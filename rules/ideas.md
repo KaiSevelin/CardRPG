@@ -33,3 +33,39 @@ Still an idea: **Fear / Madness** cards in the skill deck, from horrors.
 - **Lair deck:** draw 1 card at the start of each round, separate from the boss's actions (ceiling collapses, reinforcements, darkness, fire).
 
 **Favourite still parked:** boss phases.
+
+## Permanent injuries
+
+An injury is a **negative feature**: a permanent card on the character sheet, not in a deck.
+
+| | Wound | Taint | **Injury** |
+|---|---|---|---|
+| Where | Action deck | Action or skill deck | Character sheet (feature) |
+| Lasts | Until rest or healing | Until cured | Permanent |
+
+### Effects use existing rules
+
+| Injury | Effect | Uses |
+|---|---|---|
+| Lost eye | Range −2 on ranged attacks. Disadvantage on sight-based Wits checks. | Range, situational disadvantage |
+| Lost fingers | Fine tools give at most +1 (as if untrained). | Tool training |
+| Lost hand | Only 1 hand slot. | Item slots |
+| Bad leg | All Move values −1 (minimum 1). | Card values |
+| Scarred face | Disadvantage on Presence with strangers, advantage on intimidation. | Advantage |
+| Shattered nerves | Blocks ⚡ reactions on your first turn of each combat. | Blocked icons |
+
+Injuries can cut both ways (scarred face) and become part of the character. The final list waits for the world.
+
+### Gaining injuries
+When you fall Unconscious, draw a fate card:
+- **Miss:** permanent injury (from an injury deck, or chosen by the GM to fit what hit you).
+- **−2 / −1:** lasting injury that heals after some days of rest.
+- **Anything else:** only the normal Wound.
+
+### Living with injuries
+- **Items:** hook hand (takes the hand slot, has its own Strike line), glass eye, crutch.
+- **Adaptation:** a leveling option, *Adapted: ignore one injury's penalty*.
+- **Regeneration magic:** rare and expensive, more of a quest than a service.
+
+### Optional: escaping death
+When your character would die, you may take a **permanent injury instead**. Limited to once per character, or once per level.
