@@ -1,0 +1,150 @@
+{{!--
+  Slate sheet, for both item and feature. A slate is laid out face up and never shuffled; its back
+  carries the description, which is why Drained turns it sideways rather than flipping it.
+--}}
+<div class="cr-sheet">
+
+  <header class="cr-sheet__header">
+    <input type="text" name="name" value="{{slate.name}}" placeholder="Name" class="cr-name">
+  </header>
+
+  {{#if isItem}}
+    <section class="cr-vitals">
+      <label class="cr-stat">Slot
+        <select name="system.slot">{{selectOptions slots selected=system.slot labelAttr="label" localize=true}}</select>
+      </label>
+      <label class="cr-stat">Hands
+        <input type="number" name="system.hands" value="{{system.hands}}" min="1" max="2">
+      </label>
+      <label class="cr-stat">Weight (kg)
+        <input type="number" name="system.weight" value="{{system.weight}}" min="0">
+      </label>
+      <label class="cr-stat">Value (gold)
+        <input type="number" name="system.value" value="{{system.value}}" min="0">
+      </label>
+      <label class="cr-stat">Armor
+        <input type="number" name="system.armor" value="{{system.armor}}" min="0">
+      </label>
+      <label class="cr-stat cr-stat--check">
+        <input type="checkbox" name="system.equipped" {{#if system.equipped}}checked{{/if}}> Equipped
+      </label>
+      <label class="cr-stat cr-stat--check">
+        <input type="checkbox" name="system.consumed" {{#if system.consumed}}checked{{/if}}> Consumed on use
+      </label>
+      <label class="cr-stat cr-stat--check">
+        <input type="checkbox" name="system.npcGear" {{#if system.npcGear}}checked{{/if}}> NPC gear
+      </label>
+    </section>
+
+    <p class="cr-note">Weight is what this costs to haul. The <em>Heavy</em> and <em>Light</em> tags
+      are how it handles when wielded &mdash; <em>Strong</em> reads the tags. Neither derives from
+      the other.</p>
+
+    {{!-- The verb lines are what an action card needs: the card says Strike, the item says 3. --}}
+    <section class="cr-block">
+      <h3>Verb lines</h3>
+      <table class="cr-verbs">
+        <thead><tr><th>Verb</th><th>Value</th><th>Range</th><th>Area</th><th>Kind</th><th>Text</th></tr></thead>
+        <tbody>
+          {{#each system.verbs as |line verb|}}
+            <tr>
+              <th>{{verb}}</th>
+              <td><input type="number" name="system.verbs.{{verb}}.value" value="{{line.value}}"></td>
+              <td><input type="number" name="system.verbs.{{verb}}.range" value="{{line.range}}" min="0"></td>
+              <td><input type="number" name="system.verbs.{{verb}}.area" value="{{line.area}}" min="0"></td>
+              <td>
+                <select name="system.verbs.{{verb}}.areaKind">
+                  <option value="">&mdash;</option>
+                  <option value="blast" {{#if (crEq line.areaKind "blast")}}selected{{/if}}>Blast</option>
+                  <option value="aimed" {{#if (crEq line.areaKind "aimed")}}selected{{/if}}>Aimed</option>
+                </select>
+              </td>
+              <td><input type="text" name="system.verbs.{{verb}}.text" value="{{line.text}}"></td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+      <p class="cr-note">Blast hits everyone in the area, allies included. Aimed hits only your
+        enemies and should cost more &mdash; don't make it common.</p>
+    </section>
+
+    <section class="cr-block">
+      <h3>Back face</h3>
+      <label>Kind <input type="text" name="system.kind" value="{{system.kind}}" placeholder="Tool"></label>
+      <label>Blurb <input type="text" name="system.blurb" value="{{system.blurb}}"
+             placeholder="Slim picks in an oilcloth roll."></label>
+      <p class="cr-note">One sentence. Longer prose belongs in the description below, never on a face.</p>
+    </section>
+  {{/if}}
+
+  {{#if isFeature}}
+    <section class="cr-block">
+      <h3>Effect</h3>
+      <input type="text" name="system.text" value="{{system.text}}"
+             placeholder="+1 damage on Strike with Heavy items.">
+    </section>
+
+    {{!-- Flat traits the derived stats read. NOT bonus-grouped: a group caps bonuses to one action,
+          these change a standing number. --}}
+    <section class="cr-block">
+      <h3>Grants</h3>
+      <div class="cr-vitals">
+        <label class="cr-stat">Max health
+          <input type="number" name="system.grants.health" value="{{system.grants.health}}">
+        </label>
+        <label class="cr-stat">Hand size
+          <input type="number" name="system.grants.handSize" value="{{system.grants.handSize}}">
+        </label>
+        <label class="cr-stat">Carry (kg)
+          <input type="number" name="system.grants.carry" value="{{system.grants.carry}}">
+        </label>
+        <label class="cr-stat">Deck maximum
+          <input type="number" name="system.grants.deckMax" value="{{system.grants.deckMax}}">
+        </label>
+      </div>
+      <p class="cr-note">A bigger deck isn't automatically better: more stamina, but your best cards
+        come up less often. Only worth raising once there are twenty cards worth playing.</p>
+    </section>
+  {{/if}}
+
+  {{!-- A bonus group caps stacking; a recharge caps frequency. Different dials, both optional. --}}
+  <section class="cr-block">
+    <h3>Bonus group</h3>
+    <select name="system.group">
+      <option value="">&mdash; none (base values and flat traits aren't grouped)</option>
+      {{selectOptions groups selected=system.group labelAttr="label" localize=true}}
+    </select>
+    <p class="cr-note">Only a <em>numeric bonus</em> carries a group. One action may take at most one
+      bonus from each. A border always means a group, system-wide.</p>
+  </section>
+
+  <section class="cr-block">
+    <h3>Active ability</h3>
+    <label>What it does
+      <input type="text" name="system.active.text" value="{{system.active.text}}"
+             placeholder="Drain: you don't become Dazed.">
+    </label>
+    <div class="cr-vitals">
+      <label class="cr-stat">Recharge: turns
+        <input type="number" name="system.active.turns" value="{{system.active.turns}}" min="1">
+      </label>
+      <label class="cr-stat">or boundary
+        <select name="system.active.boundary">
+          <option value="">&mdash;</option>
+          {{selectOptions recharges selected=system.active.boundary localize=true}}
+        </select>
+      </label>
+      <label class="cr-stat cr-stat--check">
+        <input type="checkbox" name="system.drained" {{#if system.drained}}checked{{/if}}> Drained
+      </label>
+    </div>
+    <p class="cr-note">Leave this empty for a passive slate. Passive effects stay small; anything
+      that would swing a fight on its own needs a recharge. Turns pace a fight, rests budget a day.</p>
+  </section>
+
+  <section class="cr-block">
+    <h3>Description</h3>
+    <textarea name="system.description" rows="4">{{system.description}}</textarea>
+  </section>
+
+</div>

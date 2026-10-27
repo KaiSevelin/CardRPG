@@ -210,3 +210,109 @@
 
 /* A draining bar says the round is moving; a bare number invites haggling. */
 .cardrpg .cr-timer__fill { background: var(--cardrpg-group-1); }
+
+/* -------------------------------------------- */
+/*  Sheets                                      */
+/* -------------------------------------------- */
+
+.cardrpg .cr-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+  padding: 0.5em 0.7em;
+  font-size: 0.85rem;
+}
+
+.cardrpg .cr-sheet__header { display: flex; flex-direction: column; gap: 0.3em; }
+.cardrpg .cr-sheet__identity { display: flex; gap: 0.8em; flex-wrap: wrap; }
+.cardrpg .cr-name { font-size: 1.1rem; font-weight: 600; }
+
+.cardrpg .cr-block {
+  border-top: 1px solid var(--cardrpg-rule);
+  padding-top: 0.4em;
+}
+.cardrpg .cr-block > h3 {
+  margin: 0 0 0.3em;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--cardrpg-dim);
+}
+.cardrpg .cr-block > h4 { margin: 0.3em 0 0.2em; font-size: 0.78rem; }
+.cardrpg .cr-block--gm { border-top-style: dashed; }
+
+/* Derived values are shown but never editable, so they read differently from inputs. */
+.cardrpg .cr-vitals { display: flex; flex-wrap: wrap; gap: 0.6em 1em; }
+.cardrpg .cr-stat { display: flex; flex-direction: column; font-size: 0.72rem; color: var(--cardrpg-dim); }
+.cardrpg .cr-stat--check { flex-direction: row; align-items: center; gap: 0.3em; }
+.cardrpg .cr-stat input { width: 4.5em; }
+.cardrpg .cr-stat__pair { display: flex; align-items: center; gap: 0.2em; }
+.cardrpg .cr-stat__sep { color: var(--cardrpg-dim); }
+.cardrpg .cr-stat__derived {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--cardrpg-ink);
+  border-bottom: 1px dotted var(--cardrpg-dim);
+}
+
+.cardrpg .cr-note { margin: 0.2em 0; font-size: 0.72rem; color: var(--cardrpg-dim); }
+.cardrpg .cr-warn { margin: 0.2em 0; font-size: 0.75rem; color: var(--cardrpg-group-1); font-weight: 600; }
+
+.cardrpg .cr-tier { font-size: 0.7rem; font-weight: 400; color: var(--cardrpg-dim); }
+.cardrpg .cr-tier--burdened,
+.cardrpg .cr-tier--overloaded,
+.cardrpg .cr-tier--immobile { color: var(--cardrpg-group-1); font-weight: 600; }
+
+.cardrpg .cr-deck { display: flex; flex-direction: column; gap: 0.1em; }
+.cardrpg .cr-deck__counts { font-size: 0.72rem; color: var(--cardrpg-dim); }
+
+.cardrpg .cr-conditions,
+.cardrpg .cr-slates { list-style: none; margin: 0; padding: 0; }
+
+.cardrpg .cr-condition,
+.cardrpg .cr-slate-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.15em 0;
+  position: relative;
+}
+.cardrpg .cr-slate-row__name { flex: 1 1 auto; font-weight: 500; }
+.cardrpg .cr-slate-row--drained .cr-slate-row__name { color: var(--cardrpg-dim); text-decoration: line-through; }
+
+/* A derived condition has no remove button, because nothing applied it. */
+.cardrpg .cr-condition--derived { color: var(--cardrpg-dim); }
+.cardrpg .cr-condition__duration {
+  min-width: 1.4em;
+  text-align: center;
+  border: 1px solid var(--cardrpg-rule);
+  border-radius: 999px;
+  font-size: 0.7rem;
+}
+/* The creator matters: the duration ticks on their turn, not yours. */
+.cardrpg .cr-condition__creator { font-size: 0.7rem; color: var(--cardrpg-dim); }
+
+.cardrpg .cr-recharge { font-size: 0.72rem; color: var(--cardrpg-dim); white-space: nowrap; }
+
+/* A left-edge stripe is the row form of the group border. */
+.cardrpg .cr-slate-row[data-group]:not([data-group=""]) { padding-left: 0.5em; }
+.cardrpg .cr-slate-row[data-group]:not([data-group=""])::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0.15em; bottom: 0.15em;
+  width: 3px;
+  background: var(--cardrpg-dim);
+}
+.cardrpg .cr-slate-row[data-group="body"]::before { background: var(--cardrpg-group-1); }
+.cardrpg .cr-slate-row[data-group="training"]::before { background: var(--cardrpg-group-2); }
+.cardrpg .cr-slate-row[data-group="tool"]::before { background: var(--cardrpg-group-3); }
+.cardrpg .cr-slate-row[data-group="make"]::before { background: var(--cardrpg-group-4); }
+.cardrpg .cr-slate-row[data-group="power"]::before { background: var(--cardrpg-group-5); }
+.cardrpg .cr-slate-row[data-group="station"]::before { background: var(--cardrpg-group-6); }
+.cardrpg .cr-slate-row[data-group="wonder"]::before { background: var(--cardrpg-group-7); }
+
+.cardrpg .cr-verbs { width: 100%; font-size: 0.75rem; }
+.cardrpg .cr-verbs th { text-align: left; color: var(--cardrpg-dim); font-weight: 500; }
+.cardrpg .cr-verbs input { width: 100%; }
+
+.cardrpg .cr-sequence { margin: 0; padding: 0.3em 0 0.3em 1.4em; font-size: 0.75rem; }

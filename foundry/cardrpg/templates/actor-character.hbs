@@ -1,0 +1,207 @@
+{{!--
+  Character sheet: the reference surface. Live play happens on the tray, so this is deliberately
+  plain -- what you consult between turns, not what you play from.
+--}}
+<div class="cr-sheet">
+
+  <header class="cr-sheet__header">
+    <input type="text" name="name" value="{{actor.name}}" placeholder="Name" class="cr-name">
+    <div class="cr-sheet__identity">
+      <label>Way
+        <select name="system.way">
+          <option value="">&mdash;</option>
+          {{selectOptions ways selected=system.way localize=true}}
+        </select>
+      </label>
+      <label>Background
+        <input type="text" name="system.background" value="{{system.background}}">
+      </label>
+    </div>
+  </header>
+
+  {{!-- Vitals. Max health, armor and hand size are derived, so they are shown but not editable. --}}
+  <section class="cr-vitals">
+    <label class="cr-stat">Health
+      <span class="cr-stat__pair">
+        <input type="number" name="system.health.value" value="{{system.health.value}}" min="0">
+        <span class="cr-stat__sep">/</span>
+        <span class="cr-stat__derived" data-tooltip="Base {{system.health.base}}{{#if system.afflicted}}, &minus;3 Afflicted{{/if}}">{{system.health.max}}</span>
+      </span>
+    </label>
+
+    <label class="cr-stat">Base
+      <input type="number" name="system.health.base" value="{{system.health.base}}" min="1">
+    </label>
+
+    <label class="cr-stat">Block
+      <input type="number" name="system.block" value="{{system.block}}" min="0">
+    </label>
+
+    <div class="cr-stat">Armor
+      <span class="cr-stat__derived" data-tooltip="From the equipped body slate">{{system.armor}}</span>
+    </div>
+
+    <div class="cr-stat">Hand size
+      <span class="cr-stat__derived" data-tooltip="Base {{system.handSize.base}} plus features">{{system.handSize.max}}</span>
+    </div>
+
+    <label class="cr-stat">Rest tokens
+      <span class="cr-stat__pair">
+        <input type="number" name="system.rest.tokens" value="{{system.rest.tokens}}" min="0">
+        <span class="cr-stat__sep">/</span>
+        <input type="number" name="system.rest.max" value="{{system.rest.max}}" min="0">
+      </span>
+    </label>
+
+    <label class="cr-stat">Gold
+      <input type="number" name="system.cash.gold" value="{{system.cash.gold}}" min="0">
+    </label>
+  </section>
+
+  {{!-- Carrying: slots govern what you can use, weight governs what you can haul. --}}
+  <section class="cr-block">
+    <h3>Carrying <span class="cr-tier cr-tier--{{encumbrance.tier}}">{{encumbrance.label}}</span></h3>
+    <div class="cr-meter">
+      <span>{{encumbrance.carried}} / {{encumbrance.max}} kg</span>
+      <span class="cr-meter__bar">
+        <span class="cr-meter__fill" style="width: {{encumbrance.pct}}%"></span>
+      </span>
+    </div>
+    {{#if encumbrance.isOverloaded}}
+      <p class="cr-warn">Overloaded: {{config.defaults.overloadedSpent}} random cards are Spent while this lasts.</p>
+    {{/if}}
+    {{#if encumbrance.isImmobile}}
+      <p class="cr-warn">Over double your limit &mdash; you can't pick this up. Make two trips.</p>
+    {{/if}}
+  </section>
+
+  {{!-- Deck state. Wounds and Taint don't count toward the size limit. --}}
+  <section class="cr-block">
+    <h3>Action deck</h3>
+    <div class="cr-deck">
+      <span>{{deck.size}} cards (limit {{deck.min}}&ndash;{{deck.max}})</span>
+      <span class="cr-deck__counts">
+        draw {{deck.counts.draw}} &middot; hand {{deck.counts.hand}} &middot;
+        discard {{deck.counts.discard}} &middot; spent {{deck.counts.spent}}
+      </span>
+      <span class="cr-deck__counts">
+        fate {{deck.counts.fate}}/20{{#if fateSwing}} &middot; swing {{fateSwing}}%{{/if}}
+      </span>
+    </div>
+    {{#if deck.underMin}}<p class="cr-warn">Under the minimum of {{deck.min}} cards.</p>{{/if}}
+    {{#if deck.overMax}}<p class="cr-warn">Over the maximum of {{deck.max}} cards.</p>{{/if}}
+    {{#if system.exhausted}}<p class="cr-warn">Exhausted: one card per turn, and no reactions.</p>{{/if}}
+    <p class="cr-note">Wounds {{system.wounds}} &middot; Taint {{system.taint.total}}
+      (body {{system.taint.body}}, mind {{system.taint.mind}}){{#if system.afflicted}} &mdash; <strong>Afflicted</strong>{{/if}}</p>
+  </section>
+
+  {{!-- Conditions carry a creator, because the duration ticks on the creator's turn. --}}
+  <section class="cr-block">
+    <h3>Conditions</h3>
+    {{#if conditions}}
+      <ul class="cr-conditions">
+        {{#each conditions}}
+          <li class="cr-condition{{#if this.derived}} cr-condition--derived{{/if}}">
+            {{crIcon this.icon}}
+            <span class="cr-condition__label">{{this.label}}</span>
+            {{#if this.duration}}<span class="cr-condition__duration">{{this.duration}}</span>{{/if}}
+            {{#if this.creator}}<span class="cr-condition__creator">&larr; {{this.creator}}</span>{{/if}}
+            {{#if this.derived}}
+              <span class="cr-note">from carried weight</span>
+            {{else}}
+              <button type="button" data-action="removeCondition" data-index="{{@index}}" data-tooltip="Remove">&times;</button>
+            {{/if}}
+          </li>
+        {{/each}}
+      </ul>
+    {{else}}
+      <p class="cr-note">None.</p>
+    {{/if}}
+  </section>
+
+  {{!-- Equipped gear, grouped by slot so the sheet mirrors the slot rules. --}}
+  <section class="cr-block">
+    <h3>Equipped</h3>
+    {{#each equipped as |slot key|}}
+      <div class="cr-slot">
+        <h4>{{crIcon slot.icon}} {{slot.label}}
+          <span class="cr-note">{{slot.items.length}}/{{slot.capacity}}</span>
+        </h4>
+        <ul class="cr-slates">
+          {{#each slot.items as |slate|}}
+            <li class="cr-slate-row" data-group="{{slate.system.group}}">
+              <span class="cr-slate-row__name">{{slate.name}}</span>
+              <span class="cr-note">{{slate.system.weight}} kg</span>
+              <button type="button" data-action="toggleEquipped" data-slate-id="{{slate.id}}">Unequip</button>
+              <button type="button" data-action="editSlate" data-slate-id="{{slate.id}}">Edit</button>
+            </li>
+          {{/each}}
+        </ul>
+      </div>
+    {{/each}}
+  </section>
+
+  <section class="cr-block">
+    <h3>Pack</h3>
+    <ul class="cr-slates">
+      {{#each pack as |slate|}}
+        <li class="cr-slate-row" data-group="{{slate.system.group}}">
+          <span class="cr-slate-row__name">{{slate.name}}</span>
+          <span class="cr-note">{{slate.system.weight}} kg &middot; {{slate.system.value}} g</span>
+          <button type="button" data-action="toggleEquipped" data-slate-id="{{slate.id}}">Equip</button>
+          <button type="button" data-action="editSlate" data-slate-id="{{slate.id}}">Edit</button>
+          <button type="button" data-action="deleteSlate" data-slate-id="{{slate.id}}">&times;</button>
+        </li>
+      {{/each}}
+    </ul>
+    <p class="cr-note">Equipping is free outside combat. Ready only costs a card half under pressure.</p>
+  </section>
+
+  {{!-- Features: passive ones are simply true, active ones Drain when used. --}}
+  <section class="cr-block">
+    <h3>Features</h3>
+    <ul class="cr-slates">
+      {{#each features as |entry|}}
+        <li class="cr-slate-row{{#if entry.drain.drained}} cr-slate-row--drained{{/if}}" data-group="{{entry.doc.system.group}}">
+          <span class="cr-slate-row__name">{{entry.doc.name}}</span>
+          <span class="cr-note">{{entry.doc.system.text}}</span>
+          {{#if entry.drain}}
+            <span class="cr-recharge" data-tooltip="Recharges: {{entry.drain.label}}">
+              {{crIcon entry.drain.icon}}{{entry.drain.label}}
+            </span>
+            <button type="button" data-action="toggleDrained" data-slate-id="{{entry.doc.id}}">
+              {{#if entry.drain.drained}}Restore{{else}}Drain{{/if}}
+            </button>
+          {{/if}}
+          <button type="button" data-action="editSlate" data-slate-id="{{entry.doc.id}}">Edit</button>
+        </li>
+      {{/each}}
+    </ul>
+  </section>
+
+  <section class="cr-block">
+    <h3>Training</h3>
+    <p class="cr-note">Structured &mdash; an untrained user caps a tool bonus at +1.</p>
+    <input type="text" name="system.trainingsText" value="{{trainingsText}}" placeholder="lockpicks, gaming set">
+    <h3>Know-how</h3>
+    <p class="cr-note">A situation, not an approach. The GM reads this; nothing automates it.</p>
+    <input type="text" name="system.knowHowText" value="{{knowHowText}}" placeholder="Military matters; forests and tracking">
+  </section>
+
+  <section class="cr-block">
+    <h3>Biography</h3>
+    <textarea name="system.biography" rows="4">{{system.biography}}</textarea>
+    <h3>Appearance</h3>
+    <textarea name="system.appearance" rows="3">{{system.appearance}}</textarea>
+  </section>
+
+  {{#if isGM}}
+    {{!-- GM tier: data on a character that its own player must not see. --}}
+    <section class="cr-block cr-block--gm">
+      <h3>GM notes</h3>
+      <p class="cr-note">Hidden from the player: what NPCs know, hidden Taint sources, anything planted.</p>
+      <textarea name="system.gmNotes" rows="3">{{system.gmNotes}}</textarea>
+    </section>
+  {{/if}}
+
+</div>

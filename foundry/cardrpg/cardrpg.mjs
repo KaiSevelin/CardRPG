@@ -6,6 +6,7 @@
  */
 
 import { CARDRPG } from "./module/config.mjs";
+import { registerSheets } from "./module/sheets.mjs";
 import { CharacterData, NpcData } from "./module/data/actors.mjs";
 import { ItemSlateData, FeatureSlateData } from "./module/data/items.mjs";
 import {
@@ -48,7 +49,35 @@ Hooks.once("init", () => {
   CONFIG.Combat.initiative = { formula: "0", decimals: 2 };
 
   registerSettings();
+  registerHelpers();
+  registerSheets();
 });
+
+/* -------------------------------------------- */
+/*  Handlebars helpers                          */
+/* -------------------------------------------- */
+
+/** Our own, rather than relying on which helpers core happens to register. */
+function registerHelpers() {
+  /**
+   * An icon, masked to currentColor so one CSS rule can grey a blocked one. The key is the
+   * kebab-case game-icons filename (rules/icons.md), which is also the enum value.
+   *
+   * Until the SVGs are downloaded into icons/, this renders a labelled placeholder rather than an
+   * empty box -- so a missing asset is visible and tells you which one is missing.
+   */
+  Handlebars.registerHelper("crIcon", key => {
+    if (!key) return new Handlebars.SafeString("");
+    const url = `systems/cardrpg/icons/${key}.svg`;
+    return new Handlebars.SafeString(
+      `<span class="cr-icon" style="--icon: url('${url}')" data-icon="${key}" data-tooltip="${key}"></span>`
+    );
+  });
+
+  Handlebars.registerHelper("crEq", (a, b) => a === b);
+
+  Handlebars.registerHelper("concat", (...args) => args.slice(0, -1).join(""));
+}
 
 /* -------------------------------------------- */
 /*  Settings                                    */

@@ -1,0 +1,137 @@
+{{!--
+  One config sheet for every card subtype. Faces render from icon keys, never from a stored image,
+  because a condition can switch off any half showing a given icon.
+
+  Step editing is intentionally not here: cards are authored in bulk by the content routine and in
+  compendiums, so this shows the face and exposes only the fields worth hand-editing.
+--}}
+<div class="cr-sheet">
+
+  <header class="cr-sheet__header">
+    <input type="text" name="name" value="{{card.name}}" placeholder="Name" class="cr-name">
+    <span class="cr-note">{{localize (concat "TYPES.Card." type)}}</span>
+  </header>
+
+  {{!-- Face preview --}}
+  <section class="cr-block">
+    <h3>Face</h3>
+
+    {{#if isAction}}
+      <div class="cr-card">
+        <div class="cr-card__name">{{card.name}}</div>
+        <div class="cr-half cr-half--primary">
+          <span class="cr-half__marker">{{crIcon config.halfIcons.primary}}</span>
+          <span>{{#each face.primary}}{{crIcon this.icon}}{{this.num}} {{this.text}}{{/each}}</span>
+        </div>
+        <div class="cr-half cr-half--secondary">
+          <span class="cr-half__marker">{{crIcon config.halfIcons.secondary}}</span>
+          <span>{{#each face.secondary}}{{crIcon this.icon}}{{this.num}} {{this.text}}{{/each}}</span>
+        </div>
+        <div class="cr-half cr-half--reaction">
+          <span class="cr-half__marker">{{crIcon config.halfIcons.reaction}}</span>
+          <span>{{#if face.reaction}}{{face.reaction}}{{else}}&mdash;{{/if}}</span>
+        </div>
+      </div>
+      <p class="cr-note">Any card without a printed reaction can still be discarded for
+        <strong>Brace</strong>, which is never blocked &mdash; so no card is ever completely dead.</p>
+    {{/if}}
+
+    {{#if isFate}}
+      <div class="cr-card cr-card--fate{{#if system.temporary}} cr-card--temporary{{/if}}">
+        {{face.label}}
+      </div>
+      {{#if system.temporary}}
+        <p class="cr-note">Temporary: shuffled in by Blessed or Cursed, and removed when drawn. The
+          corner mark is what makes that possible.</p>
+      {{/if}}
+    {{/if}}
+
+    {{#if isNpcCard}}
+      <div class="cr-card">
+        <div class="cr-card__name">{{card.name}}</div>
+        <ol class="cr-sequence">
+          {{#each face.sequence}}
+            <li>{{crIcon this.icon}}{{this.num}} {{this.text}}</li>
+          {{/each}}
+        </ol>
+      </div>
+      <p class="cr-note">The order is the content: "Move 3, then Strike" plays nothing like
+        "Strike, then Move 2". The back shows only the type, which is what Foresee reveals.</p>
+    {{/if}}
+
+    {{#if isHarm}}
+      <div class="cr-card cr-card--harm">
+        <div class="cr-card__name">{{card.name}}</div>
+        <div class="cr-half">
+          {{#if isWound}}
+            <span>Can't be played. Discard at the end of your turn.</span>
+          {{else}}
+            <span>When drawn: 1 damage, ignoring armor. Discard, and draw no replacement.</span>
+          {{/if}}
+        </div>
+      </div>
+      <p class="cr-note">No bands, because it can't be played &mdash; that absence is the signal.
+        It takes the standard card back, so it's indistinguishable in the draw pile.</p>
+    {{/if}}
+  </section>
+
+  {{!-- Editable fields, per subtype --}}
+  {{#if isAction}}
+    <section class="cr-block">
+      <h3>Reaction</h3>
+      <select name="system.reaction">
+        <option value="">&mdash; none (Brace only)</option>
+        {{selectOptions reactions selected=system.reaction labelAttr="label" localize=true}}
+      </select>
+    </section>
+  {{/if}}
+
+  {{#if isFate}}
+    <section class="cr-vitals">
+      <label class="cr-stat">Value
+        <input type="number" name="system.value" value="{{system.value}}">
+      </label>
+      <label class="cr-stat">Special
+        <select name="system.special">
+          <option value="" {{#if (crEq system.special "")}}selected{{/if}}>&mdash; numeric</option>
+          <option value="miss" {{#if (crEq system.special "miss")}}selected{{/if}}>Miss</option>
+          <option value="crit" {{#if (crEq system.special "crit")}}selected{{/if}}>Critical</option>
+        </select>
+      </label>
+      <label class="cr-stat cr-stat--check">
+        <input type="checkbox" name="system.temporary" {{#if system.temporary}}checked{{/if}}> Temporary
+      </label>
+    </section>
+    <p class="cr-note">Miss and Critical both reshuffle the deck, which is why the fate counter is a
+      live risk readout: with k cards left the chance of a swing is 2/k.</p>
+  {{/if}}
+
+  {{#if isNpcCard}}
+    <section class="cr-block">
+      <h3>Creature type</h3>
+      <input type="text" name="system.kind" value="{{system.kind}}" placeholder="goblin">
+      <p class="cr-note">The type owns this deck. Every NPC of it acts on one card per round.</p>
+    </section>
+  {{/if}}
+
+  {{#if isTaint}}
+    <section class="cr-vitals">
+      <label class="cr-stat">Flavour
+        <select name="system.flavour">
+          <option value="body" {{#if (crEq system.flavour "body")}}selected{{/if}}>Body &mdash; action deck</option>
+          <option value="mind" {{#if (crEq system.flavour "mind")}}selected{{/if}}>Mind &mdash; skill deck</option>
+        </select>
+      </label>
+      <label class="cr-stat">Source
+        <input type="text" name="system.source" value="{{system.source}}">
+      </label>
+    </section>
+  {{/if}}
+
+  {{#if isWound}}
+    <section class="cr-block">
+      <label>Source <input type="text" name="system.source" value="{{system.source}}"></label>
+    </section>
+  {{/if}}
+
+</div>

@@ -94,8 +94,8 @@ with room for a duration number.
 | **Disarmed** | Drop weapon |
 | **Blessed** | Aura |
 | **Cursed** | Imprisoned |
-| **Burdened** | **not chosen** — placeholder `wooden-crate` |
-| **Overloaded** | **not chosen** — placeholder `duffel-bag` |
+| **Burdened** | Weight crush |
+| **Overloaded** | Weight |
 
 Blessed and Cursed are **condition markers only**. The temporary card they shuffle into your fate
 deck is an ordinary Critical or Miss and uses those faces, so all four icons are independent.
@@ -158,20 +158,17 @@ crowded inventory.
 
 ---
 
-## Status: 50 of 52 chosen
+## Status: complete — 52 of 52 chosen
 
-| Tier | Count | Chosen | Blocks |
-|---|---|---|---|
-| 1 | 23 | 23 | Card layout and the card schema |
-| 2 | 20 | 18 | Playable combat |
-| 3 | 9 | 9 | Polish |
-| *optional tags* | *9* | *9* | *nothing* |
+| Tier | Count | Blocks |
+|---|---|---|
+| 1 | 23 | Card layout and the card schema |
+| 2 | 20 | Playable combat |
+| 3 | 9 | Polish |
+| *optional tags* | *9* | *nothing* |
 
-**61 icons to download** including the optional tags.
-
-Outstanding: **Burdened** and **Overloaded**, which became conditions when encumbrance was written
-(core-rules §4) and were missed in the earlier count. The system uses `wooden-crate` and
-`duffel-bag` as placeholders until you pick.
+**61 icons to download** including the optional tags. Nothing in the rules or the system is waiting
+on an icon decision.
 
 ---
 

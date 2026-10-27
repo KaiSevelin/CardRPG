@@ -1,0 +1,127 @@
+{{!--
+  NPC sheet. GM-facing by default: everything here is the GM tier unless a reveal flag says
+  otherwise (actor-schema 7.2).
+--}}
+<div class="cr-sheet">
+
+  <header class="cr-sheet__header">
+    <input type="text" name="name" value="{{actor.name}}" placeholder="Name" class="cr-name">
+    <label>Type
+      <input type="text" name="system.kind" value="{{system.kind}}" placeholder="goblin">
+    </label>
+    <p class="cr-note">The type owns the action deck, the fate deck and the intent card. Place these
+      as <strong>unlinked</strong> tokens so each gets its own health while sharing one of each.</p>
+  </header>
+
+  <section class="cr-vitals">
+    <label class="cr-stat">Health
+      <span class="cr-stat__pair">
+        <input type="number" name="system.health.value" value="{{system.health.value}}" min="0">
+        <span class="cr-stat__sep">/</span>
+        <input type="number" name="system.health.base" value="{{system.health.base}}" min="1">
+      </span>
+    </label>
+    <label class="cr-stat">Armor
+      <input type="number" name="system.armorBase" value="{{system.armorBase}}" min="0">
+    </label>
+    <div class="cr-stat">Total armor
+      <span class="cr-stat__derived" data-tooltip="Base plus any equipped body slate">{{system.armor}}</span>
+    </div>
+    <label class="cr-stat">Block
+      <input type="number" name="system.block" value="{{system.block}}" min="0">
+    </label>
+    <label class="cr-stat cr-stat--check">
+      <input type="checkbox" name="system.elite" {{#if system.elite}}checked{{/if}}> Elite or boss
+    </label>
+  </section>
+
+  {{!-- Keep a weak enemy's Strike at least 2 above the heroes' armor (core-rules 9). --}}
+  <section class="cr-block">
+    <h3>Gear</h3>
+    <p class="cr-note">NPC weapons are tuned separately from player gear &mdash; that value is the
+      knob that sets how dangerous this is.</p>
+    <ul class="cr-slates">
+      {{#each gear as |slate|}}
+        <li class="cr-slate-row">
+          <span class="cr-slate-row__name">{{slate.name}}</span>
+          <span class="cr-note">
+            {{#if slate.system.verbs.strike.value}}Strike {{slate.system.verbs.strike.value}}{{/if}}
+            {{#if slate.system.verbs.strike.range}} &middot; range {{slate.system.verbs.strike.range}}{{/if}}
+          </span>
+          <button type="button" data-action="editSlate" data-slate-id="{{slate.id}}">Edit</button>
+        </li>
+      {{/each}}
+    </ul>
+  </section>
+
+  {{!-- A tactic is meant to give players something to play against, so reveal it when it fires. --}}
+  <section class="cr-block">
+    <h3>Tactics</h3>
+    {{#if tactics}}
+      <ul class="cr-slates">
+        {{#each tactics as |tactic|}}
+          <li class="cr-slate-row">
+            <span class="cr-slate-row__name">{{tactic.label}}</span>
+            <button type="button" data-action="toggleTactic" data-key="{{tactic.key}}"
+                    data-tooltip="Reveal once it has fired, so players can play against it">
+              {{#if tactic.revealed}}Revealed{{else}}Hidden{{/if}}
+            </button>
+          </li>
+        {{/each}}
+      </ul>
+    {{else}}
+      <p class="cr-note">None. Pick one or two &mdash; a monster should be dangerous for how it
+        fights, not just its numbers.</p>
+    {{/if}}
+    <label>Target priority
+      <select name="system.targetPriority">
+        {{selectOptions targetPriorities selected=system.targetPriority localize=true}}
+      </select>
+    </label>
+  </section>
+
+  {{!-- revealed is mechanical: appealing to a known motivation grants advantage. --}}
+  <section class="cr-block">
+    <h3>Motivations</h3>
+    <p class="cr-note">Normally hidden. Reveal one when the players earn it &mdash; a Wits check, a
+      card edge, asking around, or simply guessing right.</p>
+    {{#if motivations}}
+      <ul class="cr-slates">
+        {{#each motivations as |motive|}}
+          <li class="cr-slate-row">
+            <input type="text" name="system.motivations.{{motive.index}}.text" value="{{motive.text}}">
+            <button type="button" data-action="toggleMotivation" data-index="{{motive.index}}">
+              {{#if motive.revealed}}Revealed{{else}}Hidden{{/if}}
+            </button>
+          </li>
+        {{/each}}
+      </ul>
+    {{else}}
+      <p class="cr-note">None recorded.</p>
+    {{/if}}
+  </section>
+
+  <section class="cr-block">
+    <h3>Conditions</h3>
+    {{#if conditions}}
+      <ul class="cr-conditions">
+        {{#each conditions}}
+          <li class="cr-condition">
+            {{crIcon this.icon}}
+            <span class="cr-condition__label">{{this.label}}</span>
+            {{#if this.duration}}<span class="cr-condition__duration">{{this.duration}}</span>{{/if}}
+            {{#if this.creator}}<span class="cr-condition__creator">&larr; {{this.creator}}</span>{{/if}}
+          </li>
+        {{/each}}
+      </ul>
+    {{else}}
+      <p class="cr-note">None.</p>
+    {{/if}}
+  </section>
+
+  <section class="cr-block">
+    <h3>Notes</h3>
+    <textarea name="system.notes" rows="4">{{system.notes}}</textarea>
+  </section>
+
+</div>

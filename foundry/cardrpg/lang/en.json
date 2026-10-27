@@ -93,6 +93,11 @@
   "CARDRPG.Priority.LastAttacker": "Last attacker",
   "CARDRPG.Priority.Leader": "Leader",
 
+  "CARDRPG.Sheet.Character": "Character Sheet",
+  "CARDRPG.Sheet.Npc": "NPC Sheet",
+  "CARDRPG.Sheet.Slate": "Slate Sheet",
+  "CARDRPG.Sheet.Card": "Card Sheet",
+
   "CARDRPG.Fate.Miss": "Miss",
   "CARDRPG.Fate.Critical": "Critical",
 

@@ -78,14 +78,14 @@ CARDRPG.conditions = {
   cursed: { label: "CARDRPG.Condition.Cursed", icon: "imprisoned", noDuration: true },
   burdened: {
     label: "CARDRPG.Condition.Burdened",
-    icon: "wooden-crate",
+    icon: "weight-crush",
     noDuration: true,
     derived: true,
     halvesMove: true
   },
   overloaded: {
     label: "CARDRPG.Condition.Overloaded",
-    icon: "duffel-bag",
+    icon: "weight",
     noDuration: true,
     derived: true,
     halvesMove: true
