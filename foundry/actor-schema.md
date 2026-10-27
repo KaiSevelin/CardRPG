@@ -1,8 +1,9 @@
 # Actor schema
 
 Actor-level state: everything on a character or NPC that **isn't** a card or a slate. Cards and
-slates are their own documents — see [card-layout.md](card-layout.md) for their faces and
-[../rules/core-rules.md](../rules/core-rules.md) §1 for the distinction. Presentation splits between
+slates have their own schema in [card-slate-schema.md](card-slate-schema.md) and their faces in
+[card-layout.md](card-layout.md); [../rules/core-rules.md](../rules/core-rules.md) §1 has the
+distinction. Presentation splits between
 the tray and the sheet per [hud-spec.md](hud-spec.md).
 
 ---

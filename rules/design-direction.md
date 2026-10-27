@@ -39,9 +39,14 @@ Target **v14** (stable since April 2026; pin the manifest and expect one compati
 | **Intent cards** | The per-round NPC draw is face down by default, which Foundry's Cards API supports natively. *Foresee* flips one. |
 | **Tuning values live in data** | HP, hand sizes, item values, deck composition all go in compendiums and system settings, never in code — they're still moving (see [../sim/](../sim/)). |
 
-The HUD is specified in [../foundry/hud-spec.md](../foundry/hud-spec.md): an always-visible **tray**
-for play and a **sheet** for reference, with a face-up fate discard, automatic combat/scene mode
-switching, and per-player private hands.
+The system is specified in [../foundry/](../foundry/):
+
+| | |
+|---|---|
+| [hud-spec.md](../foundry/hud-spec.md) | The always-visible **tray** for play and the **sheet** for reference; face-up fate discard, automatic mode switching, per-player private hands, the reaction timer |
+| [card-layout.md](../foundry/card-layout.md) | Every printed face, the four information tiers, which types may have an informative back, the bonus-group border |
+| [actor-schema.md](../foundry/actor-schema.md) | Actor state, stored vs derived, the encumbrance transition hook, visibility tiers |
+| [card-slate-schema.md](../foundry/card-slate-schema.md) | Card and slate subtypes, the icon enum, deck topology, compendium packs |
 
 Card layout is settled in [../foundry/card-layout.md](../foundry/card-layout.md): the scan column,
 the four information tiers, which types may have an informative back, and the bonus-group border.
