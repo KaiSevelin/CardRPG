@@ -1,18 +1,20 @@
 {{!--
-  The HUD. Not a window: a layer over the canvas, with panels anchored to the edges.
+  The HUD: a layer over the canvas that ignores clicks, with decks anchored to the screen edges.
 
-  Decks show as backs with a count. Clicking one opens it; clicking the open one shuts it again.
-  Which piles can be opened is not arbitrary -- it is exactly the ones the rules make public: the
-  discard and the Spent pile are face up, and the fate discard is what makes counting possible.
-  Your own draw pile and the fate deck stay shut, because they are shuffled and face down.
+  Left column, right of the scene controls and under the navigation:
+    Items, Features, Conditions stacked from the top, Action deck in the bottom-left corner.
+  Bottom right, left of the sidebar: Fate above, Discard below.
 
-  Clicking the action deck deals a hand, once per turn.
+  Every deck shows as a back with a count. Clicking one spreads it as a vertical hand; clicking it
+  again closes it. Item cards can be turned over, because a slate's back is where value, weight and
+  type live (card-layout.md, the four information tiers).
 --}}
 <div class="cr-hud-layer{{#if collapsed}} cr-hud-layer--collapsed{{/if}}">
 
+  {{!-- Status bar, along the bottom above the hand --}}
   <header class="cr-hud__panel cr-hud__bar">
     <button type="button" class="cr-hud__collapse" data-action="toggleCollapse"
-            data-tooltip="{{#if collapsed}}Show the HUD{{else}}Collapse to this bar{{/if}}">
+            data-tooltip="{{#if collapsed}}Show the decks{{else}}Collapse to this bar{{/if}}">
       {{#if collapsed}}&#9662;{{else}}&#9652;{{/if}}
     </button>
     <span class="cr-hud__name">{{actor.name}}</span>
@@ -29,140 +31,51 @@
     {{#if stunned}}<span class="cr-tray__flag" data-tooltip="No reactions">Stunned</span>{{/if}}
     {{#if encumbered}}<span class="cr-tray__flag">{{encumbered}}</span>{{/if}}
 
+    {{#if staged}}
+      <span class="cr-note">resolves in order:</span>
+      {{#each staged}}<span class="cr-chip cr-chip--staged">{{this.order}}. {{this.name}} ({{this.half}})</span>{{/each}}
+    {{/if}}
+    {{#if targets}}<span class="cr-chip" data-tooltip="Fate is drawn once per action, not per target">&#9678; {{targets}}</span>{{/if}}
+
     <span class="cr-hud__turn">
+      <button type="button" data-action="play" {{#unless canPlay}}disabled{{/unless}}>Play</button>
+      <button type="button" data-action="clear" {{#unless canPlay}}disabled{{/unless}}>Clear</button>
+      <button type="button" data-action="breathe"
+              data-tooltip="Your whole turn. Recovers half the discard at random; one of the rest is Spent.">Breath</button>
       {{#if inCombat}}
-        {{#if myTurn}}<span class="cr-hud__active">Your turn</span>{{else}}<span class="cr-note">{{turnOwner}}'s turn</span>{{/if}}
+        {{#if myTurn}}<span class="cr-hud__active">Your turn</span>{{else}}<span class="cr-note">{{turnOwner}}</span>{{/if}}
         <button type="button" data-action="endTurn" data-tooltip="Pass to the next combatant">End turn</button>
-      {{else}}
-        <span class="cr-note">Not in combat</span>
       {{/if}}
     </span>
   </header>
 
-  {{!-- LEFT: what you carry, what you are, what is on you --}}
-  <section class="cr-hud__panel cr-hud__left">
-    <div class="cr-panel">
-      <h4>Items</h4>
-      <ul class="cr-mini">
-        {{#each equipped}}
-          <li class="cr-mini__row" data-group="{{this.group}}">
-            <span class="cr-mini__name" data-tooltip="{{this.lines}}">{{this.name}}</span>
-            <span class="cr-note">{{this.lines}}</span>
-            <button type="button" data-action="unequip" data-slate-id="{{this.id}}" data-tooltip="Unequip">&minus;</button>
-          </li>
-        {{else}}
-          <li class="cr-note">Nothing equipped. Strike and Defend need an item.</li>
-        {{/each}}
-      </ul>
-      {{#if pack}}
-        <h5 class="cr-panel__sub">Pack</h5>
-        <ul class="cr-mini">
-          {{#each pack}}
-            <li class="cr-mini__row" data-group="{{this.group}}">
-              <span class="cr-mini__name">{{this.name}}</span>
-              <span class="cr-note">{{this.weight}} kg</span>
-              <button type="button" data-action="equip" data-slate-id="{{this.id}}" data-tooltip="Equip">+</button>
-            </li>
-          {{/each}}
-        </ul>
-      {{/if}}
-    </div>
-
-    <div class="cr-panel">
-      <h4>Features</h4>
-      <ul class="cr-mini">
-        {{#each features}}
-          <li class="cr-mini__row{{#if this.drained}} cr-mini__row--drained{{/if}}" data-group="{{this.group}}">
-            <span class="cr-mini__name" data-tooltip="{{this.text}}">{{this.name}}</span>
-            {{#if this.recharge}}
-              <span class="cr-recharge" data-tooltip="Recharges: {{this.recharge}}">{{crIcon this.rechargeIcon}}{{this.recharge}}</span>
-              <button type="button" data-action="toggleDrain" data-slate-id="{{this.id}}">
-                {{#if this.drained}}&#8635;{{else}}Use{{/if}}
-              </button>
-            {{else}}
-              <span class="cr-note">passive</span>
-            {{/if}}
-          </li>
-        {{else}}
-          <li class="cr-note">None.</li>
-        {{/each}}
-      </ul>
-    </div>
-
-    <div class="cr-panel">
-      <h4>Conditions</h4>
-      <ul class="cr-mini">
-        {{#each conditions}}
-          <li class="cr-mini__row">
-            {{crIcon this.icon}}
-            <span class="cr-mini__name">{{this.label}}</span>
-            {{#if this.duration}}<span class="cr-condition__duration" data-tooltip="Ticks down on its creator's turn">{{this.duration}}</span>{{/if}}
-            {{#if this.creator}}<span class="cr-note">&larr; {{this.creator}}</span>{{/if}}
-          </li>
-        {{else}}
-          <li class="cr-note">None.</li>
-        {{/each}}
-      </ul>
-    </div>
-  </section>
-
-  {{!-- CENTRE BOTTOM: the hand --}}
-  <section class="cr-hud__panel cr-hud__hand-panel">
-    <div class="cr-hud__hand-head">
-      <span class="cr-hud__label">{{centreLabel}}</span>
-      {{#if skillsPlaceholder}}
-        <span class="cr-note">out of combat this becomes the skill deck &mdash; a later slice</span>
-      {{/if}}
-      {{#if staged}}
-        <span class="cr-note">resolves in order:</span>
-        {{#each staged}}<span class="cr-chip cr-chip--staged">{{this.order}}. {{this.name}} ({{this.half}})</span>{{/each}}
-      {{else}}
-        <span class="cr-note">click a primary and a secondary, from two different cards</span>
-      {{/if}}
-      {{#if targets}}<span class="cr-chip" data-tooltip="Fate is drawn once per action, not per target">&#9678; {{targets}}</span>{{/if}}
-      <span class="cr-tray__buttons">
-        <button type="button" data-action="play" {{#unless canPlay}}disabled{{/unless}}>Play</button>
-        <button type="button" data-action="clear" {{#unless canPlay}}disabled{{/unless}}>Clear</button>
-        <button type="button" data-action="breathe"
-                data-tooltip="Your whole turn. Recovers half the discard at random; one of the rest is Spent.">Catch Breath</button>
-      </span>
-    </div>
-
-    <div class="cr-hand">
-      {{#each cards as |card|}}
-        <div class="cr-card{{#if card.harm}} cr-card--harm{{/if}}">
-          <div class="cr-card__name">{{card.name}}</div>
-          {{#if card.harm}}
-            <div class="cr-half"><span class="cr-note">Can't be played, not even for Brace.</span></div>
-          {{else}}
-            {{#each card.halves as |half|}}
-              <div class="cr-half cr-half--{{half.name}}{{#if half.blocked}} cr-half--blocked{{/if}}{{#if half.staged}} cr-half--staged{{/if}}">
-                <span class="cr-half__marker">{{crIcon half.icon}}</span>
-                {{#if half.blocked}}
-                  <span data-tooltip="Blocked right now. The other half may still be playable, and Brace never is.">{{half.text}}</span>
-                {{else}}
-                  <button type="button" class="cr-half__play"
-                          data-action="stage" data-card-id="{{card.id}}" data-half="{{half.name}}">{{half.text}}</button>
-                {{/if}}
-              </div>
-            {{/each}}
-            <div class="cr-half cr-half--reaction">
-              <span class="cr-half__marker">{{crIcon ../config.halfIcons.reaction}}</span>
-              <span>{{#if card.reaction}}{{card.reaction}}{{else}}Brace{{/if}}</span>
-            </div>
-          {{/if}}
-        </div>
-      {{else}}
-        <p class="cr-note">No cards in hand. Click the <strong>Action deck</strong> to deal a hand.</p>
-      {{/each}}
-    </div>
-  </section>
-
-  {{!-- RIGHT: the decks, as backs with a count --}}
-  <section class="cr-hud__panel cr-hud__piles">
-    {{#each piles}}
+  {{!-- LEFT COLUMN: Items, Features, Conditions from the top --}}
+  <section class="cr-hud__decks cr-hud__decks--left">
+    {{#each leftDecks}}
       <button type="button"
-              class="cr-pile{{#if this.open}} cr-pile--open{{/if}}{{#if this.spent}} cr-pile--spent{{/if}}"
+              class="cr-pile{{#if this.open}} cr-pile--open{{/if}}"
+              data-action="openPile" data-pile="{{this.id}}" data-tooltip="{{this.tip}}">
+        <span class="cr-pile__count">{{this.count}}</span>
+        <span class="cr-pile__label">{{this.label}}</span>
+      </button>
+    {{/each}}
+  </section>
+
+  {{!-- BOTTOM-LEFT CORNER: the action deck --}}
+  <section class="cr-hud__decks cr-hud__decks--action">
+    <button type="button"
+            class="cr-pile cr-pile--action{{#if actionDeck.spent}} cr-pile--spent{{/if}}"
+            data-action="dealHand" data-tooltip="{{actionDeck.tip}}">
+      <span class="cr-pile__count">{{actionDeck.count}}</span>
+      <span class="cr-pile__label">{{actionDeck.label}}</span>
+    </button>
+  </section>
+
+  {{!-- BOTTOM RIGHT: Fate above, Discard below, clear of the sidebar --}}
+  <section class="cr-hud__decks cr-hud__decks--right">
+    {{#each rightDecks}}
+      <button type="button"
+              class="cr-pile{{#if this.open}} cr-pile--open{{/if}}"
               data-action="{{this.action}}" data-pile="{{this.id}}" data-tooltip="{{this.tip}}">
         <span class="cr-pile__count">{{this.count}}</span>
         <span class="cr-pile__label">{{this.label}}</span>
@@ -170,21 +83,84 @@
     {{/each}}
   </section>
 
-  {{!-- An opened pile. Scrolls, so a long discard is still readable. --}}
+  {{!-- The dealt hand, spread to the right of the action deck --}}
+  {{#if cards}}
+    <section class="cr-hud__panel cr-hud__hand-panel">
+      <div class="cr-hand">
+        {{#each cards as |card|}}
+          <div class="cr-card{{#if card.harm}} cr-card--harm{{/if}}">
+            <div class="cr-card__name">{{card.name}}</div>
+            {{#if card.harm}}
+              <div class="cr-half"><span class="cr-note">Can't be played, not even for Brace.</span></div>
+            {{else}}
+              {{#each card.halves as |half|}}
+                <div class="cr-half cr-half--{{half.name}}{{#if half.blocked}} cr-half--blocked{{/if}}{{#if half.staged}} cr-half--staged{{/if}}">
+                  <span class="cr-half__marker">{{crIcon half.icon}}</span>
+                  {{#if half.blocked}}
+                    <span data-tooltip="Blocked right now. The other half may still be playable, and Brace never is.">{{half.text}}</span>
+                  {{else}}
+                    <button type="button" class="cr-half__play"
+                            data-action="stage" data-card-id="{{card.id}}" data-half="{{half.name}}">{{half.text}}</button>
+                  {{/if}}
+                </div>
+              {{/each}}
+              <div class="cr-half cr-half--reaction">
+                <span class="cr-half__marker">{{crIcon ../config.halfIcons.reaction}}</span>
+                <span>{{#if card.reaction}}{{card.reaction}}{{else}}Brace{{/if}}</span>
+              </div>
+            {{/if}}
+          </div>
+        {{/each}}
+      </div>
+    </section>
+  {{/if}}
+
+  {{!-- An opened deck, spread as a vertical hand beside it --}}
   {{#if viewer}}
-    <section class="cr-hud__panel cr-hud__viewer">
+    <section class="cr-hud__panel cr-hud__viewer cr-hud__viewer--{{viewer.side}}">
       <div class="cr-hud__hand-head">
         <span class="cr-hud__label">{{viewer.label}}</span>
-        <span class="cr-note">{{viewer.count}} cards &mdash; click the deck again to close</span>
+        <span class="cr-note">{{viewer.count}}</span>
         <span class="cr-tray__buttons">
           <button type="button" data-action="closeViewer">Close</button>
         </span>
       </div>
-      <div class="cr-hand cr-hand--viewer">
+      <div class="cr-spread">
         {{#each viewer.cards}}
-          <div class="cr-card cr-card--small{{#if this.harm}} cr-card--harm{{/if}}">
-            <div class="cr-card__name">{{this.name}}</div>
-            <div class="cr-half"><span class="cr-note">{{this.detail}}</span></div>
+          <div class="cr-card cr-card--spread{{#if this.harm}} cr-card--harm{{/if}}{{#if this.flipped}} cr-card--back{{/if}}"
+               data-group="{{this.group}}">
+            <div class="cr-card__name">
+              {{#if this.icon}}{{crIcon this.icon}}{{/if}}
+              {{this.name}}
+              {{#if this.flippable}}
+                <button type="button" class="cr-card__flip" data-action="flipCard" data-card-id="{{this.id}}"
+                        data-tooltip="Turn it over">&#8634;</button>
+              {{/if}}
+            </div>
+
+            {{#if this.flipped}}
+              {{!-- The back: value, weight and type, which is tier 3 of the information model --}}
+              <div class="cr-card__back">
+                {{#if this.blurb}}<p class="cr-note">{{this.blurb}}</p>{{/if}}
+                <dl class="cr-card__facts">
+                  {{#each this.facts}}
+                    <dt>{{this.label}}</dt><dd>{{this.value}}</dd>
+                  {{/each}}
+                </dl>
+              </div>
+            {{else}}
+              <div class="cr-card__front">
+                {{#each this.lines}}
+                  <div class="cr-card__line">{{this}}</div>
+                {{/each}}
+                {{#if this.note}}<p class="cr-note">{{this.note}}</p>{{/if}}
+              </div>
+            {{/if}}
+
+            {{#if this.actionLabel}}
+              <button type="button" class="cr-card__act"
+                      data-action="{{this.action}}" data-slate-id="{{this.id}}">{{this.actionLabel}}</button>
+            {{/if}}
           </div>
         {{else}}
           <p class="cr-note">Empty.</p>

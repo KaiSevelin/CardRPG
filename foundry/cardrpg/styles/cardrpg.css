@@ -356,7 +356,10 @@
 
 /*
  * A layer, not a window. It covers the viewport but ignores clicks, so the canvas underneath stays
- * usable; only the panels themselves take pointer events.
+ * usable; only the decks and panels take pointer events.
+ *
+ * The offsets keep every deck clear of Foundry's own furniture: the scene controls down the left,
+ * the scene navigation across the top, and the sidebar on the right.
  */
 .cr-hud-layer {
   position: fixed;
@@ -366,15 +369,17 @@
   font-size: 0.8rem;
   color: var(--cardrpg-ink);
 
-  /* The right of the screen is Foundry's sidebar; every panel stays clear of it. */
-  --cr-sidebar: 318px;
-  --cr-left-w: 244px;
-  --cr-piles-w: 104px;
+  --cr-controls: 82px;   /* scene controls down the left edge */
+  --cr-nav: 96px;        /* scene navigation across the top */
+  --cr-sidebar: 318px;   /* chat, combat and the rest, on the right */
+  --cr-deck-w: 92px;
+  --cr-deck-h: 118px;
 }
 
+.cr-hud-layer .cr-hud__panel,
+.cr-hud-layer .cr-hud__decks { position: absolute; pointer-events: auto; }
+
 .cr-hud-layer .cr-hud__panel {
-  position: absolute;
-  pointer-events: auto;
   background: var(--cardrpg-paper);
   border: 1px solid var(--cardrpg-rule);
   border-radius: 5px;
@@ -383,66 +388,73 @@
   box-sizing: border-box;
 }
 
+/* --- the deck columns --- */
+.cr-hud-layer .cr-hud__decks { display: flex; flex-direction: column; gap: 6px; }
+
+/* Items, Features, Conditions: right of the controls, under the navigation. */
+.cr-hud-layer .cr-hud__decks--left {
+  left: var(--cr-controls);
+  top: var(--cr-nav);
+}
+
+/* The action deck, in the bottom-left corner and aligned with the column above it. */
+.cr-hud-layer .cr-hud__decks--action {
+  left: var(--cr-controls);
+  bottom: 10px;
+}
+
+/* Fate above, Discard below, left of the sidebar. */
+.cr-hud-layer .cr-hud__decks--right {
+  right: var(--cr-sidebar);
+  bottom: 10px;
+}
+
+/* --- a deck back --- */
+.cr-hud-layer .cr-pile {
+  flex: 0 0 auto;
+  width: var(--cr-deck-w);
+  height: var(--cr-deck-h);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15em;
+  cursor: pointer;
+  color: var(--cardrpg-paper);
+  /* Hatched, so a stack reads as face-down at a glance. */
+  background:
+    repeating-linear-gradient(45deg,
+      rgba(255, 255, 255, 0.07) 0 6px, rgba(0, 0, 0, 0) 6px 12px),
+    var(--cardrpg-harm-paper);
+  border: 1px solid var(--cardrpg-ink);
+  border-radius: 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+  padding: 0;
+}
+.cr-hud-layer .cr-pile:hover { outline: 2px solid var(--cardrpg-group-6); }
+.cr-hud-layer .cr-pile--open { outline: 2px solid var(--cardrpg-paper); }
+.cr-hud-layer .cr-pile__count { font-size: 1.4rem; font-weight: 700; line-height: 1; }
+.cr-hud-layer .cr-pile__label {
+  font-size: 0.62rem;
+  opacity: 0.85;
+  text-align: center;
+  line-height: 1.15;
+  padding: 0 0.3em;
+}
+
+/* Dealt already this turn: nothing more comes out of it until the next one. */
+.cr-hud-layer .cr-pile--spent { opacity: 0.4; }
+
+/* --- status bar, above the hand --- */
 .cr-hud-layer .cr-hud__bar {
-  left: calc(var(--cr-left-w) + 16px);
-  right: calc(var(--cr-sidebar) + var(--cr-piles-w) + 16px);
-  bottom: 226px;
+  left: calc(var(--cr-controls) + var(--cr-deck-w) + 12px);
+  right: calc(var(--cr-sidebar) + var(--cr-deck-w) + 12px);
+  bottom: calc(var(--cr-deck-h) + 20px);
   display: flex;
   align-items: center;
-  gap: 0.7em;
+  gap: 0.6em;
   flex-wrap: wrap;
 }
-
-.cr-hud-layer .cr-hud__left {
-  left: 8px;
-  bottom: 8px;
-  width: var(--cr-left-w);
-  max-height: 72vh;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35em;
-}
-
-.cr-hud-layer .cr-hud__hand-panel {
-  left: calc(var(--cr-left-w) + 16px);
-  right: calc(var(--cr-sidebar) + var(--cr-piles-w) + 16px);
-  bottom: 8px;
-  height: 212px;
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-}
-
-.cr-hud-layer .cr-hud__piles {
-  right: var(--cr-sidebar);
-  bottom: 8px;
-  width: var(--cr-piles-w);
-  display: flex;
-  flex-direction: column;
-  gap: 0.3em;
-  max-height: 72vh;
-  overflow-y: auto;
-}
-
-.cr-hud-layer .cr-hud__viewer {
-  left: calc(var(--cr-left-w) + 16px);
-  right: calc(var(--cr-sidebar) + var(--cr-piles-w) + 16px);
-  bottom: 268px;
-  max-height: 42vh;
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-}
-
-/* Collapsed: the status bar only, parked at the bottom so it covers nothing. */
-.cr-hud-layer--collapsed .cr-hud__left,
-.cr-hud-layer--collapsed .cr-hud__hand-panel,
-.cr-hud-layer--collapsed .cr-hud__piles,
-.cr-hud-layer--collapsed .cr-hud__viewer { display: none; }
-.cr-hud-layer--collapsed .cr-hud__bar { bottom: 8px; left: 8px; }
-
-/* --- status bar --- */
 .cr-hud-layer .cr-hud__name { font-weight: 700; }
 .cr-hud-layer .cr-hud__collapse {
   flex: 0 0 auto;
@@ -464,65 +476,125 @@
   background: var(--cardrpg-group-1);
   color: var(--cardrpg-paper);
 }
-.cr-hud-layer .cr-hud__turn { margin-left: auto; display: flex; align-items: center; gap: 0.5em; }
-.cr-hud-layer .cr-hud__turn button { flex: 0 0 auto; width: auto; white-space: nowrap; }
+.cr-hud-layer .cr-hud__turn { margin-left: auto; display: flex; align-items: center; gap: 0.35em; }
+.cr-hud-layer .cr-hud__turn button {
+  flex: 0 0 auto;
+  width: auto;
+  white-space: nowrap;
+  font-size: 0.74rem;
+  padding: 0.15em 0.6em;
+}
 .cr-hud-layer .cr-hud__active { font-weight: 700; color: var(--cardrpg-group-6); }
 
-/* --- deck backs --- */
-.cr-hud-layer .cr-pile {
-  flex: 0 0 auto;
-  width: 100%;
-  height: 56px;
+/* --- the dealt hand, spread right of the action deck --- */
+.cr-hud-layer .cr-hud__hand-panel {
+  left: calc(var(--cr-controls) + var(--cr-deck-w) + 12px);
+  right: calc(var(--cr-sidebar) + var(--cr-deck-w) + 12px);
+  bottom: 10px;
+  height: var(--cr-deck-h);
   display: flex;
   flex-direction: column;
+  min-height: 0;
+}
+
+/* --- an opened deck, spread as a vertical hand beside it --- */
+.cr-hud-layer .cr-hud__viewer {
+  top: var(--cr-nav);
+  bottom: calc(var(--cr-deck-h) + 56px);
+  width: 260px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.cr-hud-layer .cr-hud__viewer--left { left: calc(var(--cr-controls) + var(--cr-deck-w) + 12px); }
+.cr-hud-layer .cr-hud__viewer--right { right: calc(var(--cr-sidebar) + var(--cr-deck-w) + 12px); }
+
+/* Vertical, because an opened deck is held in the hand rather than fanned on the table. */
+.cr-hud-layer .cr-spread {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35em;
+  padding: 0.1em;
+}
+
+/* Collapsed: the status bar only, parked at the bottom so it covers nothing. */
+.cr-hud-layer--collapsed .cr-hud__decks,
+.cr-hud-layer--collapsed .cr-hud__hand-panel,
+.cr-hud-layer--collapsed .cr-hud__viewer { display: none; }
+.cr-hud-layer--collapsed .cr-hud__bar { bottom: 10px; left: var(--cr-controls); }
+
+/* --- spread cards --- */
+.cardrpg .cr-card--spread {
+  width: 100%;
+  aspect-ratio: auto;
+  min-height: 0;
+  position: relative;
+  padding-bottom: 0.2em;
+}
+.cardrpg .cr-card--spread .cr-card__name {
+  display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.1em;
-  cursor: pointer;
-  color: var(--cardrpg-paper);
-  /* A card back: hatched, so a stack reads as face-down at a glance. */
-  background:
-    repeating-linear-gradient(45deg,
-      rgba(255, 255, 255, 0.07) 0 6px, rgba(0, 0, 0, 0) 6px 12px),
-    var(--cardrpg-harm-paper);
-  border: 1px solid var(--cardrpg-ink);
-  border-radius: 4px;
+  gap: 0.3em;
 }
-.cr-hud-layer .cr-pile:hover { outline: 2px solid var(--cardrpg-group-6); }
-.cr-hud-layer .cr-pile__count { font-size: 1.05rem; font-weight: 700; line-height: 1; }
-.cr-hud-layer .cr-pile__label { font-size: 0.6rem; opacity: 0.8; text-align: center; line-height: 1.1; }
-.cr-hud-layer .cr-pile--open { outline: 2px solid var(--cardrpg-paper); }
-
-/* Dealt already this turn: nothing more comes out of it until the next one. */
-.cr-hud-layer .cr-pile--spent { opacity: 0.45; }
-
-/* --- panels inside the HUD --- */
-.cr-hud-layer .cr-panel {
+.cardrpg .cr-card__flip {
+  margin-left: auto;
+  flex: 0 0 auto;
+  width: auto;
+  background: none;
   border: 1px solid var(--cardrpg-rule);
-  border-radius: 4px;
-  padding: 0.3em 0.45em;
-  background: rgba(255, 255, 255, 0.35);
+  border-radius: 3px;
+  padding: 0 0.3em;
+  font-size: 0.75rem;
+  cursor: pointer;
+  color: inherit;
 }
-.cr-hud-layer .cr-panel > h4 {
-  margin: 0 0 0.25em;
+.cardrpg .cr-card__front,
+.cardrpg .cr-card__back { padding: 0.25em 0.45em; }
+.cardrpg .cr-card__line { font-variant-numeric: tabular-nums; }
+
+/* The back is the only place value, weight and type appear. */
+.cardrpg .cr-card--back { background: rgba(0, 0, 0, 0.05); }
+.cardrpg .cr-card__facts {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0 0.5em;
+  margin: 0.2em 0 0;
   font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--cardrpg-dim);
 }
-.cr-hud-layer .cr-panel__sub {
-  margin: 0.4em 0 0.2em;
-  font-size: 0.68rem;
-  text-transform: uppercase;
-  color: var(--cardrpg-dim);
-}
-.cr-hud-layer .cr-hud__label {
+.cardrpg .cr-card__facts dt { color: var(--cardrpg-dim); }
+.cardrpg .cr-card__facts dd { margin: 0; font-variant-numeric: tabular-nums; }
+
+.cardrpg .cr-card__act {
+  width: calc(100% - 0.9em);
+  margin: 0.15em 0.45em 0.25em;
   font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--cardrpg-dim);
-  font-weight: 600;
+  padding: 0.1em 0;
 }
+
+/* A group border always means a bonus group, so a spread card carries it too. */
+.cardrpg .cr-card--spread[data-group="body"] { border-left: 4px solid var(--cardrpg-group-1); }
+.cardrpg .cr-card--spread[data-group="training"] { border-left: 4px solid var(--cardrpg-group-2); }
+.cardrpg .cr-card--spread[data-group="tool"] { border-left: 4px solid var(--cardrpg-group-3); }
+.cardrpg .cr-card--spread[data-group="make"] { border-left: 4px solid var(--cardrpg-group-4); }
+.cardrpg .cr-card--spread[data-group="power"] { border-left: 4px solid var(--cardrpg-group-5); }
+.cardrpg .cr-card--spread[data-group="station"] { border-left: 4px solid var(--cardrpg-group-6); }
+.cardrpg .cr-card--spread[data-group="wonder"] { border-left: 4px solid var(--cardrpg-group-7); }
+
+/* --- the hand itself --- */
+.cardrpg .cr-hand {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  gap: 0.4em;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.1em;
+}
+.cardrpg .cr-hand .cr-card { flex: 0 0 auto; height: 100%; aspect-ratio: auto; width: 132px; }
+
 .cr-hud__hand-head {
   flex: 0 0 auto;
   display: flex;
@@ -533,59 +605,13 @@
   border-bottom: 1px solid var(--cardrpg-rule);
   margin-bottom: 0.3em;
 }
-
-/* --- compact lists --- */
-.cardrpg .cr-mini { list-style: none; margin: 0; padding: 0; }
-.cardrpg .cr-mini__row {
-  display: flex;
-  align-items: center;
-  gap: 0.3em;
-  padding: 0.1em 0 0.1em 0.4em;
-  position: relative;
-}
-.cardrpg .cr-mini__name {
-  flex: 1 1 auto;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.cardrpg .cr-mini__row button {
-  flex: 0 0 auto;
-  width: auto;
-  min-width: 1.6em;
-  padding: 0 0.35em;
+.cr-hud-layer .cr-hud__label {
   font-size: 0.72rem;
-  line-height: 1.5;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--cardrpg-dim);
+  font-weight: 600;
 }
-.cardrpg .cr-mini__row--drained .cr-mini__name { color: var(--cardrpg-dim); text-decoration: line-through; }
-.cardrpg .cr-mini__row[data-group]:not([data-group=""])::before {
-  content: "";
-  position: absolute;
-  left: 0; top: 0.1em; bottom: 0.1em;
-  width: 3px;
-  background: var(--cardrpg-dim);
-}
-.cardrpg .cr-mini__row[data-group="body"]::before { background: var(--cardrpg-group-1); }
-.cardrpg .cr-mini__row[data-group="training"]::before { background: var(--cardrpg-group-2); }
-.cardrpg .cr-mini__row[data-group="tool"]::before { background: var(--cardrpg-group-3); }
-.cardrpg .cr-mini__row[data-group="make"]::before { background: var(--cardrpg-group-4); }
-.cardrpg .cr-mini__row[data-group="power"]::before { background: var(--cardrpg-group-5); }
-.cardrpg .cr-mini__row[data-group="station"]::before { background: var(--cardrpg-group-6); }
-.cardrpg .cr-mini__row[data-group="wonder"]::before { background: var(--cardrpg-group-7); }
-
-/* --- the hand: wraps and scrolls, so every card is reachable --- */
-.cardrpg .cr-hand {
-  flex: 1 1 auto;
-  min-height: 0;
-  display: flex;
-  flex-wrap: wrap;
-  align-content: flex-start;
-  gap: 0.4em;
-  overflow-y: auto;
-  padding: 0.1em;
-}
-.cardrpg .cr-card--small { --cardrpg-card-width: 118px; aspect-ratio: auto; min-height: 58px; }
 
 .cardrpg .cr-tray__buttons { margin-left: auto; display: flex; gap: 0.3em; }
 .cardrpg .cr-tray__buttons button {
@@ -627,6 +653,7 @@
 
 .cardrpg .cr-condition__label { flex: 1 1 auto; }
 .cardrpg .cr-slot { margin-bottom: 0.4em; }
+.cardrpg .cr-mini { list-style: none; margin: 0; padding: 0; }
 
-/* The opened pile scrolls on its own, independently of the hand below it. */
-.cardrpg .cr-hand--viewer { max-height: 32vh; }
+/* The action deck is the one you act from, so it reads as the live deck. */
+.cr-hud-layer .cr-pile--action { border-color: var(--cardrpg-group-6); }

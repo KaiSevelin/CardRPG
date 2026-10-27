@@ -31,8 +31,10 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     /** Collapsed to the status bar. Skills are consulted, not played from, so out of combat the
      *  HUD is usually in the way until you want it. */
     this.collapsed = false;
-    /** Which pile is open, if any. @type {string|null} */
+    /** Which deck is open, if any. @type {string|null} */
     this.openPile = null;
+    /** Slates currently turned over, showing value, weight and type. @type {Set<string>} */
+    this.flipped = new Set();
     /** The round:turn a hand was last dealt, so the deck goes inert until the next turn. */
     this.dealtAt = null;
   }
@@ -55,11 +57,9 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       toggleCollapse: CardRPGTray.#onToggleCollapse,
       dealHand: CardRPGTray.#onDealHand,
       // A face-down pile is not openable; the click is absorbed rather than erroring.
-      none: () => {},
       openPile: CardRPGTray.#onOpenPile,
+      flipCard: CardRPGTray.#onFlipCard,
       closeViewer: CardRPGTray.#onCloseViewer,
-      peek: CardRPGTray.#onPeek,
-      reveal: CardRPGTray.#onReveal
     }
   };
 
@@ -198,14 +198,12 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       counts,
       fatePct: Math.round(100 * (counts.fate ?? 0) / 20),
       fateSwing: counts.fate ? Math.min(100, Math.round(200 / counts.fate)) : null,
-      piles: this.#piles(combat),
-      viewer: this.#viewer(combat),
+      leftDecks: this.#leftDecks(),
+      actionDeck: this.#actionDeck(combat),
+      rightDecks: this.#rightDecks(),
+      viewer: this.#viewer(),
 
       collapsed: this.collapsed,
-      // Out of combat the centre panel becomes the skill deck, which is a later slice.
-      centreLabel: myCombatant ? "Actions" : "Skills",
-      skillsPlaceholder: !myCombatant,
-
       inCombat: !!myCombatant,
       myTurn: combat?.combatant?.actor?.id === actor.id,
       turnOwner: combat?.combatant?.name ?? "",
@@ -217,88 +215,155 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   /* -------------------------------------------- */
 
   /**
-   * The decks, as backs with a count.
+   * The three decks stacked down the left: Items, Features, Conditions.
    *
-   * Openable or not is a rules question, not a UI one: a face-up pile can be looked through, a
-   * shuffled face-down one cannot. Your own draw pile staying shut is the whole reason the deck is
-   * a stamina clock rather than a menu.
+   * Items and features are slates, not cards -- they are never shuffled or drawn. They are shown
+   * as decks because they are the same printed size and a stack is how you hold them at a table.
    */
-  #piles(combat) {
-    const counts = this.actor.system.deckCounts ?? {};
-    const dealt = this.dealtAt === CardRPGTray.#turnKey(combat);
+  #leftDecks() {
+    const items = this.actor.items.filter(i => i.type === "item");
+    const features = this.actor.items.filter(i => i.type === "feature");
+    const conditions = this.actor.system.activeConditions ?? [];
 
-    const piles = [
+    return [
       {
-        id: "action", label: "Action deck", count: counts.draw ?? 0,
-        action: "dealHand", spent: dealt,
-        tip: dealt
-          ? "Already dealt this turn. You draw again next turn."
-          : "Deal a hand, up to your hand size."
+        id: "items", label: "Items", count: items.length,
+        tip: "Your gear. Turn a card over for its value, weight and type."
       },
       {
-        id: "actionDiscard", label: "Discard", count: counts.discard ?? 0,
-        action: "openPile", tip: "Face up. Catch Breath recovers half of it, at random."
+        id: "features", label: "Features", count: features.length,
+        tip: "Passive ones are simply true; an active one Drains when used."
       },
       {
-        id: "actionSpent", label: "Spent", count: counts.spent ?? 0,
-        action: "openPile", tip: "Out until a rest."
-      },
-      {
-        id: "fate", label: "Fate", count: counts.fate ?? 0,
-        action: "none", tip: "Shuffled and face down. Miss and Critical each reshuffle it."
-      },
-      {
-        id: "fateDiscard", label: "Fate discard", count: counts.fateDiscard ?? 0,
-        action: "openPile",
-        tip: "Face up, which is what makes counting possible."
+        id: "conditions", label: "Conditions", count: conditions.length,
+        tip: "What is on you. A duration ticks down on its creator's turn."
       }
-    ];
-
-    // One intent pile per NPC type in the fight, face down until the first of its type acts.
-    for (const npc of this.#npcDecks(combat)) {
-      piles.push({
-        id: `intent:${npc.kind}`, label: `${npc.kind} intent`, count: npc.revealed ? 1 : "?",
-        action: npc.revealed || game.user.isGM ? "openPile" : "none",
-        tip: npc.revealed
-          ? `Revealed: ${npc.card}`
-          : "Face down until the first of its type acts. Foresee flips it."
-      });
-    }
-
-    return piles.map(p => ({ ...p, open: this.openPile === p.id }));
+    ].map(d => ({ ...d, open: this.openPile === d.id }));
   }
 
-  /** The contents of whichever pile is open. */
-  #viewer(combat) {
-    if (!this.openPile) return null;
+  /**
+   * The action deck, in the bottom-left corner. Clicking it deals a hand; it then goes inert until
+   * the next turn, because the hand refills once a round and dealing repeatedly would just be
+   * drawing your deck away.
+   */
+  #actionDeck(combat) {
+    const dealt = this.dealtAt === CardRPGTray.#turnKey(combat);
+    return {
+      label: "Action deck",
+      count: this.actor.system.deckCounts?.draw ?? 0,
+      spent: dealt,
+      tip: dealt
+        ? "Already dealt this turn. You draw again next turn."
+        : "Deal a hand, up to your hand size."
+    };
+  }
 
-    if (this.openPile.startsWith("intent:")) {
-      const kind = this.openPile.slice(7);
-      const info = this.#npcIntent(kind);
-      const card = info?.card;
-      return {
-        label: `${kind} intent`,
-        count: card ? 1 : 0,
-        cards: card ? [{ name: cardName(card), detail: CardRPGTray.#sequenceText(card) }] : []
-      };
+  /**
+   * Fate above, Discard below, in the bottom-right.
+   *
+   * The fate deck itself cannot be opened: it is shuffled and face down, and that is the whole
+   * reason a thin deck is a risk rather than a lookup. Its discard is face up, which is what makes
+   * counting possible.
+   */
+  #rightDecks() {
+    const counts = this.actor.system.deckCounts ?? {};
+    const swing = counts.fate ? Math.min(100, Math.round(200 / counts.fate)) : null;
+    return [
+      {
+        id: "fateDiscard", label: "Fate", count: counts.fate ?? 0, action: "openPile",
+        tip: `Face down. ${counts.fateDiscard ?? 0} drawn`
+          + (swing ? `, ${swing}% chance the next is a swing` : "")
+          + ". Click to look through the discard."
+      },
+      {
+        id: "actionDiscard", label: "Discard", count: counts.discard ?? 0, action: "openPile",
+        tip: `Face up. ${counts.spent ?? 0} Spent as well; Catch Breath recovers half of this, at random.`
+      }
+    ].map(d => ({ ...d, open: this.openPile === d.id }));
+  }
+
+  /** Whichever deck is open, spread as a vertical hand beside it. */
+  #viewer() {
+    if (!this.openPile) return null;
+    const left = ["items", "features", "conditions"].includes(this.openPile);
+    const flipped = id => this.flipped.has(id);
+
+    if (this.openPile === "items") {
+      const cards = this.actor.items.filter(i => i.type === "item").map(i => ({
+        id: i.id,
+        name: i.name,
+        group: i.system.group || "",
+        flippable: true,
+        flipped: flipped(i.id),
+        blurb: i.system.blurb,
+        lines: Object.entries(i.system.verbs ?? {})
+          .filter(([, l]) => l.value !== null || l.text)
+          .map(([v, l]) => `${v} ${l.value ?? ""}${l.range ? ` · range ${l.range}` : ""}`
+            + `${l.area ? ` · ${l.areaKind || "blast"} ${l.area}` : ""}`)
+          .concat(i.system.armor ? [`armor ${i.system.armor}`] : []),
+        note: [...(i.system.tags ?? [])].join(", "),
+        facts: [
+          { label: "Value", value: `${i.system.value} g` },
+          { label: "Weight", value: `${i.system.weight} kg` },
+          { label: "Type", value: i.system.kind || "\u2014" },
+          { label: "Slot", value: i.system.slot }
+        ],
+        action: i.system.equipped ? "unequip" : "equip",
+        actionLabel: i.system.equipped ? "Unequip" : "Equip"
+      }));
+      return { label: "Items", side: "left", count: `${cards.length} slates`, cards };
+    }
+
+    if (this.openPile === "features") {
+      const cards = this.actor.items.filter(i => i.type === "feature").map(f => ({
+        id: f.id,
+        name: f.name,
+        group: f.system.group || "",
+        flipped: false,
+        lines: [f.system.text].filter(Boolean),
+        note: f.system.rechargeLabel
+          ? `Recharges: ${f.system.rechargeLabel}${f.system.drained ? " — Drained" : ""}`
+          : "Passive",
+        action: f.system.isActive ? "toggleDrain" : null,
+        actionLabel: f.system.isActive ? (f.system.drained ? "Restore" : "Use") : null
+      }));
+      return { label: "Features", side: "left", count: `${cards.length} slates`, cards };
+    }
+
+    if (this.openPile === "conditions") {
+      const cards = (this.actor.system.activeConditions ?? []).map((c, index) => {
+        const cfg = CARDRPG.conditions[c.key] ?? {};
+        const creator = c.creatorId ? game.actors.get(c.creatorId)?.name : null;
+        return {
+          id: `condition-${index}`,
+          name: game.i18n.localize(cfg.label ?? c.key),
+          icon: cfg.icon,
+          harm: true,
+          flipped: false,
+          lines: [c.duration ? `Duration ${c.duration}` : "No duration"],
+          note: creator
+            ? `Ticks down at the start of ${creator}'s turn`
+            : (cfg.derived ? "From carried weight" : "Ticks on your own turn")
+        };
+      });
+      return { label: "Conditions", side: "left", count: `${cards.length}`, cards };
     }
 
     const stack = deckOf(this.actor, this.openPile);
-    const labels = {
-      actionDiscard: "Discard", actionSpent: "Spent", fateDiscard: "Fate discard"
-    };
+    const labels = { actionDiscard: "Discard", fateDiscard: "Fate discard" };
     const cards = (stack?.cards.contents ?? []).map(c => ({
+      id: c.id,
       name: cardName(c),
       harm: c.type === "wound" || c.type === "taint",
-      detail: CardRPGTray.#cardDetail(c)
+      flipped: false,
+      lines: [CardRPGTray.#cardDetail(c)]
     }));
-    return { label: labels[this.openPile] ?? this.openPile, count: cards.length, cards };
-  }
-
-  static #sequenceText(card) {
-    return (card.system.sequence ?? [])
-      .map((s, i) => `${i + 1}. ${s.verb ?? ""}${s.param ? ` ${s.param}` : ""}${s.text ? ` (${s.text})` : ""}`)
-      .join("  ");
+    return {
+      label: labels[this.openPile] ?? this.openPile,
+      side: left ? "left" : "right",
+      count: `${cards.length}`,
+      cards
+    };
   }
 
   static #cardDetail(card) {
@@ -318,42 +383,6 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   /** Round and turn, so the action deck can go inert until the next turn. */
   static #turnKey(combat) {
     return combat ? `${combat.round}:${combat.turn}` : "no-combat";
-  }
-
-  /** The face-up fate discard, which is what makes counting possible. */
-  #fateInfo() {
-    const discard = deckOf(this.actor, "fateDiscard");
-    const cards = discard?.cards.contents ?? [];
-    const label = c => c.system.special === "miss" ? "Miss"
-      : c.system.special === "crit" ? "Crit"
-        : (c.system.value > 0 ? `+${c.system.value}` : String(c.system.value));
-    return {
-      lastFate: cards.length ? label(cards.at(-1)) : null,
-      fateDiscard: cards.slice(-14).map(c => ({ label: label(c), special: !!c.system.special }))
-    };
-  }
-
-  /** One intent card per NPC type in the fight, face down until the first of its type acts. */
-  #npcDecks(combat) {
-    if (!combat) return [];
-    const seen = new Map();
-    for (const combatant of combat.combatants) {
-      const npc = combatant.actor;
-      if (npc?.type !== "npc") continue;
-      const kind = npc.system.kind || npc.name;
-      if (seen.has(kind)) continue;
-
-      const intent = deckOf(npc, "intent");
-      const deck = deckOf(npc, "action");
-      const card = intent?.cards.contents[0];
-      seen.set(kind, {
-        kind,
-        revealed: !!intent?.getFlag("cardrpg", "revealed"),
-        card: card ? cardName(card) : "—",
-        deck: deck?.cards.size ?? 0
-      });
-    }
-    return [...seen.values()];
   }
 
   /**
@@ -492,6 +521,13 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     this.render();
   }
 
+  /** Turn a slate over. The back is where value, weight and type live, never the front. */
+  static #onFlipCard(event, target) {
+    const id = target.dataset.cardId;
+    this.flipped.has(id) ? this.flipped.delete(id) : this.flipped.add(id);
+    this.render();
+  }
+
   static #onClear() {
     this.staged = [];
     this.render();
@@ -617,26 +653,6 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   static async #onEndTurn() {
     if (!game.combat) return ui.notifications.warn("No combat running.");
     await game.combat.nextTurn();
-  }
-
-  static async #onPeek(event, target) {
-    const info = this.#npcIntent(target.dataset.kind);
-    if (info?.card) ui.notifications.info(`${target.dataset.kind} intent: ${cardName(info.card)}`);
-  }
-
-  static async #onReveal(event, target) {
-    const { revealIntent } = await import("./combat.mjs");
-    const info = this.#npcIntent(target.dataset.kind);
-    if (info?.actor) await revealIntent(info.actor);
-    this.render();
-  }
-
-  #npcIntent(kind) {
-    const combatant = game.combat?.combatants.find(c =>
-      c.actor?.type === "npc" && (c.actor.system.kind || c.actor.name) === kind);
-    const actor = combatant?.actor;
-    if (!actor) return null;
-    return { actor, card: deckOf(actor, "intent")?.cards.contents[0] ?? null };
   }
 
   static async #onBreathe() {
