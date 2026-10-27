@@ -15,6 +15,22 @@ mklink /J "C:\Users\kaise\AppData\Local\FoundryVTT\Data\systems\cardrpg" "C:\Use
 
 Then restart Foundry and create a world with the **Card RPG** system.
 
+### Create the playtest content
+
+Run the macro **Card RPG: Create starter content** (the system leaves it in your macro directory on
+first load), or from the console:
+
+```js
+game.cardrpg.createStarterContent();
+```
+
+That builds the starter Warrior, a Goblin and a Goblin Archer, their decks, and every slate. It is
+safe to run twice — anything it already made is reused rather than duplicated.
+
+**Place goblins as unlinked tokens.** They share one action deck, one fate deck and one intent pile,
+because those belong to the creature *type*. Unlinked tokens keep their own health while sharing
+those; linked tokens would share health too, which they must not.
+
 Set the scene's **diagonal rule to Equidistant** — distances are Chebyshev, so a diagonal step
 costs the same as a straight one (core-rules §11). The system warns in the console if it isn't.
 
@@ -29,14 +45,30 @@ costs the same as a straight one (core-rules §11). The system warns in the cons
 | Card models: action, fate, npc, wound, taint | `module/data/cards.mjs` |
 | Settings for every tuning value | `cardrpg.mjs` |
 | Styles: tokens, card faces, group borders, tray | `styles/cardrpg.css` |
+| Sheets for characters, NPCs, slates and cards | `module/sheets.mjs`, `templates/` |
+| Playtest content as data, and the routine that builds it | `module/content.mjs`, `module/setup.mjs` |
+| Offline validation | `test/validate.mjs` |
 
 | Not built yet | |
 |---|---|
 | Sheets | character, npc, slate, card |
 | The tray | hand, resolution flow, reaction prompts |
 | Combat | individual initiative, intent cards, condition ticking |
-| Compendium packs | starter Warrior deck, goblin deck, items, features |
-| Icon assets | 61 SVGs from game-icons.net, two still unchosen |
+| Icon assets | 61 SVGs from game-icons.net into `icons/`, named by their keys |
+
+## Validation
+
+```
+node test/validate.mjs
+```
+
+Checks what can be checked without Foundry: every module parses, the JSON is valid, every file the
+manifest promises exists, every static i18n key and `TYPES` label resolves, and the content still
+matches the numbers in [../../rules/starter-cards.md](../../rules/starter-cards.md) — deck sizes,
+the fate distribution, that every slate an actor references exists, that NPC gear is flagged so it
+can't leak into player pickers, and that goblin weapons stay at least 2 above hero armor.
+
+It cannot tell you the system *loads*. Only Foundry can do that.
 
 ## Notes for whoever picks this up
 

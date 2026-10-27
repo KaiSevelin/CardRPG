@@ -7,6 +7,7 @@
 
 import { CARDRPG } from "./module/config.mjs";
 import { registerSheets } from "./module/sheets.mjs";
+import { createStarterContent, ensureSetupMacro } from "./module/setup.mjs";
 import { CharacterData, NpcData } from "./module/data/actors.mjs";
 import { ItemSlateData, FeatureSlateData } from "./module/data/items.mjs";
 import {
@@ -117,6 +118,13 @@ function registerSettings() {
     default: true
   });
 
+  game.settings.register("cardrpg", "setupMacroMade", {
+    scope: "world",
+    config: false,
+    type: Boolean,
+    default: false
+  });
+
   game.settings.register("cardrpg", "handSize", {
     name: "CARDRPG.Settings.HandSize.Name",
     hint: "CARDRPG.Settings.HandSize.Hint",
@@ -149,7 +157,11 @@ function registerSettings() {
 /*  Ready                                       */
 /* -------------------------------------------- */
 
-Hooks.once("ready", () => {
+Hooks.once("ready", async () => {
+  // Exposed so the setup routine can be run from a macro or the console.
+  game.cardrpg = { createStarterContent, config: CARDRPG };
+  await ensureSetupMacro();
+
   // The grid is square and distances are Chebyshev: a diagonal step costs the same as a straight
   // one (core-rules 11). In Foundry that is the "Equidistant" diagonal rule, a scene setting we
   // can't force from here -- so warn rather than silently measure distances wrongly.
