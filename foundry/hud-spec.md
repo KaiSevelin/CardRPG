@@ -271,7 +271,9 @@ whether an ally can still act.
 The GM sees a different thing entirely:
 
 - **Intent cards**, face up — one per NPC type, this round.
-- The shared **NPC fate deck**, with the same count and discard readout.
+- **One fate deck per NPC type**, each with its own count and face-up discard. Players therefore get
+  a per-type risk readout — *the archers' deck is down to four, they are due a swing* — which is more
+  tactical information, not less.
 - The **twist deck**, for partials and failures.
 - NPC health and conditions.
 - **Challenge track controls**.

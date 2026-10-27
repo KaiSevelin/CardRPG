@@ -154,19 +154,21 @@ The Tool/Make line, which is the one that will actually come up at a table:
 A lantern giving Wits +1 in the dark is a Tool — the implement is doing the work. A lantern of
 everburning silver giving a further +1 would be Make.
 
-#### Wonder has to be defined by rarity, not by exclusion
+#### Wonder needs no guard
 
-**[OPEN]** A catch-all is a balance escape hatch, and this one needs guarding. Two risks:
+A catch-all looks like a balance escape hatch, but this one isn't, and it's worth saying why so
+nobody adds a rule it doesn't need.
 
-1. If **Wonder** means "didn't fit the other six", designers will reach for it instead of thinking,
-   and it becomes the dumping ground.
-2. A Wonder bonus stacks with all six other groups, so Wonder items are *structurally* the best
-   bonus in the game.
+Wonder is **not privileged**. A Wonder bonus stacks with the other six groups — and so does a Tool
+bonus, and a Body bonus. Every group stacks with the other six; that is the whole system. And the
+group cap already means **only one Wonder bonus applies to any action**, however many Wonder slates a
+character owns, so hoarding them buys nothing.
 
-Both are solved the same way: define Wonder as **extraordinary and rare**, not as miscellaneous.
-Suggested guard — **one Wonder slate per character**, and only as treasure or a story reward, never
-as purchasable gear or a standard level-up option. If a slate merely feels awkward to classify, it
-belongs in one of the six; Wonder is for things that are meant to break the pattern.
+What remains is a **content-discipline** concern, not a balance one: if Wonder becomes the bin for
+anything hard to classify, a player holding two Wonder slates gets *less* out of them than a player
+holding two differently-grouped ones, because only one can ever contribute. So classify carefully for
+the player's sake. Wonder is for things meant to break the pattern, not things that were awkward to
+file — and because such things are rare by nature, rarity does the rest.
 
 #### Palette consequence
 

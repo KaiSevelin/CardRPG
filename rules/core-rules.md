@@ -200,15 +200,35 @@ action, so they are **not** bonus-grouped (section 5).
 | Load | | Effect |
 |---|---|---|
 | Up to your limit | **Unburdened** | — |
-| Over your limit, up to double it | **Burdened** | **Slowed**, and disadvantage on 🌀 Agility and 🌑 Shadow checks |
-| Over double your limit | — | You can't pick it up. Make two trips. |
+| Over it, up to half again (41–60 kg) | **Burdened** | **Slowed**, and disadvantage on 🌀 Agility and 🌑 Shadow checks |
+| Over half again, up to double (61–80 kg) | **Overloaded** | Burdened, **and 2 random cards are Spent** |
+| Over double (81 kg +) | — | You can't pick it up. Make two trips. |
 
-**Burdened** has no duration: it lasts until you drop enough weight. You can shed a load at any time,
-including as a free part of your turn — dropping things is never an action.
+Neither state has a duration: both last until you drop enough weight. You can shed a load at any
+time, including as a free part of your turn — dropping things is never an action.
 
-Why those two effects: laden you are slow, noisy and clumsy, so the penalty lands on moving and
-sneaking. Might is untouched, since being loaded doesn't make you weak. And Strike is untouched, so a
-hauling party is never helpless — just easy to catch.
+**Burdened** lands on moving and sneaking, because laden you are slow, noisy and clumsy. Might is
+untouched, since a load doesn't make you weak, and Strike is untouched, so a hauling party is never
+helpless — just easy to catch.
+
+**Overloaded** costs you stamina, which in this game means deck. Shuffle your action deck, turn up
+**2 cards at random** and set them aside as **Spent**; they return, shuffled back into your draw
+pile, when you are no longer Overloaded, or on your next rest.
+
+- **Spent, not discarded.** A discarded card comes straight back on your next Catch Breath. Spent
+  cards stay out, so a heavy load genuinely shortens your deck and brings exhaustion forward —
+  roughly a round earlier in testing.
+- **Random, not chosen.** A pack doesn't care which of your tricks it costs you. Choosing would let
+  you shed your dead cards, which is a reward for being overloaded rather than a price — and it
+  would turn every pickup into a deck-pruning decision.
+- **Where they come from.** Normally you pick up a load between fights, when your deck is whole. If
+  you become Overloaded during a fight, take the cards from your **draw pile**; if that is empty,
+  from your hand.
+- Two is a measured number, not a guess. In simulation two random cards off a 16-card deck cost
+  **7 points of win rate in a hard fight and 2 in a moderate one**; three starts taking the fight
+  away. That difficulty-scaling is the point — hauling loot through a quiet dungeon is nearly free,
+  hauling it into a real fight is a coin flip. See
+  [../sim/analysis-2026-10-27.md](../sim/analysis-2026-10-27.md).
 
 ### Weights
 
@@ -278,8 +298,10 @@ to exactly one of seven groups, shown as a coloured border with a number (see
 - Action cards and skill cards are never grouped.
 - **Tool is what a thing does; Make is how good it is.** A lantern that gives Wits +1 in the dark is
   a Tool. A lantern of everburning silver giving a further +1 is Make.
-- **Wonder is for the extraordinary, not the awkward.** It stacks with all six others, so it has to
-  stay rare: treasure and story rewards, not purchasable gear. **[OPEN]** One per character.
+- **Wonder is for the extraordinary, not the awkward.** No rule guards it, because rarity and the
+  group cap already do: only one Wonder bonus applies to any action, however many you own. Classify
+  carefully for the player's sake rather than for balance — two Wonder slates are worth less than two
+  differently-grouped ones, since only one can ever contribute.
 
 This is the same principle the fate deck already uses for advantage — two sources of advantage still
 give one — applied to numbers. Bonuses have to come from **different kinds** of help: muscle and a
@@ -327,7 +349,23 @@ Common sources:
 | Attacking while Invisible | Ranged or Area attack while adjacent to an enemy (section 11) |
 | Card or feature says so | Card, feature or condition says so |
 
-The GM uses one shared fate deck for all NPCs.
+### NPC fate decks
+
+**Each NPC type has its own fate deck**, the same 20 cards. One for the goblins, one for the wolves,
+one for the ogre. Every NPC of that type draws from it.
+
+This matches how everything else about an NPC works — its action deck, its intent card, its tactics
+and its gear are all per type — and it is what makes **Blessed** and **Cursed** usable against
+enemies. A Cursed goblin shuffles a temporary Miss into the *goblin* deck; it has no effect on the
+ogre standing beside it.
+
+**Precision scales with importance**, which is the happy consequence. Curse one goblin in a warband
+and the hex spreads to its kin, because they share a deck — a reasonable fiction, and cheap. Curse a
+boss and it lands on the boss alone, because an elite is its own type with its own deck. The enemies
+worth cursing are the ones where the curse is exact.
+
+A typical fight has two to four types, so the GM handles two to four decks — the same number of piles
+as the NPC action decks already in front of them.
 
 ---
 
@@ -354,6 +392,7 @@ Conditions are tokens with a number (duration). Every condition remembers **who 
 | **Silenced** | Blocks ✦ Cast. |
 | **Disarmed** | Blocks ⇄ Ready, and ⚔ with the disarmed item. |
 | **Burdened** | Over your carry limit: Slowed, and disadvantage on 🌀 Agility and 🌑 Shadow checks. No duration – it lasts until you drop weight (section 4). |
+| **Overloaded** | Over half again your limit: Burdened, and 2 random cards are Spent. No duration (section 4). |
 | **Blessed / Cursed** | See fate deck (no duration – they last until the card is drawn). |
 
 ---
@@ -364,14 +403,25 @@ Your action deck is your stamina.
 
 - **Exhausted**: if you can't refill to at least **2 cards** because your draw pile is empty, you are Exhausted. You can only play **one** card per turn (primary *or* secondary), and you can't react.
 - **Catch Breath**: you may spend your whole turn (no cards played) to catch your breath:
-  1. Shuffle your discard pile into your draw pile.
-  2. Choose **1** card from the shuffled pile and set it aside as **Spent**.
-  3. Draw up to hand size as normal next round.
+  1. Shuffle your discard pile.
+  2. Move **half of it, rounded up, at random** into your draw pile.
+  3. Set **1** of the cards left behind aside as **Spent**. The rest stay in your discard pile.
+  4. Draw up to hand size as normal next round.
+
+  **You never get your whole discard pile back.** A second Catch Breath recovers half of what is
+  left, then half of that — a long fight becomes a series of smaller and smaller recoveries, and
+  only a **rest** truly restores you.
+
+  **Both the recovery and the Spent card are random.** Choosing would let you prune your weakest
+  card every time you stopped for breath, which turns a cost into a free upgrade.
 - **Spent** cards stay out until your next **short or long rest**, even after the combat ends (see *Rests* below).
 
-This makes long fights wear characters down: each Catch Breath shrinks the deck, and burning cards on reactions gets you there faster.
+This makes long fights wear characters down: each Catch Breath returns less than the last, and
+burning cards on reactions gets you there faster.
 
-You may Catch Breath at any time on your turn, even before you are Exhausted. Doing it early costs a turn but keeps your hand full later.
+You may Catch Breath at any time on your turn, even before you are Exhausted — but there is a reason
+to hold out. You recover **half of your discard pile**, so breathing early, with little in the
+discard, recovers almost nothing and still costs you the turn.
 
 ### Lingering damage
 
@@ -424,6 +474,16 @@ Some harm stays with you after the fight. It's represented by **negative cards**
 #### Deck size and pruning
 
 Wound and Taint cards **don't count** toward deck size limits, and you **can't** prune them by leveling or training. They have to be healed or cured.
+
+Because Catch Breath no longer lets you choose what to set aside, **nothing removes a dead card from
+your deck during play**. Deliberate pruning — at level up, or through training in downtime — is the
+only way to get rid of one. That makes pruning a real decision rather than a free upgrade, because
+deck **size** is protective: simulation puts a 12-card deck at **25%** in a hard fight against a
+16-card deck's 60%, catching breath nearly 2.5 times per fight. A pruned deck draws its best cards
+more often and runs dry sooner, the same trade the skill deck already describes
+([skill-rules.md](skill-rules.md) §8).
+
+**[OPEN]** The action deck's grow and prune rules wait on the Way trees, with the rest of levelling.
 
 ### Unconscious and death
 

@@ -46,8 +46,7 @@ switching, and per-player private hands.
 Card layout is settled in [../foundry/card-layout.md](../foundry/card-layout.md): the scan column,
 the four information tiers, which types may have an informative back, and the bonus-group border.
 
-Nothing in the design now blocks writing the system. The only open item is the guard on the
-**Wonder** bonus group — see [core-rules.md](core-rules.md) §5.
+Nothing in the design now blocks writing the system.
 
 ## Order of work
 
@@ -73,6 +72,9 @@ The combat simulator is the tie-breaker for numbers. Decisions it has already se
 | NPC gear is tuned separately from player gear | An NPC's weapon value is the knob that sets its threat; it shouldn't track player weapons. |
 | A Defend **primary** blocks every attack until your next turn | A one-shot block lost to the first hit was never worth a primary half. Worth +3.3 points of win rate in the hardest fight. |
 | Strike on a card's **secondary** half is a leveling reward, not a starter card | One such card shortens a fight by most of a round. |
-| The starter action deck stays at **16 cards** | A 12-card deck doesn't make exhaustion matter, it makes hard fights unwinnable (38% vs 67%) while leaving easy ones untouched. |
+| The starter action deck stays at **16 cards** | A 12-card deck doesn't make exhaustion matter, it makes hard fights unwinnable (25% vs 60%) while leaving easy ones nearly untouched. |
+| **Catch Breath recovers half the discard pile**, at random | Each recovery returning less than the last is what wears a character down over a long fight: worth 7 points of win rate in a hard fight and nothing in a short one. |
+| **Overloaded costs 2 random cards**, Spent | Measured: 7 points in a hard fight, 2 in a moderate one. One card is invisible, three takes the fight away. |
+| Each NPC **type** has its own fate deck | Blessed and Cursed need a scope, and every other NPC trait is already per type. |
 | A mixed enemy group is **a tier harder** than a uniform one of the same size | Mixing ranges, not adding bodies, is how you build a hard encounter. |
 | **Cowardly only on melee NPC types** | On a ranged enemy it is redundant with kiting and defuses the fight. |

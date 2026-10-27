@@ -134,7 +134,9 @@ class Config:
     cb_threshold: int = 3         # catch breath when draw pile empty and hand <= this
     double_strike: bool = True    # Weapon Swap secondary is Strike (False: Move 1)
     persistent_block: bool = True  # Defend primary blocks every attack until your next turn
-    deck_cut: int = 0             # drop N of the weakest cards from the action deck
+    deck_cut: int = 0             # remove N cards from the action deck
+    deck_cut_random: bool = False  # False: the weakest N (a deck-building choice)
+                                   # True: N at random (Overloaded, core-rules 4)
     max_rounds: int = 40
     card_overrides: dict = field(default_factory=dict)
 
@@ -275,7 +277,10 @@ class Game:
         self.cards.update(cfg.card_overrides)
         deck = [name for name, c in self.cards.items() for _ in range(c[3])]
         for _ in range(cfg.deck_cut):
-            deck.remove(min(deck, key=lambda n: self.cards[n][4]))
+            if cfg.deck_cut_random:
+                deck.pop(rng.randrange(len(deck)))
+            else:
+                deck.remove(min(deck, key=lambda n: self.cards[n][4]))
         rng.shuffle(deck)
         self.w = dict(pos=(1, 4), hp=cfg.hp, block=0, potions=cfg.potions, hand=[], draw=deck,
                       discard=[], spent=[], dazed=0, dazed_by=None, exhausted=False, acted=False)
@@ -430,15 +435,19 @@ class Game:
         return val
 
     def catch_breath(self):
+        """Recover half the discard at random; one of the rest is Spent (core-rules 8)."""
         w = self.w
-        w['draw'] += w['discard']
-        w['discard'] = []
+        self.rng.shuffle(w['discard'])
+        take = (len(w['discard']) + 1) // 2              # half, rounded up
+        for _ in range(take):
+            w['draw'].append(w['discard'].pop())
         self.rng.shuffle(w['draw'])
-        spent = min(w['draw'], key=self.keep)
-        w['draw'].remove(spent)
-        w['spent'].append(spent)
+        spent = w['discard'].pop() if w['discard'] else None
+        if spent:
+            w['spent'].append(spent)
         self.s['catch_breath'] += 1
-        self.log(f"  Warrior catches breath (spends {spent}), draw pile now {len(w['draw'])}")
+        self.log(f"  Warrior catches breath (recovers {take}, spends {spent}, "
+                 f"{len(w['discard'])} still in discard), draw pile now {len(w['draw'])}")
 
     def warrior_turn(self):
         w, cfg = self.w, self.cfg
@@ -657,6 +666,11 @@ SCENARIOS = [
     Config(name='W  group morale, 2 spear + 2 bow', cowardly_mode='group',
            goblins=('spear', 'spear', 'bow', 'bow')),
     Config(name='X  group morale, 5 spears', cowardly_mode='group', goblins=('spear',) * 5),
+    # cost of Overloaded: 2 random cards Spent for the whole fight (core-rules 4, Carrying)
+    Config(name='Y  overloaded, 4 spears', deck_cut=2, deck_cut_random=True,
+           goblins=('spear',) * 4),
+    Config(name='Z  overloaded, 2 spear + 2 bow', deck_cut=2, deck_cut_random=True,
+           goblins=('spear', 'spear', 'bow', 'bow')),
 ]
 
 
