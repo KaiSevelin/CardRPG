@@ -29,16 +29,16 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     /** Staged halves, in click order. @type {{cardId: string, half: string}[]} */
     this.staged = [];
     /**
-     * The order items were played, most recent last.
+     * Which half each played item is serving: "primary", "secondary" or "any".
      *
-     * A card says the verb and the item says the value, so with a sword and a shield both in play
-     * the face would be ambiguous. The last item played wins its verbs: play the sword after the
-     * shield and you are striking with the sword. That keeps the choice with the player without
-     * putting a button on every card.
+     * A card says the verb and the item says the value, so a longsword that both strikes and
+     * defends is ambiguous once both halves are staged. Clicking the slate again walks it from the
+     * primary half to the secondary and then out of play, so the card itself carries the answer --
+     * no button, no dialog. An item with one verb has nothing to choose and stays at "any".
      *
-     * @type {string[]}
+     * @type {Map<string, string>}
      */
-    this.playOrder = [];
+    this.roles = new Map();
 
     /**
      * Equips still allowed this turn. Outside combat equipping is free; inside it costs a Ready,
@@ -242,7 +242,13 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   /** One item, as a card. `played` means equipped. */
   #itemCard(i, played) {
     const verbs = Object.entries(i.system.verbs ?? {}).filter(([, l]) => l.value !== null || l.text);
-    const serving = played ? verbs.filter(([v]) => this.#itemFor(v)?.id === i.id).map(([v]) => v) : [];
+    // Only a slate that could modify more than one action has a half to choose.
+    const choosy = i.system.availableVerbs.length > 1;
+    const role = played ? (this.roles.get(i.id) ?? (choosy ? "primary" : "any")) : null;
+    const serving = played
+      ? verbs.filter(([v]) => ["primary", "secondary"].some(h => this.#itemFor(v, h)?.id === i.id))
+        .map(([v]) => v)
+      : [];
     return {
       id: i.id,
       name: i.name,
@@ -250,6 +256,15 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       flippable: true,
       flipped: this.flipped.has(i.id),
       played,
+      // Stamped across the face, so which half it serves is read rather than remembered.
+      roleLabel: role && role !== "any" ? role : null,
+      tip: !played
+        ? (choosy
+          ? "Click to play it on the primary half; click again to move it to the secondary."
+          : "Click to put it into play.")
+        : role === "primary" ? "Serving the primary half. Click for the secondary."
+          : role === "secondary" ? "Serving the secondary half. Click to take it out of play."
+            : "In play. Click to take it out.",
       blurb: i.system.blurb,
       lines: verbs
         .map(([v, l]) => `${v} ${l.value ?? ""}${l.range ? ` \u00b7 range ${l.range}` : ""}`
@@ -275,6 +290,9 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       group: f.system.group || "",
       played,
       passive,
+      tip: passive ? "Passive: nothing to play."
+        : played ? "Drained. Click to take it out of play."
+          : "Click to use it. That Drains it until it recharges.",
       lines: [f.system.text].filter(Boolean),
       note: passive
         ? "Passive \u2014 always on"
@@ -400,6 +418,8 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       name: cardName(c),
       harm: c.type === "wound" || c.type === "taint",
       flipped: false,
+      // A discard is a record, not a slate: there is nothing to put into play.
+      passive: true,
       lines: [CardRPGTray.#cardDetail(c)]
     }));
     return { label: labels[this.openPile] ?? this.openPile, count: `${cards.length}`, cards };
@@ -443,7 +463,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
 
         if (step.verb === "strike" || step.verb === "cast") {
           // The face shows the item the player chose, so "Strike 4" is never a guess.
-          const item = this.#itemFor(step.verb);
+          const item = this.#itemFor(step.verb, name);
           const base = item?.system.verbs?.[step.verb]?.value;
           if (base !== null && base !== undefined) {
             text += ` ${base + (step.mod ?? 0) + collectBonuses(this.actor, step.verb, item).total}`;
@@ -481,17 +501,23 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   /**
-   * The item a verb will actually use: the most recently played one that can serve it.
+   * The item a verb will actually use on a given half.
    *
-   * Play the shield and then the sword, and you strike with the sword. The order you put things
-   * into play is the choice, so no card needs a button to say so.
+   * An item stamped for this half wins. Then one at "any" -- a slate with a single verb, which had
+   * nothing to choose. Anything else in play is a last resort. So a longsword on the primary and a
+   * shield on the secondary strike and defend respectively, with nothing to set beyond the clicks
+   * that put them there.
    */
-  #itemFor(verb) {
+  #itemFor(verb, half = "primary") {
     const candidates = this.#itemsFor(verb);
     if (candidates.length < 2) return candidates[0] ?? null;
-    const ranked = [...candidates].sort((a, b) =>
-      this.playOrder.lastIndexOf(a.id) - this.playOrder.lastIndexOf(b.id));
-    return ranked.at(-1);
+    const choosy = i => i.system.availableVerbs.length > 1;
+    const rank = i => {
+      const role = this.roles.get(i.id) ?? (choosy(i) ? "primary" : "any");
+      return role === half ? 0 : role === "any" ? 1 : 2;
+    };
+    // #itemsFor already orders by value, and sort is stable, so equal ranks keep the better item.
+    return [...candidates].sort((a, b) => rank(a) - rank(b))[0];
   }
 
   /** Every equipped item that can serve a verb, best first. */
@@ -585,14 +611,14 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       case "strike":
       case "cast": {
         if (!targets.length) return ui.notifications.warn("Target a token first.");
-        const item = this.#itemFor(step.verb);
+        const item = this.#itemFor(step.verb, half);
         if (!item) return ui.notifications.warn(`Nothing equipped can ${step.verb}.`);
         await resolveAttack(actor, { verb: step.verb, item, mod: step.mod ?? 0, targets, step });
         return;
       }
 
       case "defend": {
-        const item = this.#itemFor("defend");
+        const item = this.#itemFor("defend", half);
         if (!item) return ui.notifications.warn("Nothing equipped can defend.");
         await resolveDefend(actor, { item, half });
         return;
@@ -603,7 +629,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         return;
 
       case "use": {
-        const item = this.#itemFor("use");
+        const item = this.#itemFor("use", half);
         if (!item) return ui.notifications.warn("No usable item equipped. Equip a potion first.");
         await resolveUse(actor, { item, target: targets[0] ?? actor });
         return;
@@ -635,10 +661,14 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   /* -------------------------------------------- */
 
   /**
-   * Play or unplay a slate. An item in play is equipped; a feature in play is Drained.
+   * Walk a slate through its states. An item in play is equipped; a feature in play is Drained.
+   *
+   * A slate that could modify more than one action has three states, because it has a half to
+   * choose: primary, then secondary, then out of play. One with a single verb has two.
    *
    * Equipping is free outside combat. Inside one it costs a Ready, because doing it under pressure
-   * is the whole reason that verb exists -- so the click is refused until a Ready has been played.
+   * is the whole reason that verb exists -- so entering or leaving play is refused until a Ready
+   * has been played. Moving between halves is not an equip and costs nothing.
    */
   static async #onPlaySlate(event, target) {
     const slate = this.actor.items.get(target.dataset.slateId);
@@ -664,19 +694,35 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     }
 
     const equipping = !slate.system.equipped;
-    if (game.combat?.started && !this.readyCharges) {
-      return ui.notifications.warn(
-        "Under pressure that costs a Ready. Play a card half showing Ready first.");
+    const next = CardRPGTray.#nextRole(slate, equipping ? null : this.roles.get(slate.id));
+
+    // Entering or leaving play is the equip. Moving from one half to the other is just a choice.
+    if (equipping || next === null) {
+      if (game.combat?.started && !this.readyCharges) {
+        return ui.notifications.warn(
+          "Under pressure that costs a Ready. Play a card half showing Ready first.");
+      }
+      if (equipping && !await CardRPGTray.#hasRoom(this.actor, slate)) return;
+      await slate.update({ "system.equipped": equipping });
+      if (game.combat?.started) this.readyCharges--;
     }
-    if (equipping && !await CardRPGTray.#hasRoom(this.actor, slate)) return;
 
-    await slate.update({ "system.equipped": equipping });
-    if (game.combat?.started) this.readyCharges--;
-
-    // Last played wins its verbs, so put it at the end of the order.
-    this.playOrder = this.playOrder.filter(id => id !== slate.id);
-    if (equipping) this.playOrder.push(slate.id);
+    if (next === null) this.roles.delete(slate.id);
+    else this.roles.set(slate.id, next);
     this.render();
+  }
+
+  /**
+   * The state the next click lands on. `null` means out of play.
+   *
+   * A reload clears the roles but not the equipped flag, so an item in play with no role is
+   * treated as if it were on the primary half -- which is what its face has been claiming.
+   */
+  static #nextRole(item, role) {
+    const choosy = item.system.availableVerbs.length > 1;
+    if (role === undefined || role === null) return choosy ? "primary" : "any";
+    if (!choosy) return null;
+    return role === "primary" ? "secondary" : null;
   }
 
   /** Slot capacity, counting a two-handed item as both hands. */

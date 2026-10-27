@@ -97,7 +97,32 @@ One primary and one secondary, from **two different cards**, in **either order**
 
 Dazed removes step 2 entirely — primary only. Exhausted likewise, and also disables reactions.
 
-### 3.5 Catch Breath
+### 3.5 A slate is played, or it is not
+
+Slates have no buttons. Items and active features sit in two groups — **not in play**, which shows
+when you open the deck, and **in play**, which stays on the scene — and clicking the card moves it
+between them. An item in play is equipped; a feature in play is Drained. A passive feature belongs to
+neither group and cannot be clicked: it is simply true.
+
+A card says the verb and the item says the value, so a longsword that both strikes and defends is
+ambiguous the moment both halves are staged. That is the one case the two states cannot express, so a
+slate that could modify **more than one action** has a third:
+
+| Click | State | Means |
+|---|---|---|
+| 1 | **primary**, stamped across the face | It serves the primary half |
+| 2 | **secondary** | It serves the secondary half |
+| 3 | out of play | — |
+
+A slate with a single verb has nothing to choose and keeps two states. When resolving a half, the
+item stamped for that half wins; then a single-verb item; then anything else in play, highest value
+first. So a longsword on the primary and a shield on the secondary strike and defend respectively,
+with nothing to configure beyond the clicks that put them there.
+
+Entering or leaving play is the equip, and inside a combat it costs a **Ready** — doing it under
+pressure is the whole reason the verb exists. Moving between halves is not an equip and is free.
+
+### 3.6 Catch Breath
 
 A distinct modal, because the rules require a choice over a pile the player cannot otherwise see:
 shuffle discard into draw, **then pick 1 card from the shuffled pile** to set aside as Spent, which
@@ -165,8 +190,9 @@ Shown whenever no Combat is active.
 Differences from the combat tray:
 
 - **Values are not pre-resolved.** Tool bonuses are situational (`Shadow +2 (locks)`), so the tray
-  shows the card's base value and offers a tool picker when a check is made. Unlike combat, where the
-  equipped item is unambiguous.
+  shows the card's base value and offers a tool picker when a check is made. Combat answers the same
+  question on the slate itself instead, by stamping it primary or secondary (§3.5); whether that
+  reads well enough for tools too is open.
 - **Push highlights same-approach cards.** Selecting a card dims every card of a different approach,
   since Push requires a match.
 - **Passive score is static** — the highest Wits value in the whole deck, +2, counting the discard and

@@ -117,14 +117,16 @@
 
   {{!--
     Slates come in two groups. What is NOT in play sits in its deck and appears when you open it;
-    what IS in play stays on the scene until you take it out again. Clicking a card moves it
-    between the two. A passive feature is in neither: it is simply true, with nothing to decide.
+    what IS in play stays on the scene until you take it out again. Clicking the card itself moves
+    it between the two, and a card that could modify more than one action stops on its way to say
+    which half it is serving. A passive feature is in neither group: it is simply true.
   --}}
   {{#if viewer}}
     <section class="cr-hud__spread" data-group-label="{{viewer.label}} — not in play">
       {{#each viewer.cards}}
-        <div class="cr-card cr-card--spread{{#if this.harm}} cr-card--harm{{/if}}{{#if this.flipped}} cr-card--back{{/if}}{{#if this.passive}} cr-card--passive{{/if}}"
-             data-group="{{this.group}}">
+        <div class="cr-card cr-card--spread{{#if this.harm}} cr-card--harm{{/if}}{{#if this.flipped}} cr-card--back{{/if}}{{#if this.passive}} cr-card--passive{{else}} cr-card--takeable{{/if}}"
+             data-group="{{this.group}}" data-tooltip="{{this.tip}}"
+             {{#unless this.passive}}role="button" tabindex="0" data-action="playSlate" data-slate-id="{{this.id}}"{{/unless}}>
           <div class="cr-card__name">
             {{#if this.icon}}{{crIcon this.icon}}{{/if}}
             {{this.name}}
@@ -148,10 +150,7 @@
             </div>
           {{/if}}
 
-          {{#unless this.passive}}
-            <button type="button" class="cr-card__take" data-action="playSlate" data-slate-id="{{this.id}}"
-                    data-tooltip="Put it into play">Play</button>
-          {{/unless}}
+          {{#if this.roleLabel}}<div class="cr-card__role">{{this.roleLabel}}</div>{{/if}}
         </div>
       {{else}}
         <div class="cr-card cr-card--spread cr-card--passive">
@@ -164,8 +163,9 @@
   {{#if playedSlates}}
     <section class="cr-hud__played" data-group-label="In play">
       {{#each playedSlates}}
-        <div class="cr-card cr-card--spread cr-card--played{{#if this.flipped}} cr-card--back{{/if}}"
-             data-group="{{this.group}}">
+        <div class="cr-card cr-card--spread cr-card--played cr-card--takeable{{#if this.flipped}} cr-card--back{{/if}}"
+             data-group="{{this.group}}" data-tooltip="{{this.tip}}"
+             role="button" tabindex="0" data-action="playSlate" data-slate-id="{{this.id}}">
           <div class="cr-card__name">
             {{this.name}}
             {{#if this.flippable}}
@@ -188,8 +188,7 @@
             </div>
           {{/if}}
 
-          <button type="button" class="cr-card__take" data-action="playSlate" data-slate-id="{{this.id}}"
-                  data-tooltip="Take it out of play">Unplay</button>
+          {{#if this.roleLabel}}<div class="cr-card__role">{{this.roleLabel}}</div>{{/if}}
         </div>
       {{/each}}
     </section>

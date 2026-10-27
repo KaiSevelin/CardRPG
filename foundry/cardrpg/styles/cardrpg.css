@@ -787,19 +787,27 @@
 /* A passive feature is simply true: nothing to pick up, so nothing to click. */
 .cardrpg .cr-card--passive { opacity: 0.7; }
 
-.cardrpg .cr-card__take {
+/* The card is the control: there is no button to aim at. */
+.cardrpg .cr-card--takeable { cursor: pointer; }
+.cardrpg .cr-card--takeable:hover { border-color: var(--cardrpg-ink); }
+
+/*
+ * The half a played item is serving, stamped across its face. An item that can modify only one
+ * action never gets one, because it had nothing to choose.
+ */
+.cardrpg .cr-card__role {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 0;
-  width: 100%;
-  border-radius: 0;
-  font-size: 0.68rem;
-  line-height: 1.8;
-  padding: 0;
-  cursor: pointer;
-}
-.cardrpg .cr-card--played .cr-card__take {
-  background: var(--cardrpg-ink);
+  bottom: 28%;
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
   color: var(--cardrpg-paper);
+  background: rgba(0, 0, 0, 0.66);
+  padding: 0.2em 0;
+  transform: rotate(-7deg);
+  pointer-events: none;
 }

@@ -222,6 +222,46 @@ check("features with flat grants are ungrouped",
 
 /* -------------------------------------------- */
 
+/*
+ * Templates against the code and the stylesheet.
+ *
+ * Every button in a template names an action that an application must have registered, and every
+ * class it uses must exist in the stylesheet. Both go stale silently: a renamed handler leaves a
+ * dead button, and an edit that truncates the stylesheet leaves whole panels unstyled. Neither
+ * throws, so only a check like this one finds them.
+ */
+section("templates reference live code");
+
+const templateDir = path.join(root, "templates");
+const templateText = fs.readdirSync(templateDir)
+  .map(name => fs.readFileSync(path.join(templateDir, name), "utf8"))
+  .join("\n");
+const moduleText = modules.map(f => fs.readFileSync(f, "utf8")).join("\n");
+
+// Registered as `actionName: SomeClass.#onThing,` in a DEFAULT_OPTIONS actions block.
+const registered = new Set(
+  [...moduleText.matchAll(/^ {6}(\w+): \w+\.#on\w+,?$/gm)].map(m => m[1]));
+// ApplicationV2 handles these itself; nothing in our code registers them.
+for (const builtin of ["close", "submit", "tab"]) registered.add(builtin);
+
+const used = new Set([...templateText.matchAll(/data-action="([a-zA-Z]+)"/g)].map(m => m[1]));
+const unregistered = [...used].filter(a => !registered.has(a));
+check("actions used in templates", used.size, used.size);
+check("actions with no handler", unregistered.length ? unregistered.join(", ") : "none", "none");
+
+const css = fs.readFileSync(path.join(root, "styles", "cardrpg.css"), "utf8");
+// Each segment must end in a letter or digit, so a name built in the template -- "cr-half--{{...}}"
+// -- contributes the part that is actually written down and nothing more.
+const classes = new Set(
+  [...templateText.matchAll(/\bcr-[a-z0-9]+(?:[-_]{1,2}[a-z0-9]+)*/g)].map(m => m[0]));
+// A selector has to end where the class name does: ".cr-card__rolex" is not ".cr-card__role".
+const unstyled = [...classes].filter(c =>
+  !new RegExp(String.raw`\.${c}(?![\w-])`).test(css));
+check("cr- classes used in templates", classes.size, classes.size);
+check("classes missing from the stylesheet", unstyled.length ? unstyled.join(", ") : "none", "none");
+
+/* -------------------------------------------- */
+
 console.log(failures
   ? `\n${failures} FAILURE${failures === 1 ? "" : "S"}`
   : "\nall checks pass");
