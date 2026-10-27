@@ -45,7 +45,7 @@ function expand(defs, build) {
 
 /** Slate data from a content entry, filling in what the schema expects. */
 function slateData(entry, type) {
-  const { name, group, active, grants, text, copies, ...rest } = entry;
+  const { name, group, active, grants, bonus, text, copies, ...rest } = entry;
   return {
     name,
     type,
@@ -54,6 +54,7 @@ function slateData(entry, type) {
       ...(group ? { group } : {}),
       ...(active ? { active } : {}),
       ...(grants ? { grants } : {}),
+      ...(bonus ? { bonus } : {}),
       ...(text !== undefined ? { text } : {})
     }
   };

@@ -1,0 +1,12 @@
+{
+  "name": "cardrpg-system",
+  "private": true,
+  "description": "Validation tooling for the Card RPG Foundry system. The system itself ships no build step -- these are dev dependencies only.",
+  "type": "module",
+  "scripts": {
+    "test": "node test/validate.mjs"
+  },
+  "devDependencies": {
+    "handlebars": "^4.7.8"
+  }
+}

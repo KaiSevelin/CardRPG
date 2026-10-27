@@ -52,6 +52,7 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     form: { submitOnChange: true },
     window: { resizable: true },
     actions: {
+      openTray: CharacterSheet.#onOpenTray,
       toggleEquipped: CharacterSheet.#onToggleEquipped,
       toggleDrained: CharacterSheet.#onToggleDrained,
       removeCondition: CharacterSheet.#onRemoveCondition,
@@ -158,6 +159,10 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   }
 
   /* -------------------------------------------- */
+
+  static #onOpenTray() {
+    game.cardrpg.openTray(this.document);
+  }
 
   static async #onToggleEquipped(event, target) {
     const slate = this.document.items.get(target.dataset.slateId);

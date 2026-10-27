@@ -5,7 +5,11 @@
 <div class="cr-sheet">
 
   <header class="cr-sheet__header">
-    <input type="text" name="name" value="{{actor.name}}" placeholder="Name" class="cr-name">
+    <div class="cr-sheet__top">
+      <input type="text" name="name" value="{{actor.name}}" placeholder="Name" class="cr-name">
+      <button type="button" data-action="openTray"
+              data-tooltip="The hand and the live state. This is what you play from.">Open tray</button>
+    </div>
     <div class="cr-sheet__identity">
       <label>Way
         <select name="system.way">

@@ -230,11 +230,13 @@ export const NPC_GEAR = [
 export const FEATURES = [
   {
     name: "Strong", group: "body",
-    text: "+1 damage on Strike with Heavy items."
+    text: "+1 damage on Strike with Heavy items.",
+    bonus: { verb: "strike", value: 1, requiresTag: "heavy" }
   },
   {
     name: "Good Aim", group: "training",
-    text: "+2 range on Ranged and Thrown items."
+    text: "+2 range on Ranged and Thrown items.",
+    bonus: { verb: "strike", range: 2, requiresTag: "ranged" }
   },
   {
     name: "Quick",
@@ -248,7 +250,8 @@ export const FEATURES = [
   },
   {
     name: "Arcane Focus", group: "power",
-    text: "+1 to all Cast values."
+    text: "+1 to all Cast values.",
+    bonus: { verb: "cast", value: 1 }
   },
   {
     name: "Steady",

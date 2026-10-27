@@ -8,6 +8,9 @@
 import { CARDRPG } from "./module/config.mjs";
 import { registerSheets } from "./module/sheets.mjs";
 import { createStarterContent, ensureSetupMacro } from "./module/setup.mjs";
+import { CardRPGCombat, registerCombatHooks } from "./module/combat.mjs";
+import { CardRPGTray, registerTrayHooks } from "./module/tray.mjs";
+import * as decks from "./module/decks.mjs";
 import { CharacterData, NpcData } from "./module/data/actors.mjs";
 import { ItemSlateData, FeatureSlateData } from "./module/data/items.mjs";
 import {
@@ -47,7 +50,10 @@ Hooks.once("init", () => {
   // --- combat
   // Initiative is individual and drawn once from each combatant's own fate deck, with ties
   // redrawn (core-rules 3). Foundry's formula is unused; CardRPGCombat overrides the roll.
-  CONFIG.Combat.initiative = { formula: "0", decimals: 2 };
+  CONFIG.Combat.documentClass = CardRPGCombat;
+  CONFIG.Combat.initiative = { formula: "0", decimals: 0 };
+  registerCombatHooks();
+  registerTrayHooks();
 
   registerSettings();
   registerHelpers();
@@ -159,7 +165,25 @@ function registerSettings() {
 
 Hooks.once("ready", async () => {
   // Exposed so the setup routine can be run from a macro or the console.
-  game.cardrpg = { createStarterContent, config: CARDRPG };
+  game.cardrpg = {
+    createStarterContent,
+    config: CARDRPG,
+    decks,
+    openTray: actor => CardRPGTray.openFor(actor)
+  };
+
+  // Overloaded mutates card state, so it fires on the transition rather than on every recompute.
+  Hooks.on("updateActor", async (actor, change) => {
+    if (!game.user.isGM || actor.type !== "character") return;
+    const touchesLoad = foundry.utils.hasProperty(change, "system.cash")
+      || foundry.utils.hasProperty(change, "system.carry");
+    if (!touchesLoad) return;
+    const overloaded = ["overloaded", "immobile"].includes(actor.system.encumbrance);
+    await decks.setOverloaded(actor, overloaded);
+  });
+  Hooks.on("createItem", item => onLoadChanged(item));
+  Hooks.on("updateItem", item => onLoadChanged(item));
+  Hooks.on("deleteItem", item => onLoadChanged(item));
   await ensureSetupMacro();
 
   // The grid is square and distances are Chebyshev: a diagonal step costs the same as a straight
@@ -171,3 +195,15 @@ Hooks.once("ready", async () => {
   }
   console.log("Card RPG | Ready");
 });
+
+/**
+ * Carried weight changes whenever a slate is added, altered or removed, so the Overloaded
+ * transition has to be checked there too -- not just on actor updates.
+ */
+async function onLoadChanged(item) {
+  if (!game.user.isGM) return;
+  const actor = item.parent;
+  if (!actor || actor.type !== "character") return;
+  const overloaded = ["overloaded", "immobile"].includes(actor.system.encumbrance);
+  await decks.setOverloaded(actor, overloaded);
+}

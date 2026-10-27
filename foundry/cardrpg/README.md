@@ -49,16 +49,22 @@ costs the same as a straight one (core-rules §11). The system warns in the cons
 | Playtest content as data, and the routine that builds it | `module/content.mjs`, `module/setup.mjs` |
 | Offline validation | `test/validate.mjs` |
 
+| Deck engine: refill, fate draws, Catch Breath, Overloaded, rests | `module/decks.mjs` |
+| Resolution with the bonus-group cap | `module/resolve.mjs` |
+| Combat: drawn initiative, intent cards, condition ticking | `module/combat.mjs` |
+| The tray | `module/tray.mjs`, `templates/tray.hbs` |
+
 | Not built yet | |
 |---|---|
-| The tray | hand, resolution flow, reaction prompts |
-| Combat | individual initiative, intent cards, condition ticking |
+| Reaction prompts | the timer and the two-step redirect/reduce flow |
 | Icon assets | 61 SVGs from game-icons.net into `icons/`, named by their keys |
+| Out-of-combat play, character creation, levelling | later slices |
 
 ## Validation
 
 ```
-node test/validate.mjs
+npm install   # once, for the template check
+npm test
 ```
 
 Checks what can be checked without Foundry: every module parses, the JSON is valid, every file the
@@ -67,7 +73,25 @@ matches the numbers in [../../rules/starter-cards.md](../../rules/starter-cards.
 the fate distribution, that every slate an actor references exists, that NPC gear is flagged so it
 can't leak into player pickers, and that goblin weapons stay at least 2 above hero armor.
 
+Templates are precompiled with real Handlebars, so a broken one fails the run.
+
 It cannot tell you the system *loads*. Only Foundry can do that.
+
+## Playing a round
+
+1. Open a character and press **Open tray**.
+2. **Create a Combat** and roll initiative — it is drawn from each combatant's fate deck, not
+   rolled, and ties redraw. Starting the combat refills hands and draws one intent card per NPC
+   type, face down.
+3. On your turn, click a **primary** and a **secondary** from two different cards. The order you
+   click is the order they resolve, which is how the rules' "either order" is expressed.
+4. **Target a token** before playing a Strike. Fate is drawn once per action, not per target.
+5. **Play**. The chat card shows the whole chain: item base, card modifier, each feature bonus, the
+   fate card, then armor and Block — including any bonus that was *not* applied because its group
+   was already used.
+
+An NPC's intent card flips automatically when the first NPC of its type acts, since from that
+moment it is public knowledge anyway.
 
 ## Notes for whoever picks this up
 

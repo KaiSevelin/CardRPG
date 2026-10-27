@@ -316,3 +316,85 @@
 .cardrpg .cr-verbs input { width: 100%; }
 
 .cardrpg .cr-sequence { margin: 0; padding: 0.3em 0 0.3em 1.4em; font-size: 0.75rem; }
+
+/* -------------------------------------------- */
+/*  Tray                                        */
+/* -------------------------------------------- */
+
+.cardrpg .cr-sheet__top { display: flex; align-items: center; gap: 0.5em; }
+
+.cr-tray-app .cr-tray { padding: 0.4em 0.6em; font-size: 0.85rem; }
+
+.cardrpg .cr-tray__state {
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+  flex-wrap: wrap;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--cardrpg-rule);
+}
+.cardrpg .cr-tray__vital { font-variant-numeric: tabular-nums; }
+
+/* Exhausted and Dazed change what you may play, so they read as warnings. */
+.cardrpg .cr-tray__flag {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.1em 0.4em;
+  border-radius: 3px;
+  background: var(--cardrpg-group-1);
+  color: var(--cardrpg-paper);
+}
+
+.cardrpg .cr-tray__conditions,
+.cardrpg .cr-tray__equipped,
+.cardrpg .cr-tray__staged {
+  display: flex;
+  align-items: center;
+  gap: 0.35em;
+  flex-wrap: wrap;
+  padding: 0.25em 0;
+}
+
+.cardrpg .cr-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+  font-size: 0.72rem;
+  padding: 0.1em 0.45em;
+  border: 1px solid var(--cardrpg-rule);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.cardrpg .cr-chip--staged { border-color: var(--cardrpg-ink); font-weight: 600; }
+
+.cardrpg .cr-tray__buttons { margin-left: auto; display: flex; gap: 0.3em; }
+.cardrpg .cr-tray__buttons button { font-size: 0.75rem; padding: 0.15em 0.6em; }
+
+/* A staged half is the one thing on the tray that must be unmistakable. */
+.cardrpg .cr-half--staged {
+  background: var(--cardrpg-ink);
+  color: var(--cardrpg-paper);
+}
+.cardrpg .cr-half--staged .cr-half__marker { color: var(--cardrpg-paper); }
+
+.cardrpg .cr-half__play {
+  flex: 1 1 auto;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.cardrpg .cr-half__play:hover { text-decoration: underline; }
+
+.cardrpg .cr-tray__meters {
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+  padding-top: 0.3em;
+  border-top: 1px solid var(--cardrpg-rule);
+}
+.cardrpg .cr-tray__meters .cr-meter { flex: 0 0 11em; }

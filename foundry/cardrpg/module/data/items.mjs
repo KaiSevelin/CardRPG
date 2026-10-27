@@ -115,6 +115,20 @@ export class ItemSlateData extends SlateData {
       group: groupField(),
       ...drainFields(),
 
+      /** As on a feature: a numeric bonus to one verb, capped by this slate's group. */
+      bonus: new fields.SchemaField({
+        verb: new fields.StringField({
+          required: false, blank: true, initial: "",
+          choices: [...Object.keys(CARDRPG.verbs), ""]
+        }),
+        value: new fields.NumberField({ integer: true, nullable: true, initial: null }),
+        range: new fields.NumberField({ integer: true, nullable: true, initial: null }),
+        requiresTag: new fields.StringField({
+          required: false, blank: true, initial: "",
+          choices: [...CARDRPG.itemTags, ""]
+        })
+      }),
+
       /** NPC gear is tuned separately from player gear, so it must not leak into player pickers. */
       npcGear: new fields.BooleanField({ initial: false }),
 
@@ -147,6 +161,24 @@ export class FeatureSlateData extends SlateData {
       text: new fields.StringField({ required: false, blank: true, initial: "" }),
       group: groupField(),
       ...drainFields(),
+
+      /**
+       * A numeric bonus to one verb. This is what makes Strong computable rather than prose, and
+       * it is the thing a bonus group caps: one bonus per group per action.
+       */
+      bonus: new fields.SchemaField({
+        verb: new fields.StringField({
+          required: false, blank: true, initial: "",
+          choices: [...Object.keys(CARDRPG.verbs), ""]
+        }),
+        value: new fields.NumberField({ integer: true, nullable: true, initial: null }),
+        range: new fields.NumberField({ integer: true, nullable: true, initial: null }),
+        // Reads the item in hand, not the feature: Strong wants a Heavy weapon.
+        requiresTag: new fields.StringField({
+          required: false, blank: true, initial: "",
+          choices: [...CARDRPG.itemTags, ""]
+        })
+      }),
 
       /**
        * Flat traits the derived stats read. These are NOT bonus-grouped: a group caps bonuses to

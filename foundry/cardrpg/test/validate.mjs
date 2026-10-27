@@ -107,6 +107,30 @@ for (const [doc, types] of Object.entries(manifest.documentTypes)) {
 
 /* -------------------------------------------- */
 
+section("templates");
+
+// Handlebars is a dev dependency, so skip rather than fail if nobody has run npm install.
+let handlebars = null;
+try {
+  handlebars = (await import("handlebars")).default;
+} catch {
+  console.log("--   handlebars not installed; run npm install to check templates");
+}
+
+if (handlebars) {
+  const dir = path.join(root, "templates");
+  for (const name of fs.readdirSync(dir)) {
+    try {
+      handlebars.precompile(fs.readFileSync(path.join(dir, name), "utf8"));
+      check(name, "compiles", "compiles");
+    } catch (err) {
+      check(name, /[^\r\n]+/.exec(err.message)?.[0] ?? "error", "compiles");
+    }
+  }
+}
+
+/* -------------------------------------------- */
+
 section("content vs rules/starter-cards.md");
 
 const content = await import("../module/content.mjs");
