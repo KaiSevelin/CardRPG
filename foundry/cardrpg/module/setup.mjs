@@ -86,6 +86,10 @@ export async function createStarterContent() {
     expand(WARRIOR_DECK, def => ({
       name: def.name,
       type: "action",
+      // A Card with no face is face-down, and Foundry then shows "Unknown (<deck>)" instead of
+      // its name. Every card here is meant to be readable in hand, so it gets a face.
+      face: 0,
+      faces: [{ name: def.name }],
       system: {
         primary: def.primary ?? [],
         secondary: def.secondary ?? [],
@@ -109,6 +113,10 @@ export async function createStarterContent() {
     GOBLIN_DECK.map(def => ({
       name: def.name,
       type: "npc",
+      // Intent cards are turned face down when drawn; the face is what a reveal turns up.
+      face: 0,
+      faces: [{ name: def.name }],
+      back: { name: "Goblin" },
       system: { kind: "goblin", sequence: def.sequence }
     }))
   );

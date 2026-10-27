@@ -14,7 +14,7 @@
  */
 
 import { CARDRPG } from "./config.mjs";
-import { deckOf, discardCards, catchBreath, refill } from "./decks.mjs";
+import { deckOf, discardCards, catchBreath, refill, cardName } from "./decks.mjs";
 import { resolveAttack, resolveDefend, resolveHeal, resolveUse, collectBonuses } from "./resolve.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin, DialogV2 } = foundry.applications.api;
@@ -31,12 +31,17 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     /** Collapsed to the status bar. Skills are consulted, not played from, so out of combat the
      *  HUD is usually in the way until you want it. */
     this.collapsed = false;
+    /** Which pile is open, if any. @type {string|null} */
+    this.openPile = null;
+    /** The round:turn a hand was last dealt, so the deck goes inert until the next turn. */
+    this.dealtAt = null;
   }
 
   static DEFAULT_OPTIONS = {
     classes: ["cardrpg", "cr-hud-app"],
-    position: { width: 1100, height: 400 },
-    window: { title: "Card RPG", resizable: true, minimizable: true },
+    // A HUD, not a window: no frame, no title bar, and positioned by CSS against the screen edges
+    // rather than by drag coordinates. The panels sit over the canvas like Foundry's own controls.
+    window: { frame: false, positioned: false },
     actions: {
       stage: CardRPGTray.#onStage,
       clear: CardRPGTray.#onClear,
@@ -48,6 +53,11 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       unequip: CardRPGTray.#onUnequip,
       toggleDrain: CardRPGTray.#onToggleDrain,
       toggleCollapse: CardRPGTray.#onToggleCollapse,
+      dealHand: CardRPGTray.#onDealHand,
+      // A face-down pile is not openable; the click is absorbed rather than erroring.
+      none: () => {},
+      openPile: CardRPGTray.#onOpenPile,
+      closeViewer: CardRPGTray.#onCloseViewer,
       peek: CardRPGTray.#onPeek,
       reveal: CardRPGTray.#onReveal
     }
@@ -64,20 +74,16 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       if (actor) ui.notifications.warn("The HUD is for characters; NPCs are run from their sheet.");
       return null;
     }
+    // One HUD at a time: it covers the screen edges, so two would fight for the same space.
+    for (const other of CardRPGTray.openTrays) {
+      if (other.actor?.id !== actor.id) other.close();
+    }
     let tray = CardRPGTray.#open.get(actor.id);
     if (!tray) {
       tray = new CardRPGTray(actor);
       CardRPGTray.#open.set(actor.id, tray);
     }
-    const width = Math.min(1180, window.innerWidth - 60);
-    tray.render({
-      force: true,
-      position: {
-        width,
-        left: Math.max(10, (window.innerWidth - width) / 2),
-        top: Math.max(10, window.innerHeight - 450)
-      }
-    });
+    tray.render({ force: true });
     return tray;
   }
 
@@ -158,7 +164,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
 
       cards: (hand?.cards.contents ?? []).map(card => this.#renderCard(card, blocked, dazed)),
       staged: this.staged.map((s, i) => ({
-        ...s, order: i + 1, name: hand?.cards.get(s.cardId)?.name ?? "?"
+        ...s, order: i + 1, name: cardName(hand?.cards.get(s.cardId))
       })),
       canPlay: this.staged.length > 0,
 
@@ -192,8 +198,8 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       counts,
       fatePct: Math.round(100 * (counts.fate ?? 0) / 20),
       fateSwing: counts.fate ? Math.min(100, Math.round(200 / counts.fate)) : null,
-      ...this.#fateInfo(),
-      npcDecks: this.#npcDecks(combat),
+      piles: this.#piles(combat),
+      viewer: this.#viewer(combat),
 
       collapsed: this.collapsed,
       // Out of combat the centre panel becomes the skill deck, which is a later slice.
@@ -209,6 +215,110 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   /* -------------------------------------------- */
+
+  /**
+   * The decks, as backs with a count.
+   *
+   * Openable or not is a rules question, not a UI one: a face-up pile can be looked through, a
+   * shuffled face-down one cannot. Your own draw pile staying shut is the whole reason the deck is
+   * a stamina clock rather than a menu.
+   */
+  #piles(combat) {
+    const counts = this.actor.system.deckCounts ?? {};
+    const dealt = this.dealtAt === CardRPGTray.#turnKey(combat);
+
+    const piles = [
+      {
+        id: "action", label: "Action deck", count: counts.draw ?? 0,
+        action: "dealHand", spent: dealt,
+        tip: dealt
+          ? "Already dealt this turn. You draw again next turn."
+          : "Deal a hand, up to your hand size."
+      },
+      {
+        id: "actionDiscard", label: "Discard", count: counts.discard ?? 0,
+        action: "openPile", tip: "Face up. Catch Breath recovers half of it, at random."
+      },
+      {
+        id: "actionSpent", label: "Spent", count: counts.spent ?? 0,
+        action: "openPile", tip: "Out until a rest."
+      },
+      {
+        id: "fate", label: "Fate", count: counts.fate ?? 0,
+        action: "none", tip: "Shuffled and face down. Miss and Critical each reshuffle it."
+      },
+      {
+        id: "fateDiscard", label: "Fate discard", count: counts.fateDiscard ?? 0,
+        action: "openPile",
+        tip: "Face up, which is what makes counting possible."
+      }
+    ];
+
+    // One intent pile per NPC type in the fight, face down until the first of its type acts.
+    for (const npc of this.#npcDecks(combat)) {
+      piles.push({
+        id: `intent:${npc.kind}`, label: `${npc.kind} intent`, count: npc.revealed ? 1 : "?",
+        action: npc.revealed || game.user.isGM ? "openPile" : "none",
+        tip: npc.revealed
+          ? `Revealed: ${npc.card}`
+          : "Face down until the first of its type acts. Foresee flips it."
+      });
+    }
+
+    return piles.map(p => ({ ...p, open: this.openPile === p.id }));
+  }
+
+  /** The contents of whichever pile is open. */
+  #viewer(combat) {
+    if (!this.openPile) return null;
+
+    if (this.openPile.startsWith("intent:")) {
+      const kind = this.openPile.slice(7);
+      const info = this.#npcIntent(kind);
+      const card = info?.card;
+      return {
+        label: `${kind} intent`,
+        count: card ? 1 : 0,
+        cards: card ? [{ name: cardName(card), detail: CardRPGTray.#sequenceText(card) }] : []
+      };
+    }
+
+    const stack = deckOf(this.actor, this.openPile);
+    const labels = {
+      actionDiscard: "Discard", actionSpent: "Spent", fateDiscard: "Fate discard"
+    };
+    const cards = (stack?.cards.contents ?? []).map(c => ({
+      name: cardName(c),
+      harm: c.type === "wound" || c.type === "taint",
+      detail: CardRPGTray.#cardDetail(c)
+    }));
+    return { label: labels[this.openPile] ?? this.openPile, count: cards.length, cards };
+  }
+
+  static #sequenceText(card) {
+    return (card.system.sequence ?? [])
+      .map((s, i) => `${i + 1}. ${s.verb ?? ""}${s.param ? ` ${s.param}` : ""}${s.text ? ` (${s.text})` : ""}`)
+      .join("  ");
+  }
+
+  static #cardDetail(card) {
+    if (card.type === "fate") {
+      return card.system.special === "miss" ? "Miss — the action does nothing, then reshuffle"
+        : card.system.special === "crit" ? "Critical — double the value, then reshuffle"
+          : `${card.system.value > 0 ? "+" : ""}${card.system.value}`;
+    }
+    if (card.type === "wound") return "Dead card. Discard at the end of your turn.";
+    if (card.type === "taint") return "1 damage when drawn, ignoring armor.";
+    const half = (name, steps) => (steps ?? [])
+      .map(s => `${s.verb ?? ""}${s.param ? ` ${s.param}` : ""}${s.mod ? ` ${s.mod > 0 ? "+" : ""}${s.mod}` : ""}`)
+      .join(", ");
+    return `${half("p", card.system.primary)} / ${half("s", card.system.secondary)}`;
+  }
+
+  /** Round and turn, so the action deck can go inert until the next turn. */
+  static #turnKey(combat) {
+    return combat ? `${combat.round}:${combat.turn}` : "no-combat";
+  }
 
   /** The face-up fate discard, which is what makes counting possible. */
   #fateInfo() {
@@ -239,7 +349,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       seen.set(kind, {
         kind,
         revealed: !!intent?.getFlag("cardrpg", "revealed"),
-        card: card?.name ?? "—",
+        card: card ? cardName(card) : "—",
         deck: deck?.cards.size ?? 0
       });
     }
@@ -289,11 +399,11 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     };
 
     if (card.type === "wound" || card.type === "taint") {
-      return { id: card.id, name: card.name, harm: true, halves: [] };
+      return { id: card.id, name: cardName(card), harm: true, halves: [] };
     }
     return {
       id: card.id,
-      name: card.name,
+      name: cardName(card),
       harm: false,
       halves: [half("primary", card.system.primary), half("secondary", card.system.secondary)],
       reaction: card.system.reaction
@@ -353,8 +463,33 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   static #onToggleCollapse() {
     this.collapsed = !this.collapsed;
     this.render();
-    // Give the window back its height when expanding, and shrink to the bar when collapsed.
-    this.setPosition({ height: this.collapsed ? 90 : 440 });
+  }
+
+  /**
+   * Clicking the action deck deals a hand, then the deck goes inert until the next turn -- the
+   * hand refills once a round, so dealing repeatedly would just be drawing your deck away.
+   */
+  static async #onDealHand() {
+    const key = CardRPGTray.#turnKey(game.combat);
+    if (this.dealtAt === key) {
+      return ui.notifications.info("Already dealt this turn. You draw again next turn.");
+    }
+    const { drawn, taint } = await refill(this.actor);
+    this.dealtAt = key;
+    if (!drawn && !taint) ui.notifications.warn("Draw pile is empty. Catch Breath to recover some.");
+    this.render();
+  }
+
+  /** Clicking an open pile shuts it again. */
+  static #onOpenPile(event, target) {
+    const id = target.dataset.pile;
+    this.openPile = this.openPile === id ? null : id;
+    this.render();
+  }
+
+  static #onCloseViewer() {
+    this.openPile = null;
+    this.render();
   }
 
   static #onClear() {
@@ -486,7 +621,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
 
   static async #onPeek(event, target) {
     const info = this.#npcIntent(target.dataset.kind);
-    if (info?.card) ui.notifications.info(`${target.dataset.kind} intent: ${info.card.name}`);
+    if (info?.card) ui.notifications.info(`${target.dataset.kind} intent: ${cardName(info.card)}`);
   }
 
   static async #onReveal(event, target) {

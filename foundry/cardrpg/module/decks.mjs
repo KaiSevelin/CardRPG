@@ -55,19 +55,39 @@ export async function move(from, to, ids) {
   return moved;
 }
 
+/** A card's readable name, never Foundry's "Unknown (<deck>)" placeholder for a faceless card. */
+export function cardName(card) {
+  return card?.faces?.[0]?.name || card?._source?.name || card?.name || "?";
+}
+
 /**
- * Repair a deck whose cards are flagged drawn while sitting in it.
+ * Repair a stack in place. Self-healing, because a world built before these fixes is already in
+ * the bad state and should not need rebuilding:
  *
- * Self-healing, because a world created before the fix above will already be in that state and
- * there is no reason to make anyone rebuild their content over it.
+ *  - cards sitting in a deck but flagged `drawn`, which makes the next draw throw;
+ *  - cards with no face, which Foundry displays as "Unknown (<deck>)".
  */
-export async function normalizeDeck(deck) {
-  if (deck?.type !== "deck") return 0;
-  const stuck = deck.cards.filter(c => c.drawn);
-  if (!stuck.length) return 0;
-  await deck.updateEmbeddedDocuments("Card", stuck.map(c => ({ _id: c.id, drawn: false })));
-  console.log(`Card RPG | un-stuck ${stuck.length} cards in ${deck.name}`);
-  return stuck.length;
+export async function normalizeDeck(stack) {
+  if (!stack) return 0;
+  const fixes = [];
+  for (const card of stack.cards) {
+    const update = { _id: card.id };
+    let needed = false;
+    if (stack.type === "deck" && card.drawn) { update.drawn = false; needed = true; }
+    if (!card.faces?.length) {
+      const name = card._source?.name || card.name;
+      if (name && !name.startsWith("Unknown")) {
+        update.faces = [{ name }];
+        update.face = 0;
+        needed = true;
+      }
+    }
+    if (needed) fixes.push(update);
+  }
+  if (!fixes.length) return 0;
+  await stack.updateEmbeddedDocuments("Card", fixes);
+  console.log(`Card RPG | repaired ${fixes.length} cards in ${stack.name}`);
+  return fixes.length;
 }
 
 /* -------------------------------------------- */
@@ -155,7 +175,10 @@ export async function refill(actor) {
   const discard = deckOf(actor, "actionDiscard");
   if (!deck || !hand) return { drawn: 0, taint: 0 };
 
-  await normalizeDeck(deck);
+  // Repair every pile, not just the deck: a card drawn before the fix is sitting in the hand.
+  for (const which of ["action", "actionHand", "actionDiscard", "actionSpent", "fate", "fateDiscard"]) {
+    await normalizeDeck(deckOf(actor, which));
+  }
 
   const size = actor.system.handSize?.max ?? CARDRPG.defaults.handSize;
   let drawn = 0;

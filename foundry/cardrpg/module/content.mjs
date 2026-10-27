@@ -20,7 +20,9 @@
 export function fateCards() {
   const cards = [];
   const push = (name, system, n) => {
-    for (let i = 0; i < n; i++) cards.push({ name, type: "fate", system });
+    for (let i = 0; i < n; i++) {
+      cards.push({ name, type: "fate", face: 0, faces: [{ name }], system });
+    }
   };
   push("Miss", { special: "miss", value: 0 }, 1);
   push("−2", { value: -2 }, 1);
