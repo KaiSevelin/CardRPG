@@ -258,6 +258,8 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       label: "Action deck",
       count: this.actor.system.deckCounts?.draw ?? 0,
       spent: dealt,
+      // The deck says what it will do next, under its name.
+      state: dealt ? "cards dealt" : "draw",
       tip: dealt
         ? "Already dealt this turn. You draw again next turn."
         : "Deal a hand, up to your hand size."

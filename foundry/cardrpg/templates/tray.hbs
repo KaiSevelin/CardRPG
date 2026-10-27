@@ -12,39 +12,6 @@
 <div class="cr-hud-layer">
 
   {{!-- Status bar, along the bottom above the hand --}}
-  <header class="cr-hud__panel cr-hud__bar">
-    <span class="cr-hud__name">{{actor.name}}</span>
-    <span class="cr-tray__vital" data-tooltip="Health">&#9829; {{system.health.value}}/{{system.health.max}}</span>
-    <span class="cr-tray__vital" data-tooltip="Block{{#if system.blockPersists}} — holds until your next turn{{/if}}">
-      &#9094; {{system.block}}{{#if system.blockPersists}}&infin;{{/if}}
-    </span>
-    <span class="cr-tray__vital" data-tooltip="Armor, from the equipped body slate">&#9636; {{system.armor}}</span>
-    {{#if system.wounds}}<span class="cr-tray__vital" data-tooltip="Wounds">&#10006; {{system.wounds}}</span>{{/if}}
-    {{#if system.taint.total}}<span class="cr-tray__vital" data-tooltip="Taint">&#9763; {{system.taint.total}}</span>{{/if}}
-
-    {{#if exhausted}}<span class="cr-tray__flag" data-tooltip="Can't refill to 2 cards: one card per turn, no reactions">Exhausted</span>{{/if}}
-    {{#if dazed}}<span class="cr-tray__flag" data-tooltip="No secondary this turn">Dazed</span>{{/if}}
-    {{#if stunned}}<span class="cr-tray__flag" data-tooltip="No reactions">Stunned</span>{{/if}}
-    {{#if encumbered}}<span class="cr-tray__flag">{{encumbered}}</span>{{/if}}
-
-    {{#if staged}}
-      <span class="cr-note">resolves in order:</span>
-      {{#each staged}}<span class="cr-chip cr-chip--staged">{{this.order}}. {{this.name}} ({{this.half}})</span>{{/each}}
-    {{/if}}
-    {{#if targets}}<span class="cr-chip" data-tooltip="Fate is drawn once per action, not per target">&#9678; {{targets}}</span>{{/if}}
-
-    <span class="cr-hud__turn">
-      <button type="button" data-action="play" {{#unless canPlay}}disabled{{/unless}}>Play</button>
-      <button type="button" data-action="clear" {{#unless canPlay}}disabled{{/unless}}>Clear</button>
-      <button type="button" data-action="breathe"
-              data-tooltip="Your whole turn. Recovers half the discard at random; one of the rest is Spent.">Breath</button>
-      {{#if inCombat}}
-        {{#if myTurn}}<span class="cr-hud__active">Your turn</span>{{else}}<span class="cr-note">{{turnOwner}}</span>{{/if}}
-        <button type="button" data-action="endTurn" data-tooltip="Pass to the next combatant">End turn</button>
-      {{/if}}
-    </span>
-  </header>
-
   {{!-- LEFT COLUMN: Items, Features, Conditions from the top --}}
   <section class="cr-hud__decks cr-hud__decks--left">
     {{#each leftDecks}}
@@ -64,10 +31,11 @@
             data-action="dealHand" data-tooltip="{{actionDeck.tip}}">
       <span class="cr-pile__count">{{actionDeck.count}}</span>
       <span class="cr-pile__label">{{actionDeck.label}}</span>
+      <span class="cr-pile__state">{{actionDeck.state}}</span>
     </button>
   </section>
 
-  {{!-- BOTTOM RIGHT: Fate above, Discard below, clear of the sidebar --}}
+  {{!-- BOTTOM RIGHT: Fate, Discard, then the options panel, all card-shaped --}}
   <section class="cr-hud__decks cr-hud__decks--right">
     {{#each rightDecks}}
       <button type="button"
@@ -77,6 +45,44 @@
         <span class="cr-pile__label">{{this.label}}</span>
       </button>
     {{/each}}
+
+    {{!-- Same shape as a card, so it sits in the column as one more object. --}}
+    <div class="cr-options">
+      <div class="cr-options__name">{{actor.name}}</div>
+
+      <div class="cr-options__vitals">
+        <span data-tooltip="Health">&#9829; {{system.health.value}}/{{system.health.max}}</span>
+        <span data-tooltip="Block{{#if system.blockPersists}} — holds until your next turn{{/if}}">&#9094; {{system.block}}{{#if system.blockPersists}}&infin;{{/if}}</span>
+        <span data-tooltip="Armor">&#9636; {{system.armor}}</span>
+        {{#if system.wounds}}<span data-tooltip="Wounds">&#10006; {{system.wounds}}</span>{{/if}}
+        {{#if system.taint.total}}<span data-tooltip="Taint">&#9763; {{system.taint.total}}</span>{{/if}}
+      </div>
+
+      {{#if exhausted}}<div class="cr-tray__flag" data-tooltip="One card per turn, and no reactions">Exhausted</div>{{/if}}
+      {{#if dazed}}<div class="cr-tray__flag" data-tooltip="No secondary this turn">Dazed</div>{{/if}}
+      {{#if stunned}}<div class="cr-tray__flag" data-tooltip="No reactions">Stunned</div>{{/if}}
+      {{#if encumbered}}<div class="cr-tray__flag">{{encumbered}}</div>{{/if}}
+
+      {{#if staged}}
+        <div class="cr-options__staged">
+          {{#each staged}}<span class="cr-chip cr-chip--staged">{{this.order}}. {{this.name}}</span>{{/each}}
+        </div>
+      {{/if}}
+      {{#if targets}}
+        <div class="cr-note" data-tooltip="Fate is drawn once per action, not per target">&#9678; {{targets}}</div>
+      {{/if}}
+
+      <div class="cr-options__buttons">
+        <button type="button" data-action="play" {{#unless canPlay}}disabled{{/unless}}>Play</button>
+        <button type="button" data-action="clear" {{#unless canPlay}}disabled{{/unless}}>Clear</button>
+        <button type="button" data-action="breathe"
+                data-tooltip="Your whole turn. Recovers half the discard at random; one of the rest is Spent.">Breath</button>
+        {{#if inCombat}}
+          <button type="button" data-action="endTurn"
+                  data-tooltip="{{#if myTurn}}Your turn{{else}}{{turnOwner}}'s turn{{/if}}">End turn</button>
+        {{/if}}
+      </div>
+    </div>
   </section>
 
   {{!-- The dealt hand: cards laid on the scene, not inside a tray --}}

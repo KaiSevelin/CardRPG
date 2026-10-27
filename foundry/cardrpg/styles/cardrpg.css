@@ -373,6 +373,7 @@
   --cr-nav: 96px;        /* scene navigation across the top */
   --cr-sidebar: 318px;   /* chat, combat and the rest, on the right */
   --cr-hotbar: 90px;     /* the macro bar along the bottom centre */
+  --cr-gutter: 18px;     /* clear of the scene controls rather than flush against them */
 
   /*
    * ONE card size, used by the deck backs, the hand and any opened deck. A card drawn from a deck
@@ -402,22 +403,29 @@
 /* --- the deck columns --- */
 .cr-hud-layer .cr-hud__decks { display: flex; flex-direction: column; gap: 6px; }
 
-/* Items, Features, Conditions: right of the controls, under the navigation. */
+/* Items, Features, Conditions: right of the controls, below the scene selector. */
 .cr-hud-layer .cr-hud__decks--left {
-  left: var(--cr-controls);
-  top: var(--cr-nav);
+  left: calc(var(--cr-controls) + var(--cr-gutter));
+  top: 54px;
 }
 
-/* The action deck, in the bottom-left corner and aligned with the column above it. */
+/*
+ * The action deck shares the hand's baseline, so the deck and the cards dealt from it read as one
+ * row rather than two stray objects.
+ */
 .cr-hud-layer .cr-hud__decks--action {
-  left: var(--cr-controls);
-  bottom: 10px;
+  left: calc(var(--cr-controls) + var(--cr-gutter));
+  bottom: var(--cr-hotbar);
 }
 
-/* Fate above, Discard below, left of the sidebar. */
+/* Fate, Discard, then the options panel, left of the sidebar. */
 .cr-hud-layer .cr-hud__decks--right {
   right: var(--cr-sidebar);
   bottom: 10px;
+  top: 54px;
+  justify-content: flex-end;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 /* --- a deck back --- */
@@ -453,19 +461,21 @@
   padding: 0 0.3em;
 }
 
+/* What the deck will do if you click it: draw, or nothing more this turn. */
+.cr-hud-layer .cr-pile__state {
+  margin-top: 0.4em;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.1em 0.5em;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  opacity: 0.9;
+}
+
 /* Dealt already this turn: nothing more comes out of it until the next one. */
 .cr-hud-layer .cr-pile--spent { opacity: 0.4; }
 
-/* --- status bar: top, right of the scene selector and clear of the sidebar --- */
-.cr-hud-layer .cr-hud__bar {
-  top: 10px;
-  right: var(--cr-sidebar);
-  max-width: 60vw;
-  display: flex;
-  align-items: center;
-  gap: 0.6em;
-  flex-wrap: wrap;
-}
 .cr-hud-layer .cr-hud__name { font-weight: 700; }
 .cr-hud-layer .cr-tray__vital { font-variant-numeric: tabular-nums; white-space: nowrap; }
 .cr-hud-layer .cr-tray__flag {
@@ -492,7 +502,7 @@
  * of cards on a table is a row of separate objects, and the HUD should read the same way.
  */
 .cr-hud-layer .cr-hud__hand {
-  left: calc(var(--cr-controls) + var(--cr-card-w) + 12px);
+  left: calc(var(--cr-controls) + var(--cr-gutter) + var(--cr-card-w) + 12px);
   right: calc(var(--cr-sidebar) + var(--cr-card-w) + 12px);
   bottom: var(--cr-hotbar);
   height: var(--cr-card-h);
@@ -508,9 +518,9 @@
  * no tray behind it.
  */
 .cr-hud-layer .cr-hud__spread {
-  left: calc(var(--cr-controls) + var(--cr-card-w) + 12px);
+  left: calc(var(--cr-controls) + var(--cr-gutter) + var(--cr-card-w) + 12px);
   right: calc(var(--cr-sidebar) + var(--cr-card-w) + 12px);
-  top: var(--cr-nav);
+  top: 54px;
   height: var(--cr-card-h);
   display: flex;
   flex-direction: row;
@@ -670,3 +680,67 @@
 
 /* The action deck is the one you act from, so it reads as the live deck. */
 .cr-hud-layer .cr-pile--action { border-color: var(--cardrpg-group-6); }
+
+/* -------------------------------------------- */
+/*  Options panel                               */
+/* -------------------------------------------- */
+
+/*
+ * Card-shaped, so it sits in the right column as one more object rather than as window chrome.
+ * Height is free: it carries however many flags and staged halves there are.
+ */
+.cr-hud-layer .cr-options {
+  flex: 0 0 auto;
+  width: var(--cr-card-w);
+  box-sizing: border-box;
+  background: var(--cardrpg-paper);
+  color: var(--cardrpg-ink);
+  border: 1px solid var(--cardrpg-rule);
+  border-radius: 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  padding: 0.35em 0.4em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+  font-size: 0.72rem;
+}
+
+.cr-hud-layer .cr-options__name {
+  font-weight: 700;
+  font-size: 0.78rem;
+  line-height: 1.15;
+  border-bottom: 1px solid var(--cardrpg-rule);
+  padding-bottom: 0.2em;
+}
+
+.cr-hud-layer .cr-options__vitals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.1em 0.5em;
+  font-variant-numeric: tabular-nums;
+}
+
+.cr-hud-layer .cr-options__staged {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15em;
+  border-top: 1px solid var(--cardrpg-rule);
+  padding-top: 0.25em;
+}
+.cr-hud-layer .cr-options__staged .cr-chip { justify-content: center; }
+
+.cr-hud-layer .cr-options__buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
+  border-top: 1px solid var(--cardrpg-rule);
+  padding-top: 0.3em;
+}
+.cr-hud-layer .cr-options__buttons button {
+  width: 100%;
+  font-size: 0.72rem;
+  padding: 0.1em 0;
+  line-height: 1.6;
+}
+
+.cr-hud-layer .cr-options .cr-tray__flag { text-align: center; }
