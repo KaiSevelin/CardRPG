@@ -374,10 +374,15 @@
   --cr-sidebar: 318px;   /* chat, combat and the rest, on the right */
   --cr-deck-w: 92px;
   --cr-deck-h: 118px;
+  --cr-hand-card-w: 150px;   /* every card in the hand, the same */
+  --cr-spread-w: 232px;      /* every card in an opened deck, the same */
+  --cr-spread-card-h: 104px;
 }
 
 .cr-hud-layer .cr-hud__panel,
-.cr-hud-layer .cr-hud__decks { position: absolute; pointer-events: auto; }
+.cr-hud-layer .cr-hud__decks,
+.cr-hud-layer .cr-hud__hand,
+.cr-hud-layer .cr-hud__spread { position: absolute; pointer-events: auto; }
 
 .cr-hud-layer .cr-hud__panel {
   background: var(--cardrpg-paper);
@@ -486,53 +491,55 @@
 }
 .cr-hud-layer .cr-hud__active { font-weight: 700; color: var(--cardrpg-group-6); }
 
-/* --- the dealt hand, spread right of the action deck --- */
-.cr-hud-layer .cr-hud__hand-panel {
+/*
+ * The dealt hand lies straight on the scene: no tray behind it, every card the same size. A hand
+ * of cards on a table is a row of separate objects, and the HUD should read the same way.
+ */
+.cr-hud-layer .cr-hud__hand {
   left: calc(var(--cr-controls) + var(--cr-deck-w) + 12px);
   right: calc(var(--cr-sidebar) + var(--cr-deck-w) + 12px);
   bottom: 10px;
   height: var(--cr-deck-h);
   display: flex;
-  flex-direction: column;
-  min-height: 0;
+  gap: 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 2px;
 }
 
-/* --- an opened deck, spread as a vertical hand beside it --- */
-.cr-hud-layer .cr-hud__viewer {
+/*
+ * An opened deck: a vertical column of equal cards beside it, no tray. Vertical because an opened
+ * deck is held in the hand rather than fanned on the table.
+ */
+.cr-hud-layer .cr-hud__spread {
   top: var(--cr-nav);
-  bottom: calc(var(--cr-deck-h) + 56px);
-  width: 260px;
+  bottom: calc(var(--cr-deck-h) + 20px);
+  width: var(--cr-spread-w);
   display: flex;
   flex-direction: column;
-  min-height: 0;
-}
-.cr-hud-layer .cr-hud__viewer--left { left: calc(var(--cr-controls) + var(--cr-deck-w) + 12px); }
-.cr-hud-layer .cr-hud__viewer--right { right: calc(var(--cr-sidebar) + var(--cr-deck-w) + 12px); }
-
-/* Vertical, because an opened deck is held in the hand rather than fanned on the table. */
-.cr-hud-layer .cr-spread {
-  flex: 1 1 auto;
-  min-height: 0;
+  gap: 8px;
   overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35em;
-  padding: 0.1em;
+  overflow-x: hidden;
+  padding: 2px;
 }
+.cr-hud-layer .cr-hud__spread--left { left: calc(var(--cr-controls) + var(--cr-deck-w) + 12px); }
+.cr-hud-layer .cr-hud__spread--right { right: calc(var(--cr-sidebar) + var(--cr-deck-w) + 12px); }
 
 /* Collapsed: the status bar only, parked at the bottom so it covers nothing. */
 .cr-hud-layer--collapsed .cr-hud__decks,
-.cr-hud-layer--collapsed .cr-hud__hand-panel,
-.cr-hud-layer--collapsed .cr-hud__viewer { display: none; }
+.cr-hud-layer--collapsed .cr-hud__hand,
+.cr-hud-layer--collapsed .cr-hud__spread { display: none; }
 .cr-hud-layer--collapsed .cr-hud__bar { bottom: 10px; left: var(--cr-controls); }
 
-/* --- spread cards --- */
+/* --- spread cards: one size, whatever is on them --- */
 .cardrpg .cr-card--spread {
+  flex: 0 0 auto;
   width: 100%;
+  height: var(--cr-spread-card-h);
   aspect-ratio: auto;
-  min-height: 0;
   position: relative;
-  padding-bottom: 0.2em;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 .cardrpg .cr-card--spread .cr-card__name {
   display: flex;
@@ -583,17 +590,14 @@
 .cardrpg .cr-card--spread[data-group="station"] { border-left: 4px solid var(--cardrpg-group-6); }
 .cardrpg .cr-card--spread[data-group="wonder"] { border-left: 4px solid var(--cardrpg-group-7); }
 
-/* --- the hand itself --- */
-.cardrpg .cr-hand {
-  flex: 1 1 auto;
-  min-height: 0;
-  display: flex;
-  gap: 0.4em;
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding: 0.1em;
+/* Every card in the hand is the same size, so none of them reads as more important. */
+.cr-hud-layer .cr-hud__hand .cr-card {
+  flex: 0 0 auto;
+  width: var(--cr-hand-card-w);
+  height: 100%;
+  aspect-ratio: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
-.cardrpg .cr-hand .cr-card { flex: 0 0 auto; height: 100%; aspect-ratio: auto; width: 132px; }
 
 .cr-hud__hand-head {
   flex: 0 0 auto;

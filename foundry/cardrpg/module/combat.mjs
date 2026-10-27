@@ -11,7 +11,7 @@
  */
 
 import { CARDRPG } from "./config.mjs";
-import { deckOf, moveRandom, move, refill, normalizeDeck } from "./decks.mjs";
+import { deckOf, moveRandom, move, normalizeDeck } from "./decks.mjs";
 
 /* -------------------------------------------- */
 /*  Initiative                                  */
@@ -119,7 +119,11 @@ export class CardRPGCombat extends Combat {
 /* -------------------------------------------- */
 
 /**
- * Start of a round: refill every player hand, then draw one intent card per NPC type.
+ * Start of a round: draw one intent card per NPC type.
+ *
+ * Hands are NOT dealt here. Drawing is the player's own act -- they click their deck -- because the
+ * draw pile is the stamina clock and watching it empty is the point. Filling it for them would make
+ * the cost invisible.
  *
  * The intent card is drawn face down. Once the first NPC of a type acts it is public knowledge
  * anyway, so it flips automatically -- which is exactly what makes Foresee worth something only
@@ -129,14 +133,6 @@ export async function onRoundStart(combat) {
   if (!game.user.isGM) return;
 
   const lines = [];
-
-  for (const combatant of combat.combatants) {
-    const actor = combatant.actor;
-    if (!actor || actor.type !== "character") continue;
-    const { drawn, taint } = await refill(actor);
-    if (drawn || taint) lines.push(`${actor.name} draws ${drawn}${taint ? ` (${taint} Taint)` : ""}`);
-  }
-
   const intents = await drawIntents(combat);
   for (const [kind] of intents) lines.push(`${kind} intent drawn, face down`);
 

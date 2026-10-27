@@ -83,10 +83,9 @@
     {{/each}}
   </section>
 
-  {{!-- The dealt hand, spread to the right of the action deck --}}
+  {{!-- The dealt hand: cards laid on the scene, not inside a tray --}}
   {{#if cards}}
-    <section class="cr-hud__panel cr-hud__hand-panel">
-      <div class="cr-hand">
+    <section class="cr-hud__hand">
         {{#each cards as |card|}}
           <div class="cr-card{{#if card.harm}} cr-card--harm{{/if}}">
             <div class="cr-card__name">{{card.name}}</div>
@@ -110,22 +109,13 @@
               </div>
             {{/if}}
           </div>
-        {{/each}}
-      </div>
+      {{/each}}
     </section>
   {{/if}}
 
-  {{!-- An opened deck, spread as a vertical hand beside it --}}
+  {{!-- An opened deck: its cards laid out beside it, again with no tray --}}
   {{#if viewer}}
-    <section class="cr-hud__panel cr-hud__viewer cr-hud__viewer--{{viewer.side}}">
-      <div class="cr-hud__hand-head">
-        <span class="cr-hud__label">{{viewer.label}}</span>
-        <span class="cr-note">{{viewer.count}}</span>
-        <span class="cr-tray__buttons">
-          <button type="button" data-action="closeViewer">Close</button>
-        </span>
-      </div>
-      <div class="cr-spread">
+    <section class="cr-hud__spread cr-hud__spread--{{viewer.side}}">
         {{#each viewer.cards}}
           <div class="cr-card cr-card--spread{{#if this.harm}} cr-card--harm{{/if}}{{#if this.flipped}} cr-card--back{{/if}}"
                data-group="{{this.group}}">
@@ -162,10 +152,9 @@
                       data-action="{{this.action}}" data-slate-id="{{this.id}}">{{this.actionLabel}}</button>
             {{/if}}
           </div>
-        {{else}}
-          <p class="cr-note">Empty.</p>
-        {{/each}}
-      </div>
+      {{else}}
+        <div class="cr-card cr-card--spread"><div class="cr-card__front"><span class="cr-note">Empty.</span></div></div>
+      {{/each}}
     </section>
   {{/if}}
 
