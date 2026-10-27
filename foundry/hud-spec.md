@@ -296,7 +296,7 @@ Wound and Taint detail, levelling. None of it changes moment to moment.
 ## 9. Open
 
 - **Swing-percentage toggle** (§4.2): default on or off.
-- **Card layout.** Where the three halves sit on a face, how a modifier attaches to its icon, how a
-  blocked icon reads as blocked. Still the other open item before any of this can be built
-  ([../rules/icons.md](../rules/icons.md)).
 - **Touch and small screens.** Five cards plus two panels is tight below about 1000 px.
+
+Card layout is settled in [card-layout.md](card-layout.md), including the bonus-group border that
+the tray has to enforce at resolution time (§4.4 there).

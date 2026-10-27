@@ -211,6 +211,23 @@ Always in this order:
 5. **Fate** – draw one card from your fate deck and apply it.
 6. **Target's defenses** – subtract armor, then Block (section 4). The result can't go below 0.
 
+### Bonus groups
+
+Bonuses don't stack from the same kind of source. Every slate that grants a **numeric bonus** belongs
+to one of five groups — **Body, Training, Tool, Power, Station** — shown as a coloured border with a
+number (see [../foundry/card-layout.md](../foundry/card-layout.md)).
+
+> **One action or check may take at most one bonus from each group.**
+
+- Only **bonus** contributions are grouped. Whatever supplies the **base** value is exempt, so a
+  weapon and a feature can never lock each other out of being used.
+- Features that grant advantage or a flat trait (*Alert*, *Tough*, *Quick*) aren't grouped at all.
+- Action cards and skill cards are never grouped.
+
+This is the same principle the fate deck already uses for advantage — two sources of advantage still
+give one — applied to numbers. Bonuses have to come from **different kinds** of help: muscle and a
+tool, not two kinds of muscle.
+
 Fate is drawn for **damage and healing**. Movement, Ready and Defend never draw fate.
 
 **One draw per action, not per target.** An action that hits several creatures — any Area — draws fate **once** and applies the same result to everyone it hits. A Critical doubles the damage to all of them; a Miss means the whole attack does nothing.

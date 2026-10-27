@@ -43,8 +43,12 @@ The HUD is specified in [../foundry/hud-spec.md](../foundry/hud-spec.md): an alw
 for play and a **sheet** for reference, with a face-up fate discard, automatic combat/scene mode
 switching, and per-player private hands.
 
-Still to decide before code: the **card layout** — where the three halves sit on a face, how a
-modifier attaches to its icon, and how a blocked icon reads as blocked.
+Card layout is settled in [../foundry/card-layout.md](../foundry/card-layout.md): the scan column,
+the four information tiers, which types may have an informative back, and the bonus-group border.
+
+Nothing in the design now blocks writing the system. What remains before code is a decision on the
+**bonus group names**, and the two item-slate fields (**weight**, which has no rule behind it, and a
+**currency unit** for value).
 
 ## Order of work
 
