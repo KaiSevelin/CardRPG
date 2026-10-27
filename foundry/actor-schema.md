@@ -190,7 +190,83 @@ its weight contribution beside it, or players will wonder why their allowance mo
 
 ---
 
-## 7. Open
+## 7. Visibility
+
+Foundry's permissions are **per document**: a user owns an actor or they don't. This game needs
+**per field** — your hand is private while your hand *size* must be public. So visibility is the
+system's job, not the platform's, and every field needs a tier.
+
+### 7.1 A character has three tiers, not two
+
+| Tier | Who | Fields |
+|---|---|---|
+| **Table** | Everyone at the table | Name, Way, background. Health and max health, Block, armor. Conditions **with their creator**. Hand **size**, draw / discard / Spent counts. Wound and Taint counts. Rest tokens. Encumbrance state. |
+| **Owner** | The player, and the GM | Hand contents, skill hand contents, secret slate contents, fate deck order, cash, carried weight detail, biography |
+| **GM** | The GM, **hidden from the owning player** | What NPCs know about this character, hidden Taint sources, anything planted on them |
+
+That third tier is the unusual one. A player character carries data its own player must not see: the
+rules have the GM holding secret slates *about* the players, to be played against them in social
+challenges (skill-rules §5). So a `character` needs a GM-only area, not just a public/private split.
+
+**Table tier is the default, deliberately.** Hand size, deck counts and conditions have to be public
+or the party can't cooperate. **Cash is Owner** by default — whether the party sees each other's
+purse is a table-culture question, so make it a setting rather than a decision.
+
+### 7.2 An NPC has two tiers
+
+| Tier | Fields |
+|---|---|
+| **GM** | Everything by default: health values, gear, deck, tactic keywords, target priority, unrevealed motivations, secrets, unflipped intent cards |
+| **Revealed** | Whatever the players have earned or observed |
+
+### 7.3 One reveal flag, four uses
+
+The same `revealed` mechanism covers everything players can learn about an enemy:
+
+| What | Revealed when |
+|---|---|
+| **Intent card** | The first NPC of that type acts — automatic (core-rules §3) |
+| **Motivation** | A Wits check, a card edge, asking around, or a player guessing right (skill-rules §5) |
+| **Tactic keyword** | It fires. A tactic is meant to give players something to play against, which requires knowing it |
+| **Secret** | Investigation, a Wits or Shadow check, downtime contacts, the *Secret* twist |
+
+Build it once. Revealing a tactic the moment it fires is the same operation as flipping an intent
+card, and it turns "wolves get advantage when they surround you" from GM bookkeeping into the
+counter-play the rules intend.
+
+### 7.4 NPC health should be visible
+
+**Recommended: show it, with a GM setting to hide it.**
+
+The rules lean on players reading enemy health. *Cowardly* triggers below half, and it is listed with
+the counter-play "let it run, or chase for the loot" — which a player cannot judge blind. *Weakest*
+target priority means the GM is reading health anyway. And the system is already built on open
+information: the fate discard is face up, intent cards auto-flip. Hidden hit points would be the one
+place the game turns opaque, for no mechanical gain.
+
+### 7.5 Why this is easier here than in most systems
+
+Two existing rules do most of the work:
+
+- **NPCs never draw fate in an opposed check** (skill-rules §2) — the player always draws. So the GM
+  almost never rolls hidden, and there is little secret randomness to present.
+- **Each NPC type has its own fate deck** with a face-up discard, so enemy luck is as public as the
+  party's.
+
+What remains hidden is **intent and knowledge** — what the enemy is about to do, what it wants, what
+it knows about you — which is exactly what the game wants hidden, since Foresee, Wits checks and
+secrets are all built to buy it back.
+
+### 7.6 How it renders
+
+One sheet per subtype, with fields rendered conditionally on the viewer's role — not a second sheet
+per tier, which would drift. Three checks: is this the GM, is this an owner, is this anyone else. The
+tray is already per-user (hud-spec §7); the GM's tray is the GM panel.
+
+Foundry's **Limited** ownership level is useful for an NPC the players have studied: it shows a
+cut-down sheet carrying only the revealed fields.
+
+## 8. Open
 
 - `specialization` and `level` both wait on the world and the levelling rules.
 - Whether `rest.max` is stored or derived from level — depends on the levelling rules.
