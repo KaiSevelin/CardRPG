@@ -333,14 +333,13 @@ front:  ╔══════════════════════╗
 - A weapon that only supplies base values (`Longsword: Strike 3, Defend 1`) carries **no border**.
 - The back holds the tier-3 fields: short description, value, type.
 
-**[OPEN] Weight has no rule behind it.** Carrying is governed entirely by slots (2 hands, 1 body,
-2 belt) plus an unbounded pack; there is no encumbrance anywhere in the rules. A numeric weight is
-either decoration or the seed of an unwritten rule, and it overlaps the existing **Heavy** and
-**Light** tags, which *are* mechanical (*Strong* reads Heavy). Either drop it, or write a pack
-capacity rule and let weight feed it.
+Weight and value are both live rules now (core-rules §4, *Carrying*): weight in **whole kilograms**
+against a 40 kg limit, value in **gold**. Both print on the back, and the tray sums weight for the
+carry total.
 
-**[OPEN] Value needs a currency unit.** Gold appears in a skill-rules example and in the world
-document, but no denomination is defined in the rules. Fix it before printing numbers on fifty items.
+Note that **weight is not the Heavy / Light tags**. Weight is what a thing costs to haul; the tags
+are how it handles when wielded, and features like *Strong* read the tags. A slate carries both, and
+they are not derived from each other.
 
 ### 6.2 Feature slate
 

@@ -189,6 +189,49 @@ Only equipped items can be used. Slots:
 | Body | 1 | Armor |
 | Belt | 2 | Potions, scrolls |
 
+### Carrying
+
+Slots govern what you can **use**. Weight governs what you can **haul**.
+
+Your **limit** is **40 kg**, counting everything on you: equipped items, belt, pack and loot.
+**Features can raise it** — like *Tough* and *Quick* these are flat traits rather than bonuses to an
+action, so they are **not** bonus-grouped (section 5).
+
+| Load | | Effect |
+|---|---|---|
+| Up to your limit | **Unburdened** | — |
+| Over your limit, up to double it | **Burdened** | **Slowed**, and disadvantage on 🌀 Agility and 🌑 Shadow checks |
+| Over double your limit | — | You can't pick it up. Make two trips. |
+
+**Burdened** has no duration: it lasts until you drop enough weight. You can shed a load at any time,
+including as a free part of your turn — dropping things is never an action.
+
+Why those two effects: laden you are slow, noisy and clumsy, so the penalty lands on moving and
+sneaking. Might is untouched, since being loaded doesn't make you weak. And Strike is untouched, so a
+hauling party is never helpless — just easy to catch.
+
+### Weights
+
+- Item slates give a weight in **whole kilograms**. Anything under a kilo counts as **0** on its own —
+  bundle them and the bundle gets a weight: a quiver, a roll of picks, a purse.
+- **Coins:** 100 gold weighs 1 kg. Pocket money is free; a chest of treasure is a problem.
+- **A person** weighs 70–90 kg. Carrying a fallen ally therefore means dropping your own kit first,
+  and still leaves you Burdened. That is intended: getting someone out should cost something.
+
+Weight and the **Heavy** / **Light** tags measure different things and shouldn't be confused:
+
+| | What it measures | Read by |
+|---|---|---|
+| **Weight (kg)** | What the thing costs to haul | The carry limit |
+| **Heavy / Light tags** | How the thing handles when wielded | Features like *Strong* |
+
+A Heavy weapon usually weighs more, but the tag is about swinging it, not carrying it.
+
+> A full kit of adventuring gear comes to roughly 10 kg, so 40 kg is not a constraint on how you
+> equip a character. It is a constraint on **loot**: what you can carry out of the dungeon, how much
+> ore the caravan takes, whether you can drag an unconscious ally. Set the weights of treasure and
+> cargo with that in mind — they are what the rule is for.
+
 **Ready** is a special action. You can only Ready by playing a card half that shows the **Ready icon**. The icon can be on either the primary or the secondary half.
 
 Ready lets you:
@@ -310,6 +353,7 @@ Conditions are tokens with a number (duration). Every condition remembers **who 
 | **Grappled** | Blocks 👣 Move (see section 10). |
 | **Silenced** | Blocks ✦ Cast. |
 | **Disarmed** | Blocks ⇄ Ready, and ⚔ with the disarmed item. |
+| **Burdened** | Over your carry limit: Slowed, and disadvantage on 🌀 Agility and 🌑 Shadow checks. No duration – it lasts until you drop weight (section 4). |
 | **Blessed / Cursed** | See fate deck (no duration – they last until the card is drawn). |
 
 ---

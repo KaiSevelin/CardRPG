@@ -71,32 +71,39 @@ Your **background** then adds its 2 skill cards on top, giving a 17-card deck at
 
 ## Items
 
-| Item | Slot | Tags | Strike | Cast | Defend | Use |
-|---|---|---|---|---|---|---|
-| Longsword | 1 hand | Heavy, Melee | 3 dmg | – | 1 | – |
-| Dagger | 1 hand | Light, Melee, Thrown | 2 dmg (range 3 thrown) | – | – | – |
-| Shortbow | 2 hands | Ranged | 2 dmg, range 6 | – | – | – |
-| Staff of Healing | 2 hands | Arcane, Melee | 1 dmg | ✚ Heal 3, range 2 | 1 | – |
-| Fire Wand | 1 hand | Arcane | – | 2 dmg, ✸ Blast 1, range 4 | – | – |
-| Wooden Shield | 1 hand | Shield | 1 dmg | – | 2 | – |
-| Leather Armor | Body | Armor | – | – | – | Armor 1 (always on) |
-| Healing Potion | Belt | Consumable | – | – | – | Heal 4, then discard item |
-| Smoke Bomb | Belt | Consumable | – | – | – | You become Invisible (1) |
+| Item | Slot | Tags | kg | Value | Strike | Cast | Defend | Use |
+|---|---|---|---|---|---|---|---|---|
+| Longsword | 1 hand | Heavy, Melee | 2 | 15 g | 3 dmg | – | 1 | – |
+| Dagger | 1 hand | Light, Melee, Thrown | 0 | 2 g | 2 dmg (range 3 thrown) | – | – | – |
+| Shortbow | 2 hands | Ranged | 1 | 25 g | 2 dmg, range 6 | – | – | – |
+| Staff of Healing | 2 hands | Arcane, Melee | 2 | – | 1 dmg | ✚ Heal 3, range 2 | 1 | – |
+| Fire Wand | 1 hand | Arcane | 0 | – | – | 2 dmg, ✸ Blast 1, range 4 | – | – |
+| Wooden Shield | 1 hand | Shield | 3 | 10 g | 1 dmg | – | 2 | – |
+| Leather Armor | Body | Armor | 5 | 20 g | – | – | – | Armor 1 (always on) |
+| Healing Potion | Belt | Consumable | 0 | 50 g | – | – | – | Heal 4, then discard item |
+| Smoke Bomb | Belt | Consumable | 0 | 40 g | – | – | – | You become Invisible (1) |
+
+A full warrior kit — longsword, shield, leather armor, a potion — comes to **10 kg** against a 40 kg
+limit. The limit is not a constraint on how you equip a character; it is a constraint on what you
+carry *out*. See *Carrying* in the core rules.
 
 ### Tools (skill lines)
 
 Tools work like weapons: the card says what you try, the tool says how well. An **untrained** user gets at most **+1** from any of these; training comes from backgrounds and the Way trees.
 
-| Item | Slot | Skill line |
-|---|---|---|
-| Lockpicks | Belt | 🌑 Shadow +2 (locks and mechanisms) |
-| Climbing Rope | Pack | ✊ Might / 🌀 Agility +1 (climbing, and nobody falls alone) |
-| Holy Symbol | 1 hand | 📜 Lore +1 (religion, undead) |
-| Fine Clothes | Body | 👑 Presence +1 (nobles and merchants) |
-| Healer's Kit | Pack | 📜 Lore +2 (treating wounds; removes 1 Wound on a Normal 5) |
-| Gaming Set | Pack | 👑 Presence +1 (soldiers, taverns, gamblers) |
-| Hunting Traps | Pack | 👁 Wits +1 (tracking and trapping animals) |
-| Lantern | 1 hand | 👁 Wits +1 (anything you need to see in the dark) |
+| Item | Slot | kg | Value | Group | Skill line |
+|---|---|---|---|---|---|
+| Lockpicks | Belt | 0 | 25 g | Tool | 🌑 Shadow +2 (locks and mechanisms) |
+| Climbing Rope | Pack | 3 | 5 g | Tool | ✊ Might / 🌀 Agility +1 (climbing, and nobody falls alone) |
+| Holy Symbol | 1 hand | 0 | 10 g | Power | 📜 Lore +1 (religion, undead) |
+| Fine Clothes | Body | 2 | 30 g | Station | 👑 Presence +1 (nobles and merchants) |
+| Healer's Kit | Pack | 2 | 20 g | Tool | 📜 Lore +2 (treating wounds; removes 1 Wound on a Normal 5) |
+| Gaming Set | Pack | 1 | 5 g | Station | 👑 Presence +1 (soldiers, taverns, gamblers) |
+| Hunting Traps | Pack | 4 | 15 g | Tool | 👁 Wits +1 (tracking and trapping animals) |
+| Lantern | 1 hand | 2 | 5 g | Tool | 👁 Wits +1 (anything you need to see in the dark) |
+
+Every tool here carries a **bonus group** (core-rules §5), so a character can benefit from one Tool
+bonus, one Station bonus and one Power bonus on the same check, but never two of the same kind.
 
 Pack items aren't equipped, so pulling one out is free in a quiet scene but may cost time inside a challenge.
 
@@ -106,10 +113,10 @@ Pack items aren't equipped, so pulling one out is free in a quiet scene but may 
 
 Tuned separately from player gear (see *NPC gear and the armor rule* in the core rules).
 
-| Item | Slot | Tags | Strike | Defend |
-|---|---|---|---|---|
-| Goblin Spear | 1 hand | Melee | 3 dmg | – |
-| Goblin Shortbow | 2 hands | Ranged | 3 dmg, range 6 | – |
+| Item | Slot | Tags | kg | Strike | Defend |
+|---|---|---|---|---|---|
+| Goblin Spear | 1 hand | Melee | 2 | 3 dmg | – |
+| Goblin Shortbow | 2 hands | Ranged | 1 | 3 dmg, range 6 | – |
 
 ---
 
