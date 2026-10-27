@@ -118,22 +118,65 @@ feature would stop you acting at all.
 So a **border is itself a signal**: this slate contributes a capped bonus. An unbordered slate is
 unconstrained. Action and skill cards never carry a group.
 
+**One slate belongs to exactly one group.** A border is a single colour, so a slate that would
+plausibly sit in two groups has to be assigned to one. Pick by what actually supplies the bonus,
+using the tests in §4.2.
+
 ### 4.2 The groups
 
-Five kinds of help, numbered for colourblind readers:
+Seven kinds of help, numbered for colourblind readers. Each answers a different question about
+*where the bonus comes from*, which is also the test for assigning a new slate:
 
-| # | Group | What it is | Examples |
+| # | Group | The question it answers | Examples |
 |---|---|---|---|
-| 1 | **Body** | Raw physical capability | *Strong* |
-| 2 | **Training** | Learned precision | *Good Aim* |
-| 3 | **Tool** | The equipment doing the work | Lockpicks, Healer's Kit, Lantern, Hunting Traps |
-| 4 | **Power** | Arcane or divine | *Arcane Focus*, Holy Symbol |
-| 5 | **Station** | Who you appear to be | Fine Clothes, Gaming Set, rank insignia |
+| 1 | **Body** | Your flesh | *Strong* |
+| 2 | **Training** | Your practice | *Good Aim* |
+| 3 | **Tool** | The implement in your hands, doing its job | Lockpicks, Healer's Kit, Lantern, Hunting Traps |
+| 4 | **Make** | How well that thing was made or enchanted | A magical arrow, a masterwork blade, a finely wrought wand |
+| 5 | **Power** | A force you channel | *Arcane Focus*, Holy Symbol |
+| 6 | **Station** | How the world sees you | Fine Clothes, Gaming Set, rank insignia |
+| 7 | **Wonder** | Nothing else — it is singular | A unique relic, a one-off blessing |
 
-Five is deliberate: enough that a built character can stack three or four different bonuses and feel
-it, few enough that five border colours stay distinguishable. **[OPEN]** Splitting **Power** into
-arcane and divine would make six, which suits a world with a sharp church/academy divide — see
-[../worldinfo/](../worldinfo/).
+#### Make, and why it isn't called Ammunition
+
+**Make** covers the standard-arrow-versus-magical-arrow distinction, and it generalises the way
+ammunition doesn't: a sword is never expended, but it can certainly be better made. A consumption
+word (*Charge*, *Munition*, *Load*) would cover the arrow and leave the blade and the spell out.
+
+It also resolves an ambiguity the five-group version had: *is a magic staff Tool or Power?* It's
+**Make** — the object is simply a better object. **Power** is left for a force you channel, which is
+a property of the caster, not the stick.
+
+The Tool/Make line, which is the one that will actually come up at a table:
+
+> **Tool** is what the thing *does*. **Make** is how good it *is*.
+
+A lantern giving Wits +1 in the dark is a Tool — the implement is doing the work. A lantern of
+everburning silver giving a further +1 would be Make.
+
+#### Wonder has to be defined by rarity, not by exclusion
+
+**[OPEN]** A catch-all is a balance escape hatch, and this one needs guarding. Two risks:
+
+1. If **Wonder** means "didn't fit the other six", designers will reach for it instead of thinking,
+   and it becomes the dumping ground.
+2. A Wonder bonus stacks with all six other groups, so Wonder items are *structurally* the best
+   bonus in the game.
+
+Both are solved the same way: define Wonder as **extraordinary and rare**, not as miscellaneous.
+Suggested guard — **one Wonder slate per character**, and only as treasure or a story reward, never
+as purchasable gear or a standard level-up option. If a slate merely feels awkward to classify, it
+belongs in one of the six; Wonder is for things that are meant to break the pattern.
+
+#### Palette consequence
+
+Seven is past the point where border *hue* alone stays readable, especially at thumbnail size, so the
+number becomes the primary channel and colour the secondary one. Use **border style as a third
+channel** — solid, double, dashed — so you need only three or four clearly distinct hues rather than
+seven.
+
+Splitting **Power** into arcane and divine, floated earlier, would make eight. Given the palette
+pressure, I'd drop that idea rather than spend a border style on it.
 
 ### 4.3 How it's drawn
 

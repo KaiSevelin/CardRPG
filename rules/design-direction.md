@@ -46,9 +46,9 @@ switching, and per-player private hands.
 Card layout is settled in [../foundry/card-layout.md](../foundry/card-layout.md): the scan column,
 the four information tiers, which types may have an informative back, and the bonus-group border.
 
-Nothing in the design now blocks writing the system. What remains before code is a decision on the
-**bonus group names**, and the two item-slate fields (**weight**, which has no rule behind it, and a
-**currency unit** for value).
+Nothing in the design now blocks writing the system. What remains before code: confirming the seven
+**bonus group** names and the guard on **Wonder**, and the two item-slate fields (**weight**, which
+has no rule behind it, and a **currency unit** for value).
 
 ## Order of work
 

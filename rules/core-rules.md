@@ -214,15 +214,29 @@ Always in this order:
 ### Bonus groups
 
 Bonuses don't stack from the same kind of source. Every slate that grants a **numeric bonus** belongs
-to one of five groups — **Body, Training, Tool, Power, Station** — shown as a coloured border with a
-number (see [../foundry/card-layout.md](../foundry/card-layout.md)).
+to exactly one of seven groups, shown as a coloured border with a number (see
+[../foundry/card-layout.md](../foundry/card-layout.md)).
 
 > **One action or check may take at most one bonus from each group.**
+
+| # | Group | Where the bonus comes from |
+|---|---|---|
+| 1 | **Body** | Your flesh |
+| 2 | **Training** | Your practice |
+| 3 | **Tool** | The implement in your hands, doing its job |
+| 4 | **Make** | How well that thing was made or enchanted |
+| 5 | **Power** | A force you channel |
+| 6 | **Station** | How the world sees you |
+| 7 | **Wonder** | Nothing else — it is singular |
 
 - Only **bonus** contributions are grouped. Whatever supplies the **base** value is exempt, so a
   weapon and a feature can never lock each other out of being used.
 - Features that grant advantage or a flat trait (*Alert*, *Tough*, *Quick*) aren't grouped at all.
 - Action cards and skill cards are never grouped.
+- **Tool is what a thing does; Make is how good it is.** A lantern that gives Wits +1 in the dark is
+  a Tool. A lantern of everburning silver giving a further +1 is Make.
+- **Wonder is for the extraordinary, not the awkward.** It stacks with all six others, so it has to
+  stay rare: treasure and story rewards, not purchasable gear. **[OPEN]** One per character.
 
 This is the same principle the fate deck already uses for advantage — two sources of advantage still
 give one — applied to numbers. Bonuses have to come from **different kinds** of help: muscle and a
