@@ -1,0 +1,68 @@
+{
+  "id": "cardrpg",
+  "title": "Card RPG",
+  "description": "A card-driven fantasy RPG. Your action deck is your stamina, a fate deck replaces dice, and every card has three halves. Playtest build: combat only.",
+  "version": "0.1.0",
+  "compatibility": {
+    "minimum": "14",
+    "verified": "14"
+  },
+  "authors": [
+    {
+      "name": "KaiSevelin"
+    }
+  ],
+  "esmodules": [
+    "cardrpg.mjs"
+  ],
+  "styles": [
+    "styles/cardrpg.css"
+  ],
+  "documentTypes": {
+    "Actor": {
+      "character": {
+        "htmlFields": [
+          "biography",
+          "appearance",
+          "gmNotes"
+        ]
+      },
+      "npc": {
+        "htmlFields": [
+          "notes"
+        ]
+      }
+    },
+    "Item": {
+      "item": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "feature": {
+        "htmlFields": [
+          "description"
+        ]
+      }
+    },
+    "Card": {
+      "action": {},
+      "fate": {},
+      "npc": {},
+      "wound": {},
+      "taint": {}
+    }
+  },
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
+  "grid": {
+    "distance": 1,
+    "units": "sq"
+  },
+  "primaryTokenAttribute": "health"
+}

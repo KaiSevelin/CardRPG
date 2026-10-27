@@ -1,0 +1,212 @@
+/*
+ * Card RPG styles.
+ *
+ * Tokens first, so the tray and the card faces can be restyled without touching markup. Icons are
+ * single-colour SVGs masked to currentColor, which is what lets a blocked icon simply be greyed.
+ */
+
+.cardrpg {
+  --cardrpg-ink: #1b1714;
+  --cardrpg-paper: #f4efe6;
+  --cardrpg-rule: #c9bda8;
+  --cardrpg-dim: #8a7f6d;
+  --cardrpg-blocked: #b0a89a;
+  --cardrpg-harm-paper: #221d1a;
+  --cardrpg-harm-ink: #efe6dc;
+
+  /* Bonus group borders. Seven is past where hue alone reads, so each pairs with a border style. */
+  --cardrpg-group-1: #9b3b2f;  /* Body */
+  --cardrpg-group-2: #2f6f9b;  /* Training */
+  --cardrpg-group-3: #6b6b5a;  /* Tool */
+  --cardrpg-group-4: #8a6a2f;  /* Make */
+  --cardrpg-group-5: #5b3b8a;  /* Power */
+  --cardrpg-group-6: #2f7a5b;  /* Station */
+  --cardrpg-group-7: #a8872f;  /* Wonder */
+
+  /* Standard poker proportions, 63 x 88 mm. */
+  --cardrpg-card-ratio: 0.716;
+  --cardrpg-card-width: 150px;
+}
+
+/* -------------------------------------------- */
+/*  Icons                                       */
+/* -------------------------------------------- */
+
+/*
+ * Masked rather than coloured, so one rule greys a blocked icon. `--icon` is set inline from the
+ * icon key, which is the game-icons filename (see rules/icons.md).
+ */
+.cardrpg .cr-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.125em;
+  background-color: currentColor;
+  mask: var(--icon) no-repeat center / contain;
+  -webkit-mask: var(--icon) no-repeat center / contain;
+}
+
+/* Until the SVGs are downloaded, show the key as a tooltip rather than an empty box. */
+.cardrpg .cr-icon:not([style*="--icon"])::after {
+  content: "?";
+  font-size: 0.7em;
+  color: var(--cardrpg-dim);
+}
+
+/* -------------------------------------------- */
+/*  Card faces                                  */
+/* -------------------------------------------- */
+
+.cardrpg .cr-card {
+  width: var(--cardrpg-card-width);
+  aspect-ratio: var(--cardrpg-card-ratio);
+  display: flex;
+  flex-direction: column;
+  background: var(--cardrpg-paper);
+  color: var(--cardrpg-ink);
+  border: 1px solid var(--cardrpg-rule);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.cardrpg .cr-card__name {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 0.25em 0.4em;
+  border-bottom: 1px solid var(--cardrpg-rule);
+}
+
+/* Unequal band heights carry the hierarchy: the primary is the strong half. */
+.cardrpg .cr-half {
+  display: flex;
+  align-items: center;
+  gap: 0.35em;
+  padding: 0.3em 0.4em;
+}
+
+.cardrpg .cr-half--primary { flex: 2 1 0; }
+.cardrpg .cr-half--secondary { flex: 1 1 0; border-top: 1px solid var(--cardrpg-rule); }
+
+/* A reaction is played on someone else's turn, so it is divided off more heavily. */
+.cardrpg .cr-half--reaction {
+  flex: 1 1 0;
+  border-top: 2px solid var(--cardrpg-ink);
+  font-size: 0.7rem;
+}
+
+/* Blocked halves are greyed in place, never hidden, so the player learns why. */
+.cardrpg .cr-half--blocked {
+  color: var(--cardrpg-blocked);
+  text-decoration: line-through;
+}
+
+/* The left edge is the scan column: a fanned or overlapped hand still reads completely. */
+.cardrpg .cr-half__marker {
+  flex: 0 0 1.1em;
+  text-align: center;
+  color: var(--cardrpg-dim);
+}
+
+/* Wounds, Taint and injuries invert, to be obviously wrong in a hand of five. */
+.cardrpg .cr-card--harm {
+  background: var(--cardrpg-harm-paper);
+  color: var(--cardrpg-harm-ink);
+  border-color: #000;
+}
+
+/* A fate card is read in a row at tiny size: one enormous glyph, nothing else. */
+.cardrpg .cr-card--fate {
+  --cardrpg-card-width: 72px;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+/* A temporary Critical or Miss must be distinguishable, or you can't remove the right card. */
+.cardrpg .cr-card--temporary {
+  position: relative;
+}
+.cardrpg .cr-card--temporary::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto auto 0;
+  border-width: 0.5em 0.5em 0 0;
+  border-style: solid;
+  border-color: var(--cardrpg-ink) transparent transparent transparent;
+}
+
+/* -------------------------------------------- */
+/*  Slates                                      */
+/* -------------------------------------------- */
+
+/* A border tint ALWAYS means a bonus group, system-wide. Nothing else uses one. */
+.cardrpg .cr-slate[data-group] { border-width: 3px; border-style: solid; }
+.cardrpg .cr-slate[data-group="body"] { border-color: var(--cardrpg-group-1); }
+.cardrpg .cr-slate[data-group="training"] { border-color: var(--cardrpg-group-2); border-style: double; }
+.cardrpg .cr-slate[data-group="tool"] { border-color: var(--cardrpg-group-3); }
+.cardrpg .cr-slate[data-group="make"] { border-color: var(--cardrpg-group-4); border-style: double; }
+.cardrpg .cr-slate[data-group="power"] { border-color: var(--cardrpg-group-5); }
+.cardrpg .cr-slate[data-group="station"] { border-color: var(--cardrpg-group-6); border-style: dashed; }
+.cardrpg .cr-slate[data-group="wonder"] { border-color: var(--cardrpg-group-7); border-style: double; }
+
+/* The group number, bottom-right: the one free corner on every slate type. */
+.cardrpg .cr-slate__group {
+  position: absolute;
+  right: 0.25em;
+  bottom: 0.15em;
+  font-size: 0.65rem;
+  color: var(--cardrpg-dim);
+}
+
+/* Drained slates turn sideways -- never flipped, because the back is the description. */
+.cardrpg .cr-slate--drained {
+  transform: rotate(90deg);
+  opacity: 0.75;
+}
+
+/* -------------------------------------------- */
+/*  Tray                                        */
+/* -------------------------------------------- */
+
+.cardrpg .cr-tray {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4em;
+}
+
+.cardrpg .cr-hand {
+  display: flex;
+  gap: 0.4em;
+  flex-wrap: nowrap;
+}
+
+/* Below about 1000px the hand overlaps; the left-edge scan column keeps it readable. */
+@media (max-width: 1000px) {
+  .cardrpg .cr-hand { gap: 0; }
+  .cardrpg .cr-hand .cr-card:not(:first-child) { margin-left: calc(var(--cardrpg-card-width) * -0.55); }
+}
+
+/* The draw pile is the tension meter, so it gets a bar rather than a bare number. */
+.cardrpg .cr-meter {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  font-size: 0.75rem;
+}
+.cardrpg .cr-meter__bar {
+  flex: 1 1 auto;
+  height: 0.5em;
+  background: var(--cardrpg-rule);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.cardrpg .cr-meter__fill {
+  height: 100%;
+  background: var(--cardrpg-ink);
+  transition: width 120ms ease-out;
+}
+
+/* A draining bar says the round is moving; a bare number invites haggling. */
+.cardrpg .cr-timer__fill { background: var(--cardrpg-group-1); }

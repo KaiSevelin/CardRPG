@@ -73,9 +73,9 @@ hover, per the information tiers in [../foundry/card-layout.md](../foundry/card-
 
 ---
 
-## Tier 2 — needed for a playable combat (18)
+## Tier 2 — needed for a playable combat (20)
 
-### Conditions (12)
+### Conditions (14)
 
 These double as Foundry status effects, so they need to read clearly as small overlays on a token,
 with room for a duration number.
@@ -94,6 +94,8 @@ with room for a duration number.
 | **Disarmed** | Drop weapon |
 | **Blessed** | Aura |
 | **Cursed** | Imprisoned |
+| **Burdened** | **not chosen** — placeholder `wooden-crate` |
+| **Overloaded** | **not chosen** — placeholder `duffel-bag` |
 
 Blessed and Cursed are **condition markers only**. The temporary card they shuffle into your fate
 deck is an ordinary Critical or Miss and uses those faces, so all four icons are independent.
@@ -156,17 +158,20 @@ crowded inventory.
 
 ---
 
-## Status: complete — 50 of 50 chosen
+## Status: 50 of 52 chosen
 
-| Tier | Count | Blocks |
-|---|---|---|
-| 1 | 23 | Card layout and the card schema |
-| 2 | 18 | Playable combat |
-| 3 | 9 | Polish |
-| *optional tags* | *9* | *nothing* |
+| Tier | Count | Chosen | Blocks |
+|---|---|---|---|
+| 1 | 23 | 23 | Card layout and the card schema |
+| 2 | 20 | 18 | Playable combat |
+| 3 | 9 | 9 | Polish |
+| *optional tags* | *9* | *9* | *nothing* |
 
-**59 icons to download** including the optional tags. Nothing in the rules is waiting on an icon
-decision any more.
+**61 icons to download** including the optional tags.
+
+Outstanding: **Burdened** and **Overloaded**, which became conditions when encumbrance was written
+(core-rules §4) and were missed in the earlier count. The system uses `wooden-crate` and
+`duffel-bag` as placeholders until you pick.
 
 ---
 
@@ -175,7 +180,7 @@ decision any more.
 - **[game-icons.net](https://game-icons.net)** — mostly **CC BY 3.0**, a few CC0, and the licence and
   author are **per icon**. Record the author for each one as you download, in an `ATTRIBUTION.md`
   that ships with the system. Doing it at download time costs minutes; doing it afterwards means
-  re-finding 59 pages.
+  re-finding 61 pages.
 - Download as **SVG** with a single fill colour, so one CSS rule can grey out a blocked icon.
 - Filenames on the site are kebab-case (`sword-wound.svg`, `all-seeing-eye.svg`), which is also a
   reasonable key convention for the icon enum in the system data model.
