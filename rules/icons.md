@@ -68,7 +68,7 @@ hover, per the information tiers in [../foundry/card-layout.md](../foundry/card-
 | 🌑 | **Shadow** | Spy |
 | 👁 | **Wits** | All seeing eye |
 | 📜 | **Lore** | Book cover |
-| 👑 | **Presence** | Embraced energy |
+| 👑 | **Presence** | Embrassed energy |
 | ✶ | **Any** — the wild approach on Inspiration cards | Misdirection |
 
 ---
@@ -123,7 +123,7 @@ model that's one card type with a `flavour` field (`body` / `mind`) selecting th
 
 ---
 
-## Tier 3 — HUD and sheet chrome (9)
+## Tier 3 — HUD and sheet chrome (10)
 
 Nothing blocks on these; Font Awesome ships with Foundry and covers most of them.
 
@@ -132,6 +132,7 @@ Nothing blocks on these; Font Awesome ships with Foundry and covers most of them
 | **Equipment slots** | Hands | Hand |
 | | Body | Person |
 | | Belt | Belt |
+| | Pack | Knapsack |
 | **Deck state** | Exhausted | Oppression |
 | | Spent | Card discard |
 | | Rest token | Night sleep |
@@ -158,17 +159,22 @@ crowded inventory.
 
 ---
 
-## Status: complete — 52 of 52 chosen
+## Status: complete — 53 of 53 chosen
 
 | Tier | Count | Blocks |
 |---|---|---|
 | 1 | 23 | Card layout and the card schema |
 | 2 | 20 | Playable combat |
-| 3 | 9 | Polish |
+| 3 | 10 | Polish |
 | *optional tags* | *9* | *nothing* |
 
-**61 icons to download** including the optional tags. Nothing in the rules or the system is waiting
-on an icon decision.
+**62 icons**, including the optional tags, all downloaded to
+[../foundry/cardrpg/icons/](../foundry/cardrpg/icons/) with per-icon credits in
+[ATTRIBUTION.md](../foundry/cardrpg/icons/ATTRIBUTION.md). Nothing in the rules or the system is
+waiting on an icon decision.
+
+> The Presence icon is spelled **Embrassed energy** upstream, with a double s. That is
+> game-icons.net's own spelling, and the filename has to match it.
 
 ---
 
@@ -177,7 +183,7 @@ on an icon decision.
 - **[game-icons.net](https://game-icons.net)** — mostly **CC BY 3.0**, a few CC0, and the licence and
   author are **per icon**. Record the author for each one as you download, in an `ATTRIBUTION.md`
   that ships with the system. Doing it at download time costs minutes; doing it afterwards means
-  re-finding 61 pages.
+  re-finding 62 pages.
 - Download as **SVG** with a single fill colour, so one CSS rule can grey out a blocked icon.
 - Filenames on the site are kebab-case (`sword-wound.svg`, `all-seeing-eye.svg`), which is also a
   reasonable key convention for the icon enum in the system data model.

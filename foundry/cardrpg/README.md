@@ -54,11 +54,22 @@ costs the same as a straight one (core-rules §11). The system warns in the cons
 | Combat: drawn initiative, intent cards, condition ticking | `module/combat.mjs` |
 | The tray | `module/tray.mjs`, `templates/tray.hbs` |
 
+| 62 icons from game-icons.net, with credits | `icons/`, `icons/ATTRIBUTION.md` |
+
 | Not built yet | |
 |---|---|
 | Reaction prompts | the timer and the two-step redirect/reduce flow |
-| Icon assets | 61 SVGs from game-icons.net into `icons/`, named by their keys |
 | Out-of-combat play, character creation, levelling | later slices |
+
+## Icons
+
+`icons/` holds 62 SVGs from [game-icons.net](https://game-icons.net) named by their keys, so the
+filename *is* the enum value. They are **CC BY 3.0** and the credit in
+[icons/ATTRIBUTION.md](icons/ATTRIBUTION.md) ships with the system because the licence requires it.
+
+Each file is modified: the full-canvas background path is stripped and the white fill dropped.
+Upstream they are a black square with a white shape on top, and masking that to `currentColor` would
+render a solid block. `npm test` checks no background path has crept back in.
 
 ## Validation
 

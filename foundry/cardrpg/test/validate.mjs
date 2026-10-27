@@ -107,6 +107,38 @@ for (const [doc, types] of Object.entries(manifest.documentTypes)) {
 
 /* -------------------------------------------- */
 
+section("icons");
+
+// Every icon key the config names must exist on disk, or a card face renders a placeholder.
+const iconDir = path.join(root, "icons");
+const onDisk = fs.existsSync(iconDir)
+  ? new Set(fs.readdirSync(iconDir).filter(n => n.endsWith(".svg")).map(n => n.slice(0, -4)))
+  : new Set();
+
+const configSource = fs.readFileSync(path.join(root, "module/config.mjs"), "utf8");
+const iconKeys = new Set();
+for (const m of configSource.matchAll(/icon:\s*"([a-z0-9-]+)"/g)) iconKeys.add(m[1]);
+for (const m of configSource.matchAll(/halfIcons\s*=\s*\{[^}]*\}/gs)) {
+  for (const k of m[0].matchAll(/"([a-z0-9-]+)"/g)) iconKeys.add(k[1]);
+}
+
+check("icon files on disk", onDisk.size, 62);
+const absent = [...iconKeys].filter(k => !onDisk.has(k)).sort();
+check("config icons present as files", absent.length ? absent.join(", ") : "all", "all");
+
+// CC BY 3.0 needs the credit to ship with the work.
+check("ATTRIBUTION.md present", fs.existsSync(path.join(iconDir, "ATTRIBUTION.md")), "true");
+
+// Masking needs the background stripped, or every icon is a solid square.
+let withBackground = 0;
+for (const name of onDisk) {
+  const svg = fs.readFileSync(path.join(iconDir, `${name}.svg`), "utf8");
+  if (svg.includes("M0 0h512v512H0z")) withBackground++;
+}
+check("icons with the background path left in", withBackground, 0);
+
+/* -------------------------------------------- */
+
 section("templates");
 
 // Handlebars is a dev dependency, so skip rather than fail if nobody has run npm install.

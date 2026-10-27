@@ -47,7 +47,7 @@ CARDRPG.approaches = {
   shadow: { label: "CARDRPG.Approach.Shadow", icon: "spy" },
   wits: { label: "CARDRPG.Approach.Wits", icon: "all-seeing-eye" },
   lore: { label: "CARDRPG.Approach.Lore", icon: "book-cover" },
-  presence: { label: "CARDRPG.Approach.Presence", icon: "embraced-energy" },
+  presence: { label: "CARDRPG.Approach.Presence", icon: "embrassed-energy" },
   any: { label: "CARDRPG.Approach.Any", icon: "misdirection" }
 };
 
