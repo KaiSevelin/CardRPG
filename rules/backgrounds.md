@@ -58,7 +58,7 @@ Rules for writing **know-how**:
 
 > Placeholder table until the world is ready. Later, each background may get its own table.
 
-At character creation, roll **d12** (or pick, with the GM's approval) for a secret from your past. The GM writes it on a **secret card**. Someone in the world may know it, and the GM can use it against you (see *Secrets against the players* in the skill rules).
+At character creation, roll **d12** (or pick, with the GM's approval) for a secret from your past. The GM writes it on a **secret slate**. Someone in the world may know it, and the GM can use it against you (see *Secrets against the players* in the skill rules).
 
 | d12 | Secret |
 |---|---|
@@ -78,4 +78,4 @@ At character creation, roll **d12** (or pick, with the GM's approval) for a secr
 ## Notes
 
 - A background shouldn't overshadow the Way. Its skill cards are low (1–2), and its feature is small.
-- Combining a background with any Way should be allowed: a Street Urchin in the Way of Mystery is interesting.
+- Combining a background with any Way should be allowed: a Street Urchin in the Way of Mind is interesting.

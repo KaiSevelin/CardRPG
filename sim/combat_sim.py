@@ -1,13 +1,18 @@
 #!/usr/bin/env python3
-"""Monte Carlo combat simulator for Card RPG draft 0.1.
+"""Monte Carlo combat simulator for Card RPG draft 0.2.
 
 Plays the starter Warrior against goblins on a grid using the rules in
 rules/core-rules.md and rules/starter-cards.md. Both sides are driven by
 simple AIs: the warrior picks the best-scoring card pair each turn, and the
 goblins follow their NPC deck.
 
+Each Config in SCENARIOS is one rules variant; the defaults are the rules as written,
+so changing a default means the rules changed too. Scenarios named "draft 0.1 ..." keep
+an old rule alive so the cost of a change stays measurable.
+
 Usage:
     python sim/combat_sim.py                 # run all scenarios
+    python sim/combat_sim.py --only ACD      # selected scenarios, by leading letter
     python sim/combat_sim.py --log 1         # print one narrated fight
     python sim/combat_sim.py --fights 5000   # more fights per scenario
 """
@@ -19,6 +24,7 @@ import statistics
 from dataclasses import dataclass, field, replace
 
 GRID_W, GRID_H = 10, 8
+ESCAPE_DIST = 5      # a fleeing NPC leaves the fight at the map edge, once this far from the hero
 
 # ---------------------------------------------------------------- fate deck
 FATE = ['MISS', -2] + [-1] * 4 + [0] * 8 + [1] * 4 + [2, 'CRIT']
@@ -115,13 +121,20 @@ class Config:
     hand_size: int = 5
     goblins: tuple = ('spear', 'spear', 'spear')
     goblin_hp: int = 5
-    goblin_dmg: int = 2           # spear / bow Strike value
-    pack_tactics: bool = False    # advantage on melee Strike if another goblin is adjacent to target
-    cowardly: bool = False        # below half Health: flee, escape at map edge
-    first: str = 'players'        # players | goblins | random
+    goblin_dmg: int = 3           # Goblin Spear / Goblin Shortbow Strike value (draft 0.2)
+    pack_tactics: bool = True     # advantage on melee Strike if another goblin is adjacent to target
+    cowardly: bool = True         # flee, escape at map edge
+    cowardly_mode: str = 'self'   # 'self': flees below half its own Health
+                                  # 'group': the survivors break once half the group is down
+    first: str = 'initiative'     # initiative | players | goblins
+    # 'initiative' draws the real thing (core-rules 3): every goblin gets its own slot, so
+    # they act scattered around the hero's turn. 'players'/'goblins' force one side to act
+    # first as a block, which is what draft 0.1's group turns did -- kept for comparison.
     heavy_hits: bool = False
     cb_threshold: int = 3         # catch breath when draw pile empty and hand <= this
     double_strike: bool = True    # Weapon Swap secondary is Strike (False: Move 1)
+    persistent_block: bool = True  # Defend primary blocks every attack until your next turn
+    deck_cut: int = 0             # drop N of the weakest cards from the action deck
     max_rounds: int = 40
     card_overrides: dict = field(default_factory=dict)
 
@@ -261,9 +274,11 @@ class Game:
             self.cards['Weapon Swap'] = (p, [('move', 1)], r, n, v)
         self.cards.update(cfg.card_overrides)
         deck = [name for name, c in self.cards.items() for _ in range(c[3])]
+        for _ in range(cfg.deck_cut):
+            deck.remove(min(deck, key=lambda n: self.cards[n][4]))
         rng.shuffle(deck)
         self.w = dict(pos=(1, 4), hp=cfg.hp, block=0, potions=cfg.potions, hand=[], draw=deck,
-                      discard=[], spent=[], dazed=0, exhausted=False, acted=False)
+                      discard=[], spent=[], dazed=0, dazed_by=None, exhausted=False, acted=False)
         n = len(cfg.goblins)
         ys = [round(1 + i * (GRID_H - 3) / max(1, n - 1)) for i in range(n)] if n > 1 else [4]
         self.gobs = [dict(id=i + 1, pos=(8, ys[i]), hp=cfg.goblin_hp, weapon=wpn) for i, wpn in enumerate(cfg.goblins)]
@@ -298,18 +313,69 @@ class Game:
             self.s['deck_empty_round'] = self.round
         w['exhausted'] = len(w['hand']) < 2 and not w['draw']
 
+    def gob(self, gid):
+        for g in self.gobs:
+            if g['id'] == gid:
+                return g
+        return None
+
+    def setup_initiative(self):
+        """Individual initiative, drawn once at the start of combat (core-rules 3).
+
+        Every combatant draws one fate card, highest first; everyone still tied draws
+        again, and only they draw. Nested draws become a sort key, so a redraw orders
+        the tied pair without moving them past anyone else.
+        """
+        everyone = ['w'] + [g['id'] for g in self.gobs]
+        if self.cfg.first == 'players':
+            self.order = everyone[:]
+            return
+        if self.cfg.first == 'goblins':
+            self.order = everyone[1:] + ['w']
+            return
+        keys = {c: [] for c in everyone}
+        tied = [everyone[:]]
+        while tied:
+            nxt = []
+            for group in tied:
+                for c in group:
+                    deck = self.fate_w if c == 'w' else self.fate_g
+                    keys[c].append(rank(deck.draw(0)))
+                buckets = collections.defaultdict(list)
+                for c in group:
+                    buckets[keys[c][-1]].append(c)
+                nxt += [cs for cs in buckets.values() if len(cs) > 1]
+            tied = nxt
+        self.order = sorted(everyone, key=lambda c: keys[c], reverse=True)
+
+    def draw_intent(self):
+        """One card per NPC type per round, face down (core-rules 3, Intent)."""
+        if not self.gdeck:
+            self.gdeck = list(GOBLIN_CARDS)
+            self.rng.shuffle(self.gdeck)
+        card = self.gdeck.pop()
+        self.gplays[card] += 1
+        return card
+
     def run(self):
         cfg = self.cfg
-        first = cfg.first if cfg.first != 'random' else self.rng.choice(['players', 'goblins'])
-        order = ['w', 'g'] if first == 'players' else ['g', 'w']
+        self.setup_initiative()
+        self.log(f"Initiative: {self.order}")
         for rnd in range(1, cfg.max_rounds + 1):
             self.round = rnd
             self.refill()
             self.w['acted'] = False
+            intent = self.draw_intent()
             self.log(f"--- Round {rnd}: HP {self.w['hp']}, hand {self.w['hand']}, draw {len(self.w['draw'])}, "
                      f"goblins {[(g['id'], g['hp']) for g in self.alive()]}")
-            for side in order:
-                self.warrior_turn() if side == 'w' else self.goblin_turn()
+            self.log(f"  Goblin intent: {intent}")
+            for c in self.order:
+                if c == 'w':
+                    self.warrior_turn()
+                else:
+                    g = self.gob(c)
+                    if g['hp'] > 0:
+                        self.goblin_act(g, intent)
                 if self.w['hp'] <= 0:
                     return self.result(False)
                 if not self.alive():
@@ -350,7 +416,9 @@ class Game:
             near = min(cheb(sim.wpos, g[0]) for g in alive)
             val -= 0.7 * near
             if near <= 4:
-                val += 0.6 * sim.block
+                reach = sum(1 for g in alive if cheb(sim.wpos, g[0]) <= 3 or g[2]['weapon'] == 'bow')
+                hits = max(1, min(reach, 3)) if cfg.persistent_block else 1
+                val += 0.5 * sim.block * hits
         melee_foes = any(g['weapon'] == 'spear' for g in self.alive())
         for i, c in enumerate(w['hand']):
             if i in played_idx:
@@ -378,6 +446,9 @@ class Game:
         w['acted'] = True
         if w['dazed'] > 0:
             self.s['dazed_turns'] += 1
+            creator = self.gob(w['dazed_by'])
+            if creator is None or creator['hp'] <= 0:
+                w['dazed'] -= 1          # creator left combat: ticks on the victim's turn
         if w['exhausted']:
             self.s['exhausted_turns'] += 1
         if w['discard'] and not w['draw'] and (w['exhausted'] or len(w['hand']) <= cfg.cb_threshold):
@@ -407,7 +478,8 @@ class Game:
         w, cfg = self.w, self.cfg
         d = max(0, raw - cfg.armor)
         absorbed = min(w['block'], d)
-        w['block'] -= absorbed
+        if not cfg.persistent_block:
+            w['block'] -= absorbed          # old rule: one hit used the whole block up
         d -= absorbed
         self.s['prevented_armor'] += min(raw, cfg.armor)
         self.s['prevented_shieldup'] += absorbed
@@ -450,69 +522,73 @@ class Game:
             self.s['heavy_hit_discards'] += 1
 
     # --- goblins
-    def goblin_turn(self):
-        if not self.gdeck:
-            self.gdeck = list(GOBLIN_CARDS)
-            self.rng.shuffle(self.gdeck)
-        card = self.gdeck.pop()
-        self.gplays[card] += 1
-        # conditions created by goblins tick at the start of their turn
-        if self.w['dazed']:
+    def routs(self, g):
+        """Has this goblin's nerve broken?"""
+        if self.cfg.cowardly_mode == 'group':
+            return 2 * len(self.alive()) <= len(self.gobs)
+        return g['hp'] < self.cfg.goblin_hp / 2
+
+    def goblin_act(self, g, card):
+        """One goblin takes its turn, on its type's intent card for this round."""
+        # a condition ticks at the start of its creator's turn
+        if self.w['dazed'] and self.w['dazed_by'] == g['id']:
             self.w['dazed'] -= 1
-        self.log(f"  Goblins play: {card}")
         wp = lambda: self.w['pos']
-        for g in sorted(self.alive(), key=lambda g: cheb(g['pos'], wp())):
-            ops = GOBLIN_CARDS[card]
-            if self.cfg.cowardly and g['hp'] < self.cfg.goblin_hp / 2:
-                ops = [('away', 3)]
-            for op in ops:
-                if self.w['hp'] <= 0:
-                    return
-                blocked = {o['pos'] for o in self.alive() if o is not g} | {wp()}
-                kind = op[0]
-                if kind in ('move', 'away'):
-                    dist = cheb(g['pos'], wp())
-                    flee = kind == 'away' or (g['weapon'] == 'bow' and dist == 1)
-                    if g['weapon'] == 'bow' and not flee and dist <= 6:
-                        continue
-                    for _ in range(op[1]):
-                        if not flee and cheb(g['pos'], wp()) <= 1:
-                            break
-                        nxt = step_away(g['pos'], wp(), blocked) if flee else step_toward(g['pos'], wp(), blocked)
-                        if nxt is None:
-                            break
-                        g['pos'] = nxt
-                    if self.cfg.cowardly and ops == [('away', 3)]:
-                        x, y = g['pos']
-                        if x in (0, GRID_W - 1) or y in (0, GRID_H - 1):
-                            g['hp'] = 0
-                            self.s['goblins_fled'] += 1
-                            self.log(f"  Goblin {g['id']} flees the battle")
-                elif kind in ('strike', 'rock'):
-                    dist = cheb(g['pos'], wp())
-                    others = {o['pos'] for o in self.alive() if o is not g}
-                    if kind == 'rock':
-                        rng_, value, ranged = 4, 1, True
-                    elif g['weapon'] == 'bow':
-                        rng_, value, ranged = 6, self.cfg.goblin_dmg, True
-                    else:
-                        rng_, value, ranged = 1, self.cfg.goblin_dmg, False
-                    if dist > rng_:
-                        continue
-                    if kind == 'strike' and op[1] == 'swarm' and any(cheb(o, wp()) == 1 for o in others):
-                        value += 1
-                    dis = ranged and (dist == 1 or has_cover(g['pos'], wp(), others))
-                    adv = self.cfg.pack_tactics and not ranged and any(cheb(o, wp()) == 1 for o in others)
-                    if dis:
-                        self.s['goblin_disadv'] += 1
-                    if adv:
-                        self.s['goblin_adv'] += 1
-                    fc = self.fate_g.draw(int(adv) - int(dis))
-                    raw = fate_apply(value, fc)
-                    self.take_hit(raw, not ranged, g['id'])
-                    if kind == 'strike' and op[2] == 'daze' and fc != 'MISS':
-                        self.w['dazed'] = 1
-                        self.s['daze_applied'] += 1
+        # routing is not the same as playing Cower: a Cower goblin retreats and comes back,
+        # a routed one leaves the fight for good
+        routing = self.cfg.cowardly and self.routs(g)
+        ops = [('away', 3)] if routing else GOBLIN_CARDS[card]
+        for op in ops:
+            if self.w['hp'] <= 0:
+                return
+            blocked = {o['pos'] for o in self.alive() if o is not g} | {wp()}
+            kind = op[0]
+            if kind in ('move', 'away'):
+                dist = cheb(g['pos'], wp())
+                flee = kind == 'away' or (g['weapon'] == 'bow' and dist == 1)
+                if g['weapon'] == 'bow' and not flee and dist <= 6:
+                    continue
+                for _ in range(op[1]):
+                    if not flee and cheb(g['pos'], wp()) <= 1:
+                        break
+                    nxt = step_away(g['pos'], wp(), blocked) if flee else step_toward(g['pos'], wp(), blocked)
+                    if nxt is None:
+                        break
+                    g['pos'] = nxt
+                if routing:
+                    x, y = g['pos']
+                    at_edge = x in (0, GRID_W - 1) or y in (0, GRID_H - 1)
+                    # it has to actually outrun the hero, not just stand on a map edge
+                    if at_edge and cheb(g['pos'], wp()) >= ESCAPE_DIST:
+                        g['hp'] = 0
+                        self.s['goblins_fled'] += 1
+                        self.log(f"  Goblin {g['id']} flees the battle")
+            elif kind in ('strike', 'rock'):
+                dist = cheb(g['pos'], wp())
+                others = {o['pos'] for o in self.alive() if o is not g}
+                if kind == 'rock':
+                    rng_, value, ranged = 4, 1, True
+                elif g['weapon'] == 'bow':
+                    rng_, value, ranged = 6, self.cfg.goblin_dmg, True
+                else:
+                    rng_, value, ranged = 1, self.cfg.goblin_dmg, False
+                if dist > rng_:
+                    continue
+                if kind == 'strike' and op[1] == 'swarm' and any(cheb(o, wp()) == 1 for o in others):
+                    value += 1
+                dis = ranged and (dist == 1 or has_cover(g['pos'], wp(), others))
+                adv = self.cfg.pack_tactics and not ranged and any(cheb(o, wp()) == 1 for o in others)
+                if dis:
+                    self.s['goblin_disadv'] += 1
+                if adv:
+                    self.s['goblin_adv'] += 1
+                fc = self.fate_g.draw(int(adv) - int(dis))
+                raw = fate_apply(value, fc)
+                self.take_hit(raw, not ranged, g['id'])
+                if kind == 'strike' and op[2] == 'daze' and fc != 'MISS':
+                    self.w['dazed'] = 1
+                    self.w['dazed_by'] = g['id']
+                    self.s['daze_applied'] += 1
 
 
 # ---------------------------------------------------------------- runner
@@ -547,32 +623,42 @@ def mean(xs):
 
 
 SCENARIOS = [
-    Config(name='A  baseline: 3 spear goblins, players first'),
-    Config(name='B  goblins go first', first='goblins'),
-    Config(name='C  2 spear + 1 bow', goblins=('spear', 'spear', 'bow')),
-    Config(name='D  4 spear goblins', goblins=('spear',) * 4),
-    Config(name='E  5 spear goblins', goblins=('spear',) * 5),
-    Config(name='F  heavy-hits rule on', heavy_hits=True),
-    Config(name='G  no Strong feature', strong=False),
-    Config(name='H  no double strike (Weapon Swap sec = Move 1)', double_strike=False),
-    Config(name='I  catch breath only when exhausted', cb_threshold=1),
-    Config(name='J  catch breath early (hand <= 4)', cb_threshold=4),
-    Config(name='K  4 goblins, HP 15', goblins=('spear',) * 4, hp=15),
-    Config(name='L  4 goblins, no Strong, HP 15', goblins=('spear',) * 4, hp=15, strong=False),
-    Config(name='M  tuning: warrior armor 0', armor=0),
-    Config(name='N  tuning: goblin spear 3', goblin_dmg=3),
-    Config(name='O  tuning: goblin spear 3, 4 goblins', goblin_dmg=3, goblins=('spear',) * 4),
-    Config(name='P  tuning: goblin spear 3, HP 6, 4 goblins', goblin_dmg=3, goblin_hp=6, goblins=('spear',) * 4),
-    Config(name='Q  tuning: spear 3, 2 spear + 2 bow', goblin_dmg=3, goblins=('spear', 'spear', 'bow', 'bow')),
-    Config(name='R  pack tactics, 3 goblins', pack_tactics=True),
-    Config(name='S  pack tactics, 4 goblins', pack_tactics=True, goblins=('spear',) * 4),
-    Config(name='T  pack tactics, spear 3, 3 goblins', pack_tactics=True, goblin_dmg=3),
-    Config(name='U  pack tactics, spear 3, 4 goblins', pack_tactics=True, goblin_dmg=3, goblins=('spear',) * 4),
-    Config(name='V  pack + cowardly, spear 3, 4 goblins', pack_tactics=True, cowardly=True, goblin_dmg=3,
-           goblins=('spear',) * 4),
-    Config(name='W  pack tactics, spear 3, 2 spear + 2 bow', pack_tactics=True, goblin_dmg=3,
+    # the rules as written in draft 0.2: Goblin Spear 3, Pack Tactics + Cowardly
+    Config(name='A  baseline: 3 goblin spears'),
+    Config(name='B  3 spears, goblins go first', first='goblins'),
+    Config(name='B2 3 spears, initiative drawn each fight', first='random'),
+    Config(name='C  4 spears (moderate)', goblins=('spear',) * 4),
+    Config(name='D  4 goblins, 2 spear + 2 bow (hard)', goblins=('spear', 'spear', 'bow', 'bow')),
+    Config(name='E  5 spears', goblins=('spear',) * 5),
+    # what each piece of the change is worth
+    Config(name='F  draft 0.1 damage: spear 2', goblin_dmg=2),
+    Config(name='G  draft 0.1 damage, 4 goblins', goblin_dmg=2, goblins=('spear',) * 4),
+    Config(name='H  draft 0.1 block: one-shot Shield Up', persistent_block=False),
+    Config(name='I  draft 0.1 block, 4 goblins', persistent_block=False, goblins=('spear',) * 4),
+    Config(name='J  draft 0.1 block, 2 spear + 2 bow', persistent_block=False,
            goblins=('spear', 'spear', 'bow', 'bow')),
+    # tactics isolated
+    Config(name='K  no tactics, 4 goblins', pack_tactics=False, cowardly=False, goblins=('spear',) * 4),
+    Config(name='L  pack only, 4 goblins', cowardly=False, goblins=('spear',) * 4),
+    # hero-side knobs
+    Config(name='M  no Strong feature', strong=False),
+    Config(name='N  no double strike (Weapon Swap sec = Move 1)', double_strike=False),
+    Config(name='O  warrior armor 0', armor=0),
+    Config(name='P  warrior armor 2', armor=2),
+    Config(name='Q  heavy-hits rule on, 4 goblins', heavy_hits=True, goblins=('spear',) * 4),
+    # exhaustion
+    Config(name='R  12-card deck, 4 goblins', deck_cut=4, goblins=('spear',) * 4),
+    Config(name='S  12-card deck, 2 spear + 2 bow', deck_cut=4,
+           goblins=('spear', 'spear', 'bow', 'bow')),
+    Config(name='T  catch breath only when exhausted', cb_threshold=1, goblins=('spear',) * 4),
+    Config(name='U  catch breath early (hand <= 4)', cb_threshold=4, goblins=('spear',) * 4),
+    # alternative Cowardly: the group breaks instead of each goblin running when hurt
+    Config(name='V  group morale, 4 spears', cowardly_mode='group', goblins=('spear',) * 4),
+    Config(name='W  group morale, 2 spear + 2 bow', cowardly_mode='group',
+           goblins=('spear', 'spear', 'bow', 'bow')),
+    Config(name='X  group morale, 5 spears', cowardly_mode='group', goblins=('spear',) * 5),
 ]
+
 
 
 def report(res):

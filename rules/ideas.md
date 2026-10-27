@@ -36,7 +36,7 @@ Still an idea: **Fear / Madness** cards in the skill deck, from horrors.
 
 ## Permanent injuries
 
-An injury is a **negative feature**: a permanent card on the character sheet, not in a deck.
+An injury is a **negative feature**: a permanent **slate** on the character sheet, not a card in a deck.
 
 | | Wound | Taint | **Injury** |
 |---|---|---|---|

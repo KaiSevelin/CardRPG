@@ -1,6 +1,8 @@
-# Starter Cards (Draft 0.1)
+# Starter Cards (Draft 0.3)
 
-Playtest set for a paper test fight. Values are first guesses. Expect to change them.
+Playtest set for a paper test fight. The Warrior deck, the goblins and their gear have been
+run through the simulator in [../sim/](../sim/); the skill deck and tools have not, so treat
+those values as first guesses.
 
 ---
 
@@ -11,7 +13,7 @@ Playtest set for a paper test fight. Values are first guesses. Expect to change 
 | 1 | Strike | Strike | Move 1 | Parry | 3 |
 | 2 | Heavy Swing | Strike +1 | Move 1 | – | 2 |
 | 3 | Lunge | Move 2, then Strike | Move 1 | – | 1 |
-| 4 | Shield Up | Defend (keep block until your next turn) | Move 1 | Block | 2 |
+| 4 | Shield Up | Defend (Block applies to every attack until your next turn) | Move 1 | Block | 2 |
 | 5 | Advance | Move 3 | Move 2 | Sidestep | 2 |
 | 6 | Draw Steel | Strike | Ready | – | 2 |
 | 7 | Quick Hands | Use | Ready | Use | 1 |
@@ -33,6 +35,40 @@ That makes **16** cards: 4 have Ready (2× Draw Steel, Quick Hands, Weapon Swap)
 
 ---
 
+## Skill deck – generic starter (15 cards)
+
+A stand-in until the Ways have card lists. Every approach appears twice, so any character can try anything, and the deck lasts about a day of play.
+
+| # | Card | Approach | Value | Edge | Copies |
+|---|---|---|---|---|---|
+| 1 | Shoulder It | ✊ Might | 2 | – | 1 |
+| 2 | Brace and Hold | ✊ Might | 1 | Edge: you don't fall or get pushed this scene. | 1 |
+| 3 | Quick Feet | 🌀 Agility | 2 | – | 1 |
+| 4 | Soft Landing | 🌀 Agility | 1 | Edge: ignore the first 2 damage from a fall this scene. | 1 |
+| 5 | Out of Sight | 🌑 Shadow | 2 | – | 1 |
+| 6 | Light Fingers | 🌑 Shadow | 1 | Edge: you know where the valuables are kept. | 1 |
+| 7 | Sharp Eyes | 👁 Wits | 2 | Edge: ask the GM one yes/no question about the scene. | 1 |
+| 8 | Read the Room | 👁 Wits | 1 | Edge: the GM names who in the scene is lying. | 1 |
+| 9 | I've Read of This | 📜 Lore | 2 | – | 1 |
+| 10 | Field Dressing | 📜 Lore | 1 | Edge: an ally heals 1 Health. | 1 |
+| 11 | Honeyed Words | 👑 Presence | 2 | – | 1 |
+| 12 | Hold Their Eye | 👑 Presence | 1 | Edge: one NPC's attention is on you until the end of the scene. | 1 |
+| 13 | Inspiration | any | 1 | Edge: draw 1 skill card. | 2 |
+
+That's **14**. Add **one card at value 3** in your Way's main approach to finish the deck:
+
+| Way | Add |
+|---|---|
+| **Way of Strength** | ✊ Might 3 or 🌀 Agility 3 |
+| **Way of Shade** | 🌑 Shadow 3 or 🌀 Agility 3 |
+| **Way of Mind** | 📜 Lore 3 or 👑 Presence 3 |
+
+Your **background** then adds its 2 skill cards on top, giving a 17-card deck at first level.
+
+> **Passive senses:** this deck's best Wits card is Sharp Eyes at 2, so a starter character's passive score is **4** — they reliably notice Easy things and miss Normal ones. Taking a Wits 3 card from a Way or background raises it to 5. See *Passive senses* in the skill rules.
+
+---
+
 ## Items
 
 | Item | Slot | Tags | Strike | Cast | Defend | Use |
@@ -40,12 +76,40 @@ That makes **16** cards: 4 have Ready (2× Draw Steel, Quick Hands, Weapon Swap)
 | Longsword | 1 hand | Heavy, Melee | 3 dmg | – | 1 | – |
 | Dagger | 1 hand | Light, Melee, Thrown | 2 dmg (range 3 thrown) | – | – | – |
 | Shortbow | 2 hands | Ranged | 2 dmg, range 6 | – | – | – |
-| Staff of Healing | 2 hands | Arcane, Melee | 1 dmg | Heal 3, range 2 | 1 | – |
-| Fire Wand | 1 hand | Arcane | – | 2 dmg to all in a 1-square area, range 4 | – | – |
+| Staff of Healing | 2 hands | Arcane, Melee | 1 dmg | ✚ Heal 3, range 2 | 1 | – |
+| Fire Wand | 1 hand | Arcane | – | 2 dmg, ✸ Blast 1, range 4 | – | – |
 | Wooden Shield | 1 hand | Shield | 1 dmg | – | 2 | – |
 | Leather Armor | Body | Armor | – | – | – | Armor 1 (always on) |
 | Healing Potion | Belt | Consumable | – | – | – | Heal 4, then discard item |
 | Smoke Bomb | Belt | Consumable | – | – | – | You become Invisible (1) |
+
+### Tools (skill lines)
+
+Tools work like weapons: the card says what you try, the tool says how well. An **untrained** user gets at most **+1** from any of these; training comes from backgrounds and the Way trees.
+
+| Item | Slot | Skill line |
+|---|---|---|
+| Lockpicks | Belt | 🌑 Shadow +2 (locks and mechanisms) |
+| Climbing Rope | Pack | ✊ Might / 🌀 Agility +1 (climbing, and nobody falls alone) |
+| Holy Symbol | 1 hand | 📜 Lore +1 (religion, undead) |
+| Fine Clothes | Body | 👑 Presence +1 (nobles and merchants) |
+| Healer's Kit | Pack | 📜 Lore +2 (treating wounds; removes 1 Wound on a Normal 5) |
+| Gaming Set | Pack | 👑 Presence +1 (soldiers, taverns, gamblers) |
+| Hunting Traps | Pack | 👁 Wits +1 (tracking and trapping animals) |
+| Lantern | 1 hand | 👁 Wits +1 (anything you need to see in the dark) |
+
+Pack items aren't equipped, so pulling one out is free in a quiet scene but may cost time inside a challenge.
+
+---
+
+### NPC gear
+
+Tuned separately from player gear (see *NPC gear and the armor rule* in the core rules).
+
+| Item | Slot | Tags | Strike | Defend |
+|---|---|---|---|---|
+| Goblin Spear | 1 hand | Melee | 3 dmg | – |
+| Goblin Shortbow | 2 hands | Ranged | 3 dmg, range 6 | – |
 
 ---
 
@@ -59,7 +123,7 @@ That makes **16** cards: 4 have Ready (2× Draw Steel, Quick Hands, Weapon Swap)
 | **Tough** | +4 max Health. |
 | **Arcane Focus** | +1 to all *Cast* values. |
 | **Steady** | The first time each combat you would become Dazed, you don't. |
-| **Alert** | Your side has advantage on the initiative draw. |
+| **Alert** | You draw with advantage on initiative. |
 
 ---
 
@@ -74,7 +138,20 @@ That makes **16** cards: 4 have Ready (2× Draw Steel, Quick Hands, Weapon Swap)
 | Dirty Trick | Strike. Target is Dazed (1) |
 | Throw Rock | Strike at range 4 (1 dmg, ignores item) |
 
-**Goblin stats:** Health 5, Armor 0, equipped: Spear (Strike 2, Melee) *or* Shortbow.
-**Tactics:** Pack Tactics, Cowardly. **Target priority:** Weakest.
+**Goblin stats:** Health 5, Armor 0, equipped: Goblin Spear *or* Goblin Shortbow.
+**Tactics:** Pack Tactics, Cowardly (spear goblins only — see *Cowardly needs rewriting* in the core rules). **Target priority:** Weakest.
+
+### Goblin encounters (tested against one starter Warrior)
+
+| Encounter | Difficulty | Simulated win rate |
+|---|---|---|
+| 3 goblins with spears | Easy | 99.3% |
+| 4 goblins with spears | Moderate | 92.6% |
+| 5 goblins with spears | Hard | 77.6% |
+| 4 goblins, 2 spears + 2 bows | **Deadly** | 67.1% |
+
+**A mixed group is a tier harder than a uniform one of the same size.** Four goblins with two bows are twice as dangerous as four with spears: the spears pin the hero in melee while the bows shoot from behind cover, and *Dirty Trick* lands three times as often because the hero spends rounds crossing open ground. Build hard encounters by mixing ranges, not by adding bodies.
+
+> These rates are for a **single** starter Warrior. They are a yardstick for tuning, not a party difficulty table; party play is untested (see [../sim/analysis-2026-10-27.md](../sim/analysis-2026-10-27.md)).
 
 > Note: the Warrior deck above is a combat-test deck. A real warrior will carry more weapons and items, which gives the Ready cards a purpose.
