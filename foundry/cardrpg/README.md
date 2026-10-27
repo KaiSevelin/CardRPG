@@ -51,7 +51,6 @@ costs the same as a straight one (core-rules §11). The system warns in the cons
 
 | Not built yet | |
 |---|---|
-| Sheets | character, npc, slate, card |
 | The tray | hand, resolution flow, reaction prompts |
 | Combat | individual initiative, intent cards, condition ticking |
 | Icon assets | 61 SVGs from game-icons.net into `icons/`, named by their keys |
