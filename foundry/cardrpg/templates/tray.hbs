@@ -9,14 +9,10 @@
   again closes it. Item cards can be turned over, because a slate's back is where value, weight and
   type live (card-layout.md, the four information tiers).
 --}}
-<div class="cr-hud-layer{{#if collapsed}} cr-hud-layer--collapsed{{/if}}">
+<div class="cr-hud-layer">
 
   {{!-- Status bar, along the bottom above the hand --}}
   <header class="cr-hud__panel cr-hud__bar">
-    <button type="button" class="cr-hud__collapse" data-action="toggleCollapse"
-            data-tooltip="{{#if collapsed}}Show the decks{{else}}Collapse to this bar{{/if}}">
-      {{#if collapsed}}&#9662;{{else}}&#9652;{{/if}}
-    </button>
     <span class="cr-hud__name">{{actor.name}}</span>
     <span class="cr-tray__vital" data-tooltip="Health">&#9829; {{system.health.value}}/{{system.health.max}}</span>
     <span class="cr-tray__vital" data-tooltip="Block{{#if system.blockPersists}} — holds until your next turn{{/if}}">
@@ -115,7 +111,7 @@
 
   {{!-- An opened deck: its cards laid out beside it, again with no tray --}}
   {{#if viewer}}
-    <section class="cr-hud__spread cr-hud__spread--{{viewer.side}}">
+    <section class="cr-hud__spread">
         {{#each viewer.cards}}
           <div class="cr-card cr-card--spread{{#if this.harm}} cr-card--harm{{/if}}{{#if this.flipped}} cr-card--back{{/if}}"
                data-group="{{this.group}}">
@@ -147,9 +143,16 @@
               </div>
             {{/if}}
 
-            {{#if this.actionLabel}}
-              <button type="button" class="cr-card__act"
-                      data-action="{{this.action}}" data-slate-id="{{this.id}}">{{this.actionLabel}}</button>
+            {{#if this.buttons}}
+              <div class="cr-card__acts">
+                {{#each this.buttons}}
+                  <button type="button"
+                          class="cr-card__act{{#if this.active}} cr-card__act--active{{/if}}"
+                          data-action="{{this.action}}" data-slate-id="{{../this.id}}"
+                          data-verb="{{this.verb}}"
+                          data-tooltip="{{#if this.verb}}Use this item for {{this.verb}}{{/if}}">{{this.label}}</button>
+                {{/each}}
+              </div>
             {{/if}}
           </div>
       {{else}}

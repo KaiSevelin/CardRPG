@@ -372,11 +372,17 @@
   --cr-controls: 82px;   /* scene controls down the left edge */
   --cr-nav: 96px;        /* scene navigation across the top */
   --cr-sidebar: 318px;   /* chat, combat and the rest, on the right */
-  --cr-deck-w: 92px;
-  --cr-deck-h: 118px;
-  --cr-hand-card-w: 150px;   /* every card in the hand, the same */
-  --cr-spread-w: 232px;      /* every card in an opened deck, the same */
-  --cr-spread-card-h: 104px;
+  --cr-hotbar: 90px;     /* the macro bar along the bottom centre */
+
+  /*
+   * ONE card size, used by the deck backs, the hand and any opened deck. A card drawn from a deck
+   * should be exactly the size of the deck it came from; anything else reads as a different object.
+   * 63 x 88 mm, the standard poker ratio.
+   */
+  --cr-card-w: 128px;
+  --cr-card-h: 179px;
+  --cr-deck-w: var(--cr-card-w);
+  --cr-deck-h: var(--cr-card-h);
 }
 
 .cr-hud-layer .cr-hud__panel,
@@ -450,27 +456,17 @@
 /* Dealt already this turn: nothing more comes out of it until the next one. */
 .cr-hud-layer .cr-pile--spent { opacity: 0.4; }
 
-/* --- status bar, above the hand --- */
+/* --- status bar: top, right of the scene selector and clear of the sidebar --- */
 .cr-hud-layer .cr-hud__bar {
-  left: calc(var(--cr-controls) + var(--cr-deck-w) + 12px);
-  right: calc(var(--cr-sidebar) + var(--cr-deck-w) + 12px);
-  bottom: calc(var(--cr-deck-h) + 20px);
+  top: 10px;
+  right: var(--cr-sidebar);
+  max-width: 60vw;
   display: flex;
   align-items: center;
   gap: 0.6em;
   flex-wrap: wrap;
 }
 .cr-hud-layer .cr-hud__name { font-weight: 700; }
-.cr-hud-layer .cr-hud__collapse {
-  flex: 0 0 auto;
-  width: auto;
-  background: none;
-  border: 1px solid var(--cardrpg-rule);
-  border-radius: 3px;
-  padding: 0 0.4em;
-  cursor: pointer;
-  color: var(--cardrpg-ink);
-}
 .cr-hud-layer .cr-tray__vital { font-variant-numeric: tabular-nums; white-space: nowrap; }
 .cr-hud-layer .cr-tray__flag {
   font-size: 0.68rem;
@@ -496,10 +492,10 @@
  * of cards on a table is a row of separate objects, and the HUD should read the same way.
  */
 .cr-hud-layer .cr-hud__hand {
-  left: calc(var(--cr-controls) + var(--cr-deck-w) + 12px);
-  right: calc(var(--cr-sidebar) + var(--cr-deck-w) + 12px);
-  bottom: 10px;
-  height: var(--cr-deck-h);
+  left: calc(var(--cr-controls) + var(--cr-card-w) + 12px);
+  right: calc(var(--cr-sidebar) + var(--cr-card-w) + 12px);
+  bottom: var(--cr-hotbar);
+  height: var(--cr-card-h);
   display: flex;
   gap: 8px;
   overflow-x: auto;
@@ -508,38 +504,32 @@
 }
 
 /*
- * An opened deck: a vertical column of equal cards beside it, no tray. Vertical because an opened
- * deck is held in the hand rather than fanned on the table.
+ * An opened deck fans out sideways from its back, at the same card size as everything else, with
+ * no tray behind it.
  */
 .cr-hud-layer .cr-hud__spread {
+  left: calc(var(--cr-controls) + var(--cr-card-w) + 12px);
+  right: calc(var(--cr-sidebar) + var(--cr-card-w) + 12px);
   top: var(--cr-nav);
-  bottom: calc(var(--cr-deck-h) + 20px);
-  width: var(--cr-spread-w);
+  height: var(--cr-card-h);
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 8px;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
   padding: 2px;
 }
-.cr-hud-layer .cr-hud__spread--left { left: calc(var(--cr-controls) + var(--cr-deck-w) + 12px); }
-.cr-hud-layer .cr-hud__spread--right { right: calc(var(--cr-sidebar) + var(--cr-deck-w) + 12px); }
 
-/* Collapsed: the status bar only, parked at the bottom so it covers nothing. */
-.cr-hud-layer--collapsed .cr-hud__decks,
-.cr-hud-layer--collapsed .cr-hud__hand,
-.cr-hud-layer--collapsed .cr-hud__spread { display: none; }
-.cr-hud-layer--collapsed .cr-hud__bar { bottom: 10px; left: var(--cr-controls); }
-
-/* --- spread cards: one size, whatever is on them --- */
+/* --- spread cards: the same size as a card in hand, whatever is on them --- */
 .cardrpg .cr-card--spread {
   flex: 0 0 auto;
-  width: 100%;
-  height: var(--cr-spread-card-h);
+  width: var(--cr-card-w);
+  height: var(--cr-card-h);
   aspect-ratio: auto;
   position: relative;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  font-size: 0.74rem;
 }
 .cardrpg .cr-card--spread .cr-card__name {
   display: flex;
@@ -574,11 +564,30 @@
 .cardrpg .cr-card__facts dt { color: var(--cardrpg-dim); }
 .cardrpg .cr-card__facts dd { margin: 0; font-variant-numeric: tabular-nums; }
 
+.cardrpg .cr-card__acts {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 3px;
+  background: rgba(0, 0, 0, 0.06);
+}
 .cardrpg .cr-card__act {
-  width: calc(100% - 0.9em);
-  margin: 0.15em 0.45em 0.25em;
-  font-size: 0.72rem;
-  padding: 0.1em 0;
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+  font-size: 0.66rem;
+  line-height: 1.5;
+  padding: 0 0.3em;
+}
+/* The item this verb will actually use. Without it, two weapons make the card face a guess. */
+.cardrpg .cr-card__act--active {
+  background: var(--cardrpg-ink);
+  color: var(--cardrpg-paper);
+  font-weight: 600;
 }
 
 /* A group border always means a bonus group, so a spread card carries it too. */
@@ -590,10 +599,10 @@
 .cardrpg .cr-card--spread[data-group="station"] { border-left: 4px solid var(--cardrpg-group-6); }
 .cardrpg .cr-card--spread[data-group="wonder"] { border-left: 4px solid var(--cardrpg-group-7); }
 
-/* Every card in the hand is the same size, so none of them reads as more important. */
+/* Every card in the hand is the deck's size, so a dealt card reads as the same object. */
 .cr-hud-layer .cr-hud__hand .cr-card {
   flex: 0 0 auto;
-  width: var(--cr-hand-card-w);
+  width: var(--cr-card-w);
   height: 100%;
   aspect-ratio: auto;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);

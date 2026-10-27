@@ -28,9 +28,16 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     this.actor = actor;
     /** Staged halves, in click order. @type {{cardId: string, half: string}[]} */
     this.staged = [];
-    /** Collapsed to the status bar. Skills are consulted, not played from, so out of combat the
-     *  HUD is usually in the way until you want it. */
-    this.collapsed = false;
+    /**
+     * Which equipped item serves which verb, chosen by the player.
+     *
+     * The card says the verb and the item says the value, so with two weapons in hand the card
+     * face is ambiguous until this is set. Picking it on the item itself beats a dialog at play
+     * time: you decide what you are fighting with before you swing, not during.
+     *
+     * @type {Record<string, string>}
+     */
+    this.activeItems = {};
     /** Which deck is open, if any. @type {string|null} */
     this.openPile = null;
     /** Slates currently turned over, showing value, weight and type. @type {Set<string>} */
@@ -54,7 +61,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       equip: CardRPGTray.#onEquip,
       unequip: CardRPGTray.#onUnequip,
       toggleDrain: CardRPGTray.#onToggleDrain,
-      toggleCollapse: CardRPGTray.#onToggleCollapse,
+      setActive: CardRPGTray.#onSetActive,
       dealHand: CardRPGTray.#onDealHand,
       // A face-down pile is not openable; the click is absorbed rather than erroring.
       openPile: CardRPGTray.#onOpenPile,
@@ -203,7 +210,6 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       rightDecks: this.#rightDecks(),
       viewer: this.#viewer(),
 
-      collapsed: this.collapsed,
       inCombat: !!myCombatant,
       myTurn: combat?.combatant?.actor?.id === actor.id,
       turnOwner: combat?.combatant?.name ?? "",
@@ -308,8 +314,25 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
           { label: "Type", value: i.system.kind || "\u2014" },
           { label: "Slot", value: i.system.slot }
         ],
-        action: i.system.equipped ? "unequip" : "equip",
-        actionLabel: i.system.equipped ? "Unequip" : "Equip"
+        buttons: [
+          {
+            action: i.system.equipped ? "unequip" : "equip",
+            label: i.system.equipped ? "Unequip" : "Equip",
+            verb: "",
+            active: false
+          },
+          // One button per verb this item can serve, so the choice is made on the item.
+          ...(i.system.equipped
+            ? Object.entries(i.system.verbs ?? {})
+              .filter(([, l]) => l.value !== null || l.text)
+              .map(([v]) => ({
+                action: "setActive",
+                verb: v,
+                label: v,
+                active: this.#itemFor(v)?.id === i.id
+              }))
+            : [])
+        ]
       }));
       return { label: "Items", side: "left", count: `${cards.length} slates`, cards };
     }
@@ -324,8 +347,14 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         note: f.system.rechargeLabel
           ? `Recharges: ${f.system.rechargeLabel}${f.system.drained ? " — Drained" : ""}`
           : "Passive",
-        action: f.system.isActive ? "toggleDrain" : null,
-        actionLabel: f.system.isActive ? (f.system.drained ? "Restore" : "Use") : null
+        buttons: f.system.isActive
+          ? [{
+            action: "toggleDrain",
+            label: f.system.drained ? "Restore" : "Use",
+            verb: "",
+            active: f.system.drained
+          }]
+          : []
       }));
       return { label: "Features", side: "left", count: `${cards.length} slates`, cards };
     }
@@ -403,8 +432,8 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
           : "";
 
         if (step.verb === "strike" || step.verb === "cast") {
-          // Show the best equipped option, so the face is never a bare verb.
-          const item = this.#itemsFor(step.verb)[0];
+          // The face shows the item the player chose, so "Strike 4" is never a guess.
+          const item = this.#itemFor(step.verb);
           const base = item?.system.verbs?.[step.verb]?.value;
           if (base !== null && base !== undefined) {
             text += ` ${base + (step.mod ?? 0) + collectBonuses(this.actor, step.verb, item).total}`;
@@ -441,28 +470,22 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     };
   }
 
+  /**
+   * The item a verb will actually use: whatever the player picked, or the best one if they have
+   * not picked. Never a silent guess between two weapons without saying which.
+   */
+  #itemFor(verb) {
+    const candidates = this.#itemsFor(verb);
+    const chosen = candidates.find(i => i.id === this.activeItems[verb]);
+    return chosen ?? candidates[0] ?? null;
+  }
+
   /** Every equipped item that can serve a verb, best first. */
   #itemsFor(verb) {
     return this.actor.items
       .filter(i => i.type === "item" && i.system.equipped
         && (i.system.verbs?.[verb]?.value !== null || i.system.verbs?.[verb]?.text))
       .sort((a, b) => (b.system.verbs[verb].value ?? 0) - (a.system.verbs[verb].value ?? 0));
-  }
-
-  /** Ask which item, when more than one qualifies. Choosing a weapon is a real decision. */
-  static async #chooseItem(items, verb) {
-    if (!items.length) return null;
-    if (items.length === 1) return items[0];
-    const chosen = await DialogV2.wait({
-      window: { title: `Which item for ${verb}?` },
-      content: `<p>More than one equipped item can ${verb}.</p>`,
-      buttons: items.map(i => {
-        const line = i.system.verbs[verb];
-        const detail = line.value !== null ? ` (${line.value}${line.range ? `, range ${line.range}` : ""})` : "";
-        return { action: i.id, label: `${i.name}${detail}` };
-      })
-    }).catch(() => null);
-    return items.find(i => i.id === chosen) ?? null;
   }
 
   /* -------------------------------------------- */
@@ -489,8 +512,10 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     this.render();
   }
 
-  static #onToggleCollapse() {
-    this.collapsed = !this.collapsed;
+  /** Choose which equipped item a verb uses. */
+  static #onSetActive(event, target) {
+    const { slateId, verb } = target.dataset;
+    this.activeItems[verb] = this.activeItems[verb] === slateId ? null : slateId;
     this.render();
   }
 
@@ -556,14 +581,14 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       case "strike":
       case "cast": {
         if (!targets.length) return ui.notifications.warn("Target a token first.");
-        const item = await CardRPGTray.#chooseItem(this.#itemsFor(step.verb), step.verb);
+        const item = this.#itemFor(step.verb);
         if (!item) return ui.notifications.warn(`Nothing equipped can ${step.verb}.`);
         await resolveAttack(actor, { verb: step.verb, item, mod: step.mod ?? 0, targets, step });
         return;
       }
 
       case "defend": {
-        const item = await CardRPGTray.#chooseItem(this.#itemsFor("defend"), "defend");
+        const item = this.#itemFor("defend");
         if (!item) return ui.notifications.warn("Nothing equipped can defend.");
         await resolveDefend(actor, { item, half });
         return;
@@ -574,7 +599,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         return;
 
       case "use": {
-        const item = await CardRPGTray.#chooseItem(this.#itemsFor("use"), "use");
+        const item = this.#itemFor("use");
         if (!item) return ui.notifications.warn("No usable item equipped. Equip a potion first.");
         await resolveUse(actor, { item, target: targets[0] ?? actor });
         return;
