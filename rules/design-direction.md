@@ -39,9 +39,12 @@ Target **v14** (stable since April 2026; pin the manifest and expect one compati
 | **Intent cards** | The per-round NPC draw is face down by default, which Foundry's Cards API supports natively. *Foresee* flips one. |
 | **Tuning values live in data** | HP, hand sizes, item values, deck composition all go in compendiums and system settings, never in code — they're still moving (see [../sim/](../sim/)). |
 
-Still to decide before code: the **card layout** (where the halves sit, how a modifier attaches to
-an icon, how a blocked icon reads as blocked), and what the HUD shows — hand, fate deck state,
-equipped slots, conditions with duration *and creator*, Wounds, Taint, rest tokens, exhaustion.
+The HUD is specified in [../foundry/hud-spec.md](../foundry/hud-spec.md): an always-visible **tray**
+for play and a **sheet** for reference, with a face-up fate discard, automatic combat/scene mode
+switching, and per-player private hands.
+
+Still to decide before code: the **card layout** — where the three halves sit on a face, how a
+modifier attaches to its icon, and how a blocked icon reads as blocked.
 
 ## Order of work
 

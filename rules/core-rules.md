@@ -124,8 +124,23 @@ If one side has clearly caught the other — an ambush, a sprung trap, a charge 
 **One reaction per trigger.** You may play **one** reaction against any single trigger. You can't stack Parry and Brace on the same hit, and you can't throw your whole hand at one attack.
 
 - There is **no limit per round**. React to every attack in the round if you can afford the cards — your hand size and the exhaustion it buys are the only limit.
-- **Several characters may each react to the same trigger.** One hit can be Braced by its target *and* intercepted by a Bodyguard.
-- If more than one reaction applies, the **target of the trigger resolves theirs first**, then the others in initiative order.
+- **Several characters may each react to the same trigger.** One hit can be intercepted by a Bodyguard *and* Braced by whoever ends up taking it.
+
+**Order of resolution.** When more than one reaction applies to the same trigger, they resolve in two
+steps, because some reactions change *who* is being hit:
+
+1. **Redirection** — reactions that change the target or the path of an action, such as *Bodyguard*
+   (take a hit meant for an adjacent ally). These resolve **first**, in initiative order.
+2. **Reduction** — reactions that change how much an action does, such as Parry, Block and Brace.
+   These are offered **afterwards**, to whoever is now the target.
+
+So an ally can throw themselves in front of a blow before you decide whether to brace against it, and
+if they do, you have spent nothing.
+
+**One reaction still means one.** The limit covers both steps: a Bodyguard who intercepts a hit has
+used its reaction for that trigger and can't also Brace against it. Reactions that neither redirect
+nor reduce — *Sidestep* fires on an enemy's movement, *Use* on nothing in particular — resolve at
+their own trigger and sit outside this order.
 
 Why: the card economy is already the cost of reacting, so reactions don't need a second budget to track. Capping it per trigger is what keeps a big hit frightening — a lethal blow leaves you choosing *which* defence to spend, not stacking all of them.
 
