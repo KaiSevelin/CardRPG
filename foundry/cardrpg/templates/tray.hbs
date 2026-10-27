@@ -1,128 +1,223 @@
 {{!--
-  The tray. Always-open, played from directly.
+  The combat HUD. Three columns:
+    left   -- Items, Features, Conditions: the state you spend and the state spent on you
+    centre -- Actions: the hand, what you actually play from
+    right  -- Fate and the NPC intent decks: the odds and what the enemy has decided
 
   Card halves show RESOLVED values (item base + card modifier + features), because the rules put
-  the verb on the card and the value on the item -- elegant on cardboard, miserable on screen.
+  the verb on the card and the value on the item.
 --}}
-<div class="cr-tray">
+<div class="cr-hud{{#if collapsed}} cr-hud--collapsed{{/if}}">
 
-  <header class="cr-tray__state">
-    <span class="cr-tray__vital" data-tooltip="Health">
-      &#9829; {{system.health.value}}/{{system.health.max}}
-    </span>
-    <span class="cr-tray__vital" data-tooltip="Block{{#if system.blockPersists}} &mdash; holds until your next turn{{/if}}">
+  <header class="cr-hud__bar">
+    <button type="button" class="cr-hud__collapse" data-action="toggleCollapse"
+            data-tooltip="{{#if collapsed}}Expand{{else}}Collapse to the status bar{{/if}}">
+      {{#if collapsed}}&#9662;{{else}}&#9652;{{/if}}
+    </button>
+    <span class="cr-hud__name">{{actor.name}}</span>
+    <span class="cr-tray__vital" data-tooltip="Health">&#9829; {{system.health.value}}/{{system.health.max}}</span>
+    <span class="cr-tray__vital" data-tooltip="Block{{#if system.blockPersists}} — holds until your next turn{{/if}}">
       &#9094; {{system.block}}{{#if system.blockPersists}}&infin;{{/if}}
     </span>
-    <span class="cr-tray__vital" data-tooltip="Armor, from the equipped body slate">
-      &#9636; {{system.armor}}
-    </span>
-    {{#if system.wounds}}<span class="cr-tray__vital" data-tooltip="Wounds in your deck">&#10006; {{system.wounds}}</span>{{/if}}
-    {{#if system.taint.total}}<span class="cr-tray__vital" data-tooltip="Taint in your decks">&#9763; {{system.taint.total}}</span>{{/if}}
-    <span class="cr-tray__vital" data-tooltip="Rest tokens">&#9790; {{system.rest.tokens}}</span>
+    <span class="cr-tray__vital" data-tooltip="Armor, from the equipped body slate">&#9636; {{system.armor}}</span>
+    {{#if system.wounds}}<span class="cr-tray__vital" data-tooltip="Wounds">&#10006; {{system.wounds}}</span>{{/if}}
+    {{#if system.taint.total}}<span class="cr-tray__vital" data-tooltip="Taint">&#9763; {{system.taint.total}}</span>{{/if}}
 
-    {{#if exhausted}}
-      <span class="cr-tray__flag" data-tooltip="Can't refill to 2 cards: one card per turn, and no reactions">Exhausted</span>
-    {{/if}}
-    {{#if dazed}}
-      <span class="cr-tray__flag" data-tooltip="No secondary this turn">Dazed</span>
-    {{/if}}
-    {{#if stunned}}
-      <span class="cr-tray__flag" data-tooltip="No reactions">Stunned</span>
-    {{/if}}
+    {{#if exhausted}}<span class="cr-tray__flag" data-tooltip="Can't refill to 2 cards: one card per turn, no reactions">Exhausted</span>{{/if}}
+    {{#if dazed}}<span class="cr-tray__flag" data-tooltip="No secondary this turn">Dazed</span>{{/if}}
+    {{#if stunned}}<span class="cr-tray__flag" data-tooltip="No reactions">Stunned</span>{{/if}}
+    {{#if encumbered}}<span class="cr-tray__flag" data-tooltip="{{encumbered}}">{{encumbered}}</span>{{/if}}
+
+    <span class="cr-hud__turn">
+      {{#if inCombat}}
+        {{#if myTurn}}<span class="cr-hud__active">Your turn</span>{{else}}<span class="cr-note">{{turnOwner}}'s turn</span>{{/if}}
+        <button type="button" data-action="endTurn" data-tooltip="Pass to the next combatant">End turn</button>
+      {{else}}
+        <span class="cr-note">Not in combat</span>
+      {{/if}}
+    </span>
   </header>
 
-  {{#if conditions}}
-    <div class="cr-tray__conditions">
-      {{#each conditions}}
-        <span class="cr-chip" data-tooltip="{{this.label}}{{#if this.creatorId}} &mdash; ticks on its creator's turn{{/if}}">
-          {{crIcon this.icon}}{{this.label}}{{#if this.duration}} {{this.duration}}{{/if}}
-        </span>
-      {{/each}}
-    </div>
-  {{/if}}
+  <div class="cr-hud__cols">
 
-  {{!-- Card halves are meaningless without the item values behind them. --}}
-  <div class="cr-tray__equipped">
-    {{#each equipped}}
-      <span class="cr-chip">{{this.name}}{{#if this.lines}} &middot; {{this.lines}}{{/if}}{{#if this.armor}} &middot; armor {{this.armor}}{{/if}}</span>
-    {{else}}
-      <span class="cr-note">Nothing equipped &mdash; Strike and Defend need an item.</span>
-    {{/each}}
-  </div>
+    {{!-- LEFT: what you carry, what you are, what is on you --}}
+    <section class="cr-hud__col cr-hud__col--left">
 
-  {{!-- The hand. Click a half to stage it; click again to unstage. --}}
-  <div class="cr-hand">
-    {{#each cards as |card|}}
-      <div class="cr-card{{#if card.harm}} cr-card--harm{{/if}}">
-        <div class="cr-card__name">{{card.name}}</div>
-
-        {{#if card.harm}}
-          <div class="cr-half">
-            <span class="cr-note">Can't be played, not even for Brace.</span>
-          </div>
-        {{else}}
-          {{#each card.halves as |half|}}
-            <div class="cr-half cr-half--{{half.name}}{{#if half.blocked}} cr-half--blocked{{/if}}{{#if half.staged}} cr-half--staged{{/if}}">
-              <span class="cr-half__marker">{{crIcon half.icon}}</span>
-              {{#if half.blocked}}
-                <span data-tooltip="Blocked right now. The other half may still be playable, and Brace never is.">{{half.text}}</span>
-              {{else}}
-                <button type="button" class="cr-half__play"
-                        data-action="stage" data-card-id="{{card.id}}" data-half="{{half.name}}">
-                  {{half.text}}
-                </button>
-              {{/if}}
-            </div>
+      <div class="cr-panel">
+        <h4>Items</h4>
+        <ul class="cr-mini">
+          {{#each equipped}}
+            <li class="cr-mini__row" data-group="{{this.group}}">
+              <span class="cr-mini__name" data-tooltip="{{this.lines}}">{{this.name}}</span>
+              <span class="cr-note">{{this.lines}}</span>
+              <button type="button" data-action="unequip" data-slate-id="{{this.id}}"
+                      data-tooltip="Free outside combat; costs a Ready under pressure">&minus;</button>
+            </li>
+          {{else}}
+            <li class="cr-note">Nothing equipped. Strike and Defend need an item.</li>
           {{/each}}
-          <div class="cr-half cr-half--reaction">
-            <span class="cr-half__marker">{{crIcon ../config.halfIcons.reaction}}</span>
-            <span>{{#if card.reaction}}{{card.reaction}}{{else}}Brace{{/if}}</span>
-          </div>
+        </ul>
+        {{#if pack}}
+          <h5 class="cr-panel__sub">Pack</h5>
+          <ul class="cr-mini">
+            {{#each pack}}
+              <li class="cr-mini__row" data-group="{{this.group}}">
+                <span class="cr-mini__name">{{this.name}}</span>
+                <span class="cr-note">{{this.weight}} kg</span>
+                <button type="button" data-action="equip" data-slate-id="{{this.id}}"
+                        data-tooltip="Equip into a free slot">+</button>
+              </li>
+            {{/each}}
+          </ul>
         {{/if}}
       </div>
-    {{else}}
-      <p class="cr-note">Hand is empty. Refill at the start of the round, or Catch Breath.</p>
-    {{/each}}
+
+      <div class="cr-panel">
+        <h4>Features</h4>
+        <ul class="cr-mini">
+          {{#each features}}
+            <li class="cr-mini__row{{#if this.drained}} cr-mini__row--drained{{/if}}" data-group="{{this.group}}">
+              <span class="cr-mini__name" data-tooltip="{{this.text}}">{{this.name}}</span>
+              {{#if this.recharge}}
+                <span class="cr-recharge" data-tooltip="Recharges: {{this.recharge}}">{{crIcon this.rechargeIcon}}{{this.recharge}}</span>
+                <button type="button" data-action="toggleDrain" data-slate-id="{{this.id}}">
+                  {{#if this.drained}}&#8635;{{else}}Use{{/if}}
+                </button>
+              {{else}}
+                <span class="cr-note">passive</span>
+              {{/if}}
+            </li>
+          {{else}}
+            <li class="cr-note">None.</li>
+          {{/each}}
+        </ul>
+      </div>
+
+      <div class="cr-panel">
+        <h4>Conditions</h4>
+        <ul class="cr-mini">
+          {{#each conditions}}
+            <li class="cr-mini__row">
+              {{crIcon this.icon}}
+              <span class="cr-mini__name">{{this.label}}</span>
+              {{#if this.duration}}<span class="cr-condition__duration" data-tooltip="Ticks down on its creator's turn">{{this.duration}}</span>{{/if}}
+              {{#if this.creator}}<span class="cr-note">&larr; {{this.creator}}</span>{{/if}}
+            </li>
+          {{else}}
+            <li class="cr-note">None.</li>
+          {{/each}}
+        </ul>
+      </div>
+
+    </section>
+
+    {{!-- CENTRE: the hand --}}
+    <section class="cr-hud__col cr-hud__col--main">
+      <div class="cr-panel cr-panel--grow">
+        <h4>{{centreLabel}}
+          <span class="cr-note">{{counts.hand}} in hand &middot; draw {{counts.draw}} &middot; discard {{counts.discard}} &middot; spent {{counts.spent}}</span>
+        </h4>
+
+        {{#if skillsPlaceholder}}
+          <p class="cr-note">Out of combat this becomes the <strong>skill deck</strong> &mdash;
+            approaches, edges, Push and Help. That slice isn't built yet; the action hand below is
+            shown meanwhile.</p>
+        {{/if}}
+
+        {{!-- Wraps and scrolls, so a full hand is visible without paging. --}}
+        <div class="cr-hand">
+          {{#each cards as |card|}}
+            <div class="cr-card{{#if card.harm}} cr-card--harm{{/if}}">
+              <div class="cr-card__name">{{card.name}}</div>
+              {{#if card.harm}}
+                <div class="cr-half"><span class="cr-note">Can't be played, not even for Brace.</span></div>
+              {{else}}
+                {{#each card.halves as |half|}}
+                  <div class="cr-half cr-half--{{half.name}}{{#if half.blocked}} cr-half--blocked{{/if}}{{#if half.staged}} cr-half--staged{{/if}}">
+                    <span class="cr-half__marker">{{crIcon half.icon}}</span>
+                    {{#if half.blocked}}
+                      <span data-tooltip="Blocked right now. The other half may still be playable, and Brace never is.">{{half.text}}</span>
+                    {{else}}
+                      <button type="button" class="cr-half__play"
+                              data-action="stage" data-card-id="{{card.id}}" data-half="{{half.name}}">{{half.text}}</button>
+                    {{/if}}
+                  </div>
+                {{/each}}
+                <div class="cr-half cr-half--reaction">
+                  <span class="cr-half__marker">{{crIcon ../config.halfIcons.reaction}}</span>
+                  <span>{{#if card.reaction}}{{card.reaction}}{{else}}Brace{{/if}}</span>
+                </div>
+              {{/if}}
+            </div>
+          {{else}}
+            <p class="cr-note">Hand is empty &mdash; refill at the start of the round, or Catch Breath.</p>
+          {{/each}}
+        </div>
+
+        <div class="cr-hud__play">
+          {{#if staged}}
+            <span class="cr-note">Resolves in this order:</span>
+            {{#each staged}}<span class="cr-chip cr-chip--staged">{{this.order}}. {{this.name}} ({{this.half}})</span>{{/each}}
+          {{else}}
+            <span class="cr-note">Click a primary and a secondary, from two different cards.</span>
+          {{/if}}
+          {{#if targets}}
+            <span class="cr-chip" data-tooltip="Fate is drawn once per action, not per target">&#9678; {{targets}}</span>
+          {{/if}}
+          <span class="cr-tray__buttons">
+            <button type="button" data-action="play" {{#unless canPlay}}disabled{{/unless}}>Play</button>
+            <button type="button" data-action="clear" {{#unless canPlay}}disabled{{/unless}}>Clear</button>
+            <button type="button" data-action="breathe"
+                    data-tooltip="Your whole turn. Recovers half the discard at random; one of the rest is Spent.">Catch Breath</button>
+            <button type="button" data-action="refill" data-tooltip="Draw back up to hand size">Refill</button>
+          </span>
+        </div>
+      </div>
+    </section>
+
+    {{!-- RIGHT: the odds, and what the enemy has already decided --}}
+    <section class="cr-hud__col cr-hud__col--right">
+
+      <div class="cr-panel">
+        <h4>Fate</h4>
+        <div class="cr-meter">
+          <span>{{counts.fate}}/20</span>
+          <span class="cr-meter__bar"><span class="cr-meter__fill" style="width: {{fatePct}}%"></span></span>
+        </div>
+        {{#if fateSwing}}
+          <p class="cr-note" data-tooltip="Miss and Critical both reshuffle, so the deck always holds one of each between reshuffles">
+            swing {{fateSwing}}%
+          </p>
+        {{/if}}
+        {{#if lastFate}}
+          <p class="cr-note">last drawn: <strong>{{lastFate}}</strong></p>
+        {{/if}}
+        <div class="cr-fate-discard">
+          {{#each fateDiscard}}<span class="cr-fate-chip{{#if this.special}} cr-fate-chip--special{{/if}}">{{this.label}}</span>{{/each}}
+        </div>
+      </div>
+
+      <div class="cr-panel">
+        <h4>Enemy intent</h4>
+        {{#each npcDecks}}
+          <div class="cr-intent">
+            <span class="cr-mini__name">{{this.kind}}</span>
+            {{#if this.revealed}}
+              <span class="cr-chip cr-chip--staged" data-tooltip="Every NPC of this type acts on this card">{{this.card}}</span>
+            {{else}}
+              <span class="cr-chip" data-tooltip="Face down until the first of its type acts. Foresee flips it.">?</span>
+              {{#if ../isGM}}
+                <button type="button" data-action="peek" data-kind="{{this.kind}}" data-tooltip="GM: look without revealing">peek</button>
+                <button type="button" data-action="reveal" data-kind="{{this.kind}}" data-tooltip="Flip it for everyone">flip</button>
+              {{/if}}
+            {{/if}}
+            <span class="cr-note">deck {{this.deck}}</span>
+          </div>
+        {{else}}
+          <p class="cr-note">No NPC types in this fight.</p>
+        {{/each}}
+      </div>
+
+    </section>
   </div>
-
-  {{!-- Staging order is play order, which is how "either order" gets expressed. --}}
-  <div class="cr-tray__staged">
-    {{#if staged}}
-      <span class="cr-note">Playing in this order:</span>
-      {{#each staged}}
-        <span class="cr-chip cr-chip--staged">{{@index}}. {{this.name}} ({{this.half}})</span>
-      {{/each}}
-    {{else}}
-      <span class="cr-note">Click a primary and a secondary, from two different cards.</span>
-    {{/if}}
-
-    {{#if targets}}
-      <span class="cr-chip" data-tooltip="Fate is drawn once per action, not per target">
-        Target: {{#each targets}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}
-      </span>
-    {{/if}}
-
-    <span class="cr-tray__buttons">
-      <button type="button" data-action="play" {{#unless canPlay}}disabled{{/unless}}>Play</button>
-      <button type="button" data-action="clear" {{#unless canPlay}}disabled{{/unless}}>Clear</button>
-      <button type="button" data-action="breathe"
-              data-tooltip="Your whole turn. Recovers half the discard pile at random; one of the rest is Spent.">
-        Catch Breath
-      </button>
-      <button type="button" data-action="refill" data-tooltip="Draw back up to hand size">Refill</button>
-    </span>
-  </div>
-
-  {{!-- The draw pile is the tension meter, so it is a bar. --}}
-  <footer class="cr-tray__meters">
-    <span class="cr-meter">
-      <span>Draw {{counts.draw}}</span>
-      <span class="cr-meter__bar"><span class="cr-meter__fill" style="width: {{drawPct}}%"></span></span>
-    </span>
-    <span class="cr-note">discard {{counts.discard}} &middot; spent {{counts.spent}}</span>
-    <span class="cr-note" data-tooltip="Miss and Critical both reshuffle, so the deck always holds one of each between reshuffles">
-      fate {{counts.fate}}/20{{#if fateSwing}} &middot; swing {{fateSwing}}%{{/if}}
-    </span>
-  </footer>
-
 </div>

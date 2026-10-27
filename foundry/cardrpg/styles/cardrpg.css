@@ -167,34 +167,27 @@
 }
 
 /* -------------------------------------------- */
-/*  Tray                                        */
+/*  Shared bits                                 */
 /* -------------------------------------------- */
 
-.cardrpg .cr-tray {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4em;
-}
+.cardrpg .cr-note { margin: 0.2em 0; font-size: 0.72rem; color: var(--cardrpg-dim); }
+.cardrpg .cr-warn { margin: 0.2em 0; font-size: 0.75rem; color: var(--cardrpg-group-1); font-weight: 600; }
+.cardrpg .cr-warn-inline { color: var(--cardrpg-group-1); font-weight: 600; }
+.cardrpg .cr-row { display: flex; gap: 0.3em; }
+.cardrpg .cr-recharge { font-size: 0.7rem; color: var(--cardrpg-dim); white-space: nowrap; }
 
-.cardrpg .cr-hand {
-  display: flex;
-  gap: 0.4em;
-  flex-wrap: nowrap;
+/* A duration belongs to its creator's turn, so it reads as a counter rather than plain text. */
+.cardrpg .cr-condition__duration {
+  min-width: 1.4em;
+  text-align: center;
+  border: 1px solid var(--cardrpg-rule);
+  border-radius: 999px;
+  font-size: 0.7rem;
 }
-
-/* Below about 1000px the hand overlaps; the left-edge scan column keeps it readable. */
-@media (max-width: 1000px) {
-  .cardrpg .cr-hand { gap: 0; }
-  .cardrpg .cr-hand .cr-card:not(:first-child) { margin-left: calc(var(--cardrpg-card-width) * -0.55); }
-}
+.cardrpg .cr-condition__creator { font-size: 0.7rem; color: var(--cardrpg-dim); }
 
 /* The draw pile is the tension meter, so it gets a bar rather than a bare number. */
-.cardrpg .cr-meter {
-  display: flex;
-  align-items: center;
-  gap: 0.4em;
-  font-size: 0.75rem;
-}
+.cardrpg .cr-meter { display: flex; align-items: center; gap: 0.4em; font-size: 0.72rem; }
 .cardrpg .cr-meter__bar {
   flex: 1 1 auto;
   height: 0.5em;
@@ -202,14 +195,7 @@
   border-radius: 999px;
   overflow: hidden;
 }
-.cardrpg .cr-meter__fill {
-  height: 100%;
-  background: var(--cardrpg-ink);
-  transition: width 120ms ease-out;
-}
-
-/* A draining bar says the round is moving; a bare number invites haggling. */
-.cardrpg .cr-timer__fill { background: var(--cardrpg-group-1); }
+.cardrpg .cr-meter__fill { height: 100%; background: var(--cardrpg-ink); transition: width 120ms ease-out; }
 
 /* -------------------------------------------- */
 /*  Sheets                                      */
@@ -217,38 +203,27 @@
 
 /*
  * The sheet carries its own paper background. Without it the ink tokens sit on whatever Foundry's
- * theme provides, which on the dark theme made derived values nearly invisible -- the bug that
- * showed up as "armor and max hp are dark grey".
+ * theme provides, which on the dark theme made derived values nearly invisible.
  */
-.cardrpg .cr-sheet,
-.cr-tray-app .cr-tray {
+.cardrpg .cr-sheet {
   background: var(--cardrpg-paper);
   color: var(--cardrpg-ink);
-}
-
-.cardrpg .cr-sheet {
   display: flex;
   flex-direction: column;
   gap: 0.5em;
   padding: 0.5em 0.7em;
   font-size: 0.85rem;
-  /* The window gives a fixed height; the body scrolls inside it. */
   height: 100%;
   box-sizing: border-box;
   overflow: hidden;
 }
 
 /* Only the body scrolls, so the header and tabs stay put. */
-.cardrpg .cr-sheet__body {
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow-y: auto;
-  padding-right: 0.3em;
-}
-
+.cardrpg .cr-sheet__body { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding-right: 0.3em; }
 .cardrpg .cr-sheet__header { flex: 0 0 auto; }
+.cardrpg .cr-sheet__identity { display: flex; gap: 0.8em; flex-wrap: wrap; }
+.cardrpg .cr-name { font-size: 1.1rem; font-weight: 600; }
 
-/* Tabs */
 .cardrpg .cr-tabs {
   flex: 0 0 auto;
   display: flex;
@@ -283,14 +258,7 @@
   border: 1px solid var(--cardrpg-rule);
 }
 
-.cardrpg .cr-sheet__header { display: flex; flex-direction: column; gap: 0.3em; }
-.cardrpg .cr-sheet__identity { display: flex; gap: 0.8em; flex-wrap: wrap; }
-.cardrpg .cr-name { font-size: 1.1rem; font-weight: 600; }
-
-.cardrpg .cr-block {
-  border-top: 1px solid var(--cardrpg-rule);
-  padding-top: 0.4em;
-}
+.cardrpg .cr-block { border-top: 1px solid var(--cardrpg-rule); padding-top: 0.4em; }
 .cardrpg .cr-block > h3 {
   margin: 0 0 0.3em;
   font-size: 0.8rem;
@@ -301,13 +269,14 @@
 .cardrpg .cr-block > h4 { margin: 0.3em 0 0.2em; font-size: 0.78rem; }
 .cardrpg .cr-block--gm { border-top-style: dashed; }
 
-/* Derived values are shown but never editable, so they read differently from inputs. */
 .cardrpg .cr-vitals { display: flex; flex-wrap: wrap; gap: 0.6em 1em; }
 .cardrpg .cr-stat { display: flex; flex-direction: column; font-size: 0.72rem; color: var(--cardrpg-dim); }
 .cardrpg .cr-stat--check { flex-direction: row; align-items: center; gap: 0.3em; }
 .cardrpg .cr-stat input { width: 4.5em; }
 .cardrpg .cr-stat__pair { display: flex; align-items: center; gap: 0.2em; }
 .cardrpg .cr-stat__sep { color: var(--cardrpg-dim); }
+
+/* A derived value must read as a value, not as a dimmed label. */
 .cardrpg .cr-stat__derived {
   font-size: 0.95rem;
   font-weight: 700;
@@ -315,24 +284,6 @@
   border-bottom: 1px dotted var(--cardrpg-dim);
   padding: 0 0.15em;
 }
-
-.cardrpg .cr-warn-inline { color: var(--cardrpg-group-1); font-weight: 600; }
-.cardrpg .cr-row { display: flex; gap: 0.3em; }
-
-/* Applying a condition needs the creator, so the control has three fields. */
-.cardrpg .cr-add-condition {
-  display: flex;
-  gap: 0.25em;
-  align-items: center;
-  flex-wrap: wrap;
-  margin-bottom: 0.4em;
-}
-.cardrpg .cr-add-condition select { flex: 0 1 auto; max-width: 14em; }
-.cardrpg .cr-add-condition input { width: 3.5em; }
-.cardrpg .cr-add-condition button { flex: 0 0 auto; width: auto; }
-
-.cardrpg .cr-note { margin: 0.2em 0; font-size: 0.72rem; color: var(--cardrpg-dim); }
-.cardrpg .cr-warn { margin: 0.2em 0; font-size: 0.75rem; color: var(--cardrpg-group-1); font-weight: 600; }
 
 .cardrpg .cr-tier { font-size: 0.7rem; font-weight: 400; color: var(--cardrpg-dim); }
 .cardrpg .cr-tier--burdened,
@@ -342,11 +293,8 @@
 .cardrpg .cr-deck { display: flex; flex-direction: column; gap: 0.1em; }
 .cardrpg .cr-deck__counts { font-size: 0.72rem; color: var(--cardrpg-dim); }
 
-.cardrpg .cr-conditions,
-.cardrpg .cr-slates { list-style: none; margin: 0; padding: 0; }
-
-.cardrpg .cr-condition,
-.cardrpg .cr-slate-row {
+.cardrpg .cr-conditions, .cardrpg .cr-slates { list-style: none; margin: 0; padding: 0; }
+.cardrpg .cr-condition, .cardrpg .cr-slate-row {
   display: flex;
   align-items: center;
   gap: 0.4em;
@@ -358,17 +306,6 @@
 
 /* A derived condition has no remove button, because nothing applied it. */
 .cardrpg .cr-condition--derived { color: var(--cardrpg-dim); }
-.cardrpg .cr-condition__duration {
-  min-width: 1.4em;
-  text-align: center;
-  border: 1px solid var(--cardrpg-rule);
-  border-radius: 999px;
-  font-size: 0.7rem;
-}
-/* The creator matters: the duration ticks on their turn, not yours. */
-.cardrpg .cr-condition__creator { font-size: 0.7rem; color: var(--cardrpg-dim); }
-
-.cardrpg .cr-recharge { font-size: 0.72rem; color: var(--cardrpg-dim); white-space: nowrap; }
 
 /* A left-edge stripe is the row form of the group border. */
 .cardrpg .cr-slate-row[data-group]:not([data-group=""]) { padding-left: 0.5em; }
@@ -387,14 +324,25 @@
 .cardrpg .cr-slate-row[data-group="station"]::before { background: var(--cardrpg-group-6); }
 .cardrpg .cr-slate-row[data-group="wonder"]::before { background: var(--cardrpg-group-7); }
 
+/* Applying a condition needs its creator, so the control has three fields. */
+.cardrpg .cr-add-condition {
+  display: flex;
+  gap: 0.25em;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 0.4em;
+}
+.cardrpg .cr-add-condition select { flex: 0 1 auto; max-width: 14em; }
+.cardrpg .cr-add-condition input { width: 3.5em; }
+.cardrpg .cr-add-condition button { flex: 0 0 auto; width: auto; }
+
 .cardrpg .cr-verbs { width: 100%; font-size: 0.75rem; }
 .cardrpg .cr-verbs th { text-align: left; color: var(--cardrpg-dim); font-weight: 500; }
 .cardrpg .cr-verbs input { width: 100%; }
-
 .cardrpg .cr-sequence { margin: 0; padding: 0.3em 0 0.3em 1.4em; font-size: 0.75rem; }
 
 /* -------------------------------------------- */
-/*  Tray                                        */
+/*  Combat HUD                                  */
 /* -------------------------------------------- */
 
 .cardrpg .cr-sheet__top { display: flex; align-items: center; gap: 0.5em; }
@@ -408,21 +356,43 @@
   padding: 0.2em 0.9em;
 }
 
-.cr-tray-app .cr-tray { padding: 0.4em 0.6em; font-size: 0.85rem; }
+.cr-hud-app .window-content { padding: 0; overflow: hidden; }
 
-.cardrpg .cr-tray__state {
+.cardrpg .cr-hud {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--cardrpg-paper);
+  color: var(--cardrpg-ink);
+  font-size: 0.8rem;
+  overflow: hidden;
+}
+
+/* --- status bar, the one thing that survives collapsing --- */
+.cardrpg .cr-hud__bar {
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
-  gap: 0.8em;
-  flex-wrap: wrap;
-  padding-bottom: 0.3em;
+  gap: 0.7em;
+  padding: 0.3em 0.6em;
   border-bottom: 1px solid var(--cardrpg-rule);
+  flex-wrap: wrap;
 }
-.cardrpg .cr-tray__vital { font-variant-numeric: tabular-nums; }
+.cardrpg .cr-hud__name { font-weight: 700; }
+.cardrpg .cr-hud__collapse {
+  flex: 0 0 auto;
+  width: auto;
+  background: none;
+  border: 1px solid var(--cardrpg-rule);
+  border-radius: 3px;
+  padding: 0 0.4em;
+  cursor: pointer;
+  color: var(--cardrpg-ink);
+}
+.cardrpg .cr-tray__vital { font-variant-numeric: tabular-nums; white-space: nowrap; }
 
-/* Exhausted and Dazed change what you may play, so they read as warnings. */
 .cardrpg .cr-tray__flag {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   padding: 0.1em 0.4em;
@@ -431,21 +401,115 @@
   color: var(--cardrpg-paper);
 }
 
-.cardrpg .cr-tray__conditions,
-.cardrpg .cr-tray__equipped,
-.cardrpg .cr-tray__staged {
+.cardrpg .cr-hud__turn { margin-left: auto; display: flex; align-items: center; gap: 0.5em; }
+.cardrpg .cr-hud__turn button { flex: 0 0 auto; width: auto; white-space: nowrap; }
+.cardrpg .cr-hud__active { font-weight: 700; color: var(--cardrpg-group-6); }
+
+/* Collapsed: only the bar, so it can sit over the map without blocking it. */
+.cardrpg .cr-hud--collapsed .cr-hud__cols { display: none; }
+
+/* --- three columns --- */
+.cardrpg .cr-hud__cols {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  gap: 0.4em;
+  padding: 0.4em;
+}
+.cardrpg .cr-hud__col { display: flex; flex-direction: column; gap: 0.4em; min-height: 0; }
+.cardrpg .cr-hud__col--left { flex: 0 0 250px; overflow-y: auto; }
+.cardrpg .cr-hud__col--main { flex: 1 1 auto; min-width: 0; }
+.cardrpg .cr-hud__col--right { flex: 0 0 185px; overflow-y: auto; }
+
+.cardrpg .cr-panel {
+  border: 1px solid var(--cardrpg-rule);
+  border-radius: 4px;
+  padding: 0.3em 0.45em;
+  background: rgba(255, 255, 255, 0.35);
+}
+.cardrpg .cr-panel--grow { flex: 1 1 auto; display: flex; flex-direction: column; min-height: 0; }
+.cardrpg .cr-panel > h4 {
+  margin: 0 0 0.25em;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--cardrpg-dim);
+  display: flex;
+  gap: 0.5em;
+  align-items: baseline;
+}
+.cardrpg .cr-panel__sub {
+  margin: 0.4em 0 0.2em;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  color: var(--cardrpg-dim);
+}
+
+/* --- compact lists for items, features, conditions --- */
+.cardrpg .cr-mini { list-style: none; margin: 0; padding: 0; }
+.cardrpg .cr-mini__row {
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+  padding: 0.1em 0 0.1em 0.4em;
+  position: relative;
+}
+.cardrpg .cr-mini__name { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cardrpg .cr-mini__row button {
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 1.6em;
+  padding: 0 0.35em;
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+.cardrpg .cr-mini__row--drained .cr-mini__name { color: var(--cardrpg-dim); text-decoration: line-through; }
+
+/* The group border, in its row form. */
+.cardrpg .cr-mini__row[data-group]:not([data-group=""])::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0.1em; bottom: 0.1em;
+  width: 3px;
+  background: var(--cardrpg-dim);
+}
+.cardrpg .cr-mini__row[data-group="body"]::before { background: var(--cardrpg-group-1); }
+.cardrpg .cr-mini__row[data-group="training"]::before { background: var(--cardrpg-group-2); }
+.cardrpg .cr-mini__row[data-group="tool"]::before { background: var(--cardrpg-group-3); }
+.cardrpg .cr-mini__row[data-group="make"]::before { background: var(--cardrpg-group-4); }
+.cardrpg .cr-mini__row[data-group="power"]::before { background: var(--cardrpg-group-5); }
+.cardrpg .cr-mini__row[data-group="station"]::before { background: var(--cardrpg-group-6); }
+.cardrpg .cr-mini__row[data-group="wonder"]::before { background: var(--cardrpg-group-7); }
+
+/* --- the hand: wraps and scrolls, so every card is reachable --- */
+.cardrpg .cr-hand {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 0.4em;
+  overflow-y: auto;
+  padding: 0.2em 0.1em;
+}
+
+.cardrpg .cr-hud__play {
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   gap: 0.35em;
   flex-wrap: wrap;
-  padding: 0.25em 0;
+  padding-top: 0.35em;
+  border-top: 1px solid var(--cardrpg-rule);
 }
+.cardrpg .cr-tray__buttons { margin-left: auto; display: flex; gap: 0.3em; }
+.cardrpg .cr-tray__buttons button { flex: 0 0 auto; width: auto; white-space: nowrap; font-size: 0.74rem; padding: 0.15em 0.6em; }
 
 .cardrpg .cr-chip {
   display: inline-flex;
   align-items: center;
   gap: 0.25em;
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   padding: 0.1em 0.45em;
   border: 1px solid var(--cardrpg-rule);
   border-radius: 999px;
@@ -453,14 +517,8 @@
 }
 .cardrpg .cr-chip--staged { border-color: var(--cardrpg-ink); font-weight: 600; }
 
-.cardrpg .cr-tray__buttons { margin-left: auto; display: flex; gap: 0.3em; }
-.cardrpg .cr-tray__buttons button { font-size: 0.75rem; padding: 0.15em 0.6em; }
-
-/* A staged half is the one thing on the tray that must be unmistakable. */
-.cardrpg .cr-half--staged {
-  background: var(--cardrpg-ink);
-  color: var(--cardrpg-paper);
-}
+/* A staged half must be unmistakable; it is the only thing that will actually happen. */
+.cardrpg .cr-half--staged { background: var(--cardrpg-ink); color: var(--cardrpg-paper); }
 .cardrpg .cr-half--staged .cr-half__marker { color: var(--cardrpg-paper); }
 
 .cardrpg .cr-half__play {
@@ -472,14 +530,25 @@
   font: inherit;
   color: inherit;
   cursor: pointer;
+  line-height: 1.2;
 }
 .cardrpg .cr-half__play:hover { text-decoration: underline; }
 
-.cardrpg .cr-tray__meters {
-  display: flex;
-  align-items: center;
-  gap: 0.8em;
-  padding-top: 0.3em;
-  border-top: 1px solid var(--cardrpg-rule);
+/* --- fate and intent --- */
+.cardrpg .cr-fate-discard { display: flex; flex-wrap: wrap; gap: 0.15em; margin-top: 0.3em; }
+.cardrpg .cr-fate-chip {
+  font-size: 0.65rem;
+  font-variant-numeric: tabular-nums;
+  padding: 0 0.3em;
+  border: 1px solid var(--cardrpg-rule);
+  border-radius: 2px;
 }
-.cardrpg .cr-tray__meters .cr-meter { flex: 0 0 11em; }
+/* Miss and Critical both reshuffle, so they are the ones worth spotting in the discard. */
+.cardrpg .cr-fate-chip--special { border-color: var(--cardrpg-ink); font-weight: 700; }
+
+.cardrpg .cr-intent { display: flex; align-items: center; gap: 0.3em; padding: 0.15em 0; flex-wrap: wrap; }
+.cardrpg .cr-intent button { flex: 0 0 auto; width: auto; padding: 0 0.35em; font-size: 0.68rem; }
+
+/* Two stragglers the class check caught after restoring the sheet styles. */
+.cardrpg .cr-condition__label { flex: 1 1 auto; }
+.cardrpg .cr-slot { margin-bottom: 0.4em; }
