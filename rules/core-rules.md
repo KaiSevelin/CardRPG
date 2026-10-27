@@ -263,6 +263,54 @@ When you build a deck, include enough Ready cards for the character's style. A w
 
 ---
 
+### Active abilities and recharge
+
+Most of what a slate gives you is **passive**: it is simply true. *Tough* raises your max Health,
+*Strong* adds a point of damage with Heavy items, a Longsword strikes for 3. Nothing to track, and
+nothing to remember to use.
+
+An **active** ability is one you choose to use, and it doesn't work every time.
+
+> **Drain** — using the ability turns the slate **sideways**. It gives nothing more until its
+> **recharge** comes round.
+
+| Recharge | Comes back |
+|---|---|
+| **Turn** | At the start of your next turn |
+| **Combat** | When the combat ends |
+| **Scene** | When the GM calls a new scene |
+| **Short rest** | On a short rest — and so costs a rest token |
+| **Long rest** | On a long rest |
+
+- **Turn the slate sideways; don't flip it.** A slate's back carries its description, so flipping
+  already means "let me read this", not "I used it".
+- **One active ability per slate**, or a sideways slate is ambiguous. If you want two, that's two
+  slates.
+- **Consumables don't recharge at all.** A Healing Potion is gone when you drink it — the far end of
+  the same scale.
+
+#### Passive or active is the main dial for pricing a slate
+
+| | Passive | Active |
+|---|---|---|
+| Size of effect | Small | Can be large |
+| Tracking | None | A sideways slate |
+| Examples | *Tough*, *Quick*, *Strong*, *Good Aim*, *Arcane Focus* | *Steady*, *Drilled*, *Faithful* |
+
+**A big effect must be active.** If a slate would swing a fight on its own, give it a recharge. If
+it's worth a point here and there, leave it passive and let the player forget it exists.
+
+#### Recharge and bonus groups are different dials
+
+A slate can carry both, and they limit different things:
+
+| | Limits |
+|---|---|
+| **Bonus group** (section 5) | How many bonuses **stack** on one action |
+| **Recharge** (here) | How **often** an ability works |
+
+---
+
 ## 5. Resolving an action
 
 Always in this order:

@@ -122,6 +122,9 @@ Tuned separately from player gear (see *NPC gear and the armor rule* in the core
 
 ## Features
 
+Passive features are simply true; an **active** one is Drained when used and comes back on its
+recharge (see *Active abilities and recharge* in the core rules).
+
 | Feature | Effect |
 |---|---|
 | **Strong** | +1 damage on Strike with *Heavy* items. |
@@ -129,7 +132,7 @@ Tuned separately from player gear (see *NPC gear and the armor rule* in the core
 | **Quick** | Hand size +1. |
 | **Tough** | +4 max Health. |
 | **Arcane Focus** | +1 to all *Cast* values. |
-| **Steady** | The first time each combat you would become Dazed, you don't. |
+| **Steady** | **Drain:** you don't become Dazed. *Recharge: combat.* |
 | **Alert** | You draw with advantage on initiative. |
 
 ---

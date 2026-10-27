@@ -104,6 +104,23 @@ writes them — see §3.
 
 ---
 
+## 2b. Drained slates
+
+An active ability leaves its slate **Drained** until its recharge (core-rules §4). On a slate this is
+two fields:
+
+| Field | Form |
+|---|---|
+| `recharge` | enum: `turn` / `combat` / `scene` / `shortRest` / `longRest`, or absent for a passive line |
+| `drained` | boolean, stored |
+
+**No new boundaries are needed.** Every recharge point is one the system already has to handle:
+start of turn (conditions tick), end of combat (hand and discard return to the deck), a new scene
+(the skill hand refreshes), and the two rests (Spent cards return). Hook the refresh onto those.
+
+Only `drained` is stored; the rest is the slate's own definition. **Consumables have no recharge** —
+they are deleted or decremented instead, which is the far end of the same scale.
+
 ## 3. Encumbrance is the one field with a transition hook
 
 Every other derived field is passive: recompute and redisplay. Encumbrance **mutates card state**.

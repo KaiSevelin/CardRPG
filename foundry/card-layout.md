@@ -331,6 +331,17 @@ front:  ╔══════════════════════╗
 
 - **Verb and bonus lines dominate the front.** That is what an action card needs from the item: the
   card says *Strike*, the item says *3*.
+- **A recharge tag sits on the line it governs**, not on the slate as a whole, so a slate can carry a
+  passive line and an active one without confusion:
+
+  ```
+  ⚔  3                      <- passive: the base value
+  Drain: +2 dmg   [combat]  <- active: Drained when used
+  ```
+
+- **A Drained slate is turned sideways**, never flipped — the back is the description, so flipping
+  already means "let me read this". Only **one** active ability per slate, or a sideways slate is
+  ambiguous about which ability is spent.
 - Slot marker top-right, tags under the name, group number bottom-right.
 - A weapon that only supplies base values (`Longsword: Strike 3, Defend 1`) carries **no border**.
 - The back holds the tier-3 fields: short description, value, type.

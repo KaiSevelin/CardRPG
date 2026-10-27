@@ -22,7 +22,7 @@ Rules for writing **know-how**:
 | Part | |
 |---|---|
 | Skill cards | ✊ Might 2, 👑 Presence 1 *(Edge: an ally in the scene draws 1 skill card)* |
-| Feature | **Drilled:** once per combat, play a reaction even while Stunned. |
+| Feature | **Drilled: Drain** to play a reaction while Stunned. *Recharge: combat.* |
 | Training | Gaming set |
 | Know-how | Military matters, soldiers and camps |
 | Gear | Spear, leather armor, gaming set, rank insignia |
@@ -40,7 +40,7 @@ Rules for writing **know-how**:
 | Part | |
 |---|---|
 | Skill cards | 📜 Lore 2, 👑 Presence 1 |
-| Feature | **Faithful:** once per long rest, add a temporary Critical to your fate deck. |
+| Feature | **Faithful: Drain** to shuffle a temporary Critical into your fate deck. *Recharge: long rest.* |
 | Training | Holy symbol |
 | Know-how | Temples, rituals and clergy |
 | Gear | Staff, holy symbol, prayer book, simple robes |
