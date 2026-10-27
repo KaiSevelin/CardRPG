@@ -52,7 +52,9 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     form: { submitOnChange: true },
     window: { resizable: true },
     actions: {
-      tab: CharacterSheet.#onTab,
+      // NOT "tab": ApplicationV2 reserves that action and routes it to its own
+      // changeTab(), which demands a tab-group identifier we do not use.
+      switchTab: CharacterSheet.#onTab,
       openTray: CharacterSheet.#onOpenTray,
       toggleEquipped: CharacterSheet.#onToggleEquipped,
       toggleDrained: CharacterSheet.#onToggleDrained,

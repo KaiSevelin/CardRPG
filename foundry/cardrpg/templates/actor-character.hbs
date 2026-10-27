@@ -25,7 +25,7 @@
 
   <nav class="cr-tabs">
     {{#each tabs}}
-      <button type="button" data-action="tab" data-tab="{{this.id}}"
+      <button type="button" data-action="switchTab" data-tab="{{this.id}}"
               class="{{#if this.active}}active{{/if}}">{{this.label}}</button>
     {{/each}}
   </nav>

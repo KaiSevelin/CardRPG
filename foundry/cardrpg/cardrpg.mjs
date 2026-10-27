@@ -75,7 +75,10 @@ function registerHelpers() {
    */
   Handlebars.registerHelper("crIcon", key => {
     if (!key) return new Handlebars.SafeString("");
-    const url = `systems/cardrpg/icons/${key}.svg`;
+    // A url() inside a custom property resolves against the STYLESHEET that uses it, not the
+    // document -- so a relative path here became systems/cardrpg/styles/systems/cardrpg/icons/...
+    // getRoute gives an absolute path and copes with a server route prefix.
+    const url = foundry.utils.getRoute(`systems/cardrpg/icons/${key}.svg`);
     return new Handlebars.SafeString(
       `<span class="cr-icon" style="--icon: url('${url}')" data-icon="${key}" data-tooltip="${key}"></span>`
     );

@@ -11,7 +11,7 @@
  */
 
 import { CARDRPG } from "./config.mjs";
-import { deckOf, moveRandom, move, refill } from "./decks.mjs";
+import { deckOf, moveRandom, move, refill, normalizeDeck } from "./decks.mjs";
 
 /* -------------------------------------------- */
 /*  Initiative                                  */
@@ -86,6 +86,7 @@ export class CardRPGCombat extends Combat {
     const discard = deckOf(actor, "fateDiscard");
     if (!deck) return 0;
 
+    await normalizeDeck(deck);
     const advantage = CardRPGCombat.#hasInitiativeAdvantage(actor);
     const need = advantage ? 2 : 1;
     if (deck.cards.size < need) {
@@ -177,6 +178,7 @@ export async function drawIntents(combat) {
       await deck.shuffle({ chatNotification: false });
     }
 
+    await normalizeDeck(deck);
     const [card] = await moveRandom(deck, intent, 1);
     if (card) {
       await card.update({ face: null });   // face down until the first of its type acts

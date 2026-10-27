@@ -24,7 +24,14 @@ export function deckOf(actor, which) {
   return doc;
 }
 
-/** Move `n` random cards from one pile to another. Returns the cards that moved. */
+/**
+ * Move `n` random cards from one pile to another. Returns the cards that moved.
+ *
+ * Cards.pass marks a card `drawn` when it leaves a deck, and refuses to pass one that is already
+ * drawn. Passing a card BACK into a deck does not clear that flag, so a card returned by Catch
+ * Breath or after combat would be stuck -- the next draw out of the deck throws "may not pass Card
+ * X which has already been drawn". Clearing it on the way in is the fix.
+ */
 export async function moveRandom(from, to, n = 1) {
   if (!from || !to || n <= 0) return [];
   const pool = from.cards.contents;
@@ -35,15 +42,32 @@ export async function moveRandom(from, to, n = 1) {
   for (let i = 0; i < Math.min(n, pool.length); i++) {
     ids.push(remaining.splice(Math.floor(Math.random() * remaining.length), 1)[0].id);
   }
-
-  const moved = await from.pass(to, ids, { chatNotification: false });
-  return moved ?? [];
+  return move(from, to, ids);
 }
 
-/** Move specific cards. */
+/** Move specific cards, clearing `drawn` when they land back in a deck. */
 export async function move(from, to, ids) {
   if (!from || !to || !ids?.length) return [];
-  return (await from.pass(to, ids, { chatNotification: false })) ?? [];
+  const moved = (await from.pass(to, ids, { chatNotification: false })) ?? [];
+  if (to.type === "deck" && moved.length) {
+    await to.updateEmbeddedDocuments("Card", moved.map(c => ({ _id: c.id, drawn: false })));
+  }
+  return moved;
+}
+
+/**
+ * Repair a deck whose cards are flagged drawn while sitting in it.
+ *
+ * Self-healing, because a world created before the fix above will already be in that state and
+ * there is no reason to make anyone rebuild their content over it.
+ */
+export async function normalizeDeck(deck) {
+  if (deck?.type !== "deck") return 0;
+  const stuck = deck.cards.filter(c => c.drawn);
+  if (!stuck.length) return 0;
+  await deck.updateEmbeddedDocuments("Card", stuck.map(c => ({ _id: c.id, drawn: false })));
+  console.log(`Card RPG | un-stuck ${stuck.length} cards in ${deck.name}`);
+  return stuck.length;
 }
 
 /* -------------------------------------------- */
@@ -110,6 +134,7 @@ export async function reshuffleFate(actor) {
   const discard = deckOf(actor, "fateDiscard");
   if (!deck) return;
   if (discard?.cards.size) await move(discard, deck, discard.cards.map(c => c.id));
+  await normalizeDeck(deck);
   await deck.shuffle({ chatNotification: false });
 }
 
@@ -129,6 +154,8 @@ export async function refill(actor) {
   const hand = deckOf(actor, "actionHand");
   const discard = deckOf(actor, "actionDiscard");
   if (!deck || !hand) return { drawn: 0, taint: 0 };
+
+  await normalizeDeck(deck);
 
   const size = actor.system.handSize?.max ?? CARDRPG.defaults.handSize;
   let drawn = 0;

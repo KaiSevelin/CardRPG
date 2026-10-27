@@ -54,8 +54,45 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       tray = new CardRPGTray(actor);
       CardRPGTray.#open.set(actor.id, tray);
     }
-    tray.render({ force: true });
+    // Sit it along the bottom, where a hand of cards belongs, rather than in the middle of the map.
+    const width = Math.min(960, window.innerWidth - 340);
+    tray.render({
+      force: true,
+      position: {
+        width,
+        left: Math.max(10, (window.innerWidth - width) / 2 - 60),
+        top: Math.max(10, window.innerHeight - 470)
+      }
+    });
     return tray;
+  }
+
+  /** Every open tray, from the ApplicationV2 registry. */
+  static get openTrays() {
+    const instances = foundry.applications?.instances;
+    const list = instances ? [...instances.values()] : [];
+    return list.filter(app => app instanceof CardRPGTray);
+  }
+
+  /**
+   * Open the tray for the character this user plays, when a fight starts or their turn comes up.
+   * A tray nobody opened is no use mid-battle.
+   */
+  static autoOpen(combat) {
+    if (!combat) return;
+    const inCombat = id => combat.combatants.some(c => c.actor?.id === id);
+
+    // The assigned character first, then a single owned character in the fight. A GM typically
+    // owns everything, so opening trays for them would be noise rather than help.
+    const assigned = game.user.character;
+    if (assigned && assigned.type === "character" && inCombat(assigned.id)) {
+      return CardRPGTray.openFor(assigned);
+    }
+    if (game.user.isGM) return;
+
+    const owned = game.actors.filter(a =>
+      a.type === "character" && a.isOwner && inCombat(a.id));
+    if (owned.length === 1) CardRPGTray.openFor(owned[0]);
   }
 
   get title() {
@@ -324,27 +361,37 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
 
 /* -------------------------------------------- */
 
-/** Keep every open tray in step with the documents behind it. */
+/**
+ * Keep every open tray in step with the documents behind it.
+ *
+ * Open ApplicationV2 windows live in `foundry.applications.instances`, not in the legacy
+ * `ui.windows` registry -- which only holds ApplicationV1 windows, so looking there finds nothing.
+ */
 export function registerTrayHooks() {
-  const refresh = doc => {
+  const refreshFor = doc => {
     const actor = doc instanceof Actor ? doc : doc.parent;
     if (!actor) return;
-    for (const app of Object.values(ui.windows ?? {})) {
-      if (app instanceof CardRPGTray && app.actor?.id === actor.id) app.render();
+    for (const tray of CardRPGTray.openTrays) {
+      if (tray.actor?.id === actor.id) tray.render();
     }
   };
 
-  Hooks.on("updateActor", refresh);
-  Hooks.on("createItem", refresh);
-  Hooks.on("updateItem", refresh);
-  Hooks.on("deleteItem", refresh);
+  Hooks.on("updateActor", refreshFor);
+  Hooks.on("createItem", refreshFor);
+  Hooks.on("updateItem", refreshFor);
+  Hooks.on("deleteItem", refreshFor);
 
-  // A card moving between piles is the commonest reason the tray is stale.
-  for (const hook of ["createCard", "updateCard", "deleteCard", "updateCards"]) {
-    Hooks.on(hook, () => {
-      for (const app of Object.values(ui.windows ?? {})) {
-        if (app instanceof CardRPGTray) app.render();
-      }
-    });
+  // A card moving between piles is the commonest reason a tray goes stale, and the card itself
+  // doesn't say whose it is -- so refresh them all.
+  const refreshAll = () => {
+    for (const tray of CardRPGTray.openTrays) tray.render();
+  };
+  for (const hook of ["createCard", "updateCard", "deleteCard", "createCards", "updateCards", "deleteCards"]) {
+    Hooks.on(hook, refreshAll);
   }
+
+  // Show up when a fight starts, and again when the turn comes round.
+  Hooks.on("combatStart", combat => CardRPGTray.autoOpen(combat));
+  Hooks.on("combatTurn", combat => CardRPGTray.autoOpen(combat));
+  Hooks.on("combatRound", combat => CardRPGTray.autoOpen(combat));
 }
