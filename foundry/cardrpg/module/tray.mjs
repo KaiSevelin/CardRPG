@@ -17,7 +17,7 @@ import { CARDRPG } from "./config.mjs";
 import { deckOf, discardCards, catchBreath, refill, cardName } from "./decks.mjs";
 import { resolveAttack, resolveDefend, resolveHeal, resolveUse, collectBonuses } from "./resolve.mjs";
 
-const { ApplicationV2, HandlebarsApplicationMixin, DialogV2 } = foundry.applications.api;
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 /* -------------------------------------------- */
 
@@ -29,15 +29,22 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     /** Staged halves, in click order. @type {{cardId: string, half: string}[]} */
     this.staged = [];
     /**
-     * Which equipped item serves which verb, chosen by the player.
+     * The order items were played, most recent last.
      *
-     * The card says the verb and the item says the value, so with two weapons in hand the card
-     * face is ambiguous until this is set. Picking it on the item itself beats a dialog at play
-     * time: you decide what you are fighting with before you swing, not during.
+     * A card says the verb and the item says the value, so with a sword and a shield both in play
+     * the face would be ambiguous. The last item played wins its verbs: play the sword after the
+     * shield and you are striking with the sword. That keeps the choice with the player without
+     * putting a button on every card.
      *
-     * @type {Record<string, string>}
+     * @type {string[]}
      */
-    this.activeItems = {};
+    this.playOrder = [];
+
+    /**
+     * Equips still allowed this turn. Outside combat equipping is free; inside it costs a Ready,
+     * which is the whole reason the verb exists (core-rules 4).
+     */
+    this.readyCharges = 0;
     /** Which deck is open, if any. @type {string|null} */
     this.openPile = null;
     /** Slates currently turned over, showing value, weight and type. @type {Set<string>} */
@@ -56,17 +63,12 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       clear: CardRPGTray.#onClear,
       play: CardRPGTray.#onPlay,
       breathe: CardRPGTray.#onBreathe,
-      refill: CardRPGTray.#onRefill,
       endTurn: CardRPGTray.#onEndTurn,
-      equip: CardRPGTray.#onEquip,
-      unequip: CardRPGTray.#onUnequip,
-      toggleDrain: CardRPGTray.#onToggleDrain,
-      setActive: CardRPGTray.#onSetActive,
+      playSlate: CardRPGTray.#onPlaySlate,
       dealHand: CardRPGTray.#onDealHand,
       // A face-down pile is not openable; the click is absorbed rather than erroring.
       openPile: CardRPGTray.#onOpenPile,
       flipCard: CardRPGTray.#onFlipCard,
-      closeViewer: CardRPGTray.#onCloseViewer,
     }
   };
 
@@ -205,6 +207,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       counts,
       fatePct: Math.round(100 * (counts.fate ?? 0) / 20),
       fateSwing: counts.fate ? Math.min(100, Math.round(200 / counts.fate)) : null,
+      playedSlates: this.#playedSlates(),
       leftDecks: this.#leftDecks(),
       actionDeck: this.#actionDeck(combat),
       rightDecks: this.#rightDecks(),
@@ -219,6 +222,65 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   /* -------------------------------------------- */
+
+  /**
+   * What is in play right now: equipped items and Drained features.
+   *
+   * These stay on the scene whether or not a deck is open, because they are on the table rather
+   * than in a stack. Clicking one takes it out of play again.
+   */
+  #playedSlates() {
+    const items = this.actor.items
+      .filter(i => i.type === "item" && i.system.equipped)
+      .map(i => this.#itemCard(i, true));
+    const features = this.actor.items
+      .filter(i => i.type === "feature" && i.system.isActive && i.system.drained)
+      .map(f => this.#featureCard(f, true));
+    return [...items, ...features];
+  }
+
+  /** One item, as a card. `played` means equipped. */
+  #itemCard(i, played) {
+    const verbs = Object.entries(i.system.verbs ?? {}).filter(([, l]) => l.value !== null || l.text);
+    const serving = played ? verbs.filter(([v]) => this.#itemFor(v)?.id === i.id).map(([v]) => v) : [];
+    return {
+      id: i.id,
+      name: i.name,
+      group: i.system.group || "",
+      flippable: true,
+      flipped: this.flipped.has(i.id),
+      played,
+      blurb: i.system.blurb,
+      lines: verbs
+        .map(([v, l]) => `${v} ${l.value ?? ""}${l.range ? ` \u00b7 range ${l.range}` : ""}`
+          + `${l.area ? ` \u00b7 ${l.areaKind || "blast"} ${l.area}` : ""}`)
+        .concat(i.system.armor ? [`armor ${i.system.armor}`] : []),
+      // Which verbs this item is actually serving, so two weapons are never ambiguous.
+      note: serving.length ? `in use for ${serving.join(", ")}` : [...(i.system.tags ?? [])].join(", "),
+      facts: [
+        { label: "Value", value: `${i.system.value} g` },
+        { label: "Weight", value: `${i.system.weight} kg` },
+        { label: "Type", value: i.system.kind || "\u2014" },
+        { label: "Slot", value: i.system.slot }
+      ]
+    };
+  }
+
+  /** One feature, as a card. A passive feature is never playable: it is simply true. */
+  #featureCard(f, played) {
+    const passive = !f.system.isActive;
+    return {
+      id: f.id,
+      name: f.name,
+      group: f.system.group || "",
+      played,
+      passive,
+      lines: [f.system.text].filter(Boolean),
+      note: passive
+        ? "Passive \u2014 always on"
+        : `Recharges: ${f.system.rechargeLabel ?? "\u2014"}`
+    };
+  }
 
   /**
    * The three decks stacked down the left: Items, Features, Conditions.
@@ -290,75 +352,26 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     ].map(d => ({ ...d, open: this.openPile === d.id }));
   }
 
-  /** Whichever deck is open, spread as a vertical hand beside it. */
+  /**
+   * Whichever deck is open, spread beside it -- holding only what is NOT in play, since what is in
+   * play is already on the scene.
+   */
   #viewer() {
     if (!this.openPile) return null;
-    const left = ["items", "features", "conditions"].includes(this.openPile);
-    const flipped = id => this.flipped.has(id);
 
     if (this.openPile === "items") {
-      const cards = this.actor.items.filter(i => i.type === "item").map(i => ({
-        id: i.id,
-        name: i.name,
-        group: i.system.group || "",
-        flippable: true,
-        flipped: flipped(i.id),
-        blurb: i.system.blurb,
-        lines: Object.entries(i.system.verbs ?? {})
-          .filter(([, l]) => l.value !== null || l.text)
-          .map(([v, l]) => `${v} ${l.value ?? ""}${l.range ? ` · range ${l.range}` : ""}`
-            + `${l.area ? ` · ${l.areaKind || "blast"} ${l.area}` : ""}`)
-          .concat(i.system.armor ? [`armor ${i.system.armor}`] : []),
-        note: [...(i.system.tags ?? [])].join(", "),
-        facts: [
-          { label: "Value", value: `${i.system.value} g` },
-          { label: "Weight", value: `${i.system.weight} kg` },
-          { label: "Type", value: i.system.kind || "\u2014" },
-          { label: "Slot", value: i.system.slot }
-        ],
-        buttons: [
-          {
-            action: i.system.equipped ? "unequip" : "equip",
-            label: i.system.equipped ? "Unequip" : "Equip",
-            verb: "",
-            active: false
-          },
-          // One button per verb this item can serve, so the choice is made on the item.
-          ...(i.system.equipped
-            ? Object.entries(i.system.verbs ?? {})
-              .filter(([, l]) => l.value !== null || l.text)
-              .map(([v]) => ({
-                action: "setActive",
-                verb: v,
-                label: v,
-                active: this.#itemFor(v)?.id === i.id
-              }))
-            : [])
-        ]
-      }));
-      return { label: "Items", side: "left", count: `${cards.length} slates`, cards };
+      const cards = this.actor.items
+        .filter(i => i.type === "item" && !i.system.equipped)
+        .map(i => this.#itemCard(i, false));
+      return { label: "Items", count: `${cards.length}`, cards };
     }
 
     if (this.openPile === "features") {
-      const cards = this.actor.items.filter(i => i.type === "feature").map(f => ({
-        id: f.id,
-        name: f.name,
-        group: f.system.group || "",
-        flipped: false,
-        lines: [f.system.text].filter(Boolean),
-        note: f.system.rechargeLabel
-          ? `Recharges: ${f.system.rechargeLabel}${f.system.drained ? " — Drained" : ""}`
-          : "Passive",
-        buttons: f.system.isActive
-          ? [{
-            action: "toggleDrain",
-            label: f.system.drained ? "Restore" : "Use",
-            verb: "",
-            active: f.system.drained
-          }]
-          : []
-      }));
-      return { label: "Features", side: "left", count: `${cards.length} slates`, cards };
+      // Passive features show but cannot be picked up: there is nothing to decide about them.
+      const cards = this.actor.items
+        .filter(i => i.type === "feature" && !(i.system.isActive && i.system.drained))
+        .map(f => this.#featureCard(f, false));
+      return { label: "Features", count: `${cards.length}`, cards };
     }
 
     if (this.openPile === "conditions") {
@@ -370,14 +383,14 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
           name: game.i18n.localize(cfg.label ?? c.key),
           icon: cfg.icon,
           harm: true,
-          flipped: false,
+          passive: true,
           lines: [c.duration ? `Duration ${c.duration}` : "No duration"],
           note: creator
-            ? `Ticks down at the start of ${creator}'s turn`
+            ? `Ticks down on ${creator}'s turn`
             : (cfg.derived ? "From carried weight" : "Ticks on your own turn")
         };
       });
-      return { label: "Conditions", side: "left", count: `${cards.length}`, cards };
+      return { label: "Conditions", count: `${cards.length}`, cards };
     }
 
     const stack = deckOf(this.actor, this.openPile);
@@ -389,12 +402,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       flipped: false,
       lines: [CardRPGTray.#cardDetail(c)]
     }));
-    return {
-      label: labels[this.openPile] ?? this.openPile,
-      side: left ? "left" : "right",
-      count: `${cards.length}`,
-      cards
-    };
+    return { label: labels[this.openPile] ?? this.openPile, count: `${cards.length}`, cards };
   }
 
   static #cardDetail(card) {
@@ -473,13 +481,17 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   /**
-   * The item a verb will actually use: whatever the player picked, or the best one if they have
-   * not picked. Never a silent guess between two weapons without saying which.
+   * The item a verb will actually use: the most recently played one that can serve it.
+   *
+   * Play the shield and then the sword, and you strike with the sword. The order you put things
+   * into play is the choice, so no card needs a button to say so.
    */
   #itemFor(verb) {
     const candidates = this.#itemsFor(verb);
-    const chosen = candidates.find(i => i.id === this.activeItems[verb]);
-    return chosen ?? candidates[0] ?? null;
+    if (candidates.length < 2) return candidates[0] ?? null;
+    const ranked = [...candidates].sort((a, b) =>
+      this.playOrder.lastIndexOf(a.id) - this.playOrder.lastIndexOf(b.id));
+    return ranked.at(-1);
   }
 
   /** Every equipped item that can serve a verb, best first. */
@@ -514,13 +526,6 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     this.render();
   }
 
-  /** Choose which equipped item a verb uses. */
-  static #onSetActive(event, target) {
-    const { slateId, verb } = target.dataset;
-    this.activeItems[verb] = this.activeItems[verb] === slateId ? null : slateId;
-    this.render();
-  }
-
   /**
    * Clicking the action deck deals a hand, then the deck goes inert until the next turn -- the
    * hand refills once a round, so dealing repeatedly would just be drawing your deck away.
@@ -532,6 +537,8 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     }
     const { drawn, taint } = await refill(this.actor);
     this.dealtAt = key;
+    // A Ready bought on an earlier turn does not keep paying out.
+    this.readyCharges = 0;
     if (!drawn && !taint) ui.notifications.warn("Draw pile is empty. Catch Breath to recover some.");
     this.render();
   }
@@ -540,11 +547,6 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   static #onOpenPile(event, target) {
     const id = target.dataset.pile;
     this.openPile = this.openPile === id ? null : id;
-    this.render();
-  }
-
-  static #onCloseViewer() {
-    this.openPile = null;
     this.render();
   }
 
@@ -607,20 +609,18 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         return;
       }
 
-      // Ready: equip or swap one item from the pack. This is the whole point of the verb, so it
-      // opens the pack rather than being narrated.
-      case "ready": {
-        const pack = actor.items.filter(i => i.type === "item" && !i.system.equipped);
-        if (!pack.length) return ui.notifications.warn("Nothing in the pack to ready.");
-        const chosen = await DialogV2.wait({
-          window: { title: "Ready an item" },
-          content: `<p>Equip one item from your pack.</p>`,
-          buttons: pack.map(i => ({ action: i.id, label: `${i.name} (${i.system.slot})` }))
-        }).catch(() => null);
-        const item = pack.find(i => i.id === chosen);
-        if (item) await CardRPGTray.#equipItem(actor, item);
+      /*
+       * Ready grants an equip or a swap. It does not pick the item: you do, by playing a slate
+       * from the Items deck. The verb buys you the chance, not the decision.
+       */
+      case "ready":
+        this.readyCharges++;
+        ui.notifications.info("Ready: play or unplay one item from the Items deck.");
+        await ChatMessage.create({
+          speaker: ChatMessage.getSpeaker({ actor }),
+          content: `<div class="cardrpg"><p><strong>${actor.name}</strong> readies an item.</p></div>`
+        });
         return;
-      }
 
       default:
         await ChatMessage.create({
@@ -634,47 +634,65 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
 
   /* -------------------------------------------- */
 
-  /** Equip, respecting slot capacity. A two-handed item fills both hand slots. */
-  static async #equipItem(actor, item) {
+  /**
+   * Play or unplay a slate. An item in play is equipped; a feature in play is Drained.
+   *
+   * Equipping is free outside combat. Inside one it costs a Ready, because doing it under pressure
+   * is the whole reason that verb exists -- so the click is refused until a Ready has been played.
+   */
+  static async #onPlaySlate(event, target) {
+    const slate = this.actor.items.get(target.dataset.slateId);
+    if (!slate) return;
+
+    if (slate.type === "feature") {
+      if (!slate.system.isActive) {
+        return ui.notifications.info("A passive feature is simply true; there is nothing to play.");
+      }
+      const drained = !slate.system.drained;
+      await slate.update({
+        "system.drained": drained,
+        "system.drainedFor": drained ? (slate.system.active.turns ?? null) : null
+      });
+      if (drained) {
+        await ChatMessage.create({
+          speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+          content: `<div class="cardrpg"><p><strong>${this.actor.name}</strong> uses `
+            + `<em>${slate.name}</em>: ${slate.system.active.text}</p></div>`
+        });
+      }
+      return this.render();
+    }
+
+    const equipping = !slate.system.equipped;
+    if (game.combat?.started && !this.readyCharges) {
+      return ui.notifications.warn(
+        "Under pressure that costs a Ready. Play a card half showing Ready first.");
+    }
+    if (equipping && !await CardRPGTray.#hasRoom(this.actor, slate)) return;
+
+    await slate.update({ "system.equipped": equipping });
+    if (game.combat?.started) this.readyCharges--;
+
+    // Last played wins its verbs, so put it at the end of the order.
+    this.playOrder = this.playOrder.filter(id => id !== slate.id);
+    if (equipping) this.playOrder.push(slate.id);
+    this.render();
+  }
+
+  /** Slot capacity, counting a two-handed item as both hands. */
+  static async #hasRoom(actor, item) {
     const slot = item.system.slot;
     const capacity = CARDRPG.slots[slot]?.capacity;
-    if (capacity !== null && capacity !== undefined) {
-      const used = actor.items
-        .filter(i => i.type === "item" && i.system.equipped && i.system.slot === slot)
-        .reduce((n, i) => n + (i.system.isTwoHanded ? 2 : 1), 0);
-      const needs = item.system.hands === 2 && slot === "hands" ? 2 : 1;
-      if (used + needs > capacity) {
-        return ui.notifications.warn(
-          `No room: ${slot} holds ${capacity}. Unequip something first.`);
-      }
+    if (capacity === null || capacity === undefined) return true;
+    const used = actor.items
+      .filter(i => i.type === "item" && i.system.equipped && i.system.slot === slot)
+      .reduce((n, i) => n + (i.system.isTwoHanded ? 2 : 1), 0);
+    const needs = item.system.hands === 2 && slot === "hands" ? 2 : 1;
+    if (used + needs > capacity) {
+      ui.notifications.warn(`No room: ${slot} holds ${capacity}. Take something out of play first.`);
+      return false;
     }
-    await item.update({ "system.equipped": true });
-  }
-
-  static async #onEquip(event, target) {
-    const item = this.actor.items.get(target.dataset.slateId);
-    if (item) await CardRPGTray.#equipItem(this.actor, item);
-  }
-
-  static async #onUnequip(event, target) {
-    await this.actor.items.get(target.dataset.slateId)?.update({ "system.equipped": false });
-  }
-
-  static async #onToggleDrain(event, target) {
-    const slate = this.actor.items.get(target.dataset.slateId);
-    if (!slate?.system.isActive) return;
-    const drained = !slate.system.drained;
-    await slate.update({
-      "system.drained": drained,
-      "system.drainedFor": drained ? (slate.system.active.turns ?? null) : null
-    });
-    if (drained) {
-      await ChatMessage.create({
-        speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-        content: `<div class="cardrpg"><p><strong>${this.actor.name}</strong> uses `
-          + `<em>${slate.name}</em>: ${slate.system.active.text}</p></div>`
-      });
-    }
+    return true;
   }
 
   static async #onEndTurn() {
@@ -688,10 +706,6 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     this.render();
   }
 
-  static async #onRefill() {
-    await refill(this.actor);
-    this.render();
-  }
 }
 
 /* -------------------------------------------- */

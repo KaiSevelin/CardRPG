@@ -115,54 +115,82 @@
     </section>
   {{/if}}
 
-  {{!-- An opened deck: its cards laid out beside it, again with no tray --}}
+  {{!--
+    Slates come in two groups. What is NOT in play sits in its deck and appears when you open it;
+    what IS in play stays on the scene until you take it out again. Clicking a card moves it
+    between the two. A passive feature is in neither: it is simply true, with nothing to decide.
+  --}}
   {{#if viewer}}
-    <section class="cr-hud__spread">
-        {{#each viewer.cards}}
-          <div class="cr-card cr-card--spread{{#if this.harm}} cr-card--harm{{/if}}{{#if this.flipped}} cr-card--back{{/if}}"
-               data-group="{{this.group}}">
-            <div class="cr-card__name">
-              {{#if this.icon}}{{crIcon this.icon}}{{/if}}
-              {{this.name}}
-              {{#if this.flippable}}
-                <button type="button" class="cr-card__flip" data-action="flipCard" data-card-id="{{this.id}}"
-                        data-tooltip="Turn it over">&#8634;</button>
-              {{/if}}
-            </div>
-
-            {{#if this.flipped}}
-              {{!-- The back: value, weight and type, which is tier 3 of the information model --}}
-              <div class="cr-card__back">
-                {{#if this.blurb}}<p class="cr-note">{{this.blurb}}</p>{{/if}}
-                <dl class="cr-card__facts">
-                  {{#each this.facts}}
-                    <dt>{{this.label}}</dt><dd>{{this.value}}</dd>
-                  {{/each}}
-                </dl>
-              </div>
-            {{else}}
-              <div class="cr-card__front">
-                {{#each this.lines}}
-                  <div class="cr-card__line">{{this}}</div>
-                {{/each}}
-                {{#if this.note}}<p class="cr-note">{{this.note}}</p>{{/if}}
-              </div>
-            {{/if}}
-
-            {{#if this.buttons}}
-              <div class="cr-card__acts">
-                {{#each this.buttons}}
-                  <button type="button"
-                          class="cr-card__act{{#if this.active}} cr-card__act--active{{/if}}"
-                          data-action="{{this.action}}" data-slate-id="{{../this.id}}"
-                          data-verb="{{this.verb}}"
-                          data-tooltip="{{#if this.verb}}Use this item for {{this.verb}}{{/if}}">{{this.label}}</button>
-                {{/each}}
-              </div>
+    <section class="cr-hud__spread" data-group-label="{{viewer.label}} — not in play">
+      {{#each viewer.cards}}
+        <div class="cr-card cr-card--spread{{#if this.harm}} cr-card--harm{{/if}}{{#if this.flipped}} cr-card--back{{/if}}{{#if this.passive}} cr-card--passive{{/if}}"
+             data-group="{{this.group}}">
+          <div class="cr-card__name">
+            {{#if this.icon}}{{crIcon this.icon}}{{/if}}
+            {{this.name}}
+            {{#if this.flippable}}
+              <button type="button" class="cr-card__flip" data-action="flipCard" data-card-id="{{this.id}}"
+                      data-tooltip="Turn it over for value, weight and type">&#8634;</button>
             {{/if}}
           </div>
+
+          {{#if this.flipped}}
+            <div class="cr-card__back">
+              {{#if this.blurb}}<p class="cr-note">{{this.blurb}}</p>{{/if}}
+              <dl class="cr-card__facts">
+                {{#each this.facts}}<dt>{{this.label}}</dt><dd>{{this.value}}</dd>{{/each}}
+              </dl>
+            </div>
+          {{else}}
+            <div class="cr-card__front">
+              {{#each this.lines}}<div class="cr-card__line">{{this}}</div>{{/each}}
+              {{#if this.note}}<p class="cr-note">{{this.note}}</p>{{/if}}
+            </div>
+          {{/if}}
+
+          {{#unless this.passive}}
+            <button type="button" class="cr-card__take" data-action="playSlate" data-slate-id="{{this.id}}"
+                    data-tooltip="Put it into play">Play</button>
+          {{/unless}}
+        </div>
       {{else}}
-        <div class="cr-card cr-card--spread"><div class="cr-card__front"><span class="cr-note">Empty.</span></div></div>
+        <div class="cr-card cr-card--spread cr-card--passive">
+          <div class="cr-card__front"><span class="cr-note">Nothing left in the deck.</span></div>
+        </div>
+      {{/each}}
+    </section>
+  {{/if}}
+
+  {{#if playedSlates}}
+    <section class="cr-hud__played" data-group-label="In play">
+      {{#each playedSlates}}
+        <div class="cr-card cr-card--spread cr-card--played{{#if this.flipped}} cr-card--back{{/if}}"
+             data-group="{{this.group}}">
+          <div class="cr-card__name">
+            {{this.name}}
+            {{#if this.flippable}}
+              <button type="button" class="cr-card__flip" data-action="flipCard" data-card-id="{{this.id}}"
+                      data-tooltip="Turn it over for value, weight and type">&#8634;</button>
+            {{/if}}
+          </div>
+
+          {{#if this.flipped}}
+            <div class="cr-card__back">
+              {{#if this.blurb}}<p class="cr-note">{{this.blurb}}</p>{{/if}}
+              <dl class="cr-card__facts">
+                {{#each this.facts}}<dt>{{this.label}}</dt><dd>{{this.value}}</dd>{{/each}}
+              </dl>
+            </div>
+          {{else}}
+            <div class="cr-card__front">
+              {{#each this.lines}}<div class="cr-card__line">{{this}}</div>{{/each}}
+              {{#if this.note}}<p class="cr-note">{{this.note}}</p>{{/if}}
+            </div>
+          {{/if}}
+
+          <button type="button" class="cr-card__take" data-action="playSlate" data-slate-id="{{this.id}}"
+                  data-tooltip="Take it out of play">Unplay</button>
+        </div>
       {{/each}}
     </section>
   {{/if}}

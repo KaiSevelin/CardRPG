@@ -389,7 +389,8 @@
 .cr-hud-layer .cr-hud__panel,
 .cr-hud-layer .cr-hud__decks,
 .cr-hud-layer .cr-hud__hand,
-.cr-hud-layer .cr-hud__spread { position: absolute; pointer-events: auto; }
+.cr-hud-layer .cr-hud__spread,
+.cr-hud-layer .cr-hud__played { position: absolute; pointer-events: auto; }
 
 .cr-hud-layer .cr-hud__panel {
   background: var(--cardrpg-paper);
@@ -528,6 +529,37 @@
   overflow-x: auto;
   overflow-y: hidden;
   padding: 2px;
+}
+
+/*
+ * What is in play sits in its own row below the deck's contents, and stays there when the deck is
+ * closed -- it is on the table, not in a stack.
+ */
+.cr-hud-layer .cr-hud__played {
+  left: calc(var(--cr-controls) + var(--cr-gutter) + var(--cr-card-w) + 12px);
+  right: calc(var(--cr-sidebar) + var(--cr-card-w) + 12px);
+  top: calc(54px + var(--cr-card-h) + 26px);
+  height: var(--cr-card-h);
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 2px;
+}
+
+/* Each row says what it is, without a tray to put a heading on. */
+.cr-hud-layer .cr-hud__spread::before,
+.cr-hud-layer .cr-hud__played::before {
+  content: attr(data-group-label);
+  position: absolute;
+  top: -15px;
+  left: 2px;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--cardrpg-paper);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
 }
 
 /* --- spread cards: the same size as a card in hand, whatever is on them --- */
@@ -744,3 +776,30 @@
 }
 
 .cr-hud-layer .cr-options .cr-tray__flag { text-align: center; }
+
+/* -------------------------------------------- */
+/*  Played and unplayed slates                  */
+/* -------------------------------------------- */
+
+/* A card in play is marked, so the two rows never blur together. */
+.cardrpg .cr-card--played { border-color: var(--cardrpg-ink); border-width: 2px; }
+
+/* A passive feature is simply true: nothing to pick up, so nothing to click. */
+.cardrpg .cr-card--passive { opacity: 0.7; }
+
+.cardrpg .cr-card__take {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  border-radius: 0;
+  font-size: 0.68rem;
+  line-height: 1.8;
+  padding: 0;
+  cursor: pointer;
+}
+.cardrpg .cr-card--played .cr-card__take {
+  background: var(--cardrpg-ink);
+  color: var(--cardrpg-paper);
+}
