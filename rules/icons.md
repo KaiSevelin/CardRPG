@@ -12,7 +12,7 @@ readable at about 16 px, single-colour so it can be recoloured and greyed out wh
 
 ---
 
-## Tier 1 — needed before the first card exists (22)
+## Tier 1 — needed before the first card exists (23)
 
 These appear on card faces. Nothing can be laid out until they're chosen.
 
@@ -48,6 +48,16 @@ These appear on card faces. Nothing can be laid out until they're chosen.
 
 Modifiers (`+1`, `−1` beside an icon) are typography, not icons.
 
+
+### Slate markers (1)
+
+| Placeholder | Name | Shown on | game-icons.net |
+|---|---|---|---|
+| ⟳ | **Charging** | Every slate with an active ability, beside its recharge | Charging |
+
+The icon carries the recharge — a number of turns, or a boundary. A **tooltip** gives the prose:
+*"Recharges after 2 of your turns"*, *"Recharges when the combat ends"*. Icon for the face, words on
+hover, per the information tiers in [../foundry/card-layout.md](../foundry/card-layout.md).
 
 ### Approaches — skill cards (7)
 
@@ -146,16 +156,16 @@ crowded inventory.
 
 ---
 
-## Status: complete — 49 of 49 chosen
+## Status: complete — 50 of 50 chosen
 
 | Tier | Count | Blocks |
 |---|---|---|
-| 1 | 22 | Card layout and the card schema |
+| 1 | 23 | Card layout and the card schema |
 | 2 | 18 | Playable combat |
 | 3 | 9 | Polish |
 | *optional tags* | *9* | *nothing* |
 
-**58 icons to download** including the optional tags. Nothing in the rules is waiting on an icon
+**59 icons to download** including the optional tags. Nothing in the rules is waiting on an icon
 decision any more.
 
 ---
@@ -165,7 +175,7 @@ decision any more.
 - **[game-icons.net](https://game-icons.net)** — mostly **CC BY 3.0**, a few CC0, and the licence and
   author are **per icon**. Record the author for each one as you download, in an `ATTRIBUTION.md`
   that ships with the system. Doing it at download time costs minutes; doing it afterwards means
-  re-finding 58 pages.
+  re-finding 59 pages.
 - Download as **SVG** with a single fill colour, so one CSS rule can grey out a blocked icon.
 - Filenames on the site are kebab-case (`sword-wound.svg`, `all-seeing-eye.svg`), which is also a
   reasonable key convention for the icon enum in the system data model.

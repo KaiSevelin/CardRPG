@@ -111,12 +111,17 @@ two fields:
 
 | Field | Form |
 |---|---|
-| `recharge` | enum: `turn` / `combat` / `scene` / `shortRest` / `longRest`, or absent for a passive line |
+| `recharge` | a **number of turns**, or the boundary `combat` / `shortRest` / `longRest`. Absent on a passive line |
 | `drained` | boolean, stored |
+| `drainedFor` | turns remaining, stored, only while a numeric recharge is counting down |
 
-**No new boundaries are needed.** Every recharge point is one the system already has to handle:
-start of turn (conditions tick), end of combat (hand and discard return to the deck), a new scene
-(the skill hand refreshes), and the two rests (Spent cards return). Hook the refresh onto those.
+**No new boundaries are needed.** Each of the three is one the system already handles: end of combat
+(hand and discard return to the deck) and the two rests (Spent cards return). Hook the refresh onto
+those.
+
+A **numeric** recharge counts down at the start of the owner's turn — the same tick conditions already
+use, so it costs no new machinery. It runs in combat rounds and challenge rounds; outside both it is
+simply ready, so there is nothing to track while the party is walking around.
 
 Only `drained` is stored; the rest is the slate's own definition. **Consumables have no recharge** —
 they are deleted or decremented instead, which is the far end of the same scale.

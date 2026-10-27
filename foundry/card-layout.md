@@ -335,13 +335,19 @@ front:  ╔══════════════════════╗
   passive line and an active one without confusion:
 
   ```
-  ⚔  3                      <- passive: the base value
-  Drain: +2 dmg   [combat]  <- active: Drained when used
+  ⚔  3                     <- passive: the base value
+  Drain: +2 dmg    ⟳ 2     <- active: Drained when used, back after 2 turns
   ```
+
+  The **⟳ Charging** icon carries the recharge: a number of turns, or a boundary word (`combat`,
+  `short rest`, `long rest`). A **tooltip** spells it out — *"Recharges after 2 of your turns"* —
+  which keeps the prose off the face, per the tiers in §2.
 
 - **A Drained slate is turned sideways**, never flipped — the back is the description, so flipping
   already means "let me read this". Only **one** active ability per slate, or a sideways slate is
   ambiguous about which ability is spent.
+- While Drained, the tray shows the **remaining count** against the ⟳ icon, counting down as your
+  turns pass, so a player can see when the trick comes back without doing arithmetic.
 - Slot marker top-right, tags under the name, group number bottom-right.
 - A weapon that only supplies base values (`Longsword: Strike 3, Defend 1`) carries **no border**.
 - The back holds the tier-3 fields: short description, value, type.

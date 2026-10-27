@@ -272,15 +272,28 @@ nothing to remember to use.
 An **active** ability is one you choose to use, and it doesn't work every time.
 
 > **Drain** — using the ability turns the slate **sideways**. It gives nothing more until its
-> **recharge** comes round.
+> **recharge** comes round. Every slate with an active ability prints its recharge, next to the
+> ⟳ **Charging** icon.
 
-| Recharge | Comes back |
+A recharge is either a **count of turns** or a **boundary**:
+
+| ⟳ | Comes back |
 |---|---|
-| **Turn** | At the start of your next turn |
+| **1** | At the start of your next turn |
+| **2, 3, …** | After that many of your turns |
 | **Combat** | When the combat ends |
-| **Scene** | When the GM calls a new scene |
 | **Short rest** | On a short rest — and so costs a rest token |
 | **Long rest** | On a long rest |
+
+**Counting turns** works exactly like a condition's duration: the number ticks down by 1 at the start
+of each of **your own** turns, and at 0 the slate turns upright again. It runs in combat rounds and in
+challenge rounds alike (see [skill-rules.md](skill-rules.md) §3), since both are ordered sequences of
+turns.
+
+**Outside a fight or a challenge, a turn-counted ability is simply ready.** Nobody is counting turns
+while the party walks down a corridor, and a two-turn cooldown was never meant to budget a day. That
+is the division: **turns pace a fight, rests budget a day.** If an ability needs limiting outside
+combat, give it a rest recharge instead.
 
 - **Turn the slate sideways; don't flip it.** A slate's back carries its description, so flipping
   already means "let me read this", not "I used it".
@@ -288,6 +301,10 @@ An **active** ability is one you choose to use, and it doesn't work every time.
   slates.
 - **Consumables don't recharge at all.** A Healing Potion is gone when you drink it — the far end of
   the same scale.
+
+Short counts are for the rhythm of a fight — a weapon trick you can lean on every second or third
+turn. The three boundaries are for things that should feel like a decision: once this fight, once
+between rests, once a day.
 
 #### Passive or active is the main dial for pricing a slate
 
