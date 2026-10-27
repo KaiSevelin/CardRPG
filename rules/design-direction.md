@@ -72,7 +72,7 @@ The combat simulator is the tie-breaker for numbers. Decisions it has already se
 | NPC gear is tuned separately from player gear | An NPC's weapon value is the knob that sets its threat; it shouldn't track player weapons. |
 | A Defend **primary** blocks every attack until your next turn | A one-shot block lost to the first hit was never worth a primary half. Worth +3.3 points of win rate in the hardest fight. |
 | Strike on a card's **secondary** half is a leveling reward, not a starter card | One such card shortens a fight by most of a round. |
-| The starter action deck stays at **16 cards** | A 12-card deck doesn't make exhaustion matter, it makes hard fights unwinnable (25% vs 60%) while leaving easy ones nearly untouched. |
+| The starter action deck stays at **16 cards** | Not because small decks are weak — a 12-card deck pruned well for the fight matches a full one (63% vs 65%). Because pruning *badly* collapses it (45%), and a new character can't know what they'll face. Deck size is training wheels, not a balance lever. |
 | **Catch Breath recovers half the discard pile**, at random | Each recovery returning less than the last is what wears a character down over a long fight: worth 7 points of win rate in a hard fight and nothing in a short one. |
 | **Overloaded costs 2 random cards**, Spent | Measured: 7 points in a hard fight, 2 in a moderate one. One card is invisible, three takes the fight away. |
 | Each NPC **type** has its own fate deck | Blessed and Cursed need a scope, and every other NPC trait is already per type. |

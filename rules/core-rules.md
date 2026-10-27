@@ -225,8 +225,8 @@ pile, when you are no longer Overloaded, or on your next rest.
   you become Overloaded during a fight, take the cards from your **draw pile**; if that is empty,
   from your hand.
 - Two is a measured number, not a guess. In simulation two random cards off a 16-card deck cost
-  **7 points of win rate in a hard fight and 2 in a moderate one**; three starts taking the fight
-  away. That difficulty-scaling is the point — hauling loot through a quiet dungeon is nearly free,
+  **7.5 points of win rate in a hard fight and 2.5 in a moderate one**; three starts taking the
+  fight away. That difficulty-scaling is the point — hauling loot through a quiet dungeon is nearly free,
   hauling it into a real fight is a coin flip. See
   [../sim/analysis-2026-10-27.md](../sim/analysis-2026-10-27.md).
 
@@ -478,10 +478,14 @@ Wound and Taint cards **don't count** toward deck size limits, and you **can't**
 Because Catch Breath no longer lets you choose what to set aside, **nothing removes a dead card from
 your deck during play**. Deliberate pruning — at level up, or through training in downtime — is the
 only way to get rid of one. That makes pruning a real decision rather than a free upgrade, because
-deck **size** is protective: simulation puts a 12-card deck at **25%** in a hard fight against a
-16-card deck's 60%, catching breath nearly 2.5 times per fight. A pruned deck draws its best cards
-more often and runs dry sooner, the same trade the skill deck already describes
-([skill-rules.md](skill-rules.md) §8).
+what matters is **fit, not size**. Simulation puts a 12-card deck pruned *well for the fight* level
+with a full 16-card deck (63% against 65% in a hard fight), and a 12-card deck pruned *badly* at 45%.
+A pruned deck draws its best cards more often and runs dry sooner, the same trade the skill deck
+already describes ([skill-rules.md](skill-rules.md) §8) — but the risk is cutting the wrong card, not
+cutting cards at all.
+
+The starter deck is 16 for that reason: pruning well takes knowing what you will face, which a new
+character doesn't.
 
 **[OPEN]** The action deck's grow and prune rules wait on the Way trees, with the rest of levelling.
 

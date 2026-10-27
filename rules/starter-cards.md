@@ -152,10 +152,10 @@ Tuned separately from player gear (see *NPC gear and the armor rule* in the core
 
 | Encounter | Difficulty | Simulated win rate |
 |---|---|---|
-| 3 goblins with spears | Easy | 99.3% |
-| 4 goblins with spears | Moderate | 92.9% |
-| 5 goblins with spears | Hard | 76.5% |
-| 4 goblins, 2 spears + 2 bows | **Deadly** | 59.7% |
+| 3 goblins with spears | Easy | 99.4% |
+| 4 goblins with spears | Moderate | 93.2% |
+| 5 goblins with spears | Hard | 75.9% |
+| 4 goblins, 2 spears + 2 bows | **Deadly** | 64.6% |
 
 **A mixed group is a tier harder than a uniform one of the same size.** Four goblins with two bows are twice as dangerous as four with spears: the spears pin the hero in melee while the bows shoot from behind cover, and *Dirty Trick* lands three times as often because the hero spends rounds crossing open ground. Build hard encounters by mixing ranges, not by adding bodies.
 

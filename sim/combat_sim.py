@@ -85,18 +85,21 @@ class FateDeck:
 
 
 # ---------------------------------------------------------------- cards
-# name: (primary ops, secondary ops, reaction, copies, keep-value for the AI)
+# name: (primary ops, secondary ops, reaction, copies)
+# A card's worth to the AI is NOT stored here -- it is computed from its ops against the
+# current board (see Game.card_value). A static table cannot express that Advance is junk
+# against three adjacent spears and essential against two kiting archers.
 WARRIOR_CARDS = {
-    'Strike':      ([('strike', 0)], [('move', 1)], 'parry', 3, 4.5),
-    'Heavy Swing': ([('strike', 1)], [('move', 1)], None, 2, 5.0),
-    'Lunge':       ([('move', 2), ('strike', 0)], [('move', 1)], None, 1, 5.0),
-    'Shield Up':   ([('defend',)], [('move', 1)], 'block', 2, 4.0),
-    'Advance':     ([('move', 3)], [('move', 2)], 'sidestep', 2, 2.5),
-    'Draw Steel':  ([('strike', 0)], [('ready',)], None, 2, 3.5),
-    'Quick Hands': ([('use',)], [('ready',)], 'use', 1, 2.0),
-    'Second Wind': ([('heal', 2)], [('use',)], None, 1, 3.0),
-    'Taunt':       ([('taunt',)], [('move', 1)], None, 1, 1.0),
-    'Weapon Swap': ([('ready',)], [('strike', 0)], None, 1, 4.0),
+    'Strike':      ([('strike', 0)], [('move', 1)], 'parry', 3),
+    'Heavy Swing': ([('strike', 1)], [('move', 1)], None, 2),
+    'Lunge':       ([('move', 2), ('strike', 0)], [('move', 1)], None, 1),
+    'Shield Up':   ([('defend',)], [('move', 1)], 'block', 2),
+    'Advance':     ([('move', 3)], [('move', 2)], 'sidestep', 2),
+    'Draw Steel':  ([('strike', 0)], [('ready',)], None, 2),
+    'Quick Hands': ([('use',)], [('ready',)], 'use', 1),
+    'Second Wind': ([('heal', 2)], [('use',)], None, 1),
+    'Taunt':       ([('taunt',)], [('move', 1)], None, 1),
+    'Weapon Swap': ([('ready',)], [('strike', 0)], None, 1),
 }
 
 GOBLIN_CARDS = {
@@ -272,21 +275,29 @@ class Game:
         self.cfg, self.rng, self.verbose = cfg, rng, verbose
         self.cards = dict(WARRIOR_CARDS)
         if not cfg.double_strike:
-            p, s, r, n, v = self.cards['Weapon Swap']
-            self.cards['Weapon Swap'] = (p, [('move', 1)], r, n, v)
+            p, s, r, n = self.cards['Weapon Swap']
+            self.cards['Weapon Swap'] = (p, [('move', 1)], r, n)
         self.cards.update(cfg.card_overrides)
         deck = [name for name, c in self.cards.items() for _ in range(c[3])]
-        for _ in range(cfg.deck_cut):
-            if cfg.deck_cut_random:
-                deck.pop(rng.randrange(len(deck)))
-            else:
-                deck.remove(min(deck, key=lambda n: self.cards[n][4]))
-        rng.shuffle(deck)
         self.w = dict(pos=(1, 4), hp=cfg.hp, block=0, potions=cfg.potions, hand=[], draw=deck,
                       discard=[], spent=[], dazed=0, dazed_by=None, exhausted=False, acted=False)
         n = len(cfg.goblins)
         ys = [round(1 + i * (GRID_H - 3) / max(1, n - 1)) for i in range(n)] if n > 1 else [4]
         self.gobs = [dict(id=i + 1, pos=(8, ys[i]), hp=cfg.goblin_hp, weapon=wpn) for i, wpn in enumerate(cfg.goblins)]
+        # Deck cut comes after the board exists, because what is worth pruning depends on
+        # the fight you expect (see prune_value).
+        self._board = self.board()
+        for _ in range(cfg.deck_cut):
+            if cfg.deck_cut_random:
+                deck.pop(rng.randrange(len(deck)))
+            else:
+                # prune_value rates cards independently, so left alone it will happily strip
+                # the last card that can drink a potion and leave the potion dead weight
+                pool = deck
+                if cfg.potions and sum(1 for n in deck if self.gives_use(n)) <= 1:
+                    pool = [n for n in deck if not self.gives_use(n)] or deck
+                deck.remove(min(pool, key=self.prune_value))
+        rng.shuffle(deck)
         self.fate_w, self.fate_g = FateDeck(rng), FateDeck(rng)
         self.gdeck = []
         self.s = collections.Counter()
@@ -303,8 +314,73 @@ class Game:
         if card in ('MISS', 'CRIT'):
             self.s['fate_' + card.lower()] += 1
 
+    # --- card valuation
+    def board(self):
+        """The board facts a card's worth depends on. Cached per turn by callers."""
+        w, alive = self.w, self.alive()
+        if not alive:
+            return dict(adj=0, gap=0, ranged=0, hurt=False, n=0)
+        return dict(
+            adj=sum(1 for g in alive if cheb(w['pos'], g['pos']) == 1),
+            gap=min(cheb(w['pos'], g['pos']) for g in alive),
+            ranged=sum(1 for g in alive if g['weapon'] == 'bow'),
+            hurt=w['hp'] <= self.cfg.hp / 2,
+            n=len(alive),
+        )
+
+    def gives_use(self, name):
+        """Can this card drink a potion, on any half or as a reaction?"""
+        primary, secondary, reaction, _ = self.cards[name]
+        return reaction == 'use' or any(o[0] == 'use' for o in primary + secondary)
+
+    def prune_value(self, name):
+        """What a card is worth across a whole fight, for deck-building decisions.
+
+        One snapshot undervalues situational cards -- a heal looks worthless while you are
+        healthy -- so average over three moments: closing, engaged, and pressed.
+        """
+        ranged = sum(1 for wpn in self.cfg.goblins if wpn == 'bow')
+        n = len(self.cfg.goblins)
+        boards = (dict(adj=0, gap=5, ranged=ranged, hurt=False, n=n),   # closing
+                  dict(adj=1, gap=3, ranged=ranged, hurt=False, n=n),   # engaged
+                  dict(adj=2, gap=1, ranged=ranged, hurt=True, n=n))    # pressed
+        return sum(self.card_value(name, b) for b in boards) / len(boards)
+
+    def op_value(self, op, b):
+        cfg, kind = self.cfg, op[0]
+        if kind == 'strike':
+            dmg = cfg.strike_base + op[1] + (1 if cfg.strong else 0)
+            return dmg if b['adj'] else dmg * 0.25      # can't swing at nothing
+        if kind == 'move':
+            closes = min(op[1], max(0, b['gap'] - 1))   # squares that actually close the gap
+            kiting = 0.8 * op[1] if b['ranged'] else 0  # archers run; you need the legs
+            return 1.2 * closes + kiting
+        if kind == 'defend':
+            return 0.8 * cfg.shield_def * max(1, min(b['adj'] + b['ranged'], 3))
+        if kind == 'heal':
+            return (2.0 if b['hurt'] else 0.3) * op[1]
+        if kind == 'use':
+            return 3.0 if (b['hurt'] and self.w['potions']) else 0.4
+        return 0.2                                       # ready, taunt: inert in a solo test
+
+    REACTION_WORTH = {'block': 1.2, 'parry': 0.9, 'use': 0.5}
+
+    def card_value(self, name, b):
+        """How much we want this card in hand, on this board."""
+        primary, secondary, reaction, _ = self.cards[name]
+        v = max(sum(self.op_value(o, b) for o in primary) if primary else 0,
+                sum(self.op_value(o, b) for o in secondary) if secondary else 0)
+        if reaction == 'parry':
+            v += 0.9 if b['adj'] else 0.2
+        elif reaction == 'use':
+            v += 0.5 if self.w['potions'] else 0.1
+        else:
+            v += self.REACTION_WORTH.get(reaction, 0.15)
+        return v
+
     def keep(self, name):
-        return self.cards[name][4]
+        """Card value against the cached board; refreshed each turn and on each hit."""
+        return self.card_value(name, self._board)
 
     def alive(self):
         return [g for g in self.gobs if g['hp'] > 0]
@@ -451,6 +527,7 @@ class Game:
 
     def warrior_turn(self):
         w, cfg = self.w, self.cfg
+        self._board = self.board()
         w['block'] = 0
         w['acted'] = True
         if w['dazed'] > 0:
@@ -485,6 +562,7 @@ class Game:
 
     def take_hit(self, raw, melee, src):
         w, cfg = self.w, self.cfg
+        self._board = self.board()
         d = max(0, raw - cfg.armor)
         absorbed = min(w['block'], d)
         if not cfg.persistent_block:
