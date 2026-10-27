@@ -52,18 +52,33 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     form: { submitOnChange: true },
     window: { resizable: true },
     actions: {
+      tab: CharacterSheet.#onTab,
       openTray: CharacterSheet.#onOpenTray,
       toggleEquipped: CharacterSheet.#onToggleEquipped,
       toggleDrained: CharacterSheet.#onToggleDrained,
+      addCondition: CharacterSheet.#onAddCondition,
       removeCondition: CharacterSheet.#onRemoveCondition,
       editSlate: CharacterSheet.#onEditSlate,
-      deleteSlate: CharacterSheet.#onDeleteSlate
+      deleteSlate: CharacterSheet.#onDeleteSlate,
+      shortRest: CharacterSheet.#onShortRest,
+      longRest: CharacterSheet.#onLongRest
     }
   };
 
   static PARTS = {
-    main: { template: "systems/cardrpg/templates/actor-character.hbs", scrollable: [""] }
+    main: { template: "systems/cardrpg/templates/actor-character.hbs", scrollable: [".cr-sheet__body"] }
   };
+
+  static TAB_LIST = [
+    { id: "vitals", label: "Vitals" },
+    { id: "deck", label: "Deck" },
+    { id: "gear", label: "Gear" },
+    { id: "features", label: "Features" },
+    { id: "notes", label: "Notes" }
+  ];
+
+  /** Kept on the instance, so switching tabs needs no document write. */
+  tab = "vitals";
 
   /* -------------------------------------------- */
 
@@ -98,7 +113,28 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       config: CARDRPG,
       isGM: game.user.isGM,
 
-      conditions: describeConditions(system),
+      tab: this.tab,
+      tabs: CharacterSheet.TAB_LIST.map(t => ({ ...t, active: t.id === this.tab })),
+      onVitals: this.tab === "vitals",
+      onDeck: this.tab === "deck",
+      onGear: this.tab === "gear",
+      onFeatures: this.tab === "features",
+      onNotes: this.tab === "notes",
+
+      // Index comes from the stored list, not the displayed one: the displayed list has the two
+      // derived conditions appended, and removing by display index would delete the wrong entry.
+      conditions: describeConditions(system).map(c => ({
+        ...c,
+        index: system.conditions.findIndex(stored =>
+          stored.key === c.key && stored.creatorId === c.creatorId)
+      })),
+      conditionChoices: Object.entries(CARDRPG.conditions)
+        .filter(([, cfg]) => !cfg.derived)
+        .map(([key, cfg]) => ({ key, label: game.i18n.localize(cfg.label) })),
+      actorChoices: game.actors
+        .filter(a => a.id !== actor.id)
+        .map(a => ({ id: a.id, name: a.name })),
+
       equipped,
       pack: items.filter(i => !i.system.equipped),
       features: features.map(f => ({ doc: f, drain: describeDrain(f) })),
@@ -160,6 +196,11 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
   /* -------------------------------------------- */
 
+  static #onTab(event, target) {
+    this.tab = target.dataset.tab;
+    this.render();
+  }
+
   static #onOpenTray() {
     game.cardrpg.openTray(this.document);
   }
@@ -181,10 +222,43 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     });
   }
 
+  /**
+   * Apply a condition. The creator matters: a duration ticks down at the start of the creator's
+   * turn, which is what makes a duration-1 condition cost the victim exactly one turn.
+   */
+  static async #onAddCondition(event, target) {
+    const root = target.closest(".cr-add-condition");
+    const key = root.querySelector("[data-condition-key]")?.value;
+    if (!key) return;
+
+    const raw = root.querySelector("[data-condition-duration]")?.value;
+    const cfg = CARDRPG.conditions[key] ?? {};
+    const duration = cfg.noDuration || raw === "" ? null : Number(raw);
+
+    const conditions = this.document.system.toObject().conditions ?? [];
+    conditions.push({
+      key,
+      duration,
+      creatorId: root.querySelector("[data-condition-creator]")?.value ?? ""
+    });
+    await this.document.update({ "system.conditions": conditions });
+  }
+
   static async #onRemoveCondition(event, target) {
     const index = Number(target.dataset.index);
+    if (index < 0) return;
     const conditions = this.document.system.toObject().conditions.filter((c, i) => i !== index);
     await this.document.update({ "system.conditions": conditions });
+  }
+
+  static async #onShortRest() {
+    const { rest } = await import("./decks.mjs");
+    await rest(this.document, { long: false });
+  }
+
+  static async #onLongRest() {
+    const { rest } = await import("./decks.mjs");
+    await rest(this.document, { long: true });
   }
 
   static #onEditSlate(event, target) {
@@ -214,7 +288,7 @@ export class NpcSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   };
 
   static PARTS = {
-    main: { template: "systems/cardrpg/templates/actor-npc.hbs", scrollable: [""] }
+    main: { template: "systems/cardrpg/templates/actor-npc.hbs", scrollable: [".cr-sheet__body"] }
   };
 
   async _prepareContext(options) {
@@ -276,7 +350,7 @@ export class SlateSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
   };
 
   static PARTS = {
-    main: { template: "systems/cardrpg/templates/item-slate.hbs", scrollable: [""] }
+    main: { template: "systems/cardrpg/templates/item-slate.hbs", scrollable: [".cr-sheet__body"] }
   };
 
   async _prepareContext(options) {
@@ -316,7 +390,7 @@ export class CardConfigSheet extends HandlebarsApplicationMixin(
   };
 
   static PARTS = {
-    main: { template: "systems/cardrpg/templates/card-config.hbs", scrollable: [""] }
+    main: { template: "systems/cardrpg/templates/card-config.hbs", scrollable: [".cr-sheet__body"] }
   };
 
   async _prepareContext(options) {

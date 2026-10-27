@@ -9,7 +9,7 @@
   --cardrpg-ink: #1b1714;
   --cardrpg-paper: #f4efe6;
   --cardrpg-rule: #c9bda8;
-  --cardrpg-dim: #8a7f6d;
+  --cardrpg-dim: #635a4b;
   --cardrpg-blocked: #b0a89a;
   --cardrpg-harm-paper: #221d1a;
   --cardrpg-harm-ink: #efe6dc;
@@ -215,12 +215,72 @@
 /*  Sheets                                      */
 /* -------------------------------------------- */
 
+/*
+ * The sheet carries its own paper background. Without it the ink tokens sit on whatever Foundry's
+ * theme provides, which on the dark theme made derived values nearly invisible -- the bug that
+ * showed up as "armor and max hp are dark grey".
+ */
+.cardrpg .cr-sheet,
+.cr-tray-app .cr-tray {
+  background: var(--cardrpg-paper);
+  color: var(--cardrpg-ink);
+}
+
 .cardrpg .cr-sheet {
   display: flex;
   flex-direction: column;
-  gap: 0.6em;
+  gap: 0.5em;
   padding: 0.5em 0.7em;
   font-size: 0.85rem;
+  /* The window gives a fixed height; the body scrolls inside it. */
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Only the body scrolls, so the header and tabs stay put. */
+.cardrpg .cr-sheet__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 0.3em;
+}
+
+.cardrpg .cr-sheet__header { flex: 0 0 auto; }
+
+/* Tabs */
+.cardrpg .cr-tabs {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 0.15em;
+  border-bottom: 1px solid var(--cardrpg-rule);
+}
+.cardrpg .cr-tabs button {
+  flex: 0 0 auto;
+  width: auto;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  padding: 0.25em 0.7em;
+  font-size: 0.78rem;
+  color: var(--cardrpg-dim);
+  cursor: pointer;
+}
+.cardrpg .cr-tabs button:hover { color: var(--cardrpg-ink); }
+.cardrpg .cr-tabs button.active {
+  color: var(--cardrpg-ink);
+  border-bottom-color: var(--cardrpg-ink);
+  font-weight: 600;
+}
+
+/* Inputs have to be legible on paper too, not just the text around them. */
+.cardrpg .cr-sheet input,
+.cardrpg .cr-sheet select,
+.cardrpg .cr-sheet textarea {
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--cardrpg-ink);
+  border: 1px solid var(--cardrpg-rule);
 }
 
 .cardrpg .cr-sheet__header { display: flex; flex-direction: column; gap: 0.3em; }
@@ -250,10 +310,26 @@
 .cardrpg .cr-stat__sep { color: var(--cardrpg-dim); }
 .cardrpg .cr-stat__derived {
   font-size: 0.95rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--cardrpg-ink);
   border-bottom: 1px dotted var(--cardrpg-dim);
+  padding: 0 0.15em;
 }
+
+.cardrpg .cr-warn-inline { color: var(--cardrpg-group-1); font-weight: 600; }
+.cardrpg .cr-row { display: flex; gap: 0.3em; }
+
+/* Applying a condition needs the creator, so the control has three fields. */
+.cardrpg .cr-add-condition {
+  display: flex;
+  gap: 0.25em;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 0.4em;
+}
+.cardrpg .cr-add-condition select { flex: 0 1 auto; max-width: 14em; }
+.cardrpg .cr-add-condition input { width: 3.5em; }
+.cardrpg .cr-add-condition button { flex: 0 0 auto; width: auto; }
 
 .cardrpg .cr-note { margin: 0.2em 0; font-size: 0.72rem; color: var(--cardrpg-dim); }
 .cardrpg .cr-warn { margin: 0.2em 0; font-size: 0.75rem; color: var(--cardrpg-group-1); font-weight: 600; }
@@ -322,6 +398,15 @@
 /* -------------------------------------------- */
 
 .cardrpg .cr-sheet__top { display: flex; align-items: center; gap: 0.5em; }
+.cardrpg .cr-sheet__top .cr-name { flex: 1 1 auto; min-width: 0; }
+
+/* Was being squeezed by the flex row until the label wrapped. */
+.cardrpg .cr-tray-button {
+  flex: 0 0 auto;
+  width: auto;
+  white-space: nowrap;
+  padding: 0.2em 0.9em;
+}
 
 .cr-tray-app .cr-tray { padding: 0.4em 0.6em; font-size: 0.85rem; }
 

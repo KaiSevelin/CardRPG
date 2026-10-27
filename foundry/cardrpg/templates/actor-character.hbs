@@ -1,14 +1,14 @@
 {{!--
-  Character sheet: the reference surface. Live play happens on the tray, so this is deliberately
-  plain -- what you consult between turns, not what you play from.
+  Character sheet: the reference surface. Live play happens on the tray, so this is what you consult
+  between turns. Tabbed, because there is more here than fits a window.
 --}}
 <div class="cr-sheet">
 
   <header class="cr-sheet__header">
     <div class="cr-sheet__top">
       <input type="text" name="name" value="{{actor.name}}" placeholder="Name" class="cr-name">
-      <button type="button" data-action="openTray"
-              data-tooltip="The hand and the live state. This is what you play from.">Open tray</button>
+      <button type="button" class="cr-tray-button" data-action="openTray"
+              data-tooltip="The hand and the live state. This is what you play from.">Tray</button>
     </div>
     <div class="cr-sheet__identity">
       <label>Way
@@ -23,189 +23,248 @@
     </div>
   </header>
 
-  {{!-- Vitals. Max health, armor and hand size are derived, so they are shown but not editable. --}}
-  <section class="cr-vitals">
-    <label class="cr-stat">Health
-      <span class="cr-stat__pair">
-        <input type="number" name="system.health.value" value="{{system.health.value}}" min="0">
-        <span class="cr-stat__sep">/</span>
-        <span class="cr-stat__derived" data-tooltip="Base {{system.health.base}}{{#if system.afflicted}}, &minus;3 Afflicted{{/if}}">{{system.health.max}}</span>
-      </span>
-    </label>
+  <nav class="cr-tabs">
+    {{#each tabs}}
+      <button type="button" data-action="tab" data-tab="{{this.id}}"
+              class="{{#if this.active}}active{{/if}}">{{this.label}}</button>
+    {{/each}}
+  </nav>
 
-    <label class="cr-stat">Base
-      <input type="number" name="system.health.base" value="{{system.health.base}}" min="1">
-    </label>
+  <div class="cr-sheet__body">
 
-    <label class="cr-stat">Block
-      <input type="number" name="system.block" value="{{system.block}}" min="0">
-    </label>
+    {{#if onVitals}}
+      {{!-- Derived values are shown but never editable, and marked so it is obvious which. --}}
+      <section class="cr-vitals">
+        <label class="cr-stat">Health
+          <span class="cr-stat__pair">
+            <input type="number" name="system.health.value" value="{{system.health.value}}" min="0">
+            <span class="cr-stat__sep">/</span>
+            <span class="cr-stat__derived" data-tooltip="Base {{system.health.base}}{{#if system.afflicted}}, &minus;3 Afflicted{{/if}}">{{system.health.max}}</span>
+          </span>
+        </label>
 
-    <div class="cr-stat">Armor
-      <span class="cr-stat__derived" data-tooltip="From the equipped body slate">{{system.armor}}</span>
-    </div>
+        <label class="cr-stat">Base health
+          <input type="number" name="system.health.base" value="{{system.health.base}}" min="1">
+        </label>
 
-    <div class="cr-stat">Hand size
-      <span class="cr-stat__derived" data-tooltip="Base {{system.handSize.base}} plus features">{{system.handSize.max}}</span>
-    </div>
+        <label class="cr-stat">Block
+          <input type="number" name="system.block" value="{{system.block}}" min="0">
+        </label>
 
-    <label class="cr-stat">Rest tokens
-      <span class="cr-stat__pair">
-        <input type="number" name="system.rest.tokens" value="{{system.rest.tokens}}" min="0">
-        <span class="cr-stat__sep">/</span>
-        <input type="number" name="system.rest.max" value="{{system.rest.max}}" min="0">
-      </span>
-    </label>
+        <div class="cr-stat">Armor
+          <span class="cr-stat__derived" data-tooltip="From the equipped body slate">{{system.armor}}</span>
+        </div>
 
-    <label class="cr-stat">Gold
-      <input type="number" name="system.cash.gold" value="{{system.cash.gold}}" min="0">
-    </label>
-  </section>
+        <div class="cr-stat">Hand size
+          <span class="cr-stat__derived" data-tooltip="Base {{system.handSize.base}} plus features">{{system.handSize.max}}</span>
+        </div>
 
-  {{!-- Carrying: slots govern what you can use, weight governs what you can haul. --}}
-  <section class="cr-block">
-    <h3>Carrying <span class="cr-tier cr-tier--{{encumbrance.tier}}">{{encumbrance.label}}</span></h3>
-    <div class="cr-meter">
-      <span>{{encumbrance.carried}} / {{encumbrance.max}} kg</span>
-      <span class="cr-meter__bar">
-        <span class="cr-meter__fill" style="width: {{encumbrance.pct}}%"></span>
-      </span>
-    </div>
-    {{#if encumbrance.isOverloaded}}
-      <p class="cr-warn">Overloaded: {{config.defaults.overloadedSpent}} random cards are Spent while this lasts.</p>
+        <label class="cr-stat">Rest tokens
+          <span class="cr-stat__pair">
+            <input type="number" name="system.rest.tokens" value="{{system.rest.tokens}}" min="0">
+            <span class="cr-stat__sep">/</span>
+            <input type="number" name="system.rest.max" value="{{system.rest.max}}" min="0">
+          </span>
+        </label>
+
+        <label class="cr-stat">Gold
+          <input type="number" name="system.cash.gold" value="{{system.cash.gold}}" min="0">
+        </label>
+      </section>
+
+      {{!-- Slots govern what you can use; weight governs what you can haul. --}}
+      <section class="cr-block">
+        <h3>Carrying <span class="cr-tier cr-tier--{{encumbrance.tier}}">{{encumbrance.label}}</span></h3>
+        <div class="cr-meter">
+          <span>{{encumbrance.carried}} / {{encumbrance.max}} kg</span>
+          <span class="cr-meter__bar">
+            <span class="cr-meter__fill" style="width: {{encumbrance.pct}}%"></span>
+          </span>
+        </div>
+        <p class="cr-note">100 gold weighs 1 kg, so a chest of treasure is a problem.</p>
+        {{#if encumbrance.isOverloaded}}
+          <p class="cr-warn">Overloaded: {{config.defaults.overloadedSpent}} random cards are Spent while this lasts.</p>
+        {{/if}}
+        {{#if encumbrance.isImmobile}}
+          <p class="cr-warn">Over double your limit &mdash; you can't pick this up. Make two trips.</p>
+        {{/if}}
+      </section>
+
+      {{!-- A condition's duration ticks on its CREATOR's turn, so the creator is a real field. --}}
+      <section class="cr-block">
+        <h3>Conditions</h3>
+        <div class="cr-add-condition">
+          <select data-condition-key>
+            {{#each conditionChoices}}
+              <option value="{{this.key}}">{{this.label}}</option>
+            {{/each}}
+          </select>
+          <input type="number" data-condition-duration value="1" min="0"
+                 data-tooltip="Duration. Leave empty for a condition with none.">
+          <select data-condition-creator data-tooltip="Whose turn it ticks down on">
+            <option value="">no creator &mdash; ticks on your own turn</option>
+            {{#each actorChoices}}
+              <option value="{{this.id}}">{{this.name}}</option>
+            {{/each}}
+          </select>
+          <button type="button" data-action="addCondition">Apply</button>
+        </div>
+        {{#if conditions}}
+          <ul class="cr-conditions">
+            {{#each conditions}}
+              <li class="cr-condition{{#if this.derived}} cr-condition--derived{{/if}}">
+                {{crIcon this.icon}}
+                <span class="cr-condition__label">{{this.label}}</span>
+                {{#if this.duration}}<span class="cr-condition__duration">{{this.duration}}</span>{{/if}}
+                {{#if this.creator}}<span class="cr-condition__creator">&larr; {{this.creator}}</span>{{/if}}
+                {{#if this.derived}}
+                  <span class="cr-note">from carried weight</span>
+                {{else}}
+                  <button type="button" data-action="removeCondition" data-index="{{this.index}}" data-tooltip="Remove">&times;</button>
+                {{/if}}
+              </li>
+            {{/each}}
+          </ul>
+        {{else}}
+          <p class="cr-note">None.</p>
+        {{/if}}
+      </section>
     {{/if}}
-    {{#if encumbrance.isImmobile}}
-      <p class="cr-warn">Over double your limit &mdash; you can't pick this up. Make two trips.</p>
+
+    {{#if onDeck}}
+      <section class="cr-block">
+        <h3>Action deck</h3>
+        <div class="cr-deck">
+          <span>{{deck.size}} cards (limit {{deck.min}}&ndash;{{deck.max}})</span>
+          <span class="cr-deck__counts">
+            draw {{deck.counts.draw}} &middot; hand {{deck.counts.hand}} &middot;
+            discard {{deck.counts.discard}} &middot; spent {{deck.counts.spent}}
+          </span>
+          <span class="cr-deck__counts">
+            fate {{deck.counts.fate}}/20{{#if fateSwing}} &middot; swing {{fateSwing}}%{{/if}}
+          </span>
+        </div>
+        {{#if deck.underMin}}<p class="cr-warn">Under the minimum of {{deck.min}} cards.</p>{{/if}}
+        {{#if deck.overMax}}<p class="cr-warn">Over the maximum of {{deck.max}} cards.</p>{{/if}}
+        {{#if system.exhausted}}<p class="cr-warn">Exhausted: one card per turn, and no reactions.</p>{{/if}}
+        <p class="cr-note">Wounds and Taint don't count toward the limit, so being hurt never locks
+          you out of adding a card.</p>
+      </section>
+
+      <section class="cr-block">
+        <h3>Lingering damage</h3>
+        <p>Wounds {{system.wounds}} &middot; Taint {{system.taint.total}}
+          (body {{system.taint.body}}, mind {{system.taint.mind}}){{#if system.afflicted}}
+          &mdash; <span class="cr-warn-inline">Afflicted</span>{{/if}}</p>
+        <p class="cr-note">Afflicted at 3 or more Taint: max Health &minus;3 until you are below 3 again.</p>
+      </section>
+
+      <section class="cr-block">
+        <h3>Rests</h3>
+        <span class="cr-row">
+          <button type="button" data-action="shortRest" {{#unless system.rest.tokens}}disabled{{/unless}}>Short rest</button>
+          <button type="button" data-action="longRest">Long rest</button>
+        </span>
+        <p class="cr-note">Both return Spent cards. A short rest costs a token and heals 1; a long
+          rest heals 5 and refills your tokens.</p>
+      </section>
     {{/if}}
-  </section>
 
-  {{!-- Deck state. Wounds and Taint don't count toward the size limit. --}}
-  <section class="cr-block">
-    <h3>Action deck</h3>
-    <div class="cr-deck">
-      <span>{{deck.size}} cards (limit {{deck.min}}&ndash;{{deck.max}})</span>
-      <span class="cr-deck__counts">
-        draw {{deck.counts.draw}} &middot; hand {{deck.counts.hand}} &middot;
-        discard {{deck.counts.discard}} &middot; spent {{deck.counts.spent}}
-      </span>
-      <span class="cr-deck__counts">
-        fate {{deck.counts.fate}}/20{{#if fateSwing}} &middot; swing {{fateSwing}}%{{/if}}
-      </span>
-    </div>
-    {{#if deck.underMin}}<p class="cr-warn">Under the minimum of {{deck.min}} cards.</p>{{/if}}
-    {{#if deck.overMax}}<p class="cr-warn">Over the maximum of {{deck.max}} cards.</p>{{/if}}
-    {{#if system.exhausted}}<p class="cr-warn">Exhausted: one card per turn, and no reactions.</p>{{/if}}
-    <p class="cr-note">Wounds {{system.wounds}} &middot; Taint {{system.taint.total}}
-      (body {{system.taint.body}}, mind {{system.taint.mind}}){{#if system.afflicted}} &mdash; <strong>Afflicted</strong>{{/if}}</p>
-  </section>
-
-  {{!-- Conditions carry a creator, because the duration ticks on the creator's turn. --}}
-  <section class="cr-block">
-    <h3>Conditions</h3>
-    {{#if conditions}}
-      <ul class="cr-conditions">
-        {{#each conditions}}
-          <li class="cr-condition{{#if this.derived}} cr-condition--derived{{/if}}">
-            {{crIcon this.icon}}
-            <span class="cr-condition__label">{{this.label}}</span>
-            {{#if this.duration}}<span class="cr-condition__duration">{{this.duration}}</span>{{/if}}
-            {{#if this.creator}}<span class="cr-condition__creator">&larr; {{this.creator}}</span>{{/if}}
-            {{#if this.derived}}
-              <span class="cr-note">from carried weight</span>
-            {{else}}
-              <button type="button" data-action="removeCondition" data-index="{{@index}}" data-tooltip="Remove">&times;</button>
-            {{/if}}
-          </li>
+    {{#if onGear}}
+      <section class="cr-block">
+        <h3>Equipped</h3>
+        {{#each equipped as |slot key|}}
+          <div class="cr-slot">
+            <h4>{{crIcon slot.icon}} {{slot.label}}
+              <span class="cr-note">{{slot.items.length}}/{{slot.capacity}}</span>
+            </h4>
+            <ul class="cr-slates">
+              {{#each slot.items as |slate|}}
+                <li class="cr-slate-row" data-group="{{slate.system.group}}">
+                  <span class="cr-slate-row__name">{{slate.name}}</span>
+                  <span class="cr-note">{{slate.system.weight}} kg</span>
+                  <button type="button" data-action="toggleEquipped" data-slate-id="{{slate.id}}">Unequip</button>
+                  <button type="button" data-action="editSlate" data-slate-id="{{slate.id}}">Edit</button>
+                </li>
+              {{else}}
+                <li class="cr-note">Empty.</li>
+              {{/each}}
+            </ul>
+          </div>
         {{/each}}
-      </ul>
-    {{else}}
-      <p class="cr-note">None.</p>
-    {{/if}}
-  </section>
+      </section>
 
-  {{!-- Equipped gear, grouped by slot so the sheet mirrors the slot rules. --}}
-  <section class="cr-block">
-    <h3>Equipped</h3>
-    {{#each equipped as |slot key|}}
-      <div class="cr-slot">
-        <h4>{{crIcon slot.icon}} {{slot.label}}
-          <span class="cr-note">{{slot.items.length}}/{{slot.capacity}}</span>
-        </h4>
+      <section class="cr-block">
+        <h3>Pack</h3>
         <ul class="cr-slates">
-          {{#each slot.items as |slate|}}
+          {{#each pack as |slate|}}
             <li class="cr-slate-row" data-group="{{slate.system.group}}">
               <span class="cr-slate-row__name">{{slate.name}}</span>
-              <span class="cr-note">{{slate.system.weight}} kg</span>
-              <button type="button" data-action="toggleEquipped" data-slate-id="{{slate.id}}">Unequip</button>
+              <span class="cr-note">{{slate.system.weight}} kg &middot; {{slate.system.value}} g</span>
+              <button type="button" data-action="toggleEquipped" data-slate-id="{{slate.id}}">Equip</button>
               <button type="button" data-action="editSlate" data-slate-id="{{slate.id}}">Edit</button>
+              <button type="button" data-action="deleteSlate" data-slate-id="{{slate.id}}">&times;</button>
             </li>
+          {{else}}
+            <li class="cr-note">Nothing in the pack.</li>
           {{/each}}
         </ul>
-      </div>
-    {{/each}}
-  </section>
+        <p class="cr-note">Equipping is free outside combat. Ready only costs a card half under pressure.</p>
+      </section>
+    {{/if}}
 
-  <section class="cr-block">
-    <h3>Pack</h3>
-    <ul class="cr-slates">
-      {{#each pack as |slate|}}
-        <li class="cr-slate-row" data-group="{{slate.system.group}}">
-          <span class="cr-slate-row__name">{{slate.name}}</span>
-          <span class="cr-note">{{slate.system.weight}} kg &middot; {{slate.system.value}} g</span>
-          <button type="button" data-action="toggleEquipped" data-slate-id="{{slate.id}}">Equip</button>
-          <button type="button" data-action="editSlate" data-slate-id="{{slate.id}}">Edit</button>
-          <button type="button" data-action="deleteSlate" data-slate-id="{{slate.id}}">&times;</button>
-        </li>
-      {{/each}}
-    </ul>
-    <p class="cr-note">Equipping is free outside combat. Ready only costs a card half under pressure.</p>
-  </section>
+    {{#if onFeatures}}
+      <section class="cr-block">
+        <h3>Features</h3>
+        <p class="cr-note">A passive feature is simply true. An active one Drains when used and comes
+          back on its recharge.</p>
+        <ul class="cr-slates">
+          {{#each features as |entry|}}
+            <li class="cr-slate-row{{#if entry.drain.drained}} cr-slate-row--drained{{/if}}" data-group="{{entry.doc.system.group}}">
+              <span class="cr-slate-row__name">{{entry.doc.name}}</span>
+              <span class="cr-note">{{entry.doc.system.text}}</span>
+              {{#if entry.drain}}
+                <span class="cr-recharge" data-tooltip="Recharges: {{entry.drain.label}}">
+                  {{crIcon entry.drain.icon}}{{entry.drain.label}}
+                </span>
+                <button type="button" data-action="toggleDrained" data-slate-id="{{entry.doc.id}}">
+                  {{#if entry.drain.drained}}Restore{{else}}Drain{{/if}}
+                </button>
+              {{/if}}
+              <button type="button" data-action="editSlate" data-slate-id="{{entry.doc.id}}">Edit</button>
+            </li>
+          {{else}}
+            <li class="cr-note">No features.</li>
+          {{/each}}
+        </ul>
+      </section>
+    {{/if}}
 
-  {{!-- Features: passive ones are simply true, active ones Drain when used. --}}
-  <section class="cr-block">
-    <h3>Features</h3>
-    <ul class="cr-slates">
-      {{#each features as |entry|}}
-        <li class="cr-slate-row{{#if entry.drain.drained}} cr-slate-row--drained{{/if}}" data-group="{{entry.doc.system.group}}">
-          <span class="cr-slate-row__name">{{entry.doc.name}}</span>
-          <span class="cr-note">{{entry.doc.system.text}}</span>
-          {{#if entry.drain}}
-            <span class="cr-recharge" data-tooltip="Recharges: {{entry.drain.label}}">
-              {{crIcon entry.drain.icon}}{{entry.drain.label}}
-            </span>
-            <button type="button" data-action="toggleDrained" data-slate-id="{{entry.doc.id}}">
-              {{#if entry.drain.drained}}Restore{{else}}Drain{{/if}}
-            </button>
-          {{/if}}
-          <button type="button" data-action="editSlate" data-slate-id="{{entry.doc.id}}">Edit</button>
-        </li>
-      {{/each}}
-    </ul>
-  </section>
+    {{#if onNotes}}
+      <section class="cr-block">
+        <h3>Training</h3>
+        <p class="cr-note">Structured &mdash; an untrained user caps a tool bonus at +1.</p>
+        <input type="text" name="system.trainingsText" value="{{trainingsText}}" placeholder="lockpicks, gaming set">
+        <h3>Know-how</h3>
+        <p class="cr-note">A situation, not an approach. The GM reads this; nothing automates it.</p>
+        <input type="text" name="system.knowHowText" value="{{knowHowText}}" placeholder="Military matters; forests and tracking">
+      </section>
 
-  <section class="cr-block">
-    <h3>Training</h3>
-    <p class="cr-note">Structured &mdash; an untrained user caps a tool bonus at +1.</p>
-    <input type="text" name="system.trainingsText" value="{{trainingsText}}" placeholder="lockpicks, gaming set">
-    <h3>Know-how</h3>
-    <p class="cr-note">A situation, not an approach. The GM reads this; nothing automates it.</p>
-    <input type="text" name="system.knowHowText" value="{{knowHowText}}" placeholder="Military matters; forests and tracking">
-  </section>
+      <section class="cr-block">
+        <h3>Biography</h3>
+        <textarea name="system.biography" rows="5">{{system.biography}}</textarea>
+        <h3>Appearance</h3>
+        <textarea name="system.appearance" rows="4">{{system.appearance}}</textarea>
+      </section>
 
-  <section class="cr-block">
-    <h3>Biography</h3>
-    <textarea name="system.biography" rows="4">{{system.biography}}</textarea>
-    <h3>Appearance</h3>
-    <textarea name="system.appearance" rows="3">{{system.appearance}}</textarea>
-  </section>
+      {{#if isGM}}
+        <section class="cr-block cr-block--gm">
+          <h3>GM notes</h3>
+          <p class="cr-note">Hidden from the player: what NPCs know, hidden Taint sources, anything planted.</p>
+          <textarea name="system.gmNotes" rows="4">{{system.gmNotes}}</textarea>
+        </section>
+      {{/if}}
+    {{/if}}
 
-  {{#if isGM}}
-    {{!-- GM tier: data on a character that its own player must not see. --}}
-    <section class="cr-block cr-block--gm">
-      <h3>GM notes</h3>
-      <p class="cr-note">Hidden from the player: what NPCs know, hidden Taint sources, anything planted.</p>
-      <textarea name="system.gmNotes" rows="3">{{system.gmNotes}}</textarea>
-    </section>
-  {{/if}}
-
+  </div>
 </div>
