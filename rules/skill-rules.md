@@ -349,7 +349,10 @@ You may also **prune** **1** card as part of leveling.
 
 ### Deck size
 
-- **Minimum 12** skill cards, **no maximum**.
+- **Minimum 12** skill cards, **no maximum** — unlike the action deck, which is capped at 20
+  (core-rules §8). The difference is deliberate: an action deck's size drives the exhaustion clock
+  inside a single fight, so it needs a ceiling, while a skill deck refreshes only on rests and
+  balances itself across a day.
 - Size balances itself:
   - **A small deck** draws your best cards more often, but runs out sooner. The skill deck only refreshes on rests, so you get fewer checks per day.
   - **A big deck** lasts longer through the day, but your hands are less focused.

@@ -23,6 +23,8 @@ means they go stale the moment a slate moves.
 | **Max health** | health base + *Tough* − 3 when Afflicted |
 | **Armor** | the equipped body slate |
 | **Hand size** | base 5 + *Quick* |
+| **Action deck maximum** | base 20 + feature bonuses |
+| **Action deck size** | counted from the deck, ignoring Wounds and Taint |
 | **Exhausted** | can't refill to 2 cards from the draw pile |
 | **Wounds, Taint (body/mind), Spent** | counted in the deck documents |
 | **Afflicted** | total Taint ≥ 3, across both decks |
@@ -71,6 +73,9 @@ One case is easy to get wrong:
 | `rest.tokens`, `rest.max` | stored (`max` starts at 1, rises with levelling) |
 | `carry.base` | stored, default **40** |
 | `carry.bonus`, `carry.max`, `carry.value` | derived |
+| `actionDeck.base` | stored, default **20** (the maximum) |
+| `actionDeck.bonus`, `actionDeck.max` | derived from features |
+| `actionDeck.size` | derived — counted from the deck documents, **excluding Wounds and Taint** |
 | `encumbrance` | derived enum: `unburdened` / `burdened` / `overloaded` / `immobile` |
 | `handSize.base`, `handSize.max` | stored base 5, derived max |
 | `exhausted`, `passive`, `afflicted` | derived |

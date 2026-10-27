@@ -22,6 +22,12 @@ kind below is a native typed document and ships in compendium packs.
 |---|---|
 | `action`, `fate`, `skill`, `twist`, `npc`, `wound`, `taint` | `item`, `feature`, `injury`, `secret` |
 
+### Deck validation
+
+An action deck holds **12–20** cards, the maximum raised by feature slates (core-rules §8); a skill
+deck holds **12 or more**, uncapped (skill-rules §8). **Wounds and Taint don't count** toward either,
+so validation counts only the playable subtypes.
+
 ### Copies are documents, not a count
 
 A starter deck is **a prebuilt `Cards` document** shipped in a compendium, so "3× Strike" is three
@@ -266,11 +272,8 @@ Card addition through compendiums is a requirement, so the packs are part of the
 
 ## 8. Open
 
-- **Action deck size limits.** Skill decks have "minimum 12, no maximum"; action decks say only
-  "~15 cards" and the starter is 16. Deck validation needs a number.
-- **Character creation flow.** Pick a Way, take a background, assemble a starter deck — the sequence
-  is unwritten, and the sheet has to implement something.
-- **Equipping outside combat.** *Ready* is a combat action; rearranging slots between fights is
-  presumably free, but the rules never say so.
+- **Character creation flow** — deferred until after the first playtest (core-rules §12). Until then
+  the sheet needs no creation wizard: ship the starter Warrior as a prebuilt Actor in a compendium
+  and let the GM copy it.
 - `way` / `tree` on cards, `level` and `specialization` on characters: all wait on the Way trees.
 - Whether `backgrounds` are Items or JournalEntries.

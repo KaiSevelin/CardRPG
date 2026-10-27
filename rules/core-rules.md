@@ -11,7 +11,7 @@
 
 | Component | What it is |
 |---|---|
-| **Action deck** | ~15 personal action cards. Defines how the character fights. |
+| **Action deck** | 12–20 personal action cards. Defines how the character fights (see section 8). |
 | **Fate deck** | 20 modifier cards. Drawn to resolve attacks and heals. |
 | **Item slates** | Everything the character owns. Only **equipped** items can be used. |
 | **Feature slates** | Permanent traits (Strong, Good Aim, ...). |
@@ -258,7 +258,13 @@ Ready lets you:
 - equip one item from your pack into an empty slot, **or**
 - swap one equipped item with one from your pack.
 
-Characters start combat with whatever they had equipped beforehand.
+**Outside combat, equipping is free.** Rearrange your slots as often as you like between fights, and
+start a combat with whatever you were carrying. Ready exists because doing it **under pressure** costs
+you a card half — not because buckling on a shield is hard.
+
+Inside a **challenge** it is not free: swapping gear takes your action for the round like anything
+else, and digging something out of the bottom of your pack may cost more than that
+([skill-rules.md](skill-rules.md) §2).
 When you build a deck, include enough Ready cards for the character's style. A weapon-swapper needs more of them than a sword-and-board fighter.
 
 ---
@@ -538,7 +544,17 @@ Some harm stays with you after the fight. It's represented by **negative cards**
 
 #### Deck size and pruning
 
-Wound and Taint cards **don't count** toward deck size limits, and you **can't** prune them by leveling or training. They have to be healed or cured.
+> **Your action deck holds 12 to 20 cards.** Feature slates can raise the maximum.
+
+Wound and Taint cards **don't count** toward deck size limits, and you **can't** prune them by leveling or training. They have to be healed or cured. That matters more with a cap: a wounded character is never locked out of adding a card.
+
+A feature that raises the maximum works like one that raises your carry allowance — a flat trait, so
+it is **not** bonus-grouped (section 5).
+
+**A bigger deck is not automatically better**, which is what makes such a feature interesting rather
+than pure upside. More cards means more stamina before exhaustion, and your best cards come up less
+often. The cap is only worth raising once you *have* twenty cards worth playing, so it is naturally a
+later pick: at low level the extra slots would be filler, and filler is what dilutes a deck.
 
 Because Catch Breath no longer lets you choose what to set aside, **nothing removes a dead card from
 your deck during play**. Deliberate pruning — at level up, or through training in downtime — is the
@@ -778,7 +794,10 @@ This is the one generic rule. Items or features can make exceptions (e.g. a feat
   what. This is the biggest one: the double-attack decision (section 3) and the action-deck
   grow/prune rules both hang off it. Waits on the Ways, which wait on the world.
 - **Affliction list for Taint sources** (section 8). Waits on world creation.
-- **Card layout** for the Foundry card sheets: where the three halves sit, how a modifier attaches to its icon, how a blocked icon reads as blocked. The icon *set* is listed in [icons.md](icons.md); the art isn't chosen yet.
+- **Character creation** — *deliberately deferred until after the first playtest.* The sequence (pick
+  a Way, take a background, assemble a starter deck) is easy to write and easy to get wrong before
+  anyone has played, so it waits for evidence. Until then, play with the pregenerated starter
+  Warrior in [starter-cards.md](starter-cards.md).
 
 Settled since draft 0.1:
 
@@ -788,3 +807,5 @@ Settled since draft 0.1:
 | Condition timing | Ticks at the start of the **creator's** turn, so a duration-1 condition always costs the victim exactly one turn (section 7). |
 | How Block works and how long it lasts | Section 4, *Block*. |
 | How to tune NPC damage against armor | Section 9, *NPC gear and the armor rule*. |
+| Final icon set and card layout | [icons.md](icons.md) lists all 50 icons with their sources; [../foundry/card-layout.md](../foundry/card-layout.md) specifies every face. |
+| Action deck size | 12–20 cards, raised by features (section 8). |
