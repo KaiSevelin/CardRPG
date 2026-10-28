@@ -7,7 +7,10 @@
  *
  *   left   -- Items, Features, Conditions
  *   centre -- Actions in combat; Skills out of it (that deck is a later slice)
- *   right  -- Fate, and the NPC intent decks
+ *   right  -- the play area, then Fate and Discard
+ *
+ * The play area holds two stacks of overlapping cards, primary then secondary: the action card at
+ * the base and everything modifying it laid on top. A card in play is in a stack and nowhere else.
  *
  * Staging order is play order: halves resolve in the order you clicked them, which is how the
  * rules' "either order" is expressed without a separate sequencing step.
@@ -29,22 +32,35 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     /** Staged halves, in click order. @type {{cardId: string, half: string}[]} */
     this.staged = [];
     /**
-     * Which half each played item is serving: "primary", "secondary" or "any".
+     * Which half each played item is serving: "primary" or "secondary".
      *
      * A card says the verb and the item says the value, so a longsword that both strikes and
-     * defends is ambiguous once both halves are staged. Clicking the slate again walks it from the
-     * primary half to the secondary and then out of play, so the card itself carries the answer --
-     * no button, no dialog. An item with one verb has nothing to choose and stays at "any".
+     * defends is ambiguous once both halves are staged. The answer is read off the play area: the
+     * stack a slate sits in *is* the half it serves. An item with one verb has nothing to choose
+     * and never appears here.
      *
      * @type {Map<string, string>}
      */
     this.roles = new Map();
+    /**
+     * Which card each stack is turned to, as an offset rather than an index, so the carousel can
+     * keep counting past either end of a stack whose length changes under it.
+     *
+     * @type {{primary: number, secondary: number}}
+     */
+    this.tops = { primary: 0, secondary: 0 };
 
     /**
-     * Equips still allowed this turn. Outside combat equipping is free; inside it costs a Ready,
-     * which is the whole reason the verb exists (core-rules 4).
+     * Slates put into play under pressure and not yet paid for, by id.
+     *
+     * Outside combat equipping is free. Inside one it costs a Ready, which is the whole reason the
+     * verb exists (core-rules 4) -- but the cost is settled when the turn is played, along with
+     * every other verb, rather than gating the click that arranges the stack. So this is a debt:
+     * it is cleared by a Play that carries enough Ready halves, or by putting the slate back.
+     *
+     * @type {Set<string>}
      */
-    this.readyCharges = 0;
+    this.pendingEquips = new Set();
     /** Which deck is open, if any. @type {string|null} */
     this.openPile = null;
     /** Slates currently turned over, showing value, weight and type. @type {Set<string>} */
@@ -65,6 +81,9 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       breathe: CardRPGTray.#onBreathe,
       endTurn: CardRPGTray.#onEndTurn,
       playSlate: CardRPGTray.#onPlaySlate,
+      shiftStack: CardRPGTray.#onShiftStack,
+      unstack: CardRPGTray.#onUnstack,
+      moveHalf: CardRPGTray.#onMoveHalf,
       dealHand: CardRPGTray.#onDealHand,
       // A face-down pile is not openable; the click is absorbed rather than erroring.
       openPile: CardRPGTray.#onOpenPile,
@@ -207,7 +226,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       counts,
       fatePct: Math.round(100 * (counts.fate ?? 0) / 20),
       fateSwing: counts.fate ? Math.min(100, Math.round(200 / counts.fate)) : null,
-      playedSlates: this.#playedSlates(),
+      playArea: this.#playArea(),
       leftDecks: this.#leftDecks(),
       actionDeck: this.#actionDeck(combat),
       rightDecks: this.#rightDecks(),
@@ -224,19 +243,94 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   /* -------------------------------------------- */
 
   /**
-   * What is in play right now: equipped items and Drained features.
+   * The play area: two stacks of overlapping cards above the Fate deck.
    *
-   * These stay on the scene whether or not a deck is open, because they are on the table rather
-   * than in a stack. Clicking one takes it out of play again.
+   * A stack is one action and everything modifying it -- the card half staged at its base, then the
+   * slates assigned to that half. Primary on the left, secondary on the right, so where a card sits
+   * *is* what it is doing; there is no stamp to read and no order to remember. A stack stands
+   * without an action card too, because gear is equipped long before a hand is dealt.
+   *
+   * Only the front card reads in full; the rest show their names above it. The carousel turns the
+   * stack over rather than taking it apart.
    */
-  #playedSlates() {
-    const items = this.actor.items
-      .filter(i => i.type === "item" && i.system.equipped)
-      .map(i => this.#itemCard(i, true));
-    const features = this.actor.items
-      .filter(i => i.type === "feature" && i.system.isActive && i.system.drained)
-      .map(f => this.#featureCard(f, true));
+  #playArea() {
+    const system = this.actor.system;
+    const blocked = system.blockedIcons ?? new Set();
+    const dazed = (system.activeConditions ?? []).some(c => c.key === "dazed");
+
+    return ["primary", "secondary"].map(half => {
+      const cards = [];
+
+      const entry = this.staged.find(s => s.half === half);
+      const base = entry ? this.#actionCard(entry, half, blocked, dazed) : null;
+      if (base) cards.push(base);
+
+      for (const slate of this.#assigned(half)) {
+        const card = slate.type === "feature"
+          ? this.#featureCard(slate, true)
+          : this.#itemCard(slate, true);
+        // Only a slate with a half to choose can be moved; the rest serve whatever needs them.
+        const movable = slate.type === "item" && slate.system.availableVerbs.length > 1;
+        cards.push(Object.assign(card, {
+          // An arrow that points, not one that swaps: the rules already spend ⇄ on Ready.
+          moveTo: movable ? (half === "primary" ? "secondary" : "primary") : null,
+          moveArrow: half === "primary" ? "→" : "←",
+          tip: `Modifying the ${half} action. Click to take it out of play.`
+        }));
+      }
+
+      // Rotate so the card the carousel landed on is drawn last, which puts it in front.
+      const n = cards.length;
+      const top = n ? ((this.tops[half] % n) + n) % n : 0;
+      return {
+        half,
+        label: half === "primary" ? "Primary" : "Secondary",
+        count: n,
+        // How far the stack reaches, in cards, so the CSS can give it a height.
+        span: Math.max(1, n),
+        cards: cards.map((_, k) => cards[(top + 1 + k) % n]),
+        carousel: n > 1
+      };
+    });
+  }
+
+  /**
+   * The slates assigned to a half.
+   *
+   * An item that could modify more than one action sits in the stack it was put in. One with a
+   * single verb had nothing to choose, and a Drained feature has no half at all, so both ride with
+   * the primary -- where they can still be seen and taken back out.
+   */
+  #assigned(half) {
+    const items = this.actor.items.filter(i =>
+      i.type === "item" && i.system.equipped && this.#stackOf(i) === half);
+    const features = half === "primary"
+      ? this.actor.items.filter(f => f.type === "feature" && f.system.isActive && f.system.drained)
+      : [];
     return [...items, ...features];
+  }
+
+  /** Which stack a played item is shown in. Resolution uses #itemFor, which is subtler than this. */
+  #stackOf(item) {
+    if (item.system.availableVerbs.length < 2) return "primary";
+    return this.roles.get(item.id) ?? "primary";
+  }
+
+  /** The staged half, as the card at the base of its stack. */
+  #actionCard(entry, half, blocked, dazed) {
+    const card = deckOf(this.actor, "actionHand")?.cards.get(entry.cardId);
+    if (!card) return null;
+    const face = this.#renderCard(card, blocked, dazed).halves.find(h => h.name === half);
+    return {
+      id: card.id,
+      name: cardName(card),
+      action: true,
+      icon: face?.icon,
+      lines: [face?.text ?? "—"],
+      // Play order is still click order, so the base card says where it falls in the turn.
+      note: `${half} half · step ${this.staged.findIndex(s => s.half === half) + 1}`,
+      tip: "The action this stack builds. Click to take it back — the stack goes with it."
+    };
   }
 
   /** One item, as a card. `played` means equipped. */
@@ -244,7 +338,6 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     const verbs = Object.entries(i.system.verbs ?? {}).filter(([, l]) => l.value !== null || l.text);
     // Only a slate that could modify more than one action has a half to choose.
     const choosy = i.system.availableVerbs.length > 1;
-    const role = played ? (this.roles.get(i.id) ?? (choosy ? "primary" : "any")) : null;
     const serving = played
       ? verbs.filter(([v]) => ["primary", "secondary"].some(h => this.#itemFor(v, h)?.id === i.id))
         .map(([v]) => v)
@@ -256,15 +349,11 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       flippable: true,
       flipped: this.flipped.has(i.id),
       played,
-      // Stamped across the face, so which half it serves is read rather than remembered.
-      roleLabel: role && role !== "any" ? role : null,
-      tip: !played
-        ? (choosy
-          ? "Click to play it on the primary half; click again to move it to the secondary."
-          : "Click to put it into play.")
-        : role === "primary" ? "Serving the primary half. Click for the secondary."
-          : role === "secondary" ? "Serving the secondary half. Click to take it out of play."
-            : "In play. Click to take it out.",
+      tip: played
+        ? "In play. Click to take it out."
+        : choosy
+          ? "Click to play it on the primary stack. You can move it to the secondary from there."
+          : "Click to put it into play.",
       blurb: i.system.blurb,
       lines: verbs
         .map(([v, l]) => `${v} ${l.value ?? ""}${l.range ? ` \u00b7 range ${l.range}` : ""}`
@@ -563,8 +652,6 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     }
     const { drawn, taint } = await refill(this.actor);
     this.dealtAt = key;
-    // A Ready bought on an earlier turn does not keep paying out.
-    this.readyCharges = 0;
     if (!drawn && !taint) ui.notifications.warn("Draw pile is empty. Catch Breath to recover some.");
     this.render();
   }
@@ -585,6 +672,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
 
   static #onClear() {
     this.staged = [];
+    this.tops = { primary: 0, secondary: 0 };
     this.render();
   }
 
@@ -592,6 +680,8 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     if (!this.staged.length) return;
     const hand = deckOf(this.actor, "actionHand");
     const targets = [...(game.user.targets ?? [])].map(t => t.actor).filter(a => a);
+
+    if (!await this.#settleReady(hand)) return;
 
     for (const { cardId, half } of this.staged) {
       const card = hand?.cards.get(cardId);
@@ -601,7 +691,47 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
 
     await discardCards(this.actor, this.staged.map(s => s.cardId));
     this.staged = [];
+    this.tops = { primary: 0, secondary: 0 };
     this.render();
+  }
+
+  /**
+   * Resolve Ready, for the whole turn at once, before any other step runs.
+   *
+   * Every other verb resolves when you play it. Ready used to be the exception: it had to be played
+   * *before* the slate it pays for, so arranging the stacks ran backwards from everything else. Now
+   * the arranging is free and the turn you play has to cover it -- one Ready per slate that went
+   * into play under pressure.
+   *
+   * @returns {Promise<boolean>} false if the turn cannot pay, in which case nothing is resolved.
+   */
+  async #settleReady(hand) {
+    // Out of combat equipping is free, so a debt carried out of a fight simply lapses.
+    if (!game.combat?.started) {
+      this.pendingEquips.clear();
+      return true;
+    }
+    const owed = [...this.pendingEquips].map(id => this.actor.items.get(id)).filter(i => i);
+    if (!owed.length) return true;
+
+    const readies = this.staged.reduce((n, { cardId, half }) => n
+      + (hand?.cards.get(cardId)?.system[half] ?? []).filter(s => s.verb === "ready").length, 0);
+    const names = owed.map(i => i.name).join(", ");
+
+    if (readies < owed.length) {
+      ui.notifications.warn(
+        `${names} went into play under pressure: that costs ${owed.length} Ready, and this turn `
+        + `plays ${readies}. Stage a half showing Ready, or take it back out of play.`);
+      return false;
+    }
+
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+      content: `<div class="cardrpg"><p><strong>${this.actor.name}</strong> readies `
+        + `<em>${names}</em>.</p></div>`
+    });
+    this.pendingEquips.clear();
+    return true;
   }
 
   async #resolveStep(step, half, targets) {
@@ -636,16 +766,10 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       }
 
       /*
-       * Ready grants an equip or a swap. It does not pick the item: you do, by playing a slate
-       * from the Items deck. The verb buys you the chance, not the decision.
+       * Ready grants an equip or a swap, and it is settled in #settleReady before any step runs --
+       * by then the slate it pays for is already in play. Nothing is left to do per step.
        */
       case "ready":
-        this.readyCharges++;
-        ui.notifications.info("Ready: play or unplay one item from the Items deck.");
-        await ChatMessage.create({
-          speaker: ChatMessage.getSpeaker({ actor }),
-          content: `<div class="cardrpg"><p><strong>${actor.name}</strong> readies an item.</p></div>`
-        });
         return;
 
       default:
@@ -661,14 +785,15 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   /* -------------------------------------------- */
 
   /**
-   * Walk a slate through its states. An item in play is equipped; a feature in play is Drained.
+   * Put a slate into play. An item in play is equipped; a feature in play is Drained.
    *
-   * A slate that could modify more than one action has three states, because it has a half to
-   * choose: primary, then secondary, then out of play. One with a single verb has two.
+   * Only the decks hold slates that are out of play, so this only ever moves a card in -- taking
+   * one back out happens in the play area, where it is sitting. A slate with a half to choose lands
+   * on the primary stack and can be moved from there.
    *
-   * Equipping is free outside combat. Inside one it costs a Ready, because doing it under pressure
-   * is the whole reason that verb exists -- so entering or leaving play is refused until a Ready
-   * has been played. Moving between halves is not an equip and costs nothing.
+   * Arranging the stacks is free. Inside a combat the arrangement still has to be paid for with a
+   * **Ready**, but that is settled when the turn is played (#settleReady), so the click that moves
+   * a slate never has to come second to the card half that pays for it.
    */
   static async #onPlaySlate(event, target) {
     const slate = this.actor.items.get(target.dataset.slateId);
@@ -693,36 +818,83 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       return this.render();
     }
 
-    const equipping = !slate.system.equipped;
-    const next = CardRPGTray.#nextRole(slate, equipping ? null : this.roles.get(slate.id));
-
-    // Entering or leaving play is the equip. Moving from one half to the other is just a choice.
-    if (equipping || next === null) {
-      if (game.combat?.started && !this.readyCharges) {
-        return ui.notifications.warn(
-          "Under pressure that costs a Ready. Play a card half showing Ready first.");
-      }
-      if (equipping && !await CardRPGTray.#hasRoom(this.actor, slate)) return;
-      await slate.update({ "system.equipped": equipping });
-      if (game.combat?.started) this.readyCharges--;
+    if (slate.system.equipped) {
+      return ui.notifications.info("Already in play. Take it back out from the play area.");
     }
+    if (!await CardRPGTray.#hasRoom(this.actor, slate)) return;
 
-    if (next === null) this.roles.delete(slate.id);
-    else this.roles.set(slate.id, next);
+    await slate.update({ "system.equipped": true });
+    // Out of combat this is free, so there is nothing to settle and nothing to remember.
+    if (game.combat?.started) this.pendingEquips.add(slate.id);
+    if (slate.system.availableVerbs.length > 1) this.roles.set(slate.id, "primary");
+    this.render();
+  }
+
+  /* -------------------------------------------- */
+
+  /** Turn a stack over. Only the front card reads in full, so this is how you see the rest. */
+  static #onShiftStack(event, target) {
+    const { half, dir } = target.dataset;
+    this.tops[half] = (this.tops[half] ?? 0) + Number(dir);
     this.render();
   }
 
   /**
-   * The state the next click lands on. `null` means out of play.
-   *
-   * A reload clears the roles but not the equipped flag, so an item in play with no role is
-   * treated as if it were on the primary half -- which is what its face has been claiming.
+   * Take one card out of a stack, after confirming. One card: a modifier leaves play, an action
+   * card goes back to hand, and in neither case does anything else in the stack move.
    */
-  static #nextRole(item, role) {
-    const choosy = item.system.availableVerbs.length > 1;
-    if (role === undefined || role === null) return choosy ? "primary" : "any";
-    if (!choosy) return null;
-    return role === "primary" ? "secondary" : null;
+  static async #onUnstack(event, target) {
+    const { half, slateId } = target.dataset;
+
+    if (!slateId) {
+      const ok = await CardRPGTray.#confirm(`Take back the ${half} action?`,
+        `<p>The card goes back to your hand. The rest of the ${half} stack stays in play.</p>`);
+      if (!ok) return;
+      this.staged = this.staged.filter(s => s.half !== half);
+      return this.render();
+    }
+
+    const slate = this.actor.items.get(slateId);
+    if (!slate) return;
+    const ok = await CardRPGTray.#confirm(`Take ${slate.name} out of play?`,
+      slate.type === "feature"
+        ? "<p>It stops being Drained and goes back to the Features deck.</p>"
+        : "<p>It goes back to the Items deck. Playing it again in a combat costs a Ready.</p>");
+    if (!ok) return;
+    await this.#takeOut(slate);
+    this.render();
+  }
+
+  /**
+   * Out of play: an item is unequipped, a feature stops being Drained.
+   *
+   * Free, and it cancels the Ready the slate owed -- a slate that is no longer in play never got
+   * readied, so there is nothing left to pay for.
+   */
+  async #takeOut(slate) {
+    await slate.update(slate.type === "feature"
+      ? { "system.drained": false, "system.drainedFor": null }
+      : { "system.equipped": false });
+    this.roles.delete(slate.id);
+    this.pendingEquips.delete(slate.id);
+  }
+
+  /** Move a modifier to the other stack. Free and reversible, so it asks nothing. */
+  static #onMoveHalf(event, target) {
+    const slate = this.actor.items.get(target.dataset.slateId);
+    if (!slate) return;
+    this.roles.set(slate.id, this.#stackOf(slate) === "primary" ? "secondary" : "primary");
+    this.render();
+  }
+
+  static #confirm(title, content) {
+    return foundry.applications.api.DialogV2.confirm({
+      window: { title },
+      content: `<div class="cardrpg">${content}</div>`,
+      modal: true,
+      // Closing the dialog is a "no", not an error to catch at every call site.
+      rejectClose: false
+    });
   }
 
   /** Slot capacity, counting a two-handed item as both hands. */
@@ -749,6 +921,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   static async #onBreathe() {
     await catchBreath(this.actor);
     this.staged = [];
+    this.tops = { primary: 0, secondary: 0 };
     this.render();
   }
 

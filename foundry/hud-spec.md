@@ -38,11 +38,9 @@ This spec is about the tray.
 │ Burning 2 <- self                         │ │ Wound 1  Taint 0   │
 │ BLOCKED: secondary halves                 │ │ Rest 1             │
 └───────────────────────────────────────────┘ └────────────────────┘
-┌─ EQUIPPED ────────────────────────────────────────────────────────┐
-│ Hand  Longsword     Strike 3  Defend 1                           │
-│ Hand  Wooden Shield Defend 2                                     │
-│ Body  Leather Armor armor 1                                      │
-│ Belt  Healing Potion Heal 4      Belt  --                        │
+┌─ PLAY AREA (§3.5) ────────────────────────────────────────────────┐
+│ PRIMARY: Strike <- Longsword, Leather Armor                      │
+│ SECONDARY: Shield <- Wooden Shield                               │
 └───────────────────────────────────────────────────────────────────┘
 ┌─ HAND ────────────────────────────────────────────────────────────┐
 │  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐     │
@@ -97,30 +95,72 @@ One primary and one secondary, from **two different cards**, in **either order**
 
 Dazed removes step 2 entirely — primary only. Exhausted likewise, and also disables reactions.
 
-### 3.5 A slate is played, or it is not
-
-Slates have no buttons. Items and active features sit in two groups — **not in play**, which shows
-when you open the deck, and **in play**, which stays on the scene — and clicking the card moves it
-between them. An item in play is equipped; a feature in play is Drained. A passive feature belongs to
-neither group and cannot be clicked: it is simply true.
+### 3.5 The play area: two stacks, over the Fate deck
 
 A card says the verb and the item says the value, so a longsword that both strikes and defends is
-ambiguous the moment both halves are staged. That is the one case the two states cannot express, so a
-slate that could modify **more than one action** has a third:
+ambiguous the moment both halves are staged. Rather than stamp the answer on the slate, the HUD puts
+it in the layout: **where a card sits is what it is doing.**
 
-| Click | State | Means |
-|---|---|---|
-| 1 | **primary**, stamped across the face | It serves the primary half |
-| 2 | **secondary** | It serves the secondary half |
-| 3 | out of play | — |
+```
+     PRIMARY (3)  ‹ ›        SECONDARY (2)  ‹ ›
+     ┌──────────────┐        ┌──────────────┐
+     │ Longsword → ↺│        │ Wooden Sh. ←↺│  <- the cards behind: name only
+     ├──────────────┤        ├──────────────┤
+     │ Leather Arm ↺│        │ SHIELD       │
+     ├──────────────┤        │ defend 2     │
+     │ STRIKE       │        │ secondary    │  <- the front card, in full
+     │ strike 4     │        │              │
+     │ primary      │        │              │
+     └──────────────┘        └──────────────┘
+     ┌──────────────┐
+     │     FATE     │
+```
 
-A slate with a single verb has nothing to choose and keeps two states. When resolving a half, the
-item stamped for that half wins; then a single-verb item; then anything else in play, highest value
-first. So a longsword on the primary and a shield on the secondary strike and defend respectively,
-with nothing to configure beyond the clicks that put them there.
+A **stack** is one action and everything modifying it: the card half you staged at its base, then
+the slates assigned to that half. Primary on the left, secondary on the right. A stack stands
+without an action card too, because gear is equipped long before a hand is dealt.
 
-Entering or leaving play is the equip, and inside a combat it costs a **Ready** — doing it under
-pressure is the whole reason the verb exists. Moving between halves is not an equip and is free.
+The cards overlap, so only the front one reads in full and the rest show their names. The `‹ ›`
+**carousel** turns the stack to bring any card to the front; it changes nothing but what you can
+read, and only appears once there is more than one card.
+
+**Every click moves one card, and only that card.**
+
+| You click | What happens |
+|---|---|
+| A card in a deck | It goes into play, into the primary stack. No prompt — this is the cheap direction. |
+| `→` / `←` on a modifier | It moves to the other stack. Free and reversible, so it asks nothing. |
+| A **modifier** in a stack | **Confirm**, then it leaves play, back to its deck. The stack stays. |
+| The **action card** at the base | **Confirm**, then it goes back to your hand. The stack stays, modifiers and all. |
+
+A stack outliving its action card is the point: the gear was equipped before the hand was dealt and
+it is still equipped afterwards. **Clear** does the same for both halves at once.
+
+Only a slate that could modify more than one action can be moved with `→` / `←`. One with a single
+verb has nothing to choose, and a Drained feature has no half at all; both ride with the primary,
+where they can still be seen and taken back out. When resolving, the item assigned to that half
+wins; then a single-verb item; then anything else in play, highest value first.
+
+A passive feature is in no stack and cannot be clicked: it is simply true.
+
+### 3.5.1 Ready is settled on Play, with everything else
+
+Inside a combat, putting a slate into play costs a **Ready** — doing it under pressure is the whole
+reason the verb exists (core-rules §4). But Ready was the one verb whose effect had to land *before*
+the thing it paid for, which made arranging a stack run backwards from every other decision in the
+turn: play the half, then pick the item.
+
+So the arranging is free and **the turn pays for it**. Each slate that goes into play under pressure
+owes one Ready; on **Play**, the staged halves have to cover the debt before any step resolves:
+
+- enough Ready icons staged → one chat line names what was readied, and the debt clears;
+- not enough → nothing resolves, and the warning names both ways out: stage a half showing Ready, or
+  take the slate back out of play.
+
+Taking a slate out of play is free and **cancels what it owed** — a slate that is not in play was
+never readied. Outside a combat equipping is free, so a debt carried out of a fight lapses. One
+Ready buys one equip *or* one swap, exactly as the rules have it: a swap is a free removal plus one
+paid-for arrival.
 
 ### 3.6 Catch Breath
 
@@ -191,7 +231,7 @@ Differences from the combat tray:
 
 - **Values are not pre-resolved.** Tool bonuses are situational (`Shadow +2 (locks)`), so the tray
   shows the card's base value and offers a tool picker when a check is made. Combat answers the same
-  question on the slate itself instead, by stamping it primary or secondary (§3.5); whether that
+  question by where the slate sits instead, in the primary or secondary stack (§3.5); whether that
   reads well enough for tools too is open.
 - **Push highlights same-approach cards.** Selecting a card dims every card of a different approach,
   since Push requires a match.

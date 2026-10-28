@@ -389,8 +389,7 @@
 .cr-hud-layer .cr-hud__panel,
 .cr-hud-layer .cr-hud__decks,
 .cr-hud-layer .cr-hud__hand,
-.cr-hud-layer .cr-hud__spread,
-.cr-hud-layer .cr-hud__played { position: absolute; pointer-events: auto; }
+.cr-hud-layer .cr-hud__spread { position: absolute; pointer-events: auto; }
 
 .cr-hud-layer .cr-hud__panel {
   background: var(--cardrpg-paper);
@@ -419,12 +418,20 @@
   bottom: var(--cr-hotbar);
 }
 
-/* Fate, Discard, then the options panel, left of the sidebar. */
+/*
+ * The play area, Fate, Discard, then the options panel, left of the sidebar.
+ *
+ * The column is as wide as its widest child and anchored on the right, so the two-stack play area
+ * grows leftwards over the canvas while the piles below keep their one-card width at the edge.
+ *
+ * The column hugs the bottom with a margin on its first child rather than `justify-content`, which
+ * would make anything overflowing the top unreachable by the scrollbar.
+ */
 .cr-hud-layer .cr-hud__decks--right {
   right: var(--cr-sidebar);
   bottom: 10px;
   top: 54px;
-  justify-content: flex-end;
+  align-items: flex-end;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -531,26 +538,8 @@
   padding: 2px;
 }
 
-/*
- * What is in play sits in its own row below the deck's contents, and stays there when the deck is
- * closed -- it is on the table, not in a stack.
- */
-.cr-hud-layer .cr-hud__played {
-  left: calc(var(--cr-controls) + var(--cr-gutter) + var(--cr-card-w) + 12px);
-  right: calc(var(--cr-sidebar) + var(--cr-card-w) + 12px);
-  top: calc(54px + var(--cr-card-h) + 26px);
-  height: var(--cr-card-h);
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding: 2px;
-}
-
-/* Each row says what it is, without a tray to put a heading on. */
-.cr-hud-layer .cr-hud__spread::before,
-.cr-hud-layer .cr-hud__played::before {
+/* The row says what it is, without a tray to put a heading on. */
+.cr-hud-layer .cr-hud__spread::before {
   content: attr(data-group-label);
   position: absolute;
   top: -15px;
@@ -781,9 +770,6 @@
 /*  Played and unplayed slates                  */
 /* -------------------------------------------- */
 
-/* A card in play is marked, so the two rows never blur together. */
-.cardrpg .cr-card--played { border-color: var(--cardrpg-ink); border-width: 2px; }
-
 /* A passive feature is simply true: nothing to pick up, so nothing to click. */
 .cardrpg .cr-card--passive { opacity: 0.7; }
 
@@ -791,23 +777,111 @@
 .cardrpg .cr-card--takeable { cursor: pointer; }
 .cardrpg .cr-card--takeable:hover { border-color: var(--cardrpg-ink); }
 
+/* -------------------------------------------- */
+/*  Play area                                   */
+/* -------------------------------------------- */
+
 /*
- * The half a played item is serving, stamped across its face. An item that can modify only one
- * action never gets one, because it had nothing to choose.
+ * Two stacks sitting on top of the Fate deck: primary on the left, secondary on the right. Each is
+ * one action and everything modifying it, laid out the way you would lay the cards on a table.
  */
-.cardrpg .cr-card__role {
+.cr-hud-layer .cr-hud__play {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 8px;
+  /* First child of the right column: this is what pushes the whole column down to the bottom. */
+  margin-top: auto;
+  margin-bottom: 2px;
+}
+
+.cr-hud-layer .cr-stack {
+  flex: 0 0 auto;
+  width: var(--cr-card-w);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+/* No tray to hang a heading on, so the label sits straight on the canvas. */
+.cr-hud-layer .cr-stack__head {
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+  min-height: 15px;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--cardrpg-paper);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+.cr-hud-layer .cr-stack__label { flex: 1 1 auto; }
+
+/* The carousel. It only appears once there is more than one card to turn to. */
+.cr-hud-layer .cr-stack__nav { display: flex; flex: 0 0 auto; gap: 2px; }
+.cr-hud-layer .cr-stack__nav button {
+  flex: 0 0 auto;
+  width: auto;
+  padding: 0 0.4em;
+  font-size: 0.8rem;
+  line-height: 1.2;
+  background: var(--cardrpg-paper);
+  color: var(--cardrpg-ink);
+  border: 1px solid var(--cardrpg-rule);
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+/*
+ * The cards overlap downwards: each one 24px lower than the one behind it, so every card in the
+ * stack shows its name and the front one shows all of itself. Absolute children carry no height,
+ * so the stack is told how many cards deep it is.
+ */
+.cr-hud-layer .cr-stack__cards {
+  position: relative;
+  width: var(--cr-card-w);
+  height: calc(var(--cr-card-h) + (var(--cr-count, 1) - 1) * 26px);
+}
+.cardrpg .cr-card--stacked {
   position: absolute;
   left: 0;
-  right: 0;
-  bottom: 28%;
-  text-align: center;
-  font-size: 0.78rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: var(--cardrpg-paper);
-  background: rgba(0, 0, 0, 0.66);
-  padding: 0.2em 0;
-  transform: rotate(-7deg);
-  pointer-events: none;
+  top: calc(var(--cr-depth, 0) * 26px);
+  z-index: var(--cr-depth, 0);
 }
+
+/* The action at the base of the stack is the thing all the rest of it is modifying. */
+.cardrpg .cr-card--base { border-color: var(--cardrpg-group-6); border-width: 2px; }
+
+/* An empty stack still holds its place, so the two never swap sides. */
+.cr-hud-layer .cr-stack__empty {
+  width: var(--cr-card-w);
+  height: var(--cr-card-h);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0.6em;
+  text-align: center;
+  font-size: 0.68rem;
+  color: var(--cardrpg-paper);
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px dashed rgba(255, 255, 255, 0.35);
+  border-radius: 5px;
+}
+
+/* Beside the flip button: send this modifier to the other stack. */
+.cardrpg .cr-card__half {
+  flex: 0 0 auto;
+  width: auto;
+  margin-left: auto;
+  background: none;
+  border: 1px solid var(--cardrpg-rule);
+  border-radius: 3px;
+  padding: 0 0.3em;
+  font-size: 0.75rem;
+  cursor: pointer;
+  color: inherit;
+}
+/* With both buttons present only the first needs pushing over. */
+.cardrpg .cr-card__half + .cr-card__flip { margin-left: 0.2em; }

@@ -251,10 +251,11 @@ check("actions with no handler", unregistered.length ? unregistered.join(", ") :
 
 const css = fs.readFileSync(path.join(root, "styles", "cardrpg.css"), "utf8");
 // Each segment must end in a letter or digit, so a name built in the template -- "cr-half--{{...}}"
-// -- contributes the part that is actually written down and nothing more.
+// -- contributes the part that is actually written down and nothing more. The lookbehind keeps a
+// custom property out of it: "--cr-depth" is a variable the stylesheet reads, not a class.
 const classes = new Set(
-  [...templateText.matchAll(/\bcr-[a-z0-9]+(?:[-_]{1,2}[a-z0-9]+)*/g)].map(m => m[0]));
-// A selector has to end where the class name does: ".cr-card__rolex" is not ".cr-card__role".
+  [...templateText.matchAll(/(?<![\w-])cr-[a-z0-9]+(?:[-_]{1,2}[a-z0-9]+)*/g)].map(m => m[0]));
+// A selector has to end where the class name does: ".cr-stack__emptyx" is not ".cr-stack__empty".
 const unstyled = [...classes].filter(c =>
   !new RegExp(String.raw`\.${c}(?![\w-])`).test(css));
 check("cr- classes used in templates", classes.size, classes.size);
