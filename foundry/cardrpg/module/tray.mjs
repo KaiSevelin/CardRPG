@@ -446,12 +446,12 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
           : !i.system.equipped && CARDRPG.slots[slotKey]?.freeEquip
             ? `Click to hang it on your ${label(slotKey).toLowerCase()}. No Ready to pay.`
             : played
-          ? "In play. Click it to put it back in the Items deck."
-          : i.system.stowedAway && fighting
-            ? "Stowed at the bottom of your pack. A Ready reaches what is already on you."
-            : choosy
-              ? "Click to equip it on the primary stack. You can move it to the secondary from there."
-              : "Click to equip it.",
+              ? "In play. Click it to put it back in the Items deck."
+              : choosy
+                ? "Click to equip it on the primary stack. You can move it to the secondary from there."
+                : fighting
+                  ? "Click to take it out of your pack. That is a Ready."
+                  : "Click to equip it.",
       blurb: i.system.blurb,
       lines: verbs
         .map(([v, l]) => `${v} ${l.value ?? ""}${l.range ? ` \u00b7 range ${l.range}` : ""}`
@@ -1186,13 +1186,11 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   /**
    * May this slate go on right now?
    *
-   * Out of combat, anything may. In combat two rules bite, and neither is a Ready cost -- they are
-   * about what a Ready can physically reach (core-rules 4):
+   * Everything you are not using is in the pack, and everything in the pack can be reached -- for
+   * a Ready (core-rules 4). So there is nothing here about reach, and only one rule bites:
    *
-   * - A **worn** slot does not change mid-fight at all. Nobody swaps rings while being stabbed, and
-   *   pricing it in Ready would be friction with no decision in it.
-   * - A **stowed** slate is at the bottom of the pack. A Ready reaches what is already on you:
-   *   your hands, your back, your belt. That is what the back slot is for.
+   * A **worn** slot does not change mid-fight at all. Nobody swaps rings while being stabbed, and
+   * pricing it in Ready would be friction with no decision in it.
    */
   static #canEquipNow(slate, into) {
     if (!game.combat?.started) return true;
@@ -1202,13 +1200,6 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       ui.notifications.warn(
         `${slate.name} is worn, not wielded: ${game.i18n.localize(slot.label)} changes between `
         + "fights, not during one.");
-      return false;
-    }
-    if (slate.system.stowedAway) {
-      const reach = CARDRPG.readyReach.map(k => game.i18n.localize(CARDRPG.slots[k].label)).join(", ");
-      ui.notifications.warn(
-        `${slate.name} is stowed away. A Ready reaches what is already on you (${reach}), not the `
-        + "bottom of your pack.");
       return false;
     }
     return true;
@@ -1227,12 +1218,21 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     const free = used + needs - capacity;
     if (free <= 0) return [];
 
-    // Either one item is big enough to make the room on its own, or the whole slot has to clear.
-    const singles = here.filter(i => size(i) >= free);
-    const options = singles.length ? singles.map(i => [i]) : (here.length ? [here] : []);
+    /*
+     * One Ready changes ONE equipped item, so the only legal swap is a single item for a single
+     * item. A two-hander going into a hand holding a sword and a shield would turn over two, and
+     * that is two Readies -- take one off first and the swap becomes legal.
+     *
+     * This used to offer clearing the whole slot at once, which was one Ready doing the work of
+     * two.
+     */
+    const options = here.filter(i => size(i) >= free).map(i => [i]);
     if (!options.length) {
-      ui.notifications.warn(
-        `Your ${game.i18n.localize(CARDRPG.slots[slot]?.label ?? slot)} cannot take ${item.name}.`);
+      const slotName = game.i18n.localize(CARDRPG.slots[slot]?.label ?? slot).toLowerCase();
+      ui.notifications.warn(here.length
+        ? `One Ready changes one item, and ${item.name} would turn over your whole ${slotName} `
+          + `(${here.map(i => i.name).join(", ")}). Take one off first.`
+        : `Your ${slotName} cannot take ${item.name}.`);
       return null;
     }
 

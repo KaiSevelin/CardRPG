@@ -233,14 +233,23 @@ where a thing sits changes what it can do:
 A two-hander takes **both hands**, but slung over a back or hung on a belt the same weapon is one
 object. Two hands is a fact about using it, not about carrying it.
 
-### What a Ready can reach
+### What a Ready does
 
-A Ready reaches what is **already on you** — hands, back, belt. It does not reach the bottom of your
-pack: digging a spare sword out from under the rations is not something you do while someone is
-swinging at you.
+**Everything you are not using is in your pack**, and everything in your pack can be reached. There
+is no third place to keep things and nothing is out of bounds — what retrieving costs is a card.
 
-That is what the **back** is for. A two-hander slung over your shoulder is one Ready away from your
-hands; the same weapon buried in the pack is not available this fight at all.
+**One Ready does one of two things:**
+
+| | Costs |
+|---|---|
+| Put an item into an **unused** slot | 1 Ready |
+| **Change one** equipped item — swap it for another | 1 Ready |
+
+And nothing else. A Ready that would turn over **two** equipped items is not one Ready: drawing a
+two-hander while holding a sword *and* a shield means putting one of them away first, and that is
+its own Ready. The exception is the belt, which costs nothing either way.
+
+This is why the second weapon you bring matters less than the hand you have free to take it in.
 
 ### Carrying
 

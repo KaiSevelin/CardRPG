@@ -177,8 +177,6 @@ CARDRPG.slots = {
   pack: { label: "CARDRPG.Slot.Pack", icon: "knapsack", capacity: null, worn: false }
 };
 
-/** The slots a Ready can reach: what is already on you, short of digging through the pack. */
-CARDRPG.readyReach = ["hands", "back", "belt"];
 
 /** Item tags. Heavy and Light are mechanical -- Strong reads them -- and are NOT weight. */
 CARDRPG.itemTags = [

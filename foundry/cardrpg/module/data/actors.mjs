@@ -141,8 +141,9 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
     // --- carried weight and encumbrance
     this.carry.bonus = grants.carry;
     this.carry.max = this.carry.base + grants.carry;
+    // Everything you own is on you: equipped, or in the pack. There is nowhere else to put it.
     const gear = slates
-      .filter(i => i.type === "item" && !i.system.stowedAway)
+      .filter(i => i.type === "item")
       .reduce((n, i) => n + (i.system.weight ?? 0), 0);
     this.carry.value = gear + Math.floor(this.cash.gold / d.goldPerKilo);
     this.encumbrance = CharacterData.encumbranceTier(this.carry.value, this.carry.max);

@@ -102,9 +102,8 @@ Capacities are fixed by the rules (core-rules §4) and split into two kinds:
 | **Hot** | Hands 2, Back 1, Belt 2 | during a fight, paid for with Ready |
 | **Worn** | Body 1, Cloak 1, Head 1, Neck 1, Fingers 2, Feet 1 | between fights only |
 
-Plus an unbounded pack, limited by weight instead. `CARDRPG.slots` carries the `worn` flag and
-`CARDRPG.readyReach` names the slots a Ready can get at. Occupancy is derived from which slates are
-equipped, never stored.
+Plus an unbounded pack, limited by weight instead. `CARDRPG.slots` carries the `worn` flag and the belt's `freeEquip`. Occupancy is derived from which
+slates are equipped, never stored.
 
 An item carries **two** slot fields, and the split is content against state:
 
@@ -118,8 +117,9 @@ An item carries **two** slot fields, and the split is content against state:
 when it is not equipped. Anything asking "is this on my body" asks `equippedSlot`, never `slot`,
 because a dagger's `slot` says `hands` while it hangs on a belt.
 
-`stowedAway` is the other half of reach: a stowed slate is at the bottom of the pack, so it is out
-of a Ready's grasp during combat and does not count toward carried weight.
+**There is no stowed state.** Unequipped means in the pack, the pack is always reachable, and
+reaching into it costs a Ready. Everything an actor owns therefore counts toward carried weight —
+there is nowhere to put a thing that is not on you.
 
 ### Conditions
 

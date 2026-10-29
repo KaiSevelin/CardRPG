@@ -92,10 +92,14 @@ Your **background** then adds its 2 skill cards on top, giving a 17-card deck at
 | Smoke Bomb | Belt, 1 hand | Consumable | 0 | 40 g | – | – | – | You become Invisible (1) |
 
 **Fits** lists every slot an item will go in; where there is more than one, you choose when you put
-it on (core-rules §4). A blade or a shield slings on your **back**, where it stays a Ready away
-from your hand without taking one up. A potion held in a **hand** is a Use with no Ready to pay
-first — and a hand you are not fighting with. Leather Armor fits one slot and so is never asked
-about, which is the rule doing its job.
+it on (core-rules §4). A potion on your **belt** is free to hang and free to swap, so the potion
+you brought is the potion you can actually drink; held in a **hand** it is a Use with no Ready at
+all, at the price of a hand you are not fighting with. Leather Armor fits one slot and so is never
+asked about, which is the rule doing its job.
+
+> **Back is currently decorative.** Everything unequipped is in your pack, and the pack costs one
+> Ready to reach — the same as the back. Slinging a blade therefore buys nothing it did not already
+> have. The slot needs a job or it needs removing; see [design-direction.md](design-direction.md).
 
 A full warrior kit — longsword, shield, leather armor, a potion — comes to **10 kg** against a 40 kg
 limit. The limit is not a constraint on how you equip a character; it is a constraint on what you

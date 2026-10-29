@@ -82,5 +82,15 @@ The combat simulator is the tie-breaker for numbers. Decisions it has already se
 | **Overloaded costs 2 random cards**, Spent | Measured: 7 points in a hard fight, 2 in a moderate one. One card is invisible, three takes the fight away. |
 | Each NPC **type** has its own fate deck | Blessed and Cursed need a scope, and every other NPC trait is already per type. |
 | **Slots come in two kinds**: hot (hands, back, belt) and worn (body, cloak, head, neck, fingers, feet) | Hot slots change in a fight and Ready prices the change; worn slots change between fights and Ready has nothing to price. Conflating them meant either friction with no decision in it, or a Ready cost nobody would ever pay. Where a thing sits is the slot; what it does, and whether two stack, is the bonus group — which is why chain mail and a cloak need no special rule. |
+| **Nothing is stowed away**: unequipped means in the pack, and the pack is always reachable for one Ready | Reach was a second axis on top of slots, and it only ever answered the same question twice. One rule — a card gets you anything — is easier to hold in your head and makes every item in your pack a live option rather than a dead one. |
+| **One Ready changes one equipped item**, or fills an empty slot | A Ready that cleared a whole slot was one card doing the work of two: a two-hander drawn against a sword *and* a shield turned over three items at once. Now that needs two Readies, which is what it costs. |
+
+### Open: the back slot
+
+**[OPEN]** Back no longer does anything the pack does not. It was added to be the one thing a Ready
+could reach that your hands were not already holding, and then "nothing is stowed" made the whole
+pack reachable at the same price. Either give it a job — drawing *from* the back being free, the way
+the belt is — or drop it. Leaving a slot that is strictly worse than not using it is the worst of
+the three.
 | A mixed enemy group is **a tier harder** than a uniform one of the same size | Mixing ranges, not adding bodies, is how you build a hard encounter. |
 | **Cowardly only on melee NPC types** | On a ranged enemy it is redundant with kiting and defuses the fight. |

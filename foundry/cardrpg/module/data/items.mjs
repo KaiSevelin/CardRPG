@@ -102,8 +102,6 @@ export class ItemSlateData extends SlateData {
       equipped: new fields.BooleanField({ initial: false }),
       /** Which slot it is in RIGHT NOW. Blank means `slot`, which covers everything inflexible. */
       equippedTo: new fields.StringField({ required: false, blank: true, initial: "" }),
-      // Deep in the pack: still owned, but not counted as carried for a quick swap.
-      stowedAway: new fields.BooleanField({ initial: false }),
 
       tags: new fields.SetField(new fields.StringField({ choices: CARDRPG.itemTags })),
 
