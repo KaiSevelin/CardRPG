@@ -110,7 +110,7 @@ Items have **skill lines**, just as they have combat lines:
 
 Only equipped or easily reached items count. Pulling something from deep in your pack may take time, which can matter in a challenge.
 
-**Training:** anyone can use a tool, but an untrained user gets at most **+1** from it. Trained users get the full bonus. Training comes from backgrounds and the Way trees.
+**Training:** anyone can use a tool, but an untrained user gets at most **+1** from it. Trained users get the full bonus. Training comes from backgrounds and from the Way graphs, where it is one of the benefits a node can offer ([leveling.md](leveling.md) §4).
 
 ### Push and help
 

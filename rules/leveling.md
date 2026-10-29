@@ -55,13 +55,20 @@ the one you could have had.
 | Benefit | What it does | Note |
 |---|---|---|
 | **Action card** | Add a card to your action deck | The deck is the main currency of progression |
+| **Skill card** | Add one, or upgrade one ([skill-rules.md](skill-rules.md) §8) | |
+| **Training** | A tool type, at the full bonus instead of +1 | Skill rules §2 already says training comes from the Way trees |
+| **Know-how** | A situation you have **advantage** in | A background gives one; a Way gives more |
 | **Feature** | A feature slate, passive or active | Bounded by bonus groups (§5) |
 | **Item** | A slate you keep | For signature gear a Way grants, not ordinary loot |
 | **Prune** | Remove one card from a deck, permanently | The only way to drop a dead card (§8) |
 | **Deck cap** | Raise your action deck maximum | A flat trait, so **not** bonus-grouped |
 | **Health** | Raise max Health | |
 | **Rest token** | One more (§8 promises these come from leveling) | |
-| **Gold** | Coin | |
+
+**Gold is not a benefit.** A level is a permanent change to who you are; coin is something you find
+and then spend, so a level spent on it is a level you can lose. Money comes from play — loot, work,
+downtime (skill rules §6) — and a Way node that handed it out would be offering the one reward the
+character could wake up without.
 
 A benefit may be a **bundle** — "a card *and* a prune" is one benefit, not two. That is how a node
 keeps a deck from drifting upward every level without making pruning its own boring pick.
@@ -72,11 +79,16 @@ more cards means your best ones come up less often — which is the tension §8 
 only exists if cards are what you mostly gain. Simulation is blunt about it: a 12-card deck pruned
 *well* matches a full 16, and pruned *badly* collapses to 45%.
 
-### The skill deck
+### The skill side
 
-Skill cards are benefits like any other, so [skill-rules.md](skill-rules.md) §8's *Add or Upgrade,
-and prune 1* becomes **what a skill-card benefit looks like** rather than a separate per-level
-entitlement. Training in downtime is unchanged and still the way to redirect between levels.
+Three of those benefits are skills, and they are the three things a background already gives
+([backgrounds.md](backgrounds.md)): a **skill card**, a **training**, a **know-how**. A background
+is who you were before the Way; the Way graph keeps giving you the same kinds of thing afterwards,
+which is why the two sheets of a character never need separate machinery.
+
+[skill-rules.md](skill-rules.md) §8's *Add or Upgrade, and prune 1* therefore becomes **what a
+skill-card benefit looks like** rather than a separate per-level entitlement. Training in downtime
+is unchanged and still the way to redirect between levels.
 
 ## 5. Specialization nodes
 
@@ -159,9 +171,6 @@ needs migrating.
 
 - **[OPEN]** The graphs themselves — every node, benefit and specialization for all three Ways.
   Waits on the world, as it always did.
-- **[OPEN]** Whether **gold** earns its place as a benefit. Against a card or a feature it looks
-  weak, and it is only a real choice if the economy is tight enough that coin buys something a level
-  cannot. Worth deciding once there are prices.
 - **[OPEN]** Whether **item** benefits overlap awkwardly with loot. A Way granting signature gear is
   good; a Way granting what the party would have found anyway is a dead pick.
 - **[OPEN]** Whether a node may offer the *same* benefit twice at different depths, e.g. Health at
