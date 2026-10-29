@@ -1,4 +1,4 @@
-# Leveling (Draft 0.1)
+# Leveling (Draft 0.2)
 
 How a character grows after creation. This settles the **chassis** — what a level-up is, what it can
 give, and how the pieces are stored. The **content** — which specializations a Way offers and what
@@ -10,25 +10,25 @@ tokens come from (§8). All three are answered here.
 
 ---
 
-## 1. The shape: a Way, then a graph
+## 1. One graph, one root
 
-A character picks a **Way** at creation — Strength, Shade or Mind — and that is the root of a
-**directed graph**. Every later level-up moves one step along it.
+Every character stands on the same **root node**, and the root points at the three Ways. Levelling up
+means **taking a node you can reach.**
 
 ```
-                                    ┌─ Cutpurse ─ …
-                    ┌─ THIEF ───────┼─ Burglar ── …
-                    │               └─ ASSASSIN ─ …
-  WAY OF SHADE ──●──●──●────────────┤
-   (root)        1  2  3            ├─ SCOUT ──── …
-                                    └─ DUELLIST ─ …
-                 └ trunk ┘          └ specializations ┘
+                                        ┌─ Cutpurse ── …
+                        ┌─ THIEF ───────┼─ Burglar ─── …
+                        │               └─ ASSASSIN ── …
+          ┌─ SHADE ──●──●──●────────────┤
+          │          1  2  3            ├─ SCOUT ───── …
+  ROOT ───┼─ STRENGTH ── …              └─ DUELLIST ── …
+          │
+          └─ MIND ───── …
 ```
 
-- A **node** is one level-up.
-- An **edge** says which node may follow which.
-- A **specialization node** is one where the graph branches, and taking it changes what you are
-  called.
+- A **node** is one level-up. Taking it is the level.
+- An **edge** says which nodes a node opens up.
+- A **specialization node** gives you a title as well as its reward.
 
 The graph is not a ladder with a fixed top. **Its shape dictates how many levels there are**, so
 adding depth is a content question, not a rules change.
@@ -38,21 +38,24 @@ adding depth is a content question, not a rules change.
 **The GM says when.** No experience points, no thresholds, no tracking. Nothing in the rules counts
 XP today and nothing here starts.
 
-## 3. An ordinary node: two offers, take one
+## 3. The node is the reward; the choice is which node
 
-Every node carries a package written for that Way at that depth. It offers **two minor benefits, and
-you take one.**
+A node carries a **fixed** reward. Nothing is offered and nothing is passed over — taking the node
+*is* taking the reward.
 
-> You never take both. The one you leave behind is the cost of the one you take, and it is the only
-> cost a level-up has.
+> **Your choices at a level-up are every node that a node you already own points at.**
 
-Two is deliberate. One offer is not a choice; four is a menu to study rather than a decision to make.
-Two is a fork you can hold in your head, and it means the character you end up with is visibly not
-the one you could have had.
+That set is your **frontier**, and it grows as you go. Taking a node spends your level and adds that
+node's own successors to what you can reach next.
 
-## 4. What a benefit can be
+The decision is therefore **navigational, not a menu**: you are not picking a prize, you are picking
+a direction, and what you give up is the other directions you could have gone this level. A node you
+walked past is still there — the frontier never shrinks, so declining a branch at level 3 only ever
+means taking it later than you could have.
 
-| Benefit | What it does | Note |
+## 4. What a node's reward can be
+
+| Reward | What it does | Note |
 |---|---|---|
 | **Action card** | Add a card to your action deck | The deck is the main currency of progression |
 | **Skill card** | Add one, or upgrade one ([skill-rules.md](skill-rules.md) §8) | |
@@ -65,62 +68,68 @@ the one you could have had.
 | **Health** | Raise max Health | |
 | **Rest token** | One more (§8 promises these come from leveling) | |
 
-**Gold is not a benefit.** A level is a permanent change to who you are; coin is something you find
+A node may grant **several of these at once** — "a card *and* a prune" is one node's reward. That is
+how a branch keeps a deck from drifting upward every level without spending a whole level on pruning.
+
+**Gold is not a reward.** A level is a permanent change to who you are; coin is something you find
 and then spend, so a level spent on it is a level you can lose. Money comes from play — loot, work,
-downtime (skill rules §6) — and a Way node that handed it out would be offering the one reward the
+downtime (skill rules §6) — and a node that handed it out would be giving the one reward the
 character could wake up without.
 
-A benefit may be a **bundle** — "a card *and* a prune" is one benefit, not two. That is how a node
-keeps a deck from drifting upward every level without making pruning its own boring pick.
-
 **Cards are the backbone, features are the spice.** A feature never dilutes anything, so a
-feature-heavy tree makes characters monotonically stronger. A card costs you something to gain, since
-more cards means your best ones come up less often — which is the tension §8 already rests on, and it
-only exists if cards are what you mostly gain. Simulation is blunt about it: a 12-card deck pruned
-*well* matches a full 16, and pruned *badly* collapses to 45%.
+feature-heavy branch makes characters monotonically stronger. A card costs you something to gain,
+since more cards means your best ones come up less often — which is the tension §8 already rests on,
+and it only exists if cards are what you mostly gain. Simulation is blunt about it: a 12-card deck
+pruned *well* matches a full 16, and pruned *badly* collapses to 45%.
 
 ### The skill side
 
-Three of those benefits are skills, and they are the three things a background already gives
+Three of those rewards are skills, and they are the three things a background already gives
 ([backgrounds.md](backgrounds.md)): a **skill card**, a **training**, a **know-how**. A background
-is who you were before the Way; the Way graph keeps giving you the same kinds of thing afterwards,
-which is why the two sheets of a character never need separate machinery.
+is who you were before the Way; the graph keeps giving you the same kinds of thing afterwards, which
+is why the two halves of a character never need separate machinery.
 
-[skill-rules.md](skill-rules.md) §8's *Add or Upgrade, and prune 1* therefore becomes **what a
-skill-card benefit looks like** rather than a separate per-level entitlement. Training in downtime
-is unchanged and still the way to redirect between levels.
+[skill-rules.md](skill-rules.md) §8's *Add or Upgrade, and prune 1* therefore describes **what a
+skill-card reward looks like** rather than a separate per-level entitlement. Training in downtime is
+unchanged and still the way to redirect between levels.
 
-## 5. Specialization nodes
+## 5. Specializations
 
-At a specialization node you do two things:
+Some nodes confer a **title**. A Way of Shade character who takes the Thief node is a *Thief* — the
+sheet, the token and the character's own idea of themselves say Thief, not Shade.
 
-1. **Choose a branch** from the specializations offered there.
-2. **Take its package**, which is richer than an ordinary node — more benefits offered, and **more
-   than one taken**.
-
-Specializing **changes your title**. A Way of Shade character becomes a *Thief*; the sheet, the token
-and the character's own idea of themselves say Thief, not Shade.
-
-## 6. Specializations chain
-
-A specialization is not a terminus. Further along the branch sit further specialization nodes, and
-taking one changes the title again:
+Specializations chain, because they are just nodes further along:
 
 ```
 Way of Shade → Thief → Assassin → …
 ```
 
-Each is reached by walking the nodes between them, so a title is **earned through the levels that
-lead to it**, not picked off a list at character creation.
+Each is reached by walking the nodes between, so a title is **earned through the levels that lead to
+it**, not picked off a list at creation. Your current title is the **deepest** specialization node
+you own.
+
+## 6. A second Way
+
+The root is a node you own, and **you never stop owning it** — so the three Way nodes stay on your
+frontier for the whole of a character's life. A Shade at level 5 may spend that level taking **Way of
+Strength** and start down its trunk.
+
+Nothing special makes this work; it falls out of the geometry, and it costs exactly what it should.
+A second Way starts at its trunk, so the level buys you an opening that a single-Way character got
+free at level 1. You go **wider and one step shallower**, which is the trade worth having and the one
+that needs no extra rule to enforce.
+
+> The same geometry says an add-on's fourth Way is reachable by every existing character the moment
+> it is installed, because it points at the root like the other three.
 
 ## 7. How many levels
 
 However deep the graph runs. There is no level cap in the rules; there is a longest path through the
 graph, and that is the cap.
 
-**Level is the number of nodes you have taken**, counted from the root. Two characters at level 6 have
-each taken six nodes whatever branches they walked, so "level 6" stays comparable across Ways and
-encounters can still be pitched at a number.
+**Level is the number of nodes you own**, not counting the root. Two level-6 characters have each
+taken six nodes whatever route they walked, so "level 6" stays comparable and encounters can still be
+pitched at a number.
 
 > **This needs the graph to be depth-consistent.** If Thief's branch runs four nodes to its next
 > specialization and Scout's runs six, two level-6 characters sit at different distances from their
@@ -129,23 +138,25 @@ encounters can still be pitched at a number.
 
 ## 8. Add-on compendiums
 
-**A branch may be added from outside.** An add-on compendium can hang new specializations off any
-existing specialization node, so *Way of Shade → Thief → …* can gain an *Infiltrator* branch that
-core never knew about.
+**A branch may be added from outside.** An add-on can hang new specializations off any existing node,
+so *Way of Shade → Thief → …* can gain an *Infiltrator* branch that core never knew about, and a new
+Way can hang off the root.
 
-The thing that makes this work:
+The thing that makes this work is a split between how the graph **reads** and how it is **stored**:
 
-> **Edges point backwards.** A node names the node it follows. Nothing names its successors.
+> It reads forwards — a node opens up its successors.
+> It is stored backwards — **a node names the nodes it follows, and nothing names its successors.**
 
-So an add-on ships nodes that say *"I come after `shade.thief`"*, and the core content is never
+An add-on therefore ships nodes that say *"I come after `shade.thief`"*, and core content is never
 edited, never re-released, and never has to know the add-on exists. The graph is **assembled at
-runtime** from every installed pack rather than authored as one tree.
+runtime** from every installed pack rather than authored as one tree, and a character's frontier is
+every node whose prerequisite list contains a node they own.
 
 Two consequences:
 
-- **Node ids are a public interface.** `shade.thief` is a name an add-on depends on, so it is
-  renamed about as freely as a database column.
-- **The graph needs validating, not just loading.** Every prerequisite must resolve, and the whole
+- **Node ids are a public interface.** `shade.thief` is a name an add-on depends on, so it is renamed
+  about as freely as a database column.
+- **The graph needs validating, not just loading.** Every prerequisite must resolve and the whole
   thing must stay acyclic. Both are cheap offline checks and belong in `test/validate.mjs` beside the
   ones already there.
 
@@ -157,22 +168,22 @@ Nodes are **content, not code** — the same rule the rest of the tuning follows
 | Field | Holds |
 |---|---|
 | `id` | stable, namespaced: `shade.thief.assassin` |
-| `way` | which Way's graph this belongs to |
-| `after[]` | the node ids this may follow; empty means a Way root |
+| `after[]` | the node ids this may follow; **any one** of them being owned is enough |
 | `title` | the class title this confers, if it is a specialization node |
-| `offers[]` | the benefits on offer |
-| `take` | how many of them you take — 1 for an ordinary node, more for a specialization |
+| `grants[]` | the reward, fixed |
 
-A character stores only **the list of node ids they have taken**. Level, title and every benefit
+A character stores only **the list of node ids they own**. Level, title, frontier and every reward
 derive from that list, so a corrected node definition fixes every character who took it, and nothing
 needs migrating.
 
 ## 10. Open
 
-- **[OPEN]** The graphs themselves — every node, benefit and specialization for all three Ways.
+- **[OPEN]** The graphs themselves — every node, reward and specialization for all three Ways.
   Waits on the world, as it always did.
-- **[OPEN]** Whether **item** benefits overlap awkwardly with loot. A Way granting signature gear is
-  good; a Way granting what the party would have found anyway is a dead pick.
-- **[OPEN]** Whether a node may offer the *same* benefit twice at different depths, e.g. Health at
-  2 and again at 5. Cheap to allow, and it gives a tree somewhere to put filler — which may be an
-  argument against it.
+- **[OPEN]** Whether a node should ever need **all** of its prerequisites rather than any one. A
+  convergence node — something only a Thief *and* a Duellist can reach — is a nice shape, and it is
+  one flag on the node. Cheap to add once there is a graph that wants one.
+- **[OPEN]** Whether **item** rewards overlap awkwardly with loot. A Way granting signature gear is
+  good; a Way granting what the party would have found anyway is a dead node.
+- **[OPEN]** Whether a second Way should cost anything beyond the level, and whether there is a cap
+  on how many Ways one character may walk.

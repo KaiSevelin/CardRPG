@@ -12,8 +12,11 @@ Three classes, called **Ways**. The world document settles this: it has a specia
 | **Way of Shade** | Rogues | 12, named, none written |
 | **Way of Mind** | Mages and priests | 13 magic schools, most written |
 
-- Each Way is the root of a **directed graph**, and each level-up is one step along it. The
-  mechanism is specified in [leveling.md](leveling.md); the graphs themselves are not.
+- There is **one graph with one root**, and the root points at all three Ways. A level-up takes a
+  node your owned nodes point at. The mechanism is specified in [leveling.md](leveling.md); the
+  graphs themselves are not.
+- Because the root is never un-owned, **a character may take a second Way later** — at the cost of
+  starting its trunk from the bottom. Nothing enforces this; it falls out of the geometry.
 - Each Way branches into **specializations**, and these branch again — *Shade → Thief → Assassin*.
   Taking one changes the character's title.
 - **Add-on compendiums hang new branches off existing specialization nodes.** A node names what it
