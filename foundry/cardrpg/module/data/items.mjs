@@ -84,11 +84,24 @@ export class ItemSlateData extends SlateData {
     });
 
     return {
+      /**
+       * Where this belongs by default, and where it goes if it only goes one place. Plate mail is
+       * `body` and nothing else; a dagger is `hands` and also fits a belt.
+       */
       slot: new fields.StringField({
         required: true, initial: "pack", choices: Object.keys(CARDRPG.slots)
       }),
+      /**
+       * The OTHER slots this will go in. Content, not state: it says what is physically possible,
+       * which is why a potion can list `hands` and armor lists nothing. Together with `slot` it is
+       * the whole answer to "can this go there" -- there is no separate rule by item type.
+       */
+      fits: new fields.SetField(new fields.StringField({ choices: Object.keys(CARDRPG.slots) })),
+
       hands: new fields.NumberField({ required: true, integer: true, min: 1, max: 2, initial: 1 }),
       equipped: new fields.BooleanField({ initial: false }),
+      /** Which slot it is in RIGHT NOW. Blank means `slot`, which covers everything inflexible. */
+      equippedTo: new fields.StringField({ required: false, blank: true, initial: "" }),
       // Deep in the pack: still owned, but not counted as carried for a quick swap.
       stowedAway: new fields.BooleanField({ initial: false }),
 
@@ -146,8 +159,20 @@ export class ItemSlateData extends SlateData {
       .map(([verb]) => verb);
   }
 
+  /** Every slot this could go in, default first. */
+  get allowedSlots() {
+    return [this.slot, ...this.fits].filter((s, i, all) => all.indexOf(s) === i);
+  }
+
+  /** The slot it occupies now, or null when it is not equipped at all. */
+  get equippedSlot() {
+    if (!this.equipped) return null;
+    return this.allowedSlots.includes(this.equippedTo) ? this.equippedTo : this.slot;
+  }
+
+  /** A two-hander is only two-handed while it is in the hands. Slung, it is one object on a back. */
   get isTwoHanded() {
-    return this.slot === "hands" && this.hands === 2;
+    return this.equippedSlot === "hands" && this.hands === 2;
   }
 }
 

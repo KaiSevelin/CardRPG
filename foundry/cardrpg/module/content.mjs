@@ -152,38 +152,38 @@ const verb = (value, extra = {}) => ({ value, ...extra });
 /** Player gear. Weight in whole kilograms, value in gold. */
 export const ITEMS = [
   {
-    name: "Longsword", slot: "hands", hands: 1, tags: ["heavy", "melee"],
+    name: "Longsword", slot: "hands", fits: ["back"], hands: 1, tags: ["heavy", "melee"],
     weight: 2, value: 15, kind: "Weapon",
     blurb: "A plain cruciform blade, kept sharp.",
     verbs: { strike: verb(3), defend: verb(1) }
   },
   {
-    name: "Dagger", slot: "hands", hands: 1, tags: ["light", "melee", "thrown"],
+    name: "Dagger", slot: "hands", fits: ["belt"], hands: 1, tags: ["light", "melee", "thrown"],
     weight: 0, value: 2, kind: "Weapon",
     blurb: "Short, quick, and easy to hide.",
     verbs: { strike: verb(2, { range: 3, text: "range 3 thrown" }) }
   },
   {
-    name: "Shortbow", slot: "hands", hands: 2, tags: ["ranged"],
+    name: "Shortbow", slot: "hands", fits: ["back"], hands: 2, tags: ["ranged"],
     weight: 1, value: 25, kind: "Weapon",
     blurb: "Horn and sinew, strung short for close country.",
     verbs: { strike: verb(2, { range: 6 }) }
   },
   {
-    name: "Staff of Healing", slot: "hands", hands: 2, tags: ["arcane", "melee"],
+    name: "Staff of Healing", slot: "hands", fits: ["back"], hands: 2, tags: ["arcane", "melee"],
     weight: 2, value: 0, kind: "Implement", group: "make",
     blurb: "Pale wood, warm to the touch.",
     verbs: { strike: verb(1), cast: verb(3, { range: 2, text: "Heal 3" }), defend: verb(1) }
   },
   {
-    name: "Fire Wand", slot: "hands", hands: 1, tags: ["arcane"],
+    name: "Fire Wand", slot: "hands", fits: ["belt"], hands: 1, tags: ["arcane"],
     weight: 0, value: 0, kind: "Implement", group: "make",
     blurb: "Blackened at the tip, and warm even unused.",
     // Blast hits everyone in the area, allies included. It is the default and the cheap one.
     verbs: { cast: verb(2, { range: 4, area: 1, areaKind: "blast" }) }
   },
   {
-    name: "Wooden Shield", slot: "hands", hands: 1, tags: ["shield"],
+    name: "Wooden Shield", slot: "hands", fits: ["back"], hands: 1, tags: ["shield"],
     weight: 3, value: 10, kind: "Shield",
     blurb: "Banded oak, scarred across the face.",
     verbs: { strike: verb(1), defend: verb(2) }
@@ -194,13 +194,13 @@ export const ITEMS = [
     blurb: "Boiled and riveted, and it still smells of the tannery."
   },
   {
-    name: "Healing Potion", slot: "belt", hands: 1, tags: ["consumable"],
+    name: "Healing Potion", slot: "belt", fits: ["hands"], hands: 1, tags: ["consumable"],
     weight: 0, value: 50, consumed: true, kind: "Consumable",
     blurb: "Thick, red, and tastes of iron.",
     verbs: { use: verb(4, { text: "Heal 4, then discard the item" }) }
   },
   {
-    name: "Smoke Bomb", slot: "belt", hands: 1, tags: ["consumable"],
+    name: "Smoke Bomb", slot: "belt", fits: ["hands"], hands: 1, tags: ["consumable"],
     weight: 0, value: 40, consumed: true, kind: "Consumable",
     blurb: "A waxed clay ball, heavier than it looks.",
     verbs: { use: verb(null, { text: "You become Invisible (1)" }) }
@@ -216,12 +216,12 @@ export const ITEMS = [
  */
 export const NPC_GEAR = [
   {
-    name: "Goblin Spear", slot: "hands", hands: 1, tags: ["melee"],
+    name: "Goblin Spear", slot: "hands", fits: ["back"], hands: 1, tags: ["melee"],
     weight: 2, value: 0, npcGear: true, kind: "Weapon",
     verbs: { strike: verb(3) }
   },
   {
-    name: "Goblin Shortbow", slot: "hands", hands: 2, tags: ["ranged"],
+    name: "Goblin Shortbow", slot: "hands", fits: ["back"], hands: 2, tags: ["ranged"],
     weight: 1, value: 0, npcGear: true, kind: "Weapon",
     verbs: { strike: verb(3, { range: 6 }) }
   }

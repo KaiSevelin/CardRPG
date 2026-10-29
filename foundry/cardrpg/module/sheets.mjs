@@ -101,7 +101,7 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
         label: game.i18n.localize(cfg.label),
         capacity: cfg.capacity,
         icon: cfg.icon,
-        items: items.filter(i => i.system.equipped && i.system.slot === key)
+        items: items.filter(i => i.system.equippedSlot === key)
       };
     }
 

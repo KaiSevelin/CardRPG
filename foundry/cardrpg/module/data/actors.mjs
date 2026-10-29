@@ -135,7 +135,7 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
 
     // --- armor, from the equipped body slate
     this.armor = slates
-      .filter(i => i.type === "item" && i.system.equipped && i.system.slot === "body")
+      .filter(i => i.type === "item" && i.system.equippedSlot === "body")
       .reduce((n, i) => n + (i.system.armor ?? 0), 0);
 
     // --- carried weight and encumbrance
@@ -274,7 +274,7 @@ export class NpcData extends foundry.abstract.TypeDataModel {
   prepareDerivedData() {
     const gear = this.parent.items.filter(i => i.type === "item" && i.system.equipped);
     this.armor = this.armorBase + gear
-      .filter(i => i.system.slot === "body")
+      .filter(i => i.system.equippedSlot === "body")
       .reduce((n, i) => n + (i.system.armor ?? 0), 0);
     this.health.max = this.health.base;
     this.health.value = Math.min(this.health.value, this.health.max);

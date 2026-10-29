@@ -79,17 +79,23 @@ Your **background** then adds its 2 skill cards on top, giving a 17-card deck at
 
 ## Items
 
-| Item | Slot | Tags | kg | Value | Strike | Cast | Defend | Use |
+| Item | Fits | Tags | kg | Value | Strike | Cast | Defend | Use |
 |---|---|---|---|---|---|---|---|---|
-| Longsword | 1 hand | Heavy, Melee | 2 | 15 g | 3 dmg | – | 1 | – |
-| Dagger | 1 hand | Light, Melee, Thrown | 0 | 2 g | 2 dmg (range 3 thrown) | – | – | – |
-| Shortbow | 2 hands | Ranged | 1 | 25 g | 2 dmg, range 6 | – | – | – |
-| Staff of Healing | 2 hands | Arcane, Melee | 2 | – | 1 dmg | ✚ Heal 3, range 2 | 1 | – |
-| Fire Wand | 1 hand | Arcane | 0 | – | – | 2 dmg, ✸ Blast 1, range 4 | – | – |
-| Wooden Shield | 1 hand | Shield | 3 | 10 g | 1 dmg | – | 2 | – |
+| Longsword | 1 hand, Back | Heavy, Melee | 2 | 15 g | 3 dmg | – | 1 | – |
+| Dagger | 1 hand, Belt | Light, Melee, Thrown | 0 | 2 g | 2 dmg (range 3 thrown) | – | – | – |
+| Shortbow | 2 hands, Back | Ranged | 1 | 25 g | 2 dmg, range 6 | – | – | – |
+| Staff of Healing | 2 hands, Back | Arcane, Melee | 2 | – | 1 dmg | ✚ Heal 3, range 2 | 1 | – |
+| Fire Wand | 1 hand, Belt | Arcane | 0 | – | – | 2 dmg, ✸ Blast 1, range 4 | – | – |
+| Wooden Shield | 1 hand, Back | Shield | 3 | 10 g | 1 dmg | – | 2 | – |
 | Leather Armor | Body | Armor | 5 | 20 g | – | – | – | Armor 1 (always on) |
-| Healing Potion | Belt | Consumable | 0 | 50 g | – | – | – | Heal 4, then discard item |
-| Smoke Bomb | Belt | Consumable | 0 | 40 g | – | – | – | You become Invisible (1) |
+| Healing Potion | Belt, 1 hand | Consumable | 0 | 50 g | – | – | – | Heal 4, then discard item |
+| Smoke Bomb | Belt, 1 hand | Consumable | 0 | 40 g | – | – | – | You become Invisible (1) |
+
+**Fits** lists every slot an item will go in; where there is more than one, you choose when you put
+it on (core-rules §4). A blade or a shield slings on your **back**, where it stays a Ready away
+from your hand without taking one up. A potion held in a **hand** is a Use with no Ready to pay
+first — and a hand you are not fighting with. Leather Armor fits one slot and so is never asked
+about, which is the rule doing its job.
 
 A full warrior kit — longsword, shield, leather armor, a potion — comes to **10 kg** against a 40 kg
 limit. The limit is not a constraint on how you equip a character; it is a constraint on what you
@@ -123,8 +129,8 @@ Tuned separately from player gear (see *NPC gear and the armor rule* in the core
 
 | Item | Slot | Tags | kg | Strike | Defend |
 |---|---|---|---|---|---|
-| Goblin Spear | 1 hand | Melee | 2 | 3 dmg | – |
-| Goblin Shortbow | 2 hands | Ranged | 1 | 3 dmg, range 6 | – |
+| Goblin Spear | 1 hand, Back | Melee | 2 | 3 dmg | – |
+| Goblin Shortbow | 2 hands, Back | Ranged | 1 | 3 dmg, range 6 | – |
 
 ---
 

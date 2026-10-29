@@ -16,6 +16,11 @@
       <label class="cr-stat">Slot
         <select name="system.slot">{{selectOptions slots selected=system.slot labelAttr="label" localize=true}}</select>
       </label>
+      {{!-- Where else it goes. Nothing here means it goes one place, which is the common case and
+            the correct one for armor. --}}
+      <label class="cr-stat cr-stat--wide">Also fits
+        <select name="system.fits" multiple size="4">{{selectOptions slots selected=system.fits labelAttr="label" localize=true}}</select>
+      </label>
       <label class="cr-stat">Hands
         <input type="number" name="system.hands" value="{{system.hands}}" min="1" max="2">
       </label>

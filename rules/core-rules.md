@@ -212,6 +212,22 @@ questions are independent on purpose.
 > Worn slots start **empty**, and the usual way to fill one is loot. That is the job: the hot slots
 > are where your turn gets decided, the worn slots are where a campaign accumulates.
 
+### What fits where
+
+An item lists the slots it fits, and that list **is** the rule — there is no second rule by item
+type. Most things fit one place. Some fit two, and then **you choose when you put it on**, because
+where a thing sits changes what it can do:
+
+| Item | Fits | Why it matters |
+|---|---|---|
+| Dagger | Hands, **Belt** | On your belt it is out of the way and still a Ready from your hand |
+| Healing Potion | Belt, **Hands** | Held ready, it is a Use with no Ready to pay first |
+| Longsword, Shield, Bow | Hands, **Back** | Slung, it stays in reach without occupying a hand |
+| Plate mail | Body | One slot, so it is never asked about — and never goes in a hand |
+
+A two-hander takes **both hands**, but slung over a back or hung on a belt the same weapon is one
+object. Two hands is a fact about using it, not about carrying it.
+
 ### What a Ready can reach
 
 A Ready reaches what is **already on you** — hands, back, belt. It does not reach the bottom of your

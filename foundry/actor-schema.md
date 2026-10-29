@@ -106,6 +106,18 @@ Plus an unbounded pack, limited by weight instead. `CARDRPG.slots` carries the `
 `CARDRPG.readyReach` names the slots a Ready can get at. Occupancy is derived from which slates are
 equipped, never stored.
 
+An item carries **two** slot fields, and the split is content against state:
+
+| Field | Means |
+|---|---|
+| `slot` | the default slot, and the only one for anything inflexible |
+| `fits[]` | the other slots it will go in — content, the whole "what fits where" rule |
+| `equippedTo` | which slot it is in **right now**; blank means `slot` |
+
+`allowedSlots` derives `[slot, ...fits]`, and `equippedSlot` derives where it actually is — null
+when it is not equipped. Anything asking "is this on my body" asks `equippedSlot`, never `slot`,
+because a dagger's `slot` says `hands` while it hangs on a belt.
+
 `stowedAway` is the other half of reach: a stowed slate is at the bottom of the pack, so it is out
 of a Ready's grasp during combat and does not count toward carried weight.
 

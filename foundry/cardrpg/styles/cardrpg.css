@@ -706,6 +706,9 @@
 .cardrpg .cr-card__costs { display: flex; gap: 0.25em; margin-top: 0.15em; }
 
 .cardrpg .cr-condition__label { flex: 1 1 auto; }
+
+/* A multi-select needs room to show its options; the rest of the stat grid is one line each. */
+.cardrpg .cr-stat--wide { grid-column: 1 / -1; }
 .cardrpg .cr-slot { margin-bottom: 0.4em; }
 .cardrpg .cr-mini { list-style: none; margin: 0; padding: 0; }
 

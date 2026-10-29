@@ -376,7 +376,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
    */
   #assigned(half) {
     const items = this.actor.items.filter(i =>
-      i.type === "item" && i.system.equipped && !CARDRPG.slots[i.system.slot]?.worn
+      i.type === "item" && i.system.equipped && !CARDRPG.slots[i.system.equippedSlot]?.worn
       && this.#stackOf(i) === half);
     const features = half === "primary"
       ? this.actor.items.filter(f => f.type === "feature" && f.system.isActive && f.system.drained)
@@ -413,7 +413,11 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     const verbs = Object.entries(i.system.verbs ?? {}).filter(([, l]) => l.value !== null || l.text);
     // Only a slate that could modify more than one action has a half to choose.
     const choosy = i.system.availableVerbs.length > 1;
-    const slot = CARDRPG.slots[i.system.slot] ?? {};
+    // Where it IS if it is on; where it COULD go if it is not.
+    const label = key => game.i18n.localize(CARDRPG.slots[key]?.label ?? key);
+    const allowed = i.system.allowedSlots ?? [i.system.slot];
+    const slotKey = i.system.equippedSlot ?? allowed[0];
+    const slot = CARDRPG.slots[slotKey] ?? {};
     const fighting = !!game.combat?.started;
     const serving = played
       ? verbs.filter(([v]) => ["primary", "secondary"].some(h => this.#itemFor(v, h)?.id === i.id))
@@ -430,14 +434,16 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       // A worn slate is simply on, like a passive feature: it never enters a stack, and in a fight
       // it cannot come off either.
       passive: slot.worn && i.system.equipped,
-      tip: slot.worn
+      tip: slot.worn && allowed.length < 2
         ? (i.system.equipped
-          ? `Worn on your ${game.i18n.localize(slot.label).toLowerCase()}. Its bonus is simply on.`
+          ? `Worn on your ${label(slotKey).toLowerCase()}. Its bonus is simply on.`
           : fighting
-            ? `Worn, not wielded: your ${game.i18n.localize(slot.label).toLowerCase()} changes `
-              + "between fights, not during one."
-            : `Click to put it on your ${game.i18n.localize(slot.label).toLowerCase()}.`)
-        : played
+            ? `Worn, not wielded: your ${label(slotKey).toLowerCase()} changes between fights, `
+              + "not during one."
+            : `Click to put it on your ${label(slotKey).toLowerCase()}.`)
+        : allowed.length > 1 && !i.system.equipped
+          ? `Fits your ${allowed.map(k => label(k).toLowerCase()).join(" or ")}. Click and choose.`
+          : played
           ? "In play. Click it to put it back in the Items deck."
           : i.system.stowedAway && fighting
             ? "Stowed at the bottom of your pack. A Ready reaches what is already on you."
@@ -458,7 +464,10 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         { label: "Value", value: `${i.system.value} g` },
         { label: "Weight", value: `${i.system.weight} kg` },
         { label: "Type", value: i.system.kind || "\u2014" },
-        { label: "Slot", value: game.i18n.localize(slot.label ?? i.system.slot) }
+        {
+          label: i.system.equipped ? "In" : "Fits",
+          value: i.system.equipped ? label(slotKey) : allowed.map(label).join(" / ")
+        }
       ]
     };
   }
@@ -1047,17 +1056,19 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
 
     if (slate.system.equipped) return ui.notifications.info("Already equipped.");
 
-    if (!CardRPGTray.#canEquipNow(slate)) return;
+    const slot = await CardRPGTray.#chooseSlot(slate);
+    if (!slot) return;
+    if (!CardRPGTray.#canEquipNow(slate, slot)) return;
 
-    const displaced = await CardRPGTray.#makeRoom(this.actor, slate);
+    const displaced = await CardRPGTray.#makeRoom(this.actor, slate, slot);
     if (displaced === null) return;
     for (const other of displaced) {
-      await other.update({ "system.equipped": false });
+      await other.update({ "system.equipped": false, "system.equippedTo": "" });
       this.roles.delete(other.id);
       this.pendingEquips.delete(other.id);
     }
 
-    await slate.update({ "system.equipped": true });
+    await slate.update({ "system.equipped": true, "system.equippedTo": slot });
     // Out of combat this is free, so there is nothing to settle and nothing to remember.
     if (game.combat?.started) this.pendingEquips.add(slate.id);
     if (slate.system.availableVerbs.length > 1) this.roles.set(slate.id, "primary");
@@ -1102,7 +1113,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   async #takeOut(slate) {
     await slate.update(slate.type === "feature"
       ? { "system.drained": false, "system.drainedFor": null }
-      : { "system.equipped": false });
+      : { "system.equipped": false, "system.equippedTo": "" });
     this.roles.delete(slate.id);
     this.pendingEquips.delete(slate.id);
   }
@@ -1142,6 +1153,34 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
    * @returns {Promise<Item[]|null>} what to unequip (possibly none), or null if the player backed out.
    */
   /**
+   * Which slot is this going in?
+   *
+   * Most things go one place and are never asked about. A dagger fits a hand or a belt and a potion
+   * fits a belt or a hand, so those ask -- and the asking is the point: where a thing sits decides
+   * what a Ready can reach and whether it is in the way. Plate mail lists one slot and so never
+   * asks, which is the whole rule about what fits where; there is no second rule by item type.
+   *
+   * @returns {Promise<string|null>} the chosen slot, or null if the player backed out.
+   */
+  static async #chooseSlot(slate) {
+    const allowed = slate.system.allowedSlots ?? [slate.system.slot];
+    if (allowed.length < 2) return allowed[0] ?? null;
+
+    const label = key => game.i18n.localize(CARDRPG.slots[key]?.label ?? key);
+    return await foundry.applications.api.DialogV2.wait({
+      window: { title: `Where does ${slate.name} go?` },
+      content: `<div class="cardrpg"><p><strong>${slate.name}</strong> fits more than one place, `
+        + "and where it sits decides what it can do and what a Ready can reach.</p></div>",
+      buttons: [
+        ...allowed.map(key => ({ action: key, label: label(key) })),
+        { action: "cancel", label: "Cancel", callback: () => null }
+      ],
+      modal: true,
+      rejectClose: false
+    }) ?? null;
+  }
+
+  /**
    * May this slate go on right now?
    *
    * Out of combat, anything may. In combat two rules bite, and neither is a Ready cost -- they are
@@ -1152,10 +1191,10 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
    * - A **stowed** slate is at the bottom of the pack. A Ready reaches what is already on you:
    *   your hands, your back, your belt. That is what the back slot is for.
    */
-  static #canEquipNow(slate) {
+  static #canEquipNow(slate, into) {
     if (!game.combat?.started) return true;
 
-    const slot = CARDRPG.slots[slate.system.slot] ?? {};
+    const slot = CARDRPG.slots[into] ?? {};
     if (slot.worn) {
       ui.notifications.warn(
         `${slate.name} is worn, not wielded: ${game.i18n.localize(slot.label)} changes between `
@@ -1172,15 +1211,14 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     return true;
   }
 
-  static async #makeRoom(actor, item) {
-    const slot = item.system.slot;
+  static async #makeRoom(actor, item, slot = item.system.slot) {
     const capacity = CARDRPG.slots[slot]?.capacity;
     if (capacity === null || capacity === undefined) return [];
 
     const size = i => (i.system.isTwoHanded ? 2 : 1);
-    const here = actor.items.filter(i =>
-      i.type === "item" && i.system.equipped && i.system.slot === slot);
+    const here = actor.items.filter(i => i.type === "item" && i.system.equippedSlot === slot);
     const used = here.reduce((n, i) => n + size(i), 0);
+    // Two hands are two hands. Slung over a back or hung on a belt, the same weapon is one object.
     const needs = item.system.hands === 2 && slot === "hands" ? 2 : 1;
 
     const free = used + needs - capacity;
@@ -1190,7 +1228,8 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     const singles = here.filter(i => size(i) >= free);
     const options = singles.length ? singles.map(i => [i]) : (here.length ? [here] : []);
     if (!options.length) {
-      ui.notifications.warn(`Your ${slot} cannot take ${item.name}.`);
+      ui.notifications.warn(
+        `Your ${game.i18n.localize(CARDRPG.slots[slot]?.label ?? slot)} cannot take ${item.name}.`);
       return null;
     }
 
@@ -1201,8 +1240,10 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     }));
     const chosen = await foundry.applications.api.DialogV2.wait({
       window: { title: `Ready: what does ${item.name} replace?` },
-      content: `<div class="cardrpg"><p>Your ${slot} is full. Equipping <strong>${item.name}</strong> `
-        + "means swapping something out, and the swap is the Ready.</p></div>",
+      content: `<div class="cardrpg"><p>Your `
+        + `${game.i18n.localize(CARDRPG.slots[slot]?.label ?? slot).toLowerCase()} is full. `
+        + `Equipping <strong>${item.name}</strong> means swapping something out, and the swap is `
+        + "the Ready.</p></div>",
       buttons: [...buttons, { action: "cancel", label: "Cancel", callback: () => null }],
       modal: true,
       rejectClose: false
