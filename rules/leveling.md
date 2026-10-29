@@ -85,6 +85,7 @@ one thing instead of another.
 | **Training** | A tool type, at the full bonus instead of +1 | Skill rules §2 already says training comes from the Way trees |
 | **Know-how** | A situation you have **advantage** in | A background gives one; a Way gives more |
 | **Feature** | A feature slate, passive or active | Bounded by bonus groups (§5) |
+| **Obligation** | A feature you **cannot remove** | What you owe for what you were taught — see below |
 | **Item** | A slate you keep | For signature gear a Way grants, not ordinary loot |
 | **Prune** | Remove one card from a deck, permanently | The only way to drop a dead card (§8) |
 | **Deck cap** | Raise your action deck maximum | A flat trait, so **not** bonus-grouped |
@@ -106,12 +107,31 @@ since more cards means your best ones come up less often — which is the tensio
 and it only exists if cards are what you mostly gain. Simulation is blunt about it: a 12-card deck
 pruned *well* matches a full 16, and pruned *badly* collapses to 45%.
 
+### Obligations
+
+Some things are not taught for free. The elves want something back, a minor god wants a pact kept,
+a priest owes vows and a pilgrimage. **An obligation is a feature the character cannot remove** — the
+GM writes it, the GM holds it, and no prune, rest or level takes it off the sheet.
+
+It needs no new machinery: a feature slate is already permanent and already sits in front of the
+player where they cannot forget it. What is new is only that this one is **not theirs to drop**, and
+that its text is a debt rather than a benefit.
+
+> This is the price four of the Way of Mind schools already charge in the world document — Glamour,
+> Spiritualism, Household magic and all of Priest magic
+> ([specializations.md](specializations.md)). It is one answer serving four nodes.
+
 ### The skill side
 
 Three of those rewards are skills, and they are the three things a background already gives
 ([backgrounds.md](backgrounds.md)): a **skill card**, a **training**, a **know-how**. A background
 is who you were before the Way; the graph keeps giving you the same kinds of thing afterwards, which
 is why the two halves of a character never need separate machinery.
+
+> **Skills belong on minor nodes.** A major node is a title and a fighting identity; a skill is a
+> thing you picked up along the way to one. Putting skills on the ordinary nodes between the titles
+> is what gives those nodes something to be — otherwise a trunk is three levels of filler waiting for
+> a specialization, which is the failure mode §5a warns about from the other direction.
 
 [skill-rules.md](skill-rules.md) §8's *Add or Upgrade, and prune 1* therefore describes **what a
 skill-card reward looks like** rather than a separate per-level entitlement. Training in downtime is
@@ -150,7 +170,7 @@ builds. Four things do:
 |---|---|
 | **The choice is exclusive** | The node's group closes every rival node for good (§3). The strongest device, and the only one that makes the frontier shrink — spend it on the handful of choices that should define a character, not on every branch. |
 | **Depth takes commitment** | A branch's later nodes require **several** of that branch's own nodes, not just one (§10). A dabbler reaches the first node of anything; only an investment reaches Assassin. |
-| **The node costs you something** | Expressed in rules that already exist — a prune, Strain, a slot you must keep free, cards that dilute a deck. Never a penalty bolted on. |
+| **The node costs you something** | Expressed in rules that already exist — a prune, Strain, an **obligation** (§4), a slot you must keep free, cards that dilute a deck. Never a penalty bolted on. |
 | **Slot and resource pressure** | A build that needs a free hand cannot carry a shield (core-rules §4). That exclusion is live, and it is the model for the rest. |
 
 ### The six parts
@@ -162,6 +182,7 @@ builds. Four things do:
 | **Leans on** | the **one** axis it pushes, from the list below |
 | **Pays in** | the resource it spends, and what it is therefore bad at |
 | **Signature** | the single card or feature the build is named for |
+| **Not** | what it is *not* about — a major node is a fighting identity, so skills belong on the minor nodes around it, never here |
 | **Opens** | which nodes it puts on the frontier |
 
 The **axes** are not new mechanics; they are the levers the engine already has:

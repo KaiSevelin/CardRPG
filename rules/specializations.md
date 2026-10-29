@@ -25,17 +25,18 @@ is a rule this game already has or has already parked:
 | **Tattoo (Styrka)** | each formula gives the GM a **secret** against you | **Secrets** (skill-rules §5) |
 | **Asceticism** | you give up **body parts** | **permanent injuries** ([ideas.md](ideas.md)) |
 | **Elemental** | money and materials | downtime (skill-rules §6) |
-| **Glamour** | the elves do not teach for free | an obligation — **[OPEN]** |
-| **Spiritualism** | a **pact with a minor god** per formula | an obligation — **[OPEN]** |
-| **Household** | negotiating with elf-kin | an obligation — **[OPEN]** |
-| **Priest** | **vows or a pilgrimage**, whatever the school | an obligation — **[OPEN]** |
+| **Glamour** | the elves do not teach for free | an **obligation** ([leveling.md](leveling.md) §4) |
+| **Spiritualism** | a **pact with a minor god** per formula | an **obligation** |
+| **Household** | negotiating with elf-kin | an **obligation** |
+| **Priest** | **vows or a pilgrimage**, whatever the school | an **obligation** |
 
 > **Formula strength is 1–5**, and that is the spell-slot cost. A strength-3 formula takes three of
 > your slots. "Some spells cost more than one slot" was already written in the world; it just was not
 > written in the rules.
 
-Three of those costs are the same shape — an obligation owed to someone who taught you — and the game
-has no mechanic for it. That is the one real gap this list turns up.
+Four of those costs are the same shape — something owed to whoever taught you — and they are now one
+mechanic: an **obligation** is a feature the character **cannot remove**. The GM writes it and the GM
+holds it, and no prune, rest or level takes it off the sheet. One answer serving four nodes.
 
 **My earlier Necromancer placeholder was wrong.** I priced it in Taint; the world prices it in
 *forgetting*, which is a prune, and that is better — it makes a necromancer's mind visibly narrower
@@ -53,12 +54,12 @@ Direct magic is cast in combat. Ritual magic is not, and anyone literate can do 
 | **Necromancy** | Nekromanti | Preparation | Forgetting: every formula prunes something else |
 | **Elemental Magic** | Elementarmagi | Position | Money and materials (Air, Water, Earth, Fire, Ether) |
 | **Poison** | Gift | Control | Skill cards set aside equal to the formula's strength |
-| **Glamour** | Glamour | Control | An elven debt — **[OPEN]** |
+| **Glamour** | Glamour | Control | An elven debt, as an obligation |
 | **Tattoo Magic** | Styrka | Deck shape | A secret the GM holds against you, per formula |
 | **Asceticism** | Asketism | Deck shape | Parts of your body |
 | **Shadow Magic** | Skugga | Position | A permanent Wild card per formula |
-| **Spiritualism** | Spiritualism | Preparation | A pact with a minor god, per formula — **[OPEN]** |
-| **Household Magic** | Hushållsmagi | *(out of combat)* | Negotiation with elf-kin — **[OPEN]** |
+| **Spiritualism** | Spiritualism | Preparation | A pact with a minor god, per formula, as an obligation |
+| **Household Magic** | Hushållsmagi | *(out of combat)* | Negotiation with elf-kin, as an obligation |
 | **Priest Magic** | Prästmagik | Preparation | Vows or a pilgrimage; a shorter list than a mage's |
 | **Ritual Magic** | Rituell magik | *(out of combat)* | Time, and a recipe that can go wrong |
 | **Brewer** | Bryggare | *(craft)* | — |
@@ -86,38 +87,41 @@ axes are all about a fight. They need either a second template or a different ki
 | **Acrobat** | Akrobater | Position | Carries nothing heavy |
 | **Half-mage** | Halvmagiker | Preparation | Few slots; neither one thing nor the other |
 
-## Way of Strength — 15
+## Way of Strength — restructured  **[PROPOSED]**
 
-| Node | Swedish | Leans on | Pays in |
+The world document lists fifteen, and eight of them are *a weapon type*. **A weapon type is not a
+playstyle** — the engine already handles "I use a sword" through the item's Strike line, so Sword,
+Two-handed, Polearm, Dagger, Blunt, Crossbow, Musket and Unarmed would be one branch written eight
+times.
+
+**Roles work where weapons do not.** A Knight and an Infantryman fight differently whatever they are
+holding, and each can carry a different axis. The list below is a proposal; the world document still
+has the weapon list, and should be updated once this is agreed.
+
+| Node | Leans on | Pays in | Absorbs |
 |---|---|---|---|
-| **Sword** | Svärdsspecialister | Reactions | — |
-| **Two-handed** | Tvåhandade specialister | Tempo | Both hands: no shield, no prepared spells |
-| **Polearm** | Polearm-specialister | Position | Both hands; poor up close |
-| **Dagger** | Dolkspecialister | Tempo | Reach |
-| **Unarmed** | Obeväpnade specialister | Reactions | No weapon value at all — **both hands always free** |
-| **Formation** | Formationsspecialister | Position | Needs an ally beside you |
-| **Crossbow** | Armborstspecialister | Tempo | Reloading |
-| **Artillerist** | Artillerister | Position | Immobile while it fires |
-| **Musketeer** | Musketerare | Tempo | Reloading, and worse |
-| **Shield** | Skyddsspecialister | Reactions | A hand that will never cast |
-| **Blunt** | Trubbiga specialister | Control | — |
-| **Gladiator** | Gladiatorer | *(social)* | — |
-| **Berserker** | Bärsärkar | Deck shape | Cannot defend; the deck burns down fast |
-| **Cavalry** | Kavalleri | Position | A mount, and room to use it |
-| **Sapper** | Sappers | Position | Setup turns |
+| **Knight** | Position | A mount, and the room to use it | Cavalry, Sword |
+| **Infantry** | Position | Needs an ally beside you; alone it is ordinary | Formation, Polearm |
+| **Guardian** | Reactions | A hand that will never cast | Protection, Shield |
+| **Berserker** | Deck shape | Cannot defend; the deck burns down fast | Berserkers |
+| **Pugilist** | Reactions | No weapon value at all — **both hands always free** | Unarmed |
+| **Executioner** | Tempo | Both hands, and nothing held back | Two-handed, Blunt |
+| **Gunner** | Tempo | Reloading | Musketeers, Crossbow |
+| **Artillerist** | Position | Immobile while it fires | Artillerists |
+| **Sapper** | Position | Setup turns before anything pays off | Sappers |
+| **Gladiator** | Reactions | Fights to be watched; poor in a line | Gladiators |
+| **Skirmisher** | Position | Carries nothing heavy | *(new)* |
+| **Vanguard** | Tempo | First in, and takes what that costs | *(new)* |
+| **Bodyguard** | Reactions | Tied to someone else's position | *(new)* |
+| **Drill Sergeant** | Position | Spends turns on allies, not enemies | *(new)* |
+| **Siegebreaker** | Control | Slow, and built for walls rather than people | *(new)* |
 
-> **Way of Strength is the one at risk.** Eight of the fifteen are *a weapon type*, and a weapon type
-> is not a playstyle — the engine already handles "I use a sword" through the item's Strike line. If
-> Sword, Two-handed, Polearm, Dagger, Blunt, Crossbow, Musket and Unarmed all lean on *damage with
-> this weapon*, they are one branch written eight times.
->
-> The axis column above is an attempt to pull them apart: Sword and Unarmed into reactions, Polearm
-> into reach, Dagger and the gunpowder ones into tempo, Blunt into conditions. **Each has to earn its
-> axis in its Signature, not in its weapon.**
+**Dagger specialists** are not here: a knife fighter is Way of Shade, and the Thief and Assassin nodes
+already carry it.
 
-**Unarmed** is worth singling out. Both hands are always free, which is exactly what a prepared caster
-needs (core-rules §4) — so it is the Way of Strength node that most wants a second Way, and the
-geometry already allows it.
+Five axes across fifteen nodes, three to an axis — which is as close as the six-axis list gets to
+even, and means the writing rule in [leveling.md](leveling.md) §5a has to do real work separating the
+three that share one.
 
 ---
 
@@ -127,23 +131,25 @@ geometry already allows it.
    elves, a pact with a god, vows. The game has no mechanic for an obligation. It is the one genuinely
    missing piece, and it would serve four nodes at once.
 2. **Spell-slot cost is already written**: formula strength 1–5.
-3. **`Armborstspecialister` appears twice** in the world document (lines 366 and 370). Listed once
-   here, as fifteen.
+3. **`Armborstspecialister` appeared twice** in the world document. Counted once.
 4. **The counts do not match [design-direction.md](design-direction.md)**, which says 15 / 12 / 13.
    Strength is 15 and Shade is 12, but Mind has 11 direct schools plus ritual, four crafts and an
    orator. The 13 needs reconciling with whoever wrote it.
-5. **The crafts do not fit the template.** Brewer, Smith, Jeweller, Orator, Spy, Fence, Politician and
-   Gladiator are all about what you do *between* fights. Either the six axes get an out-of-combat
-   sibling, or these are a different kind of node entirely.
+5. **The crafts are probably not major nodes at all.** Brewer, Smith, Jeweller, Orator, Spy, Fence
+   and Politician are about what you do *between* fights, and a major node is a fighting identity.
+   Since **skills live on minor nodes** ([leveling.md](leveling.md) §4), these are most likely
+   clusters of ordinary nodes along a branch rather than titles of their own — which also gives the
+   nodes between the titles something to be.
 
 ## Open
 
-- **[OPEN]** An **obligation** mechanic, for the four schools that need one.
 - **[OPEN]** The **deity** exclusive group ([leveling.md](leveling.md) §3). Priest magic is "a school
   according to their religion", so the deity node both gates the priest's formula list and closes
   every other god. Firma has five bodies of worship to draw it from — the Eternal God, the Eternal
   Spirit, The Five, The Grey, and the local and minor gods.
-- **[OPEN]** A second template for out-of-combat specializations (crafts, social).
+- **[OPEN]** Whether Spy, Fence, Politician and Bard stay as Shade **titles** or become clusters of
+  minor nodes, the way the crafts probably should (finding 5). Spy and Politician in particular do
+  nothing in a fight, and a major node is a fighting identity.
 - **[OPEN]** Each node's **Signature** — the one card or feature it is named for. That is where the
   axis gets earned, and it is the next thing to write.
 - **[OPEN]** Which specializations hang off which trunk node, and how deep each branch runs.
