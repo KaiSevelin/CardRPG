@@ -44,6 +44,54 @@
     doing. Only the front card reads in full; the carousel turns the stack without unmaking it.
   --}}
   <section class="cr-hud__play">
+    {{!--
+      Row 1: who is playing, and the piles the turn draws on. Fate and the two discards are LINKS
+      here, not deck backs on the table: a deck back is a big object that says "draw me", and none
+      of these is drawn from by hand. It also keeps the column short enough that Foundry's own
+      toasts have somewhere to land.
+    --}}
+    <div class="cr-options">
+      <div class="cr-options__name">{{actor.name}}</div>
+      <div class="cr-options__vitals">
+        <span data-tooltip="Health">&#9829; {{system.health.value}}/{{system.health.max}}</span>
+        <span data-tooltip="Block{{#if system.blockPersists}} — holds until your next turn{{/if}}">&#9094; {{system.block}}{{#if system.blockPersists}}&infin;{{/if}}</span>
+        <span data-tooltip="Armor">&#9636; {{system.armor}}</span>
+        {{#if system.wounds}}<span data-tooltip="Wounds">&#10006; {{system.wounds}}</span>{{/if}}
+        {{#if system.taint.total}}<span data-tooltip="Taint">&#9763; {{system.taint.total}}</span>{{/if}}
+      </div>
+      <div class="cr-options__piles">
+        {{#each pileLinks}}
+          <button type="button" class="cr-options__pile{{#if this.open}} cr-options__pile--open{{/if}}"
+                  data-action="openPile" data-pile="{{this.id}}" data-tooltip="{{this.tip}}">
+            {{crIcon this.icon}}<span class="cr-options__count">{{this.count}}</span>
+          </button>
+        {{/each}}
+      </div>
+      {{#if exhausted}}<div class="cr-tray__flag" data-tooltip="One card per turn, and no reactions">Exhausted</div>{{/if}}
+      {{#if dazed}}<div class="cr-tray__flag" data-tooltip="No secondary this turn">Dazed</div>{{/if}}
+      {{#if stunned}}<div class="cr-tray__flag" data-tooltip="No reactions">Stunned</div>{{/if}}
+      {{#if encumbered}}<div class="cr-tray__flag">{{encumbered}}</div>{{/if}}
+      {{#if staged}}
+      <div class="cr-options__staged">
+      {{#each staged}}<span class="cr-chip cr-chip--staged">{{this.order}}. {{this.name}}</span>{{/each}}
+      </div>
+      {{/if}}
+      {{#if targets}}
+      <div class="cr-note" data-tooltip="Fate is drawn once per action, not per target">&#9678; {{targets}}</div>
+      {{/if}}
+      <div class="cr-options__buttons">
+        {{!-- Play lives under the stacks it resolves. This is the undo for a mis-clicked half. --}}
+        <button type="button" data-action="clear" {{#unless canClear}}disabled{{/unless}}
+                data-tooltip="Empty the play area: action cards back to hand, items and features back to their decks.">Clear</button>
+        <button type="button" data-action="breathe" {{#unless canBreathe}}disabled{{/unless}}
+                data-tooltip="{{#if canBreathe}}Your whole turn, for {{breathRecovery}} cards out of the discard at random — exactly enough to not be Exhausted next turn.{{else}}Needs {{breathRecovery}} cards in the discard. It recovers {{breathRecovery}}, all or nothing.{{/if}}">Breath</button>
+        {{#if inCombat}}
+          <button type="button" data-action="endTurn"
+                  data-tooltip="{{#if myTurn}}Your turn{{else}}{{turnOwner}}'s turn{{/if}}">End turn</button>
+        {{/if}}
+      </div>
+    </div>
+
     <div class="cr-play__stacks">
     {{#each playArea}}
       <div class="cr-stack" data-half="{{this.half}}">
@@ -121,59 +169,6 @@
       Play
     </button>
 
-    {{!-- Under the button: the decks the turn draws on, then who is playing it. --}}
-    <div class="cr-play__piles">
-      {{#each rightDecks}}
-      <button type="button"
-              class="cr-pile{{#if this.open}} cr-pile--open{{/if}}"
-              data-action="{{this.action}}" data-pile="{{this.id}}" data-tooltip="{{this.tip}}">
-        <span class="cr-pile__count">{{this.count}}</span>
-        <span class="cr-pile__label">{{this.label}}</span>
-      </button>
-      {{/each}}
-    </div>
-
-    {{!-- Same shape as a card, so it sits in the column as one more object. --}}
-    <div class="cr-options">
-      <div class="cr-options__name">{{actor.name}}</div>
-      <div class="cr-options__vitals">
-        <span data-tooltip="Health">&#9829; {{system.health.value}}/{{system.health.max}}</span>
-        <span data-tooltip="Block{{#if system.blockPersists}} — holds until your next turn{{/if}}">&#9094; {{system.block}}{{#if system.blockPersists}}&infin;{{/if}}</span>
-        <span data-tooltip="Armor">&#9636; {{system.armor}}</span>
-        {{#if system.wounds}}<span data-tooltip="Wounds">&#10006; {{system.wounds}}</span>{{/if}}
-        {{#if system.taint.total}}<span data-tooltip="Taint">&#9763; {{system.taint.total}}</span>{{/if}}
-      </div>
-      {{!-- What this fight has cost you so far. A link, not a deck: nothing is ever played from it. --}}
-      {{#if system.deckCounts.spent}}
-        <button type="button" class="cr-options__spent{{#if spentOpen}} cr-options__spent--open{{/if}}"
-                data-action="openPile" data-pile="actionSpent"
-                data-tooltip="Out of the fight. Spent cards come back on a short or long rest. Click to look through them.">
-          {{crIcon config.costIcons.spent.icon}} {{system.deckCounts.spent}} Spent
-        </button>
-      {{/if}}
-      {{#if exhausted}}<div class="cr-tray__flag" data-tooltip="One card per turn, and no reactions">Exhausted</div>{{/if}}
-      {{#if dazed}}<div class="cr-tray__flag" data-tooltip="No secondary this turn">Dazed</div>{{/if}}
-      {{#if stunned}}<div class="cr-tray__flag" data-tooltip="No reactions">Stunned</div>{{/if}}
-      {{#if encumbered}}<div class="cr-tray__flag">{{encumbered}}</div>{{/if}}
-      {{#if staged}}
-        <div class="cr-options__staged">
-          {{#each staged}}<span class="cr-chip cr-chip--staged">{{this.order}}. {{this.name}}</span>{{/each}}
-        </div>
-      {{/if}}
-      {{#if targets}}
-        <div class="cr-note" data-tooltip="Fate is drawn once per action, not per target">&#9678; {{targets}}</div>
-      {{/if}}
-      <div class="cr-options__buttons">
-        {{!-- Play lives under the stacks it resolves. This is the undo for a mis-clicked half. --}}
-        <button type="button" data-action="clear" {{#unless canClear}}disabled{{/unless}}
-                data-tooltip="Empty the play area: action cards back to hand, items and features back to their decks.">Clear</button>
-        <button type="button" data-action="breathe" {{#unless canBreathe}}disabled{{/unless}}
-                data-tooltip="{{#if canBreathe}}Your whole turn, for {{breathRecovery}} cards out of the discard at random — exactly enough to not be Exhausted next turn.{{else}}Needs {{breathRecovery}} cards in the discard. It recovers {{breathRecovery}}, all or nothing.{{/if}}">Breath</button>
-        {{#if inCombat}}
-          <button type="button" data-action="endTurn"
-                  data-tooltip="{{#if myTurn}}Your turn{{else}}{{turnOwner}}'s turn{{/if}}">End turn</button>
-        {{/if}}
-      </div>
     </div>
   </section>
 

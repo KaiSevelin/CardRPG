@@ -144,7 +144,7 @@ model that's one card type with a `flavour` field (`body` / `mind`) selecting th
 
 ---
 
-## Tier 3 — HUD and sheet chrome (9)
+## Tier 3 — HUD and sheet chrome (10)
 
 Nothing blocks on these; Font Awesome ships with Foundry and covers most of them.
 
@@ -155,10 +155,14 @@ Nothing blocks on these; Font Awesome ships with Foundry and covers most of them
 | | Belt | Belt |
 | | Pack | Knapsack |
 | **Deck state** | Exhausted | Oppression |
+| | Fate deck | Card random |
 | | Rest token | Night sleep |
 | **Challenge tracks** | Progress | Target prize |
 | | Pressure | Hourglass |
 | **Secrets** | Secret slate | Lock spy |
+
+The Discard and Spent counters in the HUD reuse the two **cost** icons from tier 1: a Strain cost
+and the Discard counter mean the same pile, and so do a Spent cost and the Spent counter.
 
 ### Optional — item tags (9)
 

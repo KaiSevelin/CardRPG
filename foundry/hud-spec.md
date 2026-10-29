@@ -103,27 +103,23 @@ ambiguous the moment both halves are staged. Rather than stamp the answer on the
 it in the layout: **where a card sits is what it is doing.**
 
 ```
-     PRIMARY (3)  ‹ ›        SECONDARY (2)  ‹ ›
+     ┌─────────────────────────────┐
+     │ Starter Warrior              │
+     │ ♥ 12/12  ⧈ 0  ▤ 1           │
+     │ (fate) 18  (disc) 3  (spent) 1│  <- links, not decks
+     │ [Clear] [Breath] [End turn]  │
+     └─────────────────────────────┘
+     PRIMARY  ‹ ›             SECONDARY
      ┌──────────────┐        ┌──────────────┐
      │ Longsword → ↺│        │ Wooden Sh. ←↺│  <- the cards behind: name only
      ├──────────────┤        ├──────────────┤
-     │ Leather Arm ↺│        │ SHIELD       │
-     ├──────────────┤        │ defend 2     │
-     │ STRIKE       │        │ secondary    │  <- the front card, in full
-     │ strike 4     │        │              │
-     │ primary      │        │              │
+     │ STRIKE       │        │ SHIELD       │
+     │ strike 4     │        │ defend 2     │  <- the front card, in full
+     │ primary      │        │ secondary    │
      └──────────────┘        └──────────────┘
-     ┌──────────────────────────────┐
+     ┌─────────────────────────────┐
      │             PLAY             │
-     └──────────────────────────────┘
-            ┌──────────────┐
-            │     FATE     │
-            └──────────────┘
-            ┌──────────────┐
-            │   DISCARD    │
-            └──────────────┘
-     ┌──────────────────────────────┐
-     │  Starter Warrior  12/12 ...  │
+     └─────────────────────────────┘
 ```
 
 The column runs down the right, clear of the sidebar so that chat, the combat tracker and the rest
@@ -132,13 +128,16 @@ render rather than assumed, because the sidebar collapses to a rail of buttons a
 and a fixed offset would cover those buttons half the time. It is anchored at the top, because the
 stacks grow downwards as cards go into them and the part you click should not move when they do.
 
-It is four rows: the stacks with the button that resolves them, then Fate, then Discard, then who
-is playing. Fate and Discard get a row each rather than sitting side by side -- a pair side by side
-reads as a choice between two things, and these are not a choice, they are two decks the turn draws
-on. Both stay card-sized, because a deck back is the size of the cards it deals.
+It is three rows: who is playing and the piles they draw on, then the two stacks, then the button
+that resolves them.
 
-It reads top to bottom: what you are about to do, the button that does it, the decks it draws on,
-then who is doing it. Nothing about a turn is anywhere else. The far left keeps what it had --
+**Fate, Discard and Spent are links in the panel, not deck backs on the table.** A deck back is a
+big object that says *draw me*, and none of these is drawn from by hand — Fate is drawn by the rules
+when an action resolves, and the two discards are records. As card-sized backs they also made the
+column tall enough to sit under Foundry's own notifications, which have to land somewhere.
+
+It reads top to bottom: who you are and what you have to spend, what you are about to do, then the
+button that does it. Nothing about a turn is anywhere else. The far left keeps what it had --
 Items, Features and Conditions stacked from the top, the Action deck in the bottom corner -- so the
 two sides split cleanly: **what you own** on the left, **what you are doing with it** on the right.
 
@@ -243,15 +242,28 @@ The cards being played are never payable: a half cannot pay for itself. If the r
 too thin to cover the bill, the turn is refused with a notification rather than part-paid -- the
 same shape as an unpaid Ready (§3.5.2).
 
-### 3.8 Spent: a link, not a deck
+### 3.8 Piles are links, not decks
 
-The Spent pile gets **one underlined line in the character panel** (card-burn icon, `3 Spent`),
-carrying the same icon the cards do, and opening into the same spread the other piles use. It does not get a deck back in the column.
+Fate, Discard and Spent sit as **a row of icon counters in the character panel**, each opening into
+the same spread the left-hand decks use.
 
-A deck back on the table promises a pile you can draw on, and nothing is ever played from Spent. It
-is not a deck, it is a **record of what this fight has already cost you** -- which is the same kind
-of thing as Health, Block and conditions, and belongs where they are. The line is absent entirely
-when nothing is Spent, so it appears exactly when it starts to mean something.
+A deck back on the table promises a pile you can draw on. None of these is drawn from by hand: Fate
+is drawn by the rules when an action resolves, and the two discards are **records of what the fight
+has cost you so far** — the same kind of thing as Health, Block and conditions, and belonging where
+they are. They also cost the column two card-heights it could not spare: at full height it sat under
+Foundry's own notifications, which have to land somewhere.
+
+| Link | Icon | Opens |
+|---|---|---|
+| Fate | Card random | the fate **discard**, face up; the deck itself stays face down |
+| Discard | Card discard | your action discard |
+| Spent | Card burn | the Spent pile |
+
+Discard and Spent reuse the two cost icons on purpose: a Strain cost and the Discard link mean the
+same pile, and a Spent cost and the Spent link mean the same pile.
+
+**Spent is absent entirely when nothing is Spent**, so it appears exactly when it starts to mean
+something. Fate and Discard are always there, because a count of zero is itself worth reading.
 
 ---
 

@@ -1,6 +1,6 @@
 # Icon attribution
 
-The 63 icons in `icons/` come from [game-icons.net](https://game-icons.net) and are used under the
+The 64 icons in `icons/` come from [game-icons.net](https://game-icons.net) and are used under the
 **Creative Commons Attribution 3.0** licence (CC BY 3.0). The licence requires a credit, which is
 what this file is — it ships with the system.
 
@@ -110,6 +110,15 @@ modification; this records what was changed.
 | `vomiting` | Lorc |
 | `squid-head` | Lorc |
 | `severed-hand` | DarkZaitzev |
+
+### Pile links
+
+| Key | Author |
+|---|---|
+| `card-random` | Faithtoken |
+
+`card-burn` and `card-discard` are listed under Costs; the panel links reuse them, because the
+Discard link and a Strain cost mean the same pile.
 
 ### HUD and sheet chrome
 

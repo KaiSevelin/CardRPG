@@ -56,6 +56,21 @@ CARDRPG.costIcons = {
   strain: { label: "CARDRPG.Cost.Strain", icon: "card-discard" }
 };
 
+/**
+ * The piles that show as a line of icons in the character panel rather than as a deck on the table.
+ *
+ * A deck back is a big object that says "draw me". These three are not drawn from: Fate is drawn by
+ * the rules, not by you, and the two discards are records. Keyed by pile id, which is what the
+ * link's `data-pile` carries.
+ *
+ * Discard shares the Strain icon on purpose -- both mean the discard pile, and that is the point.
+ */
+CARDRPG.pileIcons = {
+  fateDiscard: "card-random",
+  actionDiscard: "card-discard",
+  actionSpent: "card-burn"
+};
+
 /** Skill-card approaches. Out of scope for the combat playtest, kept for completeness. */
 CARDRPG.approaches = {
   might: { label: "CARDRPG.Approach.Might", icon: "mighty-force" },

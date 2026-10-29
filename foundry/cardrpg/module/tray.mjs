@@ -169,12 +169,29 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       ? this.element
       : this.element?.querySelector(".cr-hud-layer");
     if (!layer) return;
-    const edges = ["sidebar", "ui-right"]
-      .map(id => document.getElementById(id)?.getBoundingClientRect().left)
-      .filter(x => Number.isFinite(x) && x > 0);
-    if (!edges.length) return;
-    const width = window.innerWidth - Math.min(...edges);
-    layer.style.setProperty("--cr-sidebar", `${Math.round(width) + 12}px`);
+
+    // Ask Foundry for its own sidebar before guessing at element ids, which have moved between
+    // versions. `ui.sidebar.element` is a bare node in v13+ and a jQuery wrapper before that.
+    const own = ui.sidebar?.element;
+    const candidates = [
+      own instanceof HTMLElement ? own : (own?.[0] ?? null),
+      document.getElementById("sidebar"),
+      document.getElementById("ui-right")
+    ];
+
+    // The FIRST plausible answer wins, narrowest first -- not the leftmost edge of any of them.
+    // #ui-right can be a container far wider than the bar inside it, and taking its edge parked
+    // the whole column in the middle of the canvas.
+    for (const node of candidates) {
+      const rect = node?.getBoundingClientRect?.();
+      if (!rect || rect.width <= 0) continue;
+      const width = window.innerWidth - rect.left;
+      // A sidebar narrower than a button or wider than a third of the screen is a measurement of
+      // something else; leave the stylesheet's fallback alone rather than trust it.
+      if (width < 24 || width > Math.min(420, window.innerWidth / 3)) continue;
+      layer.style.setProperty("--cr-sidebar", `${Math.round(width) + 12}px`);
+      return;
+    }
   }
 
   _onRender(context, options) {
@@ -246,9 +263,6 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       dazed,
       stunned: active.some(c => c.key === "stunned"),
       exhausted: system.exhausted,
-      // Spent is a line in the character panel, not a deck of its own: it is a record of what this
-      // fight has already cost you, and a record belongs with the rest of your state.
-      spentOpen: this.openPile === "actionSpent",
       encumbered: encumbered
         ? game.i18n.localize(CARDRPG.conditions[encumbered.key].label)
         : null,
@@ -279,7 +293,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       playArea: this.#playArea(),
       leftDecks: this.#leftDecks(),
       actionDeck: this.#actionDeck(combat),
-      rightDecks: this.#rightDecks(),
+      pileLinks: this.#pileLinks(),
       viewer: this.#viewer(),
 
       inCombat: !!myCombatant,
@@ -515,22 +529,37 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
    * reason a thin deck is a risk rather than a lookup. Its discard is face up, which is what makes
    * counting possible.
    */
-  #rightDecks() {
+  #pileLinks() {
     const counts = this.actor.system.deckCounts ?? {};
     const swing = counts.fate ? Math.min(100, Math.round(200 / counts.fate)) : null;
-    return [
+    const breath = CARDRPG.defaults.breathRecovery;
+
+    const links = [
       {
-        id: "fateDiscard", label: "Fate", count: counts.fate ?? 0, action: "openPile",
-        tip: `Face down. ${counts.fateDiscard ?? 0} drawn`
+        id: "fateDiscard", label: "Fate", count: counts.fate ?? 0,
+        tip: `Fate deck: ${counts.fate ?? 0} face down, ${counts.fateDiscard ?? 0} drawn`
           + (swing ? `, ${swing}% chance the next is a swing` : "")
           + ". Click to look through the discard."
       },
       {
-        id: "actionDiscard", label: "Discard", count: counts.discard ?? 0, action: "openPile",
-        tip: "Face up. Catch Breath recovers half of this at random, and the rest waits for the "
-          + "next breath — nothing in here is lost."
+        id: "actionDiscard", label: "Discard", count: counts.discard ?? 0,
+        tip: `Your discard pile. Catch Breath takes ${breath} of these at random, and the rest `
+          + "waits for the next breath — nothing in here is lost. Click to look through it."
       }
-    ].map(d => ({ ...d, open: this.openPile === d.id }));
+    ];
+
+    // Spent appears only once it has something in it, so it means something when it is there.
+    if (counts.spent) {
+      links.push({
+        id: "actionSpent", label: "Spent", count: counts.spent,
+        tip: "Out of the fight. Spent cards come back on a short or long rest. Click to look "
+          + "through them."
+      });
+    }
+
+    return links.map(l => ({
+      ...l, icon: CARDRPG.pileIcons[l.id], open: this.openPile === l.id
+    }));
   }
 
   /**

@@ -778,23 +778,34 @@
 .cr-hud-layer .cr-options .cr-tray__flag { text-align: center; }
 
 /*
- * Spent reads as a link in the panel rather than a deck on the table. Nothing is ever played from
- * it, so giving it a deck back would promise a pile you can draw on; what it is, is a record of
- * what the fight has cost you so far, and that belongs with the rest of your state.
+ * Fate, Discard and Spent as a row of counters in the panel, not as deck backs on the table.
+ *
+ * A deck back is a big object that says "draw me", and none of these is drawn from by hand: Fate
+ * is drawn by the rules, and the two discards are records. Card-sized backs for them also made the
+ * column tall enough to sit under Foundry's own toasts, which have to land somewhere.
  */
-.cr-hud-layer .cr-options__spent {
-  align-self: flex-start;
+.cr-hud-layer .cr-options__piles {
+  display: flex;
+  gap: 0.5em;
+  border-top: 1px solid var(--cardrpg-rule);
+  padding-top: 0.25em;
+}
+
+.cr-hud-layer .cr-options__pile {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2em;
   padding: 0;
   border: none;
   background: none;
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   color: var(--cardrpg-group-6);
-  text-decoration: underline dotted;
-  text-underline-offset: 2px;
   cursor: pointer;
 }
-.cr-hud-layer .cr-options__spent:hover,
-.cr-hud-layer .cr-options__spent--open { text-decoration-style: solid; font-weight: 700; }
+.cr-hud-layer .cr-options__count { font-variant-numeric: tabular-nums; }
+.cr-hud-layer .cr-options__pile:hover,
+.cr-hud-layer .cr-options__pile--open { font-weight: 700; text-decoration: underline; }
 
 /* -------------------------------------------- */
 /*  Played and unplayed slates                  */
@@ -817,17 +828,19 @@
  */
 /*
  * The whole turn in one column down the right, clear of the sidebar so chat, the combat tracker
- * and the rest of its buttons stay reachable beside it. Four rows, top to bottom: the stacks with
- * the button that resolves them, then Fate, then Discard, then who is playing. Nothing about a
- * turn is anywhere else.
+ * and the rest of its buttons stay reachable beside it. Three rows, top to bottom: who is playing
+ * and the piles they draw on, the two stacks, the button that resolves them. Nothing about a turn
+ * is anywhere else.
  *
  * Anchored at the top, not the bottom: the stacks grow downwards as cards go into them, and the
- * part you click should not move when they do.
+ * panel above them should not move when they do.
  */
 .cr-hud-layer .cr-hud__play {
   right: var(--cr-sidebar);
   top: 54px;
-  bottom: 10px;
+  /* Only as tall as its three rows. It used to run to the bottom of the screen, which put it
+     under Foundry's notifications; they need somewhere to land. */
+  max-height: calc(100vh - 64px);
   width: calc(2 * var(--cr-card-w) + 8px);
   display: flex;
   flex-direction: column;
@@ -835,21 +848,6 @@
   gap: 6px;
   overflow-y: auto;
   overflow-x: hidden;
-}
-
-/*
- * Fate and Discard each get a row to themselves, centred under the stacks. Side by side they read
- * as a pair you choose between; one above the other they read as what they are -- two separate
- * decks the turn draws on, in the order it draws on them.
- *
- * They stay card-sized. A deck back is the size of the cards it deals, everywhere in this HUD.
- */
-.cr-hud-layer .cr-play__piles {
-  flex: 0 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
 }
 
 .cr-hud-layer .cr-play__stacks {
