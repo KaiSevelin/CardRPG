@@ -115,16 +115,26 @@ it in the layout: **where a card sits is what it is doing.**
      ┌──────────────────────────────┐
      │             PLAY             │
      └──────────────────────────────┘
-     ┌──────────────┐┌──────────────┐
-     │     FATE     ││   DISCARD    │
-     └──────────────┘└──────────────┘
+            ┌──────────────┐
+            │     FATE     │
+            └──────────────┘
+            ┌──────────────┐
+            │   DISCARD    │
+            └──────────────┘
      ┌──────────────────────────────┐
      │  Starter Warrior  12/12 ...  │
 ```
 
-The column runs down the right, just inside the sidebar so that chat, the combat tracker and the
-rest stay readable beside it. It is anchored at the top, because the stacks grow downwards as cards
-go into them and the part you click should not move when they do.
+The column runs down the right, clear of the sidebar so that chat, the combat tracker and the rest
+of its buttons stay reachable beside it. Its width is measured against the real sidebar on every
+render rather than assumed, because the sidebar collapses to a rail of buttons and expands again,
+and a fixed offset would cover those buttons half the time. It is anchored at the top, because the
+stacks grow downwards as cards go into them and the part you click should not move when they do.
+
+It is four rows: the stacks with the button that resolves them, then Fate, then Discard, then who
+is playing. Fate and Discard get a row each rather than sitting side by side -- a pair side by side
+reads as a choice between two things, and these are not a choice, they are two decks the turn draws
+on. Both stay card-sized, because a deck back is the size of the cards it deals.
 
 It reads top to bottom: what you are about to do, the button that does it, the decks it draws on,
 then who is doing it. Nothing about a turn is anywhere else. The far left keeps what it had --

@@ -155,6 +155,36 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     return super.close(options);
   }
 
+  /**
+   * Sit the right column clear of Foundry's own sidebar, whatever width it is right now.
+   *
+   * The sidebar collapses to a rail of buttons and expands again, so a fixed width in the
+   * stylesheet is wrong half the time: too small and the column covers the chat and combat
+   * buttons, too large and it floats a card's width away from them. Measure the real element.
+   */
+  #fitSidebar() {
+    const layer = this.element?.classList?.contains("cr-hud-layer")
+      ? this.element
+      : this.element?.querySelector(".cr-hud-layer");
+    if (!layer) return;
+    const edges = ["sidebar", "ui-right"]
+      .map(id => document.getElementById(id)?.getBoundingClientRect().left)
+      .filter(x => Number.isFinite(x) && x > 0);
+    if (!edges.length) return;
+    const width = window.innerWidth - Math.min(...edges);
+    layer.style.setProperty("--cr-sidebar", `${Math.round(width) + 12}px`);
+  }
+
+  _onRender(context, options) {
+    super._onRender?.(context, options);
+    this.#fitSidebar();
+  }
+
+  /** Re-measure when the sidebar opens or shuts, without re-rendering the whole HUD. */
+  static refitAll() {
+    for (const tray of CardRPGTray.openTrays) tray.#fitSidebar();
+  }
+
   /* -------------------------------------------- */
 
   async _prepareContext(options) {
@@ -1019,6 +1049,10 @@ export function registerTrayHooks() {
   const refreshAll = () => {
     for (const tray of CardRPGTray.openTrays) tray.render();
   };
+
+  // Collapsing the sidebar moves the edge the right column is measured against.
+  Hooks.on("collapseSidebar", () => CardRPGTray.refitAll());
+  window.addEventListener("resize", () => CardRPGTray.refitAll());
 
   Hooks.on("updateActor", refreshFor);
   Hooks.on("createItem", refreshFor);

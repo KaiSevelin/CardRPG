@@ -371,7 +371,9 @@
 
   --cr-controls: 82px;   /* scene controls down the left edge */
   --cr-nav: 96px;        /* scene navigation across the top */
-  --cr-sidebar: 318px;   /* chat, combat and the rest, on the right */
+  /* A fallback only: the tray measures the real sidebar on render and overwrites this, because
+     the sidebar collapses to a rail of buttons and a fixed width would then cover them. */
+  --cr-sidebar: 318px;
   --cr-hotbar: 90px;     /* the macro bar along the bottom centre */
   --cr-gutter: 18px;     /* clear of the scene controls rather than flush against them */
 
@@ -691,12 +693,13 @@
 /* -------------------------------------------- */
 
 /*
- * Card-shaped, so it sits in the right column as one more object rather than as window chrome.
+ * The last row of the right column: who is playing the turn above it. It spans the column rather
+ * than a single card, so the three buttons sit in a row instead of a stack.
  * Height is free: it carries however many flags and staged halves there are.
  */
 .cr-hud-layer .cr-options {
   flex: 0 0 auto;
-  width: var(--cr-card-w);
+  width: 100%;
   box-sizing: border-box;
   background: var(--cardrpg-paper);
   color: var(--cardrpg-ink);
@@ -736,13 +739,13 @@
 
 .cr-hud-layer .cr-options__buttons {
   display: flex;
-  flex-direction: column;
-  gap: 0.2em;
+  flex-direction: row;
+  gap: 0.3em;
   border-top: 1px solid var(--cardrpg-rule);
   padding-top: 0.3em;
 }
 .cr-hud-layer .cr-options__buttons button {
-  width: 100%;
+  flex: 1 1 0;
   font-size: 0.72rem;
   padding: 0.1em 0;
   line-height: 1.6;
@@ -770,9 +773,10 @@
  * one action and everything modifying it, laid out the way you would lay the cards on a table.
  */
 /*
- * The whole turn in one column down the right, just inside the sidebar so chat, the combat tracker
- * and the rest stay readable beside it. Top to bottom: the two stacks, the button that resolves
- * them, the decks they draw on, then who is playing. Nothing about a turn is anywhere else.
+ * The whole turn in one column down the right, clear of the sidebar so chat, the combat tracker
+ * and the rest of its buttons stay reachable beside it. Four rows, top to bottom: the stacks with
+ * the button that resolves them, then Fate, then Discard, then who is playing. Nothing about a
+ * turn is anywhere else.
  *
  * Anchored at the top, not the bottom: the stacks grow downwards as cards go into them, and the
  * part you click should not move when they do.
@@ -790,12 +794,19 @@
   overflow-x: hidden;
 }
 
-/* Fate and Discard side by side, so the pair is exactly as wide as the stacks above them. */
+/*
+ * Fate and Discard each get a row to themselves, centred under the stacks. Side by side they read
+ * as a pair you choose between; one above the other they read as what they are -- two separate
+ * decks the turn draws on, in the order it draws on them.
+ *
+ * They stay card-sized. A deck back is the size of the cards it deals, everywhere in this HUD.
+ */
 .cr-hud-layer .cr-play__piles {
   flex: 0 0 auto;
   display: flex;
-  flex-direction: row;
-  gap: 8px;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
 }
 
 .cr-hud-layer .cr-play__stacks {
