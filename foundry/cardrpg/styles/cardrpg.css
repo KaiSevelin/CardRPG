@@ -785,10 +785,13 @@
  * column tall enough to sit under Foundry's own toasts, which have to land somewhere.
  */
 .cr-hud-layer .cr-options__piles {
-  display: flex;
+  display: inline-flex;
   gap: 0.5em;
-  border-top: 1px solid var(--cardrpg-rule);
-  padding-top: 0.25em;
+  /* Pushed to the end of the vitals row and divided off: the same kind of counter, a different
+     kind of thing counted. */
+  margin-left: auto;
+  padding-left: 0.5em;
+  border-left: 1px solid var(--cardrpg-rule);
 }
 
 .cr-hud-layer .cr-options__pile {

@@ -105,8 +105,7 @@ it in the layout: **where a card sits is what it is doing.**
 ```
      ┌─────────────────────────────┐
      │ Starter Warrior              │
-     │ ♥ 12/12  ⧈ 0  ▤ 1           │
-     │ (fate) 18  (disc) 3  (spent) 1│  <- links, not decks
+     │ ♥ 12/12 ⧈ 0 ▤ 1 │ 18 ◦ 3 ◦ 1 │  <- vitals, then the piles as links
      │ [Clear] [Breath] [End turn]  │
      └─────────────────────────────┘
      PRIMARY  ‹ ›             SECONDARY
@@ -204,6 +203,16 @@ One Ready buys one equip *or* one swap, exactly as the rules have it. Because an
 by being replaced, those are the same transaction: what is counted is what **arrived**, not what was
 displaced. A two-hander taking both hands displaces two items and still costs the one Ready.
 
+### 3.5.3 When the HUD opens
+
+On `combatStart`, and again on every `combatTurn` and `combatRound`. All three are **transitions**,
+which is why a Foundry reload mid-combat used to leave the HUD shut until the fight was ended and
+restarted -- none of them fires for a fight that was already running.
+
+It therefore also opens on `ready` and on `canvasReady` when `game.combats.active` is already
+started. Both, not one: on `ready` the canvas may not be up, and picking who is playing looks at the
+controlled token. Opening twice is a no-op.
+
 ### 3.6 Catch Breath
 
 **No modal.** Catch Breath takes 2 cards from the discard at random and asks nothing, so the button
@@ -244,8 +253,10 @@ same shape as an unpaid Ready (§3.5.2).
 
 ### 3.8 Piles are links, not decks
 
-Fate, Discard and Spent sit as **a row of icon counters in the character panel**, each opening into
-the same spread the left-hand decks use.
+Fate, Discard and Spent sit as **icon counters on the same row as Health, Block and Armor**, divided
+off at the end of it, each opening into the same spread the left-hand decks use. They share that row
+because they are the same kind of thing -- a number you read, not a thing you click to play -- and
+because the column has no height to spare.
 
 A deck back on the table promises a pile you can draw on. None of these is drawn from by hand: Fate
 is drawn by the rules when an action resolves, and the two discards are **records of what the fight

@@ -54,18 +54,20 @@
       <div class="cr-options__name">{{actor.name}}</div>
       <div class="cr-options__vitals">
         <span data-tooltip="Health">&#9829; {{system.health.value}}/{{system.health.max}}</span>
-        <span data-tooltip="Block{{#if system.blockPersists}} — holds until your next turn{{/if}}">&#9094; {{system.block}}{{#if system.blockPersists}}&infin;{{/if}}</span>
-        <span data-tooltip="Armor">&#9636; {{system.armor}}</span>
+        <span data-tooltip="Block: subtracted from incoming damage, after armor. From a Defend. {{#if system.blockPersists}}Played as a primary, so it holds against every attack until your next turn.{{else}}Gone after the next attack, unless it came from a Defend primary.{{/if}}">&#9094; {{system.block}}{{#if system.blockPersists}}&infin;{{/if}}</span>
+        <span data-tooltip="Armor: subtracted from incoming damage before Block. Always on.">&#9636; {{system.armor}}</span>
         {{#if system.wounds}}<span data-tooltip="Wounds">&#10006; {{system.wounds}}</span>{{/if}}
         {{#if system.taint.total}}<span data-tooltip="Taint">&#9763; {{system.taint.total}}</span>{{/if}}
-      </div>
-      <div class="cr-options__piles">
-        {{#each pileLinks}}
-          <button type="button" class="cr-options__pile{{#if this.open}} cr-options__pile--open{{/if}}"
-                  data-action="openPile" data-pile="{{this.id}}" data-tooltip="{{this.tip}}">
-            {{crIcon this.icon}}<span class="cr-options__count">{{this.count}}</span>
-          </button>
-        {{/each}}
+        {{!-- The piles ride on the same row as the vitals: both are counters, and the column has
+              no height to spare. --}}
+        <span class="cr-options__piles">
+          {{#each pileLinks}}
+            <button type="button" class="cr-options__pile{{#if this.open}} cr-options__pile--open{{/if}}"
+                    data-action="openPile" data-pile="{{this.id}}" data-tooltip="{{this.tip}}">
+              {{crIcon this.icon}}<span class="cr-options__count">{{this.count}}</span>
+            </button>
+          {{/each}}
+        </span>
       </div>
       {{#if exhausted}}<div class="cr-tray__flag" data-tooltip="One card per turn, and no reactions">Exhausted</div>{{/if}}
       {{#if dazed}}<div class="cr-tray__flag" data-tooltip="No secondary this turn">Dazed</div>{{/if}}

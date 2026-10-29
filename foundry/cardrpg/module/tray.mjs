@@ -1214,7 +1214,18 @@ export function registerTrayHooks() {
     Hooks.on(hook, refreshAll);
   }
 
+  // Every one of these is a TRANSITION. Reloading Foundry mid-combat fires none of them, so the
+  // HUD stayed shut until the fight was ended and restarted; catch the fight already in progress.
   Hooks.on("combatStart", combat => CardRPGTray.autoOpen(combat));
   Hooks.on("combatTurn", combat => CardRPGTray.autoOpen(combat));
   Hooks.on("combatRound", combat => CardRPGTray.autoOpen(combat));
+
+  // On "ready" the canvas may not be up, and autoOpen looks at the controlled token to decide who
+  // is playing; "canvasReady" runs again once it is, and opening twice is a no-op.
+  const resume = () => {
+    const combat = game.combats?.active ?? game.combat;
+    if (combat?.started) CardRPGTray.autoOpen(combat);
+  };
+  Hooks.once("ready", resume);
+  Hooks.on("canvasReady", resume);
 }
