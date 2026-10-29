@@ -169,6 +169,77 @@ This makes passive senses a **deck-building** question. A character who carries 
 | 4 | 6 | – |
 | 5 | 7 | Hard: a professional tail, a hidden assassin |
 
+### Passive scores, for every approach
+
+The passive-sense rule is not really about Wits. It is the game's way of turning **a deck into a
+number**, and it works for any approach:
+
+> **Passive score = the highest value of that approach in your whole deck + 2.**
+
+| | |
+|---|---|
+| **Might** | shoving a door that is already giving way, holding a rope, not being moved |
+| **Agility** | keeping your feet, flinching out of the way |
+| **Shadow** | not being the one they look at |
+| **Wits** | noticing — the case written above |
+| **Lore** | knowing a thing without having to think about it |
+| **Presence** | not being cowed |
+
+**This is your stat line, and it is a consequence of your deck rather than a thing you buy.** A
+character with one Might 3 is strong whenever strength is not the point; a character with four Might 1s
+is reliably strong *when they try* and unremarkable the rest of the time. Two characters with the same
+passive score can be very different in a challenge, which a stat line cannot express.
+
+A character with no cards of an approach has a passive score of **2** in it. Low, but never nothing.
+
+Note what this makes **pruning**: cutting your only Might 3 lowers your passive Might for good. A prune
+is already a real decision (§8); this gives it a second edge.
+
+### Saving throws
+
+A check is something you **chose** to attempt. A saving throw is something that **happened to you** —
+the trap fires, the spell lands, the floor gives way — and the difference is the whole of the rule:
+
+> **A saving throw is your passive score plus a fate card, against the difficulty.**
+> It costs no skill card, because you did not choose to make it.
+
+That is deliberate. Charging a card for something imposed on you is what makes saving throws feel
+punitive in other games, and here it would be worse than punitive: it would mean **bad luck shortens
+your day**, since the skill deck only refreshes on a rest.
+
+Fate *is* drawn, which is what separates a save from a passive sense. Noticing is a floor and should be
+dependable; surviving a trap is a moment and should not be.
+
+Everything else is the machinery already in this section:
+
+| | Passive sense | **Saving throw** | Skill check |
+|---|---|---|---|
+| Who starts it | nobody | the world | you |
+| Number from | passive score | **passive score** | the card you play |
+| Fate drawn | no | **yes** | yes |
+| Costs a card | no | **no** | yes |
+| Difficulty | the difficulty table | the difficulty table | the difficulty table |
+| Results | pass / fail | **the results table** | the results table |
+
+And the results table gives saving throws something trad rules have to bolt on: **Partial** — one or two
+below — already means *you do it, but it costs*. "Save for half" is native here, and it arrived without
+anyone designing it.
+
+### What this game does instead of a saving throw
+
+Not everything that would be a save elsewhere should be one here. Where another game rolls to **avoid a
+lasting effect**, this one often hands you the lasting effect and makes it a card:
+
+| Trad save | Here |
+|---|---|
+| Poison, disease | **Taint** goes into a deck (core-rules §8). No roll. It is in you now. |
+| Massive damage, death | **Wounds** and the Unconscious rules (core-rules §8) |
+| Fear, horror | **[OPEN]** — Fear or Madness cards in the skill deck ([ideas.md](ideas.md)) |
+
+This is the better trade in a deck game, and it is worth reaching for first. A save is a moment that
+passes; a card is a thing you keep drawing, and it tells the story of what happened to you every time
+it comes up.
+
 ---
 
 ## 3. Challenges

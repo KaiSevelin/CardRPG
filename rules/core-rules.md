@@ -966,6 +966,7 @@ Settled since draft 0.1:
 | Skill deck for out-of-combat play | Written: [skill-rules.md](skill-rules.md) draft 0.2. |
 | Condition timing | Ticks at the start of the **creator's** turn, so a duration-1 condition always costs the victim exactly one turn (section 7). |
 | How Block works and how long it lasts | Section 4, *Block*. |
+| Stat checks and saving throws | There are no stats. The six **approaches** are the stat line, and a **passive score** turns a deck into a number when one is needed. See *Saving throws* in [skill-rules.md](skill-rules.md) §2. |
 | How to tune NPC damage against armor | Section 9, *NPC gear and the armor rule*. |
 | Final icon set and card layout | [icons.md](icons.md) lists all 50 icons with their sources; [../foundry/card-layout.md](../foundry/card-layout.md) specifies every face. |
 | Action deck size | 12–20 cards, raised by features (section 8). |
