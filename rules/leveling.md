@@ -50,8 +50,31 @@ node's own successors to what you can reach next.
 
 The decision is therefore **navigational, not a menu**: you are not picking a prize, you are picking
 a direction, and what you give up is the other directions you could have gone this level. A node you
-walked past is still there — the frontier never shrinks, so declining a branch at level 3 only ever
-means taking it later than you could have.
+walked past is usually still there, so declining a branch at level 3 often means taking it later
+rather than losing it — **unless it was closed behind you.**
+
+### Some choices close doors
+
+A node may belong to an **exclusive group**. Taking any node in the group **disables every other node
+in it, permanently.** Those nodes leave your frontier and never come back, and so does everything
+reachable only through them.
+
+The clearest case is a **deity**. Swearing to one god is not a step you take beside swearing to
+another; it is the end of that question. Choose the Eternal God and The Five are gone, along with
+every branch that ran through them.
+
+This is the one thing that makes the frontier **shrink**, and the graph needs it. Everything else in
+this document can be had eventually (§6); an exclusive group is where a character genuinely becomes
+one thing instead of another.
+
+> **Why a group, not a list of rivals.** A node that named every node it was incompatible with could
+> not be extended: an add-on's new deity would have to be written into every existing deity's list,
+> which means editing core content. A **named group** is mutual by construction — the add-on declares
+> `exclusive: "deity"` and is at once exclusive with every deity that exists and every one that ever
+> will.
+>
+> It is also a pattern the game already uses. Bonus groups are *same group, highest wins*; this is
+> *same group, first taken wins, for good.*
 
 ## 4. What a node's reward can be
 
@@ -118,15 +141,16 @@ become simple to write and easy to compare.
 
 ### The stringency problem
 
-Your frontier never shrinks and the root keeps every Way reachable, so a Thief may take the Duellist
-branch at level 8 and Way of Mind at level 12. **In a graph you can eventually walk all of, choosing
-a branch costs nothing by itself.** Opportunity cost will not differentiate builds. Three things do,
-and all three are rules that already exist:
+The root keeps every Way reachable and most branches wait for you indefinitely, so a Thief may take
+the Duellist branch at level 8 and Way of Mind at level 12. **In a graph you can eventually walk all
+of, choosing a branch costs nothing by itself.** Opportunity cost alone will not differentiate
+builds. Four things do:
 
 | Device | How |
 |---|---|
+| **The choice is exclusive** | The node's group closes every rival node for good (§3). The strongest device, and the only one that makes the frontier shrink — spend it on the handful of choices that should define a character, not on every branch. |
 | **Depth takes commitment** | A branch's later nodes require **several** of that branch's own nodes, not just one (§10). A dabbler reaches the first node of anything; only an investment reaches Assassin. |
-| **The node costs you something** | Expressed in rules that already exist — Taint, Strain, a slot you must keep free, cards that dilute a deck. Never a penalty bolted on. |
+| **The node costs you something** | Expressed in rules that already exist — a prune, Strain, a slot you must keep free, cards that dilute a deck. Never a penalty bolted on. |
 | **Slot and resource pressure** | A build that needs a free hand cannot carry a shield (core-rules §4). That exclusion is live, and it is the model for the rest. |
 
 ### The six parts
@@ -253,8 +277,12 @@ Nodes are **content, not code** — the same rule the rest of the tuning follows
 |---|---|
 | `id` | stable, namespaced: `shade.thief.assassin` |
 | `after[]` | the node ids this may follow; **any one** of them being owned is enough |
+| `exclusive` | an exclusion group name, if this choice closes its rivals — `"deity"` |
 | `title` | the class title this confers, if it is a specialization node |
 | `grants[]` | the reward, fixed |
+
+A character's **closed** set is every node sharing an `exclusive` group with a node they own, minus
+the ones they own. It derives from the same list as everything else, so nothing extra is stored.
 
 A character stores only **the list of node ids they own**. Level, title, frontier and every reward
 derive from that list, so a corrected node definition fixes every character who took it, and nothing
@@ -271,3 +299,7 @@ needs migrating.
   good; a Way granting what the party would have found anyway is a dead node.
 - **[OPEN]** Whether a second Way should cost anything beyond the level, and whether there is a cap
   on how many Ways one character may walk.
+- **[OPEN]** Which groups beyond **deity** should be exclusive. It is a sharp tool: every group spent
+  is a door a character can never open, so the list should stay short enough to name in a sentence.
+- **[OPEN]** Whether a one-off exclusion — *this* node closes *that* one, with no group — is ever
+  needed. The group covers the known cases and extends cleanly; a one-off does not.

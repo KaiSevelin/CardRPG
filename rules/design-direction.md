@@ -21,7 +21,10 @@ Three classes, called **Ways**. The world document settles this: it has a specia
   Taking one changes the character's title.
 - **Add-on compendiums hang new branches off existing specialization nodes.** A node names what it
   follows, never what follows it, so core content is never edited to make room for an add-on.
-- The details depend on the fantasy world, which comes first.
+- **Some choices close doors.** A node may belong to an exclusive group — swear to one god and the
+  others are gone for good, along with everything behind them. The group is named rather than listed,
+  so an add-on's new deity is exclusive with every existing one without core being edited.
+- The specializations are listed in [specializations.md](specializations.md), from the world document.
 
 ## Backgrounds
 
