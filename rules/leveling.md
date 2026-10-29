@@ -109,6 +109,89 @@ Each is reached by walking the nodes between, so a title is **earned through the
 it**, not picked off a list at creation. Your current title is the **deepest** specialization node
 you own.
 
+## 5a. Writing a major node
+
+A **major node** is a Way root or a specialization — a node that gives you a title. Ordinary nodes
+are small and may be anything; major nodes are what a character *is*, so they are written to a fixed
+shape, the way [backgrounds.md](backgrounds.md) writes backgrounds to five parts. Same reason: they
+become simple to write and easy to compare.
+
+### The stringency problem
+
+Your frontier never shrinks and the root keeps every Way reachable, so a Thief may take the Duellist
+branch at level 8 and Way of Mind at level 12. **In a graph you can eventually walk all of, choosing
+a branch costs nothing by itself.** Opportunity cost will not differentiate builds. Three things do,
+and all three are rules that already exist:
+
+| Device | How |
+|---|---|
+| **Depth takes commitment** | A branch's later nodes require **several** of that branch's own nodes, not just one (§10). A dabbler reaches the first node of anything; only an investment reaches Assassin. |
+| **The node costs you something** | Expressed in rules that already exist — Taint, Strain, a slot you must keep free, cards that dilute a deck. Never a penalty bolted on. |
+| **Slot and resource pressure** | A build that needs a free hand cannot carry a shield (core-rules §4). That exclusion is live, and it is the model for the rest. |
+
+### The six parts
+
+| Part | What it says |
+|---|---|
+| **Title** | what you are called from here on |
+| **Stance** | one sentence: how this build wins |
+| **Leans on** | the **one** axis it pushes, from the list below |
+| **Pays in** | the resource it spends, and what it is therefore bad at |
+| **Signature** | the single card or feature the build is named for |
+| **Opens** | which nodes it puts on the frontier |
+
+The **axes** are not new mechanics; they are the levers the engine already has:
+
+| Axis | Lever |
+|---|---|
+| **Tempo** | Spent, Strain, Ready costs, what a turn sets up |
+| **Position** | Move, range, Blast against Aimed, cover |
+| **Reactions** | what you do on other people's turns, paid for in cards |
+| **Control** | conditions you put on other people |
+| **Deck shape** | 12–20, pruning, the deck cap |
+| **Preparation** | spell slots — deciding before the fight instead of during it |
+
+> **The writing rule:** two major nodes reachable from the same place must **lean on different axes
+> and pay in different resources.** That single constraint is what stops a Way's branches from being
+> three names for the same character, and it is checkable by eye.
+
+### Examples (placeholders until the world is ready)
+
+#### Way of Shade
+
+| | |
+|---|---|
+| **Stance** | You win by not being where the blow lands, and by hitting what cannot hit back. |
+| **Leans on** | Position |
+| **Pays in** | **Halves.** Your cards spend their secondary on Move far more often than Strength's do, so you deal less per turn and choose where every turn ends. |
+| **Signature** | A card whose primary is *Move, then Strike* — reach is the attack. |
+| **Opens** | Thief, Scout, Duellist |
+
+#### Thief
+
+| | |
+|---|---|
+| **Stance** | You take the opening, and then you take everything else. |
+| **Leans on** | Control |
+| **Pays in** | **A free hand and a light weapon.** No shield, no two-hander: both of your hands are working. |
+| **Signature** | A feature that turns a condition you applied into an opening — advantage against anyone Slowed, Prone or unaware. |
+| **Opens** | Assassin, Burglar, Cutpurse |
+
+#### Necromancer
+
+| | |
+|---|---|
+| **Stance** | You spend your own substance, and what you spend it on does not tire. |
+| **Leans on** | Preparation |
+| **Pays in** | **Taint**, into your own skill deck. The power is real and the deck you think with gets worse as you use it — at 3 Taint you are Afflicted and down 3 Health (core-rules §8). |
+| **Signature** | A prepared spell that is worth the Taint it costs. |
+| **Opens** | *(the school's deeper nodes)* |
+
+Necromancer is the example worth studying, because its cost is **not invented for it**. Taint already
+exists, already distinguishes body from mind, already has a face in the icon set and an Afflicted
+threshold in the rules. A major node is written well when its price is a rule the game already had and
+nobody had spent yet.
+
 ## 6. A second Way
 
 The root is a node you own, and **you never stop owning it** — so the three Way nodes stay on your
@@ -181,9 +264,9 @@ needs migrating.
 
 - **[OPEN]** The graphs themselves — every node, reward and specialization for all three Ways.
   Waits on the world, as it always did.
-- **[OPEN]** Whether a node should ever need **all** of its prerequisites rather than any one. A
-  convergence node — something only a Thief *and* a Duellist can reach — is a nice shape, and it is
-  one flag on the node. Cheap to add once there is a graph that wants one.
+- **Needed:** a node that requires **all** of its prerequisites rather than any one. §5a leans on
+  this — it is how depth takes commitment, and without it every title is one node deep and means
+  nothing. One flag on the node; build it with the first graph.
 - **[OPEN]** Whether **item** rewards overlap awkwardly with loot. A Way granting signature gear is
   good; a Way granting what the party would have found anyway is a dead node.
 - **[OPEN]** Whether a second Way should cost anything beyond the level, and whether there is a cap
