@@ -71,6 +71,12 @@ CARDRPG.pileIcons = {
   actionSpent: "card-burn"
 };
 
+/**
+ * The difficulty a saving throw is compared against (skill-rules 2). Shared with skill checks, so a
+ * condition printed "resist Might 5" is asking for the same 5 a Normal skill check asks for.
+ */
+CARDRPG.difficulties = { easy: 3, normal: 5, hard: 7, heroic: 9 };
+
 /** Skill-card approaches. Out of scope for the combat playtest, kept for completeness. */
 CARDRPG.approaches = {
   might: { label: "CARDRPG.Approach.Might", icon: "mighty-force" },

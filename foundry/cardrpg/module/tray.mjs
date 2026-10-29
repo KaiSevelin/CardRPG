@@ -20,7 +20,9 @@ import { CARDRPG } from "./config.mjs";
 import {
   deckOf, discardCards, retireCards, catchBreath, canCatchBreath, refill, cardName
 } from "./decks.mjs";
-import { resolveAttack, resolveDefend, resolveHeal, resolveUse, collectBonuses } from "./resolve.mjs";
+import {
+  resolveAttack, resolveDefend, resolveHeal, resolveUse, resolveCondition, collectBonuses
+} from "./resolve.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -698,6 +700,18 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
           text += ` ${step.mod > 0 ? "+" : ""}${step.mod}`;
         }
 
+        if (step.condition) {
+          const name = game.i18n.localize(CARDRPG.conditions[step.condition]?.label ?? step.condition);
+          text += `${text ? " " : ""}${name} (${Math.max(1, step.duration ?? 1)})`;
+          if (step.resist) {
+            const approach = CARDRPG.approaches[step.resist];
+            text += ` · resist ${game.i18n.localize(approach?.label ?? step.resist)} `
+              + `${step.dc ?? CARDRPG.difficulties.normal}`;
+          }
+          const icon = CARDRPG.conditions[step.condition]?.icon;
+          if (icon) icons.push(icon);
+        }
+
         if (step.text) text += ` (${step.text})`;
         bits.push(text.trim());
       }
@@ -989,6 +1003,10 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         const item = this.#itemFor(step.verb, half);
         if (!item) return ui.notifications.warn(`Nothing equipped can ${step.verb}.`);
         await resolveAttack(actor, { verb: step.verb, item, mod: step.mod ?? 0, targets, step });
+        // A condition printed on the same step rides in with the attack.
+        if (step.condition) {
+          for (const target of targets) await resolveCondition(actor, { step, target });
+        }
         return;
       }
 
@@ -1015,6 +1033,16 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
        * by then the slate it pays for is already in play. Nothing is left to do per step.
        */
       case "ready":
+        return;
+
+      /*
+       * A condition with no verb of its own: the effect IS the action, so it saves. One that rides
+       * on a Strike or Cast is handled below, after that verb has resolved.
+       */
+      case "":
+        if (!step.condition) break;
+        if (!targets.length) return ui.notifications.warn("Target a token first.");
+        for (const target of targets) await resolveCondition(actor, { step, target });
         return;
 
       default:

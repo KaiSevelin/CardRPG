@@ -287,3 +287,95 @@ export async function resolveUse(actor, { item, target = actor }) {
   if (item.system.consumed) await item.delete();
   return result;
 }
+
+/* -------------------------------------------- */
+/*  Conditions                                  */
+/* -------------------------------------------- */
+
+/**
+ * A passive score: the highest value of an approach in the WHOLE skill deck, plus 2
+ * (skill-rules 2).
+ *
+ * The whole deck, not the hand -- draw pile, discard and Spent alike -- so the number does not
+ * wander as the day is played, and nobody is caught unaware for having drawn badly.
+ *
+ * Until the skill deck exists there is nothing to count, so this falls back to `system.passive`,
+ * which is how an NPC carries a score at all, and then to the floor of 2 that a character with no
+ * cards of an approach would have anyway.
+ */
+export function passiveScore(actor, approach) {
+  const skills = actor?.system.decks?.skill ? game.cards.get(actor.system.decks.skill) : null;
+  if (skills) {
+    const best = skills.cards
+      .filter(c => c.system?.approach === approach)
+      .reduce((n, c) => Math.max(n, c.system.value ?? 0), 0);
+    return best + 2;
+  }
+  return actor?.system.passive ?? 2;
+}
+
+/**
+ * Put a condition on a target (core-rules 7).
+ *
+ * How it lands depends on whether the condition IS the action or rides on one:
+ *
+ * - With a `resist` approach, the target makes a **saving throw** -- passive score plus a fate
+ *   card against the printed difficulty. A Partial halves the duration, or gives the `lesser`
+ *   condition if the step names one.
+ * - Without one, it simply lands. The attack it rode in on already drew fate, and drawing again to
+ *   say the same thing twice is how a turn gets slow.
+ *
+ * Unconscious is never applied this way: it means 0 Health and nothing else (core-rules 8).
+ */
+export async function resolveCondition(actor, { step, target }) {
+  const key = step.condition;
+  if (!key || !target) return null;
+  if (key === "unconscious") {
+    ui.notifications.warn("Unconscious comes from 0 Health, not from an effect.");
+    return null;
+  }
+
+  const label = key => game.i18n.localize(CARDRPG.conditions[key]?.label ?? key);
+  const full = Math.max(1, step.duration ?? 1);
+  let landed = { key, duration: full };
+  let line;
+
+  if (step.resist) {
+    const score = passiveScore(target, step.resist);
+    const dc = step.dc ?? CARDRPG.difficulties.normal;
+    const { result, used } = await drawFate(target, score, 0);
+    const miss = used?.system.special === "miss";
+    const crit = used?.system.special === "crit";
+    const short = dc - result;
+
+    if (crit || (!miss && short <= 0)) landed = null;
+    else if (!miss && short <= 2) {
+      // Partial: half the duration, or the lesser condition if one is printed.
+      landed = step.lesser
+        ? { key: step.lesser, duration: full }
+        : (Math.floor(full / 2) ? { key, duration: Math.floor(full / 2) } : null);
+    }
+
+    const approach = game.i18n.localize(CARDRPG.approaches[step.resist]?.label ?? step.resist);
+    line = `resists with ${approach} ${score}${used ? ` ${used.system.label ?? ""}` : ""} `
+      + `= ${result} against ${dc}: `
+      + (landed ? `<strong>${label(landed.key)} (${landed.duration})</strong>` : "<strong>nothing</strong>");
+  } else {
+    line = `<strong>${label(key)} (${full})</strong>`;
+  }
+
+  if (landed) {
+    const conditions = [...(target.system.conditions ?? []).map(c => ({ ...c }))];
+    const already = conditions.find(c => c.key === landed.key);
+    // The longer of the two wins: a second application refreshes rather than stacks.
+    if (already) already.duration = Math.max(already.duration ?? 0, landed.duration);
+    else conditions.push({ ...landed, creatorId: actor.id });
+    await target.update({ "system.conditions": conditions });
+  }
+
+  await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<div class="cardrpg"><p><strong>${target.name}</strong> ${line}</p></div>`
+  });
+  return landed;
+}

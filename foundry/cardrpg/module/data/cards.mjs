@@ -34,6 +34,32 @@ function stepField() {
     areaKind: new fields.StringField({
       required: false, blank: true, initial: "", choices: ["", "blast", "aimed"]
     }),
+    /*
+     * A condition this step puts on its target (core-rules 7).
+     *
+     * `condition` names it and `duration` says for how long. `resist` and `dc` are what the target
+     * saves against, and they are what decides HOW it lands:
+     *
+     * - with `resist`, the condition IS the action and the target makes a saving throw;
+     * - without it, the condition rides on an attack and lands when the attack does.
+     *
+     * `lesser` overrides the default partial result, which is half the duration.
+     */
+    condition: new fields.StringField({
+      required: false, blank: true, initial: "",
+      choices: [...Object.keys(CARDRPG.conditions), ""]
+    }),
+    duration: new fields.NumberField({ integer: true, min: 0, nullable: true, initial: null }),
+    resist: new fields.StringField({
+      required: false, blank: true, initial: "",
+      choices: [...Object.keys(CARDRPG.approaches), ""]
+    }),
+    dc: new fields.NumberField({ integer: true, min: 0, nullable: true, initial: null }),
+    lesser: new fields.StringField({
+      required: false, blank: true, initial: "",
+      choices: [...Object.keys(CARDRPG.conditions), ""]
+    }),
+
     // A few words only, for what icons can't express (Taunt, Parry). Prose goes on the sheet.
     text: new fields.StringField({ required: false, blank: true, initial: "" })
   });

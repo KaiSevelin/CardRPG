@@ -251,6 +251,14 @@ export class NpcData extends foundry.abstract.TypeDataModel {
         intent: new fields.DocumentIdField()
       }),
 
+      /*
+       * An NPC's passive score, used for every approach when it saves against a condition
+       * (core-rules 7). A character derives this from their skill deck; an NPC has none, so it
+       * carries one flat number instead -- which is also the only knob needed to say how hard a
+       * monster is to hold, blind or frighten.
+       */
+      passive: new fields.NumberField({ required: true, integer: true, min: 0, initial: 4 }),
+
       // Flat, for a creature with no body slate. Overridden by gear when it has some.
       armorBase: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 }),
 

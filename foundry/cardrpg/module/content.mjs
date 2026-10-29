@@ -134,8 +134,10 @@ export const GOBLIN_DECK = [
     sequence: [{ verb: "move", param: 3, text: "away from the nearest enemy" }]
   },
   {
+    // The condition rides on the Strike, so it lands when the Strike does -- no save, no second
+    // fate draw (core-rules 7).
     name: "Dirty Trick",
-    sequence: [{ verb: "strike", text: "target is Dazed (1)" }]
+    sequence: [{ verb: "strike", condition: "dazed", duration: 1 }]
   },
   {
     name: "Throw Rock",

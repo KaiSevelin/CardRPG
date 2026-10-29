@@ -578,6 +578,52 @@ Conditions are tokens with a number (duration). Every condition remembers **who 
 - Conditions with no creator (fire, poison gas, a trap) count the affected character as the creator.
 - If the creator leaves combat, its conditions tick at the start of the **affected** character's turn instead, so they still last exactly one of the victim's turns.
 
+### Putting a condition on someone
+
+A condition **printed on an action** says three things: which condition, for how long, and what
+resists it.
+
+```
+✦ Cast · 👥 Grappled (2) · resist ✊ 5
+```
+
+- **If the condition rides on an attack that connected, it lands with it.** No separate check: the
+  goblin's *Dirty Trick* is a Strike that dazes, the Strike already drew fate, and asking for a second
+  draw would slow the turn down to say the same thing twice.
+- **If the condition *is* the action, the target makes a saving throw** — their passive score in the
+  named approach, plus a fate card, against the printed difficulty
+  ([skill-rules.md](skill-rules.md) §2). That is the whole resolution; a spell whose only purpose is
+  the condition is exactly the moment a save is for.
+
+| Result | What lands |
+|---|---|
+| **Success** | nothing |
+| **Partial** | **half the duration, rounded down.** At 0 it does not land. |
+| **Fail** | the full condition |
+| **Critical** / **Miss** | as the results table: a Miss is a fail, a Critical a clean success |
+
+Halving on a Partial means a short condition is shrugged off and a long one still bites, with nothing
+extra to print. An action may **name a lesser condition instead** if that reads better — *Grappled (2),
+or Slowed (1) on a partial.*
+
+**Which approach resists** is the author's choice and should follow what the thing actually does:
+
+| | Resists |
+|---|---|
+| ✊ **Might** | being held, moved or worn down — Grappled, Burning |
+| 🌀 **Agility** | anything you could get out of the way of — Prone, areas |
+| 👁 **Wits** | being fooled or caught out |
+| 👑 **Presence** | being cowed or compelled |
+| 📜 **Lore** | magic you understand well enough to shed |
+| 🌑 **Shadow** | not being the one it finds |
+
+**Unconscious is never applied this way.** It means 0 Health and nothing else (section 8).
+
+> **There is no "hold person".** Nothing in the list below takes a whole turn away — Dazed costs you a
+> secondary, Stunned your reactions, Grappled your feet. All three at once is as held as this game
+> gets, and you still have a primary. That is deliberate: a turn where you do nothing is the dullest
+> thing a fight can hand you.
+
 | Condition | Effect |
 |---|---|
 | **Dazed** | You can't play a secondary. |
