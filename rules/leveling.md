@@ -85,7 +85,7 @@ one thing instead of another.
 | **Training** | A tool type, at the full bonus instead of +1 | Skill rules §2 already says training comes from the Way trees |
 | **Know-how** | A situation you have **advantage** in | A background gives one; a Way gives more |
 | **Feature** | A feature slate, passive or active | Bounded by bonus groups (§5) |
-| **Obligation** | A feature you **cannot remove** | What you owe for what you were taught — see below |
+| **Obligation** | A feature you **cannot remove**, binding in text, in the action deck or in the fate deck | What you owe for what you were taught — see below |
 | **Item** | A slate you keep | For signature gear a Way grants, not ordinary loot |
 | **Prune** | Remove one card from a deck, permanently | The only way to drop a dead card (§8) |
 | **Deck cap** | Raise your action deck maximum | A flat trait, so **not** bonus-grouped |
@@ -109,13 +109,37 @@ pruned *well* matches a full 16, and pruned *badly* collapses to 45%.
 
 ### Obligations
 
-Some things are not taught for free. The elves want something back, a minor god wants a pact kept,
-a priest owes vows and a pilgrimage. **An obligation is a feature the character cannot remove** — the
+Some things are not taught for free. The elves want something back, a minor god wants a pact kept, a
+priest owes vows and a pilgrimage. **An obligation is a feature the character cannot remove** — the
 GM writes it, the GM holds it, and no prune, rest or level takes it off the sheet.
 
-It needs no new machinery: a feature slate is already permanent and already sits in front of the
-player where they cannot forget it. What is new is only that this one is **not theirs to drop**, and
-that its text is a debt rather than a benefit.
+A feature slate is already permanent and already sits in front of the player where they cannot forget
+it. What is new is only that this one is **not theirs to drop**, and that its text is a debt rather
+than a benefit.
+
+An obligation can bind in three ways, and a single one may use more than one:
+
+| | How it binds | Examples |
+|---|---|---|
+| **In text** | The table enforces it. No mechanism, just a sentence everyone can read. | *You may not wear armour. You may not own gold. You must attack anyone who taunts you.* |
+| **In the action deck** | Cards you did not choose, which **must be played** when they come up. | a compulsion that fires whether or not this was the turn for it |
+| **In the fate deck** | Cards you did not choose, permanently in the deck you draw luck from. | the Shadow mage's **Wild** card, one per formula |
+
+The three are a ladder from trust to enforcement, and **the right rung is the loosest one that
+holds**. A sentence costs nothing to write and nothing to run, and most obligations should stay
+there; put it in a deck when the table keeps forgetting, or when the point is that the character
+*cannot* remember.
+
+**Deck obligations need not be bad.** A card that must be played can be a strong card — it is still
+an obligation, because it takes the choice of *when* away from you. A god who makes you brave is
+every bit as binding as one who makes you poor.
+
+Both deck forms have precedent. Wounds and Taint are already cards you did not choose sitting in a
+deck you did (core-rules §8), and Blessed and Cursed already shuffle cards into the fate deck
+(§6) — the difference is only that an obligation's are **permanent**.
+
+> **[OPEN]** How a prohibition is actually blocked — "you may not wear armour" needs the HUD or the
+> rules to stop it, or it is a text obligation after all. Deferred until these are specified further.
 
 > This is the price four of the Way of Mind schools already charge in the world document — Glamour,
 > Spiritualism, Household magic and all of Priest magic
@@ -195,6 +219,7 @@ The **axes** are not new mechanics; they are the levers the engine already has:
 | **Control** | conditions you put on other people |
 | **Deck shape** | 12–20, pruning, the deck cap |
 | **Preparation** | spell slots — deciding before the fight instead of during it |
+| **Support** | what you spend your turn on when the payoff lands on somebody else's |
 
 > **The writing rule:** two major nodes reachable from the same place must **lean on different axes
 > and pay in different resources.** That single constraint is what stops a Way's branches from being

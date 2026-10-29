@@ -104,24 +104,27 @@ has the weapon list, and should be updated once this is agreed.
 | **Infantry** | Position | Needs an ally beside you; alone it is ordinary | Formation, Polearm |
 | **Guardian** | Reactions | A hand that will never cast | Protection, Shield |
 | **Berserker** | Deck shape | Cannot defend; the deck burns down fast | Berserkers |
-| **Pugilist** | Reactions | No weapon value at all — **both hands always free** | Unarmed |
+| **Street Fighter** | Reactions | No weapon value at all — **both hands always free** | Unarmed |
 | **Executioner** | Tempo | Both hands, and nothing held back | Two-handed, Blunt |
-| **Gunner** | Tempo | Reloading | Musketeers, Crossbow |
-| **Artillerist** | Position | Immobile while it fires | Artillerists |
-| **Sapper** | Position | Setup turns before anything pays off | Sappers |
+| **Musketeer** | Tempo | Reloading | Musketeers, Crossbow |
+| **Artillerist** | Position | Immobile while it fires | Artillerists, Sappers |
 | **Gladiator** | Reactions | Fights to be watched; poor in a line | Gladiators |
+| **Tactician** | **Support** | Spends turns on other people's turns, not on damage | *(new)* |
 | **Skirmisher** | Position | Carries nothing heavy | *(new)* |
 | **Vanguard** | Tempo | First in, and takes what that costs | *(new)* |
 | **Bodyguard** | Reactions | Tied to someone else's position | *(new)* |
-| **Drill Sergeant** | Position | Spends turns on allies, not enemies | *(new)* |
-| **Siegebreaker** | Control | Slow, and built for walls rather than people | *(new)* |
 
 **Dagger specialists** are not here: a knife fighter is Way of Shade, and the Thief and Assassin nodes
 already carry it.
 
-Five axes across fifteen nodes, three to an axis — which is as close as the six-axis list gets to
-even, and means the writing rule in [leveling.md](leveling.md) §5a has to do real work separating the
-three that share one.
+**Tactician brings a seventh axis.** Helping an ally is not any of the six — it is not your tempo,
+your position or your reactions, it is theirs. **Support** is what you spend your turn on when the
+payoff lands on somebody else's. Infantry is next to it but not it: Infantry wants an ally beside it,
+Tactician makes the ally better.
+
+Thirteen nodes over six axes: four on Position, four on Reactions, three on Tempo, and one each on
+Deck shape and Support. The two singletons are fine; the Position four and the Reactions four are
+where the writing rule in [leveling.md](leveling.md) §5a has to do real work.
 
 ---
 
