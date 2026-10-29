@@ -100,10 +100,13 @@ Capacities are fixed by the rules (core-rules §4) and split into two kinds:
 | Kind | Slots | Changes |
 |---|---|---|
 | **Hot** | Hands 2, Back 1, Belt 2 | during a fight, paid for with Ready |
+| | | the belt is `freeEquip`; the back is `stows` |
 | **Worn** | Body 1, Cloak 1, Head 1, Neck 1, Fingers 2, Feet 1 | between fights only |
 
-Plus an unbounded pack, limited by weight instead. `CARDRPG.slots` carries the `worn` flag and the belt's `freeEquip`. Occupancy is derived from which
-slates are equipped, never stored.
+Plus an unbounded pack, limited by weight instead. `CARDRPG.slots` carries three flags: `worn` (changes between fights only), `freeEquip` (no Ready to
+put something there) and `stows` (the slot **carries** rather than **uses** — a slung weapon serves
+no verb and grants no bonus, and drawing it out is free because the Ready was paid going in).
+Occupancy is derived from which slates are equipped, never stored.
 
 An item carries **two** slot fields, and the split is content against state:
 

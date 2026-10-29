@@ -376,7 +376,9 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
    */
   #assigned(half) {
     const items = this.actor.items.filter(i =>
-      i.type === "item" && i.system.equipped && !CARDRPG.slots[i.system.equippedSlot]?.worn
+      i.type === "item" && i.system.equipped
+      && !CARDRPG.slots[i.system.equippedSlot]?.worn
+      && !CARDRPG.slots[i.system.equippedSlot]?.stows
       && this.#stackOf(i) === half);
     const features = half === "primary"
       ? this.actor.items.filter(f => f.type === "feature" && f.system.isActive && f.system.drained)
@@ -443,15 +445,18 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
             : `Click to put it on your ${label(slotKey).toLowerCase()}.`)
         : allowed.length > 1 && !i.system.equipped
           ? `Fits your ${allowed.map(k => label(k).toLowerCase()).join(" or ")}. Click and choose.`
-          : !i.system.equipped && CARDRPG.slots[slotKey]?.freeEquip
-            ? `Click to hang it on your ${label(slotKey).toLowerCase()}. No Ready to pay.`
-            : played
-              ? "In play. Click it to put it back in the Items deck."
-              : choosy
-                ? "Click to equip it on the primary stack. You can move it to the secondary from there."
-                : fighting
-                  ? "Click to take it out of your pack. That is a Ready."
-                  : "Click to equip it.",
+          : CARDRPG.slots[i.system.equippedSlot]?.stows
+            ? `Slung on your ${label(i.system.equippedSlot).toLowerCase()}, so it strikes with `
+              + "nothing from there. Click to draw it — free, you paid the Ready to sling it."
+            : !i.system.equipped && CARDRPG.slots[slotKey]?.freeEquip
+              ? `Click to hang it on your ${label(slotKey).toLowerCase()}. No Ready to pay.`
+              : played
+                ? "In play. Click it to put it back in the Items deck."
+                : choosy
+                  ? "Click to equip it on the primary stack. You can move it to the secondary from there."
+                  : fighting
+                    ? "Click to take it out of your pack. That is a Ready."
+                    : "Click to equip it.",
       blurb: i.system.blurb,
       lines: verbs
         .map(([v, l]) => `${v} ${l.value ?? ""}${l.range ? ` \u00b7 range ${l.range}` : ""}`
@@ -596,8 +601,10 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     if (!this.openPile) return null;
 
     if (this.openPile === "items") {
+      // Not in use: in the pack, or slung on your back. Both are things you can still pick up.
       const cards = this.actor.items
-        .filter(i => i.type === "item" && !i.system.equipped)
+        .filter(i => i.type === "item"
+          && (!i.system.equipped || CARDRPG.slots[i.system.equippedSlot]?.stows))
         .map(i => this.#itemCard(i, false));
       return { label: "Items", count: `${cards.length}`, cards };
     }
@@ -765,6 +772,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   #itemsFor(verb) {
     return this.actor.items
       .filter(i => i.type === "item" && i.system.equipped
+        && !CARDRPG.slots[i.system.equippedSlot]?.stows
         && (i.system.verbs?.[verb]?.value !== null || i.system.verbs?.[verb]?.text))
       .sort((a, b) => (b.system.verbs[verb].value ?? 0) - (a.system.verbs[verb].value ?? 0));
   }
@@ -1056,9 +1064,17 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       return this.render();
     }
 
-    if (slate.system.equipped) return ui.notifications.info("Already equipped.");
+    // Slung on your back: not in use, so clicking it DRAWS it -- and the draw is free, because
+    // the Ready was paid when it went over your shoulder.
+    const slung = !!CARDRPG.slots[slate.system.equippedSlot]?.stows;
+    if (slate.system.equipped && !slung) return ui.notifications.info("Already equipped.");
 
-    const slot = await CardRPGTray.#chooseSlot(slate);
+    const into = slung
+      ? slate.system.allowedSlots.filter(k => !CARDRPG.slots[k]?.stows)
+      : slate.system.allowedSlots;
+    if (!into.length) return ui.notifications.warn(`${slate.name} has nowhere to go but your back.`);
+
+    const slot = await CardRPGTray.#chooseSlot(slate, into);
     if (!slot) return;
     if (!CardRPGTray.#canEquipNow(slate, slot)) return;
 
@@ -1071,9 +1087,9 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     }
 
     await slate.update({ "system.equipped": true, "system.equippedTo": slot });
-    // Out of combat everything is free, and the belt is free even in it, so there is nothing to
-    // settle and nothing to remember.
-    if (game.combat?.started && !CARDRPG.slots[slot]?.freeEquip) this.pendingEquips.add(slate.id);
+    // Three things cost nothing: being out of combat, the belt, and drawing what you already slung.
+    const free = slung || CARDRPG.slots[slot]?.freeEquip;
+    if (game.combat?.started && !free) this.pendingEquips.add(slate.id);
     if (slate.system.availableVerbs.length > 1) this.roles.set(slate.id, "primary");
     this.render();
   }
@@ -1165,8 +1181,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
    *
    * @returns {Promise<string|null>} the chosen slot, or null if the player backed out.
    */
-  static async #chooseSlot(slate) {
-    const allowed = slate.system.allowedSlots ?? [slate.system.slot];
+  static async #chooseSlot(slate, allowed = slate.system.allowedSlots ?? [slate.system.slot]) {
     if (allowed.length < 2) return allowed[0] ?? null;
 
     const label = key => game.i18n.localize(CARDRPG.slots[key]?.label ?? key);

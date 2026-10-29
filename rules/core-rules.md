@@ -186,11 +186,19 @@ Only equipped items can be used. There are two kinds of slot, and they work diff
 **Hot slots** hold what you are using. They change during a fight, and **Ready is what pays for the
 change**.
 
-| Slot | Count | Costs a Ready | Example |
+| Slot | Count | To put it there | Example |
 |---|---|---|---|
-| Hands | 2 | **yes** | Sword + shield, or a two-handed staff (takes both) |
-| Back | 1 | **yes** | A slung two-hander, a spare blade, a shield off the arm |
-| Belt | 2 | **no** | Potions, scrolls |
+| Hands | 2 | 1 Ready | Sword + shield, or a two-handed staff (takes both) |
+| Back | 1 | 1 Ready — **but drawing from it is free** | A slung two-hander, a spare blade |
+| Belt | 2 | free | Potions, scrolls |
+
+**Your back is a swap you pay for in advance.** Slinging something over your shoulder costs a Ready
+like anything else; taking it back off costs nothing. Sling the bow before the fight and it is in
+your hands for free in the middle of one.
+
+What you give up is the use of it while it hangs there: **a slung weapon is carried, not held.** It
+strikes with nothing, defends with nothing and grants no bonus until it is in your hand. The back
+carries one thing.
 
 **The belt is free.** Hanging something on it, or swapping what is on it, costs no Ready — a belt
 sits under the hand that is already holding something, and everything on it is the kind of thing you
@@ -247,9 +255,13 @@ is no third place to keep things and nothing is out of bounds — what retrievin
 
 And nothing else. A Ready that would turn over **two** equipped items is not one Ready: drawing a
 two-hander while holding a sword *and* a shield means putting one of them away first, and that is
-its own Ready. The exception is the belt, which costs nothing either way.
+its own Ready.
 
-This is why the second weapon you bring matters less than the hand you have free to take it in.
+Two things cost nothing: **the belt**, either way, and **drawing off your back**, because that Ready
+was already paid.
+
+This is why the second weapon you bring matters less than the hand you have free to take it in —
+and why what you sling before the fight is a real decision.
 
 ### Carrying
 

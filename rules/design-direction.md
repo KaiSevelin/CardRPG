@@ -85,12 +85,6 @@ The combat simulator is the tie-breaker for numbers. Decisions it has already se
 | **Nothing is stowed away**: unequipped means in the pack, and the pack is always reachable for one Ready | Reach was a second axis on top of slots, and it only ever answered the same question twice. One rule — a card gets you anything — is easier to hold in your head and makes every item in your pack a live option rather than a dead one. |
 | **One Ready changes one equipped item**, or fills an empty slot | A Ready that cleared a whole slot was one card doing the work of two: a two-hander drawn against a sword *and* a shield turned over three items at once. Now that needs two Readies, which is what it costs. |
 
-### Open: the back slot
-
-**[OPEN]** Back no longer does anything the pack does not. It was added to be the one thing a Ready
-could reach that your hands were not already holding, and then "nothing is stowed" made the whole
-pack reachable at the same price. Either give it a job — drawing *from* the back being free, the way
-the belt is — or drop it. Leaving a slot that is strictly worse than not using it is the worst of
-the three.
+| **The back is a pre-paid swap**: slinging costs a Ready, drawing is free, and a slung weapon is carried rather than held | "Nothing is stowed" made the pack reachable for one Ready, which left the back doing nothing the pack did not — strictly worse than not using it. Moving the cost to the front restores the decision without a second reach axis: you spend a card before the fight to have one in hand during it, and pay for it by carrying a weapon you cannot use. |
 | A mixed enemy group is **a tier harder** than a uniform one of the same size | Mixing ranges, not adding bodies, is how you build a hard encounter. |
 | **Cowardly only on melee NPC types** | On a ranged enemy it is redundant with kiting and defuses the fight. |

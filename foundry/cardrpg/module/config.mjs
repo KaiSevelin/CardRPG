@@ -160,8 +160,15 @@ CARDRPG.fateRank = { miss: -99, crit: 99 };
  */
 CARDRPG.slots = {
   hands: { label: "CARDRPG.Slot.Hands", icon: "hand", capacity: 2, worn: false },
-  // Over the shoulder: the one place a Ready can reach that is not already in your hands.
-  back: { label: "CARDRPG.Slot.Back", icon: "scabbard", capacity: 1, worn: false },
+  /*
+   * Over the shoulder. `stows` means the slot CARRIES rather than USES: a slung blade is on you,
+   * but it is not in your hand, so it strikes with nothing and grants nothing.
+   *
+   * Slinging costs a Ready; drawing from it is free. That is the whole point of the slot -- it is
+   * a swap you pay for before the fight and spend during it. Everything else in your pack costs a
+   * Ready at the moment you want it, which is the moment you can least afford one.
+   */
+  back: { label: "CARDRPG.Slot.Back", icon: "scabbard", capacity: 1, worn: false, stows: true },
   // Free: a belt is within reach of the hand already holding something. Everything on it is the
   // kind of thing you grab without thinking -- that is what a belt is for, and charging a Ready
   // for it made the potion you brought a potion you never drank.

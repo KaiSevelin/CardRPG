@@ -38,7 +38,8 @@ export function collectBonuses(actor, verb, item) {
     // "Only equipped items can be used" (core-rules 4). Features are never out of play, so the
     // test is for items alone -- without it a ring granted its bonus from the bottom of the pack,
     // which six new worn slots would have made a great deal worse.
-    if (slate.type === "item" && !slate.system.equipped) continue;
+    if (slate.type === "item"
+      && (!slate.system.equipped || CARDRPG.slots[slate.system.equippedSlot]?.stows)) continue;
     // A Drained slate gives nothing until it recharges.
     if (slate.system.drained) continue;
     // A tag requirement is about the item in hand, not the feature.

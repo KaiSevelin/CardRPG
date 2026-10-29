@@ -97,9 +97,9 @@ you brought is the potion you can actually drink; held in a **hand** it is a Use
 all, at the price of a hand you are not fighting with. Leather Armor fits one slot and so is never
 asked about, which is the rule doing its job.
 
-> **Back is currently decorative.** Everything unequipped is in your pack, and the pack costs one
-> Ready to reach — the same as the back. Slinging a blade therefore buys nothing it did not already
-> have. The slot needs a job or it needs removing; see [design-direction.md](design-direction.md).
+A blade or a shield slings on your **back** for a Ready, and comes off it for nothing — so what you
+sling before the fight is a free swap waiting for you in the middle of one. While it hangs there it
+is carried, not held: no Strike, no Defend, no bonus. The back takes one thing.
 
 A full warrior kit — longsword, shield, leather armor, a potion — comes to **10 kg** against a 40 kg
 limit. The limit is not a constraint on how you equip a character; it is a constraint on what you
