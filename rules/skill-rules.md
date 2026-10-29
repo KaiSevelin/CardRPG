@@ -358,7 +358,10 @@ You may also **prune** **1** card as part of leveling.
   - **A big deck** lasts longer through the day, but your hands are less focused.
 - Pruning weak cards is therefore a choice between being reliable and lasting long, not a free upgrade.
 
-The same grow/prune principle will apply to the **action deck** once the Way trees are written.
+The same grow/prune principle now applies to the **action deck** too: both decks grow and prune
+through benefits on a Way graph node ([leveling.md](leveling.md) §4), so *Add or Upgrade, and prune
+1* above describes what a **skill-card benefit** looks like rather than a separate per-level
+entitlement.
 
 ---
 

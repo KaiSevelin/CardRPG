@@ -12,8 +12,12 @@ Three classes, called **Ways**. The world document settles this: it has a specia
 | **Way of Shade** | Rogues | 12, named, none written |
 | **Way of Mind** | Mages and priests | 13 magic schools, most written |
 
-- Each Way has a **leveling tree**.
-- Each Way branches into **specializations**, and these branch into **sub-specializations**.
+- Each Way is the root of a **directed graph**, and each level-up is one step along it. The
+  mechanism is specified in [leveling.md](leveling.md); the graphs themselves are not.
+- Each Way branches into **specializations**, and these branch again — *Shade → Thief → Assassin*.
+  Taking one changes the character's title.
+- **Add-on compendiums hang new branches off existing specialization nodes.** A node names what it
+  follows, never what follows it, so core content is never edited to make room for an add-on.
 - The details depend on the fantasy world, which comes first.
 
 ## Backgrounds
@@ -38,6 +42,7 @@ Target **v14** (stable since April 2026; pin the manifest and expect one compati
 | **Card faces are rendered, not drawn** | *Blocked icons* lets a condition switch off any half showing a given icon, so icons are typed data the engine tests. Faces are built from card data; they can't be pre-made images. See [icons.md](icons.md). |
 | **Intent cards** | The per-round NPC draw is face down by default, which Foundry's Cards API supports natively. *Foresee* flips one. |
 | **Tuning values live in data** | HP, hand sizes, item values, deck composition all go in compendiums and system settings, never in code — they're still moving (see [../sim/](../sim/)). |
+| **The Way graphs are data too** | A leveling node is a document with a stable id and a list of the nodes it follows, so the graph is assembled at runtime from every installed pack. That is what lets an add-on hang a branch off a core specialization without the core being edited. See [leveling.md](leveling.md) §8. |
 
 The system is specified in [../foundry/](../foundry/):
 

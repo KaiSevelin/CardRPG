@@ -113,7 +113,7 @@ If one side has clearly caught the other — an ambush, a sprung trap, a charge 
 - The rest of your hand stays for reactions.
 - **Two attacks in one turn are allowed** if they come from two different cards, e.g. a Strike primary plus a card with Strike on its secondary. You can never use both halves of the same card.
 
-> **Where double attacks come from.** A card with Strike on its *secondary* half is the strongest kind of card in the game: simulation showed one such card shortens fights by a full round. The rule stays open, but these cards are meant to be **earned through leveling**, not handed out in starter decks. Treat Strike-on-secondary as a reward on a Way's tree, the same way a second attack is a milestone in other games. **[OPEN]** The leveling mechanism itself is still unspecified, so the starter deck keeps its one double-strike card for now.
+> **Where double attacks come from.** A card with Strike on its *secondary* half is the strongest kind of card in the game: simulation showed one such card shortens fights by a full round. The rule stays open, but these cards are meant to be **earned through leveling**, not handed out in starter decks. Treat Strike-on-secondary as a reward on a Way's tree, the same way a second attack is a milestone in other games. The mechanism is now specified — it is an **action-card benefit on a Way graph node** ([leveling.md](leveling.md) §4) — so what remains is writing the graphs. The starter deck keeps its one double-strike card until it has somewhere to be earned.
 
 ### Reactions
 
@@ -667,7 +667,10 @@ cutting cards at all.
 The starter deck is 16 for that reason: pruning well takes knowing what you will face, which a new
 character doesn't.
 
-**[OPEN]** The action deck's grow and prune rules wait on the Way trees, with the rest of levelling.
+Growing and pruning are both **benefits on a Way graph node** ([leveling.md](leveling.md) §4): a
+card adds one, a prune removes one, a deck-cap benefit raises the ceiling, and a node may bundle a
+card *with* a prune so a deck keeps its shape instead of drifting upward every level. What waits on
+the Way graphs is which nodes offer what, not the rule.
 
 ### Unconscious and death
 
@@ -703,7 +706,7 @@ Both rests need a **safe place**. Resting in a dangerous place is up to the GM: 
 | **Wounds** | – | Remove **1** |
 | **Taint** | – | – (needs a cure) |
 
-- **Rest tokens:** each character has a limited number, starting at **1**. More are gained through **leveling**.
+- **Rest tokens:** each character has a limited number, starting at **1**. More are gained through **leveling**, as a benefit on a Way graph node ([leveling.md](leveling.md) §4).
 - You can't take a short rest in the middle of a combat or a challenge. There you **Catch Breath** instead, and it always costs something:
   - **In combat:** your whole turn, so no damage and no movement (see above).
   - **In a challenge:** the other side gets time (see skill rules).
@@ -891,9 +894,11 @@ This is the one generic rule. Items or features can make exceptions (e.g. a feat
 
 ## 12. Open questions (next sessions)
 
-- **Leveling.** How characters gain new action cards and features, and which Way tree gives
-  what. This is the biggest one: the double-attack decision (section 3) and the action-deck
-  grow/prune rules both hang off it. Waits on the Ways, which wait on the world.
+- **The Way graphs.** Every node, benefit and specialization for Strength, Shade and Mind. The
+  leveling *mechanism* is settled in [leveling.md](leveling.md) — a milestone step along a directed
+  graph, two benefits offered and one taken — and with it the double-attack decision (section 3),
+  the action-deck grow/prune rules (section 8) and rest tokens. What is left is content, and it
+  waits on the world.
 - **Affliction list for Taint sources** (section 8). Waits on world creation.
 - **Character creation** — *deliberately deferred until after the first playtest.* The sequence (pick
   a Way, take a background, assemble a starter deck) is easy to write and easy to get wrong before
