@@ -162,7 +162,10 @@ CARDRPG.slots = {
   hands: { label: "CARDRPG.Slot.Hands", icon: "hand", capacity: 2, worn: false },
   // Over the shoulder: the one place a Ready can reach that is not already in your hands.
   back: { label: "CARDRPG.Slot.Back", icon: "scabbard", capacity: 1, worn: false },
-  belt: { label: "CARDRPG.Slot.Belt", icon: "belt", capacity: 2, worn: false },
+  // Free: a belt is within reach of the hand already holding something. Everything on it is the
+  // kind of thing you grab without thinking -- that is what a belt is for, and charging a Ready
+  // for it made the potion you brought a potion you never drank.
+  belt: { label: "CARDRPG.Slot.Belt", icon: "belt", capacity: 2, worn: false, freeEquip: true },
 
   body: { label: "CARDRPG.Slot.Body", icon: "person", capacity: 1, worn: true },
   cloak: { label: "CARDRPG.Slot.Cloak", icon: "cloak", capacity: 1, worn: true },

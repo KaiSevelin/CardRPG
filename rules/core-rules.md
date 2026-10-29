@@ -186,11 +186,16 @@ Only equipped items can be used. There are two kinds of slot, and they work diff
 **Hot slots** hold what you are using. They change during a fight, and **Ready is what pays for the
 change**.
 
-| Slot | Count | Example |
-|---|---|---|
-| Hands | 2 | Sword + shield, or a two-handed staff (takes both) |
-| Back | 1 | A slung two-hander, a spare blade, a shield off the arm |
-| Belt | 2 | Potions, scrolls |
+| Slot | Count | Costs a Ready | Example |
+|---|---|---|---|
+| Hands | 2 | **yes** | Sword + shield, or a two-handed staff (takes both) |
+| Back | 1 | **yes** | A slung two-hander, a spare blade, a shield off the arm |
+| Belt | 2 | **no** | Potions, scrolls |
+
+**The belt is free.** Hanging something on it, or swapping what is on it, costs no Ready — a belt
+sits under the hand that is already holding something, and everything on it is the kind of thing you
+grab without thinking. That is what a belt is for. Charging a Ready for it only ever meant the
+potion you brought was the potion you never drank.
 
 **Worn slots** hold what you are wearing. They change **between fights and never during one** —
 nobody swaps rings while being stabbed — so there is nothing for Ready to price.

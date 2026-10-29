@@ -443,7 +443,9 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
             : `Click to put it on your ${label(slotKey).toLowerCase()}.`)
         : allowed.length > 1 && !i.system.equipped
           ? `Fits your ${allowed.map(k => label(k).toLowerCase()).join(" or ")}. Click and choose.`
-          : played
+          : !i.system.equipped && CARDRPG.slots[slotKey]?.freeEquip
+            ? `Click to hang it on your ${label(slotKey).toLowerCase()}. No Ready to pay.`
+            : played
           ? "In play. Click it to put it back in the Items deck."
           : i.system.stowedAway && fighting
             ? "Stowed at the bottom of your pack. A Ready reaches what is already on you."
@@ -1069,8 +1071,9 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     }
 
     await slate.update({ "system.equipped": true, "system.equippedTo": slot });
-    // Out of combat this is free, so there is nothing to settle and nothing to remember.
-    if (game.combat?.started) this.pendingEquips.add(slate.id);
+    // Out of combat everything is free, and the belt is free even in it, so there is nothing to
+    // settle and nothing to remember.
+    if (game.combat?.started && !CARDRPG.slots[slot]?.freeEquip) this.pendingEquips.add(slate.id);
     if (slate.system.availableVerbs.length > 1) this.roles.set(slate.id, "primary");
     this.render();
   }
@@ -1238,12 +1241,14 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       label: set.map(i => i.name).join(" + "),
       callback: () => set
     }));
+    const noReady = !!CARDRPG.slots[slot]?.freeEquip;
     const chosen = await foundry.applications.api.DialogV2.wait({
-      window: { title: `Ready: what does ${item.name} replace?` },
+      window: { title: `${noReady ? "Swap" : "Ready"}: what does ${item.name} replace?` },
       content: `<div class="cardrpg"><p>Your `
         + `${game.i18n.localize(CARDRPG.slots[slot]?.label ?? slot).toLowerCase()} is full. `
-        + `Equipping <strong>${item.name}</strong> means swapping something out, and the swap is `
-        + "the Ready.</p></div>",
+        + `Equipping <strong>${item.name}</strong> means swapping something out`
+        + (noReady ? ", which costs nothing." : ", and the swap is the Ready.")
+        + "</p></div>",
       buttons: [...buttons, { action: "cancel", label: "Cancel", callback: () => null }],
       modal: true,
       rejectClose: false
