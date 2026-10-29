@@ -181,13 +181,45 @@ Blocks from different sources don't stack. If you have more than one, use the hi
 
 ### Equipped items and Ready
 
-Only equipped items can be used. Slots:
+Only equipped items can be used. There are two kinds of slot, and they work differently.
+
+**Hot slots** hold what you are using. They change during a fight, and **Ready is what pays for the
+change**.
 
 | Slot | Count | Example |
 |---|---|---|
 | Hands | 2 | Sword + shield, or a two-handed staff (takes both) |
-| Body | 1 | Armor |
+| Back | 1 | A slung two-hander, a spare blade, a shield off the arm |
 | Belt | 2 | Potions, scrolls |
+
+**Worn slots** hold what you are wearing. They change **between fights and never during one** —
+nobody swaps rings while being stabbed — so there is nothing for Ready to price.
+
+| Slot | Count | Example |
+|---|---|---|
+| Body | 1 | Armor |
+| Cloak | 1 | A cloak over the armor |
+| Head | 1 | Helm |
+| Neck | 1 | Amulet |
+| Fingers | 2 | Rings |
+| Feet | 1 | Boots |
+
+A slot says **where a thing sits on you**, which is why chain mail and a magical cloak coexist
+without a special rule. What it *does*, and whether two of them stack, is the **bonus group**
+(section 5) — two rings of different groups both apply, two of the same group do not. The two
+questions are independent on purpose.
+
+> Worn slots start **empty**, and the usual way to fill one is loot. That is the job: the hot slots
+> are where your turn gets decided, the worn slots are where a campaign accumulates.
+
+### What a Ready can reach
+
+A Ready reaches what is **already on you** — hands, back, belt. It does not reach the bottom of your
+pack: digging a spare sword out from under the rations is not something you do while someone is
+swinging at you.
+
+That is what the **back** is for. A two-hander slung over your shoulder is one Ready away from your
+hands; the same weapon buried in the pack is not available this fight at all.
 
 ### Carrying
 

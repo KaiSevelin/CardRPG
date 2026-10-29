@@ -145,13 +145,37 @@ CARDRPG.fateRank = { miss: -99, crit: 99 };
 /*  Slates                                      */
 /* -------------------------------------------- */
 
-/** Equipment slots. The pack is unbounded by slots and bounded by weight instead. */
+/**
+ * Equipment slots, in two kinds.
+ *
+ * HOT slots change during a fight, and Ready is what pays for the change: hands, belt, and the back
+ * you can reach over your shoulder. Their capacity is a decision you make under pressure.
+ *
+ * WORN slots change between fights and never during one, so there is nothing for Ready to price.
+ * Their count is a loot budget instead -- somewhere for treasure to land. A slot says WHERE a thing
+ * sits, which is why chain mail and a cloak coexist; what it DOES, and whether two of them stack,
+ * is the bonus group (section 5). The two axes are deliberately independent.
+ *
+ * The pack is unbounded by slots and bounded by weight instead.
+ */
 CARDRPG.slots = {
-  hands: { label: "CARDRPG.Slot.Hands", icon: "hand", capacity: 2 },
-  body: { label: "CARDRPG.Slot.Body", icon: "person", capacity: 1 },
-  belt: { label: "CARDRPG.Slot.Belt", icon: "belt", capacity: 2 },
-  pack: { label: "CARDRPG.Slot.Pack", icon: "knapsack", capacity: null }
+  hands: { label: "CARDRPG.Slot.Hands", icon: "hand", capacity: 2, worn: false },
+  // Over the shoulder: the one place a Ready can reach that is not already in your hands.
+  back: { label: "CARDRPG.Slot.Back", icon: "scabbard", capacity: 1, worn: false },
+  belt: { label: "CARDRPG.Slot.Belt", icon: "belt", capacity: 2, worn: false },
+
+  body: { label: "CARDRPG.Slot.Body", icon: "person", capacity: 1, worn: true },
+  cloak: { label: "CARDRPG.Slot.Cloak", icon: "cloak", capacity: 1, worn: true },
+  head: { label: "CARDRPG.Slot.Head", icon: "light-helm", capacity: 1, worn: true },
+  neck: { label: "CARDRPG.Slot.Neck", icon: "gem-pendant", capacity: 1, worn: true },
+  fingers: { label: "CARDRPG.Slot.Fingers", icon: "diamond-ring", capacity: 2, worn: true },
+  feet: { label: "CARDRPG.Slot.Feet", icon: "fur-boot", capacity: 1, worn: true },
+
+  pack: { label: "CARDRPG.Slot.Pack", icon: "knapsack", capacity: null, worn: false }
 };
+
+/** The slots a Ready can reach: what is already on you, short of digging through the pack. */
+CARDRPG.readyReach = ["hands", "back", "belt"];
 
 /** Item tags. Heavy and Light are mechanical -- Strong reads them -- and are NOT weight. */
 CARDRPG.itemTags = [

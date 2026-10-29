@@ -95,8 +95,19 @@ One case is easy to get wrong:
 
 ### Slots
 
-Capacities are fixed by the rules — Hands 2, Body 1, Belt 2 — plus an unbounded pack now limited by
-weight instead. Occupancy is derived from which slates are equipped, never stored.
+Capacities are fixed by the rules (core-rules §4) and split into two kinds:
+
+| Kind | Slots | Changes |
+|---|---|---|
+| **Hot** | Hands 2, Back 1, Belt 2 | during a fight, paid for with Ready |
+| **Worn** | Body 1, Cloak 1, Head 1, Neck 1, Fingers 2, Feet 1 | between fights only |
+
+Plus an unbounded pack, limited by weight instead. `CARDRPG.slots` carries the `worn` flag and
+`CARDRPG.readyReach` names the slots a Ready can get at. Occupancy is derived from which slates are
+equipped, never stored.
+
+`stowedAway` is the other half of reach: a stowed slate is at the bottom of the pack, so it is out
+of a Ready's grasp during combat and does not count toward carried weight.
 
 ### Conditions
 

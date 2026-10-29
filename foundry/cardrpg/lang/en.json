@@ -48,8 +48,14 @@
   "CARDRPG.Condition.Overloaded": "Overloaded",
 
   "CARDRPG.Slot.Hands": "Hands",
-  "CARDRPG.Slot.Body": "Body",
+  "CARDRPG.Slot.Back": "Back",
   "CARDRPG.Slot.Belt": "Belt",
+  "CARDRPG.Slot.Body": "Body",
+  "CARDRPG.Slot.Cloak": "Cloak",
+  "CARDRPG.Slot.Head": "Head",
+  "CARDRPG.Slot.Neck": "Neck",
+  "CARDRPG.Slot.Fingers": "Fingers",
+  "CARDRPG.Slot.Feet": "Feet",
   "CARDRPG.Slot.Pack": "Pack",
 
   "CARDRPG.Group.Body": "Body",

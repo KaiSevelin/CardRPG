@@ -376,7 +376,8 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
    */
   #assigned(half) {
     const items = this.actor.items.filter(i =>
-      i.type === "item" && i.system.equipped && this.#stackOf(i) === half);
+      i.type === "item" && i.system.equipped && !CARDRPG.slots[i.system.slot]?.worn
+      && this.#stackOf(i) === half);
     const features = half === "primary"
       ? this.actor.items.filter(f => f.type === "feature" && f.system.isActive && f.system.drained)
       : [];
@@ -412,6 +413,8 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     const verbs = Object.entries(i.system.verbs ?? {}).filter(([, l]) => l.value !== null || l.text);
     // Only a slate that could modify more than one action has a half to choose.
     const choosy = i.system.availableVerbs.length > 1;
+    const slot = CARDRPG.slots[i.system.slot] ?? {};
+    const fighting = !!game.combat?.started;
     const serving = played
       ? verbs.filter(([v]) => ["primary", "secondary"].some(h => this.#itemFor(v, h)?.id === i.id))
         .map(([v]) => v)
@@ -424,11 +427,23 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       flipped: this.flipped.has(i.id),
       played,
       disabled: i.system.drained,
-      tip: played
-        ? "In play. Click it to put it back in the Items deck."
-        : choosy
-          ? "Click to equip it on the primary stack. You can move it to the secondary from there."
-          : "Click to equip it.",
+      // A worn slate is simply on, like a passive feature: it never enters a stack, and in a fight
+      // it cannot come off either.
+      passive: slot.worn && i.system.equipped,
+      tip: slot.worn
+        ? (i.system.equipped
+          ? `Worn on your ${game.i18n.localize(slot.label).toLowerCase()}. Its bonus is simply on.`
+          : fighting
+            ? `Worn, not wielded: your ${game.i18n.localize(slot.label).toLowerCase()} changes `
+              + "between fights, not during one."
+            : `Click to put it on your ${game.i18n.localize(slot.label).toLowerCase()}.`)
+        : played
+          ? "In play. Click it to put it back in the Items deck."
+          : i.system.stowedAway && fighting
+            ? "Stowed at the bottom of your pack. A Ready reaches what is already on you."
+            : choosy
+              ? "Click to equip it on the primary stack. You can move it to the secondary from there."
+              : "Click to equip it.",
       blurb: i.system.blurb,
       lines: verbs
         .map(([v, l]) => `${v} ${l.value ?? ""}${l.range ? ` \u00b7 range ${l.range}` : ""}`
@@ -443,7 +458,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         { label: "Value", value: `${i.system.value} g` },
         { label: "Weight", value: `${i.system.weight} kg` },
         { label: "Type", value: i.system.kind || "\u2014" },
-        { label: "Slot", value: i.system.slot }
+        { label: "Slot", value: game.i18n.localize(slot.label ?? i.system.slot) }
       ]
     };
   }
@@ -1032,6 +1047,8 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
 
     if (slate.system.equipped) return ui.notifications.info("Already equipped.");
 
+    if (!CardRPGTray.#canEquipNow(slate)) return;
+
     const displaced = await CardRPGTray.#makeRoom(this.actor, slate);
     if (displaced === null) return;
     for (const other of displaced) {
@@ -1124,6 +1141,37 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
    *
    * @returns {Promise<Item[]|null>} what to unequip (possibly none), or null if the player backed out.
    */
+  /**
+   * May this slate go on right now?
+   *
+   * Out of combat, anything may. In combat two rules bite, and neither is a Ready cost -- they are
+   * about what a Ready can physically reach (core-rules 4):
+   *
+   * - A **worn** slot does not change mid-fight at all. Nobody swaps rings while being stabbed, and
+   *   pricing it in Ready would be friction with no decision in it.
+   * - A **stowed** slate is at the bottom of the pack. A Ready reaches what is already on you:
+   *   your hands, your back, your belt. That is what the back slot is for.
+   */
+  static #canEquipNow(slate) {
+    if (!game.combat?.started) return true;
+
+    const slot = CARDRPG.slots[slate.system.slot] ?? {};
+    if (slot.worn) {
+      ui.notifications.warn(
+        `${slate.name} is worn, not wielded: ${game.i18n.localize(slot.label)} changes between `
+        + "fights, not during one.");
+      return false;
+    }
+    if (slate.system.stowedAway) {
+      const reach = CARDRPG.readyReach.map(k => game.i18n.localize(CARDRPG.slots[k].label)).join(", ");
+      ui.notifications.warn(
+        `${slate.name} is stowed away. A Ready reaches what is already on you (${reach}), not the `
+        + "bottom of your pack.");
+      return false;
+    }
+    return true;
+  }
+
   static async #makeRoom(actor, item) {
     const slot = item.system.slot;
     const capacity = CARDRPG.slots[slot]?.capacity;

@@ -1,10 +1,10 @@
 # Icon attribution
 
-The 64 icons in `icons/` come from [game-icons.net](https://game-icons.net) and are used under the
+The 70 icons in `icons/` come from [game-icons.net](https://game-icons.net) and are used under the
 **Creative Commons Attribution 3.0** licence (CC BY 3.0). The licence requires a credit, which is
 what this file is — it ships with the system.
 
-> Icons made by [DarkZaitzev](https://darkzaitzev.deviantart.com), [Delapouite](https://delapouite.com), [Faithtoken](https://fungustoken.deviantart.com), [Lorc](https://lorcblog.blogspot.com), Lucas, [Sbed](https://opengameart.org/content/95-game-icons), Skoll, from [game-icons.net](https://game-icons.net),
+> Icons made by [DarkZaitzev](https://darkzaitzev.deviantart.com), [Delapouite](https://delapouite.com), [Faithtoken](https://fungustoken.deviantart.com), [Lorc](https://lorcblog.blogspot.com), Lucas, [Lucasms](https://opengameart.org/users/lucasms), [Sbed](https://opengameart.org/content/95-game-icons), Skoll, from [game-icons.net](https://game-icons.net),
 > licensed under [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/).
 
 ## Modifications
@@ -125,8 +125,14 @@ Discard link and a Strain cost mean the same pile.
 | Key | Author |
 |---|---|
 | `hand` | Lorc |
-| `person` | Delapouite |
+| `scabbard` | Delapouite |
 | `belt` | Lucas |
+| `person` | Delapouite |
+| `cloak` | Lucasms |
+| `light-helm` | Delapouite |
+| `gem-pendant` | Lorc |
+| `diamond-ring` | Delapouite |
+| `fur-boot` | Delapouite |
 | `knapsack` | Lorc |
 | `oppression` | Lorc |
 | `night-sleep` | Delapouite |

@@ -39,7 +39,7 @@ This spec is about the tray.
 │ BLOCKED: secondary halves                 │ │ Rest 1             │
 └───────────────────────────────────────────┘ └────────────────────┘
 ┌─ PLAY AREA (§3.5) ────────────────────────────────────────────────┐
-│ PRIMARY: Strike <- Longsword, Leather Armor                      │
+│ PRIMARY: Strike <- Longsword                                     │
 │ SECONDARY: Shield <- Wooden Shield                               │
 └───────────────────────────────────────────────────────────────────┘
 ┌─ HAND ────────────────────────────────────────────────────────────┐
@@ -141,7 +141,9 @@ Items, Features and Conditions stacked from the top, the Action deck in the bott
 two sides split cleanly: **what you own** on the left, **what you are doing with it** on the right.
 
 A **stack** is one action and everything modifying it: the card half you staged at its base, then
-the slates assigned to that half. Primary on the left, secondary on the right. A stack stands
+the slates assigned to that half. **Worn slates never enter a stack** -- armor, a cloak, a ring are
+simply on, like a passive feature, and putting them in a stack implied a choice that was never
+there (core-rules §4). Primary on the left, secondary on the right. A stack stands
 without an action card too, because gear is equipped long before a hand is dealt.
 
 The cards overlap, so only the front one reads in full and the rest show their names. The `‹ ›`
