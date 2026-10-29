@@ -24,6 +24,11 @@ Three classes, called **Ways**. The world document settles this: it has a specia
 - **Some choices close doors.** A node may belong to an exclusive group — swear to one god and the
   others are gone for good, along with everything behind them. The group is named rather than listed,
   so an add-on's new deity is exclusive with every existing one without core being edited.
+- **A major node is kept distinct by four devices**, not by its name: its **cell** (the axis it leans
+  on paired with the resource it pays in, both from closed lists), the **swap test** on its Signature,
+  **one thing it gives up in rules**, and a budget of **Signature shapes** per Way.
+  [leveling.md](leveling.md) §5a has them; the audit that found them necessary — including two nodes
+  that were the same build written twice — is in [specializations.md](specializations.md).
 - The specializations are listed in [specializations.md](specializations.md), from the world document.
 
 ## Backgrounds

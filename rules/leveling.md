@@ -122,7 +122,7 @@ An obligation can bind in three ways, and a single one may use more than one:
 | | How it binds | Examples |
 |---|---|---|
 | **In text** | The table enforces it. No mechanism, just a sentence everyone can read. | *You may not wear armour. You may not own gold. You must attack anyone who taunts you.* |
-| **In the action deck** | Cards you did not choose, which **must be played** when they come up. | a compulsion that fires whether or not this was the turn for it |
+| **In a deck you play from** | Cards you did not choose, in the **action** deck or the **skill** deck. A compulsion must be played when it comes up; a bound **Taint** card simply is the hole it left. | a compulsion that fires whether or not this was the turn for it; the necromancer's forgetting |
 | **In the fate deck** | Cards you did not choose, permanently in the deck you draw luck from. | the Shadow mage's **Wild** card, one per formula |
 
 The three are a ladder from trust to enforcement, and **the right rung is the loosest one that
@@ -137,6 +137,13 @@ every bit as binding as one who makes you poor.
 Both deck forms have precedent. Wounds and Taint are already cards you did not choose sitting in a
 deck you did (core-rules §8), and Blessed and Cursed already shuffle cards into the fate deck
 (§6) — the difference is only that an obligation's are **permanent**.
+
+**Bound Taint.** A Taint card an obligation put there is *bound*: a cure and Cleansing do not lift
+it. An obligation may name the one thing that does, and the price should be the thing that was bought
+with it — the necromancer gives the formula back and the hole closes
+([specializations.md](specializations.md)). Bound Taint still counts toward **Afflicted** at 3, which
+is what keeps a school paying this way from being cheap: the third purchase is where it shows on the
+body.
 
 > **[OPEN]** How a prohibition is actually blocked — "you may not wear armour" needs the HUD or the
 > rules to stop it, or it is a text obligation after all. Deferred until these are specified further.
@@ -218,12 +225,102 @@ The **axes** are not new mechanics; they are the levers the engine already has:
 | **Reactions** | what you do on other people's turns, paid for in cards |
 | **Control** | conditions you put on other people |
 | **Deck shape** | 12–20, pruning, the deck cap |
-| **Preparation** | spell slots — deciding before the fight instead of during it |
+| **Preparation** | anything decided before it matters — spell slots, a set trap, a loaded gun, a weapon slung on the back |
 | **Support** | what you spend your turn on when the payoff lands on somebody else's |
 
+### 5a.1 The cell: axis and resource as a pair
+
 > **The writing rule:** two major nodes reachable from the same place must **lean on different axes
-> and pay in different resources.** That single constraint is what stops a Way's branches from being
-> three names for the same character, and it is checkable by eye.
+> and pay in different resources.**
+
+An axis on its own will not do it. There are seven axes and — on the current list — thirty-one
+fighting nodes, so collisions are guaranteed by arithmetic before anyone writes a word; the axis
+column tells a player which lever a build pulls, never what the build is. See the audit in
+[specializations.md](specializations.md), which found **two pairs of nodes that were the same build
+written twice**, and both times the axes matched.
+
+So the rule compares a **pair**, and the second half comes from a closed list too:
+
+| Resource | What paying it looks like |
+|---|---|
+| **Spent** | cards burned for the rest of the fight |
+| **Strain** | cards out of your hand this round |
+| **Halves** | secondaries that go on Move or Ready instead of on damage |
+| **A slot kept free** | a hand you may not fill, or a worn slot you must leave empty |
+| **Weight** | carry allowance, and Overloaded |
+| **Health** | paid to learn, or paid to cast |
+| **Taint** | cards in a deck that cannot be pruned (section 4) |
+| **Deck size** | cards that dilute, or a deck you must keep small |
+| **The fate deck** | cards you did not choose in the deck you draw luck from |
+| **Spell slots** | a short list, or one formula that eats the list |
+| **A turn spent early** | setup that pays off later, or not at all |
+| **Someone else's turn** | you act when they act, and only then |
+| **Range** | you work in one band and are poor in the others |
+| **An ally** | the build is ordinary without one beside you |
+| **An obligation** | a feature you cannot remove (section 4) |
+
+A node's **cell** is the pair. Fifteen resources across seven axes is 105 cells, which is room enough
+that distinctness is a writing habit rather than a puzzle.
+
+- **Hard rule:** no two nodes sharing a predecessor may occupy the same cell. The graph validator
+  refuses it (section 8), alongside the acyclicity and prerequisite checks.
+- **Warning:** a repeated cell anywhere in one Way, or the same cell in two different Ways. Legal,
+  and usually wrong.
+
+### 5a.2 The swap test
+
+The cell separates builds on paper. The **Signature** is what separates them at the table, and it has
+one test:
+
+> **Offer the Signature to a sibling node. If it would work there, and that sibling would want it, it
+> is not a signature — it is a reward that happens to be sitting on this node.**
+
+A Thief would happily take *advantage against anyone Slowed, Prone or unaware*, and so would an
+Assassin, a Duellist and a Burglar. That card fails the test. *Advantage against anyone **you** put a
+condition on this fight* does not — it is worthless to a build that applies no conditions, which is
+exactly what makes it the Thief's.
+
+The test is strict on purpose: it is passed only by a Signature that is **bad on the other nodes**,
+and a build is memorable in the degree that its best card is useless to its neighbours.
+
+### 5a.3 One thing you give up, in rules
+
+> **Every major node subtracts something.** Not flavour — a clause the engine enforces.
+
+Additions stack and blur: three nodes that each add damage are one node with three names, and a
+character who takes all three is simply stronger. Subtractions do not stack, cannot be accumulated,
+and are impossible to confuse with one another.
+
+This is the cheapest device to write and the one with the most effect, and the evidence is already on
+the list. The two most vivid nodes anyone has drafted are **Berserker** (*cannot defend*) and
+**Street Fighter** (*no weapon value at all, both hands always free*). Neither has a Signature
+written yet, and both are already unmistakable.
+
+The subtraction and the **Pays in** resource are usually one sentence seen from two sides. Where they
+are not, the node is probably paying in something it does not care about.
+
+### 5a.4 Signature shapes
+
+A Way whose ten nodes all grant *+2 to something* has ten nodes and one idea. These are the kinds of
+thing the engine can actually be bent into, and **a Way may use each shape at most twice**:
+
+| | Shape |
+|---|---|
+| 1 | **An odd pair of verbs on one card** — *Move, then Strike*; *Defend, then Ready* |
+| 2 | **A card playable on someone else's turn** |
+| 3 | **A cost conversion** — pay Strain where everyone pays Spent, or Health where others pay cards |
+| 4 | **A cost waiver** — one thing stops costing you a Ready, a hand, a slot |
+| 5 | **A condition in your hands only** — one nobody else applies, or one that does more when you apply it |
+| 6 | **A change to a fate deck** — yours, or the enemy's |
+| 7 | **A slot rule** — a third hot slot; a worn slot that behaves like a hot one |
+| 8 | **A deck or hand rule** — draw one more, see the top card, Catch Breath differently |
+| 9 | **A bonus group only you may stack in** — the one exception to *highest wins* |
+| 10 | **A turn-structure change** — act out of order, two secondaries, a half you take back |
+
+The budget is the point. Shapes 2 and 10 are the strongest and the most expensive to balance; shapes
+1 and 4 are nearly free and carry a surprising amount of identity. Nothing here is a new mechanic -
+each shape is a lever the rules already pull somewhere, which is the same standard the cost row above
+holds a node's price to.
 
 ### Examples (placeholders until the world is ready)
 
@@ -253,14 +350,21 @@ The **axes** are not new mechanics; they are the levers the engine already has:
 |---|---|
 | **Stance** | You spend your own substance, and what you spend it on does not tire. |
 | **Leans on** | Preparation |
-| **Pays in** | **Taint**, into your own skill deck. The power is real and the deck you think with gets worse as you use it — at 3 Taint you are Afflicted and down 3 Health (core-rules §8). |
+| **Pays in** | **Taint**, into your own skill deck — one bound card per formula *learned*, not per slot prepared. The deck you think with fills up with holes, and at 3 you are Afflicted and down 3 Health (core-rules §8). Bound means no cure lifts it; surrendering the formula does. |
 | **Signature** | A prepared spell that is worth the Taint it costs. |
+| **Gives up** | **Breadth.** Every other school hoards a book and chooses on the morning; a necromancer's library stays as short as their Health allows. |
 | **Opens** | *(the school's deeper nodes)* |
 
 Necromancer is the example worth studying, because its cost is **not invented for it**. Taint already
 exists, already distinguishes body from mind, already has a face in the icon set and an Afflicted
 threshold in the rules. A major node is written well when its price is a rule the game already had and
 nobody had spent yet.
+
+It is also where 5a.3 earns itself. The world document prices necromancy in *forgetting*, and the
+first reading of that was a forced **prune** — a deletion, which is invisible at the table, pushes
+Deck shape instead of Preparation, and spends the same verb as one of section 4's rewards. A bound
+Taint card is the same fiction read as **dilution**, and it is felt every few draws for the rest of
+the character's life. [specializations.md](specializations.md) argues it out in full.
 
 ## 6. A second Way
 

@@ -234,7 +234,13 @@ export class TaintCardData extends foundry.abstract.TypeDataModel {
       flavour: new fields.StringField({
         required: true, initial: "body", choices: ["body", "mind"]
       }),
-      source: new fields.StringField({ required: false, blank: true, initial: "" })
+      source: new fields.StringField({ required: false, blank: true, initial: "" }),
+      /**
+       * Bound Taint came from an obligation, not from a sickness: no cure or Cleansing lifts it,
+       * only whatever the obligation names (core-rules 8, leveling 4). It still counts toward
+       * Afflicted, so a school that buys power this way shows it on the third purchase.
+       */
+      bound: new fields.BooleanField({ initial: false })
     };
   }
 

@@ -737,6 +737,10 @@ Some harm stays with you after the fight. It's represented by **negative cards**
 - **Taint survives rests.** Only these remove it:
   - a **cure**: priest magic, a rare potion or a special item;
   - **Cleansing**: a downtime challenge (Lore, Progress 4) with a healer or a temple.
+- **Bound Taint** is the exception: Taint an **obligation** put in your deck is not a sickness and
+  neither a cure nor Cleansing lifts it. The obligation names the one thing that does, and the price
+  is whatever the Taint bought — a necromancer's formula is forgotten along with the hole it left
+  ([leveling.md](leveling.md) §4). Bound Taint counts toward Afflicted like any other.
 - **Afflicted:** while you have **3 or more Taint** in your decks, you are Afflicted. Your max Health is −3, and the source adds its own effect (e.g. a sickness or mutation). It ends when you're below 3 Taint again.
 
 **[OPEN]** A list of afflictions per Taint source. Waits for world creation.
