@@ -191,6 +191,7 @@ change**.
 | Hands | 2 | 1 Ready | Sword + shield, or a two-handed staff (takes both) |
 | Back | 1 | 1 Ready — **but drawing from it is free** | A slung two-hander, a spare blade |
 | Belt | 2 | free | Potions, scrolls |
+| Spells | your spell slots | **between fights only** | Prepared spells (see below) |
 
 **Your back is a swap you pay for in advance.** Slinging something over your shoulder costs a Ready
 like anything else; taking it back off costs nothing. Sling the bow before the fight and it is in
@@ -262,6 +263,41 @@ was already paid.
 
 This is why the second weapon you bring matters less than the hand you have free to take it in —
 and why what you sling before the fight is a real decision.
+
+### Spells and preparation
+
+A spell is a **slate**, like a sword or a potion, and it has a slot of its own. Carrying a spell is
+not the same as being able to cast it: **you prepare spells, and only prepared spells can be cast.**
+
+| | |
+|---|---|
+| **Spell slots** | How many you may prepare. More come from leveling ([leveling.md](leveling.md) §4). |
+| **Cost** | Most spells take one slot. A big one takes **two or more.** |
+| **When** | **Between fights.** Preparation is not something you change while being shot at. |
+| **Unprepared** | Stays in your **spell book**, which is where spells live when they are not in your head. |
+
+This is the caster's version of the choice a fighter makes about what to sling on their back, and it
+is made at the same time — before anything starts. A fighter who brought the wrong weapon can draw
+another for a Ready. **A caster who prepared the wrong spells has prepared the wrong spells.** That
+is the trade: a caster decides in advance and a fighter decides in the moment.
+
+> **[OPEN]** A later spell or feature that re-prepares one spell mid-fight. It is an obvious thing
+> for a Way of Mind branch to grant, and it should stay rare enough that the choice above still
+> matters.
+
+#### What casting needs
+
+**A free hand.** You gesture with it, and you cannot do that holding a sword in one hand and a shield
+in the other. A hand counts as free if it is **empty or holding an implement** — something with a
+Cast line of its own, like a wand, a staff or a holy symbol. A two-handed staff therefore casts
+perfectly well, because what fills your hands *is* the thing you are casting with.
+
+> Sword + shield: no. Sword + free hand: yes. Wand + shield: yes. Staff: yes.
+>
+> So a shield costs a caster nothing until they also want a weapon, and that is the decision.
+
+**The ability to speak.** This is what **Silenced** already does (section 7) — it blocks ✦ Cast, and
+a prepared spell is cast like any other. Gags, water and held breath hang off the same hook.
 
 ### Carrying
 
@@ -534,7 +570,7 @@ Conditions are tokens with a number (duration). Every condition remembers **who 
 | **Prone** | Melee Strikes against you have advantage. Standing up costs Move 1. |
 | **Unconscious** | At 0 Health. No turns, no reactions, Prone. Dying until treated (section 8). |
 | **Grappled** | Blocks 👣 Move (see section 10). |
-| **Silenced** | Blocks ✦ Cast. |
+| **Silenced** | Blocks ✦ Cast — you cannot speak, and casting needs speech (section 4). |
 | **Disarmed** | Blocks ⇄ Ready, and ⚔ with the disarmed item. |
 | **Burdened** | Over your carry limit: Slowed, and disadvantage on 🌀 Agility and 🌑 Shadow checks. No duration – it lasts until you drop weight (section 4). |
 | **Overloaded** | Over half again your limit: Burdened, and 2 random cards are Spent. No duration (section 4). |

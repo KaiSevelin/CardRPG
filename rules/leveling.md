@@ -65,6 +65,7 @@ means taking it later than you could have.
 | **Item** | A slate you keep | For signature gear a Way grants, not ordinary loot |
 | **Prune** | Remove one card from a deck, permanently | The only way to drop a dead card (§8) |
 | **Deck cap** | Raise your action deck maximum | A flat trait, so **not** bonus-grouped |
+| **Spell slot** | Prepare one more spell before a fight (core-rules §4) | The Way of Mind's version of a deck cap |
 | **Health** | Raise max Health | |
 | **Rest token** | One more (§8 promises these come from leveling) | |
 

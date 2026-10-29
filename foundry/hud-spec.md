@@ -271,6 +271,11 @@ Foundry's own notifications, which have to land somewhere.
 | Fate | Card random | the fate **discard**, face up; the deck itself stays face down |
 | Discard | Card discard | your action discard |
 | Spent | Card burn | the Spent pile |
+| **Spells** | Spell book | your **spell book** — everything not prepared |
+
+The spell link reads **prepared / slots** rather than a single count (`2/3`), because what a caster
+needs at a glance is not how many spells they own but how many they can still bring. It is absent
+for a character with no spell slots, the way Spent is absent until something is Spent.
 
 Discard and Spent reuse the two cost icons on purpose: a Strain cost and the Discard link mean the
 same pile, and a Spent cost and the Spent link mean the same pile.
