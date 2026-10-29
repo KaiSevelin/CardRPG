@@ -93,7 +93,8 @@ export async function createStarterContent() {
       system: {
         primary: def.primary ?? [],
         secondary: def.secondary ?? [],
-        reaction: def.reaction ?? ""
+        reaction: def.reaction ?? "",
+        costs: def.costs ?? {}
       }
     }))
   );

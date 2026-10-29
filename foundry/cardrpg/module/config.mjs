@@ -40,6 +40,22 @@ CARDRPG.effects = {
   charging: { label: "CARDRPG.Effect.Charging", icon: "charging" }
 };
 
+/**
+ * What a half costs to play, as icons (core-rules 8).
+ *
+ * Deliberately NOT in `verbs` or `effects`, which is where the Blocked-icons test looks. A cost is
+ * not something the half does, and a condition that switched off every card showing Strain would be
+ * a rule nobody wrote. Keeping the two maps apart means such a condition has to be opted into --
+ * the icons exist, and a future "Winded" can name them, but nothing blocks them by accident.
+ *
+ * `strain` takes a BARE number, so it reads as a parameter like Move 3 or Range 4, not as a
+ * modifier (card-layout 1.3). `spent` takes none: a card is spent or it is not.
+ */
+CARDRPG.costIcons = {
+  spent: { label: "CARDRPG.Cost.Spent", icon: "card-burn" },
+  strain: { label: "CARDRPG.Cost.Strain", icon: "card-discard" }
+};
+
 /** Skill-card approaches. Out of scope for the combat playtest, kept for completeness. */
 CARDRPG.approaches = {
   might: { label: "CARDRPG.Approach.Might", icon: "mighty-force" },
@@ -204,6 +220,8 @@ CARDRPG.defaults = {
   afflictedAt: 3,
   afflictedHealthPenalty: 3,
   overloadedSpent: 2,
+  // Exactly the Exhausted threshold (core-rules 8): breathing buys one turn that is not Exhausted.
+  breathRecovery: 2,
   woundAt: 5,
   reactionTimer: 20
 };

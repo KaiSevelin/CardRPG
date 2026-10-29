@@ -83,9 +83,12 @@ export const WARRIOR_DECK = [
     secondary: [{ verb: "ready" }]
   },
   {
+    // The deck's one Spent card, and the example the rules are written around: a heal worth having
+    // once, not a heal worth having every time the discard comes back round.
     name: "Second Wind", copies: 1,
     primary: [{ verb: "heal", param: 2 }],
-    secondary: [{ verb: "use" }]
+    secondary: [{ verb: "use" }],
+    costs: { primary: { spent: true } }
   },
   {
     name: "Taunt", copies: 1,

@@ -681,6 +681,30 @@
 }
 .cardrpg .cr-half__play:hover { text-decoration: underline; }
 
+/*
+ * A price: the icon, and a BARE number where there is one, which is the same convention the rest of
+ * a face uses for a parameter (card-layout 1.3). Boxed rather than coloured, because a cost is not
+ * a warning -- a card worth its Spent is the right card to play.
+ */
+.cardrpg .cr-cost {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15em;
+  white-space: nowrap;
+  padding: 0.05em 0.3em;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  opacity: 0.85;
+}
+.cardrpg .cr-cost__n { font-size: 0.7rem; font-variant-numeric: tabular-nums; }
+
+/* In the hand, the price sits at the far end of the half it belongs to. */
+.cardrpg .cr-half .cr-cost { margin-left: auto; }
+
+/* At the base of a stack, under the line it prices. */
+.cardrpg .cr-card__costs { display: flex; gap: 0.25em; margin-top: 0.15em; }
+
 .cardrpg .cr-condition__label { flex: 1 1 auto; }
 .cardrpg .cr-slot { margin-bottom: 0.4em; }
 .cardrpg .cr-mini { list-style: none; margin: 0; padding: 0; }
@@ -752,6 +776,25 @@
 }
 
 .cr-hud-layer .cr-options .cr-tray__flag { text-align: center; }
+
+/*
+ * Spent reads as a link in the panel rather than a deck on the table. Nothing is ever played from
+ * it, so giving it a deck back would promise a pile you can draw on; what it is, is a record of
+ * what the fight has cost you so far, and that belongs with the rest of your state.
+ */
+.cr-hud-layer .cr-options__spent {
+  align-self: flex-start;
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 0.7rem;
+  color: var(--cardrpg-group-6);
+  text-decoration: underline dotted;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+.cr-hud-layer .cr-options__spent:hover,
+.cr-hud-layer .cr-options__spent--open { text-decoration-style: solid; font-weight: 700; }
 
 /* -------------------------------------------- */
 /*  Played and unplayed slates                  */

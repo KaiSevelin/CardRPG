@@ -116,6 +116,8 @@
   "CARDRPG.Settings.HandSize.Hint": "Cards drawn back to at the start of each round, before features.",
   "CARDRPG.Settings.CarryLimit.Name": "Carry limit (kg)",
   "CARDRPG.Settings.CarryLimit.Hint": "Base weight a character can carry before becoming Burdened, before features.",
+  "CARDRPG.Cost.Spent": "Spent",
+  "CARDRPG.Cost.Strain": "Strain",
   "CARDRPG.Settings.OverloadedSpent.Name": "Cards Spent while Overloaded",
   "CARDRPG.Settings.OverloadedSpent.Hint": "Random cards set aside while carrying over half again your limit. Measured at 2: about 7 points of win rate in a hard fight, 2 in a moderate one."
 }

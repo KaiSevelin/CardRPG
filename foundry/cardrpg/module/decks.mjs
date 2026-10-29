@@ -249,7 +249,7 @@ async function applyTaint(actor, card) {
   });
 }
 
-/** Play card halves: both cards go to the discard. */
+/** Move cards out of the hand and into the discard: played halves, and Strain paid from hand. */
 export async function discardCards(actor, cardIds) {
   const hand = deckOf(actor, "actionHand");
   const discard = deckOf(actor, "actionDiscard");
@@ -257,40 +257,77 @@ export async function discardCards(actor, cardIds) {
 }
 
 /**
- * Catch Breath. Spend your whole turn to recover **half** the discard pile, rounded up, at random;
- * one of the cards left behind is Spent, and the rest stay in the discard.
+ * Put played cards away, each according to what the half it was played for costs.
  *
- * You never get the whole pile back, so a second Catch Breath recovers half of what remains. Only a
- * rest truly restores you -- and because the recovery is half of whatever is there, breathing early
- * with a thin discard costs a turn for almost nothing.
+ * Almost every card goes to the discard and comes back on a Catch Breath. A half printed *Spent*
+ * retires its card to the Spent pile instead: out for the rest of the fight, back on a rest. That
+ * is the only way a card leaves the loop by the player's own choice (core-rules 8).
+ *
+ * @param {Actor} actor
+ * @param {{cardId: string, half: string}[]} plays  The halves that were just resolved.
+ * @returns {Promise<Card[]>} the cards that were Spent, for the chat line.
+ */
+export async function retireCards(actor, plays) {
+  const hand = deckOf(actor, "actionHand");
+  if (!hand) return [];
+
+  const spentPile = deckOf(actor, "actionSpent");
+  const burns = [];
+  const discards = [];
+
+  for (const { cardId, half } of plays) {
+    const card = hand.cards.get(cardId);
+    if (!card) continue;
+    // Only action cards carry costs; a Wound played as a dead card has no system.costs at all.
+    if (spentPile && card.system?.isSpentBy?.(half)) burns.push(card);
+    else discards.push(card.id);
+  }
+
+  if (discards.length) await discardCards(actor, discards);
+  if (burns.length) await move(hand, spentPile, burns.map(c => c.id));
+  return burns;
+}
+
+/** Can this actor Catch Breath at all? The discard has to cover the recovery in full. */
+export function canCatchBreath(actor) {
+  const discard = deckOf(actor, "actionDiscard");
+  return (discard?.cards.size ?? 0) >= CARDRPG.defaults.breathRecovery;
+}
+
+/**
+ * Catch Breath. Spend your whole turn to recover **2** cards from the discard, at random.
+ *
+ * Two, because two is the Exhausted threshold (core-rules 8): a breath buys exactly one turn that
+ * is not Exhausted, and no more. A fixed, small recovery means breathing never bails you out of a
+ * fight -- it keeps you playing one more round, at the price of this one.
+ *
+ * Nothing is Spent by breathing. The discard is a cycle, not a drain: breathe often enough and
+ * every card in it comes back, and what the breath costs is the turn. What leaves the deck for good
+ * is what the player chose to spend -- a half printed *Spent*, or the weight they chose to carry.
+ *
+ * The recovery is random, because choosing would turn a recovery into a tutor.
+ *
+ * @returns {Promise<object|null>} null when the discard cannot cover the recovery in full.
  */
 export async function catchBreath(actor) {
   const deck = deckOf(actor, "action");
   const discard = deckOf(actor, "actionDiscard");
-  const spent = deckOf(actor, "actionSpent");
   if (!deck || !discard) return null;
 
-  const size = discard.cards.size;
-  if (!size) return { recovered: 0, spent: null, left: 0 };
+  // All or nothing: a partial breath would let a one-card discard buy a whole turn.
+  const take = CARDRPG.defaults.breathRecovery;
+  if (discard.cards.size < take) return null;
 
-  const take = Math.ceil(size / 2);
   const recovered = await moveRandom(discard, deck, take);
   await deck.shuffle({ chatNotification: false });
 
-  // One of those left behind is Spent, and stays out until a rest.
-  let spentCard = null;
-  if (discard.cards.size && spent) {
-    [spentCard] = await moveRandom(discard, spent, 1);
-  }
-
   await ChatMessage.create({
     speaker: ChatMessage.getSpeaker({ actor }),
-    content: `<p><strong>${actor.name}</strong> catches breath: recovered ${recovered.length} of ${size}`
-      + (spentCard ? `, spent <em>${spentCard.name}</em>` : "")
+    content: `<p><strong>${actor.name}</strong> catches breath: recovered ${recovered.length}`
       + `, ${discard.cards.size} still in the discard.</p>`
   });
 
-  return { recovered: recovered.length, spent: spentCard, left: discard.cards.size };
+  return { recovered: recovered.length, left: discard.cards.size };
 }
 
 /**

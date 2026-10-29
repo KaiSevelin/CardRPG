@@ -1,6 +1,6 @@
 # Icon attribution
 
-The 62 icons in `icons/` come from [game-icons.net](https://game-icons.net) and are used under the
+The 63 icons in `icons/` come from [game-icons.net](https://game-icons.net) and are used under the
 **Creative Commons Attribution 3.0** licence (CC BY 3.0). The licence requires a credit, which is
 what this file is — it ships with the system.
 
@@ -39,6 +39,13 @@ modification; this records what was changed.
 | `potion-ball` | Lorc |
 | `boot-prints` | Lorc |
 | `school-bag` | Delapouite |
+
+### Costs
+
+| Key | Author |
+|---|---|
+| `card-burn` | Delapouite |
+| `card-discard` | Faithtoken |
 
 ### Slate markers
 
@@ -113,7 +120,6 @@ modification; this records what was changed.
 | `belt` | Lucas |
 | `knapsack` | Lorc |
 | `oppression` | Lorc |
-| `card-discard` | Faithtoken |
 | `night-sleep` | Delapouite |
 | `target-prize` | Delapouite |
 | `hourglass` | Lorc |

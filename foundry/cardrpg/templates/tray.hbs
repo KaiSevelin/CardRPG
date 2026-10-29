@@ -94,6 +94,15 @@
             {{else}}
               <div class="cr-card__front">
                 {{#each this.lines}}<div class="cr-card__line">{{this}}</div>{{/each}}
+                {{#if this.costs}}
+                  <div class="cr-card__costs">
+                    {{#each this.costs}}
+                      <span class="cr-cost" data-tooltip="{{this.tip}}">
+                        {{crIcon this.icon}}{{#if this.value}}<span class="cr-cost__n">{{this.value}}</span>{{/if}}
+                      </span>
+                    {{/each}}
+                  </div>
+                {{/if}}
                 {{#if this.note}}<p class="cr-note">{{this.note}}</p>{{/if}}
               </div>
             {{/if}}
@@ -134,6 +143,14 @@
         {{#if system.wounds}}<span data-tooltip="Wounds">&#10006; {{system.wounds}}</span>{{/if}}
         {{#if system.taint.total}}<span data-tooltip="Taint">&#9763; {{system.taint.total}}</span>{{/if}}
       </div>
+      {{!-- What this fight has cost you so far. A link, not a deck: nothing is ever played from it. --}}
+      {{#if system.deckCounts.spent}}
+        <button type="button" class="cr-options__spent{{#if spentOpen}} cr-options__spent--open{{/if}}"
+                data-action="openPile" data-pile="actionSpent"
+                data-tooltip="Out of the fight. Spent cards come back on a short or long rest. Click to look through them.">
+          {{crIcon config.costIcons.spent.icon}} {{system.deckCounts.spent}} Spent
+        </button>
+      {{/if}}
       {{#if exhausted}}<div class="cr-tray__flag" data-tooltip="One card per turn, and no reactions">Exhausted</div>{{/if}}
       {{#if dazed}}<div class="cr-tray__flag" data-tooltip="No secondary this turn">Dazed</div>{{/if}}
       {{#if stunned}}<div class="cr-tray__flag" data-tooltip="No reactions">Stunned</div>{{/if}}
@@ -150,8 +167,8 @@
         {{!-- Play lives under the stacks it resolves. This is the undo for a mis-clicked half. --}}
         <button type="button" data-action="clear" {{#unless canClear}}disabled{{/unless}}
                 data-tooltip="Empty the play area: action cards back to hand, items and features back to their decks.">Clear</button>
-        <button type="button" data-action="breathe"
-                data-tooltip="Your whole turn. Recovers half the discard at random; one of the rest is Spent.">Breath</button>
+        <button type="button" data-action="breathe" {{#unless canBreathe}}disabled{{/unless}}
+                data-tooltip="{{#if canBreathe}}Your whole turn, for {{breathRecovery}} cards out of the discard at random — exactly enough to not be Exhausted next turn.{{else}}Needs {{breathRecovery}} cards in the discard. It recovers {{breathRecovery}}, all or nothing.{{/if}}">Breath</button>
         {{#if inCombat}}
           <button type="button" data-action="endTurn"
                   data-tooltip="{{#if myTurn}}Your turn{{else}}{{turnOwner}}'s turn{{/if}}">End turn</button>
@@ -178,6 +195,12 @@
                   <button type="button" class="cr-half__play"
                           data-action="stage" data-card-id="{{card.id}}" data-half="{{half.name}}">{{half.text}}</button>
                 {{/if}}
+                {{#each half.costs}}
+                  {{!-- What the half costs, printed with the half it belongs to. --}}
+                  <span class="cr-cost" data-tooltip="{{this.tip}}">
+                    {{crIcon this.icon}}{{#if this.value}}<span class="cr-cost__n">{{this.value}}</span>{{/if}}
+                  </span>
+                {{/each}}
               </div>
             {{/each}}
             <div class="cr-half cr-half--reaction">

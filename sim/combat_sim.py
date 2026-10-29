@@ -112,6 +112,11 @@ GOBLIN_CARDS = {
 }
 
 
+# Catch Breath recovers exactly this many, all or nothing: the Exhausted threshold, so a
+# breath buys one turn that is not Exhausted and no more (core-rules 8).
+BREATH_RECOVERY = 2
+
+
 @dataclass
 class Config:
     name: str = 'baseline'
@@ -511,19 +516,25 @@ class Game:
         return val
 
     def catch_breath(self):
-        """Recover half the discard at random; one of the rest is Spent (core-rules 8)."""
+        """Recover BREATH_RECOVERY cards at random, all or nothing (core-rules 8).
+
+        Two is the Exhausted threshold, so a breath buys exactly one turn that is not Exhausted.
+        Nothing is Spent by breathing: the discard is a cycle, and what leaves the deck is what the
+        player chose to spend. `spent` still fills from Overloaded, and will fill from cards printed
+        Spent once the sim plays any.
+        """
         w = self.w
+        take = BREATH_RECOVERY
+        if len(w['discard']) < take:
+            return False
         self.rng.shuffle(w['discard'])
-        take = (len(w['discard']) + 1) // 2              # half, rounded up
         for _ in range(take):
             w['draw'].append(w['discard'].pop())
         self.rng.shuffle(w['draw'])
-        spent = w['discard'].pop() if w['discard'] else None
-        if spent:
-            w['spent'].append(spent)
         self.s['catch_breath'] += 1
-        self.log(f"  Warrior catches breath (recovers {take}, spends {spent}, "
+        self.log(f"  Warrior catches breath (recovers {take}, "
                  f"{len(w['discard'])} still in discard), draw pile now {len(w['draw'])}")
+        return True
 
     def warrior_turn(self):
         w, cfg = self.w, self.cfg
@@ -537,9 +548,10 @@ class Game:
                 w['dazed'] -= 1          # creator left combat: ticks on the victim's turn
         if w['exhausted']:
             self.s['exhausted_turns'] += 1
-        if w['discard'] and not w['draw'] and (w['exhausted'] or len(w['hand']) <= cfg.cb_threshold):
-            self.catch_breath()
-            return
+        if (len(w['discard']) >= BREATH_RECOVERY and not w['draw']
+                and (w['exhausted'] or len(w['hand']) <= cfg.cb_threshold)):
+            if self.catch_breath():
+                return
         if not w['hand']:
             return
         best, best_val = None, -1e9

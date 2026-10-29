@@ -55,6 +55,19 @@ die at 16 px.
 `Strike +1` is a bonus. `Move 3`, `Range 4`, `Blast 1` are parameters. One visual language, scales
 down cleanly, no second convention to learn.
 
+### 1.4 A cost is printed on the half, at the far end of it
+
+Two things can be printed as the price of a half (core-rules §8): **Spent**, which puts the card out
+for the fight, and **Strain X**, which discards X other cards from the hand. Both are icons, like
+everything else on a face, and Strain takes a bare number — it is a parameter under §1.3, no new
+grammar.
+
+They sit at the **far end of the half**, boxed, after the verbs. The verbs are what the half *does*;
+the cost is what it *takes*. Printed inline with the verbs, a cost reads as one more thing you
+perform, and the face stops distinguishing the two.
+
+Boxed, not coloured. A cost is not a warning: a card worth its Spent is the right card to play.
+
 ---
 
 ## 2. Information tiers

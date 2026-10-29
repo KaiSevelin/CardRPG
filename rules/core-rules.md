@@ -475,24 +475,49 @@ Your action deck is your stamina.
 - **Exhausted**: if you can't refill to at least **2 cards** because your draw pile is empty, you are Exhausted. You can only play **one** card per turn (primary *or* secondary), and you can't react.
 - **Catch Breath**: you may spend your whole turn (no cards played) to catch your breath:
   1. Shuffle your discard pile.
-  2. Move **half of it, rounded up, at random** into your draw pile.
-  3. Set **1** of the cards left behind aside as **Spent**. The rest stay in your discard pile.
-  4. Draw up to hand size as normal next round.
+  2. Move **2 cards, at random**, into your draw pile.
+  3. Draw up to hand size as normal next round.
 
-  **You never get your whole discard pile back.** A second Catch Breath recovers half of what is
-  left, then half of that — a long fight becomes a series of smaller and smaller recoveries, and
-  only a **rest** truly restores you.
+  **You need 2 in the discard, or you can't do it.** The recovery is all or nothing — a one-card
+  discard does not buy a whole turn for one card.
 
-  **Both the recovery and the Spent card are random.** Choosing would let you prune your weakest
-  card every time you stopped for breath, which turns a cost into a free upgrade.
-- **Spent** cards stay out until your next **short or long rest**, even after the combat ends (see *Rests* below).
+  **Two is the Exhausted line.** You are Exhausted when you can't refill to 2, so a breath buys you
+  exactly one turn that is not Exhausted, and not one card more. It is a way to keep playing, never
+  a way to get back on top: you give up a turn to have a normal one next round.
 
-This makes long fights wear characters down: each Catch Breath returns less than the last, and
-burning cards on reactions gets you there faster.
+  **The discard always comes back.** Breathing takes nothing out of your deck permanently; what it
+  costs is the turn. Breathe often enough and every discarded card returns, which is what makes the
+  discard a cycle rather than a drain.
 
-You may Catch Breath at any time on your turn, even before you are Exhausted — but there is a reason
-to hold out. You recover **half of your discard pile**, so breathing early, with little in the
-discard, recovers almost nothing and still costs you the turn.
+  **The recovery is random.** Choosing would let you fish your best card back every time you stopped
+  for breath, which turns a recovery into a tutor.
+
+You may Catch Breath at any time on your turn, even before you are Exhausted — but there is rarely a
+reason to. Two cards is two cards whenever you take them, and a turn spent breathing while you still
+have a hand is a turn the enemy gets for free.
+
+### What a fight actually costs you
+
+The deck is a closed loop. Nothing leaks out of it by itself — **what leaves it, you chose to
+spend**:
+
+- **Spent** — a card printed *Spent* goes to your **Spent pile** instead of your discard when you
+  play it. It does not come back this fight. These are the once-a-fight cards: the big heal, the
+  spell that ends an encounter, the trick that only works because nobody saw it coming. Spending one
+  is a decision about the whole fight, not about this turn.
+- **Strain N** — printed on a half, and paid as part of playing it: **discard N other cards from
+  your hand, your choice**. They go to the discard like anything else, so Catch Breath gets them
+  back; what Strain costs you is *this round*, not the fight. If you can't pay it in full, you can't
+  play the half. A powerful spell that strains 2 is asking for a third of your hand.
+- **Overloaded** — 2 random cards Spent while the load is on your back (section 7). The one leak you
+  did not choose, and the reason weight is a real decision.
+
+So a long fight wears you down two ways, and neither is a tax on breathing. You burn your own good
+cards to stay ahead, and the **Wounds and Taint** you take shuffle into the same cycle and keep
+coming back (see *Lingering damage* below) — the deck does not get smaller, it gets worse.
+
+- **Spent** cards stay out until your next **short or long rest**, even after the combat ends (see
+  *Rests* below).
 
 ### Lingering damage
 
@@ -716,6 +741,8 @@ The full set, with counts and where to source it, is in [icons.md](icons.md). Th
 | ✚ + number | Heal X |
 | ⊕ | Advantage |
 | ⊖ | Disadvantage |
+| 🔥 | **Spent**: playing this half puts the card out until you rest |
+| ⤵ + number | **Strain X**: discard X other cards from your hand to play this half |
 
 Example card written with icons:
 

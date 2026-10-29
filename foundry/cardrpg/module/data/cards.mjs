@@ -39,6 +39,33 @@ function stepField() {
   });
 }
 
+/* -------------------------------------------- */
+/*  What a half costs to play                   */
+/* -------------------------------------------- */
+
+/**
+ * The price of playing one half, paid before the half resolves.
+ *
+ * The action deck is a closed loop: the discard always comes back on a Catch Breath, so nothing
+ * leaves the deck unless the player decides it should. These two fields are that decision.
+ *
+ * `spent` retires the card to the Spent pile instead of the discard -- gone for the fight, back on
+ * a rest. It is the once-a-fight card.
+ *
+ * `strain` discards that many OTHER cards from the hand, the player's choice. Those go to the
+ * discard like anything else, so Strain costs the round rather than the fight.
+ *
+ * Both sit on the half, not on the card, because every other thing a card does sits on the half.
+ * A card can be a spell on one side and a step sideways on the other, and burning the card to take
+ * the step sideways should be the player's mistake to make, not the schema's.
+ */
+function costField() {
+  return new fields.SchemaField({
+    spent: new fields.BooleanField({ initial: false }),
+    strain: new fields.NumberField({ integer: true, min: 0, initial: 0 })
+  });
+}
+
 /** The icon a step draws, resolved from the verb or effect key. */
 export function stepIcon(step) {
   return CARDRPG.verbs[step.verb]?.icon ?? CARDRPG.effects[step.verb]?.icon ?? null;
@@ -53,6 +80,10 @@ export class ActionCardData extends foundry.abstract.TypeDataModel {
     return {
       primary: new fields.ArrayField(stepField()),
       secondary: new fields.ArrayField(stepField()),
+      costs: new fields.SchemaField({
+        primary: costField(),
+        secondary: costField()
+      }),
       reaction: new fields.StringField({
         required: false, blank: true, initial: "",
         choices: [...Object.keys(CARDRPG.reactions), ""]
@@ -74,6 +105,16 @@ export class ActionCardData extends foundry.abstract.TypeDataModel {
    */
   isHalfBlocked(half, blockedIcons) {
     return this.iconsFor(half).some(icon => blockedIcons.has(icon));
+  }
+
+  /** What playing this half costs. Always an object, so callers never guard. */
+  costFor(half) {
+    return this.costs?.[half] ?? { spent: false, strain: 0 };
+  }
+
+  /** Does playing this half retire the card to the Spent pile rather than the discard? */
+  isSpentBy(half) {
+    return !!this.costFor(half).spent;
   }
 
   get hasReaction() {

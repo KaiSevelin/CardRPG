@@ -17,11 +17,19 @@ those values as first guesses.
 | 5 | Advance | Move 3 | Move 2 | Sidestep | 2 |
 | 6 | Draw Steel | Strike | Ready | – | 2 |
 | 7 | Quick Hands | Use | Ready | Use | 1 |
-| 8 | Second Wind | Heal yourself 2 | Use | – | 1 |
+| 8 | Second Wind | Heal yourself 2 — **Spent** | Use | – | 1 |
 | 9 | Taunt | Target enemy must attack you next turn | Move 1 | – | 1 |
 | 10 | Weapon Swap | Ready | Strike | – | 1 |
 
 That makes **16** cards: 4 have Ready (2× Draw Steel, Quick Hands, Weapon Swap). Weapon Swap shows Ready on its *primary* half, so you can swap and still Strike in the same turn.
+
+**Second Wind** is the deck's one **Spent** card: play its primary and the card goes out for the
+rest of the fight, back only on a rest (core-rules §8). A heal worth having once is a decision; the
+same heal coming round again every time the discard recycles is just more Health. Its *secondary*
+costs nothing, so using it to drink a potion keeps the heal in the deck — which is the decision.
+
+No starter card carries **Strain** yet. It is the cost for cards that lean on a whole hand, and the
+Warrior has nothing that expensive; the first ones belong in a caster deck.
 
 ### Reactions
 

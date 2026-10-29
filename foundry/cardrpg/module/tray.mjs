@@ -17,7 +17,9 @@
  */
 
 import { CARDRPG } from "./config.mjs";
-import { deckOf, discardCards, catchBreath, refill, cardName } from "./decks.mjs";
+import {
+  deckOf, discardCards, retireCards, catchBreath, canCatchBreath, refill, cardName
+} from "./decks.mjs";
 import { resolveAttack, resolveDefend, resolveHeal, resolveUse, collectBonuses } from "./resolve.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -233,6 +235,10 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       // Clear empties the play area, so it is live whenever there is anything in it to empty.
       canClear: this.staged.length > 0
         || ["primary", "secondary"].some(h => this.#assigned(h).length > 0),
+      // A breath recovers a fixed 2, so a discard that cannot cover it buys nothing: the button
+      // says so by being dead, rather than by taking the turn and handing back one card.
+      canBreathe: canCatchBreath(this.actor),
+      breathRecovery: CARDRPG.defaults.breathRecovery,
       playHint: (dazed || system.exhausted)
         ? "Primary only this turn."
         : "Needs a primary and a secondary, from two different cards.",
@@ -240,6 +246,9 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       dazed,
       stunned: active.some(c => c.key === "stunned"),
       exhausted: system.exhausted,
+      // Spent is a line in the character panel, not a deck of its own: it is a record of what this
+      // fight has already cost you, and a record belongs with the rest of your state.
+      spentOpen: this.openPile === "actionSpent",
       encumbered: encumbered
         ? game.i18n.localize(CARDRPG.conditions[encumbered.key].label)
         : null,
@@ -377,6 +386,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       action: true,
       icon: face?.icon,
       lines: [face?.text ?? "—"],
+      costs: face?.costs ?? [],
       // Play order is still click order, so the base card says where it falls in the turn.
       note: `${half} half · step ${this.staged.findIndex(s => s.half === half) + 1}`,
       tip: "The action this stack builds. Click to take it back — the stack goes with it."
@@ -517,7 +527,8 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       },
       {
         id: "actionDiscard", label: "Discard", count: counts.discard ?? 0, action: "openPile",
-        tip: `Face up. ${counts.spent ?? 0} Spent as well; Catch Breath recovers half of this, at random.`
+        tip: "Face up. Catch Breath recovers half of this at random, and the rest waits for the "
+          + "next breath — nothing in here is lost."
       }
     ].map(d => ({ ...d, open: this.openPile === d.id }));
   }
@@ -564,7 +575,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     }
 
     const stack = deckOf(this.actor, this.openPile);
-    const labels = { actionDiscard: "Discard", fateDiscard: "Fate discard" };
+    const labels = { actionDiscard: "Discard", fateDiscard: "Fate discard", actionSpent: "Spent" };
     const cards = (stack?.cards.contents ?? []).map(c => ({
       id: c.id,
       name: cardName(c),
@@ -629,9 +640,32 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         bits.push(text.trim());
       }
 
+      // What the half costs is part of the half, printed with it wherever the half is shown.
+      // Icons, like everything else on a face: card space is limited (core-rules 10). Strain takes
+      // a bare number, so it reads as a parameter the way Move 3 does; Spent takes none.
+      const { spent, strain } = card.system.costFor?.(name) ?? {};
+      const costs = [];
+      if (spent) {
+        costs.push({
+          icon: CARDRPG.costIcons.spent.icon,
+          value: null,
+          tip: "Spent: this card goes out for the rest of the fight when you play this half. "
+            + "It comes back on a short or long rest."
+        });
+      }
+      if (strain) {
+        costs.push({
+          icon: CARDRPG.costIcons.strain.icon,
+          value: strain,
+          tip: `Strain ${strain}: discard ${strain} other card${strain === 1 ? "" : "s"} from your `
+            + "hand to play this half. They go to the discard, so a Catch Breath brings them back."
+        });
+      }
+
       return {
         name,
         text: bits.join(", ") || "—",
+        costs,
         icon: CARDRPG.halfIcons[name],
         blocked: icons.some(i => blockedIcons.has(i)) || (name === "secondary" && dazed),
         staged: this.staged.some(s => s.cardId === card.id && s.half === name)
@@ -749,6 +783,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     const targets = [...(game.user.targets ?? [])].map(t => t.actor).filter(a => a);
 
     if (!await this.#settleReady(hand)) return;
+    if (!await this.#settleStrain(hand)) return;
 
     for (const { cardId, half } of this.staged) {
       const card = hand?.cards.get(cardId);
@@ -756,7 +791,15 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       for (const step of card.system[half] ?? []) await this.#resolveStep(step, half, targets);
     }
 
-    await discardCards(this.actor, this.staged.map(s => s.cardId));
+    // Each card goes where the half it was played for sends it: the discard, or out for the fight.
+    const burned = await retireCards(this.actor, this.staged);
+    if (burned.length) {
+      await ChatMessage.create({
+        speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+        content: `<div class="cardrpg"><p><strong>${this.actor.name}</strong> spends `
+          + `<em>${burned.map(c => cardName(c)).join(", ")}</em> — out until a rest.</p></div>`
+      });
+    }
     this.staged = [];
     this.tops = { primary: 0, secondary: 0 };
     this.render();
@@ -799,6 +842,78 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     });
     this.pendingEquips.clear();
     return true;
+  }
+
+  /**
+   * Pay the Strain the staged halves print, before any of them resolves.
+   *
+   * Strain is a cost in cards: discard that many OTHER cards from your hand. The cards you are
+   * playing are not other cards, so a half can never pay for itself, and a hand too thin to cover
+   * the bill refuses the turn rather than part-paying it -- the same shape as an unpaid Ready.
+   *
+   * The player picks which cards go. Catch Breath recovers at random because choosing there would
+   * be a free upgrade; here the choosing IS the cost, and taking it away would leave a flat tax
+   * with no decision in it.
+   *
+   * @returns {Promise<boolean>} false if the turn cannot pay, in which case nothing is resolved.
+   */
+  async #settleStrain(hand) {
+    const owed = this.staged.reduce((n, { cardId, half }) =>
+      n + (hand?.cards.get(cardId)?.system.costFor?.(half)?.strain ?? 0), 0);
+    if (!owed) return true;
+
+    const playing = new Set(this.staged.map(s => s.cardId));
+    const payable = (hand?.cards.contents ?? []).filter(c => !playing.has(c.id));
+    if (payable.length < owed) {
+      ui.notifications.warn(
+        `This turn strains ${owed}, and your hand holds ${payable.length} other `
+        + `card${payable.length === 1 ? "" : "s"}. Stage something cheaper, or draw first.`);
+      return false;
+    }
+
+    const picked = await CardRPGTray.#payStrain(payable, owed);
+    if (!picked) return false;
+
+    const names = picked.map(id => cardName(hand.cards.get(id))).join(", ");
+    await discardCards(this.actor, picked);
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+      content: `<div class="cardrpg"><p><strong>${this.actor.name}</strong> strains ${owed}, `
+        + `discarding <em>${names}</em>.</p></div>`
+    });
+    return true;
+  }
+
+  /**
+   * Ask for the cards one at a time, rather than as a form with a count to police.
+   *
+   * One card per prompt means the dialog cannot be answered wrongly: there is no way to tick three
+   * boxes when the bill is two, and no way to confirm having ticked none. Backing out of any
+   * prompt cancels the whole turn, because a half-paid cost is not a cost.
+   *
+   * @returns {Promise<string[]|null>} the chosen card ids, or null if the player backed out.
+   */
+  static async #payStrain(cards, owed) {
+    const left = [...cards];
+    const picked = [];
+
+    for (let i = 1; i <= owed; i++) {
+      const chosen = await foundry.applications.api.DialogV2.wait({
+        window: { title: `Strain ${owed}` },
+        content: `<div class="cardrpg"><p>Discard a card from your hand to pay for this turn `
+          + `(${i} of ${owed}). It goes to the discard, so a Catch Breath brings it back.</p></div>`,
+        buttons: [
+          ...left.map(c => ({ action: c.id, label: cardName(c) })),
+          { action: "cancel", label: "Don't play", callback: () => null }
+        ],
+        modal: true,
+        rejectClose: false
+      });
+      if (!chosen) return null;
+      picked.push(chosen);
+      left.splice(left.findIndex(c => c.id === chosen), 1);
+    }
+    return picked;
   }
 
   async #resolveStep(step, half, targets) {
@@ -1024,7 +1139,12 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   static async #onBreathe() {
-    await catchBreath(this.actor);
+    const result = await catchBreath(this.actor);
+    if (!result) {
+      return ui.notifications.warn(
+        `Not enough in the discard to catch breath: it recovers `
+        + `${CARDRPG.defaults.breathRecovery} cards, all or nothing.`);
+    }
     this.staged = [];
     this.tops = { primary: 0, secondary: 0 };
     this.render();

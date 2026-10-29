@@ -91,7 +91,8 @@ One primary and one secondary, from **two different cards**, in **either order**
 2. Player picks the second half.
 3. Player **sequences them**. This matters: an *Advance* primary followed by a Strike secondary is a
    different turn from the reverse.
-4. Both cards go to discard.
+4. Each card goes where the half it was played for sends it: the **discard** normally, the **Spent
+   pile** if that half is printed *Spent*.
 
 Dazed removes step 2 entirely — primary only. Exhausted likewise, and also disables reactions.
 
@@ -206,9 +207,51 @@ displaced. A two-hander taking both hands displaces two items and still costs th
 
 ### 3.6 Catch Breath
 
-A distinct modal, because the rules require a choice over a pile the player cannot otherwise see:
-shuffle discard into draw, **then pick 1 card from the shuffled pile** to set aside as Spent, which
-stays out until a rest. The modal shows the full new draw pile to choose from.
+**No modal.** Catch Breath takes 2 cards from the discard at random and asks nothing, so the button
+does it and reports in chat. The modal here used to exist for the Spent pick, which no longer
+happens: the discard is a cycle, and what leaves the deck is what the player chose to spend
+(core-rules §8).
+
+**The button is disabled below 2 cards in the discard**, with a tooltip saying so. The recovery is
+all or nothing, so a thin discard buys nothing — and a button that takes your whole turn and hands
+back one card is a trap, not a choice. Dead and explained beats live and worthless.
+
+### 3.7 What a half costs
+
+Two costs can be printed on a half, and both show on the face wherever that half is shown -- in the
+hand, and at the base of a stack:
+
+| Printed | Paid | Icon |
+|---|---|---|
+| **Spent** | On resolution: the card goes to the Spent pile instead of the discard | Card burn |
+| **Strain N** | Before resolution: discard N other cards from hand, player's choice | Card discard + a bare number |
+
+Both render as icons in a boxed pill at the **far end of the half**, after the verbs -- the verbs are
+what the half does, the pill is what it takes (card-layout §1.4). Strain's number is bare, so it
+reads as a parameter like *Move 3*. The two icons are both card-shaped and the flame is what tells
+them apart, which is the rule itself: a Strained card comes back on a Catch Breath, a Spent one does
+not come back until a rest.
+
+They sit in `CARDRPG.costIcons`, deliberately outside `verbs` and `effects` where the Blocked-icons
+test looks, so nothing switches off an expensive half by accident.
+
+**Strain prompts once per card, not once per bill.** Asking for two cards as a form means policing
+a count -- too many ticked, too few, none at all. Asking for them one at a time cannot be answered
+wrongly, and backing out of any prompt cancels the turn, because a half-paid cost is not a cost.
+
+The cards being played are never payable: a half cannot pay for itself. If the rest of the hand is
+too thin to cover the bill, the turn is refused with a notification rather than part-paid -- the
+same shape as an unpaid Ready (§3.5.2).
+
+### 3.8 Spent: a link, not a deck
+
+The Spent pile gets **one underlined line in the character panel** (card-burn icon, `3 Spent`),
+carrying the same icon the cards do, and opening into the same spread the other piles use. It does not get a deck back in the column.
+
+A deck back on the table promises a pile you can draw on, and nothing is ever played from Spent. It
+is not a deck, it is a **record of what this fight has already cost you** -- which is the same kind
+of thing as Health, Block and conditions, and belongs where they are. The line is absent entirely
+when nothing is Spent, so it appears exactly when it starts to mean something.
 
 ---
 
@@ -218,8 +261,13 @@ stays out until a rest. The modal shows the full new draw pile to choose from.
 
 Simulation says the deck runs dry in 89% of four-goblin fights and the hero stops to Catch Breath in
 most of them ([../sim/analysis-2026-10-27.md](../sim/analysis-2026-10-27.md), finding 2). That
-countdown *is* the drama: reactions cost cards and Catch Breath shrinks the deck permanently. It gets
-a depleting bar with the count beside it.
+countdown *is* the drama: reactions cost cards, and a turn spent breathing is a turn not spent
+fighting. It gets a depleting bar with the count beside it.
+
+(Deck-dry barely moved when Catch Breath became a flat 2 — the deck runs out on the first pass
+through it either way — but what happens afterwards did. Breaths per fight doubled, from 1.3 to 2.7
+in the hard fight, so over a quarter of the character's turns now go on breathing rather than
+fighting. The bar is counting down to a much steeper slope than it used to.)
 
 ### 4.2 Fate deck - a live risk readout
 

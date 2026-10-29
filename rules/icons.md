@@ -12,7 +12,7 @@ readable at about 16 px, single-colour so it can be recoloured and greyed out wh
 
 ---
 
-## Tier 1 — needed before the first card exists (23)
+## Tier 1 — needed before the first card exists (25)
 
 These appear on card faces. Nothing can be laid out until they're chosen.
 
@@ -47,6 +47,27 @@ These appear on card faces. Nothing can be laid out until they're chosen.
 | ⊖ | **Disadvantage** | | Thumb down |
 
 Modifiers (`+1`, `−1` beside an icon) are typography, not icons.
+
+### Costs (2)
+
+What a half costs to play, printed on the half it prices (core-rules §8).
+
+| Placeholder | Name | Shown on | game-icons.net |
+|---|---|---|---|
+| 🔥 | **Spent** | A half whose card does not come back this fight | Card burn |
+| ⤵ | **Strain** (+ number) | A half that costs N other cards out of your hand | Card discard |
+
+**Burn against discard is the whole distinction.** A Strained card goes to the discard and comes
+back on a Catch Breath; a Spent one does not come back until a rest. Two card-shaped icons, and the
+flame is what tells them apart — which is exactly the rule they encode.
+
+Strain takes a **bare number**, so it reads as a parameter like *Move 3*, not a modifier (§1.3 of
+[../foundry/card-layout.md](../foundry/card-layout.md)). Spent takes none: a card is spent or it is not.
+
+These are **not blocked icons.** The *Blocked icons* mechanic tests what a half *does*, and a cost is
+not something it does — a condition switching off every card showing Strain is a rule nobody wrote.
+They live in their own `CARDRPG.costIcons` map, out of the test's reach, so a future *Winded* has to
+name them deliberately.
 
 
 ### Slate markers (1)
@@ -123,7 +144,7 @@ model that's one card type with a `flavour` field (`body` / `mind`) selecting th
 
 ---
 
-## Tier 3 — HUD and sheet chrome (10)
+## Tier 3 — HUD and sheet chrome (9)
 
 Nothing blocks on these; Font Awesome ships with Foundry and covers most of them.
 
@@ -134,7 +155,6 @@ Nothing blocks on these; Font Awesome ships with Foundry and covers most of them
 | | Belt | Belt |
 | | Pack | Knapsack |
 | **Deck state** | Exhausted | Oppression |
-| | Spent | Card discard |
 | | Rest token | Night sleep |
 | **Challenge tracks** | Progress | Target prize |
 | | Pressure | Hourglass |
