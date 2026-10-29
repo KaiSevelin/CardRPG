@@ -263,6 +263,47 @@ check("classes missing from the stylesheet", unstyled.length ? unstyled.join(", 
 
 /* -------------------------------------------- */
 
+/*
+ * Tag balance, and one root element per template.
+ *
+ * ApplicationV2 refuses a part that renders more than one root: "Template part must render a
+ * single HTML element". One stray </div> left behind by an edit closes the wrapper early and every
+ * section after it becomes a second root -- which only throws once the conditional holding that
+ * section happens to be true, so it can sit in the file for a while before anyone sees it.
+ *
+ * Handlebars expressions are stripped first. An {{#if}}/{{else}} leaves both branches behind, so
+ * each branch has to balance on its own; that is true here and is the stricter rule anyway.
+ */
+section("templates are well formed");
+
+const VOID = new Set(["area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta",
+  "param", "source", "track", "wbr"]);
+
+for (const name of fs.readdirSync(templateDir)) {
+  const text = fs.readFileSync(path.join(templateDir, name), "utf8").replace(/\{\{[\s\S]*?\}\}/g, "");
+  const stack = [];
+  let roots = 0;
+  let trouble = null;
+
+  for (const m of text.matchAll(/<(\/?)([a-zA-Z][\w-]*)([^>]*?)(\/?)>/g)) {
+    const [, closing, tag, attrs, selfClose] = m;
+    if (VOID.has(tag.toLowerCase()) || selfClose) continue;
+    if (!closing) {
+      if (!stack.length) roots++;
+      stack.push(tag);
+      continue;
+    }
+    if (!stack.length) { trouble ??= `stray </${tag}>`; continue; }
+    const open = stack.pop();
+    if (open !== tag) trouble ??= `</${tag}> closes <${open}>`;
+  }
+  if (stack.length) trouble ??= `unclosed <${stack[stack.length - 1]}>`;
+  if (roots !== 1) trouble ??= `${roots} root elements`;
+  check(name, trouble ?? "one root, balanced", "one root, balanced");
+}
+
+/* -------------------------------------------- */
+
 console.log(failures
   ? `\n${failures} FAILURE${failures === 1 ? "" : "S"}`
   : "\nall checks pass");
