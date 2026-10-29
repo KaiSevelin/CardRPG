@@ -269,6 +269,8 @@ and why what you sling before the fight is a real decision.
 A spell is a **slate**, like a sword or a potion, and it has a slot of its own. Carrying a spell is
 not the same as being able to cast it: **you prepare spells, and only prepared spells can be cast.**
 
+A spell in your book is not the same as a spell in a wand: see *Two kinds of casting* below.
+
 | | |
 |---|---|
 | **Spell slots** | How many you may prepare. More come from leveling ([leveling.md](leveling.md) §4). |
@@ -285,19 +287,35 @@ is the trade: a caster decides in advance and a fighter decides in the moment.
 > for a Way of Mind branch to grant, and it should stay rare enough that the choice above still
 > matters.
 
-#### What casting needs
+#### Two kinds of casting
 
-**A free hand.** You gesture with it, and you cannot do that holding a sword in one hand and a shield
-in the other. A hand counts as free if it is **empty or holding an implement** — something with a
-Cast line of its own, like a wand, a staff or a holy symbol. A two-handed staff therefore casts
-perfectly well, because what fills your hands *is* the thing you are casting with.
+✦ Cast comes from two different places, and they ask for different things.
 
-> Sword + shield: no. Sword + free hand: yes. Wand + shield: yes. Staff: yes.
->
-> So a shield costs a caster nothing until they also want a weapon, and that is the decision.
+| | **The item's Cast line** | **A prepared spell** |
+|---|---|---|
+| Where the magic is | in the object | in your head |
+| Examples | Staff of Healing, Fire Wand, a holy symbol, a scroll | whatever you prepared this morning |
+| Needs | the item **in hand** — which is just the slot rule | a **free hand**, and speech |
+| Limited by | what you are carrying | your spell slots |
 
-**The ability to speak.** This is what **Silenced** already does (section 7) — it blocks ✦ Cast, and
-a prepared spell is cast like any other. Gags, water and held breath hang off the same hook.
+A **free hand** means an **empty** one. You gesture with it, and you cannot gesture holding a sword in
+one hand and a shield in the other. An implement does not count — a staff in both hands is casting
+*its own* magic, not leaving you a hand for yours.
+
+> | In your hands | Item Cast | Prepared spells |
+> |---|---|---|
+> | Staff of Healing (2) | yes — Heal 3 | **no** |
+> | Fire Wand (1) + free | yes — Blast 1 | yes |
+> | Sword + shield | — | **no** |
+> | Sword + free hand | — | yes |
+
+So the staff and the wand are not two spellings of the same thing. **The staff is a better item and a
+worse hand**: it casts reliably without preparing anything, and it costs you your whole repertoire
+while you hold it. The wand leaves a hand open. And a shield costs a caster nothing until they also
+want a weapon — that is the decision the rule exists to create.
+
+**Speech** is what **Silenced** already takes away (section 7). It blocks ✦ Cast wherever the magic
+came from, because a wand has a command word too; gags, water and held breath hang off the same hook.
 
 ### Carrying
 
