@@ -7,6 +7,7 @@
  */
 
 import { CARDRPG } from "../config.mjs";
+import { available } from "../decks.mjs";
 
 const fields = foundry.data.fields;
 
@@ -149,14 +150,17 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
     // --- exhaustion is a deck fact, so it is derived too
     const hand = this.#deck("actionHand");
     const draw = this.#deck("action");
-    this.exhausted = (draw?.cards.size ?? 0) === 0 && (hand?.cards.size ?? 0) < 2;
+    // A card flagged `drawn` is out in the hand, not in the pile, so it is not counted here --
+    // otherwise the draw bar reads full while the deck has nothing left to give.
+    const left = available(draw).length;
+    this.exhausted = left === 0 && (hand?.cards.size ?? 0) < 2;
 
     this.deckCounts = {
-      draw: draw?.cards.size ?? 0,
+      draw: left,
       hand: hand?.cards.size ?? 0,
       discard: this.#deck("actionDiscard")?.cards.size ?? 0,
       spent: this.#deck("actionSpent")?.cards.size ?? 0,
-      fate: this.#deck("fate")?.cards.size ?? 0,
+      fate: available(this.#deck("fate")).length,
       fateDiscard: this.#deck("fateDiscard")?.cards.size ?? 0
     };
 

@@ -112,9 +112,24 @@ it in the layout: **where a card sits is what it is doing.**
      │ strike 4     │        │              │
      │ primary      │        │              │
      └──────────────┘        └──────────────┘
-     ┌──────────────┐
-     │     FATE     │
+     ┌──────────────────────────────┐
+     │             PLAY             │
+     └──────────────────────────────┘
+     ┌──────────────┐┌──────────────┐
+     │     FATE     ││   DISCARD    │
+     └──────────────┘└──────────────┘
+     ┌──────────────────────────────┐
+     │  Starter Warrior  12/12 ...  │
 ```
+
+The column runs down the right, just inside the sidebar so that chat, the combat tracker and the
+rest stay readable beside it. It is anchored at the top, because the stacks grow downwards as cards
+go into them and the part you click should not move when they do.
+
+It reads top to bottom: what you are about to do, the button that does it, the decks it draws on,
+then who is doing it. Nothing about a turn is anywhere else. The far left keeps what it had --
+Items, Features and Conditions stacked from the top, the Action deck in the bottom corner -- so the
+two sides split cleanly: **what you own** on the left, **what you are doing with it** on the right.
 
 A **stack** is one action and everything modifying it: the card half you staged at its base, then
 the slates assigned to that half. Primary on the left, secondary on the right. A stack stands
@@ -124,43 +139,60 @@ The cards overlap, so only the front one reads in full and the rest show their n
 **carousel** turns the stack to bring any card to the front; it changes nothing but what you can
 read, and only appears once there is more than one card.
 
-**Every click moves one card, and only that card.**
+Under the two stacks sits **Play**, the one button that resolves them. It stays disabled until the
+turn is complete — a primary *and* a secondary, from two different cards — or, when Dazed or
+Exhausted has cut you to one half, until that half is staged. Half a turn is not a turn, so the
+button does not offer to play one.
+
+**The card is the control, and the name is a second one.** Clicking a card's body takes it out of
+the stack; clicking its *name* turns the stack to it instead, so a card behind can be read without
+being disturbed. That split is what lets a stack be both a list and a thing you take apart.
 
 | You click | What happens |
 |---|---|
-| A card in a deck | It goes into play, into the primary stack. No prompt — this is the cheap direction. |
-| `→` / `←` on a modifier | It moves to the other stack. Free and reversible, so it asks nothing. |
-| A **modifier** in a stack | **Confirm**, then it leaves play, back to its deck. The stack stays. |
-| The **action card** at the base | **Confirm**, then it goes back to your hand. The stack stays, modifiers and all. |
+| A card in a deck | It goes into play, into the primary stack. |
+| A card's **name** in a stack | The stack turns to it, bringing it to the front. Nothing moves. |
+| `→` / `←` on a modifier | It moves to the other stack. Free and reversible. |
+| A **modifier's body** in a stack | It goes back to its deck. |
+| The **action card** at the base | It goes back to your hand, **and the whole stack goes with it** — every item and feature in it returns to its deck. |
+| **Clear** | The same for both halves at once: the play area is emptied. |
 
-A stack outliving its action card is the point: the gear was equipped before the hand was dealt and
-it is still equipped afterwards. **Clear** does the same for both halves at once.
+Taking the action card down takes its modifiers with it because they were assigned to *that* action;
+without it they have nothing to modify.
 
 Only a slate that could modify more than one action can be moved with `→` / `←`. One with a single
-verb has nothing to choose, and a Drained feature has no half at all; both ride with the primary,
-where they can still be seen and taken back out. When resolving, the item assigned to that half
-wins; then a single-verb item; then anything else in play, highest value first.
+verb has nothing to choose, and a used feature has no half at all; both ride with the primary. When
+resolving, the item assigned to that half wins; then a single-verb item; then anything else in play,
+highest value first.
 
 A passive feature is in no stack and cannot be clicked: it is simply true.
 
-### 3.5.1 Ready is settled on Play, with everything else
+### 3.5.1 Disabled for a while
+
+Both items and features can be **disabled for a number of turns** — `drained`, with `drainedFor`
+counting down. A disabled item is still equipped and still sits in its stack, drawn faded with its
+lines struck through, because what you need to know is that it is there but not working.
+
+### 3.5.2 Ready is settled on Play, with everything else
 
 Inside a combat, putting a slate into play costs a **Ready** — doing it under pressure is the whole
 reason the verb exists (core-rules §4). But Ready was the one verb whose effect had to land *before*
 the thing it paid for, which made arranging a stack run backwards from every other decision in the
 turn: play the half, then pick the item.
 
-So the arranging is free and **the turn pays for it**. Each slate that goes into play under pressure
-owes one Ready; on **Play**, the staged halves have to cover the debt before any step resolves:
+So the arranging is free and **the turn pays for it**. Each item equipped under pressure owes one
+Ready; on **Play**, the staged halves have to cover the debt before any step resolves:
 
 - enough Ready icons staged → one chat line names what was readied, and the debt clears;
 - not enough → nothing resolves, and the warning names both ways out: stage a half showing Ready, or
-  take the slate back out of play.
+  swap the item back out for the one it replaced.
 
-Taking a slate out of play is free and **cancels what it owed** — a slate that is not in play was
-never readied. Outside a combat equipping is free, so a debt carried out of a fight lapses. One
-Ready buys one equip *or* one swap, exactly as the rules have it: a swap is a free removal plus one
-paid-for arrival.
+A slate taken back out **cancels what it owed** — it is not in play any more, so it was never
+readied. Outside a combat equipping is free, so a debt carried out of a fight lapses.
+
+One Ready buys one equip *or* one swap, exactly as the rules have it. Because an item comes off only
+by being replaced, those are the same transaction: what is counted is what **arrived**, not what was
+displaced. A two-hander taking both hands displaces two items and still costs the one Ready.
 
 ### 3.6 Catch Breath
 

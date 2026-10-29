@@ -389,6 +389,7 @@
 .cr-hud-layer .cr-hud__panel,
 .cr-hud-layer .cr-hud__decks,
 .cr-hud-layer .cr-hud__hand,
+.cr-hud-layer .cr-hud__play,
 .cr-hud-layer .cr-hud__spread { position: absolute; pointer-events: auto; }
 
 .cr-hud-layer .cr-hud__panel {
@@ -418,23 +419,6 @@
   bottom: var(--cr-hotbar);
 }
 
-/*
- * The play area, Fate, Discard, then the options panel, left of the sidebar.
- *
- * The column is as wide as its widest child and anchored on the right, so the two-stack play area
- * grows leftwards over the canvas while the piles below keep their one-card width at the edge.
- *
- * The column hugs the bottom with a margin on its first child rather than `justify-content`, which
- * would make anything overflowing the top unreachable by the scrollbar.
- */
-.cr-hud-layer .cr-hud__decks--right {
-  right: var(--cr-sidebar);
-  bottom: 10px;
-  top: 54px;
-  align-items: flex-end;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
 
 /* --- a deck back --- */
 .cr-hud-layer .cr-pile {
@@ -511,7 +495,7 @@
  */
 .cr-hud-layer .cr-hud__hand {
   left: calc(var(--cr-controls) + var(--cr-gutter) + var(--cr-card-w) + 12px);
-  right: calc(var(--cr-sidebar) + var(--cr-card-w) + 12px);
+  right: calc(var(--cr-sidebar) + 2 * var(--cr-card-w) + 20px);
   bottom: var(--cr-hotbar);
   height: var(--cr-card-h);
   display: flex;
@@ -527,7 +511,7 @@
  */
 .cr-hud-layer .cr-hud__spread {
   left: calc(var(--cr-controls) + var(--cr-gutter) + var(--cr-card-w) + 12px);
-  right: calc(var(--cr-sidebar) + var(--cr-card-w) + 12px);
+  right: calc(var(--cr-sidebar) + 2 * var(--cr-card-w) + 20px);
   top: 54px;
   height: var(--cr-card-h);
   display: flex;
@@ -785,16 +769,60 @@
  * Two stacks sitting on top of the Fate deck: primary on the left, secondary on the right. Each is
  * one action and everything modifying it, laid out the way you would lay the cards on a table.
  */
+/*
+ * The whole turn in one column down the right, just inside the sidebar so chat, the combat tracker
+ * and the rest stay readable beside it. Top to bottom: the two stacks, the button that resolves
+ * them, the decks they draw on, then who is playing. Nothing about a turn is anywhere else.
+ *
+ * Anchored at the top, not the bottom: the stacks grow downwards as cards go into them, and the
+ * part you click should not move when they do.
+ */
 .cr-hud-layer .cr-hud__play {
+  right: var(--cr-sidebar);
+  top: 54px;
+  bottom: 10px;
+  width: calc(2 * var(--cr-card-w) + 8px);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Fate and Discard side by side, so the pair is exactly as wide as the stacks above them. */
+.cr-hud-layer .cr-play__piles {
   flex: 0 0 auto;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.cr-hud-layer .cr-play__stacks {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
   gap: 8px;
-  /* First child of the right column: this is what pushes the whole column down to the bottom. */
-  margin-top: auto;
-  margin-bottom: 2px;
 }
+
+/* The turn's one button, as wide as the two stacks it resolves. */
+.cr-hud-layer .cr-play {
+  width: 100%;
+  padding: 0.3em 0;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cardrpg-ink);
+  background: var(--cardrpg-paper);
+  border: 2px solid var(--cardrpg-group-6);
+  border-radius: 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+}
+.cr-hud-layer .cr-play:hover:not(:disabled) { background: var(--cardrpg-group-6); color: var(--cardrpg-paper); }
+/* Half a turn is not a turn, so the button waits until both stacks have an action. */
+.cr-hud-layer .cr-play:disabled { opacity: 0.45; cursor: default; border-color: var(--cardrpg-rule); }
 
 .cr-hud-layer .cr-stack {
   flex: 0 0 auto;
@@ -804,12 +832,16 @@
   gap: 3px;
 }
 
-/* No tray to hang a heading on, so the label sits straight on the canvas. */
+/*
+ * No tray to hang a heading on, so the label sits straight on the canvas. The height is fixed
+ * rather than minimum: only one stack carries carousel buttons, and a taller head on that one
+ * would push its cards down out of line with the other's.
+ */
 .cr-hud-layer .cr-stack__head {
   display: flex;
   align-items: center;
   gap: 0.3em;
-  min-height: 15px;
+  height: 22px;
   font-size: 0.62rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -849,6 +881,42 @@
   top: calc(var(--cr-depth, 0) * 26px);
   z-index: var(--cr-depth, 0);
 }
+
+/*
+ * A card behind shows exactly its name row, so that row has to be one line of a fixed height --
+ * "Wooden Shield" wrapping to two lines put half of it under the card in front.
+ */
+.cardrpg .cr-card--stacked .cr-card__name {
+  box-sizing: border-box;
+  height: 26px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+/*
+ * The name is its own control: clicking it turns the stack to that card, so a card behind can be
+ * read without being taken out. It still has to look like a title, not a button.
+ */
+.cardrpg .cr-card__title {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+  width: auto;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  line-height: 1.2;
+}
+.cardrpg .cr-card__title:hover { text-decoration: underline; }
+
+/* Disabled for a few turns. Still equipped, still in its stack -- it just does nothing yet. */
+.cardrpg .cr-card--disabled { opacity: 0.55; }
+.cardrpg .cr-card--disabled .cr-card__front { text-decoration: line-through; }
 
 /* The action at the base of the stack is the thing all the rest of it is modifying. */
 .cardrpg .cr-card--base { border-color: var(--cardrpg-group-6); border-width: 2px; }

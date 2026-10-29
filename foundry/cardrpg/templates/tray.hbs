@@ -1,9 +1,11 @@
 {{!--
   The HUD: a layer over the canvas that ignores clicks, with decks anchored to the screen edges.
 
-  Left column, right of the scene controls and under the navigation:
-    Items, Features, Conditions stacked from the top, Action deck in the bottom-left corner.
-  Bottom right, left of the sidebar: the play area, then Fate, then Discard.
+  Far left, right of the scene controls: Items, Features, Conditions stacked from the top, with
+  the Action deck in the bottom-left corner.
+
+  Down the right, just inside the sidebar: the two play stacks, the Play button under them, then
+  Fate and Discard, then the character panel -- the whole turn in one column, read top to bottom.
 
   Every deck shows as a back with a count. Clicking one spreads it as a vertical hand; clicking it
   again closes it. Item cards can be turned over, because a slate's back is where value, weight and
@@ -16,10 +18,10 @@
   <section class="cr-hud__decks cr-hud__decks--left">
     {{#each leftDecks}}
       <button type="button"
-              class="cr-pile{{#if this.open}} cr-pile--open{{/if}}"
-              data-action="openPile" data-pile="{{this.id}}" data-tooltip="{{this.tip}}">
-        <span class="cr-pile__count">{{this.count}}</span>
-        <span class="cr-pile__label">{{this.label}}</span>
+            class="cr-pile{{#if this.open}} cr-pile--open{{/if}}"
+            data-action="openPile" data-pile="{{this.id}}" data-tooltip="{{this.tip}}">
+      <span class="cr-pile__count">{{this.count}}</span>
+      <span class="cr-pile__label">{{this.label}}</span>
       </button>
     {{/each}}
   </section>
@@ -27,93 +29,103 @@
   {{!-- BOTTOM-LEFT CORNER: the action deck --}}
   <section class="cr-hud__decks cr-hud__decks--action">
     <button type="button"
-            class="cr-pile cr-pile--action{{#if actionDeck.spent}} cr-pile--spent{{/if}}"
-            data-action="dealHand" data-tooltip="{{actionDeck.tip}}">
+          class="cr-pile cr-pile--action{{#if actionDeck.spent}} cr-pile--spent{{/if}}"
+          data-action="dealHand" data-tooltip="{{actionDeck.tip}}">
       <span class="cr-pile__count">{{actionDeck.count}}</span>
       <span class="cr-pile__label">{{actionDeck.label}}</span>
       <span class="cr-pile__state">{{actionDeck.state}}</span>
     </button>
   </section>
 
-  {{!-- BOTTOM RIGHT: the play area, Fate, Discard, then the options panel, all card-shaped --}}
-  <section class="cr-hud__decks cr-hud__decks--right">
+  {{!--
+    The play area, over the canvas above the hand: two stacks of overlapping cards, primary on the
+    left. A stack is one action and everything modifying it, so where a card sits is what it is
+    doing. Only the front card reads in full; the carousel turns the stack without unmaking it.
+  --}}
+  <section class="cr-hud__play">
+    <div class="cr-play__stacks">
+    {{#each playArea}}
+      <div class="cr-stack" data-half="{{this.half}}">
+      <div class="cr-stack__head">
+        <span class="cr-stack__label">{{this.label}}{{#if this.carousel}} ({{this.count}}){{/if}}</span>
+        {{#if this.carousel}}
+          <span class="cr-stack__nav">
+            <button type="button" data-action="shiftStack" data-half="{{this.half}}" data-dir="-1"
+                    data-tooltip="Turn the stack back">&#8249;</button>
+            <button type="button" data-action="shiftStack" data-half="{{this.half}}" data-dir="1"
+                    data-tooltip="Bring the next card to the front">&#8250;</button>
+          </span>
+        {{/if}}
+      </div>
 
-    {{!--
-      The play area, directly over the Fate deck: two stacks of overlapping cards, primary on the
-      left. A stack is one action and everything modifying it, so where a card sits is what it is
-      doing. Only the front card reads in full; the carousel turns the stack without unmaking it.
-    --}}
-    <div class="cr-hud__play">
-      {{#each playArea}}
-        <div class="cr-stack" data-half="{{this.half}}">
-          <div class="cr-stack__head">
-            <span class="cr-stack__label">{{this.label}}{{#if this.carousel}} ({{this.count}}){{/if}}</span>
-            {{#if this.carousel}}
-              <span class="cr-stack__nav">
-                <button type="button" data-action="shiftStack" data-half="{{this.half}}" data-dir="-1"
-                        data-tooltip="Turn the stack back">&#8249;</button>
-                <button type="button" data-action="shiftStack" data-half="{{this.half}}" data-dir="1"
-                        data-tooltip="Bring the next card to the front">&#8250;</button>
-              </span>
-            {{/if}}
-          </div>
+      <div class="cr-stack__cards" style="--cr-count: {{this.span}}">
+        {{#each this.cards}}
+          {{!-- The card body takes it out of the stack; its name turns the stack to it instead,
+                so a card behind can be read without being disturbed. --}}
+          <div class="cr-card cr-card--spread cr-card--stacked cr-card--takeable{{#if this.action}} cr-card--base{{/if}}{{#if this.disabled}} cr-card--disabled{{/if}}{{#if this.flipped}} cr-card--back{{/if}}"
+               style="--cr-depth: {{@index}}"
+               data-group="{{this.group}}" data-tooltip="{{this.tip}}"
+               role="button" tabindex="0" data-action="unstack" data-half="{{../half}}"
+               {{#if this.slate}}data-slate-id="{{this.id}}"{{/if}}>
+            <div class="cr-card__name">
+              {{#if this.icon}}{{crIcon this.icon}}{{/if}}
+              <button type="button" class="cr-card__title" data-action="frontCard"
+                      data-half="{{../half}}" data-slot="{{this.slot}}"
+                      data-tooltip="Bring it to the front">{{this.name}}</button>
+              {{#if this.moveTo}}
+                <button type="button" class="cr-card__half" data-action="moveHalf"
+                        data-slate-id="{{this.id}}"
+                        data-tooltip="Move it to the {{this.moveTo}} stack">{{this.moveArrow}}</button>
+              {{/if}}
+              {{#if this.flippable}}
+                <button type="button" class="cr-card__flip" data-action="flipCard" data-card-id="{{this.id}}"
+                        data-tooltip="Turn it over for value, weight and type">&#8634;</button>
+              {{/if}}
+            </div>
 
-          <div class="cr-stack__cards" style="--cr-count: {{this.span}}">
-            {{#each this.cards}}
-              <div class="cr-card cr-card--spread cr-card--stacked cr-card--takeable{{#if this.action}} cr-card--base{{/if}}{{#if this.flipped}} cr-card--back{{/if}}"
-                   style="--cr-depth: {{@index}}"
-                   data-group="{{this.group}}" data-tooltip="{{this.tip}}"
-                   role="button" tabindex="0" data-action="unstack" data-half="{{../half}}"
-                   {{#unless this.action}}data-slate-id="{{this.id}}"{{/unless}}>
-                <div class="cr-card__name">
-                  {{#if this.icon}}{{crIcon this.icon}}{{/if}}
-                  {{this.name}}
-                  {{#if this.moveTo}}
-                    <button type="button" class="cr-card__half" data-action="moveHalf"
-                            data-slate-id="{{this.id}}"
-                            data-tooltip="Move it to the {{this.moveTo}} stack">{{this.moveArrow}}</button>
-                  {{/if}}
-                  {{#if this.flippable}}
-                    <button type="button" class="cr-card__flip" data-action="flipCard" data-card-id="{{this.id}}"
-                            data-tooltip="Turn it over for value, weight and type">&#8634;</button>
-                  {{/if}}
-                </div>
-
-                {{#if this.flipped}}
-                  <div class="cr-card__back">
-                    {{#if this.blurb}}<p class="cr-note">{{this.blurb}}</p>{{/if}}
-                    <dl class="cr-card__facts">
-                      {{#each this.facts}}<dt>{{this.label}}</dt><dd>{{this.value}}</dd>{{/each}}
-                    </dl>
-                  </div>
-                {{else}}
-                  <div class="cr-card__front">
-                    {{#each this.lines}}<div class="cr-card__line">{{this}}</div>{{/each}}
-                    {{#if this.note}}<p class="cr-note">{{this.note}}</p>{{/if}}
-                  </div>
-                {{/if}}
+            {{#if this.flipped}}
+              <div class="cr-card__back">
+                {{#if this.blurb}}<p class="cr-note">{{this.blurb}}</p>{{/if}}
+                <dl class="cr-card__facts">
+                  {{#each this.facts}}<dt>{{this.label}}</dt><dd>{{this.value}}</dd>{{/each}}
+                </dl>
               </div>
             {{else}}
-              <div class="cr-stack__empty">Nothing in play here</div>
-            {{/each}}
+              <div class="cr-card__front">
+                {{#each this.lines}}<div class="cr-card__line">{{this}}</div>{{/each}}
+                {{#if this.note}}<p class="cr-note">{{this.note}}</p>{{/if}}
+              </div>
+            {{/if}}
           </div>
-        </div>
-      {{/each}}
+        {{else}}
+          <div class="cr-stack__empty">Nothing played here</div>
+        {{/each}}
+      </div>
+      </div>
+    {{/each}}
     </div>
 
-    {{#each rightDecks}}
+    {{!-- Directly under the stacks: the button that resolves them both. --}}
+    <button type="button" class="cr-play" data-action="play" {{#unless canPlay}}disabled{{/unless}}
+          data-tooltip="{{#if canPlay}}Resolve both stacks, in the order you staged them.{{else}}{{playHint}}{{/if}}">
+      Play
+    </button>
+
+    {{!-- Under the button: the decks the turn draws on, then who is playing it. --}}
+    <div class="cr-play__piles">
+      {{#each rightDecks}}
       <button type="button"
               class="cr-pile{{#if this.open}} cr-pile--open{{/if}}"
               data-action="{{this.action}}" data-pile="{{this.id}}" data-tooltip="{{this.tip}}">
         <span class="cr-pile__count">{{this.count}}</span>
         <span class="cr-pile__label">{{this.label}}</span>
       </button>
-    {{/each}}
+      {{/each}}
+    </div>
 
     {{!-- Same shape as a card, so it sits in the column as one more object. --}}
     <div class="cr-options">
       <div class="cr-options__name">{{actor.name}}</div>
-
       <div class="cr-options__vitals">
         <span data-tooltip="Health">&#9829; {{system.health.value}}/{{system.health.max}}</span>
         <span data-tooltip="Block{{#if system.blockPersists}} — holds until your next turn{{/if}}">&#9094; {{system.block}}{{#if system.blockPersists}}&infin;{{/if}}</span>
@@ -121,12 +133,10 @@
         {{#if system.wounds}}<span data-tooltip="Wounds">&#10006; {{system.wounds}}</span>{{/if}}
         {{#if system.taint.total}}<span data-tooltip="Taint">&#9763; {{system.taint.total}}</span>{{/if}}
       </div>
-
       {{#if exhausted}}<div class="cr-tray__flag" data-tooltip="One card per turn, and no reactions">Exhausted</div>{{/if}}
       {{#if dazed}}<div class="cr-tray__flag" data-tooltip="No secondary this turn">Dazed</div>{{/if}}
       {{#if stunned}}<div class="cr-tray__flag" data-tooltip="No reactions">Stunned</div>{{/if}}
       {{#if encumbered}}<div class="cr-tray__flag">{{encumbered}}</div>{{/if}}
-
       {{#if staged}}
         <div class="cr-options__staged">
           {{#each staged}}<span class="cr-chip cr-chip--staged">{{this.order}}. {{this.name}}</span>{{/each}}
@@ -135,13 +145,10 @@
       {{#if targets}}
         <div class="cr-note" data-tooltip="Fate is drawn once per action, not per target">&#9678; {{targets}}</div>
       {{/if}}
-
       <div class="cr-options__buttons">
-        <button type="button" data-action="play" {{#unless canPlay}}disabled{{/unless}}
-                data-tooltip="Resolve both stacks, in the order you staged them.">Play</button>
-        {{!-- The cheap undo for a mis-clicked half: unlike taking a stack down, the gear stays. --}}
-        <button type="button" data-action="clear" {{#unless canPlay}}disabled{{/unless}}
-                data-tooltip="Take both action cards back. Everything in play stays in play.">Clear</button>
+        {{!-- Play lives under the stacks it resolves. This is the undo for a mis-clicked half. --}}
+        <button type="button" data-action="clear" {{#unless canClear}}disabled{{/unless}}
+                data-tooltip="Empty the play area: action cards back to hand, items and features back to their decks.">Clear</button>
         <button type="button" data-action="breathe"
                 data-tooltip="Your whole turn. Recovers half the discard at random; one of the rest is Spent.">Breath</button>
         {{#if inCombat}}
@@ -155,29 +162,29 @@
   {{!-- The dealt hand: cards laid on the scene, not inside a tray --}}
   {{#if cards}}
     <section class="cr-hud__hand">
-        {{#each cards as |card|}}
-          <div class="cr-card{{#if card.harm}} cr-card--harm{{/if}}">
-            <div class="cr-card__name">{{card.name}}</div>
-            {{#if card.harm}}
-              <div class="cr-half"><span class="cr-note">Can't be played, not even for Brace.</span></div>
-            {{else}}
-              {{#each card.halves as |half|}}
-                <div class="cr-half cr-half--{{half.name}}{{#if half.blocked}} cr-half--blocked{{/if}}{{#if half.staged}} cr-half--staged{{/if}}">
-                  <span class="cr-half__marker">{{crIcon half.icon}}</span>
-                  {{#if half.blocked}}
-                    <span data-tooltip="Blocked right now. The other half may still be playable, and Brace never is.">{{half.text}}</span>
-                  {{else}}
-                    <button type="button" class="cr-half__play"
-                            data-action="stage" data-card-id="{{card.id}}" data-half="{{half.name}}">{{half.text}}</button>
-                  {{/if}}
-                </div>
-              {{/each}}
-              <div class="cr-half cr-half--reaction">
-                <span class="cr-half__marker">{{crIcon ../config.halfIcons.reaction}}</span>
-                <span>{{#if card.reaction}}{{card.reaction}}{{else}}Brace{{/if}}</span>
+      {{#each cards as |card|}}
+        <div class="cr-card{{#if card.harm}} cr-card--harm{{/if}}">
+          <div class="cr-card__name">{{card.name}}</div>
+          {{#if card.harm}}
+            <div class="cr-half"><span class="cr-note">Can't be played, not even for Brace.</span></div>
+          {{else}}
+            {{#each card.halves as |half|}}
+              <div class="cr-half cr-half--{{half.name}}{{#if half.blocked}} cr-half--blocked{{/if}}{{#if half.staged}} cr-half--staged{{/if}}">
+                <span class="cr-half__marker">{{crIcon half.icon}}</span>
+                {{#if half.blocked}}
+                  <span data-tooltip="Blocked right now. The other half may still be playable, and Brace never is.">{{half.text}}</span>
+                {{else}}
+                  <button type="button" class="cr-half__play"
+                          data-action="stage" data-card-id="{{card.id}}" data-half="{{half.name}}">{{half.text}}</button>
+                {{/if}}
               </div>
-            {{/if}}
-          </div>
+            {{/each}}
+            <div class="cr-half cr-half--reaction">
+              <span class="cr-half__marker">{{crIcon ../config.halfIcons.reaction}}</span>
+              <span>{{#if card.reaction}}{{card.reaction}}{{else}}Brace{{/if}}</span>
+            </div>
+          {{/if}}
+        </div>
       {{/each}}
     </section>
   {{/if}}
@@ -190,36 +197,36 @@
   {{#if viewer}}
     <section class="cr-hud__spread" data-group-label="{{viewer.label}} — not in play">
       {{#each viewer.cards}}
-        <div class="cr-card cr-card--spread{{#if this.harm}} cr-card--harm{{/if}}{{#if this.flipped}} cr-card--back{{/if}}{{#if this.passive}} cr-card--passive{{else}} cr-card--takeable{{/if}}"
-             data-group="{{this.group}}" data-tooltip="{{this.tip}}"
-             {{#unless this.passive}}role="button" tabindex="0" data-action="playSlate" data-slate-id="{{this.id}}"{{/unless}}>
-          <div class="cr-card__name">
-            {{#if this.icon}}{{crIcon this.icon}}{{/if}}
-            {{this.name}}
-            {{#if this.flippable}}
-              <button type="button" class="cr-card__flip" data-action="flipCard" data-card-id="{{this.id}}"
-                      data-tooltip="Turn it over for value, weight and type">&#8634;</button>
-            {{/if}}
-          </div>
-
-          {{#if this.flipped}}
-            <div class="cr-card__back">
-              {{#if this.blurb}}<p class="cr-note">{{this.blurb}}</p>{{/if}}
-              <dl class="cr-card__facts">
-                {{#each this.facts}}<dt>{{this.label}}</dt><dd>{{this.value}}</dd>{{/each}}
-              </dl>
-            </div>
-          {{else}}
-            <div class="cr-card__front">
-              {{#each this.lines}}<div class="cr-card__line">{{this}}</div>{{/each}}
-              {{#if this.note}}<p class="cr-note">{{this.note}}</p>{{/if}}
-            </div>
+      <div class="cr-card cr-card--spread{{#if this.harm}} cr-card--harm{{/if}}{{#if this.flipped}} cr-card--back{{/if}}{{#if this.passive}} cr-card--passive{{else}} cr-card--takeable{{/if}}"
+           data-group="{{this.group}}" data-tooltip="{{this.tip}}"
+           {{#unless this.passive}}role="button" tabindex="0" data-action="playSlate" data-slate-id="{{this.id}}"{{/unless}}>
+        <div class="cr-card__name">
+          {{#if this.icon}}{{crIcon this.icon}}{{/if}}
+          {{this.name}}
+          {{#if this.flippable}}
+            <button type="button" class="cr-card__flip" data-action="flipCard" data-card-id="{{this.id}}"
+                    data-tooltip="Turn it over for value, weight and type">&#8634;</button>
           {{/if}}
         </div>
+
+        {{#if this.flipped}}
+          <div class="cr-card__back">
+            {{#if this.blurb}}<p class="cr-note">{{this.blurb}}</p>{{/if}}
+            <dl class="cr-card__facts">
+              {{#each this.facts}}<dt>{{this.label}}</dt><dd>{{this.value}}</dd>{{/each}}
+            </dl>
+          </div>
+        {{else}}
+          <div class="cr-card__front">
+            {{#each this.lines}}<div class="cr-card__line">{{this}}</div>{{/each}}
+            {{#if this.note}}<p class="cr-note">{{this.note}}</p>{{/if}}
+          </div>
+        {{/if}}
+      </div>
       {{else}}
-        <div class="cr-card cr-card--spread cr-card--passive">
-          <div class="cr-card__front"><span class="cr-note">Nothing left in the deck.</span></div>
-        </div>
+      <div class="cr-card cr-card--spread cr-card--passive">
+        <div class="cr-card__front"><span class="cr-note">Nothing left in the deck.</span></div>
+      </div>
       {{/each}}
     </section>
   {{/if}}

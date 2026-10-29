@@ -24,17 +24,35 @@ export function deckOf(actor, which) {
   return doc;
 }
 
+/** Every Cards document an actor owns, so a repair can see where a copy might be sitting. */
+export function allStacks(actor) {
+  return Object.values(actor?.system.decks ?? {})
+    .map(id => (id ? game.cards.get(id) : null))
+    .filter(s => s);
+}
+
+/**
+ * What a stack can actually deal.
+ *
+ * A card sitting in its home deck flagged `drawn` is not in the deck in any meaningful sense: it is
+ * out on loan, and the copy in your hand is the real one. Foundry counts it in `cards.size` all the
+ * same, so anything that draws has to filter it out or it will try to deal the same card twice.
+ */
+export function available(stack) {
+  if (!stack) return [];
+  return stack.type === "deck" ? stack.cards.filter(c => !c.drawn) : stack.cards.contents;
+}
+
 /**
  * Move `n` random cards from one pile to another. Returns the cards that moved.
  *
- * Cards.pass marks a card `drawn` when it leaves a deck, and refuses to pass one that is already
- * drawn. Passing a card BACK into a deck does not clear that flag, so a card returned by Catch
- * Breath or after combat would be stuck -- the next draw out of the deck throws "may not pass Card
- * X which has already been drawn". Clearing it on the way in is the fix.
+ * Cards.pass marks a card `drawn` when it leaves a deck and refuses to pass it again, which is what
+ * stops a deck dealing the same card twice. So the pool is what is really there, never a card that
+ * is already out.
  */
 export async function moveRandom(from, to, n = 1) {
   if (!from || !to || n <= 0) return [];
-  const pool = from.cards.contents;
+  const pool = available(from);
   if (!pool.length) return [];
 
   const ids = [];
@@ -64,16 +82,36 @@ export function cardName(card) {
  * Repair a stack in place. Self-healing, because a world built before these fixes is already in
  * the bad state and should not need rebuilding:
  *
- *  - cards sitting in a deck but flagged `drawn`, which makes the next draw throw;
- *  - cards with no face, which Foundry displays as "Unknown (<deck>)".
+ *  - cards with no face, which Foundry displays as "Unknown (<deck>)";
+ *  - a home card whose copy is sitting in another pile but which has lost its `drawn` flag.
+ *
+ * That second one is the dangerous state, and this function used to *cause* it. `drawn` on a card
+ * in its home deck means "a copy of me is live elsewhere"; it is exactly how Cards#pass refuses to
+ * deal the same card twice. Clearing it across a deck -- which this did, to silence that refusal --
+ * lets the deck deal a card that is already out, and the create then fails with
+ * "The _id [...] already exists within the parent collection". So the flag is now restored, never
+ * cleared, and `available()` keeps the refusal from being reached in the first place.
+ *
+ * @param {Cards} stack          The stack to repair.
+ * @param {Cards[]} [elsewhere]  The other stacks a copy could be sitting in.
  */
-export async function normalizeDeck(stack) {
+export async function normalizeDeck(stack, elsewhere = []) {
   if (!stack) return 0;
+
+  const onLoan = new Set();
+  for (const other of elsewhere) {
+    if (!other || other.id === stack.id || other.type === "deck") continue;
+    for (const card of other.cards) onLoan.add(card.id);
+  }
+
   const fixes = [];
   for (const card of stack.cards) {
     const update = { _id: card.id };
     let needed = false;
-    if (stack.type === "deck" && card.drawn) { update.drawn = false; needed = true; }
+    if (stack.type === "deck" && card.isHome && !card.drawn && onLoan.has(card.id)) {
+      update.drawn = true;
+      needed = true;
+    }
     if (!card.faces?.length) {
       const name = card._source?.name || card.name;
       if (name && !name.startsWith("Unknown")) {
@@ -115,7 +153,7 @@ export async function drawFate(actor, value, mode = 0) {
 
   // Refill before drawing if the deck can't cover it, so a draw never comes up short.
   const need = mode === 0 ? 1 : 2;
-  if (deck.cards.size < need) await reshuffleFate(actor);
+  if (available(deck).length < need) await reshuffleFate(actor);
 
   const drawn = await moveRandom(deck, discard, need);
   if (!drawn.length) return { result: value, drawn: [], used: null, reshuffled: false };
@@ -154,7 +192,7 @@ export async function reshuffleFate(actor) {
   const discard = deckOf(actor, "fateDiscard");
   if (!deck) return;
   if (discard?.cards.size) await move(discard, deck, discard.cards.map(c => c.id));
-  await normalizeDeck(deck);
+  await normalizeDeck(deck, allStacks(actor));
   await deck.shuffle({ chatNotification: false });
 }
 
@@ -175,16 +213,15 @@ export async function refill(actor) {
   const discard = deckOf(actor, "actionDiscard");
   if (!deck || !hand) return { drawn: 0, taint: 0 };
 
-  // Repair every pile, not just the deck: a card drawn before the fix is sitting in the hand.
-  for (const which of ["action", "actionHand", "actionDiscard", "actionSpent", "fate", "fateDiscard"]) {
-    await normalizeDeck(deckOf(actor, which));
-  }
+  // Repair every pile, not just the deck: each one is where a copy of a deck card might be.
+  const stacks = allStacks(actor);
+  for (const stack of stacks) await normalizeDeck(stack, stacks);
 
   const size = actor.system.handSize?.max ?? CARDRPG.defaults.handSize;
   let drawn = 0;
   let taint = 0;
 
-  while (hand.cards.size < size && deck.cards.size > 0) {
+  while (hand.cards.size < size && available(deck).length > 0) {
     const [card] = await moveRandom(deck, hand, 1);
     if (!card) break;
 

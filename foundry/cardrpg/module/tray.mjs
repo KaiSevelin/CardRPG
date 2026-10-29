@@ -83,6 +83,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       playSlate: CardRPGTray.#onPlaySlate,
       shiftStack: CardRPGTray.#onShiftStack,
       unstack: CardRPGTray.#onUnstack,
+      frontCard: CardRPGTray.#onFrontCard,
       moveHalf: CardRPGTray.#onMoveHalf,
       dealHand: CardRPGTray.#onDealHand,
       // A face-down pile is not openable; the click is absorbed rather than erroring.
@@ -194,7 +195,17 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       staged: this.staged.map((s, i) => ({
         ...s, order: i + 1, name: cardName(hand?.cards.get(s.cardId))
       })),
-      canPlay: this.staged.length > 0,
+      // A turn is one primary and one secondary. Dazed or Exhausted cuts you to the primary alone,
+      // and then one half is the whole turn -- so the button waits for what you are allowed to play.
+      canPlay: (dazed || system.exhausted)
+        ? this.staged.some(s => s.half === "primary")
+        : ["primary", "secondary"].every(h => this.staged.some(s => s.half === h)),
+      // Clear empties the play area, so it is live whenever there is anything in it to empty.
+      canClear: this.staged.length > 0
+        || ["primary", "secondary"].some(h => this.#assigned(h).length > 0),
+      playHint: (dazed || system.exhausted)
+        ? "Primary only this turn."
+        : "Needs a primary and a secondary, from two different cards.",
 
       dazed,
       stunned: active.some(c => c.key === "stunned"),
@@ -266,18 +277,27 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       if (base) cards.push(base);
 
       for (const slate of this.#assigned(half)) {
-        const card = slate.type === "feature"
-          ? this.#featureCard(slate, true)
-          : this.#itemCard(slate, true);
+        const item = slate.type === "item";
         // Only a slate with a half to choose can be moved; the rest serve whatever needs them.
-        const movable = slate.type === "item" && slate.system.availableVerbs.length > 1;
-        cards.push(Object.assign(card, {
-          // An arrow that points, not one that swaps: the rules already spend ⇄ on Ready.
-          moveTo: movable ? (half === "primary" ? "secondary" : "primary") : null,
-          moveArrow: half === "primary" ? "→" : "←",
-          tip: `Modifying the ${half} action. Click to take it out of play.`
-        }));
+        const movable = item && slate.system.availableVerbs.length > 1;
+        cards.push(Object.assign(
+          item ? this.#itemCard(slate, true) : this.#featureCard(slate),
+          {
+            slate: true,
+            // A feature is in a stack only because it has been used, so fading it says nothing.
+            disabled: item && slate.system.drained,
+            // An arrow that points, not one that swaps: the rules already spend ⇄ on Ready.
+            moveTo: movable ? (half === "primary" ? "secondary" : "primary") : null,
+            moveArrow: half === "primary" ? "→" : "←",
+            tip: slate.system.drained && item
+              ? `Disabled until it recharges: ${slate.system.rechargeLabel ?? "—"}. `
+                + "Click to put it back in the Items deck."
+              : `In the ${half} stack. Click to put it back in its deck.`
+          }));
       }
+
+      // Where each card sits before the carousel turns anything, so clicking a name can turn to it.
+      cards.forEach((card, slot) => { card.slot = slot; });
 
       // Rotate so the card the carousel landed on is drawn last, which puts it in front.
       const n = cards.length;
@@ -297,9 +317,9 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   /**
    * The slates assigned to a half.
    *
-   * An item that could modify more than one action sits in the stack it was put in. One with a
-   * single verb had nothing to choose, and a Drained feature has no half at all, so both ride with
-   * the primary -- where they can still be seen and taken back out.
+   * An item that could modify more than one action sits in the stack it was put in; one with a
+   * single verb had nothing to choose, and a used feature has no half at all, so both ride with
+   * the primary.
    */
   #assigned(half) {
     const items = this.actor.items.filter(i =>
@@ -349,18 +369,22 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       flippable: true,
       flipped: this.flipped.has(i.id),
       played,
+      disabled: i.system.drained,
       tip: played
-        ? "In play. Click to take it out."
+        ? "In play. Click it to put it back in the Items deck."
         : choosy
-          ? "Click to play it on the primary stack. You can move it to the secondary from there."
-          : "Click to put it into play.",
+          ? "Click to equip it on the primary stack. You can move it to the secondary from there."
+          : "Click to equip it.",
       blurb: i.system.blurb,
       lines: verbs
         .map(([v, l]) => `${v} ${l.value ?? ""}${l.range ? ` \u00b7 range ${l.range}` : ""}`
           + `${l.area ? ` \u00b7 ${l.areaKind || "blast"} ${l.area}` : ""}`)
         .concat(i.system.armor ? [`armor ${i.system.armor}`] : []),
-      // Which verbs this item is actually serving, so two weapons are never ambiguous.
-      note: serving.length ? `in use for ${serving.join(", ")}` : [...(i.system.tags ?? [])].join(", "),
+      // Which verbs this item is actually serving, so two weapons are never ambiguous. A verb is
+      // the whole phrase -- "serving use" reads badly, "the Use half" reads as the thing it is.
+      note: serving.length
+        ? `serves the ${serving.join(" and ")} half${serving.length > 1 ? "s" : ""}`
+        : [...(i.system.tags ?? [])].join(", "),
       facts: [
         { label: "Value", value: `${i.system.value} g` },
         { label: "Weight", value: `${i.system.weight} kg` },
@@ -370,22 +394,31 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     };
   }
 
-  /** One feature, as a card. A passive feature is never playable: it is simply true. */
-  #featureCard(f, played) {
+  /**
+   * One feature, as a card.
+   *
+   * A feature is never in or out of play -- it is part of you. A passive one is simply true; an
+   * active one can be used, which disables it for a while. So the only state it has is available
+   * or disabled, and neither is something you can undo by hand.
+   */
+  #featureCard(f) {
     const passive = !f.system.isActive;
+    const disabled = f.system.drained;
+    const recharge = f.system.rechargeLabel ?? "\u2014";
     return {
       id: f.id,
       name: f.name,
       group: f.system.group || "",
-      played,
-      passive,
-      tip: passive ? "Passive: nothing to play."
-        : played ? "Drained. Click to take it out of play."
-          : "Click to use it. That Drains it until it recharges.",
+      disabled,
+      // Nothing to click on either: a passive feature has no use, a disabled one is spent.
+      passive: passive || disabled,
+      tip: passive ? "Passive: always on, nothing to use."
+        : disabled ? `Used. Disabled until it recharges: ${recharge}.`
+          : "Click to use it. That disables it until it recharges.",
       lines: [f.system.text].filter(Boolean),
-      note: passive
-        ? "Passive \u2014 always on"
-        : `Recharges: ${f.system.rechargeLabel ?? "\u2014"}`
+      note: passive ? "Passive \u2014 always on"
+        : disabled ? `Disabled \u00b7 recharges ${recharge}`
+          : `Recharges: ${recharge}`
     };
   }
 
@@ -474,10 +507,10 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     }
 
     if (this.openPile === "features") {
-      // Passive features show but cannot be picked up: there is nothing to decide about them.
+      // Every feature, always: none of them is ever out of play, so none of them is ever missing.
       const cards = this.actor.items
-        .filter(i => i.type === "feature" && !(i.system.isActive && i.system.drained))
-        .map(f => this.#featureCard(f, false));
+        .filter(i => i.type === "feature")
+        .map(f => this.#featureCard(f));
       return { label: "Features", count: `${cards.length}`, cards };
     }
 
@@ -670,7 +703,11 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     this.render();
   }
 
-  static #onClear() {
+  /** Empty the play area: both action cards back to hand, every slate back to its deck. */
+  static async #onClear() {
+    for (const half of ["primary", "secondary"]) {
+      for (const slate of this.#assigned(half)) await this.#takeOut(slate);
+    }
     this.staged = [];
     this.tops = { primary: 0, secondary: 0 };
     this.render();
@@ -785,15 +822,15 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   /* -------------------------------------------- */
 
   /**
-   * Put a slate into play. An item in play is equipped; a feature in play is Drained.
+   * Use a feature, or equip an item.
    *
-   * Only the decks hold slates that are out of play, so this only ever moves a card in -- taking
-   * one back out happens in the play area, where it is sitting. A slate with a half to choose lands
-   * on the primary stack and can be moved from there.
+   * Neither ever goes *out* of play. A feature is part of you: using an active one disables it
+   * until it recharges, and that is the only state it has. An item comes off only when a Ready
+   * swaps something else in, so a full slot asks what this item replaces instead of refusing.
    *
-   * Arranging the stacks is free. Inside a combat the arrangement still has to be paid for with a
-   * **Ready**, but that is settled when the turn is played (#settleReady), so the click that moves
-   * a slate never has to come second to the card half that pays for it.
+   * Arranging is free. Inside a combat it still has to be paid for with a **Ready**, but that is
+   * settled when the turn is played (#settleReady), so the click that arranges a stack never has
+   * to come second to the card half that pays for it.
    */
   static async #onPlaySlate(event, target) {
     const slate = this.actor.items.get(target.dataset.slateId);
@@ -801,27 +838,33 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
 
     if (slate.type === "feature") {
       if (!slate.system.isActive) {
-        return ui.notifications.info("A passive feature is simply true; there is nothing to play.");
+        return ui.notifications.info("A passive feature is always on; there is nothing to use.");
       }
-      const drained = !slate.system.drained;
+      if (slate.system.drained) {
+        return ui.notifications.info(
+          `${slate.name} is used up. It recharges on its own: ${slate.system.rechargeLabel ?? "—"}.`);
+      }
       await slate.update({
-        "system.drained": drained,
-        "system.drainedFor": drained ? (slate.system.active.turns ?? null) : null
+        "system.drained": true,
+        "system.drainedFor": slate.system.active.turns ?? null
       });
-      if (drained) {
-        await ChatMessage.create({
-          speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-          content: `<div class="cardrpg"><p><strong>${this.actor.name}</strong> uses `
-            + `<em>${slate.name}</em>: ${slate.system.active.text}</p></div>`
-        });
-      }
+      await ChatMessage.create({
+        speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+        content: `<div class="cardrpg"><p><strong>${this.actor.name}</strong> uses `
+          + `<em>${slate.name}</em>: ${slate.system.active.text}</p></div>`
+      });
       return this.render();
     }
 
-    if (slate.system.equipped) {
-      return ui.notifications.info("Already in play. Take it back out from the play area.");
+    if (slate.system.equipped) return ui.notifications.info("Already equipped.");
+
+    const displaced = await CardRPGTray.#makeRoom(this.actor, slate);
+    if (displaced === null) return;
+    for (const other of displaced) {
+      await other.update({ "system.equipped": false });
+      this.roles.delete(other.id);
+      this.pendingEquips.delete(other.id);
     }
-    if (!await CardRPGTray.#hasRoom(this.actor, slate)) return;
 
     await slate.update({ "system.equipped": true });
     // Out of combat this is free, so there is nothing to settle and nothing to remember.
@@ -840,36 +883,30 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   /**
-   * Take one card out of a stack, after confirming. One card: a modifier leaves play, an action
-   * card goes back to hand, and in neither case does anything else in the stack move.
+   * Take a card out of a stack.
+   *
+   * A slate goes back to the deck it came from. The action card at the base takes the whole stack
+   * with it: its modifiers were assigned to that action, so without it they have nothing to modify.
    */
   static async #onUnstack(event, target) {
     const { half, slateId } = target.dataset;
 
-    if (!slateId) {
-      const ok = await CardRPGTray.#confirm(`Take back the ${half} action?`,
-        `<p>The card goes back to your hand. The rest of the ${half} stack stays in play.</p>`);
-      if (!ok) return;
-      this.staged = this.staged.filter(s => s.half !== half);
+    if (slateId) {
+      const slate = this.actor.items.get(slateId);
+      if (slate) await this.#takeOut(slate);
       return this.render();
     }
 
-    const slate = this.actor.items.get(slateId);
-    if (!slate) return;
-    const ok = await CardRPGTray.#confirm(`Take ${slate.name} out of play?`,
-      slate.type === "feature"
-        ? "<p>It stops being Drained and goes back to the Features deck.</p>"
-        : "<p>It goes back to the Items deck. Playing it again in a combat costs a Ready.</p>");
-    if (!ok) return;
-    await this.#takeOut(slate);
+    for (const slate of this.#assigned(half)) await this.#takeOut(slate);
+    this.staged = this.staged.filter(s => s.half !== half);
+    this.tops[half] = 0;
     this.render();
   }
 
   /**
-   * Out of play: an item is unequipped, a feature stops being Drained.
+   * Back to its deck: an item is unequipped, a used feature stops being used up.
    *
-   * Free, and it cancels the Ready the slate owed -- a slate that is no longer in play never got
-   * readied, so there is nothing left to pay for.
+   * It also cancels the Ready the slate owed -- a slate that is not in play was never readied.
    */
   async #takeOut(slate) {
     await slate.update(slate.type === "feature"
@@ -877,6 +914,13 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       : { "system.equipped": false });
     this.roles.delete(slate.id);
     this.pendingEquips.delete(slate.id);
+  }
+
+  /** Clicking a card's name turns the stack to it, rather than taking it out. */
+  static #onFrontCard(event, target) {
+    const { half, slot } = target.dataset;
+    this.tops[half] = Number(slot);
+    this.render();
   }
 
   /** Move a modifier to the other stack. Free and reversible, so it asks nothing. */
@@ -897,20 +941,51 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     });
   }
 
-  /** Slot capacity, counting a two-handed item as both hands. */
-  static async #hasRoom(actor, item) {
+  /**
+   * Make room in a slot, which is the only way an equipped item ever comes off.
+   *
+   * An item never simply leaves play. It is displaced, by another item, in a Ready -- so a full
+   * slot does not refuse the equip, it asks what this item replaces. A two-hander going into two
+   * occupied hands replaces both, and still costs the one Ready, because one item came in.
+   *
+   * @returns {Promise<Item[]|null>} what to unequip (possibly none), or null if the player backed out.
+   */
+  static async #makeRoom(actor, item) {
     const slot = item.system.slot;
     const capacity = CARDRPG.slots[slot]?.capacity;
-    if (capacity === null || capacity === undefined) return true;
-    const used = actor.items
-      .filter(i => i.type === "item" && i.system.equipped && i.system.slot === slot)
-      .reduce((n, i) => n + (i.system.isTwoHanded ? 2 : 1), 0);
+    if (capacity === null || capacity === undefined) return [];
+
+    const size = i => (i.system.isTwoHanded ? 2 : 1);
+    const here = actor.items.filter(i =>
+      i.type === "item" && i.system.equipped && i.system.slot === slot);
+    const used = here.reduce((n, i) => n + size(i), 0);
     const needs = item.system.hands === 2 && slot === "hands" ? 2 : 1;
-    if (used + needs > capacity) {
-      ui.notifications.warn(`No room: ${slot} holds ${capacity}. Take something out of play first.`);
-      return false;
+
+    const free = used + needs - capacity;
+    if (free <= 0) return [];
+
+    // Either one item is big enough to make the room on its own, or the whole slot has to clear.
+    const singles = here.filter(i => size(i) >= free);
+    const options = singles.length ? singles.map(i => [i]) : (here.length ? [here] : []);
+    if (!options.length) {
+      ui.notifications.warn(`Your ${slot} cannot take ${item.name}.`);
+      return null;
     }
-    return true;
+
+    const buttons = options.map((set, index) => ({
+      action: String(index),
+      label: set.map(i => i.name).join(" + "),
+      callback: () => set
+    }));
+    const chosen = await foundry.applications.api.DialogV2.wait({
+      window: { title: `Ready: what does ${item.name} replace?` },
+      content: `<div class="cardrpg"><p>Your ${slot} is full. Equipping <strong>${item.name}</strong> `
+        + "means swapping something out, and the swap is the Ready.</p></div>",
+      buttons: [...buttons, { action: "cancel", label: "Cancel", callback: () => null }],
+      modal: true,
+      rejectClose: false
+    });
+    return chosen ?? null;
   }
 
   static async #onEndTurn() {
