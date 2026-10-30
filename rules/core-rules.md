@@ -170,6 +170,49 @@ Action cards say **what** you do (the verb). Equipped items say **how well** (th
 
 If an equipped item has no line for a verb, you can't use that verb with that item.
 
+### Shove, Trip and Grapple
+
+> **A Shove, a Trip and a Grapple are Strikes that spend their damage.**
+
+Any ⚔ Strike may be played as one of these instead. It hits as normally — draw fate, apply armor,
+everything — but **deals no damage at all**, and does this instead:
+
+| Instead of damage | What happens | Needs |
+|---|---|---|
+| **Shove** | Push the target **1 square** (§11). You may step into the square it left. | — |
+| **Trip** | **Off-Balance (1)**, no save (§7). | — |
+| **Grapple** | **Grappled (1)**, resist ✊ Might 5. | a free hand |
+
+**They are universal, because a fighter's verbs are everyone's verbs**
+([design-direction.md](design-direction.md)). A mage with a staff may shove; nobody needs a node for
+it. What a node buys is a **better** version of the same thing — *Shoulder Check* trips off a
+**secondary** rather than a primary, *Get a Grip* grapples with **no save**, *Sweep the Leg* trips
+straight to **Prone** ([way-cards.md](way-cards.md) §3). The universal versions are the floor, in the
+same way Brace is the floor under every reaction.
+
+**Spending the damage is the whole cost**, which is why none of these needs a price from anywhere
+else. It is also what makes them a real decision rather than a free rider on a Strike.
+
+#### When it is worth it, measured
+
+What each of these is worth depends entirely on **how much the target's position was worth**
+([../sim/analysis-2026-10-30.md](../sim/analysis-2026-10-30.md) §7). Against a damage rung at **8.7**
+points of win rate:
+
+| Condition | Costs its victim | |
+|---|---|---|
+| **Off-Balance (1)** | **0.0** | nothing at all — it is an opening, and that is the design holding |
+| **Dazed (1)** | 5.8 | two thirds of a rung |
+| **Prone (1)** | 8.5 | **about one rung** — so a Trip to Prone roughly breaks even against Striking |
+| **Grappled (1)** | 10.0 | **more than a rung** — a Grapple beats Striking |
+| **Grappled (2)** | 18.3 | two rungs |
+
+> **Position-denial is worth exactly what the target's position was worth.** Those numbers are from a
+> mixed group, where mobility is worth 29.5 points (§11). Against a brute that wanted to stand next
+> to you anyway, a Grapple is worth nothing and the Strike would have been better. **Grapple the
+> archer; hit the ogre.** That is the decision these three exist to create, and it is why they are
+> options on a Strike rather than cards of their own.
+
 ### Block
 
 **Defend** gives you **Block X**, where X is the item's *Defend* value. Block is subtracted from incoming damage (step 6 of section 5).

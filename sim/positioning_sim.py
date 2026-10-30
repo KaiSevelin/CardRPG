@@ -75,10 +75,46 @@ def how_often_played():
     print()
 
 
+def price_of_control():
+    """What is a Shove, a Trip or a Grapple worth against a Strike?
+
+    core-rules 4 makes all three Strikes that spend their damage, so the question is simply whether
+    the condition is worth more than the damage. Measured from the receiving end -- Dirty Trick
+    applies each one instead of Dazed -- because that is the side the simulator has conditions on.
+    """
+    print("--- 4. control against damage: what each condition costs its victim ---")
+    gob = ('spear', 'spear', 'bow', 'bow')
+    base = win(run_scenario(Config(name='n', goblins=gob, goblin_condition='offBalance'),
+                            FIGHTS, SEED))
+    rows = [
+        ("Off-Balance (1)", dict(goblin_condition='offBalance')),
+        ("Dazed (1)", dict(goblin_condition='dazed')),
+        ("Prone (1)", dict(goblin_condition='prone', goblin_cond_value=1)),
+        ("Grappled (1)", dict(goblin_condition='grappled')),
+        ("Grappled (2)", dict(goblin_condition='grappled', goblin_cond_dur=2)),
+        ("Burning 1 (1) -- one damage rung", dict(goblin_condition='burning',
+                                                  goblin_cond_value=1)),
+    ]
+    print("  baseline (Dirty Trick does nothing but Strike): %.1f%%" % base)
+    for label, kw in rows:
+        w = win(run_scenario(Config(name='x', goblins=gob, **kw), FIGHTS, SEED))
+        print("  %-34s %5.1f%%   costs %5.1f" % (label, w, base - w))
+    print()
+    print("  Off-Balance costs nothing at all, which is the opening design holding: it does")
+    print("  nothing until a card reads it. Prone is about one damage rung, so a Trip roughly")
+    print("  breaks even against Striking. Grappled beats Striking outright -- because it")
+    print("  blocks Move, and Move is the most valuable thing a figure does.")
+    print()
+    print("  So: position-denial is worth exactly what the target's position was worth.")
+    print("  Grapple the archer; hit the ogre.")
+    print()
+
+
 def main():
     value_of_mobility()
     more_mobility()
     how_often_played()
+    price_of_control()
 
 
 if __name__ == '__main__':

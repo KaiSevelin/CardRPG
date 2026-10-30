@@ -699,7 +699,7 @@ handed. The −1 is what keeps it from making plain *Strike* obsolete.
 already carries *Second Wind*, so taking this one spends the ceiling. That is the decision, and no
 branch should offer a third.
 
-### 3.2 Way of Strength — thirteen cards
+### 3.2 Way of Strength — fourteen cards
 
 Weight, armor, Block, adjacency and the Wound threshold are the levers the **major** nodes own
 ([specializations.md](specializations.md)); these touch them without taking them.
@@ -707,6 +707,7 @@ Weight, armor, Block, adjacency and the Wound threshold are the levers the **maj
 | Card | ▲ Primary | ▼ Secondary | ⚡ Reaction | Cost |
 |---|---|---|---|---|
 | **Shoulder Check** | ⚔ Strike | **Off-Balance (1)**, adjacent | – | – |
+| **Shield Bash** | ⚔ Strike, no damage: **push 2** and step into the square it left | 👣 Move 1 | Block | – |
 | **Hammerblow** | ⚔ Strike — **+2** vs **Off-Balance** | 👣 Move 1 | – | – |
 | **Sweep the Leg** | ⚔ Strike · **Prone (1)**, resist 🌀 5 — **9** vs **Off-Balance** | 👣 Move 1 | – | – |
 | **Overbear** | **Grappled (2)**, resist ✊ 5 — **7** vs **Off-Balance** | 👣 Move 1 | – | – |
@@ -719,6 +720,13 @@ Weight, armor, Block, adjacency and the Wound threshold are the levers the **maj
 | **Beat the Blade** | ⚔ Strike · on a hit, **Disarmed (1)**, resist ✊ 5 | 👣 Move 1 | – | – |
 | **Roar** | every adjacent enemy is **Compelled (1)**, resist 👑 5 | 👣 Move 1 | – | ⤵ **Strain 1** |
 | **Walk It Off** | ✚ Heal 2 · ⛓ **Shake Off 2** on yourself | 👣 Move 1 | Brace | 🔥 **Spent** |
+
+> **Overbear may be the strongest card in this document, and the saving throw is what carries it.**
+> Grappled (2) costs its victim **18.3 points of win rate** against a mixed group — two damage rungs
+> ([../sim/analysis-2026-10-30.md](../sim/analysis-2026-10-30.md) §7) — because blocking 👣 Move is
+> blocking the most valuable thing a figure does. At a Normal 5 it lands often enough to be worth a
+> card and not often enough to be the only card, which is the band a save is for. Against
+> **Off-Balance** it goes to Hard 7 and that is a two-card play earning a two-rung effect.
 
 Three of those read **Off-Balance** and each reads it a different way — more damage, a harder save on
 a condition the card was already attempting, and the same again on a longer condition. That is the

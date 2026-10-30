@@ -124,6 +124,9 @@ CONDITIONS = {
     'burning':  dict(valued=True, damage=True, cancels=('wet', 'frozen')),
     'poisoned': dict(valued=True, damage=True, blocks_secondary=True),
     'frozen':   dict(valued=True, reduces_move=True, cancels=('burning',)),
+    'prone':    dict(enemy_melee_advantage=True, reduces_move=True),
+    'grappled': dict(blocks_move=True),
+    'offBalance': dict(opening=True),
     'wet':      dict(opening=True, cancels=('burning',)),
     'marked':   dict(opening=True),
     'blessed':  dict(no_duration=True, liftable=True, fate='CRIT'),
@@ -368,6 +371,9 @@ class Game:
 
     def move_mod(self, n):
         """A printed Move as it plays: halved, then reduced, floored at 0 (core-rules 7)."""
+        # Grappled blocks the Move icon entirely -- the half cannot be played at all (core-rules 10).
+        if any(CONDITIONS[c['key']].get('blocks_move') for c in self.w['conds']):
+            return 0
         if any(CONDITIONS[c['key']].get('halves_move') for c in self.w['conds']):
             n //= 2
         worst = max([c['value'] for c in self.w['conds']
@@ -832,6 +838,11 @@ class Game:
                     value += 1
                 dis = ranged and (dist == 1 or has_cover(g['pos'], wp(), others))
                 adv = self.cfg.pack_tactics and not ranged and any(cheb(o, wp()) == 1 for o in others)
+                # Prone: melee Strikes against you have advantage (core-rules 7). Two sources of
+                # advantage still give one, which the draw mode already handles.
+                if not ranged and any(CONDITIONS[c['key']].get('enemy_melee_advantage')
+                                      for c in self.w['conds']):
+                    adv = True
                 if dis:
                     self.s['goblin_disadv'] += 1
                 if adv:

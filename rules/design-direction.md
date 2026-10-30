@@ -156,6 +156,12 @@ The combat simulator is the tie-breaker for numbers. Decisions it has already se
   a rung, which is what prices *Poisoned N* against *Burning N*
   ([../sim/analysis-2026-10-30.md](../sim/analysis-2026-10-30.md)). The claim that Poisoned cost a
   **whole** rung more was wrong by about half.
+- **Position-denial is worth exactly what the target's position was worth.** Grappled costs its
+  victim **10.0 points** and Prone **8.5** against a damage rung at **8.7** — so a Grapple beats a
+  Strike and a Trip breaks even, against a mixed group. Against a brute that wanted to be adjacent
+  anyway, both are worth nothing. **Grapple the archer; hit the ogre.** And **Off-Balance measures at
+  exactly 0.0**, which is the opening design holding: it was written to do nothing until a card reads
+  it, and it does nothing ([../sim/analysis-2026-10-30.md](../sim/analysis-2026-10-30.md) §7).
 - **Mobility is the most valuable thing in a starter deck, and its worth is set by the enemy's
   reach.** Taking the hero's one movement card away costs **29.5 points** against two spears and two
   bows, **3.5** against five spears and **nothing** against three
