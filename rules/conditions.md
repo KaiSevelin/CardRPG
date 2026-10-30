@@ -98,8 +98,8 @@ No duration: they last until the card they put in the deck is drawn
 
 | Condition | Key | Icon | Effect |
 |---|---|---|---|
-| **Blessed** | `blessed` | aura | Shuffles a temporary **Critical** into the fate deck. Removed when drawn. |
-| **Cursed** | `cursed` | imprisoned | Shuffles a temporary **Miss** into the fate deck. Removed when drawn. |
+| **Blessed** | `blessed` | aura | Shuffles a temporary **Critical** into the fate deck. Removed when drawn, or **Lifted** (§9.3). |
+| **Cursed** | `cursed` | imprisoned | Shuffles a temporary **Miss** into the fate deck. Removed when drawn, or **Lifted** (§9.3). |
 
 **NPC fate decks are per *type***, so these are worth inversely what there are of the thing: a Miss
 in a deck five goblins share is four-fifths wasted, and a Miss in a lone ogre's twenty is coming for
@@ -484,7 +484,7 @@ removal in the content, and the gaps are the point.
 | **Prone** | also standing up, for Move 1 |
 | **Burdened**, **Overloaded** | dropping weight, and nothing else — no cure touches them |
 | **Invisible** | attacking, which ends it early · **Shake Off**, if you wanted to · the duration |
-| **Blessed**, **Cursed** | drawing the card they put in the deck |
+| **Blessed**, **Cursed** | drawing the card they put in the deck · **Lift** (§9.3) |
 | **Unconscious** | Health above 0, and nothing else — it has no duration to spend |
 | **Dazed**, **Stunned**, **Grappled**, **Silenced**, **Disarmed**, **Compelled** | **Shake Off** (§9.2) · the duration |
 | **Marked**, **Judged** | **the duration**, and only the duration — an opening cannot be shaken off, *by design* |
@@ -511,7 +511,40 @@ what is simply *true* of you — and everything on the excluded side already car
 `opening` before the keyword existed, so `CARDRPG.shakeable` is derived from flags rather than being
 a fifth flag that could drift (§5).
 
-### 9.3 One shape per Way
+### 9.3 Lift, and the five ways out
+
+> **Shake Off spends a duration. Lift removes what has no duration to spend.**
+
+Blessed and Cursed had **no** way out but the draw, which is the gap the question *"can everything be
+dispelled?"* actually finds. A curse is about **sixteen fate draws** long on average — the temporary
+card is one of three that reshuffle the deck, so it comes up about a third of the time — which is
+roughly a fight, with a tail of three. Lifting a curse is the oldest job a priest has, and nothing
+could do it.
+
+Lift takes the marker off the character **and** the temporary card out of the fate deck. Doing only
+the first would leave a Miss in there that nothing would ever account for.
+
+**The complete picture, and it is exhaustive:**
+
+| How it ends | How many | Which |
+|---|---|---|
+| **Shake Off** | **12** | the timed subtractions |
+| **Lift** | **2** | Blessed, Cursed |
+| **Drop weight** — free, any time, never an action | **2** | Burdened, Overloaded |
+| **The clock**, *by design* | **4** | the four openings |
+| **Health above 0** | **1** | Unconscious |
+
+`test/validate.mjs` checks each bucket's size and that they add to the whole list, so a condition in
+no bucket — or in two — fails. That is a stronger check than the one in §9.1: that one asks whether an
+answer is *written down*, this one asks whether the rules actually provide one.
+
+**Fourteen of twenty-one come off to a card.** The seven that do not each answer to something that is
+not a card, and only the openings have nothing that will hurry them at all. That is deliberate: an
+opening is cheap to set and worth little alone, and letting an enemy spend one secondary to undo the
+party's whole combo would make combos unplayable. **Marked and Judged are the purest case** — they
+are *calls*, not states (§1.2), and you cannot wash off somebody's opinion of you.
+
+### 9.4 One shape per Way
 
 A single generic dispel card would fail the swap test ([leveling.md](leveling.md) §5a.2) four times
 over, so each Way sheds differently — and the differences are the Ways' own:

@@ -22,7 +22,7 @@ import {
 } from "./decks.mjs";
 import {
   resolveAttack, resolveDefend, resolveHeal, resolveUse, resolveCondition, resolveShake,
-  resolveTaint, resolveCorrode, collectBonuses
+  resolveTaint, resolveCorrode, resolveLift, collectBonuses
 } from "./resolve.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -1103,6 +1103,33 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       case "corrode":
         for (const t of targets) await resolveCorrode(actor, { amount: step.param ?? 1, target: t });
         break;
+
+      case "lift": {
+        // The complement of shake: what has no duration to spend. Same pick-one shape.
+        const who = targets[0] ?? actor;
+        const options = (who.system.activeConditions ?? [])
+          .filter(c => CARDRPG.liftable(c.key))
+          .filter(c => !step.condition || c.key === step.condition);
+        if (!options.length) {
+          ui.notifications.info(`${who.name} has nothing to lift.`);
+          break;
+        }
+        const key = options.length === 1 ? options[0].key : await foundry.applications.api.DialogV2.wait({
+          window: { title: "Lift" },
+          content: `<div class="cardrpg"><p>Which does ${who.name} have lifted?</p></div>`,
+          buttons: [
+            ...options.map(c => ({
+              action: c.key,
+              label: game.i18n.localize(CARDRPG.conditions[c.key]?.label ?? c.key)
+            })),
+            { action: "cancel", label: "None", callback: () => null }
+          ],
+          modal: true,
+          rejectClose: false
+        });
+        if (key) await resolveLift(actor, { target: who, key });
+        break;
+      }
 
       case "heal":
         await resolveHeal(actor, { amount: step.param ?? 0 });

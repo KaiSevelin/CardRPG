@@ -144,6 +144,49 @@ function actorHasAdjacentEnemy(actor) {
 /* -------------------------------------------- */
 
 /**
+ * Lift: remove a condition that has no duration to spend (core-rules 7).
+ *
+ * Shake Off spends duration and these have none, so they needed the other keyword. For a fate
+ * condition that means two things at once -- the marker comes off the character AND the temporary
+ * card comes out of the fate deck -- and doing only the first would leave a Miss in the deck that
+ * nothing would ever account for.
+ */
+export async function resolveLift(actor, { target, key }) {
+  if (!target || !CARDRPG.liftable(key)) {
+    ui.notifications.warn(`${target?.name ?? "That target"} has nothing of that kind to lift.`);
+    return null;
+  }
+  const conditions = (target.system.toObject().conditions ?? []).map(c => ({ ...c }));
+  if (!conditions.some(c => c.key === key)) return null;
+
+  const label = game.i18n.localize(CARDRPG.conditions[key]?.label ?? key);
+  await target.update({ "system.conditions": conditions.filter(c => c.key !== key) });
+
+  // The card it put in the fate deck goes with it.
+  let pulled = 0;
+  const which = CARDRPG.conditions[key]?.temporaryFate;
+  if (which) {
+    for (const stack of ["fate", "fateDiscard"]) {
+      const deck = deckOf(target, stack);
+      const spoiled = (deck?.cards ?? []).filter(c =>
+        c.type === "fate" && c.system.temporary && c.system.special === which
+      );
+      for (const card of spoiled) {
+        await card.delete();
+        pulled++;
+      }
+    }
+  }
+
+  await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<div class="cardrpg"><p><strong>${target.name}</strong>: ${label} <strong>lifted</strong>`
+      + (pulled ? `, and ${pulled} temporary card out of the fate deck` : "") + `.</p></div>`
+  });
+  return { key, pulled };
+}
+
+/**
  * Tainting N: N Taint cards into a deck the target plays from (core-rules 8). This is how **poison**
  * works, and how disease and corruption do -- the rules have said so since they were written and
  * nothing applied it.

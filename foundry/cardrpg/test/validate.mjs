@@ -169,12 +169,48 @@ if (!fs.existsSync(specPath)) {
   const block = configSource.slice(
     configSource.indexOf("CARDRPG.conditions = {"), configSource.indexOf("CARDRPG.shakeable")
   );
-  const shakeable = [...conditions].filter(k => {
+  const bodyOf = k => {
     const entry = block.slice(block.indexOf("  " + k + ": {"));
-    const body = entry.slice(0, entry.indexOf("},"));
+    return entry.slice(0, entry.indexOf("},"));
+  };
+  const shakeable = [...conditions].filter(k => {
+    const body = bodyOf(k);
     return !body.includes("opening:") && !body.includes("noDuration:");
   });
   check("conditions that can be shaken off", shakeable.length, 12);
+
+  /*
+   * How every condition is got rid of, as an EXHAUSTIVE partition -- which is the only honest answer
+   * to "can all conditions be dispelled", because the answer is no and the useful form of it is a
+   * list of five reasons with nothing falling between them.
+   *
+   * A condition landing in no bucket, or in two, is a condition whose removal nobody has decided,
+   * and it would otherwise be found by a player at a table.
+   */
+  const bucket = k => {
+    const body = bodyOf(k);
+    if (k === "unconscious") return "health";
+    if (body.includes("derived:")) return "weight";
+    if (body.includes("opening:")) return "clock";
+    if (body.includes("liftable:")) return "lift";
+    if (!body.includes("noDuration:")) return "shake";
+    return null;
+  };
+  const buckets = {};
+  const homeless = [];
+  for (const k of conditions) {
+    const b = bucket(k);
+    if (!b) homeless.push(k);
+    else buckets[b] = (buckets[b] ?? 0) + 1;
+  }
+  check("conditions with no way out at all", homeless.length ? homeless.join(", ") : "none", "none");
+  check("removed by Shake Off", buckets.shake ?? 0, 12);
+  check("removed by Lift", buckets.lift ?? 0, 2);
+  check("removed by dropping weight", buckets.weight ?? 0, 2);
+  check("removed by the clock, by design", buckets.clock ?? 0, 4);
+  check("removed by Health", buckets.health ?? 0, 1);
+  check("the five buckets are exhaustive",
+    Object.values(buckets).reduce((a, b) => a + b, 0), conditions.size);
 
   /*
    * Every condition must be creatable and answerable.
@@ -271,7 +307,7 @@ for (const m of configSource.matchAll(/halfIcons\s*=\s*\{[^}]*\}/gs)) {
   for (const k of m[0].matchAll(/"([a-z0-9-]+)"/g)) iconKeys.add(k[1]);
 }
 
-check("icon files on disk", onDisk.size, 79);
+check("icon files on disk", onDisk.size, 80);
 const absent = [...iconKeys].filter(k => !onDisk.has(k)).sort();
 check("config icons present as files", absent.length ? absent.join(", ") : "all", "all");
 

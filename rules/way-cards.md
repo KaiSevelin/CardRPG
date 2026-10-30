@@ -622,7 +622,7 @@ fighters and *The Mark of Things to Come* sets **Marked** for the archers. A Poi
 up on a stumble and a Diviner cannot shoot — which is precisely why those two cards get played at a
 table and never in a solo playtest.
 
-### 3.5 Way of Faith — fifteen miracles (plus the counter in §3.6)
+### 3.5 Way of Faith — sixteen miracles (plus the counter in §3.6)
 
 A second per god, and the Way's own opening seeded. **A god's list is short** (§1.4); these do not
 pretend to finish one.
@@ -634,6 +634,7 @@ pretend to finish one.
 | **The Eternal Spirit** | **Lay On** | 1 | ✚ Heal an ally 2 at ◎3. |
 | **The Eternal Spirit** | **A Word for You** | 1 | **Blessed** on one ally — a temporary Critical in their fate deck, until drawn. |
 | **The Eternal Spirit** | **Bear It for Them** | 2 | ⚡ Reaction at ◎3: move one condition off an ally and **onto yourself**, at its full duration. Not a dispel — somebody still has it. |
+| **The Eternal Spirit** | **A Word Withdrawn** | 1 | ✋ **Lift** **Blessed** or **Cursed** from anyone at ◎3 — the marker and the card both. The god who gives a word may take it back, so this strips an enemy's blessing as readily as it lifts an ally's curse. |
 | **Sessyfyn** | **Undertow** | 2 | ✸ Blast 2, ◎3: **Wet (1)**, and every target is moved 1 square you choose. |
 | **Valtor** | **No Step Back** | 2 | Every ally within 2 gains **Block 2** until your next turn. |
 | **Fagar** | **The Second Thought** | 1 | One enemy spends its secondary this round doing nothing, resist 👑 7. |

@@ -55,7 +55,17 @@ CARDRPG.effects = {
    * the only thing in the game that spends GEAR -- a resource leveling 5a.1 names ("gear you can
    * lose") and nothing implemented.
    */
-  corrode: { label: "CARDRPG.Effect.Corrode", icon: "melting-metal" }
+  corrode: { label: "CARDRPG.Effect.Corrode", icon: "melting-metal" },
+  /*
+   * Lift: remove a condition that has no duration to spend, which is the other half of Shake Off.
+   *
+   *   Shake Off spends a duration. Lift removes what has no duration to spend.
+   *
+   * Only the `liftable` ones -- the two that live in a deck rather than on the character. The
+   * openings are excluded on purpose, the derived pair answer to arithmetic, and Unconscious answers
+   * to Health. When Cleansing is built, Taint is the third thing this should reach.
+   */
+  lift: { label: "CARDRPG.Effect.Lift", icon: "magic-palm" }
 };
 
 /**
@@ -219,12 +229,14 @@ CARDRPG.conditions = {
     label: "CARDRPG.Condition.Blessed",
     icon: "aura",
     noDuration: true,
+    liftable: true,
     temporaryFate: "crit"
   },
   cursed: {
     label: "CARDRPG.Condition.Cursed",
     icon: "imprisoned",
     noDuration: true,
+    liftable: true,
     temporaryFate: "miss"
   },
   burdened: {
@@ -261,6 +273,16 @@ CARDRPG.shakeable = key => {
   const cfg = CARDRPG.conditions[key];
   return !!cfg && !cfg.opening && !cfg.noDuration;
 };
+
+/**
+ * Can this condition be **lifted** (core-rules 7)? The complement of `shakeable`: it has no duration
+ * to spend, and something can still take it away.
+ *
+ * Between them the two predicates and three stated exceptions cover every condition exactly once --
+ * shakeable, liftable, `derived` (drop weight), `opening` (the clock, by design) and Unconscious
+ * (Health). The validator checks that partition is still exhaustive.
+ */
+CARDRPG.liftable = key => !!CARDRPG.conditions[key]?.liftable;
 
 /** The openings, as a list, for the places that need to offer or test only those. */
 CARDRPG.openings = Object.entries(CARDRPG.conditions)

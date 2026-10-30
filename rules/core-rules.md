@@ -767,6 +767,48 @@ is a card you played for nothing, and the game has enough of those.
 **Shedding is a decision, so the player chooses which condition** — a character carrying Dazed (1)
 and Grappled (2) picks, and picking is the interesting part.
 
+#### Lift
+
+**Shake Off spends a duration. Lift removes what has no duration to spend.**
+
+**Blessed** and **Cursed** have no clock — they last until the card they put in your fate deck is
+drawn — so nothing could take them off. **Lift** does: the marker comes off the character *and* the
+temporary card comes out of the deck, because removing only the marker would leave a Miss in there
+that nothing would ever account for.
+
+> **A curse lasts about a fight, and could easily last three.** The temporary card is one of three
+> cards that reshuffle the deck when drawn, so it is the one to come up about a third of the time —
+> roughly **sixteen fate draws** on average, with a long tail. Lifting a curse is the oldest job a
+> priest has, and until Lift existed the rules had no way to do it.
+
+Lift reaches **only** the two: an opening has nothing being done to you, the encumbrance pair answer
+to arithmetic, and Unconscious answers to Health. When **Cleansing** is built, Taint is the third
+thing Lift should reach.
+
+#### The five ways out, and there are no others
+
+Every condition in the game leaves by exactly one of these. The list is **exhaustive**, and the
+validator checks that it stays so — a condition in no bucket is a condition whose removal nobody
+decided:
+
+| How it ends | How many | Which |
+|---|---|---|
+| **Shake Off** — spend its duration | **12** | the timed subtractions |
+| **Lift** — it has no duration to spend | **2** | Blessed, Cursed |
+| **Drop weight** — free, any time, never an action (§4) | **2** | Burdened, Overloaded |
+| **The clock, by design** | **4** | the four openings |
+| **Health above 0** | **1** | Unconscious |
+
+> **So no: not everything can be dispelled, and that is the design rather than a gap.** Fourteen of
+> the twenty-one come off to a card. The other seven each answer to something that is not a card, and
+> the openings are the only ones where *nothing* will hurry them — deliberately, because an opening
+> is cheap to set and worth little on its own, and letting an enemy spend one secondary to undo the
+> party's whole combo would make combos unplayable.
+
+**Marked and Judged are the purest case of that**, and the fiction says why: they are **calls**, not
+states (§7). You can wash off water and you can regain your footing, but you cannot wash off
+somebody's opinion of you — you can only wait for them to stop saying it.
+
 #### A dispel must not sit on the half the condition takes
 
 Four conditions defeat the dispel that would answer them, and not by accident — it falls out of what
