@@ -50,6 +50,13 @@ A slate can still be **spent** — a secret slate is used up once you play it �
 
 Any card without a printed reaction can still be discarded as a reaction for **Brace: reduce incoming damage by 1**.
 
+> **Brace is a floor, not an option.** One point is deliberately too little to be worth a card, so a
+> player holding any real reaction will never choose it. Its job is that **no card in your hand is
+> ever completely dead** — which is also why nothing can block it (section 10). The one time it is
+> the right play is the one that matters: the hit that would otherwise kill you, by exactly one.
+> Raising it to 2 would put it in competition with Parry and Block and flatten the choice, so it
+> stays at 1.
+
 ---
 
 ## 3. The round
@@ -177,7 +184,17 @@ How long it lasts depends on how you played it:
 
 A Defend primary is a real defensive stance: it costs you your strong half, so it has to hold up against a whole enemy turn. A Defend secondary or reaction is a one-off.
 
-Blocks from different sources don't stack. If you have more than one, use the highest.
+Blocks from different sources don't stack. If you have more than one, **use the highest** — and that
+source's duration is the one that applies, so a Defend secondary played behind a Defend primary never
+shortens the stance you already had.
+
+Two things fall out of the order in section 5 rather than needing their own rule:
+
+- **A Critical is doubled before Block is subtracted**, because fate is step 5 and defences are step
+  6. Block is therefore worth proportionally less against a Critical, which is what makes a Critical
+  frightening to a defended target.
+- **Damage that does not come from an action never meets Block at all** — a Taint card's 1 damage is
+  resolved where it is drawn, not through section 5.
 
 ### Equipped items and Ready
 

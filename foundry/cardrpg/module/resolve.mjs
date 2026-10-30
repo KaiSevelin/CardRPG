@@ -162,8 +162,9 @@ export async function resolveAttack(actor, { verb = "strike", item, mod = 0, tar
 
     await target.update({
       "system.health.value": Math.max(0, target.system.health.value - dealt),
-      // A Defend secondary or reaction covers one attack; a primary holds for the round.
-      ...(block && !target.system.blockPersists ? { "system.block": Math.max(0, block - dealt) } : {})
+      // A Defend secondary or reaction covers one attack, so it is spent whatever it stopped; a
+      // primary holds until the start of the defender's next turn and is cleared there instead.
+      ...(block && !target.system.blockPersists ? { "system.block": 0 } : {})
     });
 
     rows.push({ name: target.name, armor, block, dealt, down: target.system.health.value - dealt <= 0 });
@@ -234,9 +235,16 @@ export async function resolveDefend(actor, { item, half = "primary" }) {
     return null;
   }
 
-  // Blocks from different sources don't stack: use the highest.
-  const block = Math.max(actor.system.block ?? 0, value);
-  const persists = half === "primary";
+  // Blocks from different sources don't stack: use the highest -- and keep the duration of
+  // whichever source won, or a Defend secondary played behind a Defend primary would silently
+  // downgrade a round-long stance to a one-shot and make the extra card a downgrade.
+  const current = actor.system.block ?? 0;
+  const held = !!actor.system.blockPersists;
+  const incoming = half === "primary";
+  const block = Math.max(current, value);
+  const persists = value > current ? incoming
+    : value < current ? held
+    : incoming || held;            // a tie: either source would serve, so take the longer one
   await actor.update({ "system.block": block, "system.blockPersists": persists });
 
   await ChatMessage.create({

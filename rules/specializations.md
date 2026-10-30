@@ -664,13 +664,58 @@ Twelve nodes: three on Position, three on Reactions, two on Deck shape, and one 
 Preparation, Control and Support. Reactions came down from four, Control came up from nothing, and
 all seven axes are covered.
 
-> **[OPEN]** **Block** is Guardian's lever and the HUD already shows it beside Health and armor, but
-> the rules have never defined it in its own right — it arrived as part of the Defend-primary
-> decision. It needs a paragraph in core-rules §3 before the Guardian's Signature can be written.
+### Block and Brace, since Guardian's lever rests on them
 
-> **[OPEN]** **Brace** is named in core-rules §8 (a Wound *"can't be played, not even for Brace"*) and
-> defined nowhere this list can point at. It is a fighter's mechanic and it is unowned, so it is a
-> candidate lever for a node behind Guardian or Ironclad.
+Both are fully specified already — **Block** has its own subsection in core-rules §4 and **Brace** is
+defined in §2 with its order of resolution in §3. Two earlier `[OPEN]` flags here claimed otherwise
+and were simply wrong.
+
+**Block is in good shape, and it is the right lever to hand a node.** The division it draws is the
+useful one: **armor is what you wear and Block is what you do.** Armor is flat, permanent and
+passive; Block comes from a verb, costs a half, and expires. That is exactly what keeps a Guardian
+from being *a fighter with more armor*, which is the failure this Way was most at risk of.
+
+The three durations are the good part, and they were settled by simulation rather than taste:
+
+| Played as | Covers | |
+|---|---|---|
+| **Primary** | every attack until your next turn | worth **+3.3 points of win rate** in the hardest fight ([design-direction.md](design-direction.md)) |
+| **Secondary** | the next attack | a one-off |
+| **Reaction** | the attack that triggered it | a one-off, on somebody else's turn |
+
+The cost decides the coverage, which is the cleanest shape a mechanic can have.
+
+**Brace is correctly small, and the rules now say so.** One point is deliberately not worth a card, so
+anyone holding a real reaction will never Brace — and that is the design, not a weakness. Its job is
+that no card in a hand is ever completely dead, which is why nothing can block it. Raising it to 2
+would put it in competition with Parry and Block and flatten the reaction choice.
+
+> **Therefore: Brace is withdrawn as a candidate lever.** A node that Braces *harder* is a bigger
+> number on a thing every character already has — the +2 trap exactly. Brace is universal by design,
+> so it is the one mechanic in the game that **must not** become anybody's identity.
+
+### Proposed: the Guardian's Signature
+
+Block carries one universal restriction, and it is the only place in the defensive rules where an
+exception would be felt immediately:
+
+> **Blocks from different sources don't stack. If you have more than one, use the highest.**
+
+So:
+
+> **The Guardian's Blocks stack.** They are the one exception to highest-wins.
+
+That is **Signature shape 9** — *a bonus group only you may stack in* ([leveling.md](leveling.md)
+§5a.4) — and it earns the slot on every test. It is one sentence. It adds no number and no keyword. It
+cannot be handed to a sibling, because Ironclad, Artillerist and Tactician would each rather have
+almost anything else, so it passes the **swap test**. And it changes what a Guardian *does* with a
+turn rather than how big their shield is: a shield's Defend and a card's Defend secondary become worth
+holding at the same time, which is a decision nobody else at the table has.
+
+It also has a natural ceiling, which is why it is safe to give away: Block is cleared at the start of
+your turn, so stacking is bounded by how many defensive halves you can spend in one round, and every
+one of them is a half not spent attacking. The Guardian pays in **a slot kept free** and now in tempo
+as well, which is the shape the node always claimed.
 
 > **[OPEN]** The world document still lists fifteen weapon types for this Way. It needs the same pass
 > as Shade's chapter once these restructures are accepted.

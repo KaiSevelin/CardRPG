@@ -33,8 +33,10 @@ Strength needed a third answer again. Mind, Shade and Faith each own nouns the e
 specially — spell slots, conditions, gods — while Strength's nouns are **Strike, Defend and Move**,
 which every character has, so its natural reward is more of what everyone already does. The fix was
 to find that Strength is actually the Way with the **most unclaimed mechanics**: armor, Block, weight
-and Overloaded, the Wound threshold, Blast against Aimed, Brace, adjacency. Each role now owns one
-outright. The lists are in [specializations.md](specializations.md).
+and Overloaded, the Wound threshold, Blast against Aimed, adjacency. Each role now owns one outright.
+**Brace is the exception that proves the rule** — it is universal and never blocked on purpose, so a
+node that Braces harder would be a bigger number on something everyone has, and it must not become
+anybody's identity. The lists are in [specializations.md](specializations.md).
 
 - There is **one graph with one root**, and the root points at all four Ways. A level-up takes a
   node your owned nodes point at. The mechanism is specified in [leveling.md](leveling.md); the
