@@ -152,6 +152,15 @@ affliction list per Taint source.
 
 The combat simulator is the tie-breaker for numbers. Decisions it has already settled:
 
+- **A damage rung is worth 8.7 points of win rate, and Dazed is worth 5.8** — so Dazed is **0.67** of
+  a rung, which is what prices *Poisoned N* against *Burning N*
+  ([../sim/analysis-2026-10-30.md](../sim/analysis-2026-10-30.md)). The claim that Poisoned cost a
+  **whole** rung more was wrong by about half.
+- **A dispel does not belong on an action card.** A Shake Off 1 on a secondary costs **−2.1 points**
+  and is played 0.22 times a fight at best, because a one-of-sixteen card is in hand 31% of turns and
+  must coincide with the condition. Dispels belong on reactions, prepared spells and features — the
+  surfaces that are there when they are needed.
+
 | Decision | Why |
 |---|---|
 | Weak enemies' Strike is at least 2 above the heroes' armor | Flat armor cancels small hits instead of reducing them. |

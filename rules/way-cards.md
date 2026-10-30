@@ -179,18 +179,37 @@ no condition of its own: what acid does to a person is **Burning**, which even g
 right, and what makes acid *acid* is that it eats the armour. **Corrode 1 on a formula, Corrode 2 on
 a monster** — armor behaves like a cliff edge, so one point is already a great deal.
 
-**A dispel is priced in Shake Off, and the band is narrow** (core-rules §7,
+**A dispel is priced in Shake Off, and the half is the cheap part** (core-rules §7,
 [conditions.md](conditions.md) §9.2):
 
 | Shake Off | Costs |
 |---|---|
-| **1** | a secondary — free, and the only rung a secondary may buy |
+| **1** | a secondary — but see below: the half is cheap and the **card** is not |
 | **2** | a primary, and **Spent** |
 | **3** | a strength-2 formula, which is where *ends anything* belongs |
 
 Three is the ceiling because nothing in the game prints a duration above 2, so **Shake Off 3 is
 already "remove it"** — and it costs a spell slot and a school to say so. That is the whole reason
 the keyword counts down instead of deleting: the strong version is reachable, expensive, and owned.
+
+> **Measured, and it changes where a dispel belongs.** A Shake Off 1 on an action card's secondary,
+> bought by cutting a copy of *Strike*, is worth **−2.1 points of win rate** and is played **0.00 to
+> 0.22 times a fight** ([../sim/analysis-2026-10-30.md](../sim/analysis-2026-10-30.md)). One copy in
+> sixteen reaches your hand 31% of turns, and it has to be there on a turn the condition is *also* on
+> you. Against Dazed and Poisoned it cannot fire at all — both take the secondary it sits on.
+>
+> **So a dispel wants a surface that is there when the condition is:**
+>
+> | Surface | Available | Costs |
+> |---|---|---|
+> | an action card's secondary | 31% of turns | a card **and** a half — not worth it |
+> | a **reaction** line | 31% of turns | the card only, no half |
+> | a **prepared spell** | **always** | a slot, not a draw |
+> | a **feature** | **always** | a node |
+>
+> Ward's *Shake It Off* is a **reaction spell** and is therefore right by both measures. *Slip the
+> Knot* (§3.3) is the shape the simulator argues against, and it stays in the pool as the cheap
+> option a Shade may take rather than as the answer anyone should rely on.
 
 **No reader gates a primary, whatever kind it is.** No primary reads *"only against a Wet target"* —
 an opening sharpens, it never switches a card on (core-rules §7, rule 3). A primary that does nothing

@@ -767,6 +767,13 @@ is a card you played for nothing, and the game has enough of those.
 **Shedding is a decision, so the player chooses which condition** — a character carrying Dazed (1)
 and Grappled (2) picks, and picking is the interesting part.
 
+> **A dispel belongs on a reaction, a prepared spell or a feature — not on an ordinary card's
+> secondary.** Simulation puts a Shake Off 1 bought with a card slot at **−2.1 points of win rate**,
+> played **0.22 times a fight at best**: one copy in sixteen is in your hand 31% of turns, and it has
+> to be there on a turn the condition is also on you
+> ([../sim/analysis-2026-10-30.md](../sim/analysis-2026-10-30.md)). The half a Shake Off costs is
+> cheap; the **card** is not.
+
 #### Lift
 
 **Shake Off spends a duration. Lift removes what has no duration to spend.**

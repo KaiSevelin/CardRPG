@@ -112,6 +112,29 @@ GOBLIN_CARDS = {
 }
 
 
+# ---------------------------------------------------------------- conditions
+# A mirror of CARDRPG.conditions in the system (module/config.mjs), carrying only the flags the
+# simulator can act on. Keeping it a table rather than a pile of ifs is the same decision the
+# engine made, and for the same reason: a new condition is a row, not a code path.
+#
+# shakeable = not an opening and has a duration to spend (core-rules 7).
+CONDITIONS = {
+    'dazed':    dict(blocks_secondary=True),
+    'slowed':   dict(halves_move=True),
+    'burning':  dict(valued=True, damage=True, cancels=('wet', 'frozen')),
+    'poisoned': dict(valued=True, damage=True, blocks_secondary=True),
+    'frozen':   dict(valued=True, reduces_move=True, cancels=('burning',)),
+    'wet':      dict(opening=True, cancels=('burning',)),
+    'marked':   dict(opening=True),
+    'blessed':  dict(no_duration=True, liftable=True, fate='CRIT'),
+    'cursed':   dict(no_duration=True, liftable=True, fate='MISS'),
+}
+
+def shakeable(key):
+    c = CONDITIONS[key]
+    return not c.get('opening') and not c.get('no_duration')
+
+
 # Catch Breath recovers exactly this many, all or nothing: the Exhausted threshold, so a
 # breath buys one turn that is not Exhausted and no more (core-rules 8).
 BREATH_RECOVERY = 2
@@ -146,6 +169,14 @@ class Config:
     deck_cut_random: bool = False  # False: the weakest N (a deck-building choice)
                                    # True: N at random (Overloaded, core-rules 4)
     max_rounds: int = 40
+    # What Dirty Trick inflicts. 'dazed' is the printed card; the others are here to price the
+    # ladder against it (conditions.md 2.1), since "Poisoned N is Burning N plus Dazed" was an
+    # assertion until it could be measured.
+    goblin_condition: str = 'dazed'
+    goblin_cond_value: int = 0     # intensity, for a `valued` condition
+    goblin_cond_dur: int = 1
+    # Swap one copy of Strike for a card whose secondary is Shake Off 1, to price a dispel.
+    shake_card: bool = False
     card_overrides: dict = field(default_factory=dict)
 
 
@@ -211,7 +242,7 @@ class Sim:
                     continue
                 target = min(alive, key=lambda g: (cheb(self.wpos, g[0]), g[1]))
                 blocked = {g[0] for g in alive}
-                for _ in range(op[1]):
+                for _ in range(self.game.move_mod(op[1])):
                     if cheb(self.wpos, target[0]) <= 1:
                         break
                     nxt = step_toward(self.wpos, target[0], blocked)
@@ -263,6 +294,14 @@ class Sim:
                 self.healed += gain
                 if real:
                     self.game.log(f"  Warrior {'drinks potion' if kind == 'use' else 'heals'} +{gain} HP -> {self.whp}")
+            elif kind in ('shake', 'lift'):
+                # The lookahead has to SEE the saving or the AI will never spend a half on it.
+                # Prevented harm is scored like healing, which is what it is: HP that stays on.
+                saved = self.game.cond_relief(op[1] if kind == 'shake' else 99, lift=(kind == 'lift'))
+                if real:
+                    (self.game.lift() if kind == 'lift' else self.game.shake(op[1]))
+                else:
+                    self.healed += saved
             # ready / taunt: no effect in this test (everything is equipped, solo hero)
 
     def commit(self):
@@ -282,10 +321,17 @@ class Game:
         if not cfg.double_strike:
             p, s, r, n = self.cards['Weapon Swap']
             self.cards['Weapon Swap'] = (p, [('move', 1)], r, n)
+        if cfg.shake_card:
+            # One copy of Strike becomes a card whose secondary sheds a condition. Costing a
+            # secondary is the rung core-rules 7 says a Shake Off 1 belongs on, and taking it out
+            # of Strike rather than adding a card keeps the deck at sixteen.
+            p, sec, r, n = self.cards['Strike']
+            self.cards['Strike'] = (p, sec, r, n - 1)
+            self.cards['Shrug It Off'] = ([('strike', 0)], [('shake', 1)], 'parry', 1)
         self.cards.update(cfg.card_overrides)
         deck = [name for name, c in self.cards.items() for _ in range(c[3])]
         self.w = dict(pos=(1, 4), hp=cfg.hp, block=0, potions=cfg.potions, hand=[], draw=deck,
-                      discard=[], spent=[], dazed=0, dazed_by=None, exhausted=False, acted=False)
+                      discard=[], spent=[], conds=[], exhausted=False, acted=False)
         n = len(cfg.goblins)
         ys = [round(1 + i * (GRID_H - 3) / max(1, n - 1)) for i in range(n)] if n > 1 else [4]
         self.gobs = [dict(id=i + 1, pos=(8, ys[i]), hp=cfg.goblin_hp, weapon=wpn) for i, wpn in enumerate(cfg.goblins)]
@@ -311,6 +357,95 @@ class Game:
         self.round = 0
 
     # --- helpers
+    # ------------------------------------------------------------ conditions
+    def cond(self, key):
+        """The warrior's record for a condition, or None."""
+        return next((c for c in self.w['conds'] if c['key'] == key), None)
+
+    def dazed(self):
+        """Any condition that costs the secondary (core-rules 7). Dazed and Poisoned both do."""
+        return any(CONDITIONS[c['key']].get('blocks_secondary') for c in self.w['conds'])
+
+    def move_mod(self, n):
+        """A printed Move as it plays: halved, then reduced, floored at 0 (core-rules 7)."""
+        if any(CONDITIONS[c['key']].get('halves_move') for c in self.w['conds']):
+            n //= 2
+        worst = max([c['value'] for c in self.w['conds']
+                     if CONDITIONS[c['key']].get('reduces_move')] or [0])
+        return max(0, n - worst)
+
+    def apply_cond(self, key, duration=1, value=0, by=None):
+        """Apply a condition, honouring cancels and the refresh rule (core-rules 7)."""
+        cancels = CONDITIONS[key].get('cancels', ())
+        hit = [c for c in self.w['conds'] if c['key'] in cancels]
+        if hit:
+            # Water and fire annihilate: the newer ends the older and does not itself land.
+            for c in hit:
+                self.w['conds'].remove(c)
+            self.s['cancelled'] += 1
+            self.log(f"  {key} and {hit[0]['key']} cancel -- neither lands")
+            return False
+        have = self.cond(key)
+        if have:
+            have['duration'] = max(have['duration'], duration)
+            have['value'] = max(have['value'], value)
+        else:
+            self.w['conds'].append(dict(key=key, duration=duration, value=value, by=by))
+        self.s[f'applied_{key}'] += 1
+        return True
+
+    def tick_conds(self, creator_id):
+        """Tick everything this creator made. The whole of the core-rules 7 clock."""
+        for c in list(self.w['conds']):
+            if CONDITIONS[c['key']].get('no_duration') or c['by'] != creator_id:
+                continue
+            c['duration'] -= 1
+            if c['duration'] <= 0:
+                self.w['conds'].remove(c)
+
+    def cond_relief(self, n, lift=False):
+        """What taking n off the worst condition is worth, in HP.
+
+        Damage prevented is the condition's value times the turns it would still have bitten for;
+        a condition that costs the secondary is worth about a Move 1 plus the half itself. Zero when
+        nothing is on us, which is what makes a dispel a real decision rather than a free card.
+        """
+        pool = [c for c in self.w['conds']
+                if (CONDITIONS[c['key']].get('liftable') if lift else shakeable(c['key']))]
+        if not pool:
+            return 0.0
+        def relief(c):
+            f = CONDITIONS[c['key']]
+            turns = 99 if f.get('no_duration') else min(c['duration'], n)
+            return c['value'] * turns + (1.5 * turns if f.get('blocks_secondary') else 0)
+        return max(relief(c) for c in pool)
+
+    def shake(self, n):
+        """Shake Off N: spend duration on the worst thing we can (core-rules 7)."""
+        options = [c for c in self.w['conds'] if shakeable(c['key'])]
+        if not options:
+            return False
+        # Worst first: a damaging condition by its value, then anything that costs a half.
+        def harm(c):
+            f = CONDITIONS[c['key']]
+            return (c['value'] if f.get('damage') else 0) + (1 if f.get('blocks_secondary') else 0)
+        c = max(options, key=harm)
+        c['duration'] -= n
+        self.s['shaken'] += 1
+        if c['duration'] <= 0:
+            self.w['conds'].remove(c)
+            self.s['shaken_off'] += 1
+        return True
+
+    def lift(self):
+        """Lift: remove what has no duration to spend (core-rules 7)."""
+        c = next((c for c in self.w['conds'] if CONDITIONS[c['key']].get('liftable')), None)
+        if not c:
+            return False
+        self.w['conds'].remove(c)
+        self.s['lifted'] += 1
+        return True
+
     def log(self, msg):
         if self.verbose:
             print(msg)
@@ -366,6 +501,12 @@ class Game:
             return (2.0 if b['hurt'] else 0.3) * op[1]
         if kind == 'use':
             return 3.0 if (b['hurt'] and self.w['potions']) else 0.4
+        if op[0] == 'shake':
+            # Worth whatever it takes off: the damage a tick would have done, plus the half a
+            # Dazed costs. Zero when nothing is on us, which is what makes it a real decision.
+            bite = sum(c['value'] for c in self.w['conds'] if CONDITIONS[c['key']].get('damage'))
+            half = 1.5 if self.dazed() else 0
+            return min(op[1], 1) * (bite + half) * 1.0
         return 0.2                                       # ready, taunt: inert in a solo test
 
     REACTION_WORTH = {'block': 1.2, 'parry': 0.9, 'use': 0.5}
@@ -477,7 +618,7 @@ class Game:
     # --- warrior
     def options(self):
         w, hand = self.w, self.w['hand']
-        single = w['dazed'] > 0 or len(hand) < 2
+        single = self.dazed() or len(hand) < 2
         opts = []
         if single:
             for i, c in enumerate(hand):
@@ -541,11 +682,26 @@ class Game:
         self._board = self.board()
         w['block'] = 0
         w['acted'] = True
-        if w['dazed'] > 0:
-            self.s['dazed_turns'] += 1
-            creator = self.gob(w['dazed_by'])
+        # A condition whose creator has left combat ticks on the victim's turn instead, so it
+        # still costs exactly one of their turns (core-rules 7).
+        for c in list(w['conds']):
+            if CONDITIONS[c['key']].get('no_duration'):
+                continue
+            creator = self.gob(c['by'])
             if creator is None or creator['hp'] <= 0:
-                w['dazed'] -= 1          # creator left combat: ticks on the victim's turn
+                c['duration'] -= 1
+                if c['duration'] <= 0:
+                    w['conds'].remove(c)
+        if self.dazed():
+            self.s['dazed_turns'] += 1
+        # Burning and Poisoned bite at the start of your turn, past armor and Block, and they add.
+        bite = sum(c['value'] for c in w['conds'] if CONDITIONS[c['key']].get('damage'))
+        if bite:
+            w['hp'] = max(0, w['hp'] - bite)
+            self.s['tick_damage'] += bite
+            self.log(f"  conditions bite for {bite} -> {w['hp']} HP")
+            if w['hp'] <= 0:
+                return
         if w['exhausted']:
             self.s['exhausted_turns'] += 1
         if (len(w['discard']) >= BREATH_RECOVERY and not w['draw']
@@ -630,8 +786,7 @@ class Game:
     def goblin_act(self, g, card):
         """One goblin takes its turn, on its type's intent card for this round."""
         # a condition ticks at the start of its creator's turn
-        if self.w['dazed'] and self.w['dazed_by'] == g['id']:
-            self.w['dazed'] -= 1
+        self.tick_conds(g['id'])
         wp = lambda: self.w['pos']
         # routing is not the same as playing Cower: a Cower goblin retreats and comes back,
         # a routed one leaves the fight for good
@@ -685,8 +840,9 @@ class Game:
                 raw = fate_apply(value, fc)
                 self.take_hit(raw, not ranged, g['id'])
                 if kind == 'strike' and op[2] == 'daze' and fc != 'MISS':
-                    self.w['dazed'] = 1
-                    self.w['dazed_by'] = g['id']
+                    self.apply_cond(self.cfg.goblin_condition,
+                                    self.cfg.goblin_cond_dur,
+                                    self.cfg.goblin_cond_value, g['id'])
                     self.s['daze_applied'] += 1
 
 
@@ -703,6 +859,7 @@ def run_scenario(cfg, fights, seed):
         losses += r is False
         timeouts += r is None
         for k in ('rounds', 'hp_left', 'catch_breath', 'exhausted_turns', 'dazed_turns', 'daze_applied',
+              'tick_damage', 'shaken', 'shaken_off', 'lifted', 'cancelled',
                   'react_block', 'react_parry', 'react_brace', 'react_use', 'prevented_react',
                   'prevented_armor', 'prevented_shieldup', 'dmg_taken', 'heavy_hit_discards',
                   'goblin_disadv', 'goblin_adv', 'goblins_fled', 'fate_miss', 'fate_crit'):

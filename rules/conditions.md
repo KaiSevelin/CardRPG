@@ -170,19 +170,25 @@ Frozen is easier to price, because it spends nothing anyone needs to survive:
 | **1–2** | the ordinary card and formula range |
 | **3+** | nobody is going anywhere — which is fine, they still get a whole turn |
 
-**Poisoned costs one rung more than Burning at the same number**, because the Dazed rides along at
-every value:
+**Poisoned costs two thirds of a rung more than Burning at the same number**, because the Dazed rides
+along at every value — and that figure is **measured**
+([../sim/analysis-2026-10-30.md](../sim/analysis-2026-10-30.md)):
 
-| Poisoned | Belongs to | Against Burning |
+| Poisoned | Belongs to | Against Burning, measured |
 |---|---|---|
-| **0** | a card, or a weak venom — Dazed, no damage | Burning has no 0 |
-| **1** | a strength-2 formula | about a Burning 2 |
-| **2** | a strength-3 formula | about a Burning 3 |
+| **0** | a card, or strength 1 | costs **less** than a Burning 1 |
+| **1** | a strength-2 formula | a Burning 1 **and 0.4 of a rung** |
+| **2** | a strength-3 formula | a Burning 2 **and 0.24 of a rung** |
 | **3+** | **monsters only** | |
 
-Dazed costs a secondary, and a secondary is worth rather less than a primary — call it a third of a
-turn — so *Poisoned 0 for two rounds* and *Burning 1 for two rounds* are close, and **the whole ladder
-is Burning shifted down one.** None of it is simulated.
+> **A damage rung is worth about 8.7 points of win rate and Dazed is worth 5.8** — so Dazed is
+> **0.67** of a rung, not the whole one this table used to claim. The rungs above were right and the
+> reason was wrong: Poisoned 1 belongs at strength 2 because it **exceeds** a Burning 1, not because
+> it equals a Burning 2.
+
+**And the gap shrinks as the number rises** — 0.4 of a rung at Poisoned 1, 0.24 at Poisoned 2 — which
+is obvious once measured: losing a secondary matters most in a fight you could still win, and a
+fierce poison is killing you too fast for that.
 
 ### 2.2 Two rules the second number needs, and no more
 
