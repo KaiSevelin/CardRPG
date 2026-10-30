@@ -712,6 +712,21 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
           if (icon) icons.push(icon);
         }
 
+        /*
+         * The combo clause. Printed after the verb and the condition, because that is the order it
+         * is read in: what the half does, then what it does extra against an opening.
+         */
+        if (step.when?.needs) {
+          const w = step.when;
+          const opening = game.i18n.localize(CARDRPG.conditions[w.needs]?.label ?? w.needs);
+          const extra = [];
+          if (w.mod) extra.push(`${w.mod > 0 ? "+" : ""}${w.mod}`);
+          if (w.advantage) extra.push(game.i18n.localize(CARDRPG.effects.advantage?.label ?? "advantage"));
+          if (w.dc) extra.push(`resist ${w.dc}`);
+          if (w.text) extra.push(w.text);
+          if (extra.length) text += `${text ? " " : ""}vs ${opening}: ${extra.join(", ")}`;
+        }
+
         if (step.text) text += ` (${step.text})`;
         bits.push(text.trim());
       }

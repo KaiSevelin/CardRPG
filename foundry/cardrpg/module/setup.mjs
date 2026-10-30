@@ -8,7 +8,7 @@
 
 import { CARDRPG } from "./config.mjs";
 import {
-  fateCards, WARRIOR_DECK, GOBLIN_DECK, ITEMS, NPC_GEAR, FEATURES,
+  fateCards, WARRIOR_DECK, GOBLIN_DECK, ITEMS, NPC_GEAR, FEATURES, FORMULAS,
   WARRIOR, GOBLIN, GOBLIN_ARCHER
 } from "./content.mjs";
 
@@ -132,7 +132,9 @@ export async function createStarterContent() {
   const slateDefs = [
     ...ITEMS.map(i => ({ ...slateData(i, "item"), tag: `item.${i.name}` })),
     ...NPC_GEAR.map(i => ({ ...slateData(i, "item"), tag: `item.${i.name}` })),
-    ...FEATURES.map(f => ({ ...slateData(f, "feature"), tag: `feature.${f.name}` }))
+    ...FEATURES.map(f => ({ ...slateData(f, "feature"), tag: `feature.${f.name}` })),
+    // Spells are slates too, and these four are the combo mechanic in playable form.
+    ...FORMULAS.map(f => ({ ...slateData(f, "spell"), tag: `spell.${f.name}` }))
   ];
 
   const slates = {};

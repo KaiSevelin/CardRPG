@@ -47,6 +47,10 @@
   "CARDRPG.Condition.Cursed": "Cursed",
   "CARDRPG.Condition.Burdened": "Burdened",
   "CARDRPG.Condition.Overloaded": "Overloaded",
+  "CARDRPG.Condition.Wet": "Wet",
+  "CARDRPG.Condition.OffBalance": "Off-Balance",
+  "CARDRPG.Condition.Marked": "Marked",
+  "CARDRPG.Condition.Judged": "Judged",
 
   "CARDRPG.Slot.Hands": "Hands",
   "CARDRPG.Slot.Back": "Back",

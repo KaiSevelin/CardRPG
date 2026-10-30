@@ -99,13 +99,25 @@ CARDRPG.approaches = {
  *
  * `blocks` lists the icon keys a condition switches off (core-rules 10, Blocked icons).
  * `derived` marks the two that are computed from carried weight rather than applied by anyone.
+ *
+ * `opening` marks the four that do **nothing at all** by themselves (core-rules 7). They exist to
+ * be read by other cards, and -- this is the whole reason the set stays small -- an opening carries
+ * no rules of its own, so adding a card that reads one costs no table entry anywhere. Every combo
+ * in the game is a `when` clause on some card half (see stepField in data/cards.mjs).
+ *
+ * `cancels` names conditions this one annihilates with: neither lands on a target already
+ * carrying the other, and whichever arrives second ends the first WITHOUT itself landing. It is
+ * symmetric data on purpose -- both halves of the pair carry it, so nothing has to search backwards
+ * -- and it exists for one pair, Wet against Burning, which every table would rule this way
+ * whatever the book said. The rules sentence lives on **Burning**, not on Wet, which keeps the
+ * promise that an opening carries no rules of its own (core-rules 7).
  */
 CARDRPG.conditions = {
   dazed: { label: "CARDRPG.Condition.Dazed", icon: "surprised", blocksSecondary: true },
   slowed: { label: "CARDRPG.Condition.Slowed", icon: "tortoise", halvesMove: true },
   stunned: { label: "CARDRPG.Condition.Stunned", icon: "brain-freeze", blocksReactions: true },
   invisible: { label: "CARDRPG.Condition.Invisible", icon: "invisible" },
-  burning: { label: "CARDRPG.Condition.Burning", icon: "fire-silhouette" },
+  burning: { label: "CARDRPG.Condition.Burning", icon: "fire-silhouette", cancels: ["wet"] },
   prone: { label: "CARDRPG.Condition.Prone", icon: "falling" },
   unconscious: { label: "CARDRPG.Condition.Unconscious", icon: "knockout", blocksReactions: true },
   grappled: { label: "CARDRPG.Condition.Grappled", icon: "luchador", blocks: ["boot-prints"] },
@@ -126,8 +138,19 @@ CARDRPG.conditions = {
     noDuration: true,
     derived: true,
     halvesMove: true
-  }
+  },
+
+  // --- Openings. One per Way, and each does nothing until a card reads it.
+  wet: { label: "CARDRPG.Condition.Wet", icon: "droplets", opening: true, cancels: ["burning"] },
+  offBalance: { label: "CARDRPG.Condition.OffBalance", icon: "foot-trip", opening: true },
+  marked: { label: "CARDRPG.Condition.Marked", icon: "crosshair", opening: true },
+  judged: { label: "CARDRPG.Condition.Judged", icon: "scales", opening: true }
 };
+
+/** The openings, as a list, for the places that need to offer or test only those. */
+CARDRPG.openings = Object.entries(CARDRPG.conditions)
+  .filter(([, cfg]) => cfg.opening)
+  .map(([key]) => key);
 
 /* -------------------------------------------- */
 /*  Fate                                        */

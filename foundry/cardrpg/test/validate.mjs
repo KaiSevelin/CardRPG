@@ -144,7 +144,7 @@ for (const m of configSource.matchAll(/halfIcons\s*=\s*\{[^}]*\}/gs)) {
   for (const k of m[0].matchAll(/"([a-z0-9-]+)"/g)) iconKeys.add(k[1]);
 }
 
-check("icon files on disk", onDisk.size, 70);
+check("icon files on disk", onDisk.size, 74);
 const absent = [...iconKeys].filter(k => !onDisk.has(k)).sort();
 check("config icons present as files", absent.length ? absent.join(", ") : "all", "all");
 
@@ -208,6 +208,64 @@ for (const card of fate) {
 for (const [key, want] of Object.entries({ miss: 1, "-2": 1, "-1": 4, "0": 8, "+1": 4, "+2": 1, crit: 1 })) {
   check(`fate: ${key}`, dist[key], want);
 }
+
+/*
+ * Combo clauses, against the three promises core-rules 7 makes about them:
+ *
+ *   1. `needs` names an OPENING, not any old condition. A combo that reads Grappled or Unconscious
+ *      is reading something that already does plenty by itself, which is a different and much
+ *      harder balancing problem.
+ *   2. A clause SHARPENS. One of mod, advantage or dc must be there -- a clause that carries only
+ *      prose is a gate wearing a costume, and a gated half is a card held all fight.
+ *      Scorch is the deliberate control: its Wet interaction comes from the condition table, so it
+ *      carries no clause at all and this check never sees it.
+ *   3. `dc` only means something beside a condition the half is already attempting.
+ */
+const steps = [];
+for (const card of [...content.WARRIOR_DECK, ...content.GOBLIN_DECK]) {
+  steps.push(...(card.primary ?? []), ...(card.secondary ?? []), ...(card.sequence ?? []));
+}
+for (const spell of content.FORMULAS) steps.push(spell.effect);
+
+/*
+ * Step keys against the schema. A data model only validates once Foundry is running, and a
+ * misspelled key is silently dropped rather than rejected -- `areakind` for `areaKind` would simply
+ * mean the Blast never happened. Reading the field names out of stepField() keeps this honest
+ * without duplicating the list here.
+ */
+const cardsSource = fs.readFileSync(path.join(root, "module/data/cards.mjs"), "utf8");
+const stepBlock = cardsSource.slice(cardsSource.indexOf("export function stepField()"));
+const stepKeys = new Set(
+  [...stepBlock.slice(0, stepBlock.indexOf("\n}")).matchAll(/^    ([a-zA-Z]+):/gm)].map(m => m[1])
+);
+check("stepField keys read from source", stepKeys.size, 13);
+
+const strayKeys = new Set();
+for (const step of steps) {
+  for (const key of Object.keys(step ?? {})) if (!stepKeys.has(key)) strayKeys.add(key);
+}
+check("step keys not in stepField", strayKeys.size ? [...strayKeys].join(", ") : "none", "none");
+
+const clauses = steps.filter(step => step?.when?.needs);
+check("combo clauses found", clauses.length, 2);
+
+const openings = new Set(["wet", "offBalance", "marked", "judged"]);
+const notOpenings = clauses.filter(s => !openings.has(s.when.needs)).map(s => s.when.needs);
+check("clauses that read an opening", notOpenings.length ? notOpenings.join(", ") : "all", "all");
+
+const gates = clauses.filter(s =>
+  !s.when.mod && !s.when.advantage && !s.when.dc
+).map(s => s.when.needs);
+check("clauses that only gate", gates.length ? gates.join(", ") : "none", "none");
+
+const danglingDc = clauses.filter(s => s.when.dc && !s.condition).map(s => s.when.needs);
+check("clauses with a dc and no condition", danglingDc.length ? danglingDc.join(", ") : "none", "none");
+
+// Every formula's strength is its slot cost, so it has to be in the 1-5 band the rules print.
+const band = content.FORMULAS.filter(f => !(f.strength >= 1 && f.strength <= 5)).map(f => f.name);
+check("formula strengths in band", band.length ? band.join(", ") : "all", "all");
+check("formula slots to run the Rain combo",
+  content.FORMULAS.reduce((n, f) => n + f.strength, 0), 6);
 
 const slateNames = new Set([...content.ITEMS, ...content.NPC_GEAR, ...content.FEATURES].map(s => s.name));
 for (const actor of [content.WARRIOR, content.GOBLIN, content.GOBLIN_ARCHER]) {

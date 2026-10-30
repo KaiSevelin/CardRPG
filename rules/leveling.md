@@ -523,8 +523,9 @@ needs migrating.
 ## 10. Open
 
 - **[OPEN]** The graphs themselves — every node, reward and specialization for all four Ways. The
-  major nodes are now named and celled ([specializations.md](specializations.md)); the minor nodes
-  between them, and every Signature, are not.
+  major nodes are named and celled ([specializations.md](specializations.md)) and both the Signatures
+  and the minor-node **pools** are drafted ([way-cards.md](way-cards.md)), so what is missing is the
+  wiring: which node grants which entry, and the depth-consistency §7 asks for.
 - **Needed:** a node that requires **all** of its prerequisites rather than any one. §5a leans on
   this — it is how depth takes commitment, and without it every title is one node deep and means
   nothing. One flag on the node; build it with the first graph.

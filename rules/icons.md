@@ -94,9 +94,9 @@ hover, per the information tiers in [../foundry/card-layout.md](../foundry/card-
 
 ---
 
-## Tier 2 — needed for a playable combat (20)
+## Tier 2 — needed for a playable combat (24)
 
-### Conditions (14)
+### Conditions (18)
 
 These double as Foundry status effects, so they need to read clearly as small overlays on a token,
 with room for a duration number.
@@ -117,6 +117,14 @@ with room for a duration number.
 | **Cursed** | Imprisoned |
 | **Burdened** | Weight crush |
 | **Overloaded** | Weight |
+| **Wet** | Droplets |
+| **Off-Balance** | Foot trip |
+| **Marked** | Crosshair |
+| **Judged** | Scales |
+
+The last four are the **openings** (core-rules §7) — conditions that do nothing by themselves and
+exist to be read by other cards. They need icons for the same reason as the rest: a player decides
+whether to spend a secondary setting one up by looking at the token.
 
 Blessed and Cursed are **condition markers only**. The temporary card they shuffle into your fate
 deck is an ordinary Critical or Miss and uses those faces, so all four icons are independent.
@@ -183,16 +191,16 @@ crowded inventory.
 
 ---
 
-## Status: complete — 53 of 53 chosen
+## Status: complete — 57 of 57 chosen
 
 | Tier | Count | Blocks |
 |---|---|---|
 | 1 | 23 | Card layout and the card schema |
-| 2 | 20 | Playable combat |
+| 2 | 24 | Playable combat |
 | 3 | 10 | Polish |
 | *optional tags* | *9* | *nothing* |
 
-**62 icons**, including the optional tags, all downloaded to
+**66 icons**, including the optional tags, all downloaded to
 [../foundry/cardrpg/icons/](../foundry/cardrpg/icons/) with per-icon credits in
 [ATTRIBUTION.md](../foundry/cardrpg/icons/ATTRIBUTION.md). Nothing in the rules or the system is
 waiting on an icon decision.

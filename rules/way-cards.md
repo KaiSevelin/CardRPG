@@ -1,15 +1,19 @@
-# Way Cards and Spells (Draft 0.1)
+# Way Cards and Spells (Draft 0.2)
 
 What the nodes hand out. [leveling.md](leveling.md) settles what a level-up *is* and
 [specializations.md](specializations.md) settles what the 48 major nodes *are*; this settles the
 **content** — the cards, the spells and the miracles that make a node something you can play.
 
-Two halves:
+Three parts:
 
-1. **The standard** — value bands, cost budgets and the spell format, so that content written months
-   apart stays comparable and can be balanced as a set.
+1. **The standard** — value bands, cost budgets, the spell format and how a combo is written, so that
+   content written months apart stays comparable and can be balanced as a set.
 2. **The 48 Signatures** — one card or feature per major node, the thing each node is named for
-   ([leveling.md](leveling.md) §5a). These are **drafts and none of them is simulated.**
+   ([leveling.md](leveling.md) §5a).
+3. **The minor-node pools** — the ordinary cards, formulas and miracles the nodes *between* the
+   titles hand out, which is most of a character.
+
+**None of it is simulated.** §4 says which parts most need to be.
 
 ---
 
@@ -40,6 +44,7 @@ something measured rather than invented:
 | **Defend** | *Shield Up* | Defend **and** something else |
 | **Heal** | 2, and the card is Spent | 3, Spent, plus Strain 1 |
 | **A condition with a saving throw** | never | **yes** — conditions are where the Ways live (core-rules §7) |
+| **A combo** | never | **yes** — a half that sets an **opening**, or reads one (§1.6) |
 | **Move** | 1–3 | 3 with a verb attached |
 
 Two of those lines are quoted from decisions already taken, not proposed here: *Strike on a
@@ -111,6 +116,85 @@ a spell slot, Health, a rest token ([leveling.md](leveling.md) §4).
 never dilutes anything, so a feature-heavy branch makes a character monotonically stronger, while a
 card costs you something to gain. Aim for roughly **two cards per feature** along a trunk.
 
+The pools themselves are in §3.
+
+### 1.6 Combos, and the four openings
+
+Four conditions do **nothing at all** by themselves and exist to be read by other cards
+(core-rules §7): **Wet**, **Off-Balance**, **Marked**, **Judged**. One per Way. A mage's *Rain*
+leaves a goblin Wet; Wet does nothing; and then somebody's *Lightning* hits a Wet goblin harder than
+a dry one.
+
+The rules for them are in core-rules §7 and they are short. What belongs here is the **content**
+side: who writes a setter, who writes a reader, and what each is worth.
+
+**A setter goes on a secondary half.** Nothing else. A turn is a primary and a secondary, and most
+secondaries are *Move 1* — the cheapest space in the game. An opening set from there costs a step
+you were not taking, which is the only price a setup can afford. Put it on a primary and it competes
+with a Strike, which means it never gets played.
+
+**A setter needs no rung on the cost ladder** (§1.3), and it is the one exception in this document.
+It does nothing on its own, so the secondary it occupies *is* the cost.
+
+**A reader is worth about a card.** Where what it adds is a number there are exactly three bands,
+and a clause that fits one of them is in band without further argument:
+
+| A reader may give | Band | Note |
+|---|---|---|
+| **+2 damage** | the standard | the same +2 §1.2 allows for *"something you had to arrange"* |
+| **advantage** | the standard | but it does **not** stack with Prone or Invisible, so it is wasted on a build that already arranges those |
+| **a harder saving throw** | Normal → Hard, or Hard → Heroic | on a condition the half was attempting anyway |
+
+Those three are what the schema carries, and the validator checks that a combo clause is one of
+them (`when.mod`, `when.advantage`, `when.dc` — [../foundry/cardrpg/module/data/cards.mjs](../foundry/cardrpg/module/data/cards.mjs)).
+
+**A fourth kind exists and is not banded: a reader whose payoff is not a number at all.** *Between
+the Plates* ignores armor, *The Weight of It* sets a target's armor to 0 for everybody,
+*Grey Judgement* moves an enemy to the end of the round, *Measure of the Debt* pays you Health for
+a kill. These are worth whatever the fight makes them worth — nothing against a goblin, a great deal
+against a knight — so a band cannot price them and only the simulator can. **Write them as prose and
+send them to §4**, which is where all four of them are. They are also the ones to be stingy with: three or four in the whole game, not one per
+node.
+
+**No reader ever *gates*, whatever kind it is.** No card reads *"only against a Wet target"* — an
+opening sharpens, it never switches a card on (core-rules §7, rule 3). A half that does nothing
+without its partner is a card held all fight waiting for a draw that never comes, and the validator
+refuses that clause outright rather than trusting anyone to remember.
+
+**Every Way sets its own opening and reads its own best — but may set another Way's.** That is where
+party play comes from, and it is written into the content on purpose: the Poison school sets
+**Off-Balance**, which is Strength's; Divination sets **Marked**, which is Shade's; Sessyfyn's
+*Undertow* sets **Wet**, which is Mind's. A caster who cannot use an opening can still hand it to
+the fighter who can.
+
+> **The arithmetic that makes this worth doing at all.** Drawing two particular cards in one turn out
+> of a sixteen-card deck is rare, so a combo in one player's hands is a trap. But an opening's
+> duration ticks on its **creator's** turn, so one laid down on your turn survives every other
+> player's and expires when you come round again — **one setup, one round, the whole party.** Split
+> across two players, two cards are two hands, which is a different and far better probability.
+
+#### The worked example, and what it costs
+
+| | Strength | Printed |
+|---|---|---|
+| **Rain** | 2 | ✸ Blast 3 at ◎4. Everything in it is **Wet (1)**. No damage, no save. |
+| **Lightning** | 2 | ✦ Cast at ◎4. **Stunned (1)**, resist 📜 Lore 7 — against a **Wet** target, Heroic **9** and **+2** damage. |
+| **Frost** | 1 | ◎3. **Slowed (1)**, resist 🌀 Agility 5 — against a **Wet** target, Heroic **9**. |
+| **Scorch** | 1 | ✦ Cast at ◎4. **Burning (1)** — and a **Wet** target sheds it, because water and fire cancel. |
+
+All four are in [../foundry/cardrpg/module/content.mjs](../foundry/cardrpg/module/content.mjs) and
+resolve in the system today, which is why they are the worked example rather than an illustration.
+
+**Rain plus Lightning is four of a caster's spell slots.** A first Way of Mind node grants **2**
+(§1.4), so a starting caster **cannot run a combo at all** — and that is the answer to what the
+later slots are for. Slot progression stops being *more spells* and becomes *you can now afford a
+plan.*
+
+**Scorch is the control, and it carries no combo clause whatsoever.** Water and fire cancel, so a Wet
+target is a *worse* mark for fire rather than a better one. The interaction is printed on **Burning**
+in the condition table, where core-rules §7 puts it — which means laying an opening down is never
+simply correct, and there is no autopilot.
+
 ---
 
 ## 2. The 48 Signatures  **[DRAFT]**
@@ -147,10 +231,10 @@ it.
 
 | Node | Signature | What it is |
 |---|---|---|
-| **Thief** | **The Opening** | Feature: **advantage against anyone *you* put a condition on** this fight. Worthless to a build that applies none — which is what makes it the Thief's. |
+| **Thief** | **The Opening** | Feature: **advantage against anyone carrying an opening** (§1.6) — whoever set it. |
 | **Scout** | **Point Man** | Primary: **Foresee**. While you are the furthest forward of your party, Foresee **one extra type**. |
 | **Duellist** | **Named** | Secondary: name one enemy. Against it, your **Parry also Strikes for 1**. |
-| **Assassin** | **One Opening** | Primary — **Spent**: Strike. Against a target that is unaware, Prone or Slowed, the damage is **doubled**. |
+| **Assassin** | **One Opening** | Primary — **Spent**: Strike. Against a target that is unaware or carrying an **opening**, the damage is **doubled**. |
 | **Cutpurse** | **Lift** | Primary: Strike. On a hit, take **one card from the target's own deck**. It is yours now, and it is in your deck for good. |
 | **Burglar** | **The Kit** | Item slate, weight 3, which you may never put down: every Hard physical obstacle becomes **Normal**. |
 | **Archer** | **Loose and Step** | Primary: ranged **Strike, then Move 1**. |
@@ -159,6 +243,16 @@ it.
 | **Bard** | **Heckle** | Reaction, when an enemy acts: it draws fate with **disadvantage**. |
 | **Gambler** | **Double or Nothing** | Primary: Strike, and draw **two** fate cards — **both apply**, added together. Variance, not advantage. |
 | **Half-mage** | **One Trick** | Feature: **2 spell slots**, and you may prepare from any one school you have ever seen cast. |
+
+**The Thief's and the Assassin's were rewritten when §1.6 was written, because §1.6 broke them.**
+*The Opening* used to read *advantage against anyone you put a condition on, this fight*. Add *Call
+the Shot* — a free secondary that Marks anything in sight (§3.3) — and a Thief spends round one
+marking the room and has advantage against everything for the rest of the fight. The fix is the
+better card anyway: an opening lasts a round, so the advantage lasts a round, and **whoever set it**
+counts. The Thief stops being a character who sets up for themselves and becomes the one the party
+sets up *for* — the reason somebody else's rain was worth casting. The Assassin then deepens their
+parent's reading rather than carrying an unrelated list, which is what §5a of
+[leveling.md](leveling.md) says a child node is allowed to do.
 
 **Gambler is the one worth arguing about.** Advantage draws two and keeps the better; *Double or
 Nothing* draws two and keeps **both**, which widens the tails instead of shifting the mean — a Miss
@@ -216,17 +310,200 @@ differ in what they take.**
 
 ---
 
-## 3. Open
+## 3. Minor-node content  **[DRAFT]**
 
-- **Nothing here is simulated.** The four that most need it: **Double or Nothing** (two fate cards,
-  both applying, is a new distribution and nothing else in the game does it), **Cleave to the Bone**
-  (a Wound threshold at 4 changes how often Wounds enter a deck at all), **The Wall** (stacking Blocks
-  against the measured value of a Defend primary) and **Nothing Gets Through** (doubled armor against
-  the cliff-edge behaviour armor already has).
-- **[OPEN]** The ordinary cards on **minor** nodes — far more content than this document, and the
-  place where the two-cards-per-feature ratio actually gets tested.
-- **[OPEN]** Each god's **full miracle list** and each school's **full formula list**. Only the first
-  of each is written above.
+The 48 above are the titles. **Most of a character is the nodes in between**, and §1.5 says what
+those hand out: a card, a skill card, a training, a know-how, a feature, a prune, a deck cap, a
+spell slot, Health, a rest token.
+
+**This is written as pools, not as assignments**, because the graph does not exist yet
+([leveling.md](leveling.md) §10). A pool is a set of cards the minor nodes along a branch draw
+from; when the graph is authored, a node's `grants[]` names one. That is also the only form that
+survives [leveling.md](leveling.md) §8 — an add-on hangs new nodes off an existing one and must be
+able to grant content without core re-releasing anything.
+
+Everything here obeys §1.1 (one card, one gift) and §1.3 (one rung of the cost ladder). A blank cost
+column means the card is a re-arrangement of verbs you already have, which is free.
+
+### 3.1 The common pool — six cards
+
+Any Way's minor nodes may grant these. **They are deliberately dull**, and that is their job: they
+are the backbone §1.5 asks for, and a Signature only feels like a Signature against a background of
+ordinary improvement.
+
+| Card | ▲ Primary | ▼ Secondary | ⚡ Reaction | Cost |
+|---|---|---|---|---|
+| **Off-Hand Blow** | ⚔ Strike | ⚔ Strike −1 | – | – |
+| **Measure** | ⚔ Strike +1 | 👣 Move 1 | Parry | – |
+| **Hold the Line** | 🛡 Defend | ⚔ Strike −1 | Parry | – |
+| **Press** | ⚔ Strike, then 👣 Move 1 | 👣 Move 2 | Sidestep | – |
+| **Both Hands** | ⇄ Ready, then ⚔ Strike | ⇄ Ready | Use | – |
+| **Dig In** | ✚ Heal 2 | 👣 Move 1 | Brace | 🔥 **Spent** |
+
+**Off-Hand Blow is the one that answers an open question.** Core-rules §3 asks where
+Strike-on-a-secondary cards come from and [leveling.md](leveling.md) §4 promises the answer is here:
+they come from the common pool, at **−1**, as the first ordinary card a fighter of any Way is
+handed. The −1 is what keeps it from making plain *Strike* obsolete.
+
+**Dig In is the deck's second and last Spent card.** §1.3 caps a 16-card deck at two and the Warrior
+already carries *Second Wind*, so taking this one spends the ceiling. That is the decision, and no
+branch should offer a third.
+
+### 3.2 Way of Strength — twelve cards
+
+Weight, armor, Block, adjacency and the Wound threshold are the levers the **major** nodes own
+([specializations.md](specializations.md)); these touch them without taking them.
+
+| Card | ▲ Primary | ▼ Secondary | ⚡ Reaction | Cost |
+|---|---|---|---|---|
+| **Shoulder Check** | ⚔ Strike | **Off-Balance (1)**, adjacent | – | – |
+| **Hammerblow** | ⚔ Strike — **+2** vs **Off-Balance** | 👣 Move 1 | – | – |
+| **Sweep the Leg** | ⚔ Strike · **Prone (1)**, resist 🌀 5 — **9** vs **Off-Balance** | 👣 Move 1 | – | – |
+| **Overbear** | **Grappled (2)**, resist ✊ 5 — **7** vs **Off-Balance** | 👣 Move 1 | – | – |
+| **Shield Wall** | 🛡 Defend | 🛡 Defend, and one adjacent ally gains Block 1 | Block | – |
+| **Set Spear** | 🛡 Defend | 👣 Move 1 | an enemy ending its move adjacent takes your Strike | – |
+| **Two-Hand It** | ⚔ Strike +2 — both hands | ⇄ Ready | – | – |
+| **Heave** | 👣 Move 2, carrying any weight without being Slowed | ⇄ Ready | – | – |
+| **Armoured Advance** | 👣 Move 3; your armor counts **+1** until your next turn | 👣 Move 1 | Brace | – |
+| **Pull Them Down** | ⚔ Strike | ⚔ Strike −1 vs a **Prone** or **Grappled** target | – | – |
+| **Roar** | every adjacent enemy must attack you next turn | 👣 Move 1 | – | ⤵ **Strain 1** |
+| **Walk It Off** | ✚ Heal 2, and shed **Off-Balance**, **Slowed** or **Prone** | 👣 Move 1 | Brace | 🔥 **Spent** |
+
+Three of those read **Off-Balance** and each reads it a different way — more damage, a harder save on
+a condition the card was already attempting, and the same again on a longer condition. That is the
+whole of §1.6's reader table, deliberately, so the band has three worked instances rather than an
+assertion.
+
+### 3.3 Way of Shade — twelve cards
+
+| Card | ▲ Primary | ▼ Secondary | ⚡ Reaction | Cost |
+|---|---|---|---|---|
+| **Call the Shot** | ⚔ Strike | **Marked (1)** on any enemy you can see | – | – |
+| **Between the Plates** | ⚔ Strike — vs **Marked**, ignores armor | 👣 Move 1 | – | – |
+| **Take the Shot** | ◎ ⚔ Strike +1 — ⊕ vs **Marked** | 👣 Move 2 | – | – |
+| **Pin the Shadow** | ◎ ⚔ Strike · **Slowed (1)**, resist 🌀 5 — **7** vs **Marked** | 👣 Move 1 | – | – |
+| **Cut and Run** | ⚔ Strike, then 👣 Move 2 | 👣 Move 1 | – | – |
+| **Light Feet** | 👣 Move 3, ignoring difficult ground | 👣 Move 2 | Sidestep | – |
+| **Roll With It** | 👣 Move 3 | 👣 Move 2 | Sidestep 2, and you may end next to a different enemy | – |
+| **Second Knife** | ◎3 ⚔ Strike with a *Light* item | ⚔ Strike −1 | – | – |
+| **Mock** | **Dazed (1)**, resist 👑 5 | 👣 Move 1 | – | – |
+| **Sleight** | 🧪 Use a belt item, then ⚔ Strike | ⇄ Ready | Use | – |
+| **Vanish** | **Invisible (1)** on yourself | 👣 Move 2 | – | ⤵ **Strain 1** |
+| **Smoke and Go** | **Invisible (1)**, then 👣 Move 2 | 🧪 Use | – | 🔥 **Spent** |
+
+**Call the Shot is the best setter in the game, and it should be**, because it is the only one that
+works **at any range**. Strength shoves what it can reach and Faith names what it can see, but a
+Shade marks across the battlefield — the Way's whole claim on Position, made into one secondary
+half.
+
+**Between the Plates is one of the four unbanded readers** (§1.6). *Ignores armor* is worth a great
+deal against an ironclad and nothing at all against a goblin, so its value is set by the **target**
+rather than by the card, and no band can price it. It is the one card in this section most worth
+simulating.
+
+### 3.4 Way of Mind — fifteen formulas
+
+Beyond the twelve Signatures. **Strength is the slot cost** (§1.4), so the bracketed number is what
+it takes out of the budget. Each school's full list is still open; these are its second and third
+entries, weighted toward the schools the combo work touched.
+
+| School | Formula | Str | Effect |
+|---|---|---|---|
+| **Elemental** | **Rain** | 2 | ✸ Blast 3, ◎4. Everything in it is **Wet (1)**. No damage, no save. |
+| **Elemental** | **Lightning** | 2 | ✦ ◎4 · **Stunned (1)**, resist 📜 7 — **9** and **+2** vs **Wet** |
+| **Elemental** | **Frost** | 1 | ◎3 · **Slowed (1)**, resist 🌀 5 — **9** vs **Wet** |
+| **Elemental** | **Scorch** | 1 | ✦ ◎4 · **Burning (1)**. A **Wet** target sheds it. |
+| **Blood** | **Open the Vein** | 1 | ◎2 · ⚔ 3, ignoring **Block**. Costs **1 Health**. |
+| **Blood** | **Boil** | 3 | **Burning (3)**, resist ✊ 7. Costs **2 Health**. |
+| **Necromancy** | **Grave Chill** | 2 | ✵ Aimed 2 · **Dazed (1)**, resist ✊ 5. One **bound Taint** card. |
+| **Poison** | **Slick** | 1 | ◎3 · **Off-Balance (1)**. No save. |
+| **Glamour** | **Wrong Face** | 2 | **Dazed (2)**, resist 👁 7. The GM writes down a secret. |
+| **Shadow** | **Longer Shadow** | 1 | Until your next turn every square adjacent to you is shadowed. A **Wild** card joins your fate deck. |
+| **Tattoo** | **Graven Eye** | 1 | Permanent: you are never surprised. The GM writes down a secret. |
+| **Ward** | **Turn Aside** | 2 | ⚡ Reaction: one ally's Block counts **double** against this attack. |
+| **Divination** | **Where It Will Land** | 1 | **Read 1** on your own fate deck (core-rules §6). |
+| **Divination** | **The Mark of Things to Come** | 2 | **Marked (1)** on an enemy at any range, and **Read 1** on its fate deck. |
+| **Asceticism** | **Empty Hand** | 1 | While your hand is empty you may ⚔ Strike with no item, at your own ✊ Might. |
+
+**Two of those set an opening Way of Mind barely reads.** *Slick* sets **Off-Balance** for the
+fighters and *The Mark of Things to Come* sets **Marked** for the archers. A Poisoner cannot follow
+up on a stumble and a Diviner cannot shoot — which is precisely why those two cards get played at a
+table and never in a solo playtest.
+
+### 3.5 Way of Faith — thirteen miracles
+
+A second per god, and the Way's own opening seeded. **A god's list is short** (§1.4); these do not
+pretend to finish one.
+
+| God | Miracle | Str | Effect |
+|---|---|---|---|
+| **The Eternal God** | **Name the Guilty** | 1 | **Judged (1)** on one enemy you can see. No save. |
+| **The Eternal God** | **The Weight of It** | 2 | A **Judged** enemy's armor counts **0** against everyone until your next turn. |
+| **The Eternal Spirit** | **Lay On** | 1 | ✚ Heal an ally 2 at ◎3. |
+| **Sessyfyn** | **Undertow** | 2 | ✸ Blast 2, ◎3: **Wet (1)**, and every target is moved 1 square you choose. |
+| **Valtor** | **No Step Back** | 2 | Every ally within 2 gains **Block 2** until your next turn. |
+| **Fagar** | **The Second Thought** | 1 | One enemy spends its secondary this round doing nothing, resist 👑 7. |
+| **Vulpet** | **Nobody's Friend** | 2 | Until your next turn no ally may Heal, Interpose for, or redirect a hit from one enemy. |
+| **Brendan** | **Full Belly** | 1 | Out of combat: the party's next rest returns one extra rest token. |
+| **The Grey** | **Grey Judgement** | 2 | A **Judged** enemy acts **last** in the round, whatever its initiative. |
+| **The Purple** | **Taste of the Rot** | 1 | One adjacent enemy: 1 damage and **Off-Balance (1)**, no save. You gain **1 Taint** on a Miss. |
+| **The Yellow** | **Half a Truth** | 2 | Until your next turn, enemies act as though one ally you name were not there. ⤵ **Strain 1**. |
+| **Vax** | **Stand Where I Stand** | 1 | Until your next turn, allies adjacent to you cannot be reduced below 1 Health. Costs **2 Health**. |
+| **The First** | **Measure of the Debt** | 2 | A **Judged** enemy that dies this round: you gain **3 Health**. |
+
+**Judged is the opening a priest sets for other people**, and all three of its readers above are
+party-facing or tempo — stripped armor, a changed turn order, a death that pays. That is an answer at
+the card level to the thinnest finding in the whole uniqueness audit: **Support** had one node in the
+game ([specializations.md](specializations.md)). Faith's combo is *telling the party who to kill.*
+
+### 3.6 Can every Way reach a combo? — the audit
+
+An opening nobody can set is a dead keyword, and a Way that can only set and never read has been
+handed homework. One row per Way:
+
+| Way | Sets | Reads | Verdict |
+|---|---|---|---|
+| **Strength** | Off-Balance — *Shoulder Check* | 3, one per band | balanced |
+| **Shade** | Marked — *Call the Shot*, at any range | 3 | balanced |
+| **Mind** | Wet — *Rain*; plus Off-Balance and Marked for others | 3 of Wet | balanced, and the only Way that sets for every other |
+| **Faith** | Judged — *Name the Guilty*; plus Wet — *Undertow* | 3, all party-facing | balanced |
+
+Every Way can set and read its own opening with **two ordinary minor nodes**, so a combo is reachable
+long before a title is. That was the thing worth checking: if openings only arrived with a Signature,
+nobody would ever see one at a table.
+
+**Nothing in §3 is simulated either.** The four worth it first, each for a different reason:
+
+| Card | Why |
+|---|---|
+| **Between the Plates** | a reader whose value the target sets rather than the card — the only one of its shape |
+| **Sweep the Leg** | two cards for **Prone**, the strongest condition that is not Unconscious |
+| **The Weight of It** | armor at 0 for the whole party is the biggest swing any strength-2 spell makes, and armor already behaves like a cliff edge |
+| **Off-Hand Blow** | the commonest card this game will ever print, so a −1 that is wrong is wrong everywhere |
+
+---
+
+## 4. Open
+
+- **Nothing here is simulated.** The four Signatures that most need it: **Double or Nothing** (two
+  fate cards, both applying, is a new distribution and nothing else in the game does it),
+  **Cleave to the Bone** (a Wound threshold at 4 changes how often Wounds enter a deck at all),
+  **The Wall** (stacking Blocks against the measured value of a Defend primary) and
+  **Nothing Gets Through** (doubled armor against the cliff-edge behaviour armor already has). §3.6
+  names the four minor-node cards with the same claim on a simulator.
+- **[OPEN]** **How a combo actually performs.** Every number in §1.6's reader table is reasoned from
+  the value bands and none of it is measured. The specific question is whether a +2 that costs a
+  secondary *and* a draw of the right pair beats simply playing two Strikes — and the answer may well
+  be no for one character and yes for a party, which is the whole design but is still a claim.
+- **[OPEN]** Each god's **full miracle list** and each school's **full formula list**. §3.4 and §3.5
+  write the second and third entries; nobody has written a fourth.
+- **[OPEN]** The **four unbanded readers** — *Between the Plates*, *The Weight of It*,
+  *Grey Judgement*, *Measure of the Debt*. Each pays off in something a band cannot price, which is
+  what makes them interesting and what makes them unpriced. Either the simulator settles them or the
+  count should come down.
+- **[OPEN]** Whether the openings want a **fifth**. Four is one per Way and memorable, but nothing
+  covers *armour pried open* or *a spell half-unravelled*, and a fifth would have no Way to belong
+  to — which may be an argument for it rather than against.
 - **[OPEN]** A **multi-step spell**. The slate carries one effect; *Move, then Strike* exists on cards
   but has no spell equivalent, and *Wall of the Sphere* is already straining against the single step.
 - **[OPEN]** **The Rumour** needs the GM-facing half written: what "acts as if it were true" does to

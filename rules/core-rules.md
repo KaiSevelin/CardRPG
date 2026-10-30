@@ -120,7 +120,7 @@ If one side has clearly caught the other — an ambush, a sprung trap, a charge 
 - The rest of your hand stays for reactions.
 - **Two attacks in one turn are allowed** if they come from two different cards, e.g. a Strike primary plus a card with Strike on its secondary. You can never use both halves of the same card.
 
-> **Where double attacks come from.** A card with Strike on its *secondary* half is the strongest kind of card in the game: simulation showed one such card shortens fights by a full round. The rule stays open, but these cards are meant to be **earned through leveling**, not handed out in starter decks. Treat Strike-on-secondary as a reward on a Way's tree, the same way a second attack is a milestone in other games. The mechanism is now specified — it is an **action-card benefit on a Way graph node** ([leveling.md](leveling.md) §4) — so what remains is writing the graphs. The starter deck keeps its one double-strike card until it has somewhere to be earned.
+> **Where double attacks come from.** A card with Strike on its *secondary* half is the strongest kind of card in the game: simulation showed one such card shortens fights by a full round. The rule stays open, but these cards are meant to be **earned through leveling**, not handed out in starter decks. Treat Strike-on-secondary as a reward on a Way's tree, the same way a second attack is a milestone in other games. The mechanism is now specified — it is an **action-card benefit on a Way graph node** ([leveling.md](leveling.md) §4) — and the card is written: *Off-Hand Blow*, Strike on the primary and **Strike −1** on the secondary, in the common minor-node pool any Way may draw from ([way-cards.md](way-cards.md) §3.1). The −1 is what keeps it from making a plain Strike obsolete. The starter deck keeps its one double-strike card.
 
 ### Reactions
 
@@ -682,7 +682,7 @@ or Slowed (1) on a partial.*
 | **Slowed** | All Move values are halved (round down). |
 | **Stunned** | You can't play reactions. |
 | **Invisible** | Enemies can't target you. Ends early if you Strike or Cast at an enemy. |
-| **Burning** | Take 1 damage at the start of your turn. |
+| **Burning** | Take 1 damage at the start of your turn. **Water and fire cancel:** neither Burning nor Wet lands on a target already carrying the other, and whichever arrives second ends the first without itself landing. |
 | **Prone** | Melee Strikes against you have advantage. Standing up costs Move 1. |
 | **Unconscious** | At 0 Health. No turns, no reactions, Prone. Dying until treated (section 8). |
 | **Grappled** | Blocks 👣 Move (see section 10). |
@@ -691,6 +691,78 @@ or Slowed (1) on a partial.*
 | **Burdened** | Over your carry limit: Slowed, and disadvantage on 🌀 Agility and 🌑 Shadow checks. No duration – it lasts until you drop weight (section 4). |
 | **Overloaded** | Over half again your limit: Burdened, and 2 random cards are Spent. No duration (section 4). |
 | **Blessed / Cursed** | See fate deck (no duration – they last until the card is drawn). |
+
+### Openings
+
+Every condition above takes something away. These four take nothing:
+
+| Opening | Effect |
+|---|---|
+| **Wet** | Nothing by itself. |
+| **Off-Balance** | Nothing by itself. |
+| **Marked** | Nothing by itself. |
+| **Judged** | Nothing by itself. |
+
+An **opening** is a condition that exists to be **read by another card**. A mage's *Rain* leaves a
+goblin Wet; Wet does nothing at all; and then somebody's *Lightning* hits a Wet goblin harder than a
+dry one. That is the whole mechanic, and these four rules are what make it work.
+
+**1. An opening carries no rules of its own. Every combo is printed on the card that reads it.**
+The table above is the entire text of all four openings. *Lightning* says what *Lightning* does to a
+Wet target, and nothing else in the book mentions the pair. So a new card adds **one** combo and
+changes nothing else, and a new opening adds none at all. This is the rule that stops the system
+growing into an interaction table, which is how combo systems usually die.
+
+**2. An opening is never resisted.**
+There is nothing to save against — it does nothing. The saving throw happens on the **payoff**,
+where the real effect is. So the setup always works, and the uncertainty sits where uncertainty
+belongs. It is also why a setup is allowed to be cheap.
+
+**3. An opening never gates. It only sharpens.**
+No card reads *"only against a Wet target."* A payoff does its job against anyone and does it
+**better** against an opening — more damage, advantage, or a harder saving throw for a condition it
+was already trying for. A card that does nothing without its partner is a card you hold all fight
+waiting for a draw that never comes, and in a game played from a shuffled deck that is the one
+mistake a combo must not make.
+
+**4. An opening is not used up. The duration is the window, and the window is the whole round.**
+Conditions tick at the start of the **creator's** turn, so an opening you lay down on your turn lasts
+through everybody else's and expires when you come round again. **One setup, one round, the whole
+party.** The mage's rain is the archer's rain.
+
+> **Openings are the only place in these rules where two players' cards combine.** Fights are
+> otherwise played side by side: a Tactician's call, a Bodyguard stepping in, and little else. An
+> opening is a thing one character does to make another character's turn better, and it costs the
+> first character almost nothing — which is what makes it get done.
+
+**They are a closed list of four, one per Way**, because a player has to be able to hold in their
+head which ones their own cards read:
+
+| Opening | The Way that makes it most easily | Read best by |
+|---|---|---|
+| **Wet** | Mind — Elemental magic | lightning and cold |
+| **Off-Balance** | Strength | knockdowns, grapples, follow-up blows |
+| **Marked** | Shade | ranged and precise attacks |
+| **Judged** | Faith | that god's miracles — and, usually, any ally's attack |
+
+**Any card may read any opening**, whatever its Way. The Ways differ only in which they *make*
+easily, and that asymmetry is the point: the combo you want is usually the one somebody else sets up
+for you.
+
+**Setters belong on secondary halves.** A turn is a primary and a secondary, and most secondaries are
+*Move 1* — the cheapest space on a card. An opening set from there costs you a step you were not
+taking. Put it on a primary instead and it competes with a Strike, which means it never gets played.
+
+**An opening is not always good.** Water and fire cancel, so a Wet enemy is a *worse* target for
+fire, not a better one — one application of flame goes into steam and the water with it. There is no
+autopilot in which laying down an opening is simply correct, and that is deliberate.
+
+> Note where that rule is written: on **Burning**, in the table above, not on Wet. Wet's entry is
+> still *nothing by itself*, which is rule 1 holding even at the one place the rules bend — the
+> interaction lives on the thing that reads the opening, exactly as it does for a card.
+
+> **Enemies use openings too, by the same rules.** A goblin shaman's rain and a goblin archer's
+> shock are the same two cards, and the monster side needs no special case.
 
 ---
 

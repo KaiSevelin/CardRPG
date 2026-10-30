@@ -337,6 +337,61 @@ export const GOBLIN_ARCHER = {
 };
 
 /* -------------------------------------------- */
+/*  Formulas                                    */
+/* -------------------------------------------- */
+
+/**
+ * Four Elemental formulas, and they are here for one reason: they are the combo mechanic running.
+ * Rain sets the opening, and the other three read it in the three different ways a `when` clause is
+ * allowed to (data/cards.mjs) -- more damage, a harder save, and nothing at all.
+ *
+ * Together they cost 6 spell slots, which is three times what a first Way of Mind node grants
+ * (core-rules 4). That is the honest price of a combo and the reason slot progression is a reward
+ * worth having: the pair is what the extra slots are FOR.
+ */
+export const FORMULAS = [
+  {
+    name: "Rain", strength: 2, kind: "formula", source: "Elemental Magic",
+    description: "<p>A squall out of nothing, over three squares, and the water does not care who "
+      + "it lands on. It is not an attack and nothing resists it.</p>",
+    // No verb: a step with a condition and no verb IS the condition, and an opening never saves.
+    effect: {
+      range: 4, area: 3, areaKind: "blast",
+      condition: "wet", duration: 1,
+      text: "no damage"
+    }
+  },
+  {
+    name: "Lightning", strength: 2, kind: "formula", source: "Elemental Magic",
+    description: "<p>Reads a Wet target two ways at once: harder to shrug off, and it hurts more. "
+      + "Against a dry one it is still a Cast that tries to stun, which is the point &mdash; the "
+      + "opening sharpens the card, it does not switch it on.</p>",
+    effect: {
+      verb: "cast", range: 4,
+      condition: "stunned", duration: 1, resist: "lore", dc: 7,
+      when: { needs: "wet", mod: 2, dc: 9 }
+    }
+  },
+  {
+    name: "Frost", strength: 1, kind: "formula", source: "Elemental Magic",
+    description: "<p>One target, one round, no damage. Against a Wet target the water is already "
+      + "there to freeze, so the save goes from Normal to Heroic and nothing else changes.</p>",
+    effect: {
+      range: 3,
+      condition: "slowed", duration: 1, resist: "agility", dc: 5,
+      when: { needs: "wet", dc: 9 }
+    }
+  },
+  {
+    name: "Scorch", strength: 1, kind: "formula", source: "Elemental Magic",
+    description: "<p>Carries no combo clause at all, and is still the proof that an opening is not "
+      + "always worth having: water and fire cancel, so a Wet target takes the Cast and sheds the "
+      + "Burning. The interaction is on Burning, where the rules put it.</p>",
+    effect: { verb: "cast", range: 4, condition: "burning", duration: 1 }
+  }
+];
+
+/* -------------------------------------------- */
 /*  Encounters                                  */
 /* -------------------------------------------- */
 

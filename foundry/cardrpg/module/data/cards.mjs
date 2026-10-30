@@ -65,6 +65,33 @@ export function stepField() {
       choices: [...Object.keys(CARDRPG.conditions), ""]
     }),
 
+    /*
+     * The combo clause: what this half does EXTRA against a target that already carries an
+     * **opening** (core-rules 7). `needs` names the opening; the other three are what knowing about
+     * it is worth.
+     *
+     * An opening never GATES. There is no field here for "only against a Wet target", on purpose:
+     * a half that does nothing without its setup is a card you hold all fight waiting for a draw
+     * that never comes. So this only ever sharpens -- `mod` more damage, `advantage` on the draw,
+     * `dc` a harder save for the condition the half was already printing.
+     *
+     * `dc` is how a combo lands a condition without gating one: Lightning always tries to Stun,
+     * and against a Wet target it tries at Heroic instead of Normal.
+     *
+     * Because the clause lives here, on the half that reads the opening, NO interaction table
+     * exists -- adding a card adds one combo and changes nothing else in the game.
+     */
+    when: new fields.SchemaField({
+      needs: new fields.StringField({
+        required: false, blank: true, initial: "",
+        choices: [...Object.keys(CARDRPG.conditions), ""]
+      }),
+      mod: new fields.NumberField({ integer: true, nullable: true, initial: null }),
+      advantage: new fields.BooleanField({ initial: false }),
+      dc: new fields.NumberField({ integer: true, min: 0, nullable: true, initial: null }),
+      text: new fields.StringField({ required: false, blank: true, initial: "" })
+    }),
+
     // A few words only, for what icons can't express (Taunt, Parry). Prose goes on the sheet.
     text: new fields.StringField({ required: false, blank: true, initial: "" })
   });

@@ -119,6 +119,15 @@ are — not an eleventh entry in the slot list. The format and the content stand
 Card layout is settled in [../foundry/card-layout.md](../foundry/card-layout.md): the scan column,
 the four information tiers, which types may have an informative back, and the bonus-group border.
 
+**Combos are the one place two players' cards combine.** Four **openings** — Wet, Off-Balance,
+Marked, Judged, one per Way — are conditions that do nothing at all by themselves and exist to be
+read by other cards (core-rules §7). Three rules do the work: an opening carries no rules of its own
+so no interaction table can ever accumulate, it is never resisted so a setup always lands, and it
+never **gates** a card but only sharpens one, so no card is ever dead for want of its partner. The
+reason it is a party mechanic rather than a solo one is the clock we already had: a condition ticks on
+its **creator's** turn, so one opening is one round for everybody at the table. Drawing a pair out of
+one sixteen-card deck is a trap; holding one card each in two hands is not.
+
 Nothing in the design now blocks writing the system.
 
 ## Order of work
@@ -128,7 +137,8 @@ Nothing in the design now blocks writing the system.
 3. **Fantasy world** (in progress — `worldinfo/Firma.md`: history, districts, enclaves and religions written; specializations and most monsters are empty headings)
 4. Ways, leveling trees, specializations — chassis and all 48 major nodes done
    ([leveling.md](leveling.md), [specializations.md](specializations.md)); **content in progress**
-   ([way-cards.md](way-cards.md): the standard and 48 draft Signatures, none simulated)
+   ([way-cards.md](way-cards.md): the standard, 48 draft Signatures and the minor-node pools —
+   roughly 100 cards, formulas and miracles, none of it simulated)
 5. Backgrounds
 6. Monsters and NPCs with tactics
 7. Foundry VTT 14 system

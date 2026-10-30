@@ -74,13 +74,22 @@ export function collectBonuses(actor, verb, item) {
 /*  Advantage                                   */
 /* -------------------------------------------- */
 
+/** Does this actor carry that condition right now? The one test every combo clause runs. */
+export function carries(actor, key) {
+  if (!key || !actor) return false;
+  return (actor.system.activeConditions ?? []).some(c => c.key === key);
+}
+
 /**
  * Work out advantage. Two sources of advantage still give one, and advantage and disadvantage
  * cancel -- so this returns a mode, never a stack.
  *
+ * `when` is a half's combo clause (data/cards.mjs): if its opening is on the target and it promises
+ * advantage, that is one more source of the same single advantage, not a second one.
+ *
  * @returns {{mode: number, reasons: string[]}}
  */
-export function advantageFor(actor, target, { ranged = false, area = false } = {}) {
+export function advantageFor(actor, target, { ranged = false, area = false, when = null } = {}) {
   const reasons = [];
   let advantage = false;
   let disadvantage = false;
@@ -96,6 +105,11 @@ export function advantageFor(actor, target, { ranged = false, area = false } = {
   if (conditionsOf(actor).includes("invisible")) {
     advantage = true;
     reasons.push("attacking while Invisible");
+  }
+  if (when?.advantage && when.needs && carries(target, when.needs)) {
+    advantage = true;
+    const label = game.i18n.localize(CARDRPG.conditions[when.needs]?.label ?? when.needs);
+    reasons.push(`target is ${label}`);
   }
 
   // Ranged or Area while an enemy is adjacent. Adjacency needs the canvas, so this is the GM's
@@ -149,16 +163,25 @@ export async function resolveAttack(actor, { verb = "strike", item, mod = 0, tar
   const ranged = !!(line.range && line.range > 1) || !!(step.range && step.range > 1);
   const area = !!(line.area || step.area);
 
+  /*
+   * The combo clause. `advantage` has to be settled before the draw and there is only one draw, so
+   * like the ranged-in-melee rule it is decided from the first target -- the existing compromise,
+   * not a new one. `mod` is settled per target AFTER the draw, because an Area may catch one Wet
+   * goblin and one dry one and they must not take the same damage.
+   */
+  const when = step.when?.needs ? step.when : null;
+
   // One draw for the whole action.
   const first = targets[0] ?? null;
-  const { mode, reasons } = advantageFor(actor, first, { ranged, area });
+  const { mode, reasons } = advantageFor(actor, first, { ranged, area, when });
   const fate = await drawFate(actor, before, mode);
 
   const rows = [];
   for (const target of targets) {
     const armor = target.system.armor ?? 0;
     const block = target.system.block ?? 0;
-    const dealt = Math.max(0, fate.result - armor - block);
+    const combo = when && carries(target, when.needs) ? (when.mod ?? 0) : 0;
+    const dealt = Math.max(0, fate.result + combo - armor - block);
 
     await target.update({
       "system.health.value": Math.max(0, target.system.health.value - dealt),
@@ -167,7 +190,11 @@ export async function resolveAttack(actor, { verb = "strike", item, mod = 0, tar
       ...(block && !target.system.blockPersists ? { "system.block": 0 } : {})
     });
 
-    rows.push({ name: target.name, armor, block, dealt, down: target.system.health.value - dealt <= 0 });
+    rows.push({
+      name: target.name, armor, block, combo, dealt,
+      opening: combo ? game.i18n.localize(CARDRPG.conditions[when.needs]?.label ?? when.needs) : null,
+      down: target.system.health.value - dealt <= 0
+    });
   }
 
   await attackCard(actor, { verb, item, base, mod, bonuses, fate, mode, reasons, rows });
@@ -204,6 +231,7 @@ async function attackCard(actor, info) {
 
   for (const row of rows) {
     parts.push(`<p><strong>${row.name}</strong>: ${fate.result}`
+      + (row.combo ? ` ${row.combo > 0 ? "+" : "&minus;"} ${Math.abs(row.combo)} (${row.opening})` : "")
       + (row.armor ? ` &minus; ${row.armor} armor` : "")
       + (row.block ? ` &minus; ${row.block} Block` : "")
       + ` = <strong>${row.dealt}</strong> damage`
@@ -350,7 +378,10 @@ export async function resolveCondition(actor, { step, target }) {
 
   if (step.resist) {
     const score = passiveScore(target, step.resist);
-    const dc = step.dc ?? CARDRPG.difficulties.normal;
+    // An opening the target already carries makes the save harder; it never decides whether the
+    // condition is attempted at all, so the half is playable against anyone (data/cards.mjs).
+    const when = step.when?.needs && step.when.dc && carries(target, step.when.needs) ? step.when : null;
+    const dc = when ? when.dc : (step.dc ?? CARDRPG.difficulties.normal);
     const { result, used } = await drawFate(target, score, 0);
     const miss = used?.system.special === "miss";
     const crit = used?.system.special === "crit";
@@ -365,19 +396,39 @@ export async function resolveCondition(actor, { step, target }) {
     }
 
     const approach = game.i18n.localize(CARDRPG.approaches[step.resist]?.label ?? step.resist);
+    const why = when
+      ? ` (${game.i18n.localize(CARDRPG.conditions[when.needs]?.label ?? when.needs)})`
+      : "";
     line = `resists with ${approach} ${score}${used ? ` ${used.system.label ?? ""}` : ""} `
-      + `= ${result} against ${dc}: `
+      + `= ${result} against ${dc}${why}: `
       + (landed ? `<strong>${label(landed.key)} (${landed.duration})</strong>` : "<strong>nothing</strong>");
   } else {
     line = `<strong>${label(key)} (${full})</strong>`;
   }
 
   if (landed) {
-    const conditions = [...(target.system.conditions ?? []).map(c => ({ ...c }))];
-    const already = conditions.find(c => c.key === landed.key);
-    // The longer of the two wins: a second application refreshes rather than stacks.
-    if (already) already.duration = Math.max(already.duration ?? 0, landed.duration);
-    else conditions.push({ ...landed, creatorId: actor.id });
+    let conditions = [...(target.system.conditions ?? []).map(c => ({ ...c }))];
+
+    /*
+     * Water and fire cancel. Whichever arrives second ends the first and does not itself land, so
+     * this is checked BEFORE the refresh below -- one application of fire is absorbed by the water
+     * and vice versa, which is why a Wet enemy is a worse target for Scorch, not a better one.
+     *
+     * It reports through `line` rather than its own message: one resolution, one chat card, even
+     * when a saving throw was made and then came to nothing.
+     */
+    const cancels = CARDRPG.conditions[landed.key]?.cancels ?? [];
+    const hit = conditions.filter(c => cancels.includes(c.key)).map(c => label(c.key));
+    if (hit.length) {
+      conditions = conditions.filter(c => !cancels.includes(c.key));
+      line += ` &mdash; and ${hit.join(" and ")} cancel it. Neither lands.`;
+      landed = null;
+    } else {
+      const already = conditions.find(c => c.key === landed.key);
+      // The longer of the two wins: a second application refreshes rather than stacks.
+      if (already) already.duration = Math.max(already.duration ?? 0, landed.duration);
+      else conditions.push({ ...landed, creatorId: actor.id });
+    }
     await target.update({ "system.conditions": conditions });
   }
 
