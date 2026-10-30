@@ -292,6 +292,95 @@ if (!fs.existsSync(specPath)) {
 
 /* -------------------------------------------- */
 
+/*
+ * rules/way-cards.md 3.4 claims every one of the twelve magic schools has at least four formulas
+ * and at least one at strength 1 and one at strength 2 -- the test being whether a caster at their
+ * first node, who has two slots, can prepare anything at all from that school.
+ *
+ * It is checked because it is the kind of claim that was true when written and quietly stops being
+ * true: the previous distribution ran from seven formulas down to one, entirely according to which
+ * school the last few passes had happened to need.
+ */
+section("rules/way-cards.md: every school is playable at two slots");
+
+const waycards = fs.readFileSync(path.join(root, "../../rules/way-cards.md"), "utf8");
+// Set inside the schools block below and read again by the gods block, which compares the two.
+let formulaCount = 0;
+const mindFrom = waycards.indexOf("### 3.4 Way of Mind");
+const mindTo = waycards.indexOf("### 3.5 Way of Faith");
+if (mindFrom < 0 || mindTo < 0) {
+  check("section 3.4 found", "missing", "present");
+} else {
+  const schools = new Map();
+  let current = null;
+  for (const line of waycards.slice(mindFrom, mindTo).split("\n")) {
+    const heading = /^#### (.+?) \u2014/.exec(line);
+    if (heading) {
+      current = heading[1];
+      schools.set(current, []);
+      continue;
+    }
+    if (!current || !line.startsWith("|") || /^\|[\s:|-]+\|$/.test(line)) continue;
+    const cells = line.replace(/^\||\|$/g, "").split("|").map(c => c.trim());
+    // A formula row is | name | strength | effect |; the header row says "Formula".
+    if (cells.length === 3 && cells[0] !== "Formula") schools.get(current).push(cells[1]);
+  }
+
+  check("magic schools with a list", schools.size, 12);
+  const thin = [...schools].filter(([, f]) => f.length < 4).map(([n, f]) => `${n} (${f.length})`);
+  check("schools with fewer than four formulas", thin.length ? thin.join(", ") : "none", "none");
+
+  const unplayable = [...schools]
+    .filter(([, f]) => !f.includes("1") || !f.includes("2"))
+    .map(([n]) => n);
+  check("schools a two-slot caster cannot use",
+    unplayable.length ? unplayable.join(", ") : "none", "none");
+
+  formulaCount = [...schools.values()].reduce((n, f) => n + f.length, 0);
+  check("formulas written in total", formulaCount, 54);
+}
+
+/*
+ * The same for the twelve gods, and one thing more: every god must state an **Obedience**, which is
+ * what a miracle is paid in. A school is what it cost you to learn; a god is what it costs you to
+ * ask, so a god with no Obedience is a god that grants its miracles free.
+ */
+const faithFrom = waycards.indexOf("### 3.5 Way of Faith");
+const faithTo = waycards.indexOf("### 3.6 Targeted counters");
+if (faithFrom < 0 || faithTo < 0) {
+  check("section 3.5 found", "missing", "present");
+} else {
+  const gods = new Map();
+  let current = null;
+  for (const line of waycards.slice(faithFrom, faithTo).split("\n")) {
+    const heading = /^#### (.+?) —/.exec(line);
+    if (heading) {
+      current = heading[1];
+      gods.set(current, { miracles: 0, obedience: false });
+      continue;
+    }
+    if (!current) continue;
+    if (line.includes("**Obedience")) gods.get(current).obedience = true;
+    if (!line.startsWith("|") || /^\|[\s:|-]+\|$/.test(line)) continue;
+    const cells = line.replace(/^\||\|$/g, "").split("|").map(c => c.trim());
+    if (cells.length === 3 && cells[0] !== "Miracle") gods.get(current).miracles++;
+  }
+
+  check("gods with a list", gods.size, 12);
+  const thin = [...gods].filter(([, g]) => g.miracles < 3).map(([n, g]) => `${n} (${g.miracles})`);
+  check("gods with fewer than three miracles", thin.length ? thin.join(", ") : "none", "none");
+  const free = [...gods].filter(([, g]) => !g.obedience).map(([n]) => n);
+  check("gods that state no Obedience", free.length ? free.join(", ") : "none", "none");
+  check("miracles written in total",
+    [...gods.values()].reduce((n, g) => n + g.miracles, 0), 39);
+
+  // A god's list stays shorter than a school's, which way-cards 1.4 asks for.
+  const miracles = [...gods.values()].reduce((n, g) => n + g.miracles, 0);
+  check("a god's list is shorter than a school's", miracles < formulaCount, true);
+}
+
+/* -------------------------------------------- */
+
 section("icons");
 
 // Every icon key the config names must exist on disk, or a card face renders a placeholder.

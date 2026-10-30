@@ -510,6 +510,10 @@ Four of these pay in something other than slots — Valtor in Strain, Fagar in S
 Purple in their own Health and Taint — which is the Way's design read at the card level: **the gods
 differ in what they take.**
 
+§3.5 makes that general: each god now states an **Obedience** that applies to everything it grants,
+because a miracle is free to learn and paid for every time you ask. These twelve are repeated there
+under their gods.
+
 ---
 
 ## 3. Minor-node content  **[DRAFT]**
@@ -605,70 +609,450 @@ deal against an ironclad and nothing at all against a goblin, so its value is se
 rather than by the card, and no band can price it. It is the one card in this section most worth
 simulating.
 
-### 3.4 Way of Mind — twenty-two formulas (plus the counters in §3.6)
+### 3.4 Way of Mind — the twelve schools
 
-Beyond the twelve Signatures. **Strength is the slot cost** (§1.4), so the bracketed number is what
-it takes out of the budget. Each school's full list is still open; these are its second and third
-entries, weighted toward the schools the combo work touched.
+**Strength is the slot cost** (§1.4), so the bracketed number is what a formula takes out of the
+budget. The Signature from §2.3 is listed first in each school and marked ✦.
 
-| School | Formula | Str | Effect |
-|---|---|---|---|
-| **Elemental** | **Rain** | 2 | ✸ Blast 3, ◎4. Everything in it is **Wet (1)**. No damage, no save. |
-| **Elemental** | **Lightning** | 2 | ✦ ◎4 · **Stunned (1)**, resist 📜 7 — **9** and **+2** vs **Wet** |
-| **Elemental** | **Frost** | 1 | ◎3 · **Slowed (1)**, resist 🌀 5 — against a **Wet** target, **Frozen 2 (1)** instead, no save: the water is already there to freeze |
-| **Elemental** | **Scorch** | 1 | ✦ ◎4 · **Burning 1 (1)**. A **Wet** or **Frozen** target sheds it. |
-| **Blood** | **Open the Vein** | 1 | ◎2 · ⚔ 3, ignoring **Block**. Costs **1 Health**. |
-| **Blood** | **Boil** | 3 | **Burning 3 (2)**, resist ✊ 7. Costs **2 Health**. |
-| **Necromancy** | **Grave Chill** | 2 | ✵ Aimed 2 · **Dazed (1)**, resist ✊ 5. One **bound Taint** card. |
-| **Poison** | **Slick** | 1 | ◎3 · **Off-Balance (1)**. No save. |
-| **Poison** | **The Quick Dose** | 3 | **Poisoned 2 (2)** on one adjacent target, resist ✊ 7. Two a turn, and no secondary. |
-| **Poison** | **The Long Dose** | 1 | **Poisoned 0 (3)** on one target at ◎2, resist ✊ 5. No damage at all — three rounds of a man who cannot use his off hand. |
-| **Poison** | **The Grey Sickness** | 2 | ☣ **Tainting 1, slow** on one adjacent target, resist ✊ 7. Not a poison: a **disease**, and it is still there next week. |
-| **Elemental** | **Flesh of the Earth** | 2 | ✦ ◎3 · **Burning 1 (2)** and ⚗ **Corrode 1**. Acid: it eats the armour as well as the man. |
-| **Glamour** | **Wrong Face** | 2 | **Dazed (2)**, resist 👁 7. The GM writes down a secret. |
-| **Glamour** | **The Evil Eye** | 2 | **Cursed** on one target you can see — a temporary Miss in its fate deck, until drawn. The GM writes down a secret. |
-| **Shadow** | **Longer Shadow** | 1 | Until your next turn every square adjacent to you is shadowed. A **Wild** card joins your fate deck. |
-| **Tattoo** | **Graven Eye** | 1 | Permanent: you are never surprised. The GM writes down a secret. |
-| **Ward** | **Turn Aside** | 2 | ⚡ Reaction: one ally's Block counts **double** against this attack. |
-| **Ward** | **The Shut Mouth** | 2 | **Silenced (1)** on one enemy at ◎3, resist 📜 7. Ward decides whether magic happens; this is the other direction from *The Unbound Tongue*. |
-| **Ward** | **Shake It Off** | 2 | ⚡ Reaction: ⛓ **Shake Off 3** on one ally at ◎3 — which ends anything the game can print. The only dispel that does not care what the condition is. |
-| **Divination** | **Where It Will Land** | 1 | **Read 1** on your own fate deck (core-rules §6). |
-| **Divination** | **The Mark of Things to Come** | 2 | **Marked (1)** on an enemy at any range, and **Read 1** on its fate deck. |
-| **Asceticism** | **Empty Hand** | 1 | While your hand is empty you may ⚔ Strike with no item, at your own ✊ Might. |
+#### The principle: a school is its price
 
-**Two of those set an opening Way of Mind barely reads.** *Slick* sets **Off-Balance** for the
-fighters and *The Mark of Things to Come* sets **Marked** for the archers. A Poisoner cannot follow
-up on a stumble and a Diviner cannot shoot — which is precisely why those two cards get played at a
-table and never in a solo playtest.
+> **What makes a formula belong to its school is not what it does. It is what it costs.**
 
-### 3.5 Way of Faith — sixteen miracles (plus the counter in §3.6)
+A Blood spell and an Elemental spell can deal the same damage at the same range; what makes one
+unmistakably Blood is that it was paid for in **Health**. Every school in the world document states a
+price ([specializations.md](specializations.md) §2), and the price is the most distinguishing thing
+each one has — far more than its element, which is why two schools can both throw fire.
 
-A second per god, and the Way's own opening seeded. **A god's list is short** (§1.4); these do not
-pretend to finish one.
+**Half the prices had never been charged.** Writing these lists began with that audit:
 
-| God | Miracle | Str | Effect |
-|---|---|---|---|
-| **The Eternal God** | **Name the Guilty** | 1 | **Judged (1)** on one enemy you can see. No save. |
-| **The Eternal God** | **The Weight of It** | 2 | A **Judged** enemy's armor counts **0** against everyone until your next turn. |
-| **The Eternal Spirit** | **Lay On** | 1 | ✚ Heal an ally 2 at ◎3. |
-| **The Eternal Spirit** | **A Word for You** | 1 | **Blessed** on one ally — a temporary Critical in their fate deck, until drawn. |
-| **The Eternal Spirit** | **Bear It for Them** | 2 | ⚡ Reaction at ◎3: move one condition off an ally and **onto yourself**, at its full duration. Not a dispel — somebody still has it. |
-| **The Eternal Spirit** | **A Word Withdrawn** | 1 | ✋ **Lift** **Blessed** or **Cursed** from anyone at ◎3 — the marker and the card both. The god who gives a word may take it back, so this strips an enemy's blessing as readily as it lifts an ally's curse. |
-| **Sessyfyn** | **Undertow** | 2 | ✸ Blast 2, ◎3: **Wet (1)**, and every target is moved 1 square you choose. |
-| **Valtor** | **No Step Back** | 2 | Every ally within 2 gains **Block 2** until your next turn. |
-| **Fagar** | **The Second Thought** | 1 | One enemy spends its secondary this round doing nothing, resist 👑 7. |
-| **Vulpet** | **Nobody's Friend** | 2 | Until your next turn no ally may Heal, Interpose for, or redirect a hit from one enemy. |
-| **Brendan** | **Full Belly** | 1 | Out of combat: the party's next rest returns one extra rest token. |
-| **The Grey** | **Grey Judgement** | 2 | A **Judged** enemy acts **last** in the round, whatever its initiative. |
-| **The Purple** | **Taste of the Rot** | 1 | One adjacent enemy: 1 damage and **Off-Balance (1)**, no save. You gain **1 Taint** on a Miss. |
-| **The Yellow** | **Half a Truth** | 2 | Until your next turn, enemies act as though one ally you name were not there. ⤵ **Strain 1**. |
-| **Vax** | **Stand Where I Stand** | 1 | Until your next turn, allies adjacent to you cannot be reduced below 1 Health. Costs **2 Health**. |
-| **The First** | **Measure of the Debt** | 2 | A **Judged** enemy that dies this round: you gain **3 Health**. |
+| Price | Charged in a written formula? |
+|---|---|
+| **Health** — Blood | ✔ *Blood Price*, *Boil*, and now *The Second Heartbeat* |
+| **A bound Taint (mind)** per formula — Necromancy | ✔ *Grave Chill* |
+| **A permanent Wild card** per formula — Shadow | ✔ *Step Through*, *Longer Shadow* |
+| **A secret the GM holds** per formula — Tattoo | ✔ *Graven Strength*, *Graven Eye* |
+| **Spent** — Ward | ✔ *Unmake* |
+| **Money and materials** — Elemental | ✗ → now *The Reagent Cost* rule below |
+| **Skill cards set aside, equal to the strength** — Poison | ✗ → now charged on every Poison formula |
+| **An elven debt** — Glamour | ✗ → now charged, and two spells were charging **Tattoo's** price by mistake |
+| **Parts of your body** — Asceticism | ✗ → now *The Price Paid* |
+| **A pact with a minor god** per formula — Spiritualism | ✗ → now the pact *is* the spell |
+| **Negotiation with elf-kin** — Household | ✗ → an obligation per formula |
+| **Someone else's turn, and a prophecy** — Divination | ✗ → now *The Long Look* |
 
-**Judged is the opening a priest sets for other people**, and all three of its readers above are
-party-facing or tempo — stripped armor, a changed turn order, a death that pays. That is an answer at
-the card level to the thinnest finding in the whole uniqueness audit: **Support** had one node in the
-game ([specializations.md](specializations.md)). Faith's combo is *telling the party who to kill.*
+**Target: four formulas a school, and a 1 and a 2 in every one.** A first Way of Mind node grants
+**2 slots** (§1.4), so the test that matters is whether a two-slot caster can prepare something from
+*this* school on their first day. All twelve now pass it. Elemental, Poison, Glamour and Ward run to
+five or seven because earlier passes needed them; the thin ones were filled rather than making the
+fat ones fatter.
+
+**Five of the twelve reach strength 3, and nothing in the game is a 4 or a 5.** That is the real gap
+and it is deliberate for now — §1.4 says a **4** *changes the fight for a round* and a **5** is *once
+in a fight, and the reason the branch exists*, which are the two bands that most need the numbers
+under them to be settled first. They are in §4.
+
+---
+
+#### Blood Magic — Tempo, paid in Health
+
+| Formula | Str | Effect |
+|---|---|---|
+| ✦ **Blood Price** | 2 | ⚔ 4 at ◎3, ignoring armor. Costs **2 of your own Health**. |
+| **Open the Vein** | 1 | ◎2 · ⚔ 3, ignoring **Block**. Costs **1 Health**. |
+| **Boil** | 3 | **Burning 3 (2)**, resist ✊ 7. Costs **2 Health**. |
+| **The Second Heartbeat** | 3 | 🔥 **Spent**: play a **second primary** this turn. Costs **4 Health**. |
+
+**The Second Heartbeat is what Tempo means**, and it is the only card in the game that grants an extra
+primary. It is priced like it: three slots, Spent, and a third of a starting character's Health. Blood
+Magic buys time with blood, and nothing else can buy time at all.
+
+#### Necromancy — Preparation, paid in a bound Taint per formula
+
+| Formula | Str | Effect |
+|---|---|---|
+| ✦ **Call the Unquiet** | 3 | A corpse within 2 rises and fights for you until the fight ends. |
+| **Grave Chill** | 2 | ✵ Aimed 2 · **Dazed (1)**, resist ✊ 5. |
+| **The Long Preparation** | 1 | Before a fight, name one enemy type. Your ✦ Casts against it are **+2** for the whole fight. |
+| **Ask the Dead** | 1 | Out of combat: a corpse answers **three questions** truthfully, as far as it knew. |
+
+**Every formula here costs a bound Taint (mind) card, permanently** — a hole in the deck you play from
+that no cure lifts (core-rules §8). So a necromancer's list is short because they *cannot afford* a
+long one: four formulas is four Taint, and **three is Afflicted**. The school prices itself.
+
+#### Elemental Magic — Position, paid in money and materials
+
+| Formula | Str | Effect |
+|---|---|---|
+| ✦ **Wall of the Sphere** | 2 | A 3-square line of your element: cover, and difficult ground, until your next turn. |
+| **Rain** | 2 | ✸ Blast 3, ◎4. Everything in it is **Wet (1)**. No damage, no save. |
+| **Lightning** | 2 | ✦ ◎4 · **Stunned (1)**, resist 📜 7 — **9** and **+2** vs **Wet** |
+| **Frost** | 1 | ◎3 · **Slowed (1)**, resist 🌀 5 — against a **Wet** target, **Frozen 2 (1)** instead, no save |
+| **Scorch** | 1 | ✦ ◎4 · **Burning 1 (1)**. A **Wet** or **Frozen** target sheds it. |
+| **Flesh of the Earth** | 2 | ✦ ◎3 · **Burning 1 (2)** and ⚗ **Corrode 1**. Acid: it eats the armour as well as the man. |
+| **Slippery** | 1 | ⛓ End **Grappled** on an ally at ◎2. Until your next turn they cannot be Grappled again. |
+
+> **The reagent cost.** Elemental Magic is the one school that pays in **coin**, which no other
+> mechanic in the game touches — and [leveling.md](leveling.md) §4 is explicit that *gold is not a
+> reward*, so it cannot be a levelling price either. It is a **per-preparation** cost instead: an
+> elementalist spends materials when they prepare, which is a downtime expense the GM prices, and a
+> broke elementalist prepares nothing. That is the one price in the twelve that bites between fights
+> rather than during them, and it is why this school is the one a rich patron is worth having.
+
+#### Poison — Control, paid in skill cards set aside
+
+| Formula | Str | Effect |
+|---|---|---|
+| ✦ **Wither** | 2 | **Poisoned 1 (2)** on one target, resist ✊ Might 5 — Dazed, and 1 a turn past armor. |
+| **Slick** | 1 | ◎3 · **Off-Balance (1)**. No save. |
+| **The Quick Dose** | 3 | **Poisoned 2 (2)** on one adjacent target, resist ✊ 7. |
+| **The Long Dose** | 1 | **Poisoned 0 (3)** on one target at ◎2, resist ✊ 5. No damage — three rounds of a man who cannot use his off hand. |
+| **The Grey Sickness** | 2 | ☣ **Tainting 1, slow** on one adjacent target, resist ✊ 7. Not a poison: a **disease**, still there next week. |
+
+> **Every one of these costs skill cards set aside equal to its strength, until the next rest.** That
+> is the school's price and it is the sharpest in the twelve: a poisoner buys control of a fight by
+> giving up competence *outside* it. Prepare *The Quick Dose* and three skill cards are gone — the
+> lockpicking, the lying, the reading of a room. **Poison is the school that makes you worse at
+> everything else**, which is exactly right for it and costs the rules nothing to say, because the
+> skill deck is already a deck that can be short ([skill-rules.md](skill-rules.md)).
+
+#### Glamour — Control, paid in an elven debt
+
+| Formula | Str | Effect |
+|---|---|---|
+| ✦ **Not Here** | 2 | You are **Invisible** until you attack or are attacked. |
+| **Wrong Face** | 2 | **Dazed (2)**, resist 👁 7. |
+| **The Evil Eye** | 2 | **Cursed** on one target you can see — a temporary Miss in its fate deck, until drawn. |
+| **Ink Spray** | 1 | ✸ Blast 2: end **Invisible** on everything in the area, and nothing in it may become Invisible until your next turn. |
+| **A Clear Head** | 1 | ⛓ End **Dazed** on an ally at ◎3, and they may play a secondary this turn even if they already have. |
+
+> **[FIXED] Two of these were charging the wrong school's price.** *Wrong Face* and *The Evil Eye*
+> both read *"the GM writes down a secret"*, which is **Tattoo Magic's** price. Glamour pays an
+> **elven debt, as an obligation** — one debt per formula learned, written by the GM and not
+> removable (leveling.md §4). The elves do not want secrets; they want to be owed.
+
+#### Tattoo Magic — Deck shape, paid in a secret per formula
+
+| Formula | Str | Effect |
+|---|---|---|
+| ✦ **Graven Strength** | 1 | Permanent: **+2 Strike with Heavy items**. |
+| **Graven Eye** | 1 | Permanent: you are never surprised. |
+| **Graven Shield** | 2 | Permanent: **+1 armor**. |
+| **Graven Road** | 1 | Permanent: your Move is **never halved** — Slowed, Burdened and Overloaded do not slow you. |
+
+> **A tattoo spends its slots permanently, and is never prepared.** This is the school's whole shape
+> and it is what its axis means: **Deck shape** is capacity, and a tattoo takes capacity away for
+> good. Carve *Graven Shield* and two slots are gone from your budget forever — but it is always on,
+> every fight, with no preparation and no casting. The others are spells you *choose* each morning;
+> a tattoo is a spell you *became*.
+>
+> **And it is the right home for an always-on counter.** Simulation found that a dispel on a drawn
+> card is nearly worthless because it is in hand 31% of turns
+> ([../sim/analysis-2026-10-30.md](../sim/analysis-2026-10-30.md)) — so *Graven Road*, which answers
+> Slowed by simply never being slowed, is worth more than any card that sheds it.
+
+#### Asceticism — Deck shape, paid in parts of your body
+
+| Formula | Str | Effect |
+|---|---|---|
+| ✦ **Nothing Left to Take** | 1 | While your **hand is empty**, you cannot be reduced below 1 Health. |
+| **Empty Hand** | 1 | While your hand is empty you may ⚔ Strike with no item, at your own ✊ Might. |
+| **Nothing to Carry** | 1 | While both your hands are empty: **+2** to all ✦ Casts, and you cannot be **Disarmed**. |
+| **The Last Card** | 2 | While your hand is exactly **one** card, you may play that card for **both halves**. |
+
+> **The Price Paid.** Asceticism costs *parts of your body*, which the world document means
+> literally — and it is the only price that is **not renewable**. One formula is a finger, and the GM
+> writes which; a hand has five. The mechanical bite is the same one everything else in this school
+> turns on: fewer hands is fewer items, which is fewer cards worth playing, which is the empty hand
+> these formulas reward. **The school is paid for in the condition it exploits**, and nothing else in
+> the twelve closes that loop.
+
+#### Shadow Magic — Position, paid in a permanent Wild card per formula
+
+| Formula | Str | Effect |
+|---|---|---|
+| ✦ **Step Through** | 2 | Teleport to any shadowed square you can see. |
+| **Longer Shadow** | 1 | Until your next turn every square adjacent to you is shadowed. |
+| **The Long Step** | 1 | 👣 Move 4, through anything, if you begin and end in shadow. |
+| **Cast No Shadow** | 2 | Until your next turn, nothing further than **1 square** away can target you at all. |
+
+> **Each formula puts a permanent Wild card in your fate deck** — one you did not choose, in the deck
+> you draw luck from, for good (core-rules §6). Four formulas is four Wild cards in twenty-four, so a
+> shadow mage's luck gets stranger the more they know. *Cast No Shadow* is the Position answer rather
+> than another Invisible: it does not hide you, it puts the world out of reach.
+
+#### Spiritualism — Preparation, paid in a pact per formula
+
+| Formula | Str | Effect |
+|---|---|---|
+| ✦ **The Bargain** | 3 | A minor god acts once this fight. **The GM decides how**, and that is the point. |
+| **The Small Pact** | 1 | Name one god you are pacted with. It grants **the favour written on the pact** — the same favour every time. |
+| **Hold to the Bargain** | 2 | ⚡ Reaction: an ally's failed check becomes a **Partial**. Once per pact per fight. |
+| **The Nine Names** | 1 | Out of combat: a minor god names **who in this place it is angry with**, and will not say why. |
+
+> **The pact *is* the spell, and that is how this school avoids being one card twelve times.** *The
+> Bargain* leaves everything to the GM, which is wonderful once and arbitrary twice — so every other
+> formula here leans on a **pact written down once**: the god, the favour, and what it wants back. The
+> favour is fixed from then on, so *The Small Pact* is a different spell for every character who takes
+> it and the same spell every time *they* cast it.
+>
+> **[OPEN]** The minor gods themselves. The world document says they *"grant no miracles, but they are
+> the basis of the Spiritualism school"* and does not name them. Until it does, a pact is the GM's to
+> write, which is workable and is not the same as finished.
+
+#### Household Magic — out of combat, paid in negotiation with elf-kin
+
+| Formula | Str | Effect |
+|---|---|---|
+| ✦ **Hearth and Home** | ritual | A camp nobody unfriendly can find, for one night. |
+| **The Clean Pot** | 1 | Food never spoils and water is always safe. A day's rations for the party, every day. |
+| **The Mended Seam** | 1 | Repair one item overnight — including **corroded armour** (core-rules §8). |
+| **The Unlatched Door** | 2 | Any door or lock that was ever opened by someone who lived there opens for you. |
+
+> **The one school with no combat value at all**, and it is worth having anyway: it answers starvation,
+> pursuit, and the one kind of damage nothing else repairs. **The Mended Seam is the repair side of
+> acid** — core-rules §8 says corrosion needs *"a smith and coin, or a Lore check with the right
+> tools"*, and this is the third way. A party that travels with a household mage is a party that does
+> not lose its armour to the first acid monster.
+
+#### Ward Magic — Reactions, paid in Spent
+
+| Formula | Str | Effect |
+|---|---|---|
+| ✦ **Unmake** | 2 | ⚡ Reaction — 🔥 **Spent**: a ✦ Cast **you have survived before** does not resolve. |
+| **Turn Aside** | 2 | ⚡ Reaction: one ally's Block counts **double** against this attack. |
+| **The Shut Mouth** | 2 | **Silenced (1)** on one enemy at ◎3, resist 📜 7. |
+| **Shake It Off** | 2 | ⚡ Reaction: ⛓ **Shake Off 3** on one ally at ◎3 — which ends anything the game can print. |
+| **The Unbound Tongue** | 1 | ⛓ End **Silenced** on an ally at ◎3. |
+
+> **Ward decides whether magic happens**, in both directions: it silences and it unsilences, it
+> prevents a Cast and it removes what landed. And it is the school simulation vindicated — a dispel on
+> a **reaction spell** is prepared rather than drawn and costs no half, which is the only surface a
+> dispel is worth putting on ([../sim/analysis-2026-10-30.md](../sim/analysis-2026-10-30.md)).
+
+#### Divination — Support, paid in someone else's turn and a prophecy
+
+| Formula | Str | Effect |
+|---|---|---|
+| ✦ **The Reading** | 2 | **Read 3** (core-rules §6) on any one fate deck **except your own**. |
+| **Where It Will Land** | 1 | **Read 1** on your own fate deck. |
+| **The Mark of Things to Come** | 2 | **Marked (1)** on an enemy at any range, and **Read 1** on its fate deck. |
+| **The Long Look** | 3 | Out of combat: ask the GM **one question** about the next scene. The answer is true — **and the GM writes a prophecy** you do not get to read. |
+
+> **The prophecy is the price, and it is the only one that is paid later.** *The Long Look* buys a
+> true answer now and hands the GM something to spend on you whenever they like. Every other school's
+> price is a thing you give up at the moment of learning or casting; a diviner's is a thing that
+> happens to them.
+
+### 3.5 Way of Faith — the twelve gods
+
+Clerics cast too, and a god's list is built on a different principle from a school's:
+
+> **A school is what it cost you to *learn*. A god is what it costs you to *ask*.**
+
+A formula is paid for once, when you learn it, in Health or Taint or a secret (§3.4). A miracle costs
+**nothing** to learn — a god grants it — and is paid for **every time**, in that god's own coin. That
+is §1.4's *"Faith pays continuously in obedience"* made into a mechanic, and
+[specializations.md](specializations.md) already wrote each god's coin: deck size, weight, the fate
+deck, Strain, Spent, an ally, a turn spent early, range, Taint, halves, Health, spell slots.
+
+**So each god below opens with its Obedience, which applies to every miracle it grants.** That is
+better than printing a cost on each card, because obedience is not a price you pay at a moment — it is
+a way you have to live. It is also what makes twelve gods twelve *different kinds of caster* rather
+than twelve lists of effects: a priest of Vax bleeds to cast, a priest of Brendan is always a turn
+behind, and a priest of The Yellow is holding something up with every secondary they have.
+
+**Three miracles a god, and a god's list is shorter than a school's on purpose** (§1.4) — thirty-nine
+in all, against the schools' fifty-four. Ten of the twelve had exactly **two** before this pass; the
+two churches run longer because they were written first and their registers are the widest.
+
+---
+
+#### The Eternal God — Control, and the clean body
+
+> **Obedience: your action deck may hold no more than 12 cards**, and the faith names what may not be
+> in it. The one god whose coin is **deck size**, which simulation says is survivable precisely
+> because a 12-card deck pruned *well* matches a full 16 ([leveling.md](leveling.md) §4) — so this
+> obedience is a demand to prune well, and punishes a priest who cannot.
+
+| Miracle | Str | Effect |
+|---|---|---|
+| ✦ **The Clean Hand** | 2 | An ally's next check or attack **cannot fail**. One cheaper on a brother or sister in faith. |
+| **Name the Guilty** | 1 | **Judged (1)** on one enemy you can see. No save. |
+| **The Weight of It** | 2 | A **Judged** enemy's armor counts **0** against everyone until your next turn. |
+| **The Narrow Path** | 1 | While your action deck is **10 cards or fewer**, your miracles cost **1 slot less** (minimum 1). |
+
+**The Narrow Path is the obedience turned into a reward**, which is the shape an ascetic faith should
+have: go further than you were told and the god pays you back.
+
+#### The Eternal Spirit — Reactions, and the unseen
+
+> **Obedience: you must stay Unburdened** — never over your carry limit — and you may wear no armour
+> heavier than Leather. The spirit drifts through all the air and carries nothing that anchors it.
+
+| Miracle | Str | Effect |
+|---|---|---|
+| ✦ **Breath of the Spirit** | 2 | ⚡ Reaction: heal an ally **3**, at any range, ignoring cover. |
+| **Lay On** | 1 | ✚ Heal an ally 2 at ◎3. |
+| **A Word for You** | 1 | **Blessed** on one ally — a temporary Critical in their fate deck, until drawn. |
+| **Bear It for Them** | 2 | ⚡ Reaction at ◎3: move one condition off an ally and **onto yourself**, at its full duration. |
+| **A Word Withdrawn** | 1 | ✋ **Lift** **Blessed** or **Cursed** from anyone at ◎3 — the marker and the card both. |
+
+**The longest list of the twelve, and it should be**: this is the god of the two tolerant churches and
+the only one whose whole register is helping other people. Its obedience is the lightest to describe
+and the heaviest to keep, because a healer who may not wear armour stands where the healing is needed.
+
+#### Sessyfyn — Support, and the sea is not fair
+
+> **Obedience: a permanent Miss *and* a permanent Critical in your fate deck.** Not one or the other.
+> Your luck is wider than anyone's in both directions, for as long as you serve her.
+
+| Miracle | Str | Effect |
+|---|---|---|
+| ✦ **The Tide Knows** | 2 | An ally draws fate **twice** on their next action and keeps **both**. The sea is not fair. |
+| **Undertow** | 2 | ✸ Blast 2, ◎3: **Wet (1)**, and every target is moved 1 square you choose. |
+| **The Turning Tide** | 2 | ⚡ Reaction: an ally redraws a fate card and must keep the second. **A temporary Miss joins your own fate deck.** |
+
+**Sessyfyn is the only god who pays in luck**, and *The Turning Tide* charges it where it is felt: you
+fix somebody else's draw by spoiling your own. Note that her obedience makes her priest the one
+character in the game for whom **a reshuffle is likelier than anyone else's** — two of the three
+reshuffle cards are hers by standing order.
+
+#### Valtor — Tempo, and the body made a weapon
+
+> **Obedience: every miracle costs Strain 1** on top of its slots. His strength comes out of your
+> hand, every time you ask.
+
+| Miracle | Str | Effect |
+|---|---|---|
+| ✦ **The Drum** | 1 | Your next Strike this turn is **+3**. |
+| **No Step Back** | 2 | Every ally within 2 gains **Block 2** until your next turn. |
+| **The Charge** | 2 | ⤵ **Strain 2**: every ally within 2 may **Move their full value**, at once, now. |
+
+**Valtor is the Tempo god and Strain is the Tempo coin** — it takes cards out of your hand *now*,
+which is a tax on the turn rather than the fight (§1.3). *The Charge* pays double because moving the
+whole party out of turn is the largest tempo swing in the Way.
+
+#### Fagar — Control, and the trick that works once
+
+> **Obedience: each miracle may be cast once per fight.** A trick works once. There is no second
+> borrowed face.
+
+| Miracle | Str | Effect |
+|---|---|---|
+| ✦ **The Borrowed Face** | 3 | 🔥 **Spent**: one enemy spends this round attacking **its own ally**. |
+| **The Second Thought** | 1 | One enemy spends its secondary this round doing nothing, resist 👑 7. |
+| **The Second Face** | 1 | 🔥 **Spent**: read one enemy's **intent card** for this round before anyone acts. |
+
+**Fagar's obedience is the only one that is also a flavour of its own effects** — the god of the trick
+that works once grants miracles that work once, so the price and the fiction are the same sentence.
+
+#### Vulpet — Preparation, and the outcast
+
+> **Obedience: you may not accept help.** No ally may Heal you, Interpose for you, or Shake a
+> condition off you. She was driven out by everyone; nobody will stand beside you either.
+
+| Miracle | Str | Effect |
+|---|---|---|
+| ✦ **The Outcast's Due** | 3 | Every enemy adjacent to you is **Compelled (2)**, resist 👑 Presence 5. The outcast is who the crowd turns on. |
+| **Nobody's Friend** | 2 | Until your next turn no ally may Heal, Interpose for, or redirect a hit from one enemy. |
+| **Alone on the Road** | 1 | While **no ally is within 2 squares**, heal **2** at the start of your turn. |
+
+**Vulpet's obedience is the harshest in the Way and her miracles are built to repay it**: *Nobody's
+Friend* does to an enemy exactly what the god does to you, and *Alone on the Road* is the only healing
+a priest of hers can ever receive — her own, and only when standing apart.
+
+#### Brendan — Support, and growth out of barren ground
+
+> **Obedience: nothing he gives arrives on the turn you ask for it.** Every miracle resolves at the
+> **start of your next turn** at the earliest, and the card says if it is later still.
+
+| Miracle | Str | Effect |
+|---|---|---|
+| ✦ **Out of Barren Ground** | 3 | Plant it. At the start of your **second** turn after, every ally within 2 heals **4**. |
+| **Full Belly** | 1 | Out of combat: the party's next rest returns one extra rest token. |
+| **The Slow Mercy** | 2 | Name an ally. At the start of your **third** turn after this, they are healed to full. |
+
+**The Slow Mercy is the largest heal in the game and it is three turns away**, which is the whole of
+Brendan: nothing he gives is fast, and what he gives is worth waiting for. A fight that ends in two
+rounds wastes it entirely, and that is the risk the priest takes when they cast it.
+
+#### The Grey — Reactions, and the silent approach
+
+> **Obedience: adjacent only.** Every miracle of The Grey reaches one square and no further. Close
+> enough to touch, which is where the knife is.
+
+| Miracle | Str | Effect |
+|---|---|---|
+| ✦ **The Silent Hour** | 2 | ⚡ Reaction, adjacent: an enemy's action **does not happen**. |
+| **Grey Judgement** | 2 | A **Judged** adjacent enemy acts **last** in the round, whatever its initiative. |
+| **The Close Work** | 2 | ⚡ Reaction, adjacent: an adjacent enemy's Strike hits **the nearest other enemy** instead. |
+
+**Range is the coin and it is paid in risk, not resources** — a priest of The Grey has to be standing
+next to the thing they are stopping. It is the one obedience that costs nothing on the sheet and
+everything on the board.
+
+#### The Purple — Control, and the dose
+
+> **Obedience: the first miracle you cast each fight gives you 1 Taint.** You are the first to taste
+> it, always. Three Taint is **Afflicted** (core-rules §8), so a long day of casting shows on the
+> body.
+
+| Miracle | Str | Effect |
+|---|---|---|
+| ✦ **The First Taste** | 2 | **Tainting 2** on one adjacent enemy. You gain **1 Taint** yourself. |
+| **Taste of the Rot** | 1 | One adjacent enemy: 1 damage and **Off-Balance (1)**, no save. You gain **1 Taint** on a Miss. |
+| **The Brewer's Tithe** | 2 | ☣ **Tainting 2, slow** on one adjacent enemy — a disease, not a poison, and it is still there next week. |
+
+**The Purple is the god of disease rather than poison**, which the condition split makes meaningful:
+poison runs out, Taint does not (core-rules §8). Her priests do not win fights, they decide who is ill
+next month.
+
+#### The Yellow — Preparation, and the lie
+
+> **Obedience: a lie must be kept up.** Every miracle of The Yellow ends the moment you fail to spend
+> a **secondary** on it, and a priest holding two lies has no secondaries left for anything else.
+
+| Miracle | Str | Effect |
+|---|---|---|
+| ✦ **The Rumour** | 2 | Name a lie before the fight. One enemy type acts as if it were true, for as long as you spend a **secondary** each round keeping it up. |
+| **Half a Truth** | 2 | Until your next turn, enemies act as though one ally you name were not there. |
+| **The Planted Word** | 1 | Name one enemy type before the fight. While you spend a **secondary** each round, that type cannot play **reactions**. |
+
+> **[FIXED] *Half a Truth* was charging Valtor's coin.** It read *"⤵ Strain 1"*, which is Valtor's
+> obedience, not The Yellow's. The Yellow is paid in **halves** — the secondary spent keeping the lie
+> alive — and the standing obedience above now charges it, so the card needed no cost of its own. The
+> same mistake as Glamour charging Tattoo's secret (§3.4), and found the same way.
+
+#### Vax — Position, and war plainly
+
+> **Obedience: every miracle costs at least 1 Health**, and the card may ask more. War is paid in
+> blood and he counts yours first.
+
+| Miracle | Str | Effect |
+|---|---|---|
+| ✦ **The Club and the Line** | 2 | Strike **every adjacent enemy** — no free hand needed, because the club is the symbol. Costs **2 Health**. |
+| **Stand Where I Stand** | 1 | Until your next turn, allies adjacent to you cannot be reduced below 1 Health. Costs **2 Health**. |
+| **The Shield Line** | 2 | Every ally **adjacent to you** gains your armor value as **Block** until your next turn. Costs **1 Health per ally**. |
+
+**Every Vax miracle is about a line of men standing next to each other**, which is what his Position
+axis means, and every one of them is paid for out of the priest's own body. He is the cleric-fighter
+the Way was reshaped to allow, and the one god whose miracles all reward *not moving*.
+
+#### The First — Deck shape, and what does not die
+
+> **Obedience: your spell slots are capped at 3, for ever.** The thinnest miracle list and the
+> dearest — few slots, and a deck narrow enough to hold them.
+
+| Miracle | Str | Effect |
+|---|---|---|
+| ✦ **The Long Night** | 3 | Drain **3 Health** from an adjacent living target and **gain it**. |
+| **Measure of the Debt** | 2 | A **Judged** enemy that dies this round: you gain **3 Health**. |
+| **What Does Not Die** | 3 | When you would drop to 0 Health, drop to **1** instead — and **lose a spell slot permanently**. |
+
+**A cap of 3 slots means The Long Night and What Does Not Die cannot both be prepared**, and that is
+the entire character of this god: you get one great thing at a time. *What Does Not Die* then pays in
+the only coin The First accepts, and pays it for good — each time it saves you, there is less of you
+left to save with. A priest of The First who has survived four times cannot cast at all.
 
 ### 3.6 Targeted counters — five spells
 
@@ -681,7 +1065,7 @@ decision would be gone. A **targeted counter** is the other half of the trade:
 > spells has prepared the wrong spells* is the whole point of a slot budget (§1.4).
 
 Each of these also does something the generic one **cannot**, which is what keeps it from being a
-worse *Shake It Off*:
+worse *Shake It Off*. They are repeated in their schools' lists in §3.4, where their prices are:
 
 | School | Formula | Str | Effect | What the generic cannot do |
 |---|---|---|---|---|
@@ -699,6 +1083,9 @@ slot despite answering one condition. Core-rules §7 sets out the other three th
 **The Unbound Tongue must come from somebody else**, because Silenced blocks ✦ Cast and a silenced
 caster cannot cast their own cure. That is not a flaw in the spell; it is the rule that *you cannot
 reliably dispel yourself*, printed on a card.
+
+**Every one of these pays its school's price as well**, which §3.4 lists — a Glamour counter costs an
+elven debt and a Ward counter is Spent or a slot, and that is as true of a counter as of an attack.
 
 **No spell answers Burning or Frozen**, and none should: water and fire already cancel
 ([conditions.md](conditions.md) §6), so *Rain* on a burning ally is the counter and it is a spell
@@ -749,8 +1136,14 @@ nobody would ever see one at a table.
   the value bands and none of it is measured. The specific question is whether a +2 that costs a
   secondary *and* a draw of the right pair beats simply playing two Strikes — and the answer may well
   be no for one character and yes for a party, which is the whole design but is still a claim.
-- **[OPEN]** Each god's **full miracle list** and each school's **full formula list**. §3.4 and §3.5
-  write the second and third entries; nobody has written a fourth.
+- **[OPEN]** **Strength 4 and 5 — nothing in the game has either.** §3.4 puts all twelve schools at
+  four formulas or more with a 1 and a 2 each, and five of them reach a 3; the top two bands are
+  empty across the whole of Way of Mind and Way of Faith. §1.4 describes them as *changes the fight
+  for a round* and *once in a fight, and the reason the branch exists*, which is exactly why they
+  should wait: a spell that decides a round wants the rounds measured first.
+- **Settled: every god has three miracles and a stated Obedience** (§3.5). A god's list stays shorter
+  than a school's four, which §1.4 asks for, and the Obedience is what carries the difference: a
+  school is what it cost you to learn, a god is what it costs you to ask.
 - **[OPEN]** **Frightened**, the mirror of Compelled — *you may not attack the one who frightened
   you*. §1.7 declines it on a count of one interested card against Compelled's four, and core-rules
   §7's resist table anticipates it (*"cowed or compelled"*). If a second card ever wants it, it is
