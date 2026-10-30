@@ -257,6 +257,90 @@ target is a *worse* mark for fire rather than a better one. The interaction is p
 in the condition table, where core-rules §7 puts it — which means laying an opening down is never
 simply correct, and there is no autopilot.
 
+### 1.7 Conditions from spells
+
+Half this game's major nodes are casters — twelve schools and twelve gods out of forty-eight — and
+the condition list was written for fighters. Of the nineteen, magic touches seven: Invisible, Burning,
+Dazed, Slowed, Stunned, Silenced and Wet. Everything else on the list is a thing you do with your
+hands.
+
+That is not a shortage of conditions. It is one missing *shape*, one condition nobody casts, and one
+procedural rule already in force that is worth saying out loud.
+
+#### The shape: a caster takes away what you may choose
+
+Core-rules §7 forbids taking a turn away — *"a turn where you do nothing is the dullest thing a
+fight can hand you"* — which rules out sleep, paralysis, petrifaction and *hold person* in one
+stroke. All four are what spells classically do, so magic needs a different move:
+
+> **A fighter's conditions take away what you may *do*. A caster's take away what you may *choose*.**
+
+Dazed subtracts a half, Grappled subtracts your feet. **Compelled** subtracts nothing: you draw, you
+play a primary and a secondary, you keep your reactions, and you simply do not pick the target. The
+turn is full and the decision is gone.
+
+**Compelled is not new content.** It is a name for a shape four cards already used in prose:
+
+| Already written | Was |
+|---|---|
+| *Taunt* (starter deck) | *"Target enemy must attack you next turn"* — no save at all |
+| *Roar* (§3.2) | every adjacent enemy must attack you next turn |
+| *Play to the Crowd* (§2.1) | the attacker must attack you again |
+| *The Outcast's Due* (§2.4) | cited **Frightened**, a condition that does not exist |
+
+And core-rules §7's resist table has said *"👑 Presence — being cowed or compelled"* since it was
+written, naming a condition nothing implemented. This is the same hole Block was in before it got a
+subsection: the rules promised it, four cards used it, and it had no entry.
+
+It needs **no target field** — the one you must attack is the creator, which the condition record
+already stores. Fagar's miracle, which points an enemy at its own ally instead, stays prose for
+exactly that reason, and that is the right division: the keyword covers the common case and prose
+covers the clever one.
+
+#### Why a spell's conditions may be stronger than a fighter's
+
+Already in the rules, and it is the balancing mechanism:
+
+> **If the condition rides on an attack that connected, it lands with it. If the condition *is* the
+> action, the target makes a saving throw.** (core-rules §7)
+
+A fighter's condition usually rides a Strike — the goblin's *Dirty Trick* dazes, and the Strike
+already drew fate. A spell's condition usually **is** the spell, so it is saved against. **Casters
+pay for their conditions in a save that fighters do not make**, which is why a strength-2 formula may
+reach for Stunned while no card does. Nothing new is needed here; it just explains the bands in §1.4.
+
+#### Blessed and Cursed exist, and nothing casts them
+
+Both are fully specified (core-rules §6 and §7), both have icons, both work in the system — and
+across all 48 Signatures and 28 pool spells **not one casts either.** They are the two most magical
+conditions in the game and they were sitting unused.
+
+| Condition | Does |
+|---|---|
+| **Blessed** | shuffles a temporary **Critical** into a fate deck, removed when drawn |
+| **Cursed** | shuffles a temporary **Miss** into a fate deck, removed when drawn |
+
+Fixed below — *The Evil Eye* (§3.4) and *A Word for You* (§3.5) — and the interesting part is a
+consequence of a rule written for a different reason. **NPC fate decks are per *type*, not per
+creature** (core-rules §6), so:
+
+> **Cursed is worth inversely what there are of the thing.** One of five goblins shares a deck with
+> four friends, so the Miss is four-fifths wasted. A lone ogre draws from its own twenty, and the Miss
+> is coming for *it*.
+
+That makes Cursed the game's only **anti-boss** spell, and it got there without anyone designing one.
+It also means Cursed is close to dead against a swarm, which is the honest cost and a good reason for
+a caster to carry something else as well.
+
+#### What is not needed
+
+| Candidate | Why not |
+|---|---|
+| **Blinded** | *Invisible* is already *"enemies can't target you"*; everyone being invisible **to you** is the same rule read from the other end, and a feature can say so with no new condition |
+| **Frightened** | the mirror of Compelled, and §7's *"cowed"* half anticipates it — but exactly **one** card wanted it, against Compelled's four. Recorded, not written |
+| **Held, Slept, Petrified, Banished** | all turn removal, all forbidden by §7, and the shape rule above is what replaces them |
+| **Polymorph, Enlarge** | not conditions. They change the sheet, which is a GM-facing change and belongs in prose on the spell |
+
 ---
 
 ## 2. The 48 Signatures  **[DRAFT]**
@@ -280,7 +364,7 @@ verbs, so the identity has to be a rule nobody else may touch.
 | **Knight** | **The Lance** | Primary: **Move 3, then Strike**, with advantage if you moved at least 2. Needs the mount. |
 | **Berserker** | **Red Mist** | Primary: Strike — **Spent**. Then draw back up to your hand size at once. |
 | **Musketeer** | **Loaded Before the Bell** | Feature: you begin every combat already loaded, and the first shot of a fight is **+2**. |
-| **Gladiator** | **Play to the Crowd** | Reaction, when you are hit: gain Block 2, and the attacker **must** attack you again next turn. |
+| **Gladiator** | **Play to the Crowd** | Reaction, when you are hit: gain Block 2, and the attacker is **Compelled (1)** — no save, because you have already been hit once. |
 | **Street Fighter** | **Get a Grip** | Primary: **Grappled (2)**, resist ✊ Might 5 — and **no save at all** if both your hands are empty. |
 | **Bodyguard** | **Interpose** | Reaction: take a hit meant for an adjacent ally. Core-rules §3 already names this card in its redirection step. |
 
@@ -358,7 +442,7 @@ they belong to the node, not to a miracle.
 | **Sessyfyn** | **The Tide Knows** (2) | An ally draws fate **twice** on their next action and keeps **both**. The sea is not fair. |
 | **Valtor** | **The Drum** (1) | **Strain 1**: your next Strike this turn is **+3**. |
 | **Fagar** | **The Borrowed Face** (3) | **Spent**: one enemy spends this round attacking **its own ally**. |
-| **Vulpet** | **The Outcast's Due** (3) | Every enemy adjacent to you is **Frightened (2)**, resist ✨ Presence 5. |
+| **Vulpet** | **The Outcast's Due** (3) | Every enemy adjacent to you is **Compelled (2)**, resist 👑 Presence 5. The outcast is who the crowd turns on. |
 | **Brendan** | **Out of Barren Ground** (3) | Plant it. At the start of your **second** turn after, every ally within 2 heals **4**. |
 | **The Grey** | **The Silent Hour** (2) | Reaction, adjacent only: an enemy's action **does not happen**. |
 | **The Purple** | **The First Taste** (2) | **Tainting 2** on one adjacent enemy. You gain **1 Taint** yourself. |
@@ -428,7 +512,7 @@ Weight, armor, Block, adjacency and the Wound threshold are the levers the **maj
 | **Heave** | 👣 Move 2, carrying any weight without being Slowed | ⇄ Ready | – | – |
 | **Armoured Advance** | 👣 Move 3; your armor counts **+1** until your next turn | 👣 Move 1 | Brace | – |
 | **Pull Them Down** | ⚔ Strike | ⚔ Strike −1 vs a **Prone** or **Grappled** target | – | – |
-| **Roar** | every adjacent enemy must attack you next turn | 👣 Move 1 | – | ⤵ **Strain 1** |
+| **Roar** | every adjacent enemy is **Compelled (1)**, resist 👑 5 | 👣 Move 1 | – | ⤵ **Strain 1** |
 | **Walk It Off** | ✚ Heal 2, and shed **Off-Balance**, **Slowed** or **Prone** | 👣 Move 1 | Brace | 🔥 **Spent** |
 
 Three of those read **Off-Balance** and each reads it a different way — more damage, a harder save on
@@ -463,7 +547,7 @@ deal against an ironclad and nothing at all against a goblin, so its value is se
 rather than by the card, and no band can price it. It is the one card in this section most worth
 simulating.
 
-### 3.4 Way of Mind — fifteen formulas
+### 3.4 Way of Mind — sixteen formulas
 
 Beyond the twelve Signatures. **Strength is the slot cost** (§1.4), so the bracketed number is what
 it takes out of the budget. Each school's full list is still open; these are its second and third
@@ -480,6 +564,7 @@ entries, weighted toward the schools the combo work touched.
 | **Necromancy** | **Grave Chill** | 2 | ✵ Aimed 2 · **Dazed (1)**, resist ✊ 5. One **bound Taint** card. |
 | **Poison** | **Slick** | 1 | ◎3 · **Off-Balance (1)**. No save. |
 | **Glamour** | **Wrong Face** | 2 | **Dazed (2)**, resist 👁 7. The GM writes down a secret. |
+| **Glamour** | **The Evil Eye** | 2 | **Cursed** on one target you can see — a temporary Miss in its fate deck, until drawn. The GM writes down a secret. |
 | **Shadow** | **Longer Shadow** | 1 | Until your next turn every square adjacent to you is shadowed. A **Wild** card joins your fate deck. |
 | **Tattoo** | **Graven Eye** | 1 | Permanent: you are never surprised. The GM writes down a secret. |
 | **Ward** | **Turn Aside** | 2 | ⚡ Reaction: one ally's Block counts **double** against this attack. |
@@ -492,7 +577,7 @@ fighters and *The Mark of Things to Come* sets **Marked** for the archers. A Poi
 up on a stumble and a Diviner cannot shoot — which is precisely why those two cards get played at a
 table and never in a solo playtest.
 
-### 3.5 Way of Faith — thirteen miracles
+### 3.5 Way of Faith — fourteen miracles
 
 A second per god, and the Way's own opening seeded. **A god's list is short** (§1.4); these do not
 pretend to finish one.
@@ -502,6 +587,7 @@ pretend to finish one.
 | **The Eternal God** | **Name the Guilty** | 1 | **Judged (1)** on one enemy you can see. No save. |
 | **The Eternal God** | **The Weight of It** | 2 | A **Judged** enemy's armor counts **0** against everyone until your next turn. |
 | **The Eternal Spirit** | **Lay On** | 1 | ✚ Heal an ally 2 at ◎3. |
+| **The Eternal Spirit** | **A Word for You** | 1 | **Blessed** on one ally — a temporary Critical in their fate deck, until drawn. |
 | **Sessyfyn** | **Undertow** | 2 | ✸ Blast 2, ◎3: **Wet (1)**, and every target is moved 1 square you choose. |
 | **Valtor** | **No Step Back** | 2 | Every ally within 2 gains **Block 2** until your next turn. |
 | **Fagar** | **The Second Thought** | 1 | One enemy spends its secondary this round doing nothing, resist 👑 7. |
@@ -559,6 +645,14 @@ nobody would ever see one at a table.
   be no for one character and yes for a party, which is the whole design but is still a claim.
 - **[OPEN]** Each god's **full miracle list** and each school's **full formula list**. §3.4 and §3.5
   write the second and third entries; nobody has written a fourth.
+- **[OPEN]** **Frightened**, the mirror of Compelled — *you may not attack the one who frightened
+  you*. §1.7 declines it on a count of one interested card against Compelled's four, and core-rules
+  §7's resist table anticipates it (*"cowed or compelled"*). If a second card ever wants it, it is
+  cheap: one entry, one icon, no new fields.
+- **[OPEN]** **How much of a caster's action deck may show ✦ Cast.** Silenced is the only condition
+  in the game that can empty a turn, and core-rules §7 now computes the floor: eight of sixteen cards
+  need an ordinary primary to make a Silenced turn playable 98.7% of the time. That is a constraint on
+  a deck nobody has written yet, and it should be met when it is written rather than discovered after.
 - **[OPEN]** The **four unbanded readers** — *Between the Plates*, *The Weight of It*,
   *Grey Judgement*, *Measure of the Debt*. Each pays off in something a band cannot price, which is
   what makes them interesting and what makes them unpriced. Either the simulator settles them or the

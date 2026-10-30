@@ -144,7 +144,7 @@ for (const m of configSource.matchAll(/halfIcons\s*=\s*\{[^}]*\}/gs)) {
   for (const k of m[0].matchAll(/"([a-z0-9-]+)"/g)) iconKeys.add(k[1]);
 }
 
-check("icon files on disk", onDisk.size, 74);
+check("icon files on disk", onDisk.size, 75);
 const absent = [...iconKeys].filter(k => !onDisk.has(k)).sort();
 check("config icons present as files", absent.length ? absent.join(", ") : "all", "all");
 

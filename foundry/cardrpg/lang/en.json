@@ -43,6 +43,7 @@
   "CARDRPG.Condition.Grappled": "Grappled",
   "CARDRPG.Condition.Silenced": "Silenced",
   "CARDRPG.Condition.Disarmed": "Disarmed",
+  "CARDRPG.Condition.Compelled": "Compelled",
   "CARDRPG.Condition.Blessed": "Blessed",
   "CARDRPG.Condition.Cursed": "Cursed",
   "CARDRPG.Condition.Burdened": "Burdened",

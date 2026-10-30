@@ -92,7 +92,9 @@ export const WARRIOR_DECK = [
   },
   {
     name: "Taunt", copies: 1,
-    primary: [{ text: "Target enemy must attack you next turn" }],
+    // The game's oldest compulsion, and it used to be prose with no save at all. It is Compelled
+    // now, which is the condition core-rules 7's resist table named before anything implemented it.
+    primary: [{ condition: "compelled", duration: 1, resist: "presence", dc: 5 }],
     secondary: [{ verb: "move", param: 1 }]
   },
   {

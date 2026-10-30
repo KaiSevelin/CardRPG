@@ -18,10 +18,16 @@ those values as first guesses.
 | 6 | Draw Steel | Strike | Ready | – | 2 |
 | 7 | Quick Hands | Use | Ready | Use | 1 |
 | 8 | Second Wind | Heal yourself 2 — **Spent** | Use | – | 1 |
-| 9 | Taunt | Target enemy must attack you next turn | Move 1 | – | 1 |
+| 9 | Taunt | Target enemy is **Compelled (1)**, resist 👑 Presence 5 | Move 1 | – | 1 |
 | 10 | Weapon Swap | Ready | Strike | – | 1 |
 
 That makes **16** cards: 4 have Ready (2× Draw Steel, Quick Hands, Weapon Swap). Weapon Swap shows Ready on its *primary* half, so you can swap and still Strike in the same turn.
+
+**Taunt used to be unresistable prose.** *Target enemy must attack you next turn* had no saving
+throw, no duration and no keyword — it was the game's oldest compulsion and the only effect of its
+kind with no mechanism behind it. It is **Compelled** now (core-rules §7), which gives it the save
+every other condition makes and gives three later cards something to point at
+([way-cards.md](way-cards.md) §1.7).
 
 **Second Wind** is the deck's one **Spent** card: play its primary and the card goes out for the
 rest of the fight, back only on a rest (core-rules §8). A heal worth having once is a decision; the

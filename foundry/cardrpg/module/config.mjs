@@ -123,6 +123,16 @@ CARDRPG.conditions = {
   grappled: { label: "CARDRPG.Condition.Grappled", icon: "luchador", blocks: ["boot-prints"] },
   silenced: { label: "CARDRPG.Condition.Silenced", icon: "silenced", blocks: ["magic-swirl"] },
   disarmed: { label: "CARDRPG.Condition.Disarmed", icon: "drop-weapon", blocks: ["school-bag"] },
+  /*
+   * Compelled takes away WHO you attack, not whether you attack, which is the only shape a
+   * compulsion may have while core-rules 7 forbids taking a turn away. It needs no target field:
+   * the one you must attack is the creator, and `creatorId` already holds that. Fagar's miracle,
+   * which points an enemy at its own ally instead, stays prose for exactly that reason.
+   *
+   * Not machine-enforced -- targets are chosen by whoever is playing the figure, so this is a
+   * reminder on the tray, the same way Taunt has always been.
+   */
+  compelled: { label: "CARDRPG.Condition.Compelled", icon: "puppet" },
   blessed: { label: "CARDRPG.Condition.Blessed", icon: "aura", noDuration: true },
   cursed: { label: "CARDRPG.Condition.Cursed", icon: "imprisoned", noDuration: true },
   burdened: {

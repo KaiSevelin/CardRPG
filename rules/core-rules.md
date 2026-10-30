@@ -665,7 +665,7 @@ or Slowed (1) on a partial.*
 | ✊ **Might** | being held, moved or worn down — Grappled, Burning |
 | 🌀 **Agility** | anything you could get out of the way of — Prone, areas |
 | 👁 **Wits** | being fooled or caught out |
-| 👑 **Presence** | being cowed or compelled |
+| 👑 **Presence** | being cowed or compelled — **Compelled** |
 | 📜 **Lore** | magic you understand well enough to shed |
 | 🌑 **Shadow** | not being the one it finds |
 
@@ -675,6 +675,14 @@ or Slowed (1) on a partial.*
 > secondary, Stunned your reactions, Grappled your feet. All three at once is as held as this game
 > gets, and you still have a primary. That is deliberate: a turn where you do nothing is the dullest
 > thing a fight can hand you.
+
+> **Which leaves magic a problem, and the answer is the one rule worth remembering here.** Sleep,
+> paralysis, petrifaction and *hold person* are what spells classically do, and all four are turn
+> removal, so none of them can exist. **A fighter's conditions take away what you may *do*; a
+> caster's take away what you may *choose*.** Dazed subtracts a half and Grappled subtracts your
+> feet, but **Compelled** subtracts nothing at all — you draw your cards, play a primary and a
+> secondary, keep your reactions, and simply do not pick the target. The turn is full and the
+> decision is gone, which is both unmistakably magic and the only shape §7 permits.
 
 | Condition | Effect |
 |---|---|
@@ -688,6 +696,7 @@ or Slowed (1) on a partial.*
 | **Grappled** | Blocks 👣 Move (see section 10). |
 | **Silenced** | Blocks ✦ Cast — you cannot speak, and casting needs speech (section 4). |
 | **Disarmed** | Blocks ⇄ Ready, and ⚔ with the disarmed item. |
+| **Compelled** | You must spend your **primary** attacking whoever compelled you. Everything else about your turn is yours. |
 | **Burdened** | Over your carry limit: Slowed, and disadvantage on 🌀 Agility and 🌑 Shadow checks. No duration – it lasts until you drop weight (section 4). |
 | **Overloaded** | Over half again your limit: Burdened, and 2 random cards are Spent. No duration (section 4). |
 | **Blessed / Cursed** | See fate deck (no duration – they last until the card is drawn). |
@@ -1064,6 +1073,31 @@ Example card written with icons:
 │ ⚡ –          │
 └──────────────┘
 ```
+
+### [OPEN] Silenced is the one condition that can empty a turn
+
+**Silenced blocks ✦ Cast**, and a caster plays spells off card halves that show it — so a Silenced
+caster whose hand is all ✦ has the turn the blockquote above forbids. Nothing does this to a
+fighter: Disarmed costs you one item's ⚔ and ⇄ Ready, and you can still pick something else up or
+hit them with your hands.
+
+It is not quite nothing, because **Brace is never blocked** and no card is ever completely dead
+(below). But one point of damage reduction is not a turn.
+
+The fix is a **content** rule rather than a rules change, and it sets a floor for the caster deck
+that does not exist yet. A hand is 5 of 16, so for *k* cards carrying a non-✦ **primary**:
+
+| Non-✦ primaries in 16 | A Silenced turn is playable |
+|---|---|
+| 4 | 81.9% |
+| 6 | 94.2% |
+| **8** | **98.7%** |
+| 10 | 99.9% |
+
+**Half the deck is the number.** Eight cards with an ordinary primary — a Move, a Ready, a staff's
+⚔ — makes a Silenced turn playable 98.7% of the time, which is the same standard every other
+condition in the list meets. Below six it is a coin-flip whether magic's hard counter is also a lost
+turn, and *that* is the version of Silenced nobody should playtest.
 
 ### Blocked icons
 
