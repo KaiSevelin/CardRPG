@@ -564,6 +564,191 @@ export const ITEMS = [
     weight: 2, value: 2000, kind: "Wonder", group: "wonder",
     blurb: "Quenched in something that is still angry about it.",
     verbs: { strike: verb(3, { text: "on a hit, Burning 1 (1)" }), defend: verb(1) }
+  },
+  /* ---- smith and jeweller, two more each ---- */
+  {
+    name: "Balanced Dagger", slot: "hands", fits: ["belt"], hands: 1,
+    tags: ["light", "melee", "thrown"],
+    weight: 0, value: 70, kind: "Make", group: "make",
+    blurb: "Weighted at the tang. It goes where you looked.",
+    verbs: { strike: verb(3, { range: 5, text: "range 5 thrown" }) }
+  },
+  {
+    name: "Proofed Mail", slot: "body", tags: ["armor"],
+    weight: 9, value: 320, kind: "Make", group: "make", armor: 3,
+    // Brigandine's armour at mail's weight, and no Sidestep penalty: that is the whole craft.
+    blurb: "Tested against a bodkin at ten paces and dented, not pierced."
+  },
+  {
+    name: "Warden's Seal", slot: "fingers", weight: 0, value: 500,
+    kind: "Power", group: "power",
+    blurb: "A tower in relief, worn smooth by thumbs that are not yours.",
+    bonus: { verb: "defend", value: 1 }
+  },
+
+  /* ---- minor wonders: 50 to 150 gold ---------------------------------------
+   * One mechanic each, and none of them changes a fight -- each changes one turn in it. The list
+   * was generated from a coverage audit: fourteen mechanics in the rules had no item touching them
+   * (rules/equipment.md 9.4).
+   */
+  {
+    name: "Whetstone of the Last Edge", slot: "pack", weight: 1, value: 60,
+    kind: "Wonder", group: "wonder",
+    blurb: "It takes something back out of a blade that has given everything.",
+    active: { text: "One Spent card returns to your discard.", boundary: "longRest" }
+  },
+  {
+    name: "Tinker's Thimble", slot: "fingers", weight: 0, value: 80,
+    kind: "Wonder", group: "wonder",
+    blurb: "Brass, and far too small for whoever made it.",
+    text: "Strain costs you one card fewer, to a minimum of 1."
+  },
+  {
+    name: "Pilgrim's Shoes", slot: "feet", weight: 1, value: 90,
+    kind: "Wonder", group: "wonder",
+    blurb: "Worn by somebody who got where they were going.",
+    text: "One extra rest token on every long rest."
+  },
+  {
+    name: "Cracked Spyglass", slot: "pack", weight: 1, value: 150,
+    kind: "Wonder", group: "wonder",
+    blurb: "The crack does not matter. What you see through it has not happened yet.",
+    text: "Foresee one extra type at the start of a fight."
+  },
+
+  /* ---- lesser wonders: 300 to 700 gold ---- */
+  {
+    name: "Quartermaster's Belt", slot: "belt", weight: 1, value: 300,
+    kind: "Wonder", group: "wonder",
+    blurb: "Everything hangs lighter on it. Nobody knows why and nobody asks twice.",
+    grants: { carry: 15 }
+  },
+  {
+    name: "Hollow Boots", slot: "feet", weight: 1, value: 350,
+    kind: "Wonder", group: "wonder",
+    blurb: "They sound like a far larger man coming.",
+    active: { text: "Shove an adjacent enemy 2 squares.", boundary: "combat" }
+  },
+  {
+    name: "Marked Arrowhead", slot: "belt", weight: 0, value: 350,
+    kind: "Wonder", group: "wonder",
+    // An opening is read by EVERYBODY's cards, so a party with no Shade can now set one.
+    blurb: "It has not been fired. It does not need to be.",
+    active: { text: "One enemy you can see is Marked (1).", boundary: "combat" }
+  },
+  {
+    name: "Deep Pockets", slot: "cloak", weight: 1, value: 400,
+    kind: "Wonder", group: "wonder",
+    blurb: "More in them than went in, and never what you wanted.",
+    grants: { deckMax: 2 }
+  },
+  {
+    name: "Cairn Stone", slot: "pack", weight: 4, value: 450,
+    kind: "Wonder", group: "wonder",
+    blurb: "Set it down and the ground agrees to be taller.",
+    text: "Set it down: its square is high ground for the rest of the fight."
+  },
+  {
+    name: "Gorget of the Turned Blade", slot: "neck", weight: 1, value: 450,
+    kind: "Wonder", group: "wonder",
+    blurb: "Three old cuts in it, none of them deep.",
+    active: { text: "Block 3 as a reaction.", boundary: "combat" }
+  },
+  {
+    name: "Accuser's Ring", slot: "fingers", weight: 0, value: 500,
+    kind: "Wonder", group: "wonder",
+    blurb: "It is cold on the finger that points.",
+    active: { text: "One enemy within 3 is Judged (1).", boundary: "combat" }
+  },
+  {
+    name: "Beggar's Bowl", slot: "pack", weight: 1, value: 500,
+    kind: "Wonder", group: "wonder",
+    blurb: "Whatever is dropped in it stops being anybody's.",
+    active: { text: "Lift Blessed or Cursed from anyone adjacent.", boundary: "longRest" }
+  },
+  {
+    name: "Hourglass Charm", slot: "neck", weight: 0, value: 550,
+    kind: "Wonder", group: "wonder",
+    blurb: "The sand has not moved since you found it.",
+    active: { text: "Swap your place in the initiative order with a willing ally.", boundary: "combat" }
+  },
+  {
+    name: "Gambler's Coin", slot: "fingers", weight: 0, value: 600,
+    kind: "Wonder", group: "wonder",
+    blurb: "It lands how you need it to, which is not the same as how you want it to.",
+    active: { text: "Read 3 on your own fate deck.", boundary: "combat" }
+  },
+
+  /* ---- greater wonders: 800 to 2000 gold ---- */
+  {
+    name: "Surgeon's Pin", slot: "neck", weight: 0, value: 900,
+    kind: "Wonder", group: "wonder",
+    blurb: "Silver, and it has closed worse than this.",
+    active: { text: "Remove one Wound from an ally.", boundary: "longRest" }
+  },
+  {
+    name: "Mantle of the Unburdened", slot: "cloak", weight: 1, value: 900,
+    kind: "Wonder", group: "wonder",
+    // The counterpart to Plate -- and the one item that would ruin an Ironclad, whose Signature
+    // wants to be Overloaded. Loot that is wrong for a build is as good a find as loot that is right.
+    blurb: "Everything you carry belongs to the cloak while you wear it.",
+    text: "You are never Burdened or Overloaded, whatever you carry."
+  },
+  {
+    name: "Reaver's Edge", slot: "hands", fits: ["back"], hands: 1, tags: ["heavy", "melee"],
+    weight: 2, value: 1300, kind: "Wonder", group: "wonder",
+    blurb: "It eats what it meets, slowly, and starts with the armour.",
+    verbs: { strike: verb(4, { text: "on a Critical, Corrode 1" }) }
+  },
+  {
+    name: "Crown of the Quiet Mind", slot: "head", weight: 1, value: 1400,
+    kind: "Wonder", group: "wonder",
+    blurb: "Thin gold. Nothing in your head hurries while it is on.",
+    grants: { handSize: 1 }
+  },
+  {
+    name: "Pact Iron", slot: "fingers", weight: 0, value: 1600,
+    kind: "Wonder", group: "wonder",
+    blurb: "Cold iron takes a debt and holds it for a while.",
+    active: { text: "One Taint card is set aside for the rest of the fight.", boundary: "longRest" }
+  },
+
+  /* ---- relics: and what they take ------------------------------------------
+   * Not much better than a greater wonder -- DIFFERENT, because each carries an obligation the GM
+   * writes down and holds (leveling.md 4). An obligation in TEXT is the loosest rung and the right
+   * one here: a sentence everyone can read is enough when the item is why they can read it.
+   */
+  {
+    name: "Sessyfyn's Tear", slot: "neck", weight: 0, value: 3000,
+    kind: "Relic", group: "wonder",
+    // Charges the goddess's own obedience, which way-cards 3.5 asks of her priests.
+    blurb: "Seawater that has not dried in four hundred years.",
+    active: { text: "Any one fate draw on the field is drawn again.", boundary: "combat" },
+    text: "Obligation: a permanent Miss AND a permanent Critical in your fate deck."
+  },
+  {
+    name: "The Black Lantern", slot: "hands", hands: 1, weight: 2, value: 3500,
+    kind: "Relic", group: "wonder",
+    // The only item that makes the battlefield worse for everyone, which a Shadow mage wants and
+    // nobody else does.
+    blurb: "It is lit. You can tell because of how much less you can see.",
+    text: "Every square within 3 is shadowed, your enemies' included. "
+      + "Obligation: you may never carry any other light."
+  },
+  {
+    name: "The Hungry Blade", slot: "hands", fits: ["back"], hands: 1, tags: ["heavy", "melee"],
+    weight: 2, value: 4000, kind: "Relic", group: "wonder",
+    // Punishes you for carrying it BADLY rather than for carrying it: free in the fights it is for.
+    blurb: "It is not sharp. It does not need to be sharp.",
+    verbs: { strike: verb(5, { text: "when it kills, heal 2" }) },
+    text: "Obligation: a bound Taint the first round of each fight it does not kill."
+  },
+  {
+    name: "The Pale Crown", slot: "head", weight: 1, value: 5000,
+    kind: "Relic", group: "wonder",
+    blurb: "Bone, and lighter than bone should be.",
+    grants: { spellSlots: 2 },
+    text: "Obligation: you may never wear armour, and nobody but you may heal you."
   }
 ];
 

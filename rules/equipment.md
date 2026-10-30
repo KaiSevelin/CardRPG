@@ -251,6 +251,8 @@ other on the same roll, and a Wonder never competes with a Tool.
 | **Fine Longsword** | 1 hand, Back | 2 | 90 g | Strike 3 · **+1 Strike** (Make) |
 | **Smith-forged Plate** | Body | 18 | 1200 g | Armor 4 — and **2 kg lighter** than plate, which is the whole craft |
 | **Masterwork Crossbow** | 2 hands, Back | 3 | 300 g | Strike 4, range 8, ignores 1 armor · **reloads on a free hand**, not a Ready |
+| **Balanced Dagger** | 1 hand, Belt | 0 | 70 g | Strike 3, **range 5 thrown** — a smith's dagger throws further than anyone's arm |
+| **Proofed Mail** | Body | 9 | 320 g | **Armor 3 at 9 kg** — brigandine's protection at mail's weight, and no Sidestep penalty |
 
 **The masterwork crossbow is the best thing on this page and it is not magic**, which is the point of
 the Make group: it buys back the **Ready**, and a crossbow that fires every turn is a different weapon
@@ -292,13 +294,143 @@ to remember. Dazed costs its victim 4.0 points of win rate
 ([analysis §9](../sim/analysis-2026-10-30.md)), so an item that simply deletes it is worth more than
 any Drain.
 
+### 9.4 What makes loot various: one item per mechanic
+
+A longer list of **+1 swords** is not variation. The generative question is *what in the game does
+this item let you touch*, and the answer makes loot interesting for the same reason the magic schools
+are interesting — it is about **access**, not numbers.
+
+> **A magic item is the one thing in the game that can hand a non-specialist somebody else's
+> mechanic.** A tactic belongs to a node and cannot be found; an item can be. That is what makes a
+> find worth being excited about.
+
+**Two rules, and the first is the one that protects the Ways.**
+
+**1. Loot may hand you somebody else's *mechanic*, never somebody's *Signature*.** *Marked* is a
+mechanic, so an arrowhead that sets it is fine — the Shade's advantage over the finder is that they do
+it every turn for free, where the arrowhead does it once a fight. But *"for you the Wound threshold is
+4"* **is** the Executioner's Signature, so no item may say it. An item that prints a Signature retires
+a node.
+
+**2. The greater it is, the more it takes.** Minor and lesser items are free; a **relic** carries an
+**obligation**, which is the same price every magic school pays and uses the machinery
+[leveling.md](leveling.md) §4 already built. Relics take the loosest rung — *in text* — because a
+sentence everybody at the table can read is enough when the item is the reason they can read it.
+
+#### The coverage audit
+
+Of the mechanics the rules contain, **fourteen had no item touching them at all** before this pass.
+One each, so the next question is always *what is still uncovered*:
+
+| Mechanic | Item | Tier |
+|---|---|---|
+| **Strain** | Tinker's Thimble | minor |
+| **Spent** | Whetstone of the Last Edge | minor |
+| **Rest tokens** | Pilgrim's Shoes | minor |
+| **Foresee** | Cracked Spyglass | minor |
+| **Carry** | Quartermaster's Belt | lesser |
+| **Deck size** | Deep Pockets | lesser |
+| **Block** | Gorget of the Turned Blade | lesser |
+| **Initiative** | Hourglass Charm | lesser |
+| **Openings — Marked** | Marked Arrowhead | lesser |
+| **Openings — Judged** | Accuser's Ring | lesser |
+| **Lift** | Beggar's Bowl | lesser |
+| **High ground** | Cairn Stone | lesser |
+| **Forced movement** | Hollow Boots | lesser |
+| **Read N / the fate deck** | Gambler's Coin | lesser |
+| **Wounds** | Surgeon's Pin | greater |
+| **Taint** | Pact Iron | greater |
+| **Corrode** | Reaver's Edge | greater |
+| **Encumbrance** | Mantle of the Unburdened | greater |
+| **Hand size** | Crown of the Quiet Mind | greater |
+
+> **Brace is deliberately absent and always will be.** It is universal and never blocked on purpose,
+> so [specializations.md](specializations.md) withdrew it as a candidate lever for a *node* — and an
+> item that Braces harder is the same mistake with a price tag. **Brace is the one mechanic in the
+> game that must not become anybody's identity**, bought or earned.
+
+#### 9.5 Minor wonders — 50 to 150 gold
+
+Small, situational, and the kind of thing a party actually finds. None of them changes a fight; each
+changes one turn in it.
+
+| Item | Slot | kg | Value | Line |
+|---|---|---|---|---|
+| **Whetstone of the Last Edge** | Pack | 1 | 60 g | **Drain:** one **Spent** card returns to your discard. *Recharge: long rest.* |
+| **Tinker's Thimble** | Fingers | 0 | 80 g | ⤵ **Strain** costs you one card fewer, to a minimum of 1. |
+| **Pilgrim's Shoes** | Feet | 1 | 90 g | One extra **rest token** on every long rest. |
+| **Cracked Spyglass** | Pack | 1 | 150 g | **Foresee** one extra type at the start of a fight. |
+
+#### 9.6 Lesser wonders — 300 to 700 gold
+
+One real effect each, and most of them **Drain** with a recharge, because core-rules §4 prices active
+below passive.
+
+| Item | Slot | kg | Value | Line |
+|---|---|---|---|---|
+| **Quartermaster's Belt** | Belt | 1 | 300 g | **Carry +15 kg.** |
+| **Hollow Boots** | Feet | 1 | 350 g | **Drain:** **shove** an adjacent enemy 2 squares. *Recharge: combat.* |
+| **Marked Arrowhead** | Belt | 0 | 350 g | **Drain:** one enemy you can see is **Marked (1)**. *Recharge: combat.* |
+| **Deep Pockets** | Cloak | 1 | 400 g | Your action deck maximum is **+2**. |
+| **Cairn Stone** | Pack | 4 | 450 g | Set it down. Its square is **high ground** for the rest of the fight. |
+| **Gorget of the Turned Blade** | Neck | 1 | 450 g | **Drain:** ⚡ **Block 3** as a reaction. *Recharge: combat.* |
+| **Accuser's Ring** | Fingers | 0 | 500 g | **Drain:** one enemy within 3 is **Judged (1)**. *Recharge: combat.* |
+| **Beggar's Bowl** | Pack | 1 | 500 g | **Drain:** ✋ **Lift** Blessed or Cursed from anyone adjacent. *Recharge: long rest.* |
+| **Warden's Seal** | Fingers | 0 | 500 g | **+1 to all 🛡 Defend values** (Power). |
+| **Hourglass Charm** | Neck | 0 | 550 g | **Drain:** swap your place in the initiative order with a willing ally. *Recharge: combat.* |
+| **Gambler's Coin** | Fingers | 0 | 600 g | **Drain:** **Read 3** on your own fate deck. *Recharge: combat.* |
+
+**The Marked Arrowhead and the Accuser's Ring are the two that matter most for a party**, because an
+**opening** is read by *everybody's* cards (core-rules §7). A party with no Shade and no priest could
+not set one at all; now they can find one, once a fight, which is exactly the access a magic item
+should sell.
+
+#### 9.7 Greater wonders — 800 to 2000 gold
+
+| Item | Slot | kg | Value | Line |
+|---|---|---|---|---|
+| **Surgeon's Pin** | Neck | 0 | 900 g | **Drain:** remove one **Wound** from an ally. *Recharge: long rest.* |
+| **Mantle of the Unburdened** | Cloak | 1 | 900 g | You are never **Burdened** or **Overloaded**, whatever you carry. |
+| **Reaver's Edge** | 1 hand, Back | 2 | 1300 g | Strike 4 · on a **Critical**, ⚗ **Corrode 1**. |
+| **Crown of the Quiet Mind** | Head | 1 | 1400 g | **Hand size +1.** |
+| **Pact Iron** | Fingers | 0 | 1600 g | **Drain:** one **Taint** card is set aside for the rest of the fight. *Recharge: long rest.* |
+
+**The Mantle is the counterpart to Plate**, and the pair is the best decision in the catalogue: Plate
+buys 4 armor at 20 kg and makes **Burdened** one bad decision away (§1.2), and the Mantle removes the
+risk for 900 gold. Together they are the Ironclad's build, bought rather than earned — except that the
+Ironclad's Signature *wants* to be Overloaded, so the Mantle is the one item that would **ruin** them.
+Loot that is wrong for a build is as good a find as loot that is right.
+
+#### 9.8 Relics — and what they take
+
+Four, and each carries an **obligation** the GM writes down and holds
+([leveling.md](leveling.md) §4). They are not better than the greater wonders by much; they are
+*different*, because they have a price, and that is what makes them worth naming.
+
+| Relic | Slot | Value | Line | **Obligation** |
+|---|---|---|---|---|
+| **Sessyfyn's Tear** | Neck | 3000 g | **Drain:** any one fate draw on the field is drawn again. *Recharge: combat.* | A permanent **Miss** *and* a permanent **Critical** in your fate deck — the goddess's own price |
+| **The Black Lantern** | 1 hand | 3500 g | Every square within 3 is **shadowed**, your enemies' squares included. | You may never carry any other light, ever |
+| **The Hungry Blade** | 1 hand, Back | 4000 g | Strike **5** · when it kills, heal **2**. | A **bound Taint** the first round each fight it does not kill |
+| **The Pale Crown** | Head | 5000 g | **+2 spell slots.** | You may never wear armour, and **nobody but you** may heal you |
+
+**Sessyfyn's Tear charges the god's own obedience**, which is the right way to price a relic of hers:
+way-cards §3.5 asks a priest of Sessyfyn for exactly that Miss and Critical, and the Tear asks it of
+anybody. **The Black Lantern is the only item in the game that makes the battlefield worse for
+everyone**, which is what a Shadow mage wants and nobody else does. And **The Hungry Blade punishes
+you for carrying it badly** rather than for carrying it, which is the most interesting shape an
+obligation can have: it is free in the fights it is built for.
+
 ---
 
 ## 10. Open
 
-- **Settled: all of it is in the system** — **65 items** in `content.mjs`, up from nine, and the
-  validator checks the count, that every key exists on the schema, and that no bonus group is left
-  unused but `body` and `training` (which belong to features, not items).
+- **Settled: all of it is in the system** — **91 items** in `content.mjs`, up from nine. **Forty**
+  are magic or crafted: 24 wonders across four value tiers, 4 relics, 6 smith-works and 6 jeweller's
+  pieces. The validator checks the count, that every key exists on the schema, that no bonus group
+  is left unused but `body` and `training` (which belong to features), that the magic items still
+  reach **every** mechanic §9.4 lists, that **nothing touches Brace**, and that **no relic is free
+  of its obligation**.
 
   **The schema did need two changes, and the second explains an old absence.** An item's `bonus` was
   **combat-verb shaped only**, so *"🌑 Shadow +2 on locks and mechanisms"* could not be written
@@ -315,3 +447,8 @@ any Drain.
   once, for a slung bow.
 - **[OPEN]** Whether **ignores N armor** should be a tag rather than text on the verb line. Three
   weapon families use it now; a fourth would make it a tag.
+- **[OPEN]** **Loot tables.** Ninety-one items and no rule for what a party finds, where, or how
+  often. The tiers in §9.5–9.8 are priced for it — minor, lesser, greater, relic — and the thing
+  still missing is the table that says a kobold warren yields minor and a dragon yields a relic.
+  [leveling.md](leveling.md) §4 is firm that **gold is not a levelling reward**, so loot is the
+  GM's lever and it has no guidance at all.

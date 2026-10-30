@@ -617,7 +617,40 @@ for (const item of [...content.ITEMS, ...content.NPC_GEAR]) {
 check("item keys not in the schema",
   strayItemKeys.size ? [...strayItemKeys].join(", ") : "none", "none");
 
-check("player items written", content.ITEMS.length, 65);
+check("player items written", content.ITEMS.length, 91);
+
+/*
+ * Loot variation is about ACCESS, not numbers (rules/equipment.md 9.4): a magic item is the one
+ * thing that can hand a non-specialist somebody else's mechanic. So the thing to check is that the
+ * catalogue keeps reaching across the game's mechanics rather than growing another +1 sword -- and
+ * that no item prints a Signature, which would retire a node.
+ */
+const magic = content.ITEMS.filter(i => ["Wonder", "Relic", "Make", "Power"].includes(i.kind));
+check("magic and crafted items", magic.length >= 40, true);
+
+const prose = i => [i.text ?? "", i.active?.text ?? "",
+  ...Object.values(i.verbs ?? {}).map(v => v?.text ?? ""),
+  i.bonus?.situation ?? ""].join(" ").toLowerCase();
+const reach = [
+  "strain", "spent", "rest token", "foresee", "carry", "deck", "block", "initiative",
+  "marked", "judged", "lift", "high ground", "shove", "read 3", "wound", "taint",
+  // handSize, deckMax and carry come through grants, so they are matched as engine keys.
+  "corrode", "burdened", "handsize", "invisible", "burning", "shadowed", "difficult ground"
+];
+const whole = magic.map(prose).join(" ") + " " + JSON.stringify(magic.map(i => i.grants)).toLowerCase();
+const untouched = reach.filter(k => !whole.includes(k));
+check("mechanics no magic item reaches", untouched.length ? untouched.join(", ") : "none", "none");
+
+// Brace is universal and never blocked on purpose, so it must not become anybody's identity --
+// bought or earned (specializations.md withdrew it as a node lever for the same reason).
+const braces = magic.filter(i => /brace/.test(prose(i))).map(i => i.name);
+check("items that touch Brace", braces.length ? braces.join(", ") : "none", "none");
+
+// A relic has a price. That is the whole difference between it and a greater wonder.
+const freeRelics = content.ITEMS
+  .filter(i => i.kind === "Relic" && !/obligation/i.test(i.text ?? ""))
+  .map(i => i.name);
+check("relics with no obligation", freeRelics.length ? freeRelics.join(", ") : "none", "none");
 
 // Every bonus group should have something using it, or the group is a promise nothing keeps.
 const groupsUsed = new Set(content.ITEMS.filter(i => i.group).map(i => i.group));
