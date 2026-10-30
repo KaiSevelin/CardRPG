@@ -194,6 +194,19 @@ export class ItemSlateData extends SlateData {
        * rather than guesswork about what the number used to be.
        */
       corroded: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 }),
+
+      /*
+       * What wearing this raises, the same shape a feature uses -- a ring that grants a spell slot,
+       * a belt that grants carry. Counted only while EQUIPPED, which is the difference between an
+       * item's grant and a feature's.
+       */
+      grants: new fields.SchemaField({
+        health: new fields.NumberField({ required: true, integer: true, initial: 0 }),
+        handSize: new fields.NumberField({ required: true, integer: true, initial: 0 }),
+        carry: new fields.NumberField({ required: true, integer: true, initial: 0 }),
+        deckMax: new fields.NumberField({ required: true, integer: true, initial: 0 }),
+        spellSlots: new fields.NumberField({ required: true, integer: true, initial: 0 })
+      }),
       consumed: new fields.BooleanField({ initial: false }),
 
       group: groupField(),
@@ -210,7 +223,18 @@ export class ItemSlateData extends SlateData {
         requiresTag: new fields.StringField({
           required: false, blank: true, initial: "",
           choices: [...CARDRPG.itemTags, ""]
-        })
+        }),
+        /*
+         * A tool's skill line -- "Shadow +2 on locks and mechanisms" (skill-rules 2). Until this
+         * existed the bonus field was combat-verb shaped only, so the eight tools documented since
+         * the first draft of starter-cards.md could not be expressed at all, which is why none of
+         * them was ever in the system. `situation` is prose because the table adjudicates it.
+         */
+        approach: new fields.StringField({
+          required: false, blank: true, initial: "",
+          choices: [...Object.keys(CARDRPG.approaches), ""]
+        }),
+        situation: new fields.StringField({ required: false, blank: true, initial: "" })
       }),
 
       /** NPC gear is tuned separately from player gear, so it must not leak into player pickers. */

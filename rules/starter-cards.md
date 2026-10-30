@@ -85,6 +85,12 @@ Your **background** then adds its 2 skill cards on top, giving a 17-card deck at
 
 ## Items
 
+> **The full catalogue is [equipment.md](equipment.md)** — sixty-five items: weapons by the world
+> document's fifteen specialities, four rungs of armour, matchlock firearms, the ten tools, the
+> consumables and the magic items. What follows is the **playtest set**: the nine a paper test fight
+> needs.
+
+
 | Item | Fits | Tags | kg | Value | Strike | Cast | Defend | Use |
 |---|---|---|---|---|---|---|---|---|
 | Longsword | 1 hand, Back | Heavy, Melee | 2 | 15 g | 3 dmg | – | 1 | – |

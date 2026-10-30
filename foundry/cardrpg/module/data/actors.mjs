@@ -124,10 +124,18 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
     const d = CARDRPG.defaults;
     const slates = this.parent.items;
 
-    // --- what the features grant
+    /*
+     * --- what features and worn items grant
+     *
+     * A feature is simply true; an item has to be EQUIPPED, which is what makes a ring that grants
+     * a spell slot a thing you can take off (rules/equipment.md 9.2). Items were excluded here
+     * until the magic items were written, so a granting item silently granted nothing.
+     */
     const grants = { health: 0, handSize: 0, carry: 0, deckMax: 0, spellSlots: 0 };
     for (const slate of slates) {
-      if (slate.type !== "feature") continue;
+      const counts = slate.type === "feature"
+        || (slate.type === "item" && slate.system.equipped);
+      if (!counts) continue;
       for (const k of Object.keys(grants)) grants[k] += slate.system.grants?.[k] ?? 0;
     }
 
@@ -163,9 +171,15 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
     // Wounds and Taint don't count toward the limit, so a wounded character is never locked out.
     this.actionDeck.size = this.#countCards("action").total;
 
-    // --- armor, from the equipped body slate, after anything that has eaten it
+    /*
+     * --- armor, from every WORN slot, after anything that has eaten it
+     *
+     * `worn` rather than `=== "body"`: a helmet in the head slot contributed nothing whatever it
+     * said, which made five of the ten slots unusable for armour and is why nothing had ever been
+     * written for cloak, head, neck, fingers or feet (rules/equipment.md 5).
+     */
     this.armor = slates
-      .filter(i => i.type === "item" && i.system.equippedSlot === "body")
+      .filter(i => i.type === "item" && CARDRPG.slots[i.system.equippedSlot]?.worn)
       .reduce((n, i) => n + (i.system.armorNow ?? i.system.armor ?? 0), 0);
 
     // --- carried weight and encumbrance
@@ -354,7 +368,7 @@ export class NpcData extends foundry.abstract.TypeDataModel {
   prepareDerivedData() {
     const gear = this.parent.items.filter(i => i.type === "item" && i.system.equipped);
     this.armor = this.armorBase + gear
-      .filter(i => i.system.equippedSlot === "body")
+      .filter(i => CARDRPG.slots[i.system.equippedSlot]?.worn)
       .reduce((n, i) => n + (i.system.armorNow ?? i.system.armor ?? 0), 0);
     this.health.max = this.health.base;
     this.health.value = Math.min(this.health.value, this.health.max);

@@ -208,6 +208,362 @@ export const ITEMS = [
     weight: 0, value: 40, consumed: true, kind: "Consumable",
     blurb: "A waxed clay ball, heavier than it looks.",
     verbs: { use: verb(null, { text: "You become Invisible (1)" }) }
+  },
+  /* ---- melee, one per speciality the world document names ------------------
+   * worldinfo/Firma.md's "Specialization -- Way of Strength" chapter lists fifteen weapon
+   * specialities as empty headings. The list is derived from that rather than invented, which is
+   * the same discipline the magic schools' prices got (rules/equipment.md 2).
+   */
+  {
+    name: "Arming Sword", slot: "hands", fits: ["back"], hands: 1, tags: ["melee"],
+    weight: 1, value: 12, kind: "Weapon",
+    blurb: "A plain single-handed blade. Every town has a smith who makes them.",
+    verbs: { strike: verb(3), defend: verb(1) }
+  },
+  {
+    name: "Greatsword", slot: "hands", hands: 2, tags: ["heavy", "melee"],
+    weight: 3, value: 40, kind: "Weapon",
+    blurb: "Four feet of edge. Both hands, and nothing held back.",
+    verbs: { strike: verb(5) }
+  },
+  {
+    name: "Great Axe", slot: "hands", hands: 2, tags: ["heavy", "melee"],
+    weight: 4, value: 30, kind: "Weapon",
+    blurb: "Cheaper than a greatsword and it does not care.",
+    verbs: { strike: verb(5) }
+  },
+  {
+    name: "Mace", slot: "hands", fits: ["belt"], hands: 1, tags: ["heavy", "melee"],
+    weight: 2, value: 10, kind: "Weapon",
+    blurb: "Flanged. It does not cut, which is the point against a man in mail.",
+    verbs: { strike: verb(3, { text: "ignores 1 armor" }) }
+  },
+  {
+    name: "Warhammer", slot: "hands", fits: ["back"], hands: 1, tags: ["heavy", "melee"],
+    weight: 3, value: 25, kind: "Weapon",
+    blurb: "A beak on one side for the plate and a hammer on the other for the man in it.",
+    verbs: { strike: verb(4, { text: "ignores 1 armor" }) }
+  },
+  {
+    name: "Spear", slot: "hands", fits: ["back"], hands: 1, tags: ["melee", "thrown"],
+    weight: 2, value: 8, kind: "Weapon",
+    blurb: "The cheapest thing that keeps a man at arm's length.",
+    verbs: { strike: verb(3, { range: 3, text: "range 3 thrown" }) }
+  },
+  {
+    name: "Halberd", slot: "hands", hands: 2, tags: ["heavy", "melee"],
+    weight: 3, value: 35, kind: "Weapon",
+    blurb: "Axe, spike and hook on a six-foot shaft. Reaches over the man in front of you.",
+    verbs: { strike: verb(4, { range: 2, text: "reach 2" }) }
+  },
+  {
+    name: "Pike", slot: "hands", hands: 2, tags: ["heavy", "melee"],
+    weight: 4, value: 20, kind: "Weapon",
+    // Useless adjacent is the price of reach 3: a pikeman wants somebody in front of them, which
+    // is the whole of a formation.
+    blurb: "Eighteen feet. Magnificent in a line and worthless on your own.",
+    verbs: { strike: verb(3, { range: 3, text: "reach 3; useless adjacent" }) }
+  },
+  {
+    name: "Lance", slot: "hands", hands: 1, tags: ["heavy", "melee"],
+    weight: 3, value: 30, kind: "Weapon",
+    blurb: "A couched lance is a horse's weight arriving at one point. Needs the horse.",
+    verbs: { strike: verb(5, { text: "needs a mount" }) }
+  },
+  {
+    name: "Trident", slot: "hands", fits: ["back"], hands: 1, tags: ["melee"],
+    weight: 2, value: 18, kind: "Weapon",
+    blurb: "Arena work. The crowd likes the shape of it.",
+    verbs: { strike: verb(3, { range: 2, text: "reach 2" }) }
+  },
+  {
+    name: "Net", slot: "hands", fits: ["belt"], hands: 1, tags: ["light", "thrown"],
+    weight: 1, value: 5, kind: "Weapon",
+    blurb: "Weighted at the edges. The other half of a trident.",
+    verbs: { strike: verb(0, { range: 3, text: "Grappled (1), resist Might 5" }) }
+  },
+
+  /* ---- bows and crossbows ---- */
+  {
+    name: "Longbow", slot: "hands", fits: ["back"], hands: 2, tags: ["heavy", "ranged"],
+    weight: 2, value: 50, kind: "Weapon",
+    // The longbow's whole argument against a crossbow that hits harder: it fires every turn.
+    blurb: "A yew stave taller than the archer. No reload -- that is what you are buying.",
+    verbs: { strike: verb(3, { range: 10 }) }
+  },
+  {
+    name: "Crossbow", slot: "hands", fits: ["back"], hands: 2, tags: ["ranged"],
+    weight: 3, value: 60, kind: "Weapon",
+    blurb: "Anyone can be taught one in a week, which is why lords dislike them.",
+    verbs: { strike: verb(4, { range: 8, text: "ignores 1 armor; Ready to reload" }) }
+  },
+  {
+    name: "Heavy Crossbow", slot: "hands", hands: 2, tags: ["heavy", "ranged"],
+    weight: 5, value: 120, kind: "Weapon",
+    blurb: "Cranked with a windlass. It goes through a shield and the arm behind it.",
+    verbs: { strike: verb(5, { range: 10, text: "ignores 1 armor; Ready to reload" }) }
+  },
+
+  /* ---- firearms: matchlocks, and the reason plate stopped being worth its weight ---- */
+  {
+    name: "Matchlock Pistol", slot: "hands", fits: ["belt"], hands: 1, tags: ["ranged"],
+    weight: 1, value: 70, kind: "Weapon",
+    blurb: "One hand, so it goes beside a sword. A brace of them is two shots before a reload.",
+    verbs: { strike: verb(3, { range: 4, text: "ignores 2 armor; Ready to reload" }) }
+  },
+  {
+    name: "Arquebus", slot: "hands", fits: ["back"], hands: 2, tags: ["heavy", "ranged"],
+    weight: 4, value: 90, kind: "Weapon",
+    blurb: "Loud, slow, and it does not care what you are wearing.",
+    verbs: { strike: verb(5, { range: 8, text: "ignores 2 armor; Ready to reload" }) }
+  },
+  {
+    name: "Matchlock Musket", slot: "hands", hands: 2, tags: ["heavy", "ranged"],
+    weight: 5, value: 150, kind: "Weapon",
+    blurb: "A rest to fire it from and a minute to load it. Worth both.",
+    verbs: { strike: verb(6, { range: 12, text: "ignores 2 armor; Ready to reload" }) }
+  },
+
+  /* ---- armour: four rungs, bought with kilograms, because armor is a cliff edge ---- */
+  {
+    name: "Mail Shirt", slot: "body", tags: ["armor"],
+    weight: 9, value: 70, kind: "Armor", armor: 2,
+    blurb: "Riveted rings to the hip. The soldier's compromise for eight hundred years."
+  },
+  {
+    name: "Brigandine", slot: "body", tags: ["armor", "heavy"],
+    weight: 12, value: 140, kind: "Armor", armor: 3,
+    blurb: "Plates riveted between canvas. Heavy enough that you stop dodging.",
+    text: "Blocks Sidestep reactions."
+  },
+  {
+    name: "Plate", slot: "body", tags: ["armor", "heavy"],
+    weight: 20, value: 400, kind: "Armor", armor: 4,
+    // Half a 40 kg allowance: Plate is a bet that nothing will out-range you.
+    blurb: "Half your carry allowance, and nothing short of a ball goes through it.",
+    text: "Blocks Sidestep reactions."
+  },
+  {
+    name: "Buckler", slot: "hands", fits: ["belt"], hands: 1, tags: ["shield"],
+    weight: 1, value: 6, kind: "Shield",
+    blurb: "A fist-sized iron plate. Better than the hand behind it.",
+    verbs: { defend: verb(1) }
+  },
+  {
+    name: "Kite Shield", slot: "hands", fits: ["back"], hands: 1, tags: ["shield"],
+    weight: 4, value: 24, kind: "Shield",
+    blurb: "Long enough to cover the leg a horseman cannot move.",
+    verbs: { defend: verb(2, { text: "Defend 3 against Ranged" }) }
+  },
+  {
+    name: "Tower Shield", slot: "hands", hands: 1, tags: ["shield", "heavy"],
+    weight: 8, value: 45, kind: "Shield",
+    blurb: "A wall for a man who has decided not to go anywhere.",
+    verbs: { defend: verb(3, { text: "your Move is halved while it is in hand" }) }
+  },
+  {
+    name: "Light Helm", slot: "head", tags: ["armor"],
+    weight: 1, value: 15, kind: "Armor", armor: 1,
+    blurb: "An open kettle. You can still hear and still see."
+  },
+  {
+    name: "Great Helm", slot: "head", tags: ["armor", "heavy"],
+    weight: 3, value: 40, kind: "Armor", armor: 1,
+    blurb: "Safe, and you cannot hear a thing through it.",
+    text: "Disadvantage on Wits checks."
+  },
+
+  /* ---- the five worn slots that had no item in them at all ---- */
+  {
+    name: "Travelling Cloak", slot: "cloak", weight: 2, value: 8, kind: "Station", group: "station",
+    blurb: "Oiled wool. The difference between a wet night and an unbearable one.",
+    bonus: { approach: "shadow", value: 1, situation: "outdoors, and you stay dry" }
+  },
+  {
+    name: "Fine Clothes", slot: "body", weight: 2, value: 30, kind: "Station", group: "station",
+    blurb: "Cut well enough that nobody asks who you are.",
+    bonus: { approach: "presence", value: 1, situation: "nobles and merchants" }
+  },
+  {
+    name: "Signet Ring", slot: "fingers", weight: 0, value: 60, kind: "Station", group: "station",
+    blurb: "A house, a seal, and somebody who will answer for you.",
+    bonus: { approach: "presence", value: 1, situation: "where your house is known" }
+  },
+  {
+    name: "Pilgrim's Token", slot: "neck", weight: 0, value: 3, kind: "Power", group: "power",
+    blurb: "Tin, stamped at a shrine. Worth nothing and proof of everything.",
+    bonus: { approach: "lore", value: 1, situation: "matters of one named faith" }
+  },
+  {
+    name: "Marching Boots", slot: "feet", weight: 1, value: 12, kind: "Make", group: "make",
+    blurb: "Nailed soles. Rubble and mud stop being a decision.",
+    text: "Difficult ground costs you 1 instead of 2."
+  },
+
+  /* ---- tools: the eight documented since the first draft, plus two ----------
+   * None of these existed in the system, and the reason was the schema rather than neglect: the
+   * item bonus field was combat-verb shaped only, so "Shadow +2 on locks" could not be written
+   * down. They carry the only examples of the Tool, Station and Power bonus groups (core-rules 5).
+   */
+  {
+    name: "Lockpicks", slot: "belt", weight: 0, value: 25, kind: "Tool", group: "tool",
+    blurb: "A roll of picks and a torsion wrench, in oiled cloth.",
+    bonus: { approach: "shadow", value: 2, situation: "locks and mechanisms" }
+  },
+  {
+    name: "Climbing Rope", slot: "pack", weight: 3, value: 5, kind: "Tool", group: "tool",
+    blurb: "Fifty feet of hemp. Nobody falls alone.",
+    bonus: { approach: "might", value: 1, situation: "climbing" }
+  },
+  {
+    name: "Healer's Kit", slot: "pack", weight: 2, value: 20, kind: "Tool", group: "tool",
+    blurb: "Needle, gut, lint and spirit.",
+    bonus: { approach: "lore", value: 2, situation: "treating wounds; removes 1 Wound on a Normal 5" }
+  },
+  {
+    name: "Repair Kit", slot: "pack", weight: 3, value: 30, kind: "Tool", group: "tool",
+    blurb: "Files, rivets, pitch and wire. What acid leaves behind is work, not loss.",
+    bonus: { approach: "lore", value: 2, situation: "repairs; overnight it clears 1 Corrode" }
+  },
+  {
+    name: "Hunting Traps", slot: "pack", weight: 4, value: 15, kind: "Tool", group: "tool",
+    blurb: "Jaws and a stake. Patience, mostly.",
+    bonus: { approach: "wits", value: 1, situation: "tracking and trapping animals" }
+  },
+  {
+    name: "Lantern", slot: "hands", hands: 1, weight: 2, value: 5, kind: "Tool", group: "tool",
+    // Shadowed squares are now defined (core-rules 11) and a whole school reads them, so a lantern
+    // is an answer to a Shadow mage -- which a 5-gold item should not be by accident.
+    blurb: "Horn panes and a tallow dip. The squares it lights are not shadowed.",
+    bonus: { approach: "wits", value: 1, situation: "anything you need to see in the dark" }
+  },
+  {
+    name: "The Kit", slot: "pack", weight: 3, value: 0, kind: "Tool", group: "tool",
+    blurb: "A burglar's whole trade in a roll of canvas, and they never put it down.",
+    bonus: { approach: "shadow", value: 2, situation: "every Hard physical obstacle counts as Normal" }
+  },
+  {
+    name: "Holy Symbol", slot: "hands", hands: 1, weight: 0, value: 10, kind: "Power", group: "power",
+    blurb: "Whose, and how openly, is the only question that matters in Firma.",
+    bonus: { approach: "lore", value: 1, situation: "religion and undead" }
+  },
+  {
+    name: "Gaming Set", slot: "pack", weight: 1, value: 5, kind: "Station", group: "station",
+    blurb: "Dice, a board and a cup. Soldiers will tell a stranger anything over it.",
+    bonus: { approach: "presence", value: 1, situation: "soldiers, taverns, gamblers" }
+  },
+  {
+    name: "Smith's Hammer", slot: "pack", weight: 2, value: 18, kind: "Make", group: "make",
+    blurb: "A cross-pein and a sense of what metal wants.",
+    bonus: { approach: "lore", value: 2, situation: "metalwork; repairs 1 Corrode overnight" }
+  },
+
+  /* ---- consumables: the Brewer's craft, and the cheap answer to a condition ---- */
+  {
+    name: "Antidote", slot: "belt", fits: ["hands"], hands: 1, tags: ["consumable"],
+    weight: 0, value: 35, kind: "Consumable", consumed: true,
+    blurb: "Charcoal, milk thistle and something the brewer will not name.",
+    verbs: { use: verb(2, { text: "Shake Off 2, Poisoned only" }) }
+  },
+  {
+    name: "Flask of Ink", slot: "belt", fits: ["hands"], hands: 1, tags: ["consumable", "thrown"],
+    weight: 0, value: 20, kind: "Consumable", consumed: true,
+    blurb: "Cuttlefish black. It finds what is not there to be seen.",
+    verbs: { use: verb(0, { range: 3, area: 1, areaKind: "blast", text: "ends Invisible in the area" }) }
+  },
+  {
+    name: "Flask of Oil", slot: "belt", fits: ["hands"], hands: 1, tags: ["consumable", "thrown"],
+    weight: 0, value: 10, kind: "Consumable", consumed: true,
+    blurb: "Lamp oil, thrown low.",
+    verbs: { use: verb(0, { range: 3, text: "Off-Balance (1), no save" }) }
+  },
+  {
+    name: "Firepot", slot: "belt", fits: ["hands"], hands: 1, tags: ["consumable", "thrown"],
+    weight: 1, value: 45, kind: "Consumable", consumed: true,
+    blurb: "Pitch and naphtha in a clay shell. It keeps burning.",
+    verbs: { use: verb(0, { range: 3, area: 1, areaKind: "blast", text: "Burning 1 (2)" }) }
+  },
+  {
+    name: "Cleansing Draught", slot: "belt", fits: ["hands"], hands: 1, tags: ["consumable"],
+    weight: 0, value: 150, kind: "Consumable", consumed: true,
+    // 150 gold on purpose: a cheap cure would make gold the counter to half the content.
+    blurb: "A temple brews it and does not sell it gladly.",
+    verbs: { use: verb(1, { text: "remove 1 Taint that is not bound" }) }
+  },
+  {
+    name: "Caltrops", slot: "pack", tags: ["consumable"],
+    weight: 2, value: 12, kind: "Consumable", consumed: true,
+    blurb: "A handful of iron, however it lands.",
+    verbs: { use: verb(0, { area: 2, text: "the area is difficult ground for the fight" }) }
+  },
+
+  /* ---- magic items: three crafts, three groups --------------------------------
+   * worldinfo/Firma.md names the makers -- smiths make exceptional weapons and armour, jewellers
+   * make magical jewellery, brewers make potions -- and they land on three bonus groups, two of
+   * which had nothing in them at all (rules/equipment.md 9).
+   */
+  {
+    name: "Fine Longsword", slot: "hands", fits: ["back"], hands: 1, tags: ["heavy", "melee"],
+    weight: 2, value: 90, kind: "Make", group: "make",
+    blurb: "A smith's mark near the hilt, and worth asking after.",
+    verbs: { strike: verb(3), defend: verb(1) },
+    bonus: { verb: "strike", value: 1 }
+  },
+  {
+    name: "Masterwork Crossbow", slot: "hands", fits: ["back"], hands: 2, tags: ["ranged"],
+    weight: 3, value: 300, kind: "Make", group: "make",
+    // The best thing in the catalogue and not magic: it buys back the Ready.
+    blurb: "A steel prod and a goat's-foot lever. It reloads in the hand.",
+    verbs: { strike: verb(4, { range: 8, text: "ignores 1 armor; reloads on a free hand, not a Ready" }) }
+  },
+  {
+    name: "Focus Pendant", slot: "neck", weight: 0, value: 400, kind: "Power", group: "power",
+    blurb: "Jeweller's work. The stone is not the point; the setting is.",
+    bonus: { verb: "cast", value: 1 }
+  },
+  {
+    name: "Ring of the Open Hand", slot: "fingers", weight: 0, value: 600,
+    kind: "Power", group: "power",
+    // Answers a rule rather than a number: core-rules 4 says a spell needs a free hand.
+    blurb: "Plain silver, worn thin. The gesture is already in it.",
+    text: "You may Cast without a free hand."
+  },
+  {
+    name: "Reliquary Band", slot: "fingers", weight: 0, value: 350, kind: "Power", group: "power",
+    blurb: "A splinter of someone's finger under glass.",
+    grants: { spellSlots: 1 }
+  },
+  {
+    name: "Cloak of the Grey", slot: "cloak", weight: 1, value: 500, kind: "Wonder", group: "wonder",
+    blurb: "It is the colour of whatever is behind it.",
+    active: { text: "Become Invisible (1).", boundary: "combat" }
+  },
+  {
+    name: "Amulet of the Mended Thread", slot: "neck", weight: 0, value: 800,
+    kind: "Wonder", group: "wonder",
+    // The First's miracle for sale: a god asks for a spell slot for ever, a jeweller for a rest.
+    blurb: "A knotted thread in amber. The knot is tied, not drawn.",
+    active: { text: "When you would drop to 0 Health, drop to 1 instead.", boundary: "longRest" }
+  },
+  {
+    name: "Boots of the Long Step", slot: "feet", weight: 1, value: 450,
+    kind: "Wonder", group: "wonder",
+    blurb: "The soles are never quite worn in the same places twice.",
+    active: { text: "Teleport to any square you can see within 6.", boundary: "combat" }
+  },
+  {
+    name: "Helm of the Watchful", slot: "head", tags: ["armor"],
+    weight: 2, value: 1500, kind: "Wonder", group: "wonder", armor: 1,
+    // Passive is dearer than active (core-rules 4), and this is the proof: no Drain, no recharge,
+    // nothing to remember, and it deletes a condition worth 4.0 points of win rate.
+    blurb: "Nothing comes at you from a side you were not already watching.",
+    text: "You are never surprised and cannot be Dazed."
+  },
+  {
+    name: "The Quenched Blade", slot: "hands", fits: ["back"], hands: 1, tags: ["heavy", "melee"],
+    weight: 2, value: 2000, kind: "Wonder", group: "wonder",
+    blurb: "Quenched in something that is still angry about it.",
+    verbs: { strike: verb(3, { text: "on a hit, Burning 1 (1)" }), defend: verb(1) }
   }
 ];
 

@@ -588,6 +588,47 @@ check("formula strengths in band", band.length ? band.join(", ") : "all", "all")
 check("formula slots to run the Rain combo",
   content.FORMULAS.reduce((n, f) => n + f.strength, 0), 6);
 
+/*
+ * Item keys against the schema, which is the same check stepField already gets and for the same
+ * reason: a data model DROPS a key it does not know rather than rejecting it, so a magic ring
+ * written with `grants` before the item schema had a `grants` field silently granted nothing. That
+ * is exactly what happened, and this is what would have said so.
+ *
+ * The schema's own field names are read out of the source, so the list cannot drift.
+ */
+const itemSource = fs.readFileSync(path.join(root, "module/data/items.mjs"), "utf8");
+const itemBlock = itemSource.slice(
+  itemSource.indexOf("export class ItemSlateData"),
+  itemSource.indexOf("export class FeatureSlateData")
+);
+const itemFields = new Set([...itemBlock.matchAll(/^      ([a-zA-Z]+): /gm)].map(m => m[1]));
+// Written by hand into the entry rather than being schema fields of their own.
+for (const extra of ["name", "blurb", "kind", "copies"]) itemFields.add(extra);
+// From the SlateData mixin and the shared helpers, which sit outside the class body.
+for (const extra of ["active", "drained", "drainedFor", "group", "text", "description"]) {
+  itemFields.add(extra);
+}
+check("ItemSlateData fields read from source", itemFields.size >= 18, true);
+
+const strayItemKeys = new Set();
+for (const item of [...content.ITEMS, ...content.NPC_GEAR]) {
+  for (const key of Object.keys(item)) if (!itemFields.has(key)) strayItemKeys.add(key);
+}
+check("item keys not in the schema",
+  strayItemKeys.size ? [...strayItemKeys].join(", ") : "none", "none");
+
+check("player items written", content.ITEMS.length, 65);
+
+// Every bonus group should have something using it, or the group is a promise nothing keeps.
+const groupsUsed = new Set(content.ITEMS.filter(i => i.group).map(i => i.group));
+const declared = Object.keys(
+  JSON.parse("{" + (/CARDRPG\.bonusGroups = \{([^}]*(?:\}[^}]*)*?)\};/.exec(configSource)?.[1] ?? "")
+    .replace(/(\w+): \{[^}]*\}/g, '"$1": 0').replace(/,\s*$/, "") + "}")
+);
+const emptyGroups = declared.filter(g => !groupsUsed.has(g));
+check("bonus groups with no item using them",
+  emptyGroups.length ? emptyGroups.join(", ") : "none", "body, training");
+
 const slateNames = new Set([...content.ITEMS, ...content.NPC_GEAR, ...content.FEATURES].map(s => s.name));
 for (const actor of [content.WARRIOR, content.GOBLIN, content.GOBLIN_ARCHER]) {
   const refs = [...(actor.equipped ?? []), ...(actor.pack ?? []), ...(actor.features ?? [])];
