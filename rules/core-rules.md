@@ -723,6 +723,44 @@ or Slowed (1) on a partial.*
 | **Overloaded** | Over half again your limit: Burdened, and 2 random cards are Spent. No duration (section 4). |
 | **Blessed / Cursed** | See fate deck (no duration – they last until the card is drawn). |
 
+### Shake Off
+
+A condition's duration can run longer than a turn, and until now nothing in the game could shorten
+one. **Shake Off N** takes **N off one condition's duration.** At 0 it ends.
+
+> **A dispel pays in the number the condition already has.** It does not remove conditions, it
+> *spends* their duration — so a **(1)** is shrugged away by the cheapest card and a **(3)** takes
+> three efforts or one real spell. No card is ever a hard counter to a big condition, which is what
+> keeps conditions worth applying at all.
+
+That matters more than it sounds. **Conditions are where the Ways live** — half the content in
+[way-cards.md](way-cards.md) applies one — so a cheap *remove any condition* would be an attack on
+half the game, and every condition printed after it would have to be priced against the assumption
+that somebody holds the answer. Spending duration has no such effect: it is a trade of a half for a
+turn, which is roughly even, and it stays even however strong the condition is.
+
+**What may be shaken off, and what may not:**
+
+> **You can shake off what is being *done* to you. You cannot shake off what is simply *true* of
+> you.**
+
+| | Shake Off |
+|---|---|
+| the eleven timed **subtractions** — Dazed, Slowed, Stunned, Prone, Grappled, Silenced, Disarmed, Burning, Frozen, Compelled, Invisible | **yes** |
+| the four **openings** — Wet, Off-Balance, Marked, Judged | **no.** Nothing is being done to you; you are simply wet. An opening is outside this machinery the same way it is outside saving throws |
+| **Blessed**, **Cursed** | **no.** The card is in a deck, not on you |
+| **Burdened**, **Overloaded** | **no.** Drop weight; a spell cannot argue with arithmetic |
+| **Unconscious** | **no.** That is Health (§8) |
+
+Those four exclusions are one rule, not four: everything on the *no* side has **no duration to
+spend**, which is a flag the condition already carried before this keyword existed.
+
+**Shake Off never resists and never rolls.** The duration simply goes down. A dispel that could fail
+is a card you played for nothing, and the game has enough of those.
+
+**Shedding is a decision, so the player chooses which condition** — a character carrying Dazed (1)
+and Grappled (2) picks, and picking is the interesting part.
+
 ### Openings
 
 Every condition above takes something away. These four take nothing:

@@ -37,7 +37,13 @@ CARDRPG.effects = {
   aimed: { label: "CARDRPG.Effect.Aimed", icon: "laser-sparks" },
   advantage: { label: "CARDRPG.Effect.Advantage", icon: "thumb-up" },
   disadvantage: { label: "CARDRPG.Effect.Disadvantage", icon: "thumb-down" },
-  charging: { label: "CARDRPG.Effect.Charging", icon: "charging" }
+  charging: { label: "CARDRPG.Effect.Charging", icon: "charging" },
+  /*
+   * Shake Off N: take N off the duration of one condition, which ends at 0 (core-rules 7). It pays
+   * in the number the condition already has rather than removing it outright, so a (1) is shrugged
+   * away and a (3) takes real effort -- and no card is ever a hard counter to a big condition.
+   */
+  shake: { label: "CARDRPG.Effect.Shake", icon: "breaking-chain" }
 };
 
 /**
@@ -144,7 +150,17 @@ CARDRPG.conditions = {
     cancels: ["burning"]
   },
   prone: { label: "CARDRPG.Condition.Prone", icon: "falling" },
-  unconscious: { label: "CARDRPG.Condition.Unconscious", icon: "knockout", blocksReactions: true },
+  /*
+   * noDuration because Unconscious is not timed -- it means 0 Health and lasts until treated
+   * (core-rules 8). Without the flag, combat.mjs cleared it when the fight ended and a downed
+   * character stood up for free. It is also what keeps Shake Off away from it.
+   */
+  unconscious: {
+    label: "CARDRPG.Condition.Unconscious",
+    icon: "knockout",
+    blocksReactions: true,
+    noDuration: true
+  },
   grappled: { label: "CARDRPG.Condition.Grappled", icon: "luchador", blocks: ["boot-prints"] },
   silenced: { label: "CARDRPG.Condition.Silenced", icon: "silenced", blocks: ["magic-swirl"] },
   disarmed: { label: "CARDRPG.Condition.Disarmed", icon: "drop-weapon", blocks: ["school-bag"] },
@@ -180,6 +196,19 @@ CARDRPG.conditions = {
   offBalance: { label: "CARDRPG.Condition.OffBalance", icon: "foot-trip", opening: true },
   marked: { label: "CARDRPG.Condition.Marked", icon: "crosshair", opening: true },
   judged: { label: "CARDRPG.Condition.Judged", icon: "scales", opening: true }
+};
+
+/**
+ * Can this condition be shaken off (core-rules 7)?
+ *
+ * Derived from the flags already there rather than a flag of its own, so it cannot drift: you may
+ * shake off what is being DONE to you, never what is simply TRUE of you. An `opening` is a state
+ * and does nothing to shrug off; a `noDuration` condition has no number to take from -- Blessed and
+ * Cursed are in a deck, Burdened and Overloaded are on your back, Unconscious is your Health.
+ */
+CARDRPG.shakeable = key => {
+  const cfg = CARDRPG.conditions[key];
+  return !!cfg && !cfg.opening && !cfg.noDuration;
 };
 
 /** The openings, as a list, for the places that need to offer or test only those. */

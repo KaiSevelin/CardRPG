@@ -160,6 +160,22 @@ if (!fs.existsSync(specPath)) {
   }
   check("conditions found in config", conditions.size, 20);
 
+  /*
+   * The spec's removal table claims eleven conditions can be shaken off and nine cannot
+   * (conditions.md 8.1). That split is derived in config from `opening` and `noDuration`, so it can
+   * be checked here rather than trusted -- and it is the one number in the spec a reader would act
+   * on when writing a dispel.
+   */
+  const block = configSource.slice(
+    configSource.indexOf("CARDRPG.conditions = {"), configSource.indexOf("CARDRPG.shakeable")
+  );
+  const shakeable = [...conditions].filter(k => {
+    const entry = block.slice(block.indexOf("  " + k + ": {"));
+    const body = entry.slice(0, entry.indexOf("},"));
+    return !body.includes("opening:") && !body.includes("noDuration:");
+  });
+  check("conditions that can be shaken off", shakeable.length, 11);
+
   const undocumented = [...conditions].filter(k => !ticked.has(k)).sort();
   check("conditions missing from the spec",
     undocumented.length ? undocumented.join(", ") : "none", "none");
@@ -210,7 +226,7 @@ for (const m of configSource.matchAll(/halfIcons\s*=\s*\{[^}]*\}/gs)) {
   for (const k of m[0].matchAll(/"([a-z0-9-]+)"/g)) iconKeys.add(k[1]);
 }
 
-check("icon files on disk", onDisk.size, 76);
+check("icon files on disk", onDisk.size, 77);
 const absent = [...iconKeys].filter(k => !onDisk.has(k)).sort();
 check("config icons present as files", absent.length ? absent.join(", ") : "all", "all");
 

@@ -144,6 +144,40 @@ function actorHasAdjacentEnemy(actor) {
 /* -------------------------------------------- */
 
 /**
+ * Shake Off N: take N off one condition's duration, and remove it at 0 (core-rules 7).
+ *
+ * The condition is chosen by the caller, because which one to shed is the whole decision -- a turn
+ * where the engine picks for you is a turn you did not play. Everything else here is arithmetic.
+ *
+ * @returns {Promise<{key: string, was: number, now: number, gone: boolean}|null>}
+ */
+export async function resolveShake(actor, { amount = 1, target = actor, key }) {
+  const conditions = (target.system.toObject().conditions ?? []).map(c => ({ ...c }));
+  const found = conditions.find(c => c.key === key);
+  if (!found || !CARDRPG.shakeable(key)) {
+    ui.notifications.warn(`${target.name} has nothing of that kind to shake off.`);
+    return null;
+  }
+
+  const label = game.i18n.localize(CARDRPG.conditions[key]?.label ?? key);
+  const was = found.duration ?? 1;
+  const now = Math.max(0, was - Math.max(1, amount));
+  const gone = now === 0;
+
+  await target.update({
+    "system.conditions": gone ? conditions.filter(c => c !== found)
+      : conditions.map(c => (c === found ? { ...c, duration: now } : c))
+  });
+
+  await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<div class="cardrpg"><p><strong>${target.name}</strong>: ${label} `
+      + (gone ? "<strong>ends</strong>" : `${was} &rarr; <strong>${now}</strong>`) + `</p></div>`
+  });
+  return { key, was, now, gone };
+}
+
+/**
  * Resolve an attack against one target, and report every step so the arithmetic is auditable.
  *
  * Fate is drawn **once per action, not per target** -- an Area draws once and applies the same

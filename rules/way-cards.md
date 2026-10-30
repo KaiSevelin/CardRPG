@@ -156,6 +156,19 @@ against a knight — so a band cannot price them and only the simulator can. **W
 send them to §4**, which is where all four of them are. They are also the ones to be stingy with: three or four in the whole game, not one per
 node.
 
+**A dispel is priced in Shake Off, and the band is narrow** (core-rules §7,
+[conditions.md](conditions.md) §8.2):
+
+| Shake Off | Costs |
+|---|---|
+| **1** | a secondary — free, and the only rung a secondary may buy |
+| **2** | a primary, and **Spent** |
+| **3** | a strength-2 formula, which is where *ends anything* belongs |
+
+Three is the ceiling because nothing in the game prints a duration above 2, so **Shake Off 3 is
+already "remove it"** — and it costs a spell slot and a school to say so. That is the whole reason
+the keyword counts down instead of deleting: the strong version is reachable, expensive, and owned.
+
 **No reader gates a primary, whatever kind it is.** No primary reads *"only against a Wet target"* —
 an opening sharpens, it never switches a card on (core-rules §7, rule 3). A primary that does nothing
 without its partner is a card held all fight waiting for a draw that never comes, and the validator
@@ -514,14 +527,14 @@ Weight, armor, Block, adjacency and the Wound threshold are the levers the **maj
 | **Armoured Advance** | 👣 Move 3; your armor counts **+1** until your next turn | 👣 Move 1 | Brace | – |
 | **Pull Them Down** | ⚔ Strike | ⚔ Strike −1 vs a **Prone** or **Grappled** target | – | – |
 | **Roar** | every adjacent enemy is **Compelled (1)**, resist 👑 5 | 👣 Move 1 | – | ⤵ **Strain 1** |
-| **Walk It Off** | ✚ Heal 2, and shed **Off-Balance**, **Slowed** or **Prone** | 👣 Move 1 | Brace | 🔥 **Spent** |
+| **Walk It Off** | ✚ Heal 2 · ⛓ **Shake Off 2** on yourself | 👣 Move 1 | Brace | 🔥 **Spent** |
 
 Three of those read **Off-Balance** and each reads it a different way — more damage, a harder save on
 a condition the card was already attempting, and the same again on a longer condition. That is the
 whole of §1.6's reader table, deliberately, so the band has three worked instances rather than an
 assertion.
 
-### 3.3 Way of Shade — twelve cards
+### 3.3 Way of Shade — thirteen cards
 
 | Card | ▲ Primary | ▼ Secondary | ⚡ Reaction | Cost |
 |---|---|---|---|---|
@@ -531,6 +544,7 @@ assertion.
 | **Pin the Shadow** | ◎ ⚔ Strike · **Slowed (1)**, resist 🌀 5 — **7** vs **Marked** | 👣 Move 1 | – | – |
 | **Cut and Run** | ⚔ Strike, then 👣 Move 2 | 👣 Move 1 | – | – |
 | **Light Feet** | 👣 Move 3, ignoring difficult ground | 👣 Move 2 | Sidestep | – |
+| **Slip the Knot** | 👣 Move 2 | ⛓ **Shake Off 1** on yourself | Sidestep | – |
 | **Roll With It** | 👣 Move 3 | 👣 Move 2 | Sidestep 2, and you may end next to a different enemy | – |
 | **Second Knife** | ◎3 ⚔ Strike with a *Light* item | ⚔ Strike −1 | – | – |
 | **Mock** | **Dazed (1)**, resist 👑 5 | 👣 Move 1 | – | – |
@@ -569,7 +583,7 @@ entries, weighted toward the schools the combo work touched.
 | **Shadow** | **Longer Shadow** | 1 | Until your next turn every square adjacent to you is shadowed. A **Wild** card joins your fate deck. |
 | **Tattoo** | **Graven Eye** | 1 | Permanent: you are never surprised. The GM writes down a secret. |
 | **Ward** | **Turn Aside** | 2 | ⚡ Reaction: one ally's Block counts **double** against this attack. |
-| **Ward** | **Shake It Off** | 2 | ⚡ Reaction: remove one condition from an ally — not Blessed, Cursed or a derived one ([conditions.md](conditions.md) §8.1). |
+| **Ward** | **Shake It Off** | 2 | ⚡ Reaction: ⛓ **Shake Off 3** on one ally at ◎3 — which ends anything the game can print. The only dispel that does not care what the condition is. |
 | **Divination** | **Where It Will Land** | 1 | **Read 1** on your own fate deck (core-rules §6). |
 | **Divination** | **The Mark of Things to Come** | 2 | **Marked (1)** on an enemy at any range, and **Read 1** on its fate deck. |
 | **Asceticism** | **Empty Hand** | 1 | While your hand is empty you may ⚔ Strike with no item, at your own ✊ Might. |
@@ -579,7 +593,7 @@ fighters and *The Mark of Things to Come* sets **Marked** for the archers. A Poi
 up on a stumble and a Diviner cannot shoot — which is precisely why those two cards get played at a
 table and never in a solo playtest.
 
-### 3.5 Way of Faith — fourteen miracles
+### 3.5 Way of Faith — fifteen miracles
 
 A second per god, and the Way's own opening seeded. **A god's list is short** (§1.4); these do not
 pretend to finish one.
@@ -590,6 +604,7 @@ pretend to finish one.
 | **The Eternal God** | **The Weight of It** | 2 | A **Judged** enemy's armor counts **0** against everyone until your next turn. |
 | **The Eternal Spirit** | **Lay On** | 1 | ✚ Heal an ally 2 at ◎3. |
 | **The Eternal Spirit** | **A Word for You** | 1 | **Blessed** on one ally — a temporary Critical in their fate deck, until drawn. |
+| **The Eternal Spirit** | **Bear It for Them** | 2 | ⚡ Reaction at ◎3: move one condition off an ally and **onto yourself**, at its full duration. Not a dispel — somebody still has it. |
 | **Sessyfyn** | **Undertow** | 2 | ✸ Blast 2, ◎3: **Wet (1)**, and every target is moved 1 square you choose. |
 | **Valtor** | **No Step Back** | 2 | Every ally within 2 gains **Block 2** until your next turn. |
 | **Fagar** | **The Second Thought** | 1 | One enemy spends its secondary this round doing nothing, resist 👑 7. |

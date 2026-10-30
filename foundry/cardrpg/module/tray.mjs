@@ -21,7 +21,8 @@ import {
   deckOf, discardCards, retireCards, catchBreath, canCatchBreath, refill, cardName
 } from "./decks.mjs";
 import {
-  resolveAttack, resolveDefend, resolveHeal, resolveUse, resolveCondition, collectBonuses
+  resolveAttack, resolveDefend, resolveHeal, resolveUse, resolveCondition, resolveShake,
+  collectBonuses
 } from "./resolve.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -1047,6 +1048,33 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         if (!item) return ui.notifications.warn("Nothing equipped can defend.");
         await resolveDefend(actor, { item, half });
         return;
+      }
+
+      case "shake": {
+        // Shedding a condition is a decision, so the player picks which one; the engine only ever
+        // narrows the list to what core-rules 7 allows to be shaken at all.
+        const who = targets[0] ?? actor;
+        const options = (who.system.activeConditions ?? []).filter(c => CARDRPG.shakeable(c.key));
+        if (!options.length) {
+          ui.notifications.info(`${who.name} has nothing to shake off.`);
+          break;
+        }
+        const key = options.length === 1 ? options[0].key : await foundry.applications.api.DialogV2.wait({
+          window: { title: `Shake Off ${step.param ?? 1}` },
+          content: `<div class="cardrpg"><p>Which condition does `
+            + `${who.name} shake off?</p></div>`,
+          buttons: [
+            ...options.map(c => ({
+              action: c.key,
+              label: `${game.i18n.localize(CARDRPG.conditions[c.key]?.label ?? c.key)} (${c.duration})`
+            })),
+            { action: "cancel", label: "None", callback: () => null }
+          ],
+          modal: true,
+          rejectClose: false
+        });
+        if (key) await resolveShake(actor, { amount: step.param ?? 1, target: who, key });
+        break;
       }
 
       case "heal":

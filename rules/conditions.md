@@ -360,33 +360,63 @@ removal in the content, and the gaps are the point.
 
 | Condition | Taken off by |
 |---|---|
-| **Burning** | **Wet or Frozen** (they cancel) · the duration |
-| **Frozen** | **Burning** (it thaws) · the duration |
+| **Burning** | **Wet or Frozen** (they cancel) · **Shake Off** · the duration |
+| **Frozen** | **Burning** (it thaws) · **Shake Off** · the duration |
 | **Wet** | **Burning** (it steams) · the duration |
-| **Off-Balance**, **Slowed**, **Prone** | *Walk It Off* (Strength) · the duration |
+| **Slowed**, **Prone** | **Shake Off** · the duration |
+| **Off-Balance** | **nothing but the duration** — an opening cannot be shaken off |
 | **Prone** | also standing up, for Move 1 |
 | **Burdened**, **Overloaded** | dropping weight, and nothing else — no cure touches them |
-| **Invisible** | attacking, which ends it early · the duration |
+| **Invisible** | attacking, which ends it early · **Shake Off**, if you wanted to · the duration |
 | **Blessed**, **Cursed** | drawing the card they put in the deck |
-| **Unconscious** | Health above 0 |
-| **Dazed**, **Stunned**, **Grappled**, **Silenced**, **Disarmed**, **Compelled**, **Marked**, **Judged** | **nothing but the duration** |
+| **Unconscious** | Health above 0, and nothing else — it has no duration to spend |
+| **Dazed**, **Stunned**, **Grappled**, **Silenced**, **Disarmed**, **Compelled** | **Shake Off** (§8.2) · the duration |
+| **Marked**, **Judged** | **nothing but the duration** — an opening cannot be shaken off |
 
-> **There is no dispel in this game, and eight conditions have no answer at all** beyond waiting a
-> turn. That is defensible — durations are short, §7 keeps every condition survivable, and a game
-> where the counter is always available is a game where the condition was never a threat. But it is a
-> **decision**, and it was made by nobody: it is simply what the content happens to contain.
+That table is the state **before** a dispel existed, and eight conditions had no answer at all
+beyond waiting a turn. Six cards in the content print a duration of **(2)**, so waiting could mean
+two turns of blocked feet or a lost secondary — which is what argued for **Shake Off**.
 
-**The school that should own the gap is Ward Magic**, and it does not yet. Its Signature *Unmake*
-**prevents** a Cast from resolving; nothing in the game **removes** a condition that has already
-landed. One formula closes it, and it belongs to the warder rather than to a potion:
+### 8.2 Shake Off, and why it spends duration
 
-| School | Formula | Str | Effect |
-|---|---|---|---|
-| **Ward** | **Shake It Off** | 2 | Reaction: remove one condition from an ally. Not **Blessed**, **Cursed** or a **derived** one — those are not on them, they are in a deck or on their back. |
+The keyword is in [core-rules.md](core-rules.md) §7. The design decision is one line:
 
-That exclusion list is the whole of its text, and each entry is for a different reason: the fate
-conditions live in a deck rather than on a character, and the derived pair are arithmetic about
-carried weight that a spell cannot argue with.
+> **A dispel spends a condition's duration rather than removing the condition.**
+
+Removing is binary, and binary removal makes conditions not matter. **Conditions are where the Ways
+live** ([way-cards.md](way-cards.md) §1.2) — half the content applies one — so a cheap *remove any
+condition* would be an attack on half the game, and every condition written afterwards would have to
+be priced against somebody holding the answer. Spending duration scales instead: a **(1)** goes to the
+cheapest card, a **(3)** needs three efforts or one real spell, and the trade is always about a half
+for a turn however fierce the condition.
+
+**The exclusions are one rule, not a list.** You can shake off what is being *done* to you, never
+what is simply *true* of you — and everything on the excluded side already carried `noDuration` or
+`opening` before the keyword existed, so `CARDRPG.shakeable` is derived from flags rather than being
+a fifth flag that could drift (§4).
+
+### 8.3 One shape per Way
+
+A single generic dispel card would fail the swap test ([leveling.md](leveling.md) §5a.2) four times
+over, so each Way sheds differently — and the differences are the Ways' own:
+
+| Way | Card | How it sheds |
+|---|---|---|
+| **Strength** | *Walk It Off* | **by force, on yourself.** Spent, heals, and sheds hard — the big one, once a fight |
+| **Shade** | *Slip the Knot* | **by escaping, on yourself, cheaply.** The only Shake Off on a secondary, and it moves you |
+| **Mind** | *Shake It Off* (Ward) | **by unmaking, on anyone, at range.** The precise one, and the only one that does not care what the condition is |
+| **Faith** | *Bear It for Them* (The Eternal Spirit) | **by taking it instead.** Not a dispel — a transfer, and the priest pays in carrying it |
+
+**Faith's is the interesting one**, and it is not a Shake Off at all. Core-rules §3 already has a
+redirection step for *Interpose*, so moving a condition from an ally onto yourself needs no new
+machinery — and it keeps the condition in the fight, which is the difference between a priest and an
+eraser. A party with a priest does not stop caring about conditions; it changes who is carrying
+them.
+
+**Ward Magic owns the generic answer**, which is the right home for it. Its Signature *Unmake*
+**prevents** a Cast from resolving, and *Shake It Off* **removes** what already landed — prevention
+and removal, the same school, two different spells. Nothing else in the game gets to ignore what the
+condition is.
 
 ---
 
@@ -406,5 +436,13 @@ carried weight that a spell cannot argue with.
 - **[OPEN]** **Frightened**, the mirror of Compelled. §7's resist table anticipates it (*"cowed or
   compelled"*) and exactly one card ever wanted it. One entry, one icon, no new fields, if a second
   ever does.
+- **[OPEN]** Whether **killing the creator** should end its conditions. §7 of the core rules
+  deliberately says it should not — a creator who leaves combat hands the clock to the victim instead
+  — and that was a decision rather than an oversight, so it is left alone. But it is the one lever
+  nobody has pulled, and it would make focusing a caster down worth doing for a reason other than
+  damage.
+- **[OPEN]** Whether a **consumable** should ever shake off. A potion that does it makes **gold** the
+  counter to half the content, which is why none exists; the counter-argument is that a party with no
+  Ward mage and no priest has no answer at all.
 - **[OPEN]** Whether **Invisible** should stop targeting rather than hand out advantage. It is the one
   condition whose written effect and implemented effect are different things.

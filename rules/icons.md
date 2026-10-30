@@ -12,7 +12,7 @@ readable at about 16 px, single-colour so it can be recoloured and greyed out wh
 
 ---
 
-## Tier 1 — needed before the first card exists (25)
+## Tier 1 — needed before the first card exists (26)
 
 These appear on card faces. Nothing can be laid out until they're chosen.
 
@@ -35,11 +35,12 @@ These appear on card faces. Nothing can be laid out until they're chosen.
 | 👣 | **Move** (+ number) | No | Boot prints |
 | ⇄ | **Ready** | No | School bag |
 
-### Effects and targeting (6)
+### Effects and targeting (7)
 
 | Placeholder | Name | Notes | game-icons.net |
 |---|---|---|---|
 | ✚ | **Heal** (+ number) | An effect, not a verb — it comes off an item's Cast line or a card | Healing |
+| ⛓ | **Shake Off** (+ number) | Takes that much off one condition's duration (core-rules §7) | Breaking chain |
 | ◎ | **Range** (+ number) | | Bullseye |
 | ✸ | **Blast** (+ number) | Area that hits everyone in it, allies included | Mushroom cloud |
 | ✵ | **Aimed** (+ number) | Area that hits only your enemies | Laser sparks |
@@ -193,16 +194,16 @@ crowded inventory.
 
 ---
 
-## Status: complete — 59 of 59 chosen
+## Status: complete — 60 of 60 chosen
 
 | Tier | Count | Blocks |
 |---|---|---|
-| 1 | 23 | Card layout and the card schema |
+| 1 | 24 | Card layout and the card schema |
 | 2 | 26 | Playable combat |
 | 3 | 10 | Polish |
 | *optional tags* | *9* | *nothing* |
 
-**68 icons**, including the optional tags, all downloaded to
+**69 icons**, including the optional tags, all downloaded to
 [../foundry/cardrpg/icons/](../foundry/cardrpg/icons/) with per-icon credits in
 [ATTRIBUTION.md](../foundry/cardrpg/icons/ATTRIBUTION.md). Nothing in the rules or the system is
 waiting on an icon decision.
