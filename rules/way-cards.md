@@ -532,7 +532,7 @@ handed. The −1 is what keeps it from making plain *Strike* obsolete.
 already carries *Second Wind*, so taking this one spends the ceiling. That is the decision, and no
 branch should offer a third.
 
-### 3.2 Way of Strength — twelve cards
+### 3.2 Way of Strength — thirteen cards
 
 Weight, armor, Block, adjacency and the Wound threshold are the levers the **major** nodes own
 ([specializations.md](specializations.md)); these touch them without taking them.
@@ -549,6 +549,7 @@ Weight, armor, Block, adjacency and the Wound threshold are the levers the **maj
 | **Heave** | 👣 Move 2, carrying any weight without being Slowed | ⇄ Ready | – | – |
 | **Armoured Advance** | 👣 Move 3; your armor counts **+1** until your next turn | 👣 Move 1 | Brace | – |
 | **Pull Them Down** | ⚔ Strike | ⚔ Strike −1 vs a **Prone** or **Grappled** target | – | – |
+| **Beat the Blade** | ⚔ Strike · on a hit, **Disarmed (1)**, resist ✊ 5 | 👣 Move 1 | – | – |
 | **Roar** | every adjacent enemy is **Compelled (1)**, resist 👑 5 | 👣 Move 1 | – | ⤵ **Strain 1** |
 | **Walk It Off** | ✚ Heal 2 · ⛓ **Shake Off 2** on yourself | 👣 Move 1 | Brace | 🔥 **Spent** |
 
@@ -585,7 +586,7 @@ deal against an ironclad and nothing at all against a goblin, so its value is se
 rather than by the card, and no band can price it. It is the one card in this section most worth
 simulating.
 
-### 3.4 Way of Mind — twenty-one formulas (plus the counters in §3.6)
+### 3.4 Way of Mind — twenty-two formulas (plus the counters in §3.6)
 
 Beyond the twelve Signatures. **Strength is the slot cost** (§1.4), so the bracketed number is what
 it takes out of the budget. Each school's full list is still open; these are its second and third
@@ -610,6 +611,7 @@ entries, weighted toward the schools the combo work touched.
 | **Shadow** | **Longer Shadow** | 1 | Until your next turn every square adjacent to you is shadowed. A **Wild** card joins your fate deck. |
 | **Tattoo** | **Graven Eye** | 1 | Permanent: you are never surprised. The GM writes down a secret. |
 | **Ward** | **Turn Aside** | 2 | ⚡ Reaction: one ally's Block counts **double** against this attack. |
+| **Ward** | **The Shut Mouth** | 2 | **Silenced (1)** on one enemy at ◎3, resist 📜 7. Ward decides whether magic happens; this is the other direction from *The Unbound Tongue*. |
 | **Ward** | **Shake It Off** | 2 | ⚡ Reaction: ⛓ **Shake Off 3** on one ally at ◎3 — which ends anything the game can print. The only dispel that does not care what the condition is. |
 | **Divination** | **Where It Will Land** | 1 | **Read 1** on your own fate deck (core-rules §6). |
 | **Divination** | **The Mark of Things to Come** | 2 | **Marked (1)** on an enemy at any range, and **Read 1** on its fate deck. |

@@ -723,7 +723,7 @@ or Slowed (1) on a partial.*
 | **Unconscious** | At 0 Health. No turns, no reactions, Prone. Dying until treated (section 8). |
 | **Grappled** | Blocks 👣 Move (see section 10). |
 | **Silenced** | Blocks ✦ Cast — you cannot speak, and casting needs speech (section 4). |
-| **Disarmed** | Blocks ⇄ Ready, and ⚔ with the disarmed item. |
+| **Disarmed** | Blocks ⇄ Ready, and ⚔ with the disarmed item. You cannot simply draw another: Ready is the verb it takes away. |
 | **Compelled** | You must spend your **primary** attacking whoever compelled you. Everything else about your turn is yours. |
 | **Burdened** | Over your carry limit: Slowed, and disadvantage on 🌀 Agility and 🌑 Shadow checks. No duration – it lasts until you drop weight (section 4). |
 | **Overloaded** | Over half again your limit: Burdened, and 2 random cards are Spent. No duration (section 4). |
@@ -778,6 +778,7 @@ each one does:
 | **Silenced** | your own ✦ Cast dispel | casting needs speech |
 | **Compelled** | a dispel on your **primary** | your primary is already spoken for |
 | **Dazed** | a dispel on your **secondary** | you have no secondary |
+| **Disarmed** | **picking your weapon back up** | it blocks ⇄ Ready, which is the verb that would undo it |
 
 So:
 

@@ -408,7 +408,7 @@ the table play. This column says which half of that each condition gets.
 | **Prone** | **yes** | melee advantage; *"standing up costs Move 1"* is not modelled, because Move is not |
 | **Invisible** | partial | gives the **attacker** advantage while invisible; nothing prevents being targeted |
 | **Compelled** | **no, by design** | targets are chosen by whoever plays the figure, so it is a reminder — as *Taunt* always was |
-| **Blessed** / **Cursed** | **no** | see §7: the temporary-card plumbing exists and nothing calls it |
+| **Blessed** / **Cursed** | **yes** | applying one shuffles a temporary Critical or Miss into the target's fate deck, off the `temporaryFate` flag; `drawFate` has always removed it when drawn |
 | **Burdened** / **Overloaded** | **yes** | derived from weight every time the sheet recomputes |
 | the four **openings** | **yes** | a combo clause reads them in the damage line, the fate draw and the saving throw |
 
@@ -445,13 +445,29 @@ Every source in the content as it stands ([way-cards.md](way-cards.md),
 | **Judged** | *Name the Guilty* (The Eternal God) |
 | **Unconscious** | 0 Health, and nothing else |
 | **Burdened** / **Overloaded** | carried weight |
-| **Silenced** | **nothing** |
-| **Disarmed** | **nothing** |
+| **Silenced** | *The Shut Mouth* (Ward) |
+| **Disarmed** | *Beat the Blade* (Strength) |
 
-**Silenced and Disarmed have no source at all.** Both are fully specified, both have icons, both are
-wired into blocked icons — and nothing in the starter decks, the 48 Signatures, the spell pools or any
-item causes either. They are the two conditions the game can suffer and cannot inflict, and the
-natural home for both is **monsters**, which are not written yet.
+**Every condition can now be created and every condition has an answer**, which was not true until
+this was checked: *Silenced* and *Disarmed* were fully specified, had icons, were wired into blocked
+icons — and **nothing in the game could cause either.** They were the two conditions a character could
+suffer and nobody could inflict. *The Shut Mouth* and *Beat the Blade* close that, and the schools
+they went to are the ones that should have had them: Ward decides whether magic happens, and knocking
+a sword out of a hand is a fighter's trick.
+
+`test/validate.mjs` now fails if any condition's cell in either table is the bare word **nothing**, so
+the next one cannot be added without a source and an answer. The three kinds of answer it accepts are
+all answers:
+
+| | Counts as an answer |
+|---|---|
+| **a card** | Shake Off, a cure, a targeted counter, water on a fire |
+| **a fact** | Health above 0 for Unconscious; dropping weight for Burdened; attacking, for Invisible |
+| **the clock, stated** | the four openings, whose duration is the answer *by design* — they are cheap to set and worth little, and making them shakeable would let an enemy trade one secondary for the party's whole combo |
+
+The check is deliberately loose about *what* the answer is and strict about there **being** one. A
+reference that says "nothing" is a hole somebody will fall into; a reference that says "the clock, and
+here is why" is a decision.
 
 ### 9.1 What takes each one off
 
@@ -462,16 +478,16 @@ removal in the content, and the gaps are the point.
 |---|---|
 | **Burning** | **Wet or Frozen** (they cancel) · **Shake Off** · the duration |
 | **Frozen** | **Burning** (it thaws) · **Shake Off** · the duration |
-| **Wet** | **Burning** (it steams) · the duration |
+| **Wet** | **Burning** (it steams) · the duration. Not shakeable — an opening, *by design* |
 | **Slowed**, **Prone**, **Poisoned** | **Shake Off** · the duration. An **antidote** is the item form of a Shake Off on Poisoned |
-| **Off-Balance** | **nothing but the duration** — an opening cannot be shaken off |
+| **Off-Balance** | **the duration**, and only the duration — an opening cannot be shaken off, *by design* |
 | **Prone** | also standing up, for Move 1 |
 | **Burdened**, **Overloaded** | dropping weight, and nothing else — no cure touches them |
 | **Invisible** | attacking, which ends it early · **Shake Off**, if you wanted to · the duration |
 | **Blessed**, **Cursed** | drawing the card they put in the deck |
 | **Unconscious** | Health above 0, and nothing else — it has no duration to spend |
 | **Dazed**, **Stunned**, **Grappled**, **Silenced**, **Disarmed**, **Compelled** | **Shake Off** (§9.2) · the duration |
-| **Marked**, **Judged** | **nothing but the duration** — an opening cannot be shaken off |
+| **Marked**, **Judged** | **the duration**, and only the duration — an opening cannot be shaken off, *by design* |
 
 That table is the state **before** a dispel existed, and eight conditions had no answer at all
 beyond waiting a turn. Six cards in the content print a duration of **(2)**, so waiting could mean
@@ -522,13 +538,15 @@ condition is.
 
 ## 10. Open
 
-- **[OPEN]** **Blessed and Cursed do not work.** The plumbing is there and unconnected: `decks.mjs`
-  already removes a fate card marked `temporary` when it is drawn, and nothing creates one. Applying
-  the condition should shuffle a temporary Critical or Miss into the right deck — the victim's own, or
-  the **type's** deck for an NPC. Two spells now ask for it (§9).
-- **[OPEN]** **Silenced and Disarmed need a source**, and it should be monsters rather than player
-  cards. A spellcaster that silences and a brute that disarms are the obvious two, and both wait on
-  the monster list.
+- **Settled: Blessed and Cursed work.** Applying one shuffles the temporary card in, named by a
+  `temporaryFate` flag so the mechanism is data rather than two cases in the resolver. The plumbing
+  for removing it on the draw had been there all along; nothing had ever created one. For an NPC it
+  goes into the **type's** deck, which is what makes Cursed worth inversely what there are of the
+  thing (§1.3).
+- **Settled: Silenced and Disarmed have sources** — *The Shut Mouth* (Ward) and *Beat the Blade*
+  (Strength), and a **Venomous X** / **Tainting X** pair exists on the monster side
+  ([core-rules.md](core-rules.md) §9). Monsters should still get their own versions when the monster
+  list is written; what is closed is that nothing at all could cause them.
 - **[OPEN]** **Silenced can empty a turn**, which §7 forbids for everything else. The floor is
   computed in [core-rules.md](core-rules.md) §7: of sixteen cards, eight need an ordinary primary to
   make a Silenced turn playable 98.7% of the time. Nothing enforces it, and the caster deck that must

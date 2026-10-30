@@ -562,7 +562,28 @@ export async function resolveCondition(actor, { step, target }) {
       line += ` &mdash; and ${hit.join(" and ")} cancel it. Neither lands.`;
       landed = null;
     } else {
-      const already = conditions.find(c => c.key === landed.key);
+      /*
+     * A fate condition is a marker for a card in the fate deck, so applying it shuffles that card
+     * in (core-rules 6). For an NPC the deck belongs to the TYPE, which is what makes Cursed worth
+     * inversely what there are of the thing -- a Miss shared by five goblins is four fifths wasted.
+     */
+    const fateCard = CARDRPG.conditions[landed.key]?.temporaryFate;
+    if (fateCard) {
+      const deck = deckOf(target, "fate");
+      if (deck) {
+        await deck.createEmbeddedDocuments("Card", [{
+          name: fateCard === "crit" ? "Critical (temporary)" : "Miss (temporary)",
+          type: "fate",
+          system: { special: fateCard, temporary: true }
+        }]);
+        await deck.shuffle({ chatNotification: false });
+        line += ` &mdash; a temporary ${fateCard === "crit" ? "Critical" : "Miss"} joins the fate deck`;
+      } else {
+        line += " &mdash; but there is no fate deck to shuffle it into";
+      }
+    }
+
+    const already = conditions.find(c => c.key === landed.key);
       /*
        * A second application refreshes rather than stacks -- the longer duration wins, and for a
        * valued condition so does the fiercer value. Taking the max of each independently is the only

@@ -176,6 +176,51 @@ if (!fs.existsSync(specPath)) {
   });
   check("conditions that can be shaken off", shakeable.length, 12);
 
+  /*
+   * Every condition must be creatable and answerable.
+   *
+   * This is the check that found Silenced and Disarmed: both fully specified, both with icons, both
+   * wired into blocked icons, and NOTHING in the game could cause either -- two conditions a
+   * character could suffer that nobody could inflict. A reference that says "nothing" is a hole
+   * somebody falls into.
+   *
+   * Deliberately loose about WHAT the answer is and strict about there being one. A card, a fact
+   * (Health above 0 for Unconscious) and the clock-with-a-reason (the four openings) all count; the
+   * bare word "nothing" does not. The spec's two tables are the record, so the labels are read out
+   * of config and looked up in them -- a condition added to one and not the other fails here.
+   */
+  const rowsOf = (from, to) => {
+    const a = spec.indexOf(from);
+    const b = spec.indexOf(to, a);
+    const out = new Map();
+    if (a < 0 || b < 0) return out;
+    for (const line of spec.slice(a, b).split("\n")) {
+      if (!line.startsWith("|") || /^\|[\s:|-]+\|$/.test(line)) continue;
+      const cells = line.replace(/^\||\|$/g, "").split("|").map(c => c.trim());
+      if (cells.length < 2) continue;
+      for (const name of cells[0].matchAll(/\*\*([A-Za-z' -]+)\*\*/g)) {
+        out.set(name[1], cells[cells.length - 1]);
+      }
+    }
+    return out;
+  };
+
+  const sources = rowsOf("## 9. What applies each one", "### 9.1");
+  const answers = rowsOf("### 9.1 What takes each one off", "### 9.2");
+  check("source and answer tables found", sources.size > 0 && answers.size > 0, true);
+
+  // The display name, which is what the tables use. Only one differs from its label.
+  const shown = k => (k === "offBalance" ? "Off-Balance"
+    : k.charAt(0).toUpperCase() + k.slice(1));
+  const empty = v => v === undefined || /^\**nothing\**$/i.test(v.trim());
+
+  const uncreatable = [...conditions].filter(k => empty(sources.get(shown(k)))).sort();
+  const unanswerable = [...conditions].filter(k => empty(answers.get(shown(k)))).sort();
+  check("conditions nothing can create",
+    uncreatable.length ? uncreatable.join(", ") : "none", "none");
+  check("conditions nothing can answer",
+    unanswerable.length ? unanswerable.join(", ") : "none", "none");
+
   const undocumented = [...conditions].filter(k => !ticked.has(k)).sort();
   check("conditions missing from the spec",
     undocumented.length ? undocumented.join(", ") : "none", "none");

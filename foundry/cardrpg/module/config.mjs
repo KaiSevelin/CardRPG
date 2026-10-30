@@ -206,8 +206,27 @@ CARDRPG.conditions = {
    * reminder on the tray, the same way Taunt has always been.
    */
   compelled: { label: "CARDRPG.Condition.Compelled", icon: "puppet" },
-  blessed: { label: "CARDRPG.Condition.Blessed", icon: "aura", noDuration: true },
-  cursed: { label: "CARDRPG.Condition.Cursed", icon: "imprisoned", noDuration: true },
+  /*
+   * These two are markers for something that happens in the FATE deck: applying one shuffles a
+   * temporary card in, and the rules remove it when it is drawn (core-rules 6). `temporaryFate`
+   * names which card, so the mechanism is data rather than two special cases in the resolver.
+   *
+   * The plumbing for the card itself was built long ago -- `temporary` on the face, and drawFate
+   * deleting it when drawn -- and nothing ever created one, so Blessed and Cursed were markers with
+   * no effect behind them until now.
+   */
+  blessed: {
+    label: "CARDRPG.Condition.Blessed",
+    icon: "aura",
+    noDuration: true,
+    temporaryFate: "crit"
+  },
+  cursed: {
+    label: "CARDRPG.Condition.Cursed",
+    icon: "imprisoned",
+    noDuration: true,
+    temporaryFate: "miss"
+  },
   burdened: {
     label: "CARDRPG.Condition.Burdened",
     icon: "weight-crush",
