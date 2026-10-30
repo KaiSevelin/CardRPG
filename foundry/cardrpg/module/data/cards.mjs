@@ -21,7 +21,12 @@ const fields = foundry.data.fields;
  * parameter (Move 3, Range 4). That distinction is the whole numeric convention on a face
  * (card-layout 1.3), so the schema keeps the two apart rather than relying on a renderer.
  */
-function stepField() {
+/*
+ * Exported, because a spell slate's effect is the same shape as a card step: a verb line that may
+ * also carry a condition. Writing it twice would let the two drift, and the condition fields are
+ * exactly the part that must not.
+ */
+export function stepField() {
   return new fields.SchemaField({
     verb: new fields.StringField({
       required: false, blank: true, initial: "",

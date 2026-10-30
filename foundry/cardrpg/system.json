@@ -43,6 +43,11 @@
         "htmlFields": [
           "description"
         ]
+      },
+      "spell": {
+        "htmlFields": [
+          "description"
+        ]
       }
     },
     "Card": {

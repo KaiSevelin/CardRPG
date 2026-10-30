@@ -71,6 +71,15 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
         base: new fields.NumberField({ required: true, integer: true, min: 1, initial: d.handSize })
       }),
 
+      /*
+       * How much formula strength you may have prepared at once (core-rules 4). Stored as a base
+       * like carry and deck size, because levelling raises it and features may too. Zero for
+       * anyone who has never taken a Way of Mind or Way of Faith node, which is most characters.
+       */
+      spellSlots: new fields.SchemaField({
+        base: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 })
+      }),
+
       // The Cards documents this character plays from. Copies of an actor share these ids, which is
       // how NPCs of one type come to share a deck -- see npc below.
       decks: new fields.SchemaField({
@@ -108,7 +117,7 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
     const slates = this.parent.items;
 
     // --- what the features grant
-    const grants = { health: 0, handSize: 0, carry: 0, deckMax: 0 };
+    const grants = { health: 0, handSize: 0, carry: 0, deckMax: 0, spellSlots: 0 };
     for (const slate of slates) {
       if (slate.type !== "feature") continue;
       for (const k of Object.keys(grants)) grants[k] += slate.system.grants?.[k] ?? 0;
@@ -124,6 +133,19 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
     this.health.max = Math.max(1,
       this.health.base + grants.health - (this.afflicted ? d.afflictedHealthPenalty : 0));
     this.health.value = Math.min(this.health.value, this.health.max);
+
+    /*
+     * --- spell slots
+     * Measured in formula strength, not in spells: a strength-3 formula fills three. `used` is
+     * derived from the prepared slates, so nothing can drift out of step with what is on the sheet,
+     * and over-preparation shows as a negative `free` rather than being silently refused here --
+     * the sheet is where that is reported, as it is for deck size.
+     */
+    this.spellSlots.max = this.spellSlots.base + grants.spellSlots;
+    this.spellSlots.used = slates
+      .filter(i => i.type === "spell")
+      .reduce((n, i) => n + (i.system.slotCost ?? 0), 0);
+    this.spellSlots.free = this.spellSlots.max - this.spellSlots.used;
 
     // --- hand size and deck limits
     this.handSize.max = this.handSize.base + grants.handSize;

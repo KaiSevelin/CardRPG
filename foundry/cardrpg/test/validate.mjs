@@ -107,6 +107,28 @@ for (const [doc, types] of Object.entries(manifest.documentTypes)) {
 
 /* -------------------------------------------- */
 
+/*
+ * A subtype lives in two places -- documentTypes in system.json and CONFIG.<Doc>.dataModels in
+ * cardrpg.mjs -- and adding it to only one is the natural mistake. Declared but unregistered gives
+ * a subtype with no system fields; registered but undeclared means Foundry never offers it.
+ */
+section("subtypes are registered on both sides");
+
+const entry = fs.readFileSync(path.join(root, "cardrpg.mjs"), "utf8");
+for (const [doc, types] of Object.entries(manifest.documentTypes)) {
+  const block = entry.match(new RegExp(`CONFIG\\.${doc}\\.dataModels\\s*=\\s*\\{([^}]*)\\}`));
+  const registered = new Set(
+    [...(block?.[1] ?? "").matchAll(/^\s*([A-Za-z0-9_]+)\s*:/gm)].map(m => m[1])
+  );
+  const declared = new Set(Object.keys(types));
+  const missing = [...declared].filter(t => !registered.has(t));
+  const extra = [...registered].filter(t => !declared.has(t));
+  check(`${doc}: declared but not registered`, missing.length ? missing.join(", ") : "none", "none");
+  check(`${doc}: registered but not declared`, extra.length ? extra.join(", ") : "none", "none");
+}
+
+/* -------------------------------------------- */
+
 section("icons");
 
 // Every icon key the config names must exist on disk, or a card face renders a placeholder.

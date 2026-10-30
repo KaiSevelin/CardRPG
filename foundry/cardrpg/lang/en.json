@@ -3,6 +3,7 @@
   "TYPES.Actor.npc": "NPC",
   "TYPES.Item.item": "Item Slate",
   "TYPES.Item.feature": "Feature Slate",
+  "TYPES.Item.spell": "Spell Slate",
   "TYPES.Card.action": "Action Card",
   "TYPES.Card.fate": "Fate Card",
   "TYPES.Card.npc": "NPC Card",

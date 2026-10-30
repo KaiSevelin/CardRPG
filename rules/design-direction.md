@@ -110,6 +110,12 @@ The system is specified in [../foundry/](../foundry/):
 | [actor-schema.md](../foundry/actor-schema.md) | Actor state, stored vs derived, the encumbrance transition hook, visibility tiers |
 | [card-slate-schema.md](../foundry/card-slate-schema.md) | Card and slate subtypes, the icon enum, deck topology, compendium packs |
 
+A **spell is a slate** with one number that does three jobs: *strength* 1–5 is the slot cost, the
+power band, and the figure the world document already states for every school. Spell slots are a
+budget on the actor, counted in strength rather than in spells, the way carry weight and deck size
+are — not an eleventh entry in the slot list. The format and the content standard are in
+[way-cards.md](way-cards.md).
+
 Card layout is settled in [../foundry/card-layout.md](../foundry/card-layout.md): the scan column,
 the four information tiers, which types may have an informative back, and the bonus-group border.
 
@@ -120,7 +126,9 @@ Nothing in the design now blocks writing the system.
 1. Core combat rules ✔ (draft 0.3 — balance-tested, see [../sim/](../sim/))
 2. Skill deck and out-of-combat play ✔ (draft 0.2 — procedures complete)
 3. **Fantasy world** (in progress — `worldinfo/Firma.md`: history, districts, enclaves and religions written; specializations and most monsters are empty headings)
-4. Ways, leveling trees, specializations ← **the current bottleneck**
+4. Ways, leveling trees, specializations — chassis and all 48 major nodes done
+   ([leveling.md](leveling.md), [specializations.md](specializations.md)); **content in progress**
+   ([way-cards.md](way-cards.md): the standard and 48 draft Signatures, none simulated)
 5. Backgrounds
 6. Monsters and NPCs with tactics
 7. Foundry VTT 14 system

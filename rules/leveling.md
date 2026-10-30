@@ -8,6 +8,10 @@ Three questions elsewhere were waiting on this one: where Strike-on-secondary ca
 ([core-rules.md](core-rules.md) §3), the action deck's grow and prune rules (§8), and where rest
 tokens come from (§8). All three are answered here.
 
+**The content a node hands out** — the cards, the spells and the miracles themselves — is in
+[way-cards.md](way-cards.md), which holds the value bands, the cost ladder, the spell format and a
+draft Signature for each of the 48 major nodes.
+
 ---
 
 ## 1. One graph, one root
@@ -124,7 +128,7 @@ one thing instead of another.
 | **Item** | A slate you keep | For signature gear a Way grants, not ordinary loot |
 | **Prune** | Remove one card from a deck, permanently | The only way to drop a dead card (§8) |
 | **Deck cap** | Raise your action deck maximum | A flat trait, so **not** bonus-grouped |
-| **Spell slot** | Prepare one more spell before a fight (core-rules §4) | The Way of Mind's version of a deck cap |
+| **Spell slot** | One more point of **formula strength** you may prepare (core-rules §4) | Way of Mind's and Way of Faith's version of a deck cap |
 | **Health** | Raise max Health | |
 | **Rest token** | One more (§8 promises these come from leveling) | |
 

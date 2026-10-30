@@ -7,6 +7,7 @@
  */
 
 import { CARDRPG } from "../config.mjs";
+import { stepField } from "./cards.mjs";
 
 const fields = foundry.data.fields;
 
@@ -64,6 +65,72 @@ class SlateData extends foundry.abstract.TypeDataModel {
   /** Is the ability available right now? */
   get ready() {
     return this.isActive && !this.drained;
+  }
+}
+
+/* -------------------------------------------- */
+/*  Spell slate                                 */
+/* -------------------------------------------- */
+
+/**
+ * A spell is a slate, like a sword or a potion (core-rules 4) -- but what it occupies is a **spell
+ * slot**, not a slot on your body, so it is deliberately absent from CARDRPG.slots. Spell slots are
+ * a budget on the actor, the way carry weight and deck size are, and `strength` is what a formula
+ * spends out of it.
+ *
+ * `strength` 1-5 comes straight from the world document, where every magic school states it, and it
+ * is the slot cost: a strength-3 formula fills three slots. That is why "some spells cost more than
+ * one slot" needed no rule of its own.
+ *
+ * Unprepared spells are not thrown away -- they sit in the spell book, which is this slate with
+ * `prepared: false`. Only prepared spells can be cast.
+ */
+export class SpellSlateData extends SlateData {
+  static defineSchema() {
+    return {
+      strength: new fields.NumberField({
+        required: true, integer: true, min: 1, max: 5, initial: 1
+      }),
+      /**
+       * A formula is studied and a miracle is granted, which is the whole difference between Way of
+       * Mind and Way of Faith: a formula is paid for once, in your own substance, and a miracle is
+       * paid for continuously, in obedience. Mechanically the slate is the same, so this field is
+       * what lets content and the validator tell them apart.
+       */
+      kind: new fields.StringField({
+        required: true, initial: "formula", choices: ["formula", "miracle"]
+      }),
+      /**
+       * The school or god it comes from. A plain string rather than an enum: the twelve schools and
+       * twelve gods are content, and an add-on's thirteenth must not need a config edit.
+       */
+      source: new fields.StringField({ required: false, blank: true, initial: "" }),
+
+      /** In your head, or in the book. Changed between fights, never during one. */
+      prepared: new fields.BooleanField({ initial: false }),
+
+      /** What casting it does. Same shape as a card step, so a spell may apply a condition. */
+      effect: stepField(),
+
+      group: groupField(),
+      ...drainFields(),
+
+      description: new fields.HTMLField()
+    };
+  }
+
+  /** What this costs out of the budget right now. Nothing, while it is still in the book. */
+  get slotCost() {
+    return this.prepared ? this.strength : 0;
+  }
+
+  /**
+   * A prepared spell needs a free hand and speech; an item's own Cast line needs only the item in
+   * hand (core-rules 4). A spell slate is always the first kind -- that is what makes it a spell
+   * rather than a wand -- so this is true by construction and stated for the resolver to read.
+   */
+  get needsFreeHand() {
+    return true;
   }
 }
 
@@ -211,7 +278,8 @@ export class FeatureSlateData extends SlateData {
         health: new fields.NumberField({ required: true, integer: true, initial: 0 }),
         handSize: new fields.NumberField({ required: true, integer: true, initial: 0 }),
         carry: new fields.NumberField({ required: true, integer: true, initial: 0 }),
-        deckMax: new fields.NumberField({ required: true, integer: true, initial: 0 })
+        deckMax: new fields.NumberField({ required: true, integer: true, initial: 0 }),
+        spellSlots: new fields.NumberField({ required: true, integer: true, initial: 0 })
       }),
 
       description: new fields.HTMLField()

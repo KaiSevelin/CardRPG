@@ -290,8 +290,8 @@ A spell in your book is not the same as a spell in a wand: see *Two kinds of cas
 
 | | |
 |---|---|
-| **Spell slots** | How many you may prepare. More come from leveling ([leveling.md](leveling.md) §4). |
-| **Cost** | Most spells take one slot. A big one takes **two or more.** |
+| **Spell slots** | How many you may prepare, counted in **formula strength**, not in spells. More come from leveling ([leveling.md](leveling.md) §4); a first Way of Mind or Way of Faith node grants **2**. |
+| **Strength** | Every spell has one, **1 to 5**, and it **is** the slot cost — a strength-3 formula fills three slots. It is also the power band ([way-cards.md](way-cards.md) §1.4). |
 | **When** | **Between fights.** Preparation is not something you change while being shot at. |
 | **Unprepared** | Stays in your **spell book**, which is where spells live when they are not in your head. |
 

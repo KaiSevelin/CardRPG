@@ -12,7 +12,7 @@ import { CardRPGCombat, registerCombatHooks } from "./module/combat.mjs";
 import { CardRPGTray, registerTrayHooks } from "./module/tray.mjs";
 import * as decks from "./module/decks.mjs";
 import { CharacterData, NpcData } from "./module/data/actors.mjs";
-import { ItemSlateData, FeatureSlateData } from "./module/data/items.mjs";
+import { ItemSlateData, FeatureSlateData, SpellSlateData } from "./module/data/items.mjs";
 import {
   ActionCardData, FateCardData, NpcCardData, WoundCardData, TaintCardData
 } from "./module/data/cards.mjs";
@@ -34,7 +34,9 @@ Hooks.once("init", () => {
 
   CONFIG.Item.dataModels = {
     item: ItemSlateData,
-    feature: FeatureSlateData
+    feature: FeatureSlateData,
+    // A spell is a slate too, but what it occupies is a spell slot rather than a slot on your body.
+    spell: SpellSlateData
   };
 
   // Card and Cards support document subtypes with a TypeDataModel on `system`, which is what lets
