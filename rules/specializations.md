@@ -1,8 +1,9 @@
-# Specializations (Draft 0.1)
+# Specializations (Draft 0.3)
 
-Every major node in the graph, taken from the world document
-([../worldinfo/Firma.md](../worldinfo/Firma.md)). The names are the world's; the **axis** and **cost**
-columns are the [leveling.md](leveling.md) §5a template applied to them.
+Every major node in the graph across the **four Ways**, drawn from the world document
+([../worldinfo/Firma.md](../worldinfo/Firma.md)) wherever it has one. The names are mostly the
+world's; the **axis** and **cost** columns are the [leveling.md](leveling.md) §5a template applied to
+them, and the handful of nodes marked ✱ are additions the audit below argued for.
 
 Two columns carry different weight:
 
@@ -28,8 +29,9 @@ is a rule this game already has or has already parked:
 | **Glamour** | the elves do not teach for free | an **obligation** ([leveling.md](leveling.md) §4) |
 | **Spiritualism** | a **pact with a minor god** per formula | an **obligation** |
 | **Household** | negotiating with elf-kin | an **obligation** |
-| **Priest** | **vows or a pilgrimage**, whatever the school | an **obligation** |
 | **Divination** *(new)* | a **prophecy** the GM holds, one per formula | a **text obligation** ([leveling.md](leveling.md) §4) |
+| **Ward** *(new)* | you may only learn a ward against magic **already used on you** | a **text obligation**, and a campaign |
+| ~~Priest~~ | **vows or a pilgrimage**, whatever the school | moved — it is a whole Way now, see below |
 
 > **Formula strength is 1–5**, and that is the spell-slot cost. A strength-3 formula takes three of
 > your slots. "Some spells cost more than one slot" was already written in the world; it just was not
@@ -102,7 +104,7 @@ Direct magic is cast in combat. Ritual magic is not, and anyone literate can do 
 | **Shadow Magic** | Skugga | Position | A permanent Wild card per formula |
 | **Spiritualism** | Spiritualism | Preparation | A pact with a minor god, per formula, as an obligation |
 | **Household Magic** | Hushållsmagi | *(out of combat)* | Negotiation with elf-kin, as an obligation |
-| **Priest Magic** | Prästmagik | Preparation | Vows or a pilgrimage; a shorter list than a mage's |
+| **Ward Magic** ✱ | Bannmagi | **Reactions** | Spent — a ward held in reserve is a card gone for the fight |
 | **Divination** ✱ | Spådom | **Support** | Someone else's turn — and a prophecy the GM holds over you |
 | **Ritual Magic** | Rituell magik | *(out of combat)* | Time, and a recipe that can go wrong |
 | **Brewer** | Bryggare | *(craft)* | — |
@@ -110,8 +112,42 @@ Direct magic is cast in combat. Ritual magic is not, and anyone literate can do 
 | **Jeweller** | Juvelerare | *(craft)* | — |
 | **Orator** | Oratorer | *(social)* | — |
 
-✱ **Divination is not in the world document.** It is added to bring Mind to twelve schools, matching
-Shade's twelve and Strength's twelve, and it is specified below.
+✱ **Divination and Ward Magic are not in the world document.** Divination was added for the Support
+axis; Ward Magic replaces **Priest Magic**, which has become a Way of its own. Priest magic was one
+node in Mind carrying an entire religion chapter, and both halves were the worse for it.
+
+**Spiritualism stays in Mind**, and the world says why in one line: the minor gods *"grant no
+miracles, but they are the basis of the Spiritualism school."* Faith is granted by gods who give
+miracles; Spiritualism **bargains** with the gods who cannot. That is a clean seam, and the world drew
+it rather than us.
+
+### Ward Magic: the axis Mind did not have  **[PROPOSED]**
+
+Removing Priest Magic left eleven schools and a hole. The histogram says which hole: **Way of Mind had
+no Reactions node at all** — eleven schools and not one of them did anything on another creature's
+turn. That is the same gap, found the same way, as the Support gap that produced the Divinator and the
+Scout.
+
+A mage who acts on someone else's turn is answering something, so:
+
+| Part | |
+|---|---|
+| **Title** | **Warder** (*Bannmagi*) |
+| **Stance** | You do not cast the first spell in a fight. You cast the last one. |
+| **Leans on** | **Reactions** |
+| **Pays in** | **Spent.** A ward is held in reserve and burns a card for the fight whether or not anything comes. |
+| **Signature** | A card playable on another creature's turn that stops a ✦ Cast before it resolves. |
+| **Gives up** | **Everything that is not magic.** Your wards answer spells and nothing else — against a warband with no caster you have paid for an empty hand. |
+| **Pays to learn** | **You may only learn a ward against magic that has already been used on you.** Every formula in a warder's book is a scar. |
+
+The learning price is the part worth keeping. It costs the rules nothing, it cannot be shortcut with
+money, and it turns the school into a campaign: a warder's book is a record of what the party has
+survived, and the GM fills it by using magic on them. It is also the sharpest *gives up* on the list
+after the Divinator's — a build that is **useless in some fights** is a real risk, and it is flagged
+as one: if Firma's encounters turn out to be mostly caster-free, this node needs widening to *any
+incoming effect that draws fate*, which makes it a second Guardian and much duller.
+
+
 
 **[OPEN]** The crafts and the two out-of-combat schools do not fit the six-axis template, because the
 axes are all about a fight. They need either a second template or a different kind of node.
@@ -314,6 +350,143 @@ three levels of filler waiting for a title now has three recognisable profession
 > **[OPEN]** The world document's Shade chapter still lists the old twelve, and its Strength chapter
 > still lists fifteen weapon types. Both need a pass once these restructures are accepted.
 
+## Way of Faith — 12 gods  **[PROPOSED]**
+
+A fourth Way. Firma's **Religion** chapter is longer than any of its specialization chapters: five
+bodies of worship, sixteen named gods, tenets, saints, holy books, orders of knights, secret police
+and assassin sects. All of that was reaching the rules through **one node** called Priest Magic. It is
+a Way.
+
+### The find: every god already names its miracle
+
+The world states a **Miracles** line for every god that grants any, and nearly every one of those is
+a magic school this game already has:
+
+| God | Religion | Miracle, per the world | The school it already is |
+|---|---|---|---|
+| **The Eternal God** | Church of the Eternal God | Ascetic | Asceticism |
+| **The Eternal Spirit** | Church of the Eternal Spirit | Air | Elemental |
+| **Sessyfyn** | The Five | Water | Elemental |
+| **Valtor** | The Five | Strength | Tattoo Magic (*Styrka*) |
+| **Fagar** | The Five | Glamour | Glamour |
+| **Vulpet** | The Five | Necromancy | Necromancy |
+| **Brendan** | The Five | Earth | Elemental |
+| **The Grey** | The Grey | Shadow | Shadow Magic |
+| **The Purple** | The Grey | Poison | Poison |
+| **Parfebe** | Local gods (Hyrlock) | Blood magic | Blood Magic |
+| **The Fire** | Local gods (Vargtoppen) | Fire | Elemental |
+| **The First** | Local gods (Echterhof) | Ether | Elemental |
+
+**Those are twelve gods with twelve distinct miracles**, and they fall out of a selection rule rather
+than a preference: *one god per miracle*. The world's other four miracle-granting gods duplicate one
+of these — The Yellow and Fagar both grant Glamour, Aecht and Vulpet both Necromancy, Vax and Valtor
+both Strength, The Primal Mother and Brendan both Earth — so the duplicates stay worshipped without
+being doors in the graph, and an add-on compendium can promote any of them later (it declares
+`exclusive: "faith"` and is at once exclusive with the right religions). **The Yellow** in particular
+has a home already: lies, deceit and disguise are Way of Shade's Spy cluster.
+
+It also completes something. The five Elemental spheres are Air, Water, Earth, Fire and Ether, and the
+twelve gods grant **all five, one each** — the Eternal Spirit, Sessyfyn, Brendan, The Fire and The
+First. Nobody planned that; the world did it.
+
+### Twelve gods, twelve prices
+
+Way of Faith is the inverse of Way of Shade. Shade is **narrow and deep** — three titles off the trunk
+and nine behind them. Faith is **wide and shallow**: twelve doors at the top, because in this Way *the
+choice is the content*, and it is the only Way where the first step closes the others for good.
+
+That breaks the strict writing rule, and it has to. **Twelve siblings cannot lean on seven axes
+without repeating**; the pigeonhole principle says so before anyone writes a word. So Faith is
+distinguished the other way round:
+
+> **The gods do not differ in what they push. They differ in what they take.**
+> Twelve gods, twelve different resources, so all twelve cells are distinct by the resource alone.
+
+| God | Religion | Miracle | Leans on | Pays in |
+|---|---|---|---|---|
+| **The Eternal God** | Eternal God | Asceticism | Control | **Deck size** — obedience: the faith names what may not be in your deck, and keeps it small |
+| **The Eternal Spirit** | Eternal Spirit | Air | Reactions | **Weight** — the spirit drifts through all the air, and carries nothing that anchors it |
+| **Sessyfyn** | The Five | Water | Support | **The fate deck** — the sea is not fair: a Miss *and* a Critical, permanently |
+| **Valtor** | The Five | Tattoo | Tempo | **Strain** — his strength comes out of your hand, every time you ask |
+| **Fagar** | The Five | Glamour | Control | **Spent** — a trick works once |
+| **Vulpet** | The Five | Necromancy | Preparation | **An ally** — she was driven out by everyone; nobody will stand beside you either |
+| **Brendan** | The Five | Earth | Support | **A turn spent early** — beauty out of barren ground, and nothing he gives arrives quickly |
+| **The Grey** | The Grey | Shadow | Reactions | **Range** — close enough to touch, which is where the knife is |
+| **The Purple** | The Grey | Poison | Control | **Taint** — you are the first to taste it |
+| **Parfebe** | Local | Blood | Preparation | **Health** — the dose is measured out of you before the fight |
+| **The Fire** | Local | Fire | Position | **Halves** — fire must be fed: a secondary every round or it goes out |
+| **The First** | Local | Ether | Deck shape | **Spell slots** — the thinnest miracle and the dearest: few slots, and a deck narrow enough to hold them |
+
+All seven axes are covered, no cell repeats anywhere in the four Ways, and two resources — *a slot
+kept free* and *someone else's turn* — are deliberately left for the nodes **behind** each god.
+
+**Control went from thin to the busiest axis.** It had 3 nodes across three Ways and now has 6, half
+of them here, which answers the question the audit left open about whether Control was narrow or just
+unexamined. It was unexamined: obedience, trickery and poison are all *doing something to someone
+else's choices*, and a religion chapter is full of that.
+
+### What the Way costs, as a Way
+
+Every god grants its miracle on the same terms, and the world already wrote them: *vows or a
+pilgrimage, whatever the school.* So **every node in Way of Faith carries an obligation** on top of
+its own price — which is why *an obligation* is not listed as any single god's resource. It is the
+entrance fee.
+
+That is the real difference between this Way and Way of Mind, and it is worth stating plainly:
+
+| | **Way of Mind** | **Way of Faith** |
+|---|---|---|
+| Who owns the magic | you do | the god does |
+| When you pay | **once**, when you learn the formula | **continuously**, in how you behave |
+| Paid in | your own substance — Health, Taint, secrets, body parts, money | obedience, and whatever the god's order asks this month |
+| Who holds the price | the rules | the **GM** |
+| If you stop paying | nothing; it is already spent | the miracles stop |
+
+A mage who runs out of money studies less. A priest who breaks their vows has nothing.
+
+### Exclusivity: jealous gods and tolerant ones
+
+**The rule as I have read it:** a *monotheistic* religion admits no other god at all, while the
+*polytheistic* ones admit each other freely. So a character may serve Valtor and then also The Purple
+and then also Parfebe — three gods in three different religions — but the moment anyone swears to the
+Eternal God, every other god is gone for good.
+
+The world supports it almost line for line. The Church of the Eternal God's first tenet is *"All other
+gods are impure"*; the Church of the Eternal Spirit holds the same tenets; The Five's third tenet is
+*"The gods are not infallible. Anyone who claims otherwise blasphemes"*; The Grey and the siblings have
+no tenets at all; and the local gods *"lived side by side with the large ones"*. One group is jealous,
+the rest are not.
+
+| Religion | Creed | Gods | Admits |
+|---|---|---|---|
+| **Church of the Eternal God** | **jealous** | 1 | nothing else, ever — including the Eternal Spirit |
+| **Church of the Eternal Spirit** | **jealous** | 1 | nothing else, ever — including the Eternal God |
+| **The Five** | tolerant | 5 | any tolerant god, in any religion |
+| **The Grey** | tolerant | 2 | any tolerant god, in any religion |
+| **Local gods** | tolerant | 3 | any tolerant god, in any religion |
+
+The two churches being mutually exclusive is the one place the rule is harsher than the fiction — the
+world says the sister churches *"accept one another tolerably"*. They accept one another; they do not
+let you be both. That is what a schism is.
+
+This needs one new flag on a node rather than a new mechanism, and it is a **strict generalisation** of
+what [leveling.md](leveling.md) §3 already does — a group where every member is jealous behaves exactly
+like today's exclusive group. See §3 and §9 there.
+
+> **[OPEN]** Whether a tolerant god costs a **full level** each time or something less. Twelve doors
+> and nine of them re-openable means a devotee of three tolerant gods has spent three levels on
+> entrance fees and is three levels shallower than a single-god priest — which may be exactly right,
+> or may need the second and third to be cheaper.
+
+> **[OPEN]** Each god's **Signature**, and the nodes behind it. A god's branch is where the playstyle
+> actually lives, because the god itself is a door, an obligation and a spell list.
+
+> **[OPEN]** The **minor gods** grant no miracles, so there is no Faith node for them — they stay
+> Spiritualism's business in Way of Mind. Whether a cult of the Winter Lady should nonetheless be
+> reachable from Faith is open.
+
+---
+
 ## Way of Strength — restructured  **[PROPOSED]**
 
 The world document lists fifteen, and eight of them are *a weapon type*. **A weapon type is not a
@@ -364,16 +537,19 @@ can, because *whose turn* and *whose being hit* are four different answers.
 
 ## What this list turns up
 
-1. **Three Mind schools and Priest magic all price themselves in an obligation** — a debt to the
+1. **Three Mind schools and all of priest magic price themselves in an obligation** — a debt to the
    elves, a pact with a god, vows. That was the one genuinely missing mechanic; it is now written
-   ([leveling.md](leveling.md) §4) and it serves those four nodes plus Necromancy's bound Taint.
+   ([leveling.md](leveling.md) §4), and the vows turned out to be large enough that priest magic
+   became **Way of Faith** and the obligation its entrance fee. It also carries Necromancy's bound
+   Taint and the Dream Guild debt proposed for Way of Shade: one mechanic, four jobs.
 2. **Spell-slot cost is already written**: formula strength 1–5.
 3. **`Armborstspecialister` appeared twice** in the world document. Counted once.
-4. **The counts now line up at twelve.** [design-direction.md](design-direction.md) says 15 / 12 / 13,
-   which was the world document's own tally: 15 Strength *weapon types*, 12 Shade, and 13 for Mind
-   only if you count ritual magic. Restructuring Strength into **12 roles** and adding **Divination**
-   as Mind's twelfth school makes all three Ways twelve nodes wide, with ritual magic and the four
-   crafts sitting outside the count because they are not fighting identities (finding 5).
+4. **All four Ways are twelve nodes wide.** The world document's own tally was 15 Strength *weapon
+   types*, 12 Shade, and 13 for Mind only if ritual magic counts. Strength became **12 roles**, Shade
+   **12** after three professions were demoted and one weapon absorbed, Mind **12** once Divination
+   and Ward Magic replaced the overloaded Priest node, and Faith is **12 gods** by the one-god-per-
+   miracle rule. Ritual magic, household magic and the four crafts sit outside the count because they
+   are not fighting identities (finding 5).
 5. **The crafts are probably not major nodes at all.** Brewer, Smith, Jeweller, Orator, Spy, Fence
    and Politician are about what you do *between* fights, and a major node is a fighting identity.
    Since **skills live on minor nodes** ([leveling.md](leveling.md) §4), these are most likely
@@ -391,33 +567,37 @@ found both a weakness in the device and two outright breaches.
 
 ## 1. The axis cannot carry it alone
 
-Thirty-five of these nodes fight. Seven axes, thirty-five nodes:
+Forty-seven of these nodes fight, across four Ways. Seven axes:
 
 | Axis | At the audit | Now |
 |---|---|---|
-| **Position** | 9 | 7 |
-| **Preparation** | 4 | 7 |
-| **Reactions** | 6 | 6 |
-| **Deck shape** | 3 | 5 |
-| **Tempo** | 6 | 4 |
-| **Control** | 3 | 3 |
-| **Support** | 1 | 3 |
-| | **32** | **35** |
+| **Reactions** | 6 | 9 |
+| **Position** | 9 | 8 |
+| **Preparation** | 4 | 8 |
+| **Control** | 3 | 6 |
+| **Deck shape** | 3 | 6 |
+| **Tempo** | 6 | 5 |
+| **Support** | 1 | 5 |
+| | **32** | **47** |
 
 Nine nodes "leaned on Position". Tell a player that and they have learned nearly nothing: it is the
-aisle, not the item. **With 35 nodes and 7 axes the pigeonhole principle alone guarantees
+aisle, not the item. **With 47 nodes and 7 axes the pigeonhole principle alone guarantees
 collisions**, so no amount of care in writing the axis column will separate these builds. The axis
 says which lever a build pulls; it was never going to say what the build *is*.
 
-What the histogram was good for was finding **missing** nodes, which is not what it was built to do.
-**Support had exactly one node** — the Tactician, in the Way where helping an ally is incidental — and
-none in Way of Mind, where half the fiction is knowing what others do not, nor in Way of Shade, where
-going ahead and coming back to tell is the oldest job there is. Those two gaps are the **Divinator**
-and the **Scout**, and Support now has exactly one node per Way. **Preparation** rose from 4 to 7 the
-same way: it had been defined as "spell slots" and so could only exist in one Way.
+What the histogram turned out to be good for is finding **missing** nodes, which is not what it was
+built to do. Every one of the five additions above was found this way:
 
-A thin axis is a question, then: either it is thin because it is narrow, or because nobody has
-looked. Control is still at 3 and may be the next of these.
+| Gap the histogram showed | What filled it |
+|---|---|
+| **Support** had one node anywhere — the Tactician, in the Way where helping an ally is incidental | **Divinator** in Mind, **Scout** in Shade; Support is now one or two per Way |
+| **Preparation** was defined as "spell slots", so it could exist in only one Way | widened to *anything decided before it matters*; Trapmaker, Musketeer and Burglar moved onto it |
+| **Way of Mind had no Reactions node at all** — eleven schools, none that acted on another creature's turn | **Ward Magic** |
+| **Control** sat at 3 and might have been narrow or merely unexamined | unexamined: Way of Faith took it to 6, because obedience, trickery and poison are all interference in someone else's choices |
+
+The spread went from 9:1 at its worst to **9:5** — flat enough that no axis is now either a dumping
+ground or an empty shelf. That is the histogram's whole job, and it is done; from here the work is
+Signatures, which no count can check.
 
 Two of the re-homings above came straight out of the count. **Preparation was defined as "spell
 slots"**, which confined it to Way of Mind and left Position carrying every build that was really
@@ -486,10 +666,10 @@ a build that cannot do something.
 
 ## Open
 
-- **[OPEN]** The **deity** exclusive group ([leveling.md](leveling.md) §3). Priest magic is "a school
-  according to their religion", so the deity node both gates the priest's formula list and closes
-  every other god. Firma has five bodies of worship to draw it from — the Eternal God, the Eternal
-  Spirit, The Five, The Grey, and the local and minor gods.
+- **Answered:** the deity exclusive group. It is the `"faith"` group, its members are the twelve gods
+  of Way of Faith, and it needed the **jealous / tolerant** distinction to express the world's own
+  theology ([leveling.md](leveling.md) §3). Each god gates its own formula list, exactly as the world
+  says priest magic is *"a school according to their religion"*.
 - **[OPEN]** Whether Spy, Fence, Politician and Bard stay as Shade **titles** or become clusters of
   minor nodes, the way the crafts probably should (finding 5). Spy and Politician in particular do
   nothing in a fight, and a major node is a fighting identity.

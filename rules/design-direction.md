@@ -4,24 +4,33 @@ Long-term decisions that aren't detailed rules yet.
 
 ## Classes: the Ways
 
-Three classes, called **Ways**. The world document settles this: it has a specialization chapter for each of the three, so the possible fourth Way is dropped.
+**Four** classes, called **Ways**. The world document has a specialization chapter for three of them — and a **Religion** chapter, longer than any of those, which was reaching the rules through a single Way of Mind node called *Priest Magic*. Five bodies of worship, sixteen named gods, tenets, saints, holy books, orders of knights and an assassin sect do not fit in one node, so **Way of Faith** is the fourth. The earlier decision to drop a fourth Way was taken when the only candidate was an invented one; this one was already written.
 
 | Way | Archetype | In the world doc | Major nodes now |
 |---|---|---|---|
 | **Way of Strength** | Fighters | 15 weapon types, none written | **12 roles** — a weapon type is not a playstyle |
 | **Way of Shade** | Rogues | 12, named, none written | **12 restructured** — three professions demoted, one weapon absorbed, four added |
-| **Way of Mind** | Mages and priests | 11 schools, ritual magic, most priced | **12** — Divination added for the Support axis |
+| **Way of Mind** | Mages | 11 schools, ritual magic, most priced | **12** — Divination and Ward Magic added, Priest Magic removed |
+| **Way of Faith** | Priests | a Religion chapter: 16 gods, each with a named miracle | **12 gods**, one per distinct miracle |
 
-Shade is also the first Way with a **tree** rather than a list: three titles off the trunk and nine
-behind them, every sibling set distinct on both coordinates. It is the template for the other two.
+**All four Ways are twelve nodes wide**, which is a target rather than a coincidence: it keeps them
+comparable in depth (§7 of [leveling.md](leveling.md) needs branches level), and holding to it is what
+kept turning up **missing** nodes rather than spare ones. Ritual magic, household magic and the four
+crafts sit outside the count because a major node is a fighting identity.
 
-**All three Ways are twelve nodes wide**, which is a target rather than a coincidence: it keeps the
-Ways comparable in depth (§7 of [leveling.md](leveling.md) needs branches level) and it was what
-turned up the missing node. Mind had no **Support** node at all, in the Way whose whole fiction is
-knowing what others do not. Ritual magic and the four crafts sit outside the count because a major
-node is a fighting identity. The list is in [specializations.md](specializations.md).
+The two Ways written out in full so far are shaped as opposites, deliberately:
 
-- There is **one graph with one root**, and the root points at all three Ways. A level-up takes a
+| | **Way of Shade** | **Way of Faith** |
+|---|---|---|
+| Shape | **narrow and deep** — 3 titles off the trunk, 9 behind them | **wide and shallow** — 12 doors at once |
+| Told apart by | its **axes**: every sibling set differs on both coordinates | its **prices**: twelve gods, twelve different resources |
+| Why | a rogue's identity is how they fight | a priest's identity is who they answer to, and the first choice is permanent |
+
+Twelve siblings cannot lean on seven axes without repeating, so Faith had to be told apart some other
+way — and what a god takes from you turned out to be the better coordinate anyway. The lists are in
+[specializations.md](specializations.md).
+
+- There is **one graph with one root**, and the root points at all four Ways. A level-up takes a
   node your owned nodes point at. The mechanism is specified in [leveling.md](leveling.md); the
   graphs themselves are not.
 - Because the root is never un-owned, **a character may take a second Way later** — at the cost of
@@ -30,15 +39,33 @@ node is a fighting identity. The list is in [specializations.md](specializations
   Taking one changes the character's title.
 - **Add-on compendiums hang new branches off existing specialization nodes.** A node names what it
   follows, never what follows it, so core content is never edited to make room for an add-on.
-- **Some choices close doors.** A node may belong to an exclusive group — swear to one god and the
-  others are gone for good, along with everything behind them. The group is named rather than listed,
-  so an add-on's new deity is exclusive with every existing one without core being edited.
+- **Some choices close doors.** A node in an exclusive group is either **jealous** or **tolerant**: a
+  jealous god closes every other god for good, a tolerant one closes only the jealous ones. So a
+  character may serve three gods of three polytheistic religions, and swearing to the Eternal God ends
+  the question for ever. The group is named rather than listed, so an add-on's new pantheon is
+  correctly exclusive in both directions without core being edited.
 - **A major node is kept distinct by four devices**, not by its name: its **cell** (the axis it leans
   on paired with the resource it pays in, both from closed lists), the **swap test** on its Signature,
   **one thing it gives up in rules**, and a budget of **Signature shapes** per Way.
   [leveling.md](leveling.md) §5a has them; the audit that found them necessary — including two nodes
   that were the same build written twice — is in [specializations.md](specializations.md).
 - The specializations are listed in [specializations.md](specializations.md), from the world document.
+
+## Obligations
+
+Settled in [leveling.md](leveling.md) §4: a feature the character **cannot remove**, which the GM
+writes and the GM holds, binding **in text**, **in a deck you play from** or **in the fate deck** —
+loosest rung that holds. It began as the one answer to four Way of Mind schools whose world-stated
+price was a debt to whoever taught them. It now also carries:
+
+- **Way of Faith entire.** Every god grants its miracle on vows, so an obligation is that Way's
+  entrance fee rather than any one god's price.
+- **Necromancy's bound Taint**, which no cure lifts except by surrendering the formula.
+- **The Dream Guild**, proposed on Way of Shade's Thief trunk, because the audit found that no Shade
+  node owed anything to anyone.
+
+Which is the test a mechanic should pass before it goes in: it was written once, for one problem, and
+is now doing four unrelated jobs.
 
 ## Backgrounds
 

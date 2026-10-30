@@ -12,7 +12,7 @@ tokens come from (§8). All three are answered here.
 
 ## 1. One graph, one root
 
-Every character stands on the same **root node**, and the root points at the three Ways. Levelling up
+Every character stands on the same **root node**, and the root points at the four Ways. Levelling up
 means **taking a node you can reach.**
 
 ```
@@ -21,10 +21,18 @@ means **taking a node you can reach.**
                         │               └─ ASSASSIN ── …
           ┌─ SHADE ──●──●──●────────────┤
           │          1  2  3            ├─ SCOUT ───── …
-  ROOT ───┼─ STRENGTH ── …              └─ DUELLIST ── …
-          │
-          └─ MIND ───── …
+          ├─ STRENGTH ── …              └─ DUELLIST ── …
+  ROOT ───┼
+          ├─ MIND ───── …
+          │                             ┌─ VALTOR ──── …
+          └─ FAITH ─────────────────────┼─ THE PURPLE …
+                                        └─ … twelve gods
 ```
+
+**Way of Faith is shaped differently on purpose.** Shade is narrow and deep — three titles off the
+trunk, nine behind them. Faith fans out to twelve gods at once, because in that Way the first choice
+*is* the content, and it is the only Way whose first step shuts doors permanently
+([specializations.md](specializations.md)).
 
 - A **node** is one level-up. Taking it is the level.
 - An **edge** says which nodes a node opens up.
@@ -59,18 +67,39 @@ A node may belong to an **exclusive group**. Taking any node in the group **disa
 in it, permanently.** Those nodes leave your frontier and never come back, and so does everything
 reachable only through them.
 
-The clearest case is a **deity**. Swearing to one god is not a step you take beside swearing to
-another; it is the end of that question. Choose the Eternal God and The Five are gone, along with
-every branch that ran through them.
+The clearest case is a **god**, and Way of Faith is built out of twelve of them. Swearing to a
+jealous god is not a step you take beside swearing to another; it is the end of that question. Choose
+the Eternal God and every other god is gone, along with every branch that ran through them.
+
+#### Jealous and tolerant
+
+Not every god is jealous, and the world is explicit about which are. The Church of the Eternal God
+holds that *"all other gods are impure"*; The Five hold that *"the gods are not infallible"*; the local
+gods *"lived side by side"* with the large religions. So a group needs two kinds of member:
+
+| | Taking it closes |
+|---|---|
+| **Jealous** | **every other node in the group**, for good |
+| **Tolerant** | **only the jealous nodes** in the group |
+
+A character may therefore serve Valtor, and later The Purple, and later Parfebe — three gods in three
+religions, all tolerant. The moment anyone swears to the Eternal God or the Eternal Spirit, the rest
+of the group is shut.
+
+> **This is a generalisation, not a second mechanism.** A group in which *every* member is jealous
+> behaves exactly like the exclusive group described above, so nothing that exists needs rewriting.
+> One flag on a node buys the whole distinction, and an add-on's new pantheon declares
+> `exclusive: "faith"` plus its creed and is correctly exclusive with everything, in both directions,
+> without core being touched.
 
 This is the one thing that makes the frontier **shrink**, and the graph needs it. Everything else in
 this document can be had eventually (§6); an exclusive group is where a character genuinely becomes
 one thing instead of another.
 
 > **Why a group, not a list of rivals.** A node that named every node it was incompatible with could
-> not be extended: an add-on's new deity would have to be written into every existing deity's list,
+> not be extended: an add-on's new god would have to be written into every existing god's list,
 > which means editing core content. A **named group** is mutual by construction — the add-on declares
-> `exclusive: "deity"` and is at once exclusive with every deity that exists and every one that ever
+> `exclusive: "faith"` and is at once exclusive with every god that exists and every one that ever
 > will.
 >
 > It is also a pattern the game already uses. Bonus groups are *same group, highest wins*; this is
@@ -397,7 +426,7 @@ the character's life. [specializations.md](specializations.md) argues it out in 
 
 ## 6. A second Way
 
-The root is a node you own, and **you never stop owning it** — so the three Way nodes stay on your
+The root is a node you own, and **you never stop owning it** — so all four Way nodes stay on your
 frontier for the whole of a character's life. A Shade at level 5 may spend that level taking **Way of
 Strength** and start down its trunk.
 
@@ -406,8 +435,9 @@ A second Way starts at its trunk, so the level buys you an opening that a single
 free at level 1. You go **wider and one step shallower**, which is the trade worth having and the one
 that needs no extra rule to enforce.
 
-> The same geometry says an add-on's fourth Way is reachable by every existing character the moment
-> it is installed, because it points at the root like the other three.
+> The same geometry says an add-on's **fifth** Way is reachable by every existing character the moment
+> it is installed, because it points at the root like the other four. Way of Faith was added to core
+> this way and needed no change to §6 to do it.
 
 ## 7. How many levels
 
@@ -456,12 +486,15 @@ Nodes are **content, not code** — the same rule the rest of the tuning follows
 |---|---|
 | `id` | stable, namespaced: `shade.thief.assassin` |
 | `after[]` | the node ids this may follow; **any one** of them being owned is enough |
-| `exclusive` | an exclusion group name, if this choice closes its rivals — `"deity"` |
+| `exclusive` | an exclusion group name, if this choice closes its rivals — `"faith"` |
+| `jealous` | within that group: `true` closes **every** other member, `false` closes only the jealous ones (§3) |
 | `title` | the class title this confers, if it is a specialization node |
 | `grants[]` | the reward, fixed |
 
-A character's **closed** set is every node sharing an `exclusive` group with a node they own, minus
-the ones they own. It derives from the same list as everything else, so nothing extra is stored.
+A character's **closed** set derives from the owned list and nothing else. For each `exclusive` group
+the character has any node in: if **any** owned node in it is `jealous`, every other member of the
+group is closed; otherwise only the group's `jealous` members are. Nothing extra is stored, and a
+group whose members are all jealous collapses to the simple rule.
 
 A character stores only **the list of node ids they own**. Level, title, frontier and every reward
 derive from that list, so a corrected node definition fixes every character who took it, and nothing
@@ -469,8 +502,9 @@ needs migrating.
 
 ## 10. Open
 
-- **[OPEN]** The graphs themselves — every node, reward and specialization for all three Ways.
-  Waits on the world, as it always did.
+- **[OPEN]** The graphs themselves — every node, reward and specialization for all four Ways. The
+  major nodes are now named and celled ([specializations.md](specializations.md)); the minor nodes
+  between them, and every Signature, are not.
 - **Needed:** a node that requires **all** of its prerequisites rather than any one. §5a leans on
   this — it is how depth takes commitment, and without it every title is one node deep and means
   nothing. One flag on the node; build it with the first graph.
@@ -478,7 +512,8 @@ needs migrating.
   good; a Way granting what the party would have found anyway is a dead node.
 - **[OPEN]** Whether a second Way should cost anything beyond the level, and whether there is a cap
   on how many Ways one character may walk.
-- **[OPEN]** Which groups beyond **deity** should be exclusive. It is a sharp tool: every group spent
+- **[OPEN]** Which groups beyond **faith** should be exclusive. It is a sharp tool: every group spent
   is a door a character can never open, so the list should stay short enough to name in a sentence.
+  Faith is the only one so far, and it uses both creeds.
 - **[OPEN]** Whether a one-off exclusion — *this* node closes *that* one, with no group — is ever
   needed. The group covers the known cases and extends cleanly; a one-off does not.
