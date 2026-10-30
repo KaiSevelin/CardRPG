@@ -156,6 +156,25 @@ against a knight — so a band cannot price them and only the simulator can. **W
 send them to §4**, which is where all four of them are. They are also the ones to be stingy with: three or four in the whole game, not one per
 node.
 
+**Poison is priced in Tainting, and the dial is *when*, not *how hard*** (core-rules §8). One word
+on the card decides which pile the Taint lands in, and that is the whole difference between a venom
+and a vial of something awful:
+
+| | Lands in | Costs |
+|---|---|---|
+| **slow** | the **discard** — it comes round at a moment nobody chose | the cheaper half of a strength-1 formula |
+| **fast** | the **hand** — 1 damage past armor at once, and a hand one card short | strength 2, because it is damage now *and* damage later |
+
+**Taint is the only thing a card can do that outlives the fight**, and that is what keeps the numbers
+tiny: **Tainting 1 is a real effect** and **Tainting 2 is a big spell.** Three Taint makes a character
+**Afflicted** — max Health −3 until they are below three again — so a caster who deals four has taken
+something off the sheet rather than out of a Health pool.
+
+**Acid is priced in Corrode, and it is the only effect that spends gear** (core-rules §8). It needs
+no condition of its own: what acid does to a person is **Burning**, which even gets the water rule
+right, and what makes acid *acid* is that it eats the armour. **Corrode 1 on a formula, Corrode 2 on
+a monster** — armor behaves like a cliff edge, so one point is already a great deal.
+
 **A dispel is priced in Shake Off, and the band is narrow** (core-rules §7,
 [conditions.md](conditions.md) §9.2):
 
@@ -562,7 +581,7 @@ deal against an ironclad and nothing at all against a goblin, so its value is se
 rather than by the card, and no band can price it. It is the one card in this section most worth
 simulating.
 
-### 3.4 Way of Mind — seventeen formulas (plus the counters in §3.6)
+### 3.4 Way of Mind — twenty formulas (plus the counters in §3.6)
 
 Beyond the twelve Signatures. **Strength is the slot cost** (§1.4), so the bracketed number is what
 it takes out of the budget. Each school's full list is still open; these are its second and third
@@ -578,6 +597,9 @@ entries, weighted toward the schools the combo work touched.
 | **Blood** | **Boil** | 3 | **Burning 3 (2)**, resist ✊ 7. Costs **2 Health**. |
 | **Necromancy** | **Grave Chill** | 2 | ✵ Aimed 2 · **Dazed (1)**, resist ✊ 5. One **bound Taint** card. |
 | **Poison** | **Slick** | 1 | ◎3 · **Off-Balance (1)**. No save. |
+| **Poison** | **The Quick Dose** | 2 | ☣ **Tainting 1, fast** — into the hand, resolving at once — on one adjacent target, resist ✊ 7. |
+| **Poison** | **The Long Dose** | 1 | ☣ **Tainting 2, slow** — into the discard — on one target at ◎2, resist ✊ 5. It will come round. |
+| **Elemental** | **Flesh of the Earth** | 2 | ✦ ◎3 · **Burning 1 (2)** and ⚗ **Corrode 1**. Acid: it eats the armour as well as the man. |
 | **Glamour** | **Wrong Face** | 2 | **Dazed (2)**, resist 👁 7. The GM writes down a secret. |
 | **Glamour** | **The Evil Eye** | 2 | **Cursed** on one target you can see — a temporary Miss in its fate deck, until drawn. The GM writes down a secret. |
 | **Shadow** | **Longer Shadow** | 1 | Until your next turn every square adjacent to you is shadowed. A **Wild** card joins your fate deck. |

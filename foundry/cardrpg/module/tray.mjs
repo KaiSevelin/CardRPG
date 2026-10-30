@@ -22,7 +22,7 @@ import {
 } from "./decks.mjs";
 import {
   resolveAttack, resolveDefend, resolveHeal, resolveUse, resolveCondition, resolveShake,
-  collectBonuses
+  resolveTaint, resolveCorrode, collectBonuses
 } from "./resolve.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -1084,6 +1084,25 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         if (key) await resolveShake(actor, { amount: step.param ?? 1, target: who, key });
         break;
       }
+
+      /*
+       * Poison and acid. Both take a target, and neither is a condition: Tainting deals cards into
+       * a deck and Corrode eats the armour itself (core-rules 8).
+       */
+      case "tainting":
+        for (const t of targets.length ? targets : [actor]) {
+          await resolveTaint(actor, {
+            amount: step.param ?? 1,
+            target: t,
+            // `text` carries "fast" for a dose that drops you now rather than later.
+            fast: /fast/i.test(step.text ?? "")
+          });
+        }
+        break;
+
+      case "corrode":
+        for (const t of targets) await resolveCorrode(actor, { amount: step.param ?? 1, target: t });
+        break;
 
       case "heal":
         await resolveHeal(actor, { amount: step.param ?? 0 });

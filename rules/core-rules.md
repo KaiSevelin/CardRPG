@@ -952,6 +952,14 @@ Some harm stays with you after the fight. It's represented by **negative cards**
 ```
 
 - **You gain Taint** from sources with the **Tainting** keyword: corrupted monsters, poison, disease, cursed places. The source says how much, and which deck: the **action deck** for the body (poison, disease) or the **skill deck** for the mind (dark magic, horrors). The two have different card faces (see [icons.md](icons.md)), so you can see at a glance what is wrong with you.
+- **Tainting is how poison works**, and the dose decides *when* it bites rather than how hard:
+  - **slow** — the default — puts the card in your **discard**, so it comes round at a moment nobody
+    chose. A venom working on you while you fight.
+  - **fast** puts it straight into your **hand**, where it resolves at once: 1 damage past armor, and
+    a hand one card short for the turn. A dose that drops you now.
+
+  One word on the card, two very different fights, and no second mechanic. The poison that fells a
+  man in a minute and the one that kills him in a week are the same card in a different pile.
 - Taint goes into your discard pile, just like Wounds.
 - **When drawn:** resolve it at once: take 1 damage (ignores armor) and discard it. You don't draw a replacement, so your hand is one card short.
 - **Taint survives rests.** Only these remove it:
@@ -964,6 +972,32 @@ Some harm stays with you after the fight. It's represented by **negative cards**
 - **Afflicted:** while you have **3 or more Taint** in your decks, you are Afflicted. Your max Health is −3, and the source adds its own effect (e.g. a sickness or mutation). It ends when you're below 3 Taint again.
 
 **[OPEN]** A list of afflictions per Taint source. Waits for world creation.
+
+#### Acid, and the only damage that costs you gear
+
+**Corrode N** takes **N off the target's armor**, and it does not come back on a rest.
+
+Acid needs no condition of its own. What acid does to *you* is already written — **Burning** is the
+right mechanic and even the right fiction, because water ends it and washing is how you treat an acid
+burn (§7). What acid does that nothing else in the game does is eat your **equipment**:
+
+> **Corrode is the only effect that spends gear.** [leveling.md](leveling.md) §5a.1 lists *"gear you
+> can lose — a mount, a cannon, a shield: ordinary without it, and the GM can take it"* as a
+> resource a specialization may be priced in. Until now nothing in the rules could actually take any.
+
+- It eats the **armour itself**, not your armor score, so the loss follows the armour when it comes
+  off and a borrowed breastplate is only as good as its last fight.
+- **Repair** is a downtime matter: a smith and coin, or a Lore check with the right tools. Printed
+  armor says what the item *is*; corrosion is tracked against it, so a repair is a reset rather than
+  a memory test.
+- **Armor behaves like a cliff edge** — a point of it is worth far more against four goblins with
+  Strike 3 than against one ogre — so Corrode 1 is already a strong effect and **Corrode 2 belongs to
+  a monster.**
+
+> **Why gear and not Health.** Everything else in this section takes something a rest gives back, or
+> a card out of a deck. Acid takes a *decision you made before the fight*, which is the one kind of
+> loss the rules had no way to inflict — and it is why an acid monster changes how a party packs
+> rather than how it fights.
 
 #### Deck size and pruning
 

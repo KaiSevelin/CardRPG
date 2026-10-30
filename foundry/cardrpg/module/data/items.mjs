@@ -188,6 +188,12 @@ export class ItemSlateData extends SlateData {
       }),
 
       armor: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 }),
+      /**
+       * How much of this slate's armor has been eaten away, by acid or anything else that spends
+       * gear (core-rules 8). Printed `armor` stays what the item IS, so a repair is a reset to 0
+       * rather than guesswork about what the number used to be.
+       */
+      corroded: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 }),
       consumed: new fields.BooleanField({ initial: false }),
 
       group: groupField(),
@@ -215,6 +221,15 @@ export class ItemSlateData extends SlateData {
       blurb: new fields.StringField({ required: false, blank: true, initial: "" }),
       description: new fields.HTMLField()
     };
+  }
+
+  /**
+   * Armor this slate actually gives, after anything that has eaten it. Printed `armor` stays what
+   * the item IS, so repairing is a reset of `corroded` to 0 rather than guesswork about what the
+   * number used to be.
+   */
+  get armorNow() {
+    return Math.max(0, (this.armor ?? 0) - (this.corroded ?? 0));
   }
 
   /** Which verbs this item can actually serve. */

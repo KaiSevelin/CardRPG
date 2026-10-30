@@ -47,6 +47,10 @@ These take something away. They are the fighter's vocabulary.
 **Invisible is the odd one** — it subtracts from everybody *else*, which is why it is the only
 condition on this list anyone wants.
 
+**Burning is fire *and* acid**, and the water rule is why: washing is how an acid burn is treated,
+so *cancels with Wet* reads correctly for both. Acid needs no condition of its own — what makes it
+acid is **Corrode**, which eats armour rather than people (core-rules §8).
+
 **Burning and Frozen are the mirror pair**, and they mirror in shape as well as fiction: **Burning
 spends its value on Health, Frozen spends its value on Move.** Frozen *reduces* where Slowed
 *halves*, which is what earns it a place beside Slowed — and at a value at or above your Move you are
@@ -192,10 +196,30 @@ one line rather than a ruling each time:
 > exactly three entries: **Burdened** and **Overloaded** from carried weight, and **Unconscious** from
 > Health.
 
-That test accepts all twenty above and rejects the usual candidates. Worked through for the one that
-has actually come up:
+That test accepts all twenty above and rejects the usual candidates. Worked through for the two that
+have actually come up:
 
-### 4.1 Mounted is not a condition
+### 4.1 Poison is not a condition either
+
+By the same test: a poison has no duration, and a *cure* rather than a clock is what ends it. It is
+**lingering damage** — **Tainting N**, cards in a deck you play from — and core-rules §8 has said so
+since it was written: *"you gain Taint from sources with the Tainting keyword: corrupted monsters,
+**poison**, disease, cursed places."* The body/mind deck split is the poison/horror split already
+made.
+
+**What was missing was not a condition but an implementation.** `tainting` existed in the system only
+as an NPC *tactic label*; nothing could apply it, although the Poison school's Signature *Wither* has
+read **Tainting 1** since it was written. That is now an effect like Heal.
+
+**Fast-acting poison needed one word, not a mechanic.** A dose that drops you now puts the Taint in
+your **hand**, where it resolves at once; a slow one puts it in the **discard**, where it waits. Same
+card, same face, different pile (core-rules §8).
+
+And where a poison does something a Taint card cannot express, it borrows a condition that exists: a
+**paralytic** is *Frozen*, a **soporific** is *Dazed*, a **blinding** venom is handled the way
+Invisible's counter is. None of them is a new entry.
+
+### 4.2 Mounted is not a condition
 
 | Test | Mounted |
 |---|---|

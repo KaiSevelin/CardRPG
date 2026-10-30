@@ -15,7 +15,7 @@
  */
 
 import { CARDRPG } from "./config.mjs";
-import { drawFate } from "./decks.mjs";
+import { drawFate, deckOf } from "./decks.mjs";
 
 /* -------------------------------------------- */
 /*  Bonuses                                     */
@@ -142,6 +142,93 @@ function actorHasAdjacentEnemy(actor) {
 /* -------------------------------------------- */
 /*  Strike and Cast                             */
 /* -------------------------------------------- */
+
+/**
+ * Tainting N: N Taint cards into a deck the target plays from (core-rules 8). This is how **poison**
+ * works, and how disease and corruption do -- the rules have said so since they were written and
+ * nothing applied it.
+ *
+ * `fast` is the whole dial, and it is one word rather than a second mechanic:
+ *
+ * - **slow** (the default) puts the card in the **discard**, so it comes round at a moment nobody
+ *   chose. That is a venom working while you fight.
+ * - **fast** puts it in the **hand**, where it resolves at once: 1 damage past armor, and a hand one
+ *   card short. That is a dose that drops you now.
+ *
+ * `flavour` decides which deck, and the rules already set the split: **body** taint (poison,
+ * disease) goes in the action deck, **mind** taint (dark magic, horrors) in the skill deck.
+ */
+export async function resolveTaint(actor, { amount = 1, target, flavour = "body", fast = false, source = "" }) {
+  if (!target) return null;
+  const which = flavour === "mind"
+    ? (fast ? "skillHand" : "skillDiscard")
+    : (fast ? "actionHand" : "actionDiscard");
+  const stack = deckOf(target, which);
+  if (!stack) {
+    ui.notifications.warn(`${target.name} has no ${which} to be tainted in.`);
+    return null;
+  }
+
+  const n = Math.max(1, amount);
+  await stack.createEmbeddedDocuments("Card", Array.from({ length: n }, () => ({
+    name: flavour === "mind" ? "Taint (mind)" : "Taint (body)",
+    type: "taint",
+    system: { flavour, source }
+  })));
+
+  /*
+   * Fast taint resolves on arrival, because the card's own text fires "when drawn" and a card put
+   * into a hand was never drawn. Doing it here keeps that text true rather than adding a case to it.
+   */
+  let dealt = 0;
+  if (fast) {
+    dealt = n;
+    await target.update({
+      "system.health.value": Math.max(0, target.system.health.value - n)
+    });
+  }
+
+  await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<div class="cardrpg"><p><strong>${target.name}</strong>: Tainting <strong>${n}</strong> `
+      + `&mdash; ${n} ${flavour} Taint into the ${fast ? "hand" : "discard"}`
+      + (dealt ? `, resolving at once for <strong>${dealt}</strong> past armor` : "")
+      + `.</p></div>`
+  });
+  return { amount: n, flavour, fast, dealt };
+}
+
+/**
+ * Corrode N: take N off the target's armor until it is repaired (core-rules 8).
+ *
+ * The only effect in the game that spends **gear**, which is a resource leveling 5a.1 names and
+ * nothing implemented. It eats the equipped body slate rather than the actor's armor number, so the
+ * loss follows the armour when it is taken off, and a repair is a reset rather than a guess.
+ */
+export async function resolveCorrode(actor, { amount = 1, target }) {
+  if (!target) return null;
+  const armour = target.items?.find(i =>
+    i.type === "item" && i.system.equipped && i.system.equippedSlot === "body" && i.system.armor > 0
+  );
+  if (!armour) {
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor }),
+      content: `<div class="cardrpg"><p><strong>${target.name}</strong> has no armour to eat.</p></div>`
+    });
+    return null;
+  }
+
+  const before = armour.system.armorNow;
+  const eaten = Math.min(before, Math.max(1, amount));
+  await armour.update({ "system.corroded": (armour.system.corroded ?? 0) + eaten });
+
+  await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<div class="cardrpg"><p><strong>${target.name}</strong>: ${armour.name} armor `
+      + `${before} &rarr; <strong>${before - eaten}</strong>, until it is repaired.</p></div>`
+  });
+  return { item: armour.name, before, now: before - eaten };
+}
 
 /**
  * Shake Off N: take N off one condition's duration, and remove it at 0 (core-rules 7).

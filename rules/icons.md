@@ -12,7 +12,7 @@ readable at about 16 px, single-colour so it can be recoloured and greyed out wh
 
 ---
 
-## Tier 1 — needed before the first card exists (26)
+## Tier 1 — needed before the first card exists (27)
 
 These appear on card faces. Nothing can be laid out until they're chosen.
 
@@ -35,12 +35,14 @@ These appear on card faces. Nothing can be laid out until they're chosen.
 | 👣 | **Move** (+ number) | No | Boot prints |
 | ⇄ | **Ready** | No | School bag |
 
-### Effects and targeting (7)
+### Effects and targeting (9)
 
 | Placeholder | Name | Notes | game-icons.net |
 |---|---|---|---|
 | ✚ | **Heal** (+ number) | An effect, not a verb — it comes off an item's Cast line or a card | Healing |
 | ⛓ | **Shake Off** (+ number) | Takes that much off one condition's duration (core-rules §7) | Breaking chain |
+| ☣ | **Tainting** (+ number) | That many Taint cards into a deck — how poison works (core-rules §8). Reuses the body-taint face | Vomiting |
+| ⚗ | **Corrode** (+ number) | That much off the target's armour, until repaired — how acid works (core-rules §8) | Melting metal |
 | ◎ | **Range** (+ number) | | Bullseye |
 | ✸ | **Blast** (+ number) | Area that hits everyone in it, allies included | Mushroom cloud |
 | ✵ | **Aimed** (+ number) | Area that hits only your enemies | Laser sparks |
@@ -194,16 +196,16 @@ crowded inventory.
 
 ---
 
-## Status: complete — 60 of 60 chosen
+## Status: complete — 61 of 61 chosen
 
 | Tier | Count | Blocks |
 |---|---|---|
-| 1 | 24 | Card layout and the card schema |
+| 1 | 25 | Card layout and the card schema |
 | 2 | 26 | Playable combat |
 | 3 | 10 | Polish |
 | *optional tags* | *9* | *nothing* |
 
-**69 icons**, including the optional tags, all downloaded to
+**70 icons**, including the optional tags, all downloaded to
 [../foundry/cardrpg/icons/](../foundry/cardrpg/icons/) with per-icon credits in
 [ATTRIBUTION.md](../foundry/cardrpg/icons/ATTRIBUTION.md). Nothing in the rules or the system is
 waiting on an icon decision.

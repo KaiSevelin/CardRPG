@@ -160,10 +160,10 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
     // Wounds and Taint don't count toward the limit, so a wounded character is never locked out.
     this.actionDeck.size = this.#countCards("action").total;
 
-    // --- armor, from the equipped body slate
+    // --- armor, from the equipped body slate, after anything that has eaten it
     this.armor = slates
       .filter(i => i.type === "item" && i.system.equippedSlot === "body")
-      .reduce((n, i) => n + (i.system.armor ?? 0), 0);
+      .reduce((n, i) => n + (i.system.armorNow ?? i.system.armor ?? 0), 0);
 
     // --- carried weight and encumbrance
     this.carry.bonus = grants.carry;
@@ -352,7 +352,7 @@ export class NpcData extends foundry.abstract.TypeDataModel {
     const gear = this.parent.items.filter(i => i.type === "item" && i.system.equipped);
     this.armor = this.armorBase + gear
       .filter(i => i.system.equippedSlot === "body")
-      .reduce((n, i) => n + (i.system.armor ?? 0), 0);
+      .reduce((n, i) => n + (i.system.armorNow ?? i.system.armor ?? 0), 0);
     this.health.max = this.health.base;
     this.health.value = Math.min(this.health.value, this.health.max);
     // NPCs never exhaust and hold no hand (core-rules 9).

@@ -43,7 +43,20 @@ CARDRPG.effects = {
    * in the number the condition already has rather than removing it outright, so a (1) is shrugged
    * away and a (3) takes real effort -- and no card is ever a hard counter to a big condition.
    */
-  shake: { label: "CARDRPG.Effect.Shake", icon: "breaking-chain" }
+  shake: { label: "CARDRPG.Effect.Shake", icon: "breaking-chain" },
+  /*
+   * Tainting N: N Taint cards into a deck you play from (core-rules 8). This is how POISON works,
+   * and it has been in the rules since they were written with no effect to apply it -- `tainting`
+   * existed only as an NPC tactic label. It reuses the body-taint face rather than inventing an
+   * icon, because the thing it deals is literally that card.
+   */
+  tainting: { label: "CARDRPG.Effect.Tainting", icon: "vomiting" },
+  /*
+   * Corrode N: N off the target's armor, until it is repaired. This is how ACID works, and it is
+   * the only thing in the game that spends GEAR -- a resource leveling 5a.1 names ("gear you can
+   * lose") and nothing implemented.
+   */
+  corrode: { label: "CARDRPG.Effect.Corrode", icon: "melting-metal" }
 };
 
 /**
