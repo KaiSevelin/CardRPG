@@ -640,16 +640,44 @@ each one has — far more than its element, which is why two schools can both th
 | **Negotiation with elf-kin** — Household | ✗ → an obligation per formula |
 | **Someone else's turn, and a prophecy** — Divination | ✗ → now *The Long Look* |
 
-**Target: four formulas a school, and a 1 and a 2 in every one.** A first Way of Mind node grants
-**2 slots** (§1.4), so the test that matters is whether a two-slot caster can prepare something from
-*this* school on their first day. All twelve now pass it. Elemental, Poison, Glamour and Ward run to
-five or seven because earlier passes needed them; the thin ones were filled rather than making the
-fat ones fatter.
+**Six formulas a school at least, with every strength from 1 to 5 present in each** — eighty-five
+in all. Two tests, and all twelve schools pass both:
 
-**Five of the twelve reach strength 3, and nothing in the game is a 4 or a 5.** That is the real gap
-and it is deliberate for now — §1.4 says a **4** *changes the fight for a round* and a **5** is *once
-in a fight, and the reason the branch exists*, which are the two bands that most need the numbers
-under them to be settled first. They are in §4.
+- **A first Way of Mind node grants 2 slots** (§1.4), so a two-slot caster must be able to prepare
+  something from *this* school on their first day. That is what the **1** and the **2** are for.
+- **A branch has to be worth walking to the end**, which is what the **5** is for: the school's
+  thesis, and the argument for choosing it at all.
+
+Elemental, Poison, Glamour and Ward run longer because earlier passes needed them; the thin ones were
+filled rather than making the fat ones fatter.
+
+> **The 3s were the last rung written, and only because a check asked for them.** Seven schools had a
+> 1, a 2, a 4 and a 5 and no **3** at all — the band §1.4 describes as *a condition that lasts, a heal
+> that saves someone, or an area that decides a corner of the map*. Nobody would have noticed by
+> reading: a gap in the middle of a ladder is invisible in a way a gap at the end is not.
+
+#### What a 4 and a 5 are
+
+Every school now has both, and they are not simply bigger. The distinction falls out of the **slot
+budget** rather than being invented:
+
+> **A strength-4 is the biggest thing you can cast and still have a second spell. A strength-5 is the
+> spell you brought instead of a kit.**
+
+A mature caster with six slots prepares a 4 and a 2, or a 5 and nothing worth the name. So:
+
+| | §1.4 says | And therefore |
+|---|---|---|
+| **4** | *changes the fight for a round* | one round, one big effect, and you still have an answer to something else |
+| **5** | *once in a fight, and the reason the branch exists* | **the school's thesis** — the argument for walking this branch at all |
+
+**"Once in a fight" needed no new rule.** A spell is a slate, and slates already carry the
+drain-and-recharge machinery (core-rules §4): a strength-4 or -5 formula is **active**, is Drained
+when cast, and recharges on `combat`. That was built for item abilities and fits this exactly — the
+system has had the mechanism since before there were spells to put it on.
+
+**And the slot cost is the real limiter**, not the recharge. A 5 fills a whole budget, so a caster
+who prepares one has prepared one thing. That is the point of a thesis.
 
 ---
 
@@ -661,6 +689,8 @@ under them to be settled first. They are in §4.
 | **Open the Vein** | 1 | ◎2 · ⚔ 3, ignoring **Block**. Costs **1 Health**. |
 | **Boil** | 3 | **Burning 3 (2)**, resist ✊ 7. Costs **2 Health**. |
 | **The Second Heartbeat** | 3 | 🔥 **Spent**: play a **second primary** this turn. Costs **4 Health**. |
+| **The Red Hour** | 4 | Until your next turn, every ally within 2 may play a **second secondary** each turn. Costs **1 Health per ally**. |
+| **The Last Drop** | 5 | Take your **whole turn again**, now — a fresh primary and secondary. Costs **half your current Health, rounded up**. |
 
 **The Second Heartbeat is what Tempo means**, and it is the only card in the game that grants an extra
 primary. It is priced like it: three slots, Spent, and a third of a starting character's Health. Blood
@@ -674,6 +704,8 @@ Magic buys time with blood, and nothing else can buy time at all.
 | **Grave Chill** | 2 | ✵ Aimed 2 · **Dazed (1)**, resist ✊ 5. |
 | **The Long Preparation** | 1 | Before a fight, name one enemy type. Your ✦ Casts against it are **+2** for the whole fight. |
 | **Ask the Dead** | 1 | Out of combat: a corpse answers **three questions** truthfully, as far as it knew. |
+| **The Risen Rank** | 4 | **Every** corpse within 3 rises and fights for you for one round, then falls. |
+| **The Grave's Bargain** | 5 | A **dead ally** stands up at 1 Health until the fight ends, then is dead again. You gain **one bound Taint for every round they stood**. |
 
 **Every formula here costs a bound Taint (mind) card, permanently** — a hole in the deck you play from
 that no cure lifts (core-rules §8). So a necromancer's list is short because they *cannot afford* a
@@ -690,6 +722,9 @@ long one: four formulas is four Taint, and **three is Afflicted**. The school pr
 | **Scorch** | 1 | ✦ ◎4 · **Burning 1 (1)**. A **Wet** or **Frozen** target sheds it. |
 | **Flesh of the Earth** | 2 | ✦ ◎3 · **Burning 1 (2)** and ⚗ **Corrode 1**. Acid: it eats the armour as well as the man. |
 | **Slippery** | 1 | ⛓ End **Grappled** on an ally at ◎2. Until your next turn they cannot be Grappled again. |
+| **The Sphere Entire** | 4 | A 5-square area of your element: difficult ground, cover, and **2 damage** to anything in it at the start of your turn. |
+| **The Standing Flood** | 3 | A 3-square area becomes deep water: everything in it is **Wet (2)**, and its Move is halved while it stays. |
+| **Unmake the Ground** | 5 | Name a line across the battlefield. It is **impassable** for the rest of the fight — to everyone, you included. |
 
 > **The reagent cost.** Elemental Magic is the one school that pays in **coin**, which no other
 > mechanic in the game touches — and [leveling.md](leveling.md) §4 is explicit that *gold is not a
@@ -707,6 +742,8 @@ long one: four formulas is four Taint, and **three is Afflicted**. The school pr
 | **The Quick Dose** | 3 | **Poisoned 2 (2)** on one adjacent target, resist ✊ 7. |
 | **The Long Dose** | 1 | **Poisoned 0 (3)** on one target at ◎2, resist ✊ 5. No damage — three rounds of a man who cannot use his off hand. |
 | **The Grey Sickness** | 2 | ☣ **Tainting 1, slow** on one adjacent target, resist ✊ 7. Not a poison: a **disease**, still there next week. |
+| **The Shared Cup** | 4 | ✵ Aimed 3 · **Poisoned 1 (3)** on everything in it, resist ✊ 7. |
+| **The Kingmaker's Draught** | 5 | One target is **Poisoned 3 (3)**, no save. **If it dies while poisoned you set aside no skill cards at all** for this formula. |
 
 > **Every one of these costs skill cards set aside equal to its strength, until the next rest.** That
 > is the school's price and it is the sharpest in the twelve: a poisoner buys control of a fight by
@@ -724,6 +761,9 @@ long one: four formulas is four Taint, and **three is Afflicted**. The school pr
 | **The Evil Eye** | 2 | **Cursed** on one target you can see — a temporary Miss in its fate deck, until drawn. |
 | **Ink Spray** | 1 | ✸ Blast 2: end **Invisible** on everything in the area, and nothing in it may become Invisible until your next turn. |
 | **A Clear Head** | 1 | ⛓ End **Dazed** on an ally at ◎3, and they may play a secondary this turn even if they already have. |
+| **The Crowded Room** | 4 | Until your next turn, every enemy attacks a **random** figure within its reach — friend or foe, chosen by a fate draw. |
+| **The Face of a Friend** | 3 | One enemy treats you as an ally — it will not attack you, and will take a hit for you — until you attack it. |
+| **The Long Masquerade** | 5 | Out of combat: you and your whole party appear to be **other people** for a day. Only magic sees through it. |
 
 > **[FIXED] Two of these were charging the wrong school's price.** *Wrong Face* and *The Evil Eye*
 > both read *"the GM writes down a secret"*, which is **Tattoo Magic's** price. Glamour pays an
@@ -738,6 +778,9 @@ long one: four formulas is four Taint, and **three is Afflicted**. The school pr
 | **Graven Eye** | 1 | Permanent: you are never surprised. |
 | **Graven Shield** | 2 | Permanent: **+1 armor**. |
 | **Graven Road** | 1 | Permanent: your Move is **never halved** — Slowed, Burdened and Overloaded do not slow you. |
+| **Graven Armour** | 4 | Permanent: **+3 armor** — and you count as **Burdened** always, whatever you carry. |
+| **Graven Heart** | 3 | Permanent: **+6 max Health**. The GM writes down a secret worth that much. |
+| **The Whole Skin** | 5 | Permanent, and it is the last thing you ever learn: **+2 Strike, +2 armor, +4 Health**, and Burning never lands on you. You may never prepare another spell. |
 
 > **A tattoo spends its slots permanently, and is never prepared.** This is the school's whole shape
 > and it is what its axis means: **Deck shape** is capacity, and a tattoo takes capacity away for
@@ -758,6 +801,9 @@ long one: four formulas is four Taint, and **three is Afflicted**. The school pr
 | **Empty Hand** | 1 | While your hand is empty you may ⚔ Strike with no item, at your own ✊ Might. |
 | **Nothing to Carry** | 1 | While both your hands are empty: **+2** to all ✦ Casts, and you cannot be **Disarmed**. |
 | **The Last Card** | 2 | While your hand is exactly **one** card, you may play that card for **both halves**. |
+| **The Empty Deck** | 4 | While your hand **and** your draw pile are both empty, you cannot be harmed at all. |
+| **The Hand Given** | 3 | Permanent, and it costs **a hand**: your bare Strike counts as a **Heavy** weapon at **Strike 4**, for ever. |
+| **Nothing At All** | 5 | Permanent. Your action deck becomes **4 cards**: you hold all four every turn and may play any two halves from them. Costs **a hand**. |
 
 > **The Price Paid.** Asceticism costs *parts of your body*, which the world document means
 > literally — and it is the only price that is **not renewable**. One formula is a finger, and the GM
@@ -774,6 +820,9 @@ long one: four formulas is four Taint, and **three is Afflicted**. The school pr
 | **Longer Shadow** | 1 | Until your next turn every square adjacent to you is shadowed. |
 | **The Long Step** | 1 | 👣 Move 4, through anything, if you begin and end in shadow. |
 | **Cast No Shadow** | 2 | Until your next turn, nothing further than **1 square** away can target you at all. |
+| **The Shadow Road** | 4 | You and every ally within 1 teleport to any shadowed square on the map. |
+| **The Borrowed Dark** | 3 | Until your next turn, **every square on the map is shadowed** — for your allies as much as for you. |
+| **Become the Shadow** | 5 | Until the fight ends you are in every shadow at once: Strike from any shadowed square, and nothing can target you. **Five** Wild cards join your fate deck, for good. |
 
 > **Each formula puts a permanent Wild card in your fate deck** — one you did not choose, in the deck
 > you draw luck from, for good (core-rules §6). Four formulas is four Wild cards in twenty-four, so a
@@ -788,6 +837,8 @@ long one: four formulas is four Taint, and **three is Afflicted**. The school pr
 | **The Small Pact** | 1 | Name one god you are pacted with. It grants **the favour written on the pact** — the same favour every time. |
 | **Hold to the Bargain** | 2 | ⚡ Reaction: an ally's failed check becomes a **Partial**. Once per pact per fight. |
 | **The Nine Names** | 1 | Out of combat: a minor god names **who in this place it is angry with**, and will not say why. |
+| **The Gathered Pact** | 4 | **Every** god you are pacted with grants its written favour, this turn. |
+| **The Great Bargain** | 5 | A minor god becomes **present**. The GM plays it as an ally for the rest of the fight, and afterwards it takes something the GM chooses. |
 
 > **The pact *is* the spell, and that is how this school avoids being one card twelve times.** *The
 > Bargain* leaves everything to the GM, which is wonderful once and arbitrary twice — so every other
@@ -807,6 +858,9 @@ long one: four formulas is four Taint, and **three is Afflicted**. The school pr
 | **The Clean Pot** | 1 | Food never spoils and water is always safe. A day's rations for the party, every day. |
 | **The Mended Seam** | 1 | Repair one item overnight — including **corroded armour** (core-rules §8). |
 | **The Unlatched Door** | 2 | Any door or lock that was ever opened by someone who lived there opens for you. |
+| **The House That Was** | 4 | Overnight, a ruin becomes a house: warm, defensible, and the party rests as though in a town. |
+| **The Long Table** | 3 | One meal, taken together: the party sheds **every Wound** and all rest tokens return. Once a day, and the elf-kin keep the tally. |
+| **The Door Home** | 5 | A door you have opened before becomes a door to **any other** door you have opened before. Once a day, and the elves count it. |
 
 > **The one school with no combat value at all**, and it is worth having anyway: it answers starvation,
 > pursuit, and the one kind of damage nothing else repairs. **The Mended Seam is the repair side of
@@ -823,6 +877,9 @@ long one: four formulas is four Taint, and **three is Afflicted**. The school pr
 | **The Shut Mouth** | 2 | **Silenced (1)** on one enemy at ◎3, resist 📜 7. |
 | **Shake It Off** | 2 | ⚡ Reaction: ⛓ **Shake Off 3** on one ally at ◎3 — which ends anything the game can print. |
 | **The Unbound Tongue** | 1 | ⛓ End **Silenced** on an ally at ◎3. |
+| **The Standing Ward** | 4 | 🔥 **Spent**: until your next turn **no ✦ Cast resolves at all**, anywhere on the field — including yours. |
+| **The Mirror** | 3 | ⚡ Reaction — 🔥 **Spent**: a ✦ Cast aimed at you resolves against **its own caster** instead. |
+| **The Broken Word** | 5 | 🔥 **Spent**: one spell or miracle is **unlearned by its caster** for the rest of the day. They still have the slot; they no longer have the words. |
 
 > **Ward decides whether magic happens**, in both directions: it silences and it unsilences, it
 > prevents a Cast and it removes what landed. And it is the school simulation vindicated — a dispel on
@@ -837,6 +894,8 @@ long one: four formulas is four Taint, and **three is Afflicted**. The school pr
 | **Where It Will Land** | 1 | **Read 1** on your own fate deck. |
 | **The Mark of Things to Come** | 2 | **Marked (1)** on an enemy at any range, and **Read 1** on its fate deck. |
 | **The Long Look** | 3 | Out of combat: ask the GM **one question** about the next scene. The answer is true — **and the GM writes a prophecy** you do not get to read. |
+| **The Open Book** | 4 | Until your next turn every ally draws fate with **advantage**, and you may **Read 2** on each of their decks. |
+| **The Whole Thread** | 5 | Before the fight, the GM shows you the enemy's **intent cards for the whole fight, in order**. The GM writes **three** prophecies. |
 
 > **The prophecy is the price, and it is the only one that is paid later.** *The Long Look* buys a
 > true answer now and hands the GM something to spend on you whenever they like. Every other school's
@@ -861,9 +920,13 @@ a way you have to live. It is also what makes twelve gods twelve *different kind
 than twelve lists of effects: a priest of Vax bleeds to cast, a priest of Brendan is always a turn
 behind, and a priest of The Yellow is holding something up with every secondary they have.
 
-**Three miracles a god, and a god's list is shorter than a school's on purpose** (§1.4) — thirty-nine
-in all, against the schools' fifty-four. Ten of the twelve had exactly **two** before this pass; the
-two churches run longer because they were written first and their registers are the widest.
+**A god's list is shorter than a school's on purpose** (§1.4), and every god has its **4** and its
+**5** — except **The First**, whose Obedience caps its slots at 3 and therefore caps its ladder;
+see below, because that is the point of it rather than a gap.
+
+The two bands mean the same here as in §3.4 — a 4 changes the fight for a round, a 5 is the god's
+thesis — but a god's 5 reads differently, because the obedience is paid *again* for it. A priest of
+Vax does not spend slots on *The Sixth District* so much as agree to take the whole party's wounds.
 
 ---
 
@@ -880,6 +943,8 @@ two churches run longer because they were written first and their registers are 
 | **Name the Guilty** | 1 | **Judged (1)** on one enemy you can see. No save. |
 | **The Weight of It** | 2 | A **Judged** enemy's armor counts **0** against everyone until your next turn. |
 | **The Narrow Path** | 1 | While your action deck is **10 cards or fewer**, your miracles cost **1 slot less** (minimum 1). |
+| **The Clean Field** | 4 | Until your next turn, **no enemy may play a secondary**. |
+| **The Body Made Clean** | 5 | Every ally is healed to full and every condition on them is **Lifted and Shaken off entirely**. Your action deck is **6 cards** for the rest of the day. |
 
 **The Narrow Path is the obedience turned into a reward**, which is the shape an ascetic faith should
 have: go further than you were told and the god pays you back.
@@ -896,6 +961,8 @@ have: go further than you were told and the god pays you back.
 | **A Word for You** | 1 | **Blessed** on one ally — a temporary Critical in their fate deck, until drawn. |
 | **Bear It for Them** | 2 | ⚡ Reaction at ◎3: move one condition off an ally and **onto yourself**, at its full duration. |
 | **A Word Withdrawn** | 1 | ✋ **Lift** **Blessed** or **Cursed** from anyone at ◎3 — the marker and the card both. |
+| **The Air Between** | 4 | Until your next turn, every ally may take **one extra reaction** per trigger. |
+| **Breath for the Dying** | 5 | Every ally at 0 Health stands at **half** Health. You may carry **nothing at all** for the rest of the day. |
 
 **The longest list of the twelve, and it should be**: this is the god of the two tolerant churches and
 the only one whose whole register is helping other people. Its obedience is the lightest to describe
@@ -911,6 +978,8 @@ and the heaviest to keep, because a healer who may not wear armour stands where 
 | ✦ **The Tide Knows** | 2 | An ally draws fate **twice** on their next action and keeps **both**. The sea is not fair. |
 | **Undertow** | 2 | ✸ Blast 2, ◎3: **Wet (1)**, and every target is moved 1 square you choose. |
 | **The Turning Tide** | 2 | ⚡ Reaction: an ally redraws a fate card and must keep the second. **A temporary Miss joins your own fate deck.** |
+| **The Spring Tide** | 4 | Until your next turn, **every ally** draws fate twice and keeps both. |
+| **The Sea Decides** | 5 | Shuffle every fate deck on the field into **one**. For the rest of the fight, everyone draws from it. |
 
 **Sessyfyn is the only god who pays in luck**, and *The Turning Tide* charges it where it is felt: you
 fix somebody else's draw by spoiling your own. Note that her obedience makes her priest the one
@@ -927,6 +996,8 @@ reshuffle cards are hers by standing order.
 | ✦ **The Drum** | 1 | Your next Strike this turn is **+3**. |
 | **No Step Back** | 2 | Every ally within 2 gains **Block 2** until your next turn. |
 | **The Charge** | 2 | ⤵ **Strain 2**: every ally within 2 may **Move their full value**, at once, now. |
+| **The War Drum** | 4 | ⤵ **Strain 3**: every ally within 2 takes their **whole turn again**, now. |
+| **Valtor's Own** | 5 | ⤵ **Strain your entire hand**: for the rest of the fight you play a primary **and two secondaries** each turn. |
 
 **Valtor is the Tempo god and Strain is the Tempo coin** — it takes cards out of your hand *now*,
 which is a tax on the turn rather than the fight (§1.3). *The Charge* pays double because moving the
@@ -942,6 +1013,8 @@ whole party out of turn is the largest tempo swing in the Way.
 | ✦ **The Borrowed Face** | 3 | 🔥 **Spent**: one enemy spends this round attacking **its own ally**. |
 | **The Second Thought** | 1 | One enemy spends its secondary this round doing nothing, resist 👑 7. |
 | **The Second Face** | 1 | 🔥 **Spent**: read one enemy's **intent card** for this round before anyone acts. |
+| **The Mask of the Captain** | 4 | One enemy obeys you for a round — **you play its turn**. |
+| **Everyone Wears His Face** | 5 | Until your next turn no enemy can tell friend from foe: **every enemy attack targets another enemy**. |
 
 **Fagar's obedience is the only one that is also a flavour of its own effects** — the god of the trick
 that works once grants miracles that work once, so the price and the fiction are the same sentence.
@@ -956,6 +1029,8 @@ that works once grants miracles that work once, so the price and the fiction are
 | ✦ **The Outcast's Due** | 3 | Every enemy adjacent to you is **Compelled (2)**, resist 👑 Presence 5. The outcast is who the crowd turns on. |
 | **Nobody's Friend** | 2 | Until your next turn no ally may Heal, Interpose for, or redirect a hit from one enemy. |
 | **Alone on the Road** | 1 | While **no ally is within 2 squares**, heal **2** at the start of your turn. |
+| **The Driven Out** | 4 | Every enemy within 3 is **Compelled (1)** to attack you — and you gain **Block 3** for each one that is. |
+| **The Land Beneath** | 5 | The ground opens. Every enemy within 2 is **gone from the fight** until the start of your third turn. You are **Prone**, and alone, when they come back. |
 
 **Vulpet's obedience is the harshest in the Way and her miracles are built to repay it**: *Nobody's
 Friend* does to an enemy exactly what the god does to you, and *Alone on the Road* is the only healing
@@ -971,6 +1046,8 @@ a priest of hers can ever receive — her own, and only when standing apart.
 | ✦ **Out of Barren Ground** | 3 | Plant it. At the start of your **second** turn after, every ally within 2 heals **4**. |
 | **Full Belly** | 1 | Out of combat: the party's next rest returns one extra rest token. |
 | **The Slow Mercy** | 2 | Name an ally. At the start of your **third** turn after this, they are healed to full. |
+| **The Orchard** | 4 | At the start of your **second** turn after, every ally heals **4** and sheds one condition. |
+| **What Grows Out of Us** | 5 | At the start of your **fourth** turn after, every ally — **including the dead** — stands at full Health. |
 
 **The Slow Mercy is the largest heal in the game and it is three turns away**, which is the whole of
 Brendan: nothing he gives is fast, and what he gives is worth waiting for. A fight that ends in two
@@ -986,6 +1063,8 @@ rounds wastes it entirely, and that is the risk the priest takes when they cast 
 | ✦ **The Silent Hour** | 2 | ⚡ Reaction, adjacent: an enemy's action **does not happen**. |
 | **Grey Judgement** | 2 | A **Judged** adjacent enemy acts **last** in the round, whatever its initiative. |
 | **The Close Work** | 2 | ⚡ Reaction, adjacent: an adjacent enemy's Strike hits **the nearest other enemy** instead. |
+| **The Grey Hour** | 4 | ⚡ Reaction, adjacent: an adjacent enemy's **whole turn** does not happen. |
+| **The Silent Knife** | 5 | Adjacent only. One enemy is **dead**. No save, no fate draw, no roll of any kind. |
 
 **Range is the coin and it is paid in risk, not resources** — a priest of The Grey has to be standing
 next to the thing they are stopping. It is the one obedience that costs nothing on the sheet and
@@ -1002,6 +1081,8 @@ everything on the board.
 | ✦ **The First Taste** | 2 | **Tainting 2** on one adjacent enemy. You gain **1 Taint** yourself. |
 | **Taste of the Rot** | 1 | One adjacent enemy: 1 damage and **Off-Balance (1)**, no save. You gain **1 Taint** on a Miss. |
 | **The Brewer's Tithe** | 2 | ☣ **Tainting 2, slow** on one adjacent enemy — a disease, not a poison, and it is still there next week. |
+| **The Poisoned Well** | 4 | ✸ Blast 3 · ☣ **Tainting 1, fast** on everything in it. |
+| **The Slow Failure** | 5 | One target gains ☣ **Tainting 3**. You gain **2 Taint** — which with the first taste is **Afflicted**. |
 
 **The Purple is the god of disease rather than poison**, which the condition split makes meaningful:
 poison runs out, Taint does not (core-rules §8). Her priests do not win fights, they decide who is ill
@@ -1017,6 +1098,8 @@ next month.
 | ✦ **The Rumour** | 2 | Name a lie before the fight. One enemy type acts as if it were true, for as long as you spend a **secondary** each round keeping it up. |
 | **Half a Truth** | 2 | Until your next turn, enemies act as though one ally you name were not there. |
 | **The Planted Word** | 1 | Name one enemy type before the fight. While you spend a **secondary** each round, that type cannot play **reactions**. |
+| **The Whole Cloth** | 4 | While you spend a **secondary** each round, one **enemy type** believes the party are its own. |
+| **The Lie That Held** | 5 | Name a lie before the fight. While you spend a **secondary** each round, it is **true**, and the GM runs the fight as though it always had been. |
 
 > **[FIXED] *Half a Truth* was charging Valtor's coin.** It read *"⤵ Strain 1"*, which is Valtor's
 > obedience, not The Yellow's. The Yellow is paid in **halves** — the secondary spent keeping the lie
@@ -1033,6 +1116,8 @@ next month.
 | ✦ **The Club and the Line** | 2 | Strike **every adjacent enemy** — no free hand needed, because the club is the symbol. Costs **2 Health**. |
 | **Stand Where I Stand** | 1 | Until your next turn, allies adjacent to you cannot be reduced below 1 Health. Costs **2 Health**. |
 | **The Shield Line** | 2 | Every ally **adjacent to you** gains your armor value as **Block** until your next turn. Costs **1 Health per ally**. |
+| **The Line Holds** | 4 | Allies adjacent to you cannot be moved, knocked **Prone** or **Compelled** until your next turn. Costs **2 Health per ally**. |
+| **The Sixth District** | 5 | Until the fight ends, every ally adjacent to you shares your armor and your Block — and **damage dealt to them is dealt to you instead**. It will cost enough. |
 
 **Every Vax miracle is about a line of men standing next to each other**, which is what his Position
 axis means, and every one of them is paid for out of the priest's own body. He is the cleric-fighter
@@ -1053,6 +1138,12 @@ the Way was reshaped to allow, and the one god whose miracles all reward *not mo
 the entire character of this god: you get one great thing at a time. *What Does Not Die* then pays in
 the only coin The First accepts, and pays it for good — each time it saves you, there is less of you
 left to save with. A priest of The First who has survived four times cannot cast at all.
+
+> **The First is the one god with no strength-4 and no strength-5, and its own Obedience is why.**
+> Three slots is the cap, so a 4 would be uncastable and a 5 doubly so — the god that does not die
+> cannot be asked for anything great. That is not a hole in the list; it is the obedience biting at
+> the top of the ladder as well as the bottom, and it is the sharpest statement of the trade in the
+> whole Way: **everything, for ever, and never anything grand.**
 
 ### 3.6 Targeted counters — five spells
 
@@ -1136,11 +1227,17 @@ nobody would ever see one at a table.
   the value bands and none of it is measured. The specific question is whether a +2 that costs a
   secondary *and* a draw of the right pair beats simply playing two Strikes — and the answer may well
   be no for one character and yes for a party, which is the whole design but is still a claim.
-- **[OPEN]** **Strength 4 and 5 — nothing in the game has either.** §3.4 puts all twelve schools at
-  four formulas or more with a 1 and a 2 each, and five of them reach a 3; the top two bands are
-  empty across the whole of Way of Mind and Way of Faith. §1.4 describes them as *changes the fight
-  for a round* and *once in a fight, and the reason the branch exists*, which is exactly why they
-  should wait: a spell that decides a round wants the rounds measured first.
+- **Settled: strength 4 and 5 exist everywhere.** Every school has one of each (§3.4) and every god
+  but **The First**, whose Obedience caps its slots at 3 and so caps its ladder (§3.5). *"Once in a
+  fight"* needed no new rule either — a spell is a slate and slates already Drain and recharge on
+  `combat` (core-rules §4).
+- **[OPEN]** **None of the 4s or 5s is simulated, and they are the bands where that matters most.**
+  §1.4 calls a 4 *changes the fight for a round* and a 5 *the reason the branch exists*, so these are
+  precisely the spells whose being wrong is most expensive. Four to measure first: *The Last Drop* (a
+  whole extra turn for half your Health), *The Silent Knife* (one enemy dead, no roll — the only
+  effect in the game with no fate draw at all), *The Sixth District* (one character taking the whole
+  party's damage) and *Nothing At All* (a four-card action deck, which the deck-size simulation says
+  is the most dangerous number to get wrong).
 - **Settled: every god has three miracles and a stated Obedience** (§3.5). A god's list stays shorter
   than a school's four, which §1.4 asks for, and the Obedience is what carries the difference: a
   school is what it cost you to learn, a god is what it costs you to ask.

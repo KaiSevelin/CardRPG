@@ -337,7 +337,18 @@ if (mindFrom < 0 || mindTo < 0) {
     unplayable.length ? unplayable.join(", ") : "none", "none");
 
   formulaCount = [...schools.values()].reduce((n, f) => n + f.length, 0);
-  check("formulas written in total", formulaCount, 54);
+  check("formulas written in total", formulaCount, 85);
+
+  /*
+   * Every school carries a formula at every strength from 1 to 5. The low end is what a two-slot
+   * caster can prepare on their first day; the high end is the school's thesis, and a branch with
+   * no 5 is a branch with no argument for walking it to the end.
+   */
+  const gaps = [...schools]
+    .map(([n, f]) => [n, ["1", "2", "3", "4", "5"].filter(b => !f.includes(b))])
+    .filter(([, missing]) => missing.length)
+    .map(([n, missing]) => `${n} (no ${missing.join(", ")})`);
+  check("schools missing a strength band", gaps.length ? gaps.join("; ") : "none", "none");
 }
 
 /*
@@ -356,14 +367,17 @@ if (faithFrom < 0 || faithTo < 0) {
     const heading = /^#### (.+?) —/.exec(line);
     if (heading) {
       current = heading[1];
-      gods.set(current, { miracles: 0, obedience: false });
+      gods.set(current, { miracles: 0, obedience: false, bands: [] });
       continue;
     }
     if (!current) continue;
     if (line.includes("**Obedience")) gods.get(current).obedience = true;
     if (!line.startsWith("|") || /^\|[\s:|-]+\|$/.test(line)) continue;
     const cells = line.replace(/^\||\|$/g, "").split("|").map(c => c.trim());
-    if (cells.length === 3 && cells[0] !== "Miracle") gods.get(current).miracles++;
+    if (cells.length === 3 && cells[0] !== "Miracle") {
+      gods.get(current).miracles++;
+      gods.get(current).bands.push(cells[1]);
+    }
   }
 
   check("gods with a list", gods.size, 12);
@@ -372,7 +386,17 @@ if (faithFrom < 0 || faithTo < 0) {
   const free = [...gods].filter(([, g]) => !g.obedience).map(([n]) => n);
   check("gods that state no Obedience", free.length ? free.join(", ") : "none", "none");
   check("miracles written in total",
-    [...gods.values()].reduce((n, g) => n + g.miracles, 0), 39);
+    [...gods.values()].reduce((n, g) => n + g.miracles, 0), 61);
+
+  /*
+   * Every god reaches 4 and 5 except The First, whose Obedience caps its spell slots at 3 and so
+   * caps its ladder -- the god that does not die cannot be asked for anything grand. That is the
+   * point of it, so it is named here rather than excused by a looser check.
+   */
+  const noTop = [...gods]
+    .filter(([, g]) => !g.bands.includes("4") || !g.bands.includes("5"))
+    .map(([n]) => n);
+  check("gods without a 4 and a 5", noTop.join(", ") || "none", "The First");
 
   // A god's list stays shorter than a school's, which way-cards 1.4 asks for.
   const miracles = [...gods.values()].reduce((n, g) => n + g.miracles, 0);
