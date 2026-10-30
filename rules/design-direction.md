@@ -156,6 +156,14 @@ The combat simulator is the tie-breaker for numbers. Decisions it has already se
   a rung, which is what prices *Poisoned N* against *Burning N*
   ([../sim/analysis-2026-10-30.md](../sim/analysis-2026-10-30.md)). The claim that Poisoned cost a
   **whole** rung more was wrong by about half.
+- **Mobility is the most valuable thing in a starter deck, and its worth is set by the enemy's
+  reach.** Taking the hero's one movement card away costs **29.5 points** against two spears and two
+  bows, **3.5** against five spears and **nothing** against three
+  ([../sim/analysis-2026-10-30.md](../sim/analysis-2026-10-30.md) §6). So **no flanking bonus**:
+  positioning already swings more than three damage rungs where it matters, and the only two
+  positional rules in the game are NPC tactics, which after these numbers is the right way round.
+  The dial for positioning is **encounter composition**, and terrain is how to add decisions to it
+  without adding power.
 - **A dispel does not belong on an action card.** A Shake Off 1 on a secondary costs **−2.1 points**
   and is played 0.22 times a fight at best, because a one-of-sixteen card is in hand 31% of turns and
   must coincide with the condition. Dispels belong on reactions, prepared spells and features — the

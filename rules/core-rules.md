@@ -1295,7 +1295,15 @@ Examples:
 
 ---
 
-## 11. Grid
+## 11. Grid, ground and movement
+
+> **Leaving is free. Arriving is answered.** There are no opportunity attacks in this game — you may
+> walk away from an adjacent enemy for nothing — but an enemy that **ends its movement next to you**
+> hands you a *Sidestep* or a *Set Spear*. That asymmetry is the whole positional grammar, and it is
+> the reverse of most games: it is why a bow is dangerous, why closing is the hard part, and why
+> **mobility is the most valuable thing in a starter deck** — worth **29 points of win rate** against
+> a mixed group and **nothing at all** against pure melee
+> ([../sim/analysis-2026-10-30.md](../sim/analysis-2026-10-30.md) §6).
 
 Combat uses a square grid. All distances use **Chebyshev distance**: distance = the larger of the horizontal and vertical difference, so a diagonal step costs 1, the same as a straight one. (In Foundry: grid diagonal rule "Equidistant".)
 
@@ -1319,6 +1327,42 @@ Blast is the default and the cheaper one: a Fire Wand doesn't care who it burns.
 This is the main reason to care where your party is standing, so don't make Aimed common.
 - **Blocking:** you can move through allies but not through enemies.
 
+### Ground
+
+Three kinds of square, and all three were being used by spells before any of them was defined.
+
+| | What it is | What it does |
+|---|---|---|
+| **Difficult ground** | rubble, water, thorns, ice — or a spell that says so | each square of it costs **2** of your Move instead of 1 |
+| **Shadowed** | any square with no clear line to a light source. Indoors by day or out by night, the GM marks them; at night in the open, **every** square is shadowed | nothing on its own — it is what **Shadow Magic** reads (way-cards §3.4) |
+| **High ground** | a square the GM has marked above its neighbours | shooting from it down, **the target gets no cover from figures** — only from obstacles |
+
+**Difficult ground is the only one that costs anything**, and it costs Move rather than forbidding it,
+so a Move 3 crosses one square of rubble and stands on the second. Four formulas create it and
+*Light Feet* (way-cards §3.3) is the card that ignores it.
+
+**Shadowed carries no rules at all**, which is deliberate and is the same decision as an **opening**
+(§7): a whole school reads it, and if the square itself did anything the school would be reading a
+bonus instead of a battlefield.
+
+**High ground removes a penalty rather than adding a bonus.** That is on purpose — positioning is
+already the strongest axis in the game, so the reward for taking the hill is that figures stop
+shielding your target, not a flat plus. It is what the **ground** resource a specialization pays in
+actually buys ([leveling.md](leveling.md) §5a.1).
+
+### Forced movement
+
+A push, a pull or a throw moves a figure a stated number of squares in a straight line. The **mover**
+does not choose the path and the **moved** does not spend Move.
+
+- It **is** movement for everything that cares: it can set off a *Sidestep*, and it ends a turn's
+  worth of standing still.
+- It **ignores difficult ground** — you are being thrown across the rubble, not walking it.
+- It cannot push a figure into a wall or another figure. It stops in the last square it can reach.
+
+*Undertow* (way-cards §3.5) is the first miracle that does this, and it was written before the rule
+was.
+
 ### Cover
 
 The target has **cover** if the line from your square to its square passes through:
@@ -1337,6 +1381,14 @@ This is the one generic rule. Items or features can make exceptions (e.g. a feat
 ---
 
 ## 12. Open questions (next sessions)
+
+- **[OPEN]** **Figure size.** Nothing says whether an ogre or a mounted knight occupies more than one
+  square, and it is tangled with mounts ([conditions.md](conditions.md) §4.2) — both wait on the same
+  decision.
+- **[OPEN]** **Move is not resolved by the engine.** Figures are pushed by hand, and the tray prints
+  the played value (halved by Slowed, reduced by Frozen) but nothing else. Given that mobility is the
+  most valuable action in the game (§11), this is the largest remaining engine gap: at minimum the
+  HUD should show reach to each target, since that is the number every positional decision turns on.
 
 - **The Way graphs.** Every node, benefit and specialization for Strength, Shade and Mind. The
   leveling *mechanism* is settled in [leveling.md](leveling.md) — a milestone step along a directed
