@@ -704,6 +704,106 @@ const freeRelics = content.ITEMS
   .map(i => i.name);
 check("relics with no obligation", freeRelics.length ? freeRelics.join(", ") : "none", "none");
 
+/*
+ * rules/equipment.md 10 -- finding and buying.
+ *
+ * Section 10 states its rates as FACTS ABOUT THE CATALOGUE rather than as invented dials: "6 of the
+ * 60 findable permanent magic items are cursed", "46 of the 150 are consumed". That is the right way
+ * to write a loot table and the wrong way to leave it unchecked, because every one of those
+ * sentences is a claim about content.mjs that goes stale the moment an item is added. So the doc is
+ * read and held to the catalogue, in the direction that matters: the numbers are computed here and
+ * the prose must contain them.
+ */
+section("equipment.md 10: loot quotes the catalogue");
+
+const equipDoc = fs.readFileSync(path.join(root, "../../rules/equipment.md"), "utf8");
+
+/*
+ * First, the check that would have caught this section's own absence. Section 10 was a hole for one
+ * commit: 11 and 12 were written around it when the identified switch landed, and nothing noticed,
+ * because a missing heading breaks no link and fails no test. A gap in the numbering is the one
+ * structural error a document can have that reads as deliberate.
+ */
+const sectionNums = [...equipDoc.matchAll(/^## (\d+)\. /gm)].map(m => Number(m[1]));
+const numGaps = sectionNums
+  .filter((n, k) => k > 0 && n !== sectionNums[k - 1] + 1)
+  .map((n, k) => `${n} follows ${sectionNums[sectionNums.indexOf(n) - 1]}`);
+check("gaps in the section numbering", numGaps.length ? numGaps.join(", ") : "none", "none");
+check("sections written", sectionNums.length, 12);
+
+const s10 = equipDoc.slice(equipDoc.indexOf("## 10. Finding and buying"),
+                           equipDoc.indexOf("## 11. Identified"));
+check("section 10 found", s10.length > 2000, true);
+
+// A table cell by the label in its row: cell(label, 1) is the second column, and -1 the last.
+function cell(label, i) {
+  const row = s10.split("\n").find(l => l.startsWith("|") && l.includes(label));
+  if (!row) return `no row for ${label}`;
+  const cells = row.split("|").slice(1, -1).map(c => c.trim());
+  return cells.at(i);
+}
+const says = (label, text) =>
+  check(label, s10.includes(text) ? "yes" : `missing "${text}"`, "yes");
+
+/*
+ * The catalogue, counted the way 10.4 counts it: findable means it carries a bonus group and is
+ * none of the three things that are not found -- a relic (a story, 10.3), a curse (a substitution,
+ * 10.5) or an unpriced playtest piece (starter-cards.md).
+ */
+const findable = content.ITEMS.filter(i => i.group && i.value > 0 && i.kind !== "Relic" && !i.curse);
+const consumed = content.ITEMS.filter(i => i.consumed);
+const tier = v => v <= 150 ? "minor" : v <= 700 ? "lesser" : v <= 2000 ? "greater" : "over";
+const tiers = {};
+for (const i of findable) tiers[tier(i.value)] = (tiers[tier(i.value)] ?? 0) + 1;
+const relics = content.ITEMS.filter(i => i.kind === "Relic");
+
+// 10.2: consumables are the only thing that may be handed out often, because they leave again.
+const WORDS = { 46: "Forty-six", 60: "Sixty" };
+says("10.2 quotes the consumable count",
+  `**${WORDS[consumed.length]} of the ${content.ITEMS.length} items are consumed**`);
+
+// 10.3: a band sets the best item present, and each row says how wide that tier is.
+check("10.3 Easy draws from", cell("**Easy**", -1), String(consumed.length));
+check("10.3 Moderate draws from", cell("**Moderate**", -1), String(tiers.minor));
+check("10.3 Hard draws from", cell("**Hard**", -1), String(tiers.lesser));
+check("10.3 Deadly draws from", cell("**Deadly**", -1), String(tiers.greater));
+check("10.3 relics, which are no band", cell("*(no band)*", -1), String(relics.length));
+
+// 10.4: the slot ladder is the cap. Ten items want your one finger, and that is the shape working.
+says("10.4 quotes the findable count", `**${WORDS[findable.length]} permanent magic items are findable**`);
+const bySlot = {};
+for (const i of findable) bySlot[i.slot] = (bySlot[i.slot] ?? 0) + 1;
+for (const slot of ["pack", "fingers", "hands", "neck"]) {
+  const label = slot[0].toUpperCase() + slot.slice(1);
+  check(`10.4 items competing for ${slot}`, cell(`**${label}**`, 1), String(bySlot[slot]));
+}
+// The five single slots share one row, so they share one cell.
+check("10.4 the five single slots",
+  cell("**Cloak** / **Feet**", 1),
+  ["cloak", "feet", "belt", "head", "body"].map(s => bySlot[s]).join(" / "));
+
+/*
+ * 10.5: what arrives unknown. These three rates are the ones a GM reads off the page and trusts, and
+ * the steep one is deliberate -- one bottle in three being bad is what makes Grey Water work.
+ */
+const unidentified = content.ITEMS.filter(i => i.identified === false);
+says("10.5 the cursed rate", `| 6 of the ${findable.length} findable permanent magic items |`);
+says("10.5 the bad-potion rate", `| 6 of the ${potions.length} potions |`);
+says("10.5 the unidentified total", `| 12 of ${content.ITEMS.length} items`);
+check("10.5 unidentified items", unidentified.length, 12);
+
+// 10.5 says no cursed item has a price, because nobody sells one -- it has nothing to be worth.
+const pricedCurses = cursed.filter(i => i.value).map(i => i.name);
+check("cursed items with a price", pricedCurses.length ? pricedCurses.join(", ") : "none", "none");
+
+/*
+ * 10.7: firearms have one source and it is a church. The market table deliberately has no row for a
+ * firearm, so the rule lives in prose -- but the thing that must not drift is section 4 pointing at
+ * it, since that is where a GM looks when a player asks the price.
+ */
+check("section 4 sends firearms to 10.7", /Nobody sells one/.test(equipDoc) ? "yes" : "no", "yes");
+
+
 // Every bonus group should have something using it, or the group is a promise nothing keeps.
 const groupsUsed = new Set(content.ITEMS.filter(i => i.group).map(i => i.group));
 const declared = Object.keys(

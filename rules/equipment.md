@@ -19,7 +19,7 @@ content written against them.
 | **Armour** | **weight**, and nothing else — which is why the ladder is short |
 | **A worn item** | the slot, and there is exactly one of most slots |
 | **A consumable** | coin, and the fact that it is gone |
-| **A magic item** | a **bonus group** (§5), so two of a kind never stack |
+| **A magic item** | a **bonus group** (core-rules §5), so two of a kind never stack |
 
 ### 1.2 Armour is a cliff edge, so the ladder is four rungs and no more
 
@@ -111,7 +111,8 @@ bow wins; against one armoured knight the crossbow does.
 
 ## 4. Firearms
 
-Matchlocks. Loud, slow, and the reason plate stopped being worth its weight.
+Matchlocks. Loud, slow, and the reason plate stopped being worth its weight. **Nobody sells one** —
+§10.7 has the only source there is.
 
 | Weapon | Fits | Tags | Hands | kg | Value | Strike |
 |---|---|---|---|---|---|---|
@@ -299,7 +300,7 @@ An archer who wants to be somewhere is usually an archer who wants to be somewhe
 the odd one: a bolt for closing, and the Acrobat and the Scout are the two who would want it.
 
 **Thunder-shot is firearm-only and that is the point.** Nothing else in the catalogue gives a
-non-caster an **area**, and §11 is explicit that Blast is the cheap kind — so an arquebus with a
+non-caster an **area**, and core-rules §11 is explicit that Blast is the cheap kind — so an arquebus with a
 thunder-shot is the one way a Musketeer answers a crowd.
 
 ---
@@ -534,7 +535,7 @@ Trapmaker, which is the access rule (§9.4) working exactly as written — a mec
 | **Discriminating Wand** | 1 hand | 1100 g | Your ✸ **Blasts** count as ✵ **Aimed** |
 | **The Scrivener's Knife** | Pack | 1200 g | **Drain:** **prune** one card from your action deck for the rest of the day. *Recharge: long rest.* |
 
-**The Discriminating Wand is the most expensive thing that does no damage**, and §11 says why: *"Aimed
+**The Discriminating Wand is the most expensive thing that does no damage**, and core-rules §11 says why: *"Aimed
 belongs on precise or discriminating magic, and should cost more — a higher-tier item, a
 specialization, or a formula with a price attached."* This is that item, and it is 1100 gold because
 the alternative is standing somewhere else.
@@ -560,6 +561,203 @@ interesting: it is worth exactly as much as the ammunition you own (§8.3). A ba
 of nothing; a quiver and a dozen silvered heads is an archer who never runs out of the right answer.
 And the obligation is the sharpest in the catalogue — **no ordinary arrows** means that when the
 magic runs out you are holding a stick.
+
+## 10. Finding and buying
+
+Nine sections of catalogue and, until now, no rule for how any of it reaches a party. This is that
+rule, and it is shorter than the catalogue because most of it was decided elsewhere already.
+
+### 10.1 Gold is not a reward, so a loot table hands out verbs
+
+[leveling.md](leveling.md) §4 is firm about it: *"Gold is not a reward. A level is a permanent change
+to who you are; coin is something you find and then spend."* That settles what a loot table can be,
+because a table paying out money pays out the one thing the rules have already refused to treat as a
+prize.
+
+> **A loot table hands out verbs, not wealth.** It is §9.4's access rule pointed at the GM instead of
+> at the designer: the question is never *how much* the party found, it is *what they can now do*.
+
+The **Value** column in §§9.5–9.8 is there so the GM can tell a minor from a greater at a glance. It
+is a yardstick, not an invitation to sell.
+
+### 10.2 A fight yields what leaves; a place yields what stays
+
+This is the whole rate control, and the catalogue turned out to be built for it:
+
+> **A consumable is the only thing a GM can hand out after every fight, because it is the only thing
+> that leaves again.**
+
+**Forty-six of the 150 items are consumed** — 18 potions, 13 pieces of ammunition, 7 poisons, 8 field
+items. Nearly a third of the catalogue, and that is precisely the third that may be found often,
+because next week it is gone and the party is back where they started. The hundred-odd that remain
+are permanent and must therefore be rare.
+
+| Source | Yields | How often |
+|---|---|---|
+| **A fight** | consumables, and the ordinary kit the enemy was using | every fight may; no fight must |
+| **A place** | **one** permanent item, at the tier the place deserves (§10.3) | once per site worth naming |
+| **A person** | whatever they will sell (§10.6) | whenever the party has coin |
+| **A story** | a **relic** — nothing else ever does | once, and the table remembers it |
+
+**Kills do not yield magic items.** A goblin carries a potion and the arrows in its quiver; a goblin
+does not carry a Crown of the Quiet Mind. A permanent item belongs to the **site**, which is also how
+the catalogue is written — the *Loose Cobble* "was part of a street once", the *Drowned Bell* "rings
+wet", and neither is loot off a body.
+
+**The rate is not a dial in this document.** [skill-rules.md](skill-rules.md) §7 already builds an
+**encounter deck per region** that "mixes combat encounters, challenges, **discoveries**, social
+meetings and quiet days", and a discovery is where a permanent item comes from. So *how often* is
+**how many discovery cards the GM put in the region's deck** — a decision they were making anyway,
+and one this page should not take off them.
+
+### 10.3 The tier a place deserves
+
+Four difficulty bands exist ([starter-cards.md](starter-cards.md)) and four item tiers exist
+(§§9.5–9.8). Four and four is too neat to be true, and it is not true:
+
+| Band of the fight guarding it | Best permanent item present | Drawn from |
+|---|---|---|
+| **Easy** | none — consumables only | 46 |
+| **Moderate** | **minor**, 50–150 g | 20 |
+| **Hard** | **lesser**, 300–700 g | 26 |
+| **Deadly** | **greater**, 800–2000 g | 14 |
+| *(no band)* | **relic** | 5 |
+
+> **A relic is found by a story and identified by a story.** §11.2 already refuses to let a check
+> identify one — *"somebody has to know its story, which is a scene rather than a roll"* — and the
+> same sentence settles where it came from. **There are five relics in the game.** A band that paid
+> them out would spend the whole category in five fights, and every one carries an obligation the GM
+> then holds for the rest of the campaign.
+
+**The band sets the best thing present, not the quantity.** A fixed count per band makes a GM pad a
+site with items it has no reason to hold; a ceiling lets them put one good thing in a small room.
+
+### 10.4 The slot ladder is the cap, not the catalogue
+
+The question behind "how much loot" is really *when is a character full*, and the answer is the
+**slots**, not the bonus groups. Core-rules §5 is explicit that *"only bonus contributions are
+grouped"*, so two wonders block each other only when both add a number to the same roll — a *Crown of
+the Quiet Mind* (hand size) and a *Mantle of the Unburdened* (carry) never compete at all.
+
+> **The group caps what an item adds. The slot caps how many items you wear.** A party does not run
+> out of bonus groups; it runs out of fingers.
+
+**Sixty permanent magic items are findable** — 74 carry a bonus group, less the 5 relics, less the 6
+cursed, less the 3 unpriced playtest pieces — and they are not spread evenly across the places a
+character can put them:
+
+| Slot | Items competing for it | Slots available |
+|---|---|---|
+| **Pack** | 15 | as many as you can carry |
+| **Fingers** | 10 | **1** |
+| **Hands** | 9 | 2, and a weapon wants one |
+| **Neck** | 8 | **1** |
+| **Cloak** / **Feet** / **Belt** / **Head** / **Body** | 5 / 4 / 4 / 3 / 2 | **1** each |
+
+So a character tops out near **nine** permanent items and a party of four near **thirty** — against
+sixty findable. Which gives the honest campaign arithmetic, and it answers the thing that started
+this catalogue:
+
+> **The catalogue is not a list of what a party will own. It is the list of what they might have
+> owned.** A long campaign spends about half of it, so two parties walking the same adventures should
+> finish carrying different things. That is where loot gets its variation — not from a longer list of
+> swords, but from a list nobody finishes.
+
+**Ten items want your one finger**, which makes the ring the most contested slot in the game and
+makes finding a *second* ring a real decision rather than an addition. Nothing needs doing about
+that; it is the shape working.
+
+### 10.5 What arrives unknown
+
+§11 says an unidentified item may be used. This says how often one turns up, and the rates are not
+invented — they are **facts about the catalogue**, so the GM can read them off the content and the
+validator can hold this page to it:
+
+| | In the catalogue | Rate |
+|---|---|---|
+| **Cursed** | 6 of the 60 findable permanent magic items | **1 in 10** |
+| **A bad potion** | 6 of the 18 potions | **1 in 3** |
+| **Arrives unidentified** | 12 of 150 items — the 6 cursed and the 6 bad | every one of them |
+
+**One unidentified bottle in three is a bad one, and that is deliberately steep.** §11.5 explains
+why: *Grey Water* costs 5 gold and does nothing, so the party cannot tell by looking and the cheapest
+possibility is also the most likely. A gamble with no blank outcome is not a gamble — and a gamble
+the party wins two times in three is not much of one either.
+
+**A curse is not a tier. It is a substitution.** The GM takes the tier the site deserves and swaps
+the item for the cursed one pretending to be it — which is why three of the six are named after real
+items (§11.3), and why **no cursed item has a price**: nobody sells one, so it has nothing to be
+worth.
+
+### 10.6 Who sells what
+
+The world document names three crafts and nothing else — *"Brewers make potions. Smiths make
+exceptional weapons and armour. Jewellers make magical jewellery"* (`worldinfo/Firma.md`,
+*Non-magical specialities*) — and those three lines are the entire market, crossed with how big the
+place is.
+
+| | **Village** | **Town** | **City** | **District seat** |
+|---|---|---|---|---|
+| **Standard kit** (§§2–7) | repairs, and what a farmer owns | all of it | all of it | all of it |
+| **Potions** (§8.2) | the two cheapest | all | all | all |
+| **Poisons** (§11.6) | — | — | quietly | quietly |
+| **Make** — smith-work (§9.1) | — | minor | all | all |
+| **Power** — jewellery (§9.2) | — | — | yes | yes |
+| **Wonder** (§9.3) | — | — | — | **never** (§10.8) |
+| **Relic** (§9.8) | — | — | — | **never** |
+
+**A jeweller is a city trade and a brewer is not**, and that falls out of the crafts rather than
+being decided here: everything a village needs brewing is brewed in the village, and nobody in a
+village has the custom to keep a jeweller fed. It also means **the Power group is the one a party has
+to travel for**, where Make is the one they can commission at home.
+
+**Commissioning is a downtime challenge, not a purchase.** [skill-rules.md](skill-rules.md) §6
+already prices it — *"craft a fine sword: 6"*, each check a unit of time, with cost or a deadline as
+the pressure — so a party wanting a smith-work item they cannot find **has** a rule for getting one,
+and it costs them days rather than only coin.
+
+### 10.7 Firearms have one source, and it is a church
+
+§4 prices four firearms and never says where one comes from. The world document always has:
+
+> Vargtoppen's "advanced technology in gunpowder and firearms helps. The materials for powder are
+> inside the mountain: never-failing guano fields from bats and large sulphur deposits from the
+> volcanism, while charcoal is harvested from fast-growing trees." Its priesthood "are rarely met
+> outside the enclave."
+
+**So a firearm is not a thing you buy, it is a thing you were given** — and the powder is the real
+constraint rather than the gun:
+
+- **Nobody sells a firearm outside Vargtoppen.** The table above has no row for one, on purpose.
+- **Powder comes from the faith of the Fire or not at all**, which makes a Musketeer's ammunition a
+  standing relationship with a church that does not travel, and a GM lever no other weapon family
+  has.
+- **It explains the Musketeer** (`worldinfo/Firma.md`, *Musketeers*): the specialization is where you
+  were **trained**, not what you could afford.
+
+That is the sharpest market rule on this page and none of it is new — it is the oldest thing in the
+world document, finally written down where the prices are.
+
+### 10.8 Selling, and why a Wonder needs a person
+
+**A shop pays half.** Standard kit, Make and Power items have a maker, and therefore a market.
+
+**A Wonder has no living maker, so it has no market.** That is what §9.3 means by singular, and §11.2
+has already said *nobody reliably identifies one* — an item nobody can price is an item no shop will
+take. So the answer is not a shop but a **Fence**:
+
+> *Fence* — "know-how in valuing and moving stolen goods; the contact who buys"
+> ([specializations.md](specializations.md), the Cutpurse's node)
+
+**The Fence is the game's answer to "where do you sell a Wonder", and it was written before the
+question existed.** Selling one is a downtime challenge run against a person, and skill-rules §6
+already lists the twist it wants: *"a buyer shows unusual interest."* A party with no Fence is a party
+that keeps what it finds, which is the better outcome anyway.
+
+**A relic is never for sale in either direction**, because the obligation does not come off with the
+item. Handing one to a buyer hands them a price they never agreed to pay.
+
+---
 
 ## 11. Identified, unidentified, and cursed
 
@@ -694,6 +892,21 @@ part: the target gets one clean turn, so a poisoner who uses it is betting on th
 
 ## 12. Open
 
+- **Settled: how any of it reaches a party.** §10 answers both of the questions this section used
+  to carry open — *what a party finds* and *who sells what* — and it needed **no new subsystem**,
+  because three mechanisms already existed and none had been pointed at loot. The rate is
+  [skill-rules.md](skill-rules.md) §7's **discovery** card in the region deck; commissioning and
+  selling are its §6 **downtime challenges**; and the **Fence** ([specializations.md](specializations.md))
+  was already the contact who buys what no shop can price. The one real design decision was that
+  **consumables ride the fight and permanents ride the place**, which is what makes a rate possible
+  at all: 46 of the 150 items are spent, and that is the third of the catalogue a GM may hand out
+  freely.
+
+  **The firearm rule was the find.** §4 had priced four firearms since the first draft and never said
+  where one comes from, while `worldinfo/Firma.md` has always held the answer — **Vargtoppen owns the
+  only powder in the world** and its priesthood does not travel. So nobody sells a firearm, and a
+  Musketeer's ammunition is a relationship with a church rather than a purchase.
+
 - **Settled: all of it is in the system** — **150 items** in `content.mjs`, up from nine. **Forty
   three wonders**, 5 relics, 6 smith-works, 7 jeweller's pieces, **18 potions** (6 of them bad), **13
   pieces of magical ammunition**, **7 poisons** and **6 cursed items**. The validator checks the count, that every key exists on the schema, that no bonus group
@@ -726,12 +939,3 @@ part: the target gets one clean turn, so a poisoner who uses it is betting on th
   item is the first case where that gap is visible at the table.
 - **[OPEN]** Whether **ignores N armor** should be a tag rather than text on the verb line. Three
   weapon families use it now; a fourth would make it a tag.
-- **[OPEN]** **Who sells what.** A hundred and thirty-one items and no rule for where any of them
-  is bought. The world document names the crafts — smiths, brewers, jewellers — and
-  [skill-rules.md](skill-rules.md) §6 has downtime; what is missing is the sentence that says a town
-  has a brewer, a city has a jeweller, and a relic is never for sale.
-- **[OPEN]** **Loot tables.** Ninety-one items and no rule for what a party finds, where, or how
-  often. The tiers in §9.5–9.8 are priced for it — minor, lesser, greater, relic — and the thing
-  still missing is the table that says a kobold warren yields minor and a dragon yields a relic.
-  [leveling.md](leveling.md) §4 is firm that **gold is not a levelling reward**, so loot is the
-  GM's lever and it has no guidance at all.
