@@ -372,8 +372,14 @@ export async function resolveCondition(actor, { step, target }) {
   }
 
   const label = key => game.i18n.localize(CARDRPG.conditions[key]?.label ?? key);
+  // "Burning 3 (2)" for a valued condition, "Dazed (1)" for the rest.
+  const named = c => `${label(c.key)}${c.value ? ` ${c.value}` : ""} (${c.duration})`;
   const full = Math.max(1, step.duration ?? 1);
-  let landed = { key, duration: full };
+  // Intensity rides along untouched by a Partial: a partial burn is a SHORTER burn, not a cooler
+  // one, which keeps the one saving-throw rule covering both numbers.
+  const valued = CARDRPG.conditions[key]?.valued;
+  const intensity = valued ? Math.max(1, step.intensity ?? 1) : null;
+  let landed = { key, duration: full, ...(intensity ? { value: intensity } : {}) };
   let line;
 
   if (step.resist) {
@@ -392,7 +398,9 @@ export async function resolveCondition(actor, { step, target }) {
       // Partial: half the duration, or the lesser condition if one is printed.
       landed = step.lesser
         ? { key: step.lesser, duration: full }
-        : (Math.floor(full / 2) ? { key, duration: Math.floor(full / 2) } : null);
+        : (Math.floor(full / 2)
+          ? { key, duration: Math.floor(full / 2), ...(intensity ? { value: intensity } : {}) }
+          : null);
     }
 
     const approach = game.i18n.localize(CARDRPG.approaches[step.resist]?.label ?? step.resist);
@@ -401,9 +409,9 @@ export async function resolveCondition(actor, { step, target }) {
       : "";
     line = `resists with ${approach} ${score}${used ? ` ${used.system.label ?? ""}` : ""} `
       + `= ${result} against ${dc}${why}: `
-      + (landed ? `<strong>${label(landed.key)} (${landed.duration})</strong>` : "<strong>nothing</strong>");
+      + (landed ? `<strong>${named(landed)}</strong>` : "<strong>nothing</strong>");
   } else {
-    line = `<strong>${label(key)} (${full})</strong>`;
+    line = `<strong>${named(landed)}</strong>`;
   }
 
   if (landed) {
@@ -425,9 +433,15 @@ export async function resolveCondition(actor, { step, target }) {
       landed = null;
     } else {
       const already = conditions.find(c => c.key === landed.key);
-      // The longer of the two wins: a second application refreshes rather than stacks.
-      if (already) already.duration = Math.max(already.duration ?? 0, landed.duration);
-      else conditions.push({ ...landed, creatorId: actor.id });
+      /*
+       * A second application refreshes rather than stacks -- the longer duration wins, and for a
+       * valued condition so does the fiercer value. Taking the max of each independently is the only
+       * version with no order of arrival in it: a candle after a dragon leaves the dragon's fire.
+       */
+      if (already) {
+        already.duration = Math.max(already.duration ?? 0, landed.duration);
+        if (landed.value) already.value = Math.max(already.value ?? 0, landed.value);
+      } else conditions.push({ ...landed, creatorId: actor.id });
     }
     await target.update({ "system.conditions": conditions });
   }

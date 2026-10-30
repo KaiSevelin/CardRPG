@@ -12,15 +12,20 @@ other way round.
 
 A condition is a **token with a number** (its duration) that remembers **who created it**. The
 duration ticks at the start of the **creator's** turn, so a condition always costs its victim
-exactly one of their own turns wherever the creator sits in the initiative order (§7).
+exactly one of their own turns wherever the creator sits in the initiative order
+([core-rules.md](core-rules.md) §7).
+
+**Two of the twenty carry a second number.** A `valued` condition has an **intensity** as well as a
+duration, printed before it: **Burning 3 (2)** is three damage a turn for two turns. Only fire and
+ice have it, and that is the whole policy — §2.1 says why.
 
 ---
 
-## 1. The nineteen
+## 1. The twenty
 
 Four kinds, and the kind is what tells you how to write for it.
 
-### 1.1 Subtractions — eleven
+### 1.1 Subtractions — twelve
 
 These take something away. They are the fighter's vocabulary.
 
@@ -33,13 +38,21 @@ These take something away. They are the fighter's vocabulary.
 | **Grappled** | `grappled` | luchador | Blocks 👣 Move. |
 | **Silenced** | `silenced` | silenced | Blocks ✦ Cast — casting needs speech. |
 | **Disarmed** | `disarmed` | drop-weapon | Blocks ⇄ Ready, and ⚔ with the disarmed item. |
-| **Burning** | `burning` | fire-silhouette | 1 damage at the start of your turn. **Cancels with Wet** (§3). |
+| **Burning** | `burning` | fire-silhouette | **Burning N**: N damage at the start of your turn. Meets neither armor nor Block. **Cancels with Wet and Frozen** (§5). |
+| **Frozen** | `frozen` | frozen-body | **Frozen N**: your Move values are **reduced by N**, floor 0. You still play both halves and keep your reactions. **Cancels with Burning** (§5). |
 | **Invisible** | `invisible` | invisible | Enemies can't target you. Ends early if you Strike or Cast at an enemy. |
 | **Compelled** | `compelled` | puppet | You must spend your **primary** attacking whoever compelled you. |
 | **Unconscious** | `unconscious` | knockout | At 0 Health. No turns, no reactions, Prone. Dying until treated (§8). |
 
 **Invisible is the odd one** — it subtracts from everybody *else*, which is why it is the only
 condition on this list anyone wants.
+
+**Burning and Frozen are the mirror pair**, and they mirror in shape as well as fiction: **Burning
+spends its value on Health, Frozen spends its value on Move.** Frozen *reduces* where Slowed
+*halves*, which is what earns it a place beside Slowed — and at a value at or above your Move you are
+not going anywhere, while still playing both halves and keeping your reactions. That is also what
+separates it from **Grappled**, which blocks the Move half outright: a Frozen character may still play
+*Move 2, then Strike* and get the Strike.
 
 **Compelled is the caster's shape**, and the distinction is the one worth holding onto: a fighter's
 condition takes away what you may **do**, a caster's takes away what you may **choose**
@@ -98,7 +111,78 @@ rather than combo material ([way-cards.md](way-cards.md) §1.6).
 
 ---
 
-## 2. Flags — the machine-readable shape
+## 2. Intensity, and why only two have it
+
+> **A condition carries an intensity only when the fiction has a reading between "a candle" and
+> "a dragon". Two do. Everything else is binary.**
+
+**Dazed 3 means nothing.** Nor does Prone 2, Grappled 4 or Marked 2 — you are either holding a
+secondary or you are not, either on the floor or not, either the one they are aiming at or not. And a
+second number is a cost **every** condition pays: two figures to read on a token the size of a
+thumbnail and a player asking which is which. Paying that for eighteen entries that cannot use it is
+the whole of the argument against a general scale.
+
+Fire and ice have the thing the other eighteen do not: a continuum nobody can round off. A candle, a
+torch, a burning building and dragonfire are not *longer* fires, they are **fiercer** ones — and the
+duration-only version could not tell them apart, because it priced fire entirely by how long it
+lasted:
+
+| Before | Meant |
+|---|---|
+| Burning (1) | 1 damage |
+| Burning (5) | 5 damage, one a turn, for five turns |
+
+**That second row is not only a fiction problem.** Duration past the length of the fight is worth
+nothing, so a Burning (5) on a 5-Health goblin kills it on a round that never arrives. Fire's whole
+dial ran out at about four and dragonfire had nowhere left to go. Intensity is the dial that was
+missing, and with it the two numbers divide cleanly:
+
+> **Duration says how long. Intensity says how hard. Burning spends its value on Health and Frozen
+> spends its value on Move.**
+
+### 2.1 Bands
+
+Burning meets **neither armor nor Block** — it is non-action damage
+([core-rules.md](core-rules.md) §5), so nothing in the game reduces it. That keeps the band tight:
+
+| Burning | Belongs to |
+|---|---|
+| **1** | a card, or a torch |
+| **2** | a strength-1 or -2 formula |
+| **3** | a strength-3 formula — a starter Strike every turn, and unblockable |
+| **4–5** | **monsters only**, and dragonfire is the 5 |
+
+Frozen is easier to price, because it spends nothing anyone needs to survive:
+
+| Frozen | Means |
+|---|---|
+| **1–2** | the ordinary card and formula range |
+| **3+** | nobody is going anywhere — which is fine, they still get a whole turn |
+
+### 2.2 Two rules the second number needs, and no more
+
+**A Partial shortens a burn; it does not cool one.** Intensity rides through the saving throw
+untouched and only the duration halves. One save still covers both numbers.
+
+**A second application takes the max of each number independently** — the longer duration *and* the
+fiercer intensity. That is the only version with no order of arrival in it: a candle thrown after a
+dragon leaves the dragon's fire burning.
+
+---
+
+## 3. What is deliberately *not* here
+
+Three things that a scale invites and that this list refuses:
+
+| | Why not |
+|---|---|
+| **A ladder of named steps** — Warm, Burning, Immolated | three icons, three entries and three sets of rules for one continuous thing. The number is strictly better |
+| **Intensity on everything** | eighteen of twenty cannot use it, and they would all pay the reading cost |
+| **Stacking** — two Burnings making a bigger one | an effect whose value grows by being applied again has no ceiling. Max-of-each has one, and it is the printed number |
+
+---
+
+## 4. Flags — the machine-readable shape
 
 What `CARDRPG.conditions` carries. Anything not listed is absent on that entry.
 
@@ -108,7 +192,8 @@ What `CARDRPG.conditions` carries. Anything not listed is absent on that entry.
 | `slowed` | | `halvesMove` |
 | `stunned` | | `blocksReactions` |
 | `invisible` | | |
-| `burning` | | `cancels` → `wet` |
+| `burning` | | `valued`, `cancels` → `wet`, `frozen` |
+| `frozen` | | `valued`, `reducesMove`, `cancels` → `burning` |
 | `prone` | | |
 | `unconscious` | | `blocksReactions` |
 | `grappled` | `boot-prints` | |
@@ -131,23 +216,52 @@ dead.
 
 ---
 
-## 3. Conditions that interact
+## 5. Conditions that interact
 
-Exactly one pair, and it is deliberately the only one.
+One relation, and **fire is on both ends of it** — which is why there is no table.
 
-> **Water and fire cancel.** Neither **Burning** nor **Wet** lands on a target already carrying the
-> other, and whichever arrives second ends the first **without itself landing**.
+> **Fire cancels water in either of its states.** Neither **Burning** nor **Wet**, and neither
+> **Burning** nor **Frozen**, lands on a target already carrying the other: whichever arrives second
+> ends the first **without itself landing**. A wet target steams, a frozen one thaws.
 
 `cancels` is symmetric data — both entries carry it — so nothing has to search backwards. The rules
 sentence lives on **Burning** rather than on Wet, which keeps the promise that an opening carries no
 rules of its own.
 
-Everything else **stacks by not stacking**: a second application of the same condition takes the
-**longer** of the two durations, and nothing else in the list has a special case.
+Everything else **stacks by not stacking**: a second application takes the **longer** duration and,
+for a valued condition, the **fiercer** intensity, each maxed independently.
+
+### 5.1 Why there is no counter table
+
+Four relations between conditions can be imagined. **Only the first is data**, and the reason matters
+more than the list:
+
+| Relation | Example | Where it lives |
+|---|---|---|
+| **cancels** | fire against water | **data** — symmetric, and one relation covers both pairs |
+| **replaces** | Off-Balance → Prone; Slowed → Frozen | **the card** — *Sweep the Leg*, *Frost* |
+| **removes** | shedding Slowed or Prone | **the card** — *Walk It Off*, a cure, standing up |
+| **suppresses** | A on you means B cannot land | **nowhere**; nothing has ever wanted it |
+
+The test is the one the openings already pass, and it is the only thing standing between this list and
+the interaction matrix that kills systems built this way:
+
+> **Put the relation on the card. Move it onto the condition only when every table would rule it the
+> same way whatever card was played.**
+
+Exactly one relation clears that bar. Everyone already knows what happens when water meets fire, and
+they know it before reading the card — so `cancels` is data, and it is the only entry. Nobody has a
+prior opinion about whether being Dazed ought to protect you from being Compelled, so a card that
+wants that says so itself, and the next card is free to disagree. **A relation in data is a rule in
+every future card whether its author wanted it or not**, which is the cost a matrix hides.
+
+What the idea *does* earn is a **reference column** rather than a mechanic — §8.1: for each condition,
+what in the content takes it off. Pure lookup, nothing behind it, and writing it out is what turned up
+the finding worth having.
 
 ---
 
-## 4. How each one lands
+## 6. How each one lands
 
 From [core-rules.md](core-rules.md) §7, and it is a two-way split with one exception:
 
@@ -180,7 +294,7 @@ The author's choice, and it should follow what the thing actually does:
 
 ---
 
-## 5. What the engine enforces
+## 7. What the engine enforces
 
 The engine's posture everywhere is **advise, don't enforce** — it shows you what is legal and lets
 the table play. This column says which half of that each condition gets.
@@ -207,7 +321,7 @@ the table play. This column says which half of that each condition gets.
 
 ---
 
-## 6. What applies each one
+## 8. What applies each one
 
 Every source in the content as it stands ([way-cards.md](way-cards.md),
 [starter-cards.md](starter-cards.md)).
@@ -218,7 +332,8 @@ Every source in the content as it stands ([way-cards.md](way-cards.md),
 | **Slowed** | *Set* (Trapmaker) · *Pin the Shadow* (Shade) · *Frost* (Elemental) |
 | **Stunned** | *Lightning* (Elemental) |
 | **Invisible** | Smoke Bomb · *Not Here* (Glamour) · *Vanish*, *Smoke and Go* (Shade) |
-| **Burning** | *Scorch* (Elemental) · *Boil* (Blood) |
+| **Burning** | *Scorch* (Elemental, **1**) · *Boil* (Blood, **3**) |
+| **Frozen** | *Frost* (Elemental) — **only against a Wet target**; a dry one is merely Slowed |
 | **Prone** | *Sweep the Leg* (Strength) |
 | **Grappled** | *Get a Grip* (Street Fighter) · *Overbear* (Strength) |
 | **Compelled** | *Taunt* (starter) · *Roar* (Strength) · *Play to the Crowd* (Gladiator) · *The Outcast's Due* (Vulpet) |
@@ -238,9 +353,44 @@ wired into blocked icons — and nothing in the starter decks, the 48 Signatures
 item causes either. They are the two conditions the game can suffer and cannot inflict, and the
 natural home for both is **monsters**, which are not written yet.
 
+### 8.1 What takes each one off
+
+§5.1's answer to *which conditions counter which*: a reference column rather than a mechanic. Every
+removal in the content, and the gaps are the point.
+
+| Condition | Taken off by |
+|---|---|
+| **Burning** | **Wet or Frozen** (they cancel) · the duration |
+| **Frozen** | **Burning** (it thaws) · the duration |
+| **Wet** | **Burning** (it steams) · the duration |
+| **Off-Balance**, **Slowed**, **Prone** | *Walk It Off* (Strength) · the duration |
+| **Prone** | also standing up, for Move 1 |
+| **Burdened**, **Overloaded** | dropping weight, and nothing else — no cure touches them |
+| **Invisible** | attacking, which ends it early · the duration |
+| **Blessed**, **Cursed** | drawing the card they put in the deck |
+| **Unconscious** | Health above 0 |
+| **Dazed**, **Stunned**, **Grappled**, **Silenced**, **Disarmed**, **Compelled**, **Marked**, **Judged** | **nothing but the duration** |
+
+> **There is no dispel in this game, and eight conditions have no answer at all** beyond waiting a
+> turn. That is defensible — durations are short, §7 keeps every condition survivable, and a game
+> where the counter is always available is a game where the condition was never a threat. But it is a
+> **decision**, and it was made by nobody: it is simply what the content happens to contain.
+
+**The school that should own the gap is Ward Magic**, and it does not yet. Its Signature *Unmake*
+**prevents** a Cast from resolving; nothing in the game **removes** a condition that has already
+landed. One formula closes it, and it belongs to the warder rather than to a potion:
+
+| School | Formula | Str | Effect |
+|---|---|---|---|
+| **Ward** | **Shake It Off** | 2 | Reaction: remove one condition from an ally. Not **Blessed**, **Cursed** or a **derived** one — those are not on them, they are in a deck or on their back. |
+
+That exclusion list is the whole of its text, and each entry is for a different reason: the fate
+conditions live in a deck rather than on a character, and the derived pair are arithmetic about
+carried weight that a spell cannot argue with.
+
 ---
 
-## 7. Open
+## 9. Open
 
 - **[OPEN]** **Blessed and Cursed do not work.** The plumbing is there and unconnected: `decks.mjs`
   already removes a fate card marked `temporary` when it is drawn, and nothing creates one. Applying

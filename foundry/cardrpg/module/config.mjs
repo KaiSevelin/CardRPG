@@ -105,6 +105,11 @@ CARDRPG.approaches = {
  * no rules of its own, so adding a card that reads one costs no table entry anywhere. Every combo
  * in the game is a `when` clause on some card half (see stepField in data/cards.mjs).
  *
+ * `valued` marks the two that carry an INTENSITY as well as a duration -- Burning 3 (2) is three
+ * damage a turn for two turns. It is opt-in for a reason: a second number on every token is a cost
+ * every condition pays, and only fire and ice have a reading between "a candle" and "a dragon".
+ * Everything else on the list is binary, and Dazed 3 would mean nothing.
+ *
  * `cancels` names conditions this one annihilates with: neither lands on a target already
  * carrying the other, and whichever arrives second ends the first WITHOUT itself landing. It is
  * symmetric data on purpose -- both halves of the pair carry it, so nothing has to search backwards
@@ -117,7 +122,27 @@ CARDRPG.conditions = {
   slowed: { label: "CARDRPG.Condition.Slowed", icon: "tortoise", halvesMove: true },
   stunned: { label: "CARDRPG.Condition.Stunned", icon: "brain-freeze", blocksReactions: true },
   invisible: { label: "CARDRPG.Condition.Invisible", icon: "invisible" },
-  burning: { label: "CARDRPG.Condition.Burning", icon: "fire-silhouette", cancels: ["wet"] },
+  // Fire annihilates with water in both its states: a wet target steams, a frozen one thaws.
+  burning: {
+    label: "CARDRPG.Condition.Burning",
+    icon: "fire-silhouette",
+    valued: true,
+    cancels: ["wet", "frozen"]
+  },
+  /*
+   * Frozen is cold's answer to Burning and the mirror of it in shape as well as fiction: Burning
+   * spends its value on Health, Frozen spends it on Move. It REDUCES rather than halves, which is
+   * what makes it worth having beside Slowed, and at value >= your Move you are stuck -- but you
+   * still play both halves and keep your reactions, so core-rules 7's ban on taking a turn away
+   * holds. That is also what separates it from Grappled, which blocks the Move half outright.
+   */
+  frozen: {
+    label: "CARDRPG.Condition.Frozen",
+    icon: "frozen-body",
+    valued: true,
+    reducesMove: true,
+    cancels: ["burning"]
+  },
   prone: { label: "CARDRPG.Condition.Prone", icon: "falling" },
   unconscious: { label: "CARDRPG.Condition.Unconscious", icon: "knockout", blocksReactions: true },
   grappled: { label: "CARDRPG.Condition.Grappled", icon: "luchador", blocks: ["boot-prints"] },

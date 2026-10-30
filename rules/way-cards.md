@@ -91,9 +91,9 @@ than one slot"* needed no rule of its own.
 
 | Strength | Slots | What it may do |
 |---|---|---|
-| **1** | 1 | one target, one small thing: damage about a weapon's Strike, or a 1-round condition |
+| **1** | 1 | one target, one small thing: damage about a weapon's Strike, or a 1-round condition — **Burning** or **Frozen** at intensity 1 |
 | **2** | 2 | a condition with a saving throw, a useful area, or a heal worth a card |
-| **3** | 3 | a condition that lasts, a heal that saves someone, or an area that decides a corner of the map |
+| **3** | 3 | a condition that lasts, a heal that saves someone, or an area that decides a corner of the map — **Burning 3** is the ceiling outside a monster ([conditions.md](conditions.md) §2.1) |
 | **4** | 4 | changes the fight for a round |
 | **5** | 5 | once in a fight, and the reason the branch exists |
 
@@ -548,7 +548,7 @@ deal against an ironclad and nothing at all against a goblin, so its value is se
 rather than by the card, and no band can price it. It is the one card in this section most worth
 simulating.
 
-### 3.4 Way of Mind — sixteen formulas
+### 3.4 Way of Mind — seventeen formulas
 
 Beyond the twelve Signatures. **Strength is the slot cost** (§1.4), so the bracketed number is what
 it takes out of the budget. Each school's full list is still open; these are its second and third
@@ -558,10 +558,10 @@ entries, weighted toward the schools the combo work touched.
 |---|---|---|---|
 | **Elemental** | **Rain** | 2 | ✸ Blast 3, ◎4. Everything in it is **Wet (1)**. No damage, no save. |
 | **Elemental** | **Lightning** | 2 | ✦ ◎4 · **Stunned (1)**, resist 📜 7 — **9** and **+2** vs **Wet** |
-| **Elemental** | **Frost** | 1 | ◎3 · **Slowed (1)**, resist 🌀 5 — **9** vs **Wet** |
-| **Elemental** | **Scorch** | 1 | ✦ ◎4 · **Burning (1)**. A **Wet** target sheds it. |
+| **Elemental** | **Frost** | 1 | ◎3 · **Slowed (1)**, resist 🌀 5 — against a **Wet** target, **Frozen 2 (1)** instead, no save: the water is already there to freeze |
+| **Elemental** | **Scorch** | 1 | ✦ ◎4 · **Burning 1 (1)**. A **Wet** or **Frozen** target sheds it. |
 | **Blood** | **Open the Vein** | 1 | ◎2 · ⚔ 3, ignoring **Block**. Costs **1 Health**. |
-| **Blood** | **Boil** | 3 | **Burning (3)**, resist ✊ 7. Costs **2 Health**. |
+| **Blood** | **Boil** | 3 | **Burning 3 (2)**, resist ✊ 7. Costs **2 Health**. |
 | **Necromancy** | **Grave Chill** | 2 | ✵ Aimed 2 · **Dazed (1)**, resist ✊ 5. One **bound Taint** card. |
 | **Poison** | **Slick** | 1 | ◎3 · **Off-Balance (1)**. No save. |
 | **Glamour** | **Wrong Face** | 2 | **Dazed (2)**, resist 👁 7. The GM writes down a secret. |
@@ -569,6 +569,7 @@ entries, weighted toward the schools the combo work touched.
 | **Shadow** | **Longer Shadow** | 1 | Until your next turn every square adjacent to you is shadowed. A **Wild** card joins your fate deck. |
 | **Tattoo** | **Graven Eye** | 1 | Permanent: you are never surprised. The GM writes down a secret. |
 | **Ward** | **Turn Aside** | 2 | ⚡ Reaction: one ally's Block counts **double** against this attack. |
+| **Ward** | **Shake It Off** | 2 | ⚡ Reaction: remove one condition from an ally — not Blessed, Cursed or a derived one ([conditions.md](conditions.md) §8.1). |
 | **Divination** | **Where It Will Land** | 1 | **Read 1** on your own fate deck (core-rules §6). |
 | **Divination** | **The Mark of Things to Come** | 2 | **Marked (1)** on an enemy at any range, and **Read 1** on its fate deck. |
 | **Asceticism** | **Empty Hand** | 1 | While your hand is empty you may ⚔ Strike with no item, at your own ✊ Might. |

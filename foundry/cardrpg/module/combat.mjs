@@ -228,9 +228,14 @@ export async function onTurnStart(combat) {
 
   if (actor.type === "npc") await revealIntent(actor);
 
-  // Burning: 1 damage at the start of your turn.
-  if (actor.system.activeConditions?.some(c => c.key === "burning")) {
-    await actor.update({ "system.health.value": Math.max(0, actor.system.health.value - 1) });
+  /*
+   * Burning: its value in damage at the start of your turn, defaulting to 1 when nothing printed
+   * one (core-rules 7). It meets neither armor nor Block, which is why the value band is tight.
+   */
+  const fire = actor.system.activeConditions?.find(c => c.key === "burning");
+  if (fire) {
+    const damage = fire.value ?? 1;
+    await actor.update({ "system.health.value": Math.max(0, actor.system.health.value - damage) });
   }
 }
 

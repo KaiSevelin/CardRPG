@@ -1,6 +1,6 @@
 # Icon attribution
 
-The 75 icons in `icons/` come from [game-icons.net](https://game-icons.net) and are used under the
+The 76 icons in `icons/` come from [game-icons.net](https://game-icons.net) and are used under the
 **Creative Commons Attribution 3.0** licence (CC BY 3.0). The licence requires a credit, which is
 what this file is — it ships with the system.
 
@@ -85,6 +85,7 @@ modification; this records what was changed.
 | `brain-freeze` | Lorc |
 | `invisible` | Delapouite |
 | `fire-silhouette` | Lorc |
+| `frozen-body` | Delapouite |
 | `falling` | Sbed |
 | `knockout` | Skoll |
 | `luchador` | Delapouite |

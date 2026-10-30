@@ -23,6 +23,11 @@ function conditionField() {
   return new fields.ArrayField(new fields.SchemaField({
     key: new fields.StringField({ required: true, choices: Object.keys(CARDRPG.conditions) }),
     duration: new fields.NumberField({ integer: true, min: 0, nullable: true, initial: null }),
+    /*
+     * Intensity, for the conditions whose config says `valued`. Null everywhere else, and the tray
+     * prints it only when it is there -- so seventeen of nineteen tokens still show one number.
+     */
+    value: new fields.NumberField({ integer: true, min: 1, nullable: true, initial: null }),
     creatorId: new fields.StringField({ required: false, blank: true, initial: "" })
   }));
 }
@@ -250,6 +255,21 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
    */
   get moveHalved() {
     return this.activeConditions.some(c => CARDRPG.conditions[c.key]?.halvesMove);
+  }
+
+  /** How much is taken off a Move after halving (Frozen). The highest applies; they do not add. */
+  get moveReduction() {
+    let worst = 0;
+    for (const c of this.activeConditions) {
+      if (CARDRPG.conditions[c.key]?.reducesMove) worst = Math.max(worst, c.value ?? 1);
+    }
+    return worst;
+  }
+
+  /** A printed Move value as it actually plays: halved, then reduced, floored at 0 (core-rules 7). */
+  movePlayed(printed) {
+    const halved = this.moveHalved ? Math.floor(printed / 2) : printed;
+    return Math.max(0, halved - this.moveReduction);
   }
 
   /* -------------------------------------------- */

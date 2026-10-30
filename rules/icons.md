@@ -94,9 +94,9 @@ hover, per the information tiers in [../foundry/card-layout.md](../foundry/card-
 
 ---
 
-## Tier 2 — needed for a playable combat (25)
+## Tier 2 — needed for a playable combat (26)
 
-### Conditions (19)
+### Conditions (20)
 
 These double as Foundry status effects, so they need to read clearly as small overlays on a token,
 with room for a duration number.
@@ -108,6 +108,7 @@ with room for a duration number.
 | **Stunned** | Brain freeze |
 | **Invisible** | Invisible |
 | **Burning** | Fire silhouette |
+| **Frozen** | Frozen body |
 | **Prone** | Falling |
 | **Unconscious** | Knockout |
 | **Grappled** | Luchador |
@@ -192,16 +193,16 @@ crowded inventory.
 
 ---
 
-## Status: complete — 58 of 58 chosen
+## Status: complete — 59 of 59 chosen
 
 | Tier | Count | Blocks |
 |---|---|---|
 | 1 | 23 | Card layout and the card schema |
-| 2 | 25 | Playable combat |
+| 2 | 26 | Playable combat |
 | 3 | 10 | Polish |
 | *optional tags* | *9* | *nothing* |
 
-**67 icons**, including the optional tags, all downloaded to
+**68 icons**, including the optional tags, all downloaded to
 [../foundry/cardrpg/icons/](../foundry/cardrpg/icons/) with per-icon credits in
 [ATTRIBUTION.md](../foundry/cardrpg/icons/ATTRIBUTION.md). Nothing in the rules or the system is
 waiting on an icon decision.

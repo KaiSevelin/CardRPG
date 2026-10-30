@@ -624,6 +624,16 @@ in it draws before the deck reshuffles.
 
 Conditions are tokens with a number (duration). Every condition remembers **who created it**.
 
+**Two of them carry a second number.** **Burning** and **Frozen** have an **intensity** as well as a
+duration, printed in front of it — *Burning 3 (2)* is three damage a turn for two turns. **Duration
+says how long; intensity says how hard.** Nothing else on the list has one, because nothing else has
+a reading between a candle and a dragon, and *Dazed 3* would mean nothing
+([conditions.md](conditions.md) §2). Two rules cover the second number and there are no others:
+
+- **A Partial shortens a burn; it does not cool one.** Only the duration halves.
+- **A second application takes the max of each number** — the longer duration and the fiercer
+  intensity, independently. A candle thrown after a dragon leaves the dragon's fire burning.
+
 > **The complete list is [conditions.md](conditions.md)** — all nineteen with their engine keys,
 > their flags, what the system actually enforces and what in the content applies each one. This
 > section is the **rule**; that document is the **reference**, and the validator keeps it in step with
@@ -682,6 +692,11 @@ or Slowed (1) on a partial.*
 > gets, and you still have a primary. That is deliberate: a turn where you do nothing is the dullest
 > thing a fight can hand you.
 
+> **Frozen at a value above your Move is not an exception to this.** You cannot cross the room, and
+> you still draw a hand, play a primary and a secondary and keep every reaction — a *Move 2, then
+> Strike* primary still gets the Strike. That is also what separates it from **Grappled**, which
+> blocks the Move half outright.
+
 > **Which leaves magic a problem, and the answer is the one rule worth remembering here.** Sleep,
 > paralysis, petrifaction and *hold person* are what spells classically do, and all four are turn
 > removal, so none of them can exist. **A fighter's conditions take away what you may *do*; a
@@ -693,10 +708,11 @@ or Slowed (1) on a partial.*
 | Condition | Effect |
 |---|---|
 | **Dazed** | You can't play a secondary. |
-| **Slowed** | All Move values are halved (round down). |
+| **Slowed** | All Move values are halved (round down). With **Frozen** as well: **halve first, then reduce**, floor 0. |
 | **Stunned** | You can't play reactions. |
 | **Invisible** | Enemies can't target you. Ends early if you Strike or Cast at an enemy. |
-| **Burning** | Take 1 damage at the start of your turn. **Water and fire cancel:** neither Burning nor Wet lands on a target already carrying the other, and whichever arrives second ends the first without itself landing. |
+| **Burning** | **Burning N:** take N damage at the start of your turn. It meets neither armor nor Block. **Fire cancels water in either state:** neither Burning nor **Wet**, and neither Burning nor **Frozen**, lands on a target already carrying the other — whichever arrives second ends the first without itself landing. A wet target steams; a frozen one thaws. |
+| **Frozen** | **Frozen N:** all Move values are **reduced by N**, to a minimum of 0. You still play both halves and keep your reactions. Cancels with Burning. |
 | **Prone** | Melee Strikes against you have advantage. Standing up costs Move 1. |
 | **Unconscious** | At 0 Health. No turns, no reactions, Prone. Dying until treated (section 8). |
 | **Grappled** | Blocks 👣 Move (see section 10). |

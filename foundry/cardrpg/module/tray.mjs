@@ -629,7 +629,10 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
           icon: cfg.icon,
           harm: true,
           passive: true,
-          lines: [c.duration ? `Duration ${c.duration}` : "No duration"],
+          lines: [
+            ...(c.value ? [`Intensity ${c.value}`] : []),
+            c.duration ? `Duration ${c.duration}` : "No duration"
+          ],
           note: creator
             ? `Ticks down on ${creator}'s turn`
             : (cfg.derived ? "From carried weight" : "Ticks on your own turn")
@@ -696,12 +699,16 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
             text += ` ${base + (step.mod ?? 0) + collectBonuses(this.actor, step.verb, item).total}`;
           } else if (step.mod) text += ` ${step.mod > 0 ? "+" : ""}${step.mod}`;
         } else if (step.param !== null && step.param !== undefined) {
-          // Slowed, Burdened and Overloaded halve Move, rounding down (core-rules 7). The face has
-          // to show the halved number: a Slowed Advance that still reads "Move 3" is a lie the
-          // player acts on.
-          const halve = step.verb === "move" && this.actor.system.moveHalved;
-          text += ` ${halve ? Math.floor(step.param / 2) : step.param}`;
-          if (halve) text += "\u00a0(halved)";
+          /*
+           * Move as it actually plays: halved by Slowed, Burdened or Overloaded, then reduced by
+           * Frozen, floored at 0 (core-rules 7). The face has to show the real number -- a Slowed
+           * Advance that still reads "Move 3" is a lie the player acts on.
+           */
+          const played = step.verb === "move"
+            ? this.actor.system.movePlayed(step.param)
+            : step.param;
+          text += ` ${played}`;
+          if (played !== step.param) text += `\u00a0(was ${step.param})`;
         }
         else if (step.mod !== null && step.mod !== undefined) {
           text += ` ${step.mod > 0 ? "+" : ""}${step.mod}`;
@@ -709,7 +716,10 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
 
         if (step.condition) {
           const name = game.i18n.localize(CARDRPG.conditions[step.condition]?.label ?? step.condition);
-          text += `${text ? " " : ""}${name} (${Math.max(1, step.duration ?? 1)})`;
+          // A valued condition prints its intensity before its duration: Burning 3 (2).
+          const fierce = CARDRPG.conditions[step.condition]?.valued
+            ? ` ${Math.max(1, step.intensity ?? 1)}` : "";
+          text += `${text ? " " : ""}${name}${fierce} (${Math.max(1, step.duration ?? 1)})`;
           if (step.resist) {
             const approach = CARDRPG.approaches[step.resist];
             text += ` · resist ${game.i18n.localize(approach?.label ?? step.resist)} `

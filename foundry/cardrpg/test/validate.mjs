@@ -158,7 +158,7 @@ if (!fs.existsSync(specPath)) {
   for (const m of configSource.matchAll(/^  ([a-zA-Z]+): \{\s*\n\s*label: "CARDRPG\.Condition\./gm)) {
     conditions.add(m[1]);
   }
-  check("conditions found in config", conditions.size, 19);
+  check("conditions found in config", conditions.size, 20);
 
   const undocumented = [...conditions].filter(k => !ticked.has(k)).sort();
   check("conditions missing from the spec",
@@ -166,10 +166,18 @@ if (!fs.existsSync(specPath)) {
 
   // Anything the spec backticks that looks like a condition key but is not one. Restricted to the
   // flags table, where every entry must be a real key or a real flag.
-  const flagTable = spec.slice(spec.indexOf("## 2. Flags"), spec.indexOf("## 3."));
+  /*
+   * Located by its heading text, not its section number: the numbers move whenever a section is
+   * inserted, and a slice keyed to them fails silently by matching nothing -- which is exactly how
+   * this check first broke.
+   */
+  const flagsAt = spec.indexOf("Flags — the machine-readable shape");
+  const nextHeading = spec.indexOf("## ", flagsAt + 10);
+  const flagTable = flagsAt < 0 ? "" : spec.slice(flagsAt, nextHeading < 0 ? undefined : nextHeading);
+  check("the flags section was located", flagsAt >= 0 && flagTable.length > 0, true);
   const flags = new Set([
-    "blocks", "blocksSecondary", "blocksReactions", "halvesMove",
-    "noDuration", "derived", "opening", "cancels"
+    "blocks", "blocksSecondary", "blocksReactions", "halvesMove", "reducesMove",
+    "noDuration", "derived", "opening", "cancels", "valued"
   ]);
   const stray = [...new Set([...flagTable.matchAll(/`([A-Za-z]+)`/g)].map(m => m[1]))]
     .filter(k => !conditions.has(k) && !flags.has(k)).sort();
@@ -179,7 +187,7 @@ if (!fs.existsSync(specPath)) {
   // data model -- which is how the three dead flags went unnoticed in the first place.
   const used = new Set([...configSource
     .slice(configSource.indexOf("CARDRPG.conditions = {"), configSource.indexOf("CARDRPG.openings"))
-    .matchAll(/(blocksSecondary|blocksReactions|halvesMove|noDuration|derived|opening|cancels|blocks):/g)
+    .matchAll(/(blocksSecondary|blocksReactions|halvesMove|reducesMove|noDuration|derived|opening|cancels|valued|blocks):/g)
   ].map(m => m[1]));
   const unlisted = [...used].filter(f => !flagTable.includes("`" + f + "`")).sort();
   check("flags used but not in the spec", unlisted.length ? unlisted.join(", ") : "none", "none");
@@ -202,7 +210,7 @@ for (const m of configSource.matchAll(/halfIcons\s*=\s*\{[^}]*\}/gs)) {
   for (const k of m[0].matchAll(/"([a-z0-9-]+)"/g)) iconKeys.add(k[1]);
 }
 
-check("icon files on disk", onDisk.size, 75);
+check("icon files on disk", onDisk.size, 76);
 const absent = [...iconKeys].filter(k => !onDisk.has(k)).sort();
 check("config icons present as files", absent.length ? absent.join(", ") : "all", "all");
 
@@ -296,7 +304,7 @@ const stepBlock = cardsSource.slice(cardsSource.indexOf("export function stepFie
 const stepKeys = new Set(
   [...stepBlock.slice(0, stepBlock.indexOf("\n}")).matchAll(/^    ([a-zA-Z]+):/gm)].map(m => m[1])
 );
-check("stepField keys read from source", stepKeys.size, 13);
+check("stepField keys read from source", stepKeys.size, 14);
 
 const strayKeys = new Set();
 for (const step of steps) {
