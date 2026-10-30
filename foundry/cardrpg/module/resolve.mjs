@@ -149,6 +149,9 @@ function actorHasAdjacentEnemy(actor) {
  * The condition is chosen by the caller, because which one to shed is the whole decision -- a turn
  * where the engine picks for you is a turn you did not play. Everything else here is arithmetic.
  *
+ * A targeted counter -- a spell that answers one named condition and nothing else -- is this with
+ * the caller's list already narrowed to one key, so there is no second mechanism for it.
+ *
  * @returns {Promise<{key: string, was: number, now: number, gone: boolean}|null>}
  */
 export async function resolveShake(actor, { amount = 1, target = actor, key }) {

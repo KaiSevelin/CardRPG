@@ -1051,10 +1051,18 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       }
 
       case "shake": {
-        // Shedding a condition is a decision, so the player picks which one; the engine only ever
-        // narrows the list to what core-rules 7 allows to be shaken at all.
+        /*
+         * Shedding a condition is a decision, so the player picks which one; the engine only ever
+         * narrows the list to what core-rules 7 allows to be shaken at all.
+         *
+         * `step.condition` on a shake half means "this one only" rather than "apply this" -- that is
+         * how a targeted counter is written (way-cards 3.6). It needs no field of its own, and it
+         * means a narrow spell cannot be played as a wide one by mistake.
+         */
         const who = targets[0] ?? actor;
-        const options = (who.system.activeConditions ?? []).filter(c => CARDRPG.shakeable(c.key));
+        const options = (who.system.activeConditions ?? [])
+          .filter(c => CARDRPG.shakeable(c.key))
+          .filter(c => !step.condition || c.key === step.condition);
         if (!options.length) {
           ui.notifications.info(`${who.name} has nothing to shake off.`);
           break;

@@ -761,6 +761,28 @@ is a card you played for nothing, and the game has enough of those.
 **Shedding is a decision, so the player chooses which condition** — a character carrying Dazed (1)
 and Grappled (2) picks, and picking is the interesting part.
 
+#### A dispel must not sit on the half the condition takes
+
+Four conditions defeat the dispel that would answer them, and not by accident — it falls out of what
+each one does:
+
+| Condition | Defeats | Because |
+|---|---|---|
+| **Invisible** | any dispel that needs a **target** | being untargetable *is* the condition |
+| **Silenced** | your own ✦ Cast dispel | casting needs speech |
+| **Compelled** | a dispel on your **primary** | your primary is already spoken for |
+| **Dazed** | a dispel on your **secondary** | you have no secondary |
+
+So:
+
+> **You cannot reliably dispel yourself.** The reliable answers are other people's cards — and the
+> two conditions that beat *every* self-dispel, Invisible and Silenced, can only be answered by
+> somebody who is not suffering them.
+
+That is the same shape as openings (§7): the game's answer to conditions is your allies. It also
+means **Invisible needs an area**, not a target, because there is no other way to reach it — see
+[way-cards.md](way-cards.md) §3.6, where that constraint writes the card.
+
 ### Openings
 
 Every condition above takes something away. These four take nothing:

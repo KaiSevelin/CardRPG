@@ -157,7 +157,7 @@ send them to §4**, which is where all four of them are. They are also the ones 
 node.
 
 **A dispel is priced in Shake Off, and the band is narrow** (core-rules §7,
-[conditions.md](conditions.md) §8.2):
+[conditions.md](conditions.md) §9.2):
 
 | Shake Off | Costs |
 |---|---|
@@ -274,7 +274,7 @@ simply correct, and there is no autopilot.
 
 Half this game's major nodes are casters — twelve schools and twelve gods out of forty-eight — and
 the condition list was written for fighters. Of the nineteen, magic **casts** six: Invisible, Burning,
-Dazed, Slowed, Stunned and Wet ([conditions.md](conditions.md) §6). Everything else on the list is a
+Dazed, Slowed, Stunned and Wet ([conditions.md](conditions.md) §9). Everything else on the list is a
 thing you do with your hands — except **Silenced**, which is the one aimed *at* casters and which
 nothing in the game can currently inflict.
 
@@ -562,7 +562,7 @@ deal against an ironclad and nothing at all against a goblin, so its value is se
 rather than by the card, and no band can price it. It is the one card in this section most worth
 simulating.
 
-### 3.4 Way of Mind — seventeen formulas
+### 3.4 Way of Mind — seventeen formulas (plus the counters in §3.6)
 
 Beyond the twelve Signatures. **Strength is the slot cost** (§1.4), so the bracketed number is what
 it takes out of the budget. Each school's full list is still open; these are its second and third
@@ -593,7 +593,7 @@ fighters and *The Mark of Things to Come* sets **Marked** for the archers. A Poi
 up on a stumble and a Diviner cannot shoot — which is precisely why those two cards get played at a
 table and never in a solo playtest.
 
-### 3.5 Way of Faith — fifteen miracles
+### 3.5 Way of Faith — fifteen miracles (plus the counter in §3.6)
 
 A second per god, and the Way's own opening seeded. **A god's list is short** (§1.4); these do not
 pretend to finish one.
@@ -621,7 +621,47 @@ party-facing or tempo — stripped armor, a changed turn order, a death that pay
 the card level to the thinnest finding in the whole uniqueness audit: **Support** had one node in the
 game ([specializations.md](specializations.md)). Faith's combo is *telling the party who to kill.*
 
-### 3.6 Can every Way reach a combo? — the audit
+### 3.6 Targeted counters — five spells
+
+A generic dispel is not enough, and the reason is the slot budget. **Ward's *Shake It Off* ends
+anything for 2 slots**, so if that were the only answer, every caster would prepare it and the
+decision would be gone. A **targeted counter** is the other half of the trade:
+
+> **A targeted counter is strength 1 and ends its one condition outright. The generic dispel is
+> strength 2 and ends anything.** You pay a slot for breadth — and *the caster who prepared the wrong
+> spells has prepared the wrong spells* is the whole point of a slot budget (§1.4).
+
+Each of these also does something the generic one **cannot**, which is what keeps it from being a
+worse *Shake It Off*:
+
+| School | Formula | Str | Effect | What the generic cannot do |
+|---|---|---|---|---|
+| **Elemental** | **Slippery** | 1 | ⛓ End **Grappled** on an ally at ◎2. Until your next turn they cannot be Grappled again. | **prevent** it coming back |
+| **Glamour** | **Ink Spray** | 1 | ✸ Blast 2: end **Invisible** on everything in the area, and nothing in it may become Invisible until your next turn. | reach a thing it **cannot target** |
+| **Ward** | **The Unbound Tongue** | 1 | ⛓ End **Silenced** on an ally at ◎3. | be cast **by the victim** — see below |
+| **Glamour** | **A Clear Head** | 1 | ⛓ End **Dazed** on an ally at ◎3, and they may play a secondary this turn even if they already have. | give the turn **back** |
+| **The Eternal God** | **Steady the Hand** | 1 | ⛓ End **Compelled** on an ally at ◎3, and whoever compelled them is **Judged (1)**. | answer **and** accuse |
+
+**Ink Spray is the one the rules wrote rather than me.** Invisible says *enemies can't target you*, so
+a dispel that needs a target cannot reach it — the condition forbids the only way in. An **area** is
+the sole shape that works, which is why this is a Blast with no target line and why it is worth a
+slot despite answering one condition. Core-rules §7 sets out the other three the same way.
+
+**The Unbound Tongue must come from somebody else**, because Silenced blocks ✦ Cast and a silenced
+caster cannot cast their own cure. That is not a flaw in the spell; it is the rule that *you cannot
+reliably dispel yourself*, printed on a card.
+
+**No spell answers Burning or Frozen**, and none should: water and fire already cancel
+([conditions.md](conditions.md) §6), so *Rain* on a burning ally is the counter and it is a spell
+somebody already prepared for another reason. A targeted counter for a condition that already has one
+is a wasted slot.
+
+> **The item version is cheaper and should exist.** A thrown flask of ink does *Ink Spray*'s job
+> without a slot, and oil does *Slippery*'s. Items are not written yet — but the division is the one
+> the game already draws: a slate is a thing you carry and can run out of, a formula is a thing you
+> know. **[OPEN]**
+
+### 3.7 Can every Way reach a combo? — the audit
 
 An opening nobody can set is a dead keyword, and a Way that can only set and never read has been
 handed homework. One row per Way:
@@ -654,7 +694,7 @@ nobody would ever see one at a table.
   fate cards, both applying, is a new distribution and nothing else in the game does it),
   **Cleave to the Bone** (a Wound threshold at 4 changes how often Wounds enter a deck at all),
   **The Wall** (stacking Blocks against the measured value of a Defend primary) and
-  **Nothing Gets Through** (doubled armor against the cliff-edge behaviour armor already has). §3.6
+  **Nothing Gets Through** (doubled armor against the cliff-edge behaviour armor already has). §3.7
   names the four minor-node cards with the same claim on a simulator.
 - **[OPEN]** **How a combo actually performs.** Every number in §1.6's reader table is reasoned from
   the value bands and none of it is measured. The specific question is whether a +2 that costs a

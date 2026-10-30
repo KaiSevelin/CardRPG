@@ -38,8 +38,8 @@ These take something away. They are the fighter's vocabulary.
 | **Grappled** | `grappled` | luchador | Blocks 👣 Move. |
 | **Silenced** | `silenced` | silenced | Blocks ✦ Cast — casting needs speech. |
 | **Disarmed** | `disarmed` | drop-weapon | Blocks ⇄ Ready, and ⚔ with the disarmed item. |
-| **Burning** | `burning` | fire-silhouette | **Burning N**: N damage at the start of your turn. Meets neither armor nor Block. **Cancels with Wet and Frozen** (§5). |
-| **Frozen** | `frozen` | frozen-body | **Frozen N**: your Move values are **reduced by N**, floor 0. You still play both halves and keep your reactions. **Cancels with Burning** (§5). |
+| **Burning** | `burning` | fire-silhouette | **Burning N**: N damage at the start of your turn. Meets neither armor nor Block. **Cancels with Wet and Frozen** (§6). |
+| **Frozen** | `frozen` | frozen-body | **Frozen N**: your Move values are **reduced by N**, floor 0. You still play both halves and keep your reactions. **Cancels with Burning** (§6). |
 | **Invisible** | `invisible` | invisible | Enemies can't target you. Ends early if you Strike or Cast at an enemy. |
 | **Compelled** | `compelled` | puppet | You must spend your **primary** attacking whoever compelled you. |
 | **Unconscious** | `unconscious` | knockout | At 0 Health. No turns, no reactions, Prone. Dying until treated (§8). |
@@ -182,7 +182,53 @@ Three things that a scale invites and that this list refuses:
 
 ---
 
-## 4. Flags — the machine-readable shape
+## 4. What is not a condition — the test
+
+The question comes up for anything persistent (**mounted**, flying, hidden, prepared), so it is worth
+one line rather than a ruling each time:
+
+> **A condition is something done *to* you that will stop.** No creator means it is not a condition
+> — unless it is computed from a number you can change, which is the one exception and covers
+> exactly three entries: **Burdened** and **Overloaded** from carried weight, and **Unconscious** from
+> Health.
+
+That test accepts all twenty above and rejects the usual candidates. Worked through for the one that
+has actually come up:
+
+### 4.1 Mounted is not a condition
+
+| Test | Mounted |
+|---|---|
+| **A creator?** | no — you got on the horse |
+| **A duration?** | no — it lasts until you get off |
+| **Computed from a number?** | no — it is a relationship to another creature |
+
+**And the design had already classified it.** [leveling.md](leveling.md) §5a.1 lists **gear you can
+lose** as a resource and names *a mount* first — *"ordinary without it, and the GM can take it"* — and
+[specializations.md](specializations.md) hands that resource to the **Knight**. A mount is gear, and
+the Knight's price is that it can be taken away.
+
+**Its only mechanical job today is making a card playable.** The Knight's *The Lance* says *"needs the
+mount"*, which is the same requirement as *"needs both hands"* or *"needs a Light item"* — and the
+game already has machinery for whether a half can be played, which is where this belongs. **Mounted
+is a requirement, not a condition.**
+
+**The one wrinkle, and the shape that answers it:** a mount can be attacked and killed, which no
+slate can, so it is an **actor** rather than purely gear — and what sits on the rider's sheet is a
+*link* to it. The precedent is already in the condition list: **Compelled** stores *who* compelled
+you in `creatorId` and needs no field for it. A rider's link is the same shape, in the other
+direction.
+
+**And being unhorsed needs no new condition either:** a rider knocked off is **Prone** and no longer
+linked, which is two things the game already has.
+
+> **[OPEN]** Mounts as a whole — the mount's own Move and Health, whether it takes its own turn,
+> dismounting, and what unhorses a rider. None of it is written, and the Knight is the node waiting on
+> it. What this section settles is only that none of it belongs here.
+
+---
+
+## 5. Flags — the machine-readable shape
 
 What `CARDRPG.conditions` carries. Anything not listed is absent on that entry.
 
@@ -216,7 +262,7 @@ dead.
 
 ---
 
-## 5. Conditions that interact
+## 6. Conditions that interact
 
 One relation, and **fire is on both ends of it** — which is why there is no table.
 
@@ -231,7 +277,7 @@ rules of its own.
 Everything else **stacks by not stacking**: a second application takes the **longer** duration and,
 for a valued condition, the **fiercer** intensity, each maxed independently.
 
-### 5.1 Why there is no counter table
+### 6.1 Why there is no counter table
 
 Four relations between conditions can be imagined. **Only the first is data**, and the reason matters
 more than the list:
@@ -255,13 +301,13 @@ prior opinion about whether being Dazed ought to protect you from being Compelle
 wants that says so itself, and the next card is free to disagree. **A relation in data is a rule in
 every future card whether its author wanted it or not**, which is the cost a matrix hides.
 
-What the idea *does* earn is a **reference column** rather than a mechanic — §8.1: for each condition,
+What the idea *does* earn is a **reference column** rather than a mechanic — §9.1: for each condition,
 what in the content takes it off. Pure lookup, nothing behind it, and writing it out is what turned up
 the finding worth having.
 
 ---
 
-## 6. How each one lands
+## 7. How each one lands
 
 From [core-rules.md](core-rules.md) §7, and it is a two-way split with one exception:
 
@@ -294,7 +340,7 @@ The author's choice, and it should follow what the thing actually does:
 
 ---
 
-## 7. What the engine enforces
+## 8. What the engine enforces
 
 The engine's posture everywhere is **advise, don't enforce** — it shows you what is legal and lets
 the table play. This column says which half of that each condition gets.
@@ -321,7 +367,7 @@ the table play. This column says which half of that each condition gets.
 
 ---
 
-## 8. What applies each one
+## 9. What applies each one
 
 Every source in the content as it stands ([way-cards.md](way-cards.md),
 [starter-cards.md](starter-cards.md)).
@@ -353,9 +399,9 @@ wired into blocked icons — and nothing in the starter decks, the 48 Signatures
 item causes either. They are the two conditions the game can suffer and cannot inflict, and the
 natural home for both is **monsters**, which are not written yet.
 
-### 8.1 What takes each one off
+### 9.1 What takes each one off
 
-§5.1's answer to *which conditions counter which*: a reference column rather than a mechanic. Every
+§6.1's answer to *which conditions counter which*: a reference column rather than a mechanic. Every
 removal in the content, and the gaps are the point.
 
 | Condition | Taken off by |
@@ -370,14 +416,14 @@ removal in the content, and the gaps are the point.
 | **Invisible** | attacking, which ends it early · **Shake Off**, if you wanted to · the duration |
 | **Blessed**, **Cursed** | drawing the card they put in the deck |
 | **Unconscious** | Health above 0, and nothing else — it has no duration to spend |
-| **Dazed**, **Stunned**, **Grappled**, **Silenced**, **Disarmed**, **Compelled** | **Shake Off** (§8.2) · the duration |
+| **Dazed**, **Stunned**, **Grappled**, **Silenced**, **Disarmed**, **Compelled** | **Shake Off** (§9.2) · the duration |
 | **Marked**, **Judged** | **nothing but the duration** — an opening cannot be shaken off |
 
 That table is the state **before** a dispel existed, and eight conditions had no answer at all
 beyond waiting a turn. Six cards in the content print a duration of **(2)**, so waiting could mean
 two turns of blocked feet or a lost secondary — which is what argued for **Shake Off**.
 
-### 8.2 Shake Off, and why it spends duration
+### 9.2 Shake Off, and why it spends duration
 
 The keyword is in [core-rules.md](core-rules.md) §7. The design decision is one line:
 
@@ -393,9 +439,9 @@ for a turn however fierce the condition.
 **The exclusions are one rule, not a list.** You can shake off what is being *done* to you, never
 what is simply *true* of you — and everything on the excluded side already carried `noDuration` or
 `opening` before the keyword existed, so `CARDRPG.shakeable` is derived from flags rather than being
-a fifth flag that could drift (§4).
+a fifth flag that could drift (§5).
 
-### 8.3 One shape per Way
+### 9.3 One shape per Way
 
 A single generic dispel card would fail the swap test ([leveling.md](leveling.md) §5a.2) four times
 over, so each Way sheds differently — and the differences are the Ways' own:
@@ -420,12 +466,12 @@ condition is.
 
 ---
 
-## 9. Open
+## 10. Open
 
 - **[OPEN]** **Blessed and Cursed do not work.** The plumbing is there and unconnected: `decks.mjs`
   already removes a fate card marked `temporary` when it is drawn, and nothing creates one. Applying
   the condition should shuffle a temporary Critical or Miss into the right deck — the victim's own, or
-  the **type's** deck for an NPC. Two spells now ask for it (§6).
+  the **type's** deck for an NPC. Two spells now ask for it (§9).
 - **[OPEN]** **Silenced and Disarmed need a source**, and it should be monsters rather than player
   cards. A spellcaster that silences and a brute that disarms are the obvious two, and both wait on
   the monster list.
