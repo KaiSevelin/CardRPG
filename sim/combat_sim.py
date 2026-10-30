@@ -119,9 +119,60 @@ GOBLIN_CARDS = {
 # verb and there was only ever one weapon to hold, so a quarter of the deck did nothing and the
 # whole item economy -- slots, the back, swapping mid-fight -- had never been measured at all.
 WEAPONS = {
-    'sword': dict(strike=3, rng=1, heavy=True),    # Longsword
-    'bow':   dict(strike=2, rng=6, heavy=False),   # Shortbow
+    #                strike  range  heavy   kg  reload  ignores N armor
+    'sword':    dict(strike=3, rng=1,  heavy=True,  kg=2),
+    'bow':      dict(strike=2, rng=6,  heavy=False, kg=1),   # Shortbow
+    # The rest of rules/equipment.md 3 and 4. `reload` is the claim worth measuring: a crossbow
+    # cannot fire again until a Ready has gone into it, so it spends half of every other turn
+    # loading, and `ignores` is what it buys with that half.
+    'longbow':  dict(strike=3, rng=10, heavy=True,  kg=2),
+    'crossbow': dict(strike=4, rng=8,  heavy=False, kg=3, reload=True, ignores=1),
+    'heavy_crossbow': dict(strike=5, rng=10, heavy=True, kg=5, reload=True, ignores=1),
+    'arquebus': dict(strike=5, rng=8,  heavy=True,  kg=4, reload=True, ignores=2),
+    'musket':   dict(strike=6, rng=12, heavy=True,  kg=5, reload=True, ignores=2),
+    'pistol':   dict(strike=3, rng=4,  heavy=False, kg=1, reload=True, ignores=2),
 }
+
+
+# ---------------------------------------------------------------- armour
+# rules/equipment.md 1.2: the ladder runs 1 to 4 and buys the difference with KILOGRAMS rather
+# than coin, and the top two rungs are Heavy Armor, which blocks the Sidestep reaction
+# (core-rules 10). Both halves of that price have to be in the same measurement or the ladder
+# reads as four rungs of free upgrade.
+ARMOUR = {
+    0: dict(kg=0,  heavy=False),                    # nothing
+    1: dict(kg=5,  heavy=False),                    # Leather
+    2: dict(kg=9,  heavy=False),                    # Mail Shirt
+    3: dict(kg=12, heavy=True),                     # Brigandine
+    4: dict(kg=20, heavy=True),                     # Plate
+}
+
+# core-rules 4: the limit is 40 kg, over it you are Burdened (Slowed), over half again
+# Overloaded (Burdened, and 2 random cards are Spent).
+CARRY_LIMIT = 40
+
+
+# ---------------------------------------------------------------- foes
+# Enemy profiles. `spear` and `bow` are the goblins every published number was measured against;
+# the rest exist for one question equipment.md 1.2 asks and nothing had ever answered -- armour is
+# subtracted from EVERY hit, so is a point of it worth the same against four enemies striking for
+# 3 as against one striking for 12? These hold the group's damage per round at 12 and vary only
+# how it is divided, which is the cliff-edge claim itself rather than a monster I invented.
+FOES = {
+    'spear':  dict(rng=1, ranged=False),
+    'bow':    dict(rng=6, ranged=True),
+    'brute':  dict(rng=1, ranged=False, dmg=6,  hp=10),   # two of these: 12 a round, 20 HP
+    'ogre':   dict(rng=1, ranged=False, dmg=12, hp=20),   # one of these: 12 a round, 20 HP
+    # Armoured infantry, for the other claim worth testing (equipment.md 3): "against five goblins
+    # the bow wins; against one armoured knight the crossbow does." These are a goblin spear and
+    # nothing else -- same damage, same Health, same tactics -- with Brigandine or Plate on, so a
+    # weapon comparison across them changes one number and not the encounter.
+    'guard':  dict(rng=1, ranged=False, armor=3),
+    'plated': dict(rng=1, ranged=False, armor=4),
+}
+
+def foe(name):
+    return FOES[name]
 
 
 # ---------------------------------------------------------------- conditions
@@ -190,6 +241,33 @@ class Config:
     # A second weapon slung on the back (core-rules 4): drawing from it is free, slinging costs a
     # Ready. '' is the old behaviour -- one weapon, and Ready does nothing.
     sling: str = ''
+    # What the warrior starts with in hand. 'sword' is every published number.
+    weapon: str = 'sword'
+    # Everything carried that is not armour, weapons or the shield: pack, rope, loot. The kit a
+    # starter Warrior carries is already in the armour and weapon kilograms, so 0 is the baseline
+    # and this is the dial that makes Plate's weight bite (core-rules 4).
+    extra_kg: int = 0
+    shield_kg: int = 3            # Wooden Shield
+    # Sidestep had a name on Advance and no behaviour anywhere, so every number published before
+    # 2026-10-30 was measured with one of the starter deck's reactions inert. False restores that,
+    # which is how the old figures are reproduced and how the reaction is priced.
+    sidestep: bool = True
+    # Which reading of core-rules 11 to play. The sentence is "an enemy that ENDS ITS MOVEMENT next
+    # to you hands you a Sidestep", introduced by "leaving is free, arriving is answered" -- and the
+    # letter and the intent are not the same rule:
+    #
+    #   'arrival': it must have taken a step AND have been non-adjacent before it. What "arriving"
+    #              plainly means, and the stricter reading.
+    #   'any':     it ended a move adjacent, even if it was adjacent already and only shuffled.
+    #              What the sentence literally says -- and it hands the defender a free reposition
+    #              almost every turn, because a goblin in your face "ends its movement" there.
+    #
+    # The two are worth measuring against each other, because a rule whose wording is load-bearing
+    # should know what the wording is worth.
+    sidestep_mode: str = 'arrival'
+    # None derives Heavy Armor from the rung, which is the rule. Setting it False keeps armor 4 and
+    # hands the reaction back, which is the only way to charge Plate's two prices separately.
+    heavy_armor: object = None
     goblin_condition: str = 'dazed'
     goblin_cond_value: int = 0     # intensity, for a `valued` condition
     goblin_cond_dur: int = 1
@@ -256,6 +334,7 @@ class Sim:
         # Strike after it better, which is the only way the AI can ever value one.
         if not hasattr(self, 'weapon'):
             self.weapon = self.game.w['weapon']
+            self.loaded = self.game.w['loaded']
         for op in ops:
             kind = op[0]
             if kind == 'move':
@@ -273,6 +352,9 @@ class Sim:
                     self.wpos = nxt
             elif kind == 'strike':
                 prof = WEAPONS[self.weapon]
+                # An unloaded crossbow is a stick: the Strike is spent and nothing happens.
+                if prof.get('reload') and not self.loaded:
+                    continue
                 reach = [g for g in self.alive() if cheb(self.wpos, g[0]) <= prof['rng']]
                 if not reach:
                     continue
@@ -283,18 +365,26 @@ class Sim:
                 ranged_pen = prof['rng'] > 1 and any(
                     cheb(self.wpos, g[0]) == 1 for g in self.alive())
 
+                # Armour comes off every hit, and `ignores N` is what a crossbow or a firearm
+                # buys with its reload (equipment.md 1.3).
+                def soak(g):
+                    return max(0, foe(g[2]['weapon']).get('armor', 0) - prof.get('ignores', 0))
+
                 def est(g):
                     e = pk = 0.0
                     for c, p in FATE_DIST[0].items():
-                        d = fate_apply(value, c)
+                        d = max(0, fate_apply(value, c) - soak(g))
                         e += p * min(d, g[1])
                         pk += p * (d >= g[1])
                     return e, pk
                 target = max(adj, key=lambda g: (est(g)[1], -g[1]))
                 if real:
                     card = self.game.fate_w.draw(-1 if ranged_pen else 0)
-                    d = fate_apply(value, card)
+                    d = max(0, fate_apply(value, card) - soak(target))
                     self.game.stat_fate(card)
+                    if prof.get('reload'):
+                        self.loaded = False
+                        self.game.s['shots_fired'] += 1
                     self.game.log(f"  Warrior strikes goblin {target[2]['id']} (base {value}, fate {card}) -> {d} dmg")
                     target[1] -= d
                     self.dmg += min(d, max(0, target[1] + d))
@@ -303,6 +393,8 @@ class Sim:
                     self.dmg += e
                     self.killp += pk
                     target[1] = 0 if pk >= .5 else target[1] - e
+                    if prof.get('reload'):
+                        self.loaded = False
             elif kind == 'defend':
                 self.block = cfg.shield_def
             elif kind in ('heal', 'use'):
@@ -331,16 +423,21 @@ class Sim:
                 else:
                     self.healed += saved
             elif kind == 'ready':
-                # One Ready swaps the held weapon for the slung one (core-rules 4). With nothing
-                # slung it is the old no-op.
-                if cfg.sling:
-                    self.weapon = cfg.sling if self.weapon != cfg.sling else 'sword'
+                # One Ready either reloads what is in your hands or swaps it for what is on your
+                # back (core-rules 4). With nothing slung and nothing to load it is the old no-op.
+                if WEAPONS[self.weapon].get('reload') and not self.loaded:
+                    self.loaded = True
+                    if real:
+                        self.game.s['reloads'] += 1
+                elif cfg.sling:
+                    self.weapon = cfg.sling if self.weapon != cfg.sling else cfg.weapon
+                    self.loaded = not WEAPONS[self.weapon].get('reload') or self.loaded
             # taunt: no effect in this test (solo hero)
 
     def commit(self):
         w = self.game.w
         w['pos'], w['hp'], w['block'], w['potions'] = self.wpos, self.whp, self.block, self.potions
-        w['weapon'] = self.weapon
+        w['weapon'], w['loaded'] = self.weapon, self.loaded
         for pos, hp, g in self.gobs:
             g['pos'] = pos
             if hp <= 0 < g['hp']:
@@ -366,10 +463,21 @@ class Game:
         deck = [name for name, c in self.cards.items() for _ in range(c[3])]
         self.w = dict(pos=(1, 4), hp=cfg.hp, block=0, potions=cfg.potions, hand=[], draw=deck,
                       discard=[], spent=[], conds=[], exhausted=False, acted=False,
-                      weapon='sword')
+                      weapon=cfg.weapon, loaded=True)
         n = len(cfg.goblins)
         ys = [round(1 + i * (GRID_H - 3) / max(1, n - 1)) for i in range(n)] if n > 1 else [4]
-        self.gobs = [dict(id=i + 1, pos=(8, ys[i]), hp=cfg.goblin_hp, weapon=wpn) for i, wpn in enumerate(cfg.goblins)]
+        self.gobs = [dict(id=i + 1, pos=(8, ys[i]), hp=foe(wpn).get('hp') or cfg.goblin_hp,
+                          weapon=wpn) for i, wpn in enumerate(cfg.goblins)]
+        # What is on the hero's back, in kilograms, and what that costs (core-rules 4). Armour is
+        # the only rung on the ladder that is paid for in weight, so this is where its price lands.
+        self.load = (ARMOUR[cfg.armor]['kg'] + WEAPONS[cfg.weapon]['kg'] + cfg.shield_kg
+                     + (WEAPONS[cfg.sling]['kg'] if cfg.sling else 0) + cfg.extra_kg)
+        self.burdened = self.load > CARRY_LIMIT
+        self.overloaded = self.load > CARRY_LIMIT * 1.5
+        # Heavy Armor blocks the Sidestep reaction (core-rules 10), which is the top two rungs'
+        # real price and the half of it that has nothing to do with weight.
+        self.heavy_armor = (ARMOUR[cfg.armor]['heavy'] if cfg.heavy_armor is None
+                            else cfg.heavy_armor)
         # Deck cut comes after the board exists, because what is worth pruning depends on
         # the fight you expect (see prune_value).
         self._board = self.board()
@@ -384,6 +492,9 @@ class Game:
                     pool = [n for n in deck if not self.gives_use(n)] or deck
                 deck.remove(min(pool, key=self.prune_value))
         rng.shuffle(deck)
+        if self.overloaded:
+            for _ in range(min(2, len(deck))):
+                self.w['spent'].append(deck.pop(rng.randrange(len(deck))))
         self.fate_w, self.fate_g = FateDeck(rng), FateDeck(rng)
         self.gdeck = []
         self.s = collections.Counter()
@@ -406,7 +517,7 @@ class Game:
         # Grappled blocks the Move icon entirely -- the half cannot be played at all (core-rules 10).
         if any(CONDITIONS[c['key']].get('blocks_move') for c in self.w['conds']):
             return 0
-        if any(CONDITIONS[c['key']].get('halves_move') for c in self.w['conds']):
+        if self.burdened or any(CONDITIONS[c['key']].get('halves_move') for c in self.w['conds']):
             n //= 2
         worst = max([c['value'] for c in self.w['conds']
                      if CONDITIONS[c['key']].get('reduces_move')] or [0])
@@ -458,6 +569,40 @@ class Game:
             return c['value'] * turns + (1.5 * turns if f.get('blocks_secondary') else 0)
         return max(relief(c) for c in pool)
 
+    def sidestep(self, g):
+        """An enemy that ENDS its movement next to you hands you a Sidestep (core-rules 11).
+
+        It neither redirects nor reduces (core-rules 3): you step out of reach and the Strike that
+        was coming finds nobody, so it denies the hit outright rather than shaving it. That is what
+        makes it worth a card, and what makes losing it to Heavy Armor a real price.
+        """
+        w = self.w
+        if not self.cfg.sidestep or self.heavy_armor or w['exhausted'] or not w['hand']:
+            return False
+        if foe(g['weapon'])['ranged']:
+            return False        # stepping one square does not get you out of a bow's range
+        cards = [c for c in w['hand'] if self.cards[c][2] == 'sidestep']
+        if not cards:
+            return False
+        blocked = {o['pos'] for o in self.alive()}
+        best = None
+        for p in neighbours(w['pos']):
+            if p in blocked or cheb(p, g['pos']) <= 1:
+                continue
+            # out of this one's reach, and out of as many others' as the step allows
+            adj = sum(1 for o in self.alive() if cheb(p, o['pos']) <= 1)
+            if best is None or adj < best[0]:
+                best = (adj, p)
+        if best is None:
+            return False        # nowhere to go: cornered, and the card stays in hand
+        card = min(cards, key=self.keep)
+        w['hand'].remove(card)
+        w['discard'].append(card)
+        w['pos'] = best[1]
+        self.s['react_sidestep'] += 1
+        self.log(f"  Warrior sidesteps goblin {g['id']} with {card} -> {w['pos']}")
+        return True
+
     def shake(self, n):
         """Shake Off N: spend duration on the worst thing we can (core-rules 7)."""
         options = [c for c in self.w['conds'] if shakeable(c['key'])]
@@ -501,7 +646,7 @@ class Game:
         return dict(
             adj=sum(1 for g in alive if cheb(w['pos'], g['pos']) == 1),
             gap=min(cheb(w['pos'], g['pos']) for g in alive),
-            ranged=sum(1 for g in alive if g['weapon'] == 'bow'),
+            ranged=sum(1 for g in alive if foe(g['weapon'])['ranged']),
             hurt=w['hp'] <= self.cfg.hp / 2,
             n=len(alive),
         )
@@ -699,10 +844,11 @@ class Game:
             near = min(cheb(sim.wpos, g[0]) for g in alive)
             val -= 0.7 * near
             if near <= 4:
-                reach = sum(1 for g in alive if cheb(sim.wpos, g[0]) <= 3 or g[2]['weapon'] == 'bow')
+                reach = sum(1 for g in alive
+                            if cheb(sim.wpos, g[0]) <= 3 or foe(g[2]['weapon'])['ranged'])
                 hits = max(1, min(reach, 3)) if cfg.persistent_block else 1
                 val += 0.5 * sim.block * hits
-        melee_foes = any(g['weapon'] == 'spear' for g in self.alive())
+        melee_foes = any(not foe(g['weapon'])['ranged'] for g in self.alive())
         for i, c in enumerate(w['hand']):
             if i in played_idx:
                 continue
@@ -855,8 +1001,10 @@ class Game:
             kind = op[0]
             if kind in ('move', 'away'):
                 dist = cheb(g['pos'], wp())
-                flee = kind == 'away' or (g['weapon'] == 'bow' and dist == 1)
-                if g['weapon'] == 'bow' and not flee and dist <= 6:
+                dist_from = g['pos']
+                prof = foe(g['weapon'])
+                flee = kind == 'away' or (prof['ranged'] and dist == 1)
+                if prof['ranged'] and not flee and dist <= prof['rng']:
                     continue
                 for _ in range(op[1]):
                     if not flee and cheb(g['pos'], wp()) <= 1:
@@ -865,6 +1013,14 @@ class Game:
                     if nxt is None:
                         break
                     g['pos'] = nxt
+                # "An enemy that ENDS ITS MOVEMENT next to you" (core-rules 11), which is a rule
+                # about ARRIVING. A goblin already in your face that plays Stab & Scurry breaks out
+                # of the loop above without taking a step, and answering that costs a card for
+                # nothing -- so the trigger needs the step to have happened and the square to be new.
+                if not routing and cheb(g['pos'], wp()) <= 1 and (
+                        self.cfg.sidestep_mode == 'any'
+                        or (g['pos'] != dist_from and dist > 1)):
+                    self.sidestep(g)
                 if routing:
                     x, y = g['pos']
                     at_edge = x in (0, GRID_W - 1) or y in (0, GRID_H - 1)
@@ -878,10 +1034,11 @@ class Game:
                 others = {o['pos'] for o in self.alive() if o is not g}
                 if kind == 'rock':
                     rng_, value, ranged = 4, 1, True
-                elif g['weapon'] == 'bow':
-                    rng_, value, ranged = 6, self.cfg.goblin_dmg, True
                 else:
-                    rng_, value, ranged = 1, self.cfg.goblin_dmg, False
+                    prof = foe(g['weapon'])
+                    rng_ = prof['rng']
+                    value = prof.get('dmg') or self.cfg.goblin_dmg
+                    ranged = prof['ranged']
                 if dist > rng_:
                     continue
                 if kind == 'strike' and op[1] == 'swarm' and any(cheb(o, wp()) == 1 for o in others):
@@ -921,7 +1078,8 @@ def run_scenario(cfg, fights, seed):
         timeouts += r is None
         for k in ('rounds', 'hp_left', 'catch_breath', 'exhausted_turns', 'dazed_turns', 'daze_applied',
               'tick_damage', 'shaken', 'shaken_off', 'lifted', 'cancelled',
-                  'react_block', 'react_parry', 'react_brace', 'react_use', 'prevented_react',
+                  'react_block', 'react_parry', 'react_brace', 'react_use', 'react_sidestep',
+                  'prevented_react', 'reloads', 'shots_fired',
                   'prevented_armor', 'prevented_shieldup', 'dmg_taken', 'heavy_hit_discards',
                   'goblin_disadv', 'goblin_adv', 'goblins_fled', 'fate_miss', 'fate_crit'):
             agg[k].append(g.s[k])

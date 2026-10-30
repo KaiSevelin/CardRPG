@@ -345,7 +345,10 @@ export async function resolveAttack(actor, { verb = "strike", item, mod = 0, tar
 
   const rows = [];
   for (const target of targets) {
-    const armor = target.system.armor ?? 0;
+    // `ignores N armor` comes off the armour, never off Block: a crossbow bolt finds a gap in
+    // plate, it does not get past a raised shield (core-rules 5 keeps the two separate).
+    const pierce = line.ignores ?? 0;
+    const armor = Math.max(0, (target.system.armor ?? 0) - pierce);
     const block = target.system.block ?? 0;
     const combo = when && carries(target, when.needs) ? (when.mod ?? 0) : 0;
     const dealt = Math.max(0, fate.result + combo - armor - block);

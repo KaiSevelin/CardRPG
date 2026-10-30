@@ -216,21 +216,33 @@ recharge (see *Active abilities and recharge* in the core rules).
 
 | Encounter | Difficulty | Simulated win rate |
 |---|---|---|
-| 3 goblins with spears | Easy | 99.0% |
-| 4 goblins with spears | Moderate | 88.8% |
-| 5 goblins with spears | Hard | 64.6% |
-| 4 goblins, 2 spears + 2 bows | **Deadly** | **41.5%** |
+| 3 goblins with spears | Easy | 98.9% |
+| 4 goblins with spears | Moderate | 90.6% |
+| 5 goblins with spears | Hard | 67.5% |
+| 4 goblins, 2 spears + 2 bows | **Deadly** | **40.6%** |
 
-> **[CORRECTED 2026-10-30]** These were **99.4 / 93.2 / 75.9 / 64.6** and had been wrong since
-> 29 October. The flat-2 Catch Breath change made every fight harder and the table was never re-run —
-> the Deadly encounter was off by **23 points**. Bisected to commit `c419043`; re-run at 4000 fights
-> per row ([../sim/analysis-2026-10-30.md](../sim/analysis-2026-10-30.md) §8).
+> **[CORRECTED 2026-10-30, twice]** These read **99.4 / 93.2 / 75.9 / 64.6** until this morning,
+> when the flat-2 Catch Breath change turned out never to have been re-run and the Deadly row was
+> **23 points** stale (bisected to `c419043`). They then read **99.0 / 88.8 / 64.6 / 41.5**, and
+> those were right for a simulator that was missing a rule: **Sidestep** is printed on *Advance* and
+> had no behaviour anywhere, so every figure this project ever published was measured with one of
+> the starter deck's four reactions inert. Implementing it is worth **+1.5** against four spears and
+> **+3.6** against five ([../sim/analysis-2026-10-30.md](../sim/analysis-2026-10-30.md) §10), and
+> these rows are the **arrival** reading of core-rules §11 — the looser one is worth a point or two
+> more and is not what "arriving is answered" means.
+>
+> Each row is now a **five-seed mean** at 4000 fights — 20,000 fights a row — with a spread of
+> ±0.2 / 0.3 / 0.6 / 0.7, because a single seed at 4000 carries ±1.6 at two sigma and this project
+> has twice published differences that were not there.
 
-**A mixed group is a tier harder than a uniform one of the same size**, and now by a wider margin
-than this table used to show: four goblins with two bows (41.5%) are harder than **five** with spears
-(64.6%). The reason is narrower than first written: a mixed group is harder because it **punishes
-immobility** — the spears are not there to deal damage, they are there to stop the hero reaching the
-bows, which is why four bows alone are *less* dangerous than two bows and two spears
+**A mixed group is a tier harder than a uniform one of the same size**, and the margin widened again
+when Sidestep started firing: four goblins with two bows (40.6%) are harder than **five** with spears
+(67.5%), a gap of twenty-seven points. Sidestep widened it — it answers an enemy that closes, and the
+mixed group's whole threat is the one that does not.
+
+The reason a mixed group is harder is narrower than first written: it **punishes immobility** — the
+spears are not there to deal damage, they are there to stop the hero reaching the bows, which is why
+four bows alone are *less* dangerous than two bows and two spears
 ([../sim/analysis-2026-10-30.md](../sim/analysis-2026-10-30.md) §6). Build hard encounters by mixing
 ranges, not by adding bodies.
 

@@ -418,6 +418,19 @@ time, including as a free part of your turn — dropping things is never an acti
 untouched, since a load doesn't make you weak, and Strike is untouched, so a hauling party is never
 helpless — just easy to catch.
 
+> **[MEASURED] Burdened is the most expensive state in the game**, by a factor of two over anything
+> else measured ([../sim/analysis-2026-10-30.md](../sim/analysis-2026-10-30.md) §13). Against a mixed
+> group it costs **81.7 points** of win rate in Mail and **68.6** in Plate. The reason is arithmetic
+> rather than subtle: Slowed **halves** a printed Move, the starter deck's Moves are 1, 2 and 3, and
+> halving turns every **Move 1 into a Move 0** — so a burdened hero cannot close on an archer at
+> all. "Just easy to catch" is an understatement; against anything with reach it is fatal.
+>
+> **And Overloaded charges nothing on top.** Being Burdened costs up to 81.7 points; going on to
+> Overloaded costs nothing that can be resolved (31.4% against 34.4%, the spreads nearly touching),
+> because two random cards out of sixteen is close to free next to being Slowed. **The whole price of
+> being over your limit is the first rung** — which is a problem for the second one, recorded in
+> [equipment.md](equipment.md) §12.
+
 **Overloaded** costs you stamina, which in this game means deck. Shuffle your action deck, turn up
 **2 cards at random** and set them aside as **Spent**; they return, shuffled back into your draw
 pile, when you are no longer Overloaded, or on your next rest.
@@ -1360,12 +1373,33 @@ Examples:
 ## 11. Grid, ground and movement
 
 > **Leaving is free. Arriving is answered.** There are no opportunity attacks in this game — you may
-> walk away from an adjacent enemy for nothing — but an enemy that **ends its movement next to you**
-> hands you a *Sidestep* or a *Set Spear*. That asymmetry is the whole positional grammar, and it is
-> the reverse of most games: it is why a bow is dangerous, why closing is the hard part, and why
+> walk away from an adjacent enemy for nothing — but an enemy that **arrives next to you** hands you
+> a *Sidestep* or a *Set Spear*. **Arriving means it took a step and was not adjacent before**: an
+> enemy already in your face that shuffles a square has not arrived and hands you nothing.
+>
+> That asymmetry is the whole positional grammar, and it is the reverse of most games: it is why a
+> bow is dangerous, why closing is the hard part, and why
 > **mobility is the most valuable thing in a starter deck** — worth **29 points of win rate** against
 > a mixed group and **nothing at all** against pure melee
 > ([../sim/analysis-2026-10-30.md](../sim/analysis-2026-10-30.md) §6).
+
+**[MEASURED] The *answer* half of that grammar is now measured too, and it is the same card.**
+⚡ Sidestep had no implementation at all until 30 October — it was a word printed on *Advance*, so
+every figure this project had published was measured with one of the starter deck's four reactions
+inert ([../sim/analysis-2026-10-30.md](../sim/analysis-2026-10-30.md) §10). Firing it is worth
+**+3.6 points** against five spears, **+1.5** against four, and **nothing measurable** against a
+mixed group — the exact mirror of its own primary:
+
+> **Advance's two halves are valuable in opposite fights.** Move 3 is worth 29.5 points against
+> archers and nothing against spears; the Sidestep is worth 3.6 against spears and nothing against
+> archers. One card, never dead, and never good at both ends at once — which is what a positional
+> card should look like.
+
+**The sentence above used to say "ends its movement next to you", and that wording was worth a point
+or two of win rate on its own.** Read literally it also answers an enemy that was already adjacent
+and merely shuffled, which is a free disengage rather than an answer to an approach — 67.5% against
+69.5% on five spears, and 0.45 sidesteps a fight against 0.77. **Arrival** is what the heading always
+meant, so that is what it now says, and the same clarification governs *Set Spear*.
 
 Combat uses a square grid. All distances use **Chebyshev distance**: distance = the larger of the horizontal and vertical difference, so a diagonal step costs 1, the same as a straight one. (In Foundry: grid diagonal rule "Equidistant".)
 

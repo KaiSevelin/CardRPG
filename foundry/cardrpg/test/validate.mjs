@@ -803,6 +803,135 @@ check("cursed items with a price", pricedCurses.length ? pricedCurses.join(", ")
  */
 check("section 4 sends firearms to 10.7", /Nobody sells one/.test(equipDoc) ? "yes" : "no", "yes");
 
+/*
+ * The simulator's own copy of the catalogue (sim/combat_sim.py).
+ *
+ * WEAPONS and ARMOUR there are transcriptions of equipment.md 3, 4 and 5, and a measurement taken
+ * against a stale transcription is fiction that reads like evidence. This project has published
+ * that twice -- an encounter table 23 points out of date, and a set of single-seed figures with an
+ * explanation invented for the noise -- so the tables are held to the document they came from.
+ */
+section("the simulator's copy of the catalogue");
+
+const simSource = fs.readFileSync(path.join(root, "../../sim/combat_sim.py"), "utf8");
+
+// How the simulator's keys map onto the names in the document.
+const SIM_WEAPONS = {
+  sword: "Longsword", bow: "Shortbow", longbow: "Longbow", crossbow: "Crossbow",
+  heavy_crossbow: "Heavy Crossbow", arquebus: "Arquebus", musket: "Matchlock Musket",
+  pistol: "Matchlock Pistol",
+};
+
+/*
+ * Only the catalogue sections, because 1.2 prints a SUMMARY armour table -- armour, kg, and a
+ * sentence -- whose columns are not 5's, and it comes first in the file. Anchoring a row by its
+ * name alone finds that one and reads the wrong cells, which is the third time on this project an
+ * anchor has matched twice.
+ */
+const catalogue = equipDoc.slice(equipDoc.indexOf("## 2. Melee weapons"),
+                                 equipDoc.indexOf("## 6. Worn items"));
+
+// A row of any weapon table: name | fits | tags | hands | kg | value | strike line.
+function weaponRow(name) {
+  // 9 cells in the bow and firearm tables; the melee table carries a tenth, "For", which does not
+  // move the columns before it.
+  const row = catalogue.split("\n").find(l =>
+    l.startsWith("| **" + name + "**") && [9, 10].includes(l.split("|").length));
+  if (!row) return null;
+  const c = row.split("|").slice(1, -1).map(x => x.trim());
+  const line = c[6];
+  return {
+    kg: Number(c[4]),
+    heavy: /Heavy/.test(c[2]),
+    strike: Number(/^\*{0,2}(\d+)/.exec(line)?.[1]),
+    rng: Number(/range (\d+)/.exec(line)?.[1] ?? 1),
+    ignores: Number(/ignores (\d+) armor/.exec(line)?.[1] ?? 0),
+    reload: /Ready to reload/.test(line),
+  };
+}
+
+// One entry of a python dict-of-dicts, by its key: 'sword': dict(strike=3, rng=1, ...)
+function simEntry(key) {
+  const row = simSource.split("\n").find(l => l.trim().startsWith(key + ":") && l.includes("dict("));
+  return row ? row.slice(row.indexOf("dict(") + 5, row.lastIndexOf(")")) : null;
+}
+function simField(entry, f, dflt) {
+  const m = new RegExp(f + "=(True|False|\\d+)").exec(entry);
+  return m ? (m[1] === "True" ? true : m[1] === "False" ? false : Number(m[1])) : dflt;
+}
+
+const drift = [];
+for (const [key, name] of Object.entries(SIM_WEAPONS)) {
+  const doc = weaponRow(name);
+  if (!doc) { drift.push(name + ": no row in equipment.md"); continue; }
+  const entry = simEntry("'" + key + "'");
+  if (!entry) { drift.push(key + ": not in the simulator"); continue; }
+  for (const [f, got, want] of [
+    ["strike", simField(entry, "strike"), doc.strike],
+    ["rng", simField(entry, "rng"), doc.rng],
+    ["kg", simField(entry, "kg"), doc.kg],
+    ["heavy", simField(entry, "heavy", false), doc.heavy],
+    ["ignores", simField(entry, "ignores", 0), doc.ignores],
+    ["reload", simField(entry, "reload", false), doc.reload],
+  ]) if (String(got) !== String(want)) drift.push(`${key}.${f} ${got} != ${want}`);
+}
+check("weapons that drifted from the document", drift.length ? drift.join("; ") : "none", "none");
+
+// The armour ladder: four rungs, each with the kilograms it is bought with and whether it is the
+// Heavy Armor that blocks Sidestep (core-rules 10). Both halves of the price, both checked.
+const armourDrift = [];
+for (const [rung, name] of [[1, "Leather Armor"], [2, "Mail Shirt"], [3, "Brigandine"], [4, "Plate"]]) {
+  const row = catalogue.split("\n").find(l =>
+    l.startsWith("| **" + name + "**") && l.split("|").length === 8);
+  if (!row) { armourDrift.push(name + ": no row"); continue; }
+  const c = row.split("|").slice(1, -1).map(x => x.trim());
+  const want = { kg: Number(c[3]), heavy: /Heavy/.test(c[2]), armor: Number(/Armor (\d+)/.exec(c[5])?.[1]) };
+  const entry = simEntry(String(rung)) ?? "";
+  if (want.armor !== rung) armourDrift.push(`${name} is Armor ${want.armor}, not rung ${rung}`);
+  if (simField(entry, "kg") !== want.kg) armourDrift.push(`${name} kg ${simField(entry, "kg")} != ${want.kg}`);
+  if (simField(entry, "heavy", false) !== want.heavy) armourDrift.push(`${name} heavy != ${want.heavy}`);
+}
+check("armour rungs that drifted", armourDrift.length ? armourDrift.join("; ") : "none", "none");
+
+// core-rules 4 sets the carry limit, and the simulator charges Plate's weight against it.
+const limit = /Your \*\*limit\*\* is \*\*(\d+) kg\*\*/.exec(
+  fs.readFileSync(path.join(root, "../../rules/core-rules.md"), "utf8"))?.[1];
+check("carry limit matches core-rules", /CARRY_LIMIT = (\d+)/.exec(simSource)?.[1], limit);
+
+/*
+ * `ignores N armor` used to be prose on the verb line and nothing else: resolve.mjs subtracted the
+ * whole of a target's armour, so eight items promised something the engine never did. Prose is not
+ * a rule, which is the answer to the open question of whether this should be a tag -- and the
+ * reason it got urgent is measured, not argued: against armoured infantry an arquebus wins 52.9%
+ * of fights where a longsword wins 0.9%, and the entire gap is this one number.
+ *
+ * Now that it is a field there are two of it, so the check is that they agree. A card that says
+ * one thing and resolves another is worse than the gap was.
+ */
+const piercers = content.ITEMS.filter(i =>
+  Object.values(i.verbs ?? {}).some(v => /ignores \d+ armor/.test(v?.text ?? "")));
+check("items promising to ignore armor", piercers.length, 8);
+
+const mismatched = [];
+for (const item of piercers) {
+  for (const [name, v] of Object.entries(item.verbs ?? {})) {
+    const said = Number(/ignores (\d+) armor/.exec(v?.text ?? "")?.[1] ?? NaN);
+    if (Number.isNaN(said)) continue;
+    if (v.ignores !== said) mismatched.push(`${item.name}.${name}: says ${said}, field ${v.ignores}`);
+  }
+}
+check("items whose text and field disagree",
+  mismatched.length ? mismatched.join("; ") : "none", "none");
+
+// And the engine has to actually take it off, or the field is the prose again with extra steps.
+const resolveSource = fs.readFileSync(path.join(root, "module/resolve.mjs"), "utf8");
+check("engine subtracts what a line ignores",
+  /line\.ignores/.test(resolveSource) ? "yes" : "no", "yes");
+// Off the armour, never off Block: a bolt finds a gap in plate, not past a raised shield.
+check("ignores is kept off Block",
+  /block\s*=\s*target\.system\.block/.test(resolveSource) ? "yes" : "no", "yes");
+
+
 
 // Every bonus group should have something using it, or the group is a promise nothing keeps.
 const groupsUsed = new Set(content.ITEMS.filter(i => i.group).map(i => i.group));

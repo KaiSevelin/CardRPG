@@ -23,10 +23,9 @@ content written against them.
 
 ### 1.2 Armour is a cliff edge, so the ladder is four rungs and no more
 
-Simulation measured armour as behaving like a cliff edge: a point of it is worth far more against
-four goblins striking for 3 than against one ogre striking for 8, because it is subtracted from
-*every* hit ([../sim/](../sim/)). That is why this list runs **1 to 4** and buys the difference with
-**kilograms** rather than coin:
+Armour is subtracted from *every* hit, which makes it the strongest thing in the game and the
+hardest to price. That is why this list runs **1 to 4** and buys the difference with **kilograms**
+rather than coin:
 
 | | Armor | kg | A 40 kg limit means |
 |---|---|---|---|
@@ -40,6 +39,33 @@ four goblins striking for 3 than against one ogre striking for 8, because it is 
 > ([../sim/analysis-2026-10-30.md](../sim/analysis-2026-10-30.md) §6). So **Plate is a bet that
 > nothing will out-range you**, and it is the Ironclad's bet in particular, whose Signature *wants*
 > to be Overloaded.
+
+**[MEASURED]** All four rungs have now been run, and the ladder is right to stop at four but not for
+the reason first written ([analysis §§11–13](../sim/analysis-2026-10-30.md)):
+
+- **One point of armour is worth up to 48.5 points of win rate** — Leather to Mail against a mixed
+  group. That is more than mobility (29.5) and six times a damage rung (7.4). **Armour is the
+  strongest single axis this project has measured**, and nine kilograms is a cheap way to buy it.
+- **The cliff is at the point where armour equals the enemy's Strike.** A goblin strikes for 3, so at
+  armor 3 the only thing that lands is a +2 or a Critical — two cards in twenty. Every published
+  encounter is **99.5% or better by Brigandine**, which means **rungs 3 and 4 are priced for monsters
+  this game has not written yet.** A GM should read them as *a different enemy roster*, not as a
+  better coat, and the old corollary stands: when heroes reach armour, retire the trash mob rather
+  than fielding more of it.
+- **The Heavy Armor drawback is free, which is a fault.** Plate wins 100.0% with the ⚡ Sidestep block
+  and 100.0% without it, because at armor 4 nothing can hurt you and so you never needed to dodge.
+  **A drawback that bites only when the item is weak is not a price** — it costs Brigandine something
+  and Plate nothing, which is backwards. `[OPEN]` below.
+- **The weight is the whole cost, and it is the largest number on this page.** Plate alone is free
+  (100.0%); Plate and 18 kg of loot is **31.4%**, and the control proves it is the kilograms rather
+  than the coat — Mail burdened to the same 43 kg collapses further still, to **7.2%**. Burdened
+  halves a printed Move, and the starter deck's Moves are 1, 2 and 3, so **halving turns a Move 1
+  into a Move 0.**
+
+> **So the real price of Plate is eleven kilograms of carrying capacity.** Mail leaves 26 kg before
+> Burdened; Plate leaves 15. Which ties this ladder straight to §10.2: **a party that means to carry
+> treasure out cannot wear Plate in.** And Plate does cushion the fall it causes — burdened at Plate
+> is 31.4% where burdened at Mail is 7.2% — so it is a real decision rather than a trap.
 
 ### 1.3 Firearms exist to answer armour
 
@@ -55,6 +81,27 @@ Which prices the whole firearm line: they hit hardest, they ignore most, and **e
 ⇄ Ready to reload.** That is not a new verb — it is the one four of the sixteen starter cards already
 carry, and a simulated slung weapon showed what the Ready economy is worth
 ([analysis §8](../sim/analysis-2026-10-30.md)).
+
+**[MEASURED] This is the best-confirmed claim on the page** ([analysis §15](../sim/analysis-2026-10-30.md)).
+Against five enemies identical in everything but what they are wearing:
+
+| Against armor 3 | Win rate |
+|---|---|
+| Longsword and shield | **0.8%** |
+| Longbow | 2.1% |
+| Crossbow | 2.4% |
+| Heavy Crossbow | 34.6% |
+| **Arquebus** | **46.5%** |
+
+**An arquebus wins the fights a longsword loses 99 times in 100.** Armour at 3 switches off every
+melee weapon and every bow in the catalogue; the arquebus barely notices, losing four points of win
+rate from unarmoured spears to armoured ones, which is what `ignores 2` means in play.
+
+> **[FIXED] None of it worked in the game until now.** `resolve.mjs` subtracted the whole of a
+> target's armour and read nothing from the verb, so **`ignores N armor` was prose on eight items and
+> did nothing.** That settles §12's open question: as text it is not a rule, it is a promise. It is
+> a field now, taken off **armour and never off Block** — a bolt finds a gap in plate, it does not
+> get past a raised shield — and the validator holds the field and the printed text to each other.
 
 ---
 
@@ -106,6 +153,35 @@ is the floor they are measured against.
 **The longbow is the one that does not reload**, and that is its whole argument against a crossbow
 that hits harder: a bow fires every turn, a crossbow fires every other turn. Against five goblins the
 bow wins; against one armoured knight the crossbow does.
+
+**[MEASURED] True, and conditional on a feature this page never mentioned**
+([analysis §14](../sim/analysis-2026-10-30.md)). Expected damage **a turn**, reload included:
+
+| at target armor 2 / 4 | With ✊ Strong | Without it |
+|---|---|---|
+| **Longbow** | 2.10 / 0.50 | 1.15 / 0.15 |
+| **Crossbow** | 1.53 / 0.60 | 1.53 / 0.60 |
+
+> **The Crossbow is a weapon for a character who is not Strong.** For somebody who is, it does not
+> overtake the longbow until the target wears **Plate**, and then by a tenth of a point; without
+> Strong the crossover comes forward to **armor 2** and by armor 4 the crossbow does four times the
+> work.
+
+The cause is that **`Heavy` does two unrelated jobs**: it marks the weight class that blocks
+⚡ Sidestep, *and* it gates Strong's +1. A longbow is Heavy for its draw weight and collects a melee
+feature's bonus by accident; a crossbow — the weapon a weak person can actually use, which was
+historically the point of one — is not Heavy and collects nothing. `[OPEN]` in §12.
+
+**But an arithmetic crossover is not a playable difference.** Against five enemies in Brigandine the
+longbow wins **2.1%** and the crossbow **2.4%** — and without Strong, **0.0%** against 2.5%. The
+crossing is real and it happens between *hopeless* and *nearly hopeless*: the weapon that actually
+answers armour is the **Heavy Crossbow** (34.6%), and the answer is a **firearm** (§1.3).
+
+**And the longbow is a longsword with range 10.** Both are Heavy Strike 3, so they do identical
+damage at every armour value, and the only thing the bow gives up is the shield. Against five spears
+that trade is worth **+22.9 points** (90.1% against 67.2%), and taking Strong away *widens* it to
++24.9 — so the cause is **reach, not the tag.** It is the clearest overpowered line measured so
+far.
 
 ---
 
@@ -892,6 +968,22 @@ part: the target gets one clean turn, so a poisoner who uses it is betting on th
 
 ## 12. Open
 
+- **Settled: the page is simulated, and finding the ladder's price needed a rule first.**
+  The armour ladder and reload are both measured ([analysis §§11–15](../sim/analysis-2026-10-30.md)),
+  and **`ignores N armor` is a field** rather than prose, which answers the question this section
+  used to carry: as text it was not a rule, and the engine had been subtracting the whole of a
+  target's armour while eight items promised otherwise.
+
+  **The ladder could not be priced until ⚡ Sidestep existed.** Heavy Armor's drawback is the loss of
+  Sidestep reactions (core-rules §10), and Sidestep was a word printed on *Advance* with no
+  behaviour anywhere in the simulator — so **every figure this project ever published was measured
+  with one of the starter deck's four reactions inert.** Implementing it moved the published
+  encounter table ([starter-cards.md](starter-cards.md)) and is worth **+3.6 points** against five
+  spears and nothing at all against archers, which is the mirror of its own primary: *Advance's two
+  halves are valuable in opposite fights.* It also turned up an ambiguity worth a point or two in
+  core-rules §11's own wording — *"ends its movement next to you"* answers an enemy that merely
+  shuffles, where *arriving* does not — now settled in favour of arrival.
+
 - **Settled: how any of it reaches a party.** §10 answers both of the questions this section used
   to carry open — *what a party finds* and *who sells what* — and it needed **no new subsystem**,
   because three mechanisms already existed and none had been pointed at loot. The rate is
@@ -927,15 +1019,26 @@ part: the target gets one clean turn, so a poisoner who uses it is betting on th
 - **[OPEN]** **A mount.** The Lance needs one, the Culverin implies draught animals, and
   [conditions.md](conditions.md) §4.2 settled only that a mount is *not* a condition. Its Move,
   Health, turn and the rules for being unhorsed are all unwritten.
-- **[OPEN]** **Nothing on this page is simulated.** The two numbers most worth measuring are the
-  **armour ladder** — armour is a cliff edge and Plate at 4 against Leather at 1 has never been run —
-  and **reload**, since every firearm and crossbow turns on a ⇄ Ready whose value was only measured
-  once, for a slung bow.
 - **[OPEN]** **Nothing in the engine enforces a curse.** `curse` is a string and `identified` a
   boolean, and both are honest records the GM reads — but nothing stops a player unequipping a cursed
   item, and the sheet does not yet use `shownName` to hide an unidentified one. That is the same
   `[OPEN]` [leveling.md](leveling.md) §4 already carries for prohibitions in general: *"you may not
   wear armour" needs the HUD or the rules to stop it, or it is a text obligation after all.* A cursed
   item is the first case where that gap is visible at the table.
-- **[OPEN]** Whether **ignores N armor** should be a tag rather than text on the verb line. Three
-  weapon families use it now; a fourth would make it a tag.
+- **[OPEN]** **Heavy Armor's drawback is free.** Plate wins 100.0% with the Sidestep block and
+  100.0% without it, because at armor 4 nothing can hurt you and so the dodge was never needed. It
+  therefore costs **Brigandine** something and **Plate** nothing, which is backwards for a price
+  that is supposed to rise with the rung. Candidates: move the drawback onto something armour cannot
+  substitute for (a Move penalty, which Burdened already shows is enormous), or accept it as
+  flavour and stop calling it a cost.
+- **[OPEN]** **`Heavy` does two unrelated jobs** — the weight class that blocks Sidestep, and the
+  gate on ✊ Strong's +1. That is why a longbow collects a melee feature's bonus and a crossbow,
+  which a weak person can actually use, collects nothing (§3). Two tags would fix it; whether that
+  is worth a tag is the question.
+- **[OPEN]** **Overloaded charges nothing.** Being Burdened costs up to **81.7 points** of win rate;
+  going on to Overloaded costs **nothing measurable** on top (31.4% against 34.4%, spreads nearly
+  touching), because two random cards Spent out of sixteen is close to free next to being Slowed.
+  The second rung of the carry ladder is decoration.
+- **[OPEN]** **Rungs 3 and 4 have no opponent.** Every published encounter is 99.5% or better by
+  Brigandine, so two of the four armour rungs are priced for monsters that do not exist. This is the
+  same gap as the mount: the game has goblins, and the catalogue has outgrown them.

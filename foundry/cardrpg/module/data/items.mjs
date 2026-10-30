@@ -147,6 +147,16 @@ export class ItemSlateData extends SlateData {
       areaKind: new fields.StringField({
         required: false, blank: true, initial: "", choices: ["", "blast", "aimed"]
       }),
+      /*
+       * How much of the target's armour this line goes straight through (equipment.md 1.3).
+       *
+       * It was prose on the verb's `text` for as long as firearms have existed, and prose is not a
+       * rule: resolve.mjs subtracted the whole of a target's armour and eight items quietly
+       * promised otherwise. Simulation is what made it urgent -- against armoured infantry an
+       * arquebus wins 52.9% of fights and a longsword 0.9%, and that entire gap is this number
+       * (../../sim/analysis-2026-10-30.md 13).
+       */
+      ignores: new fields.NumberField({ integer: true, min: 0, nullable: true, initial: null }),
       text: new fields.StringField({ required: false, blank: true, initial: "" })
     });
 

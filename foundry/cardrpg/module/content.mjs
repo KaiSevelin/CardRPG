@@ -236,13 +236,13 @@ export const ITEMS = [
     name: "Mace", slot: "hands", fits: ["belt"], hands: 1, tags: ["heavy", "melee"],
     weight: 2, value: 10, kind: "Weapon",
     blurb: "Flanged. It does not cut, which is the point against a man in mail.",
-    verbs: { strike: verb(3, { text: "ignores 1 armor" }) }
+    verbs: { strike: verb(3, { ignores: 1, text: "ignores 1 armor" }) }
   },
   {
     name: "Warhammer", slot: "hands", fits: ["back"], hands: 1, tags: ["heavy", "melee"],
     weight: 3, value: 25, kind: "Weapon",
     blurb: "A beak on one side for the plate and a hammer on the other for the man in it.",
-    verbs: { strike: verb(4, { text: "ignores 1 armor" }) }
+    verbs: { strike: verb(4, { ignores: 1, text: "ignores 1 armor" }) }
   },
   {
     name: "Spear", slot: "hands", fits: ["back"], hands: 1, tags: ["melee", "thrown"],
@@ -295,13 +295,13 @@ export const ITEMS = [
     name: "Crossbow", slot: "hands", fits: ["back"], hands: 2, tags: ["ranged"],
     weight: 3, value: 60, kind: "Weapon",
     blurb: "Anyone can be taught one in a week, which is why lords dislike them.",
-    verbs: { strike: verb(4, { range: 8, text: "ignores 1 armor; Ready to reload" }) }
+    verbs: { strike: verb(4, { ignores: 1, range: 8, text: "ignores 1 armor; Ready to reload" }) }
   },
   {
     name: "Heavy Crossbow", slot: "hands", hands: 2, tags: ["heavy", "ranged"],
     weight: 5, value: 120, kind: "Weapon",
     blurb: "Cranked with a windlass. It goes through a shield and the arm behind it.",
-    verbs: { strike: verb(5, { range: 10, text: "ignores 1 armor; Ready to reload" }) }
+    verbs: { strike: verb(5, { ignores: 1, range: 10, text: "ignores 1 armor; Ready to reload" }) }
   },
 
   /* ---- firearms: matchlocks, and the reason plate stopped being worth its weight ---- */
@@ -309,19 +309,19 @@ export const ITEMS = [
     name: "Matchlock Pistol", slot: "hands", fits: ["belt"], hands: 1, tags: ["ranged"],
     weight: 1, value: 70, kind: "Weapon",
     blurb: "One hand, so it goes beside a sword. A brace of them is two shots before a reload.",
-    verbs: { strike: verb(3, { range: 4, text: "ignores 2 armor; Ready to reload" }) }
+    verbs: { strike: verb(3, { ignores: 2, range: 4, text: "ignores 2 armor; Ready to reload" }) }
   },
   {
     name: "Arquebus", slot: "hands", fits: ["back"], hands: 2, tags: ["heavy", "ranged"],
     weight: 4, value: 90, kind: "Weapon",
     blurb: "Loud, slow, and it does not care what you are wearing.",
-    verbs: { strike: verb(5, { range: 8, text: "ignores 2 armor; Ready to reload" }) }
+    verbs: { strike: verb(5, { ignores: 2, range: 8, text: "ignores 2 armor; Ready to reload" }) }
   },
   {
     name: "Matchlock Musket", slot: "hands", hands: 2, tags: ["heavy", "ranged"],
     weight: 5, value: 150, kind: "Weapon",
     blurb: "A rest to fire it from and a minute to load it. Worth both.",
-    verbs: { strike: verb(6, { range: 12, text: "ignores 2 armor; Ready to reload" }) }
+    verbs: { strike: verb(6, { ignores: 2, range: 12, text: "ignores 2 armor; Ready to reload" }) }
   },
 
   /* ---- armour: four rungs, bought with kilograms, because armor is a cliff edge ---- */
@@ -514,7 +514,7 @@ export const ITEMS = [
     weight: 3, value: 300, kind: "Make", group: "make",
     // The best thing in the catalogue and not magic: it buys back the Ready.
     blurb: "A steel prod and a goat's-foot lever. It reloads in the hand.",
-    verbs: { strike: verb(4, { range: 8, text: "ignores 1 armor; reloads on a free hand, not a Ready" }) }
+    verbs: { strike: verb(4, { ignores: 1, range: 8, text: "ignores 1 armor; reloads on a free hand, not a Ready" }) }
   },
   {
     name: "Focus Pendant", slot: "neck", weight: 0, value: 400, kind: "Power", group: "power",
