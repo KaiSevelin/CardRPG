@@ -8,7 +8,8 @@ Three parts:
 
 1. **The standard** — value bands, cost budgets, the spell format and how a combo is written, so that
    content written months apart stays comparable and can be balanced as a set.
-2. **The 48 Signatures** — one card or feature per major node, the thing each node is named for
+2. **The 48 Signatures**, and the **48 tactics** — one card and one standing feature per major node.
+   The Signature is what the node lets you *do*; the tactic is how it makes you *stand*
    ([leveling.md](leveling.md) §5a).
 3. **The minor-node pools** — the ordinary cards, formulas and miracles the nodes *between* the
    titles hand out, which is most of a character.
@@ -513,6 +514,149 @@ differ in what they take.**
 §3.5 makes that general: each god now states an **Obedience** that applies to everything it grants,
 because a miracle is free to learn and paid for every time you ask. These twelve are repeated there
 under their gods.
+
+### 2.5 Tactics — how each specialization fights  **[DRAFT]**
+
+A Signature says what a node lets you *do*. A **tactic** says how it makes you *stand*.
+
+> **A tactic is a feature, always on, that makes a different position correct.**
+
+#### Why a feature and not a card
+
+Measured, not assumed: **a one-of-sixteen card is in your hand 31% of turns**
+([../sim/analysis-2026-10-30.md](../sim/analysis-2026-10-30.md) §4). A thing that is true a third of
+the time cannot shape how you play — it can only be a trick you sometimes have. A tactic has to be
+true on the turn you are deciding where to stand, which means it has to be true every turn.
+
+#### Why players should have them at all
+
+**Monsters already do.** Pack Tactics and Shield Wall have been in core-rules §9 since the rules were
+written, and they are the only two positional rules in the game — so the monster side has had a
+positional grammar and the player side has had cards. **A tactic is that machinery pointed the other
+way.**
+
+And positioning is where it matters most: mobility is worth **29.5 points of win rate** in the fights
+where it counts (§11), which makes *where you stand* the strongest decision a player makes and the one
+with almost nothing written about it.
+
+#### The three rules that stop 48 of these being power creep
+
+**1. One tactic per character — the deepest title you own.** An Assassin does not also fight like a
+Thief; the tactic is **replaced**, not accumulated ([leveling.md](leveling.md) §5). So however deep
+the graph runs, a character has exactly one, and each can therefore be strong.
+
+**2. A tactic names a position or a behaviour, never a number.** It may grant **advantage**, **remove
+a penalty**, **add a reaction**, or **restrict movement** — it may never add +N to anything. Advantage
+does not stack, which caps it for free; a flat bonus would not be capped at all.
+
+**3. A tactic must fail the swap test.** Offer it to a sibling node: if it would work there, it is not
+a tactic, it is a house rule with a name on it ([leveling.md](leveling.md) §5a.2).
+
+> **This is also the answer to a question §11 raises.** That section recommends **no flanking bonus**,
+> because positioning already swings more than three damage rungs. A tactic looks like the opposite —
+> the Assassin's is flanking in all but name. The difference is that it belongs to **one node**:
+> positional rewards exist in this game, but each is somebody's, so **nobody has them all**. A
+> universal flanking rule would reward every character for the same thing; forty-eight different
+> tactics reward forty-eight different things, which adds decisions rather than power.
+
+#### Way of Strength
+
+| Node | Tactic | |
+|---|---|---|
+| **Infantry** | **Shoulder to Shoulder** | While an ally is adjacent to you, neither of you can be moved against your will. |
+| **Guardian** | **The Door** | An enemy adjacent to you that would move to another square adjacent to you must **stop** instead. You do not pin them; you stop them getting past. |
+| **Ironclad** | **Immovable** | Forced movement never moves you, and difficult ground costs you nothing. |
+| **Artillerist** | **Ranging** | If you did not Move this turn, your ranged attacks **ignore cover**. |
+| **Tactician** | **The Call** | At the start of a round, name a square. The first ally to end movement there draws fate with **advantage** on their next action. |
+| **Executioner** | **No Second Thought** | When an enemy drops to 0 Health from your Strike, **Move 1** at once. |
+| **Knight** | **The Charge** | If you moved 3 or more squares in a straight line this turn, your Strike **cannot be answered by a reaction**. |
+| **Berserker** | **Forward Only** | You may never move away from the nearest enemy — and while two or more enemies are adjacent to you, you cannot be **Dazed** or **Compelled**. |
+| **Musketeer** | **The Firing Step** | You may not Strike an adjacent enemy at all — and your ranged attacks **never** take the ranged-in-melee penalty. |
+| **Gladiator** | **The Crowd Wants Blood** | While you are the nearest target to the enemy, you draw fate with **advantage** on reactions. |
+| **Street Fighter** | **The Alley** | While both your hands are empty, an enemy adjacent to you may not Move away except by forced movement. |
+| **Bodyguard** | **Never Leave Them** | When an ally moves, you may **Move 1** as a reaction to follow — and figures never block that move. |
+
+#### Way of Shade
+
+| Node | Tactic | |
+|---|---|---|
+| **Thief** | **Never Where You Looked** | An enemy that attacks you and misses may not attack you again this round. |
+| **Scout** | **Furthest Forward** | While no ally is nearer the enemy than you, you have **cover from every figure** on the field, not only those in the line. |
+| **Duellist** | **One at a Time** | While exactly one enemy is adjacent to you, it has **disadvantage** against you and you have **advantage** against it. |
+| **Assassin** | **From Behind** | You have **advantage** against any enemy that is adjacent to one of your allies. |
+| **Cutpurse** | **Light Fingers** | The first time each fight you end your turn adjacent to an enemy that has not attacked you, take one item from its belt. |
+| **Burglar** | **Through the Window** | You ignore difficult ground, and no enemy blocks your movement in a square that holds an obstacle. |
+| **Archer** | **Overwatch** | Once a round, when an enemy **ends its movement** in your line of sight and within range, Strike it as a reaction. |
+| **Trapmaker** | **The Ground You Chose** | Every square you have occupied this fight is **difficult ground** for your enemies. |
+| **Acrobat** | **Never Cornered** | When you are attacked, you may **Move 1** as a reaction before damage is worked out. |
+| **Bard** | **The Running Commentary** | An enemy within 3 of you that would draw fate with **advantage** draws normally instead. |
+| **Gambler** | **The Long Odds** | While two or more enemies are adjacent to you, you draw fate with **advantage**. |
+| **Half-mage** | **One Hand Free** | You may ✦ Cast with a weapon in your other hand. Casting never needs a hand free. |
+
+**The Assassin and the Archer are the two this section was asked for**, and they are worth comparing
+because they answer the same question from opposite ends. *From Behind* rewards standing where the
+enemy is **already busy**; *Overwatch* punishes the enemy for **arriving** anywhere you can see. One
+is about your position, the other about theirs — and *Overwatch* is the only tactic in the game that
+extends core-rules §11's *arriving is answered* past the square you are standing in.
+
+#### Way of Mind
+
+A caster's hard problem is not what to cast, it is **where to stand** — ranged-in-melee, line of
+sight, and their own Blast. Every tactic here is about that.
+
+| Node | Tactic | |
+|---|---|---|
+| **Blood Magic** | **Your Own Blood Is Nearest** | You may always Cast on yourself whatever the spell's range, and never take disadvantage for it. |
+| **Necromancy** | **The Dead Are Furniture** | Corpses are **cover** for you and **difficult ground** for your enemies. |
+| **Elemental Magic** | **The Sphere Holds** | Your own ✸ Blast spares **you** alone, whatever the card says. |
+| **Poison** | **The Patient Hand** | An enemy you have put a condition on this fight has **disadvantage** against you. |
+| **Glamour** | **Never Quite There** | Ranged attacks against you from more than 3 squares always have **disadvantage**. |
+| **Tattoo Magic** | **Nothing to Prepare** | You may ✦ Cast with both hands full, and **Silenced does not stop you** — your spells are on your skin, not in your mouth. |
+| **Asceticism** | **The Still Point** | If you did not Move this turn, you cannot be moved and attacks against you have **disadvantage**. |
+| **Shadow Magic** | **At Home in the Dark** | While you stand in a **shadowed** square, enemies more than 2 squares away cannot target you at all. |
+| **Spiritualism** | **Something Is Always Listening** | You know whether any square within 6 is shadowed, high ground or difficult ground before anyone steps on it. |
+| **Household Magic** | **The House Helps** | Indoors you ignore difficult ground, and you know where every door is before you see it. |
+| **Ward Magic** | **The Standing Guard** | One extra reaction each round, usable **only** to answer a ✦ Cast. |
+| **Divination** | **Already Seen** | You are never surprised, and at the start of any round you may **swap your place in the initiative order** with a willing ally's. |
+
+**Tattoo Magic's is the only player answer to Silenced in the game.** [conditions.md](conditions.md)
+§8 records that Silenced is the one condition that can empty a turn and that it does so only to
+casters; the tattoo mage is the caster it cannot touch, which is what paying for your magic in skin
+rather than words should buy.
+
+#### Way of Faith
+
+Each is shaped by the god's **Obedience** (§3.5), because a priest's tactics are not theirs.
+
+| Node | Tactic | |
+|---|---|---|
+| **The Eternal God** | **No Shelter for the Guilty** | Enemies get no **cover from figures** against you. |
+| **The Eternal Spirit** | **Where the Air Goes** | You may reach any ally you can see, ignoring cover and range, for anything that heals or helps. |
+| **Sessyfyn** | **The Tide Comes In** | At the start of each round, move any one willing ally **1 square**. |
+| **Valtor** | **The Drum Does Not Stop** | You may never 🛡 Defend — and if you moved toward an enemy this turn, your Strike **cannot be answered by a reaction**. |
+| **Fagar** | **Nobody Remembers Your Face** | The first enemy to attack you each fight draws fate with **disadvantage**. |
+| **Vulpet** | **Alone and Unafraid** | While no ally is within 2, you cannot be **Compelled** and enemies have **disadvantage** against you. |
+| **Brendan** | **Roots** | A square you have stood in for a whole round is **high ground** for you and **difficult ground** for your enemies. |
+| **The Grey** | **Close Enough to Touch** | Moving into a square adjacent to an enemy costs you nothing, even out of difficult ground, and never sets off a reaction. |
+| **The Purple** | **The Cup Passes** | An enemy will not willingly **end its movement** adjacent to you; doing so costs it a half. |
+| **The Yellow** | **Nobody Knows Where You Are** | Enemies treat you as standing where you were at the **start of the round**. |
+| **Vax** | **The Line** | While two or more allies are adjacent to you, none of you can be moved and none of you is blocked by cover. |
+| **The First** | **What Does Not Die** | At 0 Health you keep acting as though at 1 until the end of the round in which you fell. |
+
+**The Yellow's is the strangest and the most Yellow.** *Nobody Knows Where You Are* means the enemy
+aims at a lie: you moved, and they did not notice. It costs nothing and changes every enemy's targeting
+decision, which is the god of the rumour doing on the battlefield exactly what she does in a city.
+
+#### Open
+
+- **None of the 48 is simulated.** The simulator has one hero, so the four that most obviously need a
+  party — *Shoulder to Shoulder*, *From Behind*, *The Line*, *Never Leave Them* — cannot be measured at
+  all yet.
+- **Three lean on terrain the simulator does not model**: *The Ground You Chose*, *At Home in the Dark*
+  and *Roots*. The rules for difficult ground, shadow and high ground are new (§11) and the map in
+  [../sim/](../sim/) is still open ground.
+- **[OPEN]** Whether a character may **keep** an earlier tactic by spending a node on it. The rule
+  above replaces; a minor node that preserves the old one is the obvious variant and it is not written.
 
 ---
 

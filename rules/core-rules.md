@@ -1347,7 +1347,14 @@ bonus instead of a battlefield.
 
 **High ground removes a penalty rather than adding a bonus.** That is on purpose — positioning is
 already the strongest axis in the game, so the reward for taking the hill is that figures stop
-shielding your target, not a flat plus. It is what the **ground** resource a specialization pays in
+shielding your target, not a flat plus.
+
+> **There is no universal flanking rule, and there is not going to be one.** Positional rewards in
+> this game belong to **specializations**, one each: an Assassin has advantage against an enemy that
+> is busy with somebody else, an Archer shoots whatever ends its movement in sight, a Guardian stops
+> an enemy sliding past ([way-cards.md](way-cards.md) §2.5). Forty-eight different tactics reward
+> forty-eight different positions, which adds decisions; one flanking rule would reward every
+> character for the same thing, which only adds power to the axis that already has the most. It is what the **ground** resource a specialization pays in
 actually buys ([leveling.md](leveling.md) §5a.1).
 
 ### Forced movement

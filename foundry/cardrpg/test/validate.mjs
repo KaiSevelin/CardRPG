@@ -356,6 +356,48 @@ if (mindFrom < 0 || mindTo < 0) {
  * what a miracle is paid in. A school is what it cost you to learn; a god is what it costs you to
  * ask, so a god with no Obedience is a god that grants its miracles free.
  */
+/*
+ * Tactics (way-cards 2.5): one per major node, and none of them a flat bonus.
+ *
+ * The second half is the check that matters. A tactic is always on and there are forty-eight of
+ * them, so the only thing keeping that from being power creep is the rule that a tactic names a
+ * position or a behaviour and never a number -- advantage, a removed penalty, a reaction, a
+ * restriction on movement, but never +N. That rule erodes one well-meaning card at a time, so it is
+ * grepped rather than trusted.
+ */
+const tacticsFrom = waycards.indexOf("### 2.5 Tactics");
+const tacticsTo = waycards.indexOf("## 3. Minor-node content");
+if (tacticsFrom < 0 || tacticsTo < 0) {
+  check("section 2.5 found", "missing", "present");
+} else {
+  const tactics = [];
+  for (const line of waycards.slice(tacticsFrom, tacticsTo).split("\n")) {
+    if (!line.startsWith("|") || /^\|[\s:|-]+\|$/.test(line)) continue;
+    const cells = line.replace(/^\||\|$/g, "").split("|").map(c => c.trim());
+    if (cells.length === 3 && cells[0] !== "Node") {
+      tactics.push({ node: cells[0].replace(/\*\*/g, ""), text: cells[2] });
+    }
+  }
+  check("tactics written", tactics.length, 48);
+
+  const flat = tactics.filter(t => /\+\s*\d/.test(t.text)).map(t => t.node);
+  check("tactics that add a flat bonus", flat.length ? flat.join(", ") : "none", "none");
+
+  // Every node that has a Signature must have a tactic, and nothing else may.
+  const signed = new Set();
+  for (const line of waycards.slice(
+    waycards.indexOf("## 2. The 48 Signatures"), tacticsFrom
+  ).split("\n")) {
+    if (!line.startsWith("|") || /^\|[\s:|-]+\|$/.test(line)) continue;
+    const cells = line.replace(/^\||\|$/g, "").split("|").map(c => c.trim());
+    if (cells.length >= 3 && !["Node", "God", "School"].includes(cells[0])) {
+      signed.add(cells[0].replace(/\*\*/g, ""));
+    }
+  }
+  const noTactic = [...signed].filter(n => !tactics.some(t => t.node === n));
+  check("major nodes with no tactic", noTactic.length ? noTactic.join(", ") : "none", "none");
+}
+
 const faithFrom = waycards.indexOf("### 3.5 Way of Faith");
 const faithTo = waycards.indexOf("### 3.6 Targeted counters");
 if (faithFrom < 0 || faithTo < 0) {

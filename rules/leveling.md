@@ -243,7 +243,7 @@ builds. Four things do:
 | **The node costs you something** | Expressed in rules that already exist — a prune, Strain, an **obligation** (§4), a slot you must keep free, cards that dilute a deck. Never a penalty bolted on. |
 | **Slot and resource pressure** | A build that needs a free hand cannot carry a shield (core-rules §4). That exclusion is live, and it is the model for the rest. |
 
-### The six parts
+### The eight parts
 
 | Part | What it says |
 |---|---|
@@ -252,8 +252,17 @@ builds. Four things do:
 | **Leans on** | the **one** axis it pushes, from the list below |
 | **Pays in** | the resource it spends, and what it is therefore bad at |
 | **Signature** | the single card or feature the build is named for |
+| **Tactic** | a standing feature that makes a different **position** correct ([way-cards.md](way-cards.md) §2.5) — always on, never a number, and you only ever have your deepest title's |
 | **Not** | what it is *not* about — a major node is a fighting identity, so skills belong on the minor nodes around it, never here |
 | **Opens** | which nodes it puts on the frontier |
+
+**Signature and Tactic are the pair, and they divide cleanly**: the Signature is what the node lets
+you **do**, the tactic is how it makes you **stand**. A Signature is a card and is therefore in hand
+about a third of the time; a tactic is a feature and is therefore true on the turn you are deciding
+where to go, which is the only turn it would matter on.
+
+> The heading said *six* and the table had **seven** rows before the tactic was added. Counting one's
+> own list is apparently the hardest part of writing one.
 
 The **axes** are not new mechanics; they are the levers the engine already has:
 
