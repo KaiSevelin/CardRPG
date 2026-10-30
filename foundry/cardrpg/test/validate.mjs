@@ -617,7 +617,29 @@ for (const item of [...content.ITEMS, ...content.NPC_GEAR]) {
 check("item keys not in the schema",
   strayItemKeys.size ? [...strayItemKeys].join(", ") : "none", "none");
 
-check("player items written", content.ITEMS.length, 91);
+check("player items written", content.ITEMS.length, 131);
+
+/*
+ * Potions and ammunition are the two kinds a party BUYS rather than finds, and each has a rule that
+ * is easy to erode:
+ *
+ *  - a potion is DRUNK, so it has a Use line and nothing else -- a potion with a Strike line is a
+ *    thrown flask wearing the wrong label (rules/equipment.md 8.1 has those);
+ *  - magical ammunition is spent on a shot and is gone, so every piece is `consumed` -- a reusable
+ *    magic arrow is the Unquiet Quiver's whole reason to exist, and nothing else may do it.
+ */
+const potions = content.ITEMS.filter(i => i.kind === "Potion");
+check("potions written", potions.length, 12);
+const notDrunk = potions.filter(i => !i.verbs?.use || i.verbs?.strike).map(i => i.name);
+check("potions that are not simply drunk", notDrunk.length ? notDrunk.join(", ") : "none", "none");
+
+const ammo = content.ITEMS.filter(i => i.kind === "Ammunition");
+check("magical ammunition written", ammo.length, 13);
+const reusable = ammo.filter(i => !i.consumed).map(i => i.name);
+check("ammunition that is not spent", reusable.length ? reusable.join(", ") : "none", "none");
+// Ammunition rides the Strike, so it must not carry a verb line of its own (core-rules 4).
+const acting = ammo.filter(i => i.verbs).map(i => i.name);
+check("ammunition with a verb line of its own", acting.length ? acting.join(", ") : "none", "none");
 
 /*
  * Loot variation is about ACCESS, not numbers (rules/equipment.md 9.4): a magic item is the one

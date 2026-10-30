@@ -749,6 +749,264 @@ export const ITEMS = [
     blurb: "Bone, and lighter than bone should be.",
     grants: { spellSlots: 2 },
     text: "Obligation: you may never wear armour, and nobody but you may heal you."
+  },
+  /* ---- potions: the Brewer's craft ---- */
+  {
+    name: "Tincture of the Clear Eye", slot: "belt", fits: ["hands"], hands: 1, tags: ["consumable"],
+    weight: 0, value: 30, kind: "Potion", consumed: true,
+    blurb: "Cloudy, and it stings going down.",
+    verbs: { use: verb(0, { text: "Shake Off 1 on anything" }) }
+  },
+  {
+    name: "Potion of Stone", slot: "belt", fits: ["hands"], hands: 1, tags: ["consumable"],
+    weight: 0, value: 40, kind: "Potion", consumed: true,
+    blurb: "Grit in the bottom of the flask, and it settles in you the same way.",
+    verbs: { use: verb(0, { text: "for the fight you cannot be moved -- and your Move is 0" }) }
+  },
+  {
+    name: "Brewer's Reserve", slot: "belt", fits: ["hands"], hands: 1, tags: ["consumable"],
+    weight: 0, value: 45, kind: "Potion", consumed: true,
+    blurb: "The brewer keeps a cask of it back and will not say what is in it.",
+    verbs: { use: verb(0, { text: "your next Cast is +2" }) }
+  },
+  {
+    name: "Greater Healing Potion", slot: "belt", fits: ["hands"], hands: 1, tags: ["consumable"],
+    weight: 0, value: 150, kind: "Potion", consumed: true,
+    blurb: "Twice the price of the ordinary sort and rather more than twice the work.",
+    verbs: { use: verb(0, { text: "Heal 8" }) }
+  },
+  {
+    name: "Potion of the Hare", slot: "belt", fits: ["hands"], hands: 1, tags: ["consumable"],
+    weight: 0, value: 55, kind: "Potion", consumed: true,
+    blurb: "It tastes of running, which is not a taste anyone can describe.",
+    verbs: { use: verb(0, { text: "for the fight your Move values are +2" }) }
+  },
+  {
+    name: "Potion of the Bear", slot: "belt", fits: ["hands"], hands: 1, tags: ["consumable"],
+    weight: 0, value: 60, kind: "Potion", consumed: true,
+    blurb: "Thick as honey. You will want both hands to lift the bottle.",
+    verbs: { use: verb(0, { text: "for the scene, carry +20 kg and Might +2" }) }
+  },
+  {
+    name: "Philtre of Borrowed Courage", slot: "belt", fits: ["hands"], hands: 1, tags: ["consumable"],
+    weight: 0, value: 65, kind: "Potion", consumed: true,
+    blurb: "Somebody else's nerve, and they are not getting it back.",
+    verbs: { use: verb(0, { text: "for the fight you cannot be Compelled" }) }
+  },
+  {
+    name: "Potion of the Owl", slot: "belt", fits: ["hands"], hands: 1, tags: ["consumable"],
+    weight: 0, value: 70, kind: "Potion", consumed: true,
+    blurb: "Your eyes do not change. What they are willing to see does.",
+    verbs: { use: verb(0, { text: "for the fight no square is shadowed for you" }) }
+  },
+  {
+    name: "Draught of Second Breath", slot: "belt", fits: ["hands"], hands: 1, tags: ["consumable"],
+    weight: 0, value: 90, kind: "Potion", consumed: true,
+    blurb: "One swallow and your lungs believe the fight has just started.",
+    verbs: { use: verb(0, { text: "Catch Breath without spending your turn" }) }
+  },
+  {
+    name: "Potion of the Quick Hand", slot: "belt", fits: ["hands"], hands: 1, tags: ["consumable"],
+    weight: 0, value: 110, kind: "Potion", consumed: true,
+    blurb: "You will have put the bottle down before you remember drinking it.",
+    verbs: { use: verb(0, { text: "one extra reaction this round" }) }
+  },
+  {
+    name: "Potion of Iron Skin", slot: "belt", fits: ["hands"], hands: 1, tags: ["consumable"],
+    weight: 0, value: 120, kind: "Potion", consumed: true,
+    blurb: "It goes down like filings and sits there like a breastplate.",
+    verbs: { use: verb(0, { text: "for the fight, armor +2" }) }
+  },
+  {
+    name: "Elixir of the Long Night", slot: "belt", fits: ["hands"], hands: 1, tags: ["consumable"],
+    weight: 0, value: 200, kind: "Potion", consumed: true,
+    blurb: "It lends. It is very clear about lending.",
+    verbs: { use: verb(0, { text: "+6 temporary Health; it fades at your next rest" }) }
+  },
+
+  /* ---- magical ammunition (core-rules 4) ---- */
+  {
+    name: "Blunt Head", slot: "belt", tags: ["consumable"],
+    weight: 0, value: 20, kind: "Ammunition", consumed: true,
+    blurb: "No point at all, which is the point.",
+    text: "Bow or crossbow. The target is Off-Balance (1). No save."
+  },
+  {
+    name: "Bodkin Points", slot: "belt", tags: ["consumable"],
+    weight: 0, value: 25, kind: "Ammunition", consumed: true,
+    blurb: "A square spike, hardened. It is looking for a gap and will make one.",
+    text: "Bow or crossbow. Ignores 2 armor."
+  },
+  {
+    name: "Hollow Bolt", slot: "belt", tags: ["consumable"],
+    weight: 0, value: 30, kind: "Ammunition", consumed: true,
+    blurb: "The shaft unscrews. A fiddly, brilliant, disreputable idea.",
+    text: "Crossbow. Carries one potion; whatever you hit drinks it."
+  },
+  {
+    name: "Screaming Shaft", slot: "belt", tags: ["consumable"],
+    weight: 0, value: 35, kind: "Ammunition", consumed: true,
+    blurb: "Bored through so the air goes through it wrong.",
+    text: "Bow. Dazed (1), resist Presence 5."
+  },
+  {
+    name: "Chalked Shaft", slot: "belt", tags: ["consumable"],
+    weight: 0, value: 40, kind: "Ammunition", consumed: true,
+    blurb: "It leaves a smear that everyone can see and nobody can wipe off.",
+    text: "Bow or crossbow. The target is Marked (1). No save."
+  },
+  {
+    name: "Moth-wing Fletching", slot: "belt", tags: ["consumable"],
+    weight: 0, value: 40, kind: "Ammunition", consumed: true,
+    blurb: "It does not fly straight. It arrives anyway.",
+    text: "Bow. This shot ignores cover entirely."
+  },
+  {
+    name: "Oil-wrapped Shaft", slot: "belt", tags: ["consumable"],
+    weight: 0, value: 45, kind: "Ammunition", consumed: true,
+    blurb: "Tow and pitch below the head. Lit from the match in your teeth.",
+    text: "Bow or crossbow. Burning 1 (2)."
+  },
+  {
+    name: "Net Bolt", slot: "belt", tags: ["consumable"],
+    weight: 0, value: 50, kind: "Ammunition", consumed: true,
+    blurb: "A folded net on a blunt head. It opens in the air.",
+    text: "Crossbow. Grappled (1), resist Might 5."
+  },
+  {
+    name: "Whistling Shaft", slot: "belt", tags: ["consumable"],
+    weight: 0, value: 55, kind: "Ammunition", consumed: true,
+    blurb: "Whoever it passes becomes very interested in who sent it.",
+    text: "Bow. The target is Compelled (1) -- at you."
+  },
+  {
+    name: "Frost-dipped Bolt", slot: "belt", tags: ["consumable"],
+    weight: 0, value: 60, kind: "Ammunition", consumed: true,
+    blurb: "Cold enough that the quiver frosts around it.",
+    text: "Crossbow. Frozen 1 (1)."
+  },
+  {
+    name: "Grapnel Bolt", slot: "belt", tags: ["consumable"],
+    weight: 0, value: 70, kind: "Ammunition", consumed: true,
+    blurb: "Barbed, with fifty feet of silk line. A bolt for closing.",
+    text: "Crossbow. YOU are pulled to a square adjacent to the target."
+  },
+  {
+    name: "Thunder-shot", slot: "belt", tags: ["consumable"],
+    weight: 0, value: 80, kind: "Ammunition", consumed: true,
+    blurb: "A paper cartridge of scrap. Nothing else gives a non-caster an area.",
+    text: "Firearm only. The shot is Blast 1 on the target's square."
+  },
+  {
+    name: "Silvered Head", slot: "belt", tags: ["consumable"],
+    weight: 0, value: 90, kind: "Ammunition", consumed: true,
+    blurb: "Silver remembers what it was aimed at.",
+    text: "Bow or crossbow. You may target an Invisible enemy you have seen this fight."
+  },
+
+  /* ---- the conditions no item could inflict ---- */
+  {
+    name: "Loose Cobble", slot: "pack", weight: 4, value: 300,
+    kind: "Wonder", group: "wonder",
+    // Not a Drain, and the cheapest here, because it is a trap: set it down and that is the item.
+    // The Trapmaker's Set without the Trapmaker -- a mechanic, not a Signature.
+    blurb: "It was part of a street once and has not forgiven anyone.",
+    text: "Set it down. The first enemy to enter its square is Off-Balance (1)."
+  },
+  {
+    name: "Drowned Bell", slot: "belt", weight: 2, value: 400,
+    kind: "Wonder", group: "wonder",
+    blurb: "It rings wet. There is no water in it.",
+    active: { text: "Everything within 2 is Wet (1).", boundary: "combat" }
+  },
+  {
+    name: "Hooked Gauntlet", slot: "hands", hands: 1, weight: 2, value: 600,
+    kind: "Wonder", group: "wonder",
+    blurb: "Three hooks along the knuckle, set the wrong way round.",
+    active: { text: "An adjacent enemy is Disarmed (1), resist Might 5.", boundary: "combat" }
+  },
+  {
+    name: "Thunderstone", slot: "pack", weight: 1, value: 650,
+    kind: "Wonder", group: "wonder",
+    blurb: "Throw it down hard. Do not be holding it.",
+    active: { text: "One enemy within 3 is Stunned (1), resist Might 7.", boundary: "combat" }
+  },
+  {
+    name: "Gag of the Nine", slot: "neck", weight: 0, value: 700,
+    kind: "Wonder", group: "wonder",
+    // Silenced is the only condition that can empty a turn, and only a caster's. A Drain at range 3
+    // is a specific answer to enemy magic; two of these should not silence everybody.
+    blurb: "Nine knots in a cord. Somebody counted them out loud, once.",
+    active: { text: "One enemy within 3 is Silenced (1), resist Lore 5.", boundary: "combat" }
+  },
+  {
+    name: "Winter Cloak", slot: "cloak", weight: 2, value: 750,
+    kind: "Wonder", group: "wonder",
+    blurb: "The hem is always a little frozen, in any season.",
+    active: { text: "Everything adjacent to you is Slowed (1).", boundary: "combat" }
+  },
+  {
+    name: "Serpent's Tooth Ring", slot: "fingers", weight: 0, value: 850,
+    kind: "Wonder", group: "wonder",
+    blurb: "A fang set as a stone, still wet at the root.",
+    active: { text: "One adjacent enemy is Poisoned 1 (2).", boundary: "combat" }
+  },
+
+  /* ---- the systems still untouched ---- */
+  {
+    name: "Locked Casket", slot: "pack", weight: 3, value: 500,
+    kind: "Wonder", group: "wonder",
+    blurb: "No hinge, no seam, and a keyhole that is not for a key.",
+    text: "Holds one secret. Nobody but you may learn it, by any means."
+  },
+  {
+    name: "Surveyor's Chain", slot: "pack", weight: 2, value: 600,
+    kind: "Wonder", group: "wonder",
+    blurb: "Sixty-six feet of brass links that measure what matters rather than what is there.",
+    text: "In a challenge, your first Progress each scene is free."
+  },
+  {
+    name: "Far-sight Monocle", slot: "head", weight: 0, value: 700,
+    kind: "Wonder", group: "wonder",
+    blurb: "Ground by somebody who had opinions about distance.",
+    text: "Your Ranged items' range is doubled."
+  },
+  {
+    name: "Mnemonic Stone", slot: "fingers", weight: 0, value: 800,
+    kind: "Wonder", group: "wonder",
+    blurb: "Worn smooth by a thumb that was trying to remember something.",
+    text: "One extra skill card in your skill deck, of any approach you already have."
+  },
+  {
+    name: "Vagrant's Charm", slot: "neck", weight: 0, value: 950,
+    kind: "Wonder", group: "wonder",
+    // Exhausted is the one state that is nobody's fault: it comes from an empty draw pile and
+    // cannot be resisted, and until now nothing answered it but a Catch Breath.
+    blurb: "A knot of road-dust and hair. Its owner never sat down.",
+    text: "You are never Exhausted."
+  },
+  {
+    name: "Discriminating Wand", slot: "hands", hands: 1, tags: ["arcane"],
+    weight: 0, value: 1100, kind: "Wonder", group: "wonder",
+    // Section 11: "Aimed belongs on precise or discriminating magic, and should cost more."
+    blurb: "It knows whose side everyone is on, which is more than most people do.",
+    text: "Your Blasts count as Aimed."
+  },
+  {
+    name: "The Scrivener's Knife", slot: "pack", weight: 0, value: 1200,
+    kind: "Wonder", group: "wonder",
+    // The only item that touches deck-building mid-campaign, and a rope to hang yourself with: a
+    // 12-card deck pruned well matches a full 16 and pruned badly collapses to 45%.
+    blurb: "For cutting out what should not have been written.",
+    active: { text: "Prune one card from your action deck for the rest of the day.", boundary: "longRest" }
+  },
+  {
+    name: "The Unquiet Quiver", slot: "back", weight: 2, value: 4500,
+    kind: "Relic", group: "wonder",
+    // Worth exactly as much as the ammunition you own: a bare quiver is 4500 gold of nothing.
+    blurb: "It rattles when there is nothing in it.",
+    text: "Every piece of magical ammunition you fire returns to it when the fight ends. "
+      + "Obligation: it will not hold ordinary arrows, and you may carry no other quiver."
   }
 ];
 

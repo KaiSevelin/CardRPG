@@ -170,6 +170,25 @@ Action cards say **what** you do (the verb). Equipped items say **how well** (th
 
 If an equipped item has no line for a verb, you can't use that verb with that item.
 
+### Ammunition
+
+**Ordinary ammunition is not tracked.** A quiver is a weight in your pack (*Carrying*, below) and
+that is the whole of it: nobody counts arrows, and a bow with a quiver behind it simply works.
+
+**Magical ammunition is tracked, because there is one of it.** A single arrow, bolt or ball that does
+something an ordinary one cannot:
+
+- **Nocking it is free.** It rides the ⚔ Strike and costs no half of its own — the same reason a belt
+  is free to reach into (§4, *What fits where*). A magic arrow that cost an action would never be
+  worth firing.
+- **One piece per Strike**, and it is **gone** whether the shot lands or misses.
+- It must suit the weapon: an arrow is not a ball.
+
+> **This is how an archer gets what a caster has.** A caster prepares spells and chooses before the
+> fight what they can do; an archer carries shafts and chooses the same way. It is the one place in
+> the rules where **coin buys a condition** — so each piece is narrow, each is spent, and the list is
+> in [equipment.md](equipment.md) §8.3.
+
 ### Shove, Trip and Grapple
 
 > **A Shove, a Trip and a Grapple are Strikes that spend their damage.**

@@ -209,6 +209,8 @@ item list until now.
 
 ## 8. Consumables
 
+### 8.1 Thrown and field
+
 | Item | Slot | kg | Value | Use |
 |---|---|---|---|---|
 | **Healing Potion** | Belt, 1 hand | 0 | 50 g | Heal 4, then discard |
@@ -227,6 +229,78 @@ and why a potion is the one magic-adjacent thing a party can simply buy.
 cannot be the only answer. [conditions.md](conditions.md) §10 records the open question: a potion that
 removes any condition would make gold the counter to half the game's content, which is why the
 Antidote is narrow and the Cleansing Draught costs 150 gold.
+
+### 8.2 Potions — the Brewer's craft
+
+*"Brewers make potions"* is one line of the world document and it is a whole craft. A potion is
+**drunk**, which makes it the only magic in the game that works on somebody who has no idea how it
+works — you can pour one into an unconscious friend.
+
+| Potion | Value | Use |
+|---|---|---|
+| **Tincture of the Clear Eye** | 30 g | ⛓ **Shake Off 1** on anything |
+| **Potion of Stone** | 40 g | For the fight you cannot be **moved** — and your Move is **0** |
+| **Brewer's Reserve** | 45 g | Your next ✦ Cast is **+2** |
+| **Healing Potion** | 50 g | **Heal 4** |
+| **Potion of the Hare** | 55 g | For the fight your Move values are **+2** |
+| **Potion of the Bear** | 60 g | For the scene, **carry +20 kg** and ✊ Might **+2** |
+| **Philtre of Borrowed Courage** | 65 g | For the fight you cannot be **Compelled** |
+| **Potion of the Owl** | 70 g | For the fight **no square is shadowed** for you |
+| **Draught of Second Breath** | 90 g | **Catch Breath** without spending your turn |
+| **Potion of the Quick Hand** | 110 g | **One extra reaction** this round |
+| **Potion of Iron Skin** | 120 g | For the fight, **armor +2** |
+| **Greater Healing Potion** | 150 g | **Heal 8** |
+| **Elixir of the Long Night** | 200 g | **+6 temporary Health.** It fades at your next rest |
+
+**Potion of Stone is the cheap one that is also a decision**, and it is here to prove a potion need
+not be a strict gain: immovable and immobile at once, which is magnificent on a bridge and suicidal
+against archers — mobility being worth 29.5 points in exactly those fights
+([../sim/analysis-2026-10-30.md](../sim/analysis-2026-10-30.md) §6).
+
+**Tincture of the Clear Eye costs 30 gold and that is deliberate.**
+[conditions.md](conditions.md) §10 records the worry: *a potion that removes any condition would make
+gold the counter to half the game's content*. **Shake Off 1** is the weakest rung there is, and
+simulation put a dispel on an action card at **−2.1 points of win rate** (analysis §4) — so the cheap
+generic answer is cheap precisely because it is nearly worthless, and the narrow ones (Antidote,
+Cleansing Draught) cost more for doing more.
+
+### 8.3 Magical ammunition
+
+The rule is core-rules §4: **ordinary ammunition is not tracked, magical ammunition is, nocking it is
+free, and it is gone whether the shot lands or misses.**
+
+> **This is how an archer gets what a caster has.** A caster prepares spells and decides before the
+> fight what they can do. An archer carries shafts and decides the same way — so this list is
+> deliberately built out of **conditions**, which is the one place in the rules where coin buys one.
+
+| Ammunition | Value | For | Does |
+|---|---|---|---|
+| **Blunt Head** | 20 g | bow, crossbow | The target is **Off-Balance (1)**. No save |
+| **Bodkin Points** | 25 g | bow, crossbow | **Ignores 2 armor** |
+| **Hollow Bolt** | 30 g | crossbow | Carries one **potion**. Whatever you hit drinks it |
+| **Screaming Shaft** | 35 g | bow | **Dazed (1)**, resist 👑 Presence 5 |
+| **Chalked Shaft** | 40 g | bow, crossbow | The target is **Marked (1)**. No save |
+| **Moth-wing Fletching** | 40 g | bow | This shot **ignores cover** entirely |
+| **Oil-wrapped Shaft** | 45 g | bow, crossbow | **Burning 1 (2)** |
+| **Net Bolt** | 50 g | crossbow | **Grappled (1)**, resist ✊ Might 5 |
+| **Whistling Shaft** | 55 g | bow | The target is **Compelled (1)** — at you |
+| **Frost-dipped Bolt** | 60 g | crossbow | **Frozen 1 (1)** |
+| **Grapnel Bolt** | 70 g | crossbow | **You** are pulled to a square adjacent to the target |
+| **Thunder-shot** | 80 g | **firearm only** | The shot is ✸ **Blast 1** on the target's square |
+| **Silvered Head** | 90 g | bow, crossbow | You may target an **Invisible** enemy you have seen this fight |
+
+**The Hollow Bolt is the best thing on this page** and it costs 30 gold: it turns every potion in §8.2
+into a ranged attack, which means a party with an archer can deliver a Tincture of the Clear Eye to
+an ally across the battlefield — or an Elixir of the Long Night, or a Potion of Stone to somebody who
+did not ask for one. One item multiplied by thirteen.
+
+**The Grapnel Bolt moves the shooter, not the target**, which is the only thing on the list that does.
+An archer who wants to be somewhere is usually an archer who wants to be somewhere *else*, so this is
+the odd one: a bolt for closing, and the Acrobat and the Scout are the two who would want it.
+
+**Thunder-shot is firearm-only and that is the point.** Nothing else in the catalogue gives a
+non-caster an **area**, and §11 is explicit that Blast is the cheap kind — so an arquebus with a
+thunder-shot is the one way a Musketeer answers a crowd.
 
 ---
 
@@ -421,16 +495,83 @@ everyone**, which is what a Shadow mage wants and nobody else does. And **The Hu
 you for carrying it badly** rather than for carrying it, which is the most interesting shape an
 obligation can have: it is free in the fights it is built for.
 
+#### 9.9 The conditions no item could inflict
+
+The last coverage pass (§9.4) filled the **systems** — Strain, Spent, initiative, Lift. It left the
+**conditions**: nine of them could be suffered and no item could cause one. These are the nine, and
+every one is a **Drain** with a recharge, because an item that applies a condition every turn is a
+specialization and not a thing you buy.
+
+| Item | Slot | Value | Line |
+|---|---|---|---|
+| **Loose Cobble** | Pack | 300 g | Set it down. The first enemy to enter its square is **Off-Balance (1)** |
+| **Drowned Bell** | Belt | 400 g | **Drain:** everything within 2 is **Wet (1)**. *Recharge: combat.* |
+| **Hooked Gauntlet** | 1 hand | 600 g | **Drain:** an adjacent enemy is **Disarmed (1)**, resist ✊ 5. *Recharge: combat.* |
+| **Thunderstone** | Pack | 650 g | **Drain:** one enemy within 3 is **Stunned (1)**, resist ✊ 7. *Recharge: combat.* |
+| **Gag of the Nine** | Neck | 700 g | **Drain:** one enemy within 3 is **Silenced (1)**, resist 📜 5. *Recharge: combat.* |
+| **Winter Cloak** | Cloak | 750 g | **Drain:** everything adjacent to you is **Slowed (1)**. *Recharge: combat.* |
+| **Serpent's Tooth Ring** | Fingers | 850 g | **Drain:** one adjacent enemy is **Poisoned 1 (2)**. *Recharge: combat.* |
+
+**Gag of the Nine is the one to be careful with.** Silenced is the only condition that can empty a
+turn and it does so only to casters (core-rules §7), so an item that hands it out for 700 gold is a
+*specific* answer to enemy magic — which is good, and is why it is a Drain at range 3 rather than
+something you do every round. A party that keeps meeting mages should be able to buy a gag; a party
+that buys two should not get to silence everybody.
+
+**Loose Cobble is not a Drain and is the cheapest thing here**, because it is a trap: you set it
+down, somebody walks into it, and that is the whole item. It is the Trapmaker's *Set* without the
+Trapmaker, which is the access rule (§9.4) working exactly as written — a mechanic, not a Signature.
+
+#### 9.10 The systems still untouched
+
+| Item | Slot | Value | Line |
+|---|---|---|---|
+| **Locked Casket** | Pack | 500 g | Holds one **secret**. Nobody but you may learn it, by any means |
+| **Surveyor's Chain** | Pack | 600 g | In a challenge, your first **Progress** each scene is free |
+| **Far-sight Monocle** | Head | 700 g | Your **Ranged** items' range is **doubled** |
+| **Mnemonic Stone** | Fingers | 800 g | One extra **skill card** in your skill deck, of any approach you already have |
+| **Vagrant's Charm** | Neck | 950 g | You are never **Exhausted** |
+| **Discriminating Wand** | 1 hand | 1100 g | Your ✸ **Blasts** count as ✵ **Aimed** |
+| **The Scrivener's Knife** | Pack | 1200 g | **Drain:** **prune** one card from your action deck for the rest of the day. *Recharge: long rest.* |
+
+**The Discriminating Wand is the most expensive thing that does no damage**, and §11 says why: *"Aimed
+belongs on precise or discriminating magic, and should cost more — a higher-tier item, a
+specialization, or a formula with a price attached."* This is that item, and it is 1100 gold because
+the alternative is standing somewhere else.
+
+**Vagrant's Charm reaches the one state that is nobody's fault.** Exhausted comes from an empty draw
+pile (core-rules §8) — it is not inflicted and it cannot be resisted, and until now nothing in the
+game answered it but a Catch Breath. 950 gold for never being caught with an empty deck is the kind
+of thing a veteran should be able to buy.
+
+**The Scrivener's Knife is the only item that touches deck-building mid-campaign.** Simulation is
+blunt about pruning: a 12-card deck pruned *well* matches a full 16 and pruned *badly* collapses to
+45% ([leveling.md](leveling.md) §4). So an item that prunes on demand is worth 1200 gold and is also
+a rope to hang yourself with.
+
+#### 9.11 One more relic
+
+| Relic | Slot | Value | Line | **Obligation** |
+|---|---|---|---|---|
+| **The Unquiet Quiver** | Back | 4500 g | Every piece of **magical ammunition** you fire returns to it when the fight ends. | It will not hold ordinary arrows, and you may carry **no other quiver** |
+
+**It is the most expensive relic and it does nothing at all on its own**, which is what makes it
+interesting: it is worth exactly as much as the ammunition you own (§8.3). A bare quiver is 4500 gold
+of nothing; a quiver and a dozen silvered heads is an archer who never runs out of the right answer.
+And the obligation is the sharpest in the catalogue — **no ordinary arrows** means that when the
+magic runs out you are holding a stick.
+
 ---
 
 ## 10. Open
 
-- **Settled: all of it is in the system** — **91 items** in `content.mjs`, up from nine. **Forty**
-  are magic or crafted: 24 wonders across four value tiers, 4 relics, 6 smith-works and 6 jeweller's
-  pieces. The validator checks the count, that every key exists on the schema, that no bonus group
+- **Settled: all of it is in the system** — **131 items** in `content.mjs`, up from nine. **Thirty
+  eight wonders**, 5 relics, 6 smith-works, 6 jeweller's pieces, **12 potions** and **13 pieces of
+  magical ammunition**. The validator checks the count, that every key exists on the schema, that no bonus group
   is left unused but `body` and `training` (which belong to features), that the magic items still
-  reach **every** mechanic §9.4 lists, that **nothing touches Brace**, and that **no relic is free
-  of its obligation**.
+  reach **every** mechanic §9.4 lists, that **nothing touches Brace**, that **no relic is free of
+  its obligation**, that **a potion is simply drunk** rather than thrown, and that **every piece of
+  ammunition is spent** and carries no verb line of its own.
 
   **The schema did need two changes, and the second explains an old absence.** An item's `bonus` was
   **combat-verb shaped only**, so *"🌑 Shadow +2 on locks and mechanisms"* could not be written
@@ -447,6 +588,10 @@ obligation can have: it is free in the fights it is built for.
   once, for a slung bow.
 - **[OPEN]** Whether **ignores N armor** should be a tag rather than text on the verb line. Three
   weapon families use it now; a fourth would make it a tag.
+- **[OPEN]** **Who sells what.** A hundred and thirty-one items and no rule for where any of them
+  is bought. The world document names the crafts — smiths, brewers, jewellers — and
+  [skill-rules.md](skill-rules.md) §6 has downtime; what is missing is the sentence that says a town
+  has a brewer, a city has a jeweller, and a relic is never for sale.
 - **[OPEN]** **Loot tables.** Ninety-one items and no rule for what a party finds, where, or how
   often. The tiers in §9.5–9.8 are priced for it — minor, lesser, greater, relic — and the thing
   still missing is the table that says a kobold warren yields minor and a dragon yields a relic.
