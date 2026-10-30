@@ -232,7 +232,8 @@ lasting effect**, this one often hands you the lasting effect and makes it a car
 
 | Trad save | Here |
 |---|---|
-| Poison, disease | **Taint** goes into a deck (core-rules §8). No roll. It is in you now. |
+| Poison | the **Poisoned** condition (core-rules §7) — Dazed and N damage a turn, running out when its duration does |
+| Disease, corruption | **Taint** goes into a deck (core-rules §8). No roll. It is in you now, and it is still there next week. |
 | Massive damage, death | **Wounds** and the Unconscious rules (core-rules §8) |
 | Fear, horror | **[OPEN]** — Fear or Madness cards in the skill deck ([ideas.md](ideas.md)) |
 

@@ -25,9 +25,12 @@ function conditionField() {
     duration: new fields.NumberField({ integer: true, min: 0, nullable: true, initial: null }),
     /*
      * Intensity, for the conditions whose config says `valued`. Null everywhere else, and the tray
-     * prints it only when it is there -- so seventeen of nineteen tokens still show one number.
+     * prints it only when it is there -- so most tokens still show one number.
+     *
+     * The floor is 0, not 1, because Poisoned 0 is a real rung: the nausea with no damage behind it.
+     * A valued condition is free to have a bottom rung that does nothing but its side effect.
      */
-    value: new fields.NumberField({ integer: true, min: 1, nullable: true, initial: null }),
+    value: new fields.NumberField({ integer: true, min: 0, nullable: true, initial: null }),
     creatorId: new fields.StringField({ required: false, blank: true, initial: "" })
   }));
 }

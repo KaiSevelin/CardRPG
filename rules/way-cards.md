@@ -156,19 +156,23 @@ against a knight — so a band cannot price them and only the simulator can. **W
 send them to §4**, which is where all four of them are. They are also the ones to be stingy with: three or four in the whole game, not one per
 node.
 
-**Poison is priced in Tainting, and the dial is *when*, not *how hard*** (core-rules §8). One word
-on the card decides which pile the Taint lands in, and that is the whole difference between a venom
-and a vial of something awful:
+**Poison is priced in Poisoned N, and the scale starts at 0** (core-rules §7). *Poisoned 0* is Dazed
+and nothing else; each rung above adds that much damage a turn on top. **Poisoned N is Burning N plus
+Dazed**, so it costs one rung more than Burning for the same number:
 
-| | Lands in | Costs |
+| Poisoned | Costs | Is about |
 |---|---|---|
-| **slow** | the **discard** — it comes round at a moment nobody chose | the cheaper half of a strength-1 formula |
-| **fast** | the **hand** — 1 damage past armor at once, and a hand one card short | strength 2, because it is damage now *and* damage later |
+| **0** | a card, or strength 1 | a Burning 1 — and the rung Burning does not have |
+| **1** | strength 2 | a Burning 2 |
+| **2** | strength 3 | a Burning 3 |
+| **3+** | **monsters only** | |
 
-**Taint is the only thing a card can do that outlives the fight**, and that is what keeps the numbers
-tiny: **Tainting 1 is a real effect** and **Tainting 2 is a big spell.** Three Taint makes a character
-**Afflicted** — max Health −3 until they are below three again — so a caster who deals four has taken
-something off the sheet rather than out of a Health pool.
+**Disease is priced in Tainting, and it is a different thing from poison** — the line is whether it
+outlives the fight (core-rules §8). Taint is the only thing a card can do that does, which is what
+keeps the numbers tiny: **Tainting 1 is a real effect** and **Tainting 2 is a big spell.** Three Taint
+makes a character **Afflicted** — max Health −3 until they are below three again — so a caster who
+deals four has taken something off the sheet rather than out of a Health pool. The **fast/slow** dial
+decides which pile the card lands in: the hand, resolving at once, or the discard, waiting.
 
 **Acid is priced in Corrode, and it is the only effect that spends gear** (core-rules §8). It needs
 no condition of its own: what acid does to a person is **Burning**, which even gets the water rule
@@ -448,7 +452,7 @@ Formulas, with their strength in brackets. Strength is the slot cost.
 | **Blood Magic** | **Blood Price** (2) | Strike 4 at range 3, ignoring armor. Costs **2 of your own Health**. |
 | **Necromancy** | **Call the Unquiet** (3) | A corpse within 2 rises and fights for you until the fight ends. |
 | **Elemental Magic** | **Wall of the Sphere** (2) | A 3-square line of your element: cover, and difficult ground, until your next turn. |
-| **Poison** | **Wither** (2) | **Tainting 1** on one target, resist ✊ Might 5. |
+| **Poison** | **Wither** (2) | **Poisoned 1 (2)** on one target, resist ✊ Might 5 — Dazed, and 1 a turn past armor. |
 | **Glamour** | **Not Here** (2) | You are **Invisible** until you attack or are attacked. |
 | **Tattoo Magic** | **Graven Strength** (1) | A permanent tattoo: **+2 Strike with Heavy items** — and the GM writes down a secret. |
 | **Asceticism** | **Nothing Left to Take** (1) | While your **hand is empty**, you cannot be reduced below 1 Health. |
@@ -581,7 +585,7 @@ deal against an ironclad and nothing at all against a goblin, so its value is se
 rather than by the card, and no band can price it. It is the one card in this section most worth
 simulating.
 
-### 3.4 Way of Mind — twenty formulas (plus the counters in §3.6)
+### 3.4 Way of Mind — twenty-one formulas (plus the counters in §3.6)
 
 Beyond the twelve Signatures. **Strength is the slot cost** (§1.4), so the bracketed number is what
 it takes out of the budget. Each school's full list is still open; these are its second and third
@@ -597,8 +601,9 @@ entries, weighted toward the schools the combo work touched.
 | **Blood** | **Boil** | 3 | **Burning 3 (2)**, resist ✊ 7. Costs **2 Health**. |
 | **Necromancy** | **Grave Chill** | 2 | ✵ Aimed 2 · **Dazed (1)**, resist ✊ 5. One **bound Taint** card. |
 | **Poison** | **Slick** | 1 | ◎3 · **Off-Balance (1)**. No save. |
-| **Poison** | **The Quick Dose** | 2 | ☣ **Tainting 1, fast** — into the hand, resolving at once — on one adjacent target, resist ✊ 7. |
-| **Poison** | **The Long Dose** | 1 | ☣ **Tainting 2, slow** — into the discard — on one target at ◎2, resist ✊ 5. It will come round. |
+| **Poison** | **The Quick Dose** | 3 | **Poisoned 2 (2)** on one adjacent target, resist ✊ 7. Two a turn, and no secondary. |
+| **Poison** | **The Long Dose** | 1 | **Poisoned 0 (3)** on one target at ◎2, resist ✊ 5. No damage at all — three rounds of a man who cannot use his off hand. |
+| **Poison** | **The Grey Sickness** | 2 | ☣ **Tainting 1, slow** on one adjacent target, resist ✊ 7. Not a poison: a **disease**, and it is still there next week. |
 | **Elemental** | **Flesh of the Earth** | 2 | ✦ ◎3 · **Burning 1 (2)** and ⚗ **Corrode 1**. Acid: it eats the armour as well as the man. |
 | **Glamour** | **Wrong Face** | 2 | **Dazed (2)**, resist 👁 7. The GM writes down a secret. |
 | **Glamour** | **The Evil Eye** | 2 | **Cursed** on one target you can see — a temporary Miss in its fate deck, until drawn. The GM writes down a secret. |

@@ -45,12 +45,11 @@ CARDRPG.effects = {
    */
   shake: { label: "CARDRPG.Effect.Shake", icon: "breaking-chain" },
   /*
-   * Tainting N: N Taint cards into a deck you play from (core-rules 8). This is how POISON works,
-   * and it has been in the rules since they were written with no effect to apply it -- `tainting`
-   * existed only as an NPC tactic label. It reuses the body-taint face rather than inventing an
-   * icon, because the thing it deals is literally that card.
+   * Tainting N: N Taint cards into a deck you play from (core-rules 8). Disease, corruption and
+   * cursed places -- NOT poison, which is the `poisoned` condition below. The line between them is
+   * whether it outlives the fight: a venom does not, a plague does.
    */
-  tainting: { label: "CARDRPG.Effect.Tainting", icon: "vomiting" },
+  tainting: { label: "CARDRPG.Effect.Tainting", icon: "virus" },
   /*
    * Corrode N: N off the target's armor, until it is repaired. This is how ACID works, and it is
    * the only thing in the game that spends GEAR -- a resource leveling 5a.1 names ("gear you can
@@ -146,7 +145,27 @@ CARDRPG.conditions = {
     label: "CARDRPG.Condition.Burning",
     icon: "fire-silhouette",
     valued: true,
+    damagePerTurn: true,
     cancels: ["wet", "frozen"]
+  },
+  /*
+   * Poisoned N: Dazed, and N damage at the start of your turn.
+   *
+   * It is **Burning plus Dazed**, and that is deliberate -- the Dazed rides along at every value,
+   * which is what makes a poison not a fire with a different icon, and it is why the scale starts at
+   * **0**. Poisoned 0 is the nausea alone: no damage, still sick. Burning has no such rung.
+   *
+   * The Dazed is `blocksSecondary`, the flag Dazed itself uses, so it costs no code at all.
+   *
+   * No `cancels`: water puts out a fire and does nothing for a poison. That one absence is the other
+   * half of what separates them.
+   */
+  poisoned: {
+    label: "CARDRPG.Condition.Poisoned",
+    icon: "vomiting",
+    valued: true,
+    damagePerTurn: true,
+    blocksSecondary: true
   },
   /*
    * Frozen is cold's answer to Burning and the mirror of it in shape as well as fiction: Burning

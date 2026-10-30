@@ -15,17 +15,17 @@ duration ticks at the start of the **creator's** turn, so a condition always cos
 exactly one of their own turns wherever the creator sits in the initiative order
 ([core-rules.md](core-rules.md) §7).
 
-**Two of the twenty carry a second number.** A `valued` condition has an **intensity** as well as a
-duration, printed before it: **Burning 3 (2)** is three damage a turn for two turns. Only fire and
-ice have it, and that is the whole policy — §2.1 says why.
+**Three of the twenty-one carry a second number.** A `valued` condition has an **intensity** as well
+as a duration, printed before it: **Burning 3 (2)** is three damage a turn for two turns. Only fire,
+poison and ice have it, and that is the whole policy — §2 says why.
 
 ---
 
-## 1. The twenty
+## 1. The twenty-one
 
 Four kinds, and the kind is what tells you how to write for it.
 
-### 1.1 Subtractions — twelve
+### 1.1 Subtractions — thirteen
 
 These take something away. They are the fighter's vocabulary.
 
@@ -40,12 +40,19 @@ These take something away. They are the fighter's vocabulary.
 | **Disarmed** | `disarmed` | drop-weapon | Blocks ⇄ Ready, and ⚔ with the disarmed item. |
 | **Burning** | `burning` | fire-silhouette | **Burning N**: N damage at the start of your turn. Meets neither armor nor Block. **Cancels with Wet and Frozen** (§6). |
 | **Frozen** | `frozen` | frozen-body | **Frozen N**: your Move values are **reduced by N**, floor 0. You still play both halves and keep your reactions. **Cancels with Burning** (§6). |
+| **Poisoned** | `poisoned` | vomiting | **Poisoned N**: you are **Dazed**, and take N damage at the start of your turn, past armor and Block. **N may be 0** — the sickness with nothing behind it. Water does nothing for it. |
 | **Invisible** | `invisible` | invisible | Enemies can't target you. Ends early if you Strike or Cast at an enemy. |
 | **Compelled** | `compelled` | puppet | You must spend your **primary** attacking whoever compelled you. |
 | **Unconscious** | `unconscious` | knockout | At 0 Health. No turns, no reactions, Prone. Dying until treated (§8). |
 
 **Invisible is the odd one** — it subtracts from everybody *else*, which is why it is the only
 condition on this list anyone wants.
+
+**Poisoned is the scale that starts at 0**, and the only one. *Poisoned 0* is Dazed and nothing else;
+each rung above adds that much damage a turn on top of it. **Poisoned N is Burning N plus Dazed** —
+which is what keeps it from being a fire with a different icon, and it costs a rung more than Burning
+for the same number. Water puts out a fire and does nothing for a poison, and that one absence is the
+other half of the difference.
 
 **Burning is fire *and* acid**, and the water rule is why: washing is how an acid burn is treated,
 so *cancels with Wet* reads correctly for both. Acid needs no condition of its own — what makes it
@@ -163,6 +170,20 @@ Frozen is easier to price, because it spends nothing anyone needs to survive:
 | **1–2** | the ordinary card and formula range |
 | **3+** | nobody is going anywhere — which is fine, they still get a whole turn |
 
+**Poisoned costs one rung more than Burning at the same number**, because the Dazed rides along at
+every value:
+
+| Poisoned | Belongs to | Against Burning |
+|---|---|---|
+| **0** | a card, or a weak venom — Dazed, no damage | Burning has no 0 |
+| **1** | a strength-2 formula | about a Burning 2 |
+| **2** | a strength-3 formula | about a Burning 3 |
+| **3+** | **monsters only** | |
+
+Dazed costs a secondary, and a secondary is worth rather less than a primary — call it a third of a
+turn — so *Poisoned 0 for two rounds* and *Burning 1 for two rounds* are close, and **the whole ladder
+is Burning shifted down one.** None of it is simulated.
+
 ### 2.2 Two rules the second number needs, and no more
 
 **A Partial shortens a burn; it does not cool one.** Intensity rides through the saving throw
@@ -199,25 +220,31 @@ one line rather than a ruling each time:
 That test accepts all twenty above and rejects the usual candidates. Worked through for the two that
 have actually come up:
 
-### 4.1 Poison is not a condition either
+### 4.1 Poison is a condition — and disease is not
 
-By the same test: a poison has no duration, and a *cure* rather than a clock is what ends it. It is
-**lingering damage** — **Tainting N**, cards in a deck you play from — and core-rules §8 has said so
-since it was written: *"you gain Taint from sources with the Tainting keyword: corrupted monsters,
-**poison**, disease, cursed places."* The body/mind deck split is the poison/horror split already
-made.
+These two were one thing and are now two, and the line between them is worth stating on its own:
 
-**What was missing was not a condition but an implementation.** `tainting` existed in the system only
-as an NPC *tactic label*; nothing could apply it, although the Poison school's Signature *Wither* has
-read **Tainting 1** since it was written. That is now an effect like Heal.
+> **Taint outlives the fight. A condition does not.** A venom is a condition; a plague is Taint.
 
-**Fast-acting poison needed one word, not a mechanic.** A dose that drops you now puts the Taint in
-your **hand**, where it resolves at once; a slow one puts it in the **discard**, where it waits. Same
-card, same face, different pile (core-rules §8).
+So **poison is the `poisoned` condition** (§1.1) — Dazed plus N damage a turn, running out when its
+duration does — and **Taint is disease, rot and corruption**, cards in a deck you play from that
+survive a rest and need a cure. A poison still with you next week was never a poison.
 
-And where a poison does something a Taint card cannot express, it borrows a condition that exists: a
-**paralytic** is *Frozen*, a **soporific** is *Dazed*, a **blinding** venom is handled the way
-Invisible's counter is. None of them is a new entry.
+**That split is cleaner than the one it replaced.** core-rules §8 used to list poison alongside
+disease and cursed places, so a venom took effect by putting a card in your discard that bit at a
+moment nobody chose — which is exactly right for a plague and exactly wrong for a snake. Nothing
+happened when you were bitten. Now something does.
+
+**Body Taint keeps the mechanic and loses the name:** the action deck is for **disease and bodily
+corruption**, the skill deck for dark magic and horrors, and the body face moved from *Vomiting* to
+*Virus* because nausea is what the Poisoned condition draws.
+
+**The fast/slow dial stayed with Taint**, where it still earns its place: a curse that strikes you
+down in the temple puts the card in your **hand**, a rot that takes a month puts it in your
+**discard**. It was built for poison and turned out to describe corruption just as well.
+
+And where a poison wants something *Poisoned N* cannot say, it borrows a condition that exists: a
+**paralytic** is *Frozen*, a **soporific** is *Dazed* on its own. Neither is a new entry.
 
 ### 4.2 Mounted is not a condition
 
@@ -262,8 +289,9 @@ What `CARDRPG.conditions` carries. Anything not listed is absent on that entry.
 | `slowed` | | `halvesMove` |
 | `stunned` | | `blocksReactions` |
 | `invisible` | | |
-| `burning` | | `valued`, `cancels` → `wet`, `frozen` |
+| `burning` | | `valued`, `damagePerTurn`, `cancels` → `wet`, `frozen` |
 | `frozen` | | `valued`, `reducesMove`, `cancels` → `burning` |
+| `poisoned` | | `valued`, `damagePerTurn`, `blocksSecondary` |
 | `prone` | | |
 | `unconscious` | | `blocksReactions` |
 | `grappled` | `boot-prints` | |
@@ -375,7 +403,8 @@ the table play. This column says which half of that each condition gets.
 | **Stunned** | advisory | a "No reactions" badge; reactions have no legality gate |
 | **Slowed** | **yes, on the face** | the printed Move is halved — Move itself is never resolved, figures are moved by hand |
 | **Grappled** / **Silenced** / **Disarmed** | **yes** | via `blocks` → blocked icons; Disarmed's *"⚔ with the disarmed item"* half is not modelled |
-| **Burning** | **yes** | 1 damage at the start of the victim's turn |
+| **Burning**, **Poisoned** | **yes** | their value in damage at the start of the victim's turn, off the `damagePerTurn` flag, and they add |
+| **Poisoned**'s Dazed | **yes** | the same `blocksSecondary` flag Dazed uses, so it cost no code |
 | **Prone** | **yes** | melee advantage; *"standing up costs Move 1"* is not modelled, because Move is not |
 | **Invisible** | partial | gives the **attacker** advantage while invisible; nothing prevents being targeted |
 | **Compelled** | **no, by design** | targets are chosen by whoever plays the figure, so it is a reminder — as *Taunt* always was |
@@ -402,7 +431,8 @@ Every source in the content as it stands ([way-cards.md](way-cards.md),
 | **Slowed** | *Set* (Trapmaker) · *Pin the Shadow* (Shade) · *Frost* (Elemental) |
 | **Stunned** | *Lightning* (Elemental) |
 | **Invisible** | Smoke Bomb · *Not Here* (Glamour) · *Vanish*, *Smoke and Go* (Shade) |
-| **Burning** | *Scorch* (Elemental, **1**) · *Boil* (Blood, **3**) |
+| **Burning** | *Scorch* (Elemental, **1**) · *Boil* (Blood, **3**) · *Flesh of the Earth* (Elemental acid, **1**) |
+| **Poisoned** | *Wither* (Poison, **1**) · *The Quick Dose* (Poison, **2**) · *The Long Dose* (Poison, **0**) |
 | **Frozen** | *Frost* (Elemental) — **only against a Wet target**; a dry one is merely Slowed |
 | **Prone** | *Sweep the Leg* (Strength) |
 | **Grappled** | *Get a Grip* (Street Fighter) · *Overbear* (Strength) |
@@ -433,7 +463,7 @@ removal in the content, and the gaps are the point.
 | **Burning** | **Wet or Frozen** (they cancel) · **Shake Off** · the duration |
 | **Frozen** | **Burning** (it thaws) · **Shake Off** · the duration |
 | **Wet** | **Burning** (it steams) · the duration |
-| **Slowed**, **Prone** | **Shake Off** · the duration |
+| **Slowed**, **Prone**, **Poisoned** | **Shake Off** · the duration. An **antidote** is the item form of a Shake Off on Poisoned |
 | **Off-Balance** | **nothing but the duration** — an opening cannot be shaken off |
 | **Prone** | also standing up, for Move 1 |
 | **Burdened**, **Overloaded** | dropping weight, and nothing else — no cure touches them |

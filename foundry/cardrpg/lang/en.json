@@ -42,6 +42,7 @@
   "CARDRPG.Condition.Invisible": "Invisible",
   "CARDRPG.Condition.Burning": "Burning",
   "CARDRPG.Condition.Frozen": "Frozen",
+  "CARDRPG.Condition.Poisoned": "Poisoned",
   "CARDRPG.Condition.Prone": "Prone",
   "CARDRPG.Condition.Unconscious": "Unconscious",
   "CARDRPG.Condition.Grappled": "Grappled",

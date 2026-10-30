@@ -624,15 +624,20 @@ in it draws before the deck reshuffles.
 
 Conditions are tokens with a number (duration). Every condition remembers **who created it**.
 
-**Two of them carry a second number.** **Burning** and **Frozen** have an **intensity** as well as a
-duration, printed in front of it — *Burning 3 (2)* is three damage a turn for two turns. **Duration
-says how long; intensity says how hard.** Nothing else on the list has one, because nothing else has
-a reading between a candle and a dragon, and *Dazed 3* would mean nothing
+**Three of them carry a second number.** **Burning**, **Poisoned** and **Frozen** have an
+**intensity** as well as a duration, printed in front of it — *Burning 3 (2)* is three damage a turn
+for two turns. **Duration says how long; intensity says how hard.** Nothing else on the list has one,
+because nothing else has a reading between a candle and a dragon, and *Dazed 3* would mean nothing
 ([conditions.md](conditions.md) §2). Two rules cover the second number and there are no others:
 
 - **A Partial shortens a burn; it does not cool one.** Only the duration halves.
 - **A second application takes the max of each number** — the longer duration and the fiercer
   intensity, independently. A candle thrown after a dragon leaves the dragon's fire burning.
+
+> **Poisoned is the one whose scale starts at 0.** *Poisoned 0* is Dazed and nothing else — a sickness
+> that slows your hands without killing you — and every rung above it adds that many damage a turn on
+> top. **Poisoned N is Burning N plus Dazed**, which is why it costs one rung more than Burning does
+> for the same number, and why the bottom rung exists at all: Burning has nothing to be at 0.
 
 > **The complete list is [conditions.md](conditions.md)** — all nineteen with their engine keys,
 > their flags, what the system actually enforces and what in the content applies each one. This
@@ -713,6 +718,7 @@ or Slowed (1) on a partial.*
 | **Invisible** | Enemies can't target you. Ends early if you Strike or Cast at an enemy. |
 | **Burning** | **Burning N:** take N damage at the start of your turn. It meets neither armor nor Block. **Fire cancels water in either state:** neither Burning nor **Wet**, and neither Burning nor **Frozen**, lands on a target already carrying the other — whichever arrives second ends the first without itself landing. A wet target steams; a frozen one thaws. |
 | **Frozen** | **Frozen N:** all Move values are **reduced by N**, to a minimum of 0. You still play both halves and keep your reactions. Cancels with Burning. |
+| **Poisoned** | **Poisoned N:** you are **Dazed** — no secondary — **and** take N damage at the start of your turn, past armor and Block. **N may be 0**, which is the sickness with nothing behind it. Water does nothing for it. |
 | **Prone** | Melee Strikes against you have advantage. Standing up costs Move 1. |
 | **Unconscious** | At 0 Health. No turns, no reactions, Prone. Dying until treated (section 8). |
 | **Grappled** | Blocks 👣 Move (see section 10). |
@@ -951,15 +957,19 @@ Some harm stays with you after the fight. It's represented by **negative cards**
 └───────────────────────┘
 ```
 
-- **You gain Taint** from sources with the **Tainting** keyword: corrupted monsters, poison, disease, cursed places. The source says how much, and which deck: the **action deck** for the body (poison, disease) or the **skill deck** for the mind (dark magic, horrors). The two have different card faces (see [icons.md](icons.md)), so you can see at a glance what is wrong with you.
-- **Tainting is how poison works**, and the dose decides *when* it bites rather than how hard:
-  - **slow** — the default — puts the card in your **discard**, so it comes round at a moment nobody
-    chose. A venom working on you while you fight.
-  - **fast** puts it straight into your **hand**, where it resolves at once: 1 damage past armor, and
-    a hand one card short for the turn. A dose that drops you now.
+- **You gain Taint** from sources with the **Tainting** keyword: corrupted monsters, disease, cursed places, dark magic. The source says how much, and which deck: the **action deck** for the body (disease, rot, bodily corruption) or the **skill deck** for the mind (dark magic, horrors). The two have different card faces (see [icons.md](icons.md)), so you can see at a glance what is wrong with you.
+- **Poison is not Taint.** It is the **Poisoned** condition (§7), which runs out when its duration
+  does. The line between them is the only one that matters here:
 
-  One word on the card, two very different fights, and no second mechanic. The poison that fells a
-  man in a minute and the one that kills him in a week are the same card in a different pile.
+  > **Taint outlives the fight. A condition does not.** A venom is a condition; a plague is Taint.
+
+  So a poison that is still with you next week was never a poison — it is a **disease**, and that is
+  what body Taint is for.
+- The **fast/slow dial** still belongs to Taint, because corruption has the same two speeds: **slow**
+  puts the card in your **discard**, where it comes round at a moment nobody chose, and **fast** puts
+  it straight into your **hand**, where it resolves at once for 1 past armor and a hand one card
+  short. A curse that strikes you down in the temple and a rot that takes a month are the same card
+  in a different pile.
 - Taint goes into your discard pile, just like Wounds.
 - **When drawn:** resolve it at once: take 1 damage (ignores armor) and discard it. You don't draw a replacement, so your hand is one card short.
 - **Taint survives rests.** Only these remove it:
@@ -1123,7 +1133,8 @@ Starter list of tactic keywords (to grow over time):
 | **Grappler** | On hit: target is Grappled (1). | Kill it, keep Ready/Move cards. |
 | **Commander** | When it acts, one ally may Move 1. Allies lose this while it's down. | Focus it down. |
 | **Cowardly** | Flees when below half Health. | Let it run, or chase for the loot. |
-| **Tainting X** | On hit: the target gains X Taint (section 8). | Avoid its hits, carry a cure. |
+| **Tainting X** | On hit: the target gains X Taint — disease or corruption (section 8). | Avoid its hits, carry a cure. |
+| **Venomous X** | On hit: **Poisoned X** (section 7) — Dazed, and X a turn past armor. | Kill it first, or carry an antidote. |
 
 Target priorities: **Nearest**, **Weakest** (lowest Health), **Caster** (anyone who Cast last round), **Last attacker**, **Leader** (GM's choice).
 

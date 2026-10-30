@@ -158,7 +158,7 @@ if (!fs.existsSync(specPath)) {
   for (const m of configSource.matchAll(/^  ([a-zA-Z]+): \{\s*\n\s*label: "CARDRPG\.Condition\./gm)) {
     conditions.add(m[1]);
   }
-  check("conditions found in config", conditions.size, 20);
+  check("conditions found in config", conditions.size, 21);
 
   /*
    * The spec's removal table claims eleven conditions can be shaken off and nine cannot
@@ -174,7 +174,7 @@ if (!fs.existsSync(specPath)) {
     const body = entry.slice(0, entry.indexOf("},"));
     return !body.includes("opening:") && !body.includes("noDuration:");
   });
-  check("conditions that can be shaken off", shakeable.length, 11);
+  check("conditions that can be shaken off", shakeable.length, 12);
 
   const undocumented = [...conditions].filter(k => !ticked.has(k)).sort();
   check("conditions missing from the spec",
@@ -193,7 +193,7 @@ if (!fs.existsSync(specPath)) {
   check("the flags section was located", flagsAt >= 0 && flagTable.length > 0, true);
   const flags = new Set([
     "blocks", "blocksSecondary", "blocksReactions", "halvesMove", "reducesMove",
-    "noDuration", "derived", "opening", "cancels", "valued"
+    "noDuration", "derived", "opening", "cancels", "valued", "damagePerTurn"
   ]);
   const stray = [...new Set([...flagTable.matchAll(/`([A-Za-z]+)`/g)].map(m => m[1]))]
     .filter(k => !conditions.has(k) && !flags.has(k)).sort();
@@ -203,7 +203,7 @@ if (!fs.existsSync(specPath)) {
   // data model -- which is how the three dead flags went unnoticed in the first place.
   const used = new Set([...configSource
     .slice(configSource.indexOf("CARDRPG.conditions = {"), configSource.indexOf("CARDRPG.openings"))
-    .matchAll(/(blocksSecondary|blocksReactions|halvesMove|reducesMove|noDuration|derived|opening|cancels|valued|blocks):/g)
+    .matchAll(/(blocksSecondary|blocksReactions|halvesMove|reducesMove|noDuration|derived|opening|cancels|valued|damagePerTurn|blocks):/g)
   ].map(m => m[1]));
   const unlisted = [...used].filter(f => !flagTable.includes("`" + f + "`")).sort();
   check("flags used but not in the spec", unlisted.length ? unlisted.join(", ") : "none", "none");
@@ -226,7 +226,7 @@ for (const m of configSource.matchAll(/halfIcons\s*=\s*\{[^}]*\}/gs)) {
   for (const k of m[0].matchAll(/"([a-z0-9-]+)"/g)) iconKeys.add(k[1]);
 }
 
-check("icon files on disk", onDisk.size, 78);
+check("icon files on disk", onDisk.size, 79);
 const absent = [...iconKeys].filter(k => !onDisk.has(k)).sort();
 check("config icons present as files", absent.length ? absent.join(", ") : "all", "all");
 

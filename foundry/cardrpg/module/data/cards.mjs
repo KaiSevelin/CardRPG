@@ -55,8 +55,11 @@ export function stepField() {
       choices: [...Object.keys(CARDRPG.conditions), ""]
     }),
     duration: new fields.NumberField({ integer: true, min: 0, nullable: true, initial: null }),
-    /* Intensity, for a `valued` condition: Burning 3 (2). Ignored by the other seventeen. */
-    intensity: new fields.NumberField({ integer: true, min: 1, nullable: true, initial: null }),
+    /*
+     * Intensity, for a `valued` condition: Burning 3 (2). Ignored by the ones without it.
+     * The floor is 0 because Poisoned 0 -- all nausea, no damage -- is the bottom of that scale.
+     */
+    intensity: new fields.NumberField({ integer: true, min: 0, nullable: true, initial: null }),
     resist: new fields.StringField({
       required: false, blank: true, initial: "",
       choices: [...Object.keys(CARDRPG.approaches), ""]

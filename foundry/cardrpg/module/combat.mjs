@@ -229,12 +229,16 @@ export async function onTurnStart(combat) {
   if (actor.type === "npc") await revealIntent(actor);
 
   /*
-   * Burning: its value in damage at the start of your turn, defaulting to 1 when nothing printed
-   * one (core-rules 7). It meets neither armor nor Block, which is why the value band is tight.
+   * Conditions that bite at the start of your turn -- Burning and Poisoned -- each for their own
+   * value, defaulting to 1 when nothing printed one (core-rules 7). They meet neither armor nor
+   * Block, which is why their bands are tight, and they add: a man on fire and poisoned takes both.
+   *
+   * Driven off the `damagePerTurn` flag rather than by key, so a third one needs no code here.
    */
-  const fire = actor.system.activeConditions?.find(c => c.key === "burning");
-  if (fire) {
-    const damage = fire.value ?? 1;
+  const bites = (actor.system.activeConditions ?? [])
+    .filter(c => CARDRPG.conditions[c.key]?.damagePerTurn);
+  const damage = bites.reduce((n, c) => n + (c.value ?? 1), 0);
+  if (damage > 0) {
     await actor.update({ "system.health.value": Math.max(0, actor.system.health.value - damage) });
   }
 }

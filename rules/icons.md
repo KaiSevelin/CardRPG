@@ -41,7 +41,7 @@ These appear on card faces. Nothing can be laid out until they're chosen.
 |---|---|---|---|
 | ✚ | **Heal** (+ number) | An effect, not a verb — it comes off an item's Cast line or a card | Healing |
 | ⛓ | **Shake Off** (+ number) | Takes that much off one condition's duration (core-rules §7) | Breaking chain |
-| ☣ | **Tainting** (+ number) | That many Taint cards into a deck — how poison works (core-rules §8). Reuses the body-taint face | Vomiting |
+| ☣ | **Tainting** (+ number) | That many Taint cards into a deck — disease and corruption, not poison (core-rules §8). Reuses the body-taint face | Virus |
 | ⚗ | **Corrode** (+ number) | That much off the target's armour, until repaired — how acid works (core-rules §8) | Melting metal |
 | ◎ | **Range** (+ number) | | Bullseye |
 | ✸ | **Blast** (+ number) | Area that hits everyone in it, allies included | Mushroom cloud |
@@ -97,9 +97,9 @@ hover, per the information tiers in [../foundry/card-layout.md](../foundry/card-
 
 ---
 
-## Tier 2 — needed for a playable combat (26)
+## Tier 2 — needed for a playable combat (27)
 
-### Conditions (20)
+### Conditions (21)
 
 These double as Foundry status effects, so they need to read clearly as small overlays on a token,
 with room for a duration number.
@@ -112,6 +112,7 @@ with room for a duration number.
 | **Invisible** | Invisible |
 | **Burning** | Fire silhouette |
 | **Frozen** | Frozen body |
+| **Poisoned** | Vomiting |
 | **Prone** | Falling |
 | **Unconscious** | Knockout |
 | **Grappled** | Luchador |
@@ -131,6 +132,10 @@ The last four are the **openings** (core-rules §7) — conditions that do nothi
 exist to be read by other cards. They need icons for the same reason as the rest: a player decides
 whether to spend a secondary setting one up by looking at the token.
 
+**Vomiting moved.** It was the body-Taint card face while Taint covered poison; poison is its own
+condition now, nausea is the thing the icon actually draws, and body Taint — disease and corruption —
+took **Virus** instead.
+
 Blessed and Cursed are **condition markers only**. The temporary card they shuffle into your fate
 deck is an ordinary Critical or Miss and uses those faces, so all four icons are independent.
 
@@ -148,7 +153,7 @@ The −2 … +2 cards are numerals and need no symbol.
 | Placeholder | Name | Notes | game-icons.net |
 |---|---|---|---|
 | ✖ | **Wound** | A card in your action deck that can't be played | Knee bandage |
-| ☣ | **Taint (body)** | Poison and disease — goes in the **action** deck | Vomiting |
+| ☣ | **Taint (body)** | Disease and bodily corruption — goes in the **action** deck | Virus |
 | ☣ | **Taint (mind)** | Dark magic and horrors — goes in the **skill** deck | Squid head |
 | – | **Injury** | Permanent — a *slate* on the sheet, not a card in a deck (see [ideas.md](ideas.md)) | Severed hand |
 
@@ -196,16 +201,16 @@ crowded inventory.
 
 ---
 
-## Status: complete — 61 of 61 chosen
+## Status: complete — 62 of 62 chosen
 
 | Tier | Count | Blocks |
 |---|---|---|
 | 1 | 25 | Card layout and the card schema |
-| 2 | 26 | Playable combat |
+| 2 | 27 | Playable combat |
 | 3 | 10 | Polish |
 | *optional tags* | *9* | *nothing* |
 
-**70 icons**, including the optional tags, all downloaded to
+**71 icons**, including the optional tags, all downloaded to
 [../foundry/cardrpg/icons/](../foundry/cardrpg/icons/) with per-icon credits in
 [ATTRIBUTION.md](../foundry/cardrpg/icons/ATTRIBUTION.md). Nothing in the rules or the system is
 waiting on an icon decision.

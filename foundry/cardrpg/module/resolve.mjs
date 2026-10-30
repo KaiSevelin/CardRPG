@@ -497,13 +497,16 @@ export async function resolveCondition(actor, { step, target }) {
 
   const label = key => game.i18n.localize(CARDRPG.conditions[key]?.label ?? key);
   // "Burning 3 (2)" for a valued condition, "Dazed (1)" for the rest.
-  const named = c => `${label(c.key)}${c.value ? ` ${c.value}` : ""} (${c.duration})`;
+  const named = c =>
+    `${label(c.key)}${c.value === undefined || c.value === null ? "" : ` ${c.value}`} (${c.duration})`;
   const full = Math.max(1, step.duration ?? 1);
   // Intensity rides along untouched by a Partial: a partial burn is a SHORTER burn, not a cooler
   // one, which keeps the one saving-throw rule covering both numbers.
   const valued = CARDRPG.conditions[key]?.valued;
-  const intensity = valued ? Math.max(1, step.intensity ?? 1) : null;
-  let landed = { key, duration: full, ...(intensity ? { value: intensity } : {}) };
+  // `?? 1` keeps every existing card at 1, and Math.max(0, ...) lets a card print 0 on purpose.
+  const intensity = valued ? Math.max(0, step.intensity ?? 1) : null;
+  // Tested against null, not for truthiness: Poisoned 0 is a value, and 0 is falsy.
+  let landed = { key, duration: full, ...(intensity === null ? {} : { value: intensity }) };
   let line;
 
   if (step.resist) {
@@ -523,7 +526,10 @@ export async function resolveCondition(actor, { step, target }) {
       landed = step.lesser
         ? { key: step.lesser, duration: full }
         : (Math.floor(full / 2)
-          ? { key, duration: Math.floor(full / 2), ...(intensity ? { value: intensity } : {}) }
+          ? {
+            key, duration: Math.floor(full / 2),
+            ...(intensity === null ? {} : { value: intensity })
+          }
           : null);
     }
 
