@@ -112,6 +112,18 @@ GOBLIN_CARDS = {
 }
 
 
+# ---------------------------------------------------------------- weapons
+# Two profiles off rules/starter-cards.md. `heavy` is what the Strong feature keys on.
+#
+# This exists because Ready was inert in every run before it: four of the sixteen cards carry the
+# verb and there was only ever one weapon to hold, so a quarter of the deck did nothing and the
+# whole item economy -- slots, the back, swapping mid-fight -- had never been measured at all.
+WEAPONS = {
+    'sword': dict(strike=3, rng=1, heavy=True),    # Longsword
+    'bow':   dict(strike=2, rng=6, heavy=False),   # Shortbow
+}
+
+
 # ---------------------------------------------------------------- conditions
 # A mirror of CARDRPG.conditions in the system (module/config.mjs), carrying only the flags the
 # simulator can act on. Keeping it a table rather than a pile of ifs is the same decision the
@@ -175,6 +187,9 @@ class Config:
     # What Dirty Trick inflicts. 'dazed' is the printed card; the others are here to price the
     # ladder against it (conditions.md 2.1), since "Poisoned N is Burning N plus Dazed" was an
     # assertion until it could be measured.
+    # A second weapon slung on the back (core-rules 4): drawing from it is free, slinging costs a
+    # Ready. '' is the old behaviour -- one weapon, and Ready does nothing.
+    sling: str = ''
     goblin_condition: str = 'dazed'
     goblin_cond_value: int = 0     # intensity, for a `valued` condition
     goblin_cond_dur: int = 1
@@ -237,6 +252,10 @@ class Sim:
 
     def run(self, ops, real):
         cfg = self.game.cfg
+        # The weapon is Sim-local so the lookahead sees the swap: a Ready in the same turn makes the
+        # Strike after it better, which is the only way the AI can ever value one.
+        if not hasattr(self, 'weapon'):
+            self.weapon = self.game.w['weapon']
         for op in ops:
             kind = op[0]
             if kind == 'move':
@@ -253,10 +272,16 @@ class Sim:
                         break
                     self.wpos = nxt
             elif kind == 'strike':
-                adj = [g for g in self.alive() if cheb(self.wpos, g[0]) == 1]
-                if not adj:
+                prof = WEAPONS[self.weapon]
+                reach = [g for g in self.alive() if cheb(self.wpos, g[0]) <= prof['rng']]
+                if not reach:
                     continue
-                value = cfg.strike_base + op[1] + (1 if cfg.strong else 0)
+                adj = reach
+                # Strong is +1 with Heavy items only (starter-cards.md Features).
+                value = prof['strike'] + op[1] + (1 if cfg.strong and prof['heavy'] else 0)
+                # Ranged in melee: disadvantage while an enemy is adjacent (core-rules 11).
+                ranged_pen = prof['rng'] > 1 and any(
+                    cheb(self.wpos, g[0]) == 1 for g in self.alive())
 
                 def est(g):
                     e = pk = 0.0
@@ -267,7 +292,7 @@ class Sim:
                     return e, pk
                 target = max(adj, key=lambda g: (est(g)[1], -g[1]))
                 if real:
-                    card = self.game.fate_w.draw(0)
+                    card = self.game.fate_w.draw(-1 if ranged_pen else 0)
                     d = fate_apply(value, card)
                     self.game.stat_fate(card)
                     self.game.log(f"  Warrior strikes goblin {target[2]['id']} (base {value}, fate {card}) -> {d} dmg")
@@ -305,11 +330,17 @@ class Sim:
                     (self.game.lift() if kind == 'lift' else self.game.shake(op[1]))
                 else:
                     self.healed += saved
-            # ready / taunt: no effect in this test (everything is equipped, solo hero)
+            elif kind == 'ready':
+                # One Ready swaps the held weapon for the slung one (core-rules 4). With nothing
+                # slung it is the old no-op.
+                if cfg.sling:
+                    self.weapon = cfg.sling if self.weapon != cfg.sling else 'sword'
+            # taunt: no effect in this test (solo hero)
 
     def commit(self):
         w = self.game.w
         w['pos'], w['hp'], w['block'], w['potions'] = self.wpos, self.whp, self.block, self.potions
+        w['weapon'] = self.weapon
         for pos, hp, g in self.gobs:
             g['pos'] = pos
             if hp <= 0 < g['hp']:
@@ -334,7 +365,8 @@ class Game:
         self.cards.update(cfg.card_overrides)
         deck = [name for name, c in self.cards.items() for _ in range(c[3])]
         self.w = dict(pos=(1, 4), hp=cfg.hp, block=0, potions=cfg.potions, hand=[], draw=deck,
-                      discard=[], spent=[], conds=[], exhausted=False, acted=False)
+                      discard=[], spent=[], conds=[], exhausted=False, acted=False,
+                      weapon='sword')
         n = len(cfg.goblins)
         ys = [round(1 + i * (GRID_H - 3) / max(1, n - 1)) for i in range(n)] if n > 1 else [4]
         self.gobs = [dict(id=i + 1, pos=(8, ys[i]), hp=cfg.goblin_hp, weapon=wpn) for i, wpn in enumerate(cfg.goblins)]
@@ -507,6 +539,24 @@ class Game:
             return (2.0 if b['hurt'] else 0.3) * op[1]
         if kind == 'use':
             return 3.0 if (b['hurt'] and self.w['potions']) else 0.4
+        if op[0] == 'ready':
+            # Worth the swap only when the weapon in hand cannot reach and the other one could.
+            if not self.cfg.sling:
+                return 0.2
+            held, other = WEAPONS[self.w['weapon']], WEAPONS[self.cfg.sling]
+            if self.w['weapon'] == self.cfg.sling:
+                other = WEAPONS['sword']
+            alive = [g for g in self.gobs if g['hp'] > 0]
+            if not alive:
+                return 0.2
+            near = min(cheb(self.w['pos'], g['pos']) for g in alive)
+            reach_now = near <= held['rng']
+            reach_then = near <= other['rng']
+            if reach_then and not reach_now:
+                return 3.0            # you cannot hit at all, and with the other weapon you can
+            if reach_now and not reach_then:
+                return -2.0           # do not put the useful one away
+            return 0.2
         if op[0] == 'shake':
             # Worth whatever it takes off: the damage a tick would have done, plus the half a
             # Dazed costs. Zero when nothing is on us, which is what makes it a real decision.

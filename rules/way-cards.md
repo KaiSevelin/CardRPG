@@ -722,7 +722,8 @@ Weight, armor, Block, adjacency and the Wound threshold are the levers the **maj
 | **Walk It Off** | ✚ Heal 2 · ⛓ **Shake Off 2** on yourself | 👣 Move 1 | Brace | 🔥 **Spent** |
 
 > **Overbear may be the strongest card in this document, and the saving throw is what carries it.**
-> Grappled (2) costs its victim **18.3 points of win rate** against a mixed group — two damage rungs
+> Grappled (2) costs its victim **18.3 points of win rate** against a mixed group — two and a half
+> damage rungs
 > ([../sim/analysis-2026-10-30.md](../sim/analysis-2026-10-30.md) §7) — because blocking 👣 Move is
 > blocking the most valuable thing a figure does. At a Normal 5 it lands often enough to be worth a
 > card and not often enough to be the only card, which is the band a save is for. Against

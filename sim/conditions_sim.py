@@ -20,6 +20,21 @@ from combat_sim import (
     CONDITIONS, shakeable, Config, Game, FateDeck, run_scenario, mean,
 )
 
+# ---------------------------------------------------------------- seeds
+# A single seed at 4000 fights carries about +/-1.6 points at two sigma, which is wide enough to
+# have had me reporting differences that were not there. Everything below averages over SEEDS and
+# prints the spread, so a figure that cannot be resolved looks like one.
+SEEDS = (1, 2, 3, 4, 5)
+
+
+def rate(gob, **kw):
+    """Win rate over every seed: (mean, standard deviation across seeds)."""
+    import statistics
+    v = [100.0 * run_scenario(Config(name='x', goblins=gob, **kw), FIGHTS, s)['wins'] / FIGHTS
+         for s in SEEDS]
+    return statistics.fmean(v), (statistics.stdev(v) if len(v) > 1 else 0.0)
+
+
 FIGHTS = 4000
 SEED = 20261030
 

@@ -131,6 +131,37 @@ bonus, one Station bonus and one Power bonus on the same check, but never two of
 
 Pack items aren't equipped, so pulling one out is free in a quiet scene but may cost time inside a challenge.
 
+### Items the rules already ask for
+
+Nine items were not enough to cover what the rest of the rules had been written against. Each of
+these was **named somewhere before it existed**, which is the whole reason it is here.
+
+| Item | Fits | Tags | kg | Value | Line | Asked for by |
+|---|---|---|---|---|---|---|
+| **Heavy Armor** | Body | Armor | 12 | 60 g | Armor 3 (always on) · blocks ⚡ Sidestep | core-rules §10's **own example** of a blocked icon |
+| **Arquebus** | 2 hands, Back | Ranged, Heavy | 4 | 90 g | 5 dmg, range 8 — needs a ⇄ Ready to reload **after every shot** | the Musketeer, who *"begins every combat already loaded"* |
+| **Antidote** | Belt, 1 hand | Consumable | 0 | 35 g | Use: ⛓ **Shake Off 2**, Poisoned only | conditions.md §9.1, which calls it *"the item form"* |
+| **Flask of Ink** | Belt, 1 hand | Consumable, Thrown | 0 | 20 g | Use: ✸ Blast 1 at range 3 — ends **Invisible** in it | way-cards §3.6: *"the item version is cheaper and should exist"* |
+| **Flask of Oil** | Belt, 1 hand | Consumable, Thrown | 0 | 10 g | Use: one target is **Off-Balance (1)**, no save | the same note |
+| **Repair Kit** | Pack | Tool | 3 | 30 g | 📜 Lore +2, and overnight it clears **1 Corrode** from one item | core-rules §8: *"a smith and coin, or a Lore check with the right tools"* |
+| **Cleansing Draught** | Belt, 1 hand | Consumable | 0 | 150 g | Use: remove **1 Taint** that is not bound | core-rules §8: *"a cure: priest magic, a rare potion or a special item"* |
+| **The Kit** | Pack | Tool | 3 | — | 🌑 Shadow +2, and every **Hard** physical obstacle counts as Normal | the Burglar's Signature, which **is** this item (way-cards §2.2) |
+
+**The Arquebus is the one that needed a rule rather than a number.** *Reload* is not a new verb: it is
+a ⇄ **Ready**, which the game already has and which four of the sixteen starter cards carry. So a
+musketeer's turn is shoot-then-Ready, shoot-then-Ready, and the Musketeer node's *Loaded Before the
+Bell* buys them the **first** shot free — one turn of tempo, bought before the fight, which is exactly
+the **Preparation** axis that node is filed under.
+
+**The Kit was already a Signature and not an item.** way-cards §2.2 prints it as *"Item slate, weight
+3, which you may never put down"* — a node whose whole reward is a piece of gear, which nothing in the
+item list contained.
+
+**Heavy Armor is the oldest of these.** core-rules §10 has used it as its example of an item drawback
+blocking an icon since the icon rules were written, and there was no heavy armor in the game. At 12 kg
+it is also the first item that makes **Burdened** a live concern for a 40 kg limit once a shield and a
+pack are on.
+
 ---
 
 ### NPC gear
@@ -179,13 +210,29 @@ recharge (see *Active abilities and recharge* in the core rules).
 
 | Encounter | Difficulty | Simulated win rate |
 |---|---|---|
-| 3 goblins with spears | Easy | 99.4% |
-| 4 goblins with spears | Moderate | 93.2% |
-| 5 goblins with spears | Hard | 75.9% |
-| 4 goblins, 2 spears + 2 bows | **Deadly** | 64.6% |
+| 3 goblins with spears | Easy | 99.0% |
+| 4 goblins with spears | Moderate | 88.8% |
+| 5 goblins with spears | Hard | 64.6% |
+| 4 goblins, 2 spears + 2 bows | **Deadly** | **41.5%** |
 
-**A mixed group is a tier harder than a uniform one of the same size.** Four goblins with two bows are twice as dangerous as four with spears: the spears pin the hero in melee while the bows shoot from behind cover, and *Dirty Trick* lands three times as often because the hero spends rounds crossing open ground. Build hard encounters by mixing ranges, not by adding bodies.
+> **[CORRECTED 2026-10-30]** These were **99.4 / 93.2 / 75.9 / 64.6** and had been wrong since
+> 29 October. The flat-2 Catch Breath change made every fight harder and the table was never re-run —
+> the Deadly encounter was off by **23 points**. Bisected to commit `c419043`; re-run at 4000 fights
+> per row ([../sim/analysis-2026-10-30.md](../sim/analysis-2026-10-30.md) §8).
+
+**A mixed group is a tier harder than a uniform one of the same size**, and now by a wider margin
+than this table used to show: four goblins with two bows (41.5%) are harder than **five** with spears
+(64.6%). The reason is narrower than first written: a mixed group is harder because it **punishes
+immobility** — the spears are not there to deal damage, they are there to stop the hero reaching the
+bows, which is why four bows alone are *less* dangerous than two bows and two spears
+([../sim/analysis-2026-10-30.md](../sim/analysis-2026-10-30.md) §6). Build hard encounters by mixing
+ranges, not by adding bodies.
 
 > These rates are for a **single** starter Warrior. They are a yardstick for tuning, not a party difficulty table; party play is untested (see [../sim/analysis-2026-10-27.md](../sim/analysis-2026-10-27.md)).
 
-> Note: the Warrior deck above is a combat-test deck. A real warrior will carry more weapons and items, which gives the Ready cards a purpose.
+> **[RESOLVED]** This note used to end *"a real warrior will carry more weapons and items, which gives
+> the Ready cards a purpose"* — and until 30 October nothing had ever tested that, so the four Ready
+> cards were inert in every number this project published. They are not any more: a **Shortbow slung
+> on the back** is worth **+15.2 points** against the Deadly encounter and **−6.9** against five
+> spears, because against melee you waste halves swapping. The kit you bring is a real decision, and
+> the **back** slot is what makes it one ([../sim/analysis-2026-10-30.md](../sim/analysis-2026-10-30.md) §8).

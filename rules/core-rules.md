@@ -196,16 +196,16 @@ else. It is also what makes them a real decision rather than a free rider on a S
 #### When it is worth it, measured
 
 What each of these is worth depends entirely on **how much the target's position was worth**
-([../sim/analysis-2026-10-30.md](../sim/analysis-2026-10-30.md) §7). Against a damage rung at **8.7**
-points of win rate:
+([../sim/analysis-2026-10-30.md](../sim/analysis-2026-10-30.md) §7, §9). Against a damage rung at
+**7.4** points of win rate, averaged over five seeds:
 
 | Condition | Costs its victim | |
 |---|---|---|
 | **Off-Balance (1)** | **0.0** | nothing at all — it is an opening, and that is the design holding |
-| **Dazed (1)** | 5.8 | two thirds of a rung |
-| **Prone (1)** | 8.5 | **about one rung** — so a Trip to Prone roughly breaks even against Striking |
-| **Grappled (1)** | 10.0 | **more than a rung** — a Grapple beats Striking |
-| **Grappled (2)** | 18.3 | two rungs |
+| **Dazed (1)** | 4.0 | half a rung |
+| **Prone (1)** | 6.0 | **0.8 of a rung** — so a Trip loses a little against Striking |
+| **Grappled (1)** | 9.1 | **1.2 rungs** — a Grapple beats Striking |
+| **Grappled (2)** | 18.3 | two and a half rungs |
 
 > **Position-denial is worth exactly what the target's position was worth.** Those numbers are from a
 > mixed group, where mobility is worth 29.5 points (§11). Against a brute that wanted to stand next

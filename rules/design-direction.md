@@ -152,13 +152,14 @@ affliction list per Taint source.
 
 The combat simulator is the tie-breaker for numbers. Decisions it has already settled:
 
-- **A damage rung is worth 8.7 points of win rate, and Dazed is worth 5.8** — so Dazed is **0.67** of
-  a rung, which is what prices *Poisoned N* against *Burning N*
-  ([../sim/analysis-2026-10-30.md](../sim/analysis-2026-10-30.md)). The claim that Poisoned cost a
-  **whole** rung more was wrong by about half.
+- **A damage rung is 7.4 points of win rate and Dazed is 4.0** — so Dazed is **0.54** of a rung,
+  which is what prices *Poisoned N* against *Burning N*: about **half a rung more, flat**
+  ([../sim/analysis-2026-10-30.md](../sim/analysis-2026-10-30.md) §9). Both earlier answers were
+  wrong — a whole rung, then two thirds and shrinking — and the second was a story told about
+  single-seed noise. **Every simulated figure is now a five-seed mean.**
 - **Position-denial is worth exactly what the target's position was worth.** Grappled costs its
-  victim **10.0 points** and Prone **8.5** against a damage rung at **8.7** — so a Grapple beats a
-  Strike and a Trip breaks even, against a mixed group. Against a brute that wanted to be adjacent
+  victim **9.1 points** and Prone **6.0** against a damage rung at **7.4** — so a Grapple beats a
+  Strike and a Trip loses a little, against a mixed group. Against a brute that wanted to be adjacent
   anyway, both are worth nothing. **Grapple the archer; hit the ogre.** And **Off-Balance measures at
   exactly 0.0**, which is the opening design holding: it was written to do nothing until a card reads
   it, and it does nothing ([../sim/analysis-2026-10-30.md](../sim/analysis-2026-10-30.md) §7).
