@@ -292,10 +292,20 @@ So the rule compares a **pair**, and the second half comes from a closed list to
 | **Someone else's turn** | you act when they act, and only then |
 | **Range** | you work in one band and are poor in the others |
 | **An ally** | the build is ordinary without one beside you |
+| **Ground** | open space, a line, high ground — or standing still to get it |
+| **A weapon's value** | the Strike number on the item, given up altogether |
+| **Gear you can lose** | a mount, a cannon, a shield: ordinary without it, and the GM can take it |
 | **An obligation** | a feature you cannot remove (section 4) |
 
-A node's **cell** is the pair. Fifteen resources across seven axes is 105 cells, which is room enough
+A node's **cell** is the pair. Eighteen resources across seven axes is 126 cells, which is room enough
 that distinctness is a writing habit rather than a puzzle.
+
+> **The last three were added late, and that is a lesson.** This list was written out of Way of Mind
+> and Way of Shade, whose costs are all abstract — slots, cards, luck, knowledge. It had no entry for
+> a mount, for open ground, or for giving up your weapon, so **Way of Strength's prices had to be
+> written as prose**, and prose cannot be sorted or checked. The Way read flat partly because our
+> vocabulary for it was thinner than the Way is. If a Way's costs keep coming out as sentences, the
+> list is short, not the Way.
 
 - **Hard rule:** no two nodes sharing a predecessor may occupy the same cell. The graph validator
   refuses it (section 8), alongside the acyclicity and prerequisite checks.

@@ -526,49 +526,154 @@ most identity for the least arithmetic. And each is worth a closed door, which i
 
 ## Way of Strength — restructured  **[PROPOSED]**
 
-The world document lists fifteen, and eight of them are *a weapon type*. **A weapon type is not a
-playstyle** — the engine already handles "I use a sword" through the item's Strike line, so Sword,
-Two-handed, Polearm, Dagger, Blunt, Crossbow, Musket and Unarmed would be one branch written eight
-times.
+### Why this Way felt the least special
 
-**Roles work where weapons do not.** A Knight and an Infantryman fight differently whatever they are
-holding, and each can carry a different axis. The list below is a proposal; the world document still
-has the weapon list, and should be updated once this is agreed.
+The weapon-type problem was the easy half, and it was fixed: the world lists fifteen specializations
+and eight of them are *a weapon type*, which the engine already handles through an item's Strike line,
+so Sword, Two-handed, Polearm, Dagger, Blunt, Crossbow, Musket and Unarmed were one branch written
+eight times. **Roles work where weapons do not** — a Knight and an Infantryman fight differently
+whatever they are holding.
+
+Twelve roles later it still read flatter than the other three Ways, and the audit says why. Four
+reasons, and none of them is about the names:
+
+1. **Every other Way owns a noun the engine treats specially.** Mind has spell slots and formulas,
+   Shade has conditions and the fate deck, Faith has gods and miracles. Strength's nouns are **Strike,
+   Defend and Move**, which every character in the game already has. So the natural reward for a
+   Strength node is *more of what everyone does*, which is precisely the **+2 trap**
+   [leveling.md](leveling.md) §5a.4 exists to prevent.
+2. **The resource list was written from Mind and Shade.** It had no entry for a mount, for open
+   ground, or for giving up your weapon — three of the most vivid things a fighter can pay. **Our
+   vocabulary for this Way was thinner than the Way is**, so half its prices had to be written as
+   prose, and prose cannot be checked. Three resources are added in §5a.1 for it.
+3. **Strength had no tree.** All twelve were siblings, so the writing rule had to separate twelve
+   nodes at once — which is what piled **four of them onto Reactions**.
+4. **Strength had no Control node**, in the one Way where grabbing, tripping and shoving people is the
+   obvious thing to do. Every other Way had one.
+
+### The fix: one unclaimed lever each
+
+Here is the thing the audit did not expect. **Strength is the Way with the most unclaimed mechanics**,
+not the fewest — it only reads flat because nobody had claimed them. Every rule in this list already
+exists in core-rules, was written for another reason, and belonged to no node:
+
+| Role | The lever it owns outright |
+|---|---|
+| **Infantry** | **Adjacency** — the only build in the game that gets better for standing beside someone |
+| **Guardian** | **Block**, and the Defend-primary that covers every attack until your next turn (§3) |
+| **Ironclad** | **Armor and Overloaded** — carrying past the limit on purpose |
+| **Artillerist** | **Blast against Aimed**, and cover (§11) |
+| **Tactician** | **Other people's turns** |
+| **Executioner** | **The Wound threshold** — 5 or more damage from a single hit (§8) |
+| **Knight** | **The mount**, and reach: *Move, then Strike* |
+| **Berserker** | **The deck burning down** |
+| **Musketeer** | **The loaded state** — a turn spent before the fight, carried into it |
+| **Gladiator** | **Being the target** |
+| **Street Fighter** | **Two empty hands**, and what you do with them: grapple, trip, shove |
+| **Bodyguard** | **Somebody else's position** |
+
+> **A Strength role is special when it owns a rule, not a number.** A bigger Strike is the same build
+> twelve times; the only build that can cross the Wound line, or the only one that is better for having
+> a friend nearby, cannot be confused with anything.
+
+The two best of these cost nothing to write:
+
+- **Executioner owns the Wound threshold.** Core-rules §8 already says a hit of 5 or more causes a
+  Wound — a card shuffled into the target's own deck that cannot be played. **Nothing in the game is
+  built around crossing that line.** A role whose whole job is to cross it is instantly legible, and
+  it is *why* he holds nothing back.
+- **Ironclad owns armor.** Simulation already established that flat armor **cancels** small hits
+  rather than reducing them — at Strike 2 against armor 1, half of every hit is gone before fate is
+  drawn ([design-direction.md](design-direction.md)). A role built on *the many cannot hurt me* is
+  mechanically real and already measured, and the price is written on the node: you carry the armoury,
+  and **Overloaded** Spends 2 random cards for it.
+
+### The twelve
 
 | Node | Leans on | Pays in | Absorbs |
 |---|---|---|---|
-| **Knight** | Position | A mount, and the room to use it | Cavalry, Sword |
-| **Infantry** | Position | Needs an ally beside you; alone it is ordinary | Formation, Polearm |
-| **Guardian** | Reactions | A hand that will never cast | Protection, Shield |
-| **Berserker** | Deck shape | Cannot defend; the deck burns down fast | Berserkers |
-| **Street Fighter** | Reactions | No weapon value at all — **both hands always free** | Unarmed |
-| **Executioner** | Tempo | Both hands, and nothing held back | Two-handed, Blunt |
-| **Musketeer** | Preparation | A turn spent loading, and nothing at all up close | Musketeers, Crossbow |
-| **Artillerist** | Position | Immobile while it fires | Artillerists, Sappers |
-| **Gladiator** | Reactions | Reacts only to attacks on **you** — it pays to be the target | Gladiators |
-| **Tactician** | **Support** | Spends turns on other people's turns, not on damage | *(new)* |
-| **Vanguard** | Tempo | First in, and takes what that costs | *(new)* |
-| **Bodyguard** | Reactions | Reacts only to attacks on your **ward** — never on yourself | *(new)* |
+| **Infantry** | Position | **An ally** — alone it is an ordinary fighter | Formation, Polearm |
+| **Guardian** | Reactions | **A slot kept free** — a hand that will never cast | Protection, Shield |
+| **Ironclad** ✱ | Deck shape | **Weight** — over the limit on purpose, and Overloaded for it | *(new)* |
+| **Artillerist** | Position | **Ground** — immobile while it fires | Artillerists, Sappers |
+| **Tactician** | Support | **Halves** — your secondaries go on their turn, not your damage | *(new)* |
+| **Executioner** | Tempo | **Halves** — nothing held back: no Move, no Ready, both hands on the swing | Two-handed, Blunt |
+| **Knight** | Position | **Gear you can lose** — a mount, and the room to use it | Cavalry, Sword |
+| **Berserker** | Deck shape | **Spent** — the rage burns cards for the fight, and it cannot defend | Berserkers |
+| **Musketeer** | Preparation | **Range** — nothing at all up close | Musketeers, Crossbow |
+| **Gladiator** | Reactions | **Health** — paid to be the target, and duly hit | Gladiators |
+| **Street Fighter** | Control | **A weapon's value** — none at all, and both hands always free | Unarmed |
+| **Bodyguard** ✱ | Reactions | **Ground** — you stand where your ward stands | *(new)* |
+
+✱ **Ironclad is new and Vanguard is gone.** Vanguard was *Tempo / first in, and takes what that
+costs*, which is a sentence rather than a cost — "goes first" is initiative, which no node owns and
+which the Tempo axis already covers. **Ironclad replaces it** because armor, weight and Overloaded
+were three live rules with no node, and they make one build rather than three.
+
+**Street Fighter moves from Reactions to Control**, which fixes two things with one change: it takes
+Reactions down from four nodes to three, and it fills the Control gap. The move is also more honest
+about what the role is — the point of two empty hands is not that you react, it is **what you can do
+to someone with them.** Grapple, trip and shove are conditions, and conditions are Control.
 
 **Dagger specialists** are not here: a knife fighter is Way of Shade, and the Thief and Assassin nodes
 already carry it.
 
-**Skirmisher is gone.** It was *Position / carries nothing heavy*, which is the Acrobat's cell
-exactly — a light harasser in armour is not a different build, it is the same build in a different
-chapter. See the review below.
-
 **Gladiator and Bodyguard are mirrors.** Both react; the difference is *whose* being hit triggers
 them. A Gladiator is paid to be the target and a Bodyguard is paid never to be, so the two cannot
-share a card between them. Before, both read "tied to a position" and were the same node twice.
+share a card between them.
 
-**Tactician brings a seventh axis.** Helping an ally is not any of the six — it is not your tempo,
+**Tactician brings the seventh axis.** Helping an ally is not any of the six — it is not your tempo,
 your position or your reactions, it is theirs. **Support** is what you spend your turn on when the
-payoff lands on somebody else's. Infantry is next to it but not it: Infantry wants an ally beside it,
-Tactician makes the ally better.
+payoff lands on somebody else's. Infantry is next to it but is not it: Infantry wants an ally beside
+it, Tactician makes the ally better.
 
-Twelve nodes: four on Reactions, three on Position, two on Tempo, one each on Preparation, Deck
-shape and Support. The Reactions four are where the cell rule below has to do real work — and it
-can, because *whose turn* and *whose being hit* are four different answers.
+### The shape
+
+Strength's second tree, and the same rule holds as for Shade — **every sibling set differs on both
+coordinates**, not merely on the cell:
+
+```
+  STRENGTH              (Position    / halves)
+  ├─ INFANTRY           (Position    / an ally)
+  │  ├─ GUARDIAN        (Reactions   / a slot kept free)
+  │  ├─ IRONCLAD        (Deck shape  / weight)
+  │  ├─ ARTILLERIST     (Position    / ground)
+  │  └─ TACTICIAN       (Support     / halves)
+  ├─ EXECUTIONER        (Tempo       / halves)
+  │  ├─ KNIGHT          (Position    / gear you can lose)
+  │  ├─ BERSERKER       (Deck shape  / Spent)
+  │  └─ MUSKETEER       (Preparation / range)
+  └─ GLADIATOR          (Reactions   / Health)
+     ├─ STREET FIGHTER  (Control     / a weapon's value)
+     └─ BODYGUARD       (Reactions   / ground)
+```
+
+| Siblings | Axes | Resources |
+|---|---|---|
+| Infantry, Executioner, Gladiator | Position, Tempo, Reactions | an ally, halves, Health |
+| Guardian, Ironclad, Artillerist, Tactician | Reactions, Deck shape, Position, Support | a slot, weight, ground, halves |
+| Knight, Berserker, Musketeer | Position, Deck shape, Preparation | gear, Spent, range |
+| Street Fighter, Bodyguard | Control, Reactions | a weapon's value, ground |
+
+The three trunk nodes are **how you stand, how you strike, and who you fight in front of** — the line,
+the kill, the crowd. Each is the broadest version of its branch, which is what a trunk should be, and
+the fan is uneven on purpose: four hang off the line because a line has more jobs in it than a duel
+does.
+
+Twelve nodes: three on Position, three on Reactions, two on Deck shape, and one each on Tempo,
+Preparation, Control and Support. Reactions came down from four, Control came up from nothing, and
+all seven axes are covered.
+
+> **[OPEN]** **Block** is Guardian's lever and the HUD already shows it beside Health and armor, but
+> the rules have never defined it in its own right — it arrived as part of the Defend-primary
+> decision. It needs a paragraph in core-rules §3 before the Guardian's Signature can be written.
+
+> **[OPEN]** **Brace** is named in core-rules §8 (a Wound *"can't be played, not even for Brace"*) and
+> defined nowhere this list can point at. It is a fighter's mechanic and it is unowned, so it is a
+> candidate lever for a node behind Guardian or Ironclad.
+
+> **[OPEN]** The world document still lists fifteen weapon types for this Way. It needs the same pass
+> as Shade's chapter once these restructures are accepted.
 
 ---
 
@@ -608,13 +713,13 @@ Forty-seven of these nodes fight, across four Ways. Seven axes:
 
 | Axis | At the audit | Now |
 |---|---|---|
-| **Reactions** | 6 | 9 |
 | **Position** | 9 | 8 |
+| **Reactions** | 6 | 8 |
 | **Preparation** | 4 | 8 |
-| **Control** | 3 | 6 |
-| **Deck shape** | 3 | 6 |
-| **Tempo** | 6 | 5 |
+| **Control** | 3 | 7 |
+| **Deck shape** | 3 | 7 |
 | **Support** | 1 | 5 |
+| **Tempo** | 6 | 4 |
 | | **32** | **47** |
 
 Nine nodes "leaned on Position". Tell a player that and they have learned nearly nothing: it is the
@@ -630,11 +735,18 @@ built to do. Every one of the five additions above was found this way:
 | **Support** had one node anywhere — the Tactician, in the Way where helping an ally is incidental | **Divinator** in Mind, **Scout** in Shade; Support is now one or two per Way |
 | **Preparation** was defined as "spell slots", so it could exist in only one Way | widened to *anything decided before it matters*; Trapmaker, Musketeer and Burglar moved onto it |
 | **Way of Mind had no Reactions node at all** — eleven schools, none that acted on another creature's turn | **Ward Magic** |
-| **Control** sat at 3 and might have been narrow or merely unexamined | unexamined: Way of Faith took it to 6, because obedience, trickery and poison are all interference in someone else's choices |
+| **Control** sat at 3 and might have been narrow or merely unexamined | unexamined: Faith took it to 6 — obedience, trickery and poison are all interference in someone else's choices — and Strength to 7, because grappling people was missing from the Way that does it with its hands |
+| **Way of Strength had no Control node** and four on Reactions, because it had no tree and all twelve were siblings | a tree, and **Street Fighter** moved to Control: what two empty hands are *for* is grabbing somebody |
 
-The spread went from 9:1 at its worst to **9:5** — flat enough that no axis is now either a dumping
-ground or an empty shelf. That is the histogram's whole job, and it is done; from here the work is
-Signatures, which no count can check.
+The spread went from 9:1 at its worst to **8:4** — flat enough that no axis is now either a dumping
+ground or an empty shelf, and four of the seven sit within one node of each other. That is the
+histogram's whole job, and it is done; from here the work is Signatures, which no count can check.
+
+One last thing it turned up, and the only one that was about the **rules** rather than the roster: the
+resource list in §5a.1 was written out of Mind and Shade, so it had no word for a mount, for open
+ground, or for giving up your weapon. Way of Strength's prices came out as prose because of it, and
+prose cannot be sorted. **When a Way's costs keep arriving as sentences, suspect the vocabulary before
+the Way.**
 
 Two of the re-homings above came straight out of the count. **Preparation was defined as "spell
 slots"**, which confined it to Way of Mind and left Position carrying every build that was really

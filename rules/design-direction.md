@@ -18,17 +18,23 @@ comparable in depth (§7 of [leveling.md](leveling.md) needs branches level), an
 kept turning up **missing** nodes rather than spare ones. Ritual magic, household magic and the four
 crafts sit outside the count because a major node is a fighting identity.
 
-The two Ways written out in full so far are shaped as opposites, deliberately:
+The three Ways written out so far are shaped differently, deliberately:
 
-| | **Way of Shade** | **Way of Faith** |
-|---|---|---|
-| Shape | **narrow and deep** — 3 titles off the trunk, 9 behind them | **wide and shallow** — 12 doors at once |
-| Told apart by | its **axes**: every sibling set differs on both coordinates | its **prices**: twelve gods, twelve different resources |
-| Why | a rogue's identity is how they fight | a priest's identity is who they answer to, and the first choice is permanent |
+| | **Way of Shade** | **Way of Strength** | **Way of Faith** |
+|---|---|---|---|
+| Shape | **a tree** — 3 titles off the trunk, 9 behind | **a tree** — 3 titles, 9 behind, unevenly | **a fan** — 12 doors at once |
+| Told apart by | its **axes** | the **rule each role owns** | its **prices** |
+| Why | a rogue's identity is how they fight | a fighter's verbs are everyone's verbs, so identity has to come from a rule nobody else may touch | a priest's identity is who they answer to, and the first choice is permanent |
 
 Twelve siblings cannot lean on seven axes without repeating, so Faith had to be told apart some other
-way — and what a god takes from you turned out to be the better coordinate anyway. The lists are in
-[specializations.md](specializations.md).
+way — and what a god takes from you turned out to be the better coordinate anyway.
+
+Strength needed a third answer again. Mind, Shade and Faith each own nouns the engine treats
+specially — spell slots, conditions, gods — while Strength's nouns are **Strike, Defend and Move**,
+which every character has, so its natural reward is more of what everyone already does. The fix was
+to find that Strength is actually the Way with the **most unclaimed mechanics**: armor, Block, weight
+and Overloaded, the Wound threshold, Blast against Aimed, Brace, adjacency. Each role now owns one
+outright. The lists are in [specializations.md](specializations.md).
 
 - There is **one graph with one root**, and the root points at all four Ways. A level-up takes a
   node your owned nodes point at. The mechanism is specified in [leveling.md](leveling.md); the
