@@ -249,7 +249,10 @@ check("step keys not in stepField", strayKeys.size ? [...strayKeys].join(", ") :
 const clauses = steps.filter(step => step?.when?.needs);
 check("combo clauses found", clauses.length, 2);
 
-const openings = new Set(["wet", "offBalance", "marked", "judged"]);
+const openings = new Set(
+  [...configSource.matchAll(/^  ([a-zA-Z]+): \{[^}]*opening: true/gm)].map(m => m[1])
+);
+check("openings declared in config", openings.size, 4);
 const notOpenings = clauses.filter(s => !openings.has(s.when.needs)).map(s => s.when.needs);
 check("clauses that read an opening", notOpenings.length ? notOpenings.join(", ") : "all", "all");
 

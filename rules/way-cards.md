@@ -156,10 +156,19 @@ against a knight — so a band cannot price them and only the simulator can. **W
 send them to §4**, which is where all four of them are. They are also the ones to be stingy with: three or four in the whole game, not one per
 node.
 
-**No reader ever *gates*, whatever kind it is.** No card reads *"only against a Wet target"* — an
-opening sharpens, it never switches a card on (core-rules §7, rule 3). A half that does nothing
+**No reader gates a primary, whatever kind it is.** No primary reads *"only against a Wet target"* —
+an opening sharpens, it never switches a card on (core-rules §7, rule 3). A primary that does nothing
 without its partner is a card held all fight waiting for a draw that never comes, and the validator
-refuses that clause outright rather than trusting anyone to remember.
+refuses that clause outright rather than trusting anyone to remember. **A secondary may be
+situational**, since a card is dead only when both halves are: *Pull Them Down* (§3.2) is a plain
+Strike with a conditional second half, which is the shape to use when a payoff really does want a
+prerequisite.
+
+**And a combo clause reads an **opening**, never an ordinary condition.** A half that is better
+against a Prone or an Overloaded target is welcome — but those conditions already do plenty by
+themselves, so such a half is ordinary card text, not a combo. The keyword exists for the one case
+that needs it: a setup worth nothing alone, where the sharpening *is* the payment. Both the schema
+and the validator now say so.
 
 **Every Way sets its own opening and reads its own best — but may set another Way's.** That is where
 party play comes from, and it is written into the content on purpose: the Poison school sets
@@ -172,6 +181,59 @@ the fighter who can.
 > duration ticks on its **creator's** turn, so one laid down on your turn survives every other
 > player's and expires when you come round again — **one setup, one round, the whole party.** Split
 > across two players, two cards are two hands, which is a different and far better probability.
+
+#### Why these four, and why there is no fifth
+
+**A condition needs to be an opening only where the setup would otherwise be worth nothing.**
+That is the whole test. Prone, Grappled, Dazed and Burning are already worth playing for, so a card
+that happens to be better against one of them is ordinary card text — it needs no keyword, because
+nobody had to be talked into setting it up. The four exist for the opposite case: *Rain* and
+*Shoulder Check* and *Call the Shot* and *Name the Guilty* buy you **nothing at all** on their own,
+and would never be played without a keyword promising they are worth something to somebody.
+
+Which gives three tiers of thing a card can read, and only the first needs inventing:
+
+| Tier | What a card reads | Needs a keyword? |
+|---|---|---|
+| **Openings** | Wet, Off-Balance, Marked, Judged | **yes** — worth nothing alone, so the sharpening is the payment |
+| **Real conditions** | Prone, Grappled, Dazed, Burning, Invisible… | no — already worth having; write it as card text on a **secondary** |
+| **Derived states** | Overloaded, Burdened, cover, adjacency, an empty hand | no — and nobody sets them at all, so a card reading one is **counter-build** material rather than a combo |
+
+That third tier is free content worth remembering: a Shade card that is vicious against an
+**Overloaded** target needs no setter, because the target's own kit put it there and it cannot be
+taken off mid-fight.
+
+**And the four are a 2×2, not a 4×1.** One per Way was how they were chosen; it is not why they are
+right. The real axis is *who creates it*:
+
+| | Mind / Strength — **a state** | Shade / Faith — **a call** |
+|---|---|---|
+| | the world can hand it to you free | one character asserts it to their allies |
+| | **Wet**, **Off-Balance** | **Marked**, **Judged** |
+| Also set by | rain, a river, a burst barrel; loose ground, a failed jump | nothing but a character — which is the point |
+| Reads as | *anyone can see it* | *he's the one* |
+
+A **state** is physical and the GM can give it away for nothing, which is why terrain and weather
+matter. A **call** has no source but a player, and is addressed to the rest of the table — which is
+why the two calls belong to the two Ways built on information and authority, and why they are the
+better half of the party mechanic.
+
+The grid is full, every Way has one, and no axis of the uniqueness audit is left starved: between
+them the readers written so far touch damage, saving throws, armor, initiative and Health. **So there
+is no fifth.** A candidate would have to fill a hole in that grid rather than merely sound good, and
+an *armour pried open* opening — the obvious suggestion — is already what *Between the Plates* and
+*The Weight of It* do by reading Marked and Judged.
+
+> **Off-Balance is the one to argue about.** Its case is not fictional but financial: **Prone** would
+> be a better opening in every way except that it is far too strong to set for free, so Off-Balance
+> exists to be the cheap thing a secondary may hand out and *Sweep the Leg* exists to convert it. That
+> is a pricing job dressed as a condition, and if one of the four is ever cut it is this one.
+
+> **The one real candidate for a fifth is an opening set on an **ally** —** a prepared or anointed
+> friend whose next card reads it. It is the purest party mechanic imaginable and it is **rejected on
+> rule 3**: a half that reads a buff you cannot give yourself is gated by another route, since no
+> amount of good play puts it in reach. Ally-facing value stays where it already is — Block, Heal and
+> advantage — which are simpler and do not pretend to be combos.
 
 #### The worked example, and what it costs
 
@@ -501,9 +563,10 @@ nobody would ever see one at a table.
   *Grey Judgement*, *Measure of the Debt*. Each pays off in something a band cannot price, which is
   what makes them interesting and what makes them unpriced. Either the simulator settles them or the
   count should come down.
-- **[OPEN]** Whether the openings want a **fifth**. Four is one per Way and memorable, but nothing
-  covers *armour pried open* or *a spell half-unravelled*, and a fifth would have no Way to belong
-  to — which may be an argument for it rather than against.
+- **Settled: there is no fifth opening.** The argument is in §1.6 — the four are a 2×2 of *state*
+  against *call*, the grid is full, and *armour pried open* is already what two existing readers do.
+  What stays open is the opposite question: whether **Off-Balance** earns its slot, since its case is
+  a pricing one rather than a fictional one.
 - **[OPEN]** A **multi-step spell**. The slate carries one effect; *Move, then Strike* exists on cards
   but has no spell equivalent, and *Wall of the Sphere* is already straining against the single step.
 - **[OPEN]** **The Rumour** needs the GM-facing half written: what "acts as if it were true" does to

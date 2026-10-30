@@ -80,11 +80,17 @@ export function stepField() {
      *
      * Because the clause lives here, on the half that reads the opening, NO interaction table
      * exists -- adding a card adds one combo and changes nothing else in the game.
+     *
+     * `needs` takes an OPENING, not any condition. A half may of course be better against a Prone
+     * or an Overloaded target -- but those conditions already do plenty by themselves, so a card
+     * reading one is ordinary card text and belongs in `text`. This clause is for the case the
+     * keyword exists for: a setup that is worth nothing on its own, where the sharpening IS the
+     * payment. The validator enforces the same thing from the content side.
      */
     when: new fields.SchemaField({
       needs: new fields.StringField({
         required: false, blank: true, initial: "",
-        choices: [...Object.keys(CARDRPG.conditions), ""]
+        choices: [...CARDRPG.openings, ""]
       }),
       mod: new fields.NumberField({ integer: true, nullable: true, initial: null }),
       advantage: new fields.BooleanField({ initial: false }),

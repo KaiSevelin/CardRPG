@@ -718,12 +718,17 @@ There is nothing to save against — it does nothing. The saving throw happens o
 where the real effect is. So the setup always works, and the uncertainty sits where uncertainty
 belongs. It is also why a setup is allowed to be cheap.
 
-**3. An opening never gates. It only sharpens.**
-No card reads *"only against a Wet target."* A payoff does its job against anyone and does it
+**3. An opening never gates a primary. It only sharpens one.**
+No primary half reads *"only against a Wet target."* A payoff does its job against anyone and does it
 **better** against an opening — more damage, advantage, or a harder saving throw for a condition it
-was already trying for. A card that does nothing without its partner is a card you hold all fight
+was already trying for. A primary that does nothing without its partner is a card you hold all fight
 waiting for a draw that never comes, and in a game played from a shuffled deck that is the one
 mistake a combo must not make.
+
+**A secondary may be situational**, because a card is dead only when *both* halves are. *Strike −1
+against a Prone or Grappled target* is a fine secondary behind an ordinary Strike: worth having when
+it applies, and costing nothing but the Move 1 it replaced when it does not. That asymmetry is the
+same one setters rely on — the secondary is the cheap space on a card, in both directions.
 
 **4. An opening is not used up. The duration is the window, and the window is the whole round.**
 Conditions tick at the start of the **creator's** turn, so an opening you lay down on your turn lasts
