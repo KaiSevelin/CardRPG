@@ -528,6 +528,9 @@ Each character has their own 20-card fate deck:
 
 - **Blessed**: shuffle a temporary *Critical* into your fate deck. It is removed when drawn.
 - **Cursed**: shuffle a temporary *Miss* into your fate deck. It is removed when drawn.
+- **The reshuffle on Miss and Critical is load-bearing.** It means the order of a fate deck is never
+  reliable for long, which is what keeps anything that *looks at or rearranges* a fate deck — a
+  divination, a feature, a blessing — from banking two good draws. You can aim one.
 - Later idea: some features or level-ups replace weak fate cards with better ones.
 
 ### Advantage and disadvantage

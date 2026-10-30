@@ -233,7 +233,7 @@ The **axes** are not new mechanics; they are the levers the engine already has:
 > **The writing rule:** two major nodes reachable from the same place must **lean on different axes
 > and pay in different resources.**
 
-An axis on its own will not do it. There are seven axes and — on the current list — thirty-one
+An axis on its own will not do it. There are seven axes and — on the current list — thirty-two
 fighting nodes, so collisions are guaranteed by arithmetic before anyone writes a word; the axis
 column tells a player which lever a build pulls, never what the build is. See the audit in
 [specializations.md](specializations.md), which found **two pairs of nodes that were the same build
@@ -354,6 +354,29 @@ holds a node's price to.
 | **Signature** | A prepared spell that is worth the Taint it costs. |
 | **Gives up** | **Breadth.** Every other school hoards a book and chooses on the morning; a necromancer's library stays as short as their Health allows. |
 | **Opens** | *(the school's deeper nodes)* |
+
+#### Divinator
+
+| | |
+|---|---|
+| **Stance** | You do not win the fight. You decide who does, and when. |
+| **Leans on** | Support |
+| **Pays in** | **Someone else's turn.** What you arrange is cashed by another character, and only if they act before a Miss or a Critical reshuffles the deck. |
+| **Signature** | *The Reading* — look at the top three cards of any **one** fate deck, a companion's or an enemy type's, and put them back in any order. |
+| **Gives up** | **Your own fate.** No divination of yours may look at or reorder your own fate deck. The seer is blind to themselves. |
+| **Opens** | *(the school's deeper nodes: avert, and hold a draw)* |
+
+Divinator is the example of **5a.3**, because the one clause it gives up is doing four jobs at once.
+It is the whole flavour; it forces the node onto Support, since a power that cannot help you is only
+worth anything aimed at someone else; it is the balance, because a diviner stacking their own deck
+would be a damage school with a tell; and it is what makes the Signature **fail the swap test for
+every sibling** — offer *The Reading* to a Blood mage or a Necromancer and they decline, because the
+only deck it may never touch is theirs.
+
+Note also what the Signature costs the rules: **nothing**. Fate decks, the per-type enemy decks and
+the reshuffle-on-Miss-or-Critical are all core-rules §6, written for other reasons, and the reshuffle
+is what stops a diviner banking two good draws. [specializations.md](specializations.md) works it
+through.
 
 Necromancer is the example worth studying, because its cost is **not invented for it**. Taint already
 exists, already distinguishes body from mind, already has a face in the icon set and an Afflicted

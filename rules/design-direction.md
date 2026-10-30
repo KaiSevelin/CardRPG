@@ -6,11 +6,17 @@ Long-term decisions that aren't detailed rules yet.
 
 Three classes, called **Ways**. The world document settles this: it has a specialization chapter for each of the three, so the possible fourth Way is dropped.
 
-| Way | Archetype | Specializations in the world doc |
-|---|---|---|
-| **Way of Strength** | Fighters | 15, named, none written |
-| **Way of Shade** | Rogues | 12, named, none written |
-| **Way of Mind** | Mages and priests | 13 magic schools, most written |
+| Way | Archetype | In the world doc | Major nodes now |
+|---|---|---|---|
+| **Way of Strength** | Fighters | 15 weapon types, none written | **12 roles** — a weapon type is not a playstyle |
+| **Way of Shade** | Rogues | 12, named, none written | **12** |
+| **Way of Mind** | Mages and priests | 11 schools, ritual magic, most priced | **12** — Divination added for the Support axis |
+
+**All three Ways are twelve nodes wide**, which is a target rather than a coincidence: it keeps the
+Ways comparable in depth (§7 of [leveling.md](leveling.md) needs branches level) and it was what
+turned up the missing node. Mind had no **Support** node at all, in the Way whose whole fiction is
+knowing what others do not. Ritual magic and the four crafts sit outside the count because a major
+node is a fighting identity. The list is in [specializations.md](specializations.md).
 
 - There is **one graph with one root**, and the root points at all three Ways. A level-up takes a
   node your owned nodes point at. The mechanism is specified in [leveling.md](leveling.md); the

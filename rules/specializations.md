@@ -29,6 +29,7 @@ is a rule this game already has or has already parked:
 | **Spiritualism** | a **pact with a minor god** per formula | an **obligation** |
 | **Household** | negotiating with elf-kin | an **obligation** |
 | **Priest** | **vows or a pilgrimage**, whatever the school | an **obligation** |
+| **Divination** *(new)* | a **prophecy** the GM holds, one per formula | a **text obligation** ([leveling.md](leveling.md) §4) |
 
 > **Formula strength is 1–5**, and that is the spell-slot cost. A strength-3 formula takes three of
 > your slots. "Some spells cost more than one slot" was already written in the world; it just was not
@@ -85,7 +86,7 @@ Two consequences worth seeing before this is built:
 
 ---
 
-## Way of Mind — 11 schools, 4 crafts, 1 ritual
+## Way of Mind — 12 schools, 4 crafts, 1 ritual
 
 Direct magic is cast in combat. Ritual magic is not, and anyone literate can do it.
 
@@ -102,14 +103,91 @@ Direct magic is cast in combat. Ritual magic is not, and anyone literate can do 
 | **Spiritualism** | Spiritualism | Preparation | A pact with a minor god, per formula, as an obligation |
 | **Household Magic** | Hushållsmagi | *(out of combat)* | Negotiation with elf-kin, as an obligation |
 | **Priest Magic** | Prästmagik | Preparation | Vows or a pilgrimage; a shorter list than a mage's |
+| **Divination** ✱ | Spådom | **Support** | Someone else's turn — and a prophecy the GM holds over you |
 | **Ritual Magic** | Rituell magik | *(out of combat)* | Time, and a recipe that can go wrong |
 | **Brewer** | Bryggare | *(craft)* | — |
 | **Smith** | Smeder | *(craft)* | — |
 | **Jeweller** | Juvelerare | *(craft)* | — |
 | **Orator** | Oratorer | *(social)* | — |
 
+✱ **Divination is not in the world document.** It is added to bring Mind to twelve schools, matching
+Shade's twelve and Strength's twelve, and it is specified below.
+
 **[OPEN]** The crafts and the two out-of-combat schools do not fit the six-axis template, because the
 axes are all about a fight. They need either a second template or a different kind of node.
+
+### Divination: the one deck nobody may touch  **[PROPOSED]**
+
+A diviner peeks — but at *what*? Three of the four obvious answers are already spoken for:
+
+| Peek at | Why not |
+|---|---|
+| **An enemy's intent card** | That is **Foresee**, and core-rules §3 is explicit: *a caster who can Foresee every round shouldn't exist.* Divination is already listed there as one of the things that may reveal an intent, so a whole school cannot be built on it. |
+| **Your own action deck or hand** | That is **Deck shape**, and Tattoo Magic and Asceticism already hold it. |
+| **Another player's hand** | Hands are private by design ([../foundry/hud-spec.md](../foundry/hud-spec.md)), and this is a table problem, not a mechanic. |
+| **A fate deck** | ← unclaimed, and it is the only hidden randomiser in the game |
+
+**The fate deck is the right target, and the rules have already built the fence around it.** Three
+things that were written for other reasons make it work:
+
+1. **Every character has their own 20-card fate deck**, and so does every NPC *type* (core-rules §6).
+   So a fate deck is a thing that belongs to somebody, and reading somebody else's is a service.
+2. **A Miss or a Critical reshuffles the deck.** This is the whole balance of the mechanic, for free:
+   you can aim **one** good draw and never bank two, because the moment the good one is used the
+   order you arranged is gone.
+3. **The composition is known** — 1 Miss, 1 −2, 4 −1, 8 ±0, 4 +1, 1 +2, 1 Critical — so looking at
+   three cards finds one of the three swing cards **about 40% of the time**. The other 60% is worth
+   roughly +1 to somebody. Real, but not a guarantee.
+
+#### The node
+
+| Part | |
+|---|---|
+| **Title** | **Divinator** |
+| **Stance** | You do not win the fight. You decide who does, and when. |
+| **Leans on** | **Support** — the only axis Way of Mind had no node on, and the honest one: foresight nobody acts on is a feeling, not an effect. |
+| **Pays in** | **Someone else's turn.** Everything you set up is cashed by another character, and only if they act before the deck reshuffles. |
+| **Signature** | **The Reading** — ✦ Cast, a primary half: look at the top **three** cards of any **one** fate deck — a companion's, or an enemy type's — and put them back in any order. |
+| **Gives up** | **Your own fate.** No divination of yours may look at or reorder **your own** fate deck, ever. The seer is blind to themselves. |
+| **Not** | not an intent-reader (that is Foresee), not a deck-shaper, not a damage school |
+| **Pays to learn** | **A prophecy**, one per formula: the GM writes down one true thing about your future and keeps it. You may not act to prevent it. |
+
+#### Why it holds up
+
+**It passes the swap test** ([leveling.md](leveling.md) §5a.2) harder than anything else on the list.
+Offer *The Reading* to a Blood mage, an Elementalist, a Shadow mage or a Necromancer and every one of
+them turns it down, because the one deck it may never touch is their own. A card that cannot help the
+caster is useless to eleven of the twelve schools and definitive for the twelfth.
+
+**The subtraction is the identity**, which is what §5a.3 asks for. *Blind to themselves* is one clause,
+needs no bookkeeping, is enforceable by eye, and is the oldest thing in the mythology of seers. It
+also does the balancing: a diviner who could stack their own deck would be a damage school with a
+tell, and the ban is what forces the node onto Support instead.
+
+**The price is the mirror of Tattoo Magic.** Styrka gives the GM a **secret about your past**
+(skill-rules §5); Spådom gives them a **prophecy about your future** and forbids you to dodge it. Same
+shape, opposite direction, and it stays on §4's loosest rung — a sentence the table enforces, with
+nothing to run.
+
+**Its best turn is the enemy's deck.** Fate decks are per NPC *type*, so putting the Miss on top of
+the goblin deck fails the next goblin to swing, whichever goblin that is. Core-rules §6 already notes
+that precision scales with importance for Blessed and Cursed; divination reads the same scale from
+the other end — worth most against a warband, exact against a boss.
+
+#### Three mechanisms considered and not taken
+
+| | Why not the Signature |
+|---|---|
+| **Read the top card** (look, don't touch) | Information with no commitment is advice. It also slows the table to a crawl, because everyone asks the diviner before acting. Fine as a cheap secondary half; too thin to name a school after. |
+| **Avert** (top card of a fate deck to the bottom) | Strong and clean, but it is one denial with no texture, and it is nearly Cursed in reverse. **Better as a deeper node** in the branch. |
+| **Hold a draw** (draw a fate card now, face down; the next character to draw fate uses yours) | Genuinely good, and very divination — you took a piece of fate out and spent it later. But it is a token on the table and a rules edge around who-draws-when. **Better as a deeper node**, where it reads as the school's mastery. |
+
+All three are fate-deck shapes, so the branch has somewhere to go: *read* at the trunk, *order* at the
+title, *avert* and *hold* beyond it.
+
+> **[OPEN]** The Reading has not been simulated. It is a primary half whose value swings between
+> nothing and one guaranteed enemy Miss, which is roughly a Defend — in range on paper, and exactly
+> the kind of claim [../sim/](../sim/) exists to check.
 
 ## Way of Shade — 12
 
@@ -183,10 +261,11 @@ can, because *whose turn* and *whose being hit* are four different answers.
    ([leveling.md](leveling.md) §4) and it serves those four nodes plus Necromancy's bound Taint.
 2. **Spell-slot cost is already written**: formula strength 1–5.
 3. **`Armborstspecialister` appeared twice** in the world document. Counted once.
-4. **The counts do not match [design-direction.md](design-direction.md)**, which says 15 / 12 / 13.
-   Shade is 12 and the world's Strength list is 15, but Mind has 11 direct schools plus ritual, four
-   crafts and an orator, so the 13 matches nothing. Strength is now **12 roles** here rather than 15
-   weapon types, so design-direction's row describes the world document, not this file.
+4. **The counts now line up at twelve.** [design-direction.md](design-direction.md) says 15 / 12 / 13,
+   which was the world document's own tally: 15 Strength *weapon types*, 12 Shade, and 13 for Mind
+   only if you count ritual magic. Restructuring Strength into **12 roles** and adding **Divination**
+   as Mind's twelfth school makes all three Ways twelve nodes wide, with ritual magic and the four
+   crafts sitting outside the count because they are not fighting identities (finding 5).
 5. **The crafts are probably not major nodes at all.** Brewer, Smith, Jeweller, Orator, Spy, Fence
    and Politician are about what you do *between* fights, and a major node is a fighting identity.
    Since **skills live on minor nodes** ([leveling.md](leveling.md) §4), these are most likely
@@ -204,9 +283,9 @@ found both a weakness in the device and two outright breaches.
 
 ## 1. The axis cannot carry it alone
 
-Thirty-one of these nodes fight. Seven axes, thirty-one nodes:
+Thirty-two of these nodes fight. Seven axes, thirty-two nodes:
 
-| Axis | Before | After the fixes above |
+| Axis | Before | Now |
 |---|---|---|
 | **Position** | 9 | 7 |
 | **Reactions** | 6 | 6 |
@@ -214,12 +293,16 @@ Thirty-one of these nodes fight. Seven axes, thirty-one nodes:
 | **Tempo** | 6 | 5 |
 | **Control** | 3 | 3 |
 | **Deck shape** | 3 | 3 |
-| **Support** | 1 | 1 |
+| **Support** | 1 | 2 |
 
 Nine nodes "leaned on Position". Tell a player that and they have learned nearly nothing: it is the
-aisle, not the item. **With 31 nodes and 7 axes the pigeonhole principle alone guarantees
+aisle, not the item. **With 32 nodes and 7 axes the pigeonhole principle alone guarantees
 collisions**, so no amount of care in writing the axis column will separate these builds. The axis
 says which lever a build pulls; it was never going to say what the build *is*.
+
+The thinnest axis is also the one that turned up a missing node. **Support had exactly one node**,
+the Tactician, in a Way where helping an ally is incidental — and none at all in Way of Mind, where
+half the fiction is knowing things other people do not. That gap is what the Divinator fills.
 
 Two of the re-homings above came straight out of the count. **Preparation was defined as "spell
 slots"**, which confined it to Way of Mind and left Position carrying every build that was really
