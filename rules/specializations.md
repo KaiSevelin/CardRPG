@@ -127,8 +127,11 @@ A diviner peeks — but at *what*? Three of the four obvious answers are already
 | **Another player's hand** | Hands are private by design ([../foundry/hud-spec.md](../foundry/hud-spec.md)), and this is a table problem, not a mechanic. |
 | **A fate deck** | ← unclaimed, and it is the only hidden randomiser in the game |
 
-**The fate deck is the right target, and the rules have already built the fence around it.** Three
-things that were written for other reasons make it work:
+**The fate deck is the right target, and the rules have already built the fence around it.** The
+mechanism is now a keyword in core-rules §6 — **Read N**, *look at the top N cards of one fate deck
+and put them back in any order* — so cards and features reference it the way they reference *Foresee*,
+and *Read 1* covers plain looking without a second keyword. Three things written for other reasons
+make it work:
 
 1. **Every character has their own 20-card fate deck**, and so does every NPC *type* (core-rules §6).
    So a fate deck is a thing that belongs to somebody, and reading somebody else's is a service.
@@ -147,7 +150,7 @@ things that were written for other reasons make it work:
 | **Stance** | You do not win the fight. You decide who does, and when. |
 | **Leans on** | **Support** — the only axis Way of Mind had no node on, and the honest one: foresight nobody acts on is a feeling, not an effect. |
 | **Pays in** | **Someone else's turn.** Everything you set up is cashed by another character, and only if they act before the deck reshuffles. |
-| **Signature** | **The Reading** — ✦ Cast, a primary half: look at the top **three** cards of any **one** fate deck — a companion's, or an enemy type's — and put them back in any order. |
+| **Signature** | **The Reading** — ✦ Cast, a primary half: **Read 3** (core-rules §6) on any one fate deck — a companion's, or an enemy type's. |
 | **Gives up** | **Your own fate.** No divination of yours may look at or reorder **your own** fate deck, ever. The seer is blind to themselves. |
 | **Not** | not an intent-reader (that is Foresee), not a deck-shaper, not a damage school |
 | **Pays to learn** | **A prophecy**, one per formula: the GM writes down one true thing about your future and keeps it. You may not act to prevent it. |
@@ -189,22 +192,127 @@ title, *avert* and *hold* beyond it.
 > nothing and one guaranteed enemy Miss, which is roughly a Defend — in range on paper, and exactly
 > the kind of claim [../sim/](../sim/) exists to check.
 
-## Way of Shade — 12
+## Way of Shade — restructured  **[PROPOSED]**
 
-| Node | Swedish | Leans on | Pays in |
-|---|---|---|---|
-| **Thief** | Tjuvar | Control | A free hand and a light weapon |
-| **Assassin** | Lönnmördare | Tempo | Everything on one opening; little to do once seen |
-| **Spy** | Spioner | *(social)* | — |
-| **Trapmaker** | Fällmakare | Preparation | Turns spent before the fight, on a guess about where it happens |
-| **Fence** | Hälare | *(social)* | — |
-| **Bard** | Barder | Reactions | — |
-| **Politician** | Politiker | *(social)* | — |
-| **Archer** | Bågskyttar | Position | Hands full, and ruined by anything adjacent |
-| **Pistolier** | Pistoljärer | Tempo | **One loaded shot.** After it you are holding a club until you Ready |
-| **Duellist** | Duellister | Reactions | One enemy at a time |
-| **Acrobat** | Akrobater | Position | Carries nothing heavy |
-| **Half-mage** | Halvmagiker | Preparation | Few slots; neither one thing nor the other |
+Firma's Shade chapter is twelve headings with nothing under them, so this is the cheapest of the
+three Ways to change — and it needed it most. Three problems, in order of size:
+
+**Three of the twelve do not fight.** Spy, Fence and Politician do nothing in a combat, and a major
+node is a fighting identity. Shade therefore had **nine** fighting nodes against Strength's twelve
+and Mind's twelve: the symmetry was on paper only. All three come back below as minor-node clusters,
+which is what [leveling.md](leveling.md) §4 wants the nodes between titles to be.
+
+**Two of the twelve are weapons.** Archer is a bow and Pistolier is a gun — the same error the
+Strength list made eight times. One *ranged* node per Way is a playstyle; two is a weapon list. And
+Pistolier's price, everything staked on one shot, **is Assassin's price**, which is why Pistolier kept
+colliding with its neighbours in both Ways. It is absorbed.
+
+**Bard had no price at all.** The Pays in column was blank — the tell for a node nobody has decided
+anything about yet.
+
+| Node | Swedish | Leans on | Pays in | Follows |
+|---|---|---|---|---|
+| **Thief** | Tjuvar | Control | A free hand and a light weapon | Shade |
+| **Scout** ✱ | Spanare | **Support** | **Being alone** — ahead of the party, where nobody can reach you | Shade |
+| **Duellist** | Duellister | Reactions | **Halves** — a secondary every round to keep your opponent named | Shade |
+| **Assassin** | Lönnmördare | Tempo | **Spent** — the opening is a card gone for the whole fight | Thief |
+| **Cutpurse** ✱ | Ficktjuv | Deck shape | **Deck size** — what you lift goes into your deck, and you did not choose it | Thief |
+| **Burglar** ✱ | Inbrottstjuv | Preparation | **Weight** — the kit, the rope, the bar, the lantern | Thief |
+| **Archer** | Bågskyttar | Position | **Range** — hands full, and ruined by anything adjacent | Scout |
+| **Trapmaker** | Fällmakare | Preparation | **A turn spent early**, on a guess about where the fight happens | Scout |
+| **Acrobat** | Akrobater | Position | **Weight** — carries nothing heavy | Duellist |
+| **Bard** | Barder | Reactions | **Someone else's turn** — your cards fire on theirs, never on yours | Duellist |
+| **Gambler** ✱ | Dobblare | Deck shape | **The fate deck** — a Miss *and* a Critical of your own, permanently | Duellist |
+| **Half-mage** | Halvmagiker | Preparation | **Spell slots** — few, and neither one thing nor the other | Duellist |
+
+✱ **Scout, Cutpurse, Burglar and Gambler are not in the world document.** The first three are in
+[leveling.md](leveling.md) §1's sketch of this very Way, which turned out to be right before the list
+was; Gambler is new, and the Dream Guild is where it comes from.
+
+### The shape
+
+Twelve nodes is also the first **tree** written for any Way, because the audit's main lesson was that
+uniqueness is a sibling property and a flat list cannot be checked at all:
+
+```
+  SHADE            (Position    / halves)
+  ├─ THIEF         (Control     / a slot kept free)
+  │  ├─ ASSASSIN   (Tempo       / Spent)
+  │  ├─ CUTPURSE   (Deck shape  / deck size)
+  │  └─ BURGLAR    (Preparation / weight)
+  ├─ SCOUT         (Support     / being alone)
+  │  ├─ ARCHER     (Position    / range)
+  │  └─ TRAPMAKER  (Preparation / a turn spent early)
+  └─ DUELLIST      (Reactions   / halves)
+     ├─ ACROBAT    (Position    / weight)
+     ├─ BARD       (Reactions   / someone else's turn)
+     ├─ GAMBLER    (Deck shape  / the fate deck)
+     └─ HALF-MAGE  (Preparation / spell slots)
+```
+
+**Every sibling set differs on both coordinates**, not merely on the cell, so this Way satisfies the
+original strict form of the writing rule and not only the relaxed one:
+
+| Siblings | Axes | Resources |
+|---|---|---|
+| Thief, Scout, Duellist | Control, Support, Reactions | a slot, being alone, halves |
+| Assassin, Cutpurse, Burglar | Tempo, Deck shape, Preparation | Spent, deck size, weight |
+| Archer, Trapmaker | Position, Preparation | range, a turn spent early |
+| Acrobat, Bard, Gambler, Half-mage | Position, Reactions, Deck shape, Preparation | weight, someone else's turn, the fate deck, spell slots |
+
+Two repeats are left in, deliberately, and both are instructive:
+
+- **Duellist follows Shade on the same resource**, halves, and **Bard follows Duellist on the same
+  axis**, Reactions. Neither is a fault: the cell rule governs *siblings*, and a child free to
+  deepen its parent is what a branch is **for**. Bard is the Duellist's reactions pointed at somebody
+  else.
+- **Acrobat and Burglar both pay in weight**, in opposite directions — one carries nothing, one
+  carries a kit. They sit in different branches and read as a contrast rather than a collision.
+
+### The find: Way of Shade owes nobody
+
+Every single Way of Mind school states a price to a *person* — an elven debt, a pact with a minor
+god, vows, a secret the GM keeps. **Not one Shade node owes anything to anyone.** Their prices are
+all mechanical, which makes the whole Way feel self-taught, and it leaves the obligation machinery
+([leveling.md](leveling.md) §4) serving five Mind nodes and nothing else.
+
+The world already has the creditor. The **Dream Guild** is *a criminal organisation with branches in
+every district* ([../worldinfo/Firma.md](../worldinfo/Firma.md)), it moves dreamwort out of Bogtown,
+it is said to hold a treaty with the Horde, and Highfall pays it in troops and slaves. Nobody learns
+to pick a lock in that city without somebody knowing.
+
+> **Proposed:** the Thief trunk carries a **Dream Guild obligation**, and it binds in text — §4's
+> loosest rung. *They get a cut. They will ask for a favour, and the favour will be inconvenient.*
+
+That one obligation gives the GM a standing hook into any Shade character, gives Fence and Cutpurse
+something to be about, and costs the rules nothing to run.
+
+### Spy, Fence and Politician
+
+Demoted, not deleted — as clusters of **minor** nodes along the branches they belong to, carrying
+skill cards, training and know-how:
+
+| | Sits on the way to | Gives |
+|---|---|---|
+| **Spy** | Scout | know-how in courts and crowded cities; training in disguise; the Wits cards a watcher needs |
+| **Fence** | Cutpurse | know-how in valuing and moving stolen goods; the contact who buys |
+| **Politician** | Bard | know-how in a council chamber; the Presence cards for a room that has already decided |
+
+This is the answer finding 5 wanted and it solves the other half of the problem: a trunk that was
+three levels of filler waiting for a title now has three recognisable professions sitting on it.
+
+### What changed
+
+| | |
+|---|---|
+| **Added** | Scout (Support — Shade had none), Cutpurse, Burglar, Gambler |
+| **Absorbed** | Pistolier → Assassin |
+| **Demoted** | Spy, Fence, Politician → minor-node clusters |
+| **Priced** | Bard, which had no Pays in; Duellist's *one enemy at a time* made concrete as a secondary spent naming them |
+| **Unchanged** | Thief, Assassin, Trapmaker, Archer, Acrobat, Half-mage |
+
+> **[OPEN]** The world document's Shade chapter still lists the old twelve, and its Strength chapter
+> still lists fifteen weapon types. Both need a pass once these restructures are accepted.
 
 ## Way of Strength — restructured  **[PROPOSED]**
 
@@ -283,26 +391,33 @@ found both a weakness in the device and two outright breaches.
 
 ## 1. The axis cannot carry it alone
 
-Thirty-two of these nodes fight. Seven axes, thirty-two nodes:
+Thirty-five of these nodes fight. Seven axes, thirty-five nodes:
 
-| Axis | Before | Now |
+| Axis | At the audit | Now |
 |---|---|---|
 | **Position** | 9 | 7 |
+| **Preparation** | 4 | 7 |
 | **Reactions** | 6 | 6 |
-| **Preparation** | 4 | 6 |
-| **Tempo** | 6 | 5 |
+| **Deck shape** | 3 | 5 |
+| **Tempo** | 6 | 4 |
 | **Control** | 3 | 3 |
-| **Deck shape** | 3 | 3 |
-| **Support** | 1 | 2 |
+| **Support** | 1 | 3 |
+| | **32** | **35** |
 
 Nine nodes "leaned on Position". Tell a player that and they have learned nearly nothing: it is the
-aisle, not the item. **With 32 nodes and 7 axes the pigeonhole principle alone guarantees
+aisle, not the item. **With 35 nodes and 7 axes the pigeonhole principle alone guarantees
 collisions**, so no amount of care in writing the axis column will separate these builds. The axis
 says which lever a build pulls; it was never going to say what the build *is*.
 
-The thinnest axis is also the one that turned up a missing node. **Support had exactly one node**,
-the Tactician, in a Way where helping an ally is incidental — and none at all in Way of Mind, where
-half the fiction is knowing things other people do not. That gap is what the Divinator fills.
+What the histogram was good for was finding **missing** nodes, which is not what it was built to do.
+**Support had exactly one node** — the Tactician, in the Way where helping an ally is incidental — and
+none in Way of Mind, where half the fiction is knowing what others do not, nor in Way of Shade, where
+going ahead and coming back to tell is the oldest job there is. Those two gaps are the **Divinator**
+and the **Scout**, and Support now has exactly one node per Way. **Preparation** rose from 4 to 7 the
+same way: it had been defined as "spell slots" and so could only exist in one Way.
+
+A thin axis is a question, then: either it is thin because it is narrow, or because nobody has
+looked. Control is still at 3 and may be the next of these.
 
 Two of the re-homings above came straight out of the count. **Preparation was defined as "spell
 slots"**, which confined it to Way of Mind and left Position carrying every build that was really
@@ -326,7 +441,8 @@ same node written twice:
 Both pairs were legal under the writing rule as written, because the rule only compares **siblings**
 and these sit in different Ways. Both are nonetheless indefensible: a player choosing between Ways
 reads the whole list, and finding the same build in two chapters tells them the Ways are decoration.
-Skirmisher is now deleted and Musketeer re-homed.
+Skirmisher is deleted, Musketeer re-homed, and Pistolier — which caused both halves of the first
+pair — absorbed into Assassin when Way of Shade was restructured.
 
 The useful part is *how* they were found. They were not spotted by reading; they were spotted by
 writing the two columns as a pair and sorting. **That is a check a machine can run**, and it is the

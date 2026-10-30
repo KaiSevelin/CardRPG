@@ -9,8 +9,11 @@ Three classes, called **Ways**. The world document settles this: it has a specia
 | Way | Archetype | In the world doc | Major nodes now |
 |---|---|---|---|
 | **Way of Strength** | Fighters | 15 weapon types, none written | **12 roles** — a weapon type is not a playstyle |
-| **Way of Shade** | Rogues | 12, named, none written | **12** |
+| **Way of Shade** | Rogues | 12, named, none written | **12 restructured** — three professions demoted, one weapon absorbed, four added |
 | **Way of Mind** | Mages and priests | 11 schools, ritual magic, most priced | **12** — Divination added for the Support axis |
+
+Shade is also the first Way with a **tree** rather than a list: three titles off the trunk and nine
+behind them, every sibling set distinct on both coordinates. It is the template for the other two.
 
 **All three Ways are twelve nodes wide**, which is a target rather than a coincidence: it keeps the
 Ways comparable in depth (§7 of [leveling.md](leveling.md) needs branches level) and it was what

@@ -569,6 +569,38 @@ worth cursing are the ones where the curse is exact.
 A typical fight has two to four types, so the GM handles two to four decks — the same number of piles
 as the NPC action decks already in front of them.
 
+### Reading a fate deck
+
+Anything that lets a character look into a fate deck uses one keyword, the way enemy intent uses
+*Foresee*:
+
+> **Read N** — Look at the top **N** cards of one fate deck and put them back in **any order**.
+
+| | |
+|---|---|
+| **Whose deck** | Any one fate deck in the fight — your own, a companion's, or an NPC *type*'s. A card or feature may narrow that, and divination does: a Divinator may **never** read their own ([specializations.md](specializations.md)). |
+| **Read 1** | Looking at one card and putting it back is just looking, so the cheap version needs no keyword of its own. |
+| **Who knows** | You do. Saying what you saw is a decision at the table, not a rule — but the order they go back in is **yours** either way. |
+| **Short deck** | Fewer than N cards left: read what is there. |
+| **No icon** | A named effect, like *Foresee*, *Taunt* and *Stabilize*. |
+
+**The reshuffle is the fence.** A Miss or a Critical reshuffles the deck, so an order you arranged
+survives only until the first swing card is drawn. You can aim **one** good draw and never bank two,
+and no feature needs to say so because §6 already did.
+
+Two consequences worth knowing before putting Read on a card:
+
+- **Advantage draws two and uses the better**, so a Read of 2 or more sets up an advantage draw as
+  well as a plain one. Against disadvantage it works in reverse — put the two worst on top of an
+  enemy's deck and their advantage is spent on nothing.
+- **Precision scales with importance**, the same way it does for Blessed and Cursed. Reading a goblin
+  warband's deck aims one draw for whichever goblin swings next; reading a boss's deck aims it at the
+  boss. The enemies worth reading are the ones where the reading is exact.
+
+Like Foresee, Read is **worth a different amount every round**: worth most when a hard-hitting enemy
+is about to act or an ally is about to spend a Spent card, and worth nothing when nobody with a stake
+in it draws before the deck reshuffles.
+
 ---
 
 ## 7. Conditions

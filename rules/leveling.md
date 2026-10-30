@@ -233,7 +233,7 @@ The **axes** are not new mechanics; they are the levers the engine already has:
 > **The writing rule:** two major nodes reachable from the same place must **lean on different axes
 > and pay in different resources.**
 
-An axis on its own will not do it. There are seven axes and — on the current list — thirty-two
+An axis on its own will not do it. There are seven axes and — on the current list — thirty-five
 fighting nodes, so collisions are guaranteed by arithmetic before anyone writes a word; the axis
 column tells a player which lever a build pulls, never what the build is. See the audit in
 [specializations.md](specializations.md), which found **two pairs of nodes that were the same build
@@ -266,6 +266,11 @@ that distinctness is a writing habit rather than a puzzle.
   refuses it (section 8), alongside the acyclicity and prerequisite checks.
 - **Warning:** a repeated cell anywhere in one Way, or the same cell in two different Ways. Legal,
   and usually wrong.
+- **A child may deepen its parent.** The rule governs siblings only, so a node that follows its
+  parent on the same axis, or pays in the same resource, is doing what a branch is **for**. Way of
+  Shade's Bard follows the Duellist on Reactions and is the Duellist's reactions pointed at somebody
+  else ([specializations.md](specializations.md)); if that were forbidden, every branch would have to
+  change the subject at every step.
 
 ### 5a.2 The swap test
 
@@ -362,7 +367,7 @@ holds a node's price to.
 | **Stance** | You do not win the fight. You decide who does, and when. |
 | **Leans on** | Support |
 | **Pays in** | **Someone else's turn.** What you arrange is cashed by another character, and only if they act before a Miss or a Critical reshuffles the deck. |
-| **Signature** | *The Reading* — look at the top three cards of any **one** fate deck, a companion's or an enemy type's, and put them back in any order. |
+| **Signature** | *The Reading* — **Read 3** (core-rules §6) on any **one** fate deck: a companion's, or an enemy type's. |
 | **Gives up** | **Your own fate.** No divination of yours may look at or reorder your own fate deck. The seer is blind to themselves. |
 | **Opens** | *(the school's deeper nodes: avert, and hold a draw)* |
 
@@ -373,9 +378,10 @@ would be a damage school with a tell; and it is what makes the Signature **fail 
 every sibling** — offer *The Reading* to a Blood mage or a Necromancer and they decline, because the
 only deck it may never touch is theirs.
 
-Note also what the Signature costs the rules: **nothing**. Fate decks, the per-type enemy decks and
-the reshuffle-on-Miss-or-Critical are all core-rules §6, written for other reasons, and the reshuffle
-is what stops a diviner banking two good draws. [specializations.md](specializations.md) works it
+Note also what the Signature costs the rules: **one keyword**. Fate decks, the per-type enemy decks
+and the reshuffle-on-Miss-or-Critical are all core-rules §6, written for other reasons, and the
+reshuffle is what stops a diviner banking two good draws. *Read N* is named there now, beside
+*Foresee*, so any card or feature can use it. [specializations.md](specializations.md) works it
 through.
 
 Necromancer is the example worth studying, because its cost is **not invented for it**. Taint already
