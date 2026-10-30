@@ -260,9 +260,10 @@ simply correct, and there is no autopilot.
 ### 1.7 Conditions from spells
 
 Half this game's major nodes are casters — twelve schools and twelve gods out of forty-eight — and
-the condition list was written for fighters. Of the nineteen, magic touches seven: Invisible, Burning,
-Dazed, Slowed, Stunned, Silenced and Wet. Everything else on the list is a thing you do with your
-hands.
+the condition list was written for fighters. Of the nineteen, magic **casts** six: Invisible, Burning,
+Dazed, Slowed, Stunned and Wet ([conditions.md](conditions.md) §6). Everything else on the list is a
+thing you do with your hands — except **Silenced**, which is the one aimed *at* casters and which
+nothing in the game can currently inflict.
 
 That is not a shortage of conditions. It is one missing *shape*, one condition nobody casts, and one
 procedural rule already in force that is worth saying out loud.

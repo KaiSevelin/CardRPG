@@ -226,6 +226,32 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
     return blocked;
   }
 
+  /*
+   * The three conditions below used to be hardcoded by key in the tray, or not implemented at all,
+   * while config.mjs carried flags for them that nothing read. These make the flags the truth, the
+   * way `blocks` already is: a new condition that costs a secondary needs a config entry and
+   * nothing else.
+   */
+
+  /** True while a condition costs you your secondary (Dazed). */
+  get noSecondary() {
+    return this.activeConditions.some(c => CARDRPG.conditions[c.key]?.blocksSecondary);
+  }
+
+  /** True while a condition costs you your reactions (Stunned, Unconscious). */
+  get noReactions() {
+    return this.activeConditions.some(c => CARDRPG.conditions[c.key]?.blocksReactions);
+  }
+
+  /**
+   * True while a condition halves your Move (Slowed, Burdened, Overloaded). Move is never resolved
+   * by the engine -- figures are pushed around by hand -- so what this changes is the number on the
+   * card face, which is exactly where a player needs to be told.
+   */
+  get moveHalved() {
+    return this.activeConditions.some(c => CARDRPG.conditions[c.key]?.halvesMove);
+  }
+
   /* -------------------------------------------- */
 
   #deck(which) {

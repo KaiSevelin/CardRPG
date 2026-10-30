@@ -129,6 +129,64 @@ for (const [doc, types] of Object.entries(manifest.documentTypes)) {
 
 /* -------------------------------------------- */
 
+/*
+ * rules/conditions.md is the human-readable list, and a reference that drifts is worse than none:
+ * a card author reading a condition that no longer exists writes a card that silently does nothing.
+ * So the spec and the config have to name the same set, checked both ways.
+ *
+ * The spec puts every engine key in backticks in its tables, and the flags table repeats each key
+ * once -- which is also what lets the flag names be checked, since a flag invented in prose is the
+ * other half of the same mistake.
+ */
+section("rules/conditions.md matches the config");
+
+const specPath = path.join(root, "../../rules/conditions.md");
+if (!fs.existsSync(specPath)) {
+  check("rules/conditions.md present", "missing", "present");
+} else {
+  const spec = fs.readFileSync(specPath, "utf8");
+  const ticked = new Set([...spec.matchAll(/`([A-Za-z]+)`/g)].map(m => m[1]));
+
+  // Read independently of the icons section below, which reads the same file for its own reasons.
+  const configSource = fs.readFileSync(path.join(root, "module/config.mjs"), "utf8");
+  // A condition key is one indented like this AND carrying a Condition label, so filter on the
+  // label rather than trying to slice the block out by name.
+  const conditions = new Set(
+    [...configSource.matchAll(/^  ([a-zA-Z]+): \{[^}]*label: "CARDRPG\.Condition\./gm)].map(m => m[1])
+  );
+  // The two written across several lines need the multi-line form as well.
+  for (const m of configSource.matchAll(/^  ([a-zA-Z]+): \{\s*\n\s*label: "CARDRPG\.Condition\./gm)) {
+    conditions.add(m[1]);
+  }
+  check("conditions found in config", conditions.size, 19);
+
+  const undocumented = [...conditions].filter(k => !ticked.has(k)).sort();
+  check("conditions missing from the spec",
+    undocumented.length ? undocumented.join(", ") : "none", "none");
+
+  // Anything the spec backticks that looks like a condition key but is not one. Restricted to the
+  // flags table, where every entry must be a real key or a real flag.
+  const flagTable = spec.slice(spec.indexOf("## 2. Flags"), spec.indexOf("## 3."));
+  const flags = new Set([
+    "blocks", "blocksSecondary", "blocksReactions", "halvesMove",
+    "noDuration", "derived", "opening", "cancels"
+  ]);
+  const stray = [...new Set([...flagTable.matchAll(/`([A-Za-z]+)`/g)].map(m => m[1]))]
+    .filter(k => !conditions.has(k) && !flags.has(k)).sort();
+  check("stray keys in the flags table", stray.length ? stray.join(", ") : "none", "none");
+
+  // Every flag the config uses must appear in the spec's flag column, or the spec understates the
+  // data model -- which is how the three dead flags went unnoticed in the first place.
+  const used = new Set([...configSource
+    .slice(configSource.indexOf("CARDRPG.conditions = {"), configSource.indexOf("CARDRPG.openings"))
+    .matchAll(/(blocksSecondary|blocksReactions|halvesMove|noDuration|derived|opening|cancels|blocks):/g)
+  ].map(m => m[1]));
+  const unlisted = [...used].filter(f => !flagTable.includes("`" + f + "`")).sort();
+  check("flags used but not in the spec", unlisted.length ? unlisted.join(", ") : "none", "none");
+}
+
+/* -------------------------------------------- */
+
 section("icons");
 
 // Every icon key the config names must exist on disk, or a card face renders a placeholder.

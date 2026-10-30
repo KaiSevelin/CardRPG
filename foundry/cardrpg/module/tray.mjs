@@ -216,7 +216,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     const hand = deckOf(actor, "actionHand");
 
     const active = (system.activeConditions ?? []);
-    const dazed = active.some(c => c.key === "dazed");
+    const dazed = system.noSecondary;
     const encumbered = active.find(c => c.key === "burdened" || c.key === "overloaded");
 
     const combat = game.combat;
@@ -263,7 +263,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         : "Needs a primary and a secondary, from two different cards.",
 
       dazed,
-      stunned: active.some(c => c.key === "stunned"),
+      stunned: system.noReactions,
       exhausted: system.exhausted,
       encumbered: encumbered
         ? game.i18n.localize(CARDRPG.conditions[encumbered.key].label)
@@ -695,7 +695,14 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
           if (base !== null && base !== undefined) {
             text += ` ${base + (step.mod ?? 0) + collectBonuses(this.actor, step.verb, item).total}`;
           } else if (step.mod) text += ` ${step.mod > 0 ? "+" : ""}${step.mod}`;
-        } else if (step.param !== null && step.param !== undefined) text += ` ${step.param}`;
+        } else if (step.param !== null && step.param !== undefined) {
+          // Slowed, Burdened and Overloaded halve Move, rounding down (core-rules 7). The face has
+          // to show the halved number: a Slowed Advance that still reads "Move 3" is a lie the
+          // player acts on.
+          const halve = step.verb === "move" && this.actor.system.moveHalved;
+          text += ` ${halve ? Math.floor(step.param / 2) : step.param}`;
+          if (halve) text += "\u00a0(halved)";
+        }
         else if (step.mod !== null && step.mod !== undefined) {
           text += ` ${step.mod > 0 ? "+" : ""}${step.mod}`;
         }

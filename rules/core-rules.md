@@ -624,6 +624,12 @@ in it draws before the deck reshuffles.
 
 Conditions are tokens with a number (duration). Every condition remembers **who created it**.
 
+> **The complete list is [conditions.md](conditions.md)** — all nineteen with their engine keys,
+> their flags, what the system actually enforces and what in the content applies each one. This
+> section is the **rule**; that document is the **reference**, and the validator keeps it in step with
+> the engine. Effects are repeated here because a rule you have to follow a link for is a rule nobody
+> reads.
+
 - The duration ticks down by 1 at the **start of the creator's turn**. At 0 the condition is removed.
 - So *Dazed (1)* from a goblin lasts until the start of that goblin's next turn. The victim always suffers it for exactly one of their own turns, wherever the creator sits in the initiative order — if the goblin acts before them the condition bites this round, if it acts after them it bites next round, but it always costs exactly one turn.
 - Conditions you put on yourself (e.g. Invisible from a Smoke Bomb) tick at the start of your own turn.

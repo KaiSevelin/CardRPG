@@ -109,6 +109,7 @@ The system is specified in [../foundry/](../foundry/):
 | [card-layout.md](../foundry/card-layout.md) | Every printed face, the four information tiers, which types may have an informative back, the bonus-group border |
 | [actor-schema.md](../foundry/actor-schema.md) | Actor state, stored vs derived, the encumbrance transition hook, visibility tiers |
 | [card-slate-schema.md](../foundry/card-slate-schema.md) | Card and slate subtypes, the icon enum, deck topology, compendium packs |
+| [conditions.md](conditions.md) | All nineteen conditions: keys, flags, what the engine enforces, what applies each |
 
 A **spell is a slate** with one number that does three jobs: *strength* 1–5 is the slot cost, the
 power band, and the figure the world document already states for every school. Spell slots are a
