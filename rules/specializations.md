@@ -352,42 +352,54 @@ three levels of filler waiting for a title now has three recognisable profession
 
 ## Way of Faith — 12 gods  **[PROPOSED]**
 
-A fourth Way. Firma's **Religion** chapter is longer than any of its specialization chapters: five
+A fourth Way. Firma's **Religion** chapter is longer than any of its specialization chapters: six
 bodies of worship, sixteen named gods, tenets, saints, holy books, orders of knights, secret police
 and assassin sects. All of that was reaching the rules through **one node** called Priest Magic. It is
 a Way.
 
-### The find: every god already names its miracle
+### The gods, and what their miracles are
 
-The world states a **Miracles** line for every god that grants any, and nearly every one of those is
-a magic school this game already has:
+The world states a **Miracles** line for every god that grants any, and the first draft of this Way
+read those as pointers into Way of Mind's schools — Valtor *is* Tattoo Magic, Sessyfyn *is* Elemental
+Water, and so on. **That was too tight.** Now that priests have a Way of their own, each god's
+miracles are **its own specialization**, written for that god. The world's Miracles line says what the
+god's magic is *like*; it is a lineage note, not an equals sign.
 
-| God | Religion | Miracle, per the world | The school it already is |
+| God | Religion | Miracles are like | Of the kind |
 |---|---|---|---|
-| **The Eternal God** | Church of the Eternal God | Ascetic | Asceticism |
-| **The Eternal Spirit** | Church of the Eternal Spirit | Air | Elemental |
-| **Sessyfyn** | The Five | Water | Elemental |
-| **Valtor** | The Five | Strength | Tattoo Magic (*Styrka*) |
-| **Fagar** | The Five | Glamour | Glamour |
-| **Vulpet** | The Five | Necromancy | Necromancy |
-| **Brendan** | The Five | Earth | Elemental |
-| **The Grey** | The Grey | Shadow | Shadow Magic |
-| **The Purple** | The Grey | Poison | Poison |
-| **Parfebe** | Local gods (Hyrlock) | Blood magic | Blood Magic |
-| **The Fire** | Local gods (Vargtoppen) | Fire | Elemental |
-| **The First** | Local gods (Echterhof) | Ether | Elemental |
+| **The Eternal God** | Church of the Eternal God | Ascetic | denial, endurance, the clean body |
+| **The Eternal Spirit** | Church of the Eternal Spirit | Air | breath, distance, the unseen |
+| **Sessyfyn** | The Five | Water | the sea, weather, wisdom to the edge of madness |
+| **Valtor** | The Five | Strength | fury, the drum, the body made a weapon |
+| **Fagar** | The Five | Glamour | masks, seeming, the trick that works once |
+| **Vulpet** | The Five | Necromancy | the dead, the outcast, the land beneath |
+| **Brendan** | The Five | Earth | growth out of barren ground, slow and certain |
+| **The Grey** | The Grey | Shadow | the unseen approach, the silent kill |
+| **The Purple** | The Grey | Poison | the dose, the brew, the slow failure |
+| **The Yellow** | The Grey | Glamour | the lie, the rumour, the false face |
+| **Vax** | Vax of the Sixth District | Strength | war, plainly — the club, the shield, the line |
+| **The First** | The First of Echterhof | Ether | blood, the long night, what does not die |
 
-**Those are twelve gods with twelve distinct miracles**, and they fall out of a selection rule rather
-than a preference: *one god per miracle*. The world's other four miracle-granting gods duplicate one
-of these — The Yellow and Fagar both grant Glamour, Aecht and Vulpet both Necromancy, Vax and Valtor
-both Strength, The Primal Mother and Brendan both Earth — so the duplicates stay worshipped without
-being doors in the graph, and an add-on compendium can promote any of them later (it declares
-`exclusive: "faith"` and is at once exclusive with the right religions). **The Yellow** in particular
-has a home already: lies, deceit and disguise are Way of Shade's Spy cluster.
+Two things this unlocks, both of them the point of the change:
 
-It also completes something. The five Elemental spheres are Air, Water, Earth, Fire and Ether, and the
-twelve gods grant **all five, one each** — the Eternal Spirit, Sessyfyn, Brendan, The Fire and The
-First. Nobody planned that; the world did it.
+- **Fagar and The Yellow may both be "Glamour" without colliding.** One is a trickster who deceived
+  his own parents once and fathered gods by it; the other is a sect with a *book* of misinformation
+  techniques and a network of rumour-spreaders. They share a flavour and nothing else, and under the
+  old mapping only one of them could exist.
+- **Valtor and Vax may both be "Strength".** One is the berserker's god of fury and drums; the other
+  is war as an institution, in the Sixth District, with a spiked club. Again: same word, different
+  god, different list.
+
+**The old selection rule — one god per miracle — is retired.** It bought a tidy table and paid for it
+by letting an arbitrary constraint pick the roster. The better reasons are the ones the roster now
+follows: **The Grey is complete** at Grey, Purple and Yellow, matching its three holy books and three
+sects, and **Vax is the cleric-fighter**, which the Way had no room for before. What was given up is
+Parfebe's Blood and The Fire's Fire; both remain Way of Mind schools, and an add-on can promote either
+god later by declaring its religion.
+
+The cost of the loosening is honest and worth saying: **twelve gods now need twelve short miracle
+lists** rather than twelve filters on existing schools. The world sizes that for us — priest magic is
+*"a shorter list than a mage's"* — so a god grants a handful of miracles, not a school.
 
 ### Twelve gods, twelve prices
 
@@ -402,20 +414,20 @@ distinguished the other way round:
 > **The gods do not differ in what they push. They differ in what they take.**
 > Twelve gods, twelve different resources, so all twelve cells are distinct by the resource alone.
 
-| God | Religion | Miracle | Leans on | Pays in |
-|---|---|---|---|---|
-| **The Eternal God** | Eternal God | Asceticism | Control | **Deck size** — obedience: the faith names what may not be in your deck, and keeps it small |
-| **The Eternal Spirit** | Eternal Spirit | Air | Reactions | **Weight** — the spirit drifts through all the air, and carries nothing that anchors it |
-| **Sessyfyn** | The Five | Water | Support | **The fate deck** — the sea is not fair: a Miss *and* a Critical, permanently |
-| **Valtor** | The Five | Tattoo | Tempo | **Strain** — his strength comes out of your hand, every time you ask |
-| **Fagar** | The Five | Glamour | Control | **Spent** — a trick works once |
-| **Vulpet** | The Five | Necromancy | Preparation | **An ally** — she was driven out by everyone; nobody will stand beside you either |
-| **Brendan** | The Five | Earth | Support | **A turn spent early** — beauty out of barren ground, and nothing he gives arrives quickly |
-| **The Grey** | The Grey | Shadow | Reactions | **Range** — close enough to touch, which is where the knife is |
-| **The Purple** | The Grey | Poison | Control | **Taint** — you are the first to taste it |
-| **Parfebe** | Local | Blood | Preparation | **Health** — the dose is measured out of you before the fight |
-| **The Fire** | Local | Fire | Position | **Halves** — fire must be fed: a secondary every round or it goes out |
-| **The First** | Local | Ether | Deck shape | **Spell slots** — the thinnest miracle and the dearest: few slots, and a deck narrow enough to hold them |
+| God | Religion | Leans on | Pays in |
+|---|---|---|---|
+| **The Eternal God** | Eternal God | Control | **Deck size** — obedience: the faith names what may not be in your deck, and keeps it small |
+| **The Eternal Spirit** | Eternal Spirit | Reactions | **Weight** — the spirit drifts through all the air, and carries nothing that anchors it |
+| **Sessyfyn** | The Five | Support | **The fate deck** — the sea is not fair: a Miss *and* a Critical, permanently |
+| **Valtor** | The Five | Tempo | **Strain** — his strength comes out of your hand, every time you ask |
+| **Fagar** | The Five | Control | **Spent** — a trick works once |
+| **Vulpet** | The Five | Preparation | **An ally** — she was driven out by everyone; nobody will stand beside you either |
+| **Brendan** | The Five | Support | **A turn spent early** — beauty out of barren ground, and nothing he gives arrives quickly |
+| **The Grey** | The Grey | Reactions | **Range** — close enough to touch, which is where the knife is |
+| **The Purple** | The Grey | Control | **Taint** — you are the first to taste it |
+| **The Yellow** | The Grey | Preparation | **Halves** — a lie is planted before anyone arrives, and kept up with a secondary every round |
+| **Vax** | Vax | Position | **Health** — war is paid in blood and he counts yours first |
+| **The First** | The First | Deck shape | **Spell slots** — the thinnest miracle and the dearest: few slots, and a deck narrow enough to hold them |
 
 All seven axes are covered, no cell repeats anywhere in the four Ways, and two resources — *a slot
 kept free* and *someone else's turn* — are deliberately left for the nodes **behind** each god.
@@ -427,7 +439,7 @@ else's choices*, and a religion chapter is full of that.
 
 ### What the Way costs, as a Way
 
-Every god grants its miracle on the same terms, and the world already wrote them: *vows or a
+Every god grants its miracles on the same terms, and the world already wrote them: *vows or a
 pilgrimage, whatever the school.* So **every node in Way of Faith carries an obligation** on top of
 its own price — which is why *an obligation* is not listed as any single god's resource. It is the
 entrance fee.
@@ -444,42 +456,67 @@ That is the real difference between this Way and Way of Mind, and it is worth st
 
 A mage who runs out of money studies less. A priest who breaks their vows has nothing.
 
-### Exclusivity: jealous gods and tolerant ones
+### Exclusivity: the religion is the group
 
-**The rule as I have read it:** a *monotheistic* religion admits no other god at all, while the
-*polytheistic* ones admit each other freely. So a character may serve Valtor and then also The Purple
-and then also Parfebe — three gods in three different religions — but the moment anyone swears to the
-Eternal God, every other god is gone for good.
+**The rule:** taking a god closes **every god of every other religion**, permanently. Gods of your
+*own* religion stay open, so a pantheon's worshipper may come back for its other gods later.
 
-The world supports it almost line for line. The Church of the Eternal God's first tenet is *"All other
-gods are impure"*; the Church of the Eternal Spirit holds the same tenets; The Five's third tenet is
-*"The gods are not infallible. Anyone who claims otherwise blasphemes"*; The Grey and the siblings have
-no tenets at all; and the local gods *"lived side by side with the large ones"*. One group is jealous,
-the rest are not.
+> I am reading *"change between polytheistic religions are ok"* as movement **within** a polytheistic
+> religion — a devotee of The Five may add Valtor and later Sessyfyn. Say the word if you meant that
+> The Five and The Grey should also be open to each other.
 
-| Religion | Creed | Gods | Admits |
-|---|---|---|---|
-| **Church of the Eternal God** | **jealous** | 1 | nothing else, ever — including the Eternal Spirit |
-| **Church of the Eternal Spirit** | **jealous** | 1 | nothing else, ever — including the Eternal God |
-| **The Five** | tolerant | 5 | any tolerant god, in any religion |
-| **The Grey** | tolerant | 2 | any tolerant god, in any religion |
-| **Local gods** | tolerant | 3 | any tolerant god, in any religion |
+Nothing new is needed for this and the earlier *jealous / tolerant* flag is withdrawn: **the religion
+is simply the exclusive group**, nested inside the `faith` family. The behaviour a god gets falls out
+of **how many gods its religion has** — which is content, not a rule.
 
-The two churches being mutually exclusive is the one place the rule is harsher than the fiction — the
-world says the sister churches *"accept one another tolerably"*. They accept one another; they do not
-let you be both. That is what a schism is.
+| Religion | Gods | Taking one closes |
+|---|---|---|
+| **Church of the Eternal God** | 1 | every other god |
+| **Church of the Eternal Spirit** | 1 | every other god, the Eternal God included |
+| **The Five** | 5 | every god outside The Five |
+| **The Grey** | 3 | every god outside The Grey |
+| **Vax, of the Sixth District** | 1 | every other god |
+| **The First, of Echterhof** | 1 | every other god |
 
-This needs one new flag on a node rather than a new mechanism, and it is a **strict generalisation** of
-what [leveling.md](leveling.md) §3 already does — a group where every member is jealous behaves exactly
-like today's exclusive group. See §3 and §9 there.
+The world supports it closely. The Church of the Eternal God's first tenet is *"All other gods are
+impure"*; the Church of the Eternal Spirit holds the same tenets, so the sister churches exclude each
+other — they *"accept one another tolerably"*, which is not the same as letting you be both, and that
+is what a schism is. The local gods are *"a myriad of small religions"*, **plural**: each is its own
+religion with one god in it, which is why swearing to Vax ends the question as finally as swearing to
+the emperor's god does.
 
-> **[OPEN]** Whether a tolerant god costs a **full level** each time or something less. Twelve doors
-> and nine of them re-openable means a devotee of three tolerant gods has spent three levels on
-> entrance fees and is three levels shallower than a single-god priest — which may be exactly right,
-> or may need the second and third to be cheaper.
+### A religion of one must be worth it
 
-> **[OPEN]** Each god's **Signature**, and the nodes behind it. A god's branch is where the playstyle
-> actually lives, because the god itself is a door, an obligation and a spell list.
+Four of the twelve gods — the Eternal God, the Eternal Spirit, Vax and The First — are alone in their
+religion. Choosing one of them is the most restrictive choice in the game: **one door, and no second
+god, ever.** So:
+
+> **A religion's size is its price.** Serve a pantheon and you may add its other gods later, a level
+> each, going **wider**. Serve a lone god and you never will — so a lone god's branch runs **deeper**,
+> and its gift is one no pantheon god gets.
+
+That is a rule rather than four exceptions, and it sets the content constraint: a lone god's branch
+should run about as many nodes deeper as its rivals' pantheons have spare doors, or
+[leveling.md](leveling.md) §7's depth-consistency goes out of true.
+
+Each lone god's gift bends a rule the others obey:
+
+| God | The gift | What it bends |
+|---|---|---|
+| **Vax** | **His miracles need no free hand.** The spiked club is the holy symbol. | core-rules §4's free-hand rule — the single thing standing between a caster and a shield. This is what makes the **cleric-fighter** possible, and nothing else in the game does it. |
+| **The First** | **His miracles return what they take.** Health drained from a living target comes back to you. | the Health economy — the only renewable pool in the game, and the price of it is written on the node: a narrow deck and few slots |
+| **The Eternal God** | **Solidarity.** His miracles cast on a brother or sister in faith cost one less — no Strain, no Spent. | the cost rules, straight out of the third tenet: *"Help your brothers and sisters, and ask no coin."* |
+| **The Eternal Spirit** | **The spirit drifts through all the air.** His miracles ignore range and cover. | the Position rules — the one caster for whom distance is not a question |
+
+Each is a **cost waiver** or a **rule exception**, shapes 4 and 10 of §5a.4 — the two that carry the
+most identity for the least arithmetic. And each is worth a closed door, which is the test.
+
+> **[OPEN]** Whether a pantheon's **second** god costs a full level. Five doors with four re-openable
+> means a devotee of three of The Five has spent three levels on entrance fees; that may be exactly
+> the trade, or the second and third may want to be cheaper.
+
+> **[OPEN]** Each god's **Signature** and the nodes behind it. For the eight pantheon gods that is
+> still unwritten; the four lone gods have their gift above, which is most of a Signature already.
 
 > **[OPEN]** The **minor gods** grant no miracles, so there is no Faith node for them — they stay
 > Spiritualism's business in Way of Mind. Whether a cult of the Winter Lady should nonetheless be
@@ -547,9 +584,9 @@ can, because *whose turn* and *whose being hit* are four different answers.
 4. **All four Ways are twelve nodes wide.** The world document's own tally was 15 Strength *weapon
    types*, 12 Shade, and 13 for Mind only if ritual magic counts. Strength became **12 roles**, Shade
    **12** after three professions were demoted and one weapon absorbed, Mind **12** once Divination
-   and Ward Magic replaced the overloaded Priest node, and Faith is **12 gods** by the one-god-per-
-   miracle rule. Ritual magic, household magic and the four crafts sit outside the count because they
-   are not fighting identities (finding 5).
+   and Ward Magic replaced the overloaded Priest node, and Faith is **12 gods across 6 religions**.
+   Ritual magic, household magic and the four crafts sit outside the count because they are not
+   fighting identities (finding 5).
 5. **The crafts are probably not major nodes at all.** Brewer, Smith, Jeweller, Orator, Spy, Fence
    and Politician are about what you do *between* fights, and a major node is a fighting identity.
    Since **skills live on minor nodes** ([leveling.md](leveling.md) §4), these are most likely
@@ -666,9 +703,10 @@ a build that cannot do something.
 
 ## Open
 
-- **Answered:** the deity exclusive group. It is the `"faith"` group, its members are the twelve gods
-  of Way of Faith, and it needed the **jealous / tolerant** distinction to express the world's own
-  theology ([leveling.md](leveling.md) §3). Each god gates its own formula list, exactly as the world
+- **Answered:** the deity exclusive group. It is the `faith` **family**, its members are the twelve
+  gods of Way of Faith, and the sub-group is the **religion** — which is all the theology the rules
+  need, since a god's restrictiveness then falls out of how many gods its religion has
+  ([leveling.md](leveling.md) §3). Each god grants its own short miracle list, exactly as the world
   says priest magic is *"a school according to their religion"*.
 - **[OPEN]** Whether Spy, Fence, Politician and Bard stay as Shade **titles** or become clusters of
   minor nodes, the way the crafts probably should (finding 5). Spy and Politician in particular do

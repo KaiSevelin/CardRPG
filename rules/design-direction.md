@@ -11,7 +11,7 @@ Long-term decisions that aren't detailed rules yet.
 | **Way of Strength** | Fighters | 15 weapon types, none written | **12 roles** — a weapon type is not a playstyle |
 | **Way of Shade** | Rogues | 12, named, none written | **12 restructured** — three professions demoted, one weapon absorbed, four added |
 | **Way of Mind** | Mages | 11 schools, ritual magic, most priced | **12** — Divination and Ward Magic added, Priest Magic removed |
-| **Way of Faith** | Priests | a Religion chapter: 16 gods, each with a named miracle | **12 gods**, one per distinct miracle |
+| **Way of Faith** | Priests | a Religion chapter: 16 gods in 6 religions, each with a named miracle | **12 gods** in 6 religions, each granting its own short miracle list |
 
 **All four Ways are twelve nodes wide**, which is a target rather than a coincidence: it keeps them
 comparable in depth (§7 of [leveling.md](leveling.md) needs branches level), and holding to it is what
@@ -39,11 +39,13 @@ way — and what a god takes from you turned out to be the better coordinate any
   Taking one changes the character's title.
 - **Add-on compendiums hang new branches off existing specialization nodes.** A node names what it
   follows, never what follows it, so core content is never edited to make room for an add-on.
-- **Some choices close doors.** A node in an exclusive group is either **jealous** or **tolerant**: a
-  jealous god closes every other god for good, a tolerant one closes only the jealous ones. So a
-  character may serve three gods of three polytheistic religions, and swearing to the Eternal God ends
-  the question for ever. The group is named rather than listed, so an add-on's new pantheon is
-  correctly exclusive in both directions without core being edited.
+- **Some choices close doors.** Exclusive groups **nest**: a node names a *family* and a *creed*, and
+  taking it closes every node of that family with a different creed. Way of Faith uses it — the
+  family is `faith` and the creed is the religion — so a devotee of The Five may come back for another
+  of The Five and never for a god outside it. How restrictive a god is therefore falls out of **how
+  many gods its religion has**, with no flag: a pantheon is generous, and Firma's lone local gods are
+  absolute. The names are declared rather than listed, so an add-on's pantheon is correctly exclusive
+  in both directions without core being edited.
 - **A major node is kept distinct by four devices**, not by its name: its **cell** (the axis it leans
   on paired with the resource it pays in, both from closed lists), the **swap test** on its Signature,
   **one thing it gives up in rules**, and a budget of **Signature shapes** per Way.

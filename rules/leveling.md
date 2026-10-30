@@ -67,30 +67,36 @@ A node may belong to an **exclusive group**. Taking any node in the group **disa
 in it, permanently.** Those nodes leave your frontier and never come back, and so does everything
 reachable only through them.
 
-The clearest case is a **god**, and Way of Faith is built out of twelve of them. Swearing to a
-jealous god is not a step you take beside swearing to another; it is the end of that question. Choose
-the Eternal God and every other god is gone, along with every branch that ran through them.
+The clearest case is a **god**, and Way of Faith is built out of twelve of them. Swearing to one is
+not a step you take beside swearing to another; it is the end of that question.
 
-#### Jealous and tolerant
+#### Nested groups: the family and the creed
 
-Not every god is jealous, and the world is explicit about which are. The Church of the Eternal God
-holds that *"all other gods are impure"*; The Five hold that *"the gods are not infallible"*; the local
-gods *"lived side by side"* with the large religions. So a group needs two kinds of member:
+Way of Faith needs one thing a flat group cannot say. The exclusive unit is the **religion**, not the
+god, so a devotee of The Five may come back for another of The Five — but never for a god outside it.
+Two fields say that:
 
-| | Taking it closes |
+| Field | Holds |
 |---|---|
-| **Jealous** | **every other node in the group**, for good |
-| **Tolerant** | **only the jealous nodes** in the group |
+| `exclusive` | the **family**: `"faith"` for every god |
+| `creed` | the **religion** within it: `"the-five"`, `"the-grey"`, `"eternal-god"`, `"vax"` … |
 
-A character may therefore serve Valtor, and later The Purple, and later Parfebe — three gods in three
-religions, all tolerant. The moment anyone swears to the Eternal God or the Eternal Spirit, the rest
-of the group is shut.
+> **Taking a node closes every node of the same family with a *different* creed.**
 
-> **This is a generalisation, not a second mechanism.** A group in which *every* member is jealous
-> behaves exactly like the exclusive group described above, so nothing that exists needs rewriting.
-> One flag on a node buys the whole distinction, and an add-on's new pantheon declares
-> `exclusive: "faith"` plus its creed and is correctly exclusive with everything, in both directions,
-> without core being touched.
+So Valtor closes The Purple, the Eternal God and all the rest, and leaves Sessyfyn, Fagar, Vulpet and
+Brendan open. Nothing else changes, and **a flat group is the special case** where every node's creed
+is its own — so the rule above describes both and nothing that exists needs rewriting.
+
+The interesting consequence is that **a god's restrictiveness is content, not a rule.** A religion
+with five gods is generous and a religion with one is absolute, and neither needed a flag: Firma's
+local gods are *"a myriad of small religions"*, each with a single god, so swearing to Vax ends the
+question as finally as swearing to the emperor's god does. Way of Faith prices that back the other way
+— a lone god's branch runs deeper and its gift bends a rule no pantheon god may bend
+([specializations.md](specializations.md)).
+
+An add-on's new pantheon declares `exclusive: "faith"` and its own `creed`, and is at once correctly
+exclusive with every religion that exists and every one that ever will, in both directions, without
+core being touched.
 
 This is the one thing that makes the frontier **shrink**, and the graph needs it. Everything else in
 this document can be had eventually (§6); an exclusive group is where a character genuinely becomes
@@ -99,8 +105,8 @@ one thing instead of another.
 > **Why a group, not a list of rivals.** A node that named every node it was incompatible with could
 > not be extended: an add-on's new god would have to be written into every existing god's list,
 > which means editing core content. A **named group** is mutual by construction — the add-on declares
-> `exclusive: "faith"` and is at once exclusive with every god that exists and every one that ever
-> will.
+> `exclusive: "faith"` and a creed of its own, and is at once exclusive with every religion that
+> exists and every one that ever will.
 >
 > It is also a pattern the game already uses. Bonus groups are *same group, highest wins*; this is
 > *same group, first taken wins, for good.*
@@ -486,15 +492,15 @@ Nodes are **content, not code** — the same rule the rest of the tuning follows
 |---|---|
 | `id` | stable, namespaced: `shade.thief.assassin` |
 | `after[]` | the node ids this may follow; **any one** of them being owned is enough |
-| `exclusive` | an exclusion group name, if this choice closes its rivals — `"faith"` |
-| `jealous` | within that group: `true` closes **every** other member, `false` closes only the jealous ones (§3) |
+| `exclusive` | the exclusion **family**, if this choice closes its rivals — `"faith"` |
+| `creed` | the sub-group within that family; nodes of the same family but a different creed close (§3) |
 | `title` | the class title this confers, if it is a specialization node |
 | `grants[]` | the reward, fixed |
 
-A character's **closed** set derives from the owned list and nothing else. For each `exclusive` group
-the character has any node in: if **any** owned node in it is `jealous`, every other member of the
-group is closed; otherwise only the group's `jealous` members are. Nothing extra is stored, and a
-group whose members are all jealous collapses to the simple rule.
+A character's **closed** set derives from the owned list and nothing else: for each `exclusive` family
+the character owns a node in, every node of that family whose `creed` differs from theirs is closed.
+Nothing extra is stored, and a family whose nodes all carry distinct creeds collapses to the plain
+one-and-only-one group.
 
 A character stores only **the list of node ids they own**. Level, title, frontier and every reward
 derive from that list, so a corrected node definition fixes every character who took it, and nothing
