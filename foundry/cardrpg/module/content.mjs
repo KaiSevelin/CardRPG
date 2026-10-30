@@ -1007,6 +1007,148 @@ export const ITEMS = [
     blurb: "It rattles when there is nothing in it.",
     text: "Every piece of magical ammunition you fire returns to it when the fight ends. "
       + "Obligation: it will not hold ordinary arrows, and you may carry no other quiver."
+  },
+  /* ---- cursed items (rules/equipment.md 11.4) ---- */
+  {
+    name: "Blade of the Eager Hand", slot: "hands", fits: ["back"], hands: 1,
+    tags: ["heavy", "melee"],
+    weight: 2, value: 0, kind: "Wonder", group: "wonder",
+    identified: false, unidentifiedName: "an old sword, very sharp",
+    // Loud rather than hidden: a greatsword in one hand, and you cannot choose your target. Nearly
+    // free for somebody fighting alone, which is the most interesting thing a curse can be.
+    blurb: "It wants to be swung and it is not fussy about at what.",
+    verbs: { strike: verb(5) },
+    curse: "You must Strike the nearest living creature every turn, ally or not. Lifted by a Cleansing."
+  },
+  {
+    name: "Ring of Open Hands", slot: "fingers", weight: 0, value: 0,
+    kind: "Power", group: "power",
+    identified: false, unidentifiedName: "a plain silver ring",
+    blurb: "Almost the ring you were hoping for.",
+    text: "You may Cast without a free hand.",
+    curse: "You may never hold anything in your other hand again. Lifted by the jeweller who made it, who is dead."
+  },
+  {
+    name: "Cloak of the Grey Road", slot: "cloak", weight: 1, value: 0,
+    kind: "Wonder", group: "wonder",
+    identified: false, unidentifiedName: "a grey travelling cloak",
+    blurb: "The road is grey. So is everything you are now to your friends.",
+    active: { text: "Become Invisible (1).", boundary: "combat" },
+    curse: "Allies may not target you with anything beneficial either. Lifted by a cure."
+  },
+  {
+    name: "Boots of the Longer Step", slot: "feet", weight: 1, value: 0,
+    kind: "Wonder", group: "wonder",
+    identified: false, unidentifiedName: "good boots, barely worn",
+    // A curse should punish a BUILD, not a player: these are a disaster for a Trapmaker or an
+    // Artillerist, whose whole tactic is standing still.
+    blurb: "They were barely worn because their owner could not stop.",
+    text: "Your Move values are +2.",
+    curse: "You may never end your turn in the square you began it in. Lifted by walking a pilgrimage barefoot."
+  },
+  {
+    name: "Amulet of the Fed Thread", slot: "neck", weight: 0, value: 0,
+    kind: "Wonder", group: "wonder",
+    identified: false, unidentifiedName: "a knotted thread in amber",
+    blurb: "The thread is mended. Something had to pay out the length.",
+    active: { text: "When you would drop to 0 Health, drop to 1 instead.", boundary: "longRest" },
+    curse: "Each time it saves you, one ally takes 3 damage. Lifted by dying anyway."
+  },
+  {
+    name: "Gauntlet of the Open Palm", slot: "hands", hands: 1, tags: ["armor"],
+    weight: 2, value: 0, kind: "Wonder", group: "wonder",
+    identified: false, unidentifiedName: "a fine plated gauntlet",
+    blurb: "Beautifully made, and it will not close.",
+    bonus: { verb: "defend", value: 1 },
+    curse: "You may not hold a weapon in that hand. Lifted by a Cleansing."
+  },
+
+  /* ---- bad potions: what an unidentified bottle might be ---- */
+  {
+    name: "Grey Water", slot: "belt", fits: ["hands"], hands: 1, tags: ["consumable"],
+    weight: 0, value: 5, kind: "Potion", consumed: true,
+    identified: false, unidentifiedName: "a dark bottle",
+    blurb: "Somebody corked it carefully, which is the cruellest part.",
+    verbs: { use: verb(0, { text: "Nothing at all. It is water." }) }
+  },
+  {
+    name: "Philtre of the Loose Tongue", slot: "belt", fits: ["hands"], hands: 1, tags: ["consumable"],
+    weight: 0, value: 15, kind: "Potion", consumed: true,
+    identified: false, unidentifiedName: "a dark bottle",
+    blurb: "You will mean to stop talking.",
+    verbs: { use: verb(0, { text: "you must say what you intend before each of your turns" }) }
+  },
+  {
+    name: "Draught of Lead", slot: "belt", fits: ["hands"], hands: 1, tags: ["consumable"],
+    weight: 0, value: 20, kind: "Potion", consumed: true,
+    identified: false, unidentifiedName: "a dark bottle",
+    blurb: "Heavier than it looks, and so are you now.",
+    verbs: { use: verb(0, { text: "for the fight your Move is 0" }) }
+  },
+  {
+    name: "Oil of Mislaid Courage", slot: "belt", fits: ["hands"], hands: 1, tags: ["consumable"],
+    weight: 0, value: 20, kind: "Potion", consumed: true,
+    identified: false, unidentifiedName: "a dark bottle",
+    blurb: "Whatever was going to make you flinch has been taken out.",
+    verbs: { use: verb(0, { text: "for the fight you may play no reactions" }) }
+  },
+  {
+    name: "Draught of the Hollow", slot: "belt", fits: ["hands"], hands: 1, tags: ["consumable"],
+    weight: 0, value: 25, kind: "Potion", consumed: true,
+    identified: false, unidentifiedName: "a dark bottle",
+    blurb: "It empties something you were not keeping track of.",
+    verbs: { use: verb(0, { text: "for the fight your hand size is 1 lower" }) }
+  },
+  {
+    name: "Bottle of Borrowed Pain", slot: "belt", fits: ["hands"], hands: 1, tags: ["consumable"],
+    weight: 0, value: 30, kind: "Potion", consumed: true,
+    identified: false, unidentifiedName: "a dark bottle",
+    blurb: "It does not heal you. It postpones you.",
+    verbs: { use: verb(0, { text: "Heal 4 -- and take 4 when the fight ends" }) }
+  },
+
+  /* ---- poisons, applied with a Ready ---- */
+  {
+    name: "Blade Venom", slot: "belt", tags: ["consumable"],
+    weight: 0, value: 40, kind: "Poison", consumed: true,
+    blurb: "Brewed from something that was already unpleasant.",
+    text: "Apply with a Ready. Next Strike that hits: Poisoned 1 (2), resist Might 5."
+  },
+  {
+    name: "Drowsing Oil", slot: "belt", tags: ["consumable"],
+    weight: 0, value: 50, kind: "Poison", consumed: true,
+    blurb: "It does not kill. It makes a man slow about objecting.",
+    text: "Apply with a Ready. Next Strike that hits: Dazed (2), resist Might 5."
+  },
+  {
+    name: "Weeping Resin", slot: "belt", tags: ["consumable"],
+    weight: 0, value: 60, kind: "Poison", consumed: true,
+    blurb: "The wound will not close while it is in there.",
+    text: "Apply with a Ready. Next Strike that hits: the target cannot be healed for 2 rounds. No save."
+  },
+  {
+    name: "Serpent's Milk", slot: "belt", tags: ["consumable"],
+    weight: 0, value: 70, kind: "Poison", consumed: true,
+    blurb: "Milked, strained and kept cold. No damage in it at all.",
+    text: "Apply with a Ready. Next Strike that hits: Poisoned 0 (3) -- no damage, three rounds without a secondary."
+  },
+  {
+    name: "Grave-cap Extract", slot: "belt", tags: ["consumable"],
+    weight: 0, value: 90, kind: "Poison", consumed: true,
+    blurb: "The cap grows on what is under the cairn, not on the cairn.",
+    text: "Apply with a Ready. Next Strike that hits: Poisoned 2 (2), resist Might 7."
+  },
+  {
+    name: "Assassin's Tincture", slot: "belt", tags: ["consumable"],
+    weight: 0, value: 120, kind: "Poison", consumed: true,
+    blurb: "They finish the sentence they were saying.",
+    text: "Apply with a Ready. Next Strike that hits: Poisoned 1 (2), beginning at the start of their next turn. No save."
+  },
+  {
+    name: "Black Lotus", slot: "belt", tags: ["consumable"],
+    weight: 0, value: 250, kind: "Poison", consumed: true,
+    blurb: "Illegal in every district, which is how you know the price is right.",
+    text: "Apply with a Ready. Next Strike that hits: Poisoned 3 (2), resist Might 9."
   }
 ];
 

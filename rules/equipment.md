@@ -561,17 +561,149 @@ of nothing; a quiver and a dozen silvered heads is an archer who never runs out 
 And the obligation is the sharpest in the catalogue — **no ordinary arrows** means that when the
 magic runs out you are holding a stick.
 
+## 11. Identified, unidentified, and cursed
+
+### 11.1 An unidentified item may be used
+
+> **You can swing an unmarked blade. You simply do not know what you are swinging.**
+
+That is the whole rule, and it is what makes everything in this section work. An unidentified item
+equips, holds, fires and drinks exactly as it would if you knew what it was; what you lack is the
+**text**, and the sheet shows you what it *looks* like instead — *a plain ring*, *a dark bottle*, *an
+unmarked sword*.
+
+- **Mundane items are identified by default.** A sword needs no examining. Only something with a
+  **bonus group** — Make, Power, Wonder — is ever worth the trouble.
+- **The GM reads the real fields off the same slate.** There is one item, not two, and the player's
+  side is hidden rather than absent.
+- **Using it reveals what it does, not what it costs.** You find out a ring makes you faster the
+  first time you move. You find out it will not come off when you try to take it off.
+
+### 11.2 Identifying: the craft that made it is the craft that knows it
+
+The world document names three makers, and they are the three answers
+(`worldinfo/Firma.md`, *Non-magical specialities*):
+
+| Who | Identifies |
+|---|---|
+| A **smith** | weapons, armour, anything of the **Make** group |
+| A **brewer** | potions, poisons, anything drunk or applied |
+| A **jeweller** | rings, amulets, anything of the **Power** group |
+| **Nobody reliably** | a **Wonder**, and a **relic** never |
+
+Failing that, or for a Wonder: a **📜 Lore check in downtime**, Normal **5** for a Make or Power
+item and **Hard 7** for a Wonder ([skill-rules.md](skill-rules.md) §2). A **relic** is not identified
+by a check at all — somebody has to know its story, which is a scene rather than a roll.
+
+**Divination identifies by asking.** *The Long Look* (way-cards §3.4) buys one true answer about the
+next scene, and *"what is this?"* is a question. It costs three slots and a prophecy, which is the
+right price for skipping the queue at the jeweller's.
+
+### 11.3 A cursed item is an obligation you picked up
+
+> **The curse is not a surprise mechanic. It is [leveling.md](leveling.md) §4's obligation, found
+> rather than owed.**
+
+Which means the rules for it already exist and need no additions:
+
+- **It cannot be removed.** Not by taking it off, not by a rest, not by a level.
+- **The text names the one thing that lifts it** — and the price should be what the curse bought,
+  the same rule a necromancer's bound Taint follows.
+- **It binds in text**, the loosest rung, because an item everyone at the table can read the curse
+  off *is* the enforcement.
+
+**The best disguise for a cursed item is a real one**, and three of the six below are built that way:
+the *Ring of Open Hands* beside the genuine *Ring of the Open Hand*, the *Cloak of the Grey Road*
+beside the *Cloak of the Grey*, the *Amulet of the Fed Thread* beside the *Amulet of the Mended
+Thread*. A party that has heard of the good one is exactly the party that will put the bad one on.
+
+### 11.4 The cursed items
+
+| Item | Slot | Looks like | Does | **Curse** |
+|---|---|---|---|---|
+| **Blade of the Eager Hand** | 1 hand | an old sword, very sharp | **Strike 5** | You must ⚔ Strike the **nearest** living creature every turn, ally or not. *Lifted by:* a Cleansing |
+| **Ring of Open Hands** | Fingers | a plain silver ring | You may ✦ Cast without a free hand | You may **never hold anything** in your other hand again. *Lifted by:* the jeweller who made it, who is dead |
+| **Cloak of the Grey Road** | Cloak | a grey travelling cloak | **Drain:** **Invisible (1)**. *Recharge: combat* | Allies may not target you with **anything beneficial** either. *Lifted by:* a cure |
+| **Boots of the Longer Step** | Feet | good boots, barely worn | Your Move values are **+2** | You may **never end your turn** in the square you began it in. *Lifted by:* walking a pilgrimage barefoot |
+| **Amulet of the Fed Thread** | Neck | a knotted thread in amber | **Drain:** drop to **1** instead of 0. *Recharge: long rest* | Each time it saves you, **one ally takes 3 damage**. *Lifted by:* dying anyway |
+| **Gauntlet of the Open Palm** | 1 hand | a fine plated gauntlet | **+1** to all 🛡 Defend | You may **not hold a weapon** in that hand. *Lifted by:* a Cleansing |
+
+**Four of the six are strictly good until they are not**, which is the only honest way to write a
+curse: *Boots of the Longer Step* really do give +2 Move, and a Trapmaker or an Artillerist — whose
+whole tactic is standing still (way-cards §2.5) — has just bought a disaster. **A curse should punish
+a build, not a player.**
+
+**The Blade of the Eager Hand is the exception and it is the loud one.** Strike 5 is a greatsword in
+one hand, and the price is that you cannot choose your target — which in a party is a betrayal
+waiting for a bad initiative order, and alone is nearly free. **It is a wonderful weapon for somebody
+fighting on their own**, which is the most interesting thing a curse can be.
+
+### 11.5 Bad potions
+
+An unidentified bottle is the oldest gamble there is. These are what it might be.
+
+| Potion | Value | Looks like | Does |
+|---|---|---|---|
+| **Grey Water** | 5 g | any potion at all | **Nothing.** It is water |
+| **Draught of Lead** | 20 g | Potion of Iron Skin | For the fight, your **Move is 0** |
+| **Oil of Mislaid Courage** | 20 g | Philtre of Borrowed Courage | For the fight you may **play no reactions** |
+| **Draught of the Hollow** | 25 g | Draught of Second Breath | For the fight your **hand size is 1 lower** |
+| **Bottle of Borrowed Pain** | 30 g | Healing Potion | **Heal 4** — and take **4** when the fight ends |
+| **Philtre of the Loose Tongue** | 15 g | Brewer's Reserve | You must **say what you intend** before each of your turns |
+
+**Grey Water is the most important entry on this page.** It costs 5 gold, it does nothing, and it is
+what makes every other unidentified bottle frightening — because the party cannot tell by looking,
+and the cheapest possibility is also the most likely. **A gamble with no blank outcome is not a
+gamble.**
+
+**Bottle of Borrowed Pain is the one that is sometimes correct.** Heal 4 now and 4 at the end is a
+loan, and a loan is a good deal in the fight you were about to lose.
+
+### 11.6 Poisons
+
+**Applying a poison is a ⇄ Ready** — the same verb a crossbow reloads with — and the next ⚔ Strike
+that connects delivers it. One application, whether it lands or not.
+
+> **Ammunition is how an archer buys a condition. Poison is how everybody else does** (§8.3). The
+> two lists rhyme on purpose, and both cost coin rather than a node, which is the point: *a mechanic
+> can be bought, a Signature cannot* (§9.4).
+
+| Poison | Value | Delivers |
+|---|---|---|
+| **Blade Venom** | 40 g | **Poisoned 1 (2)**, resist ✊ Might 5 |
+| **Drowsing Oil** | 50 g | **Dazed (2)**, resist ✊ Might 5 |
+| **Weeping Resin** | 60 g | The target **cannot be healed** for 2 rounds. No save |
+| **Serpent's Milk** | 70 g | **Poisoned 0 (3)** — no damage, three rounds without a secondary |
+| **Grave-cap Extract** | 90 g | **Poisoned 2 (2)**, resist ✊ Might 7 |
+| **Assassin's Tincture** | 120 g | **Poisoned 1 (2)**, and it does not bite until the **start of their next turn**. No save |
+| **Black Lotus** | 250 g | **Poisoned 3 (2)**, resist ✊ Might 9. Illegal in every district of Firma |
+
+**Why a 40-gold flask is not better than the Poison school.** *Wither* is a strength-2 formula that
+does what Blade Venom does — but the formula is **repeatable** and the flask is **one Strike**, and
+the flask costs a Ready that the caster does not pay. That is the same relationship a Healing Potion
+has to a healing spell, and it is why coin never retires a caster.
+
+**Weeping Resin is the one with no equal anywhere.** Nothing else in the game stops healing, and
+against a party with a priest that is worth more than damage — which makes it the poison an enemy
+assassin should be carrying, rather than one the players will often want.
+
+**Assassin's Tincture pays for its lack of a save with a delay**, and the delay is the interesting
+part: the target gets one clean turn, so a poisoner who uses it is betting on the fight lasting.
+
 ---
 
-## 10. Open
+## 12. Open
 
-- **Settled: all of it is in the system** — **131 items** in `content.mjs`, up from nine. **Thirty
-  eight wonders**, 5 relics, 6 smith-works, 6 jeweller's pieces, **12 potions** and **13 pieces of
-  magical ammunition**. The validator checks the count, that every key exists on the schema, that no bonus group
+- **Settled: all of it is in the system** — **150 items** in `content.mjs`, up from nine. **Forty
+  three wonders**, 5 relics, 6 smith-works, 7 jeweller's pieces, **18 potions** (6 of them bad), **13
+  pieces of magical ammunition**, **7 poisons** and **6 cursed items**. The validator checks the count, that every key exists on the schema, that no bonus group
   is left unused but `body` and `training` (which belong to features), that the magic items still
   reach **every** mechanic §9.4 lists, that **nothing touches Brace**, that **no relic is free of
   its obligation**, that **a potion is simply drunk** rather than thrown, and that **every piece of
-  ammunition is spent** and carries no verb line of its own.
+  ammunition is spent** and carries no verb line of its own. And on the cursed side: every curse must
+  **arrive unidentified**, must **name the one thing that lifts it**, and every unidentified item must
+  say **what it looks like** — because a gap where the disguise should be gives the secret away as
+  surely as the text would.
 
   **The schema did need two changes, and the second explains an old absence.** An item's `bonus` was
   **combat-verb shaped only**, so *"🌑 Shadow +2 on locks and mechanisms"* could not be written
@@ -586,6 +718,12 @@ magic runs out you are holding a stick.
   **armour ladder** — armour is a cliff edge and Plate at 4 against Leather at 1 has never been run —
   and **reload**, since every firearm and crossbow turns on a ⇄ Ready whose value was only measured
   once, for a slung bow.
+- **[OPEN]** **Nothing in the engine enforces a curse.** `curse` is a string and `identified` a
+  boolean, and both are honest records the GM reads — but nothing stops a player unequipping a cursed
+  item, and the sheet does not yet use `shownName` to hide an unidentified one. That is the same
+  `[OPEN]` [leveling.md](leveling.md) §4 already carries for prohibitions in general: *"you may not
+  wear armour" needs the HUD or the rules to stop it, or it is a text obligation after all.* A cursed
+  item is the first case where that gap is visible at the table.
 - **[OPEN]** Whether **ignores N armor** should be a tag rather than text on the verb line. Three
   weapon families use it now; a fourth would make it a tag.
 - **[OPEN]** **Who sells what.** A hundred and thirty-one items and no rule for where any of them

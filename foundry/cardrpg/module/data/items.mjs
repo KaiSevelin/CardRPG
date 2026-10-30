@@ -209,6 +209,26 @@ export class ItemSlateData extends SlateData {
       }),
       consumed: new fields.BooleanField({ initial: false }),
 
+      /*
+       * Identified, and what it looks like until it is.
+       *
+       * `initial: true` because most items are a sword, and a sword needs no examining. Loot sets
+       * it false, and an unidentified item may still be USED -- you can swing an unmarked blade,
+       * you simply do not know what you are swinging. That is what makes a curse work at all.
+       */
+      identified: new fields.BooleanField({ initial: true }),
+      unidentifiedName: new fields.StringField({ required: false, blank: true, initial: "" }),
+
+      /*
+       * The curse, as the obligation it is. Its PRESENCE is what makes an item cursed, so there is
+       * no second boolean to disagree with -- the same shape `temporaryFate` uses on a condition.
+       *
+       * leveling.md 4 already says what an obligation means: it cannot be removed, the GM holds it,
+       * and the text names the one thing that lifts it. A cursed item is an obligation you picked
+       * up, so it needs no machinery of its own.
+       */
+      curse: new fields.StringField({ required: false, blank: true, initial: "" }),
+
       group: groupField(),
       ...drainFields(),
 
@@ -245,6 +265,20 @@ export class ItemSlateData extends SlateData {
       blurb: new fields.StringField({ required: false, blank: true, initial: "" }),
       description: new fields.HTMLField()
     };
+  }
+
+  /** Is this a cursed item? The curse text being there is the whole of it. */
+  get cursed() {
+    return !!this.curse;
+  }
+
+  /**
+   * What to put in front of the player. An unidentified item shows what it LOOKS like and nothing
+   * it does -- including, pointedly, its curse. The GM reads the real fields off the same slate.
+   */
+  get shownName() {
+    if (this.identified) return null;
+    return this.unidentifiedName || "an unfamiliar item";
   }
 
   /**

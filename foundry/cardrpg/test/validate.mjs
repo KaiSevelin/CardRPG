@@ -617,7 +617,37 @@ for (const item of [...content.ITEMS, ...content.NPC_GEAR]) {
 check("item keys not in the schema",
   strayItemKeys.size ? [...strayItemKeys].join(", ") : "none", "none");
 
-check("player items written", content.ITEMS.length, 131);
+check("player items written", content.ITEMS.length, 150);
+
+/*
+ * Cursed items and the identified switch (rules/equipment.md 11).
+ *
+ * The switch is what makes a curse work at all -- an unidentified item is USED, not withheld, so
+ * everything hangs on two things being true together: a cursed item must arrive unidentified, and
+ * an unidentified item must say what it looks like, or the sheet has nothing to show the player and
+ * the GM has given the secret away by the gap.
+ *
+ * And a curse is an obligation (leveling 4), so its text must name the one thing that lifts it --
+ * a curse with no way out is a character retired by a loot roll.
+ */
+const cursed = content.ITEMS.filter(i => i.curse);
+check("cursed items", cursed.length, 6);
+
+const known = cursed.filter(i => i.identified !== false).map(i => i.name);
+check("cursed items that arrive identified", known.length ? known.join(", ") : "none", "none");
+
+const noWayOut = cursed.filter(i => !/lifted by/i.test(i.curse)).map(i => i.name);
+check("curses that name no way out", noWayOut.length ? noWayOut.join(", ") : "none", "none");
+
+const unknown = content.ITEMS.filter(i => i.identified === false);
+const faceless = unknown.filter(i => !i.unidentifiedName).map(i => i.name);
+check("unidentified items with nothing to show", faceless.length ? faceless.join(", ") : "none", "none");
+
+// A bad potion must be indistinguishable from a good one, which means they share a disguise.
+const disguises = new Set(content.ITEMS
+  .filter(i => i.kind === "Potion" && i.identified === false)
+  .map(i => i.unidentifiedName));
+check("disguises the bad potions share", disguises.size, 1);
 
 /*
  * Potions and ammunition are the two kinds a party BUYS rather than finds, and each has a rule that
@@ -629,7 +659,7 @@ check("player items written", content.ITEMS.length, 131);
  *    magic arrow is the Unquiet Quiver's whole reason to exist, and nothing else may do it.
  */
 const potions = content.ITEMS.filter(i => i.kind === "Potion");
-check("potions written", potions.length, 12);
+check("potions written", potions.length, 18);
 const notDrunk = potions.filter(i => !i.verbs?.use || i.verbs?.strike).map(i => i.name);
 check("potions that are not simply drunk", notDrunk.length ? notDrunk.join(", ") : "none", "none");
 
