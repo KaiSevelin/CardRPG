@@ -436,7 +436,7 @@ it.
 |---|---|---|
 | **Thief** | **The Opening** | Feature: **advantage against anyone carrying an opening** (§1.6) — whoever set it. |
 | **Scout** | **Point Man** | Primary: **Foresee**. While you are the furthest forward of your party, Foresee **one extra type**. |
-| **Duellist** | **Named** | Secondary: name one enemy. Against it, your **Parry also Strikes for 1**. |
+| **Duellist** | **Named** | Secondary: name one enemy. Against it, your **Parry also Strikes for 1**. Carries **no shield, ever**, and one card of its deck carries ⚔ Strike on the **secondary** ([specializations.md](specializations.md), *the exchange-rate table*). |
 | **Assassin** | **One Opening** | Primary — **Spent**: Strike. Against a target that is unaware or carrying an **opening**, the damage is **doubled**. |
 | **Cutpurse** | **Lift** | Primary: Strike. On a hit, take **one card from the target's own deck**. It is yours now, and it is in your deck for good. |
 | **Burglar** | **The Kit** | Item slate, weight 3, which you may never put down: every Hard physical obstacle becomes **Normal**. |

@@ -250,7 +250,7 @@ anything about yet.
 |---|---|---|---|---|
 | **Thief** | Tjuvar | Control | A free hand and a light weapon | Shade |
 | **Scout** ✱ | Spanare | **Support** | **Being alone** — ahead of the party, where nobody can reach you | Shade |
-| **Duellist** | Duellister | Reactions | **Halves** — a secondary every round to keep your opponent named | Shade |
+| **Duellist** | Duellister | Reactions | **A hand** — no shield, ever | Shade |
 | **Assassin** | Lönnmördare | Tempo | **Spent** — the opening is a card gone for the whole fight | Thief |
 | **Cutpurse** ✱ | Ficktjuv | Deck shape | **Deck size** — what you lift goes into your deck, and you did not choose it | Thief |
 | **Burglar** ✱ | Inbrottstjuv | Preparation | **Weight** — the kit, the rope, the bar, the lantern | Thief |
@@ -857,6 +857,43 @@ The third is the one with the most leverage and the least writing. The two most 
 whole list are **Berserker** (cannot defend) and **Street Fighter** (no weapon value at all), and
 both are vivid for the same reason: you can describe them by what they have given up. Nobody confuses
 a build that cannot do something.
+
+#### [MEASURED] The first row of the exchange-rate table
+
+The Duellist is the first node whose *"one thing you give up"* was priced instead of chosen, and the
+first attempt was wrong by a factor of ten. The proposal was **no armour** for ⚔ Strike on the
+secondary. Against the published encounters (5 seeds × 4000 fights):
+
+| | 4 spears | 5 spears | 4 mixed |
+|---|---|---|---|
+| Leather, plain deck | 89.9% | 67.0% | 40.4% |
+| **No armour**, plain deck | 72.1% | 40.6% | **10.2%** |
+| No armour, **1** double-strike | 74.0% | 43.2% | 12.4% |
+| No armour, **3** double-strikes | 73.8% | 45.0% | 12.7% |
+
+**Armour is worth about 30 points and a double-strike card buys back 2 to 6.** No restriction built
+on armour can balance that. Worse, the curve **peaks at two and falls**: each double-strike replaces
+a plain Strike, and a −1 secondary is a weak half, so the third one costs more than it brings.
+
+So the cheaper currencies were measured too (3 seeds × 3000 fights), against the same baseline:
+
+| What the node gives up | 4 spears | 5 spears | 4 mixed |
+|---|---|---|---|
+| **a card of hand size** | −6.1 | −9.9 | −8.2 |
+| **the shield** | −1.8 | −0.8 | −0.4 |
+| the ⚡ Sidestep | −1.2 | −1.7 | +1.0 |
+
+**The shield is the right price and one card is the right amount.** *No shield, one double-strike*
+lands at **−1.0 / +1.9 / +4.1** against the baseline: level in the easy fights and ahead where it
+matters, which is what a specialization should look like. Two is too many (+5.2 on the Deadly
+encounter). It also reads correctly — a duellist fights with a blade and a free hand — and it gives
+Way of Shade a resource the Way did not have.
+
+> **Two findings that were not the question.** **Hand size is the most expensive stat measured
+> anywhere in this project** at 6–10 points a card, which is worth remembering before anything
+> offers one. And **a shield is worth almost nothing** (0.4–1.8) — against a Buckler at 6 gold and a
+> Longsword at 15, that is a catalogue problem rather than a node problem
+> ([equipment.md](equipment.md) §12).
 
 #### Three more devices, and one of them solves a different problem
 

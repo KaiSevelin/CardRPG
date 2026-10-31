@@ -1081,6 +1081,15 @@ part: the target gets one clean turn, so a poisoner who uses it is betting on th
   a Halberd or a Trident and not with a Pike, and nobody had to remember that — the card said it all
   along and now the field does.
 
+- **[OPEN]** **[MEASURED] A shield is worth almost nothing, and costs 6 gold.** Pricing the
+  Duellist's giving-up put a number on it for the first time: taking the shield away costs **1.8 /
+  0.8 / 0.4** points of win rate across the Moderate, Hard and Deadly encounters
+  ([specializations.md](specializations.md), *the exchange-rate table*) — which is inside the noise
+  on two of the three. A Buckler is 6 g against a Longsword's 15 g, so the gold is not the problem;
+  the **effect** is. Block arrives after armour has already eaten most of a goblin's hit, and the
+  ⚡ Block reaction competes with Parry for the same one reaction. Either a shield needs to do
+  something armour does not, or the catalogue should stop implying it is a defensive upgrade.
+
 - **[OPEN]** **A thrown weapon has two modes and the engine knows only one.** A Dagger is `range 3
   thrown` and tagged `melee`; stabbing with it and throwing it are different attacks, and
   `resolveAttack` decides from the item alone. So a dagger **stab** is still treated as ranged —
