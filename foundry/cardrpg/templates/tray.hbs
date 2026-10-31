@@ -72,6 +72,7 @@
       {{#if exhausted}}<div class="cr-tray__flag" data-tooltip="One card per turn, and no reactions">Exhausted</div>{{/if}}
       {{#if dazed}}<div class="cr-tray__flag" data-tooltip="No secondary this turn">Dazed</div>{{/if}}
       {{#if stunned}}<div class="cr-tray__flag" data-tooltip="No reactions">Stunned</div>{{/if}}
+      {{#if reserved}}<div class="cr-tray__flag" data-tooltip="Turned sideways and held back, so they will not react. {{upright}} card(s) still able to.">Held {{reserved}}</div>{{/if}}
       {{#if encumbered}}<div class="cr-tray__flag">{{encumbered}}</div>{{/if}}
       {{#if staged}}
       <div class="cr-options__staged">
@@ -176,7 +177,7 @@
   {{#if cards}}
     <section class="cr-hud__hand">
       {{#each cards as |card|}}
-        <div class="cr-card{{#if card.harm}} cr-card--harm{{/if}}">
+        <div class="cr-card{{#if card.harm}} cr-card--harm{{/if}}{{#if card.reaction.reserved}} cr-card--reserved{{/if}}">
           <div class="cr-card__name">{{card.name}}</div>
           {{#if card.harm}}
             <div class="cr-half"><span class="cr-note">Can't be played, not even for Brace.</span></div>
@@ -198,9 +199,21 @@
                 {{/each}}
               </div>
             {{/each}}
-            <div class="cr-half cr-half--reaction">
+            {{!--
+              The reaction row, which is also the only switch on a card in hand. Reactions fire by
+              themselves (core-rules 3); what the player decides, in advance, is whether this card
+              is available to fire at all.
+            --}}
+            <div class="cr-half cr-half--reaction{{#if card.reaction.blocked}} cr-half--blocked{{/if}}">
               <span class="cr-half__marker">{{crIcon ../config.halfIcons.reaction}}</span>
-              <span>{{#if card.reaction}}{{card.reaction}}{{else}}Brace{{/if}}</span>
+              {{#if card.reaction.blocked}}
+                <span data-tooltip="{{card.reaction.tip}}">{{card.reaction.label}}</span>
+              {{else}}
+                <button type="button" class="cr-half__play" data-action="reserve"
+                        data-card-id="{{card.id}}" data-tooltip="{{card.reaction.tip}}">
+                  {{card.reaction.label}}{{#if card.reaction.reserved}} — held{{/if}}
+                </button>
+              {{/if}}
             </div>
           {{/if}}
         </div>

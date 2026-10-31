@@ -11,6 +11,7 @@ import { createStarterContent, ensureSetupMacro } from "./module/setup.mjs";
 import { CardRPGCombat, registerCombatHooks } from "./module/combat.mjs";
 import { CardRPGTray, registerTrayHooks } from "./module/tray.mjs";
 import * as decks from "./module/decks.mjs";
+import { sidestep } from "./module/resolve.mjs";
 import { CharacterData, NpcData } from "./module/data/actors.mjs";
 import { ItemSlateData, FeatureSlateData, SpellSlateData } from "./module/data/items.mjs";
 import {
@@ -102,15 +103,6 @@ function registerHelpers() {
 function registerSettings() {
   const d = CARDRPG.defaults;
 
-  game.settings.register("cardrpg", "reactionTimer", {
-    name: "CARDRPG.Settings.ReactionTimer.Name",
-    hint: "CARDRPG.Settings.ReactionTimer.Hint",
-    scope: "world",
-    config: true,
-    type: Number,
-    default: d.reactionTimer
-  });
-
   game.settings.register("cardrpg", "showFateSwing", {
     name: "CARDRPG.Settings.ShowFateSwing.Name",
     hint: "CARDRPG.Settings.ShowFateSwing.Hint",
@@ -189,6 +181,28 @@ Hooks.once("ready", async () => {
   Hooks.on("createItem", item => onLoadChanged(item));
   Hooks.on("updateItem", item => onLoadChanged(item));
   Hooks.on("deleteItem", item => onLoadChanged(item));
+
+  /*
+   * The Sidestep trigger (core-rules 11). A hit is an event the resolver owns; an ARRIVAL is not --
+   * nothing resolves a move, because moving is dragging a token -- so it needs a hook of its own,
+   * and without one the reaction stays the word on a card it was until 30 October.
+   *
+   * `preUpdateToken` is where the old square still exists, so it is stashed for the pair below.
+   * GM-only, so one client fires it rather than one per connected player.
+   */
+  Hooks.on("preUpdateToken", (token, change, options) => {
+    if (change.x === undefined && change.y === undefined) return;
+    options.cardrpgFrom = { x: token.x, y: token.y };
+  });
+  Hooks.on("updateToken", async (token, change, options) => {
+    if (!game.user.isGM) return;
+    if (change.x === undefined && change.y === undefined) return;
+    const mover = token.actor;
+    const from = options.cardrpgFrom;
+    if (!mover || !from || !canvas?.ready) return;
+    await onArrival(mover, from);
+  });
+
   await ensureSetupMacro();
 
   // The grid is square and distances are Chebyshev: a diagonal step costs the same as a straight
@@ -200,6 +214,28 @@ Hooks.once("ready", async () => {
   }
   console.log("Card RPG | Ready");
 });
+
+/**
+ * An enemy ended its move. Everyone it has just come to stand next to gets a Sidestep.
+ *
+ * "ENDS its movement next to you", and arriving is the load-bearing word: the square has to be new
+ * AND the mover has to have been out of reach before it. A goblin already in your face that shuffles
+ * one square has not arrived, and answering that would cost a card for nothing -- the simulator
+ * measures both readings and this is the one it measures by default (`sidestep_mode`).
+ */
+async function onArrival(mover, from) {
+  const size = canvas.grid.size;
+  const reach = (a, b) => Math.max(Math.abs(a.x - b.x), Math.abs(a.y - b.y)) / size <= 1;
+  const now = mover.getActiveTokens()[0];
+  if (!now || (now.x === from.x && now.y === from.y)) return;
+
+  for (const placed of canvas.tokens.placeables) {
+    const who = placed.actor;
+    if (!who || who.id === mover.id || who.type === mover.type) continue;
+    if (!reach(placed, now) || reach(placed, from)) continue;      // not an arrival, for this one
+    await sidestep(who, mover);
+  }
+}
 
 /**
  * Carried weight changes whenever a slate is added, altered or removed, so the Overloaded

@@ -930,9 +930,14 @@ check("items whose text and field disagree",
 const resolveSource = fs.readFileSync(path.join(root, "module/resolve.mjs"), "utf8");
 check("engine subtracts what a line ignores",
   /line\.ignores/.test(resolveSource) ? "yes" : "no", "yes");
-// Off the armour, never off Block: a bolt finds a gap in plate, not past a raised shield.
+/*
+ * Off the armour, never off Block: a bolt finds a gap in plate, not past a raised shield. Anchored
+ * on both halves of that sentence rather than on one variable name, because the loop now computes
+ * damage for whoever is TAKING the hit, which a Bodyguard can change.
+ */
 check("ignores is kept off Block",
-  /block\s*=\s*target\.system\.block/.test(resolveSource) ? "yes" : "no", "yes");
+  /armor = Math\.max\(0, \(who\.system\.armor \?\? 0\) - pierce\)/.test(resolveSource)
+  && /block = who\.system\.block \?\? 0/.test(resolveSource) ? "yes" : "no", "yes");
 
 
 /*
@@ -1227,6 +1232,263 @@ for (const name of fs.readdirSync(templateDir)) {
   if (roots !== 1) trouble ??= `${roots} root elements`;
   check(name, trouble ?? "one root, balanced", "one root, balanced");
 }
+
+
+/* -------------------------------------------- */
+
+/*
+ * Reactions: automatic, and the one decision that is left (core-rules 3).
+ *
+ * Nothing in the engine had ever played one. The vocabulary was there, the tray drew the row, and
+ * `reactionTimer` was a registered setting with no reader -- so all five reactions were words on a
+ * card, exactly as Sidestep was until the simulator implemented it and `ignores N armor` was until
+ * it became a field. These checks are mostly about the three ways that happens: a rule that lives
+ * only in prose, a vocabulary nothing dispatches on, and a policy with no stated threshold.
+ */
+
+section("reactions: automatic, and the card turned sideways");
+
+const reactionBlock = configSource.slice(
+  configSource.indexOf("CARDRPG.reactionTriggers = {"),
+  configSource.indexOf("/** NPC tactic keywords"));
+const triggers = [...reactionBlock
+  .slice(0, reactionBlock.indexOf("CARDRPG.reactions = {"))
+  .matchAll(/^  ([a-zA-Z]+): "/gm)].map(m => m[1]);
+check("triggers declared", triggers.join(", "), "hit, allyHit, arrival");
+
+const reactionLines = [...reactionBlock
+  .slice(reactionBlock.indexOf("CARDRPG.reactions = {"))
+  .matchAll(/^  ([a-zA-Z]+): \{([^}]*)\}/gm)]
+  .map(m => ({ key: m[1], body: m[2] }));
+check("reactions declared", reactionLines.map(r => r.key).join(", "),
+  "parry, block, sidestep, use, bodyguard");
+
+/* Every reaction must name a trigger that exists, or it is a reaction nothing can ever fire. */
+const triggerOf = r => /trigger: "([a-zA-Z]+)"/.exec(r.body)?.[1] ?? "";
+const noTrigger = reactionLines.filter(r => !triggerOf(r)).map(r => r.key);
+check("reactions with no trigger", noTrigger.length ? noTrigger.join(", ") : "none", "none");
+const strayTrigger = reactionLines
+  .filter(r => triggerOf(r) && !triggers.includes(triggerOf(r)))
+  .map(r => `${r.key}: ${triggerOf(r)}`);
+check("reactions naming a trigger that does not exist",
+  strayTrigger.length ? strayTrigger.join(", ") : "none", "none");
+
+/*
+ * Use's trigger is the whole rephrasing. "Any time on another's turn" is not an event, which made
+ * it the one reaction no engine could fire and no prompt could open at; it answers a hit now.
+ */
+check("Use fires on a hit", triggerOf(reactionLines.find(r => r.key === "use")), "hit");
+check("reactions that fire on a hit",
+  reactionLines.filter(r => triggerOf(r) === "hit").map(r => r.key).join(", "),
+  "parry, block, use");
+check("reactions that fire on an arrival",
+  reactionLines.filter(r => triggerOf(r) === "arrival").map(r => r.key).join(", "), "sidestep");
+
+/* Brace is universal, so it must NOT be a printed reaction -- and it still needs a number. */
+check("Brace is not a printed reaction",
+  reactionLines.some(r => r.key === "brace") ? "listed" : "universal", "universal");
+check("Brace has a value", /brace: 1/.test(configSource) ? "yes" : "no", "yes");
+
+/* The timer is gone, everywhere. A setting nothing reads is the state this started in. */
+check("reaction timer retired from config",
+  /reactionTimer/.test(configSource) ? "still there" : "gone", "gone");
+check("reaction timer retired from settings",
+  /reactionTimer/.test(entry) ? "still there" : "gone", "gone");
+check("reaction timer has no orphan i18n keys",
+  Object.keys(lang).some(k => k.includes("ReactionTimer")) ? "still there" : "gone", "gone");
+const hudSpec = fs.readFileSync(path.join(root, "../hud-spec.md"), "utf8");
+check("reaction timer retired from the HUD spec",
+  /\*\*Setting: `reactionTimer`\*\*/.test(hudSpec) || /^### 6\.1 The reaction timer$/m.test(hudSpec)
+    ? "still specified" : "gone", "gone");
+
+/* The cards that carry one, against the config. */
+const reactionKeys = reactionLines.map(r => r.key);
+const printed = content.WARRIOR_DECK.filter(c => c.reaction);
+check("starter cards with a printed reaction", printed.length, 4);
+const strayPrinted = printed.filter(c => !reactionKeys.includes(c.reaction))
+  .map(c => `${c.name}: ${c.reaction}`);
+check("cards printing a reaction that does not exist",
+  strayPrinted.length ? strayPrinted.join(", ") : "none", "none");
+/*
+ * Bodyguard is implemented against nothing: it is in the config, the resolver fires it, and no card
+ * in the game prints it. That is worth asserting rather than leaving to be noticed, and it is why
+ * equipment.md 12 carries it as an [OPEN].
+ */
+const unprinted = reactionKeys.filter(k => !printed.some(c => c.reaction === k));
+check("reactions no card prints", unprinted.length ? unprinted.join(", ") : "none", "bodyguard");
+check("the unprinted one is recorded as open",
+  /\[OPEN\]\*\* \*\*Nothing in the game prints/.test(equipDoc)
+  && /Bodyguard\.\*\* It is in the config/.test(equipDoc) ? "yes" : "no", "yes");
+
+/* -------------------------------------------- */
+
+/*
+ * Heavy Armor's drawback. It was the sentence "Blocks Sidestep reactions." and nothing else, so the
+ * simulator charged Plate for it and the game did not -- the same gap `ignores N armor` and the
+ * ammunition `For` column each had, and the third time this project has found it.
+ */
+const bans = slates.filter(i => (i.blocksReactions ?? []).length);
+check("slates that take a reaction away", bans.map(i => i.name).join(", "), "Brigandine, Plate");
+const strayBan = bans.flatMap(i =>
+  i.blocksReactions.filter(k => !reactionKeys.includes(k)).map(k => `${i.name}: ${k}`));
+check("slates banning a reaction that does not exist",
+  strayBan.length ? strayBan.join(", ") : "none", "none");
+/*
+ * The ones that take the Sidestep are exactly the heavy armour on the BODY -- and the slot has to
+ * be in that sentence, because `heavy` + `armor` also catches the **Great Helm**, which is a heavy
+ * piece of armour that is not Heavy Armor. That is one more instance of `heavy` doing two unrelated
+ * jobs (equipment.md 12), and it is asserted here rather than left for a reader to trip over.
+ */
+const heavyArmour = slates.filter(i =>
+  i.tags?.includes("armor") && i.tags?.includes("heavy") && i.slot === "body").map(i => i.name);
+check("heavy armour on the body", heavyArmour.join(", "), "Brigandine, Plate");
+const heavyElsewhere = slates.filter(i =>
+  i.tags?.includes("armor") && i.tags?.includes("heavy") && i.slot !== "body").map(i => i.name);
+check("heavy armour that is not Heavy Armor", heavyElsewhere.join(", "), "Great Helm");
+check("the helm case is recorded as open",
+  /a heavy \*\*helm\*\* is heavy armour and is not Heavy Armor/.test(equipDoc) ? "yes" : "no", "yes");
+
+/* The prose against the field, both directions. This is the whole lesson of the three gaps above. */
+const saysSidestep = slates.filter(i => /Sidestep/i.test(i.text ?? "")).map(i => i.name);
+check("slates whose text mentions the Sidestep", saysSidestep.join(", "), "Brigandine, Plate");
+const promiseDrift = slates.filter(i =>
+  /Sidestep/i.test(i.text ?? "") !== (i.blocksReactions ?? []).includes("sidestep")).map(i => i.name);
+check("slates whose text and field disagree",
+  promiseDrift.length ? promiseDrift.join(", ") : "none", "none");
+
+check("the item schema carries the field",
+  /blocksReactions: new fields\.SetField/.test(itemSource) ? "yes" : "no", "yes");
+check("both actor models read it",
+  (actorsSource.match(/get blockedReactions\(\)/g) ?? []).length, 2);
+/*
+ * The READ, not the name: `blockedReactions` also appears in the comment explaining why Stunned is
+ * tested separately, so matching the bare word passed a resolver that had stopped reading the field
+ * at all. Second time a check in this file has matched its own documentation.
+ */
+check("the resolver reads it",
+  /const off = actor\.system\.blockedReactions \?\? new Set\(\)/.test(resolveSource)
+    ? "yes" : "no", "yes");
+
+/* -------------------------------------------- */
+
+/*
+ * Reserved: the one decision an automatic reaction still asks for.
+ */
+const decksSource = fs.readFileSync(path.join(root, "module/decks.mjs"), "utf8");
+check("the flag exists", /export const RESERVED = "reserved"/.test(decksSource) ? "yes" : "no", "yes");
+/*
+ * It has to clear at the ONE chokepoint every card passes through. A reserved card that came back
+ * from the discard still sideways would quietly erode a player's defence with nobody told -- which
+ * is the kind of bug that is never reported, only misremembered.
+ */
+const moveBody = decksSource.slice(decksSource.indexOf("export async function move(from, to, ids)"),
+  decksSource.indexOf("/* -------------------------------------------- */\n/*  Reserved"));
+check("moving a card clears it",
+  /flags\.cardrpg\.-=\$\{RESERVED\}/.test(moveBody) ? "yes" : "no", "yes");
+/* A Wound "can't be played, not even for Brace" (core-rules 8), and Taint resolves when drawn. */
+const upright = decksSource.slice(decksSource.indexOf("export function uprightCards"));
+check("dead cards cannot react",
+  /c\.type !== "wound" && c\.type !== "taint"/.test(upright) ? "yes" : "no", "yes");
+check("reserved cards cannot react", /!isReserved\(c\)/.test(upright) ? "yes" : "no", "yes");
+/* The tray's reaction row is the switch, not a readout and not a play. */
+check("the tray's reaction row toggles reserved",
+  /data-action="reserve"/.test(fs.readFileSync(path.join(root, "templates/tray.hbs"), "utf8"))
+    ? "yes" : "no", "yes");
+check("the tray counts what can still react",
+  /upright: uprightCards\(actor\)\.length/.test(traySource) ? "yes" : "no", "yes");
+
+/* -------------------------------------------- */
+
+/*
+ * The policy. Its threshold has to be the rules' own two events rather than tuned numbers, because
+ * a tuned number in the resolver is a balance decision nobody declared.
+ */
+const policy = resolveSource.slice(resolveSource.indexOf("export function chooseReaction"),
+  resolveSource.indexOf("async function spendReaction"));
+check("the policy's threshold is a Wound",
+  /CARDRPG\.defaults\.woundAt/.test(policy) ? "yes" : "no", "yes");
+check("the policy's other threshold is being dropped",
+  /incoming >= health/.test(policy) ? "yes" : "no", "yes");
+/* Healing arrives after the blow, so it can never answer one that drops you (core-rules 8). */
+check("a stopper cannot answer a lethal blow",
+  /!lethal && heal > 0/.test(policy) ? "yes" : "no", "yes");
+check("no tuned constants in the policy",
+  /[^.\w](?:0\.\d|1\.\d|[2-9]\.\d)/.test(policy) ? "found one" : "none", "none");
+
+/*
+ * The two steps, in the order core-rules 3 gives them, and both AFTER the draw -- Parry fires on
+ * being hit and Brace on taking damage, so a Miss costs the defender nothing.
+ */
+const attackBody = resolveSource.slice(resolveSource.indexOf("export async function resolveAttack"),
+  resolveSource.indexOf("/** A reaction's name"));
+const at = needle => attackBody.indexOf(needle);
+check("the draw comes before any reaction",
+  at("const fate = await drawFate") < at("await redirectHit") ? "yes" : "no", "yes");
+check("redirection resolves before reduction",
+  at("await redirectHit") < at("chooseReaction(") ? "yes" : "no", "yes");
+check("a Miss is answered by nothing",
+  /const guard = missed \? null : await redirectHit/.test(attackBody)
+  && /\(missed \|\| guard\)\s*\?\s*null/.test(attackBody) ? "yes" : "no", "yes");
+/* One reaction per trigger covers both steps: a Bodyguard that intercepted cannot also Brace. */
+check("one reaction covers both steps",
+  /\(missed \|\| guard\)/.test(attackBody) ? "yes" : "no", "yes");
+/* A stopper is drunk once the blow has landed, which is what makes Use an alternative to reducing. */
+check("a stopper is used after the damage",
+  at('await taker.update(') < at('reaction?.key === "use"') ? "yes" : "no", "yes");
+/* A reaction goes to the discard, never the Spent pile, whatever the card's halves cost. */
+const spend = resolveSource.slice(resolveSource.indexOf("async function spendReaction"),
+  resolveSource.indexOf("export async function redirectHit"));
+check("a reaction is discarded, never Spent",
+  /discardCards\(actor, \[choice\.card\.id\]\)/.test(spend) ? "yes" : "no", "yes");
+/*
+ * Automatic is not the same as hidden. Both halves of that: the reduction has to appear in the
+ * arithmetic, and the card that paid for it has to be named -- a card spent out of a player's hand
+ * with no line in the log is a card they will swear they still had.
+ */
+check("the reduction appears in the arithmetic",
+  /row\.reaction\?\.reduce \? ` &minus; \$\{row\.reaction\.reduce\}/.test(resolveSource)
+    ? "yes" : "no", "yes");
+check("the card that reacted is named",
+  /&mdash; <em>\$\{row\.reaction\.card\}<\/em> spent/.test(resolveSource) ? "yes" : "no", "yes");
+
+/*
+ * Sidestep's trigger is the one that is not a hit, so it needs a hook of its own -- and without one
+ * the reaction goes back to being the word on a card it was before 30 October.
+ */
+check("an arrival fires it", /await sidestep\(who, mover\)/.test(entry) ? "yes" : "no", "yes");
+check("arriving means a new square out of reach",
+  /!reach\(placed, now\) \|\| reach\(placed, from\)/.test(entry) ? "yes" : "no", "yes");
+const stepBody = resolveSource.slice(resolveSource.indexOf("export async function sidestep"),
+  resolveSource.indexOf("/**\n * Resolve an attack against one target"));
+check("the square is random among the legal ones",
+  /legal\[Math\.floor\(Math\.random\(\) \* legal\.length\)\]/.test(stepBody) ? "yes" : "no", "yes");
+check("a step that stays in reach is not legal",
+  /if \(away <= 1\) continue;/.test(stepBody) ? "yes" : "no", "yes");
+
+/* -------------------------------------------- */
+
+/* The rules have to say all of this, or the engine is the only place it is written. */
+const coreRules = fs.readFileSync(path.join(root, "../../rules/core-rules.md"), "utf8");
+const reactionsSection = /### Reactions\n([\s\S]*?)\n---/.exec(coreRules)?.[1] ?? "";
+check("core-rules says reactions are automatic",
+  /\*\*Reactions resolve by themselves\.\*\*/.test(reactionsSection) ? "yes" : "no", "yes");
+check("core-rules says what a card turned sideways does",
+  /\*\*A card turned sideways is reserved: it will not react\.\*\*/.test(reactionsSection)
+    ? "yes" : "no", "yes");
+check("core-rules states the threshold",
+  /stops a \*\*Wound\*\*/.test(reactionsSection) && /stops you being \*\*dropped\*\*/.test(reactionsSection)
+    ? "yes" : "no", "yes");
+check("core-rules lists both triggers and only those",
+  (reactionsSection.match(/\*\*you are hit\*\*|\*\*an enemy ends its move next to you\*\*/g) ?? []).length,
+  2);
+check("starter-cards gives Use a trigger",
+  /\| \*\*Use\*\* \| You take damage \|/.test(fs.readFileSync(
+    path.join(root, "../../rules/starter-cards.md"), "utf8")) ? "yes" : "no", "yes");
+/* Section 11 held TWO Cover headings, giving two different rules, until this commit merged them. */
+check("core-rules defines cover exactly once",
+  (coreRules.match(/^### Cover$/gm) ?? []).length, 1);
+check("core-rules defines the Sidestep square",
+  /^### Sidestep$/m.test(coreRules) ? "yes" : "no", "yes");
 
 /* -------------------------------------------- */
 

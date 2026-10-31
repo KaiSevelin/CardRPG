@@ -272,6 +272,21 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
   }
 
   /**
+   * Reactions switched off right now (core-rules 3). A condition takes all of them, worn gear takes
+   * the ones it names, and a stowed thing takes nothing -- Plate in the pack is luggage.
+   */
+  get blockedReactions() {
+    const blocked = new Set();
+    if (this.noReactions) return new Set(Object.keys(CARDRPG.reactions));
+    for (const slate of this.parent?.items ?? []) {
+      if (slate.type !== "item" || !slate.system.equipped) continue;
+      if (CARDRPG.slots[slate.system.equippedSlot]?.stows) continue;
+      for (const key of slate.system.blocksReactions ?? []) blocked.add(key);
+    }
+    return blocked;
+  }
+
+  /**
    * True while a condition halves your Move (Slowed, Burdened, Overloaded). Move is never resolved
    * by the engine -- figures are pushed around by hand -- so what this changes is the number on the
    * card face, which is exactly where a player needs to be told.
@@ -396,6 +411,22 @@ export class NpcData extends foundry.abstract.TypeDataModel {
     const blocked = new Set();
     for (const c of this.conditions) {
       for (const icon of CARDRPG.conditions[c.key]?.blocks ?? []) blocked.add(icon);
+    }
+    return blocked;
+  }
+
+  /** As the character's. An NPC has no encumbrance, so `conditions` is the whole list. */
+  get noReactions() {
+    return this.conditions.some(c => CARDRPG.conditions[c.key]?.blocksReactions);
+  }
+
+  get blockedReactions() {
+    const blocked = new Set();
+    if (this.noReactions) return new Set(Object.keys(CARDRPG.reactions));
+    for (const slate of this.parent?.items ?? []) {
+      if (slate.type !== "item" || !slate.system.equipped) continue;
+      if (CARDRPG.slots[slate.system.equippedSlot]?.stows) continue;
+      for (const key of slate.system.blocksReactions ?? []) blocked.add(key);
     }
     return blocked;
   }

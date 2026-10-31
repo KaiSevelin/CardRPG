@@ -18,11 +18,12 @@
 
 import { CARDRPG } from "./config.mjs";
 import {
-  deckOf, discardCards, retireCards, catchBreath, canCatchBreath, refill, cardName
+  deckOf, discardCards, retireCards, catchBreath, canCatchBreath, refill, cardName,
+  isReserved, reserveCard, uprightCards
 } from "./decks.mjs";
 import {
   resolveAttack, resolveDefend, resolveHeal, resolveUse, resolveCondition, resolveShake,
-  reachableAmmo,
+  reachableAmmo, isUsable,
   resolveTaint, resolveCorrode, resolveLift, collectBonuses
 } from "./resolve.mjs";
 
@@ -95,6 +96,8 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       // A face-down pile is not openable; the click is absorbed rather than erroring.
       openPile: CardRPGTray.#onOpenPile,
       flipCard: CardRPGTray.#onFlipCard,
+      // The reaction row is the only thing on a card in hand you can click that does not play it.
+      reserve: CardRPGTray.#onReserve,
     }
   };
 
@@ -266,6 +269,13 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
 
       dazed,
       stunned: system.noReactions,
+      /*
+       * How many cards are available to react with. Public, the way hand SIZE is public and hand
+       * contents are not (hud-spec 7) -- and with reactions automatic it is the most informative
+       * number on the board: it says exactly how much defence this character has left.
+       */
+      upright: uprightCards(actor).length,
+      reserved: (hand?.cards.contents ?? []).filter(c => isReserved(c)).length,
       exhausted: system.exhausted,
       encumbered: encumbered
         ? game.i18n.localize(CARDRPG.conditions[encumbered.key].label)
@@ -790,10 +800,59 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       name: cardName(card),
       harm: false,
       halves: [half("primary", card.system.primary), half("secondary", card.system.secondary)],
-      reaction: card.system.reaction
-        ? game.i18n.localize(CARDRPG.reactions[card.system.reaction]?.label ?? card.system.reaction)
-        : null
+      reaction: this.#reactionRow(card)
     };
+  }
+
+  /**
+   * The third row: what this card would do on someone else's turn, and the switch that stops it.
+   *
+   * Reactions resolve automatically (core-rules 3), so there is nothing to click at the moment a
+   * hit lands -- which leaves exactly one decision, taken in advance and at leisure: whether this
+   * card is available to spend at all. Turning it sideways is that decision, and the row that says
+   * what the card would do is the switch that stops it doing it.
+   *
+   * A card with no printed reaction reads "Brace", because that is what it is.
+   */
+  #reactionRow(card) {
+    const key = card.system.reaction || "";
+    const rule = key ? CARDRPG.reactions[key] : null;
+    const off = this.actor.system.blockedReactions ?? new Set();
+    const label = key
+      ? game.i18n.localize(rule?.label ?? key)
+      : game.i18n.localize("CARDRPG.Reaction.Brace");
+    const reserved = isReserved(card);
+
+    // A reaction a drawback has taken away is greyed in place like a blocked half, never hidden:
+    // Plate takes the Sidestep, and a player who cannot see what it took will think it took nothing.
+    const gone = !!key && off.has(key);
+    const trigger = game.i18n.localize(
+      CARDRPG.reactionTriggers[rule?.trigger ?? "hit"] ?? CARDRPG.reactionTriggers.hit);
+
+    return {
+      label,
+      reserved,
+      blocked: gone,
+      tip: gone
+        ? `${label} is switched off by what you are wearing. The card is still yours to play.`
+        : reserved
+          ? `Turned sideways: ${label} will NOT fire. It still counts toward your hand and both `
+            + `halves still play. Click to turn it back upright.`
+          : `${label} fires by itself when ${trigger}, if the hit would Wound you or drop you. `
+            + `The card goes to your discard. Click to turn it sideways and keep it.`
+    };
+  }
+
+  /**
+   * Turn a card sideways, or back upright. Free, and legal at any time -- including in the middle
+   * of somebody else's turn, which is the whole point of a standing decision.
+   */
+  static async #onReserve(event, target) {
+    const hand = deckOf(this.actor, "actionHand");
+    const card = hand?.cards.get(target.dataset.cardId);
+    if (!card) return;
+    await reserveCard(card);
+    this.render();
   }
 
   /**
@@ -1061,9 +1120,8 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
      */
     if (ammo.system.shotEffect !== "carriesPotion") return { ammo, payload: null };
 
-    const drinkable = i => (i.system.verbs?.use?.value ?? null) !== null || !!i.system.verbs?.use?.text;
     const potions = this.actor.items.filter(i =>
-      i.type === "item" && i.id !== ammo.id && drinkable(i)
+      i.type === "item" && i.id !== ammo.id && isUsable(i)
       && i.system.equipped && CARDRPG.slots[i.system.equippedSlot]?.freeEquip
     );
     if (!potions.length) {

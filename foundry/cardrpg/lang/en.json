@@ -101,6 +101,9 @@
   "CARDRPG.Reaction.Use": "Use",
   "CARDRPG.Reaction.Bodyguard": "Bodyguard",
   "CARDRPG.Reaction.Brace": "Brace",
+  "CARDRPG.Trigger.Hit": "you are hit",
+  "CARDRPG.Trigger.AllyHit": "an ally within reach is hit",
+  "CARDRPG.Trigger.Arrival": "an enemy ends its move next to you",
 
   "CARDRPG.Tactic.PackTactics": "Pack Tactics",
   "CARDRPG.Tactic.Skirmisher": "Skirmisher",
@@ -133,8 +136,6 @@
   "CARDRPG.Encumbrance.Overloaded": "Overloaded",
   "CARDRPG.Encumbrance.Immobile": "Too heavy to lift",
 
-  "CARDRPG.Settings.ReactionTimer.Name": "Reaction timer (seconds)",
-  "CARDRPG.Settings.ReactionTimer.Hint": "How long a reaction prompt waits before passing. 0 waits indefinitely, which is correct by the rules and suits a table that is all present.",
   "CARDRPG.Settings.ShowFateSwing.Name": "Show fate swing chance",
   "CARDRPG.Settings.ShowFateSwing.Hint": "Display the computed chance that the next fate draw is a Miss or Critical. Some tables want the arithmetic surfaced, others find it clinical.",
   "CARDRPG.Settings.ShowNpcHealth.Name": "Players see NPC health",

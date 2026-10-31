@@ -95,6 +95,7 @@ One primary and one secondary, from **two different cards**, in **either order**
    pile** if that half is printed *Spent*.
 
 Dazed removes step 2 entirely — primary only. Exhausted likewise, and also disables reactions.
+`R` is a button, not a readout: clicking it turns the card sideways so it will not react (§6.1).
 
 ### 3.5 The play area: two stacks, over the Fate deck
 
@@ -291,8 +292,9 @@ something. Fate and Discard are always there, because a count of zero is itself 
 
 Simulation says the deck runs dry in 89% of four-goblin fights and the hero stops to Catch Breath in
 most of them ([../sim/analysis-2026-10-27.md](../sim/analysis-2026-10-27.md), finding 2). That
-countdown *is* the drama: reactions cost cards, and a turn spent breathing is a turn not spent
-fighting. It gets a depleting bar with the count beside it.
+countdown *is* the drama: reactions cost cards — by themselves, and whether you were watching
+(§6.1) — and a turn spent breathing is a turn not spent fighting. It gets a depleting bar with the
+count beside it.
 
 (Deck-dry barely moved when Catch Breath became a flat 2 — the deck runs out on the first pass
 through it either way — but what happens afterwards did. Breaths per fight doubled, from 1.3 to 2.7
@@ -362,78 +364,53 @@ Differences from the combat tray:
 
 ---
 
-## 6. One interject system, used twice
+## 6. Interjecting
 
-Both modes let other characters interrupt the acting character:
+Both modes let other characters act while someone else is acting, and they do it in **two different
+ways** — which is a change: this section used to describe one prompt built for both.
 
-| Mode | Mechanic | Rules |
+| Mode | Mechanic | How it reaches the player |
 |---|---|---|
-| Combat | **Reaction** | One per trigger; several characters may each react; **redirection** resolves before **reduction** (core-rules §3) |
-| Scene | **Help** | One helper per check (+1, or +2 on a matching approach); the helper shares the consequences on a failure |
+| Combat | **Reaction** | **Automatic.** Nobody is asked. One per trigger; redirection resolves before reduction (core-rules §3) |
+| Scene | **Help** | **A prompt.** One helper per check (+1, or +2 on a matching approach); the helper shares the consequences on a failure |
 
-Build one prompt and use it for both. The prompt:
+### 6.1 Reactions are not a prompt
 
-- goes to the **owner** of each eligible character, not to everyone;
-- lists only **legal** options — Stunned blocks all reactions, Heavy Armor blocks Sidestep, Brace is
-  always available;
-- has an explicit **Pass** button;
-- never appears at all when nobody is eligible, so an exhausted or empty-handed party costs no time.
+A reaction fires by itself, the card goes to the discard, and the chat card says what answered. There
+is no dialog, no countdown and no Pass button, and `reactionTimer` is gone with them.
 
-### 6.1 The reaction timer
+What a prompt would have cost is the reason: **20 seconds × party size, per attack**, with a shared
+timer, two steps, concurrent declarations, and a rule for a player who has disconnected. All of that
+was specification for asking a question whose answer is usually obvious and always small.
 
-A reaction prompt runs on a **countdown with a progress bar**. When it expires, the character
-**passes**.
+**The decision moved to a card turned sideways** (core-rules §3). A reserved card will not react; it
+still counts toward your hand and both halves still play. In the tray that is the **⚡ row itself** —
+the row that says what the card would do is the button that stops it doing it:
 
 ```
-┌─ REACTION ─ goblin 3 strikes you for 3 ──────────────────┐
-│  [############........]  7s                              │
-│                                                           │
-│  Parry   (Strike card)      reduce by 2                  │
-│  Block   (Shield Up)        reduce by 3                  │
-│  Brace   (any card)         reduce by 1                  │
-│                                              [ Pass ]     │
-└───────────────────────────────────────────────────────────┘
+┌─────────┐ ┌─────────┐ ┌─────────┐    ┌─────────┐
+│ STRIKE  │ │ SHIELD  │ │ ADVANCE │    │ ADVANCE │  <- turned sideways,
+│ P Str 4 │ │ P Def 2 │ │ P Mov 3 │    │ R Side  │     rotated in its own slot
+│ S [Mov1]│ │ S [Mov1]│ │ S [Mov2]│    │  held   │
+│ R Parry │ │ R Block │ │ R Side  │    └─────────┘
+└─────────┘ └─────────┘ └─────────┘
 ```
 
-**Setting: `reactionTimer`**, in seconds. Default **20** — long enough to read five cards, short
-enough to keep a round moving. **0 means no timer**: the prompt blocks until everyone answers, which
-is correct by the rules and suits a table that is all present and talking.
+- A card with no printed reaction reads **Brace**, because that is what it is.
+- A reaction a **drawback** has taken away is greyed in place, never hidden — Plate takes the
+  Sidestep, and a player who cannot see what it took will believe it took nothing.
+- Hovering the row says what fires it and what it costs.
 
-Behaviour:
+**The count is public.** How many upright cards a character holds goes beside Stunned and Dazed as a
+flag, for the same reason hand size is public (§7): with reactions automatic it is the most
+informative number on the board — it says precisely how much defence that character has left, which
+is what a Bodyguard, a *Help* and a focus-fire decision all turn on.
 
-| Case | Rule |
-|---|---|
-| **Several eligible characters** | **One shared timer per step.** Everyone eligible in that step declares concurrently. Serial per-character timers would cost 20s × party size per attack. |
-| **A redirection is available** | Two steps, so up to two timers (see §6.2). |
-| Player answers early | Their prompt closes at once; the timer keeps running for the others. |
-| Everyone answers early | Timer ends immediately and resolution proceeds. |
-| Foundry is paused | Timer pauses with it. |
-| GM override | The GM can resolve or extend the prompt at any time. |
-| Nobody eligible | No prompt, no delay. |
+### 6.2 Help still asks
 
-The bar is the point: a bare number invites haggling, a draining bar communicates that the round is
-moving. Players who want to deliberate should raise the setting rather than stall the prompt.
-
-**Scene mode has no timer by default.** *Help* happens while the GM is narrating and nothing is
-pending, so a countdown there only adds stress. The same prompt component is used, with the timer
-disabled.
-
-### 6.2 Two-step prompts
-
-Reactions resolve in two steps because redirection changes who is being hit (core-rules §3). The
-prompt follows suit:
-
-1. **Redirection step** — offered only to characters that *have* a redirecting reaction available,
-   such as a *Bodyguard* adjacent to the target. Skipped entirely when nobody qualifies, which is the
-   common case.
-2. **Reduction step** — offered to whoever is the target *after* step 1 resolved. If a Bodyguard
-   intercepted, the prompt goes to the Bodyguard, not the original target.
-
-Each step gets its own timer. A character that spent its reaction redirecting is not offered the
-reduction step, since one reaction per trigger covers both steps.
-
-The practical effect: the original target is never asked to spend a card against a hit an ally is
-about to take for them.
+*Help* keeps the prompt: it is a genuine choice with no automatic answer, the helper takes on real
+consequences, and it happens while the GM is narrating and nothing is pending. The same component,
+without the timer — scene mode never had one by default.
 
 ---
 

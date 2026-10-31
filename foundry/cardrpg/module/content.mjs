@@ -78,6 +78,12 @@ export const WARRIOR_DECK = [
     secondary: [{ verb: "ready" }]
   },
   {
+    /*
+     * The one card whose reaction answers a hit with something other than armour. Its trigger used
+     * to be "any time on another's turn", which is not an event -- so it was the one reaction no
+     * engine could fire and no prompt could open at. It answers a hit now, and it answers it by
+     * trading the reduction away (core-rules 3).
+     */
     name: "Quick Hands", copies: 1, reaction: "use",
     primary: [{ verb: "use" }],
     secondary: [{ verb: "ready" }]
@@ -334,6 +340,7 @@ export const ITEMS = [
     name: "Brigandine", slot: "body", tags: ["armor", "heavy"],
     weight: 12, value: 140, kind: "Armor", armor: 3,
     blurb: "Plates riveted between canvas. Heavy enough that you stop dodging.",
+    blocksReactions: ["sidestep"],
     text: "Blocks Sidestep reactions."
   },
   {
@@ -341,6 +348,7 @@ export const ITEMS = [
     weight: 20, value: 400, kind: "Armor", armor: 4,
     // Half a 40 kg allowance: Plate is a bet that nothing will out-range you.
     blurb: "Half your carry allowance, and nothing short of a ball goes through it.",
+    blocksReactions: ["sidestep"],
     text: "Blocks Sidestep reactions."
   },
   {

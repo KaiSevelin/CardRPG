@@ -424,13 +424,38 @@ CARDRPG.ways = {
   mind: "CARDRPG.Way.Mind"
 };
 
-/** Printed reactions. Brace is universal and never blocked, so it isn't listed here. */
+/**
+ * What a reaction fires on. There are two events in the whole game -- a hit landed, and an enemy
+ * arrived -- and `allyHit` is the first of them seen from one square over.
+ *
+ * Two is what makes automatic reactions tractable. It was four until Use was given Brace's trigger
+ * (core-rules 3): Use fired on "any time on another's turn", which is not an event, so there was
+ * nothing an engine could dispatch on and nothing a prompt could open at.
+ */
+CARDRPG.reactionTriggers = {
+  hit: "CARDRPG.Trigger.Hit",
+  allyHit: "CARDRPG.Trigger.AllyHit",
+  arrival: "CARDRPG.Trigger.Arrival"
+};
+
+/**
+ * Printed reactions. Brace is universal and never blocked, so it isn't listed here -- it is what
+ * every upright card in your hand can do, which is why no card is ever dead.
+ *
+ * `kind` is the resolution class (core-rules 3): redirection resolves before reduction, because it
+ * changes WHO is being hit. `use` sits in the reduction step without reducing anything, because it
+ * is the ALTERNATIVE to reducing -- one reaction per trigger is what makes that a choice.
+ *
+ * `bonus` is what the reaction adds to the item's own Defend line, and `melee` marks the one that
+ * only answers a melee Strike. Both are fields rather than cases in the resolver, so a Way card
+ * that prints a better Parry is content.
+ */
 CARDRPG.reactions = {
-  parry: { label: "CARDRPG.Reaction.Parry", kind: "reduce" },
-  block: { label: "CARDRPG.Reaction.Block", kind: "reduce" },
-  sidestep: { label: "CARDRPG.Reaction.Sidestep", kind: "other" },
-  use: { label: "CARDRPG.Reaction.Use", kind: "other" },
-  bodyguard: { label: "CARDRPG.Reaction.Bodyguard", kind: "redirect" }
+  parry: { label: "CARDRPG.Reaction.Parry", kind: "reduce", trigger: "hit", melee: true, bonus: 0 },
+  block: { label: "CARDRPG.Reaction.Block", kind: "reduce", trigger: "hit", needsTag: "shield", bonus: 1 },
+  sidestep: { label: "CARDRPG.Reaction.Sidestep", kind: "other", trigger: "arrival" },
+  use: { label: "CARDRPG.Reaction.Use", kind: "reduce", trigger: "hit" },
+  bodyguard: { label: "CARDRPG.Reaction.Bodyguard", kind: "redirect", trigger: "allyHit" }
 };
 
 /** NPC tactic keywords. `revealed` is tracked per actor, not here. */
@@ -473,5 +498,10 @@ CARDRPG.defaults = {
   // Exactly the Exhausted threshold (core-rules 8): breathing buys one turn that is not Exhausted.
   breathRecovery: 2,
   woundAt: 5,
-  reactionTimer: 20
+  /*
+   * What Brace takes off, and the floor under every reaction: any upright card in your hand stops
+   * this much (core-rules 3). A number here rather than in the resolver, because it is the one
+   * reaction with no item behind it to read a value from.
+   */
+  brace: 1
 };

@@ -15,7 +15,7 @@
  */
 
 import { CARDRPG } from "./config.mjs";
-import { drawFate, deckOf } from "./decks.mjs";
+import { drawFate, deckOf, uprightCards, discardCards, cardName } from "./decks.mjs";
 
 /* -------------------------------------------- */
 /*  Bonuses                                     */
@@ -142,18 +142,29 @@ export function advantageFor(actor, target, {
   return { mode: advantage ? 1 : disadvantage ? -1 : 0, reasons };
 }
 
+/**
+ * Everyone standing next to this actor, by Chebyshev distance on the placed tokens.
+ *
+ * Empty when nothing is placed, which is deliberate: an unplaced fight has no geometry, and a rule
+ * that needs geometry should do nothing rather than guess.
+ */
+export function neighbours(actor) {
+  const token = actor?.getActiveTokens?.()[0];
+  if (!token || !canvas?.ready) return [];
+  const size = canvas.grid.size;
+  return canvas.tokens.placeables
+    .filter(other => {
+      if (other === token || !other.actor) return false;
+      const dx = Math.abs(other.x - token.x) / size;
+      const dy = Math.abs(other.y - token.y) / size;
+      return Math.max(dx, dy) <= 1;
+    })
+    .map(t => t.actor);
+}
+
 /** Chebyshev adjacency on the placed tokens, if there are any. */
 function actorHasAdjacentEnemy(actor) {
-  const token = actor.getActiveTokens()[0];
-  if (!token || !canvas?.ready) return false;
-  const size = canvas.grid.size;
-  return canvas.tokens.placeables.some(other => {
-    if (other === token || !other.actor) return false;
-    if (other.actor.type === actor.type) return false;
-    const dx = Math.abs(other.x - token.x) / size;
-    const dy = Math.abs(other.y - token.y) / size;
-    return Math.max(dx, dy) <= 1;
-  });
+  return neighbours(actor).some(other => other.type !== actor.type);
 }
 
 /* -------------------------------------------- */
@@ -328,21 +339,35 @@ export async function resolveShake(actor, { amount = 1, target = actor, key }) {
 }
 
 /**
- * Magical ammunition within reach, for a weapon that takes any (core-rules 4).
+ * Everything within reach: equipped in a slot that is free to grab from (core-rules 4).
  *
- * Reach is the belt rule, not a new one: a belt is free to grab from, so a piece on your belt
- * rides the Strike and a piece in your pack is a Ready you have not paid. Ordinary ammunition is
- * not here because it is not tracked at all -- a quiver is kilograms and a bow simply works.
+ * Reach is the belt rule and the rules lean on it twice -- a shaft on your belt rides the Strike,
+ * and a stopper on your belt answers a hit -- so it is one function rather than the same filter
+ * written out wherever something needs grabbing.
  */
-export function reachableAmmo(actor, weapon) {
-  if (!weapon?.system?.ammo) return [];
+export function withinReach(actor) {
   return (actor?.items ?? []).filter(i =>
     i.type === "item"
-    && i.system.isAmmunition
-    && i.system.suits(weapon)
     && i.system.equipped
     && CARDRPG.slots[i.system.equippedSlot]?.freeEquip
   );
+}
+
+/** Can this slate be used at all? A value to it, or words saying what using it does. */
+export function isUsable(item) {
+  const line = item?.system?.verbs?.use;
+  return (line?.value ?? null) !== null || !!line?.text;
+}
+
+/**
+ * Magical ammunition within reach, for a weapon that takes any (core-rules 4).
+ *
+ * Ordinary ammunition is not here because it is not tracked at all -- a quiver is kilograms and a
+ * bow simply works.
+ */
+export function reachableAmmo(actor, weapon) {
+  if (!weapon?.system?.ammo) return [];
+  return withinReach(actor).filter(i => i.system.isAmmunition && i.system.suits(weapon));
 }
 
 /**
@@ -383,6 +408,194 @@ async function pullShooterTo(actor, target) {
   const away = sq => Math.max(Math.abs(sq.x - token.x), Math.abs(sq.y - token.y));
   const best = free.reduce((a, b) => (away(b) < away(a) ? b : a));
   await token.document.update({ x: best.x, y: best.y });
+}
+
+/* -------------------------------------------- */
+/*  Reactions                                   */
+/* -------------------------------------------- */
+
+/**
+ * What this actor may react with against one trigger (core-rules 3).
+ *
+ * Every option is a card and a number: the card that will be spent, and what it is worth against
+ * this hit. Legality is read rather than assumed -- Stunned takes every reaction, Plate takes the
+ * Sidestep, a Parry answers melee only, a Block wants a shield -- so none of it is a case here.
+ *
+ * **Brace is the floor under every upright card** whose printed reaction cannot fire. That is the
+ * rule's own stated purpose ("no card in your hand is dead"), and it is why a hand of three Strikes
+ * can still answer an arrow: core-rules 3 says Brace belongs to a card *without* a printed reaction, which
+ * was written to stop a Parry choosing the worse of its two options -- something the policy below
+ * does by taking the best number anyway.
+ *
+ * @returns {object[]} `{key, card, item?, reduce, heal?}`
+ */
+export function reactionsFor(actor, trigger, { melee = false } = {}) {
+  // Stunned and Unconscious take Brace too: "you can't play reactions" has no exception, which is
+  // why this is tested here and not through `blockedReactions`, which names what gear takes.
+  if (!actor || actor.system.noReactions || actor.system.exhausted) return [];
+
+  const off = actor.system.blockedReactions ?? new Set();
+  const equipped = (actor.items ?? []).filter(i =>
+    i.type === "item" && i.system.equipped && !CARDRPG.slots[i.system.equippedSlot]?.stows);
+
+  const options = [];
+  for (const card of uprightCards(actor)) {
+    const key = card.system?.reaction || "";
+    const rule = key ? CARDRPG.reactions[key] : null;
+    const live = !!rule && rule.trigger === trigger && !off.has(key) && !(rule.melee && !melee);
+    let printed = null;
+
+    if (live && (key === "parry" || key === "block")) {
+      // The item is the value: a Parry is worth your sword's Defend line, a Block your shield's
+      // and one more for being a shield (starter-cards: Reactions).
+      const item = equipped.find(i => (i.system.verbs?.defend?.value ?? 0) > 0
+        && (!rule.needsTag || i.system.tags?.has?.(rule.needsTag)));
+      if (item) printed = { key, card, item, reduce: item.system.verbs.defend.value + (rule.bonus ?? 0) };
+    } else if (live && key === "use") {
+      const belt = withinReach(actor).find(i => isUsable(i));
+      if (belt) printed = { key, card, item: belt, reduce: 0, heal: belt.system.verbs.use.value ?? 0 };
+    } else if (live) {
+      printed = { key, card, reduce: 0 };
+    }
+
+    if (printed) options.push(printed);
+    // Nothing printed fired -- wrong trigger, no shield, a drawback took it -- so the card is a
+    // Brace, and a hit is the only thing a Brace answers.
+    else if (trigger === "hit") options.push({ key: "brace", card, reduce: CARDRPG.defaults.brace });
+  }
+  return options;
+}
+
+/**
+ * Which reaction fires, now that nobody is asked (core-rules 3).
+ *
+ * Reactions resolve automatically, so this is the policy -- and the threshold is **two events the
+ * rules already name** rather than a tuned number: a reaction fires when it stops a **Wound**
+ * (core-rules 8) or stops you being **dropped**. Nothing else is worth a card.
+ *
+ * That gate is the whole difference between automation and a hand emptied by round two. Spending a
+ * card to shave one point off a scratch is legal, and five enemies landing five scratches would
+ * legally cost a whole hand; it also makes a reaction the least interesting thing in the game. The
+ * rule is "react when the hit is serious", and the rules already define serious twice.
+ *
+ * A player who disagrees has the only control that matters and it is not a setting: **turn the card
+ * sideways** and it is never offered. That is what lets this function stay greedy rather than
+ * clever -- it never has to guess whether you would rather have kept a card.
+ */
+export function chooseReaction(options, { incoming, health }) {
+  if (!options?.length || incoming <= 0) return null;
+  const wound = CARDRPG.defaults.woundAt;
+  const lethal = incoming >= health;
+
+  const scored = [];
+  for (const option of options) {
+    if (option.key === "use") {
+      /*
+       * A stopper answers the hit AFTER this one, never this one: it is drunk once the blow has
+       * landed, and a blow that drops you leaves you Unconscious and Wounded before the cork is
+       * out (core-rules 8). So the trigger is "you could not take another like that" -- which
+       * needs no threshold of its own, because the hit you just took is the measure.
+       */
+      const heal = option.heal ?? 0;
+      if (!lethal && heal > 0 && health - incoming < incoming) {
+        scored.push({ ...option, worth: heal, because: "could not take another" });
+      }
+      continue;
+    }
+    const reduce = option.reduce ?? 0;
+    const after = Math.max(0, incoming - reduce);
+    if (lethal && after < health) scored.push({ ...option, worth: reduce, because: "stops the drop" });
+    else if (incoming >= wound && after < wound) {
+      scored.push({ ...option, worth: reduce, because: "stops a Wound" });
+    }
+  }
+  if (!scored.length) return null;
+  return scored.reduce((a, b) => (b.worth > a.worth ? b : a));
+}
+
+/**
+ * Spend the card. A reaction always goes to the **discard**, never to the Spent pile: `costs` holds
+ * `primary` and `secondary` only, so a card printed Spent on a half is still only discarded when it
+ * answers a hit -- which means a reaction is the cheap way out of an expensive card, and core-rules 3 says so.
+ */
+async function spendReaction(actor, choice) {
+  await discardCards(actor, [choice.card.id]);
+  return choice;
+}
+
+/**
+ * Redirection, step one of two (core-rules 3): a Bodyguard takes a hit meant for an adjacent ally.
+ *
+ * It fires when the hit **would drop** the ally, which is the same named event the reduction policy
+ * uses and the only defensible automatic reading -- an engine that threw itself in front of every
+ * scratch would kill the bodyguard for nothing by round two. Among those who could, the first in
+ * **initiative order** takes it, which is the order core-rules 3 already gives this step.
+ */
+export async function redirectHit(attacker, target, incoming) {
+  if (incoming < (target?.system?.health?.value ?? 0)) return null;
+
+  const order = game.combat?.turns ?? [];
+  const place = who => {
+    const at = order.findIndex(t => t.actor?.id === who.id);
+    return at < 0 ? Number.MAX_SAFE_INTEGER : at;
+  };
+
+  const guards = neighbours(target)
+    .filter(who => who.id !== target.id && who.id !== attacker?.id && who.type === target.type)
+    .map(who => ({ who, options: reactionsFor(who, "allyHit") }))
+    .filter(entry => entry.options.length)
+    .sort((a, b) => place(a.who) - place(b.who));
+  if (!guards.length) return null;
+
+  const { who, options } = guards[0];
+  const choice = await spendReaction(who, options[0]);
+  return { actor: who, for: target, card: cardName(choice.card) };
+}
+
+/**
+ * Sidestep: an enemy that **ends its move** next to you hands you one (core-rules 11).
+ *
+ * It neither redirects nor reduces -- you step out of reach and the Strike that was coming finds
+ * nobody -- so it resolves at its own trigger, outside the two-step order, and it has no damage to
+ * measure itself against. The square is **random among the legal ones**: free, and out of the reach
+ * of the enemy that arrived, because a step that leaves you adjacent spends a card for nothing.
+ */
+export async function sidestep(actor, enemy) {
+  const options = reactionsFor(actor, "arrival");
+  if (!options.length) return null;
+
+  const token = actor.getActiveTokens()[0];
+  const from = enemy?.getActiveTokens?.()[0];
+  if (!token || !from || !canvas?.ready) return null;
+
+  const size = canvas.grid.size;
+  const taken = new Set(canvas.tokens.placeables
+    .filter(t => t.id !== token.id)
+    .map(t => `${t.x},${t.y}`));
+
+  const legal = [];
+  for (let dx = -1; dx <= 1; dx++) {
+    for (let dy = -1; dy <= 1; dy++) {
+      if (!dx && !dy) continue;
+      const sq = { x: token.x + dx * size, y: token.y + dy * size };
+      if (taken.has(`${sq.x},${sq.y}`)) continue;
+      const away = Math.max(Math.abs(sq.x - from.x), Math.abs(sq.y - from.y)) / size;
+      if (away <= 1) continue;              // still in its reach: the card would buy nothing
+      legal.push(sq);
+    }
+  }
+  if (!legal.length) return null;           // cornered, and the card stays in hand
+
+  const to = legal[Math.floor(Math.random() * legal.length)];
+  const choice = await spendReaction(actor, options[0]);
+  await token.document.update({ x: to.x, y: to.y });
+
+  await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<div class="cardrpg"><p><strong>${actor.name}</strong> sidesteps `
+      + `${enemy.name}, spending <em>${cardName(choice.card)}</em>. The reach is broken.</p></div>`
+  });
+  return { card: cardName(choice.card), to };
 }
 
 /**
@@ -445,23 +658,61 @@ export async function resolveAttack(actor, {
     // `ignores N armor` comes off the armour, never off Block: a crossbow bolt finds a gap in
     // plate, it does not get past a raised shield (core-rules 5 keeps the two separate).
     const pierce = (line.ignores ?? 0) + (step.ignores ?? 0) + (shot?.ignores ?? 0);
-    const armor = Math.max(0, (target.system.armor ?? 0) - pierce);
-    const block = target.system.block ?? 0;
-    const combo = when && carries(target, when.needs) ? (when.mod ?? 0) : 0;
-    const dealt = Math.max(0, fate.result + combo - armor - block);
+    const against = who => {
+      const armor = Math.max(0, (who.system.armor ?? 0) - pierce);
+      const block = who.system.block ?? 0;
+      const combo = when && carries(who, when.needs) ? (when.mod ?? 0) : 0;
+      return { armor, block, combo, incoming: Math.max(0, fate.result + combo - armor - block) };
+    };
 
-    await target.update({
-      "system.health.value": Math.max(0, target.system.health.value - dealt),
+    /*
+     * Reactions, in the two steps core-rules 3 gives, and both AFTER the draw: Parry fires on "you
+     * are hit" and Brace on "you take damage", so a Miss costs the defender nothing -- `incoming`
+     * is 0 on a Miss, which is the whole of that rule.
+     *
+     * 1. REDIRECTION changes who is being hit, so it goes first; the original target is never
+     *    asked to spend a card against a blow an ally has already taken for them.
+     */
+    const guard = missed ? null : await redirectHit(actor, target, against(target).incoming);
+    const taker = guard?.actor ?? target;
+
+    // 2. REDUCTION, to whoever is the target now. One reaction per trigger covers both steps, so a
+    //    Bodyguard that just intercepted cannot also Brace -- it has spent its card.
+    const { armor, block, combo, incoming } = against(taker);
+    const reaction = (missed || guard)
+      ? null
+      : chooseReaction(reactionsFor(taker, "hit", { melee: !ranged }), {
+        incoming, health: taker.system.health.value
+      });
+    if (reaction) await spendReaction(taker, reaction);
+
+    const dealt = Math.max(0, incoming - (reaction?.reduce ?? 0));
+
+    await taker.update({
+      "system.health.value": Math.max(0, taker.system.health.value - dealt),
       // A Defend secondary or reaction covers one attack, so it is spent whatever it stopped; a
       // primary holds until the start of the defender's next turn and is cleared there instead.
-      ...(block && !target.system.blockPersists ? { "system.block": 0 } : {})
+      ...(block && !taker.system.blockPersists ? { "system.block": 0 } : {})
     });
 
     rows.push({
-      name: target.name, armor, block, combo, dealt,
+      name: taker.name, armor, block, combo, dealt,
       opening: combo ? game.i18n.localize(CARDRPG.conditions[when.needs]?.label ?? when.needs) : null,
-      down: target.system.health.value - dealt <= 0
+      down: taker.system.health.value - dealt <= 0,
+      guard: guard ? { name: guard.actor.name, forName: target.name, card: guard.card } : null,
+      reaction: reaction
+        ? { key: reaction.key, card: cardName(reaction.card), reduce: reaction.reduce ?? 0,
+          item: reaction.item?.name ?? null, because: reaction.because }
+        : null
     });
+
+    /*
+     * A stopper is drunk once the blow has landed, which is what makes Use a real alternative to
+     * reducing rather than a second reduction: you take the hit in full and answer the next one.
+     */
+    if (reaction?.key === "use" && reaction.item) {
+      await resolveUse(taker, { item: reaction.item, target: taker });
+    }
   }
 
   /*
@@ -504,6 +755,12 @@ export async function resolveAttack(actor, {
   }
 
   return { fate, rows, bonuses, missed, nocked };
+}
+
+/** A reaction's name, including the one that is never printed on a card. */
+function reactionName(key) {
+  if (key === "brace") return game.i18n.localize("CARDRPG.Reaction.Brace");
+  return game.i18n.localize(CARDRPG.reactions[key]?.label ?? key);
 }
 
 /** The chat card. Shows the whole chain, because a hidden calculation is an unauditable one. */
@@ -551,13 +808,31 @@ async function attackCard(actor, info) {
   }
 
   for (const row of rows) {
+    /*
+     * Redirection first, because it changed who the rest of the line is about. A reaction nobody
+     * was asked about still has to be read: automatic is not the same as hidden, and a card spent
+     * out of a player's hand without a line in the log is a card they will swear they still had.
+     */
+    if (row.guard) {
+      parts.push(`<p><strong>${row.guard.name}</strong> steps in front of `
+        + `${row.guard.forName}, spending <em>${row.guard.card}</em>.</p>`);
+    }
+
     parts.push(`<p><strong>${row.name}</strong>: ${fate.result}`
       + (row.combo ? ` ${row.combo > 0 ? "+" : "&minus;"} ${Math.abs(row.combo)} (${row.opening})` : "")
       + (row.armor ? ` &minus; ${row.armor} armor` : "")
       + (row.block ? ` &minus; ${row.block} Block` : "")
+      + (row.reaction?.reduce ? ` &minus; ${row.reaction.reduce} ${reactionName(row.reaction.key)}` : "")
       + ` = <strong>${row.dealt}</strong> damage`
       + (row.dealt >= CARDRPG.defaults.woundAt ? ` &mdash; <em>a Wound</em>` : "")
       + (row.down ? ` &mdash; <strong>down</strong>` : "") + `</p>`);
+
+    if (row.reaction) {
+      parts.push(`<p class="cr-note">${reactionName(row.reaction.key)} `
+        + `&mdash; <em>${row.reaction.card}</em> spent`
+        + (row.reaction.item ? ` with ${row.reaction.item}` : "")
+        + `; ${row.reaction.because}.</p>`);
+    }
   }
 
   if (fate.reshuffled) parts.push(`<p class="cr-note">Fate deck reshuffled.</p>`);

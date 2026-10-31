@@ -46,13 +46,15 @@ A slate can still be **spent** — a secret slate is used up once you play it �
 
 - **Primary**: the strong half. Played as your main action.
 - **Secondary**: the weak half. Played as your second action.
-- **Reaction**: optional. Played on someone else's turn when triggered.
+- **Reaction**: what the card does on someone else's turn, when its trigger happens. It **fires by
+  itself** unless you have turned the card sideways (section 3, *Reactions*).
 
-Any card without a printed reaction can still be discarded as a reaction for **Brace: reduce incoming damage by 1**.
+Any card whose printed reaction cannot fire — the wrong trigger, or a drawback took it — is still a
+**Brace: reduce incoming damage by 1**.
 
 > **Brace is a floor, not an option.** One point is deliberately too little to be worth a card, so a
-> player holding any real reaction will never choose it. Its job is that **no card in your hand is
-> ever completely dead** — which is also why nothing can block it (section 10). The one time it is
+> card with any real reaction live will never fall back to it. Its job is that **no card in your hand
+> is ever completely dead** — which is also why nothing can block it (section 10). The one time it is
 > the right play is the one that matters: the hit that would otherwise kill you, by exactly one.
 > Raising it to 2 would put it in competition with Parry and Block and flatten the choice, so it
 > stays at 1.
@@ -124,11 +126,49 @@ If one side has clearly caught the other — an ambush, a sprung trap, a charge 
 
 ### Reactions
 
-- When a trigger happens (you are attacked, an enemy moves next to you, ...), you may play a card from your hand for its reaction.
-- The reaction card is **discarded**.
-- Reacting is never free: every card you react with is one more card drawn from your deck at refill, so it brings exhaustion closer.
+**Reactions resolve by themselves.** You do not get asked. When a trigger happens, the best reaction
+your hand can offer fires, the card goes to your **discard**, and play continues.
 
-**One reaction per trigger.** You may play **one** reaction against any single trigger. You can't stack Parry and Brace on the same hit, and you can't throw your whole hand at one attack.
+- The reaction card is **discarded** — never Spent, whatever the card's halves cost. A reaction is
+  the cheap way out of an expensive card.
+- Reacting is never free: every card you react with is one more card drawn from your deck at refill,
+  so it brings exhaustion closer.
+
+**There are two triggers in the game**, which is what makes an automatic reaction possible at all:
+
+| Trigger | What fires on it |
+|---|---|
+| **you are hit** | Parry, Block, Brace, Use — and *Bodyguard*, which is this trigger seen from one square over |
+| **an enemy ends its move next to you** | Sidestep |
+
+**A reaction fires when the hit is serious, and the rules already say twice what that means:** when
+it stops a **Wound** (5 or more past armour, section 8) or stops you being **dropped** to 0. Nothing
+less is worth a card. A scratch is a scratch, and a hand spent on scratches is a hand you do not have
+when the blow lands.
+
+#### Turning a card sideways
+
+**A card turned sideways is reserved: it will not react.** That is the whole of the decision a
+reaction asks of you, and you take it in advance, at leisure — not in the half-second after a goblin
+rolls.
+
+- It still **counts toward your hand size**, and it does nothing to exhaustion. A reserved card is a
+  card in hand.
+- **Both halves still play.** Sideways is about the ⚡ row and nothing else.
+- Turning a card is **free**, and legal at any time, including in the middle of someone else's turn.
+- It clears when the card **leaves your hand**. Everything you draw arrives upright.
+- You may turn your **whole hand** sideways. That is a character playing for their turns rather than
+  their skin, and it is a real strategy.
+
+> **This is where the judgment went.** An automatic reaction has to decide whether you would rather
+> have kept the card, and nothing can know that but you — you are the only one who knows you mean to
+> Catch Breath next turn, or that the *Shield Up* in your hand is for its primary. So the question is
+> asked **before** the trigger instead of after it: what the rule reads off your hand is not a guess
+> about your intentions, it is a declaration you already made. It is also why the threshold above can
+> be as blunt as it is.
+
+**One reaction per trigger.** **One** reaction fires against any single trigger. Parry and Brace never
+stack on the same hit, and a whole hand is never thrown at one attack.
 
 - There is **no limit per round**. React to every attack in the round if you can afford the cards — your hand size and the exhaustion it buys are the only limit.
 - **Several characters may each react to the same trigger.** One hit can be intercepted by a Bodyguard *and* Braced by whoever ends up taking it.
@@ -138,18 +178,30 @@ steps, because some reactions change *who* is being hit:
 
 1. **Redirection** — reactions that change the target or the path of an action, such as *Bodyguard*
    (take a hit meant for an adjacent ally). These resolve **first**, in initiative order.
-2. **Reduction** — reactions that change how much an action does, such as Parry, Block and Brace.
-   These are offered **afterwards**, to whoever is now the target.
+2. **Reduction** — reactions that answer how much an action does: Parry, Block and Brace, and
+   **Use**, which belongs to this step by trading the reduction away rather than adding to it. These
+   resolve **afterwards**, for whoever is the target now.
 
-So an ally can throw themselves in front of a blow before you decide whether to brace against it, and
-if they do, you have spent nothing.
+So an ally throws themselves in front of a blow before anything of yours is spent on it — and if they
+do, you have spent nothing.
+
+**Both steps happen after the draw**, because Parry fires on *being hit* and Brace on *taking
+damage*. A **Miss costs the defender nothing**: nothing arrived, so nothing answered it. That is the
+same shape as a piece of ammunition being gone whether the shot lands or misses — one of them is
+spent on the attempt and the other is not, and which is which follows from who the trigger belongs to.
+
+**A Bodyguard steps in when the blow would drop the ally**, which is the same measure of *serious*
+the reduction step uses. Among those who could, the first in **initiative order** takes it.
 
 **One reaction still means one.** The limit covers both steps: a Bodyguard who intercepts a hit has
-used its reaction for that trigger and can't also Brace against it. Reactions that neither redirect
-nor reduce — *Sidestep* fires on an enemy's movement, *Use* on nothing in particular — resolve at
-their own trigger and sit outside this order.
+used its reaction for that trigger and can't also Brace against it. **Sidestep** sits outside this
+order entirely — it neither redirects nor reduces, it fires on the other trigger, and there is no
+damage yet for it to be measured against.
 
-Why: the card economy is already the cost of reacting, so reactions don't need a second budget to track. Capping it per trigger is what keeps a big hit frightening — a lethal blow leaves you choosing *which* defence to spend, not stacking all of them.
+Why: the card economy is already the cost of reacting, so reactions don't need a second budget to
+track. Capping it per trigger is what keeps a big hit frightening — a lethal blow spends **one** of
+your defences, not all of them. Which one is settled by the hand you turned sideways, not by a
+question asked while everyone waits.
 
 ---
 
@@ -1427,6 +1479,18 @@ Blast is the default and the cheaper one: a Fire Wand doesn't care who it burns.
 This is the main reason to care where your party is standing, so don't make Aimed common.
 - **Blocking:** you can move through allies but not through enemies.
 
+### Sidestep
+
+**Leaving is free; arriving is answered.** An enemy that **ends its movement** next to you hands you
+a ⚡ Sidestep, and *arriving* is the load-bearing word: the square has to be new **and** the enemy has
+to have been out of reach before it. A goblin already in your face that shuffles one square has not
+arrived, and answering that would cost a card for nothing.
+
+The step is to **any free square out of that enemy's reach**. A Sidestep neither redirects nor
+reduces — what it does is break the reach, so the Strike that was coming finds nobody — which is why
+a step that leaves you adjacent would spend a card for nothing. Cornered, with no legal square, the
+card stays in your hand.
+
 ### Cover
 
 **A figure in cover is behind something, and ranged Strikes and Casts against it have
@@ -1436,18 +1500,25 @@ this is the rule it was pointing at.
 | Cover from | What it is |
 |---|---|
 | **figures** | anyone standing in the way — an ally as readily as an enemy |
-| **obstacles** | a wall, a cart, a parapet, the lip of a trench |
+| **obstacles** | a low one: a crate, a table, a cart, a parapet, the lip of a trench |
 
 It is the same disadvantage either way, and the two are distinguished for exactly one reason:
 **high ground** takes away cover from figures and leaves cover from obstacles standing (*Ground*,
 below). *Moth-wing Fletching* ([equipment.md](equipment.md) §8.3) is the one thing in the game that
 ignores both.
 
+Two limits on it:
+
+- **Melee Strikes against an adjacent target ignore cover.** You are both behind the same crate.
+- A **full** obstacle — a wall, a pillar — is not cover at all. It blocks the line, and you cannot
+  target through it.
+
 > **The GM marks cover; the grid does not compute it.** Tracing the line past every figure on the
 > board would put a disadvantage on most shots in a crowded fight — which is a defensible rule, but
 > not one that can be switched on quietly: **every win rate this project has published was measured
 > without it** ([analysis](../sim/analysis-2026-10-30.md)). So cover is **declared**, the way Prone
-> is visible, and a fight where nobody declares it plays exactly as it did before.
+> is visible, and a fight where nobody declares it plays exactly as it did before. The list above is
+> what the GM is deciding *about*; it is not an instruction to the grid.
 
 ### Ground
 
@@ -1491,16 +1562,6 @@ does not choose the path and the **moved** does not spend Move.
 
 *Undertow* (way-cards §3.5) is the first miracle that does this, and it was written before the rule
 was.
-
-### Cover
-
-The target has **cover** if the line from your square to its square passes through:
-- a square with a low obstacle (crate, table, low wall), **or**
-- a square with another figure (ally or enemy).
-
-Attacks against a target in cover have **disadvantage**. Melee Strikes against an adjacent target ignore cover.
-
-Full obstacles (walls, pillars) block line of sight completely: you can't target through them at all.
 
 ### Ranged in melee
 

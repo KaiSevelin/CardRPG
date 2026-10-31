@@ -55,7 +55,8 @@ the reason first written ([analysis §§11–13](../sim/analysis-2026-10-30.md))
 - **The Heavy Armor drawback is free, which is a fault.** Plate wins 100.0% with the ⚡ Sidestep block
   and 100.0% without it, because at armor 4 nothing can hurt you and so you never needed to dodge.
   **A drawback that bites only when the item is weak is not a price** — it costs Brigandine something
-  and Plate nothing, which is backwards. `[OPEN]` below.
+  and Plate nothing, which is backwards. `[OPEN]` below. (It is at least *charged* now: the engine
+  reads it off a field rather than off the sentence on the card.)
 - **The weight is the whole cost, and it is the largest number on this page.** Plate alone is free
   (100.0%); Plate and 18 kg of loot is **31.4%**, and the control proves it is the kilograms rather
   than the coat — Mail burdened to the same 43 kg collapses further still, to **7.2%**. Burdened
@@ -1040,6 +1041,21 @@ part: the target gets one clean turn, so a poisoner who uses it is betting on th
   Neglect was not the reason; the field was. And items had no `grants`, so a ring meant to give a
   spell slot gave nothing at all, silently, which is the failure mode a data model has: it **drops**
   a key it does not know rather than refusing it.
+- **Settled: reactions resolve by themselves, and the only decision left is a card turned sideways.**
+  Nothing in the engine had ever played a reaction — the vocabulary existed, the ⚡ row rendered, and
+  `reactionTimer` was a registered setting with no reader — so all five reactions were words on a
+  card. They fire now, on the two triggers the rules turn out to have
+  ([core-rules](core-rules.md) §3), and the judgment a prompt would have asked for is taken in
+  advance instead: **a card turned sideways will not react**. That is what lets the policy be blunt
+  enough to write down — it fires when the hit would **Wound** you or **drop** you, and nothing less
+  is worth a card.
+
+  **⚡ Use had no trigger at all** ("any time on another's turn" is not an event), so it was given
+  Brace's: *you take damage*, and it uses a belt item **instead of** reducing. And **Heavy Armor's
+  drawback is a field** at last — `blocksReactions` on Brigandine and Plate — which closes the half
+  of that `[OPEN]` that was simply unimplemented. The simulator has charged Plate for it since 30
+  October; the game handed it back for free.
+
 - **Settled: how different ammunition works, which took two fields and a definition.** Ordinary
   ammunition is not tracked and magical ammunition is (core-rules §4) — the rule was written and
   **none of it was in the game**: `consumed` is read in one place, `resolveUse`, and a piece of
@@ -1066,6 +1082,17 @@ part: the target gets one clean turn, so a poisoner who uses it is betting on th
   `text` of all five reload weapons and nothing in the engine enforces it — the same gap
   `ignores N armor` and the *For* column each had, now the only one left on a firearm's card. It is
   measured (analysis §14) and it is the thing that makes a crossbow a different weapon from a bow.
+- **[OPEN]** **The engine's reaction policy and the simulator's are different policies.** The sim
+  spends a card when it saves 2 or more, or the hit is lethal, or it is down to 3 — a reserve rule
+  plus three tuned constants, which stood in for a player's judgment. The engine fires on the two
+  events the rules name (a Wound, a drop) and leaves the judgment to the sideways card, which the sim
+  does not model at all. Both are defensible; they are **not the same game**, and every reaction
+  figure published so far describes the sim's. Closing it means teaching the sim to reserve cards and
+  re-running §10 — until then the engine's reaction numbers are unmeasured.
+- **[OPEN]** **Nothing in the game prints ⚡ Bodyguard.** It is in the config, the resolver fires it,
+  initiative order picks who takes the blow — and the starter deck is Parry, Block, Sidestep and Use,
+  so the only Bodyguard in existence is an NPC *tactic*. The rule is implemented against no content,
+  which means it is also untested at a table; the first Way tree that prints one is its first test.
 - **[OPEN]** **A mount.** The Lance needs one, the Culverin implies draught animals, and
   [conditions.md](conditions.md) §4.2 settled only that a mount is *not* a condition. Its Move,
   Health, turn and the rules for being unhorsed are all unwritten.
@@ -1075,14 +1102,18 @@ part: the target gets one clean turn, so a poisoner who uses it is betting on th
   `[OPEN]` [leveling.md](leveling.md) §4 already carries for prohibitions in general: *"you may not
   wear armour" needs the HUD or the rules to stop it, or it is a text obligation after all.* A cursed
   item is the first case where that gap is visible at the table.
-- **[OPEN]** **Heavy Armor's drawback is free.** Plate wins 100.0% with the Sidestep block and
-  100.0% without it, because at armor 4 nothing can hurt you and so the dodge was never needed. It
-  therefore costs **Brigandine** something and **Plate** nothing, which is backwards for a price
-  that is supposed to rise with the rung. Candidates: move the drawback onto something armour cannot
-  substitute for (a Move penalty, which Burdened already shows is enormous), or accept it as
-  flavour and stop calling it a cost.
-- **[OPEN]** **`Heavy` does two unrelated jobs** — the weight class that blocks Sidestep, and the
-  gate on ✊ Strong's +1. That is why a longbow collects a melee feature's bonus and a crossbow,
+- **[OPEN]** **Heavy Armor's drawback is enforced now, and still free.** It is a field rather than a
+  sentence — `blocksReactions: ["sidestep"]` on Brigandine and Plate — so the engine takes the
+  reaction away. That was the implementation half. The *pricing* half is untouched: Plate wins 100.0%
+  with the Sidestep block and 100.0% without it, because at armor 4 nothing can hurt you and the
+  dodge was never needed, so the drawback costs **Brigandine** something and **Plate** nothing, which
+  is backwards for a price meant to rise with the rung. Candidates unchanged: move it onto something
+  armour cannot substitute for (a Move penalty, which Burdened already shows is enormous), or accept
+  it as flavour and stop calling it a cost.
+- **[OPEN]** **`Heavy` does three unrelated jobs now** — the weight class that blocks Sidestep, the
+  gate on ✊ Strong's +1, and, since the Sidestep ban became a field, a word that does **not** mean
+  Heavy Armor: a heavy **helm** is heavy armour and is not Heavy Armor, so the field had to be set by
+  hand on exactly the two body pieces rather than derived from the tag. That is why a longbow collects a melee feature's bonus and a crossbow,
   which a weak person can actually use, collects nothing (§3). Two tags would fix it; whether that
   is worth a tag is the question.
 - **[OPEN]** **Overloaded charges nothing.** Being Burdened costs up to **81.7 points** of win rate;

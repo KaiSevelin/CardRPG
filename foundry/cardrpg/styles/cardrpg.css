@@ -95,6 +95,20 @@
   font-size: 0.7rem;
 }
 
+/*
+ * A card turned sideways is reserved: it will not react (core-rules 3). Rotated inside its own slot
+ * rather than taking a slot of its own, so the hand stays aligned and the shape reads across the
+ * table at a glance -- which is the point of using the physical gesture instead of a checkbox.
+ */
+.cardrpg .cr-card--reserved {
+  transform: rotate(90deg) scale(var(--cardrpg-card-ratio));
+  opacity: 0.85;
+}
+
+.cardrpg .cr-card--reserved .cr-half--reaction {
+  background: var(--cardrpg-rule);
+}
+
 /* Blocked halves are greyed in place, never hidden, so the player learns why. */
 .cardrpg .cr-half--blocked {
   color: var(--cardrpg-blocked);

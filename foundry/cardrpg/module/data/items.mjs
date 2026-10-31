@@ -182,6 +182,22 @@ export class ItemSlateData extends SlateData {
 
       tags: new fields.SetField(new fields.StringField({ choices: CARDRPG.itemTags })),
 
+      /*
+       * Reactions this slate takes away while it is worn (core-rules 3).
+       *
+       * Heavy Armor's whole drawback was the sentence "Blocks Sidestep reactions." on Brigandine
+       * and Plate, and prose is not a rule: nothing in the engine could read it, so the simulator
+       * charged Plate for it (combat_sim.py, `heavy_armor`) and the game handed it back for free.
+       * That is the same gap `ignores N armor` and the ammunition `For` column each had.
+       *
+       * A SET of named reactions rather than a boolean, because a condition takes them ALL
+       * (Stunned) and a worn thing takes the ones it names -- two different sentences that must not
+       * share one field. Deliberately NOT an item tag: `heavy` already does two unrelated jobs.
+       */
+      blocksReactions: new fields.SetField(
+        new fields.StringField({ choices: Object.keys(CARDRPG.reactions) })
+      ),
+
       /**
        * Whole kilograms; anything under a kilo is 0 unless bundled (core-rules 4).
        * Weight is NOT the heavy/light tags: weight is what a thing costs to haul, the tags are how

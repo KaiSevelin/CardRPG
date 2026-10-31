@@ -44,8 +44,14 @@ Warrior has nothing that expensive; the first ones belong in a caster deck.
 | **Parry** | You are hit by a melee Strike | Block = your equipped item's *Defend* value |
 | **Block** | You are hit by any attack | Block = your shield's *Defend* value +1 |
 | **Sidestep** | An enemy ends movement next to you | Move 1 |
-| **Use** | Any time on another's turn | Use a belt item |
-| **Brace** (any card) | You take damage | Reduce damage by 1 |
+| **Use** | You take damage | Use a belt item **instead of** reducing the damage |
+| **Brace** (any card whose own reaction can't fire) | You take damage | Reduce damage by 1 |
+
+> **Use had no trigger until it was given this one.** "Any time on another's turn" is not an event,
+> which made it the one reaction nothing could ever fire on — and *instead of reducing* needed no new
+> rule, because one reaction per trigger already said you cannot do both. What it answers is the hit
+> **after** this one: a stopper is drunk once the blow has landed, so it is never the answer to a blow
+> that drops you.
 
 ---
 
