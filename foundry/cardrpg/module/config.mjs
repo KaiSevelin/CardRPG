@@ -453,7 +453,15 @@ CARDRPG.reactionTriggers = {
 CARDRPG.reactions = {
   parry: { label: "CARDRPG.Reaction.Parry", kind: "reduce", trigger: "hit", melee: true, bonus: 0 },
   block: { label: "CARDRPG.Reaction.Block", kind: "reduce", trigger: "hit", needsTag: "shield", bonus: 1 },
-  sidestep: { label: "CARDRPG.Reaction.Sidestep", kind: "other", trigger: "arrival" },
+  sidestep: { label: "CARDRPG.Reaction.Sidestep", kind: "other", trigger: "arrival", valued: true },
+  /*
+   * The only reaction that answers by dealing damage, and the only one with a weapon requirement:
+   * `needsReach` 2, because a free Strike at every arrival for anyone holding a knife is a large
+   * amount of power (a card with Strike on its secondary shortens a fight by a whole round), while
+   * the same thing on a shaft is what the four reach weapons in the catalogue were missing. It is
+   * written on *Set Spear* (way-cards 3.2) and it reaches over the man in front of you.
+   */
+  counter: { label: "CARDRPG.Reaction.Counter", kind: "other", trigger: "arrival", needsReach: 2 },
   use: { label: "CARDRPG.Reaction.Use", kind: "reduce", trigger: "hit" },
   bodyguard: { label: "CARDRPG.Reaction.Bodyguard", kind: "redirect", trigger: "allyHit" }
 };

@@ -613,6 +613,27 @@ for (const extra of ["active", "drained", "drainedFor", "group", "text", "descri
 }
 check("ItemSlateData fields read from source", itemFields.size >= 18, true);
 
+/*
+ * The same sweep one level down, for the verb line. It is a SchemaField, so the sweep above sees
+ * only `verbs` and never what is inside it -- and a content line naming a field the schema does not
+ * have is dropped in silence, which is how `reach` could have been written and never stored.
+ */
+const verbStart = itemSource.indexOf("const verbLine = () =>");
+const verbFields = new Set([...itemSource
+  .slice(verbStart, itemSource.indexOf("    return {", verbStart))
+  .matchAll(/^      ([a-zA-Z]+): /gm)].map(m => m[1]));
+check("verb line fields read from source", [...verbFields].sort().join(", "),
+  "area, areaKind, ignores, range, reach, reachMin, text, value");
+
+const strayVerbKeys = new Set();
+for (const item of [...content.ITEMS, ...content.NPC_GEAR]) {
+  for (const line of Object.values(item.verbs ?? {})) {
+    for (const key of Object.keys(line ?? {})) if (!verbFields.has(key)) strayVerbKeys.add(key);
+  }
+}
+check("verb line keys not in the schema",
+  strayVerbKeys.size ? [...strayVerbKeys].join(", ") : "none", "none");
+
 const strayItemKeys = new Set();
 for (const item of [...content.ITEMS, ...content.NPC_GEAR]) {
   for (const key of Object.keys(item)) if (!itemFields.has(key)) strayItemKeys.add(key);
@@ -1261,7 +1282,7 @@ const reactionLines = [...reactionBlock
   .matchAll(/^  ([a-zA-Z]+): \{([^}]*)\}/gm)]
   .map(m => ({ key: m[1], body: m[2] }));
 check("reactions declared", reactionLines.map(r => r.key).join(", "),
-  "parry, block, sidestep, use, bodyguard");
+  "parry, block, sidestep, counter, use, bodyguard");
 
 /* Every reaction must name a trigger that exists, or it is a reaction nothing can ever fire. */
 const triggerOf = r => /trigger: "([a-zA-Z]+)"/.exec(r.body)?.[1] ?? "";
@@ -1282,7 +1303,15 @@ check("reactions that fire on a hit",
   reactionLines.filter(r => triggerOf(r) === "hit").map(r => r.key).join(", "),
   "parry, block, use");
 check("reactions that fire on an arrival",
-  reactionLines.filter(r => triggerOf(r) === "arrival").map(r => r.key).join(", "), "sidestep");
+  reactionLines.filter(r => triggerOf(r) === "arrival").map(r => r.key).join(", "),
+  "sidestep, counter");
+/*
+ * The arrival trigger has two answers and a reaction is one, so the engine needs an order -- and it
+ * is the one core-rules 11 gives: the step denies the attack, the counter does not.
+ */
+check("the step is tried before the counter",
+  /const step = options\.find\(o => o\.key === "sidestep"\)[\s\S]*?const set = options\.find\(o => o\.key === "counter"\)/
+    .test(resolveSource) ? "yes" : "no", "yes");
 
 /* Brace is universal, so it must NOT be a printed reaction -- and it still needs a number. */
 check("Brace is not a printed reaction",
@@ -1303,8 +1332,11 @@ check("reaction timer retired from the HUD spec",
 
 /* The cards that carry one, against the config. */
 const reactionKeys = reactionLines.map(r => r.key);
-const printed = content.WARRIOR_DECK.filter(c => c.reaction);
-check("starter cards with a printed reaction", printed.length, 4);
+const carried = [...content.WARRIOR_DECK, ...content.WAY_CARDS];
+const printed = carried.filter(c => c.reaction);
+check("starter cards with a printed reaction",
+  content.WARRIOR_DECK.filter(c => c.reaction).length, 4);
+check("cards with a printed reaction", printed.length, 6);
 const strayPrinted = printed.filter(c => !reactionKeys.includes(c.reaction))
   .map(c => `${c.name}: ${c.reaction}`);
 check("cards printing a reaction that does not exist",
@@ -1455,7 +1487,8 @@ check("the card that reacted is named",
  * Sidestep's trigger is the one that is not a hit, so it needs a hook of its own -- and without one
  * the reaction goes back to being the word on a card it was before 30 October.
  */
-check("an arrival fires it", /await sidestep\(who, mover\)/.test(entry) ? "yes" : "no", "yes");
+check("an arrival fires it",
+  /await answerArrival\(who, mover\)/.test(entry) ? "yes" : "no", "yes");
 check("arriving means a new square out of reach",
   /!reach\(placed, now\) \|\| reach\(placed, from\)/.test(entry) ? "yes" : "no", "yes");
 const stepBody = resolveSource.slice(resolveSource.indexOf("export async function sidestep"),
@@ -1489,6 +1522,147 @@ check("core-rules defines cover exactly once",
   (coreRules.match(/^### Cover$/gm) ?? []).length, 1);
 check("core-rules defines the Sidestep square",
   /^### Sidestep$/m.test(coreRules) ? "yes" : "no", "yes");
+
+
+/* -------------------------------------------- */
+
+/*
+ * The counter and the number: the only two reactions in way-cards 3 that the five keys could not
+ * express. Both are carried as content (WAY_CARDS) rather than left as rules against nothing,
+ * which is the state Bodyguard is still in.
+ */
+
+section("reactions: the counter, and the one that counts");
+
+check("way cards carried", content.WAY_CARDS.map(c => c.name).join(", "),
+  "Set Spear, Roll With It");
+/*
+ * And the reason they are the two: every OTHER reaction in that document's card pools is one of the
+ * five keys. Parsed out of the ⚡ column, which is the fifth cell of each card row.
+ */
+const wayDoc = fs.readFileSync(path.join(root, "../../rules/way-cards.md"), "utf8");
+/*
+ * Only the card pools: a table whose header names the four columns a card has. Matching every wide
+ * row instead caught the dispel table too, which has five columns of something else entirely.
+ */
+const poolRows = [];
+for (const block of wayDoc.split(/\n\s*\n/)) {
+  if (!/^\| Card \| .* \| Cost \|/m.test(block)) continue;
+  for (const line of block.split("\n")) {
+    if (!/^\| \*\*/.test(line)) continue;
+    const cells = line.split("|");
+    if (cells.length < 7) continue;
+    poolRows.push({ name: cells[1].trim().replace(/\*/g, ""), cell: cells[4].trim() });
+  }
+}
+const column = poolRows.filter(e => e.cell && e.cell !== "-" && e.cell !== "\u2013");
+const bare = column.filter(e => reactionKeys.includes(e.cell.toLowerCase()) || e.cell === "Brace");
+check("reaction cells in the card pools", column.length, 14);
+check("cells that are a bare key", bare.length, 12);
+const needKeys = column.filter(e => !bare.includes(e)).map(e => e.name);
+check("cells no key could express", needKeys.join(", "), "Set Spear, Roll With It");
+/* Which must be exactly the cards the engine carries, or the selection rule is a story. */
+check("the carried cards are those cells",
+  content.WAY_CARDS.map(c => c.name).sort().join(", ") === needKeys.slice().sort().join(", ")
+    ? "yes" : "no", "yes");
+
+/* The counter's requirement, and that the catalogue can actually meet it. */
+const counterRule = reactionLines.find(r => r.key === "counter");
+check("the counter needs reach", /needsReach: 2/.test(counterRule.body) ? "yes" : "no", "yes");
+const reaching = slates.filter(i => (i.verbs?.strike?.reach ?? 1) >= 2);
+check("weapons with reach", reaching.map(i => i.name).join(", "), "Halberd, Pike, Trident");
+/*
+ * Both ends of the band. The enemy arrives ADJACENT, which is the one square a Pike cannot hit --
+ * "useless adjacent" was prose on its own card and is `reachMin` now, so the rule and the card
+ * agree without anyone remembering to make them.
+ */
+const canCounter = reaching.filter(i => (i.verbs.strike.reachMin ?? 1) <= 1).map(i => i.name);
+check("weapons that can counter", canCounter.join(", "), "Halberd, Trident");
+check("weapons too long to counter",
+  reaching.filter(i => (i.verbs.strike.reachMin ?? 1) > 1).map(i => i.name).join(", "), "Pike");
+check("the resolver reads both ends",
+  /\(strike\.reach \?\? 1\) >= \(rule\.needsReach \?\? 1\) && \(strike\.reachMin \?\? 1\) <= 1/
+    .test(resolveSource) ? "yes" : "no", "yes");
+
+/*
+ * And the split itself: `range` meant "thrown this far" on a dagger and "reaches this far" on a
+ * halberd, told apart only by the verb's own `text`. The reach weapons are out of that now, so the
+ * three rules reading `range > 1` as "ranged attack" no longer mis-fire on them -- a halberd was
+ * taking the ranged-in-melee disadvantage for being long. What is left is genuinely thrown.
+ */
+const reachDrift = slates.filter(i =>
+  /reach \d/.test(i.verbs?.strike?.text ?? "") !== ((i.verbs?.strike?.reach ?? 1) >= 2))
+  .map(i => i.name);
+check("weapons whose reach text and field disagree",
+  reachDrift.length ? reachDrift.join(", ") : "none", "none");
+const stillConflated = slates
+  .filter(i => (i.verbs?.strike?.range ?? 0) > 1 && i.tags?.includes("melee")).map(i => i.name);
+check("melee weapons still carrying a range", stillConflated.join(", "),
+  "Dagger, Spear, Balanced Dagger");
+check("the conflation that is left is recorded as open",
+  /\[OPEN\]\*\* \*\*A thrown weapon has two modes/.test(equipDoc) ? "yes" : "no", "yes");
+/* And the catalogue table against the fields, the same test the `For` column and `ignores` get. */
+const tableReach = [...equipDoc.matchAll(/^\| \*\*([^*]+)\*\* \|.*\*\*reach (\d)\*\*/gm)]
+  .map(m => ({ name: m[1], reach: Number(m[2]) }));
+check("weapons the catalogue says have reach",
+  tableReach.map(e => `${e.name} ${e.reach}`).join(", "), "Halberd 2, Pike 3, Trident 2");
+const tableDrift = tableReach
+  .filter(e => (slates.find(i => i.name === e.name)?.verbs?.strike?.reach ?? 0) !== e.reach)
+  .map(e => e.name);
+check("weapons whose table reach and field disagree",
+  tableDrift.length ? tableDrift.join(", ") : "none", "none");
+check("core-rules says which reach weapons can counter",
+  /a \*\*Halberd\*\* or a \*\*Trident\*\* counters and a \*\*Pike\*\*\s+does not/.test(coreRules)
+    ? "yes" : "no", "yes");
+
+/*
+ * Flat, and no fate. This is the invariant that lets the automatic threshold be written down: a
+ * threshold means nothing against a number nobody has drawn. It also cost a way-card its tactic.
+ */
+const counterBody = resolveSource.slice(resolveSource.indexOf("export async function counter("),
+  resolveSource.indexOf("export async function answerArrival"));
+check("the counter draws no fate",
+  /drawFate/.test(counterBody) ? "it draws" : "flat", "flat");
+check("no reaction draws fate",
+  /drawFate/.test(resolveSource.slice(resolveSource.indexOf("/*  Reactions"),
+    resolveSource.indexOf("export async function resolveAttack"))) ? "one draws" : "none", "none");
+check("core-rules states it",
+  /\*\*A reaction never draws fate\.\*\*/.test(coreRules) ? "yes" : "no", "yes");
+check("core-rules says a reaction's damage is not a trigger",
+  /\*\*A reaction's damage is not itself a trigger\.\*\*/.test(coreRules) ? "yes" : "no", "yes");
+/* And the engine keeps that promise: the counter must not consult reactionsFor on its victim. */
+check("nothing answers a counter",
+  /reactionsFor/.test(counterBody) ? "it asks" : "nothing", "nothing");
+
+/* The tactic that was written against the other model. */
+check("the tactic no longer promises a reaction draw",
+  /advantage\*\* on reactions/.test(wayDoc) ? "still there" : "rewritten", "rewritten");
+check("and the rewrite is recorded",
+  /written against a model the game does not use/.test(wayDoc) ? "yes" : "no", "yes");
+
+/* The number, and the one reaction allowed to carry it. */
+check("the schema carries a reaction param",
+  /reactionParam: new fields\.NumberField/.test(cardsSource) ? "yes" : "no", "yes");
+const valued = reactionLines.filter(r => /valued: true/.test(r.body)).map(r => r.key);
+check("reactions that take a number", valued.join(", "), "sidestep");
+const strayParam = carried
+  .filter(c => c.reactionParam !== undefined && !valued.includes(c.reaction))
+  .map(c => `${c.name}: ${c.reaction}`);
+check("cards numbering a reaction that takes none",
+  strayParam.length ? strayParam.join(", ") : "none", "none");
+check("the step reads the number",
+  /const span = Math\.max\(1, option\.param \?\? 1\)/.test(resolveSource) ? "yes" : "no", "yes");
+/* A card's prose against its field, the same test every other pair in this file gets. */
+const saidStep = carried.filter(c => /^Sidestep (\d+)/.exec(c.text ?? ""));
+const stepDrift = saidStep
+  .filter(c => Number(/^Sidestep (\d+)/.exec(c.text)[1]) !== c.reactionParam)
+  .map(c => c.name);
+check("cards whose step text and field disagree",
+  stepDrift.length ? stepDrift.join(", ") : "none", "none");
+check("core-rules allows a longer step",
+  /\*\*One square, unless the card prints a number\.\*\*/.test(coreRules) ? "yes" : "no", "yes");
+check("the redundant clause is recorded as open",
+  /Roll With It's second clause is already the rule/.test(wayDoc) ? "yes" : "no", "yes");
 
 /* -------------------------------------------- */
 

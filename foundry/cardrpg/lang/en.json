@@ -100,6 +100,7 @@
   "CARDRPG.Reaction.Sidestep": "Sidestep",
   "CARDRPG.Reaction.Use": "Use",
   "CARDRPG.Reaction.Bodyguard": "Bodyguard",
+  "CARDRPG.Reaction.Counter": "Counter",
   "CARDRPG.Reaction.Brace": "Brace",
   "CARDRPG.Trigger.Hit": "you are hit",
   "CARDRPG.Trigger.AllyHit": "an ally within reach is hit",

@@ -430,6 +430,8 @@ export class CardConfigSheet extends HandlebarsApplicationMixin(
       else if (s.param !== null && s.param !== undefined) num = String(s.param);
       const bits = [];
       if (s.range) bits.push(`range ${s.range}`);
+      // Reach is not range (items.mjs): a polearm is long, not ranged, and the face has to say which.
+      if (s.reach) bits.push(`reach ${s.reach}${s.reachMin > 1 ? ` from ${s.reachMin}` : ""}`);
       if (s.area) bits.push(`${s.areaKind || "blast"} ${s.area}`);
       if (s.text) bits.push(s.text);
       return { icon, num, text: bits.join(", ") };

@@ -166,6 +166,18 @@ export class ActionCardData extends foundry.abstract.TypeDataModel {
         required: false, blank: true, initial: "",
         choices: [...Object.keys(CARDRPG.reactions), ""]
       }),
+      /*
+       * How much, for a reaction that takes a number. Only `sidestep` does -- it is `valued` in
+       * config, the same way a condition that carries an intensity is -- and *Roll With It*
+       * (way-cards 3.3) is the one card in the document that needs it: `Sidestep 2`.
+       *
+       * A second field beside the key rather than a schema around both, which is the house idiom:
+       * a condition and its intensity live beside each other too, and the validator is what holds
+       * them together -- here, by refusing a number on a reaction that does not take one.
+       */
+      reactionParam: new fields.NumberField({
+        integer: true, min: 1, nullable: true, initial: null
+      }),
       // Reserved: which Way's list this belongs to. Waits on the Way trees.
       way: new fields.StringField({ required: false, blank: true, initial: "" }),
       tree: new fields.StringField({ required: false, blank: true, initial: "" })

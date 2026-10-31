@@ -237,7 +237,8 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       weight: i.system.weight,
       lines: Object.entries(i.system.verbs ?? {})
         .filter(([, l]) => l.value !== null)
-        .map(([v, l]) => `${v} ${l.value}${l.range ? `/r${l.range}` : ""}`)
+        .map(([v, l]) => `${v} ${l.value}`
+          + (l.range ? `/r${l.range}` : "") + (l.reach ? `/reach ${l.reach}` : ""))
         .join(" · ") || (i.system.armor ? `armor ${i.system.armor}` : "")
     });
 
@@ -474,6 +475,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       blurb: i.system.blurb,
       lines: verbs
         .map(([v, l]) => `${v} ${l.value ?? ""}${l.range ? ` \u00b7 range ${l.range}` : ""}`
+          + `${l.reach ? ` \u00b7 reach ${l.reach}${l.reachMin > 1 ? ` from ${l.reachMin}` : ""}` : ""}`
           + `${l.area ? ` \u00b7 ${l.areaKind || "blast"} ${l.area}` : ""}`)
         .concat(i.system.armor ? [`armor ${i.system.armor}`] : []),
       // Which verbs this item is actually serving, so two weapons are never ambiguous. A verb is

@@ -539,6 +539,13 @@ And positioning is where it matters most: mobility is worth **29.5 points of win
 where it counts (§11), which makes *where you stand* the strongest decision a player makes and the one
 with almost nothing written about it.
 
+> **One of these was written against a model the game does not use.** *The Crowd Wants Blood* read
+> *"you draw fate with advantage on reactions"* until reactions were implemented — and **no reaction
+> draws fate** (core-rules §3): a Parry is the item's Defend value, a Brace is 1, flat. That
+> invariant is what makes an automatic reaction's threshold statable, so the tactic was rewritten
+> rather than the rule. It now hooks that threshold instead, which is a better fit for the node
+> anyway: a Gladiator answers everything, and pays for it in cards.
+
 #### The three rules that stop 48 of these being power creep
 
 **1. One tactic per character — the deepest title you own.** An Assassin does not also fight like a
@@ -572,7 +579,7 @@ a tactic, it is a house rule with a name on it ([leveling.md](leveling.md) §5a.
 | **Knight** | **The Charge** | If you moved 3 or more squares in a straight line this turn, your Strike **cannot be answered by a reaction**. |
 | **Berserker** | **Forward Only** | You may never move away from the nearest enemy — and while two or more enemies are adjacent to you, you cannot be **Dazed** or **Compelled**. |
 | **Musketeer** | **The Firing Step** | You may not Strike an adjacent enemy at all — and your ranged attacks **never** take the ranged-in-melee penalty. |
-| **Gladiator** | **The Crowd Wants Blood** | While you are the nearest target to the enemy, you draw fate with **advantage** on reactions. |
+| **Gladiator** | **The Crowd Wants Blood** | While you are the nearest target to the enemy, your reactions fire **even when the hit is not serious** (core-rules §3). |
 | **Street Fighter** | **The Alley** | While both your hands are empty, an enemy adjacent to you may not Move away except by forced movement. |
 | **Bodyguard** | **Never Leave Them** | When an ally moves, you may **Move 1** as a reaction to follow — and figures never block that move. |
 
@@ -751,6 +758,13 @@ assertion.
 | **Sleight** | 🧪 Use a belt item, then ⚔ Strike | ⇄ Ready | Use | – |
 | **Vanish** | **Invisible (1)** on yourself | 👣 Move 2 | – | ⤵ **Strain 1** |
 | **Smoke and Go** | **Invisible (1)**, then 👣 Move 2 | 🧪 Use | – | 🔥 **Spent** |
+
+**Roll With It's second clause is already the rule, which makes it the card's one open question.**
+Base Sidestep steps to any free square out of the *arriving* enemy's reach — ending next to a
+different one is legal — so *"and you may end next to a different enemy"* grants nothing. Either base
+Sidestep should be stricter (out of reach of **every** enemy, which would make it fail in exactly the
+crowded fights it is for, and which is not what §10's **+3.6** measured), or the clause comes off the
+card and *Sidestep 2* is the whole of it. Left open rather than silently resolved.
 
 **Call the Shot is the best setter in the game, and it should be**, because it is the only one that
 works **at any range**. Strength shoves what it can reach and Faith names what it can see, but a

@@ -260,7 +260,7 @@ export const ITEMS = [
     name: "Halberd", slot: "hands", hands: 2, tags: ["heavy", "melee"],
     weight: 3, value: 35, kind: "Weapon",
     blurb: "Axe, spike and hook on a six-foot shaft. Reaches over the man in front of you.",
-    verbs: { strike: verb(4, { range: 2, text: "reach 2" }) }
+    verbs: { strike: verb(4, { reach: 2, text: "reach 2" }) }
   },
   {
     name: "Pike", slot: "hands", hands: 2, tags: ["heavy", "melee"],
@@ -268,7 +268,7 @@ export const ITEMS = [
     // Useless adjacent is the price of reach 3: a pikeman wants somebody in front of them, which
     // is the whole of a formation.
     blurb: "Eighteen feet. Magnificent in a line and worthless on your own.",
-    verbs: { strike: verb(3, { range: 3, text: "reach 3; useless adjacent" }) }
+    verbs: { strike: verb(3, { reach: 3, reachMin: 2, text: "reach 3; useless adjacent" }) }
   },
   {
     name: "Lance", slot: "hands", hands: 1, tags: ["heavy", "melee"],
@@ -280,7 +280,7 @@ export const ITEMS = [
     name: "Trident", slot: "hands", fits: ["back"], hands: 1, tags: ["melee"],
     weight: 2, value: 18, kind: "Weapon",
     blurb: "Arena work. The crowd likes the shape of it.",
-    verbs: { strike: verb(3, { range: 2, text: "reach 2" }) }
+    verbs: { strike: verb(3, { reach: 2, text: "reach 2" }) }
   },
   {
     name: "Net", slot: "hands", fits: ["belt"], hands: 1, tags: ["light", "thrown"],
@@ -1186,6 +1186,37 @@ export const ITEMS = [
     weight: 0, value: 250, kind: "Poison", consumed: true,
     blurb: "Illegal in every district, which is how you know the price is right.",
     text: "Apply with a Ready. Next Strike that hits: Poisoned 3 (2), resist Might 9."
+  }
+];
+
+/* -------------------------------------------- */
+/*  Way cards                                   */
+/* -------------------------------------------- */
+
+/**
+ * Way-card content, which is otherwise unwritten: way-cards 3 is 62 cards waiting on the Way graphs
+ * and "nothing here is simulated".
+ *
+ * These two are here for one reason, and it is a rule rather than a preference: **they are the only
+ * cards in that document whose reaction no existing key could express.** Every other reaction in
+ * the pools is Parry, Block, Sidestep, Use or Brace -- twelve of fourteen -- so the five keys were
+ * the right five, and these two are what was missing. Carrying them means neither new mechanic
+ * ships against no content, which is the state ⚡ Bodyguard is still in (equipment.md 12).
+ */
+export const WAY_CARDS = [
+  {
+    // Way of Strength 3.2. The card that gives the four reach weapons something to do.
+    name: "Set Spear", copies: 1, way: "strength", reaction: "counter",
+    primary: [{ verb: "defend" }],
+    secondary: [{ verb: "move", param: 1 }],
+    text: "an enemy ending its move adjacent takes your Strike"
+  },
+  {
+    // Way of Shade 3.3, and the only card in the document that needs a number on its ⚡ row.
+    name: "Roll With It", copies: 1, way: "shade", reaction: "sidestep", reactionParam: 2,
+    primary: [{ verb: "move", param: 3 }],
+    secondary: [{ verb: "move", param: 2 }],
+    text: "Sidestep 2, and you may end next to a different enemy"
   }
 ];
 

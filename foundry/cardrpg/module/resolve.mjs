@@ -454,8 +454,22 @@ export function reactionsFor(actor, trigger, { melee = false } = {}) {
     } else if (live && key === "use") {
       const belt = withinReach(actor).find(i => isUsable(i));
       if (belt) printed = { key, card, item: belt, reduce: 0, heal: belt.system.verbs.use.value ?? 0 };
+    } else if (live && key === "counter") {
+      /*
+       * A reach weapon, answering with its own Strike line -- the only reaction that deals damage.
+       * Both ends of the band matter: long enough to be a reach weapon at all, and still able to
+       * hit the square next to you, which is where the enemy has just arrived. A Pike is reach 3
+       * from 2, so it cannot; its own card has said "useless adjacent" all along.
+       */
+      const item = equipped.find(i => {
+        const strike = i.system.verbs?.strike;
+        if ((strike?.value ?? null) === null) return false;
+        return (strike.reach ?? 1) >= (rule.needsReach ?? 1) && (strike.reachMin ?? 1) <= 1;
+      });
+      if (item) printed = { key, card, item, reduce: 0, hits: item.system.verbs.strike.value };
     } else if (live) {
-      printed = { key, card, reduce: 0 };
+      // `valued` reactions carry a number the card printed; the rest are worth one of themselves.
+      printed = { key, card, reduce: 0, param: rule.valued ? (card.system.reactionParam ?? 1) : 1 };
     }
 
     if (printed) options.push(printed);
@@ -560,9 +574,8 @@ export async function redirectHit(attacker, target, incoming) {
  * measure itself against. The square is **random among the legal ones**: free, and out of the reach
  * of the enemy that arrived, because a step that leaves you adjacent spends a card for nothing.
  */
-export async function sidestep(actor, enemy) {
-  const options = reactionsFor(actor, "arrival");
-  if (!options.length) return null;
+export async function sidestep(actor, enemy, option) {
+  if (!option) return null;
 
   const token = actor.getActiveTokens()[0];
   const from = enemy?.getActiveTokens?.()[0];
@@ -573,9 +586,11 @@ export async function sidestep(actor, enemy) {
     .filter(t => t.id !== token.id)
     .map(t => `${t.x},${t.y}`));
 
+  // How far, which is one square unless the card printed a number (`Roll With It`: Sidestep 2).
+  const span = Math.max(1, option.param ?? 1);
   const legal = [];
-  for (let dx = -1; dx <= 1; dx++) {
-    for (let dy = -1; dy <= 1; dy++) {
+  for (let dx = -span; dx <= span; dx++) {
+    for (let dy = -span; dy <= span; dy++) {
       if (!dx && !dy) continue;
       const sq = { x: token.x + dx * size, y: token.y + dy * size };
       if (taken.has(`${sq.x},${sq.y}`)) continue;
@@ -587,15 +602,75 @@ export async function sidestep(actor, enemy) {
   if (!legal.length) return null;           // cornered, and the card stays in hand
 
   const to = legal[Math.floor(Math.random() * legal.length)];
-  const choice = await spendReaction(actor, options[0]);
+  const choice = await spendReaction(actor, option);
   await token.document.update({ x: to.x, y: to.y });
 
   await ChatMessage.create({
     speaker: ChatMessage.getSpeaker({ actor }),
     content: `<div class="cardrpg"><p><strong>${actor.name}</strong> sidesteps `
-      + `${enemy.name}, spending <em>${cardName(choice.card)}</em>. The reach is broken.</p></div>`
+      + `${enemy.name}${span > 1 ? ` ${span} squares` : ""}, spending `
+      + `<em>${cardName(choice.card)}</em>. The reach is broken.</p></div>`
   });
   return { card: cardName(choice.card), to };
+}
+
+/**
+ * Counter: an enemy that ends its move next to you takes your Strike (*Set Spear*, way-cards 3.2).
+ *
+ * The only reaction that answers by dealing damage, and it is **flat** -- the item's Strike line,
+ * armour and Block off it, and no fate draw, because **no reaction draws fate** (core-rules 3). The
+ * documents already speak this way where they are specific: a Trapmaker's trap deals "your Strike
+ * value" and a Duellist's Parry "also Strikes for 1".
+ *
+ * **A reaction's damage is not itself a trigger.** Nothing is offered against this hit -- the
+ * arriving enemy does not Brace -- because a reaction answering a reaction is where one-per-trigger
+ * stops meaning anything, and a rule is a better floor than a recursion counter.
+ */
+export async function counter(actor, enemy, option) {
+  if (!option || !enemy) return null;
+
+  const armor = enemy.system.armor ?? 0;
+  const block = enemy.system.block ?? 0;
+  const dealt = Math.max(0, (option.hits ?? 0) - armor - block);
+  const choice = await spendReaction(actor, option);
+
+  await enemy.update({
+    "system.health.value": Math.max(0, enemy.system.health.value - dealt),
+    ...(block && !enemy.system.blockPersists ? { "system.block": 0 } : {})
+  });
+
+  await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<div class="cardrpg"><p><strong>${actor.name}</strong> sets against `
+      + `${enemy.name} with ${option.item.name}, spending <em>${cardName(choice.card)}</em>: `
+      + `${option.hits}`
+      + (armor ? ` &minus; ${armor} armor` : "")
+      + (block ? ` &minus; ${block} Block` : "")
+      + ` = <strong>${dealt}</strong> damage`
+      + (enemy.system.health.value - dealt <= 0 ? ` &mdash; <strong>down</strong>` : "")
+      + `.</p></div>`
+  });
+  return { card: cardName(choice.card), dealt };
+}
+
+/**
+ * The arrival trigger has two possible answers and you get **one** reaction, so it needs an order.
+ *
+ * **A Sidestep goes first, because stepping out of reach denies the attack and countering does
+ * not** -- the Strike that was coming finds nobody, where a counter trades damage for damage. A
+ * player who would rather set their spear turns the Advance sideways, which is the whole of how
+ * this is overridden; there is no setting for it.
+ */
+export async function answerArrival(actor, enemy) {
+  const options = reactionsFor(actor, "arrival");
+  if (!options.length) return null;
+
+  const step = options.find(o => o.key === "sidestep");
+  const stepped = step ? await sidestep(actor, enemy, step) : null;
+  if (stepped) return stepped;
+
+  const set = options.find(o => o.key === "counter");
+  return set ? await counter(actor, enemy, set) : null;
 }
 
 /**

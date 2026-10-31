@@ -139,12 +139,21 @@ your hand can offer fires, the card goes to your **discard**, and play continues
 | Trigger | What fires on it |
 |---|---|
 | **you are hit** | Parry, Block, Brace, Use — and *Bodyguard*, which is this trigger seen from one square over |
-| **an enemy ends its move next to you** | Sidestep |
+| **an enemy ends its move next to you** | Sidestep, Counter |
 
 **A reaction fires when the hit is serious, and the rules already say twice what that means:** when
 it stops a **Wound** (5 or more past armour, section 8) or stops you being **dropped** to 0. Nothing
 less is worth a card. A scratch is a scratch, and a hand spent on scratches is a hand you do not have
 when the blow lands.
+
+Two things are true of every reaction in the game:
+
+- **A reaction never draws fate.** A Parry is your item's *Defend* value, a Brace is 1, a Counter is
+  your item's *Strike* value. Flat, every one of them — which is what lets the rule above be written
+  down at all: a threshold has no meaning against a number nobody has drawn yet.
+- **A reaction's damage is not itself a trigger.** A Counter hits, and nothing answers it. A reaction
+  answering a reaction is where *one per trigger* stops meaning anything, and this is a cleaner floor
+  under it than counting how deep the answers go.
 
 #### Turning a card sideways
 
@@ -194,9 +203,14 @@ spent on the attempt and the other is not, and which is which follows from who t
 the reduction step uses. Among those who could, the first in **initiative order** takes it.
 
 **One reaction still means one.** The limit covers both steps: a Bodyguard who intercepts a hit has
-used its reaction for that trigger and can't also Brace against it. **Sidestep** sits outside this
-order entirely — it neither redirects nor reduces, it fires on the other trigger, and there is no
-damage yet for it to be measured against.
+used its reaction for that trigger and can't also Brace against it. **Sidestep** and **Counter** sit
+outside this order entirely — they neither redirect nor reduce, they fire on the other trigger, and
+there is no damage yet for either to be measured against.
+
+**The arrival trigger has two answers and you still get one**, so it has an order of its own:
+**Sidestep first.** Stepping out of reach *denies* the attack — the Strike that was coming finds
+nobody — where a Counter trades damage for damage and you are still standing there. Someone who
+would rather set their spear turns the other card sideways; that is the whole of the override.
 
 Why: the card economy is already the cost of reacting, so reactions don't need a second budget to
 track. Capping it per trigger is what keeps a big hit frightening — a lethal blow spends **one** of
@@ -1490,6 +1504,20 @@ The step is to **any free square out of that enemy's reach**. A Sidestep neither
 reduces — what it does is break the reach, so the Strike that was coming finds nobody — which is why
 a step that leaves you adjacent would spend a card for nothing. Cornered, with no legal square, the
 card stays in your hand.
+
+**One square, unless the card prints a number.** *Sidestep 2* is a longer step and nothing else:
+still any free square out of that enemy's reach, just further out.
+
+**Or you answer instead of leaving.** ⚡ **Counter** is the other thing an arrival can be met with —
+*an enemy ending its move adjacent takes your Strike* — and it is flat, draws no fate, and nothing
+answers it (section 3). One reaction per trigger means it is this *or* the step, and the step comes
+first.
+
+It asks two things of the weapon, and both ends matter: **reach 2 or more**, because a counter is
+what a shaft is for and not what a knife is for — and the ability to hit the square **next to you**,
+which is where the enemy has just arrived. So a **Halberd** or a **Trident** counters and a **Pike**
+does not: a pike is useless adjacent, which its own entry has said since it was written
+([equipment.md](equipment.md) §2).
 
 ### Cover
 

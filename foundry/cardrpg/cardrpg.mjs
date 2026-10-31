@@ -11,7 +11,7 @@ import { createStarterContent, ensureSetupMacro } from "./module/setup.mjs";
 import { CardRPGCombat, registerCombatHooks } from "./module/combat.mjs";
 import { CardRPGTray, registerTrayHooks } from "./module/tray.mjs";
 import * as decks from "./module/decks.mjs";
-import { sidestep } from "./module/resolve.mjs";
+import { answerArrival } from "./module/resolve.mjs";
 import { CharacterData, NpcData } from "./module/data/actors.mjs";
 import { ItemSlateData, FeatureSlateData, SpellSlateData } from "./module/data/items.mjs";
 import {
@@ -216,7 +216,7 @@ Hooks.once("ready", async () => {
 });
 
 /**
- * An enemy ended its move. Everyone it has just come to stand next to gets a Sidestep.
+ * An enemy ended its move. Everyone it has just come to stand next to may answer it.
  *
  * "ENDS its movement next to you", and arriving is the load-bearing word: the square has to be new
  * AND the mover has to have been out of reach before it. A goblin already in your face that shuffles
@@ -233,7 +233,7 @@ async function onArrival(mover, from) {
     const who = placed.actor;
     if (!who || who.id === mover.id || who.type === mover.type) continue;
     if (!reach(placed, now) || reach(placed, from)) continue;      // not an arrival, for this one
-    await sidestep(who, mover);
+    await answerArrival(who, mover);
   }
 }
 

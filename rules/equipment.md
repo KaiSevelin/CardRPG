@@ -123,16 +123,18 @@ discipline the magic schools' prices got.
 | **Mace** | 1 hand, Belt | Heavy, Melee | 1 | 2 | 10 g | 3, **ignores 1 armor** | blunt-weapon specialists |
 | **Warhammer** | 1 hand, Back | Heavy, Melee | 1 | 3 | 25 g | 4, **ignores 1 armor** | blunt-weapon specialists |
 | **Spear** | 1 hand, Back | Melee, Thrown | 1 | 2 | 8 g | 3 (range 3 thrown) | formation |
-| **Halberd** | 2 hands, Back | Heavy, Melee | 2 | 3 | 35 g | 4, **range 2** | polearm specialists |
-| **Pike** | 2 hands | Heavy, Melee | 2 | 4 | 20 g | 3, **range 3** — useless adjacent | formation specialists |
+| **Halberd** | 2 hands, Back | Heavy, Melee | 2 | 3 | 35 g | 4, **reach 2** | polearm specialists |
+| **Pike** | 2 hands | Heavy, Melee | 2 | 4 | 20 g | 3, **reach 3** from **2** — useless adjacent | formation specialists |
 | **Lance** | 1 hand | Heavy, Melee | 1 | 3 | 30 g | **5** — **needs a mount** | cavalry |
-| **Trident** | 1 hand, Back | Melee | 1 | 2 | 18 g | 3, **range 2** | gladiators |
+| **Trident** | 1 hand, Back | Melee | 1 | 2 | 18 g | 3, **reach 2** | gladiators |
 | **Net** | Belt, 1 hand | Light, Thrown | 1 | 1 | 5 g | — · range 3: **Grappled (1)**, resist ✊ 5 | gladiators |
 | **Bare hands** | — | Light, Melee | 0 | 0 | — | 1 | unarmed specialists |
 
-**Reach is what a polearm sells, and the rules already had the field for it.** A melee weapon with
-**range 2 or 3** strikes from behind the front rank, which is what *formation* means and what the
-Infantry and Vax tactics are built around (way-cards §2.5). **The Pike pays for it honestly** — it is
+**Reach is what a polearm sells, and it has a field of its own now — it did not before.** This
+paragraph used to say the rules already had the field, and they did not: `range` was carrying both
+*reach* and *thrown range*, which is why a Halberd was quietly treated as a ranged weapon by the
+engine (§12). A melee weapon with **reach 2 or 3** strikes from behind the front rank, which is what
+*formation* means and what the Infantry and Vax tactics are built around (way-cards §2.5). **The Pike pays for it honestly** — it is
 *useless* against an adjacent enemy, so a pikeman wants somebody in front of them, which is the whole
 of a formation.
 
@@ -1041,6 +1043,30 @@ part: the target gets one clean turn, so a poisoner who uses it is betting on th
   Neglect was not the reason; the field was. And items had no `grants`, so a ring meant to give a
   spell slot gave nothing at all, silently, which is the failure mode a data model has: it **drops**
   a key it does not know rather than refusing it.
+- **Settled: reach is a field, and it is not range.** ⚡ Counter needed to know which weapons are
+  long, and `range` could not say: it meant *"thrown this far"* on a Dagger and *"reaches this far"*
+  on a Halberd, told apart only by the words in the verb's own `text`. That is the fourth time this
+  project has found a rule living in prose, after `ignores N armor`, the ammunition *For* column and
+  Heavy Armor's Sidestep ban — and this one was doing damage: `resolveAttack` reads `range > 1` as
+  *"this is a ranged attack"*, so **a Halberd was taking the ranged-in-melee disadvantage for being
+  long**, could not be Parried, and got no advantage against a Prone target. The three reach weapons
+  carry `reach` now and no `range`, which takes them out of all three rules.
+
+  `reachMin` came with it, and it is the **Pike's** *"useless adjacent"* — also prose. A reach band
+  of 2–3 means somebody has to be in front of you, and it is what stops a pikeman countering: the
+  enemy arrives **adjacent**, which is the one square a pike cannot reach. So *Set Spear* works with
+  a Halberd or a Trident and not with a Pike, and nobody had to remember that — the card said it all
+  along and now the field does.
+
+- **[OPEN]** **A thrown weapon has two modes and the engine knows only one.** A Dagger is `range 3
+  thrown` and tagged `melee`; stabbing with it and throwing it are different attacks, and
+  `resolveAttack` decides from the item alone. So a dagger **stab** is still treated as ranged —
+  disadvantage while an enemy is adjacent, no Parry against it, no advantage against a Prone target
+  — and the same goes for the Spear and the Balanced Dagger. The reach split above took the reach
+  weapons out of this; what is left is genuinely two-moded. Fixing it means the attack choosing its
+  mode (the target is beyond reach, so this is a throw), which is a resolution-time decision the
+  engine has nowhere to put yet.
+
 - **Settled: reactions resolve by themselves, and the only decision left is a card turned sideways.**
   Nothing in the engine had ever played a reaction — the vocabulary existed, the ⚡ row rendered, and
   `reactionTimer` was a registered setting with no reader — so all five reactions were words on a
@@ -1055,6 +1081,14 @@ part: the target gets one clean turn, so a poisoner who uses it is betting on th
   drawback is a field** at last — `blocksReactions` on Brigandine and Plate — which closes the half
   of that `[OPEN]` that was simply unimplemented. The simulator has charged Plate for it since 30
   October; the game handed it back for free.
+
+  **And one reaction was added, because two cards in way-cards needed what no key could say.**
+  ⚡ **Counter** — *an enemy ending its move adjacent takes your Strike* (*Set Spear*) — is the only
+  reaction that answers by dealing damage, and the only one with a weapon requirement. *Roll With It*
+  needed the other thing: a **number** on the ⚡ row, `Sidestep 2`. Every other reaction cell in that
+  document's card pools is one of the five keys, twelve of fourteen, so those five were the right
+  five and these two were the gap. Both cards are carried as content, so neither rule ships against
+  nothing.
 
 - **Settled: how different ammunition works, which took two fields and a definition.** Ordinary
   ammunition is not tracked and magical ammunition is (core-rules §4) — the rule was written and

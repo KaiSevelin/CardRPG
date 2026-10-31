@@ -143,6 +143,20 @@ export class ItemSlateData extends SlateData {
     const verbLine = () => new fields.SchemaField({
       value: new fields.NumberField({ integer: true, nullable: true, initial: null }),
       range: new fields.NumberField({ integer: true, min: 0, nullable: true, initial: null }),
+      /*
+       * How far this line reaches in MELEE, and the nearest square it still works in.
+       *
+       * `range` was doing both jobs and the difference lived in the verb's `text`: "range 3 thrown"
+       * on a dagger and "reach 2" on a halberd are the same field with opposite meanings, and
+       * `resolveAttack` reads `range > 1` as "this is a ranged attack" -- so a halberd took the
+       * ranged-in-melee disadvantage for being long, which is the opposite of what reach is.
+       *
+       * `reachMin` is the Pike's "useless adjacent", also prose until now: a reach band of 2-3
+       * means somebody has to be in front of you. It is what stops a pikeman countering an arrival
+       * (core-rules 11) -- the enemy arrives adjacent, which is the one place a pike cannot hit.
+       */
+      reach: new fields.NumberField({ integer: true, min: 1, nullable: true, initial: null }),
+      reachMin: new fields.NumberField({ integer: true, min: 1, nullable: true, initial: null }),
       area: new fields.NumberField({ integer: true, min: 0, nullable: true, initial: null }),
       areaKind: new fields.StringField({
         required: false, blank: true, initial: "", choices: ["", "blast", "aimed"]
