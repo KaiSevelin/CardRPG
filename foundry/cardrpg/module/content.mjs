@@ -1189,6 +1189,79 @@ export const ITEMS = [
   }
 ];
 
+
+/* -------------------------------------------- */
+/*  Wild Magic                                  */
+/* -------------------------------------------- */
+
+/**
+ * The Wild Magic deck (core-rules 6, from ideas.md). Drawn from when a **Wild** comes out of a fate
+ * deck, which for a Shadow mage is every spell they have ever cast catching up with them.
+ *
+ * **Five good, four bad, three both: a slight edge to the good, and a real tail.** The edge is
+ * deliberate and so is the tail, and the reason the edge does not make Shadow Magic free is
+ * arithmetic the fate deck already settles: a Wild resolves at **plain value**, so adding Wilds
+ * dilutes the Miss and the Critical equally and takes variance OUT of the fate deck. The price of
+ * Shadow Magic was therefore never going to be found in an average -- it is that **you cannot
+ * predict your own turns**, and that is what *Misfire* and *Backlash* are for.
+ *
+ * Nine of the twelve are **steps**, so the engine resolves them with the code that lands any card's
+ * condition. The three that are not are the three it has no verb for, and they say so.
+ */
+export const WILD_MAGIC = [
+  /* --- good: five of twelve */
+  {
+    name: "Echo", copies: 1, turn: "good",
+    text: "The Cast resolves a second time, against the same target."
+  },
+  {
+    name: "Blink", copies: 2, turn: "good",
+    steps: [{ verb: "move", param: 3, text: "ignoring figures and difficult ground" }]
+  },
+  {
+    name: "Veil", copies: 1, turn: "good",
+    steps: [{ condition: "invisible", duration: 1 }]
+  },
+  {
+    // Reaches into the deck that sent you here, which is the loop worth having: a surge can make
+    // your fate swingy again, and the mirror of it four entries down can make it worse.
+    name: "Second Sight", copies: 1, turn: "good",
+    steps: [{ condition: "blessed" }]
+  },
+
+  /* --- bad: four of twelve */
+  {
+    name: "Backlash", copies: 2, turn: "bad",
+    steps: [{ condition: "dazed", duration: 1 }]
+  },
+  {
+    name: "Misfire", copies: 1, turn: "bad",
+    text: "The Cast resolves against the nearest creature instead, ally or not."
+  },
+  {
+    name: "Residue", copies: 1, turn: "bad",
+    steps: [{ condition: "cursed" }]
+  },
+
+  /* --- both: three of twelve, and each is both at the same moment */
+  {
+    name: "Glare", copies: 1, turn: "both",
+    text: "The Cast becomes a Blast 2 around its target, whoever is standing in it."
+  },
+  {
+    // The shadow opens in both directions: unseen, and read.
+    name: "Open Door", copies: 1, turn: "both",
+    steps: [{ condition: "invisible", duration: 1 }, { condition: "marked", duration: 2 }]
+  },
+  {
+    name: "The Long Step", copies: 1, turn: "both",
+    steps: [
+      { verb: "move", param: 3, text: "ignoring figures and difficult ground" },
+      { condition: "prone", duration: 1 }
+    ]
+  }
+];
+
 /* -------------------------------------------- */
 /*  Way cards                                   */
 /* -------------------------------------------- */
@@ -1362,7 +1435,7 @@ export const GOBLIN_ARCHER = {
  */
 export const FORMULAS = [
   {
-    name: "Rain", strength: 2, kind: "formula", source: "Elemental Magic",
+    name: "Rain", strength: 2, kind: "formula", source: "Elemental Magic", element: "water",
     description: "<p>A squall out of nothing, over three squares, and the water does not care who "
       + "it lands on. It is not an attack and nothing resists it.</p>",
     // No verb: a step with a condition and no verb IS the condition, and an opening never saves.
@@ -1373,7 +1446,7 @@ export const FORMULAS = [
     }
   },
   {
-    name: "Lightning", strength: 2, kind: "formula", source: "Elemental Magic",
+    name: "Lightning", strength: 2, kind: "formula", source: "Elemental Magic", element: "storm",
     description: "<p>Reads a Wet target two ways at once: harder to shrug off, and it hurts more. "
       + "Against a dry one it is still a Cast that tries to stun, which is the point &mdash; the "
       + "opening sharpens the card, it does not switch it on.</p>",
@@ -1384,7 +1457,7 @@ export const FORMULAS = [
     }
   },
   {
-    name: "Frost", strength: 1, kind: "formula", source: "Elemental Magic",
+    name: "Frost", strength: 1, kind: "formula", source: "Elemental Magic", element: "frost",
     description: "<p>One target, one round, no damage. Against a Wet target the water is already "
       + "there to freeze, so the save goes from Normal to Heroic and nothing else changes.</p>",
     effect: {
@@ -1394,7 +1467,7 @@ export const FORMULAS = [
     }
   },
   {
-    name: "Scorch", strength: 1, kind: "formula", source: "Elemental Magic",
+    name: "Scorch", strength: 1, kind: "formula", source: "Elemental Magic", element: "fire",
     description: "<p>Carries no combo clause at all, and is still the proof that an opening is not "
       + "always worth having: water and fire cancel, so a Wet target takes the Cast and sheds the "
       + "Burning. The interaction is on Burning, where the rules put it.</p>",
@@ -1410,6 +1483,24 @@ export const FORMULAS = [
  * Measured against one starter Warrior, so these are a tuning yardstick rather than a party
  * difficulty table. A mixed group is a tier harder than a uniform one of the same size.
  */
+/**
+ * The one Shadow Magic formula the documents specify, here because `wilds` would otherwise be a
+ * field with nothing in it. Its teleport is a sentence: **movement is manual everywhere in this
+ * engine** (core-rules 12), so a step across the room is adjudicated exactly as a Move 3 is.
+ *
+ * What is NOT a sentence is the price, and that is the point of carrying it.
+ */
+export const SHADOW_FORMULAS = [
+  {
+    name: "Step Through", strength: 2, kind: "formula", source: "Shadow Magic",
+    wilds: 1,
+    description: "<p>You are in the shadow, and then you are in another one. Every reach into the "
+      + "dark leaves something of the dark in you: a <strong>Wild</strong> card joins your fate "
+      + "deck, and it does not leave until you have slept.</p>",
+    effect: { text: "teleport to any shadowed square you can see" }
+  }
+];
+
 export const ENCOUNTERS = [
   { label: "3 goblins with spears", difficulty: "Easy", winRate: "99.4%" },
   { label: "4 goblins with spears", difficulty: "Moderate", winRate: "93.2%" },

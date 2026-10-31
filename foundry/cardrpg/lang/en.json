@@ -9,6 +9,7 @@
   "TYPES.Card.npc": "NPC Card",
   "TYPES.Card.wound": "Wound",
   "TYPES.Card.taint": "Taint",
+  "TYPES.Card.wild": "Wild Magic",
 
   "CARDRPG.Verb.Strike": "Strike",
   "CARDRPG.Verb.Cast": "Cast",
@@ -95,9 +96,6 @@
   "CARDRPG.Way.Shade": "Way of Shade",
   "CARDRPG.Way.Mind": "Way of Mind",
 
-  "CARDRPG.Fate.Miss": "Miss",
-  "CARDRPG.Fate.Crit": "Critical",
-  "CARDRPG.Fate.Wild": "Wild",
   "CARDRPG.Reaction.Parry": "Parry",
   "CARDRPG.Reaction.Block": "Block",
   "CARDRPG.Reaction.Sidestep": "Sidestep",
@@ -134,6 +132,12 @@
 
   "CARDRPG.Fate.Miss": "Miss",
   "CARDRPG.Fate.Critical": "Critical",
+  "CARDRPG.Fate.Wild": "Wild",
+
+  "CARDRPG.Element.Fire": "Fire",
+  "CARDRPG.Element.Frost": "Frost",
+  "CARDRPG.Element.Storm": "Storm",
+  "CARDRPG.Element.Water": "Water",
 
   "CARDRPG.Encumbrance.Unburdened": "Unburdened",
   "CARDRPG.Encumbrance.Burdened": "Burdened",

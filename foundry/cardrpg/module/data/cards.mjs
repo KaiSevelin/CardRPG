@@ -213,6 +213,43 @@ export class ActionCardData extends foundry.abstract.TypeDataModel {
 }
 
 /* -------------------------------------------- */
+/*  Wild Magic card                             */
+/* -------------------------------------------- */
+
+/**
+ * A Wild Magic card, drawn when a Wild comes out of a fate deck (core-rules 6).
+ *
+ * `steps` and nothing else, which is the same observation that made ammunition cheap: a card's
+ * half, a piece of ammunition and a wild surge are all **a step**, so the code that lands a
+ * condition from a card lands these too. Two of the twelve are a single step; the rest are two, or
+ * a sentence the table resolves because the engine has no verb for it.
+ */
+export class WildCardData extends foundry.abstract.TypeDataModel {
+  static defineSchema() {
+    return {
+      steps: new fields.ArrayField(stepField()),
+      /**
+       * Good, bad, or both -- declared rather than inferred from the steps, because what a surge is
+       * WORTH depends on where everyone is standing. *Glare* widens your own Blast: a gift with a
+       * clear field and a disaster beside an ally, and no reading of its step can tell which.
+       *
+       * It is also the only way to hold the deck to its design: a slight edge to the good
+       * (specializations.md), which is a claim about the counts and therefore checkable.
+       */
+      turn: new fields.StringField({
+        required: true, initial: "good", choices: ["good", "bad", "both"]
+      }),
+      text: new fields.StringField({ required: false, blank: true, initial: "" })
+    };
+  }
+
+  /** What the face reads, which is the words when there are words and the steps otherwise. */
+  get line() {
+    return this.text || "";
+  }
+}
+
+/* -------------------------------------------- */
 /*  Fate card                                   */
 /* -------------------------------------------- */
 

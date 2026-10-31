@@ -15,7 +15,7 @@ import { answerArrival } from "./module/resolve.mjs";
 import { CharacterData, NpcData } from "./module/data/actors.mjs";
 import { ItemSlateData, FeatureSlateData, SpellSlateData } from "./module/data/items.mjs";
 import {
-  ActionCardData, FateCardData, NpcCardData, WoundCardData, TaintCardData
+  ActionCardData, FateCardData, NpcCardData, WoundCardData, TaintCardData, WildCardData
 } from "./module/data/cards.mjs";
 
 /* -------------------------------------------- */
@@ -47,7 +47,8 @@ Hooks.once("init", () => {
     fate: FateCardData,
     npc: NpcCardData,
     wound: WoundCardData,
-    taint: TaintCardData
+    taint: TaintCardData,
+    wild: WildCardData
   };
 
   // --- combat

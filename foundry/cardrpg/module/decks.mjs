@@ -85,6 +85,53 @@ export async function move(from, to, ids) {
   return moved;
 }
 
+
+/* -------------------------------------------- */
+/*  Wild Magic                                  */
+/* -------------------------------------------- */
+
+/**
+ * A Wild came out of the fate deck, so a surge comes out of the Wild Magic deck (core-rules 6).
+ *
+ * The deck is **shared by the world, not owned by a caster**: a surge is the world answering, and
+ * one deck means the table sees the same twelve possibilities every time, which is what makes them
+ * learnable. It cycles like any other -- draw to the discard, reshuffle when it runs dry -- so a
+ * table that has seen *Misfire* knows it is out of the deck for a while, and that is information
+ * worth having.
+ *
+ * Returns the card so the caller may resolve its steps; the steps themselves are resolved by
+ * whoever has a target to resolve them against (resolve.mjs), because this module moves cards.
+ */
+export async function drawWildMagic(actor) {
+  const deck = game.cards?.getName?.("Wild Magic");
+  const discard = game.cards?.getName?.("Wild Magic Discard");
+  if (!deck) {
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor }),
+      content: `<div class="cardrpg"><p><strong>${actor.name}</strong> draws <strong>Wild</strong>: `
+        + `the action resolves at its plain value. <em>No Wild Magic deck in this world &mdash; the `
+        + `GM reads the surge.</em></p></div>`
+    });
+    return null;
+  }
+
+  if (!available(deck).length && discard?.cards.size) {
+    await move(discard, deck, discard.cards.map(c => c.id));
+    await deck.shuffle({ chatNotification: false });
+  }
+  const [card] = await moveRandom(deck, discard ?? deck, 1);
+
+  await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<div class="cardrpg"><p><strong>${actor.name}</strong> draws <strong>Wild</strong>: `
+      + `the action resolves at its plain value, and the magic surges &mdash; `
+      + `<strong>${card ? cardName(card) : "nothing left"}</strong>`
+      + (card?.system?.line ? `: ${card.system.line}` : "")
+      + `.</p><p class="cr-note">The Wild card stays in the fate deck.</p></div>`
+  });
+  return card ?? null;
+}
+
 /* -------------------------------------------- */
 /*  Reserved: the only decision a reaction takes */
 /* -------------------------------------------- */
@@ -248,14 +295,7 @@ export async function drawFate(actor, value, mode = 0) {
    * and a heal, an initiative and a Strike would otherwise each have to remember to mention it.
    */
   const wilds = drawn.filter(c => c.system.special === "wild").length;
-  if (wilds) {
-    await ChatMessage.create({
-      speaker: ChatMessage.getSpeaker({ actor }),
-      content: `<div class="cardrpg"><p><strong>${actor.name}</strong> draws `
-        + `<strong>Wild</strong>${wilds > 1 ? ` &times;${wilds}` : ""}: the action resolves at its `
-        + `plain value, and the Wild Magic draw follows. <em>The card stays in the deck.</em></p></div>`
-    });
-  }
+  for (let i = 0; i < wilds; i++) await drawWildMagic(actor);
 
   return { result, drawn, used, reshuffled, temporary: temporary.length, wilds };
 }

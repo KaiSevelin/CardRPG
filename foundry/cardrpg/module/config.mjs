@@ -320,7 +320,7 @@ CARDRPG.fateDeck = [
  */
 CARDRPG.fateSpecials = {
   miss: { label: "CARDRPG.Fate.Miss", rank: -99, reshuffles: true, swing: true },
-  crit: { label: "CARDRPG.Fate.Crit", rank: 99, reshuffles: true, swing: true },
+  crit: { label: "CARDRPG.Fate.Critical", rank: 99, reshuffles: true, swing: true },
   /*
    * Wild (ideas.md, *Wild magic and miscasts*). Promised in five documents -- Shadow Magic's whole
    * price is "a permanent Wild card per formula" (specializations.md) -- and absent from the deck
@@ -451,6 +451,26 @@ CARDRPG.recharges = {
 /*  Characters and NPCs                         */
 /* -------------------------------------------- */
 
+/**
+ * The elements an elementalist may hold, and the exclusivity is the whole point: taking one closes
+ * the others for good (leveling.md 3, `exclusive: "element"` with the element as the `creed`).
+ *
+ * No new mechanism was needed. The nested exclusive group was built for Way of Faith -- a family
+ * with a creed per religion -- and generalised on purpose so an add-on's pantheon would be
+ * correctly exclusive without a rules change. This is its second user, and the first that is not
+ * a god.
+ *
+ * The rule it supplies was already overdue: *Wall of the Sphere* and *The Sphere Entire* both read
+ * "a line of **your element**" (way-cards 3.4) and nothing anywhere said how an elementalist came
+ * to have one.
+ */
+CARDRPG.elements = {
+  fire: { label: "CARDRPG.Element.Fire", condition: "burning" },
+  frost: { label: "CARDRPG.Element.Frost", condition: "frozen" },
+  storm: { label: "CARDRPG.Element.Storm", condition: "stunned" },
+  water: { label: "CARDRPG.Element.Water", condition: "wet" }
+};
+
 CARDRPG.ways = {
   strength: "CARDRPG.Way.Strength",
   shade: "CARDRPG.Way.Shade",
@@ -527,6 +547,9 @@ CARDRPG.targetPriorities = {
 /* -------------------------------------------- */
 
 /** Rules defaults. Exposed so a world can override them without a system release. */
+/** The deck a Wild fate card sends you to (ideas.md, core-rules 6). */
+CARDRPG.wildDeck = "wildMagic";
+
 CARDRPG.defaults = {
   handSize: 5,
   carryLimit: 40,

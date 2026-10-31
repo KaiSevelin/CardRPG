@@ -55,7 +55,8 @@
       "fate": {},
       "npc": {},
       "wound": {},
-      "taint": {}
+      "taint": {},
+      "wild": {}
     }
   },
   "languages": [

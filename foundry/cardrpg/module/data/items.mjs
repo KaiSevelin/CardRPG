@@ -109,6 +109,31 @@ export class SpellSlateData extends SlateData {
       /** In your head, or in the book. Changed between fights, never during one. */
       prepared: new fields.BooleanField({ initial: false }),
 
+      /*
+       * Which element this one is, for the schools that have them.
+       *
+       * *Wall of the Sphere* and *The Sphere Entire* both read "a line of **your element**"
+       * (way-cards 3.4) and nothing in the rules said how an elementalist came to have one. An
+       * elementalist picks **one** and is closed out of the others for good -- `exclusive: "element"`
+       * with the element as the `creed` (leveling.md 3), which is the Way of Faith machinery with
+       * its second user and its first that is not a god.
+       *
+       * Blank for every school that does not have elements, which is eleven of the twelve.
+       */
+      element: new fields.StringField({
+        required: false, blank: true, initial: "",
+        choices: [...Object.keys(CARDRPG.elements), ""]
+      }),
+
+      /*
+       * Wild fate cards that casting this adds to your own deck (core-rules 6).
+       *
+       * Shadow Magic's whole price, and it is **every spell**, not one per formula: the more a
+       * shadow mage reaches, the less they can predict their own luck. A number rather than a
+       * boolean because a strength-3 formula reaching further should cost more of the same thing.
+       */
+      wilds: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 }),
+
       /** What casting it does. Same shape as a card step, so a spell may apply a condition. */
       effect: stepField(),
 

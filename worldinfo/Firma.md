@@ -257,6 +257,9 @@ Chguuth is the main hive, located in the south-east of Firma. It is a hive that 
 height of the others and is reinforced with chitin from dead critters. The enormous flying Skaah that
 were mistaken for airships during the invasion all set out from here, and the Queen has her seat here.
 
+## The Underworld
+The underworld, tunnels and caves are not unoccupied. Beings such as demons, minor gods and powerful monsters pushed from the overground has set up strongholds here. The minor goddess, the queen of the dark as well as the Troll King has always been here and do not like intruders. Other parts have become infested with the Horde.
+
 # Religion
 
 ## The Church of the Eternal God
@@ -438,6 +441,7 @@ Firma. Minor gods grant no miracles, but they are the basis of the Spiritualism 
 Some of the known gods are:
 
 * The Winter Lady
+* Queen of the Dark
 * The Troll King
 * Baal Fagor
 * The Land Jelly

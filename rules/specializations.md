@@ -101,7 +101,7 @@ Direct magic is cast in combat. Ritual magic is not, and anyone literate can do 
 | **Glamour** | Glamour | Control | An elven debt, as an obligation |
 | **Tattoo Magic** | Styrka | Deck shape | A secret the GM holds against you, per formula |
 | **Asceticism** | Asketism | Deck shape | Parts of your body |
-| **Shadow Magic** | Skugga | Position | A permanent Wild card per formula — **the card exists now** (core-rules §6) |
+| **Shadow Magic** | Skugga | Position | A **Wild card per spell cast**, until you sleep (core-rules §6) |
 | **Spiritualism** | Spiritualism | Preparation | A pact with a minor god, per formula, as an obligation |
 | **Household Magic** | Hushållsmagi | *(out of combat)* | Negotiation with elf-kin, as an obligation |
 | **Ward Magic** ✱ | Bannmagi | **Reactions** | Spent — a ward held in reserve is a card gone for the fight |
@@ -858,6 +858,33 @@ whole list are **Berserker** (cannot defend) and **Street Fighter** (no weapon v
 both are vivid for the same reason: you can describe them by what they have given up. Nobody confuses
 a build that cannot do something.
 
+#### Three more devices, and one of them solves a different problem
+
+| Device | What it is |
+|---|---|
+| **A different distribution** | The build's randomness has a different *shape*, not a different size. The **Gambler** draws two fate cards and adds both — *variance, not advantage*; **Shadow Magic** fills its deck with Wilds, which takes variance out and replaces it with surges; **Divination** reorders what is coming. Three nodes already live here and nobody had named it. Memorable at the table because players describe it unprompted: *the gambler's hits are wild*. |
+| **A deck of its own** | The node brings a pile nobody else has. **Shadow Magic** is the first — a Wild sends you to the **Wild Magic deck** — and ideas.md's *Lair deck* is the second. Unmistakable, because the build physically occupies more of the table than anyone else's. |
+| **The shape of its halves** | Not what a card does but what its **rows** say. A **Duellist** whose cards carry ⚔ Strike on the *secondary* is a build whose weak half is still a weapon, and no feature or signature is needed to say so — the deck says it. |
+
+> **And one device that answers a question the other six do not ask.** Every device above
+> distinguishes **nodes** from each other. None of them helps two characters who took the *same*
+> node feel different — two Elemental mages are mechanically identical, and the Way with twelve
+> schools is the Way where that is most likely to happen.
+>
+> **A sub-specialization fixes that, and it needs no new machinery.** An elementalist picks **one
+> element** and is closed out of the others for good: `exclusive: "element"` with the element as the
+> `creed` ([leveling.md](leveling.md) §3). That is the Way of Faith nested group with its second
+> user and its first that is not a god — exactly the generality §3 was built for.
+>
+> It also supplies a rule that was already overdue. *Wall of the Sphere* and *The Sphere Entire* both
+> read *"a line of **your element**"* ([way-cards.md](way-cards.md) §3.4) and **nothing anywhere said
+> how an elementalist came to have one.** The Signature was leaning on a choice the rules never
+> offered.
+>
+> The pattern generalises past Elemental: any node with flavours rather than one identity can split
+> this way, and the test is whether the flavours are **mutually exclusive in the fiction**. Twelve
+> gods already are. Four elements are. A Thief's choice of tools is not.
+
 ## Open
 
 - **Answered:** the deity exclusive group. It is the `faith` **family**, its members are the twelve
@@ -868,6 +895,17 @@ a build that cannot do something.
 - **[OPEN]** Whether Spy, Fence, Politician and Bard stay as Shade **titles** or become clusters of
   minor nodes, the way the crafts probably should (finding 5). Spy and Politician in particular do
   nothing in a fight, and a major node is a fighting identity.
+- **Answered:** how two characters on the **same** node differ — a sub-specialization on an
+  exclusive sub-choice, the elements being the first (§4). It needs no new mechanism, and it closes
+  the *"your element"* promise that two Elemental Signatures were already making.
+- **[OPEN]** **The Duellist's Strike-on-secondary identity needs measuring before it is written.**
+  A card with ⚔ Strike on its secondary is the strongest kind of card in the game — the simulation
+  found **one** such card shortens a fight by a full round (core-rules §3), which is why
+  *Off-Hand Blow* carries a **−1** and why these are meant to be earned. "More of them" is therefore
+  a large claim: it probably wants each at a penalty, or a cap on how many a deck may hold, and it
+  wants a sim run before either number is chosen.
+- **[OPEN]** Which elements exist beyond the four the engine carries (fire, frost, storm, water), and
+  whether a god's **domain** should split the same way an element does.
 - **[OPEN]** Each node's **Signature** — the one card or feature it is named for. That is where the
   axis gets earned, and it is the next thing to write.
 - **[OPEN]** Which specializations hang off which trunk node, and how deep each branch runs.

@@ -707,9 +707,25 @@ Three things make it different from the other two specials, and all three matter
 | what it does to the value | nothing / doubles | **nothing at all** |
 
 **It is a cost you accept, not one inflicted on you.** Wilds arrive because somebody reached for
-more power than they had: *Overcast* trades a Wild for a stronger spell, and **Shadow Magic's price
-is a permanent Wild per formula** ([specializations.md](specializations.md)) — the one school whose
-whole cost is written in this card.
+more power than they had: *Overcast* trades a Wild for a stronger spell, and **every Shadow Magic
+spell puts one in your deck** — the one school whose whole cost is written in this card. Not one per
+formula learnt but one **per cast**, so a shadow mage's luck gets stranger the more they reach, and
+a Wild stays until you have **slept** (a long rest), which is what keeps it from accumulating
+forever.
+
+#### The Wild Magic deck
+
+Drawing a Wild sends you to the **Wild Magic deck**: twelve cards, **five good, four bad, three
+both**, shared by the whole world rather than owned by a caster. One deck means the table meets the
+same twelve possibilities every time, which is what makes them learnable — and it cycles, so a table
+that has seen *Misfire* knows it is out of the deck for a while.
+
+> **The slight edge to the good is deliberate, and it is not what makes Shadow Magic cheap.** A Wild
+> resolves at plain value, so adding Wilds dilutes the Miss and the Critical **equally** and takes
+> variance *out* of your fate deck — which means the school's price was never going to be found in an
+> average. Shadow Magic costs you the ability to **predict your own turns**, and that is what
+> *Misfire* (the Cast hits the nearest creature, ally or not) and *Backlash* are for: a tail, not a
+> penalty. A mage who needs to know what will happen should learn something else.
 
 > **A Wild does not break the `2/k` readout, and this is why.** That number is true because exactly
 > one Miss and one Critical sit in the deck between reshuffles; a Wild is **not** a swing and does
@@ -1126,9 +1142,17 @@ Your action deck is your stamina.
   > - it costs a **card or a slot**, never a free rider on something else;
   > - and it may not be repeatable within a fight, or the deck stops having a bottom.
   >
-  > **[OPEN]** who gets it. The Divination branch owns looking at and reordering *fate* decks
-  > ([specializations.md](specializations.md)) and this is the **action** deck, so it is not
-  > obviously theirs; Asceticism, which already cares what is in your hand, is the other candidate.
+  > **Seven nodes get it, and none of them the same way.** *Asceticism* and *Divination* in Mind,
+  > *Scout* and *Gambler* in Shade, the **local gods** and *Fagar* in Faith, and the *Tactician* in
+  > Strength ([specializations.md](specializations.md)). Reaching into a discard is therefore a
+  > **shared** capability, which the sibling rule allows — no two of the seven are siblings — and
+  > what makes each one its own trick is the **shape** of the reach, not the fact of it.
+  >
+  > **Two depths, and the lower one is the rule.** A card that reaches *early* in a branch does it
+  > **on a combo** — the reach happens because something else already happened, and you do not pick
+  > the card. **Direct choice is reserved for the deep cards**, where it reads as the branch's
+  > mastery. That is the same ladder [specializations.md](specializations.md) uses for Divination —
+  > *read* at the trunk, *order* at the title, *avert* and *hold* beyond it.
 
 You may Catch Breath at any time on your turn, even before you are Exhausted — but there is rarely a
 reason to. Two cards is two cards whenever you take them, and a turn spent breathing while you still

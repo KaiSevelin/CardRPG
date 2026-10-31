@@ -70,7 +70,7 @@ for (const rel of ["system.json", "lang/en.json"]) {
 }
 
 const manifest = JSON.parse(fs.readFileSync(path.join(root, "system.json"), "utf8"));
-check("manifest declares Card subtypes", Object.keys(manifest.documentTypes.Card ?? {}).length, 5);
+check("manifest declares Card subtypes", Object.keys(manifest.documentTypes.Card ?? {}).length, 6);
 check("manifest verified for v14", manifest.compatibility.verified, "14");
 
 // Every file the manifest promises must exist, or the system won't load at all.
@@ -1778,9 +1778,10 @@ check("core-rules explains the readout survives",
 check("ideas.md records what is built and what is not",
   /\*\*The Wild card itself is now a rule:\*\*/.test(
     fs.readFileSync(path.join(root, "../../rules/ideas.md"), "utf8")) ? "yes" : "no", "yes");
-check("the school it prices knows the card exists",
-  /\*\*the card exists now\*\* \(core-rules §6\)/.test(
-    fs.readFileSync(path.join(root, "../../rules/specializations.md"), "utf8")) ? "yes" : "no", "yes");
+const specDoc = fs.readFileSync(path.join(root, "../../rules/specializations.md"), "utf8");
+// Per CAST, not per formula: the more a shadow mage reaches, the less they can predict themselves.
+check("the school prices itself per cast",
+  /A \*\*Wild card per spell cast\*\*, until you sleep/.test(specDoc) ? "yes" : "no", "yes");
 check("nothing producing one is recorded as open",
   /\[OPEN\]\*\* \*\*Nothing in play produces a Wild yet/.test(equipDoc) ? "yes" : "no", "yes");
 
@@ -1792,8 +1793,125 @@ check("core-rules still refuses a general discard search",
   /\*\*Nothing general will ever let you\s+search your discard\*\*/.test(coreRules) ? "yes" : "no", "yes");
 check("and names the price a specific one must pay",
   /\*\*But a named thing may\.\*\*/.test(coreRules) ? "yes" : "no", "yes");
-check("whose it is, is open",
-  /\*\*\[OPEN\]\*\* who gets it\./.test(coreRules) ? "yes" : "no", "yes");
+/*
+ * It has owners now, and what keeps seven of them from being one trick is the SHAPE of each reach,
+ * not the fact of it -- plus a depth rule: a combo early, a free choice only deep in a branch.
+ */
+check("the discard reach has named owners",
+  /\*\*Seven nodes get it, and none of them the same way\.\*\*/.test(coreRules) ? "yes" : "no", "yes");
+check("and choice is reserved for the deep cards",
+  /\*\*Direct choice is reserved for the deep cards\*\*/.test(coreRules) ? "yes" : "no", "yes");
+
+
+/* -------------------------------------------- */
+
+/*
+ * The Way of Mind cluster: the Wild Magic deck, the elements, and the price every Shadow spell pays.
+ */
+
+section("Wild Magic, and the element a Signature was already assuming");
+
+/* The condition vocabulary, read from source, so a surge cannot promise one that does not exist. */
+const conditionKeys = [...configSource
+  .slice(configSource.indexOf("CARDRPG.conditions = {"), configSource.indexOf("CARDRPG.shakeable"))
+  .matchAll(/^  ([a-zA-Z]+): /gm)].map(m => m[1]);
+check("condition vocabulary read from source", conditionKeys.length >= 20, true);
+
+/* The deck's shape is a design claim -- "a slight edge to the good" -- so it is countable. */
+const wildCards = content.WILD_MAGIC;
+const copies = t => wildCards.filter(c => c.turn === t).reduce((n, c) => n + (c.copies ?? 1), 0);
+check("Wild Magic deck size", wildCards.reduce((n, c) => n + (c.copies ?? 1), 0), 12);
+check("good, bad and both", `${copies("good")}, ${copies("bad")}, ${copies("both")}`, "5, 4, 3");
+check("the edge goes to the good", copies("good") > copies("bad") ? "yes" : "no", "yes");
+const strayTurn = wildCards.filter(c => !["good", "bad", "both"].includes(c.turn)).map(c => c.name);
+check("surges with no verdict", strayTurn.length ? strayTurn.join(", ") : "none", "none");
+/* Every surge must do something: steps the engine can land, or words the table resolves. */
+const emptySurge = wildCards.filter(c => !(c.steps ?? []).length && !c.text).map(c => c.name);
+check("surges that do nothing", emptySurge.length ? emptySurge.join(", ") : "none", "none");
+const stepSurges = wildCards.filter(c => (c.steps ?? []).length).length;
+check("surges the engine resolves itself", stepSurges, 7);
+/* A surge's condition has to exist, or it is a word on a card. */
+const strayCond = wildCards.flatMap(c => (c.steps ?? [])
+  .filter(s => s.condition && !conditionKeys.includes(s.condition))
+  .map(s => `${c.name}: ${s.condition}`));
+check("surges naming a condition that does not exist",
+  strayCond.length ? strayCond.join(", ") : "none", "none");
+
+/* The deck is reachable: the card type exists, the world builds it, and a Wild draw deals from it. */
+check("the card subtype is registered",
+  /wild: WildCardData/.test(entry) ? "yes" : "no", "yes");
+const setupSource = fs.readFileSync(path.join(root, "module/setup.mjs"), "utf8");
+check("the world builds the deck",
+  /makeCards\("Wild Magic", "deck", "wild\.deck"/.test(setupSource) ? "yes" : "no", "yes");
+check("a Wild draw deals a surge",
+  /for \(let i = 0; i < wilds; i\+\+\) await drawWildMagic\(actor\)/.test(decksSource) ? "yes" : "no", "yes");
+check("and says so when the world has no such deck",
+  /No Wild Magic deck in this world/.test(decksSource) ? "yes" : "no", "yes");
+
+/* -------------------------------------------- */
+
+/*
+ * The elements. "A line of your element" is written twice in way-cards and nothing granted one --
+ * the same shape as `ignores N armor` and `reach`, in a Signature rather than on an item.
+ */
+const elementBlock = configSource.slice(configSource.indexOf("CARDRPG.elements = {"),
+  configSource.indexOf("CARDRPG.ways"));
+const elements = [...elementBlock.matchAll(/^  ([a-z]+): \{/gm)].map(m => m[1]);
+check("elements declared", elements.join(", "), "fire, frost, storm, water");
+const strayElementCond = [...elementBlock.matchAll(/condition: "([a-zA-Z]+)"/g)]
+  .map(m => m[1]).filter(k => !conditionKeys.includes(k));
+check("elements naming a condition that does not exist",
+  strayElementCond.length ? strayElementCond.join(", ") : "none", "none");
+check("the spell slate carries one",
+  /element: new fields\.StringField/.test(itemSource) ? "yes" : "no", "yes");
+
+/* Every elemental formula has an element, and nothing else does. */
+const elemental = content.FORMULAS.filter(f => f.source === "Elemental Magic");
+check("elemental formulas", elemental.length, 4);
+const elementless = elemental.filter(f => !f.element).map(f => f.name);
+check("elemental formulas with no element",
+  elementless.length ? elementless.join(", ") : "none", "none");
+const strayElement = [...elemental, ...content.SHADOW_FORMULAS]
+  .filter(f => f.element && !elements.includes(f.element)).map(f => `${f.name}: ${f.element}`);
+check("formulas naming an element that does not exist",
+  strayElement.length ? strayElement.join(", ") : "none", "none");
+const wrongSchool = content.SHADOW_FORMULAS.filter(f => f.element).map(f => f.name);
+check("non-elemental formulas carrying an element",
+  wrongSchool.length ? wrongSchool.join(", ") : "none", "none");
+/* And the promise the field answers is still in the document that made it. */
+const wayDocEl = fs.readFileSync(path.join(root, "../../rules/way-cards.md"), "utf8");
+check("way-cards still says 'your element'",
+  (wayDocEl.match(/your element/g) ?? []).length, 3);
+check("the exclusivity is recorded, and reuses the faith group",
+  /`exclusive: "element"` with the element as the[\s\S]{0,4}`creed`/.test(specDoc) ? "yes" : "no", "yes");
+
+/* -------------------------------------------- */
+
+/* What every Shadow spell costs, as a field rather than a sentence. */
+check("the spell slate carries a Wild price",
+  /wilds: new fields\.NumberField/.test(itemSource) ? "yes" : "no", "yes");
+check("Shadow formulas pay it",
+  content.SHADOW_FORMULAS.filter(f => (f.wilds ?? 0) > 0).map(f => f.name).join(", "),
+  "Step Through");
+const freeShadow = content.SHADOW_FORMULAS.filter(f => !(f.wilds > 0)).map(f => f.name);
+check("Shadow formulas that pay nothing", freeShadow.length ? freeShadow.join(", ") : "none", "none");
+/* No other school may pay in Wilds, or the price stops being the school's. */
+const otherWilds = content.FORMULAS.filter(f => (f.wilds ?? 0) > 0).map(f => f.name);
+check("other schools paying in Wilds", otherWilds.length ? otherWilds.join(", ") : "none", "none");
+check("core-rules prices it per cast",
+  /\*\*every Shadow Magic\s+spell puts one in your deck\*\*/.test(coreRules) ? "yes" : "no", "yes");
+check("core-rules says why the good edge is not a discount",
+  /dilutes the Miss and the Critical \*\*equally\*\*/.test(coreRules) ? "yes" : "no", "yes");
+
+/*
+ * And the duplicate-key sweep, which this commit needed: `CARDRPG.Fate.Miss` was in en.json twice
+ * after the Wild work, because JSON.parse keeps the last of a pair in silence -- the same failure
+ * mode as a Foundry schema dropping an unknown key, in the one file the i18n checks all read.
+ */
+const langLines = fs.readFileSync(path.join(root, "lang/en.json"), "utf8");
+const langKeys = [...langLines.matchAll(/^\s*"([^"]+)":/gm)].map(m => m[1]);
+const dupes = langKeys.filter((k, i) => langKeys.indexOf(k) !== i);
+check("duplicate i18n keys", dupes.length ? [...new Set(dupes)].join(", ") : "none", "none");
 
 /* -------------------------------------------- */
 

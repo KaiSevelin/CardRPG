@@ -9,6 +9,7 @@
 import { CARDRPG } from "./config.mjs";
 import {
   fateCards, WARRIOR_DECK, GOBLIN_DECK, ITEMS, NPC_GEAR, FEATURES, FORMULAS,
+  SHADOW_FORMULAS, WILD_MAGIC,
   WARRIOR, GOBLIN, GOBLIN_ARCHER
 } from "./content.mjs";
 
@@ -126,6 +127,22 @@ export async function createStarterContent() {
   const goblinFateDiscard = await makeCards("Goblin — Fate Discard", "pile", "goblin.fateDiscard");
   // Each NPC type has its own fate deck, so a Cursed goblin doesn't hex the ogre beside it.
   const goblinIntent = await makeCards("Goblin — Intent", "pile", "goblin.intent");
+
+  /*
+   * The Wild Magic deck belongs to the WORLD, not to a caster: a surge is the world answering, and
+   * one deck means the table meets the same twelve possibilities every time, which is what makes
+   * them learnable. It cycles like any other deck, so a table that has seen Misfire knows it is out
+   * for a while -- information worth having, and the same reason the fate discard is face up.
+   */
+  await makeCards("Wild Magic", "deck", "wild.deck",
+    expand(WILD_MAGIC, def => ({
+      name: def.name,
+      type: "wild",
+      faces: [{ name: def.name }],
+      face: 0,
+      system: { steps: def.steps ?? [], turn: def.turn, text: def.text ?? "" }
+    })));
+  await makeCards("Wild Magic Discard", "pile", "wild.discard");
   note("goblin decks ready");
 
   /* --- slates, created as world Items so they can be dragged onto actors --- */
@@ -134,7 +151,8 @@ export async function createStarterContent() {
     ...NPC_GEAR.map(i => ({ ...slateData(i, "item"), tag: `item.${i.name}` })),
     ...FEATURES.map(f => ({ ...slateData(f, "feature"), tag: `feature.${f.name}` })),
     // Spells are slates too, and these four are the combo mechanic in playable form.
-    ...FORMULAS.map(f => ({ ...slateData(f, "spell"), tag: `spell.${f.name}` }))
+    ...FORMULAS.map(f => ({ ...slateData(f, "spell"), tag: `spell.${f.name}` })),
+    ...SHADOW_FORMULAS.map(f => ({ ...slateData(f, "spell"), tag: `spell.${f.name}` }))
   ];
 
   const slates = {};
