@@ -274,6 +274,17 @@ class Config:
     # Swap one copy of Strike for a card whose secondary is Shake Off 1, to price a dispel.
     shake_card: bool = False
     card_overrides: dict = field(default_factory=dict)
+    # Stamina: how many cards you may DRAW in a fight, as a stat rather than as your deck size.
+    #
+    # Today the deck IS the stamina, which has a defect: acquiring any card makes you last longer
+    # and pruning a bad one makes you last less, so a card's contents and a character's endurance
+    # are the same number. Stamina separates them -- the collection decides what you can do, the
+    # stat decides how long you can keep doing it.
+    #
+    # 0 keeps the old rule, which is how every figure published before this is reproduced.
+    # With it on: a fight starts with min(stamina, collection) random cards in the deck, the discard
+    # tops the deck back up while the budget lasts, and you are Exhausted when the budget is gone.
+    stamina: int = 0
 
 
 def cheb(a, b):
@@ -492,6 +503,13 @@ class Game:
                     pool = [n for n in deck if not self.gives_use(n)] or deck
                 deck.remove(min(pool, key=self.prune_value))
         rng.shuffle(deck)
+        # Stamina caps what comes to the fight: own twenty, bring ten, and which ten is the
+        # question. The rest is `reserve` -- not spent, just not here.
+        self.w['budget'] = cfg.stamina if cfg.stamina else None
+        self.w['reserve'] = []
+        if cfg.stamina and len(deck) > cfg.stamina:
+            self.w['reserve'] = deck[cfg.stamina:]
+            del deck[cfg.stamina:]
         if self.overloaded:
             for _ in range(min(2, len(deck))):
                 self.w['spent'].append(deck.pop(rng.randrange(len(deck))))
@@ -735,11 +753,27 @@ class Game:
     # --- round structure
     def refill(self):
         w = self.w
-        while len(w['hand']) < self.cfg.hand_size and w['draw']:
+        while len(w['hand']) < self.cfg.hand_size:
+            if w['budget'] is not None:
+                if w['budget'] <= 0:
+                    break
+                # The deck tops itself back up from the discard while the budget lasts: a thin
+                # collection means the same cards come round again, which is the price of a thin
+                # collection rather than a shorter fight.
+                if not w['draw'] and w['discard']:
+                    self.rng.shuffle(w['discard'])
+                    for _ in range(min(w['budget'], len(w['discard']))):
+                        w['draw'].append(w['discard'].pop())
+                if not w['draw']:
+                    break
+                w['budget'] -= 1
+            elif not w['draw']:
+                break
             w['hand'].append(w['draw'].pop())
         if not w['draw'] and 'deck_empty_round' not in self.s:
             self.s['deck_empty_round'] = self.round
-        w['exhausted'] = len(w['hand']) < 2 and not w['draw']
+        out = (w['budget'] is not None and w['budget'] <= 0) or not w['draw']
+        w['exhausted'] = len(w['hand']) < 2 and out
 
     def gob(self, gid):
         for g in self.gobs:
@@ -873,6 +907,11 @@ class Game:
         self.rng.shuffle(w['discard'])
         for _ in range(take):
             w['draw'].append(w['discard'].pop())
+        # Under stamina a breath has to buy BUDGET as well as cards, or it buys nothing at all:
+        # the deck already feeds itself from the discard, so moving cards would change which card
+        # comes next and not how many more there are.
+        if w['budget'] is not None:
+            w['budget'] += BREATH_RECOVERY
         self.rng.shuffle(w['draw'])
         self.s['catch_breath'] += 1
         self.log(f"  Warrior catches breath (recovers {take}, "

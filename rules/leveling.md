@@ -45,6 +45,34 @@ trunk, nine behind them. Faith fans out to twelve gods at once, because in that 
 The graph is not a ladder with a fixed top. **Its shape dictates how many levels there are**, so
 adding depth is a content question, not a rules change.
 
+### Two decisions about the shape  **[DECIDED 2026-11-01]**
+
+- **More than one minor node between majors.** A branch is not a chain of titles with a step between
+  them: two or three ordinary nodes separate each major node from the next. That is what gives the
+  minor nodes something to be — [specializations.md](specializations.md) finding 5 wants the crafts
+  (Brewer, Smith, Spy, Fence, Politician) to be *clusters along a branch* rather than titles, and
+  this is the room for them.
+
+  It is cheap only if most of them draw on the **common pool** ([way-cards.md](way-cards.md) §3.1),
+  which is six deliberately dull cards built for exactly this. Bespoke minor nodes at two or three
+  per edge would be upwards of a hundred pieces of content; pool draws are a line each.
+
+- **Cross edges: this is a graph, not a tree.** A node may have **more than one predecessor**, so two
+  branches can arrive at the same place and a hybrid is reachable without a new mechanism. The
+  *Half-mage* is the standing example — a Way of Shade node that pays in **spell slots** — and it
+  should be reachable from Mind as well as from the Duellist.
+
+  > **Cross edges make the sibling rule stricter, not looser.** §3 of
+  > [specializations.md](specializations.md) says nodes sharing a predecessor must occupy different
+  > cells. With one predecessor each, that is a handful of small sets; with several, **every pair
+  > sharing *any* predecessor** is a constraint, and the sets overlap. The graph validator (§8) has
+  > to compute sibling pairs over all predecessors rather than walking a parent pointer, and it will
+  > refuse more than a tree would.
+  >
+  > It also meets the exclusive groups (§3): a node reachable two ways can have one of its paths
+  > closed by a creed while the other stays open, which is a feature — it means an exclusive choice
+  > narrows *how* you get somewhere, not only *whether*.
+
 ## 2. Milestone
 
 **The GM says when.** No experience points, no thresholds, no tracking. Nothing in the rules counts
