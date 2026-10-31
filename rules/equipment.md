@@ -1043,6 +1043,29 @@ part: the target gets one clean turn, so a poisoner who uses it is betting on th
   Neglect was not the reason; the field was. And items had no `grants`, so a ring meant to give a
   spell slot gave nothing at all, silently, which is the failure mode a data model has: it **drops**
   a key it does not know rather than refusing it.
+- **Settled: the Wild fate card exists.** It was promised in five documents — ideas.md's *Overcast*,
+  leveling.md §5a.1's cost table, specializations.md twice, and Way of Mind's *Step Through* — and
+  the fate card schema allowed `miss` and `crit` and nothing else, so **Shadow Magic could not be
+  priced at all**: its entire cost is *"a permanent Wild card per formula"* and no such card could be
+  made. It is the third special now (core-rules §6): plain value, **no reshuffle**, permanent.
+
+  Finding it collapsed a triplication. `fateRank` was two bare numbers and *"is this card special"*
+  was written out three times — in `decks.mjs`, `combat.mjs` and the card's own data model — and
+  Wild is the card that would have broken all three differently, because it is the first special
+  that does **not** reshuffle. One `CARDRPG.fateSpecials` now carries rank, reshuffle and swing, and
+  the insertion path is one function rather than Blessed and Cursed inline.
+
+  It also broke a number on the way in: the tray's fate bar divided by a **hardcoded 20**, so one
+  Wild in the deck read as over 100%. The `2/k` swing readout is fine and that is not luck —
+  a Wild is marked `swing: false`, so it joins the `k` and never the `2`.
+
+- **[OPEN]** **Nothing in play produces a Wild yet, and the reason is worth knowing.** Shadow Magic's
+  price is paid *per formula prepared*, and **`prepared` is a schema field that nothing in the engine
+  reads or toggles** — spells are out of combat-playtest scope, so there is no preparation hook for a
+  price to hang on. *Overcast* is the other producer and ideas.md still says *"e.g. +2 value"*, which
+  is not a decided rule. So the card works, the insertion is one call (`addFateCards`), and the GM
+  can make one from a macro — what is missing is a rule that chooses to.
+
 - **Settled: reach is a field, and it is not range.** ⚡ Counter needed to know which weapons are
   long, and `range` could not say: it meant *"thrown this far"* on a Dagger and *"reaches this far"*
   on a Halberd, told apart only by the words in the verb's own `text`. That is the fourth time this

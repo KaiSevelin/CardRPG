@@ -97,11 +97,11 @@ export class CardRPGCombat extends Combat {
     const drawn = await moveRandom(deck, discard, need);
     if (!drawn.length) return 0;
 
-    const rank = card => card.system.special ? CARDRPG.fateRank[card.system.special] : card.system.value;
+    const rank = CARDRPG.fateValueOf;
     const value = advantage ? Math.max(...drawn.map(rank)) : rank(drawn[0]);
 
-    // Normal fate rules apply: a Miss or Critical shuffles that deck.
-    if (drawn.some(c => c.system.special)) {
+    // Normal fate rules apply: a Miss or Critical shuffles that deck. A Wild does not.
+    if (drawn.some(c => CARDRPG.fateSpecials[c.system.special]?.reshuffles)) {
       if (discard?.cards.size) await move(discard, deck, discard.cards.map(c => c.id));
       await deck.shuffle({ chatNotification: false });
     }

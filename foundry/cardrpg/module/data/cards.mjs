@@ -221,7 +221,8 @@ export class FateCardData extends foundry.abstract.TypeDataModel {
     return {
       value: new fields.NumberField({ integer: true, nullable: true, initial: 0 }),
       special: new fields.StringField({
-        required: false, blank: true, initial: "", choices: ["", "miss", "crit"]
+        required: false, blank: true, initial: "",
+        choices: [...Object.keys(CARDRPG.fateSpecials), ""]
       }),
       /**
        * Blessed and Cursed shuffle in TEMPORARY copies which the rules remove when drawn
@@ -232,22 +233,29 @@ export class FateCardData extends foundry.abstract.TypeDataModel {
     };
   }
 
-  /** Miss < -2 < -1 < 0 < +1 < +2 < Critical, for advantage and disadvantage. */
+  /** Miss < -2 < -1 < 0 < Wild < +1 < +2 < Critical, for advantage and disadvantage. */
   get rank() {
-    if (this.special) return CARDRPG.fateRank[this.special];
+    if (this.special) return CARDRPG.fateSpecials[this.special]?.rank ?? 0;
     return this.value;
   }
 
-  /** Apply this card to a value. A Miss does nothing; a Critical doubles. */
+  /**
+   * Apply this card to a value. A Miss does nothing; a Critical doubles; a **Wild leaves it alone**
+   * -- "the spell still happens" (ideas.md), and what follows is the Wild Magic draw, not a number.
+   */
   apply(value) {
     if (this.special === "miss") return 0;
     if (this.special === "crit") return value * 2;
+    if (this.special === "wild") return Math.max(0, value);
     return Math.max(0, value + this.value);
   }
 
-  /** Miss and Critical both trigger a reshuffle, which is what makes the fate counter a risk dial. */
+  /**
+   * Miss and Critical trigger a reshuffle, which is what makes the fate counter a risk dial -- and
+   * a Wild does not, which is why this cannot simply ask whether the card is special.
+   */
   get reshuffles() {
-    return !!this.special;
+    return !!CARDRPG.fateSpecials[this.special]?.reshuffles;
   }
 
   get label() {

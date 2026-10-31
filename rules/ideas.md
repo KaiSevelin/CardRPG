@@ -12,6 +12,10 @@ Ideas we like but haven't decided on. Each could become a rule later.
 | NPC deck | Enemy behaviour | Boss phases and chaos |
 
 ### Wild magic and miscasts (fate deck)
+**The Wild card itself is now a rule:** core-rules.md, section 6. It is in the fate deck's schema, it
+resolves at plain value, it does not reshuffle, and it is permanent. What is still an idea is
+everything that *produces* one and the deck it points at.
+
 - **Overcast:** a caster can boost a spell (e.g. +2 value) by shuffling a **Wild** card into their own fate deck.
 - Drawing a Wild card: the spell still happens, and you also draw from a **Wild Magic deck**. Cards range from good to dangerous: *Echo* (the spell happens twice), *Blink* (teleport 3), *Backlash* (Dazed), *Misfire* (hits the nearest creature), *Glow* (can't be Invisible this fight).
 - Wild cards stay until a long rest, so the more a caster pushes, the less predictable they get.

@@ -101,7 +101,7 @@ Direct magic is cast in combat. Ritual magic is not, and anyone literate can do 
 | **Glamour** | Glamour | Control | An elven debt, as an obligation |
 | **Tattoo Magic** | Styrka | Deck shape | A secret the GM holds against you, per formula |
 | **Asceticism** | Asketism | Deck shape | Parts of your body |
-| **Shadow Magic** | Skugga | Position | A permanent Wild card per formula |
+| **Shadow Magic** | Skugga | Position | A permanent Wild card per formula — **the card exists now** (core-rules §6) |
 | **Spiritualism** | Spiritualism | Preparation | A pact with a minor god, per formula, as an obligation |
 | **Household Magic** | Hushållsmagi | *(out of combat)* | Negotiation with elf-kin, as an obligation |
 | **Ward Magic** ✱ | Bannmagi | **Reactions** | Spent — a ward held in reserve is a card gone for the fight |

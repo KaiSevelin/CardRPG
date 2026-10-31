@@ -220,7 +220,7 @@ export async function drawFate(actor, value, mode = 0) {
   const drawn = await moveRandom(deck, discard, need);
   if (!drawn.length) return { result: value, drawn: [], used: null, reshuffled: false };
 
-  const rank = card => card.system.special ? CARDRPG.fateRank[card.system.special] : card.system.value;
+  const rank = CARDRPG.fateValueOf;
   const used = mode === 0
     ? drawn[0]
     : drawn.reduce((best, card) => {
@@ -234,18 +234,65 @@ export async function drawFate(actor, value, mode = 0) {
   const temporary = drawn.filter(c => c.system.temporary);
   for (const card of temporary) await card.delete();
 
-  // Either card being a Miss or Critical reshuffles the deck.
-  const reshuffled = drawn.some(c => c.system.special);
+  /*
+   * Either card being a Miss or Critical reshuffles the deck -- and a Wild does NOT, which is the
+   * whole of what makes it permanent. Asking whether the card is special would reshuffle on a Wild
+   * and quietly undo the one thing it is for.
+   */
+  const reshuffled = drawn.some(c => CARDRPG.fateSpecials[c.system.special]?.reshuffles);
   if (reshuffled) await reshuffleFate(actor);
 
-  return { result, drawn, used, reshuffled, temporary: temporary.length };
+  /*
+   * A Wild is announced wherever it is drawn, rather than by each caller: it is the one fate card
+   * whose result is a question for the table (the Wild Magic draw, ideas.md) instead of a number,
+   * and a heal, an initiative and a Strike would otherwise each have to remember to mention it.
+   */
+  const wilds = drawn.filter(c => c.system.special === "wild").length;
+  if (wilds) {
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor }),
+      content: `<div class="cardrpg"><p><strong>${actor.name}</strong> draws `
+        + `<strong>Wild</strong>${wilds > 1 ? ` &times;${wilds}` : ""}: the action resolves at its `
+        + `plain value, and the Wild Magic draw follows. <em>The card stays in the deck.</em></p></div>`
+    });
+  }
+
+  return { result, drawn, used, reshuffled, temporary: temporary.length, wilds };
 }
 
 /** Apply a fate card to a value, without relying on the data model being live. */
 export function applyFate(value, card) {
   if (card.system.special === "miss") return 0;
   if (card.system.special === "crit") return value * 2;
+  // "The spell still happens" (ideas.md): a Wild is a plain resolution and a question afterwards.
+  if (card.system.special === "wild") return Math.max(0, value);
   return Math.max(0, value + (card.system.value ?? 0));
+}
+
+/**
+ * Put a special card into an actor's fate deck and shuffle.
+ *
+ * The one insertion path, because there are now two reasons to insert and they differ in exactly
+ * one field: **Blessed and Cursed** shuffle in a `temporary` copy the rules remove when it is drawn
+ * (core-rules 6), and a **Wild** is permanent -- it stays until a long rest at least, and Shadow
+ * Magic's is for good (specializations.md). Writing the second one out beside the first is how the
+ * two would drift.
+ *
+ * @returns {Promise<number>} how many cards went in.
+ */
+export async function addFateCards(actor, { special, count = 1, temporary = false } = {}) {
+  const rule = CARDRPG.fateSpecials[special];
+  const deck = deckOf(actor, "fate");
+  if (!rule || !deck || count < 1) return 0;
+
+  const label = game.i18n.localize(rule.label);
+  await deck.createEmbeddedDocuments("Card", Array.from({ length: count }, () => ({
+    name: temporary ? `${label} (temporary)` : label,
+    type: "fate",
+    system: { special, temporary }
+  })));
+  await deck.shuffle({ chatNotification: false });
+  return count;
 }
 
 /** Everything back into the fate deck, shuffled. */

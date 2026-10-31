@@ -1664,6 +1664,137 @@ check("core-rules allows a longer step",
 check("the redundant clause is recorded as open",
   /Roll With It's second clause is already the rule/.test(wayDoc) ? "yes" : "no", "yes");
 
+
+/* -------------------------------------------- */
+
+/*
+ * The Wild fate card (core-rules 6, from ideas.md).
+ *
+ * Promised in five documents and absent from the schema, which meant Shadow Magic -- whose entire
+ * price is "a permanent Wild card per formula" -- could not be priced. It is also the first special
+ * that does NOT reshuffle, so it is the card that would have broken every place the "is this
+ * special" test was written out by hand, and there were three of those.
+ */
+
+section("the Wild fate card, and the two numbers it could have broken");
+
+const specialsBlock = configSource.slice(
+  configSource.indexOf("CARDRPG.fateSpecials = {"),
+  configSource.indexOf("CARDRPG.fateValueOf"));
+const specials = [...specialsBlock.matchAll(/^  ([a-z]+): \{([^}]*)\}/gm)]
+  .map(m => ({ key: m[1], body: m[2] }));
+check("fate specials declared", specials.map(s => s.key).join(", "), "miss, crit, wild");
+check("the old bare rank map is gone",
+  /CARDRPG\.fateRank/.test(configSource) ? "still there" : "gone", "gone");
+
+/* Every special needs all three properties, or one of the readers below falls back to a guess. */
+const thin = specials.filter(s =>
+  !/rank: /.test(s.body) || !/reshuffles: /.test(s.body) || !/swing: /.test(s.body)).map(s => s.key);
+check("fate specials missing a property", thin.length ? thin.join(", ") : "none", "none");
+
+/*
+ * The two that reshuffle are the two that swing, and Wild is neither. This is the whole of what
+ * keeps the 2/k readout true (hud-spec 4.2): exactly one Miss and one Critical between reshuffles.
+ */
+const reshufflers = specials.filter(s => /reshuffles: true/.test(s.body)).map(s => s.key);
+check("fate specials that reshuffle", reshufflers.join(", "), "miss, crit");
+const swings = specials.filter(s => /swing: true/.test(s.body)).map(s => s.key);
+check("fate specials that are swings", swings.join(", "), "miss, crit");
+check("Wild does not reshuffle",
+  /reshuffles: false/.test(specials.find(s => s.key === "wild").body) ? "yes" : "no", "yes");
+check("Wild is worth nothing either way",
+  /rank: 0/.test(specials.find(s => s.key === "wild").body) ? "yes" : "no", "yes");
+
+/* The card may actually be made, which is what five documents were promising. */
+check("the schema allows every special",
+  /choices: \[\.\.\.Object\.keys\(CARDRPG\.fateSpecials\), ""\]/.test(cardsSource) ? "yes" : "no", "yes");
+check("a Wild resolves at its plain value",
+  /if \(this\.special === "wild"\) return Math\.max\(0, value\);/.test(cardsSource) ? "yes" : "no", "yes");
+check("and so does the live-data-free path",
+  /if \(card\.system\.special === "wild"\) return Math\.max\(0, value\);/.test(decksSource)
+    ? "yes" : "no", "yes");
+
+/*
+ * The triplication. "Is this card special" was written out in three files with three chances to
+ * disagree, and a card that is special without reshuffling is exactly what would have exposed that.
+ */
+const combatSource = fs.readFileSync(path.join(root, "module/combat.mjs"), "utf8");
+for (const [name, src] of [["decks", decksSource], ["combat", combatSource]]) {
+  check(`${name} reshuffles from the config`,
+    /drawn\.some\(c => CARDRPG\.fateSpecials\[c\.system\.special\]\?\.reshuffles\)/.test(src)
+      ? "yes" : "no", "yes");
+  check(`${name} ranks from the config`,
+    /CARDRPG\.fateValueOf/.test(src) ? "yes" : "no", "yes");
+}
+check("the data model reshuffles from the config",
+  /CARDRPG\.fateSpecials\[this\.special\]\?\.reshuffles/.test(cardsSource) ? "yes" : "no", "yes");
+/*
+ * Nowhere may ask whether the card is special and MEAN "does it reshuffle" -- which is the exact
+ * shape all three files used before Wild. Asking whether it is special to choose between a rank
+ * lookup and a plain value is fine and is what `rank` still does; this is only about the reshuffle.
+ */
+const loose = [["decks", decksSource], ["combat", combatSource], ["cards", cardsSource]]
+  .filter(([, src]) =>
+    /some\(c => c\.system\.special\)/.test(src) || /reshuffles\(\) \{\s*return !!this\.special/.test(src))
+  .map(([name]) => name);
+check("files deciding a reshuffle from bare specialness",
+  loose.length ? loose.join(", ") : "none", "none");
+
+/* One insertion path, because there are two reasons to insert and they differ in one field. */
+check("one path puts a card into a fate deck",
+  /export async function addFateCards/.test(decksSource) ? "yes" : "no", "yes");
+check("Blessed and Cursed use it",
+  /await addFateCards\(target, \{ special: fateCard, temporary: true \}\)/.test(resolveSource)
+    ? "yes" : "no", "yes");
+check("nothing builds a fate card by hand any more",
+  /createEmbeddedDocuments\("Card", \[\{\s*name: fateCard/.test(resolveSource) ? "still does" : "none",
+  "none");
+
+/* A Wild is a question for the table, so every draw path has to say it was drawn -- not each caller. */
+check("a Wild is announced where fate is drawn",
+  /const wilds = drawn\.filter\(c => c\.system\.special === "wild"\)\.length/.test(decksSource)
+    ? "yes" : "no", "yes");
+/* And the chat card names a special from config, so a fourth needs no case there. */
+check("the chat card names the special from config",
+  /CARDRPG\.fateSpecials\[special\]\?\.label/.test(resolveSource) ? "yes" : "no", "yes");
+
+/*
+ * The number a permanent card breaks. The fate bar divided by a hardcoded 20, so one Wild read as
+ * over 100% -- the kind of bug that only appears once the thing it assumed stops being true.
+ */
+check("the fate bar counts the real deck",
+  /\/ Math\.max\(1, fateTotal\)/.test(traySource) ? "yes" : "no", "yes");
+check("the fate bar no longer assumes twenty",
+  /\(counts\.fate \?\? 0\) \/ 20/.test(traySource) ? "still does" : "no", "no");
+check("the printed deck is still twenty", fate.length, 20);
+
+/* The rules have to carry all of it, including why the readout survives. */
+check("core-rules documents the Wild",
+  /^#### Wild$/m.test(coreRules) ? "yes" : "no", "yes");
+check("core-rules says it does not reshuffle",
+  /\| reshuffles the deck \| \*\*yes\*\* \| \*\*no\*\* \|/.test(coreRules) ? "yes" : "no", "yes");
+check("core-rules explains the readout survives",
+  /joins the `k` and never the `2`/.test(coreRules) ? "yes" : "no", "yes");
+check("ideas.md records what is built and what is not",
+  /\*\*The Wild card itself is now a rule:\*\*/.test(
+    fs.readFileSync(path.join(root, "../../rules/ideas.md"), "utf8")) ? "yes" : "no", "yes");
+check("the school it prices knows the card exists",
+  /\*\*the card exists now\*\* \(core-rules §6\)/.test(
+    fs.readFileSync(path.join(root, "../../rules/specializations.md"), "utf8")) ? "yes" : "no", "yes");
+check("nothing producing one is recorded as open",
+  /\[OPEN\]\*\* \*\*Nothing in play produces a Wild yet/.test(equipDoc) ? "yes" : "no", "yes");
+
+/*
+ * Searching the discard: refused in general, and left open to ONE owner by name. Catch Breath's
+ * randomness is load-bearing -- a deck you can search is a deck with no weak cards in it.
+ */
+check("core-rules still refuses a general discard search",
+  /\*\*Nothing general will ever let you\s+search your discard\*\*/.test(coreRules) ? "yes" : "no", "yes");
+check("and names the price a specific one must pay",
+  /\*\*But a named thing may\.\*\*/.test(coreRules) ? "yes" : "no", "yes");
+check("whose it is, is open",
+  /\*\*\[OPEN\]\*\* who gets it\./.test(coreRules) ? "yes" : "no", "yes");
+
 /* -------------------------------------------- */
 
 console.log(failures

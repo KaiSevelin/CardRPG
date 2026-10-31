@@ -228,6 +228,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     const myCombatant = combat?.combatants.find(c => c.actor?.id === actor.id);
     const counts = system.deckCounts ?? {};
     const deckTotal = Math.max(1, (counts.draw ?? 0) + (counts.discard ?? 0) + (counts.hand ?? 0));
+    const fateTotal = (counts.fate ?? 0) + (counts.fateDiscard ?? 0);
 
     const slates = actor.items.filter(i => i.type === "item");
     const describeItem = i => ({
@@ -303,7 +304,14 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       })),
 
       counts,
-      fatePct: Math.round(100 * (counts.fate ?? 0) / 20),
+      /*
+       * Against the deck's REAL size, not a hardcoded 20. A Wild is a permanent passenger
+       * (ideas.md), so a fate deck can be larger than the printed twenty -- and this bar read over
+       * 100% the moment one went in.
+       */
+      fatePct: Math.round(100 * (counts.fate ?? 0) / Math.max(1, fateTotal)),
+      // Exactly one Miss and one Critical between reshuffles, which is what makes 2/k true. Wilds
+      // do not reshuffle and are not swings, so they are in `k` and not in the 2.
       fateSwing: counts.fate ? Math.min(100, Math.round(200 / counts.fate)) : null,
       playArea: this.#playArea(),
       leftDecks: this.#leftDecks(),

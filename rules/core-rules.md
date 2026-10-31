@@ -690,6 +690,32 @@ Each character has their own 20-card fate deck:
 
 - **Blessed**: shuffle a temporary *Critical* into your fate deck. It is removed when drawn.
 - **Cursed**: shuffle a temporary *Miss* into your fate deck. It is removed when drawn.
+- **Wild**: a **permanent** passenger, and the third special card.
+
+#### Wild
+
+A **Wild** is not a swing. The action **resolves at its plain value** — no bonus, no penalty, and
+never a Miss — and then the table draws from the **Wild Magic deck**
+([ideas.md](ideas.md), *Wild magic and miscasts*), which is where the interesting part lives.
+
+Three things make it different from the other two specials, and all three matter:
+
+| | Miss / Critical | Wild |
+|---|---|---|
+| reshuffles the deck | **yes** | **no** |
+| stays in the deck | one of each, always | **permanently**, until something removes it |
+| what it does to the value | nothing / doubles | **nothing at all** |
+
+**It is a cost you accept, not one inflicted on you.** Wilds arrive because somebody reached for
+more power than they had: *Overcast* trades a Wild for a stronger spell, and **Shadow Magic's price
+is a permanent Wild per formula** ([specializations.md](specializations.md)) — the one school whose
+whole cost is written in this card.
+
+> **A Wild does not break the `2/k` readout, and this is why.** That number is true because exactly
+> one Miss and one Critical sit in the deck between reshuffles; a Wild is **not** a swing and does
+> **not** reshuffle, so it joins the `k` and never the `2`. The practical effect is that a deck
+> carrying Wilds is **less** swingy per draw and takes longer to come round — which is the shape of
+> the bargain: a wild mage's luck is flatter, stranger, and harder to read.
 - **The reshuffle on Miss and Critical is load-bearing.** It means the order of a fate deck is never
   reliable for long, which is what keeps anything that *looks at or rearranges* a fate deck — a
   divination, a feature, a blessing — from banking two good draws. You can aim one.
@@ -1084,8 +1110,25 @@ Your action deck is your stamina.
   costs is the turn. Breathe often enough and every discarded card returns, which is what makes the
   discard a cycle rather than a drain.
 
-  **The recovery is random.** Choosing would let you fish your best card back every time you stopped
-  for breath, which turns a recovery into a tutor.
+  **The recovery is random.** Choosing would let you fish your best card back every time you
+  stopped for breath, which turns a recovery into a tutor. **Nothing general will ever let you
+  search your discard** — it is the kind of rule that quietly rewrites every deck in the game, since
+  a deck you can search is a deck with no weak cards in it.
+
+  > **But a named thing may.** This is a rule worth one owner, the way *Over and Past* owns walking
+  > through enemies (section 11) and *The Wall* owns stacking Blocks (section 4): a specific spell,
+  > a specific node or a specific combo may reach into a discard **by name**, and then it is that
+  > character's trick rather than everybody's habit. What such an effect has to pay is set by what
+  > breathing costs:
+  >
+  > - it takes **one** card, not two — a breath's whole yield is two, and choosing is worth more
+  >   than counting;
+  > - it costs a **card or a slot**, never a free rider on something else;
+  > - and it may not be repeatable within a fight, or the deck stops having a bottom.
+  >
+  > **[OPEN]** who gets it. The Divination branch owns looking at and reordering *fate* decks
+  > ([specializations.md](specializations.md)) and this is the **action** deck, so it is not
+  > obviously theirs; Asceticism, which already cares what is in your hand, is the other candidate.
 
 You may Catch Breath at any time on your turn, even before you are Exhausted — but there is rarely a
 reason to. Two cards is two cards whenever you take them, and a turn spent breathing while you still

@@ -15,7 +15,9 @@
  */
 
 import { CARDRPG } from "./config.mjs";
-import { drawFate, deckOf, uprightCards, discardCards, cardName } from "./decks.mjs";
+import {
+  drawFate, deckOf, uprightCards, discardCards, cardName, addFateCards
+} from "./decks.mjs";
 
 /* -------------------------------------------- */
 /*  Bonuses                                     */
@@ -849,10 +851,12 @@ async function attackCard(actor, info) {
   for (const bonus of bonuses.applied) chain.push(`${bonus.name} +${bonus.value}`);
 
   const modeLabel = mode > 0 ? " with advantage" : mode < 0 ? " with disadvantage" : "";
+  // The special's own name, from config, so a fourth one needs no case here -- Wild needed none.
+  const special = fate.used?.system.special;
   const fateLabel = fate.used
-    ? (fate.used.system.special === "miss" ? "Miss"
-      : fate.used.system.special === "crit" ? "Critical"
-        : (fate.used.system.value > 0 ? `+${fate.used.system.value}` : String(fate.used.system.value)))
+    ? (special
+      ? game.i18n.localize(CARDRPG.fateSpecials[special]?.label ?? special)
+      : (fate.used.system.value > 0 ? `+${fate.used.system.value}` : String(fate.used.system.value)))
     : "—";
 
   const parts = [
@@ -1116,18 +1120,11 @@ export async function resolveCondition(actor, { step, target }) {
      */
     const fateCard = CARDRPG.conditions[landed.key]?.temporaryFate;
     if (fateCard) {
-      const deck = deckOf(target, "fate");
-      if (deck) {
-        await deck.createEmbeddedDocuments("Card", [{
-          name: fateCard === "crit" ? "Critical (temporary)" : "Miss (temporary)",
-          type: "fate",
-          system: { special: fateCard, temporary: true }
-        }]);
-        await deck.shuffle({ chatNotification: false });
-        line += ` &mdash; a temporary ${fateCard === "crit" ? "Critical" : "Miss"} joins the fate deck`;
-      } else {
-        line += " &mdash; but there is no fate deck to shuffle it into";
-      }
+      const went = await addFateCards(target, { special: fateCard, temporary: true });
+      const label = game.i18n.localize(CARDRPG.fateSpecials[fateCard].label);
+      line += went
+        ? ` &mdash; a temporary ${label} joins the fate deck`
+        : " &mdash; but there is no fate deck to shuffle it into";
     }
 
     const already = conditions.find(c => c.key === landed.key);

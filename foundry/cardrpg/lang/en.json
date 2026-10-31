@@ -95,6 +95,9 @@
   "CARDRPG.Way.Shade": "Way of Shade",
   "CARDRPG.Way.Mind": "Way of Mind",
 
+  "CARDRPG.Fate.Miss": "Miss",
+  "CARDRPG.Fate.Crit": "Critical",
+  "CARDRPG.Fate.Wild": "Wild",
   "CARDRPG.Reaction.Parry": "Parry",
   "CARDRPG.Reaction.Block": "Block",
   "CARDRPG.Reaction.Sidestep": "Sidestep",

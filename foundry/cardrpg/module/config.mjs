@@ -305,7 +305,40 @@ CARDRPG.fateDeck = [
 ];
 
 /** Better/worse order, for advantage and disadvantage. */
-CARDRPG.fateRank = { miss: -99, crit: 99 };
+/**
+ * The fate deck's special cards: what each is worth when advantage compares two, and whether
+ * drawing it reshuffles the deck.
+ *
+ * This was `fateRank`, a bare map of two numbers, and the "is it special" test was written out
+ * three separate times -- in decks.mjs, combat.mjs and the card's own data model. Wild is the card
+ * that would have broken all three differently, because it is the first special that does **not**
+ * reshuffle: Miss and Critical are swings and clear the deck, a Wild is a permanent passenger.
+ *
+ * `swing` is what the 2/k readout counts (hud-spec 4.2). Exactly one Miss and one Critical sit in
+ * the deck between reshuffles, which is the whole basis of that number -- so a card that is special
+ * without being a swing has to be marked, not inferred.
+ */
+CARDRPG.fateSpecials = {
+  miss: { label: "CARDRPG.Fate.Miss", rank: -99, reshuffles: true, swing: true },
+  crit: { label: "CARDRPG.Fate.Crit", rank: 99, reshuffles: true, swing: true },
+  /*
+   * Wild (ideas.md, *Wild magic and miscasts*). Promised in five documents -- Shadow Magic's whole
+   * price is "a permanent Wild card per formula" (specializations.md) -- and absent from the deck
+   * until now, so the school could not be priced at all.
+   *
+   * **The action resolves at its plain value**: "the spell still happens". That makes a Wild a
+   * flattening card rather than a bad one -- no swing in either direction, and no Miss -- and the
+   * cost is that it is permanent, it dilutes the deck, and it is the one draw that hands the table
+   * a question instead of a number.
+   */
+  wild: { label: "CARDRPG.Fate.Wild", rank: 0, reshuffles: false, swing: false }
+};
+
+/** What a special fate card is worth against another, or the card's own value when it is plain. */
+CARDRPG.fateValueOf = card =>
+  (card?.system?.special
+    ? CARDRPG.fateSpecials[card.system.special]?.rank ?? 0
+    : card?.system?.value ?? 0);
 
 /* -------------------------------------------- */
 /*  Slates                                      */
