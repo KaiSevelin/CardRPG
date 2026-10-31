@@ -70,6 +70,15 @@
   "CARDRPG.Slot.Feet": "Feet",
   "CARDRPG.Slot.Pack": "Pack",
 
+  "CARDRPG.Ammo.Bow": "Bow",
+  "CARDRPG.Ammo.Crossbow": "Crossbow",
+  "CARDRPG.Ammo.Firearm": "Firearm",
+
+  "CARDRPG.Shot.IgnoresCover": "Ignores cover",
+  "CARDRPG.Shot.PullsShooter": "Pulls you to the target",
+  "CARDRPG.Shot.SeesInvisible": "May target the Invisible",
+  "CARDRPG.Shot.CarriesPotion": "Carries a potion",
+
   "CARDRPG.Group.Body": "Body",
   "CARDRPG.Group.Training": "Training",
   "CARDRPG.Group.Tool": "Tool",

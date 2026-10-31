@@ -544,6 +544,9 @@ for (const card of [...content.WARRIOR_DECK, ...content.GOBLIN_DECK]) {
   steps.push(...(card.primary ?? []), ...(card.secondary ?? []), ...(card.sequence ?? []));
 }
 for (const spell of content.FORMULAS) steps.push(spell.effect);
+// A piece of magical ammunition is a step too (core-rules 4), so it gets the same key check: a
+// misspelled `intensity` on a Frost-dipped Bolt would be dropped exactly as quietly.
+for (const item of content.ITEMS) if (item.shot) steps.push(item.shot);
 
 /*
  * Step keys against the schema. A data model only validates once Foundry is running, and a
@@ -556,7 +559,7 @@ const stepBlock = cardsSource.slice(cardsSource.indexOf("export function stepFie
 const stepKeys = new Set(
   [...stepBlock.slice(0, stepBlock.indexOf("\n}")).matchAll(/^    ([a-zA-Z]+):/gm)].map(m => m[1])
 );
-check("stepField keys read from source", stepKeys.size, 14);
+check("stepField keys read from source", stepKeys.size, 15);
 
 const strayKeys = new Set();
 for (const step of steps) {
@@ -902,8 +905,8 @@ check("carry limit matches core-rules", /CARRY_LIMIT = (\d+)/.exec(simSource)?.[
  * `ignores N armor` used to be prose on the verb line and nothing else: resolve.mjs subtracted the
  * whole of a target's armour, so eight items promised something the engine never did. Prose is not
  * a rule, which is the answer to the open question of whether this should be a tag -- and the
- * reason it got urgent is measured, not argued: against armoured infantry an arquebus wins 52.9%
- * of fights where a longsword wins 0.9%, and the entire gap is this one number.
+ * reason it got urgent is measured, not argued: against armoured infantry an arquebus wins 46.5%
+ * of fights where a longsword wins 0.8%, and the entire gap is this one number.
  *
  * Now that it is a field there are two of it, so the check is that they agree. A card that says
  * one thing and resolves another is worse than the gap was.
@@ -930,6 +933,173 @@ check("engine subtracts what a line ignores",
 // Off the armour, never off Block: a bolt finds a gap in plate, not past a raised shield.
 check("ignores is kept off Block",
   /block\s*=\s*target\.system\.block/.test(resolveSource) ? "yes" : "no", "yes");
+
+
+/*
+ * Ammunition, both halves of it (core-rules 4).
+ *
+ * "It must suit the weapon: an arrow is not a ball" was the same disease `ignores N armor` had and
+ * in a worse place: the suitability rule was prose in two documents and prose on the item's own
+ * `text`, so nothing in the game stopped a Silvered Head going down a musket. It takes two fields
+ * to fix -- the weapon names the class it takes, the piece names the classes it suits -- and two
+ * fields is two things that can drift, from each other and from the table in equipment.md 8.3.
+ *
+ * So everything below is the same shape of check: the vocabulary is read out of config, both sides
+ * are held to it, and the prose is held to both.
+ */
+section("ammunition: both halves of the rule");
+
+const slates = [...content.ITEMS, ...content.NPC_GEAR];
+const ammoClasses = [...configSource
+  .slice(configSource.indexOf("CARDRPG.ammoKinds = {"), configSource.indexOf("CARDRPG.shotEffects"))
+  .matchAll(/^  ([a-zA-Z]+): \{/gm)].map(m => m[1]);
+check("ammunition classes declared", ammoClasses.join(", "), "bow, crossbow, firearm");
+
+/* The weapon's half. The `ranged` tag is the independent list to check against: a weapon that
+ * shoots and takes nothing is a weapon no piece of ammunition can ever be fired from. */
+const takers = slates.filter(i => i.ammo);
+check("weapons that take ammunition", takers.length, 9);
+const rangedTagged = slates.filter(i => i.tags?.includes("ranged"));
+const noClass = rangedTagged.filter(i => !i.ammo).map(i => i.name);
+check("ranged weapons that take no class", noClass.length ? noClass.join(", ") : "none", "none");
+// And the other direction: a thrown axe IS the projectile, so it must not take one either.
+const notRanged = takers.filter(i => !i.tags?.includes("ranged")).map(i => i.name);
+check("ammunition classes on something not ranged",
+  notRanged.length ? notRanged.join(", ") : "none", "none");
+const strayTakes = takers.filter(i => !ammoClasses.includes(i.ammo)).map(i => `${i.name}: ${i.ammo}`);
+check("weapons taking a class that does not exist",
+  strayTakes.length ? strayTakes.join(", ") : "none", "none");
+
+/* The piece's half. */
+const suitsNothing = ammo.filter(a => !(a.ammoFor ?? []).length).map(a => a.name);
+check("pieces that suit no weapon", suitsNothing.length ? suitsNothing.join(", ") : "none", "none");
+const strayFor = ammo.flatMap(a =>
+  (a.ammoFor ?? []).filter(k => !ammoClasses.includes(k)).map(k => `${a.name}: ${k}`));
+check("pieces naming a class that does not exist",
+  strayFor.length ? strayFor.join(", ") : "none", "none");
+const untaken = ammoClasses.filter(k => !takers.some(i => i.ammo === k));
+check("classes no weapon takes", untaken.length ? untaken.join(", ") : "none", "none");
+const unserved = ammoClasses.filter(k => !ammo.some(a => (a.ammoFor ?? []).includes(k)));
+check("classes no piece suits", unserved.length ? unserved.join(", ") : "none", "none");
+
+/*
+ * The prose against the field, which is the whole lesson of the section above. Every piece opens
+ * its text with the weapons it suits, so that sentence is parseable and must agree.
+ */
+const opens = {
+  "Bow or crossbow.": "bow,crossbow",
+  "Bow.": "bow",
+  "Crossbow.": "crossbow",
+  "Firearm only.": "firearm"
+};
+const saidDrift = [];
+for (const piece of ammo) {
+  const lead = /^([^.]*\.)/.exec(piece.text ?? "")?.[1];
+  const want = opens[lead];
+  if (!want) { saidDrift.push(`${piece.name}: text opens "${lead}"`); continue; }
+  const got = [...(piece.ammoFor ?? [])].sort().join(",");
+  if (got !== want) saidDrift.push(`${piece.name}: says ${lead} field ${got}`);
+}
+check("pieces whose text and field disagree", saidDrift.length ? saidDrift.join("; ") : "none", "none");
+
+/*
+ * Nine of the thirteen are a step and four are a hook, and nothing is both or neither.
+ *
+ * `shot` being a step is why this cost so little: a card's half and a piece of ammunition are the
+ * same shape, so the condition a Frost-dipped Bolt lands is landed by the code that already lands
+ * every condition a card prints. The four that are not a step each do something no step can say.
+ */
+const isStep = a => !!(a.shot && (a.shot.condition || a.shot.ignores || a.shot.area || a.shot.mod));
+check("pieces that are a step", ammo.filter(isStep).length, 9);
+check("pieces that are a hook", ammo.filter(a => a.shotEffect).length, 4);
+const inert = ammo.filter(a => !isStep(a) && !a.shotEffect).map(a => a.name);
+check("pieces that do nothing at all", inert.length ? inert.join(", ") : "none", "none");
+const doubled = ammo.filter(a => isStep(a) && a.shotEffect).map(a => a.name);
+check("pieces that are both", doubled.length ? doubled.join(", ") : "none", "none");
+
+// A condition it hands out has to be a condition the game has.
+const badCondition = ammo
+  .filter(a => a.shot?.condition && !configSource.includes("\n  " + a.shot.condition + ": {"))
+  .map(a => `${a.name}: ${a.shot.condition}`);
+check("pieces landing a condition that does not exist",
+  badCondition.length ? badCondition.join(", ") : "none", "none");
+
+// The one piece that is a number rather than a condition, held to its own prose as above.
+const shotPiercers = ammo.filter(a => /ignores \d+ armor/i.test(a.text ?? ""));
+check("pieces promising to ignore armor", shotPiercers.length, 1);
+const shotDrift = shotPiercers
+  .filter(a => a.shot?.ignores !== Number(/ignores (\d+) armor/i.exec(a.text)[1]))
+  .map(a => a.name);
+check("pieces whose armor promise and field disagree",
+  shotDrift.length ? shotDrift.join(", ") : "none", "none");
+
+/*
+ * The hooks, against the resolver that has to act on them -- and the one that deliberately does
+ * not. Silvered Head permits a target Invisible would otherwise protect, and Invisible currently
+ * hands out advantage instead of stopping a target, so there is nothing to permit yet. That is an
+ * open question in conditions.md, not an oversight, and this is what keeps the two in step: if the
+ * question is ever answered the resolver must grow the case, and if the field is ever quietly
+ * dropped from the enum this fails too.
+ */
+const declaredEffects = [...configSource
+  .slice(configSource.indexOf("CARDRPG.shotEffects = {"))
+  .split("};")[0]
+  .matchAll(/^  ([a-zA-Z]+): \{/gm)].map(m => m[1]);
+check("shot effects declared", declaredEffects.join(", "),
+  "ignoresCover, pullsShooter, seesInvisible, carriesPotion");
+const unused = declaredEffects.filter(k => !ammo.some(a => a.shotEffect === k));
+check("shot effects no piece uses", unused.length ? unused.join(", ") : "none", "none");
+const acted = declaredEffects.filter(k =>
+  resolveSource.includes(`case "${k}":`) || resolveSource.includes(`=== "${k}"`));
+check("shot effects the resolver acts on", acted.join(", "),
+  "ignoresCover, pullsShooter, carriesPotion");
+const conditionsDoc = fs.readFileSync(path.join(root, "../../rules/conditions.md"), "utf8");
+check("the question that holds Silvered Head still open",
+  conditionsDoc.includes("Whether **Invisible** should stop targeting") ? "yes" : "no", "yes");
+
+/*
+ * And the engine, because a field nothing reads is the prose again with extra steps.
+ */
+check("engine checks that a piece suits the weapon",
+  resolveSource.includes("ammo.system.suits(item)") ? "yes" : "no", "yes");
+check("engine adds what a shot ignores",
+  resolveSource.includes("shot?.ignores") ? "yes" : "no", "yes");
+// Gone whether the shot lands or misses: the delete has to sit OUTSIDE the hit test, before it.
+const spent = resolveSource.indexOf("await ammo.delete()");
+const hitGate = resolveSource.indexOf("if (!missed) {");
+check("the piece is spent before anything depends on the hit",
+  spent > 0 && hitGate > 0 && spent < hitGate, true);
+// Anchored on the whole disadvantage condition, not on the field name: the field is also named in
+// the line that merely explains itself in chat, and a check that matched there passed a resolver
+// that had stopped reading cover at all.
+check("cover is read where advantage is decided",
+  resolveSource.includes("(ranged || area) && target?.system?.cover && !ignoresCover")
+    ? "yes" : "no", "yes");
+const actorsSource = fs.readFileSync(path.join(root, "module/data/actors.mjs"), "utf8");
+check("cover exists on both actor models",
+  (actorsSource.match(/cover: new fields\.BooleanField/g) ?? []).length, 2);
+// Nocking costs no half of its own, so it must not be spending one anywhere.
+const traySource = fs.readFileSync(path.join(root, "module/tray.mjs"), "utf8");
+check("the nock asks before the Strike resolves",
+  traySource.includes("await this.#nock(item)") ? "yes" : "no", "yes");
+
+/*
+ * equipment.md 8.3 prints the same pairing in a table, and a table is the easiest thing in the
+ * project to leave behind: the For column is read here and held to the field.
+ */
+const s83 = equipDoc.slice(equipDoc.indexOf("### 8.3 Magical ammunition"),
+                           equipDoc.indexOf("## 9. Magic items"));
+check("section 8.3 found", s83.length > 1000, true);
+const docDrift = [];
+for (const piece of ammo) {
+  const row = s83.split("\n").find(l => l.startsWith("|") && l.includes(`**${piece.name}**`));
+  if (!row) { docDrift.push(`${piece.name}: no row in 8.3`); continue; }
+  const said = (row.split("|").slice(1, -1).map(c => c.trim()).at(2) ?? "")
+    .replace(/\*/g, "").replace(" only", "").split(",").map(x => x.trim()).sort().join(",");
+  const got = [...(piece.ammoFor ?? [])].sort().join(",");
+  if (said !== got) docDrift.push(`${piece.name}: doc ${said}, field ${got}`);
+}
+check("8.3 and the fields disagree", docDrift.length ? docDrift.join("; ") : "none", "none");
 
 
 

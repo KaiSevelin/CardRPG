@@ -22,6 +22,7 @@ import {
 } from "./decks.mjs";
 import {
   resolveAttack, resolveDefend, resolveHeal, resolveUse, resolveCondition, resolveShake,
+  reachableAmmo,
   resolveTaint, resolveCorrode, resolveLift, collectBonuses
 } from "./resolve.mjs";
 
@@ -1026,6 +1027,62 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     return picked;
   }
 
+  /**
+   * Nock one piece of magical ammunition, if any is within reach (core-rules 4).
+   *
+   * Nocking costs no half of its own, so this is a question and not an action: the plain shot is
+   * the default button, because a player who has to decline their own quiver on every Strike will
+   * stop carrying one. Nothing is asked at all unless the weapon takes ammunition and a suitable
+   * piece is on the belt.
+   */
+  async #nock(weapon) {
+    const pieces = reachableAmmo(this.actor, weapon);
+    if (!pieces.length) return { ammo: null, payload: null };
+
+    const chosen = await foundry.applications.api.DialogV2.wait({
+      window: { title: `${weapon.name}: nock a shaft` },
+      content: `<div class="cardrpg"><p>One piece per Strike, and it is gone whether the shot `
+        + `lands or misses.</p></div>`,
+      buttons: [
+        ...pieces.map(piece => ({
+          action: piece.id,
+          label: piece.system.shotLine ? `${piece.name} — ${piece.system.shotLine}` : piece.name
+        })),
+        { action: "plain", label: "Plain shot", default: true }
+      ],
+      rejectClose: false
+    });
+    const ammo = pieces.find(piece => piece.id === chosen) ?? null;
+    if (!ammo) return { ammo: null, payload: null };
+
+    /*
+     * A Hollow Bolt is the one piece that needs a second question, because what it does is deliver
+     * something else: the potion is the effect and the bolt is only the range.
+     */
+    if (ammo.system.shotEffect !== "carriesPotion") return { ammo, payload: null };
+
+    const drinkable = i => (i.system.verbs?.use?.value ?? null) !== null || !!i.system.verbs?.use?.text;
+    const potions = this.actor.items.filter(i =>
+      i.type === "item" && i.id !== ammo.id && drinkable(i)
+      && i.system.equipped && CARDRPG.slots[i.system.equippedSlot]?.freeEquip
+    );
+    if (!potions.length) {
+      ui.notifications.warn(`${ammo.name} has nothing to carry — put a potion on your belt.`);
+      return { ammo: null, payload: null };
+    }
+
+    const which = await foundry.applications.api.DialogV2.wait({
+      window: { title: `${ammo.name}: what does it carry?` },
+      content: `<div class="cardrpg"><p>Whatever you hit drinks it.</p></div>`,
+      buttons: [
+        ...potions.map(potion => ({ action: potion.id, label: potion.name })),
+        { action: "none", label: "Nothing — fire it empty" }
+      ],
+      rejectClose: false
+    });
+    return { ammo, payload: potions.find(potion => potion.id === which) ?? null };
+  }
+
   async #resolveStep(step, half, targets) {
     const actor = this.actor;
 
@@ -1035,7 +1092,12 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         if (!targets.length) return ui.notifications.warn("Target a token first.");
         const item = this.#itemFor(step.verb, half);
         if (!item) return ui.notifications.warn(`Nothing equipped can ${step.verb}.`);
-        await resolveAttack(actor, { verb: step.verb, item, mod: step.mod ?? 0, targets, step });
+        const { ammo, payload } = step.verb === "strike"
+          ? await this.#nock(item)
+          : { ammo: null, payload: null };
+        await resolveAttack(actor, {
+          verb: step.verb, item, mod: step.mod ?? 0, targets, step, ammo, payload
+        });
         // A condition printed on the same step rides in with the attack.
         if (step.condition) {
           for (const target of targets) await resolveCondition(actor, { step, target });

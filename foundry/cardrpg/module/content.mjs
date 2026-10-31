@@ -168,7 +168,7 @@ export const ITEMS = [
     verbs: { strike: verb(2, { range: 3, text: "range 3 thrown" }) }
   },
   {
-    name: "Shortbow", slot: "hands", fits: ["back"], hands: 2, tags: ["ranged"],
+    name: "Shortbow", ammo: "bow", slot: "hands", fits: ["back"], hands: 2, tags: ["ranged"],
     weight: 1, value: 25, kind: "Weapon",
     blurb: "Horn and sinew, strung short for close country.",
     verbs: { strike: verb(2, { range: 6 }) }
@@ -285,20 +285,20 @@ export const ITEMS = [
 
   /* ---- bows and crossbows ---- */
   {
-    name: "Longbow", slot: "hands", fits: ["back"], hands: 2, tags: ["heavy", "ranged"],
+    name: "Longbow", ammo: "bow", slot: "hands", fits: ["back"], hands: 2, tags: ["heavy", "ranged"],
     weight: 2, value: 50, kind: "Weapon",
     // The longbow's whole argument against a crossbow that hits harder: it fires every turn.
     blurb: "A yew stave taller than the archer. No reload -- that is what you are buying.",
     verbs: { strike: verb(3, { range: 10 }) }
   },
   {
-    name: "Crossbow", slot: "hands", fits: ["back"], hands: 2, tags: ["ranged"],
+    name: "Crossbow", ammo: "crossbow", slot: "hands", fits: ["back"], hands: 2, tags: ["ranged"],
     weight: 3, value: 60, kind: "Weapon",
     blurb: "Anyone can be taught one in a week, which is why lords dislike them.",
     verbs: { strike: verb(4, { ignores: 1, range: 8, text: "ignores 1 armor; Ready to reload" }) }
   },
   {
-    name: "Heavy Crossbow", slot: "hands", hands: 2, tags: ["heavy", "ranged"],
+    name: "Heavy Crossbow", ammo: "crossbow", slot: "hands", hands: 2, tags: ["heavy", "ranged"],
     weight: 5, value: 120, kind: "Weapon",
     blurb: "Cranked with a windlass. It goes through a shield and the arm behind it.",
     verbs: { strike: verb(5, { ignores: 1, range: 10, text: "ignores 1 armor; Ready to reload" }) }
@@ -306,19 +306,19 @@ export const ITEMS = [
 
   /* ---- firearms: matchlocks, and the reason plate stopped being worth its weight ---- */
   {
-    name: "Matchlock Pistol", slot: "hands", fits: ["belt"], hands: 1, tags: ["ranged"],
+    name: "Matchlock Pistol", ammo: "firearm", slot: "hands", fits: ["belt"], hands: 1, tags: ["ranged"],
     weight: 1, value: 70, kind: "Weapon",
     blurb: "One hand, so it goes beside a sword. A brace of them is two shots before a reload.",
     verbs: { strike: verb(3, { ignores: 2, range: 4, text: "ignores 2 armor; Ready to reload" }) }
   },
   {
-    name: "Arquebus", slot: "hands", fits: ["back"], hands: 2, tags: ["heavy", "ranged"],
+    name: "Arquebus", ammo: "firearm", slot: "hands", fits: ["back"], hands: 2, tags: ["heavy", "ranged"],
     weight: 4, value: 90, kind: "Weapon",
     blurb: "Loud, slow, and it does not care what you are wearing.",
     verbs: { strike: verb(5, { ignores: 2, range: 8, text: "ignores 2 armor; Ready to reload" }) }
   },
   {
-    name: "Matchlock Musket", slot: "hands", hands: 2, tags: ["heavy", "ranged"],
+    name: "Matchlock Musket", ammo: "firearm", slot: "hands", hands: 2, tags: ["heavy", "ranged"],
     weight: 5, value: 150, kind: "Weapon",
     blurb: "A rest to fire it from and a minute to load it. Worth both.",
     verbs: { strike: verb(6, { ignores: 2, range: 12, text: "ignores 2 armor; Ready to reload" }) }
@@ -510,7 +510,7 @@ export const ITEMS = [
     bonus: { verb: "strike", value: 1 }
   },
   {
-    name: "Masterwork Crossbow", slot: "hands", fits: ["back"], hands: 2, tags: ["ranged"],
+    name: "Masterwork Crossbow", ammo: "crossbow", slot: "hands", fits: ["back"], hands: 2, tags: ["ranged"],
     weight: 3, value: 300, kind: "Make", group: "make",
     // The best thing in the catalogue and not magic: it buys back the Ready.
     blurb: "A steel prod and a goat's-foot lever. It reloads in the hand.",
@@ -828,78 +828,107 @@ export const ITEMS = [
   {
     name: "Blunt Head", slot: "belt", tags: ["consumable"],
     weight: 0, value: 20, kind: "Ammunition", consumed: true,
+    ammoFor: ["bow", "crossbow"],
+    shot: { condition: "offBalance", duration: 1 },
     blurb: "No point at all, which is the point.",
     text: "Bow or crossbow. The target is Off-Balance (1). No save."
   },
   {
     name: "Bodkin Points", slot: "belt", tags: ["consumable"],
     weight: 0, value: 25, kind: "Ammunition", consumed: true,
+    ammoFor: ["bow", "crossbow"],
+    // The only piece that is a number rather than a condition, and it adds to the
+    // weapon's own: a bodkin on a crossbow ignores 3 between them.
+    shot: { ignores: 2 },
     blurb: "A square spike, hardened. It is looking for a gap and will make one.",
     text: "Bow or crossbow. Ignores 2 armor."
   },
   {
     name: "Hollow Bolt", slot: "belt", tags: ["consumable"],
     weight: 0, value: 30, kind: "Ammunition", consumed: true,
+    ammoFor: ["crossbow"],
+    shotEffect: "carriesPotion",
     blurb: "The shaft unscrews. A fiddly, brilliant, disreputable idea.",
     text: "Crossbow. Carries one potion; whatever you hit drinks it."
   },
   {
     name: "Screaming Shaft", slot: "belt", tags: ["consumable"],
     weight: 0, value: 35, kind: "Ammunition", consumed: true,
+    ammoFor: ["bow"],
+    shot: { condition: "dazed", duration: 1, resist: "presence", dc: 5 },
     blurb: "Bored through so the air goes through it wrong.",
     text: "Bow. Dazed (1), resist Presence 5."
   },
   {
     name: "Chalked Shaft", slot: "belt", tags: ["consumable"],
     weight: 0, value: 40, kind: "Ammunition", consumed: true,
+    ammoFor: ["bow", "crossbow"],
+    shot: { condition: "marked", duration: 1 },
     blurb: "It leaves a smear that everyone can see and nobody can wipe off.",
     text: "Bow or crossbow. The target is Marked (1). No save."
   },
   {
     name: "Moth-wing Fletching", slot: "belt", tags: ["consumable"],
     weight: 0, value: 40, kind: "Ammunition", consumed: true,
+    ammoFor: ["bow"],
+    shotEffect: "ignoresCover",
     blurb: "It does not fly straight. It arrives anyway.",
     text: "Bow. This shot ignores cover entirely."
   },
   {
     name: "Oil-wrapped Shaft", slot: "belt", tags: ["consumable"],
     weight: 0, value: 45, kind: "Ammunition", consumed: true,
+    ammoFor: ["bow", "crossbow"],
+    shot: { condition: "burning", duration: 2, intensity: 1 },
     blurb: "Tow and pitch below the head. Lit from the match in your teeth.",
     text: "Bow or crossbow. Burning 1 (2)."
   },
   {
     name: "Net Bolt", slot: "belt", tags: ["consumable"],
     weight: 0, value: 50, kind: "Ammunition", consumed: true,
+    ammoFor: ["crossbow"],
+    shot: { condition: "grappled", duration: 1, resist: "might", dc: 5 },
     blurb: "A folded net on a blunt head. It opens in the air.",
     text: "Crossbow. Grappled (1), resist Might 5."
   },
   {
     name: "Whistling Shaft", slot: "belt", tags: ["consumable"],
     weight: 0, value: 55, kind: "Ammunition", consumed: true,
+    ammoFor: ["bow"],
+    shot: { condition: "compelled", duration: 1 },
     blurb: "Whoever it passes becomes very interested in who sent it.",
     text: "Bow. The target is Compelled (1) -- at you."
   },
   {
     name: "Frost-dipped Bolt", slot: "belt", tags: ["consumable"],
     weight: 0, value: 60, kind: "Ammunition", consumed: true,
+    ammoFor: ["crossbow"],
+    shot: { condition: "frozen", duration: 1, intensity: 1 },
     blurb: "Cold enough that the quiver frosts around it.",
     text: "Crossbow. Frozen 1 (1)."
   },
   {
     name: "Grapnel Bolt", slot: "belt", tags: ["consumable"],
     weight: 0, value: 70, kind: "Ammunition", consumed: true,
+    ammoFor: ["crossbow"],
+    shotEffect: "pullsShooter",
     blurb: "Barbed, with fifty feet of silk line. A bolt for closing.",
     text: "Crossbow. YOU are pulled to a square adjacent to the target."
   },
   {
     name: "Thunder-shot", slot: "belt", tags: ["consumable"],
     weight: 0, value: 80, kind: "Ammunition", consumed: true,
+    ammoFor: ["firearm"],
+    // The one area a non-caster can buy, so it is the step fields rather than a hook.
+    shot: { area: 1, areaKind: "blast" },
     blurb: "A paper cartridge of scrap. Nothing else gives a non-caster an area.",
     text: "Firearm only. The shot is Blast 1 on the target's square."
   },
   {
     name: "Silvered Head", slot: "belt", tags: ["consumable"],
     weight: 0, value: 90, kind: "Ammunition", consumed: true,
+    ammoFor: ["bow", "crossbow"],
+    shotEffect: "seesInvisible",
     blurb: "Silver remembers what it was aimed at.",
     text: "Bow or crossbow. You may target an Invisible enemy you have seen this fight."
   },
@@ -1166,7 +1195,7 @@ export const NPC_GEAR = [
     verbs: { strike: verb(3) }
   },
   {
-    name: "Goblin Shortbow", slot: "hands", fits: ["back"], hands: 2, tags: ["ranged"],
+    name: "Goblin Shortbow", ammo: "bow", slot: "hands", fits: ["back"], hands: 2, tags: ["ranged"],
     weight: 1, value: 0, npcGear: true, kind: "Weapon",
     verbs: { strike: verb(3, { range: 6 }) }
   }

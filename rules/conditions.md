@@ -602,4 +602,6 @@ condition is.
   counter to half the content, which is why none exists; the counter-argument is that a party with no
   Ward mage and no priest has no answer at all.
 - **[OPEN]** Whether **Invisible** should stop targeting rather than hand out advantage. It is the one
-  condition whose written effect and implemented effect are different things.
+  condition whose written effect and implemented effect are different things — and it now has
+  something waiting on it: the **Silvered Head** ([equipment.md](equipment.md) §8.3) is 90 gold for
+  permission to target an Invisible enemy, which is permission to do what anyone can already do.

@@ -89,7 +89,9 @@ export function carries(actor, key) {
  *
  * @returns {{mode: number, reasons: string[]}}
  */
-export function advantageFor(actor, target, { ranged = false, area = false, when = null } = {}) {
+export function advantageFor(actor, target, {
+  ranged = false, area = false, when = null, ignoresCover = false
+} = {}) {
   const reasons = [];
   let advantage = false;
   let disadvantage = false;
@@ -118,6 +120,21 @@ export function advantageFor(actor, target, { ranged = false, area = false, when
     disadvantage = true;
     reasons.push("ranged or area with an enemy adjacent");
   }
+
+  /*
+   * Cover (core-rules 11). The advantage table has cited it since the first draft and nothing read
+   * it, which is why Moth-wing Fletching could promise to ignore something that did not exist.
+   *
+   * It is a DECLARED state, not a line traced across the canvas: cover from figures would change
+   * the disadvantage on every ranged attack in the game, and every win rate this project has
+   * published was measured without it (../../sim/analysis-2026-10-30.md). So the GM marks it, the
+   * way they mark Prone, and `false` by default moves no measured number.
+   */
+  if ((ranged || area) && target?.system?.cover && !ignoresCover) {
+    disadvantage = true;
+    reasons.push("target is in cover");
+  }
+  if (target?.system?.cover && ignoresCover) reasons.push("cover ignored");
 
   if (advantage && disadvantage) {
     return { mode: 0, reasons: [...reasons, "advantage and disadvantage cancel"] };
@@ -311,24 +328,100 @@ export async function resolveShake(actor, { amount = 1, target = actor, key }) {
 }
 
 /**
+ * Magical ammunition within reach, for a weapon that takes any (core-rules 4).
+ *
+ * Reach is the belt rule, not a new one: a belt is free to grab from, so a piece on your belt
+ * rides the Strike and a piece in your pack is a Ready you have not paid. Ordinary ammunition is
+ * not here because it is not tracked at all -- a quiver is kilograms and a bow simply works.
+ */
+export function reachableAmmo(actor, weapon) {
+  if (!weapon?.system?.ammo) return [];
+  return (actor?.items ?? []).filter(i =>
+    i.type === "item"
+    && i.system.isAmmunition
+    && i.system.suits(weapon)
+    && i.system.equipped
+    && CARDRPG.slots[i.system.equippedSlot]?.freeEquip
+  );
+}
+
+/**
+ * Pull the shooter to the target (the Grapnel Bolt). The only thing in the catalogue that moves
+ * the person firing, which is why it gets a hook rather than a step: every step targets the target.
+ */
+async function pullShooterTo(actor, target) {
+  const token = actor?.getActiveTokens?.()[0];
+  const to = target?.getActiveTokens?.()[0];
+  if (!token || !to) {
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor }),
+      content: `<div class="cardrpg"><p><strong>${actor.name}</strong> is pulled to a square `
+        + `adjacent to the target. <em>No tokens placed -- the GM moves it.</em></p></div>`
+    });
+    return;
+  }
+
+  const size = canvas.grid.size;
+  const squares = [];
+  for (let dx = -1; dx <= 1; dx++) {
+    for (let dy = -1; dy <= 1; dy++) {
+      if (!dx && !dy) continue;
+      squares.push({ x: to.x + dx * size, y: to.y + dy * size });
+    }
+  }
+  // You cannot land on anybody: enemies block, and an ally's square is not a square you share.
+  const taken = new Set(canvas.tokens.placeables
+    .filter(t => t.id !== token.id)
+    .map(t => `${t.x},${t.y}`));
+  const free = squares.filter(sq => !taken.has(`${sq.x},${sq.y}`));
+  if (!free.length) {
+    ui.notifications.info("Nowhere adjacent to land -- the line is wasted.");
+    return;
+  }
+
+  // The nearest free one, so the pull is the shortest trip that gets you there.
+  const away = sq => Math.max(Math.abs(sq.x - token.x), Math.abs(sq.y - token.y));
+  const best = free.reduce((a, b) => (away(b) < away(a) ? b : a));
+  await token.document.update({ x: best.x, y: best.y });
+}
+
+/**
  * Resolve an attack against one target, and report every step so the arithmetic is auditable.
  *
  * Fate is drawn **once per action, not per target** -- an Area draws once and applies the same
  * result to everyone it hits, so a Critical doubles for all of them and a Miss wastes the lot.
+ *
+ * `ammo` is one piece of magical ammunition nocked onto this Strike (core-rules 4). It costs no
+ * half of its own, it must suit the weapon, its `shot` step folds into this one, and it is **gone
+ * whether the shot lands or misses**. `payload` is the potion a Hollow Bolt carries.
  */
-export async function resolveAttack(actor, { verb = "strike", item, mod = 0, targets = [], step = {} }) {
+export async function resolveAttack(actor, {
+  verb = "strike", item, mod = 0, targets = [], step = {}, ammo = null, payload = null
+}) {
   const line = item?.system.verbs?.[verb];
   if (!line || line.value === null) {
     ui.notifications.warn(`${item?.name ?? "That item"} has no ${verb} line.`);
     return null;
   }
 
+  /*
+   * Suitability is the one rule ammunition has that is not about effect, and it is checked here
+   * rather than in the picker: a nock that reaches the resolver from a macro or a replayed flag
+   * has to meet the same rule as a nock that came from a click.
+   */
+  if (ammo && !ammo.system.suits(item)) {
+    ui.notifications.warn(`${ammo.name} does not suit ${item.name}.`);
+    return null;
+  }
+  const shot = ammo ? ammo.system.shot : null;
+  const effect = ammo?.system.shotEffect ?? "";
+
   const base = line.value;
   const bonuses = collectBonuses(actor, verb, item);
-  const before = base + mod + bonuses.total;
+  const before = base + mod + (shot?.mod ?? 0) + bonuses.total;
 
   const ranged = !!(line.range && line.range > 1) || !!(step.range && step.range > 1);
-  const area = !!(line.area || step.area);
+  const area = !!(line.area || step.area || shot?.area);
 
   /*
    * The combo clause. `advantage` has to be settled before the draw and there is only one draw, so
@@ -340,14 +433,18 @@ export async function resolveAttack(actor, { verb = "strike", item, mod = 0, tar
 
   // One draw for the whole action.
   const first = targets[0] ?? null;
-  const { mode, reasons } = advantageFor(actor, first, { ranged, area, when });
+  const { mode, reasons } = advantageFor(actor, first, {
+    ranged, area, when, ignoresCover: effect === "ignoresCover"
+  });
   const fate = await drawFate(actor, before, mode);
+  // A Miss is a shot that went wide: nothing arrives, so nothing the piece promised arrives either.
+  const missed = fate.used?.system.special === "miss";
 
   const rows = [];
   for (const target of targets) {
     // `ignores N armor` comes off the armour, never off Block: a crossbow bolt finds a gap in
     // plate, it does not get past a raised shield (core-rules 5 keeps the two separate).
-    const pierce = line.ignores ?? 0;
+    const pierce = (line.ignores ?? 0) + (step.ignores ?? 0) + (shot?.ignores ?? 0);
     const armor = Math.max(0, (target.system.armor ?? 0) - pierce);
     const block = target.system.block ?? 0;
     const combo = when && carries(target, when.needs) ? (when.mod ?? 0) : 0;
@@ -367,16 +464,56 @@ export async function resolveAttack(actor, { verb = "strike", item, mod = 0, tar
     });
   }
 
-  await attackCard(actor, { verb, item, base, mod, bonuses, fate, mode, reasons, rows });
-  return { fate, rows, bonuses };
+  /*
+   * Spend the piece. It goes before anything it does, and unconditionally: core-rules 4 says gone
+   * whether the shot lands or misses, and spending it first means a hook that throws cannot hand
+   * a magic arrow back. Everything the card and the hooks still need is copied off it here.
+   */
+  const nocked = ammo
+    ? { name: ammo.name, line: ammo.system.shotLine, effect, missed, mod: shot?.mod ?? 0 }
+    : null;
+  if (ammo) await ammo.delete();
+
+  await attackCard(actor, { verb, item, base, mod, bonuses, fate, mode, reasons, rows, nocked });
+
+  if (shot?.condition && !missed) {
+    for (const target of targets) await resolveCondition(actor, { step: shot, target });
+  }
+
+  if (!missed) {
+    switch (effect) {
+      // Whatever you hit drinks it: one potion, delivered at range, and spent in the delivering.
+      case "carriesPotion":
+        if (payload) await resolveUse(actor, { item: payload, target: first });
+        break;
+      case "pullsShooter":
+        await pullShooterTo(actor, first);
+        break;
+      /*
+       * `ignoresCover` was settled before the draw, in advantageFor.
+       *
+       * `seesInvisible` does nothing here on purpose. Invisible currently hands the attacker
+       * advantage rather than stopping a target (conditions.md 10 holds that open question), so
+       * there is nothing yet for a permission to permit. The field exists so the promise is data
+       * rather than prose the day that question is answered, and the validator holds it to being
+       * the ONLY inert piece.
+       */
+      default:
+        break;
+    }
+  }
+
+  return { fate, rows, bonuses, missed, nocked };
 }
 
 /** The chat card. Shows the whole chain, because a hidden calculation is an unauditable one. */
 async function attackCard(actor, info) {
-  const { verb, item, base, mod, bonuses, fate, mode, reasons, rows } = info;
+  const { verb, item, base, mod, bonuses, fate, mode, reasons, rows, nocked } = info;
 
   const chain = [`${item.name} ${verb} <strong>${base}</strong>`];
   if (mod) chain.push(`card ${mod > 0 ? "+" : ""}${mod}`);
+  // A shot that adds a number has to say so in the chain, like everything else that does.
+  if (nocked?.mod) chain.push(`${nocked.name} ${nocked.mod > 0 ? "+" : ""}${nocked.mod}`);
   for (const bonus of bonuses.applied) chain.push(`${bonus.name} +${bonus.value}`);
 
   const modeLabel = mode > 0 ? " with advantage" : mode < 0 ? " with disadvantage" : "";
@@ -392,6 +529,20 @@ async function attackCard(actor, info) {
   ];
 
   if (reasons.length) parts.push(`<p class="cr-note">${reasons.join("; ")}</p>`);
+
+  /*
+   * The piece, said out loud. It is gone by the time this posts, so the card is the only record
+   * that it was ever nocked -- and a spent magic arrow the table never saw spent is the surest way
+   * to an argument about whether it had been.
+   */
+  if (nocked) {
+    parts.push(`<p>Nocked: <strong>${nocked.name}</strong>`
+      + (nocked.line ? ` &mdash; ${nocked.line}` : "")
+      + `</p>`);
+    parts.push(`<p class="cr-note">`
+      + (nocked.missed ? "The shot went wide; the piece is spent anyway." : "The piece is spent.")
+      + `</p>`);
+  }
 
   // A blocked bonus is worth showing: it teaches the group rule better than any tooltip.
   if (bonuses.blocked.length) {

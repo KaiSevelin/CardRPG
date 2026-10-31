@@ -40,6 +40,15 @@ export function stepField() {
       required: false, blank: true, initial: "", choices: ["", "blast", "aimed"]
     }),
     /*
+     * How much of the target's armour this step goes straight through.
+     *
+     * The same number `verbLine` carries, one level down: there it is a property of the WEAPON
+     * (a crossbow finds a gap in plate) and here it is a property of the SHOT (so do Bodkin
+     * Points, fired from a weapon that does not). They add, because a bodkin on a crossbow is
+     * both things at once, and both come off armour and never off Block (core-rules 5).
+     */
+    ignores: new fields.NumberField({ integer: true, min: 0, nullable: true, initial: null }),
+    /*
      * A condition this step puts on its target (core-rules 7).
      *
      * `condition` names it and `duration` says for how long. `resist` and `dc` are what the target

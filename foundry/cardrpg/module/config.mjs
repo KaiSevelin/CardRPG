@@ -356,6 +356,43 @@ CARDRPG.itemTags = [
   "heavy", "light", "melee", "ranged", "thrown", "arcane", "shield", "armor", "consumable"
 ];
 
+/*
+ * Which ammunition a ranged weapon takes (core-rules 4, "an arrow is not a ball").
+ *
+ * Three classes and no more, because the rule they serve is a rule about SUITABILITY and nothing
+ * else: a piece either fits the weapon in your hands or it does not. They are deliberately NOT
+ * item tags -- `heavy` already does two unrelated jobs in that list, marking weight class and
+ * gating Strong's bonus, and a fourth meaning for the same flat enum is how that happened.
+ *
+ * A weapon names the one class it takes; a piece of ammunition names every class it suits.
+ */
+CARDRPG.ammoKinds = {
+  bow: { label: "CARDRPG.Ammo.Bow" },
+  crossbow: { label: "CARDRPG.Ammo.Crossbow" },
+  firearm: { label: "CARDRPG.Ammo.Firearm" }
+};
+
+/*
+ * The four pieces of ammunition that are not a step.
+ *
+ * Nine of the thirteen are a condition, which is a `shot` step and needs nothing here. These four
+ * each do something no step shape can say, so each gets one named behaviour the resolver switches
+ * on -- an enum rather than four booleans, because no piece has two of them and an enum keeps the
+ * switch exhaustive.
+ */
+CARDRPG.shotEffects = {
+  // Cancels the disadvantage a target in cover gives (core-rules 11).
+  ignoresCover: { label: "CARDRPG.Shot.IgnoresCover" },
+  // Pulls the SHOOTER to the target, the only thing in the catalogue that moves the person firing.
+  pullsShooter: { label: "CARDRPG.Shot.PullsShooter" },
+  // Permits a target that Invisible would otherwise protect. Inert until conditions.md 10 is
+  // settled -- while Invisible hands out advantage instead of stopping a target, there is nothing
+  // for this to permit, and the validator holds the field to that.
+  seesInvisible: { label: "CARDRPG.Shot.SeesInvisible" },
+  // Delivers another slate's Use line at range: whatever you hit drinks it.
+  carriesPotion: { label: "CARDRPG.Shot.CarriesPotion" }
+};
+
 /**
  * Bonus groups. One action or check may take at most one bonus from each (core-rules 5).
  * Only bonus contributions are grouped; whatever supplies a base value is exempt.

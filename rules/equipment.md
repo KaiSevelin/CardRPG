@@ -379,6 +379,30 @@ the odd one: a bolt for closing, and the Acrobat and the Scout are the two who w
 non-caster an **area**, and core-rules §11 is explicit that Blast is the cheap kind — so an arquebus with a
 thunder-shot is the one way a Musketeer answers a crowd.
 
+**The *For* column is a field now, on both sides.** It was prose, which is the same disease
+`ignores N armor` had and in a worse place — nothing in the game stopped a Silvered Head going down
+a musket. A weapon names the one class it takes and a piece names every class it suits, which is
+two fields and therefore two things that can drift, so the validator holds both of them to this
+table. The eight ranged weapons a player can buy split **bow** (Shortbow, Longbow), **crossbow**
+(Crossbow, Heavy Crossbow, Masterwork Crossbow) and **firearm** (Pistol, Arquebus, Musket) — and
+the Goblin Shortbow is a bow, because an enemy archer's quiver is a thing a party can loot.
+
+> **A piece of ammunition is a card's half, written as an item.** Nine of the thirteen are nothing
+> but a **condition with a duration** — the same shape a card prints, landed by the same code — and
+> that is why this list could be built out of conditions in the first place. The other four do
+> something no step can say: the Bodkin is a number, the Grapnel moves the *shooter*, the Moth-wing
+> cancels cover, and the Hollow Bolt delivers somebody else's Use line.
+
+**The Hollow Bolt is the one piece that needs a second thing on your belt** — a potion within
+reach to carry — and *both* are spent on the shot, which is 30 gold on top of whatever the potion
+cost for the privilege of throwing it ten squares.
+
+**The Silvered Head does nothing yet, and that is not this list's fault.** It buys permission to
+target an enemy that **Invisible** would otherwise protect; Invisible currently hands out advantage
+instead of stopping a target, so the permission is permission to do what anyone can already do.
+That is an open question ([conditions.md](conditions.md) §10), and 90 gold is now waiting on the
+answer.
+
 ---
 
 ## 9. Magic items — three crafts, three groups
@@ -1016,6 +1040,32 @@ part: the target gets one clean turn, so a poisoner who uses it is betting on th
   Neglect was not the reason; the field was. And items had no `grants`, so a ring meant to give a
   spell slot gave nothing at all, silently, which is the failure mode a data model has: it **drops**
   a key it does not know rather than refusing it.
+- **Settled: how different ammunition works, which took two fields and a definition.** Ordinary
+  ammunition is not tracked and magical ammunition is (core-rules §4) — the rule was written and
+  **none of it was in the game**: `consumed` is read in one place, `resolveUse`, and a piece of
+  ammunition correctly has no Use line, so the one magic arrow in the world could be fired forever.
+  It is spent on the Strike now, before anything that depends on the hit, because it is gone whether
+  the shot lands or misses.
+
+  **Suitability was prose and is now the `ammo`/`ammoFor` pair**, which also forced the three
+  classes to be named (§8.3). Nine pieces turned out to be a **step** — the same shape a card's half
+  is — so they needed no machinery at all; the four that are not each got one named hook, and
+  defining **cover** (core-rules §11) was the price of the Moth-wing Fletching promising to ignore
+  something the rules cited and never described.
+
+- **[OPEN]** **A condition printed on an attack still lands when the attack misses.** Ammunition
+  does not — a Miss is a shot that went wide, so nothing arrives to resist — but the card side has
+  always applied its condition regardless, and `data/cards.mjs` says the intended rule out loud:
+  *"without `resist`, the condition rides on an attack and lands when the attack does."* Making the
+  two agree is a one-line change and a real balance change, so it is a decision rather than a fix.
+- **[OPEN]** **A belt holds two, and the Unquiet Quiver implies a dozen.** Reach is the belt rule,
+  which caps you at two pieces nocked-and-ready; §9.11's quiver is sold on being *"an archer who
+  never runs out of the right answer"*. Either the quiver grants reach to what it holds, or the
+  sentence is describing a fight that cannot happen.
+- **[OPEN]** **Reload is still prose.** *"Needs a ⇄ Ready to reload after every shot"* sits on the
+  `text` of all five reload weapons and nothing in the engine enforces it — the same gap
+  `ignores N armor` and the *For* column each had, now the only one left on a firearm's card. It is
+  measured (analysis §14) and it is the thing that makes a crossbow a different weapon from a bow.
 - **[OPEN]** **A mount.** The Lance needs one, the Culverin implies draught animals, and
   [conditions.md](conditions.md) §4.2 settled only that a mount is *not* a condition. Its Move,
   Health, turn and the rules for being unhorsed are all unwritten.

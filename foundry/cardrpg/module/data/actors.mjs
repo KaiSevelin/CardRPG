@@ -56,6 +56,12 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       // Transient: cleared at the start of your turn. A Defend primary holds for the round.
       block: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 }),
       blockPersists: new fields.BooleanField({ initial: false }),
+      /*
+       * Standing behind something (core-rules 11): ranged attacks against this figure have
+       * disadvantage. Declared by the GM rather than traced across the canvas -- see advantageFor
+       * in resolve.mjs for why automatic cover from figures is deliberately not computed.
+       */
+      cover: new fields.BooleanField({ initial: false }),
 
       cash: new fields.SchemaField({
         gold: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 })
@@ -320,6 +326,12 @@ export class NpcData extends foundry.abstract.TypeDataModel {
       health: healthField(5),
       block: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 }),
       blockPersists: new fields.BooleanField({ initial: false }),
+      /*
+       * Standing behind something (core-rules 11): ranged attacks against this figure have
+       * disadvantage. Declared by the GM rather than traced across the canvas -- see advantageFor
+       * in resolve.mjs for why automatic cover from figures is deliberately not computed.
+       */
+      cover: new fields.BooleanField({ initial: false }),
 
       /**
        * The creature type. An NPC's action deck, fate deck and intent card all belong to the TYPE,

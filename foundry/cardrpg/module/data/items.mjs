@@ -153,7 +153,7 @@ export class ItemSlateData extends SlateData {
        * It was prose on the verb's `text` for as long as firearms have existed, and prose is not a
        * rule: resolve.mjs subtracted the whole of a target's armour and eight items quietly
        * promised otherwise. Simulation is what made it urgent -- against armoured infantry an
-       * arquebus wins 52.9% of fights and a longsword 0.9%, and that entire gap is this number
+       * arquebus wins 46.5% of fights and a longsword 0.8%, and that entire gap is this number
        * (../../sim/analysis-2026-10-30.md 13).
        */
       ignores: new fields.NumberField({ integer: true, min: 0, nullable: true, initial: null }),
@@ -190,6 +190,20 @@ export class ItemSlateData extends SlateData {
       weight: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 }),
       value: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 }),
 
+      /*
+       * Which class of ammunition this weapon takes (core-rules 4). Blank for everything that is
+       * not a ranged weapon, which is most of the catalogue.
+       *
+       * "It must suit the weapon: an arrow is not a ball" was prose in two documents and prose on
+       * the item's own `text`, which is exactly what `ignores N armor` was until last commit --
+       * nothing stopped a Silvered Head going down a musket. This is the weapon's half of the
+       * answer and `ammoFor` below is the piece's.
+       */
+      ammo: new fields.StringField({
+        required: false, blank: true, initial: "",
+        choices: [...Object.keys(CARDRPG.ammoKinds), ""]
+      }),
+
       verbs: new fields.SchemaField({
         strike: verbLine(),
         cast: verbLine(),
@@ -218,6 +232,27 @@ export class ItemSlateData extends SlateData {
         spellSlots: new fields.NumberField({ required: true, integer: true, initial: 0 })
       }),
       consumed: new fields.BooleanField({ initial: false }),
+
+      /*
+       * Ammunition: which weapons this piece suits, what it adds to the shot, and the one thing
+       * it does that no step can say.
+       *
+       * `ammoFor` is non-empty on exactly the thirteen pieces and empty everywhere else, so it is
+       * also the test for "is this ammunition" that does not go through the back-face `kind`.
+       *
+       * `shot` is a STEP, which is the whole reason this needed so little: a card's half and a
+       * piece of ammunition are the same shape, so nine of the thirteen are a condition the card
+       * did not print and the resolver already knew how to land. It rides the Strike and costs no
+       * half of its own -- a magic arrow that cost an action would never be worth firing.
+       */
+      ammoFor: new fields.SetField(
+        new fields.StringField({ choices: Object.keys(CARDRPG.ammoKinds) })
+      ),
+      shot: stepField(),
+      shotEffect: new fields.StringField({
+        required: false, blank: true, initial: "",
+        choices: [...Object.keys(CARDRPG.shotEffects), ""]
+      }),
 
       /*
        * Identified, and what it looks like until it is.
@@ -275,6 +310,25 @@ export class ItemSlateData extends SlateData {
       blurb: new fields.StringField({ required: false, blank: true, initial: "" }),
       description: new fields.HTMLField()
     };
+  }
+
+  /**
+   * Is this magical ammunition? Suiting at least one weapon is the whole of it -- a piece that
+   * suits nothing is not a shot, it is a pebble, and the validator refuses one.
+   */
+  get isAmmunition() {
+    return (this.ammoFor?.size ?? 0) > 0;
+  }
+
+  /** Does this piece suit that weapon? Both halves have to agree, or an arrow goes down a musket. */
+  suits(weapon) {
+    const takes = weapon?.system?.ammo;
+    return !!takes && !!this.ammoFor?.has(takes);
+  }
+
+  /** What a piece of ammunition promises, for the nock dialog and the chat card. */
+  get shotLine() {
+    return this.text || this.blurb || "";
   }
 
   /** Is this a cursed item? The curse text being there is the whole of it. */

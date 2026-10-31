@@ -182,7 +182,11 @@ something an ordinary one cannot:
   is free to reach into (§4, *What fits where*). A magic arrow that cost an action would never be
   worth firing.
 - **One piece per Strike**, and it is **gone** whether the shot lands or misses.
-- It must suit the weapon: an arrow is not a ball.
+- **It must suit the weapon**, and there are **three classes** — **bow**, **crossbow** and
+  **firearm**. An arrow is not a ball. Three and no more: this rule is only ever about whether a
+  piece fits what is in your hands, so a fourth class would have to be a fourth kind of weapon.
+- **It has to be within reach**, which is that same belt rule and not a new one: a shaft on your
+  belt rides the Strike, a shaft in your pack is a ⇄ Ready you have not paid.
 
 > **This is how an archer gets what a caster has.** A caster prepares spells and chooses before the
 > fight what they can do; an archer carries shafts and chooses the same way. It is the one place in
@@ -1422,6 +1426,28 @@ Blast is the default and the cheaper one: a Fire Wand doesn't care who it burns.
 
 This is the main reason to care where your party is standing, so don't make Aimed common.
 - **Blocking:** you can move through allies but not through enemies.
+
+### Cover
+
+**A figure in cover is behind something, and ranged Strikes and Casts against it have
+disadvantage.** The advantage table (§6) has cited this section for cover since the first draft;
+this is the rule it was pointing at.
+
+| Cover from | What it is |
+|---|---|
+| **figures** | anyone standing in the way — an ally as readily as an enemy |
+| **obstacles** | a wall, a cart, a parapet, the lip of a trench |
+
+It is the same disadvantage either way, and the two are distinguished for exactly one reason:
+**high ground** takes away cover from figures and leaves cover from obstacles standing (*Ground*,
+below). *Moth-wing Fletching* ([equipment.md](equipment.md) §8.3) is the one thing in the game that
+ignores both.
+
+> **The GM marks cover; the grid does not compute it.** Tracing the line past every figure on the
+> board would put a disadvantage on most shots in a crowded fight — which is a defensible rule, but
+> not one that can be switched on quietly: **every win rate this project has published was measured
+> without it** ([analysis](../sim/analysis-2026-10-30.md)). So cover is **declared**, the way Prone
+> is visible, and a fight where nobody declares it plays exactly as it did before.
 
 ### Ground
 
