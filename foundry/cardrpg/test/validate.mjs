@@ -1275,14 +1275,14 @@ const reactionBlock = configSource.slice(
 const triggers = [...reactionBlock
   .slice(0, reactionBlock.indexOf("CARDRPG.reactions = {"))
   .matchAll(/^  ([a-zA-Z]+): "/gm)].map(m => m[1]);
-check("triggers declared", triggers.join(", "), "hit, allyHit, arrival");
+check("triggers declared", triggers.join(", "), "hit, allyHit, arrival, cast");
 
 const reactionLines = [...reactionBlock
   .slice(reactionBlock.indexOf("CARDRPG.reactions = {"))
   .matchAll(/^  ([a-zA-Z]+): \{([^}]*)\}/gm)]
   .map(m => ({ key: m[1], body: m[2] }));
 check("reactions declared", reactionLines.map(r => r.key).join(", "),
-  "parry, block, sidestep, counter, use, heckle, bodyguard");
+  "parry, block, sidestep, counter, use, heckle, bodyguard, unmake, mend");
 
 /* Every reaction must name a trigger that exists, or it is a reaction nothing can ever fire. */
 const triggerOf = r => /trigger: "([a-zA-Z]+)"/.exec(r.body)?.[1] ?? "";
@@ -1359,7 +1359,16 @@ check("cards printing a reaction that does not exist",
  * in the game prints it. That is worth asserting rather than leaving to be noticed, and it is why
  * equipment.md 12 carries it as an [OPEN].
  */
-const unprinted = reactionKeys.filter(k => !printed.some(c => c.reaction === k));
+/*
+ * A reaction may now be printed by a **spell** as well as by a card, so both are counted. That is
+ * not a loosening: a reaction nothing prints is still a reaction nothing can ever fire, and this is
+ * the check that caught `bodyguard` sitting unprinted for months.
+ */
+const reactionSpells = Object.entries(content)
+  .filter(([k]) => k.endsWith("_SIGNATURES") || k.endsWith("_POOL"))
+  .flatMap(([, v]) => v).filter(sp => sp.reaction);
+const unprinted = reactionKeys.filter(k =>
+  !printed.some(c => c.reaction === k) && !reactionSpells.some(sp => sp.reaction === k));
 /* Interpose closed the last one: `bodyguard` was printed by nothing until Way of Strength's
  * Bodyguard claimed it, which is what the reaction was written for in the first place. */
 check("reactions no card prints", unprinted.length ? unprinted.join(", ") : "none", "none");
@@ -3089,9 +3098,9 @@ check("Half-mage's slots are on the node", byId.get("shade.half-mage").grants.sp
 const built = sigs.filter(sg => !sg.needs?.length).map(sg => sg.name);
 check("Signatures the engine does everything for", built.join(", "),
   "The Opening, The Kit, Loose and Step, Heckle, One Trick, Nothing Gets Through, Interpose, "
-  + "Wither, The Bargain, The Outcast's Due");
+  + "Wither, The Bargain, Unmake, Breath of the Spirit, The Outcast's Due");
 const gaps = sigs.filter(sg => sg.needs?.length).map(sg => `${sg.name}: ${sg.needs.join("; ")}`);
-check("Signatures with a named gap", gaps.length, 37);
+check("Signatures with a named gap", gaps.length, 35);
 /*
  * `needs` is a LIST, and that is the lesson of the Health cost. It was the largest gap in the game
  * at six pieces of content; building it finished exactly ONE, because every other one wanted a
@@ -3134,10 +3143,98 @@ check("core-rules still calls it a named effect",
   /it's a named effect, like \*Taunt\* or \*Stabilize\*/.test(coreRules) ? "yes" : "no", "yes");
 
 /*
- * 2. Heckle, pointed at an event that exists. There are still only two.
+ * 2. Heckle, pointed at an event that exists.
+ *
+ * There were two for a long time and there are three now, and the third is the interesting one:
+ * `cast` could not have been added earlier however much the documents asked, because nothing cast
+ * a spell. A trigger is an event SITE, and a site needs code that reaches it.
  */
-check("the triggers are still the two events",
-  Object.keys(CARDRPG.reactionTriggers).join(", "), "hit, allyHit, arrival");
+check("the triggers, and the event each one has",
+  Object.keys(CARDRPG.reactionTriggers).join(", "), "hit, allyHit, arrival, cast");
+/*
+ * Every trigger has code that raises it, which is the thing a trigger actually IS. A key with no
+ * event site is a reaction nothing can ever fire, and this project spent five documents asking for
+ * triggers before noticing that the asking was for a place rather than a mechanism.
+ */
+const raised = {
+  hit: /reactionsFor\(taker, "hit"/,
+  allyHit: /reactionsFor\(who, "allyHit"\)/,
+  arrival: /reactionsFor\(actor, "arrival"\)/,
+  cast: /reactionsFor\(who, "cast"\)/
+};
+const unraised = Object.keys(CARDRPG.reactionTriggers)
+  .filter(t => !raised[t] || !raised[t].test(resolveSource));
+check("triggers with no code that raises them",
+  unraised.length ? unraised.join(", ") : "none", "none");
+/* And the newest one needed casting to exist first, which is why it could not have come earlier. */
+check("the Cast event is raised where a spell is cast",
+  /const warded = await answerCast\(this\.actor, slate\.name\);/.test(traySource) ? "yes" : "no",
+  "yes");
+check("and a warded Cast does not resolve",
+  /if \(warded\) return this\.render\(\);/.test(traySource) ? "yes" : "no", "yes");
+/*
+ * The price is paid before the ward fires: *Unmake* stops a Cast RESOLVING, not being attempted, so
+ * the Health and the slot are gone either way. A counterspell that also refunded the cast would
+ * make being countered better than not casting. Measured by position rather than by a window,
+ * because a window is satisfied by an extra call in front of the real one.
+ */
+check("the cost is paid before the ward fires",
+  traySource.indexOf("payToCast(this.actor, slate)") < traySource.indexOf("answerCast(this.actor")
+    ? "yes" : "no", "yes");
+
+/* The field a spell carries to print a reaction at all. */
+check("a spell slate can print a reaction",
+  /reaction: new fields\.StringField\(\{[\s\S]{0,160}Object\.keys\(CARDRPG\.reactions\)/
+    .test(fs.readFileSync(path.join(root, "module/data/items.mjs"), "utf8"))
+    ? "yes" : "no", "yes");
+
+/*
+ * Two reactions answer `allyHit` now, so the order is the policy again: taking the blow outranks
+ * mending it, because the ally is about to be dropped and a heal after the drop is a heal on a body.
+ */
+check("a redirect is preferred to a mend",
+  /options\.find\(o => CARDRPG\.reactions\[o\.key\]\?\.kind === "redirect"\) \?\? options\[0\]/
+    .test(resolveSource) ? "yes" : "no", "yes");
+
+/*
+ * And each of the three cards that named the merged gap now names what it is actually waiting for.
+ * Two strings swapping places leaves every count unchanged, so this has to name them.
+ */
+const everything = Object.entries(content)
+  .filter(([k]) => k.endsWith("_SIGNATURES") || k.endsWith("_POOL")).flatMap(([, v]) => v);
+const waitingFor = n => everything.find(c => c.name === n)?.needs.join("; ") ?? "missing";
+check("the ward is finished", waitingFor("Unmake") || "nothing", "nothing");
+check("the healer needed no new trigger",
+  waitingFor("Breath of the Spirit") || "nothing", "nothing");
+check("and the third wants a resolver, not a trigger",
+  waitingFor("Hold to the Bargain"), "a skill check the engine resolves");
+
+/* A reaction spell is spent by draining the slate, not by discarding a card it never was. */
+check("a reaction spell is spent by draining it",
+  /if \(choice\.slate\) \{[\s\S]{0,120}"system\.drained": true/.test(resolveSource)
+    ? "yes" : "no", "yes");
+check("and reactionsFor looks in the spell book",
+  /slate\.type !== "spell" \|\| !slate\.system\.prepared \|\| slate\.system\.drained/
+    .test(resolveSource) ? "yes" : "no", "yes");
+/* No Brace fallback there: a spell that cannot fire does not, where a card that cannot is a Brace. */
+/*
+ * And the two statements, checked where they are written. Four turns running the break test caught
+ * me writing a decision into a document with nothing behind it, so these go in with the code.
+ */
+check("core-rules names the four events a reaction answers",
+  /^\*\*3b\. A reaction answers an event, and there are four\.\*\*/m.test(coreRules)
+    ? "yes" : "no", "yes");
+check("and says a trigger is a place, not a mechanism",
+  /it is a \*\*place in the code that raises it\*\*/.test(coreRules) ? "yes" : "no", "yes");
+check("way-cards records that the merged gap was three jobs",
+  /And a merged gap can be three different jobs/.test(wayDoc) ? "yes" : "no", "yes");
+check("and what a merge has to prove",
+  /The proof that a merge was right[\s>]+is that building it finishes all of them/.test(wayDoc)
+    ? "yes" : "no", "yes");
+
+check("a reaction spell carries the flag that says where to look",
+  Object.entries(CARDRPG.reactions).filter(([, r]) => r.spell).map(([k]) => k).join(", "),
+  "unmake, mend");
 check("Heckle fires on an arrival", CARDRPG.reactions.heckle?.trigger, "arrival");
 check("the card prints it", sigs.find(sg => sg.name === "Heckle")?.reaction, "heckle");
 check("and applies Heckled rather than something borrowed",
@@ -3347,8 +3444,8 @@ check("content carrying the audit column",
 const vague = audited.filter(c => (c.needs ?? []).some(g => g.length < 12)).map(c => c.name);
 check("gaps too short to act on", vague.length ? vague.join(", ") : "none", "none");
 const workingCards = audited.filter(c => !c.needs.length).length;
-check("content the engine does everything for", workingCards, 43);
-check("content with a named gap", audited.filter(c => c.needs.length).length, 59);
+check("content the engine does everything for", workingCards, 45);
+check("content with a named gap", audited.filter(c => c.needs.length).length, 57);
 
 /*
  * A gap shared by several cards is one piece of engine work, not several. Counting the DISTINCT
@@ -3358,7 +3455,7 @@ const gapCounts = new Map();
 for (const card of audited) {
   for (const gap of card.needs) gapCounts.set(gap, (gapCounts.get(gap) ?? 0) + 1);
 }
-check("distinct gaps across all content", gapCounts.size, 50);
+check("distinct gaps across all content", gapCounts.size, 51);
 /*
  * Two different questions, and the list is what lets them be asked apart.
  *
@@ -3386,7 +3483,7 @@ const bestFinish = Math.max(...finishes.values());
 check("the gap that would finish the most content",
   [...finishes.entries()].filter(([, n]) => n === bestFinish).map(([g]) => g).sort().join("; ")
   + ` (${bestFinish})`,
-  "a reaction trigger beyond hit and arrival; granting Block to an ally (3)");
+  "granting Block to an ally (3)");
 /* And how much of the queue is one card deep, which is what a long tail of singletons means. */
 check("gaps that would finish exactly one piece of content",
   [...finishes.values()].filter(n => n === 1).length, 41);

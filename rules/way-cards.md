@@ -522,6 +522,18 @@ it.
 > same six resolution steps a Strike does, takes the same fate draw, and comes off armour and Block
 > the same way. No second resolver.
 
+> **[BUILT 2026-11-01] And a merged gap can be three different jobs.** The phrasing check unified
+> *a reaction that answers a check* and *a reaction that answers a Cast* on the grounds that they
+> agreed on four words and were probably one piece of work. They were not. A **Cast** is an event
+> the engine raises; an ally's failed **check** is not an event at all, because nothing in the engine
+> resolves a skill check. Of the three cards that named the merged gap, one needed a new trigger,
+> one needed none (*Breath of the Spirit* answers `allyHit`, which has existed since the Bodyguard
+> redirect), and one needs a resolver that does not exist.
+>
+> So the heuristic flags for review; it does not license a merge. **The proof that a merge was right
+> is that building it finishes all of them** — and that is now something the column can be asked,
+> because it is a list.
+
 > **What `needs` means**, since the column is counted: *the engine would have to compute something
 > and cannot.* It does **not** mean "the engine does not do this". Move is never resolved by the
 > engine at all — figures are pushed around by hand ([core-rules.md](core-rules.md) §11) — so

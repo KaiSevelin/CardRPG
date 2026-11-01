@@ -1070,6 +1070,20 @@ against a Prone or Grappled target* is a fine secondary behind an ordinary Strik
 it applies, and costing nothing but the Move 1 it replaced when it does not. That asymmetry is the
 same one setters rely on — the secondary is the cheap space on a card, in both directions.
 
+**3b. A reaction answers an event, and there are four.**  **[BUILT 2026-11-01]**
+A **hit**, an **arrival**, an **ally about to be dropped**, and a **Cast**. That list is short
+because a trigger is not a mechanism — it is a **place in the code that raises it**. Five documents
+across this project asked for "a new trigger" and none of them got one, because each was really
+asking for an event site: *when an enemy acts* and *any time on another's turn* are not moments, and
+the two cards that said so were rewritten rather than the rules. **Cast** is the newest and could not
+have come earlier at any price: nothing cast a spell until spells became castable.
+
+A reaction may be printed on a **card in your hand** or on a **prepared spell**. The second is new
+and it is where a counterspell belongs: a dispel on a drawn card is in hand about a third of turns
+and is therefore nearly worthless, while a prepared one is there every fight and costs no half. A
+card reaction is spent by discarding the card; a spell reaction by draining the slate, which is what
+*Spent* means on something that was never in your hand.
+
 **3a. One thing may gate a primary: what you are holding.**  **[BUILT 2026-11-01]**
 *Take the Shot* requires a **ranged** item, *Second Knife* a **Light** one, *Two-Hand It* **both
 hands**. That is the opposite case to rule 3 and worth stating as a pair, because the difference is

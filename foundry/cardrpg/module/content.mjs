@@ -2025,7 +2025,8 @@ export const STRENGTH_SIGNATURES = [
      * `allyHit`, which is a moment, but it is not this one.
      */
     name: "On My Call", kind: "card", node: "strength.tactician",
-    needs: ["a trigger for an ally's turn, and swapping a card's halves"],
+    /* Two things in one string until the column became a list, which is what a list is for. */
+    needs: ["a reaction trigger on an ally's turn", "swapping a card's halves"],
     primary: [{ verb: "ready" }],
     secondary: [{ verb: "move", param: 1 }],
     text: "On an ally's turn: they may play a card in their hand halves swapped, its secondary as a "
@@ -2205,7 +2206,12 @@ export const MIND_POOL = [
   },
   {
     name: "Hold to the Bargain", strength: 2, pool: "mind", source: "Spiritualism",
-    needs: ["a reaction trigger beyond hit and arrival"],
+    /*
+     * The third card that named the merged gap, and the one it was hiding: a Cast is an event the
+     * engine raises and an ally's failed CHECK is not an event at all -- nothing in the engine
+     * resolves a skill check. So this is not "a trigger", it is a resolver that does not exist.
+     */
+    needs: ["a skill check the engine resolves"],
     description: "<p>It was going to fail. Something intervened, once, because it owes you.</p>",
     effect: { text: "reaction: an ally's failed check becomes a Partial. Once per pact per fight" }
   },
@@ -2350,12 +2356,18 @@ export const MIND_SIGNATURES = [
      * school's axis rather than one card's flavour.
      */
     name: "Unmake", kind: "spell", node: "mind.ward", strength: 2, source: "Ward Magic",
-    needs: ["a reaction trigger beyond hit and arrival"],
+    needs: [],
+    /*
+     * The first reaction in the game that is not a card in your hand, and way-cards 3.4 argued for
+     * exactly that from the simulation: a dispel on a drawn card is in hand 31% of turns and is
+     * therefore nearly worthless, while a PREPARED one is there every fight and costs no half.
+     * Spent, on a thing that was never in your hand, is the slate draining until a rest.
+     */
+    reaction: "unmake",
     description: "<p>You have felt this one before. That is the only reason you can stop it: a "
-      + "warder's book is a record of what the party has survived.</p>",
-    effect: {
-      text: "reaction, Spent: a Cast you have survived before does not resolve"
-    }
+      + "warder's book is a record of what the party has survived &mdash; which is a condition on "
+      + "LEARNING it, held by the GM, not something the engine tests.</p>",
+    effect: { text: "a Cast you have survived before does not resolve" }
   },
   {
     name: "The Reading", kind: "spell", node: "mind.divination", strength: 2, source: "Divination",
@@ -2435,7 +2447,14 @@ export const FAITH_SIGNATURES = [
   {
     name: "Breath of the Spirit", kind: "spell", node: "faith.eternalspirit", strength: 2,
     source: "The Eternal Spirit",
-    needs: ["a reaction trigger beyond hit and arrival"],
+    /*
+     * This one wanted no new trigger at all: `allyHit` has existed since the Bodyguard redirect,
+     * and an ally about to be dropped is the same event whether you take the blow or mend it. It
+     * was in the queue under *a reaction trigger beyond hit and arrival* because the gap had been
+     * merged with Unmake's -- and that merge was wrong, which is this increment's lesson.
+     */
+    needs: [],
+    reaction: "mend",
     description: "<p>Reaction: heal an ally 3, at any range, ignoring cover. The spirit drifts "
       + "through all the air, so distance is not a question for it.</p>",
     effect: { verb: "heal", param: 3, text: "reaction, any range, ignoring cover" }

@@ -110,6 +110,19 @@ export class SpellSlateData extends SlateData {
       prepared: new fields.BooleanField({ initial: false }),
 
       /*
+       * Which event this one answers, for a spell that is cast on somebody else's turn.
+       *
+       * The same field an action card carries (data/cards.mjs) and for the same reason, but the
+       * spending is different: a card reaction is paid by discarding the card, and a spell reaction
+       * by **draining the slate** -- which is what Ward Magic's *Spent* means on something that was
+       * never in your hand. The drain machinery was already here for item abilities.
+       */
+      reaction: new fields.StringField({
+        required: false, blank: true, initial: "",
+        choices: [...Object.keys(CARDRPG.reactions), ""]
+      }),
+
+      /*
        * Which element this one is, for the schools that have them.
        *
        * *Wall of the Sphere* and *The Sphere Entire* both read "a line of **your element**"

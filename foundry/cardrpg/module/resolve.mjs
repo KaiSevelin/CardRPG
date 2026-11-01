@@ -551,6 +551,20 @@ export function reactionsFor(actor, trigger, { melee = false } = {}) {
     i.type === "item" && i.system.equipped && !CARDRPG.slots[i.system.equippedSlot]?.stows);
 
   const options = [];
+
+  /*
+   * The spell book first, because a reaction spell is not in your hand and cannot be turned
+   * sideways: it is prepared or it is not, and a drained one has already answered something this
+   * fight. There is no Brace fallback here -- a spell that cannot fire simply does not, where a
+   * card that cannot fire is still a card.
+   */
+  for (const slate of actor.items ?? []) {
+    if (slate.type !== "spell" || !slate.system.prepared || slate.system.drained) continue;
+    const rule = slate.system.reaction ? CARDRPG.reactions[slate.system.reaction] : null;
+    if (!rule?.spell || rule.trigger !== trigger || off.has(slate.system.reaction)) continue;
+    options.push({ key: slate.system.reaction, slate, reduce: 0, heal: slate.system.effect?.param ?? 0 });
+  }
+
   for (const card of uprightCards(actor)) {
     const key = card.system?.reaction || "";
     const rule = key ? CARDRPG.reactions[key] : null;
@@ -645,6 +659,14 @@ export function chooseReaction(options, { incoming, health }) {
  * answers a hit -- which means a reaction is the cheap way out of an expensive card, and core-rules 3 says so.
  */
 async function spendReaction(actor, choice) {
+  /*
+   * A spell is not discarded -- it was never in your hand. It is drained, which is Ward Magic's
+   * *Spent* on a thing that lives in a book: gone for the fight, back on a rest.
+   */
+  if (choice.slate) {
+    await choice.slate.update({ "system.drained": true });
+    return choice;
+  }
   await discardCards(actor, [choice.card.id]);
   return choice;
 }
@@ -674,7 +696,25 @@ export async function redirectHit(attacker, target, incoming) {
   if (!guards.length) return null;
 
   const { who, options } = guards[0];
-  const choice = await spendReaction(who, options[0]);
+  /*
+   * A redirect takes the hit; a mend answers it afterwards. Both are the same event, so the
+   * ordering is the policy -- and taking the blow outranks healing it, because the ally is about to
+   * be dropped and a heal after the drop is a heal on a body.
+   */
+  const option = options.find(o => CARDRPG.reactions[o.key]?.kind === "redirect") ?? options[0];
+  const choice = await spendReaction(who, option);
+
+  if (option.slate) {
+    const healed = Math.min(target.system.health.max,
+      (target.system.health.value ?? 0) + (option.heal ?? 0));
+    await target.update({ "system.health.value": healed });
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: who }),
+      content: `<div class="cardrpg"><p><strong>${who.name}</strong> mends ${target.name} with `
+        + `<em>${option.slate.name}</em>: ${option.heal} Health.</p></div>`
+    });
+    return { actor: who, for: target, mended: option.heal ?? 0 };
+  }
   return { actor: who, for: target, card: cardName(choice.card) };
 }
 
@@ -792,6 +832,45 @@ export async function answerArrival(actor, enemy) {
 
   const set = options.find(o => o.key === "counter");
   return set ? await counter(actor, enemy, set) : null;
+}
+
+/**
+ * A Cast is being made. Anyone on the other side who has a ward prepared may stop it.
+ *
+ * **The event site is the whole of this gap.** `reactionsFor` has taken a trigger since it was
+ * written, so `cast` cost one line of config; what did not exist was a moment to raise it from,
+ * and that moment only came into being when a spell became castable. Five documents asked for "a
+ * trigger" over this project's life and every one of them was asking for a place, not a mechanism.
+ *
+ * No range test, and that is Ward Magic's coin rather than an oversight: specializations.md prices
+ * this school in **Spent**, a card gone for the fight whether or not anything comes. A warder who
+ * also had to stand next to the caster would be paying twice.
+ *
+ * *You may only learn a ward against magic that has already been used on you* is a LEARNING
+ * condition, not a runtime one -- the GM fills a warder's book by casting at the party -- so the
+ * engine does not test it. It is printed on the card, where the table reads it.
+ *
+ * @returns {object|null} the ward that fired, so the caller knows the Cast does not resolve
+ */
+export async function answerCast(caster, spellName) {
+  if (!caster || !canvas?.ready) return null;
+
+  for (const placed of canvas.tokens.placeables) {
+    const who = placed.actor;
+    if (!who || who.id === caster.id || who.type === caster.type) continue;
+    const options = reactionsFor(who, "cast");
+    if (!options.length) continue;
+
+    const choice = await spendReaction(who, options[0]);
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: who }),
+      content: `<div class="cardrpg"><p><strong>${who.name}</strong> unmakes `
+        + `<em>${spellName}</em> with <em>${choice.slate?.name ?? "a ward"}</em>. `
+        + "It does not resolve.</p></div>"
+    });
+    return { actor: who, ward: choice.slate?.name ?? "a ward" };
+  }
+  return null;
 }
 
 /**

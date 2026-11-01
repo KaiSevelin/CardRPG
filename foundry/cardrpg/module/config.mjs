@@ -518,10 +518,19 @@ CARDRPG.ways = {
  * (core-rules 3): Use fired on "any time on another's turn", which is not an event, so there was
  * nothing an engine could dispatch on and nothing a prompt could open at.
  */
+/*
+ * **A trigger is not a mechanism, it is an event site**, and that is why five documents asked for
+ * "a new trigger" over this project's life and none of them got one. `reactionsFor(actor, trigger)`
+ * has been generic since it was written, so a key here costs one line; what each one needs is
+ * somewhere in the code that RAISES it. `hit` is raised in the attack resolver, `arrival` by a
+ * token ending its move, `allyHit` inside the redirect step -- and `cast` could not be raised at
+ * all until a spell could be cast, which is a thing that started working one commit ago.
+ */
 CARDRPG.reactionTriggers = {
   hit: "CARDRPG.Trigger.Hit",
   allyHit: "CARDRPG.Trigger.AllyHit",
-  arrival: "CARDRPG.Trigger.Arrival"
+  arrival: "CARDRPG.Trigger.Arrival",
+  cast: "CARDRPG.Trigger.Cast"
 };
 
 /**
@@ -556,8 +565,28 @@ CARDRPG.reactions = {
    * the enemy walks into reach and attacks on the same turn, with its draw already spoiled.
    */
   heckle: { label: "CARDRPG.Reaction.Heckle", kind: "other", trigger: "arrival" },
-  bodyguard: { label: "CARDRPG.Reaction.Bodyguard", kind: "redirect", trigger: "allyHit" }
+  bodyguard: { label: "CARDRPG.Reaction.Bodyguard", kind: "redirect", trigger: "allyHit" },
+
+  /*
+   * The two that live on a **spell** rather than on a card, which is the first time a reaction has
+   * not been something you hold in your hand.
+   *
+   * way-cards 3.4 argued for this from the simulation and it is worth repeating: *a dispel on a
+   * drawn card is nearly worthless because it is in hand 31% of turns* -- so a counterspell on an
+   * action card is a card you have when you do not need it. On a **prepared** spell it is there
+   * every fight, costs no half, and is paid for out of the slot budget. That is the only surface
+   * worth putting a dispel on, and it is why Ward Magic's axis is Reactions.
+   *
+   * `spell: true` is what tells `reactionsFor` to look in the spell book instead of the hand.
+   */
+  unmake: {
+    label: "CARDRPG.Reaction.Unmake", kind: "other", trigger: "cast", spell: true
+  },
+  mend: {
+    label: "CARDRPG.Reaction.Mend", kind: "other", trigger: "allyHit", spell: true
+  }
 };
+
 
 /** NPC tactic keywords. `revealed` is tracked per actor, not here. */
 CARDRPG.tactics = {

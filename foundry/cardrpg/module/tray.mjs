@@ -25,7 +25,7 @@ import {
   resolveAttack, resolveDefend, resolveHeal, resolveUse, resolveCondition, resolveShake,
   reachableAmmo, isUsable,
   resolveTaint, resolveCorrode, liftCondition, resolveForesee, collectBonuses,
-  itemMeets, requireText, payToCast
+  itemMeets, requireText, payToCast, answerCast
 } from "./resolve.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -1466,6 +1466,13 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     if (slate.type === "spell") {
       const targets = [...(game.user.targets ?? [])].map(t => t.actor).filter(a => a);
       if (!await payToCast(this.actor, slate)) return;
+      /*
+       * The price is paid before the ward fires, and that is deliberate: *Unmake* stops the spell
+       * from RESOLVING, not from being attempted, so the Health and the slot are gone either way.
+       * A counterspell that also refunded the cast would be strictly better than not being cast at.
+       */
+      const warded = await answerCast(this.actor, slate.name);
+      if (warded) return this.render();
       await this.#resolveStep(slate.system.effect, "primary", targets, slate);
       return this.render();
     }
