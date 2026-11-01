@@ -19,13 +19,14 @@
 import { CARDRPG } from "./config.mjs";
 import {
   deckOf, discardCards, retireCards, catchBreath, canCatchBreath, refill, cardName,
+  dealSkillHand, discardSkillCards,
   isReserved, reserveCard, uprightCards
 } from "./decks.mjs";
 import {
   resolveAttack, resolveDefend, resolveHeal, resolveUse, resolveCondition, resolveShake,
   reachableAmmo, isUsable,
   resolveTaint, resolveCorrode, liftCondition, resolveForesee, collectBonuses,
-  itemMeets, requireText, payToCast, answerCast, grantBlock
+  itemMeets, requireText, payToCast, answerCast, grantBlock, resolveCheck, passiveScore
 } from "./resolve.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -99,6 +100,9 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       flipCard: CardRPGTray.#onFlipCard,
       // The reaction row is the only thing on a card in hand you can click that does not play it.
       reserve: CardRPGTray.#onReserve,
+      // The scene side: the GM says when a scene starts, and a card is played AT a difficulty.
+      dealSkills: CardRPGTray.#onDealSkills,
+      check: CardRPGTray.#onCheck,
     }
   };
 
@@ -320,6 +324,12 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       pileLinks: this.#pileLinks(),
       viewer: this.#viewer(),
 
+      /*
+       * The scene tray (hud-spec 5), shown whenever no Combat is active. It is the same window in
+       * a different mode rather than a second application, because the fate deck spans both and a
+       * second window would have to show it twice.
+       */
+      scene: myCombatant ? null : this.#sceneTray(),
       inCombat: !!myCombatant,
       myTurn: combat?.combatant?.actor?.id === actor.id,
       turnOwner: combat?.combatant?.name ?? "",
@@ -766,6 +776,57 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     return `${half("p", card.system.primary)} / ${half("s", card.system.secondary)}`;
   }
 
+  /**
+   * The scene side: the skill hand, the six passive scores, and the counts.
+   *
+   * **Values are not pre-resolved here**, and that is the one real difference from the combat tray
+   * (hud-spec 5): a tool bonus is situational -- *Shadow +2 (locks)* -- so the card shows its base
+   * and the check asks which tool. Combat answers the same question by where the slate sits, and
+   * there is no equivalent place to put a lockpick.
+   *
+   * **A passive score is static.** It is the best card of an approach in the WHOLE deck plus 2,
+   * counting the discard, so it does not move during play and renders as a constant rather than a
+   * live stat (skill-rules 2).
+   */
+  #sceneTray() {
+    const actor = this.actor;
+    const hand = deckOf(actor, "skillHand");
+    const deck = deckOf(actor, "skill");
+    const discard = deckOf(actor, "skillDiscard");
+
+    const cards = [...(hand?.cards?.contents ?? [])].map(card => ({
+      id: card.id,
+      name: card.name,
+      wild: !!card.system.wild,
+      approach: card.system.wild
+        ? game.i18n.localize("CARDRPG.Approach.Any")
+        : game.i18n.localize(CARDRPG.approaches[card.system.approach]?.label ?? card.system.approach),
+      icon: card.system.wild
+        ? CARDRPG.approaches.any?.icon
+        : CARDRPG.approaches[card.system.approach]?.icon,
+      value: card.system.value,
+      edge: card.system.edge ?? ""
+    })).sort((a, b) => b.value - a.value || a.approach.localeCompare(b.approach));
+
+    return {
+      cards,
+      /* The six, always all six: a deck that covers every approach is the composition rule. */
+      passives: Object.entries(CARDRPG.approaches)
+        .filter(([key]) => key !== "any")
+        .map(([key, cfg]) => ({
+          key,
+          label: game.i18n.localize(cfg.label ?? key),
+          icon: cfg.icon,
+          score: passiveScore(actor, key)
+        })),
+      deck: deck?.cards?.size ?? 0,
+      discard: discard?.cards?.size ?? 0,
+      full: cards.length >= CARDRPG.defaults.skillHandSize,
+      /* Deck and hand both empty is the improvising case, and it is worth saying out loud. */
+      improvising: !cards.length && !(deck?.cards?.size ?? 0)
+    };
+  }
+
   /** Round and turn, so the action deck can go inert until the next turn. */
   static #turnKey(combat) {
     return combat ? `${combat.round}:${combat.turn}` : "no-combat";
@@ -1031,6 +1092,91 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     const { drawn, taint } = await refill(this.actor);
     this.dealtAt = key;
     if (!drawn && !taint) ui.notifications.warn("Draw pile is empty. Catch Breath to recover some.");
+    this.render();
+  }
+
+  /**
+   * Draw up to the skill hand size. The GM says when, because a scene is not an event the engine
+   * has -- the same reason granting a level is a GM action and not a hook.
+   */
+  static async #onDealSkills() {
+    if (!game.user.isGM) {
+      return ui.notifications.info("The GM says when a new scene starts.");
+    }
+    const { drawn } = await dealSkillHand(this.actor);
+    if (!drawn) ui.notifications.info("Nothing to draw: the skill deck is empty until a rest.");
+    this.render();
+  }
+
+  /**
+   * Play a skill card at a difficulty (skill-rules 2).
+   *
+   * One dialog, because a check is one decision made of four parts: how hard it is, what you are
+   * using, whether anybody helped, and whether you are pushing. Push offers only cards of the
+   * **same approach**, which is the rule rather than a convenience -- and a wild serves any, which
+   * is the only reason an Inspiration is worth a slot that could have held a 3.
+   */
+  static async #onCheck(event, target) {
+    const hand = deckOf(this.actor, "skillHand");
+    const card = hand?.cards.get(target.dataset.cardId);
+    if (!card) return;
+
+    const approach = card.system.wild ? null : card.system.approach;
+    const tools = this.actor.items.filter(i => i.type === "item" && i.system.equipped
+      && i.system.bonus?.approach);
+    const pushable = [...hand.cards.contents]
+      .filter(c => c.id !== card.id && (approach ? c.system.serves(approach) : c.system.value > 0));
+
+    const difficulties = Object.entries(CARDRPG.difficulties)
+      .map(([name, dc]) => `<option value="${dc}">${name} (${dc})</option>`).join("");
+    const toolOptions = ['<option value="">no tool</option>',
+      ...tools.map(i => `<option value="${i.id}">${foundry.utils.escapeHTML(i.name)}`
+        + ` (${i.system.bonus.approach} +${i.system.bonus.value ?? 0})</option>`)].join("");
+    const pushOptions = ['<option value="">no push</option>',
+      ...pushable.map(c => `<option value="${c.id}">${foundry.utils.escapeHTML(c.name)}`
+        + ` (${c.system.value})</option>`)].join("");
+
+    const answer = await foundry.applications.api.DialogV2.prompt({
+      window: { title: `${card.name}: how hard, and with what?` },
+      content: `<div class="cardrpg cr-check">
+        <label>Difficulty <select name="dc">${difficulties}</select></label>
+        <label>Approach <select name="approach">${Object.entries(CARDRPG.approaches)
+          .filter(([key]) => key !== "any")
+          .map(([key, cfg]) => `<option value="${key}"`
+            + `${key === approach ? " selected" : ""}>${game.i18n.localize(cfg.label ?? key)}`
+            + "</option>").join("")}</select></label>
+        <label>Tool <select name="tool">${toolOptions}</select></label>
+        <label>Push <select name="push">${pushOptions}</select></label>
+        <label>Help <select name="help">
+          <option value="0">none</option><option value="1">+1</option><option value="2">+2 (same approach)</option>
+        </select></label>
+      </div>`,
+      ok: {
+        label: "Make the check",
+        callback: (ev, button) => ({
+          dc: Number(button.form.elements.dc.value),
+          approach: button.form.elements.approach.value,
+          tool: button.form.elements.tool.value,
+          push: button.form.elements.push.value,
+          help: Number(button.form.elements.help.value)
+        })
+      },
+      rejectClose: false
+    });
+    if (!answer) return;
+
+    const pushed = answer.push ? hand.cards.get(answer.push) : null;
+    await resolveCheck(this.actor, {
+      approach: answer.approach,
+      dc: answer.dc,
+      card,
+      push: pushed,
+      help: answer.help,
+      item: answer.tool ? this.actor.items.get(answer.tool) : null
+    });
+
+    /* Played cards go to the skill discard, and the push went with them. */
+    await discardSkillCards(this.actor, [card.id, ...(pushed ? [pushed.id] : [])]);
     this.render();
   }
 

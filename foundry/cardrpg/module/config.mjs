@@ -643,6 +643,8 @@ CARDRPG.wildDeck = "wildMagic";
 
 CARDRPG.defaults = {
   handSize: 5,
+  /* The skill hand is four and it refills per SCENE, not per round (skill-rules 1). */
+  skillHandSize: 4,
   carryLimit: 40,
   actionDeckMax: 20,
   actionDeckMin: 12,

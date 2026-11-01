@@ -450,6 +450,36 @@ export async function discardCards(actor, cardIds) {
 }
 
 /**
+ * Draw up to the skill hand size, which happens **at the start of a scene** rather than on a turn.
+ *
+ * That is the whole difference between the two decks' rhythms and it is a difference in kind: an
+ * action hand refills once a round because a round is a thing the engine knows about, and a scene
+ * is a thing only the GM knows about (skill-rules 1: *the GM says when a new scene starts, e.g. a
+ * new location, a new conversation, or time passing*). So this is not on a hook -- nothing could
+ * raise it -- and it is the same shape as granting a level: the GM says when.
+ *
+ * **The discard does not come back here.** skill-rules is explicit that it returns on a rest and
+ * not on a shuffle, so a deck that has run out stays run out until somebody rests, and the
+ * improvising rule is what a character has instead.
+ */
+export async function dealSkillHand(actor) {
+  const deck = deckOf(actor, "skill");
+  const hand = deckOf(actor, "skillHand");
+  if (!deck || !hand) return { drawn: 0 };
+
+  const size = CARDRPG.defaults.skillHandSize;
+  const want = Math.max(0, size - hand.cards.size);
+  if (!want) return { drawn: 0 };
+  const moved = await moveRandom(deck, hand, want);
+  return { drawn: moved.length };
+}
+
+/** A played skill card goes to the skill discard, which only a rest brings back. */
+export async function discardSkillCards(actor, cardIds) {
+  return move(deckOf(actor, "skillHand"), deckOf(actor, "skillDiscard"), cardIds);
+}
+
+/**
  * Put played cards away, each according to what the half it was played for costs.
  *
  * Almost every card goes to the discard and comes back on a Catch Breath. A half printed *Spent*

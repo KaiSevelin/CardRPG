@@ -226,6 +226,58 @@
     a card here puts it into play, on the primary stack if it has a half to choose. A passive
     feature can never be clicked: it is simply true.
   --}}
+  {{#if scene}}
+    {{!--
+      The scene tray (hud-spec 5): shown whenever no Combat is active. The same window in a
+      different mode rather than a second application, because the fate deck spans both modes and
+      a second window would have to draw it twice.
+    --}}
+    <section class="cr-scene" data-group-label="Scene">
+      <div class="cr-scene__passives">
+        {{#each scene.passives}}
+          {{!-- Static: the best card of this approach in the WHOLE deck plus 2, counting the
+                discard. It does not move during play, so it is a constant and not a live stat. --}}
+          <span class="cr-passive" data-tooltip="{{this.label}} passive: the best {{this.label}} card in your whole deck, plus 2. It does not change during play.">
+            {{crIcon this.icon}}<span class="cr-passive__n">{{this.score}}</span>
+          </span>
+        {{/each}}
+      </div>
+
+      <div class="cr-scene__hand">
+        {{#each scene.cards}}
+          <div class="cr-card cr-card--skill{{#if this.wild}} cr-card--wild{{/if}}"
+               role="button" tabindex="0" data-action="check" data-card-id="{{this.id}}"
+               data-tooltip="Play it: the check asks how hard, which tool, and whether anybody helped.">
+            <div class="cr-card__name">
+              {{#if this.icon}}{{crIcon this.icon}}{{/if}}
+              {{this.approach}} <strong>{{this.value}}</strong>
+            </div>
+            <div class="cr-card__front">
+              <div class="cr-card__line">{{this.name}}</div>
+              {{#if this.edge}}<p class="cr-note">Edge: {{this.edge}}</p>{{/if}}
+            </div>
+          </div>
+        {{/each}}
+        {{#unless scene.cards.length}}
+          <span class="cr-note">
+            {{#if scene.improvising}}
+              Nothing left to play. You can still improvise: value 0, with disadvantage.
+            {{else}}
+              No skill hand dealt. The GM says when a new scene starts.
+            {{/if}}
+          </span>
+        {{/unless}}
+      </div>
+
+      <div class="cr-scene__counts">
+        <button type="button" data-action="dealSkills" {{#if scene.full}}disabled{{/if}}
+                data-tooltip="Draw up to your skill hand size. A new scene: a new location, a new conversation, or time passing.">New scene</button>
+        <span class="cr-note">Skill deck {{scene.deck}} &middot; discard {{scene.discard}} &mdash;
+          the discard comes back on a rest, never on a shuffle.</span>
+      </div>
+    </section>
+  {{/if}}
+
   {{#if viewer}}
     <section class="cr-hud__spread" data-group-label="{{viewer.label}} — not in play">
       {{#each viewer.cards}}

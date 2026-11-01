@@ -3996,6 +3996,63 @@ check("an empty deck can still improvise",
 check("a wild card serves any approach",
   /return this\.wild \|\| this\.approach === approach;/.test(cardsSource) ? "yes" : "no", "yes");
 
+/* ---- the scene tray: somewhere to make one from ---- */
+
+/*
+ * `resolveCheck` was reachable only from a macro, which is the same shape of omission the skill
+ * deck itself was: built, correct, and unplayable. The scene tray is hud-spec 5, and it is the same
+ * window in a different mode rather than a second application -- because the fate deck spans both
+ * modes and a second window would have to draw it twice.
+ */
+/* The record, where a reader of the HUD spec will find it. */
+check("the HUD spec marks the scene tray built",
+  /^## 5\. Scene tray {2}\*\*\[BUILT 2026-11-01\]\*\*$/m.test(hudPane) ? "yes" : "no", "yes");
+check("and says why it is not a second window",
+  /\*\*The same window in a different mode, not a second application\*\*/.test(hudPane)
+    ? "yes" : "no", "yes");
+
+check("the tray has a scene mode",
+  /scene: myCombatant \? null : this\.#sceneTray\(\),/.test(traySource) ? "yes" : "no", "yes");
+check("and the template draws it",
+  /\{\{#if scene\}\}/.test(trayTemplate) ? "yes" : "no", "yes");
+check("a skill card is playable",
+  /data-action="check" data-card-id="\{\{this\.id\}\}"/.test(trayTemplate) ? "yes" : "no", "yes");
+/*
+ * All six passives, always: a deck that covers every approach is the composition rule, so a tray
+ * that showed four would be hiding two a player is entitled to. Read from the `#sceneTray` body --
+ * the check dialog filters the same list the same way, and a loose match found that one instead.
+ */
+const sceneBody = traySource.slice(
+  traySource.indexOf("  #sceneTray() {"), traySource.indexOf("  /** Round and turn,"));
+check("the passive list covers every approach but `any`",
+  (sceneBody.match(/key !== "any"/g) ?? []).length, 1);
+check("and nothing narrows it to one",
+  /key === "/.test(sceneBody) ? "no" : "yes", "yes");
+/* Push offers same-approach cards only, which is the rule and not a convenience. */
+check("push offers only cards of that approach",
+  /c\.system\.serves\(approach\)/.test(traySource) ? "yes" : "no", "yes");
+/* The hand refills per SCENE, and only the GM knows when one starts. */
+check("the skill hand is four",  CARDRPG.defaults.skillHandSize, 4);
+check("and only the GM starts a scene",
+  /if \(!game\.user\.isGM\) \{[\s\S]{0,120}says when a new scene starts/.test(traySource)
+    ? "yes" : "no", "yes");
+/* A played card goes to the skill discard, and the push goes with it. */
+check("the played cards go to the skill discard",
+  /discardSkillCards\(this\.actor, \[card\.id, \.\.\.\(pushed \? \[pushed\.id\] : \[\]\)\]\)/
+    .test(traySource) ? "yes" : "no", "yes");
+/*
+ * And the discard is NOT reshuffled: skill-rules says a rest brings it back, never a shuffle, which
+ * is the one place the two card sides differ in kind. Read from the function BODY, because the next
+ * function along is the one that puts cards INTO the discard and a wide window matched it.
+ */
+const dealBody = decksSource.slice(
+  decksSource.indexOf("export async function dealSkillHand"),
+  decksSource.indexOf("/** A played skill card goes"));
+check("dealing never touches the discard",
+  /skillDiscard/.test(dealBody) ? "no" : "yes", "yes");
+check("and it draws at random rather than off the top",
+  /moveRandom\(deck, hand, want\)/.test(dealBody) ? "yes" : "no", "yes");
+
 /* ---- and the trigger that fell out of it ---- */
 
 /*

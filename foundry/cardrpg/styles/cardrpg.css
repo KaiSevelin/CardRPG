@@ -1148,6 +1148,17 @@
 /* The Tactic: always on, never a number, and never something you can drop. */
 /* A god asks something of you for ever, and a lone god gives something back. Both are standing
    facts, printed like the Tactic above them because that is what they are. */
+/* The scene tray: the skill hand, the six passives, and what is left of the deck. */
+.cr-scene { display: flex; flex-direction: column; gap: 0.3rem; padding: 0.3rem 0; }
+.cr-scene__passives { display: flex; gap: 0.5rem; align-items: center; }
+.cr-passive { display: inline-flex; align-items: center; gap: 0.15rem; font-size: 0.9em; }
+.cr-passive__n { font-weight: bold; }
+.cr-scene__hand { display: flex; gap: 0.3rem; flex-wrap: wrap; align-items: flex-start; }
+.cr-card--skill { cursor: pointer; min-width: 7rem; }
+/* The one card in the deck that is never the wrong card, so it reads as different. */
+.cr-card--wild { box-shadow: 0 0 0 1px #c9a227 inset; }
+.cr-scene__counts { display: flex; gap: 0.5rem; align-items: center; }
+.cr-check label { display: block; margin-bottom: 0.25rem; }
 .cr-standing__ways { opacity: 0.8; margin-left: 0.3rem; }
 .cr-stat__flag { font-weight: bold; margin-left: 0.2rem; }
 .cr-level-button__open { opacity: 0.75; font-size: 0.85em; margin-left: 0.25rem; }

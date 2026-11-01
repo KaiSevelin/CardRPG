@@ -330,7 +330,26 @@ therefore persists across mode switches and does not reset when combat ends.
 
 ---
 
-## 5. Scene tray
+## 5. Scene tray  **[BUILT 2026-11-01]**
+
+> **The same window in a different mode, not a second application** — because §4.3 says the fate
+> deck spans both modes, and a second window would have to draw it twice. The tray renders the scene
+> side whenever no Combat is active.
+>
+> Three of this section's four differences from the combat tray are built as written. **Values are
+> not pre-resolved**: a tool bonus is situational, so the card shows its base and the check asks
+> which tool — combat answers the same question by where the slate sits, and there is nowhere
+> equivalent to put a lockpick. **Push offers same-approach cards only**, which is the rule rather
+> than a convenience, and a wild serves any, which is the whole reason an Inspiration is worth a
+> slot that could have held a 3. **A passive score is static** and renders as a constant.
+>
+> **A scene is not an event the engine has.** skill-rules §1 says *the GM says when a new scene
+> starts*, so dealing the skill hand is a GM action and not a hook — the same shape as granting a
+> level, and for the same reason: nothing in the software could raise it.
+>
+> **[OPEN]** Challenge tracks and secret slates, which are the remaining two rows of the sketch
+> above. Both need content that does not exist yet (§3 challenges, §5.3 secrets).
+
 
 Shown whenever no Combat is active.
 
