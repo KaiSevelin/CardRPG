@@ -425,6 +425,50 @@ verbs, so the identity has to be a rule nobody else may touch.
 | **Street Fighter** | **Get a Grip** | Primary: **Grappled (2)**, resist ✊ Might 5 — and **no save at all** if both your hands are empty. |
 | **Bodyguard** | **Interpose** | Reaction: take a hit meant for an adjacent ally. Core-rules §3 already names this card in its redirection step. |
 
+> **[BUILT 2026-11-01] All twelve exist as content now, and two of them work.** Same shape as Way
+> of Shade's (§2.2): each Signature is a card, a feature or an item slate a node hands over, and
+> each one the engine cannot work out **names what is missing**.
+>
+> | | Signature | What the engine lacks |
+> |---|---|---|
+> | ✓ | **Nothing Gets Through** | nothing — one field, like the Thief's (below) |
+> | ✓ | **Interpose** | nothing at all: the reaction was already there |
+> | | Shoulder to Shoulder | granting Block to an ally |
+> | | The Wall | an exception to highest-wins, which no bonus group has |
+> | | Ranging Shot | the Blast alternative, which has to know you did not Move |
+> | | On My Call | a trigger for an ally's turn, and swapping a card's halves |
+> | | Cleave to the Bone | the Wound threshold as the **attacker's**, where the reaction policy reads a constant |
+> | | The Lance | advantage conditional on how far you moved |
+> | | Red Mist | drawing back up to hand size mid-turn |
+> | | Loaded Before the Bell | a loaded state to begin a fight in — reload is still prose |
+> | | Play to the Crowd | a reaction that grants Block **and** applies a condition |
+> | | Get a Grip | waiving a save when both hands are empty |
+>
+> **The paragraph below claimed two of these cost the rules nothing. One does.**
+>
+> *Interpose* really is free, and it is the only Signature in either Way that was implemented before
+> it was written down: core-rules §3's redirection step and `redirectHit` **are** this card. Printing
+> it also closes a gap the validator had been reporting since reactions were built — `bodyguard` was
+> the one reaction nothing in the content carried.
+>
+> *Cleave to the Bone* is not free, and the reason is worth keeping. The Wound threshold is a
+> **constant read in two places**, and one of them is the reaction policy. Making it *4 for this
+> attacker* means threading the attacker's number into `chooseReaction` — the function whose whole
+> stated virtue is that it holds **no tuned constants**. One number, two readers and a signature
+> change is cheap, but it is not nothing, and "costs the rules nothing" is a claim worth being
+> strict about.
+>
+> **On My Call is the fourth reaction written to a trigger that is not an event**, after Quick
+> Hands, Heckle and the Bard's old wording. *"On an ally's turn"* is a span, not a moment. The game
+> has `allyHit`, which is a moment, but it is not this one — so this needs a trigger invented rather
+> than a trigger chosen, which is why it is the most expensive of the twelve.
+>
+> **And Infantry's Signature and Tactic had the same name.** Both were *Shoulder to Shoulder*: the
+> card grants an adjacent ally Block, the tactic stops either of you being moved. A player would
+> hold one and carry the other under one name. The tactic is **The Line** now, which is what it is
+> about and sits beside Guardian's *The Door*. A check refuses any two pieces of content sharing a
+> name, which is how it was found.
+
 Two of these cost the rules nothing at all. **Cleave to the Bone** moves a number that already exists
 by one, and because a Wound is a card shuffled into the target's own deck, an Executioner's work
 outlasts the fight. **Interpose** was already written into the reaction order before any node claimed
@@ -641,7 +685,7 @@ a tactic, it is a house rule with a name on it ([leveling.md](leveling.md) §5a.
 
 | Node | Tactic | |
 |---|---|---|
-| **Infantry** | **Shoulder to Shoulder** | While an ally is adjacent to you, neither of you can be moved against your will. |
+| **Infantry** | **The Line** | While an ally is adjacent to you, neither of you can be moved against your will. |
 | **Guardian** | **The Door** | An enemy adjacent to you that would move to another square adjacent to you must **stop** instead. You do not pin them; you stop them getting past. |
 | **Ironclad** | **Immovable** | Forced movement never moves you, and difficult ground costs you nothing. |
 | **Artillerist** | **Ranging** | If you did not Move this turn, your ranged attacks **ignore cover**. |

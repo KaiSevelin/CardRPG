@@ -463,6 +463,18 @@ export class FeatureSlateData extends SlateData {
       }),
 
       /**
+       * What this feature does to the armour it is worn with, read in `prepareDerivedData`.
+       *
+       * `doubleWhenOverloaded` is the Ironclad's Signature and the only thing in the game that
+       * WANTS you over the carry limit. Both halves of it were already derived -- the armour total
+       * and the encumbrance tier -- so this is a line rather than a mechanism, which is what makes
+       * it the cheapest of Way of Strength's twelve to build.
+       */
+      armor: new fields.SchemaField({
+        doubleWhenOverloaded: new fields.BooleanField({ initial: false })
+      }),
+
+      /**
        * Advantage this feature grants on an attack, read by `advantageFor` in resolve.mjs.
        *
        * `vsOpening` is the one case the card-level `when` clause cannot express. That clause names

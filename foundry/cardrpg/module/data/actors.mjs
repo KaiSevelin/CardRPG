@@ -234,6 +234,14 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       .filter(i => i.type === "item" && CARDRPG.slots[i.system.equippedSlot]?.worn)
       .reduce((n, i) => n + (i.system.armorNow ?? i.system.armor ?? 0), 0);
 
+    /*
+     * --- armour again, for the one feature that reads the encumbrance tier
+     *
+     * This has to come after the tier is known, which is why it is not up with the armour sum: the
+     * Ironclad doubles armour only while Overloaded, and Overloaded is itself derived from weight.
+     */
+    this.armorDoubled = false;
+
     // --- carried weight and encumbrance
     this.carry.bonus = grants.carry;
     this.carry.max = this.carry.base + grants.carry;
@@ -243,6 +251,11 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       .reduce((n, i) => n + (i.system.weight ?? 0), 0);
     this.carry.value = gear + Math.floor(this.cash.gold / d.goldPerKilo);
     this.encumbrance = CharacterData.encumbranceTier(this.carry.value, this.carry.max);
+    if (["overloaded", "immobile"].includes(this.encumbrance)
+      && slates.some(i => i.type === "feature" && i.system.armor?.doubleWhenOverloaded)) {
+      this.armor *= 2;
+      this.armorDoubled = true;
+    }
 
     // --- exhaustion is a deck fact, so it is derived too
     const hand = this.#deck("actionHand");

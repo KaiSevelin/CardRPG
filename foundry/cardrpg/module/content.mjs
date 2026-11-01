@@ -1741,6 +1741,164 @@ export const TACTICS = {
 };
 
 /* -------------------------------------------- */
+/*  Way of Strength's Signatures and Tactics    */
+/* -------------------------------------------- */
+
+/**
+ * The twelve of way-cards.md 2.1, in the same shape as Shade's: `kind` says which document it
+ * becomes, and `needs` names what the engine lacks when it lacks something.
+ *
+ * **way-cards says two of these "cost the rules nothing at all". One does.** *Interpose* really is
+ * free: the `bodyguard` reaction and `redirectHit` were written into the reaction order before any
+ * node claimed them, so the card is the claim and nothing else. *Cleave to the Bone* is not, and
+ * the reason is worth having: the Wound threshold is a **constant read in two places**, one of them
+ * the reaction policy, and moving it to *4 for this attacker* means threading the attacker's number
+ * into `chooseReaction` -- which is the function whose whole virtue is that it has no tuned
+ * constants in it. One number, two readers, and a signature change. Not nothing.
+ *
+ * *Interpose* also closes a gap the validator has been reporting since reactions were built: the
+ * `bodyguard` reaction was the one nothing in the content printed.
+ */
+export const STRENGTH_SIGNATURES = [
+  {
+    name: "Shoulder to Shoulder", kind: "card", node: "strength.infantry",
+    needs: "granting Block to an ally",
+    primary: [{ verb: "strike" }],
+    secondary: [{ verb: "move", param: 1 }],
+    text: "Every ally adjacent to you gains Block 1 until your next turn."
+  },
+  {
+    name: "The Wall", kind: "feature", node: "strength.guardian",
+    needs: "an exception to highest-wins, which no bonus group has",
+    text: "Your Blocks stack. You are the one exception to highest-wins."
+  },
+  {
+    /*
+     * Built, and it is the node that earned Way of Strength its new resource: the Way root pays in
+     * weight now, and this is the build that wants to be over the limit. Armour and encumbrance are
+     * both already derived, so doubling one when the other says Overloaded is a line in
+     * prepareDerivedData rather than a mechanism.
+     */
+    name: "Nothing Gets Through", kind: "feature", node: "strength.ironclad", needs: "",
+    text: "While you are Overloaded, your armor counts double.",
+    armor: { doubleWhenOverloaded: true }
+  },
+  {
+    name: "Ranging Shot", kind: "card", node: "strength.artillerist",
+    needs: "the Blast alternative, which has to know you did not Move",
+    primary: [{ verb: "strike", area: 1, areaKind: "aimed" }],
+    secondary: [{ verb: "ready" }],
+    text: "Ranged. Blast instead of Aimed, if you did not Move this turn."
+  },
+  {
+    /*
+     * The fourth reaction in the documents whose trigger is not an event -- after Quick Hands,
+     * Heckle and the Bard's old wording. "On an ally's turn" is a span, not a moment. The game has
+     * `allyHit`, which is a moment, but it is not this one.
+     */
+    name: "On My Call", kind: "card", node: "strength.tactician",
+    needs: "a trigger for an ally's turn, and swapping a card's halves",
+    primary: [{ verb: "ready" }],
+    secondary: [{ verb: "move", param: 1 }],
+    text: "On an ally's turn: they may play a card in their hand halves swapped, its secondary as a "
+      + "primary."
+  },
+  {
+    name: "Cleave to the Bone", kind: "feature", node: "strength.executioner",
+    needs: "the Wound threshold as the attacker's, where the reaction policy reads a constant",
+    text: "For you, the Wound threshold is 4, not 5."
+  },
+  {
+    name: "The Lance", kind: "card", node: "strength.knight",
+    needs: "advantage conditional on how far you moved",
+    primary: [{ verb: "move", param: 3 }, { verb: "strike" }],
+    secondary: [{ verb: "move", param: 1 }],
+    text: "Advantage if you moved at least 2. Needs the mount."
+  },
+  {
+    name: "Red Mist", kind: "card", node: "strength.berserker",
+    needs: "drawing back up to hand size mid-turn",
+    primary: [{ verb: "strike" }],
+    secondary: [{ verb: "move", param: 1 }],
+    costs: { primary: { spent: true } },
+    text: "Then draw back up to your hand size at once."
+  },
+  {
+    name: "Loaded Before the Bell", kind: "feature", node: "strength.musketeer",
+    needs: "a loaded state to begin a fight in, since reload is still prose",
+    text: "You begin every combat already loaded, and the first shot of a fight is +2."
+  },
+  {
+    name: "Play to the Crowd", kind: "card", node: "strength.gladiator",
+    needs: "a reaction that grants Block and applies a condition",
+    primary: [{ condition: "compelled", duration: 1, resist: "presence", dc: 5 }],
+    secondary: [{ verb: "move", param: 1 }],
+    text: "When you are hit: gain Block 2, and the attacker is Compelled (1) -- no save, because "
+      + "you have already been hit once."
+  },
+  {
+    name: "Get a Grip", kind: "card", node: "strength.street-fighter",
+    needs: "waiving a save when both hands are empty",
+    primary: [{ condition: "grappled", duration: 2, resist: "might", dc: 5 }],
+    secondary: [{ verb: "move", param: 1 }],
+    text: "No save at all if both your hands are empty."
+  },
+  {
+    /*
+     * Free, and the only Signature in either Way that was already implemented before it was
+     * written down: core-rules 3's redirection step and `redirectHit` are this card. Printing it
+     * also closes the one reaction nothing in the content carried.
+     */
+    name: "Interpose", kind: "card", node: "strength.bodyguard", needs: "",
+    primary: [{ verb: "defend" }],
+    secondary: [{ verb: "move", param: 1 }],
+    reaction: "bodyguard",
+    text: "Take a hit meant for an adjacent ally."
+  }
+];
+
+/**
+ * Way of Strength's Tactics (way-cards 2.5), derived from the deepest title like Shade's.
+ *
+ * **Infantry's was renamed.** The document called both its Signature and its Tactic *Shoulder to
+ * Shoulder*, so a player would hold a card and carry a standing feature with one name doing two
+ * different things -- the card grants an ally Block, the tactic stops either of you being moved.
+ * *The Line* is what the tactic is about, and it sits beside Guardian's *The Door* in register.
+ */
+export const STRENGTH_TACTICS = {
+  "The Line":
+    "While an ally is adjacent to you, neither of you can be moved against your will.",
+  "The Door":
+    "An enemy adjacent to you that would move to another square adjacent to you must stop instead. "
+    + "You do not pin them; you stop them getting past.",
+  "Immovable": "Forced movement never moves you, and difficult ground costs you nothing.",
+  "Ranging": "If you did not Move this turn, your ranged attacks ignore cover.",
+  "The Call":
+    "At the start of a round, name a square. The first ally to end movement there draws fate with "
+    + "advantage on their next action.",
+  "No Second Thought":
+    "When an enemy drops to 0 Health from your Strike, Move 1 at once.",
+  "The Charge":
+    "If you moved 3 or more squares in a straight line this turn, your Strike cannot be answered by "
+    + "a reaction.",
+  "Forward Only":
+    "You may never move away from the nearest enemy -- and while two or more enemies are adjacent "
+    + "to you, you cannot be Dazed or Compelled.",
+  "The Firing Step":
+    "You may not Strike an adjacent enemy at all -- and your ranged attacks never take the "
+    + "ranged-in-melee penalty.",
+  "The Crowd Wants Blood":
+    "While you are the nearest target to the enemy, your reactions fire even when the hit is not "
+    + "serious.",
+  "The Alley":
+    "While both your hands are empty, an enemy adjacent to you may not Move away except by forced "
+    + "movement.",
+  "Never Leave Them":
+    "When an ally moves, you may Move 1 as a reaction to follow -- and figures never block that "
+    + "move."
+};
+
+/* -------------------------------------------- */
 /*  The levelling graph                         */
 /* -------------------------------------------- */
 
@@ -1961,5 +2119,156 @@ export const NODES = [
   {
     id: "shade.cross.ledges", name: "Rooftops", after: ["shade.cross.ledges1"], bespoke: true,
     grants: { knowHow: "rooftops, and what carries weight up there" }
+  }
+,
+/* --- the Strength trunk: three ordinary nodes before the first title --- */
+  { id: "strength.drill", name: "Drill", after: ["strength"], grants: { card: "Hold the Line" } },
+  { id: "strength.march", name: "The March", after: ["strength.drill"], grants: { carry: 5 } },
+  { id: "strength.scars", name: "Old Scars", after: ["strength.march"], grants: { health: 1 } },
+
+  /* --- the three titles off the trunk: how you stand, how you strike, who you stand in front of --- */
+  {
+    id: "strength.infantry", name: "Infantry", after: ["strength.scars"], title: "Infantry",
+    axis: "Position", resource: "an ally",
+    signature: "Shoulder to Shoulder", tactic: "The Line",
+    grants: { card: "Shoulder to Shoulder" }
+  },
+  {
+    id: "strength.executioner", name: "Executioner", after: ["strength.scars"],
+    title: "Executioner", axis: "Tempo", resource: "halves",
+    signature: "Cleave to the Bone", tactic: "No Second Thought",
+    grants: { feature: "Cleave to the Bone" }
+  },
+  {
+    id: "strength.gladiator", name: "Gladiator", after: ["strength.scars"], title: "Gladiator",
+    axis: "Reactions", resource: "Health",
+    signature: "Play to the Crowd", tactic: "The Crowd Wants Blood",
+    grants: { card: "Play to the Crowd" }
+  },
+
+  /* --- Infantry's four --- */
+  { id: "strength.infantry.shields", name: "Shieldwork", after: ["strength.infantry"], grants: { card: "Off-Hand Blow" } },
+  {
+    id: "strength.infantry.watch", name: "The Watch", after: ["strength.infantry.shields"],
+    bespoke: true, grants: { knowHow: "standing a watch, and what the night sounds like" }
+  },
+  {
+    id: "strength.guardian", name: "Guardian", after: ["strength.infantry.watch"],
+    title: "Guardian", axis: "Reactions", resource: "a slot kept free",
+    signature: "The Wall", tactic: "The Door",
+    grants: { feature: "The Wall" }
+  },
+
+  { id: "strength.infantry.load", name: "Load-Bearing", after: ["strength.infantry"], grants: { carry: 10 } },
+  {
+    id: "strength.infantry.armoury", name: "Armoury", after: ["strength.infantry.load"],
+    bespoke: true, grants: { training: "armour and its repair", knowHow: "what a dent means" }
+  },
+  {
+    id: "strength.ironclad", name: "Ironclad", after: ["strength.infantry.armoury"],
+    title: "Ironclad", axis: "Deck shape", resource: "weight",
+    signature: "Nothing Gets Through", tactic: "Immovable",
+    grants: { feature: "Nothing Gets Through" }
+  },
+
+  { id: "strength.infantry.crews", name: "Crews", after: ["strength.infantry"], grants: { card: "Press" } },
+  {
+    id: "strength.infantry.siege", name: "Siegework", after: ["strength.infantry.crews"],
+    bespoke: true, grants: { training: "siege engines" }
+  },
+  {
+    id: "strength.artillerist", name: "Artillerist", after: ["strength.infantry.siege"],
+    title: "Artillerist", axis: "Position", resource: "ground",
+    signature: "Ranging Shot", tactic: "Ranging",
+    grants: { card: "Ranging Shot" }
+  },
+
+  { id: "strength.infantry.orders", name: "Orders", after: ["strength.infantry"], grants: { card: "Both Hands" } },
+  {
+    id: "strength.infantry.maps", name: "Maps", after: ["strength.infantry.orders"],
+    bespoke: true, grants: { knowHow: "ground you have not walked, from a map of it" }
+  },
+  {
+    id: "strength.tactician", name: "Tactician", after: ["strength.infantry.maps"],
+    title: "Tactician", axis: "Support", resource: "halves",
+    signature: "On My Call", tactic: "The Call",
+    grants: { card: "On My Call" }
+  },
+
+  /* --- Executioner's three --- */
+  { id: "strength.exec.seat", name: "The Seat", after: ["strength.executioner"], grants: { training: "riding" } },
+  {
+    id: "strength.exec.stable", name: "Stablework", after: ["strength.exec.seat"],
+    bespoke: true, grants: { knowHow: "a horse that is about to refuse" }
+  },
+  {
+    id: "strength.knight", name: "Knight", after: ["strength.exec.stable"], title: "Knight",
+    axis: "Position", resource: "gear you can lose",
+    signature: "The Lance", tactic: "The Charge",
+    grants: { card: "The Lance" }
+  },
+
+  { id: "strength.exec.temper", name: "Temper", after: ["strength.executioner"], grants: { card: "Off-Hand Blow" } },
+  { id: "strength.exec.fury", name: "Fury", after: ["strength.exec.temper"], grants: { health: 1 } },
+  {
+    id: "strength.berserker", name: "Berserker",
+    after: ["strength.exec.fury", "strength.cross.rage"], title: "Berserker",
+    axis: "Deck shape", resource: "Spent",
+    signature: "Red Mist", tactic: "Forward Only",
+    grants: { card: "Red Mist" }
+  },
+
+  { id: "strength.exec.powder", name: "Powder", after: ["strength.executioner"], grants: { card: "Press" } },
+  {
+    id: "strength.exec.drillshot", name: "The Volley", after: ["strength.exec.powder"],
+    bespoke: true, grants: { training: "firearms and their cleaning" }
+  },
+  {
+    id: "strength.musketeer", name: "Musketeer", after: ["strength.exec.drillshot"],
+    title: "Musketeer", axis: "Preparation", resource: "range",
+    signature: "Loaded Before the Bell", tactic: "The Firing Step",
+    grants: { feature: "Loaded Before the Bell" }
+  },
+
+  /* --- Gladiator's two --- */
+  { id: "strength.glad.hands", name: "Bare Hands", after: ["strength.gladiator"], grants: { card: "Both Hands" } },
+  {
+    id: "strength.glad.alley", name: "Alley Work", after: ["strength.glad.hands"],
+    bespoke: true, grants: { knowHow: "a crowd that is about to turn" }
+  },
+  {
+    id: "strength.street-fighter", name: "Street Fighter", after: ["strength.glad.alley"],
+    title: "Street Fighter", axis: "Control", resource: "a weapon's value",
+    signature: "Get a Grip", tactic: "The Alley",
+    grants: { card: "Get a Grip" }
+  },
+
+  { id: "strength.glad.ward", name: "Warding", after: ["strength.gladiator"], grants: { card: "Off-Hand Blow" } },
+  { id: "strength.glad.shadow", name: "The Shadow", after: ["strength.glad.ward"], grants: { health: 1 } },
+  {
+    id: "strength.bodyguard", name: "Bodyguard",
+    after: ["strength.glad.shadow", "strength.cross.door"], title: "Bodyguard",
+    axis: "Reactions", resource: "ground",
+    signature: "Interpose", tactic: "Never Leave Them",
+    grants: { card: "Interpose" }
+  },
+
+  /*
+   * --- the two crossings, each its own short chain
+   *
+   * Guardian to Bodyguard on the axis, Ironclad to Berserker on the axis
+   * (specializations.md, Way of Strength). Neither grants a card: a crossing teaches you about the
+   * other trade and the cards stay behind the title.
+   */
+  { id: "strength.cross.door1", name: "One Charge", after: ["strength.guardian"], grants: { training: "close protection" } },
+  {
+    id: "strength.cross.door", name: "The One You Keep", after: ["strength.cross.door1"],
+    bespoke: true, grants: { knowHow: "a room, and which door in it matters" }
+  },
+
+  { id: "strength.cross.rage1", name: "Weight of It", after: ["strength.ironclad"], grants: { carry: 5 } },
+  {
+    id: "strength.cross.rage", name: "Let It Out", after: ["strength.cross.rage1"],
+    bespoke: true, grants: { knowHow: "when armour stops being protection" }
   }
 ];

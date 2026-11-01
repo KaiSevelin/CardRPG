@@ -20,7 +20,17 @@
  *      *never again*, and only the second is worth a confirmation.
  */
 
-import { NODES, COMMON_POOL, WAY_CARDS, SHADE_SIGNATURES, TACTICS } from "./content.mjs";
+import {
+  NODES, COMMON_POOL, WAY_CARDS,
+  SHADE_SIGNATURES, TACTICS, STRENGTH_SIGNATURES, STRENGTH_TACTICS
+} from "./content.mjs";
+
+/**
+ * Every Signature, and every Tactic, from whichever Way wrote them. A Way adds a pair of exports
+ * and nothing here changes -- which is the same shape leveling.md 8 asks of an add-on.
+ */
+export const SIGNATURES = [...SHADE_SIGNATURES, ...STRENGTH_SIGNATURES];
+export const ALL_TACTICS = { ...TACTICS, ...STRENGTH_TACTICS };
 import { deckOf, allStacks, actionCardData } from "./decks.mjs";
 /* The one shape a slate takes, shared with the setup routine rather than spelled twice. */
 import { slateData } from "./setup.mjs";
@@ -33,7 +43,7 @@ export const ROOT = "root";
  * against.
  */
 export const POOL = new Map([...COMMON_POOL, ...WAY_CARDS,
-  ...SHADE_SIGNATURES.filter(s => s.kind === "card")].map(c => [c.name, c]));
+  ...SIGNATURES.filter(s => s.kind === "card")].map(c => [c.name, c]));
 
 /** Every node by id. */
 export const GRAPH = new Map(NODES.map(n => [n.id, n]));
@@ -186,11 +196,13 @@ export function tacticOf(owned) {
     if (!node?.tactic) continue;
     if (!best || (DEPTH.get(id) ?? 0) > (DEPTH.get(best.id) ?? 0)) best = node;
   }
-  return best ? { name: best.tactic, text: TACTICS[best.tactic] ?? "", from: best.title } : null;
+  return best
+    ? { name: best.tactic, text: ALL_TACTICS[best.tactic] ?? "", from: best.title }
+    : null;
 }
 
 /** The content a node hands over as a slate, by name: the Signatures, so far. */
-export const SLATES = new Map(SHADE_SIGNATURES.map(s => [s.name, s]));
+export const SLATES = new Map(SIGNATURES.map(s => [s.name, s]));
 
 /** The Ways a character has set foot in, which is derived rather than chosen on a sheet. */
 export function waysOf(owned) {

@@ -695,10 +695,14 @@ needs migrating.
 
 ## 10. Open
 
-- **[OPEN]** The graphs themselves — every node, reward and specialization for all four Ways. The
-  major nodes are named and celled ([specializations.md](specializations.md)) and both the Signatures
-  and the minor-node **pools** are drafted ([way-cards.md](way-cards.md)), so what is missing is the
-  wiring: which node grants which entry, and the depth-consistency §7 asks for.
+- **[HALF BUILT 2026-11-01]** The graphs themselves. **Way of Shade and Way of Strength are
+  wired** — 81 nodes, 26 titles, 52 minor nodes at the 1-in-3 bespoke ratio, five crossings, and
+  both Ways' Signatures and Tactics as content a node hands over. Way of Mind and Way of Faith are
+  still a root node each.
+
+  What the two built Ways still owe: the **depth consistency** §7 asks for is unchecked, and each
+  Way's own card pool ([way-cards.md](way-cards.md) §3.2, §3.3) is unbuilt — every minor node draws
+  on the six common cards instead, which is why no minor node yet grants anything that Way-specific.
 - **[BUILT 2026-11-01]** A node that requires **all** of its prerequisites rather than any one.
   §5a leans on this — it is how depth takes commitment, and without it every title is one node deep
   — and §1's **dominance** invariant leans on it too: the flag is the only thing that stops a cross

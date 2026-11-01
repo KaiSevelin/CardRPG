@@ -1332,15 +1332,24 @@ check("reaction timer retired from the HUD spec",
 
 /* The cards that carry one, against the config. */
 const reactionKeys = reactionLines.map(r => r.key);
-/* Every pool that prints a reaction, not the two that existed when this was written: the common
- * pool and the Signatures print them too, and a stale list here would miss a reaction nobody
- * carries. */
+/*
+ * Every pool that prints a reaction. This list was the two that existed when it was written, then
+ * four, and each time it went stale it stopped seeing a whole Way -- which is how `bodyguard` went
+ * on being reported as a reaction nobody carries after Interpose started carrying it.
+ *
+ * So the Signatures are gathered BY CONVENTION rather than by name: any content export ending in
+ * `_SIGNATURES` is one, and a third Way needs no edit here.
+ */
+const signatureExports = Object.entries(content)
+  .filter(([key]) => key.endsWith("_SIGNATURES"))
+  .flatMap(([, list]) => list);
+check("Signature exports found", signatureExports.length >= 24, true);
 const carried = [...content.WARRIOR_DECK, ...content.WAY_CARDS, ...content.COMMON_POOL,
-  ...content.SHADE_SIGNATURES.filter(c => c.kind === "card")];
+  ...signatureExports.filter(c => c.kind === "card")];
 const printed = carried.filter(c => c.reaction);
 check("starter cards with a printed reaction",
   content.WARRIOR_DECK.filter(c => c.reaction).length, 4);
-check("cards with a printed reaction", printed.length, 13);
+check("cards with a printed reaction", printed.length, 14);
 const strayPrinted = printed.filter(c => !reactionKeys.includes(c.reaction))
   .map(c => `${c.name}: ${c.reaction}`);
 check("cards printing a reaction that does not exist",
@@ -1351,7 +1360,9 @@ check("cards printing a reaction that does not exist",
  * equipment.md 12 carries it as an [OPEN].
  */
 const unprinted = reactionKeys.filter(k => !printed.some(c => c.reaction === k));
-check("reactions no card prints", unprinted.length ? unprinted.join(", ") : "none", "bodyguard");
+/* Interpose closed the last one: `bodyguard` was printed by nothing until Way of Strength's
+ * Bodyguard claimed it, which is what the reaction was written for in the first place. */
+check("reactions no card prints", unprinted.length ? unprinted.join(", ") : "none", "none");
 check("the unprinted one is recorded as open",
   /\[OPEN\]\*\* \*\*Nothing in the game prints/.test(equipDoc)
   && /Bodyguard\.\*\* It is in the config/.test(equipDoc) ? "yes" : "no", "yes");
@@ -2079,7 +2090,7 @@ const graphSource = fs.readFileSync(path.join(root, "module/graph.mjs"), "utf8")
 const nodes = content.NODES;
 const byId = graph.GRAPH;
 
-check("nodes defined", nodes.length, 44);
+check("nodes defined", nodes.length, 81);
 check("duplicate node ids", nodes.length === byId.size ? "none" : "yes", "none");
 
 /* Every prerequisite must resolve, or a branch is silently unreachable. */
@@ -2176,7 +2187,7 @@ for (const node of nodes) {
     }
   }
 }
-check("crossings in the data", crossings, 3);
+check("crossings in the data", crossings, 5);
 check("crossings breaking a rule", crossFaults.length ? crossFaults.join("; ") : "none", "none");
 
 /* -------------------------------------------- */
@@ -2212,7 +2223,8 @@ const cardGrants = nodes.filter(n => n.grants?.card);
 const unbuilt = cardGrants.filter(n => !graph.POOL.has(n.grants.card))
   .map(n => `${n.id}: ${n.grants.card}`);
 /* Six pool draws on the minor nodes, plus nine Signature cards on the majors. */
-check("nodes granting a card", cardGrants.length, 15);
+/* The pool draws on the minor nodes, plus every Signature that is a card. */
+check("nodes granting a card", cardGrants.length, 31);
 check("cards granted but never built", unbuilt.length ? unbuilt.join(", ") : "none", "none");
 
 /* A pool card twice on one path would be a node that gives you a card you already have. */
@@ -2233,8 +2245,8 @@ check("a pool card granted twice on one path",
  */
 const minors = nodes.filter(n => !n.title && n.id !== graph.ROOT);
 const bespoke = minors.filter(n => n.bespoke);
-check("minor nodes", minors.length, 27);
-check("bespoke minor nodes", bespoke.length, 9);
+check("minor nodes", minors.length, 52);
+check("bespoke minor nodes", bespoke.length, 18);
 check("the bespoke share is about a third",
   bespoke.length / minors.length >= 0.25 && bespoke.length / minors.length <= 0.4, true);
 /* And each bespoke node sits LAST on its edge, immediately before the title it leads to. */
@@ -2256,7 +2268,8 @@ check("Shade majors in the data", majorsInData.length, 13);
 
 const cellDrift = [];
 for (const node of majorsInData) {
-  const doc = shadeTree.get((node.title ?? "").toLowerCase())
+  const doc = shadeTree.get(node.id)
+    ?? shadeTree.get((node.title ?? "").toLowerCase())
     ?? shadeTree.get((node.name ?? "").toLowerCase());
   if (!doc) { cellDrift.push(`${node.id}: not in the document's tree`); continue; }
   if (doc.axis !== node.axis || doc.resource !== node.resource) {
@@ -2277,6 +2290,22 @@ for (const node of majorsInData) {
 }
 check("Signatures or Tactics nobody wrote", sigDrift.length ? sigDrift.join("; ") : "none", "none");
 check("majors carrying a Signature", majorsInData.filter(n => n.signature).length, 12);
+/* And the same for Strength, against its own tree in the same document. */
+const strengthMajors = nodes.filter(n => n.title && n.id.startsWith("strength"));
+check("Strength majors in the data", strengthMajors.length, 13);
+const strengthDrift = [];
+for (const node of strengthMajors) {
+  const doc = trees.strength.get(node.id)
+    ?? trees.strength.get((node.title ?? "").toLowerCase())
+    ?? trees.strength.get((node.name ?? "").toLowerCase());
+  if (!doc) { strengthDrift.push(`${node.id}: not in the document's tree`); continue; }
+  if (doc.axis !== node.axis || doc.resource !== node.resource) {
+    strengthDrift.push(`${node.id}: data (${node.axis} / ${node.resource})`
+      + ` vs doc (${doc.axis} / ${doc.resource})`);
+  }
+}
+check("Strength cells that drifted from the document",
+  strengthDrift.length ? strengthDrift.join("; ") : "none", "none");
 
 /* The crossings the document drafts must be the crossings the data carries. */
 const dataCrossings = [];
@@ -2292,7 +2321,7 @@ for (const node of nodes) {
   }
 }
 check("the built crossings are the drafted ones", dataCrossings.sort().join(" "),
-  drafted.filter(e => byId.has(`shade.${e.from}`)).map(e => `${e.from}>${e.to}`).sort().join(" "));
+  drafted.map(e => `${e.from}>${e.to}`).sort().join(" "));
 
 /* -------------------------------------------- */
 
@@ -2540,17 +2569,21 @@ check("no prune sits on a branch that pays in deck size",
 section("Signatures and Tactics");
 
 const contentSource = fs.readFileSync(path.join(root, "module/content.mjs"), "utf8");
-const sigs = content.SHADE_SIGNATURES;
-const tactics = content.TACTICS;
+const sigs = graph.SIGNATURES;
+/* Both Ways' tables, through the index the engine builds -- a Way that added a table the engine
+ * merged and this check did not would be a Way whose Tactics nobody validated. */
+const tactics = graph.ALL_TACTICS;
 
-check("Signatures defined", sigs.length, 12);
-check("Tactics defined", Object.keys(tactics).length, 12);
+check("Signatures defined", sigs.length, 24);
+check("Tactics defined", Object.keys(tactics).length, 24);
 
 /* One per Shade title, and the Way root has neither -- way-cards 2.2 starts at Thief. */
-const titled = nodes.filter(n => n.title && n.id.startsWith("shade.") && n.signature);
-check("Shade titles carrying a Signature", titled.length, 12);
-check("the Way root carries none",
-  byId.get("shade").signature ?? byId.get("shade").tactic ?? "none", "none");
+const titled = nodes.filter(n => n.title && n.signature);
+check("titles carrying a Signature", titled.length, 24);
+/* A Way root is a major node and has neither: way-cards 2.1 and 2.2 start at the first title. */
+check("Way roots carrying one",
+  ["shade", "strength", "mind", "faith"]
+    .filter(w => byId.get(w)?.signature || byId.get(w)?.tactic).join(", ") || "none", "none");
 
 /*
  * The name on the node and the content it hands over must be the same thing. A node that *says*
@@ -2592,9 +2625,9 @@ check("Half-mage's slots are on the node", byId.get("shade.half-mage").grants.sp
  */
 const built = sigs.filter(sg => !sg.needs).map(sg => sg.name);
 check("Signatures the engine does everything for", built.join(", "),
-  "The Opening, The Kit, Heckle, One Trick");
+  "The Opening, The Kit, Heckle, One Trick, Nothing Gets Through, Interpose");
 const gaps = sigs.filter(sg => sg.needs).map(sg => `${sg.name}: ${sg.needs}`);
-check("Signatures with a named gap", gaps.length, 8);
+check("Signatures with a named gap", gaps.length, 18);
 /* Every gap says something; "needs: true" or an empty string would be a gap nobody can act on. */
 check("gaps that name nothing",
   sigs.filter(sg => sg.needs !== undefined && typeof sg.needs !== "string").length, 0);
@@ -2737,6 +2770,63 @@ check("and holds exactly that Tactic", graph.tacticOf(crossed)?.name, "The Long 
 check("not the shallower one's",
   graph.tacticOf(crossed)?.name === tactics["Light Fingers"] ? "both" : "one", "one");
 check("every Tactic has text", graph.tacticOf(crossed)?.text?.length > 20, true);
+
+/* -------------------------------------------- */
+
+/* -------------------------------------------- */
+
+/*
+ * The Ironclad, the second Signature that needed a field rather than a mechanism -- and the only
+ * thing in the game that wants you over the carry limit, which is what Way of Strength's resource
+ * became when it stopped colliding with Shade's.
+ */
+check("the feature schema carries the armour doubling",
+  /armor: new fields\.SchemaField\(\{\s*\n\s*doubleWhenOverloaded/.test(itemSource)
+    ? "yes" : "no", "yes");
+check("the actor applies it after the encumbrance tier",
+  /this\.encumbrance = CharacterData\.encumbranceTier[\s\S]{0,260}doubleWhenOverloaded/
+    .test(actorModel) ? "yes" : "no", "yes");
+/* After, not before: the tier is itself derived from weight, so order is the whole correctness. */
+check("and not before it",
+  actorModel.indexOf("doubleWhenOverloaded")
+    > actorModel.indexOf("this.encumbrance = CharacterData.encumbranceTier") ? "yes" : "no", "yes");
+check("only the Ironclad's Signature claims it",
+  sigs.filter(sg => sg.armor?.doubleWhenOverloaded).map(sg => sg.name).join(", "),
+  "Nothing Gets Through");
+
+/*
+ * Two pieces of content with one name. way-cards called Infantry's Signature AND its Tactic
+ * *Shoulder to Shoulder*, so a player would hold a card and carry a standing feature with the same
+ * name doing different things. The Tactic is *The Line* now, and this check is why that was found.
+ */
+const named = [
+  ...sigs.map(s => ["Signature", s.name]),
+  ...Object.keys(tactics).map(t => ["Tactic", t]),
+  ...content.COMMON_POOL.map(c => ["pool card", c.name]),
+  ...content.WAY_CARDS.map(c => ["Way card", c.name]),
+  ...content.FEATURES.map(f => ["feature", f.name])
+];
+const seen = new Map();
+const collisions2 = [];
+for (const [kind, name] of named) {
+  if (seen.has(name)) collisions2.push(`${name} (${seen.get(name)} and ${kind})`);
+  else seen.set(name, kind);
+}
+check("way-cards records Strength's audit",
+  /All twelve exist as content now, and two of them work/.test(wayDoc) ? "yes" : "no", "yes");
+check("and that one of the two 'free' Signatures was not",
+  /\*\*The paragraph below claimed two of these cost the rules nothing\. One does\.\*\*/
+    .test(wayDoc) ? "yes" : "no", "yes");
+check("Infantry's Tactic was renamed in the document",
+  /\| \*\*Infantry\*\* \| \*\*The Line\*\* \|/.test(wayDoc) ? "yes" : "no", "yes");
+check("leveling records that two Ways are wired",
+  /\*\*Way of Shade and Way of Strength are\s+wired\*\*/.test(levDoc) ? "yes" : "no", "yes");
+check("and that each Way's own pool is not",
+  /each\s+Way's own card pool \(\[way-cards\.md\]\(way-cards\.md\) §3\.2, §3\.3\) is unbuilt/
+    .test(levDoc) ? "yes" : "no", "yes");
+
+check("two pieces of content sharing a name",
+  collisions2.length ? collisions2.join(", ") : "none", "none");
 
 /* -------------------------------------------- */
 
