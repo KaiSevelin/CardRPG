@@ -1915,6 +1915,152 @@ check("duplicate i18n keys", dupes.length ? [...new Set(dupes)].join(", ") : "no
 
 /* -------------------------------------------- */
 
+/*
+ * The levelling graph's cross edges (leveling 1). Two Ways print their nodes as trees with the
+ * (axis / resource) cell beside each, and five cross edges are proposed in tables beside them. The
+ * cell test is arithmetic on those same cells -- an edge must match its source on EXACTLY one half,
+ * and join nodes of the same tier -- so the proposal is checkable rather than asserted.
+ *
+ * Everything here is parsed out of the document. A cell edited in the tree and not in the edge
+ * table is the failure this section exists to catch.
+ */
+
+section("the levelling graph: cross edges obey the cell test");
+
+function parseTree(doc, rootName) {
+  const start = doc.indexOf("  " + rootName + " ");
+  const block = doc.slice(start, doc.indexOf("```", start));
+  const nodes = new Map();
+  const stack = [];
+  for (const line of block.split("\n")) {
+    const m = line.match(/^([ │├└─]*?)([A-Z][A-Z \-]*[A-Z])\s+\(([^/]+?)\s*\/\s*([^)]+?)\)\s*$/);
+    if (!m) continue;
+    const tier = (m[1].length - 2) / 3;
+    const node = {
+      name: m[2].trim().toLowerCase(), tier,
+      axis: m[3].trim(), resource: m[4].trim(),
+      parent: tier >= 1 ? stack[tier - 1].name : null
+    };
+    stack[tier] = node;
+    /* A node's branch is the tier-1 ancestor it hangs off: the Way root is its own. */
+    node.branch = tier === 0 ? node.name : stack[1].name;
+    nodes.set(node.name, node);
+  }
+  return nodes;
+}
+
+const trees = { shade: parseTree(specDoc, "SHADE"), strength: parseTree(specDoc, "STRENGTH") };
+check("Way of Shade tree parses", trees.shade.size, 13);
+check("Way of Strength tree parses", trees.strength.size, 13);
+const allNodes = new Map([...trees.shade, ...trees.strength]);
+
+/* The five drafted edges, read from the tables that propose them. */
+const drafted = [...specDoc.matchAll(
+  /^\| \*\*([A-Za-z\- ]+?) → ([A-Za-z\- ]+?)\*\* \| (axis|resource), \*([^*]+)\* \|/gm)]
+  .map(m => ({ from: m[1].toLowerCase(), to: m[2].toLowerCase(), half: m[3], named: m[4].trim() }));
+check("cross edges proposed", drafted.map(e => `${e.from}>${e.to}`).join(" "),
+  "cutpurse>gambler burglar>trapmaker burglar>acrobat guardian>bodyguard ironclad>berserker");
+
+/* The test itself: exactly one half, the declared half is the one that matches, same tier, and
+ * different branches -- an edge inside one branch is a lattice and is not written here. */
+const halves = (a, b) => ({ axis: a.axis === b.axis, resource: a.resource === b.resource });
+const faults = [];
+for (const e of drafted) {
+  const a = allNodes.get(e.from), b = allNodes.get(e.to);
+  if (!a || !b) { faults.push(`${e.from}/${e.to}: not in any tree`); continue; }
+  const h = halves(a, b);
+  const n = (h.axis ? 1 : 0) + (h.resource ? 1 : 0);
+  if (n !== 1) faults.push(`${e.from}>${e.to}: ${n} halves match, not 1`);
+  else if (!h[e.half]) faults.push(`${e.from}>${e.to}: declared ${e.half}, matches the other half`);
+  else if ((e.half === "axis" ? a.axis : a.resource) !== e.named)
+    faults.push(`${e.from}>${e.to}: names "${e.named}", cell says "${e.half === "axis" ? a.axis : a.resource}"`);
+  if (a.tier !== b.tier) faults.push(`${e.from}>${e.to}: tier ${a.tier} to ${b.tier}, not sideways`);
+  if (a.branch === b.branch) faults.push(`${e.from}>${e.to}: same branch, so not a cross edge`);
+}
+check("cross edges failing the test", faults.length ? faults.join("; ") : "none", "none");
+
+/*
+ * Completeness: the test permits a fixed set of pairs, and the document claims to have considered
+ * all of them -- three taken and three declined in Shade, two and two in Strength. Enumerate.
+ * Tier 1 is skipped because those nodes already share the Way root; an edge between them is nothing.
+ */
+const declined = [...specDoc.matchAll(/([A-Z][A-Za-z\-]*) ↔ ([A-Z][A-Za-z\-]*)/g)]
+  .map(m => [m[1].toLowerCase(), m[2].toLowerCase()]);
+check("cross edges named and declined", declined.length, 5);
+
+const key = (x, y) => [x, y].sort().join("+");
+const accounted = new Set([...drafted.map(e => key(e.from, e.to)), ...declined.map(d => key(...d))]);
+const unconsidered = [];
+for (const tree of Object.values(trees)) {
+  const deep = [...tree.values()].filter(n => n.tier >= 2);
+  for (const a of deep) for (const b of deep) {
+    if (a.name >= b.name || a.branch === b.branch) continue;
+    const h = halves(a, b);
+    if ((h.axis ? 1 : 0) + (h.resource ? 1 : 0) !== 1) continue;
+    if (!accounted.has(key(a.name, b.name))) unconsidered.push(`${a.name}/${b.name}`);
+  }
+}
+check("legal pairs the document never mentions",
+  unconsidered.length ? unconsidered.join(", ") : "none", "none");
+/* And the other direction: a declined pair the test would have refused anyway is not a decision. */
+const idleDeclines = declined.filter(([x, y]) => {
+  const a = allNodes.get(x), b = allNodes.get(y);
+  if (!a || !b) return true;
+  const h = halves(a, b);
+  return (h.axis ? 1 : 0) + (h.resource ? 1 : 0) !== 1;
+}).map(d => d.join("/"));
+check("declined pairs the test already refused",
+  idleDeclines.length ? idleDeclines.join(", ") : "none", "none");
+
+/*
+ * The sibling rule, computed over ALL predecessors rather than a parent pointer -- which is the
+ * thing leveling 1 warns cross edges change. Siblings must differ on BOTH halves, the strict form
+ * both trees claim to satisfy.
+ */
+const successors = new Map();
+for (const n of allNodes.values()) {
+  if (n.parent) (successors.get(n.parent) ?? successors.set(n.parent, []).get(n.parent)).push(n.name);
+}
+for (const e of drafted) (successors.get(e.from) ?? successors.set(e.from, []).get(e.from)).push(e.to);
+const collisions = [];
+for (const [parent, kids] of successors) {
+  for (const x of kids) for (const y of kids) {
+    if (x >= y) continue;
+    const h = halves(allNodes.get(x), allNodes.get(y));
+    if (h.axis || h.resource) collisions.push(`${parent}: ${x}/${y}`);
+  }
+}
+check("sibling sets over all predecessors", collisions.length ? collisions.join(", ") : "none", "none");
+/* A parse that found no siblings at all would pass the line above while checking nothing. */
+check("sibling pairs actually compared",
+  [...successors.values()].reduce((n, k) => n + (k.length * (k.length - 1)) / 2, 0) >= 20, true);
+
+/* -------------------------------------------- */
+
+/* The rules the graph will be built to, as decisions rather than habits. */
+const levDoc = fs.readFileSync(path.join(root, "../../rules/leveling.md"), "utf8");
+check("leveling sets the pool-to-bespoke ratio",
+  /\*\*The pool is the default; about one minor node in three is bespoke\.\*\*/.test(levDoc)
+    ? "yes" : "no", "yes");
+check("and way-cards carries the same ratio",
+  /\*\*Two minor nodes in three draw from a pool; the third is bespoke\*\*/.test(wayDocEl)
+    ? "yes" : "no", "yes");
+check("a cross edge may not pass a title",
+  /A cross edge to a title is cheap; a cross edge past one is the leak/.test(levDoc) ? "yes" : "no",
+  "yes");
+check("cross edges go sideways, not up",
+  /\*\*Sideways, not up\.\*\*/.test(levDoc) ? "yes" : "no", "yes");
+check("the laundering case is recorded",
+  /an exclusive node must dominate everything behind it/i.test(levDoc) ? "yes" : "no", "yes");
+check("and the all-prerequisites flag is what enforces it",
+  /dominance\*\* invariant now leans on it too/.test(levDoc) ? "yes" : "no", "yes");
+check("Way of Faith admits no cross edge",
+  /\| \*\*Faith\*\* \| \*\*None\*\* \|/.test(levDoc) ? "yes" : "no", "yes");
+check("Mind and Faith are stringent in different ways",
+  /\*\*Mind and Faith differ in kind, not degree\.\*\*/.test(levDoc) ? "yes" : "no", "yes");
+
+/* -------------------------------------------- */
+
 console.log(failures
   ? `\n${failures} FAILURE${failures === 1 ? "" : "S"}`
   : "\nall checks pass");

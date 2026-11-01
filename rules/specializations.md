@@ -305,6 +305,36 @@ Two repeats are left in, deliberately, and both are instructive:
 - **Acrobat and Burglar both pay in weight**, in opposite directions — one carries nothing, one
   carries a kit. They sit in different branches and read as a contrast rather than a collision.
 
+### Cross edges: three, all sideways  **[PROPOSED]**
+
+[leveling.md](leveling.md) §1 allows an edge between branches when it arrives at a **title** and
+matches the source on **exactly one** half of the cell. Shade's second tier has three such pairs
+worth having:
+
+| Edge | Matches on | Reads as |
+|---|---|---|
+| **Cutpurse → Gambler** | axis, *Deck shape* | both are builds about cards in a deck you did not choose — one the action deck, one the fate deck |
+| **Burglar → Trapmaker** | axis, *Preparation* | the kit put down in advance instead of carried in |
+| **Burglar → Acrobat** | resource, *weight* | the same cost paid in the opposite direction — the contrast noted above, made into a route |
+
+All three join nodes at the **same tier**, so none of them shortens a path. They widen it, which is
+what a cross edge is for.
+
+The test permits three more — Burglar ↔ Half-mage and Trapmaker ↔ Half-mage on *Preparation*,
+Archer ↔ Acrobat on *Position* — and all three are declined. Spell slots are not a thing a kit or a
+trapline teaches, and the last is sound but surplus: **three cross edges in a twelve-node Way is
+already a lattice**, and a fourth starts turning the tree into a mesh. **The test is a floor, not a
+mandate.**
+
+**Assassin has no cross edge, and the test produced that rather than a decision about Assassin:**
+nothing else in the Way leans on Tempo and nothing else pays in Spent, so the deepest commitment in
+Way of Shade stays reachable only through Thief. The Way's own cells name the node you cannot stumble
+into.
+
+> **What the Dream Guild is for.** A lattice needs a reason or it is a convenience, and the guild is
+> already the Way's creditor (below). A Cutpurse learns the Gambler's trick because the same
+> organisation teaches both and keeps the books on both.
+
 ### The find: Way of Shade owes nobody
 
 Every single Way of Mind school states a price to a *person* — an elven debt, a pact with a minor
@@ -655,6 +685,23 @@ coordinates**, not merely on the cell:
 | Knight, Berserker, Musketeer | Position, Deck shape, Preparation | gear, Spent, range |
 | Street Fighter, Bodyguard | Control, Reactions | a weapon's value, ground |
 
+### Cross edges: two  **[PROPOSED]**
+
+| Edge | Matches on | Reads as |
+|---|---|---|
+| **Guardian → Bodyguard** | axis, *Reactions* | the same job narrowed from a line to one person — the hand kept free becomes the ground you will not leave |
+| **Ironclad → Berserker** | axis, *Deck shape* | the armour stops being protection and becomes permission |
+
+Both are tier 2 to tier 2. **Street Fighter and Tactician have none**, for the same reason Assassin
+has none in Shade: *a weapon's value*, *Support* and *halves* are unshared at that tier, so those two
+are reachable only down their own branches.
+
+The test permits two more — Artillerist ↔ Bodyguard on *ground*, Knight ↔ Artillerist on *Position*
+— and both are declined on fiction: a gun crew is not a career path to a bodyguard. **The test is a
+floor, not a mandate.**
+
+### What the trunk is
+
 The three trunk nodes are **how you stand, how you strike, and who you fight in front of** — the line,
 the kill, the crowd. Each is the broadest version of its branch, which is what a trunk should be, and
 the fan is uneven on purpose: four hang off the line because a line has more jobs in it than a duel
@@ -834,6 +881,11 @@ thirty-one-way distinctness. Two sets with teeth:
 
 - **Hard rule — siblings.** Nodes sharing a predecessor must occupy different cells. Violation is a
   content bug and the graph validator should refuse it ([leveling.md](leveling.md) §8).
+- **Hard rule — cross edges.** An edge between branches must arrive **at a title**, never at
+  another branch's minor nodes, and its cell must match the source's on **exactly one** half
+  ([leveling.md](leveling.md) §1). Both halves is the same build; neither is an arbitrary jump. The
+  cell therefore does a second job it was not built for: it decides which shortcuts through a Way
+  are legal.
 - **Warning — a whole Way.** A repeated cell inside one Way is allowed but suspicious; across Ways it
   is what the two pairs above were. Worth a warning, not a refusal.
 

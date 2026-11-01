@@ -45,7 +45,7 @@ trunk, nine behind them. Faith fans out to twelve gods at once, because in that 
 The graph is not a ladder with a fixed top. **Its shape dictates how many levels there are**, so
 adding depth is a content question, not a rules change.
 
-### Two decisions about the shape  **[DECIDED 2026-11-01]**
+### Decisions about the shape  **[DECIDED 2026-11-01]**
 
 - **More than one minor node between majors.** A branch is not a chain of titles with a step between
   them: two or three ordinary nodes separate each major node from the next. That is what gives the
@@ -53,14 +53,30 @@ adding depth is a content question, not a rules change.
   (Brewer, Smith, Spy, Fence, Politician) to be *clusters along a branch* rather than titles, and
   this is the room for them.
 
-  It is cheap only if most of them draw on the **common pool** ([way-cards.md](way-cards.md) §3.1),
-  which is six deliberately dull cards built for exactly this. Bespoke minor nodes at two or three
-  per edge would be upwards of a hundred pieces of content; pool draws are a line each.
+- **The pool is the default; about one minor node in three is bespoke.** Two of every three minor
+  nodes grant something already written — a card from the **common pool** or the **Way pool**
+  ([way-cards.md](way-cards.md) §3), or one of §4's generic rewards: a prune, a training, a know-how,
+  Health, a deck cap, a rest token. The third gives content written for that node and nowhere else —
+  a specific card, a feature, a formula.
+
+  **The ratio is a content budget**, and it is the difference between a shippable graph and a stalled
+  one. Around 120 minor nodes at two or three per edge means **about 40 bespoke pieces** instead of
+  120, which is the same order as the 48 Signatures already drafted. The pools are already sized for
+  it: six common cards plus a Way's thirteen or fourteen is about twenty, against about twenty pool
+  nodes per Way — and the slack goes to the generic rewards, which cost nothing to write at all.
+
+  > **Put the bespoke node last on the edge.** A run up to a title should start ordinary and end
+  > sounding like the title. A node written for the branch, sitting immediately before the branch's
+  > name, is also a second gate — the cheap half of §5a's *depth takes commitment*.
 
 - **Cross edges: this is a graph, not a tree.** A node may have **more than one predecessor**, so two
   branches can arrive at the same place and a hybrid is reachable without a new mechanism. The
   *Half-mage* is the standing example — a Way of Shade node that pays in **spell slots** — and it
   should be reachable from Mind as well as from the Duellist.
+
+  What cross edges are **for** is making a path less linear: a branch you can walk only one way is a
+  ladder with extra steps. What they must not become is a way round a price, which is the whole of
+  the next section.
 
   > **Cross edges make the sibling rule stricter, not looser.** §3 of
   > [specializations.md](specializations.md) says nodes sharing a predecessor must occupy different
@@ -72,6 +88,70 @@ adding depth is a content question, not a rules change.
   > It also meets the exclusive groups (§3): a node reachable two ways can have one of its paths
   > closed by a creed while the other stays open, which is a feature — it means an exclusive choice
   > narrows *how* you get somewhere, not only *whether*.
+
+### Cross edges, and what they may cross  **[DECIDED 2026-11-01]**
+
+Not every cross edge is the same kind of thing. Three kinds, by what they cross:
+
+| Kind | Crosses | Verdict |
+|---|---|---|
+| **A lattice** | nothing — two minor nodes of the same branch | **Free.** This is the kind that makes a path non-linear, and it needs no justification at all. |
+| **To a title** | one specialization's branch into another's, arriving **at the title** | **Allowed**, under the test below. |
+| **Past a title** | into another branch's **minor** nodes | **No.** |
+
+> **A cross edge to a title is cheap; a cross edge past one is the leak.** A major node charges its
+> own price — its subtraction, its *Pays in*, its obligation — so arriving at one by an unusual
+> route changes nothing about what it costs. A **minor** node charges nothing at all, which is
+> exactly why it is safe to hang pool content on and exactly why it must not be reachable from
+> outside the branch it belongs to. **Gambler's cards are behind Gambler**, and the good reason for a
+> Cutpurse to have them is that they took the node and are paying the fate deck for it.
+
+#### The test: exactly one half of the cell matches
+
+A cross edge onto a title is justified when the destination shares the source's **axis** or its
+**resource** (§5a.1), and not both:
+
+| | |
+|---|---|
+| **both halves match** | the two nodes are the same build, which §5a.1 refuses already |
+| **neither half matches** | the jump is arbitrary — the player arrives knowing nothing they learned on the way |
+| **one half matches** | the edge says something: you carry one half of how you fought into a build that spends it differently |
+
+**Cutpurse → Gambler passes on the axis.** Cutpurse is *(Deck shape / deck size)* and Gambler is
+*(Deck shape / the fate deck)*: both are builds about cards in a deck you did not choose, one the
+action deck and one the fate deck. That is a good reason rather than a shrug, and it is a reason the
+validator can check.
+
+**Sideways, not up.** A cross edge joins nodes of the **same depth**. An edge that reaches a tier-2
+node from a tier-1 one is not a cross edge, it is a shortcut — and §7 rests on two level-6
+characters having walked six nodes to comparable places.
+
+#### The thing cross edges break: an exclusive choice can be laundered
+
+`after[]` is **any one of** (§9), so a second predecessor is a second way in. Give a node behind
+Valtor an edge from outside Valtor's branch and swearing to The Purple no longer closes it — the
+exclusive group of §3 still *says* it does, and the graph quietly disagrees. This is the one way a
+tree was safer than a graph.
+
+> **Invariant: an exclusive node must dominate everything behind it.** Every path to a node behind
+> `X` passes through `X`.
+
+It needs no new field. §10 already asks for a node that requires **all** of its prerequisites, and
+that flag is the enforcement: **a cross edge into a gated branch is legal if it requires the gate as
+well.** So the rule is not quite *never* — it is *not for free*.
+
+#### What each Way does with them
+
+| Way | Cross edges | Why |
+|---|---|---|
+| **Shade** | Several, between branches at the same tier | The **Dream Guild** teaches across trades, and it already holds an obligation over every Thief ([specializations.md](specializations.md)) — the creditor is the reason. Three are drafted there. |
+| **Strength** | Several | Technique is watched and copied on a drill field. It is also the Way that read flattest, and a lattice is the cheapest way to make twelve nodes read like an army rather than three careers. Two are drafted. |
+| **Mind** | Few, and they buy nothing | A school **is its price** ([way-cards.md](way-cards.md) §3.4). The only cross edges worth wanting in Mind would arrive at a school's *deeper* nodes — formulas without the school's cost, the forbidden kind. The school nodes themselves sit one step off a trunk you own, so they are on your frontier already. |
+| **Faith** | **None** | The invariant above, applied to twelve gods. Any edge into a god's branch from outside it is the laundering case, so Faith's stringency is not a policy — it is what §3 was already claiming. |
+
+**Mind and Faith differ in kind, not degree.** Mind's cross edges are *pointless*: its content is
+guarded by a price you pay on arrival whichever way you came. Faith's are *forbidden*: its content is
+guarded by a door that shuts, and a second way in unshuts it.
 
 ## 2. Milestone
 
@@ -534,6 +614,20 @@ Two consequences:
   thing must stay acyclic. Both are cheap offline checks and belong in `test/validate.mjs` beside the
   ones already there.
 
+§1's cross edges add four more, each of them cheap and each checking a claim this document currently
+only asserts:
+
+| Check | Refuses |
+|---|---|
+| **Siblings** | two nodes sharing *any* predecessor in the same cell (§5a.1) |
+| **Dominance** | a node behind an `exclusive` node that does not require it |
+| **Past a title** | a cross edge arriving at a minor node of another branch |
+| **The cell halves** | a cross edge onto a title matching the source on both halves, or on neither |
+
+Depth consistency (§7) and *sideways, not up* are the same check twice, and both should **warn**
+rather than refuse: an uneven fan is sometimes the content's own shape, and Way of Faith's is, on
+purpose.
+
 ## 9. How it is stored
 
 Nodes are **content, not code** — the same rule the rest of the tuning follows
@@ -565,7 +659,9 @@ needs migrating.
   wiring: which node grants which entry, and the depth-consistency §7 asks for.
 - **Needed:** a node that requires **all** of its prerequisites rather than any one. §5a leans on
   this — it is how depth takes commitment, and without it every title is one node deep and means
-  nothing. One flag on the node; build it with the first graph.
+  nothing. §1's **dominance** invariant now leans on it too: the flag is the only thing that stops a
+  cross edge from handing out what an exclusive choice closed. One flag on the node; build it with
+  the first graph.
 - **[OPEN]** Whether **item** rewards overlap awkwardly with loot. A Way granting signature gear is
   good; a Way granting what the party would have found anyway is a dead node.
 - **[OPEN]** Whether a second Way should cost anything beyond the level, and whether there is a cap

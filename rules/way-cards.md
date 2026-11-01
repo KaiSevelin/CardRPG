@@ -682,6 +682,13 @@ able to grant content without core re-releasing anything.
 Everything here obeys §1.1 (one card, one gift) and §1.3 (one rung of the cost ladder). A blank cost
 column means the card is a re-arrangement of verbs you already have, which is free.
 
+> **Two minor nodes in three draw from a pool; the third is bespoke**
+> ([leveling.md](leveling.md) §1). That ratio is what makes these sections the right size — six
+> common cards plus a Way's thirteen or fourteen is about twenty, against about twenty pool nodes per
+> Way. A pool card may sit on nodes in several branches, which is what a pool is **for**, but never
+> **twice on one path**: that is a validator check rather than a writing habit. The bespoke third
+> goes **last on the edge**, immediately before the title it leads to.
+
 ### 3.1 The common pool — six cards
 
 Any Way's minor nodes may grant these. **They are deliberately dull**, and that is their job: they
