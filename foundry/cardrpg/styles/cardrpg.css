@@ -26,7 +26,17 @@
   --cardrpg-group-7: #a8872f;  /* Wonder */
 
   /* Standard poker proportions, 63 x 88 mm. */
-  --cardrpg-card-ratio: 0.716;
+  /*
+   * **2:3**, and the only statement of it anywhere.
+   *
+   * It was 0.716 here and 128/179 (0.7151) in the tray's layout block -- two statements of the
+   * same number, already disagreeing in the third decimal. The tray's height is derived from this
+   * now, so the ratio is a knob rather than three numbers to keep in step.
+   *
+   * It governs more than the card's shape: a card turned sideways is scaled by it so a rotated
+   * card still fits its slot, so a change here moves that too and automatically.
+   */
+  --cardrpg-card-ratio: 0.6667;
   --cardrpg-card-width: 150px;
 }
 
@@ -440,7 +450,9 @@
    * 63 x 88 mm, the standard poker ratio.
    */
   --cr-card-w: 128px;
-  --cr-card-h: 179px;
+  /* Derived, so the tray's cards and the card's own aspect-ratio cannot disagree. 2:3 at 128
+     wide is 192 tall, which is 13px more than 5:7 was -- the whole cost of the change. */
+  --cr-card-h: calc(var(--cr-card-w) / var(--cardrpg-card-ratio));
   --cr-deck-w: var(--cr-card-w);
   --cr-deck-h: var(--cr-card-h);
 }

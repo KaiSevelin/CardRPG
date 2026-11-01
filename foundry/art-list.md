@@ -6,11 +6,13 @@
 
 | | |
 |---|---|
-| Ratio | **5:7** — the standard playing-card proportion, which the card has been since the CSS was written |
-| Size | **640 × 896** (2×, for a 150px card on a retina display) |
+| Ratio | **2:3** |
+| Size | **640 × 960** (2×, for a 150px card on a retina display) |
 | Format | `.webp` preferred, `.png` fine. No transparency needed: the art is a full bleed |
 | Crop | **Cover, never letterbox.** Art is supplied at the card's own ratio, so a crop is a rounding error |
-| Safe area | Keep the subject off the **top 18%** and **bottom 34%**: the name sits on one and the halves on the other |
+| Safe area | Keep the subject off the **top 17%** and **bottom 32%**: the name sits on one and the halves on the other |
+
+**Nothing is cropped.** The card is 2:3 as well, so art supplied at 2:3 fills it exactly. A file at some other shape still works &mdash; it is cover-cropped rather than letterboxed &mdash; but it will lose whichever dimension is long, so compose at 2:3 and nothing is lost.
 
 **The art goes behind the face, not instead of it.** A face is rendered from data so that a condition can switch an individual icon off at runtime, so every card still draws its own name, halves and reaction row over the picture, on a scrim of the paper colour at 86%. That is also why there is no deadline: a card with no art looks exactly as it did before there were pictures, and the catalogue improves one file at a time.
 
@@ -33,7 +35,7 @@ cardrpg/art/signatures/shade/the-opening.webp
 
 **A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. Five pictures against three hundred faces — and the five are what a table looks at all evening, since a deck is face down from the first second of play.
 
-**5 pieces**. Same 5:7 and 640 × 896 as a face, and **no safe area**: nothing is printed over a back, so the whole card is yours.
+**5 pieces**. Same 2:3 and 640 × 960 as a face, and **no safe area**: nothing is printed over a back, so the whole card is yours.
 
 | | Deck | What it is for | File |
 |---|---|---|---|

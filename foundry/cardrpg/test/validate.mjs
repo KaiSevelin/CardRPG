@@ -3946,9 +3946,20 @@ check("punctuation does not survive", slug("Hit & Run!"), "hit-run");
 check("and nothing starts or ends with a hyphen", slug("-- Edge Case --"), "edge-case");
 
 /* The ratio and the safe area, which are the two things art cannot be redone without. */
-check("the brief states the ratio", /\| Ratio \| \*\*5:7\*\*/.test(artList) ? "yes" : "no", "yes");
+check("the brief states the ratio", /\| Ratio \| \*\*2:3\*\*/.test(artList) ? "yes" : "no", "yes");
 check("and the safe area the face sits on",
-  /\*\*top 18%\*\* and \*\*bottom 34%\*\*/.test(artList) ? "yes" : "no", "yes");
+  /\*\*top 17%\*\* and \*\*bottom 32%\*\*/.test(artList) ? "yes" : "no", "yes");
+
+/*
+ * A deck back is the same shape as a face, and the brief says so in prose rather than in the
+ * table -- so it is a second statement of the ratio, in a different sentence, and the kind that
+ * goes stale silently. Read both and make them agree, instead of writing 2:3 down a third time.
+ */
+const faceRatio = /\| Ratio \| \*\*(\S+)\*\*/.exec(artList)?.[1] ?? "none";
+const faceSize = /\| Size \| \*\*(\d+ \S+ \d+)\*\*/.exec(artList)?.[1] ?? "none";
+const backShape = /Same (\S+) and (\d+ \S+ \d+) as a face/.exec(artList);
+check("the backs ask for the face's ratio", backShape?.[1] ?? "none", faceRatio);
+check("and the face's size", backShape?.[2] ?? "none", faceSize);
 
 /* ---- how a card and the graph look ---- */
 
@@ -3990,7 +4001,26 @@ check("the rim is the border", /border: 5px solid var\(--cardrpg-paper\)/.test(c
  */
 check("and the art stops at it",
   /^ {2}background-clip: padding-box;$/m.test(css) ? "yes" : "no", "yes");
-/* Cover, not contain: art is supplied at the card's own ratio, so a letterbox would be two bars. */
+/*
+ * **The ratio is one number.** It was two -- `0.716` in the card's own `aspect-ratio` and
+ * `128/179` in the tray's layout block -- and they already disagreed in the third decimal, which
+ * is what a duplicated constant does while nobody is looking. The tray's height is derived from
+ * the ratio now, so a change to the shape of a card is one edit.
+ */
+check("the card ratio is stated once",
+  (css.match(/--cardrpg-card-ratio: [\d.]+;/g) ?? []).length, 1);
+check("and the tray's height is derived from it",
+  /--cr-card-h: calc\(var\(--cr-card-w\) \/ var\(--cardrpg-card-ratio\)\);/.test(css)
+    ? "yes" : "no", "yes");
+/* It also scales a card turned sideways, so a rotated card still fits the slot it came from. */
+check("a sideways card is scaled by the same number",
+  /transform: rotate\(90deg\) scale\(var\(--cardrpg-card-ratio\)\);/.test(css) ? "yes" : "no",
+  "yes");
+/* The brief and the card agree, which is the only way art arrives uncropped. */
+const ratioInCss = Number(/--cardrpg-card-ratio: ([\d.]+);/.exec(css)?.[1] ?? 0);
+check("the card is 2:3", Math.abs(ratioInCss - 2 / 3) < 0.001, true);
+
+/* Cover, not contain: a file at some other shape is cropped rather than letterboxed. */
 check("art is cropped rather than letterboxed",
   /background-size: cover/.test(css) ? "yes" : "no", "yes");
 /* A tint still means a bonus group and nothing else, and the band carries the style too. */
@@ -4037,10 +4067,14 @@ check("and a walked road is brighter",
 
 /* The record: the ratio to supply art at, which is the one thing art needs decided in advance. */
 check("the spec says what to supply",
-  /\| Ratio \| \*\*5:7\*\* \|/.test(hudPane) ? "yes" : "no", "yes");
+  /\| Ratio \| \*\*2:3\*\* \|/.test(hudPane) ? "yes" : "no", "yes");
 check("and why the face cannot be a picture",
   /renders a face from data so that a[\s\S]{0,40}condition can switch an individual icon off/
     .test(hudPane) ? "yes" : "no", "yes");
+check("the spec says the ratio is one number",
+  /\*\*The ratio is one number, and it moved once\.\*\*/.test(hudPane) ? "yes" : "no", "yes");
+check("and what it cost",
+  /192px against 179 at the tray's width/.test(hudPane) ? "yes" : "no", "yes");
 check("and what the pane's two channels say",
   /the \*\*fill\*\* \| which Way you are looking at/.test(hudPane) ? "yes" : "no", "yes");
 

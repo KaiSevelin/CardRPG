@@ -349,19 +349,29 @@ way round and the printing stops short of the edge. The rim is the element's **b
 what lets the art live inside it with no extra markup — `background-clip: padding-box` stops the
 art at the inner edge and the padding box rounds its own corners.
 
+> **The ratio is one number, and it moved once.** The card was 5:7 — the standard playing-card
+> proportion — and is **2:3**, which is a taller card: 192px against 179 at the tray's width, and
+> that 13px is the whole cost of the change. It was two numbers before, `0.716` in the card's own
+> `aspect-ratio` and `128/179` in the tray's layout block, already disagreeing in the third
+> decimal; the tray's height is derived from the ratio now, so there is one statement of it. It
+> also governs the **sideways card**, which is scaled by the ratio so a rotated card still fits
+> its slot — a change to the shape of a card moves that with it and automatically.
+
 > **The rim is always there, and ivory when it means nothing.** A tint on it means a **bonus group**
 > and nothing else, system-wide; an action card has no group, so it wears the paper colour — which
 > is the white outer strip the rim was modelled on. The border **style** still varies with the
 > group, because seven is past where hue alone reads, and a 5px `double` band reads as two
 > concentric lines where a 1px one barely read at all.
 
-**What to supply.** The card ratio is already `0.716`, which is **5:7** — the standard playing-card
-proportion — so art wants that shape and gets cover-cropped, never letterboxed:
+**What to supply.** The card is **2:3**, so art at 2:3 fills it exactly and nothing is cropped. A
+file at any other shape still works — it is cover-cropped rather than letterboxed — but it loses
+whichever dimension is long, so composing at 2:3 is the difference between drawing the card and
+drawing most of it:
 
 | | |
 |---|---|
-| Ratio | **5:7** |
-| Size | **640 × 896** (2×, for a 150px card on a retina display) |
+| Ratio | **2:3** |
+| Size | **640 × 960** (2×, for a 150px card on a retina display) |
 | Where | anywhere in the world's files; the path goes in content |
 | Field | **none was needed** — Foundry already gives every Item an `img` and every Card face an `img`, and nothing in this system used either |
 

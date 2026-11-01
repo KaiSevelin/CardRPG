@@ -180,11 +180,15 @@ push(
   "",
   "| | |",
   "|---|---|",
-  "| Ratio | **5:7** — the standard playing-card proportion, which the card has been since the CSS was written |",
-  "| Size | **640 × 896** (2×, for a 150px card on a retina display) |",
+  "| Ratio | **2:3** |",
+  "| Size | **640 × 960** (2×, for a 150px card on a retina display) |",
   "| Format | `.webp` preferred, `.png` fine. No transparency needed: the art is a full bleed |",
   "| Crop | **Cover, never letterbox.** Art is supplied at the card's own ratio, so a crop is a rounding error |",
-  "| Safe area | Keep the subject off the **top 18%** and **bottom 34%**: the name sits on one and the halves on the other |",
+  "| Safe area | Keep the subject off the **top 17%** and **bottom 32%**: the name sits on one and the halves on the other |",
+  "",
+  "**Nothing is cropped.** The card is 2:3 as well, so art supplied at 2:3 fills it exactly. A "
+  + "file at some other shape still works &mdash; it is cover-cropped rather than letterboxed "
+  + "&mdash; but it will lose whichever dimension is long, so compose at 2:3 and nothing is lost.",
   "",
   "**The art goes behind the face, not instead of it.** A face is rendered from data so that a "
   + "condition can switch an individual icon off at runtime, so every card still draws its own name, "
@@ -232,7 +236,7 @@ push(
   "",
   `**${backs.length} pieces**${backs.filter(([, b]) => b.art).length
     ? `, ${backs.filter(([, b]) => b.art).length} wired up` : ""}. `
-  + "Same 5:7 and 640 × 896 as a face, and **no safe area**: nothing is printed over a back, so "
+  + "Same 2:3 and 640 × 960 as a face, and **no safe area**: nothing is printed over a back, so "
   + "the whole card is yours.",
   "",
   "| | Deck | What it is for | File |",
