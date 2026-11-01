@@ -208,6 +208,11 @@ outside this order entirely — they neither redirect nor reduce, they fire on t
 there is no damage yet for either to be measured against.
 
 **The arrival trigger has two answers and you still get one**, so it has an order of its own:
+**Sidestep, then Heckle, then Counter.** One reaction answers an arrival, so the order is the
+policy: **mitigation outranks retaliation**, because the threshold above is *stops a Wound* or
+*stops you being dropped* and a counter does neither. Stepping out of reach denies the attack;
+spoiling the draw blunts it; hitting back leaves it untouched.
+
 **Sidestep first.** Stepping out of reach *denies* the attack — the Strike that was coming finds
 nobody — where a Counter trades damage for damage and you are still standing there. Someone who
 would rather set their spear turns the other card sideways; that is the whole of the override.
@@ -902,6 +907,7 @@ or Slowed (1) on a partial.*
 | **Dazed** | You can't play a secondary. |
 | **Slowed** | All Move values are halved (round down). With **Frozen** as well: **halve first, then reduce**, floor 0. |
 | **Stunned** | You can't play reactions. |
+| **Heckled** | You draw fate with **disadvantage**. The only condition that touches the fate deck rather than the body or the board, and nobody but a Bard applies it. |
 | **Invisible** | Enemies can't target you. Ends early if you Strike or Cast at an enemy. |
 | **Burning** | **Burning N:** take N damage at the start of your turn. It meets neither armor nor Block. **Fire cancels water in either state:** neither Burning nor **Wet**, and neither Burning nor **Frozen**, lands on a target already carrying the other — whichever arrives second ends the first without itself landing. A wet target steams; a frozen one thaws. |
 | **Frozen** | **Frozen N:** all Move values are **reduced by N**, to a minimum of 0. You still play both halves and keep your reactions. Cancels with Burning. |

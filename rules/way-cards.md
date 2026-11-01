@@ -447,7 +447,7 @@ it.
 | **Gambler** | **Double or Nothing** | Primary: Strike, and draw **two** fate cards — **both apply**, added together. Variance, not advantage. |
 | **Half-mage** | **One Trick** | Feature: **2 spell slots**, and you may prepare from any one school you have ever seen cast. |
 
-> **[BUILT 2026-11-01] All twelve exist as content now, and three of them work.** Each Signature is
+> **[BUILT 2026-11-01] All twelve exist as content now, and four of them work.** Each Signature is
 > an action card, a feature slate or an item slate that a node hands over, and each one that the
 > engine cannot work out **names what is missing** rather than hiding behind its prose. That list is
 > the Way of Shade engine backlog, read off the content rather than remembered, and the validator
@@ -457,15 +457,15 @@ it.
 > |---|---|---|
 > | ✓ | **The Opening** | nothing — it needed one new field, not a new mechanism (below) |
 > | ✓ | **The Kit** | nothing — an item slate with a sentence is how every item works |
+> | ✓ | **Heckle** | nothing, since **[FIXED]** below |
 > | ✓ | **One Trick** | nothing — the slots sit on the node, the sentence on the slate |
-> | | Point Man | **Foresee is not a verb** |
+> | | Point Man | the **extra** type, which needs to know who is furthest forward |
 > | | Named | a reaction that also Strikes |
 > | | One Opening | doubling, and a clause that reads *any* opening |
 > | | Lift | taking a card from another deck |
 > | | Loose and Step | a card that requires a ranged item |
 > | | Set | placing a trap on a square |
 > | | Over and Past | moving through an occupied square |
-> | | Heckle | **a reaction trigger for an enemy acting** |
 > | | Double or Nothing | two fate draws that both apply |
 >
 > **The Opening needed a field, and the field is the interesting part.** The card-level `when`
@@ -475,19 +475,42 @@ it.
 > feature level, which is why the Thief's Signature had nowhere to live. One `advantage.vsOpening`
 > flag on a feature slate, read by `advantageFor`, and the Way's keystone computes.
 >
-> **Three of the nine are defects rather than missing features:**
+> **Three of them were defects rather than missing features, and all three are [FIXED].**
 >
-> - **Point Man is a Primary that says *Foresee*, and Foresee is not a verb.** It is named in
->   core-rules §6 and in one feature's prose, and nowhere in the engine. A half whose verb does not
->   exist cannot be played at all, so this card is unplayable as printed.
-> - **Heckle is a reaction *"when an enemy acts"*, which is not a trigger.** There are two events in
->   the game: a hit landing and an enemy arriving. This is the **identical defect already fixed on
->   *Quick Hands***, whose trigger used to be *"any time on another's turn"* — and the fix there was
->   to re-point it at a real event, which is what this one needs too.
-> - **Lift collides with `resolveLift`, which does something else.** The engine's `resolveLift`
->   removes a *condition* from a target; the Cutpurse's *Lift* steals a *card* from their deck. Same
->   word, two mechanics — the `range`-means-reach shape again, and the sort of collision that gets
->   one of them implemented by mistake.
+> - **Foresee was a named effect nobody implemented**, and the first diagnosis of it was wrong.
+>   §6 of [core-rules.md](core-rules.md) says Foresee *"needs no icon of its own: it's a named
+>   effect, like Taunt or Stabilize"* — so it was never supposed to be a verb, and the bug is
+>   narrower than *"Point Man has no verb"*. What was missing was **the effect**: nothing in the
+>   engine could look at an intent card. Foresee now sits in the effect vocabulary beside Heal,
+>   Range and Blast, and reads one NPC type's intent — **whispered**, because §6 is explicit that
+>   *who knows* is a decision at the table and not a rule. Point Man's remaining gap is the *extra*
+>   type, which needs to know who is furthest forward.
+> - **Heckle was a reaction *"when an enemy acts"*, which is not a trigger.** There are two events
+>   in the game: a hit landing and an enemy arriving. The **identical defect was already fixed on
+>   *Quick Hands***, whose trigger used to be *"any time on another's turn"*, and the cure is the
+>   same: point it at a real event. It fires on **arrival** now — the enemy walks into reach and
+>   attacks on the same turn, so the draw it spoils is the one that was coming anyway.
+> - **Lift collided with `resolveLift`, which does something else.** The engine's removed a
+>   *condition*; the Cutpurse's *Lift* steals a *card*. Same word, two mechanics — the
+>   `range`-means-reach shape again, and the sort of collision that gets one of them implemented by
+>   mistake. The published card keeps its name; the function is **`liftCondition`**.
+>
+> **Heckle brought a condition and cost a hardcoded key.** *Heckled* — you draw fate with
+> disadvantage — is the first condition that touches the **fate deck** rather than the body or the
+> board, and it is Signature shape 5, *a condition in your hands only*: nothing else applies it. It
+> is deliberately **not an opening**, because an opening is a setup worth nothing on its own and
+> this one already pays.
+>
+> Declaring it turned up the last hardcoded condition in the resolver: advantage from **Invisible**
+> was a literal `includes("invisible")`, which is the by-key pattern the condition flags exist to
+> replace. Both are flags now — `grantsAdvantage` and `drawsWithDisadvantage` — and the next
+> condition that changes a draw needs a config entry and nothing else.
+>
+> **Where a heckle sits in the arrival order is the policy, not a preference.** One reaction answers
+> an arrival, so the order decides: **Sidestep, then Heckle, then Counter.** core-rules §3 states
+> the threshold as *stops a Wound* or *stops you being dropped*, which makes mitigation outrank
+> retaliation — stepping out of reach denies the attack, spoiling the draw blunts it, and the
+> counter does neither and hits back instead.
 
 **The Thief's and the Assassin's were rewritten when §1.6 was written, because §1.6 broke them.**
 *The Opening* used to read *advantage against anyone you put a condition on, this fight*. Add *Call

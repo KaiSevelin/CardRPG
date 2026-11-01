@@ -1578,17 +1578,24 @@ export const COMMON_POOL = [
  * the content rather than guessed at. Three of the twelve are fully computable; the other nine each
  * name exactly what is missing, and the validator asserts that list so closing one shows up.
  *
- * The three defects worth knowing, all of them the shape this project keeps meeting:
+ * The three defects worth knowing, all of them the shape this project keeps meeting, and all three
+ * now **[FIXED]**:
  *
- *   - **Point Man is a Primary that says `Foresee`, and Foresee is not a verb.** It is named in
- *     core-rules 6 and in one feature's prose, and nowhere in the engine. A half whose verb does
- *     not exist cannot be played at all.
- *   - **Heckle is a reaction *"when an enemy acts"*, which is not a trigger.** There are two events
- *     in the game, a hit landing and an enemy arriving. This is the identical defect already fixed
- *     on *Quick Hands*, whose trigger used to be "any time on another's turn".
- *   - **Lift collides with `resolveLift`, which does something else.** The engine's `resolveLift`
- *     removes a *condition* from a target; the Cutpurse's *Lift* steals a *card* from their deck.
- *     Same word, two mechanics, like `range` meaning both thrown range and melee reach.
+ *   - **Foresee was a named effect nobody implemented.** The first reading of this was wrong: it is
+ *     not a missing *verb*, because core-rules 6 says Foresee "needs no icon of its own" -- it is a
+ *     named effect, like Taunt and Stabilize. What was missing was the effect itself, so Foresee
+ *     now sits in `CARDRPG.effects` beside Heal and Blast, and `resolveForesee` whispers one NPC
+ *     type's intent card to the player. Point Man's remaining gap is narrower and real: the *extra*
+ *     type needs to know who is furthest forward, which no engine computes.
+ *   - **Heckle was a reaction *"when an enemy acts"*, which is not a trigger.** There are two
+ *     events in the game, a hit landing and an enemy arriving. The identical defect was already
+ *     fixed on *Quick Hands*, whose trigger used to be "any time on another's turn" -- and the cure
+ *     is the same: point it at a real event. It fires on **arrival** now, which is the moment it
+ *     reads best, since the enemy walks into reach and attacks on the same turn.
+ *   - **Lift collided with `resolveLift`, which does something else.** The engine's removed a
+ *     *condition* from a target; the Cutpurse's *Lift* steals a *card* from their deck. Same word,
+ *     two mechanics, like `range` meaning both thrown range and melee reach. The published card
+ *     keeps its name and the function is `liftCondition`.
  */
 export const SHADE_SIGNATURES = [
   {
@@ -1604,10 +1611,10 @@ export const SHADE_SIGNATURES = [
   },
   {
     name: "Point Man", kind: "card", node: "shade.scout",
-    needs: "Foresee is not a verb the engine has",
-    primary: [{ verb: "ready" }],
+    needs: "the extra type, which needs to know who is furthest forward",
+    primary: [{ verb: "foresee" }],
     secondary: [{ verb: "move", param: 1 }],
-    text: "Foresee. While you are the furthest forward of your party, Foresee one extra type."
+    text: "While you are the furthest forward of your party, Foresee one extra type."
   },
   {
     name: "Named", kind: "card", node: "shade.duellist",
@@ -1628,6 +1635,7 @@ export const SHADE_SIGNATURES = [
   {
     name: "Lift", kind: "card", node: "shade.cutpurse",
     needs: "taking a card from another deck",
+    /* The name is the card's. The engine's condition-removal is `liftCondition` now. */
     primary: [{ verb: "strike" }],
     secondary: [{ verb: "move", param: 1 }],
     text: "On a hit, take one card from the target's own deck. It is yours now, and it is in your "
@@ -1667,11 +1675,11 @@ export const SHADE_SIGNATURES = [
     text: "You may move through enemy squares."
   },
   {
-    name: "Heckle", kind: "card", node: "shade.bard",
-    needs: "a reaction trigger for an enemy acting",
-    primary: [{ condition: "dazed", duration: 1, resist: "presence", dc: 5 }],
+    name: "Heckle", kind: "card", node: "shade.bard", needs: "",
+    primary: [{ condition: "heckled", duration: 1, resist: "presence", dc: 5 }],
     secondary: [{ verb: "move", param: 1 }],
-    text: "When an enemy acts, it draws fate with disadvantage."
+    reaction: "heckle",
+    text: "An enemy arriving next to you draws fate with disadvantage until your next turn."
   },
   {
     name: "Double or Nothing", kind: "card", node: "shade.gambler",

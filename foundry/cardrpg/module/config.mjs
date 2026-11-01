@@ -32,6 +32,16 @@ CARDRPG.verbs = {
 /** Effects and targeting markers. Heal is an effect, not a verb. */
 CARDRPG.effects = {
   heal: { label: "CARDRPG.Effect.Heal", icon: "healing" },
+  /*
+   * Foresee: look at one NPC type's intent card for this round (core-rules 6).
+   *
+   * core-rules says it "needs no icon of its own", meaning no new entry in the six-verb vocabulary
+   * -- and it does not get one. It sits here beside Heal, Range and Blast, which are effects rather
+   * than verbs and all carry an icon, because a card half has to print SOMETHING. Its worth changes
+   * every round by design: a lot when the enemy acts late, nothing when it acts first and reveals
+   * the card for free.
+   */
+  foresee: { label: "CARDRPG.Effect.Foresee", icon: "all-seeing-eye" },
   range: { label: "CARDRPG.Effect.Range", icon: "bullseye" },
   blast: { label: "CARDRPG.Effect.Blast", icon: "mushroom-cloud" },
   aimed: { label: "CARDRPG.Effect.Aimed", icon: "laser-sparks" },
@@ -149,7 +159,27 @@ CARDRPG.conditions = {
   dazed: { label: "CARDRPG.Condition.Dazed", icon: "surprised", blocksSecondary: true },
   slowed: { label: "CARDRPG.Condition.Slowed", icon: "tortoise", halvesMove: true },
   stunned: { label: "CARDRPG.Condition.Stunned", icon: "brain-freeze", blocksReactions: true },
-  invisible: { label: "CARDRPG.Condition.Invisible", icon: "invisible" },
+  /*
+   * `grantsAdvantage` rather than a key the resolver looks for by name. advantageFor used to test
+   * `includes("invisible")` directly, which is the hardcoded-by-key pattern the condition flags
+   * exist to replace -- and it is what left `heckled` below with nowhere to say what it does.
+   */
+  invisible: {
+    label: "CARDRPG.Condition.Invisible", icon: "invisible", grantsAdvantage: true
+  },
+  /*
+   * Heckled: you draw fate with disadvantage.
+   *
+   * The Bard's Signature, and the first condition that touches the fate deck rather than the body
+   * or the board. Nobody else applies it -- Signature shape 5, *a condition in your hands only*.
+   *
+   * It is NOT an opening: an opening is a setup worth nothing on its own that a combo pays off, and
+   * this one is already worth something by itself. Adding it to that list would sharpen every combo
+   * clause in the game, which is not what the Bard is for.
+   */
+  heckled: {
+    label: "CARDRPG.Condition.Heckled", icon: "thumb-down", drawsWithDisadvantage: true
+  },
   // Fire annihilates with water in both its states: a wet target steams, a frozen one thaws.
   burning: {
     label: "CARDRPG.Condition.Burning",
@@ -519,6 +549,13 @@ CARDRPG.reactions = {
    */
   counter: { label: "CARDRPG.Reaction.Counter", kind: "other", trigger: "arrival", needsReach: 2 },
   use: { label: "CARDRPG.Reaction.Use", kind: "reduce", trigger: "hit" },
+  /*
+   * The Bard's. way-cards printed it as a reaction "when an enemy acts", which is not an event the
+   * game has -- the identical defect already fixed on Quick Hands, whose trigger used to be "any
+   * time on another's turn". An enemy ARRIVING is an event, and it is the moment the heckle lands:
+   * the enemy walks into reach and attacks on the same turn, with its draw already spoiled.
+   */
+  heckle: { label: "CARDRPG.Reaction.Heckle", kind: "other", trigger: "arrival" },
   bodyguard: { label: "CARDRPG.Reaction.Bodyguard", kind: "redirect", trigger: "allyHit" }
 };
 

@@ -106,9 +106,17 @@ export function advantageFor(actor, target, {
     advantage = true;
     reasons.push("target is Prone");
   }
-  if (conditionsOf(actor).includes("invisible")) {
-    advantage = true;
-    reasons.push("attacking while Invisible");
+  /*
+   * What the attacker's own conditions do to their draw, from the config flags rather than by key.
+   * Invisible granted advantage through a hardcoded `includes("invisible")` until Heckled needed
+   * the other half of the same idea and found nowhere to declare it.
+   */
+  for (const key of conditionsOf(actor)) {
+    const cfg = CARDRPG.conditions[key];
+    if (!cfg?.grantsAdvantage && !cfg?.drawsWithDisadvantage) continue;
+    const label = game.i18n.localize(cfg.label ?? key);
+    if (cfg.grantsAdvantage) { advantage = true; reasons.push(`attacking while ${label}`); }
+    if (cfg.drawsWithDisadvantage) { disadvantage = true; reasons.push(`attacking while ${label}`); }
   }
   /*
    * A feature granting advantage against anyone carrying an opening. Unlike the `when` clause
@@ -194,7 +202,12 @@ function actorHasAdjacentEnemy(actor) {
  * card comes out of the fate deck -- and doing only the first would leave a Miss in the deck that
  * nothing would ever account for.
  */
-export async function resolveLift(actor, { target, key }) {
+/*
+ * Renamed from `resolveLift`, which collided with the Cutpurse's Signature. This removes a
+ * CONDITION; that card steals a CARD. The published card keeps the name it is printed with and the
+ * function takes the one that says what it does -- the same cure `range`/`reach` needed.
+ */
+export async function liftCondition(actor, { target, key }) {
   if (!target || !CARDRPG.liftable(key)) {
     ui.notifications.warn(`${target?.name ?? "That target"} has nothing of that kind to lift.`);
     return null;
@@ -684,8 +697,62 @@ export async function answerArrival(actor, enemy) {
   const stepped = step ? await sidestep(actor, enemy, step) : null;
   if (stepped) return stepped;
 
+  /*
+   * Then the heckle, and then the counter. One reaction answers an arrival, so the order IS the
+   * policy -- and the policy core-rules 3 states is about not being Wounded and not being dropped,
+   * which makes mitigation outrank retaliation. Stepping out of reach denies the attack; spoiling
+   * the draw blunts it; the counter does neither and hits back instead.
+   */
+  const heckling = options.find(o => o.key === "heckle");
+  if (heckling) return heckle(actor, enemy, heckling);
+
   const set = options.find(o => o.key === "counter");
   return set ? await counter(actor, enemy, set) : null;
+}
+
+/**
+ * Heckle: the arriving enemy draws fate with disadvantage until your next turn.
+ *
+ * Like the counter, it draws no fate of its own and nothing answers it (core-rules 3). Unlike the
+ * counter it deals no damage, which is why it sits ahead of one in the order: a spoiled draw is
+ * worth more to a figure trying not to be Wounded than a Strike is.
+ */
+export async function heckle(actor, enemy, option) {
+  const existing = (enemy.system.toObject().conditions ?? []).map(c => ({ ...c }));
+  if (existing.some(c => c.key === "heckled")) return null;
+  await enemy.update({
+    "system.conditions": [...existing, { key: "heckled", duration: 1, creatorId: actor.id }]
+  });
+  await spendReaction(actor, option);
+  await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<div class="cardrpg"><p><strong>${actor.name}</strong> heckles `
+      + `<strong>${enemy.name}</strong>: it draws fate with disadvantage.</p></div>`
+  });
+  return { key: "heckle", card: option.card };
+}
+
+/**
+ * Foresee: look at one NPC type's intent card for this round (core-rules 6).
+ *
+ * The card stays face down. It is whispered, because the rules are explicit that *who knows* is a
+ * decision at the table and not a rule -- the player learns it and says what they like.
+ */
+export async function resolveForesee(actor, kind) {
+  const intent = kind ? deckOf(kind, "intent") : null;
+  const card = intent?.cards.contents[0];
+  if (!card) {
+    ui.notifications.info(game.i18n.localize("CARDRPG.Foresee.Nothing"));
+    return null;
+  }
+  const name = card.faces?.[0]?.name ?? card.name;
+  await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    whisper: ChatMessage.getWhisperRecipients("GM").concat(game.user.id),
+    content: `<div class="cardrpg"><p><strong>${actor.name}</strong> foresees `
+      + `<strong>${kind.system.kind || kind.name}</strong>: ${name}</p></div>`
+  });
+  return name;
 }
 
 /**

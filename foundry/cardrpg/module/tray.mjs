@@ -24,7 +24,7 @@ import {
 import {
   resolveAttack, resolveDefend, resolveHeal, resolveUse, resolveCondition, resolveShake,
   reachableAmmo, isUsable,
-  resolveTaint, resolveCorrode, resolveLift, collectBonuses
+  resolveTaint, resolveCorrode, liftCondition, resolveForesee, collectBonuses
 } from "./resolve.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -1257,8 +1257,36 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
           modal: true,
           rejectClose: false
         });
-        if (key) await resolveLift(actor, { target: who, key });
+        if (key) await liftCondition(actor, { target: who, key });
         break;
+      }
+
+      /*
+       * Foresee names one NPC TYPE, not a token: every goblin shares one intent card (core-rules
+       * 6, 9). With one type in the fight there is nothing to ask.
+       */
+      case "foresee": {
+        const kinds = new Map();
+        for (const combatant of game.combat?.combatants ?? []) {
+          const npc = combatant.actor;
+          if (npc?.type !== "npc") continue;
+          kinds.set(npc.system.kind || npc.name, npc);
+        }
+        if (!kinds.size) return ui.notifications.info("No enemy types in this fight to read.");
+        const names = [...kinds.keys()];
+        const pick = names.length === 1 ? names[0]
+          : await foundry.applications.api.DialogV2.wait({
+            window: { title: game.i18n.localize("CARDRPG.Effect.Foresee") },
+            content: `<div class="cardrpg"><p>Whose intent do you read?</p></div>`,
+            buttons: [
+              ...names.map(n => ({ action: n, label: n })),
+              { action: "cancel", label: "None", callback: () => null }
+            ],
+            modal: true,
+            rejectClose: false
+          });
+        if (pick && kinds.has(pick)) await resolveForesee(actor, kinds.get(pick));
+        return;
       }
 
       case "heal":

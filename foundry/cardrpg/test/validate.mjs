@@ -158,7 +158,7 @@ if (!fs.existsSync(specPath)) {
   for (const m of configSource.matchAll(/^  ([a-zA-Z]+): \{\s*\n\s*label: "CARDRPG\.Condition\./gm)) {
     conditions.add(m[1]);
   }
-  check("conditions found in config", conditions.size, 21);
+  check("conditions found in config", conditions.size, 22);
 
   /*
    * The spec's removal table claims eleven conditions can be shaken off and nine cannot
@@ -177,7 +177,7 @@ if (!fs.existsSync(specPath)) {
     const body = bodyOf(k);
     return !body.includes("opening:") && !body.includes("noDuration:");
   });
-  check("conditions that can be shaken off", shakeable.length, 12);
+  check("conditions that can be shaken off", shakeable.length, 13);
 
   /*
    * How every condition is got rid of, as an EXHAUSTIVE partition -- which is the only honest answer
@@ -204,7 +204,7 @@ if (!fs.existsSync(specPath)) {
     else buckets[b] = (buckets[b] ?? 0) + 1;
   }
   check("conditions with no way out at all", homeless.length ? homeless.join(", ") : "none", "none");
-  check("removed by Shake Off", buckets.shake ?? 0, 12);
+  check("removed by Shake Off", buckets.shake ?? 0, 13);
   check("removed by Lift", buckets.lift ?? 0, 2);
   check("removed by dropping weight", buckets.weight ?? 0, 2);
   check("removed by the clock, by design", buckets.clock ?? 0, 4);
@@ -1282,7 +1282,7 @@ const reactionLines = [...reactionBlock
   .matchAll(/^  ([a-zA-Z]+): \{([^}]*)\}/gm)]
   .map(m => ({ key: m[1], body: m[2] }));
 check("reactions declared", reactionLines.map(r => r.key).join(", "),
-  "parry, block, sidestep, counter, use, bodyguard");
+  "parry, block, sidestep, counter, use, heckle, bodyguard");
 
 /* Every reaction must name a trigger that exists, or it is a reaction nothing can ever fire. */
 const triggerOf = r => /trigger: "([a-zA-Z]+)"/.exec(r.body)?.[1] ?? "";
@@ -1304,7 +1304,7 @@ check("reactions that fire on a hit",
   "parry, block, use");
 check("reactions that fire on an arrival",
   reactionLines.filter(r => triggerOf(r) === "arrival").map(r => r.key).join(", "),
-  "sidestep, counter");
+  "sidestep, counter, heckle");
 /*
  * The arrival trigger has two answers and a reaction is one, so the engine needs an order -- and it
  * is the one core-rules 11 gives: the step denies the attack, the counter does not.
@@ -1332,11 +1332,15 @@ check("reaction timer retired from the HUD spec",
 
 /* The cards that carry one, against the config. */
 const reactionKeys = reactionLines.map(r => r.key);
-const carried = [...content.WARRIOR_DECK, ...content.WAY_CARDS];
+/* Every pool that prints a reaction, not the two that existed when this was written: the common
+ * pool and the Signatures print them too, and a stale list here would miss a reaction nobody
+ * carries. */
+const carried = [...content.WARRIOR_DECK, ...content.WAY_CARDS, ...content.COMMON_POOL,
+  ...content.SHADE_SIGNATURES.filter(c => c.kind === "card")];
 const printed = carried.filter(c => c.reaction);
 check("starter cards with a printed reaction",
   content.WARRIOR_DECK.filter(c => c.reaction).length, 4);
-check("cards with a printed reaction", printed.length, 6);
+check("cards with a printed reaction", printed.length, 13);
 const strayPrinted = printed.filter(c => !reactionKeys.includes(c.reaction))
   .map(c => `${c.name}: ${c.reaction}`);
 check("cards printing a reaction that does not exist",
@@ -2588,24 +2592,104 @@ check("Half-mage's slots are on the node", byId.get("shade.half-mage").grants.sp
  */
 const built = sigs.filter(sg => !sg.needs).map(sg => sg.name);
 check("Signatures the engine does everything for", built.join(", "),
-  "The Opening, The Kit, One Trick");
+  "The Opening, The Kit, Heckle, One Trick");
 const gaps = sigs.filter(sg => sg.needs).map(sg => `${sg.name}: ${sg.needs}`);
-check("Signatures with a named gap", gaps.length, 9);
+check("Signatures with a named gap", gaps.length, 8);
 /* Every gap says something; "needs: true" or an empty string would be a gap nobody can act on. */
 check("gaps that name nothing",
   sigs.filter(sg => sg.needs !== undefined && typeof sg.needs !== "string").length, 0);
-/* The three defects are rules bugs rather than missing features, so the document records them. */
-for (const [label, re] of [
-  ["Foresee is not a verb", /\*\*Point Man is a Primary that says `Foresee`, and Foresee is not a verb\.\*\*/],
-  ["Heckle has no trigger", /\*\*Heckle is a reaction \*"when an enemy acts"\*, which is not a trigger\.\*\*/],
-  ["Lift collides with resolveLift", /\*\*Lift collides with `resolveLift`, which does something else\.\*\*/]
-]) {
-  check(`the content records that ${label}`, re.test(contentSource) ? "yes" : "no", "yes");
-}
-/* And Foresee really is absent, so the note is not describing a problem that was since fixed. */
-check("Foresee is still not a verb", "foresee" in CARDRPG.verbs, false);
-check("and an enemy acting is still not a trigger",
+/* -------------------------------------------- */
+
+/*
+ * The three defects, fixed. Each check is on the fix rather than on the sentence describing it, and
+ * the record of what was wrong is checked too -- a defect whose history is deleted is one somebody
+ * re-introduces.
+ */
+
+/*
+ * 1. Foresee. The first diagnosis was wrong and that is worth keeping straight: core-rules 6 says
+ * it needs no icon OF ITS OWN, meaning no new verb -- it is a named effect. So it must be an
+ * EFFECT, and must NOT be a verb.
+ */
+check("Foresee is an effect", "foresee" in CARDRPG.effects, true);
+check("and still not a verb", "foresee" in CARDRPG.verbs, false);
+check("its icon is a file that exists",
+  fs.existsSync(path.join(root, `icons/${CARDRPG.effects.foresee.icon}.svg`)) ? "yes" : "no", "yes");
+check("the engine can read an intent card",
+  /export async function resolveForesee\(actor, kind\)/.test(resolveSource) ? "yes" : "no", "yes");
+/* Whispered, because core-rules 6 is explicit that *who knows* is a table decision, not a rule. */
+check("and whispers it rather than announcing it",
+  /resolveForesee[\s\S]{0,700}whisper: ChatMessage\.getWhisperRecipients/.test(resolveSource)
+    ? "yes" : "no", "yes");
+check("the tray can play a Foresee half",
+  /case "foresee": \{/.test(traySource) ? "yes" : "no", "yes");
+check("Point Man uses it",
+  sigs.find(sg => sg.name === "Point Man")?.primary?.[0]?.verb, "foresee");
+check("core-rules still calls it a named effect",
+  /it's a named effect, like \*Taunt\* or \*Stabilize\*/.test(coreRules) ? "yes" : "no", "yes");
+
+/*
+ * 2. Heckle, pointed at an event that exists. There are still only two.
+ */
+check("the triggers are still the two events",
   Object.keys(CARDRPG.reactionTriggers).join(", "), "hit, allyHit, arrival");
+check("Heckle fires on an arrival", CARDRPG.reactions.heckle?.trigger, "arrival");
+check("the card prints it", sigs.find(sg => sg.name === "Heckle")?.reaction, "heckle");
+check("and applies Heckled rather than something borrowed",
+  sigs.find(sg => sg.name === "Heckle")?.primary?.[0]?.condition, "heckled");
+check("Heckled spoils the carrier's own draw",
+  CARDRPG.conditions.heckled?.drawsWithDisadvantage, true);
+/* Not an opening: an opening is a setup worth nothing alone, and this one already pays. */
+check("Heckled is not an opening", CARDRPG.openings.includes("heckled"), false);
+check("nothing else applies it",
+  [...content.WARRIOR_DECK, ...content.WAY_CARDS, ...content.COMMON_POOL, ...content.GOBLIN_DECK,
+    ...sigs.filter(c => c.kind === "card")]
+    .filter(c => [...(c.primary ?? []), ...(c.secondary ?? [])]
+      .some(st => st.condition === "heckled")).map(c => c.name).join(", "),
+  "Heckle");
+check("the engine resolves a heckle",
+  /export async function heckle\(actor, enemy, option\)/.test(resolveSource) ? "yes" : "no", "yes");
+check("it spends the card like any reaction",
+  /heckle\(actor, enemy, option\)[\s\S]{0,700}await spendReaction\(actor, option\)/
+    .test(resolveSource) ? "yes" : "no", "yes");
+/* Mitigation outranks retaliation, because the policy is about Wounds and being dropped. */
+const arrivalOrder = resolveSource.slice(resolveSource.indexOf("export async function answerArrival"));
+const chain = ["sidestep", "heckle", "counter"].map(k => arrivalOrder.indexOf(`"${k}"`));
+check("the arrival order is step, heckle, counter",
+  chain[0] < chain[1] && chain[1] < chain[2] ? "yes" : "no", "yes");
+check("core-rules states that order",
+  /\*\*Sidestep, then Heckle, then Counter\.\*\*/.test(coreRules) ? "yes" : "no", "yes");
+
+/*
+ * 3. Lift. The published card keeps the name; the function says what it does. And the condition
+ * flags replaced the last key the resolver looked for by name.
+ */
+/* A CALL or a declaration, not a mention: the comment recording the rename says the old name, and
+ * a check that matched any occurrence would match the explanation instead of the code. */
+check("the colliding function name is gone",
+  /resolveLift\s*\(/.test(resolveSource + traySource) ? "still there" : "gone", "gone");
+check("and the condition remover says what it removes",
+  /export async function liftCondition\(actor, \{ target, key \}\)/.test(resolveSource)
+    ? "yes" : "no", "yes");
+check("the Cutpurse's card keeps its printed name",
+  sigs.some(sg => sg.name === "Lift") ? "yes" : "no", "yes");
+check("Invisible declares its advantage rather than being looked for by name",
+  CARDRPG.conditions.invisible?.grantsAdvantage, true);
+check("and the resolver reads the flag",
+  /if \(cfg\.grantsAdvantage\) \{ advantage = true;/.test(resolveSource)
+  && !/conditionsOf\(actor\)\.includes\("invisible"\)/.test(resolveSource) ? "yes" : "no", "yes");
+
+/* The history, so a fixed defect stays a known one. */
+for (const [label, re] of [
+  ["Foresee was an effect nobody implemented",
+    /\*\*Foresee was a named effect nobody implemented\*\*, and the first diagnosis of it was wrong\./],
+  ["Heckle had no trigger",
+    /\*\*Heckle was a reaction \*"when an enemy acts"\*, which is not a trigger\.\*\*/],
+  ["Lift collided with the engine's own function",
+    /\*\*Lift collided with `resolveLift`, which does something else\.\*\*/]
+]) {
+  check(`way-cards records that ${label}`, re.test(wayDoc) ? "yes" : "no", "yes");
+}
 
 /* -------------------------------------------- */
 
@@ -2659,7 +2743,7 @@ check("every Tactic has text", graph.tacticOf(crossed)?.text?.length > 20, true)
 /* Slates are handed over the same way cards are, and through one shape. */
 /* The documents say the same things, so the content and the rules cannot drift apart. */
 check("way-cards records the audit",
-  /All twelve exist as content now, and three of them work/.test(wayDoc) ? "yes" : "no", "yes");
+  /All twelve exist as content now, and four of them work/.test(wayDoc) ? "yes" : "no", "yes");
 check("way-cards says a Tactic is derived, not granted",
   /A Tactic is derived from your deepest title, never granted/.test(wayDoc) ? "yes" : "no", "yes");
 check("leveling says where a Signature's numbers live",
