@@ -2393,6 +2393,291 @@ export const MIND_TACTICS = {
 };
 
 /* -------------------------------------------- */
+
+/**
+ * Way of Faith's twelve Signature miracles (way-cards 2.4).
+ *
+ * A miracle is the same slate as a formula and is paid for at the opposite end: *a school is what it
+ * cost you to LEARN, a god is what it costs you to ASK* (way-cards 3.5). So nothing here carries a
+ * learning price, and every god carries an **Obedience** instead -- which is on the node, not here,
+ * because it applies to everything the god ever grants.
+ *
+ * **The largest gap in the game is now a spell that costs Health to cast**, at six pieces of
+ * content: three of Blood Magic's and three of Vax's. Two Ways arrived at the same mechanism from
+ * opposite directions -- a mage spending their own substance to buy power, and a war god counting
+ * his priest's blood first -- and neither can be built without it.
+ */
+export const FAITH_SIGNATURES = [
+  {
+    name: "The Clean Hand", kind: "spell", node: "faith.eternalgod", strength: 2,
+    source: "The Eternal God",
+    needs: "a promise that the next draw cannot fail",
+    description: "<p>An ally's next check or attack cannot fail. One cheaper on a brother or "
+      + "sister in faith, which is the third tenet made arithmetic.</p>",
+    effect: { range: 3, text: "an ally's next check or attack cannot fail" }
+  },
+  {
+    name: "Breath of the Spirit", kind: "spell", node: "faith.eternalspirit", strength: 2,
+    source: "The Eternal Spirit",
+    needs: "a reaction trigger beyond hit and arrival",
+    description: "<p>Reaction: heal an ally 3, at any range, ignoring cover. The spirit drifts "
+      + "through all the air, so distance is not a question for it.</p>",
+    effect: { verb: "heal", param: 3, text: "reaction, any range, ignoring cover" }
+  },
+  {
+    name: "The Tide Knows", kind: "spell", node: "faith.sessyfyn", strength: 2, source: "Sessyfyn",
+    needs: "two fate draws that both apply",
+    description: "<p>An ally draws fate twice on their next action and keeps both. The sea is not "
+      + "fair.</p>",
+    effect: { range: 3, text: "an ally draws fate twice on their next action and keeps both" }
+  },
+  {
+    name: "The Drum", kind: "spell", node: "faith.valtor", strength: 1, source: "Valtor",
+    needs: "a bonus that waits for your next Strike",
+    description: "<p>It starts somewhere behind you and it is already in your arms.</p>",
+    effect: { text: "your next Strike this turn is +3" }
+  },
+  {
+    name: "The Borrowed Face", kind: "spell", node: "faith.fagar", strength: 3, source: "Fagar",
+    needs: "an enemy that attacks its own side",
+    description: "<p>Spent: one enemy spends this round attacking its own ally. It works once, "
+      + "which is the god.</p>",
+    effect: { range: 3, text: "Spent: one enemy spends this round attacking its own ally" }
+  },
+  {
+    /*
+     * The one Faith Signature the engine does everything for, and the same shape as Mind's single
+     * one: a condition in an area with a saving throw. That part of the engine has been finished
+     * longest, so it is where content lands intact.
+     */
+    name: "The Outcast's Due", kind: "spell", node: "faith.vulpet", strength: 3, source: "Vulpet",
+    needs: "",
+    description: "<p>Every enemy next to you turns on you, because the outcast is who the crowd "
+      + "turns on. That is not a side effect; it is the prayer.</p>",
+    effect: {
+      verb: "cast", area: 1, areaKind: "blast",
+      condition: "compelled", duration: 2, resist: "presence", dc: 5
+    }
+  },
+  {
+    name: "Out of Barren Ground", kind: "spell", node: "faith.brendan", strength: 3,
+    source: "Brendan",
+    needs: "an effect that resolves on a later turn",
+    description: "<p>Plant it. At the start of your second turn after, every ally within 2 heals "
+      + "4. Nothing he gives arrives when you ask for it.</p>",
+    effect: { range: 2, text: "at the start of your second turn after, allies within 2 heal 4" }
+  },
+  {
+    name: "The Silent Hour", kind: "spell", node: "faith.grey", strength: 2, source: "The Grey",
+    needs: "a reaction that stops an action",
+    description: "<p>Reaction, adjacent only: an enemy's action does not happen. Close enough to "
+      + "touch, which is where the knife is.</p>",
+    effect: { range: 1, text: "reaction: an adjacent enemy's action does not happen" }
+  },
+  {
+    name: "The First Taste", kind: "spell", node: "faith.purple", strength: 2,
+    source: "The Purple",
+    needs: "a spell that taints its caster",
+    description: "<p>Tainting 2 on one adjacent enemy, and 1 Taint for you. You are the first to "
+      + "taste it, always.</p>",
+    effect: { verb: "tainting", param: 2, range: 1, text: "you gain 1 Taint yourself" }
+  },
+  {
+    name: "The Rumour", kind: "spell", node: "faith.yellow", strength: 2, source: "The Yellow",
+    needs: "an effect held up by spending a secondary",
+    description: "<p>Name a lie before the fight. One enemy type acts as if it were true, for as "
+      + "long as you keep spending a secondary on it.</p>",
+    effect: { text: "one enemy type acts as though a named lie were true, while you keep it up" }
+  },
+  {
+    name: "The Club and the Line", kind: "spell", node: "faith.vax", strength: 2, source: "Vax",
+    needs: "a spell that costs Health to cast",
+    description: "<p>Strike every adjacent enemy. No free hand needed, because the club is the "
+      + "holy symbol &mdash; which is the gift on the node, not on the card.</p>",
+    effect: { verb: "cast", area: 1, areaKind: "blast", text: "Strike every adjacent enemy. Costs 2 Health" }
+  },
+  {
+    name: "The Long Night", kind: "spell", node: "faith.first", strength: 3, source: "The First",
+    needs: "damage that heals the caster",
+    description: "<p>Drain 3 Health from an adjacent living target and gain it. The only renewable "
+      + "pool in the game, and the node says what it costs to have one.</p>",
+    effect: { verb: "cast", range: 1, mod: 3, text: "you gain the Health you take" }
+  }
+];
+
+/* -------------------------------------------- */
+
+/**
+ * The miracles a Faith minor node hands over (way-cards 3.5).
+ *
+ * The same rule Mind's pool follows, and easier here: a god's branch leads nowhere but deeper into
+ * that god, so a minor node's miracle is always its own god's. Nothing on a Valtor run could hand
+ * out a miracle of The Grey without an edge between religions, and there are none -- the religions
+ * are the exclusive groups.
+ */
+export const FAITH_POOL = [
+  {
+    name: "Name the Guilty", strength: 1, pool: "faith", source: "The Eternal God", needs: "",
+    description: "<p>No save. Being named is not something you resist.</p>",
+    /* No verb: a step with a condition and no verb IS the condition, and an opening never saves. */
+    effect: { range: 6, condition: "judged", duration: 1 }
+  },
+  {
+    name: "Steady the Hand", strength: 1, pool: "faith", source: "The Eternal God",
+    needs: "judging whoever applied a condition",
+    description: "<p>Ends Compelled on an ally, and accuses whoever did it. Answer and accuse, "
+      + "which is what a targeted counter has to do to be worth a slot (way-cards 3.6).</p>",
+    effect: { verb: "shake", param: 1, condition: "compelled", range: 3 }
+  },
+  {
+    name: "Lay On", strength: 1, pool: "faith", source: "The Eternal Spirit", needs: "",
+    description: "<p>Hands, and three squares of air between you.</p>",
+    effect: { verb: "heal", param: 2, range: 3 }
+  },
+  {
+    name: "A Word for You", strength: 1, pool: "faith", source: "The Eternal Spirit", needs: "",
+    description: "<p>Blessed: a temporary Critical in their fate deck, until it is drawn. The "
+      + "condition shuffles the card in by itself (core-rules 6).</p>",
+    effect: { range: 3, condition: "blessed" }
+  },
+  {
+    name: "Undertow", strength: 2, pool: "faith", source: "Sessyfyn", needs: "",
+    description: "<p>Wet, and everything in it moved a square you choose. Moving figures is a "
+      + "sentence the table applies (core-rules 11), so this card is complete.</p>",
+    effect: {
+      verb: "cast", range: 3, area: 2, areaKind: "blast", condition: "wet", duration: 1,
+      text: "every target is moved 1 square you choose"
+    }
+  },
+  {
+    name: "No Step Back", strength: 2, pool: "faith", source: "Valtor",
+    needs: "granting Block to an ally",
+    description: "<p>Every ally within 2 gains Block 2 until your next turn.</p>",
+    effect: { range: 2, text: "every ally within 2 gains Block 2 until your next turn" }
+  },
+  {
+    name: "The Second Thought", strength: 1, pool: "faith", source: "Fagar",
+    needs: "an enemy that loses a half",
+    description: "<p>One enemy spends its secondary this round doing nothing.</p>",
+    effect: { range: 3, resist: "presence", dc: 7, text: "one enemy's secondary does nothing" }
+  },
+  {
+    name: "Alone on the Road", strength: 1, pool: "faith", source: "Vulpet",
+    needs: "an effect that reads how far away your allies are",
+    description: "<p>While no ally is within 2 squares, heal 2 at the start of your turn. The only "
+      + "healing a priest of hers can ever receive.</p>",
+    effect: { verb: "heal", param: 2, text: "while no ally is within 2, at the start of your turn" }
+  },
+  {
+    name: "Full Belly", strength: 1, pool: "faith", source: "Brendan",
+    needs: "a one-off bonus to the next rest",
+    description: "<p>Out of combat: the party's next rest returns one extra rest token.</p>",
+    effect: { text: "the party's next rest returns one extra rest token" }
+  },
+  {
+    name: "Grey Judgement", strength: 2, pool: "faith", source: "The Grey",
+    needs: "moving a figure's place in the round",
+    description: "<p>A Judged adjacent enemy acts last in the round, whatever its initiative.</p>",
+    effect: { range: 1, text: "a Judged adjacent enemy acts last this round" }
+  },
+  {
+    name: "Taste of the Rot", strength: 1, pool: "faith", source: "The Purple",
+    needs: "a spell that taints its caster",
+    description: "<p>One adjacent enemy: 1 damage and Off-Balance, no save. A Miss costs you a "
+      + "Taint, which is the god being paid whether or not it worked.</p>",
+    effect: {
+      verb: "cast", range: 1, mod: 1, condition: "offBalance", duration: 1,
+      text: "you gain 1 Taint on a Miss"
+    }
+  },
+  {
+    name: "The Planted Word", strength: 1, pool: "faith", source: "The Yellow",
+    needs: "an effect held up by spending a secondary",
+    description: "<p>Name one enemy type before the fight. While you spend a secondary each round, "
+      + "that type cannot play reactions.</p>",
+    effect: { text: "while you spend a secondary, one enemy type cannot play reactions" }
+  },
+  {
+    name: "Stand Where I Stand", strength: 1, pool: "faith", source: "Vax",
+    needs: "a spell that costs Health to cast",
+    description: "<p>Allies adjacent to you cannot be reduced below 1 Health until your next "
+      + "turn. Costs 2 Health, because his miracles are paid in yours.</p>",
+    effect: { range: 1, text: "adjacent allies cannot be reduced below 1 Health. Costs 2 Health" }
+  },
+  {
+    name: "The Shield Line", strength: 2, pool: "faith", source: "Vax",
+    needs: "a spell that costs Health to cast",
+    description: "<p>Every ally adjacent to you gains your armor value as Block until your next "
+      + "turn. One Health per ally, so a long line is a dear one.</p>",
+    effect: { range: 1, text: "adjacent allies gain your armor as Block. Costs 1 Health per ally" }
+  },
+  {
+    name: "Measure of the Debt", strength: 2, pool: "faith", source: "The First",
+    needs: "an event when a figure's Health reaches zero",
+    description: "<p>A Judged enemy that dies this round pays you 3 Health. The debt is collected "
+      + "whether or not you were the one who called it in.</p>",
+    effect: { text: "a Judged enemy that dies this round: you gain 3 Health" }
+  },
+  {
+    /*
+     * The one miracle that charges a god's own coin on the card as well as in the obedience, and it
+     * charges it FOR GOOD: each time it saves you there is less of you left to save with. A priest
+     * of The First who has survived four times cannot cast at all.
+     */
+    name: "What Does Not Die", strength: 3, pool: "faith", source: "The First",
+    needs: "an event when a figure's Health reaches zero",
+    description: "<p>When you would drop to 0 Health, drop to 1 instead &mdash; and lose a spell "
+      + "slot permanently.</p>",
+    effect: { text: "drop to 1 instead of 0, and lose a spell slot for good" }
+  }
+];
+
+/* -------------------------------------------- */
+
+/**
+ * Way of Faith's Tactics (way-cards 2.5). Each is shaped by its god's Obedience, because a priest's
+ * tactics are not theirs.
+ */
+/*
+ * **Two were renamed, and both for the reason that renamed Infantry's.** The document gives Vax
+ * *The Line*, which Way of Strength's Infantry already carries, and gives The First *What Does Not
+ * Die*, which is the name of one of The First's own miracles. A player holding a card and carrying
+ * a standing feature with one name doing two different things is the defect the collision check
+ * exists to refuse, so way-cards 2.5 now prints the names below.
+ */
+export const FAITH_TACTICS = {
+  "No Shelter for the Guilty":
+    "Enemies get no cover from figures against you.",
+  "Where the Air Goes":
+    "You may reach any ally you can see, ignoring cover and range, for anything that heals or "
+    + "helps.",
+  "The Tide Comes In":
+    "At the start of each round, move any one willing ally 1 square.",
+  "The Drum Does Not Stop":
+    "You may never Defend -- and if you moved toward an enemy this turn, your Strike cannot be "
+    + "answered by a reaction.",
+  "Nobody Remembers Your Face":
+    "The first enemy to attack you each fight draws fate with disadvantage.",
+  "Alone and Unafraid":
+    "While no ally is within 2, you cannot be Compelled and enemies have disadvantage against you.",
+  "Roots":
+    "A square you have stood in for a whole round is high ground for you and difficult ground for "
+    + "your enemies.",
+  "Close Enough to Touch":
+    "Moving into a square adjacent to an enemy costs you nothing, even out of difficult ground, "
+    + "and never sets off a reaction.",
+  "The Cup Passes":
+    "An enemy will not willingly end its movement adjacent to you; doing so costs it a half.",
+  "Nobody Knows Where You Are":
+    "Enemies treat you as standing where you were at the start of the round.",
+  "The Line of Vax":
+    "While two or more allies are adjacent to you, none of you can be moved and none of you is "
+    + "blocked by cover.",
+  "What Is Left":
+    "At 0 Health you keep acting as though at 1 until the end of the round in which you fell."
+};
+
+/* -------------------------------------------- */
 /*  The levelling graph                         */
 /* -------------------------------------------- */
 
@@ -2413,9 +2698,8 @@ export const MIND_TACTICS = {
  *   bespoke    content written for this node and nowhere else. Two minor nodes in three are NOT
  *              bespoke: they draw on a pool, which is the content budget leveling 1 sets
  *
- * Three Ways are built -- Shade, Strength and Mind. Way of Faith is a root node with nothing behind
- * it yet, and it is the only one that will use `exclusive` and `creed`, which have been built and
- * unused since the day they were written.
+ * All four Ways are built. `exclusive` and `creed` were written for Way of Faith and sat unused
+ * until it existed; the twelve gods are their first content, and the religion is the group.
  *
  * The cross edges are the part worth reading twice. A cross edge is an edge like any other, so it
  * carries its own minor nodes. Attach one straight to the far title and a Cutpurse reaches Gambler
@@ -2978,5 +3262,255 @@ export const NODES = [
     axis: "Support", resource: "someone else's turn",
     signature: "The Reading", tactic: "Already Seen",
     grants: { spell: "The Reading" }
+  },
+
+  /*
+   * --- Way of Faith: twelve gods, and the only Way whose first step closes the others
+   *
+   * The inverse of every other Way. Shade, Strength and Mind are narrow and deep -- three titles
+   * off a trunk and nine behind them. Faith is **wide and shallow**: twelve doors at the top,
+   * because here *the choice is the content* (specializations.md).
+   *
+   * **The religion is the exclusive group**, nested inside the `faith` family: taking a god closes
+   * every god of every other religion for good, and leaves your own religion's open. Nothing new
+   * was needed for that -- `exclusive` with a `creed` was written for exactly this and has been
+   * built and unused since the day it was written. This is its first content.
+   *
+   * **A religion's size is its price.** Serve a pantheon and you may add its other gods later, a
+   * level each, going wider; serve a lone god and you never will -- so a lone god's branch runs
+   * **four nodes deeper**, which is how many spare doors The Five has. That is leveling.md 7's
+   * depth consistency applied to a Way that spends its depth sideways.
+   *
+   * Twelve siblings cannot lean on seven axes without repeating, and the pigeonhole principle says
+   * so before anyone writes a word. So this Way is distinguished by what it TAKES: twelve
+   * different resources, so all twelve cells are distinct on the resource alone.
+   */
+
+  /* --- the Faith trunk: three ordinary nodes before the first vow ---
+   *
+   * No prune here, and the reason is a god. The Eternal God's Obedience is *your action deck may
+   * hold no more than 12 cards*; a prune on the shared trunk would pre-pay that price for a
+   * character who has not sworn to him yet, and hand every other priest a reward he has to earn.
+   */
+  { id: "faith.vows", name: "Vows", after: ["faith"], grants: { training: "liturgy" } },
+  {
+    id: "faith.pilgrimage", name: "Pilgrimage", after: ["faith.vows"],
+    grants: { card: "Hold the Line" }
+  },
+  { id: "faith.calling", name: "The Calling", after: ["faith.pilgrimage"], grants: { restTokens: 1 } },
+
+  /* --- the four lone gods: one door, no second god ever, and a branch four nodes deeper --- */
+  {
+    id: "faith.eternalgod", name: "The Eternal God", after: ["faith.calling"],
+    title: "The Eternal God", exclusive: "faith", creed: "eternal-god",
+    axis: "Control", resource: "deck size",
+    signature: "The Clean Hand", tactic: "No Shelter for the Guilty",
+    obedience: "Your action deck may hold no more than 12 cards, and the faith names what may "
+      + "not be in it.",
+    gift: "Solidarity: his miracles cast on a brother or sister in faith cost one less -- no "
+      + "Strain, no Spent.",
+    grants: { spell: "The Clean Hand" }
+  },
+  { id: "faith.eg.rule", name: "The Rule", after: ["faith.eternalgod"], grants: { spell: "Name the Guilty" } },
+  { id: "faith.eg.fast", name: "The Fast", after: ["faith.eg.rule"], grants: { health: 1 } },
+  {
+    id: "faith.eg.office", name: "The Night Office", after: ["faith.eg.fast"],
+    grants: { spell: "Steady the Hand" }
+  },
+  { id: "faith.eg.scripture", name: "Scripture", after: ["faith.eg.office"], grants: { training: "the holy books" } },
+  { id: "faith.eg.clean", name: "The Clean Body", after: ["faith.eg.scripture"], grants: { spellSlots: 1 } },
+  {
+    id: "faith.eg.alms", name: "Alms", after: ["faith.eg.clean"], bespoke: true,
+    grants: { knowHow: "which houses of the faith will take you in" }
+  },
+
+  {
+    id: "faith.eternalspirit", name: "The Eternal Spirit", after: ["faith.calling"],
+    title: "The Eternal Spirit", exclusive: "faith", creed: "eternal-spirit",
+    axis: "Reactions", resource: "weight",
+    signature: "Breath of the Spirit", tactic: "Where the Air Goes",
+    obedience: "You must stay Unburdened, and wear no armour heavier than Leather.",
+    gift: "The spirit drifts through all the air: his miracles ignore range and cover.",
+    grants: { spell: "Breath of the Spirit" }
+  },
+  { id: "faith.es.breath", name: "Breath", after: ["faith.eternalspirit"], grants: { spell: "Lay On" } },
+  { id: "faith.es.word", name: "The Given Word", after: ["faith.es.breath"], grants: { spell: "A Word for You" } },
+  { id: "faith.es.air", name: "The Open Air", after: ["faith.es.word"], grants: { carry: 1 } },
+  { id: "faith.es.unseen", name: "The Unseen", after: ["faith.es.air"], grants: { restTokens: 1 } },
+  { id: "faith.es.hand", name: "The Open Hand", after: ["faith.es.unseen"], grants: { spellSlots: 1 } },
+  {
+    id: "faith.es.distance", name: "Distance", after: ["faith.es.hand"], bespoke: true,
+    grants: { knowHow: "how far a voice carries, and where it will not" }
+  },
+
+  {
+    id: "faith.vax", name: "Vax", after: ["faith.calling"], title: "Vax",
+    exclusive: "faith", creed: "vax",
+    axis: "Position", resource: "Health",
+    signature: "The Club and the Line", tactic: "The Line of Vax",
+    obedience: "Every miracle costs at least 1 Health, and the card may ask more.",
+    gift: "His miracles need no free hand: the spiked club is the holy symbol. Nothing else in "
+      + "the game sets aside the free-hand rule, and it is what makes a cleric-fighter possible.",
+    grants: { spell: "The Club and the Line" }
+  },
+  { id: "faith.vax.club", name: "The Club", after: ["faith.vax"], grants: { spell: "Stand Where I Stand" } },
+  { id: "faith.vax.shield", name: "The Shield", after: ["faith.vax.club"], grants: { spell: "The Shield Line" } },
+  { id: "faith.vax.ranks", name: "The Ranks", after: ["faith.vax.shield"], grants: { health: 1 } },
+  { id: "faith.vax.drill", name: "Drill", after: ["faith.vax.ranks"], grants: { training: "shield and club" } },
+  { id: "faith.vax.blood", name: "Blood Paid", after: ["faith.vax.drill"], grants: { health: 1 } },
+  {
+    id: "faith.vax.sixth", name: "The Sixth", after: ["faith.vax.blood"], bespoke: true,
+    grants: { knowHow: "the Sixth District, and who owes the temple" }
+  },
+
+  {
+    /*
+     * The one node in the game that CAPS a derived maximum rather than raising it. Every other
+     * grant adds; this says *your spell slots are capped at 3, for ever*, which is why The First
+     * has no strength-4 and no strength-5 miracle -- the obedience bites at the top of the ladder
+     * as well as the bottom (way-cards 3.5).
+     */
+    id: "faith.first", name: "The First", after: ["faith.calling"], title: "The First",
+    exclusive: "faith", creed: "first",
+    axis: "Deck shape", resource: "spell slots",
+    signature: "The Long Night", tactic: "What Is Left",
+    obedience: "Your spell slots are capped at 3, for ever.",
+    gift: "His miracles return what they take: Health drained from a living target comes back "
+      + "to you, which is the only renewable pool in the game.",
+    grants: { spell: "The Long Night", caps: { spellSlots: 3 } }
+  },
+  { id: "faith.first.debt", name: "The Debt", after: ["faith.first"], grants: { spell: "Measure of the Debt" } },
+  {
+    id: "faith.first.watch", name: "The Long Watch", after: ["faith.first.debt"],
+    grants: { spell: "What Does Not Die" }
+  },
+  {
+    /*
+     * Way of Faith's only prune, and it is on the god who wants a narrow deck anyway -- *few
+     * slots, and a deck narrow enough to hold them* (way-cards 3.5), which is one node.
+     */
+    id: "faith.first.narrow", name: "The Narrow Deck", after: ["faith.first.watch"],
+    grants: { spellSlots: 1, prune: 1 }
+  },
+  { id: "faith.first.blood", name: "The Blood", after: ["faith.first.narrow"], grants: { health: 1 } },
+  {
+    /*
+     * The fourth slot, which the cap eats. That is deliberate and it is the only way an obedience
+     * can be a price rather than a decoration: the god offers more than you may hold, and what
+     * stops you is the vow. A priest of The First who walks the whole branch is granted four slots
+     * and keeps three, for ever.
+     */
+    id: "faith.first.rest", name: "The Long Sleep", after: ["faith.first.blood"],
+    grants: { spellSlots: 1 }
+  },
+  {
+    id: "faith.first.echterhof", name: "Echterhof", after: ["faith.first.rest"], bespoke: true,
+    grants: { knowHow: "Echterhof, and what is buried under it" }
+  },
+
+  /* --- The Five: five doors, four of them re-openable, so each branch runs two nodes --- */
+  {
+    id: "faith.sessyfyn", name: "Sessyfyn", after: ["faith.calling"], title: "Sessyfyn",
+    exclusive: "faith", creed: "five",
+    axis: "Support", resource: "the fate deck",
+    signature: "The Tide Knows", tactic: "The Tide Comes In",
+    obedience: "A permanent Miss AND a permanent Critical in your fate deck. Not one or the other.",
+    grants: { spell: "The Tide Knows" }
+  },
+  { id: "faith.sess.tides", name: "The Tides", after: ["faith.sessyfyn"], grants: { spell: "Undertow" } },
+  {
+    id: "faith.sess.salt", name: "Salt Wisdom", after: ["faith.sess.tides"], bespoke: true,
+    grants: { knowHow: "the sea, and what it does not forgive" }
+  },
+
+  {
+    id: "faith.valtor", name: "Valtor", after: ["faith.calling"], title: "Valtor",
+    exclusive: "faith", creed: "five",
+    axis: "Tempo", resource: "Strain",
+    signature: "The Drum", tactic: "The Drum Does Not Stop",
+    obedience: "Every miracle costs Strain 1 on top of its slots.",
+    grants: { spell: "The Drum" }
+  },
+  { id: "faith.valtor.drums", name: "The Drums", after: ["faith.valtor"], grants: { spell: "No Step Back" } },
+  { id: "faith.valtor.fury", name: "Fury", after: ["faith.valtor.drums"], grants: { health: 1 } },
+
+  {
+    id: "faith.fagar", name: "Fagar", after: ["faith.calling"], title: "Fagar",
+    exclusive: "faith", creed: "five",
+    axis: "Control", resource: "Spent",
+    signature: "The Borrowed Face", tactic: "Nobody Remembers Your Face",
+    obedience: "Each miracle may be cast once per fight. A trick works once.",
+    grants: { spell: "The Borrowed Face" }
+  },
+  { id: "faith.fagar.masks", name: "Masks", after: ["faith.fagar"], grants: { spell: "The Second Thought" } },
+  { id: "faith.fagar.trick", name: "The Trick", after: ["faith.fagar.masks"], grants: { training: "sleight of hand" } },
+
+  {
+    id: "faith.vulpet", name: "Vulpet", after: ["faith.calling"], title: "Vulpet",
+    exclusive: "faith", creed: "five",
+    axis: "Preparation", resource: "an ally",
+    signature: "The Outcast's Due", tactic: "Alone and Unafraid",
+    obedience: "You may not accept help: no ally may Heal you, Interpose for you, or Shake a "
+      + "condition off you.",
+    grants: { spell: "The Outcast's Due" }
+  },
+  { id: "faith.vulpet.road", name: "The Road", after: ["faith.vulpet"], grants: { spell: "Alone on the Road" } },
+  {
+    id: "faith.vulpet.driven", name: "Driven Out", after: ["faith.vulpet.road"], bespoke: true,
+    grants: { knowHow: "where the unwanted go, and who feeds them" }
+  },
+
+  {
+    id: "faith.brendan", name: "Brendan", after: ["faith.calling"], title: "Brendan",
+    exclusive: "faith", creed: "five",
+    axis: "Support", resource: "a turn spent early",
+    signature: "Out of Barren Ground", tactic: "Roots",
+    obedience: "Nothing he gives arrives on the turn you ask for it: every miracle resolves at "
+      + "the start of your next turn at the earliest.",
+    grants: { spell: "Out of Barren Ground" }
+  },
+  { id: "faith.brendan.seed", name: "The Seed", after: ["faith.brendan"], grants: { spell: "Full Belly" } },
+  { id: "faith.brendan.ground", name: "Slow Ground", after: ["faith.brendan.seed"], grants: { restTokens: 1 } },
+
+  /* --- The Grey: three doors, matching its three holy books and three sects --- */
+  {
+    id: "faith.grey", name: "The Grey", after: ["faith.calling"], title: "The Grey",
+    exclusive: "faith", creed: "grey",
+    axis: "Reactions", resource: "range",
+    signature: "The Silent Hour", tactic: "Close Enough to Touch",
+    obedience: "Adjacent only. Every miracle of The Grey reaches one square and no further.",
+    grants: { spell: "The Silent Hour" }
+  },
+  { id: "faith.grey.quiet", name: "The Quiet Step", after: ["faith.grey"], grants: { spell: "Grey Judgement" } },
+  { id: "faith.grey.arm", name: "Arm's Length", after: ["faith.grey.quiet"], grants: { training: "the knife" } },
+
+  {
+    id: "faith.purple", name: "The Purple", after: ["faith.calling"], title: "The Purple",
+    exclusive: "faith", creed: "grey",
+    axis: "Control", resource: "Taint",
+    signature: "The First Taste", tactic: "The Cup Passes",
+    obedience: "The first miracle you cast each fight gives you 1 Taint. You are the first to "
+      + "taste it, always.",
+    grants: { spell: "The First Taste" }
+  },
+  { id: "faith.purple.dose", name: "The Dose", after: ["faith.purple"], grants: { spell: "Taste of the Rot" } },
+  {
+    id: "faith.purple.cup", name: "The Cup", after: ["faith.purple.dose"], bespoke: true,
+    grants: { knowHow: "what is in the water, and who put it there" }
+  },
+
+  {
+    id: "faith.yellow", name: "The Yellow", after: ["faith.calling"], title: "The Yellow",
+    exclusive: "faith", creed: "grey",
+    axis: "Preparation", resource: "halves",
+    signature: "The Rumour", tactic: "Nobody Knows Where You Are",
+    obedience: "A lie must be kept up: every miracle ends the moment you fail to spend a "
+      + "secondary on it.",
+    grants: { spell: "The Rumour" }
+  },
+  { id: "faith.yellow.whispers", name: "Whispers", after: ["faith.yellow"], grants: { spell: "The Planted Word" } },
+  {
+    id: "faith.yellow.network", name: "The Network", after: ["faith.yellow.whispers"], bespoke: true,
+    grants: { knowHow: "who carries a rumour, and how fast" }
   }
 ];

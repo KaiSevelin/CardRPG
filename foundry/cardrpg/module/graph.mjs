@@ -21,18 +21,19 @@
  */
 
 import {
-  NODES, COMMON_POOL, WAY_CARDS, SHADE_POOL, STRENGTH_POOL, MIND_POOL,
+  NODES, COMMON_POOL, WAY_CARDS, SHADE_POOL, STRENGTH_POOL, MIND_POOL, FAITH_POOL,
   FORMULAS, SHADOW_FORMULAS,
   SHADE_SIGNATURES, TACTICS, STRENGTH_SIGNATURES, STRENGTH_TACTICS,
-  MIND_SIGNATURES, MIND_TACTICS
+  MIND_SIGNATURES, MIND_TACTICS, FAITH_SIGNATURES, FAITH_TACTICS
 } from "./content.mjs";
 
 /**
  * Every Signature, and every Tactic, from whichever Way wrote them. A Way adds a pair of exports
  * and nothing here changes -- which is the same shape leveling.md 8 asks of an add-on.
  */
-export const SIGNATURES = [...SHADE_SIGNATURES, ...STRENGTH_SIGNATURES, ...MIND_SIGNATURES];
-export const ALL_TACTICS = { ...TACTICS, ...STRENGTH_TACTICS, ...MIND_TACTICS };
+export const SIGNATURES = [...SHADE_SIGNATURES, ...STRENGTH_SIGNATURES, ...MIND_SIGNATURES,
+  ...FAITH_SIGNATURES];
+export const ALL_TACTICS = { ...TACTICS, ...STRENGTH_TACTICS, ...MIND_TACTICS, ...FAITH_TACTICS };
 import { deckOf, allStacks, actionCardData } from "./decks.mjs";
 /* The one shape a slate takes, shared with the setup routine rather than spelled twice. */
 import { slateData } from "./setup.mjs";
@@ -56,7 +57,7 @@ export const POOL = new Map([...COMMON_POOL, ...WAY_CARDS, ...SHADE_POOL, ...STR
  * nothing ever GRANTED one; Rain and Lightning in particular are the pair the `when` clause was
  * written to demonstrate, and they are two nodes on one branch now.
  */
-export const SPELLS = new Map([...MIND_POOL, ...FORMULAS, ...SHADOW_FORMULAS,
+export const SPELLS = new Map([...MIND_POOL, ...FAITH_POOL, ...FORMULAS, ...SHADOW_FORMULAS,
   ...SIGNATURES.filter(s => s.kind === "spell")].map(f => [f.name, f]));
 
 /** Every node by id. */
@@ -253,13 +254,32 @@ export function levelOf(owned) {
 
 /** Your title is the deepest specialization node you own (§5). */
 export function titleOf(owned) {
+  return deepestTitled(owned)?.title ?? null;
+}
+
+/**
+ * The deepest titled node owned, and **the tie-break is the interesting part.**
+ *
+ * Three Ways never produced a tie: their titles sit at different depths, so *the deepest title you
+ * own* ordered them completely. Way of Faith is wide -- twelve gods are siblings at one depth -- so
+ * a devotee of Valtor and Sessyfyn owns two titles that are exactly as deep as each other, and the
+ * rule said nothing at all about that case.
+ *
+ * It is settled by **the order the nodes were taken**, which costs nothing because `system.nodes`
+ * is an array and an array remembers: the ids are in acquisition order, so the set this iterates is
+ * a character's history. The comparison is strictly greater-than, so an exact tie keeps the
+ * EARLIER node -- **your first vow is the one that names you**, and the second god of a pantheon
+ * adds miracles without changing how you stand. That also makes it stable: a priest who swears
+ * again does not silently re-style themselves.
+ */
+function deepestTitled(owned) {
   let best = null;
   for (const id of owned) {
     const node = GRAPH.get(id);
     if (!node?.title) continue;
     if (!best || (DEPTH.get(id) ?? 0) > (DEPTH.get(best.id) ?? 0)) best = node;
   }
-  return best?.title ?? null;
+  return best;
 }
 
 /**
@@ -271,13 +291,9 @@ export function titleOf(owned) {
  * deeper title arrives.
  */
 export function tacticOf(owned) {
-  let best = null;
-  for (const id of owned) {
-    const node = GRAPH.get(id);
-    if (!node?.tactic) continue;
-    if (!best || (DEPTH.get(id) ?? 0) > (DEPTH.get(best.id) ?? 0)) best = node;
-  }
-  return best
+  /* The same node `titleOf` picked, by the same tie-break: a title and its Tactic are one choice. */
+  const best = deepestTitled(owned);
+  return best?.tactic
     ? { name: best.tactic, text: ALL_TACTICS[best.tactic] ?? "", from: best.title }
     : null;
 }
@@ -298,7 +314,14 @@ export function waysOf(owned) {
 export function grantsOf(owned) {
   const out = {
     health: 0, handSize: 0, carry: 0, deckMax: 0, spellSlots: 0, restTokens: 0,
-    trainings: [], knowHow: [], cards: [], features: [], spells: [], prunes: 0
+    trainings: [], knowHow: [], cards: [], features: [], spells: [], prunes: 0,
+    /*
+     * The one thing a node can do that is not addition. Every other grant raises a number; The
+     * First's Obedience says *your spell slots are capped at 3, for ever* -- which is why that god
+     * has no strength-4 and no strength-5 miracle (way-cards 3.5). `null` is no cap, and two caps
+     * take the lower, because an obedience is not negotiated down by taking another one.
+     */
+    slotCap: null
   };
   for (const id of owned) {
     const g = GRAPH.get(id)?.grants;
@@ -312,6 +335,33 @@ export function grantsOf(owned) {
     if (g.card) out.cards.push(g.card);
     if (g.feature) out.features.push(g.feature);
     if (g.spell) out.spells.push(g.spell);
+    if (g.caps?.spellSlots !== undefined) {
+      out.slotCap = out.slotCap === null
+        ? g.caps.spellSlots
+        : Math.min(out.slotCap, g.caps.spellSlots);
+    }
+  }
+  return out;
+}
+
+/**
+ * The standing terms a character lives under: one per god sworn to.
+ *
+ * **An Obedience is a Tactic's opposite number and the difference is the point.** A Tactic is your
+ * *deepest* title's and you have exactly one (way-cards 2.5); an Obedience is **every** god's, and
+ * a devotee of two of The Five pays both. So this returns a list where `tacticOf` returns one --
+ * and both are derived rather than granted, for the same reason: nothing un-grants a slate.
+ *
+ * `gift` is there only for the four gods who are alone in their religion. A religion of one must be
+ * worth it (specializations.md), so each lone god bends a rule the other eleven obey, and the gift
+ * is printed beside the obedience because they are the two halves of one bargain.
+ */
+export function termsOf(owned) {
+  const out = [];
+  for (const id of owned) {
+    const node = GRAPH.get(id);
+    if (!node?.obedience) continue;
+    out.push({ god: node.title ?? node.name, obedience: node.obedience, gift: node.gift ?? "" });
   }
   return out;
 }

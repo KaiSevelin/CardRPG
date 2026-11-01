@@ -9,7 +9,7 @@
 import { CARDRPG } from "../config.mjs";
 import { available } from "../decks.mjs";
 import {
-  ownedIds, grantsOf, levelOf, titleOf, tacticOf, waysOf, frontier
+  ownedIds, grantsOf, levelOf, titleOf, tacticOf, termsOf, waysOf, frontier
 } from "../graph.mjs";
 
 const fields = foundry.data.fields;
@@ -178,6 +178,8 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
     /* One Tactic, the deepest title's, derived rather than granted -- way-cards 2.5 says you only
      * ever have that one, and a slate per title would accumulate them. */
     this.tactic = tacticOf(owned);
+    /* And every god's standing terms, which unlike a Tactic accumulate: you pay all of them. */
+    this.terms = termsOf(owned);
     this.waysOwned = waysOf(owned);
     this.frontier = frontier(owned);
     /* Trainings and know-how are additive rather than overwritten: a background gives some and the
@@ -210,6 +212,14 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
      * the sheet is where that is reported, as it is for deck size.
      */
     this.spellSlots.max = this.spellSlots.base + grants.spellSlots;
+    /*
+     * And the one grant that is not addition: The First's Obedience caps the budget for good, so
+     * the cap is applied after everything that raises it. Nothing else in the game does this, which
+     * is why it is a line here rather than a mechanism.
+     */
+    if (fromNodes.slotCap !== null) {
+      this.spellSlots.max = Math.min(this.spellSlots.max, fromNodes.slotCap);
+    }
     this.spellSlots.used = slates
       .filter(i => i.type === "spell")
       .reduce((n, i) => n + (i.system.slotCost ?? 0), 0);

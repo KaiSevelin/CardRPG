@@ -626,8 +626,19 @@ most identity for the least arithmetic. And each is worth a closed door, which i
 > means a devotee of three of The Five has spent three levels on entrance fees; that may be exactly
 > the trade, or the second and third may want to be cheaper.
 
-> **[OPEN]** Each god's **Signature** and the nodes behind it. For the eight pantheon gods that is
-> still unwritten; the four lone gods have their gift above, which is most of a Signature already.
+> **[BUILT 2026-11-01]** Each god's **Signature** and the nodes behind it. Twelve Signature
+> miracles, sixteen more on the minor nodes, and the shape the Way argued for holds: a pantheon god
+> has **two** nodes behind it and a lone god **six**, the difference being The Five's four spare
+> doors. The validator computes both and subtracts them, so *a religion's size is its price* is
+> arithmetic rather than an intention.
+>
+> **One thing the fourth Way broke that the first three never could.** *You only ever have your
+> deepest title's Tactic* ordered three Ways completely, because their titles sit at different
+> depths. Twelve gods are **siblings at one depth**, so a devotee of Valtor and Sessyfyn owns two
+> titles exactly as deep as each other and the rule said nothing at all. It is settled by the order
+> the nodes were taken &mdash; which costs nothing, because a character stores an **array** of node
+> ids and an array remembers: **your first vow is the one that names you**, and a pantheon's second
+> god adds miracles without changing how you stand.
 
 > **[OPEN]** The **minor gods** grant no miracles, so there is no Faith node for them — they stay
 > Spiritualism's business in Way of Mind. Whether a cult of the Winter Lady should nonetheless be

@@ -625,7 +625,26 @@ Formulas, with their strength in brackets. Strength is the slot cost.
 learning condition printed on the card: a warder's book is a record of what the party has lived
 through, and the GM fills it by casting at them.
 
-### 2.4 Way of Faith
+### 2.4 Way of Faith  **[BUILT 2026-11-01]**
+
+> **All twelve are content, and one of them works.** *The Outcast's Due* is the exception for the
+> same reason *Wither* was Mind's: it is a condition in an area with a saving throw, and that is the
+> part of the engine that has been finished longest.
+>
+> **A god's Obedience is on the node, not on the card**, because it applies to everything that god
+> ever grants &mdash; and it is derived rather than granted, which makes it a Tactic's opposite
+> number: you have exactly **one** Tactic, your deepest title's, and **every** god's Obedience. A
+> devotee of two of The Five pays both.
+>
+> **The four lone gods' gifts sit beside their obediences**, as the two halves of one bargain. Three
+> of the four are prose the table applies; **Vax's is not** &mdash; *his miracles need no free hand*
+> contradicts `SpellSlateData.needsFreeHand`, which returns `true` by construction, and that is the
+> cleric-fighter's whole existence waiting on a field.
+>
+> **And this Way turned the biggest gap in the game up to six.** *A spell that costs Health to cast*
+> is now three of Blood Magic's formulas and three of Vax's miracles: two Ways arrived at the same
+> mechanism from opposite ends, a mage spending their own substance for power and a war god counting
+> his priest's blood first, and neither can be built without it.
 
 Miracles. A god's list is short, and these are each god's first and defining one. The four lone gods'
 rule-bending gifts are in [specializations.md](specializations.md) and are **not** repeated here —

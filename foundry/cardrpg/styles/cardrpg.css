@@ -1146,6 +1146,12 @@
 .cr-standing__grant button { width: 1.6em; padding: 0; line-height: 1.4; }
 
 /* The Tactic: always on, never a number, and never something you can drop. */
+/* A god asks something of you for ever, and a lone god gives something back. Both are standing
+   facts, printed like the Tactic above them because that is what they are. */
+.cr-obedience { display: block; font-size: 0.9em; margin-bottom: 0.15rem; }
+.cr-obedience__god { font-weight: bold; margin-right: 0.3rem; }
+.cr-obedience__text { opacity: 0.8; }
+.cr-obedience__gift { display: block; opacity: 0.8; font-style: italic; }
 .cr-tactic { display: block; font-size: 0.9em; }
 .cr-tactic__text { opacity: 0.8; }
 .cr-level-button--ready { box-shadow: 0 0 0 1px #7fb2ef inset; font-weight: bold; }

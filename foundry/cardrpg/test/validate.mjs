@@ -2102,7 +2102,7 @@ const graphSource = fs.readFileSync(path.join(root, "module/graph.mjs"), "utf8")
 const nodes = content.NODES;
 const byId = graph.GRAPH;
 
-check("nodes defined", nodes.length, 114);
+check("nodes defined", nodes.length, 169);
 check("duplicate node ids", nodes.length === byId.size ? "none" : "yes", "none");
 
 /* Every prerequisite must resolve, or a branch is silently unreachable. */
@@ -2154,8 +2154,19 @@ for (const parent of nodes) {
   }
 }
 check("major siblings sharing a cell", sameCell.length ? sameCell.join("; ") : "none", "none");
+/*
+ * **Twelve siblings cannot lean on seven axes without repeating**, and the pigeonhole principle
+ * says so before anyone writes a word -- so Way of Faith breaks the strict form of the writing rule
+ * on purpose, and specializations.md says why: *the gods do not differ in what they push, they
+ * differ in what they take.* Twelve different resources, so all twelve cells are still distinct.
+ * The six pairs below share an axis and nothing else, and the hard rule above -- no two siblings in
+ * one CELL -- still holds everywhere.
+ */
 check("major siblings sharing one half (warning)",
-  sameHalf.length ? sameHalf.join(", ") : "none", "shade/strength");
+  sameHalf.length ? sameHalf.join(", ") : "none",
+  "shade/strength, faith.eternalgod/faith.fagar, faith.eternalgod/faith.purple, "
+  + "faith.eternalspirit/faith.grey, faith.fagar/faith.purple, faith.vulpet/faith.yellow, "
+  + "faith.brendan/faith.sessyfyn");
 
 /* -------------------------------------------- */
 
@@ -2222,8 +2233,210 @@ for (const gate of exclusiveGates) {
     if (without.has(n.id)) laundered.push(`${n.id} bypasses ${gate}`);
   }
 }
-check("exclusive gates in the data", exclusiveGates.length, 0);
+/*
+ * **Twelve gates, and they are the first content `exclusive` has ever had.** The family/creed rule
+ * was written for Way of Faith and sat built and unused until the Way existed; the religion is the
+ * group, so taking a god closes every god of every OTHER religion and leaves your own open.
+ */
+check("exclusive gates in the data", exclusiveGates.length, 12);
 check("subgraphs that bypass their gate", laundered.length ? laundered.join(", ") : "none", "none");
+/* Every gate is a god, and every god is a gate: a Faith title without one would be a free door. */
+const unsworn = nodes.filter(n => n.title && n.id.startsWith("faith.") && !n.exclusive)
+  .map(n => n.id);
+check("Faith titles that are not exclusive", unsworn.length ? unsworn.join(", ") : "none", "none");
+const strayGates = nodes.filter(n => n.exclusive && !n.id.startsWith("faith."))
+  .map(n => n.id);
+check("exclusive nodes outside Way of Faith",
+  strayGates.length ? strayGates.join(", ") : "none", "none");
+/* Six religions, and their sizes are what makes a lone god lone (specializations.md). */
+const religions = new Map();
+for (const god of nodes.filter(n => n.exclusive === "faith")) {
+  religions.set(god.creed, (religions.get(god.creed) ?? 0) + 1);
+}
+check("religions, by how many gods they hold",
+  [...religions.entries()].sort().map(([c, n]) => `${c}:${n}`).join(" "),
+  "eternal-god:1 eternal-spirit:1 first:1 five:5 grey:3 vax:1");
+
+/*
+ * **A religion's size is its price**, which is a content constraint and therefore checkable: serve
+ * a pantheon and you may add its other gods later, a level each, going wider; serve a lone god and
+ * you never will, so a lone god's branch runs deeper by as many nodes as the biggest pantheon has
+ * spare doors. The Five has four spare, so a lone god runs four nodes past a pantheon god's two.
+ */
+const runLength = id => {
+  let n = 0;
+  let here = graph.SUCCESSORS.get(id) ?? [];
+  while (here.length) {
+    n += 1;
+    here = graph.SUCCESSORS.get(here[0]) ?? [];
+  }
+  return n;
+};
+const runs = new Map();
+for (const god of nodes.filter(n => n.exclusive === "faith")) {
+  const alone = religions.get(god.creed) === 1;
+  const key = alone ? "a lone god" : "a pantheon god";
+  const len = runLength(god.id);
+  if (runs.has(key) && runs.get(key) !== len) runs.set(key, `${runs.get(key)} and ${len}`);
+  else runs.set(key, len);
+}
+check("nodes behind a pantheon god", runs.get("a pantheon god"), 2);
+check("and behind a lone god", runs.get("a lone god"), 6);
+check("the difference, against The Five's spare doors",
+  runs.get("a lone god") - runs.get("a pantheon god"), religions.get("five") - 1);
+
+/* -------------------------------------------- */
+
+/*
+ * What a priest ends up with, asked of the engine. The exclusive machinery has existed since
+ * leveling.md 3 was written and nothing exercised it until now, so these are the first checks on
+ * it that use real content rather than a hand-built example.
+ */
+
+section("Way of Faith: swearing, and what it shuts");
+
+const trunk = ["root", "faith", "faith.vows", "faith.pilgrimage", "faith.calling"];
+const toValtor = new Set([...trunk, "faith.valtor"]);
+const closedToValtor = graph.closedIds(toValtor);
+
+/* The Five stays open; everything else is gone for good. */
+check("gods still open to a Valtor devotee",
+  nodes.filter(n => n.exclusive === "faith" && !closedToValtor.has(n.id))
+    .map(n => n.name).sort().join(", "),
+  "Brendan, Fagar, Sessyfyn, Valtor, Vulpet");
+check("and how many gods are shut", closedToValtor.size, 7);
+/* And their branches go with them: a closed node takes everything only it could reach (leveling 3). */
+const liveForValtor = graph.reachable(toValtor, closedToValtor);
+check("Grey nodes still reachable",
+  nodes.filter(n => n.id.startsWith("faith.grey") && liveForValtor.has(n.id)).length, 0);
+check("but Sessyfyn and her two nodes are still there",
+  nodes.filter(n => n.id.startsWith("faith.sess") && liveForValtor.has(n.id)).length, 3);
+
+/* A lone god shuts the lot, which is what makes the gift worth a closed door. */
+const toVax = new Set([...trunk, "faith.vax"]);
+check("gods still open to a priest of Vax",
+  nodes.filter(n => n.exclusive === "faith" && !graph.closedIds(toVax).has(n.id))
+    .map(n => n.name).join(", "), "Vax");
+/* The warning the pane prints before an irreversible level: it has to name the whole cost. */
+/* Eleven gods and everything behind them: the dearest single level in the game. */
+check("what swearing to Vax would close",
+  graph.wouldClose("faith.vax", new Set(trunk)).length, 45);
+
+/*
+ * **The tie Way of Faith created.** Twelve gods are siblings at one depth, so a devotee of two of
+ * The Five owns two titles exactly as deep as each other -- a case three Ways never produced and
+ * the rules never addressed. It is settled by the order the nodes were taken, which `system.nodes`
+ * already records because it is an array: your FIRST vow is the one that names you.
+ */
+const valtorThenSessyfyn = new Set([...trunk, "faith.valtor", "faith.sessyfyn"]);
+const sessyfynThenValtor = new Set([...trunk, "faith.sessyfyn", "faith.valtor"]);
+check("two gods, equal depth, first sworn names you",
+  graph.titleOf(valtorThenSessyfyn), "Valtor");
+check("and the other order gives the other", graph.titleOf(sessyfynThenValtor), "Sessyfyn");
+check("the Tactic follows the same title, not a second vote",
+  graph.tacticOf(valtorThenSessyfyn).name, "The Drum Does Not Stop");
+/* A deeper title still wins outright: the tie-break only ever decides an exact tie. */
+check("depth still beats order where there is depth",
+  graph.titleOf(new Set(["root", "shade", "shade.footwork", "shade.quiet", "shade.patience",
+    "shade.thief", "shade.thief.crowds", "shade.thief.fence", "shade.cutpurse"])), "Cutpurse");
+
+/*
+ * The Obedience, which is a Tactic's opposite number: one Tactic ever, but every god's obedience.
+ */
+check("a devotee of two gods pays two obediences", graph.termsOf(valtorThenSessyfyn).length, 2);
+check("and has one Tactic between them",
+  graph.tacticOf(valtorThenSessyfyn) ? 1 : 0, 1);
+check("every god states one",
+  nodes.filter(n => n.exclusive === "faith" && !n.obedience).map(n => n.id).join(", ") || "none",
+  "none");
+/* A gift is what a closed door buys, so only the four lone gods carry one. */
+check("gods carrying a rule-bending gift",
+  nodes.filter(n => n.gift).map(n => n.name).sort().join(", "),
+  "The Eternal God, The Eternal Spirit, The First, Vax");
+check("and each of those is alone in its religion",
+  nodes.filter(n => n.gift).every(n => religions.get(n.creed) === 1), true);
+
+/*
+ * The cap, which is the only grant in the game that is not addition. A priest of The First who
+ * walks their whole branch is granted no slots by it at all, so the cap is doing the work: two from
+ * the Way root, and three is where it stops however much else is taken.
+ */
+const firstWhole = new Set([...trunk, "faith.first", "faith.first.debt", "faith.first.watch",
+  "faith.first.narrow", "faith.first.blood", "faith.first.rest", "faith.first.echterhof"]);
+check("The First's slot cap", graph.grantsOf(firstWhole).slotCap, 3);
+/*
+ * And the cap has to BITE, or it is decoration. The branch grants four slots counting the Way
+ * root's two, and the obedience keeps three -- so the god offers more than the vow allows you to
+ * hold, which is the only shape in which a cap is a price.
+ */
+const firstGrants = graph.grantsOf(firstWhole);
+check("slots The First's whole branch grants", firstGrants.spellSlots, 4);
+check("and what the obedience leaves",
+  Math.min(firstGrants.spellSlots, firstGrants.slotCap), 3);
+check("no cap for anybody else", graph.grantsOf(toValtor).slotCap, "null");
+check("the actor applies it after everything that raises it",
+  /if \(fromNodes\.slotCap !== null\) \{[\s\S]{0,120}Math\.min\(this\.spellSlots\.max, fromNodes\.slotCap\)/
+    .test(actorsSource) ? "yes" : "no", "yes");
+/* An Eternal Spirit priest walking the same length of branch gets the slot their god allows. */
+const spiritWhole = new Set([...trunk, "faith.eternalspirit", "faith.es.breath", "faith.es.word",
+  "faith.es.air", "faith.es.unseen", "faith.es.hand", "faith.es.distance"]);
+/*
+ * Two caps take the LOWER, and this one is read from the source rather than asked, because only one
+ * node in the game carries a cap: with a single cap, min and max are the same answer and no
+ * behavioural check can tell them apart. The rule matters anyway -- an obedience is not negotiated
+ * down by swearing a second vow -- so it is pinned where it is written.
+ */
+check("two caps take the lower, not the higher",
+  /Math\.min\(out\.slotCap, g\.caps\.spellSlots\)/.test(graphSource) ? "yes" : "no", "yes");
+
+/*
+ * A Faith minor node hands over ITS OWN god's miracle, which is the same rule Mind's pool follows
+ * and for the same reason: a god's coin is what makes its miracles that god's. Easier to keep here,
+ * since a god's run leads nowhere but deeper into that god -- and therefore easier to break by
+ * typing the wrong name, which is exactly what a check is for.
+ */
+const godOf = id => {
+  let cur = id;
+  while (cur) {
+    const node = byId.get(cur);
+    if (node?.exclusive === "faith") return node.title;
+    cur = (node?.after ?? [])[0];
+  }
+  return null;
+};
+const offGod = [];
+for (const node of nodes.filter(n => n.id.startsWith("faith.") && !n.title && n.grants?.spell)) {
+  const miracle = graph.SPELLS.get(node.grants.spell);
+  if (!miracle) { offGod.push(`${node.id}: "${node.grants.spell}" is not built`); continue; }
+  const god = godOf(node.id);
+  if (miracle.source !== god) offGod.push(`${node.id}: ${miracle.source} on ${god}'s run`);
+}
+check("minor nodes handing over another god's miracle",
+  offGod.length ? offGod.join("; ") : "none", "none");
+check("Faith minor nodes granting a miracle",
+  nodes.filter(n => n.id.startsWith("faith.") && !n.title && n.grants?.spell).length, 16);
+
+/* Derived, and on the sheet: an obedience nobody can read is an obedience nobody keeps. */
+check("the actor derives every god's terms",
+  /this\.terms = termsOf\(owned\);/.test(actorsSource) ? "yes" : "no", "yes");
+check("and the sheet prints them",
+  /\{\{#each system\.terms\}\}/
+    .test(fs.readFileSync(path.join(root, "templates/actor-character.hbs"), "utf8"))
+    ? "yes" : "no", "yes");
+
+/* The three statements this Way rests on, checked where they are written. Two turns running the
+ * break test caught me writing a decision into a document and no check behind it. */
+check("the document marks the gods built",
+  /^> \*\*\[BUILT 2026-11-01\]\*\* Each god's \*\*Signature\*\* and the nodes behind it\./m
+    .test(specDoc) ? "yes" : "no", "yes");
+check("and says what settles a tie of equal depth",
+  /\*\*your first vow is the one that names you\*\*/.test(specDoc) ? "yes" : "no", "yes");
+check("way-cards marks the miracles built",
+  /^### 2\.4 Way of Faith {2}\*\*\[BUILT 2026-11-01\]\*\*$/m.test(wayDoc) ? "yes" : "no", "yes");
+
+/* Two from the Way root and one from the branch, and no vow to clip it. */
+check("and a lone god without a cap keeps all three",
+  graph.grantsOf(spiritWhole).spellSlots, 3);
 
 /* -------------------------------------------- */
 
@@ -2236,7 +2449,7 @@ const unbuilt = cardGrants.filter(n => !graph.POOL.has(n.grants.card))
   .map(n => `${n.id}: ${n.grants.card}`);
 /* Six pool draws on the minor nodes, plus nine Signature cards on the majors. */
 /* The pool draws on the minor nodes, plus every Signature that is a card. */
-check("nodes granting a card", cardGrants.length, 32);
+check("nodes granting a card", cardGrants.length, 33);
 check("cards granted but never built", unbuilt.length ? unbuilt.join(", ") : "none", "none");
 
 /* A pool card twice on one path would be a node that gives you a card you already have. */
@@ -2257,13 +2470,21 @@ check("a pool card granted twice on one path",
  */
 const minors = nodes.filter(n => !n.title && n.id !== graph.ROOT);
 const bespoke = minors.filter(n => n.bespoke);
-check("minor nodes", minors.length, 73);
-check("bespoke minor nodes", bespoke.length, 21);
+check("minor nodes", minors.length, 116);
+check("bespoke minor nodes", bespoke.length, 29);
 check("the bespoke share is about a third",
   bespoke.length / minors.length >= 0.25 && bespoke.length / minors.length <= 0.4, true);
-/* And each bespoke node sits LAST on its edge, immediately before the title it leads to. */
-const misplaced = bespoke.filter(n =>
-  !(graph.SUCCESSORS.get(n.id) ?? []).some(id => byId.get(id)?.title)).map(n => n.id);
+/*
+ * And each bespoke node sits LAST on its run -- which asked for the title it leads to until Way of
+ * Faith had no titles to lead to. Faith spends its depth sideways: the gods are the titles and they
+ * are at the TOP, so a god's run ends in nothing. The rule the old one was reaching for is the
+ * general one: **a bespoke node is the end of something**, either the step before a title or the
+ * last node on a branch, never a thing you walk past.
+ */
+const misplaced = bespoke.filter(n => {
+  const next = graph.SUCCESSORS.get(n.id) ?? [];
+  return next.length && !next.some(id => byId.get(id)?.title);
+}).map(n => n.id);
 check("bespoke nodes not last on their edge", misplaced.length ? misplaced.join(", ") : "none", "none");
 
 /* -------------------------------------------- */
@@ -2395,9 +2616,9 @@ for (const node of mindAll) {
  */
 const wiredWays = ["shade", "strength", "mind", "faith"]
   .filter(w => nodes.some(n => n.id.startsWith(w + ".")));
-check("Ways with a branch behind them", wiredWays.join(", "), "shade, strength, mind");
+check("Ways with a branch behind them", wiredWays.join(", "), "shade, strength, mind, faith");
 check("and the file says so at the top",
-  /Three Ways are built -- Shade, Strength and Mind/
+  /All four Ways are built/
     .test(fs.readFileSync(path.join(root, "module/content.mjs"), "utf8")) ? "yes" : "no", "yes");
 
 check("the document says why Mind does not cross",
@@ -2425,7 +2646,7 @@ const unbuiltSpells = nodes.filter(n => n.grants?.spell)
   .map(n => `${n.id}: ${n.grants.spell}`);
 check("formulas granted but never built",
   unbuiltSpells.length ? unbuiltSpells.join(", ") : "none", "none");
-check("formulas a node can hand over", graph.SPELLS.size, 24);
+check("formulas a node can hand over", graph.SPELLS.size, 52);
 check("taking a node hands over the formula",
   /if \(grants\.spell\) await grantSpell\(actor, grants\.spell, id\);/.test(graphSource)
     ? "yes" : "no", "yes");
@@ -2481,6 +2702,23 @@ for (const node of nodes) {
 check("the built crossings are the drafted ones", dataCrossings.sort().join(" "),
   drafted.map(e => `${e.from}>${e.to}`).sort().join(" "));
 
+/*
+ * And each crossing chain leads to exactly one title. Burglar has two crossings, so the pair above
+ * reads the same whichever chain feeds which target -- swap them and one chain is handed the other
+ * one's destination while its own becomes a run to nowhere. The chain is written FOR its
+ * destination (the Dream Guild teaches you, and being taught takes levels), so a crossing that
+ * arrives nowhere is levels spent on content the graph no longer uses.
+ */
+const strandedCrossings = nodes.filter(n => n.id.includes(".cross."))
+  .filter(n => {
+    const next = graph.SUCCESSORS.get(n.id) ?? [];
+    const titled = next.filter(id => byId.get(id)?.title);
+    /* A link in the chain passes to the next link; the last one must arrive at exactly one title. */
+    return next.length ? titled.length !== 1 && !next.some(id => id.includes(".cross.")) : true;
+  }).map(n => n.id);
+check("crossing chains that arrive nowhere",
+  strandedCrossings.length ? strandedCrossings.join(", ") : "none", "none");
+
 /* -------------------------------------------- */
 
 /*
@@ -2502,7 +2740,7 @@ for (const node of nodes) {
 }
 check("title tiers", [...titleTiers.keys()].sort().join(", "), "0, 1, 2");
 check("titles per tier",
-  [...titleTiers.keys()].sort().map(t => titleTiers.get(t).length).join(", "), "4, 9, 27");
+  [...titleTiers.keys()].sort().map(t => titleTiers.get(t).length).join(", "), "4, 21, 27");
 /* The baseline is what the tier costs; a title BELOW it would be a shortcut into a branch. */
 const baselines = [...titleTiers.keys()].sort().map(t => Math.min(...titleTiers.get(t).map(r => r.level)));
 check("what each tier costs", baselines.join(", "), "1, 5, 8");
@@ -2750,7 +2988,7 @@ check("taking a node performs every prune it grants",
     ? "yes" : "no", "yes");
 const pruners = nodes.filter(n => n.grants?.prune);
 check("nodes granting a prune", pruners.map(n => n.id).join(", "),
-  "shade.footwork, mind.vigil");
+  "shade.footwork, mind.vigil, faith.first.narrow");
 /* And the documents say where it sits and why, since where a prune sits is a balance decision. */
 check("leveling says why the prune is on the trunk",
   /Way of Shade's prune sits on the trunk, not on the Cutpurse run/.test(levDoc) ? "yes" : "no",
@@ -2788,12 +3026,12 @@ const sigs = graph.SIGNATURES;
  * merged and this check did not would be a Way whose Tactics nobody validated. */
 const tactics = graph.ALL_TACTICS;
 
-check("Signatures defined", sigs.length, 35);
-check("Tactics defined", Object.keys(tactics).length, 36);
+check("Signatures defined", sigs.length, 47);
+check("Tactics defined", Object.keys(tactics).length, 48);
 
 /* One per Shade title, and the Way root has neither -- way-cards 2.2 starts at Thief. */
 const titled = nodes.filter(n => n.title && n.signature);
-check("titles carrying a Signature", titled.length, 36);
+check("titles carrying a Signature", titled.length, 48);
 /* A Way root is a major node and has neither: way-cards 2.1 and 2.2 start at the first title. */
 check("Way roots carrying one",
   ["shade", "strength", "mind", "faith"]
@@ -2851,9 +3089,9 @@ check("Half-mage's slots are on the node", byId.get("shade.half-mage").grants.sp
 const built = sigs.filter(sg => !sg.needs).map(sg => sg.name);
 check("Signatures the engine does everything for", built.join(", "),
   "The Opening, The Kit, Loose and Step, Heckle, One Trick, Nothing Gets Through, Interpose, "
-  + "Wither, The Bargain");
+  + "Wither, The Bargain, The Outcast's Due");
 const gaps = sigs.filter(sg => sg.needs).map(sg => `${sg.name}: ${sg.needs}`);
-check("Signatures with a named gap", gaps.length, 26);
+check("Signatures with a named gap", gaps.length, 37);
 /* Every gap says something; "needs: true" or an empty string would be a gap nobody can act on. */
 check("gaps that name nothing",
   sigs.filter(sg => sg.needs !== undefined && typeof sg.needs !== "string").length, 0);
@@ -3069,7 +3307,8 @@ check("two pieces of content sharing a name",
 section("the two Way pools, and the audit over all of it");
 
 const pools = {
-  shade: content.SHADE_POOL, strength: content.STRENGTH_POOL, mind: content.MIND_POOL
+  shade: content.SHADE_POOL, strength: content.STRENGTH_POOL, mind: content.MIND_POOL,
+  faith: content.FAITH_POOL
 };
 check("Shade's pool", pools.shade.length, 12);
 check("Strength's pool", pools.strength.length, 13);
@@ -3093,7 +3332,7 @@ check("every pool card says which pool it is in",
 
 /* Every piece of content that can carry a gap, audited together. */
 const audited = [...signatureExports, ...pools.shade, ...pools.strength, ...pools.mind,
-  ...content.COMMON_POOL];
+  ...pools.faith, ...content.COMMON_POOL];
 /* Every one of them: a partial audit is a count nobody can trust. */
 check("content carrying the audit column",
   audited.filter(c => c.needs !== undefined).length, audited.length);
@@ -3101,8 +3340,8 @@ const vague = audited.filter(c => typeof c.needs === "string" && c.needs && c.ne
   .map(c => c.name);
 check("gaps too short to act on", vague.length ? vague.join(", ") : "none", "none");
 const workingCards = audited.filter(c => c.needs === "").length;
-check("content the engine does everything for", workingCards, 37);
-check("content with a named gap", audited.filter(c => c.needs).length, 37);
+check("content the engine does everything for", workingCards, 42);
+check("content with a named gap", audited.filter(c => c.needs).length, 60);
 
 /*
  * A gap shared by several cards is one piece of engine work, not several. Counting the DISTINCT
@@ -3112,7 +3351,7 @@ const gapCounts = new Map();
 for (const card of audited.filter(c => c.needs)) {
   gapCounts.set(card.needs, (gapCounts.get(card.needs) ?? 0) + 1);
 }
-check("distinct gaps across all content", gapCounts.size, 33);
+check("distinct gaps across all content", gapCounts.size, 47);
 /*
  * EVERY gap at the maximum, not the first one the sort happens to put there. Way of Mind produced
  * a tie on its first day, and a check that reports one of two tied answers is a check that changes
@@ -3121,7 +3360,7 @@ check("distinct gaps across all content", gapCounts.size, 33);
 const most = Math.max(...gapCounts.values());
 const worst = [...gapCounts.entries()].filter(([, n]) => n === most).map(([gap]) => gap).sort();
 check("the gaps that would unblock the most content", `${worst.join("; ")} (${most})`,
-  "a spell that costs Health to cast (3)");
+  "a spell that costs Health to cast (6)");
 
 /*
  * And a check on the QUEUE rather than on the content, which the ranged-item work earned.

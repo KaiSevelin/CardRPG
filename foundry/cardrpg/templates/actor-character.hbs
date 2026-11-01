@@ -44,6 +44,17 @@
           </span>
         {{/if}}
       </span>
+      {{#if system.terms}}
+        {{!-- What each god asks, and what the lone ones give back. A priest who cannot see their
+              obedience cannot keep it, and unlike a Tactic these accumulate. --}}
+        {{#each system.terms}}
+          <div class="cr-obedience">
+            <span class="cr-obedience__god">{{this.god}}</span>
+            <span class="cr-obedience__text">{{this.obedience}}</span>
+            {{#if this.gift}}<span class="cr-obedience__gift">{{this.gift}}</span>{{/if}}
+          </div>
+        {{/each}}
+      {{/if}}
       {{#if system.tactic}}
         {{!--
           Your Tactic is derived from your deepest title and you only ever have one (way-cards 2.5),
