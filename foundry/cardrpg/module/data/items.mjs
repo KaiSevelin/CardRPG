@@ -137,6 +137,24 @@ export class SpellSlateData extends SlateData {
       /** What casting it does. Same shape as a card step, so a spell may apply a condition. */
       effect: stepField(),
 
+      /*
+       * What casting it costs, over and above the slot it occupies.
+       *
+       * **Six pieces of content were waiting on this one field** and the audit named it the largest
+       * gap in the game: three of Blood Magic's formulas and three of Vax's miracles. Two Ways
+       * arrived at the same mechanism from opposite ends -- a mage spending their own substance to
+       * buy power, and a war god who counts his priest's blood first -- which is the clearest sign
+       * a thing belongs in the schema rather than on a card.
+       *
+       * Health and nothing else, for now. Strain and Spent are costs a CARD HALF pays
+       * (data/cards.mjs) and a spell is not a card half; Valtor's *every miracle costs Strain 1* is
+       * an obedience, and obediences are the GM's. This is the one price the engine can charge,
+       * because Health is a number it already keeps.
+       */
+      cost: new fields.SchemaField({
+        health: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 })
+      }),
+
       group: groupField(),
       ...drainFields(),
 
@@ -147,6 +165,29 @@ export class SpellSlateData extends SlateData {
   /** What this costs out of the budget right now. Nothing, while it is still in the book. */
   get slotCost() {
     return this.prepared ? this.strength : 0;
+  }
+
+  /**
+   * A spell, shaped like an item that can Cast -- which is what lets `resolveAttack` resolve one.
+   *
+   * **A spell is its own weapon.** Every attack in the game reads its base value off the item in
+   * hand, and a formula has no item: *Blood Price* is 4 damage because the formula says 4, not
+   * because of what you are holding. Rather than a second resolver for spells, the slate answers
+   * the question the resolver asks -- so a spell goes through the same six steps a Strike does,
+   * takes the same fate draw, and comes off armour and Block the same way.
+   *
+   * The step's `mod` is the value, because that is where a formula's number already lived.
+   */
+  get verbs() {
+    const e = this.effect ?? {};
+    return {
+      cast: {
+        value: e.mod ?? 0,
+        range: e.range ?? 1,
+        area: e.area ?? 0,
+        text: e.text ?? ""
+      }
+    };
   }
 
   /**

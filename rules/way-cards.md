@@ -497,6 +497,31 @@ it.
 | **Gambler** | **Double or Nothing** | Primary: Strike, and draw **two** fate cards — **both apply**, added together. Variance, not advantage. |
 | **Half-mage** | **One Trick** | Feature: **2 spell slots**, and you may prepare from any one school you have ever seen cast. |
 
+> **[BUILT 2026-11-01] `needs` is a LIST, and the Health cost is why.** It was the largest gap in
+> the game at six pieces of content; building it finished exactly **one**, *Boil*, because every
+> other one wanted a second thing as well — a step that goes through armour, a Strike that uses the
+> weapon in hand, a floor under an ally's Health, a cost that scales with the allies it covers. One
+> string per card made a card blocked by two things look exactly like a card blocked by one, so the
+> queue was ordered by **what somebody wrote down first**.
+>
+> A list separates two questions that were being answered as one:
+>
+> | | |
+> |---|---|
+> | **mentioned** | how many pieces of content name this gap |
+> | **finished** | how many it is the **last thing standing** for |
+>
+> The second is the one to build from, and it could not be computed at all before. Today: *granting
+> Block to an ally* is mentioned most, at four; *a reaction trigger beyond hit and arrival* and
+> *granting Block to an ally* would each finish three.
+>
+> **And casting was the real gap under the named one.** `prepared`, `slotCost` and `effect` have
+> existed since the data model was written and nothing ever read `effect` but the validator — so
+> *a spell that costs Health to cast* was a price on an action that did not happen. A spell is now
+> its own weapon: the slate answers `verbs.cast` the way an item does, so a formula goes through the
+> same six resolution steps a Strike does, takes the same fate draw, and comes off armour and Block
+> the same way. No second resolver.
+
 > **What `needs` means**, since the column is counted: *the engine would have to compute something
 > and cannot.* It does **not** mean "the engine does not do this". Move is never resolved by the
 > engine at all — figures are pushed around by hand ([core-rules.md](core-rules.md) §11) — so

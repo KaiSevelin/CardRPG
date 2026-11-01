@@ -124,6 +124,49 @@ export function carries(actor, key) {
 }
 
 /**
+ * Cast a prepared spell.
+ *
+ * Nothing cast a spell before this. `prepared`, `slotCost` and `effect` have all existed since the
+ * data model was written, and the only thing that ever read `effect` was the validator -- so the
+ * audit's largest gap, *a spell that costs Health to cast*, was a price on an action that did not
+ * happen. The price is the smaller half of this.
+ *
+ * The effect goes through `resolveAttack` when it has a value to deal, because the slate answers
+ * `verbs.cast` like an item would (data/items.mjs). Everything else -- a condition, a heal, a
+ * shake -- is the same step shape a card half uses, so the caller resolves it with the same code
+ * that resolves a card. One step vocabulary, two kinds of document.
+ *
+ * @returns {boolean} whether it was cast, so the caller knows not to resolve the effect
+ */
+export async function payToCast(actor, slate) {
+  if (!slate?.system?.prepared) {
+    ui.notifications.warn(`${slate?.name ?? "That spell"} is in your book, not in your head.`);
+    return false;
+  }
+  const cost = slate.system.cost?.health ?? 0;
+  if (!cost) return true;
+
+  /*
+   * You may not kill yourself casting. The floor is 1 rather than 0 because 0 Health is
+   * Unconscious (core-rules 8) and a spell that knocks its own caster out before it resolves is a
+   * rule nobody wrote -- so the cost is refused, not survived.
+   */
+  const health = actor.system.health?.value ?? 0;
+  if (health - cost < 1) {
+    ui.notifications.warn(
+      `${slate.name} costs ${cost} Health and you have ${health}. That is not a price, it is a death.`);
+    return false;
+  }
+  await actor.update({ "system.health.value": health - cost });
+  await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<div class="cardrpg"><p><strong>${actor.name}</strong> pays <strong>${cost} Health</strong> `
+      + `for <em>${slate.name}</em>.</p></div>`
+  });
+  return true;
+}
+
+/**
  * Work out advantage. Two sources of advantage still give one, and advantage and disadvantage
  * cancel -- so this returns a mode, never a stack.
  *

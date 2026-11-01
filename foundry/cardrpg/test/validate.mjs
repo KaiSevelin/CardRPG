@@ -3086,15 +3086,23 @@ check("Half-mage's slots are on the node", byId.get("shade.half-mage").grants.sp
  * of Shade engine backlog -- read off the content rather than remembered. Closing one changes the
  * count here, which is the point of asserting it.
  */
-const built = sigs.filter(sg => !sg.needs).map(sg => sg.name);
+const built = sigs.filter(sg => !sg.needs?.length).map(sg => sg.name);
 check("Signatures the engine does everything for", built.join(", "),
   "The Opening, The Kit, Loose and Step, Heckle, One Trick, Nothing Gets Through, Interpose, "
   + "Wither, The Bargain, The Outcast's Due");
-const gaps = sigs.filter(sg => sg.needs).map(sg => `${sg.name}: ${sg.needs}`);
+const gaps = sigs.filter(sg => sg.needs?.length).map(sg => `${sg.name}: ${sg.needs.join("; ")}`);
 check("Signatures with a named gap", gaps.length, 37);
-/* Every gap says something; "needs: true" or an empty string would be a gap nobody can act on. */
+/*
+ * `needs` is a LIST, and that is the lesson of the Health cost. It was the largest gap in the game
+ * at six pieces of content; building it finished exactly ONE, because every other one wanted a
+ * second thing as well -- a step that ignores armour, a Strike that uses the weapon in hand, a
+ * floor under an ally's Health. One string per card made a card blocked by two things look exactly
+ * like a card blocked by one, so the queue was ordered by *what got written down first*.
+ */
+check("audit columns that are not a list",
+  sigs.filter(sg => sg.needs !== undefined && !Array.isArray(sg.needs)).length, 0);
 check("gaps that name nothing",
-  sigs.filter(sg => sg.needs !== undefined && typeof sg.needs !== "string").length, 0);
+  sigs.filter(sg => (sg.needs ?? []).some(g => typeof g !== "string" || !g)).length, 0);
 /* -------------------------------------------- */
 
 /*
@@ -3335,32 +3343,53 @@ const audited = [...signatureExports, ...pools.shade, ...pools.strength, ...pool
   ...pools.faith, ...content.COMMON_POOL];
 /* Every one of them: a partial audit is a count nobody can trust. */
 check("content carrying the audit column",
-  audited.filter(c => c.needs !== undefined).length, audited.length);
-const vague = audited.filter(c => typeof c.needs === "string" && c.needs && c.needs.length < 12)
-  .map(c => c.name);
+  audited.filter(c => Array.isArray(c.needs)).length, audited.length);
+const vague = audited.filter(c => (c.needs ?? []).some(g => g.length < 12)).map(c => c.name);
 check("gaps too short to act on", vague.length ? vague.join(", ") : "none", "none");
-const workingCards = audited.filter(c => c.needs === "").length;
-check("content the engine does everything for", workingCards, 42);
-check("content with a named gap", audited.filter(c => c.needs).length, 60);
+const workingCards = audited.filter(c => !c.needs.length).length;
+check("content the engine does everything for", workingCards, 43);
+check("content with a named gap", audited.filter(c => c.needs.length).length, 59);
 
 /*
  * A gap shared by several cards is one piece of engine work, not several. Counting the DISTINCT
  * gaps is what turns the column into a queue -- and the largest of them is worth knowing.
  */
 const gapCounts = new Map();
-for (const card of audited.filter(c => c.needs)) {
-  gapCounts.set(card.needs, (gapCounts.get(card.needs) ?? 0) + 1);
+for (const card of audited) {
+  for (const gap of card.needs) gapCounts.set(gap, (gapCounts.get(gap) ?? 0) + 1);
 }
-check("distinct gaps across all content", gapCounts.size, 47);
+check("distinct gaps across all content", gapCounts.size, 50);
 /*
- * EVERY gap at the maximum, not the first one the sort happens to put there. Way of Mind produced
- * a tie on its first day, and a check that reports one of two tied answers is a check that changes
- * its mind when content is reordered.
+ * Two different questions, and the list is what lets them be asked apart.
+ *
+ *   MENTIONED -- how many pieces of content name this gap. What the column used to report, and it
+ *                is the wrong number to build from: a card that names two gaps is finished by
+ *                neither of them on its own.
+ *   FINISHED  -- how many pieces of content this gap is the LAST thing standing for. That is the
+ *                number that says what to build next, and until `needs` was a list it could not
+ *                be computed at all.
+ *
+ * The Health cost is the whole reason this distinction exists: six mentions, and exactly one card
+ * it would finish. The queue was being ordered by what somebody wrote down first.
  */
 const most = Math.max(...gapCounts.values());
 const worst = [...gapCounts.entries()].filter(([, n]) => n === most).map(([gap]) => gap).sort();
-check("the gaps that would unblock the most content", `${worst.join("; ")} (${most})`,
-  "a spell that costs Health to cast (6)");
+check("the gap mentioned by the most content", `${worst.join("; ")} (${most})`,
+  "granting Block to an ally (4)");
+
+const finishes = new Map();
+for (const card of audited) {
+  if (card.needs.length !== 1) continue;
+  finishes.set(card.needs[0], (finishes.get(card.needs[0]) ?? 0) + 1);
+}
+const bestFinish = Math.max(...finishes.values());
+check("the gap that would finish the most content",
+  [...finishes.entries()].filter(([, n]) => n === bestFinish).map(([g]) => g).sort().join("; ")
+  + ` (${bestFinish})`,
+  "a reaction trigger beyond hit and arrival; granting Block to an ally (3)");
+/* And how much of the queue is one card deep, which is what a long tail of singletons means. */
+check("gaps that would finish exactly one piece of content",
+  [...finishes.values()].filter(n => n === 1).length, 41);
 
 /*
  * And a check on the QUEUE rather than on the content, which the ranged-item work earned.
@@ -3568,6 +3597,90 @@ check("way-cards sends its reader to that rule",
   /One gate on a primary is allowed, and it is not a condition/.test(wayDoc) ? "yes" : "no", "yes");
 check("and records that three gaps were one field",
   /three entries, one field, \*\*six cards\*\*/.test(wayDoc) ? "yes" : "no", "yes");
+
+/* -------------------------------------------- */
+
+/*
+ * Casting a prepared spell, which nothing did until now.
+ *
+ * `prepared`, `slotCost` and `effect` have all existed since the data model was written, and the
+ * only thing that ever read `effect` was this file -- so the audit's largest gap, *a spell that
+ * costs Health to cast*, was a price on an action that did not happen. The price turned out to be
+ * the smaller half.
+ */
+
+section("casting a prepared spell");
+
+const itemsSource = fs.readFileSync(path.join(root, "module/data/items.mjs"), "utf8");
+
+/* A spell is its own weapon: the slate answers the question the attack resolver asks of an item. */
+check("a spell answers a cast verb line",
+  /get verbs\(\) \{[\s\S]{0,400}cast: \{[\s\S]{0,120}value: e\.mod \?\? 0/.test(itemsSource)
+    ? "yes" : "no", "yes");
+check("so one resolver serves a card half and a spell alike",
+  /const item = source \?\? this\.#itemFor\(step\.verb, half, step\.requires\);/.test(traySource)
+    ? "yes" : "no", "yes");
+check("a spell's effect runs through the step resolver",
+  /await this\.#resolveStep\(slate\.system\.effect, "primary", targets, slate\);/.test(traySource)
+    ? "yes" : "no", "yes");
+
+/* The price, and the two rules around it. */
+check("the schema carries a cast cost",
+  /cost: new fields\.SchemaField\(\{[\s\S]{0,200}health: new fields\.NumberField/.test(itemsSource)
+    ? "yes" : "no", "yes");
+check("an unprepared spell cannot be cast",
+  /if \(!slate\?\.system\?\.prepared\)/.test(resolveSource) ? "yes" : "no", "yes");
+/* The floor is 1, not 0: 0 Health is Unconscious, so a self-killing cost is refused, not survived. */
+check("the cost may not take you below 1 Health",
+  /if \(health - cost < 1\)/.test(resolveSource) ? "yes" : "no", "yes");
+check("and paying is what gates the effect",
+  /if \(!await payToCast\(this\.actor, slate\)\) return;/.test(traySource) ? "yes" : "no", "yes");
+
+/* The content side. */
+const spellsWithCost = [...graph.SPELLS.values()].filter(s => s.cost?.health);
+check("spells that cost Health",
+  spellsWithCost.map(s => s.name).sort().join(", "),
+  "Blood Price, Boil, Open the Vein, Stand Where I Stand, The Club and the Line, "
+  + "The Second Heartbeat");
+check("the Health they ask between them",
+  spellsWithCost.reduce((n, s) => n + s.cost.health, 0), 13);
+/* Every one of them is a Blood Magic formula or a miracle of Vax, which is the finding: two Ways
+ * arrived at the same mechanism from opposite ends. */
+check("the sources that charge in blood",
+  [...new Set(spellsWithCost.map(s => s.source))].sort().join(", "), "Blood Magic, Vax");
+/*
+ * And no FIXED price is still printed in words, now that the field carries it. A price per ally is
+ * a different thing: the number depends on where everyone is standing, so it stays prose and its
+ * gap says why -- which is the line between the two, and the reason this check has to know it.
+ */
+const printedCost = [...graph.SPELLS.values()]
+  .filter(s => /costs? \d+ Health(?! per)/i.test(s.effect?.text ?? "")).map(s => s.name);
+check("spells still printing a fixed cost as prose",
+  printedCost.length ? printedCost.join(", ") : "none", "none");
+const variableCost = [...graph.SPELLS.values()]
+  .filter(s => /Health per/i.test(s.effect?.text ?? ""));
+check("spells whose price scales, which the field cannot hold",
+  variableCost.map(s => s.name).sort().join(", "), "The Red Hour, The Shield Line");
+check("and every one of them says so in the queue",
+  variableCost.every(s => s.needs.includes("a cost that scales with the allies it covers")),
+  true);
+
+/*
+ * And the reason the column is a list, written where a reader of the column will find it. Four
+ * turns running now the break test has caught me writing a decision into a document with no check
+ * behind it, so this one goes in beside the code that implements it.
+ */
+check("way-cards says why the audit column is a list",
+  /\*\*\[BUILT 2026-11-01\] `needs` is a LIST, and the Health cost is why\.\*\*/.test(wayDoc)
+    ? "yes" : "no", "yes");
+check("and separates mentioned from finished",
+  /how many it is the \*\*last thing standing\*\* for/.test(wayDoc) ? "yes" : "no", "yes");
+
+/* The tray has somewhere to cast from, and the book is not clickable. */
+check("the tray offers a spells deck",
+  /id: "spells",/.test(traySource) ? "yes" : "no", "yes");
+check("and only a prepared spell is clickable",
+  /passive: !prepared,/.test(traySource) ? "yes" : "no", "yes");
 
 /* -------------------------------------------- */
 

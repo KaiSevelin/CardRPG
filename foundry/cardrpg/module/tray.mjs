@@ -25,7 +25,7 @@ import {
   resolveAttack, resolveDefend, resolveHeal, resolveUse, resolveCondition, resolveShake,
   reachableAmmo, isUsable,
   resolveTaint, resolveCorrode, liftCondition, resolveForesee, collectBonuses,
-  itemMeets, requireText
+  itemMeets, requireText, payToCast
 } from "./resolve.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -434,6 +434,52 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     };
   }
 
+  /**
+   * One spell, as a card. Only a prepared one is clickable; the rest are the book.
+   *
+   * The lines read the step rather than prose, so a formula whose numbers are edited in content
+   * says the new numbers here without anything being rewritten -- the same reason a card face is
+   * rendered from data and never from a stored image (data/cards.mjs).
+   */
+  #spellCard(slate) {
+    const e = slate.system.effect ?? {};
+    const lines = [];
+    const verb = e.verb
+      ? game.i18n.localize(CARDRPG.verbs[e.verb]?.label ?? CARDRPG.effects[e.verb]?.label ?? e.verb)
+      : "";
+    const value = e.mod ?? null;
+    if (verb || value !== null) lines.push(`${verb}${value ? ` ${value}` : ""}`.trim());
+    if (e.condition) {
+      const cfg = CARDRPG.conditions[e.condition] ?? {};
+      const fierce = cfg.valued ? ` ${Math.max(1, e.intensity ?? 1)}` : "";
+      lines.push(`${game.i18n.localize(cfg.label ?? e.condition)}${fierce}`
+        + ` (${Math.max(1, e.duration ?? 1)})`
+        + (e.resist
+          ? ` \u00b7 resist ${game.i18n.localize(CARDRPG.approaches[e.resist]?.label ?? e.resist)}`
+            + ` ${e.dc ?? CARDRPG.difficulties.normal}`
+          : ""));
+    }
+    if (e.range) lines.push(`Range ${e.range}`);
+    if (e.text) lines.push(e.text);
+
+    const cost = slate.system.cost?.health ?? 0;
+    const prepared = slate.system.prepared;
+    return {
+      id: slate.id,
+      name: slate.name,
+      icon: CARDRPG.verbs.cast?.icon ?? null,
+      lines: lines.length ? lines : ["\u2014"],
+      /* The book is not clickable: you change what is prepared between fights, never during one. */
+      passive: !prepared,
+      note: `${slate.system.source || "—"} \u00b7 ${slate.system.strength} slot`
+        + `${slate.system.strength === 1 ? "" : "s"}`
+        + (cost ? ` \u00b7 costs ${cost} Health` : ""),
+      tip: prepared
+        ? `Cast it.${cost ? ` It costs ${cost} Health.` : ""}`
+        : "In your book. What is prepared changes between fights, not during one."
+    };
+  }
+
   /** One item, as a card. `played` means equipped. */
   #itemCard(i, played) {
     const verbs = Object.entries(i.system.verbs ?? {}).filter(([, l]) => l.value !== null || l.text);
@@ -541,6 +587,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   #leftDecks() {
     const items = this.actor.items.filter(i => i.type === "item");
     const features = this.actor.items.filter(i => i.type === "feature");
+    const spells = this.actor.items.filter(i => i.type === "spell");
     const conditions = this.actor.system.activeConditions ?? [];
 
     return [
@@ -552,6 +599,20 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         id: "features", label: "Features", count: features.length,
         tip: "Passive ones are simply true; an active one Drains when used."
       },
+      /*
+       * A fourth deck, and it is a deck rather than a rail for a reason: unprepared spells are the
+       * book, and the book is most of what a caster owns. The count is what you can CAST, because
+       * a number that included the book would tell a player the opposite of what they need.
+       */
+      ...(spells.length ? [{
+        id: "spells",
+        label: "Spells",
+        count: spells.filter(s => s.system.prepared).length,
+        tip: `${spells.filter(s => s.system.prepared).length} prepared, `
+          + `${spells.filter(s => !s.system.prepared).length} in the book. `
+          + `${this.actor.system.spellSlots?.free ?? 0} of `
+          + `${this.actor.system.spellSlots?.max ?? 0} slots free.`
+      }] : []),
       {
         id: "conditions", label: "Conditions", count: conditions.length,
         tip: "What is on you. A duration ticks down on its creator's turn."
@@ -640,6 +701,19 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         .filter(i => i.type === "feature")
         .map(f => this.#featureCard(f));
       return { label: "Features", count: `${cards.length}`, cards };
+    }
+
+    if (this.openPile === "spells") {
+      /*
+       * Prepared first, because those are the ones you can do something with, and the book after
+       * -- greyed, because *the caster who prepared the wrong spells has prepared the wrong
+       * spells* is the whole point of a slot budget and the sheet should not soften it.
+       */
+      const order = (a, b) => (b.system.prepared ? 1 : 0) - (a.system.prepared ? 1 : 0)
+        || a.name.localeCompare(b.name);
+      const cards = this.actor.items.filter(i => i.type === "spell").sort(order)
+        .map(s => this.#spellCard(s));
+      return { label: "Spells", count: `${cards.length}`, cards };
     }
 
     if (this.openPile === "conditions") {
@@ -1178,14 +1252,21 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     return { ammo, payload: potions.find(potion => potion.id === which) ?? null };
   }
 
-  async #resolveStep(step, half, targets) {
+  /**
+   * Resolve one step.
+   *
+   * `source` is the slate the step came from, when it came from one. A card half has no source and
+   * finds an item for its verb; a spell IS the source and answers `verbs.cast` itself, which is
+   * what lets one function resolve both without a branch per verb.
+   */
+  async #resolveStep(step, half, targets, source = null) {
     const actor = this.actor;
 
     switch (step.verb) {
       case "strike":
       case "cast": {
         if (!targets.length) return ui.notifications.warn("Target a token first.");
-        const item = this.#itemFor(step.verb, half, step.requires);
+        const item = source ?? this.#itemFor(step.verb, half, step.requires);
         if (!item) {
           const need = requireText(step.requires);
           return ui.notifications.warn(need
@@ -1375,6 +1456,19 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   static async #onPlaySlate(event, target) {
     const slate = this.actor.items.get(target.dataset.slateId);
     if (!slate) return;
+
+    /*
+     * A spell is the third kind of slate and the first that RESOLVES when clicked. An item is
+     * arranged and a feature is used; a spell is cast, which means paying for it and then running
+     * its effect through the very code that runs a card half -- `#resolveStep` -- because a
+     * spell's effect and a card's step are one shape (data/cards.mjs).
+     */
+    if (slate.type === "spell") {
+      const targets = [...(game.user.targets ?? [])].map(t => t.actor).filter(a => a);
+      if (!await payToCast(this.actor, slate)) return;
+      await this.#resolveStep(slate.system.effect, "primary", targets, slate);
+      return this.render();
+    }
 
     if (slate.type === "feature") {
       if (!slate.system.isActive) {

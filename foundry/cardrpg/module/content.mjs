@@ -1524,27 +1524,27 @@ export const ENCOUNTERS = [
  */
 export const COMMON_POOL = [
   {
-    name: "Off-Hand Blow", copies: 1, pool: "common", needs: "",
+    name: "Off-Hand Blow", copies: 1, pool: "common", needs: [],
     primary: [{ verb: "strike" }],
     secondary: [{ verb: "strike", mod: -1 }]
   },
   {
-    name: "Measure", copies: 1, pool: "common", needs: "", reaction: "parry",
+    name: "Measure", copies: 1, pool: "common", needs: [], reaction: "parry",
     primary: [{ verb: "strike", mod: 1 }],
     secondary: [{ verb: "move", param: 1 }]
   },
   {
-    name: "Hold the Line", copies: 1, pool: "common", needs: "", reaction: "parry",
+    name: "Hold the Line", copies: 1, pool: "common", needs: [], reaction: "parry",
     primary: [{ verb: "defend" }],
     secondary: [{ verb: "strike", mod: -1 }]
   },
   {
-    name: "Press", copies: 1, pool: "common", needs: "", reaction: "sidestep",
+    name: "Press", copies: 1, pool: "common", needs: [], reaction: "sidestep",
     primary: [{ verb: "strike" }, { verb: "move", param: 1 }],
     secondary: [{ verb: "move", param: 2 }]
   },
   {
-    name: "Both Hands", copies: 1, pool: "common", needs: "", reaction: "use",
+    name: "Both Hands", copies: 1, pool: "common", needs: [], reaction: "use",
     primary: [{ verb: "ready" }, { verb: "strike" }],
     secondary: [{ verb: "ready" }]
   },
@@ -1556,7 +1556,7 @@ export const COMMON_POOL = [
      * the rule gives Brace to a card *without* a printed reaction. Dig In gets Brace by having
      * none.
      */
-    name: "Dig In", copies: 1, pool: "common", needs: "",
+    name: "Dig In", copies: 1, pool: "common", needs: [],
     primary: [{ verb: "heal", param: 2 }],
     secondary: [{ verb: "move", param: 1 }],
     costs: { primary: { spent: true } }
@@ -1588,19 +1588,20 @@ export const SHADE_POOL = [
      * is a *call* rather than a state (core-rules 7), which is why it takes no save -- you cannot
      * resist somebody's opinion of you, you can only wait for them to stop saying it.
      */
-    name: "Call the Shot", copies: 1, pool: "shade", needs: "",
+    name: "Call the Shot", copies: 1, pool: "shade", needs: [],
     primary: [{ verb: "strike" }],
     secondary: [{ condition: "marked", duration: 1 }],
     text: "Marked on any enemy you can see, at any range."
   },
   {
     name: "Between the Plates", copies: 1, pool: "shade",
-    needs: "an opening clause that ignores armour",
+    /* The same field Blood Price wants, asked for from inside a `when` clause instead. */
+    needs: ["a step that goes through armour entirely"],
     primary: [{ verb: "strike", when: { needs: "marked", text: "ignores armor" } }],
     secondary: [{ verb: "move", param: 1 }]
   },
   {
-    name: "Take the Shot", copies: 1, pool: "shade", needs: "",
+    name: "Take the Shot", copies: 1, pool: "shade", needs: [],
     primary: [{
       verb: "strike", mod: 1, requires: { tag: "ranged" },
       when: { needs: "marked", advantage: true }
@@ -1608,7 +1609,7 @@ export const SHADE_POOL = [
     secondary: [{ verb: "move", param: 2 }]
   },
   {
-    name: "Pin the Shadow", copies: 1, pool: "shade", needs: "",
+    name: "Pin the Shadow", copies: 1, pool: "shade", needs: [],
     primary: [{
       verb: "strike", requires: { tag: "ranged" },
       condition: "slowed", duration: 1, resist: "agility", dc: 5,
@@ -1617,18 +1618,18 @@ export const SHADE_POOL = [
     secondary: [{ verb: "move", param: 1 }]
   },
   {
-    name: "Cut and Run", copies: 1, pool: "shade", needs: "",
+    name: "Cut and Run", copies: 1, pool: "shade", needs: [],
     primary: [{ verb: "strike" }, { verb: "move", param: 2 }],
     secondary: [{ verb: "move", param: 1 }]
   },
   {
-    name: "Light Feet", copies: 1, pool: "shade", needs: "", reaction: "sidestep",
+    name: "Light Feet", copies: 1, pool: "shade", needs: [], reaction: "sidestep",
     primary: [{ verb: "move", param: 3 }],
     secondary: [{ verb: "move", param: 2 }],
     text: "Ignoring difficult ground."
   },
   {
-    name: "Slip the Knot", copies: 1, pool: "shade", needs: "", reaction: "sidestep",
+    name: "Slip the Knot", copies: 1, pool: "shade", needs: [], reaction: "sidestep",
     primary: [{ verb: "move", param: 2 }],
     secondary: [{ verb: "shake", param: 1 }]
   },
@@ -1637,29 +1638,29 @@ export const SHADE_POOL = [
      * The requirement is on BOTH halves, because the card is about the knife rather than about the
      * throw: a Second Knife thrown from a greatsword is not a thing, and neither is the follow-up.
      */
-    name: "Second Knife", copies: 1, pool: "shade", needs: "",
+    name: "Second Knife", copies: 1, pool: "shade", needs: [],
     primary: [{ verb: "strike", range: 3, requires: { tag: "light" } }],
     secondary: [{ verb: "strike", mod: -1, requires: { tag: "light" } }]
   },
   {
-    name: "Mock", copies: 1, pool: "shade", needs: "",
+    name: "Mock", copies: 1, pool: "shade", needs: [],
     primary: [{ condition: "dazed", duration: 1, resist: "presence", dc: 5 }],
     secondary: [{ verb: "move", param: 1 }]
   },
   {
-    name: "Sleight", copies: 1, pool: "shade", needs: "", reaction: "use",
+    name: "Sleight", copies: 1, pool: "shade", needs: [], reaction: "use",
     primary: [{ verb: "use" }, { verb: "strike" }],
     secondary: [{ verb: "ready" }]
   },
   {
-    name: "Vanish", copies: 1, pool: "shade", needs: "",
+    name: "Vanish", copies: 1, pool: "shade", needs: [],
     primary: [{ condition: "invisible", duration: 1 }],
     secondary: [{ verb: "move", param: 2 }],
     costs: { primary: { strain: 1 } },
     text: "On yourself."
   },
   {
-    name: "Smoke and Go", copies: 1, pool: "shade", needs: "",
+    name: "Smoke and Go", copies: 1, pool: "shade", needs: [],
     primary: [{ condition: "invisible", duration: 1 }, { verb: "move", param: 2 }],
     secondary: [{ verb: "use" }],
     costs: { primary: { spent: true } },
@@ -1678,25 +1679,25 @@ export const SHADE_POOL = [
  */
 export const STRENGTH_POOL = [
   {
-    name: "Shoulder Check", copies: 1, pool: "strength", needs: "",
+    name: "Shoulder Check", copies: 1, pool: "strength", needs: [],
     primary: [{ verb: "strike" }],
     secondary: [{ condition: "offBalance", duration: 1 }],
     text: "Adjacent."
   },
   {
     name: "Shield Bash", copies: 1, pool: "strength",
-    needs: "a Strike that deals no damage", reaction: "block",
+    needs: ["a Strike that deals no damage"], reaction: "block",
     primary: [{ verb: "strike" }],
     secondary: [{ verb: "move", param: 1 }],
     text: "No damage: push 2 and step into the square it left."
   },
   {
-    name: "Hammerblow", copies: 1, pool: "strength", needs: "",
+    name: "Hammerblow", copies: 1, pool: "strength", needs: [],
     primary: [{ verb: "strike", when: { needs: "offBalance", mod: 2 } }],
     secondary: [{ verb: "move", param: 1 }]
   },
   {
-    name: "Sweep the Leg", copies: 1, pool: "strength", needs: "",
+    name: "Sweep the Leg", copies: 1, pool: "strength", needs: [],
     primary: [{
       verb: "strike", condition: "prone", duration: 1, resist: "agility", dc: 5,
       when: { needs: "offBalance", dc: 9 }
@@ -1709,7 +1710,7 @@ export const STRENGTH_POOL = [
      * Grappled (2) costs its victim 18.3 points of win rate against a mixed group, because blocking
      * Move is blocking the most valuable thing a figure does (sim/analysis-2026-10-30.md 7).
      */
-    name: "Overbear", copies: 1, pool: "strength", needs: "",
+    name: "Overbear", copies: 1, pool: "strength", needs: [],
     primary: [{
       condition: "grappled", duration: 2, resist: "might", dc: 5,
       when: { needs: "offBalance", dc: 7 }
@@ -1718,7 +1719,7 @@ export const STRENGTH_POOL = [
   },
   {
     name: "Shield Wall", copies: 1, pool: "strength",
-    needs: "granting Block to an ally", reaction: "block",
+    needs: ["granting Block to an ally"], reaction: "block",
     primary: [{ verb: "defend" }],
     secondary: [{ verb: "defend" }],
     text: "The secondary also gives one adjacent ally Block 1."
@@ -1728,13 +1729,13 @@ export const STRENGTH_POOL = [
      * `bothHands` is held in two hands NOW, not an item that could take two -- so the Ready on the
      * secondary is the card's own answer to being dealt it with a shield up.
      */
-    name: "Two-Hand It", copies: 1, pool: "strength", needs: "",
+    name: "Two-Hand It", copies: 1, pool: "strength", needs: [],
     primary: [{ verb: "strike", mod: 2, requires: { bothHands: true } }],
     secondary: [{ verb: "ready" }]
   },
   {
     name: "Heave", copies: 1, pool: "strength",
-    needs: "a Move that ignores your own encumbrance",
+    needs: ["a Move that ignores your own encumbrance"],
     primary: [{ verb: "move", param: 2 }],
     secondary: [{ verb: "ready" }],
     text: "Carrying any weight without being Slowed."
@@ -1746,7 +1747,7 @@ export const STRENGTH_POOL = [
      * off -- the same correction Dig In needed.
      */
     name: "Armoured Advance", copies: 1, pool: "strength",
-    needs: "a transient bonus to armour",
+    needs: ["a transient bonus to armour"],
     primary: [{ verb: "move", param: 3 }],
     secondary: [{ verb: "move", param: 1 }],
     text: "Your armor counts +1 until your next turn."
@@ -1757,13 +1758,13 @@ export const STRENGTH_POOL = [
      * a `when` clause, exactly as cards.mjs says it should be: that clause is for a setup worth
      * nothing on its own, and being Prone already does plenty.
      */
-    name: "Pull Them Down", copies: 1, pool: "strength", needs: "",
+    name: "Pull Them Down", copies: 1, pool: "strength", needs: [],
     primary: [{ verb: "strike" }],
     secondary: [{ verb: "strike", mod: -1 }],
     text: "The secondary only against a Prone or Grappled target."
   },
   {
-    name: "Beat the Blade", copies: 1, pool: "strength", needs: "",
+    name: "Beat the Blade", copies: 1, pool: "strength", needs: [],
     primary: [{
       verb: "strike", condition: "disarmed", duration: 1, resist: "might", dc: 5
     }],
@@ -1771,7 +1772,7 @@ export const STRENGTH_POOL = [
   },
   {
     name: "Roar", copies: 1, pool: "strength",
-    needs: "a condition applied to an area",
+    needs: ["a condition applied to an area"],
     primary: [{ condition: "compelled", duration: 1, resist: "presence", dc: 5 }],
     secondary: [{ verb: "move", param: 1 }],
     costs: { primary: { strain: 1 } },
@@ -1779,7 +1780,7 @@ export const STRENGTH_POOL = [
   },
   {
     /* Brace by printing nothing, as above. */
-    name: "Walk It Off", copies: 1, pool: "strength", needs: "",
+    name: "Walk It Off", copies: 1, pool: "strength", needs: [],
     primary: [{ verb: "heal", param: 2 }, { verb: "shake", param: 2 }],
     secondary: [{ verb: "move", param: 1 }],
     costs: { primary: { spent: true } },
@@ -1829,20 +1830,20 @@ export const SHADE_SIGNATURES = [
      * hit whatever you set up" needs any of them. Openings were already a computed list in config
      * and nothing read it at the feature level.
      */
-    name: "The Opening", kind: "feature", node: "shade.thief", needs: "",
+    name: "The Opening", kind: "feature", node: "shade.thief", needs: [],
     text: "Advantage against anyone carrying an opening -- whoever set it.",
     advantage: { vsOpening: true }
   },
   {
     name: "Point Man", kind: "card", node: "shade.scout",
-    needs: "the extra type, which needs to know who is furthest forward",
+    needs: ["the extra type, which needs to know who is furthest forward"],
     primary: [{ verb: "foresee" }],
     secondary: [{ verb: "move", param: 1 }],
     text: "While you are the furthest forward of your party, Foresee one extra type."
   },
   {
     name: "Named", kind: "card", node: "shade.duellist",
-    needs: "a reaction that also Strikes",
+    needs: ["a reaction that also Strikes"],
     primary: [{ verb: "strike" }],
     secondary: [{ condition: "marked", duration: 1 }],
     reaction: "parry",
@@ -1850,7 +1851,7 @@ export const SHADE_SIGNATURES = [
   },
   {
     name: "One Opening", kind: "card", node: "shade.assassin",
-    needs: "doubling, and a clause that reads any opening",
+    needs: ["doubling, and a clause that reads any opening"],
     primary: [{ verb: "strike" }],
     secondary: [{ verb: "move", param: 1 }],
     costs: { primary: { spent: true } },
@@ -1858,7 +1859,7 @@ export const SHADE_SIGNATURES = [
   },
   {
     name: "Lift", kind: "card", node: "shade.cutpurse",
-    needs: "taking a card from another deck",
+    needs: ["taking a card from another deck"],
     /* The name is the card's. The engine's condition-removal is `liftCondition` now. */
     primary: [{ verb: "strike" }],
     secondary: [{ verb: "move", param: 1 }],
@@ -1871,18 +1872,18 @@ export const SHADE_SIGNATURES = [
      * never put down IS the Burglar's price (Preparation / weight) expressed as a thing you carry,
      * which is why it reads as an item and not as a sentence.
      */
-    name: "The Kit", kind: "item", node: "shade.burglar", needs: "",
+    name: "The Kit", kind: "item", node: "shade.burglar", needs: [],
     slot: "pack", weight: 3, cost: 0,
     text: "You may never put it down. Every Hard physical obstacle becomes Normal."
   },
   {
-    name: "Loose and Step", kind: "card", node: "shade.archer", needs: "",
+    name: "Loose and Step", kind: "card", node: "shade.archer", needs: [],
     primary: [{ verb: "strike", requires: { tag: "ranged" } }, { verb: "move", param: 1 }],
     secondary: [{ verb: "move", param: 1 }]
   },
   {
     name: "Set", kind: "card", node: "shade.trapmaker",
-    needs: "placing a trap on a square",
+    needs: ["placing a trap on a square"],
     primary: [{ verb: "ready" }],
     secondary: [{ verb: "ready" }],
     text: "Place a trap on an adjacent square. The first enemy to enter is Slowed (2) and takes "
@@ -1890,14 +1891,14 @@ export const SHADE_SIGNATURES = [
   },
   {
     name: "Over and Past", kind: "card", node: "shade.acrobat",
-    needs: "moving through an occupied square",
+    needs: ["moving through an occupied square"],
     primary: [{ verb: "move", param: 3 }],
     secondary: [{ verb: "move", param: 1 }],
     reaction: "sidestep",
     text: "You may move through enemy squares."
   },
   {
-    name: "Heckle", kind: "card", node: "shade.bard", needs: "",
+    name: "Heckle", kind: "card", node: "shade.bard", needs: [],
     primary: [{ condition: "heckled", duration: 1, resist: "presence", dc: 5 }],
     secondary: [{ verb: "move", param: 1 }],
     reaction: "heckle",
@@ -1905,7 +1906,7 @@ export const SHADE_SIGNATURES = [
   },
   {
     name: "Double or Nothing", kind: "card", node: "shade.gambler",
-    needs: "two fate draws that both apply",
+    needs: ["two fate draws that both apply"],
     primary: [{ verb: "strike" }],
     secondary: [{ verb: "move", param: 1 }],
     text: "Draw two fate cards -- both apply, added together. Variance, not advantage."
@@ -1917,7 +1918,7 @@ export const SHADE_SIGNATURES = [
      * is prepared and cannot drift (rules/leveling.md 9). So a Signature feature carries the text
      * and the node carries the figure -- which the validator enforces for all of them.
      */
-    name: "One Trick", kind: "feature", node: "shade.half-mage", needs: "",
+    name: "One Trick", kind: "feature", node: "shade.half-mage", needs: [],
     text: "You may prepare from any one school you have ever seen cast."
   }
 ];
@@ -1984,14 +1985,14 @@ export const TACTICS = {
 export const STRENGTH_SIGNATURES = [
   {
     name: "Shoulder to Shoulder", kind: "card", node: "strength.infantry",
-    needs: "granting Block to an ally",
+    needs: ["granting Block to an ally"],
     primary: [{ verb: "strike" }],
     secondary: [{ verb: "move", param: 1 }],
     text: "Every ally adjacent to you gains Block 1 until your next turn."
   },
   {
     name: "The Wall", kind: "feature", node: "strength.guardian",
-    needs: "an exception to highest-wins, which no bonus group has",
+    needs: ["an exception to highest-wins, which no bonus group has"],
     text: "Your Blocks stack. You are the one exception to highest-wins."
   },
   {
@@ -2001,7 +2002,7 @@ export const STRENGTH_SIGNATURES = [
      * both already derived, so doubling one when the other says Overloaded is a line in
      * prepareDerivedData rather than a mechanism.
      */
-    name: "Nothing Gets Through", kind: "feature", node: "strength.ironclad", needs: "",
+    name: "Nothing Gets Through", kind: "feature", node: "strength.ironclad", needs: [],
     text: "While you are Overloaded, your armor counts double.",
     armor: { doubleWhenOverloaded: true }
   },
@@ -2012,7 +2013,7 @@ export const STRENGTH_SIGNATURES = [
      * sentence, so this one is half closed and still carries a `needs`.
      */
     name: "Ranging Shot", kind: "card", node: "strength.artillerist",
-    needs: "the Blast alternative, which has to know you did not Move",
+    needs: ["the Blast alternative, which has to know you did not Move"],
     primary: [{ verb: "strike", area: 1, areaKind: "aimed", requires: { tag: "ranged" } }],
     secondary: [{ verb: "ready" }],
     text: "Blast instead of Aimed, if you did not Move this turn."
@@ -2024,7 +2025,7 @@ export const STRENGTH_SIGNATURES = [
      * `allyHit`, which is a moment, but it is not this one.
      */
     name: "On My Call", kind: "card", node: "strength.tactician",
-    needs: "a trigger for an ally's turn, and swapping a card's halves",
+    needs: ["a trigger for an ally's turn, and swapping a card's halves"],
     primary: [{ verb: "ready" }],
     secondary: [{ verb: "move", param: 1 }],
     text: "On an ally's turn: they may play a card in their hand halves swapped, its secondary as a "
@@ -2032,19 +2033,19 @@ export const STRENGTH_SIGNATURES = [
   },
   {
     name: "Cleave to the Bone", kind: "feature", node: "strength.executioner",
-    needs: "the Wound threshold as the attacker's, where the reaction policy reads a constant",
+    needs: ["the Wound threshold as the attacker's, where the reaction policy reads a constant"],
     text: "For you, the Wound threshold is 4, not 5."
   },
   {
     name: "The Lance", kind: "card", node: "strength.knight",
-    needs: "advantage conditional on how far you moved",
+    needs: ["advantage conditional on how far you moved"],
     primary: [{ verb: "move", param: 3 }, { verb: "strike" }],
     secondary: [{ verb: "move", param: 1 }],
     text: "Advantage if you moved at least 2. Needs the mount."
   },
   {
     name: "Red Mist", kind: "card", node: "strength.berserker",
-    needs: "drawing back up to hand size mid-turn",
+    needs: ["drawing back up to hand size mid-turn"],
     primary: [{ verb: "strike" }],
     secondary: [{ verb: "move", param: 1 }],
     costs: { primary: { spent: true } },
@@ -2052,12 +2053,12 @@ export const STRENGTH_SIGNATURES = [
   },
   {
     name: "Loaded Before the Bell", kind: "feature", node: "strength.musketeer",
-    needs: "a loaded state to begin a fight in, since reload is still prose",
+    needs: ["a loaded state to begin a fight in, since reload is still prose"],
     text: "You begin every combat already loaded, and the first shot of a fight is +2."
   },
   {
     name: "Play to the Crowd", kind: "card", node: "strength.gladiator",
-    needs: "a reaction that grants Block and applies a condition",
+    needs: ["a reaction that grants Block and applies a condition"],
     primary: [{ condition: "compelled", duration: 1, resist: "presence", dc: 5 }],
     secondary: [{ verb: "move", param: 1 }],
     text: "When you are hit: gain Block 2, and the attacker is Compelled (1) -- no save, because "
@@ -2065,7 +2066,7 @@ export const STRENGTH_SIGNATURES = [
   },
   {
     name: "Get a Grip", kind: "card", node: "strength.street-fighter",
-    needs: "waiving a save when both hands are empty",
+    needs: ["waiving a save when both hands are empty"],
     primary: [{ condition: "grappled", duration: 2, resist: "might", dc: 5 }],
     secondary: [{ verb: "move", param: 1 }],
     text: "No save at all if both your hands are empty."
@@ -2076,7 +2077,7 @@ export const STRENGTH_SIGNATURES = [
      * written down: core-rules 3's redirection step and `redirectHit` are this card. Printing it
      * also closes the one reaction nothing in the content carried.
      */
-    name: "Interpose", kind: "card", node: "strength.bodyguard", needs: "",
+    name: "Interpose", kind: "card", node: "strength.bodyguard", needs: [],
     primary: [{ verb: "defend" }],
     secondary: [{ verb: "move", param: 1 }],
     reaction: "bodyguard",
@@ -2148,17 +2149,27 @@ export const STRENGTH_TACTICS = {
 export const MIND_POOL = [
   {
     name: "Open the Vein", strength: 1, pool: "mind", source: "Blood Magic",
-    needs: "a spell that costs Health to cast",
+    /*
+     * Not the armour gap: `ignores` comes off armour and never off Block, which core-rules 5 is
+     * explicit about -- so going round a shield is a second field and a second line in the queue.
+     */
+    needs: ["a step that ignores Block"],
+    cost: { health: 1 },
     description: "<p>Your own blood, thrown. It goes round a shield rather than through it.</p>",
-    effect: { verb: "cast", range: 2, mod: 3, text: "ignoring Block. Costs 1 Health" }
+    effect: { verb: "cast", range: 2, mod: 3, text: "ignoring Block" }
   },
   {
+    /*
+     * The one piece of content the Health cost finished outright, and it is worth knowing why:
+     * everything else on the list wanted a second thing as well. A condition with a saving throw
+     * is the oldest finished part of the engine, so this had only ever been waiting on the price.
+     */
     name: "Boil", strength: 3, pool: "mind", source: "Blood Magic",
-    needs: "a spell that costs Health to cast",
+    needs: [],
+    cost: { health: 2 },
     description: "<p>Not your blood this time. Theirs, and it does not stop.</p>",
     effect: {
-      verb: "cast", condition: "burning", intensity: 3, duration: 2, resist: "might", dc: 7,
-      text: "costs 2 Health"
+      verb: "cast", condition: "burning", intensity: 3, duration: 2, resist: "might", dc: 7
     }
   },
   {
@@ -2167,13 +2178,16 @@ export const MIND_POOL = [
      * Magic's axis means: Tempo is bought with blood and nothing else buys it at all.
      */
     name: "The Second Heartbeat", strength: 3, pool: "mind", source: "Blood Magic",
-    needs: "a second primary in one turn",
+    needs: ["a second primary in one turn"],
+    cost: { health: 4 },
     description: "<p>Two hearts for one turn. The second one is paid for.</p>",
-    effect: { text: "Spent: play a second primary this turn. Costs 4 Health" }
+    effect: { text: "Spent: play a second primary this turn" }
   },
   {
     name: "The Red Hour", strength: 4, pool: "mind", source: "Blood Magic",
-    needs: "a second secondary for every ally in an area",
+    /* A Health cost per ALLY, so the same variable price The Shield Line pays and the same gap. */
+    needs: ["a second secondary for every ally in an area",
+      "a cost that scales with the allies it covers"],
     description: "<p>You open a vein for each of them, and for an hour nobody is tired.</p>",
     effect: {
       range: 2,
@@ -2184,27 +2198,27 @@ export const MIND_POOL = [
 
   {
     name: "The Small Pact", strength: 1, pool: "mind", source: "Spiritualism",
-    needs: "",
+    needs: [],
     description: "<p>Name the god you are pacted with, and it does the thing written on the pact. "
       + "The same thing, every time &mdash; which is what makes this a spell and not a wish.</p>",
     effect: { text: "the god grants the favour written on your pact" }
   },
   {
     name: "Hold to the Bargain", strength: 2, pool: "mind", source: "Spiritualism",
-    needs: "a reaction trigger beyond hit and arrival",
+    needs: ["a reaction trigger beyond hit and arrival"],
     description: "<p>It was going to fail. Something intervened, once, because it owes you.</p>",
     effect: { text: "reaction: an ally's failed check becomes a Partial. Once per pact per fight" }
   },
   {
     name: "The Nine Names", strength: 1, pool: "mind", source: "Spiritualism",
-    needs: "",
+    needs: [],
     description: "<p>Out of combat. A minor god names who in this place it is angry with, and will "
       + "not say why.</p>",
     effect: { text: "out of combat: a minor god names who here it is angry with" }
   },
   {
     name: "The Gathered Pact", strength: 4, pool: "mind", source: "Spiritualism",
-    needs: "",
+    needs: [],
     description: "<p>Every pact at once, called in on the same turn. Each god does exactly what it "
       + "promised and no more, which is why this is worth four slots and not five.</p>",
     effect: { text: "every god you are pacted with grants its written favour, this turn" }
@@ -2234,15 +2248,17 @@ export const MIND_POOL = [
 export const MIND_SIGNATURES = [
   {
     name: "Blood Price", kind: "spell", node: "mind.blood", strength: 2, source: "Blood Magic",
-    needs: "a spell that costs Health to cast",
+    /* The Health is built; the armour is not, and it is the same field *Between the Plates* wants. */
+    needs: ["a step that goes through armour entirely"],
+    cost: { health: 2 },
     description: "<p>Four damage at three squares, and nothing between you and it matters. The "
       + "two Health are not a drawback; they are the school.</p>",
-    effect: { verb: "cast", range: 3, mod: 4, text: "ignoring armor. Costs 2 of your own Health" }
+    effect: { verb: "cast", range: 3, mod: 4, text: "ignoring armor" }
   },
   {
     name: "Call the Unquiet", kind: "spell", node: "mind.necromancy", strength: 3,
     source: "Necromancy",
-    needs: "a figure a spell puts on the map",
+    needs: ["a figure a spell puts on the map"],
     description: "<p>It does not know it died. It will stop when the fight does.</p>",
     effect: { range: 2, text: "a corpse within 2 rises and fights for you until the fight ends" }
   },
@@ -2255,7 +2271,7 @@ export const MIND_SIGNATURES = [
      */
     name: "Wall of the Sphere", kind: "spell", node: "mind.elemental", strength: 2,
     source: "Elemental Magic",
-    needs: "terrain a spell places on the map",
+    needs: ["terrain a spell places on the map"],
     description: "<p>Three squares of whichever sphere is yours. Stand behind it and the ground in "
       + "front of you is no longer anybody's.</p>",
     effect: {
@@ -2270,7 +2286,7 @@ export const MIND_SIGNATURES = [
      * are the part of the engine that has been finished longest.
      */
     name: "Wither", kind: "spell", node: "mind.poison", strength: 2, source: "Poison",
-    needs: "",
+    needs: [],
     description: "<p>Dazed while it lasts, and one damage a turn that armour does not stop.</p>",
     effect: {
       verb: "cast", condition: "poisoned", intensity: 1, duration: 2, resist: "might", dc: 5
@@ -2278,7 +2294,7 @@ export const MIND_SIGNATURES = [
   },
   {
     name: "Not Here", kind: "spell", node: "mind.glamour", strength: 2, source: "Glamour",
-    needs: "a condition that ends when you act",
+    needs: ["a condition that ends when you act"],
     description: "<p>You are standing exactly where you are standing. Nobody can be told so.</p>",
     effect: {
       condition: "invisible", duration: 1, text: "until you attack or are attacked"
@@ -2293,14 +2309,14 @@ export const MIND_SIGNATURES = [
      */
     name: "Graven Strength", kind: "spell", node: "mind.tattoo", strength: 1,
     source: "Tattoo Magic",
-    needs: "a permanent formula that is never prepared and carries a bonus",
+    needs: ["a permanent formula that is never prepared and carries a bonus"],
     description: "<p>It is on your arm. It does not need remembering, and it never comes off.</p>",
     effect: { text: "permanent: +2 Strike with Heavy items" }
   },
   {
     name: "Nothing Left to Take", kind: "spell", node: "mind.asceticism", strength: 1,
     source: "Asceticism",
-    needs: "a rule that reads your own hand being empty",
+    needs: ["a rule that reads your own hand being empty"],
     description: "<p>There is nothing in your hand and nothing left to lose, and the second "
       + "follows from the first.</p>",
     effect: { text: "while your hand is empty you cannot be reduced below 1 Health" }
@@ -2308,7 +2324,7 @@ export const MIND_SIGNATURES = [
   {
     name: "The Bargain", kind: "spell", node: "mind.spiritualism", strength: 3,
     source: "Spiritualism",
-    needs: "",
+    needs: [],
     description: "<p>A minor god acts, once. <strong>The GM decides how</strong>, and that is not "
       + "a hole in the spell &mdash; it is the spell.</p>",
     effect: { text: "a minor god acts once this fight; the GM decides how" }
@@ -2321,7 +2337,7 @@ export const MIND_SIGNATURES = [
      */
     name: "Hearth and Home", kind: "spell", node: "mind.household", strength: 1,
     source: "Household Magic",
-    needs: "a ritual, which costs no slots at all",
+    needs: ["a ritual, which costs no slots at all"],
     description: "<p>Out of combat: a camp nobody unfriendly can find, for one night. A ritual, so "
       + "anyone literate could do it &mdash; but somebody has to know the words.</p>",
     effect: { text: "ritual: a camp nobody unfriendly can find, for one night" }
@@ -2334,7 +2350,7 @@ export const MIND_SIGNATURES = [
      * school's axis rather than one card's flavour.
      */
     name: "Unmake", kind: "spell", node: "mind.ward", strength: 2, source: "Ward Magic",
-    needs: "a reaction trigger beyond hit and arrival",
+    needs: ["a reaction trigger beyond hit and arrival"],
     description: "<p>You have felt this one before. That is the only reason you can stop it: a "
       + "warder's book is a record of what the party has survived.</p>",
     effect: {
@@ -2343,7 +2359,7 @@ export const MIND_SIGNATURES = [
   },
   {
     name: "The Reading", kind: "spell", node: "mind.divination", strength: 2, source: "Divination",
-    needs: "reading the top of a fate deck",
+    needs: ["reading the top of a fate deck"],
     description: "<p>Three cards down somebody else's luck. Never your own &mdash; a diviner who "
       + "could stack their own deck would be a damage school wearing a robe.</p>",
     effect: { text: "Read 3 on any one fate deck except your own" }
@@ -2411,7 +2427,7 @@ export const FAITH_SIGNATURES = [
   {
     name: "The Clean Hand", kind: "spell", node: "faith.eternalgod", strength: 2,
     source: "The Eternal God",
-    needs: "a promise that the next draw cannot fail",
+    needs: ["a promise that the next draw cannot fail"],
     description: "<p>An ally's next check or attack cannot fail. One cheaper on a brother or "
       + "sister in faith, which is the third tenet made arithmetic.</p>",
     effect: { range: 3, text: "an ally's next check or attack cannot fail" }
@@ -2419,27 +2435,27 @@ export const FAITH_SIGNATURES = [
   {
     name: "Breath of the Spirit", kind: "spell", node: "faith.eternalspirit", strength: 2,
     source: "The Eternal Spirit",
-    needs: "a reaction trigger beyond hit and arrival",
+    needs: ["a reaction trigger beyond hit and arrival"],
     description: "<p>Reaction: heal an ally 3, at any range, ignoring cover. The spirit drifts "
       + "through all the air, so distance is not a question for it.</p>",
     effect: { verb: "heal", param: 3, text: "reaction, any range, ignoring cover" }
   },
   {
     name: "The Tide Knows", kind: "spell", node: "faith.sessyfyn", strength: 2, source: "Sessyfyn",
-    needs: "two fate draws that both apply",
+    needs: ["two fate draws that both apply"],
     description: "<p>An ally draws fate twice on their next action and keeps both. The sea is not "
       + "fair.</p>",
     effect: { range: 3, text: "an ally draws fate twice on their next action and keeps both" }
   },
   {
     name: "The Drum", kind: "spell", node: "faith.valtor", strength: 1, source: "Valtor",
-    needs: "a bonus that waits for your next Strike",
+    needs: ["a bonus that waits for your next Strike"],
     description: "<p>It starts somewhere behind you and it is already in your arms.</p>",
     effect: { text: "your next Strike this turn is +3" }
   },
   {
     name: "The Borrowed Face", kind: "spell", node: "faith.fagar", strength: 3, source: "Fagar",
-    needs: "an enemy that attacks its own side",
+    needs: ["an enemy that attacks its own side"],
     description: "<p>Spent: one enemy spends this round attacking its own ally. It works once, "
       + "which is the god.</p>",
     effect: { range: 3, text: "Spent: one enemy spends this round attacking its own ally" }
@@ -2451,7 +2467,7 @@ export const FAITH_SIGNATURES = [
      * longest, so it is where content lands intact.
      */
     name: "The Outcast's Due", kind: "spell", node: "faith.vulpet", strength: 3, source: "Vulpet",
-    needs: "",
+    needs: [],
     description: "<p>Every enemy next to you turns on you, because the outcast is who the crowd "
       + "turns on. That is not a side effect; it is the prayer.</p>",
     effect: {
@@ -2462,14 +2478,14 @@ export const FAITH_SIGNATURES = [
   {
     name: "Out of Barren Ground", kind: "spell", node: "faith.brendan", strength: 3,
     source: "Brendan",
-    needs: "an effect that resolves on a later turn",
+    needs: ["an effect that resolves on a later turn"],
     description: "<p>Plant it. At the start of your second turn after, every ally within 2 heals "
       + "4. Nothing he gives arrives when you ask for it.</p>",
     effect: { range: 2, text: "at the start of your second turn after, allies within 2 heal 4" }
   },
   {
     name: "The Silent Hour", kind: "spell", node: "faith.grey", strength: 2, source: "The Grey",
-    needs: "a reaction that stops an action",
+    needs: ["a reaction that stops an action"],
     description: "<p>Reaction, adjacent only: an enemy's action does not happen. Close enough to "
       + "touch, which is where the knife is.</p>",
     effect: { range: 1, text: "reaction: an adjacent enemy's action does not happen" }
@@ -2477,28 +2493,34 @@ export const FAITH_SIGNATURES = [
   {
     name: "The First Taste", kind: "spell", node: "faith.purple", strength: 2,
     source: "The Purple",
-    needs: "a spell that taints its caster",
+    needs: ["a spell that taints its caster"],
     description: "<p>Tainting 2 on one adjacent enemy, and 1 Taint for you. You are the first to "
       + "taste it, always.</p>",
     effect: { verb: "tainting", param: 2, range: 1, text: "you gain 1 Taint yourself" }
   },
   {
     name: "The Rumour", kind: "spell", node: "faith.yellow", strength: 2, source: "The Yellow",
-    needs: "an effect held up by spending a secondary",
+    needs: ["an effect held up by spending a secondary"],
     description: "<p>Name a lie before the fight. One enemy type acts as if it were true, for as "
       + "long as you keep spending a secondary on it.</p>",
     effect: { text: "one enemy type acts as though a named lie were true, while you keep it up" }
   },
   {
     name: "The Club and the Line", kind: "spell", node: "faith.vax", strength: 2, source: "Vax",
-    needs: "a spell that costs Health to cast",
+    /*
+     * The Health is built. What is not is the value: *Strike* every adjacent enemy means the club's
+     * own number, and a spell is its own weapon (data/items.mjs) -- so a miracle that borrows the
+     * weapon in hand is the one shape the new verb line cannot answer.
+     */
+    needs: ["a spell that strikes with the weapon in hand"],
+    cost: { health: 2 },
     description: "<p>Strike every adjacent enemy. No free hand needed, because the club is the "
       + "holy symbol &mdash; which is the gift on the node, not on the card.</p>",
-    effect: { verb: "cast", area: 1, areaKind: "blast", text: "Strike every adjacent enemy. Costs 2 Health" }
+    effect: { verb: "cast", area: 1, areaKind: "blast", text: "with the weapon in hand" }
   },
   {
     name: "The Long Night", kind: "spell", node: "faith.first", strength: 3, source: "The First",
-    needs: "damage that heals the caster",
+    needs: ["damage that heals the caster"],
     description: "<p>Drain 3 Health from an adjacent living target and gain it. The only renewable "
       + "pool in the game, and the node says what it costs to have one.</p>",
     effect: { verb: "cast", range: 1, mod: 3, text: "you gain the Health you take" }
@@ -2517,31 +2539,31 @@ export const FAITH_SIGNATURES = [
  */
 export const FAITH_POOL = [
   {
-    name: "Name the Guilty", strength: 1, pool: "faith", source: "The Eternal God", needs: "",
+    name: "Name the Guilty", strength: 1, pool: "faith", source: "The Eternal God", needs: [],
     description: "<p>No save. Being named is not something you resist.</p>",
     /* No verb: a step with a condition and no verb IS the condition, and an opening never saves. */
     effect: { range: 6, condition: "judged", duration: 1 }
   },
   {
     name: "Steady the Hand", strength: 1, pool: "faith", source: "The Eternal God",
-    needs: "judging whoever applied a condition",
+    needs: ["judging whoever applied a condition"],
     description: "<p>Ends Compelled on an ally, and accuses whoever did it. Answer and accuse, "
       + "which is what a targeted counter has to do to be worth a slot (way-cards 3.6).</p>",
     effect: { verb: "shake", param: 1, condition: "compelled", range: 3 }
   },
   {
-    name: "Lay On", strength: 1, pool: "faith", source: "The Eternal Spirit", needs: "",
+    name: "Lay On", strength: 1, pool: "faith", source: "The Eternal Spirit", needs: [],
     description: "<p>Hands, and three squares of air between you.</p>",
     effect: { verb: "heal", param: 2, range: 3 }
   },
   {
-    name: "A Word for You", strength: 1, pool: "faith", source: "The Eternal Spirit", needs: "",
+    name: "A Word for You", strength: 1, pool: "faith", source: "The Eternal Spirit", needs: [],
     description: "<p>Blessed: a temporary Critical in their fate deck, until it is drawn. The "
       + "condition shuffles the card in by itself (core-rules 6).</p>",
     effect: { range: 3, condition: "blessed" }
   },
   {
-    name: "Undertow", strength: 2, pool: "faith", source: "Sessyfyn", needs: "",
+    name: "Undertow", strength: 2, pool: "faith", source: "Sessyfyn", needs: [],
     description: "<p>Wet, and everything in it moved a square you choose. Moving figures is a "
       + "sentence the table applies (core-rules 11), so this card is complete.</p>",
     effect: {
@@ -2551,38 +2573,38 @@ export const FAITH_POOL = [
   },
   {
     name: "No Step Back", strength: 2, pool: "faith", source: "Valtor",
-    needs: "granting Block to an ally",
+    needs: ["granting Block to an ally"],
     description: "<p>Every ally within 2 gains Block 2 until your next turn.</p>",
     effect: { range: 2, text: "every ally within 2 gains Block 2 until your next turn" }
   },
   {
     name: "The Second Thought", strength: 1, pool: "faith", source: "Fagar",
-    needs: "an enemy that loses a half",
+    needs: ["an enemy that loses a half"],
     description: "<p>One enemy spends its secondary this round doing nothing.</p>",
     effect: { range: 3, resist: "presence", dc: 7, text: "one enemy's secondary does nothing" }
   },
   {
     name: "Alone on the Road", strength: 1, pool: "faith", source: "Vulpet",
-    needs: "an effect that reads how far away your allies are",
+    needs: ["an effect that reads how far away your allies are"],
     description: "<p>While no ally is within 2 squares, heal 2 at the start of your turn. The only "
       + "healing a priest of hers can ever receive.</p>",
     effect: { verb: "heal", param: 2, text: "while no ally is within 2, at the start of your turn" }
   },
   {
     name: "Full Belly", strength: 1, pool: "faith", source: "Brendan",
-    needs: "a one-off bonus to the next rest",
+    needs: ["a one-off bonus to the next rest"],
     description: "<p>Out of combat: the party's next rest returns one extra rest token.</p>",
     effect: { text: "the party's next rest returns one extra rest token" }
   },
   {
     name: "Grey Judgement", strength: 2, pool: "faith", source: "The Grey",
-    needs: "moving a figure's place in the round",
+    needs: ["moving a figure's place in the round"],
     description: "<p>A Judged adjacent enemy acts last in the round, whatever its initiative.</p>",
     effect: { range: 1, text: "a Judged adjacent enemy acts last this round" }
   },
   {
     name: "Taste of the Rot", strength: 1, pool: "faith", source: "The Purple",
-    needs: "a spell that taints its caster",
+    needs: ["a spell that taints its caster"],
     description: "<p>One adjacent enemy: 1 damage and Off-Balance, no save. A Miss costs you a "
       + "Taint, which is the god being paid whether or not it worked.</p>",
     effect: {
@@ -2592,28 +2614,34 @@ export const FAITH_POOL = [
   },
   {
     name: "The Planted Word", strength: 1, pool: "faith", source: "The Yellow",
-    needs: "an effect held up by spending a secondary",
+    needs: ["an effect held up by spending a secondary"],
     description: "<p>Name one enemy type before the fight. While you spend a secondary each round, "
       + "that type cannot play reactions.</p>",
     effect: { text: "while you spend a secondary, one enemy type cannot play reactions" }
   },
   {
     name: "Stand Where I Stand", strength: 1, pool: "faith", source: "Vax",
-    needs: "a spell that costs Health to cast",
+    needs: ["a floor under an ally's Health"],
+    cost: { health: 2 },
     description: "<p>Allies adjacent to you cannot be reduced below 1 Health until your next "
       + "turn. Costs 2 Health, because his miracles are paid in yours.</p>",
-    effect: { range: 1, text: "adjacent allies cannot be reduced below 1 Health. Costs 2 Health" }
+    effect: { range: 1, text: "adjacent allies cannot be reduced below 1 Health" }
   },
   {
+    /*
+     * The one Health price the field cannot hold: *1 Health per ally* is a cost that depends on
+     * where everyone is standing, and `cost.health` is a number. A variable price is a second
+     * mechanism, not a bigger number, so it stays in the queue and says so.
+     */
     name: "The Shield Line", strength: 2, pool: "faith", source: "Vax",
-    needs: "a spell that costs Health to cast",
+    needs: ["a cost that scales with the allies it covers", "granting Block to an ally"],
     description: "<p>Every ally adjacent to you gains your armor value as Block until your next "
       + "turn. One Health per ally, so a long line is a dear one.</p>",
     effect: { range: 1, text: "adjacent allies gain your armor as Block. Costs 1 Health per ally" }
   },
   {
     name: "Measure of the Debt", strength: 2, pool: "faith", source: "The First",
-    needs: "an event when a figure's Health reaches zero",
+    needs: ["an event when a figure's Health reaches zero"],
     description: "<p>A Judged enemy that dies this round pays you 3 Health. The debt is collected "
       + "whether or not you were the one who called it in.</p>",
     effect: { text: "a Judged enemy that dies this round: you gain 3 Health" }
@@ -2625,7 +2653,7 @@ export const FAITH_POOL = [
      * of The First who has survived four times cannot cast at all.
      */
     name: "What Does Not Die", strength: 3, pool: "faith", source: "The First",
-    needs: "an event when a figure's Health reaches zero",
+    needs: ["an event when a figure's Health reaches zero"],
     description: "<p>When you would drop to 0 Health, drop to 1 instead &mdash; and lose a spell "
       + "slot permanently.</p>",
     effect: { text: "drop to 1 instead of 0, and lose a spell slot for good" }
