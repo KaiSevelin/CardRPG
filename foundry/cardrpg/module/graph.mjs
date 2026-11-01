@@ -61,6 +61,32 @@ export const SPELLS = new Map([...MIND_POOL, ...FAITH_POOL, ...FORMULAS, ...SHAD
   ...SIGNATURES.filter(s => s.kind === "spell")].map(f => [f.name, f]));
 
 /**
+ * Every formula and miracle, grouped by the school or god that may teach it.
+ *
+ * **A pool is a menu, and this is the menu.** way-cards 3 writes the minor-node content as pools
+ * rather than as assignments -- *a pool is a set of cards the minor nodes along a branch draw
+ * from* -- and for a card that was always enough, because a card pool is a dozen cards and a Way
+ * has about twenty pool nodes to spend on them. A school's list is not like that: twelve schools
+ * and twelve gods hold a hundred and forty-seven formulas between them, and a school branch has
+ * three nodes. Naming one formula per node left ninety-five of them written down and unreachable.
+ *
+ * So a node may name a SOURCE instead of a spell, and the player picks. `source` is a plain string
+ * on the content for exactly this reason (data/items.mjs): an add-on's thirteenth school indexes
+ * itself here without a config edit.
+ */
+export const SPELLS_BY_SOURCE = (() => {
+  const out = new Map();
+  for (const spell of SPELLS.values()) {
+    if (!spell.source) continue;
+    if (!out.has(spell.source)) out.set(spell.source, []);
+    out.get(spell.source).push(spell);
+  }
+  for (const list of out.values()) list.sort((a, b) => a.strength - b.strength
+    || a.name.localeCompare(b.name));
+  return out;
+})();
+
+/**
  * The nodes in play: core content, plus whatever a world has added or replaced.
  *
  * leveling.md 8 describes the graph as **assembled at runtime** from every installed source rather
@@ -201,6 +227,17 @@ export function graphFaults(nodes) {
     colour.set(id, "black");
   };
   for (const node of nodes) walk(node.id);
+  /*
+   * A choice has to have something to choose from. A node naming a school nobody wrote is a node
+   * that offers a player an empty list and spends their level doing it, which is worse than a node
+   * that grants nothing: the level is gone either way and this one looked like a reward.
+   */
+  for (const node of nodes) {
+    const from = node?.grants?.choose?.from;
+    if (from && !SPELLS_BY_SOURCE.has(from)) {
+      faults.push(`${node.id} offers a choice from ${from}, which has no spells`);
+    }
+  }
   return [...new Set(faults)];
 }
 
@@ -402,6 +439,9 @@ export function grantsOf(owned) {
   const out = {
     health: 0, handSize: 0, carry: 0, deckMax: 0, spellSlots: 0, restTokens: 0,
     trainings: [], knowHow: [], cards: [], features: [], spells: [], prunes: 0,
+    /* The sources a character has been offered a choice from, which is not the same as what they
+     * chose: the spell itself is a document and is counted by the book, not by this. */
+    choices: [],
     /*
      * The one thing a node can do that is not addition. Every other grant raises a number; The
      * First's Obedience says *your spell slots are capped at 3, for ever* -- which is why that god
@@ -422,6 +462,7 @@ export function grantsOf(owned) {
     if (g.card) out.cards.push(g.card);
     if (g.feature) out.features.push(g.feature);
     if (g.spell) out.spells.push(g.spell);
+    if (g.choose?.from) out.choices.push(g.choose.from);
     if (g.caps?.spellSlots !== undefined) {
       out.slotCap = out.slotCap === null
         ? g.caps.spellSlots
@@ -467,6 +508,11 @@ export function describeGrants(node) {
   if (g.card) lines.push(`${game.i18n.localize("CARDRPG.Level.Card")}: ${g.card}`);
   if (g.feature) lines.push(`${game.i18n.localize("CARDRPG.Level.Feature")}: ${g.feature}`);
   if (g.spell) lines.push(`${game.i18n.localize("CARDRPG.Level.Spell")}: ${g.spell}`);
+  if (g.choose?.from) {
+    lines.push(game.i18n.format("CARDRPG.Level.Choose", {
+      source: g.choose.from, n: SPELLS_BY_SOURCE.get(g.choose.from)?.length ?? 0
+    }));
+  }
   if (g.training) lines.push(`${game.i18n.localize("CARDRPG.Level.Training")}: ${g.training}`);
   if (g.knowHow) lines.push(`${game.i18n.localize("CARDRPG.Level.KnowHow")}: ${g.knowHow}`);
   number("health", game.i18n.localize("CARDRPG.Health"));
@@ -526,6 +572,7 @@ export async function takeNode(actor, id) {
   if (grants.feature) await grantSlate(actor, grants.feature, "feature");
   if (grants.item) await grantSlate(actor, grants.item, "item");
   if (grants.spell) await grantSpell(actor, grants.spell, id);
+  if (grants.choose?.from) await grantSpellChoice(actor, grants.choose.from, id);
   for (let i = 0; i < (grants.prune ?? 0); i++) await prune(actor);
   return true;
 }
@@ -573,6 +620,47 @@ async function grantSpell(actor, name, nodeId) {
     prepared: false
   }, "spell")]);
   return true;
+}
+
+/**
+ * One spell of your choice from a school's or a god's list.
+ *
+ * The second reward that has to ask, and it asks for the opposite reason to a prune: a prune is
+ * asked about because only the player knows which card has gone dead, and this is asked about
+ * because a school's list is a **menu** and picking off it is the decision the branch was walked
+ * for. way-cards 3.4 argues it from the bottom of the ladder -- *a two-slot caster must be able to
+ * prepare something from this school on their first day, which is what the 1 and the 2 are for* --
+ * and that argument is about the LIST holding both, which only means something if the caster picks.
+ *
+ * What a player already has is left out of the list rather than greyed: a node that can hand over
+ * nothing new says so instead of charging a level for a duplicate.
+ */
+async function grantSpellChoice(actor, source, nodeId) {
+  const list = SPELLS_BY_SOURCE.get(source) ?? [];
+  const held = new Set(actor.items.filter(i => i.type === "spell").map(i => i.name));
+  const open = list.filter(spell => !held.has(spell.name));
+  if (!open.length) {
+    ui.notifications?.warn(game.i18n.format("CARDRPG.Level.NothingLeft", { source }));
+    return false;
+  }
+
+  /* Cheapest first, because strength IS the slot cost and a two-slot caster is reading for a 1. */
+  const options = open.map(spell =>
+    `<option value="${foundry.utils.escapeHTML(spell.name)}">`
+    + `${foundry.utils.escapeHTML(spell.name)} (${spell.strength})</option>`).join("");
+
+  const chosen = await foundry.applications.api.DialogV2.prompt({
+    window: { title: game.i18n.format("CARDRPG.Level.ChooseTitle", { source }) },
+    content: `<p>${game.i18n.localize("CARDRPG.Level.ChooseBody")}</p>
+      <select name="spell" style="width: 100%">${options}</select>`,
+    ok: {
+      label: game.i18n.localize("CARDRPG.Level.ChooseConfirm"),
+      callback: (event, button) => button.form.elements.spell.value
+    },
+    rejectClose: false
+  });
+  if (!chosen) return false;
+  return grantSpell(actor, chosen, nodeId);
 }
 
 /**

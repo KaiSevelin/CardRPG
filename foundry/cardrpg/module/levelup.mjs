@@ -27,7 +27,7 @@
 
 import {
   ALL_TACTICS,
-  rebuildGraph, GRAPH, SUCCESSORS, DEPTH, ROOT, POOL, SPELLS, SLATES,
+  rebuildGraph, GRAPH, SUCCESSORS, DEPTH, ROOT, POOL, SPELLS, SPELLS_BY_SOURCE, SLATES,
   ownedIds, closedIds, reachable, canTake, stateOf,
   levelOf, titleOf, describeGrants, wouldClose, takeNode
 } from "./graph.mjs";
@@ -395,6 +395,13 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
           <label>Feature <input type="text" name="feature" value="${foundry.utils.escapeHTML(grants.feature ?? "")}"></label>
           <label>Item <input type="text" name="item" value="${foundry.utils.escapeHTML(grants.item ?? "")}"></label>
           <label>Formula <input type="text" name="spell" value="${foundry.utils.escapeHTML(grants.spell ?? "")}"></label>
+          <label>Choice from <select name="choose">
+            <option value=""></option>
+            ${[...SPELLS_BY_SOURCE.entries()].map(([src, list]) =>
+              `<option value="${foundry.utils.escapeHTML(src)}"${
+                grants.choose?.from === src ? " selected" : ""}>${
+                foundry.utils.escapeHTML(src)} (${list.length})</option>`).join("")}
+          </select></label>
           <label>Training <input type="text" name="training" value="${foundry.utils.escapeHTML(grants.training ?? "")}"></label>
           <label>Know-how <input type="text" name="knowHow" value="${foundry.utils.escapeHTML(grants.knowHow ?? "")}"></label>
           ${["health", "handSize", "carry", "deckMax", "spellSlots", "restTokens", "prune"]
@@ -411,6 +418,9 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
           for (const key of ["card", "feature", "item", "spell", "training", "knowHow"]) {
             if (text(key)) grant[key] = text(key);
           }
+          /* A dropdown rather than a text box, so an authored menu node cannot name a school
+           * nobody wrote -- which `graphFaults` would refuse anyway, but after the typing. */
+          if (text("choose")) grant.choose = { from: text("choose") };
           for (const key of ["health", "handSize", "carry", "deckMax", "spellSlots", "restTokens",
             "prune"]) {
             if (num(key) !== undefined) grant[key] = num(key);

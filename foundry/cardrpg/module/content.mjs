@@ -4852,5 +4852,78 @@ export const NODES = [
   {
     id: "faith.yellow.network", name: "The Network", after: ["faith.yellow.whispers"], bespoke: true,
     grants: { knowHow: "who carries a rumour, and how fast" }
-  }
+  },
+
+  /* --- the twenty-four menu nodes ---
+   *
+   * One behind every school and every god: **one formula or miracle of your choice from that
+   * source's list**.
+   *
+   * Ninety-five of the hundred and forty-seven spells were on no node at all, and these are what
+   * reach them. Nothing above changed to make room: every named grant on every branch is still
+   * exactly the formula the branch was written around -- Rain and Lightning are still two nodes six
+   * slots apart, which is the price way-cards 1.4 says a combo costs -- and this is one more node
+   * on each branch rather than a rewrite of the ones there.
+   *
+   * They sit immediately behind the title, which is the earliest the choice can honestly be
+   * offered: way-cards 3.4 argues the bottom of the ladder from a caster's FIRST day with the
+   * school, and a node three steps further in would be arguing about their fourth.
+   *
+   * **Nine of these are the first thing behind their title.** The deep schools -- Necromancy,
+   * Poison, Glamour, Tattoo, Asceticism, Shadow, Household, Ward, Divination -- are the level-8
+   * ones a character crosses two branches to reach, and until now they were leaves: you arrived,
+   * took the Signature, and the school had nothing else in it. A branch has to be worth walking to
+   * the end (way-cards 3.4), and six formulas you could not be taught is not an end.
+   */
+  { id: "mind.blood.book", name: "The Opened Book", after: ["mind.blood"],
+    grants: { choose: { from: "Blood Magic" } } },
+  { id: "mind.elem.pages", name: "The Sphere's Pages", after: ["mind.elemental"],
+    grants: { choose: { from: "Elemental Magic" } } },
+  { id: "mind.spirit.written", name: "Another Pact Written", after: ["mind.spiritualism"],
+    grants: { choose: { from: "Spiritualism" } } },
+  { id: "mind.necro.ledger", name: "The Grave Ledger", after: ["mind.necromancy"],
+    grants: { choose: { from: "Necromancy" } } },
+  { id: "mind.poison.shelf", name: "The Apothecary's Shelf", after: ["mind.poison"],
+    grants: { choose: { from: "Poison" } } },
+  { id: "mind.glamour.face", name: "A Borrowed Face", after: ["mind.glamour"],
+    grants: { choose: { from: "Glamour" } } },
+  { id: "mind.tattoo.clean", name: "Skin Still Clean", after: ["mind.tattoo"],
+    grants: { choose: { from: "Tattoo Magic" } } },
+  { id: "mind.ascetic.given", name: "One More Thing Given", after: ["mind.asceticism"],
+    grants: { choose: { from: "Asceticism" } } },
+  { id: "mind.shadow.deeper", name: "A Deeper Dark", after: ["mind.shadow"],
+    grants: { choose: { from: "Shadow Magic" } } },
+  { id: "mind.house.book", name: "The Household Book", after: ["mind.household"],
+    grants: { choose: { from: "Household Magic" } } },
+  { id: "mind.ward.record", name: "The Warder's Record", after: ["mind.ward"],
+    grants: { choose: { from: "Ward Magic" } } },
+  { id: "mind.div.thread", name: "Another Thread", after: ["mind.divination"],
+    grants: { choose: { from: "Divination" } } },
+
+  /* And the twelve gods. A miracle costs nothing to learn -- a god grants it (way-cards 1.4) -- so
+   * what a priest is choosing here is which part of the litany they know, not what it cost them. */
+  { id: "faith.eg.recited", name: "The Rule Recited", after: ["faith.eternalgod"],
+    grants: { choose: { from: "The Eternal God" } } },
+  { id: "faith.es.another", name: "Another Word", after: ["faith.eternalspirit"],
+    grants: { choose: { from: "The Eternal Spirit" } } },
+  { id: "faith.vax.order", name: "The Next Order", after: ["faith.vax"],
+    grants: { choose: { from: "Vax" } } },
+  { id: "faith.first.else", name: "What Else Does Not Die", after: ["faith.first"],
+    grants: { choose: { from: "The First" } } },
+  { id: "faith.sess.next", name: "The Next Tide", after: ["faith.sessyfyn"],
+    grants: { choose: { from: "Sessyfyn" } } },
+  { id: "faith.valtor.again", name: "The Drum Again", after: ["faith.valtor"],
+    grants: { choose: { from: "Valtor" } } },
+  { id: "faith.fagar.another", name: "Another Mask", after: ["faith.fagar"],
+    grants: { choose: { from: "Fagar" } } },
+  { id: "faith.vulpet.further", name: "Further Out", after: ["faith.vulpet"],
+    grants: { choose: { from: "Vulpet" } } },
+  { id: "faith.brendan.season", name: "Another Season", after: ["faith.brendan"],
+    grants: { choose: { from: "Brendan" } } },
+  { id: "faith.grey.quieter", name: "Quieter Still", after: ["faith.grey"],
+    grants: { choose: { from: "The Grey" } } },
+  { id: "faith.purple.stronger", name: "A Stronger Dose", after: ["faith.purple"],
+    grants: { choose: { from: "The Purple" } } },
+  { id: "faith.yellow.longer", name: "A Longer Lie", after: ["faith.yellow"],
+    grants: { choose: { from: "The Yellow" } } },
 ];

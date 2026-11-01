@@ -1119,12 +1119,16 @@ who prepares one has prepared one thing. That is the point of a thesis.
 > bigger reach could cost more of the same thing — which is what *Become the Shadow* turned out to
 > need, at five.
 >
-> **What is NOT built is a way to be handed most of it.** Fifty-two of the hundred and forty-seven
-> are named by a node and **ninety-five are on none**, which §3 half-predicts: this is written as
-> pools, and *a node's `grants[]` names one*. A school branch of three nodes names three of its
-> school's six. The mechanism the pool language implies and the engine does not have is a node that
-> grants your **choice** from a named list; until it exists, two formulas in three are written down
-> and unreachable, and the validator pins the number so that stays a decision rather than a drift.
+> **And then a way to be handed it.** Fifty-two of the hundred and forty-seven were named by a node
+> and **ninety-five were on none**, which §3 half-predicts: this is written as pools, and *a node's
+> `grants[]` names one*, while a school branch of three nodes names three of its school's six.
+>
+> **[BUILT 2026-11-01]** A node may now grant a **choice** from a school's or a god's list
+> ([leveling.md](leveling.md) §4a), and there are twenty-four of them, one behind every school and
+> every god. Nothing already on a branch changed. Every one of the 147 is reachable, and the
+> argument for where those nodes sit is the one this section makes: a two-slot caster must be able
+> to cast something from this school **on their first day**, which is a claim about the LIST holding
+> both a 1 and a 2 — and that only means anything if the caster picks off it.
 
 #### Blood Magic — Tempo, paid in Health
 

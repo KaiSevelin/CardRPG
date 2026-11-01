@@ -2121,7 +2121,7 @@ const graphSource = fs.readFileSync(path.join(root, "module/graph.mjs"), "utf8")
 const nodes = content.NODES;
 const byId = graph.GRAPH;
 
-check("nodes defined", nodes.length, 169);
+check("nodes defined", nodes.length, 193);
 check("duplicate node ids", nodes.length === byId.size ? "none" : "yes", "none");
 
 /* Every prerequisite must resolve, or a branch is silently unreachable. */
@@ -2328,8 +2328,8 @@ check("and how many gods are shut", closedToValtor.size, 7);
 const liveForValtor = graph.reachable(toValtor, closedToValtor);
 check("Grey nodes still reachable",
   nodes.filter(n => n.id.startsWith("faith.grey") && liveForValtor.has(n.id)).length, 0);
-check("but Sessyfyn and her two nodes are still there",
-  nodes.filter(n => n.id.startsWith("faith.sess") && liveForValtor.has(n.id)).length, 3);
+check("but Sessyfyn and her nodes are still there",
+  nodes.filter(n => n.id.startsWith("faith.sess") && liveForValtor.has(n.id)).length, 4);
 
 /* A lone god shuts the lot, which is what makes the gift worth a closed door. */
 const toVax = new Set([...trunk, "faith.vax"]);
@@ -2337,9 +2337,10 @@ check("gods still open to a priest of Vax",
   nodes.filter(n => n.exclusive === "faith" && !graph.closedIds(toVax).has(n.id))
     .map(n => n.name).join(", "), "Vax");
 /* The warning the pane prints before an irreversible level: it has to name the whole cost. */
-/* Eleven gods and everything behind them: the dearest single level in the game. */
+/* Eleven gods and everything behind them: the dearest single level in the game, and it got
+ * dearer by eleven -- one menu node behind each god now stands behind that door too. */
 check("what swearing to Vax would close",
-  graph.wouldClose("faith.vax", new Set(trunk)).length, 45);
+  graph.wouldClose("faith.vax", new Set(trunk)).length, 56);
 
 /*
  * **The tie Way of Faith created.** Twelve gods are siblings at one depth, so a devotee of two of
@@ -2489,10 +2490,27 @@ check("a pool card granted twice on one path",
  */
 const minors = nodes.filter(n => !n.title && n.id !== graph.ROOT);
 const bespoke = minors.filter(n => n.bespoke);
-check("minor nodes", minors.length, 116);
+check("minor nodes", minors.length, 140);
 check("bespoke minor nodes", bespoke.length, 29);
-check("the bespoke share is about a third",
-  bespoke.length / minors.length >= 0.25 && bespoke.length / minors.length <= 0.4, true);
+/*
+ * **The budget is a ceiling, and it is the number of bespoke PIECES.** leveling 1 sizes it exactly
+ * that way -- *around 120 minor nodes at two or three per edge means about 40 bespoke pieces
+ * instead of 120, which is the same order as the 48 Signatures* -- so what must not drift upward is
+ * the count of things somebody has to write, and that is what this asserts.
+ */
+check("bespoke pieces, against a budget of about forty", bespoke.length <= 40, true);
+/*
+ * The SHARE is the observation, and it moved: the twenty-four menu nodes behind the schools and the
+ * gods all draw from a pool by definition, so adding them could only push the share down, from one
+ * in four to a little over one in five. Nothing bespoke was removed to get there -- the count above
+ * is the same 29 it was -- and a graph that leans harder on pools is the cheap direction, which is
+ * the whole reason the document calls the ratio a budget rather than a shape.
+ *
+ * So the ceiling is still checked and the floor is pinned rather than banded: a share that falls
+ * because bespoke content was DELETED would move this number too, and would have to be explained.
+ */
+check("the bespoke share is under the budget ceiling", bespoke.length / minors.length <= 0.4, true);
+check("and what the share is now", (bespoke.length / minors.length).toFixed(3), "0.207");
 /*
  * And each bespoke node sits LAST on its run -- which asked for the title it leads to until Way of
  * Faith had no titles to lead to. Faith spends its depth sideways: the gods are the titles and they
@@ -2584,7 +2602,7 @@ check("Mind cells that drifted from the document",
   mindDrift.length ? mindDrift.join("; ") : "none", "none");
 
 const mindAll = nodes.filter(n => n.id === "mind" || n.id.startsWith("mind."));
-check("Way of Mind nodes", mindAll.length, 34);
+check("Way of Mind nodes", mindAll.length, 46);
 /* One predecessor each, so there is no crossing and no `all` node anywhere in the Way. */
 const mindForks = mindAll.filter(n => (n.after ?? []).length > 1).map(n => n.id);
 check("Mind nodes with more than one way in",
@@ -3643,16 +3661,15 @@ check("prose Health prices that name no gap",
 /*
  * ---- and how much of it a character can actually be handed ----
  *
- * **Fifty-two of the hundred and forty-seven are on a node, and the other ninety-five are on
- * none.** That is not an accident and it is not finished either, so it is a number rather than a
- * failure: way-cards 3 writes this content as POOLS rather than assignments -- *a pool is a set of
- * cards the minor nodes along a branch draw from; when the graph is authored, a node's `grants[]`
- * names one* -- and a school branch of three nodes names three of its school's six.
+ * **Fifty-two of the hundred and forty-seven are named by a node; the other ninety-five are
+ * reached by choosing.** way-cards 3 writes this content as POOLS rather than assignments -- *a
+ * pool is a set of cards the minor nodes along a branch draw from; when the graph is authored, a
+ * node's `grants[]` names one* -- and a school branch of three nodes names three of its school's
+ * six, which left ninety-five formulas written down and on no node at all.
  *
- * What that leaves is a menu nobody can order the rest of. The mechanism the pool language implies
- * and the engine does not have is a node that grants your CHOICE from a named list; until it
- * exists, two formulas in three are written down and unreachable. Pinning the number here is what
- * makes that a decision somebody took rather than something that drifted.
+ * The two numbers below are still worth keeping apart, because they say different things: how much
+ * of the content a branch points at BY NAME, and how much of it is reached the other way. A named
+ * grant is a decision the branch was written around; a choice is the list being a list.
  */
 const spellGrants = nodes.filter(n => n.grants?.spell).map(n => n.grants.spell);
 check("nodes that hand over a named spell", spellGrants.length, 52);
@@ -3664,6 +3681,114 @@ const complete = [...ladders.keys()].filter(src =>
   [...everySpell.values()].filter(s => s.source === src)
     .every(s => spellGrants.includes(s.name)));
 check("sources a character can be handed in full", complete.join(", "), "The First");
+
+/*
+ * ---- a node that grants your CHOICE from a school's or a god's list ----
+ *
+ * The gap the eighty-five formulas and the sixty-one miracles left behind: fifty-two of the
+ * hundred and forty-seven were named by a node and **ninety-five were on none**, because a school
+ * branch has three nodes and a school's list has six to ten entries. way-cards 3 writes this
+ * content as pools -- *a set the minor nodes along a branch draw from* -- and a pool larger than
+ * the nodes that draw on it is a menu nobody can order from.
+ *
+ * A node may now name a SOURCE instead of a spell. Nothing already on a branch changed: every
+ * named grant is still the formula its branch was written around, and these are one more node each.
+ */
+check("the sources a spell can be chosen from", graph.SPELLS_BY_SOURCE.size, 24);
+check("and every source is a school or a god in the document",
+  [...graph.SPELLS_BY_SOURCE.keys()].filter(src => !spellTables.some(r => r.group === src))
+    .join(", ") || "none", "none");
+/* Cheapest first in the list, because strength IS the slot cost and a two-slot caster reads for
+ * a 1 (way-cards 1.4). */
+const ladderOrder = [...graph.SPELLS_BY_SOURCE.values()]
+  .filter(list => list.some((sp, i) => i > 0 && sp.strength < list[i - 1].strength));
+check("source lists that are not in strength order", ladderOrder.length, 0);
+
+const menuNodes = nodes.filter(n => n.grants?.choose?.from);
+check("nodes that offer a choice", menuNodes.length, 24);
+check("one behind every school and every god",
+  new Set(menuNodes.map(n => n.grants.choose.from)).size, 24);
+/* Each sits directly behind its own title, which is the earliest the choice can honestly be
+ * offered: 3.4 argues the bottom of the ladder from a caster's FIRST day with the school. */
+const offBranch = menuNodes.filter(n => {
+  const parent = byId.get(n.after?.[0]);
+  return parent?.title !== n.grants.choose.from;
+}).map(n => n.id);
+check("menu nodes not sitting behind their own title",
+  offBranch.length ? offBranch.join(", ") : "none", "none");
+/* A menu node is a pool node, never a bespoke one: it is the definition of drawing from a pool. */
+check("menu nodes marked bespoke",
+  menuNodes.filter(n => n.bespoke).length, 0);
+
+/* And the point of all of it: nothing is written down and unreachable any more. */
+const namedByNodes = nodes.filter(n => n.grants?.spell).map(n => n.grants.spell);
+const choosable = new Set(menuNodes
+  .flatMap(n => graph.SPELLS_BY_SOURCE.get(n.grants.choose.from).map(sp => sp.name)));
+const unreachableSpells = [...graph.SPELLS.keys()]
+  .filter(name => !namedByNodes.includes(name) && !choosable.has(name));
+check("spells no node can hand over at all",
+  unreachableSpells.length ? unreachableSpells.join(", ") : "none", "none");
+/* Which is a different number from before, and it is the one the last pass pinned at ninety-five. */
+check("spells reachable only through a choice",
+  [...graph.SPELLS.keys()].filter(n => !namedByNodes.includes(n)).length, 95);
+
+/* The engine reads the key in all four places a grant has to be read. */
+check("taking a node asks the question",
+  /if \(grants\.choose\?\.from\) await grantSpellChoice\(actor, grants\.choose\.from, id\);/
+    .test(graphSource) ? "yes" : "no", "yes");
+check("and the choice is handed over by the same routine a named grant uses",
+  /if \(!chosen\) return false;\s*\n\s*return grantSpell\(actor, chosen, nodeId\);/
+    .test(graphSource) ? "yes" : "no", "yes");
+check("what the player already knows is left out of the list",
+  /const open = list\.filter\(spell => !held\.has\(spell\.name\)\);/.test(graphSource)
+    ? "yes" : "no", "yes");
+check("and a node with nothing left to teach says so",
+  /if \(!open\.length\) \{[\s\S]{0,120}CARDRPG\.Level\.NothingLeft/.test(graphSource)
+    ? "yes" : "no", "yes");
+check("the pane reads the choice out loud",
+  /if \(g\.choose\?\.from\) \{[\s\S]{0,200}CARDRPG\.Level\.Choose/.test(graphSource)
+    ? "yes" : "no", "yes");
+check("and grantsOf carries the sources offered",
+  /if \(g\.choose\?\.from\) out\.choices\.push\(g\.choose\.from\);/.test(graphSource)
+    ? "yes" : "no", "yes");
+check("a blank sheet has been offered no choices", graph.grantsOf(new Set()).choices.length, 0);
+/*
+ * A choice from a source nobody wrote is a fault rather than an empty dialog, because the level is
+ * spent either way and this one looked like a reward.
+ */
+check("a choice from a source with no spells is refused",
+  graph.graphFaults([...content.NODES,
+    { id: "mind.ghost", after: ["mind"], grants: { choose: { from: "Ghost Magic" } } }])
+    .join("; "), "mind.ghost offers a choice from Ghost Magic, which has no spells");
+check("and the live graph has no such fault", graph.graphFaults(graph.LIVE_NODES).length, 0);
+
+/*
+ * And the decision is written down, because a mechanism nobody documented is a mechanism the next
+ * pass invents again from scratch. The ratio note is in there too: the budget's ceiling is what the
+ * check enforces, and the share it used to band is recorded instead.
+ */
+check("leveling.md carries the key as a section",
+  /^### 4a\. A node may grant a \*choice\* from a school's or a god's list {2}\*\*\[BUILT/m
+    .test(levDoc) ? "yes" : "no", "yes");
+check("and shows the shape a node takes",
+  /grants: \{ choose: \{ from: "Poison" \} \}/.test(levDoc) ? "yes" : "no", "yes");
+check("and says a source nobody wrote is a fault",
+  /a \*\*graph fault\*\*, refused at assembly/.test(levDoc) ? "yes" : "no", "yes");
+check("and records the open question it did not take",
+  /\[OPEN\] Or should a school's node hand over the whole book\?/.test(levDoc) ? "yes" : "no",
+  "yes");
+check("and that the bespoke budget is a ceiling on the count",
+  /The budget is a ceiling on the COUNT, and the validator now says so/.test(levDoc)
+    ? "yes" : "no", "yes");
+check("way-cards records that the list can now be ordered from",
+  /\*\*And then a way to be handed it\.\*\*/.test(waycards) ? "yes" : "no", "yes");
+check("and the argument for where the nodes sit",
+  /that only means anything if the caster picks off it/.test(waycards) ? "yes" : "no", "yes");
+
+/* Every string the chooser prints exists, which is the check a dialog nobody has opened needs. */
+for (const key of ["Choose", "ChooseTitle", "ChooseBody", "ChooseConfirm", "NothingLeft"]) {
+  check(`the string for ${key}`, typeof lang[`CARDRPG.Level.${key}`], "string");
+}
 /* Roll With It and Set Spear have been in WAY_CARDS since the reach weapons; a second copy here
  * would be two cards with one name, which the collision check below refuses. */
 check("the two already-built Way cards are not repeated",
@@ -4353,7 +4478,7 @@ check("the indexes are refilled rather than replaced",
 /* ---- what it refuses, asked rather than read ---- */
 
 const coreNodes = [...graph.LIVE_NODES];
-check("the graph starts as core content", coreNodes.length, 169);
+check("the graph starts as core content", coreNodes.length, 193);
 
 /* A prerequisite that does not exist: the first price section 8 names. */
 check("a node following nothing that exists",
@@ -4415,7 +4540,7 @@ check("and the graph is still whole", graph.GRAPH.has("shade.thief"), true);
 
 /* Back to core, so every check after this section is asking about the shipped graph. */
 check("the graph can be put back", graph.rebuildGraph({}).length, 0);
-check("and it is core again", graph.LIVE_NODES.length, 169);
+check("and it is core again", graph.LIVE_NODES.length, 193);
 check("with the replaced node restored", graph.GRAPH.get("shade.footwork")?.name, "Footwork");
 
 /* ---- the lock, which is the answer to "not in an active campaign" ---- */
@@ -4453,6 +4578,25 @@ check("the world is written only after the rebuild holds",
 /* And the world's own nodes join at ready, which is the only moment a setting can be read. */
 check("the world's nodes join the graph at ready",
   /const faults = rebuildGraph\(edits\);/.test(entrySource) ? "yes" : "no", "yes");
+
+/*
+ * And a world can author one, which is the standing rule for everything in this system: a menu
+ * node is the only grant whose value must be one of a known set, so the editor offers a dropdown
+ * of the twenty-four sources with their list sizes rather than a text box. A typo in a text box
+ * would be a node that offers an empty list and spends a level doing it -- `graphFaults` refuses
+ * that, but refusing it after the typing is worse than not offering the typo.
+ */
+check("the node editor can author a choice",
+  /<label>Choice from <select name="choose">/.test(paneSource) ? "yes" : "no", "yes");
+check("and offers the sources rather than a text box",
+  /\[\.\.\.SPELLS_BY_SOURCE\.entries\(\)\]\.map\(\(\[src, list\]\) =>/.test(paneSource)
+    ? "yes" : "no", "yes");
+check("and shows how long each list is",
+  /foundry\.utils\.escapeHTML\(src\)\} \(\$\{list\.length\}\)<\/option>/.test(paneSource)
+    ? "yes" : "no", "yes");
+check("and writes it back in the shape the graph reads",
+  /if \(text\("choose"\)\) grant\.choose = \{ from: text\("choose"\) \};/.test(paneSource)
+    ? "yes" : "no", "yes");
 
 /* ---- every document subtype has a sheet that knows about it ---- */
 

@@ -65,9 +65,60 @@ adding depth is a content question, not a rules change.
   it: six common cards plus a Way's thirteen or fourteen is about twenty, against about twenty pool
   nodes per Way — and the slack goes to the generic rewards, which cost nothing to write at all.
 
+  > **[2026-11-01] The budget is a ceiling on the COUNT, and the validator now says so.** The graph
+  > has **140 minor nodes and 29 bespoke** ones, which is a little over one in five rather than one
+  > in three — because the twenty-four menu nodes behind the schools and the gods (§4a) all draw
+  > from a pool by definition, so adding them could only push the share down. Nothing bespoke was
+  > removed to get there. What the check enforces is the number the paragraph above actually sizes:
+  > **bespoke pieces, against a budget of about forty**, with the share recorded rather than banded,
+  > so a share that fell because content was *deleted* would still have to be explained.
+
   > **Put the bespoke node last on the edge.** A run up to a title should start ordinary and end
   > sounding like the title. A node written for the branch, sitting immediately before the branch's
   > name, is also a second gate — the cheap half of §5a's *depth takes commitment*.
+
+### 4a. A node may grant a *choice* from a school's or a god's list  **[BUILT 2026-11-01]**
+
+> **A pool larger than the nodes that draw on it is a menu nobody can order from.**
+
+§4's reward list is one thing per node, named: *a specific card, a feature, a formula*. That is the
+right shape for a card pool, where a Way's thirteen cards meet about twenty pool nodes. It is the
+wrong shape for a spell list: the twelve schools and twelve gods hold **147 formulas and miracles**
+([way-cards.md](way-cards.md) §3.4, §3.5), a school branch has three nodes, and naming one formula
+per node left **ninety-five of them written down and on no node at all**.
+
+So a node may name a **source** instead of a spell:
+
+```js
+{ id: "mind.poison.shelf", name: "The Apothecary's Shelf", after: ["mind.poison"],
+  grants: { choose: { from: "Poison" } } }
+```
+
+| | |
+|---|---|
+| What the player gets | **one** formula or miracle of their choice from that source's list, unprepared |
+| What it costs | the level, and the school's own price when they prepare it |
+| What is offered | everything from that source they do not already know, cheapest first |
+| Nothing left to teach | the node says so rather than charging a level for a duplicate |
+| A source nobody wrote | a **graph fault**, refused at assembly (§8) |
+
+**Twenty-four of these exist, one behind every school and every god**, and they sit immediately
+behind the title rather than deeper in: §3.4 argues the bottom of a school's ladder from a caster's
+*first day* with the school, and a node three steps further in would be arguing about their fourth.
+Nine of them are the first thing behind their title at all — the level-8 schools were leaves, so
+you arrived, took the Signature, and the school had nothing else in it.
+
+**Nothing already on a branch changed.** Every named grant is still the formula its branch was
+written around: Rain and Lightning are still two nodes six slots apart, which is the price §1.4 of
+[way-cards.md](way-cards.md) says a combo costs. A menu node is one more node on each branch, not a
+rewrite of the ones there, and it is a **pool** node by definition rather than a bespoke one.
+
+> **[OPEN] Or should a school's node hand over the whole book?** There is a reading of §1.4 —
+> *prepared: in your head, or in the book*, and a miracle *costs nothing to learn, a god grants it*
+> — under which taking a god gives you its whole litany at once, and the slot budget is the only
+> limit. It is not obviously wrong: a spell in the book costs **0 slots**, so the book can hold what
+> the budget cannot. What decided against it for now is that it would make twenty-eight existing
+> node grants redundant, and a choice does not block it later.
 
 - **Cross edges: this is a graph, not a tree.** A node may have **more than one predecessor**, so two
   branches can arrive at the same place and a hybrid is reachable without a new mechanism. The
