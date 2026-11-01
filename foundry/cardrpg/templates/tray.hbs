@@ -115,6 +115,7 @@
           {{!-- The card body takes it out of the stack; its name turns the stack to it instead,
                 so a card behind can be read without being disturbed. --}}
           <div class="cr-card cr-card--spread cr-card--stacked cr-card--takeable{{#if this.action}} cr-card--base{{/if}}{{#if this.disabled}} cr-card--disabled{{/if}}{{#if this.flipped}} cr-card--back{{/if}}"
+               {{#if this.art}}style="--cr-art: url('{{this.art}}')"{{/if}}
                style="--cr-depth: {{@index}}"
                data-group="{{this.group}}" data-tooltip="{{this.tip}}"
                role="button" tabindex="0" data-action="unstack" data-half="{{../half}}"
@@ -177,7 +178,10 @@
   {{#if cards}}
     <section class="cr-hud__hand">
       {{#each cards as |card|}}
-        <div class="cr-card{{#if card.harm}} cr-card--harm{{/if}}{{#if card.reaction.reserved}} cr-card--reserved{{/if}}">
+        {{!-- `--cr-art` is the only thing art needs: the rim is the border and the art is the
+              background inside it, so a card with no picture needs no different markup. --}}
+        <div class="cr-card{{#if card.harm}} cr-card--harm{{/if}}{{#if card.reaction.reserved}} cr-card--reserved{{/if}}"
+             {{#if card.art}}style="--cr-art: url('{{card.art}}')"{{/if}}>
           <div class="cr-card__name">{{card.name}}</div>
           {{#if card.harm}}
             <div class="cr-half"><span class="cr-note">Can't be played, not even for Brace.</span></div>
@@ -246,6 +250,7 @@
       <div class="cr-scene__hand">
         {{#each scene.cards}}
           <div class="cr-card cr-card--skill{{#if this.wild}} cr-card--wild{{/if}}"
+               {{#if this.art}}style="--cr-art: url('{{this.art}}')"{{/if}}
                role="button" tabindex="0" data-action="check" data-card-id="{{this.id}}"
                data-tooltip="Play it: the check asks how hard, which tool, and whether anybody helped.">
             <div class="cr-card__name">
@@ -283,6 +288,7 @@
       {{#each viewer.cards}}
       <div class="cr-card cr-card--spread{{#if this.harm}} cr-card--harm{{/if}}{{#if this.flipped}} cr-card--back{{/if}}{{#if this.passive}} cr-card--passive{{else}} cr-card--takeable{{/if}}"
            data-group="{{this.group}}" data-tooltip="{{this.tip}}"
+           {{#if this.art}}style="--cr-art: url('{{this.art}}')"{{/if}}
            {{#unless this.passive}}role="button" tabindex="0" data-action="playSlate" data-slate-id="{{this.id}}"{{/unless}}>
         <div class="cr-card__name">
           {{#if this.icon}}{{crIcon this.icon}}{{/if}}

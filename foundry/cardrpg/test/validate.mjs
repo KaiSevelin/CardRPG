@@ -3773,6 +3773,100 @@ check("buttons and handlers that do not meet",
 /* A parse that found nothing would pass the line above while checking nothing at all. */
 check("applications whose wiring was compared", APPS.length, 4);
 
+/* ---- how a card and the graph look ---- */
+
+/*
+ * Art arrives later, so the whole point of these is that the layout works WITHOUT it: every card
+ * in the catalogue reads today and improves one file at a time.
+ */
+
+section("the rim, the art, and the four territories");
+
+/* No new field: Foundry's own `img` slots, which nothing in this system used. */
+check("art has one reader",
+  /export function artOf\(doc\)/.test(decksSource) ? "yes" : "no", "yes");
+/* Foundry fills those slots with its own placeholder, so the test is "is it ours". */
+check("and core's placeholders are not treated as art",
+  /path\.startsWith\("icons\/svg\/"\)/.test(decksSource) ? "yes" : "no", "yes");
+/*
+ * Both builders, separately. They are the same line twice -- an action card and a skill card each
+ * put the art on the face -- so one regex over the whole file passed with either of them gutted.
+ */
+for (const [label, builder] of [["an action card", "actionCardData"], ["a skill card", "skillCardData"]]) {
+  const body = decksSource.slice(decksSource.indexOf(`export function ${builder}(def)`));
+  check(`${label} definition can carry art`,
+    /faces: \[\{ name: def\.name, \.\.\.\(def\.art \? \{ img: def\.art \} : \{\}\) \}\]/
+      .test(body.slice(0, body.indexOf("\n}"))) ? "yes" : "no", "yes");
+}
+
+/*
+ * The rim is the BORDER, which is what lets the art sit inside it with no extra element: the
+ * background is clipped to the padding box, so it stops where the rim begins exactly as the
+ * printing on a playing card stops short of the white.
+ */
+check("the rim is the border", /border: 5px solid var\(--cardrpg-paper\)/.test(css) ? "yes" : "no",
+  "yes");
+/*
+ * The DECLARATION, not the comment above it explaining the declaration. The first version of this
+ * matched the prose and passed happily with the property deleted -- the oldest trap in this
+ * project's test suite, wearing CSS this time instead of JavaScript.
+ */
+check("and the art stops at it",
+  /^ {2}background-clip: padding-box;$/m.test(css) ? "yes" : "no", "yes");
+/* Cover, not contain: art is supplied at the card's own ratio, so a letterbox would be two bars. */
+check("art is cropped rather than letterboxed",
+  /background-size: cover/.test(css) ? "yes" : "no", "yes");
+/* A tint still means a bonus group and nothing else, and the band carries the style too. */
+check("the group rim is the same band",
+  /\.cr-slate\[data-group\] \{ border-width: 5px/.test(css) ? "yes" : "no", "yes");
+check("and seven groups still differ by more than hue",
+  (css.match(/border-style: (double|dashed)/g) ?? []).length >= 4, true);
+/* The scrim is the paper colour, so a card with no art looks unlayered rather than washed out. */
+check("the scrim is the paper colour",
+  /--cardrpg-scrim: rgba\(244, 239, 230, 0\.86\)/.test(css) ? "yes" : "no", "yes");
+
+/* The graph: a Way per colour, four territories, and state in the border. */
+const paneSource = fs.readFileSync(path.join(root, "module/levelup.mjs"), "utf8");
+const wayBlock = /const WAY_COLOUR = \{([\s\S]*?)\n\};/.exec(paneSource)?.[1] ?? "";
+check("a colour per Way",
+  [...wayBlock.matchAll(/^ {2}([a-z]+): \{/gm)].map(m => m[1]).join(", "),
+  "shade, strength, mind, faith, root");
+check("the fill says which Way",
+  /selector: "node\[way\]"[\s\S]{0,120}"background-color": "data\(fill\)"/.test(paneSource)
+    ? "yes" : "no", "yes");
+/*
+ * And the state never touches the fill, which is the Way's now. A closed Shade node is drained of
+ * its colour rather than painted a different one: it should still look like a Shade node.
+ */
+const stateRules = (/node\[state = 'closed'\][\s\S]{0,260}?\}/.exec(paneSource)?.[0] ?? "");
+check("state does not repaint the fill",
+  /"background-color"/.test(stateRules) ? "no" : "yes", "yes");
+check("a closed node is drained instead",
+  /"background-blacken": 0\.55/.test(stateRules) ? "yes" : "no", "yes");
+/* Four labelled territories, which is what turns 169 boxes into four places. */
+check("the Ways are drawn as territories",
+  /nodes\.push\(\{ data: \{ id: `territory-\$\{way\}`/.test(paneSource) ? "yes" : "no", "yes");
+check("and a territory is scenery",
+  /if \(ev\.target\.isParent\(\)\) return;/.test(paneSource) ? "yes" : "no", "yes");
+/* A node wears what it hands over: what a node GIVES is the thing worth looking at. */
+check("a node shows the art of what it grants",
+  /function artFor\(node\)/.test(paneSource) ? "yes" : "no", "yes");
+check("an edge takes its colour from where it arrives",
+  /edge: \(WAY_COLOUR\[wayOf\(id\)\] \?\? WAY_COLOUR\.root\)\.edge/.test(paneSource)
+    ? "yes" : "no", "yes");
+check("and a walked road is brighter",
+  /walked: owned\.has\(prereq\) && owned\.has\(id\) \? "yes" : "no"/.test(paneSource)
+    ? "yes" : "no", "yes");
+
+/* The record: the ratio to supply art at, which is the one thing art needs decided in advance. */
+check("the spec says what to supply",
+  /\| Ratio \| \*\*5:7\*\* \|/.test(hudPane) ? "yes" : "no", "yes");
+check("and why the face cannot be a picture",
+  /renders a face from data so that a[\s\S]{0,40}condition can switch an individual icon off/
+    .test(hudPane) ? "yes" : "no", "yes");
+check("and what the pane's two channels say",
+  /the \*\*fill\*\* \| which Way you are looking at/.test(hudPane) ? "yes" : "no", "yes");
+
 /* ---- the graph is assembled, and a world may edit it ---- */
 
 /*
@@ -3896,7 +3990,6 @@ check("off by default",
 check("and the hint says not during a campaign",
   /not during a campaign/.test(lang["CARDRPG.Settings.GraphEditing.Hint"] ?? "") ? "yes" : "no",
   "yes");
-const paneSource = fs.readFileSync(path.join(root, "module/levelup.mjs"), "utf8");
 check("the editor does not exist without it",
   /editing: game\.user\.isGM && game\.settings\.get\("cardrpg", "graphEditing"\)/.test(paneSource)
     ? "yes" : "no", "yes");

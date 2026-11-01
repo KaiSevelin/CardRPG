@@ -27,7 +27,7 @@
 
 import {
   ALL_TACTICS,
-  rebuildGraph, GRAPH, SUCCESSORS, DEPTH, ROOT,
+  rebuildGraph, GRAPH, SUCCESSORS, DEPTH, ROOT, POOL, SPELLS, SLATES,
   ownedIds, closedIds, reachable, canTake, stateOf,
   levelOf, titleOf, describeGrants, wouldClose, takeNode
 } from "./graph.mjs";
@@ -215,7 +215,11 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
       layout: { name: "preset", positions: tierLayout([...GRAPH.keys()]), fit: true, padding: 40 }
     });
 
-    this.cy.on("tap", "node", ev => this.#onPick(ev.target.id()));
+    /* A territory is scenery, not a node: tapping one picks nothing and says nothing. */
+    this.cy.on("tap", "node", ev => {
+      if (ev.target.isParent()) return;
+      this.#onPick(ev.target.id());
+    });
     this.cy.on("tap", ev => { if (ev.target === this.cy) this.#pick(null); });
 
     this.element.querySelector("[name=layout]")?.addEventListener("change", ev => {
@@ -245,13 +249,34 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
     const nodes = [];
     const edges = [];
 
+    /*
+     * One parent per Way, which is what turns 169 boxes into four places. A compound parent sizes
+     * itself around its children, so nothing is laid out twice -- and it carries the Way's name
+     * where the player is already looking rather than in a legend they have to find.
+     *
+     * Only Ways that have a branch get one: an empty territory would be a label round nothing.
+     */
+    const ways = new Set([...GRAPH.keys()].map(wayOf).filter(w => w !== "root"));
+    for (const way of ways) {
+      const paint = WAY_COLOUR[way] ?? WAY_COLOUR.root;
+      nodes.push({ data: { id: `territory-${way}`, label: paint.label, ...paint } });
+    }
+
     for (const [id, node] of GRAPH) {
+      const way = wayOf(id);
+      const paint = WAY_COLOUR[way] ?? WAY_COLOUR.root;
       nodes.push({
         data: {
           id,
           label: node.name ?? id,
           kind: node.title ? "major" : "minor",
-          state: stateOf(id, owned, closed, live)
+          state: stateOf(id, owned, closed, live),
+          way,
+          fill: paint.fill,
+          edge: paint.edge,
+          /* The Signature's art when the node has one, so a title wears the card it hands over. */
+          art: artFor(node),
+          ...(ways.has(way) ? { parent: `territory-${way}` } : {})
         }
       });
       /*
@@ -267,6 +292,10 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
         edges.push({
           data: {
             id: `${prereq}->${id}`, source: prereq, target: id,
+            /* An edge takes its colour from where it ARRIVES, so a branch reads as one colour. */
+            edge: (WAY_COLOUR[wayOf(id)] ?? WAY_COLOUR.root).edge,
+            /* A road already walked: both ends owned. Brighter, because it is your history. */
+            walked: owned.has(prereq) && owned.has(id) ? "yes" : "no",
             cross: after.length > 1 && prereq !== shallowest ? "yes" : "no"
           }
         });
@@ -279,7 +308,10 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
     if (!this.cy) return;
     const chosen = LAYOUTS[this.layout];
     if (!chosen?.cy) {
-      this.cy.layout({ name: "preset", positions: tierLayout([...GRAPH.keys()]), fit: true, padding: 40 }).run();
+      /* The parents are not laid out: a compound node takes its place from its children. */
+      this.cy.layout({
+        name: "preset", positions: tierLayout([...GRAPH.keys()]), fit: true, padding: 40
+      }).run();
       return;
     }
     this.cy.layout({ ...chosen.cy, fit: true, padding: 40 }).run();
@@ -601,6 +633,47 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
  * A crossing is dashed. leveling.md calls it a cross edge and means something precise by it, and a
  * dashed line is how a reader sees that this route is a crossing rather than the branch's own run.
  */
+/**
+ * A colour per Way, which is the change that makes a graph of 169 nodes legible.
+ *
+ * **Colour used to mean state and nothing meant Way**, so the pane was one grey mass with a few
+ * coloured rings in it: a player could see which nodes they could take and not where in the game
+ * they were. Those are different questions and they now use different channels --
+ *
+ *   the FILL says which Way you are looking at
+ *   the BORDER says what you can do about it
+ *
+ * -- which is the same split the cards use, where the rim says what a thing belongs to and the
+ * face says what it does.
+ */
+const WAY_COLOUR = {
+  shade: { fill: "#2f3b4e", edge: "#5d7aa3", label: "Way of Shade" },
+  strength: { fill: "#4a3330", edge: "#a3655d", label: "Way of Strength" },
+  mind: { fill: "#2f3f3a", edge: "#5d9a86", label: "Way of Mind" },
+  faith: { fill: "#403458", edge: "#8a74b8", label: "Way of Faith" },
+  root: { fill: "#2a2d33", edge: "#5a606a", label: "Where everyone starts" }
+};
+
+/** Which Way a node belongs to, from its id: the namespace IS the Way (leveling 8). */
+function wayOf(id) {
+  return id.split(".")[0];
+}
+
+/**
+ * The art a node shows: its Signature's, when it hands one over.
+ *
+ * A node has no picture of its own and should not: what it GIVES is the thing worth looking at, so
+ * a title wears the card or slate it hands over and a minor node wears whatever it grants. Nothing
+ * to show is the common case today and stays blank rather than falling back to a placeholder.
+ */
+function artFor(node) {
+  const name = node?.grants?.card ?? node?.grants?.spell ?? node?.grants?.feature
+    ?? node?.grants?.item ?? null;
+  if (!name) return "";
+  const def = POOL.get(name) ?? SPELLS.get(name) ?? SLATES.get(name) ?? null;
+  return def?.art ?? "";
+}
+
 const STYLE = [
   {
     selector: "node",
@@ -608,21 +681,79 @@ const STYLE = [
       "label": "data(label)", "font-size": 11, "color": "#e8e4da",
       "text-valign": "center", "text-halign": "center", "text-wrap": "wrap",
       "text-max-width": 120, "width": 132, "height": 46, "shape": "round-rectangle",
-      "background-color": "#22262c", "border-width": 2, "border-color": "#4a505a"
+      "background-color": "#22262c", "border-width": 2, "border-color": "#4a505a",
+      /* Art when a node has it, and nothing when it does not: `background-image` of `none` leaves
+       * the fill showing, so a graph with no art at all looks exactly as it did. */
+      "background-image": "data(art)", "background-fit": "cover", "background-opacity": 1,
+      "background-image-opacity": 0.55
     }
   },
-  { selector: "node[kind = 'major']", style: { "width": 150, "height": 56, "font-weight": "bold", "shape": "round-hexagon" } },
-  { selector: "node[state = 'owned']", style: { "background-color": "#3c5a3a", "border-color": "#7ab874", "color": "#f2f6f0" } },
-  { selector: "node[state = 'available']", style: { "background-color": "#2a3a52", "border-color": "#7fb2ef", "border-width": 3 } },
-  { selector: "node[state = 'later']", style: { "background-color": "#1c1f24", "border-color": "#3a4049", "color": "#8d9099" } },
-  { selector: "node[state = 'closed']", style: { "background-color": "#1a1a1a", "border-color": "#58333a", "color": "#6b5055" } },
-  { selector: "node.tentative", style: { "border-color": "#f0c060", "border-width": 5, "color": "#fff6e0" } },
+
+  /*
+   * The four territories. A compound parent is the cheapest honest way to say *you are here*: it
+   * sizes itself around its children, so nothing has to be laid out twice, and it carries the Way's
+   * name as a label where the player is already looking.
+   */
+  {
+    selector: ":parent",
+    style: {
+      "label": "data(label)", "font-size": 15, "font-weight": "bold",
+      "text-valign": "top", "text-halign": "center", "text-margin-y": -6,
+      "color": "data(edge)", "background-color": "data(fill)", "background-opacity": 0.35,
+      "border-width": 1, "border-color": "data(edge)", "border-opacity": 0.5,
+      "padding": 22, "shape": "round-rectangle", "background-image": "none"
+    }
+  },
+
+  /* The Way, in the fill. */
+  { selector: "node[way]", style: { "background-color": "data(fill)", "border-color": "data(edge)" } },
+
+  /*
+   * And the state, in the border and the brightness -- never in the fill, which is the Way's now.
+   * Owned is lit from inside, available wears a bright ring, later is dimmed and closed is drained
+   * of its colour rather than painted a different one: a closed Shade node should still look like
+   * a Shade node you cannot have.
+   */
+  {
+    selector: "node[state = 'owned']",
+    style: { "border-width": 3, "border-color": "#9fd99a", "color": "#f4f8f2",
+      "background-blacken": -0.15 }
+  },
+  {
+    selector: "node[state = 'available']",
+    style: { "border-width": 4, "border-color": "#9ccbff", "color": "#f2f7ff" }
+  },
+  {
+    selector: "node[state = 'later']",
+    style: { "border-width": 2, "color": "#9aa0aa", "opacity": 0.75,
+      "background-blacken": 0.35, "background-image-opacity": 0.25 }
+  },
+  {
+    selector: "node[state = 'closed']",
+    style: { "border-width": 2, "border-style": "dotted", "color": "#7d7076",
+      "opacity": 0.5, "background-blacken": 0.55, "background-image-opacity": 0.12 }
+  },
+
+  /* A title is a bigger, stronger shape: the thing a player is aiming at should look like one. */
+  {
+    selector: "node[kind = 'major']",
+    style: {
+      "width": 154, "height": 60, "font-size": 12, "font-weight": "bold",
+      "shape": "round-hexagon", "border-width": 3, "background-image-opacity": 0.7
+    }
+  },
+
+  { selector: "node.tentative", style: { "border-color": "#f0c060", "border-width": 6, "color": "#fff6e0", "background-blacken": -0.2 } },
+
   {
     selector: "edge",
     style: {
-      "width": 2, "line-color": "#4a505a", "curve-style": "bezier",
-      "target-arrow-shape": "triangle", "target-arrow-color": "#4a505a", "arrow-scale": 0.8
+      "width": 2, "line-color": "data(edge)", "line-opacity": 0.55,
+      "curve-style": "bezier", "target-arrow-shape": "triangle",
+      "target-arrow-color": "data(edge)", "arrow-scale": 0.7
     }
   },
-  { selector: "edge[cross = 'yes']", style: { "line-style": "dashed", "line-color": "#8a6f9c", "target-arrow-color": "#8a6f9c" } }
+  /* An edge into something you own is a road you walked: brighter than one you have not. */
+  { selector: "edge[walked = 'yes']", style: { "line-opacity": 0.9, "width": 3 } },
+  { selector: "edge[cross = 'yes']", style: { "line-style": "dashed", "line-color": "#b89cd0", "target-arrow-color": "#b89cd0", "line-opacity": 0.8 } }
 ];

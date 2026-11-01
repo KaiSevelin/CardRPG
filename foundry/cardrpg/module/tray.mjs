@@ -18,7 +18,7 @@
 
 import { CARDRPG } from "./config.mjs";
 import {
-  deckOf, discardCards, retireCards, catchBreath, canCatchBreath, refill, cardName,
+  deckOf, discardCards, retireCards, catchBreath, canCatchBreath, refill, cardName, artOf,
   dealSkillHand, discardSkillCards,
   isReserved, reserveCard, uprightCards
 } from "./decks.mjs";
@@ -477,6 +477,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     return {
       id: slate.id,
       name: slate.name,
+      art: artOf(slate),
       icon: CARDRPG.verbs.cast?.icon ?? null,
       lines: lines.length ? lines : ["\u2014"],
       /* The book is not clickable: you change what is prepared between fights, never during one. */
@@ -508,6 +509,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     return {
       id: i.id,
       name: i.name,
+      art: artOf(i),
       group: i.system.group || "",
       flippable: true,
       flipped: this.flipped.has(i.id),
@@ -574,6 +576,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     return {
       id: f.id,
       name: f.name,
+      art: artOf(f),
       group: f.system.group || "",
       disabled,
       // Nothing to click on either: a passive feature has no use, a disabled one is spent.
@@ -797,6 +800,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     const cards = [...(hand?.cards?.contents ?? [])].map(card => ({
       id: card.id,
       name: card.name,
+      art: artOf(card),
       wild: !!card.system.wild,
       approach: card.system.wild
         ? game.i18n.localize("CARDRPG.Approach.Any")
@@ -957,12 +961,13 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     };
 
     if (card.type === "wound" || card.type === "taint") {
-      return { id: card.id, name: cardName(card), harm: true, halves: [] };
+      return { id: card.id, name: cardName(card), harm: true, art: artOf(card), halves: [] };
     }
     return {
       id: card.id,
       name: cardName(card),
       harm: false,
+      art: artOf(card),
       halves: [half("primary", card.system.primary), half("secondary", card.system.secondary)],
       reaction: this.#reactionRow(card)
     };

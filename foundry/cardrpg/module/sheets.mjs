@@ -10,6 +10,8 @@ import { CARDRPG } from "./config.mjs";
 import { LevelUpPane } from "./levelup.mjs";
 /* The node index, so the sheet can name what it is taking back rather than printing an id. */
 import { GRAPH } from "./graph.mjs";
+/* One answer to "is there art on this", shared with the tray rather than spelled twice. */
+import { artOf } from "./decks.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2, ItemSheetV2 } = foundry.applications.sheets;
@@ -534,6 +536,8 @@ export class CardConfigSheet extends HandlebarsApplicationMixin(
         spent: !!card.system.costs?.[key]?.spent,
         strain: card.system.costs?.[key]?.strain ?? 0
       })),
+      /* What it will look like once there is a picture, which is most of why a GM opens this. */
+      art: artOf(card),
       face: CardConfigSheet.#face(card),
       reactions: CARDRPG.reactions,
       approaches: CARDRPG.approaches

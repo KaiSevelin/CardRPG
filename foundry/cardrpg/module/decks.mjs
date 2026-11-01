@@ -25,7 +25,23 @@ export function deckOf(actor, which) {
 }
 
 /**
- * A Card document from a content definition. One shape in one place: the starter decks and the
+ * The art on a card or a slate, or nothing.
+ *
+ * **No new field was needed.** Foundry gives every Item an `img` and every Card face an `img`, and
+ * neither was used by anything in this system -- so art is a path in content rather than a schema
+ * change, and the two built-in slots are exactly the two places art belongs.
+ *
+ * Foundry also FILLS those slots with a default when a document is created, so the test is not
+ * "is there a path" but "is it ours": anything under `icons/svg/` is core's placeholder set, and a
+ * generic bag icon stretched full-bleed across a card would be worse than no art at all.
+ */
+export function artOf(doc) {
+  const path = doc?.faces?.[0]?.img || doc?.img || "";
+  if (!path || path.startsWith("icons/svg/")) return "";
+  return path;
+}
+
+/** A Card document from a content definition. One shape in one place: the starter decks and the
  * levelling graph both create action cards, and two spellings of the same thing would drift.
  *
  * A Card with no face is face-down, and Foundry then shows "Unknown (<deck>)" instead of its name.
@@ -41,7 +57,7 @@ export function skillCardData(def) {
     name: def.name,
     type: "skill",
     face: 0,
-    faces: [{ name: def.name }],
+    faces: [{ name: def.name, ...(def.art ? { img: def.art } : {}) }],
     system: {
       approach: def.approach ?? "",
       value: def.value ?? 1,
@@ -56,7 +72,8 @@ export function actionCardData(def) {
     name: def.name,
     type: "action",
     face: 0,
-    faces: [{ name: def.name }],
+    /* The face carries the art, which is where Foundry already keeps a card's picture. */
+    faces: [{ name: def.name, ...(def.art ? { img: def.art } : {}) }],
     system: {
       primary: def.primary ?? [],
       secondary: def.secondary ?? [],

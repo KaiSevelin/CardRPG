@@ -330,6 +330,48 @@ therefore persists across mode switches and does not reset when combat ends.
 
 ---
 
+## 4a. Art on a card  **[BUILT 2026-11-01]**
+
+Every card and slate takes a picture, and the layout had to be decided before any art exists,
+because the face **cannot be a picture**: core-rules §10 renders a face from data so that a
+condition can switch an individual icon off at runtime. Art therefore sits under a face that still
+draws itself.
+
+> **Full-bleed behind a scrim**, not a window at the top. At 150px a card has room for a name, two
+> halves and a reaction row and nothing else; a window would cost about 40% of the height. The art
+> fills the printed area and the text sits on a ground of the paper colour at 86% — so a card with
+> **no** art shows a scrim the same colour as what is behind it, and looks exactly as it did before
+> there were pictures. That degradation is the reason to prefer it: the whole catalogue works now
+> and improves one file at a time.
+
+**And the card is a rim around a printed face**, the way a playing card is: the colour runs all the
+way round and the printing stops short of the edge. The rim is the element's **border**, which is
+what lets the art live inside it with no extra markup — `background-clip: padding-box` stops the
+art at the inner edge and the padding box rounds its own corners.
+
+> **The rim is always there, and ivory when it means nothing.** A tint on it means a **bonus group**
+> and nothing else, system-wide; an action card has no group, so it wears the paper colour — which
+> is the white outer strip the rim was modelled on. The border **style** still varies with the
+> group, because seven is past where hue alone reads, and a 5px `double` band reads as two
+> concentric lines where a 1px one barely read at all.
+
+**What to supply.** The card ratio is already `0.716`, which is **5:7** — the standard playing-card
+proportion — so art wants that shape and gets cover-cropped, never letterboxed:
+
+| | |
+|---|---|
+| Ratio | **5:7** |
+| Size | **640 × 896** (2×, for a 150px card on a retina display) |
+| Where | anywhere in the world's files; the path goes in content |
+| Field | **none was needed** — Foundry already gives every Item an `img` and every Card face an `img`, and nothing in this system used either |
+
+A content definition carries `art: "..."` and the deck builders put it in the face. Foundry fills
+those slots with its own placeholder when a document is created, so the test is not *is there a
+path* but *is it ours*: anything under `icons/svg/` is core's set, and a generic bag icon stretched
+across a card would be worse than no art at all.
+
+---
+
 ## 5. Scene tray  **[BUILT 2026-11-01]**
 
 > **The same window in a different mode, not a second application** — because §4.3 says the fate
@@ -531,6 +573,34 @@ your frontier yet, closed for good. A click that silently fails reads as a broke
 
 > **The detail panel is written in place rather than re-rendered.** A re-render rebuilds the canvas
 > and throws away the player's pan and zoom — at exactly the moment they were comparing two nodes.
+
+### 8a.1a What the pane looks like  **[BUILT 2026-11-01]**
+
+169 nodes in one colour is one grey mass, and the fix is not prettiness — it is that **colour meant
+state and nothing meant Way**. A player could see which nodes they could take and not where in the
+game they were, and those are different questions. They now use different channels:
+
+| Channel | Says |
+|---|---|
+| the **fill** | which Way you are looking at |
+| the **border** | what you can do about it |
+
+That is the same split the cards use, where the rim says what a thing belongs to and the face says
+what it does.
+
+> **Four territories.** A compound parent per Way, labelled, sizing itself around its children — so
+> nothing is laid out twice and the Way's name sits where the player is already looking rather than
+> in a legend they have to find. A territory is scenery: tapping one picks nothing.
+
+**A closed node is drained of its colour rather than painted a different one**, because a closed
+Shade node should still look like a Shade node you cannot have. Owned is lit from inside, available
+wears a bright ring, later is dimmed, and the tentative gold ring is unchanged.
+
+**An edge takes its colour from where it arrives**, so a branch reads as one colour rather than a
+gradient — and an edge with both ends owned is brighter, because that one is your history.
+
+**A node wears the art of what it hands over**, not art of its own: what a node GIVES is the thing
+worth looking at, so a title shows its Signature's picture. Nothing to show stays blank.
 
 ### 8a.2a Prune: the reward that asks back
 

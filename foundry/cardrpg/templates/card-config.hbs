@@ -20,7 +20,7 @@
     <h3>Face</h3>
 
     {{#if isAction}}
-      <div class="cr-card">
+      <div class="cr-card" {{#if art}}style="--cr-art: url('{{art}}')"{{/if}}>
         <div class="cr-card__name">{{card.name}}</div>
         <div class="cr-half cr-half--primary">
           <span class="cr-half__marker">{{crIcon config.halfIcons.primary}}</span>
@@ -50,7 +50,7 @@
     {{/if}}
 
     {{#if isNpcCard}}
-      <div class="cr-card">
+      <div class="cr-card" {{#if art}}style="--cr-art: url('{{art}}')"{{/if}}>
         <div class="cr-card__name">{{card.name}}</div>
         <ol class="cr-sequence">
           {{#each face.sequence}}
