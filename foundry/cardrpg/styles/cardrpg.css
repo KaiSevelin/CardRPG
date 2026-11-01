@@ -1148,6 +1148,24 @@
 /* The Tactic: always on, never a number, and never something you can drop. */
 /* A god asks something of you for ever, and a lone god gives something back. Both are standing
    facts, printed like the Tactic above them because that is what they are. */
+/* The owned nodes, GM only: a fix, not a choice. */
+.cr-nodes { font-size: 0.9em; margin: 0.2rem 0; }
+.cr-nodes__list { list-style: none; margin: 0.2rem 0 0; padding: 0; }
+.cr-nodes__list li { display: flex; gap: 0.3rem; align-items: center; }
+.cr-nodes__name { flex: 1 1 auto; }
+.cr-nodes__title { opacity: 0.7; font-style: italic; }
+/* A list of steps, numbered, because the order is the content. */
+.cr-steps__item { display: flex; gap: 0.3rem; align-items: flex-start; margin-bottom: 0.3rem; }
+.cr-steps__head { display: flex; flex-direction: column; align-items: center; gap: 0.15rem; }
+.cr-steps__n { font-size: 0.8em; opacity: 0.7; }
+.cr-steps__drop { width: 1.4rem; line-height: 1; }
+.cr-steps > button { font-size: 0.85em; }
+/* The step editor: one partial, used by a spell's effect, a card's halves and an NPC sequence. */
+.cr-step { border: 1px solid rgba(128, 128, 128, 0.35); padding: 0.3rem; margin-bottom: 0.3rem; }
+.cr-step__row { display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: flex-end; }
+.cr-step__row label { font-size: 0.85em; }
+.cr-step__row input[type="number"] { width: 4rem; }
+.cr-step__row--wide input[type="text"] { width: 14rem; }
 /* The scene tray: the skill hand, the six passives, and what is left of the deck. */
 .cr-scene { display: flex; flex-direction: column; gap: 0.3rem; padding: 0.3rem 0; }
 .cr-scene__passives { display: flex; gap: 0.5rem; align-items: center; }

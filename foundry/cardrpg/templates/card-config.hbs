@@ -136,6 +136,70 @@
       <label>Source <input type="text" name="system.source" value="{{system.source}}"></label>
     </section>
   {{/if}}
+
+  {{#if isSkill}}
+    {{!--
+      A skill card: one approach and a value. `wild` is the Inspiration card -- any approach, worth
+      1 -- and it is a flag rather than an `any` approach because `any` already means something
+      else in the approach list (a tool that helps with everything).
+    --}}
+    <section class="cr-vitals">
+      <label class="cr-stat">Approach
+        <select name="system.approach">
+          <option value="">&mdash;</option>
+          {{selectOptions approaches selected=system.approach labelAttr="label" localize=true}}
+        </select>
+      </label>
+      <label class="cr-stat">Value
+        <input type="number" name="system.value" value="{{system.value}}" min="0" max="3">
+      </label>
+      <label class="cr-stat">
+        <input type="checkbox" name="system.wild" {{#if system.wild}}checked{{/if}}>
+        Inspiration &mdash; any approach
+      </label>
+    </section>
+    <section class="cr-block">
+      <h3>Edge</h3>
+      <p class="cr-note">What playing it does whether or not the check succeeds. Prose: the table
+        resolves it, not the engine.</p>
+      <input type="text" name="system.edge" value="{{system.edge}}"
+             placeholder="Ask the GM one yes-or-no question about the scene.">
+    </section>
+  {{/if}}
+
+  {{#if isWild}}
+    <section class="cr-vitals">
+      <label class="cr-stat">Turn
+        <select name="system.turn">
+          <option value="good" {{#if (crEq system.turn "good")}}selected{{/if}}>Good</option>
+          <option value="bad" {{#if (crEq system.turn "bad")}}selected{{/if}}>Bad</option>
+          <option value="both" {{#if (crEq system.turn "both")}}selected{{/if}}>Both</option>
+        </select>
+      </label>
+    </section>
+    <section class="cr-block">
+      <h3>Text</h3>
+      <p class="cr-note">Declared rather than inferred from the steps: what a surge is worth
+        depends on where everyone is standing, and no reading of its step can tell.</p>
+      <input type="text" name="system.text" value="{{system.text}}">
+    </section>
+    {{> "systems/cardrpg/templates/parts/steps.hbs" steps=steps.steps list="steps" label="Steps" config=config}}
+  {{/if}}
+
+  {{#if isAction}}
+    {{!--
+      What the card DOES, editable. It was read-only for as long as this sheet has existed, which
+      meant a GM could retune a card's reaction and not what it did -- the half the content is
+      actually made of.
+    --}}
+    {{> "systems/cardrpg/templates/parts/steps.hbs" steps=steps.primary list="primary" label="Primary" config=config}}
+    {{> "systems/cardrpg/templates/parts/steps.hbs" steps=steps.secondary list="secondary" label="Secondary" config=config}}
+  {{/if}}
+
+  {{#if isNpcCard}}
+    {{!-- Ordered and numbered: "Move 3, then Strike" plays nothing like the reverse. --}}
+    {{> "systems/cardrpg/templates/parts/steps.hbs" steps=steps.sequence list="sequence" label="Sequence" config=config}}
+  {{/if}}
   </div>
 
 </div>

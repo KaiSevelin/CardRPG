@@ -8,6 +8,8 @@
 
 import { CARDRPG } from "./config.mjs";
 import { LevelUpPane } from "./levelup.mjs";
+/* The node index, so the sheet can name what it is taking back rather than printing an id. */
+import { GRAPH } from "./graph.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2, ItemSheetV2 } = foundry.applications.sheets;
@@ -59,6 +61,7 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       openTray: CharacterSheet.#onOpenTray,
       levelUp: CharacterSheet.#onLevelUp,
       grantLevel: CharacterSheet.#onGrantLevel,
+      dropNode: CharacterSheet.#onDropNode,
       toggleEquipped: CharacterSheet.#onToggleEquipped,
       toggleDrained: CharacterSheet.#onToggleDrained,
       addCondition: CharacterSheet.#onAddCondition,
@@ -185,6 +188,12 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
        * work the sheet does on every render and throws away, and -- worse -- a claim nothing
        * tests. All three are information a player needs, so they are shown rather than deleted.
        */
+      /* In the order they were taken, which is the order the tie-break reads (graph.mjs). */
+      ownedNodes: (system.nodes ?? []).map(id => ({
+        id,
+        name: GRAPH.get(id)?.name ?? id,
+        title: GRAPH.get(id)?.title ?? ""
+      })),
       waysWalked: (system.waysOwned ?? [])
         .map(id => game.i18n.localize(CARDRPG.ways[id] ?? id)).join(", "),
       frontierCount: (system.frontier ?? []).length,
@@ -250,6 +259,45 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     const by = Number(target.dataset.by ?? 1);
     const now = this.document.system.levels?.pending ?? 0;
     await this.document.update({ "system.levels.pending": Math.max(0, now + by) });
+  }
+
+  /**
+   * Take a node back off a character.
+   *
+   * The pane only ever adds, so until this existed a mis-clicked node was permanent -- and because
+   * everything derives from the node list (leveling 9), a wrong node is a wrong Health, title,
+   * Tactic and frontier for ever. The same asymmetry says what this canNOT do: a card or a slate
+   * the node handed over is a **document**, created once, so removing the node leaves it behind.
+   * That is stated rather than guessed at, and the level comes back so the fix is not a punishment.
+   */
+  static async #onDropNode(event, target) {
+    if (!game.user.isGM) return;
+    const id = target.dataset.node;
+    const nodes = (this.actor.system.nodes ?? []).filter(n => n !== id);
+    if (nodes.length === (this.actor.system.nodes ?? []).length) return;
+
+    const node = GRAPH.get(id);
+    const gave = node?.grants ?? {};
+    const documents = ["card", "feature", "item", "spell"].filter(k => gave[k]);
+    const ok = await foundry.applications.api.DialogV2.confirm({
+      window: { title: `Take back ${node?.name ?? id}?` },
+      content: `<div class="cardrpg"><p>Everything derived from it goes with it: level, title,
+        Tactic, and any numbers it granted.</p>`
+        + (documents.length
+          ? `<p><strong>${documents.map(k => gave[k]).join(", ")}</strong> stays behind.</p>`
+            + `<p class="cr-note">A card or a slate is a document, created once. Delete it by hand
+               if it should go.</p>`
+          : "")
+        + "</div>",
+      rejectClose: false
+    });
+    if (!ok) return;
+
+    await this.actor.update({
+      "system.nodes": nodes,
+      /* The level comes back, so correcting a mistake is not also a penalty for making it. */
+      "system.levels.pending": (this.actor.system.levels?.pending ?? 0) + 1
+    });
   }
 
   static async #onToggleEquipped(event, target) {
@@ -409,6 +457,12 @@ export class SlateSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
       config: CARDRPG,
       isItem: slate.type === "item",
       isFeature: slate.type === "feature",
+      isSpell: slate.type === "spell",
+      approaches: CARDRPG.approaches,
+      elements: CARDRPG.elements,
+      reactions: CARDRPG.reactions,
+      verbs: CARDRPG.verbs,
+      conditions: CARDRPG.conditions,
       drain: describeDrain(slate),
       slots: CARDRPG.slots,
       groups: CARDRPG.bonusGroups,
@@ -431,9 +485,13 @@ export class CardConfigSheet extends HandlebarsApplicationMixin(
 ) {
   static DEFAULT_OPTIONS = {
     classes: ["cardrpg", "sheet", "card"],
-    position: { width: 480, height: 560 },
+    position: { width: 640, height: 680 },
     form: { submitOnChange: true },
-    window: { resizable: true }
+    window: { resizable: true },
+    actions: {
+      addStep: CardConfigSheet.#onAddStep,
+      removeStep: CardConfigSheet.#onRemoveStep
+    }
   };
 
   static PARTS = {
@@ -456,9 +514,49 @@ export class CardConfigSheet extends HandlebarsApplicationMixin(
       isWound: type === "wound",
       isTaint: type === "taint",
       isHarm: type === "wound" || type === "taint",
+      isWild: type === "wild",
+      isSkill: type === "skill",
+      /*
+       * The steps, as data to edit rather than a face to read. The face above is still rendered,
+       * because what a card LOOKS like is the thing being edited and a sheet that only showed
+       * fields would make a GM compile the card in their head.
+       */
+      steps: {
+        primary: [...(card.system.primary ?? [])],
+        secondary: [...(card.system.secondary ?? [])],
+        sequence: [...(card.system.sequence ?? [])],
+        steps: [...(card.system.steps ?? [])]
+      },
       face: CardConfigSheet.#face(card),
-      reactions: CARDRPG.reactions
+      reactions: CARDRPG.reactions,
+      approaches: CARDRPG.approaches
     });
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Add a step to one of a card's lists.
+   *
+   * An ArrayField is replaced wholesale rather than appended to, which is Foundry's rule for
+   * arrays and not a preference: a partial update to an array is ambiguous about what happened to
+   * the entries nobody mentioned. So the list is read, extended and written back.
+   */
+  static async #onAddStep(event, target) {
+    const key = target.dataset.list;
+    const list = [...(this.document.system[key] ?? [])].map(s => s.toObject?.() ?? s);
+    list.push({});
+    await this.document.update({ [`system.${key}`]: list });
+  }
+
+  /** Take one out, by index. The order IS the content: "Move 3, then Strike" is not the reverse. */
+  static async #onRemoveStep(event, target) {
+    const key = target.dataset.list;
+    const at = Number(target.dataset.index);
+    const list = [...(this.document.system[key] ?? [])].map(s => s.toObject?.() ?? s);
+    if (at < 0 || at >= list.length) return;
+    list.splice(at, 1);
+    await this.document.update({ [`system.${key}`]: list });
   }
 
   /* -------------------------------------------- */
@@ -512,11 +610,18 @@ export function registerSheets() {
   DocumentSheetConfig.registerSheet(Actor, "cardrpg", NpcSheet, {
     types: ["npc"], makeDefault: true, label: "CARDRPG.Sheet.Npc"
   });
+  /*
+   * **Every subtype gets a sheet.** `spell` was left out when the slate sheet was written and
+   * `wild` and `skill` were left out of the card sheet, which meant 24 formulas and miracles, the
+   * twelve Wild Magic cards and every skill card fell back to Foundry's default -- a sheet that
+   * knows nothing about a TypeDataModel and shows a GM nothing they can act on. A subtype with no
+   * sheet is content nobody can read, let alone correct, so the validator now counts them.
+   */
   DocumentSheetConfig.registerSheet(Item, "cardrpg", SlateSheet, {
-    types: ["item", "feature"], makeDefault: true, label: "CARDRPG.Sheet.Slate"
+    types: ["item", "feature", "spell"], makeDefault: true, label: "CARDRPG.Sheet.Slate"
   });
   DocumentSheetConfig.registerSheet(Card, "cardrpg", CardConfigSheet, {
-    types: ["action", "fate", "npc", "wound", "taint"],
+    types: ["action", "fate", "npc", "wound", "taint", "wild", "skill"],
     makeDefault: true, label: "CARDRPG.Sheet.Card"
   });
 }

@@ -83,11 +83,23 @@ for (const rel of [...manifest.esmodules, ...manifest.styles, ...manifest.langua
 section("i18n");
 
 const lang = JSON.parse(fs.readFileSync(path.join(root, "lang/en.json"), "utf8"));
-const sources = [...modules];
-(function walkTemplates(dir) {
-  if (!fs.existsSync(dir)) return;
-  for (const entry of fs.readdirSync(dir)) sources.push(path.join(dir, entry));
-})(path.join(root, "templates"));
+/*
+ * Every .hbs under templates/, at any depth. The directory became a tree when the step editor was
+ * pulled out into a partial, and three separate passes over it each broke on the new folder -- so
+ * there is one lister now and all of them use it.
+ */
+const templateDir = path.join(root, "templates");
+function everyTemplate(dir = templateDir) {
+  const out = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) out.push(...everyTemplate(full));
+    else if (entry.name.endsWith(".hbs")) out.push(full);
+  }
+  return out;
+}
+
+const sources = [...modules, ...everyTemplate()];
 
 const referenced = new Set();
 for (const file of sources) {
@@ -490,10 +502,10 @@ try {
 }
 
 if (handlebars) {
-  const dir = path.join(root, "templates");
-  for (const name of fs.readdirSync(dir)) {
+  for (const full of everyTemplate()) {
+    const name = path.relative(templateDir, full).replace(/\\/g, "/");
     try {
-      handlebars.precompile(fs.readFileSync(path.join(dir, name), "utf8"));
+      handlebars.precompile(fs.readFileSync(full, "utf8"));
       check(name, "compiles", "compiles");
     } catch (err) {
       check(name, /[^\r\n]+/.exec(err.message)?.[0] ?? "error", "compiles");
@@ -1184,10 +1196,7 @@ check("features with flat grants are ungrouped",
  */
 section("templates reference live code");
 
-const templateDir = path.join(root, "templates");
-const templateText = fs.readdirSync(templateDir)
-  .map(name => fs.readFileSync(path.join(templateDir, name), "utf8"))
-  .join("\n");
+const templateText = everyTemplate().map(f => fs.readFileSync(f, "utf8")).join("\n");
 const moduleText = modules.map(f => fs.readFileSync(f, "utf8")).join("\n");
 
 // Registered as `actionName: SomeClass.#onThing,` in a DEFAULT_OPTIONS actions block.
@@ -1231,8 +1240,9 @@ section("templates are well formed");
 const VOID = new Set(["area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta",
   "param", "source", "track", "wbr"]);
 
-for (const name of fs.readdirSync(templateDir)) {
-  const text = fs.readFileSync(path.join(templateDir, name), "utf8").replace(/\{\{[\s\S]*?\}\}/g, "");
+for (const full of everyTemplate()) {
+  const name = path.relative(templateDir, full).replace(/\\/g, "/");
+  const text = fs.readFileSync(full, "utf8").replace(/\{\{[\s\S]*?\}\}/g, "");
   const stack = [];
   let roots = 0;
   let trouble = null;
@@ -3763,6 +3773,112 @@ check("buttons and handlers that do not meet",
 /* A parse that found nothing would pass the line above while checking nothing at all. */
 check("applications whose wiring was compared", APPS.length, 4);
 
+/* ---- every document subtype has a sheet that knows about it ---- */
+
+/*
+ * **A subtype with no sheet is content nobody can read, let alone correct.** Three were uncovered:
+ * `spell` was left out when the slate sheet was written, and `wild` and `skill` out of the card
+ * sheet -- so 24 formulas and miracles, twelve Wild Magic cards and every skill card fell back to
+ * Foundry's default sheet, which knows nothing about a TypeDataModel and shows a GM nothing they
+ * can act on. The audit in this section asked about buttons and hooks and never asked this.
+ */
+const sheetSource = fs.readFileSync(path.join(root, "module/sheets.mjs"), "utf8");
+const cardTemplate = fs.readFileSync(path.join(root, "templates/card-config.hbs"), "utf8");
+const slateTemplate = fs.readFileSync(path.join(root, "templates/item-slate.hbs"), "utf8");
+const sheetTypes = {};
+for (const m of sheetSource.matchAll(
+  /registerSheet\((Actor|Item|Card), "cardrpg", \w+, \{\s*types: \[([^\]]*)\]/g)) {
+  sheetTypes[m[1]] = (sheetTypes[m[1]] ?? []).concat(
+    [...m[2].matchAll(/"([a-z]+)"/g)].map(t => t[1]));
+}
+const uncovered = [];
+for (const [doc, types] of Object.entries(manifest.documentTypes)) {
+  for (const type of Object.keys(types)) {
+    if (!(sheetTypes[doc] ?? []).includes(type)) uncovered.push(`${doc}.${type}`);
+  }
+}
+check("document subtypes with no sheet", uncovered.length ? uncovered.join(", ") : "none", "none");
+check("subtypes checked", Object.values(manifest.documentTypes)
+  .reduce((n, types) => n + Object.keys(types).length, 0), 12);
+
+/* ---- what a card does is editable, not just what it is called ---- */
+
+/*
+ * The steps were read-only for as long as the card sheet has existed, so a GM could retune a
+ * card's reaction and not what it did -- the half the content is actually made of. The editor is
+ * one partial, because a card half, a spell's effect, an NPC sequence and a Wild surge are all
+ * ordered lists of the same thing, and four copies is four places for the vocabulary to drift.
+ */
+const stepPart = fs.readFileSync(path.join(root, "templates/parts/step.hbs"), "utf8");
+const stepsPart = fs.readFileSync(path.join(root, "templates/parts/steps.hbs"), "utf8");
+check("the step editor is a partial",
+  fs.existsSync(path.join(root, "templates/parts/step.hbs")) ? "yes" : "no", "yes");
+check("and both partials are preloaded",
+  ["parts/step.hbs", "parts/steps.hbs"]
+    .filter(p => !entrySource.includes(`systems/cardrpg/templates/${p}`)).join(", ") || "none",
+  "none");
+/*
+ * Every field of a step is on it. A step the sheet cannot fully edit is a step whose remainder has
+ * to be set from a macro, which is the thing this whole increment is about.
+ */
+const stepFieldsEdited = [...stepPart.matchAll(/name="\{\{path\}\}\.([a-zA-Z.]+)"/g)]
+  .map(m => m[1].split(".")[0]);
+const missingFromEditor = [...stepKeys].filter(k => !stepFieldsEdited.includes(k));
+check("step fields the editor cannot set",
+  missingFromEditor.length ? missingFromEditor.join(", ") : "none", "none");
+/* The three places a list of steps appears, all through the one partial. */
+check("lists of steps the sheet can edit",
+  [...cardTemplate.matchAll(/parts\/steps\.hbs"\s+steps=steps\.(\w+)/g)].map(m => m[1])
+    .sort().join(", "), "primary, secondary, sequence, steps");
+/* An ArrayField is replaced wholesale: a partial update to an array says nothing about the rest. */
+check("adding a step rewrites the whole list",
+  /list\.push\(\{\}\);[\s\S]{0,40}await this\.document\.update/.test(sheetSource) ? "yes" : "no",
+  "yes");
+check("and removing one goes by index",
+  /list\.splice\(at, 1\);/.test(sheetSource) ? "yes" : "no", "yes");
+
+/* ---- every stored field on a character is on the sheet ---- */
+
+/*
+ * A stored number nobody can edit is a number the GM reaches through the console for. Five were
+ * off the sheet -- the hand size, carry, spell slot and deck bases, and the deck floor -- which
+ * are exactly the numbers a playtest wants to move.
+ */
+for (const field of ["handSize.base", "carry.base", "spellSlots.base", "actionDeck.base",
+  "actionDeck.min"]) {
+  check(`the sheet can set ${field}`,
+    charTemplate.includes(`name="system.${field}"`) ? "yes" : "no", "yes");
+}
+
+/*
+ * And the node list, which only ever grew. The pane takes a node and nothing took one back, so a
+ * mis-clicked node was permanent -- and because everything derives from that list, a wrong node is
+ * a wrong Health, title, Tactic and frontier for ever.
+ */
+check("a GM can take a node back",
+  /dropNode: CharacterSheet\.#onDropNode,/.test(sheetSource) ? "yes" : "no", "yes");
+check("and only a GM",
+  /#onDropNode\(event, target\) \{[\s\S]{0,40}if \(!game\.user\.isGM\) return;/.test(sheetSource)
+    ? "yes" : "no", "yes");
+/* The level comes back, so correcting a mistake is not also a penalty for making it. */
+check("the level comes back with it",
+  /"system\.levels\.pending": \(this\.actor\.system\.levels\?\.pending \?\? 0\) \+ 1/
+    .test(sheetSource) ? "yes" : "no", "yes");
+/* What it cannot do, said out loud rather than discovered: a document stays behind. */
+check("and says what it cannot take back",
+  /stays behind/.test(sheetSource) ? "yes" : "no", "yes");
+
+/* ---- the spell sheet ---- */
+
+check("a spell's strength is editable",
+  /name="system\.strength"/.test(slateTemplate) ? "yes" : "no", "yes");
+check("and its cast cost",
+  /name="system\.cost\.health"/.test(slateTemplate) ? "yes" : "no", "yes");
+check("and whether it is prepared",
+  /name="system\.prepared"/.test(slateTemplate) ? "yes" : "no", "yes");
+check("and its effect, through the same partial",
+  /parts\/step\.hbs"\s+step=system\.effect/.test(slateTemplate) ? "yes" : "no", "yes");
+
 /* ---- every PARTS template is a file that exists ---- */
 
 const partPaths = [...[...APPS.map(a => a.source), "module/sheets.mjs"]
@@ -3848,7 +3964,8 @@ check("and the shorthand members beside them",
  * A derived value nobody reads is worse than dead code, because it is a claim nothing tests.
  */
 const modelSource = fs.readFileSync(path.join(root, "module/data/actors.mjs"), "utf8");
-const readers = [...fs.readdirSync(path.join(root, "templates")).map(f => `templates/${f}`),
+/* Recursive, since the step editor lives in `templates/parts/`: one partial for the one shape. */
+const readers = [...everyTemplate().map(f => path.relative(root, f).replace(/\\/g, "/")),
   "module/sheets.mjs", "module/tray.mjs", "module/resolve.mjs", "module/levelup.mjs",
   "module/combat.mjs", "module/decks.mjs", "module/graph.mjs", "module/data/items.mjs",
   "module/data/actors.mjs"]

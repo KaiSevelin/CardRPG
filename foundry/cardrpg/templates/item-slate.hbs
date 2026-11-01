@@ -11,6 +11,65 @@
   <div class="cr-sheet__body">
 
 
+  {{#if isSpell}}
+    {{!--
+      A formula or a miracle. Everything here is stored rather than derived, so everything here is
+      editable -- including `prepared`, which is the one field a player changes between fights and
+      the GM may need to correct after one.
+    --}}
+    <section class="cr-vitals">
+      <label class="cr-stat">Strength
+        <input type="number" name="system.strength" value="{{system.strength}}" min="1" max="3"
+               data-tooltip="The slot cost. 1-5 in the documents; the schema caps it where the data model does.">
+      </label>
+      <label class="cr-stat">Kind
+        <select name="system.kind">
+          <option value="formula" {{#if (crEq system.kind "formula")}}selected{{/if}}>Formula &mdash; studied</option>
+          <option value="miracle" {{#if (crEq system.kind "miracle")}}selected{{/if}}>Miracle &mdash; granted</option>
+        </select>
+      </label>
+      <label class="cr-stat cr-stat--wide">School or god
+        <input type="text" name="system.source" value="{{system.source}}" placeholder="Blood Magic">
+      </label>
+      <label class="cr-stat">Health to cast
+        <input type="number" name="system.cost.health" value="{{system.cost.health}}" min="0"
+               data-tooltip="Charged before the effect, and refused if it would take the caster below 1.">
+      </label>
+      <label class="cr-stat">Wilds per cast
+        <input type="number" name="system.wilds" value="{{system.wilds}}" min="0"
+               data-tooltip="Shadow Magic's price: a permanent Wild in your own fate deck.">
+      </label>
+      <label class="cr-stat">Element
+        <select name="system.element">
+          <option value="">&mdash;</option>
+          {{selectOptions elements selected=system.element labelAttr="label" localize=true}}
+        </select>
+      </label>
+      <label class="cr-stat">Reaction
+        <select name="system.reaction">
+          <option value="">&mdash; cast on your turn</option>
+          {{selectOptions reactions selected=system.reaction labelAttr="label" localize=true}}
+        </select>
+      </label>
+      <label class="cr-stat">
+        <input type="checkbox" name="system.prepared" {{#if system.prepared}}checked{{/if}}>
+        Prepared
+      </label>
+    </section>
+
+    <section class="cr-block">
+      <h3>Effect</h3>
+      <p class="cr-note">The same shape a card half uses, so a spell and a card step are one
+        vocabulary. A spell is its own weapon: the <em>mod</em> is its value.</p>
+      {{> "systems/cardrpg/templates/parts/step.hbs" step=system.effect path="system.effect" config=config}}
+    </section>
+
+    <section class="cr-block">
+      <h3>Description</h3>
+      <textarea name="system.description" rows="4">{{system.description}}</textarea>
+    </section>
+  {{/if}}
+
   {{#if isItem}}
     <section class="cr-vitals">
       <label class="cr-stat">Slot

@@ -65,6 +65,15 @@ Hooks.once("init", () => {
   registerSettings();
   registerHelpers();
   registerSheets();
+  /*
+   * One partial, for the one shape this game has: a step. A card half, a spell's effect and an NPC
+   * sequence are all ordered lists of them, so an editor for a step belongs in one file rather
+   * than in three -- three copies is three places for the vocabulary to drift.
+   */
+  foundry.applications.handlebars.loadTemplates([
+    "systems/cardrpg/templates/parts/step.hbs",
+    "systems/cardrpg/templates/parts/steps.hbs"
+  ]);
 });
 
 /* -------------------------------------------- */

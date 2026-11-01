@@ -55,6 +55,29 @@
           </span>
         {{/if}}
       </span>
+      {{#if isGM}}
+        {{!--
+          The levelling graph only ever ADDS: the pane takes a node and nothing anywhere took one
+          back, so a mis-clicked node was permanent. Everything about a character derives from this
+          list (leveling 9), which cuts both ways -- it is why there is nothing else to correct, and
+          why this list has to be correctable. GM only, because it is not a choice, it is a fix.
+        --}}
+        <details class="cr-nodes">
+          <summary>Nodes ({{ownedNodes.length}})</summary>
+          <p class="cr-note">Everything else on this sheet is derived from these. Removing one
+            un-does the level; it does not take back the card or slate it handed over.</p>
+          <ul class="cr-nodes__list">
+            {{#each ownedNodes}}
+              <li>
+                <button type="button" data-action="dropNode" data-node="{{this.id}}"
+                        data-tooltip="Take this node back off the character.">&times;</button>
+                <span class="cr-nodes__name">{{this.name}}</span>
+                {{#if this.title}}<span class="cr-nodes__title">{{this.title}}</span>{{/if}}
+              </li>
+            {{/each}}
+          </ul>
+        </details>
+      {{/if}}
       {{#if system.terms}}
         {{!-- What each god asks, and what the lone ones give back. A priest who cannot see their
               obedience cannot keep it, and unlike a Tactic these accumulate. --}}
@@ -120,9 +143,31 @@
           {{/if}}
         </div>
 
-        <div class="cr-stat">Hand size
-          <span class="cr-stat__derived" data-tooltip="Base {{system.handSize.base}} plus features">{{system.handSize.max}}</span>
-        </div>
+        {{!--
+          The bases were stored and off the sheet, so only a macro could set them. They are not
+          derived -- the derived total sits beside each one -- and a stored number nobody can edit
+          is a number the GM has to reach through the console for.
+        --}}
+        <label class="cr-stat">Hand size
+          <input type="number" name="system.handSize.base" value="{{system.handSize.base}}" min="1">
+          <span class="cr-stat__derived" data-tooltip="Base plus features and nodes">&rarr; {{system.handSize.max}}</span>
+        </label>
+        <label class="cr-stat">Carry
+          <input type="number" name="system.carry.base" value="{{system.carry.base}}" min="0">
+          <span class="cr-stat__derived" data-tooltip="Base plus features and nodes">&rarr; {{system.carry.max}}</span>
+        </label>
+        <label class="cr-stat">Spell slots
+          <input type="number" name="system.spellSlots.base" value="{{system.spellSlots.base}}" min="0">
+          <span class="cr-stat__derived" data-tooltip="Base plus nodes, then capped by any vow">&rarr; {{system.spellSlots.max}}</span>
+        </label>
+        <label class="cr-stat">Deck size
+          <input type="number" name="system.actionDeck.base" value="{{system.actionDeck.base}}" min="1">
+          <span class="cr-stat__derived" data-tooltip="Base plus nodes">&rarr; {{system.actionDeck.max}}</span>
+        </label>
+        <label class="cr-stat">Deck floor
+          <input type="number" name="system.actionDeck.min" value="{{system.actionDeck.min}}" min="1"
+                 data-tooltip="A prune is refused below this, because a prune is the one reward that can make a character illegal.">
+        </label>
 
         <label class="cr-stat">Rest tokens
           <span class="cr-stat__pair">

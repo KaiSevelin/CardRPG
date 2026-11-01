@@ -1,0 +1,122 @@
+{{!--
+  One step, editable.
+
+  A step is the whole action vocabulary of this game -- a card half, a spell's effect, an NPC's
+  sequence and a piece of ammunition are all ordered lists of these (data/cards.mjs). So it is a
+  partial rather than four copies: four copies is four places for the fields to drift apart, and
+  the one thing that must not drift is the vocabulary.
+
+  `path` is the form path the caller owns, e.g. `system.effect` or `system.primary.0`. Everything
+  here is stored, so everything here is editable; nothing derived appears on this partial at all.
+--}}
+<div class="cr-step">
+  <div class="cr-step__row">
+    <label>Verb
+      <select name="{{path}}.verb">
+        <option value="">&mdash; no verb</option>
+        {{#each config.verbs}}
+          <option value="{{@key}}" {{#if (crEq @key ../step.verb)}}selected{{/if}}>{{localize this.label}}</option>
+        {{/each}}
+        {{#each config.effects}}
+          <option value="{{@key}}" {{#if (crEq @key ../step.verb)}}selected{{/if}}>{{localize this.label}}</option>
+        {{/each}}
+      </select>
+    </label>
+    {{!-- `mod` is signed and means a modifier; `param` is bare and means a parameter. That
+          distinction is the whole numeric convention on a face, so the two never share a box. --}}
+    <label>Mod <input type="number" name="{{path}}.mod" value="{{step.mod}}"
+                      data-tooltip="Signed: a modifier, like Strike +2. A spell's own value lives here."></label>
+    <label>Param <input type="number" name="{{path}}.param" value="{{step.param}}" min="0"
+                        data-tooltip="Bare: a parameter, like Move 3."></label>
+    <label>Range <input type="number" name="{{path}}.range" value="{{step.range}}" min="0"></label>
+    <label>Ignores <input type="number" name="{{path}}.ignores" value="{{step.ignores}}" min="0"
+                          data-tooltip="Armour this step goes through. Never comes off Block."></label>
+  </div>
+
+  <div class="cr-step__row">
+    <label>Area <input type="number" name="{{path}}.area" value="{{step.area}}" min="0"></label>
+    <label>Area kind
+      <select name="{{path}}.areaKind">
+        <option value="" {{#if (crEq step.areaKind "")}}selected{{/if}}>&mdash;</option>
+        <option value="blast" {{#if (crEq step.areaKind "blast")}}selected{{/if}}>Blast</option>
+        <option value="aimed" {{#if (crEq step.areaKind "aimed")}}selected{{/if}}>Aimed</option>
+      </select>
+    </label>
+    <label>Condition
+      <select name="{{path}}.condition">
+        <option value="">&mdash;</option>
+        {{#each config.conditions}}
+          <option value="{{@key}}" {{#if (crEq @key ../step.condition)}}selected{{/if}}>{{localize this.label}}</option>
+        {{/each}}
+      </select>
+    </label>
+    <label>Duration <input type="number" name="{{path}}.duration" value="{{step.duration}}" min="0"></label>
+    <label>Intensity <input type="number" name="{{path}}.intensity" value="{{step.intensity}}" min="0"
+                            data-tooltip="For a valued condition: Burning 3 (2)."></label>
+  </div>
+
+  <div class="cr-step__row">
+    {{!-- With a resist the condition IS the action and the target saves; without one it rides on
+          an attack and lands when the attack does. --}}
+    <label>Resist
+      <select name="{{path}}.resist">
+        <option value="">&mdash; rides on the attack</option>
+        {{#each config.approaches}}
+          <option value="{{@key}}" {{#if (crEq @key ../step.resist)}}selected{{/if}}>{{localize this.label}}</option>
+        {{/each}}
+      </select>
+    </label>
+    <label>DC <input type="number" name="{{path}}.dc" value="{{step.dc}}" min="0"></label>
+    <label>Lesser
+      <select name="{{path}}.lesser">
+        <option value="">&mdash; half the duration</option>
+        {{#each config.conditions}}
+          <option value="{{@key}}" {{#if (crEq @key ../step.lesser)}}selected{{/if}}>{{localize this.label}}</option>
+        {{/each}}
+      </select>
+    </label>
+  </div>
+
+  <div class="cr-step__row">
+    {{!-- The kit requirement: the one gate allowed on a primary, because you chose your kit and
+          a Ready changes it (core-rules 7, rule 3a). --}}
+    <label>Needs in hand
+      <select name="{{path}}.requires.tag">
+        <option value="">&mdash; anything</option>
+        {{#each config.itemTags}}
+          <option value="{{this}}" {{#if (crEq this ../step.requires.tag)}}selected{{/if}}>{{this}}</option>
+        {{/each}}
+      </select>
+    </label>
+    <label>
+      <input type="checkbox" name="{{path}}.requires.bothHands" {{#if step.requires.bothHands}}checked{{/if}}>
+      Both hands
+    </label>
+  </div>
+
+  <div class="cr-step__row">
+    {{!-- The combo clause. An opening never GATES a half; it only sharpens one, which is why
+          there is no "only against" box here and never will be. --}}
+    <label>Vs opening
+      <select name="{{path}}.when.needs">
+        <option value="">&mdash; no combo</option>
+        {{#each config.openings}}
+          <option value="{{this}}" {{#if (crEq this ../step.when.needs)}}selected{{/if}}>{{this}}</option>
+        {{/each}}
+      </select>
+    </label>
+    <label>Extra mod <input type="number" name="{{path}}.when.mod" value="{{step.when.mod}}"></label>
+    <label>
+      <input type="checkbox" name="{{path}}.when.advantage" {{#if step.when.advantage}}checked{{/if}}>
+      Advantage
+    </label>
+    <label>Harder DC <input type="number" name="{{path}}.when.dc" value="{{step.when.dc}}" min="0"></label>
+  </div>
+
+  <div class="cr-step__row cr-step__row--wide">
+    <label>Combo text <input type="text" name="{{path}}.when.text" value="{{step.when.text}}"
+                             placeholder="ignores armor"></label>
+    <label>Text <input type="text" name="{{path}}.text" value="{{step.text}}"
+                       placeholder="A few words only; prose goes on the sheet."></label>
+  </div>
+</div>
