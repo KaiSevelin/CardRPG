@@ -1148,6 +1148,10 @@
 /* The Tactic: always on, never a number, and never something you can drop. */
 /* A god asks something of you for ever, and a lone god gives something back. Both are standing
    facts, printed like the Tactic above them because that is what they are. */
+/* What each half costs, side by side, because the two are a comparison. */
+.cr-costs { display: flex; gap: 1rem; }
+.cr-costs__half { display: flex; gap: 0.4rem; align-items: center; font-size: 0.9em; }
+.cr-costs__label { font-weight: bold; }
 /* The owned nodes, GM only: a fix, not a choice. */
 .cr-nodes { font-size: 0.9em; margin: 0.2rem 0; }
 .cr-nodes__list { list-style: none; margin: 0.2rem 0 0; padding: 0; }

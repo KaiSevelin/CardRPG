@@ -527,6 +527,13 @@ export class CardConfigSheet extends HandlebarsApplicationMixin(
         sequence: [...(card.system.sequence ?? [])],
         steps: [...(card.system.steps ?? [])]
       },
+      /* The two halves, so the cost boxes are a loop rather than four hand-written fields. */
+      halves: ["primary", "secondary"].map(key => ({
+        key,
+        label: key === "primary" ? "Primary" : "Secondary",
+        spent: !!card.system.costs?.[key]?.spent,
+        strain: card.system.costs?.[key]?.strain ?? 0
+      })),
       face: CardConfigSheet.#face(card),
       reactions: CARDRPG.reactions,
       approaches: CARDRPG.approaches

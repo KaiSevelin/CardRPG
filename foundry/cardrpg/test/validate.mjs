@@ -3837,6 +3837,55 @@ check("adding a step rewrites the whole list",
 check("and removing one goes by index",
   /list\.splice\(at, 1\);/.test(sheetSource) ? "yes" : "no", "yes");
 
+/*
+ * And every stored field on an ACTION CARD, since that is the document the content is mostly made
+ * of. Three were still missing after the steps were opened up: `reactionParam` (the Sidestep 2
+ * that *Roll With It* needs), the four `costs` fields -- Spent and Strain, which are what a half
+ * costs and therefore part of what it does -- and the reserved `way`/`tree` pair.
+ *
+ * Read from the data model rather than from a list written here, so a field added to the schema
+ * tomorrow fails this until somebody puts it on the sheet.
+ */
+const actionBlock = cardsSource.slice(
+  cardsSource.indexOf("export class ActionCardData"),
+  cardsSource.indexOf("/*  Wild Magic card"));
+const actionFields = [...new Set([...actionBlock.matchAll(/^      ([a-zA-Z]\w*): new fields\./gm)]
+  .map(m => m[1]))];
+const cardEditors = cardTemplate + stepPart + stepsPart;
+const unsettable = actionFields.filter(f => {
+  /* The two step arrays are edited through the partial, which addresses them as system.<list>.N */
+  if (["primary", "secondary"].includes(f)) {
+    return !new RegExp(`list="${f}"`).test(cardTemplate);
+  }
+  return !new RegExp(`name="system\.${f}[."]`).test(cardEditors);
+});
+check("action-card fields the sheet cannot set",
+  unsettable.length ? unsettable.join(", ") : "none", "none");
+check("action-card fields checked", actionFields.length, 7);
+/*
+ * `costs` is one schema field holding a sub-schema per half, so the loop above cannot see inside
+ * it: renaming the Strain box left `costs` looking settable because the Spent box still matched.
+ * The leaves are read from `costField()` and checked one at a time.
+ */
+const costBlock = cardsSource.slice(cardsSource.indexOf("function costField()"),
+  cardsSource.indexOf("/** The icon a step draws"));
+const costLeaves = [...new Set([...costBlock.matchAll(/^    ([a-zA-Z]\w*): new fields\./gm)]
+  .map(m => m[1]))];
+check("cost leaves in the schema", costLeaves.join(", "), "spent, strain");
+/*
+ * The closing quote is load-bearing: without it `strainx` contains `strain` and a renamed box
+ * passed. Same prefix trap as `decks.skills` matching `decks.skill`, two commits ago -- an
+ * `includes` on a name is only a check if it includes the end of the name.
+ */
+check("cost leaves the sheet cannot set",
+  costLeaves.filter(leaf => !cardTemplate.includes(`name="system.costs.{{this.key}}.${leaf}"`))
+    .join(", ") || "none", "none");
+/* And both halves get a box, since Spent on one is a different card from Spent on both. */
+check("both halves can be made Spent",
+  (cardTemplate.match(/system\.costs\.\{\{this\.key\}\}\.spent/g) ?? []).length, 1);
+check("and the loop covers two halves",
+  /\["primary", "secondary"\]\.map\(key => \(\{/.test(sheetSource) ? "yes" : "no", "yes");
+
 /* ---- every stored field on a character is on the sheet ---- */
 
 /*

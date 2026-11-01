@@ -86,6 +86,59 @@
         <option value="">&mdash; none (Brace only)</option>
         {{selectOptions reactions selected=system.reaction labelAttr="label" localize=true}}
       </select>
+      {{!--
+        How much, for a reaction that takes a number. Only Sidestep does -- it is `valued` in the
+        config the way a condition that carries an intensity is -- and *Roll With It* is the one
+        card in the documents that needs it. A number beside the key rather than a schema around
+        both, which is the house idiom; the validator refuses a number on a reaction that does not
+        take one.
+      --}}
+      <label class="cr-stat">Reaction value
+        <input type="number" name="system.reactionParam" value="{{system.reactionParam}}" min="1"
+               placeholder="&mdash;"
+               data-tooltip="Only a valued reaction takes one: Sidestep 2. Leave it empty otherwise.">
+      </label>
+    </section>
+
+    <section class="cr-block">
+      <h3>What each half costs</h3>
+      {{!--
+        The price of playing a half, paid before it resolves. Both sit on the HALF and not on the
+        card, because every other thing a card does sits on the half -- a card can be a spell on
+        one side and a step sideways on the other, and burning it for the step sideways should be
+        the player's mistake to make rather than the schema's.
+      --}}
+      <p class="cr-note">Spent retires the card for the fight and it comes back on a rest. Strain
+        discards that many <em>other</em> cards from your hand, so it costs the round rather than
+        the fight.</p>
+      <div class="cr-costs">
+        {{#each halves}}
+          <div class="cr-costs__half">
+            <span class="cr-costs__label">{{this.label}}</span>
+            <label>
+              <input type="checkbox" name="system.costs.{{this.key}}.spent"
+                     {{#if this.spent}}checked{{/if}}> Spent
+            </label>
+            <label>Strain
+              <input type="number" name="system.costs.{{this.key}}.strain" value="{{this.strain}}"
+                     min="0">
+            </label>
+          </div>
+        {{/each}}
+      </div>
+    </section>
+
+    <section class="cr-block">
+      <h3>Where it came from</h3>
+      <p class="cr-note">Which Way's list this belongs to. Reserved when it was written and
+        unfilled since, so it is a plain text pair rather than two dropdowns over vocabularies the
+        content does not use yet.</p>
+      <label class="cr-stat">Way
+        <input type="text" name="system.way" value="{{system.way}}" placeholder="shade">
+      </label>
+      <label class="cr-stat">Tree
+        <input type="text" name="system.tree" value="{{system.tree}}" placeholder="thief">
+      </label>
     </section>
   {{/if}}
 
