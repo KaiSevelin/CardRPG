@@ -884,8 +884,19 @@ decision, which is the god of the rumour doing on the battlefield exactly what s
 > card that requires both hands* (1): three entries, one field, **six cards** once it existed and
 > five gaps closed. Counting distinct **strings** overstates the work whenever the same mechanism is
 > described from each card's point of view, so the validator now also refuses two gaps that agree on
-> their first four words. The totals today: **32 pieces complete, 23 with a gap, 22 distinct gaps**,
+> their first four words. The totals then: **32 pieces complete, 23 with a gap, 22 distinct gaps**,
 > the largest being *granting Block to an ally* at two.
+>
+> **[2026-11-01] And then the eighty-five formulas and the sixty-one miracles arrived**, which is
+> ninety-five pieces of content in one pass and four times the audit's previous size. The totals
+> today: **61 pieces complete, 136 with a gap, 98 distinct gaps**.
+>
+> The flat tail is gone and the queue has a plain first item, which it did not have at twenty-two:
+> it was a six-way tie at two, and it is now *a spell that taints its caster* at **eight** — every
+> one of Necromancy's five formulas and The Purple's thesis pay in Taint. The gap that would
+> **finish** the most is a different one, which is the whole reason both numbers are kept: *a
+> permanent formula that is never prepared and carries a bonus* finishes **five** of Tattoo Magic's
+> seven outright, where the Taint price finishes none of them alone.
 
 The 48 above are the titles. **Most of a character is the nodes in between**, and §1.5 says what
 those hand out: a card, a skill card, a training, a know-how, a feature, a prune, a deck cap, a
@@ -1012,7 +1023,7 @@ deal against an ironclad and nothing at all against a goblin, so its value is se
 rather than by the card, and no band can price it. It is the one card in this section most worth
 simulating.
 
-### 3.4 Way of Mind — the twelve schools
+### 3.4 Way of Mind — the twelve schools  **[BUILT 2026-11-01]**
 
 **Strength is the slot cost** (§1.4), so the bracketed number is what a formula takes out of the
 budget. The Signature from §2.3 is listed first in each school and marked ✦.
@@ -1083,6 +1094,37 @@ system has had the mechanism since before there were spells to put it on.
 who prepares one has prepared one thing. That is the point of a thesis.
 
 ---
+
+> **[BUILT 2026-11-01] All twelve schools and all twelve gods are in the game**, and the
+> validator no longer keeps a copy of these tables: it **reads this section** and fails if a row
+> here is not built, is built at another strength, or is built under another source. The art brief
+> is generated from the content and this is checked against it, and both exist so that one of the
+> two files cannot quietly stop describing the other.
+>
+> Three things the writing found, none of which is visible from reading:
+>
+> **1. *Flesh of the Earth* belongs to no sphere.** It is an acid formula, and an elementalist's
+> spheres are four — fire, frost, storm, water — so acid is none of them. It resolves (Corrode is
+> built), but it cannot be **exclusive**, which is the entire point of holding a sphere: the one
+> formula in the school that any elementalist may cast whatever they swore to.
+>
+> **2. Two kinds of emptiness, and Asceticism needs both.** *Nothing Left to Take* reads an empty
+> **card hand**; *Empty Hand* reads empty **hands**, meaning no item held. The engine has known
+> about a free hand since casting needed one and has never been asked whether both hands hold
+> nothing. One word covering both would have been a merge that finished neither.
+>
+> **3. Two prices were already mechanisms under other names.** Sessyfyn's *The Turning Tide* pays
+> with "a temporary Miss in your own fate deck", which **is** Cursed as conditions.md defines it;
+> and Shadow Magic's price was already a field, `wilds`, built as a number rather than a flag so a
+> bigger reach could cost more of the same thing — which is what *Become the Shadow* turned out to
+> need, at five.
+>
+> **What is NOT built is a way to be handed most of it.** Fifty-two of the hundred and forty-seven
+> are named by a node and **ninety-five are on none**, which §3 half-predicts: this is written as
+> pools, and *a node's `grants[]` names one*. A school branch of three nodes names three of its
+> school's six. The mechanism the pool language implies and the engine does not have is a node that
+> grants your **choice** from a named list; until it exists, two formulas in three are written down
+> and unreachable, and the validator pins the number so that stays a decision rather than a drift.
 
 #### Blood Magic — Tempo, paid in Health
 
@@ -1305,7 +1347,7 @@ long one: four formulas is four Taint, and **three is Afflicted**. The school pr
 > price is a thing you give up at the moment of learning or casting; a diviner's is a thing that
 > happens to them.
 
-### 3.5 Way of Faith — the twelve gods
+### 3.5 Way of Faith — the twelve gods  **[BUILT 2026-11-01]**
 
 Clerics cast too, and a god's list is built on a different principle from a school's:
 

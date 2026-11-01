@@ -2665,7 +2665,7 @@ const unbuiltSpells = nodes.filter(n => n.grants?.spell)
   .map(n => `${n.id}: ${n.grants.spell}`);
 check("formulas granted but never built",
   unbuiltSpells.length ? unbuiltSpells.join(", ") : "none", "none");
-check("formulas a node can hand over", graph.SPELLS.size, 52);
+check("formulas a node can hand over", graph.SPELLS.size, 147);
 check("taking a node hands over the formula",
   /if \(grants\.spell\) await grantSpell\(actor, grants\.spell, id\);/.test(graphSource)
     ? "yes" : "no", "yes");
@@ -3216,6 +3216,37 @@ const everything = Object.entries(content)
   .filter(([k]) => k.endsWith("_SIGNATURES") || k.endsWith("_POOL")).flatMap(([, v]) => v);
 const waitingFor = n => everything.find(c => c.name === n)?.needs.join("; ") ?? "missing";
 check("the ward is finished", waitingFor("Unmake") || "nothing", "nothing");
+/*
+ * [FOUND BY THE BREAK TEST] **And the ward still prints the reaction it is the axis for**, which
+ * nothing asserted until the twelve schools were written.
+ *
+ * The coverage check above -- *reactions no card prints* -- is satisfied by ANY one printer, and
+ * for months `unmake` had exactly one: this Signature. Ward Magic's list added *The Mirror*, which
+ * prints it too, and from that moment the Signature could have lost its own reaction without a
+ * single check noticing. A second printer quietly turned a check about one card into a check about
+ * the set, which is the same shape of failure as a regex matching an identical line in another
+ * function -- and the only reliable way to find it is to break the thing on purpose.
+ *
+ * So each spell-reaction is pinned to the content it was built for, by name.
+ */
+check("the ward's Signature prints the reaction it is the axis for",
+  everything.find(c => c.name === "Unmake")?.reaction, "unmake");
+check("and the other two spell-reactions are printed by the spells they were built for",
+  ["Breath of the Spirit", "Hold to the Bargain"]
+    .map(n => `${n}: ${everything.find(c => c.name === n)?.reaction ?? "none"}`).join(", "),
+  "Breath of the Spirit: mend, Hold to the Bargain: bargain");
+/*
+ * And the whole set, because the lesson of the find is that a NEW printer is what hid the old one
+ * going missing. A spell that starts answering an event should have to be added here.
+ */
+check("everything that prints a reaction",
+  everything.filter(c => c.reaction).map(c => `${c.name} (${c.reaction})`).sort().join("; "),
+  "Bear It for Them (mend); Both Hands (use); Breath of the Spirit (mend); Heckle (heckle); "
+  + "Hold the Line (parry); Hold to the Bargain (bargain); Interpose (bodyguard); "
+  + "Light Feet (sidestep); Measure (parry); Named (parry); Over and Past (sidestep); "
+  + "Press (sidestep); Shake It Off (mend); Shield Bash (block); Shield Wall (block); "
+  + "Sleight (use); Slip the Knot (sidestep); The Close Work (parry); The Mirror (unmake); "
+  + "The Turning Tide (mend); Turn Aside (mend); Unmake (unmake)");
 check("the healer needed no new trigger",
   waitingFor("Breath of the Spirit") || "nothing", "nothing");
 /* And it got one, which is why this reads as finished now. */
@@ -3431,14 +3462,208 @@ const pools = {
 check("Shade's pool", pools.shade.length, 12);
 check("Strength's pool", pools.strength.length, 13);
 /*
- * Mind's pool is formulas rather than cards, and it is eight rather than twelve because
- * **Elemental Magic needed none**: Rain, Lightning, Frost and Scorch have been content since the
- * combo clause was written, so its four runs hand those over. The pair the `when` clause exists to
- * demonstrate is reachable by levelling now instead of being put on the actor by the setup routine.
+ * Mind's pool is formulas rather than cards, and it is **sixty-nine**, which is a different kind of
+ * list from the other two Ways: a Way pool is a dozen cards and this is twelve SCHOOLS, each with
+ * its own six-to-ten formulas and every strength from 1 to 5 present (way-cards 3.4).
+ *
+ * It was eight for one day -- Blood Magic's four and Spiritualism's four, because those were the
+ * two schools earlier passes had reached. The other ten schools were written in the world document
+ * and nothing in the game had them.
  */
-check("Mind's pool", pools.mind.length, 8);
+check("Mind's pool", pools.mind.length, 69);
 check("the schools Mind's pool draws on",
-  [...new Set(pools.mind.map(f => f.source))].sort().join(", "), "Blood Magic, Spiritualism");
+  [...new Set(pools.mind.map(f => f.source))].sort().join(", "),
+  "Asceticism, Blood Magic, Divination, Elemental Magic, Glamour, Household Magic, Necromancy, "
+  + "Poison, Shadow Magic, Spiritualism, Tattoo Magic, Ward Magic");
+/* And Faith's, which had no check at all while it had sixteen entries. */
+check("Faith's pool", pools.faith.length, 50);
+check("the gods Faith's pool draws on", new Set(pools.faith.map(f => f.source)).size, 12);
+
+/*
+ * ---- the twelve schools and the twelve gods, read out of the document ----
+ *
+ * **The brief is the document, so the check reads the document.** way-cards 3.4 and 3.5 are two
+ * hundred lines of tables naming every formula and miracle with its strength, and a hand-kept list
+ * here would be a second copy of them: the first time somebody added a formula to the world, the
+ * copy would be the thing that was true and the game would be the thing that was wrong.
+ *
+ * This is the same decision the art brief made in the other direction -- that one is GENERATED from
+ * the content, this one is CHECKED against the content -- and both exist so that one of the two
+ * files cannot quietly stop describing the other.
+ */
+const spellTables = (() => {
+  const lines = waycards.split("\n");
+  const from = lines.findIndex(l => l.startsWith("### 3.4"));
+  const to = lines.findIndex((l, i) => i > from && l.startsWith("### 3.6"));
+  const rows = [];
+  let group = "";
+  let kind = "";
+  for (const line of lines.slice(from, to === -1 ? lines.length : to)) {
+    if (line.startsWith("### 3.4")) kind = "formula";
+    else if (line.startsWith("### 3.5")) kind = "miracle";
+    else if (line.startsWith("#### ")) {
+      /* A school's heading is "Name -- axis, paid in ...". A prose heading has no dash. */
+      const head = line.slice(5).split(/—|--/)[0].trim();
+      group = /^(The principle|What a 4)/.test(head) ? "" : head;
+    } else if (line.startsWith("|") && group) {
+      const cells = line.replace(/^\||\|$/g, "").split("|").map(c => c.trim());
+      if (cells.length < 3) continue;
+      const name = cells[0].replace(/[✦*]/g, "").trim();
+      if (!name || name === "Formula" || name === "Miracle" || /^-+$/.test(name)) continue;
+      rows.push({ group, kind, name, strength: cells[1], signature: cells[0].includes("✦") });
+    }
+  }
+  return rows;
+})();
+
+/* A parser that matched nothing would say every list below was complete. */
+/* 145 with a number, plus the one ritual, which is the row the exception below is about. */
+check("rows read out of way-cards 3.4 and 3.5", spellTables.length, 146);
+check("and the schools and gods they fall under",
+  new Set(spellTables.map(r => r.group)).size, 24);
+check("twelve of them are schools",
+  new Set(spellTables.filter(r => r.kind === "formula").map(r => r.group)).size, 12);
+check("and twelve are gods",
+  new Set(spellTables.filter(r => r.kind === "miracle").map(r => r.group)).size, 12);
+/* One per school and one per god, marked in the document and carried on a node. */
+check("rows marked as a Signature", spellTables.filter(r => r.signature).length, 24);
+
+/*
+ * The one row whose strength is not a number, and it is a known exception rather than a parse
+ * failure: a ritual costs no slots at all, `strength` is required and runs 1 to 5
+ * (data/items.mjs), and *Hearth and Home* is written as a 1 with a gap that says what the 1 is
+ * standing in for. Naming it here is what keeps the parser honest about the rest.
+ */
+const unnumbered = spellTables.filter(r => !/^\d$/.test(r.strength));
+check("rows with no numeric strength", unnumbered.map(r => `${r.name}: ${r.strength}`).join(", "),
+  "Hearth and Home: ritual");
+
+const everySpell = new Map([...content.MIND_POOL, ...content.FAITH_POOL, ...content.FORMULAS,
+  ...content.SHADOW_FORMULAS, ...signatureExports.filter(s => s.kind === "spell")]
+  .map(s => [s.name, s]));
+check("spells built in all", everySpell.size, 147);
+
+/* Every row in the document exists in the game. This is the check the eighty-five were written for. */
+const unwritten = spellTables.filter(r => !everySpell.has(r.name))
+  .map(r => `${r.group}: ${r.name}`);
+check("formulas and miracles in the document that the game does not have",
+  unwritten.length ? unwritten.join(", ") : "none", "none");
+/* And at the strength the document gives, because strength IS the slot cost (way-cards 1.4). */
+const wrongStrength = spellTables.filter(r => /^\d$/.test(r.strength))
+  .filter(r => everySpell.get(r.name)?.strength !== Number(r.strength))
+  .map(r => `${r.name}: document ${r.strength}, built ${everySpell.get(r.name)?.strength}`);
+check("spells built at a different strength from the document",
+  wrongStrength.length ? wrongStrength.join(", ") : "none", "none");
+/* And under the school or god that may teach it, which is the other printed field. */
+const wrongSource = spellTables.filter(r => everySpell.has(r.name))
+  .filter(r => everySpell.get(r.name).source !== r.group)
+  .map(r => `${r.name}: document ${r.group}, built ${everySpell.get(r.name).source}`);
+check("spells built under a different source",
+  wrongSource.length ? wrongSource.join(", ") : "none", "none");
+/* And nothing in the game claims a school or god the document does not have. */
+const strayDoc = [...everySpell.values()]
+  .filter(s => !spellTables.some(r => r.group === s.source))
+  .map(s => `${s.name} (${s.source})`);
+check("spells whose source is in no section of the document",
+  strayDoc.length ? strayDoc.join(", ") : "none", "none");
+
+/*
+ * The document's own tests of a list, and **a school's list and a god's are held to different
+ * standards on purpose** -- which is the kind of thing a single check would have flattened.
+ *
+ * way-cards 3.4 promises a school **every strength from 1 to 5**, and gives the reason for both
+ * ends: the 1 and the 2 are what a two-slot caster can cast on their first day, and the 5 is what
+ * makes the branch worth walking to the end. The 3s were the last rung written and only because a
+ * check asked for them, which is exactly why this one exists.
+ *
+ * way-cards 3.5 promises a god far less -- *a god's list is shorter than a school's on purpose* --
+ * and promises only its **4 and its 5**, except The First, whose Obedience caps its slots at 3 and
+ * therefore caps its ladder. A god with no 1 is a god; a school with no 1 is an oversight.
+ */
+const ladders = new Map();
+for (const spell of everySpell.values()) {
+  if (!ladders.has(spell.source)) ladders.set(spell.source, new Set());
+  ladders.get(spell.source).add(spell.strength);
+}
+const schools = new Set(spellTables.filter(r => r.kind === "formula").map(r => r.group));
+const gaped = [...ladders.entries()].filter(([src]) => schools.has(src))
+  .filter(([, band]) => [1, 2, 3, 4, 5].some(n => !band.has(n)))
+  .map(([src, band]) => `${src} (${[1, 2, 3, 4, 5].filter(n => !band.has(n)).join(" ")})`);
+check("schools missing a rung of the 1-to-5 ladder", gaped.join(", ") || "none", "none");
+/* And a god's two bands, with the one god whose obedience takes them away named rather than
+ * excluded -- a second capped god would otherwise look exactly like this one. */
+const noThesis = [...ladders.entries()].filter(([src]) => !schools.has(src))
+  .filter(([, band]) => !band.has(4) || !band.has(5))
+  .map(([src, band]) => `${src} (${[4, 5].filter(n => !band.has(n)).join(" ")})`);
+check("gods missing their 4 or their 5", noThesis.join(", "), "The First (4 5)");
+/* A two-slot caster's first day, which is the 1-and-2 half of the promise, over both Ways. */
+const noFirstDay = [...ladders.entries()]
+  .filter(([, band]) => !band.has(1) && !band.has(2)).map(([src]) => src);
+check("schools and gods a two-slot caster cannot cast from at all",
+  noFirstDay.length ? noFirstDay.join(", ") : "none", "none");
+check("and The First is capped at 3 by its own Obedience",
+  nodes.find(n => n.creed === "first")?.grants?.caps?.spellSlots, 3);
+
+/*
+ * Shadow Magic's price is **every formula**, not one per school (data/items.mjs), and it is the one
+ * school price the engine charges in a field rather than in prose. Six formulas arrived after the
+ * field did, so this is the check that they all pay.
+ */
+const shadow = [...everySpell.values()].filter(s => s.source === "Shadow Magic");
+check("Shadow Magic's formulas", shadow.length, 7);
+const freeShadowFormula = shadow.filter(s => !(s.wilds > 0)).map(s => s.name);
+check("Shadow formulas that cost no Wild",
+  freeShadowFormula.length ? freeShadowFormula.join(", ") : "none", "none");
+/* And the thesis costs five of them, which is the field being a number rather than a flag. */
+check("the most Wilds any one formula costs",
+  Math.max(...shadow.map(s => s.wilds ?? 0)), 5);
+/* Nothing else pays in Wilds: it is a school's price, not a generic one. */
+const otherSchoolWilds = [...everySpell.values()]
+  .filter(s => (s.wilds ?? 0) > 0 && s.source !== "Shadow Magic").map(s => s.name);
+check("spells outside Shadow Magic that cost a Wild",
+  otherSchoolWilds.length ? otherSchoolWilds.join(", ") : "none", "none");
+
+/*
+ * A Health price is either in the field or named in the queue, and never only in the prose.
+ *
+ * The narrower check further down catches a FIXED cost printed in words; this one catches the two
+ * shapes the field cannot hold at all -- a price per ally (*The Red Hour*, *The Shield Line*, *The
+ * Line Holds*) and a fraction of what you have left (*The Last Drop*) -- and insists each one says
+ * so. Without it, a spell could charge Health in a sentence nobody computes.
+ */
+const bloodPrice = [...everySpell.values()]
+  .filter(s => /costs? [^.]*health/i.test(s.effect?.text ?? ""));
+check("spells printing a Health price in prose", bloodPrice.length, 4);
+const unqueued = bloodPrice
+  .filter(s => !(s.cost?.health > 0) && !(s.needs ?? []).some(g => /cost|price/i.test(g)))
+  .map(s => s.name);
+check("prose Health prices that name no gap",
+  unqueued.length ? unqueued.join(", ") : "none", "none");
+
+/*
+ * ---- and how much of it a character can actually be handed ----
+ *
+ * **Fifty-two of the hundred and forty-seven are on a node, and the other ninety-five are on
+ * none.** That is not an accident and it is not finished either, so it is a number rather than a
+ * failure: way-cards 3 writes this content as POOLS rather than assignments -- *a pool is a set of
+ * cards the minor nodes along a branch draw from; when the graph is authored, a node's `grants[]`
+ * names one* -- and a school branch of three nodes names three of its school's six.
+ *
+ * What that leaves is a menu nobody can order the rest of. The mechanism the pool language implies
+ * and the engine does not have is a node that grants your CHOICE from a named list; until it
+ * exists, two formulas in three are written down and unreachable. Pinning the number here is what
+ * makes that a decision somebody took rather than something that drifted.
+ */
+const spellGrants = nodes.filter(n => n.grants?.spell).map(n => n.grants.spell);
+check("nodes that hand over a named spell", spellGrants.length, 52);
+check("and no two of them hand over the same one", new Set(spellGrants).size, spellGrants.length);
+const onNoNode = [...everySpell.keys()].filter(name => !spellGrants.includes(name));
+check("spells no node in the graph hands over", onNoNode.length, 95);
+/* The First is the one source a character can be handed entire, because its ladder stops at 3. */
+const complete = [...ladders.keys()].filter(src =>
+  [...everySpell.values()].filter(s => s.source === src)
+    .every(s => spellGrants.includes(s.name)));
+check("sources a character can be handed in full", complete.join(", "), "The First");
 /* Roll With It and Set Spear have been in WAY_CARDS since the reach weapons; a second copy here
  * would be two cards with one name, which the collision check below refuses. */
 check("the two already-built Way cards are not repeated",
@@ -3457,8 +3682,8 @@ check("content carrying the audit column",
 const vague = audited.filter(c => (c.needs ?? []).some(g => g.length < 12)).map(c => c.name);
 check("gaps too short to act on", vague.length ? vague.join(", ") : "none", "none");
 const workingCards = audited.filter(c => !c.needs.length).length;
-check("content the engine does everything for", workingCards, 49);
-check("content with a named gap", audited.filter(c => c.needs.length).length, 53);
+check("content the engine does everything for", workingCards, 61);
+check("content with a named gap", audited.filter(c => c.needs.length).length, 136);
 
 /*
  * A gap shared by several cards is one piece of engine work, not several. Counting the DISTINCT
@@ -3468,7 +3693,7 @@ const gapCounts = new Map();
 for (const card of audited) {
   for (const gap of card.needs) gapCounts.set(gap, (gapCounts.get(gap) ?? 0) + 1);
 }
-check("distinct gaps across all content", gapCounts.size, 50);
+check("distinct gaps across all content", gapCounts.size, 98);
 /*
  * Two different questions, and the list is what lets them be asked apart.
  *
@@ -3491,10 +3716,14 @@ const worst = [...gapCounts.entries()].filter(([, n]) => n === most).map(([gap])
  * content asked for has been done, and what is left is a long flat tail -- which is the point at
  * which "what should I build next" stops being a question the audit can answer on its own.
  */
+/*
+ * **The flat tail is gone, and one gap is now plainly first.** It used to be a six-way tie at two,
+ * which is the shape of an audit that cannot answer "what next"; Necromancy's five formulas and
+ * The Purple's thesis all pay in Taint, so a spell that taints its caster is named by eight pieces
+ * of content and is the largest single piece of work in the game.
+ */
 check("the gap mentioned by the most content", `${worst.join("; ")} (${most})`,
-  "a cost that scales with the allies it covers; a spell that taints its caster; "
-  + "a step that goes through armour entirely; an effect held up by spending a secondary; "
-  + "an event when a figure's Health reaches zero; two fate draws that both apply (2)");
+  "a spell that taints its caster (8)");
 
 const finishes = new Map();
 for (const card of audited) {
@@ -3502,15 +3731,19 @@ for (const card of audited) {
   finishes.set(card.needs[0], (finishes.get(card.needs[0]) ?? 0) + 1);
 }
 const bestFinish = Math.max(...finishes.values());
+/*
+ * And FINISHED is a different gap from MENTIONED, which is the whole reason both are counted: the
+ * Taint price is named by eight and finishes none of them on its own, because every formula that
+ * pays it also wants a figure on the map or a condition over an area. A standing bonus on a
+ * never-prepared spell finishes five of Tattoo Magic's seven outright.
+ */
 check("the gap that would finish the most content",
   [...finishes.entries()].filter(([, n]) => n === bestFinish).map(([g]) => g).sort().join("; ")
   + ` (${bestFinish})`,
-  "a spell that taints its caster; a step that goes through armour entirely; "
-  + "an effect held up by spending a secondary; "
-  + "an event when a figure's Health reaches zero; two fate draws that both apply (2)");
+  "a permanent formula that is never prepared and carries a bonus (5)");
 /* And how much of the queue is one card deep, which is what a long tail of singletons means. */
 check("gaps that would finish exactly one piece of content",
-  [...finishes.values()].filter(n => n === 1).length, 40);
+  [...finishes.values()].filter(n => n === 1).length, 51);
 
 /*
  * And a check on the QUEUE rather than on the content, which the ranged-item work earned.
@@ -3792,7 +4025,7 @@ const artable = [
   content.FEATURES, content.ITEMS.filter(i => !i.npc), content.NPC_GEAR ?? [],
   ...Object.entries(content).filter(([k]) => k.endsWith("_SIGNATURES")).map(([, v]) => v)
 ].flat();
-check("pieces of content that take art", artable.length, 305);
+check("pieces of content that take art", artable.length, 400);
 
 /*
  * The backs, which are a different kind of art: **one picture per deck, not one per card**, doing
@@ -3898,7 +4131,7 @@ const briefs = faceRows.map(r => r.brief);
 const leaked = briefs.flatMap(text =>
   [...text.matchAll(/\b([a-z]+[A-Z][a-zA-Z]*)\b/g)].map(m => m[1]));
 /* A pattern that matched no rows at all would report "none" for any list whatsoever. */
-check("briefs the check actually read", briefs.length, 305);
+check("briefs the check actually read", briefs.length, 400);
 check("keys that leaked into the brief",
   leaked.length ? [...new Set(leaked)].join(", ") : "none", "none");
 
@@ -3911,7 +4144,7 @@ check("keys that leaked into the brief",
  */
 const { slug } = await import("./art-list.mjs");
 const rows = faceRows;
-check("file paths in the brief", rows.length, 305);
+check("file paths in the brief", rows.length, 400);
 /* And the backs, whose path is the slug of their KEY rather than of their printed label. */
 const backPaths = [...artList.matchAll(/\| `(backs\/[^`]+)` \|/g)].map(m => m[1]);
 check("back paths in the brief", backPaths.length, backs.length);
@@ -4833,7 +5066,8 @@ check("spells still printing a fixed cost as prose",
 const variableCost = [...graph.SPELLS.values()]
   .filter(s => /Health per/i.test(s.effect?.text ?? ""));
 check("spells whose price scales, which the field cannot hold",
-  variableCost.map(s => s.name).sort().join(", "), "The Red Hour, The Shield Line");
+  variableCost.map(s => s.name).sort().join(", "),
+  "The Line Holds, The Red Hour, The Shield Line");
 check("and every one of them says so in the queue",
   variableCost.every(s => s.needs.includes("a cost that scales with the allies it covers")),
   true);

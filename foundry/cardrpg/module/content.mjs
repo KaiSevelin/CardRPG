@@ -2238,7 +2238,765 @@ export const MIND_POOL = [
     description: "<p>Every pact at once, called in on the same turn. Each god does exactly what it "
       + "promised and no more, which is why this is worth four slots and not five.</p>",
     effect: { text: "every god you are pacted with grants its written favour, this turn" }
-  }
+  },
+
+  /*
+   * Blood Magic's thesis, and the one formula whose PRICE the engine cannot state. Every other
+   * Health cost in the game is a number (`cost.health`); this one is half of whatever you have
+   * left, so it is cheap when you are winning and nearly suicide when you are not. That is the
+   * spell. A fixed number would be a different card.
+   */
+  {
+    name: "The Last Drop", strength: 5, pool: "mind", source: "Blood Magic",
+    needs: ["a whole turn taken again, now",
+      "a Health cost that is a fraction of what you have left"],
+    description: "<p>You will not be standing afterwards. You will have had two turns.</p>",
+    effect: {
+      text: "take your whole turn again, now. Costs half your current Health, rounded up"
+    }
+  },
+
+  /*
+   * --- Necromancy, five formulas, and every one of them taints ---
+   *
+   * The school prices itself and the arithmetic is the point: a bound Taint per formula, three
+   * Taint is Afflicted (core-rules 8), so a necromancer who learns four of these cannot stand up.
+   * Nobody balanced that; it falls out of the price. The gap is the same string on all five,
+   * because a gap shared by five formulas is one piece of work.
+   */
+  {
+    name: "Grave Chill", strength: 2, pool: "mind", source: "Necromancy",
+    needs: ["a spell that taints its caster", "a condition applied to an area"],
+    description: "<p>The cold that comes off a body, aimed. Two squares of it, and everything in "
+      + "them is slow to understand what happened.</p>",
+    effect: {
+      verb: "cast", area: 2, areaKind: "aimed",
+      condition: "dazed", duration: 1, resist: "might", dc: 5
+    }
+  },
+  {
+    name: "The Long Preparation", strength: 1, pool: "mind", source: "Necromancy",
+    needs: ["a spell that taints its caster",
+      "a bonus against one enemy type, named before the fight"],
+    description: "<p>You read about them the night before. It is not insight; it is homework, and "
+      + "it only works on the thing you did it for.</p>",
+    effect: { text: "before a fight, name one enemy type: your Casts against it are +2 all fight" }
+  },
+  {
+    /*
+     * Out of combat, three questions, and the engine has nothing to do. A corpse answering is the
+     * GM's job in the same way Move is the table's -- so this is a FINISHED formula with one gap,
+     * and the gap is the price rather than the spell.
+     */
+    name: "Ask the Dead", strength: 1, pool: "mind", source: "Necromancy",
+    needs: ["a spell that taints its caster"],
+    description: "<p>It answers three questions truthfully, as far as it knew &mdash; which is "
+      + "usually less than you hoped and occasionally much more.</p>",
+    effect: { text: "out of combat: a corpse answers three questions, as truthfully as it knew" }
+  },
+  {
+    name: "The Risen Rank", strength: 4, pool: "mind", source: "Necromancy",
+    needs: ["a spell that taints its caster", "a figure a spell puts on the map"],
+    description: "<p>Every body within three squares, up at once, for one round. Then they are "
+      + "bodies again, and the ground is worse than it was.</p>",
+    effect: {
+      range: 3,
+      text: "every corpse within 3 rises and fights for you for one round, then falls"
+    }
+  },
+  {
+    /*
+     * The school's 5, and its price is the only one in the game that grows while the spell is
+     * still running: a Taint for every round your friend stayed up. Stopping early is a decision
+     * the caster makes against their own deck, which is what makes this Preparation.
+     */
+    name: "The Grave's Bargain", strength: 5, pool: "mind", source: "Necromancy",
+    needs: ["a spell that taints its caster", "a figure a spell puts on the map",
+      "a price that grows for every round an effect lasts"],
+    description: "<p>They stand up at one Health, and they are themselves, and they know. When "
+      + "the fight ends they are dead again, and you are a little less alive for it.</p>",
+    effect: {
+      text: "a dead ally stands at 1 Health until the fight ends. One bound Taint per round "
+        + "they stood"
+    }
+  },
+
+  /*
+   * --- Elemental Magic, five more, and the one that belongs to no sphere ---
+   *
+   * [FOUND IN CODE] *Flesh of the Earth* is an ACID formula in a school with four spheres --
+   * fire, frost, storm, water (config.mjs) -- and acid is none of them. Earth is not an element an
+   * elementalist may hold, so this formula cannot read "your element" the way the two Sphere
+   * spells do: it is the school's one element-free formula and its `element` is blank on purpose.
+   *
+   * That is not a defect in the engine. `Corrode` is a built effect and the formula resolves; what
+   * it cannot be is EXCLUSIVE, which is the whole point of holding a sphere.
+   */
+  {
+    name: "Flesh of the Earth", strength: 2, pool: "mind", source: "Elemental Magic",
+    needs: [],
+    description: "<p>Acid, which is nobody's sphere. It eats the armour as well as the man, and "
+      + "the man notices second.</p>",
+    effect: {
+      verb: "cast", range: 3, condition: "burning", intensity: 1, duration: 2,
+      text: "and Corrode 1: it eats the armour as well as the man"
+    }
+  },
+  {
+    /*
+     * Water used sideways, and the shortest proof that this school's axis is Position: it deals
+     * nothing, saves nothing, and takes a man out of a grapple he was going to lose.
+     */
+    name: "Slippery", strength: 1, pool: "mind", source: "Elemental Magic", element: "water",
+    needs: [],
+    description: "<p>Not enough water to drown in. Exactly enough to be impossible to hold.</p>",
+    effect: {
+      verb: "shake", param: 1, condition: "grappled", range: 2,
+      text: "until your next turn they cannot be Grappled again"
+    }
+  },
+  {
+    name: "The Sphere Entire", strength: 4, pool: "mind", source: "Elemental Magic",
+    needs: ["terrain a spell places on the map"],
+    description: "<p>Five squares of whichever sphere is yours, and standing in it costs you "
+      + "something every turn you stay.</p>",
+    effect: {
+      range: 3, area: 5,
+      text: "a 5-square area of your element: difficult ground, cover, and 2 damage at the start "
+        + "of your turn"
+    }
+  },
+  {
+    name: "The Standing Flood", strength: 3, pool: "mind", source: "Elemental Magic",
+    element: "water",
+    needs: ["terrain a spell places on the map"],
+    description: "<p>Deep water where there was a floor. Everything in it is Wet, which is the "
+      + "opening half this school is built to set up.</p>",
+    effect: {
+      range: 3, area: 3,
+      text: "a 3-square area becomes deep water: everything in it is Wet (2) and its Move is halved"
+    }
+  },
+  {
+    /*
+     * The school's 5, and the only spell in the game that is as often worse for the caster as for
+     * the enemy: the line does not care which side asked for it.
+     */
+    name: "Unmake the Ground", strength: 5, pool: "mind", source: "Elemental Magic",
+    needs: ["terrain a spell places on the map"],
+    description: "<p>A line across the battlefield that is no longer there. For the rest of the "
+      + "fight, nobody crosses it &mdash; you included, which is the half of this that gets "
+      + "casters killed.</p>",
+    effect: { text: "name a line across the field: it is impassable all fight, to everyone" }
+  },
+
+  /*
+   * --- Poison, six formulas, and a price the engine DOES keep ---
+   *
+   * Skill cards set aside, equal to the strength (specializations.md 2) -- which is a price on the
+   * deck a character makes checks with, and the engine keeps that deck (data/actors.mjs). So it is
+   * a gap rather than a sentence, and it is the same gap six times.
+   *
+   * Everything else in this school is a condition with a saving throw, which is the oldest
+   * finished part of the engine. Four of the six need nothing else at all.
+   */
+  {
+    name: "Slick", strength: 1, pool: "mind", source: "Poison",
+    needs: ["skill cards set aside to pay for a formula"],
+    description: "<p>Oil of something. No save: a man whose feet have gone is not resisting "
+      + "anything.</p>",
+    effect: { range: 3, condition: "offBalance", duration: 1 }
+  },
+  {
+    name: "The Quick Dose", strength: 3, pool: "mind", source: "Poison",
+    needs: ["skill cards set aside to pay for a formula"],
+    description: "<p>Adjacent, because it has to go in them. Two rounds, two damage a round, and "
+      + "armour is no part of the conversation.</p>",
+    effect: {
+      verb: "cast", condition: "poisoned", intensity: 2, duration: 2, resist: "might", dc: 7
+    }
+  },
+  {
+    /*
+     * Poisoned 0 -- all nausea, no damage -- is why `intensity` has a floor of 0 rather than 1
+     * (data/cards.mjs). This is the formula that floor was written for, and it was written before
+     * this one existed to need it.
+     */
+    name: "The Long Dose", strength: 1, pool: "mind", source: "Poison",
+    needs: ["skill cards set aside to pay for a formula"],
+    description: "<p>No damage at all. Three rounds of a man who cannot use his off hand, which "
+      + "in a fight is worse than three damage and lasts longer.</p>",
+    effect: {
+      verb: "cast", range: 2, condition: "poisoned", intensity: 0, duration: 3,
+      resist: "might", dc: 5
+    }
+  },
+  {
+    name: "The Grey Sickness", strength: 2, pool: "mind", source: "Poison",
+    needs: ["skill cards set aside to pay for a formula"],
+    description: "<p>Not a poison. A disease, which is the difference between a bad afternoon and "
+      + "something still with them next week.</p>",
+    effect: {
+      verb: "tainting", param: 1, resist: "might", dc: 7, text: "slow: a disease, not a poison"
+    }
+  },
+  {
+    name: "The Shared Cup", strength: 4, pool: "mind", source: "Poison",
+    needs: ["skill cards set aside to pay for a formula", "a condition applied to an area"],
+    description: "<p>Everyone who drank. Three rounds of it, over three squares, and the save is "
+      + "the only mercy in the formula.</p>",
+    effect: {
+      verb: "cast", area: 3, areaKind: "aimed",
+      condition: "poisoned", intensity: 1, duration: 3, resist: "might", dc: 7
+    }
+  },
+  {
+    /*
+     * The school's 5, and the only price in the game that is REFUNDED: kill the man and you set
+     * nothing aside. A poisoner who finishes the job pays nothing, and one who does not pays five
+     * skill cards -- which is the school's axis, Control, written as a bill.
+     */
+    name: "The Kingmaker's Draught", strength: 5, pool: "mind", source: "Poison",
+    needs: ["skill cards set aside to pay for a formula",
+      "a price refunded when the target dies carrying the condition"],
+    description: "<p>Three rounds of three, no save, and no cost at all if it finishes him. If it "
+      + "does not, you have paid five cards for an angry survivor who knows your face.</p>",
+    effect: {
+      condition: "poisoned", intensity: 3, duration: 3,
+      text: "no save. If it dies while poisoned, set aside no skill cards for this formula"
+    }
+  },
+
+  /*
+   * --- Glamour, seven formulas, and the school the engine was readiest for ---
+   *
+   * An elven debt is the price, and nobody computes a debt -- the GM holds it, the way a secret and
+   * a pact are held -- so it is not in the gap column (way-cards 3.4). What is left is conditions
+   * and saving throws, and three of the seven need nothing at all.
+   *
+   * **Blessed and Cursed exist and nothing cast them** (way-cards 1.7), which was true of Cursed
+   * until this list: *A Word for You* blesses and nothing anywhere cursed. *The Evil Eye* is the
+   * other half of a pair that has been half-built since conditions.md was written.
+   */
+  {
+    name: "Wrong Face", strength: 2, pool: "mind", source: "Glamour",
+    needs: [],
+    description: "<p>Your face is briefly somebody they were not expecting. Two rounds of trying "
+      + "to work out what they are looking at.</p>",
+    effect: { verb: "cast", condition: "dazed", duration: 2, resist: "wits", dc: 7 }
+  },
+  {
+    name: "The Evil Eye", strength: 2, pool: "mind", source: "Glamour",
+    needs: [],
+    description: "<p>A temporary Miss in their fate deck, until it is drawn. The condition "
+      + "shuffles the card in by itself (core-rules 6), which is why the pair of these needed no "
+      + "mechanism of their own.</p>",
+    effect: { range: 3, condition: "cursed" }
+  },
+  {
+    name: "Ink Spray", strength: 1, pool: "mind", source: "Glamour",
+    needs: ["ending a condition over a whole area",
+      "a condition nobody may gain for a round"],
+    description: "<p>Two squares of ink in the air. Nobody in it is invisible, and nobody in it "
+      + "is going to be.</p>",
+    effect: {
+      verb: "blast", area: 2,
+      text: "end Invisible in the area, and nothing in it may become Invisible until your next turn"
+    }
+  },
+  {
+    /*
+     * The ending is built -- `shake` has ended a named condition since the first potion -- and the
+     * second half is not. Granting ONE ally an extra secondary is not the job *The Red Hour* wants
+     * (every ally in an area, at a Health cost per head), so it is a second gap rather than the
+     * same one worded twice: building this would finish this card and not that one.
+     */
+    name: "A Clear Head", strength: 1, pool: "mind", source: "Glamour",
+    needs: ["an ally granted an extra secondary this turn"],
+    description: "<p>You say the thing they needed to hear, and they come back to themselves in "
+      + "time to do something about it.</p>",
+    effect: {
+      verb: "shake", param: 1, condition: "dazed", range: 3,
+      text: "and they may play a secondary this turn even if they already have"
+    }
+  },
+  {
+    name: "The Crowded Room", strength: 4, pool: "mind", source: "Glamour",
+    needs: ["an enemy that attacks its own side"],
+    description: "<p>For one round nobody can tell who is who, and the fate deck decides who "
+      + "swings at whom. It is as likely to help them as you.</p>",
+    effect: {
+      text: "until your next turn every enemy attacks a random figure in reach, chosen by a "
+        + "fate draw"
+    }
+  },
+  {
+    name: "The Face of a Friend", strength: 3, pool: "mind", source: "Glamour",
+    needs: ["an enemy that counts you as an ally"],
+    description: "<p>It will not attack you. It will take a hit meant for you. It will do both "
+      + "until the moment you attack it, and then it will remember everything.</p>",
+    effect: {
+      range: 3,
+      text: "one enemy treats you as an ally -- it will not attack you and will take a hit for "
+        + "you -- until you attack it"
+    }
+  },
+  {
+    /*
+     * The school's 5 and the only one of the eighty-five that has no combat behaviour at all. That
+     * is Glamour's thesis: the fight you do not have is the one a glamourist wins.
+     */
+    name: "The Long Masquerade", strength: 5, pool: "mind", source: "Glamour",
+    needs: [],
+    description: "<p>Out of combat: you and your whole party are other people for a day. Only "
+      + "magic sees through it, and most places have none.</p>",
+    effect: {
+      text: "out of combat: you and your whole party appear to be other people for a day"
+    }
+  },
+
+  /*
+   * --- Tattoo Magic, six formulas, and all six are the SAME gap ---
+   *
+   * A tattoo is never prepared: it spends its slots for good and is always on. The slate holds the
+   * slots (`strength`) and the drain machinery, and has nowhere to put a standing BONUS, because
+   * until this school a spell only ever did something when cast. *Graven Strength* named that gap
+   * as the whole school's and it was right -- all seven of the school's formulas carry it.
+   *
+   * The price, a secret the GM writes down, is not a gap. It is not even a cost in the engine's
+   * sense: it is a hostage.
+   */
+  {
+    name: "Graven Eye", strength: 1, pool: "mind", source: "Tattoo Magic",
+    needs: ["a permanent formula that is never prepared and carries a bonus"],
+    description: "<p>An eye on the back of your neck that is not decorative. You are never "
+      + "surprised again, and you never sleep quite as well.</p>",
+    effect: { text: "permanent: you are never surprised" }
+  },
+  {
+    name: "Graven Shield", strength: 2, pool: "mind", source: "Tattoo Magic",
+    needs: ["a permanent formula that is never prepared and carries a bonus"],
+    description: "<p>A shield you cannot put down, drawn across your back by somebody who knew "
+      + "what they were doing.</p>",
+    effect: { text: "permanent: +1 armor" }
+  },
+  {
+    name: "Graven Road", strength: 1, pool: "mind", source: "Tattoo Magic",
+    needs: ["a permanent formula that is never prepared and carries a bonus"],
+    description: "<p>A road down the inside of both legs. Slowed, Burdened and Overloaded all "
+      + "still land on you; none of them slows you down.</p>",
+    effect: { text: "permanent: your Move is never halved" }
+  },
+  {
+    /*
+     * The one tattoo with a drawback rather than a price, and it is a drawback the engine would
+     * have to tell a lie to carry: Burdened is DERIVED from what you are carrying (data/actors.mjs),
+     * so a Burdened that an empty pack does not lift is a second mechanism wearing its name.
+     */
+    name: "Graven Armour", strength: 4, pool: "mind", source: "Tattoo Magic",
+    needs: ["a permanent formula that is never prepared and carries a bonus",
+      "Burdened that no amount of dropping weight lifts"],
+    description: "<p>Plate, in ink, over everything. It weighs nothing and you are never again "
+      + "anything but weighed down.</p>",
+    effect: { text: "permanent: +3 armor, and you count as Burdened always, whatever you carry" }
+  },
+  {
+    name: "Graven Heart", strength: 3, pool: "mind", source: "Tattoo Magic",
+    needs: ["a permanent formula that is never prepared and carries a bonus"],
+    description: "<p>A second heart, drawn over the first. The GM writes down a secret worth six "
+      + "Health, and you will find out which one when it matters.</p>",
+    effect: { text: "permanent: +6 max Health" }
+  },
+  {
+    /*
+     * The school's 5, and the one formula in the game that takes the school away: a mage covered
+     * in the whole skin is a fighter with good armour and no book. Four slots of standing bonus
+     * for every slot you will ever have.
+     */
+    name: "The Whole Skin", strength: 5, pool: "mind", source: "Tattoo Magic",
+    needs: ["a permanent formula that is never prepared and carries a bonus",
+      "immunity to a named condition, which nothing grants",
+      "a ban on preparing any further spell"],
+    description: "<p>There is no skin left to write on. It is the last thing you ever learn, and "
+      + "afterwards you are something else wearing a mage's name.</p>",
+    effect: {
+      text: "permanent: +2 Strike, +2 armor, +4 Health, and Burning never lands. You may never "
+        + "prepare another spell"
+    }
+  },
+
+  /*
+   * --- Asceticism, six formulas, and the school that reads your own hand ---
+   *
+   * Two different emptinesses, and keeping them apart is the whole of this school's wiring:
+   *
+   * - an empty **card hand**, which *Nothing Left to Take* and *The Empty Deck* read; and
+   * - empty **hands**, meaning no item held, which *Empty Hand* and *Nothing to Carry* read.
+   *
+   * The engine knows about a free hand (`needsFreeHand`, `requires.bothHands`) because casting and
+   * two-handed weapons needed it, and it has never been asked whether BOTH hands hold nothing.
+   * Those are two gaps with two names on purpose; one word covering both would be the kind of merge
+   * that finishes neither card.
+   *
+   * The price is parts of your body, and unlike a secret or a debt this one the engine does keep:
+   * hands are what hold items.
+   */
+  {
+    name: "Empty Hand", strength: 1, pool: "mind", source: "Asceticism",
+    needs: ["empty hands as a state the engine can read",
+      "a Strike made with no item, at your own Might"],
+    description: "<p>No weapon, and no need of one. It is not a better Strike than a sword; it is "
+      + "a Strike you cannot be parted from.</p>",
+    effect: { text: "while your hands are empty you may Strike with no item, at your own Might" }
+  },
+  {
+    name: "Nothing to Carry", strength: 1, pool: "mind", source: "Asceticism",
+    needs: ["empty hands as a state the engine can read"],
+    description: "<p>Nothing in either hand, and nothing anybody can take out of them. The bonus "
+      + "to Casts is incidental; the point is that Disarm stops being a word.</p>",
+    effect: {
+      text: "while both hands are empty: +2 to all Casts, and you cannot be Disarmed"
+    }
+  },
+  {
+    name: "The Last Card", strength: 2, pool: "mind", source: "Asceticism",
+    needs: ["playing one card for both halves"],
+    description: "<p>One card left, and it does both jobs. A hand of one is the worst hand in the "
+      + "game and this is the formula that makes it the best.</p>",
+    effect: {
+      text: "while your hand is exactly one card, you may play that card for both halves"
+    }
+  },
+  {
+    /*
+     * The same gap *Nothing Left to Take* named, and deliberately the same STRING: a rule that can
+     * read an empty hand finishes both, which is the test for whether two gaps are one.
+     */
+    name: "The Empty Deck", strength: 4, pool: "mind", source: "Asceticism",
+    needs: ["a rule that reads your own hand being empty"],
+    description: "<p>Nothing in your hand, nothing left to draw, and nothing anybody can do to "
+      + "you. It is the shortest window in the game and it is absolute.</p>",
+    effect: {
+      text: "while your hand and your draw pile are both empty, you cannot be harmed at all"
+    }
+  },
+  {
+    name: "The Hand Given", strength: 3, pool: "mind", source: "Asceticism",
+    needs: ["a hand given up, which the engine counts for holding things",
+      "a bare Strike that counts as a weapon"],
+    description: "<p>It costs a hand. What is left strikes like a Heavy weapon, for ever, and you "
+      + "will never hold a shield again.</p>",
+    effect: { text: "permanent, and it costs a hand: your bare Strike is a Heavy weapon at Strike 4" }
+  },
+  {
+    /*
+     * The school's 5, and the only content in the game that argues with the deck floor: the
+     * minimum exists so a character cannot prune themselves into a deck of nothing (core-rules 8),
+     * and this spell sets a deck of four on purpose. The floor is a rule and this is an exception
+     * to it, which is exactly the kind of thing that must be in the schema rather than in prose.
+     */
+    name: "Nothing At All", strength: 5, pool: "mind", source: "Asceticism",
+    needs: ["a hand given up, which the engine counts for holding things",
+      "a deck size below the floor the rules set"],
+    description: "<p>Four cards, all of them in your hand, every turn. You have given away a hand "
+      + "and most of a deck, and what is left is a man who always has exactly the right card.</p>",
+    effect: {
+      text: "permanent: your action deck becomes 4 cards, you hold all four, and may play any two "
+        + "halves. Costs a hand"
+    }
+  },
+
+  /*
+   * --- Shadow Magic, six more, and a price that is already a field ---
+   *
+   * `wilds` was built when *Step Through* needed somewhere to put the school's price, and it was
+   * built as a NUMBER rather than a flag on purpose: "a strength-3 formula reaching further should
+   * cost more of the same thing" (data/items.mjs). *Become the Shadow* is what that was for -- five
+   * Wild cards, for good, which is a third of a fate deck a shadow mage can no longer predict.
+   *
+   * What the school does NOT have is a shadowed square. Every one of these reads one, and the map
+   * does not know which squares are dark; that is one gap shared by six formulas.
+   *
+   * **And *The Long Step* is the rule-3a case in a spell.** It does nothing unless you begin and
+   * end in shadow, which looks exactly like the gating an opening is forbidden to do (way-cards
+   * 1.6) -- except that where you are standing is yours to arrange and a drawn card is not. A
+   * caster who prepared this chose to fight in the dark.
+   */
+  {
+    name: "Longer Shadow", strength: 1, pool: "mind", source: "Shadow Magic",
+    wilds: 1,
+    needs: ["shadow as a state a square is in"],
+    description: "<p>The dark you are standing in reaches one square further, all the way "
+      + "round, which is enough to make the next formula work.</p>",
+    effect: { text: "until your next turn every square adjacent to you is shadowed" }
+  },
+  {
+    name: "The Long Step", strength: 1, pool: "mind", source: "Shadow Magic",
+    wilds: 1,
+    needs: ["shadow as a state a square is in"],
+    description: "<p>Four squares, through whatever is in between, so long as both ends are "
+      + "dark. Movement is a sentence the table applies (core-rules 11), so the only thing the "
+      + "engine would have to know is which squares are shadowed.</p>",
+    effect: { verb: "move", mod: 4, text: "through anything, if you begin and end in shadow" }
+  },
+  {
+    name: "Cast No Shadow", strength: 2, pool: "mind", source: "Shadow Magic",
+    wilds: 1,
+    needs: ["a limit on who may target you at all"],
+    description: "<p>For one round you are only there if they are standing next to you. Archers "
+      + "and casters are simply out of the conversation.</p>",
+    effect: { text: "until your next turn nothing further than 1 square away can target you" }
+  },
+  {
+    name: "The Shadow Road", strength: 4, pool: "mind", source: "Shadow Magic",
+    wilds: 1,
+    needs: ["shadow as a state a square is in"],
+    description: "<p>You take them with you. The whole front rank arrives behind the enemy line "
+      + "at once, which is the only thing in this school that wins a fight outright.</p>",
+    effect: {
+      area: 1,
+      text: "you and every ally within 1 teleport to any shadowed square on the map"
+    }
+  },
+  {
+    name: "The Borrowed Dark", strength: 3, pool: "mind", source: "Shadow Magic",
+    wilds: 1,
+    needs: ["shadow as a state a square is in"],
+    description: "<p>Every square on the map, dark at once &mdash; for your allies as much as for "
+      + "you, and for anyone else who knows what to do with it.</p>",
+    effect: { text: "until your next turn every square on the map is shadowed" }
+  },
+  {
+    /*
+     * The school's 5, and the only formula whose price is the reason not to cast it: five Wilds is
+     * a third of a fate deck gone unpredictable for ever. A shadow mage who casts this twice is
+     * playing a different game afterwards.
+     */
+    name: "Become the Shadow", strength: 5, pool: "mind", source: "Shadow Magic",
+    wilds: 5,
+    needs: ["shadow as a state a square is in", "a limit on who may target you at all"],
+    description: "<p>Not in a shadow: in every shadow, at once, until the fight ends. Nothing "
+      + "can reach you and you can reach anything standing in the dark.</p>",
+    effect: {
+      text: "until the fight ends you are in every shadow at once: Strike from any shadowed "
+        + "square, and nothing can target you"
+    }
+  },
+
+  /*
+   * --- Spiritualism's last rung ---
+   *
+   * The same gap Call the Unquiet named, and the same string: a god standing on the board and a
+   * corpse standing on the board are one piece of work. What is different is who decides what it
+   * does, and that is the GM both times.
+   */
+  {
+    name: "The Great Bargain", strength: 5, pool: "mind", source: "Spiritualism",
+    needs: ["a figure a spell puts on the map"],
+    description: "<p>It is actually here. The GM plays it as an ally for the rest of the fight, "
+      + "and afterwards it takes something the GM chooses &mdash; which is the only honest way to "
+      + "price a favour that large.</p>",
+    effect: {
+      text: "a minor god becomes present and fights as an ally for the rest of the fight"
+    }
+  },
+
+  /*
+   * --- Household Magic, six formulas, and not one of them is cast in a fight ---
+   *
+   * All six are rituals, so all six carry the gap *Hearth and Home* named: `strength` is required
+   * and runs 1 to 5 (data/items.mjs), and a ritual costs no slots at all. Six formulas written as
+   * numbers that are standing in for nothing.
+   *
+   * This is the school a party notices most and the engine notices least, which is the clearest
+   * case in the twelve of the difference between a rule and a sentence.
+   */
+  {
+    name: "The Clean Pot", strength: 1, pool: "mind", source: "Household Magic",
+    needs: ["a ritual, which costs no slots at all"],
+    description: "<p>Food never spoils and water is always safe. A day's rations for the party, "
+      + "every day, for ever &mdash; which quietly deletes a whole column of the equipment "
+      + "list.</p>",
+    effect: { text: "ritual: a day's rations for the party, every day" }
+  },
+  {
+    /*
+     * Corrode eats armour permanently (core-rules 8) and nothing in the game ever put it back.
+     * This is the inverse, and it is the one Household formula whose effect the engine would have
+     * to compute rather than narrate.
+     */
+    name: "The Mended Seam", strength: 1, pool: "mind", source: "Household Magic",
+    needs: ["a ritual, which costs no slots at all",
+      "repairing an item, which Corrode has no inverse for"],
+    description: "<p>One item, overnight, including corroded armour &mdash; which until now was "
+      + "the only damage in the game nothing undid.</p>",
+    effect: { text: "ritual: repair one item overnight, including corroded armour" }
+  },
+  {
+    name: "The Unlatched Door", strength: 2, pool: "mind", source: "Household Magic",
+    needs: ["a ritual, which costs no slots at all"],
+    description: "<p>Any door or lock that was ever opened by somebody who lived there opens for "
+      + "you. Most doors were, which is the joke and also the spell.</p>",
+    effect: { text: "ritual: a door ever opened by one who lived there opens for you" }
+  },
+  {
+    name: "The House That Was", strength: 4, pool: "mind", source: "Household Magic",
+    needs: ["a ritual, which costs no slots at all",
+      "a rest that counts as a night in a town"],
+    description: "<p>Overnight a ruin is a house again: warm, defensible, and worth sleeping in. "
+      + "The party rests as though they had reached somewhere.</p>",
+    effect: { text: "ritual: overnight a ruin becomes a house, and the party rests as in a town" }
+  },
+  {
+    name: "The Long Table", strength: 3, pool: "mind", source: "Household Magic",
+    needs: ["a ritual, which costs no slots at all",
+      "every Wound shed and every rest token returned"],
+    description: "<p>One meal, taken together, and nobody is carrying anything from before it. "
+      + "Once a day, and the elf-kin keep the tally &mdash; which is this school's price doing "
+      + "exactly what a price should.</p>",
+    effect: { text: "ritual: the party sheds every Wound and all rest tokens return. Once a day" }
+  },
+  {
+    name: "The Door Home", strength: 5, pool: "mind", source: "Household Magic",
+    needs: ["a ritual, which costs no slots at all"],
+    description: "<p>A door you have opened before becomes a door to any other door you have "
+      + "opened before. It is the school's thesis: a householder is never far from anywhere "
+      + "they have been.</p>",
+    effect: { text: "ritual: a door you have opened leads to any other you have opened. Once a day" }
+  },
+
+  /*
+   * --- Ward Magic, seven formulas, and the only school whose axis is reactions ---
+   *
+   * Two reaction keys live on a spell rather than a card (config.mjs): `unmake`, which answers a
+   * **cast**, and `mend`, which answers an **ally being hit**. Both were built for this school and
+   * both are event sites rather than effects -- which is why three of these name a `reaction` and
+   * then name a gap for what the reaction DOES.
+   *
+   * Spent is the price, and on a thing that was never in your hand Spent means the slate drains
+   * until a rest. That machinery has been here since item abilities.
+   */
+  {
+    name: "Turn Aside", strength: 2, pool: "mind", source: "Ward Magic",
+    reaction: "mend",
+    needs: ["an ally's Block counted double for one attack"],
+    description: "<p>You do not stop the blow; you make their shield worth twice what it was for "
+      + "exactly as long as it takes.</p>",
+    effect: { range: 3, text: "reaction: one ally's Block counts double against this attack" }
+  },
+  {
+    name: "The Shut Mouth", strength: 2, pool: "mind", source: "Ward Magic",
+    needs: [],
+    description: "<p>A caster who cannot speak is a man in a robe. Lore resists it, because the "
+      + "ones who understand the word are the ones who can get out from under it.</p>",
+    effect: {
+      verb: "cast", range: 3, condition: "silenced", duration: 1, resist: "lore", dc: 7
+    }
+  },
+  {
+    /*
+     * Shake Off 3 ends anything the game can print, and the verb has existed since the first
+     * potion. What is new is the TIMING: this is the same mechanism on somebody else's turn, which
+     * `mend` is the event site for.
+     */
+    name: "Shake It Off", strength: 2, pool: "mind", source: "Ward Magic",
+    reaction: "mend",
+    needs: [],
+    description: "<p>Whatever is on them, off, on the turn it happened rather than on yours. "
+      + "Three is enough for anything the game can print.</p>",
+    effect: { verb: "shake", param: 3, range: 3 }
+  },
+  {
+    name: "The Unbound Tongue", strength: 1, pool: "mind", source: "Ward Magic",
+    needs: [],
+    description: "<p>The cheapest formula in the school and the one that beats the school: a "
+      + "warder with this prepared cannot be silenced out of the fight.</p>",
+    effect: { verb: "shake", param: 1, condition: "silenced", range: 3 }
+  },
+  {
+    name: "The Standing Ward", strength: 4, pool: "mind", source: "Ward Magic",
+    needs: ["no Cast resolving at all, for a round"],
+    description: "<p>Spent: for one round there is no magic on the field. Yours included, which "
+      + "is what makes this a ward and not an attack.</p>",
+    effect: { text: "Spent: until your next turn no Cast resolves at all, anywhere -- yours too" }
+  },
+  {
+    name: "The Mirror", strength: 3, pool: "mind", source: "Ward Magic",
+    reaction: "unmake",
+    needs: ["a Cast that resolves against its own caster"],
+    description: "<p>Not stopped. Returned, in full, to the man who sent it &mdash; which is "
+      + "worse for him than for you and is the whole reason to prepare this instead of Unmake.</p>",
+    effect: { text: "reaction, Spent: a Cast aimed at you resolves against its own caster" }
+  },
+  {
+    /*
+     * The school's 5, and the only content in the game that reaches into another character's
+     * SHEET: the slot stays and the spell leaves it. That is a day-long edit to somebody else's
+     * prepared list, which nothing else in the engine does.
+     */
+    name: "The Broken Word", strength: 5, pool: "mind", source: "Ward Magic",
+    needs: ["a spell unlearned by its caster for a day"],
+    description: "<p>They still have the slot. They no longer have the words, and will not until "
+      + "tomorrow &mdash; which to a caster is worse than a wound.</p>",
+    effect: {
+      text: "Spent: one spell or miracle is unlearned by its caster for the rest of the day"
+    }
+  },
+
+  /*
+   * --- Divination, five more, and the school that pays in somebody else's turn ---
+   *
+   * `foresee` is a declared verb and reading a fate deck is not built (the same gap *The Reading*
+   * named), so four of the six carry one string between them. The prophecy half is the GM's and is
+   * not a gap: a prophecy the player does not get to read is not something the engine could keep.
+   */
+  {
+    name: "Where It Will Land", strength: 1, pool: "mind", source: "Divination",
+    needs: ["reading the top of a fate deck"],
+    description: "<p>Your own deck, one card down. The cheapest certainty in the game.</p>",
+    effect: { verb: "foresee", param: 1, text: "on your own fate deck" }
+  },
+  {
+    name: "The Mark of Things to Come", strength: 2, pool: "mind", source: "Divination",
+    needs: ["reading the top of a fate deck"],
+    description: "<p>Marked at any range, and you know what its luck is about to do. The "
+      + "condition lands by itself; the reading is the half that does not.</p>",
+    effect: { range: 99, condition: "marked", duration: 1, text: "and Read 1 on its fate deck" }
+  },
+  {
+    name: "The Long Look", strength: 3, pool: "mind", source: "Divination",
+    needs: [],
+    description: "<p>One question about the next scene, answered truthfully &mdash; and the GM "
+      + "writes a prophecy you do not get to read. The price is the better half of the "
+      + "formula.</p>",
+    effect: {
+      text: "out of combat: one true answer about the next scene, and the GM writes a prophecy"
+    }
+  },
+  {
+    name: "The Open Book", strength: 4, pool: "mind", source: "Divination",
+    needs: ["reading the top of a fate deck", "advantage granted to every ally for a round"],
+    description: "<p>For one round the whole party is lucky and you can see why. Two cards down "
+      + "each of their decks, and a better draw on top of it.</p>",
+    effect: {
+      text: "until your next turn every ally draws fate with advantage, and Read 2 on each deck"
+    }
+  },
+  {
+    /*
+     * The school's 5, and it is read before the fight starts rather than during it -- which is
+     * what Preparation means in a school whose axis is Support. Three prophecies is the largest
+     * price in the twelve that the engine does not touch at all.
+     */
+    name: "The Whole Thread", strength: 5, pool: "mind", source: "Divination",
+    needs: ["an enemy's intent cards, shown in order"],
+    description: "<p>The whole fight, in order, before it starts. The GM writes three prophecies "
+      + "for it, and a diviner who uses this twice in a week is in a story they no longer "
+      + "steer.</p>",
+    effect: {
+      text: "before the fight: the GM shows the enemy's intent cards for the whole fight, in order"
+    }
+  },
 ];
 
 /* -------------------------------------------- */
@@ -2694,7 +3452,423 @@ export const FAITH_POOL = [
     description: "<p>When you would drop to 0 Health, drop to 1 instead &mdash; and lose a spell "
       + "slot permanently.</p>",
     effect: { text: "drop to 1 instead of 0, and lose a spell slot for good" }
-  }
+  },
+
+  /*
+   * --- The Eternal God, four miracles, and the one that reads its own opening ---
+   *
+   * *The Weight of It* only works on a **Judged** enemy, which looks like the gating an opening is
+   * forbidden to do (way-cards 1.6) -- and is not, for the reason rule 3a gives: Judged is applied
+   * by *Name the Guilty*, which is a miracle of the same god and in the same book. A priest who
+   * prepared both arranged this; nobody is waiting on a draw.
+   */
+  {
+    name: "The Weight of It", strength: 2, pool: "faith", source: "The Eternal God",
+    needs: ["armour counted as zero against everyone"],
+    description: "<p>Named, and then weighed. For one round its armour is worth nothing to "
+      + "anybody on the field, which is a gift to the whole line rather than to you.</p>",
+    effect: {
+      range: 6,
+      text: "a Judged enemy's armor counts 0 against everyone until your next turn"
+    }
+  },
+  {
+    /*
+     * The only content in the game that makes a spell CHEAPER, and it is priced in the one
+     * resource a priest of the clean body is supposed to spend: cards. A ten-card deck is four
+     * below a Warrior's and the reason to accept that is here.
+     */
+    name: "The Narrow Path", strength: 1, pool: "faith", source: "The Eternal God",
+    needs: ["a slot cost that a deck size changes"],
+    description: "<p>Less to carry, less to remember, and the words come easier. A thin deck is "
+      + "the clean body, written as arithmetic.</p>",
+    effect: {
+      text: "while your action deck is 10 cards or fewer, your miracles cost 1 slot less (min 1)"
+    }
+  },
+  {
+    name: "The Clean Field", strength: 4, pool: "faith", source: "The Eternal God",
+    needs: ["an enemy that loses a half"],
+    description: "<p>For one round nobody on the other side does anything but their main business. "
+      + "It is the same mechanism as Fagar's small trick, over the whole field.</p>",
+    effect: { text: "until your next turn no enemy may play a secondary" }
+  },
+  {
+    name: "The Body Made Clean", strength: 5, pool: "faith", source: "The Eternal God",
+    needs: ["healing and lifting over every ally at once",
+      "a deck size an effect sets until the day ends"],
+    description: "<p>Everybody whole, and nothing on anybody. You will play the rest of the day "
+      + "out of six cards, which is the god's point: the body is clean and the hand is "
+      + "empty.</p>",
+    effect: {
+      text: "every ally is healed to full and every condition is Lifted and Shaken off. Your "
+        + "action deck is 6 cards for the rest of the day"
+    }
+  },
+
+  /*
+   * --- The Eternal Spirit, four miracles, and the only one that takes a condition onto itself ---
+   */
+  {
+    name: "Bear It for Them", strength: 2, pool: "faith", source: "The Eternal Spirit",
+    reaction: "mend",
+    needs: ["a condition moved from one figure to another"],
+    description: "<p>Whatever is on them is on you instead, at its full duration. The Spirit's "
+      + "priests are the only ones who can do this and the only ones who would.</p>",
+    effect: { range: 3, text: "reaction: move one condition off an ally and onto yourself" }
+  },
+  {
+    /*
+     * Blessed and Cursed each shuffle a card into a fate deck by themselves (core-rules 6), so
+     * lifting the condition takes its card with it -- the condition OWNS the card. That is why
+     * this miracle, which reads as though it needed a second mechanism, needs none.
+     */
+    name: "A Word Withdrawn", strength: 1, pool: "faith", source: "The Eternal Spirit",
+    needs: [],
+    description: "<p>The marker and the card both: a blessing withdrawn is a Critical taken back "
+      + "out of the deck, and a curse withdrawn is a Miss. It works on anybody, including the "
+      + "enemy you blessed by mistake.</p>",
+    effect: { verb: "lift", range: 3, condition: "blessed", text: "or Cursed" }
+  },
+  {
+    name: "The Air Between", strength: 4, pool: "faith", source: "The Eternal Spirit",
+    needs: ["an extra reaction on one trigger"],
+    description: "<p>For one round everybody answers twice. The reaction policy allows one per "
+      + "trigger and this is the only thing in the game that argues with it.</p>",
+    effect: { text: "until your next turn every ally may take one extra reaction per trigger" }
+  },
+  {
+    name: "Breath for the Dying", strength: 5, pool: "faith", source: "The Eternal Spirit",
+    needs: ["an event when a figure's Health reaches zero",
+      "a ban on carrying anything for the rest of the day"],
+    description: "<p>Everybody who had fallen is standing, at half. You will carry nothing at all "
+      + "until tomorrow, which in a dungeon is a real price and not a flourish.</p>",
+    effect: {
+      text: "every ally at 0 Health stands at half Health. You may carry nothing for the rest "
+        + "of the day"
+    }
+  },
+
+  /*
+   * --- Sessyfyn, three miracles, and a price that was already a condition ---
+   *
+   * *The Turning Tide* pays with "a temporary Miss in your own fate deck", which is **Cursed**
+   * exactly as conditions.md defines it -- so the god's price needed no mechanism at all. It is the
+   * clearest case in the twenty-four of a price that was already in the engine under another name.
+   */
+  {
+    name: "The Turning Tide", strength: 2, pool: "faith", source: "Sessyfyn",
+    reaction: "mend",
+    needs: ["a reaction trigger on an ally's turn"],
+    description: "<p>The sea is not fair. They draw again and must keep the second card, and a "
+      + "Miss joins your own deck for having asked.</p>",
+    effect: {
+      range: 3, condition: "cursed",
+      text: "reaction: an ally redraws a fate card and keeps the second. The Cursed is yours"
+    }
+  },
+  {
+    name: "The Spring Tide", strength: 4, pool: "faith", source: "Sessyfyn",
+    needs: ["two fate draws that both apply"],
+    description: "<p>For one round the whole party has the tide with them: two cards each, and "
+      + "both of them count.</p>",
+    effect: { text: "until your next turn every ally draws fate twice and keeps both" }
+  },
+  {
+    /*
+     * The god's 5, and the only miracle that changes the game rather than the fight: one deck for
+     * everybody means your luck and theirs are the same luck. A priest of the sea thinks that is
+     * obviously correct.
+     */
+    name: "The Sea Decides", strength: 5, pool: "faith", source: "Sessyfyn",
+    needs: ["one fate deck shared by the whole field"],
+    description: "<p>Every fate deck on the field, shuffled into one. For the rest of the fight "
+      + "nobody has their own luck, which is the fairest thing the sea has ever done.</p>",
+    effect: { text: "shuffle every fate deck on the field into one; everyone draws from it" }
+  },
+
+  /*
+   * --- Valtor, three miracles, and a price that is NOT a gap ---
+   *
+   * Every miracle of Valtor's costs Strain, and Strain is a cost a card half pays
+   * (data/items.mjs). On a miracle it is an **obedience** -- the GM's, like a vow -- which is why
+   * none of these carries a gap for it. The war god counts his priest's blood first and the engine
+   * is not asked to do the counting.
+   */
+  {
+    name: "The Charge", strength: 2, pool: "faith", source: "Valtor",
+    needs: [],
+    description: "<p>Strain 2, and the whole line moves at once. Movement is a sentence the table "
+      + "applies (core-rules 11), so this miracle is finished as written.</p>",
+    effect: {
+      area: 2, text: "Strain 2: every ally within 2 may Move their full value, at once, now"
+    }
+  },
+  {
+    name: "The War Drum", strength: 4, pool: "faith", source: "Valtor",
+    needs: ["a whole turn taken again, now"],
+    description: "<p>Strain 3, and everybody near you goes again. The same mechanism Blood "
+      + "Magic's thesis wants, bought with pain instead of blood.</p>",
+    effect: {
+      area: 2, text: "Strain 3: every ally within 2 takes their whole turn again, now"
+    }
+  },
+  {
+    name: "Valtor's Own", strength: 5, pool: "faith", source: "Valtor",
+    needs: ["two secondaries every turn until the fight ends"],
+    description: "<p>Your whole hand, strained, and for the rest of the fight you act like three "
+      + "men. There is nothing left to play it with, which is the god's idea of a bargain.</p>",
+    effect: {
+      text: "Strain your entire hand: for the rest of the fight you play a primary and two "
+        + "secondaries each turn"
+    }
+  },
+
+  /*
+   * --- Fagar, three miracles, and the intent cards ---
+   *
+   * Two miracles of two different gods want to look at the enemy's **intent card** -- Fagar's
+   * small one and Divination's thesis -- and they carry one string between them, because showing a
+   * player an intent card is one piece of work whichever god asked.
+   */
+  {
+    name: "The Second Face", strength: 1, pool: "faith", source: "Fagar",
+    needs: ["an enemy's intent cards, shown in order"],
+    description: "<p>Spent: you know what one of them is going to do before anybody moves. "
+      + "Fagar's whole theology is that this is enough.</p>",
+    effect: { text: "Spent: read one enemy's intent card for this round before anyone acts" }
+  },
+  {
+    name: "The Mask of the Captain", strength: 4, pool: "faith", source: "Fagar",
+    needs: ["playing an enemy's turn for them"],
+    description: "<p>For one round it is yours: you play its turn, with its cards, against its "
+      + "own side. The trick works once and everybody remembers your face afterwards.</p>",
+    effect: { text: "one enemy obeys you for a round -- you play its turn" }
+  },
+  {
+    name: "Everyone Wears His Face", strength: 5, pool: "faith", source: "Fagar",
+    needs: ["an enemy that attacks its own side"],
+    description: "<p>For one round no enemy can tell friend from foe, and every attack they make "
+      + "lands on one of their own. It is the same mechanism Glamour's 4 wants, done once and "
+      + "for certain rather than at random.</p>",
+    effect: { text: "until your next turn every enemy attack targets another enemy" }
+  },
+
+  /*
+   * --- Vulpet, three miracles, and the god who makes you worth helping least ---
+   */
+  {
+    name: "Nobody's Friend", strength: 2, pool: "faith", source: "Vulpet",
+    needs: ["an ally forbidden to heal or shield one figure"],
+    description: "<p>One of them is alone now: nobody will heal it, step in front of it or take a "
+      + "hit for it. Vulpet's priests understand this condition from the inside.</p>",
+    effect: {
+      range: 3,
+      text: "until your next turn no ally may Heal, Interpose for, or redirect a hit from one enemy"
+    }
+  },
+  {
+    name: "The Driven Out", strength: 4, pool: "faith", source: "Vulpet",
+    needs: ["a condition applied to an area", "Block that counts how many it caught"],
+    description: "<p>Everything within three squares wants you and nothing else, and you are "
+      + "three Block better off for each one of them. It is a good trade and a terrible "
+      + "position.</p>",
+    effect: {
+      area: 3, condition: "compelled", duration: 1, resist: "presence", dc: 7,
+      text: "and you gain Block 3 for each enemy Compelled"
+    }
+  },
+  {
+    /*
+     * The god's 5, and the only miracle whose drawback is the whole point: you have removed the
+     * fight and you are lying on the floor by yourself when it comes back. Vulpet is the god of
+     * the outcast and this is what she offers.
+     */
+    name: "The Land Beneath", strength: 5, pool: "faith", source: "Vulpet",
+    needs: ["a figure taken off the board and put back later",
+      "an effect that resolves on a later turn"],
+    description: "<p>The ground opens and takes them. They are back at the start of your third "
+      + "turn, and you are Prone, and alone, and it is entirely your own doing.</p>",
+    effect: {
+      area: 2,
+      text: "every enemy within 2 is gone until the start of your third turn. You are Prone"
+    }
+  },
+
+  /*
+   * --- Brendan, three miracles, and all three resolve on a turn that has not happened ---
+   *
+   * One string between them, and it is the string *On the Third Day* named: growth out of barren
+   * ground is a god whose miracles are all delayed, and a delayed effect is one mechanism however
+   * many turns it waits.
+   */
+  {
+    name: "The Slow Mercy", strength: 2, pool: "faith", source: "Brendan",
+    needs: ["an effect that resolves on a later turn"],
+    description: "<p>Name them now. At the start of your third turn they are whole, which is "
+      + "either too late or exactly right.</p>",
+    effect: {
+      range: 3, text: "at the start of your third turn after this, one named ally is healed to full"
+    }
+  },
+  {
+    name: "The Orchard", strength: 4, pool: "faith", source: "Brendan",
+    needs: ["an effect that resolves on a later turn"],
+    description: "<p>Two turns from now the whole party heals four and sheds something. Planting "
+      + "is the god's only verb.</p>",
+    effect: {
+      text: "at the start of your second turn after this, every ally heals 4 and sheds one "
+        + "condition"
+    }
+  },
+  {
+    /*
+     * The god's 5, and it raises the dead on a four-turn delay -- which means casting it is a bet
+     * that the fight lasts. Brendan does not do anything quickly and will not start now.
+     */
+    name: "What Grows Out of Us", strength: 5, pool: "faith", source: "Brendan",
+    needs: ["an effect that resolves on a later turn", "a figure a spell puts on the map"],
+    description: "<p>Four turns. Then everybody stands up, including the ones who had stopped "
+      + "being people and started being ground.</p>",
+    effect: {
+      text: "at the start of your fourth turn after this, every ally including the dead stands "
+        + "at full Health"
+    }
+  },
+
+  /*
+   * --- The Grey, three miracles, all adjacent, and the shortest card in the game ---
+   */
+  {
+    name: "The Close Work", strength: 2, pool: "faith", source: "The Grey",
+    reaction: "parry",
+    needs: ["an enemy that attacks its own side"],
+    description: "<p>You move his arm. The man behind him takes it, and neither of them "
+      + "understands what happened.</p>",
+    effect: { text: "reaction, adjacent: an enemy's Strike hits the nearest other enemy instead" }
+  },
+  {
+    name: "The Grey Hour", strength: 4, pool: "faith", source: "The Grey",
+    needs: ["a reaction that stops an action",
+      "a trigger at the start of an enemy's turn"],
+    description: "<p>Its whole turn does not happen. Not interrupted &mdash; it simply never "
+      + "took place, and the round moves on without it.</p>",
+    effect: { text: "reaction, adjacent: an adjacent enemy's whole turn does not happen" }
+  },
+  {
+    /*
+     * The god's 5, and the only content in the game that kills without a draw. It is a sentence
+     * long because there is nothing to resolve: no save, no fate card, no armour, no Block. The
+     * price is the god's own, paid continuously, and the knife is the whole theology.
+     */
+    name: "The Silent Knife", strength: 5, pool: "faith", source: "The Grey",
+    needs: ["a kill with no draw and no save of any kind"],
+    description: "<p>Adjacent only. One enemy is dead. There is no roll of any kind, which is "
+      + "what a god of the silent approach has instead of a spell.</p>",
+    effect: { text: "adjacent: one enemy is dead. No save, no fate draw, no roll of any kind" }
+  },
+
+  /*
+   * --- The Purple, three miracles, and a disease is not a poison ---
+   *
+   * `tainting` is a built verb with a slow and a fast form (config.mjs), which is why this god's
+   * small miracles need nothing: the mechanism arrived with Taint itself.
+   */
+  {
+    name: "The Brewer's Tithe", strength: 2, pool: "faith", source: "The Purple",
+    needs: [],
+    description: "<p>Slow, and still there next week. A disease rather than a poison, which is "
+      + "the distinction the whole cult is built on.</p>",
+    effect: { verb: "tainting", param: 2, text: "slow: a disease, not a poison" }
+  },
+  {
+    name: "The Poisoned Well", strength: 4, pool: "faith", source: "The Purple",
+    needs: ["a condition applied to an area"],
+    description: "<p>Three squares of it, fast. Everything standing in the water carries it "
+      + "away.</p>",
+    effect: { verb: "tainting", param: 1, area: 3, areaKind: "blast", text: "fast" }
+  },
+  {
+    name: "The Slow Failure", strength: 5, pool: "faith", source: "The Purple",
+    needs: ["a spell that taints its caster"],
+    description: "<p>Tainting 3 on them and two Taint on you &mdash; which with the first taste "
+      + "is Afflicted. A priest of The Purple who casts their thesis is ill for good.</p>",
+    effect: { verb: "tainting", param: 3, text: "and you gain 2 Taint yourself" }
+  },
+
+  /*
+   * --- The Yellow, three miracles, and two of them are held up by a secondary ---
+   *
+   * The same mechanism *The Long Con* wants, and the same string: an effect that lasts only while
+   * you keep paying a half every round is one piece of work, and this god has three users of it.
+   */
+  {
+    name: "Half a Truth", strength: 2, pool: "faith", source: "The Yellow",
+    needs: ["an ally the enemy acts as though absent"],
+    description: "<p>Name one of your own. For a round the enemy fights as though they were not "
+      + "on the field at all, which is as good as cover and better than armour.</p>",
+    effect: {
+      text: "until your next turn enemies act as though one ally you name were not there"
+    }
+  },
+  {
+    name: "The Whole Cloth", strength: 4, pool: "faith", source: "The Yellow",
+    needs: ["an effect held up by spending a secondary", "an enemy that counts you as an ally"],
+    description: "<p>While you keep paying a half every round, one whole kind of enemy believes "
+      + "the party are its own. Stop paying and the room remembers.</p>",
+    effect: {
+      text: "while you spend a secondary each round, one enemy type believes the party are its own"
+    }
+  },
+  {
+    /*
+     * The god's 5, and the only miracle that edits the fiction rather than the fight: the GM runs
+     * the fight as though the lie had always been true. There is nothing for the engine to do and
+     * that is not a gap -- it is the largest thing in the twelve gods and it is all table.
+     */
+    name: "The Lie That Held", strength: 5, pool: "faith", source: "The Yellow",
+    needs: ["an effect held up by spending a secondary"],
+    description: "<p>Name the lie before the fight. While you spend a secondary each round it is "
+      + "true, and the GM runs the fight as though it always had been.</p>",
+    effect: {
+      text: "while you spend a secondary each round, a lie named before the fight is true"
+    }
+  },
+
+  /*
+   * --- Vax, two miracles, and the god who bills you per man ---
+   *
+   * *The Line Holds* pays 2 Health per ally, which is the same variable price *The Red Hour* and
+   * *The Shield Line* pay and the same string. Three pieces of content from two Ways want one
+   * mechanism, which is the clearest sign it belongs in the schema.
+   */
+  {
+    name: "The Line Holds", strength: 4, pool: "faith", source: "Vax",
+    needs: ["a cost that scales with the allies it covers",
+      "immunity to a named condition, which nothing grants"],
+    description: "<p>Nobody beside you is moved, knocked down or turned. It costs two Health a "
+      + "man, and Vax expects you to count them first.</p>",
+    effect: {
+      text: "allies adjacent to you cannot be moved, knocked Prone or Compelled until your next "
+        + "turn. Costs 2 Health per ally"
+    }
+  },
+  {
+    /*
+     * The god's 5, and the only miracle in the game that moves damage ONTO the caster as a
+     * standing rule rather than once. "It will cost enough" is the document's own pricing and it
+     * is right: a priest of Vax holding a line of four is taking four men's hits.
+     */
+    name: "The Sixth District", strength: 5, pool: "faith", source: "Vax",
+    needs: ["damage dealt to an ally dealt to you instead",
+      "allies that share the caster's armor"],
+    description: "<p>Your armour is theirs, your Block is theirs, and everything aimed at them "
+      + "arrives in you. It will cost enough, which is how Vax prices war plainly.</p>",
+    effect: {
+      text: "until the fight ends every adjacent ally shares your armor and Block, and damage "
+        + "dealt to them is dealt to you instead"
+    }
+  },
 ];
 
 /* -------------------------------------------- */
