@@ -3743,6 +3743,183 @@ const complete = [...ladders.keys()].filter(src =>
 check("sources a character can be handed in full", complete.join(", "), "The First");
 
 /*
+ * ---- the slot budget against the lists it has to pay for ----
+ *
+ * **Strength is the slot cost** (way-cards 1.4), so a caster's whole ceiling is the number of slots
+ * the graph hands them, and that number is granted by *nodes* -- leveling 4 lists *a spell slot* as
+ * one of the minor-node rewards. Nobody had ever counted the two against each other.
+ *
+ * There are **ten** slot-granting nodes in a graph of 193, and four of the ten are on two gods'
+ * branches. So the ceiling is low, uneven between the Ways, and uneven between gods of the same
+ * Way -- and it is measured here rather than assumed, because the content on the other side of it
+ * runs to strength 5 in all twenty-four lists.
+ *
+ * These are **pinned measurements, not assertions of health**. Every number below is a fact about
+ * today's content; the ones that are defects say so in the check's name.
+ */
+
+/*
+ * The ceiling for a caster who stays in ONE Way: their title's cheapest route, then every node of
+ * that Way still open to them. A second Way is excluded on purpose -- a priest who has to walk Way
+ * of Mind to cast their own god's miracle is the finding, not the baseline.
+ *
+ * Iterated to a fixed point because taking an open node can close others (leveling 3).
+ */
+function slotCeiling(titleId) {
+  const way = titleId.split(".")[0];
+  const inWay = id => id === way || id.startsWith(`${way}.`);
+  let owned = new Set([graph.ROOT, ...(graph.REACH.get(titleId) ?? []), titleId]);
+  for (let i = 0; i < 8; i++) {
+    const shut = graph.closedIds(owned);
+    const live = [...graph.reachable(owned, shut)]
+      .filter(id => !shut.has(id) && (id === graph.ROOT || inWay(id)));
+    const next = new Set([...owned, ...live]);
+    if (next.size === owned.size) break;
+    owned = next;
+  }
+  const g = graph.grantsOf(owned);
+  return g.slotCap === null ? g.spellSlots : Math.min(g.spellSlots, g.slotCap);
+}
+
+const slotGrants = nodes.filter(n => n.grants?.spellSlots);
+check("nodes that grant a spell slot", slotGrants.length, 10);
+/* The measurement is written down where a designer reads, not only where a test runs. */
+check("way-cards carries the slot audit",
+  /The graph pays for a ladder of 2 to 4, and both lists are written/.test(waycards)
+    ? "yes" : "no", "yes");
+check("and the number that matters most",
+  /\*\*Thirty-seven of the hundred and forty-seven cannot be prepared/.test(waycards)
+    ? "yes" : "no", "yes");
+check("and names the three gods whose Signature is a dead letter",
+  /\*\*Fagar\*\*, \*\*Vulpet\*\* and \*\*Brendan\*\*/.test(waycards) ? "yes" : "no", "yes");
+check("and leaves the shape of the fix open",
+  /\*\*Slots by level\*\*, the way Health already arrives/.test(waycards) ? "yes" : "no", "yes");
+check("and leveling.md points at it from the reward list",
+  /Spell slots are the one reward nobody counted/.test(levDoc) ? "yes" : "no", "yes");
+check("and the Ways they sit in",
+  [...new Set(slotGrants.map(n => n.id.split(".")[0]))].sort().join(", "),
+  "faith, mind, shade");
+/* Way of Strength grants none, which is right: it has no casters and no spells. */
+check("Way of Strength grants no slots",
+  slotGrants.filter(n => n.id.startsWith("strength")).length, 0);
+
+const casterTitles = nodes.filter(n => n.title && graph.SPELLS_BY_SOURCE.has(n.title));
+check("sources with a title to reach them by", casterTitles.length, 24);
+
+/*
+ * **The headline: thirty-seven of the hundred and forty-seven spells cannot be prepared by any
+ * caster who stays in their own Way.** Twelve of them are the strength-5 formulas way-cards 3.4
+ * calls *the school's thesis, and the argument for choosing the branch at all*, and the rest are
+ * the 4s and 5s of eleven gods, which 3.5 promises every god has.
+ *
+ * A mage tops out at **4** and a priest at **2 or 3**. The content was written to a ladder of 1 to 5
+ * and the graph pays for a ladder of 2 to 4.
+ */
+const overBudget = [];
+for (const t of casterTitles) {
+  const cap = slotCeiling(t.id);
+  for (const spell of graph.SPELLS_BY_SOURCE.get(t.title)) {
+    if (spell.strength > cap) overBudget.push(`${t.title}/${spell.name} (${spell.strength}>${cap})`);
+  }
+}
+check("spells no single-Way caster of that source can prepare", overBudget.length, 37);
+check("and every strength-5 is among them",
+  [...graph.SPELLS.values()].filter(s => s.strength === 5)
+    .every(s => overBudget.some(o => o.includes(`/${s.name} `))), true);
+
+const ceilings = new Map(casterTitles.map(t => [t.title, slotCeiling(t.id)]));
+check("the ceiling for a mage who stays in Way of Mind",
+  [...new Set(casterTitles.filter(t => t.id.startsWith("mind")).map(t => ceilings.get(t.title)))]
+    .join(", "), "4");
+check("and for a priest who stays in Way of Faith",
+  [...new Set(casterTitles.filter(t => t.id.startsWith("faith")).map(t => ceilings.get(t.title)))]
+    .sort().join(", "), "2, 3");
+/* Three gods out of twelve have a slot node behind them. The other nine have the root's two. */
+check("gods whose own branch grants a slot",
+  casterTitles.filter(t => t.id.startsWith("faith") && ceilings.get(t.title) > 2)
+    .map(t => t.title).sort().join(", "),
+  "The Eternal God, The Eternal Spirit, The First");
+
+/*
+ * **And four gods hand over a Signature the priest cannot cast.** That is worse than a 5 nobody
+ * reaches: a title's Signature is the thing the title IS (way-cards 2), granted at the moment you
+ * swear, and for three of these four it is not a question of waiting -- their Way ceiling is 2 and
+ * the Signature is a 3, so it is never castable at all.
+ *
+ * The First is the fourth and is a different case: its own branch grants two slots, so its
+ * strength-3 Signature becomes castable one node later. A timing wrinkle rather than a dead end.
+ */
+const sigTrouble = [];
+for (const t of nodes.filter(n => n.title && n.grants?.spell)) {
+  const def = graph.SPELLS.get(t.grants.spell);
+  const atTitle = graph.grantsOf(new Set([...(graph.REACH.get(t.id) ?? []), t.id]));
+  const now = atTitle.slotCap === null ? atTitle.spellSlots
+    : Math.min(atTitle.spellSlots, atTitle.slotCap);
+  if (def && def.strength > now) {
+    sigTrouble.push(`${t.title}: ${def.name} is ${def.strength}, slots ${now}, `
+      + `ceiling ${slotCeiling(t.id)}`);
+  }
+}
+check("titles granting a Signature their holder cannot cast", sigTrouble.length, 4);
+check("and which titles they are",
+  sigTrouble.map(s => s.split(":")[0]).sort().join(", "),
+  "Brendan, Fagar, The First, Vulpet");
+check("three of them can never cast it, whatever they take afterwards",
+  sigTrouble.filter(s => /ceiling 2$/.test(s)).map(s => s.split(":")[0]).sort().join(", "),
+  "Brendan, Fagar, Vulpet");
+
+/*
+ * ---- and the shape of the four Ways against each other ----
+ *
+ * Not a verdict: the four are meant to feel different. What is worth pinning is the places where
+ * they differ STRUCTURALLY rather than in flavour, because those are the ones nobody chose.
+ */
+const titleRows = nodes.filter(n => n.title).map(n => ({
+  way: n.id.split(".")[0], tier: graph.tierOf(n.id), level: graph.levelFor(n.id)
+}));
+check("titles in all", titleRows.length, 52);
+check("and the same number in each Way",
+  [...new Set(["strength", "shade", "mind", "faith"]
+    .map(w => titleRows.filter(r => r.way === w).length))].join(", "), "13");
+/*
+ * **Way of Faith is flat and the other three are deep.** Twelve gods, all tier 1, all at level 5 --
+ * where Strength, Shade and Mind each put three titles at tier 1 and the rest at tier 2. So a
+ * priest's own Way offers them nothing further to walk toward after level 5, and the twelve gods
+ * are breadth where the others have depth. That falls out of the religion being the exclusive
+ * choice (specializations.md) rather than from anyone deciding it about Faith's shape.
+ */
+for (const way of ["strength", "shade", "mind", "faith"]) {
+  const mine = titleRows.filter(r => r.way === way);
+  check(`${way}: tiers its titles sit at`,
+    [...new Set(mine.map(r => r.tier))].sort().join(","), way === "faith" ? "0,1" : "0,1,2");
+}
+check("levels a title is reached at, over the whole graph",
+  [...new Set(titleRows.map(r => r.level))].sort((a, b) => a - b).join(", "), "1, 5, 8, 9");
+/* One title in the game is not on the 1/5/8 ladder, and it is the deepest in Way of Shade. */
+check("the one title off the ladder",
+  titleRows.filter(r => r.level === 9).length, 1);
+
+/*
+ * What the cheapest route to a title hands over, by Way. Health and carry are where the three
+ * non-casting Ways differ most, and the asymmetry is deliberate in direction -- a mage is frail --
+ * but nothing had measured the size of it.
+ */
+const pathGrants = way => {
+  const mine = nodes.filter(n => n.title && n.id.startsWith(way) && graph.tierOf(n.id) === 2);
+  if (!mine.length) return null;
+  const sums = mine.map(n => graph.grantsOf(new Set([...(graph.REACH.get(n.id) ?? []), n.id])));
+  const mean = pick => (sums.reduce((a, g) => a + pick(g), 0) / sums.length).toFixed(1);
+  return `hp ${mean(g => g.health)} carry ${mean(g => g.carry)} cards ${mean(g => g.cards.length)}`;
+};
+check("what a tier-2 title in Way of Strength is reached with", pathGrants("strength"),
+  "hp 1.2 carry 6.1 cards 3.1");
+check("and in Way of Shade", pathGrants("shade"), "hp 1.2 carry 0.1 cards 3.1");
+check("and in Way of Mind", pathGrants("mind"), "hp 0.1 carry 0.0 cards 1.0");
+/* Way of Faith has no tier-2 title to compare, which is the finding above restated as a hole. */
+check("and in Way of Faith, which has none", pathGrants("faith"), null);
+
+
+/*
  * ---- a node that grants your CHOICE from a school's or a god's list ----
  *
  * The gap the eighty-five formulas and the sixty-one miracles left behind: fifty-two of the

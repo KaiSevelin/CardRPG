@@ -102,6 +102,44 @@ than one slot"* needed no rule of its own.
 a decision — one strength-2 formula, or two strength-1s — and it makes *"a caster who prepared the
 wrong spells has prepared the wrong spells"* bite from the first level.
 
+> **[FOUND IN CODE 2026-11-01] The graph pays for a ladder of 2 to 4, and both lists are written
+> to a ladder of 1 to 5.**
+>
+> Strength is the slot cost, so a caster's ceiling is whatever the graph hands them — and slots are
+> granted by **nodes** ([leveling.md](leveling.md) §4). Counting the two against each other for the
+> first time: there are **ten** slot-granting nodes in a graph of 193, four of them on two gods'
+> branches, and the ceiling for a caster who stays in their own Way is:
+>
+> | | slots, ever | their lists run to |
+> |---|---|---|
+> | Way of Mind | **4** | 5, in all twelve schools |
+> | Way of Faith | **2**, or 3 behind three of the twelve gods | 5, in eleven of the twelve |
+>
+> **Thirty-seven of the hundred and forty-seven cannot be prepared by any caster of their own
+> source.** Among them is every strength-5 in the game — which §3.4 calls *the school's thesis, and
+> the argument for choosing the branch at all* — and the 4s and 5s of eleven gods, which §3.5
+> promises every god has.
+>
+> **And four gods hand over a Signature their priest cannot cast.** A Signature is what a title
+> *is*, granted the moment you swear, and **Fagar**, **Vulpet** and **Brendan** each grant a
+> strength-3 miracle to a priest whose Way ceiling is 2: not a wait, a dead letter. The fourth is
+> **The First**, whose own branch grants two slots, so its 3 becomes castable one node later — a
+> timing wrinkle rather than a hole.
+>
+> This is not a tuning complaint. Two halves of the design were written separately and each is
+> coherent: *2 slots is the smallest number that is a decision* (above), and *a branch has to be
+> worth walking to the end* (§3.4). Nothing connected them, so the band the content spends most of
+> its argument on is the band nobody can reach. **[OPEN]** and the shape of the fix is a decision,
+> not an oversight to patch:
+>
+> - **Slots by level**, the way Health already arrives: one at level 3, 6, 9, 12. The only option
+>   that makes §1.4's promise hold without adding nodes, and it is Way-independent.
+> - **A slot node behind every school and every god** — twenty-four of them, parallel to
+>   the menu nodes of [leveling.md](leveling.md) §4a. Mind reaches 5; Faith reaches 3, so the gods'
+>   5s would still need something else.
+> - **Accept it and say so**: the 4s and 5s become what a *second* casting Way or a deep crossing
+>   buys, and the lists are written as endgame content on purpose.
+
 > **A miracle's list is shorter than a school's**, which the world says outright: priest magic is
 > *"a shorter list than a mage's"*. The compensation is that a miracle costs nothing to **learn** — a
 > god grants it — where a formula is paid for in Health, Taint, secrets, body parts or coin. Faith
