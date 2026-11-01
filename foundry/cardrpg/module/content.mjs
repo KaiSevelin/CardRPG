@@ -2126,6 +2126,273 @@ export const STRENGTH_TACTICS = {
 };
 
 /* -------------------------------------------- */
+
+/**
+ * Way of Mind's minor-node formulas (way-cards 3.4).
+ *
+ * **A minor node grants its TIER-1 school's formula, never the destination's**, and that is the
+ * whole of leveling.md 7's note about this Way: *the only cross edges worth wanting in Mind would
+ * arrive at a school's deeper nodes -- formulas without the school's cost, the forbidden kind.* A
+ * node on the run from Blood Magic to Necromancy is still a Blood node, so it hands out Blood's
+ * list. You cannot buy a necromancer's formulas without buying the Taint that pays for them.
+ *
+ * Elemental Magic needed none of these: **Rain, Lightning, Frost and Scorch already exist**
+ * (`FORMULAS`, written to demonstrate the combo mechanic), so its four runs hand those over and the
+ * Rain-plus-Lightning pair is reachable by levelling for the first time rather than by fiat.
+ *
+ * Some of these are dearer than a young caster's whole budget -- *The Red Hour* is 4 against the
+ * three slots this branch has granted by then. That is deliberate and it is what a spell book is
+ * for: **the book holds what the budget cannot**, and the slots that arrive later are what make it
+ * castable. A formula is never wasted, only unprepared.
+ */
+export const MIND_POOL = [
+  {
+    name: "Open the Vein", strength: 1, pool: "mind", source: "Blood Magic",
+    needs: "a spell that costs Health to cast",
+    description: "<p>Your own blood, thrown. It goes round a shield rather than through it.</p>",
+    effect: { verb: "cast", range: 2, mod: 3, text: "ignoring Block. Costs 1 Health" }
+  },
+  {
+    name: "Boil", strength: 3, pool: "mind", source: "Blood Magic",
+    needs: "a spell that costs Health to cast",
+    description: "<p>Not your blood this time. Theirs, and it does not stop.</p>",
+    effect: {
+      verb: "cast", condition: "burning", intensity: 3, duration: 2, resist: "might", dc: 7,
+      text: "costs 2 Health"
+    }
+  },
+  {
+    /*
+     * The only card or formula in the game that grants a second primary, which is what Blood
+     * Magic's axis means: Tempo is bought with blood and nothing else buys it at all.
+     */
+    name: "The Second Heartbeat", strength: 3, pool: "mind", source: "Blood Magic",
+    needs: "a second primary in one turn",
+    description: "<p>Two hearts for one turn. The second one is paid for.</p>",
+    effect: { text: "Spent: play a second primary this turn. Costs 4 Health" }
+  },
+  {
+    name: "The Red Hour", strength: 4, pool: "mind", source: "Blood Magic",
+    needs: "a second secondary for every ally in an area",
+    description: "<p>You open a vein for each of them, and for an hour nobody is tired.</p>",
+    effect: {
+      range: 2,
+      text: "until your next turn every ally within 2 may play a second secondary. "
+        + "Costs 1 Health per ally"
+    }
+  },
+
+  {
+    name: "The Small Pact", strength: 1, pool: "mind", source: "Spiritualism",
+    needs: "",
+    description: "<p>Name the god you are pacted with, and it does the thing written on the pact. "
+      + "The same thing, every time &mdash; which is what makes this a spell and not a wish.</p>",
+    effect: { text: "the god grants the favour written on your pact" }
+  },
+  {
+    name: "Hold to the Bargain", strength: 2, pool: "mind", source: "Spiritualism",
+    needs: "a reaction trigger beyond hit and arrival",
+    description: "<p>It was going to fail. Something intervened, once, because it owes you.</p>",
+    effect: { text: "reaction: an ally's failed check becomes a Partial. Once per pact per fight" }
+  },
+  {
+    name: "The Nine Names", strength: 1, pool: "mind", source: "Spiritualism",
+    needs: "",
+    description: "<p>Out of combat. A minor god names who in this place it is angry with, and will "
+      + "not say why.</p>",
+    effect: { text: "out of combat: a minor god names who here it is angry with" }
+  },
+  {
+    name: "The Gathered Pact", strength: 4, pool: "mind", source: "Spiritualism",
+    needs: "",
+    description: "<p>Every pact at once, called in on the same turn. Each god does exactly what it "
+      + "promised and no more, which is why this is worth four slots and not five.</p>",
+    effect: { text: "every god you are pacted with grants its written favour, this turn" }
+  }
+];
+
+/* -------------------------------------------- */
+
+/**
+ * Way of Mind's twelve Signatures (way-cards 2.3). Every one is a **spell**, which is the first
+ * time a node has granted a document of that type -- Shade handed out cards, a feature and an item.
+ *
+ * **Eleven entries for twelve schools**, because *Step Through* has been content since Shadow
+ * Magic's price needed somewhere to live (`SHADOW_FORMULAS`). The Shadow node points at it rather
+ * than at a second copy, exactly as Strength's reach cards were not written twice.
+ *
+ * The audit is thinner here than in the other two Ways and the reason is structural: a school's
+ * content is a spell, and **a spell does fewer things the engine already has verbs for**. Where a
+ * card modifies a Strike you already resolve, a formula puts a figure on the map, places terrain,
+ * reads a deck or spends its slots for good. Those are mechanisms, not modifiers.
+ *
+ * What is NOT in this column is a school's **price**, unless the engine would have to charge it. A
+ * secret the GM writes down, an elven debt, a pact, a finger: nobody computes those, so they are
+ * not gaps (the definition is in way-cards 2). Health, a bound Taint, skill cards set aside and a
+ * permanent Wild **are** tracked by the engine, so those prices are gaps and are named as such.
+ */
+export const MIND_SIGNATURES = [
+  {
+    name: "Blood Price", kind: "spell", node: "mind.blood", strength: 2, source: "Blood Magic",
+    needs: "a spell that costs Health to cast",
+    description: "<p>Four damage at three squares, and nothing between you and it matters. The "
+      + "two Health are not a drawback; they are the school.</p>",
+    effect: { verb: "cast", range: 3, mod: 4, text: "ignoring armor. Costs 2 of your own Health" }
+  },
+  {
+    name: "Call the Unquiet", kind: "spell", node: "mind.necromancy", strength: 3,
+    source: "Necromancy",
+    needs: "a figure a spell puts on the map",
+    description: "<p>It does not know it died. It will stop when the fight does.</p>",
+    effect: { range: 2, text: "a corpse within 2 rises and fights for you until the fight ends" }
+  },
+  {
+    /*
+     * "A line of **your element**" is the oldest piece of prose in this document that is not a
+     * rule, and it is NOT in the gap column -- because the mechanism exists. `CARDRPG.elements`
+     * and `exclusive: "element"` were built for exactly this; what is missing is a node that
+     * hands one over, which is content and is in the open list rather than here.
+     */
+    name: "Wall of the Sphere", kind: "spell", node: "mind.elemental", strength: 2,
+    source: "Elemental Magic",
+    needs: "terrain a spell places on the map",
+    description: "<p>Three squares of whichever sphere is yours. Stand behind it and the ground in "
+      + "front of you is no longer anybody's.</p>",
+    effect: {
+      range: 3,
+      text: "a 3-square line of your element: cover, and difficult ground, until your next turn"
+    }
+  },
+  {
+    /*
+     * The one Signature in this Way the engine does everything for, and it is worth noticing why:
+     * Poison's whole content is conditions with saving throws, and conditions with saving throws
+     * are the part of the engine that has been finished longest.
+     */
+    name: "Wither", kind: "spell", node: "mind.poison", strength: 2, source: "Poison",
+    needs: "",
+    description: "<p>Dazed while it lasts, and one damage a turn that armour does not stop.</p>",
+    effect: {
+      verb: "cast", condition: "poisoned", intensity: 1, duration: 2, resist: "might", dc: 5
+    }
+  },
+  {
+    name: "Not Here", kind: "spell", node: "mind.glamour", strength: 2, source: "Glamour",
+    needs: "a condition that ends when you act",
+    description: "<p>You are standing exactly where you are standing. Nobody can be told so.</p>",
+    effect: {
+      condition: "invisible", duration: 1, text: "until you attack or are attacked"
+    }
+  },
+  {
+    /*
+     * A tattoo is the one spell that is never prepared: it spends its slots for good and is always
+     * on. The slate can hold the slots (`strength`) and the drain machinery, but it has nowhere to
+     * put a BONUS -- SpellSlateData has no `bonus` field, because until now a spell only ever did
+     * something when cast. That is this school's gap, and it is the whole school's.
+     */
+    name: "Graven Strength", kind: "spell", node: "mind.tattoo", strength: 1,
+    source: "Tattoo Magic",
+    needs: "a permanent formula that is never prepared and carries a bonus",
+    description: "<p>It is on your arm. It does not need remembering, and it never comes off.</p>",
+    effect: { text: "permanent: +2 Strike with Heavy items" }
+  },
+  {
+    name: "Nothing Left to Take", kind: "spell", node: "mind.asceticism", strength: 1,
+    source: "Asceticism",
+    needs: "a rule that reads your own hand being empty",
+    description: "<p>There is nothing in your hand and nothing left to lose, and the second "
+      + "follows from the first.</p>",
+    effect: { text: "while your hand is empty you cannot be reduced below 1 Health" }
+  },
+  {
+    name: "The Bargain", kind: "spell", node: "mind.spiritualism", strength: 3,
+    source: "Spiritualism",
+    needs: "",
+    description: "<p>A minor god acts, once. <strong>The GM decides how</strong>, and that is not "
+      + "a hole in the spell &mdash; it is the spell.</p>",
+    effect: { text: "a minor god acts once this fight; the GM decides how" }
+  },
+  {
+    /*
+     * A ritual has NO slot cost, and `strength` is required and runs 1-5 (data/items.mjs) -- so
+     * the one out-of-combat Signature is the one piece of content the slate cannot store honestly.
+     * It is written as a 1 and the gap says what the 1 is standing in for.
+     */
+    name: "Hearth and Home", kind: "spell", node: "mind.household", strength: 1,
+    source: "Household Magic",
+    needs: "a ritual, which costs no slots at all",
+    description: "<p>Out of combat: a camp nobody unfriendly can find, for one night. A ritual, so "
+      + "anyone literate could do it &mdash; but somebody has to know the words.</p>",
+    effect: { text: "ritual: a camp nobody unfriendly can find, for one night" }
+  },
+  {
+    /*
+     * Two triggers exist, `hit` and `arrival` (config.mjs). A ward answers a CAST, which is
+     * neither -- and it is the fourth document to ask for a trigger the engine does not have,
+     * after Quick Hands, Heckle and On My Call. The difference is that this one is a whole
+     * school's axis rather than one card's flavour.
+     */
+    name: "Unmake", kind: "spell", node: "mind.ward", strength: 2, source: "Ward Magic",
+    needs: "a reaction trigger beyond hit and arrival",
+    description: "<p>You have felt this one before. That is the only reason you can stop it: a "
+      + "warder's book is a record of what the party has survived.</p>",
+    effect: {
+      text: "reaction, Spent: a Cast you have survived before does not resolve"
+    }
+  },
+  {
+    name: "The Reading", kind: "spell", node: "mind.divination", strength: 2, source: "Divination",
+    needs: "reading the top of a fate deck",
+    description: "<p>Three cards down somebody else's luck. Never your own &mdash; a diviner who "
+      + "could stack their own deck would be a damage school wearing a robe.</p>",
+    effect: { text: "Read 3 on any one fate deck except your own" }
+  }
+];
+
+/* -------------------------------------------- */
+
+/**
+ * Way of Mind's Tactics (way-cards 2.5), derived from the deepest title like the other two Ways.
+ *
+ * Every one is about **where a caster stands**, which the document states as the Way's thesis: a
+ * caster's hard problem is not what to cast but ranged-in-melee, line of sight and their own Blast.
+ * None of the twelve adds a number, which is the rule that keeps forty-eight of these from being
+ * power creep (way-cards 2.5, rule 2).
+ */
+export const MIND_TACTICS = {
+  "Your Own Blood Is Nearest":
+    "You may always Cast on yourself whatever the spell's range, and never take disadvantage "
+    + "for it.",
+  "The Dead Are Furniture":
+    "Corpses are cover for you and difficult ground for your enemies.",
+  "The Sphere Holds":
+    "Your own Blast spares you alone, whatever the card says.",
+  "The Patient Hand":
+    "An enemy you have put a condition on this fight has disadvantage against you.",
+  "Never Quite There":
+    "Ranged attacks against you from more than 3 squares always have disadvantage.",
+  "Nothing to Prepare":
+    "You may Cast with both hands full, and Silenced does not stop you -- your spells are on your "
+    + "skin, not in your mouth.",
+  "The Still Point":
+    "If you did not Move this turn, you cannot be moved and attacks against you have disadvantage.",
+  "At Home in the Dark":
+    "While you stand in a shadowed square, enemies more than 2 squares away cannot target you "
+    + "at all.",
+  "Something Is Always Listening":
+    "You know whether any square within 6 is shadowed, high ground or difficult ground before "
+    + "anyone steps on it.",
+  "The House Helps":
+    "Indoors you ignore difficult ground, and you know where every door is before you see it.",
+  "The Standing Guard":
+    "One extra reaction each round, usable only to answer a Cast.",
+  "Already Seen":
+    "You are never surprised, and at the start of any round you may swap your place in the "
+    + "initiative order with a willing ally's."
+};
+
+/* -------------------------------------------- */
 /*  The levelling graph                         */
 /* -------------------------------------------- */
 
@@ -2146,7 +2413,9 @@ export const STRENGTH_TACTICS = {
  *   bespoke    content written for this node and nowhere else. Two minor nodes in three are NOT
  *              bespoke: they draw on a pool, which is the content budget leveling 1 sets
  *
- * Way of Shade is built; the other three Ways are a root node with nothing behind it yet.
+ * Three Ways are built -- Shade, Strength and Mind. Way of Faith is a root node with nothing behind
+ * it yet, and it is the only one that will use `exclusive` and `creed`, which have been built and
+ * unused since the day they were written.
  *
  * The cross edges are the part worth reading twice. A cross edge is an edge like any other, so it
  * carries its own minor nodes. Attach one straight to the far title and a Cutpurse reaches Gambler
@@ -2166,13 +2435,21 @@ export const NODES = [
     id: "strength", name: "Way of Strength", after: ["root"], title: "Warrior",
     axis: "Position", resource: "weight"
   },
+  /*
+   * **Both of these grant two slots, and neither did.** way-cards 1.4 says it in one line -- *a
+   * first Way of Mind or Way of Faith node grants 2 spell slots* -- and `spellSlots.base` starts
+   * at 0 for everyone, so a character who had walked into Way of Mind could prepare nothing at
+   * all. Two is the smallest number that is a decision: one strength-2 formula, or two 1s.
+   */
   {
     id: "mind", name: "Way of Mind", after: ["root"], title: "Scholar",
-    axis: "Preparation", resource: "spell slots"
+    axis: "Preparation", resource: "spell slots",
+    grants: { spellSlots: 2 }
   },
   {
     id: "faith", name: "Way of Faith", after: ["root"], title: "Sworn",
-    axis: "Support", resource: "an obligation"
+    axis: "Support", resource: "an obligation",
+    grants: { spellSlots: 2 }
   },
 
   /* --- the Shade trunk: three ordinary nodes before the first title --- */
@@ -2497,5 +2774,209 @@ export const NODES = [
   {
     id: "strength.cross.rage", name: "Let It Out", after: ["strength.cross.rage1"],
     bespoke: true, grants: { knowHow: "when armour stops being protection" }
+  },
+
+  /*
+   * --- Way of Mind: the twelve schools
+   *
+   * Grouped by **what the price takes**, which is way-cards 3.4's own principle -- *what makes a
+   * formula belong to its school is not what it does, it is what it costs* -- read one level up. The
+   * three trunk schools are the three kinds of creditor:
+   *
+   *   BLOOD MAGIC   your own substance pays: Health, a bound Taint, an empty hand, your competence
+   *   ELEMENTAL     the table pays: coin, a card gone for the fight, a Wild in your luck, a place
+   *   SPIRITUALISM  a person pays, and remembers: a debt, a secret, a pact, a prophecy
+   *
+   * **This Way has no cross edges, and that is a decision rather than an omission**
+   * (leveling.md 1): the only ones worth wanting would arrive at a school's deeper nodes, which is
+   * formulas without the school's cost -- the forbidden kind. Shade and Strength cross because
+   * their content is cards and a card is a card; Mind's content IS its price.
+   */
+
+  /* --- the Mind trunk: three ordinary nodes before the first school --- */
+  {
+    id: "mind.letters", name: "Letters", after: ["mind"],
+    grants: { training: "reading and writing" }
+  },
+  {
+    /* The common card a caster gets is the one about spacing, because where to stand is the hard
+     * problem this whole Way's Tactics are written about (way-cards 2.5). */
+    id: "mind.candle", name: "The Candle", after: ["mind.letters"],
+    grants: { card: "Measure" }
+  },
+  {
+    /*
+     * A prune, and the reasoning is the exact mirror of Shade's. Cutpurse pays in deck size, so a
+     * prune on its branch would refund the price; a caster's power is not in their action deck at
+     * all, so thinning it costs this Way nothing and is pure gain. The same reward reads as a
+     * refund in one Way and as a gift in another, which is what it means for a price to be real.
+     */
+    id: "mind.vigil", name: "The Long Vigil", after: ["mind.candle"],
+    grants: { spellSlots: 1, prune: 1 }
+  },
+
+  /* --- the three schools off the trunk --- */
+  {
+    id: "mind.blood", name: "Blood Magic", after: ["mind.vigil"], title: "Blood Magic",
+    axis: "Tempo", resource: "your own Health",
+    signature: "Blood Price", tactic: "Your Own Blood Is Nearest",
+    grants: { spell: "Blood Price" }
+  },
+  {
+    id: "mind.elemental", name: "Elemental Magic", after: ["mind.vigil"], title: "Elemental Magic",
+    axis: "Position", resource: "reagents",
+    signature: "Wall of the Sphere", tactic: "The Sphere Holds",
+    grants: { spell: "Wall of the Sphere" }
+  },
+  {
+    id: "mind.spiritualism", name: "Spiritualism", after: ["mind.vigil"], title: "Spiritualism",
+    axis: "Preparation", resource: "a pact",
+    signature: "The Bargain", tactic: "Something Is Always Listening",
+    grants: { spell: "The Bargain" }
+  },
+
+  /* --- Blood's three --- */
+  {
+    id: "mind.blood.vein", name: "The Vein", after: ["mind.blood"],
+    grants: { spell: "Open the Vein" }
+  },
+  {
+    id: "mind.blood.anatomy", name: "Anatomy", after: ["mind.blood.vein"], bespoke: true,
+    grants: { knowHow: "what a body is made of, living or dead" }
+  },
+  {
+    id: "mind.necromancy", name: "Necromancy", after: ["mind.blood.anatomy"], title: "Necromancy",
+    axis: "Preparation", resource: "a bound Taint",
+    signature: "Call the Unquiet", tactic: "The Dead Are Furniture",
+    grants: { spell: "Call the Unquiet" }
+  },
+
+  {
+    id: "mind.blood.fasting", name: "Fasting", after: ["mind.blood"],
+    grants: { spell: "Boil" }
+  },
+  { id: "mind.blood.silence", name: "Silence", after: ["mind.blood.fasting"], grants: { health: 1 } },
+  {
+    id: "mind.asceticism", name: "Asceticism", after: ["mind.blood.silence"], title: "Asceticism",
+    axis: "Deck shape", resource: "an empty hand",
+    signature: "Nothing Left to Take", tactic: "The Still Point",
+    grants: { spell: "Nothing Left to Take" }
+  },
+
+  {
+    id: "mind.blood.doses", name: "Doses", after: ["mind.blood"],
+    grants: { spell: "The Second Heartbeat" }
+  },
+  {
+    id: "mind.blood.measures", name: "Measures", after: ["mind.blood.doses"],
+    grants: { spell: "The Red Hour" }
+  },
+  {
+    id: "mind.poison", name: "Poison", after: ["mind.blood.measures"], title: "Poison",
+    axis: "Control", resource: "skill cards",
+    signature: "Wither", tactic: "The Patient Hand",
+    grants: { spell: "Wither" }
+  },
+
+  /* --- Elemental's three ---
+   *
+   * These four nodes are why the combo pair is finally reachable. Rain and Lightning have been
+   * content since the `when` clause was written, and nothing in the game handed either of them
+   * over: they were on the actor because the setup routine put them there. Now they are two nodes
+   * on one branch, six slots between them, which is the price way-cards 1.4 says a combo costs.
+   */
+  { id: "mind.elem.rain", name: "The Rain Sign", after: ["mind.elemental"], grants: { spell: "Rain" } },
+  {
+    id: "mind.elem.dark", name: "The Dark Sphere", after: ["mind.elem.rain"], bespoke: true,
+    grants: { knowHow: "which places hold shadow, and at what hour" }
+  },
+  {
+    id: "mind.shadow", name: "Shadow Magic", after: ["mind.elem.dark"], title: "Shadow Magic",
+    axis: "Position", resource: "a permanent Wild",
+    signature: "Step Through", tactic: "At Home in the Dark",
+    grants: { spell: "Step Through" }
+  },
+
+  {
+    id: "mind.elem.storm", name: "The Storm Sign", after: ["mind.elemental"],
+    grants: { spell: "Lightning" }
+  },
+  { id: "mind.elem.circles", name: "Circles", after: ["mind.elem.storm"], grants: { spellSlots: 1 } },
+  {
+    id: "mind.ward", name: "Ward Magic", after: ["mind.elem.circles"], title: "Ward Magic",
+    axis: "Reactions", resource: "Spent",
+    signature: "Unmake", tactic: "The Standing Guard",
+    grants: { spell: "Unmake" }
+  },
+
+  {
+    id: "mind.elem.frost", name: "The Frost Sign", after: ["mind.elemental"],
+    grants: { spell: "Frost" }
+  },
+  {
+    id: "mind.elem.hearth", name: "The Hearth", after: ["mind.elem.frost"],
+    grants: { spell: "Scorch" }
+  },
+  {
+    id: "mind.household", name: "Household Magic", after: ["mind.elem.hearth"],
+    title: "Household Magic",
+    /*
+     * specializations.md leaves this one [OPEN]: the out-of-combat schools do not fit a six-axis
+     * template built for a fight. It is given **Support / a place you know** rather than left
+     * cell-less, because a node with no cell cannot be checked against its siblings at all -- and
+     * the honest reading is that a household mage supports a party between fights, which is the
+     * same axis the Tactician and the Divinator sit on for different reasons.
+     */
+    axis: "Support", resource: "a place you know",
+    signature: "Hearth and Home", tactic: "The House Helps",
+    grants: { spell: "Hearth and Home" }
+  },
+
+  /* --- Spiritualism's three --- */
+  {
+    /* The node is not called "The Small Pact": the spell is, and two pieces of content may not
+     * share a name (the check that found Infantry's Signature wearing its Tactic's). */
+    id: "mind.spirit.pact", name: "The First Pact", after: ["mind.spiritualism"],
+    grants: { spell: "The Small Pact" }
+  },
+  {
+    id: "mind.spirit.debts", name: "Debts", after: ["mind.spirit.pact"], bespoke: true,
+    grants: { knowHow: "who owes whom among the elf-kin" }
+  },
+  {
+    id: "mind.glamour", name: "Glamour", after: ["mind.spirit.debts"], title: "Glamour",
+    axis: "Control", resource: "an elven debt",
+    signature: "Not Here", tactic: "Never Quite There",
+    grants: { spell: "Not Here" }
+  },
+
+  {
+    id: "mind.spirit.names", name: "Nine Names", after: ["mind.spiritualism"],
+    grants: { spell: "The Nine Names" }
+  },
+  {
+    id: "mind.spirit.skin", name: "Skin and Ink", after: ["mind.spirit.names"],
+    grants: { training: "tattooing" }
+  },
+  {
+    id: "mind.tattoo", name: "Tattoo Magic", after: ["mind.spirit.skin"], title: "Tattoo Magic",
+    axis: "Deck shape", resource: "a secret",
+    signature: "Graven Strength", tactic: "Nothing to Prepare",
+    grants: { spell: "Graven Strength" }
+  },
+
+  {
+    id: "mind.spirit.omens", name: "Omens", after: ["mind.spiritualism"],
+    grants: { spell: "Hold to the Bargain" }
+  },
+  {
+    id: "mind.spirit.gathered", name: "The Gathered", after: ["mind.spirit.omens"],
+    grants: { spell: "The Gathered Pact" }
+  },
+  {
+    id: "mind.divination", name: "Divination", after: ["mind.spirit.gathered"], title: "Divination",
+    axis: "Support", resource: "someone else's turn",
+    signature: "The Reading", tactic: "Already Seen",
+    grants: { spell: "The Reading" }
   }
 ];

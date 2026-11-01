@@ -1964,10 +1964,15 @@ function parseTree(doc, rootName) {
   return nodes;
 }
 
-const trees = { shade: parseTree(specDoc, "SHADE"), strength: parseTree(specDoc, "STRENGTH") };
+const trees = {
+  shade: parseTree(specDoc, "SHADE"),
+  strength: parseTree(specDoc, "STRENGTH"),
+  mind: parseTree(specDoc, "MIND")
+};
 check("Way of Shade tree parses", trees.shade.size, 13);
 check("Way of Strength tree parses", trees.strength.size, 13);
-const allNodes = new Map([...trees.shade, ...trees.strength]);
+check("Way of Mind tree parses", trees.mind.size, 13);
+const allNodes = new Map([...trees.shade, ...trees.strength, ...trees.mind]);
 
 /* The five drafted edges, read from the tables that propose them. */
 const drafted = [...specDoc.matchAll(
@@ -1999,9 +2004,16 @@ check("cross edges failing the test", faults.length ? faults.join("; ") : "none"
  * all of them -- three taken and three declined in Shade, two and two in Strength. Enumerate.
  * Tier 1 is skipped because those nodes already share the Way root; an edge between them is nothing.
  */
-const declined = [...specDoc.matchAll(/([A-Z][A-Za-z\-]*) ↔ ([A-Z][A-Za-z\-]*)/g)]
+/*
+ * Multi-word school names forced this to grow: *Divination ↔ Household Magic* is one pair, and a
+ * pattern matching a single capitalised word read it as *Divination ↔ Household* and left the real
+ * pair unaccounted. Each name is now one or more capitalised words, which stops at the first
+ * lowercase one -- the "and" and "on" that join these sentences.
+ */
+const NAME = "[A-Z][A-Za-z\\-]*(?: [A-Z][A-Za-z\\-]*)*";
+const declined = [...specDoc.matchAll(new RegExp(`(${NAME}) ↔ (${NAME})`, "g"))]
   .map(m => [m[1].toLowerCase(), m[2].toLowerCase()]);
-check("cross edges named and declined", declined.length, 5);
+check("cross edges named and declined", declined.length, 8);
 
 const key = (x, y) => [x, y].sort().join("+");
 const accounted = new Set([...drafted.map(e => key(e.from, e.to)), ...declined.map(d => key(...d))]);
@@ -2090,7 +2102,7 @@ const graphSource = fs.readFileSync(path.join(root, "module/graph.mjs"), "utf8")
 const nodes = content.NODES;
 const byId = graph.GRAPH;
 
-check("nodes defined", nodes.length, 81);
+check("nodes defined", nodes.length, 114);
 check("duplicate node ids", nodes.length === byId.size ? "none" : "yes", "none");
 
 /* Every prerequisite must resolve, or a branch is silently unreachable. */
@@ -2224,7 +2236,7 @@ const unbuilt = cardGrants.filter(n => !graph.POOL.has(n.grants.card))
   .map(n => `${n.id}: ${n.grants.card}`);
 /* Six pool draws on the minor nodes, plus nine Signature cards on the majors. */
 /* The pool draws on the minor nodes, plus every Signature that is a card. */
-check("nodes granting a card", cardGrants.length, 31);
+check("nodes granting a card", cardGrants.length, 32);
 check("cards granted but never built", unbuilt.length ? unbuilt.join(", ") : "none", "none");
 
 /* A pool card twice on one path would be a node that gives you a card you already have. */
@@ -2245,8 +2257,8 @@ check("a pool card granted twice on one path",
  */
 const minors = nodes.filter(n => !n.title && n.id !== graph.ROOT);
 const bespoke = minors.filter(n => n.bespoke);
-check("minor nodes", minors.length, 52);
-check("bespoke minor nodes", bespoke.length, 18);
+check("minor nodes", minors.length, 73);
+check("bespoke minor nodes", bespoke.length, 21);
 check("the bespoke share is about a third",
   bespoke.length / minors.length >= 0.25 && bespoke.length / minors.length <= 0.4, true);
 /* And each bespoke node sits LAST on its edge, immediately before the title it leads to. */
@@ -2307,6 +2319,152 @@ for (const node of strengthMajors) {
 check("Strength cells that drifted from the document",
   strengthDrift.length ? strengthDrift.join("; ") : "none", "none");
 
+/*
+ * Way of Mind, which is checked for the opposite of what the other two are checked for.
+ *
+ * Shade and Strength cross, and the cell test says whether a crossing is legal. **This Way does not
+ * cross at all** (leveling 1): its content IS its price, so an edge into another school's run would
+ * hand out formulas without the cost that defines them. That is an absence, and an absence has to
+ * be asserted or it is just a thing nobody has written yet.
+ */
+const mindMajors = nodes.filter(n => n.title && n.id.startsWith("mind"));
+check("Mind majors in the data", mindMajors.length, 13);
+const mindDrift = [];
+for (const node of mindMajors) {
+  const doc = trees.mind.get(node.id)
+    ?? trees.mind.get((node.title ?? "").toLowerCase())
+    ?? trees.mind.get((node.name ?? "").toLowerCase());
+  if (!doc) { mindDrift.push(`${node.id}: not in the document's tree`); continue; }
+  if (doc.axis !== node.axis || doc.resource !== node.resource) {
+    mindDrift.push(`${node.id}: data (${node.axis} / ${node.resource})`
+      + ` vs doc (${doc.axis} / ${doc.resource})`);
+  }
+}
+check("Mind cells that drifted from the document",
+  mindDrift.length ? mindDrift.join("; ") : "none", "none");
+
+const mindAll = nodes.filter(n => n.id === "mind" || n.id.startsWith("mind."));
+check("Way of Mind nodes", mindAll.length, 34);
+/* One predecessor each, so there is no crossing and no `all` node anywhere in the Way. */
+const mindForks = mindAll.filter(n => (n.after ?? []).length > 1).map(n => n.id);
+check("Mind nodes with more than one way in",
+  mindForks.length ? mindForks.join(", ") : "none", "none");
+const mindLeaks = mindAll.flatMap(n => (n.after ?? [])
+  /* The Way root hangs off the graph root like every Way root; that is not an edge from elsewhere. */
+  .filter(p => p !== graph.ROOT && p !== "mind" && !p.startsWith("mind."))
+  .map(p => `${n.id} <- ${p}`));
+check("edges into Way of Mind from elsewhere",
+  mindLeaks.length ? mindLeaks.join(", ") : "none", "none");
+
+/*
+ * And the rule that is the cross-edge rule applied INSIDE a branch, where it is far easier to break
+ * by accident: a minor node hands over its TRUNK school's formula, never the school it leads to.
+ * A node on the run to Necromancy granting a Necromancy formula would be a necromancer's list
+ * without a necromancer's Taint, which is the forbidden shape in miniature.
+ */
+const trunkOf = id => {
+  let cur = id;
+  while (cur && cur !== "mind") {
+    const node = byId.get(cur);
+    const parent = (node?.after ?? [])[0];
+    if (parent === "mind.vigil") return node.name;      // this node IS a trunk school
+    cur = parent;
+  }
+  return null;
+};
+const offSchool = [];
+for (const node of mindAll) {
+  if (node.title || !node.grants?.spell) continue;
+  const spell = graph.SPELLS.get(node.grants.spell);
+  if (!spell) { offSchool.push(`${node.id}: "${node.grants.spell}" is not built`); continue; }
+  const trunk = trunkOf(node.id);
+  if (spell.source !== trunk) {
+    offSchool.push(`${node.id}: ${spell.source} on ${trunk}'s branch`);
+  }
+}
+/*
+ * And the two statements this Way rests on, checked where they are written. Two documented
+ * decisions went in with no check behind them last time and the break test was the only thing that
+ * noticed -- so these are the first thing written after the content, not the last.
+ */
+/*
+ * How many Ways have anything behind their root, asked of the data and compared with the sentence
+ * the content file opens with. That sentence said *Way of Shade is built; the other three are a
+ * root node with nothing behind it* for two increments after it stopped being true, because a
+ * comment is the one part of a file nothing reads.
+ */
+const wiredWays = ["shade", "strength", "mind", "faith"]
+  .filter(w => nodes.some(n => n.id.startsWith(w + ".")));
+check("Ways with a branch behind them", wiredWays.join(", "), "shade, strength, mind");
+check("and the file says so at the top",
+  /Three Ways are built -- Shade, Strength and Mind/
+    .test(fs.readFileSync(path.join(root, "module/content.mjs"), "utf8")) ? "yes" : "no", "yes");
+
+check("the document says why Mind does not cross",
+  /^#### Way of Mind has no cross edges, and that is the design$/m.test(specDoc) ? "yes" : "no",
+  "yes");
+check("and way-cards marks its Signatures built",
+  /^### 2\.3 Way of Mind {2}\*\*\[BUILT 2026-11-01\]\*\*$/m.test(wayDoc) ? "yes" : "no",
+  "yes");
+
+check("minor nodes handing over another school's formula",
+  offSchool.length ? offSchool.join("; ") : "none", "none");
+check("Mind minor nodes granting a formula",
+  mindAll.filter(n => !n.title && n.grants?.spell).length, 12);
+
+/*
+ * The third kind of document a node can hand over. A card goes into a deck and a slate onto the
+ * sheet; a formula is a slate too, but it is the first one that arrives **unprepared** -- and that
+ * is the part worth checking, because `slotCost` is zero while a spell is still in the book
+ * (data/items.mjs). Granting a strength-4 formula to a caster with three slots therefore costs
+ * nothing and breaks nothing: the book holds what the budget cannot. A node that handed over a
+ * prepared spell would be a node that quietly spent the budget for you.
+ */
+const unbuiltSpells = nodes.filter(n => n.grants?.spell)
+  .filter(n => !graph.SPELLS.has(n.grants.spell))
+  .map(n => `${n.id}: ${n.grants.spell}`);
+check("formulas granted but never built",
+  unbuiltSpells.length ? unbuiltSpells.join(", ") : "none", "none");
+check("formulas a node can hand over", graph.SPELLS.size, 24);
+check("taking a node hands over the formula",
+  /if \(grants\.spell\) await grantSpell\(actor, grants\.spell, id\);/.test(graphSource)
+    ? "yes" : "no", "yes");
+check("and it arrives in the book, not prepared",
+  /prepared: false[\s\S]{0,60}\}, "spell"\)\]\);/.test(graphSource) ? "yes" : "no", "yes");
+/* Formula or miracle is read off the Way, because data/items.mjs says that distinction IS the Way. */
+check("formula or miracle comes from the Way",
+  /String\(nodeId\)\.startsWith\("faith"\) \? "miracle" : "formula"/.test(graphSource)
+    ? "yes" : "no", "yes");
+check("a formula nobody built is refused rather than silently skipped",
+  /CARDRPG\.Level\.NoSpell/.test(graphSource) ? "yes" : "no", "yes");
+
+/*
+ * **Both casting Ways grant two slots at their first node, and neither did.** way-cards 1.4 states
+ * it in one line and `spellSlots.base` starts at 0 for everybody, so a character who had walked
+ * into Way of Mind could prepare nothing at all -- the one sentence that makes the Way playable was
+ * written in the rules and in no data.
+ */
+for (const way of ["mind", "faith"]) {
+  check(`${way} grants the two slots the rules promise`,
+    byId.get(way)?.grants?.spellSlots, 2);
+}
+check("and the other two Ways grant none",
+  ["shade", "strength"].filter(w => byId.get(w)?.grants?.spellSlots).join(", ") || "none", "none");
+
+/* What a diviner actually ends up with, asked of the engine rather than read off the content. */
+const diviner = new Set(["root", "mind", "mind.letters", "mind.candle", "mind.vigil",
+  "mind.spiritualism", "mind.spirit.omens", "mind.spirit.gathered", "mind.divination"]);
+const divinerGrants = graph.grantsOf(diviner);
+check("a level-9 diviner's spell slots", divinerGrants.spellSlots, 3);
+check("and the formulas in their book",
+  divinerGrants.spells.join(", "),
+  "The Bargain, Hold to the Bargain, The Gathered Pact, The Reading");
+/* Eleven slots' worth of formulas against three slots, which is what a spell book is. */
+check("the strength of everything in it",
+  divinerGrants.spells.reduce((n, name) => n + (graph.SPELLS.get(name)?.strength ?? 0), 0), 11);
+check("their title and tactic", `${graph.titleOf(diviner)} / ${graph.tacticOf(diviner).name}`,
+  "Divination / Already Seen");
+
 /* The crossings the document drafts must be the crossings the data carries. */
 const dataCrossings = [];
 for (const node of nodes) {
@@ -2344,7 +2502,7 @@ for (const node of nodes) {
 }
 check("title tiers", [...titleTiers.keys()].sort().join(", "), "0, 1, 2");
 check("titles per tier",
-  [...titleTiers.keys()].sort().map(t => titleTiers.get(t).length).join(", "), "4, 6, 18");
+  [...titleTiers.keys()].sort().map(t => titleTiers.get(t).length).join(", "), "4, 9, 27");
 /* The baseline is what the tier costs; a title BELOW it would be a shortcut into a branch. */
 const baselines = [...titleTiers.keys()].sort().map(t => Math.min(...titleTiers.get(t).map(r => r.level)));
 check("what each tier costs", baselines.join(", "), "1, 5, 8");
@@ -2591,7 +2749,8 @@ check("taking a node performs every prune it grants",
   /for \(let i = 0; i < \(grants\.prune \?\? 0\); i\+\+\) await prune\(actor\)/.test(graphSource)
     ? "yes" : "no", "yes");
 const pruners = nodes.filter(n => n.grants?.prune);
-check("nodes granting a prune", pruners.map(n => n.id).join(", "), "shade.footwork");
+check("nodes granting a prune", pruners.map(n => n.id).join(", "),
+  "shade.footwork, mind.vigil");
 /* And the documents say where it sits and why, since where a prune sits is a balance decision. */
 check("leveling says why the prune is on the trunk",
   /Way of Shade's prune sits on the trunk, not on the Cutpurse run/.test(levDoc) ? "yes" : "no",
@@ -2600,9 +2759,16 @@ check("the HUD spec describes the question it asks",
   /^### 8a\.2a Prune: the reward that asks back/m.test(hudPane) ? "yes" : "no", "yes");
 check("and who says when a level happens",
   /^### 8a\.0 Who says when/m.test(hudPane) ? "yes" : "no", "yes");
-/* Section 4's point: a prune rides along with a card rather than eating a whole level. */
-check("and it rides with a card rather than alone",
-  pruners.every(n => n.grants.card) ? "yes" : "no", "yes");
+/*
+ * Section 4's point: a prune rides along with something rather than eating a whole level.
+ *
+ * This asked for a CARD until Way of Mind had a trunk, and the Mind prune rides with a **spell
+ * slot** instead -- which is the same bargain told in that Way's own currency, and a better one:
+ * a caster's power is not in their action deck, so thinning it is pure gain where for a Cutpurse
+ * it would be a refund. What matters is that the level bought something as well, not which thing.
+ */
+check("and it rides with something rather than alone",
+  pruners.every(n => Object.keys(n.grants).some(k => k !== "prune")) ? "yes" : "no", "yes");
 /* A prune on the Cutpurse run would refund the price that node pays in. */
 check("no prune sits on a branch that pays in deck size",
   pruners.filter(n => n.id.includes("cutpurse")).length, 0);
@@ -2622,12 +2788,12 @@ const sigs = graph.SIGNATURES;
  * merged and this check did not would be a Way whose Tactics nobody validated. */
 const tactics = graph.ALL_TACTICS;
 
-check("Signatures defined", sigs.length, 24);
-check("Tactics defined", Object.keys(tactics).length, 24);
+check("Signatures defined", sigs.length, 35);
+check("Tactics defined", Object.keys(tactics).length, 36);
 
 /* One per Shade title, and the Way root has neither -- way-cards 2.2 starts at Thief. */
 const titled = nodes.filter(n => n.title && n.signature);
-check("titles carrying a Signature", titled.length, 24);
+check("titles carrying a Signature", titled.length, 36);
 /* A Way root is a major node and has neither: way-cards 2.1 and 2.2 start at the first title. */
 check("Way roots carrying one",
   ["shade", "strength", "mind", "faith"]
@@ -2640,14 +2806,25 @@ check("Way roots carrying one",
  */
 const sigDrift2 = [];
 for (const node of titled) {
-  const granted = node.grants?.card ?? node.grants?.feature ?? node.grants?.item ?? null;
+  const granted = node.grants?.card ?? node.grants?.feature ?? node.grants?.item
+    ?? node.grants?.spell ?? null;
   if (granted !== node.signature) {
     sigDrift2.push(`${node.id}: says "${node.signature}", grants ${granted ?? "nothing"}`);
   }
   const def = sigs.find(sg => sg.name === node.signature);
-  if (!def) { sigDrift2.push(`${node.id}: "${node.signature}" is not built`); continue; }
+  if (!def) {
+    /*
+     * One Signature is content that existed before its Way had a graph: *Step Through* was written
+     * when Shadow Magic's price needed somewhere to live, so it lives in SHADOW_FORMULAS and the
+     * node points at it rather than at a second copy. The same thing happened to Strength's reach
+     * cards, and the rule is the same -- pointing at it is right, duplicating it is the failure.
+     */
+    if (graph.SPELLS.has(node.signature)) continue;
+    sigDrift2.push(`${node.id}: "${node.signature}" is not built`);
+    continue;
+  }
   if (def.node !== node.id) sigDrift2.push(`${def.name}: claims ${def.node}, is on ${node.id}`);
-  const key = { card: "card", feature: "feature", item: "item" }[def.kind];
+  const key = { card: "card", feature: "feature", item: "item", spell: "spell" }[def.kind];
   if (node.grants?.[key] !== def.name) {
     sigDrift2.push(`${def.name}: a ${def.kind}, granted as something else`);
   }
@@ -2673,9 +2850,10 @@ check("Half-mage's slots are on the node", byId.get("shade.half-mage").grants.sp
  */
 const built = sigs.filter(sg => !sg.needs).map(sg => sg.name);
 check("Signatures the engine does everything for", built.join(", "),
-  "The Opening, The Kit, Loose and Step, Heckle, One Trick, Nothing Gets Through, Interpose");
+  "The Opening, The Kit, Loose and Step, Heckle, One Trick, Nothing Gets Through, Interpose, "
+  + "Wither, The Bargain");
 const gaps = sigs.filter(sg => sg.needs).map(sg => `${sg.name}: ${sg.needs}`);
-check("Signatures with a named gap", gaps.length, 17);
+check("Signatures with a named gap", gaps.length, 26);
 /* Every gap says something; "needs: true" or an empty string would be a gap nobody can act on. */
 check("gaps that name nothing",
   sigs.filter(sg => sg.needs !== undefined && typeof sg.needs !== "string").length, 0);
@@ -2890,9 +3068,20 @@ check("two pieces of content sharing a name",
 
 section("the two Way pools, and the audit over all of it");
 
-const pools = { shade: content.SHADE_POOL, strength: content.STRENGTH_POOL };
+const pools = {
+  shade: content.SHADE_POOL, strength: content.STRENGTH_POOL, mind: content.MIND_POOL
+};
 check("Shade's pool", pools.shade.length, 12);
 check("Strength's pool", pools.strength.length, 13);
+/*
+ * Mind's pool is formulas rather than cards, and it is eight rather than twelve because
+ * **Elemental Magic needed none**: Rain, Lightning, Frost and Scorch have been content since the
+ * combo clause was written, so its four runs hand those over. The pair the `when` clause exists to
+ * demonstrate is reachable by levelling now instead of being put on the actor by the setup routine.
+ */
+check("Mind's pool", pools.mind.length, 8);
+check("the schools Mind's pool draws on",
+  [...new Set(pools.mind.map(f => f.source))].sort().join(", "), "Blood Magic, Spiritualism");
 /* Roll With It and Set Spear have been in WAY_CARDS since the reach weapons; a second copy here
  * would be two cards with one name, which the collision check below refuses. */
 check("the two already-built Way cards are not repeated",
@@ -2903,7 +3092,8 @@ check("every pool card says which pool it is in",
     .join(", ") || "none", "none");
 
 /* Every piece of content that can carry a gap, audited together. */
-const audited = [...signatureExports, ...pools.shade, ...pools.strength, ...content.COMMON_POOL];
+const audited = [...signatureExports, ...pools.shade, ...pools.strength, ...pools.mind,
+  ...content.COMMON_POOL];
 /* Every one of them: a partial audit is a count nobody can trust. */
 check("content carrying the audit column",
   audited.filter(c => c.needs !== undefined).length, audited.length);
@@ -2911,8 +3101,8 @@ const vague = audited.filter(c => typeof c.needs === "string" && c.needs && c.ne
   .map(c => c.name);
 check("gaps too short to act on", vague.length ? vague.join(", ") : "none", "none");
 const workingCards = audited.filter(c => c.needs === "").length;
-check("content the engine does everything for", workingCards, 32);
-check("content with a named gap", audited.filter(c => c.needs).length, 23);
+check("content the engine does everything for", workingCards, 37);
+check("content with a named gap", audited.filter(c => c.needs).length, 37);
 
 /*
  * A gap shared by several cards is one piece of engine work, not several. Counting the DISTINCT
@@ -2922,10 +3112,16 @@ const gapCounts = new Map();
 for (const card of audited.filter(c => c.needs)) {
   gapCounts.set(card.needs, (gapCounts.get(card.needs) ?? 0) + 1);
 }
-check("distinct gaps across all content", gapCounts.size, 22);
-const worst = [...gapCounts.entries()].sort((a, b) => b[1] - a[1])[0];
-check("the gap that would unblock the most cards", `${worst[0]} (${worst[1]})`,
-  "granting Block to an ally (2)");
+check("distinct gaps across all content", gapCounts.size, 33);
+/*
+ * EVERY gap at the maximum, not the first one the sort happens to put there. Way of Mind produced
+ * a tie on its first day, and a check that reports one of two tied answers is a check that changes
+ * its mind when content is reordered.
+ */
+const most = Math.max(...gapCounts.values());
+const worst = [...gapCounts.entries()].filter(([, n]) => n === most).map(([gap]) => gap).sort();
+check("the gaps that would unblock the most content", `${worst.join("; ")} (${most})`,
+  "a spell that costs Health to cast (3)");
 
 /*
  * And a check on the QUEUE rather than on the content, which the ranged-item work earned.

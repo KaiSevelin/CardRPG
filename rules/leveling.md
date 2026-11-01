@@ -161,7 +161,7 @@ is right, because the Cutpurse is also a Cutpurse.
 |---|---|---|
 | **Shade** | Several, between branches at the same tier | The **Dream Guild** teaches across trades, and it already holds an obligation over every Thief ([specializations.md](specializations.md)) — the creditor is the reason. Three are drafted there. |
 | **Strength** | Several | Technique is watched and copied on a drill field. It is also the Way that read flattest, and a lattice is the cheapest way to make twelve nodes read like an army rather than three careers. Two are drafted. |
-| **Mind** | Few, and they buy nothing | A school **is its price** ([way-cards.md](way-cards.md) §3.4). The only cross edges worth wanting in Mind would arrive at a school's *deeper* nodes — formulas without the school's cost, the forbidden kind. The school nodes themselves sit one step off a trunk you own, so they are on your frontier already. |
+| **Mind** ✓ | **None, and that is the design** (built 2026-11-01) | A school **is its price** ([way-cards.md](way-cards.md) §3.4). The only cross edges worth wanting in Mind would arrive at a school's *deeper* nodes — formulas without the school's cost, the forbidden kind. The school nodes themselves sit one step off a trunk you own, so they are on your frontier already. |
 | **Faith** | **None** | The invariant above, applied to twelve gods. Any edge into a god's branch from outside it is the laundering case, so Faith's stringency is not a policy — it is what §3 was already claiming. |
 
 **Mind and Faith differ in kind, not degree.** Mind's cross edges are *pointless*: its content is

@@ -21,16 +21,18 @@
  */
 
 import {
-  NODES, COMMON_POOL, WAY_CARDS, SHADE_POOL, STRENGTH_POOL,
-  SHADE_SIGNATURES, TACTICS, STRENGTH_SIGNATURES, STRENGTH_TACTICS
+  NODES, COMMON_POOL, WAY_CARDS, SHADE_POOL, STRENGTH_POOL, MIND_POOL,
+  FORMULAS, SHADOW_FORMULAS,
+  SHADE_SIGNATURES, TACTICS, STRENGTH_SIGNATURES, STRENGTH_TACTICS,
+  MIND_SIGNATURES, MIND_TACTICS
 } from "./content.mjs";
 
 /**
  * Every Signature, and every Tactic, from whichever Way wrote them. A Way adds a pair of exports
  * and nothing here changes -- which is the same shape leveling.md 8 asks of an add-on.
  */
-export const SIGNATURES = [...SHADE_SIGNATURES, ...STRENGTH_SIGNATURES];
-export const ALL_TACTICS = { ...TACTICS, ...STRENGTH_TACTICS };
+export const SIGNATURES = [...SHADE_SIGNATURES, ...STRENGTH_SIGNATURES, ...MIND_SIGNATURES];
+export const ALL_TACTICS = { ...TACTICS, ...STRENGTH_TACTICS, ...MIND_TACTICS };
 import { deckOf, allStacks, actionCardData } from "./decks.mjs";
 /* The one shape a slate takes, shared with the setup routine rather than spelled twice. */
 import { slateData } from "./setup.mjs";
@@ -44,6 +46,18 @@ export const ROOT = "root";
  */
 export const POOL = new Map([...COMMON_POOL, ...WAY_CARDS, ...SHADE_POOL, ...STRENGTH_POOL,
   ...SIGNATURES.filter(s => s.kind === "card")].map(c => [c.name, c]));
+
+/**
+ * The formulas a node may hand out, by name -- the spell half of `POOL`, and a separate map
+ * because a spell is a different document type and the two can never be confused for each other.
+ *
+ * It gathers the four Elemental formulas and the one Shadow formula that were content before this
+ * Way had a graph. Those were on the starter actor because the setup routine put them there, and
+ * nothing ever GRANTED one; Rain and Lightning in particular are the pair the `when` clause was
+ * written to demonstrate, and they are two nodes on one branch now.
+ */
+export const SPELLS = new Map([...MIND_POOL, ...FORMULAS, ...SHADOW_FORMULAS,
+  ...SIGNATURES.filter(s => s.kind === "spell")].map(f => [f.name, f]));
 
 /** Every node by id. */
 export const GRAPH = new Map(NODES.map(n => [n.id, n]));
@@ -374,6 +388,7 @@ export async function takeNode(actor, id) {
   if (grants.card) await grantCard(actor, grants.card);
   if (grants.feature) await grantSlate(actor, grants.feature, "feature");
   if (grants.item) await grantSlate(actor, grants.item, "item");
+  if (grants.spell) await grantSpell(actor, grants.spell, id);
   for (let i = 0; i < (grants.prune ?? 0); i++) await prune(actor);
   return true;
 }
@@ -391,6 +406,35 @@ async function grantSlate(actor, name, type) {
   }
   const { kind, node, needs, ...fields } = def;
   await actor.createEmbeddedDocuments("Item", [slateData(fields, type)]);
+  return true;
+}
+
+/**
+ * A formula or a miracle. The third document a node can hand over, and the first that arrives
+ * **unprepared**.
+ *
+ * That is not a detail. `slotCost` is zero while a spell is still in the book (data/items.mjs), so
+ * granting a strength-4 formula to a caster with three slots costs nothing and breaks nothing -- the
+ * book holds what the budget cannot, and the slots that arrive later are what make it castable. A
+ * node that handed over a PREPARED spell would be a node that quietly spent your budget for you.
+ *
+ * `kind` -- formula or miracle -- is read off the Way rather than carried on the content, because
+ * that distinction simply IS the Way: data/items.mjs says so in the field's own documentation. A
+ * formula is studied and paid for once in your own substance; a miracle is granted and paid for
+ * every time you ask.
+ */
+async function grantSpell(actor, name, nodeId) {
+  const def = SPELLS.get(name);
+  if (!def) {
+    ui.notifications?.warn(game.i18n.format("CARDRPG.Level.NoSpell", { name }));
+    return false;
+  }
+  const { kind, node, needs, pool, ...fields } = def;
+  await actor.createEmbeddedDocuments("Item", [slateData({
+    ...fields,
+    kind: String(nodeId).startsWith("faith") ? "miracle" : "formula",
+    prepared: false
+  }, "spell")]);
   return true;
 }
 

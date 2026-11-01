@@ -152,6 +152,87 @@ incoming effect that draws fate*, which makes it a second Guardian and much dull
 **[OPEN]** The crafts and the two out-of-combat schools do not fit the six-axis template, because the
 axes are all about a fight. They need either a second template or a different kind of node.
 
+### The shape of Way of Mind  **[BUILT 2026-11-01]**
+
+Twelve schools, and the grouping is **way-cards §3.4's own principle read one level up**: *what
+makes a formula belong to its school is not what it does, it is what it costs.* Group the twelve by
+the kind of creditor their price names and three trunk schools fall out, each with three behind it:
+
+| Trunk school | The price takes | Behind it |
+|---|---|---|
+| **Blood Magic** | **your own substance** — Health, every cast | Necromancy (a bound Taint), Asceticism (parts of your body), Poison (your competence outside the fight) |
+| **Elemental Magic** | **the table** — coin and materials | Shadow Magic (a Wild in your own luck), Ward Magic (a card gone for the fight), Household Magic (a negotiation) |
+| **Spiritualism** | **a person, who remembers** — a pact | Glamour (an elven debt), Tattoo Magic (a secret), Divination (a prophecy) |
+
+The two schools that are **not in the world document** — Ward Magic and Divination — sit at the
+leaves, which is where a thing added to fill an axis belongs: nothing hangs off them, so if either
+turns out to be wrong it can be cut without reshaping a branch.
+
+```
+  MIND                  (Preparation / spell slots)
+  ├─ BLOOD MAGIC        (Tempo       / your own Health)
+  │  ├─ NECROMANCY      (Preparation / a bound Taint)
+  │  ├─ ASCETICISM      (Deck shape  / an empty hand)
+  │  └─ POISON          (Control     / skill cards)
+  ├─ ELEMENTAL MAGIC    (Position    / reagents)
+  │  ├─ SHADOW MAGIC    (Position    / a permanent Wild)
+  │  ├─ WARD MAGIC      (Reactions   / Spent)
+  │  └─ HOUSEHOLD MAGIC (Support     / a place you know)
+  └─ SPIRITUALISM       (Preparation / a pact)
+     ├─ GLAMOUR         (Control     / an elven debt)
+     ├─ TATTOO MAGIC    (Deck shape  / a secret)
+     └─ DIVINATION      (Support     / someone else's turn)
+```
+
+**Household Magic's cell closes an [OPEN] above** rather than leaving it open. The out-of-combat
+schools do not fit a template built for a fight — but a node with **no** cell cannot be checked
+against its siblings at all, and an unchecked node is how two schools come to charge the same price
+without anyone noticing. **Support / a place you know** is the honest reading: a household mage
+supports a party *between* fights, which is the same axis the Tactician and the Divinator sit on for
+entirely different reasons.
+
+#### Way of Mind has no cross edges, and that is the design
+
+[leveling.md](leveling.md) §1 says why in one line, and building the Way confirmed it: *the only
+cross edges worth wanting in Mind would arrive at a school's deeper nodes — formulas without the
+school's cost, the forbidden kind.* Shade and Strength cross because their content is **cards**, and
+a card is a card whoever holds it. **Mind's content is its price.** A cutpurse who learns a gambler's
+trick has learned a trick; a necromancer's formula learned without the Taint is not the same formula.
+
+So the validator checks the absence: **every node in this Way has exactly one predecessor, and that
+predecessor is in this Way.** The two Ways that cross are checked for crossing correctly; this one is
+checked for not crossing at all.
+
+#### The three crossings the test permits, and why Mind declines all three
+
+The cell test does not care which Way it is run on, so it finds three legal pairs here — and this is
+the first time the answer to *all* of them is no:
+
+| Permitted pair | On | Declined because |
+|---|---|---|
+| **Asceticism ↔ Tattoo Magic** | *Deck shape* | Both spend capacity for good, which is why the test likes them. One pays in **fingers** and the other in **secrets**, and an edge would let a tattoo mage reach the empty-hand rules without giving up a hand. |
+| **Glamour ↔ Poison** | *Control* | An elven debt and a set-aside skill deck are both control bought with something, and they are not the same something. Nothing an elf is owed teaches a dose. |
+| **Divination ↔ Household Magic** | *Support* | A prophecy the GM holds and a negotiation with elf-kin. The only thing they share is that somebody else is owed, which is true of half this Way. |
+
+**One reason covers all three, and it is the Way's rule rather than three separate judgements:** the
+cell test asks whether two nodes are *adjacent in design space*, and in Mind that is never enough,
+because **a formula without its school's price is not that formula.** The test is a floor, not a
+mandate — and this is the Way where the floor and the ceiling are the same height.
+
+#### What the minor nodes hand over
+
+**A minor node grants its trunk school's formula, never the destination's.** A node on the run from
+Blood Magic to Necromancy is still a Blood node, so it hands out Blood's list — which is the same
+rule as the cross-edge one, applied inside a branch where it is much easier to break by accident.
+
+Elemental Magic's four runs needed **no new content at all**: *Rain*, *Lightning*, *Frost* and
+*Scorch* have been written since the combo clause was ([way-cards.md](way-cards.md) §1.4), and
+nothing in the game ever handed one over — they were on the starter actor because the setup routine
+put them there. The **Rain-plus-Lightning pair the `when` clause exists to demonstrate** is now two
+nodes on one branch, six slots between them, reachable by levelling.
+
+---
+
 ### Divination: the one deck nobody may touch  **[PROPOSED]**
 
 A diviner peeks — but at *what*? Three of the four obvious answers are already spoken for:

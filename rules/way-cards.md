@@ -585,7 +585,24 @@ and a Critical in the same swing. It is the only card in the game that makes the
 dangerous to its owner, which is exactly what a gambler should be, and it needs simulation more
 than anything else in this document.
 
-### 2.3 Way of Mind
+### 2.3 Way of Mind  **[BUILT 2026-11-01]**
+
+> **All twelve are content, and two of them work.** Eleven are written here; *Step Through* was
+> already content, because Shadow Magic's price needed somewhere to live before this Way had a
+> graph, so the node points at it rather than at a second copy.
+>
+> **The audit is thinner in this Way than in the other two, and the reason is structural.** A
+> school's content is a **spell**, and a spell does fewer things the engine already has verbs for: a
+> card modifies a Strike that is already resolved, while a formula puts a figure on the map, places
+> terrain, reads a deck or spends its slots for good. Those are mechanisms, not modifiers. *Wither*
+> and *The Bargain* are the two that work, and that is not an accident either — one is a condition
+> with a saving throw, which is the oldest finished part of the engine, and the other hands the whole
+> question to the GM on purpose.
+>
+> **A school's price is only a gap when the engine would have to charge it.** A secret the GM writes
+> down, an elven debt, a pact, a finger: nobody computes those. Health, a bound Taint, skill cards
+> set aside and a permanent Wild **are** tracked, so those prices are named in the column — and *a
+> spell that costs Health to cast* is now the largest single gap in the game at three formulas.
 
 Formulas, with their strength in brackets. Strength is the slot cost.
 

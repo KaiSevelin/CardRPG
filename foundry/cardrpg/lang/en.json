@@ -196,6 +196,7 @@
   "CARDRPG.Level.Grant": "Grant a level",
   "CARDRPG.Level.Revoke": "Take one back",
   "CARDRPG.Level.Ways": "Ways walked",
+  "CARDRPG.Level.NoSpell": "This node grants the formula {name}, which has not been built yet. Tell your GM.",
   "CARDRPG.Level.NoSlate": "This node grants {name}, which has not been built yet. Tell your GM.",
   "CARDRPG.Level.TacticFrom": "Tactic ({title})",
   "CARDRPG.Condition.Heckled": "Heckled",
