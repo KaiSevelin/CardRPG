@@ -3793,8 +3793,72 @@ const artable = [
   ...Object.entries(content).filter(([k]) => k.endsWith("_SIGNATURES")).map(([, v]) => v)
 ].flat();
 check("pieces of content that take art", artable.length, 305);
+
+/*
+ * The backs, which are a different kind of art: **one picture per deck, not one per card**, doing
+ * one job -- saying which deck a face-down card came from. Five against three hundred faces, and
+ * the five are what a table looks at all evening.
+ */
+const backs = Object.entries(content.DECK_BACKS);
+check("deck backs", backs.length, 5);
+check("the decks that take one", backs.map(([k]) => k).join(", "),
+  "action, fate, skill, wild, npc.goblin");
+/* Every one says what it is for: a back with no note is a brief nobody can draw from. */
+check("backs with nothing said about them",
+  backs.filter(([, b]) => !b.note || b.note.length < 40).map(([k]) => k).join(", ") || "none",
+  "none");
+/* And a back only ever appears where it would be SEEN: a hand and a discard are face up. */
+/*
+ * Both sources, because where a back is read depends on who owns the card: the skill deck's goes
+ * on in `skillCardData`, which lives with the other card shapes, and the rest in the setup routine
+ * that creates the deck documents.
+ */
+const backed = [...`${setupSource}\n${decksSource}`.matchAll(/backOf\("([a-z.]+)"\)/g)]
+  .map(m => m[1]);
+check("decks given a back", [...new Set(backed)].sort().join(", "),
+  "action, fate, npc.goblin, skill, wild");
+/* Every back declared is a back used: one nobody reads is a picture drawn for nothing. */
+check("backs declared but never read",
+  backs.map(([k]) => k).filter(k => !backed.includes(k)).join(", ") || "none", "none");
+check("a pile is never given one",
+  /"pile",[^)]*backOf\(/.test(setupSource) ? "no" : "yes", "yes");
+/*
+ * **Every deck document gets a back and no pile does**, which is the rule rather than a list: a
+ * deck is face down, so somebody is looking at its back all evening; a hand is face up to its
+ * owner and a pile to the table, so a back on one would be art nobody ever sees.
+ *
+ * Read as whole calls, because `backOf("skill")` also appears in the card builder -- so a deck
+ * document can lose its own back while the key still looks used.
+ */
+const deckCalls = [...setupSource.matchAll(/makeCards\(([\s\S]*?)\n?\s*\);/g)]
+  .map(m => m[1]).filter(args => /"deck"/.test(args));
+/* Six documents from five backs: there are two fate decks, because each NPC type has its own so
+ * that a Cursed goblin does not hex the ogre beside it. They share the one fate back. */
+check("deck documents created", deckCalls.length, 6);
+check("deck documents with no back",
+  deckCalls.filter(args => !/"[a-z.]+"\s*\)?\s*$/.test(args.trim())
+    || !/backOf\(|, "(action|fate|skill|wild|npc\.[a-z]+)"\s*\)?\s*$/.test(args.trim()))
+    .length, 0);
+/*
+ * A Wound and a Taint wear the ACTION back, which is not an oversight: both go into the action
+ * deck (core-rules 8), and a Wound you could see coming would not be a Wound.
+ */
+check("and the brief says why harm has no back of its own",
+  /a Wound you could see coming would not be a Wound/.test(artList) ? "yes" : "no", "yes");
+/* One reader for a back, the same shape as the one for a face. */
+check("a back has one reader",
+  /export function backOf\(key\)/.test(decksSource) ? "yes" : "no", "yes");
+check("with the same placeholder guard a face gets",
+  /art && !art\.startsWith\("icons\/svg\/"\) \? art : ""/.test(decksSource) ? "yes" : "no", "yes");
+/* It goes in both slots Foundry has for it, and wants the same file in each. */
+check("the deck document takes it",
+  /\.\.\.\(art \? \{ img: art \} : \{\}\)/.test(setupSource) ? "yes" : "no", "yes");
+check("and so does every card in the deck",
+  (setupSource.match(/back: \{/g) ?? []).length >= 1
+  && /\.\.\.\(backOf\("action"\) \? \{ back: \{ img: backOf\("action"\) \} \} : \{\}\)/
+    .test(decksSource) ? "yes" : "no", "yes");
 check("the art list counts the same",
-  Number(/\*\*(\d+) pieces\*\*/.exec(artList)?.[1] ?? 0), artable.length);
+  Number(/\*\*(\d+) pieces\*\*/.exec(artList)?.[1] ?? 0), artable.length + backs.length);
 /* Every piece is a row, so nothing is quietly left out of the brief. */
 const listed = new Set([...artList.matchAll(/^\| [ ✓] \| \*\*(.+?)\*\* \|/gm)]
   .map(m => m[1]));
@@ -3804,7 +3868,7 @@ check("pieces missing from the art list",
 /* And the count of what is drawn is the count of what carries a path. */
 check("the list agrees on what is wired up",
   Number(/of which \*\*(\d+)\*\* are wired up/.exec(artList)?.[1] ?? -1),
-  artable.filter(e => e.art).length);
+  artable.filter(e => e.art).length + backs.filter(([, b]) => b.art).length);
 /*
  * And the brief reads as English. A condition is printed by its NAME, not its key: an artist should
  * not have to work out that `offBalance` is Off Balance, and a camelCase word in a brief is the one
@@ -3821,8 +3885,16 @@ check("the list agrees on what is wired up",
  * A DATA row: the one whose first cell is the drawn-yet tick and whose second is a bold name.
  * Nineteen tables' worth of headers and rules are rows too, and so is the "what to supply" table
  * at the top -- which has bold in its second cell and caught a looser pattern twice.
+ *
+ * And the BACKS table is filtered out, because it has the same tick column: its third cell is a
+ * note rather than a brief and its path is the slug of a key rather than of a label, so every rule
+ * below would be the wrong rule for it.
  */
-const briefs = [...artList.matchAll(/^\| [ ✓] \| \*\*[^|]*\|([^|]*)\|/gm)].map(m => m[1]);
+const faceRows = [...artList.matchAll(
+  /^\| [ ✓] \| \*\*(.+?)\*\* \|([^|]*)\| `([^`]+)` \|/gm)]
+  .map(m => ({ name: m[1], brief: m[2], path: m[3] }))
+  .filter(r => !r.path.startsWith("backs/"));
+const briefs = faceRows.map(r => r.brief);
 const leaked = briefs.flatMap(text =>
   [...text.matchAll(/\b([a-z]+[A-Z][a-zA-Z]*)\b/g)].map(m => m[1]));
 /* A pattern that matched no rows at all would report "none" for any list whatsoever. */
@@ -3838,9 +3910,17 @@ check("keys that leaked into the brief",
  * hundred and fifty files have been named that way and the brief is the only record of it.
  */
 const { slug } = await import("./art-list.mjs");
-const rows = [...artList.matchAll(/^\| [ \u2713] \| \*\*(.+?)\*\* \|[^|]*\| `([^`]+)` \|/gm)]
-  .map(m => ({ name: m[1], path: m[2] }));
+const rows = faceRows;
 check("file paths in the brief", rows.length, 305);
+/* And the backs, whose path is the slug of their KEY rather than of their printed label. */
+const backPaths = [...artList.matchAll(/\| `(backs\/[^`]+)` \|/g)].map(m => m[1]);
+check("back paths in the brief", backPaths.length, backs.length);
+/* And the section they sit in, which is where an artist is told to start. */
+check("the brief puts the backs first",
+  /^## Deck backs \u2014 draw these first$/m.test(artList) ? "yes" : "no", "yes");
+check("back paths that are not the slug of their key",
+  backs.map(([key]) => `backs/${slug(key.replace(/\./g, "-"))}.webp`)
+    .filter(p => !backPaths.includes(p)).join(", ") || "none", "none");
 /*
  * "Lowercase words and hyphens" could not tell `accuser-s-ring` from `accusers-ring`: both are
  * lowercase words separated by hyphens, and `s` is a word. The rule that holds is that a path IS

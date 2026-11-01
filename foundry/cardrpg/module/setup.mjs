@@ -8,7 +8,7 @@
 
 import { CARDRPG } from "./config.mjs";
 /* The one shape a skill card takes, shared with anything that grants one rather than spelled here. */
-import { skillCardData } from "./decks.mjs";
+import { skillCardData, backOf } from "./decks.mjs";
 import {
   fateCards, WARRIOR_DECK, GOBLIN_DECK, ITEMS, NPC_GEAR, FEATURES, FORMULAS, WARRIOR_SKILLS,
   SHADOW_FORMULAS, WILD_MAGIC,
@@ -31,10 +31,12 @@ function findExisting(collection, tag) {
 }
 
 /** A Cards document: core provides deck, hand and pile; our subtypes live on the cards inside. */
-async function makeCards(name, type, tag, cards = []) {
+async function makeCards(name, type, tag, cards = [], back = "") {
   const existing = findExisting(game.cards, tag);
   if (existing) return existing;
-  return Cards.create({ name, type, cards, ...stamp(tag) });
+  /* `img` is what Foundry shows for the stack, which is the back of the deck as a pile of cards. */
+  const art = back ? backOf(back) : "";
+  return Cards.create({ name, type, cards, ...(art ? { img: art } : {}), ...stamp(tag) });
 }
 
 /** Expand a card definition's `copies` into that many Card documents. */
@@ -93,18 +95,21 @@ export async function createStarterContent() {
       // its name. Every card here is meant to be readable in hand, so it gets a face.
       face: 0,
       faces: [{ name: def.name }],
+      ...(backOf("action") ? { back: { img: backOf("action") } } : {}),
       system: {
         primary: def.primary ?? [],
         secondary: def.secondary ?? [],
         reaction: def.reaction ?? "",
         costs: def.costs ?? {}
       }
-    }))
+    })),
+    "action"
   );
   const warriorHand = await makeCards("Starter Warrior — Hand", "hand", "warrior.hand");
   const warriorDiscard = await makeCards("Starter Warrior — Discard", "pile", "warrior.discard");
   const warriorSpent = await makeCards("Starter Warrior — Spent", "pile", "warrior.spent");
-  const warriorFate = await makeCards("Starter Warrior — Fate Deck", "deck", "warrior.fate", fateCards());
+  const warriorFate = await makeCards(
+    "Starter Warrior — Fate Deck", "deck", "warrior.fate", fateCards(backOf("fate")), "fate");
   const warriorFateDiscard = await makeCards("Starter Warrior — Fate Discard", "pile", "warrior.fateDiscard");
   note("warrior decks ready");
 
@@ -120,12 +125,16 @@ export async function createStarterContent() {
       // Intent cards are turned face down when drawn; the face is what a reveal turns up.
       face: 0,
       faces: [{ name: def.name }],
-      back: { name: "Goblin" },
+      /* The back shows the creature kind and nothing else, which is what makes a goblin's
+         intents recognisable across the table as a goblin's. */
+      back: { name: "Goblin", ...(backOf("npc.goblin") ? { img: backOf("npc.goblin") } : {}) },
       system: { kind: "goblin", sequence: def.sequence }
-    }))
+    })),
+    "npc.goblin"
   );
   const goblinDiscard = await makeCards("Goblin — Discard", "pile", "goblin.discard");
-  const goblinFate = await makeCards("Goblin — Fate Deck", "deck", "goblin.fate", fateCards());
+  const goblinFate = await makeCards(
+    "Goblin — Fate Deck", "deck", "goblin.fate", fateCards(backOf("fate")), "fate");
   const goblinFateDiscard = await makeCards("Goblin — Fate Discard", "pile", "goblin.fateDiscard");
   // Each NPC type has its own fate deck, so a Cursed goblin doesn't hex the ogre beside it.
   const goblinIntent = await makeCards("Goblin — Intent", "pile", "goblin.intent");
@@ -142,8 +151,9 @@ export async function createStarterContent() {
       type: "wild",
       faces: [{ name: def.name }],
       face: 0,
+      ...(backOf("wild") ? { back: { img: backOf("wild") } } : {}),
       system: { steps: def.steps ?? [], turn: def.turn, text: def.text ?? "" }
-    })));
+    })), "wild");
   await makeCards("Wild Magic Discard", "pile", "wild.discard");
   note("goblin decks ready");
 
@@ -212,7 +222,7 @@ export async function createStarterContent() {
    * place the two sides differ in kind rather than in content.
    */
   const warriorSkills = await makeCards("Warrior Skills", "deck", "warrior-skills",
-    expand(WARRIOR_SKILLS, def => skillCardData(def)));
+    expand(WARRIOR_SKILLS, def => skillCardData(def)), "skill");
   const warriorSkillHand = await makeCards("Warrior Skill Hand", "hand", "warrior-skill-hand");
   const warriorSkillDiscard = await makeCards("Warrior Skill Discard", "pile",
     "warrior-skill-discard");

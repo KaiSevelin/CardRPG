@@ -17,11 +17,17 @@
  * Miss and Critical both reshuffle, so between reshuffles the deck always holds one of each --
  * which is what makes the remaining count a live risk readout.
  */
-export function fateCards() {
+export function fateCards(back = "") {
   const cards = [];
   const push = (name, system, n) => {
     for (let i = 0; i < n; i++) {
-      cards.push({ name, type: "fate", face: 0, faces: [{ name }], system });
+      /* A fate card's back is the one a table sees most: the deck is face down by design, and
+       * that is what makes a thin one a risk rather than a lookup (core-rules 6). */
+      cards.push({
+        name, type: "fate", face: 0, faces: [{ name }],
+        ...(back ? { back: { img: back } } : {}),
+        system
+      });
     }
   };
   push("Miss", { special: "miss", value: 0 }, 1);
@@ -2785,6 +2791,57 @@ export const WARRIOR_SKILLS = [
     edge: "Draw 1 skill card."
   }
 ];
+
+/* -------------------------------------------- */
+
+/**
+ * The deck backs.
+ *
+ * **A back is one picture per deck, not one per card**, and it does one job: it says which deck a
+ * face-down card came from. That is why there are five of these and three hundred of everything
+ * else -- and why they are worth drawing first in practice, since a back is on the table from the
+ * first second of play and a face only when somebody holds it.
+ *
+ * **Wound and Taint have no back of their own, deliberately.** Both go *into* the action deck
+ * (core-rules 8), and a Wound you could see coming would not be a Wound: they wear the action
+ * back like everything else in there, which is the whole threat.
+ *
+ * NPC decks are keyed by **creature kind**, because `NpcCardData.kind` says the back shows that and
+ * nothing else -- a goblin's intent deck should be recognisable across the table as a goblin's.
+ * One kind today; a new creature brings a new back with it.
+ */
+export const DECK_BACKS = {
+  action: {
+    label: "The action deck",
+    art: "",
+    note: "Face down in front of every player, all game. Cards from the common pool and all four "
+      + "Ways mix in one deck, so this is NOT a Way's back -- the deck is yours, not Shade's."
+  },
+  fate: {
+    label: "The fate deck",
+    art: "",
+    note: "The back players see most: it is shuffled and face down by design, and that is what "
+      + "makes a thin deck a risk rather than a lookup. Twenty cards, drawn from constantly."
+  },
+  skill: {
+    label: "The skill deck",
+    art: "",
+    note: "The scene side's deck. Wants to read as clearly NOT the action deck at a glance, since "
+      + "both are face down in front of the same player."
+  },
+  wild: {
+    label: "The Wild Magic deck",
+    art: "",
+    note: "Drawn only when a Wild comes out of a fate deck, so its back is a promise that "
+      + "something strange is about to happen."
+  },
+  "npc.goblin": {
+    label: "Goblin intent",
+    art: "",
+    note: "An NPC intent deck, keyed by creature kind: the back shows the kind and nothing else, "
+      + "so the table can tell a goblin's intents from anything else's at a glance."
+  }
+};
 
 /* -------------------------------------------- */
 /*  The levelling graph                         */

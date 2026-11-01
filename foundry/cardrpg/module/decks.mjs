@@ -11,6 +11,8 @@
  */
 
 import { CARDRPG } from "./config.mjs";
+/* The deck backs, which are content: one picture per deck rather than one per card. */
+import { DECK_BACKS } from "./content.mjs";
 
 /* -------------------------------------------- */
 /*  Primitives                                  */
@@ -41,6 +43,19 @@ export function artOf(doc) {
   return path;
 }
 
+/**
+ * The back of a deck, by its key in `DECK_BACKS`, or nothing.
+ *
+ * A back goes in two slots and wants the same file in both: `Cards.img`, which is what Foundry
+ * shows for the stack, and `Card.back.img`, which is what a face-down card shows. One answer here
+ * rather than two spellings of the same path -- and the same `icons/svg/` guard a face gets, since
+ * Foundry fills these slots with its own placeholder too.
+ */
+export function backOf(key) {
+  const art = DECK_BACKS[key]?.art ?? "";
+  return art && !art.startsWith("icons/svg/") ? art : "";
+}
+
 /** A Card document from a content definition. One shape in one place: the starter decks and the
  * levelling graph both create action cards, and two spellings of the same thing would drift.
  *
@@ -53,11 +68,13 @@ export function artOf(doc) {
  * document is two places to get it wrong.
  */
 export function skillCardData(def) {
+  const back = backOf("skill");
   return {
     name: def.name,
     type: "skill",
     face: 0,
     faces: [{ name: def.name, ...(def.art ? { img: def.art } : {}) }],
+    ...(back ? { back: { img: back } } : {}),
     system: {
       approach: def.approach ?? "",
       value: def.value ?? 1,
@@ -74,6 +91,12 @@ export function actionCardData(def) {
     face: 0,
     /* The face carries the art, which is where Foundry already keeps a card's picture. */
     faces: [{ name: def.name, ...(def.art ? { img: def.art } : {}) }],
+    /*
+     * And the back says which deck it came from. A Wound and a Taint wear this one too, on
+     * purpose: both go INTO the action deck (core-rules 8), and a Wound you could see coming
+     * would not be a Wound.
+     */
+    ...(backOf("action") ? { back: { img: backOf("action") } } : {}),
     system: {
       primary: def.primary ?? [],
       secondary: def.secondary ?? [],

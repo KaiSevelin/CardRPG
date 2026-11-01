@@ -162,8 +162,8 @@ const GROUPS = [
 const lines = [];
 const push = (...rows) => lines.push(...rows);
 
-let total = 0;
-let drawn = 0;
+let total = Object.keys(content.DECK_BACKS).length;
+let drawn = Object.values(content.DECK_BACKS).filter(b => b.art).length;
 for (const group of GROUPS) {
   total += group.list.length;
   drawn += group.list.filter(e => e.art).length;
@@ -214,6 +214,46 @@ push(
   + "content. One picture each at most.",
   "- **The levelling graph's nodes.** A node wears the art of what it hands over, so drawing a "
   + "Signature draws its node too. Nothing needs art of its own.",
+  ""
+);
+
+/*
+ * The backs, first, because a back is on the table from the first second of play and a face only
+ * when somebody is holding one. Five pictures against three hundred, and the five are the ones a
+ * table looks at all evening.
+ */
+const backs = Object.entries(content.DECK_BACKS);
+push(
+  "## Deck backs — draw these first",
+  "",
+  "**A back is one picture per deck, not one per card**, and it does one job: it says which deck a "
+  + "face-down card came from. Five pictures against three hundred faces — and the five are what "
+  + "a table looks at all evening, since a deck is face down from the first second of play.",
+  "",
+  `**${backs.length} pieces**${backs.filter(([, b]) => b.art).length
+    ? `, ${backs.filter(([, b]) => b.art).length} wired up` : ""}. `
+  + "Same 5:7 and 640 × 896 as a face, and **no safe area**: nothing is printed over a back, so "
+  + "the whole card is yours.",
+  "",
+  "| | Deck | What it is for | File |",
+  "|---|---|---|---|"
+);
+for (const [key, back] of backs) {
+  push(`| ${back.art ? "✓" : " "} | **${back.label}** | ${back.note} `
+    + `| \`backs/${slug(key.replace(/\./g, "-"))}.webp\` |`);
+}
+push(
+  "",
+  "**Wound and Taint have no back of their own, deliberately.** Both go *into* the action deck, "
+  + "and a Wound you could see coming would not be a Wound — they wear the action back like "
+  + "everything else in there, which is the whole threat.",
+  "",
+  "**Hands, discards and Spent piles have no back either.** A hand is face up to its owner and a "
+  + "discard is face up to the table, so a back on one would be art nobody ever sees.",
+  "",
+  "**An NPC deck's back is keyed by creature kind**, because that is all it shows: a goblin's "
+  + "intents should be recognisable across the table as a goblin's. One kind today, and a new "
+  + "creature brings a new back with it.",
   ""
 );
 
