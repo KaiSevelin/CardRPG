@@ -10,6 +10,7 @@ import { registerSheets } from "./module/sheets.mjs";
 import { createStarterContent, ensureSetupMacro } from "./module/setup.mjs";
 import { CardRPGCombat, registerCombatHooks } from "./module/combat.mjs";
 import { CardRPGTray, registerTrayHooks } from "./module/tray.mjs";
+import { LevelUpPane } from "./module/levelup.mjs";
 import * as decks from "./module/decks.mjs";
 import { answerArrival } from "./module/resolve.mjs";
 import { CharacterData, NpcData } from "./module/data/actors.mjs";
@@ -167,7 +168,12 @@ Hooks.once("ready", async () => {
     createStarterContent,
     config: CARDRPG,
     decks,
-    openTray: actor => CardRPGTray.openFor(actor)
+    openTray: actor => CardRPGTray.openFor(actor),
+    levelUp: actor => LevelUpPane.openFor(actor),
+    /* So a GM can grant from a macro as well as from the sheet. */
+    grantLevel: async (actor, n = 1) => actor.update({
+      "system.levels.pending": Math.max(0, (actor.system.levels?.pending ?? 0) + n)
+    })
   };
 
   // Overloaded mutates card state, so it fires on the transition rather than on every recompute.

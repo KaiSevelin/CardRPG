@@ -1035,6 +1035,24 @@
  * The graph needs a sized box or Cytoscape mounts into a zero-height div and draws nothing, which
  * is the one failure that looks like a broken library rather than a broken stylesheet.
  */
+/*
+ * A framed ApplicationV2 puts the part straight into .window-content, which does not pass a height
+ * down by default -- and a Cytoscape container with no height draws nothing at all, which reads as
+ * a broken library rather than a broken stylesheet. Both selectors are deliberate: the part element
+ * IS the frame in current Foundry, and a wrapper would not change the requirement.
+ */
+.cr-levelup .window-content {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.cr-levelup .window-content > * {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
 .cr-levelup .cr-levelup__frame {
   display: flex;
   flex-direction: column;
@@ -1120,4 +1138,10 @@
 
 /* The sheet button lights up only when the GM has actually granted a level. */
 .cr-level-button { white-space: nowrap; }
+
+/* Level and title on the sheet: a readout, because both are derived from the node list. */
+.cr-standing { display: flex; align-items: center; gap: 8px; }
+.cr-standing__title { opacity: 0.85; font-style: italic; }
+.cr-standing__grant { display: flex; gap: 2px; }
+.cr-standing__grant button { width: 1.6em; padding: 0; line-height: 1.4; }
 .cr-level-button--ready { box-shadow: 0 0 0 1px #7fb2ef inset; font-weight: bold; }

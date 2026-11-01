@@ -119,7 +119,29 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
     this.cy = null;
   }
 
+  /**
+   * One pane per actor, keyed by actor id. Without this two characters' panes share the window id
+   * ApplicationV2 derives from the class, and opening the second one re-renders the first against
+   * the wrong character -- which looks like the graph forgetting what it had marked.
+   */
+  static #open = new Map();
+
+  static openFor(actor) {
+    if (!actor || actor.type !== "character") {
+      if (actor) ui.notifications.warn(game.i18n.localize("CARDRPG.Level.CharactersOnly"));
+      return null;
+    }
+    let pane = LevelUpPane.#open.get(actor.id);
+    if (!pane || pane.rendered === undefined) {
+      pane = new LevelUpPane(actor, { uniqueId: actor.id });
+      LevelUpPane.#open.set(actor.id, pane);
+    }
+    pane.render({ force: true });
+    return pane;
+  }
+
   static DEFAULT_OPTIONS = {
+    id: "cardrpg-levelup-{id}",
     classes: ["cardrpg", "cr-levelup"],
     position: { width: 1040, height: 700 },
     window: { title: "CARDRPG.Level.Pane", resizable: true, icon: "fa-solid fa-diagram-project" },
@@ -197,6 +219,7 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
   async _preClose(options) {
     this.cy?.destroy();
     this.cy = null;
+    LevelUpPane.#open.delete(this.actor?.id);
     return super._preClose(options);
   }
 

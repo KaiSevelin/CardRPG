@@ -2437,6 +2437,96 @@ check("cards printing a reaction the config lacks",
 
 /* -------------------------------------------- */
 
+/*
+ * Closing the level-up loop: the GM grants, the pane opens once per actor, and prune -- the one
+ * reward that has to ask a question -- actually removes a card.
+ */
+
+section("granting and spending a level");
+
+const entrySource = fs.readFileSync(path.join(root, "cardrpg.mjs"), "utf8");
+
+/*
+ * graph.mjs must stay importable outside Foundry, because the engine checks above are only possible
+ * while it is. Destructuring a Foundry global at module scope breaks that, and it broke it once.
+ */
+check("the engine touches no Foundry global at module scope",
+  /^const \{[^}]*\} = foundry\./m.test(graphSource)
+  || /^const \w+ = game\./m.test(graphSource) ? "it does" : "no", "no");
+
+/* One pane per actor. Two sharing a window id makes the second re-render the first. */
+check("panes are kept per actor", /static #open = new Map\(\)/.test(levelup) ? "yes" : "no", "yes");
+check("and the window id is per actor",
+  /id: "cardrpg-levelup-\{id\}"/.test(levelup) && /uniqueId: actor\.id/.test(levelup)
+    ? "yes" : "no", "yes");
+check("a closed pane is forgotten",
+  /LevelUpPane\.#open\.delete\(this\.actor\?\.id\)/.test(levelup) ? "yes" : "no", "yes");
+
+/*
+ * The flex chain. A framed ApplicationV2 does not pass a height down to its part, and a Cytoscape
+ * container with no height draws nothing -- the one failure that reads as a broken library.
+ */
+const paneCss = fs.readFileSync(path.join(root, "styles/cardrpg.css"), "utf8");
+check("the pane's window content passes a height down",
+  /\.cr-levelup \.window-content \{[^}]*min-height: 0/s.test(paneCss) ? "yes" : "no", "yes");
+check("and the part inside it stretches",
+  /\.cr-levelup \.window-content > \* \{[^}]*flex: 1 1 auto/s.test(paneCss) ? "yes" : "no", "yes");
+
+/* The GM says when, and now something can say it. */
+check("the sheet registers the grant",
+  /grantLevel: CharacterSheet\.#onGrantLevel/.test(sheets) ? "yes" : "no", "yes");
+check("granting is GM-only",
+  /#onGrantLevel\(event, target\) \{\s*\n\s*if \(!game\.user\.isGM\) return;/.test(sheets)
+    ? "yes" : "no", "yes");
+check("the sheet offers it only to a GM",
+  /\{\{#if isGM\}\}[\s\S]{0,400}data-action="grantLevel"/.test(charTemplate) ? "yes" : "no", "yes");
+check("pending levels cannot go negative",
+  /Math\.max\(0, now \+ by\)/.test(sheets) ? "yes" : "no", "yes");
+check("and a GM can grant from a macro",
+  /grantLevel: async \(actor, n = 1\)/.test(entrySource) ? "yes" : "no", "yes");
+check("the pane is reachable from the API",
+  /levelUp: actor => LevelUpPane\.openFor\(actor\)/.test(entrySource) ? "yes" : "no", "yes");
+
+/* Level and title are a readout on the sheet, because they are derived (leveling 9). */
+check("the sheet reads level out rather than storing it",
+  /\{\{system\.level\}\}/.test(charTemplate) && !/name="system\.level"/.test(charTemplate)
+    ? "yes" : "no", "yes");
+check("the actor derives level, title and Ways",
+  /this\.level = levelOf\(owned\)/.test(actorModel)
+  && /this\.title = titleOf\(owned\)/.test(actorModel)
+  && /this\.waysOwned = waysOf\(owned\)/.test(actorModel) ? "yes" : "no", "yes");
+
+/* Prune: the reward that asks, and the only one that can make a character illegal. */
+check("prune is implemented", /export async function prune\(actor\)/.test(graphSource) ? "yes" : "no", "yes");
+/* The comparison itself, not a mention of the floor: the warning names `min` too, so a check that
+ * looked for the field survived the floor being removed. */
+check("it checks the deck floor before asking",
+  /cards\.length <= \(actor\.system\.actionDeck\?\.min[\s\S]{0,900}DialogV2\.prompt/
+    .test(graphSource) ? "yes" : "no", "yes");
+check("it only ever removes an action card",
+  /\.filter\(card => card\.type === "action"\)/.test(graphSource) ? "yes" : "no", "yes");
+check("taking a node performs every prune it grants",
+  /for \(let i = 0; i < \(grants\.prune \?\? 0\); i\+\+\) await prune\(actor\)/.test(graphSource)
+    ? "yes" : "no", "yes");
+const pruners = nodes.filter(n => n.grants?.prune);
+check("nodes granting a prune", pruners.map(n => n.id).join(", "), "shade.footwork");
+/* And the documents say where it sits and why, since where a prune sits is a balance decision. */
+check("leveling says why the prune is on the trunk",
+  /Way of Shade's prune sits on the trunk, not on the Cutpurse run/.test(levDoc) ? "yes" : "no",
+  "yes");
+check("the HUD spec describes the question it asks",
+  /^### 8a\.2a Prune: the reward that asks back/m.test(hudPane) ? "yes" : "no", "yes");
+check("and who says when a level happens",
+  /^### 8a\.0 Who says when/m.test(hudPane) ? "yes" : "no", "yes");
+/* Section 4's point: a prune rides along with a card rather than eating a whole level. */
+check("and it rides with a card rather than alone",
+  pruners.every(n => n.grants.card) ? "yes" : "no", "yes");
+/* A prune on the Cutpurse run would refund the price that node pays in. */
+check("no prune sits on a branch that pays in deck size",
+  pruners.filter(n => n.id.includes("cutpurse")).length, 0);
+
+/* -------------------------------------------- */
+
 console.log(failures
   ? `\n${failures} FAILURE${failures === 1 ? "" : "S"}`
   : "\nall checks pass");

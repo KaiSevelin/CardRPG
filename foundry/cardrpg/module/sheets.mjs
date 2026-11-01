@@ -58,6 +58,7 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       switchTab: CharacterSheet.#onTab,
       openTray: CharacterSheet.#onOpenTray,
       levelUp: CharacterSheet.#onLevelUp,
+      grantLevel: CharacterSheet.#onGrantLevel,
       toggleEquipped: CharacterSheet.#onToggleEquipped,
       toggleDrained: CharacterSheet.#onToggleDrained,
       addCondition: CharacterSheet.#onAddCondition,
@@ -216,7 +217,19 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
    * which is also the only way to see what a branch costs before committing to its first node.
    */
   static #onLevelUp() {
-    new LevelUpPane(this.document).render({ force: true });
+    LevelUpPane.openFor(this.document);
+  }
+
+  /*
+   * rules/leveling.md 2: *the GM says when*. No experience points and no thresholds, so the only
+   * thing that can raise a pending level is a GM deciding one happened -- and until this control
+   * existed, the pane's Accept button could never light up for anyone.
+   */
+  static async #onGrantLevel(event, target) {
+    if (!game.user.isGM) return;
+    const by = Number(target.dataset.by ?? 1);
+    const now = this.document.system.levels?.pending ?? 0;
+    await this.document.update({ "system.levels.pending": Math.max(0, now + by) });
   }
 
   static async #onToggleEquipped(event, target) {

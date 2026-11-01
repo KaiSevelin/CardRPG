@@ -470,6 +470,20 @@ when*, so the button cannot be a thing a player presses to grow. The GM grants a
 (`system.levels.pending`) and only then does Accept light up; before that the pane is a **map and a
 planner**, which is the only way to see what a branch costs before committing to its first node.
 
+### 8a.0 Who says when
+
+The GM, and now something can say it. A **+ / − pair beside the level readout on the character
+sheet**, GM-only, raises and lowers `system.levels.pending`; `game.cardrpg.grantLevel(actor, n)`
+does the same from a macro. Until this existed the pane's Accept button could never light up for
+anybody, which made the whole feature a very pretty read-only map.
+
+**Level and title are a readout on that sheet, never a field.** Both derive from the owned node
+list, so there is nothing to type and nothing to keep in step.
+
+> **[OPEN] The Way dropdown is the one seam left.** `system.way` is still stored and is still how a
+> playtest character is set up, while the Ways a character has actually walked are derived from the
+> nodes they own. It closes when character creation grants a Way node instead of setting a string.
+
 ### 8a.1 Four states, not two
 
 | State | Paint | What it means |
@@ -498,6 +512,21 @@ your frontier yet, closed for good. A click that silently fails reads as a broke
 
 > **The detail panel is written in place rather than re-rendered.** A re-render rebuilds the canvas
 > and throws away the player's pan and zoom — at exactly the moment they were comparing two nodes.
+
+### 8a.2a Prune: the reward that asks back
+
+Most rewards are taken in silence, because most of them are numbers. A **prune** is not: §4 of the
+levelling rules calls it *remove one card from a deck, permanently*, and only the player knows which
+card has gone dead. So Accept on a node granting one opens a second, smaller question — the deck's
+cards by name, with duplicates counted, because *which* of your three Strikes is not a question.
+
+Two rules sit on it. It can only ever remove an **action** card, so a Wound or a Taint is never on
+the list — those are not yours to drop (§4, bound Taint). And the **deck minimum is checked before
+the question is asked** rather than after it is answered: a prune is the only reward in the game
+that can make a character illegal.
+
+> **[OPEN] It deletes a Card document, which a player may not be allowed to do.** The same solo-GM
+> assumption the tray carries. GM-side resolution is the standing prerequisite for both.
 
 ### 8a.3 The one click that asks twice
 
@@ -533,13 +562,14 @@ this project, in pixels.
 ## 9. Open
 
 - **Swing-percentage toggle** (§4.2): default on or off.
-- **[OPEN]** Who may grant a level. `system.levels.pending` is a number on the actor and nothing but
-  a GM editing the sheet raises it; a *Grant a level* control on the GM tray is the obvious next
-  step (§7's GM tray).
-- **[OPEN]** A **prune** reward needs a card chosen, which is a second dialog the pane does not
-  have. No node in the built graph grants one, deliberately, until it does.
-- **[OPEN]** Feature and spell grants create slates; the pane reads them out but creates nothing.
-  Only the numeric grants and the one card grant are actually applied.
+- **[OPEN]** Feature and spell grants would create slates; the pane reads them out but creates
+  nothing, and no node in the built graph grants either. The reason is content rather than code:
+  **not one of the 48 Signatures exists as a feature or a formula yet**, so there is nothing for a
+  node to point at. The validator refuses a node that grants a *card* nobody built, and the same
+  check is waiting for these two.
+- **[OPEN]** Nothing has run the pane in Foundry. Two failure modes were fixed by reading rather
+  than by playing — a window id shared between two actors, and a Cytoscape container with no height
+  — and that is not the same as having seen it work.
 - **Touch and small screens.** Five cards plus two panels is tight below about 1000 px.
 
 Card layout is settled in [card-layout.md](card-layout.md), including the bonus-group border that

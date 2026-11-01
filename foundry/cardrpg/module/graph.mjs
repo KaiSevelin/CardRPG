@@ -21,7 +21,7 @@
  */
 
 import { NODES, COMMON_POOL, WAY_CARDS } from "./content.mjs";
-import { deckOf, actionCardData } from "./decks.mjs";
+import { deckOf, allStacks, actionCardData } from "./decks.mjs";
 
 export const ROOT = "root";
 
@@ -267,8 +267,57 @@ export async function takeNode(actor, id) {
     "system.levels.pending": actor.system.levels.pending - 1
   });
 
-  const card = GRAPH.get(id)?.grants?.card;
-  if (card) await grantCard(actor, card);
+  const grants = GRAPH.get(id)?.grants ?? {};
+  if (grants.card) await grantCard(actor, grants.card);
+  for (let i = 0; i < (grants.prune ?? 0); i++) await prune(actor);
+  return true;
+}
+
+/**
+ * A prune, which is the one reward that cannot be handed over without asking: section 4 calls it
+ * *remove one card from a deck, permanently*, and only the player knows which card has gone dead.
+ *
+ * It is also the only reward that can make a character illegal, so the deck minimum is checked
+ * before the question is asked rather than after it is answered (core-rules 8).
+ */
+export async function prune(actor) {
+  const cards = allStacks(actor)
+    .flatMap(stack => stack.cards.contents)
+    .filter(card => card.type === "action");
+
+  if (cards.length <= (actor.system.actionDeck?.min ?? 0)) {
+    ui.notifications?.warn(game.i18n.format("CARDRPG.Level.PruneFloor",
+      { min: actor.system.actionDeck?.min ?? 0 }));
+    return false;
+  }
+
+  /* Sorted and counted, because a deck holds three Strikes and "which Strike" is not a question. */
+  const counts = new Map();
+  for (const card of cards) counts.set(card.name, (counts.get(card.name) ?? 0) + 1);
+  const options = [...counts.entries()].sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([name, n]) => `<option value="${foundry.utils.escapeHTML(name)}">`
+      + `${foundry.utils.escapeHTML(name)}${n > 1 ? ` (${n})` : ""}</option>`).join("");
+
+  /* Reached through the global rather than destructured at module scope: this module is imported by
+   * the offline validator, where `foundry` does not exist, and the engine's testability depends on
+   * it staying that way. */
+  const chosen = await foundry.applications.api.DialogV2.prompt({
+    window: { title: game.i18n.localize("CARDRPG.Level.PruneTitle") },
+    content: `<p>${game.i18n.localize("CARDRPG.Level.PruneBody")}</p>
+      <select name="card" style="width: 100%">${options}</select>`,
+    ok: {
+      label: game.i18n.localize("CARDRPG.Level.PruneConfirm"),
+      callback: (event, button) => button.form.elements.card.value
+    },
+    rejectClose: false
+  });
+  if (!chosen) return false;
+
+  /* Whichever copy is easiest to reach: they are identical documents by this point. */
+  const victim = cards.find(card => card.name === chosen);
+  if (!victim) return false;
+  await victim.delete();
+  ui.notifications?.info(game.i18n.format("CARDRPG.Level.Pruned", { name: chosen }));
   return true;
 }
 

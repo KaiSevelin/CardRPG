@@ -1614,7 +1614,16 @@ export const NODES = [
   },
 
   /* --- the Shade trunk: three ordinary nodes before the first title --- */
-  { id: "shade.footwork", name: "Footwork", after: ["shade"], grants: { card: "Measure" } },
+  /*
+   * A card AND a prune, which section 4 says is how a branch keeps a deck from drifting upward
+   * every level without spending a whole level on pruning. It sits on the trunk rather than on the
+   * Cutpurse run on purpose: Cutpurse PAYS in deck size, and handing its own branch a prune would
+   * refund the price.
+   */
+  {
+    id: "shade.footwork", name: "Footwork", after: ["shade"],
+    grants: { card: "Measure", prune: 1 }
+  },
   { id: "shade.quiet", name: "Quiet Hands", after: ["shade.footwork"], grants: { training: "lockpicks" } },
   { id: "shade.patience", name: "Patience", after: ["shade.quiet"], grants: { health: 1 } },
 

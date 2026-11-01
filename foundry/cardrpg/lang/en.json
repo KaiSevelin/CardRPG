@@ -186,5 +186,14 @@
   "CARDRPG.Level.State.Later": "Possible later",
   "CARDRPG.Level.State.Closed": "Closed for good",
   "CARDRPG.Level.State.Cross": "A crossing",
-  "CARDRPG.Way.Faith": "Way of Faith"
+  "CARDRPG.Way.Faith": "Way of Faith",
+  "CARDRPG.Level.CharactersOnly": "The levelling graph is for characters; NPCs do not level.",
+  "CARDRPG.Level.PruneTitle": "Prune a card",
+  "CARDRPG.Level.PruneBody": "This node lets you remove one card from your action deck, permanently. Which one has gone dead?",
+  "CARDRPG.Level.PruneConfirm": "Remove it",
+  "CARDRPG.Level.Pruned": "{name} is gone from your deck for good.",
+  "CARDRPG.Level.PruneFloor": "Your deck is already at its minimum of {min}; there is nothing to prune.",
+  "CARDRPG.Level.Grant": "Grant a level",
+  "CARDRPG.Level.Revoke": "Take one back",
+  "CARDRPG.Level.Ways": "Ways walked"
 }

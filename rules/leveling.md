@@ -249,7 +249,7 @@ one thing instead of another.
 | **Feature** | A feature slate, passive or active | Bounded by bonus groups (§5) |
 | **Obligation** | A feature you **cannot remove**, binding in text, in the action deck or in the fate deck | What you owe for what you were taught — see below |
 | **Item** | A slate you keep | For signature gear a Way grants, not ordinary loot |
-| **Prune** | Remove one card from a deck, permanently | The only way to drop a dead card (§8) |
+| **Prune** | Remove one card from a deck, permanently | The only way to drop a dead card (§8). **[BUILT 2026-11-01]** — the one reward that asks the player a question, since only they know which card died |
 | **Deck cap** | Raise your action deck maximum | A flat trait, so **not** bonus-grouped |
 | **Spell slot** | One more point of **formula strength** you may prepare (core-rules §4) | Way of Mind's and Way of Faith's version of a deck cap |
 | **Health** | Raise max Health | |
@@ -257,6 +257,12 @@ one thing instead of another.
 
 A node may grant **several of these at once** — "a card *and* a prune" is one node's reward. That is
 how a branch keeps a deck from drifting upward every level without spending a whole level on pruning.
+
+> **[BUILT 2026-11-01] Way of Shade's prune sits on the trunk, not on the Cutpurse run.** *Footwork*
+> grants a card and a prune, so every Shade character gets one chance to drop a dead starter card.
+> Putting it on the Cutpurse branch would have been the obvious place and the wrong one: Cutpurse
+> **pays in deck size**, and handing its own run a prune refunds the price the node is built on.
+> Where a prune sits is a balance decision, not a convenience.
 
 **Gold is not a reward.** A level is a permanent change to who you are; coin is something you find
 and then spend, so a level spent on it is a level you can lose. Money comes from play — loot, work,

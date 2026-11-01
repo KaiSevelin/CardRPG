@@ -25,6 +25,25 @@
       <label>Background
         <input type="text" name="system.background" value="{{system.background}}">
       </label>
+      {{!--
+        Level, title and the Ways walked are DERIVED from the owned node list
+        (rules/leveling.md 9), so they are a readout and not a field. The Way dropdown above is
+        still stored and is still how a playtest character is set up; that overlap is section 9's
+        one remaining seam, and it closes when creation grants a Way node instead.
+      --}}
+      <span class="cr-standing">
+        <strong>{{localize "CARDRPG.Level.Level"}} {{system.level}}</strong>
+        {{#if system.title}}<span class="cr-standing__title">{{system.title}}</span>{{/if}}
+        {{#if isGM}}
+          <span class="cr-standing__grant">
+            <button type="button" data-action="grantLevel" data-by="1"
+                    data-tooltip="{{localize 'CARDRPG.Level.Grant'}}">+</button>
+            <button type="button" data-action="grantLevel" data-by="-1"
+                    data-tooltip="{{localize 'CARDRPG.Level.Revoke'}}"
+                    {{#unless pendingLevels}}disabled{{/unless}}>&minus;</button>
+          </span>
+        {{/if}}
+      </span>
     </div>
   </header>
 
