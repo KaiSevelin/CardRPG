@@ -7,6 +7,7 @@
  */
 
 import { CARDRPG } from "./config.mjs";
+import { LevelUpPane } from "./levelup.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2, ItemSheetV2 } = foundry.applications.sheets;
@@ -56,6 +57,7 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       // changeTab(), which demands a tab-group identifier we do not use.
       switchTab: CharacterSheet.#onTab,
       openTray: CharacterSheet.#onOpenTray,
+      levelUp: CharacterSheet.#onLevelUp,
       toggleEquipped: CharacterSheet.#onToggleEquipped,
       toggleDrained: CharacterSheet.#onToggleDrained,
       addCondition: CharacterSheet.#onAddCondition,
@@ -115,6 +117,7 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       config: CARDRPG,
       isGM: game.user.isGM,
 
+      pendingLevels: system.levels?.pending ?? 0,
       tab: this.tab,
       tabs: CharacterSheet.TAB_LIST.map(t => ({ ...t, active: t.id === this.tab })),
       onVitals: this.tab === "vitals",
@@ -205,6 +208,15 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
   static #onOpenTray() {
     game.cardrpg.openTray(this.document);
+  }
+
+  /*
+   * The graph is readable whether or not there is a level to spend. rules/leveling.md 2 says the GM
+   * says when, so a player with no pending level opens a map and a planner rather than a refusal --
+   * which is also the only way to see what a branch costs before committing to its first node.
+   */
+  static #onLevelUp() {
+    new LevelUpPane(this.document).render({ force: true });
   }
 
   static async #onToggleEquipped(event, target) {

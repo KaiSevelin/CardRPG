@@ -1507,3 +1507,262 @@ export const ENCOUNTERS = [
   { label: "5 goblins with spears", difficulty: "Hard", winRate: "75.9%" },
   { label: "4 goblins, 2 spears + 2 bows", difficulty: "Deadly", winRate: "64.6%" }
 ];
+
+/* -------------------------------------------- */
+/*  The common pool                             */
+/* -------------------------------------------- */
+
+/**
+ * Six deliberately dull cards (rules/way-cards.md 3.1). Any Way's minor nodes may grant these, and
+ * two minor nodes in three draw from a pool rather than carrying content written for them
+ * (rules/leveling.md 1) -- so these six are the backbone the Signatures are felt against.
+ *
+ * Off-Hand Blow is the one that answers an open question: core-rules 3 asks where Strike-on-a-
+ * secondary cards come from, and the answer is here, at -1, as the first ordinary card any fighter
+ * is handed. Dig In is the deck's second and last Spent card -- the ladder caps a 16-card deck at
+ * two and the Warrior already carries Second Wind, so no branch may offer a third.
+ */
+export const COMMON_POOL = [
+  {
+    name: "Off-Hand Blow", copies: 1, pool: "common",
+    primary: [{ verb: "strike" }],
+    secondary: [{ verb: "strike", mod: -1 }]
+  },
+  {
+    name: "Measure", copies: 1, pool: "common", reaction: "parry",
+    primary: [{ verb: "strike", mod: 1 }],
+    secondary: [{ verb: "move", param: 1 }]
+  },
+  {
+    name: "Hold the Line", copies: 1, pool: "common", reaction: "parry",
+    primary: [{ verb: "defend" }],
+    secondary: [{ verb: "strike", mod: -1 }]
+  },
+  {
+    name: "Press", copies: 1, pool: "common", reaction: "sidestep",
+    primary: [{ verb: "strike" }, { verb: "move", param: 1 }],
+    secondary: [{ verb: "move", param: 2 }]
+  },
+  {
+    name: "Both Hands", copies: 1, pool: "common", reaction: "use",
+    primary: [{ verb: "ready" }, { verb: "strike" }],
+    secondary: [{ verb: "ready" }]
+  },
+  {
+    /*
+     * No printed reaction, although way-cards 3.1 prints Brace in its reaction column. Brace is
+     * the FLOOR under a card that prints nothing (core-rules 3, resolve.mjs reactionsFor), so
+     * printing it is not merely redundant -- it is the one spelling that could switch it off, since
+     * the rule gives Brace to a card *without* a printed reaction. Dig In gets Brace by having
+     * none.
+     */
+    name: "Dig In", copies: 1, pool: "common",
+    primary: [{ verb: "heal", param: 2 }],
+    secondary: [{ verb: "move", param: 1 }],
+    costs: { primary: { spent: true } }
+  }
+];
+
+/* -------------------------------------------- */
+/*  The levelling graph                         */
+/* -------------------------------------------- */
+
+/**
+ * Nodes (rules/leveling.md 9). Content, not code: the engine in graph.mjs reads this, and nothing
+ * here knows how eligibility works.
+ *
+ *   id         stable and namespaced; an add-on depends on it, so it is renamed about as freely
+ *              as a database column (leveling 8)
+ *   after[]    the nodes this may follow. ANY ONE of them being owned is enough, unless `all`
+ *   all        true when every prerequisite is required -- how depth takes commitment, and what
+ *              keeps a cross edge from laundering an exclusive choice (leveling 1)
+ *   title      the title this confers, if it is a major node
+ *   exclusive  the exclusion family, and `creed` the religion within it (leveling 3)
+ *   grants     the reward, fixed. Numbers flow into prepareDerivedData beside the ones features
+ *              and worn items grant; nothing is copied onto the sheet, so a corrected node fixes
+ *              every character who took it (leveling 9)
+ *   bespoke    content written for this node and nowhere else. Two minor nodes in three are NOT
+ *              bespoke: they draw on a pool, which is the content budget leveling 1 sets
+ *
+ * Way of Shade is built; the other three Ways are a root node with nothing behind it yet.
+ *
+ * The cross edges are the part worth reading twice. A cross edge is an edge like any other, so it
+ * carries its own minor nodes. Attach one straight to the far title and a Cutpurse reaches Gambler
+ * two levels sooner than a Duellist does, which is the shortcut leveling 1 forbids; attach it to
+ * the far title's own lead-in minors and you have handed out Gambler's run without Gambler. So each
+ * crossing is a short chain of its own: the Dream Guild teaches you, and being taught takes levels.
+ */
+export const NODES = [
+  { id: "root", name: "Root", after: [] },
+
+  /* --- the four Ways, all of them on your frontier for life (leveling 6) --- */
+  {
+    id: "shade", name: "Way of Shade", after: ["root"], title: "Shade",
+    axis: "Position", resource: "halves"
+  },
+  {
+    id: "strength", name: "Way of Strength", after: ["root"], title: "Warrior",
+    axis: "Position", resource: "weight"
+  },
+  {
+    id: "mind", name: "Way of Mind", after: ["root"], title: "Scholar",
+    axis: "Preparation", resource: "spell slots"
+  },
+  {
+    id: "faith", name: "Way of Faith", after: ["root"], title: "Sworn",
+    axis: "Support", resource: "an obligation"
+  },
+
+  /* --- the Shade trunk: three ordinary nodes before the first title --- */
+  { id: "shade.footwork", name: "Footwork", after: ["shade"], grants: { card: "Measure" } },
+  { id: "shade.quiet", name: "Quiet Hands", after: ["shade.footwork"], grants: { training: "lockpicks" } },
+  { id: "shade.patience", name: "Patience", after: ["shade.quiet"], grants: { health: 1 } },
+
+  /* --- the three titles off the trunk --- */
+  {
+    id: "shade.thief", name: "Thief", after: ["shade.patience"], title: "Thief",
+    axis: "Control", resource: "a slot kept free",
+    signature: "The Opening", tactic: "Never Where You Looked"
+  },
+  {
+    id: "shade.scout", name: "Scout", after: ["shade.patience"], title: "Scout",
+    axis: "Support", resource: "being alone",
+    signature: "Point Man", tactic: "Furthest Forward"
+  },
+  {
+    id: "shade.duellist", name: "Duellist", after: ["shade.patience"], title: "Duellist",
+    axis: "Reactions", resource: "halves",
+    signature: "Named", tactic: "One at a Time"
+  },
+
+  /* --- Thief's three --- */
+  { id: "shade.thief.wait", name: "The Wait", after: ["shade.thief"], grants: { card: "Press" } },
+  {
+    id: "shade.thief.shadowing", name: "Shadowing", after: ["shade.thief.wait"], bespoke: true,
+    grants: { knowHow: "following someone through a city without being seen" }
+  },
+  {
+    /*
+     * The one node in the graph that requires ALL of its prerequisites, which is leveling 5a's
+     * "depth takes commitment" made real: specializations.md says a dabbler reaches the first node
+     * of anything and only an investment reaches Assassin, so Assassin wants two of Thief's three
+     * runs walked rather than one. It is also the only content that exercises the `all` flag, and
+     * an untested flag is a flag that does not work.
+     */
+    id: "shade.assassin", name: "Assassin", all: true,
+    after: ["shade.thief.shadowing", "shade.thief.crowds"], title: "Assassin",
+    axis: "Tempo", resource: "Spent",
+    signature: "One Opening", tactic: "From Behind"
+  },
+
+  { id: "shade.thief.crowds", name: "Crowds", after: ["shade.thief"], grants: { card: "Off-Hand Blow" } },
+  {
+    /* specializations.md demotes Fence to a cluster of minor nodes on the way to Cutpurse. */
+    id: "shade.thief.fence", name: "Fence", after: ["shade.thief.crowds"], bespoke: true,
+    grants: { knowHow: "valuing stolen goods, and the contact who buys them", training: "appraisal" }
+  },
+  {
+    id: "shade.cutpurse", name: "Cutpurse", after: ["shade.thief.fence"], title: "Cutpurse",
+    axis: "Deck shape", resource: "deck size",
+    signature: "Lift", tactic: "Light Fingers"
+  },
+
+  { id: "shade.thief.ropework", name: "Ropework", after: ["shade.thief"], grants: { training: "rope and climbing" } },
+  { id: "shade.thief.night", name: "Night Work", after: ["shade.thief.ropework"], grants: { carry: 1 } },
+  {
+    id: "shade.burglar", name: "Burglar", after: ["shade.thief.night"], title: "Burglar",
+    axis: "Preparation", resource: "weight",
+    signature: "The Kit", tactic: "Through the Window"
+  },
+
+  /* --- Scout's two --- */
+  { id: "shade.scout.ranges", name: "Ranges", after: ["shade.scout"], grants: { card: "Both Hands" } },
+  { id: "shade.scout.breathing", name: "Breathing", after: ["shade.scout.ranges"], grants: { health: 1 } },
+  {
+    id: "shade.archer", name: "Archer", after: ["shade.scout.breathing"], title: "Archer",
+    axis: "Position", resource: "range",
+    signature: "Loose and Step", tactic: "Overwatch"
+  },
+
+  { id: "shade.scout.groundwork", name: "Groundwork", after: ["shade.scout"], grants: { restTokens: 1 } },
+  {
+    /* And Spy, the second of the three demoted professions. */
+    id: "shade.scout.spy", name: "Spy", after: ["shade.scout.groundwork"], bespoke: true,
+    grants: { knowHow: "courts and crowded cities", training: "disguise" }
+  },
+  {
+    id: "shade.trapmaker", name: "Trapmaker", after: ["shade.scout.spy", "shade.cross.wire"],
+    title: "Trapmaker",
+    axis: "Preparation", resource: "a turn spent early",
+    signature: "Set", tactic: "The Ground You Chose"
+  },
+
+  /* --- Duellist's four --- */
+  { id: "shade.duellist.balance", name: "Balance", after: ["shade.duellist"], grants: { card: "Hold the Line" } },
+  { id: "shade.duellist.tumbling", name: "Tumbling", after: ["shade.duellist.balance"], grants: { knowHow: "falling" } },
+  {
+    id: "shade.acrobat", name: "Acrobat", after: ["shade.duellist.tumbling", "shade.cross.ledges"],
+    title: "Acrobat", axis: "Position", resource: "weight",
+    signature: "Over and Past", tactic: "Never Cornered"
+  },
+
+  { id: "shade.duellist.timing", name: "Timing", after: ["shade.duellist"], grants: { card: "Off-Hand Blow" } },
+  {
+    /* Politician, the third. It sits on the way to Bard, which is where the room already was. */
+    id: "shade.duellist.politician", name: "Politician", after: ["shade.duellist.timing"], bespoke: true,
+    grants: { knowHow: "a council chamber that has already decided", training: "oratory" }
+  },
+  {
+    id: "shade.bard", name: "Bard", after: ["shade.duellist.politician"], title: "Bard",
+    axis: "Reactions", resource: "someone else's turn",
+    signature: "Heckle", tactic: "The Running Commentary"
+  },
+
+  { id: "shade.duellist.nerve", name: "Nerve", after: ["shade.duellist"], grants: { health: 1 } },
+  {
+    id: "shade.duellist.cards", name: "Card Sense", after: ["shade.duellist.nerve"], bespoke: true,
+    grants: { knowHow: "games of chance, and who is cheating at them" }
+  },
+  {
+    id: "shade.gambler", name: "Gambler", after: ["shade.duellist.cards", "shade.cross.odds"],
+    title: "Gambler", axis: "Deck shape", resource: "the fate deck",
+    signature: "Double or Nothing", tactic: "The Long Odds"
+  },
+
+  { id: "shade.duellist.letters", name: "Letters", after: ["shade.duellist"], grants: { training: "reading" } },
+  {
+    id: "shade.duellist.formula", name: "The First Formula", after: ["shade.duellist.letters"],
+    bespoke: true, grants: { spellSlots: 1 }
+  },
+  {
+    id: "shade.half-mage", name: "Half-mage", after: ["shade.duellist.formula"], title: "Half-mage",
+    axis: "Preparation", resource: "spell slots",
+    signature: "One Trick", tactic: "One Hand Free",
+    grants: { spellSlots: 1 }
+  },
+
+  /*
+   * --- the three cross edges, each a short chain of its own
+   *
+   * None of them grants a card. A crossing teaches you about the other trade; the cards are behind
+   * the title, which is the whole of leveling 1's "a cross edge to a title is cheap, past one is
+   * the leak".
+   */
+  { id: "shade.cross.odds1", name: "The Tables", after: ["shade.cutpurse"], grants: { training: "games of chance" } },
+  {
+    id: "shade.cross.odds", name: "Long Odds", after: ["shade.cross.odds1"], bespoke: true,
+    grants: { knowHow: "which of the Guild's tables are honest" }
+  },
+
+  { id: "shade.cross.wire1", name: "Tripwire", after: ["shade.burglar"], grants: { training: "traps" } },
+  {
+    id: "shade.cross.wire", name: "The Second Door", after: ["shade.cross.wire1"], bespoke: true,
+    grants: { knowHow: "where a house is weakest from the inside" }
+  },
+
+  { id: "shade.cross.ledges1", name: "Ledges", after: ["shade.burglar"], grants: { carry: 1 } },
+  {
+    id: "shade.cross.ledges", name: "Rooftops", after: ["shade.cross.ledges1"], bespoke: true,
+    grants: { knowHow: "rooftops, and what carries weight up there" }
+  }
+];

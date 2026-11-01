@@ -474,7 +474,10 @@ CARDRPG.elements = {
 CARDRPG.ways = {
   strength: "CARDRPG.Way.Strength",
   shade: "CARDRPG.Way.Shade",
-  mind: "CARDRPG.Way.Mind"
+  mind: "CARDRPG.Way.Mind",
+  /* A whole chapter of rules/specializations.md, and it was missing from the vocabulary -- so the
+   * sheet's Way dropdown could not offer it and the graph's fourth root had no label. */
+  faith: "CARDRPG.Way.Faith"
 };
 
 /**

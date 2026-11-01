@@ -1,0 +1,63 @@
+{{!--
+  The level-up pane. The graph is the interface, because a level-up is a direction rather than a
+  prize (rules/leveling.md 3). The canvas is mounted by levelup.mjs and is deliberately NOT
+  re-rendered when a node is marked -- the detail panel is written in place, so a player comparing
+  two nodes keeps their pan and zoom.
+--}}
+<div class="cr-levelup__frame">
+
+  <header class="cr-levelup__bar">
+    <span class="cr-levelup__who">
+      <strong>{{title}}</strong>
+      <span class="cr-levelup__level">{{localize "CARDRPG.Level.Level"}} {{level}}</span>
+    </span>
+
+    {{#if pending}}
+      <span class="cr-levelup__pending">{{localize "CARDRPG.Level.ToSpend"}}: {{pending}}</span>
+    {{else}}
+      <span class="cr-levelup__pending cr-levelup__pending--none"
+            data-tooltip="{{localize 'CARDRPG.Level.GmSaysWhenHint'}}">
+        {{localize "CARDRPG.Level.GmSaysWhen"}}
+      </span>
+    {{/if}}
+
+    <label class="cr-levelup__layout">
+      {{localize "CARDRPG.Level.LayoutLabel"}}
+      <select name="layout">
+        {{#each layouts}}
+          <option value="{{this.key}}" {{#if this.selected}}selected{{/if}}>{{this.label}}</option>
+        {{/each}}
+      </select>
+    </label>
+
+    <button type="button" data-action="refit" data-tooltip="{{localize 'CARDRPG.Level.Refit'}}">
+      {{localize "CARDRPG.Level.RefitShort"}}
+    </button>
+  </header>
+
+  <div class="cr-levelup__body">
+    {{!-- Cytoscape mounts here. It needs a sized box of its own, so nothing else goes in it. --}}
+    <div class="cr-graph"></div>
+
+    <aside class="cr-levelup__side">
+      <div class="cr-levelup__detail"></div>
+
+      <footer class="cr-levelup__actions">
+        <button type="button" data-action="accept" class="cr-levelup__accept" disabled>
+          {{localize "CARDRPG.Level.Accept"}}
+        </button>
+        <button type="button" data-action="cancelPick">
+          {{localize "CARDRPG.Level.Cancel"}}
+        </button>
+      </footer>
+
+      <ul class="cr-levelup__legend">
+        <li><span class="cr-swatch cr-swatch--owned"></span>{{localize "CARDRPG.Level.State.Owned"}} ({{counts.owned}})</li>
+        <li><span class="cr-swatch cr-swatch--available"></span>{{localize "CARDRPG.Level.State.Available"}} ({{counts.available}})</li>
+        <li><span class="cr-swatch cr-swatch--later"></span>{{localize "CARDRPG.Level.State.Later"}}</li>
+        <li><span class="cr-swatch cr-swatch--closed"></span>{{localize "CARDRPG.Level.State.Closed"}} ({{counts.closed}})</li>
+        <li><span class="cr-swatch cr-swatch--cross"></span>{{localize "CARDRPG.Level.State.Cross"}}</li>
+      </ul>
+    </aside>
+  </div>
+</div>

@@ -2053,11 +2053,387 @@ check("cross edges go sideways, not up",
 check("the laundering case is recorded",
   /an exclusive node must dominate everything behind it/i.test(levDoc) ? "yes" : "no", "yes");
 check("and the all-prerequisites flag is what enforces it",
-  /dominance\*\* invariant now leans on it too/.test(levDoc) ? "yes" : "no", "yes");
+  /dominance\*\* invariant leans on it too: the flag is the only thing that stops a cross\s+edge/
+    .test(levDoc) ? "yes" : "no", "yes");
 check("Way of Faith admits no cross edge",
   /\| \*\*Faith\*\* \| \*\*None\*\* \|/.test(levDoc) ? "yes" : "no", "yes");
 check("Mind and Faith are stringent in different ways",
   /\*\*Mind and Faith differ in kind, not degree\.\*\*/.test(levDoc) ? "yes" : "no", "yes");
+
+/* -------------------------------------------- */
+
+/*
+ * The graph as data (leveling 8: "the graph needs validating, not just loading"). Everything above
+ * checked the documents against each other; this checks the node content, and then checks the node
+ * content against the document that specifies it.
+ */
+
+section("the levelling graph as data");
+
+const graph = await import("../module/graph.mjs");
+const graphSource = fs.readFileSync(path.join(root, "module/graph.mjs"), "utf8");
+const nodes = content.NODES;
+const byId = graph.GRAPH;
+
+check("nodes defined", nodes.length, 44);
+check("duplicate node ids", nodes.length === byId.size ? "none" : "yes", "none");
+
+/* Every prerequisite must resolve, or a branch is silently unreachable. */
+const danglers = nodes.flatMap(n => (n.after ?? [])
+  .filter(a => !byId.has(a)).map(a => `${n.id} -> ${a}`));
+check("prerequisites that do not resolve", danglers.length ? danglers.join(", ") : "none", "none");
+
+/* Exactly one root, and every node reachable from it. */
+const roots = nodes.filter(n => !(n.after ?? []).length).map(n => n.id);
+check("roots", roots.join(", "), "root");
+const fromRoot = graph.reachable(new Set([graph.ROOT]));
+const orphans = nodes.filter(n => !fromRoot.has(n.id)).map(n => n.id);
+check("nodes unreachable from the root", orphans.length ? orphans.join(", ") : "none", "none");
+
+/* Acyclic. A cycle makes `after` unsatisfiable and DEPTH meaningless, and it is easy to author. */
+const cycles = [];
+(function detect() {
+  const colour = new Map();
+  const walk = (id, path) => {
+    if (colour.get(id) === "done") return;
+    if (colour.get(id) === "open") { cycles.push([...path, id].join(" -> ")); return; }
+    colour.set(id, "open");
+    for (const a of byId.get(id)?.after ?? []) walk(a, [...path, id]);
+    colour.set(id, "done");
+  };
+  for (const n of nodes) walk(n.id, []);
+})();
+check("cycles", cycles.length ? cycles.join("; ") : "none", "none");
+
+/* -------------------------------------------- */
+
+/*
+ * The sibling rule (specializations 3, leveling 5a.1), computed over ALL predecessors because the
+ * graph has cross edges. Majors only: a cell is a major node's property, and minors have none.
+ *
+ * The hard rule is the one the document states -- no two siblings in the same CELL. The strict form
+ * both trees claim, differing on both halves, is a warning here, which is how the documents
+ * themselves treat it ("two repeats are left in, deliberately").
+ */
+const cellOf = n => `${n.axis ?? "?"} / ${n.resource ?? "?"}`;
+const sameCell = [];
+const sameHalf = [];
+for (const parent of nodes) {
+  const kids = (graph.SUCCESSORS.get(parent.id) ?? []).map(id => byId.get(id)).filter(n => n?.title);
+  for (const a of kids) for (const b of kids) {
+    if (a.id >= b.id) continue;
+    if (cellOf(a) === cellOf(b)) sameCell.push(`${parent.id}: ${a.id}/${b.id} (${cellOf(a)})`);
+    else if (a.axis === b.axis || a.resource === b.resource) sameHalf.push(`${a.id}/${b.id}`);
+  }
+}
+check("major siblings sharing a cell", sameCell.length ? sameCell.join("; ") : "none", "none");
+check("major siblings sharing one half (warning)",
+  sameHalf.length ? sameHalf.join(", ") : "none", "shade/strength");
+
+/* -------------------------------------------- */
+
+/*
+ * Cross edges. A node with more than one predecessor is reached more than one way; the shallowest
+ * route is the branch's own and anything deeper is a crossing. Three rules apply to a crossing, and
+ * all three are leveling 1:
+ *
+ *   - it arrives AT A TITLE, never past one into another branch's minor nodes
+ *   - it is not a shortcut: the crossing route is no shorter than the branch's own
+ *   - the cells match on exactly one half
+ */
+const crossFaults = [];
+let crossings = 0;
+for (const node of nodes) {
+  const after = node.after ?? [];
+  /* An `all` node's predecessors are requirements, not alternative routes, so none of them is a
+   * crossing -- reading them as one would ask the cell test a question it cannot answer. */
+  if (after.length < 2 || node.all) continue;
+  const depth = id => graph.DEPTH.get(id) ?? 0;
+  const primary = after.reduce((a, b) => (depth(a) <= depth(b) ? a : b));
+  for (const prereq of after) {
+    if (prereq === primary) continue;
+    crossings++;
+    if (!node.title) crossFaults.push(`${prereq} -> ${node.id}: arrives past a title`);
+    if (depth(prereq) < depth(primary)) {
+      crossFaults.push(`${prereq} -> ${node.id}: shorter than the branch's own route`);
+    }
+    /* The crossing's own source is the last major before it, which is what the cell test compares. */
+    let src = prereq;
+    const seen = new Set();
+    while (src && !byId.get(src)?.title && !seen.has(src)) {
+      seen.add(src);
+      src = (byId.get(src)?.after ?? [])[0];
+    }
+    const from = byId.get(src);
+    if (!from?.title) { crossFaults.push(`${prereq} -> ${node.id}: no major node behind it`); continue; }
+    const halves = (from.axis === node.axis ? 1 : 0) + (from.resource === node.resource ? 1 : 0);
+    if (halves !== 1) {
+      crossFaults.push(`${from.id} -> ${node.id}: ${halves} halves match, not 1`);
+    }
+  }
+}
+check("crossings in the data", crossings, 3);
+check("crossings breaking a rule", crossFaults.length ? crossFaults.join("; ") : "none", "none");
+
+/* -------------------------------------------- */
+
+/*
+ * Dominance (leveling 1): everything behind an exclusive node must require that node, or a cross
+ * edge hands out what the exclusive choice closed. Nothing in the data is exclusive yet -- Way of
+ * Faith's twelve gods are not built -- so this is a check waiting for content rather than one
+ * finding a fault, and it is written now because it is the rule a cross edge can break silently.
+ */
+const exclusiveGates = nodes.filter(n => n.exclusive).map(n => n.id);
+const laundered = [];
+for (const gate of exclusiveGates) {
+  const without = graph.reachable(new Set([graph.ROOT]), new Set([gate]));
+  const behind = nodes.filter(n => n.id !== gate
+    && graph.reachable(new Set([graph.ROOT, gate])).has(n.id) && !without.has(n.id));
+  for (const n of behind) {
+    if (!(n.after ?? []).length) continue;
+    /* Reachable with the gate, unreachable without it: that is what dominance means. */
+    if (without.has(n.id)) laundered.push(`${n.id} bypasses ${gate}`);
+  }
+}
+check("exclusive gates in the data", exclusiveGates.length, 0);
+check("subgraphs that bypass their gate", laundered.length ? laundered.join(", ") : "none", "none");
+
+/* -------------------------------------------- */
+
+/*
+ * What the nodes hand out. A grant naming content that does not exist is a node that silently gives
+ * nothing, which is the Foundry failure mode this project keeps meeting from the other side.
+ */
+const cardGrants = nodes.filter(n => n.grants?.card);
+const unbuilt = cardGrants.filter(n => !graph.POOL.has(n.grants.card))
+  .map(n => `${n.id}: ${n.grants.card}`);
+check("nodes granting a card", cardGrants.length, 6);
+check("cards granted but never built", unbuilt.length ? unbuilt.join(", ") : "none", "none");
+
+/* A pool card twice on one path would be a node that gives you a card you already have. */
+const dupeOnPath = [];
+(function pathCheck(id = graph.ROOT, cards = []) {
+  const card = byId.get(id)?.grants?.card;
+  if (card && cards.includes(card)) dupeOnPath.push(`${card} twice by ${id}`);
+  const next = card ? [...cards, card] : cards;
+  for (const kid of graph.SUCCESSORS.get(id) ?? []) pathCheck(kid, next);
+})();
+check("a pool card granted twice on one path",
+  dupeOnPath.length ? [...new Set(dupeOnPath)].join(", ") : "none", "none");
+
+/*
+ * The content budget (leveling 1): two minor nodes in three draw on a pool, one in three is written
+ * for its node. The ratio is the difference between a shippable graph and a stalled one, so it is
+ * checked rather than intended.
+ */
+const minors = nodes.filter(n => !n.title && n.id !== graph.ROOT);
+const bespoke = minors.filter(n => n.bespoke);
+check("minor nodes", minors.length, 27);
+check("bespoke minor nodes", bespoke.length, 9);
+check("the bespoke share is about a third",
+  bespoke.length / minors.length >= 0.25 && bespoke.length / minors.length <= 0.4, true);
+/* And each bespoke node sits LAST on its edge, immediately before the title it leads to. */
+const misplaced = bespoke.filter(n =>
+  !(graph.SUCCESSORS.get(n.id) ?? []).some(id => byId.get(id)?.title)).map(n => n.id);
+check("bespoke nodes not last on their edge", misplaced.length ? misplaced.join(", ") : "none", "none");
+
+/* -------------------------------------------- */
+
+/*
+ * And the part that matters most: the data against the document that specifies it. The Shade tree
+ * in specializations.md prints twelve titles with their cells, and way-cards.md 2.2 and 2.5 print
+ * each one's Signature and Tactic. A node carrying a different cell, or a Signature nobody wrote,
+ * is the drift this check exists to refuse.
+ */
+const shadeTree = trees.shade;
+const majorsInData = nodes.filter(n => n.title && n.id.startsWith("shade"));
+check("Shade majors in the data", majorsInData.length, 13);
+
+const cellDrift = [];
+for (const node of majorsInData) {
+  const doc = shadeTree.get((node.title ?? "").toLowerCase())
+    ?? shadeTree.get((node.name ?? "").toLowerCase());
+  if (!doc) { cellDrift.push(`${node.id}: not in the document's tree`); continue; }
+  if (doc.axis !== node.axis || doc.resource !== node.resource) {
+    cellDrift.push(`${node.id}: data (${node.axis} / ${node.resource}) vs doc (${doc.axis} / ${doc.resource})`);
+  }
+}
+check("cells that drifted from the document", cellDrift.length ? cellDrift.join("; ") : "none", "none");
+
+/* Signature and Tactic: every one a node carries must be printed in way-cards.md, which is the
+ * document that writes them. An invented Signature is content nobody designed. */
+const sigDrift = [];
+for (const node of majorsInData) {
+  for (const key of ["signature", "tactic"]) {
+    if (node[key] && !wayDoc.includes(`**${node[key]}**`)) {
+      sigDrift.push(`${node.id} ${key}: "${node[key]}" is in no table`);
+    }
+  }
+}
+check("Signatures or Tactics nobody wrote", sigDrift.length ? sigDrift.join("; ") : "none", "none");
+check("majors carrying a Signature", majorsInData.filter(n => n.signature).length, 12);
+
+/* The crossings the document drafts must be the crossings the data carries. */
+const dataCrossings = [];
+for (const node of nodes) {
+  const after = node.after ?? [];
+  if (after.length < 2 || !node.title || node.all) continue;
+  const depth = id => graph.DEPTH.get(id) ?? 0;
+  const primary = after.reduce((a, b) => (depth(a) <= depth(b) ? a : b));
+  for (const prereq of after.filter(a => a !== primary)) {
+    let src = prereq;
+    while (src && !byId.get(src)?.title) src = (byId.get(src)?.after ?? [])[0];
+    dataCrossings.push(`${byId.get(src).name.toLowerCase()}>${node.name.toLowerCase()}`);
+  }
+}
+check("the built crossings are the drafted ones", dataCrossings.sort().join(" "),
+  drafted.filter(e => byId.has(`shade.${e.from}`)).map(e => `${e.from}>${e.to}`).sort().join(" "));
+
+/* -------------------------------------------- */
+
+/* The engine's answers, on a character walked down one branch. */
+const owned = new Set(["root", "shade", "shade.footwork", "shade.quiet", "shade.patience",
+  "shade.thief", "shade.thief.crowds", "shade.thief.fence", "shade.cutpurse"]);
+check("level is the number of nodes owned", graph.levelOf(owned), 8);
+check("title is the deepest major owned", graph.titleOf(owned), "Cutpurse");
+check("every Way stays on the frontier",
+  ["strength", "mind", "faith"].every(w => graph.frontier(owned).includes(w)), true);
+/* The crossing is open to a Cutpurse and the far title is not -- that is the whole of "past a
+ * title is the leak", seen from the engine rather than from the prose. */
+check("the crossing opens", graph.frontier(owned).includes("shade.cross.odds1"), true);
+check("but the far title does not", graph.canTake("shade.gambler", owned), false);
+check("and nothing adjacent-but-ineligible is offered",
+  graph.frontier(owned).filter(id => !(byId.get(id).after ?? []).some(a => owned.has(a))).length, 0);
+/*
+ * The engine's rules, exercised rather than grepped for. Every one of these replaced a check that
+ * read the source and was therefore blind to the mutation it was meant to catch.
+ */
+check("the frontier never offers what you already own",
+  graph.frontier(owned).filter(id => owned.has(id)).length, 0);
+/* ownedIds is the one place the root is added, and leveling 6's "all four Ways stay on your
+ * frontier for the whole of a character's life" rests entirely on it. A stub actor exercises it. */
+const blank = { system: { nodes: [] } };
+check("a character with no nodes still owns the root", graph.ownedIds(blank).has(graph.ROOT), true);
+check("so the Ways are reachable from a blank sheet", graph.frontier(graph.ownedIds(blank)).length, 4);
+check("a fresh character sees exactly the four Ways",
+  graph.frontier(new Set([graph.ROOT])).join(", "), "shade, strength, mind, faith");
+check("and nothing deeper than a Way",
+  graph.frontier(new Set([graph.ROOT])).some(id => id.includes(".")), false);
+
+/* `all` means every prerequisite. One of the two is not enough; both are. */
+const halfWay = new Set(["root", "shade", "shade.footwork", "shade.quiet", "shade.patience",
+  "shade.thief", "shade.thief.wait", "shade.thief.shadowing"]);
+check("an all-node is refused on one prerequisite", graph.canTake("shade.assassin", halfWay), false);
+check("and offered on both",
+  graph.canTake("shade.assassin", new Set([...halfWay, "shade.thief.crowds"])), true);
+check("nodes requiring every prerequisite", nodes.filter(n => n.all).map(n => n.id).join(", "),
+  "shade.assassin");
+
+/* Taking a node writes the id and the counter, and nothing else: leveling 9 in one assertion. */
+const update = graphSource.slice(graphSource.indexOf("await actor.update({"));
+const written = [...update.slice(0, update.indexOf("});")).matchAll(/"(system\.[\w.]+)"/g)]
+  .map(m => m[1]).sort();
+check("what taking a node writes", written.join(", "), "system.levels.pending, system.nodes");
+
+const g = graph.grantsOf(owned);
+check("what the branch has granted", `${g.health} health, ${g.cards.length} cards, ${g.trainings.length} trainings`,
+  "1 health, 2 cards, 2 trainings");
+
+/* -------------------------------------------- */
+
+/*
+ * The level-up pane. The engine decides eligibility and the pane paints it, so the thing worth
+ * checking here is that the pane has not grown a second opinion -- plus the wiring Foundry drops in
+ * silence: an unregistered action, a template that is not shipped, a library that is not there.
+ */
+
+section("the level-up pane");
+
+const levelup = fs.readFileSync(path.join(root, "module/levelup.mjs"), "utf8");
+const sheets = fs.readFileSync(path.join(root, "module/sheets.mjs"), "utf8");
+const panePart = fs.readFileSync(path.join(root, "templates/levelup.hbs"), "utf8");
+const actorModel = fs.readFileSync(path.join(root, "module/data/actors.mjs"), "utf8");
+const charTemplate = fs.readFileSync(path.join(root, "templates/actor-character.hbs"), "utf8");
+const { CARDRPG } = await import("../module/config.mjs");
+
+/* One decision, in one place. A pane that tested adjacency itself would drift from the rules the
+ * moment `all` or an exclusive group appeared, which is the whole point of leveling 1. */
+check("the pane asks the engine whether a node is takeable",
+  /canTake|stateOf/.test(levelup) ? "yes" : "no", "yes");
+check("and never decides from adjacency itself",
+  /\.after[\s\S]{0,60}\.(some|every)\(/.test(levelup) ? "it decides" : "no", "no");
+check("accept goes through takeNode",
+  /await takeNode\(this\.actor, this\.tentative\)/.test(levelup) ? "yes" : "no", "yes");
+
+/* Four states, because *later* and *closed* are the pair a player most needs told apart. */
+for (const state of ["owned", "available", "later", "closed"]) {
+  check(`the pane paints '${state}'`,
+    levelup.includes(`state = '${state}'`) || levelup.includes(`"${state}"`) ? "yes" : "no", "yes");
+}
+check("a crossing is drawn differently",
+  /edge\[cross = 'yes'\]/.test(levelup) ? "yes" : "no", "yes");
+
+/* The one irreversible click asks twice, and names what it shuts. */
+check("an exclusive node is confirmed before it is taken",
+  /if \(closes\.length\) \{[\s\S]{0,200}DialogV2\.confirm/.test(levelup) ? "yes" : "no", "yes");
+check("and the confirmation names what closes",
+  /closes\.map\(c => foundry\.utils\.escapeHTML\(c\)\)/.test(levelup) ? "yes" : "no", "yes");
+
+/* The GM says when (leveling 2): a pending counter, and a button that is dead without one. */
+check("the actor stores pending levels",
+  /pending: new fields\.NumberField/.test(actorModel) ? "yes" : "no", "yes");
+check("takeNode refuses to spend a level nobody granted",
+  /levels\?\.pending \?\? 0\) < 1/.test(levelup + graphSource) ? "yes" : "no", "yes");
+
+/* Wiring Foundry will not complain about. */
+check("the sheet action is registered",
+  /levelUp: CharacterSheet\.#onLevelUp/.test(sheets) ? "yes" : "no", "yes");
+check("the sheet template calls it",
+  /data-action="levelUp"/.test(charTemplate) ? "yes" : "no", "yes");
+check("the pane's template is on disk", panePart.includes("cr-graph") ? "yes" : "no", "yes");
+check("the pane declares the template it loads",
+  /systems\/cardrpg\/templates\/levelup\.hbs/.test(levelup) ? "yes" : "no", "yes");
+
+/* The vendored library, and the lazy load that keeps it off the boot path. */
+check("cytoscape is vendored",
+  fs.existsSync(path.join(root, "lib/cytoscape.esm.min.mjs")) ? "yes" : "no", "yes");
+check("its licence ships with it",
+  fs.existsSync(path.join(root, "lib/cytoscape.LICENSE")) ? "yes" : "no", "yes");
+check("it is imported lazily, not at boot",
+  /cytoscapePromise \?\?= import\("\.\.\/lib\/cytoscape\.esm\.min\.mjs"\)/.test(levelup)
+    ? "yes" : "no", "yes");
+check("and the system manifest does not load it eagerly",
+  JSON.stringify(manifest.esmodules ?? []).includes("cytoscape")
+  || JSON.stringify(manifest.scripts ?? []).includes("cytoscape") ? "eagerly" : "no", "no");
+/* dagre was weighed and declined, and the reason is written down rather than remembered. */
+check("dagre is not vendored",
+  fs.existsSync(path.join(root, "lib/cytoscape-dagre.js")) ? "yes" : "no", "no");
+
+/* Every layout the picker offers must exist, or the select has a dead option. */
+const layoutKeys = [...levelup.matchAll(/^  (\w+): \{ label: "CARDRPG\.Level\.Layout\./gm)]
+  .map(m => m[1]);
+check("layouts offered", layoutKeys.join(", "), "tiers, breadthfirst, concentric, cose, grid");
+
+/* And the spec, so the pane and the document cannot drift apart. */
+const hudPane = fs.readFileSync(path.join(root, "../hud-spec.md"), "utf8");
+check("the HUD spec describes the pane",
+  /^## 8a\. The level-up pane/m.test(hudPane) ? "yes" : "no", "yes");
+check("it says adjacency is not eligibility",
+  /\*\*Adjacency is not eligibility\.\*\*/.test(hudPane) ? "yes" : "no", "yes");
+check("it says the GM says when",
+  /It opens whether or not there is a level to spend/.test(hudPane) ? "yes" : "no", "yes");
+check("leveling records what the data model nearly broke",
+  /This paragraph is a promise the implementation can break in one line/.test(levDoc)
+    ? "yes" : "no", "yes");
+check("and that a crossing carries its own minors",
+  /\*\*So a crossing is a short chain of its own\*\*/.test(levDoc) ? "yes" : "no", "yes");
+check("way-cards records the printed Brace",
+  /Dig In should not print ⚡ Brace/.test(wayDoc) ? "yes" : "no", "yes");
+/* The content agrees with it: nothing prints a reaction the config has no key for. */
+const printedReactions = [...content.COMMON_POOL, ...content.WARRIOR_DECK, ...content.WAY_CARDS]
+  .filter(c => c.reaction).map(c => c.reaction);
+check("cards printing a reaction the config lacks",
+  printedReactions.filter(r => !(r in CARDRPG.reactions)).join(", ") || "none", "none");
 
 /* -------------------------------------------- */
 

@@ -458,9 +458,88 @@ Wound and Taint detail, levelling. None of it changes moment to moment.
 
 ---
 
+## 8a. The level-up pane  **[BUILT 2026-11-01]**
+
+A level-up is **navigational rather than a menu** ([../rules/leveling.md](../rules/leveling.md) §3)
+— you are not picking a prize, you are picking a direction — so the interface is the map. A button
+on the character sheet opens it; the graph fills the pane, scrollable and zoomable, and a side panel
+reads out whatever is marked.
+
+**It opens whether or not there is a level to spend.** §2 of the levelling rules says *the GM says
+when*, so the button cannot be a thing a player presses to grow. The GM grants a level
+(`system.levels.pending`) and only then does Accept light up; before that the pane is a **map and a
+planner**, which is the only way to see what a branch costs before committing to its first node.
+
+### 8a.1 Four states, not two
+
+| State | Paint | What it means |
+|---|---|---|
+| **Taken** | filled green | owned, and never un-owned |
+| **Available now** | bright blue outline | on your frontier this level |
+| **Possible later** | dim | not yet reachable, but nothing has closed it |
+| **Closed for good** | greyed, red edge | an exclusive choice took it, or everything leading to it |
+
+> **The last two look alike on a sheet and are nothing alike in play.** *Later* is a plan; *closed*
+> is a door that shut behind you (§3, exclusive groups). A player who cannot see which is which
+> cannot plan at all, which is why these differ in colour rather than in brightness.
+
+A **crossing** is drawn dashed. A cross edge means something precise in the rules, and a reader
+needs to see that a route is a crossing rather than the branch's own run.
+
+### 8a.2 Marking, and changing your mind
+
+Clicking an available node **marks** it. Marking another unmarks the first — one node, or none — and
+the side panel shows what that node gives: its title and cell if it is a major one, its Signature and
+Tactic, every grant as a line, what it opens, and what it closes. Clicking empty space clears the
+mark. **Nothing is written until Accept**, so Cancel has nothing to undo.
+
+Clicking a node that is *not* available says why rather than doing nothing: already yours, not on
+your frontier yet, closed for good. A click that silently fails reads as a broken window.
+
+> **The detail panel is written in place rather than re-rendered.** A re-render rebuilds the canvas
+> and throws away the player's pan and zoom — at exactly the moment they were comparing two nodes.
+
+### 8a.3 The one click that asks twice
+
+Accept takes the node. For an **exclusive** node it first names what that shuts, by name, including
+everything reachable only through it. That is the one irreversible level-up in the game (§3 — the
+only thing that makes a frontier shrink), and accept-or-cancel is not a strong enough question for
+it. Everything else can be had later, and is therefore just Accept.
+
+### 8a.4 Layouts
+
+Five, from a picker: **Tiers** (the default), Breadth-first, Concentric, Force, Grid.
+
+Tiers is ours and is the only one that knows what this graph is. Depth is already computed from the
+edges, so the layering is free and every edge points the same way — which a force layout will not
+promise, and a graph that puts a title above its own trunk is unreadable. Within a layer, nodes are
+ordered by the mean position of their predecessors, twice over: the cheap half of crossing reduction,
+and enough for a graph this size.
+
+> **Cytoscape is vendored (364 KB) and the dagre extension is not.** Dagre would do slightly better
+> at crossing reduction for another 280 KB — at the one job the data already told us how to do,
+> since `DEPTH` is computed from the edges either way. The library is also loaded on **first open**
+> rather than at world boot, so a client that never opens the pane never pays for it.
+
+### 8a.5 What it refuses to get wrong
+
+**Adjacency is not eligibility.** A node touching one you own may still be unavailable:
+`after[]` is any-one-of, `all` makes it every-one-of, and an exclusive family closes its rivals.
+One function decides (`canTake`), and the paint and the Accept path both call it — so a node the
+pane offers is a node the engine accepts. Painting the frontier from adjacency would have offered
+level-ups the rules refuse, which is the same mistake as every other *prose is not a rule* case in
+this project, in pixels.
+
 ## 9. Open
 
 - **Swing-percentage toggle** (§4.2): default on or off.
+- **[OPEN]** Who may grant a level. `system.levels.pending` is a number on the actor and nothing but
+  a GM editing the sheet raises it; a *Grant a level* control on the GM tray is the obvious next
+  step (§7's GM tray).
+- **[OPEN]** A **prune** reward needs a card chosen, which is a second dialog the pane does not
+  have. No node in the built graph grants one, deliberately, until it does.
+- **[OPEN]** Feature and spell grants create slates; the pane reads them out but creates nothing.
+  Only the numeric grants and the one card grant are actually applied.
 - **Touch and small screens.** Five cards plus two panels is tight below about 1000 px.
 
 Card layout is settled in [card-layout.md](card-layout.md), including the bonus-group border that

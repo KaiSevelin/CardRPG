@@ -709,6 +709,17 @@ Strike-on-a-secondary cards come from and [leveling.md](leveling.md) §4 promise
 they come from the common pool, at **−1**, as the first ordinary card a fighter of any Way is
 handed. The −1 is what keeps it from making plain *Strike* obsolete.
 
+> **[FOUND IN CODE 2026-11-01] Dig In should not print ⚡ Brace, and neither should the two
+> Strength cards that do.** Brace is the **floor under a card that prints nothing**: core-rules §3
+> gives it to a card *without* a printed reaction, and `reactionsFor` in the engine implements
+> exactly that. So printing Brace is not merely redundant — it is the one spelling that could
+> switch it off, because a card that prints Brace has a printed reaction. Dig In gets Brace by
+> having none, and `Armoured Advance` and `Walk It Off` (§3.2) need the same correction.
+>
+> This is the sixth time a document has printed something the engine has no key for: `ignores N
+> armor`, the ammunition *For* column, Heavy Armor's Sidestep ban, `range` doing duty as reach, and
+> the element a Signature was already assuming. The column is the tell every time — prose in a slot that looks mechanical.
+
 **Dig In is the deck's second and last Spent card.** §1.3 caps a 16-card deck at two and the Warrior
 already carries *Second Wind*, so taking this one spends the ceiling. That is the decision, and no
 branch should offer a third.

@@ -140,6 +140,21 @@ It needs no new field. §10 already asks for a node that requires **all** of its
 that flag is the enforcement: **a cross edge into a gated branch is legal if it requires the gate as
 well.** So the rule is not quite *never* — it is *not for free*.
 
+#### A cross edge carries its own minor nodes  **[FOUND IN CODE 2026-11-01]**
+
+Building the graph turned up a hole in the rule above. A cross edge drawn straight from one title to
+another **is** a shortcut, whatever the tiers say: *Cutpurse → Gambler* as a bare edge lets a
+Cutpurse take Gambler on the next level, while a Duellist walks two minor nodes to reach it. And
+attaching the crossing to the far title's own lead-in minors is worse — that is handing out
+Gambler's run without Gambler, which is the leak this section is about.
+
+> **So a crossing is a short chain of its own**, two ordinary nodes between the two titles. The
+> Dream Guild teaches you, and being taught takes levels.
+
+It costs six pool nodes for Way of Shade's three crossings, and it makes the depth claim true rather
+than asserted: the Cutpurse route to Gambler runs **three levels longer** than the Duellist's, which
+is right, because the Cutpurse is also a Cutpurse.
+
 #### What each Way does with them
 
 | Way | Cross edges | Why |
@@ -651,17 +666,37 @@ A character stores only **the list of node ids they own**. Level, title, frontie
 derive from that list, so a corrected node definition fixes every character who took it, and nothing
 needs migrating.
 
+> **[BUILT 2026-11-01] This paragraph is a promise the implementation can break in one line.** The
+> character data model stores `health.base`, `handSize.base`, `actionDeck.base`, `spellSlots.base`,
+> `carry.base` and `rest.max` — which is exactly the list of things §4 hands out. Had the level-up
+> written `+1 Health` onto the sheet, two characters who took the same node could silently differ
+> and a corrected node would fix neither.
+>
+> So taking a node is **one array push and one counter**, and the numbers flow through the
+> accumulator `prepareDerivedData` already used for features and worn gear: a node granting Health
+> is summed by the line that sums a ring granting Health. The level, the title and the Ways a
+> character has walked are derived too.
+>
+> **A card is the one exception, and it has to be.** A number can be recomputed every time the sheet
+> is prepared; a card is a document in a deck, so it is created once and it stays created. That
+> asymmetry is why `grants.card` is the only key the level-up acts on.
+
 ## 10. Open
 
 - **[OPEN]** The graphs themselves — every node, reward and specialization for all four Ways. The
   major nodes are named and celled ([specializations.md](specializations.md)) and both the Signatures
   and the minor-node **pools** are drafted ([way-cards.md](way-cards.md)), so what is missing is the
   wiring: which node grants which entry, and the depth-consistency §7 asks for.
-- **Needed:** a node that requires **all** of its prerequisites rather than any one. §5a leans on
-  this — it is how depth takes commitment, and without it every title is one node deep and means
-  nothing. §1's **dominance** invariant now leans on it too: the flag is the only thing that stops a
-  cross edge from handing out what an exclusive choice closed. One flag on the node; build it with
-  the first graph.
+- **[BUILT 2026-11-01]** A node that requires **all** of its prerequisites rather than any one.
+  §5a leans on this — it is how depth takes commitment, and without it every title is one node deep
+  — and §1's **dominance** invariant leans on it too: the flag is the only thing that stops a cross
+  edge from handing out what an exclusive choice closed. It is the `all` flag on a node, and
+  **Assassin is the first node to carry it**: two of Thief's three runs walked, not one, which is
+  [specializations.md](specializations.md)'s *"only an investment reaches Assassin"* in data.
+
+  > One thing it changes, found while implementing it: an `all` node's several predecessors are
+  > **requirements, not routes**, so none of them is a cross edge. The cell test asks which half two
+  > nodes share, and that question has no meaning for a prerequisite you must have anyway.
 - **[OPEN]** Whether **item** rewards overlap awkwardly with loot. A Way granting signature gear is
   good; a Way granting what the party would have found anyway is a dead node.
 - **[OPEN]** Whether a second Way should cost anything beyond the level, and whether there is a cap

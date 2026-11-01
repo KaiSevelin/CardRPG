@@ -1,12 +1,15 @@
 {
   "name": "cardrpg-system",
   "private": true,
-  "description": "Validation tooling for the Card RPG Foundry system. The system itself ships no build step -- these are dev dependencies only.",
+  "description": "Validation tooling for the Card RPG Foundry system, and the one runtime library it vendors. There is still no build step: cytoscape is here so it can be updated and copied into lib/, which is the copy that actually ships.",
   "type": "module",
   "scripts": {
     "test": "node test/validate.mjs"
   },
   "devDependencies": {
     "handlebars": "^4.7.8"
+  },
+  "dependencies": {
+    "cytoscape": "^3.30.2"
   }
 }

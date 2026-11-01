@@ -9,6 +9,11 @@
       <input type="text" name="name" value="{{actor.name}}" placeholder="Name" class="cr-name">
       <button type="button" class="cr-tray-button" data-action="openTray"
               data-tooltip="The hand and the live state. This is what you play from.">Tray</button>
+      <button type="button" class="cr-level-button {{#if pendingLevels}}cr-level-button--ready{{/if}}"
+              data-action="levelUp"
+              data-tooltip="The levelling graph. Readable any time; spendable when the GM grants a level.">
+        {{localize "CARDRPG.Level.Pane"}}{{#if pendingLevels}} ({{pendingLevels}}){{/if}}
+      </button>
     </div>
     <div class="cr-sheet__identity">
       <label>Way

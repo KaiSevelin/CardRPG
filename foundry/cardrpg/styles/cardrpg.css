@@ -1025,3 +1025,99 @@
 }
 /* With both buttons present only the first needs pushing over. */
 .cardrpg .cr-card__half + .cr-card__flip { margin-left: 0.2em; }
+
+
+/* -------------------------------------------- */
+/*  Level-up pane                               */
+/* -------------------------------------------- */
+
+/*
+ * The graph needs a sized box or Cytoscape mounts into a zero-height div and draws nothing, which
+ * is the one failure that looks like a broken library rather than a broken stylesheet.
+ */
+.cr-levelup .cr-levelup__frame {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  gap: 6px;
+}
+
+.cr-levelup__bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 6px;
+  border-bottom: 1px solid var(--cardrpg-rule, #4a505a);
+  flex: 0 0 auto;
+}
+
+.cr-levelup__who { display: flex; align-items: baseline; gap: 8px; }
+.cr-levelup__level { opacity: 0.75; font-size: 0.9em; }
+.cr-levelup__pending { margin-left: auto; font-weight: bold; color: #7fb2ef; }
+.cr-levelup__pending--none { color: #8d9099; font-weight: normal; }
+.cr-levelup__layout { display: flex; align-items: center; gap: 4px; font-size: 0.9em; }
+
+.cr-levelup__body {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  gap: 8px;
+}
+
+.cr-levelup .cr-graph {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  background: #15171b;
+  border: 1px solid var(--cardrpg-rule, #4a505a);
+  border-radius: 3px;
+}
+
+.cr-levelup__side {
+  flex: 0 0 290px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  gap: 8px;
+}
+
+.cr-levelup__detail {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 8px;
+  border: 1px solid var(--cardrpg-rule, #4a505a);
+  border-radius: 3px;
+}
+
+.cr-levelup__detail h3 { margin: 0 0 6px; }
+.cr-levelup__hint { opacity: 0.7; font-style: italic; }
+.cr-levelup__cell { opacity: 0.8; font-size: 0.9em; }
+.cr-levelup__grants { margin: 6px 0; padding-left: 18px; }
+.cr-levelup__opens { margin-top: 8px; font-size: 0.9em; opacity: 0.8; }
+/* The irreversible half of a level-up, and the only thing on this panel printed in a warning colour. */
+.cr-levelup__closes { margin-top: 8px; color: #e08a8a; }
+
+.cr-levelup__actions { display: flex; gap: 6px; flex: 0 0 auto; }
+.cr-levelup__actions button { flex: 1 1 auto; }
+.cr-levelup__accept:disabled { opacity: 0.45; cursor: default; }
+
+.cr-levelup__legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 0.85em;
+  flex: 0 0 auto;
+}
+.cr-levelup__legend li { display: flex; align-items: center; gap: 6px; }
+
+.cr-swatch { width: 14px; height: 10px; border: 2px solid; border-radius: 2px; }
+.cr-swatch--owned { background: #3c5a3a; border-color: #7ab874; }
+.cr-swatch--available { background: #2a3a52; border-color: #7fb2ef; }
+.cr-swatch--later { background: #1c1f24; border-color: #3a4049; }
+.cr-swatch--closed { background: #1a1a1a; border-color: #58333a; }
+.cr-swatch--cross { background: transparent; border: 0; border-top: 2px dashed #8a6f9c; height: 0; }
+
+/* The sheet button lights up only when the GM has actually granted a level. */
+.cr-level-button { white-space: nowrap; }
+.cr-level-button--ready { box-shadow: 0 0 0 1px #7fb2ef inset; font-weight: bold; }

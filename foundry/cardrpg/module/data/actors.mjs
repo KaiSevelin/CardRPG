@@ -8,6 +8,7 @@
 
 import { CARDRPG } from "../config.mjs";
 import { available } from "../decks.mjs";
+import { ownedIds, grantsOf, levelOf, titleOf, waysOf, frontier } from "../graph.mjs";
 
 const fields = foundry.data.fields;
 
@@ -107,6 +108,19 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
 
       conditions: conditionField(),
 
+      /*
+       * The levelling graph, and the whole of it: rules/leveling.md 9 says a character stores only
+       * the list of node ids they own, and that level, title, frontier and every reward derive from
+       * that list. Ordered, because the order they were taken in is the only record of the route.
+       *
+       * `pending` is what a level-up button may spend. It exists because section 2 says *the GM
+       * says when* -- without a counter the GM grants nothing and a player could level at will.
+       */
+      nodes: new fields.ArrayField(new fields.StringField()),
+      levels: new fields.SchemaField({
+        pending: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 })
+      }),
+
       way: new fields.StringField({ required: false, blank: true, initial: "", choices: [...Object.keys(CARDRPG.ways), ""] }),
       background: new fields.StringField({ required: false, blank: true, initial: "" }),
 
@@ -145,6 +159,29 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       for (const k of Object.keys(grants)) grants[k] += slate.system.grants?.[k] ?? 0;
     }
 
+    /*
+     * --- and what the levelling graph grants
+     *
+     * The same accumulator, deliberately: a node granting Health is summed by the line that sums a
+     * ring granting Health. This is where leveling.md 9's promise is kept or broken -- nothing is
+     * copied onto the sheet, so a node definition corrected tomorrow fixes every character who
+     * took it and there is nothing to migrate.
+     */
+    const owned = ownedIds(this.parent);
+    const fromNodes = grantsOf(owned);
+    for (const k of Object.keys(grants)) grants[k] += fromNodes[k] ?? 0;
+
+    this.level = levelOf(owned);
+    this.title = titleOf(owned);
+    this.waysOwned = waysOf(owned);
+    this.frontier = frontier(owned);
+    /* Trainings and know-how are additive rather than overwritten: a background gives some and the
+     * graph gives more (leveling 4, "the skill side"), and the stored ones stay editable. */
+    this.learned = {
+      trainings: [...new Set([...this.trainings, ...fromNodes.trainings])],
+      knowHow: [...this.knowHow, ...fromNodes.knowHow]
+    };
+
     // --- taint and afflicted (counted from the decks, so derived)
     const taint = this.#countCards("taint");
     this.taint = taint;
@@ -155,6 +192,10 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
     this.health.max = Math.max(1,
       this.health.base + grants.health - (this.afflicted ? d.afflictedHealthPenalty : 0));
     this.health.value = Math.min(this.health.value, this.health.max);
+
+    // --- rest tokens. The stored max is the base, as health's is; a node may add to it (section 4).
+    this.rest.max = this.rest.max + fromNodes.restTokens;
+    this.rest.tokens = Math.min(this.rest.tokens, this.rest.max);
 
     /*
      * --- spell slots

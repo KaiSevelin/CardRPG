@@ -663,7 +663,7 @@ Strength's second tree, and the same rule holds as for Shade — **every sibling
 coordinates**, not merely on the cell:
 
 ```
-  STRENGTH              (Position    / halves)
+  STRENGTH              (Position    / weight)
   ├─ INFANTRY           (Position    / an ally)
   │  ├─ GUARDIAN        (Reactions   / a slot kept free)
   │  ├─ IRONCLAD        (Deck shape  / weight)
@@ -710,6 +710,22 @@ does.
 Twelve nodes: three on Position, three on Reactions, two on Deck shape, and one each on Tempo,
 Preparation, Control and Support. Reactions came down from four, Control came up from nothing, and
 all seven axes are covered.
+
+> **[FIXED 2026-11-01] The Way root paid in *halves*, and so does Way of Shade.** The two are
+> siblings off the root, so that is the sibling rule broken at the very top of the graph — and both
+> documents wrote it independently, which is how it survived two restructures unnoticed. The graph
+> validator found it the first time it ran against node data rather than prose.
+>
+> **Strength is the one that moves**, because [leveling.md](leveling.md) §5a names halves as Shade's
+> price *by contrast with this Way*: *"your cards spend their secondary on Move far more often than
+> Strength's do"*. Strength pays in **weight** instead, which is the lever
+> [specializations.md](specializations.md) already said this Way had and nobody had spent — armour,
+> the kit, the carry limit, Overloaded. It also reads better: a Way with both hands on the swing is
+> not a Way that spends its halves on Move.
+>
+> The two still share the **axis**, Position, which the validator reports as a warning and which is
+> left standing: a Way root is the broadest version of its branch, and two Ways may both be about
+> where you are without being the same build.
 
 ### Block and Brace, since Guardian's lever rests on them
 

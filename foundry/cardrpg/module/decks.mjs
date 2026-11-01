@@ -24,6 +24,30 @@ export function deckOf(actor, which) {
   return doc;
 }
 
+/**
+ * A Card document from a content definition. One shape in one place: the starter decks and the
+ * levelling graph both create action cards, and two spellings of the same thing would drift.
+ *
+ * A Card with no face is face-down, and Foundry then shows "Unknown (<deck>)" instead of its name.
+ * Everything here is meant to be readable in hand, so it gets a face.
+ */
+export function actionCardData(def) {
+  return {
+    name: def.name,
+    type: "action",
+    face: 0,
+    faces: [{ name: def.name }],
+    system: {
+      primary: def.primary ?? [],
+      secondary: def.secondary ?? [],
+      reaction: def.reaction ?? "",
+      ...(def.reactionParam !== undefined ? { reactionParam: def.reactionParam } : {}),
+      costs: def.costs ?? {},
+      ...(def.text !== undefined ? { text: def.text } : {})
+    }
+  };
+}
+
 /** Every Cards document an actor owns, so a repair can see where a copy might be sitting. */
 export function allStacks(actor) {
   return Object.values(actor?.system.decks ?? {})
