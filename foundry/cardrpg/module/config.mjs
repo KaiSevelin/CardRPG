@@ -33,6 +33,18 @@ CARDRPG.verbs = {
 CARDRPG.effects = {
   heal: { label: "CARDRPG.Effect.Heal", icon: "healing" },
   /*
+   * Block, given to somebody else.
+   *
+   * The same word as the `block` reaction below and deliberately so: they are one concept reached
+   * from two directions -- a shield answering a hit, and a shield held over the man beside you. The
+   * engine already has `use` as both a verb and a reaction for the same reason.
+   *
+   * Four pieces of content were waiting on it (way-cards: Shield Wall, Shoulder to Shoulder, No
+   * Step Back, The Shield Line) and three of them are a whole Way's thesis: Infantry, Valtor and
+   * Vax are all the same idea, which is that standing next to somebody should be worth something.
+   */
+  block: { label: "CARDRPG.Effect.Block", icon: "shield-reflect" },
+  /*
    * Foresee: look at one NPC type's intent card for this round (core-rules 6).
    *
    * core-rules says it "needs no icon of its own", meaning no new entry in the six-verb vocabulary

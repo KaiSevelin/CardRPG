@@ -3097,10 +3097,11 @@ check("Half-mage's slots are on the node", byId.get("shade.half-mage").grants.sp
  */
 const built = sigs.filter(sg => !sg.needs?.length).map(sg => sg.name);
 check("Signatures the engine does everything for", built.join(", "),
-  "The Opening, The Kit, Loose and Step, Heckle, One Trick, Nothing Gets Through, Interpose, "
-  + "Wither, The Bargain, Unmake, Breath of the Spirit, The Outcast's Due");
+  "The Opening, The Kit, Loose and Step, Heckle, One Trick, Shoulder to Shoulder, "
+  + "Nothing Gets Through, Interpose, Wither, The Bargain, Unmake, Breath of the Spirit, "
+  + "The Outcast's Due");
 const gaps = sigs.filter(sg => sg.needs?.length).map(sg => `${sg.name}: ${sg.needs.join("; ")}`);
-check("Signatures with a named gap", gaps.length, 35);
+check("Signatures with a named gap", gaps.length, 34);
 /*
  * `needs` is a LIST, and that is the lesson of the Health cost. It was the largest gap in the game
  * at six pieces of content; building it finished exactly ONE, because every other one wanted a
@@ -3444,8 +3445,8 @@ check("content carrying the audit column",
 const vague = audited.filter(c => (c.needs ?? []).some(g => g.length < 12)).map(c => c.name);
 check("gaps too short to act on", vague.length ? vague.join(", ") : "none", "none");
 const workingCards = audited.filter(c => !c.needs.length).length;
-check("content the engine does everything for", workingCards, 45);
-check("content with a named gap", audited.filter(c => c.needs.length).length, 57);
+check("content the engine does everything for", workingCards, 48);
+check("content with a named gap", audited.filter(c => c.needs.length).length, 54);
 
 /*
  * A gap shared by several cards is one piece of engine work, not several. Counting the DISTINCT
@@ -3471,8 +3472,17 @@ check("distinct gaps across all content", gapCounts.size, 51);
  */
 const most = Math.max(...gapCounts.values());
 const worst = [...gapCounts.entries()].filter(([, n]) => n === most).map(([gap]) => gap).sort();
+/*
+ * **The queue has a flat top now**, and that is a state worth knowing rather than a tie to be
+ * broken. Six gaps are mentioned twice and nothing is mentioned more; five would finish two
+ * pieces of content and nothing would finish more. Every cheap, broad piece of engine work this
+ * content asked for has been done, and what is left is a long flat tail -- which is the point at
+ * which "what should I build next" stops being a question the audit can answer on its own.
+ */
 check("the gap mentioned by the most content", `${worst.join("; ")} (${most})`,
-  "granting Block to an ally (4)");
+  "a cost that scales with the allies it covers; a spell that taints its caster; "
+  + "a step that goes through armour entirely; an effect held up by spending a secondary; "
+  + "an event when a figure's Health reaches zero; two fate draws that both apply (2)");
 
 const finishes = new Map();
 for (const card of audited) {
@@ -3483,7 +3493,9 @@ const bestFinish = Math.max(...finishes.values());
 check("the gap that would finish the most content",
   [...finishes.entries()].filter(([, n]) => n === bestFinish).map(([g]) => g).sort().join("; ")
   + ` (${bestFinish})`,
-  "granting Block to an ally (3)");
+  "a spell that taints its caster; a step that goes through armour entirely; "
+  + "an effect held up by spending a secondary; "
+  + "an event when a figure's Health reaches zero; two fate draws that both apply (2)");
 /* And how much of the queue is one card deep, which is what a long tail of singletons means. */
 check("gaps that would finish exactly one piece of content",
   [...finishes.values()].filter(n => n === 1).length, 41);
@@ -3694,6 +3706,91 @@ check("way-cards sends its reader to that rule",
   /One gate on a primary is allowed, and it is not a condition/.test(wayDoc) ? "yes" : "no", "yes");
 check("and records that three gaps were one field",
   /three entries, one field, \*\*six cards\*\*/.test(wayDoc) ? "yes" : "no", "yes");
+
+/* -------------------------------------------- */
+
+/*
+ * Block, given away -- the gap four pieces of content had been waiting on, and three of them were
+ * a whole Way's thesis: Infantry, Valtor and Vax are all the same idea, which is that standing next
+ * to somebody should be worth something.
+ */
+
+section("Block that reaches somebody else");
+
+check("block is an effect, beside heal", "block" in CARDRPG.effects, true);
+check("and not a seventh verb", "block" in CARDRPG.verbs, false);
+/* The same word as the reaction, which is the same concept from the other side -- and the same
+ * thing `use` has done as both a verb and a reaction since before there were spells. */
+check("the reaction of that name still exists too", "block" in CARDRPG.reactions, true);
+check("its icon is a file that exists",
+  fs.existsSync(path.join(root, `icons/${CARDRPG.effects.block.icon}.svg`)) ? "yes" : "no", "yes");
+
+/*
+ * Highest wins and the longer duration survives. That is not a new rule -- `resolveDefend` has
+ * settled Block that way since it was written -- and the only honest way to grant it to somebody
+ * else is to settle it identically, or a card handing an ally Block 1 would downgrade the Block 3
+ * they are already holding.
+ */
+check("the grant keeps the highest",
+  /const block = Math\.max\(current, amount\);/.test(resolveSource) ? "yes" : "no", "yes");
+check("and never shortens what is held",
+  /const persists = amount > current \? true : amount < current \? held : true;/.test(resolveSource)
+    ? "yes" : "no", "yes");
+/* Allies only, and it needs no field: nothing in the game protects an enemy. */
+check("it reaches your own side only",
+  /if \(other\.actor\.type !== actor\.type\) return false;/.test(resolveSource) ? "yes" : "no",
+  "yes");
+/*
+ * An unplaced fight has no geometry, so nothing happens rather than something guessed -- the same
+ * choice `neighbours` makes, which is exactly why this has to be read INSIDE grantBlock. The first
+ * version of this check matched `neighbours`'s identical line and passed with the guard deleted:
+ * the old trap of matching the wrong text, wearing a new hat.
+ */
+const grantBlockBody = resolveSource.slice(
+  resolveSource.indexOf("export async function grantBlock"),
+  resolveSource.indexOf("/** Healing draws fate"));
+check("and does nothing without a board",
+  /if \(!token \|\| !canvas\?\.ready\) return \[\];/.test(grantBlockBody) ? "yes" : "no", "yes");
+check("the tray can play the half",
+  /case "block": \{/.test(traySource) ? "yes" : "no", "yes");
+/* `param` is how much and `area` is how far, which is the pair a Blast already uses. */
+check("how much and how far come from the step",
+  /amount: step\.param \?\? 0,[\s\S]{0,60}radius: step\.area \?\? 1/.test(traySource)
+    ? "yes" : "no", "yes");
+
+/*
+ * And the rule, where a reader of the Block subsection will find it. Four turns running the break
+ * test caught me writing a decision into a document with no check behind it, so this goes in with
+ * the code rather than after it.
+ */
+check("specializations records the Block grant",
+  /^#### Block that reaches somebody else {2}\*\*\[BUILT 2026-11-01\]\*\*$/m.test(specDoc)
+    ? "yes" : "no", "yes");
+check("and says why it needed no new rule",
+  /\*\*Highest wins and the longer duration[\s>]+survives\*\*/.test(specDoc) ? "yes" : "no", "yes");
+
+/* The content: four cards named this gap and the steps are on three of them now. */
+const blockSteps = [...graph.POOL.values(), ...graph.SPELLS.values()]
+  .flatMap(c => [...(c.primary ?? []), ...(c.secondary ?? []), ...(c.effect ? [c.effect] : [])]
+    .filter(st => st.verb === "block").map(st => ({ name: c.name, ...st })));
+check("content that gives Block away",
+  [...new Set(blockSteps.map(b => b.name))].sort().join(", "),
+  "No Step Back, Shield Wall, Shoulder to Shoulder");
+check("and every one of them says how much",
+  blockSteps.every(b => (b.param ?? 0) > 0), true);
+/*
+ * Nothing prints a Block GRANT in prose any more, which is this project's recurring defect.
+ *
+ * Block on yourself is a different thing and stays prose where it belongs: *Play to the Crowd*
+ * reads "when you are hit: gain Block 2, and the attacker is Compelled", and its gap is a reaction
+ * that does two things at once -- not this. So the test is for an ally in the same sentence, which
+ * is the word that makes it a grant.
+ */
+const printedBlock = [...graph.POOL.values(), ...graph.SPELLS.values()]
+  .filter(c => /Block \d/i.test(c.text ?? "") && /all(y|ies)/i.test(c.text ?? ""))
+  .map(c => c.name);
+check("content still printing a Block grant as prose",
+  printedBlock.length ? printedBlock.join(", ") : "none", "none");
 
 /* -------------------------------------------- */
 

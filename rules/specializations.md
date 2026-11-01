@@ -825,6 +825,28 @@ Both are fully specified already — **Block** has its own subsection in core-ru
 defined in §2 with its order of resolution in §3. Two earlier `[OPEN]` flags here claimed otherwise
 and were simply wrong.
 
+#### Block that reaches somebody else  **[BUILT 2026-11-01]**
+
+> **Block is the one defensive number a card can hand to another character**, and four pieces of
+> content were waiting on that: *Shield Wall*, *Shoulder to Shoulder*, *No Step Back* and
+> *The Shield Line*. Three of them are a whole Way's thesis — Infantry, Valtor and Vax are the same
+> idea stated three ways, which is that **standing next to somebody should be worth something.**
+>
+> It needed no new rule, and that is the interesting part. **Highest wins and the longer duration
+> survives** has settled Block since the first Defend was resolved, and the only honest way to give
+> it to an ally is to settle it identically — otherwise a card handing someone Block 1 would
+> downgrade the Block 3 they were already holding, and a one-shot grant would shorten a round-long
+> stance. So the grant is the same four lines applied to a set of actors rather than to one.
+>
+> **Allies only, and that needs no field**: Block is protection, and there is no card in the game
+> that protects an enemy. The amount and the reach come from the step's `param` and `area`, which is
+> the pair a Blast already uses — *every ally within 2* is the same shape of statement as
+> *everything within 2* and should not need a second vocabulary.
+>
+> *The Shield Line* is still blocked, now on two unrelated things: its price scales with the line it
+> covers, and its amount is the caster's own **armour** rather than a number on the card. The old
+> single-string column hid that; a list does not.
+
 **Block is in good shape, and it is the right lever to hand a node.** The division it draws is the
 useful one: **armor is what you wear and Block is what you do.** Armor is flat, permanent and
 passive; Block comes from a verb, costs a half, and expires. That is exactly what keeps a Guardian

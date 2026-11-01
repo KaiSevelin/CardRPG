@@ -1719,10 +1719,10 @@ export const STRENGTH_POOL = [
   },
   {
     name: "Shield Wall", copies: 1, pool: "strength",
-    needs: ["granting Block to an ally"], reaction: "block",
+    needs: [], reaction: "block",
     primary: [{ verb: "defend" }],
-    secondary: [{ verb: "defend" }],
-    text: "The secondary also gives one adjacent ally Block 1."
+    /* The second half is the card: a Defend that also reaches the man beside you. */
+    secondary: [{ verb: "defend" }, { verb: "block", param: 1, area: 1 }]
   },
   {
     /*
@@ -1984,11 +1984,14 @@ export const TACTICS = {
  */
 export const STRENGTH_SIGNATURES = [
   {
+    /*
+     * The Infantry Signature, and the whole Way's thesis: standing next to somebody is worth
+     * something. It was prose from the day it was written and is now two steps.
+     */
     name: "Shoulder to Shoulder", kind: "card", node: "strength.infantry",
-    needs: ["granting Block to an ally"],
-    primary: [{ verb: "strike" }],
-    secondary: [{ verb: "move", param: 1 }],
-    text: "Every ally adjacent to you gains Block 1 until your next turn."
+    needs: [],
+    primary: [{ verb: "strike" }, { verb: "block", param: 1, area: 1 }],
+    secondary: [{ verb: "move", param: 1 }]
   },
   {
     name: "The Wall", kind: "feature", node: "strength.guardian",
@@ -2592,9 +2595,10 @@ export const FAITH_POOL = [
   },
   {
     name: "No Step Back", strength: 2, pool: "faith", source: "Valtor",
-    needs: ["granting Block to an ally"],
-    description: "<p>Every ally within 2 gains Block 2 until your next turn.</p>",
-    effect: { range: 2, text: "every ally within 2 gains Block 2 until your next turn" }
+    needs: [],
+    description: "<p>Every ally within 2 gains Block 2 until your next turn. Valtor's answer to "
+      + "being outnumbered is that nobody moves.</p>",
+    effect: { verb: "block", param: 2, area: 2 }
   },
   {
     name: "The Second Thought", strength: 1, pool: "faith", source: "Fagar",
@@ -2652,8 +2656,15 @@ export const FAITH_POOL = [
      * where everyone is standing, and `cost.health` is a number. A variable price is a second
      * mechanism, not a bigger number, so it stays in the queue and says so.
      */
+    /*
+     * Still blocked, and on two different things now that the Block grant exists: the price scales
+     * with the line and the AMOUNT is the caster's own armour rather than a number on the card.
+     * Both are reasons a fixed `param` cannot hold it, and naming them apart is what the list is
+     * for -- the old single string hid that this card needed two unrelated mechanisms.
+     */
     name: "The Shield Line", strength: 2, pool: "faith", source: "Vax",
-    needs: ["a cost that scales with the allies it covers", "granting Block to an ally"],
+    needs: ["a cost that scales with the allies it covers",
+      "Block equal to the caster's own armour"],
     description: "<p>Every ally adjacent to you gains your armor value as Block until your next "
       + "turn. One Health per ally, so a long line is a dear one.</p>",
     effect: { range: 1, text: "adjacent allies gain your armor as Block. Costs 1 Health per ally" }

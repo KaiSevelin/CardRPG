@@ -16,6 +16,7 @@
   "CARDRPG.Verb.Use": "Use",
   "CARDRPG.Verb.Move": "Move",
   "CARDRPG.Verb.Ready": "Ready",
+  "CARDRPG.Effect.Block": "Block",
   "CARDRPG.Effect.Heal": "Heal",
   "CARDRPG.Effect.Range": "Range",
   "CARDRPG.Effect.Blast": "Blast",

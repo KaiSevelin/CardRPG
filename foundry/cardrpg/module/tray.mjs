@@ -25,7 +25,7 @@ import {
   resolveAttack, resolveDefend, resolveHeal, resolveUse, resolveCondition, resolveShake,
   reachableAmmo, isUsable,
   resolveTaint, resolveCorrode, liftCondition, resolveForesee, collectBonuses,
-  itemMeets, requireText, payToCast, answerCast
+  itemMeets, requireText, payToCast, answerCast, grantBlock
 } from "./resolve.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -1290,6 +1290,28 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         const item = this.#itemFor("defend", half);
         if (!item) return ui.notifications.warn("Nothing equipped can defend.");
         await resolveDefend(actor, { item, half });
+        return;
+      }
+
+      /*
+       * Block, given away. `param` is how much and `area` is how far, 1 being adjacent -- which is
+       * the same pair of fields a Blast uses, because *every ally within 2* is the same shape of
+       * statement as *everything within 2* and should not need a second vocabulary.
+       */
+      case "block": {
+        const given = await grantBlock(actor, {
+          amount: step.param ?? 0,
+          radius: step.area ?? 1
+        });
+        if (!given.length) {
+          return ui.notifications.info("Nobody is standing close enough to cover.");
+        }
+        await ChatMessage.create({
+          speaker: ChatMessage.getSpeaker({ actor }),
+          content: `<div class="cardrpg"><p><strong>${actor.name}</strong> covers `
+            + given.map(g => `${g.actor.name} (Block ${g.block})`).join(", ")
+            + " until the start of their next turn.</p></div>"
+        });
         return;
       }
 

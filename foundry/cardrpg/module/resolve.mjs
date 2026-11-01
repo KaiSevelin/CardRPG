@@ -1205,6 +1205,55 @@ export async function resolveDefend(actor, { item, half = "primary" }) {
   return { block, persists };
 }
 
+/**
+ * Give Block to the people standing with you (core-rules 5).
+ *
+ * **Highest wins and the longer duration survives**, which is not a new rule: `resolveDefend` has
+ * settled Block that way since it was written, and the only honest way to grant Block to somebody
+ * else is to settle it the same way. So this is the same four lines, applied to a set of actors
+ * rather than to one -- a card that hands an ally Block 1 cannot downgrade the Block 3 they are
+ * already holding, and cannot shorten it either.
+ *
+ * `radius` is in squares, 1 being adjacent, measured the way everything else is: Chebyshev on the
+ * placed tokens. An unplaced fight has no geometry, so nothing happens rather than something
+ * guessed -- the same choice `neighbours` makes and for the same reason.
+ *
+ * Allies only, and that needs no field: Block is protection, and there is no card in the game that
+ * protects an enemy. `includeSelf` is false by default because every one of these is printed as
+ * *every ally* -- the caster is covered by their own Defend, not by their own order.
+ *
+ * @returns {object[]} who got it and what they ended up holding, for the chat line
+ */
+export async function grantBlock(actor, { amount = 0, radius = 1, includeSelf = false } = {}) {
+  if (!actor || amount <= 0) return [];
+  const token = actor.getActiveTokens?.()[0];
+  if (!token || !canvas?.ready) return [];
+
+  const size = canvas.grid.size;
+  const within = canvas.tokens.placeables.filter(other => {
+    if (!other.actor) return false;
+    if (other === token) return includeSelf;
+    if (other.actor.type !== actor.type) return false;        // allies are your own side
+    const dx = Math.abs(other.x - token.x) / size;
+    const dy = Math.abs(other.y - token.y) / size;
+    return Math.max(dx, dy) <= radius;
+  });
+
+  const given = [];
+  for (const other of within) {
+    const who = other.actor;
+    const current = who.system.block ?? 0;
+    const held = !!who.system.blockPersists;
+    /* Until your next turn, which is what every card printing this says, so it persists. */
+    const block = Math.max(current, amount);
+    const persists = amount > current ? true : amount < current ? held : true;
+    if (block === current && persists === held) continue;     // nothing to say
+    await who.update({ "system.block": block, "system.blockPersists": persists });
+    given.push({ actor: who, block });
+  }
+  return given;
+}
+
 /** Healing draws fate, same as damage. */
 export async function resolveHeal(actor, { amount, target = actor, source = "" }) {
   const fate = await drawFate(actor, amount, 0);
