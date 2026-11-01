@@ -13,6 +13,9 @@
               data-action="levelUp"
               data-tooltip="The levelling graph. Readable any time; spendable when the GM grants a level.">
         {{localize "CARDRPG.Level.Pane"}}{{#if pendingLevels}} ({{pendingLevels}}){{/if}}
+        {{!-- How many nodes are on your frontier right now, which is worth knowing before you
+              open a graph of 169. --}}
+        {{#if frontierCount}}<span class="cr-level-button__open">{{frontierCount}} open</span>{{/if}}
       </button>
     </div>
     <div class="cr-sheet__identity">
@@ -34,6 +37,14 @@
       <span class="cr-standing">
         <strong>{{localize "CARDRPG.Level.Level"}} {{system.level}}</strong>
         {{#if system.title}}<span class="cr-standing__title">{{system.title}}</span>{{/if}}
+        {{!--
+          The Ways actually walked, which is the other half of the seam described above: the
+          dropdown is a declaration and this is the truth. A character who declared Shade and
+          spent every level in Mind should be able to see the disagreement.
+        --}}
+        {{#if waysWalked}}
+          <span class="cr-standing__ways" data-tooltip="Derived from the Way nodes you own">{{waysWalked}}</span>
+        {{/if}}
         {{#if isGM}}
           <span class="cr-standing__grant">
             <button type="button" data-action="grantLevel" data-by="1"
@@ -99,6 +110,14 @@
 
         <div class="cr-stat">Armor
           <span class="cr-stat__derived" data-tooltip="From the equipped body slate">{{system.armor}}</span>
+          {{!--
+            The Ironclad's Signature is the only thing in the game that WANTS you over the carry
+            limit, and it was computed and never shown: a player who cannot see it fire cannot
+            decide to go heavy on purpose.
+          --}}
+          {{#if system.armorDoubled}}
+            <span class="cr-stat__flag" data-tooltip="Doubled: you are carrying more than you can, and your armour likes it">&times;2</span>
+          {{/if}}
         </div>
 
         <div class="cr-stat">Hand size
@@ -294,6 +313,24 @@
         <h3>Know-how</h3>
         <p class="cr-note">A situation, not an approach. The GM reads this; nothing automates it.</p>
         <input type="text" name="system.knowHowText" value="{{knowHowText}}" placeholder="Military matters; forests and tracking">
+
+        {{!--
+          What the graph has added, which is NOT editable here: it is derived from the nodes you own
+          (leveling 9), so correcting it means correcting the node. The field above holds what a
+          background gave you and stays yours to type in; these are the ones you levelled for.
+        --}}
+        {{#if fromNodes.trainings.length}}
+          <h3>Trained by your nodes</h3>
+          <ul class="cr-learned">
+            {{#each fromNodes.trainings}}<li>{{this}}</li>{{/each}}
+          </ul>
+        {{/if}}
+        {{#if fromNodes.knowHow.length}}
+          <h3>Know-how from your nodes</h3>
+          <ul class="cr-learned">
+            {{#each fromNodes.knowHow}}<li>{{this}}</li>{{/each}}
+          </ul>
+        {{/if}}
       </section>
 
       <section class="cr-block">

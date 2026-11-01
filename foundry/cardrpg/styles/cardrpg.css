@@ -1148,6 +1148,11 @@
 /* The Tactic: always on, never a number, and never something you can drop. */
 /* A god asks something of you for ever, and a lone god gives something back. Both are standing
    facts, printed like the Tactic above them because that is what they are. */
+.cr-standing__ways { opacity: 0.8; margin-left: 0.3rem; }
+.cr-stat__flag { font-weight: bold; margin-left: 0.2rem; }
+.cr-level-button__open { opacity: 0.75; font-size: 0.85em; margin-left: 0.25rem; }
+/* Derived, so it is a list and not a field: correcting it means correcting the node. */
+.cr-learned { margin: 0.2rem 0 0.4rem 1rem; padding: 0; font-size: 0.9em; opacity: 0.85; }
 .cr-obedience { display: block; font-size: 0.9em; margin-bottom: 0.15rem; }
 .cr-obedience__god { font-weight: bold; margin-right: 0.3rem; }
 .cr-obedience__text { opacity: 0.8; }

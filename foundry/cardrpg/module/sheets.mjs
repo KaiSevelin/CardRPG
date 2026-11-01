@@ -172,6 +172,26 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       // split again in _prepareSubmitData.
       trainingsText: (system.trainings ?? []).join(", "),
       knowHowText: (system.knowHow ?? []).join("; "),
+      /*
+       * What the GRAPH added, separated from what was typed in. `system.learned` has been derived
+       * since the nodes were wired and nothing ever read it, so every training and piece of
+       * know-how a node granted was computed and thrown away -- which is most of what the 29
+       * bespoke minor nodes exist to hand over. Shown apart from the editable field, because a
+       * derived value you can type over is a value that disagrees with itself.
+       */
+      /*
+       * Three derived values existed and nothing read them, which an audit of the whole model
+       * turned up: `waysOwned`, `frontier` and `armorDoubled`. A derived value nobody reads is
+       * work the sheet does on every render and throws away, and -- worse -- a claim nothing
+       * tests. All three are information a player needs, so they are shown rather than deleted.
+       */
+      waysWalked: (system.waysOwned ?? [])
+        .map(id => game.i18n.localize(CARDRPG.ways[id] ?? id)).join(", "),
+      frontierCount: (system.frontier ?? []).length,
+      fromNodes: {
+        trainings: (system.learned?.trainings ?? []).filter(t => !(system.trainings ?? []).includes(t)),
+        knowHow: (system.learned?.knowHow ?? []).filter(k => !(system.knowHow ?? []).includes(k))
+      },
 
       // Shown only when the GM asked for it, since it is a per-table taste call.
       fateSwing: game.settings.get("cardrpg", "showFateSwing") && system.fateSwing !== null

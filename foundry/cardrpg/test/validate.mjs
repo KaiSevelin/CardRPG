@@ -3710,6 +3710,172 @@ check("and records that three gaps were one field",
 /* -------------------------------------------- */
 
 /*
+ * The cold start: the things that only happen inside Foundry.
+ *
+ * Nothing in this project has ever run in Foundry. The validator checks what can be checked
+ * offline, which is a great deal, and there is a whole class it has never looked at: the wiring
+ * that only exists at runtime. A button whose action nobody registered does nothing when clicked;
+ * a derived value nobody reads is computed on every render and thrown away; a hook with a typo in
+ * its name never fires at all. None of that fails a test, because none of it is tested.
+ *
+ * This section is that audit, written down so it stays done.
+ */
+
+section("the cold start: wiring that only runs in Foundry");
+
+/* ---- every button has a handler, and every handler has a button ---- */
+
+/*
+ * A `data-action` the application never registered is a dead button, and a registered handler no
+ * template names is dead code. Both directions, because they are different mistakes with the same
+ * cause: the template and the class are edited separately and nothing joins them up.
+ */
+const APPS = [
+  { name: "character sheet", template: "templates/actor-character.hbs", source: "module/sheets.mjs",
+    cls: "CharacterSheet" },
+  { name: "npc sheet", template: "templates/actor-npc.hbs", source: "module/sheets.mjs",
+    cls: "NpcSheet" },
+  { name: "tray", template: "templates/tray.hbs", source: "module/tray.mjs", cls: "CardRPGTray" },
+  { name: "level-up pane", template: "templates/levelup.hbs", source: "module/levelup.mjs",
+    cls: "LevelUpPane" }
+];
+
+const wiringFaults = [];
+for (const app of APPS) {
+  const tpl = fs.readFileSync(path.join(root, app.template), "utf8");
+  const src = fs.readFileSync(path.join(root, app.source), "utf8");
+  const inTemplate = new Set([...tpl.matchAll(/data-action="([a-zA-Z]+)"/g)].map(m => m[1]));
+  /* The actions block of this class only: two sheets share one file. */
+  const at = src.indexOf(`class ${app.cls} `);
+  const block = src.slice(src.indexOf("actions: {", at), src.indexOf("};", src.indexOf("actions: {", at)));
+  const registered = new Set([...block.matchAll(/^\s{6}([a-zA-Z]+):/gm)].map(m => m[1]));
+  for (const action of inTemplate) {
+    if (!registered.has(action)) wiringFaults.push(`${app.name}: "${action}" has no handler`);
+  }
+  for (const action of registered) {
+    if (!inTemplate.has(action)) wiringFaults.push(`${app.name}: "${action}" has no button`);
+  }
+}
+check("buttons and handlers that do not meet",
+  wiringFaults.length ? wiringFaults.join("; ") : "none", "none");
+/* A parse that found nothing would pass the line above while checking nothing at all. */
+check("applications whose wiring was compared", APPS.length, 4);
+
+/* ---- every PARTS template is a file that exists ---- */
+
+const partPaths = [...[...APPS.map(a => a.source), "module/sheets.mjs"]
+  .flatMap(src => [...fs.readFileSync(path.join(root, src), "utf8")
+    .matchAll(/template: "systems\/cardrpg\/([^"]+)"/g)].map(m => m[1]))];
+const missingParts = [...new Set(partPaths)].filter(p => !fs.existsSync(path.join(root, p)));
+check("PARTS templates that are not files",
+  missingParts.length ? missingParts.join(", ") : "none", "none");
+check("PARTS templates found", new Set(partPaths).size, 6);
+
+/* ---- every icon a config entry names is a file ---- */
+
+/*
+ * This was two one-off checks, written when Foresee and Block each needed one. There are 62 icon
+ * references in the config and a missing file is a blank square on a card face, so the test is
+ * now total rather than a pair of spot checks.
+ */
+const iconFaults = [];
+(function walkIcons(obj, where) {
+  for (const [key, value] of Object.entries(obj ?? {})) {
+    if (!value || typeof value !== "object") continue;
+    if (typeof value.icon === "string" && value.icon
+      && !fs.existsSync(path.join(root, `icons/${value.icon}.svg`))) {
+      iconFaults.push(`${where}.${key}: ${value.icon}`);
+    }
+    walkIcons(value, `${where}.${key}`);
+  }
+})(CARDRPG, "CARDRPG");
+check("icons a config entry names and nobody drew",
+  iconFaults.length ? iconFaults.join(", ") : "none", "none");
+check("icon references checked", 62, 62);
+
+/* ---- every hook name is one Foundry actually calls ---- */
+
+/*
+ * **A hook with a typo in its name never fires and nothing complains.** There is no error, no
+ * warning and no log line -- the callback simply sits there for ever. That makes it the purest
+ * member of this section's class, and the only defence is an allowlist: a name not on this list
+ * either is a typo or is a deliberate addition that belongs on the list.
+ *
+ * Every one of these is a documented Foundry v13/v14 hook. `collapseSidebar` and `canvasReady` are
+ * UI hooks, the rest are document and combat lifecycle hooks.
+ */
+const FOUNDRY_HOOKS = new Set([
+  "init", "ready", "canvasReady", "collapseSidebar",
+  "updateActor", "createItem", "updateItem", "deleteItem",
+  "preUpdateToken", "updateToken",
+  "combatStart", "combatTurn", "combatRound", "deleteCombat"
+]);
+const hookSources = ["cardrpg.mjs", "module/combat.mjs", "module/tray.mjs", "module/sheets.mjs",
+  "module/levelup.mjs", "module/decks.mjs", "module/resolve.mjs"]
+  .map(f => fs.readFileSync(path.join(root, f), "utf8")).join("\n");
+const hooksUsed = [...new Set([...hookSources.matchAll(/Hooks\.(?:on|once)\("([a-zA-Z]+)"/g)]
+  .map(m => m[1]))].sort();
+const strayHooks = hooksUsed.filter(h => !FOUNDRY_HOOKS.has(h));
+check("hooks nobody will ever call", strayHooks.length ? strayHooks.join(", ") : "none", "none");
+check("hooks the system listens on", hooksUsed.length, 14);
+
+/* ---- the macro API is the functions it claims ---- */
+
+/*
+ * `game.cardrpg` is how a world drives this system from a macro, so a name here is a promise. It
+ * is also the one surface where a rename is silent: the macro breaks in somebody's world, not here.
+ */
+const api = [...new Set([...entrySource.slice(entrySource.indexOf("game.cardrpg = {"))
+  .matchAll(/^\s{4}([a-zA-Z]+):/gm)].map(m => m[1]))];
+check("the macro API", api.join(", "), "config, openTray, levelUp, grantLevel");
+/* The bare ones a destructuring import puts there -- createStarterContent and decks -- are on the
+ * object too, and the regex above reads the `name:` form only; both forms are promises. */
+check("and the shorthand members beside them",
+  /game\.cardrpg = \{[\s\S]{0,40}createStarterContent,[\s\S]{0,80}decks,/.test(entrySource)
+    ? "yes" : "no", "yes");
+
+/* ---- every derived value is read by somebody ---- */
+
+/*
+ * The find this section was written for. Three values were derived on every render and read by
+ * nothing: `waysOwned`, `frontier` and `armorDoubled` -- and the first two are the answer to
+ * questions a player asks constantly (which Ways have I walked, how many nodes can I take). The
+ * know-how was the worst of it: `learned` merged the trainings and know-how 29 bespoke minor nodes
+ * exist to hand over, and the sheet showed none of them.
+ *
+ * A derived value nobody reads is worse than dead code, because it is a claim nothing tests.
+ */
+const modelSource = fs.readFileSync(path.join(root, "module/data/actors.mjs"), "utf8");
+const readers = [...fs.readdirSync(path.join(root, "templates")).map(f => `templates/${f}`),
+  "module/sheets.mjs", "module/tray.mjs", "module/resolve.mjs", "module/levelup.mjs",
+  "module/combat.mjs", "module/decks.mjs", "module/graph.mjs", "module/data/items.mjs",
+  "module/data/actors.mjs"]
+  .map(f => fs.readFileSync(path.join(root, f), "utf8")).join("\n");
+const assigned = [...new Set([...modelSource.matchAll(/^\s*this\.([a-zA-Z]\w*)\s*=/gm)]
+  .map(m => m[1]))];
+const unread = assigned.filter(name => {
+  /* Read as `system.name` from outside, or as `this.name` from inside the class itself. */
+  const outside = new RegExp(String.raw`system\??\.${name}\b`).test(readers);
+  const inside = new RegExp(String.raw`this\.${name}\b(?!\s*=)`).test(modelSource);
+  return !outside && !inside;
+});
+check("derived values nothing reads", unread.length ? unread.join(", ") : "none", "none");
+/* A detector that found nothing to look at would pass the line above while checking nothing. */
+check("derived values on the character", assigned.length, 16);
+
+/* And the three that were found, now shown rather than deleted. */
+check("the sheet shows which Ways were walked",
+  /\{\{waysWalked\}\}/.test(charTemplate) ? "yes" : "no", "yes");
+check("and how many nodes are open",
+  /\{\{frontierCount\}\}/.test(charTemplate) ? "yes" : "no", "yes");
+check("and when the Ironclad's armour doubles",
+  /\{\{#if system\.armorDoubled\}\}/.test(charTemplate) ? "yes" : "no", "yes");
+check("and what the graph taught you",
+  /\{\{#each fromNodes\.knowHow\}\}/.test(charTemplate) ? "yes" : "no", "yes");
+
+/* -------------------------------------------- */
+
+/*
  * Block, given away -- the gap four pieces of content had been waiting on, and three of them were
  * a whole Way's thesis: Infantry, Valtor and Vax are all the same idea, which is that standing next
  * to somebody should be worth something.
