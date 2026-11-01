@@ -608,8 +608,35 @@ pitched at a number.
 
 > **This needs the graph to be depth-consistent.** If Thief's branch runs four nodes to its next
 > specialization and Scout's runs six, two level-6 characters sit at different distances from their
-> next title. Keeping branches level is a content constraint, and the validator should check it once
-> there is a graph to check.
+> next title. Keeping branches level is a content constraint.
+
+### 7.1 Depth consistency, measured  **[BUILT 2026-11-01]**
+
+Checking it needed a **second notion of depth**, and the distinction is worth keeping:
+
+| | Is | Wanted by |
+|---|---|---|
+| **Longest path** from the root | every edge points forward | the layout, so no title is drawn above its own trunk |
+| **Cheapest legal route** | the smallest set you must own first | *this* section — it is what "level 6" means |
+
+They part company wherever the graph stops being a tree. A node reached by a **crossing** has a long
+route and a short one, and the longest path takes the long one. An **`all`** node needs *every*
+prerequisite, so its cheapest route is not its shallowest predecessor but the **union** of all of
+them — which is why **Assassin measured as a tier-2 title one level early** until this was built.
+That was the measurement being wrong, not the content.
+
+The graph as it stands: **Way roots at level 1, the titles off a trunk at 5, theirs at 8.**
+
+> **And here §7 and §5a pull against each other.** *Depth takes commitment* is the device that makes
+> a branch cost more, and costing more is exactly what breaks a level tier. So the rule is
+> **one-sided**: no title may be **cheaper** than its tier — that is a shortcut into a branch — and
+> one that is **dearer** must be dearer **on purpose**, by the `all` flag rather than by an uneven
+> fan nobody noticed.
+>
+> One node is dearer today. **Assassin costs level 9 where its siblings cost 8**, because it wants
+> two of Thief's three runs walked. That is [specializations.md](specializations.md)'s *"only an
+> investment reaches Assassin"* showing up as a number, and the validator refuses any title that is
+> dearer **without** the flag.
 
 ## 8. Add-on compendiums
 

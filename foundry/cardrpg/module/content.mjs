@@ -1524,27 +1524,27 @@ export const ENCOUNTERS = [
  */
 export const COMMON_POOL = [
   {
-    name: "Off-Hand Blow", copies: 1, pool: "common",
+    name: "Off-Hand Blow", copies: 1, pool: "common", needs: "",
     primary: [{ verb: "strike" }],
     secondary: [{ verb: "strike", mod: -1 }]
   },
   {
-    name: "Measure", copies: 1, pool: "common", reaction: "parry",
+    name: "Measure", copies: 1, pool: "common", needs: "", reaction: "parry",
     primary: [{ verb: "strike", mod: 1 }],
     secondary: [{ verb: "move", param: 1 }]
   },
   {
-    name: "Hold the Line", copies: 1, pool: "common", reaction: "parry",
+    name: "Hold the Line", copies: 1, pool: "common", needs: "", reaction: "parry",
     primary: [{ verb: "defend" }],
     secondary: [{ verb: "strike", mod: -1 }]
   },
   {
-    name: "Press", copies: 1, pool: "common", reaction: "sidestep",
+    name: "Press", copies: 1, pool: "common", needs: "", reaction: "sidestep",
     primary: [{ verb: "strike" }, { verb: "move", param: 1 }],
     secondary: [{ verb: "move", param: 2 }]
   },
   {
-    name: "Both Hands", copies: 1, pool: "common", reaction: "use",
+    name: "Both Hands", copies: 1, pool: "common", needs: "", reaction: "use",
     primary: [{ verb: "ready" }, { verb: "strike" }],
     secondary: [{ verb: "ready" }]
   },
@@ -1556,10 +1556,229 @@ export const COMMON_POOL = [
      * the rule gives Brace to a card *without* a printed reaction. Dig In gets Brace by having
      * none.
      */
-    name: "Dig In", copies: 1, pool: "common",
+    name: "Dig In", copies: 1, pool: "common", needs: "",
     primary: [{ verb: "heal", param: 2 }],
     secondary: [{ verb: "move", param: 1 }],
     costs: { primary: { spent: true } }
+  }
+];
+
+/* -------------------------------------------- */
+/*  The two Way pools                           */
+/* -------------------------------------------- */
+
+/**
+ * way-cards.md 3.2 and 3.3: the cards a Way's **minor** nodes draw from. Until now every minor node
+ * in both Ways granted one of the six common cards, which made the backbone identical in a Way
+ * about position and a Way about weight.
+ *
+ * **`needs` means the engine would have to compute something and cannot.** It does not mean "the
+ * engine does not do this": Move is never resolved by the engine at all -- figures are pushed around
+ * by hand (core-rules 11) -- so *ignoring difficult ground*, *through enemy squares* and *push 2* are
+ * complete cards with a sentence the table applies, not gaps. Drawing that line is what makes the
+ * column worth counting, and it moves one Signature (*Over and Past*) from gap to built.
+ *
+ * Roll With It (Shade) and Set Spear (Strength) are not repeated here: both have been in WAY_CARDS
+ * since the reach weapons and the reaction row were built.
+ */
+export const SHADE_POOL = [
+  {
+    /*
+     * The best setter in the game, and it should be: the only one that works at ANY range. Marked
+     * is a *call* rather than a state (core-rules 7), which is why it takes no save -- you cannot
+     * resist somebody's opinion of you, you can only wait for them to stop saying it.
+     */
+    name: "Call the Shot", copies: 1, pool: "shade", needs: "",
+    primary: [{ verb: "strike" }],
+    secondary: [{ condition: "marked", duration: 1 }],
+    text: "Marked on any enemy you can see, at any range."
+  },
+  {
+    name: "Between the Plates", copies: 1, pool: "shade",
+    needs: "an opening clause that ignores armour",
+    primary: [{ verb: "strike", when: { needs: "marked", text: "ignores armor" } }],
+    secondary: [{ verb: "move", param: 1 }]
+  },
+  {
+    name: "Take the Shot", copies: 1, pool: "shade",
+    needs: "a card that requires a ranged item",
+    primary: [{ verb: "strike", mod: 1, when: { needs: "marked", advantage: true } }],
+    secondary: [{ verb: "move", param: 2 }],
+    text: "Ranged."
+  },
+  {
+    name: "Pin the Shadow", copies: 1, pool: "shade",
+    needs: "a card that requires a ranged item",
+    primary: [{
+      verb: "strike", condition: "slowed", duration: 1, resist: "agility", dc: 5,
+      when: { needs: "marked", dc: 7 }
+    }],
+    secondary: [{ verb: "move", param: 1 }],
+    text: "Ranged."
+  },
+  {
+    name: "Cut and Run", copies: 1, pool: "shade", needs: "",
+    primary: [{ verb: "strike" }, { verb: "move", param: 2 }],
+    secondary: [{ verb: "move", param: 1 }]
+  },
+  {
+    name: "Light Feet", copies: 1, pool: "shade", needs: "", reaction: "sidestep",
+    primary: [{ verb: "move", param: 3 }],
+    secondary: [{ verb: "move", param: 2 }],
+    text: "Ignoring difficult ground."
+  },
+  {
+    name: "Slip the Knot", copies: 1, pool: "shade", needs: "", reaction: "sidestep",
+    primary: [{ verb: "move", param: 2 }],
+    secondary: [{ verb: "shake", param: 1 }]
+  },
+  {
+    name: "Second Knife", copies: 1, pool: "shade",
+    needs: "a card that requires an item with a tag",
+    primary: [{ verb: "strike", range: 3 }],
+    secondary: [{ verb: "strike", mod: -1 }],
+    text: "With a Light item."
+  },
+  {
+    name: "Mock", copies: 1, pool: "shade", needs: "",
+    primary: [{ condition: "dazed", duration: 1, resist: "presence", dc: 5 }],
+    secondary: [{ verb: "move", param: 1 }]
+  },
+  {
+    name: "Sleight", copies: 1, pool: "shade", needs: "", reaction: "use",
+    primary: [{ verb: "use" }, { verb: "strike" }],
+    secondary: [{ verb: "ready" }]
+  },
+  {
+    name: "Vanish", copies: 1, pool: "shade", needs: "",
+    primary: [{ condition: "invisible", duration: 1 }],
+    secondary: [{ verb: "move", param: 2 }],
+    costs: { primary: { strain: 1 } },
+    text: "On yourself."
+  },
+  {
+    name: "Smoke and Go", copies: 1, pool: "shade", needs: "",
+    primary: [{ condition: "invisible", duration: 1 }, { verb: "move", param: 2 }],
+    secondary: [{ verb: "use" }],
+    costs: { primary: { spent: true } },
+    text: "On yourself."
+  }
+];
+
+/**
+ * way-cards 3.2. Weight, armor, Block, adjacency and the Wound threshold are the levers the major
+ * nodes own; these touch them without taking them.
+ *
+ * Three of the fourteen read **Off-Balance** and each reads it differently -- more damage, a harder
+ * save on a condition the card was already attempting, and the same again on a longer one. That is
+ * the whole of the reader table, deliberately, so the band has worked instances rather than an
+ * assertion.
+ */
+export const STRENGTH_POOL = [
+  {
+    name: "Shoulder Check", copies: 1, pool: "strength", needs: "",
+    primary: [{ verb: "strike" }],
+    secondary: [{ condition: "offBalance", duration: 1 }],
+    text: "Adjacent."
+  },
+  {
+    name: "Shield Bash", copies: 1, pool: "strength",
+    needs: "a Strike that deals no damage", reaction: "block",
+    primary: [{ verb: "strike" }],
+    secondary: [{ verb: "move", param: 1 }],
+    text: "No damage: push 2 and step into the square it left."
+  },
+  {
+    name: "Hammerblow", copies: 1, pool: "strength", needs: "",
+    primary: [{ verb: "strike", when: { needs: "offBalance", mod: 2 } }],
+    secondary: [{ verb: "move", param: 1 }]
+  },
+  {
+    name: "Sweep the Leg", copies: 1, pool: "strength", needs: "",
+    primary: [{
+      verb: "strike", condition: "prone", duration: 1, resist: "agility", dc: 5,
+      when: { needs: "offBalance", dc: 9 }
+    }],
+    secondary: [{ verb: "move", param: 1 }]
+  },
+  {
+    /*
+     * Possibly the strongest card in the document, and the saving throw is what carries it:
+     * Grappled (2) costs its victim 18.3 points of win rate against a mixed group, because blocking
+     * Move is blocking the most valuable thing a figure does (sim/analysis-2026-10-30.md 7).
+     */
+    name: "Overbear", copies: 1, pool: "strength", needs: "",
+    primary: [{
+      condition: "grappled", duration: 2, resist: "might", dc: 5,
+      when: { needs: "offBalance", dc: 7 }
+    }],
+    secondary: [{ verb: "move", param: 1 }]
+  },
+  {
+    name: "Shield Wall", copies: 1, pool: "strength",
+    needs: "granting Block to an ally", reaction: "block",
+    primary: [{ verb: "defend" }],
+    secondary: [{ verb: "defend" }],
+    text: "The secondary also gives one adjacent ally Block 1."
+  },
+  {
+    name: "Two-Hand It", copies: 1, pool: "strength",
+    needs: "a card that requires both hands",
+    primary: [{ verb: "strike", mod: 2 }],
+    secondary: [{ verb: "ready" }]
+  },
+  {
+    name: "Heave", copies: 1, pool: "strength",
+    needs: "a Move that ignores your own encumbrance",
+    primary: [{ verb: "move", param: 2 }],
+    secondary: [{ verb: "ready" }],
+    text: "Carrying any weight without being Slowed."
+  },
+  {
+    /*
+     * No printed reaction, although way-cards 3.2 prints Brace. Brace is the floor under a card
+     * that prints NOTHING (core-rules 3), so printing it is the one spelling that could switch it
+     * off -- the same correction Dig In needed.
+     */
+    name: "Armoured Advance", copies: 1, pool: "strength",
+    needs: "a transient bonus to armour",
+    primary: [{ verb: "move", param: 3 }],
+    secondary: [{ verb: "move", param: 1 }],
+    text: "Your armor counts +1 until your next turn."
+  },
+  {
+    /*
+     * The clause names Prone and Grappled, which are NOT openings -- so it is card text rather than
+     * a `when` clause, exactly as cards.mjs says it should be: that clause is for a setup worth
+     * nothing on its own, and being Prone already does plenty.
+     */
+    name: "Pull Them Down", copies: 1, pool: "strength", needs: "",
+    primary: [{ verb: "strike" }],
+    secondary: [{ verb: "strike", mod: -1 }],
+    text: "The secondary only against a Prone or Grappled target."
+  },
+  {
+    name: "Beat the Blade", copies: 1, pool: "strength", needs: "",
+    primary: [{
+      verb: "strike", condition: "disarmed", duration: 1, resist: "might", dc: 5
+    }],
+    secondary: [{ verb: "move", param: 1 }]
+  },
+  {
+    name: "Roar", copies: 1, pool: "strength",
+    needs: "a condition applied to an area",
+    primary: [{ condition: "compelled", duration: 1, resist: "presence", dc: 5 }],
+    secondary: [{ verb: "move", param: 1 }],
+    costs: { primary: { strain: 1 } },
+    text: "Every adjacent enemy."
+  },
+  {
+    /* Brace by printing nothing, as above. */
+    name: "Walk It Off", copies: 1, pool: "strength", needs: "",
+    primary: [{ verb: "heal", param: 2 }, { verb: "shake", param: 2 }],
+    secondary: [{ verb: "move", param: 1 }],
+    costs: { primary: { spent: true } },
+    text: "On yourself."
   }
 ];
 
@@ -1983,7 +2202,7 @@ export const NODES = [
   },
 
   /* --- Thief's three --- */
-  { id: "shade.thief.wait", name: "The Wait", after: ["shade.thief"], grants: { card: "Press" } },
+  { id: "shade.thief.wait", name: "The Wait", after: ["shade.thief"], grants: { card: "Cut and Run" } },
   {
     id: "shade.thief.shadowing", name: "Shadowing", after: ["shade.thief.wait"], bespoke: true,
     grants: { knowHow: "following someone through a city without being seen" }
@@ -2003,7 +2222,7 @@ export const NODES = [
     grants: { card: "One Opening" }
   },
 
-  { id: "shade.thief.crowds", name: "Crowds", after: ["shade.thief"], grants: { card: "Off-Hand Blow" } },
+  { id: "shade.thief.crowds", name: "Crowds", after: ["shade.thief"], grants: { card: "Second Knife" } },
   {
     /* specializations.md demotes Fence to a cluster of minor nodes on the way to Cutpurse. */
     id: "shade.thief.fence", name: "Fence", after: ["shade.thief.crowds"], bespoke: true,
@@ -2026,7 +2245,7 @@ export const NODES = [
   },
 
   /* --- Scout's two --- */
-  { id: "shade.scout.ranges", name: "Ranges", after: ["shade.scout"], grants: { card: "Both Hands" } },
+  { id: "shade.scout.ranges", name: "Ranges", after: ["shade.scout"], grants: { card: "Call the Shot" } },
   { id: "shade.scout.breathing", name: "Breathing", after: ["shade.scout.ranges"], grants: { health: 1 } },
   {
     id: "shade.archer", name: "Archer", after: ["shade.scout.breathing"], title: "Archer",
@@ -2050,7 +2269,7 @@ export const NODES = [
   },
 
   /* --- Duellist's four --- */
-  { id: "shade.duellist.balance", name: "Balance", after: ["shade.duellist"], grants: { card: "Hold the Line" } },
+  { id: "shade.duellist.balance", name: "Balance", after: ["shade.duellist"], grants: { card: "Light Feet" } },
   { id: "shade.duellist.tumbling", name: "Tumbling", after: ["shade.duellist.balance"], grants: { knowHow: "falling" } },
   {
     id: "shade.acrobat", name: "Acrobat", after: ["shade.duellist.tumbling", "shade.cross.ledges"],
@@ -2059,7 +2278,7 @@ export const NODES = [
     grants: { card: "Over and Past" }
   },
 
-  { id: "shade.duellist.timing", name: "Timing", after: ["shade.duellist"], grants: { card: "Off-Hand Blow" } },
+  { id: "shade.duellist.timing", name: "Timing", after: ["shade.duellist"], grants: { card: "Mock" } },
   {
     /* Politician, the third. It sits on the way to Bard, which is where the room already was. */
     id: "shade.duellist.politician", name: "Politician", after: ["shade.duellist.timing"], bespoke: true,
@@ -2147,7 +2366,7 @@ export const NODES = [
   },
 
   /* --- Infantry's four --- */
-  { id: "strength.infantry.shields", name: "Shieldwork", after: ["strength.infantry"], grants: { card: "Off-Hand Blow" } },
+  { id: "strength.infantry.shields", name: "Shieldwork", after: ["strength.infantry"], grants: { card: "Shoulder Check" } },
   {
     id: "strength.infantry.watch", name: "The Watch", after: ["strength.infantry.shields"],
     bespoke: true, grants: { knowHow: "standing a watch, and what the night sounds like" }
@@ -2171,7 +2390,7 @@ export const NODES = [
     grants: { feature: "Nothing Gets Through" }
   },
 
-  { id: "strength.infantry.crews", name: "Crews", after: ["strength.infantry"], grants: { card: "Press" } },
+  { id: "strength.infantry.crews", name: "Crews", after: ["strength.infantry"], grants: { card: "Heave" } },
   {
     id: "strength.infantry.siege", name: "Siegework", after: ["strength.infantry.crews"],
     bespoke: true, grants: { training: "siege engines" }
@@ -2183,7 +2402,7 @@ export const NODES = [
     grants: { card: "Ranging Shot" }
   },
 
-  { id: "strength.infantry.orders", name: "Orders", after: ["strength.infantry"], grants: { card: "Both Hands" } },
+  { id: "strength.infantry.orders", name: "Orders", after: ["strength.infantry"], grants: { card: "Shield Wall" } },
   {
     id: "strength.infantry.maps", name: "Maps", after: ["strength.infantry.orders"],
     bespoke: true, grants: { knowHow: "ground you have not walked, from a map of it" }
@@ -2208,7 +2427,7 @@ export const NODES = [
     grants: { card: "The Lance" }
   },
 
-  { id: "strength.exec.temper", name: "Temper", after: ["strength.executioner"], grants: { card: "Off-Hand Blow" } },
+  { id: "strength.exec.temper", name: "Temper", after: ["strength.executioner"], grants: { card: "Hammerblow" } },
   { id: "strength.exec.fury", name: "Fury", after: ["strength.exec.temper"], grants: { health: 1 } },
   {
     id: "strength.berserker", name: "Berserker",
@@ -2218,7 +2437,7 @@ export const NODES = [
     grants: { card: "Red Mist" }
   },
 
-  { id: "strength.exec.powder", name: "Powder", after: ["strength.executioner"], grants: { card: "Press" } },
+  { id: "strength.exec.powder", name: "Powder", after: ["strength.executioner"], grants: { card: "Two-Hand It" } },
   {
     id: "strength.exec.drillshot", name: "The Volley", after: ["strength.exec.powder"],
     bespoke: true, grants: { training: "firearms and their cleaning" }
@@ -2231,7 +2450,7 @@ export const NODES = [
   },
 
   /* --- Gladiator's two --- */
-  { id: "strength.glad.hands", name: "Bare Hands", after: ["strength.gladiator"], grants: { card: "Both Hands" } },
+  { id: "strength.glad.hands", name: "Bare Hands", after: ["strength.gladiator"], grants: { card: "Pull Them Down" } },
   {
     id: "strength.glad.alley", name: "Alley Work", after: ["strength.glad.hands"],
     bespoke: true, grants: { knowHow: "a crowd that is about to turn" }
@@ -2243,7 +2462,7 @@ export const NODES = [
     grants: { card: "Get a Grip" }
   },
 
-  { id: "strength.glad.ward", name: "Warding", after: ["strength.gladiator"], grants: { card: "Off-Hand Blow" } },
+  { id: "strength.glad.ward", name: "Warding", after: ["strength.gladiator"], grants: { card: "Beat the Blade" } },
   { id: "strength.glad.shadow", name: "The Shadow", after: ["strength.glad.ward"], grants: { health: 1 } },
   {
     id: "strength.bodyguard", name: "Bodyguard",

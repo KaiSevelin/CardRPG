@@ -491,6 +491,13 @@ it.
 | **Gambler** | **Double or Nothing** | Primary: Strike, and draw **two** fate cards — **both apply**, added together. Variance, not advantage. |
 | **Half-mage** | **One Trick** | Feature: **2 spell slots**, and you may prepare from any one school you have ever seen cast. |
 
+> **What `needs` means**, since the column is counted: *the engine would have to compute something
+> and cannot.* It does **not** mean "the engine does not do this". Move is never resolved by the
+> engine at all — figures are pushed around by hand ([core-rules.md](core-rules.md) §11) — so
+> *ignoring difficult ground*, *through enemy squares* and *push 2* are **complete** cards with a
+> sentence the table applies. Drawing that line is what makes the column worth counting, and it
+> moved *Over and Past* from gap to built.
+
 > **[BUILT 2026-11-01] All twelve exist as content now, and four of them work.** Each Signature is
 > an action card, a feature slate or an item slate that a node hands over, and each one that the
 > engine cannot work out **names what is missing** rather than hiding behind its prose. That list is
@@ -782,7 +789,18 @@ decision, which is the god of the rumour doing on the battlefield exactly what s
 
 ---
 
-## 3. Minor-node content  **[DRAFT]**
+## 3. Minor-node content  **[BUILT 2026-11-01]**
+
+> **Both Way pools are content now**, so a minor node grants a card from its **own** Way rather than
+> from the six common ones — which is what the backbone was missing: a Way about position and a Way
+> about weight had the same ordinary cards behind their titles. The trunk still draws on the common
+> pool, because a trunk is where a character is not yet anything in particular.
+>
+> Twenty-five cards, fifteen of which the engine does everything for. The other ten name what is
+> missing, and the audit now runs over **all** content rather than the Signatures alone: **27
+> pieces complete, 28 with a gap, and 25 *distinct* gaps** — because a gap shared by three cards
+> is one piece of work, not three. The largest is *a card that requires a ranged item*, which
+> three cards are waiting on, and it is therefore the cheapest thing to build next.
 
 The 48 above are the titles. **Most of a character is the nodes in between**, and §1.5 says what
 those hand out: a card, a skill card, a training, a know-how, a feature, a prune, a deck cap, a

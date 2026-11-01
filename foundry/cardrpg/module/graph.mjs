@@ -21,7 +21,7 @@
  */
 
 import {
-  NODES, COMMON_POOL, WAY_CARDS,
+  NODES, COMMON_POOL, WAY_CARDS, SHADE_POOL, STRENGTH_POOL,
   SHADE_SIGNATURES, TACTICS, STRENGTH_SIGNATURES, STRENGTH_TACTICS
 } from "./content.mjs";
 
@@ -42,7 +42,7 @@ export const ROOT = "root";
  * node that silently gives nothing, so the validator refuses one -- this map is what it checks
  * against.
  */
-export const POOL = new Map([...COMMON_POOL, ...WAY_CARDS,
+export const POOL = new Map([...COMMON_POOL, ...WAY_CARDS, ...SHADE_POOL, ...STRENGTH_POOL,
   ...SIGNATURES.filter(s => s.kind === "card")].map(c => [c.name, c]));
 
 /** Every node by id. */
@@ -78,6 +78,73 @@ export const DEPTH = (() => {
   for (const node of NODES) visit(node.id);
   return depth;
 })();
+
+/**
+ * The **cheapest legal route** to each node: the smallest set of nodes you must already own before
+ * it becomes takeable. `REACH.get(id).size + 1` is the earliest level at which you can hold it.
+ *
+ * This is not `DEPTH`, and the difference is the whole of leveling.md 7. DEPTH is the longest path
+ * from the root, which is what a layered layout wants -- every edge pointing forward, no title
+ * drawn above its own trunk. REACH is what *level 6* means: six nodes owned, whatever route.
+ *
+ * They part company wherever a graph stops being a tree:
+ *
+ *   - a node reached by a **crossing** has a long route and a short one, and DEPTH takes the long
+ *     one, so it overstates how early you can have it;
+ *   - an **`all`** node needs *every* prerequisite, so its cheapest route is not its shallowest
+ *     predecessor but the **union** of all of them. Assassin measured as a tier-2 title one level
+ *     early until this existed, and that was the measurement being wrong rather than the content.
+ */
+export const REACH = (() => {
+  const reach = new Map();
+  const visit = id => {
+    if (reach.has(id)) return reach.get(id);
+    const node = GRAPH.get(id);
+    const after = node?.after ?? [];
+    reach.set(id, new Set());                       // cycle guard; the validator refuses cycles
+    let out;
+    if (!after.length) out = new Set();
+    else if (node.all) {
+      /* Every one of them, so the cost is the union of what each needs plus each itself. */
+      out = new Set();
+      for (const prereq of after) {
+        for (const owned of visit(prereq)) out.add(owned);
+        out.add(prereq);
+      }
+    } else {
+      /* Any one of them, so the cheapest. */
+      out = null;
+      for (const prereq of after) {
+        const via = new Set([...visit(prereq), prereq]);
+        if (!out || via.size < out.size) out = via;
+      }
+    }
+    reach.set(id, out);
+    return out;
+  };
+  for (const node of NODES) visit(node.id);
+  return reach;
+})();
+
+/**
+ * The earliest level at which a node can be held: the nodes it needs plus itself, and **not** the
+ * root -- section 7 counts level as the nodes you own not counting the root, so this counts the same
+ * way or the two numbers would never agree.
+ */
+export function levelFor(id) {
+  const needs = REACH.get(id);
+  if (!needs) return 1;
+  return [...needs].filter(n => n !== ROOT).length + 1;
+}
+
+/**
+ * How many titles deep a node sits on its cheapest route: a Way root is 0, the titles off its trunk
+ * are 1, theirs are 2. The unit section 7's consistency is measured in, because comparing a tier-2
+ * title against a tier-1 one says nothing.
+ */
+export function tierOf(id) {
+  return [...(REACH.get(id) ?? [])].filter(n => GRAPH.get(n)?.title).length;
+}
 
 /* -------------------------------------------- */
 /*  What a character owns                       */

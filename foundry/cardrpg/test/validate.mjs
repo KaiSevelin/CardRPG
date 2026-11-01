@@ -2325,6 +2325,54 @@ check("the built crossings are the drafted ones", dataCrossings.sort().join(" ")
 
 /* -------------------------------------------- */
 
+/*
+ * Depth consistency (leveling 7), which was an unchecked claim from the day it was written: *two
+ * level-6 characters have each taken six nodes whatever route they walked*, so two characters at
+ * one level should sit at comparable distances from their next title.
+ *
+ * Measuring it needed a second notion of depth. `DEPTH` is the longest path from the root, which is
+ * what the layout wants; this needs the CHEAPEST legal route, which is `REACH`. They differ
+ * wherever the graph stops being a tree -- a crossing gives a node a long route and a short one,
+ * and an `all` node needs every prerequisite rather than its shallowest.
+ */
+const titleTiers = new Map();
+for (const node of nodes) {
+  if (!node.title) continue;
+  const tier = graph.tierOf(node.id);
+  if (!titleTiers.has(tier)) titleTiers.set(tier, []);
+  titleTiers.get(tier).push({ name: node.name, level: graph.levelFor(node.id), all: !!node.all });
+}
+check("title tiers", [...titleTiers.keys()].sort().join(", "), "0, 1, 2");
+check("titles per tier",
+  [...titleTiers.keys()].sort().map(t => titleTiers.get(t).length).join(", "), "4, 6, 18");
+/* The baseline is what the tier costs; a title BELOW it would be a shortcut into a branch. */
+const baselines = [...titleTiers.keys()].sort().map(t => Math.min(...titleTiers.get(t).map(r => r.level)));
+check("what each tier costs", baselines.join(", "), "1, 5, 8");
+
+/*
+ * And the part that is a decision rather than arithmetic. Depth consistency and section 5a's
+ * *depth takes commitment* pull against each other: the `all` flag exists to make a branch cost
+ * more, and costing more is exactly what breaks a level tier. So the rule is one-sided -- **no
+ * title may be cheaper than its tier, and one that is dearer must be priced on purpose.**
+ */
+const priced = [];
+const unpriced = [];
+for (const rows of titleTiers.values()) {
+  const base = Math.min(...rows.map(r => r.level));
+  for (const row of rows) {
+    if (row.level === base) continue;
+    priced.push(`${row.name} (+${row.level - base})`);
+    if (!row.all) unpriced.push(row.name);
+  }
+}
+check("titles dearer than their tier", priced.join(", "), "Assassin (+1)");
+/* Dearer only ever by the flag that is supposed to make it dearer -- anything else is an uneven
+ * fan nobody noticed, which is the thing section 7 is actually guarding against. */
+check("dearer without the flag that prices it",
+  unpriced.length ? unpriced.join(", ") : "none", "none");
+
+/* -------------------------------------------- */
+
 /* The engine's answers, on a character walked down one branch. */
 const owned = new Set(["root", "shade", "shade.footwork", "shade.quiet", "shade.patience",
   "shade.thief", "shade.thief.crowds", "shade.thief.fence", "shade.cutpurse"]);
@@ -2827,6 +2875,95 @@ check("and that each Way's own pool is not",
 
 check("two pieces of content sharing a name",
   collisions2.length ? collisions2.join(", ") : "none", "none");
+
+/* -------------------------------------------- */
+
+/*
+ * The audit, over every piece of content that carries the column rather than only the Signatures.
+ *
+ * `needs` means **the engine would have to compute something and cannot**. It does not mean "the
+ * engine does not do this": Move is never resolved by the engine at all (core-rules 11, figures are
+ * pushed around by hand), so *ignoring difficult ground*, *through enemy squares* and *push 2* are
+ * complete cards with a sentence the table applies. Drawing that line is what makes the column
+ * worth counting -- and applying it moved one Signature, Over and Past, from gap to built.
+ */
+
+section("the two Way pools, and the audit over all of it");
+
+const pools = { shade: content.SHADE_POOL, strength: content.STRENGTH_POOL };
+check("Shade's pool", pools.shade.length, 12);
+check("Strength's pool", pools.strength.length, 13);
+/* Roll With It and Set Spear have been in WAY_CARDS since the reach weapons; a second copy here
+ * would be two cards with one name, which the collision check below refuses. */
+check("the two already-built Way cards are not repeated",
+  [...pools.shade, ...pools.strength].filter(c => ["Roll With It", "Set Spear"].includes(c.name))
+    .length, 0);
+check("every pool card says which pool it is in",
+  Object.entries(pools).flatMap(([way, list]) => list.filter(c => c.pool !== way).map(c => c.name))
+    .join(", ") || "none", "none");
+
+/* Every piece of content that can carry a gap, audited together. */
+const audited = [...signatureExports, ...pools.shade, ...pools.strength, ...content.COMMON_POOL];
+/* Every one of them: a partial audit is a count nobody can trust. */
+check("content carrying the audit column",
+  audited.filter(c => c.needs !== undefined).length, audited.length);
+const vague = audited.filter(c => typeof c.needs === "string" && c.needs && c.needs.length < 12)
+  .map(c => c.name);
+check("gaps too short to act on", vague.length ? vague.join(", ") : "none", "none");
+const workingCards = audited.filter(c => c.needs === "").length;
+check("content the engine does everything for", workingCards, 27);
+check("content with a named gap", audited.filter(c => c.needs).length, 28);
+
+/*
+ * A gap shared by several cards is one piece of engine work, not several. Counting the DISTINCT
+ * gaps is what turns the column into a queue -- and the largest of them is worth knowing.
+ */
+const gapCounts = new Map();
+for (const card of audited.filter(c => c.needs)) {
+  gapCounts.set(card.needs, (gapCounts.get(card.needs) ?? 0) + 1);
+}
+check("distinct gaps across all content", gapCounts.size, 25);
+const worst = [...gapCounts.entries()].sort((a, b) => b[1] - a[1])[0];
+check("the gap that would unblock the most cards", `${worst[0]} (${worst[1]})`,
+  "a card that requires a ranged item (3)");
+
+/* The rules the audit and the depth measure rest on, written down where a reader will find them. */
+check("way-cards defines what a gap is",
+  /\*the engine would have to compute something[\s>]+and cannot\.\*/.test(wayDoc) ? "yes" : "no",
+  "yes");
+check("and says the pools are built",
+  /^## 3\. Minor-node content {2}\*\*\[BUILT 2026-11-01\]\*\*$/m.test(wayDoc) ? "yes" : "no",
+  "yes");
+check("leveling separates the two notions of depth",
+  /^### 7\.1 Depth consistency, measured {2}\*\*\[BUILT 2026-11-01\]\*\*$/m.test(levDoc)
+    ? "yes" : "no", "yes");
+check("and states the rule one-sided",
+  /\*\*And here §7 and §5a pull against each other\.\*\*/.test(levDoc) ? "yes" : "no", "yes");
+
+/* Nothing prints Brace: it is the floor under a card that prints nothing (core-rules 3). */
+check("cards printing Brace, which would switch it off",
+  audited.filter(c => c.reaction === "brace").map(c => c.name).join(", ") || "none", "none");
+
+/* Every opening a `when` clause names has to be an opening, not any condition. */
+const strayWhen = audited.flatMap(c => [...(c.primary ?? []), ...(c.secondary ?? [])]
+  .filter(st => st.when?.needs && !CARDRPG.openings.includes(st.when.needs))
+  .map(st => `${c.name}: ${st.when.needs}`));
+check("when-clauses naming something that is not an opening",
+  strayWhen.length ? strayWhen.join(", ") : "none", "none");
+
+/* A minor node should grant its own Way's card, or the backbone is the same in every Way. */
+const wayOf = id => id.split(".")[0];
+const offWay = nodes.filter(n => !n.title && n.grants?.card)
+  .filter(n => {
+    const card = graph.POOL.get(n.grants.card);
+    return card?.pool && card.pool !== "common" && card.pool !== wayOf(n.id);
+  }).map(n => `${n.id}: ${n.grants.card}`);
+check("minor nodes granting another Way's card",
+  offWay.length ? offWay.join(", ") : "none", "none");
+/* The trunk draws on the common pool, the branches on the Way's own. */
+const wayGrants = nodes.filter(n => !n.title && n.grants?.card)
+  .filter(n => graph.POOL.get(n.grants.card)?.pool !== "common").length;
+check("minor nodes granting their own Way's card", wayGrants, 12);
 
 /* -------------------------------------------- */
 
