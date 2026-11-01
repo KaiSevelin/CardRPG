@@ -1070,6 +1070,24 @@ against a Prone or Grappled target* is a fine secondary behind an ordinary Strik
 it applies, and costing nothing but the Move 1 it replaced when it does not. That asymmetry is the
 same one setters rely on — the secondary is the cheap space on a card, in both directions.
 
+**3a. One thing may gate a primary: what you are holding.**  **[BUILT 2026-11-01]**
+*Take the Shot* requires a **ranged** item, *Second Knife* a **Light** one, *Two-Hand It* **both
+hands**. That is the opposite case to rule 3 and worth stating as a pair, because the difference is
+not how harsh the gate is — it is **who decides**:
+
+| A primary may be gated on | Because |
+|---|---|
+| **your own kit** | you chose it at the shop, and a **Ready** changes it mid-fight |
+| ~~the target's condition~~ | nobody can arrange a draw, so the card waits all fight |
+
+**Gate on what the player controls, never on what the shuffle controls.** A bow you did not bring is
+a mistake you made; a Wet target you never drew is a card that was never yours to play.
+
+A requirement reads the item that would serve the verb, so it also decides **which** item: a Shade
+holding a bow and a dagger has a better Strike with the dagger, and *Take the Shot* fires the bow
+anyway. **Both hands** means two hands occupied **now** — a slung greatsword is one object on a
+back, so *Two-Hand It* is dead with a shield up, which is what its own **Ready** secondary is for.
+
 **4. An opening is not used up. The duration is the window, and the window is the whole round.**
 Conditions tick at the start of the **creator's** turn, so an opening you lay down on your turn lasts
 through everybody else's and expires when you come round again. **One setup, one round, the whole

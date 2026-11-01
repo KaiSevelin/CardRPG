@@ -24,7 +24,8 @@ import {
 import {
   resolveAttack, resolveDefend, resolveHeal, resolveUse, resolveCondition, resolveShake,
   reachableAmmo, isUsable,
-  resolveTaint, resolveCorrode, liftCondition, resolveForesee, collectBonuses
+  resolveTaint, resolveCorrode, liftCondition, resolveForesee, collectBonuses,
+  itemMeets, requireText
 } from "./resolve.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -704,6 +705,8 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     const half = (name, steps) => {
       const icons = [];
       const bits = [];
+      /* Why this half cannot be played, when it cannot: a kit requirement nothing in hand meets. */
+      let unmet = "";
 
       for (const step of steps ?? []) {
         const icon = CARDRPG.verbs[step.verb]?.icon ?? CARDRPG.effects[step.verb]?.icon ?? null;
@@ -715,11 +718,19 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
 
         if (step.verb === "strike" || step.verb === "cast") {
           // The face shows the item the player chose, so "Strike 4" is never a guess.
-          const item = this.#itemFor(step.verb, name);
+          const item = this.#itemFor(step.verb, name, step.requires);
+          /*
+           * A kit requirement is printed from the field, never from the card's prose, and the same
+           * call that printed the number decided whether anything meets it -- so the face and the
+           * click cannot disagree about whether this half is playable.
+           */
+          const need = requireText(step.requires);
+          if (need && !item) unmet = need;
           const base = item?.system.verbs?.[step.verb]?.value;
           if (base !== null && base !== undefined) {
             text += ` ${base + (step.mod ?? 0) + collectBonuses(this.actor, step.verb, item).total}`;
           } else if (step.mod) text += ` ${step.mod > 0 ? "+" : ""}${step.mod}`;
+          if (need) text += ` · ${need}`;
         } else if (step.param !== null && step.param !== undefined) {
           /*
            * Move as it actually plays: halved by Slowed, Burdened or Overloaded, then reduced by
@@ -797,7 +808,15 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         text: bits.join(", ") || "—",
         costs,
         icon: CARDRPG.halfIcons[name],
-        blocked: icons.some(i => blockedIcons.has(i)) || (name === "secondary" && dazed),
+        blocked: icons.some(i => blockedIcons.has(i)) || (name === "secondary" && dazed) || !!unmet,
+        /*
+         * Why, in words. The sentence used to be fixed in the template, which was fine while a
+         * half could only ever be switched off by a Blocked icon; a kit requirement is a second
+         * reason, and a player who cannot tell them apart will go looking for the condition.
+         */
+        tip: unmet
+          ? `Needs ${unmet} in hand. Ready something that is, or play the other half.`
+          : "Blocked right now. The other half may still be playable, and Brace never is.",
         staged: this.staged.some(s => s.cardId === card.id && s.half === name)
       };
     };
@@ -873,8 +892,8 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
    * shield on the secondary strike and defend respectively, with nothing to set beyond the clicks
    * that put them there.
    */
-  #itemFor(verb, half = "primary") {
-    const candidates = this.#itemsFor(verb);
+  #itemFor(verb, half = "primary", requires = null) {
+    const candidates = this.#itemsFor(verb, requires);
     if (candidates.length < 2) return candidates[0] ?? null;
     const choosy = i => i.system.availableVerbs.length > 1;
     const rank = i => {
@@ -885,12 +904,20 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     return [...candidates].sort((a, b) => rank(a) - rank(b))[0];
   }
 
-  /** Every equipped item that can serve a verb, best first. */
-  #itemsFor(verb) {
+  /**
+   * Every equipped item that can serve a verb, best first.
+   *
+   * `requires` is the step's kit requirement (data/cards.mjs), and it narrows the list BEFORE the
+   * sort rather than after the pick -- which is the whole of the fix. A Shade holding a bow and a
+   * dagger has a better Strike with the dagger, so a Take the Shot that asked for the best item
+   * and then checked it would refuse to fire a bow the character is holding.
+   */
+  #itemsFor(verb, requires = null) {
     return this.actor.items
       .filter(i => i.type === "item" && i.system.equipped
         && !CARDRPG.slots[i.system.equippedSlot]?.stows
         && (i.system.verbs?.[verb]?.value !== null || i.system.verbs?.[verb]?.text))
+      .filter(i => itemMeets(i, requires))
       .sort((a, b) => (b.system.verbs[verb].value ?? 0) - (a.system.verbs[verb].value ?? 0));
   }
 
@@ -1158,8 +1185,13 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       case "strike":
       case "cast": {
         if (!targets.length) return ui.notifications.warn("Target a token first.");
-        const item = this.#itemFor(step.verb, half);
-        if (!item) return ui.notifications.warn(`Nothing equipped can ${step.verb}.`);
+        const item = this.#itemFor(step.verb, half, step.requires);
+        if (!item) {
+          const need = requireText(step.requires);
+          return ui.notifications.warn(need
+            ? `This ${step.verb} needs ${need} in hand.`
+            : `Nothing equipped can ${step.verb}.`);
+        }
         const { ammo, payload } = step.verb === "strike"
           ? await this.#nock(item)
           : { ammo: null, payload: null };

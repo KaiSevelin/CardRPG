@@ -1600,21 +1600,21 @@ export const SHADE_POOL = [
     secondary: [{ verb: "move", param: 1 }]
   },
   {
-    name: "Take the Shot", copies: 1, pool: "shade",
-    needs: "a card that requires a ranged item",
-    primary: [{ verb: "strike", mod: 1, when: { needs: "marked", advantage: true } }],
-    secondary: [{ verb: "move", param: 2 }],
-    text: "Ranged."
+    name: "Take the Shot", copies: 1, pool: "shade", needs: "",
+    primary: [{
+      verb: "strike", mod: 1, requires: { tag: "ranged" },
+      when: { needs: "marked", advantage: true }
+    }],
+    secondary: [{ verb: "move", param: 2 }]
   },
   {
-    name: "Pin the Shadow", copies: 1, pool: "shade",
-    needs: "a card that requires a ranged item",
+    name: "Pin the Shadow", copies: 1, pool: "shade", needs: "",
     primary: [{
-      verb: "strike", condition: "slowed", duration: 1, resist: "agility", dc: 5,
+      verb: "strike", requires: { tag: "ranged" },
+      condition: "slowed", duration: 1, resist: "agility", dc: 5,
       when: { needs: "marked", dc: 7 }
     }],
-    secondary: [{ verb: "move", param: 1 }],
-    text: "Ranged."
+    secondary: [{ verb: "move", param: 1 }]
   },
   {
     name: "Cut and Run", copies: 1, pool: "shade", needs: "",
@@ -1633,11 +1633,13 @@ export const SHADE_POOL = [
     secondary: [{ verb: "shake", param: 1 }]
   },
   {
-    name: "Second Knife", copies: 1, pool: "shade",
-    needs: "a card that requires an item with a tag",
-    primary: [{ verb: "strike", range: 3 }],
-    secondary: [{ verb: "strike", mod: -1 }],
-    text: "With a Light item."
+    /*
+     * The requirement is on BOTH halves, because the card is about the knife rather than about the
+     * throw: a Second Knife thrown from a greatsword is not a thing, and neither is the follow-up.
+     */
+    name: "Second Knife", copies: 1, pool: "shade", needs: "",
+    primary: [{ verb: "strike", range: 3, requires: { tag: "light" } }],
+    secondary: [{ verb: "strike", mod: -1, requires: { tag: "light" } }]
   },
   {
     name: "Mock", copies: 1, pool: "shade", needs: "",
@@ -1722,9 +1724,12 @@ export const STRENGTH_POOL = [
     text: "The secondary also gives one adjacent ally Block 1."
   },
   {
-    name: "Two-Hand It", copies: 1, pool: "strength",
-    needs: "a card that requires both hands",
-    primary: [{ verb: "strike", mod: 2 }],
+    /*
+     * `bothHands` is held in two hands NOW, not an item that could take two -- so the Ready on the
+     * secondary is the card's own answer to being dealt it with a shield up.
+     */
+    name: "Two-Hand It", copies: 1, pool: "strength", needs: "",
+    primary: [{ verb: "strike", mod: 2, requires: { bothHands: true } }],
     secondary: [{ verb: "ready" }]
   },
   {
@@ -1871,11 +1876,9 @@ export const SHADE_SIGNATURES = [
     text: "You may never put it down. Every Hard physical obstacle becomes Normal."
   },
   {
-    name: "Loose and Step", kind: "card", node: "shade.archer",
-    needs: "a card that requires a ranged item",
-    primary: [{ verb: "strike" }, { verb: "move", param: 1 }],
-    secondary: [{ verb: "move", param: 1 }],
-    text: "The Strike is ranged."
+    name: "Loose and Step", kind: "card", node: "shade.archer", needs: "",
+    primary: [{ verb: "strike", requires: { tag: "ranged" } }, { verb: "move", param: 1 }],
+    secondary: [{ verb: "move", param: 1 }]
   },
   {
     name: "Set", kind: "card", node: "shade.trapmaker",
@@ -2003,11 +2006,16 @@ export const STRENGTH_SIGNATURES = [
     armor: { doubleWhenOverloaded: true }
   },
   {
+    /*
+     * A sixth card wanted the field, and the check written to confirm the other five is what found
+     * it: "Ranged." was the first word of its text, doing nothing. Its own gap is the rest of that
+     * sentence, so this one is half closed and still carries a `needs`.
+     */
     name: "Ranging Shot", kind: "card", node: "strength.artillerist",
     needs: "the Blast alternative, which has to know you did not Move",
-    primary: [{ verb: "strike", area: 1, areaKind: "aimed" }],
+    primary: [{ verb: "strike", area: 1, areaKind: "aimed", requires: { tag: "ranged" } }],
     secondary: [{ verb: "ready" }],
-    text: "Ranged. Blast instead of Aimed, if you did not Move this turn."
+    text: "Blast instead of Aimed, if you did not Move this turn."
   },
   {
     /*

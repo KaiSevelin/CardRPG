@@ -226,6 +226,12 @@ themselves, so such a half is ordinary card text, not a combo. The keyword exist
 that needs it: a setup worth nothing alone, where the sharpening *is* the payment. Both the schema
 and the validator now say so.
 
+**One gate on a primary is allowed, and it is not a condition: what you are holding.**
+**[BUILT 2026-11-01]** *Take the Shot* requires a ranged item, *Two-Hand It* both hands. The test is
+not how harsh a gate is but **who decides** — your kit you chose and can Ready, a draw you cannot
+arrange at all (core-rules [§7](core-rules.md) rule 3a). The two fields sit next to each other in
+the schema so the difference is visible from the code as well.
+
 **Every Way sets its own opening and reads its own best — but may set another Way's.** That is where
 party play comes from, and it is written into the content on purpose: the Poison school sets
 **Off-Balance**, which is Strength's; Divination sets **Marked**, which is Shade's; Sessyfyn's
@@ -514,7 +520,7 @@ it.
 > | | Named | a reaction that also Strikes |
 > | | One Opening | doubling, and a clause that reads *any* opening |
 > | | Lift | taking a card from another deck |
-> | | Loose and Step | a card that requires a ranged item |
+> | ✓ | **Loose and Step** | nothing, since **[BUILT 2026-11-01]** — a step may require a ranged item (core-rules §7, rule 3a) |
 > | | Set | placing a trap on a square |
 > | | Over and Past | moving through an occupied square |
 > | | Double or Nothing | two fate draws that both apply |
@@ -797,10 +803,16 @@ decision, which is the god of the rumour doing on the battlefield exactly what s
 > pool, because a trunk is where a character is not yet anything in particular.
 >
 > Twenty-five cards, fifteen of which the engine does everything for. The other ten name what is
-> missing, and the audit now runs over **all** content rather than the Signatures alone: **27
-> pieces complete, 28 with a gap, and 25 *distinct* gaps** — because a gap shared by three cards
-> is one piece of work, not three. The largest is *a card that requires a ranged item*, which
-> three cards are waiting on, and it is therefore the cheapest thing to build next.
+> missing, and the audit now runs over **all** content rather than the Signatures alone — because a
+> gap shared by three cards is one piece of work, not three.
+>
+> **[2026-11-01] And a gap shared by three cards can be written up three times.** The queue read
+> *a card that requires a ranged item* (3), *a card that requires an item with a tag* (1) and *a
+> card that requires both hands* (1): three entries, one field, **six cards** once it existed and
+> five gaps closed. Counting distinct **strings** overstates the work whenever the same mechanism is
+> described from each card's point of view, so the validator now also refuses two gaps that agree on
+> their first four words. The totals today: **32 pieces complete, 23 with a gap, 22 distinct gaps**,
+> the largest being *granting Block to an ally* at two.
 
 The 48 above are the titles. **Most of a character is the nodes in between**, and §1.5 says what
 those hand out: a card, a skill card, a training, a know-how, a feature, a prune, a deck cap, a

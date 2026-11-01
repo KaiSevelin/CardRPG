@@ -20,6 +20,46 @@ import {
 } from "./decks.mjs";
 
 /* -------------------------------------------- */
+/*  What the kit has to be                      */
+/* -------------------------------------------- */
+
+/**
+ * Does the item in hand satisfy a requirement? One test, asked by two callers.
+ *
+ * A slate's bonus asks it -- Strong wants a Heavy weapon -- and now a card step asks it too: Take
+ * the Shot wants a ranged one. That is the same question about the same item, and it was written
+ * twice the moment the card side existed, so it is written once here instead.
+ *
+ * `bothHands` is `isTwoHanded`, which is "held in two hands right now" rather than `hands === 2`:
+ * a slung two-hander is one object on a back (data/items.mjs), and a card that wants both hands
+ * wants them occupied, not merely spoken for.
+ *
+ * No requirement at all passes, which is nearly every step in the game.
+ */
+export function itemMeets(item, requires) {
+  const tag = requires?.tag ?? "";
+  const bothHands = !!requires?.bothHands;
+  if (!tag && !bothHands) return true;
+  if (!item) return false;
+  if (tag && !item.system?.tags?.has?.(tag)) return false;
+  if (bothHands && !item.system?.isTwoHanded) return false;
+  return true;
+}
+
+/**
+ * What a requirement reads as, on a face and in the warning when nothing qualifies.
+ *
+ * The field is the printed text now, so this is the only place the words live -- which is the point
+ * of moving "Ranged." off the card: one sentence, generated from the thing the engine checks.
+ */
+export function requireText(requires) {
+  const bits = [];
+  if (requires?.tag) bits.push(requires.tag);
+  if (requires?.bothHands) bits.push("both hands");
+  return bits.join(", ");
+}
+
+/* -------------------------------------------- */
 /*  Bonuses                                     */
 /* -------------------------------------------- */
 
@@ -44,8 +84,9 @@ export function collectBonuses(actor, verb, item) {
       && (!slate.system.equipped || CARDRPG.slots[slate.system.equippedSlot]?.stows)) continue;
     // A Drained slate gives nothing until it recharges.
     if (slate.system.drained) continue;
-    // A tag requirement is about the item in hand, not the feature.
-    if (bonus.requiresTag && !item?.system.tags?.has?.(bonus.requiresTag)) continue;
+    // A tag requirement is about the item in hand, not the feature -- the same question a card
+    // step asks, so it goes through the same predicate rather than testing the tags again here.
+    if (bonus.requiresTag && !itemMeets(item, { tag: bonus.requiresTag })) continue;
 
     candidates.push({
       name: slate.name,

@@ -559,7 +559,7 @@ const stepBlock = cardsSource.slice(cardsSource.indexOf("export function stepFie
 const stepKeys = new Set(
   [...stepBlock.slice(0, stepBlock.indexOf("\n}")).matchAll(/^    ([a-zA-Z]+):/gm)].map(m => m[1])
 );
-check("stepField keys read from source", stepKeys.size, 15);
+check("stepField keys read from source", stepKeys.size, 16);
 
 const strayKeys = new Set();
 for (const step of steps) {
@@ -2673,9 +2673,9 @@ check("Half-mage's slots are on the node", byId.get("shade.half-mage").grants.sp
  */
 const built = sigs.filter(sg => !sg.needs).map(sg => sg.name);
 check("Signatures the engine does everything for", built.join(", "),
-  "The Opening, The Kit, Heckle, One Trick, Nothing Gets Through, Interpose");
+  "The Opening, The Kit, Loose and Step, Heckle, One Trick, Nothing Gets Through, Interpose");
 const gaps = sigs.filter(sg => sg.needs).map(sg => `${sg.name}: ${sg.needs}`);
-check("Signatures with a named gap", gaps.length, 18);
+check("Signatures with a named gap", gaps.length, 17);
 /* Every gap says something; "needs: true" or an empty string would be a gap nobody can act on. */
 check("gaps that name nothing",
   sigs.filter(sg => sg.needs !== undefined && typeof sg.needs !== "string").length, 0);
@@ -2911,8 +2911,8 @@ const vague = audited.filter(c => typeof c.needs === "string" && c.needs && c.ne
   .map(c => c.name);
 check("gaps too short to act on", vague.length ? vague.join(", ") : "none", "none");
 const workingCards = audited.filter(c => c.needs === "").length;
-check("content the engine does everything for", workingCards, 27);
-check("content with a named gap", audited.filter(c => c.needs).length, 28);
+check("content the engine does everything for", workingCards, 32);
+check("content with a named gap", audited.filter(c => c.needs).length, 23);
 
 /*
  * A gap shared by several cards is one piece of engine work, not several. Counting the DISTINCT
@@ -2922,10 +2922,35 @@ const gapCounts = new Map();
 for (const card of audited.filter(c => c.needs)) {
   gapCounts.set(card.needs, (gapCounts.get(card.needs) ?? 0) + 1);
 }
-check("distinct gaps across all content", gapCounts.size, 25);
+check("distinct gaps across all content", gapCounts.size, 22);
 const worst = [...gapCounts.entries()].sort((a, b) => b[1] - a[1])[0];
 check("the gap that would unblock the most cards", `${worst[0]} (${worst[1]})`,
-  "a card that requires a ranged item (3)");
+  "granting Block to an ally (2)");
+
+/*
+ * And a check on the QUEUE rather than on the content, which the ranged-item work earned.
+ *
+ * Three gaps read "a card that requires a ranged item", "a card that requires an item with a tag"
+ * and "a card that requires both hands". The audit counted three pieces of work; they were one
+ * field, and building it closed five cards. Counting distinct STRINGS overstates the queue
+ * whenever the same mechanism is written up from each card's point of view.
+ *
+ * Four words is the test, and it is not arbitrary: all three of those agreed on "a card that
+ * requires", while *a reaction that also Strikes* and *a reaction that grants Block and applies a
+ * condition* -- genuinely two jobs -- part company at the fourth. It cannot see gaps that merely
+ * OVERLAP (*granting Block to an ally* is contained in that second reaction gap), only gaps
+ * phrased alike. That is the cheap half of the problem, and it is the half that actually happened.
+ */
+const byPhrasing = new Map();
+for (const gap of gapCounts.keys()) {
+  const key = gap.split(" ").slice(0, 4).join(" ");
+  if (!byPhrasing.has(key)) byPhrasing.set(key, []);
+  byPhrasing.get(key).push(gap);
+}
+const samePhrasing = [...byPhrasing.values()].filter(list => list.length > 1)
+  .map(list => list.join(" / "));
+check("gaps phrased alike, which are probably one job",
+  samePhrasing.length ? samePhrasing.join("; ") : "none", "none");
 
 /* The rules the audit and the depth measure rest on, written down where a reader will find them. */
 check("way-cards defines what a gap is",
@@ -2964,6 +2989,150 @@ check("minor nodes granting another Way's card",
 const wayGrants = nodes.filter(n => !n.title && n.grants?.card)
   .filter(n => graph.POOL.get(n.grants.card)?.pool !== "common").length;
 check("minor nodes granting their own Way's card", wayGrants, 12);
+
+/* -------------------------------------------- */
+
+/*
+ * What a step requires in hand -- the one gate on the card schema, and the one the combo clause is
+ * forbidden (core-rules 7, rule 3). An opening may never switch a primary on, because nobody can
+ * arrange a draw; a kit requirement may, because the player chose the kit and a Ready changes it.
+ *
+ * These are behavioural: `resolve.mjs` imports cleanly out here (it touches no Foundry global at
+ * module scope), so the predicate can simply be ASKED rather than read. Six engine checks in an
+ * earlier section were source reads that the break test walked straight past, which is the whole
+ * reason this section is written the other way round.
+ */
+
+section("what a card requires in hand");
+
+const resolve = await import("../module/resolve.mjs");
+const trayTemplate = fs.readFileSync(path.join(root, "templates/tray.hbs"), "utf8");
+const kit = (tags, twoHanded = false) =>
+  ({ system: { tags: new Set(tags), isTwoHanded: twoHanded } });
+const bow = kit(["ranged"]);
+const dagger = kit(["light"]);
+const greatsword = kit(["heavy"], true);
+
+check("no requirement passes with nothing in hand", resolve.itemMeets(null, null), true);
+check("and passes with anything", resolve.itemMeets(dagger, {}), true);
+check("a tag requirement reads the item's tags", resolve.itemMeets(bow, { tag: "ranged" }), true);
+check("and refuses an item without it", resolve.itemMeets(dagger, { tag: "ranged" }), false);
+check("a requirement with nothing in hand is refused",
+  resolve.itemMeets(null, { tag: "ranged" }), false);
+/* Held in two hands, not merely two-handed: a slung greatsword is one object on a back. */
+check("both hands reads what is held", resolve.itemMeets(greatsword, { bothHands: true }), true);
+check("and not what could be held",
+  resolve.itemMeets(kit(["heavy"], false), { bothHands: true }), false);
+/* Both halves of a requirement have to hold, or "a light thrown knife" is either. */
+check("two requirements both apply",
+  resolve.itemMeets(greatsword, { tag: "light", bothHands: true }), false);
+/* The words on the face come from the field, which is the point of taking them off the card. */
+check("a requirement prints itself", resolve.requireText({ tag: "ranged" }), "ranged");
+check("including the hands one", resolve.requireText({ bothHands: true }), "both hands");
+check("and nothing when there is nothing", resolve.requireText(null), "");
+
+/* The content side: every requirement names a real tag, and one no item carries is a dead card. */
+const reqSteps = audited.flatMap(c => [...(c.primary ?? []), ...(c.secondary ?? [])]
+  .filter(st => st.requires).map(st => ({ card: c.name, verb: st.verb, ...st.requires })));
+check("steps carrying a kit requirement", reqSteps.length, 7);
+check("cards carrying one", new Set(reqSteps.map(r => r.card)).size, 6);
+check("requirements naming a tag that is not an item tag",
+  reqSteps.filter(r => r.tag && !CARDRPG.itemTags.includes(r.tag))
+    .map(r => `${r.card}: ${r.tag}`).join(", ") || "none", "none");
+/* A misspelled inner key would be dropped by the data model exactly as quietly as a step key. */
+check("requirement keys not in the schema",
+  [...new Set(reqSteps.flatMap(r => Object.keys(r)))]
+    .filter(k => !["card", "verb", "tag", "bothHands"].includes(k)).join(", ") || "none", "none");
+/*
+ * A requirement nothing can satisfy is a card that can never be played -- and the test has to ask
+ * about the VERB as well as the tag. Every one of the nine item tags is carried by something, so
+ * "no item has this tag" is a check that can never fail; *Strike with a consumable* is the shape of
+ * the real mistake, and there are forty-six consumables and not one of them strikes.
+ */
+const playerItems = content.ITEMS.filter(i => !i.npc);
+const serves = (item, verb) => {
+  const line = item.verbs?.[verb];
+  return !!line && ((line.value !== null && line.value !== undefined) || !!line.text);
+};
+check("requirements nothing could satisfy for that verb",
+  reqSteps.filter(r => r.tag
+    && !playerItems.some(i => (i.tags ?? []).includes(r.tag) && serves(i, r.verb)))
+    .map(r => `${r.card}: ${r.verb} with ${r.tag}`).join(", ") || "none", "none");
+check("and the two-handers that satisfy the other one",
+  playerItems.filter(i => i.hands === 2 && serves(i, "strike")).length > 0, true);
+
+/* The schema has to narrow the tag too, or a typo'd one is simply dropped when Foundry loads. */
+check("the schema narrows the tag to an item tag",
+  /requires: new fields\.SchemaField\(\{[\s\S]{0,200}choices: \[\.\.\.CARDRPG\.itemTags, ""\]/
+    .test(cardsSource) ? "yes" : "no", "yes");
+
+/*
+ * And the prose those fields replaced. A card that says "Ranged." in its text and nothing in its
+ * data is a card the engine fires with a dagger, which is this project's recurring defect: the
+ * sentence a human reads is not the rule the engine runs. So no card may print in words what the
+ * field now carries.
+ */
+const printedKit = audited.filter(c => /\b(ranged|both hands|light item)\b/i.test(c.text ?? ""))
+  .map(c => c.name);
+check("cards still printing a kit requirement as prose",
+  printedKit.length ? printedKit.join(", ") : "none", "none");
+
+/*
+ * The limit in what this covers, held in place rather than left to be discovered.
+ *
+ * A requirement is checked where the TRAY picks an item, and a reaction never goes through the
+ * tray: it fires by itself on someone else'''s turn (core-rules 3), from `resolve.mjs`, with no
+ * face to grey out and no click to refuse. No card carries both today, so this is a check and not
+ * a mechanism -- but a card that carried both would gate silently, which is the worse failure.
+ */
+check("cards with both a requirement and a reaction, which nothing checks",
+  audited.filter(c => c.reaction
+    && [...(c.primary ?? []), ...(c.secondary ?? [])].some(st => st.requires))
+    .map(c => c.name).join(", ") || "none", "none");
+
+/* The paint and the click ask the same question of the same pickers, or they can disagree. */
+check("the face picks the item the requirement allows",
+  /#itemFor\(step\.verb, name, step\.requires\)/.test(traySource) ? "yes" : "no", "yes");
+check("and so does playing the half",
+  /#itemFor\(step\.verb, half, step\.requires\)/.test(traySource) ? "yes" : "no", "yes");
+/* Narrowed BEFORE the sort: a Shade holding a bow and a dagger strikes harder with the dagger. */
+check("the requirement narrows the list before the best is chosen",
+  /\.filter\(i => itemMeets\(i, requires\)\)[\s\S]{0,120}\.sort\(/.test(traySource)
+    ? "yes" : "no", "yes");
+/* One predicate: the slate bonus asks it too, rather than testing the tags a second time. */
+check("a slate's bonus asks the same predicate",
+  /if \(bonus\.requiresTag && !itemMeets\(item, \{ tag: bonus\.requiresTag \}\)\)/
+    .test(resolveSource) ? "yes" : "no", "yes");
+/*
+ * An unmet requirement switches the half OFF, which is a separate thing from explaining why. The
+ * tooltip check below passed happily with the half still clickable, so both are needed: the face
+ * said "needs ranged in hand" on a button that fired the dagger.
+ */
+check("an unmet requirement blocks the half",
+  /blocked: icons\.some[^\n]*\|\| !!unmet,/.test(traySource) ? "yes" : "no", "yes");
+check("and something sets it",
+  /if \(need && !item\) unmet = need;/.test(traySource) ? "yes" : "no", "yes");
+
+/* Two reasons a half can be dead now, so the tooltip has to say which. */
+check("the blocked tooltip says which reason",
+  /data-tooltip="\{\{half\.tip\}\}"/.test(trayTemplate) ? "yes" : "no", "yes");
+
+/*
+ * And the rule, written where a reader of the OTHER rule will find it. Core-rules 7 rule 3 forbids
+ * gating a primary; this is the one exception, so the two have to be read together or the next
+ * person to write a card will follow whichever they happened to open.
+ */
+const coreDoc = fs.readFileSync(path.join(root, "../../rules/core-rules.md"), "utf8");
+check("core-rules states the one allowed gate",
+  /^\*\*3a\. One thing may gate a primary: what you are holding\.\*\*/m.test(coreDoc)
+    ? "yes" : "no", "yes");
+check("and says what decides which gates are allowed",
+  /Gate on what the player controls, never on what the shuffle controls/.test(coreDoc)
+    ? "yes" : "no", "yes");
+check("way-cards sends its reader to that rule",
+  /One gate on a primary is allowed, and it is not a condition/.test(wayDoc) ? "yes" : "no", "yes");
+check("and records that three gaps were one field",
+  /three entries, one field, \*\*six cards\*\*/.test(wayDoc) ? "yes" : "no", "yes");
 
 /* -------------------------------------------- */
 

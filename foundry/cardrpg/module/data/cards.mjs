@@ -112,6 +112,33 @@ export function stepField() {
       text: new fields.StringField({ required: false, blank: true, initial: "" })
     }),
 
+    /*
+     * What this step needs IN HAND before it can be played at all.
+     *
+     * The one gate on the schema, and it is allowed exactly where the combo clause above is not.
+     * An opening may never gate a primary (core-rules 7, rule 3) because nobody can arrange a
+     * draw: a half that waits for one is a card held all fight. Your own kit is the opposite --
+     * you chose it at the shop and a Ready changes it mid-fight -- so *this Strike is ranged* is a
+     * build decision, not a wait on luck. **Gate on what the player controls, never on what the
+     * shuffle controls**, and the two fields sit next to each other so the difference is visible.
+     *
+     * `tag` is an item tag (`ranged`, `light`, `heavy`), read off the item that would serve the
+     * verb. `bothHands` is a boolean rather than a number because there is one hand requirement in
+     * the game and it is "both" -- and it means a two-hander actually HELD in two hands
+     * (`isTwoHanded`), not an item that could take two while it is slung on a back.
+     *
+     * This is also what three cards were doing in prose, printing "Ranged." in their text. A
+     * printed sentence cannot narrow which weapon the engine picks up, so the engine picked the
+     * dagger: prose is not a rule, for the sixth or seventh time.
+     */
+    requires: new fields.SchemaField({
+      tag: new fields.StringField({
+        required: false, blank: true, initial: "",
+        choices: [...CARDRPG.itemTags, ""]
+      }),
+      bothHands: new fields.BooleanField({ initial: false })
+    }),
+
     // A few words only, for what icons can't express (Taunt, Parry). Prose goes on the sheet.
     text: new fields.StringField({ required: false, blank: true, initial: "" })
   });

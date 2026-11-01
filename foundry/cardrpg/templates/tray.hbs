@@ -186,7 +186,7 @@
               <div class="cr-half cr-half--{{half.name}}{{#if half.blocked}} cr-half--blocked{{/if}}{{#if half.staged}} cr-half--staged{{/if}}">
                 <span class="cr-half__marker">{{crIcon half.icon}}</span>
                 {{#if half.blocked}}
-                  <span data-tooltip="Blocked right now. The other half may still be playable, and Brace never is.">{{half.text}}</span>
+                  <span data-tooltip="{{half.tip}}">{{half.text}}</span>
                 {{else}}
                   <button type="button" class="cr-half__play"
                           data-action="stage" data-card-id="{{card.id}}" data-half="{{half.name}}">{{half.text}}</button>
