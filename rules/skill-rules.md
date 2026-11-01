@@ -66,7 +66,31 @@ Some cards also have a small **edge**: a bonus effect that triggers when the car
 
 ---
 
-## 2. Making a check
+## 2. Making a check  **[BUILT 2026-11-01]**
+
+> **The skill side was documented in full and entirely unbuilt**, and one piece of the omission was
+> load-bearing. `passiveScore` has read `system.decks.skill` since it was written and **that field
+> was never declared** — so for every player character it was `undefined`, and the function fell
+> through to `system.passive`, which only the NPC model carries. **Every saving throw a character
+> ever made used a flat 2**, for every approach, however good their deck was supposed to be. The
+> comment above it said *a character derives this from their skill deck*, and a character could not,
+> because there was no skill deck.
+>
+> What exists now: the **skill** card subtype (one approach, a value of 1–3, a `wild` flag for
+> Inspiration and an `edge` the table resolves), the three stacks on the character, a fifteen-card
+> starter deck, and `resolveCheck` doing the six steps below in that order.
+>
+> **The four results are a band, not a threshold**, which is the part worth getting right — and
+> because they are a pure function of the margin and the fate card, they are pulled out where the
+> validator can ask them rather than read them. A **Critical comes off the card**, so a crit that
+> still falls short is a success with a bonus rather than a near miss; a **Miss is a Fail** however
+> high the total was.
+>
+> And the trigger came free. A failed check is an event, which is what Spiritualism's *Hold to the
+> Bargain* had been waiting for — it named *a reaction trigger* for one commit, and what it actually
+> wanted was a resolver. That is the second time a trigger has fallen out of building the thing it
+> fires on, after `cast` fell out of casting.
+
 
 Only make a check when **failure would be interesting** and the outcome is uncertain. Trivial tasks just succeed. Impossible tasks just fail, or need a different plan.
 

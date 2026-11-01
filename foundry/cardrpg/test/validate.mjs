@@ -70,7 +70,7 @@ for (const rel of ["system.json", "lang/en.json"]) {
 }
 
 const manifest = JSON.parse(fs.readFileSync(path.join(root, "system.json"), "utf8"));
-check("manifest declares Card subtypes", Object.keys(manifest.documentTypes.Card ?? {}).length, 6);
+check("manifest declares Card subtypes", Object.keys(manifest.documentTypes.Card ?? {}).length, 7);
 check("manifest verified for v14", manifest.compatibility.verified, "14");
 
 // Every file the manifest promises must exist, or the system won't load at all.
@@ -1275,14 +1275,14 @@ const reactionBlock = configSource.slice(
 const triggers = [...reactionBlock
   .slice(0, reactionBlock.indexOf("CARDRPG.reactions = {"))
   .matchAll(/^  ([a-zA-Z]+): "/gm)].map(m => m[1]);
-check("triggers declared", triggers.join(", "), "hit, allyHit, arrival, cast");
+check("triggers declared", triggers.join(", "), "hit, allyHit, arrival, cast, check");
 
 const reactionLines = [...reactionBlock
   .slice(reactionBlock.indexOf("CARDRPG.reactions = {"))
   .matchAll(/^  ([a-zA-Z]+): \{([^}]*)\}/gm)]
   .map(m => ({ key: m[1], body: m[2] }));
 check("reactions declared", reactionLines.map(r => r.key).join(", "),
-  "parry, block, sidestep, counter, use, heckle, bodyguard, unmake, mend");
+  "parry, block, sidestep, counter, use, heckle, bodyguard, unmake, mend, bargain");
 
 /* Every reaction must name a trigger that exists, or it is a reaction nothing can ever fire. */
 const triggerOf = r => /trigger: "([a-zA-Z]+)"/.exec(r.body)?.[1] ?? "";
@@ -3151,7 +3151,7 @@ check("core-rules still calls it a named effect",
  * a spell. A trigger is an event SITE, and a site needs code that reaches it.
  */
 check("the triggers, and the event each one has",
-  Object.keys(CARDRPG.reactionTriggers).join(", "), "hit, allyHit, arrival, cast");
+  Object.keys(CARDRPG.reactionTriggers).join(", "), "hit, allyHit, arrival, cast, check");
 /*
  * Every trigger has code that raises it, which is the thing a trigger actually IS. A key with no
  * event site is a reaction nothing can ever fire, and this project spent five documents asking for
@@ -3161,7 +3161,8 @@ const raised = {
   hit: /reactionsFor\(taker, "hit"/,
   allyHit: /reactionsFor\(who, "allyHit"\)/,
   arrival: /reactionsFor\(actor, "arrival"\)/,
-  cast: /reactionsFor\(who, "cast"\)/
+  cast: /reactionsFor\(who, "cast"\)/,
+  check: /reactionsFor\(who, "check"\)/
 };
 const unraised = Object.keys(CARDRPG.reactionTriggers)
   .filter(t => !raised[t] || !raised[t].test(resolveSource));
@@ -3207,8 +3208,9 @@ const waitingFor = n => everything.find(c => c.name === n)?.needs.join("; ") ?? 
 check("the ward is finished", waitingFor("Unmake") || "nothing", "nothing");
 check("the healer needed no new trigger",
   waitingFor("Breath of the Spirit") || "nothing", "nothing");
-check("and the third wants a resolver, not a trigger",
-  waitingFor("Hold to the Bargain"), "a skill check the engine resolves");
+/* And it got one, which is why this reads as finished now. */
+check("and the third got the resolver it wanted",
+  waitingFor("Hold to the Bargain") || "nothing", "nothing");
 
 /* A reaction spell is spent by draining the slate, not by discarding a card it never was. */
 check("a reaction spell is spent by draining it",
@@ -3235,7 +3237,7 @@ check("and what a merge has to prove",
 
 check("a reaction spell carries the flag that says where to look",
   Object.entries(CARDRPG.reactions).filter(([, r]) => r.spell).map(([k]) => k).join(", "),
-  "unmake, mend");
+  "unmake, mend, bargain");
 check("Heckle fires on an arrival", CARDRPG.reactions.heckle?.trigger, "arrival");
 check("the card prints it", sigs.find(sg => sg.name === "Heckle")?.reaction, "heckle");
 check("and applies Heckled rather than something borrowed",
@@ -3445,8 +3447,8 @@ check("content carrying the audit column",
 const vague = audited.filter(c => (c.needs ?? []).some(g => g.length < 12)).map(c => c.name);
 check("gaps too short to act on", vague.length ? vague.join(", ") : "none", "none");
 const workingCards = audited.filter(c => !c.needs.length).length;
-check("content the engine does everything for", workingCards, 48);
-check("content with a named gap", audited.filter(c => c.needs.length).length, 54);
+check("content the engine does everything for", workingCards, 49);
+check("content with a named gap", audited.filter(c => c.needs.length).length, 53);
 
 /*
  * A gap shared by several cards is one piece of engine work, not several. Counting the DISTINCT
@@ -3456,7 +3458,7 @@ const gapCounts = new Map();
 for (const card of audited) {
   for (const gap of card.needs) gapCounts.set(gap, (gapCounts.get(gap) ?? 0) + 1);
 }
-check("distinct gaps across all content", gapCounts.size, 51);
+check("distinct gaps across all content", gapCounts.size, 50);
 /*
  * Two different questions, and the list is what lets them be asked apart.
  *
@@ -3498,7 +3500,7 @@ check("the gap that would finish the most content",
   + "an event when a figure's Health reaches zero; two fate draws that both apply (2)");
 /* And how much of the queue is one card deep, which is what a long tail of singletons means. */
 check("gaps that would finish exactly one piece of content",
-  [...finishes.values()].filter(n => n === 1).length, 41);
+  [...finishes.values()].filter(n => n === 1).length, 40);
 
 /*
  * And a check on the QUEUE rather than on the content, which the ranged-item work earned.
@@ -3872,6 +3874,146 @@ check("and when the Ironclad's armour doubles",
   /\{\{#if system\.armorDoubled\}\}/.test(charTemplate) ? "yes" : "no", "yes");
 check("and what the graph taught you",
   /\{\{#each fromNodes\.knowHow\}\}/.test(charTemplate) ? "yes" : "no", "yes");
+
+/* -------------------------------------------- */
+
+/*
+ * The skill side, which was fully documented and entirely unbuilt.
+ *
+ * **One omission was load-bearing.** `passiveScore` has read `system.decks.skill` since it was
+ * written and that field was never declared -- so for every player character it was `undefined`,
+ * `skills` was null, and it fell through to `system.passive`, which only the NPC model carries.
+ * **Every saving throw a character has ever made used a flat 2**, for every approach, however good
+ * their skill deck was supposed to be. The comment above it said "a character derives this from
+ * their skill deck", and a character could not, because there was no skill deck.
+ */
+
+section("the skill deck, and the check");
+
+/* The record, written where a reader of the check rules will find it. */
+const skillDoc = fs.readFileSync(path.join(root, "../../rules/skill-rules.md"), "utf8");
+check("skill-rules marks the check built",
+  /^## 2\. Making a check {2}\*\*\[BUILT 2026-11-01\]\*\*$/m.test(skillDoc) ? "yes" : "no", "yes");
+check("and records the defect it was hiding",
+  /\*\*Every saving throw a character[\s>]+ever made used a flat 2\*\*/.test(skillDoc)
+    ? "yes" : "no", "yes");
+
+check("skill is a card subtype", "skill" in (manifest.documentTypes.Card ?? {}), true);
+check("and the data model is registered",
+  /skill: SkillCardData/.test(entrySource) ? "yes" : "no", "yes");
+check("the three stacks are on the character",
+  ["skill", "skillHand", "skillDiscard"]
+    .filter(k => !new RegExp(`${k}: new fields\.DocumentIdField`).test(modelSource)).join(", ")
+    || "none", "none");
+/* The field `passiveScore` reads, which is the whole of the defect above. */
+check("the id passiveScore reads is the id that exists",
+  /system\.decks\?\.skill/.test(resolveSource) ? "yes" : "no", "yes");
+
+/* ---- the deck, as composed ---- */
+
+const skills = content.WARRIOR_SKILLS;
+const skillCopies = skills.reduce((n, c) => n + (c.copies ?? 1), 0);
+/* "About 15 cards" (skill-rules 1), and the hand is 4 of them. */
+check("cards in the starter skill deck", skillCopies, 15);
+/* All six approaches, nobody locked out: that is the composition rule. */
+const covered = new Set(skills.filter(c => !c.wild).map(c => c.approach));
+check("approaches the deck covers", [...covered].sort().join(", "),
+  "agility, lore, might, presence, shadow, wits");
+check("approaches a skill card names that do not exist",
+  skills.filter(c => c.approach && !(c.approach in CARDRPG.approaches))
+    .map(c => c.name).join(", ") || "none", "none");
+/* Way of Strength means lots of Might and Agility, which is a shape rather than a sentence. */
+const byApproach = a => skills.filter(c => c.approach === a)
+  .reduce((n, c) => n + (c.copies ?? 1), 0);
+check("Might and Agility, for a Warrior", `${byApproach("might")} + ${byApproach("agility")}`,
+  "4 + 3");
+check("and one each of the four they are not",
+  ["shadow", "wits", "lore", "presence"].map(byApproach).join(", "), "2, 2, 2, 1");
+/* One Inspiration: any approach, value 1. */
+const wilds = skills.filter(c => c.wild);
+check("Inspiration cards", wilds.length, 1);
+check("which name no approach and are worth 1",
+  wilds.every(c => !c.approach && c.value === 1), true);
+/* Values run 1-3 and nothing is worth more than the top of the band. */
+check("skill cards outside the 1-3 band",
+  skills.filter(c => c.value < 1 || c.value > 3).map(c => c.name).join(", ") || "none", "none");
+/* Some cards have an edge, which is prose on purpose: it is not a computation. */
+check("cards carrying an edge", skills.filter(c => c.edge).length, 5);
+
+/* ---- the check itself ---- */
+
+check("the engine resolves a check",
+  /export async function resolveCheck\(actor, \{/.test(resolveSource) ? "yes" : "no", "yes");
+/*
+ * The four bands, ASKED rather than read. They are the one part of a check that is a pure function
+ * of two numbers, so they were pulled out into `checkOutcome` -- which makes the rule testable
+ * instead of grepped, and the rule is the thing skill-rules 2 actually specifies.
+ */
+check("exactly on the difficulty", resolve.checkOutcome(0), "success");
+check("one below", resolve.checkOutcome(-1), "partial");
+check("two below", resolve.checkOutcome(-2), "partial");
+check("three below", resolve.checkOutcome(-3), "fail");
+check("well over", resolve.checkOutcome(4), "success");
+/* A Critical comes off the CARD: a crit that still falls short is a success with a bonus. */
+check("a Critical three below is still a Critical", resolve.checkOutcome(-3, "crit"), "critical");
+/* And a Miss is a Fail however high the total was before it. */
+check("a Miss four over is still a Fail", resolve.checkOutcome(4, "miss"), "fail");
+/* A Wild is neither, so it falls through to the margin like any ordinary draw. */
+check("a Wild is decided by the margin", resolve.checkOutcome(-1, "wild"), "partial");
+
+/*
+ * And the arithmetic the defect was hiding: `passiveScore` with and without a skill deck. Asked
+ * with a stubbed `game.cards`, because this is the one function whose whole behaviour was wrong
+ * and a source read would have agreed with it either way.
+ */
+const savedGame = globalThis.game;
+const fakeDeck = {
+  cards: [
+    { system: { approach: "might", value: 3 } },
+    { system: { approach: "might", value: 1 } },
+    { system: { approach: "lore", value: 1 } }
+  ]
+};
+globalThis.game = { cards: { get: id => (id === "deck-id" ? fakeDeck : null) } };
+const withDeck = { system: { decks: { skill: "deck-id" }, passive: 99 } };
+const withNone = { system: { decks: {}, passive: 7 } };
+check("passive score from the best card of that approach",
+  resolve.passiveScore(withDeck, "might"), 5);
+check("an approach the deck is thin on", resolve.passiveScore(withDeck, "lore"), 3);
+check("one it has no card for at all", resolve.passiveScore(withDeck, "presence"), 2);
+/* An NPC has no deck and carries one flat number instead, which is what the fallback is FOR. */
+check("and a creature with no deck uses its own number",
+  resolve.passiveScore(withNone, "might"), 7);
+globalThis.game = savedGame;
+/* An untrained user caps a tool at +1, which is the one place a training is arithmetic. */
+check("an untrained user caps the tool",
+  /trained \? \(bonus\.value \?\? 0\) : Math\.min\(1, bonus\.value \?\? 0\)/.test(resolveSource)
+    ? "yes" : "no", "yes");
+/* Improvising: value 0 with disadvantage, so an empty deck is not an empty character. */
+check("an empty deck can still improvise",
+  /const draw = improvise \? -1 : mode;/.test(resolveSource) ? "yes" : "no", "yes");
+/* A wild serves every approach, which is what makes it worth a slot that could have held a 3. */
+check("a wild card serves any approach",
+  /return this\.wild \|\| this\.approach === approach;/.test(cardsSource) ? "yes" : "no", "yes");
+
+/* ---- and the trigger that fell out of it ---- */
+
+/*
+ * `check` is the fourth trigger and the second that could not have existed earlier: a failed check
+ * is not an event until something resolves a check. *Hold to the Bargain* named "a reaction trigger
+ * beyond hit and arrival" for one commit, which was the merged gap being wrong about it -- what it
+ * wanted was a resolver, and the trigger came free with it.
+ */
+check("a failed check raises an event",
+  /const held = await answerCheck\(actor\);/.test(resolveSource) ? "yes" : "no", "yes");
+check("and the Fail it answers becomes a Partial",
+  /if \(held\) return \{ total: result, dc, result: "partial", margin, held \};/.test(resolveSource)
+    ? "yes" : "no", "yes");
+/* It scans allies, including the caster: a priest may spend their own pact on their own failure. */
+check("the pact may answer its owner's own failure",
+  /if \(!who \|\| who\.type !== actor\.type\) continue;/.test(resolveSource) ? "yes" : "no", "yes");
+check("the pact is the spell that prints it",
+  everything.find(c => c.name === "Hold to the Bargain")?.reaction, "bargain");
 
 /* -------------------------------------------- */
 

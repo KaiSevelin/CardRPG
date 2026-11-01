@@ -105,7 +105,17 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
         actionDiscard: new fields.DocumentIdField(),
         actionSpent: new fields.DocumentIdField(),
         fate: new fields.DocumentIdField(),
-        fateDiscard: new fields.DocumentIdField()
+        fateDiscard: new fields.DocumentIdField(),
+        /*
+         * The skill deck (skill-rules 1), and `skill` is the id `passiveScore` has been reading
+         * since it was written. It was never declared, so it was always undefined and a character's
+         * passive score was always the flat 2 an NPC uses. Three stacks like the action side, and
+         * for the same reasons -- except the discard does NOT come back by itself: skill-rules 1 is
+         * explicit that it returns on a rest and not on a shuffle.
+         */
+        skill: new fields.DocumentIdField(),
+        skillHand: new fields.DocumentIdField(),
+        skillDiscard: new fields.DocumentIdField()
       }),
 
       conditions: conditionField(),

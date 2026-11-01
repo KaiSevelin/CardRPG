@@ -16,7 +16,7 @@ import { answerArrival } from "./module/resolve.mjs";
 import { CharacterData, NpcData } from "./module/data/actors.mjs";
 import { ItemSlateData, FeatureSlateData, SpellSlateData } from "./module/data/items.mjs";
 import {
-  ActionCardData, FateCardData, NpcCardData, WoundCardData, TaintCardData, WildCardData
+  ActionCardData, FateCardData, NpcCardData, WoundCardData, TaintCardData, WildCardData, SkillCardData
 } from "./module/data/cards.mjs";
 
 /* -------------------------------------------- */
@@ -49,7 +49,9 @@ Hooks.once("init", () => {
     npc: NpcCardData,
     wound: WoundCardData,
     taint: TaintCardData,
-    wild: WildCardData
+    wild: WildCardData,
+    // The skill side's own card: one approach and a value (skill-rules 1).
+    skill: SkillCardData
   };
 
   // --- combat

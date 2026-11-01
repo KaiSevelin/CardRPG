@@ -542,7 +542,9 @@ CARDRPG.reactionTriggers = {
   hit: "CARDRPG.Trigger.Hit",
   allyHit: "CARDRPG.Trigger.AllyHit",
   arrival: "CARDRPG.Trigger.Arrival",
-  cast: "CARDRPG.Trigger.Cast"
+  cast: "CARDRPG.Trigger.Cast",
+  /* A failed skill check, which could not be an event until something resolved a check. */
+  check: "CARDRPG.Trigger.Check"
 };
 
 /**
@@ -596,6 +598,14 @@ CARDRPG.reactions = {
   },
   mend: {
     label: "CARDRPG.Reaction.Mend", kind: "other", trigger: "allyHit", spell: true
+  },
+  /*
+   * Spiritualism's, and the third reaction that lives on a prepared spell. It answers a FAILED
+   * CHECK, which is the one trigger that is not about an attack at all -- a god intervening in the
+   * ordinary business of trying something and not managing it.
+   */
+  bargain: {
+    label: "CARDRPG.Reaction.Bargain", kind: "other", trigger: "check", spell: true
   }
 };
 

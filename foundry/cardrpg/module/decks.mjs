@@ -31,6 +31,26 @@ export function deckOf(actor, which) {
  * A Card with no face is face-down, and Foundry then shows "Unknown (<deck>)" instead of its name.
  * Everything here is meant to be readable in hand, so it gets a face.
  */
+/**
+ * One skill card, in the one shape the setup routine and anything that grants one both use -- the
+ * same arrangement `actionCardData` is in, and for the same reason: two places building a card
+ * document is two places to get it wrong.
+ */
+export function skillCardData(def) {
+  return {
+    name: def.name,
+    type: "skill",
+    face: 0,
+    faces: [{ name: def.name }],
+    system: {
+      approach: def.approach ?? "",
+      value: def.value ?? 1,
+      wild: !!def.wild,
+      ...(def.edge !== undefined ? { edge: def.edge } : {})
+    }
+  };
+}
+
 export function actionCardData(def) {
   return {
     name: def.name,

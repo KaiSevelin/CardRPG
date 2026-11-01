@@ -2210,11 +2210,12 @@ export const MIND_POOL = [
   {
     name: "Hold to the Bargain", strength: 2, pool: "mind", source: "Spiritualism",
     /*
-     * The third card that named the merged gap, and the one it was hiding: a Cast is an event the
-     * engine raises and an ally's failed CHECK is not an event at all -- nothing in the engine
-     * resolves a skill check. So this is not "a trigger", it is a resolver that does not exist.
+     * The card that proved a merged gap can be three jobs: it wanted a RESOLVER, not a trigger,
+     * because nothing in the engine resolved a skill check. Now something does, and the trigger
+     * it needed fell out of the resolver the way `cast` fell out of casting.
      */
-    needs: ["a skill check the engine resolves"],
+    needs: [],
+    reaction: "bargain",
     description: "<p>It was going to fail. Something intervened, once, because it owes you.</p>",
     effect: { text: "reaction: an ally's failed check becomes a Partial. Once per pact per fight" }
   },
@@ -2734,6 +2735,56 @@ export const FAITH_TACTICS = {
   "What Is Left":
     "At 0 Health you keep acting as though at 1 until the end of the round in which you fell."
 };
+
+/* -------------------------------------------- */
+
+/**
+ * The starter Warrior's skill deck (skill-rules 1).
+ *
+ * **Fifteen cards, all six approaches, nobody locked out.** That is the composition rule and it is
+ * the reason a skill deck is a deck rather than a stat line: *anyone can try anything*, and the Way
+ * decides which approaches come up often and high rather than which ones exist.
+ *
+ * Way of Strength means *lots of Might and Agility*, so the shape here is 4 Might and 3 Agility at
+ * values 2 and 3, against one each of the four approaches a warrior is not: Shadow, Wits, Lore and
+ * Presence at value 1. A specialist plays their best approach often and still draws hands without
+ * it, which is where the helping rule earns its place.
+ *
+ * `edge` is what the card does whether or not the check succeeds, and it is **prose on purpose**:
+ * *ask the GM one yes/no question about the scene* is not a computation and should not pretend to
+ * be one. Four of the fifteen carry one, which is the document's *some cards also have a small
+ * edge* read as a ratio rather than as a maybe.
+ *
+ * And one Inspiration: any approach, value 1, *draw 1 skill card*. The one card in the deck that is
+ * never the wrong card, which is what makes it worth a slot that could have held a 3.
+ */
+export const WARRIOR_SKILLS = [
+  { name: "Set Your Feet", approach: "might", value: 3, copies: 1 },
+  { name: "Heave", approach: "might", value: 2, copies: 2 },
+  {
+    name: "Break It", approach: "might", value: 1, copies: 1,
+    edge: "Something gives whether or not you get through: the GM says what broke."
+  },
+  { name: "Quick Hands", approach: "agility", value: 2, copies: 2 },
+  {
+    name: "Keep Your Footing", approach: "agility", value: 1, copies: 1,
+    edge: "You do not fall, whatever else happens."
+  },
+  { name: "Out of the Light", approach: "shadow", value: 1, copies: 2 },
+  {
+    name: "Sharp Eyes", approach: "wits", value: 1, copies: 2,
+    edge: "Ask the GM one yes-or-no question about the scene."
+  },
+  { name: "Soldier's Learning", approach: "lore", value: 1, copies: 2 },
+  {
+    name: "The Loud Voice", approach: "presence", value: 1, copies: 1,
+    edge: "Everyone nearby hears you, and knows it was you."
+  },
+  {
+    name: "Inspiration", approach: "", value: 1, copies: 1, wild: true,
+    edge: "Draw 1 skill card."
+  }
+];
 
 /* -------------------------------------------- */
 /*  The levelling graph                         */

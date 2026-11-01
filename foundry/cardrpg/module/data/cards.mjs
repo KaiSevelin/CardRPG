@@ -345,6 +345,54 @@ export class NpcCardData extends foundry.abstract.TypeDataModel {
 }
 
 /* -------------------------------------------- */
+/*  Skill card                                  */
+/* -------------------------------------------- */
+
+/**
+ * A skill card: one **approach** and a **value** (skill-rules 1).
+ *
+ * This is the oldest documented thing in the project with no code behind it, and the omission was
+ * load-bearing rather than cosmetic. `passiveScore` reads `system.decks.skill` -- a field that was
+ * never declared -- so for every player character it fell through to `system.passive`, which only
+ * the NPC model has. **Every saving throw a character has ever made used a flat 2**, for every
+ * approach, however good their deck was supposed to be.
+ *
+ * `edge` is a sentence that happens when the card is played *even if the check fails*, which is
+ * what makes a skill card a card rather than a die: skill-rules prints *Edge: ask the GM one
+ * yes/no question about the scene.* The engine does not resolve it, the table does -- the same
+ * footing as a Move.
+ *
+ * `wild` is the Inspiration card: any approach, value 1, one or two per deck. A separate flag
+ * rather than an `any` approach, because `any` already means something else in `CARDRPG.approaches`
+ * (a tool that helps with everything) and the two must not be confused.
+ */
+export class SkillCardData extends foundry.abstract.TypeDataModel {
+  static defineSchema() {
+    return {
+      approach: new fields.StringField({
+        required: true, blank: true, initial: "",
+        choices: [...Object.keys(CARDRPG.approaches), ""]
+      }),
+      value: new fields.NumberField({ required: true, integer: true, min: 0, max: 3, initial: 1 }),
+      /** Any approach, value 1. The one card in a skill deck that is never the wrong card. */
+      wild: new fields.BooleanField({ initial: false }),
+      /** What playing it does regardless of the result. Prose: the table resolves it. */
+      edge: new fields.StringField({ required: false, blank: true, initial: "" })
+    };
+  }
+
+  /** Does this card serve that approach? A wild serves all six. */
+  serves(approach) {
+    return this.wild || this.approach === approach;
+  }
+
+  /** What it is worth on a check of that approach, or null when it does not serve it at all. */
+  worth(approach) {
+    return this.serves(approach) ? this.value : null;
+  }
+}
+
+/* -------------------------------------------- */
 /*  Wound and Taint                             */
 /* -------------------------------------------- */
 

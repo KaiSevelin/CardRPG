@@ -7,8 +7,10 @@
  */
 
 import { CARDRPG } from "./config.mjs";
+/* The one shape a skill card takes, shared with anything that grants one rather than spelled here. */
+import { skillCardData } from "./decks.mjs";
 import {
-  fateCards, WARRIOR_DECK, GOBLIN_DECK, ITEMS, NPC_GEAR, FEATURES, FORMULAS,
+  fateCards, WARRIOR_DECK, GOBLIN_DECK, ITEMS, NPC_GEAR, FEATURES, FORMULAS, WARRIOR_SKILLS,
   SHADOW_FORMULAS, WILD_MAGIC,
   WARRIOR, GOBLIN, GOBLIN_ARCHER
 } from "./content.mjs";
@@ -204,13 +206,28 @@ export async function createStarterContent() {
     return actor;
   };
 
+  /*
+   * The skill side's three stacks. The discard is a `pile` like the action discard and is NOT
+   * shuffled back by anything automatic: skill-rules 1 says it returns on a rest, which is the one
+   * place the two sides differ in kind rather than in content.
+   */
+  const warriorSkills = await makeCards("Warrior Skills", "deck", "warrior-skills",
+    expand(WARRIOR_SKILLS, def => skillCardData(def)));
+  const warriorSkillHand = await makeCards("Warrior Skill Hand", "hand", "warrior-skill-hand");
+  const warriorSkillDiscard = await makeCards("Warrior Skill Discard", "pile",
+    "warrior-skill-discard");
+  made.decks += 3;
+
   await buildActor(WARRIOR, {
     action: warriorDeck.id,
     actionHand: warriorHand.id,
     actionDiscard: warriorDiscard.id,
     actionSpent: warriorSpent.id,
     fate: warriorFate.id,
-    fateDiscard: warriorFateDiscard.id
+    fateDiscard: warriorFateDiscard.id,
+    skill: warriorSkills.id,
+    skillHand: warriorSkillHand.id,
+    skillDiscard: warriorSkillDiscard.id
   });
 
   const goblinDecks = {

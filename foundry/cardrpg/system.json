@@ -56,7 +56,8 @@
       "npc": {},
       "wound": {},
       "taint": {},
-      "wild": {}
+      "wild": {},
+        "skill": {}
     }
   },
   "languages": [

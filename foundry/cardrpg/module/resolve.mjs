@@ -1296,6 +1296,148 @@ export async function resolveUse(actor, { item, target = actor }) {
 /* -------------------------------------------- */
 
 /**
+ * Which of the four results a check produced (skill-rules 2).
+ *
+ * **A band, not a threshold**, and it is pulled out here because that makes it the one piece of the
+ * check that can be asked a question offline: four results, two of them read off the fate card and
+ * two off the margin. A Critical comes from the CARD and not from the total -- the document says
+ * *Critical drawn* -- so a crit that still falls short is a success with a bonus rather than a near
+ * miss, which is the same reading `FateCardData.apply` gives it in combat.
+ */
+export function checkOutcome(margin, special = "") {
+  if (special === "crit") return "critical";
+  if (special === "miss") return "fail";
+  if (margin >= 0) return "success";
+  return margin >= -2 ? "partial" : "fail";
+}
+
+/**
+ * Resolve a skill check (skill-rules 2), which nothing has ever done.
+ *
+ * The whole skill side was written out in full and never built: six approaches, four difficulties,
+ * four results, tools, training, push and help -- and not one line of code. This is the arithmetic
+ * that document specifies, in the order it specifies:
+ *
+ *   1. the card's value for this approach
+ *   2. the tool bonus, capped at 1 for an untrained user (skill-rules 2, Tools)
+ *   3. feature bonuses, through the same `collectBonuses` an attack uses
+ *   4. push: a second card of the SAME approach adds its value
+ *   5. help: +1 from an ally, +2 when their card shares the approach
+ *   6. one fate card, with advantage or disadvantage
+ *
+ * **The four results are a band, not a threshold**, and that is the part worth getting right: a
+ * Partial is one or two below, a Fail is three or more below OR a Miss, and a Critical is the fate
+ * card rather than the total. The document gives the odds those bands produce; the bands are what
+ * the engine owes it.
+ *
+ * `improvise` is the empty-deck case: value 0 with disadvantage, so a character with nothing left
+ * can still act (skill-rules 1, Fatigue).
+ *
+ * @returns {object} `{ total, dc, result, margin }`
+ */
+export async function resolveCheck(actor, {
+  approach, dc = CARDRPG.difficulties.normal, card = null, push = null, help = 0,
+  item = null, mode = 0, improvise = false
+} = {}) {
+  if (!actor || !approach) return null;
+
+  const base = improvise ? 0 : (card?.system?.worth?.(approach) ?? null);
+  if (base === null && !improvise) {
+    ui.notifications.warn(
+      `${cardName(card) || "That card"} is not a ${game.i18n.localize(CARDRPG.approaches[approach]?.label ?? approach)} card.`);
+    return null;
+  }
+
+  /*
+   * A tool helps with the approach it names, and **an untrained user gets at most +1** however good
+   * the tool is -- which is the one place in the game where a training matters arithmetically, and
+   * the reason a node granting one is a reward rather than flavour.
+   */
+  const bonus = item?.system?.bonus ?? null;
+  const serves = bonus && (bonus.approach === approach || bonus.approach === "any");
+  const trained = (actor.system.learned?.trainings ?? []).some(t => item?.name
+    && t.toLowerCase().includes(item.name.toLowerCase().split(" ").pop()));
+  const toolBonus = serves ? (trained ? (bonus.value ?? 0) : Math.min(1, bonus.value ?? 0)) : 0;
+
+  /* Push: a second card of the same approach. A wild serves, which is what a wild is for. */
+  const pushed = push?.system?.worth?.(approach) ?? 0;
+
+  const features = collectBonuses(actor, approach, item);
+  const before = base + toolBonus + pushed + help + features.total;
+
+  const draw = improvise ? -1 : mode;
+  const { result, used } = await drawFate(actor, before, draw);
+  const special = used?.system?.special ?? "";
+  const margin = result - dc;
+
+  const outcome = checkOutcome(margin, special);
+
+  const label = {
+    critical: "Critical", success: "Success", partial: "Partial", fail: "Fail"
+  }[outcome];
+  const chain = [
+    `${game.i18n.localize(CARDRPG.approaches[approach]?.label ?? approach)} ${base}`,
+    ...(toolBonus ? [`${item.name} +${toolBonus}${trained ? "" : " (untrained, capped)"}`] : []),
+    ...(pushed ? [`push +${pushed}`] : []),
+    ...(help ? [`help +${help}`] : []),
+    ...(features.total ? [`features +${features.total}`] : []),
+    ...(improvise ? ["improvising, with disadvantage"] : [])
+  ];
+
+  await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<div class="cardrpg"><p>${chain.join(" &middot; ")}</p>`
+      + `<p>Fate: <strong>${used ? (special || used.system.value) : "\u2014"}</strong>`
+      + ` &rarr; ${result} against ${dc}</p>`
+      + `<p><strong>${label}</strong>`
+      + (outcome === "partial" ? " &mdash; you do it, and it costs something." : "")
+      + (outcome === "fail" ? " &mdash; and the situation changes." : "")
+      + `</p></div>`
+  });
+
+  /*
+   * A failed check is an event, and it is the one Spiritualism's *Hold to the Bargain* has been
+   * waiting for: a god intervenes once and a Fail becomes a Partial. The `check` trigger could not
+   * exist before this function did -- which is the same lesson the `cast` trigger taught, arriving
+   * from the other direction.
+   */
+  if (outcome === "fail" && !improvise) {
+    const held = await answerCheck(actor);
+    if (held) return { total: result, dc, result: "partial", margin, held };
+  }
+
+  return { total: result, dc, result: outcome, margin };
+}
+
+/**
+ * A check has failed. Anyone on this actor's side with a pact prepared may hold it to the bargain.
+ *
+ * Unlike the other three triggers this one answers somebody's **own** failure rather than an
+ * attack, so the scan is over allies including the actor: a priest may spend their own pact on
+ * their own failed check, which is what *once per pact per fight* is counting.
+ */
+export async function answerCheck(actor) {
+  if (!actor || !canvas?.ready) return null;
+
+  for (const placed of canvas.tokens.placeables) {
+    const who = placed.actor;
+    if (!who || who.type !== actor.type) continue;
+    const options = reactionsFor(who, "check");
+    if (!options.length) continue;
+
+    const choice = await spendReaction(who, options[0]);
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: who }),
+      content: `<div class="cardrpg"><p><strong>${who.name}</strong> holds `
+        + `${who.id === actor.id ? "their own" : `${actor.name}'s`} failure to the bargain with `
+        + `<em>${choice.slate?.name ?? "a pact"}</em>: it becomes a <strong>Partial</strong>.</p></div>`
+    });
+    return { actor: who, pact: choice.slate?.name ?? "a pact" };
+  }
+  return null;
+}
+
+/**
  * A passive score: the highest value of an approach in the WHOLE skill deck, plus 2
  * (skill-rules 2).
  *
