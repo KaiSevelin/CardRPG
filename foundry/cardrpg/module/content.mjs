@@ -1500,6 +1500,7 @@ export const SHADOW_FORMULAS = [
   {
     name: "Step Through", strength: 2, kind: "formula", source: "Shadow Magic",
     wilds: 1,
+    needs: ["a Wild that leaves the fate deck when you sleep"],
     description: "<p>You are in the shadow, and then you are in another one. Every reach into the "
       + "dark leaves something of the dark in you: a <strong>Wild</strong> card joins your fate "
       + "deck, and it does not leave until you have slept.</p>",
@@ -2725,7 +2726,8 @@ export const MIND_POOL = [
   {
     name: "Longer Shadow", strength: 1, pool: "mind", source: "Shadow Magic",
     wilds: 1,
-    needs: ["shadow as a state a square is in"],
+    needs: ["a Wild that leaves the fate deck when you sleep",
+      "shadow as a state a square is in"],
     description: "<p>The dark you are standing in reaches one square further, all the way "
       + "round, which is enough to make the next formula work.</p>",
     effect: { text: "until your next turn every square adjacent to you is shadowed" }
@@ -2733,7 +2735,8 @@ export const MIND_POOL = [
   {
     name: "The Long Step", strength: 1, pool: "mind", source: "Shadow Magic",
     wilds: 1,
-    needs: ["shadow as a state a square is in"],
+    needs: ["a Wild that leaves the fate deck when you sleep",
+      "shadow as a state a square is in"],
     description: "<p>Four squares, through whatever is in between, so long as both ends are "
       + "dark. Movement is a sentence the table applies (core-rules 11), so the only thing the "
       + "engine would have to know is which squares are shadowed.</p>",
@@ -2742,7 +2745,8 @@ export const MIND_POOL = [
   {
     name: "Cast No Shadow", strength: 2, pool: "mind", source: "Shadow Magic",
     wilds: 1,
-    needs: ["a limit on who may target you at all"],
+    needs: ["a Wild that leaves the fate deck when you sleep",
+      "a limit on who may target you at all"],
     description: "<p>For one round you are only there if they are standing next to you. Archers "
       + "and casters are simply out of the conversation.</p>",
     effect: { text: "until your next turn nothing further than 1 square away can target you" }
@@ -2750,7 +2754,8 @@ export const MIND_POOL = [
   {
     name: "The Shadow Road", strength: 4, pool: "mind", source: "Shadow Magic",
     wilds: 1,
-    needs: ["shadow as a state a square is in"],
+    needs: ["a Wild that leaves the fate deck when you sleep",
+      "shadow as a state a square is in"],
     description: "<p>You take them with you. The whole front rank arrives behind the enemy line "
       + "at once, which is the only thing in this school that wins a fight outright.</p>",
     effect: {
@@ -2761,7 +2766,8 @@ export const MIND_POOL = [
   {
     name: "The Borrowed Dark", strength: 3, pool: "mind", source: "Shadow Magic",
     wilds: 1,
-    needs: ["shadow as a state a square is in"],
+    needs: ["a Wild that leaves the fate deck when you sleep",
+      "shadow as a state a square is in"],
     description: "<p>Every square on the map, dark at once &mdash; for your allies as much as for "
       + "you, and for anyone else who knows what to do with it.</p>",
     effect: { text: "until your next turn every square on the map is shadowed" }

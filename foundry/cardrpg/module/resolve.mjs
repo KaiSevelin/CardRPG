@@ -144,23 +144,60 @@ export async function payToCast(actor, slate) {
     return false;
   }
   const cost = slate.system.cost?.health ?? 0;
-  if (!cost) return true;
+  /*
+   * **The second price, and the engine collected nothing for it until now.** `wilds` has been a
+   * field since *Step Through* needed somewhere to put Shadow Magic's price, seven formulas carry
+   * it, the spell sheet edits it -- and no code path read it, so a shadow mage cast for free. It
+   * was found by asking which fields of the slate anything reads, which is the same question that
+   * found `passiveScore` reading a deck that did not exist.
+   *
+   * `addFateCards` without `temporary` is the right call -- `temporary` means *removed when drawn*,
+   * which is Blessed and Cursed (core-rules 6) and not this. A Wild stays in the deck and fires
+   * every time it comes up, which is what makes this a price rather than a cost.
+   *
+   * **And it stays too long.** specializations.md 2 prices the school at *a Wild card per spell
+   * cast, until you sleep*, and nothing in this engine takes a card out of a fate deck at a long
+   * rest -- the boundary exists for slates recharging, not for decks. So the charge is correct for
+   * *Become the Shadow*, whose five are explicitly **for good**, and heavier than written for the
+   * other six. Collecting the price and overstating it is a smaller wrong than collecting nothing,
+   * and the gap is on those six formulas by name rather than hidden here.
+   */
+  const wilds = slate.system.wilds ?? 0;
+  if (!cost && !wilds) return true;
 
   /*
    * You may not kill yourself casting. The floor is 1 rather than 0 because 0 Health is
    * Unconscious (core-rules 8) and a spell that knocks its own caster out before it resolves is a
    * rule nobody wrote -- so the cost is refused, not survived.
+   *
+   * Checked BEFORE either price is paid, because a refused cast must charge nothing: a caster who
+   * cannot afford the Health would otherwise have bought the Wilds and not the spell.
    */
   const health = actor.system.health?.value ?? 0;
-  if (health - cost < 1) {
+  if (cost && health - cost < 1) {
     ui.notifications.warn(
       `${slate.name} costs ${cost} Health and you have ${health}. That is not a price, it is a death.`);
     return false;
   }
-  await actor.update({ "system.health.value": health - cost });
+
+  if (cost) await actor.update({ "system.health.value": health - cost });
+  /* There is no refusal for a Wild. It cannot kill you; it only makes you less sure of yourself. */
+  const added = wilds ? await addFateCards(actor, { special: "wild", count: wilds }) : 0;
+
+  /*
+   * One message for both, because two messages would read as two castings. A spell that charges
+   * nothing says nothing -- the early return above -- so this only ever prints a real price.
+   */
+  /* No "for good" in the wording: only one formula's Wilds are, and the message would be making
+   * a promise about the other six that the rules do not make. */
+  const paid = [
+    cost ? `<strong>${cost} Health</strong>` : null,
+    added ? `<strong>${added} Wild</strong> ${added === 1 ? "card" : "cards"} into the fate deck`
+      : null
+  ].filter(Boolean).join(" and ");
   await ChatMessage.create({
     speaker: ChatMessage.getSpeaker({ actor }),
-    content: `<div class="cardrpg"><p><strong>${actor.name}</strong> pays <strong>${cost} Health</strong> `
+    content: `<div class="cardrpg"><p><strong>${actor.name}</strong> pays ${paid} `
       + `for <em>${slate.name}</em>.</p></div>`
   });
   return true;

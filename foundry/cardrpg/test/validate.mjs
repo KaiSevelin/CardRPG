@@ -1382,9 +1382,40 @@ const unprinted = reactionKeys.filter(k =>
 /* Interpose closed the last one: `bodyguard` was printed by nothing until Way of Strength's
  * Bodyguard claimed it, which is what the reaction was written for in the first place. */
 check("reactions no card prints", unprinted.length ? unprinted.join(", ") : "none", "none");
-check("the unprinted one is recorded as open",
-  /\[OPEN\]\*\* \*\*Nothing in the game prints/.test(equipDoc)
-  && /Bodyguard\.\*\* It is in the config/.test(equipDoc) ? "yes" : "no", "yes");
+/*
+ * **This check used to require the document to say the opposite**, and that is worth keeping a note
+ * about. It asserted equipment.md still carried *"[OPEN] Nothing in the game prints Bodyguard"* --
+ * true when it was written, and false from the moment *Interpose* printed one, at which point the
+ * check above reported `none` while this one insisted the document keep claiming otherwise.
+ *
+ * A check on prose has to be able to go stale in the same direction as the prose. So this one now
+ * reads the document's SETTLED entry and names the card that settled it, which is a claim that
+ * cannot quietly outlive the content: `printed` is where the card comes from.
+ */
+const bodyguards = printed.filter(c => c.reaction === "bodyguard").map(c => c.name);
+check("the card that closed Bodyguard", bodyguards.join(", "), "Interpose");
+check("and equipment.md records it as settled rather than open",
+  /\*\*Settled: \u26a1 Bodyguard is printed\.\*\*/.test(equipDoc) ? "yes" : "no", "yes");
+/*
+ * Scoped to the entry itself, and that scoping is the point: the first version of this check asked
+ * whether *Interpose* appeared anywhere in equipment.md, and the entry mentions it twice -- once as
+ * the card that settled it and once in the note underneath. Deleting the first mention left the
+ * second, and the check passed on it. A name appearing SOMEWHERE in a file is not a claim about
+ * anything; the break test is the only reason that was ever found out.
+ */
+const settledAt = equipDoc.indexOf("**Settled: ⚡ Bodyguard is printed.**");
+const bodyguardEntry = equipDoc.slice(settledAt, equipDoc.indexOf("\n\n  >", settledAt));
+check("the entry was located", settledAt >= 0 && bodyguardEntry.length > 40, true);
+check("and names the card in the settled sentence itself",
+  bodyguards.every(name => bodyguardEntry.includes(`*${name}*`)), true);
+check("and the lesson about a check holding prose in place is written down",
+  /This paragraph was wrong for longer than it should have been, and a check was holding/
+    .test(equipDoc) ? "yes" : "no", "yes");
+check("and what it asks of a check on a document",
+  /A\s+> check on a document has to be able to go stale in the same direction as the document/
+    .test(equipDoc) ? "yes" : "no", "yes");
+check("and says it is still untested at a table",
+  /It is still untested at a table/.test(equipDoc) ? "yes" : "no", "yes");
 
 /* -------------------------------------------- */
 
@@ -1816,8 +1847,37 @@ const specDoc = fs.readFileSync(path.join(root, "../../rules/specializations.md"
 // Per CAST, not per formula: the more a shadow mage reaches, the less they can predict themselves.
 check("the school prices itself per cast",
   /A \*\*Wild card per spell cast\*\*, until you sleep/.test(specDoc) ? "yes" : "no", "yes");
-check("nothing producing one is recorded as open",
-  /\[OPEN\]\*\* \*\*Nothing in play produces a Wild yet/.test(equipDoc) ? "yes" : "no", "yes");
+/*
+ * **This check also used to hold a document to a fact it had stopped stating**, which is the second
+ * one in this file: it required equipment.md to carry *"[OPEN] Nothing in play produces a Wild
+ * yet"*, and casting produces one now. Worse, the entry's stated REASON -- that `prepared` was read
+ * and toggled by nothing -- had gone stale long before the conclusion did.
+ *
+ * So it now reads the settled entry, and the half that is still open is checked as open.
+ */
+check("equipment.md records that casting produces a Wild",
+  /\*\*Settled: casting a Shadow formula produces a Wild\.\*\*/.test(equipDoc) ? "yes" : "no",
+  "yes");
+check("and that its old reason had itself gone stale",
+  /The reason this entry used to give had itself gone stale/.test(equipDoc) ? "yes" : "no", "yes");
+check("and that the overcharge is in the document, not only in the code",
+  /\[OPEN\] And it charges more than §2 asks/.test(equipDoc) ? "yes" : "no", "yes");
+check("and says why a long rest does not help",
+  /The `longRest` boundary\s+recharges \*\*slates\*\*, not decks/.test(equipDoc) ? "yes" : "no",
+  "yes");
+check("and Overcast is still open",
+  /\[OPEN\]\*\* \*Overcast\* is the other producer/.test(equipDoc) ? "yes" : "no", "yes");
+/* The six that are overcharged say so, and the one that is not does not. */
+const shadowSpells = [...content.MIND_POOL, ...content.SHADOW_FORMULAS]
+  .filter(sp => sp.source === "Shadow Magic");
+const sleepGap = "a Wild that leaves the fate deck when you sleep";
+check("Shadow formulas whose Wilds should go at a sleep",
+  shadowSpells.filter(sp => (sp.needs ?? []).includes(sleepGap)).length, 6);
+check("and the one whose five are for good names no such gap",
+  shadowSpells.filter(sp => !(sp.needs ?? []).includes(sleepGap)).map(sp => sp.name).join(", "),
+  "Become the Shadow");
+check("which is the one the document says is permanent",
+  /\*\*Five\*\* Wild cards join your fate deck, for good/.test(waycards) ? "yes" : "no", "yes");
 
 /*
  * Searching the discard: refused in general, and left open to ONE owner by name. Catch Breath's
@@ -3818,7 +3878,12 @@ const gapCounts = new Map();
 for (const card of audited) {
   for (const gap of card.needs) gapCounts.set(gap, (gapCounts.get(gap) ?? 0) + 1);
 }
-check("distinct gaps across all content", gapCounts.size, 98);
+/*
+ * Ninety-nine, and the new one is the Wild's: charging a price the rules say lasts *until you
+ * sleep* against an engine with no sleep that empties a fate deck. Naming it is what keeps the
+ * overcharge from being a silent one.
+ */
+check("distinct gaps across all content", gapCounts.size, 99);
 /*
  * Two different questions, and the list is what lets them be asked apart.
  *
@@ -3867,8 +3932,13 @@ check("the gap that would finish the most content",
   + ` (${bestFinish})`,
   "a permanent formula that is never prepared and carries a bonus (5)");
 /* And how much of the queue is one card deep, which is what a long tail of singletons means. */
+/*
+ * Fifty, down one: five Shadow formulas that each named a single gap now name two, so they leave
+ * the "one gap away" list -- and *Step Through*, which had no audit column at all because
+ * SHADOW_FORMULAS is not one of the audited exports, joins it with exactly one.
+ */
 check("gaps that would finish exactly one piece of content",
-  [...finishes.values()].filter(n => n === 1).length, 51);
+  [...finishes.values()].filter(n => n === 1).length, 50);
 
 /*
  * And a check on the QUEUE rather than on the content, which the ranged-item work earned.
@@ -5182,7 +5252,49 @@ check("an unprepared spell cannot be cast",
   /if \(!slate\?\.system\?\.prepared\)/.test(resolveSource) ? "yes" : "no", "yes");
 /* The floor is 1, not 0: 0 Health is Unconscious, so a self-killing cost is refused, not survived. */
 check("the cost may not take you below 1 Health",
-  /if \(health - cost < 1\)/.test(resolveSource) ? "yes" : "no", "yes");
+  /if \(cost && health - cost < 1\)/.test(resolveSource) ? "yes" : "no", "yes");
+
+/*
+ * ---- and the Wild, which is the other price and was collected by nothing ----
+ *
+ * `wilds` has been a field since *Step Through* needed somewhere to put Shadow Magic's price
+ * (data/items.mjs), **seven formulas carry it**, the spell sheet edits it -- and until now no code
+ * path read it, so a shadow mage cast for free. The same shape as `passiveScore` reading a deck
+ * that was never declared: a field, content that fills it, and nothing in between.
+ */
+check("casting reads the Wild price",
+  /const wilds = slate\.system\.wilds \?\? 0;/.test(resolveSource) ? "yes" : "no", "yes");
+check("and a spell that charges neither price charges nothing",
+  /if \(!cost && !wilds\) return true;/.test(resolveSource) ? "yes" : "no", "yes");
+check("and the Wild goes into the fate deck",
+  /await addFateCards\(actor, \{ special: "wild", count: wilds \}\)/.test(resolveSource)
+    ? "yes" : "no", "yes");
+/*
+ * **Permanent, which is the difference between a price and a cost.** `addFateCards` writes a
+ * `temporary` copy for Blessed and Cursed -- the one the rules remove when it is drawn (core-rules
+ * 6) -- and a Wild is passed without that flag on purpose, so it stays. *Become the Shadow* puts
+ * five in for good.
+ */
+check("the Wild is not a temporary card",
+  /special: "wild", count: wilds \}\)(?![\s\S]{0,40}temporary)/.test(resolveSource)
+    ? "yes" : "no", "yes");
+/*
+ * And a refused cast charges NOTHING. The order is the whole of it: a caster who cannot afford the
+ * Health would otherwise have bought the Wilds and not the spell, which is the worst of both.
+ */
+/* Both ends are located first: an indexOf that found nothing is -1, and -1 is less than
+ * everything, so an ordering check on a string that moved would pass by accident. */
+const refusalAt = resolveSource.indexOf("if (cost && health - cost < 1)");
+const wildAt = resolveSource.indexOf('await addFateCards(actor, { special: "wild"');
+check("both ends of the order were found", refusalAt >= 0 && wildAt >= 0, true);
+check("the Health is refused before either price is paid", refusalAt < wildAt, true);
+check("and one message names both prices",
+  /\$\{added\} Wild<\/strong> \$\{added === 1 \? "card" : "cards"\} into the fate deck/
+    .test(resolveSource) ? "yes" : "no", "yes");
+/* And does not promise "for good", which is true of one formula in seven. */
+check("the message makes no promise about how long they stay",
+  /for good/.test(resolveSource.slice(resolveSource.indexOf("const paid = ["))) ? "no" : "yes",
+  "yes");
 check("and paying is what gates the effect",
   /if \(!await payToCast\(this\.actor, slate\)\) return;/.test(traySource) ? "yes" : "no", "yes");
 

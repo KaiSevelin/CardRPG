@@ -1059,12 +1059,28 @@ part: the target gets one clean turn, so a poisoner who uses it is betting on th
   Wild in the deck read as over 100%. The `2/k` swing readout is fine and that is not luck —
   a Wild is marked `swing: false`, so it joins the `k` and never the `2`.
 
-- **[OPEN]** **Nothing in play produces a Wild yet, and the reason is worth knowing.** Shadow Magic's
-  price is paid *per formula prepared*, and **`prepared` is a schema field that nothing in the engine
-  reads or toggles** — spells are out of combat-playtest scope, so there is no preparation hook for a
-  price to hang on. *Overcast* is the other producer and ideas.md still says *"e.g. +2 value"*, which
-  is not a decided rule. So the card works, the insertion is one call (`addFateCards`), and the GM
-  can make one from a macro — what is missing is a rule that chooses to.
+- **Settled: casting a Shadow formula produces a Wild.** `payToCast` adds `wilds` Wild cards to the
+  caster's own fate deck, which is Shadow Magic's whole price — seven formulas carry it and
+  *Become the Shadow* costs **five**.
+
+  **[OPEN] And it charges more than §2 asks**, which is worth stating plainly rather than
+  leaving in the code: the school is priced at *a Wild card per spell cast, **until you sleep***,
+  and nothing in this engine takes a card out of a fate deck at a long rest. The `longRest` boundary
+  recharges **slates**, not decks. So the charge is exactly right for *Become the Shadow*, whose
+  five are explicitly for good, and permanent-when-it-should-be-nightly for the other six — which
+  those six now name in the audit column. Collecting a price and overstating its duration is a
+  smaller wrong than collecting nothing at all, and this is the sentence that stops it being
+  mistaken for finished.
+
+  > **The reason this entry used to give had itself gone stale, which is worse than the gap.** It
+  > said *"`prepared` is a schema field that nothing in the engine reads or toggles"*, and by the
+  > time anybody read that sentence again `prepared` gated casting, decided a reaction's eligibility,
+  > was counted by the tray and was a checkbox on the spell sheet. The conclusion survived its own
+  > argument for weeks, and a wrong reason stops the next pass looking where a plain gap would have
+  > sent it.
+  >
+  > **[OPEN]** *Overcast* is the other producer and [ideas.md](ideas.md) still says *"e.g. +2
+  > value"*, which is not a decided rule. That half is still open.
 
 - **Settled: reach is a field, and it is not range.** ⚡ Counter needed to know which weapons are
   long, and `range` could not say: it meant *"thrown this far"* on a Dagger and *"reaches this far"*
@@ -1155,10 +1171,17 @@ part: the target gets one clean turn, so a poisoner who uses it is betting on th
   does not model at all. Both are defensible; they are **not the same game**, and every reaction
   figure published so far describes the sim's. Closing it means teaching the sim to reserve cards and
   re-running §10 — until then the engine's reaction numbers are unmeasured.
-- **[OPEN]** **Nothing in the game prints ⚡ Bodyguard.** It is in the config, the resolver fires it,
-  initiative order picks who takes the blow — and the starter deck is Parry, Block, Sidestep and Use,
-  so the only Bodyguard in existence is an NPC *tactic*. The rule is implemented against no content,
-  which means it is also untested at a table; the first Way tree that prints one is its first test.
+- **Settled: ⚡ Bodyguard is printed.** It was in the config with the resolver firing it and no
+  content printing it, so the rule was implemented against nothing; **Way of Strength's *Interpose*
+  closed it** and is the only card in the game that prints it. It is still untested at a table,
+  which is a different sentence from the one this entry used to make.
+
+  > **This paragraph was wrong for longer than it should have been, and a check was holding it
+  > there.** The validator asserts both halves of a reaction's coverage — that nothing prints a
+  > reaction the config lacks, and that no declared reaction goes unprinted — and the second one
+  > reported `none` as soon as *Interpose* existed. Beside it sat a check that this document still
+  > *recorded the open one*, which is how a document gets pinned to a fact it no longer states. A
+  > check on a document has to be able to go stale in the same direction as the document.
 - **[OPEN]** **A mount.** The Lance needs one, the Culverin implies draught animals, and
   [conditions.md](conditions.md) §4.2 settled only that a mount is *not* a condition. Its Move,
   Health, turn and the rules for being unhorsed are all unwritten.
