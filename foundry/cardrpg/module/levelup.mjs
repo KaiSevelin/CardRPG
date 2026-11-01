@@ -25,6 +25,7 @@
  * every client every session for a window most of them will not open today.
  */
 
+import { TACTICS } from "./content.mjs";
 import {
   GRAPH, SUCCESSORS, DEPTH, ROOT,
   ownedIds, closedIds, reachable, canTake, stateOf,
@@ -339,8 +340,12 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
           ${esc(node.signature)}</p>`);
       }
       if (node.tactic) {
+        /* The text as well as the name, because a Tactic is the half of a major node that changes
+         * where you stand -- and you only keep the deepest one, so a player comparing two titles
+         * is comparing the tactics as much as the Signatures. */
+        const text = TACTICS[node.tactic] ?? "";
         rows.push(`<p><em>${game.i18n.localize("CARDRPG.Level.Tactic")}:</em>
-          ${esc(node.tactic)}</p>`);
+          ${esc(node.tactic)}${text ? ` — ${esc(text)}` : ""}</p>`);
       }
     }
     rows.push(grants.length

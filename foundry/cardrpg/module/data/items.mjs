@@ -463,6 +463,19 @@ export class FeatureSlateData extends SlateData {
       }),
 
       /**
+       * Advantage this feature grants on an attack, read by `advantageFor` in resolve.mjs.
+       *
+       * `vsOpening` is the one case the card-level `when` clause cannot express. That clause names
+       * **one** opening on purpose (cards.mjs explains why: one card, one combo, no interaction
+       * table), and a build whose entire claim is *I hit whatever you set up* needs any of them.
+       * Openings have been a computed list in config since conditions were written and nothing read
+       * it at the feature level -- which is why the Thief's Signature had nowhere to live.
+       */
+      advantage: new fields.SchemaField({
+        vsOpening: new fields.BooleanField({ initial: false })
+      }),
+
+      /**
        * Flat traits the derived stats read. These are NOT bonus-grouped: a group caps bonuses to
        * one action, while these change a standing number (core-rules 4, 5).
        */

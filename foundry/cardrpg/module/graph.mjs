@@ -20,8 +20,10 @@
  *      *never again*, and only the second is worth a confirmation.
  */
 
-import { NODES, COMMON_POOL, WAY_CARDS } from "./content.mjs";
+import { NODES, COMMON_POOL, WAY_CARDS, SHADE_SIGNATURES, TACTICS } from "./content.mjs";
 import { deckOf, allStacks, actionCardData } from "./decks.mjs";
+/* The one shape a slate takes, shared with the setup routine rather than spelled twice. */
+import { slateData } from "./setup.mjs";
 
 export const ROOT = "root";
 
@@ -30,7 +32,8 @@ export const ROOT = "root";
  * node that silently gives nothing, so the validator refuses one -- this map is what it checks
  * against.
  */
-export const POOL = new Map([...COMMON_POOL, ...WAY_CARDS].map(c => [c.name, c]));
+export const POOL = new Map([...COMMON_POOL, ...WAY_CARDS,
+  ...SHADE_SIGNATURES.filter(s => s.kind === "card")].map(c => [c.name, c]));
 
 /** Every node by id. */
 export const GRAPH = new Map(NODES.map(n => [n.id, n]));
@@ -168,6 +171,27 @@ export function titleOf(owned) {
   return best?.title ?? null;
 }
 
+/**
+ * Your Tactic: the one your deepest title carries, and only that one.
+ *
+ * way-cards 2.5 says *you only ever have your deepest title's*, so this is derived beside the title
+ * rather than granted as a slate. Granting them would give a Cutpurse-Gambler both, which is
+ * exactly the accumulation the rule exists to prevent -- and there is no un-granting a slate when a
+ * deeper title arrives.
+ */
+export function tacticOf(owned) {
+  let best = null;
+  for (const id of owned) {
+    const node = GRAPH.get(id);
+    if (!node?.tactic) continue;
+    if (!best || (DEPTH.get(id) ?? 0) > (DEPTH.get(best.id) ?? 0)) best = node;
+  }
+  return best ? { name: best.tactic, text: TACTICS[best.tactic] ?? "", from: best.title } : null;
+}
+
+/** The content a node hands over as a slate, by name: the Signatures, so far. */
+export const SLATES = new Map(SHADE_SIGNATURES.map(s => [s.name, s]));
+
 /** The Ways a character has set foot in, which is derived rather than chosen on a sheet. */
 export function waysOf(owned) {
   return [...owned].filter(id => GRAPH.get(id)?.after?.includes(ROOT));
@@ -269,7 +293,25 @@ export async function takeNode(actor, id) {
 
   const grants = GRAPH.get(id)?.grants ?? {};
   if (grants.card) await grantCard(actor, grants.card);
+  if (grants.feature) await grantSlate(actor, grants.feature, "feature");
+  if (grants.item) await grantSlate(actor, grants.item, "item");
   for (let i = 0; i < (grants.prune ?? 0); i++) await prune(actor);
+  return true;
+}
+
+/**
+ * A feature or item slate from content. Like a card and unlike a number, a slate is a document: it
+ * is created once and it stays created, which is why a Signature feature carries only text and the
+ * node carries any figure (rules/leveling.md 9).
+ */
+async function grantSlate(actor, name, type) {
+  const def = SLATES.get(name);
+  if (!def) {
+    ui.notifications?.warn(game.i18n.format("CARDRPG.Level.NoSlate", { name }));
+    return false;
+  }
+  const { kind, node, needs, ...fields } = def;
+  await actor.createEmbeddedDocuments("Item", [slateData(fields, type)]);
   return true;
 }
 

@@ -447,6 +447,48 @@ it.
 | **Gambler** | **Double or Nothing** | Primary: Strike, and draw **two** fate cards — **both apply**, added together. Variance, not advantage. |
 | **Half-mage** | **One Trick** | Feature: **2 spell slots**, and you may prepare from any one school you have ever seen cast. |
 
+> **[BUILT 2026-11-01] All twelve exist as content now, and three of them work.** Each Signature is
+> an action card, a feature slate or an item slate that a node hands over, and each one that the
+> engine cannot work out **names what is missing** rather than hiding behind its prose. That list is
+> the Way of Shade engine backlog, read off the content rather than remembered, and the validator
+> asserts it so closing a gap shows up:
+>
+> | | Signature | What the engine lacks |
+> |---|---|---|
+> | ✓ | **The Opening** | nothing — it needed one new field, not a new mechanism (below) |
+> | ✓ | **The Kit** | nothing — an item slate with a sentence is how every item works |
+> | ✓ | **One Trick** | nothing — the slots sit on the node, the sentence on the slate |
+> | | Point Man | **Foresee is not a verb** |
+> | | Named | a reaction that also Strikes |
+> | | One Opening | doubling, and a clause that reads *any* opening |
+> | | Lift | taking a card from another deck |
+> | | Loose and Step | a card that requires a ranged item |
+> | | Set | placing a trap on a square |
+> | | Over and Past | moving through an occupied square |
+> | | Heckle | **a reaction trigger for an enemy acting** |
+> | | Double or Nothing | two fate draws that both apply |
+>
+> **The Opening needed a field, and the field is the interesting part.** The card-level `when`
+> clause names **one** opening on purpose — one card, one combo, no interaction table — and a build
+> whose whole claim is *I hit whatever you set up* needs **any** of them. Openings have been a
+> computed list in config since the conditions were written and nothing read that list at the
+> feature level, which is why the Thief's Signature had nowhere to live. One `advantage.vsOpening`
+> flag on a feature slate, read by `advantageFor`, and the Way's keystone computes.
+>
+> **Three of the nine are defects rather than missing features:**
+>
+> - **Point Man is a Primary that says *Foresee*, and Foresee is not a verb.** It is named in
+>   core-rules §6 and in one feature's prose, and nowhere in the engine. A half whose verb does not
+>   exist cannot be played at all, so this card is unplayable as printed.
+> - **Heckle is a reaction *"when an enemy acts"*, which is not a trigger.** There are two events in
+>   the game: a hit landing and an enemy arriving. This is the **identical defect already fixed on
+>   *Quick Hands***, whose trigger used to be *"any time on another's turn"* — and the fix there was
+>   to re-point it at a real event, which is what this one needs too.
+> - **Lift collides with `resolveLift`, which does something else.** The engine's `resolveLift`
+>   removes a *condition* from a target; the Cutpurse's *Lift* steals a *card* from their deck. Same
+>   word, two mechanics — the `range`-means-reach shape again, and the sort of collision that gets
+>   one of them implemented by mistake.
+
 **The Thief's and the Assassin's were rewritten when §1.6 was written, because §1.6 broke them.**
 *The Opening* used to read *advantage against anyone you put a condition on, this fight*. Add *Call
 the Shot* — a free secondary that Marks anything in sight (§3.3) — and a Thief spends round one
@@ -516,6 +558,12 @@ because a miracle is free to learn and paid for every time you ask. These twelve
 under their gods.
 
 ### 2.5 Tactics — how each specialization fights  **[DRAFT]**
+
+> **[BUILT 2026-11-01] A Tactic is derived from your deepest title, never granted.** *You only
+> ever have your deepest title's* is a sentence a slate cannot keep: granting one per title
+> would accumulate them, and nothing un-grants a slate when a deeper title arrives. So a Tactic
+> is computed beside the title itself and printed on the sheet as a standing fact. A Cutpurse
+> who crossed to Gambler holds both titles' nodes and exactly one Tactic — *The Long Odds*.
 
 A Signature says what a node lets you *do*. A **tactic** says how it makes you *stand*.
 

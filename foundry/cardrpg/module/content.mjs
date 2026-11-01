@@ -1564,6 +1564,175 @@ export const COMMON_POOL = [
 ];
 
 /* -------------------------------------------- */
+/*  Way of Shade's Signatures and Tactics       */
+/* -------------------------------------------- */
+
+/**
+ * The twelve Signatures (rules/way-cards.md 2.2), as content a node can actually grant.
+ *
+ * `kind` says which document it becomes -- an action card, a feature slate or an item slate -- and
+ * it must match the key the granting node uses, or the node names one thing and hands over another.
+ *
+ * `needs` is the honest part. A Signature whose effect the engine cannot work out is not a bug to
+ * hide behind prose: it is a named gap, and this column is the Way of Shade engine backlog read off
+ * the content rather than guessed at. Three of the twelve are fully computable; the other nine each
+ * name exactly what is missing, and the validator asserts that list so closing one shows up.
+ *
+ * The three defects worth knowing, all of them the shape this project keeps meeting:
+ *
+ *   - **Point Man is a Primary that says `Foresee`, and Foresee is not a verb.** It is named in
+ *     core-rules 6 and in one feature's prose, and nowhere in the engine. A half whose verb does
+ *     not exist cannot be played at all.
+ *   - **Heckle is a reaction *"when an enemy acts"*, which is not a trigger.** There are two events
+ *     in the game, a hit landing and an enemy arriving. This is the identical defect already fixed
+ *     on *Quick Hands*, whose trigger used to be "any time on another's turn".
+ *   - **Lift collides with `resolveLift`, which does something else.** The engine's `resolveLift`
+ *     removes a *condition* from a target; the Cutpurse's *Lift* steals a *card* from their deck.
+ *     Same word, two mechanics, like `range` meaning both thrown range and melee reach.
+ */
+export const SHADE_SIGNATURES = [
+  {
+    /*
+     * The Way's keystone, and the one that needed a new field rather than a new mechanism: the
+     * card-level `when` clause names ONE opening on purpose, and a build whose whole claim is "I
+     * hit whatever you set up" needs any of them. Openings were already a computed list in config
+     * and nothing read it at the feature level.
+     */
+    name: "The Opening", kind: "feature", node: "shade.thief", needs: "",
+    text: "Advantage against anyone carrying an opening -- whoever set it.",
+    advantage: { vsOpening: true }
+  },
+  {
+    name: "Point Man", kind: "card", node: "shade.scout",
+    needs: "Foresee is not a verb the engine has",
+    primary: [{ verb: "ready" }],
+    secondary: [{ verb: "move", param: 1 }],
+    text: "Foresee. While you are the furthest forward of your party, Foresee one extra type."
+  },
+  {
+    name: "Named", kind: "card", node: "shade.duellist",
+    needs: "a reaction that also Strikes",
+    primary: [{ verb: "strike" }],
+    secondary: [{ condition: "marked", duration: 1 }],
+    reaction: "parry",
+    text: "Name one enemy. Against it, your Parry also Strikes for 1."
+  },
+  {
+    name: "One Opening", kind: "card", node: "shade.assassin",
+    needs: "doubling, and a clause that reads any opening",
+    primary: [{ verb: "strike" }],
+    secondary: [{ verb: "move", param: 1 }],
+    costs: { primary: { spent: true } },
+    text: "Against a target that is unaware or carrying an opening, the damage is doubled."
+  },
+  {
+    name: "Lift", kind: "card", node: "shade.cutpurse",
+    needs: "taking a card from another deck",
+    primary: [{ verb: "strike" }],
+    secondary: [{ verb: "move", param: 1 }],
+    text: "On a hit, take one card from the target's own deck. It is yours now, and it is in your "
+      + "deck for good."
+  },
+  {
+    /*
+     * An item rather than a card or a feature, and the only Signature that is. Weight 3 you may
+     * never put down IS the Burglar's price (Preparation / weight) expressed as a thing you carry,
+     * which is why it reads as an item and not as a sentence.
+     */
+    name: "The Kit", kind: "item", node: "shade.burglar", needs: "",
+    slot: "pack", weight: 3, cost: 0,
+    text: "You may never put it down. Every Hard physical obstacle becomes Normal."
+  },
+  {
+    name: "Loose and Step", kind: "card", node: "shade.archer",
+    needs: "a card that requires a ranged item",
+    primary: [{ verb: "strike" }, { verb: "move", param: 1 }],
+    secondary: [{ verb: "move", param: 1 }],
+    text: "The Strike is ranged."
+  },
+  {
+    name: "Set", kind: "card", node: "shade.trapmaker",
+    needs: "placing a trap on a square",
+    primary: [{ verb: "ready" }],
+    secondary: [{ verb: "ready" }],
+    text: "Place a trap on an adjacent square. The first enemy to enter is Slowed (2) and takes "
+      + "your Strike value."
+  },
+  {
+    name: "Over and Past", kind: "card", node: "shade.acrobat",
+    needs: "moving through an occupied square",
+    primary: [{ verb: "move", param: 3 }],
+    secondary: [{ verb: "move", param: 1 }],
+    reaction: "sidestep",
+    text: "You may move through enemy squares."
+  },
+  {
+    name: "Heckle", kind: "card", node: "shade.bard",
+    needs: "a reaction trigger for an enemy acting",
+    primary: [{ condition: "dazed", duration: 1, resist: "presence", dc: 5 }],
+    secondary: [{ verb: "move", param: 1 }],
+    text: "When an enemy acts, it draws fate with disadvantage."
+  },
+  {
+    name: "Double or Nothing", kind: "card", node: "shade.gambler",
+    needs: "two fate draws that both apply",
+    primary: [{ verb: "strike" }],
+    secondary: [{ verb: "move", param: 1 }],
+    text: "Draw two fate cards -- both apply, added together. Variance, not advantage."
+  },
+  {
+    /*
+     * The slots are on the NODE, not here. A number carried by a granted slate is a number in a
+     * document, and a document can be deleted; a number on a node is derived every time the sheet
+     * is prepared and cannot drift (rules/leveling.md 9). So a Signature feature carries the text
+     * and the node carries the figure -- which the validator enforces for all of them.
+     */
+    name: "One Trick", kind: "feature", node: "shade.half-mage", needs: "",
+    text: "You may prepare from any one school you have ever seen cast."
+  }
+];
+
+/**
+ * The twelve Tactics (way-cards 2.5): a standing feature that makes a different **position**
+ * correct, always on and never a number.
+ *
+ * **These are not granted.** way-cards says *you only ever have your deepest title's*, so a Tactic
+ * is a property of the title you currently hold, not a slate you accumulate -- otherwise a
+ * Cutpurse-Gambler would carry both. It is derived in `graph.mjs` beside the title itself, from
+ * this table, keyed by the Tactic's name as the node prints it.
+ */
+export const TACTICS = {
+  "Never Where You Looked":
+    "An enemy that attacks you and misses may not attack you again this round.",
+  "Furthest Forward":
+    "While no ally is nearer the enemy than you, you have cover from every figure on the field, "
+    + "not only those in the line.",
+  "One at a Time":
+    "While exactly one enemy is adjacent to you, it has disadvantage against you and you have "
+    + "advantage against it.",
+  "From Behind": "You have advantage against any enemy that is adjacent to one of your allies.",
+  "Light Fingers":
+    "The first time each fight you end your turn adjacent to an enemy that has not attacked you, "
+    + "take one item from its belt.",
+  "Through the Window":
+    "You ignore difficult ground, and no enemy blocks your movement in a square that holds an "
+    + "obstacle.",
+  "Overwatch":
+    "Once a round, when an enemy ends its movement in your line of sight and within range, "
+    + "Strike it as a reaction.",
+  "The Ground You Chose":
+    "Every square you have occupied this fight is difficult ground for your enemies.",
+  "Never Cornered":
+    "When you are attacked, you may Move 1 as a reaction before damage is worked out.",
+  "The Running Commentary":
+    "An enemy within 3 of you that would draw fate with advantage draws normally instead.",
+  "The Long Odds":
+    "While two or more enemies are adjacent to you, you draw fate with advantage.",
+  "One Hand Free":
+    "You may Cast with a weapon in your other hand. Casting never needs a hand free."
+};
+
+/* -------------------------------------------- */
 /*  The levelling graph                         */
 /* -------------------------------------------- */
 
@@ -1631,17 +1800,20 @@ export const NODES = [
   {
     id: "shade.thief", name: "Thief", after: ["shade.patience"], title: "Thief",
     axis: "Control", resource: "a slot kept free",
-    signature: "The Opening", tactic: "Never Where You Looked"
+    signature: "The Opening", tactic: "Never Where You Looked",
+    grants: { feature: "The Opening" }
   },
   {
     id: "shade.scout", name: "Scout", after: ["shade.patience"], title: "Scout",
     axis: "Support", resource: "being alone",
-    signature: "Point Man", tactic: "Furthest Forward"
+    signature: "Point Man", tactic: "Furthest Forward",
+    grants: { card: "Point Man" }
   },
   {
     id: "shade.duellist", name: "Duellist", after: ["shade.patience"], title: "Duellist",
     axis: "Reactions", resource: "halves",
-    signature: "Named", tactic: "One at a Time"
+    signature: "Named", tactic: "One at a Time",
+    grants: { card: "Named" }
   },
 
   /* --- Thief's three --- */
@@ -1661,7 +1833,8 @@ export const NODES = [
     id: "shade.assassin", name: "Assassin", all: true,
     after: ["shade.thief.shadowing", "shade.thief.crowds"], title: "Assassin",
     axis: "Tempo", resource: "Spent",
-    signature: "One Opening", tactic: "From Behind"
+    signature: "One Opening", tactic: "From Behind",
+    grants: { card: "One Opening" }
   },
 
   { id: "shade.thief.crowds", name: "Crowds", after: ["shade.thief"], grants: { card: "Off-Hand Blow" } },
@@ -1673,7 +1846,8 @@ export const NODES = [
   {
     id: "shade.cutpurse", name: "Cutpurse", after: ["shade.thief.fence"], title: "Cutpurse",
     axis: "Deck shape", resource: "deck size",
-    signature: "Lift", tactic: "Light Fingers"
+    signature: "Lift", tactic: "Light Fingers",
+    grants: { card: "Lift" }
   },
 
   { id: "shade.thief.ropework", name: "Ropework", after: ["shade.thief"], grants: { training: "rope and climbing" } },
@@ -1681,7 +1855,8 @@ export const NODES = [
   {
     id: "shade.burglar", name: "Burglar", after: ["shade.thief.night"], title: "Burglar",
     axis: "Preparation", resource: "weight",
-    signature: "The Kit", tactic: "Through the Window"
+    signature: "The Kit", tactic: "Through the Window",
+    grants: { item: "The Kit" }
   },
 
   /* --- Scout's two --- */
@@ -1690,7 +1865,8 @@ export const NODES = [
   {
     id: "shade.archer", name: "Archer", after: ["shade.scout.breathing"], title: "Archer",
     axis: "Position", resource: "range",
-    signature: "Loose and Step", tactic: "Overwatch"
+    signature: "Loose and Step", tactic: "Overwatch",
+    grants: { card: "Loose and Step" }
   },
 
   { id: "shade.scout.groundwork", name: "Groundwork", after: ["shade.scout"], grants: { restTokens: 1 } },
@@ -1703,7 +1879,8 @@ export const NODES = [
     id: "shade.trapmaker", name: "Trapmaker", after: ["shade.scout.spy", "shade.cross.wire"],
     title: "Trapmaker",
     axis: "Preparation", resource: "a turn spent early",
-    signature: "Set", tactic: "The Ground You Chose"
+    signature: "Set", tactic: "The Ground You Chose",
+    grants: { card: "Set" }
   },
 
   /* --- Duellist's four --- */
@@ -1712,7 +1889,8 @@ export const NODES = [
   {
     id: "shade.acrobat", name: "Acrobat", after: ["shade.duellist.tumbling", "shade.cross.ledges"],
     title: "Acrobat", axis: "Position", resource: "weight",
-    signature: "Over and Past", tactic: "Never Cornered"
+    signature: "Over and Past", tactic: "Never Cornered",
+    grants: { card: "Over and Past" }
   },
 
   { id: "shade.duellist.timing", name: "Timing", after: ["shade.duellist"], grants: { card: "Off-Hand Blow" } },
@@ -1724,7 +1902,8 @@ export const NODES = [
   {
     id: "shade.bard", name: "Bard", after: ["shade.duellist.politician"], title: "Bard",
     axis: "Reactions", resource: "someone else's turn",
-    signature: "Heckle", tactic: "The Running Commentary"
+    signature: "Heckle", tactic: "The Running Commentary",
+    grants: { card: "Heckle" }
   },
 
   { id: "shade.duellist.nerve", name: "Nerve", after: ["shade.duellist"], grants: { health: 1 } },
@@ -1735,7 +1914,8 @@ export const NODES = [
   {
     id: "shade.gambler", name: "Gambler", after: ["shade.duellist.cards", "shade.cross.odds"],
     title: "Gambler", axis: "Deck shape", resource: "the fate deck",
-    signature: "Double or Nothing", tactic: "The Long Odds"
+    signature: "Double or Nothing", tactic: "The Long Odds",
+    grants: { card: "Double or Nothing" }
   },
 
   { id: "shade.duellist.letters", name: "Letters", after: ["shade.duellist"], grants: { training: "reading" } },
@@ -1747,7 +1927,7 @@ export const NODES = [
     id: "shade.half-mage", name: "Half-mage", after: ["shade.duellist.formula"], title: "Half-mage",
     axis: "Preparation", resource: "spell slots",
     signature: "One Trick", tactic: "One Hand Free",
-    grants: { spellSlots: 1 }
+    grants: { spellSlots: 2, feature: "One Trick" }
   },
 
   /*

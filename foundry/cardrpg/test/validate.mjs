@@ -2207,7 +2207,8 @@ check("subgraphs that bypass their gate", laundered.length ? laundered.join(", "
 const cardGrants = nodes.filter(n => n.grants?.card);
 const unbuilt = cardGrants.filter(n => !graph.POOL.has(n.grants.card))
   .map(n => `${n.id}: ${n.grants.card}`);
-check("nodes granting a card", cardGrants.length, 6);
+/* Six pool draws on the minor nodes, plus nine Signature cards on the majors. */
+check("nodes granting a card", cardGrants.length, 15);
 check("cards granted but never built", unbuilt.length ? unbuilt.join(", ") : "none", "none");
 
 /* A pool card twice on one path would be a node that gives you a card you already have. */
@@ -2337,7 +2338,7 @@ check("what taking a node writes", written.join(", "), "system.levels.pending, s
 
 const g = graph.grantsOf(owned);
 check("what the branch has granted", `${g.health} health, ${g.cards.length} cards, ${g.trainings.length} trainings`,
-  "1 health, 2 cards, 2 trainings");
+  "1 health, 3 cards, 2 trainings");
 
 /* -------------------------------------------- */
 
@@ -2524,6 +2525,156 @@ check("and it rides with a card rather than alone",
 /* A prune on the Cutpurse run would refund the price that node pays in. */
 check("no prune sits on a branch that pays in deck size",
   pruners.filter(n => n.id.includes("cutpurse")).length, 0);
+
+/* -------------------------------------------- */
+
+/*
+ * The twelve Signatures and the twelve Tactics. Both were names on a node until now, which the
+ * level-up pane read out and nothing handed over.
+ */
+
+section("Signatures and Tactics");
+
+const contentSource = fs.readFileSync(path.join(root, "module/content.mjs"), "utf8");
+const sigs = content.SHADE_SIGNATURES;
+const tactics = content.TACTICS;
+
+check("Signatures defined", sigs.length, 12);
+check("Tactics defined", Object.keys(tactics).length, 12);
+
+/* One per Shade title, and the Way root has neither -- way-cards 2.2 starts at Thief. */
+const titled = nodes.filter(n => n.title && n.id.startsWith("shade.") && n.signature);
+check("Shade titles carrying a Signature", titled.length, 12);
+check("the Way root carries none",
+  byId.get("shade").signature ?? byId.get("shade").tactic ?? "none", "none");
+
+/*
+ * The name on the node and the content it hands over must be the same thing. A node that *says*
+ * Lift and grants something else is the drift this pairing exists to refuse, and it is the same
+ * check the card grants already get from the other direction.
+ */
+const sigDrift2 = [];
+for (const node of titled) {
+  const granted = node.grants?.card ?? node.grants?.feature ?? node.grants?.item ?? null;
+  if (granted !== node.signature) {
+    sigDrift2.push(`${node.id}: says "${node.signature}", grants ${granted ?? "nothing"}`);
+  }
+  const def = sigs.find(sg => sg.name === node.signature);
+  if (!def) { sigDrift2.push(`${node.id}: "${node.signature}" is not built`); continue; }
+  if (def.node !== node.id) sigDrift2.push(`${def.name}: claims ${def.node}, is on ${node.id}`);
+  const key = { card: "card", feature: "feature", item: "item" }[def.kind];
+  if (node.grants?.[key] !== def.name) {
+    sigDrift2.push(`${def.name}: a ${def.kind}, granted as something else`);
+  }
+}
+check("Signatures that do not match their node",
+  sigDrift2.length ? sigDrift2.join("; ") : "none", "none");
+
+/*
+ * A Signature FEATURE carries text and never a number. A figure in a granted slate is a figure in
+ * a document, and a document can be deleted; a figure on a node is derived every time the sheet is
+ * prepared (leveling 9). So Half-mage's two slots are on the node and One Trick is the sentence.
+ */
+const numericSig = sigs.filter(sg => sg.grants && Object.values(sg.grants).some(v => v))
+  .map(sg => sg.name);
+check("Signature slates carrying a number",
+  numericSig.length ? numericSig.join(", ") : "none", "none");
+check("Half-mage's slots are on the node", byId.get("shade.half-mage").grants.spellSlots, 2);
+
+/*
+ * The audit. A Signature the engine cannot work out names what is missing, and this list IS the Way
+ * of Shade engine backlog -- read off the content rather than remembered. Closing one changes the
+ * count here, which is the point of asserting it.
+ */
+const built = sigs.filter(sg => !sg.needs).map(sg => sg.name);
+check("Signatures the engine does everything for", built.join(", "),
+  "The Opening, The Kit, One Trick");
+const gaps = sigs.filter(sg => sg.needs).map(sg => `${sg.name}: ${sg.needs}`);
+check("Signatures with a named gap", gaps.length, 9);
+/* Every gap says something; "needs: true" or an empty string would be a gap nobody can act on. */
+check("gaps that name nothing",
+  sigs.filter(sg => sg.needs !== undefined && typeof sg.needs !== "string").length, 0);
+/* The three defects are rules bugs rather than missing features, so the document records them. */
+for (const [label, re] of [
+  ["Foresee is not a verb", /\*\*Point Man is a Primary that says `Foresee`, and Foresee is not a verb\.\*\*/],
+  ["Heckle has no trigger", /\*\*Heckle is a reaction \*"when an enemy acts"\*, which is not a trigger\.\*\*/],
+  ["Lift collides with resolveLift", /\*\*Lift collides with `resolveLift`, which does something else\.\*\*/]
+]) {
+  check(`the content records that ${label}`, re.test(contentSource) ? "yes" : "no", "yes");
+}
+/* And Foresee really is absent, so the note is not describing a problem that was since fixed. */
+check("Foresee is still not a verb", "foresee" in CARDRPG.verbs, false);
+check("and an enemy acting is still not a trigger",
+  Object.keys(CARDRPG.reactionTriggers).join(", "), "hit, allyHit, arrival");
+
+/* -------------------------------------------- */
+
+/*
+ * The Opening, which is the one Signature that needed a new field rather than a new mechanism.
+ */
+check("the feature schema carries advantage vs an opening",
+  /advantage: new fields\.SchemaField\(\{\s*\n\s*vsOpening: new fields\.BooleanField/
+    .test(itemSource) ? "yes" : "no", "yes");
+check("the engine reads it against any opening",
+  /targetConditions\.some\(key => CARDRPG\.openings\.includes\(key\)\)/.test(resolveSource)
+    ? "yes" : "no", "yes");
+check("and the Thief's Signature sets it",
+  sigs.find(sg => sg.name === "The Opening")?.advantage?.vsOpening ? "yes" : "no", "yes");
+/* Exactly one feature in all of content may claim it: it is a Signature, not a trait. */
+check("features claiming advantage vs an opening",
+  [...sigs, ...content.FEATURES].filter(f => f.advantage?.vsOpening).map(f => f.name).join(", "),
+  "The Opening");
+
+/* -------------------------------------------- */
+
+/*
+ * Tactics are derived from the deepest title and never granted, because way-cards 2.5 says you
+ * only ever have that one. A slate per title would accumulate, and nothing un-grants a slate.
+ */
+const strayTactic = nodes.filter(n => n.tactic && !(n.tactic in tactics)).map(n => n.id);
+check("nodes naming a Tactic nobody wrote",
+  strayTactic.length ? strayTactic.join(", ") : "none", "none");
+check("no node grants a Tactic as a slate",
+  nodes.filter(n => n.grants?.feature && n.grants.feature in tactics).length, 0);
+check("the engine derives one Tactic",
+  /export function tacticOf\(owned\)/.test(graphSource) ? "yes" : "no", "yes");
+check("and the actor reads it out",
+  /this\.tactic = tacticOf\(owned\)/.test(actorModel) ? "yes" : "no", "yes");
+
+/*
+ * The case the rule is for: a Cutpurse who crossed to Gambler holds two titles' worth of nodes and
+ * exactly one Tactic -- the deeper one's.
+ */
+const crossed = new Set(["root", "shade", "shade.footwork", "shade.quiet", "shade.patience",
+  "shade.thief", "shade.thief.crowds", "shade.thief.fence", "shade.cutpurse",
+  "shade.cross.odds1", "shade.cross.odds", "shade.gambler"]);
+check("a crossed character's title", graph.titleOf(crossed), "Gambler");
+check("and holds exactly that Tactic", graph.tacticOf(crossed)?.name, "The Long Odds");
+check("not the shallower one's",
+  graph.tacticOf(crossed)?.name === tactics["Light Fingers"] ? "both" : "one", "one");
+check("every Tactic has text", graph.tacticOf(crossed)?.text?.length > 20, true);
+
+/* -------------------------------------------- */
+
+/* Slates are handed over the same way cards are, and through one shape. */
+/* The documents say the same things, so the content and the rules cannot drift apart. */
+check("way-cards records the audit",
+  /All twelve exist as content now, and three of them work/.test(wayDoc) ? "yes" : "no", "yes");
+check("way-cards says a Tactic is derived, not granted",
+  /A Tactic is derived from your deepest title, never granted/.test(wayDoc) ? "yes" : "no", "yes");
+check("leveling says where a Signature's numbers live",
+  /The same asymmetry decides where a Signature's numbers live/.test(levDoc) ? "yes" : "no", "yes");
+check("the sheet prints the live Tactic",
+  /\{\{system\.tactic\.name\}\}/.test(charTemplate) ? "yes" : "no", "yes");
+
+check("a node's feature and item grants are performed",
+  /if \(grants\.feature\) await grantSlate\(actor, grants\.feature, "feature"\);/.test(graphSource)
+  && /if \(grants\.item\) await grantSlate\(actor, grants\.item, "item"\);/.test(graphSource)
+    ? "yes" : "no", "yes");
+check("through the setup routine's own slate shape",
+  /import \{ slateData \} from "\.\/setup\.mjs";/.test(graphSource) ? "yes" : "no", "yes");
+check("and a slate nobody built is refused rather than silently skipped",
+  /CARDRPG\.Level\.NoSlate/.test(graphSource) ? "yes" : "no", "yes");
 
 /* -------------------------------------------- */
 

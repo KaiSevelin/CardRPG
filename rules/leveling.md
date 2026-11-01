@@ -246,7 +246,7 @@ one thing instead of another.
 | **Skill card** | Add one, or upgrade one ([skill-rules.md](skill-rules.md) §8) | |
 | **Training** | A tool type, at the full bonus instead of +1 | Skill rules §2 already says training comes from the Way trees |
 | **Know-how** | A situation you have **advantage** in | A background gives one; a Way gives more |
-| **Feature** | A feature slate, passive or active | Bounded by bonus groups (§5) |
+| **Feature** | A feature slate, passive or active | Bounded by bonus groups (§5). **[BUILT 2026-11-01]** — and a granted feature carries text only, never a figure: see below |
 | **Obligation** | A feature you **cannot remove**, binding in text, in the action deck or in the fate deck | What you owe for what you were taught — see below |
 | **Item** | A slate you keep | For signature gear a Way grants, not ordinary loot |
 | **Prune** | Remove one card from a deck, permanently | The only way to drop a dead card (§8). **[BUILT 2026-11-01]** — the one reward that asks the player a question, since only they know which card died |
@@ -684,8 +684,14 @@ needs migrating.
 > character has walked are derived too.
 >
 > **A card is the one exception, and it has to be.** A number can be recomputed every time the sheet
-> is prepared; a card is a document in a deck, so it is created once and it stays created. That
-> asymmetry is why `grants.card` is the only key the level-up acts on.
+> is prepared; a card is a document in a deck, so it is created once and it stays created.
+>
+> **[2026-11-01] The same asymmetry decides where a Signature's numbers live.** A feature or
+> item slate is a document too, so a figure written on one is a figure that can be deleted.
+> Half-mage's *One Trick* is *"2 spell slots, and you may prepare from any one school"*: the
+> **two slots sit on the node** and the **sentence sits on the slate**. A granted slate carrying
+> a number would put part of a character outside the guarantee this section makes, so none of
+> them does, and the validator refuses one that tries.
 
 ## 10. Open
 

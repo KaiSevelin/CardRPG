@@ -8,7 +8,9 @@
 
 import { CARDRPG } from "../config.mjs";
 import { available } from "../decks.mjs";
-import { ownedIds, grantsOf, levelOf, titleOf, waysOf, frontier } from "../graph.mjs";
+import {
+  ownedIds, grantsOf, levelOf, titleOf, tacticOf, waysOf, frontier
+} from "../graph.mjs";
 
 const fields = foundry.data.fields;
 
@@ -173,6 +175,9 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
 
     this.level = levelOf(owned);
     this.title = titleOf(owned);
+    /* One Tactic, the deepest title's, derived rather than granted -- way-cards 2.5 says you only
+     * ever have that one, and a slate per title would accumulate them. */
+    this.tactic = tacticOf(owned);
     this.waysOwned = waysOf(owned);
     this.frontier = frontier(owned);
     /* Trainings and know-how are additive rather than overwritten: a background gives some and the

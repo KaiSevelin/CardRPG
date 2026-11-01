@@ -44,6 +44,17 @@
           </span>
         {{/if}}
       </span>
+      {{#if system.tactic}}
+        {{!--
+          Your Tactic is derived from your deepest title and you only ever have one (way-cards 2.5),
+          so it belongs on the sheet as a standing fact rather than in the feature list where it
+          would look like something you could drop.
+        --}}
+        <span class="cr-tactic" data-tooltip="{{system.tactic.text}}">
+          <strong>{{system.tactic.name}}</strong>
+          <span class="cr-tactic__text">{{system.tactic.text}}</span>
+        </span>
+      {{/if}}
     </div>
   </header>
 

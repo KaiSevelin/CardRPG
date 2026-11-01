@@ -110,6 +110,19 @@ export function advantageFor(actor, target, {
     advantage = true;
     reasons.push("attacking while Invisible");
   }
+  /*
+   * A feature granting advantage against anyone carrying an opening. Unlike the `when` clause
+   * below, this reads ANY opening -- it is the Thief's whole claim, and the reason the Thief is the
+   * node a party sets up *for* rather than one that sets up for itself.
+   */
+  if (!advantage && targetConditions.some(key => CARDRPG.openings.includes(key))) {
+    const slate = (actor?.items ?? []).find(i =>
+      i.type === "feature" && i.system.advantage?.vsOpening);
+    if (slate) {
+      advantage = true;
+      reasons.push(`${slate.name}: the target carries an opening`);
+    }
+  }
   if (when?.advantage && when.needs && carries(target, when.needs)) {
     advantage = true;
     const label = game.i18n.localize(CARDRPG.conditions[when.needs]?.label ?? when.needs);

@@ -562,11 +562,13 @@ this project, in pixels.
 ## 9. Open
 
 - **Swing-percentage toggle** (§4.2): default on or off.
-- **[OPEN]** Feature and spell grants would create slates; the pane reads them out but creates
-  nothing, and no node in the built graph grants either. The reason is content rather than code:
-  **not one of the 48 Signatures exists as a feature or a formula yet**, so there is nothing for a
-  node to point at. The validator refuses a node that grants a *card* nobody built, and the same
-  check is waiting for these two.
+- **[DONE 2026-11-01]** Feature and item grants create slates, and all twelve of Way of Shade's
+  Signatures exist as content for a node to point at. The pane prints the Signature and the
+  Tactic with its text, and a Signature the engine cannot work out says so
+  ([../rules/way-cards.md](../rules/way-cards.md) §2.2).
+- **[OPEN]** **Spell** grants still create nothing: a formula is a slate like the others, but no
+  node in the built graph grants one and Way of Mind's schools are not authored. Way of Shade's
+  *Half-mage* grants slots rather than formulas, which is the node working as written.
 - **[OPEN]** Nothing has run the pane in Foundry. Two failure modes were fixed by reading rather
   than by playing — a window id shared between two actors, and a Cytoscape container with no height
   — and that is not the same as having seen it work.
