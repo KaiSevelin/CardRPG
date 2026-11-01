@@ -3773,6 +3773,103 @@ check("buttons and handlers that do not meet",
 /* A parse that found nothing would pass the line above while checking nothing at all. */
 check("applications whose wiring was compared", APPS.length, 4);
 
+/* ---- the art list stays in step with the content ---- */
+
+/*
+ * The brief is **generated** from the same content the game reads, so a piece that exists in the
+ * game is in the brief and a piece in the brief exists in the game. A hand-written list would have
+ * gone stale the first time somebody added a card -- and this project added a hundred and sixty of
+ * them in a fortnight.
+ *
+ * What is checked is the committed file against today's content, because a stale list is a brief
+ * somebody draws the wrong things from.
+ */
+const artList = fs.readFileSync(path.join(root, "../art-list.md"), "utf8");
+const artable = [
+  content.WARRIOR_DECK, content.GOBLIN_DECK, content.COMMON_POOL, content.WAY_CARDS,
+  content.SHADE_POOL, content.STRENGTH_POOL, content.WARRIOR_SKILLS, content.WILD_MAGIC,
+  content.FORMULAS, content.SHADOW_FORMULAS, content.MIND_POOL, content.FAITH_POOL,
+  content.FEATURES, content.ITEMS.filter(i => !i.npc), content.NPC_GEAR ?? [],
+  ...Object.entries(content).filter(([k]) => k.endsWith("_SIGNATURES")).map(([, v]) => v)
+].flat();
+check("pieces of content that take art", artable.length, 305);
+check("the art list counts the same",
+  Number(/\*\*(\d+) pieces\*\*/.exec(artList)?.[1] ?? 0), artable.length);
+/* Every piece is a row, so nothing is quietly left out of the brief. */
+const listed = new Set([...artList.matchAll(/^\| [ ✓] \| \*\*(.+?)\*\* \|/gm)]
+  .map(m => m[1]));
+check("pieces missing from the art list",
+  artable.filter(e => !listed.has(e.name)).map(e => e.name).slice(0, 5).join(", ") || "none",
+  "none");
+/* And the count of what is drawn is the count of what carries a path. */
+check("the list agrees on what is wired up",
+  Number(/of which \*\*(\d+)\*\* are wired up/.exec(artList)?.[1] ?? -1),
+  artable.filter(e => e.art).length);
+/*
+ * And the brief reads as English. A condition is printed by its NAME, not its key: an artist should
+ * not have to work out that `offBalance` is Off Balance, and a camelCase word in a brief is the one
+ * reliable sign that a key leaked through instead of a label.
+ */
+/*
+ * The first version of this never matched anything, and invisibly: it was written through a layer
+ * of escaping that turned its `\b` word boundaries into literal BACKSPACE characters, so the
+ * pattern was unsatisfiable and reported "none" for a list full of keys. The break test is the
+ * only reason that was ever found -- a check that cannot fail looks exactly like a check that
+ * passes, and this one looked right in every reading of the source.
+ */
+/*
+ * A DATA row: the one whose first cell is the drawn-yet tick and whose second is a bold name.
+ * Nineteen tables' worth of headers and rules are rows too, and so is the "what to supply" table
+ * at the top -- which has bold in its second cell and caught a looser pattern twice.
+ */
+const briefs = [...artList.matchAll(/^\| [ ✓] \| \*\*[^|]*\|([^|]*)\|/gm)].map(m => m[1]);
+const leaked = briefs.flatMap(text =>
+  [...text.matchAll(/\b([a-z]+[A-Z][a-zA-Z]*)\b/g)].map(m => m[1]));
+/* A pattern that matched no rows at all would report "none" for any list whatsoever. */
+check("briefs the check actually read", briefs.length, 305);
+check("keys that leaked into the brief",
+  leaked.length ? [...new Set(leaked)].join(", ") : "none", "none");
+
+/*
+ * And the filenames, which are what an artist names files by.
+ *
+ * Lowercase, hyphens between words, nothing else -- an apostrophe left in the slug turns
+ * *Accuser's Ring* into `accuser-s-ring`, which is the kind of thing nobody notices until a
+ * hundred and fifty files have been named that way and the brief is the only record of it.
+ */
+const { slug } = await import("./art-list.mjs");
+const rows = [...artList.matchAll(/^\| [ \u2713] \| \*\*(.+?)\*\* \|[^|]*\| `([^`]+)` \|/gm)]
+  .map(m => ({ name: m[1], path: m[2] }));
+check("file paths in the brief", rows.length, 305);
+/*
+ * "Lowercase words and hyphens" could not tell `accuser-s-ring` from `accusers-ring`: both are
+ * lowercase words separated by hyphens, and `s` is a word. The rule that holds is that a path IS
+ * the slug of its name -- checked with the generator's own `slug`, because a copy of a rule is a
+ * second rule and two rules drift.
+ */
+const badPaths = rows.filter(r => !r.path.endsWith(`/${slug(r.name)}.webp`));
+check("paths that are not the slug of their name",
+  badPaths.length ? badPaths.slice(0, 5).map(r => `${r.name} -> ${r.path}`).join(", ") : "none",
+  "none");
+
+/*
+ * And the rule itself, ASKED. The check above shares its implementation with the generator, so a
+ * change to the slug rule moves both and they go on agreeing -- it cannot catch the one mistake
+ * most likely to be made here. These can: an apostrophe is dropped rather than hyphenated, because
+ * *Accuser's Ring* filing itself as `accuser-s-ring` is the sort of thing nobody notices until a
+ * hundred and fifty files are named that way.
+ */
+check("an apostrophe is dropped, not hyphenated", slug("Accuser's Ring"), "accusers-ring");
+check("and a curly one too", slug("Accuser\u2019s Ring"), "accusers-ring");
+check("spaces become one hyphen", slug("The Club and the Line"), "the-club-and-the-line");
+check("punctuation does not survive", slug("Hit & Run!"), "hit-run");
+check("and nothing starts or ends with a hyphen", slug("-- Edge Case --"), "edge-case");
+
+/* The ratio and the safe area, which are the two things art cannot be redone without. */
+check("the brief states the ratio", /\| Ratio \| \*\*5:7\*\*/.test(artList) ? "yes" : "no", "yes");
+check("and the safe area the face sits on",
+  /\*\*top 18%\*\* and \*\*bottom 34%\*\*/.test(artList) ? "yes" : "no", "yes");
+
 /* ---- how a card and the graph look ---- */
 
 /*
