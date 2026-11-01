@@ -27,7 +27,7 @@
 
 import {
   ALL_TACTICS,
-  GRAPH, SUCCESSORS, DEPTH, ROOT,
+  rebuildGraph, GRAPH, SUCCESSORS, DEPTH, ROOT,
   ownedIds, closedIds, reachable, canTake, stateOf,
   levelOf, titleOf, describeGrants, wouldClose, takeNode
 } from "./graph.mjs";
@@ -149,7 +149,11 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
     actions: {
       accept: LevelUpPane.#onAccept,
       cancelPick: LevelUpPane.#onCancelPick,
-      refit: LevelUpPane.#onRefit
+      refit: LevelUpPane.#onRefit,
+      /* Authoring, not playing: these only appear with the world setting on. */
+      editNode: LevelUpPane.#onEditNode,
+      addNode: LevelUpPane.#onAddNode,
+      dropGraphNode: LevelUpPane.#onDropGraphNode
     }
   };
 
@@ -179,7 +183,13 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
       },
       layouts: Object.entries(LAYOUTS).map(([key, l]) => ({
         key, label: game.i18n.localize(l.label), selected: key === this.layout
-      }))
+      })),
+      /*
+       * The authoring lock. A graph edited under a running campaign changes characters who are not
+       * in the room, because everything about them derives from the nodes they own -- so this is a
+       * world setting a GM turns on deliberately, and the editor does not exist without it.
+       */
+      editing: game.user.isGM && game.settings.get("cardrpg", "graphEditing")
     };
   }
 
@@ -287,6 +297,12 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
     const owned = ownedIds(this.actor);
     const closed = closedIds(owned);
     const state = stateOf(id, owned, closed);
+    /*
+     * Whatever was tapped last, available or not. Spending a level needs a node you may take;
+     * AUTHORING needs any node at all -- a GM edits the ones a character can never reach as often
+     * as the ones they can -- so the two are tracked apart rather than one being widened.
+     */
+    this.inspecting = id;
     if (state === "available") return this.#pick(id);
 
     const why = {
@@ -295,6 +311,172 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
       closed: "CARDRPG.Level.Closed"
     }[state];
     ui.notifications?.info(game.i18n.format(why, { name: GRAPH.get(id)?.name ?? id }));
+  }
+
+  /* -------------------------------------------- */
+  /*  Authoring                                   */
+  /* -------------------------------------------- */
+
+  /**
+   * Edit a node, or add one.
+   *
+   * The whole node is a form, because a node IS its fields -- there is no partial edit that makes
+   * sense when `after` decides where it sits and `grants` decides what it is for. `after` is a
+   * multi-select over every other node rather than a drawn edge: the graph is stored backwards
+   * (leveling 8), a node names what it follows, and a list of ids is that stored form exactly.
+   *
+   * @param {string|null} id the node to edit, or null to add one
+   */
+  async #editNode(id) {
+    const node = id ? GRAPH.get(id) : null;
+    const others = [...GRAPH.values()].filter(n => n.id !== id)
+      .sort((a, b) => (a.name ?? a.id).localeCompare(b.name ?? b.id));
+
+    const after = new Set(node?.after ?? []);
+    const options = others.map(n =>
+      `<option value="${n.id}"${after.has(n.id) ? " selected" : ""}>`
+      + `${foundry.utils.escapeHTML(n.name ?? n.id)} &mdash; ${n.id}</option>`).join("");
+    const grants = node?.grants ?? {};
+    const numberRow = (key, label) =>
+      `<label>${label} <input type="number" name="${key}" value="${grants[key] ?? ""}"></label>`;
+
+    const answer = await foundry.applications.api.DialogV2.prompt({
+      window: { title: node ? `Edit ${node.name ?? id}` : "A new node" },
+      position: { width: 560 },
+      content: `<div class="cardrpg cr-nodeedit">
+        <label>Id <input type="text" name="id" value="${id ?? ""}"
+          ${id ? "readonly" : ""} placeholder="shade.thief.lockpicks"
+          data-tooltip="A public interface: an add-on depends on it, so it is renamed about as freely as a database column."></label>
+        <label>Name <input type="text" name="name" value="${foundry.utils.escapeHTML(node?.name ?? "")}"></label>
+        <label>Follows <select name="after" multiple size="8">${options}</select></label>
+        <label><input type="checkbox" name="all" ${node?.all ? "checked" : ""}>
+          Needs every one of them &mdash; how depth takes commitment</label>
+        <fieldset><legend>If it is a major node</legend>
+          <label>Title <input type="text" name="title" value="${foundry.utils.escapeHTML(node?.title ?? "")}"></label>
+          <label>Axis <input type="text" name="axis" value="${foundry.utils.escapeHTML(node?.axis ?? "")}"></label>
+          <label>Resource <input type="text" name="resource" value="${foundry.utils.escapeHTML(node?.resource ?? "")}"></label>
+          <label>Signature <input type="text" name="signature" value="${foundry.utils.escapeHTML(node?.signature ?? "")}"></label>
+          <label>Tactic <input type="text" name="tactic" value="${foundry.utils.escapeHTML(node?.tactic ?? "")}"></label>
+        </fieldset>
+        <fieldset><legend>What it hands over</legend>
+          <label>Card <input type="text" name="card" value="${foundry.utils.escapeHTML(grants.card ?? "")}"></label>
+          <label>Feature <input type="text" name="feature" value="${foundry.utils.escapeHTML(grants.feature ?? "")}"></label>
+          <label>Item <input type="text" name="item" value="${foundry.utils.escapeHTML(grants.item ?? "")}"></label>
+          <label>Formula <input type="text" name="spell" value="${foundry.utils.escapeHTML(grants.spell ?? "")}"></label>
+          <label>Training <input type="text" name="training" value="${foundry.utils.escapeHTML(grants.training ?? "")}"></label>
+          <label>Know-how <input type="text" name="knowHow" value="${foundry.utils.escapeHTML(grants.knowHow ?? "")}"></label>
+          ${["health", "handSize", "carry", "deckMax", "spellSlots", "restTokens", "prune"]
+            .map(k => numberRow(k, k)).join("")}
+        </fieldset>
+      </div>`,
+      ok: {
+        label: node ? "Save it" : "Add it",
+        callback: (event, button) => {
+          const f = button.form.elements;
+          const text = key => (f[key]?.value ?? "").trim();
+          const num = key => (f[key]?.value === "" ? undefined : Number(f[key].value));
+          const grant = {};
+          for (const key of ["card", "feature", "item", "spell", "training", "knowHow"]) {
+            if (text(key)) grant[key] = text(key);
+          }
+          for (const key of ["health", "handSize", "carry", "deckMax", "spellSlots", "restTokens",
+            "prune"]) {
+            if (num(key) !== undefined) grant[key] = num(key);
+          }
+          return {
+            id: text("id"),
+            name: text("name"),
+            after: [...f.after.selectedOptions].map(o => o.value),
+            ...(f.all.checked ? { all: true } : {}),
+            ...(text("title") ? { title: text("title") } : {}),
+            ...(text("axis") ? { axis: text("axis") } : {}),
+            ...(text("resource") ? { resource: text("resource") } : {}),
+            ...(text("signature") ? { signature: text("signature") } : {}),
+            ...(text("tactic") ? { tactic: text("tactic") } : {}),
+            ...(Object.keys(grant).length ? { grants: grant } : {})
+          };
+        }
+      },
+      rejectClose: false
+    });
+    if (!answer?.id) return;
+    await this.#commit({ replace: answer });
+  }
+
+  /**
+   * Write an edit set to the world, but only if the result is still a graph.
+   *
+   * `rebuildGraph` refuses the whole set rather than applying what it can, so this saves the
+   * setting **after** the rebuild succeeds -- a stored edit nobody can load would make the world
+   * unopenable on the next reload, which is the one failure mode worth engineering against.
+   */
+  async #commit({ replace = null, remove = null } = {}) {
+    const edits = foundry.utils.deepClone(game.settings.get("cardrpg", "graphEdits") ?? {});
+    edits.added ??= [];
+    edits.removed ??= [];
+
+    if (replace) {
+      edits.added = edits.added.filter(n => n.id !== replace.id).concat([replace]);
+      edits.removed = edits.removed.filter(id => id !== replace.id);
+    }
+    if (remove) {
+      edits.added = edits.added.filter(n => n.id !== remove);
+      if (!edits.removed.includes(remove)) edits.removed.push(remove);
+    }
+
+    const faults = rebuildGraph(edits);
+    if (faults.length) {
+      return ui.notifications.error(faults.join("; "));
+    }
+    await game.settings.set("cardrpg", "graphEdits", edits);
+    this.render();
+  }
+
+  static async #onEditNode() {
+    if (!this.#canAuthor()) return;
+    await this.#editNode(this.tentative ?? this.inspecting ?? null);
+  }
+
+  static async #onAddNode() {
+    if (!this.#canAuthor()) return;
+    await this.#editNode(null);
+  }
+
+  /**
+   * Take a node out of the graph.
+   *
+   * **Refused while anybody owns it.** A character stores node ids and derives everything from
+   * them, so removing an owned node does not un-grant anything -- it makes the id point at nothing,
+   * and the character silently loses whatever it gave with no record that it ever did. Correcting
+   * the character is a different job and the sheet already does it.
+   */
+  static async #onDropGraphNode() {
+    if (!this.#canAuthor()) return;
+    const id = this.tentative ?? this.inspecting ?? null;
+    if (!id) return ui.notifications.info("Pick a node first.");
+
+    const holders = game.actors.filter(a => (a.system?.nodes ?? []).includes(id));
+    if (holders.length) {
+      return ui.notifications.warn(
+        `${GRAPH.get(id)?.name ?? id} is owned by ${holders.map(a => a.name).join(", ")}. `
+        + "Take it off them first: removing it here would leave their id pointing at nothing.");
+    }
+    const ok = await foundry.applications.api.DialogV2.confirm({
+      window: { title: `Remove ${GRAPH.get(id)?.name ?? id}?` },
+      content: `<div class="cardrpg"><p>Anything that follows it must follow something else, or the
+        rebuild is refused and nothing changes.</p></div>`,
+      rejectClose: false
+    });
+    if (ok) await this.#commit({ remove: id });
+  }
+
+  /** Authoring is a world setting, and the pane says so rather than hiding the reason. */
+  #canAuthor() {
+    if (game.user.isGM && game.settings.get("cardrpg", "graphEditing")) return true;
+    ui.notifications.info(
+      "Editing the graph is off. It changes every character who owns the node, so it is a world "
+      + "setting a GM turns on while authoring rather than during a campaign.");
+    return false;
   }
 
   /** Marking a second node unmarks the first: one node, or none. */

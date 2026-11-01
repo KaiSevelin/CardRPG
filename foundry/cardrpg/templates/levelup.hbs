@@ -33,6 +33,23 @@
     <button type="button" data-action="refit" data-tooltip="{{localize 'CARDRPG.Level.Refit'}}">
       {{localize "CARDRPG.Level.RefitShort"}}
     </button>
+
+    {{#if editing}}
+      {{!--
+        Authoring, and the pane says so. The graph is the one thing here that is not about this
+        character: changing a node changes everybody who owns it, with no event and no log line,
+        which is why this is a world setting rather than a GM permission.
+      --}}
+      <span class="cr-authoring" data-tooltip="This world has graph editing on. Everything about a character derives from the nodes they own, so a change here reaches every one of them.">
+        <strong>Authoring</strong>
+        <button type="button" data-action="editNode"
+                data-tooltip="Edit the node you last tapped. The whole node is the form: a node IS its fields.">Edit node</button>
+        <button type="button" data-action="addNode"
+                data-tooltip="A new node. It names what it follows; nothing names its successors.">Add</button>
+        <button type="button" data-action="dropGraphNode"
+                data-tooltip="Remove the node you last tapped. Refused while any character owns it.">Remove</button>
+      </span>
+    {{/if}}
   </header>
 
   <div class="cr-levelup__body">

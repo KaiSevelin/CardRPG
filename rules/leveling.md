@@ -638,7 +638,28 @@ The graph as it stands: **Way roots at level 1, the titles off a trunk at 5, the
 > investment reaches Assassin"* showing up as a number, and the validator refuses any title that is
 > dearer **without** the flag.
 
-## 8. Add-on compendiums
+## 8. Add-on compendiums  **[BUILT 2026-11-01]**
+
+> **The assembly exists now, and a world is a source.** `NODES` was one array read once at import,
+> so the graph described here as *assembled at runtime* was in fact authored as one tree and nothing
+> could change a node at all — not a sheet, not a macro, not the console. The engine now reads an
+> assembled list, and core content is never written to; a world's own nodes join it at `ready`,
+> which is the only moment a setting can be read.
+>
+> **Both prices this section names are charged.** Every prerequisite must resolve and the whole
+> thing must stay acyclic, and a third comes with letting a world **replace** a node rather than
+> only add one: two nodes with one id are two different things wearing a name an add-on depends on.
+> A bad edit set is refused **whole** — a half-applied graph is worse than a rejected one, because a
+> character derives everything from it.
+>
+> **And it is locked, because a graph is not a card.** Editing a node changes every character who
+> owns it, with no event and no log line: everything about them derives from that list (§9). So
+> authoring is a world setting, off by default, and the pane's editor does not exist without it —
+> not a railing against a mistake, but a statement that the world is being **authored** rather than
+> played. A node anybody owns cannot be removed at all, because removing it would not un-grant
+> anything; it would leave the id pointing at nothing and the character would silently lose what it
+> gave.
+
 
 **A branch may be added from outside.** An add-on can hang new specializations off any existing node,
 so *Way of Shade → Thief → …* can gain an *Infiltrator* branch that core never knew about, and a new

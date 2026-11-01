@@ -13,6 +13,8 @@ import { CardRPGTray, registerTrayHooks } from "./module/tray.mjs";
 import { LevelUpPane } from "./module/levelup.mjs";
 import * as decks from "./module/decks.mjs";
 import { answerArrival } from "./module/resolve.mjs";
+/* The graph is assembled at runtime from core content plus whatever the world has added. */
+import { rebuildGraph } from "./module/graph.mjs";
 import { CharacterData, NpcData } from "./module/data/actors.mjs";
 import { ItemSlateData, FeatureSlateData, SpellSlateData } from "./module/data/items.mjs";
 import {
@@ -134,6 +136,36 @@ function registerSettings() {
     default: true
   });
 
+  /*
+   * **The authoring lock.** A world may edit the levelling graph, and a graph edited under a
+   * running campaign is the one thing in this system that can quietly change a character who is
+   * not in the room: everything about them derives from the nodes they own (leveling 9), so a
+   * changed node changes their Health, title, Tactic and frontier with no event and no log line.
+   *
+   * So editing is off by default and the GM turns it on deliberately. It is not a safety railing
+   * against a mistake; it is a statement that this world is being AUTHORED rather than played.
+   */
+  game.settings.register("cardrpg", "graphEditing", {
+    name: "CARDRPG.Settings.GraphEditing.Name",
+    hint: "CARDRPG.Settings.GraphEditing.Hint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false
+  });
+
+  /*
+   * What this world has changed about the graph: nodes it replaced or added, and core nodes it
+   * dropped. leveling.md 8 describes the graph as assembled at runtime from every installed
+   * source; this is the world's own source, and `NODES` is never touched.
+   */
+  game.settings.register("cardrpg", "graphEdits", {
+    scope: "world",
+    config: false,
+    type: Object,
+    default: { added: [], removed: [] }
+  });
+
   game.settings.register("cardrpg", "setupMacroMade", {
     scope: "world",
     config: false,
@@ -186,6 +218,24 @@ Hooks.once("ready", async () => {
       "system.levels.pending": Math.max(0, (actor.system.levels?.pending ?? 0) + n)
     })
   };
+
+  /*
+   * Assemble the graph before anything reads it. The engine starts on core content, because
+   * graph.mjs is imported long before a setting can be read -- so this is the moment the world's
+   * own nodes join it, and the only moment they can.
+   *
+   * A bad edit set is refused whole and announced: a half-applied graph is worse than a rejected
+   * one, since a character derives everything from it.
+   */
+  const edits = game.settings.get("cardrpg", "graphEdits") ?? {};
+  const faults = rebuildGraph(edits);
+  if (faults.length) {
+    console.error("Card RPG | graph edits refused:", faults);
+    if (game.user.isGM) {
+      ui.notifications.error(game.i18n.format("CARDRPG.Level.GraphRefused",
+        { faults: faults.join("; ") }), { permanent: true });
+    }
+  }
 
   // Overloaded mutates card state, so it fires on the transition rather than on every recompute.
   Hooks.on("updateActor", async (actor, change) => {

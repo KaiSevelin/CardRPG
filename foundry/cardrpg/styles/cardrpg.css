@@ -1148,6 +1148,14 @@
 /* The Tactic: always on, never a number, and never something you can drop. */
 /* A god asks something of you for ever, and a lone god gives something back. Both are standing
    facts, printed like the Tactic above them because that is what they are. */
+/* Authoring the graph: deliberately not styled like the rest of the pane. */
+.cr-authoring { display: inline-flex; gap: 0.3rem; align-items: center; margin-left: auto;
+  padding: 0.1rem 0.3rem; box-shadow: 0 0 0 1px #c9a227 inset; font-size: 0.9em; }
+.cr-nodeedit label { display: block; margin-bottom: 0.2rem; }
+.cr-nodeedit fieldset { margin-top: 0.4rem; }
+.cr-nodeedit fieldset label { display: inline-block; margin-right: 0.5rem; }
+.cr-nodeedit input[type="text"] { width: 16rem; }
+.cr-nodeedit input[type="number"] { width: 4rem; }
 /* What each half costs, side by side, because the two are a comparison. */
 .cr-costs { display: flex; gap: 1rem; }
 .cr-costs__half { display: flex; gap: 0.4rem; align-items: center; font-size: 0.9em; }

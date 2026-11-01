@@ -60,39 +60,32 @@ export const POOL = new Map([...COMMON_POOL, ...WAY_CARDS, ...SHADE_POOL, ...STR
 export const SPELLS = new Map([...MIND_POOL, ...FAITH_POOL, ...FORMULAS, ...SHADOW_FORMULAS,
   ...SIGNATURES.filter(s => s.kind === "spell")].map(f => [f.name, f]));
 
+/**
+ * The nodes in play: core content, plus whatever a world has added or replaced.
+ *
+ * leveling.md 8 describes the graph as **assembled at runtime** from every installed source rather
+ * than authored as one tree, and this is that assembly. `NODES` is the core array and never
+ * changes; this is the list the engine actually reads, and `rebuildGraph` is the only thing that
+ * replaces its contents.
+ *
+ * Mutated in place rather than reassigned, because every importer holds this binding: a module
+ * that got the array at import time has to see the same array afterwards, or half the engine would
+ * be answering questions about a graph nobody is playing on.
+ */
+export const LIVE_NODES = [...NODES];
+
 /** Every node by id. */
-export const GRAPH = new Map(NODES.map(n => [n.id, n]));
+export const GRAPH = new Map();
 
 /**
  * Read forwards, stored backwards (leveling 8): a node names what it follows and nothing names its
  * successors, which is what lets an add-on hang a branch off core content without core knowing.
  * The forward index is therefore computed, never authored.
  */
-export const SUCCESSORS = (() => {
-  const out = new Map(NODES.map(n => [n.id, []]));
-  for (const node of NODES) {
-    for (const prereq of node.after ?? []) out.get(prereq)?.push(node.id);
-  }
-  return out;
-})();
+export const SUCCESSORS = new Map();
 
 /** Longest path from the root, which is what a layered layout and the sideways rule both want. */
-export const DEPTH = (() => {
-  const depth = new Map();
-  const visit = id => {
-    if (depth.has(id)) return depth.get(id);
-    const node = GRAPH.get(id);
-    const after = node?.after ?? [];
-    /* Set before recursing, so a cycle in bad content returns rather than overflowing the stack --
-     * the validator is what refuses it, and this must survive long enough to be told off. */
-    depth.set(id, 0);
-    const d = after.length ? Math.max(...after.map(visit)) + 1 : 0;
-    depth.set(id, d);
-    return d;
-  };
-  for (const node of NODES) visit(node.id);
-  return depth;
-})();
+export const DEPTH = new Map();
 
 /**
  * The **cheapest legal route** to each node: the smallest set of nodes you must already own before
@@ -110,36 +103,130 @@ export const DEPTH = (() => {
  *     predecessor but the **union** of all of them. Assassin measured as a tier-2 title one level
  *     early until this existed, and that was the measurement being wrong rather than the content.
  */
-export const REACH = (() => {
-  const reach = new Map();
-  const visit = id => {
-    if (reach.has(id)) return reach.get(id);
+export const REACH = new Map();
+
+/* -------------------------------------------- */
+/*  Assembling the graph                        */
+/* -------------------------------------------- */
+
+/**
+ * Fill the four indexes from `LIVE_NODES`. Every map is cleared and refilled rather than replaced,
+ * so the bindings every other module imported stay the ones being answered from.
+ */
+function reindex() {
+  GRAPH.clear();
+  for (const node of LIVE_NODES) GRAPH.set(node.id, node);
+
+  SUCCESSORS.clear();
+  for (const node of LIVE_NODES) SUCCESSORS.set(node.id, []);
+  for (const node of LIVE_NODES) {
+    for (const prereq of node.after ?? []) SUCCESSORS.get(prereq)?.push(node.id);
+  }
+
+  DEPTH.clear();
+  const deep = id => {
+    if (DEPTH.has(id)) return DEPTH.get(id);
+    const after = GRAPH.get(id)?.after ?? [];
+    /* Set before recursing, so a cycle in bad content returns rather than overflowing the stack --
+     * `graphFaults` is what refuses it, and this must survive long enough to be told off. */
+    DEPTH.set(id, 0);
+    const d = after.length ? Math.max(...after.map(deep)) + 1 : 0;
+    DEPTH.set(id, d);
+    return d;
+  };
+  for (const node of LIVE_NODES) deep(node.id);
+
+  REACH.clear();
+  const cheapest = id => {
+    if (REACH.has(id)) return REACH.get(id);
     const node = GRAPH.get(id);
     const after = node?.after ?? [];
-    reach.set(id, new Set());                       // cycle guard; the validator refuses cycles
+    REACH.set(id, new Set());                       // cycle guard; `graphFaults` refuses cycles
     let out;
     if (!after.length) out = new Set();
     else if (node.all) {
       /* Every one of them, so the cost is the union of what each needs plus each itself. */
       out = new Set();
       for (const prereq of after) {
-        for (const owned of visit(prereq)) out.add(owned);
+        for (const owned of cheapest(prereq)) out.add(owned);
         out.add(prereq);
       }
     } else {
       /* Any one of them, so the cheapest. */
       out = null;
       for (const prereq of after) {
-        const via = new Set([...visit(prereq), prereq]);
+        const via = new Set([...cheapest(prereq), prereq]);
         if (!out || via.size < out.size) out = via;
       }
     }
-    reach.set(id, out);
+    REACH.set(id, out);
     return out;
   };
-  for (const node of NODES) visit(node.id);
-  return reach;
-})();
+  for (const node of LIVE_NODES) cheapest(node.id);
+}
+
+reindex();
+
+/**
+ * What is wrong with a proposed set of nodes, as sentences.
+ *
+ * leveling.md 8 names both of these as the price of a graph assembled at runtime: *every
+ * prerequisite must resolve and the whole thing must stay acyclic*. A third is the cost of letting
+ * a world replace a node rather than only add one -- two nodes with one id is two different things
+ * wearing a name an add-on depends on.
+ *
+ * Nothing is committed until this comes back empty, because a half-applied graph is worse than a
+ * rejected one: a character derives everything from it.
+ */
+export function graphFaults(nodes) {
+  const faults = [];
+  const byId = new Map();
+  for (const node of nodes) {
+    if (!node?.id) { faults.push("a node with no id"); continue; }
+    if (byId.has(node.id)) faults.push(`two nodes share the id ${node.id}`);
+    byId.set(node.id, node);
+  }
+  for (const node of nodes) {
+    for (const prereq of node.after ?? []) {
+      if (!byId.has(prereq)) faults.push(`${node.id} follows ${prereq}, which does not exist`);
+    }
+  }
+  /* Acyclic, by colouring: grey means "on the stack", which is what a back edge arrives at. */
+  const colour = new Map();
+  const walk = id => {
+    if (colour.get(id) === "black") return;
+    if (colour.get(id) === "grey") { faults.push(`${id} is in a cycle`); return; }
+    colour.set(id, "grey");
+    for (const prereq of byId.get(id)?.after ?? []) walk(prereq);
+    colour.set(id, "black");
+  };
+  for (const node of nodes) walk(node.id);
+  return [...new Set(faults)];
+}
+
+/**
+ * Assemble the graph from core content plus a world's own edits, and reindex.
+ *
+ * `added` replaces a node when it carries an id core already uses and adds one when it does not;
+ * `removed` drops a core node. Both are refused outright if the result would not be a graph, and
+ * the core array is never touched -- so a bad edit set is a message and not a broken world.
+ *
+ * @returns {string[]} the faults, empty when the rebuild was committed
+ */
+export function rebuildGraph({ added = [], removed = [] } = {}) {
+  const merged = new Map(NODES.map(n => [n.id, n]));
+  for (const id of removed) merged.delete(id);
+  for (const node of added) merged.set(node.id, node);
+
+  const next = [...merged.values()];
+  const faults = graphFaults(next);
+  if (faults.length) return faults;
+
+  LIVE_NODES.length = 0;
+  LIVE_NODES.push(...next);
+  reindex();
+  return [];
+}
 
 /**
  * The earliest level at which a node can be held: the nodes it needs plus itself, and **not** the
@@ -183,7 +270,7 @@ export function closedIds(owned) {
   }
   const closed = new Set();
   if (!sworn.size) return closed;
-  for (const node of NODES) {
+  for (const node of LIVE_NODES) {
     if (!node.exclusive || !sworn.has(node.exclusive)) continue;
     if ((node.creed ?? node.id) !== sworn.get(node.exclusive)) closed.add(node.id);
   }
@@ -200,7 +287,7 @@ export function reachable(owned, closed = closedIds(owned)) {
   let grew = true;
   while (grew) {
     grew = false;
-    for (const node of NODES) {
+    for (const node of LIVE_NODES) {
       if (live.has(node.id) || closed.has(node.id)) continue;
       if (satisfied(node, live)) { live.add(node.id); grew = true; }
     }
@@ -228,7 +315,7 @@ export function canTake(id, owned, closed = closedIds(owned)) {
 
 /** Every node takeable this level: the frontier of §3. */
 export function frontier(owned, closed = closedIds(owned)) {
-  return NODES.filter(n => canTake(n.id, owned, closed)).map(n => n.id);
+  return LIVE_NODES.filter(n => canTake(n.id, owned, closed)).map(n => n.id);
 }
 
 /**
@@ -402,7 +489,7 @@ export function wouldClose(id, owned) {
   if (!node?.exclusive) return [];
   const after = new Set([...owned, id]);
   const stillLive = reachable(after, closedIds(after));
-  return NODES
+  return LIVE_NODES
     .filter(n => !after.has(n.id) && !stillLive.has(n.id) && reachable(owned).has(n.id))
     .map(n => n.name ?? n.id);
 }

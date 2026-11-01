@@ -3773,6 +3773,150 @@ check("buttons and handlers that do not meet",
 /* A parse that found nothing would pass the line above while checking nothing at all. */
 check("applications whose wiring was compared", APPS.length, 4);
 
+/* ---- the graph is assembled, and a world may edit it ---- */
+
+/*
+ * leveling.md 8 describes the graph as **assembled at runtime** from every installed source rather
+ * than authored as one tree, and nothing implemented the assembly: `NODES` was one array read once
+ * at import, so nothing could change a node at all -- not a sheet, not a macro, not the console.
+ *
+ * It is assembled now, and the two prices that section names are paid: every prerequisite must
+ * resolve and the whole thing must stay acyclic. A third comes with letting a world REPLACE a node
+ * rather than only add one -- two nodes with one id is two different things wearing a name an
+ * add-on depends on.
+ */
+
+section("assembling the levelling graph");
+
+/* The record, where a reader of the add-on section will find it. */
+check("leveling marks the assembly built",
+  /^## 8\. Add-on compendiums {2}\*\*\[BUILT 2026-11-01\]\*\*$/m.test(levDoc) ? "yes" : "no",
+  "yes");
+check("and says why the editor is locked",
+  /a statement that the world is being \*\*authored\*\* rather than[\s>]+played/.test(levDoc)
+    ? "yes" : "no", "yes");
+
+/* The engine reads the assembled list, not the core array, or an edit would change nothing. */
+check("the engine reads the assembled list",
+  /export const LIVE_NODES = \[\.\.\.NODES\];/.test(graphSource) ? "yes" : "no", "yes");
+/*
+ * The word boundary is load-bearing: `NODES` is a SUFFIX of `LIVE_NODES`, so the first version of
+ * this matched the assembled list being refilled and reported the core array as written to. Third
+ * time a prefix or suffix has fooled a check in this session -- `decks.skills`, `strainx`, and now
+ * this one.
+ */
+check("and core content is never written to",
+  /NODES\.(push|splice|length =)/.test(graphSource) ? "no" : "yes", "yes");
+/* Maps are cleared and refilled, so every importer keeps answering from the binding it holds. */
+check("the indexes are refilled rather than replaced",
+  ["GRAPH.clear()", "SUCCESSORS.clear()", "DEPTH.clear()", "REACH.clear()"]
+    .filter(c => !graphSource.includes(c)).join(", ") || "none", "none");
+
+/* ---- what it refuses, asked rather than read ---- */
+
+const coreNodes = [...graph.LIVE_NODES];
+check("the graph starts as core content", coreNodes.length, 169);
+
+/* A prerequisite that does not exist: the first price section 8 names. */
+check("a node following nothing that exists",
+  graph.graphFaults([{ id: "a", after: [] }, { id: "b", after: ["nowhere"] }]).join("; "),
+  "b follows nowhere, which does not exist");
+/* A cycle: the second price, and the reason the depth walk sets before it recurses. */
+check("a cycle is named",
+  graph.graphFaults([{ id: "a", after: ["b"] }, { id: "b", after: ["a"] }]).length > 0, true);
+/* Two nodes with one id: the price of replacing rather than only adding. */
+check("two nodes sharing an id",
+  graph.graphFaults([{ id: "a", after: [] }, { id: "a", after: [] }]).join("; "),
+  "two nodes share the id a");
+check("and a graph with none of those", graph.graphFaults(coreNodes).length, 0);
+
+/* ---- a rebuild is all or nothing ---- */
+
+/*
+ * A half-applied graph is worse than a rejected one, because a character derives everything from
+ * it. So a bad edit set leaves the previous graph exactly as it was -- which is checkable by asking
+ * the graph a question afterwards rather than by reading the code that promises it.
+ */
+const nodesBefore = graph.LIVE_NODES.length;
+const refused = graph.rebuildGraph({ added: [{ id: "bad", after: ["nowhere"] }] });
+check("a bad edit set is refused", refused.length > 0, true);
+check("and changes nothing", graph.LIVE_NODES.length, nodesBefore);
+check("the node is not in the graph", graph.GRAPH.has("bad"), false);
+
+/* A good one commits, and every index moves with it. */
+const addedFaults = graph.rebuildGraph({
+  added: [{ id: "shade.thief.extra", name: "A World's Own Node", after: ["shade.thief"],
+    grants: { health: 1 } }]
+});
+check("a good edit set is accepted", addedFaults.length, 0);
+check("the node joins the graph", graph.GRAPH.get("shade.thief.extra")?.name, "A World's Own Node");
+check("its predecessor knows about it",
+  (graph.SUCCESSORS.get("shade.thief") ?? []).includes("shade.thief.extra"), true);
+check("it has a depth", graph.DEPTH.get("shade.thief.extra"), 6);
+/* Five nodes behind it, so the sixth level is the earliest you could hold it. */
+check("and a level", graph.levelFor("shade.thief.extra"), 6);
+/* It is on a character's frontier the moment they own what it follows, with nothing re-authored. */
+const thiefOwns = new Set(["root", "shade", "shade.footwork", "shade.quiet", "shade.patience",
+  "shade.thief"]);
+check("and it is on the frontier of whoever owns its prerequisite",
+  graph.frontier(thiefOwns).includes("shade.thief.extra"), true);
+
+/* Replacing a core node by id, which is the sharper half of letting a world edit at all. */
+const replacedFaults = graph.rebuildGraph({
+  added: [{ id: "shade.footwork", name: "Something Else", after: ["shade"],
+    grants: { health: 2 } }]
+});
+check("a core node can be replaced", replacedFaults.length, 0);
+check("by id", graph.GRAPH.get("shade.footwork")?.name, "Something Else");
+check("and what it grants moves with it", graph.grantsOf(new Set(["shade.footwork"])).health, 2);
+
+/* Removing one, refused when something still follows it -- the invariant doing the work. */
+const orphaned = graph.rebuildGraph({ removed: ["shade.thief"] });
+check("removing a node everything hangs off is refused", orphaned.length > 0, true);
+check("and the graph is still whole", graph.GRAPH.has("shade.thief"), true);
+
+/* Back to core, so every check after this section is asking about the shipped graph. */
+check("the graph can be put back", graph.rebuildGraph({}).length, 0);
+check("and it is core again", graph.LIVE_NODES.length, 169);
+check("with the replaced node restored", graph.GRAPH.get("shade.footwork")?.name, "Footwork");
+
+/* ---- the lock, which is the answer to "not in an active campaign" ---- */
+
+/*
+ * A graph edited under a running campaign is the one thing in this system that can quietly change
+ * a character who is not in the room: everything about them derives from the nodes they own
+ * (leveling 9), so a changed node changes their Health, title, Tactic and frontier with no event
+ * and no log line. The lock is not a railing against a mistake; it is a statement that the world
+ * is being authored rather than played.
+ */
+check("authoring is a world setting",
+  /game\.settings\.register\("cardrpg", "graphEditing"/.test(entrySource) ? "yes" : "no", "yes");
+check("off by default",
+  /"graphEditing"[\s\S]{0,260}default: false/.test(entrySource) ? "yes" : "no", "yes");
+check("and the hint says not during a campaign",
+  /not during a campaign/.test(lang["CARDRPG.Settings.GraphEditing.Hint"] ?? "") ? "yes" : "no",
+  "yes");
+const paneSource = fs.readFileSync(path.join(root, "module/levelup.mjs"), "utf8");
+check("the editor does not exist without it",
+  /editing: game\.user\.isGM && game\.settings\.get\("cardrpg", "graphEditing"\)/.test(paneSource)
+    ? "yes" : "no", "yes");
+check("and every authoring action asks again",
+  (paneSource.match(/if \(!this\.#canAuthor\(\)\) return;/g) ?? []).length, 3);
+/*
+ * A node anybody owns cannot be removed. A character stores ids and derives from them, so removing
+ * an owned node does not un-grant anything -- it leaves the id pointing at nothing and the
+ * character silently loses what it gave, with no record that it ever did.
+ */
+check("a node somebody owns cannot be removed",
+  /\(a\.system\?\.nodes \?\? \[\]\)\.includes\(id\)/.test(paneSource) ? "yes" : "no", "yes");
+/* The setting is written AFTER the rebuild succeeds: a stored edit nobody can load is unopenable. */
+check("the world is written only after the rebuild holds",
+  paneSource.indexOf("const faults = rebuildGraph(edits);")
+    < paneSource.indexOf('await game.settings.set("cardrpg", "graphEdits"') ? "yes" : "no", "yes");
+/* And the world's own nodes join at ready, which is the only moment a setting can be read. */
+check("the world's nodes join the graph at ready",
+  /const faults = rebuildGraph\(edits\);/.test(entrySource) ? "yes" : "no", "yes");
+
 /* ---- every document subtype has a sheet that knows about it ---- */
 
 /*
