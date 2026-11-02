@@ -306,7 +306,7 @@ A god's first and defining miracle.
 | | Name | What it is | File |
 |---|---|---|---|
 |   | **Breath of the Spirit** | strength 2 · Heal 3 range 99 | `signatures/faith/breath-of-the-spirit.webp` |
-|   | **Out of Barren Ground** | strength 3 · range 2 at the start of your second turn after, allies within 2 heal 4 | `signatures/faith/out-of-barren-ground.webp` |
+|   | **Out of Barren Ground** | strength 3 · Heal 4 range 2 | `signatures/faith/out-of-barren-ground.webp` |
 |   | **The Borrowed Face** | strength 3 · range 3 Spent: one enemy spends this round attacking its own ally | `signatures/faith/the-borrowed-face.webp` |
 |   | **The Clean Hand** | strength 2 · range 3 an ally's next check or attack cannot fail | `signatures/faith/the-clean-hand.webp` |
 |   | **The Club and the Line** | strength 2 · Cast blast 1 with the weapon in hand | `signatures/faith/the-club-and-the-line.webp` |
@@ -457,12 +457,12 @@ Twelve gods' lesser miracles, handed over by minor nodes.
 |   | **The Close Work** | strength 2 · adjacent: an enemy's Strike hits the nearest other enemy instead | `spells/faith/the-close-work.webp` |
 |   | **The Driven Out** | strength 4 · area 3 Compelled (1) and you gain Block 3 for each enemy Compelled | `spells/faith/the-driven-out.webp` |
 |   | **The Grey Hour** | strength 4 · range 1 Halted (1) | `spells/faith/the-grey-hour.webp` |
-|   | **The Land Beneath** | strength 5 · area 2 every enemy within 2 is gone until the start of your third turn. You are Prone | `spells/faith/the-land-beneath.webp` |
+|   | **The Land Beneath** | strength 5 · area 2 every enemy within 2 is gone until then. You are Prone | `spells/faith/the-land-beneath.webp` |
 |   | **The Lie That Held** | strength 5 · a lie named before the fight is true | `spells/faith/the-lie-that-held.webp` |
 |   | **The Line Holds** | strength 4 · allies adjacent to you cannot be moved, knocked Prone or Compelled | `spells/faith/the-line-holds.webp` |
 |   | **The Mask of the Captain** | strength 4 · one enemy obeys you for a round -- you play its turn | `spells/faith/the-mask-of-the-captain.webp` |
 |   | **The Narrow Path** | strength 1 · your miracles cost 1 slot less (min 1) | `spells/faith/the-narrow-path.webp` |
-|   | **The Orchard** | strength 4 · at the start of your second turn after this, every ally heals 4 and sheds one condition | `spells/faith/the-orchard.webp` |
+|   | **The Orchard** | strength 4 · Heal 4 and sheds one condition | `spells/faith/the-orchard.webp` |
 |   | **The Planted Word** | strength 1 · one enemy type cannot play reactions | `spells/faith/the-planted-word.webp` |
 |   | **The Poisoned Well** | strength 4 · Tainting 1 blast 3 fast | `spells/faith/the-poisoned-well.webp` |
 |   | **The Sea Decides** | strength 5 · shuffle every fate deck on the field into one; everyone draws from it | `spells/faith/the-sea-decides.webp` |
@@ -472,7 +472,7 @@ Twelve gods' lesser miracles, handed over by minor nodes.
 |   | **The Silent Knife** | strength 5 · adjacent: one enemy is dead. No save, no fate draw, no roll of any kind | `spells/faith/the-silent-knife.webp` |
 |   | **The Sixth District** | strength 5 · until the fight ends every adjacent ally shares your armor and Block, and damage dealt to them is dealt to you instead | `spells/faith/the-sixth-district.webp` |
 |   | **The Slow Failure** | strength 5 · Tainting 3 | `spells/faith/the-slow-failure.webp` |
-|   | **The Slow Mercy** | strength 2 · range 3 at the start of your third turn after this, one named ally is healed to full | `spells/faith/the-slow-mercy.webp` |
+|   | **The Slow Mercy** | strength 2 · range 3 healed to full | `spells/faith/the-slow-mercy.webp` |
 |   | **The Spring Tide** | strength 4 · until your next turn every ally draws fate twice and keeps both | `spells/faith/the-spring-tide.webp` |
 |   | **The Turning Tide** | strength 2 · range 3 Cursed an ally redraws a fate card and keeps the second. The Cursed is yours | `spells/faith/the-turning-tide.webp` |
 |   | **The War Drum** | strength 4 · area 2 every ally within 2 takes their whole turn again, now | `spells/faith/the-war-drum.webp` |
@@ -481,7 +481,7 @@ Twelve gods' lesser miracles, handed over by minor nodes.
 |   | **Undertow** | strength 2 · Cast range 3 blast 2 Wet (1) every target is moved 1 square you choose | `spells/faith/undertow.webp` |
 |   | **Valtor's Own** | strength 5 · for the rest of the fight you play a primary and two secondaries each turn | `spells/faith/valtors-own.webp` |
 |   | **What Does Not Die** | strength 3 · drop to 1 instead of 0, and lose a spell slot for good | `spells/faith/what-does-not-die.webp` |
-|   | **What Grows Out of Us** | strength 5 · at the start of your fourth turn after this, every ally including the dead stands at full Health | `spells/faith/what-grows-out-of-us.webp` |
+|   | **What Grows Out of Us** | strength 5 · every ally including the dead stands at full Health | `spells/faith/what-grows-out-of-us.webp` |
 
 ## Features
 

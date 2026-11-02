@@ -171,7 +171,7 @@ extra reaction per trigger, fate twice, a check that cannot fail, a failure that
 One value per card is a free-text special wearing an enum's clothes. **The uniform half is who; the
 varied half stays prose.**
 
-**116 steps still carry prose, 21 of them prose alone** `-` the same count as before, which is not a
+**115 steps still carry prose, 21 of them prose alone** `-` the same count as before, which is not a
 failure to make progress. 31 steps lost a prefix to `timing`, and the five conjurings kept a
 sentence on purpose. **What moved is the part that was a rule** `-` when a step may be played, what
 it costs to keep a thing standing `-` **and what stayed is the part that was a judgement.** The

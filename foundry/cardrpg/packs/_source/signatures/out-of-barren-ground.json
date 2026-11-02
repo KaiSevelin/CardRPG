@@ -8,9 +8,11 @@
     "source": "Brendan",
     "description": "<p>Plant it. At the start of your second turn after, every ally within 2 heals 4. Nothing he gives arrives when you ask for it.</p>",
     "effect": {
+      "verb": "heal",
+      "param": 4,
       "range": 2,
       "targets": "alliesInRange",
-      "text": "at the start of your second turn after, allies within 2 heal 4"
+      "delay": 2
     },
     "kind": "miracle",
     "prepared": false

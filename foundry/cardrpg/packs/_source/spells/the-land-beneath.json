@@ -10,7 +10,8 @@
     "effect": {
       "area": 2,
       "targets": "enemiesInRange",
-      "text": "every enemy within 2 is gone until the start of your third turn. You are Prone"
+      "delay": 3,
+      "text": "every enemy within 2 is gone until then. You are Prone"
     },
     "kind": "miracle",
     "prepared": false

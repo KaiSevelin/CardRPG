@@ -3383,16 +3383,19 @@ check("Half-mage's slots are on the node", byId.get("shade.half-mage").grants.sp
  */
 const built = sigs.filter(sg => !sg.needs?.length).map(sg => sg.name);
 check("Signatures the engine does everything for", built.join(", "),
-  /* `Set` joined this list when `ground` was built: it was queued under "placing a trap on a
-   * square", which is now a shape, a square and a trap. The first gap closed by building the
-   * mechanism a card named rather than by rewriting the card. */
+  /*
+   * Seven of these arrived in one sweep and not one of them needed engine code: the work had been
+   * built over the previous four increments and the audit column had simply not been told. A gap is
+   * a promise that something is NOT built, and the one thing that makes it worthless is being kept
+   * after it is -- which is what the mapped check further down now refuses to allow.
+   */
   "The Opening, The Kit, Loose and Step, Set, Heckle, One Trick, Shoulder to Shoulder, "
-  + "Nothing Gets Through, Interpose, Wither, The Bargain, Unmake, Breath of the Spirit, "
-  /* The Silent Hour joined when Halted was built: its gap was "a reaction that stops an action",
-   * and a condition that denies a turn is that. */
-  + "The Outcast's Due, The Silent Hour, The Writ, The Order's Shield, The Scourge");
+  + "Nothing Gets Through, Interpose, Call the Unquiet, Wall of the Sphere, Wither, "
+  + "The Bargain, Unmake, The Reading, Breath of the Spirit, The Outcast's Due, "
+  + "Out of Barren Ground, The Silent Hour, The First Taste, The Rumour, The Writ, "
+  + "The Order's Shield, The Scourge");
 const gaps = sigs.filter(sg => sg.needs?.length).map(sg => `${sg.name}: ${sg.needs.join("; ")}`);
-check("Signatures with a named gap", gaps.length, 33);
+check("Signatures with a named gap", gaps.length, 27);
 /*
  * `needs` is a LIST, and that is the lesson of the Health cost. It was the largest gap in the game
  * at six pieces of content; building it finished exactly ONE, because every other one wanted a
@@ -4579,13 +4582,17 @@ check("and mean list weight in slots",
  * rather than a balance fault -- but it is the difference a player would feel first.
  */
 check("lists waiting on the engine from end to end",
-  listsBySource.filter(([, l]) => l.every(s => s.needs?.length)).length, 9);
+  listsBySource.filter(([, l]) => l.every(s => s.needs?.length)).length, 6);
 check("and which they are",
   listsBySource.filter(([, l]) => l.every(s => s.needs?.length)).map(([s]) => s).sort().join(", "),
   /* Fagar and The Grey are finished now: the two cards holding them back were describing
    * conditions -- The Second Thought was Dazed all along, and The Silent Hour wanted Halted. */
-  "Asceticism, Brendan, Household Magic, Necromancy, Shadow Magic, Tattoo Magic, "
-  + "The First, The Yellow, Vax");
+  /* Necromancy and The Yellow came off this list in the sweep: every gap they still named had
+   * been built, one of them two increments earlier. */
+  /* Brendan went too, and it is the neatest of them: the comment above its three miracles has
+   * always said "all three resolve on a turn that has not happened", which is `delay` named in
+   * prose a month before the field existed. */
+  "Asceticism, Household Magic, Shadow Magic, Tattoo Magic, The First, Vax");
 check("the list the engine runs best",
   listsBySource.map(([s, l]) => [s, l.filter(x => x.needs?.length).length / l.length])
     .sort((a, b) => a[1] - b[1])[0][0], "Spiritualism");
@@ -4716,8 +4723,8 @@ check("content carrying the audit column",
 const vague = audited.filter(c => (c.needs ?? []).some(g => g.length < 12)).map(c => c.name);
 check("gaps too short to act on", vague.length ? vague.join(", ") : "none", "none");
 const workingCards = audited.filter(c => !c.needs.length).length;
-check("content the engine does everything for", workingCards, 68);
-check("content with a named gap", audited.filter(c => c.needs.length).length, 134);
+check("content the engine does everything for", workingCards, 87);
+check("content with a named gap", audited.filter(c => c.needs.length).length, 115);
 
 /*
  * A gap shared by several cards is one piece of engine work, not several. Counting the DISTINCT
@@ -4732,7 +4739,7 @@ for (const card of audited) {
  * sleep* against an engine with no sleep that empties a fate deck. Naming it is what keeps the
  * overcharge from being a silent one.
  */
-check("distinct gaps across all content", gapCounts.size, 98);
+check("distinct gaps across all content", gapCounts.size, 92);
 /*
  * Two different questions, and the list is what lets them be asked apart.
  *
@@ -4761,8 +4768,107 @@ const worst = [...gapCounts.entries()].filter(([, n]) => n === most).map(([gap])
  * The Purple's thesis all pay in Taint, so a spell that taints its caster is named by eight pieces
  * of content and is the largest single piece of work in the game.
  */
+
+/*
+ * **A gap a card has already built is a gap it may not still name.**
+ *
+ * Twenty-four gap entries rotted across four increments, and every time in the same way: a field
+ * was added, the content was converted to use it, and the column went on promising the thing was
+ * not built. The census overstated the backlog by a sixth, and no check could see it -- every
+ * check about this column was about its SHAPE (is every gap a sentence, is any too short, how many
+ * are there) and none about whether it was still TRUE.
+ *
+ * So each gap that a field closes is mapped to the question that decides it. The map is a cost: it
+ * has to be extended when a field is. What it buys is that the column cannot quietly rot again.
+ */
+const stepsOfContent = c => [...(c.primary ?? []), ...(c.secondary ?? []), ...(c.sequence ?? []),
+  ...(c.effect ? [c.effect] : [])];
+const GAP_CLOSERS = [
+  ["terrain a spell places on the map", c => stepsOfContent(c).some(s => s.ground?.shape)],
+  ["shadow as a state a square is in",
+    c => stepsOfContent(c).some(s => (s.ground?.effects ?? []).includes("shadowed"))],
+  ["placing a trap on a square",
+    c => stepsOfContent(c).some(s => (s.ground?.effects ?? []).includes("trap"))],
+  ["a figure a spell puts on the map", c => stepsOfContent(c).some(s => s.verb === "conjure")],
+  ["an effect that resolves on a later turn", c => stepsOfContent(c).some(s => s.delay)],
+  ["an effect held up by spending a secondary",
+    c => stepsOfContent(c).some(s => /spendSecondary|upkeep/.test(s.whileState ?? ""))],
+  ["reading the top of a fate deck", c => stepsOfContent(c).some(s => s.readDeck)],
+  ["a cost that scales with the allies it covers", c => c.cost?.scale === "perAlly"],
+  ["a spell that taints its caster", c => (c.cost?.taint ?? 0) > 0],
+  ["an enemy that loses a half", c => stepsOfContent(c).some(s => s.condition === "dazed")],
+  ["a reaction that stops an action", c => stepsOfContent(c).some(s => s.condition === "halted")],
+  ["a second secondary for every ally in an area",
+    c => stepsOfContent(c).some(s => s.targets === "alliesInRange")]
+];
+const rotted = [];
+for (const [gap, isBuilt] of GAP_CLOSERS) {
+  for (const c of audited.filter(x => (x.needs ?? []).includes(gap))) {
+    if (isBuilt(c)) rotted.push(`${c.name}: "${gap}"`);
+  }
+}
+check("gaps kept by content that has already built them",
+  rotted.length ? rotted.slice(0, 5).join(" | ") : "none", "none");
+/*
+ * **And every closer can say yes.** A break test replaced one question with `() => false` and this
+ * section passed in silence -- which is the oldest failure mode in this file, *a check that cannot
+ * fail looks exactly like a check that passes*, and worse here than usual: this map's whole job is
+ * to notice when something else has stopped being true.
+ *
+ * For the gaps closed outright the answer comes from the content that closed them; for the rest,
+ * from the cards that have already built it. A closer nothing satisfies is pointing at a field
+ * nobody writes or asking a question that cannot be answered.
+ */
+const mute = GAP_CLOSERS.filter(([, isBuilt]) => !audited.some(c => isBuilt(c))).map(([g]) => g);
+check("closers no content in the game can satisfy", mute.join(", ") || "none", "none");
+/* And how many each one finds, so a closer narrowing to one card is visible rather than silent. */
+check("content each closer recognises",
+  GAP_CLOSERS.map(([gap, isBuilt]) => `${audited.filter(c => isBuilt(c)).length}`).join(" "),
+  "7 2 1 5 5 4 4 3 3 6 1 4");
+/*
+ * And the map does not rot either: a gap nobody names and nobody has built is a line in this list
+ * describing nothing. Two are allowed to be unnamed, because closing them is what emptied them --
+ * `placing a trap on a square` and `a reaction that stops an action` were Set's and The Silent
+ * Hour's, and both cards are finished.
+ */
+const CLOSED_OUTRIGHT = ["placing a trap on a square", "a reaction that stops an action",
+  "terrain a spell places on the map", "an effect held up by spending a secondary",
+  "reading the top of a fate deck", "a cost that scales with the allies it covers",
+  "an effect that resolves on a later turn", "a second secondary for every ally in an area"];
+const idleClosers = GAP_CLOSERS
+  .filter(([gap]) => !audited.some(c => (c.needs ?? []).includes(gap)))
+  .map(([gap]) => gap);
+check("mapped gaps nobody names, which closing them explains",
+  idleClosers.filter(g => !CLOSED_OUTRIGHT.includes(g)).join(", ") || "none", "none");
+check("and the ones closed outright really are empty",
+  CLOSED_OUTRIGHT.filter(g => !idleClosers.includes(g)).join(", ") || "none", "none");
+/* A map that matched nothing would pass both checks above in silence. */
+check("gaps the map is able to decide",
+  GAP_CLOSERS.filter(([gap]) => audited.some(c => (c.needs ?? []).includes(gap))).length, 4);
+/*
+ * **And the whole queue, ranked.** The suite has always named the single most-mentioned gap; what
+ * it never showed is the distribution, which is what makes "what next" answerable: a gap named by
+ * one card is a card-sized job, and one named by seven is a mechanism seven cards wait on.
+ */
+const queue = new Map();
+for (const c of audited) {
+  for (const gap of c.needs ?? []) queue.set(gap, (queue.get(gap) ?? 0) + 1);
+}
+const topOfQueue = [...queue].filter(([, n]) => n >= 4)
+  .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+  .map(([gap, n]) => `${n} ${gap}`);
+check("the gaps four or more pieces of content wait on", topOfQueue.join(" | "),
+  "7 a permanent formula that is never prepared and carries a bonus | "
+  + "7 a ritual, which costs no slots at all | "
+  + "6 skill cards set aside to pay for a formula | "
+  + "5 a condition applied to an area | "
+  + "5 a spell that taints its caster | "
+  + "5 a Wild that leaves the fate deck when you sleep | "
+  + "4 an enemy that attacks its own side");
+
 check("the gap mentioned by the most content", `${worst.join("; ")} (${most})`,
-  "a spell that taints its caster (8)");
+  "a permanent formula that is never prepared and carries a bonus; "
+  + "a ritual, which costs no slots at all (7)");
 
 const finishes = new Map();
 for (const card of audited) {
@@ -4787,7 +4893,7 @@ check("the gap that would finish the most content",
  * SHADOW_FORMULAS is not one of the audited exports, joins it with exactly one.
  */
 check("gaps that would finish exactly one piece of content",
-  [...finishes.values()].filter(n => n === 1).length, 51);
+  [...finishes.values()].filter(n => n === 1).length, 55);
 
 /*
  * And a check on the QUEUE rather than on the content, which the ranged-item work earned.
@@ -5880,7 +5986,7 @@ const proseLeft = everyStep.filter(s => s.st.text);
  * start and 33 now. A step with prose beside its fields is a step the engine resolves and the
  * table reads; a step with prose alone is one the engine drops on the floor.
  */
-check("steps still carrying prose", proseLeft.length, 116);
+check("steps still carrying prose", proseLeft.length, 115);
 /* And the schema document says the same numbers, read off the same sweep rather than typed into
  * prose a second time: a document that counts the content is a document that goes stale. */
 check("the schema document records what the sweep found",

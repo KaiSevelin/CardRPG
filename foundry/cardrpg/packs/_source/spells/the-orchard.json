@@ -8,8 +8,11 @@
     "source": "Brendan",
     "description": "<p>Two turns from now the whole party heals four and sheds something. Planting is the god's only verb.</p>",
     "effect": {
+      "verb": "heal",
+      "param": 4,
       "targets": "everyAlly",
-      "text": "at the start of your second turn after this, every ally heals 4 and sheds one condition"
+      "delay": 2,
+      "text": "and sheds one condition"
     },
     "kind": "miracle",
     "prepared": false

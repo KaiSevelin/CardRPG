@@ -3069,8 +3069,7 @@ export const MIND_POOL = [
   {
     name: "The Red Hour", strength: 4, pool: "mind", source: "Blood Magic",
     /* A Health cost per ALLY, so the same variable price The Shield Line pays and the same gap. */
-    needs: ["a second secondary for every ally in an area",
-      "a cost that scales with the allies it covers"],
+    needs: [],
     description: "<p>You open a vein for each of them, and for an hour nobody is tired.</p>",
     cost: { health: 1, scale: "perAlly" },
     effect: { range: 2, duration: 1, targets: "alliesInRange",
@@ -3191,7 +3190,7 @@ export const MIND_POOL = [
   },
   {
     name: "The Risen Rank", strength: 4, pool: "mind", source: "Necromancy",
-    needs: ["a spell that taints its caster", "a figure a spell puts on the map"],
+    needs: ["a spell that taints its caster"],
     description: "<p>Every body within three squares, up at once, for one round. Then they are "
       + "bodies again, and the ground is worse than it was.</p>",
     effect: {
@@ -3209,8 +3208,7 @@ export const MIND_POOL = [
      * the caster makes against their own deck, which is what makes this Preparation.
      */
     name: "The Grave's Bargain", strength: 5, pool: "mind", source: "Necromancy",
-    needs: ["a spell that taints its caster", "a figure a spell puts on the map",
-      "a price that grows for every round an effect lasts"],
+    needs: ["a spell that taints its caster", "a price that grows for every round an effect lasts"],
     description: "<p>They stand up at one Health, and they are themselves, and they know. When "
       + "the fight ends they are dead again, and you are a little less alive for it.</p>",
     effect: {
@@ -3258,7 +3256,7 @@ export const MIND_POOL = [
   },
   {
     name: "The Sphere Entire", strength: 4, pool: "mind", source: "Elemental Magic",
-    needs: ["terrain a spell places on the map"],
+    needs: [],
     description: "<p>Five squares of whichever sphere is yours, and standing in it costs you "
       + "something every turn you stay.</p>",
     effect: {
@@ -3272,7 +3270,7 @@ export const MIND_POOL = [
   {
     name: "The Standing Flood", strength: 3, pool: "mind", source: "Elemental Magic",
     element: "water",
-    needs: ["terrain a spell places on the map"],
+    needs: [],
     description: "<p>Deep water where there was a floor. Everything in it is Wet, which is the "
       + "opening half this school is built to set up.</p>",
     effect: {
@@ -3287,7 +3285,7 @@ export const MIND_POOL = [
      * the enemy: the line does not care which side asked for it.
      */
     name: "Unmake the Ground", strength: 5, pool: "mind", source: "Elemental Magic",
-    needs: ["terrain a spell places on the map"],
+    needs: [],
     description: "<p>A line across the battlefield that is no longer there. For the rest of the "
       + "fight, nobody crosses it &mdash; you included, which is the half of this that gets "
       + "casters killed.</p>",
@@ -3639,8 +3637,7 @@ export const MIND_POOL = [
   {
     name: "Longer Shadow", strength: 1, pool: "mind", source: "Shadow Magic",
     wilds: 1,
-    needs: ["a Wild that leaves the fate deck when you sleep",
-      "shadow as a state a square is in"],
+    needs: ["a Wild that leaves the fate deck when you sleep"],
     description: "<p>The dark you are standing in reaches one square further, all the way "
       + "round, which is enough to make the next formula work.</p>",
     effect: { duration: 1, ground: { shape: "adjacent", effects: ["shadowed"] } }
@@ -3680,8 +3677,7 @@ export const MIND_POOL = [
   {
     name: "The Borrowed Dark", strength: 3, pool: "mind", source: "Shadow Magic",
     wilds: 1,
-    needs: ["a Wild that leaves the fate deck when you sleep",
-      "shadow as a state a square is in"],
+    needs: ["a Wild that leaves the fate deck when you sleep"],
     description: "<p>Every square on the map, dark at once &mdash; for your allies as much as for "
       + "you, and for anyone else who knows what to do with it.</p>",
     effect: { duration: 1, ground: { shape: "wholeMap", effects: ["shadowed"] } }
@@ -3712,7 +3708,7 @@ export const MIND_POOL = [
    */
   {
     name: "The Great Bargain", strength: 5, pool: "mind", source: "Spiritualism",
-    needs: ["a figure a spell puts on the map"],
+    needs: [],
     description: "<p>It is actually here. The GM plays it as an ally for the rest of the fight, "
       + "and afterwards it takes something the GM chooses &mdash; which is the only honest way to "
       + "price a favour that large.</p>",
@@ -3882,13 +3878,13 @@ export const MIND_POOL = [
    */
   {
     name: "Where It Will Land", strength: 1, pool: "mind", source: "Divination",
-    needs: ["reading the top of a fate deck"],
+    needs: [],
     description: "<p>Your own deck, one card down. The cheapest certainty in the game.</p>",
     effect: { verb: "foresee", param: 1, readDeck: "own" }
   },
   {
     name: "The Mark of Things to Come", strength: 2, pool: "mind", source: "Divination",
-    needs: ["reading the top of a fate deck"],
+    needs: [],
     description: "<p>Marked at any range, and you know what its luck is about to do. The "
       + "condition lands by itself; the reading is the half that does not.</p>",
     effect: {
@@ -3910,7 +3906,7 @@ export const MIND_POOL = [
   },
   {
     name: "The Open Book", strength: 4, pool: "mind", source: "Divination",
-    needs: ["reading the top of a fate deck", "advantage granted to every ally for a round"],
+    needs: ["advantage granted to every ally for a round"],
     description: "<p>For one round the whole party is lucky and you can see why. Two cards down "
       + "each of their decks, and a better draw on top of it.</p>",
     effect: {
@@ -3969,7 +3965,7 @@ export const MIND_SIGNATURES = [
   {
     name: "Call the Unquiet", kind: "spell", node: "mind.necromancy", strength: 3,
     source: "Necromancy",
-    needs: ["a figure a spell puts on the map"],
+    needs: [],
     description: "<p>It does not know it died. It will stop when the fight does.</p>",
     effect: {
       verb: "conjure", range: 2,
@@ -3987,7 +3983,7 @@ export const MIND_SIGNATURES = [
      */
     name: "Wall of the Sphere", kind: "spell", node: "mind.elemental", strength: 2,
     source: "Elemental Magic",
-    needs: ["terrain a spell places on the map"],
+    needs: [],
     description: "<p>Three squares of whichever sphere is yours. Stand behind it and the ground in "
       + "front of you is no longer anybody's.</p>",
     effect: {
@@ -4090,7 +4086,7 @@ export const MIND_SIGNATURES = [
   },
   {
     name: "The Reading", kind: "spell", node: "mind.divination", strength: 2, source: "Divination",
-    needs: ["reading the top of a fate deck"],
+    needs: [],
     description: "<p>Three cards down somebody else's luck. Never your own &mdash; a diviner who "
       + "could stack their own deck would be a damage school wearing a robe.</p>",
     effect: { verb: "foresee", param: 3, readDeck: "other" }
@@ -4221,11 +4217,12 @@ export const FAITH_SIGNATURES = [
   {
     name: "Out of Barren Ground", kind: "spell", node: "faith.brendan", strength: 3,
     source: "Brendan",
-    needs: ["an effect that resolves on a later turn"],
+    needs: [],
     description: "<p>Plant it. At the start of your second turn after, every ally within 2 heals "
       + "4. Nothing he gives arrives when you ask for it.</p>",
-    effect: { range: 2, targets: "alliesInRange",
-    text: "at the start of your second turn after, allies within 2 heal 4" }
+    effect: {
+      verb: "heal", param: 4, range: 2, targets: "alliesInRange", delay: 2
+    }
   },
   {
     name: "The Silent Hour", kind: "spell", node: "faith.grey", strength: 2, source: "The Grey",
@@ -4243,7 +4240,7 @@ export const FAITH_SIGNATURES = [
   {
     name: "The First Taste", kind: "spell", node: "faith.purple", strength: 2,
     source: "The Purple",
-    needs: ["a spell that taints its caster"],
+    needs: [],
     description: "<p>Tainting 2 on one adjacent enemy, and 1 Taint for you. You are the first to "
       + "taste it, always.</p>",
     cost: { taint: 1 },
@@ -4251,7 +4248,7 @@ export const FAITH_SIGNATURES = [
   },
   {
     name: "The Rumour", kind: "spell", node: "faith.yellow", strength: 2, source: "The Yellow",
-    needs: ["an effect held up by spending a secondary"],
+    needs: [],
     description: "<p>Name a lie before the fight. One enemy type acts as if it were true, for as "
       + "long as you keep spending a secondary on it.</p>",
     effect: {
@@ -4420,7 +4417,7 @@ export const FAITH_POOL = [
   },
   {
     name: "Taste of the Rot", strength: 1, pool: "faith", source: "The Purple",
-    needs: ["a spell that taints its caster"],
+    needs: [],
     description: "<p>One adjacent enemy: 1 damage and Off-Balance, no save. A Miss costs you a "
       + "Taint, which is the god being paid whether or not it worked.</p>",
     cost: { taint: 1 },
@@ -4433,7 +4430,7 @@ export const FAITH_POOL = [
   },
   {
     name: "The Planted Word", strength: 1, pool: "faith", source: "The Yellow",
-    needs: ["an effect held up by spending a secondary"],
+    needs: [],
     description: "<p>Name one enemy type before the fight. While you spend a secondary each round, "
       + "that type cannot play reactions.</p>",
     effect: {
@@ -4462,8 +4459,7 @@ export const FAITH_POOL = [
      * for -- the old single string hid that this card needed two unrelated mechanisms.
      */
     name: "The Shield Line", strength: 2, pool: "faith", source: "Vax",
-    needs: ["a cost that scales with the allies it covers",
-      "Block equal to the caster's own armour"],
+    needs: ["Block equal to the caster's own armour"],
     description: "<p>Every ally adjacent to you gains your armor value as Block until your next "
       + "turn. One Health per ally, so a long line is a dear one.</p>",
     cost: { health: 1, scale: "perAlly" },
@@ -4732,14 +4728,16 @@ export const FAITH_POOL = [
      * the outcast and this is what she offers.
      */
     name: "The Land Beneath", strength: 5, pool: "faith", source: "Vulpet",
-    needs: ["a figure taken off the board and put back later",
-      "an effect that resolves on a later turn"],
+    needs: ["a figure taken off the board and put back later"],
     description: "<p>The ground opens and takes them. They are back at the start of your third "
       + "turn, and you are Prone, and alone, and it is entirely your own doing.</p>",
     effect: {
       area: 2,
       targets: "enemiesInRange",
-      text: "every enemy within 2 is gone until the start of your third turn. You are Prone"
+      delay: 3,
+      /* The delay is when they COME BACK, which is the one thing this card needed a field for.
+       * The rest -- gone in the meantime, and you Prone for doing it -- is still prose. */
+      text: "every enemy within 2 is gone until then. You are Prone"
     }
   },
 
@@ -4752,23 +4750,23 @@ export const FAITH_POOL = [
    */
   {
     name: "The Slow Mercy", strength: 2, pool: "faith", source: "Brendan",
-    needs: ["an effect that resolves on a later turn"],
+    needs: [],
     description: "<p>Name them now. At the start of your third turn they are whole, which is "
       + "either too late or exactly right.</p>",
     effect: {
       range: 3, targets: "oneAlly",
-      text: "at the start of your third turn after this, one named ally is healed to full"
+      delay: 3,
+      text: "healed to full"
     }
   },
   {
     name: "The Orchard", strength: 4, pool: "faith", source: "Brendan",
-    needs: ["an effect that resolves on a later turn"],
+    needs: [],
     description: "<p>Two turns from now the whole party heals four and sheds something. Planting "
       + "is the god's only verb.</p>",
     effect: {
-      targets: "everyAlly",
-      text: "at the start of your second turn after this, every ally heals 4 and sheds one "
-        + "condition"
+      verb: "heal", param: 4, targets: "everyAlly", delay: 2,
+      text: "and sheds one condition"
     }
   },
   {
@@ -4777,13 +4775,12 @@ export const FAITH_POOL = [
      * that the fight lasts. Brendan does not do anything quickly and will not start now.
      */
     name: "What Grows Out of Us", strength: 5, pool: "faith", source: "Brendan",
-    needs: ["an effect that resolves on a later turn", "a figure a spell puts on the map"],
+    needs: ["a figure a spell puts on the map"],
     description: "<p>Four turns. Then everybody stands up, including the ones who had stopped "
       + "being people and started being ground.</p>",
     effect: {
-      targets: "everyAlly",
-      text: "at the start of your fourth turn after this, every ally including the dead stands "
-        + "at full Health"
+      targets: "everyAlly", delay: 4,
+      text: "every ally including the dead stands at full Health"
     }
   },
 
@@ -4842,7 +4839,7 @@ export const FAITH_POOL = [
   },
   {
     name: "The Slow Failure", strength: 5, pool: "faith", source: "The Purple",
-    needs: ["a spell that taints its caster"],
+    needs: [],
     description: "<p>Tainting 3 on them and two Taint on you &mdash; which with the first taste "
       + "is Afflicted. A priest of The Purple who casts their thesis is ill for good.</p>",
     cost: { taint: 2 },
@@ -4867,7 +4864,7 @@ export const FAITH_POOL = [
   },
   {
     name: "The Whole Cloth", strength: 4, pool: "faith", source: "The Yellow",
-    needs: ["an effect held up by spending a secondary", "an enemy that counts you as an ally"],
+    needs: ["an enemy that counts you as an ally"],
     description: "<p>While you keep paying a half every round, one whole kind of enemy believes "
       + "the party are its own. Stop paying and the room remembers.</p>",
     effect: {
@@ -4882,7 +4879,7 @@ export const FAITH_POOL = [
      * that is not a gap -- it is the largest thing in the twelve gods and it is all table.
      */
     name: "The Lie That Held", strength: 5, pool: "faith", source: "The Yellow",
-    needs: ["an effect held up by spending a secondary"],
+    needs: [],
     description: "<p>Name the lie before the fight. While you spend a secondary each round it is "
       + "true, and the GM runs the fight as though it always had been.</p>",
     effect: {
@@ -4900,8 +4897,7 @@ export const FAITH_POOL = [
    */
   {
     name: "The Line Holds", strength: 4, pool: "faith", source: "Vax",
-    needs: ["a cost that scales with the allies it covers",
-      "immunity to a named condition, which nothing grants"],
+    needs: ["immunity to a named condition, which nothing grants"],
     description: "<p>Nobody beside you is moved, knocked down or turned. It costs two Health a "
       + "man, and Vax expects you to count them first.</p>",
     cost: { health: 2, scale: "perAlly" },

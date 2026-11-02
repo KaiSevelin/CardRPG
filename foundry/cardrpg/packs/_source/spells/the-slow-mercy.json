@@ -10,7 +10,8 @@
     "effect": {
       "range": 3,
       "targets": "oneAlly",
-      "text": "at the start of your third turn after this, one named ally is healed to full"
+      "delay": 3,
+      "text": "healed to full"
     },
     "kind": "miracle",
     "prepared": false
