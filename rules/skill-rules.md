@@ -92,6 +92,43 @@ Some cards also have a small **edge**: a bonus effect that triggers when the car
 > fires on, after `cast` fell out of casting.
 
 
+> **[BUILT 2026-11-02]** The GM's half of a check had nowhere to be said, and two rules went
+> missing in the gap.
+>
+> **Step 1 above is the GM's, and the first build gave it to the player.** The tray offered every
+> difficulty from Easy 3 to Heroic 9 to whoever clicked their own card, so a player set the
+> difficulty of their own obstacle. Nothing in the software disagreed, because nothing in the
+> software had ever been told whose step it was.
+>
+> **And advantage was unreachable.** `resolveCheck` has taken a mode since it was written; the
+> dialog never set one. *A good plan, a clever use of the environment, or a fitting background
+> grants advantage* is the GM's main lever and the thing section 3's own worked example turns twice,
+> and there was no way to pull it. The same omission, seen twice.
+>
+> **A call** is that half, and it is one thing rather than a field on everybody's dialog: an
+> approach (or any), a difficulty, advantage or disadvantage, and a line saying what the obstacle
+> is. It stands in front of the whole party until the GM withdraws it, which is what makes a
+> challenge work &mdash; section 3 has several characters answering the same gate in turn, and a
+> call that cleared itself would have the GM restate it for each of them.
+>
+> **A player with no call cannot start a check**, and that is a refusal rather than a default: a
+> Normal 5 for an uncalled check would be the same defect wearing a sensible-looking number. Saying
+> what you are doing out loud is the step that was always there, and the GM answers it in two
+> clicks.
+>
+> **The player is asked only what is still theirs to decide.** The tool is chosen for them, because
+> the engine knows what is equipped and which approach it serves &mdash; it is still shown with its
+> situation and still clearable, since *Shadow +2 (locks and mechanisms)* is not a bonus to every
+> Shadow check. Push appears only when a same-approach card is in hand, help only when somebody
+> could give it, and the approach only when the card is a wild and the call named none. **When none
+> of those applies the check resolves on the click**, which is the common case at a table: a called
+> obstacle, a card that fits, no tool, no push, nobody helping.
+>
+> And step 2's approach rule is the engine's to hold now. A card that cannot answer the call is
+> **dimmed in place and refused** &mdash; dimmed rather than hidden, because hiding it would hide
+> why it cannot be played &mdash; and a wild answers any call, which is the whole reason an
+> Inspiration is worth a slot that could have held a 3.
+
 Only make a check when **failure would be interesting** and the outcome is uncertain. Trivial tasks just succeed. Impossible tasks just fail, or need a different plan.
 
 1. The GM describes the obstacle and sets a **difficulty**.
@@ -133,6 +170,23 @@ Items have **skill lines**, just as they have combat lines:
 | Healer's Kit | Lore +2 (treating wounds) |
 
 Only equipped or easily reached items count. Pulling something from deep in your pack may take time, which can matter in a challenge.
+
+> **[BUILT 2026-11-02] Eleven of the fourteen tools could never be trained, so a tool names the
+> training that unlocks it.**
+>
+> The cap above is the one place in the game where a training changes a number, and the first
+> implementation decided *trained* by matching the tool's **last word** against the trainings the
+> character held. So a Healer's Kit went looking for a training with *kit* in it. Lockpicks,
+> Climbing Rope and Hunting Traps happened to work; the other eleven could not, and four of them
+> could never reach the bonus printed on them at all: **Healer's Kit, Repair Kit, Smith's Hammer and
+> *The Kit***, which is the Burglar's Signature, halved for ever by a string match.
+>
+> A tool now names its training and the comparison is exact. **A tool that names none is not
+> capped**, which is the honest reading for a +1: the cap exists because the training does. And the
+> invariant that replaces the guess is the one worth having &mdash; *a bonus printed on a tool must
+> be reachable* &mdash; so every tool over +1 names a training and every training it names is taught
+> by a node. One of them was taught by nothing: **treating wounds**, now on the cloister's infirmary
+> and on the school that already names what a body is made of.
 
 **Training:** anyone can use a tool, but an untrained user gets at most **+1** from it. Trained users get the full bonus. Training comes from backgrounds and from the Way graphs, where it is one of the benefits a node can offer ([leveling.md](leveling.md) §4).
 

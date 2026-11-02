@@ -899,3 +899,27 @@ Wingless water-dwelling dragons.
 ### Wyvern
 
 Smaller dragons.
+
+## The burrower group
+
+### Mole Beast
+A large tusked underground dweller
+
+### Mole man
+Medium sized moles, followers of the Queen of the dark
+
+### Burrowers
+Worms and steeds of the mole men
+
+### 
+
+# Languages
+* Imperial - the old language and the diplomatic lingua franca
+* Valgar - lost language from the fifth district
+* Perga - The language at wolf's peak
+* Veche - The local tongue in Saag et Haar
+* Elvish - lingua franca within the elf group and most of lesser gods
+* Demonic - lingua franca in the demon group
+* Troll - lingua franca in the troll group
+* Reversed - reversed elvish used by undead
+* Burrowing - lingua franca of the burrower group

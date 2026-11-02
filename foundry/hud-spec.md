@@ -435,6 +435,32 @@ Differences from the combat tray:
 
 ---
 
+#### 5.1 The call for a check  **[BUILT 2026-11-02]**
+
+> **The GM's half of a check is a banner, not a field.** skill-rules section 2 step 1 gives the
+> difficulty to the GM, and the first build put a difficulty select in the player's dialog. A call
+> is set once, shown to everybody, and answered with one card.
+
+```
+┌─ CALL ────────────────────────────────────────────────┐
+│ Hard 7 · Shadow · advantage   the shutter is unlatched│
+└───────────────────────────────────────────────────────┘
+```
+
+- It lives as a flag on the **active scene**, because a call is a state of the table rather than an
+  event in its history: true until withdrawn, identical on every client, and `updateScene` already
+  redraws the tray. Not the *viewed* scene &mdash; a GM drawing next week's map must not take the
+  call with them.
+- **The GM sees a button when there is no call** and a *Re-call* beside the scene counts when there
+  is, because a difficulty set wrongly should be corrected rather than argued about.
+- **Answering does not withdraw it.** Several characters answer the same gate in a challenge.
+- Cards that cannot answer are **dimmed in place**, by the rule of §3.2: never hidden, because
+  hiding them hides the reason.
+- A player with no call in front of them is told to say what they are doing. The engine will not
+  invent a difficulty.
+
+---
+
 ## 6. Interjecting
 
 Both modes let other characters act while someone else is acting, and they do it in **two different

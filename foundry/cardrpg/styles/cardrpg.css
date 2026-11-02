@@ -1242,6 +1242,19 @@
 .cr-card--skill { cursor: pointer; min-width: 7rem; }
 /* The one card in the deck that is never the wrong card, so it reads as different. */
 .cr-card--wild { box-shadow: 0 0 0 1px #c9a227 inset; }
+/* A card that cannot answer the call: dimmed in place, never hidden, the same way a blocked card
+   half is. It is still clickable, and the click says why. */
+.cr-card--mute { opacity: 0.45; filter: saturate(0.4); }
+/* The call for a check: the GM's half of step 1, in front of everybody. */
+.cr-call {
+  display: flex; align-items: center; gap: 0.4rem;
+  padding: 0.15rem 0.4rem; border-left: 3px solid #c9a227;
+  background: rgba(201, 162, 39, 0.12); font-size: 0.9em;
+}
+.cr-call__dc { font-weight: bold; }
+.cr-call__note { opacity: 0.85; }
+.cr-call__clear { margin-left: auto; line-height: 1; padding: 0 0.3rem; }
+.cr-call__ask { align-self: flex-start; font-size: 0.85em; }
 .cr-scene__counts { display: flex; gap: 0.5rem; align-items: center; }
 .cr-check label { display: block; margin-bottom: 0.25rem; }
 .cr-standing__ways { opacity: 0.8; margin-left: 0.3rem; }

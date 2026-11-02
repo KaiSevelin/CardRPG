@@ -5830,6 +5830,182 @@ check("the pact may answer its owner's own failure",
 check("the pact is the spell that prints it",
   everything.find(c => c.name === "Hold to the Bargain")?.reaction, "bargain");
 
+/* ---- the call for a check, and the two defects it closed  [BUILT 2026-11-02] ---- */
+
+/*
+ * **Step 1 of skill-rules 2 is "the GM describes the obstacle and sets a difficulty", and the first
+ * build gave it to the player.** The tray offered Easy 3 to Heroic 9 to whoever clicked their own
+ * card, so a player set the difficulty of their own obstacle and nothing in the software disagreed.
+ *
+ * **And advantage was unreachable.** `resolveCheck` has taken a `mode` since it was written, the
+ * dialog never set it, and skill-rules 2 gives advantage for *a good plan, a clever use of the
+ * environment, or a fitting background* -- the GM's main lever, used twice in section 3's own
+ * worked example, with no way to pull it. Both are the same omission seen twice: the half of a
+ * check that belongs to the GM had nowhere to be said.
+ *
+ * A **call** is that half. It lives as a flag on the active scene rather than in a chat message,
+ * because it is a state of the table and not an event in its history: true until answered or
+ * withdrawn, read identically by every client, and `updateScene` already redraws the tray.
+ */
+const checksSource = fs.readFileSync(path.join(root, "module/checks.mjs"), "utf8");
+
+check("the call is a module of its own",
+  /export function readCall\(\)/.test(checksSource) ? "yes" : "no", "yes");
+check("and it lives on the active scene",
+  /game\.scenes\?\.active/.test(checksSource) ? "yes" : "no", "yes");
+/*
+ * The ACTIVE scene and not the viewed one: a GM drawing next week's map must not take the call with
+ * them, which is a different question from where the canvas happens to be.
+ *
+ * **Asked of the code with the comments stripped**, because the first version of this check read
+ * the comment that says `canvas.scene` is not what is used and reported the opposite. A grep over a
+ * file that explains itself will find the words it explains.
+ */
+const checksCode = checksSource.replace(/\/\*[\s\S]*?\*\//g, "")
+  .split("\n").map(line => line.replace(/\/\/.*$/, "")).join("\n");
+check("the active scene rather than the viewed one",
+  /canvas\.scene/.test(checksCode) ? "the viewed one" : "the active one", "the active one");
+check("only the GM may set one",
+  /if \(!game\.user\.isGM \|\| !scene\) return null;/.test(checksSource) ? "yes" : "no", "yes");
+check("and only the GM may withdraw it",
+  /export async function clearCall\(\) \{\s*const scene = game\.scenes\?\.active;\s*if \(!game\.user\.isGM/
+    .test(checksSource) ? "yes" : "no", "yes");
+
+/*
+ * **Answering does not clear the call**, which is what makes a challenge work: section 3 says
+ * *each round, every character may take one action*, so several characters answer the same obstacle
+ * in turn. A call that cleared itself would make the GM re-state the gate for every player.
+ */
+check("answering a call does not withdraw it",
+  /clearCall\(\)/.test(traySource.slice(traySource.indexOf("static async #onCheck")))
+    ? "it withdraws it" : "it stands", "it stands");
+check("and the document says why it stands",
+  /Answering a check does not clear the call/.test(checksSource) ? "yes" : "no", "yes");
+
+/* The player cannot set a difficulty, and the refusal is a refusal rather than a default: a
+ * Normal 5 for an uncalled check would be the same defect wearing a sensible-looking number. */
+check("a player with no call cannot start a check",
+  /if \(!call && !game\.user\.isGM\) \{[\s\S]{0,120}WaitForCall/.test(traySource) ? "yes" : "no",
+  "yes");
+check("and the dialog asks for a difficulty only when there is no call",
+  /!call \? "dc" : null/.test(traySource) ? "yes" : "no", "yes");
+/* The GM's half reaches the arithmetic: the mode that was unreachable is now passed through. */
+check("the call's advantage reaches resolveCheck",
+  /mode: answer\.mode,/.test(traySource) ? "yes" : "no", "yes");
+check("and the call carries one at all",
+  /mode: Number\(call\.mode\) \|\| 0/.test(checksSource) ? "yes" : "no", "yes");
+check("the GM's dialog offers all three edges",
+  ["CARDRPG.Check.Even", "CARDRPG.Check.Advantage", "CARDRPG.Check.Disadvantage"]
+    .every(k => traySource.includes(k) && k in lang), true);
+
+/*
+ * **The approach must fit the description** (skill-rules 2, step 2), which the engine can hold once
+ * the GM has named one -- and a wild fits any, which is the whole reason an Inspiration is worth a
+ * slot that could have held a 3.
+ */
+check("a card that cannot answer the call is refused",
+  /if \(call && !cardAnswers\(card, call\)\)/.test(traySource) ? "yes" : "no", "yes");
+check("and a wild answers any call",
+  /serves\?\.\(call\.approach\)/.test(checksCode) ? "yes" : "no", "yes");
+/* Which rests on `serves` itself, where a wild is the first clause: the card model has said so
+ * since the skill side was built, and a check about wilds that did not read it would be a check
+ * about a regex. */
+check("and serves says a wild serves everything",
+  /return this\.wild \|\| this\.approach === approach;/.test(
+    fs.readFileSync(path.join(root, "module/data/cards.mjs"), "utf8")) ? "yes" : "no", "yes");
+/* Dimmed in place, never hidden: the same rule a blocked card half follows (hud-spec 3.2). */
+check("the hand dims what cannot answer",
+  /cr-card--mute/.test(trayTemplate) ? "yes" : "no", "yes");
+check("and the stylesheet dims rather than hides",
+  /\.cr-card--mute \{ opacity/.test(
+    fs.readFileSync(path.join(root, "styles/cardrpg.css"), "utf8")) ? "yes" : "no", "yes");
+
+/*
+ * **And the dialog asks only what is still a decision.** Five selects were offered every time, four
+ * of them usually with one option. The tool is now chosen -- the engine knows what is equipped and
+ * which approach it serves -- and push, help and approach appear only when they have an answer. An
+ * empty list means the click was the whole check, which is the common case at a table.
+ */
+check("the dialog is built from what is still open",
+  /const asks = \[/.test(traySource) ? "yes" : "no", "yes");
+check("and skips itself entirely when nothing is",
+  /if \(asks\.length\) \{/.test(traySource) ? "yes" : "no", "yes");
+check("the tool is picked rather than asked",
+  /export function bestTool\(actor, approach\)/.test(checksSource) ? "yes" : "no", "yes");
+/* Picked by what it is worth TO THIS CHARACTER, because an untrained +2 is a +1. */
+check("and ranked by what it is worth to this character",
+  /return trained \? \(b\.value \?\? 0\) : Math\.min\(1, b\.value \?\? 0\);/.test(checksSource)
+    ? "yes" : "no", "yes");
+/* It is still offered and still clearable: a tool bonus is situational and only the table knows
+ * whether this is a lock. */
+check("the chosen tool is still shown with its situation",
+  /bonus\.situation/.test(traySource) ? "yes" : "no", "yes");
+
+/* The banner, the GM's button, and the hook that redraws it for everybody. */
+check("the tray prints the call",
+  /\{\{#if scene\.call\}\}/.test(trayTemplate) ? "yes" : "no", "yes");
+check("and offers the GM a way to make one",
+  /data-action="callCheck"/.test(trayTemplate) ? "yes" : "no", "yes");
+check("a scene change redraws every tray",
+  /"deleteCombat", "updateScene"/.test(traySource) ? "yes" : "no", "yes");
+check("every string the call needs is translated",
+  Object.keys(lang).filter(k => k.startsWith("CARDRPG.Check.")).length, 23);
+check("and nothing it uses is missing",
+  [...traySource.matchAll(/CARDRPG\.Check\.[A-Za-z]+/g)].map(m => m[0])
+    .filter(k => !(k in lang)).join(", ") || "none", "none");
+
+/*
+ * ---- a tool names its own training ----
+ *
+ * **Eleven of the fourteen tools could never be trained.** skill-rules 2 caps an untrained user at
+ * +1 however good the tool is, and the test matched the tool's LAST WORD against the trainings a
+ * character held -- so "Healer's Kit" went looking for a training with "kit" in it. Four tools
+ * could never reach the bonus printed on them: Healer's Kit, Repair Kit, Smith's Hammer and *The
+ * Kit*, which is the Burglar's Signature.
+ *
+ * The tool names the training now, and the comparison is exact. The invariant that replaces the
+ * guess is the one worth having: **a bonus printed on a tool must be reachable**, which means every
+ * tool over +1 names a training and every training it names is taught by a node.
+ */
+check("the training is a field on the tool",
+  /training: new fields\.StringField/.test(
+    fs.readFileSync(path.join(root, "module/data/items.mjs"), "utf8")) ? "yes" : "no", "yes");
+check("and the comparison is exact rather than a substring",
+  /String\(t\)\.trim\(\)\.toLowerCase\(\) === want/.test(resolveSource) ? "yes" : "no", "yes");
+check("a tool that names no training is not capped",
+  /const trained = !want \|\|/.test(resolveSource) ? "yes" : "no", "yes");
+
+const taught = new Set(nodes.filter(n => n.grants?.training)
+  .map(n => String(n.grants.training).trim().toLowerCase()));
+const overOne = content.ITEMS.filter(i => (i.bonus?.value ?? 0) > 1);
+check("tools whose bonus the untrained cap bites", overOne.length, 5);
+check("and every one of them names a training",
+  overOne.filter(i => !(i.bonus.training ?? "").trim()).map(i => i.name).join(", ") || "none",
+  "none");
+check("and every training they name is taught by a node",
+  overOne.filter(i => !taught.has((i.bonus.training ?? "").trim().toLowerCase()))
+    .map(i => `${i.name} wants ${i.bonus.training}`).join(", ") || "none", "none");
+/* The one that was taught by nothing, and the two nodes that now teach it. A training granted
+ * twice is one training: `learned` dedupes, so the cloister and the anatomist agree. */
+check("who teaches treating wounds",
+  nodes.filter(n => n.grants?.training === "treating wounds").map(n => n.id).sort().join(", "),
+  "faith.order.cloister, mind.blood.anatomy");
+check("and the sheet would not list it twice",
+  /trainings: \[\.\.\.new Set\(/.test(
+    fs.readFileSync(path.join(root, "module/data/actors.mjs"), "utf8")) ? "yes" : "no", "yes");
+
+/* The documents, because every one of these three was a rule the software contradicted. */
+check("skill-rules records who sets the difficulty",
+  /\[BUILT 2026-11-02\]\*\* The GM's half of a check had nowhere to be said/
+    .test(skillDoc) ? "yes" : "no", "yes");
+check("and that a tool names its training",
+  /a tool names the\n> training that unlocks it/.test(skillDoc) ? "yes" : "no", "yes");
+check("and names the four tools that could not reach their bonus",
+  /Healer's Kit, Repair Kit, Smith's Hammer and\n> \*The Kit\*/.test(skillDoc) ? "yes" : "no", "yes");
+check("hud-spec records the banner",
+  /#### 5\.1 The call for a check {2}\*\*\[BUILT 2026-11-02\]\*\*/.test(hudSpec) ? "yes" : "no",
+  "yes");
+
 /* -------------------------------------------- */
 
 /*

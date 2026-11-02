@@ -422,7 +422,8 @@ export const ITEMS = [
   {
     name: "Lockpicks", slot: "belt", weight: 0, value: 25, kind: "Tool", group: "tool",
     blurb: "A roll of picks and a torsion wrench, in oiled cloth.",
-    bonus: { approach: "shadow", value: 2, situation: "locks and mechanisms" }
+    bonus: { approach: "shadow", value: 2, training: "lockpicks",
+      situation: "locks and mechanisms" }
   },
   {
     name: "Climbing Rope", slot: "pack", weight: 3, value: 5, kind: "Tool", group: "tool",
@@ -432,12 +433,14 @@ export const ITEMS = [
   {
     name: "Healer's Kit", slot: "pack", weight: 2, value: 20, kind: "Tool", group: "tool",
     blurb: "Needle, gut, lint and spirit.",
-    bonus: { approach: "lore", value: 2, situation: "treating wounds; removes 1 Wound on a Normal 5" }
+    bonus: { approach: "lore", value: 2, training: "treating wounds",
+      situation: "treating wounds; removes 1 Wound on a Normal 5" }
   },
   {
     name: "Repair Kit", slot: "pack", weight: 3, value: 30, kind: "Tool", group: "tool",
     blurb: "Files, rivets, pitch and wire. What acid leaves behind is work, not loss.",
-    bonus: { approach: "lore", value: 2, situation: "repairs; overnight it clears 1 Corrode" }
+    bonus: { approach: "lore", value: 2, training: "armour and its repair",
+      situation: "repairs; overnight it clears 1 Corrode" }
   },
   {
     name: "Hunting Traps", slot: "pack", weight: 4, value: 15, kind: "Tool", group: "tool",
@@ -454,7 +457,8 @@ export const ITEMS = [
   {
     name: "The Kit", slot: "pack", weight: 3, value: 0, kind: "Tool", group: "tool",
     blurb: "A burglar's whole trade in a roll of canvas, and they never put it down.",
-    bonus: { approach: "shadow", value: 2, situation: "every Hard physical obstacle counts as Normal" }
+    bonus: { approach: "shadow", value: 2, training: "lockpicks",
+      situation: "every Hard physical obstacle counts as Normal" }
   },
   {
     name: "Holy Symbol", slot: "hands", hands: 1, weight: 0, value: 10, kind: "Power", group: "power",
@@ -469,7 +473,8 @@ export const ITEMS = [
   {
     name: "Smith's Hammer", slot: "pack", weight: 2, value: 18, kind: "Make", group: "make",
     blurb: "A cross-pein and a sense of what metal wants.",
-    bonus: { approach: "lore", value: 2, situation: "metalwork; repairs 1 Corrode overnight" }
+    bonus: { approach: "lore", value: 2, training: "armour and its repair",
+      situation: "metalwork; repairs 1 Corrode overnight" }
   },
 
   /* ---- consumables: the Brewer's craft, and the cheap answer to a condition ---- */
@@ -4555,7 +4560,10 @@ export const NODES = [
   },
   {
     id: "mind.blood.anatomy", name: "Anatomy", after: ["mind.blood.vein"], bespoke: true,
-    grants: { knowHow: "what a body is made of, living or dead" }
+    /* The other half of "treating wounds": a mage who knows what a body is made of can use a
+     * Healer's Kit to its printed value, and a training granted twice is one training (actors.mjs
+     * dedupes `learned`). */
+    grants: { knowHow: "what a body is made of, living or dead", training: "treating wounds" }
   },
   {
     id: "mind.necromancy", name: "Necromancy", after: ["mind.blood.anatomy"], title: "Necromancy",
@@ -5061,7 +5069,9 @@ export const NODES = [
   { id: "faith.order.shield", name: "The Holy Shield", after: ["faith.ordination"],
     grants: { training: "shield and formation" } },
   { id: "faith.order.cloister", name: "The Cloister", after: ["faith.ordination"],
-    grants: { restTokens: 1 } },
+    /* The infirmary is monastic in this world as in ours, and the training was the one a tool
+     * named and no node taught: a Healer's Kit is Lore +2 and was capped at +1 for ever. */
+    grants: { restTokens: 1, training: "treating wounds" } },
   { id: "faith.order.drums", name: "The Drums", after: ["faith.ordination"],
     grants: { knowHow: "working a crowd into a state" } },
 

@@ -237,6 +237,25 @@
       a second window would have to draw it twice.
     --}}
     <section class="cr-scene" data-group-label="Scene">
+      {{!--
+        The obstacle, which is the GM's half of a check (skill-rules 2, step 1). It is a banner and
+        not a field in the player's dialog, because it is a state of the table rather than a thing
+        each player decides: one call, in front of everybody, until the GM withdraws it.
+      --}}
+      {{#if scene.call}}
+        <div class="cr-call" data-tooltip="The GM has called for a check. Play a card that fits.">
+          <span class="cr-call__dc">{{scene.call.label}}</span>
+          {{#if scene.call.note}}<span class="cr-call__note">{{scene.call.note}}</span>{{/if}}
+          {{#if scene.isGM}}
+            <button type="button" data-action="clearCall" class="cr-call__clear"
+                    data-tooltip="Withdraw the call.">&times;</button>
+          {{/if}}
+        </div>
+      {{else if scene.isGM}}
+        <button type="button" data-action="callCheck" class="cr-call__ask"
+                data-tooltip="Name the obstacle: how hard, which approach, and whether the plan earns advantage.">Call for a check</button>
+      {{/if}}
+
       <div class="cr-scene__passives">
         {{#each scene.passives}}
           {{!-- Static: the best card of this approach in the WHOLE deck plus 2, counting the
@@ -249,7 +268,10 @@
 
       <div class="cr-scene__hand">
         {{#each scene.cards}}
-          <div class="cr-card cr-card--skill{{#if this.wild}} cr-card--wild{{/if}}"
+          {{!-- A card whose approach cannot fit the call is dimmed in place, never hidden: the
+                same rule a blocked card half follows (hud-spec 3.2), and for the same reason --
+                hiding it would hide why it cannot be played. --}}
+          <div class="cr-card cr-card--skill{{#if this.wild}} cr-card--wild{{/if}}{{#unless this.answers}} cr-card--mute{{/unless}}"
                {{#if this.art}}style="--cr-art: url('{{this.art}}')"{{/if}}
                role="button" tabindex="0" data-action="check" data-card-id="{{this.id}}"
                data-tooltip="Play it: the check asks how hard, which tool, and whether anybody helped.">
@@ -275,6 +297,12 @@
       </div>
 
       <div class="cr-scene__counts">
+        {{#if scene.isGM}}
+          {{#if scene.call}}
+            <button type="button" data-action="callCheck"
+                    data-tooltip="Change the call: a difficulty set wrongly is corrected here, not argued about.">Re-call</button>
+          {{/if}}
+        {{/if}}
         <button type="button" data-action="dealSkills" {{#if scene.full}}disabled{{/if}}
                 data-tooltip="Draw up to your skill hand size. A new scene: a new location, a new conversation, or time passing.">New scene</button>
         <span class="cr-note">Skill deck {{scene.deck}} &middot; discard {{scene.discard}} &mdash;

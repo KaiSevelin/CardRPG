@@ -28,6 +28,9 @@ import {
   resolveTaint, resolveCorrode, liftCondition, resolveForesee, collectBonuses,
   itemMeets, requireText, payToCast, answerCast, grantBlock, resolveCheck, passiveScore
 } from "./resolve.mjs";
+import {
+  readCall, setCall, clearCall, describeCall, cardAnswers, bestTool, helpOptions
+} from "./checks.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -103,6 +106,9 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       // The scene side: the GM says when a scene starts, and a card is played AT a difficulty.
       dealSkills: CardRPGTray.#onDealSkills,
       check: CardRPGTray.#onCheck,
+      // The GM's half of a check, and withdrawing it again (skill-rules 2, step 1).
+      callCheck: CardRPGTray.#onCallCheck,
+      clearCall: CardRPGTray.#onClearCall,
     }
   };
 
@@ -809,11 +815,26 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         ? CARDRPG.approaches.any?.icon
         : CARDRPG.approaches[card.system.approach]?.icon,
       value: card.system.value,
-      edge: card.system.edge ?? ""
+      edge: card.system.edge ?? "",
+      /* Whether this card may answer the call at all: the approach must fit the description, and a
+       * wild fits any. Cards that cannot are dimmed rather than hidden, the same way a blocked
+       * card half is (hud-spec 3.2) -- hiding them would hide the reason. */
+      canAnswer: cardAnswers(card, readCall())
     })).sort((a, b) => b.value - a.value || a.approach.localeCompare(b.approach));
+
+    const call = readCall();
+    for (const card of cards) card.answers = !call || card.canAnswer;
 
     return {
       cards,
+      /*
+       * The obstacle in front of the party, which is the GM's half of a check and the half the
+       * first build left to the player (skill-rules 2, step 1). A banner rather than a dialog
+       * field: it is true until the GM withdraws it, and several characters answer the same one in
+       * turn inside a challenge.
+       */
+      call: call ? { ...call, label: describeCall(call) } : null,
+      isGM: game.user.isGM,
       /* The six, always all six: a deck that covers every approach is the composition rule. */
       passives: Object.entries(CARDRPG.approaches)
         .filter(([key]) => key !== "any")
@@ -1114,66 +1135,195 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   /**
-   * Play a skill card at a difficulty (skill-rules 2).
+   * The GM's half of a check: name the obstacle (skill-rules 2, step 1).
    *
-   * One dialog, because a check is one decision made of four parts: how hard it is, what you are
-   * using, whether anybody helped, and whether you are pushing. Push offers only cards of the
-   * **same approach**, which is the rule rather than a convenience -- and a wild serves any, which
-   * is the only reason an Inspiration is worth a slot that could have held a 3.
+   * **This step existed in the rules and not in the software.** The dialog below used to offer
+   * every difficulty to whoever clicked their own card, so the player set the difficulty of their
+   * own obstacle. A call is set here, read by every tray, and answered with one card.
    */
-  static async #onCheck(event, target) {
-    const hand = deckOf(this.actor, "skillHand");
-    const card = hand?.cards.get(target.dataset.cardId);
-    if (!card) return;
-
-    const approach = card.system.wild ? null : card.system.approach;
-    const tools = this.actor.items.filter(i => i.type === "item" && i.system.equipped
-      && i.system.bonus?.approach);
-    const pushable = [...hand.cards.contents]
-      .filter(c => c.id !== card.id && (approach ? c.system.serves(approach) : c.system.value > 0));
-
+  static async #onCallCheck() {
+    if (!game.user.isGM) return ui.notifications.info(game.i18n.localize("CARDRPG.Check.GMCalls"));
+    if (!game.scenes?.active) {
+      return ui.notifications.warn(game.i18n.localize("CARDRPG.Check.NoScene"));
+    }
+    const current = readCall();
     const difficulties = Object.entries(CARDRPG.difficulties)
-      .map(([name, dc]) => `<option value="${dc}">${name} (${dc})</option>`).join("");
-    const toolOptions = ['<option value="">no tool</option>',
-      ...tools.map(i => `<option value="${i.id}">${foundry.utils.escapeHTML(i.name)}`
-        + ` (${i.system.bonus.approach} +${i.system.bonus.value ?? 0})</option>`)].join("");
-    const pushOptions = ['<option value="">no push</option>',
-      ...pushable.map(c => `<option value="${c.id}">${foundry.utils.escapeHTML(c.name)}`
-        + ` (${c.system.value})</option>`)].join("");
+      .map(([name, dc]) => `<option value="${dc}"${current?.dc === dc ? " selected" : ""}>`
+        + `${name} (${dc})</option>`).join("");
+    const approaches = [`<option value="any">`
+      + `${game.i18n.localize("CARDRPG.Check.AnyApproach")}</option>`,
+    ...Object.entries(CARDRPG.approaches).filter(([key]) => key !== "any")
+      .map(([key, cfg]) => `<option value="${key}"`
+        + `${current?.approach === key ? " selected" : ""}>`
+        + `${game.i18n.localize(cfg.label ?? key)}</option>`)].join("");
 
     const answer = await foundry.applications.api.DialogV2.prompt({
-      window: { title: `${card.name}: how hard, and with what?` },
+      window: { title: game.i18n.localize("CARDRPG.Check.CallTitle") },
       content: `<div class="cardrpg cr-check">
-        <label>Difficulty <select name="dc">${difficulties}</select></label>
-        <label>Approach <select name="approach">${Object.entries(CARDRPG.approaches)
-          .filter(([key]) => key !== "any")
-          .map(([key, cfg]) => `<option value="${key}"`
-            + `${key === approach ? " selected" : ""}>${game.i18n.localize(cfg.label ?? key)}`
-            + "</option>").join("")}</select></label>
-        <label>Tool <select name="tool">${toolOptions}</select></label>
-        <label>Push <select name="push">${pushOptions}</select></label>
-        <label>Help <select name="help">
-          <option value="0">none</option><option value="1">+1</option><option value="2">+2 (same approach)</option>
+        <p class="cr-note">${game.i18n.localize("CARDRPG.Check.CallBody")}</p>
+        <label>${game.i18n.localize("CARDRPG.Check.Difficulty")}
+          <select name="dc">${difficulties}</select></label>
+        <label>${game.i18n.localize("CARDRPG.Check.Approach")}
+          <select name="approach">${approaches}</select></label>
+        <label>${game.i18n.localize("CARDRPG.Check.Edge")} <select name="mode">
+          <option value="0">${game.i18n.localize("CARDRPG.Check.Even")}</option>
+          <option value="1">${game.i18n.localize("CARDRPG.Check.Advantage")}</option>
+          <option value="-1">${game.i18n.localize("CARDRPG.Check.Disadvantage")}</option>
         </select></label>
+        <label>${game.i18n.localize("CARDRPG.Check.Note")}
+          <input type="text" name="note" value="${foundry.utils.escapeHTML(current?.note ?? "")}"></label>
       </div>`,
       ok: {
-        label: "Make the check",
+        label: game.i18n.localize("CARDRPG.Check.CallConfirm"),
         callback: (ev, button) => ({
           dc: Number(button.form.elements.dc.value),
           approach: button.form.elements.approach.value,
-          tool: button.form.elements.tool.value,
-          push: button.form.elements.push.value,
-          help: Number(button.form.elements.help.value)
+          mode: Number(button.form.elements.mode.value),
+          note: button.form.elements.note.value
         })
       },
       rejectClose: false
     });
     if (!answer) return;
 
+    const call = await setCall(answer);
+    /* A chat line as well as the banner: the banner is the state of the table and the message is
+     * its history, which is what a log is for. */
+    await ChatMessage.create({
+      content: `<div class="cardrpg"><p><strong>${describeCall(call)}</strong>`
+        + `${answer.note ? ` &mdash; ${foundry.utils.escapeHTML(answer.note)}` : ""}</p></div>`
+    });
+    for (const tray of CardRPGTray.openTrays) tray.render();
+  }
+
+  /** Withdraw it. The obstacle is gone, or it was the wrong call. */
+  static async #onClearCall() {
+    if (!game.user.isGM) return;
+    await clearCall();
+    for (const tray of CardRPGTray.openTrays) tray.render();
+  }
+
+  /**
+   * Answer the call with one card (skill-rules 2).
+   *
+   * **One dialog, and only for the parts that are still a decision.** The difficulty is the GM's
+   * and comes from the call; the approach is the call's when it named one; the tool is chosen for
+   * the character because the engine knows what is equipped and what it serves. What is left is
+   * what the rules leave to the player: whether to spend a second card pushing, whether anybody
+   * helped, and -- for a wild -- which approach they are claiming.
+   *
+   * When none of those is available the check resolves on the click, with no dialog at all. That is
+   * the common case at a table: a called obstacle, a card that fits, no tool, no push, no helper.
+   */
+  static async #onCheck(event, target) {
+    const hand = deckOf(this.actor, "skillHand");
+    const card = hand?.cards.get(target.dataset.cardId);
+    if (!card) return;
+
+    const call = readCall();
+    /*
+     * **A player cannot set their own difficulty**, which is step 1 of the rules belonging to the
+     * GM. Without a call there is nothing to answer, and the GM is one button away -- so this
+     * refuses rather than guessing a Normal 5, which would be the same defect wearing a default.
+     */
+    if (!call && !game.user.isGM) {
+      return ui.notifications.info(game.i18n.localize("CARDRPG.Check.WaitForCall"));
+    }
+    if (call && !cardAnswers(card, call)) {
+      return ui.notifications.warn(game.i18n.format("CARDRPG.Check.WrongApproach",
+        { card: card.name, approach: describeCall(call) }));
+    }
+
+    /* A wild claims an approach; anything else has one. A call that names one settles it. */
+    const called = call && call.approach !== "any" ? call.approach : null;
+    const own = card.system.wild ? null : card.system.approach;
+    const approach = called ?? own;
+
+    const pushable = [...hand.cards.contents]
+      .filter(c => c.id !== card.id
+        && (approach ? c.system.serves(approach) : c.system.value > 0));
+    const tool = approach ? bestTool(this.actor, approach) : null;
+    const tools = this.actor.items.filter(i => i.type === "item" && i.system.equipped
+      && i.system.bonus?.approach);
+    const helpers = helpOptions(this.actor);
+
+    /* What is still a decision. An empty list means the click was the whole check. */
+    const asks = [
+      !approach ? "approach" : null,
+      tools.length ? "tool" : null,
+      pushable.length ? "push" : null,
+      helpers ? "help" : null,
+      !call ? "dc" : null
+    ].filter(Boolean);
+
+    let answer = {
+      approach, dc: call?.dc ?? CARDRPG.difficulties.normal, mode: call?.mode ?? 0,
+      tool: tool?.id ?? "", push: "", help: 0
+    };
+
+    if (asks.length) {
+      const row = (label, body) => `<label>${label} ${body}</label>`;
+      const fields = [
+        asks.includes("dc") ? row(game.i18n.localize("CARDRPG.Check.Difficulty"),
+          `<select name="dc">${Object.entries(CARDRPG.difficulties)
+            .map(([name, dc]) => `<option value="${dc}">${name} (${dc})</option>`).join("")}`
+          + "</select>") : "",
+        asks.includes("approach") ? row(game.i18n.localize("CARDRPG.Check.Approach"),
+          `<select name="approach">${Object.entries(CARDRPG.approaches)
+            .filter(([key]) => key !== "any")
+            .map(([key, cfg]) => `<option value="${key}">`
+              + `${game.i18n.localize(cfg.label ?? key)}</option>`).join("")}</select>`) : "",
+        asks.includes("tool") ? row(game.i18n.localize("CARDRPG.Check.Tool"),
+          `<select name="tool"><option value="">`
+          + `${game.i18n.localize("CARDRPG.Check.NoTool")}</option>`
+          + tools.map(i => `<option value="${i.id}"${i.id === tool?.id ? " selected" : ""}>`
+            + `${foundry.utils.escapeHTML(i.name)} (${i.system.bonus.approach} `
+            + `+${i.system.bonus.value ?? 0}${i.system.bonus.situation
+              ? `, ${foundry.utils.escapeHTML(i.system.bonus.situation)}` : ""})</option>`).join("")
+          + "</select>") : "",
+        asks.includes("push") ? row(game.i18n.localize("CARDRPG.Check.Push"),
+          `<select name="push"><option value="">`
+          + `${game.i18n.localize("CARDRPG.Check.NoPush")}</option>`
+          + pushable.map(c => `<option value="${c.id}">${foundry.utils.escapeHTML(c.name)}`
+            + ` (${c.system.value})</option>`).join("") + "</select>") : "",
+        asks.includes("help") ? row(game.i18n.localize("CARDRPG.Check.Help"),
+          `<select name="help"><option value="0">`
+          + `${game.i18n.localize("CARDRPG.Check.NoHelp")}</option>`
+          + `<option value="1">+1</option>`
+          + `<option value="2">+2 (${game.i18n.localize("CARDRPG.Check.SameApproach")})</option>`
+          + "</select>") : ""
+      ].filter(Boolean).join("");
+
+      const got = await foundry.applications.api.DialogV2.prompt({
+        window: { title: `${card.name}` },
+        content: `<div class="cardrpg cr-check">`
+          + (call ? `<p class="cr-note"><strong>${describeCall(call)}</strong>`
+            + `${call.note ? ` &mdash; ${foundry.utils.escapeHTML(call.note)}` : ""}</p>` : "")
+          + fields + "</div>",
+        ok: {
+          label: game.i18n.localize("CARDRPG.Check.Make"),
+          callback: (ev, button) => {
+            const f = button.form.elements;
+            return {
+              dc: f.dc ? Number(f.dc.value) : (call?.dc ?? CARDRPG.difficulties.normal),
+              approach: f.approach ? f.approach.value : approach,
+              tool: f.tool ? f.tool.value : (tool?.id ?? ""),
+              push: f.push ? f.push.value : "",
+              help: f.help ? Number(f.help.value) : 0
+            };
+          }
+        },
+        rejectClose: false
+      });
+      if (!got) return;
+      answer = { ...answer, ...got };
+    }
+
     const pushed = answer.push ? hand.cards.get(answer.push) : null;
     await resolveCheck(this.actor, {
       approach: answer.approach,
       dc: answer.dc,
+      mode: answer.mode,
       card,
       push: pushed,
       help: answer.help,
@@ -1924,8 +2074,10 @@ export function registerTrayHooks() {
   Hooks.on("deleteItem", refreshFor);
 
   // A card doesn't say whose it is, and neither does a combat change, so refresh everything.
+  /* `updateScene` is the call for a check: it lives as a scene flag, so every tray reads the one
+   * the GM set and redraws when it changes (checks.mjs). */
   for (const hook of ["createCard", "updateCard", "deleteCard", "createCards", "updateCards",
-    "deleteCards", "updateCombat", "deleteCombat"]) {
+    "deleteCards", "updateCombat", "deleteCombat", "updateScene"]) {
     Hooks.on(hook, refreshAll);
   }
 

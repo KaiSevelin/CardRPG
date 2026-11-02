@@ -408,6 +408,20 @@ export class ItemSlateData extends SlateData {
           required: false, blank: true, initial: "",
           choices: [...Object.keys(CARDRPG.approaches), ""]
         }),
+        /*
+         * **The training that unlocks the full bonus**, named by the tool rather than guessed from
+         * its own name.
+         *
+         * skill-rules 2 caps an untrained user at +1 however good the tool is, and the first
+         * implementation matched the tool's last word against the character's trainings: "Healer's
+         * Kit" looked for a training containing "kit". **Eleven of the fourteen tools could never
+         * be trained**, and four could never reach their printed bonus at all -- Healer's Kit,
+         * Repair Kit, Smith's Hammer and *The Kit*, which is the Burglar's Signature.
+         *
+         * Blank means there is nothing to be trained in, which is the honest reading for a tool
+         * whose bonus is +1: the cap exists because the training does.
+         */
+        training: new fields.StringField({ required: false, blank: true, initial: "" }),
         situation: new fields.StringField({ required: false, blank: true, initial: "" })
       }),
 

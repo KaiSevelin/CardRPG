@@ -1392,8 +1392,18 @@ export async function resolveCheck(actor, {
    */
   const bonus = item?.system?.bonus ?? null;
   const serves = bonus && (bonus.approach === approach || bonus.approach === "any");
-  const trained = (actor.system.learned?.trainings ?? []).some(t => item?.name
-    && t.toLowerCase().includes(item.name.toLowerCase().split(" ").pop()));
+  /*
+   * **A tool names its own training** (data/items.mjs), and the comparison is exact.
+   *
+   * It used to match the tool's LAST WORD against the trainings a character held, which meant
+   * "Healer's Kit" went looking for a training with "kit" in it. Eleven of the fourteen tools
+   * could never be trained and four could never reach the bonus printed on them. A tool that names
+   * no training has nothing to be trained in, so it is not capped: the cap exists because the
+   * training does.
+   */
+  const want = (bonus?.training ?? "").trim().toLowerCase();
+  const trained = !want || (actor.system.learned?.trainings ?? [])
+    .some(t => String(t).trim().toLowerCase() === want);
   const toolBonus = serves ? (trained ? (bonus.value ?? 0) : Math.min(1, bonus.value ?? 0)) : 0;
 
   /* Push: a second card of the same approach. A wild serves, which is what a wild is for. */
