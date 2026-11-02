@@ -21,7 +21,7 @@ import {
 import { expandRoster } from "./monsters.mjs";
 import { slateData } from "./setup.mjs";
 import {
-  drawFate, deckOf, uprightCards, discardCards, cardName, addFateCards
+  drawFate, deckOf, uprightCards, discardCards, cardName, addFateCards, moveRandom
 } from "./decks.mjs";
 
 /* -------------------------------------------- */
@@ -79,6 +79,30 @@ export function requireText(requires) {
 export function collectBonuses(actor, verb, item) {
   const candidates = [];
 
+  /*
+   * **A condition can carry a bonus**, and that is where a spell's goes.
+   *
+   * The Graven line used to be a `bonus` on the spell slate: standing, invisible and unremovable,
+   * with nothing on the token to say it was there. Applied as a condition it shows, it has a
+   * duration, and it ends however that condition ends.
+   *
+   * The group is the condition's own key, so two tattoos granting the same verb cap each other the
+   * way two rings do -- a bonus group caps bonuses to one action (core-rules 5), and a creature
+   * wearing its whole school's ink is exactly the case that needs capping.
+   */
+  for (const c of actor.system.activeConditions ?? []) {
+    const bonus = c.bonus;
+    if (!bonus?.value || bonus.verb !== verb) continue;
+    /* Through the same predicate a slate's bonus and a card step both use, rather than reading the
+     * tags again here: a tag requirement asked two ways is a tag requirement nobody can change. */
+    if (bonus.requiresTag && !itemMeets(item, { tag: bonus.requiresTag })) continue;
+    candidates.push({
+      name: game.i18n.localize(CARDRPG.conditions[c.key]?.label ?? c.key),
+      group: c.key,
+      value: bonus.value
+    });
+  }
+
   for (const slate of actor.items) {
     const bonus = slate.system.bonus;
     if (!bonus?.value || bonus.verb !== verb) continue;
@@ -87,9 +111,7 @@ export function collectBonuses(actor, verb, item) {
     // which six new worn slots would have made a great deal worse.
     if (slate.type === "item"
       && (!slate.system.equipped || CARDRPG.slots[slate.system.equippedSlot]?.stows)) continue;
-    /* And a formula gives its bonus only while it is permanent, for the reason a feature needs no
-     * such test: a permanent is carved in, and a formula in a book is a thing you have read. */
-    if (slate.type === "spell" && slate.system.effect?.timing !== "permanent") continue;
+
     // A Drained slate gives nothing until it recharges.
     if (slate.system.drained) continue;
     // A tag requirement is about the item in hand, not the feature -- the same question a card
@@ -186,6 +208,52 @@ export function carries(actor, key) {
  *
  * @returns {boolean} whether it was cast, so the caller knows not to resolve the effect
  */
+/**
+ * **Pay for PREPARING a spell**, which until now was a checkbox with no consequence.
+ *
+ * `prepared` is set from the item sheet and nothing else: no function, no hook, nothing that
+ * happens when a spell goes into your head. The slot budget survived that because it is derived --
+ * `slotCost` sums the prepared spells whenever anything asks -- but a cost paid AT preparing has no
+ * such luck, which is why the Poison school's price sat in six cards' audit column instead of in
+ * the engine.
+ *
+ * Strain takes from the hand first and the draw pile after. A strength-5 formula wants five cards
+ * and the skill hand is four, so taking only from the hand would make the school's own thesis
+ * formula unpayable -- and `moveRandom` is what Overloaded already uses to take cards nobody chose.
+ *
+ * Nothing is refunded on UN-preparing, and that is Strain's rule rather than an omission: what
+ * Strain costs you is the time until the cards come back, and they come back on a rest.
+ */
+export async function payToPrepare(actor, slate) {
+  const want = slate?.system?.cost?.skillCards ?? 0;
+  if (!want) return true;
+
+  const hand = deckOf(actor, "skillHand");
+  const deck = deckOf(actor, "skill");
+  const discard = deckOf(actor, "skillDiscard");
+  if (!discard) {
+    ui.notifications?.warn("No skill discard on this actor; the price goes uncollected.");
+    return true;
+  }
+
+  let paid = 0;
+  for (const from of [hand, deck]) {
+    if (paid >= want || !from?.cards?.size) continue;
+    const take = Math.min(want - paid, from.cards.size);
+    const moved = await moveRandom(from, discard, take);
+    paid += moved.length;
+  }
+
+  await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<div class="cardrpg"><p><strong>${actor.name}</strong> prepares `
+      + `<em>${slate.name}</em> and sets aside ${paid} skill card${paid === 1 ? "" : "s"}`
+      + `${paid < want ? ` of ${want} \u2014 there were no more to set aside` : ""}.</p>`
+      + "<p>They come back on a rest.</p></div>"
+  });
+  return true;
+}
+
 export async function payToCast(actor, slate) {
   if (!slate?.system?.prepared) {
     ui.notifications.warn(`${slate?.name ?? "That spell"} is in your book, not in your head.`);
@@ -1926,7 +1994,18 @@ export async function resolveCondition(actor, { step, target }) {
   // `?? 1` keeps every existing card at 1, and Math.max(0, ...) lets a card print 0 on purpose.
   const intensity = valued ? Math.max(0, step.intensity ?? 1) : null;
   // Tested against null, not for truthiness: Poisoned 0 is a value, and 0 is falsy.
-  let landed = { key, duration: full, ...(intensity === null ? {} : { value: intensity }) };
+  /*
+   * And the bonus the step grants, carried on the instance rather than read off the config: two
+   * tattoos are both Graven and grant different things. `creatorId` is the precedent -- a condition
+   * has been able to hold data since Compelled needed to remember who compelled.
+   */
+  const carried = step.bonus?.value
+    ? { bonus: { verb: step.bonus.verb ?? "", value: step.bonus.value,
+      requiresTag: step.bonus.requiresTag ?? "" } }
+    : {};
+  let landed = {
+    key, duration: full, ...(intensity === null ? {} : { value: intensity }), ...carried
+  };
   let line;
 
   if (step.resist) {

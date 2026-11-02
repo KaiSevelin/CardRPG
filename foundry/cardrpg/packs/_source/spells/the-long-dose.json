@@ -6,6 +6,9 @@
   "system": {
     "strength": 1,
     "source": "Poison",
+    "cost": {
+      "skillCards": 1
+    },
     "description": "<p>No damage at all. Three rounds of a man who cannot use his off hand, which in a fight is worse than three damage and lasts longer.</p>",
     "effect": {
       "verb": "cast",

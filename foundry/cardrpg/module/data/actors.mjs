@@ -37,7 +37,20 @@ function conditionField() {
      * A valued condition is free to have a bottom rung that does nothing but its side effect.
      */
     value: new fields.NumberField({ integer: true, min: 0, nullable: true, initial: null }),
-    creatorId: new fields.StringField({ required: false, blank: true, initial: "" })
+    creatorId: new fields.StringField({ required: false, blank: true, initial: "" }),
+    /*
+     * **A bonus this instance of the condition carries.**
+     *
+     * The second thing a condition has been able to hold: `creatorId` was the first, and the
+     * conditions document names it as the precedent -- *Compelled stores who compelled*. A tattoo
+     * grants +2 Strike with Heavy items and another grants +2 Strike flat, and both are Graven, so
+     * the payload cannot live on the config.
+     */
+    bonus: new fields.SchemaField({
+      verb: new fields.StringField({ required: false, blank: true, initial: "" }),
+      value: new fields.NumberField({ integer: true, nullable: true, initial: null }),
+      requiresTag: new fields.StringField({ required: false, blank: true, initial: "" })
+    })
   }));
 }
 

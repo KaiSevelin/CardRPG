@@ -8,14 +8,15 @@
     "source": "Tattoo Magic",
     "description": "<p>It is on your arm. It does not need remembering, and it never comes off.</p>",
     "effect": {
-      "timing": "permanent"
+      "timing": "permanent",
+      "condition": "graven",
+      "bonus": {
+        "verb": "strike",
+        "value": 2,
+        "requiresTag": "heavy"
+      }
     },
     "kind": "formula",
-    "prepared": false,
-    "bonus": {
-      "verb": "strike",
-      "value": 2,
-      "requiresTag": "heavy"
-    }
+    "prepared": false
   }
 }

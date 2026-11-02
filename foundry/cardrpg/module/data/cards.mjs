@@ -134,6 +134,29 @@ export function stepField() {
       required: false, blank: true, initial: "",
       choices: [...Object.keys(CARDRPG.targets), ""]
     }),
+    /*
+     * **A bonus this step's condition carries**, in the shape an item and a feature already use.
+     *
+     * It is here rather than on a spell slate because a bonus a spell gives should be a thing you
+     * can SEE: the Graven line was a standing, invisible, unremovable +2 on the sheet, and nothing
+     * on the token said so. Applied as a condition it shows, it has a duration, and it comes off
+     * however that condition comes off.
+     *
+     * The payload rides on the condition instance rather than on the condition's config, because
+     * each tattoo grants a different one -- +2 Strike with Heavy items is not +2 Strike, and both
+     * are Graven.
+     */
+    bonus: new fields.SchemaField({
+      verb: new fields.StringField({
+        required: false, blank: true, initial: "",
+        choices: [...Object.keys(CARDRPG.verbs), ""]
+      }),
+      value: new fields.NumberField({ integer: true, nullable: true, initial: null }),
+      requiresTag: new fields.StringField({
+        required: false, blank: true, initial: "",
+        choices: [...CARDRPG.itemTags, ""]
+      })
+    }),
     oncePer: new fields.StringField({
       required: false, blank: true, initial: "",
       choices: [...Object.keys(CARDRPG.limits), ""]

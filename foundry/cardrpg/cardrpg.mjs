@@ -10,7 +10,7 @@ import { registerSheets } from "./module/sheets.mjs";
 import { createStarterContent, ensureSetupMacro, buildMonster } from "./module/setup.mjs";
 /* A transformation is ended by somebody, because nothing here owns a timer that survives a
  * reload -- so the duration on the card is what the table reads and this is how it is settled. */
-import { endTransformation } from "./module/resolve.mjs";
+import { endTransformation, payToPrepare } from "./module/resolve.mjs";
 import { CardRPGCombat, registerCombatHooks } from "./module/combat.mjs";
 import { CardRPGTray, registerTrayHooks } from "./module/tray.mjs";
 import { registerCheckHooks } from "./module/checks.mjs";
@@ -296,6 +296,23 @@ Hooks.once("ready", async () => {
     if (!touchesLoad) return;
     const overloaded = ["overloaded", "immobile"].includes(actor.system.encumbrance);
     await decks.setOverloaded(actor, overloaded);
+  });
+  /*
+   * **A spell going into somebody's head, which nothing used to notice.**
+   *
+   * `prepared` is a checkbox on the item sheet and there has never been anything listening -- the
+   * slot budget got away with that because it is derived, but the Poison school's price is paid AT
+   * preparing and so needs a moment. This is the moment.
+   *
+   * The change object is what makes it one: `prepared` has to have been turned ON by this update
+   * rather than merely be true, or every unrelated edit to a prepared spell would charge for it
+   * again. `updateItem` is given that object for exactly this, and the load watcher below is the
+   * precedent for reading it.
+   */
+  Hooks.on("updateItem", async (item, change) => {
+    if (item.type !== "spell" || change?.system?.prepared !== true) return;
+    if (!item.parent || !game.user.isGM) return;
+    await payToPrepare(item.parent, item);
   });
   Hooks.on("createItem", item => onLoadChanged(item));
   Hooks.on("updateItem", item => onLoadChanged(item));

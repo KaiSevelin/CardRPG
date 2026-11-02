@@ -151,30 +151,20 @@ export class SpellSlateData extends SlateData {
       effect: stepField(),
 
       /*
-       * **What a PERMANENT formula does to you, in the shapes a feature already uses.**
+       * **What a PERMANENT formula does to you, in the shape a feature already uses.**
        *
-       * Seven cards named *a permanent formula that is never prepared and carries a bonus*, and
-       * the discovery was that a permanent formula wants exactly what a feature wants: the Graven
-       * line is +1 armour, +6 max Health, +2 Strike with Heavy items. A bonus, a grant and a
-       * standing number -- which is a feature's whole vocabulary, so these are a feature's fields
-       * rather than a mechanism of their own.
+       * Seven cards named *a permanent formula that is never prepared and carries a bonus*, and the
+       * discovery was that a permanent formula wants what a feature wants: +1 armour, +6 max
+       * Health. Standing numbers, which is what `grants` is for.
        *
-       * They count only while the effect's `timing` is `permanent`. A formula sitting unread in a
+       * A **bonus** is not here, and that is the correction: a bonus a spell gives belongs on the
+       * step as a condition's payload, because then it SHOWS. As a field on the slate it was a
+       * standing, invisible, unremovable +2 that nothing on the token mentioned.
+       *
+       * These count only while the effect's `timing` is `permanent`. A formula sitting unread in a
        * book must not be granting anything, which is the one way this could have gone wrong: a
-       * caster would have learned every bonus in their school and kept them all.
+       * caster would have learned every grant in their school and kept them all.
        */
-      bonus: new fields.SchemaField({
-        verb: new fields.StringField({
-          required: false, blank: true, initial: "",
-          choices: [...Object.keys(CARDRPG.verbs), ""]
-        }),
-        value: new fields.NumberField({ integer: true, nullable: true, initial: null }),
-        range: new fields.NumberField({ integer: true, nullable: true, initial: null }),
-        requiresTag: new fields.StringField({
-          required: false, blank: true, initial: "",
-          choices: [...CARDRPG.itemTags, ""]
-        })
-      }),
       grants: new fields.SchemaField({
         health: new fields.NumberField({ required: true, integer: true, initial: 0 }),
         handSize: new fields.NumberField({ required: true, integer: true, initial: 0 }),
@@ -214,6 +204,22 @@ export class SpellSlateData extends SlateData {
         health: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 }),
         taint: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 }),
         strain: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 }),
+        /*
+         * **Skill cards set aside to PREPARE it**, which is the Poison school's whole price and
+         * the only cost in the game paid at preparing rather than at casting.
+         *
+         * specializations.md 1 states the rule -- *preparing costs skill cards set aside equal to
+         * the formula's strength* -- and names the mechanism as Strain on the skill deck.
+         * core-rules 1208 says what Strain is: discard N, and they come back. The skill discard
+         * returns on a rest, which makes this per-rest, which is per-preparation: you prepare after
+         * a rest and the cards are back by the next one, when you would re-prepare anyway.
+         *
+         * It is its own currency rather than `strain` with a deck beside it, because the two are
+         * not the same thing being spent. Blood Magic pays in *your own substance* and Poison in
+         * *your competence outside the fight* (specializations.md 5) -- one is Health and one is
+         * the deck you make skill checks with.
+         */
+        skillCards: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 }),
         scale: new fields.StringField({
           required: false, blank: true, initial: "",
           choices: [...Object.keys(CARDRPG.costScales), ""]

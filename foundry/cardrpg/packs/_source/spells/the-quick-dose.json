@@ -6,6 +6,9 @@
   "system": {
     "strength": 3,
     "source": "Poison",
+    "cost": {
+      "skillCards": 3
+    },
     "description": "<p>Adjacent, because it has to go in them. Two rounds, two damage a round, and armour is no part of the conversation.</p>",
     "effect": {
       "verb": "cast",

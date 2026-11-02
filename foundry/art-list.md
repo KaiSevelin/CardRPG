@@ -287,7 +287,7 @@ Eleven, not twelve: *Step Through* is in the Shadow formulas below.
 |---|---|---|---|
 |   | **Blood Price** | strength 2 · Cast +4 range 3 | `signatures/mind/blood-price.webp` |
 |   | **Call the Unquiet** | strength 3 · Conjure range 2 a corpse rises and fights for you | `signatures/mind/call-the-unquiet.webp` |
-|   | **Graven Strength** | strength 1 | `signatures/mind/graven-strength.webp` |
+|   | **Graven Strength** | strength 1 · Graven | `signatures/mind/graven-strength.webp` |
 |   | **Hearth and Home** | strength 1 · a camp nobody unfriendly can find, for one night | `signatures/mind/hearth-and-home.webp` |
 |   | **Not Here** | strength 2 · Invisible (1) until you attack or are attacked | `signatures/mind/not-here.webp` |
 |   | **Nothing Left to Take** | strength 1 · you cannot be reduced below 1 Health | `signatures/mind/nothing-left-to-take.webp` |
@@ -417,7 +417,7 @@ Blood Magic and Spiritualism, handed over by minor nodes.
 |   | **The Standing Ward** | strength 4 · Spent: until your next turn no Cast resolves at all, anywhere -- yours too | `spells/mind/the-standing-ward.webp` |
 |   | **The Unbound Tongue** | strength 1 · Shake 1 range 3 Silenced | `spells/mind/the-unbound-tongue.webp` |
 |   | **The Unlatched Door** | strength 2 · a door ever opened by one who lived there opens for you | `spells/mind/the-unlatched-door.webp` |
-|   | **The Whole Skin** | strength 5 · Burning never lands. You may never prepare another spell | `spells/mind/the-whole-skin.webp` |
+|   | **The Whole Skin** | strength 5 · Graven Burning never lands. You may never prepare another spell | `spells/mind/the-whole-skin.webp` |
 |   | **The Whole Thread** | strength 5 · the GM shows the enemy's intent cards for the whole fight, in order | `spells/mind/the-whole-thread.webp` |
 |   | **Turn Aside** | strength 2 · range 3 one ally's Block counts double against this attack | `spells/mind/turn-aside.webp` |
 |   | **Unmake the Ground** | strength 5 · all fight | `spells/mind/unmake-the-ground.webp` |

@@ -6,6 +6,9 @@
   "system": {
     "strength": 2,
     "source": "Poison",
+    "cost": {
+      "skillCards": 2
+    },
     "description": "<p>Dazed while it lasts, and one damage a turn that armour does not stop.</p>",
     "effect": {
       "verb": "cast",

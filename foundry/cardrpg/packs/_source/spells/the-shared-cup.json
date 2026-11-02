@@ -6,6 +6,9 @@
   "system": {
     "strength": 4,
     "source": "Poison",
+    "cost": {
+      "skillCards": 4
+    },
     "description": "<p>Everyone who drank. Three rounds of it, over three squares, and the save is the only mercy in the formula.</p>",
     "effect": {
       "verb": "cast",

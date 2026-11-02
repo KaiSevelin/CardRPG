@@ -6,6 +6,9 @@
   "system": {
     "strength": 2,
     "source": "Poison",
+    "cost": {
+      "skillCards": 2
+    },
     "description": "<p>Not a poison. A disease, which is the difference between a bad afternoon and something still with them next week.</p>",
     "effect": {
       "verb": "tainting",

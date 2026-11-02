@@ -170,7 +170,7 @@ if (!fs.existsSync(specPath)) {
   for (const m of configSource.matchAll(/^  ([a-zA-Z]+): \{\s*\n\s*label: "CARDRPG\.Condition\./gm)) {
     conditions.add(m[1]);
   }
-  check("conditions found in config", conditions.size, 23);
+  check("conditions found in config", conditions.size, 24);
 
 
   /*
@@ -206,6 +206,10 @@ if (!fs.existsSync(specPath)) {
     if (body.includes("derived:")) return "weight";
     if (body.includes("opening:")) return "clock";
     if (body.includes("liftable:")) return "lift";
+    /* And a sixth: nothing takes it off, said out loud. A condition recognised by having no flags
+     * would be indistinguishable from one that forgot them, which is how Graven first fell through
+     * -- so a permanent condition declares itself and an absent-minded one still falls. */
+    if (body.includes("permanent:")) return "permanent";
     if (!body.includes("noDuration:")) return "shake";
     return null;
   };
@@ -263,12 +267,43 @@ if (!fs.existsSync(specPath)) {
     : k.charAt(0).toUpperCase() + k.slice(1));
   const empty = v => v === undefined || /^\**nothing\**$/i.test(v.trim());
 
+  /*
+   * **A condition nobody can take off answers `nothing`, and every other one answers something.**
+   *
+   * Stated both ways round, because the first version EXEMPTED a permanent condition from the
+   * answer table -- and the spec's Graven row reads as a sentence, so it would have passed without
+   * the exemption and the exemption would have been a check that cannot fail. Each half can fail
+   * now: a condition that forgot its answer, and a condition the spec promises a way out of when
+   * config says there is none.
+   *
+   * Creation is not symmetrical. A permanent condition still has to be PUT on you by something, so
+   * the source table covers it like any other.
+   */
+  const forever = k => /permanent:/.test(bodyOf(k));
+  /*
+   * **Absent and "nothing" are different answers**, which is why `empty` is not enough on its own.
+   * A break test deleted the Graven row and nothing noticed: no row and a row saying nothing both
+   * came back empty. The decision has to be written down -- that is the entire reason the table is
+   * in the document -- so the question splits in three.
+   */
+  const unrowed = k => answers.get(shown(k)) === undefined;
+  const saysNothing = k => !unrowed(k) && empty(answers.get(shown(k)));
   const uncreatable = [...conditions].filter(k => empty(sources.get(shown(k)))).sort();
-  const unanswerable = [...conditions].filter(k => empty(answers.get(shown(k)))).sort();
+  const rowless = [...conditions].filter(unrowed).sort();
+  const unanswerable = [...conditions].filter(k => !forever(k) && saysNothing(k)).sort();
+  const overanswered = [...conditions].filter(k => forever(k) && !saysNothing(k)).sort();
+  check("conditions that nothing takes off, which say so",
+    [...conditions].filter(forever).join(", "), "graven");
   check("conditions nothing can create",
     uncreatable.length ? uncreatable.join(", ") : "none", "none");
+  /* Every condition has a row, permanent or not: a row is where the decision is recorded. */
+  check("conditions the answer table does not list at all",
+    rowless.length ? rowless.join(", ") : "none", "none");
   check("conditions nothing can answer",
     unanswerable.length ? unanswerable.join(", ") : "none", "none");
+  /* And the other way: the spec must not promise a way off one that config says is forever. */
+  check("conditions config calls permanent that the spec answers anyway",
+    overanswered.length ? overanswered.join(", ") : "none", "none");
 
   const undocumented = [...conditions].filter(k => !ticked.has(k)).sort();
   check("conditions missing from the spec",
@@ -573,7 +608,7 @@ const stepBlock = cardsSource.slice(cardsSource.indexOf("export function stepFie
 const stepKeys = new Set(
   [...stepBlock.slice(0, stepBlock.indexOf("\n}")).matchAll(/^    ([a-zA-Z]+):/gm)].map(m => m[1])
 );
-check("stepField keys read from source", stepKeys.size, 28);
+check("stepField keys read from source", stepKeys.size, 29);
 
 const strayKeys = new Set();
 for (const step of steps) {
@@ -4803,9 +4838,16 @@ const GAP_CLOSERS = [
     c => stepsOfContent(c).some(s => s.targets === "alliesInRange")],
   ["a ritual, which costs no slots at all",
     c => stepsOfContent(c).some(s => s.timing === "ritual")],
+  /*
+   * A permanent carries a field either as a standing grant or as a bonus on the step, which is
+   * where a bonus a spell gives now lives -- it rides on the condition the step applies, so the
+   * tattoo shows on the token. This read `c.bonus`, and when that field went the closer quietly
+   * lost one of the five cards it recognised.
+   */
   ["a permanent formula that is never prepared and carries a bonus",
     c => stepsOfContent(c).some(s => s.timing === "permanent")
-      && (!!c.bonus?.value || Object.values(c.grants ?? {}).some(v => v))]
+      && (stepsOfContent(c).some(s => !!s.bonus?.value)
+        || Object.values(c.grants ?? {}).some(v => v))]
 ];
 const rotted = [];
 for (const [gap, isBuilt] of GAP_CLOSERS) {
@@ -5072,10 +5114,15 @@ check("and so does playing the half",
 check("the requirement narrows the list before the best is chosen",
   /\.filter\(i => itemMeets\(i, requires\)\)[\s\S]{0,120}\.sort\(/.test(traySource)
     ? "yes" : "no", "yes");
-/* One predicate: the slate bonus asks it too, rather than testing the tags a second time. */
-check("a slate's bonus asks the same predicate",
-  /if \(bonus\.requiresTag && !itemMeets\(item, \{ tag: bonus\.requiresTag \}\)\)/
-    .test(resolveSource) ? "yes" : "no", "yes");
+/*
+ * One predicate, and now **two** callers ask it: a slate's bonus and a condition's. So this is a
+ * count rather than a grep, which is the suite's own rule -- a grep two places can answer is a grep
+ * about neither, and the second caller arrived the day the bonus moved onto a condition.
+ */
+check("callers that ask the same predicate for a bonus's tag",
+  (resolveSource.match(
+    /if \(bonus\.requiresTag && !itemMeets\(item, \{ tag: bonus\.requiresTag \}\)\)/g) ?? []).length,
+  2);
 /*
  * An unmet requirement switches the half OFF, which is a separate thing from explaining why. The
  * tooltip check below passed happily with the half still clickable, so both are needed: the face
@@ -6873,9 +6920,33 @@ check("and offers every slot the game has",
   /\{\{#each config\.slots\}\}/.test(quarantinePart) ? "yes" : "no", "yes");
 check("and every item tag",
   /\{\{#each config\.itemTags\}\}/.test(quarantinePart) ? "yes" : "no", "yes");
-/* And the other loop is still there, so the slice above cannot pass by being empty. */
+/*
+ * **And the bonus a step's condition carries, by each of its three controls.**
+ *
+ * A break test pointed the verb select at a field that does not exist and nothing noticed: the
+ * loops were counted but the names they sat in were not, so the editor could have offered every
+ * verb in the game and written them nowhere. Sliced, so each control is asked for by name.
+ */
+const bonusPart = stepPart.slice(stepPart.indexOf("Bonus to"),
+  stepPart.indexOf("</div>", stepPart.indexOf("Bonus to")));
+check("the editor sets the verb a carried bonus applies to",
+  bonusPart.includes('name="{{path}}.bonus.verb"') ? "yes" : "no", "yes");
+check("and offers every verb for it",
+  /\{\{#each config\.verbs\}\}/.test(bonusPart) ? "yes" : "no", "yes");
+check("and how much it is worth",
+  bonusPart.includes('name="{{path}}.bonus.value"') ? "yes" : "no", "yes");
+check("and the tag the hand must be holding to earn it",
+  bonusPart.includes('name="{{path}}.bonus.requiresTag"') ? "yes" : "no", "yes");
+/* And the slice is a slice of something: three controls in it, not the whole template. */
+check("while the bonus row is a row rather than the file",
+  bonusPart.length < stepPart.length / 4 ? "a row" : "the file", "a row");
+/*
+ * And the other loops are still there, so the slice above cannot pass by being empty. Three now:
+ * the tag a step requires in hand, the tags a quarantine filter takes away, and the tag a carried
+ * bonus requires -- +2 Strike with Heavy items is a different tattoo from +2 Strike.
+ */
 check("while the tag a step requires in hand is still offered",
-  (stepPart.match(/\{\{#each config\.itemTags\}\}/g) ?? []).length, 2);
+  (stepPart.match(/\{\{#each config\.itemTags\}\}/g) ?? []).length, 3);
 /*
  * **Each sub-field of `shape` by name.** The sweep above reads the FIRST segment of every input
  * name, so `shape` counted as editable on the strength of `shape.quarantine.features` alone --
@@ -7174,16 +7245,27 @@ check("and the two kinds they are",
  */
 const permanents = outsideBudget.filter(s => s.effect.timing === "permanent");
 check("permanent formulas", permanents.length, 9);
+/*
+ * A permanent carries a field when it grants a standing number OR when its step applies a condition
+ * that carries a bonus. The second half is the correction: this read `s.bonus`, a field on the
+ * slate, and when the bonus moved onto the condition the two spells that give one would have
+ * silently joined the list of those still wanting a flag.
+ */
+const carries = s => Object.values(s.grants ?? {}).some(v => v) || !!s.effect?.bonus?.value;
 check("and the five that now carry a field rather than a sentence",
-  permanents.filter(s => s.bonus?.value || Object.values(s.grants ?? {}).some(v => v))
-    .map(s => s.name).sort().join(", "),
+  permanents.filter(carries).map(s => s.name).sort().join(", "),
   "Graven Armour, Graven Heart, Graven Shield, Graven Strength, The Whole Skin");
-/* The other two are flags nothing in the game has, and their gaps say so now rather than hiding
+/* The other four are flags nothing in the game has, and their gaps say so now rather than hiding
  * inside a gap about bonuses. */
 check("and the four that still want a flag",
-  permanents.filter(s => !(s.bonus?.value || Object.values(s.grants ?? {}).some(v => v)))
-    .map(s => s.name).sort().join(", "),
+  permanents.filter(s => !carries(s)).map(s => s.name).sort().join(", "),
   "Graven Eye, Graven Road, Nothing At All, The Hand Given");
+/* Both of the two that give a bonus deliver it as Graven, which is the whole change: ink you can
+ * see on the token rather than a number on the sheet that nothing mentions. */
+check("permanents that give their bonus as a condition",
+  permanents.filter(s => s.effect?.bonus?.value)
+    .map(s => `${s.name} (${s.effect.condition})`).sort().join(", "),
+  "Graven Strength (graven), The Whole Skin (graven)");
 /*
  * **A formula that is not permanent grants nothing**, and this is the load-bearing half: without it
  * a caster would hold every bonus in their school at once, having learned them all and prepared
@@ -7199,9 +7281,43 @@ check("and a formula still in the book grants nothing",
   grants.sumGrants([permSpell(3, "")], grants.CHARACTER_GRANTS).armor, 0);
 check("nor does a ritual, which is work and not a trait",
   grants.sumGrants([permSpell(3, "ritual")], grants.CHARACTER_GRANTS).armor, 0);
-check("and the bonus accumulator refuses one that is not",
-  /if \(slate\.type === "spell" && slate\.system\.effect\?\.timing !== "permanent"\) continue;/
-    .test(resolveSource) ? "yes" : "no", "yes");
+/*
+ * And a bonus a spell gives reaches the character as a CONDITION, which is the correction: as a
+ * field on the slate it was standing, invisible and unremovable, and nothing on the token said so.
+ */
+check("the bonus accumulator reads the conditions a creature is under",
+  /for \(const c of actor\.system\.activeConditions \?\? \[\]\) \{/.test(resolveSource)
+    ? "yes" : "no", "yes");
+check("and no longer reads a spell as a source of bonus",
+  /slate\.type === "spell" && slate\.system\.effect/.test(resolveSource) ? "still does" : "no",
+  "no");
+check("and groups it under the condition, so two tattoos cap each other",
+  /group: c\.key,/.test(resolveSource) ? "yes" : "no", "yes");
+check("and a condition carries its own bonus rather than the config's",
+  /bonus: new fields\.SchemaField\(\{\n      verb: new fields\.StringField\(\{ required: false, blank: true, initial: "" \}\),/
+    .test(actorsSource) ? "yes" : "no", "yes");
+check("and what lands copies the step's bonus onto it",
+  /const carried = step\.bonus\?\.value/.test(resolveSource) ? "yes" : "no", "yes");
+/*
+ * **And the bonus is selective, which is the half nothing watched.**
+ *
+ * A break test deleted the tag test from the condition branch and the whole suite shrugged: Graven
+ * Strength is +2 Strike *with a Heavy item*, and without the filter it would have been +2 Strike
+ * with a dagger, a lute and empty hands. Both branches of the accumulator ask the same two
+ * questions, so both are counted rather than grepped -- a grep either one could answer is a grep
+ * about neither.
+ */
+check("accumulator branches that ask which verb the bonus is for",
+  (resolveSource.match(/if \(!bonus\?\.value \|\| bonus\.verb !== verb\) continue;/g) ?? []).length,
+  2);
+check("and that ask what the hand must be holding",
+  (resolveSource.match(/if \(bonus\.requiresTag && !itemMeets\(item, \{ tag: bonus\.requiresTag \}\)\) continue;/g) ?? []).length,
+  2);
+/* Through the one predicate, not read off the tags a second time: the slate branch says so in a
+ * comment and the condition branch did it by hand until a break test made the point. */
+check("and neither reads an item's tags by hand",
+  /\(item\?\.system\?\.tags \?\? \[\]\)\.includes/.test(resolveSource) ? "one does" : "no",
+  "no");
 /* And flat armour, which had no home in the game at all until this. */
 check("flat armour is a grant a character reads",
   grants.CHARACTER_GRANTS.includes("armor") ? "yes" : "no", "yes");
@@ -8603,7 +8719,15 @@ check("and paying is what gates the effect",
  * and deleted another with nothing noticing: the content went on writing them, the model went on
  * dropping them, and the spell was simply free.
  */
-const spellBlock = itemSource.slice(itemSource.indexOf("export class SpellSlateData"));
+/*
+ * The spell class, bounded. This slice used to run to the end of the file, so when the spell's own
+ * `bonus` was removed the sub-schema sweep below found the NEXT class's and reported its fields as
+ * the spell's -- a slice that can wander into the next class is a sweep about whichever class
+ * happens to be last.
+ */
+const spellStart = itemSource.indexOf("export class SpellSlateData");
+const spellBlock = itemSource.slice(spellStart,
+  itemSource.indexOf("export class ", spellStart + 20));
 
 /**
  * The field names of one sub-schema of a spell, read out of the source.
@@ -8621,9 +8745,12 @@ const subSchemaOf = name => {
   return new Set([...spellBlock.slice(at, spellBlock.indexOf("\n      }),", at))
     .matchAll(/^        ([a-zA-Z]+): /gm)].map(m => m[1]));
 };
+/* `bonus` is deliberately absent now: a bonus a spell gives is a condition's payload, because a
+ * field on the slate was a standing, invisible, unremovable number. */
+check("the spell schema has no bonus of its own",
+  /bonus: new fields\.SchemaField/.test(spellBlock) ? "still there" : "gone", "gone");
 for (const [name, want] of [
-  ["grants", "armor, carry, deckMax, handSize, health, spellSlots"],
-  ["bonus", "range, requiresTag, value, verb"]
+  ["grants", "armor, carry, deckMax, handSize, health, spellSlots"]
 ]) {
   const fields = subSchemaOf(name);
   check(`${name} fields read from the spell schema`, [...fields].sort().join(", "), want);
@@ -8643,7 +8770,7 @@ const costFields = new Set([...spellBlock
   .slice(costStart, spellBlock.indexOf("\n      }),", costStart))
   .matchAll(/^        ([a-zA-Z]+): /gm)].map(m => m[1]));
 check("cost fields read from the spell schema", [...costFields].sort().join(", "),
-  "health, scale, strain, taint");
+  "health, scale, skillCards, strain, taint");
 const strayCostKeys = new Set();
 for (const spell of graph.SPELLS.values()) {
   for (const key of Object.keys(spell.cost ?? {})) if (!costFields.has(key)) strayCostKeys.add(key);
@@ -8699,6 +8826,66 @@ check("scaled prices with nothing to scale",
 check("scales declared and never used",
   Object.keys(CARDRPG.costScales).filter(k => !scaled.some(s => s.cost.scale === k)).join(", ")
     || "none", "none");
+/*
+ * **The Poison school's price, which was the top of the queue.** Six formulas, and the rule is the
+ * school's rather than six numbers somebody typed: specializations.md 1 says *preparing costs skill
+ * cards set aside equal to the formula's strength*, so both are read and made to agree. A card
+ * written at the wrong price is a school quietly cheaper or dearer than its own document.
+ */
+const poison = [...graph.SPELLS.values()].filter(s => s.source === "Poison");
+/* Seven, not the six that named the gap: `Wither` is the school's thesis Signature and never
+ * named it, so it was already "a thing the engine does everything for" while paying nothing. */
+check("the Poison school", poison.length, 7);
+check("and every formula in it sets aside skill cards",
+  poison.filter(s => !s.cost?.skillCards).map(s => s.name).join(", ") || "none", "none");
+check("each equal to its own strength",
+  poison.filter(s => s.cost.skillCards !== s.strength)
+    .map(s => `${s.name}: ${s.cost.skillCards} for strength ${s.strength}`).join(", ") || "none",
+  "none");
+check("and the document says that is the rule",
+  /preparing costs \*\*skill cards set aside equal to the formula's strength\*\*/
+    .test(specDoc) ? "yes" : "no", "yes");
+/* Nobody else pays in them: it is the school's whole identity, and a second school charging the
+ * same thing would be the two of them sharing an axis rather than dividing one. */
+check("schools that set aside skill cards",
+  [...new Set([...graph.SPELLS.values()].filter(s => s.cost?.skillCards).map(s => s.source))]
+    .join(", "), "Poison");
+
+/*
+ * **And the moment it is paid, which did not exist.** `prepared` is a checkbox on the item sheet
+ * and nothing listened -- the slot budget got away with that because `slotCost` is derived and asks
+ * whenever anything looks. A cost paid AT preparing has no such luck.
+ */
+check("preparing has a collector of its own",
+  /export async function payToPrepare\(actor, slate\)/.test(resolveSource) ? "yes" : "no", "yes");
+check("and a hook that notices the checkbox turning on",
+  /change\?\.system\?\.prepared !== true\) return;/.test(entrySource) ? "yes" : "no", "yes");
+/*
+ * The CHANGE object, not the current value: a spell that is already prepared must not be charged
+ * again every time anything else about it is edited.
+ *
+ * Written as a grep for the STATE, which must be absent. The first version grepped for the start of
+ * the hook's own condition and ended in a space -- and a pattern whose last character is a space
+ * cannot be written into the absent-grep pin at all, because the pin is text and loses it.
+ */
+check("and reads the change rather than the state",
+  /item\.system\.prepared/.test(entrySource) ? "the state" : "the change", "the change");
+check("and the collector is called with the owning actor",
+  /await payToPrepare\(item\.parent, item\);/.test(entrySource) ? "yes" : "no", "yes");
+/*
+ * Strain takes from the hand first and the draw pile after, because the school's own thesis
+ * formula wants five cards and the skill hand is four -- taking only from the hand would have made
+ * it unpayable, which is the kind of rule that reads fine and cannot be obeyed.
+ */
+const prepareBody = resolveSource.slice(resolveSource.indexOf("export async function payToPrepare"),
+  resolveSource.indexOf("export async function payToCast"));
+check("it takes from the hand and then the deck",
+  /for \(const from of \[hand, deck\]\)/.test(prepareBody) ? "yes" : "no", "yes");
+check("and nothing is refunded on un-preparing, which is Strain's rule",
+  /Nothing is refunded on UN-preparing/.test(resolveSource) ? "yes" : "no", "yes");
+check("and it says where the cards go back to",
+  /They come back on a rest/.test(prepareBody) ? "yes" : "no", "yes");
+
 /* And the other two currencies, which were prose on six spells until this increment. */
 const taintCost = [...graph.SPELLS.values()].filter(s => s.cost?.taint);
 check("spells that cost Taint",
@@ -9077,7 +9264,7 @@ for (const m of selfSource.matchAll(/(\w+)\.includes\("((?:[^"\\]|\\.)*)"\)/g)) 
 }
 
 /* The pin that keeps the rest of this honest. */
-check("greps over a whole file, resolved", greps.length, 500);
+check("greps over a whole file, resolved", greps.length, 510);
 
 /*
  * **The rule, as one predicate, run over a planted example before it is run over the suite.**
@@ -9113,7 +9300,7 @@ check("greps a second printer could answer",
  * is absent is the whole of its content, so the content is what is pinned.
  */
 /*
- * The twenty-two, by name and by pattern, in the order the suite sorts them. Raw strings,
+ * The twenty-five, by name and by pattern, in the order the suite sorts them. Raw strings,
  * because these are patterns: written as escaped JS they are unreadable, and a list nobody
  * can read is a list nobody will check when it changes.
  */
@@ -9121,8 +9308,11 @@ const absentGreps = [
   String.raw`a pile is never given one :: "pile",[^)]*backOf\(`,
   String.raw`and core content is never written to :: NODES\.(push|splice|length =)`,
   String.raw`and neither builds a face by hand any more :: faces: \[\{ name: card\.name \}\]`,
+  String.raw`and neither reads an item's tags by hand :: \(item\?\.system\?\.tags \?\? \[\]\)\.includes`,
   String.raw`and never decides from adjacency itself :: \.after[\s\S]{0,60}\.(some|every)\(`,
+  String.raw`and no longer reads a spell as a source of bonus :: slate\.type === "spell" && slate\.system\.effect`,
   String.raw`and no slate is flagged unusable instead :: quarantined: new fields\.BooleanField`,
+  String.raw`and reads the change rather than the state :: item\.system\.prepared`,
   String.raw`and the engine clamps neither total :: Math\.max\(0, before`,
   String.raw`and the old sentence is gone :: Faith is \*\*wide and shallow\*\*`,
   String.raw`and the resolver reads the flag :: conditionsOf\(actor\)\.includes\("invisible"\)`,

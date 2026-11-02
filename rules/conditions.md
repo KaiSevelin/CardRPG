@@ -34,6 +34,7 @@ These take something away. They are the fighter's vocabulary.
 | **Dazed** | `dazed` | surprised | You can't play a secondary. |
 | **Slowed** | `slowed` | tortoise | All Move values are halved, rounding down. |
 | **Stunned** | `stunned` | brain-freeze | You can't play reactions. |
+| **Graven** | `graven` | aura | **Ink in your skin.** It carries the bonus the tattoo grants, and nothing takes it off. |
 | **Halted** | `halted` | hourglass | **Your turn does not happen.** Not interrupted &mdash; it never took place, and the round moves on without you. |
 | **Heckled** | `heckled` | thumb-down | You draw fate with **disadvantage**. |
 | **Prone** | `prone` | falling | Melee Strikes against you have advantage. Standing up costs Move 1. |
@@ -409,6 +410,7 @@ the table play. This column says which half of that each condition gets.
 |---|---|---|
 | **Dazed** | **yes** | the tray allows a primary only, and says so |
 | **Stunned** | advisory | a "No reactions" badge; reactions have no legality gate |
+| **Graven** | advisory | the bonus it carries is read by `collectBonuses`, grouped under `graven` so two tattoos on the same verb cap each other |
 | **Halted** | advisory | a "No turn" badge. `blocksTurn` is read by `noTurn` on the actor; nothing enforces a skipped turn, because initiative order is the GM's to run |
 | **Heckled** | **yes** | the fate draw reads it, the same way Invisible is read |
 | **Slowed** | **yes, on the face** | the printed Move is halved — Move itself is never resolved, figures are moved by hand |
@@ -440,6 +442,7 @@ Every source in the content as it stands ([way-cards.md](way-cards.md),
 | **Dazed** | *Dirty Trick* (goblin) · *Mock* (Shade) · *Wrong Face* (Glamour) · *Grave Chill* (Necromancy) |
 | **Slowed** | *Set* (Trapmaker) · *Pin the Shadow* (Shade) · *Frost* (Elemental) |
 | **Stunned** | *Lightning* (Elemental) |
+| **Graven** | *Graven Strength* (Tattoo Magic) · *The Whole Skin* (Tattoo Magic) |
 | **Halted** | *The Grey Hour* (The Grey) |
 | **Heckled** | *Heckle* (Bard) — and nothing else, by design |
 | **Invisible** | Smoke Bomb · *Not Here* (Glamour) · *Vanish*, *Smoke and Go* (Shade) |
@@ -483,6 +486,15 @@ here is why" is a decision.
 
 ### 9.1 What takes each one off
 
+> **Graven is the one with no answer, and that is the point of it.** The five ways a condition ends
+> are Health, weight, the clock, a Lift and a Shake, and a tattoo is none of them. It declares
+> `permanent: true` so that saying so is a decision rather than an oversight &mdash; a condition
+> recognised by having no flags would be indistinguishable from one that forgot them.
+>
+> So its row below reads **nothing**, the one place in this document where that word is an answer
+> instead of a hole, and the suite holds the pair together in both directions: a condition config
+> calls permanent must say nothing here, and every other condition must say something.
+
 §6.1's answer to *which conditions counter which*: a reference column rather than a mechanic. Every
 removal in the content, and the gaps are the point.
 
@@ -501,6 +513,7 @@ removal in the content, and the gaps are the point.
 | **Dazed**, **Stunned**, **Grappled**, **Silenced**, **Disarmed**, **Compelled**, **Halted** | **Shake Off** (§9.2) · the duration |
 | **Heckled** | **Shake Off** · the duration, which is the heckler's next turn |
 | **Marked**, **Judged** | **the duration**, and only the duration — an opening cannot be shaken off, *by design* |
+| **Graven** | **nothing** |
 
 That table is the state **before** a dispel existed, and eight conditions had no answer at all
 beyond waiting a turn. Six cards in the content print a duration of **(2)**, so waiting could mean

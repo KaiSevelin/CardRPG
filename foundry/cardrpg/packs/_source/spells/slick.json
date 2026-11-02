@@ -6,6 +6,9 @@
   "system": {
     "strength": 1,
     "source": "Poison",
+    "cost": {
+      "skillCards": 1
+    },
     "description": "<p>Oil of something. No save: a man whose feet have gone is not resisting anything.</p>",
     "effect": {
       "range": 3,

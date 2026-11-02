@@ -202,6 +202,23 @@ Carried only by slates that grant a **numeric bonus** (core-rules §5):
 Null is the common case: a weapon supplying a base value is not a bonus, and neither is a feature
 that grants advantage or a flat trait. **One slate, one group** — a border is one colour.
 
+#### A spell does not carry one
+
+A spell slate has `grants` but no `bonus`, and the asymmetry is deliberate. A permanent formula
+gives standing numbers (`grants.armor`, `grants.health`) the way a feature does, but a **bonus**
+reaches the character as a **condition** instead: the step applies one, and the bonus rides on it as
+a payload.
+
+The reason is that a bonus on the slate was invisible. The Graven line put +2 Strike on a sheet with
+nothing on the token to say it was there, no duration, and no way to take it off. As a condition it
+shows in the HUD, the condition's own key is the bonus group — so two tattoos on one verb cap
+each other — and the removal question has an answer, which for `graven` is *nothing*
+([conditions.md](../rules/conditions.md) §9.1).
+
+So `stepField().bonus` is `{ verb, value, requiresTag }`, the same three questions an item's bonus
+asks, and `conditionField().bonus` is where they land. The payload is on the **instance**, not on
+the condition's config: +2 Strike with a Heavy item and +2 Strike flat are both Graven.
+
 ---
 
 ## 3. `Card` subtypes

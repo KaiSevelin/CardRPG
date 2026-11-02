@@ -3308,6 +3308,7 @@ export const MIND_POOL = [
    */
   {
     name: "Slick", strength: 1, pool: "mind", source: "Poison",
+    cost: { skillCards: 1 },
     needs: ["skill cards set aside to pay for a formula"],
     description: "<p>Oil of something. No save: a man whose feet have gone is not resisting "
       + "anything.</p>",
@@ -3315,6 +3316,7 @@ export const MIND_POOL = [
   },
   {
     name: "The Quick Dose", strength: 3, pool: "mind", source: "Poison",
+    cost: { skillCards: 3 },
     needs: ["skill cards set aside to pay for a formula"],
     description: "<p>Adjacent, because it has to go in them. Two rounds, two damage a round, and "
       + "armour is no part of the conversation.</p>",
@@ -3329,6 +3331,7 @@ export const MIND_POOL = [
      * this one existed to need it.
      */
     name: "The Long Dose", strength: 1, pool: "mind", source: "Poison",
+    cost: { skillCards: 1 },
     needs: ["skill cards set aside to pay for a formula"],
     description: "<p>No damage at all. Three rounds of a man who cannot use his off hand, which "
       + "in a fight is worse than three damage and lasts longer.</p>",
@@ -3339,6 +3342,7 @@ export const MIND_POOL = [
   },
   {
     name: "The Grey Sickness", strength: 2, pool: "mind", source: "Poison",
+    cost: { skillCards: 2 },
     needs: ["skill cards set aside to pay for a formula"],
     description: "<p>Not a poison. A disease, which is the difference between a bad afternoon and "
       + "something still with them next week.</p>",
@@ -3348,6 +3352,7 @@ export const MIND_POOL = [
   },
   {
     name: "The Shared Cup", strength: 4, pool: "mind", source: "Poison",
+    cost: { skillCards: 4 },
     needs: ["skill cards set aside to pay for a formula", "a condition applied to an area"],
     description: "<p>Everyone who drank. Three rounds of it, over three squares, and the save is "
       + "the only mercy in the formula.</p>",
@@ -3363,6 +3368,7 @@ export const MIND_POOL = [
      * skill cards -- which is the school's axis, Control, written as a bill.
      */
     name: "The Kingmaker's Draught", strength: 5, pool: "mind", source: "Poison",
+    cost: { skillCards: 5 },
     needs: ["skill cards set aside to pay for a formula",
       "a price refunded when the target dies carrying the condition"],
     description: "<p>Three rounds of three, no save, and no cost at all if it finishes him. If it "
@@ -3535,10 +3541,10 @@ export const MIND_POOL = [
       "a spell budget closed for the rest of the character"],
     description: "<p>There is no skin left to write on. It is the last thing you ever learn, and "
       + "afterwards you are something else wearing a mage's name.</p>",
-    bonus: { verb: "strike", value: 2 },
     grants: { armor: 2, health: 4 },
     effect: {
-      timing: "permanent",
+      timing: "permanent", condition: "graven",
+      bonus: { verb: "strike", value: 2 },
       /* Two things no field holds: a condition that never lands on you, and a slot budget closed
        * for good. Both are the price of a strength-5 permanent and both are still prose. */
       text: "Burning never lands. You may never prepare another spell"
@@ -4010,6 +4016,9 @@ export const MIND_SIGNATURES = [
      */
     name: "Wither", kind: "spell", node: "mind.poison", strength: 2, source: "Poison",
     needs: [],
+    /* The school's thesis Signature, and it pays the school's price like the other six -- it never
+     * named the gap, which is why the sweep found it only when the check counted the school. */
+    cost: { skillCards: 2 },
     description: "<p>Dazed while it lasts, and one damage a turn that armour does not stop.</p>",
     effect: {
       verb: "cast", condition: "poisoned", intensity: 1, duration: 2, resist: "might", dc: 5
@@ -4034,8 +4043,12 @@ export const MIND_SIGNATURES = [
     source: "Tattoo Magic",
     needs: [],
     description: "<p>It is on your arm. It does not need remembering, and it never comes off.</p>",
-    bonus: { verb: "strike", value: 2, requiresTag: "heavy" },
-    effect: { timing: "permanent" }
+    effect: {
+      timing: "permanent", condition: "graven",
+      /* The bonus rides on the condition, so the tattoo SHOWS on the token instead of being a
+       * standing number nobody can see. */
+      bonus: { verb: "strike", value: 2, requiresTag: "heavy" }
+    }
   },
   {
     name: "Nothing Left to Take", kind: "spell", node: "mind.asceticism", strength: 1,

@@ -6,6 +6,9 @@
   "system": {
     "strength": 5,
     "source": "Poison",
+    "cost": {
+      "skillCards": 5
+    },
     "description": "<p>Three rounds of three, no save, and no cost at all if it finishes him. If it does not, you have paid five cards for an angry survivor who knows your face.</p>",
     "effect": {
       "condition": "poisoned",

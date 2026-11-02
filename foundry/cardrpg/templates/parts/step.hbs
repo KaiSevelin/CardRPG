@@ -131,6 +131,28 @@
     {{/each}}
   </div>
 
+  {{!-- A bonus the step's condition carries. On the step rather than on a slate, so that a bonus a
+        spell gives SHOWS on the token instead of being a standing number nobody can see. --}}
+  <div class="cr-step__row">
+    <label>Bonus to
+      <select name="{{path}}.bonus.verb">
+        <option value="">&mdash;</option>
+        {{#each config.verbs}}
+          <option value="{{@key}}" {{#if (crEq @key ../step.bonus.verb)}}selected{{/if}}>{{localize this.label}}</option>
+        {{/each}}
+      </select>
+    </label>
+    <label>Value <input type="number" name="{{path}}.bonus.value" value="{{step.bonus.value}}"></label>
+    <label>Only with
+      <select name="{{path}}.bonus.requiresTag">
+        <option value="">any item</option>
+        {{#each config.itemTags}}
+          <option value="{{this}}" {{#if (crEq this ../step.bonus.requiresTag)}}selected{{/if}}>{{this}}</option>
+        {{/each}}
+      </select>
+    </label>
+  </div>
+
   {{!-- A state of the player's own that the step waits on. Whole builds rest on these. --}}
   <div class="cr-step__row">
     <label>Only while

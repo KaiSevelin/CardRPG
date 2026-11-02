@@ -309,6 +309,29 @@ CARDRPG.conditions = {
    * deleting it when drawn -- and nothing ever created one, so Blessed and Cursed were markers with
    * no effect behind them until now.
    */
+  /*
+   * **Graven: a tattoo, and the bonus it carries.**
+   *
+   * The Graven line used to be a `bonus` on the spell slate, which made it standing, invisible and
+   * unremovable -- nothing on the token said it and nothing could end it. As a condition it shows,
+   * and the bonus rides on the condition instance rather than on this config, because each tattoo
+   * grants a different one: +2 Strike with Heavy items is not +2 Strike.
+   *
+   * `noDuration` because a tattoo is permanent, which is the same flag Blessed uses for a thing
+   * that lasts until something takes it away. Not `liftable`: it is carved in.
+   */
+  graven: {
+    label: "CARDRPG.Condition.Graven",
+    icon: "aura",
+    noDuration: true,
+    /*
+     * **Nothing takes it off**, and it has to say so rather than be recognised by having no flags.
+     * The suite sorts every condition into one of the ways it can end -- Health, weight, the clock,
+     * a Lift, a Shake -- and a condition in none of them is one whose removal nobody decided. This
+     * one's removal IS decided: never. A tattoo is ink in your skin.
+     */
+    permanent: true
+  },
   blessed: {
     label: "CARDRPG.Condition.Blessed",
     icon: "aura",

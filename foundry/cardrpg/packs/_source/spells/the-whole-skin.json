@@ -9,6 +9,11 @@
     "description": "<p>There is no skin left to write on. It is the last thing you ever learn, and afterwards you are something else wearing a mage's name.</p>",
     "effect": {
       "timing": "permanent",
+      "condition": "graven",
+      "bonus": {
+        "verb": "strike",
+        "value": 2
+      },
       "text": "Burning never lands. You may never prepare another spell"
     },
     "kind": "formula",
@@ -16,10 +21,6 @@
     "grants": {
       "armor": 2,
       "health": 4
-    },
-    "bonus": {
-      "verb": "strike",
-      "value": 2
     }
   }
 }
