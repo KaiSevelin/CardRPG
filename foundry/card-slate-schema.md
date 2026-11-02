@@ -87,6 +87,8 @@ prevent.
 |---|---|
 | `timing` | **When** the step may be played: `reaction`, `ritual`, `outOfCombat`, `beforeFight`, `permanent`. 31 steps carried this as a prefix on their prose |
 | `delay` | Turns to wait before it happens. `2` is *at the start of your second turn after this*, which three steps said in prose `-` and a delayed effect the engine cannot see is one the table forgets, because the card is in the discard by the time it matters |
+| `ground` | **What the step leaves on the map**: a `shape` (line, area, adjacent, whole map, one square), an `effects` list (cover, difficult ground, shadowed, impassable, a trap) and `damage` a turn. The condition a zone applies is the step's own. **Nothing places it** |
+| `targets` | **Who the step is for**: `self`, `oneEnemy`, `enemiesInRange`, `oneAlly`, `alliesInRange`, `adjacentAllies`, `everyAlly`, `selfAndAllies`, `everyone`. Blank means one enemy, which is what every card has always meant by saying nothing |
 | `oncePer` | How often it may be played: `fight`, `day`, `pactPerFight`. Three steps said it in prose |
 | `ignoresArmour` / `ignoresBlock` / `ignoresCover` | All of it, where `ignores` above is a NUMBER of armour points. Block and cover are not armour, and core-rules 5 is explicit that `ignores` comes off armour and never off Block |
 | `readDeck` | Whose fate deck a Read looks at: `own`, `other`, `target`, `all`. `foresee` had a number and never a target |
@@ -154,7 +156,22 @@ a timer that survives a reload `-` the card's `duration` is what the table reads
 > name. Your **Health and conditions**, because a bear that has forgotten it was poisoned is a way
 > out of a condition that no card should hand over for nothing.
 
-**120 steps still carry prose, 33 of them prose alone** `-` the same count as before, which is not a
+#### Who a step is for
+
+**The oldest assumption in the game, and nothing ever wrote it down.** A step targets an enemy,
+because the first step anybody wrote was a Strike `-` and **29 steps affect allies** with no way to
+say so. *An ally's next check cannot fail*, *every ally within 2 may play a second secondary*,
+*adjacent allies gain your armor as Block*: the engine could not tell a blessing from an attack.
+
+`targets` is on 32 steps now, which is the largest single conversion of these three increments.
+
+**There is deliberately no field for what the ally gets.** Nine steps want one and want eight
+different values between them `-` a second secondary, a whole turn again, Move at full value, an
+extra reaction per trigger, fate twice, a check that cannot fail, a failure that becomes a Partial.
+One value per card is a free-text special wearing an enum's clothes. **The uniform half is who; the
+varied half stays prose.**
+
+**116 steps still carry prose, 21 of them prose alone** `-` the same count as before, which is not a
 failure to make progress. 31 steps lost a prefix to `timing`, and the five conjurings kept a
 sentence on purpose. **What moved is the part that was a rule** `-` when a step may be played, what
 it costs to keep a thing standing `-` **and what stayed is the part that was a judgement.** The

@@ -13,6 +13,7 @@
     },
     "effect": {
       "range": 1,
+      "targets": "adjacentAllies",
       "text": "adjacent allies gain your armor as Block"
     },
     "kind": "miracle",

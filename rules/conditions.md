@@ -34,6 +34,7 @@ These take something away. They are the fighter's vocabulary.
 | **Dazed** | `dazed` | surprised | You can't play a secondary. |
 | **Slowed** | `slowed` | tortoise | All Move values are halved, rounding down. |
 | **Stunned** | `stunned` | brain-freeze | You can't play reactions. |
+| **Halted** | `halted` | hourglass | **Your turn does not happen.** Not interrupted &mdash; it never took place, and the round moves on without you. |
 | **Heckled** | `heckled` | thumb-down | You draw fate with **disadvantage**. |
 | **Prone** | `prone` | falling | Melee Strikes against you have advantage. Standing up costs Move 1. |
 | **Grappled** | `grappled` | luchador | Blocks 👣 Move. |
@@ -408,6 +409,7 @@ the table play. This column says which half of that each condition gets.
 |---|---|---|
 | **Dazed** | **yes** | the tray allows a primary only, and says so |
 | **Stunned** | advisory | a "No reactions" badge; reactions have no legality gate |
+| **Halted** | advisory | a "No turn" badge. `blocksTurn` is read by `noTurn` on the actor; nothing enforces a skipped turn, because initiative order is the GM's to run |
 | **Heckled** | **yes** | the fate draw reads it, the same way Invisible is read |
 | **Slowed** | **yes, on the face** | the printed Move is halved — Move itself is never resolved, figures are moved by hand |
 | **Grappled** / **Silenced** / **Disarmed** | **yes** | via `blocks` → blocked icons; Disarmed's *"⚔ with the disarmed item"* half is not modelled |
@@ -438,6 +440,7 @@ Every source in the content as it stands ([way-cards.md](way-cards.md),
 | **Dazed** | *Dirty Trick* (goblin) · *Mock* (Shade) · *Wrong Face* (Glamour) · *Grave Chill* (Necromancy) |
 | **Slowed** | *Set* (Trapmaker) · *Pin the Shadow* (Shade) · *Frost* (Elemental) |
 | **Stunned** | *Lightning* (Elemental) |
+| **Halted** | *The Silent Hour* (The Grey) · *The Grey Hour* (The Grey) |
 | **Heckled** | *Heckle* (Bard) — and nothing else, by design |
 | **Invisible** | Smoke Bomb · *Not Here* (Glamour) · *Vanish*, *Smoke and Go* (Shade) |
 | **Burning** | *Scorch* (Elemental, **1**) · *Boil* (Blood, **3**) · *Flesh of the Earth* (Elemental acid, **1**) |
@@ -495,7 +498,7 @@ removal in the content, and the gaps are the point.
 | **Invisible** | attacking, which ends it early · **Shake Off**, if you wanted to · the duration |
 | **Blessed**, **Cursed** | drawing the card they put in the deck · **Lift** (§9.3) |
 | **Unconscious** | Health above 0, and nothing else — it has no duration to spend |
-| **Dazed**, **Stunned**, **Grappled**, **Silenced**, **Disarmed**, **Compelled** | **Shake Off** (§9.2) · the duration |
+| **Dazed**, **Stunned**, **Grappled**, **Silenced**, **Disarmed**, **Compelled**, **Halted** | **Shake Off** (§9.2) · the duration |
 | **Heckled** | **Shake Off** · the duration, which is the heckler's next turn |
 | **Marked**, **Judged** | **the duration**, and only the duration — an opening cannot be shaken off, *by design* |
 

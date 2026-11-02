@@ -8,6 +8,7 @@
     "source": "The Eternal Spirit",
     "description": "<p>Everybody who had fallen is standing, at half. You will carry nothing at all until tomorrow, which in a dungeon is a real price and not a flourish.</p>",
     "effect": {
+      "targets": "everyAlly",
       "text": "every ally at 0 Health stands at half Health. You may carry nothing for the rest of the day"
     },
     "kind": "miracle",

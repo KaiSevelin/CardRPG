@@ -12,6 +12,7 @@
     },
     "effect": {
       "area": 2,
+      "targets": "alliesInRange",
       "text": "every ally within 2 may Move their full value, at once, now"
     },
     "kind": "miracle",

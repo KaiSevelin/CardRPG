@@ -11,7 +11,15 @@
     "effect": {
       "range": 3,
       "area": 3,
-      "text": "a 3-square area becomes deep water: everything in it is Wet (2) and its Move is halved"
+      "condition": "wet",
+      "intensity": 2,
+      "ground": {
+        "shape": "area",
+        "effects": [
+          "difficult"
+        ]
+      },
+      "text": "deep water: and its Move is halved"
     },
     "kind": "formula",
     "prepared": false

@@ -170,7 +170,8 @@ if (!fs.existsSync(specPath)) {
   for (const m of configSource.matchAll(/^  ([a-zA-Z]+): \{\s*\n\s*label: "CARDRPG\.Condition\./gm)) {
     conditions.add(m[1]);
   }
-  check("conditions found in config", conditions.size, 22);
+  check("conditions found in config", conditions.size, 23);
+
 
   /*
    * The spec's removal table claims eleven conditions can be shaken off and nine cannot
@@ -189,7 +190,7 @@ if (!fs.existsSync(specPath)) {
     const body = bodyOf(k);
     return !body.includes("opening:") && !body.includes("noDuration:");
   });
-  check("conditions that can be shaken off", shakeable.length, 13);
+  check("conditions that can be shaken off", shakeable.length, 14);
 
   /*
    * How every condition is got rid of, as an EXHAUSTIVE partition -- which is the only honest answer
@@ -216,7 +217,7 @@ if (!fs.existsSync(specPath)) {
     else buckets[b] = (buckets[b] ?? 0) + 1;
   }
   check("conditions with no way out at all", homeless.length ? homeless.join(", ") : "none", "none");
-  check("removed by Shake Off", buckets.shake ?? 0, 13);
+  check("removed by Shake Off", buckets.shake ?? 0, 14);
   check("removed by Lift", buckets.lift ?? 0, 2);
   check("removed by dropping weight", buckets.weight ?? 0, 2);
   check("removed by the clock, by design", buckets.clock ?? 0, 4);
@@ -572,7 +573,7 @@ const stepBlock = cardsSource.slice(cardsSource.indexOf("export function stepFie
 const stepKeys = new Set(
   [...stepBlock.slice(0, stepBlock.indexOf("\n}")).matchAll(/^    ([a-zA-Z]+):/gm)].map(m => m[1])
 );
-check("stepField keys read from source", stepKeys.size, 26);
+check("stepField keys read from source", stepKeys.size, 28);
 
 const strayKeys = new Set();
 for (const step of steps) {
@@ -3382,11 +3383,16 @@ check("Half-mage's slots are on the node", byId.get("shade.half-mage").grants.sp
  */
 const built = sigs.filter(sg => !sg.needs?.length).map(sg => sg.name);
 check("Signatures the engine does everything for", built.join(", "),
-  "The Opening, The Kit, Loose and Step, Heckle, One Trick, Shoulder to Shoulder, "
+  /* `Set` joined this list when `ground` was built: it was queued under "placing a trap on a
+   * square", which is now a shape, a square and a trap. The first gap closed by building the
+   * mechanism a card named rather than by rewriting the card. */
+  "The Opening, The Kit, Loose and Step, Set, Heckle, One Trick, Shoulder to Shoulder, "
   + "Nothing Gets Through, Interpose, Wither, The Bargain, Unmake, Breath of the Spirit, "
-  + "The Outcast's Due, The Writ, The Order's Shield, The Scourge");
+  /* The Silent Hour joined when Halted was built: its gap was "a reaction that stops an action",
+   * and a condition that denies a turn is that. */
+  + "The Outcast's Due, The Silent Hour, The Writ, The Order's Shield, The Scourge");
 const gaps = sigs.filter(sg => sg.needs?.length).map(sg => `${sg.name}: ${sg.needs.join("; ")}`);
-check("Signatures with a named gap", gaps.length, 35);
+check("Signatures with a named gap", gaps.length, 33);
 /*
  * `needs` is a LIST, and that is the lesson of the Health cost. It was the largest gap in the game
  * at six pieces of content; building it finished exactly ONE, because every other one wanted a
@@ -3558,6 +3564,37 @@ check("Heckle fires on an arrival", CARDRPG.reactions.heckle?.trigger, "arrival"
 check("the card prints it", sigs.find(sg => sg.name === "Heckle")?.reaction, "heckle");
 check("and applies Heckled rather than something borrowed",
   sigs.find(sg => sg.name === "Heckle")?.primary?.[0]?.condition, "heckled");
+/*
+ * **Every blocking flag, pinned to the condition that has it AND the getter that reads it.**
+ *
+ * None of this was checked, and all three were load-bearing: `blocksSecondary` could have been
+ * deleted from Dazed and nothing would have noticed -- the condition would still exist, still be
+ * applied, still show on the token, and quietly stop costing anybody a half. A break test proved
+ * it by doing exactly that.
+ *
+ * This is the shape this project has met seven times now, in the one place where it was holding up
+ * three conditions at once.
+ */
+const BLOCKS = [
+  ["blocksSecondary", "dazed", "noSecondary", "a half"],
+  ["blocksReactions", "stunned", "noReactions", "your reactions"],
+  ["blocksTurn", "halted", "noTurn", "the whole turn"]
+];
+for (const [flag, key, getter, what] of BLOCKS) {
+  check(`${key} is what costs you ${what}`,
+    CARDRPG.conditions[key]?.[flag] === true ? "yes" : "no", "yes");
+  check(`and ${getter} on the actor reads ${flag}`,
+    new RegExp(`get ${getter}\\(\\) \\{\\s*\\n\\s*return this\\.activeConditions`
+      + `\\.some\\(c => CARDRPG\\.conditions\\[c\\.key\\]\\?\\.${flag}\\)`)
+      .test(actorsSource) ? "yes" : "no", "yes");
+}
+/* And no flag is declared by a condition with no reader at all, which is how a fourth would arrive
+ * and do nothing. */
+const flagsDeclared = new Set(Object.values(CARDRPG.conditions)
+  .flatMap(c => Object.keys(c).filter(k => k.startsWith("blocks") && c[k] === true)));
+check("blocking flags with no getter behind them",
+  [...flagsDeclared].filter(f => !BLOCKS.some(b => b[0] === f)).join(", ") || "none", "none");
+
 check("Heckled spoils the carrier's own draw",
   CARDRPG.conditions.heckled?.drawsWithDisadvantage, true);
 /* Not an opening: an opening is a setup worth nothing alone, and this one already pays. */
@@ -4542,11 +4579,13 @@ check("and mean list weight in slots",
  * rather than a balance fault -- but it is the difference a player would feel first.
  */
 check("lists waiting on the engine from end to end",
-  listsBySource.filter(([, l]) => l.every(s => s.needs?.length)).length, 11);
+  listsBySource.filter(([, l]) => l.every(s => s.needs?.length)).length, 9);
 check("and which they are",
   listsBySource.filter(([, l]) => l.every(s => s.needs?.length)).map(([s]) => s).sort().join(", "),
-  "Asceticism, Brendan, Fagar, Household Magic, Necromancy, Shadow Magic, Tattoo Magic, "
-  + "The First, The Grey, The Yellow, Vax");
+  /* Fagar and The Grey are finished now: the two cards holding them back were describing
+   * conditions -- The Second Thought was Dazed all along, and The Silent Hour wanted Halted. */
+  "Asceticism, Brendan, Household Magic, Necromancy, Shadow Magic, Tattoo Magic, "
+  + "The First, The Yellow, Vax");
 check("the list the engine runs best",
   listsBySource.map(([s, l]) => [s, l.filter(x => x.needs?.length).length / l.length])
     .sort((a, b) => a[1] - b[1])[0][0], "Spiritualism");
@@ -4677,8 +4716,8 @@ check("content carrying the audit column",
 const vague = audited.filter(c => (c.needs ?? []).some(g => g.length < 12)).map(c => c.name);
 check("gaps too short to act on", vague.length ? vague.join(", ") : "none", "none");
 const workingCards = audited.filter(c => !c.needs.length).length;
-check("content the engine does everything for", workingCards, 65);
-check("content with a named gap", audited.filter(c => c.needs.length).length, 137);
+check("content the engine does everything for", workingCards, 68);
+check("content with a named gap", audited.filter(c => c.needs.length).length, 134);
 
 /*
  * A gap shared by several cards is one piece of engine work, not several. Counting the DISTINCT
@@ -4693,7 +4732,7 @@ for (const card of audited) {
  * sleep* against an engine with no sleep that empties a fate deck. Naming it is what keeps the
  * overcharge from being a silent one.
  */
-check("distinct gaps across all content", gapCounts.size, 100);
+check("distinct gaps across all content", gapCounts.size, 98);
 /*
  * Two different questions, and the list is what lets them be asked apart.
  *
@@ -5481,7 +5520,23 @@ check("steps that say when they are played", everyStep.filter(s => s.st.timing).
  * field nothing writes is the same defect as a field nothing reads, and this project has met the
  * second one six times.
  */
+/*
+ * **`targets` is the largest single conversion of these three increments**, and the oldest
+ * assumption in the game to be written down: a step targeted an ENEMY, implicitly, because the
+ * first step anybody wrote was a Strike. Twenty-nine steps affect allies and could not say so, so
+ * the engine could not tell a blessing from an attack.
+ *
+ * Blank still means one enemy, which is what saying nothing has always meant.
+ */
+/*
+ * **`ground` is the one that owns map state, and the first gap this project has closed by building
+ * the mechanism a card named rather than by rewriting the card.** `Set` was queued under *placing a
+ * trap on a square* for as long as it has existed; a shape, a square and a trap is that gap, so the
+ * census below is one gap shorter than it was.
+ */
 for (const [what, count, read] of [
+  ["leave ground behind", 7, s => s.st.ground?.shape],
+  ["say who they are for", 32, s => s.st.targets],
   ["say how often they may be played", 3, s => s.st.oncePer],
   ["go straight through armour, Block or cover", 3,
     s => s.st.ignoresArmour || s.st.ignoresBlock || s.st.ignoresCover],
@@ -5492,6 +5547,8 @@ for (const [what, count, read] of [
 }
 /* Every value of the two bigger enums is used, or it is an entry in a dropdown and nothing else. */
 for (const [name, table, read] of [
+  ["ground shapes", CARDRPG.groundShapes, s => s.st.ground?.shape],
+  ["targets", CARDRPG.targets, s => s.st.targets],
   ["limits", CARDRPG.limits, s => s.st.oncePer],
   ["read targets", CARDRPG.readDecks, s => s.st.readDeck],
   ["states", CARDRPG.whileStates, s => s.st.whileState]
@@ -5502,12 +5559,34 @@ for (const [name, table, read] of [
 }
 /* And nothing says it twice: a prefix left in the prose beside its field reads to a player as
  * though the card means both. */
+/*
+ * And the ally steps keep their sentence on purpose: what the ally GETS is still prose, because
+ * nine steps want a grant and want eight different values between them. One value per card is a
+ * free-text special wearing an enum's clothes, so the uniform half moved and the varied half did
+ * not -- which is why `targets` is not checked for saying it twice.
+ */
 const saidTwice = everyStep.filter(s =>
   (s.st.oncePer && /\bOnce (a day|per)\b/i.test(s.st.text ?? ""))
   || (s.st.whileState && /^while\b/i.test(s.st.text ?? ""))
   || ((s.st.ignoresArmour || s.st.ignoresBlock || s.st.ignoresCover)
     && /\bignoring\b/i.test(s.st.text ?? ""))
   || (s.st.readDeck && /fate deck/i.test(s.st.text ?? "")));
+/* Every ground property is used by a zone, and the list is a LIST because several cards name two
+ * or three at once -- a column of booleans could not have said that cheaply. */
+const groundSteps = everyStep.filter(s => s.st.ground?.shape);
+const groundUsed = new Set(groundSteps.flatMap(s => s.st.ground.effects ?? []));
+check("ground properties declared and never used",
+  Object.keys(CARDRPG.groundEffects).filter(k => !groundUsed.has(k)).join(", ") || "none", "none");
+check("and the zone that names three at once",
+  groundSteps.filter(s => (s.st.ground.effects ?? []).length >= 2).map(s => s.card).sort()
+    .join(", "), "The Sphere Entire, Wall of the Sphere");
+/* Ground with a shape and nothing to do is a template on the map that means nothing. */
+check("ground that does nothing",
+  groundSteps.filter(s => !(s.st.ground.effects ?? []).length && !s.st.ground.damage
+    && !s.st.condition).map(s => s.card).join(", ") || "none", "none");
+/* And nothing claims to place it: where a three-square line goes is a judgement about the map. */
+check("and the schema says nothing places it",
+  /Nothing here PLACES it/.test(cardsSource) ? "yes" : "no", "yes");
 check("steps that say it in a field and in prose",
   saidTwice.map(s => `${s.card}: ${s.st.text}`).slice(0, 3).join(" | ") || "none", "none");
 /*
@@ -5801,7 +5880,7 @@ const proseLeft = everyStep.filter(s => s.st.text);
  * start and 33 now. A step with prose beside its fields is a step the engine resolves and the
  * table reads; a step with prose alone is one the engine drops on the floor.
  */
-check("steps still carrying prose", proseLeft.length, 120);
+check("steps still carrying prose", proseLeft.length, 116);
 /* And the schema document says the same numbers, read off the same sweep rather than typed into
  * prose a second time: a document that counts the content is a document that goes stale. */
 check("the schema document records what the sweep found",
@@ -5815,9 +5894,16 @@ check("and what is left of it",
  * row, because the row reads as authority.
  */
 const documented = ["timing", "delay", "oncePer", "ignoresArmour", "ignoresBlock", "ignoresCover",
-  "readDeck", "whileState", "conjure", "shape"];
+  "readDeck", "whileState", "targets", "ground", "conjure", "shape"];
+/* The TABLE ROW, not a mention. The prose above the table names `targets` and `ground` too, so a
+ * bare `includes` was answered by the paragraph while the row itself could be deleted -- which a
+ * break test proved by deleting it. The fifth second printer this session, and the first in a
+ * document. */
+const docRows = cardSchemaDoc.split("\n").filter(l => l.startsWith("| "));
 check("step fields the schema document names",
-  documented.filter(f => !cardSchemaDoc.includes(`\`${f}\``)).join(", ") || "none", "none");
+  documented.filter(f => !docRows.some(r => r.includes(`\`${f}\``))).join(", ") || "none", "none");
+/* And the rows were really found, or the filter above passes everything. */
+check("table rows the check read", docRows.length >= 40 ? "enough" : docRows.length, "enough");
 /* And each one is really in the schema, so the list above cannot drift into fiction. */
 check("and every one of them is a real field",
   documented.filter(f => !stepKeys.has(f)).join(", ") || "none", "none");
@@ -5836,7 +5922,7 @@ check("and that it leaves Health and conditions alone",
     ? "yes" : "no", "yes");
 check("and steps that carry prose and nothing else",
   proseLeft.filter(s => Object.keys(s.st).filter(k => k !== "text" && s.st[k] !== null
-    && s.st[k] !== "" && !(typeof s.st[k] === "object")).length === 0).length, 33);
+    && s.st[k] !== "" && !(typeof s.st[k] === "object")).length === 0).length, 21);
 
 /* ---- the compendium packs ship the content, and ship today's ---- */
 
@@ -6664,6 +6750,14 @@ for (const [what, field] of [["slots", "slots"], ["tags", "tags"]]) {
  * offers the tag a step REQUIRES in hand, the other the tags a quarantine takes away. */
 const quarantinePart = stepPart.slice(stepPart.indexOf("Quarantine slots"),
   stepPart.indexOf("Quarantine features"));
+/* Ground is ticked too, for the same reason the quarantine is: five properties and five shapes,
+ * all enums, and several cards name two or three properties at once. */
+check("the editor ticks what ground does",
+  stepPart.includes('name="{{../path}}.ground.effects"') ? "yes" : "no", "yes");
+check("and offers every ground property",
+  /\{\{#each config\.groundEffects\}\}/.test(stepPart) ? "yes" : "no", "yes");
+check("and every shape",
+  /\{\{#each config\.groundShapes\}\}/.test(stepPart) ? "yes" : "no", "yes");
 check("and offers every slot the game has",
   /\{\{#each config\.slots\}\}/.test(quarantinePart) ? "yes" : "no", "yes");
 check("and every item tag",
@@ -8770,7 +8864,7 @@ for (const m of selfSource.matchAll(/(\w+)\.includes\("((?:[^"\\]|\\.)*)"\)/g)) 
 }
 
 /* The pin that keeps the rest of this honest. */
-check("greps over a whole file, resolved", greps.length, 493);
+check("greps over a whole file, resolved", greps.length, 496);
 
 /*
  * **The rule, as one predicate, run over a planted example before it is run over the suite.**

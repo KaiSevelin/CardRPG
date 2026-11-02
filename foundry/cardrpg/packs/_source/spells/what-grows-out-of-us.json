@@ -8,6 +8,7 @@
     "source": "Brendan",
     "description": "<p>Four turns. Then everybody stands up, including the ones who had stopped being people and started being ground.</p>",
     "effect": {
+      "targets": "everyAlly",
       "text": "at the start of your fourth turn after this, every ally including the dead stands at full Health"
     },
     "kind": "miracle",

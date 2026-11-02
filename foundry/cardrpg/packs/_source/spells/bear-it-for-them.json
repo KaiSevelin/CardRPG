@@ -11,6 +11,7 @@
     "effect": {
       "range": 3,
       "timing": "reaction",
+      "targets": "oneAlly",
       "text": "move one condition off an ally and onto yourself"
     },
     "kind": "miracle",

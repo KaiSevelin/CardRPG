@@ -8,8 +8,10 @@
     "source": "The Grey",
     "description": "<p>Its whole turn does not happen. Not interrupted &mdash; it simply never took place, and the round moves on without it.</p>",
     "effect": {
+      "range": 1,
       "timing": "reaction",
-      "text": "adjacent: an adjacent enemy's whole turn does not happen"
+      "condition": "halted",
+      "duration": 1
     },
     "kind": "miracle",
     "prepared": false

@@ -9,7 +9,13 @@
     "wilds": 1,
     "description": "<p>The dark you are standing in reaches one square further, all the way round, which is enough to make the next formula work.</p>",
     "effect": {
-      "text": "until your next turn every square adjacent to you is shadowed"
+      "duration": 1,
+      "ground": {
+        "shape": "adjacent",
+        "effects": [
+          "shadowed"
+        ]
+      }
     },
     "kind": "formula",
     "prepared": false

@@ -9,6 +9,7 @@
     "description": "<p>An ally draws fate twice on their next action and keeps both. The sea is not fair.</p>",
     "effect": {
       "range": 3,
+      "targets": "oneAlly",
       "text": "an ally draws fate twice on their next action and keeps both"
     },
     "kind": "miracle",

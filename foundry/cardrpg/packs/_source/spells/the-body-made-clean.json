@@ -8,6 +8,7 @@
     "source": "The Eternal God",
     "description": "<p>Everybody whole, and nothing on anybody. You will play the rest of the day out of six cards, which is the god's point: the body is clean and the hand is empty.</p>",
     "effect": {
+      "targets": "everyAlly",
       "text": "every ally is healed to full and every condition is Lifted and Shaken off. Your action deck is 6 cards for the rest of the day"
     },
     "kind": "miracle",

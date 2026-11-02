@@ -94,6 +94,46 @@ export function stepField() {
      * fight*, and a limit the engine cannot read is a limit the table forgets at the exact moment
      * it matters, which is the second time somebody wants to use it.
      */
+    /*
+     * **Ground this step leaves behind**, which seven steps carried in prose because nothing in
+     * this system owned map state.
+     *
+     * `shape` is where it goes and `effects` is what it does, as a ticked list because several
+     * cards name two or three properties at once: *difficult ground, cover, and 2 damage at the
+     * start of your turn* is one zone, not three. `damage` is what standing in it costs per turn,
+     * and the condition a zone applies is the step's own `condition` and `intensity` -- a Standing
+     * Flood makes everything in it Wet (2), and Wet is a condition the game already has.
+     *
+     * The step's `duration` says how long the ground lasts, and `area` or `range` how big it is.
+     * Nothing here PLACES it: where a three-square line goes is a judgement about the map, and the
+     * one thing worse than no automation is automation that puts a wall through the party.
+     */
+    ground: new fields.SchemaField({
+      shape: new fields.StringField({
+        required: false, blank: true, initial: "",
+        choices: [...Object.keys(CARDRPG.groundShapes), ""]
+      }),
+      effects: new fields.ArrayField(new fields.StringField({
+        choices: Object.keys(CARDRPG.groundEffects)
+      })),
+      damage: new fields.NumberField({ integer: true, min: 0, nullable: true, initial: null })
+    }),
+    /*
+     * **Who this step is for**, which twenty-nine steps carried in prose.
+     *
+     * Blank means one enemy, because that is what every card in the game has always meant by
+     * saying nothing -- a step was a Strike before it was anything else. What the field buys is
+     * that a blessing stops looking like an attack: the engine can offer the right tokens, and a
+     * card that heals every ally within 2 can say so in a form something reads.
+     *
+     * There is deliberately no field for WHAT the ally gets. Nine steps want one and want eight
+     * different values between them, which is one per card -- an enum that size is a free-text
+     * special in disguise, so the grant stays prose and the targeting does not.
+     */
+    targets: new fields.StringField({
+      required: false, blank: true, initial: "",
+      choices: [...Object.keys(CARDRPG.targets), ""]
+    }),
     oncePer: new fields.StringField({
       required: false, blank: true, initial: "",
       choices: [...Object.keys(CARDRPG.limits), ""]

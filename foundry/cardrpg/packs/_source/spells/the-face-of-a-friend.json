@@ -9,6 +9,7 @@
     "description": "<p>It will not attack you. It will take a hit meant for you. It will do both until the moment you attack it, and then it will remember everything.</p>",
     "effect": {
       "range": 3,
+      "targets": "oneEnemy",
       "text": "one enemy treats you as an ally -- it will not attack you and will take a hit for you -- until you attack it"
     },
     "kind": "formula",

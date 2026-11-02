@@ -54,6 +54,14 @@
     {{!-- When it waits until, and when it may be played: both were prose on 35 steps. --}}
     <label>Delay <input type="number" name="{{path}}.delay" value="{{step.delay}}" min="1"
                         data-tooltip="Turns to wait: 2 is the start of your second turn after this."></label>
+    <label>Targets
+      <select name="{{path}}.targets">
+        <option value="">one enemy</option>
+        {{#each config.targets}}
+          <option value="{{@key}}" {{#if (crEq @key ../step.targets)}}selected{{/if}}>{{localize this}}</option>
+        {{/each}}
+      </select>
+    </label>
     <label>Once per
       <select name="{{path}}.oncePer">
         <option value="">&mdash;</option>
@@ -95,6 +103,32 @@
         {{/each}}
       </select>
     </label>
+  </div>
+
+  {{!-- Ground the step leaves behind. The shape is one of five; what it does is a ticked list,
+        because several cards name two or three properties at once. --}}
+  <div class="cr-step__row">
+    <label>Ground
+      <select name="{{path}}.ground.shape">
+        <option value="">&mdash;</option>
+        {{#each config.groundShapes}}
+          <option value="{{@key}}" {{#if (crEq @key ../step.ground.shape)}}selected{{/if}}>{{localize this}}</option>
+        {{/each}}
+      </select>
+    </label>
+    <label>Damage a turn <input type="number" name="{{path}}.ground.damage"
+                                value="{{step.ground.damage}}" min="0"></label>
+  </div>
+
+  <div class="cr-step__row cr-step__row--wrap">
+    <span class="cr-step__legend" data-tooltip="What standing in it means. The step's own condition and duration apply too.">Ground does</span>
+    {{#each config.groundEffects}}
+      <label class="cr-step__tick">
+        <input type="checkbox" name="{{../path}}.ground.effects" value="{{@key}}"
+               {{#if (crHas ../step.ground.effects @key)}}checked{{/if}}>
+        {{localize this}}
+      </label>
+    {{/each}}
   </div>
 
   {{!-- A state of the player's own that the step waits on. Whole builds rest on these. --}}

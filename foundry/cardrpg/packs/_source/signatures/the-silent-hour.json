@@ -10,7 +10,8 @@
     "effect": {
       "range": 1,
       "timing": "reaction",
-      "text": "an adjacent enemy's action does not happen"
+      "condition": "halted",
+      "duration": 1
     },
     "kind": "miracle",
     "prepared": false

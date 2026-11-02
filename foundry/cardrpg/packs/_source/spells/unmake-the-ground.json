@@ -8,7 +8,14 @@
     "source": "Elemental Magic",
     "description": "<p>A line across the battlefield that is no longer there. For the rest of the fight, nobody crosses it &mdash; you included, which is the half of this that gets casters killed.</p>",
     "effect": {
-      "text": "name a line across the field: it is impassable all fight, to everyone"
+      "targets": "everyone",
+      "ground": {
+        "shape": "line",
+        "effects": [
+          "impassable"
+        ]
+      },
+      "text": "all fight"
     },
     "kind": "formula",
     "prepared": false

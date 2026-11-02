@@ -9,6 +9,7 @@
     "description": "<p>Spent: one enemy spends this round attacking its own ally. It works once, which is the god.</p>",
     "effect": {
       "range": 3,
+      "targets": "oneEnemy",
       "text": "Spent: one enemy spends this round attacking its own ally"
     },
     "kind": "miracle",

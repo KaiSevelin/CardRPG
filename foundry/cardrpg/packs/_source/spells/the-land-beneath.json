@@ -9,6 +9,7 @@
     "description": "<p>The ground opens and takes them. They are back at the start of your third turn, and you are Prone, and alone, and it is entirely your own doing.</p>",
     "effect": {
       "area": 2,
+      "targets": "enemiesInRange",
       "text": "every enemy within 2 is gone until the start of your third turn. You are Prone"
     },
     "kind": "miracle",

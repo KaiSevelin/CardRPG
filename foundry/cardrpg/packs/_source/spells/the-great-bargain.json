@@ -12,6 +12,7 @@
       "conjure": {
         "creature": ""
       },
+      "targets": "self",
       "text": "a minor god becomes present and fights as an ally"
     },
     "kind": "formula",

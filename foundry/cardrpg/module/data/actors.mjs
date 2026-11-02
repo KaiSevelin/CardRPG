@@ -368,6 +368,11 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
     return this.activeConditions.some(c => CARDRPG.conditions[c.key]?.blocksSecondary);
   }
 
+  /** True while a condition costs you the whole turn (Halted). */
+  get noTurn() {
+    return this.activeConditions.some(c => CARDRPG.conditions[c.key]?.blocksTurn);
+  }
+
   /** True while a condition costs you your reactions (Stunned, Unconscious). */
   get noReactions() {
     return this.activeConditions.some(c => CARDRPG.conditions[c.key]?.blocksReactions);

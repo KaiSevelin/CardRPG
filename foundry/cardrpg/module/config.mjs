@@ -196,6 +196,24 @@ CARDRPG.conditions = {
   slowed: { label: "CARDRPG.Condition.Slowed", icon: "tortoise", halvesMove: true },
   stunned: { label: "CARDRPG.Condition.Stunned", icon: "brain-freeze", blocksReactions: true },
   /*
+   * **Halted: the whole turn does not happen.**
+   *
+   * Dazed costs you a half and Stunned your reactions; this costs the turn. Two cards asked for it
+   * in prose -- *an adjacent enemy's action does not happen*, *an adjacent enemy's whole turn does
+   * not happen* -- and there was no condition between "one half" and "unconscious" to carry it.
+   *
+   * It takes `blocksSecondary` as well, which is not belt and braces: a turn that does not happen
+   * has no halves in it, and a reader that only knew about `blocksTurn` would grey out the wrong
+   * thing. Same reason Unconscious carries `blocksReactions`.
+   */
+  halted: {
+    label: "CARDRPG.Condition.Halted",
+    icon: "hourglass",
+    blocksTurn: true,
+    blocksSecondary: true,
+    blocksReactions: true
+  },
+  /*
    * `grantsAdvantage` rather than a key the resolver looks for by name. advantageFor used to test
    * `includes("invisible")` directly, which is the hardcoded-by-key pattern the condition flags
    * exist to replace -- and it is what left `heckled` below with nowhere to say what it does.
@@ -685,6 +703,59 @@ CARDRPG.costScales = {
   perAlly: "CARDRPG.CostScale.PerAlly",
   halfCurrent: "CARDRPG.CostScale.HalfCurrent",
   wholeHand: "CARDRPG.CostScale.WholeHand"
+};
+
+/**
+ * **The shape a piece of ground takes.** Five, and every one is a shape a card asks for: a line
+ * across the field, an area of your element, the squares next to you, the whole map, one square.
+ */
+CARDRPG.groundShapes = {
+  line: "CARDRPG.Ground.Line",
+  area: "CARDRPG.Ground.Area",
+  adjacent: "CARDRPG.Ground.Adjacent",
+  wholeMap: "CARDRPG.Ground.WholeMap",
+  square: "CARDRPG.Ground.Square"
+};
+
+/**
+ * **What the ground then does**, as a ticked list rather than a field each.
+ *
+ * Every value is a property a card already names, and several cards name two or three at once --
+ * *difficult ground, cover, and 2 damage at the start of your turn* is one zone with three
+ * properties, which is exactly what a list is for and a column of booleans is not.
+ *
+ * `shadowed` is the Way of Shade's whole terrain: three other cards READ a shadowed square without
+ * making one, which is why making one has to be sayable.
+ */
+CARDRPG.groundEffects = {
+  cover: "CARDRPG.Ground.Cover",
+  difficult: "CARDRPG.Ground.Difficult",
+  shadowed: "CARDRPG.Ground.Shadowed",
+  impassable: "CARDRPG.Ground.Impassable",
+  trap: "CARDRPG.Ground.Trap"
+};
+
+/**
+ * **Who a step is for.**
+ *
+ * The oldest assumption in the game, and the one nothing ever wrote down: a step targets an ENEMY,
+ * because the first step anybody wrote was a Strike. Twenty-nine steps affect allies and had no way
+ * to say so -- *an ally's next check cannot fail*, *adjacent allies gain your armor as Block* --
+ * so the engine could not tell a blessing from an attack.
+ *
+ * Blank still means one enemy, which is what every card in the game has always meant by saying
+ * nothing. The value exists anyway, for the card that wants to be explicit about it.
+ */
+CARDRPG.targets = {
+  self: "CARDRPG.Target.Self",
+  oneEnemy: "CARDRPG.Target.OneEnemy",
+  enemiesInRange: "CARDRPG.Target.EnemiesInRange",
+  oneAlly: "CARDRPG.Target.OneAlly",
+  alliesInRange: "CARDRPG.Target.AlliesInRange",
+  adjacentAllies: "CARDRPG.Target.AdjacentAllies",
+  everyAlly: "CARDRPG.Target.EveryAlly",
+  selfAndAllies: "CARDRPG.Target.SelfAndAllies",
+  everyone: "CARDRPG.Target.Everyone"
 };
 
 /**

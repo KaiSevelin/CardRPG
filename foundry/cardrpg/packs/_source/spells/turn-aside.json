@@ -11,6 +11,7 @@
     "effect": {
       "range": 3,
       "timing": "reaction",
+      "targets": "oneAlly",
       "text": "one ally's Block counts double against this attack"
     },
     "kind": "formula",

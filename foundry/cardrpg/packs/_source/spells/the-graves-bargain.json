@@ -15,6 +15,7 @@
           "taint": 1
         }
       },
+      "targets": "oneAlly",
       "text": "a dead ally, and they stand at 1 Health"
     },
     "kind": "formula",

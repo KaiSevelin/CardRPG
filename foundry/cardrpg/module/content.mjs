@@ -2756,11 +2756,17 @@ export const SHADE_SIGNATURES = [
   },
   {
     name: "Set", kind: "card", node: "shade.trapmaker",
-    needs: ["placing a trap on a square"],
-    primary: [{ verb: "ready" }],
+    /* The gap this card was queued under was "placing a trap on a square", and `ground` is that:
+     * a shape, a square, and a trap the first to enter sets off. What the trap DOES is the step's
+     * own condition and the Strike value it borrows. */
+    needs: [],
+    primary: [{
+      verb: "ready", condition: "slowed", intensity: 2,
+      ground: { shape: "square", effects: ["trap"] },
+      text: "an adjacent square; the first enemy to enter takes your Strike value"
+    }],
     secondary: [{ verb: "ready" }],
-    text: "Place a trap on an adjacent square. The first enemy to enter is Slowed (2) and takes "
-      + "your Strike value."
+    text: "Place a trap on an adjacent square."
   },
   {
     name: "Over and Past", kind: "card", node: "shade.acrobat",
@@ -3067,7 +3073,8 @@ export const MIND_POOL = [
       "a cost that scales with the allies it covers"],
     description: "<p>You open a vein for each of them, and for an hour nobody is tired.</p>",
     cost: { health: 1, scale: "perAlly" },
-    effect: { range: 2, duration: 1, text: "every ally within 2 may play a second secondary" }
+    effect: { range: 2, duration: 1, targets: "alliesInRange",
+    text: "every ally within 2 may play a second secondary" }
   },
 
   {
@@ -3089,6 +3096,7 @@ export const MIND_POOL = [
     description: "<p>It was going to fail. Something intervened, once, because it owes you.</p>",
     effect: {
       timing: "reaction", oncePer: "pactPerFight",
+      targets: "oneAlly",
       text: "an ally's failed check becomes a Partial"
     }
   },
@@ -3209,6 +3217,7 @@ export const MIND_POOL = [
       verb: "conjure",
       conjure: { creature: "", upkeep: { taint: 1 } },
       /* The one thing no field carries: it is an ALLY's body, and they come back at 1. */
+      targets: "oneAlly",
       text: "a dead ally, and they stand at 1 Health"
     }
   },
@@ -3254,8 +3263,10 @@ export const MIND_POOL = [
       + "something every turn you stay.</p>",
     effect: {
       range: 3, area: 5,
-      text: "a 5-square area of your element: difficult ground, cover, and 2 damage at the start "
-        + "of your turn"
+      ground: { shape: "area", effects: ["difficult", "cover"], damage: 2 },
+      /* The element stays prose because the caster picks it, and which one it is changes nothing
+       * the engine does to the ground. */
+      text: "of your element"
     }
   },
   {
@@ -3265,8 +3276,9 @@ export const MIND_POOL = [
     description: "<p>Deep water where there was a floor. Everything in it is Wet, which is the "
       + "opening half this school is built to set up.</p>",
     effect: {
-      range: 3, area: 3,
-      text: "a 3-square area becomes deep water: everything in it is Wet (2) and its Move is halved"
+      range: 3, area: 3, condition: "wet", intensity: 2,
+      ground: { shape: "area", effects: ["difficult"] },
+      text: "deep water: and its Move is halved"
     }
   },
   {
@@ -3279,7 +3291,11 @@ export const MIND_POOL = [
     description: "<p>A line across the battlefield that is no longer there. For the rest of the "
       + "fight, nobody crosses it &mdash; you included, which is the half of this that gets "
       + "casters killed.</p>",
-    effect: { text: "name a line across the field: it is impassable all fight, to everyone" }
+    effect: {
+      targets: "everyone",
+      ground: { shape: "line", effects: ["impassable"] },
+      text: "all fight"
+    }
   },
 
   /*
@@ -3429,6 +3445,7 @@ export const MIND_POOL = [
       + "until the moment you attack it, and then it will remember everything.</p>",
     effect: {
       range: 3,
+      targets: "oneEnemy",
       text: "one enemy treats you as an ally -- it will not attack you and will take a hit for "
         + "you -- until you attack it"
     }
@@ -3626,7 +3643,7 @@ export const MIND_POOL = [
       "shadow as a state a square is in"],
     description: "<p>The dark you are standing in reaches one square further, all the way "
       + "round, which is enough to make the next formula work.</p>",
-    effect: { text: "until your next turn every square adjacent to you is shadowed" }
+    effect: { duration: 1, ground: { shape: "adjacent", effects: ["shadowed"] } }
   },
   {
     name: "The Long Step", strength: 1, pool: "mind", source: "Shadow Magic",
@@ -3656,6 +3673,7 @@ export const MIND_POOL = [
       + "at once, which is the only thing in this school that wins a fight outright.</p>",
     effect: {
       area: 1,
+      targets: "selfAndAllies",
       text: "you and every ally within 1 teleport to any shadowed square on the map"
     }
   },
@@ -3666,7 +3684,7 @@ export const MIND_POOL = [
       "shadow as a state a square is in"],
     description: "<p>Every square on the map, dark at once &mdash; for your allies as much as for "
       + "you, and for anyone else who knows what to do with it.</p>",
-    effect: { text: "until your next turn every square on the map is shadowed" }
+    effect: { duration: 1, ground: { shape: "wholeMap", effects: ["shadowed"] } }
   },
   {
     /*
@@ -3701,6 +3719,7 @@ export const MIND_POOL = [
     effect: {
       verb: "conjure",
       conjure: { creature: "" },
+      targets: "self",
       text: "a minor god becomes present and fights as an ally"
     }
   },
@@ -3792,7 +3811,8 @@ export const MIND_POOL = [
     needs: ["an ally's Block counted double for one attack"],
     description: "<p>You do not stop the blow; you make their shield worth twice what it was for "
       + "exactly as long as it takes.</p>",
-    effect: { range: 3, timing: "reaction", text: "one ally's Block counts double against this attack" }
+    effect: { range: 3, timing: "reaction", targets: "oneAlly",
+    text: "one ally's Block counts double against this attack" }
   },
   {
     name: "The Shut Mouth", strength: 2, pool: "mind", source: "Ward Magic",
@@ -3895,6 +3915,7 @@ export const MIND_POOL = [
       + "each of their decks, and a better draw on top of it.</p>",
     effect: {
       duration: 1, readDeck: "all",
+      targets: "everyAlly",
       text: "every ally draws fate with advantage, and Read 2"
     }
   },
@@ -3970,8 +3991,9 @@ export const MIND_SIGNATURES = [
     description: "<p>Three squares of whichever sphere is yours. Stand behind it and the ground in "
       + "front of you is no longer anybody's.</p>",
     effect: {
-      range: 3,
-      text: "a 3-square line of your element: cover, and difficult ground, until your next turn"
+      range: 3, area: 3, duration: 1,
+      ground: { shape: "line", effects: ["cover", "difficult"] },
+      text: "of your element"
     }
   },
   {
@@ -4139,7 +4161,8 @@ export const FAITH_SIGNATURES = [
     needs: ["a promise that the next draw cannot fail"],
     description: "<p>An ally's next check or attack cannot fail. One cheaper on a brother or "
       + "sister in faith, which is the third tenet made arithmetic.</p>",
-    effect: { range: 3, text: "an ally's next check or attack cannot fail" }
+    effect: { range: 3, targets: "oneAlly",
+    text: "an ally's next check or attack cannot fail" }
   },
   {
     name: "Breath of the Spirit", kind: "spell", node: "faith.eternalspirit", strength: 2,
@@ -4163,7 +4186,8 @@ export const FAITH_SIGNATURES = [
     needs: ["two fate draws that both apply"],
     description: "<p>An ally draws fate twice on their next action and keeps both. The sea is not "
       + "fair.</p>",
-    effect: { range: 3, text: "an ally draws fate twice on their next action and keeps both" }
+    effect: { range: 3, targets: "oneAlly",
+    text: "an ally draws fate twice on their next action and keeps both" }
   },
   {
     name: "The Drum", kind: "spell", node: "faith.valtor", strength: 1, source: "Valtor",
@@ -4176,7 +4200,8 @@ export const FAITH_SIGNATURES = [
     needs: ["an enemy that attacks its own side"],
     description: "<p>Spent: one enemy spends this round attacking its own ally. It works once, "
       + "which is the god.</p>",
-    effect: { range: 3, text: "Spent: one enemy spends this round attacking its own ally" }
+    effect: { range: 3, targets: "oneEnemy",
+    text: "Spent: one enemy spends this round attacking its own ally" }
   },
   {
     /*
@@ -4199,14 +4224,15 @@ export const FAITH_SIGNATURES = [
     needs: ["an effect that resolves on a later turn"],
     description: "<p>Plant it. At the start of your second turn after, every ally within 2 heals "
       + "4. Nothing he gives arrives when you ask for it.</p>",
-    effect: { range: 2, text: "at the start of your second turn after, allies within 2 heal 4" }
+    effect: { range: 2, targets: "alliesInRange",
+    text: "at the start of your second turn after, allies within 2 heal 4" }
   },
   {
     name: "The Silent Hour", kind: "spell", node: "faith.grey", strength: 2, source: "The Grey",
-    needs: ["a reaction that stops an action"],
+    needs: [],
     description: "<p>Reaction, adjacent only: an enemy's action does not happen. Close enough to "
       + "touch, which is where the knife is.</p>",
-    effect: { range: 1, timing: "reaction", text: "an adjacent enemy's action does not happen" }
+    effect: { range: 1, timing: "reaction", condition: "halted", duration: 1 }
   },
   {
     name: "The First Taste", kind: "spell", node: "faith.purple", strength: 2,
@@ -4358,9 +4384,12 @@ export const FAITH_POOL = [
   },
   {
     name: "The Second Thought", strength: 1, pool: "faith", source: "Fagar",
-    needs: ["an enemy that loses a half"],
+    /* The gap said "an enemy that loses a half", and Dazed IS that: `blocksSecondary` has
+     * been on it since there were conditions, `noSecondary` reads it on the actor, and the tray
+     * greys the half out. The card described a built mechanic in prose for as long as it existed. */
+    needs: [],
     description: "<p>One enemy spends its secondary this round doing nothing.</p>",
-    effect: { range: 3, resist: "presence", dc: 7, text: "one enemy's secondary does nothing" }
+    effect: { range: 3, condition: "dazed", duration: 1, resist: "presence", dc: 7 }
   },
   {
     name: "Alone on the Road", strength: 1, pool: "faith", source: "Vulpet",
@@ -4411,7 +4440,8 @@ export const FAITH_POOL = [
     cost: { health: 2 },
     description: "<p>Allies adjacent to you cannot be reduced below 1 Health until your next "
       + "turn. Costs 2 Health, because his miracles are paid in yours.</p>",
-    effect: { range: 1, text: "adjacent allies cannot be reduced below 1 Health" }
+    effect: { range: 1, targets: "adjacentAllies",
+    text: "adjacent allies cannot be reduced below 1 Health" }
   },
   {
     /*
@@ -4431,7 +4461,8 @@ export const FAITH_POOL = [
     description: "<p>Every ally adjacent to you gains your armor value as Block until your next "
       + "turn. One Health per ally, so a long line is a dear one.</p>",
     cost: { health: 1, scale: "perAlly" },
-    effect: { range: 1, text: "adjacent allies gain your armor as Block" }
+    effect: { range: 1, targets: "adjacentAllies",
+    text: "adjacent allies gain your armor as Block" }
   },
   {
     name: "Measure of the Debt", strength: 2, pool: "faith", source: "The First",
@@ -4503,6 +4534,7 @@ export const FAITH_POOL = [
       + "out of six cards, which is the god's point: the body is clean and the hand is "
       + "empty.</p>",
     effect: {
+      targets: "everyAlly",
       text: "every ally is healed to full and every condition is Lifted and Shaken off. Your "
         + "action deck is 6 cards for the rest of the day"
     }
@@ -4517,7 +4549,8 @@ export const FAITH_POOL = [
     needs: ["a condition moved from one figure to another"],
     description: "<p>Whatever is on them is on you instead, at its full duration. The Spirit's "
       + "priests are the only ones who can do this and the only ones who would.</p>",
-    effect: { range: 3, timing: "reaction", text: "move one condition off an ally and onto yourself" }
+    effect: { range: 3, timing: "reaction", targets: "oneAlly",
+    text: "move one condition off an ally and onto yourself" }
   },
   {
     /*
@@ -4537,7 +4570,8 @@ export const FAITH_POOL = [
     needs: ["an extra reaction on one trigger"],
     description: "<p>For one round everybody answers twice. The reaction policy allows one per "
       + "trigger and this is the only thing in the game that argues with it.</p>",
-    effect: { text: "until your next turn every ally may take one extra reaction per trigger" }
+    effect: { targets: "everyAlly",
+    text: "until your next turn every ally may take one extra reaction per trigger" }
   },
   {
     name: "Breath for the Dying", strength: 5, pool: "faith", source: "The Eternal Spirit",
@@ -4546,6 +4580,7 @@ export const FAITH_POOL = [
     description: "<p>Everybody who had fallen is standing, at half. You will carry nothing at all "
       + "until tomorrow, which in a dungeon is a real price and not a flourish.</p>",
     effect: {
+      targets: "everyAlly",
       text: "every ally at 0 Health stands at half Health. You may carry nothing for the rest "
         + "of the day"
     }
@@ -4566,7 +4601,8 @@ export const FAITH_POOL = [
       + "Miss joins your own deck for having asked.</p>",
     effect: {
       range: 3, condition: "cursed",
-      timing: "reaction", text: "an ally redraws a fate card and keeps the second. The Cursed is yours"
+      timing: "reaction", targets: "oneAlly",
+      text: "an ally redraws a fate card and keeps the second. The Cursed is yours"
     }
   },
   {
@@ -4574,7 +4610,8 @@ export const FAITH_POOL = [
     needs: ["two fate draws that both apply"],
     description: "<p>For one round the whole party has the tide with them: two cards each, and "
       + "both of them count.</p>",
-    effect: { text: "until your next turn every ally draws fate twice and keeps both" }
+    effect: { targets: "everyAlly",
+    text: "until your next turn every ally draws fate twice and keeps both" }
   },
   {
     /*
@@ -4603,7 +4640,8 @@ export const FAITH_POOL = [
     description: "<p>Strain 2, and the whole line moves at once. Movement is a sentence the table "
       + "applies (core-rules 11), so this miracle is finished as written.</p>",
     cost: { strain: 2 },
-    effect: { area: 2, text: "every ally within 2 may Move their full value, at once, now" }
+    effect: { area: 2, targets: "alliesInRange",
+    text: "every ally within 2 may Move their full value, at once, now" }
   },
   {
     name: "The War Drum", strength: 4, pool: "faith", source: "Valtor",
@@ -4611,7 +4649,8 @@ export const FAITH_POOL = [
     description: "<p>Strain 3, and everybody near you goes again. The same mechanism Blood "
       + "Magic's thesis wants, bought with pain instead of blood.</p>",
     cost: { strain: 3 },
-    effect: { area: 2, text: "every ally within 2 takes their whole turn again, now" }
+    effect: { area: 2, targets: "alliesInRange",
+    text: "every ally within 2 takes their whole turn again, now" }
   },
   {
     name: "Valtor's Own", strength: 5, pool: "faith", source: "Valtor",
@@ -4651,7 +4690,8 @@ export const FAITH_POOL = [
     description: "<p>For one round no enemy can tell friend from foe, and every attack they make "
       + "lands on one of their own. It is the same mechanism Glamour's 4 wants, done once and "
       + "for certain rather than at random.</p>",
-    effect: { text: "until your next turn every enemy attack targets another enemy" }
+    effect: { targets: "enemiesInRange",
+    text: "until your next turn every enemy attack targets another enemy" }
   },
 
   /*
@@ -4664,6 +4704,7 @@ export const FAITH_POOL = [
       + "hit for it. Vulpet's priests understand this condition from the inside.</p>",
     effect: {
       range: 3,
+      targets: "oneEnemy",
       text: "until your next turn no ally may Heal, Interpose for, or redirect a hit from one enemy"
     }
   },
@@ -4691,6 +4732,7 @@ export const FAITH_POOL = [
       + "turn, and you are Prone, and alone, and it is entirely your own doing.</p>",
     effect: {
       area: 2,
+      targets: "enemiesInRange",
       text: "every enemy within 2 is gone until the start of your third turn. You are Prone"
     }
   },
@@ -4708,7 +4750,8 @@ export const FAITH_POOL = [
     description: "<p>Name them now. At the start of your third turn they are whole, which is "
       + "either too late or exactly right.</p>",
     effect: {
-      range: 3, text: "at the start of your third turn after this, one named ally is healed to full"
+      range: 3, targets: "oneAlly",
+      text: "at the start of your third turn after this, one named ally is healed to full"
     }
   },
   {
@@ -4717,6 +4760,7 @@ export const FAITH_POOL = [
     description: "<p>Two turns from now the whole party heals four and sheds something. Planting "
       + "is the god's only verb.</p>",
     effect: {
+      targets: "everyAlly",
       text: "at the start of your second turn after this, every ally heals 4 and sheds one "
         + "condition"
     }
@@ -4731,6 +4775,7 @@ export const FAITH_POOL = [
     description: "<p>Four turns. Then everybody stands up, including the ones who had stopped "
       + "being people and started being ground.</p>",
     effect: {
+      targets: "everyAlly",
       text: "at the start of your fourth turn after this, every ally including the dead stands "
         + "at full Health"
     }
@@ -4749,11 +4794,12 @@ export const FAITH_POOL = [
   },
   {
     name: "The Grey Hour", strength: 4, pool: "faith", source: "The Grey",
-    needs: ["a reaction that stops an action",
-      "a trigger at the start of an enemy's turn"],
+    /* One gap closed and one left: Halted is the condition that denies a turn, but a trigger
+     * AT THE START of an enemy's turn is still something nothing in the engine offers. */
+    needs: ["a trigger at the start of an enemy's turn"],
     description: "<p>Its whole turn does not happen. Not interrupted &mdash; it simply never "
       + "took place, and the round moves on without it.</p>",
-    effect: { timing: "reaction", text: "adjacent: an adjacent enemy's whole turn does not happen" }
+    effect: { range: 1, timing: "reaction", condition: "halted", duration: 1 }
   },
   {
     /*
@@ -4809,6 +4855,7 @@ export const FAITH_POOL = [
     description: "<p>Name one of your own. For a round the enemy fights as though they were not "
       + "on the field at all, which is as good as cover and better than armour.</p>",
     effect: {
+      targets: "enemiesInRange",
       text: "until your next turn enemies act as though one ally you name were not there"
     }
   },
@@ -4854,6 +4901,7 @@ export const FAITH_POOL = [
     cost: { health: 2, scale: "perAlly" },
     effect: {
       duration: 1,
+      targets: "adjacentAllies",
       text: "allies adjacent to you cannot be moved, knocked Prone or Compelled"
     }
   },
@@ -4869,6 +4917,7 @@ export const FAITH_POOL = [
     description: "<p>Your armour is theirs, your Block is theirs, and everything aimed at them "
       + "arrives in you. It will cost enough, which is how Vax prices war plainly.</p>",
     effect: {
+      targets: "adjacentAllies",
       text: "until the fight ends every adjacent ally shares your armor and Block, and damage "
         + "dealt to them is dealt to you instead"
     }

@@ -9,7 +9,16 @@
     "description": "<p>Three squares of whichever sphere is yours. Stand behind it and the ground in front of you is no longer anybody's.</p>",
     "effect": {
       "range": 3,
-      "text": "a 3-square line of your element: cover, and difficult ground, until your next turn"
+      "area": 3,
+      "duration": 1,
+      "ground": {
+        "shape": "line",
+        "effects": [
+          "cover",
+          "difficult"
+        ]
+      },
+      "text": "of your element"
     },
     "kind": "formula",
     "prepared": false

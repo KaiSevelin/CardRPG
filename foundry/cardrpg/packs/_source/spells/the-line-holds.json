@@ -13,6 +13,7 @@
     },
     "effect": {
       "duration": 1,
+      "targets": "adjacentAllies",
       "text": "allies adjacent to you cannot be moved, knocked Prone or Compelled"
     },
     "kind": "miracle",

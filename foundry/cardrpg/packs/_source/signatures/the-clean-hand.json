@@ -9,6 +9,7 @@
     "description": "<p>An ally's next check or attack cannot fail. One cheaper on a brother or sister in faith, which is the third tenet made arithmetic.</p>",
     "effect": {
       "range": 3,
+      "targets": "oneAlly",
       "text": "an ally's next check or attack cannot fail"
     },
     "kind": "miracle",

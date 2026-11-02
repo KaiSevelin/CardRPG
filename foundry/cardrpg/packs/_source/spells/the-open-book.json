@@ -10,6 +10,7 @@
     "effect": {
       "duration": 1,
       "readDeck": "all",
+      "targets": "everyAlly",
       "text": "every ally draws fate with advantage, and Read 2"
     },
     "kind": "formula",

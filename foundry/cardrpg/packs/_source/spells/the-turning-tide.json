@@ -12,6 +12,7 @@
       "range": 3,
       "condition": "cursed",
       "timing": "reaction",
+      "targets": "oneAlly",
       "text": "an ally redraws a fate card and keeps the second. The Cursed is yours"
     },
     "kind": "miracle",

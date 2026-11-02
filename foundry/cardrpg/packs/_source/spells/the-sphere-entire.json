@@ -10,7 +10,15 @@
     "effect": {
       "range": 3,
       "area": 5,
-      "text": "a 5-square area of your element: difficult ground, cover, and 2 damage at the start of your turn"
+      "ground": {
+        "shape": "area",
+        "effects": [
+          "difficult",
+          "cover"
+        ],
+        "damage": 2
+      },
+      "text": "of your element"
     },
     "kind": "formula",
     "prepared": false

@@ -10,6 +10,7 @@
     "description": "<p>You take them with you. The whole front rank arrives behind the enemy line at once, which is the only thing in this school that wins a fight outright.</p>",
     "effect": {
       "area": 1,
+      "targets": "selfAndAllies",
       "text": "you and every ally within 1 teleport to any shadowed square on the map"
     },
     "kind": "formula",

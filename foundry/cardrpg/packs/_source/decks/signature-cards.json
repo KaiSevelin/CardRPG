@@ -174,7 +174,16 @@
       "system": {
         "primary": [
           {
-            "verb": "ready"
+            "verb": "ready",
+            "condition": "slowed",
+            "intensity": 2,
+            "ground": {
+              "shape": "square",
+              "effects": [
+                "trap"
+              ]
+            },
+            "text": "an adjacent square; the first enemy to enter takes your Strike value"
           }
         ],
         "secondary": [
@@ -184,7 +193,7 @@
         ],
         "reaction": "",
         "costs": {},
-        "text": "Place a trap on an adjacent square. The first enemy to enter is Slowed (2) and takes your Strike value."
+        "text": "Place a trap on an adjacent square."
       }
     },
     {

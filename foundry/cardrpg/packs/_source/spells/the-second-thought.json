@@ -9,9 +9,10 @@
     "description": "<p>One enemy spends its secondary this round doing nothing.</p>",
     "effect": {
       "range": 3,
+      "condition": "dazed",
+      "duration": 1,
       "resist": "presence",
-      "dc": 7,
-      "text": "one enemy's secondary does nothing"
+      "dc": 7
     },
     "kind": "miracle",
     "prepared": false

@@ -9,7 +9,13 @@
     "wilds": 1,
     "description": "<p>Every square on the map, dark at once &mdash; for your allies as much as for you, and for anyone else who knows what to do with it.</p>",
     "effect": {
-      "text": "until your next turn every square on the map is shadowed"
+      "duration": 1,
+      "ground": {
+        "shape": "wholeMap",
+        "effects": [
+          "shadowed"
+        ]
+      }
     },
     "kind": "formula",
     "prepared": false

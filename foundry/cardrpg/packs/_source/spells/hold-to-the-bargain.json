@@ -11,6 +11,7 @@
     "effect": {
       "timing": "reaction",
       "oncePer": "pactPerFight",
+      "targets": "oneAlly",
       "text": "an ally's failed check becomes a Partial"
     },
     "kind": "formula",

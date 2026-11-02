@@ -252,7 +252,7 @@ A title's own piece of content, and what its node wears in the levelling graph.
 |   | **One Trick** | You may prepare from any one school you have ever seen cast. | `signatures/shade/one-trick.webp` |
 |   | **Over and Past** | Move 3 · / Move 1 · You may move through enemy squares. | `signatures/shade/over-and-past.webp` |
 |   | **Point Man** | Foresee · / Move 1 · While you are the furthest forward of your party, Foresee one extra type. | `signatures/shade/point-man.webp` |
-|   | **Set** | Ready · / Ready · Place a trap on an adjacent square. The first enemy to enter is Slowed (2) and takes your Strike value. | `signatures/shade/set.webp` |
+|   | **Set** | Ready Slowed 2 an adjacent square; the first enemy to enter takes your Strike value · / Ready · Place a trap on an adjacent square. | `signatures/shade/set.webp` |
 |   | **The Kit** | item · You may never put it down. Every Hard physical obstacle becomes Normal. | `signatures/shade/the-kit.webp` |
 |   | **The Opening** | Advantage against anyone carrying an opening -- whoever set it. | `signatures/shade/the-opening.webp` |
 
@@ -294,7 +294,7 @@ Eleven, not twelve: *Step Through* is in the Shadow formulas below.
 |   | **The Bargain** | strength 3 · Conjure it acts once; the GM decides how | `signatures/mind/the-bargain.webp` |
 |   | **The Reading** | strength 2 · Foresee 3 | `signatures/mind/the-reading.webp` |
 |   | **Unmake** | strength 2 · a Cast you have survived before does not resolve | `signatures/mind/unmake.webp` |
-|   | **Wall of the Sphere** | strength 2 · range 3 a 3-square line of your element: cover, and difficult ground, until your next turn | `signatures/mind/wall-of-the-sphere.webp` |
+|   | **Wall of the Sphere** | strength 2 · range 3 area 3 of your element | `signatures/mind/wall-of-the-sphere.webp` |
 |   | **Wither** | strength 2 · Cast Poisoned 1 (2) | `signatures/mind/wither.webp` |
 
 ## Signatures — Way of Faith
@@ -318,7 +318,7 @@ A god's first and defining miracle.
 |   | **The Outcast's Due** | strength 3 · Cast blast 1 Compelled (2) | `signatures/faith/the-outcasts-due.webp` |
 |   | **The Rumour** | strength 2 · one enemy type acts as though a named lie were true | `signatures/faith/the-rumour.webp` |
 |   | **The Scourge** | Strike +2 · / Move 2 · Strain 1, paid before the blow lands. The drums, the dance and the whip make the same argument: pay first, strike harder. | `signatures/faith/the-scourge.webp` |
-|   | **The Silent Hour** | strength 2 · range 1 an adjacent enemy's action does not happen | `signatures/faith/the-silent-hour.webp` |
+|   | **The Silent Hour** | strength 2 · range 1 Halted (1) | `signatures/faith/the-silent-hour.webp` |
 |   | **The Tide Knows** | strength 2 · range 3 an ally draws fate twice on their next action and keeps both | `signatures/faith/the-tide-knows.webp` |
 |   | **The Writ** | range 6 Judged (2) · / Move 1 · No save, at range 6. Being named is not something you resist, and the whole field may act on it. | `signatures/faith/the-writ.webp` |
 
@@ -368,7 +368,7 @@ Blood Magic and Spiritualism, handed over by minor nodes.
 |   | **Graven Shield** | strength 2 · +1 armor | `spells/mind/graven-shield.webp` |
 |   | **Hold to the Bargain** | strength 2 · an ally's failed check becomes a Partial | `spells/mind/hold-to-the-bargain.webp` |
 |   | **Ink Spray** | strength 1 · Blast area 2 end Invisible in the area, and nothing in it may become Invisible until your next turn | `spells/mind/ink-spray.webp` |
-|   | **Longer Shadow** | strength 1 · until your next turn every square adjacent to you is shadowed | `spells/mind/longer-shadow.webp` |
+|   | **Longer Shadow** | strength 1 | `spells/mind/longer-shadow.webp` |
 |   | **Nothing At All** | strength 5 · your action deck becomes 4 cards, you hold all four, and may play any two halves. Costs a hand | `spells/mind/nothing-at-all.webp` |
 |   | **Nothing to Carry** | strength 1 · +2 to all Casts, and you cannot be Disarmed | `spells/mind/nothing-to-carry.webp` |
 |   | **Open the Vein** | strength 1 · Cast +3 range 2 | `spells/mind/open-the-vein.webp` |
@@ -376,7 +376,7 @@ Blood Magic and Spiritualism, handed over by minor nodes.
 |   | **Slick** | strength 1 · range 3 Off Balance (1) | `spells/mind/slick.webp` |
 |   | **Slippery** | strength 1 · Shake 1 range 2 Grappled until your next turn they cannot be Grappled again | `spells/mind/slippery.webp` |
 |   | **The Borrowed Body** | strength 3 · Shape | `spells/mind/the-borrowed-body.webp` |
-|   | **The Borrowed Dark** | strength 3 · until your next turn every square on the map is shadowed | `spells/mind/the-borrowed-dark.webp` |
+|   | **The Borrowed Dark** | strength 3 | `spells/mind/the-borrowed-dark.webp` |
 |   | **The Broken Word** | strength 5 · Spent: one spell or miracle is unlearned by its caster for the rest of the day | `spells/mind/the-broken-word.webp` |
 |   | **The Clean Pot** | strength 1 · a day's rations for the party, every day | `spells/mind/the-clean-pot.webp` |
 |   | **The Crowded Room** | strength 4 · until your next turn every enemy attacks a random figure in reach, chosen by a fate draw | `spells/mind/the-crowded-room.webp` |
@@ -412,15 +412,15 @@ Blood Magic and Spiritualism, handed over by minor nodes.
 |   | **The Shared Cup** | strength 4 · Cast aimed 3 Poisoned 1 (3) | `spells/mind/the-shared-cup.webp` |
 |   | **The Shut Mouth** | strength 2 · Cast range 3 Silenced (1) | `spells/mind/the-shut-mouth.webp` |
 |   | **The Small Pact** | strength 1 · the god grants the favour written on your pact | `spells/mind/the-small-pact.webp` |
-|   | **The Sphere Entire** | strength 4 · range 3 area 5 a 5-square area of your element: difficult ground, cover, and 2 damage at the start of your turn | `spells/mind/the-sphere-entire.webp` |
-|   | **The Standing Flood** | strength 3 · range 3 area 3 a 3-square area becomes deep water: everything in it is Wet (2) and its Move is halved | `spells/mind/the-standing-flood.webp` |
+|   | **The Sphere Entire** | strength 4 · range 3 area 5 of your element | `spells/mind/the-sphere-entire.webp` |
+|   | **The Standing Flood** | strength 3 · range 3 area 3 Wet 2 deep water: and its Move is halved | `spells/mind/the-standing-flood.webp` |
 |   | **The Standing Ward** | strength 4 · Spent: until your next turn no Cast resolves at all, anywhere -- yours too | `spells/mind/the-standing-ward.webp` |
 |   | **The Unbound Tongue** | strength 1 · Shake 1 range 3 Silenced | `spells/mind/the-unbound-tongue.webp` |
 |   | **The Unlatched Door** | strength 2 · a door ever opened by one who lived there opens for you | `spells/mind/the-unlatched-door.webp` |
 |   | **The Whole Skin** | strength 5 · +2 Strike, +2 armor, +4 Health, and Burning never lands. You may never prepare another spell | `spells/mind/the-whole-skin.webp` |
 |   | **The Whole Thread** | strength 5 · the GM shows the enemy's intent cards for the whole fight, in order | `spells/mind/the-whole-thread.webp` |
 |   | **Turn Aside** | strength 2 · range 3 one ally's Block counts double against this attack | `spells/mind/turn-aside.webp` |
-|   | **Unmake the Ground** | strength 5 · name a line across the field: it is impassable all fight, to everyone | `spells/mind/unmake-the-ground.webp` |
+|   | **Unmake the Ground** | strength 5 · all fight | `spells/mind/unmake-the-ground.webp` |
 |   | **Where It Will Land** | strength 1 · Foresee 1 | `spells/mind/where-it-will-land.webp` |
 |   | **Wrong Face** | strength 2 · Cast Dazed (2) | `spells/mind/wrong-face.webp` |
 
@@ -456,7 +456,7 @@ Twelve gods' lesser miracles, handed over by minor nodes.
 |   | **The Clean Field** | strength 4 · until your next turn no enemy may play a secondary | `spells/faith/the-clean-field.webp` |
 |   | **The Close Work** | strength 2 · adjacent: an enemy's Strike hits the nearest other enemy instead | `spells/faith/the-close-work.webp` |
 |   | **The Driven Out** | strength 4 · area 3 Compelled (1) and you gain Block 3 for each enemy Compelled | `spells/faith/the-driven-out.webp` |
-|   | **The Grey Hour** | strength 4 · adjacent: an adjacent enemy's whole turn does not happen | `spells/faith/the-grey-hour.webp` |
+|   | **The Grey Hour** | strength 4 · range 1 Halted (1) | `spells/faith/the-grey-hour.webp` |
 |   | **The Land Beneath** | strength 5 · area 2 every enemy within 2 is gone until the start of your third turn. You are Prone | `spells/faith/the-land-beneath.webp` |
 |   | **The Lie That Held** | strength 5 · a lie named before the fight is true | `spells/faith/the-lie-that-held.webp` |
 |   | **The Line Holds** | strength 4 · allies adjacent to you cannot be moved, knocked Prone or Compelled | `spells/faith/the-line-holds.webp` |
@@ -467,7 +467,7 @@ Twelve gods' lesser miracles, handed over by minor nodes.
 |   | **The Poisoned Well** | strength 4 · Tainting 1 blast 3 fast | `spells/faith/the-poisoned-well.webp` |
 |   | **The Sea Decides** | strength 5 · shuffle every fate deck on the field into one; everyone draws from it | `spells/faith/the-sea-decides.webp` |
 |   | **The Second Face** | strength 1 · Spent: read one enemy's intent card for this round before anyone acts | `spells/faith/the-second-face.webp` |
-|   | **The Second Thought** | strength 1 · range 3 one enemy's secondary does nothing | `spells/faith/the-second-thought.webp` |
+|   | **The Second Thought** | strength 1 · range 3 Dazed (1) | `spells/faith/the-second-thought.webp` |
 |   | **The Shield Line** | strength 2 · range 1 adjacent allies gain your armor as Block | `spells/faith/the-shield-line.webp` |
 |   | **The Silent Knife** | strength 5 · adjacent: one enemy is dead. No save, no fate draw, no roll of any kind | `spells/faith/the-silent-knife.webp` |
 |   | **The Sixth District** | strength 5 · until the fight ends every adjacent ally shares your armor and Block, and damage dealt to them is dealt to you instead | `spells/faith/the-sixth-district.webp` |

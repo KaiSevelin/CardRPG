@@ -12,6 +12,7 @@
     },
     "effect": {
       "area": 2,
+      "targets": "alliesInRange",
       "text": "every ally within 2 takes their whole turn again, now"
     },
     "kind": "miracle",
