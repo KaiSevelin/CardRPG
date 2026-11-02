@@ -4005,6 +4005,30 @@ export const FAITH_TACTICS = {
 /* -------------------------------------------- */
 
 /**
+ * The nine languages of Firma, read off the world's own list (worldinfo/Firma.md, *Languages*).
+ *
+ * **A language is a levelling reward and not a stat**, which is why it lives here beside the
+ * trainings rather than in the character model: `grants: { language: "Elvish" }` is the same shape
+ * as a training, and for the same reason -- a node hands it over, the sheet derives it, and nothing
+ * is copied onto a character that a corrected node could not fix.
+ *
+ * The `of` line is the world's, not ours. It is what decides where a language is taught: a tongue
+ * is learned where its speakers are studied, so the school that knows who owes whom among the
+ * elf-kin is the school that teaches Elvish.
+ */
+export const LANGUAGES = [
+  { name: "Imperial", of: "the old language and the diplomatic lingua franca" },
+  { name: "Valgar", of: "lost language from the fifth district" },
+  { name: "Perga", of: "the language at wolf's peak" },
+  { name: "Veche", of: "the local tongue in Saag et Haar" },
+  { name: "Elvish", of: "lingua franca within the elf group and most of lesser gods" },
+  { name: "Demonic", of: "lingua franca in the demon group" },
+  { name: "Troll", of: "lingua franca in the troll group" },
+  { name: "Reversed", of: "reversed elvish used by undead" },
+  { name: "Burrowing", of: "lingua franca of the burrower group" }
+];
+
+/**
  * The starter Warrior's skill deck (skill-rules 1).
  *
  * **Fifteen cards, all six approaches, nobody locked out.** That is the composition rule and it is
@@ -4253,7 +4277,9 @@ export const NODES = [
   {
     /* And Spy, the second of the three demoted professions. */
     id: "shade.scout.spy", name: "Spy", after: ["shade.scout.groundwork"], bespoke: true,
-    grants: { knowHow: "courts and crowded cities", training: "disguise" }
+    /* The same tongue from the other side: a scholar reads Imperial and a spy speaks it. Two
+     * nodes may teach one language, and `learned` dedupes them (data/actors.mjs). */
+    grants: { knowHow: "courts and crowded cities", training: "disguise", language: "Imperial" }
   },
   {
     id: "shade.trapmaker", name: "Trapmaker", after: ["shade.scout.spy", "shade.cross.wire"],
@@ -4514,7 +4540,10 @@ export const NODES = [
    */
   {
     id: "mind.letters", name: "Letters", after: ["mind"],
-    grants: { training: "reading and writing", spellSlots: 1 }
+    /* **Imperial** is *the old language and the diplomatic lingua franca* (worldinfo/Firma.md), so
+     * it belongs where reading does: the first node of the scholar's trunk teaches the alphabet
+     * that everything else in this Way is written in. */
+    grants: { training: "reading and writing", spellSlots: 1, language: "Imperial" }
   },
   {
     /* The common card a caster gets is the one about spacing, because where to stand is the hard
@@ -4538,7 +4567,10 @@ export const NODES = [
     id: "mind.blood", name: "Blood Magic", after: ["mind.vigil"], title: "Blood Magic",
     axis: "Tempo", resource: "your own Health",
     signature: "Blood Price", tactic: "Your Own Blood Is Nearest",
-    grants: { spell: "Blood Price" }
+    /* **Demonic**, because blood is the currency it is spoken in: the demons hold the Third Side
+     * and let the necromancers use it *in exchange for human sacrifices* (Firma.md). The school
+     * whose price is its own Health is the school that can afford the conversation. */
+    grants: { spell: "Blood Price", language: "Demonic" }
   },
   {
     id: "mind.elemental", name: "Elemental Magic", after: ["mind.vigil"], title: "Elemental Magic",
@@ -4569,7 +4601,10 @@ export const NODES = [
     id: "mind.necromancy", name: "Necromancy", after: ["mind.blood.anatomy"], title: "Necromancy",
     axis: "Preparation", resource: "a bound Taint",
     signature: "Call the Unquiet", tactic: "The Dead Are Furniture",
-    grants: { spell: "Call the Unquiet" }
+    /* **Reversed** is *reversed elvish used by undead* (Firma.md), so it is the one language in
+     * the world that is a derivation rather than a tongue -- and the school that calls the unquiet
+     * is the only one with anybody to practise it on. */
+    grants: { spell: "Call the Unquiet", language: "Reversed" }
   },
 
   {
@@ -4662,7 +4697,9 @@ export const NODES = [
   },
   {
     id: "mind.spirit.debts", name: "Debts", after: ["mind.spirit.pact"], bespoke: true,
-    grants: { knowHow: "who owes whom among the elf-kin" }
+    /* **Elvish** is the elves' lingua franca *and most of the lesser gods'* (Firma.md), which is
+     * this school's whole subject -- and this node already knows who owes whom among them. */
+    grants: { knowHow: "who owes whom among the elf-kin", language: "Elvish" }
   },
   {
     id: "mind.glamour", name: "Glamour", after: ["mind.spirit.debts"], title: "Glamour",
@@ -4673,7 +4710,10 @@ export const NODES = [
 
   {
     id: "mind.spirit.names", name: "Nine Names", after: ["mind.spiritualism"],
-    grants: { spell: "The Nine Names" }
+    /* **Troll**, because the Troll King is a minor god and *essentially all trolls follow* him
+     * (Firma.md): the node that learns the names of spirits learns the tongue of the largest
+     * following any of them has. */
+    grants: { spell: "The Nine Names", language: "Troll" }
   },
   {
     id: "mind.spirit.skin", name: "Skin and Ink", after: ["mind.spirit.names"],
@@ -4698,7 +4738,9 @@ export const NODES = [
     id: "mind.divination", name: "Divination", after: ["mind.spirit.gathered"], title: "Divination",
     axis: "Support", resource: "someone else's turn",
     signature: "The Reading", tactic: "Already Seen",
-    grants: { spell: "The Reading" }
+    /* **Valgar** is a *lost* language from the fifth district (Firma.md), and a lost language is
+     * not learned from a speaker. It is read, which is what this school is for. */
+    grants: { spell: "The Reading", language: "Valgar" }
   },
 
   /*
@@ -4901,7 +4943,10 @@ export const NODES = [
   { id: "faith.vulpet.road", name: "The Road", after: ["faith.vulpet"], grants: { spell: "Alone on the Road" } },
   {
     id: "faith.vulpet.driven", name: "Driven Out", after: ["faith.vulpet.road"], bespoke: true,
-    grants: { knowHow: "where the unwanted go, and who feeds them" }
+    /* **Burrowing**, the lingua franca of the burrower group (Firma.md). Vulpet was driven out by
+     * everyone and became ruler of the land beneath, and the mole men down there follow the Queen
+     * of the Dark: this node already knows where the unwanted go, and this is what they speak. */
+    grants: { knowHow: "where the unwanted go, and who feeds them", language: "Burrowing" }
   },
 
   {

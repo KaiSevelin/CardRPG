@@ -206,8 +206,8 @@ granted anywhere else reaches one school or one priest, which is how the hole be
 ### 1.5 What belongs on a minor node
 
 A major node gets a Signature. The ordinary nodes between them get the small things, and the list is
-already written: a skill card, a training, a know-how, a feature, an action card, a prune, a deck cap,
-a spell slot, Health, a rest token ([leveling.md](leveling.md) §4).
+already written: a skill card, a training, a know-how, **a language**, a feature, an action card, a
+prune, a deck cap, a spell slot, Health, a rest token ([leveling.md](leveling.md) §4).
 
 **Cards are the backbone and features are the spice**, and that is a ratio, not a slogan: a feature
 never dilutes anything, so a feature-heavy branch makes a character monotonically stronger, while a

@@ -27,7 +27,7 @@
 
 import {
   ALL_TACTICS,
-  rebuildGraph, GRAPH, SUCCESSORS, DEPTH, ROOT, POOL, SPELLS, SPELLS_BY_SOURCE, SLATES,
+  rebuildGraph, GRAPH, SUCCESSORS, DEPTH, ROOT, POOL, SPELLS, SPELLS_BY_SOURCE, SLATES, LANGUAGES,
   ownedIds, closedIds, reachable, canTake, stateOf,
   levelOf, titleOf, describeGrants, wouldClose, takeNode
 } from "./graph.mjs";
@@ -404,6 +404,15 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
           </select></label>
           <label>Training <input type="text" name="training" value="${foundry.utils.escapeHTML(grants.training ?? "")}"></label>
           <label>Know-how <input type="text" name="knowHow" value="${foundry.utils.escapeHTML(grants.knowHow ?? "")}"></label>
+          <!-- A dropdown and not a text box: the nine are the world's, and a tenth is a fault the
+               graph check would refuse anyway -- but it should be refused before the typing. -->
+          <label>Language <select name="language">
+            <option value="">no language</option>
+            ${LANGUAGES.map(l => `<option value="${foundry.utils.escapeHTML(l.name)}"${
+              grants.language === l.name ? " selected" : ""}>${
+              foundry.utils.escapeHTML(l.name)} \u2014 ${
+              foundry.utils.escapeHTML(l.of)}</option>`).join("")}
+          </select></label>
           ${["health", "handSize", "carry", "deckMax", "spellSlots", "restTokens", "prune"]
             .map(k => numberRow(k, k)).join("")}
         </fieldset>
@@ -415,7 +424,8 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
           const text = key => (f[key]?.value ?? "").trim();
           const num = key => (f[key]?.value === "" ? undefined : Number(f[key].value));
           const grant = {};
-          for (const key of ["card", "feature", "item", "spell", "training", "knowHow"]) {
+          for (const key of ["card", "feature", "item", "spell", "training", "knowHow",
+            "language"]) {
             if (text(key)) grant[key] = text(key);
           }
           /* A dropdown rather than a text box, so an authored menu node cannot name a school

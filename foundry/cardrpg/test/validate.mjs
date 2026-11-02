@@ -4140,6 +4140,107 @@ check("leveling records the same fix where slots are handed out",
 check("and that a slot was the reward nobody counted",
   /Spell slots were the one reward nobody counted/.test(levDoc) ? "yes" : "no", "yes");
 
+/* ---- languages, awarded on levelling  [BUILT 2026-11-02] ---- */
+
+/*
+ * **The world's list is the brief, and the content is checked against it.** worldinfo/Firma.md
+ * grew a *Languages* section, and a language is a levelling reward in the same shape as a training:
+ * `grants: { language: "Elvish" }`, derived on the sheet, never copied onto a character. So the
+ * table in content.mjs is not an invention -- it is a transcription, and this is the check that it
+ * stays one. The same binding §3.4's spell tables have, in the same direction.
+ */
+const worldDoc = fs.readFileSync(path.join(root, "../../worldinfo/Firma.md"), "utf8");
+const langSection = worldDoc.slice(worldDoc.indexOf("\n# Languages"));
+const worldTongues = [...langSection.matchAll(
+  /^\* (?:\*\*)?([A-Za-z]+)(?:\*\*)? *[-–—] *(.+)$/gm)]
+  .map(m => ({ name: m[1], of: m[2].trim() }));
+check("languages the world names", worldTongues.length, 9);
+check("and the content holds the same nine",
+  graph.LANGUAGES.map(l => l.name).join(", "),
+  worldTongues.map(l => l.name).join(", "));
+/* The gloss too, lowercased at the front because a bullet starts with a capital and a table entry
+ * does not: a language whose description drifted would be a language nobody could place. */
+check("and says the same thing about each",
+  graph.LANGUAGES.filter(l => {
+    const world = worldTongues.find(w => w.name === l.name)?.of ?? "";
+    return world.toLowerCase() !== l.of.toLowerCase();
+  }).map(l => l.name).join(", ") || "none", "none");
+
+/*
+ * **Where a language is taught is not arbitrary: it is taught where its speakers are studied.**
+ * That is the rule, and it is what makes the placement checkable rather than a matter of taste --
+ * every one of the seven sits on a node whose own reward already names those speakers.
+ */
+const tongueNodes = nodes.filter(n => n.grants?.language);
+check("nodes that teach a language", tongueNodes.length, 8);
+check("and which tongue each teaches",
+  tongueNodes.map(n => `${n.id}=${n.grants.language}`).sort().join(", "),
+  "faith.vulpet.driven=Burrowing, mind.blood=Demonic, mind.divination=Valgar, "
+  + "mind.letters=Imperial, mind.necromancy=Reversed, mind.spirit.debts=Elvish, "
+  + "mind.spirit.names=Troll, shade.scout.spy=Imperial");
+/* Eight nodes and seven tongues: Imperial is taught twice, read by a scholar and spoken by a spy,
+ * and `learned` dedupes it. A language is binary -- you read Reversed or you do not. */
+check("tongues the graph teaches at all",
+  [...new Set(tongueNodes.map(n => n.grants.language))].length, 7);
+check("and the one taught from two directions",
+  [...new Set(tongueNodes.map(n => n.grants.language))]
+    .filter(l => tongueNodes.filter(n => n.grants.language === l).length > 1).join(", "),
+  "Imperial");
+/*
+ * **Two are taught by nothing, and that is the finding rather than an omission.** Perga is the
+ * language at wolf's peak and Veche the local tongue in Saag et Haar: regional human tongues, which
+ * nobody studies -- you grow up in them. They belong to a background, and a background has no
+ * mechanical representation yet (rules/backgrounds.md is a template with no engine behind it), so
+ * the field they will land in exists and the grant does not.
+ */
+const taughtTongues = new Set(tongueNodes.map(n => n.grants.language));
+check("languages no node teaches",
+  graph.LANGUAGES.filter(l => !taughtTongues.has(l.name)).map(l => l.name).join(", "),
+  "Perga, Veche");
+check("and leveling says where those two belong",
+  /\[OPEN\][^\n]*Perga and Veche[\s\S]{0,700}?background/.test(levDoc) ? "yes" : "no", "yes");
+
+/* A language the world does not have is a reward that reads as flavour and means nothing: the same
+ * failure as a node granting a card nobody wrote, refused in the same place. */
+check("the graph refuses a tongue nobody speaks",
+  graph.graphFaults([...nodes, { id: "test.tongue", after: ["root"],
+    grants: { language: "Olde Welshe" } }])
+    .some(f => /is not a language of Firma/.test(f)), true);
+/* And accepts one that exists, or the check above would pass for the wrong reason. */
+check("and accepts one that does",
+  graph.graphFaults([...nodes, { id: "test.tongue", after: ["root"],
+    grants: { language: "Troll" } }]).length, 0);
+
+/* The reward reaches a character: summed by the graph, deduped on the sheet, printed by the pane. */
+check("the graph sums languages like trainings",
+  /if \(g\.language\) out\.languages\.push\(g\.language\);/.test(graphSource) ? "yes" : "no", "yes");
+check("a character derives them",
+  /languages: \[\.\.\.new Set\(\[\.\.\.this\.languages, \.\.\.fromNodes\.languages\]\)\]\.sort\(\)/
+    .test(actorModel) ? "yes" : "no", "yes");
+check("the pane prints what a node teaches",
+  /CARDRPG\.Level\.Language/.test(graphSource) ? "yes" : "no", "yes");
+check("and the string exists", "CARDRPG.Level.Language" in lang, true);
+check("the sheet holds the ones a background gave",
+  /name="system\.languagesText"/.test(charTemplate) ? "yes" : "no", "yes");
+check("and lists the ones the nodes taught, separately",
+  /\{\{#each fromNodes\.languages\}\}/.test(charTemplate) ? "yes" : "no", "yes");
+check("the editor offers the nine and nothing else",
+  /<label>Language <select name="language">/.test(levelup) ? "yes" : "no", "yes");
+check("and saves what it was given",
+  /"training", "knowHow",\s*"language"/.test(levelup) ? "yes" : "no", "yes");
+
+/* Counting what one character can end up with, because a reward nobody can reach is not a reward.
+ * A single-Way mage who walks the whole of Way of Mind reads five of the nine. */
+const mageAll = new Set(["root", ...nodes.filter(n => n.id === "mind" || n.id.startsWith("mind."))
+  .map(n => n.id)]);
+check("languages a mage who walked all of Way of Mind reads",
+  graph.grantsOf(mageAll).languages.sort().join(", "),
+  "Demonic, Elvish, Imperial, Reversed, Troll, Valgar");
+check("and leveling records that a language is a minor-node reward",
+  /\*\*A language\*\*/.test(levDoc) ? "yes" : "no", "yes");
+check("way-cards lists it among what belongs on a minor node",
+  /a know-how, \*\*a language\*\*, a feature/.test(wayDoc) ? "yes" : "no", "yes");
+
 /*
  * ---- and the shape of the four Ways against each other ----
  *

@@ -177,6 +177,7 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       // split again in _prepareSubmitData.
       trainingsText: (system.trainings ?? []).join(", "),
       knowHowText: (system.knowHow ?? []).join("; "),
+      languagesText: (system.languages ?? []).join(", "),
       /*
        * What the GRAPH added, separated from what was typed in. `system.learned` has been derived
        * since the nodes were wired and nothing ever read it, so every training and piece of
@@ -227,6 +228,10 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     if ("knowHowText" in data.system) {
       data.system.knowHow = split(data.system.knowHowText, ";");
       delete data.system.knowHowText;
+    }
+    if ("languagesText" in data.system) {
+      data.system.languages = split(data.system.languagesText, ",");
+      delete data.system.languagesText;
     }
     return data;
   }

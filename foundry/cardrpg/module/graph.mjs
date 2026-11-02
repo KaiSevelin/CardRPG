@@ -21,7 +21,7 @@
  */
 
 import {
-  NODES, COMMON_POOL, WAY_CARDS, SHADE_POOL, STRENGTH_POOL, MIND_POOL, FAITH_POOL,
+  NODES, COMMON_POOL, WAY_CARDS, SHADE_POOL, STRENGTH_POOL, MIND_POOL, FAITH_POOL, LANGUAGES,
   FORMULAS, SHADOW_FORMULAS,
   SHADE_SIGNATURES, TACTICS, STRENGTH_SIGNATURES, STRENGTH_TACTICS,
   MIND_SIGNATURES, MIND_TACTICS, FAITH_SIGNATURES, FAITH_TACTICS
@@ -237,6 +237,12 @@ export function graphFaults(nodes) {
     if (from && !SPELLS_BY_SOURCE.has(from)) {
       faults.push(`${node.id} offers a choice from ${from}, which has no spells`);
     }
+    /* A language the world does not have is a reward that reads as flavour and means nothing --
+     * the same failure as a node granting a card nobody wrote, caught in the same place. */
+    const tongue = node?.grants?.language;
+    if (tongue && !LANGUAGE_NAMES.has(tongue)) {
+      faults.push(`${node.id} teaches ${tongue}, which is not a language of Firma`);
+    }
   }
   return [...new Set(faults)];
 }
@@ -425,6 +431,12 @@ export function tacticOf(owned) {
 /** The content a node hands over as a slate, by name: the Signatures, so far. */
 export const SLATES = new Map(SIGNATURES.map(s => [s.name, s]));
 
+/** The nine, by name, so a node teaching a tongue nobody speaks is a fault and not a typo. */
+export const LANGUAGE_NAMES = new Set(LANGUAGES.map(l => l.name));
+
+/** And the nine themselves, so the node editor can offer them with the world's own gloss. */
+export { LANGUAGES };
+
 /** The Ways a character has set foot in, which is derived rather than chosen on a sheet. */
 export function waysOf(owned) {
   return [...owned].filter(id => GRAPH.get(id)?.after?.includes(ROOT));
@@ -438,7 +450,7 @@ export function waysOf(owned) {
 export function grantsOf(owned) {
   const out = {
     health: 0, handSize: 0, carry: 0, deckMax: 0, spellSlots: 0, restTokens: 0,
-    trainings: [], knowHow: [], cards: [], features: [], spells: [], prunes: 0,
+    trainings: [], knowHow: [], languages: [], cards: [], features: [], spells: [], prunes: 0,
     /* The sources a character has been offered a choice from, which is not the same as what they
      * chose: the spell itself is a document and is counted by the book, not by this. */
     choices: [],
@@ -459,6 +471,7 @@ export function grantsOf(owned) {
     out.prunes += g.prune ?? 0;
     if (g.training) out.trainings.push(g.training);
     if (g.knowHow) out.knowHow.push(g.knowHow);
+    if (g.language) out.languages.push(g.language);
     if (g.card) out.cards.push(g.card);
     if (g.feature) out.features.push(g.feature);
     if (g.spell) out.spells.push(g.spell);
@@ -515,6 +528,9 @@ export function describeGrants(node) {
   }
   if (g.training) lines.push(`${game.i18n.localize("CARDRPG.Level.Training")}: ${g.training}`);
   if (g.knowHow) lines.push(`${game.i18n.localize("CARDRPG.Level.KnowHow")}: ${g.knowHow}`);
+  if (g.language) {
+    lines.push(`${game.i18n.localize("CARDRPG.Level.Language")}: ${g.language}`);
+  }
   number("health", game.i18n.localize("CARDRPG.Health"));
   number("handSize", game.i18n.localize("CARDRPG.HandSize"));
   number("carry", game.i18n.localize("CARDRPG.Carry"));

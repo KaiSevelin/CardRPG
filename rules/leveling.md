@@ -323,6 +323,7 @@ one thing instead of another.
 | **Skill card** | Add one, or upgrade one ([skill-rules.md](skill-rules.md) §8) | |
 | **Training** | A tool type, at the full bonus instead of +1 | Skill rules §2 already says training comes from the Way trees |
 | **Know-how** | A situation you have **advantage** in | A background gives one; a Way gives more |
+| **A language** | One of Firma's nine, read and spoken | **[BUILT 2026-11-02]** Binary like a training: you read Reversed or you do not. Taught where its speakers are studied |
 | **Feature** | A feature slate, passive or active | Bounded by bonus groups (§5). **[BUILT 2026-11-01]** — and a granted feature carries text only, never a figure: see below |
 | **Obligation** | A feature you **cannot remove**, binding in text, in the action deck or in the fate deck | What you owe for what you were taught — see below |
 | **Item** | A slate you keep | For signature gear a Way grants, not ordinary loot |
@@ -331,6 +332,30 @@ one thing instead of another.
 | **Spell slot** | One more point of **formula strength** you may prepare (core-rules §4) | Way of Mind's and Way of Faith's version of a deck cap |
 | **Health** | Raise max Health | |
 | **Rest token** | One more (§8 promises these come from leveling) | |
+
+> **[BUILT 2026-11-02] A language is taught where its speakers are studied.** The world's
+> *Languages* list (worldinfo/Firma.md) is the brief and the content is a transcription of it,
+> checked against it in both directions. **Seven of the nine are on the graph**, and not one of them
+> was placed by taste: each sits on a node whose own reward already names those speakers.
+>
+> | Language | Taught by | Because |
+> |---|---|---|
+> | **Imperial** | *Letters* (Mind trunk), *Spy* (Shade) | The diplomatic lingua franca, so it belongs where reading does — and a spy speaks what a scholar reads, which is why two nodes teach one tongue |
+> | **Elvish** | *Debts* (Spiritualism) | The elves' and *most of the lesser gods'*, and that node already knows who owes whom among them |
+> | **Troll** | *Nine Names* (Spiritualism) | The Troll King is a minor god and *essentially all trolls follow him* |
+> | **Demonic** | **Blood Magic** | Blood is the currency it is spoken in: the demons let the necromancers use the Third Side *in exchange for human sacrifices* |
+> | **Reversed** | **Necromancy** | *Reversed elvish used by undead* — the only school with anybody to practise it on |
+> | **Valgar** | **Divination** | A *lost* language is not learned from a speaker. It is read |
+> | **Burrowing** | *Driven Out* (Vulpet) | Vulpet was driven out and rules the land beneath, and the mole men down there follow the Queen of the Dark |
+>
+> A language granted twice is one language: `learned` dedupes, the way it does for a training.
+>
+> **[OPEN]** **Perga and Veche are taught by nothing, and that is the finding rather than the gap.**
+> They are regional human tongues — the language at wolf's peak, the local tongue in Saag et Haar
+> — and nobody *studies* those. You grow up in them, which makes them a **background**'s to give.
+> A background has no mechanical representation yet ([backgrounds.md](backgrounds.md) is a template
+> with nothing behind it), so the field they will land in exists on the character and the grant does
+> not. Whatever gives backgrounds their skill cards and training should give these.
 
 A node may grant **several of these at once** — "a card *and* a prune" is one node's reward. That is
 how a branch keeps a deck from drifting upward every level without spending a whole level on pruning.

@@ -218,6 +218,7 @@
   "CARDRPG.Check.WaitForCall": "The GM has not called for a check yet. Say what you are doing, and they will.",
   "CARDRPG.Check.WrongApproach": "{card} cannot answer {approach}.",
   "CARDRPG.Level.CharactersOnly": "The levelling graph is for characters; NPCs do not level.",
+  "CARDRPG.Level.Language": "Language",
   "CARDRPG.Level.Choose": "One formula of your choice from {source} ({n} to pick from)",
   "CARDRPG.Level.ChooseTitle": "Choose from {source}",
   "CARDRPG.Level.ChooseBody": "This node teaches one formula or miracle of your choice from this list. The number after each is its strength, which is what it costs out of your spell slots once you prepare it.",

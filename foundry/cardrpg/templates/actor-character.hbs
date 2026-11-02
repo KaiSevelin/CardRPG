@@ -358,6 +358,11 @@
         <h3>Know-how</h3>
         <p class="cr-note">A situation, not an approach. The GM reads this; nothing automates it.</p>
         <input type="text" name="system.knowHowText" value="{{knowHowText}}" placeholder="Military matters; forests and tracking">
+        <h3>Languages</h3>
+        {{!-- Binary the way a training is, and it arrives from two directions: a background gives
+              what you grew up with, the graph gives what you studied. This field is the first. --}}
+        <p class="cr-note">What you grew up with. What you studied is below, from your nodes.</p>
+        <input type="text" name="system.languagesText" value="{{languagesText}}" placeholder="Imperial, Veche">
 
         {{!--
           What the graph has added, which is NOT editable here: it is derived from the nodes you own
@@ -368,6 +373,12 @@
           <h3>Trained by your nodes</h3>
           <ul class="cr-learned">
             {{#each fromNodes.trainings}}<li>{{this}}</li>{{/each}}
+          </ul>
+        {{/if}}
+        {{#if fromNodes.languages.length}}
+          <h3>Languages your nodes taught you</h3>
+          <ul class="cr-learned">
+            {{#each fromNodes.languages}}<li>{{this}}</li>{{/each}}
           </ul>
         {{/if}}
         {{#if fromNodes.knowHow.length}}

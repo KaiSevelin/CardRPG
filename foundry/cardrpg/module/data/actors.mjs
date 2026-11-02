@@ -140,6 +140,12 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       trainings: new fields.ArrayField(new fields.StringField()),
       // Prose, because know-how names a situation no engine can evaluate.
       knowHow: new fields.ArrayField(new fields.StringField()),
+      /*
+       * Languages, which are binary the way a training is: you read Reversed or you do not. Stored
+       * here as well as derived from the graph because a background gives what you grew up with
+       * (rules/backgrounds.md) and the graph gives what you studied.
+       */
+      languages: new fields.ArrayField(new fields.StringField()),
 
       biography: new fields.HTMLField(),
       appearance: new fields.HTMLField(),
@@ -196,7 +202,10 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
      * graph gives more (leveling 4, "the skill side"), and the stored ones stay editable. */
     this.learned = {
       trainings: [...new Set([...this.trainings, ...fromNodes.trainings])],
-      knowHow: [...this.knowHow, ...fromNodes.knowHow]
+      knowHow: [...this.knowHow, ...fromNodes.knowHow],
+      /* Deduped like a training and for the same reason: two nodes may teach one tongue, and
+       * knowing Imperial twice is knowing Imperial. */
+      languages: [...new Set([...this.languages, ...fromNodes.languages])].sort()
     };
 
     // --- taint and afflicted (counted from the decks, so derived)
