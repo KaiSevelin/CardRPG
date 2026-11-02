@@ -5755,6 +5755,91 @@ check("and what the graph taught you",
  * their skill deck", and a character could not, because there was no skill deck.
  */
 
+
+/* ---- what a monster's features and gear grant  [BUILT 2026-11-02] ---- */
+
+/*
+ * **`CharacterData` summed the `grants` of every feature and equipped item; `NpcData` summed
+ * none.** Its whole health line was `health.max = health.base`, so a feature called *Thick Hide*
+ * granting 4 Health read correctly on the sheet, passed every check, and changed no number. The
+ * field existed and the reader did not.
+ *
+ * **Asked rather than read**, which needed the sum moved somewhere askable: a data model cannot be
+ * imported outside Foundry, so arithmetic left inside one can only be grepped -- and a grep would
+ * have agreed with the broken version just as happily, which is how this survived. It lives in
+ * `grants.mjs` now, has no Foundry global in it, and both models call it.
+ */
+const grants = await import("../module/grants.mjs");
+const schemaDoc = fs.readFileSync(path.join(root, "../actor-schema.md"), "utf8");
+
+const feature = health => ({ type: "feature", system: { grants: { health } } });
+const worn = (health, equipped = true) => ({
+  type: "item", system: { grants: { health }, equipped }
+});
+const npcHealth = slates => grants.sumGrants(slates, grants.NPC_GRANTS).health;
+
+check("a monster with nothing", npcHealth([]), 0);
+check("and one with a feature that grants Health", npcHealth([feature(4)]), 4);
+/* A feature is simply true; an item has to be EQUIPPED, so a looted amulet stops working when it
+ * comes off the thing you looted it from (equipment.md 9.2). */
+check("an equipped item grants it too", npcHealth([worn(2)]), 2);
+check("and an unequipped one does not", npcHealth([worn(2, false)]), 0);
+check("a feature and an item together", npcHealth([feature(4), worn(2)]), 6);
+/* The rule that decides it, asked on its own so the two halves cannot drift apart. */
+check("a feature always counts",
+  grants.slateCounts({ type: "feature", system: {} }), true);
+check("an unequipped item never does",
+  grants.slateCounts({ type: "item", system: { equipped: false } }), false);
+check("and a card is neither", grants.slateCounts({ type: "action", system: {} }), false);
+
+/* And the model uses it, rather than keeping a second copy of the same loop. */
+check("the NPC model sums through the helper",
+  /const granted = sumGrants\(this\.parent\.items, NPC_GRANTS\);/.test(modelSource)
+    ? "yes" : "no", "yes");
+check("the character model too",
+  /const grants = sumGrants\(slates, CHARACTER_GRANTS\);/.test(modelSource) ? "yes" : "no", "yes");
+check("and the maximum cannot be driven below one",
+  /Math\.max\(1, this\.health\.base \+ granted\.health\)/.test(modelSource) ? "yes" : "no", "yes");
+/* The loop that was in both models is in neither now. */
+check("the grant loop is written once",
+  (modelSource.match(/slate\.type === "feature"/g) ?? []).length, 0);
+
+/*
+ * **Health is the only key a monster can be granted, and that is a statement about the schema.** An
+ * NPC holds no hand and never exhausts (core-rules 9), has no encumbrance, and has neither a deck
+ * maximum nor a spell slot -- so a grant naming one of those is content pointed at a field that
+ * does not exist. It is refused here rather than summed into nothing.
+ */
+check("grant keys a character reads", grants.CHARACTER_GRANTS.join(", "),
+  "health, handSize, carry, deckMax, spellSlots");
+check("and the ones a monster has a field for", grants.NPC_GRANTS.join(", "), "health");
+check("the model has no field for the other four",
+  grants.CHARACTER_GRANTS.filter(k => k !== "health")
+    .filter(k => new RegExp(`\\n      ${k}: new fields\\.`).test(
+      modelSource.slice(modelSource.indexOf("export class NpcData")))).join(", ") || "none",
+  "none");
+/* And nothing a monster carries asks for one. A check waiting for the roster rather than one
+ * finding a fault -- which is the honest description of most of this file. */
+const monsterBorne = [...content.NPC_GEAR, ...content.FEATURES.filter(f =>
+  [content.GOBLIN, content.GOBLIN_ARCHER].some(a => (a.features ?? []).includes(f.name)))];
+check("content a monster carries", monsterBorne.length, 2);
+check("and none of it grants what a monster cannot read",
+  monsterBorne.filter(x => grants.CHARACTER_GRANTS.filter(k => k !== "health")
+    .some(k => x.grants?.[k])).map(x => x.name).join(", ") || "none", "none");
+
+/* The two goblins are untouched, which is the point: a silent failure was closed and nothing was
+ * rebalanced on the way past. */
+check("a goblin's Health", content.GOBLIN.system.health.base, 5);
+check("and the archer's", content.GOBLIN_ARCHER.system.health.base, 5);
+check("neither carries a feature yet",
+  [content.GOBLIN, content.GOBLIN_ARCHER].flatMap(a => a.features ?? []).join(", ") || "none",
+  "none");
+
+check("the schema document records what a monster derives",
+  /plus the `grants` of its features and equipped gear/.test(schemaDoc) ? "yes" : "no", "yes");
+check("and why Health is the only one",
+  /no hand, no encumbrance, no deck maximum and no spell slot/.test(schemaDoc) ? "yes" : "no",
+  "yes");
 section("the skill deck, and the check");
 
 /* The record, written where a reader of the check rules will find it. */
@@ -7175,7 +7260,7 @@ for (const m of selfSource.matchAll(
   const p = path.join(root, m[2]);
   if (fs.existsSync(p)) readFiles.set(m[1], fs.readFileSync(p, "utf8"));
 }
-check("files this suite greps by name", readFiles.size, 47);
+check("files this suite greps by name", readFiles.size, 48);
 
 /* Every `/pattern/.test(VAR)` and `VAR.includes("...")`, with the check it belongs to. */
 const nameOfCheck = index => {
@@ -7207,7 +7292,7 @@ for (const m of selfSource.matchAll(/(\w+)\.includes\("((?:[^"\\]|\\.)*)"\)/g)) 
 }
 
 /* The pin that keeps the rest of this honest. */
-check("greps over a whole file, resolved", greps.length, 434);
+check("greps over a whole file, resolved", greps.length, 439);
 
 /*
  * **The rule, as one predicate, run over a planted example before it is run over the suite.**

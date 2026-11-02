@@ -192,6 +192,7 @@ NPCs never exhaust, hold no hand, and need no rest tokens.
 |---|---|
 | `kind` | The creature type — this is what owns the deck (§5) |
 | `health.value`, `health.base` | stored |
+| `health.max` | derived: `health.base` plus the `grants` of its features and equipped gear |
 | `armor` | derived from gear, or stored flat for a creature with none |
 | `gear` | equipped item slates, **tuned separately from player gear** (core-rules §9) |
 | `tactics[]` | structured keyword keys: Pack Tactics, Skirmisher, Sniper, … |
@@ -202,6 +203,28 @@ NPCs never exhaust, hold no hand, and need no rest tokens.
 | `conditions[]` | as `character` |
 | `carry` | optional; most NPCs don't need it |
 | `phases` | **[IDEA]** boss phases, see [../rules/ideas.md](../rules/ideas.md) |
+
+### A monster's features and gear grant what it has a field for  **[BUILT 2026-11-02]**
+
+> **`character` summed the `grants` of every feature and equipped item and `npc` summed none.** Its
+> whole health line was `health.max = health.base`, so a feature called *Thick Hide* granting 4
+> Health read correctly on the sheet, passed every check and changed no number &mdash; §1.1's *derive
+> the rest* kept on one model and not the other.
+>
+> **Health is the only key a monster can be granted**, and that is a fact about this table rather
+> than a shortcut: an NPC has **no hand, no encumbrance, no deck maximum and no spell slot**, so the
+> other four keys a character reads have nothing here to raise. A grant naming one of them on a
+> monster is content pointed at a field that does not exist, and the validator refuses it rather
+> than letting the sum quietly add it to nothing.
+>
+> The rule is the character's, unchanged: **a feature is simply true, an item has to be equipped**
+> &mdash; which is what makes a looted amulet stop working when it comes off the thing you looted it
+> from ([../rules/equipment.md](../rules/equipment.md) §9.2).
+>
+> The sum itself lives in `module/grants.mjs` and both models call it. It was moved out of the two
+> models because a data model cannot be imported outside Foundry, so arithmetic left inside one can
+> only ever be **read** by the validator and never **asked** &mdash; and a read would have agreed
+> with the broken version just as happily, which is how it survived this long.
 
 ### `revealed` is mechanical
 

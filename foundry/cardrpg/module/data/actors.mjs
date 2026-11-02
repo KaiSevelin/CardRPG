@@ -11,6 +11,9 @@ import { available } from "../decks.mjs";
 import {
   ownedIds, grantsOf, levelOf, titleOf, tacticOf, termsOf, waysOf, frontier
 } from "../graph.mjs";
+/* The one place the grant sum lives, in a module with no Foundry global so the validator can ask
+ * it rather than read it. */
+import { sumGrants, CHARACTER_GRANTS, NPC_GRANTS } from "../grants.mjs";
 
 const fields = foundry.data.fields;
 
@@ -169,13 +172,7 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
      * a spell slot a thing you can take off (rules/equipment.md 9.2). Items were excluded here
      * until the magic items were written, so a granting item silently granted nothing.
      */
-    const grants = { health: 0, handSize: 0, carry: 0, deckMax: 0, spellSlots: 0 };
-    for (const slate of slates) {
-      const counts = slate.type === "feature"
-        || (slate.type === "item" && slate.system.equipped);
-      if (!counts) continue;
-      for (const k of Object.keys(grants)) grants[k] += slate.system.grants?.[k] ?? 0;
-    }
+    const grants = sumGrants(slates, CHARACTER_GRANTS);
 
     /*
      * --- and what the levelling graph grants
@@ -493,7 +490,29 @@ export class NpcData extends foundry.abstract.TypeDataModel {
     this.armor = this.armorBase + gear
       .filter(i => CARDRPG.slots[i.system.equippedSlot]?.worn)
       .reduce((n, i) => n + (i.system.armorNow ?? i.system.armor ?? 0), 0);
-    this.health.max = this.health.base;
+
+    /*
+     * --- what a monster's features and gear grant
+     *
+     * **This line did not exist, and its absence was silent.** `CharacterData` sums the `grants` of
+     * every feature and every equipped item -- Health, hand size, carry, deck max, spell slots --
+     * and this model summed none of them: `health.max` was `health.base` and nothing else. So a
+     * feature called *Thick Hide* granting 4 Health read correctly on the sheet, passed every
+     * check, and changed no number. The field existed and the reader did not, which is the shape
+     * this project keeps digging out.
+     *
+     * **Health is the only one summed here, and that is not laziness.** An NPC holds no hand and
+     * never exhausts (core-rules 9), has no encumbrance, and has neither a deck maximum nor a spell
+     * slot in its schema -- so the other four keys have nothing to raise. A grant that names one is
+     * content pointed at a field this model does not have, which is why the validator refuses it
+     * rather than this function quietly adding it to nothing.
+     *
+     * The same shape as the character's, deliberately: a feature is simply true, an item has to be
+     * EQUIPPED, so a looted amulet stops working when it is taken off the thing you looted it from.
+     */
+    const granted = sumGrants(this.parent.items, NPC_GRANTS);
+
+    this.health.max = Math.max(1, this.health.base + granted.health);
     this.health.value = Math.min(this.health.value, this.health.max);
     // NPCs never exhaust and hold no hand (core-rules 9).
     this.exhausted = false;
