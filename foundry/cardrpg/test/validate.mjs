@@ -3121,8 +3121,15 @@ const { CARDRPG } = await import("../module/config.mjs");
 
 /* One decision, in one place. A pane that tested adjacency itself would drift from the rules the
  * moment `all` or an exclusive group appeared, which is the whole point of leveling 1. */
+/*
+ * Read from the function that paints, and this one was answered by a **comment**: the module's own
+ * header explains that `canTake` is the single decision, so the grep found the explanation rather
+ * than the call. The same failure as reading the sentence that says `canvas.scene` is not used.
+ */
+const paintBody = levelup.slice(levelup.indexOf("  #elements()"),
+  levelup.indexOf("  #onRender") >= 0 ? levelup.indexOf("  #onRender") : levelup.length);
 check("the pane asks the engine whether a node is takeable",
-  /canTake|stateOf/.test(levelup) ? "yes" : "no", "yes");
+  /stateOf\(id, owned, closed, live\)/.test(paintBody) ? "yes" : "no", "yes");
 check("and never decides from adjacency itself",
   /\.after[\s\S]{0,60}\.(some|every)\(/.test(levelup) ? "it decides" : "no", "no");
 check("accept goes through takeNode",
@@ -6004,8 +6011,15 @@ const checksSource = fs.readFileSync(path.join(root, "module/checks.mjs"), "utf8
 
 check("the call is a module of its own",
   /export function readCall\(\)/.test(checksSource) ? "yes" : "no", "yes");
+/*
+ * Read from `readCall`'s own body. Nine functions in that module reach for the active scene, so a
+ * file-wide grep was a claim about the module and not about the call: any one of the other eight
+ * would have answered it.
+ */
+const readCallBody = checksSource.slice(checksSource.indexOf("export function readCall"),
+  checksSource.indexOf("export async function setCall"));
 check("and it lives on the active scene",
-  /game\.scenes\?\.active/.test(checksSource) ? "yes" : "no", "yes");
+  /game\.scenes\?\.active/.test(readCallBody) ? "yes" : "no", "yes");
 /*
  * The ACTIVE scene and not the viewed one: a GM drawing next week's map must not take the call with
  * them, which is a different question from where the canvas happens to be.
@@ -6099,14 +6113,30 @@ check("and ranked by what it is worth to this character",
     ? "yes" : "no", "yes");
 /* It is still offered and still clearable: a tool bonus is situational and only the table knows
  * whether this is a lock. */
+/* From the check dialog's own body: the two hits are one ternary across a wrapped line, but a
+ * grep that cannot tell that from two sites is not worth trusting the next time. */
+const onCheckBody = traySource.slice(traySource.indexOf("static async #onCheck"),
+  traySource.indexOf("static #onOpenPile"));
 check("the chosen tool is still shown with its situation",
-  /bonus\.situation/.test(traySource) ? "yes" : "no", "yes");
+  /bonus\.situation/.test(onCheckBody) ? "yes" : "no", "yes");
 
 /* The banner, the GM's button, and the hook that redraws it for everybody. */
+/*
+ * The banner's own region. Both of these patterns appear twice in the template -- once in the
+ * banner and once in the GM's row further down, where *Re-call* lives -- so each was answerable by
+ * the other half of a feature it was not about.
+ */
+const bannerBlock = trayTemplate.slice(trayTemplate.indexOf('data-group-label="Scene"'),
+  trayTemplate.indexOf('class="cr-scene__counts"'));
 check("the tray prints the call",
-  /\{\{#if scene\.call\}\}/.test(trayTemplate) ? "yes" : "no", "yes");
+  /\{\{#if scene\.call\}\}/.test(bannerBlock) ? "yes" : "no", "yes");
 check("and offers the GM a way to make one",
-  /data-action="callCheck"/.test(trayTemplate) ? "yes" : "no", "yes");
+  /data-action="callCheck"/.test(bannerBlock) ? "yes" : "no", "yes");
+/* And the second one is its own affordance, worth its own assertion rather than propping up the
+ * first: a difficulty set wrongly should be corrected, not argued about. */
+const countsBlock = trayTemplate.slice(trayTemplate.indexOf('class="cr-scene__counts"'));
+check("and a way to change it once it stands",
+  /data-action="callCheck"[\s\S]{0,200}Re-call/.test(countsBlock) ? "yes" : "no", "yes");
 check("a scene change redraws every tray",
   /"deleteCombat", "updateScene"/.test(traySource) ? "yes" : "no", "yes");
 check("every string the call needs is translated",
@@ -7110,6 +7140,137 @@ check("and a slate nobody built is refused rather than silently skipped",
   /CARDRPG\.Level\.NoSlate/.test(graphSource) ? "yes" : "no", "yes");
 
 /* -------------------------------------------- */
+
+
+section("The checks themselves");
+
+/*
+ * ---- a grep that a second printer could answer ----
+ *
+ * **Four times this week a check passed because something else in the file said what it was looking
+ * for**, and a break test caught every one: a comment explaining that `canvas.scene` is NOT used; a
+ * module's header naming `canTake` as the single decision; `startChallenge`'s copy of a guard that
+ * `setCall` had lost; six rows of a template carrying the `{{this.tip}}` the panel had dropped; and
+ * §3's copy of a reward list that §1.5 no longer printed. Reading never found one of them.
+ *
+ * The shape is always the same: **a check greps a whole file, and the pattern occurs twice.** That
+ * is checkable, so it is checked here, over this file, by this file.
+ *
+ * Two things make this honest rather than decorative:
+ *
+ *   - **the number of greps it resolved is pinned.** A self-parser that quietly stops understanding
+ *     its own source would find no problems and report success, which is the failure mode this
+ *     whole section exists to catch -- so if the count moves, the parser is wrong or the suite grew,
+ *     and either way somebody looks.
+ *   - **the greps that match nothing are pinned by name.** Those are the negatives -- *the reaction
+ *     timer is gone*, *nothing draws a twist* -- and they are correct at zero. But a grep that went
+ *     stale reads zero too, so a new one has to be added to the list deliberately.
+ */
+const selfSource = fs.readFileSync(path.join(root, "test/validate.mjs"), "utf8");
+
+/* Which local holds which file: the same declarations this suite opens with. */
+const readFiles = new Map();
+for (const m of selfSource.matchAll(
+  /const (\w+) = fs\.readFileSync\(path\.join\(root, "([^"]+)"\), "utf8"\)/g)) {
+  const p = path.join(root, m[2]);
+  if (fs.existsSync(p)) readFiles.set(m[1], fs.readFileSync(p, "utf8"));
+}
+check("files this suite greps by name", readFiles.size, 47);
+
+/* Every `/pattern/.test(VAR)` and `VAR.includes("...")`, with the check it belongs to. */
+const nameOfCheck = index => {
+  const at = selfSource.lastIndexOf('check("', index);
+  return at < 0 ? "?" : selfSource.slice(at + 7, selfSource.indexOf('"', at + 7));
+};
+const greps = [];
+for (const m of selfSource.matchAll(
+  /(\/(?:[^/\\\n]|\\[\s\S]|\[[^\]]*\])+\/[gimsuy]*)\s*\n?\s*\.test\((\w+)\)/g)) {
+  const body = readFiles.get(m[2]);
+  if (body === undefined) continue;
+  const literal = m[1];
+  const source = literal.slice(1, literal.lastIndexOf("/"));
+  const flags = literal.slice(literal.lastIndexOf("/") + 1).replace(/g/g, "");
+  let re = null;
+  try { re = new RegExp(source, `${flags}g`); } catch { /* not ours to judge */ }
+  if (!re) continue;
+  greps.push({
+    check: nameOfCheck(m.index), pattern: source, hits: (body.match(re) ?? []).length
+  });
+}
+for (const m of selfSource.matchAll(/(\w+)\.includes\("((?:[^"\\]|\\.)*)"\)/g)) {
+  const body = readFiles.get(m[1]);
+  if (body === undefined) continue;
+  const needle = m[2].replace(/\\"/g, '"').replace(/\\\\/g, "\\");
+  greps.push({
+    check: nameOfCheck(m.index), pattern: needle, hits: body.split(needle).length - 1
+  });
+}
+
+/* The pin that keeps the rest of this honest. */
+check("greps over a whole file, resolved", greps.length, 434);
+
+/*
+ * **The rule, as one predicate, run over a planted example before it is run over the suite.**
+ *
+ * With nothing left to find, `hits > 1` and `hits > 99` answer alike, so the rule was unexercised
+ * and would have gone on passing if the threshold were typed wrong -- this suite's oldest lesson
+ * aimed at its newest check. The first version of the fix tested a COPY of the threshold, which is
+ * two checks that look like a pair and share nothing: the planted example passed while the real
+ * line said 99. One definition, used by both.
+ */
+const answeredTwice = g => g.hits > 1;
+/* A pattern planted twice in a string of its own, so the predicate has something to find. */
+const planted = (() => {
+  const haystack = "a: /b/.test(X)\nb: /b/.test(X)";
+  return { check: "planted", hits: (haystack.match(/\/b\//g) ?? []).length };
+})();
+check("the rule finds a pattern that occurs twice", [planted].filter(answeredTwice).length, 1);
+check("and passes one that occurs once",
+  [{ check: "planted", hits: 1 }].filter(answeredTwice).length, 0);
+
+/* And the rule itself. Anything it finds is a check whose own subject could be deleted. */
+check("greps a second printer could answer",
+  greps.filter(answeredTwice).map(g => `${g.check} (${g.hits}x)`).sort().join("; ") || "none",
+  "none");
+
+/*
+ * And the negatives, **by name and by pattern**. Each is a check that something is *absent*, so
+ * zero is the right answer -- and a positive grep that went stale cannot hide here, because a
+ * positive one failing to match makes its own check fail outright.
+ *
+ * The patterns are in the list because the first version keyed it on the check's name alone, and a
+ * break test renamed a pattern under an unchanged name and went unnoticed. What a negative asserts
+ * is absent is the whole of its content, so the content is what is pinned.
+ */
+/*
+ * The eighteen, by name and by pattern, in the order the suite sorts them. Raw strings,
+ * because these are patterns: written as escaped JS they are unreadable, and a list nobody
+ * can read is a list nobody will check when it changes.
+ */
+const absentGreps = [
+  String.raw`a pile is never given one :: "pile",[^)]*backOf\(`,
+  String.raw`and core content is never written to :: NODES\.(push|splice|length =)`,
+  String.raw`and never decides from adjacency itself :: \.after[\s\S]{0,60}\.(some|every)\(`,
+  String.raw`and the engine clamps neither total :: Math\.max\(0, before`,
+  String.raw`and the old sentence is gone :: Faith is \*\*wide and shallow\*\*`,
+  String.raw`and the resolver reads the flag :: conditionsOf\(actor\)\.includes\("invisible"\)`,
+  String.raw`nothing builds a fate card by hand any more :: createEmbeddedDocuments\("Card", \[\{\s*name: fateCard`,
+  String.raw`nothing draws a twist automatically :: drawTwist\(`,
+  String.raw`reaction timer retired from config :: reactionTimer`,
+  String.raw`reaction timer retired from settings :: reactionTimer`,
+  String.raw`reaction timer retired from the HUD spec :: \*\*Setting: ` + "`" + String.raw`reactionTimer` + "`" + String.raw`\*\*`,
+  String.raw`reaction timer retired from the HUD spec :: ^### 6\.1 The reaction timer$`,
+  String.raw`the engine touches no Foundry global at module scope :: ^const \w+ = game\.`,
+  String.raw`the engine touches no Foundry global at module scope :: ^const \{[^}]*\} = foundry\.`,
+  String.raw`the fate bar no longer assumes twenty :: \(counts\.fate \?\? 0\) \/ 20`,
+  String.raw`the old bare rank map is gone :: CARDRPG\.fateRank`,
+  String.raw`the sheet reads level out rather than storing it :: name="system\.level"`,
+  String.raw`the tactic no longer promises a reaction draw :: advantage\*\* on reactions`,
+].join(" | ");
+check("greps that correctly match nothing",
+  greps.filter(g => g.hits === 0).map(g => `${g.check} :: ${g.pattern}`).sort().join(" | "),
+  absentGreps);
+
 
 console.log(failures
   ? `\n${failures} FAILURE${failures === 1 ? "" : "S"}`
