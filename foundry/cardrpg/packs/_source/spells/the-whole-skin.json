@@ -1,0 +1,17 @@
+{
+  "_id": "41jidRx5uBmThWXL",
+  "_key": "!items!41jidRx5uBmThWXL",
+  "name": "The Whole Skin",
+  "type": "spell",
+  "system": {
+    "strength": 5,
+    "source": "Tattoo Magic",
+    "description": "<p>There is no skin left to write on. It is the last thing you ever learn, and afterwards you are something else wearing a mage's name.</p>",
+    "effect": {
+      "timing": "permanent",
+      "text": "+2 Strike, +2 armor, +4 Health, and Burning never lands. You may never prepare another spell"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "_id": "oE1rAa2ueOqhjWjL",
+  "_key": "!items!oE1rAa2ueOqhjWjL",
+  "name": "Net",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "fits": [
+      "belt"
+    ],
+    "hands": 1,
+    "tags": [
+      "light",
+      "thrown"
+    ],
+    "weight": 1,
+    "value": 5,
+    "blurb": "Weighted at the edges. The other half of a trident.",
+    "verbs": {
+      "strike": {
+        "value": 0,
+        "range": 3,
+        "text": "Grappled (1), resist Might 5"
+      }
+    }
+  }
+}

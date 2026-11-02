@@ -1,0 +1,18 @@
+{
+  "_id": "eIfjZsI6BCsyrljn",
+  "_key": "!items!eIfjZsI6BCsyrljn",
+  "name": "Name the Guilty",
+  "type": "spell",
+  "system": {
+    "strength": 1,
+    "source": "The Eternal God",
+    "description": "<p>No save. Being named is not something you resist.</p>",
+    "effect": {
+      "range": 6,
+      "condition": "judged",
+      "duration": 1
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

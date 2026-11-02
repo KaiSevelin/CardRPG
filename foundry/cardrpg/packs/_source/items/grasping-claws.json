@@ -1,0 +1,23 @@
+{
+  "_id": "it4ObUQgj23fLyA4",
+  "_key": "!items!it4ObUQgj23fLyA4",
+  "name": "Grasping Claws",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "hands": 0,
+    "tags": [
+      "melee",
+      "natural"
+    ],
+    "weight": 0,
+    "value": 0,
+    "npcGear": true,
+    "verbs": {
+      "strike": {
+        "value": 5,
+        "reach": 2
+      }
+    }
+  }
+}

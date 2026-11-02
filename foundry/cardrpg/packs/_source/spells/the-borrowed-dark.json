@@ -1,0 +1,17 @@
+{
+  "_id": "u8nqb3DdaO5nIdgP",
+  "_key": "!items!u8nqb3DdaO5nIdgP",
+  "name": "The Borrowed Dark",
+  "type": "spell",
+  "system": {
+    "strength": 3,
+    "source": "Shadow Magic",
+    "wilds": 1,
+    "description": "<p>Every square on the map, dark at once &mdash; for your allies as much as for you, and for anyone else who knows what to do with it.</p>",
+    "effect": {
+      "text": "until your next turn every square on the map is shadowed"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

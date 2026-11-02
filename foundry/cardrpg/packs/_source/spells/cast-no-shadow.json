@@ -1,0 +1,17 @@
+{
+  "_id": "Q8M8sF4jCGfCfkXF",
+  "_key": "!items!Q8M8sF4jCGfCfkXF",
+  "name": "Cast No Shadow",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "Shadow Magic",
+    "wilds": 1,
+    "description": "<p>For one round you are only there if they are standing next to you. Archers and casters are simply out of the conversation.</p>",
+    "effect": {
+      "text": "until your next turn nothing further than 1 square away can target you"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

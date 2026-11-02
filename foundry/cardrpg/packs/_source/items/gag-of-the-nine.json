@@ -1,0 +1,17 @@
+{
+  "_id": "YrF1jYwnGeMOETBO",
+  "_key": "!items!YrF1jYwnGeMOETBO",
+  "name": "Gag of the Nine",
+  "type": "item",
+  "system": {
+    "slot": "neck",
+    "weight": 0,
+    "value": 700,
+    "blurb": "Nine knots in a cord. Somebody counted them out loud, once.",
+    "group": "wonder",
+    "active": {
+      "text": "One enemy within 3 is Silenced (1), resist Lore 5.",
+      "boundary": "combat"
+    }
+  }
+}

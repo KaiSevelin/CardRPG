@@ -1,0 +1,14 @@
+{
+  "_id": "N0BVUatAZOTXl8aJ",
+  "_key": "!items!N0BVUatAZOTXl8aJ",
+  "name": "The Unquiet Quiver",
+  "type": "item",
+  "system": {
+    "slot": "back",
+    "weight": 2,
+    "value": 4500,
+    "blurb": "It rattles when there is nothing in it.",
+    "group": "wonder",
+    "text": "Every piece of magical ammunition you fire returns to it when the fight ends. Obligation: it will not hold ordinary arrows, and you may carry no other quiver."
+  }
+}

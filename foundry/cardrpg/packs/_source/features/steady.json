@@ -1,0 +1,13 @@
+{
+  "_id": "BHCn5kmgsaubtNcD",
+  "_key": "!items!BHCn5kmgsaubtNcD",
+  "name": "Steady",
+  "type": "feature",
+  "system": {
+    "active": {
+      "text": "Drain: you don't become Dazed.",
+      "boundary": "combat"
+    },
+    "text": "You don't become Dazed."
+  }
+}

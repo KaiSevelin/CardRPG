@@ -1,0 +1,20 @@
+{
+  "_id": "cWeZR0jbDHwM7fSb",
+  "_key": "!items!cWeZR0jbDHwM7fSb",
+  "name": "The Turning Tide",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "Sessyfyn",
+    "reaction": "mend",
+    "description": "<p>The sea is not fair. They draw again and must keep the second card, and a Miss joins your own deck for having asked.</p>",
+    "effect": {
+      "range": 3,
+      "condition": "cursed",
+      "timing": "reaction",
+      "text": "an ally redraws a fate card and keeps the second. The Cursed is yours"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

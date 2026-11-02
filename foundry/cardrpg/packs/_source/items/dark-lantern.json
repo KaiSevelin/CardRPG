@@ -1,0 +1,23 @@
+{
+  "_id": "E22z1QAKa5bJGbCV",
+  "_key": "!items!E22z1QAKa5bJGbCV",
+  "name": "Dark Lantern",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "hands": 1,
+    "tags": [
+      "arcane",
+      "natural"
+    ],
+    "weight": 1,
+    "value": 0,
+    "npcGear": true,
+    "verbs": {
+      "cast": {
+        "value": 4,
+        "range": 3
+      }
+    }
+  }
+}

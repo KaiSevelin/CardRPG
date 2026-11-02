@@ -1,0 +1,22 @@
+{
+  "_id": "Uo5cRhPq8n5ny9MA",
+  "_key": "!items!Uo5cRhPq8n5ny9MA",
+  "name": "Undertow",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "Sessyfyn",
+    "description": "<p>Wet, and everything in it moved a square you choose. Moving figures is a sentence the table applies (core-rules 11), so this card is complete.</p>",
+    "effect": {
+      "verb": "cast",
+      "range": 3,
+      "area": 2,
+      "areaKind": "blast",
+      "condition": "wet",
+      "duration": 1,
+      "text": "every target is moved 1 square you choose"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

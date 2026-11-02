@@ -1,0 +1,56 @@
+{
+  "_id": "mWFMl67869reWq3r",
+  "_key": "!actors!mWFMl67869reWq3r",
+  "name": "Flat Bug Runner",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 4,
+      "base": 4
+    },
+    "kind": "flat-bug-runner",
+    "armorBase": 0,
+    "speed": 5,
+    "capabilities": [
+      "legs",
+      "pack",
+      "fast"
+    ],
+    "tactics": [
+      "packTactics",
+      "shieldWall",
+      "skirmisher"
+    ],
+    "targetPriority": "nearest"
+  },
+  "items": [
+    {
+      "_id": "7kMFyprGJjnJovpo",
+      "_key": "!actors.items!mWFMl67869reWq3r.7kMFyprGJjnJovpo",
+      "name": "Mandibles",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 3
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Flat Bug Runner"
+  }
+}

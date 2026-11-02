@@ -1,0 +1,20 @@
+{
+  "_id": "pvHOsLBbnW7jbpLH",
+  "_key": "!items!pvHOsLBbnW7jbpLH",
+  "name": "The Borrowed Body",
+  "type": "spell",
+  "system": {
+    "strength": 3,
+    "source": "Spiritualism",
+    "description": "<p>A spirit lends you its shape. Your deck, your Health and whatever is wrong with you come along &mdash; a body is what you fight with, not who you are.</p>",
+    "effect": {
+      "verb": "shape",
+      "duration": 2,
+      "shape": {
+        "creature": "Doomfly"
+      }
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

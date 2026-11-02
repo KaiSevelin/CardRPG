@@ -1,0 +1,16 @@
+{
+  "_id": "YAmKsHq1IZ5TPoMG",
+  "_key": "!items!YAmKsHq1IZ5TPoMG",
+  "name": "The Narrow Path",
+  "type": "spell",
+  "system": {
+    "strength": 1,
+    "source": "The Eternal God",
+    "description": "<p>Less to carry, less to remember, and the words come easier. A thin deck is the clean body, written as arithmetic.</p>",
+    "effect": {
+      "text": "while your action deck is 10 cards or fewer, your miracles cost 1 slot less (min 1)"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

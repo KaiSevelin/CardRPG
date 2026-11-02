@@ -1,0 +1,17 @@
+{
+  "_id": "EY9HlkjzWOcjWWrd",
+  "_key": "!items!EY9HlkjzWOcjWWrd",
+  "name": "Pact Iron",
+  "type": "item",
+  "system": {
+    "slot": "fingers",
+    "weight": 0,
+    "value": 1600,
+    "blurb": "Cold iron takes a debt and holds it for a while.",
+    "group": "wonder",
+    "active": {
+      "text": "One Taint card is set aside for the rest of the fight.",
+      "boundary": "longRest"
+    }
+  }
+}

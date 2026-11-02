@@ -1,0 +1,54 @@
+{
+  "_id": "ROz7XhLFPfv9onWp",
+  "_key": "!actors!ROz7XhLFPfv9onWp",
+  "name": "Flat Bug",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 5,
+      "base": 5
+    },
+    "kind": "flat-bug",
+    "armorBase": 1,
+    "speed": 3,
+    "capabilities": [
+      "legs",
+      "pack"
+    ],
+    "tactics": [
+      "packTactics",
+      "shieldWall"
+    ],
+    "targetPriority": "nearest"
+  },
+  "items": [
+    {
+      "_id": "CwL5BUSv2HGJBjbL",
+      "_key": "!actors.items!ROz7XhLFPfv9onWp.CwL5BUSv2HGJBjbL",
+      "name": "Mandibles",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 3
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Flat Bug"
+  }
+}

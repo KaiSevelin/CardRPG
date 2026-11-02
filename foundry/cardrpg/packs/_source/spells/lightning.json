@@ -1,0 +1,27 @@
+{
+  "_id": "miXb30FG4MDEQNhv",
+  "_key": "!items!miXb30FG4MDEQNhv",
+  "name": "Lightning",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "Elemental Magic",
+    "element": "storm",
+    "description": "<p>Reads a Wet target two ways at once: harder to shrug off, and it hurts more. Against a dry one it is still a Cast that tries to stun, which is the point &mdash; the opening sharpens the card, it does not switch it on.</p>",
+    "effect": {
+      "verb": "cast",
+      "range": 4,
+      "condition": "stunned",
+      "duration": 1,
+      "resist": "lore",
+      "dc": 7,
+      "when": {
+        "needs": "wet",
+        "mod": 2,
+        "dc": 9
+      }
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

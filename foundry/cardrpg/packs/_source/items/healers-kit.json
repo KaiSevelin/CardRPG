@@ -1,0 +1,19 @@
+{
+  "_id": "aeHf2x7J4bFcEROF",
+  "_key": "!items!aeHf2x7J4bFcEROF",
+  "name": "Healer's Kit",
+  "type": "item",
+  "system": {
+    "slot": "pack",
+    "weight": 2,
+    "value": 20,
+    "blurb": "Needle, gut, lint and spirit.",
+    "group": "tool",
+    "bonus": {
+      "approach": "lore",
+      "value": 2,
+      "training": "treating wounds",
+      "situation": "treating wounds; removes 1 Wound on a Normal 5"
+    }
+  }
+}

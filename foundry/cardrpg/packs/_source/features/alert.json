@@ -1,0 +1,9 @@
+{
+  "_id": "vAepJ4D6dEQs6oLX",
+  "_key": "!items!vAepJ4D6dEQs6oLX",
+  "name": "Alert",
+  "type": "feature",
+  "system": {
+    "text": "You draw with advantage on initiative."
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "_id": "gzRaSVHaLWCXJnzG",
+  "_key": "!items!gzRaSVHaLWCXJnzG",
+  "name": "Mole Pick",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "hands": 1,
+    "tags": [
+      "melee",
+      "natural"
+    ],
+    "weight": 2,
+    "value": 0,
+    "npcGear": true,
+    "verbs": {
+      "strike": {
+        "value": 4,
+        "ignores": 1
+      }
+    }
+  }
+}

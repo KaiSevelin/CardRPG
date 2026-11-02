@@ -1,0 +1,51 @@
+{
+  "_id": "ZCslvOuyO458dTWj",
+  "_key": "!actors!ZCslvOuyO458dTWj",
+  "name": "Burrower Brood Mother",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 30,
+      "base": 30
+    },
+    "kind": "burrower-mother",
+    "armorBase": 3,
+    "speed": 3,
+    "capabilities": [
+      "burrow",
+      "summon"
+    ],
+    "tactics": [],
+    "targetPriority": "nearest"
+  },
+  "items": [
+    {
+      "_id": "ENpRBCR1r9JB8oAQ",
+      "_key": "!actors.items!ZCslvOuyO458dTWj.ENpRBCR1r9JB8oAQ",
+      "name": "Mandibles",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 3
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Burrower Brood Mother"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "_id": "r1eUIjkO6jC5qhDY",
+  "_key": "!items!r1eUIjkO6jC5qhDY",
+  "name": "The Body Made Clean",
+  "type": "spell",
+  "system": {
+    "strength": 5,
+    "source": "The Eternal God",
+    "description": "<p>Everybody whole, and nothing on anybody. You will play the rest of the day out of six cards, which is the god's point: the body is clean and the hand is empty.</p>",
+    "effect": {
+      "text": "every ally is healed to full and every condition is Lifted and Shaken off. Your action deck is 6 cards for the rest of the day"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

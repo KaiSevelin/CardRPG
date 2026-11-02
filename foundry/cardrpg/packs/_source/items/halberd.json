@@ -1,0 +1,24 @@
+{
+  "_id": "8rBpGbqcXvdNTaGo",
+  "_key": "!items!8rBpGbqcXvdNTaGo",
+  "name": "Halberd",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "hands": 2,
+    "tags": [
+      "heavy",
+      "melee"
+    ],
+    "weight": 3,
+    "value": 35,
+    "blurb": "Axe, spike and hook on a six-foot shaft. Reaches over the man in front of you.",
+    "verbs": {
+      "strike": {
+        "value": 4,
+        "reach": 2,
+        "text": "reach 2"
+      }
+    }
+  }
+}

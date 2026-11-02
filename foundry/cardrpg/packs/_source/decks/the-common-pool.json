@@ -1,0 +1,188 @@
+{
+  "_id": "YVYpVkRry9xB4xNb",
+  "_key": "!cards!YVYpVkRry9xB4xNb",
+  "name": "The Common Pool",
+  "type": "deck",
+  "cards": [
+    {
+      "_id": "gPbLOFpCgNu3SFZB",
+      "_key": "!cards.cards!YVYpVkRry9xB4xNb.gPbLOFpCgNu3SFZB",
+      "sort": 100,
+      "name": "Off-Hand Blow",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Off-Hand Blow"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "strike"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "strike",
+            "mod": -1
+          }
+        ],
+        "reaction": "",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "vZAH1xlyg9EfMT6R",
+      "_key": "!cards.cards!YVYpVkRry9xB4xNb.vZAH1xlyg9EfMT6R",
+      "sort": 200,
+      "name": "Measure",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Measure"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "strike",
+            "mod": 1
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "parry",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "GAVkHh34qd5Dcfxo",
+      "_key": "!cards.cards!YVYpVkRry9xB4xNb.GAVkHh34qd5Dcfxo",
+      "sort": 300,
+      "name": "Hold the Line",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Hold the Line"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "defend"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "strike",
+            "mod": -1
+          }
+        ],
+        "reaction": "parry",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "H48WvYH7128hHQti",
+      "_key": "!cards.cards!YVYpVkRry9xB4xNb.H48WvYH7128hHQti",
+      "sort": 400,
+      "name": "Press",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Press"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "strike"
+          },
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 2
+          }
+        ],
+        "reaction": "sidestep",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "MeGMXYZqLwudmD5X",
+      "_key": "!cards.cards!YVYpVkRry9xB4xNb.MeGMXYZqLwudmD5X",
+      "sort": 500,
+      "name": "Both Hands",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Both Hands"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "ready"
+          },
+          {
+            "verb": "strike"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "ready"
+          }
+        ],
+        "reaction": "use",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "Xc30nu5H6y2IWMbc",
+      "_key": "!cards.cards!YVYpVkRry9xB4xNb.Xc30nu5H6y2IWMbc",
+      "sort": 600,
+      "name": "Dig In",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Dig In"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "heal",
+            "param": 2
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {
+          "primary": {
+            "spent": true
+          }
+        }
+      }
+    }
+  ]
+}

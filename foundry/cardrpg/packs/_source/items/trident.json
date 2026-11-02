@@ -1,0 +1,26 @@
+{
+  "_id": "JfJ4Fuc3X5KxR0BU",
+  "_key": "!items!JfJ4Fuc3X5KxR0BU",
+  "name": "Trident",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "fits": [
+      "back"
+    ],
+    "hands": 1,
+    "tags": [
+      "melee"
+    ],
+    "weight": 2,
+    "value": 18,
+    "blurb": "Arena work. The crowd likes the shape of it.",
+    "verbs": {
+      "strike": {
+        "value": 3,
+        "reach": 2,
+        "text": "reach 2"
+      }
+    }
+  }
+}

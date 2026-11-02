@@ -1,0 +1,17 @@
+{
+  "_id": "6dHuwcnfZSG28mG2",
+  "_key": "!items!6dHuwcnfZSG28mG2",
+  "name": "Step Through",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "Shadow Magic",
+    "wilds": 1,
+    "description": "<p>You are in the shadow, and then you are in another one. Every reach into the dark leaves something of the dark in you: a <strong>Wild</strong> card joins your fate deck, and it does not leave until you have slept.</p>",
+    "effect": {
+      "text": "teleport to any shadowed square you can see"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

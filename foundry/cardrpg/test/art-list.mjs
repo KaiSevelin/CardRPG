@@ -313,10 +313,6 @@ push(
   + "are in the content as a name and a list of capabilities, with no numbers and no actor — so "
   + "there is nothing yet for a picture to be of. They arrive in the brief when they arrive in the "
   + "game.",
-  `- **The goblin's old authored deck.** ${content.GOBLIN_DECK.length} cards that predate the `
-  + "common pool, and "
-  + `${content.GOBLIN_DECK.filter(c => !content.INTENTS.some(i => i.name === c.name)).length} `
-  + "of them are drawn by no creature in the world. Nothing in the brief asks for them.",
   ""
 );
 

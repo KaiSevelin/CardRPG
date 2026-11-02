@@ -1,0 +1,17 @@
+{
+  "_id": "xWR9421MTTE3uFUV",
+  "_key": "!items!xWR9421MTTE3uFUV",
+  "name": "Boots of the Longer Step",
+  "type": "item",
+  "system": {
+    "slot": "feet",
+    "weight": 1,
+    "value": 0,
+    "identified": false,
+    "unidentifiedName": "good boots, barely worn",
+    "blurb": "They were barely worn because their owner could not stop.",
+    "curse": "You may never end your turn in the square you began it in. Lifted by walking a pilgrimage barefoot.",
+    "group": "wonder",
+    "text": "Your Move values are +2."
+  }
+}

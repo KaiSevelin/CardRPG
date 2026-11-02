@@ -1,0 +1,16 @@
+{
+  "_id": "7OEETzj2qfH5VQb4",
+  "_key": "!items!7OEETzj2qfH5VQb4",
+  "name": "The Reading",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "Divination",
+    "description": "<p>Three cards down somebody else's luck. Never your own &mdash; a diviner who could stack their own deck would be a damage school wearing a robe.</p>",
+    "effect": {
+      "text": "Read 3 on any one fate deck except your own"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

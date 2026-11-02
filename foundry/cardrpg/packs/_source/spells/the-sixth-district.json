@@ -1,0 +1,16 @@
+{
+  "_id": "6I3b0zLyi4x8tQSZ",
+  "_key": "!items!6I3b0zLyi4x8tQSZ",
+  "name": "The Sixth District",
+  "type": "spell",
+  "system": {
+    "strength": 5,
+    "source": "Vax",
+    "description": "<p>Your armour is theirs, your Block is theirs, and everything aimed at them arrives in you. It will cost enough, which is how Vax prices war plainly.</p>",
+    "effect": {
+      "text": "until the fight ends every adjacent ally shares your armor and Block, and damage dealt to them is dealt to you instead"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

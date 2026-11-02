@@ -1,0 +1,21 @@
+{
+  "_id": "vkK1vxek65ebEokE",
+  "_key": "!items!vkK1vxek65ebEokE",
+  "name": "Hollow Bolt",
+  "type": "item",
+  "system": {
+    "slot": "belt",
+    "tags": [
+      "consumable"
+    ],
+    "weight": 0,
+    "value": 30,
+    "consumed": true,
+    "ammoFor": [
+      "crossbow"
+    ],
+    "shotEffect": "carriesPotion",
+    "blurb": "The shaft unscrews. A fiddly, brilliant, disreputable idea.",
+    "text": "Crossbow. Carries one potion; whatever you hit drinks it."
+  }
+}

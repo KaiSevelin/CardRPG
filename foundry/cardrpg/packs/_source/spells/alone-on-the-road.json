@@ -1,0 +1,18 @@
+{
+  "_id": "YIlUaLPi9XxYHvMs",
+  "_key": "!items!YIlUaLPi9XxYHvMs",
+  "name": "Alone on the Road",
+  "type": "spell",
+  "system": {
+    "strength": 1,
+    "source": "Vulpet",
+    "description": "<p>While no ally is within 2 squares, heal 2 at the start of your turn. The only healing a priest of hers can ever receive.</p>",
+    "effect": {
+      "verb": "heal",
+      "param": 2,
+      "text": "while no ally is within 2, at the start of your turn"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

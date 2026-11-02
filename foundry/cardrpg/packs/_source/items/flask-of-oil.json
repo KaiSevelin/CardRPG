@@ -1,0 +1,28 @@
+{
+  "_id": "r2QRirAVftnedCFD",
+  "_key": "!items!r2QRirAVftnedCFD",
+  "name": "Flask of Oil",
+  "type": "item",
+  "system": {
+    "slot": "belt",
+    "fits": [
+      "hands"
+    ],
+    "hands": 1,
+    "tags": [
+      "consumable",
+      "thrown"
+    ],
+    "weight": 0,
+    "value": 10,
+    "consumed": true,
+    "blurb": "Lamp oil, thrown low.",
+    "verbs": {
+      "use": {
+        "value": 0,
+        "range": 3,
+        "text": "Off-Balance (1), no save"
+      }
+    }
+  }
+}

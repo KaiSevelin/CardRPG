@@ -1,0 +1,16 @@
+{
+  "_id": "R0Sndgj2PoOK2hM7",
+  "_key": "!items!R0Sndgj2PoOK2hM7",
+  "name": "The Mask of the Captain",
+  "type": "spell",
+  "system": {
+    "strength": 4,
+    "source": "Fagar",
+    "description": "<p>For one round it is yours: you play its turn, with its cards, against its own side. The trick works once and everybody remembers your face afterwards.</p>",
+    "effect": {
+      "text": "one enemy obeys you for a round -- you play its turn"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

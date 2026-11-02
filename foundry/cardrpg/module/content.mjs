@@ -116,49 +116,39 @@ export const WARRIOR_DECK = [
   }
 ];
 
+
+
 /* -------------------------------------------- */
-/*  Goblin deck                                 */
+/*  Minor gods                                  */
 /* -------------------------------------------- */
 
 /**
- * Six cards, each a full turn. One is drawn per NPC *type* per round, face down, and every goblin
- * acts on it at its own place in the initiative order (core-rules 3, Intent).
+ * **The eight minor gods the world names**, which is what a conjuration may call by name.
  *
- * Note that Cower is a tactical retreat, not a rout: a Cower goblin comes back. Conflating the two
- * was a real bug in the simulator for several runs.
+ * Firma.md is unusually specific about these and the specificity is the point: *unlike the other
+ * gods, the minor gods demonstrably exist* -- a hundred or so nature spirits and beings forced into
+ * isolated places and underground by Athor's conquest. They *grant no miracles, but they are the
+ * basis of the Spiritualism school*, so a spell that calls one is not a prayer. It is a
+ * negotiation with somebody who is actually there.
+ *
+ * Eight of a hundred or so, which is what the document gives. The rest are absent for the same
+ * reason the twelve demons are: a name with no description is nothing a card can be written from,
+ * and `name: ""` on a conjuration already means *the GM decides*.
+ *
+ * Fahlas appears twice in the world and deliberately so: he is the necromancer king of Saag et
+ * Haar who *has lived 400 years and become a minor god*, which makes him the one entry here that
+ * a party might also meet as a ruler.
  */
-export const GOBLIN_DECK = [
-  {
-    name: "Stab & Scurry",
-    sequence: [{ verb: "strike" }, { verb: "move", param: 2 }]
-  },
-  {
-    name: "Rush",
-    sequence: [{ verb: "move", param: 3 }, { verb: "strike" }]
-  },
-  {
-    name: "Swarm",
-    sequence: [
-      { verb: "move", param: 2 },
-      { verb: "strike", mod: 1, text: "if another goblin is next to the target" }
-    ]
-  },
-  {
-    name: "Cower",
-    sequence: [{ verb: "move", param: 3, text: "away from the nearest enemy" }]
-  },
-  {
-    // The condition rides on the Strike, so it lands when the Strike does -- no save, no second
-    // fate draw (core-rules 7).
-    name: "Dirty Trick",
-    sequence: [{ verb: "strike", condition: "dazed", duration: 1 }]
-  },
-  {
-    name: "Throw Rock",
-    sequence: [{ verb: "strike", range: 4, text: "1 damage, ignores the item" }]
-  }
+export const MINOR_GODS = [
+  { name: "The Winter Lady", note: "the Silent are her cult" },
+  { name: "Queen of the Dark", note: "" },
+  { name: "The Troll King", note: "essentially all trolls follow him" },
+  { name: "Baal Fagor", note: "the Soot Club try to summon him" },
+  { name: "The Land Jelly", note: "the Dancers use drugs to speak with it" },
+  { name: "The Cat God", note: "" },
+  { name: "Fahlas", note: "the necromancer king of Saag et Haar, 400 years old" },
+  { name: "Mother Longhand", note: "" }
 ];
-
 
 /* -------------------------------------------- */
 /*  Slates                                      */
@@ -2713,8 +2703,10 @@ export const SHADE_SIGNATURES = [
      * never put down IS the Burglar's price (Preparation / weight) expressed as a thing you carry,
      * which is why it reads as an item and not as a sentence.
      */
+    /* No price: a Signature is granted, not bought -- and `cost` is a SPELL's field anyway, which
+     * is why this one was dropped on the way into the document rather than stored as zero. */
     name: "The Kit", kind: "item", node: "shade.burglar", needs: [],
-    slot: "pack", weight: 3, cost: 0,
+    slot: "pack", weight: 3,
     text: "You may never put it down. Every Hard physical obstacle becomes Normal."
   },
   {
@@ -3058,14 +3050,33 @@ export const MIND_POOL = [
     needs: [],
     reaction: "bargain",
     description: "<p>It was going to fail. Something intervened, once, because it owes you.</p>",
-    effect: { text: "reaction: an ally's failed check becomes a Partial. Once per pact per fight" }
+    effect: { timing: "reaction", text: "an ally's failed check becomes a Partial. Once per pact per fight" }
   },
   {
     name: "The Nine Names", strength: 1, pool: "mind", source: "Spiritualism",
     needs: [],
     description: "<p>Out of combat. A minor god names who in this place it is angry with, and will "
       + "not say why.</p>",
-    effect: { text: "out of combat: a minor god names who here it is angry with" }
+    effect: { timing: "outOfCombat", text: "a minor god names who here it is angry with" }
+  },
+  /**
+   * **[PLACEHOLDER]** One spell so `shape` is written by content as well as read by the engine --
+   * a field nothing writes is the same defect as a field nothing reads.
+   *
+   * The Doomfly is named because it is in the roster and it flies, which is the clearest thing a
+   * borrowed shape can be worth. Spiritualism is the school because the minor gods *are* a hundred
+   * or so nature spirits (Firma.md) and this is asking one for the loan of its body. Replace the
+   * creature, the strength and the name freely: what the increment settles is the mechanism.
+   */
+  {
+    name: "The Borrowed Body", strength: 3, pool: "mind", source: "Spiritualism",
+    needs: [],
+    description: "<p>A spirit lends you its shape. Your deck, your Health and whatever is wrong "
+      + "with you come along &mdash; a body is what you fight with, not who you are.</p>",
+    effect: {
+      verb: "shape", duration: 2,
+      shape: { creature: "Doomfly" }
+    }
   },
   {
     name: "The Gathered Pact", strength: 4, pool: "mind", source: "Spiritualism",
@@ -3115,7 +3126,7 @@ export const MIND_POOL = [
       "a bonus against one enemy type, named before the fight"],
     description: "<p>You read about them the night before. It is not insight; it is homework, and "
       + "it only works on the thing you did it for.</p>",
-    effect: { text: "before a fight, name one enemy type: your Casts against it are +2 all fight" }
+    effect: { timing: "beforeFight", text: "name one enemy type: your Casts against it are +2 all fight" }
   },
   {
     /*
@@ -3127,7 +3138,7 @@ export const MIND_POOL = [
     needs: ["a spell that taints its caster"],
     description: "<p>It answers three questions truthfully, as far as it knew &mdash; which is "
       + "usually less than you hoped and occasionally much more.</p>",
-    effect: { text: "out of combat: a corpse answers three questions, as truthfully as it knew" }
+    effect: { timing: "outOfCombat", text: "a corpse answers three questions, as truthfully as it knew" }
   },
   {
     name: "The Risen Rank", strength: 4, pool: "mind", source: "Necromancy",
@@ -3135,8 +3146,10 @@ export const MIND_POOL = [
     description: "<p>Every body within three squares, up at once, for one round. Then they are "
       + "bodies again, and the ground is worse than it was.</p>",
     effect: {
-      range: 3,
-      text: "every corpse within 3 rises and fights for you for one round, then falls"
+      verb: "conjure", range: 3, duration: 1,
+      /* `count: 0` is every corpse in range, which is the difference between this and Call the
+       * Unquiet -- that and the one round, which is what the rank costs for being a rank. */
+      conjure: { from: "corpse", count: 0, side: "ally" }
     }
   },
   {
@@ -3151,8 +3164,10 @@ export const MIND_POOL = [
     description: "<p>They stand up at one Health, and they are themselves, and they know. When "
       + "the fight ends they are dead again, and you are a little less alive for it.</p>",
     effect: {
-      text: "a dead ally stands at 1 Health until the fight ends. One bound Taint per round "
-        + "they stood"
+      verb: "conjure",
+      conjure: { from: "corpse", count: 1, side: "ally", upkeep: { taint: 1 } },
+      /* The one thing no field carries: it is an ALLY's body, and they come back at 1. */
+      text: "a dead ally, and they stand at 1 Health"
     }
   },
 
@@ -3386,7 +3401,7 @@ export const MIND_POOL = [
     description: "<p>Out of combat: you and your whole party are other people for a day. Only "
       + "magic sees through it, and most places have none.</p>",
     effect: {
-      text: "out of combat: you and your whole party appear to be other people for a day"
+      timing: "outOfCombat", text: "you and your whole party appear to be other people for a day"
     }
   },
 
@@ -3406,21 +3421,21 @@ export const MIND_POOL = [
     needs: ["a permanent formula that is never prepared and carries a bonus"],
     description: "<p>An eye on the back of your neck that is not decorative. You are never "
       + "surprised again, and you never sleep quite as well.</p>",
-    effect: { text: "permanent: you are never surprised" }
+    effect: { timing: "permanent", text: "you are never surprised" }
   },
   {
     name: "Graven Shield", strength: 2, pool: "mind", source: "Tattoo Magic",
     needs: ["a permanent formula that is never prepared and carries a bonus"],
     description: "<p>A shield you cannot put down, drawn across your back by somebody who knew "
       + "what they were doing.</p>",
-    effect: { text: "permanent: +1 armor" }
+    effect: { timing: "permanent", text: "+1 armor" }
   },
   {
     name: "Graven Road", strength: 1, pool: "mind", source: "Tattoo Magic",
     needs: ["a permanent formula that is never prepared and carries a bonus"],
     description: "<p>A road down the inside of both legs. Slowed, Burdened and Overloaded all "
       + "still land on you; none of them slows you down.</p>",
-    effect: { text: "permanent: your Move is never halved" }
+    effect: { timing: "permanent", text: "your Move is never halved" }
   },
   {
     /*
@@ -3433,14 +3448,14 @@ export const MIND_POOL = [
       "Burdened that no amount of dropping weight lifts"],
     description: "<p>Plate, in ink, over everything. It weighs nothing and you are never again "
       + "anything but weighed down.</p>",
-    effect: { text: "permanent: +3 armor, and you count as Burdened always, whatever you carry" }
+    effect: { timing: "permanent", text: "+3 armor, and you count as Burdened always, whatever you carry" }
   },
   {
     name: "Graven Heart", strength: 3, pool: "mind", source: "Tattoo Magic",
     needs: ["a permanent formula that is never prepared and carries a bonus"],
     description: "<p>A second heart, drawn over the first. The GM writes down a secret worth six "
       + "Health, and you will find out which one when it matters.</p>",
-    effect: { text: "permanent: +6 max Health" }
+    effect: { timing: "permanent", text: "+6 max Health" }
   },
   {
     /*
@@ -3455,7 +3470,7 @@ export const MIND_POOL = [
     description: "<p>There is no skin left to write on. It is the last thing you ever learn, and "
       + "afterwards you are something else wearing a mage's name.</p>",
     effect: {
-      text: "permanent: +2 Strike, +2 armor, +4 Health, and Burning never lands. You may never "
+      timing: "permanent", text: "+2 Strike, +2 armor, +4 Health, and Burning never lands. You may never "
         + "prepare another spell"
     }
   },
@@ -3521,7 +3536,7 @@ export const MIND_POOL = [
       "a bare Strike that counts as a weapon"],
     description: "<p>It costs a hand. What is left strikes like a Heavy weapon, for ever, and you "
       + "will never hold a shield again.</p>",
-    effect: { text: "permanent, and it costs a hand: your bare Strike is a Heavy weapon at Strike 4" }
+    effect: { timing: "permanent", text: "and it costs a hand: your bare Strike is a Heavy weapon at Strike 4" }
   },
   {
     /*
@@ -3536,7 +3551,7 @@ export const MIND_POOL = [
     description: "<p>Four cards, all of them in your hand, every turn. You have given away a hand "
       + "and most of a deck, and what is left is a man who always has exactly the right card.</p>",
     effect: {
-      text: "permanent: your action deck becomes 4 cards, you hold all four, and may play any two "
+      timing: "permanent", text: "your action deck becomes 4 cards, you hold all four, and may play any two "
         + "halves. Costs a hand"
     }
   },
@@ -3637,7 +3652,8 @@ export const MIND_POOL = [
       + "and afterwards it takes something the GM chooses &mdash; which is the only honest way to "
       + "price a favour that large.</p>",
     effect: {
-      text: "a minor god becomes present and fights as an ally for the rest of the fight"
+      verb: "conjure",
+      conjure: { from: "god", count: 1, side: "ally" }
     }
   },
 
@@ -3657,7 +3673,7 @@ export const MIND_POOL = [
     description: "<p>Food never spoils and water is always safe. A day's rations for the party, "
       + "every day, for ever &mdash; which quietly deletes a whole column of the equipment "
       + "list.</p>",
-    effect: { text: "ritual: a day's rations for the party, every day" }
+    effect: { timing: "ritual", text: "a day's rations for the party, every day" }
   },
   {
     /*
@@ -3670,14 +3686,14 @@ export const MIND_POOL = [
       "repairing an item, which Corrode has no inverse for"],
     description: "<p>One item, overnight, including corroded armour &mdash; which until now was "
       + "the only damage in the game nothing undid.</p>",
-    effect: { text: "ritual: repair one item overnight, including corroded armour" }
+    effect: { timing: "ritual", text: "repair one item overnight, including corroded armour" }
   },
   {
     name: "The Unlatched Door", strength: 2, pool: "mind", source: "Household Magic",
     needs: ["a ritual, which costs no slots at all"],
     description: "<p>Any door or lock that was ever opened by somebody who lived there opens for "
       + "you. Most doors were, which is the joke and also the spell.</p>",
-    effect: { text: "ritual: a door ever opened by one who lived there opens for you" }
+    effect: { timing: "ritual", text: "a door ever opened by one who lived there opens for you" }
   },
   {
     name: "The House That Was", strength: 4, pool: "mind", source: "Household Magic",
@@ -3685,7 +3701,7 @@ export const MIND_POOL = [
       "a rest that counts as a night in a town"],
     description: "<p>Overnight a ruin is a house again: warm, defensible, and worth sleeping in. "
       + "The party rests as though they had reached somewhere.</p>",
-    effect: { text: "ritual: overnight a ruin becomes a house, and the party rests as in a town" }
+    effect: { timing: "ritual", text: "overnight a ruin becomes a house, and the party rests as in a town" }
   },
   {
     name: "The Long Table", strength: 3, pool: "mind", source: "Household Magic",
@@ -3694,7 +3710,7 @@ export const MIND_POOL = [
     description: "<p>One meal, taken together, and nobody is carrying anything from before it. "
       + "Once a day, and the elf-kin keep the tally &mdash; which is this school's price doing "
       + "exactly what a price should.</p>",
-    effect: { text: "ritual: the party sheds every Wound and all rest tokens return. Once a day" }
+    effect: { timing: "ritual", text: "the party sheds every Wound and all rest tokens return. Once a day" }
   },
   {
     name: "The Door Home", strength: 5, pool: "mind", source: "Household Magic",
@@ -3702,7 +3718,7 @@ export const MIND_POOL = [
     description: "<p>A door you have opened before becomes a door to any other door you have "
       + "opened before. It is the school's thesis: a householder is never far from anywhere "
       + "they have been.</p>",
-    effect: { text: "ritual: a door you have opened leads to any other you have opened. Once a day" }
+    effect: { timing: "ritual", text: "a door you have opened leads to any other you have opened. Once a day" }
   },
 
   /*
@@ -3722,7 +3738,7 @@ export const MIND_POOL = [
     needs: ["an ally's Block counted double for one attack"],
     description: "<p>You do not stop the blow; you make their shield worth twice what it was for "
       + "exactly as long as it takes.</p>",
-    effect: { range: 3, text: "reaction: one ally's Block counts double against this attack" }
+    effect: { range: 3, timing: "reaction", text: "one ally's Block counts double against this attack" }
   },
   {
     name: "The Shut Mouth", strength: 2, pool: "mind", source: "Ward Magic",
@@ -3766,7 +3782,7 @@ export const MIND_POOL = [
     needs: ["a Cast that resolves against its own caster"],
     description: "<p>Not stopped. Returned, in full, to the man who sent it &mdash; which is "
       + "worse for him than for you and is the whole reason to prepare this instead of Unmake.</p>",
-    effect: { text: "reaction, Spent: a Cast aimed at you resolves against its own caster" }
+    effect: { timing: "reaction", text: "Spent: a Cast aimed at you resolves against its own caster" }
   },
   {
     /*
@@ -3810,7 +3826,7 @@ export const MIND_POOL = [
       + "writes a prophecy you do not get to read. The price is the better half of the "
       + "formula.</p>",
     effect: {
-      text: "out of combat: one true answer about the next scene, and the GM writes a prophecy"
+      timing: "outOfCombat", text: "one true answer about the next scene, and the GM writes a prophecy"
     }
   },
   {
@@ -3834,7 +3850,7 @@ export const MIND_POOL = [
       + "for it, and a diviner who uses this twice in a week is in a story they no longer "
       + "steer.</p>",
     effect: {
-      text: "before the fight: the GM shows the enemy's intent cards for the whole fight, in order"
+      timing: "beforeFight", text: "the GM shows the enemy's intent cards for the whole fight, in order"
     }
   },
 ];
@@ -3874,7 +3890,10 @@ export const MIND_SIGNATURES = [
     source: "Necromancy",
     needs: ["a figure a spell puts on the map"],
     description: "<p>It does not know it died. It will stop when the fight does.</p>",
-    effect: { range: 2, text: "a corpse within 2 rises and fights for you until the fight ends" }
+    effect: {
+      verb: "conjure", range: 2,
+      conjure: { from: "corpse", count: 1, side: "ally" }
+    }
   },
   {
     /*
@@ -3925,7 +3944,7 @@ export const MIND_SIGNATURES = [
     source: "Tattoo Magic",
     needs: ["a permanent formula that is never prepared and carries a bonus"],
     description: "<p>It is on your arm. It does not need remembering, and it never comes off.</p>",
-    effect: { text: "permanent: +2 Strike with Heavy items" }
+    effect: { timing: "permanent", text: "+2 Strike with Heavy items" }
   },
   {
     name: "Nothing Left to Take", kind: "spell", node: "mind.asceticism", strength: 1,
@@ -3941,7 +3960,13 @@ export const MIND_SIGNATURES = [
     needs: [],
     description: "<p>A minor god acts, once. <strong>The GM decides how</strong>, and that is not "
       + "a hole in the spell &mdash; it is the spell.</p>",
-    effect: { text: "a minor god acts once this fight; the GM decides how" }
+    effect: {
+      verb: "conjure",
+      /* No name and no side: a minor god is a person with its own opinions, and a spell that told
+       * one whom to fight would have misunderstood the arrangement. */
+      conjure: { from: "god", count: 1, side: "neutral" },
+      text: "it acts once; the GM decides how"
+    }
   },
   {
     /*
@@ -3954,7 +3979,7 @@ export const MIND_SIGNATURES = [
     needs: ["a ritual, which costs no slots at all"],
     description: "<p>Out of combat: a camp nobody unfriendly can find, for one night. A ritual, so "
       + "anyone literate could do it &mdash; but somebody has to know the words.</p>",
-    effect: { text: "ritual: a camp nobody unfriendly can find, for one night" }
+    effect: { timing: "ritual", text: "a camp nobody unfriendly can find, for one night" }
   },
   {
     /*
@@ -4065,7 +4090,7 @@ export const FAITH_SIGNATURES = [
     reaction: "mend",
     description: "<p>Reaction: heal an ally 3, at any range, ignoring cover. The spirit drifts "
       + "through all the air, so distance is not a question for it.</p>",
-    effect: { verb: "heal", param: 3, text: "reaction, any range, ignoring cover" }
+    effect: { verb: "heal", param: 3, timing: "reaction", text: "any range, ignoring cover" }
   },
   {
     name: "The Tide Knows", kind: "spell", node: "faith.sessyfyn", strength: 2, source: "Sessyfyn",
@@ -4115,7 +4140,7 @@ export const FAITH_SIGNATURES = [
     needs: ["a reaction that stops an action"],
     description: "<p>Reaction, adjacent only: an enemy's action does not happen. Close enough to "
       + "touch, which is where the knife is.</p>",
-    effect: { range: 1, text: "reaction: an adjacent enemy's action does not happen" }
+    effect: { range: 1, timing: "reaction", text: "an adjacent enemy's action does not happen" }
   },
   {
     name: "The First Taste", kind: "spell", node: "faith.purple", strength: 2,
@@ -4412,7 +4437,7 @@ export const FAITH_POOL = [
     needs: ["a condition moved from one figure to another"],
     description: "<p>Whatever is on them is on you instead, at its full duration. The Spirit's "
       + "priests are the only ones who can do this and the only ones who would.</p>",
-    effect: { range: 3, text: "reaction: move one condition off an ally and onto yourself" }
+    effect: { range: 3, timing: "reaction", text: "move one condition off an ally and onto yourself" }
   },
   {
     /*
@@ -4461,7 +4486,7 @@ export const FAITH_POOL = [
       + "Miss joins your own deck for having asked.</p>",
     effect: {
       range: 3, condition: "cursed",
-      text: "reaction: an ally redraws a fate card and keeps the second. The Cursed is yours"
+      timing: "reaction", text: "an ally redraws a fate card and keeps the second. The Cursed is yours"
     }
   },
   {
@@ -4642,7 +4667,7 @@ export const FAITH_POOL = [
     needs: ["an enemy that attacks its own side"],
     description: "<p>You move his arm. The man behind him takes it, and neither of them "
       + "understands what happened.</p>",
-    effect: { text: "reaction, adjacent: an enemy's Strike hits the nearest other enemy instead" }
+    effect: { timing: "reaction", text: "adjacent: an enemy's Strike hits the nearest other enemy instead" }
   },
   {
     name: "The Grey Hour", strength: 4, pool: "faith", source: "The Grey",
@@ -4650,7 +4675,7 @@ export const FAITH_POOL = [
       "a trigger at the start of an enemy's turn"],
     description: "<p>Its whole turn does not happen. Not interrupted &mdash; it simply never "
       + "took place, and the round moves on without it.</p>",
-    effect: { text: "reaction, adjacent: an adjacent enemy's whole turn does not happen" }
+    effect: { timing: "reaction", text: "adjacent: an adjacent enemy's whole turn does not happen" }
   },
   {
     /*

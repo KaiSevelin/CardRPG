@@ -1,0 +1,56 @@
+{
+  "_id": "3DCR02y4L7E7a5Ns",
+  "_key": "!actors!3DCR02y4L7E7a5Ns",
+  "name": "Goblin",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 5,
+      "base": 5
+    },
+    "kind": "goblin",
+    "armorBase": 0,
+    "speed": 3,
+    "capabilities": [
+      "legs",
+      "pack"
+    ],
+    "tactics": [
+      "packTactics",
+      "cowardly"
+    ],
+    "targetPriority": "weakest"
+  },
+  "items": [
+    {
+      "_id": "PqmRQ1ZIxxV9Mmnp",
+      "_key": "!actors.items!3DCR02y4L7E7a5Ns.PqmRQ1ZIxxV9Mmnp",
+      "name": "Goblin Spear",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "fits": [
+          "back"
+        ],
+        "hands": 1,
+        "tags": [
+          "melee"
+        ],
+        "weight": 2,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Weapon",
+        "verbs": {
+          "strike": {
+            "value": 3
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Goblin"
+  }
+}

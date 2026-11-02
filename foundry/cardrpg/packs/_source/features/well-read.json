@@ -1,0 +1,14 @@
+{
+  "_id": "2SVphmODTcN9E63w",
+  "_key": "!items!2SVphmODTcN9E63w",
+  "name": "Well Read",
+  "type": "feature",
+  "system": {
+    "group": "training",
+    "bonus": {
+      "approach": "lore",
+      "value": 1
+    },
+    "text": "+1 on Lore checks. Somebody has written this down, and you have read them."
+  }
+}

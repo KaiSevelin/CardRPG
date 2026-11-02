@@ -1,0 +1,26 @@
+{
+  "_id": "D4ZjfE1b3cXaZOXO",
+  "_key": "!items!D4ZjfE1b3cXaZOXO",
+  "name": "Potion of Stone",
+  "type": "item",
+  "system": {
+    "slot": "belt",
+    "fits": [
+      "hands"
+    ],
+    "hands": 1,
+    "tags": [
+      "consumable"
+    ],
+    "weight": 0,
+    "value": 40,
+    "consumed": true,
+    "blurb": "Grit in the bottom of the flask, and it settles in you the same way.",
+    "verbs": {
+      "use": {
+        "value": 0,
+        "text": "for the fight you cannot be moved -- and your Move is 0"
+      }
+    }
+  }
+}

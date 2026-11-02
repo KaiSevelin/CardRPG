@@ -1,0 +1,18 @@
+{
+  "_id": "y4X3PhONaOVe5ete",
+  "_key": "!items!y4X3PhONaOVe5ete",
+  "name": "Hooked Gauntlet",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "hands": 1,
+    "weight": 2,
+    "value": 600,
+    "blurb": "Three hooks along the knuckle, set the wrong way round.",
+    "group": "wonder",
+    "active": {
+      "text": "An adjacent enemy is Disarmed (1), resist Might 5.",
+      "boundary": "combat"
+    }
+  }
+}

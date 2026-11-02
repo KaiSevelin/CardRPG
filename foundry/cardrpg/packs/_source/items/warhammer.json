@@ -1,0 +1,27 @@
+{
+  "_id": "GcoI4kFZzjqNSKPt",
+  "_key": "!items!GcoI4kFZzjqNSKPt",
+  "name": "Warhammer",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "fits": [
+      "back"
+    ],
+    "hands": 1,
+    "tags": [
+      "heavy",
+      "melee"
+    ],
+    "weight": 3,
+    "value": 25,
+    "blurb": "A beak on one side for the plate and a hammer on the other for the man in it.",
+    "verbs": {
+      "strike": {
+        "value": 4,
+        "ignores": 1,
+        "text": "ignores 1 armor"
+      }
+    }
+  }
+}

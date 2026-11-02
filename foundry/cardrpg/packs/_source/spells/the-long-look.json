@@ -1,0 +1,17 @@
+{
+  "_id": "ykSj9jncLKFicxuq",
+  "_key": "!items!ykSj9jncLKFicxuq",
+  "name": "The Long Look",
+  "type": "spell",
+  "system": {
+    "strength": 3,
+    "source": "Divination",
+    "description": "<p>One question about the next scene, answered truthfully &mdash; and the GM writes a prophecy you do not get to read. The price is the better half of the formula.</p>",
+    "effect": {
+      "timing": "outOfCombat",
+      "text": "one true answer about the next scene, and the GM writes a prophecy"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

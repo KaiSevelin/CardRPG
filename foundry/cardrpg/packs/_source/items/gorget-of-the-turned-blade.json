@@ -1,0 +1,17 @@
+{
+  "_id": "rVMl7Ex6qxEA7mUW",
+  "_key": "!items!rVMl7Ex6qxEA7mUW",
+  "name": "Gorget of the Turned Blade",
+  "type": "item",
+  "system": {
+    "slot": "neck",
+    "weight": 1,
+    "value": 450,
+    "blurb": "Three old cuts in it, none of them deep.",
+    "group": "wonder",
+    "active": {
+      "text": "Block 3 as a reaction.",
+      "boundary": "combat"
+    }
+  }
+}

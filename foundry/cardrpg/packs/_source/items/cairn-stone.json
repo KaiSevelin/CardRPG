@@ -1,0 +1,14 @@
+{
+  "_id": "fnQFn8RTwAgTp1OE",
+  "_key": "!items!fnQFn8RTwAgTp1OE",
+  "name": "Cairn Stone",
+  "type": "item",
+  "system": {
+    "slot": "pack",
+    "weight": 4,
+    "value": 450,
+    "blurb": "Set it down and the ground agrees to be taller.",
+    "group": "wonder",
+    "text": "Set it down: its square is high ground for the rest of the fight."
+  }
+}

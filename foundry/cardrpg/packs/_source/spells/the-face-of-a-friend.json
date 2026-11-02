@@ -1,0 +1,17 @@
+{
+  "_id": "SAjDiPETV4SpMBny",
+  "_key": "!items!SAjDiPETV4SpMBny",
+  "name": "The Face of a Friend",
+  "type": "spell",
+  "system": {
+    "strength": 3,
+    "source": "Glamour",
+    "description": "<p>It will not attack you. It will take a hit meant for you. It will do both until the moment you attack it, and then it will remember everything.</p>",
+    "effect": {
+      "range": 3,
+      "text": "one enemy treats you as an ally -- it will not attack you and will take a hit for you -- until you attack it"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

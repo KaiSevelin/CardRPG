@@ -1,0 +1,19 @@
+{
+  "_id": "MkAsCZMKd53HIdRY",
+  "_key": "!items!MkAsCZMKd53HIdRY",
+  "name": "Turn Aside",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "Ward Magic",
+    "reaction": "mend",
+    "description": "<p>You do not stop the blow; you make their shield worth twice what it was for exactly as long as it takes.</p>",
+    "effect": {
+      "range": 3,
+      "timing": "reaction",
+      "text": "one ally's Block counts double against this attack"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "_id": "cmwRKlhQGYqNVInD",
+  "_key": "!items!cmwRKlhQGYqNVInD",
+  "name": "Greatsword",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "hands": 2,
+    "tags": [
+      "heavy",
+      "melee"
+    ],
+    "weight": 3,
+    "value": 40,
+    "blurb": "Four feet of edge. Both hands, and nothing held back.",
+    "verbs": {
+      "strike": {
+        "value": 5
+      }
+    }
+  }
+}

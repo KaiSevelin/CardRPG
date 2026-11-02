@@ -1,0 +1,23 @@
+{
+  "_id": "lqpCOo7rgLd8ihH2",
+  "_key": "!items!lqpCOo7rgLd8ihH2",
+  "name": "Caltrops",
+  "type": "item",
+  "system": {
+    "slot": "pack",
+    "tags": [
+      "consumable"
+    ],
+    "weight": 2,
+    "value": 12,
+    "consumed": true,
+    "blurb": "A handful of iron, however it lands.",
+    "verbs": {
+      "use": {
+        "value": 0,
+        "area": 2,
+        "text": "the area is difficult ground for the fight"
+      }
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "_id": "Ljhq0CT81VDXWYQJ",
+  "_key": "!items!Ljhq0CT81VDXWYQJ",
+  "name": "Firepot",
+  "type": "item",
+  "system": {
+    "slot": "belt",
+    "fits": [
+      "hands"
+    ],
+    "hands": 1,
+    "tags": [
+      "consumable",
+      "thrown"
+    ],
+    "weight": 1,
+    "value": 45,
+    "consumed": true,
+    "blurb": "Pitch and naphtha in a clay shell. It keeps burning.",
+    "verbs": {
+      "use": {
+        "value": 0,
+        "range": 3,
+        "area": 1,
+        "areaKind": "blast",
+        "text": "Burning 1 (2)"
+      }
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "_id": "DguHKDSaMIh4JzGV",
+  "_key": "!items!DguHKDSaMIh4JzGV",
+  "name": "Matchlock Musket",
+  "type": "item",
+  "system": {
+    "ammo": "firearm",
+    "slot": "hands",
+    "hands": 2,
+    "tags": [
+      "heavy",
+      "ranged"
+    ],
+    "weight": 5,
+    "value": 150,
+    "blurb": "A rest to fire it from and a minute to load it. Worth both.",
+    "verbs": {
+      "strike": {
+        "value": 6,
+        "ignores": 2,
+        "range": 12,
+        "text": "ignores 2 armor; Ready to reload"
+      }
+    }
+  }
+}

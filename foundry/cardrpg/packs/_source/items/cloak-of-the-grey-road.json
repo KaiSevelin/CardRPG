@@ -1,0 +1,20 @@
+{
+  "_id": "yvdb9QgmII5QSEan",
+  "_key": "!items!yvdb9QgmII5QSEan",
+  "name": "Cloak of the Grey Road",
+  "type": "item",
+  "system": {
+    "slot": "cloak",
+    "weight": 1,
+    "value": 0,
+    "identified": false,
+    "unidentifiedName": "a grey travelling cloak",
+    "blurb": "The road is grey. So is everything you are now to your friends.",
+    "curse": "Allies may not target you with anything beneficial either. Lifted by a cure.",
+    "group": "wonder",
+    "active": {
+      "text": "Become Invisible (1).",
+      "boundary": "combat"
+    }
+  }
+}

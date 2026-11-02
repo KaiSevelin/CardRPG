@@ -1,0 +1,54 @@
+{
+  "_id": "VYAHDhVVYnrDC5Hw",
+  "_key": "!actors!VYAHDhVVYnrDC5Hw",
+  "name": "Skaah",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 40,
+      "base": 40
+    },
+    "kind": "skaah",
+    "armorBase": 2,
+    "speed": 4,
+    "capabilities": [
+      "flight",
+      "transport",
+      "shelter"
+    ],
+    "tactics": [
+      "bodyguard"
+    ],
+    "targetPriority": "nearest"
+  },
+  "items": [
+    {
+      "_id": "gdIDF8lrgSkHREeA",
+      "_key": "!actors.items!VYAHDhVVYnrDC5Hw.gdIDF8lrgSkHREeA",
+      "name": "Nip",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 1
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Skaah"
+  }
+}

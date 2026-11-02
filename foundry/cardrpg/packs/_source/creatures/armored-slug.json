@@ -1,0 +1,56 @@
+{
+  "_id": "EhyoIGPD9fzIUkME",
+  "_key": "!actors!EhyoIGPD9fzIUkME",
+  "name": "Armored Slug",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 16,
+      "base": 16
+    },
+    "kind": "armored-slug",
+    "armorBase": 4,
+    "speed": 1,
+    "capabilities": [
+      "legs",
+      "spray"
+    ],
+    "tactics": [
+      "sniper"
+    ],
+    "targetPriority": "nearest"
+  },
+  "items": [
+    {
+      "_id": "cuPXryqFvD6kqYyT",
+      "_key": "!actors.items!EhyoIGPD9fzIUkME.cuPXryqFvD6kqYyT",
+      "name": "Acid Spray",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "ranged",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 4,
+            "range": 3,
+            "area": 1,
+            "ignores": 2
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Armored Slug"
+  }
+}

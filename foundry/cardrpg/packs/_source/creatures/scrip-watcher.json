@@ -1,0 +1,55 @@
+{
+  "_id": "oiuLvK31JYNRTaOS",
+  "_key": "!actors!oiuLvK31JYNRTaOS",
+  "name": "Scrip Watcher",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 2,
+      "base": 2
+    },
+    "kind": "scrip-watcher",
+    "armorBase": 0,
+    "speed": 7,
+    "capabilities": [
+      "flight",
+      "pack",
+      "stealth"
+    ],
+    "tactics": [
+      "skirmisher",
+      "ambusher"
+    ],
+    "targetPriority": "nearest"
+  },
+  "items": [
+    {
+      "_id": "SAeAPcFX3ejGWyfQ",
+      "_key": "!actors.items!oiuLvK31JYNRTaOS.SAeAPcFX3ejGWyfQ",
+      "name": "Nip",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 1
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Scrip Watcher"
+  }
+}

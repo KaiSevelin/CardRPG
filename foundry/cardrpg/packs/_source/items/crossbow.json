@@ -1,0 +1,28 @@
+{
+  "_id": "O4avnaJmww5uTZsX",
+  "_key": "!items!O4avnaJmww5uTZsX",
+  "name": "Crossbow",
+  "type": "item",
+  "system": {
+    "ammo": "crossbow",
+    "slot": "hands",
+    "fits": [
+      "back"
+    ],
+    "hands": 2,
+    "tags": [
+      "ranged"
+    ],
+    "weight": 3,
+    "value": 60,
+    "blurb": "Anyone can be taught one in a week, which is why lords dislike them.",
+    "verbs": {
+      "strike": {
+        "value": 4,
+        "ignores": 1,
+        "range": 8,
+        "text": "ignores 1 armor; Ready to reload"
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "_id": "78sz7Jmx7Kzl50pH",
+  "_key": "!items!78sz7Jmx7Kzl50pH",
+  "name": "The Clean Field",
+  "type": "spell",
+  "system": {
+    "strength": 4,
+    "source": "The Eternal God",
+    "description": "<p>For one round nobody on the other side does anything but their main business. It is the same mechanism as Fagar's small trick, over the whole field.</p>",
+    "effect": {
+      "text": "until your next turn no enemy may play a secondary"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

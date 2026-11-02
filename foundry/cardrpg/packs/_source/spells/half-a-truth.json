@@ -1,0 +1,16 @@
+{
+  "_id": "XmU4OYQomYDAgcg7",
+  "_key": "!items!XmU4OYQomYDAgcg7",
+  "name": "Half a Truth",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "The Yellow",
+    "description": "<p>Name one of your own. For a round the enemy fights as though they were not on the field at all, which is as good as cover and better than armour.</p>",
+    "effect": {
+      "text": "until your next turn enemies act as though one ally you name were not there"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

@@ -1,0 +1,819 @@
+{
+  "_id": "89Gj8hxxjlCUI77W",
+  "_key": "!cards!89Gj8hxxjlCUI77W",
+  "name": "The Intent Pool",
+  "type": "deck",
+  "cards": [
+    {
+      "_id": "IFtOtV0H69UCOnBh",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.IFtOtV0H69UCOnBh",
+      "sort": 100,
+      "name": "Close In",
+      "type": "npc",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Close In"
+        }
+      ],
+      "back": {
+        "name": "Intent"
+      },
+      "system": {
+        "kind": "",
+        "sequence": [
+          {
+            "verb": "move"
+          },
+          {
+            "verb": "strike"
+          }
+        ],
+        "needs": [
+          "move"
+        ],
+        "text": "Move your speed, then Strike."
+      }
+    },
+    {
+      "_id": "Qvv1pvGN13fNn4HL",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.Qvv1pvGN13fNn4HL",
+      "sort": 200,
+      "name": "Strike and Step",
+      "type": "npc",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Strike and Step"
+        }
+      ],
+      "back": {
+        "name": "Intent"
+      },
+      "system": {
+        "kind": "",
+        "sequence": [
+          {
+            "verb": "strike"
+          },
+          {
+            "verb": "move"
+          }
+        ],
+        "needs": [
+          "move"
+        ],
+        "text": "Strike, then move your speed away."
+      }
+    },
+    {
+      "_id": "Bjz1HD25MxN9NAXw",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.Bjz1HD25MxN9NAXw",
+      "sort": 300,
+      "name": "Press",
+      "type": "npc",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Press"
+        }
+      ],
+      "back": {
+        "name": "Intent"
+      },
+      "system": {
+        "kind": "",
+        "sequence": [
+          {
+            "verb": "strike"
+          },
+          {
+            "verb": "strike",
+            "mod": -1
+          }
+        ],
+        "needs": [],
+        "text": "Strike, and Strike again at −1. Nothing clever, twice."
+      }
+    },
+    {
+      "_id": "EgfaBZUnAQMv5Rhr",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.EgfaBZUnAQMv5Rhr",
+      "sort": 400,
+      "name": "Lash Out",
+      "type": "npc",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Lash Out"
+        }
+      ],
+      "back": {
+        "name": "Intent"
+      },
+      "system": {
+        "kind": "",
+        "sequence": [
+          {
+            "verb": "strike",
+            "area": 1,
+            "areaKind": "blast"
+          }
+        ],
+        "needs": [],
+        "text": "Strike every figure adjacent to you, friend or not."
+      }
+    },
+    {
+      "_id": "bkjtj89dEAghX2kO",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.bkjtj89dEAghX2kO",
+      "sort": 500,
+      "name": "Set and Wait",
+      "type": "npc",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Set and Wait"
+        }
+      ],
+      "back": {
+        "name": "Intent"
+      },
+      "system": {
+        "kind": "",
+        "sequence": [
+          {
+            "verb": "defend"
+          }
+        ],
+        "needs": [],
+        "text": "Defend, and keep a reaction for whoever comes."
+      }
+    },
+    {
+      "_id": "XonxzNtmV260Ws9w",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.XonxzNtmV260Ws9w",
+      "sort": 600,
+      "name": "Hold the Line",
+      "type": "npc",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Hold the Line"
+        }
+      ],
+      "back": {
+        "name": "Intent"
+      },
+      "system": {
+        "kind": "",
+        "sequence": [
+          {
+            "verb": "defend"
+          },
+          {
+            "verb": "block",
+            "param": 1,
+            "range": 1
+          }
+        ],
+        "needs": [],
+        "text": "Defend, and an ally adjacent to you gains Block 1."
+      }
+    },
+    {
+      "_id": "MohWUerGVnhiVEiy",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.MohWUerGVnhiVEiy",
+      "sort": 700,
+      "name": "Give Ground",
+      "type": "npc",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Give Ground"
+        }
+      ],
+      "back": {
+        "name": "Intent"
+      },
+      "system": {
+        "kind": "",
+        "sequence": [
+          {
+            "verb": "move"
+          }
+        ],
+        "needs": [
+          "move"
+        ],
+        "text": "Move your speed away from the nearest enemy. A hurt thing that can leave, does."
+      }
+    },
+    {
+      "_id": "fl6iFDfSrhvEPEkh",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.fl6iFDfSrhvEPEkh",
+      "sort": 800,
+      "name": "Take Stock",
+      "type": "npc",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Take Stock"
+        }
+      ],
+      "back": {
+        "name": "Intent"
+      },
+      "system": {
+        "kind": "",
+        "sequence": [
+          {
+            "verb": "shake",
+            "param": 1
+          }
+        ],
+        "needs": [],
+        "text": "Nothing this round, and shake one condition off."
+      }
+    },
+    {
+      "_id": "8olTaRVstSfdT8Ki",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.8olTaRVstSfdT8Ki",
+      "sort": 900,
+      "name": "Loose",
+      "type": "npc",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Loose"
+        }
+      ],
+      "back": {
+        "name": "Intent"
+      },
+      "system": {
+        "kind": "",
+        "sequence": [
+          {
+            "verb": "strike"
+          }
+        ],
+        "needs": [
+          "ranged"
+        ],
+        "text": "Strike at your weapon's range."
+      }
+    },
+    {
+      "_id": "j0F1y3tUowze5sNv",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.j0F1y3tUowze5sNv",
+      "sort": 1000,
+      "name": "Spray",
+      "type": "npc",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Spray"
+        }
+      ],
+      "back": {
+        "name": "Intent"
+      },
+      "system": {
+        "kind": "",
+        "sequence": [
+          {
+            "verb": "strike",
+            "areaKind": "blast"
+          }
+        ],
+        "needs": [
+          "spray"
+        ],
+        "text": "Strike everything in the area, at range. Whatever you breathe, you breathe it on your own kind too."
+      }
+    },
+    {
+      "_id": "G9fRaRA9mhtsajs4",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.G9fRaRA9mhtsajs4",
+      "sort": 1100,
+      "name": "Long Arm",
+      "type": "npc",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Long Arm"
+        }
+      ],
+      "back": {
+        "name": "Intent"
+      },
+      "system": {
+        "kind": "",
+        "sequence": [
+          {
+            "verb": "strike"
+          }
+        ],
+        "needs": [
+          "reach"
+        ],
+        "text": "Strike at reach without closing, and stay where you are."
+      }
+    },
+    {
+      "_id": "KeXzM9IPm57cO4U7",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.KeXzM9IPm57cO4U7",
+      "sort": 1200,
+      "name": "Charge",
+      "type": "npc",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Charge"
+        }
+      ],
+      "back": {
+        "name": "Intent"
+      },
+      "system": {
+        "kind": "",
+        "sequence": [
+          {
+            "verb": "move"
+          },
+          {
+            "verb": "strike",
+            "mod": 1
+          }
+        ],
+        "needs": [
+          "fast",
+          "move"
+        ],
+        "text": "Move double your speed in a straight line, then Strike. The distance is the damage."
+      }
+    },
+    {
+      "_id": "nP5H9v3HAXW8zmvG",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.nP5H9v3HAXW8zmvG",
+      "sort": 1300,
+      "name": "Bull Through",
+      "type": "npc",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Bull Through"
+        }
+      ],
+      "back": {
+        "name": "Intent"
+      },
+      "system": {
+        "kind": "",
+        "sequence": [
+          {
+            "verb": "move"
+          },
+          {
+            "verb": "strike"
+          }
+        ],
+        "needs": [
+          "brute",
+          "move"
+        ],
+        "text": "Move your speed through a figure in the way, pushing it aside, then Strike."
+      }
+    },
+    {
+      "_id": "be8Ko05qzvhg7n29",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.be8Ko05qzvhg7n29",
+      "sort": 1400,
+      "name": "Bring It Down",
+      "type": "npc",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Bring It Down"
+        }
+      ],
+      "back": {
+        "name": "Intent"
+      },
+      "system": {
+        "kind": "",
+        "sequence": [
+          {
+            "verb": "strike",
+            "ignores": 99
+          }
+        ],
+        "needs": [
+          "siege"
+        ],
+        "text": "Strike a door, a wall or a held position, ignoring its armour entirely."
+      }
+    },
+    {
+      "_id": "zauBILaef0K0eO54",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.zauBILaef0K0eO54",
+      "sort": 1500,
+      "name": "Swarm",
+      "type": "npc",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Swarm"
+        }
+      ],
+      "back": {
+        "name": "Intent"
+      },
+      "system": {
+        "kind": "",
+        "sequence": [
+          {
+            "verb": "move"
+          },
+          {
+            "verb": "strike",
+            "mod": 1
+          }
+        ],
+        "needs": [
+          "pack",
+          "move"
+        ],
+        "text": "Move, then Strike at +1 for each ally already adjacent to your target."
+      }
+    },
+    {
+      "_id": "sTx1IcJ5c1X9pqPD",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.sTx1IcJ5c1X9pqPD",
+      "sort": 1600,
+      "name": "Drag Down",
+      "type": "npc",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Drag Down"
+        }
+      ],
+      "back": {
+        "name": "Intent"
+      },
+      "system": {
+        "kind": "",
+        "sequence": [
+          {
+            "verb": "strike",
+            "condition": "grappled",
+            "duration": 1
+          }
+        ],
+        "needs": [
+          "grapple"
+        ],
+        "text": "Strike; on a hit the target is Grappled and goes nowhere."
+      }
+    },
+    {
+      "_id": "lehwprtZ8GrZiHqo",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.lehwprtZ8GrZiHqo",
+      "sort": 1700,
+      "name": "Envenom",
+      "type": "npc",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Envenom"
+        }
+      ],
+      "back": {
+        "name": "Intent"
+      },
+      "system": {
+        "kind": "",
+        "sequence": [
+          {
+            "verb": "strike"
+          }
+        ],
+        "needs": [
+          "venom"
+        ],
+        "text": "Strike; on a hit it carries whatever you carry."
+      }
+    },
+    {
+      "_id": "ERKHe8wKQSjs9IY5",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.ERKHe8wKQSjs9IY5",
+      "sort": 1800,
+      "name": "Feed",
+      "type": "npc",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Feed"
+        }
+      ],
+      "back": {
+        "name": "Intent"
+      },
+      "system": {
+        "kind": "",
+        "sequence": [
+          {
+            "verb": "strike"
+          },
+          {
+            "verb": "heal"
+          }
+        ],
+        "needs": [
+          "drain"
+        ],
+        "text": "Strike an adjacent figure and heal what you took out of it."
+      }
+    },
+    {
+      "_id": "9w4QtzKYOmDP14gB",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.9w4QtzKYOmDP14gB",
+      "sort": 1900,
+      "name": "Go Under",
+      "type": "npc",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Go Under"
+        }
+      ],
+      "back": {
+        "name": "Intent"
+      },
+      "system": {
+        "kind": "",
+        "sequence": [
+          {
+            "verb": "move"
+          }
+        ],
+        "needs": [
+          "burrow"
+        ],
+        "text": "Leave the map. Next round you arrive anywhere you could have walked to."
+      }
+    },
+    {
+      "_id": "WttpA61MtpTdUSBf",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.WttpA61MtpTdUSBf",
+      "sort": 2000,
+      "name": "Submerge",
+      "type": "npc",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Submerge"
+        }
+      ],
+      "back": {
+        "name": "Intent"
+      },
+      "system": {
+        "kind": "",
+        "sequence": [
+          {
+            "verb": "move"
+          }
+        ],
+        "needs": [
+          "swim"
+        ],
+        "text": "Go under the water. Next round you surface anywhere along it."
+      }
+    },
+    {
+      "_id": "ZslpqP7BPLP2HEmF",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.ZslpqP7BPLP2HEmF",
+      "sort": 2100,
+      "name": "Stoop",
+      "type": "npc",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Stoop"
+        }
+      ],
+      "back": {
+        "name": "Intent"
+      },
+      "system": {
+        "kind": "",
+        "sequence": [
+          {
+            "verb": "move"
+          },
+          {
+            "verb": "strike"
+          }
+        ],
+        "needs": [
+          "flight"
+        ],
+        "text": "Arrive from above: move twice your speed, then Strike."
+      }
+    },
+    {
+      "_id": "UbXrblO1ripLCkIB",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.UbXrblO1ripLCkIB",
+      "sort": 2200,
+      "name": "Fade",
+      "type": "npc",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Fade"
+        }
+      ],
+      "back": {
+        "name": "Intent"
+      },
+      "system": {
+        "kind": "",
+        "sequence": [
+          {
+            "verb": "move"
+          },
+          {
+            "verb": "strike",
+            "condition": "invisible",
+            "duration": 1
+          }
+        ],
+        "needs": [
+          "stealth",
+          "move"
+        ],
+        "text": "Move your speed and become Hidden. You were never standing there."
+      }
+    },
+    {
+      "_id": "oGxFUeGpBpIHUfGk",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.oGxFUeGpBpIHUfGk",
+      "sort": 2300,
+      "name": "Lie Still",
+      "type": "npc",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Lie Still"
+        }
+      ],
+      "back": {
+        "name": "Intent"
+      },
+      "system": {
+        "kind": "",
+        "sequence": [],
+        "needs": [
+          "dormant"
+        ],
+        "text": "Nothing at all, and the next Strike you make cannot be answered by a reaction."
+      }
+    },
+    {
+      "_id": "Qg6VaADrTQkPRJbN",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.Qg6VaADrTQkPRJbN",
+      "sort": 2400,
+      "name": "Order",
+      "type": "npc",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Order"
+        }
+      ],
+      "back": {
+        "name": "Intent"
+      },
+      "system": {
+        "kind": "",
+        "sequence": [],
+        "needs": [
+          "commander"
+        ],
+        "text": "An ally within sight acts again, or moves its speed. You do nothing yourself."
+      }
+    },
+    {
+      "_id": "ju5FPakDvoW9chi1",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.ju5FPakDvoW9chi1",
+      "sort": 2500,
+      "name": "Call More",
+      "type": "npc",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Call More"
+        }
+      ],
+      "back": {
+        "name": "Intent"
+      },
+      "system": {
+        "kind": "",
+        "sequence": [],
+        "needs": [
+          "summon"
+        ],
+        "text": "Something arrives at the edge of the scene. The GM says what and how much."
+      }
+    },
+    {
+      "_id": "YrMwP89GvRY3XMfd",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.YrMwP89GvRY3XMfd",
+      "sort": 2600,
+      "name": "Work the Weave",
+      "type": "npc",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Work the Weave"
+        }
+      ],
+      "back": {
+        "name": "Intent"
+      },
+      "system": {
+        "kind": "",
+        "sequence": [
+          {
+            "verb": "cast"
+          }
+        ],
+        "needs": [
+          "caster"
+        ],
+        "text": "Cast one from your own short list."
+      }
+    },
+    {
+      "_id": "qDM7ZdIgztdAB60m",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.qDM7ZdIgztdAB60m",
+      "sort": 2700,
+      "name": "Carry",
+      "type": "npc",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Carry"
+        }
+      ],
+      "back": {
+        "name": "Intent"
+      },
+      "system": {
+        "kind": "",
+        "sequence": [
+          {
+            "verb": "move"
+          }
+        ],
+        "needs": [
+          "transport",
+          "move"
+        ],
+        "text": "A willing ally rides: it moves with you, and may still act when you stop."
+      }
+    },
+    {
+      "_id": "uDbTc2Q15xsA8UsI",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.uDbTc2Q15xsA8UsI",
+      "sort": 2800,
+      "name": "Shelter",
+      "type": "npc",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Shelter"
+        }
+      ],
+      "back": {
+        "name": "Intent"
+      },
+      "system": {
+        "kind": "",
+        "sequence": [
+          {
+            "verb": "defend"
+          }
+        ],
+        "needs": [
+          "shelter"
+        ],
+        "text": "Allies within 1 cannot be targeted at range while you stand."
+      }
+    }
+  ]
+}

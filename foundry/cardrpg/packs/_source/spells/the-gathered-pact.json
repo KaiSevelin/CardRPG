@@ -1,0 +1,16 @@
+{
+  "_id": "EQg1spq1SdIRVlwf",
+  "_key": "!items!EQg1spq1SdIRVlwf",
+  "name": "The Gathered Pact",
+  "type": "spell",
+  "system": {
+    "strength": 4,
+    "source": "Spiritualism",
+    "description": "<p>Every pact at once, called in on the same turn. Each god does exactly what it promised and no more, which is why this is worth four slots and not five.</p>",
+    "effect": {
+      "text": "every god you are pacted with grants its written favour, this turn"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

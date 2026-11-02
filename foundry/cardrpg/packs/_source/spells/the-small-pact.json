@@ -1,0 +1,16 @@
+{
+  "_id": "RMxrGFBHjGj4DUEJ",
+  "_key": "!items!RMxrGFBHjGj4DUEJ",
+  "name": "The Small Pact",
+  "type": "spell",
+  "system": {
+    "strength": 1,
+    "source": "Spiritualism",
+    "description": "<p>Name the god you are pacted with, and it does the thing written on the pact. The same thing, every time &mdash; which is what makes this a spell and not a wish.</p>",
+    "effect": {
+      "text": "the god grants the favour written on your pact"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

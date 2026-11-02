@@ -1,0 +1,16 @@
+{
+  "_id": "0fE7EE2fx6jHpQ5h",
+  "_key": "!items!0fE7EE2fx6jHpQ5h",
+  "name": "Nothing to Carry",
+  "type": "spell",
+  "system": {
+    "strength": 1,
+    "source": "Asceticism",
+    "description": "<p>Nothing in either hand, and nothing anybody can take out of them. The bonus to Casts is incidental; the point is that Disarm stops being a word.</p>",
+    "effect": {
+      "text": "while both hands are empty: +2 to all Casts, and you cannot be Disarmed"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "_id": "gNCPXOT59zLq3G0m",
+  "_key": "!actors!gNCPXOT59zLq3G0m",
+  "name": "Goblin Chief",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 11,
+      "base": 11
+    },
+    "kind": "goblin-chief",
+    "armorBase": 1,
+    "speed": 3,
+    "capabilities": [
+      "legs",
+      "pack",
+      "commander"
+    ],
+    "tactics": [
+      "packTactics",
+      "commander"
+    ],
+    "targetPriority": "leader"
+  },
+  "items": [
+    {
+      "_id": "Otdug4oGARlopzfG",
+      "_key": "!actors.items!gNCPXOT59zLq3G0m.Otdug4oGARlopzfG",
+      "name": "Goblin Spear",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "fits": [
+          "back"
+        ],
+        "hands": 1,
+        "tags": [
+          "melee"
+        ],
+        "weight": 2,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Weapon",
+        "verbs": {
+          "strike": {
+            "value": 3
+          }
+        },
+        "equipped": true
+      }
+    },
+    {
+      "_id": "CbHBxRYCTQu1EX9q",
+      "_key": "!actors.items!gNCPXOT59zLq3G0m.CbHBxRYCTQu1EX9q",
+      "name": "Goblin Shield",
+      "type": "item",
+      "system": {
+        "slot": "offhand",
+        "hands": 1,
+        "tags": [
+          "shield",
+          "natural"
+        ],
+        "weight": 2,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Shield",
+        "armor": 1,
+        "verbs": {
+          "defend": {
+            "value": 2
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Goblin Chief"
+  }
+}

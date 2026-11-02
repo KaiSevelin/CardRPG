@@ -1,0 +1,27 @@
+{
+  "_id": "tt03QbHvPQjKDe3G",
+  "_key": "!items!tt03QbHvPQjKDe3G",
+  "name": "Longbow",
+  "type": "item",
+  "system": {
+    "ammo": "bow",
+    "slot": "hands",
+    "fits": [
+      "back"
+    ],
+    "hands": 2,
+    "tags": [
+      "heavy",
+      "ranged"
+    ],
+    "weight": 2,
+    "value": 50,
+    "blurb": "A yew stave taller than the archer. No reload -- that is what you are buying.",
+    "verbs": {
+      "strike": {
+        "value": 3,
+        "range": 10
+      }
+    }
+  }
+}

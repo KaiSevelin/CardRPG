@@ -1,0 +1,17 @@
+{
+  "_id": "HmmkwQQplqfD7vWB",
+  "_key": "!items!HmmkwQQplqfD7vWB",
+  "name": "Graven Shield",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "Tattoo Magic",
+    "description": "<p>A shield you cannot put down, drawn across your back by somebody who knew what they were doing.</p>",
+    "effect": {
+      "timing": "permanent",
+      "text": "+1 armor"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

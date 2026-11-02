@@ -1,0 +1,22 @@
+{
+  "_id": "QKoBQVJl1yLRGmSG",
+  "_key": "!items!QKoBQVJl1yLRGmSG",
+  "name": "The Long Dose",
+  "type": "spell",
+  "system": {
+    "strength": 1,
+    "source": "Poison",
+    "description": "<p>No damage at all. Three rounds of a man who cannot use his off hand, which in a fight is worse than three damage and lasts longer.</p>",
+    "effect": {
+      "verb": "cast",
+      "range": 2,
+      "condition": "poisoned",
+      "intensity": 0,
+      "duration": 3,
+      "resist": "might",
+      "dc": 5
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

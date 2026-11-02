@@ -1,0 +1,27 @@
+{
+  "_id": "QcnWOWTyuOJ6zXSa",
+  "_key": "!items!QcnWOWTyuOJ6zXSa",
+  "name": "Spear",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "fits": [
+      "back"
+    ],
+    "hands": 1,
+    "tags": [
+      "melee",
+      "thrown"
+    ],
+    "weight": 2,
+    "value": 8,
+    "blurb": "The cheapest thing that keeps a man at arm's length.",
+    "verbs": {
+      "strike": {
+        "value": 3,
+        "range": 3,
+        "text": "range 3 thrown"
+      }
+    }
+  }
+}

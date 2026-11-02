@@ -1,0 +1,25 @@
+{
+  "_id": "7o9NQYYc2ag4osMQ",
+  "_key": "!items!7o9NQYYc2ag4osMQ",
+  "name": "Tail Club",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "hands": 0,
+    "tags": [
+      "melee",
+      "heavy",
+      "natural"
+    ],
+    "weight": 0,
+    "value": 0,
+    "npcGear": true,
+    "verbs": {
+      "strike": {
+        "value": 7,
+        "reach": 2,
+        "ignores": 2
+      }
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "_id": "oWYGPzFRDzF1Lnkh",
+  "_key": "!items!oWYGPzFRDzF1Lnkh",
+  "name": "Pike",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "hands": 2,
+    "tags": [
+      "heavy",
+      "melee"
+    ],
+    "weight": 4,
+    "value": 20,
+    "blurb": "Eighteen feet. Magnificent in a line and worthless on your own.",
+    "verbs": {
+      "strike": {
+        "value": 3,
+        "reach": 3,
+        "reachMin": 2,
+        "text": "reach 3; useless adjacent"
+      }
+    }
+  }
+}

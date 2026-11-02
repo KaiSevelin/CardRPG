@@ -1,0 +1,28 @@
+{
+  "_id": "nsje5jXCwhZwXw6e",
+  "_key": "!items!nsje5jXCwhZwXw6e",
+  "name": "Dagger",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "fits": [
+      "belt"
+    ],
+    "hands": 1,
+    "tags": [
+      "light",
+      "melee",
+      "thrown"
+    ],
+    "weight": 0,
+    "value": 2,
+    "blurb": "Short, quick, and easy to hide.",
+    "verbs": {
+      "strike": {
+        "value": 2,
+        "range": 3,
+        "text": "range 3 thrown"
+      }
+    }
+  }
+}

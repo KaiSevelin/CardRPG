@@ -1,0 +1,26 @@
+{
+  "_id": "A2ZJyaVKxjBM2apw",
+  "_key": "!items!A2ZJyaVKxjBM2apw",
+  "name": "Elixir of the Long Night",
+  "type": "item",
+  "system": {
+    "slot": "belt",
+    "fits": [
+      "hands"
+    ],
+    "hands": 1,
+    "tags": [
+      "consumable"
+    ],
+    "weight": 0,
+    "value": 200,
+    "consumed": true,
+    "blurb": "It lends. It is very clear about lending.",
+    "verbs": {
+      "use": {
+        "value": 0,
+        "text": "+6 temporary Health; it fades at your next rest"
+      }
+    }
+  }
+}

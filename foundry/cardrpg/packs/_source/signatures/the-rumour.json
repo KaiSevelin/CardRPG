@@ -1,0 +1,16 @@
+{
+  "_id": "r3l9CCMwPrDGKy6v",
+  "_key": "!items!r3l9CCMwPrDGKy6v",
+  "name": "The Rumour",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "The Yellow",
+    "description": "<p>Name a lie before the fight. One enemy type acts as if it were true, for as long as you keep spending a secondary on it.</p>",
+    "effect": {
+      "text": "one enemy type acts as though a named lie were true, while you keep it up"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

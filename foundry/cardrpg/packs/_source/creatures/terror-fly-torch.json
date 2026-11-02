@@ -1,0 +1,61 @@
+{
+  "_id": "1QtCrE6ycBf9Mft9",
+  "_key": "!actors!1QtCrE6ycBf9Mft9",
+  "name": "Terror Fly Torch",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 14,
+      "base": 14
+    },
+    "kind": "terror-fly-torch",
+    "armorBase": 2,
+    "speed": 6,
+    "capabilities": [
+      "flight",
+      "spray"
+    ],
+    "tactics": [
+      "sniper"
+    ],
+    "targetPriority": "weakest",
+    "signature": {
+      "condition": "burning",
+      "intensity": 3,
+      "duration": 2
+    }
+  },
+  "items": [
+    {
+      "_id": "Tm1ffQFqw2csqu8h",
+      "_key": "!actors.items!1QtCrE6ycBf9Mft9.Tm1ffQFqw2csqu8h",
+      "name": "Fire Spray",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "ranged",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 5,
+            "range": 4,
+            "area": 2,
+            "ignores": 1
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Terror Fly Torch"
+  }
+}

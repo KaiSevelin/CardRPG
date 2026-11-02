@@ -1,0 +1,18 @@
+{
+  "_id": "bHwJv2Z3rMpU0CaT",
+  "_key": "!items!bHwJv2Z3rMpU0CaT",
+  "name": "Fine Clothes",
+  "type": "item",
+  "system": {
+    "slot": "body",
+    "weight": 2,
+    "value": 30,
+    "blurb": "Cut well enough that nobody asks who you are.",
+    "group": "station",
+    "bonus": {
+      "approach": "presence",
+      "value": 1,
+      "situation": "nobles and merchants"
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "_id": "cD7lsSoubJOCWdD1",
+  "_key": "!items!cD7lsSoubJOCWdD1",
+  "name": "Rain",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "Elemental Magic",
+    "element": "water",
+    "description": "<p>A squall out of nothing, over three squares, and the water does not care who it lands on. It is not an attack and nothing resists it.</p>",
+    "effect": {
+      "range": 4,
+      "area": 3,
+      "areaKind": "blast",
+      "condition": "wet",
+      "duration": 1,
+      "text": "no damage"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

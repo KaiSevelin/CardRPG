@@ -1,0 +1,9 @@
+{
+  "_id": "fXitQTBYsUpJFxa6",
+  "_key": "!items!fXitQTBYsUpJFxa6",
+  "name": "Cleave to the Bone",
+  "type": "feature",
+  "system": {
+    "text": "For you, the Wound threshold is 4, not 5."
+  }
+}

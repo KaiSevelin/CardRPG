@@ -1,0 +1,21 @@
+{
+  "_id": "zsTAYzfaXdK5EaVr",
+  "_key": "!items!zsTAYzfaXdK5EaVr",
+  "name": "The Great Bargain",
+  "type": "spell",
+  "system": {
+    "strength": 5,
+    "source": "Spiritualism",
+    "description": "<p>It is actually here. The GM plays it as an ally for the rest of the fight, and afterwards it takes something the GM chooses &mdash; which is the only honest way to price a favour that large.</p>",
+    "effect": {
+      "verb": "conjure",
+      "conjure": {
+        "from": "god",
+        "count": 1,
+        "side": "ally"
+      }
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

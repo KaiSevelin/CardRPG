@@ -1,0 +1,16 @@
+{
+  "_id": "nkAYqWwSRba6bwjf",
+  "_key": "!items!nkAYqWwSRba6bwjf",
+  "name": "Light Helm",
+  "type": "item",
+  "system": {
+    "slot": "head",
+    "tags": [
+      "armor"
+    ],
+    "weight": 1,
+    "value": 15,
+    "armor": 1,
+    "blurb": "An open kettle. You can still hear and still see."
+  }
+}

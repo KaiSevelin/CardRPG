@@ -1,0 +1,29 @@
+{
+  "_id": "zsEfypOa3MLW1hap",
+  "_key": "!items!zsEfypOa3MLW1hap",
+  "name": "Balanced Dagger",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "fits": [
+      "belt"
+    ],
+    "hands": 1,
+    "tags": [
+      "light",
+      "melee",
+      "thrown"
+    ],
+    "weight": 0,
+    "value": 70,
+    "blurb": "Weighted at the tang. It goes where you looked.",
+    "verbs": {
+      "strike": {
+        "value": 3,
+        "range": 5,
+        "text": "range 5 thrown"
+      }
+    },
+    "group": "make"
+  }
+}

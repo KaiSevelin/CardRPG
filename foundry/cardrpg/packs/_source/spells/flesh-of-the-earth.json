@@ -1,0 +1,21 @@
+{
+  "_id": "5aWNXpabBMyLjcOq",
+  "_key": "!items!5aWNXpabBMyLjcOq",
+  "name": "Flesh of the Earth",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "Elemental Magic",
+    "description": "<p>Acid, which is nobody's sphere. It eats the armour as well as the man, and the man notices second.</p>",
+    "effect": {
+      "verb": "cast",
+      "range": 3,
+      "condition": "burning",
+      "intensity": 1,
+      "duration": 2,
+      "text": "and Corrode 1: it eats the armour as well as the man"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

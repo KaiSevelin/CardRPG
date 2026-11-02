@@ -1,0 +1,58 @@
+{
+  "_id": "MaANXp3HWKg0k5zN",
+  "_key": "!actors!MaANXp3HWKg0k5zN",
+  "name": "Mantiss Veteran",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 18,
+      "base": 18
+    },
+    "kind": "mantiss-veteran",
+    "armorBase": 3,
+    "speed": 4,
+    "capabilities": [
+      "legs",
+      "reach",
+      "commander",
+      "grapple"
+    ],
+    "tactics": [
+      "commander",
+      "skirmisher",
+      "grappler"
+    ],
+    "targetPriority": "leader"
+  },
+  "items": [
+    {
+      "_id": "XvmZKrlBOBYOGiXK",
+      "_key": "!actors.items!MaANXp3HWKg0k5zN.XvmZKrlBOBYOGiXK",
+      "name": "Grasping Claws",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 5,
+            "reach": 2
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Mantiss Veteran"
+  }
+}

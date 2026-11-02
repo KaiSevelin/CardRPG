@@ -1,0 +1,18 @@
+{
+  "_id": "SLumRAxxUrY4Pw8X",
+  "_key": "!items!SLumRAxxUrY4Pw8X",
+  "name": "Hunting Traps",
+  "type": "item",
+  "system": {
+    "slot": "pack",
+    "weight": 4,
+    "value": 15,
+    "blurb": "Jaws and a stake. Patience, mostly.",
+    "group": "tool",
+    "bonus": {
+      "approach": "wits",
+      "value": 1,
+      "situation": "tracking and trapping animals"
+    }
+  }
+}

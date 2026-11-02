@@ -1,0 +1,20 @@
+{
+  "_id": "8UsA9nP97uGeAOLG",
+  "_key": "!items!8UsA9nP97uGeAOLG",
+  "name": "Scorch",
+  "type": "spell",
+  "system": {
+    "strength": 1,
+    "source": "Elemental Magic",
+    "element": "fire",
+    "description": "<p>Carries no combo clause at all, and is still the proof that an opening is not always worth having: water and fire cancel, so a Wet target takes the Cast and sheds the Burning. The interaction is on Burning, where the rules put it.</p>",
+    "effect": {
+      "verb": "cast",
+      "range": 4,
+      "condition": "burning",
+      "duration": 1
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "_id": "xkcdhZFz052KAUQf",
+  "_key": "!items!xkcdhZFz052KAUQf",
+  "name": "Drowsing Oil",
+  "type": "item",
+  "system": {
+    "slot": "belt",
+    "tags": [
+      "consumable"
+    ],
+    "weight": 0,
+    "value": 50,
+    "consumed": true,
+    "blurb": "It does not kill. It makes a man slow about objecting.",
+    "text": "Apply with a Ready. Next Strike that hits: Dazed (2), resist Might 5."
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "_id": "oVjwDSDDBETzaqzf",
+  "_key": "!items!oVjwDSDDBETzaqzf",
+  "name": "Staff of Healing",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "fits": [
+      "back"
+    ],
+    "hands": 2,
+    "tags": [
+      "arcane",
+      "melee"
+    ],
+    "weight": 2,
+    "value": 0,
+    "blurb": "Pale wood, warm to the touch.",
+    "verbs": {
+      "strike": {
+        "value": 1
+      },
+      "cast": {
+        "value": 3,
+        "range": 2,
+        "text": "Heal 3"
+      },
+      "defend": {
+        "value": 1
+      }
+    },
+    "group": "make"
+  }
+}

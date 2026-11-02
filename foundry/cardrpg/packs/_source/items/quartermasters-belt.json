@@ -1,0 +1,16 @@
+{
+  "_id": "YarMu5Rq79MGm6sc",
+  "_key": "!items!YarMu5Rq79MGm6sc",
+  "name": "Quartermaster's Belt",
+  "type": "item",
+  "system": {
+    "slot": "belt",
+    "weight": 1,
+    "value": 300,
+    "blurb": "Everything hangs lighter on it. Nobody knows why and nobody asks twice.",
+    "group": "wonder",
+    "grants": {
+      "carry": 15
+    }
+  }
+}

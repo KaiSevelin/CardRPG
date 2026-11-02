@@ -1,0 +1,17 @@
+{
+  "_id": "mgU4Adu4ULID5v5C",
+  "_key": "!items!mgU4Adu4ULID5v5C",
+  "name": "The Door Home",
+  "type": "spell",
+  "system": {
+    "strength": 5,
+    "source": "Household Magic",
+    "description": "<p>A door you have opened before becomes a door to any other door you have opened before. It is the school's thesis: a householder is never far from anywhere they have been.</p>",
+    "effect": {
+      "timing": "ritual",
+      "text": "a door you have opened leads to any other you have opened. Once a day"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

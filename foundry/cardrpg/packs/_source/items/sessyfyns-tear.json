@@ -1,0 +1,18 @@
+{
+  "_id": "cLqhebQtaQeeRHam",
+  "_key": "!items!cLqhebQtaQeeRHam",
+  "name": "Sessyfyn's Tear",
+  "type": "item",
+  "system": {
+    "slot": "neck",
+    "weight": 0,
+    "value": 3000,
+    "blurb": "Seawater that has not dried in four hundred years.",
+    "group": "wonder",
+    "active": {
+      "text": "Any one fate draw on the field is drawn again.",
+      "boundary": "combat"
+    },
+    "text": "Obligation: a permanent Miss AND a permanent Critical in your fate deck."
+  }
+}

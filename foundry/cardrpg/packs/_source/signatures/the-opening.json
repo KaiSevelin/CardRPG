@@ -1,0 +1,12 @@
+{
+  "_id": "4FMJUVh3ILBhV8b6",
+  "_key": "!items!4FMJUVh3ILBhV8b6",
+  "name": "The Opening",
+  "type": "feature",
+  "system": {
+    "advantage": {
+      "vsOpening": true
+    },
+    "text": "Advantage against anyone carrying an opening -- whoever set it."
+  }
+}

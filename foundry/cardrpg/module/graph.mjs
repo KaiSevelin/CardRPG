@@ -625,6 +625,35 @@ export async function takeNode(actor, id) {
 }
 
 /**
+ * **The fields a content entry contributes to a document, with the graph's own fields removed.**
+ *
+ * An entry carries two kinds of field. Some are the thing itself -- text, a bonus, a strength, an
+ * effect -- and some are how the LEVELLING GRAPH handles it: `kind` says which document to make,
+ * `node` which node hands it over, `needs` what it requires first, `pool` which Way teaches it.
+ * The second kind must not reach the document, because a data model drops a key it does not know
+ * without saying so: a Signature feature packed with its own `kind: "feature"` puts that string in
+ * `system.kind`, which the feature schema has no field for, and the loss is silent.
+ *
+ * One function because there are three callers now rather than two. `grantSlate` and `grantSpell`
+ * each stripped their own list, which held while they were the only ways a content entry became a
+ * document; the compendium builder is the third, and it got the list wrong.
+ */
+export function slateFieldsOf(def) {
+  const { kind, node, needs, pool, ...fields } = def;
+  return fields;
+}
+
+/**
+ * **A spell's `kind` is its Way, not its content.** A formula is studied and paid for once in your
+ * own substance; a miracle is granted and paid for every time you ask (data/items.mjs). Both are
+ * spells, and which one a given formula is depends entirely on who taught it -- so it is derived
+ * from the node or the pool rather than written on the entry.
+ */
+export function spellKindOf(source) {
+  return String(source).startsWith("faith") ? "miracle" : "formula";
+}
+
+/**
  * A feature or item slate from content. Like a card and unlike a number, a slate is a document: it
  * is created once and it stays created, which is why a Signature feature carries only text and the
  * node carries any figure (rules/leveling.md 9).
@@ -635,8 +664,7 @@ async function grantSlate(actor, name, type) {
     ui.notifications?.warn(game.i18n.format("CARDRPG.Level.NoSlate", { name }));
     return false;
   }
-  const { kind, node, needs, ...fields } = def;
-  await actor.createEmbeddedDocuments("Item", [slateData(fields, type)]);
+  await actor.createEmbeddedDocuments("Item", [slateData(slateFieldsOf(def), type)]);
   return true;
 }
 
@@ -660,10 +688,9 @@ async function grantSpell(actor, name, nodeId) {
     ui.notifications?.warn(game.i18n.format("CARDRPG.Level.NoSpell", { name }));
     return false;
   }
-  const { kind, node, needs, pool, ...fields } = def;
   await actor.createEmbeddedDocuments("Item", [slateData({
-    ...fields,
-    kind: String(nodeId).startsWith("faith") ? "miracle" : "formula",
+    ...slateFieldsOf(def),
+    kind: spellKindOf(nodeId),
     prepared: false
   }, "spell")]);
   return true;

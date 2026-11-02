@@ -1,0 +1,24 @@
+{
+  "_id": "FVtIDsSeDT5OHEuh",
+  "_key": "!items!FVtIDsSeDT5OHEuh",
+  "name": "Whistling Shaft",
+  "type": "item",
+  "system": {
+    "slot": "belt",
+    "tags": [
+      "consumable"
+    ],
+    "weight": 0,
+    "value": 55,
+    "consumed": true,
+    "ammoFor": [
+      "bow"
+    ],
+    "shot": {
+      "condition": "compelled",
+      "duration": 1
+    },
+    "blurb": "Whoever it passes becomes very interested in who sent it.",
+    "text": "Bow. The target is Compelled (1) -- at you."
+  }
+}

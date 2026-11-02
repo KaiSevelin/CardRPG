@@ -1,0 +1,26 @@
+{
+  "_id": "Iqh7LZV3CTGR7HbE",
+  "_key": "!items!Iqh7LZV3CTGR7HbE",
+  "name": "Draught of Second Breath",
+  "type": "item",
+  "system": {
+    "slot": "belt",
+    "fits": [
+      "hands"
+    ],
+    "hands": 1,
+    "tags": [
+      "consumable"
+    ],
+    "weight": 0,
+    "value": 90,
+    "consumed": true,
+    "blurb": "One swallow and your lungs believe the fight has just started.",
+    "verbs": {
+      "use": {
+        "value": 0,
+        "text": "Catch Breath without spending your turn"
+      }
+    }
+  }
+}

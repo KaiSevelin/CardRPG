@@ -1,0 +1,16 @@
+{
+  "_id": "eO4enHrAn77s9lun",
+  "_key": "!items!eO4enHrAn77s9lun",
+  "name": "The Drum",
+  "type": "spell",
+  "system": {
+    "strength": 1,
+    "source": "Valtor",
+    "description": "<p>It starts somewhere behind you and it is already in your arms.</p>",
+    "effect": {
+      "text": "your next Strike this turn is +3"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

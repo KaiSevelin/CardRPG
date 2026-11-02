@@ -1,0 +1,193 @@
+{
+  "_id": "AYD8Fo48MjyCS9av",
+  "_key": "!cards!AYD8Fo48MjyCS9av",
+  "name": "Skill Cards",
+  "type": "deck",
+  "cards": [
+    {
+      "_id": "0qEzAkdTjSIWfOPg",
+      "_key": "!cards.cards!AYD8Fo48MjyCS9av.0qEzAkdTjSIWfOPg",
+      "sort": 100,
+      "name": "Set Your Feet",
+      "type": "skill",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Set Your Feet"
+        }
+      ],
+      "system": {
+        "approach": "might",
+        "value": 3,
+        "wild": false
+      }
+    },
+    {
+      "_id": "j763DuH0DvAjrsJp",
+      "_key": "!cards.cards!AYD8Fo48MjyCS9av.j763DuH0DvAjrsJp",
+      "sort": 200,
+      "name": "Heave",
+      "type": "skill",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Heave"
+        }
+      ],
+      "system": {
+        "approach": "might",
+        "value": 2,
+        "wild": false
+      }
+    },
+    {
+      "_id": "jwYlDgkhQTDlJ0lE",
+      "_key": "!cards.cards!AYD8Fo48MjyCS9av.jwYlDgkhQTDlJ0lE",
+      "sort": 300,
+      "name": "Break It",
+      "type": "skill",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Break It"
+        }
+      ],
+      "system": {
+        "approach": "might",
+        "value": 1,
+        "wild": false,
+        "edge": "Something gives whether or not you get through: the GM says what broke."
+      }
+    },
+    {
+      "_id": "SkaMBDjBcsdG5CXn",
+      "_key": "!cards.cards!AYD8Fo48MjyCS9av.SkaMBDjBcsdG5CXn",
+      "sort": 400,
+      "name": "Quick Hands",
+      "type": "skill",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Quick Hands"
+        }
+      ],
+      "system": {
+        "approach": "agility",
+        "value": 2,
+        "wild": false
+      }
+    },
+    {
+      "_id": "O5QcZkUHQSFBaU4S",
+      "_key": "!cards.cards!AYD8Fo48MjyCS9av.O5QcZkUHQSFBaU4S",
+      "sort": 500,
+      "name": "Keep Your Footing",
+      "type": "skill",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Keep Your Footing"
+        }
+      ],
+      "system": {
+        "approach": "agility",
+        "value": 1,
+        "wild": false,
+        "edge": "You do not fall, whatever else happens."
+      }
+    },
+    {
+      "_id": "pZAWsrPKgQSwcJSX",
+      "_key": "!cards.cards!AYD8Fo48MjyCS9av.pZAWsrPKgQSwcJSX",
+      "sort": 600,
+      "name": "Out of the Light",
+      "type": "skill",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Out of the Light"
+        }
+      ],
+      "system": {
+        "approach": "shadow",
+        "value": 1,
+        "wild": false
+      }
+    },
+    {
+      "_id": "JO09r4MEQlnIVYo9",
+      "_key": "!cards.cards!AYD8Fo48MjyCS9av.JO09r4MEQlnIVYo9",
+      "sort": 700,
+      "name": "Sharp Eyes",
+      "type": "skill",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Sharp Eyes"
+        }
+      ],
+      "system": {
+        "approach": "wits",
+        "value": 1,
+        "wild": false,
+        "edge": "Ask the GM one yes-or-no question about the scene."
+      }
+    },
+    {
+      "_id": "H35bn6LD60jfof6x",
+      "_key": "!cards.cards!AYD8Fo48MjyCS9av.H35bn6LD60jfof6x",
+      "sort": 800,
+      "name": "Soldier's Learning",
+      "type": "skill",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Soldier's Learning"
+        }
+      ],
+      "system": {
+        "approach": "lore",
+        "value": 1,
+        "wild": false
+      }
+    },
+    {
+      "_id": "DKDALDNGUd8uS3q7",
+      "_key": "!cards.cards!AYD8Fo48MjyCS9av.DKDALDNGUd8uS3q7",
+      "sort": 900,
+      "name": "The Loud Voice",
+      "type": "skill",
+      "face": 0,
+      "faces": [
+        {
+          "name": "The Loud Voice"
+        }
+      ],
+      "system": {
+        "approach": "presence",
+        "value": 1,
+        "wild": false,
+        "edge": "Everyone nearby hears you, and knows it was you."
+      }
+    },
+    {
+      "_id": "ajC03Q3FgFAPHt1g",
+      "_key": "!cards.cards!AYD8Fo48MjyCS9av.ajC03Q3FgFAPHt1g",
+      "sort": 1000,
+      "name": "Inspiration",
+      "type": "skill",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Inspiration"
+        }
+      ],
+      "system": {
+        "approach": "",
+        "value": 1,
+        "wild": true,
+        "edge": "Draw 1 skill card."
+      }
+    }
+  ]
+}

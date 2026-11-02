@@ -1,0 +1,9 @@
+{
+  "_id": "d9xtTFjvhf9JKDoX",
+  "_key": "!items!d9xtTFjvhf9JKDoX",
+  "name": "Loaded Before the Bell",
+  "type": "feature",
+  "system": {
+    "text": "You begin every combat already loaded, and the first shot of a fight is +2."
+  }
+}

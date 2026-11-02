@@ -1,0 +1,14 @@
+{
+  "_id": "NtIda3xfxW4yWCN3",
+  "_key": "!items!NtIda3xfxW4yWCN3",
+  "name": "Hard Hands",
+  "type": "feature",
+  "system": {
+    "group": "training",
+    "bonus": {
+      "approach": "might",
+      "value": 1
+    },
+    "text": "+1 on Might checks. Lifting, breaking, and not letting go."
+  }
+}

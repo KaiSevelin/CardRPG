@@ -1,0 +1,22 @@
+{
+  "_id": "G44s9yYAf04zzxU0",
+  "_key": "!items!G44s9yYAf04zzxU0",
+  "name": "Mandibles",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "hands": 0,
+    "tags": [
+      "melee",
+      "natural"
+    ],
+    "weight": 0,
+    "value": 0,
+    "npcGear": true,
+    "verbs": {
+      "strike": {
+        "value": 3
+      }
+    }
+  }
+}

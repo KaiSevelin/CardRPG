@@ -1,0 +1,25 @@
+{
+  "_id": "gefBVgNXH7LfmSCw",
+  "_key": "!items!gefBVgNXH7LfmSCw",
+  "name": "Chalked Shaft",
+  "type": "item",
+  "system": {
+    "slot": "belt",
+    "tags": [
+      "consumable"
+    ],
+    "weight": 0,
+    "value": 40,
+    "consumed": true,
+    "ammoFor": [
+      "bow",
+      "crossbow"
+    ],
+    "shot": {
+      "condition": "marked",
+      "duration": 1
+    },
+    "blurb": "It leaves a smear that everyone can see and nobody can wipe off.",
+    "text": "Bow or crossbow. The target is Marked (1). No save."
+  }
+}

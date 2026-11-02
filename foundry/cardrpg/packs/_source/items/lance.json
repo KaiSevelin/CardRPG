@@ -1,0 +1,23 @@
+{
+  "_id": "jmkhi62KUkBuNP7F",
+  "_key": "!items!jmkhi62KUkBuNP7F",
+  "name": "Lance",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "hands": 1,
+    "tags": [
+      "heavy",
+      "melee"
+    ],
+    "weight": 3,
+    "value": 30,
+    "blurb": "A couched lance is a horse's weight arriving at one point. Needs the horse.",
+    "verbs": {
+      "strike": {
+        "value": 5,
+        "text": "needs a mount"
+      }
+    }
+  }
+}

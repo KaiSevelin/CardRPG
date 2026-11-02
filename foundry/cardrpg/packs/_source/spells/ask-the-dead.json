@@ -1,0 +1,17 @@
+{
+  "_id": "YqpbCGa9zsfncHb0",
+  "_key": "!items!YqpbCGa9zsfncHb0",
+  "name": "Ask the Dead",
+  "type": "spell",
+  "system": {
+    "strength": 1,
+    "source": "Necromancy",
+    "description": "<p>It answers three questions truthfully, as far as it knew &mdash; which is usually less than you hoped and occasionally much more.</p>",
+    "effect": {
+      "timing": "outOfCombat",
+      "text": "a corpse answers three questions, as truthfully as it knew"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

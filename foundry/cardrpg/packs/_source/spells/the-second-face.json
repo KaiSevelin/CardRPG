@@ -1,0 +1,16 @@
+{
+  "_id": "HtNWN6ZEl9kY1Jeu",
+  "_key": "!items!HtNWN6ZEl9kY1Jeu",
+  "name": "The Second Face",
+  "type": "spell",
+  "system": {
+    "strength": 1,
+    "source": "Fagar",
+    "description": "<p>Spent: you know what one of them is going to do before anybody moves. Fagar's whole theology is that this is enough.</p>",
+    "effect": {
+      "text": "Spent: read one enemy's intent card for this round before anyone acts"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

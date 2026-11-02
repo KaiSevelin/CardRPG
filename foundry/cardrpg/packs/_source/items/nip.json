@@ -1,0 +1,22 @@
+{
+  "_id": "AwJ7aOsGIGnpkuHA",
+  "_key": "!items!AwJ7aOsGIGnpkuHA",
+  "name": "Nip",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "hands": 0,
+    "tags": [
+      "melee",
+      "natural"
+    ],
+    "weight": 0,
+    "value": 0,
+    "npcGear": true,
+    "verbs": {
+      "strike": {
+        "value": 1
+      }
+    }
+  }
+}

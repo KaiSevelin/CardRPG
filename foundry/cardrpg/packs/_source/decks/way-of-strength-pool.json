@@ -1,0 +1,426 @@
+{
+  "_id": "nfIAB5yBnWRwobEb",
+  "_key": "!cards!nfIAB5yBnWRwobEb",
+  "name": "Way of Strength — Pool",
+  "type": "deck",
+  "cards": [
+    {
+      "_id": "1IRsyVGzZdooOYcS",
+      "_key": "!cards.cards!nfIAB5yBnWRwobEb.1IRsyVGzZdooOYcS",
+      "sort": 100,
+      "name": "Shoulder Check",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Shoulder Check"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "strike"
+          }
+        ],
+        "secondary": [
+          {
+            "condition": "offBalance",
+            "duration": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {},
+        "text": "Adjacent."
+      }
+    },
+    {
+      "_id": "TWiADJgXqxstWImq",
+      "_key": "!cards.cards!nfIAB5yBnWRwobEb.TWiADJgXqxstWImq",
+      "sort": 200,
+      "name": "Shield Bash",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Shield Bash"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "strike"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "block",
+        "costs": {},
+        "text": "No damage: push 2 and step into the square it left."
+      }
+    },
+    {
+      "_id": "IoUh9Gw3oWh5DAlP",
+      "_key": "!cards.cards!nfIAB5yBnWRwobEb.IoUh9Gw3oWh5DAlP",
+      "sort": 300,
+      "name": "Hammerblow",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Hammerblow"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "strike",
+            "when": {
+              "needs": "offBalance",
+              "mod": 2
+            }
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "YJhrTVN0LyXWDK3x",
+      "_key": "!cards.cards!nfIAB5yBnWRwobEb.YJhrTVN0LyXWDK3x",
+      "sort": 400,
+      "name": "Sweep the Leg",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Sweep the Leg"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "strike",
+            "condition": "prone",
+            "duration": 1,
+            "resist": "agility",
+            "dc": 5,
+            "when": {
+              "needs": "offBalance",
+              "dc": 9
+            }
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "mDvO6zVMZhR8pjbe",
+      "_key": "!cards.cards!nfIAB5yBnWRwobEb.mDvO6zVMZhR8pjbe",
+      "sort": 500,
+      "name": "Overbear",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Overbear"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "condition": "grappled",
+            "duration": 2,
+            "resist": "might",
+            "dc": 5,
+            "when": {
+              "needs": "offBalance",
+              "dc": 7
+            }
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "nLEPnUWtD4c9Itbe",
+      "_key": "!cards.cards!nfIAB5yBnWRwobEb.nLEPnUWtD4c9Itbe",
+      "sort": 600,
+      "name": "Shield Wall",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Shield Wall"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "defend"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "defend"
+          },
+          {
+            "verb": "block",
+            "param": 1,
+            "area": 1
+          }
+        ],
+        "reaction": "block",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "OAtG3hhGOPog03jc",
+      "_key": "!cards.cards!nfIAB5yBnWRwobEb.OAtG3hhGOPog03jc",
+      "sort": 700,
+      "name": "Two-Hand It",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Two-Hand It"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "strike",
+            "mod": 2,
+            "requires": {
+              "bothHands": true
+            }
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "ready"
+          }
+        ],
+        "reaction": "",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "q9xPy3RHvZvV81tE",
+      "_key": "!cards.cards!nfIAB5yBnWRwobEb.q9xPy3RHvZvV81tE",
+      "sort": 800,
+      "name": "Heave",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Heave"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "move",
+            "param": 2
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "ready"
+          }
+        ],
+        "reaction": "",
+        "costs": {},
+        "text": "Carrying any weight without being Slowed."
+      }
+    },
+    {
+      "_id": "nlm9sZSmZcAHlJvi",
+      "_key": "!cards.cards!nfIAB5yBnWRwobEb.nlm9sZSmZcAHlJvi",
+      "sort": 900,
+      "name": "Armoured Advance",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Armoured Advance"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "move",
+            "param": 3
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {},
+        "text": "Your armor counts +1 until your next turn."
+      }
+    },
+    {
+      "_id": "qPHK54Co5X30jO7o",
+      "_key": "!cards.cards!nfIAB5yBnWRwobEb.qPHK54Co5X30jO7o",
+      "sort": 1000,
+      "name": "Pull Them Down",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Pull Them Down"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "strike"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "strike",
+            "mod": -1
+          }
+        ],
+        "reaction": "",
+        "costs": {},
+        "text": "The secondary only against a Prone or Grappled target."
+      }
+    },
+    {
+      "_id": "5OOVWgJ7dOOyuEKJ",
+      "_key": "!cards.cards!nfIAB5yBnWRwobEb.5OOVWgJ7dOOyuEKJ",
+      "sort": 1100,
+      "name": "Beat the Blade",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Beat the Blade"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "strike",
+            "condition": "disarmed",
+            "duration": 1,
+            "resist": "might",
+            "dc": 5
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "mZweB7rRUtEM6gKZ",
+      "_key": "!cards.cards!nfIAB5yBnWRwobEb.mZweB7rRUtEM6gKZ",
+      "sort": 1200,
+      "name": "Roar",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Roar"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "condition": "compelled",
+            "duration": 1,
+            "resist": "presence",
+            "dc": 5
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {
+          "primary": {
+            "strain": 1
+          }
+        },
+        "text": "Every adjacent enemy."
+      }
+    },
+    {
+      "_id": "0GxlLZXk40Nqd3o0",
+      "_key": "!cards.cards!nfIAB5yBnWRwobEb.0GxlLZXk40Nqd3o0",
+      "sort": 1300,
+      "name": "Walk It Off",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Walk It Off"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "heal",
+            "param": 2
+          },
+          {
+            "verb": "shake",
+            "param": 2
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {
+          "primary": {
+            "spent": true
+          }
+        },
+        "text": "On yourself."
+      }
+    }
+  ]
+}

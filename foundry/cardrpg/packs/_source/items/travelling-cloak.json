@@ -1,0 +1,18 @@
+{
+  "_id": "mGPoDzCZySFJQMgO",
+  "_key": "!items!mGPoDzCZySFJQMgO",
+  "name": "Travelling Cloak",
+  "type": "item",
+  "system": {
+    "slot": "cloak",
+    "weight": 2,
+    "value": 8,
+    "blurb": "Oiled wool. The difference between a wet night and an unbearable one.",
+    "group": "station",
+    "bonus": {
+      "approach": "shadow",
+      "value": 1,
+      "situation": "outdoors, and you stay dry"
+    }
+  }
+}

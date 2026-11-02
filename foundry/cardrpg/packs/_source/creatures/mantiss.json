@@ -1,0 +1,56 @@
+{
+  "_id": "PLq4AJeRBfjV0CHp",
+  "_key": "!actors!PLq4AJeRBfjV0CHp",
+  "name": "Mantiss",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 12,
+      "base": 12
+    },
+    "kind": "mantiss",
+    "armorBase": 2,
+    "speed": 4,
+    "capabilities": [
+      "legs",
+      "reach",
+      "commander"
+    ],
+    "tactics": [
+      "commander",
+      "skirmisher"
+    ],
+    "targetPriority": "leader"
+  },
+  "items": [
+    {
+      "_id": "wBvc3BTVarHMZa2T",
+      "_key": "!actors.items!PLq4AJeRBfjV0CHp.wBvc3BTVarHMZa2T",
+      "name": "Grasping Claws",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 5,
+            "reach": 2
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Mantiss"
+  }
+}

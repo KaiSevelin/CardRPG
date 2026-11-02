@@ -1,0 +1,20 @@
+{
+  "_id": "AGkaUu0JqooCqSTE",
+  "_key": "!items!AGkaUu0JqooCqSTE",
+  "name": "The Poisoned Well",
+  "type": "spell",
+  "system": {
+    "strength": 4,
+    "source": "The Purple",
+    "description": "<p>Three squares of it, fast. Everything standing in the water carries it away.</p>",
+    "effect": {
+      "verb": "tainting",
+      "param": 1,
+      "area": 3,
+      "areaKind": "blast",
+      "text": "fast"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

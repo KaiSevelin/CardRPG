@@ -1,0 +1,19 @@
+{
+  "_id": "FOeBrEgTsYISGw3V",
+  "_key": "!items!FOeBrEgTsYISGw3V",
+  "name": "Bear It for Them",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "The Eternal Spirit",
+    "reaction": "mend",
+    "description": "<p>Whatever is on them is on you instead, at its full duration. The Spirit's priests are the only ones who can do this and the only ones who would.</p>",
+    "effect": {
+      "range": 3,
+      "timing": "reaction",
+      "text": "move one condition off an ally and onto yourself"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

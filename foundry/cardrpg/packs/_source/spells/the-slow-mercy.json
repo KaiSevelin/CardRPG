@@ -1,0 +1,17 @@
+{
+  "_id": "AcwfbHJnw59wSLGg",
+  "_key": "!items!AcwfbHJnw59wSLGg",
+  "name": "The Slow Mercy",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "Brendan",
+    "description": "<p>Name them now. At the start of your third turn they are whole, which is either too late or exactly right.</p>",
+    "effect": {
+      "range": 3,
+      "text": "at the start of your third turn after this, one named ally is healed to full"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

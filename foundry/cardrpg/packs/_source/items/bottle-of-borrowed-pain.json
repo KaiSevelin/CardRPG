@@ -1,0 +1,28 @@
+{
+  "_id": "IdXfwGcIVUn0Cpcx",
+  "_key": "!items!IdXfwGcIVUn0Cpcx",
+  "name": "Bottle of Borrowed Pain",
+  "type": "item",
+  "system": {
+    "slot": "belt",
+    "fits": [
+      "hands"
+    ],
+    "hands": 1,
+    "tags": [
+      "consumable"
+    ],
+    "weight": 0,
+    "value": 30,
+    "consumed": true,
+    "identified": false,
+    "unidentifiedName": "a dark bottle",
+    "blurb": "It does not heal you. It postpones you.",
+    "verbs": {
+      "use": {
+        "value": 0,
+        "text": "Heal 4 -- and take 4 when the fight ends"
+      }
+    }
+  }
+}

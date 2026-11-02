@@ -1,0 +1,26 @@
+{
+  "_id": "iCH4ftHvCGFSoPAG",
+  "_key": "!items!iCH4ftHvCGFSoPAG",
+  "name": "Cleansing Draught",
+  "type": "item",
+  "system": {
+    "slot": "belt",
+    "fits": [
+      "hands"
+    ],
+    "hands": 1,
+    "tags": [
+      "consumable"
+    ],
+    "weight": 0,
+    "value": 150,
+    "consumed": true,
+    "blurb": "A temple brews it and does not sell it gladly.",
+    "verbs": {
+      "use": {
+        "value": 1,
+        "text": "remove 1 Taint that is not bound"
+      }
+    }
+  }
+}

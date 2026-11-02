@@ -1,0 +1,17 @@
+{
+  "_id": "VvRvU79nao9ENx31",
+  "_key": "!items!VvRvU79nao9ENx31",
+  "name": "The Charge",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "Valtor",
+    "description": "<p>Strain 2, and the whole line moves at once. Movement is a sentence the table applies (core-rules 11), so this miracle is finished as written.</p>",
+    "effect": {
+      "area": 2,
+      "text": "Strain 2: every ally within 2 may Move their full value, at once, now"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

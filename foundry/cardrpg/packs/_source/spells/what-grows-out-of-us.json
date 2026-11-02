@@ -1,0 +1,16 @@
+{
+  "_id": "ryQzqn6IcGAQN8OC",
+  "_key": "!items!ryQzqn6IcGAQN8OC",
+  "name": "What Grows Out of Us",
+  "type": "spell",
+  "system": {
+    "strength": 5,
+    "source": "Brendan",
+    "description": "<p>Four turns. Then everybody stands up, including the ones who had stopped being people and started being ground.</p>",
+    "effect": {
+      "text": "at the start of your fourth turn after this, every ally including the dead stands at full Health"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

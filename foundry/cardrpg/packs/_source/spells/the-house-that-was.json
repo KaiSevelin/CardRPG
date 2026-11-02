@@ -1,0 +1,17 @@
+{
+  "_id": "vLChX3MLqzrrMwfg",
+  "_key": "!items!vLChX3MLqzrrMwfg",
+  "name": "The House That Was",
+  "type": "spell",
+  "system": {
+    "strength": 4,
+    "source": "Household Magic",
+    "description": "<p>Overnight a ruin is a house again: warm, defensible, and worth sleeping in. The party rests as though they had reached somewhere.</p>",
+    "effect": {
+      "timing": "ritual",
+      "text": "overnight a ruin becomes a house, and the party rests as in a town"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

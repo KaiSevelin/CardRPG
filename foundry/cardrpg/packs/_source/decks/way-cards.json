@@ -1,0 +1,68 @@
+{
+  "_id": "HdgFzLVmpGcrPSHf",
+  "_key": "!cards!HdgFzLVmpGcrPSHf",
+  "name": "Way Cards",
+  "type": "deck",
+  "cards": [
+    {
+      "_id": "UXw0VEFlETUWFouk",
+      "_key": "!cards.cards!HdgFzLVmpGcrPSHf.UXw0VEFlETUWFouk",
+      "sort": 100,
+      "name": "Set Spear",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Set Spear"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "defend"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "counter",
+        "costs": {},
+        "text": "an enemy ending its move adjacent takes your Strike"
+      }
+    },
+    {
+      "_id": "XrWcCpu3tauK0WHh",
+      "_key": "!cards.cards!HdgFzLVmpGcrPSHf.XrWcCpu3tauK0WHh",
+      "sort": 200,
+      "name": "Roll With It",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Roll With It"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "move",
+            "param": 3
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 2
+          }
+        ],
+        "reaction": "sidestep",
+        "reactionParam": 2,
+        "costs": {},
+        "text": "Sidestep 2, and you may end next to a different enemy"
+      }
+    }
+  ]
+}

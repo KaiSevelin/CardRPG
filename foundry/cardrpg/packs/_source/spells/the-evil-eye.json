@@ -1,0 +1,17 @@
+{
+  "_id": "OqHwqb0JLZ8b4Bfi",
+  "_key": "!items!OqHwqb0JLZ8b4Bfi",
+  "name": "The Evil Eye",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "Glamour",
+    "description": "<p>A temporary Miss in their fate deck, until it is drawn. The condition shuffles the card in by itself (core-rules 6), which is why the pair of these needed no mechanism of their own.</p>",
+    "effect": {
+      "range": 3,
+      "condition": "cursed"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

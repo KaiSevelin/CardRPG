@@ -1,0 +1,18 @@
+{
+  "_id": "XvbzrpIFLUedYHBn",
+  "_key": "!items!XvbzrpIFLUedYHBn",
+  "name": "The Slow Failure",
+  "type": "spell",
+  "system": {
+    "strength": 5,
+    "source": "The Purple",
+    "description": "<p>Tainting 3 on them and two Taint on you &mdash; which with the first taste is Afflicted. A priest of The Purple who casts their thesis is ill for good.</p>",
+    "effect": {
+      "verb": "tainting",
+      "param": 3,
+      "text": "and you gain 2 Taint yourself"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

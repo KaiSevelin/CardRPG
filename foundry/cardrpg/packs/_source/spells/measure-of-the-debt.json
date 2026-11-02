@@ -1,0 +1,16 @@
+{
+  "_id": "UMOgdqgva4RYg3PP",
+  "_key": "!items!UMOgdqgva4RYg3PP",
+  "name": "Measure of the Debt",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "The First",
+    "description": "<p>A Judged enemy that dies this round pays you 3 Health. The debt is collected whether or not you were the one who called it in.</p>",
+    "effect": {
+      "text": "a Judged enemy that dies this round: you gain 3 Health"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

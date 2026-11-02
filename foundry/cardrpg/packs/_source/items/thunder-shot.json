@@ -1,0 +1,24 @@
+{
+  "_id": "lO0TocZfgJMXjf1q",
+  "_key": "!items!lO0TocZfgJMXjf1q",
+  "name": "Thunder-shot",
+  "type": "item",
+  "system": {
+    "slot": "belt",
+    "tags": [
+      "consumable"
+    ],
+    "weight": 0,
+    "value": 80,
+    "consumed": true,
+    "ammoFor": [
+      "firearm"
+    ],
+    "shot": {
+      "area": 1,
+      "areaKind": "blast"
+    },
+    "blurb": "A paper cartridge of scrap. Nothing else gives a non-caster an area.",
+    "text": "Firearm only. The shot is Blast 1 on the target's square."
+  }
+}

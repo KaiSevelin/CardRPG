@@ -1,0 +1,30 @@
+{
+  "_id": "EDDDnODDCv6utT4W",
+  "_key": "!items!EDDDnODDCv6utT4W",
+  "name": "The Quenched Blade",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "fits": [
+      "back"
+    ],
+    "hands": 1,
+    "tags": [
+      "heavy",
+      "melee"
+    ],
+    "weight": 2,
+    "value": 2000,
+    "blurb": "Quenched in something that is still angry about it.",
+    "verbs": {
+      "strike": {
+        "value": 3,
+        "text": "on a hit, Burning 1 (1)"
+      },
+      "defend": {
+        "value": 1
+      }
+    },
+    "group": "wonder"
+  }
+}

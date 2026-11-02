@@ -1,0 +1,18 @@
+{
+  "_id": "PZm13zPC2uPccglr",
+  "_key": "!items!PZm13zPC2uPccglr",
+  "name": "Hold to the Bargain",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "Spiritualism",
+    "reaction": "bargain",
+    "description": "<p>It was going to fail. Something intervened, once, because it owes you.</p>",
+    "effect": {
+      "timing": "reaction",
+      "text": "an ally's failed check becomes a Partial. Once per pact per fight"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

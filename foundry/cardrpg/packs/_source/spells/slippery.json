@@ -1,0 +1,21 @@
+{
+  "_id": "xdsHdwFZySJjxEw9",
+  "_key": "!items!xdsHdwFZySJjxEw9",
+  "name": "Slippery",
+  "type": "spell",
+  "system": {
+    "strength": 1,
+    "source": "Elemental Magic",
+    "element": "water",
+    "description": "<p>Not enough water to drown in. Exactly enough to be impossible to hold.</p>",
+    "effect": {
+      "verb": "shake",
+      "param": 1,
+      "condition": "grappled",
+      "range": 2,
+      "text": "until your next turn they cannot be Grappled again"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

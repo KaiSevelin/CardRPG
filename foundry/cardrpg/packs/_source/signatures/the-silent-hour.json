@@ -1,0 +1,18 @@
+{
+  "_id": "PW55AC01xFx79svb",
+  "_key": "!items!PW55AC01xFx79svb",
+  "name": "The Silent Hour",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "The Grey",
+    "description": "<p>Reaction, adjacent only: an enemy's action does not happen. Close enough to touch, which is where the knife is.</p>",
+    "effect": {
+      "range": 1,
+      "timing": "reaction",
+      "text": "an adjacent enemy's action does not happen"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

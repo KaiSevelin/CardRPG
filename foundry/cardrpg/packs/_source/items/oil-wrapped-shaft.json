@@ -1,0 +1,26 @@
+{
+  "_id": "SYBsgOwaNU9Z0S1q",
+  "_key": "!items!SYBsgOwaNU9Z0S1q",
+  "name": "Oil-wrapped Shaft",
+  "type": "item",
+  "system": {
+    "slot": "belt",
+    "tags": [
+      "consumable"
+    ],
+    "weight": 0,
+    "value": 45,
+    "consumed": true,
+    "ammoFor": [
+      "bow",
+      "crossbow"
+    ],
+    "shot": {
+      "condition": "burning",
+      "duration": 2,
+      "intensity": 1
+    },
+    "blurb": "Tow and pitch below the head. Lit from the match in your teeth.",
+    "text": "Bow or crossbow. Burning 1 (2)."
+  }
+}

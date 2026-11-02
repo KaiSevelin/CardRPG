@@ -15,6 +15,9 @@
  */
 
 import { CARDRPG } from "./config.mjs";
+import { MINOR_GODS, ROSTER, VARIANTS, NATURAL_WEAPONS, NPC_GEAR } from "./content.mjs";
+import { expandRoster } from "./monsters.mjs";
+import { slateData } from "./setup.mjs";
 import {
   drawFate, deckOf, uprightCards, discardCards, cardName, addFateCards
 } from "./decks.mjs";
@@ -534,6 +537,147 @@ export async function resolveShake(actor, { amount = 1, target = actor, key }) {
  * and a stopper on your belt answers a hit -- so it is one function rather than the same filter
  * written out wherever something needs grabbing.
  */
+/* -------------------------------------------- */
+/*  Conjuration and shape                       */
+/* -------------------------------------------- */
+
+/** Every creature the roster can produce, by name: what a conjuration or a form may name. */
+export function creaturesByName() {
+  return new Map(expandRoster(ROSTER, VARIANTS).map(c => [c.name, c]));
+}
+
+/** The minor gods by name, which is the other thing a conjuration may name. */
+export function godsByName() {
+  return new Map(MINOR_GODS.map(g => [g.name, g]));
+}
+
+/**
+ * **Conjure something onto the field, on the terms the step sets.**
+ *
+ * What this does and does not do is worth being exact about. It settles and announces **the
+ * terms** -- what arrives, how many, whose side, how long, and what it costs per round -- and
+ * where the thing named is a creature the system can build, it builds the actor so the GM has a
+ * token to place. It does not place the token, because where a conjured thing appears is a
+ * judgement about the map that no card can make: *within 2* is a region, not a square.
+ *
+ * The upkeep is announced rather than charged. A conjuration's price is paid *per round it stands*
+ * and nothing here knows when it falls, so charging it now would be charging for a round that may
+ * not happen -- and the one thing worse than an unpaid price is a price paid twice.
+ */
+export async function resolveConjure(actor, { step }) {
+  const cfg = step.conjure ?? {};
+  const gods = godsByName();
+  const creatures = creaturesByName();
+
+  /* What is being called. A blank name is not a mistake: two cards say the GM decides, because a
+   * minor god is a person with its own opinions and a spell that commands one has misunderstood
+   * the arrangement. */
+  const named = cfg.name || "";
+  let what = game.i18n.localize(CARDRPG.conjureSources[cfg.from] ?? "CARDRPG.Conjure.Creature");
+  if (named) what = named;
+  if (named && cfg.from === "god" && !gods.has(named)) {
+    ui.notifications?.warn(`${named} is not one of the minor gods the world names.`);
+  }
+
+  const bits = [];
+  bits.push(cfg.count === 0 ? `every ${what} in range` : `${cfg.count ?? 1} × ${what}`);
+  if (step.range) bits.push(`within ${step.range}`);
+  if (cfg.side) bits.push(game.i18n.localize(CARDRPG.conjureSides[cfg.side]).toLowerCase());
+  if (step.duration) bits.push(`for ${step.duration} round${step.duration === 1 ? "" : "s"}`);
+  else if (cfg.side) bits.push("for the rest of the fight");
+  const upkeep = [];
+  if (cfg.upkeep?.taint) upkeep.push(`${cfg.upkeep.taint} Taint`);
+  if (cfg.upkeep?.health) upkeep.push(`${cfg.upkeep.health} Health`);
+
+  /*
+   * The actor, when the thing named is one the roster can make. `buildMonster` is the one builder
+   * for this -- it earns the creature its intent deck from its capabilities -- so a conjuration
+   * does not get a second, thinner way of making a creature exist.
+   */
+  let built = null;
+  if (named && creatures.has(named) && game.user.isGM) {
+    const { buildMonster } = await import("./setup.mjs");
+    built = await buildMonster(named);
+  }
+
+  await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<div class="cardrpg"><p><strong>${actor.name}</strong> conjures: `
+      + `${bits.join(", ")}.</p>`
+      + (upkeep.length ? `<p>Upkeep, each round it stands: ${upkeep.join(" and ")}.</p>` : "")
+      + (built ? `<p><em>${built.name}</em> is in the actors directory, with its intent deck.</p>`
+        : cfg.from === "corpse"
+          ? "<p>A body on the field is what it needs; the GM says which.</p>"
+          : "<p>The GM places it.</p>")
+      + "</div>"
+  });
+  return true;
+}
+
+/**
+ * **Take the shape of a creature in the roster.**
+ *
+ * A form names a creature and the creature supplies the numbers, which is the split a card and an
+ * item have had from the start. So a form arrives as the creature's own **natural weapons,
+ * equipped**: a body is what you fight with, and `Claws` is already an item with a Strike on it.
+ * Nothing new resolves a shaped Strike, because the ordinary item path already picks up whatever
+ * serves the verb.
+ *
+ * What a form does not touch, deliberately:
+ *
+ *   - **your deck**, because the deck is the character in this game. A shape that replaced it
+ *     would be a different character wearing your name.
+ *   - **your Health and your conditions**, because a bear that has forgotten it was poisoned is a
+ *     way out of a condition that no card should hand over for nothing.
+ *
+ * It ends when the form items are removed, and the message says so. A duration the engine enforced
+ * would need somewhere to keep it between turns, and nothing in this system owns that yet.
+ */
+export async function resolveShape(actor, { step }) {
+  const name = step.shape?.creature ?? "";
+  if (!name) return ui.notifications?.warn("This shape names no creature.");
+  const creature = creaturesByName().get(name);
+  if (!creature) {
+    return ui.notifications?.warn(`No creature called ${name} in the roster.`);
+  }
+
+  /* Its own gear, natural first: a form gives you the body, not the spear it was holding. */
+  const pool = [...NATURAL_WEAPONS, ...NPC_GEAR];
+  const bodies = (creature.equipped ?? [])
+    .map(n => pool.find(g => g.name === n))
+    .filter(g => g && (g.tags ?? []).includes("natural"));
+  if (!bodies.length) {
+    return ui.notifications?.warn(`${name} has no natural weapon to lend you.`);
+  }
+
+  /* Already shaped into this: a second helping would stack two sets of claws. */
+  const mark = `form:${name}`;
+  if (actor.items.some(i => i.getFlag("cardrpg", "form") === mark)) {
+    return ui.notifications?.info(`${actor.name} already wears the shape of ${name}.`);
+  }
+
+  await actor.createEmbeddedDocuments("Item", bodies.map(body => ({
+    ...slateData(body, "item"),
+    name: `${name} — ${body.name}`,
+    system: { ...slateData(body, "item").system, equipped: true },
+    flags: { cardrpg: { form: mark } }
+  })));
+
+  const how = bodies.map(b => `${b.name} (Strike ${b.verbs?.strike?.value ?? "?"})`).join(", ");
+  await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<div class="cardrpg"><p><strong>${actor.name}</strong> takes the shape of `
+      + `<em>${name}</em>: ${how}.</p>`
+      + `<p>Your deck, Health and conditions are your own still. `
+      + (step.duration ? `It holds for ${step.duration} round${step.duration === 1 ? "" : "s"}; `
+        : "")
+      + "remove the form items to end it.</p></div>"
+  });
+  return true;
+}
+
+/* -------------------------------------------- */
+
 export function withinReach(actor) {
   return (actor?.items ?? []).filter(i =>
     i.type === "item"

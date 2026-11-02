@@ -1,0 +1,18 @@
+{
+  "_id": "EQfL4YCXAyZK5Au1",
+  "_key": "!items!EQfL4YCXAyZK5Au1",
+  "name": "No Step Back",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "Valtor",
+    "description": "<p>Every ally within 2 gains Block 2 until your next turn. Valtor's answer to being outnumbered is that nobody moves.</p>",
+    "effect": {
+      "verb": "block",
+      "param": 2,
+      "area": 2
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

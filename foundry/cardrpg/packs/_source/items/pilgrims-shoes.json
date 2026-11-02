@@ -1,0 +1,14 @@
+{
+  "_id": "b95qRZpONkaBAdGZ",
+  "_key": "!items!b95qRZpONkaBAdGZ",
+  "name": "Pilgrim's Shoes",
+  "type": "item",
+  "system": {
+    "slot": "feet",
+    "weight": 1,
+    "value": 90,
+    "blurb": "Worn by somebody who got where they were going.",
+    "group": "wonder",
+    "text": "One extra rest token on every long rest."
+  }
+}

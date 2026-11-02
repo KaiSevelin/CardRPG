@@ -1,0 +1,176 @@
+{
+  "_id": "ZiWPnDYlNCBB1Cac",
+  "_key": "!actors!ZiWPnDYlNCBB1Cac",
+  "name": "Starter Warrior",
+  "type": "character",
+  "system": {
+    "health": {
+      "value": 12,
+      "base": 12
+    },
+    "way": "strength",
+    "rest": {
+      "tokens": 1,
+      "max": 1
+    },
+    "cash": {
+      "gold": 20
+    }
+  },
+  "items": [
+    {
+      "_id": "TrOtq7kEVkTKMqTD",
+      "_key": "!actors.items!ZiWPnDYlNCBB1Cac.TrOtq7kEVkTKMqTD",
+      "name": "Longsword",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "fits": [
+          "back"
+        ],
+        "hands": 1,
+        "tags": [
+          "heavy",
+          "melee"
+        ],
+        "weight": 2,
+        "value": 15,
+        "kind": "Weapon",
+        "blurb": "A plain cruciform blade, kept sharp.",
+        "verbs": {
+          "strike": {
+            "value": 3
+          },
+          "defend": {
+            "value": 1
+          }
+        },
+        "equipped": true
+      }
+    },
+    {
+      "_id": "eylbhNTM1maXAodJ",
+      "_key": "!actors.items!ZiWPnDYlNCBB1Cac.eylbhNTM1maXAodJ",
+      "name": "Wooden Shield",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "fits": [
+          "back"
+        ],
+        "hands": 1,
+        "tags": [
+          "shield"
+        ],
+        "weight": 3,
+        "value": 10,
+        "kind": "Shield",
+        "blurb": "Banded oak, scarred across the face.",
+        "verbs": {
+          "strike": {
+            "value": 1
+          },
+          "defend": {
+            "value": 2
+          }
+        },
+        "equipped": true
+      }
+    },
+    {
+      "_id": "cd10dx2sgDnOPGaA",
+      "_key": "!actors.items!ZiWPnDYlNCBB1Cac.cd10dx2sgDnOPGaA",
+      "name": "Leather Armor",
+      "type": "item",
+      "system": {
+        "slot": "body",
+        "hands": 1,
+        "tags": [
+          "armor"
+        ],
+        "weight": 5,
+        "value": 20,
+        "armor": 1,
+        "kind": "Armor",
+        "blurb": "Boiled and riveted, and it still smells of the tannery.",
+        "equipped": true
+      }
+    },
+    {
+      "_id": "q6ltR2vWjDzeNrJx",
+      "_key": "!actors.items!ZiWPnDYlNCBB1Cac.q6ltR2vWjDzeNrJx",
+      "name": "Healing Potion",
+      "type": "item",
+      "system": {
+        "slot": "belt",
+        "fits": [
+          "hands"
+        ],
+        "hands": 1,
+        "tags": [
+          "consumable"
+        ],
+        "weight": 0,
+        "value": 50,
+        "consumed": true,
+        "kind": "Consumable",
+        "blurb": "Thick, red, and tastes of iron.",
+        "verbs": {
+          "use": {
+            "value": 4,
+            "text": "Heal 4, then discard the item"
+          }
+        },
+        "equipped": true
+      }
+    },
+    {
+      "_id": "Vk9DNssyGafOjHoN",
+      "_key": "!actors.items!ZiWPnDYlNCBB1Cac.Vk9DNssyGafOjHoN",
+      "name": "Dagger",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "fits": [
+          "belt"
+        ],
+        "hands": 1,
+        "tags": [
+          "light",
+          "melee",
+          "thrown"
+        ],
+        "weight": 0,
+        "value": 2,
+        "kind": "Weapon",
+        "blurb": "Short, quick, and easy to hide.",
+        "verbs": {
+          "strike": {
+            "value": 2,
+            "range": 3,
+            "text": "range 3 thrown"
+          }
+        }
+      }
+    },
+    {
+      "_id": "38TLs7xkx8HfSkJF",
+      "_key": "!actors.items!ZiWPnDYlNCBB1Cac.38TLs7xkx8HfSkJF",
+      "name": "Strong",
+      "type": "feature",
+      "system": {
+        "group": "body",
+        "bonus": {
+          "verb": "strike",
+          "value": 1,
+          "requiresTag": "heavy"
+        },
+        "text": "+1 damage on Strike with Heavy items."
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Starter Warrior"
+  }
+}

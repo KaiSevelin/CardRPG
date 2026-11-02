@@ -1,0 +1,20 @@
+{
+  "_id": "wUr9TkKtJJ4qHKDb",
+  "_key": "!items!wUr9TkKtJJ4qHKDb",
+  "name": "Amulet of the Fed Thread",
+  "type": "item",
+  "system": {
+    "slot": "neck",
+    "weight": 0,
+    "value": 0,
+    "identified": false,
+    "unidentifiedName": "a knotted thread in amber",
+    "blurb": "The thread is mended. Something had to pay out the length.",
+    "curse": "Each time it saves you, one ally takes 3 damage. Lifted by dying anyway.",
+    "group": "wonder",
+    "active": {
+      "text": "When you would drop to 0 Health, drop to 1 instead.",
+      "boundary": "longRest"
+    }
+  }
+}

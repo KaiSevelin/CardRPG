@@ -1,0 +1,17 @@
+{
+  "_id": "dilBzGm5tPwKAdFy",
+  "_key": "!items!dilBzGm5tPwKAdFy",
+  "name": "The Borrowed Face",
+  "type": "spell",
+  "system": {
+    "strength": 3,
+    "source": "Fagar",
+    "description": "<p>Spent: one enemy spends this round attacking its own ally. It works once, which is the god.</p>",
+    "effect": {
+      "range": 3,
+      "text": "Spent: one enemy spends this round attacking its own ally"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

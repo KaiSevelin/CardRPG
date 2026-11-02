@@ -1,0 +1,17 @@
+{
+  "_id": "bLDmX4FldYjaoAtg",
+  "_key": "!items!bLDmX4FldYjaoAtg",
+  "name": "Wall of the Sphere",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "Elemental Magic",
+    "description": "<p>Three squares of whichever sphere is yours. Stand behind it and the ground in front of you is no longer anybody's.</p>",
+    "effect": {
+      "range": 3,
+      "text": "a 3-square line of your element: cover, and difficult ground, until your next turn"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

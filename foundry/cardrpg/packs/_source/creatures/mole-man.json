@@ -1,0 +1,55 @@
+{
+  "_id": "cvw02MIEUIobx2Cf",
+  "_key": "!actors!cvw02MIEUIobx2Cf",
+  "name": "Mole Man",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 8,
+      "base": 8
+    },
+    "kind": "mole-man",
+    "armorBase": 1,
+    "speed": 3,
+    "capabilities": [
+      "burrow",
+      "legs",
+      "pack"
+    ],
+    "tactics": [
+      "packTactics"
+    ],
+    "targetPriority": "weakest"
+  },
+  "items": [
+    {
+      "_id": "j8rMVeNNiuM2WVoD",
+      "_key": "!actors.items!cvw02MIEUIobx2Cf.j8rMVeNNiuM2WVoD",
+      "name": "Mole Pick",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 1,
+        "tags": [
+          "melee",
+          "natural"
+        ],
+        "weight": 2,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Weapon",
+        "verbs": {
+          "strike": {
+            "value": 4,
+            "ignores": 1
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Mole Man"
+  }
+}

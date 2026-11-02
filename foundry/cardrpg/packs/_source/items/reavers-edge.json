@@ -1,0 +1,27 @@
+{
+  "_id": "ShDWfM3R0ERLpJAs",
+  "_key": "!items!ShDWfM3R0ERLpJAs",
+  "name": "Reaver's Edge",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "fits": [
+      "back"
+    ],
+    "hands": 1,
+    "tags": [
+      "heavy",
+      "melee"
+    ],
+    "weight": 2,
+    "value": 1300,
+    "blurb": "It eats what it meets, slowly, and starts with the armour.",
+    "verbs": {
+      "strike": {
+        "value": 4,
+        "text": "on a Critical, Corrode 1"
+      }
+    },
+    "group": "wonder"
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "_id": "Ebht4Dy129zij2I4",
+  "_key": "!actors!Ebht4Dy129zij2I4",
+  "name": "Pincer",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 25,
+      "base": 25
+    },
+    "kind": "pincer",
+    "armorBase": 3,
+    "speed": 4,
+    "capabilities": [
+      "legs",
+      "grapple",
+      "commander",
+      "reach"
+    ],
+    "tactics": [
+      "commander",
+      "grappler"
+    ],
+    "targetPriority": "leader"
+  },
+  "items": [
+    {
+      "_id": "K0sVRjHwaTXjGkua",
+      "_key": "!actors.items!Ebht4Dy129zij2I4.K0sVRjHwaTXjGkua",
+      "name": "Grasping Claws",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 5,
+            "reach": 2
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Pincer"
+  }
+}

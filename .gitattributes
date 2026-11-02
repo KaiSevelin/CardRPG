@@ -1,0 +1,14 @@
+# Compendium packs are LevelDB: binary, byte-exact, and ruined by newline translation.
+#
+# This repository is checked out on Windows, where git rewrites LF to CRLF in anything it thinks
+# is text -- and it thinks a MANIFEST and a .log are text. A pack that has been through that
+# conversion still looks like a pack and fails to open, which is the worst of the two outcomes:
+# Foundry reports a corrupt compendium and nothing says why.
+*.ldb       binary
+*.log       binary
+MANIFEST-*  binary
+CURRENT     binary
+
+# The pack sources are JSON and meant to be read in a diff, so they stay text with LF endings --
+# the same bytes the generator writes, or every rebuild shows every file as changed.
+foundry/cardrpg/packs/_source/**/*.json text eol=lf

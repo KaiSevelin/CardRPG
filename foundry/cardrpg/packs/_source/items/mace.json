@@ -1,0 +1,27 @@
+{
+  "_id": "2b5H2NESl8e15u9h",
+  "_key": "!items!2b5H2NESl8e15u9h",
+  "name": "Mace",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "fits": [
+      "belt"
+    ],
+    "hands": 1,
+    "tags": [
+      "heavy",
+      "melee"
+    ],
+    "weight": 2,
+    "value": 10,
+    "blurb": "Flanged. It does not cut, which is the point against a man in mail.",
+    "verbs": {
+      "strike": {
+        "value": 3,
+        "ignores": 1,
+        "text": "ignores 1 armor"
+      }
+    }
+  }
+}

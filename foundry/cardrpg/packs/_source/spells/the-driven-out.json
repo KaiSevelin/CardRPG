@@ -1,0 +1,21 @@
+{
+  "_id": "U6IjhDqPgfy3syAV",
+  "_key": "!items!U6IjhDqPgfy3syAV",
+  "name": "The Driven Out",
+  "type": "spell",
+  "system": {
+    "strength": 4,
+    "source": "Vulpet",
+    "description": "<p>Everything within three squares wants you and nothing else, and you are three Block better off for each one of them. It is a good trade and a terrible position.</p>",
+    "effect": {
+      "area": 3,
+      "condition": "compelled",
+      "duration": 1,
+      "resist": "presence",
+      "dc": 7,
+      "text": "and you gain Block 3 for each enemy Compelled"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

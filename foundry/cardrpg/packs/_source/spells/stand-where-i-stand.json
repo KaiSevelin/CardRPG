@@ -1,0 +1,20 @@
+{
+  "_id": "CwRcc9jbyjaAoWxB",
+  "_key": "!items!CwRcc9jbyjaAoWxB",
+  "name": "Stand Where I Stand",
+  "type": "spell",
+  "system": {
+    "strength": 1,
+    "source": "Vax",
+    "cost": {
+      "health": 2
+    },
+    "description": "<p>Allies adjacent to you cannot be reduced below 1 Health until your next turn. Costs 2 Health, because his miracles are paid in yours.</p>",
+    "effect": {
+      "range": 1,
+      "text": "adjacent allies cannot be reduced below 1 Health"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

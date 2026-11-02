@@ -1,0 +1,26 @@
+{
+  "_id": "jlQCW5ZSEBH6cyvq",
+  "_key": "!items!jlQCW5ZSEBH6cyvq",
+  "name": "Potion of the Hare",
+  "type": "item",
+  "system": {
+    "slot": "belt",
+    "fits": [
+      "hands"
+    ],
+    "hands": 1,
+    "tags": [
+      "consumable"
+    ],
+    "weight": 0,
+    "value": 55,
+    "consumed": true,
+    "blurb": "It tastes of running, which is not a taste anyone can describe.",
+    "verbs": {
+      "use": {
+        "value": 0,
+        "text": "for the fight your Move values are +2"
+      }
+    }
+  }
+}

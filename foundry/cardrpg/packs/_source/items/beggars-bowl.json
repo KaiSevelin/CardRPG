@@ -1,0 +1,17 @@
+{
+  "_id": "dcV8SdfCgEpGH1Qx",
+  "_key": "!items!dcV8SdfCgEpGH1Qx",
+  "name": "Beggar's Bowl",
+  "type": "item",
+  "system": {
+    "slot": "pack",
+    "weight": 1,
+    "value": 500,
+    "blurb": "Whatever is dropped in it stops being anybody's.",
+    "group": "wonder",
+    "active": {
+      "text": "Lift Blessed or Cursed from anyone adjacent.",
+      "boundary": "longRest"
+    }
+  }
+}

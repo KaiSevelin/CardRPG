@@ -26,6 +26,7 @@ import {
   resolveAttack, resolveDefend, resolveHeal, resolveUse, resolveCondition, resolveShake,
   reachableAmmo, isUsable,
   resolveTaint, resolveCorrode, liftCondition, resolveForesee, collectBonuses,
+  resolveConjure, resolveShape,
   itemMeets, requireText, payToCast, answerCast, grantBlock, resolveCheck, passiveScore
 } from "./resolve.mjs";
 import {
@@ -1910,6 +1911,19 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         await resolveHeal(actor, { amount: step.param ?? 0 });
         return;
 
+      /*
+       * Conjuring and shaping both read their own sub-schema rather than the step's bare numbers,
+       * because what separates the lesser necromancy from the greater is entirely how many, how
+       * long and at what price -- and that was six cards' worth of prose before it was a field.
+       */
+      case "conjure":
+        await resolveConjure(actor, { step });
+        return;
+
+      case "shape":
+        await resolveShape(actor, { step });
+        return;
+
       case "use": {
         const item = this.#itemFor("use", half);
         if (!item) return ui.notifications.warn("No usable item equipped. Equip a potion first.");
@@ -1929,10 +1943,26 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
        * on a Strike or Cast is handled below, after that verb has resolved.
        */
       case "":
-        if (!step.condition) break;
-        if (!targets.length) return ui.notifications.warn("Target a token first.");
-        for (const target of targets) await resolveCondition(actor, { step, target });
-        return;
+        if (step.condition) {
+          if (!targets.length) return ui.notifications.warn("Target a token first.");
+          for (const target of targets) await resolveCondition(actor, { step, target });
+          return;
+        }
+        /*
+         * **And a step that is only prose FALLS THROUGH to the announcement**, rather than
+         * breaking out of a switch that is the end of this method.
+         *
+         * It used to break, which meant seventy-five steps did nothing when played -- no effect,
+         * no prompt, not even a line in chat. The branch below announces any verb the engine does
+         * not recognise, so the position was exactly backwards: a step with a made-up verb reached
+         * the table and a step with a blank one was discarded. `initial: ""` on the schema is what
+         * hid it, because content omits the key and the data model fills it in.
+         *
+         * The table resolves these, and that is fine -- a hundred and twenty-seven of them say
+         * things no engine should try to adjudicate. What is not fine is the table never hearing
+         * about it.
+         */
+        /* falls through */
 
       default:
         await ChatMessage.create({

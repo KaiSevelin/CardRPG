@@ -1,0 +1,16 @@
+{
+  "_id": "wowCNUlDPcmk2GgB",
+  "_key": "!items!wowCNUlDPcmk2GgB",
+  "name": "Breath for the Dying",
+  "type": "spell",
+  "system": {
+    "strength": 5,
+    "source": "The Eternal Spirit",
+    "description": "<p>Everybody who had fallen is standing, at half. You will carry nothing at all until tomorrow, which in a dungeon is a real price and not a flourish.</p>",
+    "effect": {
+      "text": "every ally at 0 Health stands at half Health. You may carry nothing for the rest of the day"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

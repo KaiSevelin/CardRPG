@@ -1,0 +1,54 @@
+{
+  "_id": "SE4p2HXJ5XWjTDob",
+  "_key": "!actors!SE4p2HXJ5XWjTDob",
+  "name": "Sweeper",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 8,
+      "base": 8
+    },
+    "kind": "sweeper",
+    "armorBase": 1,
+    "speed": 7,
+    "capabilities": [
+      "flight",
+      "fast"
+    ],
+    "tactics": [
+      "skirmisher",
+      "ambusher"
+    ],
+    "targetPriority": "weakest"
+  },
+  "items": [
+    {
+      "_id": "GvPgy9MZS9S07q9u",
+      "_key": "!actors.items!SE4p2HXJ5XWjTDob.GvPgy9MZS9S07q9u",
+      "name": "Claws",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 4
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Sweeper"
+  }
+}

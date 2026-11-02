@@ -1,0 +1,18 @@
+{
+  "_id": "eNMt9SFpU7Qr6hpn",
+  "_key": "!items!eNMt9SFpU7Qr6hpn",
+  "name": "Helm of the Watchful",
+  "type": "item",
+  "system": {
+    "slot": "head",
+    "tags": [
+      "armor"
+    ],
+    "weight": 2,
+    "value": 1500,
+    "armor": 1,
+    "blurb": "Nothing comes at you from a side you were not already watching.",
+    "group": "wonder",
+    "text": "You are never surprised and cannot be Dazed."
+  }
+}

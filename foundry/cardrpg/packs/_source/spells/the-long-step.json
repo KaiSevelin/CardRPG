@@ -1,0 +1,19 @@
+{
+  "_id": "2yfcncwgoOMtAH4G",
+  "_key": "!items!2yfcncwgoOMtAH4G",
+  "name": "The Long Step",
+  "type": "spell",
+  "system": {
+    "strength": 1,
+    "source": "Shadow Magic",
+    "wilds": 1,
+    "description": "<p>Four squares, through whatever is in between, so long as both ends are dark. Movement is a sentence the table applies (core-rules 11), so the only thing the engine would have to know is which squares are shadowed.</p>",
+    "effect": {
+      "verb": "move",
+      "mod": 4,
+      "text": "through anything, if you begin and end in shadow"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

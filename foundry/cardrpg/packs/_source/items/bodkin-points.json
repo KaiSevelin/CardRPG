@@ -1,0 +1,24 @@
+{
+  "_id": "XzWtFTEJT7ReuFzL",
+  "_key": "!items!XzWtFTEJT7ReuFzL",
+  "name": "Bodkin Points",
+  "type": "item",
+  "system": {
+    "slot": "belt",
+    "tags": [
+      "consumable"
+    ],
+    "weight": 0,
+    "value": 25,
+    "consumed": true,
+    "ammoFor": [
+      "bow",
+      "crossbow"
+    ],
+    "shot": {
+      "ignores": 2
+    },
+    "blurb": "A square spike, hardened. It is looking for a gap and will make one.",
+    "text": "Bow or crossbow. Ignores 2 armor."
+  }
+}

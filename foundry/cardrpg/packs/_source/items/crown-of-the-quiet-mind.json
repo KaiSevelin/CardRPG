@@ -1,0 +1,16 @@
+{
+  "_id": "PF5GqacmRAOeTGg0",
+  "_key": "!items!PF5GqacmRAOeTGg0",
+  "name": "Crown of the Quiet Mind",
+  "type": "item",
+  "system": {
+    "slot": "head",
+    "weight": 1,
+    "value": 1400,
+    "blurb": "Thin gold. Nothing in your head hurries while it is on.",
+    "group": "wonder",
+    "grants": {
+      "handSize": 1
+    }
+  }
+}

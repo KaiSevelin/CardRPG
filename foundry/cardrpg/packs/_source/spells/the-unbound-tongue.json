@@ -1,0 +1,19 @@
+{
+  "_id": "riKWVfSuq7HSsySs",
+  "_key": "!items!riKWVfSuq7HSsySs",
+  "name": "The Unbound Tongue",
+  "type": "spell",
+  "system": {
+    "strength": 1,
+    "source": "Ward Magic",
+    "description": "<p>The cheapest formula in the school and the one that beats the school: a warder with this prepared cannot be silenced out of the fight.</p>",
+    "effect": {
+      "verb": "shake",
+      "param": 1,
+      "condition": "silenced",
+      "range": 3
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

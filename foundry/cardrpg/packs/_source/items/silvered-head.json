@@ -1,0 +1,22 @@
+{
+  "_id": "F3RmAT00rkztLgEO",
+  "_key": "!items!F3RmAT00rkztLgEO",
+  "name": "Silvered Head",
+  "type": "item",
+  "system": {
+    "slot": "belt",
+    "tags": [
+      "consumable"
+    ],
+    "weight": 0,
+    "value": 90,
+    "consumed": true,
+    "ammoFor": [
+      "bow",
+      "crossbow"
+    ],
+    "shotEffect": "seesInvisible",
+    "blurb": "Silver remembers what it was aimed at.",
+    "text": "Bow or crossbow. You may target an Invisible enemy you have seen this fight."
+  }
+}

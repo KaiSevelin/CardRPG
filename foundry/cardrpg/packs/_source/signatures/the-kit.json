@@ -1,0 +1,11 @@
+{
+  "_id": "aiQuBHBrkGcx2FPE",
+  "_key": "!items!aiQuBHBrkGcx2FPE",
+  "name": "The Kit",
+  "type": "item",
+  "system": {
+    "slot": "pack",
+    "weight": 3,
+    "text": "You may never put it down. Every Hard physical obstacle becomes Normal."
+  }
+}

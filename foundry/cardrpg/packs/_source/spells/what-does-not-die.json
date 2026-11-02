@@ -1,0 +1,16 @@
+{
+  "_id": "2VNWkFD6hkxRwBbv",
+  "_key": "!items!2VNWkFD6hkxRwBbv",
+  "name": "What Does Not Die",
+  "type": "spell",
+  "system": {
+    "strength": 3,
+    "source": "The First",
+    "description": "<p>When you would drop to 0 Health, drop to 1 instead &mdash; and lose a spell slot permanently.</p>",
+    "effect": {
+      "text": "drop to 1 instead of 0, and lose a spell slot for good"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

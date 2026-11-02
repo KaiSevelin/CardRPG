@@ -1,0 +1,25 @@
+{
+  "_id": "gEzDZvC3JSOCXAgA",
+  "_key": "!items!gEzDZvC3JSOCXAgA",
+  "name": "Kite Shield",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "fits": [
+      "back"
+    ],
+    "hands": 1,
+    "tags": [
+      "shield"
+    ],
+    "weight": 4,
+    "value": 24,
+    "blurb": "Long enough to cover the leg a horseman cannot move.",
+    "verbs": {
+      "defend": {
+        "value": 2,
+        "text": "Defend 3 against Ranged"
+      }
+    }
+  }
+}

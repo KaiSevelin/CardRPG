@@ -1,0 +1,26 @@
+{
+  "_id": "h0kAIXilALowkbKv",
+  "_key": "!items!h0kAIXilALowkbKv",
+  "name": "Screaming Shaft",
+  "type": "item",
+  "system": {
+    "slot": "belt",
+    "tags": [
+      "consumable"
+    ],
+    "weight": 0,
+    "value": 35,
+    "consumed": true,
+    "ammoFor": [
+      "bow"
+    ],
+    "shot": {
+      "condition": "dazed",
+      "duration": 1,
+      "resist": "presence",
+      "dc": 5
+    },
+    "blurb": "Bored through so the air goes through it wrong.",
+    "text": "Bow. Dazed (1), resist Presence 5."
+  }
+}

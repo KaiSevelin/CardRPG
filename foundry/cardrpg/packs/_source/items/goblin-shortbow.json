@@ -1,0 +1,26 @@
+{
+  "_id": "pZnqEHRuQRAgWwCD",
+  "_key": "!items!pZnqEHRuQRAgWwCD",
+  "name": "Goblin Shortbow",
+  "type": "item",
+  "system": {
+    "ammo": "bow",
+    "slot": "hands",
+    "fits": [
+      "back"
+    ],
+    "hands": 2,
+    "tags": [
+      "ranged"
+    ],
+    "weight": 1,
+    "value": 0,
+    "npcGear": true,
+    "verbs": {
+      "strike": {
+        "value": 3,
+        "range": 6
+      }
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "_id": "13nQUZOJrvrmaGEj",
+  "_key": "!items!13nQUZOJrvrmaGEj",
+  "name": "Gauntlet of the Open Palm",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "hands": 1,
+    "tags": [
+      "armor"
+    ],
+    "weight": 2,
+    "value": 0,
+    "identified": false,
+    "unidentifiedName": "a fine plated gauntlet",
+    "blurb": "Beautifully made, and it will not close.",
+    "curse": "You may not hold a weapon in that hand. Lifted by a Cleansing.",
+    "group": "wonder",
+    "bonus": {
+      "verb": "defend",
+      "value": 1
+    }
+  }
+}

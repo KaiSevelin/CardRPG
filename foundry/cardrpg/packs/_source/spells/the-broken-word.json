@@ -1,0 +1,16 @@
+{
+  "_id": "1bNXAWoHCfsoBhTf",
+  "_key": "!items!1bNXAWoHCfsoBhTf",
+  "name": "The Broken Word",
+  "type": "spell",
+  "system": {
+    "strength": 5,
+    "source": "Ward Magic",
+    "description": "<p>They still have the slot. They no longer have the words, and will not until tomorrow &mdash; which to a caster is worse than a wound.</p>",
+    "effect": {
+      "text": "Spent: one spell or miracle is unlearned by its caster for the rest of the day"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

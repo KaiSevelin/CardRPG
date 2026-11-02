@@ -1,0 +1,18 @@
+{
+  "_id": "ogfUCqPNydKDfWfO",
+  "_key": "!items!ogfUCqPNydKDfWfO",
+  "name": "Not Here",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "Glamour",
+    "description": "<p>You are standing exactly where you are standing. Nobody can be told so.</p>",
+    "effect": {
+      "condition": "invisible",
+      "duration": 1,
+      "text": "until you attack or are attacked"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

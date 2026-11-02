@@ -1,0 +1,28 @@
+{
+  "_id": "rETgRGqumO3ujSiK",
+  "_key": "!items!rETgRGqumO3ujSiK",
+  "name": "Fire Wand",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "fits": [
+      "belt"
+    ],
+    "hands": 1,
+    "tags": [
+      "arcane"
+    ],
+    "weight": 0,
+    "value": 0,
+    "blurb": "Blackened at the tip, and warm even unused.",
+    "verbs": {
+      "cast": {
+        "value": 2,
+        "range": 4,
+        "area": 1,
+        "areaKind": "blast"
+      }
+    },
+    "group": "make"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "_id": "6DXwCvElApQLgNHD",
+  "_key": "!items!6DXwCvElApQLgNHD",
+  "name": "Mnemonic Stone",
+  "type": "item",
+  "system": {
+    "slot": "fingers",
+    "weight": 0,
+    "value": 800,
+    "blurb": "Worn smooth by a thumb that was trying to remember something.",
+    "group": "wonder",
+    "text": "One extra skill card in your skill deck, of any approach you already have."
+  }
+}

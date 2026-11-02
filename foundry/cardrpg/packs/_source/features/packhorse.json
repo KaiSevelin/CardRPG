@@ -1,0 +1,12 @@
+{
+  "_id": "32JrFmx5JnqEXXXz",
+  "_key": "!items!32JrFmx5JnqEXXXz",
+  "name": "Packhorse",
+  "type": "feature",
+  "system": {
+    "grants": {
+      "carry": 20
+    },
+    "text": "+20 kg carry allowance."
+  }
+}

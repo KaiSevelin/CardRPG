@@ -1,0 +1,18 @@
+{
+  "_id": "QwuBo6MMGwMqV1Ky",
+  "_key": "!items!QwuBo6MMGwMqV1Ky",
+  "name": "Where It Will Land",
+  "type": "spell",
+  "system": {
+    "strength": 1,
+    "source": "Divination",
+    "description": "<p>Your own deck, one card down. The cheapest certainty in the game.</p>",
+    "effect": {
+      "verb": "foresee",
+      "param": 1,
+      "text": "on your own fate deck"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

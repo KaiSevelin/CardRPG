@@ -1,0 +1,19 @@
+{
+  "_id": "lcZmJNCxGMVCQXgR",
+  "_key": "!items!lcZmJNCxGMVCQXgR",
+  "name": "The Mark of Things to Come",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "Divination",
+    "description": "<p>Marked at any range, and you know what its luck is about to do. The condition lands by itself; the reading is the half that does not.</p>",
+    "effect": {
+      "range": 99,
+      "condition": "marked",
+      "duration": 1,
+      "text": "and Read 1 on its fate deck"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

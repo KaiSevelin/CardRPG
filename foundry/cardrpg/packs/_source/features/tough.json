@@ -1,0 +1,12 @@
+{
+  "_id": "DaicvvW12IhJ3FvC",
+  "_key": "!items!DaicvvW12IhJ3FvC",
+  "name": "Tough",
+  "type": "feature",
+  "system": {
+    "grants": {
+      "health": 4
+    },
+    "text": "+4 max Health."
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "_id": "0BgWFPXUoCkQN5Rq",
+  "_key": "!items!0BgWFPXUoCkQN5Rq",
+  "name": "Drowned Bell",
+  "type": "item",
+  "system": {
+    "slot": "belt",
+    "weight": 2,
+    "value": 400,
+    "blurb": "It rings wet. There is no water in it.",
+    "group": "wonder",
+    "active": {
+      "text": "Everything within 2 is Wet (1).",
+      "boundary": "combat"
+    }
+  }
+}

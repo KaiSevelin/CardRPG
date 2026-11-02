@@ -1,0 +1,17 @@
+{
+  "_id": "k1KfbDKlt11gEVvl",
+  "_key": "!items!k1KfbDKlt11gEVvl",
+  "name": "The Weight of It",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "The Eternal God",
+    "description": "<p>Named, and then weighed. For one round its armour is worth nothing to anybody on the field, which is a gift to the whole line rather than to you.</p>",
+    "effect": {
+      "range": 6,
+      "text": "a Judged enemy's armor counts 0 against everyone until your next turn"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

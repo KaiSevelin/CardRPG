@@ -1,0 +1,12 @@
+{
+  "_id": "rkm40pZcEXHv7JT1",
+  "_key": "!items!rkm40pZcEXHv7JT1",
+  "name": "Nothing Gets Through",
+  "type": "feature",
+  "system": {
+    "armor": {
+      "doubleWhenOverloaded": true
+    },
+    "text": "While you are Overloaded, your armor counts double."
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "_id": "59BfA9oNQHcBENBW",
+  "_key": "!items!59BfA9oNQHcBENBW",
+  "name": "Pilgrim's Token",
+  "type": "item",
+  "system": {
+    "slot": "neck",
+    "weight": 0,
+    "value": 3,
+    "blurb": "Tin, stamped at a shrine. Worth nothing and proof of everything.",
+    "group": "power",
+    "bonus": {
+      "approach": "lore",
+      "value": 1,
+      "situation": "matters of one named faith"
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "_id": "YJCLgL2Rt7boKFP6",
+  "_key": "!items!YJCLgL2Rt7boKFP6",
+  "name": "Thunderstone",
+  "type": "item",
+  "system": {
+    "slot": "pack",
+    "weight": 1,
+    "value": 650,
+    "blurb": "Throw it down hard. Do not be holding it.",
+    "group": "wonder",
+    "active": {
+      "text": "One enemy within 3 is Stunned (1), resist Might 7.",
+      "boundary": "combat"
+    }
+  }
+}

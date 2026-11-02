@@ -1,0 +1,18 @@
+{
+  "_id": "48IqAA9iT1FpMz1H",
+  "_key": "!items!48IqAA9iT1FpMz1H",
+  "name": "The Brewer's Tithe",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "The Purple",
+    "description": "<p>Slow, and still there next week. A disease rather than a poison, which is the distinction the whole cult is built on.</p>",
+    "effect": {
+      "verb": "tainting",
+      "param": 2,
+      "text": "slow: a disease, not a poison"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

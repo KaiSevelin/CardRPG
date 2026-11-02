@@ -65,6 +65,80 @@ export function stepField() {
     }),
     duration: new fields.NumberField({ integer: true, min: 0, nullable: true, initial: null }),
     /*
+     * **How long after this turn the step waits before it happens.** `duration` says how long an
+     * effect lasts; this says when it starts.
+     *
+     * Three steps said it in prose -- *at the start of your second turn after*, *at the start of
+     * your third turn after this* -- and a delayed effect that the engine cannot see is one the
+     * table forgets, because the card is back in the discard by the time it matters.
+     */
+    delay: new fields.NumberField({ integer: true, min: 1, nullable: true, initial: null }),
+    /*
+     * **When this step may be played at all**, which is a different question from what it does.
+     *
+     * Thirty-two steps carried this in prose and the engine could not read any of it: nine said
+     * `permanent:`, nine `reaction:`, seven `ritual:`, four `out of combat:`, two `Strain N`, one
+     * `before a fight`. A ritual played in the middle of a fight is not a rules argument the
+     * software should leave to the table when the card already says so.
+     *
+     * `permanent` is the odd one and the reason this is not just a boolean: nine steps beginning
+     * *permanent: +1 armor* are not steps at all. They are passive grants wearing a step's
+     * clothes, and naming the timing is what makes that visible.
+     */
+    timing: new fields.StringField({
+      required: false, blank: true, initial: "",
+      choices: [...Object.keys(CARDRPG.timings), ""]
+    }),
+
+    /*
+     * **What a `conjure` step calls up, and on what terms.**
+     *
+     * Every field here was a difference between two spells that the prose carried and the engine
+     * could not: *a corpse within 2 rises and fights for you until the fight ends* against *every
+     * corpse within 3 rises and fights for you for one round, then falls* is one `from`, two
+     * `count`s, two durations and two ranges. Written out, the pair is one effect configured twice.
+     *
+     * `name` is blank for *the GM decides how*, which two cards say outright -- a minor god is a
+     * person with its own opinions, and a spell that commands one is a spell that has misunderstood
+     * the arrangement.
+     *
+     * `count: 0` means every eligible thing in range, because *one* and *all* are the two numbers
+     * the cards actually use and a null would have to mean one of them.
+     *
+     * `upkeep` is paid per round the thing stands, which is the price The Grave's Bargain already
+     * printed: *one bound Taint per round they stood*.
+     */
+    conjure: new fields.SchemaField({
+      from: new fields.StringField({
+        required: false, blank: true, initial: "",
+        choices: [...Object.keys(CARDRPG.conjureSources), ""]
+      }),
+      name: new fields.StringField({ required: false, blank: true, initial: "" }),
+      count: new fields.NumberField({ integer: true, min: 0, nullable: true, initial: null }),
+      side: new fields.StringField({
+        required: false, blank: true, initial: "",
+        choices: [...Object.keys(CARDRPG.conjureSides), ""]
+      }),
+      upkeep: new fields.SchemaField({
+        taint: new fields.NumberField({ integer: true, min: 0, nullable: true, initial: null }),
+        health: new fields.NumberField({ integer: true, min: 0, nullable: true, initial: null })
+      })
+    }),
+
+    /*
+     * **What a `shape` step turns you into.**
+     *
+     * One field, because a form is a creature in the roster and the creature already says
+     * everything else: its natural weapons are what you fight with, and a second table of forms
+     * would be a second description of forty-seven creatures that already exist. Two descriptions
+     * of a thing drift, which this project has now watched happen twice.
+     *
+     * The step's own `duration` says how long you hold it.
+     */
+    shape: new fields.SchemaField({
+      creature: new fields.StringField({ required: false, blank: true, initial: "" })
+    }),
+    /*
      * Intensity, for a `valued` condition: Burning 3 (2). Ignored by the ones without it.
      * The floor is 0 because Poisoned 0 -- all nausea, no damage -- is the bottom of that scale.
      */

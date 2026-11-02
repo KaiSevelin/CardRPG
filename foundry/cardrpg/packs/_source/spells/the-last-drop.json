@@ -1,0 +1,16 @@
+{
+  "_id": "rsqWHNwNHMi3b6Jy",
+  "_key": "!items!rsqWHNwNHMi3b6Jy",
+  "name": "The Last Drop",
+  "type": "spell",
+  "system": {
+    "strength": 5,
+    "source": "Blood Magic",
+    "description": "<p>You will not be standing afterwards. You will have had two turns.</p>",
+    "effect": {
+      "text": "take your whole turn again, now. Costs half your current Health, rounded up"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

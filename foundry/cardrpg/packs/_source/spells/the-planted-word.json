@@ -1,0 +1,16 @@
+{
+  "_id": "J7pGkQktpqFFTIJN",
+  "_key": "!items!J7pGkQktpqFFTIJN",
+  "name": "The Planted Word",
+  "type": "spell",
+  "system": {
+    "strength": 1,
+    "source": "The Yellow",
+    "description": "<p>Name one enemy type before the fight. While you spend a secondary each round, that type cannot play reactions.</p>",
+    "effect": {
+      "text": "while you spend a secondary, one enemy type cannot play reactions"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

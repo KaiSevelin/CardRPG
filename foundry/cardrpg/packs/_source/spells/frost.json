@@ -1,0 +1,25 @@
+{
+  "_id": "5rrWCc0Yc75H945V",
+  "_key": "!items!5rrWCc0Yc75H945V",
+  "name": "Frost",
+  "type": "spell",
+  "system": {
+    "strength": 1,
+    "source": "Elemental Magic",
+    "element": "frost",
+    "description": "<p>One target, one round, no damage. Against a Wet target the water is already there to freeze, so the save goes from Normal to Heroic and nothing else changes.</p>",
+    "effect": {
+      "range": 3,
+      "condition": "slowed",
+      "duration": 1,
+      "resist": "agility",
+      "dc": 5,
+      "when": {
+        "needs": "wet",
+        "dc": 9
+      }
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

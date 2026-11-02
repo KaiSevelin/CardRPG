@@ -1,0 +1,61 @@
+{
+  "_id": "HhrW1Nfov2Dd3DGS",
+  "_key": "!actors!HhrW1Nfov2Dd3DGS",
+  "name": "Slitherer Brood",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 4,
+      "base": 4
+    },
+    "kind": "slitherer-brood",
+    "armorBase": 1,
+    "speed": 5,
+    "capabilities": [
+      "legs",
+      "stealth",
+      "venom",
+      "pack"
+    ],
+    "tactics": [
+      "ambusher",
+      "packTactics"
+    ],
+    "targetPriority": "weakest",
+    "signature": {
+      "condition": "poisoned",
+      "intensity": 1,
+      "duration": 2
+    }
+  },
+  "items": [
+    {
+      "_id": "XOENpY2ba8I385IW",
+      "_key": "!actors.items!HhrW1Nfov2Dd3DGS.XOENpY2ba8I385IW",
+      "name": "Mandibles",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 3
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Slitherer Brood"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "_id": "Ul5nluDvcfmg9li4",
+  "_key": "!items!Ul5nluDvcfmg9li4",
+  "name": "The Long Table",
+  "type": "spell",
+  "system": {
+    "strength": 3,
+    "source": "Household Magic",
+    "description": "<p>One meal, taken together, and nobody is carrying anything from before it. Once a day, and the elf-kin keep the tally &mdash; which is this school's price doing exactly what a price should.</p>",
+    "effect": {
+      "timing": "ritual",
+      "text": "the party sheds every Wound and all rest tokens return. Once a day"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

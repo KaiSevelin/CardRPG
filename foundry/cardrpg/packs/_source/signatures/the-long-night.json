@@ -1,0 +1,19 @@
+{
+  "_id": "HU13EgWyIx3CecK7",
+  "_key": "!items!HU13EgWyIx3CecK7",
+  "name": "The Long Night",
+  "type": "spell",
+  "system": {
+    "strength": 3,
+    "source": "The First",
+    "description": "<p>Drain 3 Health from an adjacent living target and gain it. The only renewable pool in the game, and the node says what it costs to have one.</p>",
+    "effect": {
+      "verb": "cast",
+      "range": 1,
+      "mod": 3,
+      "text": "you gain the Health you take"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

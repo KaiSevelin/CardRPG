@@ -1,0 +1,58 @@
+{
+  "_id": "FywH1jVJ8tzhHzEo",
+  "_key": "!actors!FywH1jVJ8tzhHzEo",
+  "name": "Skaah Bloated",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 60,
+      "base": 60
+    },
+    "kind": "skaah-bloated",
+    "armorBase": 1,
+    "speed": 3,
+    "capabilities": [
+      "flight",
+      "transport",
+      "shelter",
+      "spray"
+    ],
+    "tactics": [
+      "bodyguard"
+    ],
+    "targetPriority": "nearest"
+  },
+  "items": [
+    {
+      "_id": "ptADDFO5e9NAdn44",
+      "_key": "!actors.items!FywH1jVJ8tzhHzEo.ptADDFO5e9NAdn44",
+      "name": "Acid Spray",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "ranged",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 4,
+            "range": 3,
+            "area": 1,
+            "ignores": 2
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Skaah Bloated"
+  }
+}

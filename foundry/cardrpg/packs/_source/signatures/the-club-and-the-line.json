@@ -1,0 +1,22 @@
+{
+  "_id": "M2tnvWW8LY9x6Yli",
+  "_key": "!items!M2tnvWW8LY9x6Yli",
+  "name": "The Club and the Line",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "Vax",
+    "cost": {
+      "health": 2
+    },
+    "description": "<p>Strike every adjacent enemy. No free hand needed, because the club is the holy symbol &mdash; which is the gift on the node, not on the card.</p>",
+    "effect": {
+      "verb": "cast",
+      "area": 1,
+      "areaKind": "blast",
+      "text": "with the weapon in hand"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

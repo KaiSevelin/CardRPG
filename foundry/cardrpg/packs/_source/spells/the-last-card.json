@@ -1,0 +1,16 @@
+{
+  "_id": "kCi0pUti4OS2H1W8",
+  "_key": "!items!kCi0pUti4OS2H1W8",
+  "name": "The Last Card",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "Asceticism",
+    "description": "<p>One card left, and it does both jobs. A hand of one is the worst hand in the game and this is the formula that makes it the best.</p>",
+    "effect": {
+      "text": "while your hand is exactly one card, you may play that card for both halves"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "_id": "VibD9dZUBGKUaQba",
+  "_key": "!items!VibD9dZUBGKUaQba",
+  "name": "Mantle of the Unburdened",
+  "type": "item",
+  "system": {
+    "slot": "cloak",
+    "weight": 1,
+    "value": 900,
+    "blurb": "Everything you carry belongs to the cloak while you wear it.",
+    "group": "wonder",
+    "text": "You are never Burdened or Overloaded, whatever you carry."
+  }
+}

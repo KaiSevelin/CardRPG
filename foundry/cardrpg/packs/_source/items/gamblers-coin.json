@@ -1,0 +1,17 @@
+{
+  "_id": "vBBJiUtAPWXlgx0m",
+  "_key": "!items!vBBJiUtAPWXlgx0m",
+  "name": "Gambler's Coin",
+  "type": "item",
+  "system": {
+    "slot": "fingers",
+    "weight": 0,
+    "value": 600,
+    "blurb": "It lands how you need it to, which is not the same as how you want it to.",
+    "group": "wonder",
+    "active": {
+      "text": "Read 3 on your own fate deck.",
+      "boundary": "combat"
+    }
+  }
+}

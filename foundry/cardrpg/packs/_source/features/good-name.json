@@ -1,0 +1,14 @@
+{
+  "_id": "gMwYsJC9eHGHdu9L",
+  "_key": "!items!gMwYsJC9eHGHdu9L",
+  "name": "Good Name",
+  "type": "feature",
+  "system": {
+    "group": "training",
+    "bonus": {
+      "approach": "presence",
+      "value": 1
+    },
+    "text": "+1 on Presence checks. People have heard of you, and most of it was good."
+  }
+}

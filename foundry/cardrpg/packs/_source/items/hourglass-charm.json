@@ -1,0 +1,17 @@
+{
+  "_id": "sNrKTJIneGqJIUlc",
+  "_key": "!items!sNrKTJIneGqJIUlc",
+  "name": "Hourglass Charm",
+  "type": "item",
+  "system": {
+    "slot": "neck",
+    "weight": 0,
+    "value": 550,
+    "blurb": "The sand has not moved since you found it.",
+    "group": "wonder",
+    "active": {
+      "text": "Swap your place in the initiative order with a willing ally.",
+      "boundary": "combat"
+    }
+  }
+}

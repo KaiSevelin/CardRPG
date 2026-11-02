@@ -1,0 +1,17 @@
+{
+  "_id": "O8y5T5mUKEqU6T9J",
+  "_key": "!items!O8y5T5mUKEqU6T9J",
+  "name": "Cloak of the Grey",
+  "type": "item",
+  "system": {
+    "slot": "cloak",
+    "weight": 1,
+    "value": 500,
+    "blurb": "It is the colour of whatever is behind it.",
+    "group": "wonder",
+    "active": {
+      "text": "Become Invisible (1).",
+      "boundary": "combat"
+    }
+  }
+}

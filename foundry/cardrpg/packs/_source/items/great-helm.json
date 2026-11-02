@@ -1,0 +1,18 @@
+{
+  "_id": "kWkKDdKwTESIelMV",
+  "_key": "!items!kWkKDdKwTESIelMV",
+  "name": "Great Helm",
+  "type": "item",
+  "system": {
+    "slot": "head",
+    "tags": [
+      "armor",
+      "heavy"
+    ],
+    "weight": 3,
+    "value": 40,
+    "armor": 1,
+    "blurb": "Safe, and you cannot hear a thing through it.",
+    "text": "Disadvantage on Wits checks."
+  }
+}

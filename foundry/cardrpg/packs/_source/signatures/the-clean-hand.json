@@ -1,0 +1,17 @@
+{
+  "_id": "6jFw0Hk8VCX1lnrk",
+  "_key": "!items!6jFw0Hk8VCX1lnrk",
+  "name": "The Clean Hand",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "The Eternal God",
+    "description": "<p>An ally's next check or attack cannot fail. One cheaper on a brother or sister in faith, which is the third tenet made arithmetic.</p>",
+    "effect": {
+      "range": 3,
+      "text": "an ally's next check or attack cannot fail"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "_id": "EiqBZtTGWNCTesGb",
+  "_key": "!items!EiqBZtTGWNCTesGb",
+  "name": "Arming Sword",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "fits": [
+      "back"
+    ],
+    "hands": 1,
+    "tags": [
+      "melee"
+    ],
+    "weight": 1,
+    "value": 12,
+    "blurb": "A plain single-handed blade. Every town has a smith who makes them.",
+    "verbs": {
+      "strike": {
+        "value": 3
+      },
+      "defend": {
+        "value": 1
+      }
+    }
+  }
+}

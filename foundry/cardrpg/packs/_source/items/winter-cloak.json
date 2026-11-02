@@ -1,0 +1,17 @@
+{
+  "_id": "hXXi7W4cSsYcZynH",
+  "_key": "!items!hXXi7W4cSsYcZynH",
+  "name": "Winter Cloak",
+  "type": "item",
+  "system": {
+    "slot": "cloak",
+    "weight": 2,
+    "value": 750,
+    "blurb": "The hem is always a little frozen, in any season.",
+    "group": "wonder",
+    "active": {
+      "text": "Everything adjacent to you is Slowed (1).",
+      "boundary": "combat"
+    }
+  }
+}

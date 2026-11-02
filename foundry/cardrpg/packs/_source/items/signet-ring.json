@@ -1,0 +1,18 @@
+{
+  "_id": "lWnleKFGXBsCEOTE",
+  "_key": "!items!lWnleKFGXBsCEOTE",
+  "name": "Signet Ring",
+  "type": "item",
+  "system": {
+    "slot": "fingers",
+    "weight": 0,
+    "value": 60,
+    "blurb": "A house, a seal, and somebody who will answer for you.",
+    "group": "station",
+    "bonus": {
+      "approach": "presence",
+      "value": 1,
+      "situation": "where your house is known"
+    }
+  }
+}

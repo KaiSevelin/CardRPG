@@ -1,0 +1,14 @@
+{
+  "_id": "WqXD6acNJFAGeiJP",
+  "_key": "!items!WqXD6acNJFAGeiJP",
+  "name": "Quick Eye",
+  "type": "feature",
+  "system": {
+    "group": "training",
+    "bonus": {
+      "approach": "wits",
+      "value": 1
+    },
+    "text": "+1 on Wits checks. You notice the thing that is about to happen."
+  }
+}

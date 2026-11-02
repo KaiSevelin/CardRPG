@@ -1,0 +1,26 @@
+{
+  "_id": "BUEP0Qgqjjs81cSd",
+  "_key": "!items!BUEP0Qgqjjs81cSd",
+  "name": "Shortbow",
+  "type": "item",
+  "system": {
+    "ammo": "bow",
+    "slot": "hands",
+    "fits": [
+      "back"
+    ],
+    "hands": 2,
+    "tags": [
+      "ranged"
+    ],
+    "weight": 1,
+    "value": 25,
+    "blurb": "Horn and sinew, strung short for close country.",
+    "verbs": {
+      "strike": {
+        "value": 2,
+        "range": 6
+      }
+    }
+  }
+}

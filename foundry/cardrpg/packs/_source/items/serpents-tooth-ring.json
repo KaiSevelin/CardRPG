@@ -1,0 +1,17 @@
+{
+  "_id": "3ZkPJgNdIfU0FFm4",
+  "_key": "!items!3ZkPJgNdIfU0FFm4",
+  "name": "Serpent's Tooth Ring",
+  "type": "item",
+  "system": {
+    "slot": "fingers",
+    "weight": 0,
+    "value": 850,
+    "blurb": "A fang set as a stone, still wet at the root.",
+    "group": "wonder",
+    "active": {
+      "text": "One adjacent enemy is Poisoned 1 (2).",
+      "boundary": "combat"
+    }
+  }
+}

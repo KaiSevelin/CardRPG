@@ -1,0 +1,18 @@
+{
+  "_id": "VjP17WJkV3yEvAM1",
+  "_key": "!items!VjP17WJkV3yEvAM1",
+  "name": "Slick",
+  "type": "spell",
+  "system": {
+    "strength": 1,
+    "source": "Poison",
+    "description": "<p>Oil of something. No save: a man whose feet have gone is not resisting anything.</p>",
+    "effect": {
+      "range": 3,
+      "condition": "offBalance",
+      "duration": 1
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

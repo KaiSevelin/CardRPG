@@ -1,0 +1,17 @@
+{
+  "_id": "M4dZao5g3MPYF2Ic",
+  "_key": "!items!M4dZao5g3MPYF2Ic",
+  "name": "Nobody's Friend",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "Vulpet",
+    "description": "<p>One of them is alone now: nobody will heal it, step in front of it or take a hit for it. Vulpet's priests understand this condition from the inside.</p>",
+    "effect": {
+      "range": 3,
+      "text": "until your next turn no ally may Heal, Interpose for, or redirect a hit from one enemy"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

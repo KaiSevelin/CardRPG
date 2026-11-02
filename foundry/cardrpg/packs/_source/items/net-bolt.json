@@ -1,0 +1,26 @@
+{
+  "_id": "DkawM1YlkLSBfBGZ",
+  "_key": "!items!DkawM1YlkLSBfBGZ",
+  "name": "Net Bolt",
+  "type": "item",
+  "system": {
+    "slot": "belt",
+    "tags": [
+      "consumable"
+    ],
+    "weight": 0,
+    "value": 50,
+    "consumed": true,
+    "ammoFor": [
+      "crossbow"
+    ],
+    "shot": {
+      "condition": "grappled",
+      "duration": 1,
+      "resist": "might",
+      "dc": 5
+    },
+    "blurb": "A folded net on a blunt head. It opens in the air.",
+    "text": "Crossbow. Grappled (1), resist Might 5."
+  }
+}

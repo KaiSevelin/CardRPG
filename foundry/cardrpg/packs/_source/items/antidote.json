@@ -1,0 +1,26 @@
+{
+  "_id": "RQeOxtK0u0mHwHq9",
+  "_key": "!items!RQeOxtK0u0mHwHq9",
+  "name": "Antidote",
+  "type": "item",
+  "system": {
+    "slot": "belt",
+    "fits": [
+      "hands"
+    ],
+    "hands": 1,
+    "tags": [
+      "consumable"
+    ],
+    "weight": 0,
+    "value": 35,
+    "consumed": true,
+    "blurb": "Charcoal, milk thistle and something the brewer will not name.",
+    "verbs": {
+      "use": {
+        "value": 2,
+        "text": "Shake Off 2, Poisoned only"
+      }
+    }
+  }
+}

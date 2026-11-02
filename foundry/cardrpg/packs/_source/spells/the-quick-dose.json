@@ -1,0 +1,21 @@
+{
+  "_id": "Hhr8S5E9nUx9WxBa",
+  "_key": "!items!Hhr8S5E9nUx9WxBa",
+  "name": "The Quick Dose",
+  "type": "spell",
+  "system": {
+    "strength": 3,
+    "source": "Poison",
+    "description": "<p>Adjacent, because it has to go in them. Two rounds, two damage a round, and armour is no part of the conversation.</p>",
+    "effect": {
+      "verb": "cast",
+      "condition": "poisoned",
+      "intensity": 2,
+      "duration": 2,
+      "resist": "might",
+      "dc": 7
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

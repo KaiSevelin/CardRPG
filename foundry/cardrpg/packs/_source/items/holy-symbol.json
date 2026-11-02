@@ -1,0 +1,19 @@
+{
+  "_id": "Kvb7zF5rrkbL8IVH",
+  "_key": "!items!Kvb7zF5rrkbL8IVH",
+  "name": "Holy Symbol",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "hands": 1,
+    "weight": 0,
+    "value": 10,
+    "blurb": "Whose, and how openly, is the only question that matters in Firma.",
+    "group": "power",
+    "bonus": {
+      "approach": "lore",
+      "value": 1,
+      "situation": "religion and undead"
+    }
+  }
+}

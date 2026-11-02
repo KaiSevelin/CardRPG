@@ -1,0 +1,26 @@
+{
+  "_id": "6DDMYmM4wLTz3vHh",
+  "_key": "!items!6DDMYmM4wLTz3vHh",
+  "name": "Brewer's Reserve",
+  "type": "item",
+  "system": {
+    "slot": "belt",
+    "fits": [
+      "hands"
+    ],
+    "hands": 1,
+    "tags": [
+      "consumable"
+    ],
+    "weight": 0,
+    "value": 45,
+    "consumed": true,
+    "blurb": "The brewer keeps a cask of it back and will not say what is in it.",
+    "verbs": {
+      "use": {
+        "value": 0,
+        "text": "your next Cast is +2"
+      }
+    }
+  }
+}

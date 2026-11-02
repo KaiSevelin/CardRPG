@@ -1,0 +1,60 @@
+{
+  "_id": "FLAItf8bduBreVWO",
+  "_key": "!actors!FLAItf8bduBreVWO",
+  "name": "Goblin Archer",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 5,
+      "base": 5
+    },
+    "kind": "goblin-archer",
+    "armorBase": 0,
+    "speed": 3,
+    "capabilities": [
+      "legs",
+      "pack",
+      "ranged"
+    ],
+    "tactics": [
+      "packTactics",
+      "cowardly",
+      "sniper"
+    ],
+    "targetPriority": "caster"
+  },
+  "items": [
+    {
+      "_id": "tzbiUEsebnl6ur8e",
+      "_key": "!actors.items!FLAItf8bduBreVWO.tzbiUEsebnl6ur8e",
+      "name": "Goblin Shortbow",
+      "type": "item",
+      "system": {
+        "ammo": "bow",
+        "slot": "hands",
+        "fits": [
+          "back"
+        ],
+        "hands": 2,
+        "tags": [
+          "ranged"
+        ],
+        "weight": 1,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Weapon",
+        "verbs": {
+          "strike": {
+            "value": 3,
+            "range": 6
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Goblin Archer"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "_id": "5hUjxSgtsXLdk3Ct",
+  "_key": "!items!5hUjxSgtsXLdk3Ct",
+  "name": "Boots of the Long Step",
+  "type": "item",
+  "system": {
+    "slot": "feet",
+    "weight": 1,
+    "value": 450,
+    "blurb": "The soles are never quite worn in the same places twice.",
+    "group": "wonder",
+    "active": {
+      "text": "Teleport to any square you can see within 6.",
+      "boundary": "combat"
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "_id": "Q5ppHr4NjohspyT6",
+  "_key": "!items!Q5ppHr4NjohspyT6",
+  "name": "A Word for You",
+  "type": "spell",
+  "system": {
+    "strength": 1,
+    "source": "The Eternal Spirit",
+    "description": "<p>Blessed: a temporary Critical in their fate deck, until it is drawn. The condition shuffles the card in by itself (core-rules 6).</p>",
+    "effect": {
+      "range": 3,
+      "condition": "blessed"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "_id": "e3RGbYlPWBnK0Kt2",
+  "_key": "!items!e3RGbYlPWBnK0Kt2",
+  "name": "Tinker's Thimble",
+  "type": "item",
+  "system": {
+    "slot": "fingers",
+    "weight": 0,
+    "value": 80,
+    "blurb": "Brass, and far too small for whoever made it.",
+    "group": "wonder",
+    "text": "Strain costs you one card fewer, to a minimum of 1."
+  }
+}

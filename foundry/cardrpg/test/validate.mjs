@@ -525,7 +525,6 @@ check("Warrior distinct designs", content.WARRIOR_DECK.length, 10);
 check("cards carrying Ready", content.WARRIOR_DECK.filter(c =>
   [...(c.primary ?? []), ...(c.secondary ?? [])].some(s => s.verb === "ready")
 ).reduce((n, c) => n + (c.copies ?? 1), 0), 4);
-check("goblin deck cards", content.GOBLIN_DECK.length, 6);
 
 const fate = content.fateCards();
 check("fate deck size", fate.length, 20);
@@ -552,7 +551,9 @@ for (const [key, want] of Object.entries({ miss: 1, "-2": 1, "-1": 4, "0": 8, "+
  *   3. `dc` only means something beside a condition the half is already attempting.
  */
 const steps = [];
-for (const card of [...content.WARRIOR_DECK, ...content.GOBLIN_DECK]) {
+/* The intent pool rather than the goblin's old six: the rules below are about what a card step
+ * may say, and an NPC's steps are steps. Twenty-eight cards where six used to be read. */
+for (const card of [...content.WARRIOR_DECK, ...content.INTENTS]) {
   steps.push(...(card.primary ?? []), ...(card.secondary ?? []), ...(card.sequence ?? []));
 }
 for (const spell of content.FORMULAS) steps.push(spell.effect);
@@ -571,7 +572,7 @@ const stepBlock = cardsSource.slice(cardsSource.indexOf("export function stepFie
 const stepKeys = new Set(
   [...stepBlock.slice(0, stepBlock.indexOf("\n}")).matchAll(/^    ([a-zA-Z]+):/gm)].map(m => m[1])
 );
-check("stepField keys read from source", stepKeys.size, 16);
+check("stepField keys read from source", stepKeys.size, 20);
 
 const strayKeys = new Set();
 for (const step of steps) {
@@ -2931,7 +2932,7 @@ const unbuiltSpells = nodes.filter(n => n.grants?.spell)
   .map(n => `${n.id}: ${n.grants.spell}`);
 check("formulas granted but never built",
   unbuiltSpells.length ? unbuiltSpells.join(", ") : "none", "none");
-check("formulas a node can hand over", graph.SPELLS.size, 147);
+check("formulas a node can hand over", graph.SPELLS.size, 148);
 check("taking a node hands over the formula",
   /if \(grants\.spell\) await grantSpell\(actor, grants\.spell, id\);/.test(graphSource)
     ? "yes" : "no", "yes");
@@ -2939,7 +2940,7 @@ check("and it arrives in the book, not prepared",
   /prepared: false[\s\S]{0,60}\}, "spell"\)\]\);/.test(graphSource) ? "yes" : "no", "yes");
 /* Formula or miracle is read off the Way, because data/items.mjs says that distinction IS the Way. */
 check("formula or miracle comes from the Way",
-  /String\(nodeId\)\.startsWith\("faith"\) \? "miracle" : "formula"/.test(graphSource)
+  /export function spellKindOf\(source\) \{\n  return String\(source\)\.startsWith\("faith"\)/.test(graphSource)
     ? "yes" : "no", "yes");
 check("a formula nobody built is refused rather than silently skipped",
   /CARDRPG\.Level\.NoSpell/.test(graphSource) ? "yes" : "no", "yes");
@@ -3562,7 +3563,7 @@ check("Heckled spoils the carrier's own draw",
 /* Not an opening: an opening is a setup worth nothing alone, and this one already pays. */
 check("Heckled is not an opening", CARDRPG.openings.includes("heckled"), false);
 check("nothing else applies it",
-  [...content.WARRIOR_DECK, ...content.WAY_CARDS, ...content.COMMON_POOL, ...content.GOBLIN_DECK,
+  [...content.WARRIOR_DECK, ...content.WAY_CARDS, ...content.COMMON_POOL, ...content.INTENTS,
     ...sigs.filter(c => c.kind === "card")]
     .filter(c => [...(c.primary ?? []), ...(c.secondary ?? [])]
       .some(st => st.condition === "heckled")).map(c => c.name).join(", "),
@@ -3736,7 +3737,7 @@ const pools = {
 check("Shade's pool", pools.shade.length, 12);
 check("Strength's pool", pools.strength.length, 13);
 /*
- * Mind's pool is formulas rather than cards, and it is **sixty-nine**, which is a different kind of
+ * Mind's pool is formulas rather than cards, and it is **seventy**, which is a different kind of
  * list from the other two Ways: a Way pool is a dozen cards and this is twelve SCHOOLS, each with
  * its own six-to-ten formulas and every strength from 1 to 5 present (way-cards 3.4).
  *
@@ -3744,7 +3745,7 @@ check("Strength's pool", pools.strength.length, 13);
  * two schools earlier passes had reached. The other ten schools were written in the world document
  * and nothing in the game had them.
  */
-check("Mind's pool", pools.mind.length, 69);
+check("Mind's pool", pools.mind.length, 70);
 check("the schools Mind's pool draws on",
   [...new Set(pools.mind.map(f => f.source))].sort().join(", "),
   "Asceticism, Blood Magic, Divination, Elemental Magic, Glamour, Household Magic, Necromancy, "
@@ -3815,7 +3816,7 @@ check("rows with no numeric strength", unnumbered.map(r => `${r.name}: ${r.stren
 const everySpell = new Map([...content.MIND_POOL, ...content.FAITH_POOL, ...content.FORMULAS,
   ...content.SHADOW_FORMULAS, ...signatureExports.filter(s => s.kind === "spell")]
   .map(s => [s.name, s]));
-check("spells built in all", everySpell.size, 147);
+check("spells built in all", everySpell.size, 148);
 
 /* Every row in the document exists in the game. This is the check the eighty-five were written for. */
 const unwritten = spellTables.filter(r => !everySpell.has(r.name))
@@ -3931,7 +3932,7 @@ const spellGrants = nodes.filter(n => n.grants?.spell).map(n => n.grants.spell);
 check("nodes that hand over a named spell", spellGrants.length, 52);
 check("and no two of them hand over the same one", new Set(spellGrants).size, spellGrants.length);
 const onNoNode = [...everySpell.keys()].filter(name => !spellGrants.includes(name));
-check("spells no node in the graph hands over", onNoNode.length, 95);
+check("spells no node in the graph hands over", onNoNode.length, 96);
 /* The First is the one source a character can be handed entire, because its ladder stops at 3. */
 const complete = [...ladders.keys()].filter(src =>
   [...everySpell.values()].filter(s => s.source === src)
@@ -4524,11 +4525,11 @@ const listsOf = way => listsBySource
   .filter(([src]) => nodes.find(n => n.title === src)?.id.startsWith(way));
 check("mean list size, mind against faith",
   ["mind", "faith"].map(w => avg(listsOf(w).map(([, l]) => l.length)).toFixed(1)).join(" / "),
-  "7.1 / 5.2");
+  "7.2 / 5.2");
 check("and mean list weight in slots",
   ["mind", "faith"].map(w => avg(listsOf(w)
     .map(([, l]) => l.reduce((a, s) => a + s.strength, 0))).toFixed(1)).join(" / "),
-  "18.2 / 14.2");
+  "18.4 / 14.2");
 
 /*
  * And the one difference between specializations that is nobody's design: **how much of each list
@@ -4596,7 +4597,7 @@ check("spells no node can hand over at all",
   unreachableSpells.length ? unreachableSpells.join(", ") : "none", "none");
 /* Which is a different number from before, and it is the one the last pass pinned at ninety-five. */
 check("spells reachable only through a choice",
-  [...graph.SPELLS.keys()].filter(n => !namedByNodes.includes(n)).length, 95);
+  [...graph.SPELLS.keys()].filter(n => !namedByNodes.includes(n)).length, 96);
 
 /* The engine reads the key in all four places a grant has to be read. */
 check("taking a node asks the question",
@@ -4673,7 +4674,7 @@ check("content carrying the audit column",
 const vague = audited.filter(c => (c.needs ?? []).some(g => g.length < 12)).map(c => c.name);
 check("gaps too short to act on", vague.length ? vague.join(", ") : "none", "none");
 const workingCards = audited.filter(c => !c.needs.length).length;
-check("content the engine does everything for", workingCards, 64);
+check("content the engine does everything for", workingCards, 65);
 check("content with a named gap", audited.filter(c => c.needs.length).length, 137);
 
 /*
@@ -5019,6 +5020,8 @@ check("applications whose wiring was compared", APPS.length, 4);
  * somebody draws the wrong things from.
  */
 const artList = fs.readFileSync(path.join(root, "../art-list.md"), "utf8");
+/* The card and slate schema document, which is where the step grammar is explained. */
+const cardSchemaDoc = fs.readFileSync(path.join(root, "../card-slate-schema.md"), "utf8");
 /*
  * **Every creature in the world, because a token is art and a creature is the thing it is of.**
  * The brief had cards, spells, features and items and no creatures at all -- forty-seven of them,
@@ -5034,17 +5037,26 @@ const artable = [
   content.NATURAL_WEAPONS ?? [], everyCreatureForArt, [content.WARRIOR],
   ...Object.entries(content).filter(([k]) => k.endsWith("_SIGNATURES")).map(([, v]) => v)
 ].flat();
-check("pieces of content that take art", artable.length, 494);
+check("pieces of content that take art", artable.length, 495);
 /*
- * **The goblin's authored deck is NOT in the brief, and that is the point of the pool.** Five of
- * its six cards are drawn by no creature in the world -- the pool has its own shapes for all of
- * them -- so the brief asked for five pictures nobody would ever see. `Swarm` survived because the
- * pool has a card by that name.
+ * **And the goblin's authored deck is gone entirely.** Six cards from before the intent pool, five
+ * of which had no counterpart in it because the pool had replaced them -- Rush is Close In, Cower
+ * is Give Ground, Dirty Trick is Envenom, Throw Rock is Loose. The brief asked for five pictures
+ * nobody would ever see, and the setup routine shipped the cards into every world in a document no
+ * actor held.
  */
-check("cards in the old goblin deck that no creature can draw",
-  content.GOBLIN_DECK.filter(c => !content.INTENTS.some(i => i.name === c.name)).length, 5);
-check("and the brief says so rather than asking for them",
-  /are drawn by no creature in the world/.test(artList) ? "yes" : "no", "yes");
+check("the authored goblin deck is retired",
+  "GOBLIN_DECK" in content ? "still there" : "gone", "gone");
+/* Read without comments, because the paragraph that explains why the document is gone names it,
+ * and a grep answered by the prose about itself is a grep about nothing. Twice before in this
+ * suite, and both times it looked right in every reading of the source. */
+const setupCode = setupSource.replace(/\/\*[\s\S]*?\*\//g, "")
+  .split("\n").map(line => line.replace(/\/\/.*$/, "")).join("\n");
+check("and nothing builds a document for it",
+  /goblin\.action/.test(setupCode) ? "still built" : "gone", "gone");
+/* And the grep is not vacuous: the key the creature builder DOES use is still there to be found. */
+check("while the one it replaced it with is",
+  /\$\{kind\}\.deck/.test(setupCode) ? "yes" : "no", "yes");
 
 /*
  * The backs, which are a different kind of art: **one picture per deck, not one per card**, doing
@@ -5065,8 +5077,32 @@ check("backs with nothing said about them",
  * on in `skillCardData`, which lives with the other card shapes, and the rest in the setup routine
  * that creates the deck documents.
  */
-const backed = [...`${setupSource}\n${decksSource}`.matchAll(/backOf\("([a-z.]+)"\)/g)]
+/*
+ * **Two ways a back is reached, and both count as reading it.**
+ *
+ * Five keys are written out in a call. The sixth is not written anywhere: `buildCreature` asks for
+ * `npc.${kind}` and falls back to `npc`, so the goblin's own back is reached by COMPUTATION -- and
+ * it became the only way once the authored goblin deck was retired, since that deck's literal
+ * `backOf("npc.goblin")` went with it.
+ *
+ * A literal-only audit then reports the one back the roster earns as declared and never read,
+ * which is a true statement about the greps and a false one about the game. So the computed keys
+ * are resolved from the content, the same way the deck audit below resolves them.
+ */
+const backedLiterally = [...`${setupSource}\n${decksSource}`.matchAll(/backOf\("([a-z.]+)"\)/g)]
   .map(m => m[1]);
+check("backs reached by a key written out", [...new Set(backedLiterally)].sort().join(", "),
+  "action, fate, npc, skill, wild");
+/* The computed one, asked of the roster: every kind's own key, where one is declared. */
+const backedByKind = monsters.expandRoster(content.ROSTER, content.VARIANTS)
+  .map(c => `npc.${c.system.kind}`).filter(k => k in content.DECK_BACKS);
+check("and the kinds that resolve to one of their own",
+  [...new Set(backedByKind)].sort().join(", "), "npc.goblin");
+/* The computation is in the file rather than assumed, or the line above is pinning arithmetic the
+ * game does not do. */
+check("and the builder really asks for it that way",
+  /backOf\(`npc\.\$\{kind\}`\) \|\| backOf\("npc"\)/.test(setupCode) ? "yes" : "no", "yes");
+const backed = [...backedLiterally, ...backedByKind];
 check("decks given a back", [...new Set(backed)].sort().join(", "),
   "action, fate, npc, npc.goblin, skill, wild");
 /* Every back declared is a back used: one nobody reads is a picture drawn for nothing. */
@@ -5093,7 +5129,7 @@ const deckCalls = [...setupSource.matchAll(/makeCards\(([\s\S]*?)\n?\s*\);/g)]
  * back otherwise. That is the only computed back key in the file, which is why the check below
  * exists: a computed key cannot be audited by reading the call, so it is audited from the content.
  */
-check("deck documents created", deckCalls.length, 8);
+check("deck documents created", deckCalls.length, 7);
 check("and every creature's back resolves to a declared one",
   monsters.expandRoster(content.ROSTER, content.VARIANTS)
     .filter(c => !(`npc.${c.system.kind}` in content.DECK_BACKS)
@@ -5311,7 +5347,7 @@ const briefs = faceRows.map(r => r.brief);
 const leaked = briefs.flatMap(text =>
   [...text.matchAll(/\b([a-z]+[A-Z][a-zA-Z]*)\b/g)].map(m => m[1]));
 /* A pattern that matched no rows at all would report "none" for any list whatsoever. */
-check("briefs the check actually read", briefs.length, 494);
+check("briefs the check actually read", briefs.length, 495);
 check("keys that leaked into the brief",
   leaked.length ? [...new Set(leaked)].join(", ") : "none", "none");
 /*
@@ -5333,8 +5369,12 @@ check("briefs with a missing number in them",
  * hundred and fifty files have been named that way and the brief is the only record of it.
  */
 const { slug } = await import("./art-list.mjs");
+/* The pack builder's source, read for the rules that cannot be asked of its output: that it reads
+ * every pack back through Foundry's own packer, and that it borrows its shapes rather than
+ * spelling them again. */
+const packSource = fs.readFileSync(path.join(root, "test/build-packs.mjs"), "utf8");
 const rows = faceRows;
-check("file paths in the brief", rows.length, 494);
+check("file paths in the brief", rows.length, 495);
 /* And the backs, whose path is the slug of their KEY rather than of their printed label. */
 const backPaths = [...artList.matchAll(/\| `(backs\/[^`]+)` \|/g)].map(m => m[1]);
 check("back paths in the brief", backPaths.length, backs.length);
@@ -5383,6 +5423,623 @@ const faceSize = /\| Size \| \*\*(\d+ \S+ \d+)\*\*/.exec(artList)?.[1] ?? "none"
 const backShape = /Same (\S+) and (\d+ \S+ \d+) as a face/.exec(artList);
 check("the backs ask for the face's ratio", backShape?.[1] ?? "none", faceRatio);
 check("and the face's size", backShape?.[2] ?? "none", faceSize);
+
+/* ---- a prose step is announced, and three families of prose became fields ---- */
+
+/*
+ * **A step that is only prose used to do nothing at all.** `case "":` broke out of a switch that
+ * is the end of the method, so seventy-five steps -- *every corpse within 3 rises and fights for
+ * you*, *a minor god becomes present and fights as an ally* -- produced no effect, no prompt and
+ * no line in chat. The branch below it already announced any verb the engine did not recognise, so
+ * the arrangement was exactly backwards: a made-up verb reached the table and a blank one was
+ * dropped. `initial: ""` on the schema is what hid it, because content omits the key.
+ */
+const trayCode = traySource.replace(/\/\*[\s\S]*?\*\//g, "")
+  .split("\n").map(line => line.replace(/\/\/.*$/, "")).join("\n");
+check("a prose step still breaks out of the switch",
+  /case "":\s*\n\s*if \(!step\.condition\) break;/.test(trayCode) ? "yes" : "no", "no");
+check("and falls through to the announcement instead",
+  /case "":\s*\n\s*if \(step\.condition\) \{/.test(trayCode) ? "yes" : "no", "yes");
+/* The announcement it falls into, which is what makes the fall-through worth anything. */
+check("and the announcement prints the prose",
+  /\$\{step\.text \? ` \u2014 \$\{step\.text\}` : ""\}/.test(traySource) ? "yes" : "no", "yes");
+
+/*
+ * **Timing.** Thirty-one steps carried it as a prefix on their prose -- `ritual:`, `reaction:`,
+ * `permanent:`, `out of combat:`, `before a fight` -- and the engine could read none of it. A
+ * ritual played in the middle of a fight is not a rules argument the software should leave to the
+ * table when the card already says so.
+ */
+check("the timing vocabulary", Object.keys(CARDRPG.timings).join(", "),
+  "reaction, ritual, outOfCombat, beforeFight, permanent");
+/*
+ * Every step in the game, each counted ONCE.
+ *
+ * `graph.SPELLS` is built from the Signatures among others, so a Signature spell is in both lists
+ * and a naive sweep counts its steps twice -- which is the same mistake the pack builder made this
+ * morning, where `SPELLS` and `SIGNATURES` reported `The Clean Hand` as two slates of one name. The
+ * entries are deduplicated by identity, because the same object seen through two tables is one
+ * piece of content and not two.
+ */
+const everyEntry = new Set([content.WARRIOR_DECK, content.COMMON_POOL, content.WAY_CARDS,
+  content.SHADE_POOL, content.STRENGTH_POOL, content.WILD_MAGIC, content.INTENTS,
+  graph.SIGNATURES, [...graph.SPELLS.values()]].flatMap(l => l ?? []));
+const everyStep = [];
+for (const entry of everyEntry) {
+  for (const arr of [entry.primary, entry.secondary, entry.sequence,
+    entry.effect ? [entry.effect] : null]) {
+    for (const st of arr ?? []) everyStep.push({ card: entry.name, st });
+  }
+}
+check("steps the timing audit read", everyStep.length, 323);
+check("steps that say when they are played", everyStep.filter(s => s.st.timing).length, 31);
+/*
+ * And no step says it twice. A prefix left in the prose beside a `timing` field is the stale half
+ * of a move, and it reads to a player as though the card means both.
+ */
+const prefixedTwice = everyStep.filter(s => /^(ritual|reaction|permanent|out of combat|before (a|the) fight)\b/i
+  .test(s.st.text ?? ""));
+check("steps still carrying the prefix in prose",
+  prefixedTwice.map(s => `${s.card}: ${s.st.text}`).slice(0, 4).join(" | ") || "none", "none");
+/* Every value is used by something: a timing nobody writes is a choice in a dropdown and nothing
+ * else. `beforeFight` is the thin one, with the two cards that need it. */
+const timingsUsed = new Set(everyStep.map(s => s.st.timing).filter(Boolean));
+check("timings declared and never used",
+  Object.keys(CARDRPG.timings).filter(t => !timingsUsed.has(t)).join(", ") || "none", "none");
+/* That the editor can set it is enforced generically further down -- "step fields the editor
+ * cannot set" reads every key of the schema -- so it is not asserted twice here. */
+
+/*
+ * **Conjuration, configured rather than written one card at a time.**
+ *
+ * Six steps conjured in prose, and the content itself had already noticed they were one thing: *a
+ * god standing on the board and a corpse standing on the board are one piece of work*, says the
+ * comment above The Great Bargain. What separated the lesser necromancy from the greater was
+ * entirely how many, from what, whose side and at what price -- four numbers, in a sentence.
+ */
+const conjurings = everyStep.filter(s => s.st.verb === "conjure");
+check("steps that conjure", conjurings.length, 5);
+check("and each says what it calls up",
+  conjurings.filter(s => !s.st.conjure?.from).map(s => s.card).join(", ") || "none", "none");
+/* A named god is one the world names. `name: ""` is not a gap -- two cards say the GM decides,
+ * because a minor god is a person with its own opinions. */
+check("the minor gods the world names", content.MINOR_GODS.length, 8);
+check("and every one has a name",
+  content.MINOR_GODS.filter(g => !g.name).length, 0);
+const godNames = new Set(content.MINOR_GODS.map(g => g.name));
+const creatureNames = new Set(monsters.expandRoster(content.ROSTER, content.VARIANTS)
+  .map(c => c.name));
+const badNames = conjurings.filter(s => {
+  const n = s.st.conjure?.name;
+  if (!n) return false;
+  return s.st.conjure.from === "god" ? !godNames.has(n) : !creatureNames.has(n);
+});
+check("conjurings naming something that does not exist",
+  badNames.map(s => `${s.card}: ${s.st.conjure.name}`).join(", ") || "none", "none");
+/* And the engine reads every field, in the one resolver: a config the resolver ignores is four
+ * numbers in a data model and a sentence the table still has to adjudicate from scratch. */
+const conjureBody = resolveSource.slice(resolveSource.indexOf("export async function resolveConjure"),
+  resolveSource.indexOf("export async function resolveShape"));
+/*
+ * **Each field by what it is read FOR, not by its own name.** A break test deleted the line that
+ * names the side and nothing noticed, because `cfg.side` is read twice in this one function -- once
+ * to name the side and once to decide that a sided conjuration with no duration lasts the fight.
+ * A grep either line can answer is a grep about neither, which is the rule the self-check section
+ * applies to whole files, one scale down.
+ */
+for (const [field, pattern] of [
+  ["from", /CARDRPG\.conjureSources\[cfg\.from\]/],
+  ["name", /const named = cfg\.name \|\| ""/],
+  ["count", /cfg\.count === 0 \? `every \$\{what\} in range`/],
+  ["side", /CARDRPG\.conjureSides\[cfg\.side\]/],
+  ["upkeep.taint", /cfg\.upkeep\?\.taint/],
+  ["upkeep.health", /cfg\.upkeep\?\.health/]
+]) {
+  check(`the resolver reads conjure.${field}`,
+    pattern.test(conjureBody) ? "yes" : "no", "yes");
+}
+/* And the one field that is read twice, on purpose, says so: a side with no duration is a thing
+ * that stays until the fight ends, which is a rule rather than a repetition. */
+check("and a sided conjuring with no duration lasts the fight",
+  /else if \(cfg\.side\) bits\.push\("for the rest of the fight"\)/.test(conjureBody)
+    ? "yes" : "no", "yes");
+check("and the step's own range and duration",
+  /step\.range/.test(conjureBody) && /step\.duration/.test(conjureBody) ? "yes" : "no", "yes");
+check("and the tray calls it",
+  /case "conjure":\s*\n\s*await resolveConjure\(actor, \{ step \}\);/.test(traySource)
+    ? "yes" : "no", "yes");
+
+/*
+ * **Shape, which names a creature and lets the creature supply the numbers.**
+ *
+ * There is no table of forms, and that is the whole design: a table of forms would be a second
+ * description of forty-seven creatures that already exist, and two descriptions of a thing drift
+ * -- which this project has now watched happen with the goblin's deck and with `The Kit`.
+ */
+const shapes = everyStep.filter(s => s.st.verb === "shape");
+check("steps that change shape", shapes.length, 1);
+check("and each names a creature in the roster",
+  shapes.filter(s => !creatureNames.has(s.st.shape?.creature ?? "")).map(s => s.card).join(", ")
+    || "none", "none");
+const shapeBody = resolveSource.slice(resolveSource.indexOf("export async function resolveShape"));
+check("the resolver reads the named creature",
+  /step\.shape\?\.creature/.test(shapeBody) ? "yes" : "no", "yes");
+/* A form is the creature's NATURAL weapons: a body is what you fight with, and a form that lent
+ * you the spear it was holding would be looting a corpse rather than wearing one. */
+check("and lends only what is grown, not carried",
+  /\(g\.tags \?\? \[\]\)\.includes\("natural"\)/.test(shapeBody) ? "yes" : "no", "yes");
+check("and refuses a creature with no natural weapon",
+  /has no natural weapon to lend you/.test(shapeBody) ? "yes" : "no", "yes");
+/* Twice-shaped is two sets of claws, so the second helping is refused by a flag on the items. */
+check("and will not stack with itself",
+  /getFlag\("cardrpg", "form"\) === mark/.test(shapeBody) ? "yes" : "no", "yes");
+check("and the tray calls it",
+  /case "shape":\s*\n\s*await resolveShape\(actor, \{ step \}\);/.test(traySource) ? "yes" : "no",
+  "yes");
+/*
+ * What a form must NOT touch, pinned as prose in the resolver because it is a design decision and
+ * not an omission: the deck is the character in this game, so a shape that replaced it would be a
+ * different character wearing your name.
+ */
+check("and the resolver says why the deck is untouched",
+  /the deck is the character in this game/.test(resolveSource) ? "yes" : "no", "yes");
+
+/*
+ * **And the prose is measurably smaller.** The point of all of it: a hundred and twenty-seven
+ * steps said things the engine could not read, and this moved thirty-six of them -- thirty-one
+ * timings and five conjurings -- out of prose and into fields.
+ */
+const proseLeft = everyStep.filter(s => s.st.text);
+/* 127 before this increment; 31 lost a prefix to `timing` and 5 lost their whole sentence to
+ * `conjure`, which is three steps that now carry no prose at all and 33 that carry less. */
+check("steps still carrying prose", proseLeft.length, 124);
+/* And the schema document says the same numbers, read off the same sweep rather than typed into
+ * prose a second time: a document that counts the content is a document that goes stale. */
+check("the schema document records what the sweep found",
+  cardSchemaDoc.includes(`Of ${everyStep.length} steps, 127 carried prose`) ? "yes" : "no",
+  "yes");
+check("and what is left of it",
+  cardSchemaDoc.includes(`${proseLeft.length} steps still carry prose`) ? "yes" : "no", "yes");
+check("and why a free-text special was refused",
+  /permanently unresolvable, which is the one thing this schema exists to\nprevent/
+    .test(cardSchemaDoc) ? "yes" : "no", "yes");
+check("and what a form must not touch",
+  /the deck is the character in\n> this game/.test(cardSchemaDoc) ? "yes" : "no", "yes");
+check("and steps that carry prose and nothing else",
+  proseLeft.filter(s => Object.keys(s.st).filter(k => k !== "text" && s.st[k] !== null
+    && s.st[k] !== "" && !(typeof s.st[k] === "object")).length === 0).length, 46);
+
+/* ---- the compendium packs ship the content, and ship today's ---- */
+
+/*
+ * **All of it, in packs, built from the tables.** Before this the data existed only as tables that
+ * a setup routine turned into documents: a GM could not browse an item, drag a creature onto a
+ * scene or look at a Signature without running the routine and digging through the sidebar, and
+ * the hundred and nineteen school formulas the routine never created were unreachable entirely.
+ *
+ * The direction is content out, like everything else here. A pack edited in Foundry and a table
+ * edited in the repository are two sources with no referee, and the disagreement is invisible --
+ * each passes every check about itself. So the generator writes the packs, and this section reads
+ * the committed files back and compares them with what the generator would write right now.
+ */
+const packs = await import("./build-packs.mjs");
+/* The manifest is read at the top of this suite; one reading, so the two sections cannot be
+ * looking at different files. */
+const planned = packs.planDocuments();
+
+check("compendium packs", planned.length, 7);
+check("and what each one holds",
+  planned.map(p => `${p.name}:${p.docs.length}`).join(" "),
+  "creatures:47 characters:1 items:166 features:14 spells:125 signatures:30 decks:11");
+/* Faults the generator records rather than throws: a filename collision silently drops a document,
+ * so the build reports it and this refuses to pass with one outstanding. */
+check("faults the generator reported", planned[0].faults.join("; ") || "none", "none");
+
+/*
+ * **Every document in a pack is a document in the content**, counted from the tables rather than
+ * from the pack -- a pack that lost half its entries would otherwise agree with itself.
+ */
+const packedFromContent = {
+  creatures: monsters.expandRoster(content.ROSTER, content.VARIANTS).length,
+  characters: 1,
+  items: content.ITEMS.length + content.NPC_GEAR.length + content.NATURAL_WEAPONS.length,
+  features: content.FEATURES.length,
+  spells: [...graph.SPELLS.values()]
+    .filter(s => !graph.SIGNATURES.some(g => g.kind === "spell" && g.name === s.name)).length,
+  signatures: graph.SIGNATURES.filter(s => s.kind !== "card").length,
+  decks: 11
+};
+check("packs whose size disagrees with the content",
+  planned.filter(p => p.docs.length !== packedFromContent[p.name])
+    .map(p => `${p.name}: ${p.docs.length} vs ${packedFromContent[p.name]}`).join(", ") || "none",
+  "none");
+/* And the twenty-one Signatures that are CARDS are not missing, they are in a deck: a Card is a
+ * different document class and cannot live in an Item pack. */
+check("Signatures that are cards, and so are in a deck instead",
+  graph.SIGNATURES.filter(s => s.kind === "card").length, 21);
+check("which accounts for every Signature",
+  graph.SIGNATURES.filter(s => s.kind !== "card").length
+  + graph.SIGNATURES.filter(s => s.kind === "card").length, graph.SIGNATURES.length);
+
+/*
+ * **The committed files are today's.** One comparison per document, against the generator's own
+ * serializer: a pack is stale the moment a table moves, and nothing about a stale pack looks wrong.
+ */
+const stale = [];
+const missingFiles = [];
+for (const pack of planned) {
+  const dir = path.join(root, "packs/_source", pack.name);
+  if (!fs.existsSync(dir)) { missingFiles.push(`${pack.name}: no source directory`); continue; }
+  const onDisk = new Set(fs.readdirSync(dir).filter(f => f.endsWith(".json")));
+  for (const doc of pack.docs) {
+    const file = `${packs.fileSlug(doc.name)}.json`;
+    if (!onDisk.delete(file)) { missingFiles.push(`${pack.name}/${file}`); continue; }
+    const got = fs.readFileSync(path.join(dir, file), "utf8");
+    if (got !== packs.serializeDoc(doc)) stale.push(`${pack.name}/${file}`);
+  }
+  for (const extra of onDisk) missingFiles.push(`${pack.name}/${extra} is in no table`);
+}
+check("pack sources missing or orphaned",
+  missingFiles.length ? missingFiles.slice(0, 5).join(", ") : "none", "none");
+check("pack sources that disagree with the content",
+  stale.length ? `${stale.length}: ${stale.slice(0, 4).join(", ")}` : "none", "none");
+/* A comparison that read no files would report "none" for a repository with no packs at all. */
+check("documents the comparison actually read",
+  planned.reduce((n, p) => n + p.docs.length, 0), 394);
+
+/*
+ * **An id is a promise.** A world that imports a creature keeps the pack's id, and so does every
+ * link to it; regenerating with fresh ids would break all of them and the break is silent -- the
+ * link resolves to nothing and the sheet goes blank. So ids are derived from what the document is,
+ * and the rule is checked with the builder's own hash, because a copy of a rule is a second rule.
+ */
+const idFaults = [];
+const everyId = new Map();
+for (const pack of planned) {
+  for (const doc of pack.docs) {
+    if (doc._id !== packs.id16(`${pack.name}:${doc.name}`)) {
+      idFaults.push(`${pack.name}/${doc.name}: id is not the hash of its key`);
+    }
+    if (!/^[A-Za-z0-9]{16}$/.test(doc._id)) idFaults.push(`${pack.name}/${doc.name}: malformed id`);
+    if (everyId.has(doc._id)) {
+      idFaults.push(`${doc._id}: ${everyId.get(doc._id)} and ${pack.name}/${doc.name}`);
+    }
+    everyId.set(doc._id, `${pack.name}/${doc.name}`);
+    for (const child of doc.items ?? doc.cards ?? []) {
+      if (!/^[A-Za-z0-9]{16}$/.test(child._id)) {
+        idFaults.push(`${doc.name}/${child.name}: malformed id`);
+      }
+      if (everyId.has(child._id)) {
+        idFaults.push(`${child._id}: ${everyId.get(child._id)} and ${doc.name}/${child.name}`);
+      }
+      everyId.set(child._id, `${doc.name}/${child.name}`);
+    }
+  }
+}
+check("ids that are not the hash of their key, malformed, or shared",
+  idFaults.length ? idFaults.slice(0, 4).join("; ") : "none", "none");
+check("ids the rule actually read", everyId.size, 617);
+/* The hash itself, asked rather than shared: sixteen characters of the right alphabet, and the
+ * same answer twice for the same key. */
+check("an id is sixteen characters", packs.id16("items:Longsword").length, 16);
+check("from the id alphabet only",
+  /^[A-Za-z0-9]{16}$/.test(packs.id16("items:Longsword")) ? "yes" : "no", "yes");
+check("and the same key gives the same id",
+  packs.id16("items:Longsword"), packs.id16("items:Longsword"));
+check("while a different key does not",
+  packs.id16("items:Longsword") === packs.id16("items:Shortsword") ? "same" : "different",
+  "different");
+/*
+ * **And the id itself, written down.** Every check above shares its implementation with the
+ * generator, so a change to the hash moves both sides and they go on agreeing -- a break test
+ * shifted the digest by one byte and the whole section passed. Three literals cannot be satisfied
+ * that way.
+ *
+ * These are not arbitrary values to be updated when they fail. **They are the promise.** If a
+ * change here is needed, every link in every world that ever imported from these packs is already
+ * broken, and the right response is to put the hash back rather than to move the pin.
+ */
+check("the id for a known item", packs.id16("items:Longsword"), "AOyoqTG6b7KDVYLl");
+check("for a known creature", packs.id16("creatures:Goblin"), "3DCR02y4L7E7a5Ns");
+check("and for a known deck", packs.id16("decks:The Fate Deck"), "OIECs88iccWHuhYT");
+
+/*
+ * **The LevelDB key, which is the part Foundry reads and nothing here can test by running it.**
+ * A primary document is `!<collection>!<id>`; an embedded one is `!<collection>.<embedded>!<parent
+ * id>.<own id>`, and the parent id in it has to be the parent's. A key that is merely wrong gives
+ * a pack that opens and is missing things, which is why the builder round-trips every pack through
+ * Foundry's own packer and reads it back rather than trusting the scheme.
+ */
+const COLLECTION = { Actor: "actors", Item: "items", Cards: "cards" };
+const EMBEDDED = { Actor: "items", Cards: "cards" };
+const keyFaults = [];
+for (const pack of planned) {
+  const collection = COLLECTION[pack.type];
+  for (const doc of pack.docs) {
+    if (doc._key !== `!${collection}!${doc._id}`) keyFaults.push(`${pack.name}/${doc.name}`);
+    for (const child of doc.items ?? doc.cards ?? []) {
+      const want = `!${collection}.${EMBEDDED[pack.type]}!${doc._id}.${child._id}`;
+      if (child._key !== want) keyFaults.push(`${doc.name}/${child.name}`);
+    }
+  }
+}
+check("documents whose LevelDB key is wrong",
+  keyFaults.length ? keyFaults.slice(0, 4).join(", ") : "none", "none");
+check("and the builder reads every pack back through Foundry's own packer",
+  /await extractPack\(dest, check, \{ clean: true \}\)/.test(packSource) ? "yes" : "no", "yes");
+check("comparing what came back with what went in",
+  /packed \$\{docs\.length\} documents and read back/.test(packSource) ? "yes" : "no", "yes");
+
+/*
+ * **The manifest declares the packs that exist, and only those.** A declared pack with no
+ * directory stops the system loading; an undeclared directory is a compendium Foundry never shows.
+ * One is fatal and the other invisible, so neither is left to somebody remembering.
+ */
+check("packs declared in the manifest",
+  (manifest.packs ?? []).map(p => p.name).join(", "),
+  "creatures, characters, items, features, spells, signatures, decks");
+const onDiskPacks = fs.readdirSync(path.join(root, "packs"))
+  .filter(f => !f.startsWith("_") && fs.statSync(path.join(root, "packs", f)).isDirectory());
+check("declared packs with no directory",
+  (manifest.packs ?? []).filter(p => !onDiskPacks.includes(p.name)).map(p => p.name).join(", ")
+    || "none", "none");
+check("directories the manifest does not declare",
+  onDiskPacks.filter(d => !(manifest.packs ?? []).some(p => p.name === d)).join(", ") || "none",
+  "none");
+/* And each directory really is a compiled LevelDB rather than an empty folder. */
+check("packs with no compiled database",
+  onDiskPacks.filter(d => {
+    const files = fs.readdirSync(path.join(root, "packs", d));
+    return !files.includes("CURRENT") || !files.some(f => f.startsWith("MANIFEST-"));
+  }).join(", ") || "none", "none");
+/*
+ * **A pack's `type` must be a document class, its `system` must be this system, and its `path`
+ * must be where the directory is.** The first two are what Foundry refuses to load without; the
+ * third is what silently loads nothing.
+ */
+const manifestFaults = [];
+for (const p of manifest.packs ?? []) {
+  if (!(p.type in COLLECTION)) manifestFaults.push(`${p.name}: type ${p.type}`);
+  if (p.system !== "cardrpg") manifestFaults.push(`${p.name}: system ${p.system}`);
+  if (p.path !== `packs/${p.name}`) manifestFaults.push(`${p.name}: path ${p.path}`);
+  if (!p.label) manifestFaults.push(`${p.name}: no label`);
+  /* Folder membership is `packFolders` and nothing else: the manifest schema has no folder
+   * property on a pack, so one written there is a key Foundry ignores. */
+  if ("folder" in p) manifestFaults.push(`${p.name}: declares a folder itself`);
+}
+check("pack declarations with something wrong",
+  manifestFaults.join("; ") || "none", "none");
+check("and every pack is in the manifest's folder",
+  (manifest.packFolders ?? []).flatMap(f => f.packs ?? []).sort().join(", "),
+  (manifest.packs ?? []).map(p => p.name).sort().join(", "));
+
+/*
+ * **Every subtype in a pack is one the manifest registers.** A document whose `type` the system
+ * does not declare arrives as `base`, which has no fields at all -- so an item packed as a subtype
+ * nobody registered is an item with no data, and it looks like an item.
+ */
+const registeredSubtypes = {
+  Actor: Object.keys(manifest.documentTypes?.Actor ?? {}),
+  Item: Object.keys(manifest.documentTypes?.Item ?? {}),
+  Cards: ["deck", "hand", "pile"]
+};
+const typeFaults = new Set();
+for (const pack of planned) {
+  for (const doc of pack.docs) {
+    if (!registeredSubtypes[pack.type].includes(doc.type)) {
+      typeFaults.add(`${pack.type}/${doc.type}`);
+    }
+    for (const child of doc.items ?? []) {
+      if (!registeredSubtypes.Item.includes(child.type)) typeFaults.add(`Item/${child.type}`);
+    }
+    for (const child of doc.cards ?? []) {
+      if (!Object.keys(manifest.documentTypes?.Card ?? {}).includes(child.type)) {
+        typeFaults.add(`Card/${child.type}`);
+      }
+    }
+  }
+}
+check("subtypes used in a pack that the manifest does not register",
+  [...typeFaults].sort().join(", ") || "none", "none");
+/* A parse that found no types would report "none" for a manifest declaring nothing. */
+check("subtypes the rule read",
+  [...new Set(planned.flatMap(p => [
+    ...p.docs.map(d => `${p.type}/${d.type}`),
+    ...p.docs.flatMap(d => (d.items ?? []).map(c => `Item/${c.type}`)),
+    ...p.docs.flatMap(d => (d.cards ?? []).map(c => `Card/${c.type}`))
+  ]))].sort().join(", "),
+  "Actor/character, Actor/npc, Card/action, Card/fate, Card/npc, Card/skill, Card/twist, "
+  + "Cards/deck, Item/feature, Item/item, Item/spell");
+
+/*
+ * **And a packed document carries nothing the schema will drop.** This is the sweep the item
+ * tables already get, run over the packs instead of the tables -- which widens it from the hundred
+ * and fifty-six entries of `ITEMS` and `NPC_GEAR` to every document the system ships, natural
+ * weapons, features, spells, Signatures, creatures and the starter character included.
+ *
+ * A data model drops a key it does not know rather than rejecting it, so the test is not whether
+ * the document loads but whether anything of it is thrown away on the way in.
+ */
+const actorSource = fs.readFileSync(path.join(root, "module/data/actors.mjs"), "utf8");
+const fieldsOf = (src, from, to) => {
+  const at = src.indexOf(from);
+  const body = src.slice(at, to ? src.indexOf(to, at) : undefined);
+  return new Set([...body.matchAll(/^      ([a-zA-Z]+): /gm)].map(m => m[1]));
+};
+const SCHEMA_FIELDS = {
+  item: new Set([...fieldsOf(itemSource, "export class ItemSlateData", "export class FeatureSlateData"),
+    "active", "drained", "drainedFor", "group", "text", "description", "equipped"]),
+  feature: new Set([...fieldsOf(itemSource, "export class FeatureSlateData", "export class SpellSlateData"),
+    "active", "drained", "drainedFor", "group", "text", "description", "equipped"]),
+  spell: new Set([...fieldsOf(itemSource, "export class SpellSlateData"),
+    "active", "drained", "drainedFor", "group", "text", "description", "equipped"]),
+  npc: new Set([...fieldsOf(actorSource, "export class NpcData"), "decks"]),
+  character: new Set([...fieldsOf(actorSource, "export class CharacterData", "export class NpcData"),
+    "decks"])
+};
+/* The sets are read out of source, so an empty one would pass every document silently. */
+check("schema fields the sweep read",
+  Object.entries(SCHEMA_FIELDS).map(([k, v]) => `${k}:${v.size >= 6 ? "ok" : v.size}`).join(" "),
+  "item:ok feature:ok spell:ok npc:ok character:ok");
+const strayPacked = new Set();
+for (const pack of planned) {
+  for (const doc of pack.docs) {
+    const own = SCHEMA_FIELDS[doc.type];
+    if (own) {
+      for (const key of Object.keys(doc.system ?? {})) {
+        if (!own.has(key)) strayPacked.add(`${doc.type}.${key} (${doc.name})`);
+      }
+    }
+    for (const child of doc.items ?? []) {
+      const kid = SCHEMA_FIELDS[child.type];
+      if (!kid) continue;
+      for (const key of Object.keys(child.system ?? {})) {
+        if (!kid.has(key)) strayPacked.add(`${child.type}.${key} (${child.name})`);
+      }
+    }
+  }
+}
+check("packed keys the schema would drop",
+  strayPacked.size ? [...strayPacked].sort().slice(0, 6).join(", ") : "none", "none");
+
+/*
+ * **Two slates of one name, which the packer found and nothing else had.** `The Kit` is written
+ * twice: the catalogue's Tool, with a shadow bonus and lock training, and the Burglar's Signature,
+ * with different text and no bonus. One pack cannot hold both -- they would share an id -- so they
+ * are in different packs, and an actor that carries the name gets whichever table was read first.
+ *
+ * That is a coin flip dressed as a rule, so it is pinned rather than resolved: the design question
+ * of which `The Kit` is the real one is not the packer's to answer, and a pin is how it stays
+ * visible until somebody answers it.
+ */
+check("slates written twice under one name, same document type",
+  packs.SLATE_CLASHES.join("; ") || "none", "The Kit: ITEMS and SIGNATURES, both item");
+/*
+ * The five other shared names are deliberate and cross document types, which is why they are fine:
+ * a player's *Press* and a monster's *Press* are the same manoeuvre on two different cards, and a
+ * card and a spell of one name are two documents a world never confuses.
+ */
+const nameUse = new Map();
+for (const [table, list] of [
+  ["POOL", [...graph.POOL.values()]], ["SPELLS", [...graph.SPELLS.values()]],
+  ["INTENTS", content.INTENTS], ["WARRIOR_DECK", content.WARRIOR_DECK],
+  ["WARRIOR_SKILLS", content.WARRIOR_SKILLS], ["WILD_MAGIC", content.WILD_MAGIC],
+  ["TWISTS", content.TWISTS]
+]) {
+  for (const e of list) nameUse.set(e.name, [...(nameUse.get(e.name) ?? []), table]);
+}
+check("names shared across two card or spell tables",
+  [...nameUse].filter(([, t]) => t.length > 1).map(([n, t]) => `${n}: ${t.join("+")}`).sort()
+    .join(" | "),
+  "Heave: POOL+WARRIOR_SKILLS | Hold the Line: POOL+INTENTS | Press: POOL+INTENTS | "
+  + "Quick Hands: WARRIOR_DECK+WARRIOR_SKILLS | The Long Step: SPELLS+WILD_MAGIC");
+
+/*
+ * **The setup routine still builds the starter world from the tables**, and that is deliberate for
+ * now: it is what a first session runs, it works, and rewiring it to import from a compendium is a
+ * behaviour change nothing here can test. The packs are a GM's library; the routine is the starter
+ * world. Both read the same tables, so neither can drift from the other.
+ */
+check("the starter routine reads the tables rather than a pack",
+  /game\.packs/.test(setupCode) ? "a pack" : "the tables", "the tables");
+check("and the one shape builder is shared with the packs",
+  /import \{ slateData \} from "\.\.\/module\/setup\.mjs"/.test(packSource) ? "yes" : "no", "yes");
+check("as are the card builders",
+  /actionCardData, skillCardData, twistCardData, npcCardData/.test(packSource) ? "yes" : "no",
+  "yes");
+/* And the classification of what is a card, a spell or a slate is `graph.mjs`'s, not a second
+ * opinion: a pack that disagreed about whether Step Through is a spell would file it twice. */
+check("and the classification comes from the graph",
+  /import \{ POOL, SPELLS, SIGNATURES, slateFieldsOf, spellKindOf \} from "\.\.\/module\/graph\.mjs"/
+    .test(packSource) ? "yes" : "no", "yes");
+/*
+ * And the strip itself, which is the part three callers share. A content entry carries the graph's
+ * own fields -- `kind`, `node`, `needs`, `pool` -- and a data model drops a key it does not know
+ * without a word, so an entry passed through whole loses whatever the schema has no field for. The
+ * pack builder was the third caller and got the list wrong; the schema sweep above is what said so.
+ */
+check("one place strips the graph's fields",
+  /export function slateFieldsOf\(def\)/.test(graphSource) ? "yes" : "no", "yes");
+check("and all three callers use it",
+  (`${graphSource}\n${packSource}`.match(/slateFieldsOf\(/g) ?? []).length, 4);
+check("and none of them spells the list out any more",
+  /const \{ kind, node, needs(, pool)?, \.\.\.fields \} = def;/
+    .test(graphSource.replace(/export function slateFieldsOf[\s\S]*?\n\}/, ""))
+    ? "still there" : "gone", "gone");
+
+/*
+ * **LevelDB is binary and this repository is checked out on Windows**, where git rewrites LF to
+ * CRLF in anything it takes for text -- and it takes a MANIFEST and a .log for text. A pack that
+ * has been through that conversion still looks like a pack and fails to open, with Foundry
+ * reporting a corrupt compendium and nothing saying why.
+ */
+const attrs = fs.readFileSync(path.join(root, "../../.gitattributes"), "utf8");
+/* Read as whole lines rather than built into a regex: the pattern IS the thing being checked, so
+ * escaping it in order to look for it is a way to go wrong twice and notice neither time. */
+const attrLines = attrs.split("\n").map(l => l.trim().split(/\s+/));
+check("the pack formats git must not translate",
+  ["*.ldb", "*.log", "MANIFEST-*", "CURRENT"]
+    .filter(p => !attrLines.some(([pat, ...rest]) => pat === p && rest.includes("binary")))
+    .join(", ") || "none", "none");
+check("and the sources stay text with one newline",
+  /packs\/_source\/\*\*\/\*\.json text eol=lf/.test(attrs) ? "yes" : "no", "yes");
+/* LevelDB's own runtime files are not committed: a stale LOCK ships a pack nobody can open. */
+const ignores = fs.readFileSync(path.join(root, ".gitignore"), "utf8");
+/*
+ * **And the sentence that stops somebody editing a pack in Foundry**, which is the one mistake this
+ * arrangement invites: a compendium is editable, the edit works, and the next build overwrites it
+ * without warning. The README is where that is said, so it is where it is checked.
+ */
+const readmeSource = fs.readFileSync(path.join(root, "README.md"), "utf8");
+/*
+ * **And the install page's numbers, which are the roster's.** It told people the routine built
+ * "a Goblin and a Goblin Archer" for a while after it built five, and that page is what somebody
+ * follows to set up a test -- so the creatures it names and the count it gives are asked of the
+ * content rather than left to whoever remembers to edit prose.
+ */
+const goblinLineNames = monsters.expandRoster(
+  content.ROSTER.filter(r => r.system.kind === "goblin"), content.VARIANTS).map(c => c.name);
+/* By the word that tells each one apart, which is how the prose names them: "the spearman, the
+ * Warrior, the Archer, the Shaman and the Chief" reads better than five full names and says the
+ * same thing. The base has no such word, so it is the one named for its weapon. */
+check("the README names every variant in the goblin line",
+  goblinLineNames.slice(1).map(n => n.split(" ").pop())
+    /* Whitespace collapsed: the list wraps mid-phrase, and a check that a document SAYS something
+     * must not depend on where the line happened to break. */
+    .filter(w => !readmeSource.replace(/\s+/g, " ").includes(`the ${w}`)).join(", ") || "none",
+  "none");
+check("and the line is the length it says",
+  readmeSource.replace(/\s+/g, " ")
+    .includes("the spearman, the Warrior, the Archer, the Shaman and the Chief")
+  && goblinLineNames.length === 5 ? "yes" : "no", "yes");
+check("and counts the ones that arrive on demand",
+  new RegExp(`\\*\\*The other ${
+    monsters.expandRoster(content.ROSTER, content.VARIANTS).length - goblinLineNames.length
+  } creatures arrive one at a time\\*\\*`).test(readmeSource) ? "yes" : "no", "yes");
+check("and names the call that builds one",
+  /game\.cardrpg\.buildMonster\("Mole Beast"\)/.test(readmeSource)
+  && monsters.expandRoster(content.ROSTER, content.VARIANTS).some(c => c.name === "Mole Beast")
+    ? "yes" : "no", "yes");
+/* And the compendium, which is the other way to get one onto a table. */
+check("and says the pack holds every creature",
+  new RegExp(`which holds all ${
+    monsters.expandRoster(content.ROSTER, content.VARIANTS).length
+  } ready-made`).test(readmeSource) ? "yes" : "no", "yes");
+check("the README says a pack is a build artefact",
+  /> \*\*Editing a pack inside Foundry edits a build artefact\.\*\*/.test(readmeSource) ? "yes" : "no",
+  "yes");
+check("and says what to change instead",
+  /Change `module\/content\.mjs` and rebuild\./.test(readmeSource) ? "yes" : "no", "yes");
+/* Two files, two checks: one grep over both would have been answered by either, which is the
+ * thing this suite's last section is entirely about. */
+check("and gives the one command that rebuilds them",
+  /^npm run packs$/m.test(readmeSource) ? "yes" : "no", "yes");
+check("which package.json really defines",
+  /"packs": "node test\/build-packs\.mjs"/
+    .test(fs.readFileSync(path.join(root, "package.json"), "utf8")) ? "yes" : "no", "yes");
+check("LevelDB runtime files kept out of the repository",
+  ["packs/*/LOCK", "packs/*/LOG", "packs/*/LOG.old"]
+    .filter(p => !ignores.includes(p)).join(", ") || "none", "none");
 
 /* ---- how a card and the graph look ---- */
 
@@ -7756,7 +8413,7 @@ for (const m of selfSource.matchAll(
   const p = path.join(root, m[2]);
   if (fs.existsSync(p)) readFiles.set(m[1], fs.readFileSync(p, "utf8"));
 }
-check("files this suite greps by name", readFiles.size, 48);
+check("files this suite greps by name", readFiles.size, 54);
 
 /* Every `/pattern/.test(VAR)` and `VAR.includes("...")`, with the check it belongs to. */
 const nameOfCheck = index => {
@@ -7788,7 +8445,7 @@ for (const m of selfSource.matchAll(/(\w+)\.includes\("((?:[^"\\]|\\.)*)"\)/g)) 
 }
 
 /* The pin that keeps the rest of this honest. */
-check("greps over a whole file, resolved", greps.length, 468);
+check("greps over a whole file, resolved", greps.length, 484);
 
 /*
  * **The rule, as one predicate, run over a planted example before it is run over the suite.**

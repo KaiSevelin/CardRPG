@@ -1,0 +1,54 @@
+{
+  "_id": "i4dLW0R6uti2Ycla",
+  "_key": "!actors!i4dLW0R6uti2Ycla",
+  "name": "Rush Spider",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 10,
+      "base": 10
+    },
+    "kind": "rush-spider",
+    "armorBase": 1,
+    "speed": 8,
+    "capabilities": [
+      "legs",
+      "fast",
+      "transport"
+    ],
+    "tactics": [
+      "skirmisher"
+    ],
+    "targetPriority": "weakest"
+  },
+  "items": [
+    {
+      "_id": "gKC7axft3Tdjfqi3",
+      "_key": "!actors.items!i4dLW0R6uti2Ycla.gKC7axft3Tdjfqi3",
+      "name": "Mandibles",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 3
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Rush Spider"
+  }
+}

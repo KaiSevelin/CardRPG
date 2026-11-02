@@ -1,0 +1,61 @@
+{
+  "_id": "tGR9Zsyn2W3RnEUk",
+  "_key": "!actors!tGR9Zsyn2W3RnEUk",
+  "name": "Goblin Shaman",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 6,
+      "base": 6
+    },
+    "kind": "goblin-shaman",
+    "armorBase": 0,
+    "speed": 2,
+    "capabilities": [
+      "legs",
+      "pack",
+      "caster"
+    ],
+    "tactics": [
+      "packTactics",
+      "cowardly",
+      "tainting"
+    ],
+    "targetPriority": "weakest",
+    "signature": {
+      "condition": "cursed",
+      "duration": 2
+    }
+  },
+  "items": [
+    {
+      "_id": "OqC6Bl36IHGIQ2If",
+      "_key": "!actors.items!tGR9Zsyn2W3RnEUk.OqC6Bl36IHGIQ2If",
+      "name": "Goblin Fetish",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 1,
+        "tags": [
+          "arcane",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Focus",
+        "verbs": {
+          "cast": {
+            "value": 3,
+            "range": 4
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Goblin Shaman"
+  }
+}

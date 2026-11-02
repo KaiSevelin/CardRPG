@@ -1,0 +1,17 @@
+{
+  "_id": "rkaL8BHqM4CyYuYn",
+  "_key": "!items!rkaL8BHqM4CyYuYn",
+  "name": "The Clean Pot",
+  "type": "spell",
+  "system": {
+    "strength": 1,
+    "source": "Household Magic",
+    "description": "<p>Food never spoils and water is always safe. A day's rations for the party, every day, for ever &mdash; which quietly deletes a whole column of the equipment list.</p>",
+    "effect": {
+      "timing": "ritual",
+      "text": "a day's rations for the party, every day"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

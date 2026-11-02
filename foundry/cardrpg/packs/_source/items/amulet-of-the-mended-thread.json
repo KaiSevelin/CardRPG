@@ -1,0 +1,17 @@
+{
+  "_id": "kgDjRABjluV85uAR",
+  "_key": "!items!kgDjRABjluV85uAR",
+  "name": "Amulet of the Mended Thread",
+  "type": "item",
+  "system": {
+    "slot": "neck",
+    "weight": 0,
+    "value": 800,
+    "blurb": "A knotted thread in amber. The knot is tied, not drawn.",
+    "group": "wonder",
+    "active": {
+      "text": "When you would drop to 0 Health, drop to 1 instead.",
+      "boundary": "longRest"
+    }
+  }
+}

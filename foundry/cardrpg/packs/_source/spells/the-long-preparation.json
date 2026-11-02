@@ -1,0 +1,17 @@
+{
+  "_id": "UnrwrtHvFCmMHJRz",
+  "_key": "!items!UnrwrtHvFCmMHJRz",
+  "name": "The Long Preparation",
+  "type": "spell",
+  "system": {
+    "strength": 1,
+    "source": "Necromancy",
+    "description": "<p>You read about them the night before. It is not insight; it is homework, and it only works on the thing you did it for.</p>",
+    "effect": {
+      "timing": "beforeFight",
+      "text": "name one enemy type: your Casts against it are +2 all fight"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "_id": "yd0rLxTZLDdPmxvL",
+  "_key": "!items!yd0rLxTZLDdPmxvL",
+  "name": "Fine Longsword",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "fits": [
+      "back"
+    ],
+    "hands": 1,
+    "tags": [
+      "heavy",
+      "melee"
+    ],
+    "weight": 2,
+    "value": 90,
+    "blurb": "A smith's mark near the hilt, and worth asking after.",
+    "verbs": {
+      "strike": {
+        "value": 3
+      },
+      "defend": {
+        "value": 1
+      }
+    },
+    "group": "make",
+    "bonus": {
+      "verb": "strike",
+      "value": 1
+    }
+  }
+}

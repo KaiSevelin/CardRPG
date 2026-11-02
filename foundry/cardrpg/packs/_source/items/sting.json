@@ -1,0 +1,22 @@
+{
+  "_id": "RITdFoVM2J3sBwRL",
+  "_key": "!items!RITdFoVM2J3sBwRL",
+  "name": "Sting",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "hands": 0,
+    "tags": [
+      "melee",
+      "natural"
+    ],
+    "weight": 0,
+    "value": 0,
+    "npcGear": true,
+    "verbs": {
+      "strike": {
+        "value": 2
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "_id": "hLpSyA9Q7eADJtvl",
+  "_key": "!items!hLpSyA9Q7eADJtvl",
+  "name": "Quiet Worker",
+  "type": "feature",
+  "system": {
+    "group": "training",
+    "bonus": {
+      "approach": "shadow",
+      "value": 1
+    },
+    "text": "+1 on Shadow checks. Slowly is quietly, and you have the patience for it."
+  }
+}

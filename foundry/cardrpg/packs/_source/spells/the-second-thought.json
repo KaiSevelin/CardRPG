@@ -1,0 +1,19 @@
+{
+  "_id": "TxOolNumikYH9RVq",
+  "_key": "!items!TxOolNumikYH9RVq",
+  "name": "The Second Thought",
+  "type": "spell",
+  "system": {
+    "strength": 1,
+    "source": "Fagar",
+    "description": "<p>One enemy spends its secondary this round doing nothing.</p>",
+    "effect": {
+      "range": 3,
+      "resist": "presence",
+      "dc": 7,
+      "text": "one enemy's secondary does nothing"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

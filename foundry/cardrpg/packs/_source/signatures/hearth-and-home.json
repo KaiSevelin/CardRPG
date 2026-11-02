@@ -1,0 +1,17 @@
+{
+  "_id": "KKR7HHhvAkb2a2AN",
+  "_key": "!items!KKR7HHhvAkb2a2AN",
+  "name": "Hearth and Home",
+  "type": "spell",
+  "system": {
+    "strength": 1,
+    "source": "Household Magic",
+    "description": "<p>Out of combat: a camp nobody unfriendly can find, for one night. A ritual, so anyone literate could do it &mdash; but somebody has to know the words.</p>",
+    "effect": {
+      "timing": "ritual",
+      "text": "a camp nobody unfriendly can find, for one night"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

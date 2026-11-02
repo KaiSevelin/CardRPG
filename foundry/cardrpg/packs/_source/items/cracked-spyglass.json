@@ -1,0 +1,14 @@
+{
+  "_id": "sFuxeA3pxNV6c7qH",
+  "_key": "!items!sFuxeA3pxNV6c7qH",
+  "name": "Cracked Spyglass",
+  "type": "item",
+  "system": {
+    "slot": "pack",
+    "weight": 1,
+    "value": 150,
+    "blurb": "The crack does not matter. What you see through it has not happened yet.",
+    "group": "wonder",
+    "text": "Foresee one extra type at the start of a fight."
+  }
+}

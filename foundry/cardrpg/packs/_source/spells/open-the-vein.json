@@ -1,0 +1,22 @@
+{
+  "_id": "nkA4AxLKSsdOEd4K",
+  "_key": "!items!nkA4AxLKSsdOEd4K",
+  "name": "Open the Vein",
+  "type": "spell",
+  "system": {
+    "strength": 1,
+    "source": "Blood Magic",
+    "cost": {
+      "health": 1
+    },
+    "description": "<p>Your own blood, thrown. It goes round a shield rather than through it.</p>",
+    "effect": {
+      "verb": "cast",
+      "range": 2,
+      "mod": 3,
+      "text": "ignoring Block"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "_id": "uWiTVY6ZVBDt5POZ",
+  "_key": "!actors!uWiTVY6ZVBDt5POZ",
+  "name": "Goblin Warrior",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 8,
+      "base": 8
+    },
+    "kind": "goblin-warrior",
+    "armorBase": 1,
+    "speed": 3,
+    "capabilities": [
+      "legs",
+      "pack",
+      "brute"
+    ],
+    "tactics": [
+      "packTactics",
+      "shieldWall"
+    ],
+    "targetPriority": "nearest"
+  },
+  "items": [
+    {
+      "_id": "skgtYZvvnL50LEUx",
+      "_key": "!actors.items!uWiTVY6ZVBDt5POZ.skgtYZvvnL50LEUx",
+      "name": "Goblin Spear",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "fits": [
+          "back"
+        ],
+        "hands": 1,
+        "tags": [
+          "melee"
+        ],
+        "weight": 2,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Weapon",
+        "verbs": {
+          "strike": {
+            "value": 3
+          }
+        },
+        "equipped": true
+      }
+    },
+    {
+      "_id": "DUUpI1cnrBItTeso",
+      "_key": "!actors.items!uWiTVY6ZVBDt5POZ.DUUpI1cnrBItTeso",
+      "name": "Goblin Shield",
+      "type": "item",
+      "system": {
+        "slot": "offhand",
+        "hands": 1,
+        "tags": [
+          "shield",
+          "natural"
+        ],
+        "weight": 2,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Shield",
+        "armor": 1,
+        "verbs": {
+          "defend": {
+            "value": 2
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Goblin Warrior"
+  }
+}

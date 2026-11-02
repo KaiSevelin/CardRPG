@@ -1,0 +1,17 @@
+{
+  "_id": "jGaHOGjGoT7hCNaa",
+  "_key": "!items!jGaHOGjGoT7hCNaa",
+  "name": "Become the Shadow",
+  "type": "spell",
+  "system": {
+    "strength": 5,
+    "source": "Shadow Magic",
+    "wilds": 5,
+    "description": "<p>Not in a shadow: in every shadow, at once, until the fight ends. Nothing can reach you and you can reach anything standing in the dark.</p>",
+    "effect": {
+      "text": "until the fight ends you are in every shadow at once: Strike from any shadowed square, and nothing can target you"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

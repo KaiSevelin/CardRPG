@@ -1,0 +1,17 @@
+{
+  "_id": "EMHBmFBbfQCHw2e3",
+  "_key": "!items!EMHBmFBbfQCHw2e3",
+  "name": "Focus Pendant",
+  "type": "item",
+  "system": {
+    "slot": "neck",
+    "weight": 0,
+    "value": 400,
+    "blurb": "Jeweller's work. The stone is not the point; the setting is.",
+    "group": "power",
+    "bonus": {
+      "verb": "cast",
+      "value": 1
+    }
+  }
+}

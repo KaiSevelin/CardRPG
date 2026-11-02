@@ -1,0 +1,17 @@
+{
+  "_id": "mYfSB5by9WLzjV7G",
+  "_key": "!items!mYfSB5by9WLzjV7G",
+  "name": "Marked Arrowhead",
+  "type": "item",
+  "system": {
+    "slot": "belt",
+    "weight": 0,
+    "value": 350,
+    "blurb": "It has not been fired. It does not need to be.",
+    "group": "wonder",
+    "active": {
+      "text": "One enemy you can see is Marked (1).",
+      "boundary": "combat"
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "_id": "e0Issb2stKmftsp4",
+  "_key": "!items!e0Issb2stKmftsp4",
+  "name": "The Pale Crown",
+  "type": "item",
+  "system": {
+    "slot": "head",
+    "weight": 1,
+    "value": 5000,
+    "blurb": "Bone, and lighter than bone should be.",
+    "group": "wonder",
+    "grants": {
+      "spellSlots": 2
+    },
+    "text": "Obligation: you may never wear armour, and nobody but you may heal you."
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "_id": "qMPyUJ7vBrwBXpLt",
+  "_key": "!items!qMPyUJ7vBrwBXpLt",
+  "name": "Wrong Face",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "Glamour",
+    "description": "<p>Your face is briefly somebody they were not expecting. Two rounds of trying to work out what they are looking at.</p>",
+    "effect": {
+      "verb": "cast",
+      "condition": "dazed",
+      "duration": 2,
+      "resist": "wits",
+      "dc": 7
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

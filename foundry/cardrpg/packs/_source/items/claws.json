@@ -1,0 +1,22 @@
+{
+  "_id": "v35QEojN9qmEFoEm",
+  "_key": "!items!v35QEojN9qmEFoEm",
+  "name": "Claws",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "hands": 0,
+    "tags": [
+      "melee",
+      "natural"
+    ],
+    "weight": 0,
+    "value": 0,
+    "npcGear": true,
+    "verbs": {
+      "strike": {
+        "value": 4
+      }
+    }
+  }
+}

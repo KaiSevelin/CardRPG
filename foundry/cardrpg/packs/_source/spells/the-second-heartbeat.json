@@ -1,0 +1,19 @@
+{
+  "_id": "ITDAKtuNFEBjXHnB",
+  "_key": "!items!ITDAKtuNFEBjXHnB",
+  "name": "The Second Heartbeat",
+  "type": "spell",
+  "system": {
+    "strength": 3,
+    "source": "Blood Magic",
+    "cost": {
+      "health": 4
+    },
+    "description": "<p>Two hearts for one turn. The second one is paid for.</p>",
+    "effect": {
+      "text": "Spent: play a second primary this turn"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

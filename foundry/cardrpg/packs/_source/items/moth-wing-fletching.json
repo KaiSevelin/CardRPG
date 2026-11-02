@@ -1,0 +1,21 @@
+{
+  "_id": "EXGX4LG8tEMd1sto",
+  "_key": "!items!EXGX4LG8tEMd1sto",
+  "name": "Moth-wing Fletching",
+  "type": "item",
+  "system": {
+    "slot": "belt",
+    "tags": [
+      "consumable"
+    ],
+    "weight": 0,
+    "value": 40,
+    "consumed": true,
+    "ammoFor": [
+      "bow"
+    ],
+    "shotEffect": "ignoresCover",
+    "blurb": "It does not fly straight. It arrives anyway.",
+    "text": "Bow. This shot ignores cover entirely."
+  }
+}

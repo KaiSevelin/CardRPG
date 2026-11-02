@@ -1,0 +1,29 @@
+{
+  "_id": "EPNMYubCOcE273ud",
+  "_key": "!items!EPNMYubCOcE273ud",
+  "name": "Arquebus",
+  "type": "item",
+  "system": {
+    "ammo": "firearm",
+    "slot": "hands",
+    "fits": [
+      "back"
+    ],
+    "hands": 2,
+    "tags": [
+      "heavy",
+      "ranged"
+    ],
+    "weight": 4,
+    "value": 90,
+    "blurb": "Loud, slow, and it does not care what you are wearing.",
+    "verbs": {
+      "strike": {
+        "value": 5,
+        "ignores": 2,
+        "range": 8,
+        "text": "ignores 2 armor; Ready to reload"
+      }
+    }
+  }
+}

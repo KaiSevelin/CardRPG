@@ -1,0 +1,14 @@
+{
+  "_id": "4fTW4Qr9znQQGV56",
+  "_key": "!items!4fTW4Qr9znQQGV56",
+  "name": "Marching Boots",
+  "type": "item",
+  "system": {
+    "slot": "feet",
+    "weight": 1,
+    "value": 12,
+    "blurb": "Nailed soles. Rubble and mud stop being a decision.",
+    "group": "make",
+    "text": "Difficult ground costs you 1 instead of 2."
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "_id": "E6EDzf6xhRZvRr4F",
+  "_key": "!items!E6EDzf6xhRZvRr4F",
+  "name": "The Black Lantern",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "hands": 1,
+    "weight": 2,
+    "value": 3500,
+    "blurb": "It is lit. You can tell because of how much less you can see.",
+    "group": "wonder",
+    "text": "Every square within 3 is shadowed, your enemies' included. Obligation: you may never carry any other light."
+  }
+}

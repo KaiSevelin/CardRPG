@@ -45,6 +45,30 @@ CARDRPG.effects = {
    */
   block: { label: "CARDRPG.Effect.Block", icon: "shield-reflect" },
   /*
+   * **Conjure: something that was not on the field is on it now.**
+   *
+   * Six steps did this in prose -- *a corpse within 2 rises and fights for you until the fight
+   * ends*, *a minor god becomes present and fights as an ally for the rest of the fight* -- and
+   * `summon` is a capability a creature holds and an intent card reads, so the monster side asks
+   * for it too. The configuration is on the step (`conjure`), because what separates the lesser
+   * necromancy from the greater is entirely a matter of how many, how long and at what price.
+   */
+  conjure: { label: "CARDRPG.Effect.Conjure", icon: "puppet" },
+  /*
+   * **Shape: you are something else for a while.**
+   *
+   * A form names a creature and the creature supplies the numbers, which is the same split a card
+   * and an item have had since the beginning. So a form is delivered as an ITEM -- the creature's
+   * own natural weapon, equipped -- and that is not a trick to avoid writing a mechanism: a body
+   * IS what you fight with, and `Claws` is already an item with a Strike on it.
+   *
+   * What a form does not touch: your deck, your Health and your conditions. The deck is the
+   * character in this game, so a shape that replaced it would be a different character wearing
+   * your name; and a bear that forgets it was poisoned is a way out of a condition that no card
+   * should hand over for free.
+   */
+  shape: { label: "CARDRPG.Effect.Shape", icon: "squid-head" },
+  /*
    * Foresee: look at one NPC type's intent card for this round (core-rules 6).
    *
    * core-rules says it "needs no icon of its own", meaning no new entry in the six-verb vocabulary
@@ -639,6 +663,45 @@ CARDRPG.tactics = {
  * (monsters.mjs `capsOf`), and the Queen -- rooted, unique -- is the creature that proves deriving
  * it was worth the trouble.
  */
+/**
+ * **When a step may be played**, which the cards used to say in prose and the engine could not read.
+ *
+ * Six values, every one of them a phrase already written on a card rather than a category invented
+ * for the table: a Signature that reads *ritual: overnight a ruin becomes a house* is a ritual, and
+ * one that reads *permanent: +3 armor* is not a step at all.
+ */
+/**
+ * **What a conjuration may call up.** Three sources, and the difference between them is where the
+ * thing being conjured comes FROM rather than what it is.
+ *
+ * `corpse` needs a dead body on the field, which is why Necromancy's lesser work is cheap and its
+ * greater work is not: the spell does not make a soldier, it reuses one. `god` needs a pact, and
+ * the minor gods *demonstrably exist* (Firma.md) -- they are beings forced underground by Athor's
+ * conquest, not articles of faith, which is why Spiritualism is a school and not a church.
+ * `creature` is anything in the roster, for the summoner who brings their own.
+ */
+CARDRPG.conjureSources = {
+  corpse: "CARDRPG.Conjure.Corpse",
+  god: "CARDRPG.Conjure.God",
+  creature: "CARDRPG.Conjure.Creature"
+};
+
+/** Whose side the conjured thing fights on. A summoner who cannot be betrayed is a summoner with
+ *  nothing at stake, so `enemy` is a real option and not a joke. */
+CARDRPG.conjureSides = {
+  ally: "CARDRPG.Conjure.Ally",
+  enemy: "CARDRPG.Conjure.Enemy",
+  neutral: "CARDRPG.Conjure.Neutral"
+};
+
+CARDRPG.timings = {
+  reaction: "CARDRPG.Timing.Reaction",
+  ritual: "CARDRPG.Timing.Ritual",
+  outOfCombat: "CARDRPG.Timing.OutOfCombat",
+  beforeFight: "CARDRPG.Timing.BeforeFight",
+  permanent: "CARDRPG.Timing.Permanent"
+};
+
 CARDRPG.capabilities = {
   /* how it gets about */
   legs: "CARDRPG.Capability.Legs",

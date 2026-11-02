@@ -1,0 +1,14 @@
+{
+  "_id": "b9zo0Je3ErBKAr8D",
+  "_key": "!items!b9zo0Je3ErBKAr8D",
+  "name": "Light Step",
+  "type": "feature",
+  "system": {
+    "group": "training",
+    "bonus": {
+      "approach": "agility",
+      "value": 1
+    },
+    "text": "+1 on Agility checks. Where to put a foot, decided before you need it."
+  }
+}

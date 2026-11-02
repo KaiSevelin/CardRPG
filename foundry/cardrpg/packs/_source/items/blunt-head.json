@@ -1,0 +1,25 @@
+{
+  "_id": "lzyk27myLDawyZUA",
+  "_key": "!items!lzyk27myLDawyZUA",
+  "name": "Blunt Head",
+  "type": "item",
+  "system": {
+    "slot": "belt",
+    "tags": [
+      "consumable"
+    ],
+    "weight": 0,
+    "value": 20,
+    "consumed": true,
+    "ammoFor": [
+      "bow",
+      "crossbow"
+    ],
+    "shot": {
+      "condition": "offBalance",
+      "duration": 1
+    },
+    "blurb": "No point at all, which is the point.",
+    "text": "Bow or crossbow. The target is Off-Balance (1). No save."
+  }
+}

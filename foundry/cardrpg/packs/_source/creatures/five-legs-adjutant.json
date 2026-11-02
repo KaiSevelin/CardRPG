@@ -1,0 +1,54 @@
+{
+  "_id": "lyosWXlCceSJPDMd",
+  "_key": "!actors!lyosWXlCceSJPDMd",
+  "name": "Five Legs Adjutant",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 12,
+      "base": 12
+    },
+    "kind": "five-legs-adjutant",
+    "armorBase": 2,
+    "speed": 4,
+    "capabilities": [
+      "legs",
+      "commander",
+      "summon"
+    ],
+    "tactics": [
+      "commander"
+    ],
+    "targetPriority": "leader"
+  },
+  "items": [
+    {
+      "_id": "DpWjhFmYhllM3IZo",
+      "_key": "!actors.items!lyosWXlCceSJPDMd.DpWjhFmYhllM3IZo",
+      "name": "Claws",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 4
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Five Legs Adjutant"
+  }
+}

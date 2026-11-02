@@ -1,0 +1,30 @@
+{
+  "_id": "0ecava67ddjQzC5K",
+  "_key": "!items!0ecava67ddjQzC5K",
+  "name": "Flask of Ink",
+  "type": "item",
+  "system": {
+    "slot": "belt",
+    "fits": [
+      "hands"
+    ],
+    "hands": 1,
+    "tags": [
+      "consumable",
+      "thrown"
+    ],
+    "weight": 0,
+    "value": 20,
+    "consumed": true,
+    "blurb": "Cuttlefish black. It finds what is not there to be seen.",
+    "verbs": {
+      "use": {
+        "value": 0,
+        "range": 3,
+        "area": 1,
+        "areaKind": "blast",
+        "text": "ends Invisible in the area"
+      }
+    }
+  }
+}

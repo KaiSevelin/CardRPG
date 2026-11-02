@@ -1,0 +1,18 @@
+{
+  "_id": "tCpCBVPK1IzZm4Bs",
+  "_key": "!items!tCpCBVPK1IzZm4Bs",
+  "name": "Discriminating Wand",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "hands": 1,
+    "tags": [
+      "arcane"
+    ],
+    "weight": 0,
+    "value": 1100,
+    "blurb": "It knows whose side everyone is on, which is more than most people do.",
+    "group": "wonder",
+    "text": "Your Blasts count as Aimed."
+  }
+}

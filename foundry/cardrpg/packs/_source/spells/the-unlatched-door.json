@@ -1,0 +1,17 @@
+{
+  "_id": "sqBiOcQUdYknFSwK",
+  "_key": "!items!sqBiOcQUdYknFSwK",
+  "name": "The Unlatched Door",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "Household Magic",
+    "description": "<p>Any door or lock that was ever opened by somebody who lived there opens for you. Most doors were, which is the joke and also the spell.</p>",
+    "effect": {
+      "timing": "ritual",
+      "text": "a door ever opened by one who lived there opens for you"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

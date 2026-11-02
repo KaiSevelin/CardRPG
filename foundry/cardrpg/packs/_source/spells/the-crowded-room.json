@@ -1,0 +1,16 @@
+{
+  "_id": "y3FWChP6sBb4m2Rh",
+  "_key": "!items!y3FWChP6sBb4m2Rh",
+  "name": "The Crowded Room",
+  "type": "spell",
+  "system": {
+    "strength": 4,
+    "source": "Glamour",
+    "description": "<p>For one round nobody can tell who is who, and the fate deck decides who swings at whom. It is as likely to help them as you.</p>",
+    "effect": {
+      "text": "until your next turn every enemy attacks a random figure in reach, chosen by a fate draw"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

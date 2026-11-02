@@ -1,0 +1,666 @@
+{
+  "_id": "DqkrIjHJLCtUsdZi",
+  "_key": "!cards!DqkrIjHJLCtUsdZi",
+  "name": "Signature Cards",
+  "type": "deck",
+  "cards": [
+    {
+      "_id": "IlRVsmaTFg8I0ewr",
+      "_key": "!cards.cards!DqkrIjHJLCtUsdZi.IlRVsmaTFg8I0ewr",
+      "sort": 100,
+      "name": "Point Man",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Point Man"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "foresee"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {},
+        "text": "While you are the furthest forward of your party, Foresee one extra type."
+      }
+    },
+    {
+      "_id": "vksNecDLSVDZ83Mv",
+      "_key": "!cards.cards!DqkrIjHJLCtUsdZi.vksNecDLSVDZ83Mv",
+      "sort": 200,
+      "name": "Named",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Named"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "strike"
+          }
+        ],
+        "secondary": [
+          {
+            "condition": "marked",
+            "duration": 1
+          }
+        ],
+        "reaction": "parry",
+        "costs": {},
+        "text": "Name one enemy. Against it, your Parry also Strikes for 1."
+      }
+    },
+    {
+      "_id": "l1AUxq3MnJdJ9MY5",
+      "_key": "!cards.cards!DqkrIjHJLCtUsdZi.l1AUxq3MnJdJ9MY5",
+      "sort": 300,
+      "name": "One Opening",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "One Opening"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "strike"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {
+          "primary": {
+            "spent": true
+          }
+        },
+        "text": "Against a target that is unaware or carrying an opening, the damage is doubled."
+      }
+    },
+    {
+      "_id": "ZI4HSqgT5cY2o5MM",
+      "_key": "!cards.cards!DqkrIjHJLCtUsdZi.ZI4HSqgT5cY2o5MM",
+      "sort": 400,
+      "name": "Lift",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Lift"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "strike"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {},
+        "text": "On a hit, take one card from the target's own deck. It is yours now, and it is in your deck for good."
+      }
+    },
+    {
+      "_id": "0J9ybEDEHYjCbv6Y",
+      "_key": "!cards.cards!DqkrIjHJLCtUsdZi.0J9ybEDEHYjCbv6Y",
+      "sort": 500,
+      "name": "Loose and Step",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Loose and Step"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "strike",
+            "requires": {
+              "tag": "ranged"
+            }
+          },
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "w9pVnAPH820orHHZ",
+      "_key": "!cards.cards!DqkrIjHJLCtUsdZi.w9pVnAPH820orHHZ",
+      "sort": 600,
+      "name": "Set",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Set"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "ready"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "ready"
+          }
+        ],
+        "reaction": "",
+        "costs": {},
+        "text": "Place a trap on an adjacent square. The first enemy to enter is Slowed (2) and takes your Strike value."
+      }
+    },
+    {
+      "_id": "zD9aG46t7WXbjVFT",
+      "_key": "!cards.cards!DqkrIjHJLCtUsdZi.zD9aG46t7WXbjVFT",
+      "sort": 700,
+      "name": "Over and Past",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Over and Past"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "move",
+            "param": 3
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "sidestep",
+        "costs": {},
+        "text": "You may move through enemy squares."
+      }
+    },
+    {
+      "_id": "1dUBLbgmERcrBKR4",
+      "_key": "!cards.cards!DqkrIjHJLCtUsdZi.1dUBLbgmERcrBKR4",
+      "sort": 800,
+      "name": "Heckle",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Heckle"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "condition": "heckled",
+            "duration": 1,
+            "resist": "presence",
+            "dc": 5
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "heckle",
+        "costs": {},
+        "text": "An enemy arriving next to you draws fate with disadvantage until your next turn."
+      }
+    },
+    {
+      "_id": "Sj9stOn9eaJOQ5aq",
+      "_key": "!cards.cards!DqkrIjHJLCtUsdZi.Sj9stOn9eaJOQ5aq",
+      "sort": 900,
+      "name": "Double or Nothing",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Double or Nothing"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "strike"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {},
+        "text": "Draw two fate cards -- both apply, added together. Variance, not advantage."
+      }
+    },
+    {
+      "_id": "S6etM4Yru9780UHA",
+      "_key": "!cards.cards!DqkrIjHJLCtUsdZi.S6etM4Yru9780UHA",
+      "sort": 1000,
+      "name": "Shoulder to Shoulder",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Shoulder to Shoulder"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "strike"
+          },
+          {
+            "verb": "block",
+            "param": 1,
+            "area": 1
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "JBEjEgwxw7gYXjAE",
+      "_key": "!cards.cards!DqkrIjHJLCtUsdZi.JBEjEgwxw7gYXjAE",
+      "sort": 1100,
+      "name": "Ranging Shot",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Ranging Shot"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "strike",
+            "area": 1,
+            "areaKind": "aimed",
+            "requires": {
+              "tag": "ranged"
+            }
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "ready"
+          }
+        ],
+        "reaction": "",
+        "costs": {},
+        "text": "Blast instead of Aimed, if you did not Move this turn."
+      }
+    },
+    {
+      "_id": "o3XQSp8nTleHvmm5",
+      "_key": "!cards.cards!DqkrIjHJLCtUsdZi.o3XQSp8nTleHvmm5",
+      "sort": 1200,
+      "name": "On My Call",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "On My Call"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "ready"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {},
+        "text": "On an ally's turn: they may play a card in their hand halves swapped, its secondary as a primary."
+      }
+    },
+    {
+      "_id": "gyWp6dRZOaK67dqP",
+      "_key": "!cards.cards!DqkrIjHJLCtUsdZi.gyWp6dRZOaK67dqP",
+      "sort": 1300,
+      "name": "The Lance",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "The Lance"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "move",
+            "param": 3
+          },
+          {
+            "verb": "strike"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {},
+        "text": "Advantage if you moved at least 2. Needs the mount."
+      }
+    },
+    {
+      "_id": "OIkExoXDTWSbqMMv",
+      "_key": "!cards.cards!DqkrIjHJLCtUsdZi.OIkExoXDTWSbqMMv",
+      "sort": 1400,
+      "name": "Red Mist",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Red Mist"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "strike"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {
+          "primary": {
+            "spent": true
+          }
+        },
+        "text": "Then draw back up to your hand size at once."
+      }
+    },
+    {
+      "_id": "HLEgGbrehdaN5fth",
+      "_key": "!cards.cards!DqkrIjHJLCtUsdZi.HLEgGbrehdaN5fth",
+      "sort": 1500,
+      "name": "Play to the Crowd",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Play to the Crowd"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "condition": "compelled",
+            "duration": 1,
+            "resist": "presence",
+            "dc": 5
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {},
+        "text": "When you are hit: gain Block 2, and the attacker is Compelled (1) -- no save, because you have already been hit once."
+      }
+    },
+    {
+      "_id": "poVWtJZxoftduXrN",
+      "_key": "!cards.cards!DqkrIjHJLCtUsdZi.poVWtJZxoftduXrN",
+      "sort": 1600,
+      "name": "Get a Grip",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Get a Grip"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "condition": "grappled",
+            "duration": 2,
+            "resist": "might",
+            "dc": 5
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {},
+        "text": "No save at all if both your hands are empty."
+      }
+    },
+    {
+      "_id": "L19Z98zeHWpxclHz",
+      "_key": "!cards.cards!DqkrIjHJLCtUsdZi.L19Z98zeHWpxclHz",
+      "sort": 1700,
+      "name": "Interpose",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Interpose"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "defend"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "bodyguard",
+        "costs": {},
+        "text": "Take a hit meant for an adjacent ally."
+      }
+    },
+    {
+      "_id": "oiGXDJfIM19UcKBL",
+      "_key": "!cards.cards!DqkrIjHJLCtUsdZi.oiGXDJfIM19UcKBL",
+      "sort": 1800,
+      "name": "The Writ",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "The Writ"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "condition": "judged",
+            "range": 6,
+            "duration": 2
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {},
+        "text": "No save, at range 6. Being named is not something you resist, and the whole field may act on it."
+      }
+    },
+    {
+      "_id": "nRr3g3oVunpFGkjv",
+      "_key": "!cards.cards!DqkrIjHJLCtUsdZi.nRr3g3oVunpFGkjv",
+      "sort": 1900,
+      "name": "The Order's Shield",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "The Order's Shield"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "defend"
+          },
+          {
+            "verb": "block",
+            "param": 2,
+            "range": 1
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "block",
+            "param": 1,
+            "range": 1
+          }
+        ],
+        "reaction": "block",
+        "costs": {},
+        "text": "The Block goes to an adjacent ally and never to you. The order does not defend itself."
+      }
+    },
+    {
+      "_id": "iwMZSPqRL1qii7eO",
+      "_key": "!cards.cards!DqkrIjHJLCtUsdZi.iwMZSPqRL1qii7eO",
+      "sort": 2000,
+      "name": "The Long Silence",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "The Long Silence"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "ready",
+            "param": 2
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "shake",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {},
+        "text": "Only if you did not move this round. Stillness is the whole of the order's method."
+      }
+    },
+    {
+      "_id": "U4Fyv0kOhWTE2FRR",
+      "_key": "!cards.cards!DqkrIjHJLCtUsdZi.U4Fyv0kOhWTE2FRR",
+      "sort": 2100,
+      "name": "The Scourge",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "The Scourge"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "strike",
+            "mod": 2
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 2
+          }
+        ],
+        "reaction": "",
+        "costs": {
+          "primary": {
+            "strain": 1
+          }
+        },
+        "text": "Strain 1, paid before the blow lands. The drums, the dance and the whip make the same argument: pay first, strike harder."
+      }
+    }
+  ]
+}

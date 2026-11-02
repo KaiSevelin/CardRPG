@@ -1,0 +1,19 @@
+{
+  "_id": "MSgERwrVzxUt2Ap4",
+  "_key": "!items!MSgERwrVzxUt2Ap4",
+  "name": "The Kit",
+  "type": "item",
+  "system": {
+    "slot": "pack",
+    "weight": 3,
+    "value": 0,
+    "blurb": "A burglar's whole trade in a roll of canvas, and they never put it down.",
+    "group": "tool",
+    "bonus": {
+      "approach": "shadow",
+      "value": 2,
+      "training": "lockpicks",
+      "situation": "every Hard physical obstacle counts as Normal"
+    }
+  }
+}

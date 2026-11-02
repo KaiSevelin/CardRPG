@@ -1,0 +1,16 @@
+{
+  "_id": "SNPLYaLRE82PPLN4",
+  "_key": "!items!SNPLYaLRE82PPLN4",
+  "name": "The Silent Knife",
+  "type": "spell",
+  "system": {
+    "strength": 5,
+    "source": "The Grey",
+    "description": "<p>Adjacent only. One enemy is dead. There is no roll of any kind, which is what a god of the silent approach has instead of a spell.</p>",
+    "effect": {
+      "text": "adjacent: one enemy is dead. No save, no fate draw, no roll of any kind"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

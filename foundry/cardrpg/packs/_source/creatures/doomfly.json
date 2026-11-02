@@ -1,0 +1,51 @@
+{
+  "_id": "m7POjHYL4svGPEyj",
+  "_key": "!actors!m7POjHYL4svGPEyj",
+  "name": "Doomfly",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 12,
+      "base": 12
+    },
+    "kind": "doomfly",
+    "armorBase": 1,
+    "speed": 7,
+    "capabilities": [
+      "flight",
+      "transport"
+    ],
+    "tactics": [],
+    "targetPriority": "nearest"
+  },
+  "items": [
+    {
+      "_id": "uWEEEbeM3BZ7Egep",
+      "_key": "!actors.items!m7POjHYL4svGPEyj.uWEEEbeM3BZ7Egep",
+      "name": "Nip",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 1
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Doomfly"
+  }
+}

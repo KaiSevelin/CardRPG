@@ -1,0 +1,16 @@
+{
+  "_id": "BVwvPQKCOXio0Lsk",
+  "_key": "!items!BVwvPQKCOXio0Lsk",
+  "name": "Valtor's Own",
+  "type": "spell",
+  "system": {
+    "strength": 5,
+    "source": "Valtor",
+    "description": "<p>Your whole hand, strained, and for the rest of the fight you act like three men. There is nothing left to play it with, which is the god's idea of a bargain.</p>",
+    "effect": {
+      "text": "Strain your entire hand: for the rest of the fight you play a primary and two secondaries each turn"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

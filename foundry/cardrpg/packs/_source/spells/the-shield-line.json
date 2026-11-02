@@ -1,0 +1,17 @@
+{
+  "_id": "cEqnkYwFr7fGAmBY",
+  "_key": "!items!cEqnkYwFr7fGAmBY",
+  "name": "The Shield Line",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "Vax",
+    "description": "<p>Every ally adjacent to you gains your armor value as Block until your next turn. One Health per ally, so a long line is a dear one.</p>",
+    "effect": {
+      "range": 1,
+      "text": "adjacent allies gain your armor as Block. Costs 1 Health per ally"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

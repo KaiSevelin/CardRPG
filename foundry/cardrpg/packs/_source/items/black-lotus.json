@@ -1,0 +1,17 @@
+{
+  "_id": "kqkiVwwDuF00esuK",
+  "_key": "!items!kqkiVwwDuF00esuK",
+  "name": "Black Lotus",
+  "type": "item",
+  "system": {
+    "slot": "belt",
+    "tags": [
+      "consumable"
+    ],
+    "weight": 0,
+    "value": 250,
+    "consumed": true,
+    "blurb": "Illegal in every district, which is how you know the price is right.",
+    "text": "Apply with a Ready. Next Strike that hits: Poisoned 3 (2), resist Might 9."
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "_id": "13AtP4IEf6t5F6e5",
+  "_key": "!items!13AtP4IEf6t5F6e5",
+  "name": "Boil",
+  "type": "spell",
+  "system": {
+    "strength": 3,
+    "source": "Blood Magic",
+    "cost": {
+      "health": 2
+    },
+    "description": "<p>Not your blood this time. Theirs, and it does not stop.</p>",
+    "effect": {
+      "verb": "cast",
+      "condition": "burning",
+      "intensity": 3,
+      "duration": 2,
+      "resist": "might",
+      "dc": 7
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "_id": "IWB0uFOCJY8pymVW",
+  "_key": "!actors!IWB0uFOCJY8pymVW",
+  "name": "Stinger Drone",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 10,
+      "base": 10
+    },
+    "kind": "stinger-drone",
+    "armorBase": 0,
+    "speed": 6,
+    "capabilities": [
+      "flight",
+      "venom",
+      "spray"
+    ],
+    "tactics": [
+      "skirmisher",
+      "sniper"
+    ],
+    "targetPriority": "caster",
+    "signature": {
+      "condition": "poisoned",
+      "intensity": 1,
+      "duration": 3
+    }
+  },
+  "items": [
+    {
+      "_id": "qtma5T4VL5vLqZXX",
+      "_key": "!actors.items!IWB0uFOCJY8pymVW.qtma5T4VL5vLqZXX",
+      "name": "Acid Spray",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "ranged",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 4,
+            "range": 3,
+            "area": 1,
+            "ignores": 2
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Stinger Drone"
+  }
+}

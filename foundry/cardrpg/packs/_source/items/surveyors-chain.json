@@ -1,0 +1,14 @@
+{
+  "_id": "9rRc8rsJeVHC7EyR",
+  "_key": "!items!9rRc8rsJeVHC7EyR",
+  "name": "Surveyor's Chain",
+  "type": "item",
+  "system": {
+    "slot": "pack",
+    "weight": 2,
+    "value": 600,
+    "blurb": "Sixty-six feet of brass links that measure what matters rather than what is there.",
+    "group": "wonder",
+    "text": "In a challenge, your first Progress each scene is free."
+  }
+}

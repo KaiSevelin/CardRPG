@@ -1,0 +1,17 @@
+{
+  "_id": "DditIC1bGmsiAgTW",
+  "_key": "!items!DditIC1bGmsiAgTW",
+  "name": "Unmake",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "Ward Magic",
+    "reaction": "unmake",
+    "description": "<p>You have felt this one before. That is the only reason you can stop it: a warder's book is a record of what the party has survived &mdash; which is a condition on LEARNING it, held by the GM, not something the engine tests.</p>",
+    "effect": {
+      "text": "a Cast you have survived before does not resolve"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

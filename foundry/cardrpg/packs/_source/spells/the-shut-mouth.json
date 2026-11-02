@@ -1,0 +1,21 @@
+{
+  "_id": "MmseD2kxFMzaKCFt",
+  "_key": "!items!MmseD2kxFMzaKCFt",
+  "name": "The Shut Mouth",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "Ward Magic",
+    "description": "<p>A caster who cannot speak is a man in a robe. Lore resists it, because the ones who understand the word are the ones who can get out from under it.</p>",
+    "effect": {
+      "verb": "cast",
+      "range": 3,
+      "condition": "silenced",
+      "duration": 1,
+      "resist": "lore",
+      "dc": 7
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

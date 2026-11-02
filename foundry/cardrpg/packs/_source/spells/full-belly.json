@@ -1,0 +1,16 @@
+{
+  "_id": "ULxzLMLDzFdIvxUg",
+  "_key": "!items!ULxzLMLDzFdIvxUg",
+  "name": "Full Belly",
+  "type": "spell",
+  "system": {
+    "strength": 1,
+    "source": "Brendan",
+    "description": "<p>Out of combat: the party's next rest returns one extra rest token.</p>",
+    "effect": {
+      "text": "the party's next rest returns one extra rest token"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

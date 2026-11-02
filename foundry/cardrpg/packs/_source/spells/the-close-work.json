@@ -1,0 +1,18 @@
+{
+  "_id": "r9dnt2FtPWkHHd9N",
+  "_key": "!items!r9dnt2FtPWkHHd9N",
+  "name": "The Close Work",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "The Grey",
+    "reaction": "parry",
+    "description": "<p>You move his arm. The man behind him takes it, and neither of them understands what happened.</p>",
+    "effect": {
+      "timing": "reaction",
+      "text": "adjacent: an enemy's Strike hits the nearest other enemy instead"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

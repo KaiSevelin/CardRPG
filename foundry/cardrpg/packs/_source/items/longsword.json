@@ -1,0 +1,28 @@
+{
+  "_id": "AOyoqTG6b7KDVYLl",
+  "_key": "!items!AOyoqTG6b7KDVYLl",
+  "name": "Longsword",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "fits": [
+      "back"
+    ],
+    "hands": 1,
+    "tags": [
+      "heavy",
+      "melee"
+    ],
+    "weight": 2,
+    "value": 15,
+    "blurb": "A plain cruciform blade, kept sharp.",
+    "verbs": {
+      "strike": {
+        "value": 3
+      },
+      "defend": {
+        "value": 1
+      }
+    }
+  }
+}

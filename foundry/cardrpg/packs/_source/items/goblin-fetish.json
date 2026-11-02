@@ -1,0 +1,23 @@
+{
+  "_id": "zXECZ3xuMnso04BF",
+  "_key": "!items!zXECZ3xuMnso04BF",
+  "name": "Goblin Fetish",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "hands": 1,
+    "tags": [
+      "arcane",
+      "natural"
+    ],
+    "weight": 0,
+    "value": 0,
+    "npcGear": true,
+    "verbs": {
+      "cast": {
+        "value": 3,
+        "range": 4
+      }
+    }
+  }
+}

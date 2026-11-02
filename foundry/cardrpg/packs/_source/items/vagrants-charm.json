@@ -1,0 +1,14 @@
+{
+  "_id": "DvLJ2P739ce7u6y3",
+  "_key": "!items!DvLJ2P739ce7u6y3",
+  "name": "Vagrant's Charm",
+  "type": "item",
+  "system": {
+    "slot": "neck",
+    "weight": 0,
+    "value": 950,
+    "blurb": "A knot of road-dust and hair. Its owner never sat down.",
+    "group": "wonder",
+    "text": "You are never Exhausted."
+  }
+}

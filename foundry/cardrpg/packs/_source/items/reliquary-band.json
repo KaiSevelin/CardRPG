@@ -1,0 +1,16 @@
+{
+  "_id": "9aZLmv8tU0EIXEQq",
+  "_key": "!items!9aZLmv8tU0EIXEQq",
+  "name": "Reliquary Band",
+  "type": "item",
+  "system": {
+    "slot": "fingers",
+    "weight": 0,
+    "value": 350,
+    "blurb": "A splinter of someone's finger under glass.",
+    "group": "power",
+    "grants": {
+      "spellSlots": 1
+    }
+  }
+}

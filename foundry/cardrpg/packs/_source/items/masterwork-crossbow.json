@@ -1,0 +1,29 @@
+{
+  "_id": "MjuRPjIZiZT8brhS",
+  "_key": "!items!MjuRPjIZiZT8brhS",
+  "name": "Masterwork Crossbow",
+  "type": "item",
+  "system": {
+    "ammo": "crossbow",
+    "slot": "hands",
+    "fits": [
+      "back"
+    ],
+    "hands": 2,
+    "tags": [
+      "ranged"
+    ],
+    "weight": 3,
+    "value": 300,
+    "blurb": "A steel prod and a goat's-foot lever. It reloads in the hand.",
+    "verbs": {
+      "strike": {
+        "value": 4,
+        "ignores": 1,
+        "range": 8,
+        "text": "ignores 1 armor; reloads on a free hand, not a Ready"
+      }
+    },
+    "group": "make"
+  }
+}

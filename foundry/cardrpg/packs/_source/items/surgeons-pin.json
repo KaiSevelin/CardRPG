@@ -1,0 +1,17 @@
+{
+  "_id": "QnDVxAmNbT0wQA11",
+  "_key": "!items!QnDVxAmNbT0wQA11",
+  "name": "Surgeon's Pin",
+  "type": "item",
+  "system": {
+    "slot": "neck",
+    "weight": 0,
+    "value": 900,
+    "blurb": "Silver, and it has closed worse than this.",
+    "group": "wonder",
+    "active": {
+      "text": "Remove one Wound from an ally.",
+      "boundary": "longRest"
+    }
+  }
+}

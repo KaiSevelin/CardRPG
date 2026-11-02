@@ -1,0 +1,19 @@
+{
+  "_id": "qcbGZlqEwHSnDP6S",
+  "_key": "!items!qcbGZlqEwHSnDP6S",
+  "name": "Shake It Off",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "Ward Magic",
+    "reaction": "mend",
+    "description": "<p>Whatever is on them, off, on the turn it happened rather than on yours. Three is enough for anything the game can print.</p>",
+    "effect": {
+      "verb": "shake",
+      "param": 3,
+      "range": 3
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

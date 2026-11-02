@@ -1,0 +1,25 @@
+{
+  "_id": "pDFGUeicOyCdhjDC",
+  "_key": "!items!pDFGUeicOyCdhjDC",
+  "name": "Fire Spray",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "hands": 0,
+    "tags": [
+      "ranged",
+      "natural"
+    ],
+    "weight": 0,
+    "value": 0,
+    "npcGear": true,
+    "verbs": {
+      "strike": {
+        "value": 5,
+        "range": 4,
+        "area": 2,
+        "ignores": 1
+      }
+    }
+  }
+}

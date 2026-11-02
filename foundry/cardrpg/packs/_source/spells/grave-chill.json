@@ -1,0 +1,22 @@
+{
+  "_id": "qqocKA2mfLY5LmrL",
+  "_key": "!items!qqocKA2mfLY5LmrL",
+  "name": "Grave Chill",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "Necromancy",
+    "description": "<p>The cold that comes off a body, aimed. Two squares of it, and everything in them is slow to understand what happened.</p>",
+    "effect": {
+      "verb": "cast",
+      "area": 2,
+      "areaKind": "aimed",
+      "condition": "dazed",
+      "duration": 1,
+      "resist": "might",
+      "dc": 5
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

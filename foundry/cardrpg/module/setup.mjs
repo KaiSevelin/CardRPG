@@ -13,7 +13,7 @@ import { skillCardData, twistCardData, npcCardData, backOf, artIn } from "./deck
  * its base. Both are arithmetic, and both live where the validator can ask them. */
 import { deckFor, expandRoster } from "./monsters.mjs";
 import {
-  fateCards, WARRIOR_DECK, GOBLIN_DECK, ITEMS, NPC_GEAR, FEATURES, FORMULAS, WARRIOR_SKILLS,
+  fateCards, WARRIOR_DECK, ITEMS, NPC_GEAR, FEATURES, FORMULAS, WARRIOR_SKILLS,
   TWISTS, INTENTS, NATURAL_WEAPONS, ROSTER, VARIANTS,
   SHADOW_FORMULAS, WILD_MAGIC,
   WARRIOR, GOBLIN, GOBLIN_ARCHER
@@ -125,31 +125,22 @@ export async function createStarterContent() {
   const warriorFateDiscard = await makeCards("Starter Warrior — Fate Discard", "pile", "warrior.fateDiscard");
   note("warrior decks ready");
 
-  /* --- the goblins' decks, which belong to the TYPE ----------------------
-   * Five goblins reference one action deck, one fate deck and one intent pile. Place them as
-   * UNLINKED tokens: each then gets its own health while sharing these ids. Linked tokens would
-   * share health too, which they must not. */
-  const goblinDeck = await makeCards(
-    "Goblin — Action Deck", "deck", "goblin.action",
-    GOBLIN_DECK.map(def => ({
-      name: def.name,
-      type: "npc",
-      // Intent cards are turned face down when drawn; the face is what a reveal turns up.
-      face: 0,
-      faces: [{ name: def.name }],
-      /* The back shows the creature kind and nothing else, which is what makes a goblin's
-         intents recognisable across the table as a goblin's. */
-      back: { name: "Goblin", ...(backOf("npc.goblin") ? { img: backOf("npc.goblin") } : {}) },
-      system: { kind: "goblin", sequence: def.sequence }
-    })),
-    "npc.goblin"
-  );
-  const goblinDiscard = await makeCards("Goblin — Discard", "pile", "goblin.discard");
+  /* --- the goblins' fate deck, which belongs to the TYPE ----------------------
+   *
+   * Every goblin in the line references this one deck, and each is placed as an UNLINKED token so
+   * it keeps its own health while sharing the id. Linked tokens would share health too, which they
+   * must not.
+   *
+   * **The action deck and the piles are `buildCreature`'s to make**, because a creature's deck is
+   * earned from the intent pool rather than authored (core-rules 9). This routine used to build a
+   * `goblin.action` document from six hand-written cards as well, and point nothing at it: five of
+   * those six had no counterpart in the pool because the pool had replaced them, so the only thing
+   * it did was ship six dead cards into every world.
+   */
   const goblinFate = await makeCards(
     "Goblin — Fate Deck", "deck", "goblin.fate", fateCards(backOf("fate")), "fate");
   const goblinFateDiscard = await makeCards("Goblin — Fate Discard", "pile", "goblin.fateDiscard");
   // Each NPC type has its own fate deck, so a Cursed goblin doesn't hex the ogre beside it.
-  const goblinIntent = await makeCards("Goblin — Intent", "pile", "goblin.intent");
 
   /*
    * The Wild Magic deck belongs to the WORLD, not to a caster: a surge is the world answering, and

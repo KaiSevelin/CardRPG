@@ -1,0 +1,16 @@
+{
+  "_id": "ugo32CRny6cgqyrN",
+  "_key": "!items!ugo32CRny6cgqyrN",
+  "name": "The Line Holds",
+  "type": "spell",
+  "system": {
+    "strength": 4,
+    "source": "Vax",
+    "description": "<p>Nobody beside you is moved, knocked down or turned. It costs two Health a man, and Vax expects you to count them first.</p>",
+    "effect": {
+      "text": "allies adjacent to you cannot be moved, knocked Prone or Compelled until your next turn. Costs 2 Health per ally"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "_id": "SizqXpd4qj5bcGkR",
+  "_key": "!items!SizqXpd4qj5bcGkR",
+  "name": "Heavy Crossbow",
+  "type": "item",
+  "system": {
+    "ammo": "crossbow",
+    "slot": "hands",
+    "hands": 2,
+    "tags": [
+      "heavy",
+      "ranged"
+    ],
+    "weight": 5,
+    "value": 120,
+    "blurb": "Cranked with a windlass. It goes through a shield and the arm behind it.",
+    "verbs": {
+      "strike": {
+        "value": 5,
+        "ignores": 1,
+        "range": 10,
+        "text": "ignores 1 armor; Ready to reload"
+      }
+    }
+  }
+}

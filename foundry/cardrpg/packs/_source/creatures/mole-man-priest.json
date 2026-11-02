@@ -1,0 +1,61 @@
+{
+  "_id": "znDZRzSzqChzD6nY",
+  "_key": "!actors!znDZRzSzqChzD6nY",
+  "name": "Mole Man Priest",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 10,
+      "base": 10
+    },
+    "kind": "mole-man-priest",
+    "armorBase": 1,
+    "speed": 2,
+    "capabilities": [
+      "burrow",
+      "legs",
+      "pack",
+      "caster"
+    ],
+    "tactics": [
+      "packTactics",
+      "tainting"
+    ],
+    "targetPriority": "weakest",
+    "signature": {
+      "condition": "cursed",
+      "duration": 2
+    }
+  },
+  "items": [
+    {
+      "_id": "ZZEOAVQM9HKnDbv9",
+      "_key": "!actors.items!znDZRzSzqChzD6nY.ZZEOAVQM9HKnDbv9",
+      "name": "Dark Lantern",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 1,
+        "tags": [
+          "arcane",
+          "natural"
+        ],
+        "weight": 1,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Focus",
+        "verbs": {
+          "cast": {
+            "value": 4,
+            "range": 3
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Mole Man Priest"
+  }
+}

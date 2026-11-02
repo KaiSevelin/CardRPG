@@ -1,0 +1,17 @@
+{
+  "_id": "cYHIlZcLB1uDPRF8",
+  "_key": "!items!cYHIlZcLB1uDPRF8",
+  "name": "Graven Eye",
+  "type": "spell",
+  "system": {
+    "strength": 1,
+    "source": "Tattoo Magic",
+    "description": "<p>An eye on the back of your neck that is not decorative. You are never surprised again, and you never sleep quite as well.</p>",
+    "effect": {
+      "timing": "permanent",
+      "text": "you are never surprised"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

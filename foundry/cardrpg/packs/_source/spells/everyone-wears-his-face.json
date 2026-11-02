@@ -1,0 +1,16 @@
+{
+  "_id": "bt99qqFX5MbRBPzM",
+  "_key": "!items!bt99qqFX5MbRBPzM",
+  "name": "Everyone Wears His Face",
+  "type": "spell",
+  "system": {
+    "strength": 5,
+    "source": "Fagar",
+    "description": "<p>For one round no enemy can tell friend from foe, and every attack they make lands on one of their own. It is the same mechanism Glamour's 4 wants, done once and for certain rather than at random.</p>",
+    "effect": {
+      "text": "until your next turn every enemy attack targets another enemy"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

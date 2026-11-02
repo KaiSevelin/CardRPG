@@ -1,0 +1,20 @@
+{
+  "_id": "sII2GcbHH4pTO1wU",
+  "_key": "!items!sII2GcbHH4pTO1wU",
+  "name": "A Clear Head",
+  "type": "spell",
+  "system": {
+    "strength": 1,
+    "source": "Glamour",
+    "description": "<p>You say the thing they needed to hear, and they come back to themselves in time to do something about it.</p>",
+    "effect": {
+      "verb": "shake",
+      "param": 1,
+      "condition": "dazed",
+      "range": 3,
+      "text": "and they may play a secondary this turn even if they already have"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

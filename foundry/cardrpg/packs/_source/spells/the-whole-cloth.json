@@ -1,0 +1,16 @@
+{
+  "_id": "P1SFR06bHxPDBHZI",
+  "_key": "!items!P1SFR06bHxPDBHZI",
+  "name": "The Whole Cloth",
+  "type": "spell",
+  "system": {
+    "strength": 4,
+    "source": "The Yellow",
+    "description": "<p>While you keep paying a half every round, one whole kind of enemy believes the party are its own. Stop paying and the room remembers.</p>",
+    "effect": {
+      "text": "while you spend a secondary each round, one enemy type believes the party are its own"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

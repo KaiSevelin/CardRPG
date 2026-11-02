@@ -1,0 +1,14 @@
+{
+  "_id": "bUbZ8Af8XLAqQW2w",
+  "_key": "!items!bUbZ8Af8XLAqQW2w",
+  "name": "Far-sight Monocle",
+  "type": "item",
+  "system": {
+    "slot": "head",
+    "weight": 0,
+    "value": 700,
+    "blurb": "Ground by somebody who had opinions about distance.",
+    "group": "wonder",
+    "text": "Your Ranged items' range is doubled."
+  }
+}

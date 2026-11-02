@@ -1,0 +1,23 @@
+{
+  "_id": "ifEGtLuRjGyqNrII",
+  "_key": "!items!ifEGtLuRjGyqNrII",
+  "name": "The Risen Rank",
+  "type": "spell",
+  "system": {
+    "strength": 4,
+    "source": "Necromancy",
+    "description": "<p>Every body within three squares, up at once, for one round. Then they are bodies again, and the ground is worse than it was.</p>",
+    "effect": {
+      "verb": "conjure",
+      "range": 3,
+      "duration": 1,
+      "conjure": {
+        "from": "corpse",
+        "count": 0,
+        "side": "ally"
+      }
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

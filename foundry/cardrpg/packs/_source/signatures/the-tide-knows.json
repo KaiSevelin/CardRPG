@@ -1,0 +1,17 @@
+{
+  "_id": "3QitwiZT46KZwifi",
+  "_key": "!items!3QitwiZT46KZwifi",
+  "name": "The Tide Knows",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "Sessyfyn",
+    "description": "<p>An ally draws fate twice on their next action and keeps both. The sea is not fair.</p>",
+    "effect": {
+      "range": 3,
+      "text": "an ally draws fate twice on their next action and keeps both"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

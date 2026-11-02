@@ -1,0 +1,22 @@
+{
+  "_id": "XD30ZwauqVj06FO1",
+  "_key": "!items!XD30ZwauqVj06FO1",
+  "name": "Great Axe",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "hands": 2,
+    "tags": [
+      "heavy",
+      "melee"
+    ],
+    "weight": 4,
+    "value": 30,
+    "blurb": "Cheaper than a greatsword and it does not care.",
+    "verbs": {
+      "strike": {
+        "value": 5
+      }
+    }
+  }
+}

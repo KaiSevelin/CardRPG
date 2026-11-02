@@ -1,0 +1,18 @@
+{
+  "_id": "nZ2BMpV68UvYrzZe",
+  "_key": "!items!nZ2BMpV68UvYrzZe",
+  "name": "Climbing Rope",
+  "type": "item",
+  "system": {
+    "slot": "pack",
+    "weight": 3,
+    "value": 5,
+    "blurb": "Fifty feet of hemp. Nobody falls alone.",
+    "group": "tool",
+    "bonus": {
+      "approach": "might",
+      "value": 1,
+      "situation": "climbing"
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "_id": "nGjkdav7zyWwaYEC",
+  "_key": "!items!nGjkdav7zyWwaYEC",
+  "name": "Proofed Mail",
+  "type": "item",
+  "system": {
+    "slot": "body",
+    "tags": [
+      "armor"
+    ],
+    "weight": 9,
+    "value": 320,
+    "armor": 3,
+    "blurb": "Tested against a bodkin at ten paces and dented, not pierced.",
+    "group": "make"
+  }
+}

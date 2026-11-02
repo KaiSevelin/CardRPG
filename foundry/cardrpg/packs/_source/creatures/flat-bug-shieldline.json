@@ -1,0 +1,54 @@
+{
+  "_id": "66kBS7cwyBmqlEG1",
+  "_key": "!actors!66kBS7cwyBmqlEG1",
+  "name": "Flat Bug Shieldline",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 7,
+      "base": 7
+    },
+    "kind": "flat-bug-shield",
+    "armorBase": 2,
+    "speed": 2,
+    "capabilities": [
+      "legs",
+      "pack"
+    ],
+    "tactics": [
+      "packTactics",
+      "shieldWall"
+    ],
+    "targetPriority": "nearest"
+  },
+  "items": [
+    {
+      "_id": "dwNEpScaZBAjdRGq",
+      "_key": "!actors.items!66kBS7cwyBmqlEG1.dwNEpScaZBAjdRGq",
+      "name": "Mandibles",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 3
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Flat Bug Shieldline"
+  }
+}

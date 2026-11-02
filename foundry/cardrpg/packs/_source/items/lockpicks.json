@@ -1,0 +1,19 @@
+{
+  "_id": "Mfb2VVy1HtSgLqAS",
+  "_key": "!items!Mfb2VVy1HtSgLqAS",
+  "name": "Lockpicks",
+  "type": "item",
+  "system": {
+    "slot": "belt",
+    "weight": 0,
+    "value": 25,
+    "blurb": "A roll of picks and a torsion wrench, in oiled cloth.",
+    "group": "tool",
+    "bonus": {
+      "approach": "shadow",
+      "value": 2,
+      "training": "lockpicks",
+      "situation": "locks and mechanisms"
+    }
+  }
+}

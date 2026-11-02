@@ -15,6 +15,50 @@ mklink /J "C:\Users\kaise\AppData\Local\FoundryVTT\Data\systems\cardrpg" "C:\Use
 
 Then restart Foundry and create a world with the **Card RPG** system.
 
+## The compendium  **[BUILT 2026-11-02]**
+
+**Everything the system knows ships as compendium packs**, so a GM can browse and drag without
+running anything. Seven packs, 393 documents, in a **Card RPG** folder in the compendium sidebar:
+
+| Pack | | |
+|---|---|---|
+| **Creatures** | 47 | every creature in the roster, bases and variants, with gear embedded |
+| **Pregenerated Characters** | 1 | the starter Warrior |
+| **Items** | 166 | the catalogue, NPC gear and the natural weapons |
+| **Features** | 14 | |
+| **Formulas and Miracles** | 124 | including the 119 school spells the setup routine never created |
+| **Signatures** | 30 | the 6 features, 1 item and 23 spells a title hands over |
+| **Decks** | 11 | the action pools, skills, Wild Magic, fate, twists and the intent pool |
+
+The 21 Signatures that are **cards** are in the *Signature Cards* deck rather than the Signatures
+pack: a Card is a different document class, and a pack holds one class.
+
+### A pack is built, not kept
+
+**The content tables are the single source of truth and the packs are generated from them.**
+
+```
+npm run packs
+```
+
+That writes `packs/_source/<pack>/*.json`, one readable file per document, and compiles each into
+the LevelDB under `packs/<pack>/` with Foundry's own packer. Both are committed, because a system
+that ships only the sources ships no compendium at all. `npm test` then compares the committed
+sources against what the generator would write today, so a table that moves without a rebuild is a
+failure rather than a surprise.
+
+> **Editing a pack inside Foundry edits a build artefact.** The next `npm run packs` overwrites it.
+> Change `module/content.mjs` and rebuild.
+
+**A document's id is a hash of its name and its pack**, not a random string, because an id is a
+promise: a world that imports a creature keeps it, and so does every link. Regenerating with fresh
+ids would break all of them silently -- the link resolves to nothing and the sheet goes blank.
+Running the build twice produces the same pack twice, which `npm test` also checks.
+
+**The packs are a library; the setup routine is still the starter world.** The routine below builds
+from the same tables rather than importing from a pack. That is deliberate for now: it is what a
+first session runs, it works, and rewiring it is a behaviour change nothing offline can test.
+
 ### Create the playtest content
 
 Run the macro **Card RPG: Create starter content** (the system leaves it in your macro directory on
@@ -24,12 +68,24 @@ first load), or from the console:
 game.cardrpg.createStarterContent();
 ```
 
-That builds the starter Warrior, a Goblin and a Goblin Archer, their decks, and every slate. It is
-safe to run twice — anything it already made is reused rather than duplicated.
+That builds the starter Warrior, **the goblin line** — the spearman, the Warrior, the Archer, the
+Shaman and the Chief — their decks, and every slate. It is safe to run twice: anything it already
+made is reused rather than duplicated.
 
-**Place goblins as unlinked tokens.** They share one action deck, one fate deck and one intent pile,
-because those belong to the creature *type*. Unlinked tokens keep their own health while sharing
-those; linked tokens would share health too, which they must not.
+**The other 42 creatures arrive one at a time**, because a starter world with 47 monsters in it is a
+world nobody can find anything in:
+
+```js
+game.cardrpg.buildMonster("Mole Beast");
+```
+
+Each gets the intent deck its capabilities earn. Or drag one out of the **Creatures** compendium,
+which holds all 47 ready-made.
+
+**Place creatures as unlinked tokens.** Each *kind* owns its own intent deck and intent pile, and
+the goblin line shares one fate deck — so five Flat Bugs on the table draw one intent between them,
+which is the rule (core-rules 3). Unlinked tokens keep their own health while sharing those; linked
+tokens would share health too, which they must not.
 
 Set the scene's **diagonal rule to Equidistant** — distances are Chebyshev, so a diagonal step
 costs the same as a straight one (core-rules §11). The system warns in the console if it isn't.

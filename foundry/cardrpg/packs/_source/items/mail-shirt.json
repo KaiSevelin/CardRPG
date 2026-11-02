@@ -1,0 +1,16 @@
+{
+  "_id": "MYHOQrXV3ChVIzyN",
+  "_key": "!items!MYHOQrXV3ChVIzyN",
+  "name": "Mail Shirt",
+  "type": "item",
+  "system": {
+    "slot": "body",
+    "tags": [
+      "armor"
+    ],
+    "weight": 9,
+    "value": 70,
+    "armor": 2,
+    "blurb": "Riveted rings to the hip. The soldier's compromise for eight hundred years."
+  }
+}

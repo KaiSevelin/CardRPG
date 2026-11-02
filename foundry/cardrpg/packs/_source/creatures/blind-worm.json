@@ -1,0 +1,54 @@
+{
+  "_id": "tUdaa4fNxae5CPZs",
+  "_key": "!actors!tUdaa4fNxae5CPZs",
+  "name": "Blind Worm",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 14,
+      "base": 14
+    },
+    "kind": "blind-worm",
+    "armorBase": 2,
+    "speed": 3,
+    "capabilities": [
+      "burrow",
+      "brute"
+    ],
+    "tactics": [
+      "ambusher"
+    ],
+    "targetPriority": "nearest"
+  },
+  "items": [
+    {
+      "_id": "3vWiedK0MLOPQxwf",
+      "_key": "!actors.items!tUdaa4fNxae5CPZs.3vWiedK0MLOPQxwf",
+      "name": "Heavy Mandibles",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "heavy",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 5
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Blind Worm"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "_id": "NGf2oB2aWepmP07v",
+  "_key": "!items!NGf2oB2aWepmP07v",
+  "name": "Strong",
+  "type": "feature",
+  "system": {
+    "group": "body",
+    "bonus": {
+      "verb": "strike",
+      "value": 1,
+      "requiresTag": "heavy"
+    },
+    "text": "+1 damage on Strike with Heavy items."
+  }
+}

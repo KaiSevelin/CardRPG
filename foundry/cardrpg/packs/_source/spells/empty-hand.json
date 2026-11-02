@@ -1,0 +1,16 @@
+{
+  "_id": "YDyxEuijOYoQGOD1",
+  "_key": "!items!YDyxEuijOYoQGOD1",
+  "name": "Empty Hand",
+  "type": "spell",
+  "system": {
+    "strength": 1,
+    "source": "Asceticism",
+    "description": "<p>No weapon, and no need of one. It is not a better Strike than a sword; it is a Strike you cannot be parted from.</p>",
+    "effect": {
+      "text": "while your hands are empty you may Strike with no item, at your own Might"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

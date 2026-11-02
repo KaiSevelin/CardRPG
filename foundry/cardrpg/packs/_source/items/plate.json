@@ -1,0 +1,21 @@
+{
+  "_id": "qrLDCVEEW9aXrPeI",
+  "_key": "!items!qrLDCVEEW9aXrPeI",
+  "name": "Plate",
+  "type": "item",
+  "system": {
+    "slot": "body",
+    "tags": [
+      "armor",
+      "heavy"
+    ],
+    "weight": 20,
+    "value": 400,
+    "armor": 4,
+    "blurb": "Half your carry allowance, and nothing short of a ball goes through it.",
+    "blocksReactions": [
+      "sidestep"
+    ],
+    "text": "Blocks Sidestep reactions."
+  }
+}

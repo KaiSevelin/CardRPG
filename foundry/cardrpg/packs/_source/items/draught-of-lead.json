@@ -1,0 +1,28 @@
+{
+  "_id": "W0nAtsJxbn2z8UcU",
+  "_key": "!items!W0nAtsJxbn2z8UcU",
+  "name": "Draught of Lead",
+  "type": "item",
+  "system": {
+    "slot": "belt",
+    "fits": [
+      "hands"
+    ],
+    "hands": 1,
+    "tags": [
+      "consumable"
+    ],
+    "weight": 0,
+    "value": 20,
+    "consumed": true,
+    "identified": false,
+    "unidentifiedName": "a dark bottle",
+    "blurb": "Heavier than it looks, and so are you now.",
+    "verbs": {
+      "use": {
+        "value": 0,
+        "text": "for the fight your Move is 0"
+      }
+    }
+  }
+}

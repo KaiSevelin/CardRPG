@@ -1,0 +1,19 @@
+{
+  "_id": "pOswWoadu5zKgbTJ",
+  "_key": "!items!pOswWoadu5zKgbTJ",
+  "name": "Repair Kit",
+  "type": "item",
+  "system": {
+    "slot": "pack",
+    "weight": 3,
+    "value": 30,
+    "blurb": "Files, rivets, pitch and wire. What acid leaves behind is work, not loss.",
+    "group": "tool",
+    "bonus": {
+      "approach": "lore",
+      "value": 2,
+      "training": "armour and its repair",
+      "situation": "repairs; overnight it clears 1 Corrode"
+    }
+  }
+}

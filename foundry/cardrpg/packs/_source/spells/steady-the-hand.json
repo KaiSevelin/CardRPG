@@ -1,0 +1,19 @@
+{
+  "_id": "pLosGB0fmwTV73XM",
+  "_key": "!items!pLosGB0fmwTV73XM",
+  "name": "Steady the Hand",
+  "type": "spell",
+  "system": {
+    "strength": 1,
+    "source": "The Eternal God",
+    "description": "<p>Ends Compelled on an ally, and accuses whoever did it. Answer and accuse, which is what a targeted counter has to do to be worth a slot (way-cards 3.6).</p>",
+    "effect": {
+      "verb": "shake",
+      "param": 1,
+      "condition": "compelled",
+      "range": 3
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

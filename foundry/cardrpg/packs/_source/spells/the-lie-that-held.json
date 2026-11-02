@@ -1,0 +1,16 @@
+{
+  "_id": "2pqIOvmJsgrNLBh8",
+  "_key": "!items!2pqIOvmJsgrNLBh8",
+  "name": "The Lie That Held",
+  "type": "spell",
+  "system": {
+    "strength": 5,
+    "source": "The Yellow",
+    "description": "<p>Name the lie before the fight. While you spend a secondary each round it is true, and the GM runs the fight as though it always had been.</p>",
+    "effect": {
+      "text": "while you spend a secondary each round, a lie named before the fight is true"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

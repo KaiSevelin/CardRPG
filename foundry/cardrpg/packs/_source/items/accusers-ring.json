@@ -1,0 +1,17 @@
+{
+  "_id": "FmctAXgqWi0uFDHX",
+  "_key": "!items!FmctAXgqWi0uFDHX",
+  "name": "Accuser's Ring",
+  "type": "item",
+  "system": {
+    "slot": "fingers",
+    "weight": 0,
+    "value": 500,
+    "blurb": "It is cold on the finger that points.",
+    "group": "wonder",
+    "active": {
+      "text": "One enemy within 3 is Judged (1).",
+      "boundary": "combat"
+    }
+  }
+}

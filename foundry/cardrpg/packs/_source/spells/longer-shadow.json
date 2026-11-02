@@ -1,0 +1,17 @@
+{
+  "_id": "EstBbG5mAkQufyx7",
+  "_key": "!items!EstBbG5mAkQufyx7",
+  "name": "Longer Shadow",
+  "type": "spell",
+  "system": {
+    "strength": 1,
+    "source": "Shadow Magic",
+    "wilds": 1,
+    "description": "<p>The dark you are standing in reaches one square further, all the way round, which is enough to make the next formula work.</p>",
+    "effect": {
+      "text": "until your next turn every square adjacent to you is shadowed"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

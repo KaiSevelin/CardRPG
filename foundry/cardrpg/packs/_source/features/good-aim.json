@@ -1,0 +1,15 @@
+{
+  "_id": "A0k2zxltsCdYp79S",
+  "_key": "!items!A0k2zxltsCdYp79S",
+  "name": "Good Aim",
+  "type": "feature",
+  "system": {
+    "group": "training",
+    "bonus": {
+      "verb": "strike",
+      "range": 2,
+      "requiresTag": "ranged"
+    },
+    "text": "+2 range on Ranged and Thrown items."
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "_id": "UsYdYd55jDehS1Er",
+  "_key": "!items!UsYdYd55jDehS1Er",
+  "name": "Matchlock Pistol",
+  "type": "item",
+  "system": {
+    "ammo": "firearm",
+    "slot": "hands",
+    "fits": [
+      "belt"
+    ],
+    "hands": 1,
+    "tags": [
+      "ranged"
+    ],
+    "weight": 1,
+    "value": 70,
+    "blurb": "One hand, so it goes beside a sword. A brace of them is two shots before a reload.",
+    "verbs": {
+      "strike": {
+        "value": 3,
+        "ignores": 2,
+        "range": 4,
+        "text": "ignores 2 armor; Ready to reload"
+      }
+    }
+  }
+}

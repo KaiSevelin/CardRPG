@@ -1,0 +1,26 @@
+{
+  "_id": "28yNJqMsOUgGHhQp",
+  "_key": "!items!28yNJqMsOUgGHhQp",
+  "name": "Potion of the Bear",
+  "type": "item",
+  "system": {
+    "slot": "belt",
+    "fits": [
+      "hands"
+    ],
+    "hands": 1,
+    "tags": [
+      "consumable"
+    ],
+    "weight": 0,
+    "value": 60,
+    "consumed": true,
+    "blurb": "Thick as honey. You will want both hands to lift the bottle.",
+    "verbs": {
+      "use": {
+        "value": 0,
+        "text": "for the scene, carry +20 kg and Might +2"
+      }
+    }
+  }
+}

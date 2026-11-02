@@ -1,0 +1,16 @@
+{
+  "_id": "v3Y436SogW2xLT3e",
+  "_key": "!items!v3Y436SogW2xLT3e",
+  "name": "The Standing Ward",
+  "type": "spell",
+  "system": {
+    "strength": 4,
+    "source": "Ward Magic",
+    "description": "<p>Spent: for one round there is no magic on the field. Yours included, which is what makes this a ward and not an attack.</p>",
+    "effect": {
+      "text": "Spent: until your next turn no Cast resolves at all, anywhere -- yours too"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "_id": "aF2FsVEavxO4VTsV",
+  "_key": "!actors!aF2FsVEavxO4VTsV",
+  "name": "Terror Fly",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 18,
+      "base": 18
+    },
+    "kind": "terror-fly",
+    "armorBase": 2,
+    "speed": 6,
+    "capabilities": [
+      "flight",
+      "spray",
+      "commander"
+    ],
+    "tactics": [
+      "commander",
+      "sniper"
+    ],
+    "targetPriority": "weakest",
+    "signature": {
+      "condition": "burning",
+      "intensity": 2,
+      "duration": 2
+    }
+  },
+  "items": [
+    {
+      "_id": "fGFm7L0HfWs9Jkhd",
+      "_key": "!actors.items!aF2FsVEavxO4VTsV.fGFm7L0HfWs9Jkhd",
+      "name": "Fire Spray",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "ranged",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 5,
+            "range": 4,
+            "area": 2,
+            "ignores": 1
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Terror Fly"
+  }
+}

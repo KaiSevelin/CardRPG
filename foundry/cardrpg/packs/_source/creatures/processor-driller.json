@@ -1,0 +1,52 @@
+{
+  "_id": "1kilwmmAVDzXuinm",
+  "_key": "!actors!1kilwmmAVDzXuinm",
+  "name": "Processor Driller",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 6,
+      "base": 6
+    },
+    "kind": "processor-driller",
+    "armorBase": 1,
+    "speed": 3,
+    "capabilities": [
+      "legs",
+      "burrow",
+      "siege"
+    ],
+    "tactics": [],
+    "targetPriority": "nearest"
+  },
+  "items": [
+    {
+      "_id": "BDL7TxBiZ8MZECdO",
+      "_key": "!actors.items!1kilwmmAVDzXuinm.BDL7TxBiZ8MZECdO",
+      "name": "Mandibles",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 3
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Processor Driller"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "_id": "8nc1oLJiHI73f2oW",
+  "_key": "!items!8nc1oLJiHI73f2oW",
+  "name": "The Mended Seam",
+  "type": "spell",
+  "system": {
+    "strength": 1,
+    "source": "Household Magic",
+    "description": "<p>One item, overnight, including corroded armour &mdash; which until now was the only damage in the game nothing undid.</p>",
+    "effect": {
+      "timing": "ritual",
+      "text": "repair one item overnight, including corroded armour"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

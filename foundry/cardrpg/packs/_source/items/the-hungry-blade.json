@@ -1,0 +1,28 @@
+{
+  "_id": "aDZK82C4WDqYXr3l",
+  "_key": "!items!aDZK82C4WDqYXr3l",
+  "name": "The Hungry Blade",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "fits": [
+      "back"
+    ],
+    "hands": 1,
+    "tags": [
+      "heavy",
+      "melee"
+    ],
+    "weight": 2,
+    "value": 4000,
+    "blurb": "It is not sharp. It does not need to be sharp.",
+    "verbs": {
+      "strike": {
+        "value": 5,
+        "text": "when it kills, heal 2"
+      }
+    },
+    "group": "wonder",
+    "text": "Obligation: a bound Taint the first round of each fight it does not kill."
+  }
+}

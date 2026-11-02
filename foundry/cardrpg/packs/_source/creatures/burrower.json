@@ -1,0 +1,51 @@
+{
+  "_id": "qBUfUY4qVspuAbCY",
+  "_key": "!actors!qBUfUY4qVspuAbCY",
+  "name": "Burrower",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 18,
+      "base": 18
+    },
+    "kind": "burrower",
+    "armorBase": 2,
+    "speed": 5,
+    "capabilities": [
+      "burrow",
+      "transport"
+    ],
+    "tactics": [],
+    "targetPriority": "nearest"
+  },
+  "items": [
+    {
+      "_id": "PWTamyuAn8FIO6vi",
+      "_key": "!actors.items!qBUfUY4qVspuAbCY.PWTamyuAn8FIO6vi",
+      "name": "Mandibles",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 3
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Burrower"
+  }
+}

@@ -1,1 +1,11 @@
 node_modules/
+
+# LevelDB's own runtime files. `LOCK` is a lock on a database nobody is holding once the build
+# ends, and the two LOGs are classic-level's console output -- all three are made again on open,
+# and committing a stale LOCK is a way to ship a pack that cannot be opened.
+packs/*/LOCK
+packs/*/LOG
+packs/*/LOG.old
+
+# The round-trip directories the pack builder writes and removes. Present only if it died.
+packs/_source/.roundtrip-*

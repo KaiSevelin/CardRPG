@@ -1,0 +1,23 @@
+{
+  "_id": "sJf3b4UqbnYVkBNF",
+  "_key": "!items!sJf3b4UqbnYVkBNF",
+  "name": "The Shared Cup",
+  "type": "spell",
+  "system": {
+    "strength": 4,
+    "source": "Poison",
+    "description": "<p>Everyone who drank. Three rounds of it, over three squares, and the save is the only mercy in the formula.</p>",
+    "effect": {
+      "verb": "cast",
+      "area": 3,
+      "areaKind": "aimed",
+      "condition": "poisoned",
+      "intensity": 1,
+      "duration": 3,
+      "resist": "might",
+      "dc": 7
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

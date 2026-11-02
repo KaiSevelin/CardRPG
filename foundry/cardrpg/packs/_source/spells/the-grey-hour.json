@@ -1,0 +1,17 @@
+{
+  "_id": "kCFOVq4KhAy4q1Xx",
+  "_key": "!items!kCFOVq4KhAy4q1Xx",
+  "name": "The Grey Hour",
+  "type": "spell",
+  "system": {
+    "strength": 4,
+    "source": "The Grey",
+    "description": "<p>Its whole turn does not happen. Not interrupted &mdash; it simply never took place, and the round moves on without it.</p>",
+    "effect": {
+      "timing": "reaction",
+      "text": "adjacent: an adjacent enemy's whole turn does not happen"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

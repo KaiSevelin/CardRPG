@@ -1,0 +1,27 @@
+{
+  "_id": "tvDUU3SJKDZus4KQ",
+  "_key": "!items!tvDUU3SJKDZus4KQ",
+  "name": "Wooden Shield",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "fits": [
+      "back"
+    ],
+    "hands": 1,
+    "tags": [
+      "shield"
+    ],
+    "weight": 3,
+    "value": 10,
+    "blurb": "Banded oak, scarred across the face.",
+    "verbs": {
+      "strike": {
+        "value": 1
+      },
+      "defend": {
+        "value": 2
+      }
+    }
+  }
+}

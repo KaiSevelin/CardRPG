@@ -1,0 +1,330 @@
+{
+  "_id": "OIECs88iccWHuhYT",
+  "_key": "!cards!OIECs88iccWHuhYT",
+  "name": "The Fate Deck",
+  "type": "deck",
+  "cards": [
+    {
+      "_id": "dAnH9GXHdOUTZVrX",
+      "_key": "!cards.cards!OIECs88iccWHuhYT.dAnH9GXHdOUTZVrX",
+      "sort": 100,
+      "name": "Miss",
+      "type": "fate",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Miss"
+        }
+      ],
+      "system": {
+        "special": "miss",
+        "value": 0
+      }
+    },
+    {
+      "_id": "iFBuqOMc6Ot8Y6ew",
+      "_key": "!cards.cards!OIECs88iccWHuhYT.iFBuqOMc6Ot8Y6ew",
+      "sort": 200,
+      "name": "−2",
+      "type": "fate",
+      "face": 0,
+      "faces": [
+        {
+          "name": "−2"
+        }
+      ],
+      "system": {
+        "value": -2
+      }
+    },
+    {
+      "_id": "LEvpvrIqY8jRoSn4",
+      "_key": "!cards.cards!OIECs88iccWHuhYT.LEvpvrIqY8jRoSn4",
+      "sort": 300,
+      "name": "−1",
+      "type": "fate",
+      "face": 0,
+      "faces": [
+        {
+          "name": "−1"
+        }
+      ],
+      "system": {
+        "value": -1
+      }
+    },
+    {
+      "_id": "BCQCOSrCvbm0SB8f",
+      "_key": "!cards.cards!OIECs88iccWHuhYT.BCQCOSrCvbm0SB8f",
+      "sort": 400,
+      "name": "−1",
+      "type": "fate",
+      "face": 0,
+      "faces": [
+        {
+          "name": "−1"
+        }
+      ],
+      "system": {
+        "value": -1
+      }
+    },
+    {
+      "_id": "FZ5ZLCMYz0gy2v7y",
+      "_key": "!cards.cards!OIECs88iccWHuhYT.FZ5ZLCMYz0gy2v7y",
+      "sort": 500,
+      "name": "−1",
+      "type": "fate",
+      "face": 0,
+      "faces": [
+        {
+          "name": "−1"
+        }
+      ],
+      "system": {
+        "value": -1
+      }
+    },
+    {
+      "_id": "EkjgqIKsjMzkJ93y",
+      "_key": "!cards.cards!OIECs88iccWHuhYT.EkjgqIKsjMzkJ93y",
+      "sort": 600,
+      "name": "−1",
+      "type": "fate",
+      "face": 0,
+      "faces": [
+        {
+          "name": "−1"
+        }
+      ],
+      "system": {
+        "value": -1
+      }
+    },
+    {
+      "_id": "UIn6tGCEYS0OAUFx",
+      "_key": "!cards.cards!OIECs88iccWHuhYT.UIn6tGCEYS0OAUFx",
+      "sort": 700,
+      "name": "±0",
+      "type": "fate",
+      "face": 0,
+      "faces": [
+        {
+          "name": "±0"
+        }
+      ],
+      "system": {
+        "value": 0
+      }
+    },
+    {
+      "_id": "TOpCNDoFGCrqJ97L",
+      "_key": "!cards.cards!OIECs88iccWHuhYT.TOpCNDoFGCrqJ97L",
+      "sort": 800,
+      "name": "±0",
+      "type": "fate",
+      "face": 0,
+      "faces": [
+        {
+          "name": "±0"
+        }
+      ],
+      "system": {
+        "value": 0
+      }
+    },
+    {
+      "_id": "npcRVfMZ8N66i4FM",
+      "_key": "!cards.cards!OIECs88iccWHuhYT.npcRVfMZ8N66i4FM",
+      "sort": 900,
+      "name": "±0",
+      "type": "fate",
+      "face": 0,
+      "faces": [
+        {
+          "name": "±0"
+        }
+      ],
+      "system": {
+        "value": 0
+      }
+    },
+    {
+      "_id": "xCoJOeLSRiyQ86rJ",
+      "_key": "!cards.cards!OIECs88iccWHuhYT.xCoJOeLSRiyQ86rJ",
+      "sort": 1000,
+      "name": "±0",
+      "type": "fate",
+      "face": 0,
+      "faces": [
+        {
+          "name": "±0"
+        }
+      ],
+      "system": {
+        "value": 0
+      }
+    },
+    {
+      "_id": "QMoHFTCJyrlfm5cS",
+      "_key": "!cards.cards!OIECs88iccWHuhYT.QMoHFTCJyrlfm5cS",
+      "sort": 1100,
+      "name": "±0",
+      "type": "fate",
+      "face": 0,
+      "faces": [
+        {
+          "name": "±0"
+        }
+      ],
+      "system": {
+        "value": 0
+      }
+    },
+    {
+      "_id": "kERajzRFeGV61H6y",
+      "_key": "!cards.cards!OIECs88iccWHuhYT.kERajzRFeGV61H6y",
+      "sort": 1200,
+      "name": "±0",
+      "type": "fate",
+      "face": 0,
+      "faces": [
+        {
+          "name": "±0"
+        }
+      ],
+      "system": {
+        "value": 0
+      }
+    },
+    {
+      "_id": "UUh007uswTS9PMZI",
+      "_key": "!cards.cards!OIECs88iccWHuhYT.UUh007uswTS9PMZI",
+      "sort": 1300,
+      "name": "±0",
+      "type": "fate",
+      "face": 0,
+      "faces": [
+        {
+          "name": "±0"
+        }
+      ],
+      "system": {
+        "value": 0
+      }
+    },
+    {
+      "_id": "8bF89s1OE9Kmd3AI",
+      "_key": "!cards.cards!OIECs88iccWHuhYT.8bF89s1OE9Kmd3AI",
+      "sort": 1400,
+      "name": "±0",
+      "type": "fate",
+      "face": 0,
+      "faces": [
+        {
+          "name": "±0"
+        }
+      ],
+      "system": {
+        "value": 0
+      }
+    },
+    {
+      "_id": "HyfqOwHg7BQf5Q6p",
+      "_key": "!cards.cards!OIECs88iccWHuhYT.HyfqOwHg7BQf5Q6p",
+      "sort": 1500,
+      "name": "+1",
+      "type": "fate",
+      "face": 0,
+      "faces": [
+        {
+          "name": "+1"
+        }
+      ],
+      "system": {
+        "value": 1
+      }
+    },
+    {
+      "_id": "j4XTEUlhkniqCHNU",
+      "_key": "!cards.cards!OIECs88iccWHuhYT.j4XTEUlhkniqCHNU",
+      "sort": 1600,
+      "name": "+1",
+      "type": "fate",
+      "face": 0,
+      "faces": [
+        {
+          "name": "+1"
+        }
+      ],
+      "system": {
+        "value": 1
+      }
+    },
+    {
+      "_id": "cyUjOK7AhxL8KjDA",
+      "_key": "!cards.cards!OIECs88iccWHuhYT.cyUjOK7AhxL8KjDA",
+      "sort": 1700,
+      "name": "+1",
+      "type": "fate",
+      "face": 0,
+      "faces": [
+        {
+          "name": "+1"
+        }
+      ],
+      "system": {
+        "value": 1
+      }
+    },
+    {
+      "_id": "Fv7ppFarQWRLzjId",
+      "_key": "!cards.cards!OIECs88iccWHuhYT.Fv7ppFarQWRLzjId",
+      "sort": 1800,
+      "name": "+1",
+      "type": "fate",
+      "face": 0,
+      "faces": [
+        {
+          "name": "+1"
+        }
+      ],
+      "system": {
+        "value": 1
+      }
+    },
+    {
+      "_id": "u6Hkdm74VdOdWWm9",
+      "_key": "!cards.cards!OIECs88iccWHuhYT.u6Hkdm74VdOdWWm9",
+      "sort": 1900,
+      "name": "+2",
+      "type": "fate",
+      "face": 0,
+      "faces": [
+        {
+          "name": "+2"
+        }
+      ],
+      "system": {
+        "value": 2
+      }
+    },
+    {
+      "_id": "HGFRm4mFvJBUZEIk",
+      "_key": "!cards.cards!OIECs88iccWHuhYT.HGFRm4mFvJBUZEIk",
+      "sort": 2000,
+      "name": "Critical",
+      "type": "fate",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Critical"
+        }
+      ],
+      "system": {
+        "special": "crit",
+        "value": 0
+      }
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "_id": "yVlPmY8hyJYcAF2b",
+  "_key": "!actors!yVlPmY8hyJYcAF2b",
+  "name": "Armored Slug Spitter",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 12,
+      "base": 12
+    },
+    "kind": "armored-slug-spitter",
+    "armorBase": 3,
+    "speed": 2,
+    "capabilities": [
+      "legs",
+      "spray"
+    ],
+    "tactics": [
+      "sniper"
+    ],
+    "targetPriority": "caster"
+  },
+  "items": [
+    {
+      "_id": "iu8pI3nUGFFbqTpC",
+      "_key": "!actors.items!yVlPmY8hyJYcAF2b.iu8pI3nUGFFbqTpC",
+      "name": "Acid Spray",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "ranged",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 4,
+            "range": 3,
+            "area": 1,
+            "ignores": 2
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Armored Slug Spitter"
+  }
+}

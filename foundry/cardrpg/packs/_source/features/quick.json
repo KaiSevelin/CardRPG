@@ -1,0 +1,12 @@
+{
+  "_id": "kpBhs7hDPeGTSU6V",
+  "_key": "!items!kpBhs7hDPeGTSU6V",
+  "name": "Quick",
+  "type": "feature",
+  "system": {
+    "grants": {
+      "handSize": 1
+    },
+    "text": "Hand size +1."
+  }
+}

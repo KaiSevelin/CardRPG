@@ -1,0 +1,18 @@
+{
+  "_id": "sAVHAUgNY2W6Kdko",
+  "_key": "!items!sAVHAUgNY2W6Kdko",
+  "name": "Gaming Set",
+  "type": "item",
+  "system": {
+    "slot": "pack",
+    "weight": 1,
+    "value": 5,
+    "blurb": "Dice, a board and a cup. Soldiers will tell a stranger anything over it.",
+    "group": "station",
+    "bonus": {
+      "approach": "presence",
+      "value": 1,
+      "situation": "soldiers, taverns, gamblers"
+    }
+  }
+}

@@ -1,0 +1,201 @@
+{
+  "_id": "osEdLrwcpr3OH41H",
+  "_key": "!cards!osEdLrwcpr3OH41H",
+  "name": "Wild Magic",
+  "type": "deck",
+  "cards": [
+    {
+      "_id": "zaditDDT313z9XAk",
+      "_key": "!cards.cards!osEdLrwcpr3OH41H.zaditDDT313z9XAk",
+      "sort": 100,
+      "name": "Echo",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Echo"
+        }
+      ],
+      "system": {
+        "primary": [],
+        "secondary": [],
+        "reaction": "",
+        "costs": {},
+        "text": "The Cast resolves a second time, against the same target."
+      }
+    },
+    {
+      "_id": "mzKG02M3QB31vWTV",
+      "_key": "!cards.cards!osEdLrwcpr3OH41H.mzKG02M3QB31vWTV",
+      "sort": 200,
+      "name": "Blink",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Blink"
+        }
+      ],
+      "system": {
+        "primary": [],
+        "secondary": [],
+        "reaction": "",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "hlhAv2f7FAmGLPl2",
+      "_key": "!cards.cards!osEdLrwcpr3OH41H.hlhAv2f7FAmGLPl2",
+      "sort": 300,
+      "name": "Veil",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Veil"
+        }
+      ],
+      "system": {
+        "primary": [],
+        "secondary": [],
+        "reaction": "",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "7WExkdvDxzQspZmr",
+      "_key": "!cards.cards!osEdLrwcpr3OH41H.7WExkdvDxzQspZmr",
+      "sort": 400,
+      "name": "Second Sight",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Second Sight"
+        }
+      ],
+      "system": {
+        "primary": [],
+        "secondary": [],
+        "reaction": "",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "uINBnA8WZj0qUGDz",
+      "_key": "!cards.cards!osEdLrwcpr3OH41H.uINBnA8WZj0qUGDz",
+      "sort": 500,
+      "name": "Backlash",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Backlash"
+        }
+      ],
+      "system": {
+        "primary": [],
+        "secondary": [],
+        "reaction": "",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "nR0Ge29oZJH9aB15",
+      "_key": "!cards.cards!osEdLrwcpr3OH41H.nR0Ge29oZJH9aB15",
+      "sort": 600,
+      "name": "Misfire",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Misfire"
+        }
+      ],
+      "system": {
+        "primary": [],
+        "secondary": [],
+        "reaction": "",
+        "costs": {},
+        "text": "The Cast resolves against the nearest creature instead, ally or not."
+      }
+    },
+    {
+      "_id": "O6TMHDqR74eh17hG",
+      "_key": "!cards.cards!osEdLrwcpr3OH41H.O6TMHDqR74eh17hG",
+      "sort": 700,
+      "name": "Residue",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Residue"
+        }
+      ],
+      "system": {
+        "primary": [],
+        "secondary": [],
+        "reaction": "",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "99dTe3SY69MlDPKf",
+      "_key": "!cards.cards!osEdLrwcpr3OH41H.99dTe3SY69MlDPKf",
+      "sort": 800,
+      "name": "Glare",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Glare"
+        }
+      ],
+      "system": {
+        "primary": [],
+        "secondary": [],
+        "reaction": "",
+        "costs": {},
+        "text": "The Cast becomes a Blast 2 around its target, whoever is standing in it."
+      }
+    },
+    {
+      "_id": "olLR8dQsOGkAcZkk",
+      "_key": "!cards.cards!osEdLrwcpr3OH41H.olLR8dQsOGkAcZkk",
+      "sort": 900,
+      "name": "Open Door",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Open Door"
+        }
+      ],
+      "system": {
+        "primary": [],
+        "secondary": [],
+        "reaction": "",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "udT6zN3DRBzOmCBB",
+      "_key": "!cards.cards!osEdLrwcpr3OH41H.udT6zN3DRBzOmCBB",
+      "sort": 1000,
+      "name": "The Long Step",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "The Long Step"
+        }
+      ],
+      "system": {
+        "primary": [],
+        "secondary": [],
+        "reaction": "",
+        "costs": {}
+      }
+    }
+  ]
+}

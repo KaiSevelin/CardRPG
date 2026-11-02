@@ -1,0 +1,16 @@
+{
+  "_id": "bEvMvvzOUswnQBHJ",
+  "_key": "!items!bEvMvvzOUswnQBHJ",
+  "name": "The Spring Tide",
+  "type": "spell",
+  "system": {
+    "strength": 4,
+    "source": "Sessyfyn",
+    "description": "<p>For one round the whole party has the tide with them: two cards each, and both of them count.</p>",
+    "effect": {
+      "text": "until your next turn every ally draws fate twice and keeps both"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

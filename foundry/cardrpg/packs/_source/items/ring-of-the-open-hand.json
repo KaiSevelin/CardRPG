@@ -1,0 +1,14 @@
+{
+  "_id": "SQ85X6NNQr6tMfAj",
+  "_key": "!items!SQ85X6NNQr6tMfAj",
+  "name": "Ring of the Open Hand",
+  "type": "item",
+  "system": {
+    "slot": "fingers",
+    "weight": 0,
+    "value": 600,
+    "blurb": "Plain silver, worn thin. The gesture is already in it.",
+    "group": "power",
+    "text": "You may Cast without a free hand."
+  }
+}

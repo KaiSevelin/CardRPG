@@ -53,6 +53,71 @@ with its number:
 Sign distinguishing modifier from parameter is a layout rule (card-layout §1.3) and it belongs in the
 schema too, so a face can render without a second convention.
 
+#### `text` was carrying the game  **[MEASURED 2026-11-02]**
+
+**Of 323 steps, 127 carried prose** `-` and a step that is only prose used to do *nothing at all*
+when played. `case ""` in the tray broke out of a switch that
+is the end of the method: no effect, no prompt, not a line in chat. The branch below it already
+announced any verb the engine did not recognise, so the arrangement was exactly backwards `-` **a
+step with a made-up verb reached the table and a step with a blank one was discarded.** The
+schema's `initial: ""` on `verb` is what hid it, because content omits the key and the data model
+fills it in.
+
+The prose turned out to be mostly not special actions. Grouped, 104 of the 127 fell into families
+the designer had already named in the words of the prose itself:
+
+| | steps | what it really was |
+|---|---|---|
+| `until your next turn` | 19 | `duration`, which existed but only beside a condition |
+| `reaction:` | 9 | the `reaction` field, which existed |
+| `Spent:` | 6 | `costs.*.spent`, which existed |
+| `permanent:` | 9 | not a step at all `-` a passive grant wearing a step's clothes |
+| `ritual:` / `out of combat:` | 11 | timing |
+| gives an ally an action | 20 | one parameterised effect |
+| puts something on the map | 8 | one parameterised effect |
+| conjures something | 6 | one parameterised effect |
+
+So the structure is **fields, not a free-text special slot**. A free-text special would have made
+every card that used it permanently unresolvable, which is the one thing this schema exists to
+prevent.
+
+#### The three fields that came out of it
+
+| Field | Notes |
+|---|---|
+| `timing` | **When** the step may be played: `reaction`, `ritual`, `outOfCombat`, `beforeFight`, `permanent`. 31 steps carried this as a prefix on their prose |
+| `delay` | Turns to wait before it happens. `2` is *at the start of your second turn after this*, which three steps said in prose `-` and a delayed effect the engine cannot see is one the table forgets, because the card is in the discard by the time it matters |
+| `conjure` | What a conjuration calls up: `from` (`corpse` / `god` / `creature`), `name`, `count`, `side`, `upkeep` |
+| `shape` | `creature`: the roster creature whose form you take |
+
+**Conjuration is configured, not described.** Six spells conjured in prose, and the content had
+already noticed they were one thing `-` *a god standing on the board and a corpse standing on the
+board are one piece of work*, says the comment above The Great Bargain. What separated the lesser
+necromancy from the greater was entirely **how many, from what, whose side and at what price**:
+four numbers, in a sentence. `count: 0` means every eligible thing in range, because *one* and
+*all* are the two numbers the cards use. `name: ""` is not a gap: two cards say *the GM decides*,
+because a minor god is a person with its own opinions and a spell that commanded one would have
+misunderstood the arrangement. `upkeep` is announced rather than charged, because a conjuration's
+price is paid *per round it stands* and nothing knows yet when it falls.
+
+**A shape names a creature and the creature supplies the numbers.** There is no table of forms, and
+that is the design rather than a shortcut: a table of forms would be a second description of 47
+creatures that already exist, and two descriptions of a thing drift `-` which this project has
+watched happen with the goblin's deck and with *The Kit*. A form arrives as the creature's own
+**natural weapons, equipped**, because a body is what you fight with and `Claws` is already an item
+with a Strike on it. Nothing new resolves a shaped Strike; the ordinary item path picks up whatever
+serves the verb.
+
+> **What a form does not touch, deliberately.** Your **deck**, because the deck is the character in
+> this game `-` a shape that replaced it would be a different character wearing your name. Your
+> **Health and conditions**, because a bear that has forgotten it was poisoned is a way out of a
+> condition that no card should hand over for nothing.
+
+**124 steps still carry prose, 46 of them prose alone**, down from 127: 31 lost a prefix to
+`timing` and 5 lost their whole sentence to `conjure`. What is left is the real one-offs `-` *one
+enemy is dead, no save, no fate draw, no roll of any kind* `-` and they now reach the table as a
+chat line instead of silence.
+
 ### 2.2 An active ability
 
 Carried by `item` and `feature` slates (core-rules §4, *Active abilities and recharge*):

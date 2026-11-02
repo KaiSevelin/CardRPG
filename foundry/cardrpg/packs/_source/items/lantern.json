@@ -1,0 +1,19 @@
+{
+  "_id": "Rqinsxq9ZoqizXtR",
+  "_key": "!items!Rqinsxq9ZoqizXtR",
+  "name": "Lantern",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "hands": 1,
+    "weight": 2,
+    "value": 5,
+    "blurb": "Horn panes and a tallow dip. The squares it lights are not shadowed.",
+    "group": "tool",
+    "bonus": {
+      "approach": "wits",
+      "value": 1,
+      "situation": "anything you need to see in the dark"
+    }
+  }
+}

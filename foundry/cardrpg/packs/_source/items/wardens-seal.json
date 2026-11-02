@@ -1,0 +1,17 @@
+{
+  "_id": "1bx1ImAWLf6FdqxE",
+  "_key": "!items!1bx1ImAWLf6FdqxE",
+  "name": "Warden's Seal",
+  "type": "item",
+  "system": {
+    "slot": "fingers",
+    "weight": 0,
+    "value": 500,
+    "blurb": "A tower in relief, worn smooth by thumbs that are not yours.",
+    "group": "power",
+    "bonus": {
+      "verb": "defend",
+      "value": 1
+    }
+  }
+}

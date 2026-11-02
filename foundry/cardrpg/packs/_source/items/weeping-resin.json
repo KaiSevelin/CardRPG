@@ -1,0 +1,17 @@
+{
+  "_id": "kuVpt4ePfiYmJFFC",
+  "_key": "!items!kuVpt4ePfiYmJFFC",
+  "name": "Weeping Resin",
+  "type": "item",
+  "system": {
+    "slot": "belt",
+    "tags": [
+      "consumable"
+    ],
+    "weight": 0,
+    "value": 60,
+    "consumed": true,
+    "blurb": "The wound will not close while it is in there.",
+    "text": "Apply with a Ready. Next Strike that hits: the target cannot be healed for 2 rounds. No save."
+  }
+}

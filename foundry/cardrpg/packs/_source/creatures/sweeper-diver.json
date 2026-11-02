@@ -1,0 +1,54 @@
+{
+  "_id": "aOynHBYlIDvuLp8X",
+  "_key": "!actors!aOynHBYlIDvuLp8X",
+  "name": "Sweeper Diver",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 6,
+      "base": 6
+    },
+    "kind": "sweeper-diver",
+    "armorBase": 1,
+    "speed": 9,
+    "capabilities": [
+      "flight",
+      "fast"
+    ],
+    "tactics": [
+      "skirmisher",
+      "ambusher"
+    ],
+    "targetPriority": "caster"
+  },
+  "items": [
+    {
+      "_id": "Ab2742qKt1Retx8f",
+      "_key": "!actors.items!aOynHBYlIDvuLp8X.Ab2742qKt1Retx8f",
+      "name": "Claws",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 4
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Sweeper Diver"
+  }
+}

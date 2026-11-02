@@ -1,0 +1,25 @@
+{
+  "_id": "cxsFKqj3nsJUmu2F",
+  "_key": "!items!cxsFKqj3nsJUmu2F",
+  "name": "The Grave's Bargain",
+  "type": "spell",
+  "system": {
+    "strength": 5,
+    "source": "Necromancy",
+    "description": "<p>They stand up at one Health, and they are themselves, and they know. When the fight ends they are dead again, and you are a little less alive for it.</p>",
+    "effect": {
+      "verb": "conjure",
+      "conjure": {
+        "from": "corpse",
+        "count": 1,
+        "side": "ally",
+        "upkeep": {
+          "taint": 1
+        }
+      },
+      "text": "a dead ally, and they stand at 1 Health"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "_id": "BscNHYy56QHDADxU",
+  "_key": "!items!BscNHYy56QHDADxU",
+  "name": "The Standing Flood",
+  "type": "spell",
+  "system": {
+    "strength": 3,
+    "source": "Elemental Magic",
+    "element": "water",
+    "description": "<p>Deep water where there was a floor. Everything in it is Wet, which is the opening half this school is built to set up.</p>",
+    "effect": {
+      "range": 3,
+      "area": 3,
+      "text": "a 3-square area becomes deep water: everything in it is Wet (2) and its Move is halved"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

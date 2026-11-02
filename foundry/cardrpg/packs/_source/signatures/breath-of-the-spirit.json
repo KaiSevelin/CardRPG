@@ -1,0 +1,20 @@
+{
+  "_id": "PiHPEHRSuwXLPGm9",
+  "_key": "!items!PiHPEHRSuwXLPGm9",
+  "name": "Breath of the Spirit",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "The Eternal Spirit",
+    "reaction": "mend",
+    "description": "<p>Reaction: heal an ally 3, at any range, ignoring cover. The spirit drifts through all the air, so distance is not a question for it.</p>",
+    "effect": {
+      "verb": "heal",
+      "param": 3,
+      "timing": "reaction",
+      "text": "any range, ignoring cover"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

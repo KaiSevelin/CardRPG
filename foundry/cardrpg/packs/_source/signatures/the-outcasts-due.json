@@ -1,0 +1,22 @@
+{
+  "_id": "B0Luq82OAImGXa0L",
+  "_key": "!items!B0Luq82OAImGXa0L",
+  "name": "The Outcast's Due",
+  "type": "spell",
+  "system": {
+    "strength": 3,
+    "source": "Vulpet",
+    "description": "<p>Every enemy next to you turns on you, because the outcast is who the crowd turns on. That is not a side effect; it is the prayer.</p>",
+    "effect": {
+      "verb": "cast",
+      "area": 1,
+      "areaKind": "blast",
+      "condition": "compelled",
+      "duration": 2,
+      "resist": "presence",
+      "dc": 5
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

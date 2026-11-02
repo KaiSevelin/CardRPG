@@ -1,0 +1,58 @@
+{
+  "_id": "ovqOeZgnJL9vxn1i",
+  "_key": "!actors!ovqOeZgnJL9vxn1i",
+  "name": "Pincer Marshal",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 35,
+      "base": 35
+    },
+    "kind": "pincer-marshal",
+    "armorBase": 4,
+    "speed": 4,
+    "capabilities": [
+      "legs",
+      "grapple",
+      "commander",
+      "reach",
+      "summon"
+    ],
+    "tactics": [
+      "commander",
+      "grappler"
+    ],
+    "targetPriority": "leader"
+  },
+  "items": [
+    {
+      "_id": "EMMs73dNOnFEu9sT",
+      "_key": "!actors.items!ovqOeZgnJL9vxn1i.EMMs73dNOnFEu9sT",
+      "name": "Grasping Claws",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 5,
+            "reach": 2
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Pincer Marshal"
+  }
+}

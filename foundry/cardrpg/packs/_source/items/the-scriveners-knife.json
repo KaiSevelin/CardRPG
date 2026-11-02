@@ -1,0 +1,17 @@
+{
+  "_id": "0Tfb6bxii5OYAYkU",
+  "_key": "!items!0Tfb6bxii5OYAYkU",
+  "name": "The Scrivener's Knife",
+  "type": "item",
+  "system": {
+    "slot": "pack",
+    "weight": 0,
+    "value": 1200,
+    "blurb": "For cutting out what should not have been written.",
+    "group": "wonder",
+    "active": {
+      "text": "Prune one card from your action deck for the rest of the day.",
+      "boundary": "longRest"
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "_id": "JxT7CL80Dlj7enHU",
+  "_key": "!items!JxT7CL80Dlj7enHU",
+  "name": "Goblin Shield",
+  "type": "item",
+  "system": {
+    "slot": "offhand",
+    "hands": 1,
+    "tags": [
+      "shield",
+      "natural"
+    ],
+    "weight": 2,
+    "value": 0,
+    "npcGear": true,
+    "armor": 1,
+    "verbs": {
+      "defend": {
+        "value": 2
+      }
+    }
+  }
+}

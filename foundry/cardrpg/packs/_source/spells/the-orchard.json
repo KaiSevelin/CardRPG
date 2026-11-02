@@ -1,0 +1,16 @@
+{
+  "_id": "NYexTosuRx5xeOLT",
+  "_key": "!items!NYexTosuRx5xeOLT",
+  "name": "The Orchard",
+  "type": "spell",
+  "system": {
+    "strength": 4,
+    "source": "Brendan",
+    "description": "<p>Two turns from now the whole party heals four and sheds something. Planting is the god's only verb.</p>",
+    "effect": {
+      "text": "at the start of your second turn after this, every ally heals 4 and sheds one condition"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

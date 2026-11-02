@@ -1,0 +1,18 @@
+{
+  "_id": "RIuE0uSgjyEFk2yE",
+  "_key": "!items!RIuE0uSgjyEFk2yE",
+  "name": "Ink Spray",
+  "type": "spell",
+  "system": {
+    "strength": 1,
+    "source": "Glamour",
+    "description": "<p>Two squares of ink in the air. Nobody in it is invisible, and nobody in it is going to be.</p>",
+    "effect": {
+      "verb": "blast",
+      "area": 2,
+      "text": "end Invisible in the area, and nothing in it may become Invisible until your next turn"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

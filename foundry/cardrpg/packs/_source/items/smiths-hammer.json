@@ -1,0 +1,19 @@
+{
+  "_id": "ZA7GzHc7qRhhDwlg",
+  "_key": "!items!ZA7GzHc7qRhhDwlg",
+  "name": "Smith's Hammer",
+  "type": "item",
+  "system": {
+    "slot": "pack",
+    "weight": 2,
+    "value": 18,
+    "blurb": "A cross-pein and a sense of what metal wants.",
+    "group": "make",
+    "bonus": {
+      "approach": "lore",
+      "value": 2,
+      "training": "armour and its repair",
+      "situation": "metalwork; repairs 1 Corrode overnight"
+    }
+  }
+}

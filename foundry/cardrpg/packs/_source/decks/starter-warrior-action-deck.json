@@ -1,0 +1,469 @@
+{
+  "_id": "mw8gCjMYrP1cjrhw",
+  "_key": "!cards!mw8gCjMYrP1cjrhw",
+  "name": "Starter Warrior — Action Deck",
+  "type": "deck",
+  "cards": [
+    {
+      "_id": "VWsALCK66zdcvdVm",
+      "_key": "!cards.cards!mw8gCjMYrP1cjrhw.VWsALCK66zdcvdVm",
+      "sort": 100,
+      "name": "Strike",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Strike"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "strike"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "parry",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "7RiVmnzoXQS3sCyG",
+      "_key": "!cards.cards!mw8gCjMYrP1cjrhw.7RiVmnzoXQS3sCyG",
+      "sort": 200,
+      "name": "Strike",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Strike"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "strike"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "parry",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "zItE2LsLXBRJOweV",
+      "_key": "!cards.cards!mw8gCjMYrP1cjrhw.zItE2LsLXBRJOweV",
+      "sort": 300,
+      "name": "Strike",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Strike"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "strike"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "parry",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "P0BEEMlnX3BVAFJM",
+      "_key": "!cards.cards!mw8gCjMYrP1cjrhw.P0BEEMlnX3BVAFJM",
+      "sort": 400,
+      "name": "Heavy Swing",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Heavy Swing"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "strike",
+            "mod": 1
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "CeFzpciqX66De0HO",
+      "_key": "!cards.cards!mw8gCjMYrP1cjrhw.CeFzpciqX66De0HO",
+      "sort": 500,
+      "name": "Heavy Swing",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Heavy Swing"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "strike",
+            "mod": 1
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "HXfxkAG2m55urwGi",
+      "_key": "!cards.cards!mw8gCjMYrP1cjrhw.HXfxkAG2m55urwGi",
+      "sort": 600,
+      "name": "Lunge",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Lunge"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "move",
+            "param": 2
+          },
+          {
+            "verb": "strike"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "Fi2Y97VXAIHD6yB2",
+      "_key": "!cards.cards!mw8gCjMYrP1cjrhw.Fi2Y97VXAIHD6yB2",
+      "sort": 700,
+      "name": "Shield Up",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Shield Up"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "defend",
+            "text": "Block applies to every attack until your next turn"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "block",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "LxV7XcsEtiiKB8o0",
+      "_key": "!cards.cards!mw8gCjMYrP1cjrhw.LxV7XcsEtiiKB8o0",
+      "sort": 800,
+      "name": "Shield Up",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Shield Up"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "defend",
+            "text": "Block applies to every attack until your next turn"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "block",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "Z6zpinehhoVwl9bl",
+      "_key": "!cards.cards!mw8gCjMYrP1cjrhw.Z6zpinehhoVwl9bl",
+      "sort": 900,
+      "name": "Advance",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Advance"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "move",
+            "param": 3
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 2
+          }
+        ],
+        "reaction": "sidestep",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "3z3ItWrhu2yG3L8I",
+      "_key": "!cards.cards!mw8gCjMYrP1cjrhw.3z3ItWrhu2yG3L8I",
+      "sort": 1000,
+      "name": "Advance",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Advance"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "move",
+            "param": 3
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 2
+          }
+        ],
+        "reaction": "sidestep",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "tqa68kQX0X8MsB5R",
+      "_key": "!cards.cards!mw8gCjMYrP1cjrhw.tqa68kQX0X8MsB5R",
+      "sort": 1100,
+      "name": "Draw Steel",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Draw Steel"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "strike"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "ready"
+          }
+        ],
+        "reaction": "",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "g5kMP4FxyCgAM2eA",
+      "_key": "!cards.cards!mw8gCjMYrP1cjrhw.g5kMP4FxyCgAM2eA",
+      "sort": 1200,
+      "name": "Draw Steel",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Draw Steel"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "strike"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "ready"
+          }
+        ],
+        "reaction": "",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "x0x0vHfl3ltEGkhW",
+      "_key": "!cards.cards!mw8gCjMYrP1cjrhw.x0x0vHfl3ltEGkhW",
+      "sort": 1300,
+      "name": "Quick Hands",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Quick Hands"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "use"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "ready"
+          }
+        ],
+        "reaction": "use",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "a7ewCoej1nz9vEwk",
+      "_key": "!cards.cards!mw8gCjMYrP1cjrhw.a7ewCoej1nz9vEwk",
+      "sort": 1400,
+      "name": "Second Wind",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Second Wind"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "heal",
+            "param": 2
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "use"
+          }
+        ],
+        "reaction": "",
+        "costs": {
+          "primary": {
+            "spent": true
+          }
+        }
+      }
+    },
+    {
+      "_id": "wU5BSlHjCw8tDtdu",
+      "_key": "!cards.cards!mw8gCjMYrP1cjrhw.wU5BSlHjCw8tDtdu",
+      "sort": 1500,
+      "name": "Taunt",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Taunt"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "condition": "compelled",
+            "duration": 1,
+            "resist": "presence",
+            "dc": 5
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {}
+      }
+    },
+    {
+      "_id": "IZsaBrTbVCbW864e",
+      "_key": "!cards.cards!mw8gCjMYrP1cjrhw.IZsaBrTbVCbW864e",
+      "sort": 1600,
+      "name": "Weapon Swap",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Weapon Swap"
+        }
+      ],
+      "system": {
+        "primary": [
+          {
+            "verb": "ready"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "strike"
+          }
+        ],
+        "reaction": "",
+        "costs": {}
+      }
+    }
+  ]
+}

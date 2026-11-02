@@ -1,0 +1,28 @@
+{
+  "_id": "40cnnxTmVipLnjbq",
+  "_key": "!items!40cnnxTmVipLnjbq",
+  "name": "Oil of Mislaid Courage",
+  "type": "item",
+  "system": {
+    "slot": "belt",
+    "fits": [
+      "hands"
+    ],
+    "hands": 1,
+    "tags": [
+      "consumable"
+    ],
+    "weight": 0,
+    "value": 20,
+    "consumed": true,
+    "identified": false,
+    "unidentifiedName": "a dark bottle",
+    "blurb": "Whatever was going to make you flinch has been taken out.",
+    "verbs": {
+      "use": {
+        "value": 0,
+        "text": "for the fight you may play no reactions"
+      }
+    }
+  }
+}

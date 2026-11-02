@@ -1,0 +1,24 @@
+{
+  "_id": "ZIABYwlDJk1YbUPd",
+  "_key": "!items!ZIABYwlDJk1YbUPd",
+  "name": "Tusks",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "hands": 0,
+    "tags": [
+      "melee",
+      "heavy",
+      "natural"
+    ],
+    "weight": 0,
+    "value": 0,
+    "npcGear": true,
+    "verbs": {
+      "strike": {
+        "value": 6,
+        "reach": 2
+      }
+    }
+  }
+}

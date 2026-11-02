@@ -1,0 +1,17 @@
+{
+  "_id": "T2eGKQ57RdBDK1xj",
+  "_key": "!items!T2eGKQ57RdBDK1xj",
+  "name": "Leather Armor",
+  "type": "item",
+  "system": {
+    "slot": "body",
+    "hands": 1,
+    "tags": [
+      "armor"
+    ],
+    "weight": 5,
+    "value": 20,
+    "armor": 1,
+    "blurb": "Boiled and riveted, and it still smells of the tannery."
+  }
+}

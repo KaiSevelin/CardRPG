@@ -1,0 +1,19 @@
+{
+  "_id": "11uj1XhgDoBBTfki",
+  "_key": "!items!11uj1XhgDoBBTfki",
+  "name": "The First Taste",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "The Purple",
+    "description": "<p>Tainting 2 on one adjacent enemy, and 1 Taint for you. You are the first to taste it, always.</p>",
+    "effect": {
+      "verb": "tainting",
+      "param": 2,
+      "range": 1,
+      "text": "you gain 1 Taint yourself"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

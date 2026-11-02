@@ -4,9 +4,12 @@
   "description": "Validation tooling for the Card RPG Foundry system, and the one runtime library it vendors. There is still no build step: cytoscape is here so it can be updated and copied into lib/, which is the copy that actually ships.",
   "type": "module",
   "scripts": {
-    "test": "node test/validate.mjs"
+    "test": "node test/validate.mjs",
+    "packs": "node test/build-packs.mjs",
+    "art-list": "node test/art-list.mjs"
   },
   "devDependencies": {
+    "@foundryvtt/foundryvtt-cli": "^3.0.5",
     "handlebars": "^4.7.8"
   },
   "dependencies": {

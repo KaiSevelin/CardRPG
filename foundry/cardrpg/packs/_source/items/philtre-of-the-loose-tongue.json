@@ -1,0 +1,28 @@
+{
+  "_id": "bQmUtbFTCjE61Zkd",
+  "_key": "!items!bQmUtbFTCjE61Zkd",
+  "name": "Philtre of the Loose Tongue",
+  "type": "item",
+  "system": {
+    "slot": "belt",
+    "fits": [
+      "hands"
+    ],
+    "hands": 1,
+    "tags": [
+      "consumable"
+    ],
+    "weight": 0,
+    "value": 15,
+    "consumed": true,
+    "identified": false,
+    "unidentifiedName": "a dark bottle",
+    "blurb": "You will mean to stop talking.",
+    "verbs": {
+      "use": {
+        "value": 0,
+        "text": "you must say what you intend before each of your turns"
+      }
+    }
+  }
+}

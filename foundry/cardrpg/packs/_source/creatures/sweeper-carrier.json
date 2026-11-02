@@ -1,0 +1,55 @@
+{
+  "_id": "pkeYkQHoSPtETibd",
+  "_key": "!actors!pkeYkQHoSPtETibd",
+  "name": "Sweeper Carrier",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 12,
+      "base": 12
+    },
+    "kind": "sweeper-carrier",
+    "armorBase": 1,
+    "speed": 6,
+    "capabilities": [
+      "flight",
+      "fast",
+      "transport"
+    ],
+    "tactics": [
+      "skirmisher",
+      "ambusher"
+    ],
+    "targetPriority": "weakest"
+  },
+  "items": [
+    {
+      "_id": "acbWXSeCNg9oZD6D",
+      "_key": "!actors.items!pkeYkQHoSPtETibd.acbWXSeCNg9oZD6D",
+      "name": "Nip",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 1
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Sweeper Carrier"
+  }
+}

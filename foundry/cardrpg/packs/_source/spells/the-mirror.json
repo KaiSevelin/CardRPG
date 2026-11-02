@@ -1,0 +1,18 @@
+{
+  "_id": "EkVDMizlT2SBBiBG",
+  "_key": "!items!EkVDMizlT2SBBiBG",
+  "name": "The Mirror",
+  "type": "spell",
+  "system": {
+    "strength": 3,
+    "source": "Ward Magic",
+    "reaction": "unmake",
+    "description": "<p>Not stopped. Returned, in full, to the man who sent it &mdash; which is worse for him than for you and is the whole reason to prepare this instead of Unmake.</p>",
+    "effect": {
+      "timing": "reaction",
+      "text": "Spent: a Cast aimed at you resolves against its own caster"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

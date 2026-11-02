@@ -1,0 +1,19 @@
+{
+  "_id": "QxD8WIuuTqi5gqn0",
+  "_key": "!items!QxD8WIuuTqi5gqn0",
+  "name": "A Word Withdrawn",
+  "type": "spell",
+  "system": {
+    "strength": 1,
+    "source": "The Eternal Spirit",
+    "description": "<p>The marker and the card both: a blessing withdrawn is a Critical taken back out of the deck, and a curse withdrawn is a Miss. It works on anybody, including the enemy you blessed by mistake.</p>",
+    "effect": {
+      "verb": "lift",
+      "range": 3,
+      "condition": "blessed",
+      "text": "or Cursed"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

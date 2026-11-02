@@ -1,0 +1,17 @@
+{
+  "_id": "qmuCZD6MYt2DNmjw",
+  "_key": "!items!qmuCZD6MYt2DNmjw",
+  "name": "The Long Masquerade",
+  "type": "spell",
+  "system": {
+    "strength": 5,
+    "source": "Glamour",
+    "description": "<p>Out of combat: you and your whole party are other people for a day. Only magic sees through it, and most places have none.</p>",
+    "effect": {
+      "timing": "outOfCombat",
+      "text": "you and your whole party appear to be other people for a day"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

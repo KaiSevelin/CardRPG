@@ -1,0 +1,17 @@
+{
+  "_id": "RSFnhWI4ovFPXuvd",
+  "_key": "!items!RSFnhWI4ovFPXuvd",
+  "name": "Hollow Boots",
+  "type": "item",
+  "system": {
+    "slot": "feet",
+    "weight": 1,
+    "value": 350,
+    "blurb": "They sound like a far larger man coming.",
+    "group": "wonder",
+    "active": {
+      "text": "Shove an adjacent enemy 2 squares.",
+      "boundary": "combat"
+    }
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "_id": "10IjicxPtM0RcDxE",
+  "_key": "!actors!10IjicxPtM0RcDxE",
+  "name": "Mole Beast Tusker",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 30,
+      "base": 30
+    },
+    "kind": "mole-beast-tusker",
+    "armorBase": 3,
+    "speed": 3,
+    "capabilities": [
+      "burrow",
+      "brute",
+      "reach",
+      "siege"
+    ],
+    "tactics": [
+      "brute",
+      "ambusher"
+    ],
+    "targetPriority": "nearest"
+  },
+  "items": [
+    {
+      "_id": "P1KTbaPck2f8zrs0",
+      "_key": "!actors.items!10IjicxPtM0RcDxE.P1KTbaPck2f8zrs0",
+      "name": "Tusks",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "heavy",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 6,
+            "reach": 2
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Mole Beast Tusker"
+  }
+}

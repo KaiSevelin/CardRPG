@@ -1,0 +1,22 @@
+{
+  "_id": "AdCkPvYxbEWtIqHA",
+  "_key": "!items!AdCkPvYxbEWtIqHA",
+  "name": "Call the Unquiet",
+  "type": "spell",
+  "system": {
+    "strength": 3,
+    "source": "Necromancy",
+    "description": "<p>It does not know it died. It will stop when the fight does.</p>",
+    "effect": {
+      "verb": "conjure",
+      "range": 2,
+      "conjure": {
+        "from": "corpse",
+        "count": 1,
+        "side": "ally"
+      }
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

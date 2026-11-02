@@ -1,0 +1,21 @@
+{
+  "_id": "TYwPyvWORG4vN45x",
+  "_key": "!items!TYwPyvWORG4vN45x",
+  "name": "Grapnel Bolt",
+  "type": "item",
+  "system": {
+    "slot": "belt",
+    "tags": [
+      "consumable"
+    ],
+    "weight": 0,
+    "value": 70,
+    "consumed": true,
+    "ammoFor": [
+      "crossbow"
+    ],
+    "shotEffect": "pullsShooter",
+    "blurb": "Barbed, with fifty feet of silk line. A bolt for closing.",
+    "text": "Crossbow. YOU are pulled to a square adjacent to the target."
+  }
+}

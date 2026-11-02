@@ -1,0 +1,18 @@
+{
+  "_id": "g77Letzx97QipdfM",
+  "_key": "!items!g77Letzx97QipdfM",
+  "name": "The Sphere Entire",
+  "type": "spell",
+  "system": {
+    "strength": 4,
+    "source": "Elemental Magic",
+    "description": "<p>Five squares of whichever sphere is yours, and standing in it costs you something every turn you stay.</p>",
+    "effect": {
+      "range": 3,
+      "area": 5,
+      "text": "a 5-square area of your element: difficult ground, cover, and 2 damage at the start of your turn"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

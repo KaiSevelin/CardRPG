@@ -1,0 +1,58 @@
+{
+  "_id": "Xyh1fkXSwUMLCgLW",
+  "_key": "!actors!Xyh1fkXSwUMLCgLW",
+  "name": "Smash Beetle Breaker",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 28,
+      "base": 28
+    },
+    "kind": "smash-beetle-breaker",
+    "armorBase": 4,
+    "speed": 1,
+    "capabilities": [
+      "legs",
+      "brute",
+      "siege",
+      "reach"
+    ],
+    "tactics": [
+      "brute"
+    ],
+    "targetPriority": "nearest"
+  },
+  "items": [
+    {
+      "_id": "ykR4RxWhNDYyEPM2",
+      "_key": "!actors.items!Xyh1fkXSwUMLCgLW.ykR4RxWhNDYyEPM2",
+      "name": "Tail Club",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "heavy",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 7,
+            "reach": 2,
+            "ignores": 2
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Smash Beetle Breaker"
+  }
+}

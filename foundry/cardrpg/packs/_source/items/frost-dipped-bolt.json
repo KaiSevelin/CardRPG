@@ -1,0 +1,25 @@
+{
+  "_id": "LwHupTWL615Ibmcd",
+  "_key": "!items!LwHupTWL615Ibmcd",
+  "name": "Frost-dipped Bolt",
+  "type": "item",
+  "system": {
+    "slot": "belt",
+    "tags": [
+      "consumable"
+    ],
+    "weight": 0,
+    "value": 60,
+    "consumed": true,
+    "ammoFor": [
+      "crossbow"
+    ],
+    "shot": {
+      "condition": "frozen",
+      "duration": 1,
+      "intensity": 1
+    },
+    "blurb": "Cold enough that the quiver frosts around it.",
+    "text": "Crossbow. Frozen 1 (1)."
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "_id": "vcE6BkkweV5JTpaz",
+  "_key": "!items!vcE6BkkweV5JTpaz",
+  "name": "The Nine Names",
+  "type": "spell",
+  "system": {
+    "strength": 1,
+    "source": "Spiritualism",
+    "description": "<p>Out of combat. A minor god names who in this place it is angry with, and will not say why.</p>",
+    "effect": {
+      "timing": "outOfCombat",
+      "text": "a minor god names who here it is angry with"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "_id": "6quvvFJAEMMyMhOu",
+  "_key": "!items!6quvvFJAEMMyMhOu",
+  "name": "Tincture of the Clear Eye",
+  "type": "item",
+  "system": {
+    "slot": "belt",
+    "fits": [
+      "hands"
+    ],
+    "hands": 1,
+    "tags": [
+      "consumable"
+    ],
+    "weight": 0,
+    "value": 30,
+    "consumed": true,
+    "blurb": "Cloudy, and it stings going down.",
+    "verbs": {
+      "use": {
+        "value": 0,
+        "text": "Shake Off 1 on anything"
+      }
+    }
+  }
+}

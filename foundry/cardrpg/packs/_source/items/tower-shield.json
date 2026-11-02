@@ -1,0 +1,23 @@
+{
+  "_id": "ejE7EIwRoU28xSLb",
+  "_key": "!items!ejE7EIwRoU28xSLb",
+  "name": "Tower Shield",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "hands": 1,
+    "tags": [
+      "shield",
+      "heavy"
+    ],
+    "weight": 8,
+    "value": 45,
+    "blurb": "A wall for a man who has decided not to go anywhere.",
+    "verbs": {
+      "defend": {
+        "value": 3,
+        "text": "your Move is halved while it is in hand"
+      }
+    }
+  }
+}

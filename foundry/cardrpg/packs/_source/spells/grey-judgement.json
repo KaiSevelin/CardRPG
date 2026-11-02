@@ -1,0 +1,17 @@
+{
+  "_id": "Xnnnd0QC2kI1DOjW",
+  "_key": "!items!Xnnnd0QC2kI1DOjW",
+  "name": "Grey Judgement",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "The Grey",
+    "description": "<p>A Judged adjacent enemy acts last in the round, whatever its initiative.</p>",
+    "effect": {
+      "range": 1,
+      "text": "a Judged adjacent enemy acts last this round"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

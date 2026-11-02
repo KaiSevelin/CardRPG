@@ -1,0 +1,24 @@
+{
+  "_id": "3dC9CflbaeOQo5Vj",
+  "_key": "!items!3dC9CflbaeOQo5Vj",
+  "name": "Goblin Spear",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "fits": [
+      "back"
+    ],
+    "hands": 1,
+    "tags": [
+      "melee"
+    ],
+    "weight": 2,
+    "value": 0,
+    "npcGear": true,
+    "verbs": {
+      "strike": {
+        "value": 3
+      }
+    }
+  }
+}

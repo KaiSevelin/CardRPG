@@ -1,0 +1,59 @@
+{
+  "_id": "tC5aOkEs8S9ZHp8i",
+  "_key": "!actors!tC5aOkEs8S9ZHp8i",
+  "name": "Slitherer",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 7,
+      "base": 7
+    },
+    "kind": "slitherer",
+    "armorBase": 1,
+    "speed": 4,
+    "capabilities": [
+      "legs",
+      "stealth",
+      "venom"
+    ],
+    "tactics": [
+      "ambusher"
+    ],
+    "targetPriority": "weakest",
+    "signature": {
+      "condition": "poisoned",
+      "intensity": 2,
+      "duration": 2
+    }
+  },
+  "items": [
+    {
+      "_id": "aiGYubT3yjyoUAzx",
+      "_key": "!actors.items!tC5aOkEs8S9ZHp8i.aiGYubT3yjyoUAzx",
+      "name": "Mandibles",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 3
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Slitherer"
+  }
+}

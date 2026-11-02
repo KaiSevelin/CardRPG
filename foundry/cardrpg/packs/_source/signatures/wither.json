@@ -1,0 +1,21 @@
+{
+  "_id": "vJ6Sqy3IIna23BQO",
+  "_key": "!items!vJ6Sqy3IIna23BQO",
+  "name": "Wither",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "Poison",
+    "description": "<p>Dazed while it lasts, and one damage a turn that armour does not stop.</p>",
+    "effect": {
+      "verb": "cast",
+      "condition": "poisoned",
+      "intensity": 1,
+      "duration": 2,
+      "resist": "might",
+      "dc": 5
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

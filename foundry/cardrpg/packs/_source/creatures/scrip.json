@@ -1,0 +1,53 @@
+{
+  "_id": "5O6mRvXKiKljWCKI",
+  "_key": "!actors!5O6mRvXKiKljWCKI",
+  "name": "Scrip",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 2,
+      "base": 2
+    },
+    "kind": "scrip",
+    "armorBase": 0,
+    "speed": 6,
+    "capabilities": [
+      "flight",
+      "pack"
+    ],
+    "tactics": [
+      "skirmisher"
+    ],
+    "targetPriority": "nearest"
+  },
+  "items": [
+    {
+      "_id": "eIB2Li4hkekDjxl2",
+      "_key": "!actors.items!5O6mRvXKiKljWCKI.eIB2Li4hkekDjxl2",
+      "name": "Nip",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 1
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Scrip"
+  }
+}

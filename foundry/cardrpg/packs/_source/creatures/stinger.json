@@ -1,0 +1,58 @@
+{
+  "_id": "ssX68yPGALPnljYP",
+  "_key": "!actors!ssX68yPGALPnljYP",
+  "name": "Stinger",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 6,
+      "base": 6
+    },
+    "kind": "stinger",
+    "armorBase": 0,
+    "speed": 6,
+    "capabilities": [
+      "flight",
+      "venom"
+    ],
+    "tactics": [
+      "skirmisher"
+    ],
+    "targetPriority": "caster",
+    "signature": {
+      "condition": "poisoned",
+      "intensity": 1,
+      "duration": 3
+    }
+  },
+  "items": [
+    {
+      "_id": "aMTjGDu685p9TOMd",
+      "_key": "!actors.items!ssX68yPGALPnljYP.aMTjGDu685p9TOMd",
+      "name": "Sting",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 2
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Stinger"
+  }
+}

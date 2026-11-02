@@ -1,0 +1,18 @@
+{
+  "_id": "g41SWHHe0EvTwqKf",
+  "_key": "!items!g41SWHHe0EvTwqKf",
+  "name": "Lay On",
+  "type": "spell",
+  "system": {
+    "strength": 1,
+    "source": "The Eternal Spirit",
+    "description": "<p>Hands, and three squares of air between you.</p>",
+    "effect": {
+      "verb": "heal",
+      "param": 2,
+      "range": 3
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "_id": "EzJMSsFYi2ChqZNb",
+  "_key": "!items!EzJMSsFYi2ChqZNb",
+  "name": "Acid Spray",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "hands": 0,
+    "tags": [
+      "ranged",
+      "natural"
+    ],
+    "weight": 0,
+    "value": 0,
+    "npcGear": true,
+    "verbs": {
+      "strike": {
+        "value": 4,
+        "range": 3,
+        "area": 1,
+        "ignores": 2
+      }
+    }
+  }
+}

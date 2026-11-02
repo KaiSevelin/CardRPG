@@ -1,0 +1,16 @@
+{
+  "_id": "CudmRIRotGJ1HLY9",
+  "_key": "!items!CudmRIRotGJ1HLY9",
+  "name": "The Air Between",
+  "type": "spell",
+  "system": {
+    "strength": 4,
+    "source": "The Eternal Spirit",
+    "description": "<p>For one round everybody answers twice. The reaction policy allows one per trigger and this is the only thing in the game that argues with it.</p>",
+    "effect": {
+      "text": "until your next turn every ally may take one extra reaction per trigger"
+    },
+    "kind": "miracle",
+    "prepared": false
+  }
+}

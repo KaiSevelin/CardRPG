@@ -1,0 +1,17 @@
+{
+  "_id": "geJiyS46BICiSN6n",
+  "_key": "!items!geJiyS46BICiSN6n",
+  "name": "Ring of Open Hands",
+  "type": "item",
+  "system": {
+    "slot": "fingers",
+    "weight": 0,
+    "value": 0,
+    "identified": false,
+    "unidentifiedName": "a plain silver ring",
+    "blurb": "Almost the ring you were hoping for.",
+    "curse": "You may never hold anything in your other hand again. Lifted by the jeweller who made it, who is dead.",
+    "group": "power",
+    "text": "You may Cast without a free hand."
+  }
+}

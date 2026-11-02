@@ -1,0 +1,14 @@
+{
+  "_id": "GS5p0H9LjMyz2IRu",
+  "_key": "!items!GS5p0H9LjMyz2IRu",
+  "name": "Arcane Focus",
+  "type": "feature",
+  "system": {
+    "group": "power",
+    "bonus": {
+      "verb": "cast",
+      "value": 1
+    },
+    "text": "+1 to all Cast values."
+  }
+}

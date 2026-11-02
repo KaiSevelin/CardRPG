@@ -1,0 +1,29 @@
+{
+  "_id": "02rb3KhdKfEGTNdw",
+  "_key": "!items!02rb3KhdKfEGTNdw",
+  "name": "Blade of the Eager Hand",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "fits": [
+      "back"
+    ],
+    "hands": 1,
+    "tags": [
+      "heavy",
+      "melee"
+    ],
+    "weight": 2,
+    "value": 0,
+    "identified": false,
+    "unidentifiedName": "an old sword, very sharp",
+    "blurb": "It wants to be swung and it is not fussy about at what.",
+    "verbs": {
+      "strike": {
+        "value": 5
+      }
+    },
+    "curse": "You must Strike the nearest living creature every turn, ally or not. Lifted by a Cleansing.",
+    "group": "wonder"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "_id": "6BWzcdmADp7S8wB3",
+  "_key": "!items!6BWzcdmADp7S8wB3",
+  "name": "Whetstone of the Last Edge",
+  "type": "item",
+  "system": {
+    "slot": "pack",
+    "weight": 1,
+    "value": 60,
+    "blurb": "It takes something back out of a blade that has given everything.",
+    "group": "wonder",
+    "active": {
+      "text": "One Spent card returns to your discard.",
+      "boundary": "longRest"
+    }
+  }
+}

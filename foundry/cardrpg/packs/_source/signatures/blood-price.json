@@ -1,0 +1,22 @@
+{
+  "_id": "wg3F9CRJJKybX73E",
+  "_key": "!items!wg3F9CRJJKybX73E",
+  "name": "Blood Price",
+  "type": "spell",
+  "system": {
+    "strength": 2,
+    "source": "Blood Magic",
+    "cost": {
+      "health": 2
+    },
+    "description": "<p>Four damage at three squares, and nothing between you and it matters. The two Health are not a drawback; they are the school.</p>",
+    "effect": {
+      "verb": "cast",
+      "range": 3,
+      "mod": 4,
+      "text": "ignoring armor"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

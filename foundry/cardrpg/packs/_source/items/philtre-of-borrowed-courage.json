@@ -1,0 +1,26 @@
+{
+  "_id": "JKF6WjtjOqznu8gl",
+  "_key": "!items!JKF6WjtjOqznu8gl",
+  "name": "Philtre of Borrowed Courage",
+  "type": "item",
+  "system": {
+    "slot": "belt",
+    "fits": [
+      "hands"
+    ],
+    "hands": 1,
+    "tags": [
+      "consumable"
+    ],
+    "weight": 0,
+    "value": 65,
+    "consumed": true,
+    "blurb": "Somebody else's nerve, and they are not getting it back.",
+    "verbs": {
+      "use": {
+        "value": 0,
+        "text": "for the fight you cannot be Compelled"
+      }
+    }
+  }
+}

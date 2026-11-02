@@ -1,0 +1,17 @@
+{
+  "_id": "Jr4m4ekDICQxnRbk",
+  "_key": "!items!Jr4m4ekDICQxnRbk",
+  "name": "The Whole Thread",
+  "type": "spell",
+  "system": {
+    "strength": 5,
+    "source": "Divination",
+    "description": "<p>The whole fight, in order, before it starts. The GM writes three prophecies for it, and a diviner who uses this twice in a week is in a story they no longer steer.</p>",
+    "effect": {
+      "timing": "beforeFight",
+      "text": "the GM shows the enemy's intent cards for the whole fight, in order"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

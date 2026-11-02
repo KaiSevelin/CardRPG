@@ -1,0 +1,17 @@
+{
+  "_id": "hEKF3tkSF79LtD7J",
+  "_key": "!items!hEKF3tkSF79LtD7J",
+  "name": "The Hand Given",
+  "type": "spell",
+  "system": {
+    "strength": 3,
+    "source": "Asceticism",
+    "description": "<p>It costs a hand. What is left strikes like a Heavy weapon, for ever, and you will never hold a shield again.</p>",
+    "effect": {
+      "timing": "permanent",
+      "text": "and it costs a hand: your bare Strike is a Heavy weapon at Strike 4"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

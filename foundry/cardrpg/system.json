@@ -57,7 +57,7 @@
       "wound": {},
       "taint": {},
       "wild": {},
-        "skill": {},
+      "skill": {},
       "twist": {}
     }
   },
@@ -72,5 +72,107 @@
     "distance": 1,
     "units": "sq"
   },
-  "primaryTokenAttribute": "health"
+  "primaryTokenAttribute": "health",
+  "packs": [
+    {
+      "name": "creatures",
+      "label": "Creatures",
+      "path": "packs/creatures",
+      "type": "Actor",
+      "system": "cardrpg",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "TRUSTED": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "characters",
+      "label": "Pregenerated Characters",
+      "path": "packs/characters",
+      "type": "Actor",
+      "system": "cardrpg",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "TRUSTED": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "items",
+      "label": "Items",
+      "path": "packs/items",
+      "type": "Item",
+      "system": "cardrpg",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "TRUSTED": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "features",
+      "label": "Features",
+      "path": "packs/features",
+      "type": "Item",
+      "system": "cardrpg",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "TRUSTED": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "spells",
+      "label": "Formulas and Miracles",
+      "path": "packs/spells",
+      "type": "Item",
+      "system": "cardrpg",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "TRUSTED": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "signatures",
+      "label": "Signatures",
+      "path": "packs/signatures",
+      "type": "Item",
+      "system": "cardrpg",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "TRUSTED": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "decks",
+      "label": "Decks",
+      "path": "packs/decks",
+      "type": "Cards",
+      "system": "cardrpg",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "TRUSTED": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    }
+  ],
+  "packFolders": [
+    {
+      "name": "Card RPG",
+      "sorting": "m",
+      "color": "#5b2333",
+      "packs": [
+        "creatures",
+        "characters",
+        "items",
+        "features",
+        "spells",
+        "signatures",
+        "decks"
+      ]
+    }
+  ]
 }
