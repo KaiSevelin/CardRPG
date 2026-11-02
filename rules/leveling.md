@@ -53,13 +53,14 @@ adding depth is a content question, not a rules change.
   (Brewer, Smith, Spy, Fence, Politician) to be *clusters along a branch* rather than titles, and
   this is the room for them.
 
-- **[FOUND IN CODE 2026-11-01] Spell slots are the one reward nobody counted.** Ten nodes in 193
-  grant one, four of those on two gods' branches, so a caster who stays in their own Way tops out
-  at **4** (Way of Mind) or **2** (Way of Faith, or 3 behind three of the twelve gods) against lists
-  written to strength 5. Thirty-seven spells cannot be prepared by any caster of their own source,
-  and four gods grant a Signature their priest cannot cast. The measurement and the three shapes a
-  fix could take are in [way-cards.md](way-cards.md) §1.4; the validator pins the numbers so they
-  cannot drift quietly.
+- **[FOUND IN CODE 2026-11-01, FIXED 2026-11-02] Spell slots were the one reward nobody counted.**
+  Ten nodes in 193 granted one, four of those on two gods' branches, so a caster who stayed in their
+  own Way topped out at **4** (Way of Mind) or **2** (Way of Faith) against lists written to
+  strength 5: thirty-seven spells unpreparable, and four titles granting a Signature their holder
+  could not cast. **A slot now sits on each of the three trunk nodes of both casting Ways**, which
+  is the only place a slot reaches every caster of a Way rather than one school or one priest, and
+  every caster holds five when their list arrives. The measurement, the fix and what it leaves open
+  are in [way-cards.md](way-cards.md) §1.4.
 
 - **The pool is the default; about one minor node in three is bespoke.** Two of every three minor
   nodes grant something already written — a card from the **common pool** or the **Way pool**

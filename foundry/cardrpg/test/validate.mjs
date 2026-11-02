@@ -2445,12 +2445,13 @@ const firstWhole = new Set([...trunk, "faith.first", "faith.first.debt", "faith.
   "faith.first.narrow", "faith.first.blood", "faith.first.rest", "faith.first.echterhof"]);
 check("The First's slot cap", graph.grantsOf(firstWhole).slotCap, 3);
 /*
- * And the cap has to BITE, or it is decoration. The branch grants four slots counting the Way
- * root's two, and the obedience keeps three -- so the god offers more than the vow allows you to
- * hold, which is the only shape in which a cap is a price.
+ * And the cap has to BITE, or it is decoration. Seven slots are granted along that route -- two
+ * at the Way root, three on the trunk, two on the branch -- and the obedience keeps three, so the
+ * god offers more than twice what the vow allows you to hold. That is the only shape in which a cap
+ * is a price, and the trunk's ladder made it a steeper one than it was.
  */
 const firstGrants = graph.grantsOf(firstWhole);
-check("slots The First's whole branch grants", firstGrants.spellSlots, 4);
+check("slots The First's whole branch grants", firstGrants.spellSlots, 7);
 check("and what the obedience leaves",
   Math.min(firstGrants.spellSlots, firstGrants.slotCap), 3);
 check("no cap for anybody else", graph.grantsOf(toValtor).slotCap, "null");
@@ -2514,9 +2515,10 @@ check("and says what settles a tie of equal depth",
 check("way-cards marks the miracles built",
   /^### 2\.4 Way of Faith {2}\*\*\[BUILT 2026-11-01\]\*\*$/m.test(wayDoc) ? "yes" : "no", "yes");
 
-/* Two from the Way root and one from the branch, and no vow to clip it. */
-check("and a lone god without a cap keeps all three",
-  graph.grantsOf(spiritWhole).spellSlots, 3);
+/* Two from the Way root, three from the trunk and one from the branch, and no vow to clip any of
+ * them: the same six a priest of The First is granted and forbidden to hold. */
+check("and a lone god without a cap keeps all six",
+  graph.grantsOf(spiritWhole).spellSlots, 6);
 
 /* -------------------------------------------- */
 
@@ -2773,11 +2775,12 @@ check("and the other two Ways grant none",
 const diviner = new Set(["root", "mind", "mind.letters", "mind.candle", "mind.vigil",
   "mind.spiritualism", "mind.spirit.omens", "mind.spirit.gathered", "mind.divination"]);
 const divinerGrants = graph.grantsOf(diviner);
-check("a level-9 diviner's spell slots", divinerGrants.spellSlots, 3);
+check("a level-9 diviner's spell slots", divinerGrants.spellSlots, 5);
 check("and the formulas in their book",
   divinerGrants.spells.join(", "),
   "The Bargain, Hold to the Bargain, The Gathered Pact, The Reading");
-/* Eleven slots' worth of formulas against three slots, which is what a spell book is. */
+/* Eleven slots' worth of formulas against five slots, which is what a spell book is: more than
+ * can be carried into one day, and the morning's choice is the whole of the Way. */
 check("the strength of everything in it",
   divinerGrants.spells.reduce((n, name) => n + (graph.SPELLS.get(name)?.strength ?? 0), 0), 11);
 check("their title and tactic", `${graph.titleOf(diviner)} / ${graph.tacticOf(diviner).name}`,
@@ -3746,30 +3749,74 @@ check("sources a character can be handed in full", complete.join(", "), "The Fir
  * ---- the slot budget against the lists it has to pay for ----
  *
  * **Strength is the slot cost** (way-cards 1.4), so a caster's whole ceiling is the number of slots
- * the graph hands them, and that number is granted by *nodes* -- leveling 4 lists *a spell slot* as
- * one of the minor-node rewards. Nobody had ever counted the two against each other.
+ * the graph hands them, and slots are granted by *nodes* -- leveling 4 lists *a spell slot* among
+ * the minor-node rewards. Counting the two against each other found the largest hole this project
+ * has had. All twenty-four lists are written to a ladder of 1 to 5; the graph paid for a ladder of
+ * 2 to 4. **Thirty-seven of the hundred and forty-seven spells could not be prepared by any caster
+ * of their own source**, every strength-5 among them, and **four titles granted a Signature their
+ * holder could not cast** -- three of them never, at any depth.
  *
- * There are **ten** slot-granting nodes in a graph of 193, and four of the ten are on two gods'
- * branches. So the ceiling is low, uneven between the Ways, and uneven between gods of the same
- * Way -- and it is measured here rather than assumed, because the content on the other side of it
- * runs to strength 5 in all twenty-four lists.
+ * **The fix was five fields, and the shape of the two casting Ways is why it could be.** Each has a
+ * trunk of three ordinary nodes that every caster of that Way walks before their first school or
+ * vow, and only Mind's carried slots at all. Both now carry the same ladder, so the ceiling arrives
+ * WITH the list instead of four nodes later. Nothing was added to the graph: a slot on a school
+ * node reaches one school and a slot on a god's branch reaches one priest, which is how the hole
+ * stayed open while nine of the ten slot nodes looked reasonable where they sat.
  *
- * These are **pinned measurements, not assertions of health**. Every number below is a fact about
- * today's content; the ones that are defects say so in the check's name.
+ * So what is checked below is an **invariant and not a number**: *no list may run past the ceiling
+ * of the caster it is handed to.* The First obeyed it before anything else did -- a vow capping
+ * slots at 3 and a list that stops at 3 -- and that is the reason to trust the rule rather than the
+ * arithmetic that follows from it.
  */
 
 /*
- * The ceiling for a caster who stays in ONE Way: their title's cheapest route, then every node of
- * that Way still open to them. A second Way is excluded on purpose -- a priest who has to walk Way
- * of Mind to cast their own god's miracle is the finding, not the baseline.
- *
- * Iterated to a fixed point because taking an open node can close others (leveling 3).
+ * The ladder itself, because the fix lives in five fields and nothing else would notice if one of
+ * them were dropped. Both trunks, in walking order, and they have to agree.
+ */
+const TRUNKS = {
+  mind: ["mind", "mind.letters", "mind.candle", "mind.vigil"],
+  faith: ["faith", "faith.vows", "faith.pilgrimage", "faith.calling"]
+};
+for (const [way, ids] of Object.entries(TRUNKS)) {
+  check(`the slot ladder on the ${way} trunk`,
+    ids.map(id => byId.get(id)?.grants?.spellSlots ?? 0).join(", "), "2, 1, 1, 1");
+  check(`and every caster of that Way walks all four`,
+    nodes.filter(n => n.title && graph.SPELLS_BY_SOURCE.has(n.title)
+      && n.id.startsWith(`${way}.`))
+      .every(n => ids.every(id => id === n.id || graph.REACH.get(n.id)?.has(id))), true);
+}
+check("the two trunks carry the same ladder",
+  TRUNKS.mind.map(id => byId.get(id)?.grants?.spellSlots ?? 0).join()
+  === TRUNKS.faith.map(id => byId.get(id)?.grants?.spellSlots ?? 0).join(), true);
+
+const slotGrants = nodes.filter(n => n.grants?.spellSlots);
+check("nodes that grant a spell slot", slotGrants.length, 15);
+check("and the Ways they sit in",
+  [...new Set(slotGrants.map(n => n.id.split(".")[0]))].sort().join(", "),
+  "faith, mind, shade");
+/* Way of Strength grants none, which is right: it has no casters and no spells. */
+check("Way of Strength grants no slots",
+  slotGrants.filter(n => n.id.startsWith("strength")).length, 0);
+
+const casterTitles = nodes.filter(n => n.title && graph.SPELLS_BY_SOURCE.has(n.title));
+check("sources with a title to reach them by", casterTitles.length, 24);
+
+/* What a caster holds the moment the title hands them the list, the cap applied. */
+function slotsAt(titleId) {
+  const g = graph.grantsOf(new Set([graph.ROOT, ...(graph.REACH.get(titleId) ?? []), titleId]));
+  return g.slotCap === null ? g.spellSlots : Math.min(g.spellSlots, g.slotCap);
+}
+
+/*
+ * Everything a caster can still reach WITHOUT leaving their Way. A second Way is excluded on
+ * purpose: a priest who has to walk Way of Mind to cast their own god's miracle is the defect, not
+ * the baseline. Iterated to a fixed point, because taking a node closes others (leveling 3).
  */
 function slotCeiling(titleId) {
   const way = titleId.split(".")[0];
   const inWay = id => id === way || id.startsWith(`${way}.`);
   let owned = new Set([graph.ROOT, ...(graph.REACH.get(titleId) ?? []), titleId]);
-  for (let i = 0; i < 8; i++) {
+  for (let i = 0; i < 12; i++) {
     const shut = graph.closedIds(owned);
     const live = [...graph.reachable(owned, shut)]
       .filter(id => !shut.has(id) && (id === graph.ROOT || inWay(id)));
@@ -3781,92 +3828,132 @@ function slotCeiling(titleId) {
   return g.slotCap === null ? g.spellSlots : Math.min(g.spellSlots, g.slotCap);
 }
 
-const slotGrants = nodes.filter(n => n.grants?.spellSlots);
-check("nodes that grant a spell slot", slotGrants.length, 10);
-/* The measurement is written down where a designer reads, not only where a test runs. */
-check("way-cards carries the slot audit",
-  /The graph pays for a ladder of 2 to 4, and both lists are written/.test(waycards)
-    ? "yes" : "no", "yes");
-check("and the number that matters most",
-  /\*\*Thirty-seven of the hundred and forty-seven cannot be prepared/.test(waycards)
-    ? "yes" : "no", "yes");
-check("and names the three gods whose Signature is a dead letter",
-  /\*\*Fagar\*\*, \*\*Vulpet\*\* and \*\*Brendan\*\*/.test(waycards) ? "yes" : "no", "yes");
-check("and leaves the shape of the fix open",
-  /\*\*Slots by level\*\*, the way Health already arrives/.test(waycards) ? "yes" : "no", "yes");
-check("and leveling.md points at it from the reward list",
-  /Spell slots are the one reward nobody counted/.test(levDoc) ? "yes" : "no", "yes");
-check("and the Ways they sit in",
-  [...new Set(slotGrants.map(n => n.id.split(".")[0]))].sort().join(", "),
-  "faith, mind, shade");
-/* Way of Strength grants none, which is right: it has no casters and no spells. */
-check("Way of Strength grants no slots",
-  slotGrants.filter(n => n.id.startsWith("strength")).length, 0);
-
-const casterTitles = nodes.filter(n => n.title && graph.SPELLS_BY_SOURCE.has(n.title));
-check("sources with a title to reach them by", casterTitles.length, 24);
-
 /*
- * **The headline: thirty-seven of the hundred and forty-seven spells cannot be prepared by any
- * caster who stays in their own Way.** Twelve of them are the strength-5 formulas way-cards 3.4
- * calls *the school's thesis, and the argument for choosing the branch at all*, and the rest are
- * the 4s and 5s of eleven gods, which 3.5 promises every god has.
- *
- * A mage tops out at **4** and a priest at **2 or 3**. The content was written to a ladder of 1 to 5
- * and the graph pays for a ladder of 2 to 4.
+ * **The invariant.** Not *everybody gets five* -- The First gets three and should -- but *the list
+ * never runs past the caster*. Checked at the moment the title is taken rather than at the ceiling,
+ * which is the stronger reading and the one way-cards 3.4 means by *the argument for choosing the
+ * branch at all*: a thesis you can cast four nodes after choosing the branch was never the thesis.
  */
 const overBudget = [];
 for (const t of casterTitles) {
-  const cap = slotCeiling(t.id);
+  const have = slotsAt(t.id);
   for (const spell of graph.SPELLS_BY_SOURCE.get(t.title)) {
-    if (spell.strength > cap) overBudget.push(`${t.title}/${spell.name} (${spell.strength}>${cap})`);
+    if (spell.strength > have) {
+      overBudget.push(`${t.title}/${spell.name} (${spell.strength}>${have})`);
+    }
   }
 }
-check("spells no single-Way caster of that source can prepare", overBudget.length, 37);
-check("and every strength-5 is among them",
-  [...graph.SPELLS.values()].filter(s => s.strength === 5)
-    .every(s => overBudget.some(o => o.includes(`/${s.name} `))), true);
-
-const ceilings = new Map(casterTitles.map(t => [t.title, slotCeiling(t.id)]));
-check("the ceiling for a mage who stays in Way of Mind",
-  [...new Set(casterTitles.filter(t => t.id.startsWith("mind")).map(t => ceilings.get(t.title)))]
-    .join(", "), "4");
-check("and for a priest who stays in Way of Faith",
-  [...new Set(casterTitles.filter(t => t.id.startsWith("faith")).map(t => ceilings.get(t.title)))]
-    .sort().join(", "), "2, 3");
-/* Three gods out of twelve have a slot node behind them. The other nine have the root's two. */
-check("gods whose own branch grants a slot",
-  casterTitles.filter(t => t.id.startsWith("faith") && ceilings.get(t.title) > 2)
-    .map(t => t.title).sort().join(", "),
-  "The Eternal God, The Eternal Spirit, The First");
+check("spells a caster cannot prepare when handed the list", overBudget.length, 0);
+check("and none can be prepared only by leaving the Way",
+  casterTitles.filter(t => slotCeiling(t.id)
+    < Math.max(...graph.SPELLS_BY_SOURCE.get(t.title).map(s => s.strength))).length, 0);
 
 /*
- * **And four gods hand over a Signature the priest cannot cast.** That is worse than a 5 nobody
- * reaches: a title's Signature is the thing the title IS (way-cards 2), granted at the moment you
- * swear, and for three of these four it is not a question of waiting -- their Way ceiling is 2 and
- * the Signature is a 3, so it is never castable at all.
- *
- * The First is the fourth and is a different case: its own branch grants two slots, so its
- * strength-3 Signature becomes castable one node later. A timing wrinkle rather than a dead end.
+ * And the margin, which is the number that says the fix is a ladder rather than a flood. Nought or
+ * one: a caster holding their list's thesis prepares it and nothing beside it, or it and a 1. That
+ * is way-cards 1.4's *a 5 fills a whole budget* made true rather than stated.
+ */
+const margins = casterTitles.map(t =>
+  slotsAt(t.id) - Math.max(...graph.SPELLS_BY_SOURCE.get(t.title).map(s => s.strength)));
+check("slots to spare over the list's thesis, at the title",
+  `${Math.min(...margins)} to ${Math.max(...margins)}`, "0 to 1");
+check("what a caster holds when the list arrives",
+  [...new Set(casterTitles.map(t => slotsAt(t.id)))].sort().join(", "), "3, 5, 6");
+/* The two that are not five, and each is a decision somebody made rather than a slip. */
+check("the one that holds three is the one whose vow caps it",
+  casterTitles.filter(t => slotsAt(t.id) === 3).map(t => t.title).join(", "), "The First");
+check("and its list stops exactly there",
+  Math.max(...graph.SPELLS_BY_SOURCE.get("The First").map(s => s.strength)), 3);
+check("the one that holds six is reached through a slot of its own",
+  casterTitles.filter(t => slotsAt(t.id) === 6).map(t => t.title).join(", "), "Ward Magic");
+
+check("the ceiling for a mage who stays in Way of Mind",
+  [...new Set(casterTitles.filter(t => t.id.startsWith("mind")).map(t => slotCeiling(t.id)))]
+    .join(", "), "6");
+check("and for a priest who stays in Way of Faith",
+  [...new Set(casterTitles.filter(t => t.id.startsWith("faith")).map(t => slotCeiling(t.id)))]
+    .sort().join(", "), "3, 5, 6");
+/* Two gods out of twelve have a slot on their own branch; the rest live on the trunk's ladder. */
+check("gods whose own branch grants one past the trunk",
+  casterTitles.filter(t => t.id.startsWith("faith") && slotCeiling(t.id) > 5)
+    .map(t => t.title).sort().join(", "),
+  "The Eternal God, The Eternal Spirit");
+
+/*
+ * **A Signature is granted the moment you swear**, so a Signature above the slot count at that
+ * moment is not a wait, it is a dead letter -- a title's Signature is the thing the title IS
+ * (way-cards 2). Four titles printed one: Fagar, Vulpet and Brendan at strength 3 against two
+ * slots, and The First, whose own branch arrived a node later. All four were fixed by the trunk.
  */
 const sigTrouble = [];
 for (const t of nodes.filter(n => n.title && n.grants?.spell)) {
   const def = graph.SPELLS.get(t.grants.spell);
-  const atTitle = graph.grantsOf(new Set([...(graph.REACH.get(t.id) ?? []), t.id]));
-  const now = atTitle.slotCap === null ? atTitle.spellSlots
-    : Math.min(atTitle.spellSlots, atTitle.slotCap);
+  const now = slotsAt(t.id);
   if (def && def.strength > now) {
-    sigTrouble.push(`${t.title}: ${def.name} is ${def.strength}, slots ${now}, `
-      + `ceiling ${slotCeiling(t.id)}`);
+    sigTrouble.push(`${t.title}: ${def.name} is ${def.strength}, slots ${now}`);
   }
 }
-check("titles granting a Signature their holder cannot cast", sigTrouble.length, 4);
-check("and which titles they are",
-  sigTrouble.map(s => s.split(":")[0]).sort().join(", "),
-  "Brendan, Fagar, The First, Vulpet");
-check("three of them can never cast it, whatever they take afterwards",
-  sigTrouble.filter(s => /ceiling 2$/.test(s)).map(s => s.split(":")[0]).sort().join(", "),
-  "Brendan, Fagar, Vulpet");
+check("titles granting a Signature their holder cannot cast", sigTrouble.join(", ") || "none",
+  "none");
+/* The three that were never castable at any depth, which is the half of it that was not timing. */
+check("and none of them is a Signature nobody could ever reach",
+  nodes.filter(n => n.title && n.grants?.spell)
+    .filter(n => (graph.SPELLS.get(n.grants.spell)?.strength ?? 0) > slotCeiling(n.id)).length, 0);
+
+/*
+ * The one number this audit does NOT restrain, pinned so it cannot move quietly. Slots are
+ * additive and Ways stack, so a character who walks everything open to them reaches fifteen -- six
+ * on their own Way's ladder and the rest from the half-mage, the Duellist's formula and a second
+ * Way's trunk. That is a crossing's reward rather than a defect (leveling 1 sells crossing as the
+ * point of a graph), but nothing in the rules says where it stops, so the number is recorded here
+ * and the question is open in way-cards 1.4.
+ */
+const crossCeiling = (() => {
+  let best = 0;
+  for (const t of casterTitles) {
+    let owned = new Set([graph.ROOT, ...(graph.REACH.get(t.id) ?? []), t.id]);
+    for (let i = 0; i < 12; i++) {
+      const shut = graph.closedIds(owned);
+      const live = [...graph.reachable(owned, shut)].filter(id => !shut.has(id));
+      const next = new Set([...owned, ...live]);
+      if (next.size === owned.size) break;
+      owned = next;
+    }
+    const g = graph.grantsOf(owned);
+    best = Math.max(best, g.slotCap === null ? g.spellSlots : Math.min(g.spellSlots, g.slotCap));
+  }
+  return best;
+})();
+check("the most slots a character can reach with every Way open", crossCeiling, 15);
+check("way-cards leaves the crossing ceiling open",
+  /\[OPEN\][^\n]*crossing[\s\S]{0,400}?fifteen/.test(wayDoc) ? "yes" : "no", "yes");
+
+/*
+ * And the documents, because a ladder in the data with no rule behind it is the thing this project
+ * keeps finding from the other side: five fields that nobody can tell from an accident. The rule is
+ * stated in 1.4 beside the two slots it extends, the measurement that rejected the first fix is
+ * kept, and the three gods are named -- a hole stays fixed only while the reason it was a hole is
+ * still written down.
+ */
+check("way-cards states the trunk ladder as a rule",
+  /\*\*And each of the three trunk nodes behind the first school or vow grants one more/
+    .test(wayDoc) ? "yes" : "no", "yes");
+check("and why the trunk and not a school or a god",
+  /the trunk is the part every caster of that Way walks/.test(wayDoc) ? "yes" : "no", "yes");
+check("and what the fix cost", /\*\*The fix was five fields/.test(wayDoc) ? "yes" : "no", "yes");
+check("way-cards keeps the three gods whose Signature was a dead letter",
+  /\*\*Fagar\*\*, \*\*Vulpet\*\* and \*\*Brendan\*\*/.test(wayDoc) ? "yes" : "no", "yes");
+/* The rejected option, with the number that rejected it: level IS the node count, so per-level
+ * slots scale with the size of the graph rather than with anything a designer chose. */
+check("and what slots-by-level measured before it was dropped",
+  /slots by level[\s\S]{0,600}?hands a mage \*\*nineteen\*\*/i.test(wayDoc) ? "yes" : "no", "yes");
+check("leveling records the same fix where slots are handed out",
+  /A slot now sits on each of the three trunk nodes of both casting Ways/.test(levDoc)
+    ? "yes" : "no", "yes");
+/* And why it was ever possible: a slot is a minor-node reward like a card or a point of Health, and
+ * it was the only one whose total nobody had ever added up. */
+check("and that a slot was the reward nobody counted",
+  /Spell slots were the one reward nobody counted/.test(levDoc) ? "yes" : "no", "yes");
 
 /*
  * ---- and the shape of the four Ways against each other ----

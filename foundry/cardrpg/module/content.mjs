@@ -4423,16 +4423,24 @@ export const NODES = [
    * their content is cards and a card is a card; Mind's content IS its price.
    */
 
-  /* --- the Mind trunk: three ordinary nodes before the first school --- */
+  /* --- the Mind trunk: three ordinary nodes before the first school ---
+   *
+   * **The trunk carries the slot ladder, and the two casting Ways carry the same one.** Strength
+   * is the slot cost (way-cards 1.4), so the trunk is the only place a slot can be granted and be
+   * certain to arrive: on a school node it reaches one school, on a god's branch one god. Two at
+   * the root and one on each of the three trunk nodes is five by the time a caster holds a list
+   * written to five -- which is 3.4's thesis formula prepared alone and nothing beside it, exactly
+   * the way 1.4 says a 5 should read.
+   */
   {
     id: "mind.letters", name: "Letters", after: ["mind"],
-    grants: { training: "reading and writing" }
+    grants: { training: "reading and writing", spellSlots: 1 }
   },
   {
     /* The common card a caster gets is the one about spacing, because where to stand is the hard
      * problem this whole Way's Tactics are written about (way-cards 2.5). */
     id: "mind.candle", name: "The Candle", after: ["mind.letters"],
-    grants: { card: "Measure" }
+    grants: { card: "Measure", spellSlots: 1 }
   },
   {
     /*
@@ -4634,16 +4642,23 @@ export const NODES = [
 
   /* --- the Faith trunk: three ordinary nodes before the first vow ---
    *
+   * The same slot ladder as the Mind trunk above, for the same reason: twelve gods are siblings,
+   * so a slot on any one branch is a slot eleven priests never see. The First is untouched by it --
+   * its Obedience caps slots at 3 and its list stops at 3, which is the one place in the content
+   * where a list and a ceiling were written to each other on purpose.
+   *
    * No prune here, and the reason is a god. The Eternal God's Obedience is *your action deck may
    * hold no more than 12 cards*; a prune on the shared trunk would pre-pay that price for a
    * character who has not sworn to him yet, and hand every other priest a reward he has to earn.
    */
-  { id: "faith.vows", name: "Vows", after: ["faith"], grants: { training: "liturgy" } },
+  { id: "faith.vows", name: "Vows", after: ["faith"],
+    grants: { training: "liturgy", spellSlots: 1 } },
   {
     id: "faith.pilgrimage", name: "Pilgrimage", after: ["faith.vows"],
-    grants: { card: "Hold the Line" }
+    grants: { card: "Hold the Line", spellSlots: 1 }
   },
-  { id: "faith.calling", name: "The Calling", after: ["faith.pilgrimage"], grants: { restTokens: 1 } },
+  { id: "faith.calling", name: "The Calling", after: ["faith.pilgrimage"],
+    grants: { restTokens: 1, spellSlots: 1 } },
 
   /* --- the four lone gods: one door, no second god ever, and a branch four nodes deeper --- */
   {

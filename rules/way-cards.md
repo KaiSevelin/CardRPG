@@ -102,43 +102,64 @@ than one slot"* needed no rule of its own.
 a decision — one strength-2 formula, or two strength-1s — and it makes *"a caster who prepared the
 wrong spells has prepared the wrong spells"* bite from the first level.
 
-> **[FOUND IN CODE 2026-11-01] The graph pays for a ladder of 2 to 4, and both lists are written
-> to a ladder of 1 to 5.**
+**And each of the three trunk nodes behind the first school or vow grants one more, so a caster
+holds five when their list arrives.** Five is the number the lists are written to: a strength-5 is
+the whole budget, prepared alone and nothing beside it. The ladder sits on the trunk rather than on
+a school or a god's branch because the trunk is the part every caster of that Way walks — a slot
+granted anywhere else reaches one school or one priest, which is how the hole below stayed open.
+
+> **[FOUND IN CODE 2026-11-01, FIXED 2026-11-02] The graph paid for a ladder of 2 to 4, and both
+> lists are written to a ladder of 1 to 5.**
 >
 > Strength is the slot cost, so a caster's ceiling is whatever the graph hands them — and slots are
-> granted by **nodes** ([leveling.md](leveling.md) §4). Counting the two against each other for the
-> first time: there are **ten** slot-granting nodes in a graph of 193, four of them on two gods'
-> branches, and the ceiling for a caster who stays in their own Way is:
+> granted by **nodes** ([leveling.md](leveling.md) §4). Nobody had counted the two against each
+> other. There were **ten** slot-granting nodes in a graph of 193, four of them on two gods'
+> branches, and the ceiling for a caster who stayed in their own Way was **4** in Way of Mind and
+> **2** — 3 behind three of the twelve gods — in Way of Faith, against lists running to 5 in
+> twenty-three of the twenty-four.
 >
-> | | slots, ever | their lists run to |
-> |---|---|---|
-> | Way of Mind | **4** | 5, in all twelve schools |
-> | Way of Faith | **2**, or 3 behind three of the twelve gods | 5, in eleven of the twelve |
+> **Thirty-seven of the hundred and forty-seven could not be prepared by any caster of their own
+> source**, every strength-5 in the game among them — the band §3.4 calls *the school's thesis, and
+> the argument for choosing the branch at all*. **And four titles handed over a Signature their
+> holder could not cast**: **Fagar**, **Vulpet** and **Brendan** grant a strength-3 miracle to a
+> priest whose whole Way then allowed two, which is not a wait but a dead letter, since a Signature
+> is what a title *is* and arrives the moment you swear.
 >
-> **Thirty-seven of the hundred and forty-seven cannot be prepared by any caster of their own
-> source.** Among them is every strength-5 in the game — which §3.4 calls *the school's thesis, and
-> the argument for choosing the branch at all* — and the 4s and 5s of eleven gods, which §3.5
-> promises every god has.
+> Neither half of the design was wrong on its own. *Two slots is the smallest number that is a
+> decision* (above) and *a branch has to be worth walking to the end* (§3.4) are both sound; nothing
+> connected them, so the band the content spends most of its argument on was the band nobody could
+> reach.
 >
-> **And four gods hand over a Signature their priest cannot cast.** A Signature is what a title
-> *is*, granted the moment you swear, and **Fagar**, **Vulpet** and **Brendan** each grant a
-> strength-3 miracle to a priest whose Way ceiling is 2: not a wait, a dead letter. The fourth is
-> **The First**, whose own branch grants two slots, so its 3 becomes castable one node later — a
-> timing wrinkle rather than a hole.
+> **The fix was five fields, and the shape of the two casting Ways is why it could be.** Each has a
+> trunk of three ordinary nodes before its first school or vow — *Letters, The Candle, The Long
+> Vigil* and *Vows, Pilgrimage, The Calling* — and only Mind's carried slots. Both now carry the
+> same ladder of 2, 1, 1, 1, so the ceiling arrives **with** the list instead of four nodes after
+> it. Nothing was added to the graph:
 >
-> This is not a tuning complaint. Two halves of the design were written separately and each is
-> coherent: *2 slots is the smallest number that is a decision* (above), and *a branch has to be
-> worth walking to the end* (§3.4). Nothing connected them, so the band the content spends most of
-> its argument on is the band nobody can reach. **[OPEN]** and the shape of the fix is a decision,
-> not an oversight to patch:
+> | | when the list arrives | staying in the Way | the list runs to |
+> |---|---|---|---|
+> | Way of Mind | **5** (6, Ward Magic) | 6 | 5 |
+> | Way of Faith | **5** (3, The First) | 5, or 6 behind two gods | 5 (3, The First) |
 >
-> - **Slots by level**, the way Health already arrives: one at level 3, 6, 9, 12. The only option
->   that makes §1.4's promise hold without adding nodes, and it is Way-independent.
-> - **A slot node behind every school and every god** — twenty-four of them, parallel to
->   the menu nodes of [leveling.md](leveling.md) §4a. Mind reaches 5; Faith reaches 3, so the gods'
->   5s would still need something else.
-> - **Accept it and say so**: the 4s and 5s become what a *second* casting Way or a deep crossing
->   buys, and the lists are written as endgame content on purpose.
+> All thirty-seven are preparable and all four Signatures are castable at the moment they are
+> granted. The margin over a list's own thesis is **nought or one**, which is the point: a 5 fills a
+> whole budget, so the fix is a ladder and not a flood.
+>
+> **The rule it settles is an invariant rather than a number** — *no list may run past the ceiling
+> of the caster it is handed to* — and **The First obeyed it before anything else did**: a vow
+> capping slots at 3 and a list that stops at 3. That is the reason to trust the shape rather than
+> the arithmetic, and it is what the validator now checks.
+>
+> **Slots by level was tried first and measured wrong**, which is worth keeping: level in this
+> system *is* the number of nodes owned ([leveling.md](leveling.md) §7), and a caster who never
+> leaves their Way can own 46 of them, so *one slot every three levels* hands a mage **nineteen**.
+> It does not raise a low ceiling, it deletes the scarcity that makes preparation a decision at all.
+>
+> **[OPEN] Nothing says where a crossing's slots stop.** Slots are additive and Ways stack, so a
+> character who walks everything open to them reaches **fifteen** — their own trunk's ladder plus
+> the half-mage, the Duellist's formula and a second Way's trunk. A crossing is meant to be worth
+> making, but fifteen is three whole books prepared at once, and no rule anywhere caps it. The
+> number is pinned in the validator so it cannot drift while the question is open.
 
 > **A miracle's list is shorter than a school's**, which the world says outright: priest magic is
 > *"a shorter list than a mage's"*. The compensation is that a miracle costs nothing to **learn** — a
