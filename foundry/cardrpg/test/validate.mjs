@@ -370,8 +370,13 @@ if (mindFrom < 0 || mindTo < 0) {
     }
     if (!current || !line.startsWith("|") || /^\|[\s:|-]+\|$/.test(line)) continue;
     const cells = line.replace(/^\||\|$/g, "").split("|").map(c => c.trim());
-    // A formula row is | name | strength | effect |; the header row says "Formula".
-    if (cells.length === 3 && cells[0] !== "Formula") schools.get(current).push(cells[1]);
+    /* A content row is | name | strength | effect |. The header says "Formula", or "Teaching" for
+     * the two schools whose lists are not all formulas -- Tattoo Magic teaches seven features and
+     * Asceticism's ladder ends in two. A parser that knew only one of the two words counted two
+     * header rows as content and this school's ladder as one rung longer than it is. */
+    if (cells.length === 3 && !["Formula", "Teaching"].includes(cells[0])) {
+      schools.get(current).push(cells[1]);
+    }
   }
 
   check("magic schools with a list", schools.size, 12);
@@ -2968,7 +2973,21 @@ const unbuiltSpells = nodes.filter(n => n.grants?.spell)
   .map(n => `${n.id}: ${n.grants.spell}`);
 check("formulas granted but never built",
   unbuiltSpells.length ? unbuiltSpells.join(", ") : "none", "none");
-check("formulas a node can hand over", graph.SPELLS.size, 148);
+check("formulas a node can hand over", graph.SPELLS.size, 139);
+/*
+ * And the nine that a node hands over as features instead. `teachingKind` is asked rather than
+ * `kind` read, because `kind` on content carries two vocabularies: the slate type on a Signature,
+ * and formula-or-miracle on the five Elemental and Shadow formulas written before this Way had a
+ * graph. Reading it blindly dropped Rain, Lightning, Frost, Scorch and Step Through out of the
+ * spell list, and the only thing that noticed was a check about a different school.
+ */
+check("and features it hands over instead",
+  graph.TEACHINGS.filter(t => graph.teachingKind(t) === "feature").length, 9);
+check("while the two vocabularies of `kind` stay apart",
+  graph.TEACHINGS.filter(t => t.kind && !["feature", "item", "spell"].includes(t.kind))
+    .map(t => `${t.name} (${t.kind})`).sort().join(", "),
+  "Frost (formula), Lightning (formula), Rain (formula), Scorch (formula), "
+  + "Step Through (formula)");
 check("taking a node hands over the formula",
   /if \(grants\.spell\) await grantSpell\(actor, grants\.spell, id\);/.test(graphSource)
     ? "yes" : "no", "yes");
@@ -3419,17 +3438,20 @@ check("Half-mage's slots are on the node", byId.get("shade.half-mage").grants.sp
 const built = sigs.filter(sg => !sg.needs?.length).map(sg => sg.name);
 check("Signatures the engine does everything for", built.join(", "),
   /*
-   * Grave Strength and Hearth and Home joined when a spell learned to sit outside the slot budget,
-   * which is the fourth and fifth gap closed by building the mechanism a card named. Seven arrived
-   * before them in a sweep that needed no engine code at all.
+   * Hearth and Home joined when a spell learned to sit outside the slot budget. **Graven Strength
+   * left again**, and that is honest rather than a regression: it joined because a permanent formula
+   * cost no slots, and way-cards 3.4 says a tattoo *spends* its slots -- for good. Pricing the
+   * school that way drops Way of Mind's ceiling from six slots to five and leaves a school's list
+   * unaffordable to the caster it was written for, so all seven of Tattoo Magic name the gap and
+   * wait for that arithmetic rather than having it decided here.
    */
   "The Opening, The Kit, Loose and Step, Set, Heckle, One Trick, Shoulder to Shoulder, "
   + "Nothing Gets Through, Interpose, Call the Unquiet, Wall of the Sphere, Wither, "
-  + "Graven Strength, The Bargain, Hearth and Home, Unmake, The Reading, "
+  + "The Bargain, Hearth and Home, Unmake, The Reading, "
   + "Breath of the Spirit, The Outcast's Due, Out of Barren Ground, The Silent Hour, "
   + "The First Taste, The Rumour, The Writ, The Order's Shield, The Scourge");
 const gaps = sigs.filter(sg => sg.needs?.length).map(sg => `${sg.name}: ${sg.needs.join("; ")}`);
-check("Signatures with a named gap", gaps.length, 25);
+check("Signatures with a named gap", gaps.length, 26);
 /*
  * `needs` is a LIST, and that is the lesson of the Health cost. It was the largest gap in the game
  * at six pieces of content; building it finished exactly ONE, because every other one wanted a
@@ -3858,7 +3880,9 @@ const spellTables = (() => {
       const cells = line.replace(/^\||\|$/g, "").split("|").map(c => c.trim());
       if (cells.length < 3) continue;
       const name = cells[0].replace(/[✦*]/g, "").trim();
-      if (!name || name === "Formula" || name === "Miracle" || /^-+$/.test(name)) continue;
+      /* "Teaching" is the header of the two schools whose lists are not all formulas: Tattoo
+       * Magic teaches seven features and Asceticism's ladder ends in two. */
+      if (!name || ["Formula", "Miracle", "Teaching"].includes(name) || /^-+$/.test(name)) continue;
       rows.push({ group, kind, name, strength: cells[1], signature: cells[0].includes("✦") });
     }
   }
@@ -3887,10 +3911,27 @@ const unnumbered = spellTables.filter(r => !/^\d$/.test(r.strength));
 check("rows with no numeric strength", unnumbered.map(r => `${r.name}: ${r.strength}`).join(", "),
   "Hearth and Home: ritual");
 
+/*
+ * **Every teaching, which is what 3.4 and 3.5 are tables of.**
+ *
+ * This read `kind === "spell"` and so asked the spell list, which was right while every teaching
+ * was a formula. Nine of them are features -- all seven of Tattoo Magic and the two renunciations
+ * Asceticism ends in -- and the first thing that happened when they stopped being spells was that
+ * the suite reported the document as listing content the game does not have. The document was
+ * right. A school teaches what it teaches; which document it becomes is a question about gates.
+ */
 const everySpell = new Map([...content.MIND_POOL, ...content.FAITH_POOL, ...content.FORMULAS,
-  ...content.SHADOW_FORMULAS, ...signatureExports.filter(s => s.kind === "spell")]
+  ...content.SHADOW_FORMULAS, ...signatureExports.filter(s => s.kind !== "card" && s.source)]
   .map(s => [s.name, s]));
-check("spells built in all", everySpell.size, 148);
+check("teachings built in all", everySpell.size, 148);
+/* And the split, so neither half can quietly become the whole. */
+check("of which formulas and miracles",
+  [...everySpell.values()].filter(t => graph.teachingKind(t) === "spell").length, 139);
+check("and features a school teaches",
+  [...everySpell.values()].filter(t => graph.teachingKind(t) === "feature")
+    .map(t => t.name).sort().join(", "),
+  "Graven Armour, Graven Eye, Graven Heart, Graven Road, Graven Shield, Graven Strength, "
+  + "Nothing At All, The Hand Given, The Whole Skin");
 
 /* Every row in the document exists in the game. This is the check the eighty-five were written for. */
 const unwritten = spellTables.filter(r => !everySpell.has(r.name))
@@ -4006,10 +4047,18 @@ check("prose Health prices that name no gap",
  * grant is a decision the branch was written around; a choice is the list being a list.
  */
 const spellGrants = nodes.filter(n => n.grants?.spell).map(n => n.grants.spell);
-check("nodes that hand over a named spell", spellGrants.length, 52);
+check("nodes that hand over a named spell", spellGrants.length, 51);
+/*
+ * And the fifty-second, which hands over a feature: *Graven Strength*, because a tattoo is never
+ * prepared. It needed no new code -- `grantSlate` has created features since Signatures were
+ * written and `SLATES` has always held this one -- so the key on the node is the whole change.
+ */
+check("and the school node that hands over a feature by name",
+  nodes.filter(n => n.id === "mind.tattoo").map(n => n.grants?.feature ?? "-").join(""),
+  "Graven Strength");
 check("and no two of them hand over the same one", new Set(spellGrants).size, spellGrants.length);
 const onNoNode = [...everySpell.keys()].filter(name => !spellGrants.includes(name));
-check("spells no node in the graph hands over", onNoNode.length, 96);
+check("spells no node in the graph hands over", onNoNode.length, 97);
 /* The First is the one source a character can be handed entire, because its ladder stops at 3. */
 const complete = [...ladders.keys()].filter(src =>
   [...everySpell.values()].filter(s => s.source === src)
@@ -4517,7 +4566,7 @@ const profileOf = way => {
 check("a level-8 Way of Strength title is reached with",
   profileOf("strength"), "hp 1.2 carry 6.1 slots 0.0 cards 3.1 spells 0.0");
 check("Way of Shade", profileOf("shade"), "hp 1.3 carry 0.1 slots 0.4 cards 3.0 spells 0.0");
-check("Way of Mind", profileOf("mind"), "hp 0.1 carry 0.0 slots 5.1 cards 1.0 spells 3.3");
+check("Way of Mind", profileOf("mind"), "hp 0.1 carry 0.0 slots 5.1 cards 1.0 spells 3.2");
 check("Way of Faith", profileOf("faith"), "hp 0.0 carry 0.0 slots 5.0 cards 2.0 spells 1.0");
 
 /*
@@ -4615,8 +4664,9 @@ check("and mean list weight in slots",
  * nothing playable in it, while Spiritualism is five formulas of six built. That is a build order
  * rather than a balance fault -- but it is the difference a player would feel first.
  */
+/* Five: Tattoo Magic rejoined them when its seven cards named the slot they spend for good. */
 check("lists waiting on the engine from end to end",
-  listsBySource.filter(([, l]) => l.every(s => s.needs?.length)).length, 4);
+  listsBySource.filter(([, l]) => l.every(s => s.needs?.length)).length, 5);
 check("and which they are",
   listsBySource.filter(([, l]) => l.every(s => s.needs?.length)).map(([s]) => s).sort().join(", "),
   /* Fagar and The Grey are finished now: the two cards holding them back were describing
@@ -4628,7 +4678,7 @@ check("and which they are",
    * prose a month before the field existed. */
   /* Household Magic and Tattoo Magic went with the ritual and permanent gaps: between them they
    * were the two lists built entirely out of work that was already done. */
-  "Asceticism, Shadow Magic, The First, Vax");
+  "Asceticism, Shadow Magic, Tattoo Magic, The First, Vax");
 check("the list the engine runs best",
   listsBySource.map(([s, l]) => [s, l.filter(x => x.needs?.length).length / l.length])
     .sort((a, b) => a[1] - b[1])[0][0], "Spiritualism");
@@ -4682,15 +4732,32 @@ check("spells no node can hand over at all",
   unreachableSpells.length ? unreachableSpells.join(", ") : "none", "none");
 /* Which is a different number from before, and it is the one the last pass pinned at ninety-five. */
 check("spells reachable only through a choice",
-  [...graph.SPELLS.keys()].filter(n => !namedByNodes.includes(n)).length, 96);
+  [...graph.SPELLS.keys()].filter(n => !namedByNodes.includes(n)).length, 88);
 
 /* The engine reads the key in all four places a grant has to be read. */
 check("taking a node asks the question",
   /if \(grants\.choose\?\.from\) await grantSpellChoice\(actor, grants\.choose\.from, id\);/
     .test(graphSource) ? "yes" : "no", "yes");
-check("and the choice is handed over by the same routine a named grant uses",
-  /if \(!chosen\) return false;\s*\n\s*return grantSpell\(actor, chosen, nodeId\);/
+/*
+ * **And the choice dispatches on kind, which is one branch at the end of the menu.**
+ *
+ * Two of the twenty-four menus hand over features: Tattoo Magic teaches no formulas at all, and
+ * Asceticism's ladder ends in two renunciations. A menu that could only call `grantSpell` would
+ * have handed over a spell document for a thing that is never prepared.
+ */
+check("and the choice is handed over by the routine the kind calls for",
+  /return teachingKind\(def\) === "feature"\s*\n\s*\? grantSlate\(actor, chosen, "feature"\)\s*\n\s*: grantSpell\(actor, chosen, nodeId\);/
     .test(graphSource) ? "yes" : "no", "yes");
+/* And `grantSlate` finds a pool teaching, not only a Signature: eight of the nine features a
+ * school teaches have never been in `SLATES`. */
+check("granting a slate looks beyond the Signatures",
+  /const def = SLATES\.get\(name\) \?\? TEACHINGS_BY_NAME\.get\(name\);/.test(graphSource)
+    ? "yes" : "no", "yes");
+check("and it looks the teaching up by name to find out",
+  /const def = TEACHINGS_BY_NAME\.get\(chosen\);/.test(graphSource) ? "yes" : "no", "yes");
+/* A feature already held is left out of the menu too, or a school would offer the same ink twice. */
+check("and what is already held counts either kind",
+  /i\.type === "spell" \|\| i\.type === "feature"/.test(graphSource) ? "yes" : "no", "yes");
 check("what the player already knows is left out of the list",
   /const open = list\.filter\(spell => !held\.has\(spell\.name\)\);/.test(graphSource)
     ? "yes" : "no", "yes");
@@ -4759,8 +4826,8 @@ check("content carrying the audit column",
 const vague = audited.filter(c => (c.needs ?? []).some(g => g.length < 12)).map(c => c.name);
 check("gaps too short to act on", vague.length ? vague.join(", ") : "none", "none");
 const workingCards = audited.filter(c => !c.needs.length).length;
-check("content the engine does everything for", workingCards, 94);
-check("content with a named gap", audited.filter(c => c.needs.length).length, 108);
+check("content the engine does everything for", workingCards, 91);
+check("content with a named gap", audited.filter(c => c.needs.length).length, 111);
 
 /*
  * A gap shared by several cards is one piece of engine work, not several. Counting the DISTINCT
@@ -4839,13 +4906,16 @@ const GAP_CLOSERS = [
   ["a ritual, which costs no slots at all",
     c => stepsOfContent(c).some(s => s.timing === "ritual")],
   /*
-   * A permanent carries a field either as a standing grant or as a bonus on the step, which is
-   * where a bonus a spell gives now lives -- it rides on the condition the step applies, so the
-   * tattoo shows on the token. This read `c.bonus`, and when that field went the closer quietly
-   * lost one of the five cards it recognised.
+   * **The gap seven cards named, and what closed it is not a spell.**
+   *
+   * It read `timing === "permanent"` and a bonus on the slate, and both of those are gone: the
+   * bonus rides on the condition the step applies, and a permanent formula is a feature -- *a thing
+   * usable without being equipped or prepared*. So the closer asks what the nine actually are, a
+   * feature a school teaches that carries a field rather than a sentence. No card names this gap
+   * any more; the entry is here so that one naming it again is caught rather than believed.
    */
   ["a permanent formula that is never prepared and carries a bonus",
-    c => stepsOfContent(c).some(s => s.timing === "permanent")
+    c => c.kind === "feature" && !!c.source
       && (stepsOfContent(c).some(s => !!s.bonus?.value)
         || Object.values(c.grants ?? {}).some(v => v))]
 ];
@@ -4908,14 +4978,14 @@ const topOfQueue = [...queue].filter(([, n]) => n >= 4)
   .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
   .map(([gap, n]) => `${n} ${gap}`);
 check("the gaps four or more pieces of content wait on", topOfQueue.join(" | "),
-  "6 skill cards set aside to pay for a formula | "
+  "7 a spell slot spent for good | 6 skill cards set aside to pay for a formula | "
   + "5 a condition applied to an area | "
   + "5 a spell that taints its caster | "
   + "5 a Wild that leaves the fate deck when you sleep | "
   + "4 an enemy that attacks its own side");
 
 check("the gap mentioned by the most content", `${worst.join("; ")} (${most})`,
-  "skill cards set aside to pay for a formula (6)");
+  "a spell slot spent for good (7)");
 
 const finishes = new Map();
 for (const card of audited) {
@@ -4940,7 +5010,7 @@ check("the gap that would finish the most content",
  * SHADOW_FORMULAS is not one of the audited exports, joins it with exactly one.
  */
 check("gaps that would finish exactly one piece of content",
-  [...finishes.values()].filter(n => n === 1).length, 60);
+  [...finishes.values()].filter(n => n === 1).length, 58);
 
 /*
  * And a check on the QUEUE rather than on the content, which the ranged-item work earned.
@@ -5649,9 +5719,18 @@ check("and the announcement prints the prose",
  * `permanent:`, `out of combat:`, `before a fight` -- and the engine could read none of it. A
  * ritual played in the middle of a fight is not a rules argument the software should leave to the
  * table when the card already says so.
+ *
+ * **`permanent` is no longer one of them**, and twenty-two steps declare a timing rather than
+ * thirty-one. It never said when anything happens: it said *this formula can never be prepared*,
+ * which is a slot budget in a timing's field. The nine steps that carried it are features now, and
+ * a feature is permanent by having no gate to pass.
  */
 check("the timing vocabulary", Object.keys(CARDRPG.timings).join(", "),
-  "reaction, ritual, outOfCombat, beforeFight, permanent");
+  "reaction, ritual, outOfCombat, beforeFight");
+check("and the retired one is gone from the step choices",
+  [...stepKeys].includes("timing")
+    && !/permanent/.test(cardsSource.slice(cardsSource.indexOf("timing: new fields"),
+      cardsSource.indexOf("timing: new fields") + 300)) ? "yes" : "no", "yes");
 /*
  * Every step in the game, each counted ONCE.
  *
@@ -5663,7 +5742,7 @@ check("the timing vocabulary", Object.keys(CARDRPG.timings).join(", "),
  */
 const everyEntry = new Set([content.WARRIOR_DECK, content.COMMON_POOL, content.WAY_CARDS,
   content.SHADE_POOL, content.STRENGTH_POOL, content.WILD_MAGIC, content.INTENTS,
-  graph.SIGNATURES, [...graph.SPELLS.values()]].flatMap(l => l ?? []));
+  graph.SIGNATURES, graph.TEACHINGS].flatMap(l => l ?? []));
 const everyStep = [];
 for (const entry of everyEntry) {
   for (const arr of [entry.primary, entry.secondary, entry.sequence,
@@ -5671,8 +5750,8 @@ for (const entry of everyEntry) {
     for (const st of arr ?? []) everyStep.push({ card: entry.name, st });
   }
 }
-check("steps the timing audit read", everyStep.length, 323);
-check("steps that say when they are played", everyStep.filter(s => s.st.timing).length, 31);
+check("steps the timing audit read", everyStep.length, 321);
+/* Pinned beside the stray-timing sweep further down, which is the sweep it protects. */
 /*
  * **And the four fields the cheap batch added**, each written by content as well as declared: a
  * field nothing writes is the same defect as a field nothing reads, and this project has met the
@@ -6078,9 +6157,16 @@ check("and what a transformation must not touch",
 check("and that it leaves Health and conditions alone",
   cardSchemaDoc.includes("a bear that has forgotten it was poisoned is a way")
     ? "yes" : "no", "yes");
+/*
+ * **Twenty-four, up from twenty-one, and the three are honest.** `timing: "permanent"` was the only
+ * field on three of the Graven steps, and it never said when anything happens -- it said *this
+ * formula can never be prepared*, which is a slot budget in a timing's field. Those nine teachings
+ * are features now and a feature is permanent by having no gate to pass, so the word was retired
+ * and the three steps are left carrying what they always really carried: a sentence.
+ */
 check("and steps that carry prose and nothing else",
   proseLeft.filter(s => Object.keys(s.st).filter(k => k !== "text" && s.st[k] !== null
-    && s.st[k] !== "" && !(typeof s.st[k] === "object")).length === 0).length, 21);
+    && s.st[k] !== "" && !(typeof s.st[k] === "object")).length === 0).length, 26);
 
 /* ---- the compendium packs ship the content, and ship today's ---- */
 
@@ -6103,7 +6189,7 @@ const planned = packs.planDocuments();
 check("compendium packs", planned.length, 7);
 check("and what each one holds",
   planned.map(p => `${p.name}:${p.docs.length}`).join(" "),
-  "creatures:47 characters:1 items:166 features:14 spells:125 signatures:30 decks:11");
+  "creatures:47 characters:1 items:166 features:22 spells:117 signatures:30 decks:11");
 /* Faults the generator records rather than throws: a filename collision silently drops a document,
  * so the build reports it and this refuses to pass with one outstanding. */
 check("faults the generator reported", planned[0].faults.join("; ") || "none", "none");
@@ -6116,12 +6202,26 @@ const packedFromContent = {
   creatures: monsters.expandRoster(content.ROSTER, content.VARIANTS).length,
   characters: 1,
   items: content.ITEMS.length + content.NPC_GEAR.length + content.NATURAL_WEAPONS.length,
-  features: content.FEATURES.length,
+  /*
+   * Features, plus the eight a school teaches that are neither Signatures nor in `FEATURES`: seven
+   * of Tattoo Magic and one of Asceticism's two renunciations. They were in the spells pack until
+   * the law moved them, and the packer caught it the way it is built to -- eight source files in no
+   * table at all.
+   */
+  features: content.FEATURES.length
+    + graph.TEACHINGS.filter(t => graph.teachingKind(t) === "feature"
+      && !graph.SIGNATURES.some(g => g.name === t.name)).length,
   spells: [...graph.SPELLS.values()]
     .filter(s => !graph.SIGNATURES.some(g => g.kind === "spell" && g.name === s.name)).length,
   signatures: graph.SIGNATURES.filter(s => s.kind !== "card").length,
   decks: 11
 };
+/*
+ * And the features count as a literal beside the derivation. This check's own comment says why -- *a
+ * pack that lost half its entries would otherwise agree with itself* -- and a break test pointed the
+ * derivation at the pack and passed, which is exactly that failure with the comment still above it.
+ */
+check("features the content holds", packedFromContent.features, 22);
 check("packs whose size disagrees with the content",
   planned.filter(p => p.docs.length !== packedFromContent[p.name])
     .map(p => `${p.name}: ${p.docs.length} vs ${packedFromContent[p.name]}`).join(", ") || "none",
@@ -6423,7 +6523,7 @@ check("as are the card builders",
 /* And the classification of what is a card, a spell or a slate is `graph.mjs`'s, not a second
  * opinion: a pack that disagreed about whether Step Through is a spell would file it twice. */
 check("and the classification comes from the graph",
-  /import \{ POOL, SPELLS, SIGNATURES, slateFieldsOf, spellKindOf \} from "\.\.\/module\/graph\.mjs"/
+  /POOL, SPELLS, SIGNATURES, TEACHINGS, teachingKind, slateFieldsOf, spellKindOf[\s\S]{0,20}from "\.\.\/module\/graph\.mjs"/
     .test(packSource) ? "yes" : "no", "yes");
 /*
  * And the strip itself, which is the part three callers share. A content entry carries the graph's
@@ -7207,6 +7307,9 @@ check("and what the graph taught you",
  * `grants.mjs` now, has no Foundry global in it, and both models call it.
  */
 const grants = await import("../module/grants.mjs");
+/* And its text, for the one thing an import cannot show: that a branch is absent rather than
+ * unreachable. An arm nothing can enter reads exactly like one that passes. */
+const grantsSource = fs.readFileSync(path.join(root, "module/grants.mjs"), "utf8");
 const schemaDoc = fs.readFileSync(path.join(root, "../actor-schema.md"), "utf8");
 
 const feature = health => ({ type: "feature", system: { grants: { health } } });
@@ -7216,35 +7319,77 @@ const worn = (health, equipped = true) => ({
 const npcHealth = slates => grants.sumGrants(slates, grants.NPC_GRANTS).health;
 
 /*
- * **A spell outside the slot budget**, which is what the two gaps at the top of the queue turned
- * out to share. `slotCost` was already `prepared ? strength : 0`, so a spell never prepared already
- * cost nothing -- what was missing was anything saying a ritual or a permanent CANNOT be prepared.
+ * **A spell outside the slot budget**, which is a ritual and nothing else.
  *
- * It is a getter over the step's own `timing` rather than a field, because a second place to say
- * "this is a ritual" is a second place for it to disagree with the first.
+ * It named a **permanent** too, for the Graven line, and that was a feature wearing a spell's
+ * clothes: `timing: "permanent"` said *this formula can never be prepared* rather than when
+ * anything happens, which is a slot budget in a timing's field. The nine it described are features
+ * now, so the word went with them -- and a getter whose list had one unreachable arm would have
+ * read exactly like one that worked.
  */
 check("a spell knows when it is outside the budget",
-  /get outsideBudget\(\) \{\s*\n\s*return \["ritual", "permanent"\]\.includes\(this\.effect\?\.timing \?\? ""\);/
+  /get outsideBudget\(\) \{\s*\n\s*return this\.effect\?\.timing === "ritual";/
     .test(itemSource) ? "yes" : "no", "yes");
 check("and costs no slot when it is",
   /return this\.outsideBudget \|\| !this\.prepared \? 0 : this\.strength;/.test(itemSource)
     ? "yes" : "no", "yes");
 const outsideBudget = [...graph.SPELLS.values()]
-  .filter(s => ["ritual", "permanent"].includes(s.effect?.timing ?? ""));
-/* Sixteen, not the fourteen the two gaps named: `Nothing At All` and `The Hand Given` have
- * carried `timing: "permanent"` since the prefix conversion and neither ever named the gap, so two
- * cards were quietly inside a category nobody had counted. */
-check("spells outside the budget", outsideBudget.length, 16);
-check("and the two kinds they are",
-  [...new Set(outsideBudget.map(s => s.effect.timing))].sort().join(", "), "permanent, ritual");
+  .filter(s => (s.effect?.timing ?? "") === "ritual");
+check("spells outside the budget", outsideBudget.length, 7);
+check("and the one kind they are",
+  [...new Set(outsideBudget.map(s => s.effect.timing))].sort().join(", "), "ritual");
 /*
- * **A permanent formula carries what a FEATURE carries**, which is the other half and the part
- * worth the ink: the Graven line is +1 armour, +6 max Health, +2 Strike with Heavy items -- a
- * bonus, a grant and a standing number, which is a feature's whole vocabulary. So the spell took a
- * feature's two fields rather than a mechanism of its own.
+ * **And no step anywhere claims a timing the vocabulary does not have**, which is what retiring one
+ * has to mean.
+ *
+ * The first version of this asked `SPELLS` whether any spell still called itself permanent, and two
+ * steps went on declaring it for an hour: *The Hand Given* and *Nothing At All* are features now, so
+ * the one check that would have caught them was asking the list they had just left. `timing` takes
+ * its choices from `CARDRPG.timings`, so a value that is not in there is a value the schema refuses
+ * the moment Foundry builds the document -- the kind of fault no amount of reading the content
+ * finds, because the content looks exactly right.
  */
-const permanents = outsideBudget.filter(s => s.effect.timing === "permanent");
-check("permanent formulas", permanents.length, 9);
+/* One predicate, over a planted example first: with no stray timing left, a rule that looks and a
+ * rule that does not answer alike, and a break test switched this one off twice. */
+const unknownTiming = st => !!st.timing && !(st.timing in CARDRPG.timings);
+check("the rule finds a timing the vocabulary does not have",
+  unknownTiming({ timing: "permanent" }) ? "yes" : "no", "yes");
+check("and passes one it does", unknownTiming({ timing: "ritual" }) ? "found" : "no", "no");
+/* And over the steps that declare one, counted -- so the sweep cannot be pointed at nothing. */
+const timedSteps = everyStep.filter(s => s.st.timing);
+check("steps that say when they are played", timedSteps.length, 22);
+/* The sweep itself, named, so the planted list and the game go through the SAME expression: a
+ * predicate tested on a planted value still leaves the sweep applying it switchable. */
+const strayIn = steps => steps.filter(s => unknownTiming(s.st))
+  .map(s => `${s.card} (${s.st.timing})`);
+check("the sweep finds a planted step",
+  strayIn([{ card: "(planted)", st: { timing: "permanent" } }]).join(", "),
+  "(planted) (permanent)");
+const strayTiming = strayIn(timedSteps);
+check("steps claiming a timing the vocabulary does not have",
+  strayTiming.length ? [...new Set(strayTiming)].join(", ") : "none", "none");
+check("timings the content actually uses",
+  [...new Set(timedSteps.map(s => s.st.timing))].sort().join(", "),
+  "beforeFight, outOfCombat, reaction, ritual");
+
+/*
+ * **The nine a school teaches that are never prepared**, which is the law's whole consequence.
+ *
+ * *A thing usable without being equipped or prepared is a feature.* These were spells because a
+ * spell was the only slate with a **step**, and a tattoo needs a step -- the bonus it gives rides
+ * on the `graven` condition, which is what ink in your skin is. That was the tail wagging the dog:
+ * a step is not about a gate, and the gate is the only thing the three subtypes differ by.
+ */
+const permanents = graph.TEACHINGS.filter(t => graph.teachingKind(t) === "feature");
+check("features a school teaches", permanents.length, 9);
+check("and the two schools that teach them",
+  [...new Set(permanents.map(t => t.source))].sort().join(", "), "Asceticism, Tattoo Magic");
+/* All seven of Tattoo Magic, which makes it the one school in the game that teaches no spells. */
+check("and the school that teaches nothing else",
+  [...graph.SPELLS.values()].filter(s => s.source === "Tattoo Magic").length, 0);
+check("while its ladder is still a ladder",
+  permanents.filter(t => t.source === "Tattoo Magic").map(t => t.strength).sort().join(""),
+  "1112345");
 /*
  * A permanent carries a field when it grants a standing number OR when its step applies a condition
  * that carries a bonus. The second half is the correction: this read `s.bonus`, a field on the
@@ -7252,7 +7397,7 @@ check("permanent formulas", permanents.length, 9);
  * silently joined the list of those still wanting a flag.
  */
 const carries = s => Object.values(s.grants ?? {}).some(v => v) || !!s.effect?.bonus?.value;
-check("and the five that now carry a field rather than a sentence",
+check("and the five that carry a field rather than a sentence",
   permanents.filter(carries).map(s => s.name).sort().join(", "),
   "Graven Armour, Graven Heart, Graven Shield, Graven Strength, The Whole Skin");
 /* The other four are flags nothing in the game has, and their gaps say so now rather than hiding
@@ -7262,25 +7407,38 @@ check("and the four that still want a flag",
   "Graven Eye, Graven Road, Nothing At All, The Hand Given");
 /* Both of the two that give a bonus deliver it as Graven, which is the whole change: ink you can
  * see on the token rather than a number on the sheet that nothing mentions. */
-check("permanents that give their bonus as a condition",
+check("teachings that give their bonus as a condition",
   permanents.filter(s => s.effect?.bonus?.value)
     .map(s => `${s.name} (${s.effect.condition})`).sort().join(", "),
   "Graven Strength (graven), The Whole Skin (graven)");
 /*
- * **A formula that is not permanent grants nothing**, and this is the load-bearing half: without it
- * a caster would hold every bonus in their school at once, having learned them all and prepared
- * none. Both accumulators are asked, because they gate on type in different places.
+ * **A spell grants nothing standing**, which is what the rule looked like before a permanent
+ * formula ever existed and what it looks like again: *a feature is simply true, an item has to be
+ * equipped*, and a spell does its work when cast.
+ *
+ * The load-bearing half is unchanged in substance -- a caster must not hold every grant in their
+ * school at once, having learned them all -- but it no longer needs a `timing` to decide it. A
+ * formula cannot grant at all.
+ *
+ * Asked rather than greped: planted slates go through the real accumulator. A grep says the line is
+ * there; an example says it works.
  */
-/* Asked rather than greped: a planted permanent grants, and a planted formula in a book does not.
- * A grep says the line is there; an example says it works. */
-const permSpell = (armor, timing = "permanent") =>
+const permSpell = (armor, timing = "ritual") =>
   ({ type: "spell", system: { grants: { armor }, effect: { timing } } });
-check("a permanent spell grants like a feature",
-  grants.sumGrants([permSpell(3)], grants.CHARACTER_GRANTS).armor, 3);
-check("and a formula still in the book grants nothing",
+check("a formula grants nothing, whatever its step says",
+  grants.sumGrants([permSpell(3)], grants.CHARACTER_GRANTS).armor, 0);
+check("and neither does one in the book",
   grants.sumGrants([permSpell(3, "")], grants.CHARACTER_GRANTS).armor, 0);
-check("nor does a ritual, which is work and not a trait",
-  grants.sumGrants([permSpell(3, "ritual")], grants.CHARACTER_GRANTS).armor, 0);
+check("while a feature grants simply by being yours",
+  grants.sumGrants([{ type: "feature", system: { grants: { armor: 3 } } }],
+    grants.CHARACTER_GRANTS).armor, 3);
+check("and an item has to be equipped",
+  grants.sumGrants([{ type: "item", system: { grants: { armor: 3 }, equipped: false } }],
+    grants.CHARACTER_GRANTS).armor, 0);
+/* And the spell arm is gone rather than made unreachable: an arm nothing can enter reads like one
+ * that passes. */
+check("the grant accumulator no longer asks a spell about its timing",
+  /slate\.type === "spell"/.test(grantsSource) ? "still does" : "no", "no");
 /*
  * And a bonus a spell gives reaches the character as a CONDITION, which is the correction: as a
  * field on the slate it was standing, invisible and unremovable, and nothing on the token said so.
@@ -7325,8 +7483,135 @@ check("and the derived armour adds it",
   /this\.armor = grants\.armor \+ slates/.test(actorsSource) ? "yes" : "no", "yes");
 check("while an NPC has no such grant, having armorBase instead",
   grants.NPC_GRANTS.includes("armor") ? "yes" : "no", "no");
-/* The three spells that grant it, which is the whole reason the field exists. */
-check("spells that grant flat armour",
+/* The three teachings that grant it, which is the whole reason the field exists. */
+/*
+ * --- The law, in all three clauses (card-slate-schema 2.4)
+ *
+ *   1. a bonus or penalty over a duration is a CONDITION;
+ *   2. a thing that must be equipped or prepared is an ITEM (`item`, or `spell` for the preparable
+ *      kind);
+ *   3. a thing usable without being equipped or prepared is a FEATURE.
+ *
+ * A law that is merely true today is a law the next card breaks, so each clause is a check. The
+ * second and third are asked of the SCHEMAS, because the gate is the whole of what distinguishes
+ * the three subtypes: a feature that grew an `equipped` would be an item wearing a feature's name.
+ */
+/* Each class sliced to its own bounds. Local, because the sub-schema sweep's `spellBlock` is
+ * declared further down the file -- and bounded, because a slice that runs to the end of the file
+ * is a slice about whichever class happens to be last. */
+const classBlock = name => {
+  const at = itemSource.indexOf(`export class ${name}`);
+  const next = itemSource.indexOf("export class ", at + 20);
+  return itemSource.slice(at, next < 0 ? undefined : next);
+};
+const featureSchema = classBlock("FeatureSlateData");
+const itemSchema = classBlock("ItemSlateData");
+const spellSchema = classBlock("SpellSlateData");
+
+/* 1. Nothing gives a timed modifier except a condition. A step's bonus is a condition's payload, so
+ *    a step that carries one without applying a condition is a bonus the engine drops. */
+/*
+ * One predicate, run over a PLANTED example before it is run over the game: with every loose bonus
+ * already gone, a sweep that looks everywhere and a sweep that looks nowhere answer alike, and a
+ * break test emptied this one without a single check noticing.
+ */
+const escapes = st => !!st?.bonus?.value && !st.condition;
+check("the rule finds a bonus that escapes a condition",
+  escapes({ bonus: { verb: "strike", value: 2 } }) ? "yes" : "no", "yes");
+check("and passes one that rides on it",
+  escapes({ condition: "graven", bonus: { verb: "strike", value: 2 } }) ? "found" : "no", "no");
+/*
+ * **Over the steps that carry a bonus at all, counted first.**
+ *
+ * Which is the only way this sweep can be made to mean something. A break test pointed it at an
+ * empty list twice and nothing noticed either time: with no loose bonus left in the game, a sweep
+ * over every step and a sweep over nothing give the same answer, and pinning the total step count
+ * elsewhere does not pin THIS walk. So the denominator is the check -- two steps in the game grant
+ * a bonus, and the clause is that both of them apply a condition.
+ */
+const bonusSteps = everyStep.filter(s => !!s.st?.bonus?.value);
+check("steps that grant a bonus at all",
+  bonusSteps.map(s => s.card).sort().join(", "), "Graven Strength, The Whole Skin");
+/* Named for the same reason as `strayIn` below: the planted list and the game go through one
+ * expression, so switching the sweep off fails the planted case. */
+const escapesIn = steps => steps.filter(s => escapes(s.st)).map(s => s.card);
+check("the bonus sweep finds a planted step",
+  escapesIn([{ card: "(planted)", st: { bonus: { verb: "strike", value: 2 } } }]).join(", "),
+  "(planted)");
+const looseBonus = escapesIn(bonusSteps);
+check("steps that carry a bonus but apply no condition",
+  looseBonus.length ? looseBonus.join(", ") : "none", "none");
+/* And the slate-level bonuses that remain are STANDING, which is the other half of clause 1: an
+ * item's while it is worn, a feature's while it is yours. Neither is timed, and neither sits beside
+ * a duration. */
+const timedSlateBonus = [...everyEntry]
+  .filter(e => e.bonus?.value && (e.bonus.duration ?? null) !== null).map(e => e.name);
+check("slates whose own bonus claims a duration",
+  timedSlateBonus.length ? timedSlateBonus.join(", ") : "none", "none");
+
+/* 2. The gate is a field, and each of the two gated subtypes has exactly its own. */
+check("an item's gate is equipping",
+  /equipped: new fields\.BooleanField/.test(itemSchema) ? "yes" : "no", "yes");
+check("a spell's gate is preparing",
+  /prepared: new fields\.BooleanField/.test(spellSchema) ? "yes" : "no", "yes");
+check("and neither gate is the other's",
+  /prepared: new fields\./.test(itemSchema) || /equipped: new fields\./.test(spellSchema)
+    ? "crossed" : "no", "no");
+
+/* 3. A feature has neither gate, and that absence IS the definition rather than an oversight. */
+check("a feature has no gate to pass",
+  /(equipped|prepared): new fields\./.test(featureSchema) ? "has one" : "none", "none");
+/* And no feature in the content behaves as though it had one: a slot, a fit or an equip state on a
+ * feature is an item filed under the wrong subtype. */
+const gatedFeatures = [...content.FEATURES, ...graph.TEACHINGS
+  .filter(t => graph.teachingKind(t) === "feature")]
+  .filter(f => f.slot || f.fits || f.equipped !== undefined || f.prepared !== undefined)
+  .map(f => f.name);
+check("features behaving as though they had a gate",
+  gatedFeatures.length ? gatedFeatures.join(", ") : "none", "none");
+/* And the other way: every item the content holds can actually be equipped somewhere, or it is a
+ * feature filed under the wrong subtype. */
+const ungatedItems = [...content.ITEMS, ...content.NPC_GEAR, ...content.NATURAL_WEAPONS]
+  .filter(i => !i.slot && !i.fits?.length).map(i => i.name);
+check("items with nowhere to be equipped",
+  ungatedItems.length ? ungatedItems.join(", ") : "none", "none");
+
+/* And a feature's permanent condition is DERIVED, which is what lets a feature have one at all. */
+/* The loop itself, not only what it decides inside: emptying it was noticed by nothing. A grep
+ * rather than an example, because a data model cannot be built outside Foundry -- which is the
+ * reason `slateCounts` lives in a module that touches no Foundry global and can be ASKED. */
+check("the derivation walks the features a creature holds",
+  /for \(const slate of this\.parent\?\.items \?\? \[\]\) \{\n      if \(slate\.type !== "feature"\) continue;/
+    .test(actorsSource) ? "yes" : "no", "yes");
+check("a feature's permanent condition is derived rather than applied",
+  /if \(!step\?\.condition \|\| !CARDRPG\.conditions\[step\.condition\]\?\.permanent\) continue;/
+    .test(actorsSource) ? "yes" : "no", "yes");
+check("and it carries the feature's id, so two tattoos are two conditions",
+  /creatorId: slate\.id,/.test(actorsSource) ? "yes" : "no", "yes");
+check("while nothing applies one at grant time",
+  /createItem[\s\S]{0,200}resolveCondition/.test(entrySource) ? "a hook" : "no", "no");
+
+/*
+ * And the law is written down, clause by clause. A rule that lives only in a check is a rule the
+ * next person reads the code to discover.
+ */
+for (const clause of [
+  "**A bonus or penalty over a duration is a condition.**",
+  "**A thing that must be equipped or prepared is an item**",
+  "**A thing usable without being equipped or prepared is a feature.**"
+]) {
+  check(`the schema document states: ${clause.slice(2, 34)}`,
+    cardSchemaDoc.includes(clause) ? "yes" : "no", "yes");
+}
+check("and names the section it is in",
+  cardSchemaDoc.includes("## 2.4 The law: three gates") ? "yes" : "no", "yes");
+/* And the table of the three gates, so a reader finds the FIELD and not only the principle. */
+for (const row of ["| `item` | equip it |", "| `spell` | prepare it |"]) {
+  check(`and the gate for ${row.split("`")[1]}`,
+    cardSchemaDoc.includes(row) ? "yes" : "no", "yes");
+}
+
+check("teachings that grant flat armour",
   permanents.filter(s => s.grants?.armor).map(s => `${s.name} ${s.grants.armor}`).sort().join(", "),
   "Graven Armour 3, Graven Shield 1, The Whole Skin 2");
 
@@ -8745,21 +9030,71 @@ const subSchemaOf = name => {
   return new Set([...spellBlock.slice(at, spellBlock.indexOf("\n      }),", at))
     .matchAll(/^        ([a-zA-Z]+): /gm)].map(m => m[1]));
 };
-/* `bonus` is deliberately absent now: a bonus a spell gives is a condition's payload, because a
- * field on the slate was a standing, invisible, unremovable number. */
-check("the spell schema has no bonus of its own",
-  /bonus: new fields\.SchemaField/.test(spellBlock) ? "still there" : "gone", "gone");
-for (const [name, want] of [
-  ["grants", "armor, carry, deckMax, handSize, health, spellSlots"]
-]) {
-  const fields = subSchemaOf(name);
-  check(`${name} fields read from the spell schema`, [...fields].sort().join(", "), want);
-  const stray = new Set();
-  for (const spell of graph.SPELLS.values()) {
-    for (const key of Object.keys(spell[name] ?? {})) if (!fields.has(key)) stray.add(key);
+/*
+ * **Both sub-schemas are gone, and that is the law in two fields.**
+ *
+ * `bonus` left because a bonus a spell gives is a condition's payload -- as a field on the slate it
+ * was a standing, invisible, unremovable number. `grants` left because *a thing usable without
+ * being equipped or prepared is a feature*, and a standing grant on a spell only ever described
+ * nine teachings that are never prepared.
+ *
+ * What is left of the spell is what a spell is: a strength, a gate (`prepared`), a step, and what
+ * casting it costs. So the sweep is two absences rather than a loop -- and a loop over an empty
+ * list is a loop that cannot fail.
+ */
+for (const name of ["bonus", "grants"]) {
+  check(`the spell schema has no ${name} of its own`,
+    new RegExp(`${name}: new fields\\.SchemaField`).test(spellBlock) ? "still there" : "gone",
+    "gone");
+  /* And no content is still writing one, which an absent schema would silently drop. */
+  const writers = [...graph.SPELLS.values()].filter(s => s[name]).map(s => s.name);
+  check(`and no formula still writes a ${name}`,
+    writers.length ? writers.join(", ") : "none", "none");
+}
+/*
+ * **And the feature's own sub-schemas are swept, because that is where the nine went.**
+ *
+ * The spell's sweep was the only one, and when `grants` moved to the feature it moved out of
+ * reach: a break test deleted `armor` from the feature schema and nothing noticed, which means a
+ * grant the schema does not declare is a number silently dropped the moment the document is
+ * created. The sweep follows the field.
+ */
+const featureSub = name => {
+  const at = featureSchema.indexOf(`${name}: new fields.SchemaField({`);
+  if (at < 0) return new Set();
+  return new Set([...featureSchema.slice(at, featureSchema.indexOf("\n      }),", at))
+    .matchAll(/^        ([a-zA-Z]+): /gm)].map(m => m[1]));
+};
+check("grants fields read from the feature schema",
+  [...featureSub("grants")].sort().join(", "),
+  "armor, carry, deckMax, handSize, health, spellSlots");
+const featureWriters = [...content.FEATURES,
+  ...graph.TEACHINGS.filter(t => graph.teachingKind(t) === "feature")];
+const strayGrants = new Set();
+for (const f of featureWriters) {
+  for (const key of Object.keys(f.grants ?? {})) {
+    if (!featureSub("grants").has(key)) strayGrants.add(`${f.name}.${key}`);
   }
-  check(`${name} keys not in the spell schema`,
-    stray.size ? [...stray].join(", ") : "none", "none");
+}
+check("grants a feature writes that its schema would drop",
+  strayGrants.size ? [...strayGrants].join(", ") : "none", "none");
+/* And the sweep saw the features that write one, so an empty writer list cannot pass it. */
+check("features that grant a standing number",
+  featureWriters.filter(f => Object.values(f.grants ?? {}).some(v => v))
+    .map(f => f.name).sort().join(", "),
+  "Graven Armour, Graven Heart, Graven Shield, Packhorse, Quick, The Whole Skin, Tough");
+
+/* While a feature has both, which is where the nine went. */
+const featureBlock = itemSource.slice(itemSource.indexOf("export class FeatureSlateData"));
+for (const name of ["bonus", "grants", "effect"]) {
+  check(`the feature schema has a ${name}`,
+    new RegExp(`${name}: (new fields\\.SchemaField|stepField\\(\\))`).test(featureBlock)
+      ? "yes" : "no", "yes");
+}
+/* And the two fields it took from a spell, because a school teaches features too. */
+for (const name of ["source", "strength"]) {
+  check(`and the ${name} a school taught it at`,
+    new RegExp(`      ${name}: new fields\\.`).test(featureBlock) ? "yes" : "no", "yes");
 }
 
 const costStart = spellBlock.indexOf("cost: new fields.SchemaField({");
@@ -9232,7 +9567,7 @@ for (const m of selfSource.matchAll(
   const p = path.join(root, m[2]);
   if (fs.existsSync(p)) readFiles.set(m[1], fs.readFileSync(p, "utf8"));
 }
-check("files this suite greps by name", readFiles.size, 54);
+check("files this suite greps by name", readFiles.size, 55);
 
 /* Every `/pattern/.test(VAR)` and `VAR.includes("...")`, with the check it belongs to. */
 const nameOfCheck = index => {
@@ -9264,7 +9599,7 @@ for (const m of selfSource.matchAll(/(\w+)\.includes\("((?:[^"\\]|\\.)*)"\)/g)) 
 }
 
 /* The pin that keeps the rest of this honest. */
-check("greps over a whole file, resolved", greps.length, 510);
+check("greps over a whole file, resolved", greps.length, 519);
 
 /*
  * **The rule, as one predicate, run over a planted example before it is run over the suite.**
@@ -9300,7 +9635,7 @@ check("greps a second printer could answer",
  * is absent is the whole of its content, so the content is what is pinned.
  */
 /*
- * The twenty-five, by name and by pattern, in the order the suite sorts them. Raw strings,
+ * The twenty-seven, by name and by pattern, in the order the suite sorts them. Raw strings,
  * because these are patterns: written as escaped JS they are unreadable, and a list nobody
  * can read is a list nobody will check when it changes.
  */
@@ -9327,9 +9662,11 @@ const absentGreps = [
   String.raw`the engine touches no Foundry global at module scope :: ^const \w+ = game\.`,
   String.raw`the engine touches no Foundry global at module scope :: ^const \{[^}]*\} = foundry\.`,
   String.raw`the fate bar no longer assumes twenty :: \(counts\.fate \?\? 0\) \/ 20`,
+  String.raw`the grant accumulator no longer asks a spell about its timing :: slate\.type === "spell"`,
   String.raw`the old bare rank map is gone :: CARDRPG\.fateRank`,
   String.raw`the sheet reads level out rather than storing it :: name="system\.level"`,
   String.raw`the tactic no longer promises a reaction draw :: advantage\*\* on reactions`,
+  String.raw`while nothing applies one at grant time :: createItem[\s\S]{0,200}resolveCondition`,
 ].join(" | ");
 check("greps that correctly match nothing",
   greps.filter(g => g.hits === 0).map(g => `${g.check} :: ${g.pattern}`).sort().join(" | "),

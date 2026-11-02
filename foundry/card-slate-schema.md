@@ -55,7 +55,7 @@ schema too, so a face can render without a second convention.
 
 #### `text` was carrying the game  **[MEASURED 2026-11-02]**
 
-**Of 323 steps, 127 carried prose** `-` and a step that is only prose used to do *nothing at all*
+**Of 321 steps, 127 carried prose** `-` and a step that is only prose used to do *nothing at all*
 when played. `case ""` in the tray broke out of a switch that
 is the end of the method: no effect, no prompt, not a line in chat. The branch below it already
 announced any verb the engine did not recognise, so the arrangement was exactly backwards `-` **a
@@ -171,9 +171,14 @@ extra reaction per trigger, fate twice, a check that cannot fail, a failure that
 One value per card is a free-text special wearing an enum's clothes. **The uniform half is who; the
 varied half stays prose.**
 
-**112 steps still carry prose, 21 of them prose alone** `-` the same count as before, which is not a
-failure to make progress. 31 steps lost a prefix to `timing`, and the five conjurings kept a
-sentence on purpose. **What moved is the part that was a rule** `-` when a step may be played, what
+**112 steps still carry prose, 26 of them prose alone** `-` the same first number as before, which
+is not a failure to make progress, and a second number that went **up** by five. That is honest
+rather than a regression: `timing: "permanent"` was the only field on five of the Graven steps, and
+it was a slot budget wearing a timing's clothes rather than a rule about when anything happens. Nine
+teachings that are never prepared are features now, a feature is permanent by having no gate to
+pass, and the word was retired `-` which left those five steps carrying what they always really
+carried, a sentence. 22 steps lose a prefix to `timing`, and the five conjurings kept a sentence on
+purpose. **What moved is the part that was a rule** `-` when a step may be played, what
 it costs to keep a thing standing `-` **and what stayed is the part that was a judgement.** The
 rest are the real one-offs: *one enemy is dead, no save, no fate draw, no roll of any kind*. They
 now reach the table as a chat line instead of silence.
@@ -202,14 +207,13 @@ Carried only by slates that grant a **numeric bonus** (core-rules §5):
 Null is the common case: a weapon supplying a base value is not a bonus, and neither is a feature
 that grants advantage or a flat trait. **One slate, one group** — a border is one colour.
 
-#### A spell does not carry one
+#### A spell carries neither
 
-A spell slate has `grants` but no `bonus`, and the asymmetry is deliberate. A permanent formula
-gives standing numbers (`grants.armor`, `grants.health`) the way a feature does, but a **bonus**
-reaches the character as a **condition** instead: the step applies one, and the bonus rides on it as
-a payload.
+A spell slate has **no `bonus` and no `grants`**, and that is the law in §2.4 rather than an
+oddity of this one subtype. A standing `grants` on a spell only ever described a permanent formula
+that is never prepared, and by the law that content is not a spell at all.
 
-The reason is that a bonus on the slate was invisible. The Graven line put +2 Strike on a sheet with
+The reason the bonus moved is that a bonus on the slate was invisible. The Graven line put +2 Strike on a sheet with
 nothing on the token to say it was there, no duration, and no way to take it off. As a condition it
 shows in the HUD, the condition's own key is the bonus group — so two tattoos on one verb cap
 each other — and the removal question has an answer, which for `graven` is *nothing*
@@ -218,6 +222,43 @@ each other — and the removal question has an answer, which for `graven` is *no
 So `stepField().bonus` is `{ verb, value, requiresTag }`, the same three questions an item's bonus
 asks, and `conditionField().bonus` is where they land. The payload is on the **instance**, not on
 the condition's config: +2 Strike with a Heavy item and +2 Strike flat are both Graven.
+
+---
+
+## 2.4 The law: three gates
+
+> 1. **A bonus or penalty over a duration is a condition.**
+> 2. **A thing that must be equipped or prepared is an item** — `item`, or `spell` for the
+>    preparable kind.
+> 3. **A thing usable without being equipped or prepared is a feature.**
+
+Read as a definition of the three `Item` subtypes it says something stronger than it looks: **the
+only thing that distinguishes them is the gate.** A bonus, a grant, a step, where a thing was taught
+and at what rank — none of that is about equipping or preparing, so none of it belongs to one
+subtype. The vocabulary is shared and the gate is the difference:
+
+| Subtype | The gate | The field that is the gate |
+|---|---|---|
+| `item` | equip it | `equipped`, `equippedTo`, `slot` |
+| `spell` | prepare it | `prepared` |
+| `feature` | none — it is simply true | *(it has neither, and that is the definition)* |
+
+**What the law moved.** Nine teachings were spells and are features: all seven of Tattoo Magic and
+the two renunciations Asceticism's ladder ends in. None of them is ever prepared. They had been
+spells because a spell was the only slate with a **step**, and a tattoo needs a step — the bonus
+it gives rides on the `graven` condition, which is what ink in your skin is. That was the tail
+wagging the dog, so a feature has a step now, and `source` and `strength`, because a school teaches
+features too.
+
+**What a feature cannot do is apply a timed condition**, and that falls out of the law rather than
+being a restriction on top of it: a timed condition needs a moment to be applied at, and a moment is
+what a feature does not have. A feature's permanent condition is **derived** in `activeConditions`
+— gated on the condition's own `permanent` flag — which is why there is no grant-time hook
+and nothing to clean up when the feature is deleted. A tattoo is on you because the tattoo is on you.
+
+**`timing: "permanent"` is gone** with them. It never said when a step happens; it said *this formula
+can never be prepared*, which is a slot budget in a timing's field. A feature is permanent by having
+no gate to pass.
 
 ---
 

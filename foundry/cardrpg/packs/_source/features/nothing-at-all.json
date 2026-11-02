@@ -1,17 +1,14 @@
 {
-  "_id": "m4m0cv2pmRjdtIQN",
-  "_key": "!items!m4m0cv2pmRjdtIQN",
+  "_id": "EFErTJzfGApEKw3o",
+  "_key": "!items!EFErTJzfGApEKw3o",
   "name": "Nothing At All",
-  "type": "spell",
+  "type": "feature",
   "system": {
     "strength": 5,
     "source": "Asceticism",
     "description": "<p>Four cards, all of them in your hand, every turn. You have given away a hand and most of a deck, and what is left is a man who always has exactly the right card.</p>",
     "effect": {
-      "timing": "permanent",
       "text": "your action deck becomes 4 cards, you hold all four, and may play any two halves. Costs a hand"
-    },
-    "kind": "formula",
-    "prepared": false
+    }
   }
 }

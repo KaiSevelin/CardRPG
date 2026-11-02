@@ -835,9 +835,14 @@ CARDRPG.timings = {
   reaction: "CARDRPG.Timing.Reaction",
   ritual: "CARDRPG.Timing.Ritual",
   outOfCombat: "CARDRPG.Timing.OutOfCombat",
-  beforeFight: "CARDRPG.Timing.BeforeFight",
-  permanent: "CARDRPG.Timing.Permanent"
+  beforeFight: "CARDRPG.Timing.BeforeFight"
 };
+/*
+ * There was a `permanent` here, and it was a slot budget wearing a timing's clothes: it said *this
+ * formula can never be prepared* rather than when anything happens. The content it described is
+ * nine features now, and a feature is permanent by having no gate to pass, so the word had nothing
+ * left to mean on a step.
+ */
 
 CARDRPG.capabilities = {
   /* how it gets about */

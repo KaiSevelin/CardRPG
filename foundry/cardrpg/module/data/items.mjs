@@ -151,30 +151,6 @@ export class SpellSlateData extends SlateData {
       effect: stepField(),
 
       /*
-       * **What a PERMANENT formula does to you, in the shape a feature already uses.**
-       *
-       * Seven cards named *a permanent formula that is never prepared and carries a bonus*, and the
-       * discovery was that a permanent formula wants what a feature wants: +1 armour, +6 max
-       * Health. Standing numbers, which is what `grants` is for.
-       *
-       * A **bonus** is not here, and that is the correction: a bonus a spell gives belongs on the
-       * step as a condition's payload, because then it SHOWS. As a field on the slate it was a
-       * standing, invisible, unremovable +2 that nothing on the token mentioned.
-       *
-       * These count only while the effect's `timing` is `permanent`. A formula sitting unread in a
-       * book must not be granting anything, which is the one way this could have gone wrong: a
-       * caster would have learned every grant in their school and kept them all.
-       */
-      grants: new fields.SchemaField({
-        health: new fields.NumberField({ required: true, integer: true, initial: 0 }),
-        handSize: new fields.NumberField({ required: true, integer: true, initial: 0 }),
-        carry: new fields.NumberField({ required: true, integer: true, initial: 0 }),
-        deckMax: new fields.NumberField({ required: true, integer: true, initial: 0 }),
-        spellSlots: new fields.NumberField({ required: true, integer: true, initial: 0 }),
-        armor: new fields.NumberField({ required: true, integer: true, initial: 0 })
-      }),
-
-      /*
        * What casting it costs, over and above the slot it occupies.
        *
        * **Six pieces of content were waiting on this one field** and the audit named it the largest
@@ -241,16 +217,17 @@ export class SpellSlateData extends SlateData {
   /**
    * **True for a spell that can never be prepared, and so never costs a slot.**
    *
-   * Two kinds: a **ritual**, which is overnight work and not a thing you hold ready, and a
-   * **permanent**, which is carved into you and not a thing you hold at all. Seven cards named each
-   * as a gap and the answer was already on the step -- `timing` has said which since it was built,
-   * and a slate can read its own effect.
+   * One kind now: a **ritual**, which is overnight work and not a thing you hold ready. `timing`
+   * has said so since it was built, and a slate can read its own effect, so this is a getter rather
+   * than a field -- a second place to say "this is a ritual" is a second place for it to disagree
+   * with the first.
    *
-   * It is a getter rather than a field for that reason: a second place to say "this is a ritual"
-   * is a second place for it to disagree with the first.
+   * It used to name **permanent** too, for the Graven line. A permanent is not a spell any more: a
+   * thing that needs no preparing is a feature, and the exemption went with the content. Leaving
+   * the word here would have been an arm nothing could reach.
    */
   get outsideBudget() {
-    return ["ritual", "permanent"].includes(this.effect?.timing ?? "");
+    return this.effect?.timing === "ritual";
   }
 
   /**
@@ -586,6 +563,24 @@ export class FeatureSlateData extends SlateData {
       ...drainFields(),
 
       /**
+       * **Where it was taught, and at what rank.**
+       *
+       * These are a spell's two fields and a feature has them for the same reason a spell does: a
+       * school teaches, and what it teaches is not always a formula. All seven of Tattoo Magic's
+       * teachings are ink, and Asceticism's ladder ends in two renunciations -- none of them is
+       * ever prepared, so by the law none of them is a spell.
+       *
+       * `strength` is a **rank**, not a cost. On a spell it is both, because the rank is what the
+       * slot budget spends; a feature has no budget to spend, so what is left is the school's
+       * ladder -- which the menu still sorts by, and which is what the GM prices the thing at.
+       * Zero for a feature no school taught, which is most of them.
+       */
+      source: new fields.StringField({ required: false, blank: true, initial: "" }),
+      strength: new fields.NumberField({
+        required: true, integer: true, min: 0, max: 5, initial: 0
+      }),
+
+      /**
        * A numeric bonus to one verb. This is what makes Strong computable rather than prose, and
        * it is the thing a bonus group caps: one bonus per group per action.
        */
@@ -647,6 +642,20 @@ export class FeatureSlateData extends SlateData {
          */
         armor: new fields.NumberField({ required: true, integer: true, initial: 0 })
       }),
+
+      /**
+       * **What it does beyond a standing number**, in the one vocabulary the game has for that.
+       *
+       * A feature could grant and it could bonus, and it could do neither of those things at all:
+       * *Graven Strength* puts ink in your skin, and the +2 Strike it gives rides on the `graven`
+       * condition that ink is. Without a step a feature had no way to apply one, which is why the
+       * Graven line sat among the spells -- a spell has a step, and a tattoo needed what a step
+       * does rather than anything a spell does.
+       *
+       * It is the same `stepField()` a spell's effect uses. The law's point is that the three
+       * subtypes are one vocabulary with three gates, and a step is not about a gate.
+       */
+      effect: stepField(),
 
       description: new fields.HTMLField()
     };

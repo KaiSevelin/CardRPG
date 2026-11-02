@@ -254,7 +254,6 @@
   "CARDRPG.Timing.Ritual": "Ritual (overnight, out of combat)",
   "CARDRPG.Timing.OutOfCombat": "Out of combat",
   "CARDRPG.Timing.BeforeFight": "Before the fight",
-  "CARDRPG.Timing.Permanent": "Permanent",
   "CARDRPG.Capability.Legs": "Legs",
   "CARDRPG.Capability.Flight": "Flight",
   "CARDRPG.Capability.Swim": "Swimmer",

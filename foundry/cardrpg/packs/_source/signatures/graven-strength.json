@@ -2,21 +2,18 @@
   "_id": "2R3gim5pTZd4qHYj",
   "_key": "!items!2R3gim5pTZd4qHYj",
   "name": "Graven Strength",
-  "type": "spell",
+  "type": "feature",
   "system": {
     "strength": 1,
     "source": "Tattoo Magic",
     "description": "<p>It is on your arm. It does not need remembering, and it never comes off.</p>",
     "effect": {
-      "timing": "permanent",
       "condition": "graven",
       "bonus": {
         "verb": "strike",
         "value": 2,
         "requiresTag": "heavy"
       }
-    },
-    "kind": "formula",
-    "prepared": false
+    }
   }
 }

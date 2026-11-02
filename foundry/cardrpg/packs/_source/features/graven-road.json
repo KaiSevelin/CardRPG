@@ -1,17 +1,14 @@
 {
-  "_id": "aC5ei1D2cnHeeHyG",
-  "_key": "!items!aC5ei1D2cnHeeHyG",
+  "_id": "GGCh1VmYQB3IpdZd",
+  "_key": "!items!GGCh1VmYQB3IpdZd",
   "name": "Graven Road",
-  "type": "spell",
+  "type": "feature",
   "system": {
     "strength": 1,
     "source": "Tattoo Magic",
     "description": "<p>A road down the inside of both legs. Slowed, Burdened and Overloaded all still land on you; none of them slows you down.</p>",
     "effect": {
-      "timing": "permanent",
       "text": "your Move is never halved"
-    },
-    "kind": "formula",
-    "prepared": false
+    }
   }
 }

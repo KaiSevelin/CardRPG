@@ -1,18 +1,15 @@
 {
-  "_id": "Q9EftdwJhYAKIT2H",
-  "_key": "!items!Q9EftdwJhYAKIT2H",
+  "_id": "BydtzB3B9vFdDSj6",
+  "_key": "!items!BydtzB3B9vFdDSj6",
   "name": "Graven Armour",
-  "type": "spell",
+  "type": "feature",
   "system": {
     "strength": 4,
     "source": "Tattoo Magic",
     "description": "<p>Plate, in ink, over everything. It weighs nothing and you are never again anything but weighed down.</p>",
     "effect": {
-      "timing": "permanent",
       "text": "you count as Burdened always, whatever you carry"
     },
-    "kind": "formula",
-    "prepared": false,
     "grants": {
       "armor": 3
     }

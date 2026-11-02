@@ -3469,37 +3469,44 @@ export const MIND_POOL = [
   },
 
   /*
-   * --- Tattoo Magic, six formulas, and all six are the SAME gap ---
+   * --- Tattoo Magic, seven teachings, and not one of them is a formula ---
    *
-   * A tattoo is never prepared: it spends its slots for good and is always on. The slate holds the
-   * slots (`strength`) and the drain machinery, and has nowhere to put a standing BONUS, because
-   * until this school a spell only ever did something when cast. *Graven Strength* named that gap
-   * as the whole school's and it was right -- all seven of the school's formulas carry it.
+   * **A tattoo is never prepared**, and that one fact decides what these are. *A thing usable
+   * without being equipped or prepared is a feature* -- so all seven are features, and the school
+   * is the one school in the game that teaches no spells.
    *
-   * The price, a secret the GM writes down, is not a gap. It is not even a cost in the engine's
-   * sense: it is a hostage.
+   * They kept `kind: "spell"` for a long time because a spell was the only slate with a **step**,
+   * and a tattoo needs a step: the bonus it gives rides on the `graven` condition, which is what
+   * ink in your skin IS. That was the tail wagging the dog. A feature has a step now, and what a
+   * spell has that a feature does not is `prepared` -- nothing these seven will ever use.
+   *
+   * `strength` stays, as the school's ladder and the GM's price. It is no longer a slot cost,
+   * because a feature has no budget to spend; what it costs you is the secret the GM writes down,
+   * which is not a cost in the engine's sense at all. It is a hostage.
    */
   {
-    name: "Graven Eye", strength: 1, pool: "mind", source: "Tattoo Magic",
-    needs: ["a trait that stops you being surprised"],
+    name: "Graven Eye", kind: "feature", strength: 1, pool: "mind", source: "Tattoo Magic",
+    needs: ["a trait that stops you being surprised",
+      "a spell slot spent for good"],
     description: "<p>An eye on the back of your neck that is not decorative. You are never "
       + "surprised again, and you never sleep quite as well.</p>",
-    effect: { timing: "permanent", text: "you are never surprised" }
+    effect: { text: "you are never surprised" }
   },
   {
-    name: "Graven Shield", strength: 2, pool: "mind", source: "Tattoo Magic",
-    needs: [],
+    name: "Graven Shield", kind: "feature", strength: 2, pool: "mind", source: "Tattoo Magic",
+    needs: ["a spell slot spent for good"],
     description: "<p>A shield you cannot put down, drawn across your back by somebody who knew "
       + "what they were doing.</p>",
-    grants: { armor: 1 },
-    effect: { timing: "permanent" }
+    /* No step at all: what it does is a grant, and a feature is permanent without saying so. */
+    grants: { armor: 1 }
   },
   {
-    name: "Graven Road", strength: 1, pool: "mind", source: "Tattoo Magic",
-    needs: ["a trait that ignores a halved Move"],
+    name: "Graven Road", kind: "feature", strength: 1, pool: "mind", source: "Tattoo Magic",
+    needs: ["a trait that ignores a halved Move",
+      "a spell slot spent for good"],
     description: "<p>A road down the inside of both legs. Slowed, Burdened and Overloaded all "
       + "still land on you; none of them slows you down.</p>",
-    effect: { timing: "permanent", text: "your Move is never halved" }
+    effect: { text: "your Move is never halved" }
   },
   {
     /*
@@ -3507,46 +3514,44 @@ export const MIND_POOL = [
      * have to tell a lie to carry: Burdened is DERIVED from what you are carrying (data/actors.mjs),
      * so a Burdened that an empty pack does not lift is a second mechanism wearing its name.
      */
-    name: "Graven Armour", strength: 4, pool: "mind", source: "Tattoo Magic",
+    name: "Graven Armour", kind: "feature", strength: 4, pool: "mind", source: "Tattoo Magic",
     needs: ["Burdened that no amount of dropping weight lifts",
-      "an encumbrance tier set by something other than weight"],
+      "an encumbrance tier set by something other than weight",
+      "a spell slot spent for good"],
     description: "<p>Plate, in ink, over everything. It weighs nothing and you are never again "
       + "anything but weighed down.</p>",
     grants: { armor: 3 },
     effect: {
-      timing: "permanent",
       /* The price stays prose: counting as Burdened whatever you carry is the encumbrance tier
        * set by something other than weight, and nothing in the game can say that yet. */
       text: "you count as Burdened always, whatever you carry"
     }
   },
   {
-    name: "Graven Heart", strength: 3, pool: "mind", source: "Tattoo Magic",
-    needs: [],
+    name: "Graven Heart", kind: "feature", strength: 3, pool: "mind", source: "Tattoo Magic",
+    needs: ["a spell slot spent for good"],
     description: "<p>A second heart, drawn over the first. The GM writes down a secret worth six "
       + "Health, and you will find out which one when it matters.</p>",
-    grants: { health: 6 },
-    effect: { timing: "permanent" }
+    grants: { health: 6 }
   },
   {
     /*
-     * The school's 5, and the one formula in the game that takes the school away: a mage covered
-     * in the whole skin is a fighter with good armour and no book. Four slots of standing bonus
-     * for every slot you will ever have.
+     * The school's 5, and the one teaching in the game that takes the school away: a mage covered
+     * in the whole skin is a fighter with good armour and no book.
      */
-    name: "The Whole Skin", strength: 5, pool: "mind", source: "Tattoo Magic",
+    name: "The Whole Skin", kind: "feature", strength: 5, pool: "mind", source: "Tattoo Magic",
     needs: ["immunity to a named condition, which nothing grants",
       "a ban on preparing any further spell",
       "a condition that can never land on you",
-      "a spell budget closed for the rest of the character"],
+      "a spell slot spent for good"],
     description: "<p>There is no skin left to write on. It is the last thing you ever learn, and "
       + "afterwards you are something else wearing a mage's name.</p>",
     grants: { armor: 2, health: 4 },
     effect: {
-      timing: "permanent", condition: "graven",
+      condition: "graven",
       bonus: { verb: "strike", value: 2 },
-      /* Two things no field holds: a condition that never lands on you, and a slot budget closed
-       * for good. Both are the price of a strength-5 permanent and both are still prose. */
+      /* Two things no field holds: a condition that never lands on you, and a spell budget closed
+       * for good. Both are the price of the school's 5 and both are still prose. */
       text: "Burning never lands. You may never prepare another spell"
     }
   },
@@ -3612,12 +3617,14 @@ export const MIND_POOL = [
     }
   },
   {
-    name: "The Hand Given", strength: 3, pool: "mind", source: "Asceticism",
+    name: "The Hand Given", kind: "feature", strength: 3, pool: "mind", source: "Asceticism",
     needs: ["a hand given up, which the engine counts for holding things",
       "a bare Strike that counts as a weapon"],
     description: "<p>It costs a hand. What is left strikes like a Heavy weapon, for ever, and you "
       + "will never hold a shield again.</p>",
-    effect: { timing: "permanent", text: "and it costs a hand: your bare Strike is a Heavy weapon at Strike 4" }
+    /* No timing: a feature is permanent by having no gate to pass, and `permanent` is not a
+     * timing the step schema offers any more. */
+    effect: { text: "and it costs a hand: your bare Strike is a Heavy weapon at Strike 4" }
   },
   {
     /*
@@ -3626,13 +3633,13 @@ export const MIND_POOL = [
      * and this spell sets a deck of four on purpose. The floor is a rule and this is an exception
      * to it, which is exactly the kind of thing that must be in the schema rather than in prose.
      */
-    name: "Nothing At All", strength: 5, pool: "mind", source: "Asceticism",
+    name: "Nothing At All", kind: "feature", strength: 5, pool: "mind", source: "Asceticism",
     needs: ["a hand given up, which the engine counts for holding things",
       "a deck size below the floor the rules set"],
     description: "<p>Four cards, all of them in your hand, every turn. You have given away a hand "
       + "and most of a deck, and what is left is a man who always has exactly the right card.</p>",
     effect: {
-      timing: "permanent", text: "your action deck becomes 4 cards, you hold all four, and may play any two "
+      text: "your action deck becomes 4 cards, you hold all four, and may play any two "
         + "halves. Costs a hand"
     }
   },
@@ -4039,14 +4046,15 @@ export const MIND_SIGNATURES = [
      * put a BONUS -- SpellSlateData has no `bonus` field, because until now a spell only ever did
      * something when cast. That is this school's gap, and it is the whole school's.
      */
-    name: "Graven Strength", kind: "spell", node: "mind.tattoo", strength: 1,
+    name: "Graven Strength", kind: "feature", node: "mind.tattoo", strength: 1,
     source: "Tattoo Magic",
-    needs: [],
+    needs: ["a spell slot spent for good"],
     description: "<p>It is on your arm. It does not need remembering, and it never comes off.</p>",
     effect: {
-      timing: "permanent", condition: "graven",
+      condition: "graven",
       /* The bonus rides on the condition, so the tattoo SHOWS on the token instead of being a
-       * standing number nobody can see. */
+       * standing number nobody can see -- and `activeConditions` derives it from the feature, so
+       * nothing has to apply it and nothing can leave it behind. */
       bonus: { verb: "strike", value: 2, requiresTag: "heavy" }
     }
   },
@@ -5792,7 +5800,17 @@ export const NODES = [
     id: "mind.tattoo", name: "Tattoo Magic", after: ["mind.spirit.skin"], title: "Tattoo Magic",
     axis: "Deck shape", resource: "a secret",
     signature: "Graven Strength", tactic: "Nothing to Prepare",
-    grants: { spell: "Graven Strength" }
+    /*
+     * A feature, not a spell: a tattoo is never prepared. `grantSlate` has created features since
+     * Signatures were written and `SLATES` has always held this one, so the key is the only change.
+     *
+     * What it SPENDS is not here, and that is a gap rather than an omission. way-cards 3.4 prices
+     * this school in capacity -- *a tattoo spends its slots permanently* -- and the obvious shape
+     * for it, a negative `spellSlots` on this node, drops Way of Mind's ceiling from six slots to
+     * five and leaves one school's list unaffordable to the caster it was written for. That is the
+     * Way ladder's arithmetic, not this school's, so all seven cards name the gap and wait.
+     */
+    grants: { feature: "Graven Strength" }
   },
 
   {

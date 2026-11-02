@@ -23,7 +23,9 @@ import crypto from "node:crypto";
 import { compilePack, extractPack } from "@foundryvtt/foundryvtt-cli";
 
 import * as content from "../module/content.mjs";
-import { POOL, SPELLS, SIGNATURES, slateFieldsOf, spellKindOf } from "../module/graph.mjs";
+import {
+  POOL, SPELLS, SIGNATURES, TEACHINGS, teachingKind, slateFieldsOf, spellKindOf
+} from "../module/graph.mjs";
 import { expandRoster } from "../module/monsters.mjs";
 import { slateData } from "../module/setup.mjs";
 import { actionCardData, skillCardData, twistCardData, npcCardData, artIn, backOf }
@@ -198,12 +200,24 @@ const FAULTS = [];
  * over as a card, `SPELLS` as a spell, and a Signature carries its own `kind`. A second opinion
  * about whether *Step Through* is a spell or a card is a second rule, and two rules drift.
  */
+/*
+ * **The features a school teaches**, which are not Signatures and not in `FEATURES`.
+ *
+ * Eight pool entries: all seven of Tattoo Magic and one of Asceticism's two renunciations (the
+ * other, *Graven Strength*, is a Signature and goes in its own pack). They were in the spells pack
+ * until the law moved them, and a slate in no pack is a slate a GM cannot drag onto a sheet.
+ */
+const SIGNATURE_NAMES = new Set(SIGNATURES.map(s => s.name));
+const TAUGHT_FEATURES = TEACHINGS.filter(t =>
+  teachingKind(t) === "feature" && !SIGNATURE_NAMES.has(t.name));
+
 const SLATE_SOURCES = new Map();
 export const SLATE_CLASHES = [];
 for (const [table, list, type] of [
   ["ITEMS", content.ITEMS, "item"], ["NPC_GEAR", content.NPC_GEAR, "item"],
   ["NATURAL_WEAPONS", content.NATURAL_WEAPONS, "item"],
   ["FEATURES", content.FEATURES, "feature"],
+  ["TAUGHT_FEATURES", TAUGHT_FEATURES, "feature"],
   ["SPELLS", [...SPELLS.values()], "spell"],
   ["SIGNATURES", SIGNATURES.filter(s => s.kind !== "card"), s => s.kind]
 ]) {
@@ -263,7 +277,10 @@ const PACK_PLAN = [
   },
   {
     name: "features", label: "Features", type: "Item", folder: "Card RPG",
-    docs: () => content.FEATURES.map(f => itemDoc(f, "feature", "features"))
+    docs: () => [
+      ...content.FEATURES.map(f => itemDoc(f, "feature", "features")),
+      ...TAUGHT_FEATURES.map(f => itemDoc(f, "feature", "features"))
+    ]
   },
   {
     name: "spells", label: "Formulas and Miracles", type: "Item", folder: "Card RPG",

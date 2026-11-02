@@ -61,8 +61,37 @@ export const POOL = new Map([...COMMON_POOL, ...WAY_CARDS, ...SHADE_POOL, ...STR
  * nothing ever GRANTED one; Rain and Lightning in particular are the pair the `when` clause was
  * written to demonstrate, and they are two nodes on one branch now.
  */
-export const SPELLS = new Map([...MIND_POOL, ...FAITH_POOL, ...FORMULAS, ...SHADOW_FORMULAS,
-  ...SIGNATURES.filter(s => s.kind === "spell")].map(f => [f.name, f]));
+/*
+ * Every teaching a school or a god may hand over.
+ *
+ * A Signature counts when it has a **source**, which is the school or god that teaches it. The
+ * first version filtered by `kind !== "card"` -- by what a Signature is not -- and let in the four
+ * Way Signatures, so a list about schools reported *The Kit* and *One Trick* as formulas belonging
+ * to no section of the world document.
+ */
+export const TEACHINGS = [...MIND_POOL, ...FAITH_POOL, ...FORMULAS, ...SHADOW_FORMULAS,
+  ...SIGNATURES.filter(s => s.kind !== "card" && s.source)];
+
+/**
+ * **What kind of slate a teaching is.**
+ *
+ * A pool entry used to carry no `kind` and be a spell by that silence, which was fine while every
+ * teaching was a formula. Nine of them are features now -- all seven of Tattoo Magic and the two
+ * renunciations Asceticism ends in -- because *a thing usable without being equipped or prepared is
+ * a feature*, and none of the nine is ever prepared. So the silence has to mean something explicit.
+ *
+ * **It asks by the values that answer, because `kind` on content carries two vocabularies.** On a
+ * Signature it is the slate type -- spell, feature, item, card. On the five Elemental and Shadow
+ * formulas written before this Way had a graph it is the SPELL kind, formula or miracle, which
+ * every other spell derives from its node (`spellKindOf` below). `t.kind ?? "spell"` read the
+ * second vocabulary as if it were the first and quietly dropped Rain, Lightning, Frost, Scorch and
+ * Step Through out of the spell list.
+ */
+export const SLATE_KINDS = ["feature", "item"];
+export const teachingKind = t => SLATE_KINDS.includes(t.kind) ? t.kind : "spell";
+
+export const SPELLS = new Map(
+  TEACHINGS.filter(t => teachingKind(t) === "spell").map(f => [f.name, f]));
 
 /**
  * Every formula and miracle, grouped by the school or god that may teach it.
@@ -77,10 +106,15 @@ export const SPELLS = new Map([...MIND_POOL, ...FAITH_POOL, ...FORMULAS, ...SHAD
  * So a node may name a SOURCE instead of a spell, and the player picks. `source` is a plain string
  * on the content for exactly this reason (data/items.mjs): an add-on's thirteenth school indexes
  * itself here without a config edit.
+ *
+ * **Teachings, not formulas.** Tattoo Magic teaches seven things and not one of them is a formula,
+ * and Asceticism's ladder ends in two renunciations you cannot prepare either -- so a menu built
+ * from `SPELLS` would have shown one school as empty and another as missing its top two rungs.
+ * What a school teaches is what it teaches; which document it arrives as is a question about gates.
  */
 export const SPELLS_BY_SOURCE = (() => {
   const out = new Map();
-  for (const spell of SPELLS.values()) {
+  for (const spell of TEACHINGS) {
     if (!spell.source) continue;
     if (!out.has(spell.source)) out.set(spell.source, []);
     out.get(spell.source).push(spell);
@@ -444,6 +478,16 @@ export function tacticOf(owned) {
 /** The content a node hands over as a slate, by name: the Signatures, so far. */
 export const SLATES = new Map(SIGNATURES.map(s => [s.name, s]));
 
+/**
+ * Every teaching by name, so a school's menu can hand over what the school actually teaches.
+ *
+ * `SLATES` holds Signatures and `SPELLS` holds formulas, and the nine features a school teaches are
+ * in neither: eight of them are pool entries, which `SLATES` never saw, and none of them is a spell
+ * any more. A menu that could only look in one of the two maps would have shown Tattoo Magic as an
+ * empty school.
+ */
+export const TEACHINGS_BY_NAME = new Map(TEACHINGS.map(t => [t.name, t]));
+
 /** The nine, by name, so a node teaching a tongue nobody speaks is a fault and not a typo. */
 export const LANGUAGE_NAMES = new Set(LANGUAGES.map(l => l.name));
 
@@ -659,7 +703,9 @@ export function spellKindOf(source) {
  * node carries any figure (rules/leveling.md 9).
  */
 async function grantSlate(actor, name, type) {
-  const def = SLATES.get(name);
+  /* A Signature first, then any teaching: eight of the nine features a school teaches are pool
+   * entries, which `SLATES` has never held. */
+  const def = SLATES.get(name) ?? TEACHINGS_BY_NAME.get(name);
   if (!def) {
     ui.notifications?.warn(game.i18n.format("CARDRPG.Level.NoSlate", { name }));
     return false;
@@ -711,7 +757,13 @@ async function grantSpell(actor, name, nodeId) {
  */
 async function grantSpellChoice(actor, source, nodeId) {
   const list = SPELLS_BY_SOURCE.get(source) ?? [];
-  const held = new Set(actor.items.filter(i => i.type === "spell").map(i => i.name));
+  /*
+   * Held, whichever kind it arrived as. A school that teaches features would otherwise offer the
+   * same tattoo twice -- the filter read spells alone, because until Tattoo Magic every teaching
+   * was one.
+   */
+  const held = new Set(actor.items
+    .filter(i => i.type === "spell" || i.type === "feature").map(i => i.name));
   const open = list.filter(spell => !held.has(spell.name));
   if (!open.length) {
     ui.notifications?.warn(game.i18n.format("CARDRPG.Level.NothingLeft", { source }));
@@ -734,7 +786,15 @@ async function grantSpellChoice(actor, source, nodeId) {
     rejectClose: false
   });
   if (!chosen) return false;
-  return grantSpell(actor, chosen, nodeId);
+  /*
+   * **And the one branch.** What a school teaches is what it teaches; which document it arrives as
+   * is a question about gates, and the gate is what `kind` names. A formula arrives unprepared and
+   * costs nothing until it is prepared; a tattoo arrives finished.
+   */
+  const def = TEACHINGS_BY_NAME.get(chosen);
+  return teachingKind(def) === "feature"
+    ? grantSlate(actor, chosen, "feature")
+    : grantSpell(actor, chosen, nodeId);
 }
 
 /**

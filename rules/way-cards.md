@@ -1080,6 +1080,13 @@ decision, which is the god of the rumour doing on the battlefield exactly what s
 > **finish** the most is a different one, which is the whole reason both numbers are kept: *a
 > permanent formula that is never prepared and carries a bonus* finishes **five** of Tattoo Magic's
 > seven outright, where the Taint price finishes none of them alone.
+>
+> **That gap is built, and it was built by deciding the seven are not formulas.** All seven of the
+> school are features &mdash; *a thing usable without being equipped or prepared*
+> ([card-slate-schema](../foundry/card-slate-schema.md) §2.4) &mdash; which is why the top of the
+> queue is now *a spell slot spent for good*, named by the same seven cards. A gap closed by
+> reclassifying the content rather than by adding a field is still closed; what it leaves behind is
+> the price, and the price is a Way ladder decision.
 
 The 48 above are the titles. **Most of a character is the nodes in between**, and §1.5 says what
 those hand out: a card, a skill card, a training, a know-how, a feature, a prune, a deck cap, a
@@ -1402,9 +1409,15 @@ long one: four formulas is four Taint, and **three is Afflicted**. The school pr
 > **elven debt, as an obligation** — one debt per formula learned, written by the GM and not
 > removable (leveling.md §4). The elves do not want secrets; they want to be owed.
 
-#### Tattoo Magic — Deck shape, paid in a secret per formula
+#### Tattoo Magic — Deck shape, paid in a secret per tattoo
 
-| Formula | Str | Effect |
+**None of these is a formula.** A tattoo is never prepared, and *a thing usable without being
+equipped or prepared is a feature* ([card-slate-schema](../foundry/card-slate-schema.md) §2.4) — so
+all seven arrive as **features**, and this is the one school in the game that teaches no spells. The
+**Str** column is still the school's ladder and still what the GM prices the secret at; what it is
+no longer is a slot cost, which is the gap below.
+
+| Teaching | Str | Effect |
 |---|---|---|
 | ✦ **Graven Strength** | 1 | Permanent: **+2 Strike with Heavy items**. |
 | **Graven Eye** | 1 | Permanent: you are never surprised. |
@@ -1414,7 +1427,15 @@ long one: four formulas is four Taint, and **three is Afflicted**. The school pr
 | **Graven Heart** | 3 | Permanent: **+6 max Health**. The GM writes down a secret worth that much. |
 | **The Whole Skin** | 5 | Permanent, and it is the last thing you ever learn: **+2 Strike, +2 armor, +4 Health**, and Burning never lands on you. You may never prepare another spell. |
 
-> **A tattoo spends its slots permanently, and is never prepared.** This is the school's whole shape
+> **[GAP] A tattoo spends its slots permanently, and is never prepared.** The second half is built
+> and the first half is not: the engine charges **nothing** for a tattoo. All seven cards name the
+> gap. The obvious shape for it is a negative `grants.spellSlots` — a feature giving capacity back —
+> and it was tried: it drops this Way's ceiling from six slots to five, leaves one school's list
+> unaffordable to the caster §3.4's own thesis was written for, and takes the most slots any
+> character can reach from 15 to 14. That is the **Way ladder's** arithmetic rather than this
+> school's, so it is a decision waiting to be made and not a line waiting to be typed.
+>
+> **The rest of the school's shape is built.** This is what its axis means: **Deck shape** is capacity
 > and it is what its axis means: **Deck shape** is capacity, and a tattoo takes capacity away for
 > good. Carve *Graven Shield* and two slots are gone from your budget forever — but it is always on,
 > every fight, with no preparation and no casting. The others are spells you *choose* each morning;
@@ -1427,7 +1448,11 @@ long one: four formulas is four Taint, and **three is Afflicted**. The school pr
 
 #### Asceticism — Deck shape, paid in parts of your body
 
-| Formula | Str | Effect |
+The **last two rungs are not formulas.** *The Hand Given* and *Nothing At All* are permanent and so
+arrive as **features** (§2.4 of [card-slate-schema](../foundry/card-slate-schema.md)): there is
+nothing to prepare once you have given the hand. The other five are formulas.
+
+| Teaching | Str | Effect |
 |---|---|---|
 | ✦ **Nothing Left to Take** | 1 | While your **hand is empty**, you cannot be reduced below 1 Health. |
 | **Empty Hand** | 1 | While your hand is empty you may ⚔ Strike with no item, at your own ✊ Might. |

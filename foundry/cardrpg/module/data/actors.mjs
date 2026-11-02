@@ -350,12 +350,40 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
     return "immobile";
   }
 
-  /** Conditions, including the two the encumbrance tier computes rather than anyone applying. */
+  /**
+   * Conditions, including the ones nobody applies: two the encumbrance tier computes, and the ink.
+   *
+   * **A feature whose step applies a permanent condition IS that condition.** It is derived rather
+   * than applied, and that is the whole reason the Graven line can be a feature at all: there is no
+   * grant-time hook to forget to run, nothing to clean up when the feature is deleted, and no way
+   * for the document and the condition to disagree about whether the tattoo is there. A tattoo is
+   * on you because the tattoo is on you.
+   *
+   * The gate is the condition's own `permanent` flag, not the step's timing. A feature that applied
+   * a TIMED condition would need something to apply it at a moment, and a moment is what a feature
+   * does not have -- so only a permanent one is derived, which gives that flag a second job beyond
+   * telling the removal table there is no answer.
+   *
+   * `creatorId` is the feature's own id, so two tattoos are two conditions and the sheet can say
+   * which is which. They share a group -- the condition's key -- so their bonuses cap each other.
+   */
   get activeConditions() {
     const list = this.conditions.map(c => ({ ...c }));
     if (this.encumbrance === "burdened") list.push({ key: "burdened", duration: null, creatorId: "" });
     if (this.encumbrance === "overloaded" || this.encumbrance === "immobile") {
       list.push({ key: "overloaded", duration: null, creatorId: "" });
+    }
+    for (const slate of this.parent?.items ?? []) {
+      if (slate.type !== "feature") continue;
+      const step = slate.system?.effect;
+      if (!step?.condition || !CARDRPG.conditions[step.condition]?.permanent) continue;
+      list.push({
+        key: step.condition, duration: null, creatorId: slate.id,
+        ...(step.bonus?.value
+          ? { bonus: { verb: step.bonus.verb ?? "", value: step.bonus.value,
+            requiresTag: step.bonus.requiresTag ?? "" } }
+          : {})
+      });
     }
     return list;
   }

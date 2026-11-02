@@ -1,17 +1,12 @@
 {
-  "_id": "2LXX7owUSbBJB6wK",
-  "_key": "!items!2LXX7owUSbBJB6wK",
+  "_id": "TvICPziiMrUgL0pP",
+  "_key": "!items!TvICPziiMrUgL0pP",
   "name": "Graven Heart",
-  "type": "spell",
+  "type": "feature",
   "system": {
     "strength": 3,
     "source": "Tattoo Magic",
     "description": "<p>A second heart, drawn over the first. The GM writes down a secret worth six Health, and you will find out which one when it matters.</p>",
-    "effect": {
-      "timing": "permanent"
-    },
-    "kind": "formula",
-    "prepared": false,
     "grants": {
       "health": 6
     }
