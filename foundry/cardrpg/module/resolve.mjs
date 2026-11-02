@@ -1431,14 +1431,24 @@ export async function resolveCheck(actor, {
     ...(improvise ? ["improvising, with disadvantage"] : [])
   ];
 
+  /*
+   * **The outcome is stamped on the message**, which is how a challenge track moves.
+   *
+   * A scene flag is the GM's to write and a player resolves their own check, so the result cannot
+   * record itself where it happens. It travels as a flag on the message instead, and the one client
+   * that may write the scene picks it up (checks.mjs `registerCheckHooks`). That also keeps this
+   * function ignorant of challenges, which is right: a check is a check whether one is running.
+   */
   await ChatMessage.create({
     speaker: ChatMessage.getSpeaker({ actor }),
+    flags: { cardrpg: { outcome } },
     content: `<div class="cardrpg"><p>${chain.join(" &middot; ")}</p>`
       + `<p>Fate: <strong>${used ? (special || used.system.value) : "\u2014"}</strong>`
       + ` &rarr; ${result} against ${dc}</p>`
       + `<p><strong>${label}</strong>`
-      + (outcome === "partial" ? " &mdash; you do it, and it costs something." : "")
-      + (outcome === "fail" ? " &mdash; and the situation changes." : "")
+      + (outcome === "partial" ? " &mdash; you do it, and it costs something. Draw a twist."
+        : "")
+      + (outcome === "fail" ? " &mdash; and the situation changes. Draw a twist." : "")
       + `</p></div>`
   });
 

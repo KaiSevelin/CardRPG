@@ -459,6 +459,43 @@ Differences from the combat tray:
 - A player with no call in front of them is told to say what they are doing. The engine will not
   invent a difficulty.
 
+#### 5.2 Challenge tracks, and checks written into the prep  **[BUILT 2026-11-02]**
+
+> **The remaining two rows of §5's sketch.** Challenge tracks appear only while a challenge is
+> running, as the sketch says, and they are bars: the question is how much room is left.
+
+```
+┌─ Into the baron's manor ─────────────────────────────────────────┐
+│ Progress 3/5 [#####....]  Pressure 2/3 [######.]  Catch Breath × │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+- **Catch Breath appears on the track, not on the deck**, because in a challenge it is a Pressure
+  cost rather than a turn: Pressure +1, your discard comes back, one card of your choice is set
+  aside as Spent, and you draw up to hand size. The choice is the player's, the way a prune is.
+- **The GM's row gains two decks**: *Challenge* starts one, *Twist* and *Twist ×2* draw from the
+  thirty. Both appear only for the GM, and the twist buttons only when the world has the deck.
+- **A filled track is coloured, not enforced.** The GM says what the ending means.
+
+And the prep carries the call:
+
+```
+    @Check[wits|hard]{Spot the tripwire}
+    @Check[shadow|7|advantage]{The shutter is unlatched}
+    @Challenge[5|3]{Into the baron's manor}
+```
+
+Written in a journal page, an item description or a chat message, each becomes a button. The GM
+clicks it and the call is set for the party exactly as if they had filled in the dialog &mdash; which
+is where most of a session's checks come from, since most of them were prepared before it started.
+**A player clicking one gets a reminder instead**, because step 1 is still the GM's: an enricher is a
+shortcut for the person who was always allowed to take it, not a way round the rule.
+
+The parts are order-free and all optional &mdash; an approach, a difficulty as a word or a number,
+*advantage* or *disadvantage* &mdash; because a GM writing prep should not have to remember a
+grammar, and an unrecognised part is ignored rather than refused: a page full of red errors is worse
+than a page with one odd button.
+
 ---
 
 ## 6. Interjecting

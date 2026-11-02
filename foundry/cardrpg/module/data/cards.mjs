@@ -393,6 +393,32 @@ export class SkillCardData extends foundry.abstract.TypeDataModel {
 }
 
 /* -------------------------------------------- */
+/*  Twist                                       */
+/* -------------------------------------------- */
+
+/**
+ * A twist (skill-rules 4): the price of a Partial, or what happens instead on a Fail.
+ *
+ * **Almost all prose, and that is the design rather than a shortfall.** *Hurt* is *lose 2 Health,
+ * or gain a condition that fits*, and nothing in an engine chooses between those -- the card names
+ * the kind of trouble and the GM says what it looks like here. The two fields that are not prose
+ * are the two the rules make arithmetic: `pressure` is Time's extra point in a challenge, and
+ * `gives` marks Opening as the one twist that hands something over.
+ */
+export class TwistCardData extends foundry.abstract.TypeDataModel {
+  static defineSchema() {
+    return {
+      /** What it costs, in the GM's hands. */
+      cost: new fields.StringField({ required: true, blank: true, initial: "" }),
+      /** Pressure beyond the normal cost. Only Time has any (skill-rules 4). */
+      pressure: new fields.NumberField({ integer: true, min: 0, initial: 0 }),
+      /** The fail-forward valve: this one gives rather than takes. */
+      gives: new fields.BooleanField({ initial: false })
+    };
+  }
+}
+
+/* -------------------------------------------- */
 /*  Wound and Taint                             */
 /* -------------------------------------------- */
 

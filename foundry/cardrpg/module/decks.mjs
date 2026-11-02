@@ -84,6 +84,25 @@ export function skillCardData(def) {
   };
 }
 
+/**
+ * One twist, as a Card. The name is the kind and the face is the cost, which is all a twist is.
+ *
+ * It shares the skill back, because a twist is drawn in a scene and not in a fight -- and because
+ * the GM's deck having its own art would be a piece of art for a deck only one person ever sees.
+ */
+export function twistCardData(def) {
+  return {
+    name: def.name,
+    type: "twist",
+    img: backOf("skill") || undefined,
+    system: {
+      cost: def.cost ?? "",
+      pressure: def.pressure ?? 0,
+      gives: !!def.gives
+    }
+  };
+}
+
 export function actionCardData(def) {
   return {
     name: def.name,

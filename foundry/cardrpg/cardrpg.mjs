@@ -10,6 +10,8 @@ import { registerSheets } from "./module/sheets.mjs";
 import { createStarterContent, ensureSetupMacro } from "./module/setup.mjs";
 import { CardRPGCombat, registerCombatHooks } from "./module/combat.mjs";
 import { CardRPGTray, registerTrayHooks } from "./module/tray.mjs";
+import { registerCheckHooks } from "./module/checks.mjs";
+import { registerEnrichers, registerEnricherClicks } from "./module/enrichers.mjs";
 import { LevelUpPane } from "./module/levelup.mjs";
 import * as decks from "./module/decks.mjs";
 import { answerArrival } from "./module/resolve.mjs";
@@ -18,7 +20,8 @@ import { rebuildGraph } from "./module/graph.mjs";
 import { CharacterData, NpcData } from "./module/data/actors.mjs";
 import { ItemSlateData, FeatureSlateData, SpellSlateData } from "./module/data/items.mjs";
 import {
-  ActionCardData, FateCardData, NpcCardData, WoundCardData, TaintCardData, WildCardData, SkillCardData
+  ActionCardData, FateCardData, NpcCardData, WoundCardData, TaintCardData, WildCardData,
+  SkillCardData, TwistCardData
 } from "./module/data/cards.mjs";
 
 /* -------------------------------------------- */
@@ -53,7 +56,9 @@ Hooks.once("init", () => {
     taint: TaintCardData,
     wild: WildCardData,
     // The skill side's own card: one approach and a value (skill-rules 1).
-    skill: SkillCardData
+    skill: SkillCardData,
+    // The GM's deck: what a Partial costs and what a Fail does instead (skill-rules 4).
+    twist: TwistCardData
   };
 
   // --- combat
@@ -63,6 +68,12 @@ Hooks.once("init", () => {
   CONFIG.Combat.initiative = { formula: "0", decimals: 0 };
   registerCombatHooks();
   registerTrayHooks();
+  /* A check's result moves a challenge track, and only the GM's client may write a scene
+   * flag -- so the recording hangs off the message rather than off the roll (checks.mjs). */
+  registerCheckHooks();
+  /* Enrichment happens the first time anything renders a journal page, so the patterns must be
+   * registered at init; the delegated click listener can wait for a document to exist. */
+  registerEnrichers();
 
   registerSettings();
   registerHelpers();
@@ -206,6 +217,9 @@ function registerSettings() {
 /* -------------------------------------------- */
 
 Hooks.once("ready", async () => {
+  /* One listener for every enriched button we will ever render, in journals, chat or a tooltip. */
+  registerEnricherClicks();
+
   // Exposed so the setup routine can be run from a macro or the console.
   game.cardrpg = {
     createStarterContent,

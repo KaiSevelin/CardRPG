@@ -4016,6 +4016,39 @@ export const FAITH_TACTICS = {
  * is learned where its speakers are studied, so the school that knows who owes whom among the
  * elf-kin is the school that teaches Elvish.
  */
+/**
+ * The twist deck (skill-rules 4): what a Partial costs and what a Fail does instead.
+ *
+ * **Thirty cards of eight kinds, and the counts are the tone rather than arithmetic.** Strain,
+ * Noise, Time, Gear, Arrival and Opening are common, so most twists push the story sideways; Hurt
+ * and Secret are rare, so they land hard when they come. Changing a count changes what the game
+ * feels like, which is why the numbers live in one place and are checked against the document.
+ *
+ * **Each twist is a question, not a script.** The card names the kind of trouble and the GM says
+ * what it looks like here, which is why `cost` is prose and there is no effect field: *Hurt* is
+ * *lose 2 Health, or gain a condition that fits*, and no engine chooses between those.
+ *
+ * Two of them are not only prose. **Time** adds a second point of Pressure in a challenge (4,
+ * *twists stack with the challenge tracks*), and **Opening** is the fail-forward valve -- *this one
+ * gives* -- so both are flagged for the challenge code rather than left to be read.
+ */
+export const TWISTS = [
+  { name: "Noise", copies: 4, cost: "Attention. The opposition now knows something is wrong." },
+  { name: "Time", copies: 4, pressure: 1,
+    cost: "The clock. Pressure +1 on top of the normal cost." },
+  { name: "Gear", copies: 4,
+    cost: "A tool. It breaks or is lost: no tool bonus until repaired or replaced." },
+  { name: "Strain", copies: 5,
+    cost: "Cards. Discard 1 skill card of the GM's choice from your hand." },
+  { name: "Hurt", copies: 3, cost: "Health. Lose 2 Health, or gain a condition that fits." },
+  { name: "Arrival", copies: 4, cost: "Someone new. A third party walks into the scene." },
+  { name: "Secret", copies: 2,
+    cost: "Information, in either direction. You learn something unwelcome, or they learn "
+      + "something about you." },
+  { name: "Opening", copies: 4, gives: true,
+    cost: "Nothing \u2014 this one gives. The complication also creates an opportunity." }
+];
+
 export const LANGUAGES = [
   { name: "Imperial", of: "the old language and the diplomatic lingua franca" },
   { name: "Valgar", of: "lost language from the fifth district" },

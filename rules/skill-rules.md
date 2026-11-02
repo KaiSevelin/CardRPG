@@ -321,7 +321,27 @@ it comes up.
 
 ---
 
-## 3. Challenges
+## 3. Challenges  **[BUILT 2026-11-02]**
+
+> **The tracks are the only part of this section that is arithmetic, and they were the cheapest
+> thing in the game to build** &mdash; because `checkOutcome` already decides which of the four results a
+> check produced, and the table below is the only other thing that reads it. Critical +2, Success
+> +1, Partial +1 and +1, Fail +1 and a twist: a lookup, not four branches.
+>
+> **A challenge lives on the active scene beside the call**, because it is a state of the table that
+> several people act into and nobody's sheet owns. The two tracks render as bars rather than
+> fractions: the question a player asks is *how much room is left*, and a length answers that faster
+> than a pair of numbers.
+>
+> **Only the GM's client records a result**, which is a fact about Foundry rather than a policy: a
+> scene flag is the GM's to write and a player resolves their own check. So the result travels as a
+> flag on the chat message and one hook moves the tracks. That also keeps the check itself ignorant
+> of challenges, which is right &mdash; a check is a check whether or not one is running.
+>
+> **Neither track is clamped.** A full track is reported and the GM decides what it means, because
+> both endings this section describes are about fiction: *progress full* is a success whose
+> cleanliness is the pressure left over, and *pressure full* should open a new situation rather than
+> close the road.
 
 Bigger situations (infiltrating a manor, chasing a thief, negotiating a treaty, crossing a mountain) are played as **challenges** with two tracks:
 
@@ -361,7 +381,24 @@ Progress 5, Pressure 3.
 
 ---
 
-## 4. Twist deck (GM tool)
+## 4. Twist deck (GM tool)  **[BUILT 2026-11-02]**
+
+> **Thirty cards of eight kinds, and the counts are checked against the table below** &mdash; because
+> the counts are the tone, not arithmetic. Changing one changes what the game feels like, so the
+> numbers live in one place and the validator reads them from this document.
+>
+> **It is never forced by a result.** Nothing in the engine draws a twist: a Partial's and a Fail's
+> chat line say one is owed, and the deck is a button on the GM's tray. This section is explicit
+> about why &mdash; *the GM can always choose a cost directly... the deck is there for when inspiration
+> runs out, not to override the GM* &mdash; and about putting back a card that makes no sense here, which
+> is a thing only a person can judge. *Twist ×2* is the same button for a dramatic failure.
+>
+> **Two of the eight are not only prose**, and both are named here as exceptions: **Time** carries
+> the extra point of Pressure, and **Opening** is flagged as the one that gives. Everything else is
+> a question for the GM to answer, which is why a twist has a cost in words and no effect field.
+>
+> Drawn to a discard and reshuffled when the deck runs out, which is the only shuffle rule it has.
+> Whispered to the GM, because a twist arrives as a decision rather than an announcement.
 
 A **twist deck** of 30 cards helps the GM improvise costs and complications. On a **Partial**, the twist is the price of success. On a **Fail**, the twist *is* what happens instead.
 

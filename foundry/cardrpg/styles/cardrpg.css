@@ -1255,6 +1255,26 @@
 .cr-call__note { opacity: 0.85; }
 .cr-call__clear { margin-left: auto; line-height: 1; padding: 0 0.3rem; }
 .cr-call__ask { align-self: flex-start; font-size: 0.85em; }
+/* A challenge's two tracks. Bars rather than numbers, because the question a player asks is "how
+   much room is left", and a fraction answers it more slowly than a length does. */
+.cr-track {
+  display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;
+  padding: 0.15rem 0.4rem; border-left: 3px solid #5a7d9a;
+  background: rgba(90, 125, 154, 0.12); font-size: 0.9em;
+}
+.cr-track--won { border-left-color: #4e8f4e; }
+.cr-track--lost { border-left-color: #9a5a5a; }
+.cr-track__note { font-weight: bold; }
+.cr-track__bar {
+  position: relative; display: inline-block; min-width: 9rem; height: 1.1rem;
+  background: rgba(0, 0, 0, 0.25); overflow: hidden;
+}
+.cr-track__label { position: relative; z-index: 1; padding: 0 0.3rem; line-height: 1.1rem; }
+.cr-track__fill { position: absolute; inset: 0 auto 0 0; }
+.cr-track__fill--progress { background: rgba(78, 143, 78, 0.55); }
+.cr-track__fill--pressure { background: rgba(154, 90, 90, 0.55); }
+/* An enriched check or challenge in prepared text: a content link, because that is what it is. */
+a.cr-enriched { cursor: pointer; white-space: nowrap; }
 .cr-scene__counts { display: flex; gap: 0.5rem; align-items: center; }
 .cr-check label { display: block; margin-bottom: 0.25rem; }
 .cr-standing__ways { opacity: 0.8; margin-left: 0.3rem; }

@@ -29,7 +29,8 @@ import {
   itemMeets, requireText, payToCast, answerCast, grantBlock, resolveCheck, passiveScore
 } from "./resolve.mjs";
 import {
-  readCall, setCall, clearCall, describeCall, cardAnswers, bestTool, helpOptions
+  readCall, setCall, clearCall, describeCall, cardAnswers, bestTool, helpOptions,
+  readChallenge, startChallenge, endChallenge, catchBreathInChallenge, drawTwist, twistCounts
 } from "./checks.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -109,6 +110,13 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       // The GM's half of a check, and withdrawing it again (skill-rules 2, step 1).
       callCheck: CardRPGTray.#onCallCheck,
       clearCall: CardRPGTray.#onClearCall,
+      // A challenge is two tracks and a GM who starts and ends it (skill-rules 3).
+      startChallenge: CardRPGTray.#onStartChallenge,
+      endChallenge: CardRPGTray.#onEndChallenge,
+      // Catch Breath on the skill side, which costs Pressure rather than a turn.
+      breatheScene: CardRPGTray.#onBreatheScene,
+      // The GM's own deck, drawn by hand because the rules say it is never forced.
+      twist: CardRPGTray.#onTwist,
     }
   };
 
@@ -835,6 +843,22 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
        */
       call: call ? { ...call, label: describeCall(call) } : null,
       isGM: game.user.isGM,
+      /*
+       * The two tracks, as fractions and as widths. A challenge shows only while one is running
+       * (hud-spec 5), and both tracks are printed even when one has not moved: *how much can go
+       * wrong before this turns ugly* is the number a player is deciding against.
+       */
+      challenge: (() => {
+        const live = readChallenge();
+        if (!live) return null;
+        const pct = (n, max) => `${Math.min(100, Math.round(100 * n / max))}%`;
+        return {
+          ...live,
+          progressPct: pct(live.progress, live.progressMax),
+          pressurePct: pct(live.pressure, live.pressureMax)
+        };
+      })(),
+      twists: game.user.isGM ? twistCounts() : null,
       /* The six, always all six: a deck that covers every approach is the composition rule. */
       passives: Object.entries(CARDRPG.approaches)
         .filter(([key]) => key !== "any")
@@ -1193,6 +1217,102 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       content: `<div class="cardrpg"><p><strong>${describeCall(call)}</strong>`
         + `${answer.note ? ` &mdash; ${foundry.utils.escapeHTML(answer.note)}` : ""}</p></div>`
     });
+    for (const tray of CardRPGTray.openTrays) tray.render();
+  }
+
+  /**
+   * Begin a challenge: two numbers and a line about what it is (skill-rules 3).
+   *
+   * The defaults are the example's -- Progress 5, Pressure 3 -- because a GM reaching for this
+   * button mid-sentence should not have to invent a pair of numbers, and those two are the pair the
+   * rules worked through.
+   */
+  static async #onStartChallenge() {
+    if (!game.user.isGM) return ui.notifications.info(game.i18n.localize("CARDRPG.Check.GMCalls"));
+    const live = readChallenge();
+    const answer = await foundry.applications.api.DialogV2.prompt({
+      window: { title: game.i18n.localize("CARDRPG.Challenge.Title") },
+      content: `<div class="cardrpg cr-check">
+        <p class="cr-note">${game.i18n.localize("CARDRPG.Challenge.Body")}</p>
+        <label>${game.i18n.localize("CARDRPG.Challenge.Progress")}
+          <input type="number" name="progress" min="1" value="${live?.progressMax ?? 5}"></label>
+        <label>${game.i18n.localize("CARDRPG.Challenge.Pressure")}
+          <input type="number" name="pressure" min="1" value="${live?.pressureMax ?? 3}"></label>
+        <label>${game.i18n.localize("CARDRPG.Check.Note")}
+          <input type="text" name="note" value="${foundry.utils.escapeHTML(live?.note ?? "")}"></label>
+      </div>`,
+      ok: {
+        label: game.i18n.localize("CARDRPG.Challenge.Begin"),
+        callback: (ev, button) => ({
+          progressMax: Number(button.form.elements.progress.value),
+          pressureMax: Number(button.form.elements.pressure.value),
+          note: button.form.elements.note.value
+        })
+      },
+      rejectClose: false
+    });
+    if (!answer) return;
+    await startChallenge(answer);
+    await ChatMessage.create({
+      content: `<div class="cardrpg"><p><strong>${answer.note
+        || game.i18n.localize("CARDRPG.Challenge.Title")}</strong> &mdash; Progress 0/`
+        + `${answer.progressMax} &middot; Pressure 0/${answer.pressureMax}</p></div>`
+    });
+    for (const tray of CardRPGTray.openTrays) tray.render();
+  }
+
+  /** End it. Either track filling is a reason, and so is the GM deciding it is over. */
+  static async #onEndChallenge() {
+    if (!game.user.isGM) return;
+    await endChallenge();
+    for (const tray of CardRPGTray.openTrays) tray.render();
+  }
+
+  /**
+   * Catch Breath inside a challenge (skill-rules 3), which is not the combat one.
+   *
+   * Pressure +1, the discard comes back, **one card of your choice** is set aside as Spent, and you
+   * draw up to hand size. The choice is the player's and the dialog asks for it, the same way a
+   * prune does: only they know which card they can do without today.
+   */
+  static async #onBreatheScene() {
+    const live = readChallenge();
+    if (!live) return ui.notifications.info(game.i18n.localize("CARDRPG.Challenge.NotInOne"));
+    const deck = deckOf(this.actor, "skill");
+    const discard = deckOf(this.actor, "skillDiscard");
+    const pool = [...(discard?.cards?.contents ?? []), ...(deck?.cards?.contents ?? [])];
+    const answer = await foundry.applications.api.DialogV2.prompt({
+      window: { title: game.i18n.localize("CARDRPG.Challenge.Breathe") },
+      content: `<div class="cardrpg cr-check">
+        <p class="cr-note">${game.i18n.localize("CARDRPG.Challenge.BreatheBody")}</p>
+        <label>${game.i18n.localize("CARDRPG.Challenge.SetAside")} <select name="spent">
+          <option value="">${game.i18n.localize("CARDRPG.Challenge.NoneAside")}</option>
+          ${pool.map(c => `<option value="${c.id}">${foundry.utils.escapeHTML(c.name)}`
+            + ` (${c.system.value})</option>`).join("")}
+        </select></label>
+      </div>`,
+      ok: {
+        label: game.i18n.localize("CARDRPG.Challenge.Breathe"),
+        callback: (ev, button) => ({ spent: button.form.elements.spent.value })
+      },
+      rejectClose: false
+    });
+    if (!answer) return;
+    await catchBreathInChallenge(this.actor, answer.spent || null);
+    this.render();
+  }
+
+  /**
+   * Draw a twist, or two to pick from (skill-rules 4).
+   *
+   * **A button and never a consequence**, which is the rule rather than a UI choice: *the GM can
+   * always choose a cost directly... the deck is there for when inspiration runs out, not to
+   * override the GM*. A Partial's chat line says a twist is owed; whether the deck answers is the
+   * GM's decision, and so is putting one back that makes no sense here.
+   */
+  static async #onTwist(event, target) {
+    if (!game.user.isGM) return;
+    await drawTwist({ two: target.dataset.two === "yes" });
     for (const tray of CardRPGTray.openTrays) tray.render();
   }
 

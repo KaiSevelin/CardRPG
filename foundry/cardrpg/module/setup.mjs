@@ -8,9 +8,10 @@
 
 import { CARDRPG } from "./config.mjs";
 /* The one shape a skill card takes, shared with anything that grants one rather than spelled here. */
-import { skillCardData, backOf } from "./decks.mjs";
+import { skillCardData, twistCardData, backOf } from "./decks.mjs";
 import {
   fateCards, WARRIOR_DECK, GOBLIN_DECK, ITEMS, NPC_GEAR, FEATURES, FORMULAS, WARRIOR_SKILLS,
+  TWISTS,
   SHADOW_FORMULAS, WILD_MAGIC,
   WARRIOR, GOBLIN, GOBLIN_ARCHER
 } from "./content.mjs";
@@ -227,6 +228,17 @@ export async function createStarterContent() {
   const warriorSkillDiscard = await makeCards("Warrior Skill Discard", "pile",
     "warrior-skill-discard");
   made.decks += 3;
+
+  /*
+   * **The GM's twist deck, which belongs to the world and not to a character.** Thirty cards of
+   * eight kinds (skill-rules 4), and a discard beside it -- a `pile`, like every other discard, and
+   * reshuffled when the deck runs out rather than on a rest, because the rules say *shuffle when the
+   * deck runs out* and nothing else.
+   */
+  const twists = await makeCards("Twist Deck", "deck", "twist-deck",
+    expand(TWISTS, def => twistCardData(def)), "skill");
+  await makeCards("Twist Discard", "pile", "twist-discard");
+  made.decks += 2;
 
   await buildActor(WARRIOR, {
     action: warriorDeck.id,

@@ -70,7 +70,7 @@ for (const rel of ["system.json", "lang/en.json"]) {
 }
 
 const manifest = JSON.parse(fs.readFileSync(path.join(root, "system.json"), "utf8"));
-check("manifest declares Card subtypes", Object.keys(manifest.documentTypes.Card ?? {}).length, 7);
+check("manifest declares Card subtypes", Object.keys(manifest.documentTypes.Card ?? {}).length, 8);
 check("manifest verified for v14", manifest.compatibility.verified, "14");
 
 // Every file the manifest promises must exist, or the system won't load at all.
@@ -5058,9 +5058,10 @@ check("a pile is never given one",
  */
 const deckCalls = [...setupSource.matchAll(/makeCards\(([\s\S]*?)\n?\s*\);/g)]
   .map(m => m[1]).filter(args => /"deck"/.test(args));
-/* Six documents from five backs: there are two fate decks, because each NPC type has its own so
- * that a Cursed goblin does not hex the ogre beside it. They share the one fate back. */
-check("deck documents created", deckCalls.length, 6);
+/* Seven documents from five backs: there are two fate decks, because each NPC type has its own so
+ * that a Cursed goblin does not hex the ogre beside it, and they share the one fate back -- and the
+ * twist deck is the GM's, which borrows the skill back for the reason twistCardData gives. */
+check("deck documents created", deckCalls.length, 7);
 check("deck documents with no back",
   deckCalls.filter(args => !/"[a-z.]+"\s*\)?\s*$/.test(args.trim())
     || !/backOf\(|, "(action|fate|skill|wild|npc\.[a-z]+)"\s*\)?\s*$/.test(args.trim()))
@@ -5492,7 +5493,7 @@ for (const [doc, types] of Object.entries(manifest.documentTypes)) {
 }
 check("document subtypes with no sheet", uncovered.length ? uncovered.join(", ") : "none", "none");
 check("subtypes checked", Object.values(manifest.documentTypes)
-  .reduce((n, types) => n + Object.keys(types).length, 0), 12);
+  .reduce((n, types) => n + Object.keys(types).length, 0), 13);
 
 /* ---- what a card does is editable, not just what it is called ---- */
 
@@ -5966,8 +5967,16 @@ const checksCode = checksSource.replace(/\/\*[\s\S]*?\*\//g, "")
   .split("\n").map(line => line.replace(/\/\/.*$/, "")).join("\n");
 check("the active scene rather than the viewed one",
   /canvas\.scene/.test(checksCode) ? "the viewed one" : "the active one", "the active one");
+/*
+ * Read from `setCall`'s OWN body. The guard is one line and `startChallenge` now carries the same
+ * one, so a file-wide grep was satisfied by the second writer while the first had lost it -- which
+ * is the shape of weakening this project has met before, and it only appeared when a second
+ * function was written.
+ */
+const setCallBody = checksSource.slice(checksSource.indexOf("export async function setCall"),
+  checksSource.indexOf("export async function clearCall"));
 check("only the GM may set one",
-  /if \(!game\.user\.isGM \|\| !scene\) return null;/.test(checksSource) ? "yes" : "no", "yes");
+  /if \(!game\.user\.isGM \|\| !scene\) return null;/.test(setCallBody) ? "yes" : "no", "yes");
 check("and only the GM may withdraw it",
   /export async function clearCall\(\) \{\s*const scene = game\.scenes\?\.active;\s*if \(!game\.user\.isGM/
     .test(checksSource) ? "yes" : "no", "yes");
@@ -6106,6 +6115,180 @@ check("and names the four tools that could not reach their bonus",
 check("hud-spec records the banner",
   /#### 5\.1 The call for a check {2}\*\*\[BUILT 2026-11-02\]\*\*/.test(hudSpec) ? "yes" : "no",
   "yes");
+
+/* ---- challenges, the twist deck and enrichers  [BUILT 2026-11-02] ---- */
+
+/*
+ * **Three sections of skill-rules that were written in full and built not at all**, and the reason
+ * the smallest of them took the longest: §3's tracks are pure arithmetic hanging off a function
+ * that already existed, §4's deck is thirty cards in the shape four decks already have, and §2's
+ * *draw a twist card* had been printed in two result tables since the rules were written with
+ * nothing in the software able to do it.
+ */
+const twistDefs = content.TWISTS;
+check("kinds of twist", twistDefs.length, 8);
+/* Thirty cards, and the counts ARE the tone: Strain, Noise, Time, Gear, Arrival and Opening are
+ * common so most twists push sideways, Hurt and Secret are rare so they land hard. */
+check("cards in the twist deck", twistDefs.reduce((n, t) => n + t.copies, 0), 30);
+check("and the counts the document gives",
+  twistDefs.map(t => `${t.name} ${t.copies}`).join(", "),
+  "Noise 4, Time 4, Gear 4, Strain 5, Hurt 3, Arrival 4, Secret 2, Opening 4");
+/* Two of the eight are not only prose, and both are named in the rules as exceptions. */
+check("the twist that costs an extra Pressure",
+  twistDefs.filter(t => t.pressure).map(t => t.name).join(", "), "Time");
+check("and the one that gives rather than takes",
+  twistDefs.filter(t => t.gives).map(t => t.name).join(", "), "Opening");
+check("every twist says what it costs",
+  twistDefs.filter(t => !(t.cost ?? "").length).length, 0);
+
+/* The document's table is the brief, the same way the world's language list is. */
+const twistRows = [...skillDoc.matchAll(/^\| \*\*(\w+)\*\* \| (\d+) \|/gm)]
+  .map(m => ({ name: m[1], copies: Number(m[2]) }));
+check("twist rows in skill-rules", twistRows.length, 8);
+check("and the content matches them",
+  twistRows.filter(r => twistDefs.find(t => t.name === r.name)?.copies !== r.copies)
+    .map(r => r.name).join(", ") || "none", "none");
+
+/* A twist is a Card, like everything else that is drawn. */
+check("the twist card is a subtype",
+  /export class TwistCardData/.test(cardsSource) ? "yes" : "no", "yes");
+check("and it is registered",
+  /twist: TwistCardData/.test(entrySource)
+    ? "yes" : "no", "yes");
+check("the deck is built at setup",
+  /makeCards\("Twist Deck", "deck", "twist-deck"/.test(setupSource) ? "yes" : "no", "yes");
+check("with a discard beside it",
+  /makeCards\("Twist Discard", "pile", "twist-discard"\)/.test(setupSource) ? "yes" : "no", "yes");
+/*
+ * **Drawn by hand and never by a result**, which is §4's own instruction: *the GM can always choose
+ * a cost directly... the deck is there for when inspiration runs out, not to override the GM*. So
+ * the check's chat line says a twist is owed and the button is the GM's; nothing in the engine
+ * draws one.
+ */
+check("only the GM may draw one",
+  /export async function drawTwist[\s\S]{0,120}if \(!game\.user\.isGM\) return null;/
+    .test(checksSource) ? "yes" : "no", "yes");
+check("nothing draws a twist automatically",
+  /drawTwist\(/.test(resolveSource) ? "something does" : "nothing does", "nothing does");
+check("the Partial says one is owed",
+  /you do it, and it costs something\. Draw a twist\./.test(resolveSource) ? "yes" : "no", "yes");
+check("and so does the Fail",
+  /the situation changes\. Draw a twist\./.test(resolveSource) ? "yes" : "no", "yes");
+/* Two and pick, for a dramatic failure or a card that does not fit the scene. */
+check("two may be drawn and one picked",
+  /drawTwist\(\{ two: target\.dataset\.two === "yes" \}\)/.test(traySource) ? "yes" : "no", "yes");
+/* Reshuffled when it runs out, which is the only shuffle rule the deck has. */
+check("the deck comes back when it runs out",
+  /if \(deck\.cards\.size < want\)/.test(checksSource) ? "yes" : "no", "yes");
+check("and a twist is whispered to the GM",
+  /whisper: ChatMessage\.getWhisperRecipients\("GM"\)/.test(checksSource) ? "yes" : "no", "yes");
+
+/*
+ * **The challenge tracks, which are the table of §3 as data.** Critical +2 progress, Success +1,
+ * Partial +1 and +1, Fail +1 pressure and a twist -- pulled out as a lookup rather than written as
+ * four branches, because `checkOutcome` already decides which of the four a check produced and this
+ * is the only other thing that reads it.
+ */
+const checksModule = await import("../module/checks.mjs");
+check("the track table", Object.entries(checksModule.TRACK_MOVES)
+  .map(([k, v]) => `${k} +${v.progress}/+${v.pressure}${v.twist ? " twist" : ""}`).join(", "),
+  "critical +2/+0, success +1/+0, partial +1/+1 twist, fail +0/+1 twist");
+check("and it matches the document's table",
+  [...skillDoc.matchAll(/^\| (Critical|Success|Partial|Fail) \| ([^|]*)\| ([^|]*)\|/gm)]
+    .map(m => `${m[1].toLowerCase()} ${m[2].trim() || "-"} ${m[3].trim() || "-"}`).join("; "),
+  "critical +2 –; success +1 –; partial +1 +1; fail – +1 (and a twist)");
+
+/* It lives beside the call, on the active scene, and for the same reason. */
+check("a challenge is a scene's state",
+  /const CHALLENGE = "challenge";/.test(checksSource) ? "yes" : "no", "yes");
+check("only the GM starts one",
+  /export async function startChallenge[\s\S]{0,200}if \(!game\.user\.isGM \|\| !scene\) return null;/
+    .test(checksSource) ? "yes" : "no", "yes");
+/*
+ * **And only the GM's client records a result**, which is not a policy but a fact about Foundry: a
+ * scene flag is the GM's to write and a player resolves their own check. So the outcome travels as
+ * a flag on the chat message and one hook, guarded by `isGM`, moves the tracks.
+ */
+check("the check stamps its outcome on the message",
+  /flags: \{ cardrpg: \{ outcome \} \},/.test(resolveSource) ? "yes" : "no", "yes");
+check("and a hook on the GM's client reads it",
+  /Hooks\.on\("createChatMessage"[\s\S]{0,120}if \(!game\.user\.isGM\) return;/
+    .test(checksSource) ? "yes" : "no", "yes");
+check("which is registered at startup",
+  /registerCheckHooks\(\);/.test(entrySource)
+    ? "yes" : "no", "yes");
+/* Neither track is clamped: a full track is reported and the GM decides what it means, because
+ * both endings in §3 are about fiction rather than state. */
+check("a filled track is reported, not enforced",
+  /won: progress >= progressMax,/.test(checksSource) ? "yes" : "no", "yes");
+check("and both endings have words",
+  ["CARDRPG.Challenge.Won", "CARDRPG.Challenge.Lost"].every(k => k in lang), true);
+
+/* Catch Breath in a challenge, which is the skill side's and not the combat one. */
+check("Catch Breath in a challenge exists",
+  /export async function catchBreathInChallenge/.test(checksSource) ? "yes" : "no", "yes");
+check("it costs a Pressure",
+  /flags: \{ cardrpg: \{ pressure: 1 \} \}/.test(checksSource) ? "yes" : "no", "yes");
+check("the discard comes back",
+  /if \(ids\.length\) await move\(discard, deck, ids\);/.test(checksSource) ? "yes" : "no", "yes");
+/* The card set aside is the player's choice, the way a prune is: only they know which one died. */
+check("and the player picks what is set aside",
+  /CARDRPG\.Challenge\.SetAside/.test(traySource) ? "yes" : "no", "yes");
+check("the tray offers it only inside a challenge",
+  /data-action="breatheScene"/.test(trayTemplate) ? "yes" : "no", "yes");
+check("and the tracks print as bars",
+  /cr-track__fill--pressure/.test(trayTemplate) ? "yes" : "no", "yes");
+
+/*
+ * **Enrichers: the call written where the prep is.** Most out-of-combat checks come from prepared
+ * material, so the cheapest streamlining left is to let the page carry the call -- `@Check[wits|
+ * hard]{Spot the tripwire}` is a button, and clicking it sets the call for the party.
+ */
+const enrichSource = fs.readFileSync(path.join(root, "module/enrichers.mjs"), "utf8");
+/* The code with its comments stripped. The module documents its own syntax, so a grep for
+ * "@Challenge[" over the whole file finds the sentence explaining it and reports a pattern that
+ * may have been renamed -- the same way an earlier check read the comment saying `canvas.scene` is
+ * NOT used. A file that explains itself will answer a grep about what it explains. */
+const enrichCode = enrichSource.replace(/\/\*[\s\S]*?\*\//g, "")
+  .split("\n").map(line => line.replace(/\/\/.*$/, "")).join("\n");
+check("the enrichers are registered",
+  /CONFIG\.TextEditor\?\.enrichers/.test(enrichSource) ? "yes" : "no", "yes");
+check("at init, because enrichment runs on first render",
+  /registerEnrichers\(\);/.test(entrySource)
+    ? "yes" : "no", "yes");
+/* Spelled with the backslash the regex literals carry, so this reads the patterns themselves and
+ * not a sentence about them. */
+check("both patterns exist",
+  ["@Check\\[", "@Challenge\\["].every(p => enrichCode.includes(p)), true);
+/* The parts are order-free, because a GM writing prep should not have to remember a grammar. */
+check("an approach, a difficulty and an edge are all optional",
+  /if \(part in CARDRPG\.difficulties\)/.test(enrichSource)
+  && /if \(part === "advantage" \|\| part === "adv"\)/.test(enrichSource) ? "yes" : "no", "yes");
+check("a difficulty may be a word or a number",
+  /if \(\/\^\\d\+\$\/\.test\(part\)\)/.test(enrichSource) ? "yes" : "no", "yes");
+/* A player clicking one gets a reminder, not a call: step 1 is still the GM's, and an enricher is
+ * a shortcut for the person who was always allowed to take it. */
+check("a player clicking an enriched check cannot call it",
+  /if \(!game\.user\.isGM\) \{[\s\S]{0,120}CARDRPG\.Check\.GMCalls/.test(enrichSource)
+    ? "yes" : "no", "yes");
+/* One delegated listener, because enriched text turns up in journals, chat, items and tooltips. */
+check("one listener serves every rendered button",
+  /document\.addEventListener\("click"/.test(enrichSource) ? "yes" : "no", "yes");
+check("and it is attached once the document exists",
+  /registerEnricherClicks\(\);/.test(entrySource)
+    ? "yes" : "no", "yes");
+
+/* The documents. Three sections moved from written to built, and each says what it now does. */
+check("skill-rules marks challenges built",
+  /^## 3\. Challenges {2}\*\*\[BUILT 2026-11-02\]\*\*$/m.test(skillDoc) ? "yes" : "no", "yes");
+check("and the twist deck",
+  /^## 4\. Twist deck \(GM tool\) {2}\*\*\[BUILT 2026-11-02\]\*\*$/m.test(skillDoc)
+    ? "yes" : "no", "yes");
+check("and says the deck is never forced",
+  /never forced by a result/.test(skillDoc) ? "yes" : "no", "yes");
+check("hud-spec records the tracks and the enrichers",
+  /#### 5\.2 Challenge tracks, and checks written into the prep {2}\*\*\[BUILT 2026-11-02\]\*\*/
+    .test(hudSpec) ? "yes" : "no", "yes");
 
 /* -------------------------------------------- */
 

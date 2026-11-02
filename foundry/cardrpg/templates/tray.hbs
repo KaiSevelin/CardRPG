@@ -256,6 +256,31 @@
                 data-tooltip="Name the obstacle: how hard, which approach, and whether the plan earns advantage.">Call for a check</button>
       {{/if}}
 
+      {{!--
+        The two tracks of a challenge (skill-rules 3), which appear only while one is running.
+        Both are printed even before either moves: how much can go wrong before this turns ugly is
+        the number a player is deciding against, and a bar at zero still says what the limit is.
+      --}}
+      {{#if scene.challenge}}
+        <div class="cr-track{{#if scene.challenge.won}} cr-track--won{{/if}}{{#if scene.challenge.lost}} cr-track--lost{{/if}}">
+          {{#if scene.challenge.note}}<span class="cr-track__note">{{scene.challenge.note}}</span>{{/if}}
+          <span class="cr-track__bar" data-tooltip="Progress: how much you still need to achieve.">
+            <span class="cr-track__label">Progress {{scene.challenge.progress}}/{{scene.challenge.progressMax}}</span>
+            <span class="cr-track__fill cr-track__fill--progress" style="width: {{scene.challenge.progressPct}}"></span>
+          </span>
+          <span class="cr-track__bar" data-tooltip="Pressure: how much can go wrong before this turns ugly.">
+            <span class="cr-track__label">Pressure {{scene.challenge.pressure}}/{{scene.challenge.pressureMax}}</span>
+            <span class="cr-track__fill cr-track__fill--pressure" style="width: {{scene.challenge.pressurePct}}"></span>
+          </span>
+          <button type="button" data-action="breatheScene"
+                  data-tooltip="Catch Breath: Pressure +1, your discard comes back, one card is set aside as Spent, and you draw up to hand size.">Catch Breath</button>
+          {{#if scene.isGM}}
+            <button type="button" data-action="endChallenge" class="cr-call__clear"
+                    data-tooltip="End the challenge.">&times;</button>
+          {{/if}}
+        </div>
+      {{/if}}
+
       <div class="cr-scene__passives">
         {{#each scene.passives}}
           {{!-- Static: the best card of this approach in the WHOLE deck plus 2, counting the
@@ -298,6 +323,18 @@
 
       <div class="cr-scene__counts">
         {{#if scene.isGM}}
+          {{#unless scene.challenge}}
+            <button type="button" data-action="startChallenge"
+                    data-tooltip="Begin a challenge: a Progress track to fill and a Pressure track to stay under.">Challenge</button>
+          {{/unless}}
+          {{#if scene.twists.exists}}
+            {{!-- The twist deck is drawn by hand, never by a result: skill-rules 4 says the GM can
+                  always choose a cost directly, and that a twist which makes no sense goes back. --}}
+            <button type="button" data-action="twist"
+                    data-tooltip="Draw one twist. {{scene.twists.deck}} left in the deck.">Twist</button>
+            <button type="button" data-action="twist" data-two="yes"
+                    data-tooltip="Draw two and pick one — for a dramatic failure, or when the first card does not fit the scene.">Twist ×2</button>
+          {{/if}}
           {{#if scene.call}}
             <button type="button" data-action="callCheck"
                     data-tooltip="Change the call: a difficulty set wrongly is corrected here, not argued about.">Re-call</button>
