@@ -14,7 +14,7 @@
       "verb": "cast",
       "range": 3,
       "mod": 4,
-      "text": "ignoring armor"
+      "ignoresArmour": true
     },
     "kind": "formula",
     "prepared": false

@@ -8,7 +8,8 @@
     "source": "Asceticism",
     "description": "<p>Nothing in either hand, and nothing anybody can take out of them. The bonus to Casts is incidental; the point is that Disarm stops being a word.</p>",
     "effect": {
-      "text": "while both hands are empty: +2 to all Casts, and you cannot be Disarmed"
+      "whileState": "handsEmpty",
+      "text": "+2 to all Casts, and you cannot be Disarmed"
     },
     "kind": "formula",
     "prepared": false

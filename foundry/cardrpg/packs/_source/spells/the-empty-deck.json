@@ -8,7 +8,8 @@
     "source": "Asceticism",
     "description": "<p>Nothing in your hand, nothing left to draw, and nothing anybody can do to you. It is the shortest window in the game and it is absolute.</p>",
     "effect": {
-      "text": "while your hand and your draw pile are both empty, you cannot be harmed at all"
+      "whileState": "handAndDeckEmpty",
+      "text": "you cannot be harmed at all"
     },
     "kind": "formula",
     "prepared": false

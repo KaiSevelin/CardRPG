@@ -14,7 +14,7 @@
       "verb": "cast",
       "range": 2,
       "mod": 3,
-      "text": "ignoring Block"
+      "ignoresBlock": true
     },
     "kind": "formula",
     "prepared": false

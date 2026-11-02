@@ -89,6 +89,45 @@ export function stepField() {
       required: false, blank: true, initial: "",
       choices: [...Object.keys(CARDRPG.timings), ""]
     }),
+    /*
+     * **How often it may be played at all.** Three steps say *Once a day* or *Once per pact per
+     * fight*, and a limit the engine cannot read is a limit the table forgets at the exact moment
+     * it matters, which is the second time somebody wants to use it.
+     */
+    oncePer: new fields.StringField({
+      required: false, blank: true, initial: "",
+      choices: [...Object.keys(CARDRPG.limits), ""]
+    }),
+    /*
+     * **What this step goes straight through.** `ignores` above is a NUMBER of armour points, which
+     * is the ordinary case -- a bodkin finds a gap. These three are all of it, and Block and cover
+     * are not armour: core-rules 5 is explicit that `ignores` comes off armour and never off Block,
+     * so each needs saying separately or the engine subtracts the wrong thing.
+     */
+    ignoresArmour: new fields.BooleanField({ initial: false }),
+    ignoresBlock: new fields.BooleanField({ initial: false }),
+    ignoresCover: new fields.BooleanField({ initial: false }),
+    /*
+     * **Whose fate deck a Read looks at** (core-rules 6). `foresee` has always had a number and
+     * never a target, so *Read 3 on any one fate deck except your own* and *on your own fate deck*
+     * were the same step as far as the engine could tell.
+     */
+    readDeck: new fields.StringField({
+      required: false, blank: true, initial: "",
+      choices: [...Object.keys(CARDRPG.readDecks), ""]
+    }),
+    /*
+     * **A state of your own this step waits on**: *while your hand is empty*, *while both hands are
+     * empty*, *while your hand is exactly one card*. Eleven steps, and whole builds rest on them.
+     *
+     * Most of these the engine can see for itself, which is the point of naming them: a condition
+     * the software can read is a condition it can show, and a card whose entire design is an empty
+     * hand should say so on its face rather than in a sentence underneath.
+     */
+    whileState: new fields.StringField({
+      required: false, blank: true, initial: "",
+      choices: [...Object.keys(CARDRPG.whileStates), ""]
+    }),
 
     /*
      * **What a `conjure` step calls up, and what it costs to keep.**

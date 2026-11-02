@@ -7,10 +7,12 @@
     "strength": 5,
     "source": "The Purple",
     "description": "<p>Tainting 3 on them and two Taint on you &mdash; which with the first taste is Afflicted. A priest of The Purple who casts their thesis is ill for good.</p>",
+    "cost": {
+      "taint": 2
+    },
     "effect": {
       "verb": "tainting",
-      "param": 3,
-      "text": "and you gain 2 Taint yourself"
+      "param": 3
     },
     "kind": "miracle",
     "prepared": false

@@ -7,8 +7,12 @@
     "strength": 5,
     "source": "Blood Magic",
     "description": "<p>You will not be standing afterwards. You will have had two turns.</p>",
+    "cost": {
+      "health": 1,
+      "scale": "halfCurrent"
+    },
     "effect": {
-      "text": "take your whole turn again, now. Costs half your current Health, rounded up"
+      "text": "take your whole turn again, now"
     },
     "kind": "formula",
     "prepared": false

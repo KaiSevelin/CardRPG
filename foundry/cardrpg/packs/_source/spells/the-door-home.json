@@ -9,7 +9,8 @@
     "description": "<p>A door you have opened before becomes a door to any other door you have opened before. It is the school's thesis: a householder is never far from anywhere they have been.</p>",
     "effect": {
       "timing": "ritual",
-      "text": "a door you have opened leads to any other you have opened. Once a day"
+      "oncePer": "day",
+      "text": "a door you have opened leads to any other you have opened"
     },
     "kind": "formula",
     "prepared": false

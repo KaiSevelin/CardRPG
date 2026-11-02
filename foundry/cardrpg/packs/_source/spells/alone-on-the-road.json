@@ -10,7 +10,8 @@
     "effect": {
       "verb": "heal",
       "param": 2,
-      "text": "while no ally is within 2, at the start of your turn"
+      "whileState": "noAllyNear",
+      "text": "at the start of your turn"
     },
     "kind": "miracle",
     "prepared": false

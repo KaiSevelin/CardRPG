@@ -7,9 +7,13 @@
     "strength": 2,
     "source": "Vax",
     "description": "<p>Every ally adjacent to you gains your armor value as Block until your next turn. One Health per ally, so a long line is a dear one.</p>",
+    "cost": {
+      "health": 1,
+      "scale": "perAlly"
+    },
     "effect": {
       "range": 1,
-      "text": "adjacent allies gain your armor as Block. Costs 1 Health per ally"
+      "text": "adjacent allies gain your armor as Block"
     },
     "kind": "miracle",
     "prepared": false

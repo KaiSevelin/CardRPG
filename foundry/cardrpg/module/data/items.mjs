@@ -164,8 +164,26 @@ export class SpellSlateData extends SlateData {
        * an obedience, and obediences are the GM's. This is the one price the engine can charge,
        * because Health is a number it already keeps.
        */
+      /*
+       * **What casting it costs you**, beyond the slot its strength fills.
+       *
+       * `health` is Blood Magic's price and has been here since there were spells. `taint` is what
+       * the Grey asks, and `strain` is cards off your own hand -- both were carried in prose on ten
+       * spells, which is also where `scale` was: *Costs 1 Health per ally* is the one shape the
+       * amount alone could not say.
+       *
+       * The step does NOT get a cost of its own, deliberately. A price in two places is a spell
+       * that can be charged for twice, by two readers, and `costs` on a card half is already the
+       * other half of this idea for a card that is not a spell.
+       */
       cost: new fields.SchemaField({
-        health: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 })
+        health: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 }),
+        taint: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 }),
+        strain: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 }),
+        scale: new fields.StringField({
+          required: false, blank: true, initial: "",
+          choices: [...Object.keys(CARDRPG.costScales), ""]
+        })
       }),
 
       group: groupField(),

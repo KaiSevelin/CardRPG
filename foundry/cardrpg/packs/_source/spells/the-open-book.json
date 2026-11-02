@@ -8,7 +8,9 @@
     "source": "Divination",
     "description": "<p>For one round the whole party is lucky and you can see why. Two cards down each of their decks, and a better draw on top of it.</p>",
     "effect": {
-      "text": "until your next turn every ally draws fate with advantage, and Read 2 on each deck"
+      "duration": 1,
+      "readDeck": "all",
+      "text": "every ally draws fate with advantage, and Read 2"
     },
     "kind": "formula",
     "prepared": false

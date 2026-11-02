@@ -3033,7 +3033,7 @@ export const MIND_POOL = [
     needs: ["a step that ignores Block"],
     cost: { health: 1 },
     description: "<p>Your own blood, thrown. It goes round a shield rather than through it.</p>",
-    effect: { verb: "cast", range: 2, mod: 3, text: "ignoring Block" }
+    effect: { verb: "cast", range: 2, mod: 3, ignoresBlock: true }
   },
   {
     /*
@@ -3066,11 +3066,8 @@ export const MIND_POOL = [
     needs: ["a second secondary for every ally in an area",
       "a cost that scales with the allies it covers"],
     description: "<p>You open a vein for each of them, and for an hour nobody is tired.</p>",
-    effect: {
-      range: 2,
-      text: "until your next turn every ally within 2 may play a second secondary. "
-        + "Costs 1 Health per ally"
-    }
+    cost: { health: 1, scale: "perAlly" },
+    effect: { range: 2, duration: 1, text: "every ally within 2 may play a second secondary" }
   },
 
   {
@@ -3090,7 +3087,10 @@ export const MIND_POOL = [
     needs: [],
     reaction: "bargain",
     description: "<p>It was going to fail. Something intervened, once, because it owes you.</p>",
-    effect: { timing: "reaction", text: "an ally's failed check becomes a Partial. Once per pact per fight" }
+    effect: {
+      timing: "reaction", oncePer: "pactPerFight",
+      text: "an ally's failed check becomes a Partial"
+    }
   },
   {
     name: "The Nine Names", strength: 1, pool: "mind", source: "Spiritualism",
@@ -3139,9 +3139,8 @@ export const MIND_POOL = [
     needs: ["a whole turn taken again, now",
       "a Health cost that is a fraction of what you have left"],
     description: "<p>You will not be standing afterwards. You will have had two turns.</p>",
-    effect: {
-      text: "take your whole turn again, now. Costs half your current Health, rounded up"
-    }
+    cost: { health: 1, scale: "halfCurrent" },
+    effect: { text: "take your whole turn again, now" }
   },
 
   /*
@@ -3540,7 +3539,9 @@ export const MIND_POOL = [
       "a Strike made with no item, at your own Might"],
     description: "<p>No weapon, and no need of one. It is not a better Strike than a sword; it is "
       + "a Strike you cannot be parted from.</p>",
-    effect: { text: "while your hands are empty you may Strike with no item, at your own Might" }
+    effect: {
+      whileState: "handsEmpty", text: "you may Strike with no item, at your own Might"
+    }
   },
   {
     name: "Nothing to Carry", strength: 1, pool: "mind", source: "Asceticism",
@@ -3548,7 +3549,8 @@ export const MIND_POOL = [
     description: "<p>Nothing in either hand, and nothing anybody can take out of them. The bonus "
       + "to Casts is incidental; the point is that Disarm stops being a word.</p>",
     effect: {
-      text: "while both hands are empty: +2 to all Casts, and you cannot be Disarmed"
+      whileState: "handsEmpty",
+      text: "+2 to all Casts, and you cannot be Disarmed"
     }
   },
   {
@@ -3557,7 +3559,8 @@ export const MIND_POOL = [
     description: "<p>One card left, and it does both jobs. A hand of one is the worst hand in the "
       + "game and this is the formula that makes it the best.</p>",
     effect: {
-      text: "while your hand is exactly one card, you may play that card for both halves"
+      whileState: "oneCard",
+      text: "you may play that card for both halves"
     }
   },
   {
@@ -3570,7 +3573,8 @@ export const MIND_POOL = [
     description: "<p>Nothing in your hand, nothing left to draw, and nothing anybody can do to "
       + "you. It is the shortest window in the game and it is absolute.</p>",
     effect: {
-      text: "while your hand and your draw pile are both empty, you cannot be harmed at all"
+      whileState: "handAndDeckEmpty",
+      text: "you cannot be harmed at all"
     }
   },
   {
@@ -3754,7 +3758,10 @@ export const MIND_POOL = [
     description: "<p>One meal, taken together, and nobody is carrying anything from before it. "
       + "Once a day, and the elf-kin keep the tally &mdash; which is this school's price doing "
       + "exactly what a price should.</p>",
-    effect: { timing: "ritual", text: "the party sheds every Wound and all rest tokens return. Once a day" }
+    effect: {
+      timing: "ritual", oncePer: "day",
+      text: "the party sheds every Wound and all rest tokens return"
+    }
   },
   {
     name: "The Door Home", strength: 5, pool: "mind", source: "Household Magic",
@@ -3762,7 +3769,10 @@ export const MIND_POOL = [
     description: "<p>A door you have opened before becomes a door to any other door you have "
       + "opened before. It is the school's thesis: a householder is never far from anywhere "
       + "they have been.</p>",
-    effect: { timing: "ritual", text: "a door you have opened leads to any other you have opened. Once a day" }
+    effect: {
+      timing: "ritual", oncePer: "day",
+      text: "a door you have opened leads to any other you have opened"
+    }
   },
 
   /*
@@ -3854,14 +3864,19 @@ export const MIND_POOL = [
     name: "Where It Will Land", strength: 1, pool: "mind", source: "Divination",
     needs: ["reading the top of a fate deck"],
     description: "<p>Your own deck, one card down. The cheapest certainty in the game.</p>",
-    effect: { verb: "foresee", param: 1, text: "on your own fate deck" }
+    effect: { verb: "foresee", param: 1, readDeck: "own" }
   },
   {
     name: "The Mark of Things to Come", strength: 2, pool: "mind", source: "Divination",
     needs: ["reading the top of a fate deck"],
     description: "<p>Marked at any range, and you know what its luck is about to do. The "
       + "condition lands by itself; the reading is the half that does not.</p>",
-    effect: { range: 99, condition: "marked", duration: 1, text: "and Read 1 on its fate deck" }
+    effect: {
+      range: 99, condition: "marked", duration: 1, readDeck: "target",
+      /* The Read rides on the Mark rather than being the action, so the amount stays prose:
+       * `foresee` is not this step's verb and giving it one would change what the card does. */
+      text: "and Read 1"
+    }
   },
   {
     name: "The Long Look", strength: 3, pool: "mind", source: "Divination",
@@ -3879,7 +3894,8 @@ export const MIND_POOL = [
     description: "<p>For one round the whole party is lucky and you can see why. Two cards down "
       + "each of their decks, and a better draw on top of it.</p>",
     effect: {
-      text: "until your next turn every ally draws fate with advantage, and Read 2 on each deck"
+      duration: 1, readDeck: "all",
+      text: "every ally draws fate with advantage, and Read 2"
     }
   },
   {
@@ -3927,7 +3943,7 @@ export const MIND_SIGNATURES = [
     cost: { health: 2 },
     description: "<p>Four damage at three squares, and nothing between you and it matters. The "
       + "two Health are not a drawback; they are the school.</p>",
-    effect: { verb: "cast", range: 3, mod: 4, text: "ignoring armor" }
+    effect: { verb: "cast", range: 3, mod: 4, ignoresArmour: true }
   },
   {
     name: "Call the Unquiet", kind: "spell", node: "mind.necromancy", strength: 3,
@@ -3998,7 +4014,9 @@ export const MIND_SIGNATURES = [
     needs: ["a rule that reads your own hand being empty"],
     description: "<p>There is nothing in your hand and nothing left to lose, and the second "
       + "follows from the first.</p>",
-    effect: { text: "while your hand is empty you cannot be reduced below 1 Health" }
+    effect: {
+      whileState: "handEmpty", text: "you cannot be reduced below 1 Health"
+    }
   },
   {
     name: "The Bargain", kind: "spell", node: "mind.spiritualism", strength: 3,
@@ -4053,7 +4071,7 @@ export const MIND_SIGNATURES = [
     needs: ["reading the top of a fate deck"],
     description: "<p>Three cards down somebody else's luck. Never your own &mdash; a diviner who "
       + "could stack their own deck would be a damage school wearing a robe.</p>",
-    effect: { text: "Read 3 on any one fate deck except your own" }
+    effect: { verb: "foresee", param: 3, readDeck: "other" }
   }
 ];
 
@@ -4136,7 +4154,9 @@ export const FAITH_SIGNATURES = [
     reaction: "mend",
     description: "<p>Reaction: heal an ally 3, at any range, ignoring cover. The spirit drifts "
       + "through all the air, so distance is not a question for it.</p>",
-    effect: { verb: "heal", param: 3, timing: "reaction", text: "any range, ignoring cover" }
+    effect: {
+      verb: "heal", param: 3, timing: "reaction", range: 99, ignoresCover: true
+    }
   },
   {
     name: "The Tide Knows", kind: "spell", node: "faith.sessyfyn", strength: 2, source: "Sessyfyn",
@@ -4194,14 +4214,17 @@ export const FAITH_SIGNATURES = [
     needs: ["a spell that taints its caster"],
     description: "<p>Tainting 2 on one adjacent enemy, and 1 Taint for you. You are the first to "
       + "taste it, always.</p>",
-    effect: { verb: "tainting", param: 2, range: 1, text: "you gain 1 Taint yourself" }
+    cost: { taint: 1 },
+    effect: { verb: "tainting", param: 2, range: 1 }
   },
   {
     name: "The Rumour", kind: "spell", node: "faith.yellow", strength: 2, source: "The Yellow",
     needs: ["an effect held up by spending a secondary"],
     description: "<p>Name a lie before the fight. One enemy type acts as if it were true, for as "
       + "long as you keep spending a secondary on it.</p>",
-    effect: { text: "one enemy type acts as though a named lie were true, while you keep it up" }
+    effect: {
+      whileState: "upkeep", text: "one enemy type acts as though a named lie were true"
+    }
   },
   {
     name: "The Club and the Line", kind: "spell", node: "faith.vax", strength: 2, source: "Vax",
@@ -4344,7 +4367,9 @@ export const FAITH_POOL = [
     needs: ["an effect that reads how far away your allies are"],
     description: "<p>While no ally is within 2 squares, heal 2 at the start of your turn. The only "
       + "healing a priest of hers can ever receive.</p>",
-    effect: { verb: "heal", param: 2, text: "while no ally is within 2, at the start of your turn" }
+    effect: {
+      verb: "heal", param: 2, whileState: "noAllyNear", text: "at the start of your turn"
+    }
   },
   {
     name: "Full Belly", strength: 1, pool: "faith", source: "Brendan",
@@ -4363,9 +4388,12 @@ export const FAITH_POOL = [
     needs: ["a spell that taints its caster"],
     description: "<p>One adjacent enemy: 1 damage and Off-Balance, no save. A Miss costs you a "
       + "Taint, which is the god being paid whether or not it worked.</p>",
+    cost: { taint: 1 },
     effect: {
       verb: "cast", range: 1, mod: 1, condition: "offBalance", duration: 1,
-      text: "you gain 1 Taint on a Miss"
+      /* The trigger stays prose: the price is only paid on a Miss, and when a cost is conditional
+       * it is the condition the engine cannot read rather than the number. */
+      text: "the Taint only on a Miss"
     }
   },
   {
@@ -4373,7 +4401,9 @@ export const FAITH_POOL = [
     needs: ["an effect held up by spending a secondary"],
     description: "<p>Name one enemy type before the fight. While you spend a secondary each round, "
       + "that type cannot play reactions.</p>",
-    effect: { text: "while you spend a secondary, one enemy type cannot play reactions" }
+    effect: {
+      whileState: "spendSecondary", text: "one enemy type cannot play reactions"
+    }
   },
   {
     name: "Stand Where I Stand", strength: 1, pool: "faith", source: "Vax",
@@ -4400,7 +4430,8 @@ export const FAITH_POOL = [
       "Block equal to the caster's own armour"],
     description: "<p>Every ally adjacent to you gains your armor value as Block until your next "
       + "turn. One Health per ally, so a long line is a dear one.</p>",
-    effect: { range: 1, text: "adjacent allies gain your armor as Block. Costs 1 Health per ally" }
+    cost: { health: 1, scale: "perAlly" },
+    effect: { range: 1, text: "adjacent allies gain your armor as Block" }
   },
   {
     name: "Measure of the Debt", strength: 2, pool: "faith", source: "The First",
@@ -4451,7 +4482,10 @@ export const FAITH_POOL = [
     description: "<p>Less to carry, less to remember, and the words come easier. A thin deck is "
       + "the clean body, written as arithmetic.</p>",
     effect: {
-      text: "while your action deck is 10 cards or fewer, your miracles cost 1 slot less (min 1)"
+      whileState: "thinDeck",
+      /* Not a price this step pays but a discount on every other: `cost` is what a step charges,
+       * and a spell that makes OTHER spells cheaper has nowhere to put that yet. */
+      text: "your miracles cost 1 slot less (min 1)"
     }
   },
   {
@@ -4568,27 +4602,25 @@ export const FAITH_POOL = [
     needs: [],
     description: "<p>Strain 2, and the whole line moves at once. Movement is a sentence the table "
       + "applies (core-rules 11), so this miracle is finished as written.</p>",
-    effect: {
-      area: 2, text: "Strain 2: every ally within 2 may Move their full value, at once, now"
-    }
+    cost: { strain: 2 },
+    effect: { area: 2, text: "every ally within 2 may Move their full value, at once, now" }
   },
   {
     name: "The War Drum", strength: 4, pool: "faith", source: "Valtor",
     needs: ["a whole turn taken again, now"],
     description: "<p>Strain 3, and everybody near you goes again. The same mechanism Blood "
       + "Magic's thesis wants, bought with pain instead of blood.</p>",
-    effect: {
-      area: 2, text: "Strain 3: every ally within 2 takes their whole turn again, now"
-    }
+    cost: { strain: 3 },
+    effect: { area: 2, text: "every ally within 2 takes their whole turn again, now" }
   },
   {
     name: "Valtor's Own", strength: 5, pool: "faith", source: "Valtor",
     needs: ["two secondaries every turn until the fight ends"],
     description: "<p>Your whole hand, strained, and for the rest of the fight you act like three "
       + "men. There is nothing left to play it with, which is the god's idea of a bargain.</p>",
+    cost: { strain: 1, scale: "wholeHand" },
     effect: {
-      text: "Strain your entire hand: for the rest of the fight you play a primary and two "
-        + "secondaries each turn"
+      text: "for the rest of the fight you play a primary and two secondaries each turn"
     }
   },
 
@@ -4761,7 +4793,8 @@ export const FAITH_POOL = [
     needs: ["a spell that taints its caster"],
     description: "<p>Tainting 3 on them and two Taint on you &mdash; which with the first taste "
       + "is Afflicted. A priest of The Purple who casts their thesis is ill for good.</p>",
-    effect: { verb: "tainting", param: 3, text: "and you gain 2 Taint yourself" }
+    cost: { taint: 2 },
+    effect: { verb: "tainting", param: 3 }
   },
 
   /*
@@ -4785,7 +4818,8 @@ export const FAITH_POOL = [
     description: "<p>While you keep paying a half every round, one whole kind of enemy believes "
       + "the party are its own. Stop paying and the room remembers.</p>",
     effect: {
-      text: "while you spend a secondary each round, one enemy type believes the party are its own"
+      whileState: "spendSecondaryEachRound",
+      text: "one enemy type believes the party are its own"
     }
   },
   {
@@ -4799,7 +4833,8 @@ export const FAITH_POOL = [
     description: "<p>Name the lie before the fight. While you spend a secondary each round it is "
       + "true, and the GM runs the fight as though it always had been.</p>",
     effect: {
-      text: "while you spend a secondary each round, a lie named before the fight is true"
+      whileState: "spendSecondaryEachRound",
+      text: "a lie named before the fight is true"
     }
   },
 
@@ -4816,9 +4851,10 @@ export const FAITH_POOL = [
       "immunity to a named condition, which nothing grants"],
     description: "<p>Nobody beside you is moved, knocked down or turned. It costs two Health a "
       + "man, and Vax expects you to count them first.</p>",
+    cost: { health: 2, scale: "perAlly" },
     effect: {
-      text: "allies adjacent to you cannot be moved, knocked Prone or Compelled until your next "
-        + "turn. Costs 2 Health per ally"
+      duration: 1,
+      text: "allies adjacent to you cannot be moved, knocked Prone or Compelled"
     }
   },
   {

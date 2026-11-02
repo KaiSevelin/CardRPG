@@ -8,7 +8,8 @@
     "source": "Asceticism",
     "description": "<p>There is nothing in your hand and nothing left to lose, and the second follows from the first.</p>",
     "effect": {
-      "text": "while your hand is empty you cannot be reduced below 1 Health"
+      "whileState": "handEmpty",
+      "text": "you cannot be reduced below 1 Health"
     },
     "kind": "formula",
     "prepared": false

@@ -572,7 +572,7 @@ const stepBlock = cardsSource.slice(cardsSource.indexOf("export function stepFie
 const stepKeys = new Set(
   [...stepBlock.slice(0, stepBlock.indexOf("\n}")).matchAll(/^    ([a-zA-Z]+):/gm)].map(m => m[1])
 );
-check("stepField keys read from source", stepKeys.size, 20);
+check("stepField keys read from source", stepKeys.size, 26);
 
 const strayKeys = new Set();
 for (const step of steps) {
@@ -3899,16 +3899,19 @@ check("spells outside Shadow Magic that cost a Wild",
   otherSchoolWilds.length ? otherSchoolWilds.join(", ") : "none", "none");
 
 /*
- * A Health price is either in the field or named in the queue, and never only in the prose.
+ * **A Health price is in the field, and no longer in the prose at all.**
  *
- * The narrower check further down catches a FIXED cost printed in words; this one catches the two
- * shapes the field cannot hold at all -- a price per ally (*The Red Hour*, *The Shield Line*, *The
- * Line Holds*) and a fraction of what you have left (*The Last Drop*) -- and insists each one says
- * so. Without it, a spell could charge Health in a sentence nobody computes.
+ * This check used to count four and say why: *the two shapes the field cannot hold* -- a price per
+ * ally (The Red Hour, The Shield Line, The Line Holds) and a fraction of what is left (The Last
+ * Drop). `cost.scale` is exactly those two shapes, so the count is zero now and the gap the check
+ * was recording is closed.
+ *
+ * It stays as a zero rather than being deleted, because the thing it guards against is a spell
+ * charging Health in a sentence nobody computes -- and that is as easy to write today as it was.
  */
 const bloodPrice = [...everySpell.values()]
   .filter(s => /costs? [^.]*health/i.test(s.effect?.text ?? ""));
-check("spells printing a Health price in prose", bloodPrice.length, 4);
+check("spells printing a Health price in prose", bloodPrice.length, 0);
 const unqueued = bloodPrice
   .filter(s => !(s.cost?.health > 0) && !(s.needs ?? []).some(g => /cost|price/i.test(g)))
   .map(s => s.name);
@@ -5474,6 +5477,40 @@ for (const entry of everyEntry) {
 check("steps the timing audit read", everyStep.length, 323);
 check("steps that say when they are played", everyStep.filter(s => s.st.timing).length, 31);
 /*
+ * **And the four fields the cheap batch added**, each written by content as well as declared: a
+ * field nothing writes is the same defect as a field nothing reads, and this project has met the
+ * second one six times.
+ */
+for (const [what, count, read] of [
+  ["say how often they may be played", 3, s => s.st.oncePer],
+  ["go straight through armour, Block or cover", 3,
+    s => s.st.ignoresArmour || s.st.ignoresBlock || s.st.ignoresCover],
+  ["name whose fate deck they Read", 4, s => s.st.readDeck],
+  ["wait on a state of the player's own", 11, s => s.st.whileState]
+]) {
+  check(`steps that ${what}`, everyStep.filter(read).length, count);
+}
+/* Every value of the two bigger enums is used, or it is an entry in a dropdown and nothing else. */
+for (const [name, table, read] of [
+  ["limits", CARDRPG.limits, s => s.st.oncePer],
+  ["read targets", CARDRPG.readDecks, s => s.st.readDeck],
+  ["states", CARDRPG.whileStates, s => s.st.whileState]
+]) {
+  const used = new Set(everyStep.map(read).filter(Boolean));
+  check(`${name} declared and never used`,
+    Object.keys(table).filter(k => !used.has(k)).join(", ") || "none", "none");
+}
+/* And nothing says it twice: a prefix left in the prose beside its field reads to a player as
+ * though the card means both. */
+const saidTwice = everyStep.filter(s =>
+  (s.st.oncePer && /\bOnce (a day|per)\b/i.test(s.st.text ?? ""))
+  || (s.st.whileState && /^while\b/i.test(s.st.text ?? ""))
+  || ((s.st.ignoresArmour || s.st.ignoresBlock || s.st.ignoresCover)
+    && /\bignoring\b/i.test(s.st.text ?? ""))
+  || (s.st.readDeck && /fate deck/i.test(s.st.text ?? "")));
+check("steps that say it in a field and in prose",
+  saidTwice.map(s => `${s.card}: ${s.st.text}`).slice(0, 3).join(" | ") || "none", "none");
+/*
  * And no step says it twice. A prefix left in the prose beside a `timing` field is the stale half
  * of a move, and it reads to a player as though the card means both.
  */
@@ -5754,13 +5791,17 @@ check("and the resolver says why the deck is untouched",
  */
 const proseLeft = everyStep.filter(s => s.st.text);
 /*
- * 127 before this increment and 127 after, which is not a failure to make progress. 31 steps lost a
- * prefix to `timing`, and the five conjurings kept a sentence on purpose: **the source is prose**,
- * because whether a corpse is available is something the table can see and the engine cannot.
- * What moved is the part that was a rule -- when a step is played, what it costs to keep a thing
- * standing -- and what stayed is the part that was a judgement.
+ * **120, from 127 before this batch and 127 before the one before it.** The number moves slowly on
+ * purpose: most of the 60 steps these three increments touched kept the part of their sentence no
+ * field holds. What moved is the part that was a RULE -- when a step is played, how often, what it
+ * costs, what it goes through, which deck it reads, what state of yours it waits on -- and what
+ * stayed is the part that was a judgement.
+ *
+ * The count that actually fell is the one below: steps carrying prose and NOTHING else, 75 at the
+ * start and 33 now. A step with prose beside its fields is a step the engine resolves and the
+ * table reads; a step with prose alone is one the engine drops on the floor.
  */
-check("steps still carrying prose", proseLeft.length, 127);
+check("steps still carrying prose", proseLeft.length, 120);
 /* And the schema document says the same numbers, read off the same sweep rather than typed into
  * prose a second time: a document that counts the content is a document that goes stale. */
 check("the schema document records what the sweep found",
@@ -5768,6 +5809,18 @@ check("the schema document records what the sweep found",
   "yes");
 check("and what is left of it",
   cardSchemaDoc.includes(`${proseLeft.length} steps still carry prose`) ? "yes" : "no", "yes");
+/*
+ * And the document names every step field it claims to document. A row that quietly stops matching
+ * the schema is a reader sent to look for something that is not there -- which is worse than no
+ * row, because the row reads as authority.
+ */
+const documented = ["timing", "delay", "oncePer", "ignoresArmour", "ignoresBlock", "ignoresCover",
+  "readDeck", "whileState", "conjure", "shape"];
+check("step fields the schema document names",
+  documented.filter(f => !cardSchemaDoc.includes(`\`${f}\``)).join(", ") || "none", "none");
+/* And each one is really in the schema, so the list above cannot drift into fiction. */
+check("and every one of them is a real field",
+  documented.filter(f => !stepKeys.has(f)).join(", ") || "none", "none");
 check("and that a conjuration's source is prose on purpose",
   /the source is prose/.test(cardSchemaDoc) ? "yes" : "no", "yes");
 check("and why a free-text special was refused",
@@ -5783,7 +5836,7 @@ check("and that it leaves Health and conditions alone",
     ? "yes" : "no", "yes");
 check("and steps that carry prose and nothing else",
   proseLeft.filter(s => Object.keys(s.st).filter(k => k !== "text" && s.st[k] !== null
-    && s.st[k] !== "" && !(typeof s.st[k] === "object")).length === 0).length, 46);
+    && s.st[k] !== "" && !(typeof s.st[k] === "object")).length === 0).length, 33);
 
 /* ---- the compendium packs ship the content, and ship today's ---- */
 
@@ -8266,13 +8319,43 @@ check("and paying is what gates the effect",
   /if \(!await payToCast\(this\.actor, slate\)\) return;/.test(traySource) ? "yes" : "no", "yes");
 
 /* The content side. */
+/*
+ * **The sweep, one level down into `cost`.** It is a SchemaField, so the key sweep above sees only
+ * `cost` and never what is inside -- the same hole the verb line had, and described in the same
+ * words thirty pages up: *a content line naming a field the schema does not have is dropped in
+ * silence*. `cost` grew from one key to four this increment, and a break test renamed one of them
+ * and deleted another with nothing noticing: the content went on writing them, the model went on
+ * dropping them, and the spell was simply free.
+ */
+const spellBlock = itemSource.slice(itemSource.indexOf("export class SpellSlateData"));
+const costStart = spellBlock.indexOf("cost: new fields.SchemaField({");
+const costFields = new Set([...spellBlock
+  /* The close is `}),` at the SchemaField's own indentation. Looking for `}),` anywhere ends the
+   * slice on the first `NumberField({ ... }),` line, which is how this check first read one field
+   * where there are four. */
+  .slice(costStart, spellBlock.indexOf("\n      }),", costStart))
+  .matchAll(/^        ([a-zA-Z]+): /gm)].map(m => m[1]));
+check("cost fields read from the spell schema", [...costFields].sort().join(", "),
+  "health, scale, strain, taint");
+const strayCostKeys = new Set();
+for (const spell of graph.SPELLS.values()) {
+  for (const key of Object.keys(spell.cost ?? {})) if (!costFields.has(key)) strayCostKeys.add(key);
+}
+check("cost keys not in the spell schema",
+  strayCostKeys.size ? [...strayCostKeys].join(", ") : "none", "none");
+/* And every field of it is written by a spell: one nobody writes is a column of zeroes. */
+const costUsed = new Set(
+  [...graph.SPELLS.values()].flatMap(s => Object.keys(s.cost ?? {}).filter(k => s.cost[k])));
+check("cost fields the schema has and no spell writes",
+  [...costFields].filter(k => !costUsed.has(k)).join(", ") || "none", "none");
+
 const spellsWithCost = [...graph.SPELLS.values()].filter(s => s.cost?.health);
 check("spells that cost Health",
   spellsWithCost.map(s => s.name).sort().join(", "),
   "Blood Price, Boil, Open the Vein, Stand Where I Stand, The Club and the Line, "
-  + "The Second Heartbeat");
+  + "The Last Drop, The Line Holds, The Red Hour, The Second Heartbeat, The Shield Line");
 check("the Health they ask between them",
-  spellsWithCost.reduce((n, s) => n + s.cost.health, 0), 13);
+  spellsWithCost.reduce((n, s) => n + s.cost.health, 0), 18);
 /* Every one of them is a Blood Magic formula or a miracle of Vax, which is the finding: two Ways
  * arrived at the same mechanism from opposite ends. */
 check("the sources that charge in blood",
@@ -8286,14 +8369,42 @@ const printedCost = [...graph.SPELLS.values()]
   .filter(s => /costs? \d+ Health(?! per)/i.test(s.effect?.text ?? "")).map(s => s.name);
 check("spells still printing a fixed cost as prose",
   printedCost.length ? printedCost.join(", ") : "none", "none");
+/*
+ * **And a price that scales is in the field now too**, which is what this pair used to record as a
+ * gap: three spells charging *1 Health per ally* in a sentence, and one asking *half your current
+ * Health, rounded up*. `cost.scale` holds both, so the prose is empty and the field is full.
+ */
 const variableCost = [...graph.SPELLS.values()]
   .filter(s => /Health per/i.test(s.effect?.text ?? ""));
-check("spells whose price scales, which the field cannot hold",
-  variableCost.map(s => s.name).sort().join(", "),
-  "The Line Holds, The Red Hour, The Shield Line");
-check("and every one of them says so in the queue",
-  variableCost.every(s => s.needs.includes("a cost that scales with the allies it covers")),
-  true);
+check("spells whose price still scales only in prose",
+  variableCost.map(s => s.name).sort().join(", ") || "none", "none");
+const scaled = [...graph.SPELLS.values()].filter(s => s.cost?.scale);
+check("spells whose price the field scales",
+  scaled.map(s => `${s.name} (${s.cost.scale})`).sort().join(", "),
+  "The Last Drop (halfCurrent), The Line Holds (perAlly), The Red Hour (perAlly), "
+  + "The Shield Line (perAlly), Valtor's Own (wholeHand)");
+/* A scale with no amount beside it charges nothing, which is the one way to write this field and
+ * get silence: `perAlly` of zero is zero however many allies are standing there. */
+check("scaled prices with nothing to scale",
+  scaled.filter(s => !(s.cost.health || s.cost.taint || s.cost.strain))
+    .map(s => s.name).join(", ") || "none", "none");
+/* Every scale the vocabulary offers is used by a spell: one nobody writes is a dropdown entry. */
+check("scales declared and never used",
+  Object.keys(CARDRPG.costScales).filter(k => !scaled.some(s => s.cost.scale === k)).join(", ")
+    || "none", "none");
+/* And the other two currencies, which were prose on six spells until this increment. */
+const taintCost = [...graph.SPELLS.values()].filter(s => s.cost?.taint);
+check("spells that cost Taint",
+  taintCost.map(s => s.name).sort().join(", "),
+  "Taste of the Rot, The First Taste, The Slow Failure");
+const strainCost = [...graph.SPELLS.values()].filter(s => s.cost?.strain);
+check("spells that cost Strain",
+  strainCost.map(s => s.name).sort().join(", "),
+  "The Charge, The War Drum, Valtor's Own");
+check("and none of the three currencies is still printed in words",
+  [...graph.SPELLS.values()]
+    .filter(s => /^Strain \d|you gain \d+ Taint yourself/i.test(s.effect?.text ?? ""))
+    .map(s => s.name).join(", ") || "none", "none");
 
 /*
  * And the reason the column is a list, written where a reader of the column will find it. Four

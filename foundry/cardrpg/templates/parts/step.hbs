@@ -54,11 +54,56 @@
     {{!-- When it waits until, and when it may be played: both were prose on 35 steps. --}}
     <label>Delay <input type="number" name="{{path}}.delay" value="{{step.delay}}" min="1"
                         data-tooltip="Turns to wait: 2 is the start of your second turn after this."></label>
+    <label>Once per
+      <select name="{{path}}.oncePer">
+        <option value="">&mdash;</option>
+        {{#each config.limits}}
+          <option value="{{@key}}" {{#if (crEq @key ../step.oncePer)}}selected{{/if}}>{{localize this}}</option>
+        {{/each}}
+      </select>
+    </label>
     <label>Timing
       <select name="{{path}}.timing">
         <option value="">&mdash;</option>
         {{#each config.timings}}
           <option value="{{@key}}" {{#if (crEq @key ../step.timing)}}selected{{/if}}>{{localize this}}</option>
+        {{/each}}
+      </select>
+    </label>
+  </div>
+
+  {{!-- What it goes straight through, and whose fate deck it reads. `ignores` above is a NUMBER of
+        armour points; these three are all of it, and Block and cover are not armour. --}}
+  <div class="cr-step__row cr-step__row--wrap">
+    <label class="cr-step__tick">
+      <input type="checkbox" name="{{path}}.ignoresArmour" {{#if step.ignoresArmour}}checked{{/if}}>
+      Ignores armour entirely
+    </label>
+    <label class="cr-step__tick">
+      <input type="checkbox" name="{{path}}.ignoresBlock" {{#if step.ignoresBlock}}checked{{/if}}>
+      Ignores Block
+    </label>
+    <label class="cr-step__tick">
+      <input type="checkbox" name="{{path}}.ignoresCover" {{#if step.ignoresCover}}checked{{/if}}>
+      Ignores cover
+    </label>
+    <label>Reads
+      <select name="{{path}}.readDeck">
+        <option value="">&mdash;</option>
+        {{#each config.readDecks}}
+          <option value="{{@key}}" {{#if (crEq @key ../step.readDeck)}}selected{{/if}}>{{localize this}}</option>
+        {{/each}}
+      </select>
+    </label>
+  </div>
+
+  {{!-- A state of the player's own that the step waits on. Whole builds rest on these. --}}
+  <div class="cr-step__row">
+    <label>Only while
+      <select name="{{path}}.whileState">
+        <option value="">&mdash;</option>
+        {{#each config.whileStates}}
+          <option value="{{@key}}" {{#if (crEq @key ../step.whileState)}}selected{{/if}}>{{localize this}}</option>
         {{/each}}
       </select>
     </label>

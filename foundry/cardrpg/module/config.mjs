@@ -670,6 +670,73 @@ CARDRPG.tactics = {
  * for the table: a Signature that reads *ritual: overnight a ruin becomes a house* is a ritual, and
  * one that reads *permanent: +3 armor* is not a step at all.
  */
+/**
+ * **How a spell's price is worked out**, for the three that are not a flat number.
+ *
+ * This is what the prose was actually carrying. *Costs 1 Health per ally*, *half your current
+ * Health, rounded up*, *Strain your entire hand* -- the amounts were always expressible on
+ * `SpellSlateData.cost`; it is **per ally** that had nowhere to go.
+ *
+ * `perAlly` multiplies by whoever benefits, which is how a Blood Mage pays for helping a crowd;
+ * `halfCurrent` is The Last Drop asking half of what is left; `wholeHand` is Valtor's Own asking
+ * all of it. A blank scale is a flat amount.
+ */
+CARDRPG.costScales = {
+  perAlly: "CARDRPG.CostScale.PerAlly",
+  halfCurrent: "CARDRPG.CostScale.HalfCurrent",
+  wholeHand: "CARDRPG.CostScale.WholeHand"
+};
+
+/**
+ * **How often a step may be played**, for the three that say so.
+ *
+ * Two values, not three: no card in the game says "once per fight" on its own -- the one that comes
+ * closest says *once per pact per fight*, which is a different and narrower thing. A plain
+ * per-fight limit arrives with the first card that wants one, because a value nobody writes is an
+ * entry in a dropdown and nothing else.
+ */
+CARDRPG.limits = {
+  day: "CARDRPG.Limit.Day",
+  pactPerFight: "CARDRPG.Limit.PactPerFight"
+};
+
+/**
+ * **Whose fate deck a Read looks at** (core-rules 6).
+ *
+ * Four steps carried this in prose and two of them carried it as a rider on something else, which
+ * is why the field is here rather than inside the foresee effect: a Read can be the action or it
+ * can be the smaller half of one.
+ */
+CARDRPG.readDecks = {
+  own: "CARDRPG.Read.Own",
+  other: "CARDRPG.Read.Other",
+  target: "CARDRPG.Read.Target",
+  all: "CARDRPG.Read.All"
+};
+
+/**
+ * **A state of your own that a step waits on**, which eleven steps described in prose.
+ *
+ * Every value is a phrase off a card rather than a category invented for the table, and the list
+ * is long because the cards are specific: *while your hand is empty* and *while your hand is
+ * exactly one card* are two different builds, and a Way is built on each.
+ *
+ * Most of these the engine can see for itself -- hand size, deck size, whether both hands are free,
+ * whether an ally is near -- which is the point: a condition the software can read is a condition
+ * it can SHOW, and a card whose whole design is an empty hand should say so on its face.
+ */
+CARDRPG.whileStates = {
+  handEmpty: "CARDRPG.While.HandEmpty",
+  handsEmpty: "CARDRPG.While.HandsEmpty",
+  oneCard: "CARDRPG.While.OneCard",
+  handAndDeckEmpty: "CARDRPG.While.HandAndDeckEmpty",
+  thinDeck: "CARDRPG.While.ThinDeck",
+  noAllyNear: "CARDRPG.While.NoAllyNear",
+  spendSecondary: "CARDRPG.While.SpendSecondary",
+  spendSecondaryEachRound: "CARDRPG.While.SpendSecondaryEachRound",
+  upkeep: "CARDRPG.While.Upkeep"
+};
+
 CARDRPG.timings = {
   reaction: "CARDRPG.Timing.Reaction",
   ritual: "CARDRPG.Timing.Ritual",

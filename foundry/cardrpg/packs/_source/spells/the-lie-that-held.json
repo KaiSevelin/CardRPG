@@ -8,7 +8,8 @@
     "source": "The Yellow",
     "description": "<p>Name the lie before the fight. While you spend a secondary each round it is true, and the GM runs the fight as though it always had been.</p>",
     "effect": {
-      "text": "while you spend a secondary each round, a lie named before the fight is true"
+      "whileState": "spendSecondaryEachRound",
+      "text": "a lie named before the fight is true"
     },
     "kind": "miracle",
     "prepared": false

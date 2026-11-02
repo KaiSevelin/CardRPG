@@ -10,7 +10,7 @@
     "effect": {
       "verb": "foresee",
       "param": 1,
-      "text": "on your own fate deck"
+      "readDeck": "own"
     },
     "kind": "formula",
     "prepared": false

@@ -11,7 +11,8 @@
       "range": 99,
       "condition": "marked",
       "duration": 1,
-      "text": "and Read 1 on its fate deck"
+      "readDeck": "target",
+      "text": "and Read 1"
     },
     "kind": "formula",
     "prepared": false

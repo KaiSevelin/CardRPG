@@ -12,7 +12,8 @@
       "verb": "heal",
       "param": 3,
       "timing": "reaction",
-      "text": "any range, ignoring cover"
+      "range": 99,
+      "ignoresCover": true
     },
     "kind": "miracle",
     "prepared": false
