@@ -52,6 +52,32 @@ Two of those lines are quoted from decisions already taken, not proposed here: *
 secondary half is a levelling reward, not a starter card*, and *a Defend primary blocks every attack
 until your next turn* ([design-direction.md](design-direction.md)).
 
+> **[FOUND IN CODE 2026-11-02] The Strike-on-a-secondary band outlived the measurement it was
+> anchored on, and it is the line this table leans hardest on.**
+>
+> The band calls it *a Way reward* and *the classic reward, worth most of a round over a fight*. Two
+> later runs and one later decision have overtaken both halves:
+>
+> - **It is a pool card, not a Way reward.** §3.1 settles it at **—1** as *the first ordinary card a
+>   fighter of any Way is handed*. Four pool cards print it — *Off-Hand Blow*, *Hold the Line*,
+>   *Second Knife*, *Pull Them Down* — and **no Signature in the game does**, which is the content
+>   agreeing with §3.1 and disagreeing with this table.
+> - **It is worth half a round, not most of one.** [../sim/analysis-2026-10-26.md](../sim/analysis-2026-10-26.md)
+>   §5: *double strike is now worth half a round, not a full one* — goblins die faster, so there is
+>   less fight to shorten. And [../sim/analysis-2026-11-01.md](../sim/analysis-2026-11-01.md) §1 puts
+>   it at **2 to 6 points** of win rate where armour is worth about **30**, with the curve peaking at
+>   two copies and falling.
+>
+> This matters more than it looks, because this table is the standard all fifty-two Signatures were
+> priced against: a band that overstates a reward makes everything priced beside it too cheap. **The
+> tell is the one this project keeps meeting — a number in prose with no check reading it**, and it
+> is the fourth time. The line now has one.
+>
+> **[OPEN]** What the band should say. *Worth half a round, and it comes from the pool* is the honest
+> replacement, but it leaves §1.2 with no entry for the thing it was trying to name: the reward a Way
+> gives that is worth most of a round. Nothing in the content is known to be worth that much, and
+> finding one needs a simulator that models a Way.
+
 ### 1.3 The cost ladder
 
 Four rungs, cheapest first. **Pick one.**
@@ -62,6 +88,17 @@ Four rungs, cheapest first. **Pick one.**
 | **Strain 1** | an effect worth about one card | a few per deck |
 | **Spent** | an effect worth the rest of the fight | **at most 2 in a 16-card deck** |
 | **Spent + Strain** | a Signature, and only a Signature | once |
+
+> **[FOUND IN CODE 2026-11-02] The top rung has never been spent.** Of the **22** card Signatures
+> in the game, **19 cost nothing at all**; *One Opening* and *Red Mist* pay Spent and *The Scourge*
+> pays Strain, and **not one pays Spent + Strain** — the rung this table reserves for a Signature
+> and for nothing else.
+>
+> That is permitted and not broken: the ladder says what a Signature **may** cost, not what it must.
+> But the consequence had never been written down, so it is here now: **a Signature is priced like
+> an ordinary card**, and a Signature is the one card a character always has. Either the rung is
+> wrong to exist or nineteen cards are under-priced, and the difference between those two readings
+> is a simulator that models a Way.
 
 The starter Warrior has exactly **one** Spent card in sixteen and no Strain at all, which is the
 floor. Two Spent cards is the ceiling for a deck of that size: Spent cards do not come back on a
@@ -819,6 +856,28 @@ title's, and your god's Obedience still stands beside the order's rule.
 > exists to make a priest's five arrive with their god's list &mdash; so a vow that empties one slot
 > would put every god's strength-5 back out of reach for a quarter of the tier, in prose no code path
 > reads. **An order may take anything except the thing another rule just paid for.** It takes ground.
+
+> **[FOUND IN CODE 2026-11-02] An order costs a priest their miracles, and the measurement is
+> stark: at level 8 the order route leaves them with five slots and one miracle.**
+>
+> An order's lead-in grants no miracles, and cannot: a node open to all twelve gods does not know
+> which list to grant from. So the three levels that buy an order are three levels that buy no
+> miracle, and the comparison at level 8 is
+>
+> | At level 8, a priest has | miracles | and |
+> |---|---|---|
+> | taken an order | **1** (weight 1—3) | the order's Signature, its Tactic and its rule |
+> | stayed on their god's branch | **2 or 3** (weight 3—8) | **1 or 2** free choices from the god's list |
+>
+> Way of Mind has no such trade: a school's lead-in nodes grant formulas, so a mage reaches a tier-2
+> title holding **3.3** of them, and depth and content arrive together. **The slot ladder of §1.4
+> pays for a list this route never acquires.**
+>
+> **[OPEN]** and the fix is one small mechanism rather than more content: a node that grants **a
+> choice from whatever god you are sworn to**. `choose: { from }` cannot express it today, because
+> `from` is a literal source name ([leveling.md](leveling.md) §4a) — it would need to resolve
+> against the character's own creed. One such node on the Ordination step would close the gap
+> without giving any order a miracle of its own.
 
 > **One order, for good**, the same way one religion is for good. `exclusive: "order"` is the second
 > family the group rule of [leveling.md](leveling.md) §3 has ever had, and that is the proof the rule

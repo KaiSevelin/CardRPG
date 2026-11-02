@@ -5085,7 +5085,14 @@ export const NODES = [
      * quarter of the tier, in prose that no code path reads. It takes ground instead, which is
      * what a shield wall actually costs.
      */
-    axis: "Position", resource: "ground",
+    /*
+     * **Support, not Position, and the cell test is what asked the question.** Position/ground is
+     * the Artillerist's cell (way-cards 2.1) and two titles in one cell are the same
+     * specialization written twice. Support is also the truer half: this order's Signature gives
+     * its Block away and its Tactic guards the figure beside it, neither of which is about where
+     * the holder stands.
+     */
+    axis: "Support", resource: "ground",
     signature: "The Order's Shield", tactic: "Nobody Falls Beside You",
     obedience: "You may not give ground: while an ally stands further forward than you, you may "
       + "not move away from the enemy.",

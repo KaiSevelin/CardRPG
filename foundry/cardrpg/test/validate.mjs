@@ -4211,6 +4211,233 @@ check("and in Way of Mind", pathGrants("mind"), "hp 0.1 carry 0.0 cards 1.0");
  */
 check("and in Way of Faith, built 2026-11-02", pathGrants("faith"), "hp 0.0 carry 0.0 cards 2.0");
 
+/*
+ * ---- the four Ways against each other, on this project's own standards  [2026-11-02] ----
+ *
+ * **Nothing in this section is a simulation, and the reason is worth stating once.** The simulator
+ * is a starter Warrior against goblins; it models no Way feature, no title, no slot and no Cast
+ * (sim/combat_sim.py), so it can price a CARD and cannot price a caster. What it can do is anchor
+ * the two standards every Way's content was written against -- way-cards 1.2's value bands and
+ * 1.3's cost ladder -- and those standards can be read off the content exactly.
+ *
+ * So this is the comparison: not *is Way of Mind as strong as Way of Strength*, which nothing here
+ * can answer, but *do the four Ways obey the same rules, and where do they differ by accident
+ * rather than by design*.
+ */
+
+const WAYS = ["strength", "shade", "mind", "faith"];
+const wayOfId = id => id.split(".")[0];
+const avg = xs => xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : 0;
+
+/* Which rung of 1.3's ladder a piece of content pays. A spell pays in slots instead and is counted
+ * separately: strength IS its price (1.4), so reading a spell's card-half costs says nothing. */
+const ladderRung = c => {
+  const halves = [c.costs?.primary, c.costs?.secondary].filter(Boolean);
+  const strain = halves.some(h => h.strain);
+  const spent = halves.some(h => h.spent);
+  return spent && strain ? "Spent+Strain" : spent ? "Spent" : strain ? "Strain" : "nothing";
+};
+const sigCards = graph.SIGNATURES.filter(s => s.kind === "card" || s.kind === "item");
+
+/*
+ * **The top rung of the cost ladder has never been used.** 1.3 reads *Spent + Strain | a Signature,
+ * and only a Signature | once* -- so the rung exists for exactly this content and no Signature
+ * pays it. Nineteen of the twenty-two card Signatures cost nothing at all.
+ *
+ * That is permitted rather than broken: the ladder says what MAY buy a Signature, not what must.
+ * But it means a Signature is priced like an ordinary card, and a Signature is the one card a
+ * character always has. The decision had never been written down, so it is written down now and
+ * pinned here.
+ */
+check("card Signatures, by the rung of the ladder they pay",
+  ["nothing", "Strain", "Spent", "Spent+Strain"]
+    .map(r => `${r} ${sigCards.filter(s => ladderRung(s) === r).length}`).join(", "),
+  "nothing 19, Strain 1, Spent 2, Spent+Strain 0");
+check("and which ones pay anything at all",
+  sigCards.filter(s => ladderRung(s) !== "nothing")
+    .map(s => `${s.name} (${ladderRung(s)})`).sort().join(", "),
+  "One Opening (Spent), Red Mist (Spent), The Scourge (Strain)");
+check("way-cards records that the rung is unspent",
+  /\[FOUND IN CODE 2026-11-02\] The top rung has never been spent/.test(wayDoc)
+    ? "yes" : "no", "yes");
+
+/*
+ * **And one of 1.2's nine value bands is measurably wrong**, which matters more than an unused
+ * rung: the band table is the standard all forty-eight Signatures were priced against.
+ *
+ * *Strike on a secondary* is listed as a **Way reward** and called *the classic reward, worth most
+ * of a round over a fight*. Both halves have been overtaken:
+ *
+ *   - it is a POOL card, not a Way reward -- way-cards 3.1 settles it at -1 as *the first ordinary
+ *     card a fighter of any Way is handed*, which is why four pool cards print it and no Signature
+ *     does;
+ *   - and it is worth **half** a round, not most of one (sim/analysis-2026-10-26 5), with the
+ *     win-rate value put at 2 to 6 points against armour's 30 (sim/analysis-2026-11-01 1).
+ *
+ * The band was anchored on a measurement and the measurement moved. This is the fourth time a
+ * number in a document has outlived the run that produced it, and the tell is the same every time:
+ * a figure in prose with no check reading it.
+ */
+const onSecondary = [...graph.POOL.values(), ...graph.SIGNATURES]
+  .filter(c => (c.secondary ?? []).some(st => st.verb === "strike"));
+check("content printing Strike on a secondary half",
+  onSecondary.map(c => c.name).sort().join(", "),
+  "Hold the Line, Off-Hand Blow, Pull Them Down, Second Knife");
+check("and how many of them are Signatures", onSecondary.filter(c => c.node).length, 0);
+check("way-cards says the band outlived its measurement",
+  /band outlived the measurement it was\n> anchored on/.test(wayDoc) ? "yes" : "no", "yes");
+/* And that it names both halves of what moved: where the card comes from, and what it is
+ * worth now. A note that said only "this is stale" would go stale itself. */
+check("and names the run that moved it",
+  /worth half a round, not a full one/.test(wayDoc) ? "yes" : "no", "yes");
+
+/*
+ * A cell is an axis and a resource together, and two titles in one cell are one specialization
+ * written twice (way-cards 2). Both survivors pair a Way ROOT with a tier-2 title, and one of them
+ * is deliberate: a Half-mage is a part-Scholar and is written to read that way.
+ */
+const cells = new Map();
+for (const n of nodes.filter(x => x.title && x.axis)) {
+  const key = `${n.axis} / ${n.resource}`;
+  if (!cells.has(key)) cells.set(key, []);
+  cells.get(key).push(`${wayOfId(n.id)}:${n.title}`);
+}
+check("cells the titles occupy", cells.size, 54);
+check("cells holding more than one title",
+  [...cells].filter(([, v]) => v.length > 1)
+    .map(([k, v]) => `${k} = ${v.join(" + ")}`).sort().join("; "),
+  "Position / weight = strength:Warrior + shade:Acrobat; "
+  + "Preparation / spell slots = mind:Scholar + shade:Half-mage");
+
+/*
+ * **What a level-8 tier-2 character holds, by Way.** The clearest statement of the four Ways'
+ * identities, and three of the four rows are exactly what the design asks for: Strength buys carry
+ * and nothing else, Mind buys slots and formulas and almost no Health, Shade buys cards and the
+ * reactions to use them.
+ *
+ * **Faith's row is the finding.** Five slots and ONE miracle. See the trade below.
+ */
+const profileOf = way => {
+  const mine = nodes.filter(n => n.title && n.id.startsWith(`${way}.`)
+    && graph.tierOf(n.id) === 2 && graph.levelFor(n.id) === 8);
+  const gs = mine.map(n => graph.grantsOf(
+    new Set([graph.ROOT, ...(graph.REACH.get(n.id) ?? []), n.id])));
+  const m = f => avg(gs.map(f)).toFixed(1);
+  return `hp ${m(g => g.health)} carry ${m(g => g.carry)} `
+    + `slots ${m(g => g.slotCap === null ? g.spellSlots : Math.min(g.spellSlots, g.slotCap))} `
+    + `cards ${m(g => g.cards.length)} spells ${m(g => g.spells.length)}`;
+};
+check("a level-8 Way of Strength title is reached with",
+  profileOf("strength"), "hp 1.2 carry 6.1 slots 0.0 cards 3.1 spells 0.0");
+check("Way of Shade", profileOf("shade"), "hp 1.3 carry 0.1 slots 0.4 cards 3.0 spells 0.0");
+check("Way of Mind", profileOf("mind"), "hp 0.1 carry 0.0 slots 5.1 cards 1.0 spells 3.3");
+check("Way of Faith", profileOf("faith"), "hp 0.0 carry 0.0 slots 5.0 cards 2.0 spells 1.0");
+
+/*
+ * **The trade a priest makes at level 8, and it is the sharpest thing in this audit.** An order's
+ * lead-in grants no miracles, because a node open to all twelve gods cannot know which list to
+ * grant from -- so the three levels that buy an order are three levels that buy no miracle. A
+ * priest arrives at an order with five slots and one miracle to put in them, which is the slot
+ * ladder of 1.4 paying for a list the route never acquires.
+ *
+ * Way of Mind has no such trade: a school's lead-in nodes grant formulas, so depth and content
+ * arrive together. The asymmetry is structural rather than a tuning slip, and the fix would be a
+ * node that grants a choice from WHATEVER god you are sworn to -- which `choose: { from }` cannot
+ * express today, because `from` is a literal source name.
+ */
+const branchRoute = god => {
+  let owned = new Set([graph.ROOT, ...(graph.REACH.get(god) ?? []), god]);
+  for (let i = 0; i < 3; i++) {
+    const shut = graph.closedIds(owned);
+    const best = [...graph.reachable(owned, shut)]
+      .filter(id => !owned.has(id) && !shut.has(id) && id.startsWith("faith.")
+        && graph.canTake(id, owned, shut))
+      .map(id => ({ id, v: (graph.SPELLS.get(byId.get(id)?.grants?.spell)?.strength ?? 0)
+        + (byId.get(id)?.grants?.choose ? 5 : 0) }))
+      .sort((a, b) => b.v - a.v)[0];
+    if (!best) break;
+    owned.add(best.id);
+  }
+  return graph.grantsOf(owned);
+};
+const orderRoute = god => graph.grantsOf(new Set([graph.ROOT, ...(graph.REACH.get(god) ?? []),
+  god, "faith.ordination", "faith.order.cloister", "faith.anchorite"]));
+const godIdsForTrade = nodes.filter(n => n.exclusive === "faith").map(n => n.id);
+check("miracles a priest holds at level 8 on the order route",
+  [...new Set(godIdsForTrade.map(g => orderRoute(g).spells.length))].join(", "), "1");
+check("and on their god's own branch instead",
+  [...new Set(godIdsForTrade.map(g => branchRoute(g).spells.length))].sort().join(", "), "2, 3");
+check("plus the choices from their god's list that branch buys",
+  [...new Set(godIdsForTrade.map(g => branchRoute(g).choices.length))].sort().join(", "), "1, 2");
+check("and no node behind an order grants a miracle",
+  nodes.filter(n => n.id === "faith.ordination" || n.id.startsWith("faith.order."))
+    .filter(n => n.grants?.spell || n.grants?.choose).length, 0);
+check("way-cards records the trade", /five slots and one miracle/.test(wayDoc) ? "yes" : "no", "yes");
+
+/*
+ * **Exclusivity is Way of Faith's real price, and this is the first time it has been counted.** A
+ * character who never leaves Strength, Shade or Mind can eventually own their whole Way -- a mage
+ * can hold all twelve schools. A priest cannot: the creed rule shuts eleven doors, or seven for a
+ * pantheon. So Faith is the largest Way on paper and the smallest in a character's hands, and the
+ * gods' gifts are what the closed doors are supposed to buy back (specializations.md).
+ */
+const reachOneWay = titleId => {
+  const way = wayOfId(titleId);
+  const inWay = id => id === way || id.startsWith(`${way}.`);
+  let owned = new Set([graph.ROOT, ...(graph.REACH.get(titleId) ?? []), titleId]);
+  for (let i = 0; i < 14; i++) {
+    const shut = graph.closedIds(owned);
+    const live = [...graph.reachable(owned, shut)]
+      .filter(id => !shut.has(id) && (id === graph.ROOT || inWay(id)));
+    const next = new Set([...owned, ...live]);
+    if (next.size === owned.size) break;
+    owned = next;
+  }
+  return [...owned].filter(id => id !== graph.ROOT).length;
+};
+const sizeOf = way => nodes.filter(n => n.id === way || n.id.startsWith(`${way}.`)).length;
+check("nodes in each Way", WAYS.map(w => `${w} ${sizeOf(w)}`).join(", "),
+  "strength 38, shade 40, mind 46, faith 77");
+check("and how many of them one character can ever own",
+  [["strength.infantry", "strength"], ["shade.thief", "shade"], ["mind.blood", "mind"]]
+    .map(([t, w]) => `${w} ${reachOneWay(t)}/${sizeOf(w)}`).join(", "),
+  "strength 38/38, shade 40/40, mind 46/46");
+check("a priest of a pantheon, and of a lone god",
+  `${reachOneWay("faith.sessyfyn")}/77, ${reachOneWay("faith.vax")}/77`, "33/77, 21/77");
+
+/*
+ * The two casting Ways' lists, against the world's own sizing: priest magic is *a shorter list than
+ * a mage's* (specializations.md), which is the one cross-Way balance claim the world states outright.
+ * It holds, by about a quarter on both count and weight.
+ */
+const listsBySource = [...graph.SPELLS_BY_SOURCE.entries()];
+const listsOf = way => listsBySource
+  .filter(([src]) => nodes.find(n => n.title === src)?.id.startsWith(way));
+check("mean list size, mind against faith",
+  ["mind", "faith"].map(w => avg(listsOf(w).map(([, l]) => l.length)).toFixed(1)).join(" / "),
+  "7.1 / 5.2");
+check("and mean list weight in slots",
+  ["mind", "faith"].map(w => avg(listsOf(w)
+    .map(([, l]) => l.reduce((a, s) => a + s.strength, 0))).toFixed(1)).join(" / "),
+  "18.2 / 14.2");
+
+/*
+ * And the one difference between specializations that is nobody's design: **how much of each list
+ * the engine can actually run today.** Eleven of the twenty-four lists are waiting on the engine
+ * from end to end, so a character of those sources has a complete written specialization and
+ * nothing playable in it, while Spiritualism is five formulas of six built. That is a build order
+ * rather than a balance fault -- but it is the difference a player would feel first.
+ */
+check("lists waiting on the engine from end to end",
+  listsBySource.filter(([, l]) => l.every(s => s.needs?.length)).length, 11);
+check("and which they are",
+  listsBySource.filter(([, l]) => l.every(s => s.needs?.length)).map(([s]) => s).sort().join(", "),
+  "Asceticism, Brendan, Fagar, Household Magic, Necromancy, Shadow Magic, Tattoo Magic, "
+  + "The First, The Grey, The Yellow, Vax");
+check("the list the engine runs best",
+  listsBySource.map(([s, l]) => [s, l.filter(x => x.needs?.length).length / l.length])
+    .sort((a, b) => a[1] - b[1])[0][0], "Spiritualism");
+
 
 /*
  * ---- a node that grants your CHOICE from a school's or a god's list ----
