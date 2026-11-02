@@ -5825,7 +5825,13 @@ check("the engine resolves a check",
 check("exactly on the difficulty", resolve.checkOutcome(0), "success");
 check("one below", resolve.checkOutcome(-1), "partial");
 check("two below", resolve.checkOutcome(-2), "partial");
-check("three below", resolve.checkOutcome(-3), "fail");
+check("three below", resolve.checkOutcome(-3), "partial");
+/* The floor itself, and the first rung past it: the band is four wide now, because a doubled card
+ * jumps over a band of two (see `PARTIAL_FLOOR`). */
+check("four below", resolve.checkOutcome(-4), "partial");
+check("five below", resolve.checkOutcome(-5), "fail");
+check("and the floor is one number, not a literal in two places",
+  resolve.PARTIAL_FLOOR, -4);
 check("well over", resolve.checkOutcome(4), "success");
 /* A Critical comes off the CARD: a crit that still falls short is a success with a bonus. */
 check("a Critical three below is still a Critical", resolve.checkOutcome(-3, "crit"), "critical");
@@ -6701,23 +6707,124 @@ check("and the editor offers both",
  * `checkOutcome` against the real deck rather than recomputed, so the check cannot agree with a
  * restatement of the rule instead of the rule.
  */
-const bands = d => {
+/*
+ * **Read through the engine's own swing and band**, so a change to either moves these numbers
+ * rather than leaving them agreeing with a restatement of the old rule. `swing` is a parameter only
+ * so the row below can ask what the game used to do.
+ */
+const bands = (d, swing = resolve.CHECK_SWING, floor = resolve.PARTIAL_FLOOR) => {
   const counts = { critical: 0, success: 0, partial: 0, fail: 0 };
   for (const card of fate) {
     const special = card.system.special ?? "";
-    counts[resolve.checkOutcome(d + (special ? 0 : card.system.value ?? 0), special)]++;
+    const margin = d + (special ? 0 : (card.system.value ?? 0) * swing);
+    const out = special === "crit" ? "critical" : special === "miss" ? "fail"
+      : margin >= 0 ? "success" : margin >= floor ? "partial" : "fail";
+    counts[out]++;
   }
   const pct = k => Math.round(100 * counts[k] / fate.length);
   /* The document counts a Critical as a success, which its own result table says it is. */
   return `${pct("success") + pct("critical")}% success, ${pct("partial")}% partial, `
     + `${pct("fail")}% fail`;
 };
+/* The band the engine actually applies, for the three distances the document prints odds for. */
 check("on the difficulty", bands(0), "70% success, 25% partial, 5% fail");
 check("one below", bands(-1), "30% success, 60% partial, 10% fail");
-check("two below", bands(-2), "10% success, 60% partial, 30% fail");
-check("and the document says the same",
-  /equals the difficulty, you succeed 70% of the time\. One below gives 30% success and 60%\s*\n?partial\. Two below gives 10% success and 60% partial\./
-    .test(skillDoc) ? "yes" : "no", "yes");
+check("two below", bands(-2), "30% success, 60% partial, 10% fail");
+/*
+ * **And what it was before the swing doubled**, which is the point of the change: the first two
+ * rows are untouched -- section 2's printed odds still hold where it prints them -- and the third
+ * is the whole of the difference. A check two below its difficulty used to fail outright three
+ * times in ten; now it succeeds three times in ten.
+ */
+check("as it was, on the difficulty", bands(0, 1, -2), "70% success, 25% partial, 5% fail");
+check("as it was, one below", bands(-1, 1, -2), "30% success, 60% partial, 10% fail");
+check("as it was, two below", bands(-2, 1, -2), "10% success, 60% partial, 30% fail");
+/* The plain measure of swing, before and after, over the cards that carry a number. */
+const spread = swing => {
+  const vals = fate.map(c => (c.system.special ? 0 : (c.system.value ?? 0) * swing));
+  const m = vals.reduce((a, b) => a + b, 0) / vals.length;
+  return Math.sqrt(vals.reduce((a, v) => a + (v - m) ** 2, 0) / vals.length).toFixed(2);
+};
+check("how far a draw moves a check now", spread(resolve.CHECK_SWING), "1.79");
+check("and how far it used to", spread(1), "0.89");
+/* And the mean is still nought, which is what lets the ladder of 3/5/7/9 stand. */
+check("the mean a check's draw adds",
+  (fate.reduce((a, c) => a + (c.system.special ? 0
+    : (c.system.value ?? 0) * resolve.CHECK_SWING), 0) / fate.length).toFixed(2), "0.00");
+/*
+ * **The document's own numbers, parsed out of it and put to the engine.**
+ *
+ * The check here used to grep for the sentence, which is a claim about the sentence and not about
+ * the game: it would have gone on passing the day the swing doubled and the prose went stale, which
+ * is the fourth time this week a grep has agreed with something familiar instead of something true.
+ * So the percentages are read out of the prose and compared with what `checkOutcome` and the real
+ * deck produce. Neither can move without the other now.
+ */
+const oddsSentence = skillDoc.slice(skillDoc.indexOf("How the odds work with the fate deck"));
+const printedOdds = [...oddsSentence.slice(0, 400).matchAll(/\*\*(\d+)%\*\*/g)]
+  .map(m => Number(m[1]));
+check("percentages the document prints for a check", printedOdds.length, 7);
+/* In the order the sentence gives them: on the difficulty win/partial/fail, then one below's
+ * win/partial, then two below's win/partial. */
+check("and the engine agrees with every one",
+  [[0, 0], [0, 1], [0, 2], [-1, 0], [-1, 1], [-2, 0], [-2, 1]]
+    .map(([d, which], i) => {
+      const parts = bands(d).match(/(\d+)% success, (\d+)% partial, (\d+)% fail/);
+      return Number(parts[which + 1]) === printedOdds[i] ? "" : `d=${d} ${parts[which + 1]} vs ${printedOdds[i]}`;
+    }).filter(Boolean).join("; ") || "none", "none");
+/* The band the document prints, too: a Partial is 1 to 4 below and a Fail is 5 or more. */
+check("the Partial band the document prints",
+  /\| \*\*Partial\*\* \| Total is 1–(\d+) below/.exec(skillDoc)?.[1], "4");
+check("which is the engine's floor",
+  Number(/\| \*\*Partial\*\* \| Total is 1–(\d+) below/.exec(skillDoc)?.[1]),
+  -resolve.PARTIAL_FLOOR);
+check("and the Fail band starts one past it",
+  Number(/\| \*\*Fail\*\* \| (\d+)\+ below/.exec(skillDoc)?.[1]), -resolve.PARTIAL_FLOOR + 1);
+/* And step 4, which is where the doubling is a rule rather than a note. */
+check("step 4 says the card is doubled",
+  /Draw a \*\*fate\*\* card and add \*\*twice\*\* its value/.test(skillDoc) ? "yes" : "no", "yes");
+check("skill-rules records the swing and what it cost",
+  /A check reads its fate card twice as loudly as combat does/.test(skillDoc) ? "yes" : "no", "yes");
+check("and that a point of modifier buys less for it",
+  /\*\*15\*\* points of success chance rather than 21/.test(skillDoc) ? "yes" : "no", "yes");
+/* The number that sentence rests on, computed rather than restated. */
+check("what a point of modifier buys now",
+  (() => {
+    const win = d => Number(bands(d).match(/(\d+)% success/)[1]);
+    const steps = [-2, -1, 0, 1].map(d => win(d + 1) - win(d));
+    return Math.round(steps.reduce((a, b) => a + b, 0) / steps.length);
+  })(), 15);
+check("and what it used to buy",
+  (() => {
+    const win = d => Number(bands(d, 1, -2).match(/(\d+)% success/)[1]);
+    const steps = [-2, -1, 0, 1].map(d => win(d + 1) - win(d));
+    return Math.round(steps.reduce((a, b) => a + b, 0) / steps.length);
+  })(), 21);
+
+/* The saving throw swings with the check, through the same two constants and not beside them. */
+check("a save reads the card at the same swing",
+  /\(used\?\.system\.value \?\? 0\) \* CHECK_SWING/.test(resolveSource) ? "yes" : "no", "yes");
+check("and uses the same band",
+  /short <= -PARTIAL_FLOOR/.test(resolveSource) ? "yes" : "no", "yes");
+/* Twice, because the four results are written twice -- which is why they are constants. */
+check("the swing is applied in both places",
+  (resolveSource.match(/\* CHECK_SWING/g) ?? []).length, 2);
+/*
+ * And the band is read from the constant in the function that owns it, not spelled again. A literal
+ * there would be identical today and would be the thing that drifts from the save's copy tomorrow,
+ * which is the only reason either of these is a constant.
+ */
+const outcomeBody = resolveSource.slice(resolveSource.indexOf("export function checkOutcome"),
+  resolveSource.indexOf("export async function resolveCheck"));
+check("the band in checkOutcome is the constant",
+  /margin >= PARTIAL_FLOOR/.test(outcomeBody) ? "yes" : "no", "yes");
+check("and no literal band is left in it",
+  /margin >= -\d/.test(outcomeBody) ? "a literal" : "none", "none");
+/* The table sees the doubling, or it is arithmetic nobody can check at the table. */
+check("the chat line prints the card and the doubling",
+  resolveSource.includes("CHECK_SWING} = ${swing") ? "yes" : "no", "yes");
+check("and the engine clamps neither total",
+  /Math\.max\(0, before/.test(resolveSource) ? "it clamps" : "it does not", "it does not");
 
 /*
  * **No check is ever certain, in either direction.** A Miss is a Fail whatever the total and a

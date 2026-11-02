@@ -1381,11 +1381,42 @@ export async function resolveUse(actor, { item, target = actor }) {
  * *Critical drawn* -- so a crit that still falls short is a success with a bonus rather than a near
  * miss, which is the same reading `FateCardData.apply` gives it in combat.
  */
+/**
+ * **A check reads its fate card twice as loudly as combat does** (skill-rules 2).
+ *
+ * The fate deck is sharply peaked: eight of its twenty cards are a flat nought, so a draw moved a
+ * check's total by 0.89 on average and the numbers on a character decided almost everything. One
+ * point of card, tool, push or help was worth 21 points of success chance, and a check two below
+ * its difficulty succeeded one time in ten.
+ *
+ * Doubling the card on a check -- and only on a check -- gets the swing to **1.79** without
+ * touching a single card, which matters because **the same twenty cards resolve combat damage**
+ * (hud-spec 4.3): reshaping the deck would have widened a Strike's spread by half as much again,
+ * against a combat model measured on this one. A multiplier here is a skill-side change that stays
+ * on the skill side.
+ *
+ * Miss and Critical are untouched at 5% each and the mean stays at nought, so the ladder of 3, 5,
+ * 7 and 9 still means what it meant.
+ */
+export const CHECK_SWING = 2;
+
+/**
+ * How far below the difficulty a total may be and still be a **Partial** (skill-rules 2).
+ *
+ * **It widened with the swing, and had to.** A doubled card jumps over a two-point band: at one
+ * below the difficulty the old floor turned 60% partials into 40% partials and 30% flat failures,
+ * which is a harsher game rather than a swingier one. At four, the bands come out at **70/25/5** on
+ * the difficulty and **30/60/10** one below -- exactly what they were before the swing doubled, and
+ * exactly what section 2 prints. What changed is the far end: two below the difficulty went from
+ * 10/60/30 to **30/60/10**, so a long shot is a real gamble instead of a formality.
+ */
+export const PARTIAL_FLOOR = -4;
+
 export function checkOutcome(margin, special = "") {
   if (special === "crit") return "critical";
   if (special === "miss") return "fail";
   if (margin >= 0) return "success";
-  return margin >= -2 ? "partial" : "fail";
+  return margin >= PARTIAL_FLOOR ? "partial" : "fail";
 }
 
 /**
@@ -1458,8 +1489,17 @@ export async function resolveCheck(actor, {
   const before = base + toolBonus + pushed + help + features.total;
 
   const draw = improvise ? -1 : mode;
-  const { result, used } = await drawFate(actor, before, draw);
+  /*
+   * **The total is computed here rather than taken from `drawFate`**, for two reasons. The card is
+   * read at `CHECK_SWING` on a check, which is the swing; and `applyFate` is combat-shaped -- it
+   * clamps a result at nought and doubles the whole total on a Critical, both of which are right
+   * for damage and wrong for a margin. A check wants the plain sum, and the Critical is decided by
+   * the band rather than by the arithmetic.
+   */
+  const { used } = await drawFate(actor, before, draw);
   const special = used?.system?.special ?? "";
+  const swing = special ? 0 : (used?.system?.value ?? 0) * CHECK_SWING;
+  const result = before + swing;
   const margin = result - dc;
 
   const outcome = checkOutcome(margin, special);
@@ -1488,7 +1528,10 @@ export async function resolveCheck(actor, {
     speaker: ChatMessage.getSpeaker({ actor }),
     flags: { cardrpg: { outcome } },
     content: `<div class="cardrpg"><p>${chain.join(" &middot; ")}</p>`
-      + `<p>Fate: <strong>${used ? (special || used.system.value) : "\u2014"}</strong>`
+      + `<p>Fate: <strong>${used ? (special
+        || `${used.system.value >= 0 ? "+" : ""}${used.system.value}`
+          + `${used.system.value ? ` \u00d7${CHECK_SWING} = ${swing >= 0 ? "+" : ""}${swing}` : ""}`)
+        : "\u2014"}</strong>`
       + ` &rarr; ${result} against ${dc}</p>`
       + `<p><strong>${label}</strong>`
       + (outcome === "partial" ? " &mdash; you do it, and it costs something. Draw a twist."
@@ -1624,13 +1667,21 @@ export async function resolveCondition(actor, { step, target }) {
     // condition is attempted at all, so the half is playable against anyone (data/cards.mjs).
     const when = step.when?.needs && step.when.dc && carries(target, step.when.needs) ? step.when : null;
     const dc = when ? when.dc : (step.dc ?? CARDRPG.difficulties.normal);
-    const { result, used } = await drawFate(target, score, 0);
+    /*
+     * **A saving throw is a check in all but name, so it swings like one.** Same doubled card,
+     * same widened band -- written through the same two constants rather than beside them, because
+     * this branch is the second copy of the four results and the two copies are exactly what would
+     * drift. (That they are two copies at all is older than this change and still true: the band
+     * lives here and in `checkOutcome`.)
+     */
+    const { used } = await drawFate(target, score, 0);
     const miss = used?.system.special === "miss";
     const crit = used?.system.special === "crit";
+    const result = score + (miss || crit ? 0 : (used?.system.value ?? 0) * CHECK_SWING);
     const short = dc - result;
 
     if (crit || (!miss && short <= 0)) landed = null;
-    else if (!miss && short <= 2) {
+    else if (!miss && short <= -PARTIAL_FLOOR) {
       // Partial: half the duration, or the lesser condition if one is printed.
       landed = step.lesser
         ? { key: step.lesser, duration: full }

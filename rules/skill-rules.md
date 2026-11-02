@@ -134,7 +134,7 @@ Only make a check when **failure would be interesting** and the outcome is uncer
 1. The GM describes the obstacle and sets a **difficulty**.
 2. You play **one skill card** and **say how** you approach it. The approach must fit the description: you can climb a wall with Might or Agility, but not with Presence.
 3. **Total** = card value + **tool** bonus + **feature** bonus.
-4. Draw a **fate** card and add it (advantage/disadvantage as usual).
+4. Draw a **fate** card and add **twice** its value (advantage/disadvantage as usual).
 5. Compare to the difficulty.
 
 ### Difficulty
@@ -152,10 +152,41 @@ Only make a check when **failure would be interesting** and the outcome is uncer
 |---|---|---|
 | **Critical** | Critical drawn | Success, plus a bonus (extra progress, a useful discovery, ...). |
 | **Success** | Total ≥ difficulty | You do it. |
-| **Partial** | Total is 1–2 below | You do it, **but** there's a cost: draw a twist card (section 4) or the GM picks a cost. |
-| **Fail** | 3+ below, or Miss | You don't do it, **and** the situation changes: draw a twist card. |
+| **Partial** | Total is 1–4 below | You do it, **but** there's a cost: draw a twist card (section 4) or the GM picks a cost. |
+| **Fail** | 5+ below, or Miss | You don't do it, **and** the situation changes: draw a twist card. |
 
-How the odds work with the fate deck: if your total equals the difficulty, you succeed 70% of the time. One below gives 30% success and 60% partial. Two below gives 10% success and 60% partial.
+How the odds work with the fate deck: if your total equals the difficulty, you succeed **70%** of the
+time, with **25%** partial and **5%** outright failure. One below gives **30%** success and **60%**
+partial. Two below gives **30%** success and **60%** partial.
+
+> **[BUILT 2026-11-02] A check reads its fate card twice as loudly as combat does, and the Partial
+> band widened to four to match.**
+>
+> The deck is sharply peaked &mdash; eight of its twenty cards are a flat nought &mdash; so a draw moved a
+> check's total by **0.89** on average and the numbers on a character decided nearly everything. One
+> point of card, tool, push or help bought **21 points** of success chance, and a check two below its
+> difficulty succeeded one time in ten.
+>
+> Doubling the card on a **check** gets the swing to **1.79** without touching a single card, which
+> is the only reason to do it that way: **the same twenty cards resolve combat damage**
+> ([../foundry/hud-spec.md](../foundry/hud-spec.md) §4.3), and reshaping the deck would have widened
+> a Strike's spread by half as much again against a combat model measured on this one.
+>
+> **The band had to widen with it.** A doubled card jumps over a band of two: at one below the
+> difficulty the old floor turned 60% partials into 40% partials and 30% flat failures, which is a
+> harsher game rather than a swingier one. At four the bands come out at **70/25/5** on the
+> difficulty and **30/60/10** one below &mdash; unchanged, which is why the odds above still read as they
+> did. The difference is at the far end: **two below went from 10/60/30 to 30/60/10**, so a long shot
+> is a real gamble instead of a formality.
+>
+> Miss and Critical are untouched at **5%** each and the mean a draw adds is still **0.00**, so the
+> ladder of 3, 5, 7 and 9 means what it meant. What it costs is that a point of modifier now buys
+> **15** points of success chance rather than 21: the scaling of §8 is worth a little less than it
+> was the day it was written, which is the trade this change is.
+>
+> **A saving throw is a check in all but name and swings with it**, through the same two constants.
+> The four results live in two places in the engine &mdash; a check's and a save's &mdash; which is older than
+> this change and is why they are constants rather than literals.
 
 > **[FOUND IN CODE 2026-11-02] The odds above are exactly right, and two things about them are
 > worth stating that the table does not.**
