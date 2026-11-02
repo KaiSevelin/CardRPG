@@ -8,7 +8,7 @@
 
 import { CARDRPG } from "./config.mjs";
 /* The one shape a skill card takes, shared with anything that grants one rather than spelled here. */
-import { skillCardData, twistCardData, backOf } from "./decks.mjs";
+import { skillCardData, twistCardData, npcCardData, backOf, artIn } from "./decks.mjs";
 /* A deck is the subset of the pool a creature's capabilities earn, and a variant is a delta from
  * its base. Both are arithmetic, and both live where the validator can ask them. */
 import { deckFor, expandRoster } from "./monsters.mjs";
@@ -54,10 +54,18 @@ function expand(defs, build) {
 
 /** Slate data from a content entry, filling in what the schema expects. */
 export function slateData(entry, type) {
-  const { name, group, active, grants, bonus, text, copies, ...rest } = entry;
+  const { name, group, active, grants, bonus, text, copies, art, ...rest } = entry;
   return {
     name,
     type,
+    /*
+     * **An Item's own `img`, which is where the brief said this would go.** `art` used to fall
+     * into `...rest` and land in `system.art`, so every item, feature, piece of NPC gear and
+     * natural weapon in the catalogue -- a hundred and seventy of the four hundred and twenty
+     * pieces -- had a path in content that no document ever wore. The levelling graph read it
+     * straight from content and showed it on a node, which is what made the gap invisible.
+     */
+    ...(artIn({ art }) ? { img: artIn({ art }) } : {}),
     system: {
       ...rest,
       ...(group ? { group } : {}),
@@ -210,13 +218,24 @@ export async function createStarterContent() {
       if (slates[name]) embedded.push(slates[name].toObject());
     }
 
+    /*
+     * **One picture, both slots.** Foundry keeps a portrait on `Actor.img` and a map token on
+     * `prototypeToken.texture.src`, and a creature wants the same file in each for the same reason
+     * a deck back does: the thing on the map and the thing on the sheet are the same creature, and
+     * two files is two things to draw and one to forget. A separate portrait is a field to add the
+     * day somebody wants one, not a field to leave empty until then.
+     */
+    const art = artIn(def);
     const actor = await Actor.create({
       name: def.name,
       type: def.type,
+      ...(art ? { img: art } : {}),
       system: { ...def.system, decks },
       items: embedded,
       // Unlinked, so each token keeps its own health while sharing the type's decks.
-      prototypeToken: { actorLink: false, name: def.name },
+      prototypeToken: {
+        actorLink: false, name: def.name, ...(art ? { texture: { src: art } } : {})
+      },
       ...stamp(tag)
     });
     made.actors++;
@@ -242,15 +261,8 @@ export async function createStarterContent() {
   const buildCreature = async (creature, fate) => {
     const kind = creature.system.kind;
     const npcBack = backOf(`npc.${kind}`) || backOf("npc");
-    const cards = deckFor(creature.system.capabilities ?? [], INTENTS).map(card => ({
-      name: card.name,
-      type: "npc",
-      face: 0,
-      faces: [{ name: card.name }],
-      /* Its own back if the kind has earned one, and the common intent back otherwise. */
-      back: { name: creature.name, ...(npcBack ? { img: npcBack } : {}) },
-      system: { kind, sequence: card.sequence, needs: card.needs ?? [], text: card.text ?? "" }
-    }));
+    const cards = deckFor(creature.system.capabilities ?? [], INTENTS)
+      .map(card => npcCardData(card, { kind, creature: creature.name, back: npcBack }));
     const deck = await makeCards(`${creature.name} \u2014 Intents`, "deck", `${kind}.deck`,
       cards, backOf(`npc.${kind}`) ? `npc.${kind}` : "npc");
     const discard = await makeCards(`${creature.name} \u2014 Discard`, "pile", `${kind}.discard`);
@@ -373,14 +385,8 @@ export async function buildMonster(name) {
   const baseKind = base.system.kind;
   const npcBack = backOf(`npc.${kind}`) || backOf("npc");
 
-  const cards = deckFor(creature.system.capabilities ?? [], INTENTS).map(card => ({
-    name: card.name,
-    type: "npc",
-    face: 0,
-    faces: [{ name: card.name }],
-    back: { name: creature.name, ...(npcBack ? { img: npcBack } : {}) },
-    system: { kind, sequence: card.sequence, needs: card.needs ?? [], text: card.text ?? "" }
-  }));
+  const cards = deckFor(creature.system.capabilities ?? [], INTENTS)
+    .map(card => npcCardData(card, { kind, creature: creature.name, back: npcBack }));
 
   const find = tag => game.cards.find(d => d.getFlag("cardrpg", FLAG) === tag);
   const art = backOf(`npc.${kind}`) ? `npc.${kind}` : "npc";

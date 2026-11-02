@@ -44,6 +44,24 @@ export function artOf(doc) {
 }
 
 /**
+ * The art a CONTENT definition carries, or nothing -- the writing side of `artOf`.
+ *
+ * `artOf` answers "what picture is on this document"; this answers "what picture should go on the
+ * document we are about to make", and both need the same `icons/svg/` guard for the same reason.
+ * One spelling, because the three builders below and the two in the setup routine all need it and
+ * five copies of a guard is four chances to forget it.
+ *
+ * It exists because the brief's central promise -- *add `art:` to the definition and no schema
+ * change is needed* -- was only true of cards. An Item's `art` fell into `slateData`'s `...rest`
+ * and settled in `system.art`, where nothing reads it, which was a hundred and seventy of the four
+ * hundred and twenty pieces commissioned.
+ */
+export function artIn(def) {
+  const art = def?.art ?? "";
+  return art && !art.startsWith("icons/svg/") ? art : "";
+}
+
+/**
  * The back of a deck, by its key in `DECK_BACKS`, or nothing.
  *
  * A back goes in two slots and wants the same file in both: `Cards.img`, which is what Foundry
@@ -73,7 +91,7 @@ export function skillCardData(def) {
     name: def.name,
     type: "skill",
     face: 0,
-    faces: [{ name: def.name, ...(def.art ? { img: def.art } : {}) }],
+    faces: [{ name: def.name, ...(artIn(def) ? { img: artIn(def) } : {}) }],
     ...(back ? { back: { img: back } } : {}),
     system: {
       approach: def.approach ?? "",
@@ -109,7 +127,7 @@ export function actionCardData(def) {
     type: "action",
     face: 0,
     /* The face carries the art, which is where Foundry already keeps a card's picture. */
-    faces: [{ name: def.name, ...(def.art ? { img: def.art } : {}) }],
+    faces: [{ name: def.name, ...(artIn(def) ? { img: artIn(def) } : {}) }],
     /*
      * And the back says which deck it came from. A Wound and a Taint wear this one too, on
      * purpose: both go INTO the action deck (core-rules 8), and a Wound you could see coming
@@ -124,6 +142,28 @@ export function actionCardData(def) {
       costs: def.costs ?? {},
       ...(def.text !== undefined ? { text: def.text } : {})
     }
+  };
+}
+
+/**
+ * One NPC intent card, in the shape both builders use.
+ *
+ * The setup routine builds the goblin line and `buildMonster` builds everything else on demand,
+ * and they were spelling this out separately -- so the face's art had to be added twice or it
+ * would be added once, which is the failure mode the suite's own self-check section is about.
+ *
+ * The back is the creature, because that is all a face-down intent shows: its own if the kind has
+ * earned one, the common intent back otherwise.
+ */
+export function npcCardData(card, { kind, creature, back }) {
+  return {
+    name: card.name,
+    type: "npc",
+    // Turned face down when drawn; the face is what a reveal turns up.
+    face: 0,
+    faces: [{ name: card.name, ...(artIn(card) ? { img: artIn(card) } : {}) }],
+    back: { name: creature, ...(back ? { img: back } : {}) },
+    system: { kind, sequence: card.sequence, needs: card.needs ?? [], text: card.text ?? "" }
   };
 }
 

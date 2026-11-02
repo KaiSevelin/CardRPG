@@ -13,6 +13,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { CARDRPG } from "../module/config.mjs";
 import * as content from "../module/content.mjs";
+import { expandRoster } from "../module/monsters.mjs";
 
 const root = path.join(import.meta.dirname, "..");
 const OUT = path.join(root, "..", "art-list.md");
@@ -88,6 +89,38 @@ function brief(entry) {
   return line.length > 150 ? line.slice(0, 147) + "..." : line;
 }
 
+/**
+ * A creature's brief: its numbers, what it fights with, and the one line of description the
+ * roster already carries.
+ *
+ * `note` is the part worth having and the part nobody had to write for this -- *the one that does
+ * not run: a shield, a shell of discipline, and no Cower* says more about the picture than a
+ * statblock does, and it was written when the creature was.
+ */
+function creatureBrief(creature) {
+  const s = creature.system ?? {};
+  const bits = [];
+  /* Only what the entry actually says. A character has no `speed` and no `armorBase` -- those are
+   * a creature's fields, and the starter Warrior is the one piece in this group that is not one --
+   * so the line leaves them out instead of printing a question mark somebody has to ask about. */
+  const health = s.health?.base ?? s.health?.value;
+  if (health !== undefined) bits.push(`Health ${health}`);
+  if (s.armorBase) bits.push(`armour ${s.armorBase}`);
+  if (s.speed !== undefined) bits.push(`speed ${s.speed}`);
+  if (creature.equipped?.length) bits.push(creature.equipped.join(", "));
+  const line = [bits.join(" \u00b7 "), creature.note].filter(Boolean).join(" \u2014 ");
+  return line.length > 150 ? line.slice(0, 147) + "..." : line;
+}
+
+/*
+ * Every creature in the roster, bases and variants alike, because a token's whole job is telling
+ * one from another on the map. The deck-back argument -- *forty-seven kinds would be forty-seven
+ * pieces of art* -- points the other way here: a back says which deck, and one picture can serve
+ * every creature that has not earned its own; a token says WHICH GOBLIN, and a Shaman that looks
+ * like an Archer is a token that has failed at the only thing it does.
+ */
+const CREATURES = expandRoster(content.ROSTER, content.VARIANTS);
+
 /* -------------------------------------------- */
 
 /**
@@ -108,8 +141,12 @@ const GROUPS = [
     why: "Six cards every Way draws on, so each one is seen by every character in the game.",
     list: content.COMMON_POOL },
   { dir: "cards/npc", title: "NPC intent cards",
-    why: "Face-up on the table during a fight, which makes them the art players stare at longest.",
-    list: content.GOBLIN_DECK },
+    why: "Face-up on the table during a fight, which makes them the art players stare at longest. "
+      + "**One pool, and every creature in the world draws the subset it has earned** "
+      + "(core-rules 9) \u2014 so a picture here is seen behind a goblin, a troll and a dragon, and "
+      + "wants to be the SHAPE of the move rather than a portrait of whoever is making it. "
+      + "*Close In* is a thing closing in.",
+    list: content.INTENTS },
   { dir: "cards/shade", title: "Way of Shade — pool",
     why: "The minor-node cards of a built Way.", list: content.SHADE_POOL },
   { dir: "cards/strength", title: "Way of Strength — pool",
@@ -154,7 +191,25 @@ const GROUPS = [
     list: content.ITEMS.filter(i => !i.npc) },
   { dir: "items/npc", title: "NPC gear",
     why: "Tuned separately from player gear and never offered in a player's picker.",
-    list: content.NPC_GEAR ?? [] }
+    list: content.NPC_GEAR ?? [] },
+  { dir: "items/natural", title: "Natural weapons",
+    why: "A mandible, a sting, a tail club and a breath are items like any other \u2014 grown "
+      + "rather than carried, which is what the `natural` tag means and why none of them can be "
+      + "disarmed or looted. They sit on a creature's sheet, so they want the same picture an "
+      + "item wants.",
+    list: content.NATURAL_WEAPONS ?? [] },
+
+  { dir: "tokens", title: "Creature tokens", kind: "token",
+    why: "**The one piece of art per creature**, and the only group here that is not a card. It "
+      + "goes in both of Foundry's slots \u2014 the portrait on the sheet and the token on the map "
+      + "\u2014 because they are the same creature and two files is one to forget. Health, armour, "
+      + "speed and gear are given so the picture can be the right size and carry the right "
+      + "weapon; the line after the dash is the creature's own description, written when it was.",
+    list: CREATURES, brief: creatureBrief },
+  { dir: "tokens", title: "The starter Warrior", kind: "token",
+    why: "The pregenerated character a first session plays. One token, same shape as a "
+      + "creature's, and the only player-side one in the brief: a real party arrives with its own.",
+    list: [content.WARRIOR], brief: creatureBrief }
 ];
 
 /* -------------------------------------------- */
@@ -205,10 +260,42 @@ push(
   "```",
   "",
   "**How a path reaches the game.** Add `art: \"...\"` to the piece's definition in "
-  + "`module/content.mjs`. No schema change is needed — Foundry already gives every Item an `img` "
-  + "and every Card face an `img`, and this system uses those two slots. Anything under "
-  + "`icons/svg/` is ignored on purpose: that is Foundry's own placeholder set, and a generic bag "
-  + "icon stretched across a card is worse than no art at all.",
+  + "`module/content.mjs`. No schema change is needed, because Foundry already has a slot for "
+  + "every one of these and this system used none of them: **a Card face's `img`** for a card, "
+  + "**an Item's `img`** for an item, feature, weapon or piece of gear, and **an Actor's `img` "
+  + "plus its prototype token's texture** for a creature — one file in those last two, which is "
+  + "why a creature is one piece and not two.",
+  "",
+  "> **This was true of cards and false of everything else until today.** An item's `art` fell "
+  + "into the rest of its definition and settled in `system.art`, which nothing reads, so 176 of "
+  + "the pieces in this brief had a path in content that no document ever wore. The levelling "
+  + "graph reads `art` straight out of content and draws it on a node, which is why a feature's "
+  + "picture appeared there and nowhere else, and why nobody noticed.",
+  "",
+  "Anything under `icons/svg/` is ignored on purpose: that is Foundry's own placeholder set, and a "
+  + "generic bag icon stretched across a card is worse than no art at all.",
+  "",
+  "## What to supply — tokens",
+  "",
+  "**A token is a different shape from a card**, and the groups below marked *token* follow this "
+  + "table instead of the one above. A card is a landscape you look at; a token is a creature seen "
+  + "from the table, sitting on a square of map with other tokens beside it.",
+  "",
+  "| | |",
+  "|---|---|",
+  "| Ratio | **1:1** |",
+  "| Size | **512 × 512** |",
+  "| Format | `.webp` or `.png`, and **transparency is required**: a token sits on the map, not in "
+  + "a frame, so a background is a square of the wrong colour around the creature |",
+  "| Framing | **The creature fills the square**, head to foot or nose to tail. Nothing is printed "
+  + "over a token, so there is no safe area — but Foundry draws a health bar under it and a "
+  + "nameplate below that, and both sit outside the image |",
+  "| Facing | **Top-down or three-quarter, consistently.** Whichever the table picks, every "
+  + "creature wants to match: one top-down dragon among forty portraits reads as a mistake |",
+  "",
+  "**One picture, both slots.** Foundry keeps a portrait on the actor and a token on the map, and a "
+  + "creature wants the same file in each — the same argument a deck back makes. A separate "
+  + "portrait is a field to add the day somebody wants one, not a field to leave empty until then.",
   "",
   "## What does not need art",
   "",
@@ -218,6 +305,18 @@ push(
   + "content. One picture each at most.",
   "- **The levelling graph's nodes.** A node wears the art of what it hands over, so drawing a "
   + "Signature draws its node too. Nothing needs art of its own.",
+  `- **The twist deck.** ${content.TWISTS.length} kinds, `
+  + `${content.TWISTS.reduce((n, t) => n + (t.copies ?? 1), 0)} cards, and a twist is a NAME and a `
+  + "COST rather than a picture. It is the GM's own deck and wears the skill back, because art for "
+  + "a deck one person ever sees is art nobody at the table looks at.",
+  `- **The ${content.MONSTER_TAGS.length} tagged creatures.** Elves, trolls, dragons and the rest `
+  + "are in the content as a name and a list of capabilities, with no numbers and no actor — so "
+  + "there is nothing yet for a picture to be of. They arrive in the brief when they arrive in the "
+  + "game.",
+  `- **The goblin's old authored deck.** ${content.GOBLIN_DECK.length} cards that predate the `
+  + "common pool, and "
+  + `${content.GOBLIN_DECK.filter(c => !content.INTENTS.some(i => i.name === c.name)).length} `
+  + "of them are drawn by no creature in the world. Nothing in the brief asks for them.",
   ""
 );
 
@@ -231,8 +330,9 @@ push(
   "## Deck backs — draw these first",
   "",
   "**A back is one picture per deck, not one per card**, and it does one job: it says which deck a "
-  + "face-down card came from. Five pictures against three hundred faces — and the five are what "
-  + "a table looks at all evening, since a deck is face down from the first second of play.",
+  + `face-down card came from. ${backs.length} pictures against ${total - backs.length} faces `
+  + "— and these are what a table looks at all evening, since a deck is face down from the first "
+  + "second of play.",
   "",
   `**${backs.length} pieces**${backs.filter(([, b]) => b.art).length
     ? `, ${backs.filter(([, b]) => b.art).length} wired up` : ""}. `
@@ -256,27 +356,34 @@ push(
   + "discard is face up to the table, so a back on one would be art nobody ever sees.",
   "",
   "**An NPC deck's back is keyed by creature kind**, because that is all it shows: a goblin's "
-  + "intents should be recognisable across the table as a goblin's. One kind today, and a new "
-  + "creature brings a new back with it.",
+  + "intents should be recognisable across the table as a goblin's. A kind with a back of its own "
+  + `uses it and the other ${CREATURES.filter(c => !(`npc.${c.system.kind}` in content.DECK_BACKS)).length} use the common one, which is what a `
+  + "roster that grew faster than its art could leaves you with.",
   ""
 );
 
 for (const group of GROUPS) {
   if (!group.list?.length) continue;
   const have = group.list.filter(e => e.art).length;
+  const describe = group.brief ?? brief;
   push(
     `## ${group.title}`,
     "",
     `${group.why}`,
     "",
-    `**${group.list.length} pieces**${have ? `, ${have} wired up` : ""}. `
+    `**${group.list.length} piece${group.list.length === 1 ? "" : "s"}**`
+    + `${have ? `, ${have} wired up` : ""}. `
+    /* Which of the two spec tables this group follows, said per group rather than once at the
+     * top: a brief that states the shape only in its header is a brief somebody draws a 2:3
+     * token from. */
+    + `${group.kind === "token" ? "**1:1, 512 × 512, transparent.** " : ""}`
     + `Suggested path: \`cardrpg/art/${group.dir}/\``,
     "",
     "| | Name | What it is | File |",
     "|---|---|---|---|"
   );
   for (const entry of [...group.list].sort((a, b) => a.name.localeCompare(b.name))) {
-    push(`| ${entry.art ? "✓" : " "} | **${entry.name}** | ${brief(entry) || "—"} `
+    push(`| ${entry.art ? "✓" : " "} | **${entry.name}** | ${describe(entry) || "—"} `
       + `| \`${group.dir}/${slug(entry.name)}.webp\` |`);
   }
   push("");

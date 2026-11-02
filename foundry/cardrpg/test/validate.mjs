@@ -5019,14 +5019,32 @@ check("applications whose wiring was compared", APPS.length, 4);
  * somebody draws the wrong things from.
  */
 const artList = fs.readFileSync(path.join(root, "../art-list.md"), "utf8");
+/*
+ * **Every creature in the world, because a token is art and a creature is the thing it is of.**
+ * The brief had cards, spells, features and items and no creatures at all -- forty-seven of them,
+ * each already carrying the one-line description somebody wrote when they made it, which is a
+ * better brief than anything invented for the purpose.
+ */
+const everyCreatureForArt = monsters.expandRoster(content.ROSTER, content.VARIANTS);
 const artable = [
-  content.WARRIOR_DECK, content.GOBLIN_DECK, content.COMMON_POOL, content.WAY_CARDS,
+  content.WARRIOR_DECK, content.INTENTS, content.COMMON_POOL, content.WAY_CARDS,
   content.SHADE_POOL, content.STRENGTH_POOL, content.WARRIOR_SKILLS, content.WILD_MAGIC,
   content.FORMULAS, content.SHADOW_FORMULAS, content.MIND_POOL, content.FAITH_POOL,
   content.FEATURES, content.ITEMS.filter(i => !i.npc), content.NPC_GEAR ?? [],
+  content.NATURAL_WEAPONS ?? [], everyCreatureForArt, [content.WARRIOR],
   ...Object.entries(content).filter(([k]) => k.endsWith("_SIGNATURES")).map(([, v]) => v)
 ].flat();
-check("pieces of content that take art", artable.length, 414);
+check("pieces of content that take art", artable.length, 494);
+/*
+ * **The goblin's authored deck is NOT in the brief, and that is the point of the pool.** Five of
+ * its six cards are drawn by no creature in the world -- the pool has its own shapes for all of
+ * them -- so the brief asked for five pictures nobody would ever see. `Swarm` survived because the
+ * pool has a card by that name.
+ */
+check("cards in the old goblin deck that no creature can draw",
+  content.GOBLIN_DECK.filter(c => !content.INTENTS.some(i => i.name === c.name)).length, 5);
+check("and the brief says so rather than asking for them",
+  /are drawn by no creature in the world/.test(artList) ? "yes" : "no", "yes");
 
 /*
  * The backs, which are a different kind of art: **one picture per deck, not one per card**, doing
@@ -5097,11 +5115,21 @@ check("and the brief says why harm has no back of its own",
 /* One reader for a back, the same shape as the one for a face. */
 check("a back has one reader",
   /export function backOf\(key\)/.test(decksSource) ? "yes" : "no", "yes");
+/* Scoped: `artIn` carries the same guard, so a grep over the file is answered by either. */
 check("with the same placeholder guard a face gets",
-  /art && !art\.startsWith\("icons\/svg\/"\) \? art : ""/.test(decksSource) ? "yes" : "no", "yes");
+  /art && !art\.startsWith\("icons\/svg\/"\) \? art : ""/
+    .test(decksSource.slice(decksSource.indexOf("export function backOf"))) ? "yes" : "no", "yes");
+/* And the writing side has it too, for the same reason: Foundry fills these slots itself. */
+const artInBody = decksSource.slice(decksSource.indexOf("export function artIn"));
+check("and the writing side guards the same way",
+  /art && !art\.startsWith\("icons\/svg\/"\) \? art : ""/
+    .test(artInBody.slice(0, artInBody.indexOf("\n}"))) ? "yes" : "no", "yes");
 /* It goes in both slots Foundry has for it, and wants the same file in each. */
+/* Scoped: an actor takes its own art the same way, so a file-wide grep is about neither. */
+const makeCardsBody = setupSource.slice(setupSource.indexOf("async function makeCards"));
 check("the deck document takes it",
-  /\.\.\.\(art \? \{ img: art \} : \{\}\)/.test(setupSource) ? "yes" : "no", "yes");
+  /\.\.\.\(art \? \{ img: art \} : \{\}\)/
+    .test(makeCardsBody.slice(0, makeCardsBody.indexOf("\n}"))) ? "yes" : "no", "yes");
 check("and so does every card in the deck",
   (setupSource.match(/back: \{/g) ?? []).length >= 1
   && /\.\.\.\(backOf\("action"\) \? \{ back: \{ img: backOf\("action"\) \} \} : \{\}\)/
@@ -5118,6 +5146,142 @@ check("pieces missing from the art list",
 check("the list agrees on what is wired up",
   Number(/of which \*\*(\d+)\*\* are wired up/.exec(artList)?.[1] ?? -1),
   artable.filter(e => e.art).length + backs.filter(([, b]) => b.art).length);
+/*
+ * **Every group in the brief lands in a slot something writes.**
+ *
+ * This is the check the catalogue needed and did not have. Counting pieces was never going to find
+ * the gap, because the count was right: 420 pieces, 420 rows, and 176 of them in a slot no
+ * document ever wore. `slateData` spread an entry's `art` into `system.art` and the levelling
+ * graph read the path straight out of content, so a feature's picture appeared on its node and
+ * nowhere else.
+ *
+ * So the question is asked of the brief's own section headings: each one names a suggested
+ * directory, every directory is one of three Foundry slots, and each slot has a writer that reads
+ * a definition's art. A group added to the brief with nowhere for its art to go fails here.
+ */
+const ART_SLOTS = {
+  "cards/starter": "face", "cards/common": "face", "cards/npc": "face", "cards/shade": "face",
+  "cards/strength": "face", "cards/way": "face", "cards/skill": "face", "cards/wild": "face",
+  "signatures/shade": "face", "signatures/strength": "face", "signatures/mind": "face",
+  "signatures/faith": "face", "spells/elemental": "face", "spells/shadow": "face",
+  "spells/mind": "face", "spells/faith": "face",
+  features: "item", items: "item", "items/npc": "item", "items/natural": "item",
+  tokens: "actor"
+};
+const briefDirs = [...new Set([...artList.matchAll(/Suggested path: `cardrpg\/art\/(.+?)\/`/g)]
+  .map(m => m[1]))];
+check("directories the brief commissions into", briefDirs.length, 21);
+check("and every one of them has a slot",
+  briefDirs.filter(d => !(d in ART_SLOTS)).join(", ") || "none", "none");
+/* And no slot is declared for a group that is not in the brief, or this list rots quietly. */
+check("slots declared for nothing",
+  Object.keys(ART_SLOTS).filter(d => !briefDirs.includes(d)).join(", ") || "none", "none");
+/*
+ * The three writers, each asked in its own body. A file-wide grep for `artIn` was exactly the
+ * shape of the original bug: one reader in the file passed for all of them.
+ */
+const SLOT_WRITERS = {
+  face: [["an action card", decksSource, "export function actionCardData", "\n}"],
+    ["a skill card", decksSource, "export function skillCardData", "\n}"],
+    ["an intent card", decksSource, "export function npcCardData", "\n}"]],
+  item: [["an item", setupSource, "export function slateData", "\n}"]],
+  actor: [["an actor", setupSource, "const buildActor = async", "\n  };"]]
+};
+const slotFaults = [];
+for (const [slot, writers] of Object.entries(SLOT_WRITERS)) {
+  for (const [label, src, anchor, end] of writers) {
+    const at = src.indexOf(anchor);
+    const to = at < 0 ? -1 : src.indexOf(end, at);
+    /* An anchor that no longer matches, or an end that does not, leaves a body of nothing or of
+     * the whole file -- and the whole file is the bug this rule is about. Both are faults. */
+    if (at < 0 || to < 0) { slotFaults.push(`${slot}: ${label} (no body)`); continue; }
+    if (!/artIn\(/.test(src.slice(at, to))) slotFaults.push(`${slot}: ${label}`);
+  }
+}
+check("slots whose writer never reads a definition's art",
+  slotFaults.join(", ") || "none", "none");
+/* A parse that found no bodies would report "none" for writers that read nothing at all. */
+check("writers the rule actually read",
+  Object.values(SLOT_WRITERS).flat().length, 5);
+
+/*
+ * **A token is a different shape, and the brief says so twice on purpose.** Once in its own spec
+ * table and once on every token group's own line -- because a brief that states the shape only at
+ * the top is a brief somebody draws a 2:3 token from, and a token in a frame is unusable.
+ */
+check("the brief has a second spec for tokens",
+  /^## What to supply \u2014 tokens$/m.test(artList) ? "yes" : "no", "yes");
+const tokenRatio = /## What to supply \u2014 tokens[\s\S]*?\| Ratio \| \*\*(\S+)\*\*/.exec(artList);
+check("and asks for a square", tokenRatio?.[1] ?? "none", "1:1");
+/*
+ * **And says, before either table, that the two differ.** An artist who reads one spec and assumes
+ * the other is a frame around a creature, which is a token that cannot be used. The check is the
+ * claim rather than the sentence: the two tables disagree about the ratio, and the prose says a
+ * token is a different shape. Reword the sentence freely; make the tables agree and this fails.
+ */
+/* The card's ratio, read here rather than borrowed: the section that pins it comes further down,
+ * and a check that reads a `const` declared below it does not run at all. */
+const cardRatio = /\| Ratio \| \*\*(\S+)\*\*/.exec(artList)?.[1] ?? "none";
+check("the two specs do not agree on the shape",
+  tokenRatio?.[1] === cardRatio ? `both ${cardRatio}` : "they differ", "they differ");
+check("and the brief says so before either table",
+  /\*\*A token is a different shape from a card\*\*/.test(artList) ? "yes" : "no", "yes");
+check("and a size", /\| Size \| \*\*512 \u00d7 512\*\* \|/.test(artList) ? "yes" : "no", "yes");
+check("and transparency, which a card does not want",
+  /\*\*transparency is required\*\*/.test(artList) ? "yes" : "no", "yes");
+/* Said again per group, so the row an artist is reading carries the shape of the row. */
+const tokenGroups = [...artList.matchAll(
+  /\*\*(\d+) pieces?\*\*\. \*\*1:1, 512 \u00d7 512, transparent\.\*\* Suggested path: `cardrpg\/art\/(\S+?)\/`/g)]
+  .map(m => m[2]);
+check("groups that restate the token shape", tokenGroups.join(", "), "tokens, tokens");
+/* One picture in both slots, which is the economy and wants saying where it is read. */
+check("and that one file serves portrait and token",
+  /\*\*One picture, both slots\.\*\*/.test(artList) ? "yes" : "no", "yes");
+/* And the brief names all four places a path lands, since it is where somebody checks. */
+for (const [what, pattern] of [
+  ["a card face", /\*\*a Card face's `img`\*\* for a card/],
+  ["an item", /\*\*an Item's `img`\*\*/],
+  ["an actor and its token", /\*\*an Actor's `img` plus its prototype token's texture\*\*/]
+]) {
+  check(`the brief says where art lands for ${what}`,
+    pattern.test(artList) ? "yes" : "no", "yes");
+}
+/* And records that it only ever worked for one of them, because a repair nobody wrote down is a
+ * repair somebody undoes. */
+check("and that it used to be true of cards alone",
+  /This was true of cards and false of everything else until today/.test(artList) ? "yes" : "no",
+  "yes");
+
+/*
+ * The HUD spec says the same, because it is what somebody reads BEFORE adding a path -- and a spec
+ * that still promises two slots sends the next person to write a reader that already exists.
+ */
+check("the HUD spec names the one writer",
+  /`artIn` beside\n`artOf`, the writing side of the same question/.test(hudSpec) ? "yes" : "no",
+  "yes");
+check("and that a creature's file goes in both of its slots",
+  /creature's on the Actor \*\*and\*\* on its token/.test(hudSpec) ? "yes" : "no", "yes");
+check("and that a token is not a card",
+  /\*\*A token is not a card\.\*\* 1:1 at 512 \u00d7 512 with transparency required/.test(hudSpec)
+    ? "yes" : "no", "yes");
+/* The two documents agree on the token's shape, rather than each stating it once. */
+const specTokenSize = /1:1 at (\d+ \u00d7 \d+) with transparency/.exec(hudSpec)?.[1] ?? "none";
+check("and the brief asks for that same size",
+  new RegExp(`\\| Size \\| \\*\\*${specTokenSize}\\*\\* \\|`).test(artList) ? "yes" : "no",
+  "yes");
+
+/*
+ * And the three groups that are deliberately absent, each with its reason in the file. A piece of
+ * content with no art and no stated reason is indistinguishable from one somebody forgot.
+ */
+check("the brief says why a twist has no picture",
+  /a twist is a NAME and a COST rather than a picture/.test(artList) ? "yes" : "no", "yes");
+check("and why the tagged creatures are not commissioned",
+  /there is nothing yet for a picture to be of/.test(artList) ? "yes" : "no", "yes");
+check("and it counts them off the content rather than in prose",
+  new RegExp(`\\*\\*The ${content.MONSTER_TAGS.length} tagged creatures\\.\\*\\*`).test(artList)
+    ? "yes" : "no", "yes");
+
 /*
  * And the brief reads as English. A condition is printed by its NAME, not its key: an artist should
  * not have to work out that `offBalance` is Off Balance, and a camelCase word in a brief is the one
@@ -5147,9 +5311,19 @@ const briefs = faceRows.map(r => r.brief);
 const leaked = briefs.flatMap(text =>
   [...text.matchAll(/\b([a-z]+[A-Z][a-zA-Z]*)\b/g)].map(m => m[1]));
 /* A pattern that matched no rows at all would report "none" for any list whatsoever. */
-check("briefs the check actually read", briefs.length, 414);
+check("briefs the check actually read", briefs.length, 494);
 check("keys that leaked into the brief",
   leaked.length ? [...new Set(leaked)].join(", ") : "none", "none");
+/*
+ * And no brief has a hole in it. The starter Warrior printed *Health 12 - speed ?* on its first
+ * generation, because `speed` is a creature's field and a character has none -- so the line
+ * reported a missing number as though the number were unknown. An artist cannot draw either, but
+ * a question mark looks like data, and the row is the only place anybody would see it.
+ */
+const holes = faceRows.filter(r => /\?|undefined|NaN|\bnull\b/.test(r.brief));
+check("briefs with a missing number in them",
+  holes.length ? holes.slice(0, 5).map(r => `${r.name}:${r.brief.trim()}`).join(" | ") : "none",
+  "none");
 
 /*
  * And the filenames, which are what an artist names files by.
@@ -5160,7 +5334,7 @@ check("keys that leaked into the brief",
  */
 const { slug } = await import("./art-list.mjs");
 const rows = faceRows;
-check("file paths in the brief", rows.length, 414);
+check("file paths in the brief", rows.length, 494);
 /* And the backs, whose path is the slug of their KEY rather than of their printed label. */
 const backPaths = [...artList.matchAll(/\| `(backs\/[^`]+)` \|/g)].map(m => m[1]);
 check("back paths in the brief", backPaths.length, backs.length);
@@ -5232,9 +5406,57 @@ check("and core's placeholders are not treated as art",
 for (const [label, builder] of [["an action card", "actionCardData"], ["a skill card", "skillCardData"]]) {
   const body = decksSource.slice(decksSource.indexOf(`export function ${builder}(def)`));
   check(`${label} definition can carry art`,
-    /faces: \[\{ name: def\.name, \.\.\.\(def\.art \? \{ img: def\.art \} : \{\}\) \}\]/
+    /faces: \[\{ name: def\.name, \.\.\.\(artIn\(def\) \? \{ img: artIn\(def\) \} : \{\}\) \}\]/
       .test(body.slice(0, body.indexOf("\n}"))) ? "yes" : "no", "yes");
 }
+
+/*
+ * **And the other three slots, which the brief promised and nothing delivered.**
+ *
+ * The brief's central sentence is *add `art:` to the definition; no schema change is needed,
+ * because Foundry already gives every Item an `img` and every Card face an `img`*. That was true
+ * of cards and false of everything else: `slateData` spread the rest of an entry into `system`, so
+ * an item's `art` settled in `system.art` and no document ever wore it -- a hundred and seventy of
+ * the pieces in the catalogue. The levelling graph reads `art` straight out of content and draws
+ * it on a node, which is exactly why nobody noticed.
+ *
+ * Each is read in the body that writes it, because "somewhere in the file" was the shape of the
+ * bug: one `img` in the file passed for all four slots.
+ */
+const slateBody = setupSource.slice(setupSource.indexOf("export function slateData"));
+check("an item definition can carry art",
+  /\.\.\.\(artIn\(\{ art \}\) \? \{ img: artIn\(\{ art \}\) \} : \{\}\)/
+    .test(slateBody.slice(0, slateBody.indexOf("\n}"))) ? "yes" : "no", "yes");
+check("and `art` is destructured out, so it cannot fall into system again",
+  /const \{ name, group, active, grants, bonus, text, copies, art, \.\.\.rest \} = entry;/
+    .test(setupSource) ? "yes" : "no", "yes");
+const actorBody = setupSource.slice(setupSource.indexOf("const buildActor = async"),
+  setupSource.indexOf("/*\n   * --- a creature"));
+check("a creature's definition reaches its portrait",
+  /\.\.\.\(art \? \{ img: art \} : \{\}\),\n      system: \{ \.\.\.def\.system, decks \}/
+    .test(actorBody) ? "yes" : "no", "yes");
+check("and its token, which is the same file",
+  /texture: \{ src: art \}/.test(actorBody) ? "yes" : "no", "yes");
+/* One picture in both slots, so the two cannot be given different files by accident. */
+check("and the token is not given a file of its own",
+  /texture: \{ src: (?!art \})/.test(setupSource) ? "no" : "yes", "yes");
+/*
+ * An intent card has one shape, built in one place. Two routines create them -- the setup routine
+ * for the goblin line and `buildMonster` for everything else -- and they were spelling the card
+ * out separately, so the face's art had to be remembered twice.
+ */
+check("an intent card has one builder",
+  /export function npcCardData\(card, \{ kind, creature, back \}\)/.test(decksSource)
+    ? "yes" : "no", "yes");
+check("and both routines use it",
+  (setupSource.match(/npcCardData\(card, \{ kind, creature: creature\.name, back: npcBack \}\)/g)
+    ?? []).length, 2);
+check("and neither builds a face by hand any more",
+  /faces: \[\{ name: card\.name \}\]/.test(setupSource) ? "no" : "yes", "yes");
+const npcBody = decksSource.slice(decksSource.indexOf("export function npcCardData"));
+check("and an intent card can carry art",
+  /\.\.\.\(artIn\(card\) \? \{ img: artIn\(card\) \} : \{\}\)/
+    .test(npcBody.slice(0, npcBody.indexOf("\n}"))) ? "yes" : "no", "yes");
 
 /*
  * The rim is the BORDER, which is what lets the art sit inside it with no extra element: the
@@ -7566,7 +7788,7 @@ for (const m of selfSource.matchAll(/(\w+)\.includes\("((?:[^"\\]|\\.)*)"\)/g)) 
 }
 
 /* The pin that keeps the rest of this honest. */
-check("greps over a whole file, resolved", greps.length, 454);
+check("greps over a whole file, resolved", greps.length, 468);
 
 /*
  * **The rule, as one predicate, run over a planted example before it is run over the suite.**
@@ -7602,17 +7824,19 @@ check("greps a second printer could answer",
  * is absent is the whole of its content, so the content is what is pinned.
  */
 /*
- * The eighteen, by name and by pattern, in the order the suite sorts them. Raw strings,
+ * The twenty, by name and by pattern, in the order the suite sorts them. Raw strings,
  * because these are patterns: written as escaped JS they are unreadable, and a list nobody
  * can read is a list nobody will check when it changes.
  */
 const absentGreps = [
   String.raw`a pile is never given one :: "pile",[^)]*backOf\(`,
   String.raw`and core content is never written to :: NODES\.(push|splice|length =)`,
+  String.raw`and neither builds a face by hand any more :: faces: \[\{ name: card\.name \}\]`,
   String.raw`and never decides from adjacency itself :: \.after[\s\S]{0,60}\.(some|every)\(`,
   String.raw`and the engine clamps neither total :: Math\.max\(0, before`,
   String.raw`and the old sentence is gone :: Faith is \*\*wide and shallow\*\*`,
   String.raw`and the resolver reads the flag :: conditionsOf\(actor\)\.includes\("invisible"\)`,
+  String.raw`and the token is not given a file of its own :: texture: \{ src: (?!art \})`,
   String.raw`nothing builds a fate card by hand any more :: createEmbeddedDocuments\("Card", \[\{\s*name: fateCard`,
   String.raw`nothing draws a twist automatically :: drawTwist\(`,
   String.raw`reaction timer retired from config :: reactionTimer`,

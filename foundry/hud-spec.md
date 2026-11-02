@@ -373,12 +373,26 @@ drawing most of it:
 | Ratio | **2:3** |
 | Size | **640 × 960** (2×, for a 150px card on a retina display) |
 | Where | anywhere in the world's files; the path goes in content |
-| Field | **none was needed** — Foundry already gives every Item an `img` and every Card face an `img`, and nothing in this system used either |
+| Field | **none was needed** — Foundry already gives every Item an `img`, every Card face an `img`, and every Actor an `img` and a prototype token, and nothing in this system used any of them |
 
-A content definition carries `art: "..."` and the deck builders put it in the face. Foundry fills
-those slots with its own placeholder when a document is created, so the test is not *is there a
-path* but *is it ours*: anything under `icons/svg/` is core's set, and a generic bag icon stretched
-across a card would be worse than no art at all.
+A content definition carries `art: "..."` and **one reader puts it where it goes**: `artIn` beside
+`artOf`, the writing side of the same question. A card's goes on the face, an item's on the Item, a
+creature's on the Actor **and** on its token — the same file in both, because the thing on the map
+and the thing on the sheet are the same creature and two files is one to forget.
+
+> **A token is not a card.** 1:1 at 512 × 512 with transparency required, against a card's 2:3
+> full bleed. A token sits on the map rather than in a frame, so a background is a square of the
+> wrong colour around the creature.
+
+Foundry fills those slots with its own placeholder when a document is created, so the test is not
+*is there a path* but *is it ours*: anything under `icons/svg/` is core's set, and a generic bag
+icon stretched across a card would be worse than no art at all.
+
+> **For a long time only the card slot was written.** An item's `art` fell into `slateData`'s
+> `...rest` and landed in `system.art`, where nothing reads it — every item, feature and piece of
+> gear in the catalogue, a hundred and seventy-six pieces. The levelling graph reads the path
+> straight from content and draws it on a node, so a feature's picture turned up there and on
+> nothing else, which is exactly the shape of a defect nobody finds by reading.
 
 ---
 

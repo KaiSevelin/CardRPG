@@ -1,6 +1,6 @@
 # Art list
 
-**420 pieces**, of which **0** are wired up. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card.
+**500 pieces**, of which **0** are wired up. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card.
 
 ## What to supply
 
@@ -23,17 +23,38 @@ cardrpg/art/cards/starter/strike.webp
 cardrpg/art/signatures/shade/the-opening.webp
 ```
 
-**How a path reaches the game.** Add `art: "..."` to the piece's definition in `module/content.mjs`. No schema change is needed — Foundry already gives every Item an `img` and every Card face an `img`, and this system uses those two slots. Anything under `icons/svg/` is ignored on purpose: that is Foundry's own placeholder set, and a generic bag icon stretched across a card is worse than no art at all.
+**How a path reaches the game.** Add `art: "..."` to the piece's definition in `module/content.mjs`. No schema change is needed, because Foundry already has a slot for every one of these and this system used none of them: **a Card face's `img`** for a card, **an Item's `img`** for an item, feature, weapon or piece of gear, and **an Actor's `img` plus its prototype token's texture** for a creature — one file in those last two, which is why a creature is one piece and not two.
+
+> **This was true of cards and false of everything else until today.** An item's `art` fell into the rest of its definition and settled in `system.art`, which nothing reads, so 176 of the pieces in this brief had a path in content that no document ever wore. The levelling graph reads `art` straight out of content and draws it on a node, which is why a feature's picture appeared there and nowhere else, and why nobody noticed.
+
+Anything under `icons/svg/` is ignored on purpose: that is Foundry's own placeholder set, and a generic bag icon stretched across a card is worse than no art at all.
+
+## What to supply — tokens
+
+**A token is a different shape from a card**, and the groups below marked *token* follow this table instead of the one above. A card is a landscape you look at; a token is a creature seen from the table, sitting on a square of map with other tokens beside it.
+
+| | |
+|---|---|
+| Ratio | **1:1** |
+| Size | **512 × 512** |
+| Format | `.webp` or `.png`, and **transparency is required**: a token sits on the map, not in a frame, so a background is a square of the wrong colour around the creature |
+| Framing | **The creature fills the square**, head to foot or nose to tail. Nothing is printed over a token, so there is no safe area — but Foundry draws a health bar under it and a nameplate below that, and both sit outside the image |
+| Facing | **Top-down or three-quarter, consistently.** Whichever the table picks, every creature wants to match: one top-down dragon among forty portraits reads as a mistake |
+
+**One picture, both slots.** Foundry keeps a portrait on the actor and a token on the map, and a creature wants the same file in each — the same argument a deck back makes. A separate portrait is a field to add the day somebody wants one, not a field to leave empty until then.
 
 ## What does not need art
 
 - **Fate cards.** Twenty cards that are a number and a reshuffle marker. They want a *design* — a back, a Miss, a Critical — not twenty illustrations.
 - **Wounds and Taint.** Two faces, fixed, and both are meant to read as damage rather than as content. One picture each at most.
 - **The levelling graph's nodes.** A node wears the art of what it hands over, so drawing a Signature draws its node too. Nothing needs art of its own.
+- **The twist deck.** 8 kinds, 30 cards, and a twist is a NAME and a COST rather than a picture. It is the GM's own deck and wears the skill back, because art for a deck one person ever sees is art nobody at the table looks at.
+- **The 21 tagged creatures.** Elves, trolls, dragons and the rest are in the content as a name and a list of capabilities, with no numbers and no actor — so there is nothing yet for a picture to be of. They arrive in the brief when they arrive in the game.
+- **The goblin's old authored deck.** 6 cards that predate the common pool, and 5 of them are drawn by no creature in the world. Nothing in the brief asks for them.
 
 ## Deck backs — draw these first
 
-**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. Five pictures against three hundred faces — and the five are what a table looks at all evening, since a deck is face down from the first second of play.
+**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 6 pictures against 494 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
 
 **6 pieces**. Same 2:3 and 640 × 960 as a face, and **no safe area**: nothing is printed over a back, so the whole card is yours.
 
@@ -50,7 +71,7 @@ cardrpg/art/signatures/shade/the-opening.webp
 
 **Hands, discards and Spent piles have no back either.** A hand is face up to its owner and a discard is face up to the table, so a back on one would be art nobody ever sees.
 
-**An NPC deck's back is keyed by creature kind**, because that is all it shows: a goblin's intents should be recognisable across the table as a goblin's. One kind today, and a new creature brings a new back with it.
+**An NPC deck's back is keyed by creature kind**, because that is all it shows: a goblin's intents should be recognisable across the table as a goblin's. A kind with a back of its own uses it and the other 46 use the common one, which is what a roster that grew faster than its art could leaves you with.
 
 ## The starter deck
 
@@ -88,18 +109,40 @@ Six cards every Way draws on, so each one is seen by every character in the game
 
 ## NPC intent cards
 
-Face-up on the table during a fight, which makes them the art players stare at longest.
+Face-up on the table during a fight, which makes them the art players stare at longest. **One pool, and every creature in the world draws the subset it has earned** (core-rules 9) — so a picture here is seen behind a goblin, a troll and a dragon, and wants to be the SHAPE of the move rather than a portrait of whoever is making it. *Close In* is a thing closing in.
 
-**6 pieces**. Suggested path: `cardrpg/art/cards/npc/`
+**28 pieces**. Suggested path: `cardrpg/art/cards/npc/`
 
 | | Name | What it is | File |
 |---|---|---|---|
-|   | **Cower** | Move 3 away from the nearest enemy | `cards/npc/cower.webp` |
-|   | **Dirty Trick** | Strike Dazed (1) | `cards/npc/dirty-trick.webp` |
-|   | **Rush** | Move 3, Strike | `cards/npc/rush.webp` |
-|   | **Stab & Scurry** | Strike, Move 2 | `cards/npc/stab-scurry.webp` |
-|   | **Swarm** | Move 2, Strike +1 if another goblin is next to the target | `cards/npc/swarm.webp` |
-|   | **Throw Rock** | Strike range 4 1 damage, ignores the item | `cards/npc/throw-rock.webp` |
+|   | **Bring It Down** | Strike · Strike a door, a wall or a held position, ignoring its armour entirely. | `cards/npc/bring-it-down.webp` |
+|   | **Bull Through** | Move, Strike · Move your speed through a figure in the way, pushing it aside, then Strike. | `cards/npc/bull-through.webp` |
+|   | **Call More** | Something arrives at the edge of the scene. The GM says what and how much. | `cards/npc/call-more.webp` |
+|   | **Carry** | Move · A willing ally rides: it moves with you, and may still act when you stop. | `cards/npc/carry.webp` |
+|   | **Charge** | Move, Strike +1 · Move double your speed in a straight line, then Strike. The distance is the damage. | `cards/npc/charge.webp` |
+|   | **Close In** | Move, Strike · Move your speed, then Strike. | `cards/npc/close-in.webp` |
+|   | **Drag Down** | Strike Grappled (1) · Strike; on a hit the target is Grappled and goes nowhere. | `cards/npc/drag-down.webp` |
+|   | **Envenom** | Strike · Strike; on a hit it carries whatever you carry. | `cards/npc/envenom.webp` |
+|   | **Fade** | Move, Strike Invisible (1) · Move your speed and become Hidden. You were never standing there. | `cards/npc/fade.webp` |
+|   | **Feed** | Strike, Heal · Strike an adjacent figure and heal what you took out of it. | `cards/npc/feed.webp` |
+|   | **Give Ground** | Move · Move your speed away from the nearest enemy. A hurt thing that can leave, does. | `cards/npc/give-ground.webp` |
+|   | **Go Under** | Move · Leave the map. Next round you arrive anywhere you could have walked to. | `cards/npc/go-under.webp` |
+|   | **Hold the Line** | Defend, Block 1 range 1 · Defend, and an ally adjacent to you gains Block 1. | `cards/npc/hold-the-line.webp` |
+|   | **Lash Out** | Strike blast 1 · Strike every figure adjacent to you, friend or not. | `cards/npc/lash-out.webp` |
+|   | **Lie Still** | Nothing at all, and the next Strike you make cannot be answered by a reaction. | `cards/npc/lie-still.webp` |
+|   | **Long Arm** | Strike · Strike at reach without closing, and stay where you are. | `cards/npc/long-arm.webp` |
+|   | **Loose** | Strike · Strike at your weapon's range. | `cards/npc/loose.webp` |
+|   | **Order** | An ally within sight acts again, or moves its speed. You do nothing yourself. | `cards/npc/order.webp` |
+|   | **Press** | Strike, Strike -1 · Strike, and Strike again at −1. Nothing clever, twice. | `cards/npc/press.webp` |
+|   | **Set and Wait** | Defend · Defend, and keep a reaction for whoever comes. | `cards/npc/set-and-wait.webp` |
+|   | **Shelter** | Defend · Allies within 1 cannot be targeted at range while you stand. | `cards/npc/shelter.webp` |
+|   | **Spray** | Strike · Strike everything in the area, at range. Whatever you breathe, you breathe it on your own kind too. | `cards/npc/spray.webp` |
+|   | **Stoop** | Move, Strike · Arrive from above: move twice your speed, then Strike. | `cards/npc/stoop.webp` |
+|   | **Strike and Step** | Strike, Move · Strike, then move your speed away. | `cards/npc/strike-and-step.webp` |
+|   | **Submerge** | Move · Go under the water. Next round you surface anywhere along it. | `cards/npc/submerge.webp` |
+|   | **Swarm** | Move, Strike +1 · Move, then Strike at +1 for each ally already adjacent to your target. | `cards/npc/swarm.webp` |
+|   | **Take Stock** | Shake 1 · Nothing this round, and shake one condition off. | `cards/npc/take-stock.webp` |
+|   | **Work the Weave** | Cast · Cast one from your own short list. | `cards/npc/work-the-weave.webp` |
 
 ## Way of Shade — pool
 
@@ -297,7 +340,7 @@ The combo pair and its two readers: the oldest spells in the game.
 
 Pays in a permanent Wild card.
 
-**1 pieces**. Suggested path: `cardrpg/art/spells/shadow/`
+**1 piece**. Suggested path: `cardrpg/art/spells/shadow/`
 
 | | Name | What it is | File |
 |---|---|---|---|
@@ -636,4 +679,89 @@ Tuned separately from player gear and never offered in a player's picker.
 |   | **Goblin Shortbow** | Weapon | `items/npc/goblin-shortbow.webp` |
 |   | **Goblin Spear** | Weapon | `items/npc/goblin-spear.webp` |
 |   | **Mole Pick** | Weapon | `items/npc/mole-pick.webp` |
+
+## Natural weapons
+
+A mandible, a sting, a tail club and a breath are items like any other — grown rather than carried, which is what the `natural` tag means and why none of them can be disarmed or looted. They sit on a creature's sheet, so they want the same picture an item wants.
+
+**10 pieces**. Suggested path: `cardrpg/art/items/natural/`
+
+| | Name | What it is | File |
+|---|---|---|---|
+|   | **Acid Spray** | Natural | `items/natural/acid-spray.webp` |
+|   | **Claws** | Natural | `items/natural/claws.webp` |
+|   | **Fire Spray** | Natural | `items/natural/fire-spray.webp` |
+|   | **Grasping Claws** | Natural | `items/natural/grasping-claws.webp` |
+|   | **Heavy Mandibles** | Natural | `items/natural/heavy-mandibles.webp` |
+|   | **Mandibles** | Natural | `items/natural/mandibles.webp` |
+|   | **Nip** | Natural | `items/natural/nip.webp` |
+|   | **Sting** | Natural | `items/natural/sting.webp` |
+|   | **Tail Club** | Natural | `items/natural/tail-club.webp` |
+|   | **Tusks** | Natural | `items/natural/tusks.webp` |
+
+## Creature tokens
+
+**The one piece of art per creature**, and the only group here that is not a card. It goes in both of Foundry's slots — the portrait on the sheet and the token on the map — because they are the same creature and two files is one to forget. Health, armour, speed and gear are given so the picture can be the right size and carry the right weapon; the line after the dash is the creature's own description, written when it was.
+
+**47 pieces**. **1:1, 512 × 512, transparent.** Suggested path: `cardrpg/art/tokens/`
+
+| | Name | What it is | File |
+|---|---|---|---|
+|   | **Armored Slug** | Health 16 · armour 4 · speed 1 · Acid Spray — slow, armoured, and it does not need to reach you | `tokens/armored-slug.webp` |
+|   | **Armored Slug Spitter** | Health 12 · armour 3 · speed 2 · Acid Spray — thinner shell, longer reach of acid: it is here to ruin somebody's concentration | `tokens/armored-slug-spitter.webp` |
+|   | **Blind Worm** | Health 14 · armour 2 · speed 3 · Heavy Mandibles — no sight and a sense for vibration: it finds whoever moved | `tokens/blind-worm.webp` |
+|   | **Blind Worm Elder** | Health 24 · armour 3 · speed 3 · Heavy Mandibles — old enough to have learned that a held thing stops moving and stops being felt | `tokens/blind-worm-elder.webp` |
+|   | **Burrower** | Health 18 · armour 2 · speed 5 · Mandibles — worms, and the steeds of the mole men: it is how they arrive under you | `tokens/burrower.webp` |
+|   | **Burrower Brood Mother** | Health 30 · armour 3 · speed 3 · Mandibles — it stopped being a steed when it started laying | `tokens/burrower-brood-mother.webp` |
+|   | **Doomfly** | Health 12 · armour 1 · speed 7 · Nip — transport: it is how everything else arrived | `tokens/doomfly.webp` |
+|   | **Five Legs** | Health 15 · armour 2 · speed 4 · Claws — lieutenants, fairly intelligent: it spends its turn on somebody else's | `tokens/five-legs.webp` |
+|   | **Five Legs Adjutant** | Health 12 · armour 2 · speed 4 · Claws — it does not fight at all: it calls the next wave | `tokens/five-legs-adjutant.webp` |
+|   | **Flat Bug** | Health 5 · armour 1 · speed 3 · Mandibles — the Horde's main infantry: a goblin with a shell and no fear | `tokens/flat-bug.webp` |
+|   | **Flat Bug Runner** | Health 4 · speed 5 · Mandibles — sent ahead to find out where you are, and dies finding out | `tokens/flat-bug-runner.webp` |
+|   | **Flat Bug Shieldline** | Health 7 · armour 2 · speed 2 · Mandibles — the front rank, which is where the Horde's armour actually is | `tokens/flat-bug-shieldline.webp` |
+|   | **Goblin** | Health 5 · speed 3 · Goblin Spear | `tokens/goblin.webp` |
+|   | **Goblin Archer** | Health 5 · speed 3 · Goblin Shortbow — it earns Loose by being able to shoot, which the spearman cannot | `tokens/goblin-archer.webp` |
+|   | **Goblin Chief** | Health 11 · armour 1 · speed 3 · Goblin Spear, Goblin Shield — kill it and the Cower comes back to everybody else | `tokens/goblin-chief.webp` |
+|   | **Goblin Shaman** | Health 6 · speed 2 · Goblin Fetish — the elves taught it enough glamour to be dangerous and not enough to be free | `tokens/goblin-shaman.webp` |
+|   | **Goblin Warrior** | Health 8 · armour 1 · speed 3 · Goblin Spear, Goblin Shield — the one that does not run: a shield, a shell of discipline, and no Cower | `tokens/goblin-warrior.webp` |
+|   | **Mantiss** | Health 12 · armour 2 · speed 4 · Grasping Claws — sergeants: the first thing in the Horde that gives an order | `tokens/mantiss.webp` |
+|   | **Mantiss Veteran** | Health 18 · armour 3 · speed 4 · Grasping Claws — it has done this before and takes you out of the fight first | `tokens/mantiss-veteran.webp` |
+|   | **Mega Beetle** | Health 30 · armour 4 · speed 2 · Heavy Mandibles — a wall that walks: the Scrips under its wings are the point of it | `tokens/mega-beetle.webp` |
+|   | **Mole Beast** | Health 22 · armour 2 · speed 3 · Tusks — it comes up underneath, which is what Go Under is for | `tokens/mole-beast.webp` |
+|   | **Mole Beast Tusker** | Health 30 · armour 3 · speed 3 · Tusks — the one the mole men dig behind | `tokens/mole-beast-tusker.webp` |
+|   | **Mole Man** | Health 8 · armour 1 · speed 3 · Mole Pick — followers of the Queen of the Dark, and the only burrower that carries a tool | `tokens/mole-man.webp` |
+|   | **Mole Man Digger** | Health 8 · armour 1 · speed 3 · Mole Pick — it is not fighting you, it is getting through the floor you are standing on | `tokens/mole-man-digger.webp` |
+|   | **Mole Man Priest** | Health 10 · armour 1 · speed 2 · Dark Lantern — the Queen of the Dark grants to those who go deep enough, and it has | `tokens/mole-man-priest.webp` |
+|   | **Pincer** | Health 25 · armour 3 · speed 4 · Grasping Claws — generals, intelligent, armoured: it takes somebody out of the fight rather than down | `tokens/pincer.webp` |
+|   | **Pincer Marshal** | Health 35 · armour 4 · speed 4 · Grasping Claws — a general who can call for more is the fight not ending | `tokens/pincer-marshal.webp` |
+|   | **Processor** | Health 4 · armour 1 · speed 3 · Nip — workers: they build, and they are what a scene looks like before the fight | `tokens/processor.webp` |
+|   | **Processor Driller** | Health 6 · armour 1 · speed 3 · Mandibles — what the Horde uses instead of a siege engine, and the reason walls fall from below | `tokens/processor-driller.webp` |
+|   | **Rush Spider** | Health 10 · armour 1 · speed 8 · Mandibles — cavalry: it arrives before you have finished deciding | `tokens/rush-spider.webp` |
+|   | **Rush Spider Rider** | Health 14 · armour 1 · speed 8 · Mandibles — carrying a Mole Man, which is two statblocks arriving as one problem | `tokens/rush-spider-rider.webp` |
+|   | **Scrip** | Health 2 · speed 6 · Nip — eyes and ears, and harmless: the question is whether you spend a turn on one | `tokens/scrip.webp` |
+|   | **Scrip Watcher** | Health 2 · speed 7 · Nip — the one that is still watching after you killed the others | `tokens/scrip-watcher.webp` |
+|   | **Skaah** | Health 40 · armour 2 · speed 4 · Nip — a drop ship: balloon-like, gigantic, and full of something worse | `tokens/skaah.webp` |
+|   | **Skaah Bloated** | Health 60 · armour 1 · speed 3 · Acid Spray — full, low and leaking: it is going to come down somewhere | `tokens/skaah-bloated.webp` |
+|   | **Slitherer** | Health 7 · armour 1 · speed 4 · Mandibles — silent and venomous: the two words the world gives it, and both are mechanical | `tokens/slitherer.webp` |
+|   | **Slitherer Brood** | Health 4 · armour 1 · speed 5 · Mandibles — smaller, and there are always more of them than you counted | `tokens/slitherer-brood.webp` |
+|   | **Smash Beetle** | Health 20 · armour 3 · speed 2 · Tail Club — it is here for the wall, and you are in the way of the wall | `tokens/smash-beetle.webp` |
+|   | **Smash Beetle Breaker** | Health 28 · armour 4 · speed 1 · Tail Club — bred bigger for the gates of the Third Ring, and it does not turn quickly | `tokens/smash-beetle-breaker.webp` |
+|   | **Stinger** | Health 6 · speed 6 · Sting — it goes for whoever is concentrating | `tokens/stinger.webp` |
+|   | **Stinger Drone** | Health 10 · speed 6 · Acid Spray — the sting became a nozzle somewhere in the hive's history | `tokens/stinger-drone.webp` |
+|   | **Sweeper** | Health 8 · armour 1 · speed 7 · Claws — the air force: four wings and a dive | `tokens/sweeper.webp` |
+|   | **Sweeper Carrier** | Health 12 · armour 1 · speed 6 · Nip — it is carrying something, and the something is the encounter | `tokens/sweeper-carrier.webp` |
+|   | **Sweeper Diver** | Health 6 · armour 1 · speed 9 · Claws — it comes down on whoever is concentrating | `tokens/sweeper-diver.webp` |
+|   | **Terror Fly** | Health 18 · armour 2 · speed 6 · Fire Spray — captains, and the first thing in the roster that burns ground | `tokens/terror-fly.webp` |
+|   | **Terror Fly Torch** | Health 14 · armour 2 · speed 6 · Fire Spray — all the fire and none of the authority | `tokens/terror-fly-torch.webp` |
+|   | **The Queen** | Health 60 · armour 4 · speed 0 · Heavy Mandibles — unique, rooted, and the only thing here that cannot walk: she spends every turn on the army instead | `tokens/the-queen.webp` |
+
+## The starter Warrior
+
+The pregenerated character a first session plays. One token, same shape as a creature's, and the only player-side one in the brief: a real party arrives with its own.
+
+**1 piece**. **1:1, 512 × 512, transparent.** Suggested path: `cardrpg/art/tokens/`
+
+| | Name | What it is | File |
+|---|---|---|---|
+|   | **Starter Warrior** | Health 12 · Longsword, Wooden Shield, Leather Armor, Healing Potion | `tokens/starter-warrior.webp` |
 
