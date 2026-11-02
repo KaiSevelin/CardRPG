@@ -3317,6 +3317,63 @@ export const FAITH_SIGNATURES = [
     description: "<p>Drain 3 Health from an adjacent living target and gain it. The only renewable "
       + "pool in the game, and the node says what it costs to have one.</p>",
     effect: { verb: "cast", range: 1, mod: 3, text: "you gain the Health you take" }
+  },
+
+  /* --- the four orders' Signatures, and none of them is a miracle ---
+   *
+   * **A miracle belongs to a god and an order does not.** An order is open to a priest of any of
+   * the twelve, so a Signature miracle would have to belong to twelve lists at once or to none;
+   * these are cards, which belong to the holder. That is not a compromise -- way-cards 2 gives a
+   * Signature as a card in nineteen other places, and *what you do in the god's service* is an
+   * action rather than a prayer.
+   *
+   * Three of the four need nothing the engine does not already do, which is a change from the way
+   * this Way's content has gone until now: Judged is an opening and openings are published rather
+   * than resisted, `block` is already Block given to somebody else, and Strain is a cost a card
+   * half has always been able to pay.
+   */
+  {
+    /*
+     * The Inquisitor publishes an opening and nothing else, which is the whole design. Judged
+     * does *nothing by itself* (conditions.md 1.2) and is never resisted, so this card's worth is
+     * entirely in what the rest of the party is already written to do with an opening -- and it
+     * makes Way of Faith the Way that hands openings out, where Shade takes them.
+     */
+    name: "The Writ", kind: "card", node: "faith.inquisitor", needs: [],
+    primary: [{ condition: "judged", range: 6, duration: 2 }],
+    secondary: [{ verb: "move", param: 1 }],
+    text: "No save, at range 6. Being named is not something you resist, and the whole field may "
+      + "act on it."
+  },
+  {
+    /* Block given away rather than kept: the effect `block` already is, pointed at the ally and
+     * never at the holder, which is the order's rule written as a card. */
+    name: "The Order's Shield", kind: "card", node: "faith.shieldsworn", needs: [],
+    primary: [{ verb: "defend" }, { verb: "block", param: 2, range: 1 }],
+    secondary: [{ verb: "block", param: 1, range: 1 }],
+    reaction: "block",
+    text: "The Block goes to an adjacent ally and never to you. The order does not defend itself."
+  },
+  {
+    /*
+     * The one gap of the four, and it is the order's whole method: a step that pays off a turn in
+     * which you did NOT move. `charging` reads the opposite -- a turn in which you did -- so the
+     * engine has half of this already and the half it has is the wrong half.
+     */
+    name: "The Long Silence", kind: "card", node: "faith.anchorite",
+    needs: ["a step that reads a turn in which you did not move"],
+    primary: [{ verb: "ready", param: 2 }],
+    secondary: [{ verb: "shake", param: 1 }],
+    text: "Only if you did not move this round. Stillness is the whole of the order's method."
+  },
+  {
+    /* Strain before the blow, which is Valtor's bargain bought with a card instead of a god. */
+    name: "The Scourge", kind: "card", node: "faith.flagellant", needs: [],
+    primary: [{ verb: "strike", mod: 2 }],
+    secondary: [{ verb: "move", param: 2 }],
+    costs: { primary: { strain: 1 } },
+    text: "Strain 1, paid before the blow lands. The drums, the dance and the whip make the same "
+      + "argument: pay first, strike harder."
   }
 ];
 
@@ -3919,7 +3976,25 @@ export const FAITH_TACTICS = {
     "While two or more allies are adjacent to you, none of you can be moved and none of you is "
     + "blocked by cover.",
   "What Is Left":
-    "At 0 Health you keep acting as though at 1 until the end of the round in which you fell."
+    "At 0 Health you keep acting as though at 1 until the end of the round in which you fell.",
+
+  /* --- the four orders ---
+   *
+   * A god's Tactic is shaped by its Obedience; an order's is shaped by its rule, which is the same
+   * bargain one layer down. None of the four names a number, because that is the standing rule for
+   * a thing that is always on (way-cards 2.5).
+   */
+  "Nobody Lies Twice":
+    "An enemy carrying an opening you put there may not take a reaction against you.",
+  "Nobody Falls Beside You":
+    "An ally adjacent to you may not be moved against their will, and cover between the two of "
+    + "you does not exist.",
+  "The Empty Cell":
+    "You cannot be Burdened or Overloaded, and no card may be taken or lifted from any deck of "
+    + "yours.",
+  "Past Caring":
+    "While your Health is half or less you cannot be Compelled or Heckled, and leaving a square "
+    + "adjacent to an enemy never sets off a reaction."
 };
 
 /* -------------------------------------------- */
@@ -4947,4 +5022,91 @@ export const NODES = [
     grants: { choose: { from: "The Purple" } } },
   { id: "faith.yellow.longer", name: "A Longer Lie", after: ["faith.yellow"],
     grants: { choose: { from: "The Yellow" } } },
+
+  /* --- the four holy orders: Way of Faith's second tier ---
+   *
+   * **A god is a choice between twelve. An order is what you do about it**, and until now this Way
+   * had the first and not the second: twelve doors at the top and nothing behind any of them, where
+   * the other three Ways put three titles at tier 1 and nine or ten behind them. A priest reached
+   * level 5 and had nothing left in their own Way to walk toward.
+   *
+   * **The world wrote these before the rules did.** Every religion's *Groupings* section in
+   * Firma.md lists the same kinds of institution under different names -- a religious secret police
+   * (the Black Circle, God's Spirit), an order of knights (the Holy Shield, the Holy Sword), a
+   * monastic order (the White Brothers, the Black Sisters, the Devoted) and the extreme (the
+   * Flagellants, the Berserkers, the Mummers) -- and specializations.md listed all of it as content
+   * that was reaching the rules through nothing at all.
+   *
+   * **So the order is the tier and the religion only names it**, which is what keeps this from
+   * being twelve times four: an order is open to a priest of any god, so four titles serve twelve
+   * where forty-eight would be needed to give each god its own. `faith.ordination` is `after` all
+   * twelve, and `after` is OR (graph.mjs `satisfied`), so one god is enough and no god is special.
+   *
+   * **`exclusive: "order"` is the second family the group rule has ever had**, and it is the proof
+   * that the rule was written general rather than for the gods: one order, for good, the same way
+   * one religion is for good. A priest pays BOTH vows, because `termsOf` accumulates every
+   * obedience owned and only the Tactic is singular -- so the deepest title's Tactic is now the
+   * order's and the god's Obedience still stands.
+   */
+  { id: "faith.ordination", name: "Ordination",
+    after: ["faith.eternalgod", "faith.eternalspirit", "faith.vax", "faith.first",
+      "faith.sessyfyn", "faith.valtor", "faith.fagar", "faith.vulpet", "faith.brendan",
+      "faith.grey", "faith.purple", "faith.yellow"],
+    grants: { training: "the rule of an order" } },
+
+  /* One path node each, so the order arrives at level 8 like every other tier-2 title, and so the
+   * level spent getting there is a level spent on the order rather than on the god. */
+  { id: "faith.order.circle", name: "The Black Circle", after: ["faith.ordination"],
+    grants: { knowHow: "who in a congregation is lying, and to whom" } },
+  { id: "faith.order.shield", name: "The Holy Shield", after: ["faith.ordination"],
+    grants: { training: "shield and formation" } },
+  { id: "faith.order.cloister", name: "The Cloister", after: ["faith.ordination"],
+    grants: { restTokens: 1 } },
+  { id: "faith.order.drums", name: "The Drums", after: ["faith.ordination"],
+    grants: { knowHow: "working a crowd into a state" } },
+
+  {
+    id: "faith.inquisitor", name: "Inquisitor", after: ["faith.order.circle"],
+    title: "Inquisitor", exclusive: "order", creed: "circle",
+    axis: "Control", resource: "a secret",
+    signature: "The Writ", tactic: "Nobody Lies Twice",
+    obedience: "You hold one thing about every ally that the others do not know, and the order "
+      + "may ask you for it.",
+    grants: { card: "The Writ" }
+  },
+  {
+    id: "faith.shieldsworn", name: "Shieldsworn", after: ["faith.order.shield"],
+    title: "Shieldsworn", exclusive: "order", creed: "shield",
+    /*
+     * **This order wrote itself as taking a kept-free spell slot first, and that is the one thing
+     * it must not take.** way-cards 1.4's invariant is that no list runs past the caster it is
+     * handed to, and the whole trunk ladder exists to make a priest's five arrive with their god's
+     * list -- a vow that empties one slot puts every god's strength-5 back out of reach, for a
+     * quarter of the tier, in prose that no code path reads. It takes ground instead, which is
+     * what a shield wall actually costs.
+     */
+    axis: "Position", resource: "ground",
+    signature: "The Order's Shield", tactic: "Nobody Falls Beside You",
+    obedience: "You may not give ground: while an ally stands further forward than you, you may "
+      + "not move away from the enemy.",
+    grants: { card: "The Order's Shield" }
+  },
+  {
+    id: "faith.anchorite", name: "Anchorite", after: ["faith.order.cloister"],
+    title: "Anchorite", exclusive: "order", creed: "cloister",
+    axis: "Deck shape", resource: "skill cards",
+    signature: "The Long Silence", tactic: "The Empty Cell",
+    obedience: "Three skill cards are set aside each morning and are not yours until the next. "
+      + "The cloister keeps them.",
+    grants: { card: "The Long Silence" }
+  },
+  {
+    id: "faith.flagellant", name: "Flagellant", after: ["faith.order.drums"],
+    title: "Flagellant", exclusive: "order", creed: "drums",
+    axis: "Tempo", resource: "a permanent Wild",
+    signature: "The Scourge", tactic: "Past Caring",
+    obedience: "One Wild stays in your fate deck for good. An ecstasy is not a thing you put "
+      + "down.",
+    grants: { card: "The Scourge" }
+  },
 ];

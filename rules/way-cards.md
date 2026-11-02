@@ -465,7 +465,7 @@ a caster to carry something else as well.
 
 ---
 
-## 2. The 48 Signatures  **[DRAFT]**
+## 2. The 52 Signatures  **[DRAFT]**
 
 One per major node. Each is written to the node's **cell** and, in Way of Strength, to the **lever**
 it owns ([specializations.md](specializations.md)). Nothing here is simulated.
@@ -769,6 +769,61 @@ differ in what they take.**
 because a miracle is free to learn and paid for every time you ask. These twelve are repeated there
 under their gods.
 
+#### The four orders  **[BUILT 2026-11-02]**
+
+> **A god is a choice between twelve. An order is what you do about it.** Until this was built, Way
+> of Faith had the first and not the second: twelve doors at the top and nothing behind any of them,
+> where Strength, Shade and Mind each put three titles at tier 1 and nine or ten behind them. A
+> priest reached level 5 and had nothing left in their own Way to walk toward.
+
+**The world wrote these before the rules did.** Every religion's *Groupings* section in
+[Firma.md](../worldinfo/Firma.md) lists the same kinds of institution under different names, and
+[specializations.md](specializations.md) listed all of it as content that reached the rules through
+nothing at all:
+
+| Order | Signature | What it is |
+|---|---|---|
+| **Inquisitor** | **The Writ** | Judged (2) at range 6, no save. The Black Circle of the Eternal God, God's Spirit of the Eternal Spirit: the faith's own police. |
+| **Shieldsworn** | **The Order's Shield** | Reaction: 🛡 Block **2** to an adjacent ally, never to yourself. The Holy Shield, the Holy Sword, and whatever the Five call a war-band. |
+| **Anchorite** | **The Long Silence** | Ready **2** and Shake Off **1**, but only in a round in which you did not move. The White Brothers, the Black Sisters, the Devoted. |
+| **Flagellant** | **The Scourge** | **Strain 1**, then Strike **+2** and move 2. The Flagellants, the Berserkers, the Mummers: pay first, strike harder. |
+
+**The order is the tier and the religion only names it**, which is what keeps this from being twelve
+times four. An order is open to a priest of any god, so **four** titles serve twelve where
+**forty-eight** would be needed to give each god its own, and a Vax priest and a priest of The Purple
+can both be Inquisitors without sharing a single miracle.
+
+**None of the four Signatures is a miracle, and that is not a compromise.** A miracle belongs to a
+god; an order does not, so a Signature miracle would have to belong to twelve lists at once or to
+none. These are cards, which belong to the holder &mdash; and *what you do in the god's service* is
+an action rather than a prayer. Three of the four need nothing the engine does not already do, which
+is new for this Way: **Judged** is an opening and openings are published rather than resisted
+([conditions.md](conditions.md) §1.2), `block` is already Block given to somebody else, and Strain
+is a cost a card half has always been able to pay. The fourth, *The Long Silence*, needs **a step
+that reads a turn in which you did not move** &mdash; the engine has `charging`, which reads the
+opposite.
+
+**A priest pays both vows.** An order carries an **Obedience** like a god's, and obediences
+accumulate where Tactics do not (§2.5): your Tactic becomes the order's, because it is your deepest
+title's, and your god's Obedience still stands beside the order's rule.
+
+| Order | Takes | Its rule |
+|---|---|---|
+| **Inquisitor** | a secret | You hold one thing about every ally that the others do not know, and the order may ask you for it. |
+| **Shieldsworn** | ground | You may not give ground: while an ally stands further forward than you, you may not move away from the enemy. |
+| **Anchorite** | skill cards | Three skill cards are set aside each morning and are not yours until the next. |
+| **Flagellant** | a permanent Wild | One Wild stays in your fate deck for good. An ecstasy is not a thing you put down. |
+
+> **The Shieldsworn's vow was a kept-free spell slot until it was written down beside §1.4.** The
+> invariant there is that no list runs past the caster it is handed to, and the trunk's slot ladder
+> exists to make a priest's five arrive with their god's list &mdash; so a vow that empties one slot
+> would put every god's strength-5 back out of reach for a quarter of the tier, in prose no code path
+> reads. **An order may take anything except the thing another rule just paid for.** It takes ground.
+
+> **One order, for good**, the same way one religion is for good. `exclusive: "order"` is the second
+> family the group rule of [leveling.md](leveling.md) §3 has ever had, and that is the proof the rule
+> was written general rather than for the gods.
+
 ### 2.5 Tactics — how each specialization fights  **[DRAFT]**
 
 > **[BUILT 2026-11-01] A Tactic is derived from your deepest title, never granted.** *You only
@@ -909,6 +964,16 @@ Each is shaped by the god's **Obedience** (§3.5), because a priest's tactics ar
 | **The Yellow** | **Nobody Knows Where You Are** | Enemies treat you as standing where you were at the **start of the round**. |
 | **Vax** | **The Line** | While two or more allies are adjacent to you, none of you can be moved and none of you is blocked by cover. |
 | **The First** | **What Does Not Die** | At 0 Health you keep acting as though at 1 until the end of the round in which you fell. |
+
+And the four orders, shaped by the order's **rule** rather than by a god's Obedience, which is the
+same bargain one layer down.
+
+| Node | Tactic | |
+|---|---|---|
+| **Inquisitor** | **Nobody Lies Twice** | An enemy carrying an **opening you put there** may not take a reaction against you. |
+| **Shieldsworn** | **Nobody Falls Beside You** | An ally adjacent to you may not be **moved against their will**, and cover between the two of you does not exist. |
+| **Anchorite** | **The Empty Cell** | You cannot be **Burdened** or **Overloaded**, and no card may be taken or lifted from any deck of yours. |
+| **Flagellant** | **Past Caring** | While your Health is **half or less** you cannot be **Compelled** or **Heckled**, and leaving a square adjacent to an enemy never sets off a reaction. |
 
 **The Yellow's is the strangest and the most Yellow.** *Nobody Knows Where You Are* means the enemy
 aims at a lie: you moved, and they did not notice. It costs nothing and changes every enemy's targeting

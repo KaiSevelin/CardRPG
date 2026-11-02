@@ -1,6 +1,6 @@
 # Art list
 
-**405 pieces**, of which **0** are wired up. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card.
+**409 pieces**, of which **0** are wired up. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card.
 
 ## What to supply
 
@@ -258,7 +258,7 @@ Eleven, not twelve: *Step Through* is in the Shadow formulas below.
 
 A god's first and defining miracle.
 
-**12 pieces**. Suggested path: `cardrpg/art/signatures/faith/`
+**16 pieces**. Suggested path: `cardrpg/art/signatures/faith/`
 
 | | Name | What it is | File |
 |---|---|---|---|
@@ -270,10 +270,14 @@ A god's first and defining miracle.
 |   | **The Drum** | strength 1 · your next Strike this turn is +3 | `signatures/faith/the-drum.webp` |
 |   | **The First Taste** | strength 2 · Tainting 2 range 1 you gain 1 Taint yourself | `signatures/faith/the-first-taste.webp` |
 |   | **The Long Night** | strength 3 · Cast +3 range 1 you gain the Health you take | `signatures/faith/the-long-night.webp` |
+|   | **The Long Silence** | Ready 2 · / Shake 1 · Only if you did not move this round. Stillness is the whole of the order's method. | `signatures/faith/the-long-silence.webp` |
+|   | **The Order's Shield** | Defend, Block 2 range 1 · / Block 1 range 1 · The Block goes to an adjacent ally and never to you. The order does not defend itself. | `signatures/faith/the-orders-shield.webp` |
 |   | **The Outcast's Due** | strength 3 · Cast blast 1 Compelled (2) | `signatures/faith/the-outcasts-due.webp` |
 |   | **The Rumour** | strength 2 · one enemy type acts as though a named lie were true, while you keep it up | `signatures/faith/the-rumour.webp` |
+|   | **The Scourge** | Strike +2 · / Move 2 · Strain 1, paid before the blow lands. The drums, the dance and the whip make the same argument: pay first, strike harder. | `signatures/faith/the-scourge.webp` |
 |   | **The Silent Hour** | strength 2 · range 1 reaction: an adjacent enemy's action does not happen | `signatures/faith/the-silent-hour.webp` |
 |   | **The Tide Knows** | strength 2 · range 3 an ally draws fate twice on their next action and keeps both | `signatures/faith/the-tide-knows.webp` |
+|   | **The Writ** | range 6 Judged (2) · / Move 1 · No save, at range 6. Being named is not something you resist, and the whole field may act on it. | `signatures/faith/the-writ.webp` |
 
 ## Formulas — Elemental
 

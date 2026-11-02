@@ -515,8 +515,25 @@ lists** rather than twelve filters on existing schools. The world sizes that for
 ### Twelve gods, twelve prices
 
 Way of Faith is the inverse of Way of Shade. Shade is **narrow and deep** — three titles off the trunk
-and nine behind them. Faith is **wide and shallow**: twelve doors at the top, because in this Way *the
-choice is the content*, and it is the only Way where the first step closes the others for good.
+and nine behind them. Faith is **wide**: twelve doors at the top, because in this Way *the choice is
+the content*, and it is the only Way where the first step closes the others for good.
+
+> **[BUILT 2026-11-02] It was wide and shallow, and now it is wide and deep.** The sentence above
+> used to end *wide and shallow*, and the shallowness was never argued for &mdash; it fell out of
+> spending the whole title budget on breadth. Measured against the other three Ways it meant a
+> priest reached level 5 and had nothing left in their own Way to walk toward, where every other Way
+> puts nine or ten titles at tier 2.
+>
+> **The depth is four holy orders** ([way-cards.md](way-cards.md) §2.4), and the world had already
+> written them: this chapter's own opening says Firma's Religion chapter holds *orders of knights,
+> secret police and assassin sects*, and none of it was reaching the rules. The order is the tier and
+> the religion only names it, so four titles serve twelve gods &mdash; the Black Circle and God's
+> Spirit are one order under two churches, and an Inquisitor of Vax is as real as an Inquisitor of
+> the Eternal God.
+>
+> **It costs the twelve-doors claim nothing.** A god is still exclusive, still for good, still the
+> content; the orders sit behind the gods rather than beside them, so the first step closes just as
+> many doors as it ever did.
 
 That breaks the strict writing rule, and it has to. **Twelve siblings cannot lean on seven axes
 without repeating**; the pigeonhole principle says so before anyone writes a word. So Faith is

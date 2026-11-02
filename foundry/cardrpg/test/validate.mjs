@@ -390,7 +390,7 @@ if (tacticsFrom < 0 || tacticsTo < 0) {
       tactics.push({ node: cells[0].replace(/\*\*/g, ""), text: cells[2] });
     }
   }
-  check("tactics written", tactics.length, 48);
+  check("tactics written", tactics.length, 52);
 
   const flat = tactics.filter(t => /\+\s*\d/.test(t.text)).map(t => t.node);
   check("tactics that add a flat bonus", flat.length ? flat.join(", ") : "none", "none");
@@ -398,11 +398,11 @@ if (tacticsFrom < 0 || tacticsTo < 0) {
   // Every node that has a Signature must have a tactic, and nothing else may.
   const signed = new Set();
   for (const line of waycards.slice(
-    waycards.indexOf("## 2. The 48 Signatures"), tacticsFrom
+    waycards.indexOf("## 2. The 52 Signatures"), tacticsFrom
   ).split("\n")) {
     if (!line.startsWith("|") || /^\|[\s:|-]+\|$/.test(line)) continue;
     const cells = line.replace(/^\||\|$/g, "").split("|").map(c => c.trim());
-    if (cells.length >= 3 && !["Node", "God", "School"].includes(cells[0])) {
+    if (cells.length >= 3 && !["Node", "God", "School", "Order"].includes(cells[0])) {
       signed.add(cells[0].replace(/\*\*/g, ""));
     }
   }
@@ -1359,7 +1359,7 @@ const carried = [...content.WARRIOR_DECK, ...content.WAY_CARDS, ...content.COMMO
 const printed = carried.filter(c => c.reaction);
 check("starter cards with a printed reaction",
   content.WARRIOR_DECK.filter(c => c.reaction).length, 4);
-check("cards with a printed reaction", printed.length, 14);
+check("cards with a printed reaction", printed.length, 15);
 const strayPrinted = printed.filter(c => !reactionKeys.includes(c.reaction))
   .map(c => `${c.name}: ${c.reaction}`);
 check("cards printing a reaction that does not exist",
@@ -2181,7 +2181,7 @@ const graphSource = fs.readFileSync(path.join(root, "module/graph.mjs"), "utf8")
 const nodes = content.NODES;
 const byId = graph.GRAPH;
 
-check("nodes defined", nodes.length, 193);
+check("nodes defined", nodes.length, 202);
 check("duplicate node ids", nodes.length === byId.size ? "none" : "yes", "none");
 
 /* Every prerequisite must resolve, or a branch is silently unreachable. */
@@ -2259,12 +2259,29 @@ check("major siblings sharing one half (warning)",
  *   - the cells match on exactly one half
  */
 const crossFaults = [];
+const confluences = [];
 let crossings = 0;
 for (const node of nodes) {
   const after = node.after ?? [];
   /* An `all` node's predecessors are requirements, not alternative routes, so none of them is a
    * crossing -- reading them as one would ask the cell test a question it cannot answer. */
   if (after.length < 2 || node.all) continue;
+  /*
+   * **Twelve doors into one room is not a crossing** (leveling 1). Way of Faith's orders hang off
+   * a node whose predecessors are all twelve gods, and read naively that is eleven cross edges
+   * arriving past a title with no second cell to compare. The three rules exist to stop content
+   * being reached past a door that was meant to shut; these edges run the OTHER way, out of twelve
+   * mutually exclusive doors into ground that belongs to no god.
+   *
+   * The exception is exactly as wide as its reason: every predecessor must be a gate of ONE
+   * exclusive family, so no character can ever hold two of them. A thirteenth predecessor that is
+   * not a gated door makes it a crossing again, with all three rules applying.
+   */
+  const families = after.map(id => byId.get(id)?.exclusive);
+  if (families.every(Boolean) && new Set(families).size === 1) {
+    confluences.push(`${node.id} <- ${after.length} ${families[0]} doors`);
+    continue;
+  }
   const depth = id => graph.DEPTH.get(id) ?? 0;
   const primary = after.reduce((a, b) => (depth(a) <= depth(b) ? a : b));
   for (const prereq of after) {
@@ -2290,6 +2307,47 @@ for (const node of nodes) {
   }
 }
 check("crossings in the data", crossings, 5);
+/* One confluence in the graph, and it is the only place the exception applies. */
+check("confluences of exclusive doors", confluences.join("; ") || "none",
+  "faith.ordination <- 12 faith doors");
+/*
+ * **The first reason I wrote for this was wrong, and the check is what said so.** It read *no
+ * character can hold two of the doors* -- but two gods of ONE religion share a creed, so a priest
+ * of The Five holds Sessyfyn and Valtor together and always could. Eleven of the twelve are closed
+ * to them, not all eleven.
+ *
+ * The exception does not rest on that. It rests on **what is on the far side**: the room behind the
+ * confluence belongs to no god, so arriving through two doors instead of one gains a character
+ * nothing a god was guarding. Laundering means reaching a god's content without that god, and this
+ * is the check that nothing behind the confluence IS a god's content -- no miracle, and no choice
+ * from a god's list. An order grants cards, which belong to the holder.
+ */
+const behindConfluence = (() => {
+  const out = new Set();
+  let grew = [...(nodes.filter(n => (n.after ?? []).includes("faith.ordination")).map(n => n.id))];
+  out.add("faith.ordination");
+  while (grew.length) {
+    const next = [];
+    for (const id of grew) {
+      if (out.has(id)) continue;
+      out.add(id);
+      for (const n of nodes) if ((n.after ?? []).includes(id)) next.push(n.id);
+    }
+    grew = next;
+  }
+  return [...out].map(id => byId.get(id));
+})();
+check("nodes behind the confluence", behindConfluence.length, 9);
+check("and not one of them hands over a god's content",
+  behindConfluence.filter(n => n.grants?.spell || n.grants?.choose)
+    .map(n => n.id).join(", ") || "none", "none");
+/* Two of the twelve doors CAN be held together, which is the creed rule working: that is why the
+ * reason above is about the far side and not about the doors. */
+check("doors a priest of The Five holds at once",
+  (byId.get("faith.ordination").after ?? [])
+    .filter(id => !graph.closedIds(new Set([graph.ROOT, "faith.sessyfyn"])).has(id)).length, 5);
+check("leveling says a confluence is not a crossing",
+  /Twelve doors into one room is not a crossing/.test(levDoc) ? "yes" : "no", "yes");
 check("crossings breaking a rule", crossFaults.length ? crossFaults.join("; ") : "none", "none");
 
 /* -------------------------------------------- */
@@ -2313,11 +2371,25 @@ for (const gate of exclusiveGates) {
   }
 }
 /*
- * **Twelve gates, and they are the first content `exclusive` has ever had.** The family/creed rule
- * was written for Way of Faith and sat built and unused until the Way existed; the religion is the
- * group, so taking a god closes every god of every OTHER religion and leaves your own open.
+ * **Sixteen gates in two families, and the second family is the proof the rule was general.** The
+ * family/creed rule was written for Way of Faith and sat built and unused until the gods existed;
+ * the religion is the group, so taking a god closes every god of every OTHER religion and leaves
+ * your own open. The four orders (way-cards 2.4) are the second family to use it and they use it
+ * differently: each order is its own creed, so joining one closes the other three outright. One
+ * rule, a pantheon and a vocation, and no new field.
  */
-check("exclusive gates in the data", exclusiveGates.length, 12);
+check("exclusive gates in the data", exclusiveGates.length, 16);
+check("and the families they fall into",
+  [...new Set(nodes.filter(n => n.exclusive).map(n => n.exclusive))].sort().join(", "),
+  "faith, order");
+check("orders, each its own creed",
+  nodes.filter(n => n.exclusive === "order").map(n => n.creed).sort().join(", "),
+  "circle, cloister, drums, shield");
+/* An order is a title and every title of this Way is a gate, which is what the next check says in
+ * general -- but the two families mean different things, so the count is pinned per family. */
+check("gods and orders",
+  `${nodes.filter(n => n.exclusive === "faith").length} gods, `
+  + `${nodes.filter(n => n.exclusive === "order").length} orders`, "12 gods, 4 orders");
 check("subgraphs that bypass their gate", laundered.length ? laundered.join(", ") : "none", "none");
 /* Every gate is a god, and every god is a gate: a Faith title without one would be a free door. */
 const unsworn = nodes.filter(n => n.title && n.id.startsWith("faith.") && !n.exclusive)
@@ -2335,6 +2407,119 @@ for (const god of nodes.filter(n => n.exclusive === "faith")) {
 check("religions, by how many gods they hold",
   [...religions.entries()].sort().map(([c, n]) => `${c}:${n}`).join(" "),
   "eternal-god:1 eternal-spirit:1 first:1 five:5 grey:3 vax:1");
+
+/*
+ * ---- the four holy orders: Way of Faith's second tier  [BUILT 2026-11-02] ----
+ *
+ * **A god is a choice between twelve; an order is what you do about it.** Way of Faith had the
+ * first and not the second: twelve doors at the top and nothing behind any of them, so a priest
+ * reached level 5 and their own Way had nothing further to walk toward, where the other three put
+ * three titles at tier 1 and nine or ten behind them.
+ *
+ * The thing worth checking is not that four titles exist. It is the claim that makes four enough:
+ * **the order is the tier and the religion only names it**, so every order is open to a priest of
+ * every god. Twelve times four would have been forty-eight titles; this is four, and it is four
+ * only while that claim holds in the data.
+ */
+const ORDERS = ["faith.inquisitor", "faith.shieldsworn", "faith.anchorite", "faith.flagellant"];
+const godIds = nodes.filter(n => n.exclusive === "faith").map(n => n.id);
+
+check("orders in the data", ORDERS.filter(id => byId.get(id)?.title).length, 4);
+check("and what they are called",
+  ORDERS.map(id => byId.get(id).title).join(", "),
+  "Inquisitor, Shieldsworn, Anchorite, Flagellant");
+/* Tier 2 at level 8, which is where every other Way's second tier sits (way-cards 2, leveling 7). */
+check("the tier and level each order sits at",
+  [...new Set(ORDERS.map(id => `t${graph.tierOf(id)} lv${graph.levelFor(id)}`))].join(", "),
+  "t2 lv8");
+
+/*
+ * **The claim, asked of the engine twelve times.** For each god: swear to it, walk everything its
+ * own Way still allows, and check that all four orders are in the reachable set. A god that could
+ * not reach one would be a god whose priests were quietly shut out of a quarter of the tier.
+ */
+const unreachable = [];
+for (const god of godIds) {
+  let owned = new Set([graph.ROOT, ...(graph.REACH.get(god) ?? []), god]);
+  for (let i = 0; i < 12; i++) {
+    const shut = graph.closedIds(owned);
+    const live = [...graph.reachable(owned, shut)].filter(id => !shut.has(id));
+    const next = new Set([...owned, ...live]);
+    if (next.size === owned.size) break;
+    owned = next;
+  }
+  for (const order of ORDERS) if (!owned.has(order)) unreachable.push(`${god} cannot reach ${order}`);
+}
+check("gods that cannot reach an order", unreachable.join("; ") || "none", "none");
+/* And the converse, which is what keeps an order from being a back door into the Way: nobody
+ * reaches one without swearing to a god first. */
+check("orders reachable without a god",
+  ORDERS.filter(id => graph.reachable(new Set([graph.ROOT]), new Set(godIds)).has(id))
+    .join(", ") || "none", "none");
+
+/* One order, for good -- the same shape as one religion, through the same rule and no new field. */
+const afterInquisitor = graph.closedIds(new Set([graph.ROOT, "faith.inquisitor"]));
+check("joining an order closes the other three",
+  ORDERS.filter(id => id !== "faith.inquisitor" && afterInquisitor.has(id)).length, 3);
+check("and leaves every god open",
+  godIds.filter(id => afterInquisitor.has(id)).length, 0);
+
+/*
+ * **A priest pays both vows.** Obediences accumulate and Tactics do not (way-cards 2.5), so an
+ * order deepens a priest without replacing their god: the Tactic becomes the order's, because it is
+ * the deepest title's, and the god's Obedience still stands. Asked of the engine, because this is
+ * the one place the two mechanisms meet.
+ */
+const sworn = new Set([graph.ROOT, ...(graph.REACH.get("faith.flagellant") ?? []),
+  "faith.flagellant"]);
+check("a Flagellant's title is the order",
+  graph.titleOf(sworn), "Flagellant");
+check("and their Tactic is the order's",
+  graph.tacticOf(sworn).name, "Past Caring");
+check("and they still answer to their god",
+  graph.termsOf(sworn).map(t => t.god).join(", "), "The Eternal God, Flagellant");
+
+/*
+ * **No order's Signature is a miracle, and that is a rule rather than a coincidence.** A miracle
+ * belongs to a god; an order is open to all twelve, so a Signature miracle would have to belong to
+ * twelve lists at once or to none. These are cards, which belong to the holder.
+ */
+check("what an order's Signature is",
+  [...new Set(ORDERS.map(id => graph.SLATES.get(byId.get(id).signature)?.kind))].join(", "), "card");
+check("and none of them is in any god's list",
+  ORDERS.filter(id => graph.SPELLS.has(byId.get(id).signature)).length, 0);
+/* Each order takes something, and no two take the same thing -- the discipline the twelve gods are
+ * written to, applied to the tier behind them. */
+check("what the four orders take",
+  ORDERS.map(id => byId.get(id).resource).join(", "),
+  "a secret, ground, skill cards, a permanent Wild");
+/*
+ * **And not one of them takes a spell slot**, which is the rule the Shieldsworn nearly broke. The
+ * trunk's ladder (way-cards 1.4) exists so a priest's five arrives with their god's list; a vow
+ * that empties a slot would put every strength-5 back out of reach in prose the engine never reads,
+ * which is the exact failure the ladder was built to end.
+ */
+check("orders that take a spell slot",
+  ORDERS.filter(id => /spell slot/i.test(byId.get(id).resource)
+    || /spell slot/i.test(byId.get(id).obedience ?? "")).join(", ") || "none", "none");
+check("way-cards says why not", /An order may take anything except the thing another rule just paid/
+  .test(wayDoc) ? "yes" : "no", "yes");
+check("and each has a rule of its own",
+  ORDERS.every(id => (byId.get(id).obedience ?? "").length > 20), true);
+
+/* The documents, because four titles with no argument behind them are four titles nobody can
+ * maintain. The claim that makes four enough is the one that has to be written down. */
+check("way-cards records the orders",
+  /^#### The four orders {2}\*\*\[BUILT 2026-11-02\]\*\*$/m.test(wayDoc) ? "yes" : "no", "yes");
+check("and says why four serve twelve",
+  /\*\*The order is the tier and the religion only names it\*\*/.test(wayDoc) ? "yes" : "no", "yes");
+check("and that an order's Signature is a card on purpose",
+  /None of the four Signatures is a miracle, and that is not a compromise/.test(wayDoc)
+    ? "yes" : "no", "yes");
+check("specializations stops calling the Way shallow",
+  /wide and shallow, and now it is wide and deep/.test(specDoc) ? "yes" : "no", "yes");
+check("and the old sentence is gone",
+  /Faith is \*\*wide and shallow\*\*/.test(specDoc) ? "still there" : "gone", "gone");
 
 /*
  * **A religion's size is its price**, which is a content constraint and therefore checkable: serve
@@ -2531,7 +2716,7 @@ const unbuilt = cardGrants.filter(n => !graph.POOL.has(n.grants.card))
   .map(n => `${n.id}: ${n.grants.card}`);
 /* Six pool draws on the minor nodes, plus nine Signature cards on the majors. */
 /* The pool draws on the minor nodes, plus every Signature that is a card. */
-check("nodes granting a card", cardGrants.length, 33);
+check("nodes granting a card", cardGrants.length, 37);
 check("cards granted but never built", unbuilt.length ? unbuilt.join(", ") : "none", "none");
 
 /* A pool card twice on one path would be a node that gives you a card you already have. */
@@ -2552,7 +2737,7 @@ check("a pool card granted twice on one path",
  */
 const minors = nodes.filter(n => !n.title && n.id !== graph.ROOT);
 const bespoke = minors.filter(n => n.bespoke);
-check("minor nodes", minors.length, 140);
+check("minor nodes", minors.length, 145);
 check("bespoke minor nodes", bespoke.length, 29);
 /*
  * **The budget is a ceiling, and it is the number of bespoke PIECES.** leveling 1 sizes it exactly
@@ -2572,7 +2757,7 @@ check("bespoke pieces, against a budget of about forty", bespoke.length <= 40, t
  * because bespoke content was DELETED would move this number too, and would have to be explained.
  */
 check("the bespoke share is under the budget ceiling", bespoke.length / minors.length <= 0.4, true);
-check("and what the share is now", (bespoke.length / minors.length).toFixed(3), "0.207");
+check("and what the share is now", (bespoke.length / minors.length).toFixed(3), "0.200");
 /*
  * And each bespoke node sits LAST on its run -- which asked for the title it leads to until Way of
  * Faith had no titles to lead to. Faith spends its depth sideways: the gods are the titles and they
@@ -2840,7 +3025,7 @@ for (const node of nodes) {
 }
 check("title tiers", [...titleTiers.keys()].sort().join(", "), "0, 1, 2");
 check("titles per tier",
-  [...titleTiers.keys()].sort().map(t => titleTiers.get(t).length).join(", "), "4, 21, 27");
+  [...titleTiers.keys()].sort().map(t => titleTiers.get(t).length).join(", "), "4, 21, 31");
 /* The baseline is what the tier costs; a title BELOW it would be a shortcut into a branch. */
 const baselines = [...titleTiers.keys()].sort().map(t => Math.min(...titleTiers.get(t).map(r => r.level)));
 check("what each tier costs", baselines.join(", "), "1, 5, 8");
@@ -3126,12 +3311,12 @@ const sigs = graph.SIGNATURES;
  * merged and this check did not would be a Way whose Tactics nobody validated. */
 const tactics = graph.ALL_TACTICS;
 
-check("Signatures defined", sigs.length, 47);
-check("Tactics defined", Object.keys(tactics).length, 48);
+check("Signatures defined", sigs.length, 51);
+check("Tactics defined", Object.keys(tactics).length, 52);
 
 /* One per Shade title, and the Way root has neither -- way-cards 2.2 starts at Thief. */
 const titled = nodes.filter(n => n.title && n.signature);
-check("titles carrying a Signature", titled.length, 48);
+check("titles carrying a Signature", titled.length, 52);
 /* A Way root is a major node and has neither: way-cards 2.1 and 2.2 start at the first title. */
 check("Way roots carrying one",
   ["shade", "strength", "mind", "faith"]
@@ -3190,9 +3375,9 @@ const built = sigs.filter(sg => !sg.needs?.length).map(sg => sg.name);
 check("Signatures the engine does everything for", built.join(", "),
   "The Opening, The Kit, Loose and Step, Heckle, One Trick, Shoulder to Shoulder, "
   + "Nothing Gets Through, Interpose, Wither, The Bargain, Unmake, Breath of the Spirit, "
-  + "The Outcast's Due");
+  + "The Outcast's Due, The Writ, The Order's Shield, The Scourge");
 const gaps = sigs.filter(sg => sg.needs?.length).map(sg => `${sg.name}: ${sg.needs.join("; ")}`);
-check("Signatures with a named gap", gaps.length, 34);
+check("Signatures with a named gap", gaps.length, 35);
 /*
  * `needs` is a LIST, and that is the lesson of the Health cost. It was the largest gap in the game
  * at six pieces of content; building it finished exactly ONE, because every other one wanted a
@@ -3327,7 +3512,7 @@ check("everything that prints a reaction",
   + "Light Feet (sidestep); Measure (parry); Named (parry); Over and Past (sidestep); "
   + "Press (sidestep); Shake It Off (mend); Shield Bash (block); Shield Wall (block); "
   + "Sleight (use); Slip the Knot (sidestep); The Close Work (parry); The Mirror (unmake); "
-  + "The Turning Tide (mend); Turn Aside (mend); Unmake (unmake)");
+  + "The Order's Shield (block); The Turning Tide (mend); Turn Aside (mend); Unmake (unmake)");
 check("the healer needed no new trigger",
   waitingFor("Breath of the Spirit") || "nothing", "nothing");
 /* And it got one, which is why this reads as finished now. */
@@ -3964,21 +4149,36 @@ check("and that a slot was the reward nobody counted",
 const titleRows = nodes.filter(n => n.title).map(n => ({
   way: n.id.split(".")[0], tier: graph.tierOf(n.id), level: graph.levelFor(n.id)
 }));
-check("titles in all", titleRows.length, 52);
-check("and the same number in each Way",
-  [...new Set(["strength", "shade", "mind", "faith"]
-    .map(w => titleRows.filter(r => r.way === w).length))].join(", "), "13");
+check("titles in all", titleRows.length, 56);
+/* Thirteen in three Ways and seventeen in Faith: twelve gods are four times the breadth of a
+ * trunk's three titles, so the four orders behind them cost four titles rather than twelve. */
+check("and how many each Way holds",
+  ["strength", "shade", "mind", "faith"]
+    .map(w => `${w} ${titleRows.filter(r => r.way === w).length}`).join(", "),
+  "strength 13, shade 13, mind 13, faith 17");
 /*
- * **Way of Faith is flat and the other three are deep.** Twelve gods, all tier 1, all at level 5 --
- * where Strength, Shade and Mind each put three titles at tier 1 and the rest at tier 2. So a
- * priest's own Way offers them nothing further to walk toward after level 5, and the twelve gods
- * are breadth where the others have depth. That falls out of the religion being the exclusive
- * choice (specializations.md) rather than from anyone deciding it about Faith's shape.
+ * **Way of Faith was flat where the other three were deep, and now it is not.** Twelve gods, all
+ * tier 1, all at level 5, and nothing behind any of them: a priest reached level 5 and their own
+ * Way had nothing further to walk toward, where Strength, Shade and Mind each put three titles at
+ * tier 1 and nine or ten at tier 2. The shallowness was never argued for -- specializations.md
+ * called the Way *wide and shallow* in one breath, and the width is the argued half.
+ *
+ * The depth is **four holy orders** (way-cards 2.4), open to a priest of any god, which is why the
+ * Way needed four titles rather than twelve to gain a tier. All four Ways reach tier 2 now, which
+ * is what this loop says and the only reason it is a loop.
  */
 for (const way of ["strength", "shade", "mind", "faith"]) {
   const mine = titleRows.filter(r => r.way === way);
   check(`${way}: tiers its titles sit at`,
-    [...new Set(mine.map(r => r.tier))].sort().join(","), way === "faith" ? "0,1" : "0,1,2");
+    [...new Set(mine.map(r => r.tier))].sort().join(","), "0,1,2");
+}
+/* And how wide each tier is, per Way, which is where the four Ways still differ by design: three
+ * Ways fan 3 into 9 or 10, and Faith fans 12 into 4. */
+for (const [way, shape] of [["strength", "1, 3, 9"], ["shade", "1, 3, 9"], ["mind", "1, 3, 9"],
+  ["faith", "1, 12, 4"]]) {
+  check(`${way}: titles at each tier`,
+    [0, 1, 2].map(t => titleRows.filter(r => r.way === way && r.tier === t).length).join(", "),
+    shape);
 }
 check("levels a title is reached at, over the whole graph",
   [...new Set(titleRows.map(r => r.level))].sort((a, b) => a - b).join(", "), "1, 5, 8, 9");
@@ -4002,8 +4202,14 @@ check("what a tier-2 title in Way of Strength is reached with", pathGrants("stre
   "hp 1.2 carry 6.1 cards 3.1");
 check("and in Way of Shade", pathGrants("shade"), "hp 1.2 carry 0.1 cards 3.1");
 check("and in Way of Mind", pathGrants("mind"), "hp 0.1 carry 0.0 cards 1.0");
-/* Way of Faith has no tier-2 title to compare, which is the finding above restated as a hole. */
-check("and in Way of Faith, which has none", pathGrants("faith"), null);
+/*
+ * And Way of Faith, which had no tier-2 title to compare until the orders were built. It is the
+ * flattest route of the four, and that is the trunk showing through: a priest walks four shared
+ * nodes, a god, Ordination and one order node, and the only numbers on that road are the Cloister's
+ * rest token and the trunk's slot ladder. The two cards are Pilgrimage's and the order's own
+ * Signature.
+ */
+check("and in Way of Faith, built 2026-11-02", pathGrants("faith"), "hp 0.0 carry 0.0 cards 2.0");
 
 
 /*
@@ -4131,8 +4337,8 @@ check("content carrying the audit column",
 const vague = audited.filter(c => (c.needs ?? []).some(g => g.length < 12)).map(c => c.name);
 check("gaps too short to act on", vague.length ? vague.join(", ") : "none", "none");
 const workingCards = audited.filter(c => !c.needs.length).length;
-check("content the engine does everything for", workingCards, 61);
-check("content with a named gap", audited.filter(c => c.needs.length).length, 136);
+check("content the engine does everything for", workingCards, 64);
+check("content with a named gap", audited.filter(c => c.needs.length).length, 137);
 
 /*
  * A gap shared by several cards is one piece of engine work, not several. Counting the DISTINCT
@@ -4147,7 +4353,7 @@ for (const card of audited) {
  * sleep* against an engine with no sleep that empties a fate deck. Naming it is what keeps the
  * overcharge from being a silent one.
  */
-check("distinct gaps across all content", gapCounts.size, 99);
+check("distinct gaps across all content", gapCounts.size, 100);
 /*
  * Two different questions, and the list is what lets them be asked apart.
  *
@@ -4202,7 +4408,7 @@ check("the gap that would finish the most content",
  * SHADOW_FORMULAS is not one of the audited exports, joins it with exactly one.
  */
 check("gaps that would finish exactly one piece of content",
-  [...finishes.values()].filter(n => n === 1).length, 50);
+  [...finishes.values()].filter(n => n === 1).length, 51);
 
 /*
  * And a check on the QUEUE rather than on the content, which the ranged-item work earned.
@@ -4484,7 +4690,7 @@ const artable = [
   content.FEATURES, content.ITEMS.filter(i => !i.npc), content.NPC_GEAR ?? [],
   ...Object.entries(content).filter(([k]) => k.endsWith("_SIGNATURES")).map(([, v]) => v)
 ].flat();
-check("pieces of content that take art", artable.length, 400);
+check("pieces of content that take art", artable.length, 404);
 
 /*
  * The backs, which are a different kind of art: **one picture per deck, not one per card**, doing
@@ -4590,7 +4796,7 @@ const briefs = faceRows.map(r => r.brief);
 const leaked = briefs.flatMap(text =>
   [...text.matchAll(/\b([a-z]+[A-Z][a-zA-Z]*)\b/g)].map(m => m[1]));
 /* A pattern that matched no rows at all would report "none" for any list whatsoever. */
-check("briefs the check actually read", briefs.length, 400);
+check("briefs the check actually read", briefs.length, 404);
 check("keys that leaked into the brief",
   leaked.length ? [...new Set(leaked)].join(", ") : "none", "none");
 
@@ -4603,7 +4809,7 @@ check("keys that leaked into the brief",
  */
 const { slug } = await import("./art-list.mjs");
 const rows = faceRows;
-check("file paths in the brief", rows.length, 400);
+check("file paths in the brief", rows.length, 404);
 /* And the backs, whose path is the slug of their KEY rather than of their printed label. */
 const backPaths = [...artList.matchAll(/\| `(backs\/[^`]+)` \|/g)].map(m => m[1]);
 check("back paths in the brief", backPaths.length, backs.length);
@@ -4812,7 +5018,7 @@ check("the indexes are refilled rather than replaced",
 /* ---- what it refuses, asked rather than read ---- */
 
 const coreNodes = [...graph.LIVE_NODES];
-check("the graph starts as core content", coreNodes.length, 193);
+check("the graph starts as core content", coreNodes.length, 202);
 
 /* A prerequisite that does not exist: the first price section 8 names. */
 check("a node following nothing that exists",
@@ -4874,7 +5080,7 @@ check("and the graph is still whole", graph.GRAPH.has("shade.thief"), true);
 
 /* Back to core, so every check after this section is asking about the shipped graph. */
 check("the graph can be put back", graph.rebuildGraph({}).length, 0);
-check("and it is core again", graph.LIVE_NODES.length, 193);
+check("and it is core again", graph.LIVE_NODES.length, 202);
 check("with the replaced node restored", graph.GRAPH.get("shade.footwork")?.name, "Footwork");
 
 /* ---- the lock, which is the answer to "not in an active campaign" ---- */
@@ -5465,7 +5671,7 @@ const blockSteps = [...graph.POOL.values(), ...graph.SPELLS.values()]
     .filter(st => st.verb === "block").map(st => ({ name: c.name, ...st })));
 check("content that gives Block away",
   [...new Set(blockSteps.map(b => b.name))].sort().join(", "),
-  "No Step Back, Shield Wall, Shoulder to Shoulder");
+  "No Step Back, Shield Wall, Shoulder to Shoulder, The Order's Shield");
 check("and every one of them says how much",
   blockSteps.every(b => (b.param ?? 0) > 0), true);
 /*

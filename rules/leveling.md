@@ -200,6 +200,23 @@ It needs no new field. §10 already asks for a node that requires **all** of its
 that flag is the enforcement: **a cross edge into a gated branch is legal if it requires the gate as
 well.** So the rule is not quite *never* — it is *not for free*.
 
+#### Twelve doors into one room is not a crossing  **[BUILT 2026-11-02]**
+
+Way of Faith's four orders ([way-cards.md](way-cards.md) §2.4) hang off a node whose `after[]` lists
+**all twelve gods**, because an order is open to a priest of any of them. Read naively that is eleven
+cross edges, and the three rules above would forbid every one of them: they arrive past a title, and
+there is no second cell for the one-half test to compare.
+
+> **It is a confluence, not a crossing.** The rules above exist to stop content being reached past a
+> door that was supposed to shut. These edges run the other way: twelve mutually exclusive doors
+> leading **out** to shared ground that belongs to no god. A character comes through exactly one of
+> them, the room behind is nobody's branch, and nothing is laundered because there is nothing on the
+> far side that a god was guarding.
+
+So the exception is exact and it is checked: **every predecessor belongs to one `exclusive` family,
+so no character can ever hold two of them.** Add a thirteenth predecessor that is not a gated door
+and the node is a crossing again, with all three rules applying.
+
 #### A cross edge carries its own minor nodes  **[FOUND IN CODE 2026-11-01]**
 
 Building the graph turned up a hole in the rule above. A cross edge drawn straight from one title to
@@ -222,7 +239,7 @@ is right, because the Cutpurse is also a Cutpurse.
 | **Shade** | Several, between branches at the same tier | The **Dream Guild** teaches across trades, and it already holds an obligation over every Thief ([specializations.md](specializations.md)) — the creditor is the reason. Three are drafted there. |
 | **Strength** | Several | Technique is watched and copied on a drill field. It is also the Way that read flattest, and a lattice is the cheapest way to make twelve nodes read like an army rather than three careers. Two are drafted. |
 | **Mind** ✓ | **None, and that is the design** (built 2026-11-01) | A school **is its price** ([way-cards.md](way-cards.md) §3.4). The only cross edges worth wanting in Mind would arrive at a school's *deeper* nodes — formulas without the school's cost, the forbidden kind. The school nodes themselves sit one step off a trunk you own, so they are on your frontier already. |
-| **Faith** | **None** | The invariant above, applied to twelve gods. Any edge into a god's branch from outside it is the laundering case, so Faith's stringency is not a policy — it is what §3 was already claiming. |
+| **Faith** | **None** | The invariant above, applied to twelve gods. Any edge *into* a god's branch from outside it is the laundering case, so Faith's stringency is not a policy — it is what §3 was already claiming. The twelve edges *out* of the gods into `faith.ordination` are a confluence and not crossings, for the reason above. |
 
 **Mind and Faith differ in kind, not degree.** Mind's cross edges are *pointless*: its content is
 guarded by a price you pay on arrival whichever way you came. Faith's are *forbidden*: its content is
