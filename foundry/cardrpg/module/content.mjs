@@ -133,10 +133,10 @@ export const WARRIOR_DECK = [
  * into the action deck -- and every name is checked against the tables, because a form that grants
  * a card nobody wrote is a form that silently gives nothing.
  *
- * **`quarantine`** is a FILTER rather than a list, for the same reason the intent pool is a filter:
- * a list would have to be revisited every time somebody writes an item, and a bird has no hands
- * whatever is in the shop. `slots`, `tags` and `kinds` select the player's items; `features` and
- * `cards` name those by hand, because there are few enough of each to say.
+ * **What it COSTS is on the card**, in the `shape` step's own `quarantine` -- a filter of the
+ * player's items, features and cards that go out of play while the form is worn. It lives there
+ * rather than here because that is where it can be edited: `content.mjs` is a source file and
+ * nothing in Foundry writes to it.
  *
  * What is quarantined is **taken off the actor and kept**, not flagged. More than ten places read a
  * slate, and a flag would have to be respected by all of them.
@@ -148,14 +148,13 @@ export const TRANSFORMATIONS = [
      * declared. The Doomfly is in the roster and it flies, which is the clearest thing a borrowed
      * body can be worth; replace it freely.
      *
-     * It takes both hands away, which is the whole point of being a fly: `Nip` is what you have
-     * instead, and every weapon, shield and implement you were carrying is on the floor until you
-     * are yourself again.
+     * `Nip` is what you have instead of hands. **What it costs is on the card**, not here: the
+     * quarantine is a field on the `shape` step so that a GM can tick it, and so that a greater
+     * version of the same borrowed body can be gentler about what you drop.
      */
     name: "Doomfly",
-    blurb: "Four wings and a mouth. Nothing you were carrying comes with you.",
-    grants: { items: ["Nip"], features: [], cards: [] },
-    quarantine: { slots: ["hands"], tags: [], kinds: [], features: [], cards: [] }
+    blurb: "Four wings and a mouth.",
+    grants: { items: ["Nip"], features: [], cards: [] }
   }
 ];
 
@@ -3116,7 +3115,9 @@ export const MIND_POOL = [
       + "with you come along &mdash; a body is what you fight with, not who you are.</p>",
     effect: {
       verb: "shape", duration: 2,
-      shape: { transformation: "Doomfly" }
+      /* Both hands, which is the whole point of being a fly: every weapon, shield and implement
+       * you were carrying is on the floor until you are yourself again. */
+      shape: { transformation: "Doomfly", quarantine: { slots: ["hands"] } }
     }
   },
   {

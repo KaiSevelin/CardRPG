@@ -131,7 +131,30 @@ export function stepField() {
      * The step's own `duration` says how long you hold it.
      */
     shape: new fields.SchemaField({
-      transformation: new fields.StringField({ required: false, blank: true, initial: "" })
+      transformation: new fields.StringField({ required: false, blank: true, initial: "" }),
+      /*
+       * **What the form costs you while you wear it**, and it is on the step rather than on the
+       * transformation because this is where it can be EDITED: `content.mjs` is a source file and
+       * nothing in Foundry writes to it, so a quarantine a GM ticks in the card sheet has to be a
+       * document field.
+       *
+       * The trade is that a form used by two cards says "no hands" twice. What it buys is that a
+       * greater version of a spell can be gentler -- the same borrowed body, and this time you keep
+       * your sword.
+       *
+       * `slots` and `tags` are enums, so they are checkboxes; `features` and `cards` are named by
+       * hand because there are few enough of each to say. No `kinds`: an item's kind is a free
+       * string with no enum behind it, so it could never have been a checkbox, and these two reach
+       * everything it would.
+       */
+      quarantine: new fields.SchemaField({
+        slots: new fields.ArrayField(new fields.StringField({
+          choices: Object.keys(CARDRPG.slots)
+        })),
+        tags: new fields.ArrayField(new fields.StringField({ choices: CARDRPG.itemTags })),
+        features: new fields.ArrayField(new fields.StringField()),
+        cards: new fields.ArrayField(new fields.StringField())
+      })
     }),
     /*
      * Intensity, for a `valued` condition: Burning 3 (2). Ignored by the ones without it.

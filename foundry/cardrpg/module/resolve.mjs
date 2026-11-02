@@ -655,7 +655,6 @@ export function quarantines(filter, slate) {
   if (slate.type === "feature") return (q.features ?? []).includes(slate.name);
   if (slate.type !== "item") return false;
   return (q.slots ?? []).includes(slate.system.slot)
-    || (q.kinds ?? []).includes(slate.system.kind)
     || (q.tags ?? []).some(t => (slate.system.tags ?? []).includes(t));
 }
 
@@ -704,8 +703,11 @@ export async function resolveShape(actor, { step }) {
     });
   }
 
-  /* --- what it takes. Kept whole on the actor, because restoring it is the other half. */
-  const taken = actor.items.filter(i => quarantines(form.quarantine, i));
+  /* --- what it takes, which the CARD says rather than the form: the quarantine is a step field so
+   *     that it can be ticked in the sheet, and so that a gentler version of the same body can
+   *     exist. Kept whole on the actor, because restoring it is the other half. */
+  const filter = step.shape?.quarantine ?? {};
+  const taken = actor.items.filter(i => quarantines(filter, i));
   const kept = taken.map(i => i.toObject());
 
   await actor.setFlag("cardrpg", FORM_FLAG, {
@@ -718,7 +720,7 @@ export async function resolveShape(actor, { step }) {
 
   /* --- and the cards, which move rather than being deleted: a card is a document the player owns
    *     and a pile is where this game already puts one it is not using. */
-  const moved = await quarantineCards(actor, form);
+  const moved = await quarantineCards(actor, filter);
 
   await ChatMessage.create({
     speaker: ChatMessage.getSpeaker({ actor }),
@@ -733,9 +735,9 @@ export async function resolveShape(actor, { step }) {
   return true;
 }
 
-/** The player's own action cards that a transformation names, moved to the quarantine pile. */
-async function quarantineCards(actor, form) {
-  const names = form.quarantine?.cards ?? [];
+/** The player's own action cards the step names, moved to the quarantine pile. */
+async function quarantineCards(actor, filter) {
+  const names = filter.cards ?? [];
   if (!names.length) return [];
   const shelf = deckOf(actor, "quarantine");
   if (!shelf) {

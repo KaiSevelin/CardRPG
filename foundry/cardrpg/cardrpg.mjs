@@ -117,6 +117,15 @@ function registerHelpers() {
   });
 
   Handlebars.registerHelper("crEq", (a, b) => a === b);
+  /*
+   * **Two helpers for editing a list of enum values as checkboxes.**
+   *
+   * `crHas` answers whether a value is already ticked, and `crList` shows an array as the comma
+   * separated text a hand-named list is typed into. A slot is an enum, and a GM should not have to
+   * remember how to spell "fingers" -- which is the whole argument for ticking rather than typing.
+   */
+  Handlebars.registerHelper("crHas", (list, value) => Array.isArray(list) && list.includes(value));
+  Handlebars.registerHelper("crList", list => (Array.isArray(list) ? list.join(", ") : ""));
 
   Handlebars.registerHelper("concat", (...args) => args.slice(0, -1).join(""));
 }

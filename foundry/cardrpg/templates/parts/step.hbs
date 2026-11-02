@@ -81,7 +81,40 @@
   <div class="cr-step__row">
     <label>Transform into <input type="text" name="{{path}}.shape.transformation"
                                  value="{{step.shape.transformation}}"
-                                 data-tooltip="A transformation by name: what it adds, and what of yours it quarantines."></label>
+                                 data-tooltip="A transformation by name (content.mjs): what the form gives you."></label>
+  </div>
+
+  {{!-- What the form costs you while you wear it. Ticked rather than typed, because a slot is an
+        enum and a GM should not have to remember how to spell "fingers". --}}
+  <div class="cr-step__row cr-step__row--wrap">
+    <span class="cr-step__legend" data-tooltip="Items in these slots go out of play until the transformation ends.">Quarantine slots</span>
+    {{#each config.slots}}
+      <label class="cr-step__tick">
+        <input type="checkbox" name="{{../path}}.shape.quarantine.slots" value="{{@key}}"
+               {{#if (crHas ../step.shape.quarantine.slots @key)}}checked{{/if}}>
+        {{localize this.label}}
+      </label>
+    {{/each}}
+  </div>
+
+  <div class="cr-step__row cr-step__row--wrap">
+    <span class="cr-step__legend" data-tooltip="Items carrying any of these tags go out of play too.">Quarantine tags</span>
+    {{#each config.itemTags}}
+      <label class="cr-step__tick">
+        <input type="checkbox" name="{{../path}}.shape.quarantine.tags" value="{{this}}"
+               {{#if (crHas ../step.shape.quarantine.tags this)}}checked{{/if}}>
+        {{this}}
+      </label>
+    {{/each}}
+  </div>
+
+  <div class="cr-step__row">
+    <label>Quarantine features <input type="text" name="{{path}}.shape.quarantine.features"
+                                      value="{{crList step.shape.quarantine.features}}"
+                                      data-tooltip="Feature names, comma separated."></label>
+    <label>Quarantine cards <input type="text" name="{{path}}.shape.quarantine.cards"
+                                   value="{{crList step.shape.quarantine.cards}}"
+                                   data-tooltip="Action card names, comma separated."></label>
     <label>Intensity <input type="number" name="{{path}}.intensity" value="{{step.intensity}}" min="0"
                             data-tooltip="For a valued condition: Burning 3 (2)."></label>
   </div>

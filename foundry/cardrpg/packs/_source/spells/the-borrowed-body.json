@@ -11,7 +11,12 @@
       "verb": "shape",
       "duration": 2,
       "shape": {
-        "transformation": "Doomfly"
+        "transformation": "Doomfly",
+        "quarantine": {
+          "slots": [
+            "hands"
+          ]
+        }
       }
     },
     "kind": "formula",

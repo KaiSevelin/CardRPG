@@ -5626,14 +5626,20 @@ for (const t of content.TRANSFORMATIONS) {
 }
 check("transformations naming content that does not exist",
   grantFaults.join(", ") || "none", "none");
-/* And each one actually takes something away, or it is a costume. */
-const costumes = content.TRANSFORMATIONS.filter(t => {
-  const q = t.quarantine ?? {};
-  return ![...(q.slots ?? []), ...(q.tags ?? []), ...(q.kinds ?? []), ...(q.features ?? []),
-    ...(q.cards ?? [])].length;
+/*
+ * **And each shape step actually takes something away, or it is a costume.**
+ *
+ * The quarantine is on the STEP rather than on the transformation, because that is where it can be
+ * edited: `content.mjs` is a source file and nothing in Foundry writes to it, so a quarantine a GM
+ * ticks in the card sheet has to be a document field. The cost of that is a form used twice saying
+ * "no hands" twice; what it buys is that a greater version of the same borrowed body can be
+ * gentler about what you drop.
+ */
+const costumes = shapes.filter(s => {
+  const q = s.st.shape?.quarantine ?? {};
+  return ![...(q.slots ?? []), ...(q.tags ?? []), ...(q.features ?? []), ...(q.cards ?? [])].length;
 });
-check("transformations that take nothing away", costumes.map(t => t.name).join(", ") || "none",
-  "none");
+check("shape steps that take nothing away", costumes.map(s => s.card).join(", ") || "none", "none");
 /*
  * **How far each quarantine actually reaches, measured through the filter itself.**
  *
@@ -5644,9 +5650,11 @@ check("transformations that take nothing away", costumes.map(t => t.name).join("
  */
 const everyItemEntry = [...content.ITEMS, ...content.NPC_GEAR, ...content.NATURAL_WEAPONS];
 const asSlate = e => ({ type: "item", name: e.name, system: e });
-const quarantineReach = content.TRANSFORMATIONS.map(t =>
-  `${t.name}:${everyItemEntry.filter(e => resolve.quarantines(t.quarantine, asSlate(e))).length}`);
-check("items each transformation's quarantine reaches", quarantineReach.join(" "), "Doomfly:54");
+const quarantineReach = shapes.map(s =>
+  `${s.card}:${everyItemEntry
+    .filter(e => resolve.quarantines(s.st.shape?.quarantine, asSlate(e))).length}`);
+check("items each shape step's quarantine reaches", quarantineReach.join(" "),
+  "The Borrowed Body:54");
 /* And none of them reaches nothing, which `quarantines` returning false for everything would
  * produce while every field was still filled in. */
 check("quarantines that match no item at all",
@@ -6589,6 +6597,44 @@ const stepFieldsEdited = [...stepPart.matchAll(/name="\{\{path\}\}\.([a-zA-Z.]+)
 const missingFromEditor = [...stepKeys].filter(k => !stepFieldsEdited.includes(k));
 check("step fields the editor cannot set",
   missingFromEditor.length ? missingFromEditor.join(", ") : "none", "none");
+
+/*
+ * And the two enums are ticked rather than typed, which is the point of putting them on a document:
+ * a slot is one of ten and a tag one of nine, so neither should ever be spelled by hand.
+ */
+for (const [what, field] of [["slots", "slots"], ["tags", "tags"]]) {
+  check(`the editor ticks quarantine ${what}`,
+    new RegExp(`type="checkbox" name="\\{\\{\\.\\./path\\}\\}\\.shape\\.quarantine\\.${field}"`)
+      .test(stepPart) ? "yes" : "no", "yes");
+}
+/* Scoped to the quarantine rows: the editor loops `config.itemTags` twice and both are right -- one
+ * offers the tag a step REQUIRES in hand, the other the tags a quarantine takes away. */
+const quarantinePart = stepPart.slice(stepPart.indexOf("Quarantine slots"),
+  stepPart.indexOf("Quarantine features"));
+check("and offers every slot the game has",
+  /\{\{#each config\.slots\}\}/.test(quarantinePart) ? "yes" : "no", "yes");
+check("and every item tag",
+  /\{\{#each config\.itemTags\}\}/.test(quarantinePart) ? "yes" : "no", "yes");
+/* And the other loop is still there, so the slice above cannot pass by being empty. */
+check("while the tag a step requires in hand is still offered",
+  (stepPart.match(/\{\{#each config\.itemTags\}\}/g) ?? []).length, 2);
+/*
+ * **Each sub-field of `shape` by name.** The sweep above reads the FIRST segment of every input
+ * name, so `shape` counted as editable on the strength of `shape.quarantine.features` alone --
+ * renaming the transformation input changed nothing it could see. A composite field is editable
+ * only when each part of it is.
+ */
+for (const field of ["transformation", "quarantine.slots", "quarantine.tags",
+  "quarantine.features", "quarantine.cards"]) {
+  check(`the editor can set shape.${field}`,
+    stepPart.includes(`shape.${field}"`) ? "yes" : "no", "yes");
+}
+/* The two helpers a ticked list needs: one to know what is already on, one to show a typed list. */
+for (const helper of ["crHas", "crList"]) {
+  check(`the ${helper} helper is registered`,
+    new RegExp(`Handlebars\\.registerHelper\\("${helper}"`).test(entrySource) ? "yes" : "no",
+    "yes");
+}
 /* The three places a list of steps appears, all through the one partial. */
 check("lists of steps the sheet can edit",
   [...cardTemplate.matchAll(/parts\/steps\.hbs"\s+steps=steps\.(\w+)/g)].map(m => m[1])

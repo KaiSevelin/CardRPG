@@ -1229,6 +1229,41 @@
 .cr-steps > button { font-size: 0.85em; }
 /* The step editor: one partial, used by a spell's effect, a card's halves and an NPC sequence. */
 .cr-step { border: 1px solid rgba(128, 128, 128, 0.35); padding: 0.3rem; margin-bottom: 0.3rem; }
+/*
+ * **A row of checkboxes for a list of enum values.** A quarantine names slots and tags, and both
+ * are enums -- so they are ticked rather than typed, and a GM never has to remember how to spell
+ * "fingers". The row wraps because ten slots do not fit on one line of a card sheet.
+ */
+.cr-step__row--wrap {
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.15rem 0.5rem;
+}
+
+/* The label for the whole row, since each tick already has its own. */
+.cr-step__legend {
+  flex: 0 0 100%;
+  font-size: 0.75rem;
+  font-weight: 600;
+  opacity: 0.75;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* One tick and its word, kept together so a wrap never splits them. */
+.cr-step__tick {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  flex: 0 0 auto;
+  white-space: nowrap;
+  font-size: 0.8rem;
+}
+
+.cr-step__tick input {
+  margin: 0;
+}
+
 .cr-step__row { display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: flex-end; }
 .cr-step__row label { font-size: 0.85em; }
 .cr-step__row input[type="number"] { width: 4rem; }
