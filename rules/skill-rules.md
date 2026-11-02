@@ -157,6 +157,28 @@ Only make a check when **failure would be interesting** and the outcome is uncer
 
 How the odds work with the fate deck: if your total equals the difficulty, you succeed 70% of the time. One below gives 30% success and 60% partial. Two below gives 10% success and 60% partial.
 
+> **[FOUND IN CODE 2026-11-02] The odds above are exactly right, and two things about them are
+> worth stating that the table does not.**
+>
+> Asked of the engine against the real twenty-card deck: **70% / 25% / 5%** on the difficulty,
+> **30% / 60% / 10%** one below, **10% / 60% / 30%** two below, counting a Critical as the success
+> its own row says it is. This is the only place in these rules where a probability is printed as a
+> number, and it holds.
+>
+> **No check is ever certain, in either direction.** A Miss is a Fail whatever the total and a
+> Critical is a success whatever the total, so every check carries a **5% floor and a 5% ceiling**
+> that no card, tool, push or help will move. A character who needs a 3 and can total 9 still fails
+> one check in twenty. That is what makes a **passive score** &mdash; the one number in the game that is
+> not drawn for &mdash; the answer to an obstacle that should not be rolled for at all, and it is why the
+> GM's panel is worth the space ([../foundry/hud-spec.md](../foundry/hud-spec.md) §5.3).
+>
+> **And it is a deck, not a die.** The same twenty cards resolve combat damage and skill checks
+> ([../foundry/hud-spec.md](../foundry/hud-spec.md) §4.3), drawn without replacement until they run
+> out, so a fight spends the deck a later check draws from. The same check, exactly on its
+> difficulty, succeeds anywhere between **50% and 100%** of the time depending on which eight cards
+> a fight happened to take &mdash; which is the whole argument for the fate panel being a live readout
+> rather than a count, and a thing a player can and should count.
+
 ### Tools
 
 Items have **skill lines**, just as they have combat lines:
@@ -596,6 +618,37 @@ Choose **one**:
 - **Upgrade** a card: replace it with a card of the same approach and value +1, or with one that has an edge.
 
 You may also **prune** **1** card as part of leveling.
+
+### Expertise and mastery  **[BUILT 2026-11-02]**
+
+**Two steps a skill card can climb**, and they are deliberately different kinds of thing.
+
+| | What it does | Where it bites |
+|---|---|---|
+| **Expertise (approach)** | Raise one skill card of that approach by **1**, to the cap of **3** | an active check |
+| **Mastery (approach)** | Your **passive score** for that approach is **1** higher | what you notice without drawing |
+
+**Expertise is the upgrade this section already described** &mdash; *replace a card with one of the same
+approach and value +1* &mdash; done in place, so the card keeps its name and its edge. It is the same card
+having got better rather than a different card arriving, and it **asks** the player which one, the
+way a prune does: only they know which of their Lore cards they actually play. A card already at 3
+is not offered, and a wild is left out altogether, because an Inspiration is *any approach, value 1*
+and the whole point of it is that it is never the wrong card and never a good one.
+
+**Mastery is the half that answers what levelling never moved.** Every other reward on a graph
+affects a check you choose to make; a passive is what happens when nobody makes one, and until this
+existed nothing in a whole career changed it. It is a number rather than a question, read off the
+owned nodes each time a passive is computed.
+
+**Two expertises and one mastery per Way**, in the approaches each Way is thick in, and a mastery
+always sits deeper than its Way's expertise &mdash; which no node states: the graph enforces it by where
+they are. Nothing was added to the graph for any of it; all twelve ride on nodes that were already
+there and already named that kind of work.
+
+**And six features now carry a skill bonus**, one per approach at **+1**, grouped so two of an
+approach cannot stack. The schema has held `bonus.approach` since tools were built and no feature
+had ever used it, so step 3 of a check had nothing to add even after the engine was repaired to look
+in the right field.
 
 ### Training (downtime)
 

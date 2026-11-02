@@ -323,6 +323,8 @@ one thing instead of another.
 | **Skill card** | Add one, or upgrade one ([skill-rules.md](skill-rules.md) §8) | **[OPEN]** The one reward on this list with no key in the accumulator, so no node can grant it: measured in [skill-rules.md](skill-rules.md) §8, where it means a skill check barely scales with levelling |
 | **Training** | A tool type, at the full bonus instead of +1 | Skill rules §2 already says training comes from the Way trees |
 | **Know-how** | A situation you have **advantage** in | A background gives one; a Way gives more |
+| **Expertise** | Raise one skill card of a named approach by 1, to the cap of 3 | **[BUILT 2026-11-02]** The upgrade of [skill-rules.md](skill-rules.md) §8, in place: it asks which card, the way a prune asks which to drop |
+| **Mastery** | Your passive score in a named approach is 1 higher | **[BUILT 2026-11-02]** The only reward that moves what a character notices without drawing anything |
 | **A language** | One of Firma's nine, read and spoken | **[BUILT 2026-11-02]** Binary like a training: you read Reversed or you do not. Taught where its speakers are studied |
 | **Feature** | A feature slate, passive or active | Bounded by bonus groups (§5). **[BUILT 2026-11-01]** — and a granted feature carries text only, never a figure: see below |
 | **Obligation** | A feature you **cannot remove**, binding in text, in the action deck or in the fate deck | What you owe for what you were taught — see below |

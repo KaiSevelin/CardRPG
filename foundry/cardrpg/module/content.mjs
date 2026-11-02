@@ -1330,6 +1330,49 @@ export const NPC_GEAR = [
  * bonus-grouped, because a group caps bonuses to one action while these change a standing number.
  */
 export const FEATURES = [
+  /*
+   * --- six features that help a skill check, one per approach ---
+   *
+   * **The schema has held `bonus.approach` since tools were built and no feature ever used it**,
+   * so step 3 of a check (skill-rules 2) had nothing to add even after the engine was repaired to
+   * look in the right field. These are what it reads.
+   *
+   * All six are **+1 and grouped**, which is what keeps them from being the thing that breaks the
+   * ladder: a group caps one bonus per action (core-rules 5), so two features of one approach do
+   * not stack, and a trained tool still adds beside them because a tool is a different half of the
+   * sum. One point is also exactly what the audit found levelling was worth to a check -- these
+   * double that, rather than replacing the arithmetic with a bigger number.
+   */
+  {
+    name: "Hard Hands", group: "training",
+    text: "+1 on Might checks. Lifting, breaking, and not letting go.",
+    bonus: { approach: "might", value: 1 }
+  },
+  {
+    name: "Light Step", group: "training",
+    text: "+1 on Agility checks. Where to put a foot, decided before you need it.",
+    bonus: { approach: "agility", value: 1 }
+  },
+  {
+    name: "Quiet Worker", group: "training",
+    text: "+1 on Shadow checks. Slowly is quietly, and you have the patience for it.",
+    bonus: { approach: "shadow", value: 1 }
+  },
+  {
+    name: "Quick Eye", group: "training",
+    text: "+1 on Wits checks. You notice the thing that is about to happen.",
+    bonus: { approach: "wits", value: 1 }
+  },
+  {
+    name: "Well Read", group: "training",
+    text: "+1 on Lore checks. Somebody has written this down, and you have read them.",
+    bonus: { approach: "lore", value: 1 }
+  },
+  {
+    name: "Good Name", group: "training",
+    text: "+1 on Presence checks. People have heard of you, and most of it was good.",
+    bonus: { approach: "presence", value: 1 }
+  },
   {
     name: "Strong", group: "body",
     text: "+1 damage on Strike with Heavy items.",
@@ -4230,7 +4273,8 @@ export const NODES = [
     id: "shade.footwork", name: "Footwork", after: ["shade"],
     grants: { card: "Measure", prune: 1 }
   },
-  { id: "shade.quiet", name: "Quiet Hands", after: ["shade.footwork"], grants: { training: "lockpicks" } },
+  { id: "shade.quiet", name: "Quiet Hands", after: ["shade.footwork"],
+    grants: { training: "lockpicks", expertise: "shadow" } },
   { id: "shade.patience", name: "Patience", after: ["shade.quiet"], grants: { health: 1 } },
 
   /* --- the three titles off the trunk --- */
@@ -4257,7 +4301,8 @@ export const NODES = [
   { id: "shade.thief.wait", name: "The Wait", after: ["shade.thief"], grants: { card: "Cut and Run" } },
   {
     id: "shade.thief.shadowing", name: "Shadowing", after: ["shade.thief.wait"], bespoke: true,
-    grants: { knowHow: "following someone through a city without being seen" }
+    grants: { knowHow: "following someone through a city without being seen",
+      feature: "Quiet Worker" }
   },
   {
     /*
@@ -4288,7 +4333,8 @@ export const NODES = [
   },
 
   { id: "shade.thief.ropework", name: "Ropework", after: ["shade.thief"], grants: { training: "rope and climbing" } },
-  { id: "shade.thief.night", name: "Night Work", after: ["shade.thief.ropework"], grants: { carry: 1 } },
+  { id: "shade.thief.night", name: "Night Work", after: ["shade.thief.ropework"],
+    grants: { carry: 1, mastery: "shadow" } },
   {
     id: "shade.burglar", name: "Burglar", after: ["shade.thief.night"], title: "Burglar",
     axis: "Preparation", resource: "weight",
@@ -4306,7 +4352,8 @@ export const NODES = [
     grants: { card: "Loose and Step" }
   },
 
-  { id: "shade.scout.groundwork", name: "Groundwork", after: ["shade.scout"], grants: { restTokens: 1 } },
+  { id: "shade.scout.groundwork", name: "Groundwork", after: ["shade.scout"],
+    grants: { restTokens: 1, expertise: "wits" } },
   {
     /* And Spy, the second of the three demoted professions. */
     id: "shade.scout.spy", name: "Spy", after: ["shade.scout.groundwork"], bespoke: true,
@@ -4324,7 +4371,8 @@ export const NODES = [
 
   /* --- Duellist's four --- */
   { id: "shade.duellist.balance", name: "Balance", after: ["shade.duellist"], grants: { card: "Light Feet" } },
-  { id: "shade.duellist.tumbling", name: "Tumbling", after: ["shade.duellist.balance"], grants: { knowHow: "falling" } },
+  { id: "shade.duellist.tumbling", name: "Tumbling", after: ["shade.duellist.balance"],
+    grants: { knowHow: "falling", feature: "Light Step" } },
   {
     id: "shade.acrobat", name: "Acrobat", after: ["shade.duellist.tumbling", "shade.cross.ledges"],
     title: "Acrobat", axis: "Position", resource: "weight",
@@ -4395,7 +4443,10 @@ export const NODES = [
   }
 ,
 /* --- the Strength trunk: three ordinary nodes before the first title --- */
-  { id: "strength.drill", name: "Drill", after: ["strength"], grants: { card: "Hold the Line" } },
+  /* Expertise sits where a Way already teaches that kind of work, two per Way, in the
+   * approaches skill-rules 1 says the Way is thick in. */
+  { id: "strength.drill", name: "Drill", after: ["strength"],
+    grants: { card: "Hold the Line", expertise: "might" } },
   { id: "strength.march", name: "The March", after: ["strength.drill"], grants: { carry: 5 } },
   { id: "strength.scars", name: "Old Scars", after: ["strength.march"], grants: { health: 1 } },
 
@@ -4432,7 +4483,10 @@ export const NODES = [
     grants: { feature: "The Wall" }
   },
 
-  { id: "strength.infantry.load", name: "Load-Bearing", after: ["strength.infantry"], grants: { carry: 10 } },
+  /* Mastery is the deeper step and raises what you notice rather than what you can push, so
+   * one per Way, behind a title rather than on a trunk. */
+  { id: "strength.infantry.load", name: "Load-Bearing", after: ["strength.infantry"],
+    grants: { carry: 10, mastery: "might" } },
   {
     id: "strength.infantry.armoury", name: "Armoury", after: ["strength.infantry.load"],
     bespoke: true, grants: { training: "armour and its repair", knowHow: "what a dent means" }
@@ -4472,7 +4526,8 @@ export const NODES = [
   { id: "strength.exec.seat", name: "The Seat", after: ["strength.executioner"], grants: { training: "riding" } },
   {
     id: "strength.exec.stable", name: "Stablework", after: ["strength.exec.seat"],
-    bespoke: true, grants: { knowHow: "a horse that is about to refuse" }
+    /* Reading an animal that has decided something is Wits, and this node already says so. */
+    bespoke: true, grants: { knowHow: "a horse that is about to refuse", feature: "Quick Eye" }
   },
   {
     id: "strength.knight", name: "Knight", after: ["strength.exec.stable"], title: "Knight",
@@ -4504,10 +4559,11 @@ export const NODES = [
   },
 
   /* --- Gladiator's two --- */
-  { id: "strength.glad.hands", name: "Bare Hands", after: ["strength.gladiator"], grants: { card: "Pull Them Down" } },
+  { id: "strength.glad.hands", name: "Bare Hands", after: ["strength.gladiator"],
+    grants: { card: "Pull Them Down", expertise: "agility" } },
   {
     id: "strength.glad.alley", name: "Alley Work", after: ["strength.glad.hands"],
-    bespoke: true, grants: { knowHow: "a crowd that is about to turn" }
+    bespoke: true, grants: { knowHow: "a crowd that is about to turn", feature: "Good Name" }
   },
   {
     id: "strength.street-fighter", name: "Street Fighter", after: ["strength.glad.alley"],
@@ -4576,7 +4632,8 @@ export const NODES = [
     /* **Imperial** is *the old language and the diplomatic lingua franca* (worldinfo/Firma.md), so
      * it belongs where reading does: the first node of the scholar's trunk teaches the alphabet
      * that everything else in this Way is written in. */
-    grants: { training: "reading and writing", spellSlots: 1, language: "Imperial" }
+    grants: { training: "reading and writing", spellSlots: 1, language: "Imperial",
+      expertise: "lore" }
   },
   {
     /* The common card a caster gets is the one about spacing, because where to stand is the hard
@@ -4628,7 +4685,8 @@ export const NODES = [
     /* The other half of "treating wounds": a mage who knows what a body is made of can use a
      * Healer's Kit to its printed value, and a training granted twice is one training (actors.mjs
      * dedupes `learned`). */
-    grants: { knowHow: "what a body is made of, living or dead", training: "treating wounds" }
+    grants: { knowHow: "what a body is made of, living or dead", training: "treating wounds",
+      feature: "Well Read" }
   },
   {
     id: "mind.necromancy", name: "Necromancy", after: ["mind.blood.anatomy"], title: "Necromancy",
@@ -4644,7 +4702,8 @@ export const NODES = [
     id: "mind.blood.fasting", name: "Fasting", after: ["mind.blood"],
     grants: { spell: "Boil" }
   },
-  { id: "mind.blood.silence", name: "Silence", after: ["mind.blood.fasting"], grants: { health: 1 } },
+  { id: "mind.blood.silence", name: "Silence", after: ["mind.blood.fasting"],
+    grants: { health: 1, mastery: "lore" } },
   {
     id: "mind.asceticism", name: "Asceticism", after: ["mind.blood.silence"], title: "Asceticism",
     axis: "Deck shape", resource: "an empty hand",
@@ -4726,7 +4785,8 @@ export const NODES = [
     /* The node is not called "The Small Pact": the spell is, and two pieces of content may not
      * share a name (the check that found Infantry's Signature wearing its Tactic's). */
     id: "mind.spirit.pact", name: "The First Pact", after: ["mind.spiritualism"],
-    grants: { spell: "The Small Pact" }
+    /* A pact is a negotiation before it is a formula, which is why Presence is what it teaches. */
+    grants: { spell: "The Small Pact", expertise: "presence" }
   },
   {
     id: "mind.spirit.debts", name: "Debts", after: ["mind.spirit.pact"], bespoke: true,
@@ -4813,7 +4873,7 @@ export const NODES = [
     grants: { training: "liturgy", spellSlots: 1 } },
   {
     id: "faith.pilgrimage", name: "Pilgrimage", after: ["faith.vows"],
-    grants: { card: "Hold the Line", spellSlots: 1 }
+    grants: { card: "Hold the Line", spellSlots: 1, expertise: "presence" }
   },
   { id: "faith.calling", name: "The Calling", after: ["faith.pilgrimage"],
     grants: { restTokens: 1, spellSlots: 1 } },
@@ -4836,7 +4896,8 @@ export const NODES = [
     id: "faith.eg.office", name: "The Night Office", after: ["faith.eg.fast"],
     grants: { spell: "Steady the Hand" }
   },
-  { id: "faith.eg.scripture", name: "Scripture", after: ["faith.eg.office"], grants: { training: "the holy books" } },
+  { id: "faith.eg.scripture", name: "Scripture", after: ["faith.eg.office"],
+    grants: { training: "the holy books", expertise: "lore" } },
   { id: "faith.eg.clean", name: "The Clean Body", after: ["faith.eg.scripture"], grants: { spellSlots: 1 } },
   {
     id: "faith.eg.alms", name: "Alms", after: ["faith.eg.clean"], bespoke: true,
@@ -4859,7 +4920,7 @@ export const NODES = [
   { id: "faith.es.hand", name: "The Open Hand", after: ["faith.es.unseen"], grants: { spellSlots: 1 } },
   {
     id: "faith.es.distance", name: "Distance", after: ["faith.es.hand"], bespoke: true,
-    grants: { knowHow: "how far a voice carries, and where it will not" }
+    grants: { knowHow: "how far a voice carries, and where it will not", mastery: "presence" }
   },
 
   {
@@ -4875,7 +4936,8 @@ export const NODES = [
   { id: "faith.vax.club", name: "The Club", after: ["faith.vax"], grants: { spell: "Stand Where I Stand" } },
   { id: "faith.vax.shield", name: "The Shield", after: ["faith.vax.club"], grants: { spell: "The Shield Line" } },
   { id: "faith.vax.ranks", name: "The Ranks", after: ["faith.vax.shield"], grants: { health: 1 } },
-  { id: "faith.vax.drill", name: "Drill", after: ["faith.vax.ranks"], grants: { training: "shield and club" } },
+  { id: "faith.vax.drill", name: "Drill", after: ["faith.vax.ranks"],
+    grants: { training: "shield and club", feature: "Hard Hands" } },
   { id: "faith.vax.blood", name: "Blood Paid", after: ["faith.vax.drill"], grants: { health: 1 } },
   {
     id: "faith.vax.sixth", name: "The Sixth", after: ["faith.vax.blood"], bespoke: true,

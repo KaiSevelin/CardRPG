@@ -1551,12 +1551,34 @@ export async function answerCheck(actor) {
  * cards of an approach would have anyway.
  */
 export function passiveScore(actor, approach) {
-  const skills = actor?.system.decks?.skill ? game.cards.get(actor.system.decks.skill) : null;
-  if (skills) {
-    const best = skills.cards
-      .filter(c => c.system?.approach === approach)
-      .reduce((n, c) => Math.max(n, c.system.value ?? 0), 0);
-    return best + 2;
+  /*
+   * **It read the draw pile alone, so a passive moved during play.** hud-spec 5 says a passive is
+   * static -- *it never changes during play, so it renders as a constant* -- and skill-rules 2
+   * calls it the best card of that approach in the WHOLE deck, counting the discard. The lookup
+   * was `decks.skill`, which is the pile you have not drawn yet: playing your Wits 3 lowered your
+   * passive Wits by one, and drawing it into hand did too. Exactly backwards, and the panel built
+   * yesterday is what made it visible.
+   *
+   * So it reads every stack the character owns and takes the skill cards out of them, which is
+   * what "the whole deck" means and is immune to where a card happens to be sitting.
+   */
+  const stacks = actor?.system?.decks ? Object.values(actor.system.decks) : [];
+  const held = stacks.map(id => game.cards.get(id)).filter(Boolean);
+  if (held.length) {
+    let best = 0;
+    for (const stack of held) {
+      for (const card of stack.cards) {
+        if (card.type !== "skill") continue;
+        if (!card.system?.serves?.(approach)) continue;
+        best = Math.max(best, card.system.value ?? 0);
+      }
+    }
+    /* And a mastery, which is the one thing that raises a passive without touching a card: the
+     * deeper half of skill-rules 8's scaling, and the only part of levelling that moves what a
+     * character notices without trying (skill-rules 8's measurement). */
+    const mastery = (actor.system.learned?.masteries ?? [])
+      .filter(m => m === approach).length;
+    return best + 2 + mastery;
   }
   return actor?.system.passive ?? 2;
 }

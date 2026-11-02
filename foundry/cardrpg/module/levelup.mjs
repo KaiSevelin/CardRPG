@@ -413,6 +413,15 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
               foundry.utils.escapeHTML(l.name)} \u2014 ${
               foundry.utils.escapeHTML(l.of)}</option>`).join("")}
           </select></label>
+          <!-- The two steps a skill card can climb (skill-rules 8). Dropdowns, because an
+               approach that is not one of the six is a reward that can never apply. -->
+          ${["expertise", "mastery"].map(key => `<label>${
+            key === "expertise" ? "Expertise" : "Mastery"} <select name="${key}">
+            <option value="">none</option>
+            ${Object.entries(CARDRPG.approaches).filter(([k]) => k !== "any")
+              .map(([k, cfg]) => `<option value="${k}"${grants[key] === k ? " selected" : ""}>${
+                game.i18n.localize(cfg.label ?? k)}</option>`).join("")}
+          </select></label>`).join("")}
           ${["health", "handSize", "carry", "deckMax", "spellSlots", "restTokens", "prune"]
             .map(k => numberRow(k, k)).join("")}
         </fieldset>
@@ -425,7 +434,7 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
           const num = key => (f[key]?.value === "" ? undefined : Number(f[key].value));
           const grant = {};
           for (const key of ["card", "feature", "item", "spell", "training", "knowHow",
-            "language"]) {
+            "language", "expertise", "mastery"]) {
             if (text(key)) grant[key] = text(key);
           }
           /* A dropdown rather than a text box, so an authored menu node cannot name a school

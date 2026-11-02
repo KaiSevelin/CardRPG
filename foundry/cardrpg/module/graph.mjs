@@ -35,6 +35,10 @@ export const SIGNATURES = [...SHADE_SIGNATURES, ...STRENGTH_SIGNATURES, ...MIND_
   ...FAITH_SIGNATURES];
 export const ALL_TACTICS = { ...TACTICS, ...STRENGTH_TACTICS, ...MIND_TACTICS, ...FAITH_TACTICS };
 import { deckOf, allStacks, actionCardData } from "./decks.mjs";
+/* The approach list, imported rather than reached through the global: `graphFaults` is called
+ * by the offline validator, where Foundry's globals do not exist, and config.mjs fills this
+ * object at module scope so an import is enough. */
+import { CARDRPG } from "./config.mjs";
 /* The one shape a slate takes, shared with the setup routine rather than spelled twice. */
 import { slateData } from "./setup.mjs";
 
@@ -242,6 +246,15 @@ export function graphFaults(nodes) {
     const tongue = node?.grants?.language;
     if (tongue && !LANGUAGE_NAMES.has(tongue)) {
       faults.push(`${node.id} teaches ${tongue}, which is not a language of Firma`);
+    }
+    /* An expertise or a mastery in an approach nobody has is a reward that can never apply, and
+     * "any" is not one either: a wild card serves every approach, an expertise in one does not. */
+    for (const key of ["expertise", "mastery"]) {
+      const approach = node?.grants?.[key];
+      if (!approach) continue;
+      if (!(approach in CARDRPG.approaches) || approach === "any") {
+        faults.push(`${node.id} grants ${key} in ${approach}, which is not an approach`);
+      }
     }
   }
   return [...new Set(faults)];
@@ -451,6 +464,13 @@ export function grantsOf(owned) {
   const out = {
     health: 0, handSize: 0, carry: 0, deckMax: 0, spellSlots: 0, restTokens: 0,
     trainings: [], knowHow: [], languages: [], cards: [], features: [], spells: [], prunes: 0,
+    /*
+     * The two steps a skill card can climb (skill-rules 8). **Expertise is a question and mastery
+     * is a number**, which is why they are kept apart: an expertise asks the player which card to
+     * raise, the way a prune asks which to drop, and a mastery is read off the owned set every
+     * time a passive is computed.
+     */
+    expertise: [], masteries: [],
     /* The sources a character has been offered a choice from, which is not the same as what they
      * chose: the spell itself is a document and is counted by the book, not by this. */
     choices: [],
@@ -472,6 +492,8 @@ export function grantsOf(owned) {
     if (g.training) out.trainings.push(g.training);
     if (g.knowHow) out.knowHow.push(g.knowHow);
     if (g.language) out.languages.push(g.language);
+    if (g.expertise) out.expertise.push(g.expertise);
+    if (g.mastery) out.masteries.push(g.mastery);
     if (g.card) out.cards.push(g.card);
     if (g.feature) out.features.push(g.feature);
     if (g.spell) out.spells.push(g.spell);
@@ -531,6 +553,14 @@ export function describeGrants(node) {
   if (g.language) {
     lines.push(`${game.i18n.localize("CARDRPG.Level.Language")}: ${g.language}`);
   }
+  if (g.expertise) {
+    lines.push(game.i18n.format("CARDRPG.Level.Expertise",
+      { approach: game.i18n.localize(CARDRPG.approaches[g.expertise]?.label ?? g.expertise) }));
+  }
+  if (g.mastery) {
+    lines.push(game.i18n.format("CARDRPG.Level.Mastery",
+      { approach: game.i18n.localize(CARDRPG.approaches[g.mastery]?.label ?? g.mastery) }));
+  }
   number("health", game.i18n.localize("CARDRPG.Health"));
   number("handSize", game.i18n.localize("CARDRPG.HandSize"));
   number("carry", game.i18n.localize("CARDRPG.Carry"));
@@ -589,6 +619,7 @@ export async function takeNode(actor, id) {
   if (grants.item) await grantSlate(actor, grants.item, "item");
   if (grants.spell) await grantSpell(actor, grants.spell, id);
   if (grants.choose?.from) await grantSpellChoice(actor, grants.choose.from, id);
+  if (grants.expertise) await raiseSkillCard(actor, grants.expertise);
   for (let i = 0; i < (grants.prune ?? 0); i++) await prune(actor);
   return true;
 }
@@ -686,6 +717,63 @@ async function grantSpellChoice(actor, source, nodeId) {
  * It is also the only reward that can make a character illegal, so the deck minimum is checked
  * before the question is asked rather than after it is answered (core-rules 8).
  */
+/**
+ * Expertise: raise one skill card of an approach by 1, to the cap of 3 (skill-rules 8).
+ *
+ * **The upgrade that section 8 describes and nothing could do.** *Replace a card with one of the
+ * same approach and value +1* is what this is, done in place rather than by swapping documents --
+ * the card keeps its name and its edge, which is what makes it the same card having got better
+ * rather than a different card arriving.
+ *
+ * **It asks**, like a prune and for the same reason: only the player knows which of their Lore
+ * cards they actually play. A card already at the cap cannot be raised and is not offered, and an
+ * approach with nothing below the cap says so and changes nothing -- taking the node is still
+ * worth it for everything else on it, and the offer is recorded on the character either way.
+ *
+ * A wild is left out on purpose. An Inspiration is *any approach, value 1* (skill-rules 1) and
+ * raising it would make it any approach at 2, which is the one card in the deck whose whole point
+ * is that it is never the wrong card and never a good one.
+ */
+export async function raiseSkillCard(actor, approach) {
+  const cap = 3;
+  const cards = allStacks(actor)
+    .flatMap(stack => stack.cards.contents)
+    .filter(card => card.type === "skill" && !card.system?.wild
+      && card.system?.approach === approach && (card.system?.value ?? 0) < cap);
+
+  const label = game.i18n.localize(CARDRPG.approaches[approach]?.label ?? approach);
+  if (!cards.length) {
+    ui.notifications?.info(game.i18n.format("CARDRPG.Level.ExpertiseNone", { approach: label }));
+    return false;
+  }
+
+  const options = cards.sort((a, b) => (b.system.value ?? 0) - (a.system.value ?? 0)
+    || a.name.localeCompare(b.name))
+    .map(card => `<option value="${card.id}">${foundry.utils.escapeHTML(card.name)}`
+      + ` (${card.system.value} \u2192 ${(card.system.value ?? 0) + 1})</option>`).join("");
+
+  const chosen = await foundry.applications.api.DialogV2.prompt({
+    window: {
+      title: game.i18n.format("CARDRPG.Level.ExpertiseTitle", { approach: label })
+    },
+    content: `<p>${game.i18n.format("CARDRPG.Level.ExpertiseBody", { approach: label })}</p>
+      <select name="card" style="width: 100%">${options}</select>`,
+    ok: {
+      label: game.i18n.localize("CARDRPG.Level.ExpertiseConfirm"),
+      callback: (event, button) => button.form.elements.card.value
+    },
+    rejectClose: false
+  });
+  if (!chosen) return false;
+
+  const card = cards.find(c => c.id === chosen);
+  if (!card) return false;
+  await card.update({ "system.value": Math.min(cap, (card.system.value ?? 0) + 1) });
+  ui.notifications?.info(game.i18n.format("CARDRPG.Level.ExpertiseDone",
+    { card: card.name, value: card.system.value }));
+  return true;
+}
+
 export async function prune(actor) {
   const cards = allStacks(actor)
     .flatMap(stack => stack.cards.contents)

@@ -1,6 +1,6 @@
 # Art list
 
-**409 pieces**, of which **0** are wired up. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card.
+**415 pieces**, of which **0** are wired up. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card.
 
 ## What to supply
 
@@ -443,18 +443,24 @@ Twelve gods' lesser miracles, handed over by minor nodes.
 
 Always on, so a feature's picture is on the sheet for the character's whole life.
 
-**8 pieces**. Suggested path: `cardrpg/art/features/`
+**14 pieces**. Suggested path: `cardrpg/art/features/`
 
 | | Name | What it is | File |
 |---|---|---|---|
 |   | **Alert** | You draw with advantage on initiative. | `features/alert.webp` |
 |   | **Arcane Focus** | +1 to all Cast values. | `features/arcane-focus.webp` |
 |   | **Good Aim** | +2 range on Ranged and Thrown items. | `features/good-aim.webp` |
+|   | **Good Name** | +1 on Presence checks. People have heard of you, and most of it was good. | `features/good-name.webp` |
+|   | **Hard Hands** | +1 on Might checks. Lifting, breaking, and not letting go. | `features/hard-hands.webp` |
+|   | **Light Step** | +1 on Agility checks. Where to put a foot, decided before you need it. | `features/light-step.webp` |
 |   | **Packhorse** | +20 kg carry allowance. | `features/packhorse.webp` |
 |   | **Quick** | Hand size +1. | `features/quick.webp` |
+|   | **Quick Eye** | +1 on Wits checks. You notice the thing that is about to happen. | `features/quick-eye.webp` |
+|   | **Quiet Worker** | +1 on Shadow checks. Slowly is quietly, and you have the patience for it. | `features/quiet-worker.webp` |
 |   | **Steady** | You don't become Dazed. · Drain: you don't become Dazed. | `features/steady.webp` |
 |   | **Strong** | +1 damage on Strike with Heavy items. | `features/strong.webp` |
 |   | **Tough** | +4 max Health. | `features/tough.webp` |
+|   | **Well Read** | +1 on Lore checks. Somebody has written this down, and you have read them. | `features/well-read.webp` |
 
 ## Items
 

@@ -205,7 +205,15 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       knowHow: [...this.knowHow, ...fromNodes.knowHow],
       /* Deduped like a training and for the same reason: two nodes may teach one tongue, and
        * knowing Imperial twice is knowing Imperial. */
-      languages: [...new Set([...this.languages, ...fromNodes.languages])].sort()
+      languages: [...new Set([...this.languages, ...fromNodes.languages])].sort(),
+      /*
+       * Masteries are derived and never stored: a mastery raises a passive score, and a passive is
+       * computed from the deck every time it is asked for (resolve.mjs). Nothing to migrate when a
+       * node is corrected, which is leveling 9's promise.
+       */
+      masteries: [...fromNodes.masteries].sort(),
+      /* What the graph has offered. Whether a card was actually raised lives on the card. */
+      expertise: [...fromNodes.expertise].sort()
     };
 
     // --- taint and afflicted (counted from the decks, so derived)

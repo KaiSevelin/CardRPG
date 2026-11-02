@@ -5018,7 +5018,7 @@ const artable = [
   content.FEATURES, content.ITEMS.filter(i => !i.npc), content.NPC_GEAR ?? [],
   ...Object.entries(content).filter(([k]) => k.endsWith("_SIGNATURES")).map(([, v]) => v)
 ].flat();
-check("pieces of content that take art", artable.length, 404);
+check("pieces of content that take art", artable.length, 410);
 
 /*
  * The backs, which are a different kind of art: **one picture per deck, not one per card**, doing
@@ -5125,7 +5125,7 @@ const briefs = faceRows.map(r => r.brief);
 const leaked = briefs.flatMap(text =>
   [...text.matchAll(/\b([a-z]+[A-Z][a-zA-Z]*)\b/g)].map(m => m[1]));
 /* A pattern that matched no rows at all would report "none" for any list whatsoever. */
-check("briefs the check actually read", briefs.length, 404);
+check("briefs the check actually read", briefs.length, 410);
 check("keys that leaked into the brief",
   leaked.length ? [...new Set(leaked)].join(", ") : "none", "none");
 
@@ -5138,7 +5138,7 @@ check("keys that leaked into the brief",
  */
 const { slug } = await import("./art-list.mjs");
 const rows = faceRows;
-check("file paths in the brief", rows.length, 404);
+check("file paths in the brief", rows.length, 410);
 /* And the backs, whose path is the slug of their KEY rather than of their printed label. */
 const backPaths = [...artList.matchAll(/\| `(backs\/[^`]+)` \|/g)].map(m => m[1]);
 check("back paths in the brief", backPaths.length, backs.length);
@@ -5765,9 +5765,22 @@ check("the three stacks are on the character",
   ["skill", "skillHand", "skillDiscard"]
     .filter(k => !new RegExp(`${k}: new fields\.DocumentIdField`).test(modelSource)).join(", ")
     || "none", "none");
-/* The field `passiveScore` reads, which is the whole of the defect above. */
-check("the id passiveScore reads is the id that exists",
-  /system\.decks\?\.skill/.test(resolveSource) ? "yes" : "no", "yes");
+/*
+ * **What `passiveScore` reads, which has been wrong twice now in opposite directions.** It began by
+ * reading a field that did not exist, so every saving throw used a flat 2; the repair pointed it at
+ * `decks.skill`, which is the pile you have NOT drawn yet -- so playing your Wits 3 lowered your
+ * passive Wits, and hud-spec 5's *it never changes during play* was false the whole time. It reads
+ * every stack now and takes the skill cards out of them, which is what skill-rules 2 means by *the
+ * best card of that approach in the whole deck, counting the discard*.
+ */
+check("the passive reads every stack, not the draw pile",
+  /Object\.values\(actor\.system\.decks\)/.test(resolveSource) ? "yes" : "no", "yes");
+check("and picks the skill cards out of them",
+  /if \(card\.type !== "skill"\) continue;/.test(resolveSource) ? "yes" : "no", "yes");
+/* Through `serves`, so the one wild in a deck counts toward every approach -- which is what a wild
+ * is, and the alternative would have had an Inspiration raise nothing at all. */
+check("a wild counts toward every approach",
+  /card\.system\?\.serves\?\.\(approach\)/.test(resolveSource) ? "yes" : "no", "yes");
 
 /* ---- the deck, as composed ---- */
 
@@ -5827,23 +5840,55 @@ check("a Wild is decided by the margin", resolve.checkOutcome(-1, "wild"), "part
  * and a source read would have agreed with it either way.
  */
 const savedGame = globalThis.game;
-const fakeDeck = {
-  cards: [
-    { system: { approach: "might", value: 3 } },
-    { system: { approach: "might", value: 1 } },
-    { system: { approach: "lore", value: 1 } }
-  ]
+/*
+ * A stub as faithful as the documents it stands for: a Card carries a `type` and its system data
+ * answers `serves`. The first version of this stub had neither, which made it a weaker model than
+ * reality and would have let a passive that ignored both look correct.
+ *
+ * The cards are spread across three stacks on purpose, because the defect being tested was reading
+ * only one of them: the best Might card sits in the DISCARD.
+ */
+const skillCard = (approach, value) => ({
+  type: "skill",
+  system: { approach, value, wild: false, serves: a => approach === a }
+});
+const fakeStacks = {
+  "deck-id": { cards: [skillCard("might", 1), skillCard("lore", 1)] },
+  "hand-id": { cards: [skillCard("might", 2)] },
+  "discard-id": { cards: [skillCard("might", 3)] }
 };
-globalThis.game = { cards: { get: id => (id === "deck-id" ? fakeDeck : null) } };
-const withDeck = { system: { decks: { skill: "deck-id" }, passive: 99 } };
+globalThis.game = { cards: { get: id => fakeStacks[id] ?? null } };
+const withDeck = {
+  system: {
+    decks: { skill: "deck-id", skillHand: "hand-id", skillDiscard: "discard-id" },
+    passive: 99
+  }
+};
 const withNone = { system: { decks: {}, passive: 7 } };
+/* 3 + 2, and the 3 is in the discard: the number a player would have lost by playing it. */
 check("passive score from the best card of that approach",
   resolve.passiveScore(withDeck, "might"), 5);
+check("and it does not fall when the best card leaves the draw pile",
+  resolve.passiveScore({ system: { decks: { skill: "hand-id", skillDiscard: "discard-id" } } },
+    "might"), 5);
 check("an approach the deck is thin on", resolve.passiveScore(withDeck, "lore"), 3);
 check("one it has no card for at all", resolve.passiveScore(withDeck, "presence"), 2);
 /* An NPC has no deck and carries one flat number instead, which is what the fallback is FOR. */
 check("and a creature with no deck uses its own number",
   resolve.passiveScore(withNone, "might"), 7);
+/*
+ * And a mastery, which is the only thing in the game that raises a passive without touching a
+ * card: the deeper half of skill-rules 8's scaling, and the half that answers the audit's finding
+ * that nothing levelling gave ever moved what a character notices.
+ */
+const withMastery = {
+  system: {
+    decks: { skill: "deck-id", skillHand: "hand-id", skillDiscard: "discard-id" },
+    learned: { masteries: ["might"] }
+  }
+};
+check("a mastery raises the passive by one", resolve.passiveScore(withMastery, "might"), 6);
+check("and only in the approach it names", resolve.passiveScore(withMastery, "lore"), 3);
 globalThis.game = savedGame;
 /* An untrained user caps a tool at +1, which is the one place a training is arithmetic. */
 check("an untrained user caps the tool",
@@ -6407,7 +6452,12 @@ check("hud-spec records it as collapsible",
  * neither does a passive score, since a passive is read off that deck.
  */
 const grantKeys = Object.keys(graph.grantsOf(new Set([graph.ROOT])));
-check("keys the grants accumulator carries", grantKeys.length, 15);
+check("keys the grants accumulator carries", grantKeys.length, 17);
+/* And the two that were added for it, which is the half of skill-rules 8 that a node can express:
+ * an expertise asks the player which card to raise, a mastery is a number read off the owned set. */
+check("the two the skill side gained",
+  grantKeys.filter(k => k === "expertise" || k === "masteries").sort().join(", "),
+  "expertise, masteries");
 check("and whether any of them could grow a skill deck",
   grantKeys.filter(k => /skill/i.test(k)).join(", ") || "none", "none");
 check("nodes that grant a skill card", nodes.filter(n => n.grants?.skillCard).length, 0);
@@ -6451,9 +6501,26 @@ check("features only, so a tool is not paid twice",
   /if \(slate\.type !== "feature"\) continue;/.test(resolveSource) ? "yes" : "no", "yes");
 /* It is still worth nothing today, and that is now a content gap rather than an engine one: no
  * feature in the game carries a skill bonus, though the schema has held the field all along. */
-check("features carrying a skill bonus", content.FEATURES.filter(f => f.bonus?.approach).length, 0);
+/*
+ * **Six of them now, one per approach**, which is the content half of the repair: the engine was
+ * fixed to read `bonus.approach` and nothing in the game printed one, so step 3 of a check was
+ * still worth nothing. All six are +1 and grouped, so two of an approach cannot stack and a
+ * trained tool still adds beside them.
+ */
+const skillFeatures = content.FEATURES.filter(f => f.bonus?.approach);
+check("features carrying a skill bonus", skillFeatures.length, 6);
+check("and one for each approach",
+  skillFeatures.map(f => f.bonus.approach).sort().join(", "),
+  "agility, lore, might, presence, shadow, wits");
+check("all of them +1", [...new Set(skillFeatures.map(f => f.bonus.value))].join(", "), "1");
+check("and all of them grouped, so two of an approach cannot stack",
+  skillFeatures.filter(f => !f.group).length, 0);
 check("and the schema has always had somewhere to put one",
   /approach: new fields\.StringField/.test(itemSource) ? "yes" : "no", "yes");
+/* Every one of them is on a node, or it is a feature nobody can be given. */
+check("nodes that hand them over",
+  skillFeatures.filter(f => !nodes.some(n => n.grants?.feature === f.name)).join(", ") || "none",
+  "none");
 
 /*
  * **3. What levelling actually adds to a check**, measured at level 8 on the cheapest route to a
@@ -6522,6 +6589,184 @@ check("and names the three things levelling can add",
 check("and sets the two halves of a career against each other",
   /against \*\*2\.3 action cards, 2\.3 spell slots, 1\.9 carry and 0\.7\n> Health\*\*/
     .test(skillDoc) ? "yes" : "no", "yes");
+
+/* ---- expertise, mastery, and how a check's randomness behaves  [BUILT 2026-11-02] ---- */
+
+/*
+ * **The two steps a skill card can climb**, which is the half of skill-rules 8 a node can express
+ * without the `skillCard` grant that is still open: an **expertise** raises a card you already
+ * hold, a **mastery** raises what you notice without drawing at all.
+ *
+ * They are deliberately different kinds of thing. An expertise is a *question* -- only the player
+ * knows which of their Lore cards they actually play -- and a mastery is a *number*, read off the
+ * owned set every time a passive is computed. Expertise moves an active check; mastery moves a
+ * passive. Between them they answer both halves of the flat curve the audit measured.
+ */
+const expertiseNodes = nodes.filter(n => n.grants?.expertise);
+const masteryNodes = nodes.filter(n => n.grants?.mastery);
+check("nodes granting an expertise", expertiseNodes.length, 8);
+check("nodes granting a mastery", masteryNodes.length, 4);
+/* Two per Way and one per Way: every Way scales its own approaches, and nobody scales all six. */
+check("expertise, by Way",
+  ["strength", "shade", "mind", "faith"]
+    .map(w => `${w} ${expertiseNodes.filter(n => n.id.startsWith(w)).length}`).join(", "),
+  "strength 2, shade 2, mind 2, faith 2");
+check("mastery, by Way",
+  ["strength", "shade", "mind", "faith"]
+    .map(w => `${w} ${masteryNodes.filter(n => n.id.startsWith(w)).length}`).join(", "),
+  "strength 1, shade 1, mind 1, faith 1");
+check("and the approaches each scales",
+  expertiseNodes.map(n => `${n.id.split(".")[0]}:${n.grants.expertise}`).sort().join(", "),
+  "faith:lore, faith:presence, mind:lore, mind:presence, "
+  + "shade:shadow, shade:wits, strength:agility, strength:might");
+/* All six approaches reachable, and a mastery only in four: the deeper step is scarcer. */
+check("approaches an expertise exists for",
+  [...new Set(expertiseNodes.map(n => n.grants.expertise))].sort().join(", "),
+  "agility, lore, might, presence, shadow, wits");
+check("and a mastery",
+  [...new Set(masteryNodes.map(n => n.grants.mastery))].sort().join(", "),
+  "lore, might, presence, shadow");
+/* A mastery sits deeper than the expertise of its Way, which is the enforcement: no node says so,
+ * the graph does. */
+check("a mastery is always deeper than that Way's expertise",
+  masteryNodes.filter(m => {
+    const way = m.id.split(".")[0];
+    const shallowest = Math.min(...expertiseNodes.filter(e => e.id.startsWith(way))
+      .map(e => graph.levelFor(e.id)));
+    return graph.levelFor(m.id) <= shallowest;
+  }).map(m => m.id).join(", ") || "none", "none");
+
+/* Nothing new was added to the graph for any of it. */
+check("nodes in the graph", nodes.length, 202);
+check("and every expertise rides a node that was already there",
+  expertiseNodes.filter(n => Object.keys(n.grants).length < 2).map(n => n.id).join(", ") || "none",
+  "none");
+
+/* An approach that is not one of the six is a reward that can never apply, refused where a card
+ * nobody wrote is refused. "any" is refused too: a wild serves every approach, an expertise in one
+ * does not. */
+check("the graph refuses an expertise in nothing",
+  graph.graphFaults([...nodes, { id: "test.x", after: ["root"], grants: { expertise: "charm" } }])
+    .some(f => /which is not an approach/.test(f)), true);
+check("and refuses one in every approach at once",
+  graph.graphFaults([...nodes, { id: "test.x", after: ["root"], grants: { mastery: "any" } }])
+    .some(f => /which is not an approach/.test(f)), true);
+
+/*
+ * The expertise prompt: the upgrade skill-rules 8 describes, done in place so the card keeps its
+ * name and its edge -- the same card having got better rather than a different card arriving.
+ */
+check("expertise raises a card in place",
+  /export async function raiseSkillCard\(actor, approach\)/.test(graphSource) ? "yes" : "no", "yes");
+check("it is capped at three",
+  /"system\.value": Math\.min\(cap, \(card\.system\.value \?\? 0\) \+ 1\)/.test(graphSource)
+    ? "yes" : "no", "yes");
+check("a card already at the cap is not offered",
+  /\(card\.system\?\.value \?\? 0\) < cap/.test(graphSource) ? "yes" : "no", "yes");
+/* A wild is left out: an Inspiration is any approach at value 1, and the whole point of it is that
+ * it is never the wrong card and never a good one. */
+check("and a wild is left out of it",
+  /card\.type === "skill" && !card\.system\?\.wild/.test(graphSource) ? "yes" : "no", "yes");
+check("taking the node performs it",
+  /if \(grants\.expertise\) await raiseSkillCard\(actor, grants\.expertise\);/.test(graphSource)
+    ? "yes" : "no", "yes");
+check("the pane says what each one gives",
+  ["CARDRPG.Level.Expertise", "CARDRPG.Level.Mastery"].every(k => k in lang), true);
+/*
+ * **The derivation chain, asked end to end.** The passive arithmetic above is tested through a stub
+ * that hands `learned.masteries` over directly, so breaking the chain that FILLS it -- the graph
+ * summing a node's mastery, the character deriving the sum -- was invisible. Two break-test
+ * mutations said so; these are the checks that answer them.
+ */
+check("the graph sums a node's mastery",
+  graph.grantsOf(new Set(["mind.blood.silence"])).masteries.join(", "), "lore");
+check("and a node's expertise",
+  graph.grantsOf(new Set(["mind.letters"])).expertise.join(", "), "lore");
+check("a character derives the masteries from the nodes",
+  /masteries: \[\.\.\.fromNodes\.masteries\]\.sort\(\)/.test(actorModel) ? "yes" : "no", "yes");
+check("and the offers of expertise beside them",
+  /expertise: \[\.\.\.fromNodes\.expertise\]\.sort\(\)/.test(actorModel) ? "yes" : "no", "yes");
+/* And what a real route adds up to: a Thief who walked to Night Work holds one. */
+check("what a Shade who walked to Night Work has mastered",
+  graph.grantsOf(new Set([graph.ROOT, ...(graph.REACH.get("shade.thief.night") ?? []),
+    "shade.thief.night"])).masteries.join(", "), "shadow");
+check("and the editor offers both",
+  /\["expertise", "mastery"\]\.map\(key =>/.test(levelup) ? "yes" : "no", "yes");
+
+/*
+ * ---- how the randomness of a check behaves ----
+ *
+ * **skill-rules 2 prints the odds and they are exactly right**, which is worth checking precisely
+ * because it is the only place in the rules where a probability is stated as a number. Asked of
+ * `checkOutcome` against the real deck rather than recomputed, so the check cannot agree with a
+ * restatement of the rule instead of the rule.
+ */
+const bands = d => {
+  const counts = { critical: 0, success: 0, partial: 0, fail: 0 };
+  for (const card of fate) {
+    const special = card.system.special ?? "";
+    counts[resolve.checkOutcome(d + (special ? 0 : card.system.value ?? 0), special)]++;
+  }
+  const pct = k => Math.round(100 * counts[k] / fate.length);
+  /* The document counts a Critical as a success, which its own result table says it is. */
+  return `${pct("success") + pct("critical")}% success, ${pct("partial")}% partial, `
+    + `${pct("fail")}% fail`;
+};
+check("on the difficulty", bands(0), "70% success, 25% partial, 5% fail");
+check("one below", bands(-1), "30% success, 60% partial, 10% fail");
+check("two below", bands(-2), "10% success, 60% partial, 30% fail");
+check("and the document says the same",
+  /equals the difficulty, you succeed 70% of the time\. One below gives 30% success and 60%\s*\n?partial\. Two below gives 10% success and 60% partial\./
+    .test(skillDoc) ? "yes" : "no", "yes");
+
+/*
+ * **No check is ever certain, in either direction.** A Miss is a Fail whatever the total and a
+ * Critical is a success whatever the total, so every check carries a 5% floor and a 5% ceiling that
+ * no amount of card, tool, push or help will move. That is what makes a **passive score** -- the
+ * one number in the game drawn for with nothing -- the design's answer to a trivial obstacle, and
+ * it is why the GM's panel is worth having.
+ */
+check("a Miss is a Fail four over the difficulty", resolve.checkOutcome(4, "miss"), "fail");
+check("a Critical is a success four below", resolve.checkOutcome(-4, "crit"), "critical");
+check("so the floor on any check",
+  `${Math.round(100 * fate.filter(c => c.system.special === "miss").length / fate.length)}%`, "5%");
+check("and the ceiling", `${Math.round(100 * fate.filter(c => c.system.special === "crit").length
+  / fate.length)}%`, "5%");
+
+/*
+ * **And it is a deck, not a die.** The same twenty cards resolve combat damage and skill checks
+ * (hud-spec 4.3), without replacement until they run out -- so a fight spends the deck a later
+ * check draws from. The same check, exactly on its difficulty, is anywhere between half and
+ * certain depending on which eight cards a fight took.
+ */
+const succeedsFrom = left => {
+  let ok = 0;
+  for (const card of left) {
+    const special = card.system.special ?? "";
+    const out = resolve.checkOutcome(0 + (special ? 0 : card.system.value ?? 0), special);
+    if (out === "success" || out === "critical") ok++;
+  }
+  return Math.round(100 * ok / left.length);
+};
+const ranked = [...fate].sort((a, b) => {
+  const v = c => c.system.special === "miss" ? -99 : c.system.special === "crit" ? 99
+    : c.system.value ?? 0;
+  return v(a) - v(b);
+});
+check("a check on its difficulty, from a full deck", `${succeedsFrom(fate)}%`, "70%");
+check("with the worst eight already spent", `${succeedsFrom(ranked.slice(8))}%`, "100%");
+check("and with the best eight already spent", `${succeedsFrom(ranked.slice(0, -8))}%`, "50%");
+check("skill-rules records the span",
+  /anywhere between \*\*50% and 100%\*\*/.test(skillDoc) ? "yes" : "no", "yes");
+check("and that a passive is the answer to a trivial obstacle",
+  /the one number in the game that is\n> not drawn for/.test(skillDoc) ? "yes" : "no", "yes");
+
+check("skill-rules records expertise and mastery",
+  /^### Expertise and mastery {2}\*\*\[BUILT 2026-11-02\]\*\*$/m.test(skillDoc) ? "yes" : "no",
+  "yes");
+check("leveling lists them as rewards",
+  /\| \*\*Expertise\*\* \|/.test(levDoc) && /\| \*\*Mastery\*\* \|/.test(levDoc) ? "yes" : "no",
+  "yes");
 
 /* -------------------------------------------- */
 
