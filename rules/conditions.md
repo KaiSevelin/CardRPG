@@ -440,7 +440,7 @@ Every source in the content as it stands ([way-cards.md](way-cards.md),
 | **Dazed** | *Dirty Trick* (goblin) · *Mock* (Shade) · *Wrong Face* (Glamour) · *Grave Chill* (Necromancy) |
 | **Slowed** | *Set* (Trapmaker) · *Pin the Shadow* (Shade) · *Frost* (Elemental) |
 | **Stunned** | *Lightning* (Elemental) |
-| **Halted** | *The Silent Hour* (The Grey) · *The Grey Hour* (The Grey) |
+| **Halted** | *The Grey Hour* (The Grey) |
 | **Heckled** | *Heckle* (Bard) — and nothing else, by design |
 | **Invisible** | Smoke Bomb · *Not Here* (Glamour) · *Vanish*, *Smoke and Go* (Shade) |
 | **Burning** | *Scorch* (Elemental, **1**) · *Boil* (Blood, **3**) · *Flesh of the Earth* (Elemental acid, **1**) |

@@ -4232,7 +4232,13 @@ export const FAITH_SIGNATURES = [
     needs: [],
     description: "<p>Reaction, adjacent only: an enemy's action does not happen. Close enough to "
       + "touch, which is where the knife is.</p>",
-    effect: { range: 1, timing: "reaction", condition: "halted", duration: 1 }
+    /*
+     * **Dazed, not Halted**, and the difference is the ladder The Grey is built on: this is an
+     * ACTION denied at strength 2 and The Grey Hour is the WHOLE TURN at strength 4. Both were
+     * given Halted when the condition was built, which flattened a deliberate pair into two
+     * identical cards -- and the break test found it by matching one anchor twice.
+     */
+    effect: { range: 1, timing: "reaction", condition: "dazed", duration: 1 }
   },
   {
     name: "The First Taste", kind: "spell", node: "faith.purple", strength: 2,

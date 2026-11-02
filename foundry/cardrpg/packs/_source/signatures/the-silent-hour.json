@@ -10,7 +10,7 @@
     "effect": {
       "range": 1,
       "timing": "reaction",
-      "condition": "halted",
+      "condition": "dazed",
       "duration": 1
     },
     "kind": "miracle",

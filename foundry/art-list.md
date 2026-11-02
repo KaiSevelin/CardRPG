@@ -318,7 +318,7 @@ A god's first and defining miracle.
 |   | **The Outcast's Due** | strength 3 · Cast blast 1 Compelled (2) | `signatures/faith/the-outcasts-due.webp` |
 |   | **The Rumour** | strength 2 · one enemy type acts as though a named lie were true | `signatures/faith/the-rumour.webp` |
 |   | **The Scourge** | Strike +2 · / Move 2 · Strain 1, paid before the blow lands. The drums, the dance and the whip make the same argument: pay first, strike harder. | `signatures/faith/the-scourge.webp` |
-|   | **The Silent Hour** | strength 2 · range 1 Halted (1) | `signatures/faith/the-silent-hour.webp` |
+|   | **The Silent Hour** | strength 2 · range 1 Dazed (1) | `signatures/faith/the-silent-hour.webp` |
 |   | **The Tide Knows** | strength 2 · range 3 an ally draws fate twice on their next action and keeps both | `signatures/faith/the-tide-knows.webp` |
 |   | **The Writ** | range 6 Judged (2) · / Move 1 · No save, at range 6. Being named is not something you resist, and the whole field may act on it. | `signatures/faith/the-writ.webp` |
 
