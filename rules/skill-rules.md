@@ -544,6 +544,49 @@ Travel isn't a skill system of its own. It's a frame for **encounters**:
 
 ## 8. Growing and pruning the skill deck
 
+> **[FOUND IN CODE 2026-11-02] A skill check barely scales with levelling, because nothing in the
+> game can grow a skill deck.**
+>
+> This section writes the rule out in full and [leveling.md](leveling.md) §4 offers it as a reward
+> &mdash; *Skill card: add one, or upgrade one* &mdash; and **the grants accumulator has no key for it**. No
+> node can hand a skill card over and none does, so a character's skill deck at level 20 is the deck
+> they started with. The card value is the largest term in a check and it never moves; a passive
+> score is read off the same deck, so that never moves either.
+>
+> **What levelling can add to a check, measured:**
+>
+> | | worth | when |
+> |---|---|---|
+> | **A training** | **+1**, and only with the tool it names | five tools have a bonus the cap bites |
+> | **A know-how** | advantage, which the fate deck makes **+0.51** | in its situation only |
+> | **A feature** | whatever it prints | **no feature in the game carries a skill bonus** |
+> | A language, a rest token | nothing to a total | |
+>
+> At level 8 the cheapest route to a tier-2 title carries **1.3 trainings, 0.5 know-how, 0.6
+> languages and 0.2 rest tokens** &mdash; against **2.3 action cards, 2.3 spell slots, 1.9 carry and 0.7
+> Health** on the other side. The combat half compounds and the skill half adds about one point,
+> situationally, for the whole of a career.
+>
+> **And §2's ladder is calibrated to a starter deck.** A specialist's best card is 3, a trained tool
+> makes **5**, a push makes **7**, help makes **9** &mdash; which is Easy, Normal, Hard and Heroic exactly.
+> The span of the four difficulties is the span of one level-1 character's stacking options, and
+> levelling moves them along it by the +1 a training is worth. That is defensible on purpose (*push*
+> and *help* are the levers, not a rising number) but it should be a decision rather than a
+> consequence of §8 never being built.
+>
+> **[OPEN]** The mechanism this section needs is a `skillCard` grant: a node names a card from the
+> Way's list, or an upgrade, and the level-up pane hands it over the way it hands over a spell. The
+> **Mnemonic Stone** (*one extra skill card in your skill deck*) is waiting on the same thing and is
+> the only piece of content that is.
+>
+> **[FIXED 2026-11-02] Step 3 of a check could never contribute anything.** `resolveCheck` asked
+> `collectBonuses` for feature bonuses and passed it an **approach**, while that function matches
+> `bonus.verb`, whose schema choices are the six core verbs. The verbs and the approaches are
+> disjoint sets, so the test was unreachable rather than merely unmet: no document could ever hold
+> `verb: "wits"`. A check now reads `bonus.approach`, which is the field a tool's skill line has
+> always used, and it is worth nothing today only because no feature prints one &mdash; which is a
+> content gap and no longer an engine one.
+
 Skill decks change over a character's life: they **grow** and they can be **pruned** (cards removed or replaced).
 
 ### When you level up

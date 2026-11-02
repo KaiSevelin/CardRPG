@@ -6393,6 +6393,136 @@ check("hud-spec records it as collapsible",
   /#### 5\.3 What the party notices {2}\*\*\[BUILT 2026-11-02\]\*\*/.test(hudSpec) ? "yes" : "no",
   "yes");
 
+/* ---- the skill side against the levelling curve  [2026-11-02] ---- */
+
+/*
+ * **The question was whether a skill check scales with levelling, and the answer is that it very
+ * nearly does not.** Three findings, in order of what they cost.
+ *
+ * **1. Nothing in the game can grow a skill deck.** leveling 4's reward table offers *Skill card:
+ * add one, or upgrade one*, and skill-rules 8 writes out the whole rule -- *add a card from your
+ * Way's card list, or upgrade one, and prune 1*. The grants accumulator has **no key for it**, so
+ * no node can hand one over and none does. A character's skill deck at level 20 is the deck they
+ * started with, which means the card value -- the largest term in a check -- never moves, and
+ * neither does a passive score, since a passive is read off that deck.
+ */
+const grantKeys = Object.keys(graph.grantsOf(new Set([graph.ROOT])));
+check("keys the grants accumulator carries", grantKeys.length, 15);
+check("and whether any of them could grow a skill deck",
+  grantKeys.filter(k => /skill/i.test(k)).join(", ") || "none", "none");
+check("nodes that grant a skill card", nodes.filter(n => n.grants?.skillCard).length, 0);
+/* The documents promise it in two places, which is why this is a gap and not a decision. */
+check("leveling offers a skill card as a reward",
+  /\| \*\*Skill card\*\* \| Add one, or upgrade one/.test(levDoc) ? "yes" : "no", "yes");
+/* And flags it as the one reward on that list nothing can grant, which is the half a reader needs:
+ * the row on its own reads as a reward that works. */
+check("and flags it as the one nothing can grant",
+  /Skill card[\s\S]{0,80}\*\*\[OPEN\]\*\* The one reward on this list with no key/.test(levDoc)
+    ? "yes" : "no", "yes");
+check("and skill-rules writes the whole rule out",
+  /\*\*Add\*\* a skill card from your Way's card list/.test(skillDoc) ? "yes" : "no", "yes");
+/*
+ * §1.5's own sentence, not the phrase. Two lists in this document name the same rewards, so a grep
+ * for "a skill card, a training" was answered by §3 while §1.5 had lost it -- the fourth time in
+ * two days that a second printer has propped up a check about the first. Every one of the four was
+ * found by a break test and none by reading.
+ */
+check("and way-cards lists it among the minor-node rewards",
+  /already written: a skill card, a training/.test(wayDoc) ? "yes" : "no", "yes");
+
+/*
+ * **2. Step 3 of a check could never contribute anything**, and the reason is a vocabulary rather
+ * than a missing document: `collectBonuses` matches `bonus.verb`, whose schema choices are the six
+ * core verbs, and `resolveCheck` passed it an approach. The two sets are **disjoint**, so
+ * `bonus.verb === "wits"` is unreachable, not merely absent -- no document can hold it. Fixed by
+ * reading `bonus.approach`, which is the field a tool's skill line has always used.
+ */
+check("the verb and approach vocabularies do not overlap",
+  Object.keys(CARDRPG.verbs).filter(v => v in CARDRPG.approaches).join(", ") || "none", "none");
+check("so a check now reads the approach field",
+  /export function collectSkillBonuses\(actor, approach\)/.test(resolveSource) ? "yes" : "no",
+  "yes");
+check("and resolveCheck calls that one",
+  /const features = collectSkillBonuses\(actor, approach\);/.test(resolveSource) ? "yes" : "no",
+  "yes");
+/* Features only: the tool comes in through its own term, where the untrained cap lives, and
+ * counting equipped items here would pay a lockpick twice. */
+check("features only, so a tool is not paid twice",
+  /if \(slate\.type !== "feature"\) continue;/.test(resolveSource) ? "yes" : "no", "yes");
+/* It is still worth nothing today, and that is now a content gap rather than an engine one: no
+ * feature in the game carries a skill bonus, though the schema has held the field all along. */
+check("features carrying a skill bonus", content.FEATURES.filter(f => f.bonus?.approach).length, 0);
+check("and the schema has always had somewhere to put one",
+  /approach: new fields\.StringField/.test(itemSource) ? "yes" : "no", "yes");
+
+/*
+ * **3. What levelling actually adds to a check**, measured at level 8 on the cheapest route to a
+ * tier-2 title. A training is worth **+1**, and only with the tool it names; a know-how is worth
+ * advantage, which the fate deck makes **+0.51**; a language and a rest token are worth nothing to
+ * a total at all. Against that, the same eight levels buy the combat side two cards, two spell
+ * slots and two points of carry.
+ */
+const lv8 = nodes.filter(n => n.title && graph.tierOf(n.id) === 2 && graph.levelFor(n.id) === 8)
+  .map(n => graph.grantsOf(new Set([graph.ROOT, ...(graph.REACH.get(n.id) ?? []), n.id])));
+const mean8 = f => (lv8.reduce((a, g) => a + f(g), 0) / lv8.length).toFixed(1);
+check("what level 8 adds to the skill side",
+  `trainings ${mean8(g => g.trainings.length)} know-how ${mean8(g => g.knowHow.length)}`
+  + ` languages ${mean8(g => g.languages.length)} rest ${mean8(g => g.restTokens)}`,
+  "trainings 1.3 know-how 0.5 languages 0.6 rest 0.2");
+check("and to the action deck and the body",
+  `cards ${mean8(g => g.cards.length)} slots ${mean8(g => g.spellSlots)}`
+  + ` carry ${mean8(g => g.carry)} health ${mean8(g => g.health)}`,
+  "cards 2.3 slots 2.3 carry 1.9 health 0.7");
+
+/*
+ * What advantage is worth, since a know-how grants it and nothing had ever priced it. Draw two,
+ * keep the better; a MISS is no number at all, so it is the other card that counts.
+ */
+const FATE_FACES = fate.map(c => c.system?.special === "miss" ? null
+  : c.system?.special === "crit" ? 2 : c.system?.value ?? 0);
+const advWorth = (() => {
+  let one = 0, two = 0, n = 0;
+  for (const a of FATE_FACES) {
+    for (const b of FATE_FACES) {
+      one += a ?? 0;
+      two += (a === null) ? (b ?? 0) : (b === null) ? a : Math.max(a, b);
+      n++;
+    }
+  }
+  return (two / n - one / n).toFixed(2);
+})();
+check("what advantage is worth on a total", advWorth, "0.51");
+
+/*
+ * And the ladder it is all measured against, which is calibrated to a STARTER deck: a specialist's
+ * best card is 3, a trained tool makes 5, a push makes 7 and help makes 9 -- so Easy to Heroic is
+ * exactly the span of one character's stacking options at level 1, and levelling moves them along
+ * it by the +1 a training is worth.
+ */
+const ladder = Object.values(CARDRPG.difficulties);
+check("the four difficulties", ladder.join(", "), "3, 5, 7, 9");
+check("and the starter deck's best card plus every stack",
+  [3, 3 + 2, 3 + 2 + 2, 3 + 2 + 2 + 2].join(", "), "3, 5, 7, 9");
+
+/* The one piece of content that needs the missing mechanism, and the one the challenge build just
+ * made buildable. Both are prose today; naming them is what keeps them from being forgotten. */
+check("content that would grow a skill deck",
+  content.ITEMS.filter(i => /skill card/i.test(i.text ?? "")).map(i => i.name).join(", "),
+  "Mnemonic Stone");
+check("and content the challenge tracks made implementable",
+  content.ITEMS.filter(i => /in a challenge/i.test(i.text ?? "")).map(i => i.name).join(", "),
+  "Surveyor's Chain");
+
+check("skill-rules records the measurement",
+  /^> \*\*\[FOUND IN CODE 2026-11-02\] A skill check barely scales with levelling/m.test(skillDoc)
+    ? "yes" : "no", "yes");
+check("and names the three things levelling can add",
+  /\*\*\+1\*\*, and only with the tool it names/.test(skillDoc) ? "yes" : "no", "yes");
+/* And the two halves it compares, so the table cannot lose the thing that makes it an argument. */
+check("and sets the two halves of a career against each other",
+  /against \*\*2\.3 action cards, 2\.3 spell slots, 1\.9 carry and 0\.7\n> Health\*\*/
+    .test(skillDoc) ? "yes" : "no", "yes");
+
 /* -------------------------------------------- */
 
 /*

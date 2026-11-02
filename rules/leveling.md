@@ -320,7 +320,7 @@ one thing instead of another.
 | Reward | What it does | Note |
 |---|---|---|
 | **Action card** | Add a card to your action deck | The deck is the main currency of progression |
-| **Skill card** | Add one, or upgrade one ([skill-rules.md](skill-rules.md) §8) | |
+| **Skill card** | Add one, or upgrade one ([skill-rules.md](skill-rules.md) §8) | **[OPEN]** The one reward on this list with no key in the accumulator, so no node can grant it: measured in [skill-rules.md](skill-rules.md) §8, where it means a skill check barely scales with levelling |
 | **Training** | A tool type, at the full bonus instead of +1 | Skill rules §2 already says training comes from the Way trees |
 | **Know-how** | A situation you have **advantage** in | A background gives one; a Way gives more |
 | **A language** | One of Firma's nine, read and spoken | **[BUILT 2026-11-02]** Binary like a training: you read Reversed or you do not. Taught where its speakers are studied |

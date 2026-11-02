@@ -113,6 +113,46 @@ export function collectBonuses(actor, verb, item) {
   };
 }
 
+/**
+ * Feature bonuses to a skill check: step 3 of skill-rules 2.
+ *
+ * **The step existed and could never contribute anything.** `resolveCheck` called
+ * `collectBonuses(actor, approach, item)`, and that function matches on `bonus.verb` -- whose
+ * schema `choices` are the six core verbs. The six verbs and the six approaches are **disjoint
+ * vocabularies**, so `bonus.verb === "wits"` is not merely false today, it is unreachable: no
+ * document can ever hold it. Step 3 returned 0 for every check ever made, and the chat line that
+ * prints `features +N` could never print one.
+ *
+ * A tool's skill line lives in `bonus.approach` (data/items.mjs), which is the field this reads.
+ * **Features only**: the tool the check is using comes in through its own term, where the untrained
+ * cap lives, and counting equipped items here would pay a lockpick twice.
+ *
+ * Bonus groups still cap it, the same way they cap an attack's: one bonus per group, best first.
+ */
+export function collectSkillBonuses(actor, approach) {
+  if (!actor || !approach) return { total: 0, applied: [], blocked: [] };
+  const candidates = [];
+  for (const slate of actor.items) {
+    if (slate.type !== "feature") continue;
+    const bonus = slate.system.bonus;
+    if (!bonus?.value) continue;
+    if (bonus.approach !== approach && bonus.approach !== "any") continue;
+    if (slate.system.drained) continue;
+    candidates.push({ name: slate.name, value: bonus.value, group: slate.system.group || null });
+  }
+
+  const best = new Map();
+  const applied = [];
+  const blocked = [];
+  for (const candidate of candidates.sort((a, b) => b.value - a.value)) {
+    if (!candidate.group) { applied.push(candidate); continue; }
+    if (best.has(candidate.group)) { blocked.push(candidate); continue; }
+    best.set(candidate.group, candidate);
+    applied.push(candidate);
+  }
+  return { total: applied.reduce((n, b) => n + b.value, 0), applied, blocked };
+}
+
 /* -------------------------------------------- */
 /*  Advantage                                   */
 /* -------------------------------------------- */
@@ -1409,7 +1449,12 @@ export async function resolveCheck(actor, {
   /* Push: a second card of the same approach. A wild serves, which is what a wild is for. */
   const pushed = push?.system?.worth?.(approach) ?? 0;
 
-  const features = collectBonuses(actor, approach, item);
+  /*
+   * Step 3, which until now read `bonus.verb` against an approach and so could never answer. See
+   * `collectSkillBonuses`: the verb and approach vocabularies do not overlap, and the schema will
+   * not let them.
+   */
+  const features = collectSkillBonuses(actor, approach);
   const before = base + toolBonus + pushed + help + features.total;
 
   const draw = improvise ? -1 : mode;
