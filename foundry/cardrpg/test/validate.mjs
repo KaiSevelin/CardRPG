@@ -9501,6 +9501,227 @@ check("and that a grown weapon cannot be looted",
   /grown rather than carried, so they cannot be\ndisarmed, broken or looted/.test(coreRules)
     ? "yes" : "no", "yes");
 
+/*
+ * --- Is the roster REASONABLE? Three questions, and two of them are arithmetic
+ *
+ * A roster can agree with itself perfectly and still be a bad bestiary. These are the two ways that
+ * can be asked as a number: whether every creature plays differently, and whether the ones the
+ * roster calls major are worse to meet than the ones it calls minor.
+ */
+
+/*
+ * **1. Intent cards no creature in the game can draw.**
+ *
+ * config.mjs says it plainly about the other direction -- *a capability no card asks for would be a
+ * field nothing reads* -- and this is the mirror: a card asking for a capability nothing HAS is a
+ * card that can never be dealt. Three of the twenty-eight.
+ *
+ * `move` is the exception and is not a capability at all: it is derived from legs, wings or a tunnel
+ * (monsters.mjs `capsOf`), and the Queen is the one creature that cannot draw a card needing it.
+ */
+const creatureCaps = new Set();
+for (const m of everyCreature) for (const x of m.system.capabilities ?? []) creatureCaps.add(x);
+const undrawable = content.INTENTS
+  .filter(i => (i.needs ?? []).some(n => n !== "move" && !creatureCaps.has(n)))
+  .map(i => `${i.name} (${(i.needs ?? []).filter(n => n !== "move" && !creatureCaps.has(n))
+    .join(", ")})`);
+check("intent cards no creature can earn",
+  undrawable.length ? undrawable.sort().join(", ") : "none",
+  "Feed (drain), Lie Still (dormant), Submerge (swim)");
+/* And the sweep had intents to look at, so an empty pool cannot pass it. */
+check("intents the sweep read", content.INTENTS.length, 28);
+/* The three capabilities that strand them, from the other end: nothing in the roster has one. */
+check("capabilities the config offers that no creature has",
+  Object.keys(CARDRPG.capabilities).filter(k => !creatureCaps.has(k)).sort().join(", "),
+  "dormant, drain, swim");
+/* While every TACTIC has a user, which is the same question answered the other way. */
+check("tactics the config offers that no creature has",
+  Object.keys(CARDRPG.tactics).filter(k =>
+    !everyCreature.some(m => (m.system.tactics ?? []).includes(k))).join(", ") || "none", "none");
+
+/*
+ * **2. Every creature plays differently**, measured as its tactics and capabilities together --
+ * which is what decides the deck it draws from, so two creatures sharing a signature are one
+ * monster with two names.
+ */
+const tacSig = m => [...(m.system.tactics ?? [])].sort().join("+")
+  + " :: " + [...(m.system.capabilities ?? [])].sort().join("+");
+const baseRoster = content.ROSTER;
+check("base creatures in the roster", baseRoster.length, 22);
+check("and distinct ways of fighting among them", new Set(baseRoster.map(tacSig)).size, 22);
+/*
+ * **The variants are where the variety thins, and four of them are numbers only.**
+ *
+ * Every one of the 22 base creatures fights differently. Four of the 25 variants do not: they carry
+ * the same tactics and the same capabilities as their parent and differ only in Health, armour,
+ * damage or speed -- so a *Flat Bug Shieldline* is a Flat Bug with better numbers rather than a
+ * different problem at the table, and the deck it draws from is identical.
+ *
+ * Pinned rather than fixed, because the two honest answers are a design decision: give each a
+ * capability or tactic that changes how it plays, or accept that some variants are meant to be
+ * nothing but a harder version of the same fight. *Armored Slug Spitter* is the clearest case for
+ * the first -- it trades armour for range, which the roster already has a word for (`ranged`), and
+ * `ranged` is currently carried by exactly one creature in the game.
+ */
+const allSigs = everyCreature.map(tacSig);
+const collided = [...new Set(allSigs.filter((sg, i) => allSigs.indexOf(sg) !== i))]
+  .map(sg => everyCreature.filter(m => tacSig(m) === sg).map(m => m.name).sort().join(" = "));
+check("creatures that fight exactly like another",
+  collided.length ? collided.sort().join("; ") : "none",
+  "Armored Slug = Armored Slug Spitter; Flat Bug = Flat Bug Shieldline; "
+  + "Smash Beetle = Smash Beetle Breaker; Sweeper = Sweeper Diver");
+/*
+ * **And four of the deltas do nothing at all**, which is why two of those collisions are there.
+ *
+ * A variant edits its parent with `+` and `-`, and these four add a tactic the parent already
+ * carries: *Flat Bug Shieldline* adds `+shieldWall` to a creature that has `shieldWall`. In the
+ * source it reads like the line that makes the variant different; in play it is a no-op. That is
+ * this project's favourite defect seen from a third side -- not a field nothing reads, nor a field
+ * nothing writes, but a WRITE that changes nothing.
+ */
+const deadDeltas = [];
+for (const [parent, list] of Object.entries(content.VARIANTS)) {
+  const p = content.ROSTER.find(m => m.system.kind === parent)?.system;
+  if (!p) continue;
+  for (const v of list) {
+    for (const [edits, had] of [[v.tactics ?? [], p.tactics ?? []],
+      [v.caps ?? [], p.capabilities ?? []]]) {
+      for (const e of edits) {
+        const key = e.replace(/^[+-]/, "");
+        if (e.startsWith("+") && had.includes(key)) deadDeltas.push(`${v.name} +${key}`);
+        if (e.startsWith("-") && !had.includes(key)) deadDeltas.push(`${v.name} -${key}`);
+      }
+    }
+  }
+}
+check("variant edits that change nothing", deadDeltas.sort().join(", "),
+  "Flat Bug Shieldline +shieldWall, Mole Beast Tusker +brute, Sweeper Diver +ambusher, "
+  + "Terror Fly Torch +sniper");
+/* And the sweep saw the variants it claims to have swept. */
+check("variants the sweep read",
+  Object.values(content.VARIANTS).reduce((n, l) => n + l.length, 0), 25);
+
+/* And how many are genuinely their own problem, which is the number worth watching. */
+check("distinct ways of fighting across the whole roster", new Set(allSigs).size, 43);
+check("out of creatures in all", everyCreature.length, 47);
+/* `ranged` is the thinnest word in the vocabulary: one creature in forty-seven can shoot. */
+check("creatures that can shoot at all",
+  everyCreature.filter(m => (m.system.capabilities ?? []).includes("ranged"))
+    .map(m => m.name).join(", "), "Goblin Archer");
+/* And the four target priorities are all used, because who a monster goes for is most of how it
+ * feels: a Stinger that went for the nearest body would be a different creature. */
+check("target priorities in use",
+  [...new Set(everyCreature.map(m => m.system.targetPriority))].sort().join(", "),
+  "caster, leader, nearest, weakest");
+
+/*
+ * **3. The Horde's command ladder: are the majors worse to meet than the minors?**
+ *
+ * The roster states the ladder in PROSE, in the `note` on six creatures -- *main infantry*,
+ * *sergeants*, *lieutenants*, *captains*, *generals*, *unique* -- and nothing reads it. So this
+ * reads it, the way the suite reads way-cards 3.4 rather than keeping a second copy of it: a
+ * hand-kept list here would be the thing that was true the first time somebody promoted a monster.
+ */
+const RANKS = ["main infantry", "sergeants", "lieutenants", "captains", "generals", "unique"];
+const command = RANKS.map(rank => {
+  /* `includes`, not `startsWith`: the infantry's note opens "the Horde's main infantry". */
+  const m = baseRoster.find(x => (x.note ?? "").includes(rank));
+  return { rank, m };
+});
+check("the command ladder, read out of the roster's own notes",
+  command.map(r => `${r.rank}: ${r.m?.name ?? "NOBODY"}`).join(" | "),
+  "main infantry: Flat Bug | sergeants: Mantiss | lieutenants: Five Legs | "
+  + "captains: Terror Fly | generals: Pincer | unique: The Queen");
+
+const hits = m => Math.max(0, ...(m.equipped ?? [])
+  .map(n => [...content.NPC_GEAR, ...content.NATURAL_WEAPONS].find(g => g.name === n))
+  .filter(Boolean)
+  .flatMap(w => Object.values(w.verbs ?? {}).map(v => v?.value ?? 0)));
+const falls = (label, of) => {
+  const vals = command.map(r => of(r.m));
+  const bad = [];
+  for (let i = 1; i < vals.length; i++) {
+    if (vals[i] < vals[i - 1]) {
+      bad.push(`${RANKS[i - 1]} ${vals[i - 1]} -> ${RANKS[i]} ${vals[i]}`);
+    }
+  }
+  return bad.join("; ") || "rises";
+};
+check("and health rises with rank", falls("hp", m => m.system.health.base), "rises");
+check("and armour rises with rank", falls("ar", m => m.system.armorBase), "rises");
+/*
+ * **And damage does not**, which is the one thing in this roster that argues with itself.
+ *
+ * A lieutenant hits for less than a sergeant, and from the sergeant up the number does not move at
+ * all: Mantiss, Terror Fly, Pincer and the Queen all strike for 5. So a general is a sergeant with
+ * more Health, and the apex of the army hits exactly as hard as the first thing in it that can give
+ * an order. What grows up the ladder is how LONG a fight takes, not how frightening it is.
+ *
+ * It is pinned rather than fixed because the fix is a balance decision with a ladder of its own: the
+ * damage band is 1-7 across the whole roster while Health spans 2-60, so raising the top of one
+ * means deciding what the other 41 creatures are measured against -- and *every number is a ratio
+ * to the one that was measured* (core-rules), which is the goblin. Changing the ratio is the
+ * roster's arithmetic, not a typo.
+ */
+check("and the step where damage does not",
+  falls("dmg", hits), "sergeants 5 -> lieutenants 4");
+check("while the hardest hitter in the game is a minor creature",
+  [...baseRoster].sort((a, b) => hits(b) - hits(a))[0].name, "Smash Beetle");
+check("and it outhits the Queen",
+  hits(baseRoster.find(m => m.name === "Smash Beetle"))
+    > hits(baseRoster.find(m => m.name === "The Queen")) ? "yes" : "no", "yes");
+/* The whole band, so a roster that quietly flattened would show. */
+check("the damage band across the roster",
+  `${Math.min(...baseRoster.map(hits))}-${Math.max(...baseRoster.map(hits))}`, "1-7");
+check("and the health band beside it, which is the disproportion",
+  `${Math.min(...baseRoster.map(m => m.system.health.base))}`
+  + `-${Math.max(...baseRoster.map(m => m.system.health.base))}`, "2-60");
+
+/*
+ * **4. The folklore the world is built on, and how much of it the roster stats.**
+ *
+ * Whether a goblin reads as a goblin is a judgement and is not asserted here. What is asserted is
+ * narrower: Firma.md names a bestiary in its first paragraph and its underworld section, and the
+ * roster is the Horde and the mole folk. Of the beings the world document says were banished to
+ * remote places or hold the tunnels, **none** has a stat line.
+ *
+ * It is the same shape as *the roster does not invent the demons* below -- a recorded absence rather
+ * than an accusation -- and the reason it is worth recording is that the two folklore-rooted names
+ * the roster DOES carry are both doing other work: `Goblin` is the Horde's base infantry (*Flat
+ * Bug: a goblin with a shell*), and `Blind Worm` is a burrowing brute. A setting whose monsters are
+ * all one hive is a setting whose folklore is decoration.
+ */
+const worldBeings = ["trolls", "dragons", "nature spirits", "Troll King", "queen of the dark"];
+check("beings the world document names in its brief",
+  worldBeings.filter(b => worldDoc.includes(b)).join(", "), worldBeings.join(", "));
+const statted = worldBeings.filter(b => {
+  const word = b.replace(/s$/, "").toLowerCase();
+  return everyCreature.some(m => m.name.toLowerCase().includes(word));
+});
+check("and how many of them the roster stats", statted.length ? statted.join(", ") : "none", "none");
+/* What the roster is instead, by the two families it does have. */
+check("creature families in the roster",
+  [...new Set(everyCreature.map(m => /mole|burrower/i.test(m.name) ? "the dark" : "the Horde"))]
+    .sort().join(", "), "the Horde, the dark");
+/* And the two names in it with folklore roots at all, both of them working for the Horde. */
+check("roster names with roots in European folklore",
+  everyCreature.filter(m => /^(Goblin|Blind Worm)/.test(m.name)).map(m => m.name).sort().join(", "),
+  "Blind Worm, Blind Worm Elder, Goblin, Goblin Archer, Goblin Chief, Goblin Shaman, "
+  + "Goblin Warrior");
+/*
+ * The goblin line is the one that holds up to its own folklore, and it holds up mechanically rather
+ * than in prose: `cowardly`, `packTactics`, and a target priority of `weakest`. A creature that is
+ * frightened, never alone, and goes for whoever is least able to stop it IS the folk goblin, and
+ * all three of those are fields.
+ */
+const goblin = everyCreature.find(m => m.name === "Goblin");
+check("and the goblin is a folk goblin in its fields, not its blurb",
+  [...(goblin.system.tactics ?? [])].sort().join("+") + " / " + goblin.system.targetPriority,
+  "cowardly+packTactics / weakest");
+check("while cowardly is carried by the goblins alone",
+  everyCreature.filter(m => (m.system.tactics ?? []).includes("cowardly"))
+    .every(m => m.name.startsWith("Goblin")) ? "yes" : "no", "yes");
+
 check("the roster does not invent the demons",
   [...everyCreature, ...content.MONSTER_TAGS]
     .filter(c => ["Watchers", "Wanderers", "Tempters", "Djinn", "Gheul", "Naga", "Div", "Estries",
