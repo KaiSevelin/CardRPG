@@ -151,6 +151,40 @@ export class SpellSlateData extends SlateData {
       effect: stepField(),
 
       /*
+       * **What a PERMANENT formula does to you, in the shapes a feature already uses.**
+       *
+       * Seven cards named *a permanent formula that is never prepared and carries a bonus*, and
+       * the discovery was that a permanent formula wants exactly what a feature wants: the Graven
+       * line is +1 armour, +6 max Health, +2 Strike with Heavy items. A bonus, a grant and a
+       * standing number -- which is a feature's whole vocabulary, so these are a feature's fields
+       * rather than a mechanism of their own.
+       *
+       * They count only while the effect's `timing` is `permanent`. A formula sitting unread in a
+       * book must not be granting anything, which is the one way this could have gone wrong: a
+       * caster would have learned every bonus in their school and kept them all.
+       */
+      bonus: new fields.SchemaField({
+        verb: new fields.StringField({
+          required: false, blank: true, initial: "",
+          choices: [...Object.keys(CARDRPG.verbs), ""]
+        }),
+        value: new fields.NumberField({ integer: true, nullable: true, initial: null }),
+        range: new fields.NumberField({ integer: true, nullable: true, initial: null }),
+        requiresTag: new fields.StringField({
+          required: false, blank: true, initial: "",
+          choices: [...CARDRPG.itemTags, ""]
+        })
+      }),
+      grants: new fields.SchemaField({
+        health: new fields.NumberField({ required: true, integer: true, initial: 0 }),
+        handSize: new fields.NumberField({ required: true, integer: true, initial: 0 }),
+        carry: new fields.NumberField({ required: true, integer: true, initial: 0 }),
+        deckMax: new fields.NumberField({ required: true, integer: true, initial: 0 }),
+        spellSlots: new fields.NumberField({ required: true, integer: true, initial: 0 }),
+        armor: new fields.NumberField({ required: true, integer: true, initial: 0 })
+      }),
+
+      /*
        * What casting it costs, over and above the slot it occupies.
        *
        * **Six pieces of content were waiting on this one field** and the audit named it the largest
@@ -195,7 +229,22 @@ export class SpellSlateData extends SlateData {
 
   /** What this costs out of the budget right now. Nothing, while it is still in the book. */
   get slotCost() {
-    return this.prepared ? this.strength : 0;
+    return this.outsideBudget || !this.prepared ? 0 : this.strength;
+  }
+
+  /**
+   * **True for a spell that can never be prepared, and so never costs a slot.**
+   *
+   * Two kinds: a **ritual**, which is overnight work and not a thing you hold ready, and a
+   * **permanent**, which is carved into you and not a thing you hold at all. Seven cards named each
+   * as a gap and the answer was already on the step -- `timing` has said which since it was built,
+   * and a slate can read its own effect.
+   *
+   * It is a getter rather than a field for that reason: a second place to say "this is a ritual"
+   * is a second place for it to disagree with the first.
+   */
+  get outsideBudget() {
+    return ["ritual", "permanent"].includes(this.effect?.timing ?? "");
   }
 
   /**
@@ -582,7 +631,15 @@ export class FeatureSlateData extends SlateData {
         handSize: new fields.NumberField({ required: true, integer: true, initial: 0 }),
         carry: new fields.NumberField({ required: true, integer: true, initial: 0 }),
         deckMax: new fields.NumberField({ required: true, integer: true, initial: 0 }),
-        spellSlots: new fields.NumberField({ required: true, integer: true, initial: 0 })
+        spellSlots: new fields.NumberField({ required: true, integer: true, initial: 0 }),
+        /*
+         * **Flat armour, which had no home anywhere.** A worn item's `armor` is a number and this
+         * `armor` schema above is `doubleWhenOverloaded` and nothing else -- so a feature or a
+         * formula that simply makes you harder to hurt had nowhere to say so, and three of the
+         * Graven line said it in prose. It is a grant and not a bonus because it changes a
+         * standing number rather than one action (core-rules 4, 5).
+         */
+        armor: new fields.NumberField({ required: true, integer: true, initial: 0 })
       }),
 
       description: new fields.HTMLField()

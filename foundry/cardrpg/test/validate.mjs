@@ -3384,18 +3384,17 @@ check("Half-mage's slots are on the node", byId.get("shade.half-mage").grants.sp
 const built = sigs.filter(sg => !sg.needs?.length).map(sg => sg.name);
 check("Signatures the engine does everything for", built.join(", "),
   /*
-   * Seven of these arrived in one sweep and not one of them needed engine code: the work had been
-   * built over the previous four increments and the audit column had simply not been told. A gap is
-   * a promise that something is NOT built, and the one thing that makes it worthless is being kept
-   * after it is -- which is what the mapped check further down now refuses to allow.
+   * Grave Strength and Hearth and Home joined when a spell learned to sit outside the slot budget,
+   * which is the fourth and fifth gap closed by building the mechanism a card named. Seven arrived
+   * before them in a sweep that needed no engine code at all.
    */
   "The Opening, The Kit, Loose and Step, Set, Heckle, One Trick, Shoulder to Shoulder, "
   + "Nothing Gets Through, Interpose, Call the Unquiet, Wall of the Sphere, Wither, "
-  + "The Bargain, Unmake, The Reading, Breath of the Spirit, The Outcast's Due, "
-  + "Out of Barren Ground, The Silent Hour, The First Taste, The Rumour, The Writ, "
-  + "The Order's Shield, The Scourge");
+  + "Graven Strength, The Bargain, Hearth and Home, Unmake, The Reading, "
+  + "Breath of the Spirit, The Outcast's Due, Out of Barren Ground, The Silent Hour, "
+  + "The First Taste, The Rumour, The Writ, The Order's Shield, The Scourge");
 const gaps = sigs.filter(sg => sg.needs?.length).map(sg => `${sg.name}: ${sg.needs.join("; ")}`);
-check("Signatures with a named gap", gaps.length, 27);
+check("Signatures with a named gap", gaps.length, 25);
 /*
  * `needs` is a LIST, and that is the lesson of the Health cost. It was the largest gap in the game
  * at six pieces of content; building it finished exactly ONE, because every other one wanted a
@@ -4582,7 +4581,7 @@ check("and mean list weight in slots",
  * rather than a balance fault -- but it is the difference a player would feel first.
  */
 check("lists waiting on the engine from end to end",
-  listsBySource.filter(([, l]) => l.every(s => s.needs?.length)).length, 6);
+  listsBySource.filter(([, l]) => l.every(s => s.needs?.length)).length, 4);
 check("and which they are",
   listsBySource.filter(([, l]) => l.every(s => s.needs?.length)).map(([s]) => s).sort().join(", "),
   /* Fagar and The Grey are finished now: the two cards holding them back were describing
@@ -4592,7 +4591,9 @@ check("and which they are",
   /* Brendan went too, and it is the neatest of them: the comment above its three miracles has
    * always said "all three resolve on a turn that has not happened", which is `delay` named in
    * prose a month before the field existed. */
-  "Asceticism, Household Magic, Shadow Magic, Tattoo Magic, The First, Vax");
+  /* Household Magic and Tattoo Magic went with the ritual and permanent gaps: between them they
+   * were the two lists built entirely out of work that was already done. */
+  "Asceticism, Shadow Magic, The First, Vax");
 check("the list the engine runs best",
   listsBySource.map(([s, l]) => [s, l.filter(x => x.needs?.length).length / l.length])
     .sort((a, b) => a[1] - b[1])[0][0], "Spiritualism");
@@ -4723,8 +4724,8 @@ check("content carrying the audit column",
 const vague = audited.filter(c => (c.needs ?? []).some(g => g.length < 12)).map(c => c.name);
 check("gaps too short to act on", vague.length ? vague.join(", ") : "none", "none");
 const workingCards = audited.filter(c => !c.needs.length).length;
-check("content the engine does everything for", workingCards, 87);
-check("content with a named gap", audited.filter(c => c.needs.length).length, 115);
+check("content the engine does everything for", workingCards, 94);
+check("content with a named gap", audited.filter(c => c.needs.length).length, 108);
 
 /*
  * A gap shared by several cards is one piece of engine work, not several. Counting the DISTINCT
@@ -4739,7 +4740,7 @@ for (const card of audited) {
  * sleep* against an engine with no sleep that empties a fate deck. Naming it is what keeps the
  * overcharge from being a silent one.
  */
-check("distinct gaps across all content", gapCounts.size, 92);
+check("distinct gaps across all content", gapCounts.size, 95);
 /*
  * Two different questions, and the list is what lets them be asked apart.
  *
@@ -4799,7 +4800,12 @@ const GAP_CLOSERS = [
   ["an enemy that loses a half", c => stepsOfContent(c).some(s => s.condition === "dazed")],
   ["a reaction that stops an action", c => stepsOfContent(c).some(s => s.condition === "halted")],
   ["a second secondary for every ally in an area",
-    c => stepsOfContent(c).some(s => s.targets === "alliesInRange")]
+    c => stepsOfContent(c).some(s => s.targets === "alliesInRange")],
+  ["a ritual, which costs no slots at all",
+    c => stepsOfContent(c).some(s => s.timing === "ritual")],
+  ["a permanent formula that is never prepared and carries a bonus",
+    c => stepsOfContent(c).some(s => s.timing === "permanent")
+      && (!!c.bonus?.value || Object.values(c.grants ?? {}).some(v => v))]
 ];
 const rotted = [];
 for (const [gap, isBuilt] of GAP_CLOSERS) {
@@ -4824,7 +4830,7 @@ check("closers no content in the game can satisfy", mute.join(", ") || "none", "
 /* And how many each one finds, so a closer narrowing to one card is visible rather than silent. */
 check("content each closer recognises",
   GAP_CLOSERS.map(([gap, isBuilt]) => `${audited.filter(c => isBuilt(c)).length}`).join(" "),
-  "7 2 1 5 5 4 4 3 3 6 1 4");
+  "7 2 1 5 5 4 4 3 3 6 1 4 7 5");
 /*
  * And the map does not rot either: a gap nobody names and nobody has built is a line in this list
  * describing nothing. Two are allowed to be unnamed, because closing them is what emptied them --
@@ -4834,7 +4840,9 @@ check("content each closer recognises",
 const CLOSED_OUTRIGHT = ["placing a trap on a square", "a reaction that stops an action",
   "terrain a spell places on the map", "an effect held up by spending a secondary",
   "reading the top of a fate deck", "a cost that scales with the allies it covers",
-  "an effect that resolves on a later turn", "a second secondary for every ally in an area"];
+  "an effect that resolves on a later turn", "a second secondary for every ally in an area",
+  "a ritual, which costs no slots at all",
+  "a permanent formula that is never prepared and carries a bonus"];
 const idleClosers = GAP_CLOSERS
   .filter(([gap]) => !audited.some(c => (c.needs ?? []).includes(gap)))
   .map(([gap]) => gap);
@@ -4858,17 +4866,14 @@ const topOfQueue = [...queue].filter(([, n]) => n >= 4)
   .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
   .map(([gap, n]) => `${n} ${gap}`);
 check("the gaps four or more pieces of content wait on", topOfQueue.join(" | "),
-  "7 a permanent formula that is never prepared and carries a bonus | "
-  + "7 a ritual, which costs no slots at all | "
-  + "6 skill cards set aside to pay for a formula | "
+  "6 skill cards set aside to pay for a formula | "
   + "5 a condition applied to an area | "
   + "5 a spell that taints its caster | "
   + "5 a Wild that leaves the fate deck when you sleep | "
   + "4 an enemy that attacks its own side");
 
 check("the gap mentioned by the most content", `${worst.join("; ")} (${most})`,
-  "a permanent formula that is never prepared and carries a bonus; "
-  + "a ritual, which costs no slots at all (7)");
+  "skill cards set aside to pay for a formula (6)");
 
 const finishes = new Map();
 for (const card of audited) {
@@ -4885,7 +4890,7 @@ const bestFinish = Math.max(...finishes.values());
 check("the gap that would finish the most content",
   [...finishes.entries()].filter(([, n]) => n === bestFinish).map(([g]) => g).sort().join("; ")
   + ` (${bestFinish})`,
-  "a permanent formula that is never prepared and carries a bonus (5)");
+  "an enemy that attacks its own side; skill cards set aside to pay for a formula (4)");
 /* And how much of the queue is one card deep, which is what a long tail of singletons means. */
 /*
  * Fifty, down one: five Shadow formulas that each named a single gap now name two, so they leave
@@ -4893,7 +4898,7 @@ check("the gap that would finish the most content",
  * SHADOW_FORMULAS is not one of the audited exports, joins it with exactly one.
  */
 check("gaps that would finish exactly one piece of content",
-  [...finishes.values()].filter(n => n === 1).length, 55);
+  [...finishes.values()].filter(n => n === 1).length, 60);
 
 /*
  * And a check on the QUEUE rather than on the content, which the ranged-item work earned.
@@ -5986,7 +5991,7 @@ const proseLeft = everyStep.filter(s => s.st.text);
  * start and 33 now. A step with prose beside its fields is a step the engine resolves and the
  * table reads; a step with prose alone is one the engine drops on the floor.
  */
-check("steps still carrying prose", proseLeft.length, 115);
+check("steps still carrying prose", proseLeft.length, 112);
 /* And the schema document says the same numbers, read off the same sweep rather than typed into
  * prose a second time: a document that counts the content is a document that goes stale. */
 check("the schema document records what the sweep found",
@@ -7139,6 +7144,77 @@ const worn = (health, equipped = true) => ({
 });
 const npcHealth = slates => grants.sumGrants(slates, grants.NPC_GRANTS).health;
 
+/*
+ * **A spell outside the slot budget**, which is what the two gaps at the top of the queue turned
+ * out to share. `slotCost` was already `prepared ? strength : 0`, so a spell never prepared already
+ * cost nothing -- what was missing was anything saying a ritual or a permanent CANNOT be prepared.
+ *
+ * It is a getter over the step's own `timing` rather than a field, because a second place to say
+ * "this is a ritual" is a second place for it to disagree with the first.
+ */
+check("a spell knows when it is outside the budget",
+  /get outsideBudget\(\) \{\s*\n\s*return \["ritual", "permanent"\]\.includes\(this\.effect\?\.timing \?\? ""\);/
+    .test(itemSource) ? "yes" : "no", "yes");
+check("and costs no slot when it is",
+  /return this\.outsideBudget \|\| !this\.prepared \? 0 : this\.strength;/.test(itemSource)
+    ? "yes" : "no", "yes");
+const outsideBudget = [...graph.SPELLS.values()]
+  .filter(s => ["ritual", "permanent"].includes(s.effect?.timing ?? ""));
+/* Sixteen, not the fourteen the two gaps named: `Nothing At All` and `The Hand Given` have
+ * carried `timing: "permanent"` since the prefix conversion and neither ever named the gap, so two
+ * cards were quietly inside a category nobody had counted. */
+check("spells outside the budget", outsideBudget.length, 16);
+check("and the two kinds they are",
+  [...new Set(outsideBudget.map(s => s.effect.timing))].sort().join(", "), "permanent, ritual");
+/*
+ * **A permanent formula carries what a FEATURE carries**, which is the other half and the part
+ * worth the ink: the Graven line is +1 armour, +6 max Health, +2 Strike with Heavy items -- a
+ * bonus, a grant and a standing number, which is a feature's whole vocabulary. So the spell took a
+ * feature's two fields rather than a mechanism of its own.
+ */
+const permanents = outsideBudget.filter(s => s.effect.timing === "permanent");
+check("permanent formulas", permanents.length, 9);
+check("and the five that now carry a field rather than a sentence",
+  permanents.filter(s => s.bonus?.value || Object.values(s.grants ?? {}).some(v => v))
+    .map(s => s.name).sort().join(", "),
+  "Graven Armour, Graven Heart, Graven Shield, Graven Strength, The Whole Skin");
+/* The other two are flags nothing in the game has, and their gaps say so now rather than hiding
+ * inside a gap about bonuses. */
+check("and the four that still want a flag",
+  permanents.filter(s => !(s.bonus?.value || Object.values(s.grants ?? {}).some(v => v)))
+    .map(s => s.name).sort().join(", "),
+  "Graven Eye, Graven Road, Nothing At All, The Hand Given");
+/*
+ * **A formula that is not permanent grants nothing**, and this is the load-bearing half: without it
+ * a caster would hold every bonus in their school at once, having learned them all and prepared
+ * none. Both accumulators are asked, because they gate on type in different places.
+ */
+/* Asked rather than greped: a planted permanent grants, and a planted formula in a book does not.
+ * A grep says the line is there; an example says it works. */
+const permSpell = (armor, timing = "permanent") =>
+  ({ type: "spell", system: { grants: { armor }, effect: { timing } } });
+check("a permanent spell grants like a feature",
+  grants.sumGrants([permSpell(3)], grants.CHARACTER_GRANTS).armor, 3);
+check("and a formula still in the book grants nothing",
+  grants.sumGrants([permSpell(3, "")], grants.CHARACTER_GRANTS).armor, 0);
+check("nor does a ritual, which is work and not a trait",
+  grants.sumGrants([permSpell(3, "ritual")], grants.CHARACTER_GRANTS).armor, 0);
+check("and the bonus accumulator refuses one that is not",
+  /if \(slate\.type === "spell" && slate\.system\.effect\?\.timing !== "permanent"\) continue;/
+    .test(resolveSource) ? "yes" : "no", "yes");
+/* And flat armour, which had no home in the game at all until this. */
+check("flat armour is a grant a character reads",
+  grants.CHARACTER_GRANTS.includes("armor") ? "yes" : "no", "yes");
+check("and the derived armour adds it",
+  /this\.armor = grants\.armor \+ slates/.test(actorsSource) ? "yes" : "no", "yes");
+check("while an NPC has no such grant, having armorBase instead",
+  grants.NPC_GRANTS.includes("armor") ? "yes" : "no", "no");
+/* The three spells that grant it, which is the whole reason the field exists. */
+check("spells that grant flat armour",
+  permanents.filter(s => s.grants?.armor).map(s => `${s.name} ${s.grants.armor}`).sort().join(", "),
+  "Graven Armour 3, Graven Shield 1, The Whole Skin 2");
+
+
 check("a monster with nothing", npcHealth([]), 0);
 check("and one with a feature that grants Health", npcHealth([feature(4)]), 4);
 /* A feature is simply true; an item has to be EQUIPPED, so a looted amulet stops working when it
@@ -7172,7 +7248,7 @@ check("the grant loop is written once",
  * does not exist. It is refused here rather than summed into nothing.
  */
 check("grant keys a character reads", grants.CHARACTER_GRANTS.join(", "),
-  "health, handSize, carry, deckMax, spellSlots");
+  "health, handSize, carry, deckMax, spellSlots, armor");
 check("and the ones a monster has a field for", grants.NPC_GRANTS.join(", "), "health");
 check("the model has no field for the other four",
   grants.CHARACTER_GRANTS.filter(k => k !== "health")
@@ -8528,6 +8604,37 @@ check("and paying is what gates the effect",
  * dropping them, and the spell was simply free.
  */
 const spellBlock = itemSource.slice(itemSource.indexOf("export class SpellSlateData"));
+
+/**
+ * The field names of one sub-schema of a spell, read out of the source.
+ *
+ * Generalised after the third time this hole opened in the same file: a `SchemaField` hides its
+ * contents from a sweep that reads the level above, so the verb line, then `cost`, then `grants`
+ * and `bonus` each had content written into keys the model did not have and dropped in silence.
+ * The next one added to a spell is covered the day it arrives.
+ */
+const subSchemaOf = name => {
+  const at = spellBlock.indexOf(`${name}: new fields.SchemaField({`);
+  if (at < 0) return new Set();
+  /* The close is at the sub-schema's own indentation. Looking for `}),` anywhere ends the slice on
+   * the first `NumberField({ ... }),` line, which is how this first read one field of four. */
+  return new Set([...spellBlock.slice(at, spellBlock.indexOf("\n      }),", at))
+    .matchAll(/^        ([a-zA-Z]+): /gm)].map(m => m[1]));
+};
+for (const [name, want] of [
+  ["grants", "armor, carry, deckMax, handSize, health, spellSlots"],
+  ["bonus", "range, requiresTag, value, verb"]
+]) {
+  const fields = subSchemaOf(name);
+  check(`${name} fields read from the spell schema`, [...fields].sort().join(", "), want);
+  const stray = new Set();
+  for (const spell of graph.SPELLS.values()) {
+    for (const key of Object.keys(spell[name] ?? {})) if (!fields.has(key)) stray.add(key);
+  }
+  check(`${name} keys not in the spell schema`,
+    stray.size ? [...stray].join(", ") : "none", "none");
+}
+
 const costStart = spellBlock.indexOf("cost: new fields.SchemaField({");
 const costFields = new Set([...spellBlock
   /* The close is `}),` at the SchemaField's own indentation. Looking for `}),` anywhere ends the
@@ -8970,7 +9077,7 @@ for (const m of selfSource.matchAll(/(\w+)\.includes\("((?:[^"\\]|\\.)*)"\)/g)) 
 }
 
 /* The pin that keeps the rest of this honest. */
-check("greps over a whole file, resolved", greps.length, 496);
+check("greps over a whole file, resolved", greps.length, 500);
 
 /*
  * **The rule, as one predicate, run over a planted example before it is run over the suite.**

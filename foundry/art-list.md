@@ -287,7 +287,7 @@ Eleven, not twelve: *Step Through* is in the Shadow formulas below.
 |---|---|---|---|
 |   | **Blood Price** | strength 2 · Cast +4 range 3 | `signatures/mind/blood-price.webp` |
 |   | **Call the Unquiet** | strength 3 · Conjure range 2 a corpse rises and fights for you | `signatures/mind/call-the-unquiet.webp` |
-|   | **Graven Strength** | strength 1 · +2 Strike with Heavy items | `signatures/mind/graven-strength.webp` |
+|   | **Graven Strength** | strength 1 | `signatures/mind/graven-strength.webp` |
 |   | **Hearth and Home** | strength 1 · a camp nobody unfriendly can find, for one night | `signatures/mind/hearth-and-home.webp` |
 |   | **Not Here** | strength 2 · Invisible (1) until you attack or are attacked | `signatures/mind/not-here.webp` |
 |   | **Nothing Left to Take** | strength 1 · you cannot be reduced below 1 Health | `signatures/mind/nothing-left-to-take.webp` |
@@ -361,11 +361,11 @@ Blood Magic and Spiritualism, handed over by minor nodes.
 |   | **Empty Hand** | strength 1 · you may Strike with no item, at your own Might | `spells/mind/empty-hand.webp` |
 |   | **Flesh of the Earth** | strength 2 · Cast range 3 Burning 1 (2) and Corrode 1: it eats the armour as well as the man | `spells/mind/flesh-of-the-earth.webp` |
 |   | **Grave Chill** | strength 2 · Cast aimed 2 Dazed (1) | `spells/mind/grave-chill.webp` |
-|   | **Graven Armour** | strength 4 · +3 armor, and you count as Burdened always, whatever you carry | `spells/mind/graven-armour.webp` |
+|   | **Graven Armour** | strength 4 · you count as Burdened always, whatever you carry | `spells/mind/graven-armour.webp` |
 |   | **Graven Eye** | strength 1 · you are never surprised | `spells/mind/graven-eye.webp` |
-|   | **Graven Heart** | strength 3 · +6 max Health | `spells/mind/graven-heart.webp` |
+|   | **Graven Heart** | strength 3 | `spells/mind/graven-heart.webp` |
 |   | **Graven Road** | strength 1 · your Move is never halved | `spells/mind/graven-road.webp` |
-|   | **Graven Shield** | strength 2 · +1 armor | `spells/mind/graven-shield.webp` |
+|   | **Graven Shield** | strength 2 | `spells/mind/graven-shield.webp` |
 |   | **Hold to the Bargain** | strength 2 · an ally's failed check becomes a Partial | `spells/mind/hold-to-the-bargain.webp` |
 |   | **Ink Spray** | strength 1 · Blast area 2 end Invisible in the area, and nothing in it may become Invisible until your next turn | `spells/mind/ink-spray.webp` |
 |   | **Longer Shadow** | strength 1 | `spells/mind/longer-shadow.webp` |
@@ -417,7 +417,7 @@ Blood Magic and Spiritualism, handed over by minor nodes.
 |   | **The Standing Ward** | strength 4 · Spent: until your next turn no Cast resolves at all, anywhere -- yours too | `spells/mind/the-standing-ward.webp` |
 |   | **The Unbound Tongue** | strength 1 · Shake 1 range 3 Silenced | `spells/mind/the-unbound-tongue.webp` |
 |   | **The Unlatched Door** | strength 2 · a door ever opened by one who lived there opens for you | `spells/mind/the-unlatched-door.webp` |
-|   | **The Whole Skin** | strength 5 · +2 Strike, +2 armor, +4 Health, and Burning never lands. You may never prepare another spell | `spells/mind/the-whole-skin.webp` |
+|   | **The Whole Skin** | strength 5 · Burning never lands. You may never prepare another spell | `spells/mind/the-whole-skin.webp` |
 |   | **The Whole Thread** | strength 5 · the GM shows the enemy's intent cards for the whole fight, in order | `spells/mind/the-whole-thread.webp` |
 |   | **Turn Aside** | strength 2 · range 3 one ally's Block counts double against this attack | `spells/mind/turn-aside.webp` |
 |   | **Unmake the Ground** | strength 5 · all fight | `spells/mind/unmake-the-ground.webp` |

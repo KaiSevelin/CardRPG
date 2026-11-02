@@ -20,6 +20,16 @@
 export function slateCounts(slate) {
   if (!slate) return false;
   if (slate.type === "feature") return true;
+  /*
+   * **A permanent formula counts the way a feature counts**: simply true. It is carved into you --
+   * there is nothing to equip and nothing to prepare, which is the whole of what `permanent` means
+   * -- so the question a feature never has to answer is one a permanent spell never has to either.
+   *
+   * A formula that is NOT permanent grants nothing, and that is the load-bearing half: without it
+   * a caster would hold every bonus in their school at once, having learned them all and prepared
+   * none.
+   */
+  if (slate.type === "spell") return slate.system?.effect?.timing === "permanent";
   return slate.type === "item" && !!slate.system?.equipped;
 }
 
@@ -43,7 +53,11 @@ export function sumGrants(slates, keys) {
 }
 
 /** The keys a character's sheet can raise. */
-export const CHARACTER_GRANTS = ["health", "handSize", "carry", "deckMax", "spellSlots"];
+export const CHARACTER_GRANTS = ["health", "handSize", "carry", "deckMax", "spellSlots",
+  /* Flat armour, which had no home in the game until the Graven line needed one: a worn
+   * item's `armor` is a number and a feature's is `doubleWhenOverloaded`, so a thing that
+   * simply makes you harder to hurt had nowhere to say so. */
+  "armor"];
 
 /** And the one an NPC has somewhere to put. */
 export const NPC_GRANTS = ["health"];

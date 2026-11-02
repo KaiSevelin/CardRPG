@@ -273,7 +273,7 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
      * said, which made five of the ten slots unusable for armour and is why nothing had ever been
      * written for cloak, head, neck, fingers or feet (rules/equipment.md 5).
      */
-    this.armor = slates
+    this.armor = grants.armor + slates
       .filter(i => i.type === "item" && CARDRPG.slots[i.system.equippedSlot]?.worn)
       .reduce((n, i) => n + (i.system.armorNow ?? i.system.armor ?? 0), 0);
 

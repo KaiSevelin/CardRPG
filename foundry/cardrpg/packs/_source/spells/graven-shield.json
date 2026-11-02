@@ -8,10 +8,12 @@
     "source": "Tattoo Magic",
     "description": "<p>A shield you cannot put down, drawn across your back by somebody who knew what they were doing.</p>",
     "effect": {
-      "timing": "permanent",
-      "text": "+1 armor"
+      "timing": "permanent"
     },
     "kind": "formula",
-    "prepared": false
+    "prepared": false,
+    "grants": {
+      "armor": 1
+    }
   }
 }

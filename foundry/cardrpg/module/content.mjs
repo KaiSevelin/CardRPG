@@ -3475,21 +3475,22 @@ export const MIND_POOL = [
    */
   {
     name: "Graven Eye", strength: 1, pool: "mind", source: "Tattoo Magic",
-    needs: ["a permanent formula that is never prepared and carries a bonus"],
+    needs: ["a trait that stops you being surprised"],
     description: "<p>An eye on the back of your neck that is not decorative. You are never "
       + "surprised again, and you never sleep quite as well.</p>",
     effect: { timing: "permanent", text: "you are never surprised" }
   },
   {
     name: "Graven Shield", strength: 2, pool: "mind", source: "Tattoo Magic",
-    needs: ["a permanent formula that is never prepared and carries a bonus"],
+    needs: [],
     description: "<p>A shield you cannot put down, drawn across your back by somebody who knew "
       + "what they were doing.</p>",
-    effect: { timing: "permanent", text: "+1 armor" }
+    grants: { armor: 1 },
+    effect: { timing: "permanent" }
   },
   {
     name: "Graven Road", strength: 1, pool: "mind", source: "Tattoo Magic",
-    needs: ["a permanent formula that is never prepared and carries a bonus"],
+    needs: ["a trait that ignores a halved Move"],
     description: "<p>A road down the inside of both legs. Slowed, Burdened and Overloaded all "
       + "still land on you; none of them slows you down.</p>",
     effect: { timing: "permanent", text: "your Move is never halved" }
@@ -3501,18 +3502,25 @@ export const MIND_POOL = [
      * so a Burdened that an empty pack does not lift is a second mechanism wearing its name.
      */
     name: "Graven Armour", strength: 4, pool: "mind", source: "Tattoo Magic",
-    needs: ["a permanent formula that is never prepared and carries a bonus",
-      "Burdened that no amount of dropping weight lifts"],
+    needs: ["Burdened that no amount of dropping weight lifts",
+      "an encumbrance tier set by something other than weight"],
     description: "<p>Plate, in ink, over everything. It weighs nothing and you are never again "
       + "anything but weighed down.</p>",
-    effect: { timing: "permanent", text: "+3 armor, and you count as Burdened always, whatever you carry" }
+    grants: { armor: 3 },
+    effect: {
+      timing: "permanent",
+      /* The price stays prose: counting as Burdened whatever you carry is the encumbrance tier
+       * set by something other than weight, and nothing in the game can say that yet. */
+      text: "you count as Burdened always, whatever you carry"
+    }
   },
   {
     name: "Graven Heart", strength: 3, pool: "mind", source: "Tattoo Magic",
-    needs: ["a permanent formula that is never prepared and carries a bonus"],
+    needs: [],
     description: "<p>A second heart, drawn over the first. The GM writes down a secret worth six "
       + "Health, and you will find out which one when it matters.</p>",
-    effect: { timing: "permanent", text: "+6 max Health" }
+    grants: { health: 6 },
+    effect: { timing: "permanent" }
   },
   {
     /*
@@ -3521,14 +3529,19 @@ export const MIND_POOL = [
      * for every slot you will ever have.
      */
     name: "The Whole Skin", strength: 5, pool: "mind", source: "Tattoo Magic",
-    needs: ["a permanent formula that is never prepared and carries a bonus",
-      "immunity to a named condition, which nothing grants",
-      "a ban on preparing any further spell"],
+    needs: ["immunity to a named condition, which nothing grants",
+      "a ban on preparing any further spell",
+      "a condition that can never land on you",
+      "a spell budget closed for the rest of the character"],
     description: "<p>There is no skin left to write on. It is the last thing you ever learn, and "
       + "afterwards you are something else wearing a mage's name.</p>",
+    bonus: { verb: "strike", value: 2 },
+    grants: { armor: 2, health: 4 },
     effect: {
-      timing: "permanent", text: "+2 Strike, +2 armor, +4 Health, and Burning never lands. You may never "
-        + "prepare another spell"
+      timing: "permanent",
+      /* Two things no field holds: a condition that never lands on you, and a slot budget closed
+       * for good. Both are the price of a strength-5 permanent and both are still prose. */
+      text: "Burning never lands. You may never prepare another spell"
     }
   },
 
@@ -3732,7 +3745,7 @@ export const MIND_POOL = [
    */
   {
     name: "The Clean Pot", strength: 1, pool: "mind", source: "Household Magic",
-    needs: ["a ritual, which costs no slots at all"],
+    needs: [],
     description: "<p>Food never spoils and water is always safe. A day's rations for the party, "
       + "every day, for ever &mdash; which quietly deletes a whole column of the equipment "
       + "list.</p>",
@@ -3745,31 +3758,28 @@ export const MIND_POOL = [
      * to compute rather than narrate.
      */
     name: "The Mended Seam", strength: 1, pool: "mind", source: "Household Magic",
-    needs: ["a ritual, which costs no slots at all",
-      "repairing an item, which Corrode has no inverse for"],
+    needs: ["repairing an item, which Corrode has no inverse for"],
     description: "<p>One item, overnight, including corroded armour &mdash; which until now was "
       + "the only damage in the game nothing undid.</p>",
     effect: { timing: "ritual", text: "repair one item overnight, including corroded armour" }
   },
   {
     name: "The Unlatched Door", strength: 2, pool: "mind", source: "Household Magic",
-    needs: ["a ritual, which costs no slots at all"],
+    needs: [],
     description: "<p>Any door or lock that was ever opened by somebody who lived there opens for "
       + "you. Most doors were, which is the joke and also the spell.</p>",
     effect: { timing: "ritual", text: "a door ever opened by one who lived there opens for you" }
   },
   {
     name: "The House That Was", strength: 4, pool: "mind", source: "Household Magic",
-    needs: ["a ritual, which costs no slots at all",
-      "a rest that counts as a night in a town"],
+    needs: ["a rest that counts as a night in a town"],
     description: "<p>Overnight a ruin is a house again: warm, defensible, and worth sleeping in. "
       + "The party rests as though they had reached somewhere.</p>",
     effect: { timing: "ritual", text: "overnight a ruin becomes a house, and the party rests as in a town" }
   },
   {
     name: "The Long Table", strength: 3, pool: "mind", source: "Household Magic",
-    needs: ["a ritual, which costs no slots at all",
-      "every Wound shed and every rest token returned"],
+    needs: ["every Wound shed and every rest token returned"],
     description: "<p>One meal, taken together, and nobody is carrying anything from before it. "
       + "Once a day, and the elf-kin keep the tally &mdash; which is this school's price doing "
       + "exactly what a price should.</p>",
@@ -3780,7 +3790,7 @@ export const MIND_POOL = [
   },
   {
     name: "The Door Home", strength: 5, pool: "mind", source: "Household Magic",
-    needs: ["a ritual, which costs no slots at all"],
+    needs: [],
     description: "<p>A door you have opened before becomes a door to any other door you have "
       + "opened before. It is the school's thesis: a householder is never far from anywhere "
       + "they have been.</p>",
@@ -4022,9 +4032,10 @@ export const MIND_SIGNATURES = [
      */
     name: "Graven Strength", kind: "spell", node: "mind.tattoo", strength: 1,
     source: "Tattoo Magic",
-    needs: ["a permanent formula that is never prepared and carries a bonus"],
+    needs: [],
     description: "<p>It is on your arm. It does not need remembering, and it never comes off.</p>",
-    effect: { timing: "permanent", text: "+2 Strike with Heavy items" }
+    bonus: { verb: "strike", value: 2, requiresTag: "heavy" },
+    effect: { timing: "permanent" }
   },
   {
     name: "Nothing Left to Take", kind: "spell", node: "mind.asceticism", strength: 1,
@@ -4058,7 +4069,7 @@ export const MIND_SIGNATURES = [
      */
     name: "Hearth and Home", kind: "spell", node: "mind.household", strength: 1,
     source: "Household Magic",
-    needs: ["a ritual, which costs no slots at all"],
+    needs: [],
     description: "<p>Out of combat: a camp nobody unfriendly can find, for one night. A ritual, so "
       + "anyone literate could do it &mdash; but somebody has to know the words.</p>",
     effect: { timing: "ritual", text: "a camp nobody unfriendly can find, for one night" }

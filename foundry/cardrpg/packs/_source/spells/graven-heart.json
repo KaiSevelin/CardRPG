@@ -8,10 +8,12 @@
     "source": "Tattoo Magic",
     "description": "<p>A second heart, drawn over the first. The GM writes down a secret worth six Health, and you will find out which one when it matters.</p>",
     "effect": {
-      "timing": "permanent",
-      "text": "+6 max Health"
+      "timing": "permanent"
     },
     "kind": "formula",
-    "prepared": false
+    "prepared": false,
+    "grants": {
+      "health": 6
+    }
   }
 }

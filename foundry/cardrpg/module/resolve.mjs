@@ -87,6 +87,9 @@ export function collectBonuses(actor, verb, item) {
     // which six new worn slots would have made a great deal worse.
     if (slate.type === "item"
       && (!slate.system.equipped || CARDRPG.slots[slate.system.equippedSlot]?.stows)) continue;
+    /* And a formula gives its bonus only while it is permanent, for the reason a feature needs no
+     * such test: a permanent is carved in, and a formula in a book is a thing you have read. */
+    if (slate.type === "spell" && slate.system.effect?.timing !== "permanent") continue;
     // A Drained slate gives nothing until it recharges.
     if (slate.system.drained) continue;
     // A tag requirement is about the item in hand, not the feature -- the same question a card
