@@ -10,9 +10,7 @@
     "effect": {
       "verb": "conjure",
       "conjure": {
-        "from": "corpse",
-        "count": 1,
-        "side": "ally",
+        "creature": "",
         "upkeep": {
           "taint": 1
         }

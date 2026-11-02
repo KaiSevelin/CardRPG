@@ -670,30 +670,6 @@ CARDRPG.tactics = {
  * for the table: a Signature that reads *ritual: overnight a ruin becomes a house* is a ritual, and
  * one that reads *permanent: +3 armor* is not a step at all.
  */
-/**
- * **What a conjuration may call up.** Three sources, and the difference between them is where the
- * thing being conjured comes FROM rather than what it is.
- *
- * `corpse` needs a dead body on the field, which is why Necromancy's lesser work is cheap and its
- * greater work is not: the spell does not make a soldier, it reuses one. `god` needs a pact, and
- * the minor gods *demonstrably exist* (Firma.md) -- they are beings forced underground by Athor's
- * conquest, not articles of faith, which is why Spiritualism is a school and not a church.
- * `creature` is anything in the roster, for the summoner who brings their own.
- */
-CARDRPG.conjureSources = {
-  corpse: "CARDRPG.Conjure.Corpse",
-  god: "CARDRPG.Conjure.God",
-  creature: "CARDRPG.Conjure.Creature"
-};
-
-/** Whose side the conjured thing fights on. A summoner who cannot be betrayed is a summoner with
- *  nothing at stake, so `enemy` is a real option and not a joke. */
-CARDRPG.conjureSides = {
-  ally: "CARDRPG.Conjure.Ally",
-  enemy: "CARDRPG.Conjure.Enemy",
-  neutral: "CARDRPG.Conjure.Neutral"
-};
-
 CARDRPG.timings = {
   reaction: "CARDRPG.Timing.Reaction",
   ritual: "CARDRPG.Timing.Ritual",

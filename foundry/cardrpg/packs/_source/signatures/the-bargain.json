@@ -10,9 +10,7 @@
     "effect": {
       "verb": "conjure",
       "conjure": {
-        "from": "god",
-        "count": 1,
-        "side": "neutral"
+        "creature": ""
       },
       "text": "it acts once; the GM decides how"
     },

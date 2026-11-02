@@ -75,7 +75,7 @@ the designer had already named in the words of the prose itself:
 | `ritual:` / `out of combat:` | 11 | timing |
 | gives an ally an action | 20 | one parameterised effect |
 | puts something on the map | 8 | one parameterised effect |
-| conjures something | 6 | one parameterised effect |
+| conjures something | 6 | one effect, two fields and a prompt |
 
 So the structure is **fields, not a free-text special slot**. A free-text special would have made
 every card that used it permanently unresolvable, which is the one thing this schema exists to
@@ -87,36 +87,75 @@ prevent.
 |---|---|
 | `timing` | **When** the step may be played: `reaction`, `ritual`, `outOfCombat`, `beforeFight`, `permanent`. 31 steps carried this as a prefix on their prose |
 | `delay` | Turns to wait before it happens. `2` is *at the start of your second turn after this*, which three steps said in prose `-` and a delayed effect the engine cannot see is one the table forgets, because the card is in the discard by the time it matters |
-| `conjure` | What a conjuration calls up: `from` (`corpse` / `god` / `creature`), `name`, `count`, `side`, `upkeep` |
-| `shape` | `creature`: the roster creature whose form you take |
+| `conjure` | `creature`, the roster creature a conjuration fixes (blank = the GM decides), and `upkeep`, what it costs per round it stands |
+| `shape` | `transformation`: the transformation by name (content.mjs) |
 
-**Conjuration is configured, not described.** Six spells conjured in prose, and the content had
-already noticed they were one thing `-` *a god standing on the board and a corpse standing on the
-board are one piece of work*, says the comment above The Great Bargain. What separated the lesser
-necromancy from the greater was entirely **how many, from what, whose side and at what price**:
-four numbers, in a sentence. `count: 0` means every eligible thing in range, because *one* and
-*all* are the two numbers the cards use. `name: ""` is not a gap: two cards say *the GM decides*,
-because a minor god is a person with its own opinions and a spell that commanded one would have
-misunderstood the arrangement. `upkeep` is announced rather than charged, because a conjuration's
-price is paid *per round it stands* and nothing knows yet when it falls.
+**Conjuration is deliberately small, and smaller than the first attempt.** Six spells conjure, and
+the content had already noticed they were one thing `-` *a god standing on the board and a corpse
+standing on the board are one piece of work*, says the comment above The Great Bargain.
 
-**A shape names a creature and the creature supplies the numbers.** There is no table of forms, and
-that is the design rather than a shortcut: a table of forms would be a second description of 47
-creatures that already exist, and two descriptions of a thing drift `-` which this project has
-watched happen with the goblin's deck and with *The Kit*. A form arrives as the creature's own
-**natural weapons, equipped**, because a body is what you fight with and `Claws` is already an item
-with a Strike on it. Nothing new resolves a shaped Strike; the ordinary item path picks up whatever
-serves the verb.
+A first pass gave it five fields: `from` (corpse / god / creature), `name`, `count`, `side` and
+`upkeep`. Three of those were the software holding opinions a table holds better `-` whether a body
+is available to rise, how many of them are lying there, and whose side the thing fights on. **A
+spell that has already said *a corpse within 2* does not also need the engine's view on whether
+there is one.** So:
 
-> **What a form does not touch, deliberately.** Your **deck**, because the deck is the character in
-> this game `-` a shape that replaced it would be a different character wearing your name. Your
-> **Health and conditions**, because a bear that has forgotten it was poisoned is a way out of a
-> condition that no card should hand over for nothing.
+| | |
+|---|---|
+| **the source is prose** | *a corpse rises*, *a minor god becomes present*. The engine cannot see the floor; the table can |
+| **the number is asked** | one prompt at play, in discussion with the GM, capped at 20 because a prompt is not a promise |
+| **control is granted** | the conjurer gets **OWNER** on the actor, which is the only part of *under their control* that is not a sentence: a token the player cannot move is a conjuration the GM plays for them |
+| **the creature may be fixed** | `creature` names one in the roster. Every conjuring in the game leaves it blank today, which is correct rather than unfinished |
+| **the price is a rule** | `upkeep` is paid *per round it stands*, which The Grave's Bargain already printed: *one bound Taint per round they stood*. Announced rather than charged, because nothing knows yet when the thing falls |
 
-**124 steps still carry prose, 46 of them prose alone**, down from 127: 31 lost a prefix to
-`timing` and 5 lost their whole sentence to `conjure`. What is left is the real one-offs `-` *one
-enemy is dead, no save, no fate draw, no roll of any kind* `-` and they now reach the table as a
-chat line instead of silence.
+A named creature resolves to its **compendium id**, since the pack ids are a hash of the pack and
+the name `-` so the name *is* the id, and nobody writes sixteen characters of hash onto a card.
+
+> **The GM still places them.** Where a conjured thing appears is a judgement about the map that no
+> card can make: *within 2* is a region, not a square.
+
+#### A transformation is a set added and a set taken away
+
+A first pass lent you a roster creature's natural weapons and nothing else, which made **a bird that
+still had hands**. A form that only adds is a costume. So a transformation is a thing in its own
+right (`TRANSFORMATIONS` in content.mjs) with two halves:
+
+| | |
+|---|---|
+| **`grants`** | items, features and action cards, by name. Every name is checked against the tables, because a form that grants a card nobody wrote is a form that silently gives nothing |
+| **`quarantine`** | a **filter** `-` `slots`, `tags`, `kinds` select the player's items; `features` and `cards` name those by hand |
+
+A filter and not a list, for the same reason the intent pool is a filter: a list would have to be
+revisited every time somebody writes an item, and **a bird has no hands whatever is in the shop.**
+The placeholder Doomfly takes the `hands` slot, which reaches 54 of the 166 items `-` every weapon,
+shield and implement in the catalogue `-` and leaves armour and potions alone.
+
+**Quarantine is movement, not a flag.** A `quarantined` boolean would have had to be respected by
+every place that reads a slate, and there are more than ten of those across combat, grants,
+resolution, the sheets and the tray; one of them would have been missed, which is the defect this
+project keeps finding. Taking the slate **off the actor** makes it unusable everywhere at once with
+no new reader anywhere, and its data is kept on the actor so that *put back* is literal. Action
+cards move to a **quarantine pile**, which is the same idea in the medium cards already use `-` and
+each card remembers which stack it came from, because a card taken from a hand belongs in that hand
+and putting everything in the deck would shuffle somebody's turn away.
+
+Ending one removes what it added and restores what it took. The two halves are written side by side
+on purpose: **a mechanism that adds in one place and removes in another will eventually add more
+than it removes**, and what is left behind is a player quietly holding a bird's mouth and their own
+sword. It is ended by `game.cardrpg.endTransformation(actor)`, because nothing in this system owns
+a timer that survives a reload `-` the card's `duration` is what the table reads.
+
+> **What a transformation does not touch, deliberately.** Your **deck**, because the deck is the
+> character in this game `-` a form that replaced it would be a different character wearing your
+> name. Your **Health and conditions**, because a bear that has forgotten it was poisoned is a way
+> out of a condition that no card should hand over for nothing.
+
+**127 steps still carry prose, 46 of them prose alone** `-` the same count as before, which is not a
+failure to make progress. 31 steps lost a prefix to `timing`, and the five conjurings kept a
+sentence on purpose. **What moved is the part that was a rule** `-` when a step may be played, what
+it costs to keep a thing standing `-` **and what stayed is the part that was a judgement.** The
+rest are the real one-offs: *one enemy is dead, no save, no fate draw, no roll of any kind*. They
+now reach the table as a chat line instead of silence.
 
 ### 2.2 An active ability
 

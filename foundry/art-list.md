@@ -286,7 +286,7 @@ Eleven, not twelve: *Step Through* is in the Shadow formulas below.
 | | Name | What it is | File |
 |---|---|---|---|
 |   | **Blood Price** | strength 2 · Cast +4 range 3 ignoring armor | `signatures/mind/blood-price.webp` |
-|   | **Call the Unquiet** | strength 3 · Conjure range 2 | `signatures/mind/call-the-unquiet.webp` |
+|   | **Call the Unquiet** | strength 3 · Conjure range 2 a corpse rises and fights for you | `signatures/mind/call-the-unquiet.webp` |
 |   | **Graven Strength** | strength 1 · +2 Strike with Heavy items | `signatures/mind/graven-strength.webp` |
 |   | **Hearth and Home** | strength 1 · a camp nobody unfriendly can find, for one night | `signatures/mind/hearth-and-home.webp` |
 |   | **Not Here** | strength 2 · Invisible (1) until you attack or are attacked | `signatures/mind/not-here.webp` |
@@ -386,7 +386,7 @@ Blood Magic and Spiritualism, handed over by minor nodes.
 |   | **The Face of a Friend** | strength 3 · range 3 one enemy treats you as an ally -- it will not attack you and will take a hit for you -- until you attack it | `spells/mind/the-face-of-a-friend.webp` |
 |   | **The Gathered Pact** | strength 4 · every god you are pacted with grants its written favour, this turn | `spells/mind/the-gathered-pact.webp` |
 |   | **The Grave's Bargain** | strength 5 · Conjure a dead ally, and they stand at 1 Health | `spells/mind/the-graves-bargain.webp` |
-|   | **The Great Bargain** | strength 5 · Conjure | `spells/mind/the-great-bargain.webp` |
+|   | **The Great Bargain** | strength 5 · Conjure a minor god becomes present and fights as an ally | `spells/mind/the-great-bargain.webp` |
 |   | **The Grey Sickness** | strength 2 · Tainting 1 slow: a disease, not a poison | `spells/mind/the-grey-sickness.webp` |
 |   | **The Hand Given** | strength 3 · and it costs a hand: your bare Strike is a Heavy weapon at Strike 4 | `spells/mind/the-hand-given.webp` |
 |   | **The House That Was** | strength 4 · overnight a ruin becomes a house, and the party rests as in a town | `spells/mind/the-house-that-was.webp` |
@@ -406,7 +406,7 @@ Blood Magic and Spiritualism, handed over by minor nodes.
 |   | **The Open Book** | strength 4 · until your next turn every ally draws fate with advantage, and Read 2 on each deck | `spells/mind/the-open-book.webp` |
 |   | **The Quick Dose** | strength 3 · Cast Poisoned 2 (2) | `spells/mind/the-quick-dose.webp` |
 |   | **The Red Hour** | strength 4 · range 2 until your next turn every ally within 2 may play a second secondary. Costs 1 Health per ally | `spells/mind/the-red-hour.webp` |
-|   | **The Risen Rank** | strength 4 · Conjure range 3 | `spells/mind/the-risen-rank.webp` |
+|   | **The Risen Rank** | strength 4 · Conjure range 3 corpses rise, and fall again when the round ends | `spells/mind/the-risen-rank.webp` |
 |   | **The Second Heartbeat** | strength 3 · Spent: play a second primary this turn | `spells/mind/the-second-heartbeat.webp` |
 |   | **The Shadow Road** | strength 4 · area 1 you and every ally within 1 teleport to any shadowed square on the map | `spells/mind/the-shadow-road.webp` |
 |   | **The Shared Cup** | strength 4 · Cast aimed 3 Poisoned 1 (3) | `spells/mind/the-shared-cup.webp` |

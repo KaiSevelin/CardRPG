@@ -12,10 +12,9 @@
       "range": 3,
       "duration": 1,
       "conjure": {
-        "from": "corpse",
-        "count": 0,
-        "side": "ally"
-      }
+        "creature": ""
+      },
+      "text": "corpses rise, and fall again when the round ends"
     },
     "kind": "formula",
     "prepared": false

@@ -10,10 +10,9 @@
     "effect": {
       "verb": "conjure",
       "conjure": {
-        "from": "god",
-        "count": 1,
-        "side": "ally"
-      }
+        "creature": ""
+      },
+      "text": "a minor god becomes present and fights as an ally"
     },
     "kind": "formula",
     "prepared": false

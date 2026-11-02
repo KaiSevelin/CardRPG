@@ -91,34 +91,29 @@ export function stepField() {
     }),
 
     /*
-     * **What a `conjure` step calls up, and on what terms.**
+     * **What a `conjure` step calls up, and what it costs to keep.**
      *
-     * Every field here was a difference between two spells that the prose carried and the engine
-     * could not: *a corpse within 2 rises and fights for you until the fight ends* against *every
-     * corpse within 3 rises and fights for you for one round, then falls* is one `from`, two
-     * `count`s, two durations and two ranges. Written out, the pair is one effect configured twice.
+     * Two fields, and the shortness is the design. A first pass had five -- `from`, `name`,
+     * `count`, `side`, `upkeep` -- and three of them were the software deciding things a table
+     * decides better: whether a body is available to rise, how many of them there are, and whose
+     * side the thing fights on. A spell that has already said *a corpse within 2* does not also
+     * need the engine's opinion on whether there is one.
      *
-     * `name` is blank for *the GM decides how*, which two cards say outright -- a minor god is a
-     * person with its own opinions, and a spell that commands one is a spell that has misunderstood
-     * the arrangement.
+     * So the card configures **which creature**, and the number is asked at play. `creature` is a
+     * name in the roster, which resolves to the creature's compendium id -- the ids are a hash of
+     * the pack and the name, so the name IS the id and nobody has to write sixteen characters of
+     * hash onto a card.
      *
-     * `count: 0` means every eligible thing in range, because *one* and *all* are the two numbers
-     * the cards actually use and a null would have to mean one of them.
+     * A blank `creature` is not a gap: two cards say *the GM decides*, because a minor god is a
+     * person with its own opinions and a spell that commanded one would have misunderstood the
+     * arrangement.
      *
-     * `upkeep` is paid per round the thing stands, which is the price The Grave's Bargain already
-     * printed: *one bound Taint per round they stood*.
+     * `upkeep` stays, because a price paid *per round the thing stands* is a rule rather than a
+     * judgement -- it is what The Grave's Bargain already printed: *one bound Taint per round they
+     * stood*.
      */
     conjure: new fields.SchemaField({
-      from: new fields.StringField({
-        required: false, blank: true, initial: "",
-        choices: [...Object.keys(CARDRPG.conjureSources), ""]
-      }),
-      name: new fields.StringField({ required: false, blank: true, initial: "" }),
-      count: new fields.NumberField({ integer: true, min: 0, nullable: true, initial: null }),
-      side: new fields.StringField({
-        required: false, blank: true, initial: "",
-        choices: [...Object.keys(CARDRPG.conjureSides), ""]
-      }),
+      creature: new fields.StringField({ required: false, blank: true, initial: "" }),
       upkeep: new fields.SchemaField({
         taint: new fields.NumberField({ integer: true, min: 0, nullable: true, initial: null }),
         health: new fields.NumberField({ integer: true, min: 0, nullable: true, initial: null })
@@ -126,17 +121,17 @@ export function stepField() {
     }),
 
     /*
-     * **What a `shape` step turns you into.**
+     * **What a `shape` step turns you into**: the name of a transformation (content.mjs).
      *
-     * One field, because a form is a creature in the roster and the creature already says
-     * everything else: its natural weapons are what you fight with, and a second table of forms
-     * would be a second description of forty-seven creatures that already exist. Two descriptions
-     * of a thing drift, which this project has now watched happen twice.
+     * One field, because a transformation is a thing in its own right -- a set of cards it adds and
+     * a filter of your own it takes away -- and that does not fit on a step. An earlier pass named
+     * a ROSTER CREATURE here and lent you its natural weapons, which made a bird that still had
+     * hands: a form that only adds is a costume.
      *
      * The step's own `duration` says how long you hold it.
      */
     shape: new fields.SchemaField({
-      creature: new fields.StringField({ required: false, blank: true, initial: "" })
+      transformation: new fields.StringField({ required: false, blank: true, initial: "" })
     }),
     /*
      * Intensity, for a `valued` condition: Burning 3 (2). Ignored by the ones without it.

@@ -5499,8 +5499,19 @@ check("timings declared and never used",
  */
 const conjurings = everyStep.filter(s => s.st.verb === "conjure");
 check("steps that conjure", conjurings.length, 5);
-check("and each says what it calls up",
-  conjurings.filter(s => !s.st.conjure?.from).map(s => s.card).join(", ") || "none", "none");
+/*
+ * **And each says, in prose, what it is calling up.** `from` was a field for one turn and went
+ * back to being a sentence: *a corpse rises*, *a minor god becomes present*. The engine never
+ * needed to know which, because it cannot see whether there is a body on the floor and the table
+ * can. What it keeps is the creature's identity, where a card fixes one.
+ */
+check("and each says in prose what it calls up",
+  conjurings.filter(s => !s.st.text).map(s => s.card).join(", ") || "none", "none");
+/* None of them names a creature yet, and that is correct rather than unfinished: every conjuring
+ * in the game is deliberately open, so the GM decides what stands up. The field is there for the
+ * card that wants to fix one. */
+check("conjurings that fix which creature arrives",
+  conjurings.filter(s => s.st.conjure?.creature).length, 0);
 /* A named god is one the world names. `name: ""` is not a gap -- two cards say the GM decides,
  * because a minor god is a person with its own opinions. */
 check("the minor gods the world names", content.MINOR_GODS.length, 8);
@@ -5521,28 +5532,46 @@ check("conjurings naming something that does not exist",
 const conjureBody = resolveSource.slice(resolveSource.indexOf("export async function resolveConjure"),
   resolveSource.indexOf("export async function resolveShape"));
 /*
- * **Each field by what it is read FOR, not by its own name.** A break test deleted the line that
- * names the side and nothing noticed, because `cfg.side` is read twice in this one function -- once
- * to name the side and once to decide that a sided conjuration with no duration lasts the fight.
- * A grep either line can answer is a grep about neither, which is the rule the self-check section
- * applies to whole files, one scale down.
+ * **Each field by what it is read FOR, not by its own name.** An earlier pass had five fields and a
+ * break test deleted the line naming one of them with nothing noticing, because the field was read
+ * twice in the same function -- a grep either line can answer is a grep about neither, which is
+ * the rule the self-check section applies to whole files, one scale down.
  */
 for (const [field, pattern] of [
-  ["from", /CARDRPG\.conjureSources\[cfg\.from\]/],
-  ["name", /const named = cfg\.name \|\| ""/],
-  ["count", /cfg\.count === 0 \? `every \$\{what\} in range`/],
-  ["side", /CARDRPG\.conjureSides\[cfg\.side\]/],
+  ["creature", /const named = cfg\.creature \|\| ""/],
   ["upkeep.taint", /cfg\.upkeep\?\.taint/],
   ["upkeep.health", /cfg\.upkeep\?\.health/]
 ]) {
   check(`the resolver reads conjure.${field}`,
     pattern.test(conjureBody) ? "yes" : "no", "yes");
 }
-/* And the one field that is read twice, on purpose, says so: a side with no duration is a thing
- * that stays until the fight ends, which is a rule rather than a repetition. */
-check("and a sided conjuring with no duration lasts the fight",
-  /else if \(cfg\.side\) bits\.push\("for the rest of the fight"\)/.test(conjureBody)
+check("and the step's own range and duration",
+  /step\.range/.test(conjureBody) && /step\.duration/.test(conjureBody) ? "yes" : "no", "yes");
+/*
+ * **The number is asked, not configured**, which is the whole of the change: a `count` on the card
+ * was the engine holding an opinion about the state of a battlefield it cannot see. A player who
+ * says *three* with the GM nodding has settled it better than a field could.
+ */
+/* And a fixed name is checked against both tables before anything is built: a card naming a
+ * creature nobody wrote would otherwise conjure silence. */
+check("and refuses a name in neither the roster nor the gods",
+  /if \(named && !creatures\.has\(named\) && !godsByName\(\)\.has\(named\)\) \{/
+    .test(conjureBody) ? "yes" : "no", "yes");
+check("the resolver asks how many",
+  /DialogV2\.prompt\(\{[\s\S]{0,400}How many/.test(conjureBody) ? "yes" : "no", "yes");
+check("and refuses a number it was not given",
+  /if \(!count\) return false;/.test(conjureBody) ? "yes" : "no", "yes");
+check("and caps it, because a prompt is not a promise",
+  /Math\.min\(asked, 20\)/.test(conjureBody) ? "yes" : "no", "yes");
+/*
+ * **And the conjurer gets OWNER on what arrives**, which is the only part of *under their control*
+ * that is not a sentence: a token the player cannot move is a conjuration the GM plays for them.
+ */
+check("the conjurer is given control of it",
+  /ownership: \{ \.\.\.built\.ownership, \[game\.user\.id\]: 3 \}/.test(conjureBody)
     ? "yes" : "no", "yes");
+check("and the two retired vocabularies are gone from config",
+  /conjureSources|conjureSides/.test(configSource) ? "still there" : "gone", "gone");
 check("and the step's own range and duration",
   /step\.range/.test(conjureBody) && /step\.duration/.test(conjureBody) ? "yes" : "no", "yes");
 check("and the tray calls it",
@@ -5556,33 +5585,159 @@ check("and the tray calls it",
  * description of forty-seven creatures that already exist, and two descriptions of a thing drift
  * -- which this project has now watched happen with the goblin's deck and with `The Kit`.
  */
+/*
+ * **A transformation adds a set of cards and takes a filtered set of the player's own away.**
+ *
+ * The second half is what makes it a transformation and not a bonus: an earlier pass lent you a
+ * creature's natural weapons and nothing else, which made a bird that still had hands. A form that
+ * only adds is a costume.
+ */
 const shapes = everyStep.filter(s => s.st.verb === "shape");
-check("steps that change shape", shapes.length, 1);
-check("and each names a creature in the roster",
-  shapes.filter(s => !creatureNames.has(s.st.shape?.creature ?? "")).map(s => s.card).join(", ")
+check("steps that transform", shapes.length, 1);
+check("transformations written", content.TRANSFORMATIONS.length, 1);
+const formNames = new Set(content.TRANSFORMATIONS.map(t => t.name));
+check("and each step names one that exists",
+  shapes.filter(s => !formNames.has(s.st.shape?.transformation ?? "")).map(s => s.card).join(", ")
     || "none", "none");
-const shapeBody = resolveSource.slice(resolveSource.indexOf("export async function resolveShape"));
-check("the resolver reads the named creature",
-  /step\.shape\?\.creature/.test(shapeBody) ? "yes" : "no", "yes");
-/* A form is the creature's NATURAL weapons: a body is what you fight with, and a form that lent
- * you the spear it was holding would be looting a corpse rather than wearing one. */
-check("and lends only what is grown, not carried",
-  /\(g\.tags \?\? \[\]\)\.includes\("natural"\)/.test(shapeBody) ? "yes" : "no", "yes");
-check("and refuses a creature with no natural weapon",
-  /has no natural weapon to lend you/.test(shapeBody) ? "yes" : "no", "yes");
-/* Twice-shaped is two sets of claws, so the second helping is refused by a flag on the items. */
+/*
+ * Everything a transformation GRANTS is content that exists. A form granting a card nobody wrote is
+ * a form that silently gives nothing, which is the shape of defect this suite was built for.
+ */
+const formSlateNames = new Set([...content.ITEMS, ...content.NPC_GEAR, ...content.NATURAL_WEAPONS,
+  ...content.FEATURES].map(e => e.name));
+const formCardNames = new Set([...content.WARRIOR_DECK, ...content.COMMON_POOL, ...content.WAY_CARDS,
+  ...content.SHADE_POOL, ...content.STRENGTH_POOL].map(c => c.name));
+const grantFaults = [];
+for (const t of content.TRANSFORMATIONS) {
+  for (const n of [...(t.grants?.items ?? []), ...(t.grants?.features ?? [])]) {
+    if (!formSlateNames.has(n)) grantFaults.push(`${t.name} grants ${n}`);
+  }
+  for (const n of t.grants?.cards ?? []) {
+    if (!formCardNames.has(n)) grantFaults.push(`${t.name} grants the card ${n}`);
+  }
+  /* And a quarantine that names a feature or card by hand names a real one, for the same reason:
+   * a filter that matches nothing is a transformation that takes nothing away. */
+  for (const n of t.quarantine?.features ?? []) {
+    if (!formSlateNames.has(n)) grantFaults.push(`${t.name} quarantines ${n}`);
+  }
+  for (const n of t.quarantine?.cards ?? []) {
+    if (!formCardNames.has(n)) grantFaults.push(`${t.name} quarantines the card ${n}`);
+  }
+}
+check("transformations naming content that does not exist",
+  grantFaults.join(", ") || "none", "none");
+/* And each one actually takes something away, or it is a costume. */
+const costumes = content.TRANSFORMATIONS.filter(t => {
+  const q = t.quarantine ?? {};
+  return ![...(q.slots ?? []), ...(q.tags ?? []), ...(q.kinds ?? []), ...(q.features ?? []),
+    ...(q.cards ?? [])].length;
+});
+check("transformations that take nothing away", costumes.map(t => t.name).join(", ") || "none",
+  "none");
+/*
+ * **How far each quarantine actually reaches, measured through the filter itself.**
+ *
+ * A first version of this counted items whose `slot` is `"hands"`, read off the content rather than
+ * off the rule -- so a break test that changed the filter to `"pack"` moved nothing, because the
+ * check was measuring something else that happened to agree. A measurement of a rule has to be
+ * taken through the rule.
+ */
+const everyItemEntry = [...content.ITEMS, ...content.NPC_GEAR, ...content.NATURAL_WEAPONS];
+const asSlate = e => ({ type: "item", name: e.name, system: e });
+const quarantineReach = content.TRANSFORMATIONS.map(t =>
+  `${t.name}:${everyItemEntry.filter(e => resolve.quarantines(t.quarantine, asSlate(e))).length}`);
+check("items each transformation's quarantine reaches", quarantineReach.join(" "), "Doomfly:54");
+/* And none of them reaches nothing, which `quarantines` returning false for everything would
+ * produce while every field was still filled in. */
+check("quarantines that match no item at all",
+  quarantineReach.filter(r => r.endsWith(":0")).join(", ") || "none", "none");
+
+const shapeBody = resolveSource.slice(resolveSource.indexOf("export async function resolveShape"),
+  resolveSource.indexOf("async function quarantineCards"));
+const endBody = resolveSource.slice(resolveSource.indexOf("export async function endTransformation"));
+check("the resolver reads the named transformation",
+  /step\.shape\?\.transformation/.test(shapeBody) ? "yes" : "no", "yes");
+check("and refuses one that grants content that does not exist",
+  /grants content that does not exist/.test(shapeBody) ? "yes" : "no", "yes");
 check("and will not stack with itself",
-  /getFlag\("cardrpg", "form"\) === mark/.test(shapeBody) ? "yes" : "no", "yes");
-check("and the tray calls it",
+  /already transformed\. End that one first/.test(shapeBody) ? "yes" : "no", "yes");
+/*
+ * **Quarantine is movement, not a flag**, and that is the load-bearing decision. More than ten
+ * places read a slate -- combat, grants, resolution, the sheets, the tray -- so a `quarantined`
+ * boolean would have had to be respected by all of them and one would have been missed. Taking the
+ * slate off the actor makes it unusable everywhere at once with no new reader anywhere.
+ */
+check("a quarantined slate is taken off the actor",
+  /deleteEmbeddedDocuments\("Item", taken\.map\(i => i\.id\)\)/.test(shapeBody) ? "yes" : "no",
+  "yes");
+check("and kept whole, so putting it back is literal",
+  /const kept = taken\.map\(i => i\.toObject\(\)\);/.test(shapeBody) ? "yes" : "no", "yes");
+check("and no slate is flagged unusable instead",
+  /quarantined: new fields\.BooleanField/.test(itemSource) ? "a flag" : "movement", "movement");
+/*
+ * A card moves to a pile, which is the same idea in the medium cards already use -- and BOTH halves
+ * ask for that pile, one to put cards on it and one to take them off, so each is read in its own
+ * body rather than over the file.
+ */
+const shelveBody = resolveSource.slice(resolveSource.indexOf("async function quarantineCards"),
+  resolveSource.indexOf("export async function endTransformation"));
+check("a quarantined card goes to a pile",
+  /const shelf = deckOf\(actor, "quarantine"\);/.test(shelveBody) ? "yes" : "no", "yes");
+check("and the half that ends it reads the same pile",
+  /const shelf = deckOf\(actor, "quarantine"\);/.test(endBody) ? "yes" : "no", "yes");
+/* And it warns rather than silently leaving the cards in play, which is what a world built before
+ * the pile existed would do. */
+check("and says so when there is no pile to shelve them on",
+  /No quarantine pile on this actor; its cards stay in play/.test(shelveBody) ? "yes" : "no",
+  "yes");
+check("and the pile is declared on the actor",
+  /quarantine: new fields\.DocumentIdField\(\)/.test(actorsSource) ? "yes" : "no", "yes");
+check("and the starter routine creates one",
+  /"Starter Warrior \u2014 Quarantine", "pile", "warrior\.quarantine"/.test(setupSource)
+    ? "yes" : "no", "yes");
+check("and wires it to the actor",
+  /quarantine: warriorQuarantine\.id,/.test(setupSource) ? "yes" : "no", "yes");
+/* A pile gets no back, which the deck audit already enforces for every pile -- so the shelf
+ * cannot quietly acquire one. */
+check("and it is a pile rather than a deck",
+  /"Starter Warrior \u2014 Quarantine", "pile"/.test(setupSource) ? "yes" : "no", "yes");
+
+/*
+ * **And the other half, beside it.** A mechanism that adds in one place and removes in another is
+ * one that will eventually add more than it removes, and what is left behind is a player quietly
+ * holding a bird's mouth and their own sword.
+ */
+check("ending a transformation removes what it added",
+  /deleteEmbeddedDocuments\("Item", added\.map\(i => i\.id\)\)/.test(endBody) ? "yes" : "no",
+  "yes");
+check("and restores what it took",
+  /createEmbeddedDocuments\("Item", worn\.slates\)/.test(endBody) ? "yes" : "no", "yes");
+/* A card goes back to the stack it came FROM, which is why the stack's name was written onto the
+ * card: a card taken from a hand belongs in that hand, and putting everything in the deck would
+ * shuffle somebody's turn away. */
+check("and a card goes back where it came from",
+  /deckOf\(actor, card\.getFlag\("cardrpg", FORM_FLAG\) \|\| "action"\)/.test(endBody)
+    ? "yes" : "no", "yes");
+/* The ACTOR's flag. `unsetFlag` is called twice in this function -- once per returned card, once
+ * for the actor -- so a grep for the name was answered by either, and deleting the one that ends
+ * the transformation left the check passing. Third time today. */
+check("and the flag is cleared, so it cannot be ended twice",
+  /await actor\.unsetFlag\("cardrpg", FORM_FLAG\);/.test(endBody) ? "yes" : "no", "yes");
+check("and each returned card's note of where it came from is cleared too",
+  /await card\.unsetFlag\("cardrpg", FORM_FLAG\);/.test(endBody) ? "yes" : "no", "yes");
+check("and the tray calls the one that puts it on",
   /case "shape":\s*\n\s*await resolveShape\(actor, \{ step \}\);/.test(traySource) ? "yes" : "no",
   "yes");
+/* Ending one is a thing somebody does, because nothing here owns a timer that survives a reload. */
+check("and the API offers the one that takes it off",
+  /^\s*endTransformation,$/m.test(entrySource) ? "yes" : "no", "yes");
 /*
- * What a form must NOT touch, pinned as prose in the resolver because it is a design decision and
- * not an omission: the deck is the character in this game, so a shape that replaced it would be a
- * different character wearing your name.
+ * What a transformation must NOT touch, pinned because it is a design decision and not an
+ * omission: the deck is the character in this game, and a bear that has forgotten it was poisoned
+ * is a way out of a condition no card should hand over free.
  */
 check("and the resolver says why the deck is untouched",
-  /the deck is the character in this game/.test(resolveSource) ? "yes" : "no", "yes");
+  /your \*\*Health\*\* and your \*\*conditions\*\*/.test(resolveSource) ? "yes" : "no", "yes");
 
 /*
  * **And the prose is measurably smaller.** The point of all of it: a hundred and twenty-seven
@@ -5590,9 +5745,14 @@ check("and the resolver says why the deck is untouched",
  * timings and five conjurings -- out of prose and into fields.
  */
 const proseLeft = everyStep.filter(s => s.st.text);
-/* 127 before this increment; 31 lost a prefix to `timing` and 5 lost their whole sentence to
- * `conjure`, which is three steps that now carry no prose at all and 33 that carry less. */
-check("steps still carrying prose", proseLeft.length, 124);
+/*
+ * 127 before this increment and 127 after, which is not a failure to make progress. 31 steps lost a
+ * prefix to `timing`, and the five conjurings kept a sentence on purpose: **the source is prose**,
+ * because whether a corpse is available is something the table can see and the engine cannot.
+ * What moved is the part that was a rule -- when a step is played, what it costs to keep a thing
+ * standing -- and what stayed is the part that was a judgement.
+ */
+check("steps still carrying prose", proseLeft.length, 127);
 /* And the schema document says the same numbers, read off the same sweep rather than typed into
  * prose a second time: a document that counts the content is a document that goes stale. */
 check("the schema document records what the sweep found",
@@ -5600,11 +5760,19 @@ check("the schema document records what the sweep found",
   "yes");
 check("and what is left of it",
   cardSchemaDoc.includes(`${proseLeft.length} steps still carry prose`) ? "yes" : "no", "yes");
+check("and that a conjuration's source is prose on purpose",
+  /the source is prose/.test(cardSchemaDoc) ? "yes" : "no", "yes");
 check("and why a free-text special was refused",
   /permanently unresolvable, which is the one thing this schema exists to\nprevent/
     .test(cardSchemaDoc) ? "yes" : "no", "yes");
-check("and what a form must not touch",
-  /the deck is the character in\n> this game/.test(cardSchemaDoc) ? "yes" : "no", "yes");
+/* A fragment that sits on one line of the document: collapsing the whitespace leaves the
+ * blockquote's `>` in the middle of the sentence, which is a third way to trip on a line break. */
+check("and what a transformation must not touch",
+  cardSchemaDoc.includes("a form that replaced it would be a different character")
+    ? "yes" : "no", "yes");
+check("and that it leaves Health and conditions alone",
+  cardSchemaDoc.includes("a bear that has forgotten it was poisoned is a way")
+    ? "yes" : "no", "yes");
 check("and steps that carry prose and nothing else",
   proseLeft.filter(s => Object.keys(s.st).filter(k => k !== "text" && s.st[k] !== null
     && s.st[k] !== "" && !(typeof s.st[k] === "object")).length === 0).length, 46);
@@ -8445,7 +8613,7 @@ for (const m of selfSource.matchAll(/(\w+)\.includes\("((?:[^"\\]|\\.)*)"\)/g)) 
 }
 
 /* The pin that keeps the rest of this honest. */
-check("greps over a whole file, resolved", greps.length, 484);
+check("greps over a whole file, resolved", greps.length, 493);
 
 /*
  * **The rule, as one predicate, run over a planted example before it is run over the suite.**
@@ -8481,7 +8649,7 @@ check("greps a second printer could answer",
  * is absent is the whole of its content, so the content is what is pinned.
  */
 /*
- * The twenty, by name and by pattern, in the order the suite sorts them. Raw strings,
+ * The twenty-two, by name and by pattern, in the order the suite sorts them. Raw strings,
  * because these are patterns: written as escaped JS they are unreadable, and a list nobody
  * can read is a list nobody will check when it changes.
  */
@@ -8490,10 +8658,12 @@ const absentGreps = [
   String.raw`and core content is never written to :: NODES\.(push|splice|length =)`,
   String.raw`and neither builds a face by hand any more :: faces: \[\{ name: card\.name \}\]`,
   String.raw`and never decides from adjacency itself :: \.after[\s\S]{0,60}\.(some|every)\(`,
+  String.raw`and no slate is flagged unusable instead :: quarantined: new fields\.BooleanField`,
   String.raw`and the engine clamps neither total :: Math\.max\(0, before`,
   String.raw`and the old sentence is gone :: Faith is \*\*wide and shallow\*\*`,
   String.raw`and the resolver reads the flag :: conditionsOf\(actor\)\.includes\("invisible"\)`,
   String.raw`and the token is not given a file of its own :: texture: \{ src: (?!art \})`,
+  String.raw`and the two retired vocabularies are gone from config :: conjureSources|conjureSides`,
   String.raw`nothing builds a fate card by hand any more :: createEmbeddedDocuments\("Card", \[\{\s*name: fateCard`,
   String.raw`nothing draws a twist automatically :: drawTwist\(`,
   String.raw`reaction timer retired from config :: reactionTimer`,

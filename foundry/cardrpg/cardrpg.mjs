@@ -8,6 +8,9 @@
 import { CARDRPG } from "./module/config.mjs";
 import { registerSheets } from "./module/sheets.mjs";
 import { createStarterContent, ensureSetupMacro, buildMonster } from "./module/setup.mjs";
+/* A transformation is ended by somebody, because nothing here owns a timer that survives a
+ * reload -- so the duration on the card is what the table reads and this is how it is settled. */
+import { endTransformation } from "./module/resolve.mjs";
 import { CardRPGCombat, registerCombatHooks } from "./module/combat.mjs";
 import { CardRPGTray, registerTrayHooks } from "./module/tray.mjs";
 import { registerCheckHooks } from "./module/checks.mjs";
@@ -246,6 +249,12 @@ Hooks.once("ready", async () => {
      * so the rest arrive when a GM asks for one by name, with the deck its capabilities earn.
      */
     buildMonster,
+    /*
+     * **Ending a transformation is a thing somebody has to do**, and nothing in this system owns a
+     * timer that survives a reload -- so the duration on the card is what the table reads and this
+     * is how it is settled. A form that expired silently would be worse than one that waits.
+     */
+    endTransformation,
     /* So a GM can grant from a macro as well as from the sheet. */
     grantLevel: async (actor, n = 1) => actor.update({
       "system.levels.pending": Math.max(0, (actor.system.levels?.pending ?? 0) + n)

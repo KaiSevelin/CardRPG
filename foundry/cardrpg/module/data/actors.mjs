@@ -118,7 +118,16 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
          */
         skill: new fields.DocumentIdField(),
         skillHand: new fields.DocumentIdField(),
-        skillDiscard: new fields.DocumentIdField()
+        skillDiscard: new fields.DocumentIdField(),
+        /*
+         * **Where a quarantined card waits.** A transformation takes some of the player's own cards
+         * out of play and gives them back when it ends, and "gives back" is movement rather than a
+         * flag -- a flag on a card would have to be respected by every place that offers one.
+         *
+         * It is a pile and not a deck, so it gets no back: nothing is ever drawn from it and
+         * nobody looks at it face down. It is a shelf.
+         */
+        quarantine: new fields.DocumentIdField()
       }),
 
       conditions: conditionField(),

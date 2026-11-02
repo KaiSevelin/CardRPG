@@ -11,10 +11,9 @@
       "verb": "conjure",
       "range": 2,
       "conjure": {
-        "from": "corpse",
-        "count": 1,
-        "side": "ally"
-      }
+        "creature": ""
+      },
+      "text": "a corpse rises and fights for you"
     },
     "kind": "formula",
     "prepared": false

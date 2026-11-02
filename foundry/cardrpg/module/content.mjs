@@ -119,6 +119,47 @@ export const WARRIOR_DECK = [
 
 
 /* -------------------------------------------- */
+/*  Transformations                             */
+/* -------------------------------------------- */
+
+/**
+ * **A transformation is a set of cards added and a set of your own taken away.**
+ *
+ * Two halves, and the second is the one that makes it a transformation rather than a bonus. A form
+ * that only ADDS is a costume: you become a bird and keep your sword. So each one names what it
+ * gives and what it takes, and a `shape` step names the transformation.
+ *
+ * **`grants`** is content by name -- items and features become slates on the actor, cards are dealt
+ * into the action deck -- and every name is checked against the tables, because a form that grants
+ * a card nobody wrote is a form that silently gives nothing.
+ *
+ * **`quarantine`** is a FILTER rather than a list, for the same reason the intent pool is a filter:
+ * a list would have to be revisited every time somebody writes an item, and a bird has no hands
+ * whatever is in the shop. `slots`, `tags` and `kinds` select the player's items; `features` and
+ * `cards` name those by hand, because there are few enough of each to say.
+ *
+ * What is quarantined is **taken off the actor and kept**, not flagged. More than ten places read a
+ * slate, and a flag would have to be respected by all of them.
+ */
+export const TRANSFORMATIONS = [
+  {
+    /**
+     * **[PLACEHOLDER]** One transformation, so the mechanism is exercised by content as well as
+     * declared. The Doomfly is in the roster and it flies, which is the clearest thing a borrowed
+     * body can be worth; replace it freely.
+     *
+     * It takes both hands away, which is the whole point of being a fly: `Nip` is what you have
+     * instead, and every weapon, shield and implement you were carrying is on the floor until you
+     * are yourself again.
+     */
+    name: "Doomfly",
+    blurb: "Four wings and a mouth. Nothing you were carrying comes with you.",
+    grants: { items: ["Nip"], features: [], cards: [] },
+    quarantine: { slots: ["hands"], tags: [], kinds: [], features: [], cards: [] }
+  }
+];
+
+/* -------------------------------------------- */
 /*  Minor gods                                  */
 /* -------------------------------------------- */
 
@@ -3075,7 +3116,7 @@ export const MIND_POOL = [
       + "with you come along &mdash; a body is what you fight with, not who you are.</p>",
     effect: {
       verb: "shape", duration: 2,
-      shape: { creature: "Doomfly" }
+      shape: { transformation: "Doomfly" }
     }
   },
   {
@@ -3147,9 +3188,10 @@ export const MIND_POOL = [
       + "bodies again, and the ground is worse than it was.</p>",
     effect: {
       verb: "conjure", range: 3, duration: 1,
-      /* `count: 0` is every corpse in range, which is the difference between this and Call the
-       * Unquiet -- that and the one round, which is what the rank costs for being a rank. */
-      conjure: { from: "corpse", count: 0, side: "ally" }
+      /* The rank is a number the player and the GM settle from what is actually lying there;
+       * what this card fixes is the one round, which is what it costs for being a rank. */
+      conjure: { creature: "" },
+      text: "corpses rise, and fall again when the round ends"
     }
   },
   {
@@ -3165,7 +3207,7 @@ export const MIND_POOL = [
       + "the fight ends they are dead again, and you are a little less alive for it.</p>",
     effect: {
       verb: "conjure",
-      conjure: { from: "corpse", count: 1, side: "ally", upkeep: { taint: 1 } },
+      conjure: { creature: "", upkeep: { taint: 1 } },
       /* The one thing no field carries: it is an ALLY's body, and they come back at 1. */
       text: "a dead ally, and they stand at 1 Health"
     }
@@ -3653,7 +3695,8 @@ export const MIND_POOL = [
       + "price a favour that large.</p>",
     effect: {
       verb: "conjure",
-      conjure: { from: "god", count: 1, side: "ally" }
+      conjure: { creature: "" },
+      text: "a minor god becomes present and fights as an ally"
     }
   },
 
@@ -3892,7 +3935,9 @@ export const MIND_SIGNATURES = [
     description: "<p>It does not know it died. It will stop when the fight does.</p>",
     effect: {
       verb: "conjure", range: 2,
-      conjure: { from: "corpse", count: 1, side: "ally" }
+      /* A body on the field is what it needs, and the table can see whether there is one. */
+      conjure: { creature: "" },
+      text: "a corpse rises and fights for you"
     }
   },
   {
@@ -3962,9 +4007,9 @@ export const MIND_SIGNATURES = [
       + "a hole in the spell &mdash; it is the spell.</p>",
     effect: {
       verb: "conjure",
-      /* No name and no side: a minor god is a person with its own opinions, and a spell that told
-       * one whom to fight would have misunderstood the arrangement. */
-      conjure: { from: "god", count: 1, side: "neutral" },
+      /* No name: a minor god is a person with its own opinions, and a spell that told one whom
+       * to fight would have misunderstood the arrangement. */
+      conjure: { creature: "" },
       text: "it acts once; the GM decides how"
     }
   },

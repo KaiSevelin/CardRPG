@@ -67,26 +67,10 @@
   {{!-- Conjuration: what arrives, on whose side, how many, and what it costs per round it stands.
         The step's own range says how far and its duration how long. --}}
   <div class="cr-step__row">
-    <label>Conjure
-      <select name="{{path}}.conjure.from">
-        <option value="">&mdash;</option>
-        {{#each config.conjureSources}}
-          <option value="{{@key}}" {{#if (crEq @key ../step.conjure.from)}}selected{{/if}}>{{localize this}}</option>
-        {{/each}}
-      </select>
-    </label>
-    <label>Named <input type="text" name="{{path}}.conjure.name" value="{{step.conjure.name}}"
-                        data-tooltip="A minor god or a roster creature. Blank means the GM decides."></label>
-    <label>How many <input type="number" name="{{path}}.conjure.count" value="{{step.conjure.count}}" min="0"
-                           data-tooltip="0 means every eligible thing in range."></label>
-    <label>Side
-      <select name="{{path}}.conjure.side">
-        <option value="">&mdash;</option>
-        {{#each config.conjureSides}}
-          <option value="{{@key}}" {{#if (crEq @key ../step.conjure.side)}}selected{{/if}}>{{localize this}}</option>
-        {{/each}}
-      </select>
-    </label>
+    {{!-- The creature, and what it costs to keep. How many is asked at play, in discussion with
+          the GM, which is why there is no field for it. --}}
+    <label>Conjure <input type="text" name="{{path}}.conjure.creature" value="{{step.conjure.creature}}"
+                          data-tooltip="A roster creature or a minor god. Blank means the GM decides."></label>
     <label>Upkeep Taint <input type="number" name="{{path}}.conjure.upkeep.taint"
                                value="{{step.conjure.upkeep.taint}}" min="0"></label>
     <label>Upkeep Health <input type="number" name="{{path}}.conjure.upkeep.health"
@@ -95,8 +79,9 @@
 
   {{!-- Shape: the creature you become. Its natural weapons are what you fight with. --}}
   <div class="cr-step__row">
-    <label>Shape into <input type="text" name="{{path}}.shape.creature" value="{{step.shape.creature}}"
-                             data-tooltip="A creature in the roster. Its natural weapons become yours."></label>
+    <label>Transform into <input type="text" name="{{path}}.shape.transformation"
+                                 value="{{step.shape.transformation}}"
+                                 data-tooltip="A transformation by name: what it adds, and what of yours it quarantines."></label>
     <label>Intensity <input type="number" name="{{path}}.intensity" value="{{step.intensity}}" min="0"
                             data-tooltip="For a valued condition: Burning 3 (2)."></label>
   </div>

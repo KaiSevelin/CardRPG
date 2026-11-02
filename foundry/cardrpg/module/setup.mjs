@@ -120,6 +120,16 @@ export async function createStarterContent() {
   const warriorHand = await makeCards("Starter Warrior — Hand", "hand", "warrior.hand");
   const warriorDiscard = await makeCards("Starter Warrior — Discard", "pile", "warrior.discard");
   const warriorSpent = await makeCards("Starter Warrior — Spent", "pile", "warrior.spent");
+  /*
+   * **The shelf a transformation puts cards on.** A form quarantines some of what the player owns
+   * and gives it back when it ends, and "gives back" is movement rather than a flag -- a flag on a
+   * card would have to be respected by every place that offers one.
+   *
+   * A pile and not a deck, so it gets no back: nothing is drawn from it and nobody sees it face
+   * down. Empty in every world until somebody transforms.
+   */
+  const warriorQuarantine = await makeCards(
+    "Starter Warrior — Quarantine", "pile", "warrior.quarantine");
   const warriorFate = await makeCards(
     "Starter Warrior — Fate Deck", "deck", "warrior.fate", fateCards(backOf("fate")), "fate");
   const warriorFateDiscard = await makeCards("Starter Warrior — Fate Discard", "pile", "warrior.fateDiscard");
@@ -305,6 +315,7 @@ export async function createStarterContent() {
     actionHand: warriorHand.id,
     actionDiscard: warriorDiscard.id,
     actionSpent: warriorSpent.id,
+      quarantine: warriorQuarantine.id,
     fate: warriorFate.id,
     fateDiscard: warriorFateDiscard.id,
     skill: warriorSkills.id,

@@ -11,7 +11,7 @@
       "verb": "shape",
       "duration": 2,
       "shape": {
-        "creature": "Doomfly"
+        "transformation": "Doomfly"
       }
     },
     "kind": "formula",

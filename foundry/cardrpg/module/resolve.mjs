@@ -15,7 +15,9 @@
  */
 
 import { CARDRPG } from "./config.mjs";
-import { MINOR_GODS, ROSTER, VARIANTS, NATURAL_WEAPONS, NPC_GEAR } from "./content.mjs";
+import {
+  MINOR_GODS, ROSTER, VARIANTS, NATURAL_WEAPONS, NPC_GEAR, ITEMS, FEATURES, TRANSFORMATIONS
+} from "./content.mjs";
 import { expandRoster } from "./monsters.mjs";
 import { slateData } from "./setup.mjs";
 import {
@@ -552,126 +554,243 @@ export function godsByName() {
 }
 
 /**
- * **Conjure something onto the field, on the terms the step sets.**
+ * **Conjure: the card names the creature, the table says how many, the player gets control.**
  *
- * What this does and does not do is worth being exact about. It settles and announces **the
- * terms** -- what arrives, how many, whose side, how long, and what it costs per round -- and
- * where the thing named is a creature the system can build, it builds the actor so the GM has a
- * token to place. It does not place the token, because where a conjured thing appears is a
- * judgement about the map that no card can make: *within 2* is a region, not a square.
+ * What this does is deliberately small. It asks for a number, makes sure the creature exists as an
+ * actor, and gives the conjurer **OWNER** on it -- which is what "under their control" means in a
+ * form the software can grant. It does not place the tokens, because where a conjured thing appears
+ * is a judgement about the map that no card can make: *within 2* is a region, not a square.
  *
- * The upkeep is announced rather than charged. A conjuration's price is paid *per round it stands*
- * and nothing here knows when it falls, so charging it now would be charging for a round that may
- * not happen -- and the one thing worse than an unpaid price is a price paid twice.
+ * The number is asked rather than configured. A first pass had `count` on the card, with `0`
+ * meaning every eligible body in range, and that was the engine holding an opinion about the state
+ * of a battlefield it cannot see. A player who says *three* with the GM nodding has settled it
+ * better than a field could.
+ *
+ * The upkeep is announced, not charged. It is paid per round the thing stands and nothing here
+ * knows when it falls, so charging now would be charging for a round that may not happen.
  */
 export async function resolveConjure(actor, { step }) {
   const cfg = step.conjure ?? {};
-  const gods = godsByName();
   const creatures = creaturesByName();
+  const named = cfg.creature || "";
 
-  /* What is being called. A blank name is not a mistake: two cards say the GM decides, because a
-   * minor god is a person with its own opinions and a spell that commands one has misunderstood
-   * the arrangement. */
-  const named = cfg.name || "";
-  let what = game.i18n.localize(CARDRPG.conjureSources[cfg.from] ?? "CARDRPG.Conjure.Creature");
-  if (named) what = named;
-  if (named && cfg.from === "god" && !gods.has(named)) {
-    ui.notifications?.warn(`${named} is not one of the minor gods the world names.`);
+  if (named && !creatures.has(named) && !godsByName().has(named)) {
+    ui.notifications?.warn(`Nothing called ${named} in the roster or among the minor gods.`);
+    return false;
   }
 
-  const bits = [];
-  bits.push(cfg.count === 0 ? `every ${what} in range` : `${cfg.count ?? 1} × ${what}`);
-  if (step.range) bits.push(`within ${step.range}`);
-  if (cfg.side) bits.push(game.i18n.localize(CARDRPG.conjureSides[cfg.side]).toLowerCase());
-  if (step.duration) bits.push(`for ${step.duration} round${step.duration === 1 ? "" : "s"}`);
-  else if (cfg.side) bits.push("for the rest of the fight");
+  /* The number, asked once. `DialogV2` rather than a field, because this is the one decision the
+   * card deliberately leaves to the table. */
+  const asked = await foundry.applications.api.DialogV2.prompt({
+    window: { title: named ? `Conjure ${named}` : "Conjure" },
+    content: `<p>How many${step.range ? `, within ${step.range}` : ""}?</p>`
+      + `<input type="number" name="count" value="1" min="1" max="20" autofocus>`,
+    ok: { label: "Conjure", callback: (_e, button) => Number(button.form.elements.count.value) }
+  }).catch(() => null);
+  const count = Number.isFinite(asked) && asked > 0 ? Math.min(asked, 20) : 0;
+  if (!count) return false;
+
+  /*
+   * The actor, built if the roster can make it. `buildMonster` is the one builder for this -- it
+   * earns the creature its intent deck from its capabilities -- so a conjuration does not get a
+   * second, thinner way of making a creature exist.
+   *
+   * And then OWNER for the conjurer, which is the only part of "under their control" that is not a
+   * sentence: a token the player cannot move is a conjuration the GM has to play for them.
+   */
+  let built = named ? game.actors.find(a => a.name === named) : null;
+  if (!built && named && creatures.has(named) && game.user.isGM) {
+    const { buildMonster } = await import("./setup.mjs");
+    built = await buildMonster(named);
+  }
+  if (built && game.user.isGM) {
+    await built.update({ ownership: { ...built.ownership, [game.user.id]: 3 } });
+  }
+
   const upkeep = [];
   if (cfg.upkeep?.taint) upkeep.push(`${cfg.upkeep.taint} Taint`);
   if (cfg.upkeep?.health) upkeep.push(`${cfg.upkeep.health} Health`);
 
-  /*
-   * The actor, when the thing named is one the roster can make. `buildMonster` is the one builder
-   * for this -- it earns the creature its intent deck from its capabilities -- so a conjuration
-   * does not get a second, thinner way of making a creature exist.
-   */
-  let built = null;
-  if (named && creatures.has(named) && game.user.isGM) {
-    const { buildMonster } = await import("./setup.mjs");
-    built = await buildMonster(named);
-  }
-
   await ChatMessage.create({
     speaker: ChatMessage.getSpeaker({ actor }),
-    content: `<div class="cardrpg"><p><strong>${actor.name}</strong> conjures: `
-      + `${bits.join(", ")}.</p>`
+    content: `<div class="cardrpg"><p><strong>${actor.name}</strong> conjures `
+      + `${count} \u00d7 ${named || "whatever the GM decides"}`
+      + `${step.range ? `, within ${step.range}` : ""}`
+      + `${step.duration ? `, for ${step.duration} round${step.duration === 1 ? "" : "s"}`
+        : ""}.</p>`
       + (upkeep.length ? `<p>Upkeep, each round it stands: ${upkeep.join(" and ")}.</p>` : "")
-      + (built ? `<p><em>${built.name}</em> is in the actors directory, with its intent deck.</p>`
-        : cfg.from === "corpse"
-          ? "<p>A body on the field is what it needs; the GM says which.</p>"
-          : "<p>The GM places it.</p>")
+      + (built ? `<p><em>${built.name}</em> is yours to place and to play.</p>`
+        : "<p>The GM places them.</p>")
       + "</div>"
   });
   return true;
 }
 
+/** The transformations, by name. */
+export function transformationsByName() {
+  return new Map(TRANSFORMATIONS.map(t => [t.name, t]));
+}
+
+/** Every slate the content tables know, by name, with the document type it becomes. */
+function slatesByName() {
+  const out = new Map();
+  for (const [list, type] of [
+    [ITEMS, "item"], [NPC_GEAR, "item"], [NATURAL_WEAPONS, "item"], [FEATURES, "feature"]
+  ]) {
+    for (const entry of list) if (!out.has(entry.name)) out.set(entry.name, { entry, type });
+  }
+  return out;
+}
+
 /**
- * **Take the shape of a creature in the roster.**
+ * Does one of the player's own slates fall inside a transformation's quarantine?
  *
- * A form names a creature and the creature supplies the numbers, which is the split a card and an
- * item have had from the start. So a form arrives as the creature's own **natural weapons,
- * equipped**: a body is what you fight with, and `Claws` is already an item with a Strike on it.
- * Nothing new resolves a shaped Strike, because the ordinary item path already picks up whatever
- * serves the verb.
+ * A filter rather than a list, for the same reason the intent pool is a filter: a list would have
+ * to be revisited every time somebody writes an item, and **a bird has no hands whatever is in the
+ * shop**. `slots`, `tags` and `kinds` select items by what they are; `features` names features,
+ * because there are few enough to say.
+ */
+export function quarantines(filter, slate) {
+  const q = filter ?? {};
+  if (slate.type === "feature") return (q.features ?? []).includes(slate.name);
+  if (slate.type !== "item") return false;
+  return (q.slots ?? []).includes(slate.system.slot)
+    || (q.kinds ?? []).includes(slate.system.kind)
+    || (q.tags ?? []).some(t => (slate.system.tags ?? []).includes(t));
+}
+
+const FORM_FLAG = "transformation";
+
+/**
+ * **Put a transformation on: add its cards, take the player's own away.**
  *
- * What a form does not touch, deliberately:
+ * The second half is what makes it a transformation rather than a bonus. A form that only adds is
+ * a costume -- you become a bird and keep your sword -- so each one names a filter of your own
+ * content that goes out of play while you wear it.
  *
- *   - **your deck**, because the deck is the character in this game. A shape that replaced it
- *     would be a different character wearing your name.
- *   - **your Health and your conditions**, because a bear that has forgotten it was poisoned is a
- *     way out of a condition that no card should hand over for nothing.
+ * **Quarantine is movement, not a flag.** A `quarantined` boolean would have to be respected by
+ * every place that reads a slate, and there are more than ten of those across combat, grants,
+ * resolution, the sheets and the tray; one of them would have been missed, which is the defect
+ * this project keeps finding. Taking the slate off the actor makes it unusable everywhere at once
+ * with no new reader anywhere, and its data is kept on the actor so that *put back* is literal.
  *
- * It ends when the form items are removed, and the message says so. A duration the engine enforced
- * would need somewhere to keep it between turns, and nothing in this system owns that yet.
+ * What a transformation still does not touch: your **Health** and your **conditions**. A bear that
+ * has forgotten it was poisoned is a way out of a condition that no card should hand over free.
  */
 export async function resolveShape(actor, { step }) {
-  const name = step.shape?.creature ?? "";
-  if (!name) return ui.notifications?.warn("This shape names no creature.");
-  const creature = creaturesByName().get(name);
-  if (!creature) {
-    return ui.notifications?.warn(`No creature called ${name} in the roster.`);
+  const name = step.shape?.transformation ?? "";
+  if (!name) return ui.notifications?.warn("This shape names no transformation.");
+  const form = transformationsByName().get(name);
+  if (!form) return ui.notifications?.warn(`No transformation called ${name}.`);
+  if (actor.getFlag("cardrpg", FORM_FLAG)) {
+    return ui.notifications?.warn(`${actor.name} is already transformed. End that one first.`);
   }
 
-  /* Its own gear, natural first: a form gives you the body, not the spear it was holding. */
-  const pool = [...NATURAL_WEAPONS, ...NPC_GEAR];
-  const bodies = (creature.equipped ?? [])
-    .map(n => pool.find(g => g.name === n))
-    .filter(g => g && (g.tags ?? []).includes("natural"));
-  if (!bodies.length) {
-    return ui.notifications?.warn(`${name} has no natural weapon to lend you.`);
+  /* --- what it gives. Items and features are slates; cards are dealt below. */
+  const known = slatesByName();
+  const missing = [...(form.grants?.items ?? []), ...(form.grants?.features ?? [])]
+    .filter(n => !known.has(n));
+  if (missing.length) {
+    return ui.notifications?.error(`${name} grants content that does not exist: ${missing.join(", ")}`);
+  }
+  const added = [];
+  for (const n of [...(form.grants?.items ?? []), ...(form.grants?.features ?? [])]) {
+    const src = known.get(n);
+    const data = slateData(src.entry, src.type);
+    added.push({
+      ...data,
+      system: { ...data.system, ...(src.type === "item" ? { equipped: true } : {}) },
+      flags: { cardrpg: { [FORM_FLAG]: name } }
+    });
   }
 
-  /* Already shaped into this: a second helping would stack two sets of claws. */
-  const mark = `form:${name}`;
-  if (actor.items.some(i => i.getFlag("cardrpg", "form") === mark)) {
-    return ui.notifications?.info(`${actor.name} already wears the shape of ${name}.`);
+  /* --- what it takes. Kept whole on the actor, because restoring it is the other half. */
+  const taken = actor.items.filter(i => quarantines(form.quarantine, i));
+  const kept = taken.map(i => i.toObject());
+
+  await actor.setFlag("cardrpg", FORM_FLAG, {
+    name, until: step.duration ?? null, slates: kept
+  });
+  if (added.length) await actor.createEmbeddedDocuments("Item", added);
+  if (taken.length) {
+    await actor.deleteEmbeddedDocuments("Item", taken.map(i => i.id));
   }
 
-  await actor.createEmbeddedDocuments("Item", bodies.map(body => ({
-    ...slateData(body, "item"),
-    name: `${name} — ${body.name}`,
-    system: { ...slateData(body, "item").system, equipped: true },
-    flags: { cardrpg: { form: mark } }
-  })));
+  /* --- and the cards, which move rather than being deleted: a card is a document the player owns
+   *     and a pile is where this game already puts one it is not using. */
+  const moved = await quarantineCards(actor, form);
 
-  const how = bodies.map(b => `${b.name} (Strike ${b.verbs?.strike?.value ?? "?"})`).join(", ");
   await ChatMessage.create({
     speaker: ChatMessage.getSpeaker({ actor }),
-    content: `<div class="cardrpg"><p><strong>${actor.name}</strong> takes the shape of `
-      + `<em>${name}</em>: ${how}.</p>`
+    content: `<div class="cardrpg"><p><strong>${actor.name}</strong> becomes <em>${name}</em>`
+      + `${step.duration ? ` for ${step.duration} round${step.duration === 1 ? "" : "s"}` : ""}.`
+      + `${form.blurb ? ` ${form.blurb}` : ""}</p>`
+      + `<p>Gained: ${added.length ? added.map(a => a.name).join(", ") : "nothing"}. `
+      + `Quarantined: ${[...taken.map(i => i.name), ...moved].join(", ") || "nothing"}.</p>`
       + `<p>Your deck, Health and conditions are your own still. `
-      + (step.duration ? `It holds for ${step.duration} round${step.duration === 1 ? "" : "s"}; `
-        : "")
-      + "remove the form items to end it.</p></div>"
+      + `End it with <code>game.cardrpg.endTransformation(actor)</code>.</p></div>`
+  });
+  return true;
+}
+
+/** The player's own action cards that a transformation names, moved to the quarantine pile. */
+async function quarantineCards(actor, form) {
+  const names = form.quarantine?.cards ?? [];
+  if (!names.length) return [];
+  const shelf = deckOf(actor, "quarantine");
+  if (!shelf) {
+    ui.notifications?.warn("No quarantine pile on this actor; its cards stay in play.");
+    return [];
+  }
+  const moved = [];
+  for (const which of ["actionHand", "action"]) {
+    const stack = deckOf(actor, which);
+    const hits = [...(stack?.cards ?? [])].filter(c => names.includes(c.name));
+    for (const card of hits) {
+      await card.setFlag("cardrpg", FORM_FLAG, which);
+      moved.push(card.name);
+    }
+    if (hits.length) await stack.pass(shelf, hits.map(c => c.id), { chatNotification: false });
+  }
+  return moved;
+}
+
+/**
+ * **Take it off: the added cards go, the quarantined ones come back.**
+ *
+ * The exact reverse, and written beside its other half on purpose. A mechanism that adds in one
+ * place and removes in another is one that will eventually add more than it removes, and what is
+ * left behind is a player quietly holding a bird's mouth and their own sword.
+ *
+ * A quarantined card goes back to the stack it came from, which is why the stack's name was
+ * written onto the card rather than assumed: a card taken from a hand belongs in that hand, and
+ * putting everything back in the deck would shuffle somebody's turn away.
+ */
+export async function endTransformation(actor) {
+  const worn = actor.getFlag("cardrpg", FORM_FLAG);
+  if (!worn) return ui.notifications?.info(`${actor.name} is not transformed.`);
+
+  const added = actor.items.filter(i => i.getFlag("cardrpg", FORM_FLAG));
+  if (added.length) await actor.deleteEmbeddedDocuments("Item", added.map(i => i.id));
+  if (worn.slates?.length) await actor.createEmbeddedDocuments("Item", worn.slates);
+
+  const shelf = deckOf(actor, "quarantine");
+  const returned = [];
+  for (const card of [...(shelf?.cards ?? [])]) {
+    const home = deckOf(actor, card.getFlag("cardrpg", FORM_FLAG) || "action");
+    if (!home) continue;
+    returned.push(card.name);
+    await card.unsetFlag("cardrpg", FORM_FLAG);
+    await shelf.pass(home, [card.id], { chatNotification: false });
+  }
+
+  await actor.unsetFlag("cardrpg", FORM_FLAG);
+  await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<div class="cardrpg"><p><strong>${actor.name}</strong> is themselves again`
+      + ` (<em>${worn.name}</em> ends).</p>`
+      + `<p>Returned: ${[...(worn.slates ?? []).map(s => s.name), ...returned].join(", ")
+        || "nothing"}.</p></div>`
   });
   return true;
 }
