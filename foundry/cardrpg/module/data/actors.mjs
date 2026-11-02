@@ -467,6 +467,34 @@ export class NpcData extends foundry.abstract.TypeDataModel {
       // Flat, for a creature with no body slate. Overridden by gear when it has some.
       armorBase: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 }),
 
+      /*
+       * **How far it moves when a card says "your speed".** An intent card prints a shape and the
+       * creature supplies the numbers (core-rules 9), exactly as a card half takes its Strike off
+       * the item -- so `Close In` is three squares for a goblin and eight for a rush spider, from
+       * one card. Zero is a real value: the Queen does not move.
+       */
+      speed: new fields.NumberField({ required: true, integer: true, min: 0, initial: 3 }),
+      /*
+       * **What it can do, which is what its deck is built from.** A card lists the capabilities it
+       * needs and a creature draws the subset it qualifies for (monsters.mjs), so a Goblin Archer
+       * earns *Loose* by being able to shoot and a spearman does not.
+       */
+      capabilities: new fields.ArrayField(new fields.StringField({
+        choices: Object.keys(CARDRPG.capabilities)
+      })),
+      /*
+       * The condition this creature's attacks carry, if any: one card in the pool is *Strike, and
+       * it carries whatever you carry*, which is how a goblin's dirty trick, a slitherer's venom, a
+       * Keres' disease and a Strigoi's bite are one card.
+       */
+      signature: new fields.SchemaField({
+        condition: new fields.StringField({
+          required: false, blank: true, initial: "",
+          choices: [...Object.keys(CARDRPG.conditions), ""]
+        }),
+        intensity: new fields.NumberField({ integer: true, min: 0, nullable: true, initial: null }),
+        duration: new fields.NumberField({ integer: true, min: 0, nullable: true, initial: null })
+      }),
       tactics: new fields.ArrayField(new fields.StringField({ choices: Object.keys(CARDRPG.tactics) })),
       targetPriority: new fields.StringField({
         required: true, initial: "nearest", choices: Object.keys(CARDRPG.targetPriorities)

@@ -159,9 +159,12 @@ export const GOBLIN_DECK = [
   }
 ];
 
+
 /* -------------------------------------------- */
 /*  Slates                                      */
 /* -------------------------------------------- */
+
+import { applyVariant } from "./monsters.mjs";
 
 const verb = (value, extra = {}) => ({ value, ...extra });
 
@@ -1321,8 +1324,772 @@ export const NPC_GEAR = [
     name: "Goblin Shortbow", ammo: "bow", slot: "hands", fits: ["back"], hands: 2, tags: ["ranged"],
     weight: 1, value: 0, npcGear: true, kind: "Weapon",
     verbs: { strike: verb(3, { range: 6 }) }
+  },
+  {
+    /* A shield is the one piece of NPC gear that changes how a fight feels rather than how much it
+     * hurts: it is what makes a Goblin Warrior worth killing before the spearmen. */
+    name: "Goblin Shield", slot: "offhand", hands: 1, tags: ["shield", "natural"],
+    weight: 2, value: 0, npcGear: true, kind: "Shield",
+    armor: 1, verbs: { defend: verb(2) }
+  },
+  {
+    name: "Goblin Fetish", slot: "hands", hands: 1, tags: ["arcane", "natural"],
+    weight: 0, value: 0, npcGear: true, kind: "Focus",
+    verbs: { cast: verb(3, { range: 4 }) }
+  },
+  {
+    name: "Mole Pick", slot: "hands", hands: 1, tags: ["melee", "natural"],
+    weight: 2, value: 0, npcGear: true, kind: "Weapon",
+    verbs: { strike: verb(4, { ignores: 1 }) }
+  },
+  {
+    name: "Dark Lantern", slot: "hands", hands: 1, tags: ["arcane", "natural"],
+    weight: 1, value: 0, npcGear: true, kind: "Focus",
+    verbs: { cast: verb(4, { range: 3 }) }
   }
 ];
+
+/* -------------------------------------------- */
+/*  The intent pool                             */
+/* -------------------------------------------- */
+
+/**
+ * The common intent pool (core-rules 9).
+ *
+ * **A card is a shape and the creature supplies the numbers.** That is the same split a player's
+ * card has always had -- *a card half says what you do; the item says how well* (config.mjs) -- and
+ * it is what lets one pool serve a roster: `Close In` is three squares for a goblin and six for a
+ * warg because `move` with no `param` means *your speed*, and the Strike comes off whatever the
+ * creature fights with.
+ *
+ * **A card earns its place by capability, not by name.** `needs` lists what a creature must be able
+ * to do; its deck is the subset it qualifies for. So adding a monster is declaring what it can do,
+ * and a card added here joins every creature that already qualifies without anybody revisiting them.
+ *
+ * **Five shapes need nothing and three need only that the creature can move**, which is eight for
+ * anything with legs and five for the one thing without them. A first pass had four, and
+ * twenty-seven of the fifty-five creatures landed on five cards or fewer: four universals plus
+ * one special. The floor is what generic shapes buy, and they are the cheap half of a pool.
+ *
+ * `move` is the one capability a card asks for that no creature declares, because it is derived
+ * from having legs, wings, fins or a tunnel -- and the Queen, who has none of them, is what makes
+ * asking for it worth the trouble rather than assuming it.
+ *
+ * Nothing here carries a condition except through the creature: *Envenom* applies **your own**, so
+ * one card is a goblin's dirty trick, a slitherer's venom, a Keres' disease and a Strigoi's bite.
+ */
+export const INTENTS = [
+  /* --- the eight anything can draw ------------------------------------------------------------ */
+  {
+    name: "Close In", needs: ["move"], text: "Move your speed, then Strike.",
+    sequence: [{ verb: "move" }, { verb: "strike" }]
+  },
+  {
+    name: "Strike and Step", needs: ["move"], text: "Strike, then move your speed away.",
+    sequence: [{ verb: "strike" }, { verb: "move" }]
+  },
+  {
+    name: "Press", needs: [],
+    text: "Strike, and Strike again at −1. Nothing clever, twice.",
+    sequence: [{ verb: "strike" }, { verb: "strike", mod: -1 }]
+  },
+  {
+    name: "Lash Out", needs: [],
+    text: "Strike every figure adjacent to you, friend or not.",
+    sequence: [{ verb: "strike", area: 1, areaKind: "blast" }]
+  },
+  {
+    name: "Set and Wait", needs: [],
+    text: "Defend, and keep a reaction for whoever comes.",
+    sequence: [{ verb: "defend" }]
+  },
+  {
+    name: "Hold the Line", needs: [],
+    text: "Defend, and an ally adjacent to you gains Block 1.",
+    sequence: [{ verb: "defend" }, { verb: "block", param: 1, range: 1 }]
+  },
+  {
+    name: "Give Ground", needs: ["move"],
+    text: "Move your speed away from the nearest enemy. A hurt thing that can leave, does.",
+    sequence: [{ verb: "move" }]
+  },
+  {
+    name: "Take Stock", needs: [],
+    text: "Nothing this round, and shake one condition off.",
+    sequence: [{ verb: "shake", param: 1 }]
+  },
+
+  /* --- reach and distance --------------------------------------------------------------------- */
+  {
+    name: "Loose", needs: ["ranged"], text: "Strike at your weapon's range.",
+    sequence: [{ verb: "strike" }]
+  },
+  {
+    name: "Spray", needs: ["spray"],
+    text: "Strike everything in the area, at range. Whatever you breathe, you breathe it on "
+      + "your own kind too.",
+    sequence: [{ verb: "strike", areaKind: "blast" }]
+  },
+  {
+    name: "Long Arm", needs: ["reach"],
+    text: "Strike at reach without closing, and stay where you are.",
+    sequence: [{ verb: "strike" }]
+  },
+
+  /* --- speed and weight ----------------------------------------------------------------------- */
+  {
+    name: "Charge", needs: ["fast", "move"],
+    text: "Move double your speed in a straight line, then Strike. The distance is the damage.",
+    sequence: [{ verb: "move" }, { verb: "strike", mod: 1 }]
+  },
+  {
+    name: "Bull Through", needs: ["brute", "move"],
+    text: "Move your speed through a figure in the way, pushing it aside, then Strike.",
+    sequence: [{ verb: "move" }, { verb: "strike" }]
+  },
+  {
+    name: "Bring It Down", needs: ["siege"],
+    text: "Strike a door, a wall or a held position, ignoring its armour entirely.",
+    sequence: [{ verb: "strike", ignores: 99 }]
+  },
+
+  /* --- numbers -------------------------------------------------------------------------------- */
+  {
+    name: "Swarm", needs: ["pack", "move"],
+    text: "Move, then Strike at +1 for each ally already adjacent to your target.",
+    sequence: [{ verb: "move" }, { verb: "strike", mod: 1 }]
+  },
+  {
+    name: "Drag Down", needs: ["grapple"],
+    text: "Strike; on a hit the target is Grappled and goes nowhere.",
+    sequence: [{ verb: "strike", condition: "grappled", duration: 1 }]
+  },
+
+  /* --- what it leaves behind ------------------------------------------------------------------- */
+  {
+    name: "Envenom", needs: ["venom"],
+    text: "Strike; on a hit it carries whatever you carry.",
+    sequence: [{ verb: "strike" }]
+  },
+  {
+    name: "Feed", needs: ["drain"],
+    text: "Strike an adjacent figure and heal what you took out of it.",
+    sequence: [{ verb: "strike" }, { verb: "heal" }]
+  },
+
+  /* --- arriving and leaving -------------------------------------------------------------------- */
+  {
+    name: "Go Under", needs: ["burrow"],
+    text: "Leave the map. Next round you arrive anywhere you could have walked to.",
+    sequence: [{ verb: "move" }]
+  },
+  {
+    name: "Submerge", needs: ["swim"],
+    text: "Go under the water. Next round you surface anywhere along it.",
+    sequence: [{ verb: "move" }]
+  },
+  {
+    name: "Stoop", needs: ["flight"],
+    text: "Arrive from above: move twice your speed, then Strike.",
+    sequence: [{ verb: "move" }, { verb: "strike" }]
+  },
+  {
+    name: "Fade", needs: ["stealth", "move"],
+    text: "Move your speed and become Hidden. You were never standing there.",
+    sequence: [{ verb: "move" }, { verb: "strike", condition: "invisible", duration: 1 }]
+  },
+  {
+    name: "Lie Still", needs: ["dormant"],
+    text: "Nothing at all, and the next Strike you make cannot be answered by a reaction.",
+    sequence: []
+  },
+
+  /* --- the ones that act on somebody else ------------------------------------------------------ */
+  {
+    name: "Order", needs: ["commander"],
+    text: "An ally within sight acts again, or moves its speed. You do nothing yourself.",
+    sequence: []
+  },
+  {
+    name: "Call More", needs: ["summon"],
+    text: "Something arrives at the edge of the scene. The GM says what and how much.",
+    sequence: []
+  },
+  {
+    name: "Work the Weave", needs: ["caster"],
+    text: "Cast one from your own short list.",
+    sequence: [{ verb: "cast" }]
+  },
+  {
+    name: "Carry", needs: ["transport", "move"],
+    text: "A willing ally rides: it moves with you, and may still act when you stop.",
+    sequence: [{ verb: "move" }]
+  },
+  {
+    name: "Shelter", needs: ["shelter"],
+    text: "Allies within 1 cannot be targeted at range while you stand.",
+    sequence: [{ verb: "defend" }]
+  }
+];
+
+/* -------------------------------------------- */
+/*  Natural weapons                             */
+/* -------------------------------------------- */
+
+/**
+ * What a creature with no hands fights with.
+ *
+ * core-rules 9 settles this already: *NPCs still use items for their Strike and Cast values, so
+ * the same goblin deck works for a spear goblin and a bow goblin.* A mandible is therefore an item,
+ * which costs no new mechanism and makes the one knob that sets how dangerous a monster is the same
+ * knob for every monster.
+ *
+ * The **`natural` tag** is what separates these from a goblin's spear: a thing grown rather than
+ * carried cannot be disarmed, broken or looted. Nothing in the engine disarms anybody yet, so the
+ * tag is a label the table reads and a thing the validator can insist on -- but it is on the item
+ * from the start rather than added once somebody writes a disarm rule and finds a dragon dropping
+ * its teeth.
+ */
+export const NATURAL_WEAPONS = [
+  {
+    name: "Mandibles", slot: "hands", hands: 0, tags: ["melee", "natural"],
+    weight: 0, value: 0, npcGear: true, kind: "Natural",
+    verbs: { strike: verb(3) }
+  },
+  {
+    name: "Heavy Mandibles", slot: "hands", hands: 0, tags: ["melee", "heavy", "natural"],
+    weight: 0, value: 0, npcGear: true, kind: "Natural",
+    verbs: { strike: verb(5) }
+  },
+  {
+    name: "Claws", slot: "hands", hands: 0, tags: ["melee", "natural"],
+    weight: 0, value: 0, npcGear: true, kind: "Natural",
+    verbs: { strike: verb(4) }
+  },
+  {
+    name: "Sting", slot: "hands", hands: 0, tags: ["melee", "natural"],
+    weight: 0, value: 0, npcGear: true, kind: "Natural",
+    verbs: { strike: verb(2) }
+  },
+  {
+    name: "Tusks", slot: "hands", hands: 0, tags: ["melee", "heavy", "natural"],
+    weight: 0, value: 0, npcGear: true, kind: "Natural",
+    verbs: { strike: verb(6, { reach: 2 }) }
+  },
+  {
+    /* A club on a long tail (Firma.md), which is what reach IS: it hits at two and not at one. */
+    name: "Tail Club", slot: "hands", hands: 0, tags: ["melee", "heavy", "natural"],
+    weight: 0, value: 0, npcGear: true, kind: "Natural",
+    verbs: { strike: verb(7, { reach: 2, ignores: 2 }) }
+  },
+  {
+    name: "Grasping Claws", slot: "hands", hands: 0, tags: ["melee", "natural"],
+    weight: 0, value: 0, npcGear: true, kind: "Natural",
+    verbs: { strike: verb(5, { reach: 2 }) }
+  },
+  {
+    name: "Acid Spray", slot: "hands", hands: 0, tags: ["ranged", "natural"],
+    weight: 0, value: 0, npcGear: true, kind: "Natural",
+    verbs: { strike: verb(4, { range: 3, area: 1, ignores: 2 }) }
+  },
+  {
+    name: "Fire Spray", slot: "hands", hands: 0, tags: ["ranged", "natural"],
+    weight: 0, value: 0, npcGear: true, kind: "Natural",
+    verbs: { strike: verb(5, { range: 4, area: 2, ignores: 1 }) }
+  },
+  {
+    /* Harmless means harmless: the world says so of Scrips and Processors, and a creature the
+     * party can ignore is a creature the party has to decide to ignore. */
+    name: "Nip", slot: "hands", hands: 0, tags: ["melee", "natural"],
+    weight: 0, value: 0, npcGear: true, kind: "Natural",
+    verbs: { strike: verb(1) }
+  }
+];
+
+/* -------------------------------------------- */
+/*  The roster                                  */
+/* -------------------------------------------- */
+
+/**
+ * The Horde and the burrowers, with numbers.
+ *
+ * **Every number is a multiple of the one creature that was measured.** A goblin is Health 5,
+ * Strike 3, armour 0, and the simulator ran four of them against a starter Warrior until the shape
+ * of that fight was known (sim/analysis-2026-10-21.md onward). Nothing else in this table has been
+ * simulated, so nothing else is claimed: these are **ratios to a goblin**, stated as ratios, and
+ * the tuning rule they obey is core-rules 9's -- *keep a weak enemy's Strike at least 2 above the
+ * heroes' armour*, which is why the floor here is 3 and not 2.
+ *
+ * | | Health | Strike | armour |
+ * |---|---|---|---|
+ * | a goblin, measured | 5 | 3 | 0 |
+ * | Horde infantry | 5 | 3 | 1 |
+ * | a lieutenant | 15 | 5 | 2 |
+ * | a general | 25 | 5 | 3 |
+ * | the Queen | 60 | 4 | 4 |
+ *
+ * **Capabilities, not decks.** Each creature declares what it can do and its intent deck is the
+ * subset of the pool it qualifies for, which is why `capabilities` is the longest line on most of
+ * these and why none of them lists a card.
+ */
+export const MONSTERS = [
+
+  /* --- the Horde: an army, so it has infantry, air, cavalry, engineers and officers ----------- */
+  {
+    name: "Flat Bug", type: "npc",
+    system: {
+      health: { value: 5, base: 5 }, kind: "flat-bug", armorBase: 1, speed: 3,
+      capabilities: ["legs", "pack"],
+      tactics: ["packTactics", "shieldWall"], targetPriority: "nearest"
+    },
+    equipped: ["Mandibles"],
+    note: "the Horde's main infantry: a goblin with a shell and no fear"
+  },
+  {
+    name: "Scrip", type: "npc",
+    system: {
+      health: { value: 2, base: 2 }, kind: "scrip", armorBase: 0, speed: 6,
+      capabilities: ["flight", "pack"],
+      tactics: ["skirmisher"], targetPriority: "nearest"
+    },
+    equipped: ["Nip"],
+    note: "eyes and ears, and harmless: the question is whether you spend a turn on one"
+  },
+  {
+    name: "Sweeper", type: "npc",
+    system: {
+      health: { value: 8, base: 8 }, kind: "sweeper", armorBase: 1, speed: 7,
+      capabilities: ["flight", "fast"],
+      tactics: ["skirmisher", "ambusher"], targetPriority: "weakest"
+    },
+    equipped: ["Claws"],
+    note: "the air force: four wings and a dive"
+  },
+  {
+    name: "Mantiss", type: "npc",
+    system: {
+      health: { value: 12, base: 12 }, kind: "mantiss", armorBase: 2, speed: 4,
+      capabilities: ["legs", "reach", "commander"],
+      tactics: ["commander", "skirmisher"], targetPriority: "leader"
+    },
+    equipped: ["Grasping Claws"],
+    note: "sergeants: the first thing in the Horde that gives an order"
+  },
+  {
+    name: "Smash Beetle", type: "npc",
+    system: {
+      health: { value: 20, base: 20 }, kind: "smash-beetle", armorBase: 3, speed: 2,
+      capabilities: ["legs", "brute", "siege", "reach"],
+      tactics: ["brute"], targetPriority: "nearest"
+    },
+    equipped: ["Tail Club"],
+    note: "it is here for the wall, and you are in the way of the wall"
+  },
+  {
+    name: "Rush Spider", type: "npc",
+    system: {
+      health: { value: 10, base: 10 }, kind: "rush-spider", armorBase: 1, speed: 8,
+      capabilities: ["legs", "fast", "transport"],
+      tactics: ["skirmisher"], targetPriority: "weakest"
+    },
+    equipped: ["Mandibles"],
+    note: "cavalry: it arrives before you have finished deciding"
+  },
+  {
+    name: "Mega Beetle", type: "npc",
+    system: {
+      health: { value: 30, base: 30 }, kind: "mega-beetle", armorBase: 4, speed: 2,
+      capabilities: ["legs", "shelter"],
+      tactics: ["shieldWall", "bodyguard"], targetPriority: "nearest"
+    },
+    equipped: ["Heavy Mandibles"],
+    note: "a wall that walks: the Scrips under its wings are the point of it"
+  },
+  {
+    name: "Slitherer", type: "npc",
+    system: {
+      health: { value: 7, base: 7 }, kind: "slitherer", armorBase: 1, speed: 4,
+      capabilities: ["legs", "stealth", "venom"],
+      tactics: ["ambusher"], targetPriority: "weakest",
+      signature: { condition: "poisoned", intensity: 2, duration: 2 }
+    },
+    equipped: ["Mandibles"],
+    note: "silent and venomous: the two words the world gives it, and both are mechanical"
+  },
+  {
+    name: "Stinger", type: "npc",
+    system: {
+      health: { value: 6, base: 6 }, kind: "stinger", armorBase: 0, speed: 6,
+      capabilities: ["flight", "venom"],
+      tactics: ["skirmisher"], targetPriority: "caster",
+      signature: { condition: "poisoned", intensity: 1, duration: 3 }
+    },
+    equipped: ["Sting"],
+    note: "it goes for whoever is concentrating"
+  },
+  {
+    name: "Blind Worm", type: "npc",
+    system: {
+      health: { value: 14, base: 14 }, kind: "blind-worm", armorBase: 2, speed: 3,
+      capabilities: ["burrow", "brute"],
+      tactics: ["ambusher"], targetPriority: "nearest"
+    },
+    equipped: ["Heavy Mandibles"],
+    note: "no sight and a sense for vibration: it finds whoever moved"
+  },
+  {
+    name: "Armored Slug", type: "npc",
+    system: {
+      health: { value: 16, base: 16 }, kind: "armored-slug", armorBase: 4, speed: 1,
+      capabilities: ["legs", "spray"],
+      tactics: ["sniper"], targetPriority: "nearest"
+    },
+    equipped: ["Acid Spray"],
+    note: "slow, armoured, and it does not need to reach you"
+  },
+  {
+    name: "Five Legs", type: "npc",
+    system: {
+      health: { value: 15, base: 15 }, kind: "five-legs", armorBase: 2, speed: 4,
+      capabilities: ["legs", "commander"],
+      tactics: ["commander", "packTactics"], targetPriority: "leader"
+    },
+    equipped: ["Claws"],
+    note: "lieutenants, fairly intelligent: it spends its turn on somebody else's"
+  },
+  {
+    name: "Terror Fly", type: "npc",
+    system: {
+      health: { value: 18, base: 18 }, kind: "terror-fly", armorBase: 2, speed: 6,
+      capabilities: ["flight", "spray", "commander"],
+      tactics: ["commander", "sniper"], targetPriority: "weakest",
+      signature: { condition: "burning", intensity: 2, duration: 2 }
+    },
+    equipped: ["Fire Spray"],
+    note: "captains, and the first thing in the roster that burns ground"
+  },
+  {
+    name: "Pincer", type: "npc",
+    system: {
+      health: { value: 25, base: 25 }, kind: "pincer", armorBase: 3, speed: 4,
+      capabilities: ["legs", "grapple", "commander", "reach"],
+      tactics: ["commander", "grappler"], targetPriority: "leader"
+    },
+    equipped: ["Grasping Claws"],
+    note: "generals, intelligent, armoured: it takes somebody out of the fight rather than down"
+  },
+  {
+    name: "The Queen", type: "npc",
+    system: {
+      health: { value: 60, base: 60 }, kind: "queen", armorBase: 4, speed: 0,
+      capabilities: ["commander", "summon"],
+      tactics: ["commander"], targetPriority: "nearest"
+    },
+    equipped: ["Heavy Mandibles"],
+    note: "unique, rooted, and the only thing here that cannot walk: she spends every turn "
+      + "on the army instead"
+  },
+  {
+    name: "Processor", type: "npc",
+    system: {
+      health: { value: 4, base: 4 }, kind: "processor", armorBase: 1, speed: 3,
+      capabilities: ["legs"],
+      tactics: [], targetPriority: "nearest"
+    },
+    equipped: ["Nip"],
+    note: "workers: they build, and they are what a scene looks like before the fight"
+  },
+  {
+    name: "Doomfly", type: "npc",
+    system: {
+      health: { value: 12, base: 12 }, kind: "doomfly", armorBase: 1, speed: 7,
+      capabilities: ["flight", "transport"],
+      tactics: [], targetPriority: "nearest"
+    },
+    equipped: ["Nip"],
+    note: "transport: it is how everything else arrived"
+  },
+  {
+    name: "Skaah", type: "npc",
+    system: {
+      health: { value: 40, base: 40 }, kind: "skaah", armorBase: 2, speed: 4,
+      capabilities: ["flight", "transport", "shelter"],
+      tactics: ["bodyguard"], targetPriority: "nearest"
+    },
+    equipped: ["Nip"],
+    note: "a drop ship: balloon-like, gigantic, and full of something worse"
+  },
+
+  /* --- the burrower group -------------------------------------------------------------------- */
+  {
+    name: "Mole Beast", type: "npc",
+    system: {
+      health: { value: 22, base: 22 }, kind: "mole-beast", armorBase: 2, speed: 3,
+      capabilities: ["burrow", "brute", "reach"],
+      tactics: ["brute", "ambusher"], targetPriority: "nearest"
+    },
+    equipped: ["Tusks"],
+    note: "it comes up underneath, which is what Go Under is for"
+  },
+  {
+    name: "Mole Man", type: "npc",
+    system: {
+      health: { value: 8, base: 8 }, kind: "mole-man", armorBase: 1, speed: 3,
+      capabilities: ["burrow", "legs", "pack"],
+      tactics: ["packTactics"], targetPriority: "weakest"
+    },
+    equipped: ["Mole Pick"],
+    note: "followers of the Queen of the Dark, and the only burrower that carries a tool"
+  },
+  {
+    name: "Burrower", type: "npc",
+    system: {
+      health: { value: 18, base: 18 }, kind: "burrower", armorBase: 2, speed: 5,
+      capabilities: ["burrow", "transport"],
+      tactics: [], targetPriority: "nearest"
+    },
+    equipped: ["Mandibles"],
+    note: "worms, and the steeds of the mole men: it is how they arrive under you"
+  }
+];
+
+/**
+ * And the rest of the roster, tagged and not numbered.
+ *
+ * **Capabilities without statblocks**, which is a deliberate half: the deck a creature would draw
+ * is computable from these alone, so the pool can be checked against the whole roster while only
+ * two groups carry numbers. A creature here is written down, not built -- and the validator counts
+ * them so the difference cannot be mistaken for completeness.
+ *
+ * The twelve demons are **not here at all**: Firma.md gives Watchers, Wanderers, Tempters, Djinn,
+ * Gheul, Naga, Div, Estries, Familiars, Incubi/Succubi, Cambion and Imp as names with no
+ * description. Nothing can be read off a name, so nothing is claimed.
+ */
+export const MONSTER_TAGS = [
+  { name: "Elves", group: "elf", caps: ["legs", "caster", "stealth"] },
+  { name: "Tomtar", group: "elf", caps: ["legs", "caster"] },
+  { name: "Little folk", group: "elf", caps: ["legs", "caster", "stealth"] },
+  { name: "Nature spirits", group: "elf", caps: ["legs", "caster"] },
+
+  { name: "Mountain trolls", group: "troll", caps: ["legs", "brute", "dormant", "siege"] },
+  { name: "Forest trolls", group: "troll", caps: ["legs", "brute", "stealth"] },
+  { name: "Changelings", group: "troll", caps: ["legs", "stealth"] },
+  { name: "Trollkin", group: "troll", caps: ["legs", "pack"] },
+
+  { name: "Strigoi", group: "undead", caps: ["legs", "drain", "caster", "commander", "stealth"] },
+  { name: "Chupacabra", group: "undead", caps: ["legs", "pack", "drain", "fast"] },
+  { name: "Alp", group: "undead", caps: ["legs", "drain", "stealth"] },
+  { name: "Dhampir", group: "undead", caps: ["legs", "drain"] },
+  { name: "Lugat", group: "undead", caps: ["legs", "drain", "brute"] },
+  { name: "Draugr", group: "undead", caps: ["legs", "brute", "dormant"] },
+  { name: "Keres", group: "undead", caps: ["legs", "venom", "pack"] },
+  { name: "Revenant", group: "undead", caps: ["legs", "brute"] },
+  { name: "Shade", group: "undead", caps: ["legs", "stealth", "caster"] },
+
+  { name: "Dragon", group: "dragon", caps: ["flight", "spray", "brute", "caster"] },
+  { name: "Lindworm", group: "dragon", caps: ["legs", "spray", "brute"] },
+  { name: "Sea serpent", group: "dragon", caps: ["swim", "brute", "grapple"] },
+  { name: "Wyvern", group: "dragon", caps: ["flight", "venom", "fast"] }
+];
+
+/**
+ * Variants: a base, and a handful of deltas.
+ *
+ * **A variant draws a different deck, which is the whole reason this is a scheme rather than a
+ * naming convention.** A deck is the subset of the intent pool a creature's capabilities earn, so a
+ * Goblin Archer with `ranged` draws *Loose* and a spearman does not -- where today the two share one
+ * deck and both throw rocks, which is the defect this fixes rather than inherits.
+ *
+ * Numbers are **deltas and never absolutes**, so correcting a base moves every variant with it and
+ * the goblin-as-unit calibration holds across the roster. `+cap` adds and `-cap` removes; a missing
+ * field is the base's.
+ *
+ * `kind` is its own for each variant, because `kind` is what owns a deck and an intent card
+ * (actor-schema 5): sharing it is sharing the turn.
+ */
+export const VARIANTS = {
+  /* --- the goblins, who were the whole roster until now ---------------------------------------
+   *
+   * The spearman keeps the numbers that were simulated. Everything here is a delta from him, which
+   * is also the honest way to say that none of these four has been simulated at all.
+   */
+  goblin: [
+    {
+      name: "Goblin Warrior", kind: "goblin-warrior",
+      health: 3, armour: 1, caps: ["+brute"], tactics: ["+shieldWall", "-cowardly"],
+      gear: ["Goblin Spear", "Goblin Shield"], priority: "nearest",
+      note: "the one that does not run: a shield, a shell of discipline, and no Cower"
+    },
+    {
+      name: "Goblin Archer", kind: "goblin-archer",
+      caps: ["+ranged"], tactics: ["+sniper"], gear: ["Goblin Shortbow"], priority: "caster",
+      note: "it earns Loose by being able to shoot, which the spearman cannot"
+    },
+    {
+      name: "Goblin Shaman", kind: "goblin-shaman",
+      health: 1, speed: -1, caps: ["+caster"], tactics: ["+tainting"],
+      gear: ["Goblin Fetish"], priority: "weakest",
+      signature: { condition: "cursed", duration: 2 },
+      note: "the elves taught it enough glamour to be dangerous and not enough to be free"
+    },
+    {
+      name: "Goblin Chief", kind: "goblin-chief",
+      health: 6, armour: 1, caps: ["+commander"], tactics: ["+commander", "-cowardly"],
+      gear: ["Goblin Spear", "Goblin Shield"], priority: "leader",
+      note: "kill it and the Cower comes back to everybody else"
+    }
+  ],
+
+  /* --- the Horde ------------------------------------------------------------------------------ */
+  "flat-bug": [
+    {
+      name: "Flat Bug Shieldline", kind: "flat-bug-shield",
+      health: 2, armour: 1, speed: -1, tactics: ["+shieldWall"], priority: "nearest",
+      note: "the front rank, which is where the Horde's armour actually is"
+    },
+    {
+      name: "Flat Bug Runner", kind: "flat-bug-runner",
+      health: -1, armour: -1, speed: 2, caps: ["+fast"], tactics: ["+skirmisher"],
+      note: "sent ahead to find out where you are, and dies finding out"
+    }
+  ],
+  scrip: [
+    {
+      name: "Scrip Watcher", kind: "scrip-watcher",
+      speed: 1, caps: ["+stealth"], tactics: ["+ambusher"],
+      note: "the one that is still watching after you killed the others"
+    }
+  ],
+  sweeper: [
+    {
+      name: "Sweeper Diver", kind: "sweeper-diver",
+      health: -2, speed: 2, tactics: ["+ambusher"], priority: "caster",
+      note: "it comes down on whoever is concentrating"
+    },
+    {
+      name: "Sweeper Carrier", kind: "sweeper-carrier",
+      health: 4, speed: -1, caps: ["+transport"], gear: ["Nip"],
+      note: "it is carrying something, and the something is the encounter"
+    }
+  ],
+  mantiss: [
+    {
+      name: "Mantiss Veteran", kind: "mantiss-veteran",
+      health: 6, armour: 1, caps: ["+grapple"], tactics: ["+grappler"],
+      note: "it has done this before and takes you out of the fight first"
+    }
+  ],
+  "smash-beetle": [
+    {
+      name: "Smash Beetle Breaker", kind: "smash-beetle-breaker",
+      health: 8, armour: 1, speed: -1,
+      note: "bred bigger for the gates of the Third Ring, and it does not turn quickly"
+    }
+  ],
+  "rush-spider": [
+    {
+      name: "Rush Spider Rider", kind: "rush-spider-rider",
+      health: 4, caps: ["+pack"], tactics: ["+packTactics"],
+      note: "carrying a Mole Man, which is two statblocks arriving as one problem"
+    }
+  ],
+  slitherer: [
+    {
+      name: "Slitherer Brood", kind: "slitherer-brood",
+      health: -3, speed: 1, caps: ["+pack"], tactics: ["+packTactics"],
+      signature: { condition: "poisoned", intensity: 1, duration: 2 },
+      note: "smaller, and there are always more of them than you counted"
+    }
+  ],
+  stinger: [
+    {
+      name: "Stinger Drone", kind: "stinger-drone",
+      health: 4, caps: ["+spray"], gear: ["Acid Spray"], tactics: ["+sniper"],
+      note: "the sting became a nozzle somewhere in the hive's history"
+    }
+  ],
+  "blind-worm": [
+    {
+      name: "Blind Worm Elder", kind: "blind-worm-elder",
+      health: 10, armour: 1, caps: ["+grapple"], tactics: ["+grappler"],
+      note: "old enough to have learned that a held thing stops moving and stops being felt"
+    }
+  ],
+  "armored-slug": [
+    {
+      name: "Armored Slug Spitter", kind: "armored-slug-spitter",
+      health: -4, armour: -1, speed: 1, priority: "caster",
+      note: "thinner shell, longer reach of acid: it is here to ruin somebody's concentration"
+    }
+  ],
+  "five-legs": [
+    {
+      name: "Five Legs Adjutant", kind: "five-legs-adjutant",
+      health: -3, caps: ["+summon"], tactics: ["-packTactics"],
+      note: "it does not fight at all: it calls the next wave"
+    }
+  ],
+  "terror-fly": [
+    {
+      name: "Terror Fly Torch", kind: "terror-fly-torch",
+      health: -4, caps: ["-commander"], tactics: ["-commander", "+sniper"],
+      signature: { condition: "burning", intensity: 3, duration: 2 },
+      note: "all the fire and none of the authority"
+    }
+  ],
+  pincer: [
+    {
+      name: "Pincer Marshal", kind: "pincer-marshal",
+      health: 10, armour: 1, caps: ["+summon"],
+      note: "a general who can call for more is the fight not ending"
+    }
+  ],
+  processor: [
+    {
+      name: "Processor Driller", kind: "processor-driller",
+      health: 2, caps: ["+burrow", "+siege"], gear: ["Mandibles"],
+      note: "what the Horde uses instead of a siege engine, and the reason walls fall from below"
+    }
+  ],
+  skaah: [
+    {
+      name: "Skaah Bloated", kind: "skaah-bloated",
+      health: 20, armour: -1, speed: -1, caps: ["+spray"], gear: ["Acid Spray"],
+      note: "full, low and leaking: it is going to come down somewhere"
+    }
+  ],
+
+  /* --- the burrowers -------------------------------------------------------------------------- */
+  "mole-beast": [
+    {
+      name: "Mole Beast Tusker", kind: "mole-beast-tusker",
+      health: 8, armour: 1, caps: ["+siege"], tactics: ["+brute"],
+      note: "the one the mole men dig behind"
+    }
+  ],
+  "mole-man": [
+    {
+      name: "Mole Man Digger", kind: "mole-man-digger",
+      caps: ["+siege"], gear: ["Mole Pick"], tactics: ["-packTactics"],
+      note: "it is not fighting you, it is getting through the floor you are standing on"
+    },
+    {
+      name: "Mole Man Priest", kind: "mole-man-priest",
+      health: 2, speed: -1, caps: ["+caster"], gear: ["Dark Lantern"], priority: "weakest",
+      tactics: ["+tainting"],
+      signature: { condition: "cursed", duration: 2 },
+      note: "the Queen of the Dark grants to those who go deep enough, and it has"
+    }
+  ],
+  burrower: [
+    {
+      name: "Burrower Brood Mother", kind: "burrower-mother",
+      health: 12, armour: 1, speed: -2, caps: ["+summon", "-transport"],
+      note: "it stopped being a steed when it started laying"
+    }
+  ]
+};
+
 
 /**
  * Features. A passive feature is simply true and stays small; anything that would swing a fight
@@ -1454,6 +2221,14 @@ export const GOBLIN = {
     health: { value: 5, base: 5 },
     kind: "goblin",
     armorBase: 0,
+    /*
+     * **The two fields the roster reads, on the one creature that was measured.** `speed` is what
+     * `move` with no number means on an intent card, and `capabilities` is what earns a card its
+     * place in this creature's deck -- so the goblin's three squares and its pack instinct are now
+     * the same kind of statement as a dragon's wings.
+     */
+    speed: 3,
+    capabilities: ["legs", "pack"],
     tactics: ["packTactics", "cowardly"],
     targetPriority: "weakest"
   },
@@ -1461,18 +2236,29 @@ export const GOBLIN = {
 };
 
 /** Same deck, same type, different gear -- which is the point of NPCs drawing values from items. */
-export const GOBLIN_ARCHER = {
-  name: "Goblin Archer",
-  type: "npc",
-  system: {
-    health: { value: 5, base: 5 },
-    kind: "goblin",
-    armorBase: 0,
-    tactics: ["packTactics", "cowardly"],
-    targetPriority: "weakest"
-  },
-  equipped: ["Goblin Shortbow"]
-};
+/**
+ * **The archer is a variant now, and that is a repair rather than a tidy-up.**
+ *
+ * It used to be a second statblock identical to the spearman -- same Health, same armour, same
+ * tactics, the same `kind`, and therefore **the same intent deck**: both drew *Throw Rock*, so the
+ * melee goblin shot as often as the archer did and the archer differed only by holding a bow.
+ *
+ * As a delta it differs where it should: `+ranged` earns it *Loose* from the pool, `sniper` changes
+ * how it picks, `caster` priority sends it after whoever is concentrating, and its own `kind` gives
+ * it its own intent. Derived from the base so the two cannot drift apart again.
+ */
+export const GOBLIN_ARCHER = applyVariant(GOBLIN, VARIANTS.goblin
+  .find(v => v.kind === "goblin-archer"));
+
+/**
+ * Every base creature in the game, in one list.
+ *
+ * The goblin is declared below the table rather than inside it, because it is older than the table
+ * and `createStarterContent` builds it by name -- but it belongs to the roster, and it is the only
+ * creature in it whose numbers were measured rather than reasoned, so everything else is a ratio to
+ * this entry (sim/analysis-2026-10-21.md onward).
+ */
+export const ROSTER = [GOBLIN, ...MONSTERS];
 
 /* -------------------------------------------- */
 /*  Formulas                                    */
@@ -4200,6 +4986,14 @@ export const DECK_BACKS = {
     art: "",
     note: "An NPC intent deck, keyed by creature kind: the back shows the kind and nothing else, "
       + "so the table can tell a goblin's intents from anything else's at a glance."
+  },
+  npc: {
+    label: "Intent, any creature",
+    art: "",
+    note: "The back every creature uses until it has earned one of its own. Forty-seven kinds "
+      + "would be forty-seven pieces of back art, and the roster grew faster than the art could; "
+      + "a kind with its own key uses it, and everything else uses this. The recognisability "
+      + "argument above is why the exceptions exist rather than why they all should."
   }
 };
 

@@ -7,7 +7,7 @@
 
 import { CARDRPG } from "./module/config.mjs";
 import { registerSheets } from "./module/sheets.mjs";
-import { createStarterContent, ensureSetupMacro } from "./module/setup.mjs";
+import { createStarterContent, ensureSetupMacro, buildMonster } from "./module/setup.mjs";
 import { CardRPGCombat, registerCombatHooks } from "./module/combat.mjs";
 import { CardRPGTray, registerTrayHooks } from "./module/tray.mjs";
 import { registerCheckHooks } from "./module/checks.mjs";
@@ -240,6 +240,12 @@ Hooks.once("ready", async () => {
     decks,
     openTray: actor => CardRPGTray.openFor(actor),
     levelUp: actor => LevelUpPane.openFor(actor),
+    /*
+     * **Any creature in the roster, on demand.** The starter world builds the goblin line and
+     * nothing else -- forty-seven monsters in a new world is a world nobody can find anything in --
+     * so the rest arrive when a GM asks for one by name, with the deck its capabilities earn.
+     */
+    buildMonster,
     /* So a GM can grant from a macro as well as from the sheet. */
     grantLevel: async (actor, n = 1) => actor.update({
       "system.levels.pending": Math.max(0, (actor.system.levels?.pending ?? 0) + n)

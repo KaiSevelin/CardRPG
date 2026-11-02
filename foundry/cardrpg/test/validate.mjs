@@ -2177,6 +2177,7 @@ check("Mind and Faith are stringent in different ways",
 section("the levelling graph as data");
 
 const graph = await import("../module/graph.mjs");
+const monsters = await import("../module/monsters.mjs");
 const graphSource = fs.readFileSync(path.join(root, "module/graph.mjs"), "utf8");
 const nodes = content.NODES;
 const byId = graph.GRAPH;
@@ -5025,7 +5026,7 @@ const artable = [
   content.FEATURES, content.ITEMS.filter(i => !i.npc), content.NPC_GEAR ?? [],
   ...Object.entries(content).filter(([k]) => k.endsWith("_SIGNATURES")).map(([, v]) => v)
 ].flat();
-check("pieces of content that take art", artable.length, 410);
+check("pieces of content that take art", artable.length, 414);
 
 /*
  * The backs, which are a different kind of art: **one picture per deck, not one per card**, doing
@@ -5033,9 +5034,9 @@ check("pieces of content that take art", artable.length, 410);
  * the five are what a table looks at all evening.
  */
 const backs = Object.entries(content.DECK_BACKS);
-check("deck backs", backs.length, 5);
+check("deck backs", backs.length, 6);
 check("the decks that take one", backs.map(([k]) => k).join(", "),
-  "action, fate, skill, wild, npc.goblin");
+  "action, fate, skill, wild, npc.goblin, npc");
 /* Every one says what it is for: a back with no note is a brief nobody can draw from. */
 check("backs with nothing said about them",
   backs.filter(([, b]) => !b.note || b.note.length < 40).map(([k]) => k).join(", ") || "none",
@@ -5049,7 +5050,7 @@ check("backs with nothing said about them",
 const backed = [...`${setupSource}\n${decksSource}`.matchAll(/backOf\("([a-z.]+)"\)/g)]
   .map(m => m[1]);
 check("decks given a back", [...new Set(backed)].sort().join(", "),
-  "action, fate, npc.goblin, skill, wild");
+  "action, fate, npc, npc.goblin, skill, wild");
 /* Every back declared is a back used: one nobody reads is a picture drawn for nothing. */
 check("backs declared but never read",
   backs.map(([k]) => k).filter(k => !backed.includes(k)).join(", ") || "none", "none");
@@ -5068,7 +5069,21 @@ const deckCalls = [...setupSource.matchAll(/makeCards\(([\s\S]*?)\n?\s*\);/g)]
 /* Seven documents from five backs: there are two fate decks, because each NPC type has its own so
  * that a Cursed goblin does not hex the ogre beside it, and they share the one fate back -- and the
  * twist deck is the GM's, which borrows the skill back for the reason twistCardData gives. */
-check("deck documents created", deckCalls.length, 7);
+/*
+ * Eight: the seven authored ones and the one every creature in the roster is built from, whose back
+ * key is **chosen rather than written** -- its own if the kind has earned one, the common intent
+ * back otherwise. That is the only computed back key in the file, which is why the check below
+ * exists: a computed key cannot be audited by reading the call, so it is audited from the content.
+ */
+check("deck documents created", deckCalls.length, 8);
+check("and every creature's back resolves to a declared one",
+  monsters.expandRoster(content.ROSTER, content.VARIANTS)
+    .filter(c => !(`npc.${c.system.kind}` in content.DECK_BACKS)
+      && !("npc" in content.DECK_BACKS))
+    .map(c => c.system.kind).join(", ") || "none", "none");
+/* And the one kind that has earned its own, so the fallback cannot quietly become the only path. */
+check("kinds with a back of their own",
+  Object.keys(content.DECK_BACKS).filter(k => k.startsWith("npc.")).join(", "), "npc.goblin");
 check("deck documents with no back",
   deckCalls.filter(args => !/"[a-z.]+"\s*\)?\s*$/.test(args.trim())
     || !/backOf\(|, "(action|fate|skill|wild|npc\.[a-z]+)"\s*\)?\s*$/.test(args.trim()))
@@ -5132,7 +5147,7 @@ const briefs = faceRows.map(r => r.brief);
 const leaked = briefs.flatMap(text =>
   [...text.matchAll(/\b([a-z]+[A-Z][a-zA-Z]*)\b/g)].map(m => m[1]));
 /* A pattern that matched no rows at all would report "none" for any list whatsoever. */
-check("briefs the check actually read", briefs.length, 410);
+check("briefs the check actually read", briefs.length, 414);
 check("keys that leaked into the brief",
   leaked.length ? [...new Set(leaked)].join(", ") : "none", "none");
 
@@ -5145,7 +5160,7 @@ check("keys that leaked into the brief",
  */
 const { slug } = await import("./art-list.mjs");
 const rows = faceRows;
-check("file paths in the brief", rows.length, 410);
+check("file paths in the brief", rows.length, 414);
 /* And the backs, whose path is the slug of their KEY rather than of their printed label. */
 const backPaths = [...artList.matchAll(/\| `(backs\/[^`]+)` \|/g)].map(m => m[1]);
 check("back paths in the brief", backPaths.length, backs.length);
@@ -5822,7 +5837,9 @@ check("the model has no field for the other four",
  * finding a fault -- which is the honest description of most of this file. */
 const monsterBorne = [...content.NPC_GEAR, ...content.FEATURES.filter(f =>
   [content.GOBLIN, content.GOBLIN_ARCHER].some(a => (a.features ?? []).includes(f.name)))];
-check("content a monster carries", monsterBorne.length, 2);
+/* Six now: the two goblin weapons and the four pieces the variants named. The natural weapons
+ * are counted separately below, since a grown thing is not gear a monster carries. */
+check("content a monster carries", monsterBorne.length, 6);
 check("and none of it grants what a monster cannot read",
   monsterBorne.filter(x => grants.CHARACTER_GRANTS.filter(k => k !== "health")
     .some(k => x.grants?.[k])).map(x => x.name).join(", ") || "none", "none");
@@ -7227,6 +7244,263 @@ check("and a slate nobody built is refused rather than silently skipped",
 /* -------------------------------------------- */
 
 
+
+section("The monster roster");
+
+/*
+ * ---- the common intent pool, and the roster it has to cover  [BUILT 2026-11-02] ----
+ *
+ * **The NPC side was one creature with a cosmetic variant.** Two statblocks, identical but for the
+ * weapon, sharing one hand-authored deck of six -- so the Goblin Archer threw rocks exactly as often
+ * as the spearman did, and fifty-five monsters in the world document had nothing in the system.
+ *
+ * What replaces it is a **pool and a rule**: a card lists the capabilities it needs, a creature
+ * declares what it can do, and the deck is the subset it earns. Everything below is asked of
+ * `monsters.mjs` rather than read, because a deck derived by arithmetic the suite cannot run is a
+ * deck nobody can check.
+ */
+/*
+ * `buildCreature`'s own body. Two builders make a deck the same way -- the one setup runs for the
+ * goblin line and the one a GM calls for anything else -- and they should; but a grep either can
+ * answer is a grep about neither, which the section at the end of this file said twice while this
+ * one was being written.
+ */
+const buildCreatureBody = setupSource.slice(setupSource.indexOf("const buildCreature = async"),
+  setupSource.indexOf("const goblinLine ="));
+const everyCreature = monsters.expandRoster(content.ROSTER, content.VARIANTS);
+const deckOfCaps = caps => monsters.deckFor(caps, content.INTENTS);
+
+check("cards in the intent pool", content.INTENTS.length, 28);
+check("bases in the roster", content.ROSTER.length, 22);
+check("creatures the variants expand them into", everyCreature.length, 47);
+check("and the rest of the world, tagged but not numbered", content.MONSTER_TAGS.length, 21);
+
+/*
+ * **Five shapes need no capability at all, and three need only that the creature can move**, which
+ * is what sets the floor -- eight cards for anything with legs, five for the one thing without
+ * them. A first pass had four universals, and twenty-seven of the fifty-five creatures landed on
+ * five cards or fewer: four generic and one special. Generic shapes are the cheap half of a pool.
+ */
+check("shapes anything can draw", content.INTENTS.filter(c => !c.needs.length).length, 5);
+check("shapes that ask only to be able to move",
+  content.INTENTS.filter(c => c.needs.length === 1 && c.needs[0] === "move").length, 3);
+/*
+ * **A card that moves the creature has to ask whether it can.** That is the whole reason `move` is
+ * derived rather than declared, and writing the rule down is what found the other five: three
+ * shapes ask for `move` and nothing else, but Charge, Bull Through, Swarm, Fade and Stoop all move
+ * as well, and four of them asked only for the capability that makes them interesting.
+ *
+ * `Stoop` is the shape of the rule: it asks for `flight`, and flight grants `move`, so it needs no
+ * second requirement. So the test is not "lists move" but "could not be drawn by something that
+ * cannot move" -- the same question `capsOf` answers for a creature, asked of a card.
+ */
+const movers = content.INTENTS.filter(c => c.sequence.some(s => s.verb === "move"));
+check("cards that move the creature", movers.map(c => c.name).sort().join(", "),
+  "Bull Through, Carry, Charge, Close In, Fade, Give Ground, Go Under, Stoop, " +
+  "Strike and Step, Submerge, Swarm");
+check("and not one of them can be drawn without being able to",
+  movers.filter(c => !monsters.capsOf(c.needs).has("move")).map(c => c.name).join(", "), "");
+/* Three of those eleven never mention `move` in `needs` and do not need to: Stoop asks for flight,
+ * Go Under for burrow, Submerge for swim, and each of those three IS a way of moving. That is the
+ * rule doing work rather than a list of exceptions to it. */
+check("and three of them get it from the way they travel",
+  movers.filter(c => !c.needs.includes("move")).map(c => c.name).sort().join(", "),
+  "Go Under, Stoop, Submerge");
+/*
+ * **The converse is one card, and it is right.** `Order` says an ally *moves its speed* and takes
+ * no move step, because the commander spends the turn and somebody else does the walking. It is
+ * exactly why the rule above is written on the sequence and not on the prose -- and the Queen, the
+ * one creature in the world who cannot move, draws `Order` off `commander`.
+ */
+check("the only card whose prose moves somebody other than the drawer",
+  content.INTENTS.filter(c => /\bmoves? \w/i.test(c.text))
+    .filter(c => !c.sequence.some(s => s.verb === "move")).map(c => c.name).join(", "), "Order");
+check("and the Queen can draw it", deckOfCaps(["commander", "summon"]).some(c => c.name === "Order")
+  ? "yes" : "no", "yes");
+check("and the smallest deck in the roster",
+  Math.min(...everyCreature.map(c => deckOfCaps(c.system.capabilities).length)), 7);
+check("the largest",
+  Math.max(...everyCreature.map(c => deckOfCaps(c.system.capabilities).length)), 12);
+/* The Queen is the only creature in the world that cannot move, so she is the only one who proves
+ * the derivation does anything. Without her, `needs: ["move"]` and `needs: []` are the same card. */
+const legless = everyCreature.filter(c => !monsters.capsOf(c.system.capabilities).has("move"));
+check("creatures that cannot move at all", legless.map(c => c.name).join(", "), "The Queen");
+/* core-rules 9 asks for 5-8 cards a type; the pool overshoots on purpose, because a deck that
+ * repeats inside one fight is a deck the players have read by round three. */
+check("core-rules still says what a deck is for",
+  /a small deck of 5–8 cards, and each card is a full turn/.test(coreRules) ? "yes" : "no",
+  "yes");
+
+/* No card is unreachable, counting the whole roster: the tagged creatures are the ones that earn
+ * Feed and Lie Still, which is the honest reason those two are in the pool at all. */
+const drawnByBuilt = new Set(everyCreature
+  .flatMap(c => deckOfCaps(c.system.capabilities).map(card => card.name)));
+const drawnByTagged = new Set(content.MONSTER_TAGS
+  .flatMap(t => deckOfCaps(t.caps).map(card => card.name)));
+check("cards no built creature draws",
+  content.INTENTS.filter(c => !drawnByBuilt.has(c.name)).map(c => c.name).sort().join(", "),
+  "Feed, Lie Still, Submerge");
+check("and cards nobody in the world draws at all",
+  content.INTENTS.filter(c => !drawnByBuilt.has(c.name) && !drawnByTagged.has(c.name))
+    .map(c => c.name).join(", ") || "none", "none");
+/* Every capability a card asks for is one a creature has, and every capability declared is read by
+ * a card: the two halves of "no field nothing reads". */
+const asked = new Set(content.INTENTS.flatMap(c => c.needs));
+const held = new Set([...everyCreature.flatMap(c => c.system.capabilities ?? []),
+  ...content.MONSTER_TAGS.flatMap(t => t.caps)]);
+check("capabilities a card asks for that nothing has",
+  [...asked].filter(a => a !== "move" && !held.has(a)).join(", ") || "none", "none");
+check("and capabilities something has that no card reads",
+  [...held].filter(h => h !== "move" && !asked.has(h) && h !== "legs").join(", ") || "none",
+  "none");
+/* `legs` is the exception and the reason `move` is derived: it earns nothing by itself, it only
+ * means the creature is not the Queen. */
+check("legs earns no card by itself",
+  content.INTENTS.filter(c => c.needs.includes("legs")).length, 0);
+check("and the one creature without it",
+  everyCreature.filter(c => !(c.system.capabilities ?? [])
+    .some(x => ["legs", "flight", "swim", "burrow"].includes(x))).map(c => c.name).join(", "),
+  "The Queen");
+
+/*
+ * **A variant is a delta, and the Goblin Archer is the proof it was worth building that way.** It
+ * used to be a second statblock with the same `kind` as the spearman and therefore the same intent
+ * deck. As a delta it earns `Loose` by being able to shoot, and the spearman cannot draw it.
+ */
+const goblins = everyCreature.filter(c => c.system.kind.startsWith("goblin"));
+check("the goblin line", goblins.map(c => c.name).join(", "),
+  "Goblin, Goblin Warrior, Goblin Archer, Goblin Shaman, Goblin Chief");
+check("each with its own kind, which is what owns a deck",
+  new Set(goblins.map(c => c.system.kind)).size, goblins.length);
+check("only the archer can shoot",
+  goblins.filter(c => c.system.capabilities.includes("ranged")).map(c => c.name).join(", "),
+  "Goblin Archer");
+check("so only the archer draws Loose",
+  goblins.filter(c => deckOfCaps(c.system.capabilities).some(x => x.name === "Loose"))
+    .map(c => c.name).join(", "), "Goblin Archer");
+/* And a delta can take something away, which is the only reason `-` exists: the Warrior and the
+ * Chief are the two goblins that do not run. */
+check("goblins that keep the cowardly keyword",
+  goblins.filter(c => c.system.tactics.includes("cowardly")).map(c => c.name).join(", "),
+  "Goblin, Goblin Archer, Goblin Shaman");
+/* Numbers are offsets, so the base moving moves every variant with it. */
+check("the spearman's Health, which was the one simulated",
+  goblins[0].system.health.base, 5);
+check("and the line that is built from it",
+  goblins.map(c => c.system.health.base).join(", "), "5, 8, 5, 6, 11");
+
+/*
+ * **Every number in the roster is a ratio to the one creature that was measured.** The goblin is
+ * Health 5, Strike 3, armour 0, and four of them against a starter Warrior is the only fight this
+ * project has run (sim/analysis-2026-10-21.md onward). Nothing else here has been simulated, so
+ * the check is not that the numbers are right -- it is that they are **ordered**, which is the most
+ * a ratio can promise.
+ */
+const gearOf = creature => {
+  const names = creature.equipped ?? [];
+  return [...content.NPC_GEAR, ...content.NATURAL_WEAPONS].filter(g => names.includes(g.name));
+};
+const strikeOf = c => Math.max(0, ...gearOf(c).map(g => g.verbs?.strike?.value ?? 0));
+/* Strike OR cast: a Goblin Shaman carries a fetish and no knife, and a caster that attacks by
+ * casting is a caster rather than a creature nobody armed. */
+const attackOf = c => Math.max(strikeOf(c),
+  ...gearOf(c).map(g => g.verbs?.cast?.value ?? 0));
+check("every creature carries something to fight with",
+  everyCreature.filter(c => attackOf(c) === 0).map(c => c.name).join(", ") || "none", "none");
+check("and the two that fight by casting",
+  everyCreature.filter(c => strikeOf(c) === 0).map(c => c.name).sort().join(", "),
+  "Goblin Shaman, Mole Man Priest");
+/* core-rules 9's tuning rule: a weak enemy's Strike stays at least 2 above the heroes' armour, and
+ * the starter Warrior wears 1 -- so nothing in the roster strikes for less than 3 except the two
+ * the world calls harmless. */
+check("creatures that strike for less than three",
+  everyCreature.filter(c => strikeOf(c) > 0 && strikeOf(c) < 3)
+    .map(c => c.name).sort().join(", "),
+  "Doomfly, Processor, Scrip, Scrip Watcher, Skaah, Stinger, Sweeper Carrier");
+check("and the rule they are the exception to",
+  /Keep a weak enemy's Strike value at least 2 above the heroes' armor/.test(coreRules)
+    ? "yes" : "no", "yes");
+/* Health is ordered by rank, which is the one thing a ratio can be checked on. */
+check("the Queen is the largest thing in the roster",
+  everyCreature.sort((a, b) => b.system.health.base - a.system.health.base)[0].name, "The Queen");
+
+/*
+ * **Natural weapons are items**, because core-rules 9 already settles where an NPC's Strike comes
+ * from -- which costs no new mechanism and makes one knob set how dangerous every monster is. The
+ * `natural` tag is what separates a grown thing from a carried one: nothing disarms anybody yet,
+ * and the tag is on the item from the start so that the day somebody writes the rule, a dragon does
+ * not drop its teeth.
+ */
+check("natural weapons", content.NATURAL_WEAPONS.length, 10);
+check("every one of them tagged as grown rather than carried",
+  content.NATURAL_WEAPONS.filter(w => !w.tags.includes("natural")).map(w => w.name).join(", ")
+    || "none", "none");
+check("and all of them NPC gear, so none reaches a player's picker",
+  content.NATURAL_WEAPONS.filter(w => !w.npcGear).length, 0);
+
+/* The twelve demons are absent on purpose: the world gives names and no descriptions, and nothing
+ * can be read off a name. */
+/* The rules say all of it, because a pool nobody can read the argument for is a pool somebody
+ * will quietly go back to authoring decks around. */
+check("core-rules records the pool",
+  /^### A common intent pool {2}\*\*\[BUILT 2026-11-02\]\*\*$/m.test(coreRules) ? "yes" : "no",
+  "yes");
+check("and that a card is a shape the creature fills in",
+  /A card says what a creature does; the creature says how far and how hard/.test(coreRules)
+    ? "yes" : "no", "yes");
+check("and why eight shapes need nothing",
+  /twenty-seven of the world's fifty-five creatures landed on five cards or fewer/.test(coreRules)
+    ? "yes" : "no", "yes");
+/* And the two halves of the derivation, which is the part a later hand would flatten: the one
+ * capability no creature declares, and the one card that moves somebody else. */
+check("and that `move` is derived rather than declared",
+  /\*\*`move` is the capability nothing declares\.\*\*/.test(coreRules) ? "yes" : "no", "yes");
+check("and that the Queen is why it is worth deriving",
+  /the one creature who cannot draw \*Close In\*/.test(coreRules) ? "yes" : "no", "yes");
+check("and that Order moves somebody else",
+  /\*Order\* spends the commander's turn moving/.test(coreRules) ? "yes" : "no", "yes");
+check("and that a variant is a delta with its own kind",
+  /a variant has its own \*\*`kind`\*\*, because `kind` owns the deck/.test(coreRules)
+    ? "yes" : "no", "yes");
+check("and that every number is a ratio to the goblin",
+  /Every number is a ratio to the one that was measured/.test(coreRules) ? "yes" : "no", "yes");
+check("and that a grown weapon cannot be looted",
+  /grown rather than carried, so they cannot be\ndisarmed, broken or looted/.test(coreRules)
+    ? "yes" : "no", "yes");
+
+check("the roster does not invent the demons",
+  [...everyCreature, ...content.MONSTER_TAGS]
+    .filter(c => ["Watchers", "Wanderers", "Tempters", "Djinn", "Gheul", "Naga", "Div", "Estries",
+      "Familiars", "Incubi / Succubi", "Cambion", "Imp"].includes(c.name)).length, 0);
+check("and says why in the content",
+  /names with no\s*\n? \* description\. Nothing can be read off a name, so nothing is claimed\./
+    .test(contentSource) ? "yes" : "no", "yes");
+/* The Queen is unique, which the world says and a variant list would deny. */
+check("the Queen has no variants", content.VARIANTS.queen ?? "none", "none");
+
+/* The deck a creature draws is built at setup from the pool, not authored per creature. */
+/* `buildCreature`'s own body again: `buildMonster` builds a deck the same way, and it should --
+ * but a grep that either can answer is a grep about neither. */
+check("setup builds a deck from the pool",
+  /deckFor\(creature\.system\.capabilities \?\? \[\], INTENTS\)/.test(buildCreatureBody)
+    ? "yes" : "no", "yes");
+check("and so does the on-demand builder",
+  /deckFor\(creature\.system\.capabilities \?\? \[\], INTENTS\)/.test(
+    setupSource.slice(setupSource.indexOf("export async function buildMonster")))
+    ? "yes" : "no", "yes");
+check("and every variant gets its own intent, because kind owns it",
+  /`\$\{kind\}\.deck`/.test(buildCreatureBody) ? "yes" : "no", "yes");
+/* A starter world gets the goblin line and nothing else: forty-seven monsters in a new world is a
+ * world nobody can find anything in. */
+check("the starter world builds the goblin line only",
+  /ROSTER\.filter\(r => r\.system\.kind === "goblin"\)/.test(setupSource) ? "yes" : "no", "yes");
+/* The name appears three times in the entry module -- an import, the API line and its comment --
+ * so this reads the one that matters: the key a GM reaches for. */
+check("and the rest are built on demand",
+  /game\.cardrpg = \{[\s\S]{0,600}?\n    buildMonster,/.test(entrySource) ? "yes" : "no", "yes");
+check("from the setup module that knows how",
+  /export async function buildMonster\(name\)/.test(setupSource) ? "yes" : "no", "yes");
+
 section("The checks themselves");
 
 /*
@@ -7292,7 +7566,7 @@ for (const m of selfSource.matchAll(/(\w+)\.includes\("((?:[^"\\]|\\.)*)"\)/g)) 
 }
 
 /* The pin that keeps the rest of this honest. */
-check("greps over a whole file, resolved", greps.length, 439);
+check("greps over a whole file, resolved", greps.length, 454);
 
 /*
  * **The rule, as one predicate, run over a planted example before it is run over the suite.**

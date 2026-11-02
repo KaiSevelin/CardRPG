@@ -9,9 +9,12 @@
 import { CARDRPG } from "./config.mjs";
 /* The one shape a skill card takes, shared with anything that grants one rather than spelled here. */
 import { skillCardData, twistCardData, backOf } from "./decks.mjs";
+/* A deck is the subset of the pool a creature's capabilities earn, and a variant is a delta from
+ * its base. Both are arithmetic, and both live where the validator can ask them. */
+import { deckFor, expandRoster } from "./monsters.mjs";
 import {
   fateCards, WARRIOR_DECK, GOBLIN_DECK, ITEMS, NPC_GEAR, FEATURES, FORMULAS, WARRIOR_SKILLS,
-  TWISTS,
+  TWISTS, INTENTS, NATURAL_WEAPONS, ROSTER, VARIANTS,
   SHADOW_FORMULAS, WILD_MAGIC,
   WARRIOR, GOBLIN, GOBLIN_ARCHER
 } from "./content.mjs";
@@ -165,7 +168,10 @@ export async function createStarterContent() {
     ...FEATURES.map(f => ({ ...slateData(f, "feature"), tag: `feature.${f.name}` })),
     // Spells are slates too, and these four are the combo mechanic in playable form.
     ...FORMULAS.map(f => ({ ...slateData(f, "spell"), tag: `spell.${f.name}` })),
-    ...SHADOW_FORMULAS.map(f => ({ ...slateData(f, "spell"), tag: `spell.${f.name}` }))
+    ...SHADOW_FORMULAS.map(f => ({ ...slateData(f, "spell"), tag: `spell.${f.name}` })),
+    /* What a creature with no hands fights with. An item, because core-rules 9 already settles it:
+     * NPCs take their Strike off an item, which is the one knob that sets how dangerous they are. */
+    ...NATURAL_WEAPONS.map(w => ({ ...slateData(w, "item"), tag: `item.${w.name}` }))
   ];
 
   const slates = {};
@@ -218,6 +224,57 @@ export async function createStarterContent() {
   };
 
   /*
+   * --- a creature, with the deck its capabilities earn
+   *
+   * **One deck per `kind`, built from the common pool rather than authored.** Each intent card
+   * lists what a creature must be able to do (core-rules 9) and the creature draws the subset it
+   * qualifies for -- so forty-seven creatures come out of twenty-seven cards, and a card added to
+   * the pool joins every creature that already qualifies without anybody revisiting them.
+   *
+   * `kind` owns the deck and the intent, so **every variant has its own**: a Goblin Archer sharing
+   * the spearman's `kind` would share its intent card, which is exactly the defect the pair in this
+   * world had until today -- both drew *Throw Rock*.
+   *
+   * **The fate deck is shared across a creature's variants**, which is a reading of core-rules 6
+   * rather than a shortcut: the rule exists so a hex on the goblins does not touch the ogre, and a
+   * Goblin Archer is not an ogre. One per base; the intent is per kind.
+   */
+  const buildCreature = async (creature, fate) => {
+    const kind = creature.system.kind;
+    const npcBack = backOf(`npc.${kind}`) || backOf("npc");
+    const cards = deckFor(creature.system.capabilities ?? [], INTENTS).map(card => ({
+      name: card.name,
+      type: "npc",
+      face: 0,
+      faces: [{ name: card.name }],
+      /* Its own back if the kind has earned one, and the common intent back otherwise. */
+      back: { name: creature.name, ...(npcBack ? { img: npcBack } : {}) },
+      system: { kind, sequence: card.sequence, needs: card.needs ?? [], text: card.text ?? "" }
+    }));
+    const deck = await makeCards(`${creature.name} \u2014 Intents`, "deck", `${kind}.deck`,
+      cards, backOf(`npc.${kind}`) ? `npc.${kind}` : "npc");
+    const discard = await makeCards(`${creature.name} \u2014 Discard`, "pile", `${kind}.discard`);
+    const intent = await makeCards(`${creature.name} \u2014 Intent`, "pile", `${kind}.intent`);
+    made.decks += 3;
+    return buildActor(creature, {
+      action: deck.id, actionDiscard: discard.id, intent: intent.id,
+      fate: fate.deck.id, fateDiscard: fate.discard.id
+    });
+  };
+
+  /*
+   * The goblin line, which is five creatures from one base: the spearman who was simulated, and
+   * four deltas who were not. Everything else in `ROSTER` is built on demand through
+   * `game.cardrpg.buildMonster`, because a starter world with forty-seven monsters in it is a
+   * starter world nobody can find anything in.
+   */
+  const goblinLine = expandRoster(ROSTER.filter(r => r.system.kind === "goblin"), VARIANTS);
+  for (const creature of goblinLine) {
+    await buildCreature(creature, { deck: goblinFate, discard: goblinFateDiscard });
+  }
+  note(`the goblin line: ${goblinLine.length} creatures`);
+
+  /*
    * The skill side's three stacks. The discard is a `pile` like the action discard and is NOT
    * shuffled back by anything automatic: skill-rules 1 says it returns on a rest, which is the one
    * place the two sides differ in kind rather than in content.
@@ -252,21 +309,137 @@ export async function createStarterContent() {
     skillDiscard: warriorSkillDiscard.id
   });
 
-  const goblinDecks = {
-    action: goblinDeck.id,
-    actionDiscard: goblinDiscard.id,
-    fate: goblinFate.id,
-    fateDiscard: goblinFateDiscard.id,
-    intent: goblinIntent.id
-  };
-  await buildActor(GOBLIN, goblinDecks);
-  await buildActor(GOBLIN_ARCHER, goblinDecks);
+  /*
+   * The hand-authored goblin deck and the two actors that shared it are gone: the line above builds
+   * all five goblins from the pool, each with its own `kind` and therefore its own intent. The old
+   * pair shared one deck, which is why both of them threw rocks.
+   */
 
   note(`done: ${made.actors} actors, ${made.slates} slates`);
   ui.notifications.info(
     `Card RPG: ${made.actors} actors and ${made.slates} slates created. ` +
     `Place goblins as unlinked tokens so they share one deck but keep their own health.`
   );
+}
+
+/* -------------------------------------------- */
+/*  One creature, on demand                     */
+/* -------------------------------------------- */
+
+/**
+ * Build any creature in the roster by name.
+ *
+ * **The starter world holds the goblin line and nothing else**, because forty-seven monsters in a
+ * new world is a world nobody can find anything in -- and because most of them are not what the
+ * next session needs. The roster is content either way; this is how one of it arrives.
+ *
+ * What it makes is what `createStarterContent` makes for a goblin: the natural weapon or gear the
+ * creature carries, the intent deck its capabilities earn from the common pool, a discard, the
+ * intent pile, and a fate deck shared with the rest of its base's variants (core-rules 6 -- the
+ * rule is that a hex on the goblins must not touch the ogre, and a Goblin Archer is not an ogre).
+ *
+ * Idempotent, like everything in this file: asking twice returns the creature that exists.
+ */
+export async function buildMonster(name) {
+  if (!game.user.isGM) {
+    ui.notifications?.warn("Only the GM builds creatures.");
+    return null;
+  }
+  const creature = expandRoster(ROSTER, VARIANTS).find(c => c.name === name);
+  if (!creature) {
+    const names = expandRoster(ROSTER, VARIANTS).map(c => c.name).join(", ");
+    ui.notifications?.warn(`No creature called ${name}. The roster is: ${names}`);
+    return null;
+  }
+
+  const existing = findExisting(game.actors, `actor.${creature.name}`);
+  if (existing) return existing;
+
+  /* Its gear, made once and reused: five mole men share one pick. */
+  const slates = {};
+  for (const gearName of creature.equipped ?? []) {
+    const def = [...NPC_GEAR, ...NATURAL_WEAPONS].find(g => g.name === gearName);
+    if (!def) continue;
+    const found = findExisting(game.items, `item.${gearName}`);
+    if (found) { slates[gearName] = found; continue; }
+    const { tag, ...data } = { ...slateData(def, "item"), tag: `item.${gearName}` };
+    const [made] = await Item.createDocuments([{ ...data, flags: { cardrpg: { [FLAG]: tag } } }]);
+    slates[gearName] = made;
+  }
+
+  const kind = creature.system.kind;
+  const base = ROSTER.find(r => (VARIANTS[r.system.kind] ?? [])
+    .some(v => v.kind === kind)) ?? creature;
+  const baseKind = base.system.kind;
+  const npcBack = backOf(`npc.${kind}`) || backOf("npc");
+
+  const cards = deckFor(creature.system.capabilities ?? [], INTENTS).map(card => ({
+    name: card.name,
+    type: "npc",
+    face: 0,
+    faces: [{ name: card.name }],
+    back: { name: creature.name, ...(npcBack ? { img: npcBack } : {}) },
+    system: { kind, sequence: card.sequence, needs: card.needs ?? [], text: card.text ?? "" }
+  }));
+
+  const find = tag => game.cards.find(d => d.getFlag("cardrpg", FLAG) === tag);
+  const art = backOf(`npc.${kind}`) ? `npc.${kind}` : "npc";
+  const deck = find(`${kind}.deck`)
+    ?? await Cards.create({
+      name: `${creature.name} \u2014 Intents`, type: "deck", cards,
+      ...(backOf(art) ? { img: backOf(art) } : {}),
+      flags: { cardrpg: { [FLAG]: `${kind}.deck` } }
+    });
+  const discard = find(`${kind}.discard`)
+    ?? await Cards.create({
+      name: `${creature.name} \u2014 Discard`, type: "pile",
+      flags: { cardrpg: { [FLAG]: `${kind}.discard` } }
+    });
+  const intent = find(`${kind}.intent`)
+    ?? await Cards.create({
+      name: `${creature.name} \u2014 Intent`, type: "pile",
+      flags: { cardrpg: { [FLAG]: `${kind}.intent` } }
+    });
+  /* One fate deck per base, shared by its variants. */
+  const fate = find(`${baseKind}.fate`)
+    ?? await Cards.create({
+      name: `${base.name} \u2014 Fate Deck`, type: "deck", cards: fateCards(backOf("fate")),
+      ...(backOf("fate") ? { img: backOf("fate") } : {}),
+      flags: { cardrpg: { [FLAG]: `${baseKind}.fate` } }
+    });
+  const fateDiscard = find(`${baseKind}.fateDiscard`)
+    ?? await Cards.create({
+      name: `${base.name} \u2014 Fate Discard`, type: "pile",
+      flags: { cardrpg: { [FLAG]: `${baseKind}.fateDiscard` } }
+    });
+
+  const embedded = [];
+  for (const gearName of creature.equipped ?? []) {
+    const source = slates[gearName];
+    if (!source) continue;
+    embedded.push({
+      ...source.toObject(),
+      system: { ...source.system.toObject(), equipped: true }
+    });
+  }
+
+  const actor = await Actor.create({
+    name: creature.name,
+    type: "npc",
+    system: {
+      ...creature.system,
+      decks: {
+        action: deck.id, actionDiscard: discard.id, intent: intent.id,
+        fate: fate.id, fateDiscard: fateDiscard.id
+      }
+    },
+    items: embedded,
+    prototypeToken: { actorLink: false, name: creature.name },
+    flags: { cardrpg: { [FLAG]: `actor.${creature.name}` } }
+  });
+  ui.notifications?.info(`${creature.name}: ${cards.length} intents, `
+    + `Health ${creature.system.health.base}, speed ${creature.system.speed}.`);
+  return actor;
 }
 
 /* -------------------------------------------- */

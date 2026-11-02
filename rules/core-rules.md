@@ -1397,7 +1397,89 @@ NPCs don't have hands. Each NPC **type** has a small deck of 5–8 cards, and ea
 - **Elite / boss** NPCs may keep 1–2 cards face-up as reactions, shown to the players.
 - NPCs still use items for their Strike and Cast values, so the same goblin deck works for a spear goblin and a bow goblin.
 
+### A common intent pool  **[BUILT 2026-11-02]**
+
+> **One pool of shapes, and a creature draws the subset it has earned.** The NPC side was a single
+> creature with a cosmetic variant: two statblocks identical but for the weapon, sharing one deck of
+> six, so a Goblin Archer threw rocks exactly as often as the spearman did.
+
+**A card says what a creature does; the creature says how far and how hard.** `Close In` is *move
+your speed, then Strike* &mdash; three squares for a goblin, eight for a rush spider, off one card,
+because `move` with no number means the creature's own `speed` and the Strike comes off whatever it
+fights with. That is the split a player's card has always had: *a card half says what you do, the
+item says how well*.
+
+**A card earns its place by capability.** Each one lists what a creature must be able to do &mdash;
+`flight`, `burrow`, `spray`, `pack`, `commander`, `drain` &mdash; and a deck is the subset those
+capabilities allow. So **declaring a monster is declaring what it can do**, and a card added to the
+pool joins every creature that already qualifies without anybody revisiting them.
+
+**Five shapes need nothing at all, and three need only that the creature can move** &mdash; eight
+cards for anything with legs. That floor is a measurement rather than a taste: with four universals,
+twenty-seven of the world's fifty-five creatures landed on five cards or fewer &mdash; four generic
+cards and one special. Generic shapes are the cheap half of a pool, and four more lifted every
+creature at once. The decks now run from **7 to 12**, which overshoots the *5 to 8* above on
+purpose: a deck that repeats inside one fight is a deck the players have read by round three.
+
+**`move` is the capability nothing declares.** It is derived from having legs, wings, fins or a
+tunnel, and eleven cards ask for it &mdash; eight directly, and three through `flight`, `burrow` or
+`swim`, which are ways of moving and so grant it. The reason to bother deriving it at all is the
+Horde's Queen: she has none of the four, so she is the one creature who cannot draw *Close In*, and
+hers is the seven-card deck. A card whose text moves the creature and whose requirements do not say
+so is a card she walks somewhere on no legs with.
+
+> **And one card says *moves* and asks for nothing.** *Order* spends the commander's turn moving
+> somebody **else**, which is why the requirement is written on what a card does and not on how it
+> reads. The Queen draws it.
+
+**One card carries no condition of its own.** *Envenom* is *Strike, and it carries whatever you
+carry* &mdash; so a goblin's dirty trick, a slitherer's venom, a Keres' disease and a Strigoi's bite
+are the same card and four different creatures.
+
+#### Variants are deltas
+
+A monster is a base and a handful of deltas. Numbers are **offsets**, so correcting a base moves
+every variant with it; capabilities are `+added` and `-removed`, which is the only form that lets a
+variant take something **away** &mdash; a Goblin Warrior is the one that does not run, and `-cowardly`
+is how that is said.
+
+And a variant has its own **`kind`**, because `kind` owns the deck and the intent card: the pair in
+this world shared one, which is the defect the scheme replaces rather than inherits. The archer earns
+*Loose* by being able to shoot, and the spearman cannot draw it.
+
+> **A unique creature has no variants.** The Horde's Queen is *the one who rules it all*, and
+> nothing in the code stops somebody giving her three; the validator does.
+
+#### Every number is a ratio to the one that was measured
+
+The goblin is **Health 5, Strike 3, armour 0**, and four of them against a starter Warrior is the
+only fight this project has run. Nothing else in the roster has been simulated, so nothing else is
+claimed: the table below is **ratios**, and the rule it obeys is the one in the next section.
+
+| | Health | Strike | armour |
+|---|---|---|---|
+| a goblin, measured | 5 | 3 | 0 |
+| Horde infantry | 5 | 3 | 1 |
+| a lieutenant | 15 | 5 | 2 |
+| a general | 25 | 5 | 3 |
+| the Queen | 60 | 4 | 4 |
+
+**What a starter world holds:** the goblin line, five creatures from one base. Forty-seven creatures
+in a new world is a world nobody can find anything in, so the rest arrive one at a time through
+`game.cardrpg.buildMonster("Mole Beast")`, with the deck its capabilities earn.
+
+**And the twelve demons are absent.** Firma.md gives Watchers, Wanderers, Tempters, Djinn, Gheul,
+Naga, Div, Estries, Familiars, Incubi/Succubi, Cambion and Imp as names with no description. Nothing
+can be read off a name, so nothing is claimed.
+
 ### NPC gear and the armor rule
+
+**A creature with no hands still fights with an item.** A mandible, a sting, a tail club and a
+breath are all items with a **`natural`** tag: grown rather than carried, so they cannot be
+disarmed, broken or looted. That costs no new mechanism &mdash; the sentence above already says NPCs
+take their Strike from an item &mdash; and it keeps one knob setting how dangerous every monster is.
+Nothing disarms anybody yet; the tag is on the item from the start so that the day somebody writes
+the rule, a dragon does not drop its teeth.
 
 **NPC weapons are their own items, tuned separately from the ones players carry.** A Goblin Spear and a player's spear can both be called a spear and have different Strike values. This is deliberate: an NPC's weapon is the one knob that sets how dangerous it is, and it shouldn't be tied to what a hero of the same level wields.
 

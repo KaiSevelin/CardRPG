@@ -339,7 +339,20 @@ export class NpcCardData extends foundry.abstract.TypeDataModel {
       /** The creature type that owns this deck. Its back shows this and nothing else. */
       kind: new fields.StringField({ required: true, blank: true, initial: "" }),
       /** Ordered and numbered on the face: "Move 3, then Strike" is not "Strike, then Move 2". */
-      sequence: new fields.ArrayField(stepField())
+      sequence: new fields.ArrayField(stepField()),
+      /**
+       * What a creature must be able to do to hold this card (core-rules 9).
+       *
+       * Kept on the card as well as in the pool so a GM who builds a creature by hand can be told
+       * why a card does or does not belong to it. The deck itself is already the subset, so nothing
+       * at the table reads this -- it is the card explaining itself, which is the job the `kind` on
+       * its back has always done.
+       */
+      needs: new fields.ArrayField(new fields.StringField({
+        choices: Object.keys(CARDRPG.capabilities)
+      })),
+      /** The shape in words, for the face: the engine resolves the sequence, the GM reads this. */
+      text: new fields.StringField({ required: false, blank: true, initial: "" })
     };
   }
 }

@@ -1,6 +1,6 @@
 # Art list
 
-**415 pieces**, of which **0** are wired up. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card.
+**420 pieces**, of which **0** are wired up. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card.
 
 ## What to supply
 
@@ -35,7 +35,7 @@ cardrpg/art/signatures/shade/the-opening.webp
 
 **A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. Five pictures against three hundred faces — and the five are what a table looks at all evening, since a deck is face down from the first second of play.
 
-**5 pieces**. Same 2:3 and 640 × 960 as a face, and **no safe area**: nothing is printed over a back, so the whole card is yours.
+**6 pieces**. Same 2:3 and 640 × 960 as a face, and **no safe area**: nothing is printed over a back, so the whole card is yours.
 
 | | Deck | What it is for | File |
 |---|---|---|---|
@@ -44,6 +44,7 @@ cardrpg/art/signatures/shade/the-opening.webp
 |   | **The skill deck** | The scene side's deck. Wants to read as clearly NOT the action deck at a glance, since both are face down in front of the same player. | `backs/skill.webp` |
 |   | **The Wild Magic deck** | Drawn only when a Wild comes out of a fate deck, so its back is a promise that something strange is about to happen. | `backs/wild.webp` |
 |   | **Goblin intent** | An NPC intent deck, keyed by creature kind: the back shows the kind and nothing else, so the table can tell a goblin's intents from anything else's at a glance. | `backs/npc-goblin.webp` |
+|   | **Intent, any creature** | The back every creature uses until it has earned one of its own. Forty-seven kinds would be forty-seven pieces of back art, and the roster grew faster than the art could; a kind with its own key uses it, and everything else uses this. The recognisability argument above is why the exceptions exist rather than why they all should. | `backs/npc.webp` |
 
 **Wound and Taint have no back of their own, deliberately.** Both go *into* the action deck, and a Wound you could see coming would not be a Wound — they wear the action back like everything else in there, which is the whole threat.
 
@@ -625,10 +626,14 @@ The largest group and the least urgent: an item is named on a sheet far more oft
 
 Tuned separately from player gear and never offered in a player's picker.
 
-**2 pieces**. Suggested path: `cardrpg/art/items/npc/`
+**6 pieces**. Suggested path: `cardrpg/art/items/npc/`
 
 | | Name | What it is | File |
 |---|---|---|---|
+|   | **Dark Lantern** | Focus | `items/npc/dark-lantern.webp` |
+|   | **Goblin Fetish** | Focus | `items/npc/goblin-fetish.webp` |
+|   | **Goblin Shield** | Shield | `items/npc/goblin-shield.webp` |
 |   | **Goblin Shortbow** | Weapon | `items/npc/goblin-shortbow.webp` |
 |   | **Goblin Spear** | Weapon | `items/npc/goblin-spear.webp` |
+|   | **Mole Pick** | Weapon | `items/npc/mole-pick.webp` |
 

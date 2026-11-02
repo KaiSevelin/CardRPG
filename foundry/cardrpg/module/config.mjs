@@ -625,6 +625,51 @@ CARDRPG.tactics = {
   tainting: "CARDRPG.Tactic.Tainting"
 };
 
+/**
+ * What a creature can do, which is what earns a card its place in that creature's deck
+ * (core-rules 9).
+ *
+ * **Every one of these is read by an intent card.** That is the rule the list obeys and the reason
+ * it is shorter than the roster's vocabulary: a creature's description may call it armoured, clever,
+ * big or slow, and those are stats, AI quality or flavour -- they belong in `armorBase`, in a
+ * tactic keyword, or nowhere. A capability no card asks for would be a field nothing reads, which
+ * is the defect this project keeps digging out of its own history.
+ *
+ * `move` is deliberately absent: it is derived from having legs, wings, fins or a tunnel
+ * (monsters.mjs `capsOf`), and the Queen -- rooted, unique -- is the creature that proves deriving
+ * it was worth the trouble.
+ */
+CARDRPG.capabilities = {
+  /* how it gets about */
+  legs: "CARDRPG.Capability.Legs",
+  flight: "CARDRPG.Capability.Flight",
+  swim: "CARDRPG.Capability.Swim",
+  burrow: "CARDRPG.Capability.Burrow",
+  /* how it reaches you */
+  ranged: "CARDRPG.Capability.Ranged",
+  reach: "CARDRPG.Capability.Reach",
+  spray: "CARDRPG.Capability.Spray",
+  /* how it closes */
+  fast: "CARDRPG.Capability.Fast",
+  brute: "CARDRPG.Capability.Brute",
+  siege: "CARDRPG.Capability.Siege",
+  /* what it does with numbers */
+  pack: "CARDRPG.Capability.Pack",
+  grapple: "CARDRPG.Capability.Grapple",
+  /* what it leaves behind */
+  venom: "CARDRPG.Capability.Venom",
+  drain: "CARDRPG.Capability.Drain",
+  /* arriving and leaving */
+  stealth: "CARDRPG.Capability.Stealth",
+  dormant: "CARDRPG.Capability.Dormant",
+  /* what it does to somebody else */
+  commander: "CARDRPG.Capability.Commander",
+  summon: "CARDRPG.Capability.Summon",
+  caster: "CARDRPG.Capability.Caster",
+  transport: "CARDRPG.Capability.Transport",
+  shelter: "CARDRPG.Capability.Shelter"
+};
+
 CARDRPG.targetPriorities = {
   nearest: "CARDRPG.Priority.Nearest",
   weakest: "CARDRPG.Priority.Weakest",
