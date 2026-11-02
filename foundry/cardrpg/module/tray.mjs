@@ -30,7 +30,8 @@ import {
 } from "./resolve.mjs";
 import {
   readCall, setCall, clearCall, describeCall, cardAnswers, bestTool, helpOptions,
-  readChallenge, startChallenge, endChallenge, catchBreathInChallenge, drawTwist, twistCounts
+  readChallenge, startChallenge, endChallenge, catchBreathInChallenge, drawTwist, twistCounts,
+  partyPassives, readAgainst
 } from "./checks.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -117,6 +118,8 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       breatheScene: CardRPGTray.#onBreatheScene,
       // The GM's own deck, drawn by hand because the rules say it is never forced.
       twist: CardRPGTray.#onTwist,
+      // The GM's passive panel, folded open or shut and remembered per client.
+      togglePassives: CardRPGTray.#onTogglePassives,
     }
   };
 
@@ -859,6 +862,51 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         };
       })(),
       twists: game.user.isGM ? twistCounts() : null,
+      /*
+       * **What the party notices, for the GM only.** Not a secret-roll panel: a passive score is
+       * static by design (hud-spec 5), which is exactly what makes it safe to read in the open.
+       * When a call is live each row is marked against it, because the only rows that need a check
+       * are the ones a card could still carry.
+       */
+      passives_gm: (() => {
+        if (!game.user.isGM) return null;
+        const open = game.settings.get("cardrpg", "passivesOpen");
+        const reading = partyPassives(passiveScore);
+        const best = actorName => {
+          const actor = game.actors.getName(actorName);
+          const hand = actor ? deckOf(actor, "skillHand") : null;
+          const cards = [...(hand?.cards?.contents ?? [])];
+          if (!cards.length) return 0;
+          return Math.max(...cards.map(c => (call && call.approach !== "any"
+            ? (c.system.worth?.(call.approach) ?? 0) : c.system.value) ?? 0));
+        };
+        return {
+          open,
+          fromScene: reading.fromScene,
+          party: reading.party.join(", "),
+          rows: reading.rows.map(row => {
+            /* Marked only against a call that names this approach, or an open one: a Wits call
+             * says nothing about whether anybody could manage the Might obstacle. */
+            const mark = call && (call.approach === "any" || call.approach === row.key)
+              ? readAgainst(row.best, call.dc, best(row.who))
+              : "";
+            /* The tooltip is built here rather than in the template: three branches of prose in a
+             * `data-tooltip` attribute is markup doing arithmetic's job, and the template has one
+             * comparison helper where this needs three. */
+            const said = {
+              over: game.i18n.localize("CARDRPG.Check.PassiveOver"),
+              close: game.i18n.localize("CARDRPG.Check.PassiveClose"),
+              under: game.i18n.localize("CARDRPG.Check.PassiveUnder")
+            }[mark] ?? "";
+            return {
+              ...row,
+              mark,
+              tip: `${row.label} ${row.best} — ${row.who}`
+                + (said ? ` · ${said}` : "")
+            };
+          })
+        };
+      })(),
       /* The six, always all six: a deck that covers every approach is the composition rule. */
       passives: Object.entries(CARDRPG.approaches)
         .filter(([key]) => key !== "any")
@@ -1314,6 +1362,19 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     if (!game.user.isGM) return;
     await drawTwist({ two: target.dataset.two === "yes" });
     for (const tray of CardRPGTray.openTrays) tray.render();
+  }
+
+  /**
+   * Fold the passive panel open or shut.
+   *
+   * A client setting rather than state on the tray, so a GM who folds it away once finds it away
+   * after a reload -- which is what makes it collapsible rather than merely foldable.
+   */
+  static async #onTogglePassives() {
+    if (!game.user.isGM) return;
+    await game.settings.set("cardrpg", "passivesOpen",
+      !game.settings.get("cardrpg", "passivesOpen"));
+    this.render();
   }
 
   /** Withdraw it. The obstacle is gone, or it was the wrong call. */

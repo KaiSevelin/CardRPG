@@ -496,6 +496,35 @@ The parts are order-free and all optional &mdash; an approach, a difficulty as a
 grammar, and an unrecognised part is ignored rather than refused: a page full of red errors is worse
 than a page with one odd button.
 
+#### 5.3 What the party notices  **[BUILT 2026-11-02]**
+
+> **The GM's panel, and it is collapsible because most of the time one line is the whole answer.**
+
+```
+┌ + Passives ──────────────────────────────────────────────┐
+│ ✊4  🌀5  🌑6  👁6  📜4  👑3                              │
+└──────────────────────────────────────────────────────────┘
+
+  folded open:
+┌ − Passives ──────────────────────────────────────────────┐
+│ ✊ Might    Brom 4    Kira 3    Aldren 2                  │
+│ 🌑 Shadow   Kira 6    Brom 2    Aldren 2                  │
+│ ...                                                       │
+│ Tokens on this scene: Brom, Kira, Aldren                  │
+└──────────────────────────────────────────────────────────┘
+```
+
+- **Folded by default**, and the fold is a **client setting**: a GM who puts it away once should
+  find it away next session, where a field on the application would last only as long as the window.
+- **Who counts is whoever has a token on the active scene.** A scene with no tokens falls back to
+  every character, since a GM reading this before the session starts is a real case and an empty
+  panel is worse than a long one.
+- **While a call is live each approach is marked** &mdash; the passive meets it, a card could carry
+  it, or it is out of reach even with their best card in hand &mdash; but only for the approach the
+  call names, because a Wits call says nothing about the Might obstacle.
+- **It is the GM's, and not because it is secret.** A passive is static (§5), which is what makes it
+  safe in the open; it is the GM's because it is the GM's decision it serves.
+
 ---
 
 ## 6. Interjecting

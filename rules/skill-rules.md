@@ -249,6 +249,30 @@ This makes passive senses a **deck-building** question. A character who carries 
 
 ### Passive scores, for every approach
 
+> **[BUILT 2026-11-02] The passive scores were right and nobody could see them.** `passiveScore`
+> has computed all six correctly since the skill side was built, and no interface anywhere showed
+> one to the person whose decision it serves. That is the same shape as a reward nobody can read:
+> the arithmetic was there and the answer never reached anybody.
+>
+> **The panel's job is subtraction.** This section's own rule is *only make a check when failure
+> would be interesting*, and a party whose best Wits is 6 simply notices a Normal 5 &mdash; no call, no
+> card, no fate draw. **The fastest check is the one nobody makes**, and that is the only reason
+> this is worth building before the things it competes with.
+>
+> It reads as **one row per approach, the party's best and who holds it**, because six numbers times
+> four characters is twenty-four numbers to scan mid-sentence and the question is almost always
+> *does anyone notice*. Folded open it gives the grid, so the GM can see who else could be asked.
+>
+> **Three states against a live call**, and the middle one is the only one that needs a check at
+> all: the passive already meets the difficulty, or a card could carry it, or their best card in
+> hand still falls short and asking is cruel. It is the comparison the check itself makes, printed
+> where the decision is taken.
+>
+> **It is not a secret-roll panel, and will not become one.** A passive score is *static* by design
+> &mdash; it counts the best card of that approach in the whole deck, discard included, and never moves
+> during play &mdash; which is exactly what makes it safe to read in the open. A GM who wants
+> uncertainty calls for a check.
+
 The passive-sense rule is not really about Wits. It is the game's way of turning **a deck into a
 number**, and it works for any approach:
 

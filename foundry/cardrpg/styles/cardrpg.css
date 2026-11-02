@@ -1273,6 +1273,23 @@
 .cr-track__fill { position: absolute; inset: 0 auto 0 0; }
 .cr-track__fill--progress { background: rgba(78, 143, 78, 0.55); }
 .cr-track__fill--pressure { background: rgba(154, 90, 90, 0.55); }
+/* The GM's passive panel: one line folded, a grid open. The three marks are the only colour,
+   because the only thing worth colouring is whether a check is needed at all. */
+.cr-passives { display: flex; flex-direction: column; gap: 0.2rem; font-size: 0.9em; }
+.cr-passives__fold { align-self: flex-start; font-size: 0.85em; padding: 0 0.3rem; }
+/* Folded open, the panel is a block of its own rather than a line in the row above it. */
+.cr-passives--open {
+  padding: 0.15rem 0.4rem; border-left: 3px solid #7a7a7a;
+  background: rgba(122, 122, 122, 0.1);
+}
+.cr-passives__row { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+.cr-passive--gm { padding: 0 0.15rem; }
+.cr-passive--over { background: rgba(78, 143, 78, 0.35); }
+.cr-passive--close { background: rgba(201, 162, 39, 0.3); }
+.cr-passive--under { opacity: 0.45; }
+.cr-passives__grid { border-collapse: collapse; font-size: 0.95em; }
+.cr-passives__grid th { text-align: left; padding-right: 0.5rem; font-weight: normal; opacity: 0.8; }
+.cr-passives__grid td { padding-right: 0.6rem; white-space: nowrap; }
 /* An enriched check or challenge in prepared text: a content link, because that is what it is. */
 a.cr-enriched { cursor: pointer; white-space: nowrap; }
 .cr-scene__counts { display: flex; gap: 0.5rem; align-items: center; }

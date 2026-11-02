@@ -129,6 +129,74 @@ export function helpOptions(actor) {
 }
 
 /* -------------------------------------------- */
+/*  What the party notices                      */
+/* -------------------------------------------- */
+
+/**
+ * The passive scores of everybody at the table, for the GM.
+ *
+ * **The point of this is to delete checks, not to speed them up.** skill-rules 2 says *only make a
+ * check when failure would be interesting*, and a passive score settles a great many obstacles
+ * before anybody reaches for a card: a party whose best Wits is 6 simply notices a Normal 5. The
+ * function `passiveScore` has existed since the skill side was built and **nothing has ever shown
+ * it to the person who needs it**, which is the same shape of omission as a reward nobody could
+ * see -- the arithmetic was there and the answer was not.
+ *
+ * **One row per approach rather than a grid.** Six numbers times four characters is twenty-four
+ * numbers to scan mid-sentence, and the question is always *does anyone notice* -- so the party's
+ * best and who holds it is the answer, and the grid is behind a fold for when it matters who else
+ * could try.
+ *
+ * **Who counts: whoever has a token on the active scene**, because that is the party in front of
+ * the GM. A scene with no tokens falls back to every character in the world, since an empty panel
+ * is less useful than a long one and a GM reading this before the session starts is a real case.
+ */
+export function partyPassives(scoreOf) {
+  const scene = game.scenes?.active ?? null;
+  const onScene = (scene?.tokens?.contents ?? [])
+    .map(t => t.actor).filter(a => a?.type === "character");
+  const seen = new Map();
+  for (const actor of onScene) seen.set(actor.id, actor);
+  const party = seen.size ? [...seen.values()]
+    : (game.actors?.filter(a => a.type === "character") ?? []);
+
+  const rows = Object.entries(CARDRPG.approaches)
+    .filter(([key]) => key !== "any")
+    .map(([key, cfg]) => {
+      const scores = party.map(actor => ({ actor, score: scoreOf(actor, key) }))
+        .sort((a, b) => b.score - a.score || a.actor.name.localeCompare(b.actor.name));
+      const best = scores[0] ?? null;
+      return {
+        key,
+        label: game.i18n.localize(cfg.label ?? key),
+        icon: cfg.icon,
+        best: best?.score ?? 0,
+        who: best?.actor?.name ?? "",
+        /* Everyone, so the fold can say who else could be asked. */
+        all: scores.map(s => ({ name: s.actor.name, score: s.score }))
+      };
+    });
+  return { party: party.map(a => a.name), fromScene: !!seen.size, rows };
+}
+
+/**
+ * How a passive reads against the call in front of the party.
+ *
+ * Three states, and the middle one is the only one that needs a check at all:
+ *
+ *   - **over** -- the passive already meets the difficulty, so it happens. No card, no fate.
+ *   - **close** -- a card could carry it, so this is a check worth making.
+ *   - **under** -- their best card in hand plus the passive still falls short, and asking is cruel.
+ *
+ * This is the same comparison `resolveCheck` makes, which is why it is worth printing beside the
+ * call rather than left to the GM's arithmetic.
+ */
+export function readAgainst(passive, dc, bestInHand = 0) {
+  if (passive >= dc) return "over";
+  return passive + bestInHand >= dc ? "close" : "under";
+}
+
+/* -------------------------------------------- */
 /*  Challenges (skill-rules 3)                  */
 /* -------------------------------------------- */
 

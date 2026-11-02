@@ -6059,7 +6059,7 @@ check("and offers the GM a way to make one",
 check("a scene change redraws every tray",
   /"deleteCombat", "updateScene"/.test(traySource) ? "yes" : "no", "yes");
 check("every string the call needs is translated",
-  Object.keys(lang).filter(k => k.startsWith("CARDRPG.Check.")).length, 23);
+  Object.keys(lang).filter(k => k.startsWith("CARDRPG.Check.")).length, 26);
 check("and nothing it uses is missing",
   [...traySource.matchAll(/CARDRPG\.Check\.[A-Za-z]+/g)].map(m => m[0])
     .filter(k => !(k in lang)).join(", ") || "none", "none");
@@ -6289,6 +6289,109 @@ check("and says the deck is never forced",
 check("hud-spec records the tracks and the enrichers",
   /#### 5\.2 Challenge tracks, and checks written into the prep {2}\*\*\[BUILT 2026-11-02\]\*\*/
     .test(hudSpec) ? "yes" : "no", "yes");
+
+/* ---- the GM's passive panel  [BUILT 2026-11-02] ---- */
+
+/*
+ * **`passiveScore` has been right since the skill side was built and nothing ever showed it to the
+ * person who needs it.** That is the same shape as a reward nobody can see: the arithmetic existed,
+ * the answer did not reach anybody. And the panel's job is **subtraction** -- skill-rules 2 says
+ * *only make a check when failure would be interesting*, and a party whose best Wits is 6 simply
+ * notices a Normal 5. The fastest check is the one nobody makes.
+ */
+check("the party's passives are read for the GM",
+  /export function partyPassives\(scoreOf\)/.test(checksSource) ? "yes" : "no", "yes");
+/* Tokens on the active scene are the party in front of the GM; a scene with none falls back to
+ * every character, because a GM reading this before the session starts is a real case. */
+check("who counts is whoever has a token on the active scene",
+  /\(scene\?\.tokens\?\.contents \?\? \[\]\)/.test(checksSource) ? "yes" : "no", "yes");
+check("and an empty scene falls back to every character",
+  /: \(game\.actors\?\.filter\(a => a\.type === "character"\) \?\? \[\]\);/.test(checksSource)
+    ? "yes" : "no", "yes");
+check("all six approaches, always",
+  /\.filter\(\(\[key\]\) => key !== "any"\)/.test(checksCode) ? "yes" : "no", "yes");
+/* One row per approach, with the best and who holds it -- and everybody, for the fold. */
+check("each row carries the best score and the name",
+  /best: best\?\.score \?\? 0,[\s\S]{0,60}who: best\?\.actor\?\.name \?\? "",/.test(checksSource)
+    ? "yes" : "no", "yes");
+
+/*
+ * **Three states against the call, and the middle one is the only one that needs a check.** Over:
+ * it happens. Close: a card could carry it, so ask. Under: their best card in hand still falls
+ * short, and asking is cruel. The same comparison `resolveCheck` makes, printed where the decision
+ * is taken instead of left to arithmetic in the GM's head.
+ */
+check("a passive reads three ways against a difficulty",
+  ["over", "close", "under"].every(s => new RegExp(`"${s}"`).test(checksCode)), true);
+check("over means the passive alone meets it",
+  /if \(passive >= dc\) return "over";/.test(checksSource) ? "yes" : "no", "yes");
+check("and close means a card could carry it",
+  /return passive \+ bestInHand >= dc \? "close" : "under";/.test(checksSource) ? "yes" : "no",
+  "yes");
+/* Marked only against a call that names the approach, or an open one: a Wits call says nothing
+ * about whether anybody could manage the Might obstacle. */
+check("a row is marked only when the call is about it",
+  /call\.approach === "any" \|\| call\.approach === row\.key/.test(traySource) ? "yes" : "no", "yes");
+check("and each mark has words of its own",
+  ["CARDRPG.Check.PassiveOver", "CARDRPG.Check.PassiveClose", "CARDRPG.Check.PassiveUnder"]
+    .every(k => k in lang), true);
+/* Built in the context rather than the template: three branches of prose in a data-tooltip is
+ * markup doing arithmetic's job, and the template has one comparison helper where this needs three. */
+/*
+ * Read from the PANEL's own block. Six other rows of this template carry `{{this.tip}}`, so a
+ * file-wide grep was satisfied by one of them while the panel had lost it -- the third time in two
+ * days that a second printer has propped up a check about the first, and the only reason it showed
+ * was the break test.
+ */
+const panelBlock = trayTemplate.slice(trayTemplate.indexOf('<div class="cr-passives'),
+  trayTemplate.indexOf('<div class="cr-scene__passives"'));
+check("the tooltip is built where the data is",
+  /data-tooltip="\{\{this\.tip\}\}"/.test(panelBlock) ? "yes" : "no", "yes");
+
+/* GM only, and not because it is secret: a passive is static (hud-spec 5), which is what makes it
+ * safe to read in the open. It is the GM's because it is the GM's decision it serves. */
+check("the panel is the GM's",
+  /if \(!game\.user\.isGM\) return null;\s*const open = game\.settings\.get\("cardrpg", "passivesOpen"\)/
+    .test(traySource) ? "yes" : "no", "yes");
+/*
+ * **Collapsible, and the state survives a reload.** A client setting rather than state on the
+ * tray: a GM who folds it away once should find it away next session, and a field on the
+ * application would last only as long as the window.
+ */
+check("the fold is a client setting",
+  /"passivesOpen", \{\s*scope: "client",/.test(entrySource) ? "yes" : "no", "yes");
+check("and it is not a world rule",
+  /"passivesOpen"[\s\S]{0,80}config: false/.test(entrySource) ? "yes" : "no", "yes");
+check("the toggle writes it",
+  /await game\.settings\.set\("cardrpg", "passivesOpen",\s*!game\.settings\.get\("cardrpg", "passivesOpen"\)\);/
+    .test(traySource) ? "yes" : "no", "yes");
+check("the fold button says which way it goes",
+  /aria-expanded="\{\{#if scene\.passives_gm\.open\}\}true\{\{else\}\}false\{\{\/if\}\}"/
+    .test(trayTemplate) ? "yes" : "no", "yes");
+/* Folded: one row of six. Open: the grid, and who the party is. */
+check("folded, it is one row",
+  /class="cr-passives__row"/.test(trayTemplate) ? "yes" : "no", "yes");
+check("open, it is a grid",
+  /class="cr-passives__grid"/.test(trayTemplate) ? "yes" : "no", "yes");
+check("and it says whose scores these are",
+  /\{\{scene\.passives_gm\.party\}\}/.test(trayTemplate) ? "yes" : "no", "yes");
+/*
+ * The question a GM will ask the moment the panel makes it visible, answered in the tooltip rather
+ * than waiting to be asked: a passive counts the best card of that approach in the WHOLE deck,
+ * discard included, so a character who has played their Wits 3 still reads the same.
+ */
+check("the tooltip says a passive counts the whole deck",
+  /best card of that approach in the whole deck, plus 2 — it counts the discard/
+    .test(trayTemplate) ? "yes" : "no", "yes");
+
+check("skill-rules records the panel",
+  /^> \*\*\[BUILT 2026-11-02\] The passive scores were right and nobody could see them\.\*\*/m
+    .test(skillDoc) ? "yes" : "no", "yes");
+check("and that its job is to remove checks",
+  /The fastest check is the one nobody makes/.test(skillDoc) ? "yes" : "no", "yes");
+check("hud-spec records it as collapsible",
+  /#### 5\.3 What the party notices {2}\*\*\[BUILT 2026-11-02\]\*\*/.test(hudSpec) ? "yes" : "no",
+  "yes");
 
 /* -------------------------------------------- */
 

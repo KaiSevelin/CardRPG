@@ -177,6 +177,19 @@ function registerSettings() {
     default: { added: [], removed: [] }
   });
 
+  /*
+   * Whether the GM's passive panel is folded open. **Client-scoped**, because it is a preference
+   * about one person's screen and not a rule of the world -- and stored rather than held on the
+   * tray so that it survives a reload, which is what "collapsible" has to mean for a panel a GM
+   * folds away once and wants to stay folded.
+   */
+  game.settings.register("cardrpg", "passivesOpen", {
+    scope: "client",
+    config: false,
+    type: Boolean,
+    default: false
+  });
+
   game.settings.register("cardrpg", "setupMacroMade", {
     scope: "world",
     config: false,

@@ -281,6 +281,48 @@
         </div>
       {{/if}}
 
+      {{#if scene.passives_gm}}
+        {{!--
+          What the party notices, for the GM. Collapsed to one line by default, because the question
+          is usually only "does anyone notice" and the answer is the best score and a name. Folded
+          open it says who else could be asked.
+
+          Not a secret-roll panel, and deliberately not: a passive score is static (hud-spec 5),
+          which is what makes it safe to read in the open. Uncertainty is what a check is for.
+        --}}
+        <div class="cr-passives{{#if scene.passives_gm.open}} cr-passives--open{{/if}}">
+          <button type="button" data-action="togglePassives" class="cr-passives__fold"
+                  aria-expanded="{{#if scene.passives_gm.open}}true{{else}}false{{/if}}"
+                  data-tooltip="What the party notices without drawing anything. The best card of that approach in the whole deck, plus 2 — it counts the discard and never changes during play.">
+            {{#if scene.passives_gm.open}}&minus;{{else}}+{{/if}} Passives
+          </button>
+          <div class="cr-passives__row">
+            {{#each scene.passives_gm.rows}}
+              <span class="cr-passive cr-passive--gm{{#if this.mark}} cr-passive--{{this.mark}}{{/if}}"
+                    data-tooltip="{{this.tip}}">
+                {{crIcon this.icon}}<span class="cr-passive__n">{{this.best}}</span>
+              </span>
+            {{/each}}
+          </div>
+          {{#if scene.passives_gm.open}}
+            <table class="cr-passives__grid">
+              {{#each scene.passives_gm.rows}}
+                <tr>
+                  <th>{{crIcon this.icon}} {{this.label}}</th>
+                  {{#each this.all}}
+                    <td>{{this.name}} <strong>{{this.score}}</strong></td>
+                  {{/each}}
+                </tr>
+              {{/each}}
+            </table>
+            <p class="cr-note">
+              {{#if scene.passives_gm.fromScene}}Tokens on this scene{{else}}Every character, since this scene has no tokens{{/if}}:
+              {{scene.passives_gm.party}}
+            </p>
+          {{/if}}
+        </div>
+      {{/if}}
+
       <div class="cr-scene__passives">
         {{#each scene.passives}}
           {{!-- Static: the best card of this approach in the WHOLE deck plus 2, counting the
