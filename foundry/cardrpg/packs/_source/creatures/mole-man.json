@@ -1,6 +1,11 @@
 {
   "_id": "cvw02MIEUIobx2Cf",
   "_key": "!actors!cvw02MIEUIobx2Cf",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Mole Man",
   "type": "npc",
   "system": {
@@ -25,6 +30,11 @@
     {
       "_id": "j8rMVeNNiuM2WVoD",
       "_key": "!actors.items!cvw02MIEUIobx2Cf.j8rMVeNNiuM2WVoD",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Mole Pick",
       "type": "item",
       "system": {
@@ -50,6 +60,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Mole Man"
+    "name": "Mole Man",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

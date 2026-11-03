@@ -1,6 +1,11 @@
 {
   "_id": "Q5ppHr4NjohspyT6",
   "_key": "!items!Q5ppHr4NjohspyT6",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "A Word for You",
   "type": "spell",
   "system": {

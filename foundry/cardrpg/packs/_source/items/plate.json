@@ -1,6 +1,11 @@
 {
   "_id": "qrLDCVEEW9aXrPeI",
   "_key": "!items!qrLDCVEEW9aXrPeI",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Plate",
   "type": "item",
   "system": {

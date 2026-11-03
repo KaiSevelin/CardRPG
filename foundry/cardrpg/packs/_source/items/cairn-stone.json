@@ -1,6 +1,11 @@
 {
   "_id": "fnQFn8RTwAgTp1OE",
   "_key": "!items!fnQFn8RTwAgTp1OE",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Cairn Stone",
   "type": "item",
   "system": {

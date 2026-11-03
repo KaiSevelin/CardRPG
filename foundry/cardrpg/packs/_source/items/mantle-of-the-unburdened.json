@@ -1,6 +1,11 @@
 {
   "_id": "VibD9dZUBGKUaQba",
   "_key": "!items!VibD9dZUBGKUaQba",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Mantle of the Unburdened",
   "type": "item",
   "system": {

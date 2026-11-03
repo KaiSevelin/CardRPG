@@ -1,6 +1,11 @@
 {
   "_id": "u8nqb3DdaO5nIdgP",
   "_key": "!items!u8nqb3DdaO5nIdgP",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Borrowed Dark",
   "type": "spell",
   "system": {

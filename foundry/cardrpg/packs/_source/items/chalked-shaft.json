@@ -1,6 +1,11 @@
 {
   "_id": "gefBVgNXH7LfmSCw",
   "_key": "!items!gefBVgNXH7LfmSCw",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Chalked Shaft",
   "type": "item",
   "system": {

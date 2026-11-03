@@ -1,6 +1,11 @@
 {
   "_id": "zoFcbCyzmwps3fWt",
   "_key": "!items!zoFcbCyzmwps3fWt",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Wall",
   "type": "feature",
   "system": {

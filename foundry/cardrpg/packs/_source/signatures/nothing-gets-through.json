@@ -1,6 +1,11 @@
 {
   "_id": "rkm40pZcEXHv7JT1",
   "_key": "!items!rkm40pZcEXHv7JT1",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Nothing Gets Through",
   "type": "feature",
   "system": {

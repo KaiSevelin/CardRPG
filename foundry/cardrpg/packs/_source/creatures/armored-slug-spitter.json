@@ -1,6 +1,11 @@
 {
   "_id": "yVlPmY8hyJYcAF2b",
   "_key": "!actors!yVlPmY8hyJYcAF2b",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Armored Slug Spitter",
   "type": "npc",
   "system": {
@@ -24,6 +29,11 @@
     {
       "_id": "iu8pI3nUGFFbqTpC",
       "_key": "!actors.items!yVlPmY8hyJYcAF2b.iu8pI3nUGFFbqTpC",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Acid Spray",
       "type": "item",
       "system": {
@@ -51,6 +61,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Armored Slug Spitter"
+    "name": "Armored Slug Spitter",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

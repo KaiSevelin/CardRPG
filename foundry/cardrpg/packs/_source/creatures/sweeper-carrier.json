@@ -1,6 +1,11 @@
 {
   "_id": "pkeYkQHoSPtETibd",
   "_key": "!actors!pkeYkQHoSPtETibd",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Sweeper Carrier",
   "type": "npc",
   "system": {
@@ -26,6 +31,11 @@
     {
       "_id": "acbWXSeCNg9oZD6D",
       "_key": "!actors.items!pkeYkQHoSPtETibd.acbWXSeCNg9oZD6D",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Nip",
       "type": "item",
       "system": {
@@ -50,6 +60,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Sweeper Carrier"
+    "name": "Sweeper Carrier",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

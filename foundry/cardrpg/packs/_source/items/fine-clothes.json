@@ -1,6 +1,11 @@
 {
   "_id": "bHwJv2Z3rMpU0CaT",
   "_key": "!items!bHwJv2Z3rMpU0CaT",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Fine Clothes",
   "type": "item",
   "system": {

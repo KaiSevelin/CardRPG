@@ -1,6 +1,11 @@
 {
   "_id": "mhuMT2oB8S77glrX",
   "_key": "!items!mhuMT2oB8S77glrX",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Sea Decides",
   "type": "spell",
   "system": {

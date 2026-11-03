@@ -1,6 +1,11 @@
 {
   "_id": "gNCPXOT59zLq3G0m",
   "_key": "!actors!gNCPXOT59zLq3G0m",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Goblin Chief",
   "type": "npc",
   "system": {
@@ -26,6 +31,11 @@
     {
       "_id": "Otdug4oGARlopzfG",
       "_key": "!actors.items!gNCPXOT59zLq3G0m.Otdug4oGARlopzfG",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Goblin Spear",
       "type": "item",
       "system": {
@@ -52,6 +62,11 @@
     {
       "_id": "CbHBxRYCTQu1EX9q",
       "_key": "!actors.items!gNCPXOT59zLq3G0m.CbHBxRYCTQu1EX9q",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Goblin Shield",
       "type": "item",
       "system": {
@@ -77,6 +92,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Goblin Chief"
+    "name": "Goblin Chief",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

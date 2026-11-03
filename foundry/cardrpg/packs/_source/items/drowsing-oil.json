@@ -1,6 +1,11 @@
 {
   "_id": "xkcdhZFz052KAUQf",
   "_key": "!items!xkcdhZFz052KAUQf",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Drowsing Oil",
   "type": "item",
   "system": {

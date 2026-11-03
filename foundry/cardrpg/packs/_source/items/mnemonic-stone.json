@@ -1,6 +1,11 @@
 {
   "_id": "6DXwCvElApQLgNHD",
   "_key": "!items!6DXwCvElApQLgNHD",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Mnemonic Stone",
   "type": "item",
   "system": {

@@ -1,6 +1,11 @@
 {
   "_id": "5hUjxSgtsXLdk3Ct",
   "_key": "!items!5hUjxSgtsXLdk3Ct",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Boots of the Long Step",
   "type": "item",
   "system": {

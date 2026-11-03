@@ -1,6 +1,11 @@
 {
   "_id": "YrF1jYwnGeMOETBO",
   "_key": "!items!YrF1jYwnGeMOETBO",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Gag of the Nine",
   "type": "item",
   "system": {

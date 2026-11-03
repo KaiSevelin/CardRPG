@@ -1,6 +1,11 @@
 {
   "_id": "ZA7GzHc7qRhhDwlg",
   "_key": "!items!ZA7GzHc7qRhhDwlg",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Smith's Hammer",
   "type": "item",
   "system": {

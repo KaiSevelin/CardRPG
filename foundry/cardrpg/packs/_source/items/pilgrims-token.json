@@ -1,6 +1,11 @@
 {
   "_id": "59BfA9oNQHcBENBW",
   "_key": "!items!59BfA9oNQHcBENBW",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Pilgrim's Token",
   "type": "item",
   "system": {

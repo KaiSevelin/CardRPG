@@ -1,6 +1,11 @@
 {
   "_id": "EPNMYubCOcE273ud",
   "_key": "!items!EPNMYubCOcE273ud",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Arquebus",
   "type": "item",
   "system": {

@@ -1,6 +1,11 @@
 {
   "_id": "48IqAA9iT1FpMz1H",
   "_key": "!items!48IqAA9iT1FpMz1H",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Brewer's Tithe",
   "type": "spell",
   "system": {

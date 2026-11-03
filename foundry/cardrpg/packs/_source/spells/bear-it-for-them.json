@@ -1,6 +1,11 @@
 {
   "_id": "FOeBrEgTsYISGw3V",
   "_key": "!items!FOeBrEgTsYISGw3V",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Bear It for Them",
   "type": "spell",
   "system": {

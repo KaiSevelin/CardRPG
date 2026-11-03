@@ -1,6 +1,11 @@
 {
   "_id": "pZnqEHRuQRAgWwCD",
   "_key": "!items!pZnqEHRuQRAgWwCD",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Goblin Shortbow",
   "type": "item",
   "system": {

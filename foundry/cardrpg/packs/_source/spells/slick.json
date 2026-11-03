@@ -1,6 +1,11 @@
 {
   "_id": "VjP17WJkV3yEvAM1",
   "_key": "!items!VjP17WJkV3yEvAM1",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Slick",
   "type": "spell",
   "system": {

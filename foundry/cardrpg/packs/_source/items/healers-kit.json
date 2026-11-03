@@ -1,6 +1,11 @@
 {
   "_id": "aeHf2x7J4bFcEROF",
   "_key": "!items!aeHf2x7J4bFcEROF",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Healer's Kit",
   "type": "item",
   "system": {

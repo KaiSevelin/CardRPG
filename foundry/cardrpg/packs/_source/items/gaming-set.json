@@ -1,6 +1,11 @@
 {
   "_id": "sAVHAUgNY2W6Kdko",
   "_key": "!items!sAVHAUgNY2W6Kdko",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Gaming Set",
   "type": "item",
   "system": {

@@ -1,6 +1,11 @@
 {
   "_id": "v3Y436SogW2xLT3e",
   "_key": "!items!v3Y436SogW2xLT3e",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Standing Ward",
   "type": "spell",
   "system": {

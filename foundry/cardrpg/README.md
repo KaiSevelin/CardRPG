@@ -15,19 +15,19 @@ mklink /J "C:\Users\kaise\AppData\Local\FoundryVTT\Data\systems\cardrpg" "C:\Use
 
 Then restart Foundry and create a world with the **Card RPG** system.
 
-## The compendium  **[BUILT 2026-11-02]**
+## The compendium  **[BUILT 2026-11-02, LOADED 2026-11-03]**
 
 **Everything the system knows ships as compendium packs**, so a GM can browse and drag without
-running anything. Seven packs, 393 documents, in a **Card RPG** folder in the compendium sidebar:
+running anything. Seven packs, 394 documents, in a **Card RPG** folder in the compendium sidebar:
 
 | Pack | | |
 |---|---|---|
 | **Creatures** | 47 | every creature in the roster, bases and variants, with gear embedded |
 | **Pregenerated Characters** | 1 | the starter Warrior |
 | **Items** | 166 | the catalogue, NPC gear and the natural weapons |
-| **Features** | 14 | |
-| **Formulas and Miracles** | 124 | including the 119 school spells the setup routine never created |
-| **Signatures** | 30 | the 6 features, 1 item and 23 spells a title hands over |
+| **Features** | 22 | including the 8 a school teaches: the 7 tattoos and a renunciation |
+| **Formulas and Miracles** | 117 | the school spells the setup routine never created |
+| **Signatures** | 30 | the 7 features, 1 item and 22 spells a title hands over |
 | **Decks** | 11 | the action pools, skills, Wild Magic, fate, twists and the intent pool |
 
 The 21 Signatures that are **cards** are in the *Signature Cards* deck rather than the Signatures
@@ -142,7 +142,26 @@ can't leak into player pickers, and that goblin weapons stay at least 2 above he
 
 Templates are precompiled with real Handlebars, so a broken one fails the run.
 
-It cannot tell you the system *loads*. Only Foundry can do that.
+It cannot tell you the system *loads*. Only Foundry can do that -- so ask Foundry:
+
+```bash
+node "$FOUNDRY/resources/app/main.mjs" --dataPath=<your data dir> --port=30001 --noupnp --world=<world>
+```
+
+The server is the same entry point the desktop app runs, it needs no browser, and it prints what it
+thinks of every pack record. **A clean load is `0` warnings and `0` lines saying `Migrated`** --
+anything it migrates is something it had to repair to use. The first time it was ever run against
+this system it found one fault in 394 documents and rewrote all 48 Actors; both are checks now, and
+a run today reads:
+
+```
+Launching World | Complete
+Server started and listening on port 30001
+```
+
+with nothing between. It still proves only that the documents are well formed and the packs index.
+The data models and the sheets are client-side, so **nothing has yet exercised them** -- that needs a
+browser logged in to a world.
 
 ## Playing a round
 

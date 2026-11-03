@@ -1,6 +1,11 @@
 {
   "_id": "F3RmAT00rkztLgEO",
   "_key": "!items!F3RmAT00rkztLgEO",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Silvered Head",
   "type": "item",
   "system": {

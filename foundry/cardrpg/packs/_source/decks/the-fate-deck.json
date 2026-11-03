@@ -1,12 +1,22 @@
 {
   "_id": "OIECs88iccWHuhYT",
   "_key": "!cards!OIECs88iccWHuhYT",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Fate Deck",
   "type": "deck",
   "cards": [
     {
       "_id": "dAnH9GXHdOUTZVrX",
       "_key": "!cards.cards!OIECs88iccWHuhYT.dAnH9GXHdOUTZVrX",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 100,
       "name": "Miss",
       "type": "fate",
@@ -24,6 +34,11 @@
     {
       "_id": "iFBuqOMc6Ot8Y6ew",
       "_key": "!cards.cards!OIECs88iccWHuhYT.iFBuqOMc6Ot8Y6ew",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 200,
       "name": "−2",
       "type": "fate",
@@ -40,6 +55,11 @@
     {
       "_id": "LEvpvrIqY8jRoSn4",
       "_key": "!cards.cards!OIECs88iccWHuhYT.LEvpvrIqY8jRoSn4",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 300,
       "name": "−1",
       "type": "fate",
@@ -56,6 +76,11 @@
     {
       "_id": "BCQCOSrCvbm0SB8f",
       "_key": "!cards.cards!OIECs88iccWHuhYT.BCQCOSrCvbm0SB8f",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 400,
       "name": "−1",
       "type": "fate",
@@ -72,6 +97,11 @@
     {
       "_id": "FZ5ZLCMYz0gy2v7y",
       "_key": "!cards.cards!OIECs88iccWHuhYT.FZ5ZLCMYz0gy2v7y",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 500,
       "name": "−1",
       "type": "fate",
@@ -88,6 +118,11 @@
     {
       "_id": "EkjgqIKsjMzkJ93y",
       "_key": "!cards.cards!OIECs88iccWHuhYT.EkjgqIKsjMzkJ93y",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 600,
       "name": "−1",
       "type": "fate",
@@ -104,6 +139,11 @@
     {
       "_id": "UIn6tGCEYS0OAUFx",
       "_key": "!cards.cards!OIECs88iccWHuhYT.UIn6tGCEYS0OAUFx",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 700,
       "name": "±0",
       "type": "fate",
@@ -120,6 +160,11 @@
     {
       "_id": "TOpCNDoFGCrqJ97L",
       "_key": "!cards.cards!OIECs88iccWHuhYT.TOpCNDoFGCrqJ97L",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 800,
       "name": "±0",
       "type": "fate",
@@ -136,6 +181,11 @@
     {
       "_id": "npcRVfMZ8N66i4FM",
       "_key": "!cards.cards!OIECs88iccWHuhYT.npcRVfMZ8N66i4FM",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 900,
       "name": "±0",
       "type": "fate",
@@ -152,6 +202,11 @@
     {
       "_id": "xCoJOeLSRiyQ86rJ",
       "_key": "!cards.cards!OIECs88iccWHuhYT.xCoJOeLSRiyQ86rJ",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1000,
       "name": "±0",
       "type": "fate",
@@ -168,6 +223,11 @@
     {
       "_id": "QMoHFTCJyrlfm5cS",
       "_key": "!cards.cards!OIECs88iccWHuhYT.QMoHFTCJyrlfm5cS",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1100,
       "name": "±0",
       "type": "fate",
@@ -184,6 +244,11 @@
     {
       "_id": "kERajzRFeGV61H6y",
       "_key": "!cards.cards!OIECs88iccWHuhYT.kERajzRFeGV61H6y",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1200,
       "name": "±0",
       "type": "fate",
@@ -200,6 +265,11 @@
     {
       "_id": "UUh007uswTS9PMZI",
       "_key": "!cards.cards!OIECs88iccWHuhYT.UUh007uswTS9PMZI",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1300,
       "name": "±0",
       "type": "fate",
@@ -216,6 +286,11 @@
     {
       "_id": "8bF89s1OE9Kmd3AI",
       "_key": "!cards.cards!OIECs88iccWHuhYT.8bF89s1OE9Kmd3AI",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1400,
       "name": "±0",
       "type": "fate",
@@ -232,6 +307,11 @@
     {
       "_id": "HyfqOwHg7BQf5Q6p",
       "_key": "!cards.cards!OIECs88iccWHuhYT.HyfqOwHg7BQf5Q6p",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1500,
       "name": "+1",
       "type": "fate",
@@ -248,6 +328,11 @@
     {
       "_id": "j4XTEUlhkniqCHNU",
       "_key": "!cards.cards!OIECs88iccWHuhYT.j4XTEUlhkniqCHNU",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1600,
       "name": "+1",
       "type": "fate",
@@ -264,6 +349,11 @@
     {
       "_id": "cyUjOK7AhxL8KjDA",
       "_key": "!cards.cards!OIECs88iccWHuhYT.cyUjOK7AhxL8KjDA",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1700,
       "name": "+1",
       "type": "fate",
@@ -280,6 +370,11 @@
     {
       "_id": "Fv7ppFarQWRLzjId",
       "_key": "!cards.cards!OIECs88iccWHuhYT.Fv7ppFarQWRLzjId",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1800,
       "name": "+1",
       "type": "fate",
@@ -296,6 +391,11 @@
     {
       "_id": "u6Hkdm74VdOdWWm9",
       "_key": "!cards.cards!OIECs88iccWHuhYT.u6Hkdm74VdOdWWm9",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1900,
       "name": "+2",
       "type": "fate",
@@ -312,6 +412,11 @@
     {
       "_id": "HGFRm4mFvJBUZEIk",
       "_key": "!cards.cards!OIECs88iccWHuhYT.HGFRm4mFvJBUZEIk",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 2000,
       "name": "Critical",
       "type": "fate",

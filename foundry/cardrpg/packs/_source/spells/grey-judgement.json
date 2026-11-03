@@ -1,6 +1,11 @@
 {
   "_id": "Xnnnd0QC2kI1DOjW",
   "_key": "!items!Xnnnd0QC2kI1DOjW",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Grey Judgement",
   "type": "spell",
   "system": {

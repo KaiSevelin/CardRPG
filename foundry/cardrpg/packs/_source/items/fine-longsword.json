@@ -1,6 +1,11 @@
 {
   "_id": "yd0rLxTZLDdPmxvL",
   "_key": "!items!yd0rLxTZLDdPmxvL",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Fine Longsword",
   "type": "item",
   "system": {

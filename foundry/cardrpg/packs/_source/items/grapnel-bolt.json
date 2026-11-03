@@ -1,6 +1,11 @@
 {
   "_id": "TYwPyvWORG4vN45x",
   "_key": "!items!TYwPyvWORG4vN45x",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Grapnel Bolt",
   "type": "item",
   "system": {

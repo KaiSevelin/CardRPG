@@ -1,6 +1,11 @@
 {
   "_id": "CwRcc9jbyjaAoWxB",
   "_key": "!items!CwRcc9jbyjaAoWxB",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Stand Where I Stand",
   "type": "spell",
   "system": {

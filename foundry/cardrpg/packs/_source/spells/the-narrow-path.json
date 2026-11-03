@@ -1,6 +1,11 @@
 {
   "_id": "YAmKsHq1IZ5TPoMG",
   "_key": "!items!YAmKsHq1IZ5TPoMG",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Narrow Path",
   "type": "spell",
   "system": {

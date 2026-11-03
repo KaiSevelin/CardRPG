@@ -1,6 +1,11 @@
 {
   "_id": "ovqOeZgnJL9vxn1i",
   "_key": "!actors!ovqOeZgnJL9vxn1i",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Pincer Marshal",
   "type": "npc",
   "system": {
@@ -28,6 +33,11 @@
     {
       "_id": "EMMs73dNOnFEu9sT",
       "_key": "!actors.items!ovqOeZgnJL9vxn1i.EMMs73dNOnFEu9sT",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Grasping Claws",
       "type": "item",
       "system": {
@@ -53,6 +63,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Pincer Marshal"
+    "name": "Pincer Marshal",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

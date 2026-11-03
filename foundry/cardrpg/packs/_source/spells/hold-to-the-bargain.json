@@ -1,6 +1,11 @@
 {
   "_id": "PZm13zPC2uPccglr",
   "_key": "!items!PZm13zPC2uPccglr",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Hold to the Bargain",
   "type": "spell",
   "system": {

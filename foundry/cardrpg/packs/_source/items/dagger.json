@@ -1,6 +1,11 @@
 {
   "_id": "nsje5jXCwhZwXw6e",
   "_key": "!items!nsje5jXCwhZwXw6e",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Dagger",
   "type": "item",
   "system": {

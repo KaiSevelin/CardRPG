@@ -1,6 +1,11 @@
 {
   "_id": "kCi0pUti4OS2H1W8",
   "_key": "!items!kCi0pUti4OS2H1W8",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Last Card",
   "type": "spell",
   "system": {

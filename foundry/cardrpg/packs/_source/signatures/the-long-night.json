@@ -1,6 +1,11 @@
 {
   "_id": "HU13EgWyIx3CecK7",
   "_key": "!items!HU13EgWyIx3CecK7",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Long Night",
   "type": "spell",
   "system": {

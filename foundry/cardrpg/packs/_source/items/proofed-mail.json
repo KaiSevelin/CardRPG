@@ -1,6 +1,11 @@
 {
   "_id": "nGjkdav7zyWwaYEC",
   "_key": "!items!nGjkdav7zyWwaYEC",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Proofed Mail",
   "type": "item",
   "system": {

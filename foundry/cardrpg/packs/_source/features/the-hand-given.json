@@ -1,6 +1,11 @@
 {
   "_id": "53EXgUGNW6OHxXH6",
   "_key": "!items!53EXgUGNW6OHxXH6",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Hand Given",
   "type": "feature",
   "system": {

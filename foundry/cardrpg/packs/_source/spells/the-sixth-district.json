@@ -1,6 +1,11 @@
 {
   "_id": "6I3b0zLyi4x8tQSZ",
   "_key": "!items!6I3b0zLyi4x8tQSZ",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Sixth District",
   "type": "spell",
   "system": {

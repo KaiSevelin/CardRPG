@@ -1,6 +1,11 @@
 {
   "_id": "cD7lsSoubJOCWdD1",
   "_key": "!items!cD7lsSoubJOCWdD1",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Rain",
   "type": "spell",
   "system": {

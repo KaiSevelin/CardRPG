@@ -1,6 +1,11 @@
 {
   "_id": "v35QEojN9qmEFoEm",
   "_key": "!items!v35QEojN9qmEFoEm",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Claws",
   "type": "item",
   "system": {

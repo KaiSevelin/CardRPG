@@ -1,6 +1,11 @@
 {
   "_id": "13AtP4IEf6t5F6e5",
   "_key": "!items!13AtP4IEf6t5F6e5",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Boil",
   "type": "spell",
   "system": {

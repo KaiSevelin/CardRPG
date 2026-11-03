@@ -1,6 +1,11 @@
 {
   "_id": "VR9BFnj8DMC8bYRT",
   "_key": "!items!VR9BFnj8DMC8bYRT",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Grave-cap Extract",
   "type": "item",
   "system": {

@@ -1,6 +1,11 @@
 {
   "_id": "1QwMDaMnJt0UhmRr",
   "_key": "!items!1QwMDaMnJt0UhmRr",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Buckler",
   "type": "item",
   "system": {

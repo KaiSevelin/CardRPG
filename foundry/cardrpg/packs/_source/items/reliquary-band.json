@@ -1,6 +1,11 @@
 {
   "_id": "9aZLmv8tU0EIXEQq",
   "_key": "!items!9aZLmv8tU0EIXEQq",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Reliquary Band",
   "type": "item",
   "system": {

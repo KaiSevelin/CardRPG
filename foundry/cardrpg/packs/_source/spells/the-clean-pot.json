@@ -1,6 +1,11 @@
 {
   "_id": "rkaL8BHqM4CyYuYn",
   "_key": "!items!rkaL8BHqM4CyYuYn",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Clean Pot",
   "type": "spell",
   "system": {

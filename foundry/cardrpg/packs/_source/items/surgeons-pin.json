@@ -1,6 +1,11 @@
 {
   "_id": "QnDVxAmNbT0wQA11",
   "_key": "!items!QnDVxAmNbT0wQA11",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Surgeon's Pin",
   "type": "item",
   "system": {

@@ -1,6 +1,11 @@
 {
   "_id": "10IjicxPtM0RcDxE",
   "_key": "!actors!10IjicxPtM0RcDxE",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Mole Beast Tusker",
   "type": "npc",
   "system": {
@@ -27,6 +32,11 @@
     {
       "_id": "P1KTbaPck2f8zrs0",
       "_key": "!actors.items!10IjicxPtM0RcDxE.P1KTbaPck2f8zrs0",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Tusks",
       "type": "item",
       "system": {
@@ -53,6 +63,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Mole Beast Tusker"
+    "name": "Mole Beast Tusker",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

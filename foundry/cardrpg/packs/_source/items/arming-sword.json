@@ -1,6 +1,11 @@
 {
   "_id": "EiqBZtTGWNCTesGb",
   "_key": "!items!EiqBZtTGWNCTesGb",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Arming Sword",
   "type": "item",
   "system": {

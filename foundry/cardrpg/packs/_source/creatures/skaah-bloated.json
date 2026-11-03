@@ -1,6 +1,11 @@
 {
   "_id": "FywH1jVJ8tzhHzEo",
   "_key": "!actors!FywH1jVJ8tzhHzEo",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Skaah Bloated",
   "type": "npc",
   "system": {
@@ -26,6 +31,11 @@
     {
       "_id": "ptADDFO5e9NAdn44",
       "_key": "!actors.items!FywH1jVJ8tzhHzEo.ptADDFO5e9NAdn44",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Acid Spray",
       "type": "item",
       "system": {
@@ -53,6 +63,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Skaah Bloated"
+    "name": "Skaah Bloated",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

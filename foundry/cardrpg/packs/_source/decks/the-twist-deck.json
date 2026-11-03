@@ -1,12 +1,22 @@
 {
   "_id": "pPY7q6wenLXBOFQK",
   "_key": "!cards!pPY7q6wenLXBOFQK",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Twist Deck",
   "type": "deck",
   "cards": [
     {
       "_id": "6xKxbiUAFX86m12q",
       "_key": "!cards.cards!pPY7q6wenLXBOFQK.6xKxbiUAFX86m12q",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 100,
       "name": "Noise",
       "type": "twist",
@@ -19,6 +29,11 @@
     {
       "_id": "eX1VlTTeKFsQnDrF",
       "_key": "!cards.cards!pPY7q6wenLXBOFQK.eX1VlTTeKFsQnDrF",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 200,
       "name": "Noise",
       "type": "twist",
@@ -31,6 +46,11 @@
     {
       "_id": "y67DpajkIaMqQnA5",
       "_key": "!cards.cards!pPY7q6wenLXBOFQK.y67DpajkIaMqQnA5",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 300,
       "name": "Noise",
       "type": "twist",
@@ -43,6 +63,11 @@
     {
       "_id": "ZWX2HQos2c31E1gx",
       "_key": "!cards.cards!pPY7q6wenLXBOFQK.ZWX2HQos2c31E1gx",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 400,
       "name": "Noise",
       "type": "twist",
@@ -55,6 +80,11 @@
     {
       "_id": "vELLnaBWHfBcokMg",
       "_key": "!cards.cards!pPY7q6wenLXBOFQK.vELLnaBWHfBcokMg",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 500,
       "name": "Time",
       "type": "twist",
@@ -67,6 +97,11 @@
     {
       "_id": "d4OmCGOF89o6y9Zs",
       "_key": "!cards.cards!pPY7q6wenLXBOFQK.d4OmCGOF89o6y9Zs",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 600,
       "name": "Time",
       "type": "twist",
@@ -79,6 +114,11 @@
     {
       "_id": "W3TLbeCwl5SIAWzU",
       "_key": "!cards.cards!pPY7q6wenLXBOFQK.W3TLbeCwl5SIAWzU",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 700,
       "name": "Time",
       "type": "twist",
@@ -91,6 +131,11 @@
     {
       "_id": "g99EXj2tohk3d2wH",
       "_key": "!cards.cards!pPY7q6wenLXBOFQK.g99EXj2tohk3d2wH",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 800,
       "name": "Time",
       "type": "twist",
@@ -103,6 +148,11 @@
     {
       "_id": "M6Wn5fYRFFaPJO49",
       "_key": "!cards.cards!pPY7q6wenLXBOFQK.M6Wn5fYRFFaPJO49",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 900,
       "name": "Gear",
       "type": "twist",
@@ -115,6 +165,11 @@
     {
       "_id": "xYEOf6R9qp1GE2kx",
       "_key": "!cards.cards!pPY7q6wenLXBOFQK.xYEOf6R9qp1GE2kx",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1000,
       "name": "Gear",
       "type": "twist",
@@ -127,6 +182,11 @@
     {
       "_id": "UD2s3XmMVZFXAMPQ",
       "_key": "!cards.cards!pPY7q6wenLXBOFQK.UD2s3XmMVZFXAMPQ",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1100,
       "name": "Gear",
       "type": "twist",
@@ -139,6 +199,11 @@
     {
       "_id": "vY4qE5dtqJFRtuOy",
       "_key": "!cards.cards!pPY7q6wenLXBOFQK.vY4qE5dtqJFRtuOy",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1200,
       "name": "Gear",
       "type": "twist",
@@ -151,6 +216,11 @@
     {
       "_id": "fyGwtY6C75o828PM",
       "_key": "!cards.cards!pPY7q6wenLXBOFQK.fyGwtY6C75o828PM",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1300,
       "name": "Strain",
       "type": "twist",
@@ -163,6 +233,11 @@
     {
       "_id": "3dHx1WV08NmWTOXO",
       "_key": "!cards.cards!pPY7q6wenLXBOFQK.3dHx1WV08NmWTOXO",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1400,
       "name": "Strain",
       "type": "twist",
@@ -175,6 +250,11 @@
     {
       "_id": "Gt6m53fBQM4BGbKM",
       "_key": "!cards.cards!pPY7q6wenLXBOFQK.Gt6m53fBQM4BGbKM",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1500,
       "name": "Strain",
       "type": "twist",
@@ -187,6 +267,11 @@
     {
       "_id": "h65rDwrKmnAWH8Ri",
       "_key": "!cards.cards!pPY7q6wenLXBOFQK.h65rDwrKmnAWH8Ri",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1600,
       "name": "Strain",
       "type": "twist",
@@ -199,6 +284,11 @@
     {
       "_id": "ktEnhZkbKAZHvc08",
       "_key": "!cards.cards!pPY7q6wenLXBOFQK.ktEnhZkbKAZHvc08",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1700,
       "name": "Strain",
       "type": "twist",
@@ -211,6 +301,11 @@
     {
       "_id": "IrC8BTjX7MvAzJmU",
       "_key": "!cards.cards!pPY7q6wenLXBOFQK.IrC8BTjX7MvAzJmU",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1800,
       "name": "Hurt",
       "type": "twist",
@@ -223,6 +318,11 @@
     {
       "_id": "nqmw38nMuto6Lzq1",
       "_key": "!cards.cards!pPY7q6wenLXBOFQK.nqmw38nMuto6Lzq1",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1900,
       "name": "Hurt",
       "type": "twist",
@@ -235,6 +335,11 @@
     {
       "_id": "Dp4Gxc0GvHq4H5ZU",
       "_key": "!cards.cards!pPY7q6wenLXBOFQK.Dp4Gxc0GvHq4H5ZU",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 2000,
       "name": "Hurt",
       "type": "twist",
@@ -247,6 +352,11 @@
     {
       "_id": "YO9UGgJo38spltBj",
       "_key": "!cards.cards!pPY7q6wenLXBOFQK.YO9UGgJo38spltBj",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 2100,
       "name": "Arrival",
       "type": "twist",
@@ -259,6 +369,11 @@
     {
       "_id": "t9L47pI9HP3KaPf0",
       "_key": "!cards.cards!pPY7q6wenLXBOFQK.t9L47pI9HP3KaPf0",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 2200,
       "name": "Arrival",
       "type": "twist",
@@ -271,6 +386,11 @@
     {
       "_id": "d5AfMYr7iSrGtjwI",
       "_key": "!cards.cards!pPY7q6wenLXBOFQK.d5AfMYr7iSrGtjwI",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 2300,
       "name": "Arrival",
       "type": "twist",
@@ -283,6 +403,11 @@
     {
       "_id": "17e5YcT7RF74SBxD",
       "_key": "!cards.cards!pPY7q6wenLXBOFQK.17e5YcT7RF74SBxD",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 2400,
       "name": "Arrival",
       "type": "twist",
@@ -295,6 +420,11 @@
     {
       "_id": "vlmqDgX67LXgT2Iz",
       "_key": "!cards.cards!pPY7q6wenLXBOFQK.vlmqDgX67LXgT2Iz",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 2500,
       "name": "Secret",
       "type": "twist",
@@ -307,6 +437,11 @@
     {
       "_id": "UfN37M1QfRTPySxt",
       "_key": "!cards.cards!pPY7q6wenLXBOFQK.UfN37M1QfRTPySxt",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 2600,
       "name": "Secret",
       "type": "twist",
@@ -319,6 +454,11 @@
     {
       "_id": "oep1GXo0OAwMbt37",
       "_key": "!cards.cards!pPY7q6wenLXBOFQK.oep1GXo0OAwMbt37",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 2700,
       "name": "Opening",
       "type": "twist",
@@ -331,6 +471,11 @@
     {
       "_id": "fftHbR2N5jJjE4NH",
       "_key": "!cards.cards!pPY7q6wenLXBOFQK.fftHbR2N5jJjE4NH",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 2800,
       "name": "Opening",
       "type": "twist",
@@ -343,6 +488,11 @@
     {
       "_id": "Yml4zO0ARuVChXGL",
       "_key": "!cards.cards!pPY7q6wenLXBOFQK.Yml4zO0ARuVChXGL",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 2900,
       "name": "Opening",
       "type": "twist",
@@ -355,6 +505,11 @@
     {
       "_id": "wwhOmLP4HAiTDubn",
       "_key": "!cards.cards!pPY7q6wenLXBOFQK.wwhOmLP4HAiTDubn",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 3000,
       "name": "Opening",
       "type": "twist",

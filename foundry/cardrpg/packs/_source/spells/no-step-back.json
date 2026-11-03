@@ -1,6 +1,11 @@
 {
   "_id": "EQfL4YCXAyZK5Au1",
   "_key": "!items!EQfL4YCXAyZK5Au1",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "No Step Back",
   "type": "spell",
   "system": {

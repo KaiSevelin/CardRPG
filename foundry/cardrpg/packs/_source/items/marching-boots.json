@@ -1,6 +1,11 @@
 {
   "_id": "4fTW4Qr9znQQGV56",
   "_key": "!items!4fTW4Qr9znQQGV56",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Marching Boots",
   "type": "item",
   "system": {

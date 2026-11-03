@@ -1,6 +1,11 @@
 {
   "_id": "IjEcWq0CSTITgusM",
   "_key": "!items!IjEcWq0CSTITgusM",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Draught of the Hollow",
   "type": "item",
   "system": {

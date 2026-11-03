@@ -1,6 +1,11 @@
 {
   "_id": "9EUaSD65Le5CbLk3",
   "_key": "!actors!9EUaSD65Le5CbLk3",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Mole Man Digger",
   "type": "npc",
   "system": {
@@ -24,6 +29,11 @@
     {
       "_id": "MOlYgzP0zQl5i0mr",
       "_key": "!actors.items!9EUaSD65Le5CbLk3.MOlYgzP0zQl5i0mr",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Mole Pick",
       "type": "item",
       "system": {
@@ -49,6 +59,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Mole Man Digger"
+    "name": "Mole Man Digger",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

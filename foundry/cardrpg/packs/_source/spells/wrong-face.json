@@ -1,6 +1,11 @@
 {
   "_id": "qMPyUJ7vBrwBXpLt",
   "_key": "!items!qMPyUJ7vBrwBXpLt",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Wrong Face",
   "type": "spell",
   "system": {

@@ -1,6 +1,11 @@
 {
   "_id": "PF5GqacmRAOeTGg0",
   "_key": "!items!PF5GqacmRAOeTGg0",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Crown of the Quiet Mind",
   "type": "item",
   "system": {

@@ -1,6 +1,11 @@
 {
   "_id": "64CcFCRRebIe6UqU",
   "_key": "!actors!64CcFCRRebIe6UqU",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Smash Beetle",
   "type": "npc",
   "system": {
@@ -26,6 +31,11 @@
     {
       "_id": "bA95vJBHTO3OuV3H",
       "_key": "!actors.items!64CcFCRRebIe6UqU.bA95vJBHTO3OuV3H",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Tail Club",
       "type": "item",
       "system": {
@@ -53,6 +63,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Smash Beetle"
+    "name": "Smash Beetle",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

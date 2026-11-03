@@ -1,6 +1,11 @@
 {
   "_id": "4wvNWxhWWgt32JoV",
   "_key": "!actors!4wvNWxhWWgt32JoV",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Processor",
   "type": "npc",
   "system": {
@@ -21,6 +26,11 @@
     {
       "_id": "WgqnTc0lQSbjHy4j",
       "_key": "!actors.items!4wvNWxhWWgt32JoV.WgqnTc0lQSbjHy4j",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Nip",
       "type": "item",
       "system": {
@@ -45,6 +55,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Processor"
+    "name": "Processor",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

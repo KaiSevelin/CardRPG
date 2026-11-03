@@ -1,6 +1,11 @@
 {
   "_id": "FLAItf8bduBreVWO",
   "_key": "!actors!FLAItf8bduBreVWO",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Goblin Archer",
   "type": "npc",
   "system": {
@@ -27,6 +32,11 @@
     {
       "_id": "tzbiUEsebnl6ur8e",
       "_key": "!actors.items!FLAItf8bduBreVWO.tzbiUEsebnl6ur8e",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Goblin Shortbow",
       "type": "item",
       "system": {
@@ -55,6 +65,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Goblin Archer"
+    "name": "Goblin Archer",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

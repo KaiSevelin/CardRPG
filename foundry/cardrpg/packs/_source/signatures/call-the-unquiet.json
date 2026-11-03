@@ -1,6 +1,11 @@
 {
   "_id": "AdCkPvYxbEWtIqHA",
   "_key": "!items!AdCkPvYxbEWtIqHA",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Call the Unquiet",
   "type": "spell",
   "system": {

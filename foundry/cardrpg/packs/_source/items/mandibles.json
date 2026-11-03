@@ -1,6 +1,11 @@
 {
   "_id": "G44s9yYAf04zzxU0",
   "_key": "!items!G44s9yYAf04zzxU0",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Mandibles",
   "type": "item",
   "system": {

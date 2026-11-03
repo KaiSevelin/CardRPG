@@ -1,12 +1,22 @@
 {
   "_id": "89Gj8hxxjlCUI77W",
   "_key": "!cards!89Gj8hxxjlCUI77W",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Intent Pool",
   "type": "deck",
   "cards": [
     {
       "_id": "IFtOtV0H69UCOnBh",
       "_key": "!cards.cards!89Gj8hxxjlCUI77W.IFtOtV0H69UCOnBh",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 100,
       "name": "Close In",
       "type": "npc",
@@ -38,6 +48,11 @@
     {
       "_id": "Qvv1pvGN13fNn4HL",
       "_key": "!cards.cards!89Gj8hxxjlCUI77W.Qvv1pvGN13fNn4HL",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 200,
       "name": "Strike and Step",
       "type": "npc",
@@ -69,6 +84,11 @@
     {
       "_id": "Bjz1HD25MxN9NAXw",
       "_key": "!cards.cards!89Gj8hxxjlCUI77W.Bjz1HD25MxN9NAXw",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 300,
       "name": "Press",
       "type": "npc",
@@ -99,6 +119,11 @@
     {
       "_id": "EgfaBZUnAQMv5Rhr",
       "_key": "!cards.cards!89Gj8hxxjlCUI77W.EgfaBZUnAQMv5Rhr",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 400,
       "name": "Lash Out",
       "type": "npc",
@@ -127,6 +152,11 @@
     {
       "_id": "bkjtj89dEAghX2kO",
       "_key": "!cards.cards!89Gj8hxxjlCUI77W.bkjtj89dEAghX2kO",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 500,
       "name": "Set and Wait",
       "type": "npc",
@@ -153,6 +183,11 @@
     {
       "_id": "XonxzNtmV260Ws9w",
       "_key": "!cards.cards!89Gj8hxxjlCUI77W.XonxzNtmV260Ws9w",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 600,
       "name": "Hold the Line",
       "type": "npc",
@@ -184,6 +219,11 @@
     {
       "_id": "MohWUerGVnhiVEiy",
       "_key": "!cards.cards!89Gj8hxxjlCUI77W.MohWUerGVnhiVEiy",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 700,
       "name": "Give Ground",
       "type": "npc",
@@ -212,6 +252,11 @@
     {
       "_id": "fl6iFDfSrhvEPEkh",
       "_key": "!cards.cards!89Gj8hxxjlCUI77W.fl6iFDfSrhvEPEkh",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 800,
       "name": "Take Stock",
       "type": "npc",
@@ -239,6 +284,11 @@
     {
       "_id": "8olTaRVstSfdT8Ki",
       "_key": "!cards.cards!89Gj8hxxjlCUI77W.8olTaRVstSfdT8Ki",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 900,
       "name": "Loose",
       "type": "npc",
@@ -267,6 +317,11 @@
     {
       "_id": "j0F1y3tUowze5sNv",
       "_key": "!cards.cards!89Gj8hxxjlCUI77W.j0F1y3tUowze5sNv",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1000,
       "name": "Spray",
       "type": "npc",
@@ -296,6 +351,11 @@
     {
       "_id": "G9fRaRA9mhtsajs4",
       "_key": "!cards.cards!89Gj8hxxjlCUI77W.G9fRaRA9mhtsajs4",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1100,
       "name": "Long Arm",
       "type": "npc",
@@ -324,6 +384,11 @@
     {
       "_id": "KeXzM9IPm57cO4U7",
       "_key": "!cards.cards!89Gj8hxxjlCUI77W.KeXzM9IPm57cO4U7",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1200,
       "name": "Charge",
       "type": "npc",
@@ -357,6 +422,11 @@
     {
       "_id": "nP5H9v3HAXW8zmvG",
       "_key": "!cards.cards!89Gj8hxxjlCUI77W.nP5H9v3HAXW8zmvG",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1300,
       "name": "Bull Through",
       "type": "npc",
@@ -389,6 +459,11 @@
     {
       "_id": "be8Ko05qzvhg7n29",
       "_key": "!cards.cards!89Gj8hxxjlCUI77W.be8Ko05qzvhg7n29",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1400,
       "name": "Bring It Down",
       "type": "npc",
@@ -418,6 +493,11 @@
     {
       "_id": "zauBILaef0K0eO54",
       "_key": "!cards.cards!89Gj8hxxjlCUI77W.zauBILaef0K0eO54",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1500,
       "name": "Swarm",
       "type": "npc",
@@ -451,6 +531,11 @@
     {
       "_id": "sTx1IcJ5c1X9pqPD",
       "_key": "!cards.cards!89Gj8hxxjlCUI77W.sTx1IcJ5c1X9pqPD",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1600,
       "name": "Drag Down",
       "type": "npc",
@@ -481,6 +566,11 @@
     {
       "_id": "lehwprtZ8GrZiHqo",
       "_key": "!cards.cards!89Gj8hxxjlCUI77W.lehwprtZ8GrZiHqo",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1700,
       "name": "Envenom",
       "type": "npc",
@@ -509,6 +599,11 @@
     {
       "_id": "ERKHe8wKQSjs9IY5",
       "_key": "!cards.cards!89Gj8hxxjlCUI77W.ERKHe8wKQSjs9IY5",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1800,
       "name": "Feed",
       "type": "npc",
@@ -540,6 +635,11 @@
     {
       "_id": "9w4QtzKYOmDP14gB",
       "_key": "!cards.cards!89Gj8hxxjlCUI77W.9w4QtzKYOmDP14gB",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1900,
       "name": "Go Under",
       "type": "npc",
@@ -568,6 +668,11 @@
     {
       "_id": "WttpA61MtpTdUSBf",
       "_key": "!cards.cards!89Gj8hxxjlCUI77W.WttpA61MtpTdUSBf",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 2000,
       "name": "Submerge",
       "type": "npc",
@@ -596,6 +701,11 @@
     {
       "_id": "ZslpqP7BPLP2HEmF",
       "_key": "!cards.cards!89Gj8hxxjlCUI77W.ZslpqP7BPLP2HEmF",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 2100,
       "name": "Stoop",
       "type": "npc",
@@ -627,6 +737,11 @@
     {
       "_id": "UbXrblO1ripLCkIB",
       "_key": "!cards.cards!89Gj8hxxjlCUI77W.UbXrblO1ripLCkIB",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 2200,
       "name": "Fade",
       "type": "npc",
@@ -661,6 +776,11 @@
     {
       "_id": "oGxFUeGpBpIHUfGk",
       "_key": "!cards.cards!89Gj8hxxjlCUI77W.oGxFUeGpBpIHUfGk",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 2300,
       "name": "Lie Still",
       "type": "npc",
@@ -685,6 +805,11 @@
     {
       "_id": "Qg6VaADrTQkPRJbN",
       "_key": "!cards.cards!89Gj8hxxjlCUI77W.Qg6VaADrTQkPRJbN",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 2400,
       "name": "Order",
       "type": "npc",
@@ -709,6 +834,11 @@
     {
       "_id": "ju5FPakDvoW9chi1",
       "_key": "!cards.cards!89Gj8hxxjlCUI77W.ju5FPakDvoW9chi1",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 2500,
       "name": "Call More",
       "type": "npc",
@@ -733,6 +863,11 @@
     {
       "_id": "YrMwP89GvRY3XMfd",
       "_key": "!cards.cards!89Gj8hxxjlCUI77W.YrMwP89GvRY3XMfd",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 2600,
       "name": "Work the Weave",
       "type": "npc",
@@ -761,6 +896,11 @@
     {
       "_id": "qDM7ZdIgztdAB60m",
       "_key": "!cards.cards!89Gj8hxxjlCUI77W.qDM7ZdIgztdAB60m",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 2700,
       "name": "Carry",
       "type": "npc",
@@ -790,6 +930,11 @@
     {
       "_id": "uDbTc2Q15xsA8UsI",
       "_key": "!cards.cards!89Gj8hxxjlCUI77W.uDbTc2Q15xsA8UsI",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 2800,
       "name": "Shelter",
       "type": "npc",

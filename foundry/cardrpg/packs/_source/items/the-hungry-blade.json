@@ -1,6 +1,11 @@
 {
   "_id": "aDZK82C4WDqYXr3l",
   "_key": "!items!aDZK82C4WDqYXr3l",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Hungry Blade",
   "type": "item",
   "system": {

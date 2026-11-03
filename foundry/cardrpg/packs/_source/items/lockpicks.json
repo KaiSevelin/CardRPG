@@ -1,6 +1,11 @@
 {
   "_id": "Mfb2VVy1HtSgLqAS",
   "_key": "!items!Mfb2VVy1HtSgLqAS",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Lockpicks",
   "type": "item",
   "system": {

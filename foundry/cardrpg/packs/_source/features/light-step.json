@@ -1,6 +1,11 @@
 {
   "_id": "b9zo0Je3ErBKAr8D",
   "_key": "!items!b9zo0Je3ErBKAr8D",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Light Step",
   "type": "feature",
   "system": {

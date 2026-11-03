@@ -1,6 +1,11 @@
 {
   "_id": "2R3gim5pTZd4qHYj",
   "_key": "!items!2R3gim5pTZd4qHYj",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Graven Strength",
   "type": "feature",
   "system": {

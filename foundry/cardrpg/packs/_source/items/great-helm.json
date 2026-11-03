@@ -1,6 +1,11 @@
 {
   "_id": "kWkKDdKwTESIelMV",
   "_key": "!items!kWkKDdKwTESIelMV",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Great Helm",
   "type": "item",
   "system": {

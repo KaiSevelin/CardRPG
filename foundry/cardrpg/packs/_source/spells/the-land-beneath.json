@@ -1,6 +1,11 @@
 {
   "_id": "MRoZqFbyhZEHeamF",
   "_key": "!items!MRoZqFbyhZEHeamF",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Land Beneath",
   "type": "spell",
   "system": {

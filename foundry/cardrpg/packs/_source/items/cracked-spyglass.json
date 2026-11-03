@@ -1,6 +1,11 @@
 {
   "_id": "sFuxeA3pxNV6c7qH",
   "_key": "!items!sFuxeA3pxNV6c7qH",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Cracked Spyglass",
   "type": "item",
   "system": {

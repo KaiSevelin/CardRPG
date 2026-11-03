@@ -1,6 +1,11 @@
 {
   "_id": "XvbzrpIFLUedYHBn",
   "_key": "!items!XvbzrpIFLUedYHBn",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Slow Failure",
   "type": "spell",
   "system": {

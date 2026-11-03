@@ -1,6 +1,11 @@
 {
   "_id": "yvdb9QgmII5QSEan",
   "_key": "!items!yvdb9QgmII5QSEan",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Cloak of the Grey Road",
   "type": "item",
   "system": {

@@ -1,6 +1,11 @@
 {
   "_id": "nkAYqWwSRba6bwjf",
   "_key": "!items!nkAYqWwSRba6bwjf",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Light Helm",
   "type": "item",
   "system": {

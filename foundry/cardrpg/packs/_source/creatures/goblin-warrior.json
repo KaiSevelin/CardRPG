@@ -1,6 +1,11 @@
 {
   "_id": "uWiTVY6ZVBDt5POZ",
   "_key": "!actors!uWiTVY6ZVBDt5POZ",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Goblin Warrior",
   "type": "npc",
   "system": {
@@ -26,6 +31,11 @@
     {
       "_id": "skgtYZvvnL50LEUx",
       "_key": "!actors.items!uWiTVY6ZVBDt5POZ.skgtYZvvnL50LEUx",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Goblin Spear",
       "type": "item",
       "system": {
@@ -52,6 +62,11 @@
     {
       "_id": "DUUpI1cnrBItTeso",
       "_key": "!actors.items!uWiTVY6ZVBDt5POZ.DUUpI1cnrBItTeso",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Goblin Shield",
       "type": "item",
       "system": {
@@ -77,6 +92,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Goblin Warrior"
+    "name": "Goblin Warrior",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

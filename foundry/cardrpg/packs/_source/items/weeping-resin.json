@@ -1,6 +1,11 @@
 {
   "_id": "kuVpt4ePfiYmJFFC",
   "_key": "!items!kuVpt4ePfiYmJFFC",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Weeping Resin",
   "type": "item",
   "system": {

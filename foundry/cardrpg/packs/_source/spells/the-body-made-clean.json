@@ -1,6 +1,11 @@
 {
   "_id": "r1eUIjkO6jC5qhDY",
   "_key": "!items!r1eUIjkO6jC5qhDY",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Body Made Clean",
   "type": "spell",
   "system": {

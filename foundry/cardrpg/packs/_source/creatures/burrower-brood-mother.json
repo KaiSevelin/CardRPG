@@ -1,6 +1,11 @@
 {
   "_id": "ZCslvOuyO458dTWj",
   "_key": "!actors!ZCslvOuyO458dTWj",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Burrower Brood Mother",
   "type": "npc",
   "system": {
@@ -22,6 +27,11 @@
     {
       "_id": "ENpRBCR1r9JB8oAQ",
       "_key": "!actors.items!ZCslvOuyO458dTWj.ENpRBCR1r9JB8oAQ",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Mandibles",
       "type": "item",
       "system": {
@@ -46,6 +56,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Burrower Brood Mother"
+    "name": "Burrower Brood Mother",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

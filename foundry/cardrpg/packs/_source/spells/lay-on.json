@@ -1,6 +1,11 @@
 {
   "_id": "g41SWHHe0EvTwqKf",
   "_key": "!items!g41SWHHe0EvTwqKf",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Lay On",
   "type": "spell",
   "system": {

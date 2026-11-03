@@ -1,6 +1,11 @@
 {
   "_id": "SAjDiPETV4SpMBny",
   "_key": "!items!SAjDiPETV4SpMBny",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Face of a Friend",
   "type": "spell",
   "system": {

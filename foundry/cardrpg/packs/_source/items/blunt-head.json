@@ -1,6 +1,11 @@
 {
   "_id": "lzyk27myLDawyZUA",
   "_key": "!items!lzyk27myLDawyZUA",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Blunt Head",
   "type": "item",
   "system": {

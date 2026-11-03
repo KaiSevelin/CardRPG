@@ -1,6 +1,11 @@
 {
   "_id": "XD30ZwauqVj06FO1",
   "_key": "!items!XD30ZwauqVj06FO1",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Great Axe",
   "type": "item",
   "system": {

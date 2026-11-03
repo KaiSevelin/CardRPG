@@ -1,6 +1,11 @@
 {
   "_id": "mgU4Adu4ULID5v5C",
   "_key": "!items!mgU4Adu4ULID5v5C",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Door Home",
   "type": "spell",
   "system": {

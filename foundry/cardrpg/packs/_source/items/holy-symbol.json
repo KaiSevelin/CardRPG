@@ -1,6 +1,11 @@
 {
   "_id": "Kvb7zF5rrkbL8IVH",
   "_key": "!items!Kvb7zF5rrkbL8IVH",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Holy Symbol",
   "type": "item",
   "system": {

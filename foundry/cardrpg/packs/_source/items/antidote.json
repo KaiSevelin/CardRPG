@@ -1,6 +1,11 @@
 {
   "_id": "RQeOxtK0u0mHwHq9",
   "_key": "!items!RQeOxtK0u0mHwHq9",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Antidote",
   "type": "item",
   "system": {

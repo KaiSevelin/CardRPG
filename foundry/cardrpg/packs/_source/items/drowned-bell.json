@@ -1,6 +1,11 @@
 {
   "_id": "0BgWFPXUoCkQN5Rq",
   "_key": "!items!0BgWFPXUoCkQN5Rq",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Drowned Bell",
   "type": "item",
   "system": {

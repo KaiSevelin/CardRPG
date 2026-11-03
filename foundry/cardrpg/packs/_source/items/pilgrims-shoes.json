@@ -1,6 +1,11 @@
 {
   "_id": "b95qRZpONkaBAdGZ",
   "_key": "!items!b95qRZpONkaBAdGZ",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Pilgrim's Shoes",
   "type": "item",
   "system": {

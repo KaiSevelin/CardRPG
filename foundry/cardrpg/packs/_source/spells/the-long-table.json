@@ -1,6 +1,11 @@
 {
   "_id": "Ul5nluDvcfmg9li4",
   "_key": "!items!Ul5nluDvcfmg9li4",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Long Table",
   "type": "spell",
   "system": {

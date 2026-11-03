@@ -1,6 +1,11 @@
 {
   "_id": "ryQzqn6IcGAQN8OC",
   "_key": "!items!ryQzqn6IcGAQN8OC",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "What Grows Out of Us",
   "type": "spell",
   "system": {

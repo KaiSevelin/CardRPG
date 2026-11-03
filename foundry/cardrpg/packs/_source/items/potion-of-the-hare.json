@@ -1,6 +1,11 @@
 {
   "_id": "jlQCW5ZSEBH6cyvq",
   "_key": "!items!jlQCW5ZSEBH6cyvq",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Potion of the Hare",
   "type": "item",
   "system": {

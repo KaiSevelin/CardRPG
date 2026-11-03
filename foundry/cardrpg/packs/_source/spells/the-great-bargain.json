@@ -1,6 +1,11 @@
 {
   "_id": "zsTAYzfaXdK5EaVr",
   "_key": "!items!zsTAYzfaXdK5EaVr",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Great Bargain",
   "type": "spell",
   "system": {

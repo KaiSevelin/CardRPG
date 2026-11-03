@@ -1,6 +1,11 @@
 {
   "_id": "SE4p2HXJ5XWjTDob",
   "_key": "!actors!SE4p2HXJ5XWjTDob",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Sweeper",
   "type": "npc",
   "system": {
@@ -25,6 +30,11 @@
     {
       "_id": "GvPgy9MZS9S07q9u",
       "_key": "!actors.items!SE4p2HXJ5XWjTDob.GvPgy9MZS9S07q9u",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Claws",
       "type": "item",
       "system": {
@@ -49,6 +59,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Sweeper"
+    "name": "Sweeper",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

@@ -1,6 +1,11 @@
 {
   "_id": "O8y5T5mUKEqU6T9J",
   "_key": "!items!O8y5T5mUKEqU6T9J",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Cloak of the Grey",
   "type": "item",
   "system": {

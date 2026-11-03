@@ -1,6 +1,11 @@
 {
   "_id": "SQ85X6NNQr6tMfAj",
   "_key": "!items!SQ85X6NNQr6tMfAj",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Ring of the Open Hand",
   "type": "item",
   "system": {

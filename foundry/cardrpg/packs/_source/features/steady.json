@@ -1,6 +1,11 @@
 {
   "_id": "BHCn5kmgsaubtNcD",
   "_key": "!items!BHCn5kmgsaubtNcD",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Steady",
   "type": "feature",
   "system": {

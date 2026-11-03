@@ -1,12 +1,22 @@
 {
   "_id": "HdgFzLVmpGcrPSHf",
   "_key": "!cards!HdgFzLVmpGcrPSHf",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Way Cards",
   "type": "deck",
   "cards": [
     {
       "_id": "UXw0VEFlETUWFouk",
       "_key": "!cards.cards!HdgFzLVmpGcrPSHf.UXw0VEFlETUWFouk",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 100,
       "name": "Set Spear",
       "type": "action",
@@ -36,6 +46,11 @@
     {
       "_id": "XrWcCpu3tauK0WHh",
       "_key": "!cards.cards!HdgFzLVmpGcrPSHf.XrWcCpu3tauK0WHh",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 200,
       "name": "Roll With It",
       "type": "action",

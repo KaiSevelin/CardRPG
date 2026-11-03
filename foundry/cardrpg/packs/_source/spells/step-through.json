@@ -1,6 +1,11 @@
 {
   "_id": "6dHuwcnfZSG28mG2",
   "_key": "!items!6dHuwcnfZSG28mG2",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Step Through",
   "type": "spell",
   "system": {

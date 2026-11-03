@@ -1,6 +1,11 @@
 {
   "_id": "kgDjRABjluV85uAR",
   "_key": "!items!kgDjRABjluV85uAR",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Amulet of the Mended Thread",
   "type": "item",
   "system": {

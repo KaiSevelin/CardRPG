@@ -1,6 +1,11 @@
 {
   "_id": "k1KfbDKlt11gEVvl",
   "_key": "!items!k1KfbDKlt11gEVvl",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Weight of It",
   "type": "spell",
   "system": {

@@ -1,6 +1,11 @@
 {
   "_id": "dilBzGm5tPwKAdFy",
   "_key": "!items!dilBzGm5tPwKAdFy",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Borrowed Face",
   "type": "spell",
   "system": {

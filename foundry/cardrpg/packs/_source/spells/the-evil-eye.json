@@ -1,6 +1,11 @@
 {
   "_id": "OqHwqb0JLZ8b4Bfi",
   "_key": "!items!OqHwqb0JLZ8b4Bfi",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Evil Eye",
   "type": "spell",
   "system": {

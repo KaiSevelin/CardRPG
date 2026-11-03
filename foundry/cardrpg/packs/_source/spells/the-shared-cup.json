@@ -1,6 +1,11 @@
 {
   "_id": "sJf3b4UqbnYVkBNF",
   "_key": "!items!sJf3b4UqbnYVkBNF",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Shared Cup",
   "type": "spell",
   "system": {

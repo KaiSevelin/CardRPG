@@ -1,6 +1,11 @@
 {
   "_id": "ssX68yPGALPnljYP",
   "_key": "!actors!ssX68yPGALPnljYP",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Stinger",
   "type": "npc",
   "system": {
@@ -29,6 +34,11 @@
     {
       "_id": "aMTjGDu685p9TOMd",
       "_key": "!actors.items!ssX68yPGALPnljYP.aMTjGDu685p9TOMd",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Sting",
       "type": "item",
       "system": {
@@ -53,6 +63,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Stinger"
+    "name": "Stinger",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

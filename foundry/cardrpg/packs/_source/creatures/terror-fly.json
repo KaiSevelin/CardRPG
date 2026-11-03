@@ -1,6 +1,11 @@
 {
   "_id": "aF2FsVEavxO4VTsV",
   "_key": "!actors!aF2FsVEavxO4VTsV",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Terror Fly",
   "type": "npc",
   "system": {
@@ -31,6 +36,11 @@
     {
       "_id": "fGFm7L0HfWs9Jkhd",
       "_key": "!actors.items!aF2FsVEavxO4VTsV.fGFm7L0HfWs9Jkhd",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Fire Spray",
       "type": "item",
       "system": {
@@ -58,6 +68,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Terror Fly"
+    "name": "Terror Fly",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

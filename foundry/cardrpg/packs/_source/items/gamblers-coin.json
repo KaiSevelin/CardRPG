@@ -1,6 +1,11 @@
 {
   "_id": "vBBJiUtAPWXlgx0m",
   "_key": "!items!vBBJiUtAPWXlgx0m",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Gambler's Coin",
   "type": "item",
   "system": {

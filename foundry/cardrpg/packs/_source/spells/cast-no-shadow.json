@@ -1,6 +1,11 @@
 {
   "_id": "Q8M8sF4jCGfCfkXF",
   "_key": "!items!Q8M8sF4jCGfCfkXF",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Cast No Shadow",
   "type": "spell",
   "system": {

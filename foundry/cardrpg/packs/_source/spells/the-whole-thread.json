@@ -1,6 +1,11 @@
 {
   "_id": "Jr4m4ekDICQxnRbk",
   "_key": "!items!Jr4m4ekDICQxnRbk",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Whole Thread",
   "type": "spell",
   "system": {

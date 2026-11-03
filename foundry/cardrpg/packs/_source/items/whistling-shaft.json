@@ -1,6 +1,11 @@
 {
   "_id": "FVtIDsSeDT5OHEuh",
   "_key": "!items!FVtIDsSeDT5OHEuh",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Whistling Shaft",
   "type": "item",
   "system": {

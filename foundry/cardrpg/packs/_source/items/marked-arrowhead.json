@@ -1,6 +1,11 @@
 {
   "_id": "mYfSB5by9WLzjV7G",
   "_key": "!items!mYfSB5by9WLzjV7G",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Marked Arrowhead",
   "type": "item",
   "system": {

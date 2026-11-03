@@ -1,6 +1,11 @@
 {
   "_id": "riKWVfSuq7HSsySs",
   "_key": "!items!riKWVfSuq7HSsySs",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Unbound Tongue",
   "type": "spell",
   "system": {

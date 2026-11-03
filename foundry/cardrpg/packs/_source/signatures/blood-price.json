@@ -1,6 +1,11 @@
 {
   "_id": "wg3F9CRJJKybX73E",
   "_key": "!items!wg3F9CRJJKybX73E",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Blood Price",
   "type": "spell",
   "system": {

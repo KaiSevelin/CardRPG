@@ -1,6 +1,11 @@
 {
   "_id": "lqpCOo7rgLd8ihH2",
   "_key": "!items!lqpCOo7rgLd8ihH2",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Caltrops",
   "type": "item",
   "system": {

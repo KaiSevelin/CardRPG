@@ -1,6 +1,11 @@
 {
   "_id": "XmU4OYQomYDAgcg7",
   "_key": "!items!XmU4OYQomYDAgcg7",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Half a Truth",
   "type": "spell",
   "system": {

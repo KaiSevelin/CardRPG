@@ -1,6 +1,11 @@
 {
   "_id": "vJ6Sqy3IIna23BQO",
   "_key": "!items!vJ6Sqy3IIna23BQO",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Wither",
   "type": "spell",
   "system": {

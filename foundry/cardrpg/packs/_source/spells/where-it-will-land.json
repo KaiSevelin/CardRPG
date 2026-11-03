@@ -1,6 +1,11 @@
 {
   "_id": "QwuBo6MMGwMqV1Ky",
   "_key": "!items!QwuBo6MMGwMqV1Ky",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Where It Will Land",
   "type": "spell",
   "system": {

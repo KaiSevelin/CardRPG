@@ -1,6 +1,11 @@
 {
   "_id": "02rb3KhdKfEGTNdw",
   "_key": "!items!02rb3KhdKfEGTNdw",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Blade of the Eager Hand",
   "type": "item",
   "system": {

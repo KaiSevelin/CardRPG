@@ -1,6 +1,11 @@
 {
   "_id": "wowCNUlDPcmk2GgB",
   "_key": "!items!wowCNUlDPcmk2GgB",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Breath for the Dying",
   "type": "spell",
   "system": {

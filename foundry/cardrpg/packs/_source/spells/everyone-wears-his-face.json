@@ -1,6 +1,11 @@
 {
   "_id": "bt99qqFX5MbRBPzM",
   "_key": "!items!bt99qqFX5MbRBPzM",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Everyone Wears His Face",
   "type": "spell",
   "system": {

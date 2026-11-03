@@ -1,6 +1,11 @@
 {
   "_id": "tGR9Zsyn2W3RnEUk",
   "_key": "!actors!tGR9Zsyn2W3RnEUk",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Goblin Shaman",
   "type": "npc",
   "system": {
@@ -31,6 +36,11 @@
     {
       "_id": "OqC6Bl36IHGIQ2If",
       "_key": "!actors.items!tGR9Zsyn2W3RnEUk.OqC6Bl36IHGIQ2If",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Goblin Fetish",
       "type": "item",
       "system": {
@@ -56,6 +66,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Goblin Shaman"
+    "name": "Goblin Shaman",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

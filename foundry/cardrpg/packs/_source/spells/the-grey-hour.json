@@ -1,6 +1,11 @@
 {
   "_id": "kCFOVq4KhAy4q1Xx",
   "_key": "!items!kCFOVq4KhAy4q1Xx",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Grey Hour",
   "type": "spell",
   "system": {

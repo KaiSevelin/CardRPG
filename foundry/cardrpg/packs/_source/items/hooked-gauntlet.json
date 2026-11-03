@@ -1,6 +1,11 @@
 {
   "_id": "y4X3PhONaOVe5ete",
   "_key": "!items!y4X3PhONaOVe5ete",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Hooked Gauntlet",
   "type": "item",
   "system": {

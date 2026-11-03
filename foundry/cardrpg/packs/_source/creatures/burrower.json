@@ -1,6 +1,11 @@
 {
   "_id": "qBUfUY4qVspuAbCY",
   "_key": "!actors!qBUfUY4qVspuAbCY",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Burrower",
   "type": "npc",
   "system": {
@@ -22,6 +27,11 @@
     {
       "_id": "PWTamyuAn8FIO6vi",
       "_key": "!actors.items!qBUfUY4qVspuAbCY.PWTamyuAn8FIO6vi",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Mandibles",
       "type": "item",
       "system": {
@@ -46,6 +56,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Burrower"
+    "name": "Burrower",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

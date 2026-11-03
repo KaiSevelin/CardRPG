@@ -1,12 +1,22 @@
 {
   "_id": "nfIAB5yBnWRwobEb",
   "_key": "!cards!nfIAB5yBnWRwobEb",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Way of Strength — Pool",
   "type": "deck",
   "cards": [
     {
       "_id": "1IRsyVGzZdooOYcS",
       "_key": "!cards.cards!nfIAB5yBnWRwobEb.1IRsyVGzZdooOYcS",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 100,
       "name": "Shoulder Check",
       "type": "action",
@@ -36,6 +46,11 @@
     {
       "_id": "TWiADJgXqxstWImq",
       "_key": "!cards.cards!nfIAB5yBnWRwobEb.TWiADJgXqxstWImq",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 200,
       "name": "Shield Bash",
       "type": "action",
@@ -65,6 +80,11 @@
     {
       "_id": "IoUh9Gw3oWh5DAlP",
       "_key": "!cards.cards!nfIAB5yBnWRwobEb.IoUh9Gw3oWh5DAlP",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 300,
       "name": "Hammerblow",
       "type": "action",
@@ -97,6 +117,11 @@
     {
       "_id": "YJhrTVN0LyXWDK3x",
       "_key": "!cards.cards!nfIAB5yBnWRwobEb.YJhrTVN0LyXWDK3x",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 400,
       "name": "Sweep the Leg",
       "type": "action",
@@ -133,6 +158,11 @@
     {
       "_id": "mDvO6zVMZhR8pjbe",
       "_key": "!cards.cards!nfIAB5yBnWRwobEb.mDvO6zVMZhR8pjbe",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 500,
       "name": "Overbear",
       "type": "action",
@@ -168,6 +198,11 @@
     {
       "_id": "nLEPnUWtD4c9Itbe",
       "_key": "!cards.cards!nfIAB5yBnWRwobEb.nLEPnUWtD4c9Itbe",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 600,
       "name": "Shield Wall",
       "type": "action",
@@ -200,6 +235,11 @@
     {
       "_id": "OAtG3hhGOPog03jc",
       "_key": "!cards.cards!nfIAB5yBnWRwobEb.OAtG3hhGOPog03jc",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 700,
       "name": "Two-Hand It",
       "type": "action",
@@ -231,6 +271,11 @@
     {
       "_id": "q9xPy3RHvZvV81tE",
       "_key": "!cards.cards!nfIAB5yBnWRwobEb.q9xPy3RHvZvV81tE",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 800,
       "name": "Heave",
       "type": "action",
@@ -260,6 +305,11 @@
     {
       "_id": "nlm9sZSmZcAHlJvi",
       "_key": "!cards.cards!nfIAB5yBnWRwobEb.nlm9sZSmZcAHlJvi",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 900,
       "name": "Armoured Advance",
       "type": "action",
@@ -290,6 +340,11 @@
     {
       "_id": "qPHK54Co5X30jO7o",
       "_key": "!cards.cards!nfIAB5yBnWRwobEb.qPHK54Co5X30jO7o",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1000,
       "name": "Pull Them Down",
       "type": "action",
@@ -319,6 +374,11 @@
     {
       "_id": "5OOVWgJ7dOOyuEKJ",
       "_key": "!cards.cards!nfIAB5yBnWRwobEb.5OOVWgJ7dOOyuEKJ",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1100,
       "name": "Beat the Blade",
       "type": "action",
@@ -351,6 +411,11 @@
     {
       "_id": "mZweB7rRUtEM6gKZ",
       "_key": "!cards.cards!nfIAB5yBnWRwobEb.mZweB7rRUtEM6gKZ",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1200,
       "name": "Roar",
       "type": "action",
@@ -387,6 +452,11 @@
     {
       "_id": "0GxlLZXk40Nqd3o0",
       "_key": "!cards.cards!nfIAB5yBnWRwobEb.0GxlLZXk40Nqd3o0",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1300,
       "name": "Walk It Off",
       "type": "action",

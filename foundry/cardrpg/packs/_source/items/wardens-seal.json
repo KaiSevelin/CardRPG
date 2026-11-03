@@ -1,6 +1,11 @@
 {
   "_id": "1bx1ImAWLf6FdqxE",
   "_key": "!items!1bx1ImAWLf6FdqxE",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Warden's Seal",
   "type": "item",
   "system": {

@@ -1,6 +1,11 @@
 {
   "_id": "ShDWfM3R0ERLpJAs",
   "_key": "!items!ShDWfM3R0ERLpJAs",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Reaver's Edge",
   "type": "item",
   "system": {

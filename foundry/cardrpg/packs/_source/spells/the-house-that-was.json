@@ -1,6 +1,11 @@
 {
   "_id": "vLChX3MLqzrrMwfg",
   "_key": "!items!vLChX3MLqzrrMwfg",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The House That Was",
   "type": "spell",
   "system": {

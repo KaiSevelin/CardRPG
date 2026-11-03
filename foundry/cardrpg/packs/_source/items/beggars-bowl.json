@@ -1,6 +1,11 @@
 {
   "_id": "dcV8SdfCgEpGH1Qx",
   "_key": "!items!dcV8SdfCgEpGH1Qx",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Beggar's Bowl",
   "type": "item",
   "system": {

@@ -1,6 +1,11 @@
 {
   "_id": "E22z1QAKa5bJGbCV",
   "_key": "!items!E22z1QAKa5bJGbCV",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Dark Lantern",
   "type": "item",
   "system": {

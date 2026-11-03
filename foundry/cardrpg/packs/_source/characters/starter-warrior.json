@@ -1,6 +1,11 @@
 {
   "_id": "ZiWPnDYlNCBB1Cac",
   "_key": "!actors!ZiWPnDYlNCBB1Cac",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Starter Warrior",
   "type": "character",
   "system": {
@@ -21,6 +26,11 @@
     {
       "_id": "TrOtq7kEVkTKMqTD",
       "_key": "!actors.items!ZiWPnDYlNCBB1Cac.TrOtq7kEVkTKMqTD",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Longsword",
       "type": "item",
       "system": {
@@ -51,6 +61,11 @@
     {
       "_id": "eylbhNTM1maXAodJ",
       "_key": "!actors.items!ZiWPnDYlNCBB1Cac.eylbhNTM1maXAodJ",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Wooden Shield",
       "type": "item",
       "system": {
@@ -80,6 +95,11 @@
     {
       "_id": "cd10dx2sgDnOPGaA",
       "_key": "!actors.items!ZiWPnDYlNCBB1Cac.cd10dx2sgDnOPGaA",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Leather Armor",
       "type": "item",
       "system": {
@@ -99,6 +119,11 @@
     {
       "_id": "q6ltR2vWjDzeNrJx",
       "_key": "!actors.items!ZiWPnDYlNCBB1Cac.q6ltR2vWjDzeNrJx",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Healing Potion",
       "type": "item",
       "system": {
@@ -127,6 +152,11 @@
     {
       "_id": "Vk9DNssyGafOjHoN",
       "_key": "!actors.items!ZiWPnDYlNCBB1Cac.Vk9DNssyGafOjHoN",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Dagger",
       "type": "item",
       "system": {
@@ -156,6 +186,11 @@
     {
       "_id": "38TLs7xkx8HfSkJF",
       "_key": "!actors.items!ZiWPnDYlNCBB1Cac.38TLs7xkx8HfSkJF",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Strong",
       "type": "feature",
       "system": {
@@ -171,6 +206,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Starter Warrior"
+    "name": "Starter Warrior",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

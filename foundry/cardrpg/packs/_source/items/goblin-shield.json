@@ -1,6 +1,11 @@
 {
   "_id": "JxT7CL80Dlj7enHU",
   "_key": "!items!JxT7CL80Dlj7enHU",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Goblin Shield",
   "type": "item",
   "system": {

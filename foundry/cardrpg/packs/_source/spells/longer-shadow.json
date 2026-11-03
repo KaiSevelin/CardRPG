@@ -1,6 +1,11 @@
 {
   "_id": "EstBbG5mAkQufyx7",
   "_key": "!items!EstBbG5mAkQufyx7",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Longer Shadow",
   "type": "spell",
   "system": {

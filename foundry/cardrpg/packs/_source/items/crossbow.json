@@ -1,6 +1,11 @@
 {
   "_id": "O4avnaJmww5uTZsX",
   "_key": "!items!O4avnaJmww5uTZsX",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Crossbow",
   "type": "item",
   "system": {

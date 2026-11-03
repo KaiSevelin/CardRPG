@@ -1,6 +1,11 @@
 {
   "_id": "bbLYI7uGlHPPEkUa",
   "_key": "!items!bbLYI7uGlHPPEkUa",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Loose Cobble",
   "type": "item",
   "system": {

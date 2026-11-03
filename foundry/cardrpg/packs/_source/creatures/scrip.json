@@ -1,6 +1,11 @@
 {
   "_id": "5O6mRvXKiKljWCKI",
   "_key": "!actors!5O6mRvXKiKljWCKI",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Scrip",
   "type": "npc",
   "system": {
@@ -24,6 +29,11 @@
     {
       "_id": "eIB2Li4hkekDjxl2",
       "_key": "!actors.items!5O6mRvXKiKljWCKI.eIB2Li4hkekDjxl2",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Nip",
       "type": "item",
       "system": {
@@ -48,6 +58,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Scrip"
+    "name": "Scrip",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

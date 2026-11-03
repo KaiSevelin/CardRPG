@@ -1,6 +1,11 @@
 {
   "_id": "Rs6SV1riRQLRN7uh",
   "_key": "!items!Rs6SV1riRQLRN7uh",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Potion of the Quick Hand",
   "type": "item",
   "system": {

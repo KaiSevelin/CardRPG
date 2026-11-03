@@ -1,6 +1,11 @@
 {
   "_id": "JfJ4Fuc3X5KxR0BU",
   "_key": "!items!JfJ4Fuc3X5KxR0BU",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Trident",
   "type": "item",
   "system": {

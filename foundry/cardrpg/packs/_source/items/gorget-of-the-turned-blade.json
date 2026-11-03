@@ -1,6 +1,11 @@
 {
   "_id": "rVMl7Ex6qxEA7mUW",
   "_key": "!items!rVMl7Ex6qxEA7mUW",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Gorget of the Turned Blade",
   "type": "item",
   "system": {

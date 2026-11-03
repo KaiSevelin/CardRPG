@@ -1,6 +1,11 @@
 {
   "_id": "EMHBmFBbfQCHw2e3",
   "_key": "!items!EMHBmFBbfQCHw2e3",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Focus Pendant",
   "type": "item",
   "system": {

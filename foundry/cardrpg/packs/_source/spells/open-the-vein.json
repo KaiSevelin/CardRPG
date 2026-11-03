@@ -1,6 +1,11 @@
 {
   "_id": "nkA4AxLKSsdOEd4K",
   "_key": "!items!nkA4AxLKSsdOEd4K",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Open the Vein",
   "type": "spell",
   "system": {

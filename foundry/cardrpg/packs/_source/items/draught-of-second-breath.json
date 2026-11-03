@@ -1,6 +1,11 @@
 {
   "_id": "Iqh7LZV3CTGR7HbE",
   "_key": "!items!Iqh7LZV3CTGR7HbE",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Draught of Second Breath",
   "type": "item",
   "system": {

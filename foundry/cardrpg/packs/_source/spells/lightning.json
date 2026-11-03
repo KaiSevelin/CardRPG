@@ -1,6 +1,11 @@
 {
   "_id": "miXb30FG4MDEQNhv",
   "_key": "!items!miXb30FG4MDEQNhv",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Lightning",
   "type": "spell",
   "system": {

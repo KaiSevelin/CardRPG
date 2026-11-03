@@ -1,6 +1,11 @@
 {
   "_id": "9AMBHv8FbGiq6ElQ",
   "_key": "!items!9AMBHv8FbGiq6ElQ",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Potion of Iron Skin",
   "type": "item",
   "system": {

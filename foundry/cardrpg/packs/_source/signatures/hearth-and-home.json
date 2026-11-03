@@ -1,6 +1,11 @@
 {
   "_id": "KKR7HHhvAkb2a2AN",
   "_key": "!items!KKR7HHhvAkb2a2AN",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Hearth and Home",
   "type": "spell",
   "system": {

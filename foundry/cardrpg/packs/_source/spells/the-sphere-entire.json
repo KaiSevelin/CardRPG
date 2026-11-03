@@ -1,6 +1,11 @@
 {
   "_id": "g77Letzx97QipdfM",
   "_key": "!items!g77Letzx97QipdfM",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Sphere Entire",
   "type": "spell",
   "system": {

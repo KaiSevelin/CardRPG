@@ -1,6 +1,11 @@
 {
   "_id": "TvICPziiMrUgL0pP",
   "_key": "!items!TvICPziiMrUgL0pP",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Graven Heart",
   "type": "feature",
   "system": {

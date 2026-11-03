@@ -35,6 +35,32 @@ const root = path.join(import.meta.dirname, "..");
 const PACKS = path.join(root, "packs");
 const SOURCE = path.join(PACKS, "_source");
 
+/*
+ * The manifest, read once. It is rewritten at the bottom of this file -- see there for why -- and
+ * read here because every document stamps its version.
+ */
+const manifestPath = path.join(root, "system.json");
+const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+
+/**
+ * **What wrote this record**, on every document in every pack.
+ *
+ * A record with no `_stats.coreVersion` is a record from before Foundry kept version numbers, so
+ * Foundry brings it forward every time it reads it: 394 documents migrated on every boot, 788
+ * writes, and a committed LevelDB that came back dirty from opening the game and touching nothing.
+ * One pack stamped with this took that pack out of the migration while the other six still rewrote,
+ * which is how the cause was settled.
+ *
+ * `coreVersion` is the manifest's verified build rather than a constant, so the claim a record
+ * makes about which Foundry wrote it and the claim the system makes about which Foundry it was
+ * tested on are one claim. Bump `compatibility.verified` and the packs follow.
+ */
+const STATS = {
+  coreVersion: manifest.compatibility.verified,
+  systemId: manifest.id,
+  systemVersion: manifest.version
+};
+
 /* -------------------------------------------- */
 /*  Identity                                    */
 /* -------------------------------------------- */
@@ -80,7 +106,10 @@ export function fileSlug(name) {
  */
 function itemDoc(entry, type, pack) {
   const _id = id16(`${pack}:${entry.name}`);
-  return { _id, _key: `!items!${_id}`, ...slateData(slateOf(entry, type), type) };
+  return {
+    _id, _key: `!items!${_id}`, _stats: { ...STATS },
+    ...slateData(slateOf(entry, type), type)
+  };
 }
 
 /**
@@ -137,6 +166,9 @@ function actorDoc(def, pack) {
       items.push({
         _id: childId,
         _key: `!actors.items!${_id}.${childId}`,
+        /* An embedded document with no `_stats` migrates its parent: before this, every Goblin in
+         * the pack was brought forward on every boot on account of its spear. */
+        _stats: { ...STATS },
         ...data,
         system: { ...data.system, ...(equipped ? { equipped: true } : {}) }
       });
@@ -146,13 +178,35 @@ function actorDoc(def, pack) {
   return {
     _id,
     _key: `!actors!${_id}`,
+    _stats: { ...STATS },
     name: def.name,
     type: def.type,
     ...(art ? { img: art } : {}),
     system: { ...def.system },
     items,
     prototypeToken: {
-      actorLink: false, name: def.name, ...(art ? { texture: { src: art } } : {})
+      actorLink: false, name: def.name,
+      /*
+       * **A token's three dimensions are written as a group, because they are validated as one.**
+       *
+       * The first time Foundry ever read these packs, all 48 Actors warned
+       *
+       *     prototypeToken: depth: must be a number
+       *
+       * and were migrated in place -- the only validation failure in 394 documents, and one no
+       * amount of offline checking could have found. `depth` is
+       * `NumberField({ required: true, nullable: false, min: 0, initial: 1 })` on core's Token
+       * schema, so the initial is right there; what the warning means is that a pack record is
+       * validated as SOURCE, and an initial is applied by cleaning, which a record being read out
+       * of a pack has not had yet.
+       *
+       * Writing `depth` alone does not fix it, which was measured: with `depth: 7` and no
+       * `width`/`height`, Foundry still warned and still stored `depth: 1`. The three belong to one
+       * group (core's `#defineMovementFields`, with `shape` and `level`), and a group given one of
+       * its members is a group with none. All three, and the warnings go to zero.
+       */
+      width: 1, height: 1, depth: 1,
+      ...(art ? { texture: { src: art } } : {})
     }
   };
 }
@@ -174,12 +228,16 @@ function cardsDoc({ name, back, build, list }, pack) {
     const n = (seen.get(data.name) ?? 0) + 1;
     seen.set(data.name, n);
     const childId = id16(`${pack}:${name}:${data.name}:${n}`);
-    return { _id: childId, _key: `!cards.cards!${_id}.${childId}`, sort: (index + 1) * 100, ...data };
+    return {
+      _id: childId, _key: `!cards.cards!${_id}.${childId}`, _stats: { ...STATS },
+      sort: (index + 1) * 100, ...data
+    };
   });
   const art = back ? backOf(back) : "";
   return {
     _id,
     _key: `!cards!${_id}`,
+    _stats: { ...STATS },
     name,
     type: "deck",
     ...(art ? { img: art } : {}),
@@ -430,9 +488,10 @@ const summary = await build();
  * declare is a pack Foundry never shows, and a pack the manifest declares that is not on disk
  * stops the system loading at all. One of those is invisible and the other is fatal, so neither
  * is left to somebody remembering.
+ *
+ * `manifestPath` and `manifest` are read at the top of this file, because every document stamps
+ * the version out of them.
  */
-const manifestPath = path.join(root, "system.json");
-const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
 /*
  * **A pack entry carries no `folder`.** Folder membership is `packFolders` and only `packFolders`:
  * the manifest schema has no folder property on a pack, so one written there is a key Foundry

@@ -1,6 +1,11 @@
 {
   "_id": "EhyoIGPD9fzIUkME",
   "_key": "!actors!EhyoIGPD9fzIUkME",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Armored Slug",
   "type": "npc",
   "system": {
@@ -24,6 +29,11 @@
     {
       "_id": "cuPXryqFvD6kqYyT",
       "_key": "!actors.items!EhyoIGPD9fzIUkME.cuPXryqFvD6kqYyT",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Acid Spray",
       "type": "item",
       "system": {
@@ -51,6 +61,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Armored Slug"
+    "name": "Armored Slug",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

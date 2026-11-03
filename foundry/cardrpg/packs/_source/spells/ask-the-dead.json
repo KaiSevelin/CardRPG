@@ -1,6 +1,11 @@
 {
   "_id": "YqpbCGa9zsfncHb0",
   "_key": "!items!YqpbCGa9zsfncHb0",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Ask the Dead",
   "type": "spell",
   "system": {

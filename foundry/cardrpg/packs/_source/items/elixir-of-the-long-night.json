@@ -1,6 +1,11 @@
 {
   "_id": "A2ZJyaVKxjBM2apw",
   "_key": "!items!A2ZJyaVKxjBM2apw",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Elixir of the Long Night",
   "type": "item",
   "system": {

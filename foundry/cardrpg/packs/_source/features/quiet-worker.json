@@ -1,6 +1,11 @@
 {
   "_id": "hLpSyA9Q7eADJtvl",
   "_key": "!items!hLpSyA9Q7eADJtvl",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Quiet Worker",
   "type": "feature",
   "system": {

@@ -1,6 +1,11 @@
 {
   "_id": "mJTRAKC7tbigPIS9",
   "_key": "!items!mJTRAKC7tbigPIS9",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Red Hour",
   "type": "spell",
   "system": {

@@ -1,12 +1,22 @@
 {
   "_id": "AYD8Fo48MjyCS9av",
   "_key": "!cards!AYD8Fo48MjyCS9av",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Skill Cards",
   "type": "deck",
   "cards": [
     {
       "_id": "0qEzAkdTjSIWfOPg",
       "_key": "!cards.cards!AYD8Fo48MjyCS9av.0qEzAkdTjSIWfOPg",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 100,
       "name": "Set Your Feet",
       "type": "skill",
@@ -25,6 +35,11 @@
     {
       "_id": "j763DuH0DvAjrsJp",
       "_key": "!cards.cards!AYD8Fo48MjyCS9av.j763DuH0DvAjrsJp",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 200,
       "name": "Heave",
       "type": "skill",
@@ -43,6 +58,11 @@
     {
       "_id": "jwYlDgkhQTDlJ0lE",
       "_key": "!cards.cards!AYD8Fo48MjyCS9av.jwYlDgkhQTDlJ0lE",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 300,
       "name": "Break It",
       "type": "skill",
@@ -62,6 +82,11 @@
     {
       "_id": "SkaMBDjBcsdG5CXn",
       "_key": "!cards.cards!AYD8Fo48MjyCS9av.SkaMBDjBcsdG5CXn",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 400,
       "name": "Quick Hands",
       "type": "skill",
@@ -80,6 +105,11 @@
     {
       "_id": "O5QcZkUHQSFBaU4S",
       "_key": "!cards.cards!AYD8Fo48MjyCS9av.O5QcZkUHQSFBaU4S",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 500,
       "name": "Keep Your Footing",
       "type": "skill",
@@ -99,6 +129,11 @@
     {
       "_id": "pZAWsrPKgQSwcJSX",
       "_key": "!cards.cards!AYD8Fo48MjyCS9av.pZAWsrPKgQSwcJSX",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 600,
       "name": "Out of the Light",
       "type": "skill",
@@ -117,6 +152,11 @@
     {
       "_id": "JO09r4MEQlnIVYo9",
       "_key": "!cards.cards!AYD8Fo48MjyCS9av.JO09r4MEQlnIVYo9",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 700,
       "name": "Sharp Eyes",
       "type": "skill",
@@ -136,6 +176,11 @@
     {
       "_id": "H35bn6LD60jfof6x",
       "_key": "!cards.cards!AYD8Fo48MjyCS9av.H35bn6LD60jfof6x",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 800,
       "name": "Soldier's Learning",
       "type": "skill",
@@ -154,6 +199,11 @@
     {
       "_id": "DKDALDNGUd8uS3q7",
       "_key": "!cards.cards!AYD8Fo48MjyCS9av.DKDALDNGUd8uS3q7",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 900,
       "name": "The Loud Voice",
       "type": "skill",
@@ -173,6 +223,11 @@
     {
       "_id": "ajC03Q3FgFAPHt1g",
       "_key": "!cards.cards!AYD8Fo48MjyCS9av.ajC03Q3FgFAPHt1g",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1000,
       "name": "Inspiration",
       "type": "skill",

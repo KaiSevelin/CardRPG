@@ -1,6 +1,11 @@
 {
   "_id": "sII2GcbHH4pTO1wU",
   "_key": "!items!sII2GcbHH4pTO1wU",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "A Clear Head",
   "type": "spell",
   "system": {

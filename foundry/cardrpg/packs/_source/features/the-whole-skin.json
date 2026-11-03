@@ -1,6 +1,11 @@
 {
   "_id": "hSA7E3IbLqy7jkzh",
   "_key": "!items!hSA7E3IbLqy7jkzh",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Whole Skin",
   "type": "feature",
   "system": {

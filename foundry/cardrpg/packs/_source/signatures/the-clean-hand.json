@@ -1,6 +1,11 @@
 {
   "_id": "6jFw0Hk8VCX1lnrk",
   "_key": "!items!6jFw0Hk8VCX1lnrk",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Clean Hand",
   "type": "spell",
   "system": {

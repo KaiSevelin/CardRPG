@@ -1,6 +1,11 @@
 {
   "_id": "DaicvvW12IhJ3FvC",
   "_key": "!items!DaicvvW12IhJ3FvC",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Tough",
   "type": "feature",
   "system": {

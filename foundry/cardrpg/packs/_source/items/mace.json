@@ -1,6 +1,11 @@
 {
   "_id": "2b5H2NESl8e15u9h",
   "_key": "!items!2b5H2NESl8e15u9h",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Mace",
   "type": "item",
   "system": {

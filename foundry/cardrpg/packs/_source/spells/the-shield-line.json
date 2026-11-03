@@ -1,6 +1,11 @@
 {
   "_id": "cEqnkYwFr7fGAmBY",
   "_key": "!items!cEqnkYwFr7fGAmBY",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Shield Line",
   "type": "spell",
   "system": {

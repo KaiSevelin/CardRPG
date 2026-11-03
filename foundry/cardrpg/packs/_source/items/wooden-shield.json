@@ -1,6 +1,11 @@
 {
   "_id": "tvDUU3SJKDZus4KQ",
   "_key": "!items!tvDUU3SJKDZus4KQ",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Wooden Shield",
   "type": "item",
   "system": {

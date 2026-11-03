@@ -1,6 +1,11 @@
 {
   "_id": "qqocKA2mfLY5LmrL",
   "_key": "!items!qqocKA2mfLY5LmrL",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Grave Chill",
   "type": "spell",
   "system": {

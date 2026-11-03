@@ -1,6 +1,11 @@
 {
   "_id": "ZEjaewWa5FiqCxgJ",
   "_key": "!items!ZEjaewWa5FiqCxgJ",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Empty Deck",
   "type": "spell",
   "system": {

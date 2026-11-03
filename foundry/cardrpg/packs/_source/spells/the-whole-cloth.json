@@ -1,6 +1,11 @@
 {
   "_id": "P1SFR06bHxPDBHZI",
   "_key": "!items!P1SFR06bHxPDBHZI",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Whole Cloth",
   "type": "spell",
   "system": {

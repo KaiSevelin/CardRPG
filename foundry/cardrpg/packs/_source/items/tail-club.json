@@ -1,6 +1,11 @@
 {
   "_id": "7o9NQYYc2ag4osMQ",
   "_key": "!items!7o9NQYYc2ag4osMQ",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Tail Club",
   "type": "item",
   "system": {

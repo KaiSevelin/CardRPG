@@ -1,6 +1,11 @@
 {
   "_id": "oiuLvK31JYNRTaOS",
   "_key": "!actors!oiuLvK31JYNRTaOS",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Scrip Watcher",
   "type": "npc",
   "system": {
@@ -26,6 +31,11 @@
     {
       "_id": "SAeAPcFX3ejGWyfQ",
       "_key": "!actors.items!oiuLvK31JYNRTaOS.SAeAPcFX3ejGWyfQ",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Nip",
       "type": "item",
       "system": {
@@ -50,6 +60,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Scrip Watcher"
+    "name": "Scrip Watcher",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

@@ -1,6 +1,11 @@
 {
   "_id": "tUdaa4fNxae5CPZs",
   "_key": "!actors!tUdaa4fNxae5CPZs",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Blind Worm",
   "type": "npc",
   "system": {
@@ -24,6 +29,11 @@
     {
       "_id": "3vWiedK0MLOPQxwf",
       "_key": "!actors.items!tUdaa4fNxae5CPZs.3vWiedK0MLOPQxwf",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Heavy Mandibles",
       "type": "item",
       "system": {
@@ -49,6 +59,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Blind Worm"
+    "name": "Blind Worm",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

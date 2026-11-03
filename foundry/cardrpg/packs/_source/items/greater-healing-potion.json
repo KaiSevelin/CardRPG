@@ -1,6 +1,11 @@
 {
   "_id": "FLCnQclu3B17giVM",
   "_key": "!items!FLCnQclu3B17giVM",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Greater Healing Potion",
   "type": "item",
   "system": {

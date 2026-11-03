@@ -1,6 +1,11 @@
 {
   "_id": "Ljhq0CT81VDXWYQJ",
   "_key": "!items!Ljhq0CT81VDXWYQJ",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Firepot",
   "type": "item",
   "system": {

@@ -1,6 +1,11 @@
 {
   "_id": "EXGX4LG8tEMd1sto",
   "_key": "!items!EXGX4LG8tEMd1sto",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Moth-wing Fletching",
   "type": "item",
   "system": {

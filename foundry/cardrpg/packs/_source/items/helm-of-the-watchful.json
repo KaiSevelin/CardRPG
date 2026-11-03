@@ -1,6 +1,11 @@
 {
   "_id": "eNMt9SFpU7Qr6hpn",
   "_key": "!items!eNMt9SFpU7Qr6hpn",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Helm of the Watchful",
   "type": "item",
   "system": {

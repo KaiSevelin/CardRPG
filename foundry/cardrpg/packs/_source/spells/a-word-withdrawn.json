@@ -1,6 +1,11 @@
 {
   "_id": "QxD8WIuuTqi5gqn0",
   "_key": "!items!QxD8WIuuTqi5gqn0",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "A Word Withdrawn",
   "type": "spell",
   "system": {

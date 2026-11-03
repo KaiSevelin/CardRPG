@@ -1,6 +1,11 @@
 {
   "_id": "B0Luq82OAImGXa0L",
   "_key": "!items!B0Luq82OAImGXa0L",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Outcast's Due",
   "type": "spell",
   "system": {

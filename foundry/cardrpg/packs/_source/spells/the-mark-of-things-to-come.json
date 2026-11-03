@@ -1,6 +1,11 @@
 {
   "_id": "lcZmJNCxGMVCQXgR",
   "_key": "!items!lcZmJNCxGMVCQXgR",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Mark of Things to Come",
   "type": "spell",
   "system": {

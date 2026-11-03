@@ -1,6 +1,11 @@
 {
   "_id": "XKpFXHEkT38hykrt",
   "_key": "!items!XKpFXHEkT38hykrt",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Assassin's Tincture",
   "type": "item",
   "system": {

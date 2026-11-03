@@ -1,6 +1,11 @@
 {
   "_id": "SizqXpd4qj5bcGkR",
   "_key": "!items!SizqXpd4qj5bcGkR",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Heavy Crossbow",
   "type": "item",
   "system": {

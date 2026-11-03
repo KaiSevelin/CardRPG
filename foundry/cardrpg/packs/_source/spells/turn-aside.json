@@ -1,6 +1,11 @@
 {
   "_id": "MkAsCZMKd53HIdRY",
   "_key": "!items!MkAsCZMKd53HIdRY",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Turn Aside",
   "type": "spell",
   "system": {

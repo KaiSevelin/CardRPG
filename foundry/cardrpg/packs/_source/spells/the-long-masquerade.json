@@ -1,6 +1,11 @@
 {
   "_id": "qmuCZD6MYt2DNmjw",
   "_key": "!items!qmuCZD6MYt2DNmjw",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Long Masquerade",
   "type": "spell",
   "system": {

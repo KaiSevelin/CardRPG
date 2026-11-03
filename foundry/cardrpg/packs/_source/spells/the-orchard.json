@@ -1,6 +1,11 @@
 {
   "_id": "NYexTosuRx5xeOLT",
   "_key": "!items!NYexTosuRx5xeOLT",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Orchard",
   "type": "spell",
   "system": {

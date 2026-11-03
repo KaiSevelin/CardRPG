@@ -1,6 +1,11 @@
 {
   "_id": "2pqIOvmJsgrNLBh8",
   "_key": "!items!2pqIOvmJsgrNLBh8",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Lie That Held",
   "type": "spell",
   "system": {

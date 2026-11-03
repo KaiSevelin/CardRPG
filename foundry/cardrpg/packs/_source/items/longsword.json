@@ -1,6 +1,11 @@
 {
   "_id": "AOyoqTG6b7KDVYLl",
   "_key": "!items!AOyoqTG6b7KDVYLl",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Longsword",
   "type": "item",
   "system": {

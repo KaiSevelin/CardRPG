@@ -1,6 +1,11 @@
 {
   "_id": "znDZRzSzqChzD6nY",
   "_key": "!actors!znDZRzSzqChzD6nY",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Mole Man Priest",
   "type": "npc",
   "system": {
@@ -31,6 +36,11 @@
     {
       "_id": "ZZEOAVQM9HKnDbv9",
       "_key": "!actors.items!znDZRzSzqChzD6nY.ZZEOAVQM9HKnDbv9",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Dark Lantern",
       "type": "item",
       "system": {
@@ -56,6 +66,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Mole Man Priest"
+    "name": "Mole Man Priest",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

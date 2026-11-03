@@ -1,6 +1,11 @@
 {
   "_id": "m7POjHYL4svGPEyj",
   "_key": "!actors!m7POjHYL4svGPEyj",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Doomfly",
   "type": "npc",
   "system": {
@@ -22,6 +27,11 @@
     {
       "_id": "uWEEEbeM3BZ7Egep",
       "_key": "!actors.items!m7POjHYL4svGPEyj.uWEEEbeM3BZ7Egep",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Nip",
       "type": "item",
       "system": {
@@ -46,6 +56,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Doomfly"
+    "name": "Doomfly",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

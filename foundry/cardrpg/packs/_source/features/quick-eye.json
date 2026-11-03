@@ -1,6 +1,11 @@
 {
   "_id": "WqXD6acNJFAGeiJP",
   "_key": "!items!WqXD6acNJFAGeiJP",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Quick Eye",
   "type": "feature",
   "system": {

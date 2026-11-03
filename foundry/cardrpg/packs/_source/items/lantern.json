@@ -1,6 +1,11 @@
 {
   "_id": "Rqinsxq9ZoqizXtR",
   "_key": "!items!Rqinsxq9ZoqizXtR",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Lantern",
   "type": "item",
   "system": {

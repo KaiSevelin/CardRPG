@@ -1,6 +1,11 @@
 {
   "_id": "OI0rqqK1intGB4I8",
   "_key": "!actors!OI0rqqK1intGB4I8",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Mega Beetle",
   "type": "npc",
   "system": {
@@ -25,6 +30,11 @@
     {
       "_id": "TqHoxRDJbi9A5ooI",
       "_key": "!actors.items!OI0rqqK1intGB4I8.TqHoxRDJbi9A5ooI",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Heavy Mandibles",
       "type": "item",
       "system": {
@@ -50,6 +60,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Mega Beetle"
+    "name": "Mega Beetle",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

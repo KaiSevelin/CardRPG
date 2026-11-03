@@ -1,6 +1,11 @@
 {
   "_id": "JKF6WjtjOqznu8gl",
   "_key": "!items!JKF6WjtjOqznu8gl",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Philtre of Borrowed Courage",
   "type": "item",
   "system": {

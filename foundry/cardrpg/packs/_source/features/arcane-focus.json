@@ -1,6 +1,11 @@
 {
   "_id": "GS5p0H9LjMyz2IRu",
   "_key": "!items!GS5p0H9LjMyz2IRu",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Arcane Focus",
   "type": "feature",
   "system": {

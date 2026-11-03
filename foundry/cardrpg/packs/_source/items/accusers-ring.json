@@ -1,6 +1,11 @@
 {
   "_id": "FmctAXgqWi0uFDHX",
   "_key": "!items!FmctAXgqWi0uFDHX",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Accuser's Ring",
   "type": "item",
   "system": {

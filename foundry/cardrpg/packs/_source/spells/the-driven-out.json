@@ -1,6 +1,11 @@
 {
   "_id": "U6IjhDqPgfy3syAV",
   "_key": "!items!U6IjhDqPgfy3syAV",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Driven Out",
   "type": "spell",
   "system": {

@@ -1,6 +1,11 @@
 {
   "_id": "cUTDYe1x1h44xyww",
   "_key": "!items!cUTDYe1x1h44xyww",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Brigandine",
   "type": "item",
   "system": {

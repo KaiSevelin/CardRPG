@@ -1,6 +1,11 @@
 {
   "_id": "r2QRirAVftnedCFD",
   "_key": "!items!r2QRirAVftnedCFD",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Flask of Oil",
   "type": "item",
   "system": {

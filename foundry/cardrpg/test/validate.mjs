@@ -8,6 +8,13 @@
  * It cannot tell you the system loads -- only Foundry can. But it catches the mistakes that are
  * tedious to find by clicking: a typo'd i18n key, a deck that no longer adds up, a slate an actor
  * references but nobody defined.
+ *
+ * **Foundry has now been asked** (14.369, headless; the README says how). It found one fault in 394
+ * documents that nothing in here could have found -- `prototypeToken: depth: must be a number` on
+ * every Actor -- and it rewrote all 394 records on every boot because none of them said which
+ * Foundry wrote it. Both are checks now, in the pack section, with the measurement that found them.
+ * What a clean headless load still does not prove: the data models and the sheets are client-side,
+ * so nothing has yet built a document against `data/items.mjs` or `data/actors.mjs`.
  */
 
 import fs from "node:fs";
@@ -71,7 +78,18 @@ for (const rel of ["system.json", "lang/en.json"]) {
 
 const manifest = JSON.parse(fs.readFileSync(path.join(root, "system.json"), "utf8"));
 check("manifest declares Card subtypes", Object.keys(manifest.documentTypes.Card ?? {}).length, 8);
-check("manifest verified for v14", manifest.compatibility.verified, "14");
+/*
+ * **The verified build is a build, not a generation**, and it is load-bearing in two places.
+ *
+ * Every pack record stamps it as `_stats.coreVersion`, the Foundry that wrote the record. A stamp
+ * of "14" is older than any 14.x, so Foundry would bring all 394 documents forward on every boot --
+ * which is precisely what the stamp exists to stop, and what was measured before it had one. And it
+ * is 14.369 because that is the build the system has actually been started on.
+ */
+check("manifest verified for a build", manifest.compatibility.verified, "14.369");
+check("and the generation it minimally needs", manifest.compatibility.minimum, "14");
+check("and the stamp every pack record carries", manifest.compatibility.verified.split(".")[0],
+  manifest.compatibility.minimum);
 
 // Every file the manifest promises must exist, or the system won't load at all.
 for (const rel of [...manifest.esmodules, ...manifest.styles, ...manifest.languages.map(l => l.path)]) {
@@ -6193,6 +6211,58 @@ check("and what each one holds",
 /* Faults the generator records rather than throws: a filename collision silently drops a document,
  * so the build reports it and this refuses to pass with one outstanding. */
 check("faults the generator reported", planned[0].faults.join("; ") || "none", "none");
+
+/*
+ * **Every Actor states its token's three dimensions**, which is the first thing Foundry ever told
+ * this project and the only part of it that can rot.
+ *
+ * The first time the packs were loaded, all 48 Actors warned `prototypeToken: depth: must be a
+ * number` and were migrated in place -- the one validation failure in 394 documents. A pack record
+ * is validated as source, before the cleaning that would apply core's initial, and `width`,
+ * `height` and `depth` are one group: supplying `depth` alone leaves the warning exactly where it
+ * was (measured, with a `depth: 7` that Foundry discarded and stored as 1).
+ *
+ * This cannot ask Foundry anything. What it can ask is whether the builder still writes all three,
+ * which is the mistake that would come back -- and it is asked of the Actor packs together, so a
+ * pack that stopped producing Actors cannot pass it by being empty.
+ */
+const DIMENSIONS = ["width", "height", "depth"];
+const actorDocs = planned.filter(p => ["creatures", "characters"].includes(p.name))
+  .flatMap(p => p.docs);
+check("Actor documents the dimension sweep read", actorDocs.length, 48);
+check("Actors missing a token dimension",
+  actorDocs.filter(d => DIMENSIONS.some(f => typeof d.prototypeToken?.[f] !== "number"))
+    .map(d => d.name).join(", ") || "none", "none");
+/* And the sweep is asking for something a document can fail: the three names are core's, not ours,
+ * so a renamed field would otherwise read as a clean sweep over fields nobody has. */
+check("and the group it asks for", DIMENSIONS.join("+"), "width+height+depth");
+
+/*
+ * **Every record says which Foundry wrote it, children included.**
+ *
+ * A record with no `_stats.coreVersion` is a record from before Foundry kept version numbers, so
+ * Foundry brings it forward every time it reads it. Measured: 394 documents migrated on every boot
+ * and the committed LevelDB came back changed from opening the game and touching nothing. Stamping
+ * the top level took that to 59 -- and the 59 were exactly the documents with children, because an
+ * unstamped child migrates its parent. Stamping the children took it to 0.
+ *
+ * The version is the manifest's, not a literal, so there is one claim about which Foundry this was
+ * built for rather than two that can disagree.
+ */
+const everyPackDoc = planned.flatMap(p => p.docs);
+const everyPackChild = planned.flatMap(p => p.docs.flatMap(d => d.items ?? d.cards ?? []));
+check("documents the stamp sweep read", everyPackDoc.length, 394);
+check("and children beneath them", everyPackChild.length, 223);
+const unstamped = [...everyPackDoc, ...everyPackChild]
+  .filter(d => d._stats?.coreVersion !== manifest.compatibility.verified
+    || d._stats?.systemId !== manifest.id
+    || d._stats?.systemVersion !== manifest.version);
+check("records that do not say which Foundry wrote them",
+  unstamped.length ? `${unstamped.length}: ${unstamped.slice(0, 3).map(d => d.name).join(", ")}`
+    : "none", "none");
+/* And the stamp is the manifest's own, so a sweep comparing a field with itself cannot pass. */
+check("the version the stamp carries", `${manifest.id} ${manifest.version} on `
+  + `${manifest.compatibility.verified}`, "cardrpg 0.2.0 on 14.369");
 
 /*
  * **Every document in a pack is a document in the content**, counted from the tables rather than

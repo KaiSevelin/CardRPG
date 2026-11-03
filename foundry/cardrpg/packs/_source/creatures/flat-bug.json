@@ -1,6 +1,11 @@
 {
   "_id": "ROz7XhLFPfv9onWp",
   "_key": "!actors!ROz7XhLFPfv9onWp",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Flat Bug",
   "type": "npc",
   "system": {
@@ -25,6 +30,11 @@
     {
       "_id": "CwL5BUSv2HGJBjbL",
       "_key": "!actors.items!ROz7XhLFPfv9onWp.CwL5BUSv2HGJBjbL",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Mandibles",
       "type": "item",
       "system": {
@@ -49,6 +59,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Flat Bug"
+    "name": "Flat Bug",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

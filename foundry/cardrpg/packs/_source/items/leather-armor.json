@@ -1,6 +1,11 @@
 {
   "_id": "T2eGKQ57RdBDK1xj",
   "_key": "!items!T2eGKQ57RdBDK1xj",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Leather Armor",
   "type": "item",
   "system": {

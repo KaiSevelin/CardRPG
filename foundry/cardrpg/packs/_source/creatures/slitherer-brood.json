@@ -1,6 +1,11 @@
 {
   "_id": "HhrW1Nfov2Dd3DGS",
   "_key": "!actors!HhrW1Nfov2Dd3DGS",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Slitherer Brood",
   "type": "npc",
   "system": {
@@ -32,6 +37,11 @@
     {
       "_id": "XOENpY2ba8I385IW",
       "_key": "!actors.items!HhrW1Nfov2Dd3DGS.XOENpY2ba8I385IW",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Mandibles",
       "type": "item",
       "system": {
@@ -56,6 +66,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Slitherer Brood"
+    "name": "Slitherer Brood",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

@@ -1,6 +1,11 @@
 {
   "_id": "SYBsgOwaNU9Z0S1q",
   "_key": "!items!SYBsgOwaNU9Z0S1q",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Oil-wrapped Shaft",
   "type": "item",
   "system": {

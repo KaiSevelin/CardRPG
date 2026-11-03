@@ -1,6 +1,11 @@
 {
   "_id": "MmseD2kxFMzaKCFt",
   "_key": "!items!MmseD2kxFMzaKCFt",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Shut Mouth",
   "type": "spell",
   "system": {

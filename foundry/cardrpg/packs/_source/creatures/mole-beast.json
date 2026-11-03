@@ -1,6 +1,11 @@
 {
   "_id": "u1HnrXNszyubE3v6",
   "_key": "!actors!u1HnrXNszyubE3v6",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Mole Beast",
   "type": "npc",
   "system": {
@@ -26,6 +31,11 @@
     {
       "_id": "ZlVUPrll3to3eb2t",
       "_key": "!actors.items!u1HnrXNszyubE3v6.ZlVUPrll3to3eb2t",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Tusks",
       "type": "item",
       "system": {
@@ -52,6 +62,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Mole Beast"
+    "name": "Mole Beast",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

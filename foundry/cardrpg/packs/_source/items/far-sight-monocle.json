@@ -1,6 +1,11 @@
 {
   "_id": "bUbZ8Af8XLAqQW2w",
   "_key": "!items!bUbZ8Af8XLAqQW2w",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Far-sight Monocle",
   "type": "item",
   "system": {

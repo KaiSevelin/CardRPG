@@ -1,6 +1,11 @@
 {
   "_id": "0ecava67ddjQzC5K",
   "_key": "!items!0ecava67ddjQzC5K",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Flask of Ink",
   "type": "item",
   "system": {

@@ -1,6 +1,11 @@
 {
   "_id": "1LInVNzA3k0q3Dpv",
   "_key": "!actors!1LInVNzA3k0q3Dpv",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Five Legs",
   "type": "npc",
   "system": {
@@ -25,6 +30,11 @@
     {
       "_id": "FAcFvWgIpetbxzsY",
       "_key": "!actors.items!1LInVNzA3k0q3Dpv.FAcFvWgIpetbxzsY",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Claws",
       "type": "item",
       "system": {
@@ -49,6 +59,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Five Legs"
+    "name": "Five Legs",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

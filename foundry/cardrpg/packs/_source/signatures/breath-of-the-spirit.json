@@ -1,6 +1,11 @@
 {
   "_id": "PiHPEHRSuwXLPGm9",
   "_key": "!items!PiHPEHRSuwXLPGm9",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Breath of the Spirit",
   "type": "spell",
   "system": {

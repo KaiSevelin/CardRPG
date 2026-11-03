@@ -1,6 +1,11 @@
 {
   "_id": "rsqWHNwNHMi3b6Jy",
   "_key": "!items!rsqWHNwNHMi3b6Jy",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Last Drop",
   "type": "spell",
   "system": {

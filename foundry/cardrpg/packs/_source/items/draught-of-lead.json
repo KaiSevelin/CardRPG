@@ -1,6 +1,11 @@
 {
   "_id": "W0nAtsJxbn2z8UcU",
   "_key": "!items!W0nAtsJxbn2z8UcU",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Draught of Lead",
   "type": "item",
   "system": {

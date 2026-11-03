@@ -1,6 +1,11 @@
 {
   "_id": "tC5aOkEs8S9ZHp8i",
   "_key": "!actors!tC5aOkEs8S9ZHp8i",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Slitherer",
   "type": "npc",
   "system": {
@@ -30,6 +35,11 @@
     {
       "_id": "aiGYubT3yjyoUAzx",
       "_key": "!actors.items!tC5aOkEs8S9ZHp8i.aiGYubT3yjyoUAzx",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Mandibles",
       "type": "item",
       "system": {
@@ -54,6 +64,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Slitherer"
+    "name": "Slitherer",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

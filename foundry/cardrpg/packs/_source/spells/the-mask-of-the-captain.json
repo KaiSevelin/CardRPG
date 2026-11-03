@@ -1,6 +1,11 @@
 {
   "_id": "R0Sndgj2PoOK2hM7",
   "_key": "!items!R0Sndgj2PoOK2hM7",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Mask of the Captain",
   "type": "spell",
   "system": {

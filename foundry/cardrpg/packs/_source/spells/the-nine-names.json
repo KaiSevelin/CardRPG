@@ -1,6 +1,11 @@
 {
   "_id": "vcE6BkkweV5JTpaz",
   "_key": "!items!vcE6BkkweV5JTpaz",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Nine Names",
   "type": "spell",
   "system": {

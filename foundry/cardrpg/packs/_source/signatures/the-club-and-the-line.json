@@ -1,6 +1,11 @@
 {
   "_id": "M2tnvWW8LY9x6Yli",
   "_key": "!items!M2tnvWW8LY9x6Yli",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Club and the Line",
   "type": "spell",
   "system": {

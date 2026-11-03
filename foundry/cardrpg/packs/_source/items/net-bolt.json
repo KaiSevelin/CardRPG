@@ -1,6 +1,11 @@
 {
   "_id": "DkawM1YlkLSBfBGZ",
   "_key": "!items!DkawM1YlkLSBfBGZ",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Net Bolt",
   "type": "item",
   "system": {

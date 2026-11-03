@@ -1,6 +1,11 @@
 {
   "_id": "N0BVUatAZOTXl8aJ",
   "_key": "!items!N0BVUatAZOTXl8aJ",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Unquiet Quiver",
   "type": "item",
   "system": {

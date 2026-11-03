@@ -1,6 +1,11 @@
 {
   "_id": "gMwYsJC9eHGHdu9L",
   "_key": "!items!gMwYsJC9eHGHdu9L",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Good Name",
   "type": "feature",
   "system": {

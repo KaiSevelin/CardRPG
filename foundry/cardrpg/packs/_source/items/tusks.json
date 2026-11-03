@@ -1,6 +1,11 @@
 {
   "_id": "ZIABYwlDJk1YbUPd",
   "_key": "!items!ZIABYwlDJk1YbUPd",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Tusks",
   "type": "item",
   "system": {

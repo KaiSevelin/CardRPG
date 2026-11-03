@@ -1,6 +1,11 @@
 {
   "_id": "NtIda3xfxW4yWCN3",
   "_key": "!items!NtIda3xfxW4yWCN3",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Hard Hands",
   "type": "feature",
   "system": {

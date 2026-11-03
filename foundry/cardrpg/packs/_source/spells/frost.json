@@ -1,6 +1,11 @@
 {
   "_id": "5rrWCc0Yc75H945V",
   "_key": "!items!5rrWCc0Yc75H945V",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Frost",
   "type": "spell",
   "system": {

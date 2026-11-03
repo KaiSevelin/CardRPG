@@ -1,6 +1,11 @@
 {
   "_id": "yelRUXoD5eLnhup0",
   "_key": "!actors!yelRUXoD5eLnhup0",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Blind Worm Elder",
   "type": "npc",
   "system": {
@@ -26,6 +31,11 @@
     {
       "_id": "TLOfdJxib17YRR4f",
       "_key": "!actors.items!yelRUXoD5eLnhup0.TLOfdJxib17YRR4f",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Heavy Mandibles",
       "type": "item",
       "system": {
@@ -51,6 +61,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Blind Worm Elder"
+    "name": "Blind Worm Elder",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

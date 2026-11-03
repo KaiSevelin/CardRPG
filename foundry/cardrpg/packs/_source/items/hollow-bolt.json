@@ -1,6 +1,11 @@
 {
   "_id": "vkK1vxek65ebEokE",
   "_key": "!items!vkK1vxek65ebEokE",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Hollow Bolt",
   "type": "item",
   "system": {

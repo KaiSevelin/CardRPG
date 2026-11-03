@@ -1,6 +1,11 @@
 {
   "_id": "y3FWChP6sBb4m2Rh",
   "_key": "!items!y3FWChP6sBb4m2Rh",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Crowded Room",
   "type": "spell",
   "system": {

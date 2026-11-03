@@ -1,6 +1,11 @@
 {
   "_id": "ugo32CRny6cgqyrN",
   "_key": "!items!ugo32CRny6cgqyrN",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Line Holds",
   "type": "spell",
   "system": {

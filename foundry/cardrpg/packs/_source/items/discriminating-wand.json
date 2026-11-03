@@ -1,6 +1,11 @@
 {
   "_id": "tCpCBVPK1IzZm4Bs",
   "_key": "!items!tCpCBVPK1IzZm4Bs",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Discriminating Wand",
   "type": "item",
   "system": {

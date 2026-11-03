@@ -2,10 +2,10 @@
   "id": "cardrpg",
   "title": "Card RPG",
   "description": "A card-driven fantasy RPG. Your action deck is your stamina, a fate deck replaces dice, and every card has three halves. Playtest build: combat only.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "compatibility": {
     "minimum": "14",
-    "verified": "14"
+    "verified": "14.369"
   },
   "authors": [
     {

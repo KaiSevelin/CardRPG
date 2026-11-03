@@ -1,6 +1,11 @@
 {
   "_id": "YIlUaLPi9XxYHvMs",
   "_key": "!items!YIlUaLPi9XxYHvMs",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Alone on the Road",
   "type": "spell",
   "system": {

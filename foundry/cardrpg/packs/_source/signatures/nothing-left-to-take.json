@@ -1,6 +1,11 @@
 {
   "_id": "d6wJFb1WpUsugieJ",
   "_key": "!items!d6wJFb1WpUsugieJ",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Nothing Left to Take",
   "type": "spell",
   "system": {

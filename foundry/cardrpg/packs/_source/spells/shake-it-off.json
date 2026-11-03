@@ -1,6 +1,11 @@
 {
   "_id": "qcbGZlqEwHSnDP6S",
   "_key": "!items!qcbGZlqEwHSnDP6S",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Shake It Off",
   "type": "spell",
   "system": {

@@ -1,6 +1,11 @@
 {
   "_id": "UnrwrtHvFCmMHJRz",
   "_key": "!items!UnrwrtHvFCmMHJRz",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Long Preparation",
   "type": "spell",
   "system": {

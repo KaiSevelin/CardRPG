@@ -1,6 +1,11 @@
 {
   "_id": "r3l9CCMwPrDGKy6v",
   "_key": "!items!r3l9CCMwPrDGKy6v",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Rumour",
   "type": "spell",
   "system": {

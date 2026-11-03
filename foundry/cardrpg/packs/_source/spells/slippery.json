@@ -1,6 +1,11 @@
 {
   "_id": "xdsHdwFZySJjxEw9",
   "_key": "!items!xdsHdwFZySJjxEw9",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Slippery",
   "type": "spell",
   "system": {

@@ -1,6 +1,11 @@
 {
   "_id": "6BWzcdmADp7S8wB3",
   "_key": "!items!6BWzcdmADp7S8wB3",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Whetstone of the Last Edge",
   "type": "item",
   "system": {

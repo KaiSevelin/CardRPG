@@ -1,6 +1,11 @@
 {
   "_id": "0fE7EE2fx6jHpQ5h",
   "_key": "!items!0fE7EE2fx6jHpQ5h",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Nothing to Carry",
   "type": "spell",
   "system": {

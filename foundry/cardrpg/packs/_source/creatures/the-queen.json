@@ -1,6 +1,11 @@
 {
   "_id": "uZaqb53zYLT1df5E",
   "_key": "!actors!uZaqb53zYLT1df5E",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Queen",
   "type": "npc",
   "system": {
@@ -24,6 +29,11 @@
     {
       "_id": "pUDSzWBwDXF4gQj9",
       "_key": "!actors.items!uZaqb53zYLT1df5E.pUDSzWBwDXF4gQj9",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Heavy Mandibles",
       "type": "item",
       "system": {
@@ -49,6 +59,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "The Queen"
+    "name": "The Queen",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

@@ -1,6 +1,11 @@
 {
   "_id": "jmkhi62KUkBuNP7F",
   "_key": "!items!jmkhi62KUkBuNP7F",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Lance",
   "type": "item",
   "system": {

@@ -1,6 +1,11 @@
 {
   "_id": "oWYGPzFRDzF1Lnkh",
   "_key": "!items!oWYGPzFRDzF1Lnkh",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Pike",
   "type": "item",
   "system": {

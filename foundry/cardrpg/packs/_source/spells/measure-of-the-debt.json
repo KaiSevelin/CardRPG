@@ -1,6 +1,11 @@
 {
   "_id": "UMOgdqgva4RYg3PP",
   "_key": "!items!UMOgdqgva4RYg3PP",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Measure of the Debt",
   "type": "spell",
   "system": {

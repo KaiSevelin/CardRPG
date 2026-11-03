@@ -1,6 +1,11 @@
 {
   "_id": "lyosWXlCceSJPDMd",
   "_key": "!actors!lyosWXlCceSJPDMd",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Five Legs Adjutant",
   "type": "npc",
   "system": {
@@ -25,6 +30,11 @@
     {
       "_id": "DpWjhFmYhllM3IZo",
       "_key": "!actors.items!lyosWXlCceSJPDMd.DpWjhFmYhllM3IZo",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Claws",
       "type": "item",
       "system": {
@@ -49,6 +59,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Five Legs Adjutant"
+    "name": "Five Legs Adjutant",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

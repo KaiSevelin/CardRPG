@@ -1,6 +1,11 @@
 {
   "_id": "bLDmX4FldYjaoAtg",
   "_key": "!items!bLDmX4FldYjaoAtg",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Wall of the Sphere",
   "type": "spell",
   "system": {

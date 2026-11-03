@@ -1,6 +1,11 @@
 {
   "_id": "IdXfwGcIVUn0Cpcx",
   "_key": "!items!IdXfwGcIVUn0Cpcx",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Bottle of Borrowed Pain",
   "type": "item",
   "system": {

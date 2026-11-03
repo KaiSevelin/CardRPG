@@ -1,6 +1,11 @@
 {
   "_id": "hXXi7W4cSsYcZynH",
   "_key": "!items!hXXi7W4cSsYcZynH",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Winter Cloak",
   "type": "item",
   "system": {

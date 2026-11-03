@@ -1,6 +1,11 @@
 {
   "_id": "gEzDZvC3JSOCXAgA",
   "_key": "!items!gEzDZvC3JSOCXAgA",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Kite Shield",
   "type": "item",
   "system": {

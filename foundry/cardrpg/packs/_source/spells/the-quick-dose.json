@@ -1,6 +1,11 @@
 {
   "_id": "Hhr8S5E9nUx9WxBa",
   "_key": "!items!Hhr8S5E9nUx9WxBa",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Quick Dose",
   "type": "spell",
   "system": {

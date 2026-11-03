@@ -1,6 +1,11 @@
 {
   "_id": "MSgERwrVzxUt2Ap4",
   "_key": "!items!MSgERwrVzxUt2Ap4",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Kit",
   "type": "item",
   "system": {

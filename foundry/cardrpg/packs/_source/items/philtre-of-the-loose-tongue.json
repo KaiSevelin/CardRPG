@@ -1,6 +1,11 @@
 {
   "_id": "bQmUtbFTCjE61Zkd",
   "_key": "!items!bQmUtbFTCjE61Zkd",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Philtre of the Loose Tongue",
   "type": "item",
   "system": {

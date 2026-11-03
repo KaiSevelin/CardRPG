@@ -1,6 +1,11 @@
 {
   "_id": "2SVphmODTcN9E63w",
   "_key": "!items!2SVphmODTcN9E63w",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Well Read",
   "type": "feature",
   "system": {

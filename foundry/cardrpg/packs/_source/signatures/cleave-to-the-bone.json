@@ -1,6 +1,11 @@
 {
   "_id": "fXitQTBYsUpJFxa6",
   "_key": "!items!fXitQTBYsUpJFxa6",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Cleave to the Bone",
   "type": "feature",
   "system": {

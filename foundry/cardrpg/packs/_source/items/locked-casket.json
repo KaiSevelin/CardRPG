@@ -1,6 +1,11 @@
 {
   "_id": "XimB7TFRuPoFOzFa",
   "_key": "!items!XimB7TFRuPoFOzFa",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Locked Casket",
   "type": "item",
   "system": {

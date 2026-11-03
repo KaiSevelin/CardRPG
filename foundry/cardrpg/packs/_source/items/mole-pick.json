@@ -1,6 +1,11 @@
 {
   "_id": "gzRaSVHaLWCXJnzG",
   "_key": "!items!gzRaSVHaLWCXJnzG",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Mole Pick",
   "type": "item",
   "system": {

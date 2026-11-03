@@ -1,6 +1,11 @@
 {
   "_id": "Xyh1fkXSwUMLCgLW",
   "_key": "!actors!Xyh1fkXSwUMLCgLW",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Smash Beetle Breaker",
   "type": "npc",
   "system": {
@@ -26,6 +31,11 @@
     {
       "_id": "ykR4RxWhNDYyEPM2",
       "_key": "!actors.items!Xyh1fkXSwUMLCgLW.ykR4RxWhNDYyEPM2",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Tail Club",
       "type": "item",
       "system": {
@@ -53,6 +63,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Smash Beetle Breaker"
+    "name": "Smash Beetle Breaker",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

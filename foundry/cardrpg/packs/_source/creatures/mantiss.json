@@ -1,6 +1,11 @@
 {
   "_id": "PLq4AJeRBfjV0CHp",
   "_key": "!actors!PLq4AJeRBfjV0CHp",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Mantiss",
   "type": "npc",
   "system": {
@@ -26,6 +31,11 @@
     {
       "_id": "wBvc3BTVarHMZa2T",
       "_key": "!actors.items!PLq4AJeRBfjV0CHp.wBvc3BTVarHMZa2T",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Grasping Claws",
       "type": "item",
       "system": {
@@ -51,6 +61,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Mantiss"
+    "name": "Mantiss",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

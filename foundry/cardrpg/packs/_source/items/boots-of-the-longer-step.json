@@ -1,6 +1,11 @@
 {
   "_id": "xWR9421MTTE3uFUV",
   "_key": "!items!xWR9421MTTE3uFUV",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Boots of the Longer Step",
   "type": "item",
   "system": {

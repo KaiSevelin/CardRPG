@@ -1,12 +1,22 @@
 {
   "_id": "mw8gCjMYrP1cjrhw",
   "_key": "!cards!mw8gCjMYrP1cjrhw",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Starter Warrior — Action Deck",
   "type": "deck",
   "cards": [
     {
       "_id": "VWsALCK66zdcvdVm",
       "_key": "!cards.cards!mw8gCjMYrP1cjrhw.VWsALCK66zdcvdVm",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 100,
       "name": "Strike",
       "type": "action",
@@ -35,6 +45,11 @@
     {
       "_id": "7RiVmnzoXQS3sCyG",
       "_key": "!cards.cards!mw8gCjMYrP1cjrhw.7RiVmnzoXQS3sCyG",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 200,
       "name": "Strike",
       "type": "action",
@@ -63,6 +78,11 @@
     {
       "_id": "zItE2LsLXBRJOweV",
       "_key": "!cards.cards!mw8gCjMYrP1cjrhw.zItE2LsLXBRJOweV",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 300,
       "name": "Strike",
       "type": "action",
@@ -91,6 +111,11 @@
     {
       "_id": "P0BEEMlnX3BVAFJM",
       "_key": "!cards.cards!mw8gCjMYrP1cjrhw.P0BEEMlnX3BVAFJM",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 400,
       "name": "Heavy Swing",
       "type": "action",
@@ -120,6 +145,11 @@
     {
       "_id": "CeFzpciqX66De0HO",
       "_key": "!cards.cards!mw8gCjMYrP1cjrhw.CeFzpciqX66De0HO",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 500,
       "name": "Heavy Swing",
       "type": "action",
@@ -149,6 +179,11 @@
     {
       "_id": "HXfxkAG2m55urwGi",
       "_key": "!cards.cards!mw8gCjMYrP1cjrhw.HXfxkAG2m55urwGi",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 600,
       "name": "Lunge",
       "type": "action",
@@ -181,6 +216,11 @@
     {
       "_id": "Fi2Y97VXAIHD6yB2",
       "_key": "!cards.cards!mw8gCjMYrP1cjrhw.Fi2Y97VXAIHD6yB2",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 700,
       "name": "Shield Up",
       "type": "action",
@@ -210,6 +250,11 @@
     {
       "_id": "LxV7XcsEtiiKB8o0",
       "_key": "!cards.cards!mw8gCjMYrP1cjrhw.LxV7XcsEtiiKB8o0",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 800,
       "name": "Shield Up",
       "type": "action",
@@ -239,6 +284,11 @@
     {
       "_id": "Z6zpinehhoVwl9bl",
       "_key": "!cards.cards!mw8gCjMYrP1cjrhw.Z6zpinehhoVwl9bl",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 900,
       "name": "Advance",
       "type": "action",
@@ -268,6 +318,11 @@
     {
       "_id": "3z3ItWrhu2yG3L8I",
       "_key": "!cards.cards!mw8gCjMYrP1cjrhw.3z3ItWrhu2yG3L8I",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1000,
       "name": "Advance",
       "type": "action",
@@ -297,6 +352,11 @@
     {
       "_id": "tqa68kQX0X8MsB5R",
       "_key": "!cards.cards!mw8gCjMYrP1cjrhw.tqa68kQX0X8MsB5R",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1100,
       "name": "Draw Steel",
       "type": "action",
@@ -324,6 +384,11 @@
     {
       "_id": "g5kMP4FxyCgAM2eA",
       "_key": "!cards.cards!mw8gCjMYrP1cjrhw.g5kMP4FxyCgAM2eA",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1200,
       "name": "Draw Steel",
       "type": "action",
@@ -351,6 +416,11 @@
     {
       "_id": "x0x0vHfl3ltEGkhW",
       "_key": "!cards.cards!mw8gCjMYrP1cjrhw.x0x0vHfl3ltEGkhW",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1300,
       "name": "Quick Hands",
       "type": "action",
@@ -378,6 +448,11 @@
     {
       "_id": "a7ewCoej1nz9vEwk",
       "_key": "!cards.cards!mw8gCjMYrP1cjrhw.a7ewCoej1nz9vEwk",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1400,
       "name": "Second Wind",
       "type": "action",
@@ -410,6 +485,11 @@
     {
       "_id": "wU5BSlHjCw8tDtdu",
       "_key": "!cards.cards!mw8gCjMYrP1cjrhw.wU5BSlHjCw8tDtdu",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1500,
       "name": "Taunt",
       "type": "action",
@@ -441,6 +521,11 @@
     {
       "_id": "IZsaBrTbVCbW864e",
       "_key": "!cards.cards!mw8gCjMYrP1cjrhw.IZsaBrTbVCbW864e",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1600,
       "name": "Weapon Swap",
       "type": "action",

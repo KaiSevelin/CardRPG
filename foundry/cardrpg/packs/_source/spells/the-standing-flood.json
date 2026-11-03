@@ -1,6 +1,11 @@
 {
   "_id": "BscNHYy56QHDADxU",
   "_key": "!items!BscNHYy56QHDADxU",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Standing Flood",
   "type": "spell",
   "system": {

@@ -1,6 +1,11 @@
 {
   "_id": "UUAH9AW69FHdFVXs",
   "_key": "!items!UUAH9AW69FHdFVXs",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Serpent's Milk",
   "type": "item",
   "system": {

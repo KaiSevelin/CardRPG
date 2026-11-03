@@ -1,6 +1,11 @@
 {
   "_id": "d9xtTFjvhf9JKDoX",
   "_key": "!items!d9xtTFjvhf9JKDoX",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Loaded Before the Bell",
   "type": "feature",
   "system": {

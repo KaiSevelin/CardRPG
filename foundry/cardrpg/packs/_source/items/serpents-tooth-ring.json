@@ -1,6 +1,11 @@
 {
   "_id": "3ZkPJgNdIfU0FFm4",
   "_key": "!items!3ZkPJgNdIfU0FFm4",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Serpent's Tooth Ring",
   "type": "item",
   "system": {

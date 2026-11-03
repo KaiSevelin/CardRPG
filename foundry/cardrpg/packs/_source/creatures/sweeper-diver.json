@@ -1,6 +1,11 @@
 {
   "_id": "aOynHBYlIDvuLp8X",
   "_key": "!actors!aOynHBYlIDvuLp8X",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Sweeper Diver",
   "type": "npc",
   "system": {
@@ -25,6 +30,11 @@
     {
       "_id": "Ab2742qKt1Retx8f",
       "_key": "!actors.items!aOynHBYlIDvuLp8X.Ab2742qKt1Retx8f",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Claws",
       "type": "item",
       "system": {
@@ -49,6 +59,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Sweeper Diver"
+    "name": "Sweeper Diver",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

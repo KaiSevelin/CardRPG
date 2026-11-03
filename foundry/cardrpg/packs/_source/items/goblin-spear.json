@@ -1,6 +1,11 @@
 {
   "_id": "3dC9CflbaeOQo5Vj",
   "_key": "!items!3dC9CflbaeOQo5Vj",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Goblin Spear",
   "type": "item",
   "system": {

@@ -1,6 +1,11 @@
 {
   "_id": "UsYdYd55jDehS1Er",
   "_key": "!items!UsYdYd55jDehS1Er",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Matchlock Pistol",
   "type": "item",
   "system": {

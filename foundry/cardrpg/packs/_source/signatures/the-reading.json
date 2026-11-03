@@ -1,6 +1,11 @@
 {
   "_id": "7OEETzj2qfH5VQb4",
   "_key": "!items!7OEETzj2qfH5VQb4",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Reading",
   "type": "spell",
   "system": {

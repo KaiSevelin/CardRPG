@@ -1,6 +1,11 @@
 {
   "_id": "SNPLYaLRE82PPLN4",
   "_key": "!items!SNPLYaLRE82PPLN4",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Silent Knife",
   "type": "spell",
   "system": {

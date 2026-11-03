@@ -1,6 +1,11 @@
 {
   "_id": "it4ObUQgj23fLyA4",
   "_key": "!items!it4ObUQgj23fLyA4",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Grasping Claws",
   "type": "item",
   "system": {

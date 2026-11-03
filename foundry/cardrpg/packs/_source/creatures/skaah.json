@@ -1,6 +1,11 @@
 {
   "_id": "VYAHDhVVYnrDC5Hw",
   "_key": "!actors!VYAHDhVVYnrDC5Hw",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Skaah",
   "type": "npc",
   "system": {
@@ -25,6 +30,11 @@
     {
       "_id": "gdIDF8lrgSkHREeA",
       "_key": "!actors.items!VYAHDhVVYnrDC5Hw.gdIDF8lrgSkHREeA",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Nip",
       "type": "item",
       "system": {
@@ -49,6 +59,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Skaah"
+    "name": "Skaah",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

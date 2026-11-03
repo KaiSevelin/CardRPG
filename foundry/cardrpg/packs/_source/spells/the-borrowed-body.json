@@ -1,6 +1,11 @@
 {
   "_id": "pvHOsLBbnW7jbpLH",
   "_key": "!items!pvHOsLBbnW7jbpLH",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Borrowed Body",
   "type": "spell",
   "system": {

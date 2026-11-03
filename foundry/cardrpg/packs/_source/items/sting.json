@@ -1,6 +1,11 @@
 {
   "_id": "RITdFoVM2J3sBwRL",
   "_key": "!items!RITdFoVM2J3sBwRL",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Sting",
   "type": "item",
   "system": {

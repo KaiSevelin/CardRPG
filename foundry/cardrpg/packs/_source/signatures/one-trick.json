@@ -1,6 +1,11 @@
 {
   "_id": "z4UQDyKWi8AxH53m",
   "_key": "!items!z4UQDyKWi8AxH53m",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "One Trick",
   "type": "feature",
   "system": {

@@ -1,6 +1,11 @@
 {
   "_id": "DvLJ2P739ce7u6y3",
   "_key": "!items!DvLJ2P739ce7u6y3",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Vagrant's Charm",
   "type": "item",
   "system": {

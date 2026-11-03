@@ -1,6 +1,11 @@
 {
   "_id": "mWFMl67869reWq3r",
   "_key": "!actors!mWFMl67869reWq3r",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Flat Bug Runner",
   "type": "npc",
   "system": {
@@ -27,6 +32,11 @@
     {
       "_id": "7kMFyprGJjnJovpo",
       "_key": "!actors.items!mWFMl67869reWq3r.7kMFyprGJjnJovpo",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Mandibles",
       "type": "item",
       "system": {
@@ -51,6 +61,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Flat Bug Runner"
+    "name": "Flat Bug Runner",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

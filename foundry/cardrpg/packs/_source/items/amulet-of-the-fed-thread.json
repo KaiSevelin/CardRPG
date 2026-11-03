@@ -1,6 +1,11 @@
 {
   "_id": "wUr9TkKtJJ4qHKDb",
   "_key": "!items!wUr9TkKtJJ4qHKDb",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Amulet of the Fed Thread",
   "type": "item",
   "system": {

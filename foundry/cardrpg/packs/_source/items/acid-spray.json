@@ -1,6 +1,11 @@
 {
   "_id": "EzJMSsFYi2ChqZNb",
   "_key": "!items!EzJMSsFYi2ChqZNb",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Acid Spray",
   "type": "item",
   "system": {

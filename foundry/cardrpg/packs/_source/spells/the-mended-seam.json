@@ -1,6 +1,11 @@
 {
   "_id": "8nc1oLJiHI73f2oW",
   "_key": "!items!8nc1oLJiHI73f2oW",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Mended Seam",
   "type": "spell",
   "system": {

@@ -1,6 +1,11 @@
 {
   "_id": "eIfjZsI6BCsyrljn",
   "_key": "!items!eIfjZsI6BCsyrljn",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Name the Guilty",
   "type": "spell",
   "system": {

@@ -1,6 +1,11 @@
 {
   "_id": "jGaHOGjGoT7hCNaa",
   "_key": "!items!jGaHOGjGoT7hCNaa",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Become the Shadow",
   "type": "spell",
   "system": {

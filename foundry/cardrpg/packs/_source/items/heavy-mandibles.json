@@ -1,6 +1,11 @@
 {
   "_id": "5KudVOabqzlQN7WH",
   "_key": "!items!5KudVOabqzlQN7WH",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Heavy Mandibles",
   "type": "item",
   "system": {

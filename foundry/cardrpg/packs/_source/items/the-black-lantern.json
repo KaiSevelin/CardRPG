@@ -1,6 +1,11 @@
 {
   "_id": "E6EDzf6xhRZvRr4F",
   "_key": "!items!E6EDzf6xhRZvRr4F",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Black Lantern",
   "type": "item",
   "system": {

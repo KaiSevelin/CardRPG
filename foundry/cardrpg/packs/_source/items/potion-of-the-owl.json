@@ -1,6 +1,11 @@
 {
   "_id": "OCFcW0GNVohCRbgk",
   "_key": "!items!OCFcW0GNVohCRbgk",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Potion of the Owl",
   "type": "item",
   "system": {

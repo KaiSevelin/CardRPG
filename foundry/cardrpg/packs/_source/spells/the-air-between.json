@@ -1,6 +1,11 @@
 {
   "_id": "CudmRIRotGJ1HLY9",
   "_key": "!items!CudmRIRotGJ1HLY9",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Air Between",
   "type": "spell",
   "system": {

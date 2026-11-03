@@ -1,6 +1,11 @@
 {
   "_id": "Lh1lAalYJwObi4xB",
   "_key": "!items!Lh1lAalYJwObi4xB",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Taste of the Rot",
   "type": "spell",
   "system": {

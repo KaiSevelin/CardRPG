@@ -1,6 +1,11 @@
 {
   "_id": "ULxzLMLDzFdIvxUg",
   "_key": "!items!ULxzLMLDzFdIvxUg",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Full Belly",
   "type": "spell",
   "system": {

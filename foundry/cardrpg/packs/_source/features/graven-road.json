@@ -1,6 +1,11 @@
 {
   "_id": "GGCh1VmYQB3IpdZd",
   "_key": "!items!GGCh1VmYQB3IpdZd",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Graven Road",
   "type": "feature",
   "system": {

@@ -1,6 +1,11 @@
 {
   "_id": "MaANXp3HWKg0k5zN",
   "_key": "!actors!MaANXp3HWKg0k5zN",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Mantiss Veteran",
   "type": "npc",
   "system": {
@@ -28,6 +33,11 @@
     {
       "_id": "XvmZKrlBOBYOGiXK",
       "_key": "!actors.items!MaANXp3HWKg0k5zN.XvmZKrlBOBYOGiXK",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Grasping Claws",
       "type": "item",
       "system": {
@@ -53,6 +63,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Mantiss Veteran"
+    "name": "Mantiss Veteran",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

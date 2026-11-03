@@ -1,6 +1,11 @@
 {
   "_id": "mADBw3UqXYqz2xzm",
   "_key": "!items!mADBw3UqXYqz2xzm",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The War Drum",
   "type": "spell",
   "system": {

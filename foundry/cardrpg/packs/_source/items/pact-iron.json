@@ -1,6 +1,11 @@
 {
   "_id": "EY9HlkjzWOcjWWrd",
   "_key": "!items!EY9HlkjzWOcjWWrd",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Pact Iron",
   "type": "item",
   "system": {

@@ -1,12 +1,22 @@
 {
   "_id": "NHP0PBXJoAQv67Vk",
   "_key": "!cards!NHP0PBXJoAQv67Vk",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Way of Shade — Pool",
   "type": "deck",
   "cards": [
     {
       "_id": "6MZL4SsIQCxDU9mQ",
       "_key": "!cards.cards!NHP0PBXJoAQv67Vk.6MZL4SsIQCxDU9mQ",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 100,
       "name": "Call the Shot",
       "type": "action",
@@ -36,6 +46,11 @@
     {
       "_id": "7vTEZ0gcS3mkvD4t",
       "_key": "!cards.cards!NHP0PBXJoAQv67Vk.7vTEZ0gcS3mkvD4t",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 200,
       "name": "Between the Plates",
       "type": "action",
@@ -68,6 +83,11 @@
     {
       "_id": "W6iqg60A5rcQX9yI",
       "_key": "!cards.cards!NHP0PBXJoAQv67Vk.W6iqg60A5rcQX9yI",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 300,
       "name": "Take the Shot",
       "type": "action",
@@ -104,6 +124,11 @@
     {
       "_id": "wgQFasamOHaNy1Uy",
       "_key": "!cards.cards!NHP0PBXJoAQv67Vk.wgQFasamOHaNy1Uy",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 400,
       "name": "Pin the Shadow",
       "type": "action",
@@ -143,6 +168,11 @@
     {
       "_id": "73WRrL8pQsIdozOZ",
       "_key": "!cards.cards!NHP0PBXJoAQv67Vk.73WRrL8pQsIdozOZ",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 500,
       "name": "Cut and Run",
       "type": "action",
@@ -175,6 +205,11 @@
     {
       "_id": "ioi8d7BZEoi1i6Ec",
       "_key": "!cards.cards!NHP0PBXJoAQv67Vk.ioi8d7BZEoi1i6Ec",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 600,
       "name": "Light Feet",
       "type": "action",
@@ -205,6 +240,11 @@
     {
       "_id": "XcrMbAspHaqPdia6",
       "_key": "!cards.cards!NHP0PBXJoAQv67Vk.XcrMbAspHaqPdia6",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 700,
       "name": "Slip the Knot",
       "type": "action",
@@ -234,6 +274,11 @@
     {
       "_id": "Uq92KyWlvFSJ1Z5s",
       "_key": "!cards.cards!NHP0PBXJoAQv67Vk.Uq92KyWlvFSJ1Z5s",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 800,
       "name": "Second Knife",
       "type": "action",
@@ -269,6 +314,11 @@
     {
       "_id": "GEBxoradU81UWqNi",
       "_key": "!cards.cards!NHP0PBXJoAQv67Vk.GEBxoradU81UWqNi",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 900,
       "name": "Mock",
       "type": "action",
@@ -300,6 +350,11 @@
     {
       "_id": "6EQ7sBh6mssDpr2n",
       "_key": "!cards.cards!NHP0PBXJoAQv67Vk.6EQ7sBh6mssDpr2n",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1000,
       "name": "Sleight",
       "type": "action",
@@ -330,6 +385,11 @@
     {
       "_id": "ohyt1YzDGWmcKSDe",
       "_key": "!cards.cards!NHP0PBXJoAQv67Vk.ohyt1YzDGWmcKSDe",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1100,
       "name": "Vanish",
       "type": "action",
@@ -364,6 +424,11 @@
     {
       "_id": "rGnEEwvBHbRoJtDs",
       "_key": "!cards.cards!NHP0PBXJoAQv67Vk.rGnEEwvBHbRoJtDs",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1200,
       "name": "Smoke and Go",
       "type": "action",

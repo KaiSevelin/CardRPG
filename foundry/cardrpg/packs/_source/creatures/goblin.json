@@ -1,6 +1,11 @@
 {
   "_id": "3DCR02y4L7E7a5Ns",
   "_key": "!actors!3DCR02y4L7E7a5Ns",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Goblin",
   "type": "npc",
   "system": {
@@ -25,6 +30,11 @@
     {
       "_id": "PqmRQ1ZIxxV9Mmnp",
       "_key": "!actors.items!3DCR02y4L7E7a5Ns.PqmRQ1ZIxxV9Mmnp",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Goblin Spear",
       "type": "item",
       "system": {
@@ -51,6 +61,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Goblin"
+    "name": "Goblin",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

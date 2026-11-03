@@ -1,6 +1,11 @@
 {
   "_id": "DguHKDSaMIh4JzGV",
   "_key": "!items!DguHKDSaMIh4JzGV",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Matchlock Musket",
   "type": "item",
   "system": {

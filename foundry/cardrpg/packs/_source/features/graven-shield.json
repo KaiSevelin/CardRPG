@@ -1,6 +1,11 @@
 {
   "_id": "XbgMfEqjMYdPgMaD",
   "_key": "!items!XbgMfEqjMYdPgMaD",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Graven Shield",
   "type": "feature",
   "system": {

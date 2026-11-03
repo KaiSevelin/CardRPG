@@ -1,6 +1,11 @@
 {
   "_id": "8UsA9nP97uGeAOLG",
   "_key": "!items!8UsA9nP97uGeAOLG",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Scorch",
   "type": "spell",
   "system": {

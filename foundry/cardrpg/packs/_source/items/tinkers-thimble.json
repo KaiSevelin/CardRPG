@@ -1,6 +1,11 @@
 {
   "_id": "e3RGbYlPWBnK0Kt2",
   "_key": "!items!e3RGbYlPWBnK0Kt2",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Tinker's Thimble",
   "type": "item",
   "system": {

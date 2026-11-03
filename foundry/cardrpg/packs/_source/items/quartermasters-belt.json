@@ -1,6 +1,11 @@
 {
   "_id": "YarMu5Rq79MGm6sc",
   "_key": "!items!YarMu5Rq79MGm6sc",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Quartermaster's Belt",
   "type": "item",
   "system": {

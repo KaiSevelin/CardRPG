@@ -1,6 +1,11 @@
 {
   "_id": "lWnleKFGXBsCEOTE",
   "_key": "!items!lWnleKFGXBsCEOTE",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Signet Ring",
   "type": "item",
   "system": {

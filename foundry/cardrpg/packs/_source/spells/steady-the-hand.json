@@ -1,6 +1,11 @@
 {
   "_id": "pLosGB0fmwTV73XM",
   "_key": "!items!pLosGB0fmwTV73XM",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Steady the Hand",
   "type": "spell",
   "system": {

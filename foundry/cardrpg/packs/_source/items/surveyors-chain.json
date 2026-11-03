@@ -1,6 +1,11 @@
 {
   "_id": "9rRc8rsJeVHC7EyR",
   "_key": "!items!9rRc8rsJeVHC7EyR",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Surveyor's Chain",
   "type": "item",
   "system": {

@@ -1,6 +1,11 @@
 {
   "_id": "1kilwmmAVDzXuinm",
   "_key": "!actors!1kilwmmAVDzXuinm",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Processor Driller",
   "type": "npc",
   "system": {
@@ -23,6 +28,11 @@
     {
       "_id": "BDL7TxBiZ8MZECdO",
       "_key": "!actors.items!1kilwmmAVDzXuinm.BDL7TxBiZ8MZECdO",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Mandibles",
       "type": "item",
       "system": {
@@ -47,6 +57,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Processor Driller"
+    "name": "Processor Driller",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

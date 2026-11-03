@@ -1,6 +1,11 @@
 {
   "_id": "OnpO58QuRUGexmuB",
   "_key": "!items!OnpO58QuRUGexmuB",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Smoke Bomb",
   "type": "item",
   "system": {

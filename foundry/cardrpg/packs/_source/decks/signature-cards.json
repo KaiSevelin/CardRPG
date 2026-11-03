@@ -1,12 +1,22 @@
 {
   "_id": "DqkrIjHJLCtUsdZi",
   "_key": "!cards!DqkrIjHJLCtUsdZi",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Signature Cards",
   "type": "deck",
   "cards": [
     {
       "_id": "IlRVsmaTFg8I0ewr",
       "_key": "!cards.cards!DqkrIjHJLCtUsdZi.IlRVsmaTFg8I0ewr",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 100,
       "name": "Point Man",
       "type": "action",
@@ -36,6 +46,11 @@
     {
       "_id": "vksNecDLSVDZ83Mv",
       "_key": "!cards.cards!DqkrIjHJLCtUsdZi.vksNecDLSVDZ83Mv",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 200,
       "name": "Named",
       "type": "action",
@@ -65,6 +80,11 @@
     {
       "_id": "l1AUxq3MnJdJ9MY5",
       "_key": "!cards.cards!DqkrIjHJLCtUsdZi.l1AUxq3MnJdJ9MY5",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 300,
       "name": "One Opening",
       "type": "action",
@@ -98,6 +118,11 @@
     {
       "_id": "ZI4HSqgT5cY2o5MM",
       "_key": "!cards.cards!DqkrIjHJLCtUsdZi.ZI4HSqgT5cY2o5MM",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 400,
       "name": "Lift",
       "type": "action",
@@ -127,6 +152,11 @@
     {
       "_id": "0J9ybEDEHYjCbv6Y",
       "_key": "!cards.cards!DqkrIjHJLCtUsdZi.0J9ybEDEHYjCbv6Y",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 500,
       "name": "Loose and Step",
       "type": "action",
@@ -162,6 +192,11 @@
     {
       "_id": "w9pVnAPH820orHHZ",
       "_key": "!cards.cards!DqkrIjHJLCtUsdZi.w9pVnAPH820orHHZ",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 600,
       "name": "Set",
       "type": "action",
@@ -199,6 +234,11 @@
     {
       "_id": "zD9aG46t7WXbjVFT",
       "_key": "!cards.cards!DqkrIjHJLCtUsdZi.zD9aG46t7WXbjVFT",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 700,
       "name": "Over and Past",
       "type": "action",
@@ -229,6 +269,11 @@
     {
       "_id": "1dUBLbgmERcrBKR4",
       "_key": "!cards.cards!DqkrIjHJLCtUsdZi.1dUBLbgmERcrBKR4",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 800,
       "name": "Heckle",
       "type": "action",
@@ -261,6 +306,11 @@
     {
       "_id": "Sj9stOn9eaJOQ5aq",
       "_key": "!cards.cards!DqkrIjHJLCtUsdZi.Sj9stOn9eaJOQ5aq",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 900,
       "name": "Double or Nothing",
       "type": "action",
@@ -290,6 +340,11 @@
     {
       "_id": "S6etM4Yru9780UHA",
       "_key": "!cards.cards!DqkrIjHJLCtUsdZi.S6etM4Yru9780UHA",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1000,
       "name": "Shoulder to Shoulder",
       "type": "action",
@@ -323,6 +378,11 @@
     {
       "_id": "JBEjEgwxw7gYXjAE",
       "_key": "!cards.cards!DqkrIjHJLCtUsdZi.JBEjEgwxw7gYXjAE",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1100,
       "name": "Ranging Shot",
       "type": "action",
@@ -356,6 +416,11 @@
     {
       "_id": "o3XQSp8nTleHvmm5",
       "_key": "!cards.cards!DqkrIjHJLCtUsdZi.o3XQSp8nTleHvmm5",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1200,
       "name": "On My Call",
       "type": "action",
@@ -385,6 +450,11 @@
     {
       "_id": "gyWp6dRZOaK67dqP",
       "_key": "!cards.cards!DqkrIjHJLCtUsdZi.gyWp6dRZOaK67dqP",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1300,
       "name": "The Lance",
       "type": "action",
@@ -418,6 +488,11 @@
     {
       "_id": "OIkExoXDTWSbqMMv",
       "_key": "!cards.cards!DqkrIjHJLCtUsdZi.OIkExoXDTWSbqMMv",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1400,
       "name": "Red Mist",
       "type": "action",
@@ -451,6 +526,11 @@
     {
       "_id": "HLEgGbrehdaN5fth",
       "_key": "!cards.cards!DqkrIjHJLCtUsdZi.HLEgGbrehdaN5fth",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1500,
       "name": "Play to the Crowd",
       "type": "action",
@@ -483,6 +563,11 @@
     {
       "_id": "poVWtJZxoftduXrN",
       "_key": "!cards.cards!DqkrIjHJLCtUsdZi.poVWtJZxoftduXrN",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1600,
       "name": "Get a Grip",
       "type": "action",
@@ -515,6 +600,11 @@
     {
       "_id": "L19Z98zeHWpxclHz",
       "_key": "!cards.cards!DqkrIjHJLCtUsdZi.L19Z98zeHWpxclHz",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1700,
       "name": "Interpose",
       "type": "action",
@@ -544,6 +634,11 @@
     {
       "_id": "oiGXDJfIM19UcKBL",
       "_key": "!cards.cards!DqkrIjHJLCtUsdZi.oiGXDJfIM19UcKBL",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1800,
       "name": "The Writ",
       "type": "action",
@@ -575,6 +670,11 @@
     {
       "_id": "nRr3g3oVunpFGkjv",
       "_key": "!cards.cards!DqkrIjHJLCtUsdZi.nRr3g3oVunpFGkjv",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 1900,
       "name": "The Order's Shield",
       "type": "action",
@@ -610,6 +710,11 @@
     {
       "_id": "iwMZSPqRL1qii7eO",
       "_key": "!cards.cards!DqkrIjHJLCtUsdZi.iwMZSPqRL1qii7eO",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 2000,
       "name": "The Long Silence",
       "type": "action",
@@ -640,6 +745,11 @@
     {
       "_id": "U4Fyv0kOhWTE2FRR",
       "_key": "!cards.cards!DqkrIjHJLCtUsdZi.U4Fyv0kOhWTE2FRR",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 2100,
       "name": "The Scourge",
       "type": "action",

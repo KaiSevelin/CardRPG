@@ -1,6 +1,11 @@
 {
   "_id": "EDDDnODDCv6utT4W",
   "_key": "!items!EDDDnODDCv6utT4W",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Quenched Blade",
   "type": "item",
   "system": {

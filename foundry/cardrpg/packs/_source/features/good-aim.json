@@ -1,6 +1,11 @@
 {
   "_id": "A0k2zxltsCdYp79S",
   "_key": "!items!A0k2zxltsCdYp79S",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Good Aim",
   "type": "feature",
   "system": {

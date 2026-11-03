@@ -1,6 +1,11 @@
 {
   "_id": "Ebht4Dy129zij2I4",
   "_key": "!actors!Ebht4Dy129zij2I4",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Pincer",
   "type": "npc",
   "system": {
@@ -27,6 +32,11 @@
     {
       "_id": "K0sVRjHwaTXjGkua",
       "_key": "!actors.items!Ebht4Dy129zij2I4.K0sVRjHwaTXjGkua",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Grasping Claws",
       "type": "item",
       "system": {
@@ -52,6 +62,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Pincer"
+    "name": "Pincer",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

@@ -1,6 +1,11 @@
 {
   "_id": "IWB0uFOCJY8pymVW",
   "_key": "!actors!IWB0uFOCJY8pymVW",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Stinger Drone",
   "type": "npc",
   "system": {
@@ -31,6 +36,11 @@
     {
       "_id": "qtma5T4VL5vLqZXX",
       "_key": "!actors.items!IWB0uFOCJY8pymVW.qtma5T4VL5vLqZXX",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "name": "Acid Spray",
       "type": "item",
       "system": {
@@ -58,6 +68,9 @@
   ],
   "prototypeToken": {
     "actorLink": false,
-    "name": "Stinger Drone"
+    "name": "Stinger Drone",
+    "width": 1,
+    "height": 1,
+    "depth": 1
   }
 }

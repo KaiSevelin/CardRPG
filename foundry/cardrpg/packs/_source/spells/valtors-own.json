@@ -1,6 +1,11 @@
 {
   "_id": "BVwvPQKCOXio0Lsk",
   "_key": "!items!BVwvPQKCOXio0Lsk",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Valtor's Own",
   "type": "spell",
   "system": {

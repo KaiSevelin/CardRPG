@@ -1,12 +1,22 @@
 {
   "_id": "YVYpVkRry9xB4xNb",
   "_key": "!cards!YVYpVkRry9xB4xNb",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Common Pool",
   "type": "deck",
   "cards": [
     {
       "_id": "gPbLOFpCgNu3SFZB",
       "_key": "!cards.cards!YVYpVkRry9xB4xNb.gPbLOFpCgNu3SFZB",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 100,
       "name": "Off-Hand Blow",
       "type": "action",
@@ -35,6 +45,11 @@
     {
       "_id": "vZAH1xlyg9EfMT6R",
       "_key": "!cards.cards!YVYpVkRry9xB4xNb.vZAH1xlyg9EfMT6R",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 200,
       "name": "Measure",
       "type": "action",
@@ -64,6 +79,11 @@
     {
       "_id": "GAVkHh34qd5Dcfxo",
       "_key": "!cards.cards!YVYpVkRry9xB4xNb.GAVkHh34qd5Dcfxo",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 300,
       "name": "Hold the Line",
       "type": "action",
@@ -92,6 +112,11 @@
     {
       "_id": "H48WvYH7128hHQti",
       "_key": "!cards.cards!YVYpVkRry9xB4xNb.H48WvYH7128hHQti",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 400,
       "name": "Press",
       "type": "action",
@@ -124,6 +149,11 @@
     {
       "_id": "MeGMXYZqLwudmD5X",
       "_key": "!cards.cards!YVYpVkRry9xB4xNb.MeGMXYZqLwudmD5X",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 500,
       "name": "Both Hands",
       "type": "action",
@@ -154,6 +184,11 @@
     {
       "_id": "Xc30nu5H6y2IWMbc",
       "_key": "!cards.cards!YVYpVkRry9xB4xNb.Xc30nu5H6y2IWMbc",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
       "sort": 600,
       "name": "Dig In",
       "type": "action",

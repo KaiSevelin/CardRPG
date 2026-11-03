@@ -1,6 +1,11 @@
 {
   "_id": "VvRvU79nao9ENx31",
   "_key": "!items!VvRvU79nao9ENx31",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "The Charge",
   "type": "spell",
   "system": {

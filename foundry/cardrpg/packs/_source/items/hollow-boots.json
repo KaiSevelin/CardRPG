@@ -1,6 +1,11 @@
 {
   "_id": "RSFnhWI4ovFPXuvd",
   "_key": "!items!RSFnhWI4ovFPXuvd",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Hollow Boots",
   "type": "item",
   "system": {

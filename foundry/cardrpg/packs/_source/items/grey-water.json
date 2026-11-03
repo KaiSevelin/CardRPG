@@ -1,6 +1,11 @@
 {
   "_id": "TeHBhiYGQDY80gfb",
   "_key": "!items!TeHBhiYGQDY80gfb",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
   "name": "Grey Water",
   "type": "item",
   "system": {
