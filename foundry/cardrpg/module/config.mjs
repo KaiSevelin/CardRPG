@@ -491,9 +491,23 @@ CARDRPG.slots = {
 };
 
 
-/** Item tags. Heavy and Light are mechanical -- Strong reads them -- and are NOT weight. */
+/**
+ * Item tags. Heavy and Light are mechanical -- Strong reads them -- and are NOT weight.
+ *
+ * **`natural` was declared by fourteen items and was not in here**, so the schema refused it on
+ * every one of them: every natural weapon, and the four pieces of gear a monster owns rather than
+ * carries. Foundry drops an invalid choice rather than failing the document, so offline the tag read
+ * back from the content tables exactly as written while in the game it was simply gone -- and the
+ * suite's own check *required* it, which is a check enforcing a value the schema rejects.
+ *
+ * **[GAP] Nothing reads `natural`.** `npcGear` is what keeps monster kit out of the player pickers,
+ * and `hands: 0` is what makes a weapon part of a body. The tag means *a monster's own, not loot*,
+ * which is true of all fourteen, and it is in the vocabulary now because fourteen entries and one
+ * check say it should be -- but until something asks for it, it is a field nothing reads.
+ */
 CARDRPG.itemTags = [
-  "heavy", "light", "melee", "ranged", "thrown", "arcane", "shield", "armor", "consumable"
+  "heavy", "light", "melee", "ranged", "thrown", "arcane", "shield", "armor", "consumable",
+  "natural"
 ];
 
 /*
@@ -874,6 +888,21 @@ CARDRPG.capabilities = {
   transport: "CARDRPG.Capability.Transport",
   shelter: "CARDRPG.Capability.Shelter"
 };
+
+/**
+ * **What an intent card may require.** The capabilities, plus `move`.
+ *
+ * `move` is not a capability and must not become one: `capsOf` (monsters.mjs) derives it from legs,
+ * flight, swim or burrow, so no creature is ever *given* it and the roster sweep excludes it by
+ * name for exactly that reason. But `needs` is a different question from `capabilities` -- it asks
+ * what a card demands, not what a body has -- and it drew its choices from the capabilities alone.
+ *
+ * So eight of the twenty-eight intents named a value the schema refused, and a Card whose `needs`
+ * is refused does not load at all: Close In, Strike and Step, Give Ground, Charge, Bull Through,
+ * Swarm, Fade and Carry were absent from every NPC deck in play, which is every way a monster has
+ * of closing distance. Offline the content read back exactly as written.
+ */
+CARDRPG.intentNeeds = [...Object.keys(CARDRPG.capabilities), "move"];
 
 CARDRPG.targetPriorities = {
   nearest: "CARDRPG.Priority.Nearest",

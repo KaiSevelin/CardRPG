@@ -542,8 +542,13 @@ export class NpcCardData extends foundry.abstract.TypeDataModel {
        * at the table reads this -- it is the card explaining itself, which is the job the `kind` on
        * its back has always done.
        */
+      /*
+       * `intentNeeds`, not `capabilities`: the two differ by `move`, which is derived rather than
+       * granted, and drawing from the capabilities alone refused it on eight cards -- and a Card
+       * whose `needs` is refused does not load at all.
+       */
       needs: new fields.ArrayField(new fields.StringField({
-        choices: Object.keys(CARDRPG.capabilities)
+        choices: CARDRPG.intentNeeds
       })),
       /** The shape in words, for the face: the engine resolves the sequence, the GM reads this. */
       text: new fields.StringField({ required: false, blank: true, initial: "" })

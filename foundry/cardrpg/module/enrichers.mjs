@@ -19,6 +19,7 @@
  * And nothing here resolves anything -- the player still plays a card.
  */
 
+import { CARDRPG } from "./config.mjs";
 import { setCall, describeCall, startChallenge } from "./checks.mjs";
 
 /** The class every button of ours carries, so one delegated listener serves all of them. */

@@ -1358,7 +1358,9 @@ export const NPC_GEAR = [
   {
     /* A shield is the one piece of NPC gear that changes how a fight feels rather than how much it
      * hurts: it is what makes a Goblin Warrior worth killing before the spearmen. */
-    name: "Goblin Shield", slot: "offhand", hands: 1, tags: ["shield", "natural"],
+    /* `hands`, like every other shield in the book: there is no `offhand` slot and never was, so
+     * the schema refused this one and fell back -- a shield in a slot the game does not have. */
+    name: "Goblin Shield", slot: "hands", hands: 1, tags: ["shield", "natural"],
     weight: 2, value: 0, npcGear: true, kind: "Shield",
     armor: 1, verbs: { defend: verb(2) }
   },

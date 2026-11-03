@@ -70,7 +70,7 @@
       "name": "Goblin Shield",
       "type": "item",
       "system": {
-        "slot": "offhand",
+        "slot": "hands",
         "hands": 1,
         "tags": [
           "shield",

@@ -19,6 +19,7 @@
  * withdrawn, every client reads the same one, and `updateScene` already re-renders the tray.
  */
 
+import { CARDRPG } from "./config.mjs";
 import { deckOf, move, dealSkillHand } from "./decks.mjs";
 
 /** Where a call lives. One per scene, because one obstacle is in front of the party at a time. */

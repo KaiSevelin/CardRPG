@@ -159,9 +159,52 @@ Launching World | Complete
 Server started and listening on port 30001
 ```
 
-with nothing between. It still proves only that the documents are well formed and the packs index.
-The data models and the sheets are client-side, so **nothing has yet exercised them** -- that needs a
-browser logged in to a world.
+with nothing between. A clean server boot proves the documents are well formed and the packs index. The data models and
+the sheets are client-side, so it says nothing about them -- for that, drive a browser.
+
+### Driving a client
+
+`puppeteer-core` plus an installed Chrome or Edge needs no browser download. Boot the server as
+above, then log a client in, wait for `game.ready`, and collect `console`, `pageerror` and
+`requestfailed`. From there `game.cardrpg` is the whole API and `await import(...)` reaches any
+module, so the engine can be exercised directly:
+
+```js
+const r = resolve.collectBonuses(actor, "strike", longsword);   //  +3 [Graven +2, Strong +1]
+```
+
+**That found five faults in an hour that 1736 offline checks did not.** Three modules used `CARDRPG`
+as a free variable, which is invisible to `node --check` and to importing them -- the tray simply
+never opened. Eight intent cards named a capability the Card schema refused, and a Card whose
+`needs` is refused does not load at all, so every monster in the game was missing every way of
+closing distance. And the level-up graph drew nothing, for the reason below.
+
+What a client confirms, once those are fixed: all 394 pack documents build with 0 invalid, every
+sheet renders, the tray renders its panels, `buildMonster` deals the right intents, and the law of
+§2.4 holds in the game -- a tattoo arrives as a `feature` with no gate, its condition is derived
+rather than granted, and its +2 reaches a heavy weapon and not a light one.
+
+## The vendored cytoscape is patched
+
+`lib/cytoscape.esm.min.mjs` carries **one edit** and will not work without it.
+
+Foundry defines `equals` on `Array.prototype` as non-writable *and non-configurable*
+(`common/primitives/array.mjs`). Cytoscape derives its collection prototype from `Array.prototype`
+and then assigns `elesfn.equal = elesfn.equals = elesfn.same`, which in a module throws
+`Cannot assign to read only property 'equals'` -- and the whole library fails to evaluate, so the
+level-up dialog opens with no graph in it.
+
+It cannot be fixed from outside: the descriptor is non-configurable, so redefining
+`Array.prototype.equals` is refused too. The edit gives the collection prototype its own writable
+`equals` at creation, so the assignment has somewhere to land:
+
+```js
+Object.create(Array.prototype, { equals: { value: void 0, writable: !0, configurable: !0, enumerable: !1 } })
+```
+
+Upstream 3.34.4 has the same line, so there is no release to wait for. **`npm i cytoscape` and a
+copy into `lib/` would undo this silently**, so `npm test` checks the patch is present and the
+unpatched line is gone.
 
 ## Playing a round
 

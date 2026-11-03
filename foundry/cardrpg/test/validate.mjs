@@ -76,6 +76,70 @@ for (const rel of ["system.json", "lang/en.json"]) {
   }
 }
 
+/*
+ * **Every module that uses `CARDRPG` imports it.**
+ *
+ * Three did not -- `checks.mjs`, `enrichers.mjs` and `levelup.mjs` -- and nothing here noticed for
+ * 108 commits. `node --check` proves a file parses. Importing a module proves its module-level code
+ * runs. An identifier used only inside a function body is invisible to both: the file is valid
+ * JavaScript and the module loads, and the call throws `CARDRPG is not defined` the first time
+ * anyone makes it. A real browser found it in a second -- the tray never opened, because rendering
+ * it calls `partyPassives`.
+ *
+ * The suite already had the neighbouring check, *the engine touches no Foundry global at module
+ * scope*, and it passed the whole time: module scope was never where the problem was.
+ *
+ * Strings and comments come out first, so an i18n key like `"CARDRPG.Check.Advantage"` is not a use
+ * of the object -- without that, every module in the system would read as a user and the sweep
+ * would be about nothing.
+ */
+const STRIP_CODE = [
+  /\/\*[\s\S]*?\*\//g, /\/\/[^\n]*/g, /`[^`]*`/g,
+  /"(?:[^"\\\n]|\\.)*"/g, /'(?:[^'\\\n]|\\.)*'/g
+];
+const codeOf = src => STRIP_CODE.reduce((t, re) => t.replace(re, " "), src);
+const freeNames = [];
+let importers = 0;
+for (const file of modules) {
+  const rel = path.relative(root, file).replace(/\\/g, "/");
+  const code = codeOf(fs.readFileSync(file, "utf8"));
+  if (!/\bCARDRPG\b/.test(code)) continue;
+  /* config.mjs is where it comes from; everyone else has to ask for it. */
+  if (/export const CARDRPG\b/.test(code)) continue;
+  importers++;
+  if (!/import\s*\{[^}]*\bCARDRPG\b[^}]*\}\s*from/.test(code)) freeNames.push(rel);
+}
+check("modules using CARDRPG without importing it",
+  freeNames.length ? freeNames.join(", ") : "none", "none");
+/* And the sweep found users, so a strip that ate the whole file cannot pass it. */
+check("modules that use it at all", importers, 14);
+
+/*
+ * **The vendored cytoscape carries a patch, and the patch has to still be there.**
+ *
+ * Foundry defines `equals` on `Array.prototype` as non-writable AND non-configurable
+ * (common/primitives/array.mjs). Cytoscape builds its collection prototype with
+ * `Object.create(Array.prototype)` and then assigns `elesfn.equal = elesfn.equals = elesfn.same`
+ * (src/collection/comparators.js) -- an assignment to an inherited read-only property, which in a
+ * module throws. The whole library fails to evaluate, so `levelUp` opened a dialog with no graph in
+ * it: 0 canvas elements, measured in a browser.
+ *
+ * It cannot be fixed from outside the library. The descriptor is non-configurable, so
+ * `Object.defineProperty(Array.prototype, "equals", ...)` is refused too -- that was tried first.
+ * What works is giving the collection prototype its own writable `equals` at creation, so the
+ * assignment has an own property to land on. Upstream 3.34.4 has the same line, so there is no
+ * version to wait for.
+ *
+ * `npm i cytoscape && cp` would undo it in one command and nothing would say so, which is what this
+ * check is for -- both halves, because a file containing neither string would otherwise pass.
+ */
+const cytoscape = fs.readFileSync(path.join(root, "lib/cytoscape.esm.min.mjs"), "utf8");
+check("the vendored cytoscape shadows Array.prototype.equals",
+  cytoscape.includes('Object.create(Array.prototype,{equals:{value:void 0,writable:!0')
+    ? "patched" : "NOT PATCHED -- the level-up graph will not draw", "patched");
+check("and the unpatched line is gone",
+  /Object\.create\(Array\.prototype\)/.test(cytoscape) ? "still there" : "gone", "gone");
+
 const manifest = JSON.parse(fs.readFileSync(path.join(root, "system.json"), "utf8"));
 check("manifest declares Card subtypes", Object.keys(manifest.documentTypes.Card ?? {}).length, 8);
 /*
@@ -3194,6 +3258,70 @@ const actorModel = fs.readFileSync(path.join(root, "module/data/actors.mjs"), "u
 const charTemplate = fs.readFileSync(path.join(root, "templates/actor-character.hbs"), "utf8");
 const { CARDRPG } = await import("../module/config.mjs");
 
+/*
+ * **Every tag and every slot a content item declares is in the vocabulary the schema draws from.**
+ *
+ * `natural` was on fourteen items and in no vocabulary, and `offhand` was the Goblin Shield's slot
+ * in a game with no such slot. Foundry drops an invalid choice rather than failing the document, so
+ * both read back from the tables exactly as written and were simply gone in play: a shield in a
+ * slot that does not exist, and a tag the suite's own check required. The fields are the same shape
+ * as the step vocabularies already swept here, and this is that sweep for the other two.
+ */
+const everyGearEntry = [...content.ITEMS, ...content.NPC_GEAR, ...content.NATURAL_WEAPONS];
+const tagVocabulary = new Set(CARDRPG.itemTags);
+const slotVocabulary = new Set(Object.keys(CARDRPG.slots));
+check("gear entries the vocabulary sweep read", everyGearEntry.length, 166);
+check("tags no vocabulary has",
+  [...new Set(everyGearEntry.flatMap(i => (i.tags ?? []).filter(t => !tagVocabulary.has(t))))]
+    .sort().join(", ") || "none", "none");
+check("slots no vocabulary has",
+  [...new Set(everyGearEntry.map(i => i.slot).filter(sl => sl && !slotVocabulary.has(sl)))]
+    .sort().join(", ") || "none", "none");
+/* And `fits`, which names slots the same way and would otherwise be swept by nothing. */
+check("fits-slots no vocabulary has",
+  [...new Set(everyGearEntry.flatMap(i => (i.fits ?? []).filter(sl => !slotVocabulary.has(sl))))]
+    .sort().join(", ") || "none", "none");
+/*
+ * **And what an intent requires**, which is the same field shape drawn from the same kind of list
+ * and was the next one to be wrong: eight intents named `move`, the schema drew `needs` from the
+ * capabilities alone, and a Card whose `needs` is refused does not load -- so every way a monster
+ * had of closing distance was missing from every deck in play.
+ *
+ * A sweep written to the shape of the last fault finds the last fault, so this one is written to
+ * the field rather than to the value.
+ */
+const needsVocabulary = new Set(CARDRPG.intentNeeds);
+/* One binding, read by the sweep and by its own denominator: a sweep holding its own copy of the
+ * list can be emptied while the count beside it goes on reporting 28. */
+const intentsSwept = content.INTENTS;
+check("intents the needs sweep read", intentsSwept.length, 28);
+check("needs no vocabulary has",
+  [...new Set(intentsSwept.flatMap(i =>
+    (i.needs ?? []).filter(n => !needsVocabulary.has(n))))].sort().join(", ") || "none", "none");
+/*
+ * **And the schema draws its choices from that same vocabulary.**
+ *
+ * Without this the sweep above is a comparison between the content and a list the schema need not
+ * be using -- a second printer, and a grep two places can answer is a grep about neither. Putting
+ * `Object.keys(CARDRPG.capabilities)` back in `data/cards.mjs` drops twenty-five cards and leaves
+ * every check here passing, which a break test duly demonstrated.
+ */
+const cardSchema = fs.readFileSync(path.join(root, "module/data/cards.mjs"), "utf8");
+check("the needs field draws from the needs vocabulary",
+  /needs: new fields\.ArrayField\(new fields\.StringField\(\{\s*choices: CARDRPG\.intentNeeds/
+    .test(cardSchema) ? "yes" : "no -- it is drawing them from somewhere else", "yes");
+/* And the two lists differ by exactly the one derived value, which is the whole claim: `move` is
+ * required by cards and granted to nobody. A third name drifting in here would be a capability
+ * nothing can earn, wearing the exemption that belongs to `move` alone. */
+check("what an intent may require that a creature cannot be given",
+  CARDRPG.intentNeeds.filter(n => !(n in CARDRPG.capabilities)).join(", "), "move");
+
+/* The two vocabularies, pinned, so a sweep against an empty set cannot read as clean. */
+check("the tag vocabulary", CARDRPG.itemTags.join(" "),
+  "heavy light melee ranged thrown arcane shield armor consumable natural");
+check("and the slot vocabulary", Object.keys(CARDRPG.slots).join(" "),
+  "hands back belt body cloak head neck fingers feet pack");
+
 /* One decision, in one place. A pane that tested adjacency itself would drift from the rules the
  * moment `all` or an exclusive group appeared, which is the whole point of leveling 1. */
 /*
@@ -6024,8 +6152,13 @@ const asSlate = e => ({ type: "item", name: e.name, system: e });
 const quarantineReach = shapes.map(s =>
   `${s.card}:${everyItemEntry
     .filter(e => resolve.quarantines(s.st.shape?.quarantine, asSlate(e))).length}`);
+/*
+ * 55 and not 54: the Goblin Shield's slot was `offhand`, which is not a slot this game has, so the
+ * schema refused it and the rule -- which quarantines `slots: ["hands"]` -- could not see a shield
+ * at all. It is `hands` now, like every other shield in the book, and the quarantine reaches it.
+ */
 check("items each shape step's quarantine reaches", quarantineReach.join(" "),
-  "The Borrowed Body:54");
+  "The Borrowed Body:55");
 /* And none of them reaches nothing, which `quarantines` returning false for everything would
  * produce while every field was still filled in. */
 check("quarantines that match no item at all",
@@ -9588,13 +9721,19 @@ check("and that a grown weapon cannot be looted",
  *
  * `move` is the exception and is not a capability at all: it is derived from legs, wings or a tunnel
  * (monsters.mjs `capsOf`), and the Queen is the one creature that cannot draw a card needing it.
+ *
+ * That exemption used to be the literal `"move"` written here, beside this comment explaining why.
+ * The difference between the two vocabularies *is* the explanation -- `intentNeeds` minus the
+ * capabilities -- so it is read rather than repeated. A second derived requirement would then be
+ * exempt here the moment it was declared there, instead of silently reading as undrawable.
  */
+const derivedNeeds = new Set(CARDRPG.intentNeeds.filter(n => !(n in CARDRPG.capabilities)));
 const creatureCaps = new Set();
 for (const m of everyCreature) for (const x of m.system.capabilities ?? []) creatureCaps.add(x);
+const earns = n => derivedNeeds.has(n) || creatureCaps.has(n);
 const undrawable = content.INTENTS
-  .filter(i => (i.needs ?? []).some(n => n !== "move" && !creatureCaps.has(n)))
-  .map(i => `${i.name} (${(i.needs ?? []).filter(n => n !== "move" && !creatureCaps.has(n))
-    .join(", ")})`);
+  .filter(i => (i.needs ?? []).some(n => !earns(n)))
+  .map(i => `${i.name} (${(i.needs ?? []).filter(n => !earns(n)).join(", ")})`);
 check("intent cards no creature can earn",
   undrawable.length ? undrawable.sort().join(", ") : "none",
   "Feed (drain), Lie Still (dormant), Submerge (swim)");
@@ -9858,7 +9997,7 @@ for (const m of selfSource.matchAll(
   const p = path.join(root, m[2]);
   if (fs.existsSync(p)) readFiles.set(m[1], fs.readFileSync(p, "utf8"));
 }
-check("files this suite greps by name", readFiles.size, 55);
+check("files this suite greps by name", readFiles.size, 57);
 
 /* Every `/pattern/.test(VAR)` and `VAR.includes("...")`, with the check it belongs to. */
 const nameOfCheck = index => {
@@ -9890,7 +10029,7 @@ for (const m of selfSource.matchAll(/(\w+)\.includes\("((?:[^"\\]|\\.)*)"\)/g)) 
 }
 
 /* The pin that keeps the rest of this honest. */
-check("greps over a whole file, resolved", greps.length, 519);
+check("greps over a whole file, resolved", greps.length, 521);
 
 /*
  * **The rule, as one predicate, run over a planted example before it is run over the suite.**
@@ -9944,6 +10083,7 @@ const absentGreps = [
   String.raw`and the resolver reads the flag :: conditionsOf\(actor\)\.includes\("invisible"\)`,
   String.raw`and the token is not given a file of its own :: texture: \{ src: (?!art \})`,
   String.raw`and the two retired vocabularies are gone from config :: conjureSources|conjureSides`,
+  String.raw`and the unpatched line is gone :: Object\.create\(Array\.prototype\)`,
   String.raw`nothing builds a fate card by hand any more :: createEmbeddedDocuments\("Card", \[\{\s*name: fateCard`,
   String.raw`nothing draws a twist automatically :: drawTwist\(`,
   String.raw`reaction timer retired from config :: reactionTimer`,
