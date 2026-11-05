@@ -1021,7 +1021,7 @@ File: `cards/shade/between-the-plates.webp`
 ```text
 SUBJECT. "Between the Plates" — Strike ignores armour vs Marked · / Move 1
 
-Draw the blow landing, finding the gap the Mark opened, through the plate, against a target already Marked -- singled out of a crowd.
+Draw the gap in a harness with a point already in it: a narrow blade entering where two plates meet under the arm, the armour unmarked everywhere else in frame. The seam is the subject and the blade is only what found it.
 ```
 
 ### Call the Shot
@@ -1031,7 +1031,7 @@ File: `cards/shade/call-the-shot.webp`
 ```text
 SUBJECT. "Call the Shot" — Strike · / Marked (1) · Marked on any enemy you can see, at any range.
 
-Draw the instant a blow lands, the weapon already through -- never wound up, never posing; singled out of a crowd.
+Draw one enemy picked out of a field at distance -- a hand up with two fingers laid along the line of sight, the eye behind it narrowed, the target far off and small. Nothing has been thrown and nothing has been loosed.
 ```
 
 ### Cut and Run
@@ -1041,7 +1041,7 @@ File: `cards/shade/cut-and-run.webp`
 ```text
 SUBJECT. "Cut and Run" — Strike, Move 2 · / Move 1
 
-Draw the instant a blow lands, the weapon already through -- never wound up, never posing; ground covered -- weight forward, the last footfall still behind.
+Draw the blow and the leaving in one gesture: a blade dragged back across the body while the feet have already turned the other way, shoulders ahead of hips. Committed to the exit rather than to a second cut.
 ```
 
 ### Light Feet
@@ -1051,7 +1051,7 @@ File: `cards/shade/light-feet.webp`
 ```text
 SUBJECT. "Light Feet" — Move 3 · / Move 2 · Ignoring difficult ground.
 
-Draw ground covered -- weight forward, the last footfall still behind.
+Draw two feet on bad ground and no weight resting in it -- a toe on a loose stone, the other foot already lifted, rubble and standing water all around. Drawn from the knee down and no higher.
 ```
 
 ### Mock
@@ -1061,7 +1061,7 @@ File: `cards/shade/mock.webp`
 ```text
 SUBJECT. "Mock" — Dazed (1) · / Move 1
 
-Draw sight swimming.
+Draw a face mid-jeer, close and turned a little away, the mouth open on a word that has already landed somewhere off-frame. The subject is the insult being enjoyed, not whoever took it.
 ```
 
 ### Pin the Shadow
@@ -1071,7 +1071,7 @@ File: `cards/shade/pin-the-shadow.webp`
 ```text
 SUBJECT. "Pin the Shadow" — Strike Slowed (1) · / Move 1
 
-Draw the blow landing, loosed from a bow or a barrel, the target well off, against a target already Marked -- singled out of a crowd; movement dragging, as if through water.
+Draw a blade driven through a trailing hem and into the ground under it, the cloth pulled taut and the foot above it unable to lift. The point is in the earth and not in anybody.
 ```
 
 ### Second Knife
@@ -1081,7 +1081,7 @@ File: `cards/shade/second-knife.webp`
 ```text
 SUBJECT. "Second Knife" — Strike range 3 · / Strike -1
 
-Draw the blow landing, a short blade, held close and low, landing 3 squares from the one who threw it; then the weaker follow-up, off the hand that was not busy, a short blade, held close and low.
+Draw a second blade leaving the hand underhand while the first is still gripped in the other fist. Two knives, one in the air and one held, and the throw is the cheap short one.
 ```
 
 ### Sleight
@@ -1091,7 +1091,7 @@ File: `cards/shade/sleight.webp`
 ```text
 SUBJECT. "Sleight" — Use, Strike · / Ready
 
-Draw a hand working an object, the object mid-use rather than held up to be seen; the instant a blow lands, the weapon already through -- never wound up, never posing; a weapon coming to hand, caught between carried and held.
+Draw one hand doing the obvious thing and the other doing the real one -- an object held up in plain view high in the frame while the second hand, lower and half out of it, has already taken something else.
 ```
 
 ### Slip the Knot
@@ -1101,7 +1101,7 @@ File: `cards/shade/slip-the-knot.webp`
 ```text
 SUBJECT. "Slip the Knot" — Move 2 · / Shake 1
 
-Draw ground covered -- weight forward, the last footfall still behind; footing lost.
+Draw wrists coming out of a cord that is still tied: one hand already free and flat, the loop collapsing off the other. The knot itself is never untied and stays in the picture.
 ```
 
 ### Smoke and Go
@@ -1111,7 +1111,7 @@ File: `cards/shade/smoke-and-go.webp`
 ```text
 SUBJECT. "Smoke and Go" — Invisible (1), Move 2 · / Use · On yourself.
 
-Draw ground covered -- weight forward, the last footfall still behind; a hand working an object, the object mid-use rather than held up to be seen; only the shape the air makes.
+Draw a low cloud at ankle height with nobody in it, and the far side of it disturbed -- a hem, a heel, the edge of a hand leaving the frame. Whoever stood here is already not here.
 ```
 
 ### Take the Shot
@@ -1121,7 +1121,7 @@ File: `cards/shade/take-the-shot.webp`
 ```text
 SUBJECT. "Take the Shot" — Strike +1 · / Move 2
 
-Draw the blow landing, the one that found its moment, loosed from a bow or a barrel, the target well off, against a target already Marked -- singled out of a crowd.
+Draw the release itself: a bowstring gone slack and the drawing hand still open exactly where it was, the arrow already out of frame. The hand that let go is the whole subject.
 ```
 
 ### Vanish
@@ -1131,7 +1131,7 @@ File: `cards/shade/vanish.webp`
 ```text
 SUBJECT. "Vanish" — Invisible (1) · / Move 2 · On yourself.
 
-Draw only the shape the air makes.
+Draw the outline of a person held open in the air by nothing -- dust and lamplight bending around a shape that is not there, the floor beneath it unpressed. No body, no cloak, no smoke.
 ```
 
 ## Way of Strength — pool
@@ -1223,7 +1223,7 @@ File: `cards/strength/armoured-advance.webp`
 ```text
 SUBJECT. "Armoured Advance" — Move 3 · / Move 1 · Your armor counts +1 until your next turn.
 
-Draw ground covered -- weight forward, the last footfall still behind.
+Draw a plated figure walking into something head-down, pauldrons forward and the helm tipped so the brow takes it first. The advance is in the shoulders; the ground is not the subject and barely shows.
 ```
 
 ### Beat the Blade
@@ -1233,7 +1233,7 @@ File: `cards/strength/beat-the-blade.webp`
 ```text
 SUBJECT. "Beat the Blade" — Strike Disarmed (1) · / Move 1
 
-Draw the instant a blow lands, the weapon already through -- never wound up, never posing; a weapon leaving the hand.
+Draw a sword leaving a hand that has just been struck across the knuckles -- the grip sprung open, the fingers splayed, the hilt tumbling clear. The empty hand is the picture.
 ```
 
 ### Hammerblow
@@ -1243,7 +1243,7 @@ File: `cards/strength/hammerblow.webp`
 ```text
 SUBJECT. "Hammerblow" — Strike · / Move 1
 
-Draw the blow landing, against a target already Off Balance -- weight in the wrong place.
+Draw a two-handed weapon at the very top of its arc, both arms locked out and the whole body stacked underneath it, a half-beat before any of it comes down.
 ```
 
 ### Heave
@@ -1253,7 +1253,7 @@ File: `cards/strength/heave.webp`
 ```text
 SUBJECT. "Heave" — Move 2 · / Ready · Carrying any weight without being Slowed.
 
-Draw ground covered -- weight forward, the last footfall still behind; a weapon coming to hand, caught between carried and held.
+Draw somebody walking under a load that should not be walkable: a beam or a cask across one shoulder, the spine straight beneath it, the pace unbroken. Not the lift -- the carrying.
 ```
 
 ### Overbear
@@ -1263,7 +1263,7 @@ File: `cards/strength/overbear.webp`
 ```text
 SUBJECT. "Overbear" — Grappled (2) · / Move 1
 
-Draw held, and not letting go.
+Draw two bodies gone to the ground as one, the upper one's whole weight on the lower's chest and both arms wrapped. Nothing is being struck; something is being kept still.
 ```
 
 ### Pull Them Down
@@ -1273,7 +1273,7 @@ File: `cards/strength/pull-them-down.webp`
 ```text
 SUBJECT. "Pull Them Down" — Strike · / Strike -1 · The secondary only against a Prone or Grappled target.
 
-Draw the instant a blow lands, the weapon already through -- never wound up, never posing; then the weaker follow-up, off the hand that was not busy.
+Draw a fistful of somebody else's collar and harness, hauled downward and sideways, their knees already going. The grip is the subject and the face above it is cropped out.
 ```
 
 ### Roar
@@ -1283,7 +1283,7 @@ File: `cards/strength/roar.webp`
 ```text
 SUBJECT. "Roar" — Compelled (1) · / Move 1 · Every adjacent enemy.
 
-Draw pulled toward something against the will.
+Draw the roar at its source and far too close -- a jaw open to its limit and the throat working, the frame filled by the one head and nothing else in it. The cause is all there is; the effect is off-frame.
 ```
 
 ### Shield Bash
@@ -1293,7 +1293,7 @@ File: `cards/strength/shield-bash.webp`
 ```text
 SUBJECT. "Shield Bash" — Strike · / Move 1 · No damage: push 2 and step into the square it left.
 
-Draw the instant a blow lands, the weapon already through -- never wound up, never posing.
+Draw the flat of a shield driven forward like a door being shut, the boss dead centre and the arm straight behind it. Nothing edged anywhere in the frame.
 ```
 
 ### Shield Wall
@@ -1313,7 +1313,7 @@ File: `cards/strength/shoulder-check.webp`
 ```text
 SUBJECT. "Shoulder Check" — Strike · / Off Balance (1) · Adjacent.
 
-Draw the instant a blow lands, the weapon already through -- never wound up, never posing; weight in the wrong place.
+Draw a shoulder arriving in somebody's chest at a run, the two bodies touching along one line and the further one's heels leaving the ground.
 ```
 
 ### Sweep the Leg
@@ -1323,7 +1323,7 @@ File: `cards/strength/sweep-the-leg.webp`
 ```text
 SUBJECT. "Sweep the Leg" — Strike Prone (1) · / Move 1
 
-Draw the blow landing, against a target already Off Balance -- weight in the wrong place; down, and the ground very close.
+Draw a low horizontal sweep through the back of a knee, drawn from the shins down: the supporting leg folding the wrong way while the other foot is still planted.
 ```
 
 ### Two-Hand It
@@ -1333,7 +1333,7 @@ File: `cards/strength/two-hand-it.webp`
 ```text
 SUBJECT. "Two-Hand It" — Strike +2 · / Ready
 
-Draw the blow landing, thrown with the whole body, nothing held back, both hands on the haft; a weapon coming to hand, caught between carried and held.
+Draw both hands closing onto one hilt and a shield already dropped, falling out of the bottom of the frame. The decision is the picture: everything into the next blow and nothing left to guard with.
 ```
 
 ### Walk It Off
@@ -1343,7 +1343,7 @@ File: `cards/strength/walk-it-off.webp`
 ```text
 SUBJECT. "Walk It Off" — Heal 2, Shake 2 · / Move 1 · On yourself.
 
-Draw a wound closing, or breath coming back; footing lost.
+Draw somebody walking a wound off instead of tending it -- a hand pressed flat to one side, head up, the stride deliberately ordinary. The refusal to stop is the subject.
 ```
 
 ## Way cards
@@ -1433,7 +1433,7 @@ File: `cards/way/roll-with-it.webp`
 ```text
 SUBJECT. "Roll With It" — Move 3 · / Move 2 · Sidestep 2, and you may end next to a different enemy
 
-Draw ground covered -- weight forward, the last footfall still behind.
+Draw the end of a shoulder roll: a body coming up out of the ground onto one knee with the momentum still in it, facing a different way than it set off.
 ```
 
 ### Set Spear
@@ -1533,7 +1533,7 @@ File: `cards/skill/break-it.webp`
 ```text
 SUBJECT. "Break It" — might 1 · Edge: Something gives whether or not you get through: the GM says what broke.
 
-Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+Draw the instant something gives -- a board, a hasp, a shutter going at its weakest point with a hand still on it. The break is the subject and the person is barely in frame.
 ```
 
 ### Heave
@@ -1713,7 +1713,7 @@ File: `cards/wild/backlash.webp`
 ```text
 SUBJECT. "Backlash" — Dazed (1)
 
-Draw sight swimming.
+Draw a caster taking their own spell in the face: the head snapped back, one hand still raised in the shape it was making, the eyes gone unfocused. It went off, and it went off here.
 ```
 
 ### Blink
@@ -1723,7 +1723,7 @@ File: `cards/wild/blink.webp`
 ```text
 SUBJECT. "Blink" — Move 3 ignoring figures and difficult ground
 
-Draw ground covered -- weight forward, the last footfall still behind.
+Draw one figure half in two places at once -- a left side at one edge of the frame and a right side at the other, nothing at all between them and no ground crossed.
 ```
 
 ### Echo
@@ -1743,7 +1743,7 @@ File: `cards/wild/glare.webp`
 ```text
 SUBJECT. "Glare" — The Cast becomes a Blast 2 around its target, whoever is standing in it.
 
-Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+Draw light going off around a standing figure rather than at it: the figure dark and central, the flare thrown outward past it in every direction, the frame's near edges washed pale.
 ```
 
 ### Misfire
@@ -1763,7 +1763,7 @@ File: `cards/wild/open-door.webp`
 ```text
 SUBJECT. "Open Door" — Invisible (1), Marked (2)
 
-Draw only the shape the air makes; singled out of a crowd.
+Draw an open door with nobody in the doorway and something on the far side already looking this way. The invisibility is the empty frame; the marking is the attention coming back through it.
 ```
 
 ### Residue
@@ -1773,7 +1773,7 @@ File: `cards/wild/residue.webp`
 ```text
 SUBJECT. "Residue" — Cursed
 
-Draw a shadow that chose someone.
+Draw a shadow on the ground belonging to nobody standing: the figure above it lit and ordinary, the shape beneath it the wrong size and reaching the wrong way.
 ```
 
 ### Second Sight
@@ -1783,7 +1783,7 @@ File: `cards/wild/second-sight.webp`
 ```text
 SUBJECT. "Second Sight" — Blessed
 
-Draw light that chose someone.
+Draw light arriving on one person out of a dim room and on nothing else, from no source anywhere in the frame -- the face lifted into it, the hands still at whatever they were doing.
 ```
 
 ### The Long Step
@@ -1793,7 +1793,7 @@ File: `cards/wild/the-long-step.webp`
 ```text
 SUBJECT. "The Long Step" — Move 3 ignoring figures and difficult ground, Prone (1)
 
-Draw ground covered -- weight forward, the last footfall still behind; down, and the ground very close.
+Draw the arrival and not the crossing: a figure already down on both hands at the far end of the move, dust still settling around it, having got there without landing.
 ```
 
 ### Veil
@@ -1803,7 +1803,7 @@ File: `cards/wild/veil.webp`
 ```text
 SUBJECT. "Veil" — Invisible (1)
 
-Draw only the shape the air makes.
+Draw a sheet of air hanging like hung cloth, the room behind it displaced a finger's width to one side where it falls. Something is behind it and the picture does not say what.
 ```
 
 ## Signatures — Way of Shade
@@ -8064,34 +8064,28 @@ The whole creature, three-quarter from above, filling the square on full transpa
 
 ## Where prompts still repeat
 
-**198 prompts in 28 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
+**178 prompts in 22 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
 
-**13 of those clusters are the ones that bite**, listed first: the ones where the subject line carries no prose either, so neither half of the prompt tells the cards apart. The rest share a direction over subjects that already differ — forty-three consumables drawing a nearly-empty vessel still come back as forty-three different pictures, because each subject names its own.
+**7 of those clusters are the ones that bite**, listed first: the ones where the subject line carries no prose either, so neither half of the prompt tells the cards apart. The rest share a direction over subjects that already differ — forty-three consumables drawing a nearly-empty vessel still come back as forty-three different pictures, because each subject names its own.
 
 Answer a cluster by adding its keys to `DIRECTION` in `test/art-prompts.mjs` and regenerating. The row shrinks or disappears when it is done.
 
 | Pieces | Bare | They share | Keys |
 |---|---|---|---|
 | **43** | 5 | a vessel, and whatever is in it is nearly gone | `items/antidote` `items/assassins-tincture` `items/black-lotus` `items/blade-venom` `items/blunt-head` …+38 |
-| **6** | 3 | ground covered -- weight forward, the last footfall still behind | `cards/starter/advance` `cards/shade/light-feet` `cards/strength/armoured-advance` `cards/way/roll-with-it` `cards/wild/blink` …+1 |
 | **41** | 2 | an object behaving as though it were awake | `items/accusers-ring` `items/amulet-of-the-fed-thread` `items/amulet-of-the-mended-thread` `items/beggars-bowl` `items/boots-of-the-long-step` …+36 |
 | **8** | 2 | an object with more inside it than its size allows | `features/arcane-focus` `items/focus-pendant` `items/holy-symbol` `items/pilgrims-token` `items/reliquary-band` …+3 |
 | **7** | 2 | a tool worn exactly where a hand goes and nowhere else | `items/climbing-rope` `items/healers-kit` `items/hunting-traps` `items/lantern` `items/lockpicks` …+2 |
 | **5** | 2 | the weapon drawn and held at tension | `items/crossbow` `items/masterwork-crossbow` `items/matchlock-pistol` `items/shortbow` `items/npc/goblin-shortbow` |
-| **3** | 2 | pulled toward something against the will | `cards/starter/taunt` `cards/strength/roar` `signatures/strength/play-to-the-crowd` |
 | **3** | 2 | an edge, worn and sharpened back more than once | `items/arming-sword` `items/trident` `items/npc/goblin-spear` |
 | **3** | 2 | a vessel, and whatever is in it is nearly gone; an object mid-flight, the hand that threw it out of frame | `items/firepot` `items/flask-of-ink` `items/flask-of-oil` |
-| **2** | 2 | the instant a blow lands, the weapon already through -- never wound up, never posing; then the weaker follow-up, off the hand that was not busy | `cards/common/off-hand-blow` `cards/strength/pull-them-down` |
-| **2** | 2 | the instant a blow lands, the weapon already through -- never wound up, never posing; ground covered -- weight forward, the last footfall still behind | `cards/common/press` `cards/shade/cut-and-run` |
-| **2** | 2 | sight swimming | `cards/shade/mock` `cards/wild/backlash` |
-| **2** | 2 | only the shape the air makes | `cards/shade/vanish` `cards/wild/veil` |
-| **9** | 1 | the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem | `cards/skill/break-it` `cards/wild/glare` `signatures/shade/one-trick` `signatures/shade/the-kit` `signatures/shade/the-opening` …+4 |
+| **7** | 1 | the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem | `signatures/shade/one-trick` `signatures/shade/the-kit` `signatures/shade/the-opening` `signatures/strength/cleave-to-the-bone` `signatures/strength/loaded-before-the-bell` …+2 |
 | **7** | 1 | an object that means nothing except in trained hands | `features/good-aim` `features/good-name` `features/hard-hands` `features/light-step` `features/quick-eye` …+2 |
-| **6** | 1 | the instant a blow lands, the weapon already through -- never wound up, never posing | `cards/starter/strike` `cards/strength/shield-bash` `signatures/shade/double-or-nothing` `signatures/shade/lift` `signatures/shade/one-opening` …+1 |
+| **5** | 1 | the instant a blow lands, the weapon already through -- never wound up, never posing | `cards/starter/strike` `signatures/shade/double-or-nothing` `signatures/shade/lift` `signatures/shade/one-opening` `signatures/strength/red-mist` |
 | **4** | 1 | a thing that says who somebody is before they speak | `items/fine-clothes` `items/gaming-set` `items/signet-ring` `items/travelling-cloak` |
+| **2** | 1 | ground covered -- weight forward, the last footfall still behind | `cards/starter/advance` `signatures/shade/over-and-past` |
 | **2** | 1 | ground covered -- weight forward, the last footfall still behind; the instant a blow lands, the weapon already through -- never wound up, never posing | `cards/starter/lunge` `signatures/strength/the-lance` |
-| **2** | 1 | the instant a blow lands, the weapon already through -- never wound up, never posing; singled out of a crowd | `cards/shade/call-the-shot` `signatures/shade/named` |
-| **2** | 1 | held, and not letting go | `cards/strength/overbear` `signatures/strength/get-a-grip` |
+| **2** | 1 | pulled toward something against the will | `cards/starter/taunt` `signatures/strength/play-to-the-crowd` |
 | **13** | — | weight: the object sits, and the surface under it knows; an edge, worn and sharpened back more than once | `items/blade-of-the-eager-hand` `items/fine-longsword` `items/great-axe` `items/greatsword` `items/halberd` …+8 |
 | **6** | — |  | `backs/action` `backs/fate` `backs/skill` `backs/twist` `backs/wild` …+1 |
 | **6** | — | armour as worn metal and strap, not as a costume | `items/gauntlet-of-the-open-palm` `items/helm-of-the-watchful` `items/leather-armor` `items/light-helm` `items/mail-shirt` …+1 |

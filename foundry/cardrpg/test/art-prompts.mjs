@@ -946,7 +946,153 @@ const DIRECTION = {
     + "already turning toward it",
   "cards/skill/inspiration":
     "the moment a face changes because the person has just thought of the thing. Nothing in the "
-    + "hands; all of it in the eyes"
+    + "hands; all of it in the eyes",
+
+  /* --- the last forty-seven cards, thirty-four of which had nothing of their own --------------
+   *
+   * **The motif table is a floor and these five groups were standing on it.** Starter, common and
+   * the thirty-six intents came out clean because eighty-five of them were written by hand; the
+   * Shade deck had twelve cards and not one direction, and four clusters were drawing the same
+   * picture across group boundaries:
+   *
+   * - *Light Feet*, *Armoured Advance*, *Roll With It* and *Blink* all had **ground covered --
+   *   weight forward, the last footfall still behind**. Four cards, one image, in four decks.
+   * - *Mock* and *Backlash* both had **sight swimming**, because both apply Dazed.
+   * - *Vanish* and *Veil* both had **only the shape the air makes**, because both apply Invisible.
+   * - *Break It* and *Glare* both had **the quality itself as one human moment**.
+   *
+   * The motif reads the STEPS, and a step is a mechanic: four cards that move three squares are
+   * the same card to it. What separates them is in the names and in the rules line underneath --
+   * *ignoring difficult ground*, *your armor counts +1*, *sidestep 2*, *ignoring figures* -- and
+   * the first audit of this set established that rules text is not a picture. So each of the four
+   * gets a different body part, a different crop and a different verb, and the cluster is gone.
+   */
+
+  /* The Shade deck: twelve cards about reach, precision and not being there afterwards. */
+  "cards/shade/between-the-plates":
+    "the gap in a harness with a point already in it: a narrow blade entering where two plates "
+    + "meet under the arm, the armour unmarked everywhere else in frame. The seam is the subject "
+    + "and the blade is only what found it",
+  "cards/shade/call-the-shot":
+    "one enemy picked out of a field at distance -- a hand up with two fingers laid along the "
+    + "line of sight, the eye behind it narrowed, the target far off and small. Nothing has been "
+    + "thrown and nothing has been loosed",
+  "cards/shade/cut-and-run":
+    "the blow and the leaving in one gesture: a blade dragged back across the body while the feet "
+    + "have already turned the other way, shoulders ahead of hips. Committed to the exit rather "
+    + "than to a second cut",
+  "cards/shade/light-feet":
+    "two feet on bad ground and no weight resting in it -- a toe on a loose stone, the other foot "
+    + "already lifted, rubble and standing water all around. Drawn from the knee down and no "
+    + "higher",
+  "cards/shade/mock":
+    "a face mid-jeer, close and turned a little away, the mouth open on a word that has already "
+    + "landed somewhere off-frame. The subject is the insult being enjoyed, not whoever took it",
+  "cards/shade/pin-the-shadow":
+    "a blade driven through a trailing hem and into the ground under it, the cloth pulled taut "
+    + "and the foot above it unable to lift. The point is in the earth and not in anybody",
+  "cards/shade/second-knife":
+    "a second blade leaving the hand underhand while the first is still gripped in the other "
+    + "fist. Two knives, one in the air and one held, and the throw is the cheap short one",
+  "cards/shade/sleight":
+    "one hand doing the obvious thing and the other doing the real one -- an object held up in "
+    + "plain view high in the frame while the second hand, lower and half out of it, has already "
+    + "taken something else",
+  "cards/shade/slip-the-knot":
+    "wrists coming out of a cord that is still tied: one hand already free and flat, the loop "
+    + "collapsing off the other. The knot itself is never untied and stays in the picture",
+  "cards/shade/smoke-and-go":
+    "a low cloud at ankle height with nobody in it, and the far side of it disturbed -- a hem, a "
+    + "heel, the edge of a hand leaving the frame. Whoever stood here is already not here",
+  "cards/shade/take-the-shot":
+    "the release itself: a bowstring gone slack and the drawing hand still open exactly where it "
+    + "was, the arrow already out of frame. The hand that let go is the whole subject",
+  "cards/shade/vanish":
+    "the outline of a person held open in the air by nothing -- dust and lamplight bending around "
+    + "a shape that is not there, the floor beneath it unpressed. No body, no cloak, no smoke",
+
+  /* The Strength deck: twelve cards about weight, and no two of them weighing the same thing. */
+  "cards/strength/armoured-advance":
+    "a plated figure walking into something head-down, pauldrons forward and the helm tipped so "
+    + "the brow takes it first. The advance is in the shoulders; the ground is not the subject "
+    + "and barely shows",
+  "cards/strength/beat-the-blade":
+    "a sword leaving a hand that has just been struck across the knuckles -- the grip sprung "
+    + "open, the fingers splayed, the hilt tumbling clear. The empty hand is the picture",
+  "cards/strength/hammerblow":
+    "a two-handed weapon at the very top of its arc, both arms locked out and the whole body "
+    + "stacked underneath it, a half-beat before any of it comes down",
+  "cards/strength/heave":
+    "somebody walking under a load that should not be walkable: a beam or a cask across one "
+    + "shoulder, the spine straight beneath it, the pace unbroken. Not the lift -- the carrying",
+  "cards/strength/overbear":
+    "two bodies gone to the ground as one, the upper one's whole weight on the lower's chest and "
+    + "both arms wrapped. Nothing is being struck; something is being kept still",
+  "cards/strength/pull-them-down":
+    "a fistful of somebody else's collar and harness, hauled downward and sideways, their knees "
+    + "already going. The grip is the subject and the face above it is cropped out",
+  "cards/strength/roar":
+    "the roar at its source and far too close -- a jaw open to its limit and the throat working, "
+    + "the frame filled by the one head and nothing else in it. The cause is all there is; the "
+    + "effect is off-frame",
+  "cards/strength/shield-bash":
+    "the flat of a shield driven forward like a door being shut, the boss dead centre and the arm "
+    + "straight behind it. Nothing edged anywhere in the frame",
+  "cards/strength/shoulder-check":
+    "a shoulder arriving in somebody's chest at a run, the two bodies touching along one line and "
+    + "the further one's heels leaving the ground",
+  "cards/strength/sweep-the-leg":
+    "a low horizontal sweep through the back of a knee, drawn from the shins down: the supporting "
+    + "leg folding the wrong way while the other foot is still planted",
+  "cards/strength/two-hand-it":
+    "both hands closing onto one hilt and a shield already dropped, falling out of the bottom of "
+    + "the frame. The decision is the picture: everything into the next blow and nothing left to "
+    + "guard with",
+  "cards/strength/walk-it-off":
+    "somebody walking a wound off instead of tending it -- a hand pressed flat to one side, head "
+    + "up, the stride deliberately ordinary. The refusal to stop is the subject",
+
+  "cards/way/roll-with-it":
+    "the end of a shoulder roll: a body coming up out of the ground onto one knee with the "
+    + "momentum still in it, facing a different way than it set off",
+
+  "cards/skill/break-it":
+    "the instant something gives -- a board, a hasp, a shutter going at its weakest point with a "
+    + "hand still on it. The break is the subject and the person is barely in frame",
+
+  /*
+   * The Wild deck, which is the hardest group in the set and the reason it is last.
+   *
+   * **These are not actions; they are what happens instead of the action.** A Wild is drawn when
+   * a spell goes wrong, so there is no body deciding anything -- *Cursed* and *Blessed* are a
+   * condition and nothing else, and the motif table could only offer *a shadow that chose
+   * someone* and *light that chose someone*, which are the same sentence twice.
+   */
+  "cards/wild/backlash":
+    "a caster taking their own spell in the face: the head snapped back, one hand still raised in "
+    + "the shape it was making, the eyes gone unfocused. It went off, and it went off here",
+  "cards/wild/blink":
+    "one figure half in two places at once -- a left side at one edge of the frame and a right "
+    + "side at the other, nothing at all between them and no ground crossed",
+  "cards/wild/glare":
+    "light going off around a standing figure rather than at it: the figure dark and central, the "
+    + "flare thrown outward past it in every direction, the frame's near edges washed pale",
+  "cards/wild/open-door":
+    "an open door with nobody in the doorway and something on the far side already looking this "
+    + "way. The invisibility is the empty frame; the marking is the attention coming back through "
+    + "it",
+  "cards/wild/residue":
+    "a shadow on the ground belonging to nobody standing: the figure above it lit and ordinary, "
+    + "the shape beneath it the wrong size and reaching the wrong way",
+  "cards/wild/second-sight":
+    "light arriving on one person out of a dim room and on nothing else, from no source anywhere "
+    + "in the frame -- the face lifted into it, the hands still at whatever they were doing",
+  "cards/wild/the-long-step":
+    "the arrival and not the crossing: a figure already down on both hands at the far end of the "
+    + "move, dust still settling around it, having got there without landing",
+  "cards/wild/veil":
+    "a sheet of air hanging like hung cloth, the room behind it displaced a finger's width to one "
+    + "side where it falls. Something is behind it and the picture does not say what"
 };
 
 /** The one place a missing motif becomes visible instead of becoming silence. */
