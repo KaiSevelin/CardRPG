@@ -89,15 +89,30 @@ function chosen() {
   if (flag("all")) return ledger;
   const group = opt("group", "");
   if (group) return ledger.filter(p => p.key.startsWith(`${group}/`));
-  const want = new Set(keys);
-  const picked = ledger.filter(p => want.has(p.key));
-  const missing = [...want].filter(k => !ledger.some(p => p.key === k));
+  /*
+   * **A bare word that names a group is taken as the group.**
+   *
+   * `backs` is not a piece, and the first thing anyone types is `backs` -- there are twenty-two
+   * groups still to draw and `--group` is a flag you have to remember every time. The two can
+   * never collide: a key always has a directory in it, so a bare word with no slash cannot be a
+   * piece, and `--group` still works for anyone who prefers it.
+   */
+  const want = new Set();
+  const missing = [];
+  for (const key of keys) {
+    if (ledger.some(p => p.key === key)) { want.add(key); continue; }
+    const asGroup = ledger.filter(p => p.key.startsWith(`${key}/`));
+    if (asGroup.length) { for (const p of asGroup) want.add(p.key); continue; }
+    missing.push(key);
+  }
   if (missing.length) {
-    console.error(`no such piece: ${missing.join(", ")}`);
-    console.error("keys look like cards/starter/strike, backs/action, tokens/goblin");
+    console.error(`no such piece or group: ${missing.join(", ")}`);
+    console.error("a piece is cards/starter/strike or backs/action; a group is backs, tokens,");
+    console.error(`cards/starter, items. Groups: ${
+      [...new Set(ledger.map(p => p.key.split("/").slice(0, -1).join("/")))].join(", ")}`);
     process.exit(1);
   }
-  return picked;
+  return ledger.filter(p => want.has(p.key));
 }
 
 const money = n => `$${n.toFixed(4)}`;

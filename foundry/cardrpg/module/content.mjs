@@ -5273,11 +5273,72 @@ export const DECK_BACKS = {
     note: "The back players see most: it is shuffled and face down by design, and that is what "
       + "makes a thin deck a risk rather than a lookup. Twenty cards, drawn from constantly."
   },
+  /*
+   * **The note is the art direction, and *the scene side's deck* is not a picture.**
+   *
+   * It said that, and the back came back with a dagger at its centre -- because a sentence about
+   * which half of the rules a deck belongs to tells an artist nothing, and the gap gets filled
+   * with whatever a fantasy card back usually has on it, which is a blade. A skill deck covered
+   * in weapons is also the exact failure the rest of the note warns about: it has to read as NOT
+   * the action deck, and a blade is the action deck's whole vocabulary.
+   */
   skill: {
     label: "The skill deck",
     art: "",
-    note: "The scene side's deck. Wants to read as clearly NOT the action deck at a glance, since "
-      + "both are face down in front of the same player."
+    note: "What you do when you are NOT fighting: climbing, listening, lifting, picking a lock, "
+      + "talking someone round. **No weapon of any kind on this one** -- no blade, no point, no "
+      + "hilt, no arrowhead. A hand, a key, an eye, a knot, a lens: the tools of a scene. It has "
+      + "to read as clearly NOT the action deck at a glance, since both are face down in front "
+      + "of the same player."
+  },
+  /*
+   * **Why there is no `item`, `feature` or `condition` back here, and what it would take.**
+   *
+   * A slate is an Item, not a Card -- it lives on a sheet or in a compendium and is never shuffled
+   * or dealt, so nothing today has a face-down state to show. But a slate is DRAWN as a card: the
+   * tray and both actor sheets render it at the card's own ratio with the same rim, which is why
+   * the question keeps coming up and why the answer is not simply no.
+   *
+   * It would not mean turning Items into Cards. That was the first answer given here and it was
+   * wrong. A back is a `Cards` concept in Foundry -- `Cards.img` and `Card.back.img` -- and
+   * nothing in this system's own templates renders one; slates are card-shaped divs that are
+   * always face up. So the cost is a face-down state in the renderer plus one picture per type,
+   * and the schema does not move at all.
+   *
+   * It is not built because nothing asks for it yet: there is no rule that hides a slate. The day
+   * an unexpanded view wants one, add the entries here and `backOf` already answers for them --
+   * and note that the suite pins that every declared back is read by something, so an entry added
+   * before a reader exists will fail rather than sit unused.
+   */
+
+  /*
+   * **The GM's deck, which was wearing the skill deck's back.**
+   *
+   * Thirty twists, face down in front of the GM all game, drawn when a check goes partly wrong --
+   * a deck by every test this file applies, and the only one with no back of its own. It took
+   * `backOf("skill")` instead, so across the table the GM's deck and a player's skill deck were
+   * the same picture. The whole point of a back is to say which deck a face-down card came from.
+   */
+  twist: {
+    label: "The twist deck",
+    art: "",
+    /*
+     * **Two of the four forms this used to name fought the capsule, and both shots lost.**
+     *
+     * It said *a knot, a fork, a crack, a thing turning*, and got a double spiral in a wash that
+     * filled every corner, twice: 0.9% then 1.2% bare paper against a floor of 5%, and symmetry
+     * 0.83 then 0.80. Neither was bad luck. A KNOT is a form that fills its own space, so there
+     * is no paper left for the contour to sit against; a THING TURNING is rotationally
+     * symmetrical and not mirror-symmetrical, which is the half of symmetry that matters when
+     * half the table is reading the card upside down. A CRACK is asymmetric by definition.
+     *
+     * Only the fork survives, and it is the best of the four anyway: it is what a Partial IS.
+     */
+    note: "The GM's deck, and the only one on their side of the table. Drawn when something goes "
+      + "partly wrong, so the back is a promise of a complication rather than a threat: **a "
+      + "fork** -- one line arriving and leaving as two, mirrored left to right, with open paper "
+      + "around it. No knot, no spiral, no coil: nothing that fills its own space or turns rather "
+      + "than mirrors. Not a weapon and not a monster -- the price of a Partial is never an attack."
   },
   wild: {
     label: "The Wild Magic deck",

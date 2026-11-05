@@ -1,6 +1,6 @@
 # Art prompts
 
-**508 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
+**509 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
 
 It walks the same `GROUPS` the art list walks, by importing it rather than copying it, so the two files cannot disagree about what exists.
 
@@ -27,7 +27,7 @@ So the numbers are gone from the capsules and the picture is in their place: **t
 
 ## Deck backs
 
-**Draw these first.** 5 pictures against 503 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
+**Draw these first.** 6 pictures against 503 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
 
 ### The capsule — paste this once
 
@@ -52,8 +52,9 @@ PALETTE.
 - Line and darks: **#1b1714**
 - Paper and lights: **#f4efe6**
 - Mid tone: **#c9bda8**
-- One chromatic accent only, named per deck below.
-- Warm, desaturated, earthy. No cyan, no magenta, no neon.
+- One chromatic accent only: **#a3655d**, a warm brick red, on the device itself.
+- Warm, desaturated, earthy. **No cyan, no teal, no blue, no green, no purple, no magenta, no
+  neon.** Every hue in the picture is between red and amber. There are no exceptions to this.
 
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
@@ -83,7 +84,7 @@ File: `backs/action.webp`
 ```text
 SUBJECT. A deck back for **The action deck**. Face down in front of every player, all game. Cards from the common pool and all four Ways mix in one deck, so this is NOT a Way's back -- the deck is yours, not Shade's.
 
-A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 4 in this set.
+A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 5 in this set.
 ```
 
 #### The fate deck
@@ -93,7 +94,7 @@ File: `backs/fate.webp`
 ```text
 SUBJECT. A deck back for **The fate deck**. The back players see most: it is shuffled and face down by design, and that is what makes a thin deck a risk rather than a lookup. Twenty cards, drawn from constantly.
 
-A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 4 in this set.
+A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 5 in this set.
 ```
 
 #### The skill deck
@@ -101,9 +102,19 @@ A design rather than a scene: one central device, near-symmetrical, legible upsi
 File: `backs/skill.webp`
 
 ```text
-SUBJECT. A deck back for **The skill deck**. The scene side's deck. Wants to read as clearly NOT the action deck at a glance, since both are face down in front of the same player.
+SUBJECT. A deck back for **The skill deck**. What you do when you are NOT fighting: climbing, listening, lifting, picking a lock, talking someone round. **No weapon of any kind on this one** -- no blade, no point, no hilt, no arrowhead. A hand, a key, an eye, a knot, a lens: the tools of a scene. It has to read as clearly NOT the action deck at a glance, since both are face down in front of the same player.
 
-A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 4 in this set.
+A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 5 in this set.
+```
+
+#### The twist deck
+
+File: `backs/twist.webp`
+
+```text
+SUBJECT. A deck back for **The twist deck**. The GM's deck, and the only one on their side of the table. Drawn when something goes partly wrong, so the back is a promise of a complication rather than a threat: **a fork** -- one line arriving and leaving as two, mirrored left to right, with open paper around it. No knot, no spiral, no coil: nothing that fills its own space or turns rather than mirrors. Not a weapon and not a monster -- the price of a Partial is never an attack.
+
+A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 5 in this set.
 ```
 
 #### The Wild Magic deck
@@ -113,7 +124,7 @@ File: `backs/wild.webp`
 ```text
 SUBJECT. A deck back for **The Wild Magic deck**. Drawn only when a Wild comes out of a fate deck, so its back is a promise that something strange is about to happen.
 
-A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 4 in this set.
+A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 5 in this set.
 ```
 
 #### Intent, any creature
@@ -123,7 +134,7 @@ File: `backs/npc.webp`
 ```text
 SUBJECT. A deck back for **Intent, any creature**. The back on every creature's intent deck in the game. A face-down intent says *this thing is about to act*, and which thing it is is already on the table in front of you -- so the back carries the threat rather than the species.
 
-A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 4 in this set.
+A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 5 in this set.
 ```
 
 ## The starter deck
@@ -6987,7 +6998,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 
 ## Where prompts still repeat
 
-**197 prompts in 28 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
+**198 prompts in 28 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
 
 **13 of those clusters are the ones that bite**, listed first: the ones where the subject line carries no prose either, so neither half of the prompt tells the cards apart. The rest share a direction over subjects that already differ — forty-three consumables drawing a nearly-empty vessel still come back as forty-three different pictures, because each subject names its own.
 
@@ -7016,8 +7027,8 @@ Answer a cluster by adding its keys to `DIRECTION` in `test/art-prompts.mjs` and
 | **2** | 1 | the instant a blow lands, the weapon already through -- never wound up, never posing; singled out of a crowd | `cards/shade/call-the-shot` `signatures/shade/named` |
 | **2** | 1 | held, and not letting go | `cards/strength/overbear` `signatures/strength/get-a-grip` |
 | **13** | — | weight: the object sits, and the surface under it knows; an edge, worn and sharpened back more than once | `items/blade-of-the-eager-hand` `items/fine-longsword` `items/great-axe` `items/greatsword` `items/halberd` …+8 |
+| **6** | — |  | `backs/action` `backs/fate` `backs/skill` `backs/twist` `backs/wild` …+1 |
 | **6** | — | armour as worn metal and strap, not as a costume | `items/gauntlet-of-the-open-palm` `items/helm-of-the-watchful` `items/leather-armor` `items/light-helm` `items/mail-shirt` …+1 |
-| **5** | — |  | `backs/action` `backs/fate` `backs/skill` `backs/wild` `backs/npc` |
 | **4** | — | weight: the object sits, and the surface under it knows; the weapon drawn and held at tension | `items/arquebus` `items/heavy-crossbow` `items/longbow` `items/matchlock-musket` |
 | **3** | — | armour as worn metal and strap, not as a costume; weight: the object sits, and the surface under it knows | `items/brigandine` `items/great-helm` `items/plate` |
 | **3** | — | a shield, face on and slightly turned, its edge nicked from use | `items/buckler` `items/kite-shield` `items/wooden-shield` |

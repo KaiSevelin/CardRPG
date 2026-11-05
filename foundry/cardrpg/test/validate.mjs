@@ -5610,9 +5610,9 @@ check("while the one it replaced it with is",
  * ninety-five faces, and the five are what a table looks at all evening.
  */
 const backs = Object.entries(content.DECK_BACKS);
-check("deck backs", backs.length, 5);
+check("deck backs", backs.length, 6);
 check("the decks that take one", backs.map(([k]) => k).join(", "),
-  "action, fate, skill, wild, npc");
+  "action, fate, skill, twist, wild, npc");
 /* Every one says what it is for: a back with no note is a brief nobody can draw from. */
 check("backs with nothing said about them",
   backs.filter(([, b]) => !b.note || b.note.length < 40).map(([k]) => k).join(", ") || "none",
@@ -5638,7 +5638,7 @@ check("backs with nothing said about them",
 const backedLiterally = [...`${setupSource}\n${decksSource}`.matchAll(/backOf\("([a-z.]+)"\)/g)]
   .map(m => m[1]);
 check("backs reached by a key written out", [...new Set(backedLiterally)].sort().join(", "),
-  "action, fate, npc, skill, wild");
+  "action, fate, npc, skill, twist, wild");
 /* The computed one, asked of the roster: every kind's own key, where one is declared. */
 const backedByKind = monsters.expandRoster(content.ROSTER, content.VARIANTS)
   .map(c => `npc.${c.system.kind}`).filter(k => k in content.DECK_BACKS);
@@ -5650,7 +5650,7 @@ check("and the builder really asks for it that way",
   /backOf\(`npc\.\$\{kind\}`\) \|\| backOf\("npc"\)/.test(setupCode) ? "yes" : "no", "yes");
 const backed = [...backedLiterally, ...backedByKind];
 check("decks given a back", [...new Set(backed)].sort().join(", "),
-  "action, fate, npc, skill, wild");
+  "action, fate, npc, skill, twist, wild");
 /* Every back declared is a back used: one nobody reads is a picture drawn for nothing. */
 check("backs declared but never read",
   backs.map(([k]) => k).filter(k => !backed.includes(k)).join(", ") || "none", "none");
@@ -5694,9 +5694,15 @@ check("and every creature's back resolves to a declared one",
  */
 check("kinds with a back of their own",
   Object.keys(content.DECK_BACKS).filter(k => k.startsWith("npc.")).join(", ") || "none", "none");
+/*
+ * The accepted keys are read off DECK_BACKS rather than typed here. A sixth back was added and
+ * this regex went on naming five, so the one deck wearing the new key counted as having none --
+ * a list of valid values is a thing that goes stale the moment the valid values change.
+ */
+const backKeys = `${backs.map(([k]) => k.replace(/\./g, "\\.")).join("|")}|npc\\.[a-z]+`;
 check("deck documents with no back",
   deckCalls.filter(args => !/"[a-z.]+"\s*\)?\s*$/.test(args.trim())
-    || !/backOf\(|, "(action|fate|skill|wild|npc\.[a-z]+)"\s*\)?\s*$/.test(args.trim()))
+    || !new RegExp(`backOf\\(|, "(${backKeys})"\\s*\\)?\\s*$`).test(args.trim()))
     .length, 0);
 /*
  * A Wound and a Taint wear the ACTION back, which is not an oversight: both go into the action

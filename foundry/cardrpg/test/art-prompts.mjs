@@ -356,6 +356,17 @@ edge is a brush edge -- ragged, varied, alive -- against full transparency, neve
 and never a white halo.`;
 
 /* A back is the one piece in the set with the whole card to itself. */
+/*
+ * **The accent the capsule promised and never named.**
+ *
+ * It said *one chromatic accent only, named per deck below* -- and no deck below named one, so
+ * for five backs the only instruction about colour was that there should be a colour. Two of the
+ * five invented one: the skill back came back teal and the Wild Magic back violet, 4.3% and 3.4%
+ * of the frame outside the warm palette, in a set whose whole premise is that it is warm.
+ *
+ * The ban is also spelled out by name now rather than as the category *cool*. The capsule said
+ * "no cyan, no magenta, no neon", and teal is none of those three.
+ */
 const BACK_CAPSULE = `The back of a deck of cards in a tabletop fantasy RPG.
 
 FORMAT.
@@ -370,8 +381,9 @@ COMPOSITION.
 
 PALETTE.
 ${PALETTE_BASE}
-- One chromatic accent only, named per deck below.
-- Warm, desaturated, earthy. No cyan, no magenta, no neon.
+- One chromatic accent only: **${WAY.strength.edge}**, a warm brick red, on the device itself.
+- Warm, desaturated, earthy. **No cyan, no teal, no blue, no green, no purple, no magenta, no
+  neon.** Every hue in the picture is between red and amber. There are no exceptions to this.
 
 STYLE.
 ${WASH}`;

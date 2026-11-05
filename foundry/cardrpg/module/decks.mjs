@@ -112,7 +112,9 @@ export function twistCardData(def) {
   return {
     name: def.name,
     type: "twist",
-    img: backOf("skill") || undefined,
+    /* Its own back, not the skill deck's: the GM's deck is face down opposite a player's
+     * skill deck all game, and two decks wearing one picture is the one thing a back must not do. */
+    img: backOf("twist") || undefined,
     system: {
       cost: def.cost ?? "",
       pressure: def.pressure ?? 0,

@@ -306,7 +306,7 @@ export async function createStarterContent() {
    * deck runs out* and nothing else.
    */
   const twists = await makeCards("Twist Deck", "deck", "twist-deck",
-    expand(TWISTS, def => twistCardData(def)), "skill");
+    expand(TWISTS, def => twistCardData(def)), "twist");
   await makeCards("Twist Discard", "pile", "twist-discard");
   made.decks += 2;
 
