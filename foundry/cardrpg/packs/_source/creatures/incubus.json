@@ -1,0 +1,98 @@
+{
+  "_id": "EErdtkYZNMuUgKGo",
+  "_key": "!actors!EErdtkYZNMuUgKGo",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Incubus",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 18,
+      "base": 18
+    },
+    "kind": "incubus",
+    "armorBase": 1,
+    "speed": 5,
+    "capabilities": [
+      "legs",
+      "caster",
+      "drain",
+      "stealth",
+      "wits"
+    ],
+    "tactics": [
+      "ambusher"
+    ],
+    "targetPriority": "weakest"
+  },
+  "items": [
+    {
+      "_id": "5K8kt2aZR0fqgxRP",
+      "_key": "!actors.items!EErdtkYZNMuUgKGo.5K8kt2aZR0fqgxRP",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Demon's Sigil",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 1,
+        "tags": [
+          "arcane"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Focus",
+        "verbs": {
+          "cast": {
+            "value": 5,
+            "range": 5
+          }
+        },
+        "equipped": true
+      }
+    },
+    {
+      "_id": "K62iiYpNDLkLTwBJ",
+      "_key": "!actors.items!EErdtkYZNMuUgKGo.K62iiYpNDLkLTwBJ",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Draining Bite",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 4
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Incubus",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

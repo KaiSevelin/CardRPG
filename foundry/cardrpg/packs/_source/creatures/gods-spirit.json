@@ -1,0 +1,100 @@
+{
+  "_id": "Ns47fdJBoV0xf2ZI",
+  "_key": "!actors!Ns47fdJBoV0xf2ZI",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "God's Spirit",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 14,
+      "base": 14
+    },
+    "kind": "gods-spirit",
+    "armorBase": 2,
+    "speed": 4,
+    "capabilities": [
+      "legs",
+      "stealth",
+      "wits",
+      "fast"
+    ],
+    "tactics": [
+      "ambusher",
+      "skirmisher"
+    ],
+    "targetPriority": "weakest"
+  },
+  "items": [
+    {
+      "_id": "pfK9KHntvSqejPGg",
+      "_key": "!actors.items!Ns47fdJBoV0xf2ZI.pfK9KHntvSqejPGg",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Balanced Dagger",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "fits": [
+          "belt"
+        ],
+        "hands": 1,
+        "tags": [
+          "light",
+          "melee",
+          "thrown"
+        ],
+        "weight": 0,
+        "value": 70,
+        "kind": "Make",
+        "blurb": "Weighted at the tang. It goes where you looked.",
+        "verbs": {
+          "strike": {
+            "value": 3,
+            "range": 5,
+            "text": "range 5 thrown"
+          }
+        },
+        "group": "make",
+        "equipped": true
+      }
+    },
+    {
+      "_id": "1zzzfEX1aeGIvgdz",
+      "_key": "!actors.items!Ns47fdJBoV0xf2ZI.1zzzfEX1aeGIvgdz",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Leather Armor",
+      "type": "item",
+      "system": {
+        "slot": "body",
+        "hands": 1,
+        "tags": [
+          "armor"
+        ],
+        "weight": 5,
+        "value": 20,
+        "armor": 1,
+        "kind": "Armor",
+        "blurb": "Boiled and riveted, and it still smells of the tannery.",
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "God's Spirit",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

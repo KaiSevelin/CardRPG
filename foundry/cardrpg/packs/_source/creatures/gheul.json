@@ -1,0 +1,69 @@
+{
+  "_id": "tFNGL9cUcGVRyw3y",
+  "_key": "!actors!tFNGL9cUcGVRyw3y",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Gheul",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 14,
+      "base": 14
+    },
+    "kind": "gheul",
+    "armorBase": 1,
+    "speed": 5,
+    "capabilities": [
+      "legs",
+      "pack",
+      "drain",
+      "feral"
+    ],
+    "tactics": [
+      "packTactics",
+      "ambusher"
+    ],
+    "targetPriority": "weakest"
+  },
+  "items": [
+    {
+      "_id": "IhaINaJi5jedBkgH",
+      "_key": "!actors.items!tFNGL9cUcGVRyw3y.IhaINaJi5jedBkgH",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Draining Bite",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 4
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Gheul",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

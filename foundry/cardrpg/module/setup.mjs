@@ -372,7 +372,14 @@ export async function buildMonster(name) {
   /* Its gear, made once and reused: five mole men share one pick. */
   const slates = {};
   for (const gearName of creature.equipped ?? []) {
-    const def = [...NPC_GEAR, ...NATURAL_WEAPONS].find(g => g.name === gearName);
+    /*
+     * **ITEMS too, because a human NPC carries real gear.** A goblin has a Goblin Spear and a
+     * troll has its fists, but a town guard has a Spear -- the same Spear a player can pick up
+     * off it. Resolving only against the NPC lists meant a human could be given a longsword and
+     * silently receive nothing, since the miss here is a `continue`. No name collides between
+     * the three lists, and the suite pins that it stays that way.
+     */
+    const def = [...NPC_GEAR, ...NATURAL_WEAPONS, ...ITEMS].find(g => g.name === gearName);
     if (!def) continue;
     const found = findExisting(game.items, `item.${gearName}`);
     if (found) { slates[gearName] = found; continue; }

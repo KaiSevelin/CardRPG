@@ -11,14 +11,15 @@
   "system": {
     "strength": 5,
     "source": "Spiritualism",
-    "description": "<p>It is actually here. The GM plays it as an ally for the rest of the fight, and afterwards it takes something the GM chooses &mdash; which is the only honest way to price a favour that large.</p>",
+    "description": "<p>It is actually here, for three rounds. The GM plays it as an ally and then it goes, and afterwards it takes something the GM chooses &mdash; which is the only honest way to price a favour that large.</p>",
     "effect": {
       "verb": "conjure",
       "conjure": {
         "creature": ""
       },
+      "duration": 3,
       "targets": "self",
-      "text": "a minor god becomes present and fights as an ally"
+      "text": "a minor god becomes present and fights as an ally for three rounds"
     },
     "kind": "formula",
     "prepared": false

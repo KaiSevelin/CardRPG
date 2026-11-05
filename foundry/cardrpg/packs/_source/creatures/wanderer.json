@@ -1,0 +1,74 @@
+{
+  "_id": "pYHcxwhAaDCgSNrD",
+  "_key": "!actors!pYHcxwhAaDCgSNrD",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Wanderer",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 18,
+      "base": 18
+    },
+    "kind": "wanderer",
+    "armorBase": 1,
+    "speed": 7,
+    "capabilities": [
+      "legs",
+      "fast",
+      "transport",
+      "wits"
+    ],
+    "tactics": [
+      "skirmisher"
+    ],
+    "targetPriority": "weakest"
+  },
+  "items": [
+    {
+      "_id": "tbRr1gd8ui5H36Fd",
+      "_key": "!actors.items!pYHcxwhAaDCgSNrD.tbRr1gd8ui5H36Fd",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Dagger",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "fits": [
+          "belt"
+        ],
+        "hands": 1,
+        "tags": [
+          "light",
+          "melee",
+          "thrown"
+        ],
+        "weight": 0,
+        "value": 2,
+        "kind": "Weapon",
+        "blurb": "Short, quick, and easy to hide.",
+        "verbs": {
+          "strike": {
+            "value": 2,
+            "range": 3,
+            "text": "range 3 thrown"
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Wanderer",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

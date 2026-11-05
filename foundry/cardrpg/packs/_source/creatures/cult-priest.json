@@ -1,0 +1,103 @@
+{
+  "_id": "gn4OUrVp3fVmffHr",
+  "_key": "!actors!gn4OUrVp3fVmffHr",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Cult Priest",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 14,
+      "base": 14
+    },
+    "kind": "cult-priest",
+    "armorBase": 1,
+    "speed": 4,
+    "capabilities": [
+      "legs",
+      "pack",
+      "caster",
+      "wits",
+      "commander"
+    ],
+    "tactics": [
+      "packTactics"
+    ],
+    "targetPriority": "weakest"
+  },
+  "items": [
+    {
+      "_id": "nL8QfnpNmQDhbsIu",
+      "_key": "!actors.items!gn4OUrVp3fVmffHr.nL8QfnpNmQDhbsIu",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Carved Idol",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 1,
+        "tags": [
+          "arcane"
+        ],
+        "weight": 1,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Focus",
+        "verbs": {
+          "cast": {
+            "value": 3,
+            "range": 4
+          }
+        },
+        "equipped": true
+      }
+    },
+    {
+      "_id": "LIz5EsQCTevQKESk",
+      "_key": "!actors.items!gn4OUrVp3fVmffHr.LIz5EsQCTevQKESk",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Mace",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "fits": [
+          "belt"
+        ],
+        "hands": 1,
+        "tags": [
+          "heavy",
+          "melee"
+        ],
+        "weight": 2,
+        "value": 10,
+        "kind": "Weapon",
+        "blurb": "Flanged. It does not cut, which is the point against a man in mail.",
+        "verbs": {
+          "strike": {
+            "value": 3,
+            "ignores": 1,
+            "text": "ignores 1 armor"
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Cult Priest",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

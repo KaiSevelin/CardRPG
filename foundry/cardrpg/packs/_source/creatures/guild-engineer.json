@@ -1,0 +1,103 @@
+{
+  "_id": "QqXM71j5XtkTC9NL",
+  "_key": "!actors!QqXM71j5XtkTC9NL",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Guild Engineer",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 12,
+      "base": 12
+    },
+    "kind": "guild-engineer",
+    "armorBase": 2,
+    "speed": 3,
+    "capabilities": [
+      "legs",
+      "ranged",
+      "siege",
+      "wits"
+    ],
+    "tactics": [
+      "sniper"
+    ],
+    "targetPriority": "nearest"
+  },
+  "items": [
+    {
+      "_id": "aLWE2EzlU6EBjoWt",
+      "_key": "!actors.items!QqXM71j5XtkTC9NL.aLWE2EzlU6EBjoWt",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Arquebus",
+      "type": "item",
+      "system": {
+        "ammo": "firearm",
+        "slot": "hands",
+        "fits": [
+          "back"
+        ],
+        "hands": 2,
+        "tags": [
+          "heavy",
+          "ranged"
+        ],
+        "weight": 4,
+        "value": 90,
+        "kind": "Weapon",
+        "blurb": "Loud, slow, and it does not care what you are wearing.",
+        "verbs": {
+          "strike": {
+            "value": 5,
+            "ignores": 2,
+            "range": 8,
+            "text": "ignores 2 armor; Ready to reload"
+          }
+        },
+        "equipped": true
+      }
+    },
+    {
+      "_id": "F2xRSN2CfG3UkfWH",
+      "_key": "!actors.items!QqXM71j5XtkTC9NL.F2xRSN2CfG3UkfWH",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Brigandine",
+      "type": "item",
+      "system": {
+        "slot": "body",
+        "tags": [
+          "armor",
+          "heavy"
+        ],
+        "weight": 12,
+        "value": 140,
+        "kind": "Armor",
+        "armor": 3,
+        "blurb": "Plates riveted between canvas. Heavy enough that you stop dodging.",
+        "blocksReactions": [
+          "sidestep"
+        ],
+        "text": "Blocks Sidestep reactions.",
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Guild Engineer",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

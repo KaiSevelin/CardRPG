@@ -1,0 +1,27 @@
+{
+  "_id": "aeBdDvwgSEXML7z9",
+  "_key": "!items!aeBdDvwgSEXML7z9",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Carved Idol",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "hands": 1,
+    "tags": [
+      "arcane"
+    ],
+    "weight": 1,
+    "value": 0,
+    "npcGear": true,
+    "verbs": {
+      "cast": {
+        "value": 3,
+        "range": 4
+      }
+    }
+  }
+}

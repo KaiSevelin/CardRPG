@@ -1,0 +1,73 @@
+{
+  "_id": "nNt3H5NmJ3yJmKuW",
+  "_key": "!actors!nNt3H5NmJ3yJmKuW",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Townsfolk",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 4,
+      "base": 4
+    },
+    "kind": "townsfolk",
+    "armorBase": 0,
+    "speed": 3,
+    "capabilities": [
+      "legs",
+      "pack",
+      "wits"
+    ],
+    "tactics": [
+      "cowardly"
+    ],
+    "targetPriority": "weakest"
+  },
+  "items": [
+    {
+      "_id": "717jrDENq5YDCqnG",
+      "_key": "!actors.items!nNt3H5NmJ3yJmKuW.717jrDENq5YDCqnG",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Dagger",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "fits": [
+          "belt"
+        ],
+        "hands": 1,
+        "tags": [
+          "light",
+          "melee",
+          "thrown"
+        ],
+        "weight": 0,
+        "value": 2,
+        "kind": "Weapon",
+        "blurb": "Short, quick, and easy to hide.",
+        "verbs": {
+          "strike": {
+            "value": 2,
+            "range": 3,
+            "text": "range 3 thrown"
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Townsfolk",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

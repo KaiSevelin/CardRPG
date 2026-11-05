@@ -1,0 +1,123 @@
+{
+  "_id": "BLLKfOhtgsDifDtC",
+  "_key": "!actors!BLLKfOhtgsDifDtC",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Mercenary Captain",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 18,
+      "base": 18
+    },
+    "kind": "mercenary-captain",
+    "armorBase": 4,
+    "speed": 4,
+    "capabilities": [
+      "legs",
+      "brute",
+      "reach",
+      "drilled",
+      "commander"
+    ],
+    "tactics": [
+      "brute",
+      "commander"
+    ],
+    "targetPriority": "leader"
+  },
+  "items": [
+    {
+      "_id": "BYKspOsJwF6jDBDy",
+      "_key": "!actors.items!BLLKfOhtgsDifDtC.BYKspOsJwF6jDBDy",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Greatsword",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 2,
+        "tags": [
+          "heavy",
+          "melee"
+        ],
+        "weight": 3,
+        "value": 40,
+        "kind": "Weapon",
+        "blurb": "Four feet of edge. Both hands, and nothing held back.",
+        "verbs": {
+          "strike": {
+            "value": 5
+          }
+        },
+        "equipped": true
+      }
+    },
+    {
+      "_id": "erje1lOWFhSxvssr",
+      "_key": "!actors.items!BLLKfOhtgsDifDtC.erje1lOWFhSxvssr",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Brigandine",
+      "type": "item",
+      "system": {
+        "slot": "body",
+        "tags": [
+          "armor",
+          "heavy"
+        ],
+        "weight": 12,
+        "value": 140,
+        "kind": "Armor",
+        "armor": 3,
+        "blurb": "Plates riveted between canvas. Heavy enough that you stop dodging.",
+        "blocksReactions": [
+          "sidestep"
+        ],
+        "text": "Blocks Sidestep reactions.",
+        "equipped": true
+      }
+    },
+    {
+      "_id": "TON1gFnGeI5pEHXA",
+      "_key": "!actors.items!BLLKfOhtgsDifDtC.TON1gFnGeI5pEHXA",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Great Helm",
+      "type": "item",
+      "system": {
+        "slot": "head",
+        "tags": [
+          "armor",
+          "heavy"
+        ],
+        "weight": 3,
+        "value": 40,
+        "kind": "Armor",
+        "armor": 1,
+        "blurb": "Safe, and you cannot hear a thing through it.",
+        "text": "Disadvantage on Wits checks.",
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Mercenary Captain",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

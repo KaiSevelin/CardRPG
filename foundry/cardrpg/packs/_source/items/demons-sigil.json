@@ -1,0 +1,27 @@
+{
+  "_id": "mDNjjELPbRFt4WDg",
+  "_key": "!items!mDNjjELPbRFt4WDg",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Demon's Sigil",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "hands": 1,
+    "tags": [
+      "arcane"
+    ],
+    "weight": 0,
+    "value": 0,
+    "npcGear": true,
+    "verbs": {
+      "cast": {
+        "value": 5,
+        "range": 5
+      }
+    }
+  }
+}

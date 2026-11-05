@@ -669,6 +669,13 @@ export async function resolveConjure(actor, { step }) {
    * And then OWNER for the conjurer, which is the only part of "under their control" that is not a
    * sentence: a token the player cannot move is a conjuration the GM has to play for them.
    */
+  /*
+   * **A named minor god used to be accepted here and then built by nothing.** The guard above
+   * passes a god, and this line only built what `creaturesByName()` knew -- so The Great Bargain
+   * could name one and put no actor on the table, which is the same silent-drop the gear lookup
+   * had. The eight gods are roster creatures now, so one lookup answers for both and the guard
+   * above is belt and braces rather than the only thing holding it.
+   */
   let built = named ? game.actors.find(a => a.name === named) : null;
   if (!built && named && creatures.has(named) && game.user.isGM) {
     const { buildMonster } = await import("./setup.mjs");

@@ -1,0 +1,104 @@
+{
+  "_id": "Ab40EP8uxRaHfa2o",
+  "_key": "!actors!Ab40EP8uxRaHfa2o",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "The Winter Lady",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 65,
+      "base": 65
+    },
+    "kind": "winter-lady",
+    "armorBase": 4,
+    "speed": 5,
+    "capabilities": [
+      "legs",
+      "spray",
+      "caster",
+      "commander",
+      "stealth",
+      "wits"
+    ],
+    "tactics": [
+      "sniper",
+      "ambusher"
+    ],
+    "targetPriority": "caster"
+  },
+  "items": [
+    {
+      "_id": "8kgsimUd7U9J33oX",
+      "_key": "!actors.items!Ab40EP8uxRaHfa2o.8kgsimUd7U9J33oX",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Killing Frost",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "ranged",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 7,
+            "range": 5,
+            "area": 2,
+            "ignores": 3
+          }
+        },
+        "equipped": true
+      }
+    },
+    {
+      "_id": "0IPzFmPMzrKzGnqB",
+      "_key": "!actors.items!Ab40EP8uxRaHfa2o.0IPzFmPMzrKzGnqB",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Elf-Bolt",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 1,
+        "tags": [
+          "arcane",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Focus",
+        "verbs": {
+          "cast": {
+            "value": 4,
+            "range": 5
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "The Winter Lady",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

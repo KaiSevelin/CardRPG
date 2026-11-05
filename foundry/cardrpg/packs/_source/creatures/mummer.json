@@ -1,0 +1,73 @@
+{
+  "_id": "DMBJbGSQVUYvfhHB",
+  "_key": "!actors!DMBJbGSQVUYvfhHB",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Mummer",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 8,
+      "base": 8
+    },
+    "kind": "mummer",
+    "armorBase": 0,
+    "speed": 5,
+    "capabilities": [
+      "legs",
+      "pack",
+      "wits"
+    ],
+    "tactics": [
+      "skirmisher"
+    ],
+    "targetPriority": "weakest"
+  },
+  "items": [
+    {
+      "_id": "2mZ9B8r79q4jpCZx",
+      "_key": "!actors.items!DMBJbGSQVUYvfhHB.2mZ9B8r79q4jpCZx",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Dagger",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "fits": [
+          "belt"
+        ],
+        "hands": 1,
+        "tags": [
+          "light",
+          "melee",
+          "thrown"
+        ],
+        "weight": 0,
+        "value": 2,
+        "kind": "Weapon",
+        "blurb": "Short, quick, and easy to hide.",
+        "verbs": {
+          "strike": {
+            "value": 2,
+            "range": 3,
+            "text": "range 3 thrown"
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Mummer",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

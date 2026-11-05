@@ -1,0 +1,67 @@
+{
+  "_id": "qnD1AQ79nCTGPJdh",
+  "_key": "!actors!qnD1AQ79nCTGPJdh",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Familiar",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 6,
+      "base": 6
+    },
+    "kind": "familiar",
+    "armorBase": 0,
+    "speed": 5,
+    "capabilities": [
+      "legs",
+      "stealth",
+      "wits"
+    ],
+    "tactics": [
+      "skirmisher"
+    ],
+    "targetPriority": "caster"
+  },
+  "items": [
+    {
+      "_id": "ST8xj3y5RXp4zpu1",
+      "_key": "!actors.items!qnD1AQ79nCTGPJdh.ST8xj3y5RXp4zpu1",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Nip",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 1
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Familiar",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

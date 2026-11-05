@@ -1,0 +1,102 @@
+{
+  "_id": "kMnj08gx2IIsYIv1",
+  "_key": "!actors!kMnj08gx2IIsYIv1",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Mother Longhand",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 72,
+      "base": 72
+    },
+    "kind": "mother-longhand",
+    "armorBase": 4,
+    "speed": 5,
+    "capabilities": [
+      "legs",
+      "reach",
+      "grapple",
+      "caster",
+      "stealth",
+      "feral"
+    ],
+    "tactics": [
+      "grappler",
+      "ambusher"
+    ],
+    "targetPriority": "weakest"
+  },
+  "items": [
+    {
+      "_id": "xvANELhT0ghwTs2W",
+      "_key": "!actors.items!kMnj08gx2IIsYIv1.xvANELhT0ghwTs2W",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Grasping Claws",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 5,
+            "reach": 2
+          }
+        },
+        "equipped": true
+      }
+    },
+    {
+      "_id": "ZD0NuAT85gdT3xH8",
+      "_key": "!actors.items!kMnj08gx2IIsYIv1.ZD0NuAT85gdT3xH8",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Elf-Bolt",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 1,
+        "tags": [
+          "arcane",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Focus",
+        "verbs": {
+          "cast": {
+            "value": 4,
+            "range": 5
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Mother Longhand",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

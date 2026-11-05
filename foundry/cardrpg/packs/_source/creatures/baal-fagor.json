@@ -1,0 +1,134 @@
+{
+  "_id": "gv75L6XYF9LpCFuP",
+  "_key": "!actors!gv75L6XYF9LpCFuP",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Baal Fagor",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 68,
+      "base": 68
+    },
+    "kind": "baal-fagor",
+    "armorBase": 5,
+    "speed": 5,
+    "capabilities": [
+      "flight",
+      "spray",
+      "brute",
+      "caster",
+      "summon",
+      "feral"
+    ],
+    "tactics": [
+      "brute",
+      "sniper"
+    ],
+    "targetPriority": "leader"
+  },
+  "items": [
+    {
+      "_id": "6gT5MeN6Tf2Xbpnt",
+      "_key": "!actors.items!gv75L6XYF9LpCFuP.6gT5MeN6Tf2Xbpnt",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Burning Grasp",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "heavy",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 6,
+            "ignores": 1
+          }
+        },
+        "equipped": true
+      }
+    },
+    {
+      "_id": "5O7iza0YUXLNR66y",
+      "_key": "!actors.items!gv75L6XYF9LpCFuP.5O7iza0YUXLNR66y",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Fire Spray",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "ranged",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 5,
+            "range": 4,
+            "area": 2,
+            "ignores": 1
+          }
+        },
+        "equipped": true
+      }
+    },
+    {
+      "_id": "bMGnFEDUz5he5DSl",
+      "_key": "!actors.items!gv75L6XYF9LpCFuP.bMGnFEDUz5he5DSl",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Demon's Sigil",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 1,
+        "tags": [
+          "arcane"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Focus",
+        "verbs": {
+          "cast": {
+            "value": 5,
+            "range": 5
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Baal Fagor",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

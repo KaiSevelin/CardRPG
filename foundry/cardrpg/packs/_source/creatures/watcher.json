@@ -1,0 +1,68 @@
+{
+  "_id": "M45CqGpaUmFk80JZ",
+  "_key": "!actors!M45CqGpaUmFk80JZ",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Watcher",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 26,
+      "base": 26
+    },
+    "kind": "watcher",
+    "armorBase": 2,
+    "speed": 5,
+    "capabilities": [
+      "flight",
+      "caster",
+      "commander",
+      "wits"
+    ],
+    "tactics": [
+      "sniper"
+    ],
+    "targetPriority": "caster"
+  },
+  "items": [
+    {
+      "_id": "lGtHeLWSooYOo7CY",
+      "_key": "!actors.items!M45CqGpaUmFk80JZ.lGtHeLWSooYOo7CY",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Demon's Sigil",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 1,
+        "tags": [
+          "arcane"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Focus",
+        "verbs": {
+          "cast": {
+            "value": 5,
+            "range": 5
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Watcher",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

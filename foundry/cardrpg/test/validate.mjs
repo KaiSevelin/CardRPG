@@ -3307,7 +3307,7 @@ const { CARDRPG } = await import("../module/config.mjs");
 const everyGearEntry = [...content.ITEMS, ...content.NPC_GEAR, ...content.NATURAL_WEAPONS];
 const tagVocabulary = new Set(CARDRPG.itemTags);
 const slotVocabulary = new Set(Object.keys(CARDRPG.slots));
-check("gear entries the vocabulary sweep read", everyGearEntry.length, 176);
+check("gear entries the vocabulary sweep read", everyGearEntry.length, 180);
 check("tags no vocabulary has",
   [...new Set(everyGearEntry.flatMap(i => (i.tags ?? []).filter(t => !tagVocabulary.has(t))))]
     .sort().join(", ") || "none", "none");
@@ -5583,7 +5583,7 @@ const artable = [
   content.NATURAL_WEAPONS ?? [], everyCreatureForArt, [content.WARRIOR],
   ...Object.entries(content).filter(([k]) => k.endsWith("_SIGNATURES")).map(([, v]) => v)
 ].flat();
-check("pieces of content that take art", artable.length, 534);
+check("pieces of content that take art", artable.length, 582);
 /*
  * **And the goblin's authored deck is gone entirely.** Six cards from before the intent pool, five
  * of which had no counterpart in it because the pool had replaced them -- Rush is Close In, Cower
@@ -6085,7 +6085,7 @@ const briefs = faceRows.map(r => r.brief);
 const leaked = briefs.flatMap(text =>
   [...text.matchAll(/\b([a-z]+[A-Z][a-zA-Z]*)\b/g)].map(m => m[1]));
 /* A pattern that matched no rows at all would report "none" for any list whatsoever. */
-check("briefs the check actually read", briefs.length, 534);
+check("briefs the check actually read", briefs.length, 582);
 check("keys that leaked into the brief",
   leaked.length ? [...new Set(leaked)].join(", ") : "none", "none");
 /*
@@ -6106,7 +6106,8 @@ check("briefs with a missing number in them",
  * *Accuser's Ring* into `accuser-s-ring`, which is the kind of thing nobody notices until a
  * hundred and fifty files have been named that way and the brief is the only record of it.
  */
-const { slug, DELIVERY, GROUPS: ART_GROUPS } = await import("./art-list.mjs");
+const { slug, DELIVERY, GROUPS: ART_GROUPS, CREATURES: ART_CREATURES, creatureBrief, castOf }
+  = await import("./art-list.mjs");
 /*
  * **The art on disk, against the brief that commissioned it.**
  *
@@ -6156,12 +6157,72 @@ check("the brief states the delivery format, in both tables",
   artList.split(delivery).length - 1, 2);
 check("and neither table still offers a choice",
   /`\.webp` (?:preferred|or `\.png`)/.test(artList) ? "no" : "yes", "yes");
+
+/*
+ * --- one creature, one body ------------------------------------------------------------------
+ *
+ * **A token is one square of a map, so it is one creature**, and the first pass of the bestiary
+ * did not know that. Nine descriptions asked for a group in so many words -- *drawn as a knot of
+ * three or four*, *drawn as a crowd in motion*, *the shape of the picture is several of them at
+ * once*, *mole men at her feet for scale* -- and every one of them came back as a group, because
+ * the prompt said so. The capsule now bans it, and this is the other half: a ban in the capsule
+ * is no use while the subject under it asks for the opposite, which is the single failure mode
+ * this whole prompt book keeps rediscovering.
+ *
+ * The Mob is the exception and the only one, which is the point of pinning it by name: it is a
+ * crowd by definition -- *the moment townsfolk stop running* -- and a rule with no exception
+ * written into it is a rule somebody will quietly break.
+ */
+const CROWD = new RegExp([
+  "a crowd", "as a group", "a knot of", "a press of", "several of them",
+  "a cluster of them", "a swarm of them", "more than one", "at (?:her|his|its) feet",
+  "who are standing too"
+].join("|"), "i");
+const crowded = ART_CREATURES
+  .filter(c => CROWD.test(creatureBrief(c)))
+  .map(c => c.name);
+check("creatures whose own description asks for more than one body",
+  crowded.join(", ") || "none", "Mob");
+
+/*
+ * --- who the people are ----------------------------------------------------------------------
+ *
+ * **Variety cannot be asked for in a capsule, and this is the proof of it.** Each piece is drawn
+ * in its own request with no sight of the others, so *vary who you draw* has nothing to vary
+ * against: twenty-four human tokens came back as one pale man in twenty-four costumes. The art
+ * layer therefore assigns the casting per creature, hashed from the creature's own kind, and
+ * states it as fact in the subject -- the form this book has learnt is obeyed.
+ *
+ * So what is worth checking is not that the rule is written down. It is that the assignment
+ * reaches every person in the roster and that it actually spreads.
+ */
+const humanBase = new Set(content.HUMAN_KINDS);
+const unpeopled = content.HUMAN_KINDS.filter(kind =>
+  !content.ROSTER.some(c => c.system?.kind === kind));
+check("human kinds named that no creature has", unpeopled.join(", ") || "none", "none");
+const cast = ART_CREATURES.filter(c => castOf(c));
+check("creatures the art layer casts as people", cast.length, 26);
+/* Variants are cast too, through their base: a Watch Sergeant is a Town Guard and the question of
+ * who the guard is does not stop applying because the sash changed. */
+check("and how many of those are variants",
+  cast.filter(c => !humanBase.has(c.system?.kind)).length, 12);
+const casts = cast.map(c => castOf(c));
+check("people cast as women", casts.filter(t => t.includes("a woman")).length, 12);
+check("people cast as men", casts.filter(t => t.includes("a man")).length, 14);
+check("distinct ancestries across the people",
+  new Set(casts.map(t => t.match(/of (.+?) appearance/)[1])).size, 13);
+/* And that it is a property of the creature rather than of its position in the file: an index
+ * into the roster would reassign every human after an inserted one, and a token already drawn
+ * and already through the gate would no longer match the prompt that would be sent for it. */
+check("casting is hashed from the kind, not counted off the roster",
+  /hash\(kind\)/.test(fs.readFileSync(path.join(root, "test/art-list.mjs"), "utf8")) ? "yes" : "no",
+  "yes");
 /* The pack builder's source, read for the rules that cannot be asked of its output: that it reads
  * every pack back through Foundry's own packer, and that it borrows its shapes rather than
  * spelling them again. */
 const packSource = fs.readFileSync(path.join(root, "test/build-packs.mjs"), "utf8");
 const rows = faceRows;
-check("file paths in the brief", rows.length, 534);
+check("file paths in the brief", rows.length, 582);
 /* And the backs, whose path is the slug of their KEY rather than of their printed label. */
 const backPaths = [...artList.matchAll(/\| `(backs\/[^`]+)` \|/g)].map(m => m[1]);
 check("back paths in the brief", backPaths.length, backs.length);
@@ -6414,6 +6475,36 @@ check("conjurings that fix which creature arrives",
 check("the minor gods the world names", content.MINOR_GODS.length, 8);
 check("and every one has a name",
   content.MINOR_GODS.filter(g => !g.name).length, 0);
+/*
+ * **And every one of them has a statline, which is what makes The Great Bargain playable.**
+ *
+ * The card says a minor god *is actually here* and the GM plays it, and for as long as the eight
+ * were a list of names with notes there was nothing to play. They are roster creatures as well as
+ * MINOR_GODS entries now -- the list says who they are to a worshipper, the roster says what
+ * happens if one is in front of you -- and this is what holds the two spellings together.
+ */
+/* Expanded here rather than taken from `everyCreature`, which this file does not define until
+ * much further down: this section runs with the spells. */
+const rosterNow = monsters.expandRoster(content.ROSTER, content.VARIANTS);
+check("minor gods the roster can actually put on a table",
+  content.MINOR_GODS.filter(g => !rosterNow.some(c => c.name === g.name))
+    .map(g => g.name).join(", ") || "none", "none");
+/* And they outrank everything else, which is the whole argument for statting them at all. */
+const godHealth = content.MINOR_GODS
+  .map(g => rosterNow.find(c => c.name === g.name)?.system.health.base ?? 0);
+const mortalTop = Math.max(...rosterNow
+  .filter(c => !content.MINOR_GODS.some(g => g.name === c.name))
+  .map(c => c.system.health.base));
+/*
+ * Measured against the DRAGON rather than against the top of the health column. The Queen is
+ * sixty and the biggest mortal, and that sixty is her army rather than her -- she cannot move.
+ * The strongest thing in the game that actually comes at you is the Dragon at fifty, and every
+ * god clears it.
+ */
+const dragonHealth = rosterNow.find(c => c.name === "Dragon").system.health.base;
+check("and the weakest of them still outlives the Dragon",
+  Math.min(...godHealth) > dragonHealth ? "yes" : "no", "yes");
+check("which it is, at", dragonHealth, 50);
 const godNames = new Set(content.MINOR_GODS.map(g => g.name));
 const creatureNames = new Set(monsters.expandRoster(content.ROSTER, content.VARIANTS)
   .map(c => c.name));
@@ -6556,7 +6647,7 @@ const quarantineReach = shapes.map(s =>
  * at all. It is `hands` now, like every other shield in the book, and the quarantine reaches it.
  */
 check("items each shape step's quarantine reaches", quarantineReach.join(" "),
-  "The Borrowed Body:64");
+  "The Borrowed Body:68");
 /* And none of them reaches nothing, which `quarantines` returning false for everything would
  * produce while every field was still filled in. */
 check("quarantines that match no item at all",
@@ -6738,7 +6829,7 @@ const planned = packs.planDocuments();
 check("compendium packs", planned.length, 7);
 check("and what each one holds",
   planned.map(p => `${p.name}:${p.docs.length}`).join(" "),
-  "creatures:68 characters:1 items:176 features:22 spells:117 signatures:30 decks:11");
+  "creatures:112 characters:1 items:180 features:22 spells:117 signatures:30 decks:11");
 /* Faults the generator records rather than throws: a filename collision silently drops a document,
  * so the build reports it and this refuses to pass with one outstanding. */
 check("faults the generator reported", planned[0].faults.join("; ") || "none", "none");
@@ -6760,7 +6851,7 @@ check("faults the generator reported", planned[0].faults.join("; ") || "none", "
 const DIMENSIONS = ["width", "height", "depth"];
 const actorDocs = planned.filter(p => ["creatures", "characters"].includes(p.name))
   .flatMap(p => p.docs);
-check("Actor documents the dimension sweep read", actorDocs.length, 69);
+check("Actor documents the dimension sweep read", actorDocs.length, 113);
 check("Actors missing a token dimension",
   actorDocs.filter(d => DIMENSIONS.some(f => typeof d.prototypeToken?.[f] !== "number"))
     .map(d => d.name).join(", ") || "none", "none");
@@ -6782,8 +6873,8 @@ check("and the group it asks for", DIMENSIONS.join("+"), "width+height+depth");
  */
 const everyPackDoc = planned.flatMap(p => p.docs);
 const everyPackChild = planned.flatMap(p => p.docs.flatMap(d => d.items ?? d.cards ?? []));
-check("documents the stamp sweep read", everyPackDoc.length, 425);
-check("and children beneath them", everyPackChild.length, 257);
+check("documents the stamp sweep read", everyPackDoc.length, 473);
+check("and children beneath them", everyPackChild.length, 340);
 const unstamped = [...everyPackDoc, ...everyPackChild]
   .filter(d => d._stats?.coreVersion !== manifest.compatibility.verified
     || d._stats?.systemId !== manifest.id
@@ -6859,7 +6950,7 @@ check("pack sources that disagree with the content",
   stale.length ? `${stale.length}: ${stale.slice(0, 4).join(", ")}` : "none", "none");
 /* A comparison that read no files would report "none" for a repository with no packs at all. */
 check("documents the comparison actually read",
-  planned.reduce((n, p) => n + p.docs.length, 0), 425);
+  planned.reduce((n, p) => n + p.docs.length, 0), 473);
 
 /*
  * **An id is a promise.** A world that imports a creature keeps the pack's id, and so does every
@@ -6892,7 +6983,7 @@ for (const pack of planned) {
 }
 check("ids that are not the hash of their key, malformed, or shared",
   idFaults.length ? idFaults.slice(0, 4).join("; ") : "none", "none");
-check("ids the rule actually read", everyId.size, 682);
+check("ids the rule actually read", everyId.size, 813);
 /* The hash itself, asked rather than shared: sixteen characters of the right alphabet, and the
  * same answer twice for the same key. */
 check("an id is sixteen characters", packs.id16("items:Longsword").length, 16);
@@ -8320,7 +8411,7 @@ const monsterBorne = [...content.NPC_GEAR, ...content.FEATURES.filter(f =>
   [content.GOBLIN, content.GOBLIN_ARCHER].some(a => (a.features ?? []).includes(f.name)))];
 /* Seven now: the two goblin weapons, the four pieces the variants named, and the trollkin club.
  * The natural weapons are counted separately below, since a grown thing is not gear. */
-check("content a monster carries", monsterBorne.length, 9);
+check("content a monster carries", monsterBorne.length, 11);
 check("and none of it grants what a monster cannot read",
   monsterBorne.filter(x => grants.CHARACTER_GRANTS.filter(k => k !== "health")
     .some(k => x.grants?.[k])).map(x => x.name).join(", ") || "none", "none");
@@ -9968,8 +10059,8 @@ const deckOfCaps = (caps, kind = "") => monsters.deckFor(caps, content.INTENTS, 
 const deckOfCreature = c => deckOfCaps(c.system.capabilities, c.system.kind);
 
 check("cards in the intent pool", content.INTENTS.length, 36);
-check("bases in the roster", content.ROSTER.length, 43);
-check("creatures the variants expand them into", everyCreature.length, 68);
+check("bases in the roster", content.ROSTER.length, 75);
+check("creatures the variants expand them into", everyCreature.length, 112);
 check("and the rest of the world, tagged but not numbered", content.MONSTER_TAGS.length, 0);
 
 /*
@@ -10036,7 +10127,7 @@ check("and creatures drilled with no tactic that says so",
 const byTemper = t => everyCreature.filter(c => temperamentsOf(c).includes(t)).length;
 check("drilled, feral and wits across the roster",
   CARDRPG.temperaments.map(t => `${t} ${byTemper(t)}`).join(", "),
-  "drilled 15, feral 34, wits 19");
+  "drilled 21, feral 44, wits 47");
 /* A gate nothing is behind is a capability that earns nothing, which is the defect the whole
  * scheme exists to avoid -- so each temperament has to carry cards of its own. */
 check("cards each temperament earns",
@@ -10109,7 +10200,7 @@ check("and the Queen can draw it", deckOfCaps(["commander", "summon"]).some(c =>
 check("and the smallest deck in the roster",
   Math.min(...everyCreature.map(c => deckOfCreature(c).length)), 7);
 check("the largest",
-  Math.max(...everyCreature.map(c => deckOfCreature(c).length)), 12);
+  Math.max(...everyCreature.map(c => deckOfCreature(c).length)), 14);
 /* The Queen is the only creature in the world that cannot move, so she is the only one who proves
  * the derivation does anything. Without her, `needs: ["move"]` and `needs: []` are the same card. */
 const legless = everyCreature.filter(c => !monsters.capsOf(c.system.capabilities).has("move"));
@@ -10187,7 +10278,8 @@ check("and the line that is built from it",
  */
 const gearOf = creature => {
   const names = creature.equipped ?? [];
-  return [...content.NPC_GEAR, ...content.NATURAL_WEAPONS].filter(g => names.includes(g.name));
+  return [...content.NPC_GEAR, ...content.NATURAL_WEAPONS, ...content.ITEMS]
+    .filter(g => names.includes(g.name));
 };
 const strikeOf = c => Math.max(0, ...gearOf(c).map(g => g.verbs?.strike?.value ?? 0));
 /* Strike OR cast: a Goblin Shaman carries a fetish and no knife, and a caster that attacks by
@@ -10198,20 +10290,31 @@ check("every creature carries something to fight with",
   everyCreature.filter(c => attackOf(c) === 0).map(c => c.name).join(", ") || "none", "none");
 check("and the ones that fight by casting",
   everyCreature.filter(c => strikeOf(c) === 0).map(c => c.name).sort().join(", "),
-  "Elf, Gnome, Goblin Shaman, Little Folk, Mole Man Priest, Nature Spirit, Shade");
+  "Elf, Gnome, Goblin Shaman, Little Folk, Mole Man Priest, Nature Spirit, Shade, Tempter, "
+  + "Watcher");
 /* core-rules 9's tuning rule: a weak enemy's Strike stays at least 2 above the heroes' armour, and
  * the starter Warrior wears 1 -- so nothing in the roster strikes for less than 3 except the two
  * the world calls harmless. */
 check("creatures that strike for less than three",
   everyCreature.filter(c => strikeOf(c) > 0 && strikeOf(c) < 3)
     .map(c => c.name).sort().join(", "),
-  "Changeling, Doomfly, Processor, Scrip, Scrip Watcher, Skaah, Stinger, Sweeper Carrier");
+  "Changeling, Cultist, Doomfly, Familiar, Imp, Mob, Mummer, Processor, Scrip, Scrip Watcher, "
+  + "Skaah, Stinger, Sweeper Carrier, The Unseen, Townsfolk, Wanderer");
 check("and the rule they are the exception to",
   /Keep a weak enemy's Strike value at least 2 above the heroes' armor/.test(coreRules)
     ? "yes" : "no", "yes");
-/* Health is ordered by rank, which is the one thing a ratio can be checked on. */
-check("the Queen is the largest thing in the roster",
-  everyCreature.sort((a, b) => b.system.health.base - a.system.health.base)[0].name, "The Queen");
+/*
+ * Health is ordered by rank, which is the one thing a ratio can be checked on -- and the gods sit
+ * outside that ordering rather than at the top of it. **The Queen is still the largest MORTAL**,
+ * and what that number buys her is the army: `summon`, `commander` and a speed of zero. Taken
+ * alone she is a big thing that cannot walk. The eight above her are not a higher rank of monster.
+ */
+const mortals = everyCreature.filter(c => !content.MINOR_GODS.some(g => g.name === c.name));
+check("the Queen is the largest mortal in the roster",
+  [...mortals].sort((a, b) => b.system.health.base - a.system.health.base)[0].name, "The Queen");
+check("and the largest thing of any kind",
+  [...everyCreature].sort((a, b) => b.system.health.base - a.system.health.base)[0].name,
+  "The Land Jelly");
 
 /*
  * **Natural weapons are items**, because core-rules 9 already settles where an NPC's Strike comes
@@ -10220,7 +10323,7 @@ check("the Queen is the largest thing in the roster",
  * and the tag is on the item from the start so that the day somebody writes the rule, a dragon does
  * not drop its teeth.
  */
-check("natural weapons", content.NATURAL_WEAPONS.length, 17);
+check("natural weapons", content.NATURAL_WEAPONS.length, 19);
 check("every one of them tagged as grown rather than carried",
   content.NATURAL_WEAPONS.filter(w => !w.tags.includes("natural")).map(w => w.name).join(", ")
     || "none", "none");
@@ -10317,8 +10420,8 @@ check("tactics the config offers that no creature has",
 const tacSig = m => [...(m.system.tactics ?? [])].sort().join("+")
   + " :: " + [...(m.system.capabilities ?? [])].sort().join("+");
 const baseRoster = content.ROSTER;
-check("base creatures in the roster", baseRoster.length, 43);
-check("and distinct ways of fighting among them", new Set(baseRoster.map(tacSig)).size, 43);
+check("base creatures in the roster", baseRoster.length, 75);
+check("and distinct ways of fighting among them", new Set(baseRoster.map(tacSig)).size, 75);
 /*
  * **The variants are where the variety thins, and it was four of them. It is one.**
  *
@@ -10373,11 +10476,11 @@ check("variant edits that change nothing", deadDeltas.sort().join(", "),
   + "Terror Fly Torch +sniper");
 /* And the sweep saw the variants it claims to have swept. */
 check("variants the sweep read",
-  Object.values(content.VARIANTS).reduce((n, l) => n + l.length, 0), 25);
+  Object.values(content.VARIANTS).reduce((n, l) => n + l.length, 0), 37);
 
 /* And how many are genuinely their own problem, which is the number worth watching. */
-check("distinct ways of fighting across the whole roster", new Set(allSigs).size, 67);
-check("out of creatures in all", everyCreature.length, 68);
+check("distinct ways of fighting across the whole roster", new Set(allSigs).size, 111);
+check("out of creatures in all", everyCreature.length, 112);
 /*
  * `ranged` was the thinnest word in the vocabulary: ONE creature in forty-seven could shoot, and
  * *Loose* was the only card in the pool with a single drawer. The Armored Slug Spitter is written
@@ -10386,7 +10489,8 @@ check("out of creatures in all", everyCreature.length, 68);
  */
 check("creatures that can shoot at all",
   everyCreature.filter(m => (m.system.capabilities ?? []).includes("ranged"))
-    .map(m => m.name).sort().join(", "), "Armored Slug Spitter, Goblin Archer");
+    .map(m => m.name).sort().join(", "), "Armored Slug Spitter, Artillerist, Goblin Archer, Guild Engineer, Highwayman, Salt Baron, "
+  + "Smuggler");
 /* And the four target priorities are all used, because who a monster goes for is most of how it
  * feels: a Stinger that went for the nearest body would be a different creature. */
 check("target priorities in use",
@@ -10413,7 +10517,10 @@ check("the command ladder, read out of the roster's own notes",
   + "captains: Terror Fly | generals: Pincer | unique: The Queen");
 
 const hits = m => Math.max(0, ...(m.equipped ?? [])
-  .map(n => [...content.NPC_GEAR, ...content.NATURAL_WEAPONS].find(g => g.name === n))
+  /* ITEMS too: a human NPC carries real gear, and without this every one of them read as
+   * unarmed and dragged the bottom of the damage band to zero. */
+  .map(n => [...content.NPC_GEAR, ...content.NATURAL_WEAPONS, ...content.ITEMS]
+    .find(g => g.name === n))
   .filter(Boolean)
   .flatMap(w => Object.values(w.verbs ?? {}).map(v => v?.value ?? 0)));
 const falls = (label, of) => {
@@ -10458,7 +10565,7 @@ check("the damage band across the roster",
   `${Math.min(...baseRoster.map(hits))}-${Math.max(...baseRoster.map(hits))}`, "1-8");
 check("and the health band beside it, which is the disproportion",
   `${Math.min(...baseRoster.map(m => m.system.health.base))}`
-  + `-${Math.max(...baseRoster.map(m => m.system.health.base))}`, "2-60");
+  + `-${Math.max(...baseRoster.map(m => m.system.health.base))}`, "2-90");
 
 /*
  * **4. The folklore the world is built on, and how much of it the roster stats.**
@@ -10491,7 +10598,7 @@ const statted = worldBeings.filter(b => {
 });
 check("and which of them the roster stats",
   statted.length ? statted.join(", ") : "none",
-  "trolls, dragons, nature spirits");
+  "trolls, dragons, nature spirits, Troll King, queen of the dark");
 check("and which are still a name and a list of capabilities",
   [...new Set(content.MONSTER_TAGS.map(t => t.group))].sort().join(", ") || "none", "none");
 /* What the roster is, by the families it has. */
@@ -10519,17 +10626,40 @@ const goblin = everyCreature.find(m => m.name === "Goblin");
 check("and the goblin is a folk goblin in its fields, not its blurb",
   [...(goblin.system.tactics ?? [])].sort().join("+") + " / " + goblin.system.targetPriority,
   "cowardly+packTactics / weakest");
-check("while cowardly is carried by the goblins alone",
+/*
+ * It was the goblins alone, and townsfolk are the one other thing in the world that runs. The
+ * two are not the same creature: a goblin line runs TOGETHER, which is `cowardly` beside
+ * `packTactics`, and a market scatters, which is `cowardly` on its own. Without that distinction
+ * they had an identical fighting signature.
+ */
+check("and who else is allowed to run",
   everyCreature.filter(m => (m.system.tactics ?? []).includes("cowardly"))
-    .every(m => m.name.startsWith("Goblin")) ? "yes" : "no", "yes");
+    .filter(m => !m.name.startsWith("Goblin")).map(m => m.name).join(", ") || "none",
+  "Townsfolk");
 
-check("the roster does not invent the demons",
-  [...everyCreature, ...content.MONSTER_TAGS]
-    .filter(c => ["Watchers", "Wanderers", "Tempters", "Djinn", "Gheul", "Naga", "Div", "Estries",
-      "Familiars", "Incubi / Succubi", "Cambion", "Imp"].includes(c.name)).length, 0);
-check("and says why in the content",
-  /names with no\s*\n? \* description\. Nothing can be read off a name, so nothing is claimed\./
-    .test(contentSource) ? "yes" : "no", "yes");
+/*
+ * **This pinned an absence, and the absence has now been filled.**
+ *
+ * The argument was *nothing can be read off a name*, and it was wrong about these particular
+ * names. Watchers are Enochian; Djinn, Ifrit, Marid and Gheul are Arabic; Div is Persian; Naga is
+ * Hindu; Estries is Jewish; Familiar, Incubus, Cambion and Imp are medieval European. Every one is
+ * a tradition with a body already attached, and the twelve headings read as a deliberate sweep
+ * across several of them. What could not be read off the names was the NUMBERS.
+ *
+ * So it pins WHICH of the headings have a stat line rather than that none does. The four that do
+ * not are the four Firma nests under another: Ifrit and Marid sit beneath Djinn as `####`, and
+ * Succubus and Cambion belong to the Incubus heading. Those are variants waiting to be written.
+ */
+const demonHeadings = ["Watcher", "Wanderer", "Tempter", "Djinn", "Gheul", "Naga", "Div",
+  "Estrie", "Familiar", "Incubus", "Imp"];
+check("the demons the world names, now with numbers",
+  demonHeadings.filter(n => everyCreature.some(c => c.name === n)).length, demonHeadings.length);
+check("and the ones still nested under another heading",
+  ["Ifrit", "Marid", "Succubus", "Cambion"].filter(n => everyCreature.some(c => c.name === n))
+    .join(", ") || "none", "none");
+check("and the content says where their bodies came from",
+  /Enochian, Arabic, Persian, Hindu, Jewish and medieval European/.test(contentSource)
+    ? "yes" : "no", "yes");
 /* The Queen is unique, which the world says and a variant list would deny. */
 check("the Queen has no variants", content.VARIANTS.queen ?? "none", "none");
 

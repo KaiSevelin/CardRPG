@@ -1,0 +1,101 @@
+{
+  "_id": "76LBe8HtfMmtrdsM",
+  "_key": "!actors!76LBe8HtfMmtrdsM",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Artillerist",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 14,
+      "base": 14
+    },
+    "kind": "artillerist",
+    "armorBase": 3,
+    "speed": 2,
+    "capabilities": [
+      "legs",
+      "ranged",
+      "siege",
+      "wits",
+      "reach"
+    ],
+    "tactics": [
+      "sniper"
+    ],
+    "targetPriority": "leader"
+  },
+  "items": [
+    {
+      "_id": "pVnakYcm1q5XyOgF",
+      "_key": "!actors.items!76LBe8HtfMmtrdsM.pVnakYcm1q5XyOgF",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Matchlock Musket",
+      "type": "item",
+      "system": {
+        "ammo": "firearm",
+        "slot": "hands",
+        "hands": 2,
+        "tags": [
+          "heavy",
+          "ranged"
+        ],
+        "weight": 5,
+        "value": 150,
+        "kind": "Weapon",
+        "blurb": "A rest to fire it from and a minute to load it. Worth both.",
+        "verbs": {
+          "strike": {
+            "value": 6,
+            "ignores": 2,
+            "range": 12,
+            "text": "ignores 2 armor; Ready to reload"
+          }
+        },
+        "equipped": true
+      }
+    },
+    {
+      "_id": "VHoYkRmq04geQesx",
+      "_key": "!actors.items!76LBe8HtfMmtrdsM.VHoYkRmq04geQesx",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Brigandine",
+      "type": "item",
+      "system": {
+        "slot": "body",
+        "tags": [
+          "armor",
+          "heavy"
+        ],
+        "weight": 12,
+        "value": 140,
+        "kind": "Armor",
+        "armor": 3,
+        "blurb": "Plates riveted between canvas. Heavy enough that you stop dodging.",
+        "blocksReactions": [
+          "sidestep"
+        ],
+        "text": "Blocks Sidestep reactions.",
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Artillerist",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

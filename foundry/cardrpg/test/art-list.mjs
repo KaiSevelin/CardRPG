@@ -152,6 +152,51 @@ function lookOf(creature) {
   return creature.look || creature.note || "";
 }
 
+/**
+ * Who the person in the picture is, for the creatures that are people.
+ *
+ * **A rule in the capsule cannot produce variety, and that is the whole reason this exists.** Each
+ * piece is a separate request with no sight of any other, so *vary who you draw* has nothing to
+ * vary against: the model answers it the same way every time, and twenty-four human tokens came
+ * back as one pale man in twenty-four costumes.
+ *
+ * So the variation is **assigned** rather than asked for. Each creature gets one sex, one
+ * ancestry and one age, and the subject states them as fact alongside the rest of its description
+ * -- which is the form the prompt book already trusts, because *drawn sitting, watching* and
+ * *no wings at all* are obeyed and *be interesting* is not.
+ *
+ * **Hashed from the creature's kind and not counted off the roster**, which matters more than it
+ * looks: an index into the list would mean that inserting one human silently reassigns every
+ * human after it, so a token already drawn and already through the gate would no longer match the
+ * prompt that would be sent for it -- and nothing in the gate can measure a face against a
+ * sentence. Hashing the kind makes a creature's casting a property of the creature.
+ *
+ * Lengths are 7, 13 and 4: coprime, so the three axes do not travel together and the same
+ * ancestry does not keep arriving at the same age.
+ */
+const SEX = ["a woman", "a man", "a woman", "a man", "a woman", "a man", "a woman"];
+const ANCESTRY = [
+  "West African", "Levantine", "South Asian", "East Asian", "North African", "Mediterranean",
+  "Persian", "Nordic", "Horn of Africa", "Slavic", "Southeast Asian", "Caribbean", "Central Asian"
+];
+const AGE = ["in their twenties", "in their thirties", "in their forties", "past fifty"];
+
+/* How long a creature's subject may run before the base's half of it is cut. Four hundred was the
+ * figure when every look was one sentence; the humans arrive with three. */
+const CAP = 480;
+
+const HUMAN = new Set(content.HUMAN_KINDS);
+const hash = text => [...text].reduce((h, c) => (h * 31 + c.codePointAt(0)) % 1000003, 7);
+
+export function castOf(creature) {
+  const kind = creature.system?.kind ?? "";
+  const human = HUMAN.has(kind) || HUMAN.has(BASE_OF.get(kind)?.system?.kind);
+  if (!human) return "";
+  const h = hash(kind);
+  return `Draw this one as ${SEX[h % 7]} of ${ANCESTRY[(h >> 1) % 13]} appearance, `
+    + `${AGE[(h >> 5) % 4]} -- that is fixed, not a suggestion.`;
+}
+
 export function creatureBrief(creature) {
   const s = creature.system ?? {};
   const bits = [];
@@ -174,9 +219,36 @@ export function creatureBrief(creature) {
    * variant has written its own `look` that wins, and otherwise its note is the difference. */
   const base_look = base ? lookOf(base) : "";
   const own = creature.look || creature.note || "";
-  const look = base ? `A ${base.name}: ${base_look} This one ${own}` : lookOf(creature);
-  const line = [bits.join(" \u00b7 "), look].filter(Boolean).join(" \u2014 ");
-  return line.length > 400 ? `${line.slice(0, 397)}...` : line;
+  /*
+   * **The cap falls on the BASE's description and never on the variant's own.**
+   *
+   * The Mob is why, and it was a live defect rather than a tidy-up. Its whole point is that it is
+   * a crowd -- *drawn as a press of bodies*, *the one creature in the roster that is deliberately
+   * more than one body* -- and every word of that sat past the four-hundredth character, so what
+   * actually reached the model was a Townsfolk's *one ordinary working person* and an ellipsis. A
+   * variant exists for the part that says how it DIFFERS; the base is context, and context is
+   * what gives ground when there is not room for both.
+   *
+   * Where even the naming will not fit, the base's description goes entirely rather than being
+   * cut off mid-clause: *a Townsfolk, and this one ...* still says which animal it is.
+   */
+  const clip = (text, room) => room >= text.length ? text : `${text.slice(0, room - 3)}...`;
+  const stats = bits.join(" \u00b7 ");
+  const room = CAP - stats.length - 3;
+  let look;
+  if (!base) look = clip(lookOf(creature), room);
+  else {
+    const left = room - `A ${base.name}: `.length - " This one ".length - own.length;
+    look = left < 60
+      ? `A ${base.name}, and this one ${own}`
+      : `A ${base.name}: ${clip(base_look, left)} This one ${own}`;
+  }
+  const line = [stats, look].filter(Boolean).join(" \u2014 ");
+  /* The casting is appended AFTER the cap for the same reason. It is the one part of a subject
+   * that is useless truncated -- *a woman of Levantine appe...* says nothing -- and being last is
+   * what would have put it first against the wall. */
+  const cast = castOf(creature);
+  return cast ? `${line} ${cast}` : line;
 }
 
 /*

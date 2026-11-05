@@ -1,0 +1,70 @@
+{
+  "_id": "6v3L1paaSNEhMj4y",
+  "_key": "!actors!6v3L1paaSNEhMj4y",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Div",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 38,
+      "base": 38
+    },
+    "kind": "div",
+    "armorBase": 3,
+    "speed": 3,
+    "capabilities": [
+      "legs",
+      "brute",
+      "siege",
+      "feral"
+    ],
+    "tactics": [
+      "brute"
+    ],
+    "targetPriority": "nearest"
+  },
+  "items": [
+    {
+      "_id": "ORHWUC6MHlI5mOkp",
+      "_key": "!actors.items!6v3L1paaSNEhMj4y.ORHWUC6MHlI5mOkp",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Burning Grasp",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "heavy",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 6,
+            "ignores": 1
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Div",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

@@ -1,6 +1,6 @@
 # Art prompts
 
-**540 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
+**588 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
 
 It walks the same `GROUPS` the art list walks, by importing it rather than copying it, so the two files cannot disagree about what exists.
 
@@ -27,7 +27,7 @@ So the numbers are gone from the capsules and the picture is in their place: **t
 
 ## Deck backs
 
-**Draw these first.** 6 pictures against 534 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
+**Draw these first.** 6 pictures against 582 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
 
 ### The capsule — paste this once
 
@@ -183,6 +183,16 @@ PALETTE.
 - Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
   here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
+
+PEOPLE.
+- **Where a person is drawn, decide who they are rather than defaulting.** This is a port city on
+  a trade road: the people in the set are Black, brown, Levantine, Persian, South and East Asian,
+  Mediterranean and northern-pale in roughly the proportions a crowd there would be, and women
+  are as common in it as men. A sepia palette is not a statement about skin -- warm ink renders
+  every complexion, and a deck in which every figure is the same pale man is a failure of the
+  drawing and not of the paper.
+- Nothing here asks for a particular face unless the subject says so in words, and where it does
+  say so -- a named sex, an ancestry, an age -- that is binding.
 
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
@@ -354,6 +364,16 @@ PALETTE.
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
   here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
 
+PEOPLE.
+- **Where a person is drawn, decide who they are rather than defaulting.** This is a port city on
+  a trade road: the people in the set are Black, brown, Levantine, Persian, South and East Asian,
+  Mediterranean and northern-pale in roughly the proportions a crowd there would be, and women
+  are as common in it as men. A sepia palette is not a statement about skin -- warm ink renders
+  every complexion, and a deck in which every figure is the same pale man is a failure of the
+  drawing and not of the paper.
+- Nothing here asks for a particular face unless the subject says so in words, and where it does
+  say so -- a named sex, an ancestry, an age -- that is binding.
+
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
 with a loaded brush; then large soft washes for the mass; then generous untouched paper where the
@@ -512,6 +532,16 @@ PALETTE.
 - Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
   here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
+
+PEOPLE.
+- **Where a person is drawn, decide who they are rather than defaulting.** This is a port city on
+  a trade road: the people in the set are Black, brown, Levantine, Persian, South and East Asian,
+  Mediterranean and northern-pale in roughly the proportions a crowd there would be, and women
+  are as common in it as men. A sepia palette is not a statement about skin -- warm ink renders
+  every complexion, and a deck in which every figure is the same pale man is a failure of the
+  drawing and not of the paper.
+- Nothing here asks for a particular face unless the subject says so in words, and where it does
+  say so -- a named sex, an ancestry, an age -- that is binding.
 
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
@@ -951,6 +981,16 @@ PALETTE.
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
   here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
 
+PEOPLE.
+- **Where a person is drawn, decide who they are rather than defaulting.** This is a port city on
+  a trade road: the people in the set are Black, brown, Levantine, Persian, South and East Asian,
+  Mediterranean and northern-pale in roughly the proportions a crowd there would be, and women
+  are as common in it as men. A sepia palette is not a statement about skin -- warm ink renders
+  every complexion, and a deck in which every figure is the same pale man is a failure of the
+  drawing and not of the paper.
+- Nothing here asks for a particular face unless the subject says so in words, and where it does
+  say so -- a named sex, an ancestry, an age -- that is binding.
+
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
 with a loaded brush; then large soft washes for the mass; then generous untouched paper where the
@@ -1142,6 +1182,16 @@ PALETTE.
   the warm greys between them. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
   here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
+
+PEOPLE.
+- **Where a person is drawn, decide who they are rather than defaulting.** This is a port city on
+  a trade road: the people in the set are Black, brown, Levantine, Persian, South and East Asian,
+  Mediterranean and northern-pale in roughly the proportions a crowd there would be, and women
+  are as common in it as men. A sepia palette is not a statement about skin -- warm ink renders
+  every complexion, and a deck in which every figure is the same pale man is a failure of the
+  drawing and not of the paper.
+- Nothing here asks for a particular face unless the subject says so in words, and where it does
+  say so -- a named sex, an ancestry, an age -- that is binding.
 
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
@@ -1343,6 +1393,16 @@ PALETTE.
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
   here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
 
+PEOPLE.
+- **Where a person is drawn, decide who they are rather than defaulting.** This is a port city on
+  a trade road: the people in the set are Black, brown, Levantine, Persian, South and East Asian,
+  Mediterranean and northern-pale in roughly the proportions a crowd there would be, and women
+  are as common in it as men. A sepia palette is not a statement about skin -- warm ink renders
+  every complexion, and a deck in which every figure is the same pale man is a failure of the
+  drawing and not of the paper.
+- Nothing here asks for a particular face unless the subject says so in words, and where it does
+  say so -- a named sex, an ancestry, an age -- that is binding.
+
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
 with a loaded brush; then large soft washes for the mass; then generous untouched paper where the
@@ -1432,6 +1492,16 @@ PALETTE.
 - Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
   here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
+
+PEOPLE.
+- **Where a person is drawn, decide who they are rather than defaulting.** This is a port city on
+  a trade road: the people in the set are Black, brown, Levantine, Persian, South and East Asian,
+  Mediterranean and northern-pale in roughly the proportions a crowd there would be, and women
+  are as common in it as men. A sepia palette is not a statement about skin -- warm ink renders
+  every complexion, and a deck in which every figure is the same pale man is a failure of the
+  drawing and not of the paper.
+- Nothing here asks for a particular face unless the subject says so in words, and where it does
+  say so -- a named sex, an ancestry, an age -- that is binding.
 
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
@@ -1602,6 +1672,16 @@ PALETTE.
 - Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
   here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
+
+PEOPLE.
+- **Where a person is drawn, decide who they are rather than defaulting.** This is a port city on
+  a trade road: the people in the set are Black, brown, Levantine, Persian, South and East Asian,
+  Mediterranean and northern-pale in roughly the proportions a crowd there would be, and women
+  are as common in it as men. A sepia palette is not a statement about skin -- warm ink renders
+  every complexion, and a deck in which every figure is the same pale man is a failure of the
+  drawing and not of the paper.
+- Nothing here asks for a particular face unless the subject says so in words, and where it does
+  say so -- a named sex, an ancestry, an age -- that is binding.
 
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
@@ -1774,6 +1854,16 @@ PALETTE.
   the warm greys between them. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
   here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
+
+PEOPLE.
+- **Where a person is drawn, decide who they are rather than defaulting.** This is a port city on
+  a trade road: the people in the set are Black, brown, Levantine, Persian, South and East Asian,
+  Mediterranean and northern-pale in roughly the proportions a crowd there would be, and women
+  are as common in it as men. A sepia palette is not a statement about skin -- warm ink renders
+  every complexion, and a deck in which every figure is the same pale man is a failure of the
+  drawing and not of the paper.
+- Nothing here asks for a particular face unless the subject says so in words, and where it does
+  say so -- a named sex, an ancestry, an age -- that is binding.
 
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
@@ -1967,6 +2057,16 @@ PALETTE.
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
   here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
 
+PEOPLE.
+- **Where a person is drawn, decide who they are rather than defaulting.** This is a port city on
+  a trade road: the people in the set are Black, brown, Levantine, Persian, South and East Asian,
+  Mediterranean and northern-pale in roughly the proportions a crowd there would be, and women
+  are as common in it as men. A sepia palette is not a statement about skin -- warm ink renders
+  every complexion, and a deck in which every figure is the same pale man is a failure of the
+  drawing and not of the paper.
+- Nothing here asks for a particular face unless the subject says so in words, and where it does
+  say so -- a named sex, an ancestry, an age -- that is binding.
+
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
 with a loaded brush; then large soft washes for the mass; then generous untouched paper where the
@@ -2158,6 +2258,16 @@ PALETTE.
   the warm greys between them. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
   here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
+
+PEOPLE.
+- **Where a person is drawn, decide who they are rather than defaulting.** This is a port city on
+  a trade road: the people in the set are Black, brown, Levantine, Persian, South and East Asian,
+  Mediterranean and northern-pale in roughly the proportions a crowd there would be, and women
+  are as common in it as men. A sepia palette is not a statement about skin -- warm ink renders
+  every complexion, and a deck in which every figure is the same pale man is a failure of the
+  drawing and not of the paper.
+- Nothing here asks for a particular face unless the subject says so in words, and where it does
+  say so -- a named sex, an ancestry, an age -- that is binding.
 
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
@@ -2362,6 +2472,16 @@ PALETTE.
   the warm greys between them. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
   here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
+
+PEOPLE.
+- **Where a person is drawn, decide who they are rather than defaulting.** This is a port city on
+  a trade road: the people in the set are Black, brown, Levantine, Persian, South and East Asian,
+  Mediterranean and northern-pale in roughly the proportions a crowd there would be, and women
+  are as common in it as men. A sepia palette is not a statement about skin -- warm ink renders
+  every complexion, and a deck in which every figure is the same pale man is a failure of the
+  drawing and not of the paper.
+- Nothing here asks for a particular face unless the subject says so in words, and where it does
+  say so -- a named sex, an ancestry, an age -- that is binding.
 
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
@@ -2617,6 +2737,16 @@ PALETTE.
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
   here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
 
+PEOPLE.
+- **Where a person is drawn, decide who they are rather than defaulting.** This is a port city on
+  a trade road: the people in the set are Black, brown, Levantine, Persian, South and East Asian,
+  Mediterranean and northern-pale in roughly the proportions a crowd there would be, and women
+  are as common in it as men. A sepia palette is not a statement about skin -- warm ink renders
+  every complexion, and a deck in which every figure is the same pale man is a failure of the
+  drawing and not of the paper.
+- Nothing here asks for a particular face unless the subject says so in words, and where it does
+  say so -- a named sex, an ancestry, an age -- that is binding.
+
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
 with a loaded brush; then large soft washes for the mass; then generous untouched paper where the
@@ -2737,6 +2867,16 @@ PALETTE.
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
   here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
 
+PEOPLE.
+- **Where a person is drawn, decide who they are rather than defaulting.** This is a port city on
+  a trade road: the people in the set are Black, brown, Levantine, Persian, South and East Asian,
+  Mediterranean and northern-pale in roughly the proportions a crowd there would be, and women
+  are as common in it as men. A sepia palette is not a statement about skin -- warm ink renders
+  every complexion, and a deck in which every figure is the same pale man is a failure of the
+  drawing and not of the paper.
+- Nothing here asks for a particular face unless the subject says so in words, and where it does
+  say so -- a named sex, an ancestry, an age -- that is binding.
+
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
 with a loaded brush; then large soft washes for the mass; then generous untouched paper where the
@@ -2820,6 +2960,16 @@ PALETTE.
   the warm greys between them. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
   here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
+
+PEOPLE.
+- **Where a person is drawn, decide who they are rather than defaulting.** This is a port city on
+  a trade road: the people in the set are Black, brown, Levantine, Persian, South and East Asian,
+  Mediterranean and northern-pale in roughly the proportions a crowd there would be, and women
+  are as common in it as men. A sepia palette is not a statement about skin -- warm ink renders
+  every complexion, and a deck in which every figure is the same pale man is a failure of the
+  drawing and not of the paper.
+- Nothing here asks for a particular face unless the subject says so in words, and where it does
+  say so -- a named sex, an ancestry, an age -- that is binding.
 
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
@@ -3245,9 +3395,9 @@ Draw something arriving that was not there a moment ago.
 File: `spells/mind/the-great-bargain.webp`
 
 ```text
-SUBJECT. "The Great Bargain" — strength 5 · Conjure a minor god becomes present and fights as an ally
+SUBJECT. "The Great Bargain" — strength 5 · Conjure a minor god becomes present and fights as an ally for three rounds
 
-It is actually here. The GM plays it as an ally for the rest of the fight, and afterwards it takes something the GM chooses — which is the only honest way to price a favour that large.
+It is actually here, for three rounds. The GM plays it as an ally and then it goes, and afterwards it takes something the GM chooses — which is the only honest way to price a favour that large.
 
 Draw something arriving that was not there a moment ago.
 ```
@@ -3732,6 +3882,16 @@ PALETTE.
   the warm greys between them. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
   here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
+
+PEOPLE.
+- **Where a person is drawn, decide who they are rather than defaulting.** This is a port city on
+  a trade road: the people in the set are Black, brown, Levantine, Persian, South and East Asian,
+  Mediterranean and northern-pale in roughly the proportions a crowd there would be, and women
+  are as common in it as men. A sepia palette is not a statement about skin -- warm ink renders
+  every complexion, and a deck in which every figure is the same pale man is a failure of the
+  drawing and not of the paper.
+- Nothing here asks for a particular face unless the subject says so in words, and where it does
+  say so -- a named sex, an ancestry, an age -- that is binding.
 
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
@@ -4403,6 +4563,16 @@ PALETTE.
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
   here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
 
+PEOPLE.
+- **Where a person is drawn, decide who they are rather than defaulting.** This is a port city on
+  a trade road: the people in the set are Black, brown, Levantine, Persian, South and East Asian,
+  Mediterranean and northern-pale in roughly the proportions a crowd there would be, and women
+  are as common in it as men. A sepia palette is not a statement about skin -- warm ink renders
+  every complexion, and a deck in which every figure is the same pale man is a failure of the
+  drawing and not of the paper.
+- Nothing here asks for a particular face unless the subject says so in words, and where it does
+  say so -- a named sex, an ancestry, an age -- that is binding.
+
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
 with a loaded brush; then large soft washes for the mass; then generous untouched paper where the
@@ -4612,6 +4782,16 @@ PALETTE.
 - Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
   here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
+
+PEOPLE.
+- **Where a person is drawn, decide who they are rather than defaulting.** This is a port city on
+  a trade road: the people in the set are Black, brown, Levantine, Persian, South and East Asian,
+  Mediterranean and northern-pale in roughly the proportions a crowd there would be, and women
+  are as common in it as men. A sepia palette is not a statement about skin -- warm ink renders
+  every complexion, and a deck in which every figure is the same pale man is a failure of the
+  drawing and not of the paper.
+- Nothing here asks for a particular face unless the subject says so in words, and where it does
+  say so -- a named sex, an ancestry, an age -- that is binding.
 
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
@@ -6138,7 +6318,7 @@ Draw a shield, face on and slightly turned, its edge nicked from use.
 
 ## NPC gear
 
-**9 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/items/npc/`.
+**11 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/items/npc/`.
 
 A monster's kit -- cruder than a player's, made or scavenged rather than bought.
 
@@ -6183,6 +6363,16 @@ PALETTE.
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
   here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
 
+PEOPLE.
+- **Where a person is drawn, decide who they are rather than defaulting.** This is a port city on
+  a trade road: the people in the set are Black, brown, Levantine, Persian, South and East Asian,
+  Mediterranean and northern-pale in roughly the proportions a crowd there would be, and women
+  are as common in it as men. A sepia palette is not a statement about skin -- warm ink renders
+  every complexion, and a deck in which every figure is the same pale man is a failure of the
+  drawing and not of the paper.
+- Nothing here asks for a particular face unless the subject says so in words, and where it does
+  say so -- a named sex, an ancestry, an age -- that is binding.
+
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
 with a loaded brush; then large soft washes for the mass; then generous untouched paper where the
@@ -6206,6 +6396,16 @@ Use the full range, both ends of it:
 
 </details>
 
+### Carved Idol
+
+File: `items/npc/carved-idol.webp`
+
+```text
+SUBJECT. "Carved Idol" — Focus
+
+Draw a god-figure the size of a fist, cut from one piece of wood by somebody with more faith than skill: the face barely a face, the body a column, worn smooth at the shoulders from being held.
+```
+
 ### Dark Lantern
 
 File: `items/npc/dark-lantern.webp`
@@ -6214,6 +6414,16 @@ File: `items/npc/dark-lantern.webp`
 SUBJECT. "Dark Lantern" — Focus
 
 Draw a shuttered lantern with one slit open, throwing a single hard bar of light across a dark room and lighting nothing else at all.
+```
+
+### Demon's Sigil
+
+File: `items/npc/demons-sigil.webp`
+
+```text
+SUBJECT. "Demon's Sigil" — Focus
+
+Draw a mark burned into a flat surface and still smoking faintly at the edges -- not written, pressed. Geometric, closed, and the wood or stone around it curled away from the heat.
 ```
 
 ### Goblin Fetish
@@ -6298,7 +6508,7 @@ Draw an edge, worn and sharpened back more than once; weight: the object sits, a
 
 ## Natural weapons
 
-**17 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/items/natural/`.
+**19 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/items/natural/`.
 
 Grown rather than carried: a mandible, a sting, a tail club. It cannot be disarmed because it is part of a body, and the picture should make that obvious.
 
@@ -6343,6 +6553,16 @@ PALETTE.
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
   here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
 
+PEOPLE.
+- **Where a person is drawn, decide who they are rather than defaulting.** This is a port city on
+  a trade road: the people in the set are Black, brown, Levantine, Persian, South and East Asian,
+  Mediterranean and northern-pale in roughly the proportions a crowd there would be, and women
+  are as common in it as men. A sepia palette is not a statement about skin -- warm ink renders
+  every complexion, and a deck in which every figure is the same pale man is a failure of the
+  drawing and not of the paper.
+- Nothing here asks for a particular face unless the subject says so in words, and where it does
+  say so -- a named sex, an ancestry, an age -- that is binding.
+
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
 with a loaded brush; then large soft washes for the mass; then generous untouched paper where the
@@ -6374,6 +6594,16 @@ File: `items/natural/acid-spray.webp`
 SUBJECT. "Acid Spray" — Natural
 
 Draw a soft vent opened in a hide and spitting a thin fan of liquid, and the stone it has already crossed pitted and smoking.
+```
+
+### Burning Grasp
+
+File: `items/natural/burning-grasp.webp`
+
+```text
+SUBJECT. "Burning Grasp" — Natural
+
+Draw an edge, worn and sharpened back more than once; weight: the object sits, and the surface under it knows; grown rather than forged -- chitin, horn, tooth or claw, still part of a body.
 ```
 
 ### Claws
@@ -6466,6 +6696,16 @@ SUBJECT. "Heavy Mandibles" — Natural
 Draw jaws as thick as forearms, chipped and blunt rather than sharp, closing slowly on something that has already stopped resisting.
 ```
 
+### Killing Frost
+
+File: `items/natural/killing-frost.webp`
+
+```text
+SUBJECT. "Killing Frost" — Natural
+
+Draw the weapon drawn and held at tension; grown rather than forged -- chitin, horn, tooth or claw, still part of a body.
+```
+
 ### Mandibles
 
 File: `items/natural/mandibles.webp`
@@ -6538,7 +6778,7 @@ Draw two curved tusks worn smooth along their undersides by digging, swung upwar
 
 ## Creature tokens
 
-**68 prompts.** **1:1, 1024 × 1024, transparent.** Files go under `cardrpg/art/tokens/`.
+**112 prompts.** **1:1, 1024 × 1024, transparent.** Files go under `cardrpg/art/tokens/`.
 
 One picture per creature, used as both the sheet portrait and the map token.
 
@@ -6556,6 +6796,16 @@ FORMAT.
 COMPOSITION.
 - **The whole creature**, head to foot or nose to tail, filling the square edge to edge. Nothing
   is printed over a token, so there is no safe area.
+- **One creature, and one only.** Not a pair, not a group, not a smaller one at its feet for
+  scale, no mount, no attendant, no victim, no bystander, no second head and no second figure
+  anywhere in the square. A token is placed on one square of a map and moved as one thing. The
+  single exception is a creature whose own description says in words that it is a crowd.
+- **Nothing in the square but the creature and what it is holding.** No cargo, no crates, no
+  furniture, no wall, no doorway, no scenery and no ground -- those belong to the map underneath.
+- **The anatomy has to close.** Count the limbs against the description and draw exactly that
+  many: four legs on a quadruped, two on a biped, one tail and not two. A tail, a wing or a neck
+  grows out of the body in one unbroken line and is part of it -- never a separate shape floating
+  near the place it should join.
 - Seen from **above at a three-quarter angle**, consistently, as a figure on a table is seen by
   the people around it. Never a portrait, never a side elevation.
 - The silhouette does the work: this will be looked at beside twenty other tokens at 60 pixels,
@@ -6568,6 +6818,13 @@ PALETTE.
 - Desaturated and natural rather than bright -- this is still ink and wash, not poster paint -- but
   the hue belongs to the animal and not to the deck.
 - Line and darks stay **#1b1714**, so a token reads as drawn by the same hand.
+
+PEOPLE.
+- **Where the creature is a person, the description says which person**, and it is binding: the
+  sex, the ancestry and the age given at the end of the subject are not a suggestion and not a
+  default to fall back from. Draw that person.
+- Where it does not say, do not reach for the same figure twice. These are the inhabitants of a
+  port city on a trade road and they look like it.
 
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
@@ -6627,12 +6884,62 @@ SUBJECT. "Armored Slug Spitter" — Health 12 · armour 3 · speed 2 · Acid Spr
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
 
+### Artillerist
+
+File: `tokens/artillerist.webp`
+
+```text
+SUBJECT. "Artillerist" — Health 14 · armour 3 · speed 2 · Matchlock Musket, Brigandine — A Guild Engineer: an engineer caught at the work rather than at the gun: sleeves rolled over a leather apron, a cloth cap, both hands on a tool -- a c... This one the same engineer, but down behind a long musket on a forked rest and sighting along it: shoulders low, cheek to the stock, goggles down over the eyes, a second charge between the teeth. The gun is the whole silhouette where the Engineer's was the tools Draw this one as a man of Slavic appearance, past fifty -- that is fixed, not a suggestion.
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Baal Fagor
+
+File: `tokens/baal-fagor.webp`
+
+```text
+SUBJECT. "Baal Fagor" — Health 68 · armour 5 · speed 5 · Burning Grasp, Fire Spray, Demon's Sigil — a demon that became a god: enormous, horned, cracked black hide with fire in every split, wings of smoke rather than membrane. Everything within reach of it is already burning. Grander and more deliberate than the Div, which is merely large
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Bandit
+
+File: `tokens/bandit.webp`
+
+```text
+SUBJECT. "Bandit" — Health 8 · armour 1 · speed 4 · Arming Sword, Leather Armor — one roadside robber in mismatched gear: a good sword, a bad coat, a hood or a scarf across the face. Everything worn looks taken off somebody else, because it was Draw this one as a woman of Southeast Asian appearance, past fifty -- that is fixed, not a suggestion.
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Berserker
+
+File: `tokens/berserker.webp`
+
+```text
+SUBJECT. "Berserker" — Health 14 · speed 5 · Great Axe — bare-armed and unarmoured, a great axe in both hands, hair matted and the pupils wrong. Pelts at the shoulder rather than armour. Caught mid-stride with no guard up at all, because guarding is not part of it Draw this one as a man of South Asian appearance, in their forties -- that is fixed, not a suggestion.
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Black Circle
+
+File: `tokens/black-circle.webp`
+
+```text
+SUBJECT. "Black Circle" — Health 14 · armour 2 · speed 3 · Arming Sword, Mail Shirt — a plain dark coat over mail, gloves, a flat wide hat, a sheaf of papers in one hand. Reads as an official rather than a soldier. The only frightening thing about the figure is how unhurried it is Draw this one as a woman of Nordic appearance, past fifty -- that is fixed, not a suggestion.
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
 ### Blind Worm
 
 File: `tokens/blind-worm.webp`
 
 ```text
-SUBJECT. "Blind Worm" — Health 14 · armour 2 · speed 3 · Heavy Mandibles — no sight and a sense for vibration: it finds whoever moved
+SUBJECT. "Blind Worm" — Health 14 · armour 2 · speed 3 · Heavy Mandibles — a thick blind tube of segmented muscle, heavy mandibles at the head end and no eyes anywhere on it. **Purplish red** -- the raw dark red-violet of muscle or of an earthworm's flush, wet-looking, deeper in the creases between the segments. Drawn coming up out of broken ground
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6642,7 +6949,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/blind-worm-elder.webp`
 
 ```text
-SUBJECT. "Blind Worm Elder" — Health 24 · armour 3 · speed 3 · Heavy Mandibles — A Blind Worm: no sight and a sense for vibration: it finds whoever moved This one a single blind tube of segmented muscle, jaws at one end and the body simply ending at the other. ONE BODY AND NO TAIL: no second tapering limb, no stinger, nothing trailing
+SUBJECT. "Blind Worm Elder" — Health 24 · armour 3 · speed 3 · Heavy Mandibles — A Blind Worm: a thick blind tube of segmented muscle, heavy mandibles at the head end and no eyes anywhere on it. **Purplish red** -- the raw dark red-violet of muscle or of an earthworm's flush, wet-looking, deeper in the creases betw... This one is longer and thicker and the same purplish red, jaws at one end and the body simply ending at the other. ONE BODY AND NO TAIL: no second tapering limb, no stinger, nothing trailing
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6652,7 +6959,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/burrower.webp`
 
 ```text
-SUBJECT. "Burrower" — Health 18 · armour 2 · speed 5 · Mandibles — worms, and the steeds of the mole men: it is how they arrive under you
+SUBJECT. "Burrower" — Health 18 · armour 2 · speed 5 · Mandibles — one great pale ringed worm, as thick as a barrel, blind, with a ring of rasping plates where a face would be. Drawn head-first out of broken ground with the body trailing back into it. No rider in the picture
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6662,7 +6969,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/burrower-brood-mother.webp`
 
 ```text
-SUBJECT. "Burrower Brood Mother" — Health 30 · armour 3 · speed 3 · Mandibles — A Burrower: worms, and the steeds of the mole men: it is how they arrive under you This one it stopped being a steed when it started laying
+SUBJECT. "Burrower Brood Mother" — Health 30 · armour 3 · speed 3 · Mandibles — A Burrower: one great pale ringed worm, as thick as a barrel, blind, with a ring of rasping plates where a face would be. Drawn head-first out of broken ground with the body trailing back into it. No rider in the picture This one it stopped being a steed when it started laying
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6687,12 +6994,52 @@ SUBJECT. "Chupacabra" — Health 10 · armour 1 · speed 7 · Draining Bite — 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
 
+### Cult Priest
+
+File: `tokens/cult-priest.webp`
+
+```text
+SUBJECT. "Cult Priest" — Health 14 · armour 1 · speed 4 · Carved Idol, Mace — A Cultist: one worshipper of something local and unofficial: plain robes over ordinary clothes, a crude carved figure held in both hand... This one the same plain robes with one piece of real finery on top -- a heavy pectoral, a painted stole, a crown of something -- and the carved idol held overhead rather than cradled. Eyes closed, mouth open mid-word. Alone in the frame -- the crowd it is talking to is not in the picture Draw this one as a man of Levantine appearance, in their thirties -- that is fixed, not a suggestion.
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Cultist
+
+File: `tokens/cultist.webp`
+
+```text
+SUBJECT. "Cultist" — Health 8 · speed 4 · Carved Idol, Dagger — one worshipper of something local and unofficial: plain robes over ordinary clothes, a crude carved figure held in both hands, the face lit from below. Not a hooded skeleton -- this is somebody from the next village and you would know them in daylight Draw this one as a man of Caribbean appearance, in their thirties -- that is fixed, not a suggestion.
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
 ### Dhampir
 
 File: `tokens/dhampir.webp`
 
 ```text
-SUBJECT. "Dhampir" — Health 14 · armour 1 · speed 5 · Draining Bite — a living person, which is the point: a lean travelling man in worn coat and boots, nothing undead about the body at all. Only the eyes are wrong, and he knows it. He is the only thing in this group that casts a shadow
+SUBJECT. "Dhampir" — Health 14 · armour 1 · speed 5 · Draining Bite — a living person, which is the point: a lean traveller in worn coat and boots, nothing undead about the body at all. Only the eyes are wrong, and they know it. The only thing in this group that casts a shadow Draw this one as a woman of Southeast Asian appearance, in their twenties -- that is fixed, not a suggestion.
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Div
+
+File: `tokens/div.webp`
+
+```text
+SUBJECT. "Div" — Health 38 · armour 3 · speed 3 · Burning Grasp — a giant of the Persian stories: horned, tusked, skin like cracked basalt with heat in the splits, far taller than a person and roughly built. Carrying something architectural it has just pulled out of the ground
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Djinn
+
+File: `tokens/djinn.webp`
+
+```text
+SUBJECT. "Djinn" — Health 24 · armour 1 · speed 6 · Demon's Sigil, Fire Spray — a person, and a whole one: two legs, two feet, two hands, a face that holds still. Fine robes actually worn as cloth, gold at the wrists, dark unblinking eyes. **No wind, no smoke, no dust, no vapour, nothing trailing off and nothing transparent** -- the only thing not human about it is that the heels are a hand's breadth clear of the ground and nothing is holding them up
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6712,7 +7059,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/dragon.webp`
 
 ```text
-SUBJECT. "Dragon" — Health 50 · armour 5 · speed 6 · Dragon Jaws, Fire Spray — the biggest thing in the bestiary: a long-bodied winged worm, heavily scaled, more serpent than lizard, with a narrow head and an old intelligence in it. Wings like a bat's and far too large. It should dwarf everything drawn beside it
+SUBJECT. "Dragon" — Health 50 · armour 5 · speed 6 · Dragon Jaws, Fire Spray — the biggest thing in the bestiary: a long-bodied winged worm, more serpent than lizard, with a narrow head and an old intelligence in it. **Scaled in bright silver** -- the scales metallic and polished like plate armour, hard white highlights running along every edge and the light sliding off it as off steel. Wings like a bat's and far too large. It should dwarf everything drawn beside it
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6727,12 +7074,52 @@ SUBJECT. "Draugr" — Health 30 · armour 3 · speed 3 · Grave-Cold Hands — a
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
 
+### Ecstatic
+
+File: `tokens/ecstatic.webp`
+
+```text
+SUBJECT. "Ecstatic" — Health 14 · speed 5 · Warhammer — A Flagellant: stripped to the shoulders under a rough habit, back and shoulders a mess of old and new scourging, a knotted cord at the belt and a mace in the hand. Ecstatic rather than angry, which is worse This one further gone than the rest: the habit discarded entirely, the body a map of old scarring, a warhammer in both hands and the head thrown back. Running, not marching Draw this one as a woman of West African appearance, past fifty -- that is fixed, not a suggestion.
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
 ### Elf
 
 File: `tokens/elf.webp`
 
 ```text
-SUBJECT. "Elf" — Health 16 · armour 1 · speed 5 · Elf-Bolt — an alva of the Nordic kind, not a tall archer: slight, pale and barefoot in a thin shift, hair unbound, drawn mid-step as if still dancing and only half attending to you. Beautiful and slightly wrong in the proportions. No armour, no bow, no pointed helm
+SUBJECT. "Elf" — Health 16 · armour 1 · speed 5 · Elf-Bolt — an alva of the Nordic kind, not a tall archer: slight, pale and barefoot in a thin shift, hair unbound, drawn mid-step as if still dancing and only half attending to you. **The whole figure glitters** -- a fine dust of light caught on the skin, the hair and the shift, as though it had been rolled in frost or crushed glass, and the air immediately around it sparkles too. Beautiful and slightly wrong in the proportions. No armour, ...
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Estrie
+
+File: `tokens/estrie.webp`
+
+```text
+SUBJECT. "Estrie" — Health 16 · armour 1 · speed 6 · Draining Bite — a woman at a glance and not on a second look: hair unbound and far too long, moving as though in water, feet not quite meeting the ground, mouth dark. The hair is the picture -- that is where its strength is kept
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Fahlas
+
+File: `tokens/fahlas.webp`
+
+```text
+SUBJECT. "Fahlas" — Health 60 · armour 4 · speed 4 · Grave Candle, Arming Sword — a human king who did not stop: court dress four centuries out of fashion and perfectly kept, a thin dry face that is still a face, a circlet. **One figure and nothing else** -- no court, no attendants, no standing dead anywhere in the frame, and he is alone in it. The only minor god you could mistake for a living man
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Familiar
+
+File: `tokens/familiar.webp`
+
+```text
+SUBJECT. "Familiar" — Health 6 · speed 5 · Nip — a hare, and anatomically exactly a hare: **four legs, no more and no fewer**, every limb and joint where a hare's belongs. What is wrong is not the body -- it is the attention. Pupils that do not match, a person's patience behind them, and it has been looking at you for some time. Ordinary at a distance and unbearable close up. Drawn sitting upright, watching, not attacking
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6753,6 +7140,16 @@ File: `tokens/five-legs-adjutant.webp`
 
 ```text
 SUBJECT. "Five Legs Adjutant" — Health 12 · armour 2 · speed 4 · Claws — A Five Legs: FIVE-FOLD RADIAL: five identical limbs spaced evenly around a domed carapace, no head and no front or back, like a starfish built as a predator. Nothing else here is radial This one it does not fight at all: it calls the next wave
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Flagellant
+
+File: `tokens/flagellant.webp`
+
+```text
+SUBJECT. "Flagellant" — Health 10 · speed 4 · Mace — stripped to the shoulders under a rough habit, back and shoulders a mess of old and new scourging, a knotted cord at the belt and a mace in the hand. Ecstatic rather than angry, which is worse Draw this one as a woman of Central Asian appearance, past fifty -- that is fixed, not a suggestion.
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6793,6 +7190,16 @@ File: `tokens/forest-troll.webp`
 
 ```text
 SUBJECT. "Forest Troll" — Health 20 · armour 2 · speed 4 · Troll Fists — a skogstroll: long-limbed and hunched, hide like wet bark with lichen in the seams, a cow's tail it keeps tucked, and a face that is nearly a person's and wrong about it
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Gheul
+
+File: `tokens/gheul.webp`
+
+```text
+SUBJECT. "Gheul" — Health 14 · armour 1 · speed 5 · Draining Bite — a graveyard demon: man-high and man-shaped and wrong in every joint, grey skin drawn tight over the skull, a mouth far too wide for the jaw, no nose to speak of, fingers long enough to dig with and used for it. Crouched over turned earth, grave-dirt to the elbow. **No animal head at all** -- nothing of the hyena, the dog or the jackal in it
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6857,12 +7264,92 @@ SUBJECT. "Goblin Warrior" — Health 8 · armour 1 · speed 3 · Goblin Spear, G
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
 
+### God's Spirit
+
+File: `tokens/gods-spirit.webp`
+
+```text
+SUBJECT. "God's Spirit" — Health 14 · armour 2 · speed 4 · Balanced Dagger, Leather Armor — A Black Circle: a plain dark coat over mail, gloves, a flat wide hat, a sheaf of papers in one hand. Reads as an official rather than a soldier. The only frightening thing about the figure is how... This one where the Black Circle looks like an official, this looks like nobody: ordinary travelling clothes, no insignia, no hat, hands empty until they are not. The one in the room you would not describe afterwards Draw this one as a man of Southeast Asian appearance, in their thirties -- that is fixed, not a suggestion.
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Grey Assassin
+
+File: `tokens/grey-assassin.webp`
+
+```text
+SUBJECT. "Grey Assassin" — Health 10 · armour 1 · speed 6 · Balanced Dagger, Blade Venom — a city killer in plain western dress: dark wool coat to the knee, close hood, gloves, a thin blade held reversed along the forearm. **Nothing wrapped, no veil, nothing eastern about it** -- this is somebody who can stand in a doorway on the Fourth District's own streets and be taken for a clerk. Nothing worn on it rattles Draw this one as a man of Persian appearance, past fifty -- that is fixed, not a suggestion.
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Guild Engineer
+
+File: `tokens/guild-engineer.webp`
+
+```text
+SUBJECT. "Guild Engineer" — Health 12 · armour 2 · speed 3 · Arquebus, Brigandine — an engineer caught at the work rather than at the gun: sleeves rolled over a leather apron, a cloth cap, both hands on a tool -- a crank, a measuring rod, a length of chain -- and the arquebus slung across the back where it is out of the way. Standing upright and busy. **No goggles, nothing aimed, nothing braced** Draw this one as a man of Nordic appearance, in their thirties -- that is fixed, not a suggestion.
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Highwayman
+
+File: `tokens/highwayman.webp`
+
+```text
+SUBJECT. "Highwayman" — Health 10 · armour 2 · speed 6 · Matchlock Pistol, Arming Sword, Brigandine — A Bandit: one roadside robber in mismatched gear: a good sword, a bad coat, a hood or a scarf across the face. Everything worn looks taken off somebody else, because it was This one mounted-class robbery: a long riding coat, boots to the knee, a scarf to the eyes and a matchlock pistol levelled. Better dressed than the band it came from, which is the whole of its character Draw this one as a woman of Southeast Asian appearance, past fifty -- that is fixed, not a suggestion.
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Holy Shield
+
+File: `tokens/holy-shield.webp`
+
+```text
+SUBJECT. "Holy Shield" — Health 18 · armour 4 · speed 3 · Longsword, Kite Shield, Plate, Great Helm — a knight of the order in full plate and a great helm, kite shield up, the faith's mark on the surcoat. Heavy, closed, and faceless -- the helm has no opening worth drawing a face in Draw this one as a man of Persian appearance, in their twenties -- that is fixed, not a suggestion.
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Holy Sword
+
+File: `tokens/holy-sword.webp`
+
+```text
+SUBJECT. "Holy Sword" — Health 18 · armour 4 · speed 4 · Longsword, Mail Shirt, Great Helm — A Holy Shield: a knight of the order in full plate and a great helm, kite shield up, the faith's mark on the surcoat. Heavy, closed, and faceless -- th... This one the other church's knight: mail rather than plate, **a longsword held in both hands** and no shield at all, a surcoat with a different mark on it. Lighter, faster and visibly poorer -- the two orders are not equally funded and both of them know it Draw this one as a man of Horn of Africa appearance, in their forties -- that is fixed, not a suggestion.
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Imp
+
+File: `tokens/imp.webp`
+
+```text
+SUBJECT. "Imp" — Health 6 · speed 7 · Nip — cat-sized, leathery, bat-winged, all elbows and grin, perched on something it has no business perching on. Drawn small in the frame on purpose -- scale is the joke, and it is the only thing here that looks like it is enjoying itself
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Incubus
+
+File: `tokens/incubus.webp`
+
+```text
+SUBJECT. "Incubus" — Health 18 · armour 1 · speed 5 · Demon's Sigil, Draining Bite — beautiful and subtly over-designed -- the proportions a shade too even, the hair too deliberate -- bare-shouldered, drawn leaning in from the edge of the frame as though over a bed. Small dark horns half-hidden. Nothing exposed that a card could not print
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
 ### Keres
 
 File: `tokens/keres.webp`
 
 ```text
-SUBJECT. "Keres" — Health 8 · speed 6 · Claws — Greek death-spirits: dark ragged female figures, gaunt and bloodied to the elbow, teeth bared, drawn low over the ground as if stooping to something. Never one alone -- the shape of the picture is several of them at once
+SUBJECT. "Keres" — Health 8 · speed 6 · Claws — one Greek death-spirit: a dark ragged woman, gaunt, bloodied to the elbow, teeth bared, stooping low over the ground towards something already down. **A single figure** -- there are others working the same field and not one of them is in this picture
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6872,7 +7359,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/lindworm.webp`
 
 ```text
-SUBJECT. "Lindworm" — Health 34 · armour 3 · speed 4 · Dragon Jaws, Acid Spray — a wingless serpent-dragon of the Nordic kind: a long heavy body with ONE pair of forelegs at the front and nothing behind, dragging the rest. Dull scale, blunt snout, small eyes. No wings at all -- that is what makes it a lindworm and not a dragon
+SUBJECT. "Lindworm" — Health 34 · armour 3 · speed 4 · Dragon Jaws, Acid Spray — a wingless serpent-dragon of the Nordic kind: a long heavy body with ONE pair of forelegs at the front and nothing behind, dragging the rest. **Ferocious, not sluggish** -- the head low and driving forward, jaws wide open on a mouthful of back-curved teeth, gums drawn back, the small eyes fixed on what is in front of it. Scarred, filthy scale. No wings at all -- that is what makes it a lindworm and not a dragon
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6882,7 +7369,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/little-folk.webp`
 
 ```text
-SUBJECT. "Little Folk" — Health 10 · armour 1 · speed 4 · Elf-Bolt — the vattar, the underground people: small, grey and earthen, dressed like poor farmers of no particular century, with a flat look and no expression to read. Drawn half out of the ground or half out of a doorway: never fully in the open
+SUBJECT. "Little Folk" — Health 10 · armour 1 · speed 4 · Elf-Bolt — one of the vattar, the underground people: small, grey and earthen, dressed like a poor farmer of no particular century, with a flat look and no expression to read. Drawn half out of the ground: never fully in the open, and never in company -- one figure and no second one anywhere
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6923,6 +7410,36 @@ File: `tokens/mega-beetle.webp`
 
 ```text
 SUBJECT. "Mega Beetle" — Health 30 · armour 4 · speed 2 · Heavy Mandibles — a wall that walks: the Scrips under its wings are the point of it
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Mercenary
+
+File: `tokens/mercenary.webp`
+
+```text
+SUBJECT. "Mercenary" — Health 12 · armour 3 · speed 4 · Halberd, Brigandine — a hardened soldier out of the eastern forests: brigandine over travelling clothes, a halberd, an old scar and a bedroll. Professional, unbothered, and nobody's idea of a hero Draw this one as a woman of Slavic appearance, past fifty -- that is fixed, not a suggestion.
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Mercenary Captain
+
+File: `tokens/mercenary-captain.webp`
+
+```text
+SUBJECT. "Mercenary Captain" — Health 18 · armour 4 · speed 4 · Greatsword, Brigandine, Great Helm — A Mercenary: a hardened soldier out of the eastern forests: brigandine over travelling clothes, a halberd, an old scar and a bedroll. Professional, unbothered, and nobody's idea of a hero This one the same hard soldier with a greatsword and a closed helm under one arm, a captain's sash and a whistle. Older, scarred across the hands, and watching the field rather than the man in front of it Draw this one as a woman of East Asian appearance, in their forties -- that is fixed, not a suggestion.
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Mob
+
+File: `tokens/mob.webp`
+
+```text
+SUBJECT. "Mob" — Health 8 · speed 4 · Dagger — A Townsfolk, and this one the same working people, no longer leaving: faces front, hands full of whatever was to hand -- a hayfork, a cobble, a bottle. Drawn as a press of bodies with no space between them, and they are not all the same person: different ages, different colours, men and women together. Frightened and coming anyway. **This is the one creature in the roster that is deliberately more than one body** Draw this one as a man of Nordic appearance, in their twenties -- that is fixed, not a suggestion.
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6977,12 +7494,42 @@ SUBJECT. "Mole Man Priest" — Health 10 · armour 1 · speed 2 · Dark Lantern 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
 
+### Mother Longhand
+
+File: `tokens/mother-longhand.webp`
+
+```text
+SUBJECT. "Mother Longhand" — Health 72 · armour 4 · speed 5 · Grasping Claws, Elf-Bolt — a ra grown enormous and wrong: the bark-and-moss body of a skogsra on a frame three times too tall, with arms that reach most of the way across the picture and hands at the end of them bigger than a person. The hollow back is still there
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
 ### Mountain Troll
 
 File: `tokens/mountain-troll.webp`
 
 ```text
 SUBJECT. "Mountain Troll" — Health 34 · armour 4 · speed 2 · Troll Fists, Thrown Stone — a bergtroll: a hunched mass of grey stone-hide with lichen and moss growing on its back and shoulders, a great hooked nose, small deep-set eyes and a mouth too wide. Vast, slow and mineral -- more cliff than animal, and no green skin anywhere
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Mummer
+
+File: `tokens/mummer.webp`
+
+```text
+SUBJECT. "Mummer" — Health 8 · speed 5 · Dagger — one reveller in a carved animal mask -- a goat, horns and all -- over ordinary festival clothes, with ribbons at the sleeves and a drinking horn in hand. Mid-step and mid-song, alone in the frame. The mask is the picture, and it is not a human face Draw this one as a woman of Central Asian appearance, in their twenties -- that is fixed, not a suggestion.
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Naga
+
+File: `tokens/naga.webp`
+
+```text
+SUBJECT. "Naga" — Health 30 · armour 3 · speed 4 · Crushing Coils, Demon's Sigil — serpent from the waist down and something close to human above, with a hood of scaled skin flared behind the head and heavy jewellery it was not given. Half-submerged, coiled rather than swimming
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -7022,7 +7569,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/processor.webp`
 
 ```text
-SUBJECT. "Processor" — Health 4 · armour 1 · speed 3 · Nip — workers: they build, and they are what a scene looks like before the fight
+SUBJECT. "Processor" — Health 4 · armour 1 · speed 3 · Nip — a single worker, unarmoured and unarmed, built for carrying rather than fighting: a low six-legged body with the front pair held up and loaded, mouthparts busy. Caught mid-task and not looking up
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -7032,7 +7579,17 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/processor-driller.webp`
 
 ```text
-SUBJECT. "Processor Driller" — Health 6 · armour 1 · speed 3 · Mandibles — A Processor: workers: they build, and they are what a scene looks like before the fight This one what the Horde uses instead of a siege engine, and the reason walls fall from below
+SUBJECT. "Processor Driller" — Health 6 · armour 1 · speed 3 · Mandibles — A Processor: a single worker, unarmoured and unarmed, built for carrying rather than fighting: a low six-legged body with the front pair held up and loaded, mouthparts busy. Caught mid-task and not looking up This one what the Horde uses instead of a siege engine, and the reason walls fall from below
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Queen of the Dark
+
+File: `tokens/queen-of-the-dark.webp`
+
+```text
+SUBJECT. "Queen of the Dark" — Health 70 · armour 5 · speed 3 · Dark Lantern, Grave-Cold Hands — an immense seated figure in the dark, more cave formation than body, with a crown of rock and a face only suggested. **Alone** -- no mole men, no attendants, no court, nothing else alive in the frame; the scale comes from how completely she fills it. The one light in the picture is the shuttered lantern in her hand
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -7067,12 +7624,22 @@ SUBJECT. "Rush Spider Rider" — Health 14 · armour 1 · speed 8 · Mandibles �
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
 
+### Salt Baron
+
+File: `tokens/salt-baron.webp`
+
+```text
+SUBJECT. "Salt Baron" — Health 16 · armour 2 · speed 4 · Matchlock Pistol, Arming Sword, Fine Clothes — A Smuggler: a west-coast sailor turned quiet trader: oilskin, a knitted cap, salt-stained boots, a crossbow held low and ready. **The figure and the crossbow and nothing else** -- no crates, no b... This one a west-coast magnate gone slightly to seed: a good coat over sea-weathered skin, rings, a pistol worn openly on the hip. Standing on a quay as though it were owned, because at one point it was Draw this one as a man of South Asian appearance, in their thirties -- that is fixed, not a suggestion.
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
 ### Scrip
 
 File: `tokens/scrip.webp`
 
 ```text
-SUBJECT. "Scrip" — Health 2 · speed 6 · Nip — small and quick on EIGHT thin legs, more eye than body -- a cluster of them over a trunk barely bigger than a fist
+SUBJECT. "Scrip" — Health 2 · speed 6 · Nip — small and quick on EIGHT thin legs, more eye than body -- a cluster of eyes over a trunk barely bigger than a fist. One of them and not a swarm
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -7082,7 +7649,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/scrip-watcher.webp`
 
 ```text
-SUBJECT. "Scrip Watcher" — Health 2 · speed 7 · Nip — A Scrip: small and quick on EIGHT thin legs, more eye than body -- a cluster of them over a trunk barely bigger than a fist This one the one that is still watching after you killed the others
+SUBJECT. "Scrip Watcher" — Health 2 · speed 7 · Nip — A Scrip: small and quick on EIGHT thin legs, more eye than body -- a cluster of eyes over a trunk barely bigger than a fist. One of them and not a swarm This one the one that is still watching after you killed the others
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -7142,7 +7709,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/slitherer-brood.webp`
 
 ```text
-SUBJECT. "Slitherer Brood" — Health 4 · armour 1 · speed 5 · Mandibles — A Slitherer: a long low body dragging between EIGHT short legs set wide along its sides -- it slithers because the body is on the ground, not because it has no legs This one smaller, and there are always more of them than you counted
+SUBJECT. "Slitherer Brood" — Health 4 · armour 1 · speed 5 · Mandibles — A Slitherer: a long low body dragging between EIGHT short legs set wide along its sides -- it slithers because the body is on the ground, not because it has no legs This one is smaller and leaner, the same animal at two-thirds the size, and it is drawn alone -- the others it travels with are not in the picture
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -7163,6 +7730,16 @@ File: `tokens/smash-beetle-breaker.webp`
 
 ```text
 SUBJECT. "Smash Beetle Breaker" — Health 28 · armour 4 · speed 1 · Tail Club — A Smash Beetle: it is here for the wall, and you are in the way of the wall This one bred bigger for the gates of the Third Ring, and it does not turn quickly
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Smuggler
+
+File: `tokens/smuggler.webp`
+
+```text
+SUBJECT. "Smuggler" — Health 10 · armour 1 · speed 4 · Crossbow, Leather Armor — a west-coast sailor turned quiet trader: oilskin, a knitted cap, salt-stained boots, a crossbow held low and ready. **The figure and the crossbow and nothing else** -- no crates, no barrels, no bundles, no cargo, no quay. The goods are elsewhere, which is the point of the trade Draw this one as a man of North African appearance, in their twenties -- that is fixed, not a suggestion.
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -7227,6 +7804,16 @@ SUBJECT. "Sweeper Diver" — Health 6 · armour 1 · speed 9 · Claws — A Swee
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
 
+### Tempter
+
+File: `tokens/tempter.webp`
+
+```text
+SUBJECT. "Tempter" — Health 20 · armour 1 · speed 4 · Demon's Sigil — immaculate and entirely at ease: good clothes a century out of date, hands open and empty, a slight pleasant expression. Nothing visibly wrong until you look for a shadow and find it pointing the wrong way
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
 ### Terror Fly
 
 File: `tokens/terror-fly.webp`
@@ -7247,6 +7834,36 @@ SUBJECT. "Terror Fly Torch" — Health 14 · armour 2 · speed 6 · Fire Spray �
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
 
+### The Cat God
+
+File: `tokens/the-cat-god.webp`
+
+```text
+SUBJECT. "The Cat God" — Health 55 · armour 4 · speed 9 · Grasping Claws — a cat the size of a cart horse and in no way a lion: the exact proportions and indifference of a domestic cat, scaled up, sitting. Too many shadows behind it for the light in the frame. Nothing about the pose suggests it has agreed to be here
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### The Land Jelly
+
+File: `tokens/the-land-jelly.webp`
+
+```text
+SUBJECT. "The Land Jelly" — Health 90 · armour 3 · speed 1 · Crushing Coils — a vast translucent mass filling the whole frame, with things suspended inside it that are clearly older than the picture -- bones, worked stone, a boat. No face, no front, no limbs. The biggest and least animal thing in the set
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### The Purple
+
+File: `tokens/the-purple.webp`
+
+```text
+SUBJECT. "The Purple" — Health 12 · armour 1 · speed 5 · Crossbow, Blade Venom, Serpent's Milk — A Grey Assassin: a city killer in plain western dress: dark wool coat to the knee, close hood, gloves, a thin blade held re... This one the same plain western coat, in deep purple-dyed wool and better cut, hood back, kneeling over a flat case of stoppered vials open across one knee. **No crossbow anywhere in the picture, and no blade either** -- the vials are the whole of it. Working rather than stalking Draw this one as a woman of West African appearance, in their forties -- that is fixed, not a suggestion.
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
 ### The Queen
 
 File: `tokens/the-queen.webp`
@@ -7257,12 +7874,92 @@ SUBJECT. "The Queen" — Health 60 · armour 4 · speed 0 · Heavy Mandibles —
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
 
+### The Troll King
+
+File: `tokens/the-troll-king.webp`
+
+```text
+SUBJECT. "The Troll King" — Health 85 · armour 6 · speed 4 · Troll Fists, Thrown Stone — a bergtroll grown past any scale a troll should reach -- a moving ridge of stone-hide with full-sized pines rooted along its back and shoulders, a crude iron crown half swallowed by the hide it was put on. The trolls around its feet are knee-high
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### The Unseen
+
+File: `tokens/the-unseen.webp`
+
+```text
+SUBJECT. "The Unseen" — Health 12 · armour 2 · speed 6 · Dagger, Leather Armor — A Grey Assassin: a city killer in plain western dress: dark wool coat to the knee, close hood, gloves, a thin blade held reversed along the forearm. **Nothing wrapped, no veil, nothing eastern about it** -- this is some... This one a western monastic at a glance -- plain habit, cord belt, hood up, hands inside the sleeves -- and nothing about the stance belongs to a monk. The dagger is not visible and is obviously there Draw this one as a woman of Mediterranean appearance, in their forties -- that is fixed, not a suggestion.
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### The Winter Lady
+
+File: `tokens/the-winter-lady.webp`
+
+```text
+SUBJECT. "The Winter Lady" — Health 65 · armour 4 · speed 5 · Killing Frost, Elf-Bolt — a tall elven woman made of winter: skin the white of old ice with the grey of it underneath, hair and gown drifting upward rather than down, bare feet not melting what she stands on. Beautiful, composed, and the air around her visibly colder
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Town Guard
+
+File: `tokens/town-guard.webp`
+
+```text
+SUBJECT. "Town Guard" — Health 10 · armour 2 · speed 3 · Spear, Wooden Shield, Leather Armor, Light Helm — a watchman in a padded coat and an open kettle helm with a spear and a round shield, a town's badge on the shield and nothing else to mark them. Tired rather than fierce Draw this one as a man of West African appearance, past fifty -- that is fixed, not a suggestion.
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Townsfolk
+
+File: `tokens/townsfolk.webp`
+
+```text
+SUBJECT. "Townsfolk" — Health 4 · speed 3 · Dagger — one ordinary working person of no particular century: apron, patched wool, boots worn down on one side, a basket or a bundle still in the hands. Already turning away from whatever is happening. The dagger at the belt has only ever cut bread Draw this one as a woman of Mediterranean appearance, in their twenties -- that is fixed, not a suggestion.
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
 ### Trollkin
 
 File: `tokens/trollkin.webp`
 
 ```text
-SUBJECT. "Trollkin" — Health 10 · armour 1 · speed 4 · Troll Club — knee-high to a person and broad, grey-brown and leathery, with a troll's nose and a troll's ears on a body built low to the ground. Rough homespun and a stick. A crowd animal: it should read as one of many even when it is drawn alone
+SUBJECT. "Trollkin" — Health 10 · armour 1 · speed 4 · Troll Club — knee-high to a person and broad, grey-brown and leathery, with a troll's nose and a troll's ears on a body built low to the ground. Rough homespun and a stick. One of many, drawn alone: a single figure in the frame, and what is unsettling about it is how plainly it is not the only one
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Wanderer
+
+File: `tokens/wanderer.webp`
+
+```text
+SUBJECT. "Wanderer" — Health 18 · armour 1 · speed 7 · Dagger — a traveller that does not resolve: layered road clothes, a staff, a pack -- and the parts of it furthest from the centre are smeared into motion, as though half of it has already left. Never drawn standing still
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Watch Sergeant
+
+File: `tokens/watch-sergeant.webp`
+
+```text
+SUBJECT. "Watch Sergeant" — Health 14 · armour 3 · speed 3 · Halberd, Mail Shirt, Light Helm — A Town Guard: a watchman in a padded coat and an open kettle helm with a spear and a round shield, a town's badge on the shield and nothing else to mark them. Tired rather than fierce This one an older watchman with a halberd and a mail shirt instead of a spear and a coat, a sergeant's sash and a horn at the belt. Shouting rather than fighting Draw this one as a man of Caribbean appearance, in their twenties -- that is fixed, not a suggestion.
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Watcher
+
+File: `tokens/watcher.webp`
+
+```text
+SUBJECT. "Watcher" — Health 26 · armour 2 · speed 5 · Demon's Sigil — tall, still and frontal, with far too many eyes -- down the arms, across the chest, open in the wings. Not bestial and not beautiful: a watching thing in the shape of a person, drawn facing the viewer dead-on, which nothing else in the set does
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -7272,7 +7969,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/wyvern.webp`
 
 ```text
-SUBJECT. "Wyvern" — Health 22 · armour 2 · speed 8 · Claws — a two-legged winged worm, hawk-sized rather than dragon-sized: wings and hind legs and nothing else, a whip of a tail ending in a barb, built entirely for the stoop. Lean and quick where the dragon is heavy
+SUBJECT. "Wyvern" — Health 22 · armour 2 · speed 8 · Claws — a two-legged winged worm, hawk-sized rather than dragon-sized: wings and hind legs and nothing else, built entirely for the stoop. **The tail grows out of the base of the spine in one unbroken line** and tapers from there to a barbed point -- it is part of the body and continuous with it, never a separate whip-shape floating near the hips. Lean and quick where the dragon is heavy
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -7297,6 +7994,16 @@ FORMAT.
 COMPOSITION.
 - **The whole creature**, head to foot or nose to tail, filling the square edge to edge. Nothing
   is printed over a token, so there is no safe area.
+- **One creature, and one only.** Not a pair, not a group, not a smaller one at its feet for
+  scale, no mount, no attendant, no victim, no bystander, no second head and no second figure
+  anywhere in the square. A token is placed on one square of a map and moved as one thing. The
+  single exception is a creature whose own description says in words that it is a crowd.
+- **Nothing in the square but the creature and what it is holding.** No cargo, no crates, no
+  furniture, no wall, no doorway, no scenery and no ground -- those belong to the map underneath.
+- **The anatomy has to close.** Count the limbs against the description and draw exactly that
+  many: four legs on a quadruped, two on a biped, one tail and not two. A tail, a wing or a neck
+  grows out of the body in one unbroken line and is part of it -- never a separate shape floating
+  near the place it should join.
 - Seen from **above at a three-quarter angle**, consistently, as a figure on a table is seen by
   the people around it. Never a portrait, never a side elevation.
 - The silhouette does the work: this will be looked at beside twenty other tokens at 60 pixels,
@@ -7309,6 +8016,13 @@ PALETTE.
 - Desaturated and natural rather than bright -- this is still ink and wash, not poster paint -- but
   the hue belongs to the animal and not to the deck.
 - Line and darks stay **#1b1714**, so a token reads as drawn by the same hand.
+
+PEOPLE.
+- **Where the creature is a person, the description says which person**, and it is binding: the
+  sex, the ancestry and the age given at the end of the subject are not a suggestion and not a
+  default to fall back from. Draw that person.
+- Where it does not say, do not reach for the same figure twice. These are the inhabitants of a
+  port city on a trade road and they look like it.
 
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in

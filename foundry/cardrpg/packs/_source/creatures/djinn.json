@@ -1,0 +1,101 @@
+{
+  "_id": "LG7SGjS7E8MLAg3w",
+  "_key": "!actors!LG7SGjS7E8MLAg3w",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Djinn",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 24,
+      "base": 24
+    },
+    "kind": "djinn",
+    "armorBase": 1,
+    "speed": 6,
+    "capabilities": [
+      "flight",
+      "caster",
+      "spray",
+      "wits"
+    ],
+    "tactics": [
+      "sniper",
+      "skirmisher"
+    ],
+    "targetPriority": "leader"
+  },
+  "items": [
+    {
+      "_id": "Jf5scIPc9NX74yJA",
+      "_key": "!actors.items!LG7SGjS7E8MLAg3w.Jf5scIPc9NX74yJA",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Demon's Sigil",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 1,
+        "tags": [
+          "arcane"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Focus",
+        "verbs": {
+          "cast": {
+            "value": 5,
+            "range": 5
+          }
+        },
+        "equipped": true
+      }
+    },
+    {
+      "_id": "oDIICLjVJa2VfZwZ",
+      "_key": "!actors.items!LG7SGjS7E8MLAg3w.oDIICLjVJa2VfZwZ",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Fire Spray",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "ranged",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 5,
+            "range": 4,
+            "area": 2,
+            "ignores": 1
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Djinn",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

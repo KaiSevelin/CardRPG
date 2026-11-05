@@ -1,0 +1,73 @@
+{
+  "_id": "uel8gWBqjSnJ9SbR",
+  "_key": "!actors!uel8gWBqjSnJ9SbR",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Flagellant",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 10,
+      "base": 10
+    },
+    "kind": "flagellant",
+    "armorBase": 0,
+    "speed": 4,
+    "capabilities": [
+      "legs",
+      "pack",
+      "feral"
+    ],
+    "tactics": [
+      "packTactics",
+      "brute"
+    ],
+    "targetPriority": "nearest"
+  },
+  "items": [
+    {
+      "_id": "9T1yi9FaPL2awK8j",
+      "_key": "!actors.items!uel8gWBqjSnJ9SbR.9T1yi9FaPL2awK8j",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Mace",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "fits": [
+          "belt"
+        ],
+        "hands": 1,
+        "tags": [
+          "heavy",
+          "melee"
+        ],
+        "weight": 2,
+        "value": 10,
+        "kind": "Weapon",
+        "blurb": "Flanged. It does not cut, which is the point against a man in mail.",
+        "verbs": {
+          "strike": {
+            "value": 3,
+            "ignores": 1,
+            "text": "ignores 1 armor"
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Flagellant",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

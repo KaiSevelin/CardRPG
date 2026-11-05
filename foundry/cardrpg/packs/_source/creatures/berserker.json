@@ -1,0 +1,68 @@
+{
+  "_id": "r9uNQvpJCDGTFi33",
+  "_key": "!actors!r9uNQvpJCDGTFi33",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Berserker",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 14,
+      "base": 14
+    },
+    "kind": "berserker",
+    "armorBase": 0,
+    "speed": 5,
+    "capabilities": [
+      "legs",
+      "brute",
+      "fast",
+      "feral"
+    ],
+    "tactics": [
+      "brute"
+    ],
+    "targetPriority": "nearest"
+  },
+  "items": [
+    {
+      "_id": "RoDnhG5oZMX7v3Pu",
+      "_key": "!actors.items!r9uNQvpJCDGTFi33.RoDnhG5oZMX7v3Pu",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Great Axe",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 2,
+        "tags": [
+          "heavy",
+          "melee"
+        ],
+        "weight": 4,
+        "value": 30,
+        "kind": "Weapon",
+        "blurb": "Cheaper than a greatsword and it does not care.",
+        "verbs": {
+          "strike": {
+            "value": 5
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Berserker",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

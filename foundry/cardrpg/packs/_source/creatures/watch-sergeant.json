@@ -1,0 +1,120 @@
+{
+  "_id": "AXBTeypCCi74CWlQ",
+  "_key": "!actors!AXBTeypCCi74CWlQ",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Watch Sergeant",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 14,
+      "base": 14
+    },
+    "kind": "watch-sergeant",
+    "armorBase": 3,
+    "speed": 3,
+    "capabilities": [
+      "legs",
+      "pack",
+      "reach",
+      "shelter",
+      "drilled",
+      "commander"
+    ],
+    "tactics": [
+      "shieldWall",
+      "packTactics",
+      "commander"
+    ],
+    "targetPriority": "leader"
+  },
+  "items": [
+    {
+      "_id": "6fDOJZ6PGJakRMcB",
+      "_key": "!actors.items!AXBTeypCCi74CWlQ.6fDOJZ6PGJakRMcB",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Halberd",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 2,
+        "tags": [
+          "heavy",
+          "melee"
+        ],
+        "weight": 3,
+        "value": 35,
+        "kind": "Weapon",
+        "blurb": "Axe, spike and hook on a six-foot shaft. Reaches over the man in front of you.",
+        "verbs": {
+          "strike": {
+            "value": 4,
+            "reach": 2,
+            "text": "reach 2"
+          }
+        },
+        "equipped": true
+      }
+    },
+    {
+      "_id": "O2KoFxkF01WPkaUh",
+      "_key": "!actors.items!AXBTeypCCi74CWlQ.O2KoFxkF01WPkaUh",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Mail Shirt",
+      "type": "item",
+      "system": {
+        "slot": "body",
+        "tags": [
+          "armor"
+        ],
+        "weight": 9,
+        "value": 70,
+        "kind": "Armor",
+        "armor": 2,
+        "blurb": "Riveted rings to the hip. The soldier's compromise for eight hundred years.",
+        "equipped": true
+      }
+    },
+    {
+      "_id": "WpJ76GA24iR82g4w",
+      "_key": "!actors.items!AXBTeypCCi74CWlQ.WpJ76GA24iR82g4w",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Light Helm",
+      "type": "item",
+      "system": {
+        "slot": "head",
+        "tags": [
+          "armor"
+        ],
+        "weight": 1,
+        "value": 15,
+        "kind": "Armor",
+        "armor": 1,
+        "blurb": "An open kettle. You can still hear and still see.",
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Watch Sergeant",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

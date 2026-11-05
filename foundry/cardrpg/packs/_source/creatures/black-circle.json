@@ -1,0 +1,96 @@
+{
+  "_id": "ZrPt0sLbeoXFItIB",
+  "_key": "!actors!ZrPt0sLbeoXFItIB",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Black Circle",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 14,
+      "base": 14
+    },
+    "kind": "black-circle",
+    "armorBase": 2,
+    "speed": 3,
+    "capabilities": [
+      "legs",
+      "stealth",
+      "commander",
+      "wits"
+    ],
+    "tactics": [
+      "ambusher"
+    ],
+    "targetPriority": "caster"
+  },
+  "items": [
+    {
+      "_id": "JdDBYISeWh76Zo8E",
+      "_key": "!actors.items!ZrPt0sLbeoXFItIB.JdDBYISeWh76Zo8E",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Arming Sword",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "fits": [
+          "back"
+        ],
+        "hands": 1,
+        "tags": [
+          "melee"
+        ],
+        "weight": 1,
+        "value": 12,
+        "kind": "Weapon",
+        "blurb": "A plain single-handed blade. Every town has a smith who makes them.",
+        "verbs": {
+          "strike": {
+            "value": 3
+          },
+          "defend": {
+            "value": 1
+          }
+        },
+        "equipped": true
+      }
+    },
+    {
+      "_id": "3eh5icjRQNEBCIWs",
+      "_key": "!actors.items!ZrPt0sLbeoXFItIB.3eh5icjRQNEBCIWs",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Mail Shirt",
+      "type": "item",
+      "system": {
+        "slot": "body",
+        "tags": [
+          "armor"
+        ],
+        "weight": 9,
+        "value": 70,
+        "kind": "Armor",
+        "armor": 2,
+        "blurb": "Riveted rings to the hip. The soldier's compromise for eight hundred years.",
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Black Circle",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

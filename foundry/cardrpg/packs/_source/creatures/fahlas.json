@@ -1,0 +1,104 @@
+{
+  "_id": "2Ipl15CulFCBlIji",
+  "_key": "!actors!2Ipl15CulFCBlIji",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Fahlas",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 60,
+      "base": 60
+    },
+    "kind": "fahlas",
+    "armorBase": 4,
+    "speed": 4,
+    "capabilities": [
+      "legs",
+      "caster",
+      "summon",
+      "commander",
+      "drain",
+      "wits"
+    ],
+    "tactics": [
+      "ambusher"
+    ],
+    "targetPriority": "caster"
+  },
+  "items": [
+    {
+      "_id": "ZUZ3Wy8Rc9RbZ9Lo",
+      "_key": "!actors.items!2Ipl15CulFCBlIji.ZUZ3Wy8Rc9RbZ9Lo",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Grave Candle",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 1,
+        "tags": [
+          "arcane"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Focus",
+        "verbs": {
+          "cast": {
+            "value": 4,
+            "range": 4
+          }
+        },
+        "equipped": true
+      }
+    },
+    {
+      "_id": "pKKCYLGns6p67Xx8",
+      "_key": "!actors.items!2Ipl15CulFCBlIji.pKKCYLGns6p67Xx8",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Arming Sword",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "fits": [
+          "back"
+        ],
+        "hands": 1,
+        "tags": [
+          "melee"
+        ],
+        "weight": 1,
+        "value": 12,
+        "kind": "Weapon",
+        "blurb": "A plain single-handed blade. Every town has a smith who makes them.",
+        "verbs": {
+          "strike": {
+            "value": 3
+          },
+          "defend": {
+            "value": 1
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Fahlas",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

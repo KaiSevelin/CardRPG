@@ -1,0 +1,68 @@
+{
+  "_id": "3u1qddiCKALZZILG",
+  "_key": "!actors!3u1qddiCKALZZILG",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Tempter",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 20,
+      "base": 20
+    },
+    "kind": "tempter",
+    "armorBase": 1,
+    "speed": 4,
+    "capabilities": [
+      "legs",
+      "caster",
+      "summon",
+      "wits"
+    ],
+    "tactics": [
+      "ambusher"
+    ],
+    "targetPriority": "caster"
+  },
+  "items": [
+    {
+      "_id": "gb8IsF81cNviSvkK",
+      "_key": "!actors.items!3u1qddiCKALZZILG.gb8IsF81cNviSvkK",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Demon's Sigil",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 1,
+        "tags": [
+          "arcane"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Focus",
+        "verbs": {
+          "cast": {
+            "value": 5,
+            "range": 5
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Tempter",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

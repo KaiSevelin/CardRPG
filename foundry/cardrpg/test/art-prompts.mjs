@@ -343,6 +343,16 @@ ${accentFor(dir)}
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
   here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
 
+PEOPLE.
+- **Where a person is drawn, decide who they are rather than defaulting.** This is a port city on
+  a trade road: the people in the set are Black, brown, Levantine, Persian, South and East Asian,
+  Mediterranean and northern-pale in roughly the proportions a crowd there would be, and women
+  are as common in it as men. A sepia palette is not a statement about skin -- warm ink renders
+  every complexion, and a deck in which every figure is the same pale man is a failure of the
+  drawing and not of the paper.
+- Nothing here asks for a particular face unless the subject says so in words, and where it does
+  say so -- a named sex, an ancestry, an age -- that is binding.
+
 STYLE.
 ${WASH}`;
 }
@@ -372,6 +382,16 @@ FORMAT.
 COMPOSITION.
 - **The whole creature**, head to foot or nose to tail, filling the square edge to edge. Nothing
   is printed over a token, so there is no safe area.
+- **One creature, and one only.** Not a pair, not a group, not a smaller one at its feet for
+  scale, no mount, no attendant, no victim, no bystander, no second head and no second figure
+  anywhere in the square. A token is placed on one square of a map and moved as one thing. The
+  single exception is a creature whose own description says in words that it is a crowd.
+- **Nothing in the square but the creature and what it is holding.** No cargo, no crates, no
+  furniture, no wall, no doorway, no scenery and no ground -- those belong to the map underneath.
+- **The anatomy has to close.** Count the limbs against the description and draw exactly that
+  many: four legs on a quadruped, two on a biped, one tail and not two. A tail, a wing or a neck
+  grows out of the body in one unbroken line and is part of it -- never a separate shape floating
+  near the place it should join.
 - Seen from **above at a three-quarter angle**, consistently, as a figure on a table is seen by
   the people around it. Never a portrait, never a side elevation.
 - The silhouette does the work: this will be looked at beside twenty other tokens at 60 pixels,
@@ -384,6 +404,13 @@ PALETTE.
 - Desaturated and natural rather than bright -- this is still ink and wash, not poster paint -- but
   the hue belongs to the animal and not to the deck.
 - Line and darks stay **${STOCK.ink}**, so a token reads as drawn by the same hand.
+
+PEOPLE.
+- **Where the creature is a person, the description says which person**, and it is binding: the
+  sex, the ancestry and the age given at the end of the subject are not a suggestion and not a
+  default to fall back from. Draw that person.
+- Where it does not say, do not reach for the same figure twice. These are the inhabitants of a
+  port city on a trade road and they look like it.
 
 STYLE.
 ${WASH}
@@ -779,6 +806,13 @@ const DIRECTION = {
   "items/natural/grave-cold-hands":
     "two hands that have been underground: nails grown long and split, the skin drawn tight and "
     + "dark over the bones, closing on nothing with far more grip than they ought to have",
+  "items/npc/carved-idol":
+    "a god-figure the size of a fist, cut from one piece of wood by somebody with more faith than "
+    + "skill: the face barely a face, the body a column, worn smooth at the shoulders from being "
+    + "held",
+  "items/npc/demons-sigil":
+    "a mark burned into a flat surface and still smoking faintly at the edges -- not written, "
+    + "pressed. Geometric, closed, and the wood or stone around it curled away from the heat",
   "items/npc/grave-candle":
     "a stub of candle burning low on a flat stone, the flame standing perfectly upright and "
     + "still in air that is plainly moving everything else",

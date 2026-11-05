@@ -1,0 +1,100 @@
+{
+  "_id": "TSvEkbjTlvHLADku",
+  "_key": "!actors!TSvEkbjTlvHLADku",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Naga",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 30,
+      "base": 30
+    },
+    "kind": "naga",
+    "armorBase": 3,
+    "speed": 4,
+    "capabilities": [
+      "swim",
+      "grapple",
+      "caster",
+      "wits"
+    ],
+    "tactics": [
+      "grappler",
+      "ambusher"
+    ],
+    "targetPriority": "nearest"
+  },
+  "items": [
+    {
+      "_id": "OfoErYDQuYHLThXP",
+      "_key": "!actors.items!TSvEkbjTlvHLADku.OfoErYDQuYHLThXP",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Crushing Coils",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "heavy",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 6,
+            "reach": 2
+          }
+        },
+        "equipped": true
+      }
+    },
+    {
+      "_id": "H1IfpwvzdlfHv46J",
+      "_key": "!actors.items!TSvEkbjTlvHLADku.H1IfpwvzdlfHv46J",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Demon's Sigil",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 1,
+        "tags": [
+          "arcane"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Focus",
+        "verbs": {
+          "cast": {
+            "value": 5,
+            "range": 5
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Naga",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

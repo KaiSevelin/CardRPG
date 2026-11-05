@@ -1,0 +1,98 @@
+{
+  "_id": "P3zkUi9dSayXJFGf",
+  "_key": "!actors!P3zkUi9dSayXJFGf",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "The Unseen",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 12,
+      "base": 12
+    },
+    "kind": "unseen",
+    "armorBase": 2,
+    "speed": 6,
+    "capabilities": [
+      "legs",
+      "stealth",
+      "fast",
+      "wits"
+    ],
+    "tactics": [
+      "ambusher"
+    ],
+    "targetPriority": "caster"
+  },
+  "items": [
+    {
+      "_id": "mhqP6pHQkC0WfzvP",
+      "_key": "!actors.items!P3zkUi9dSayXJFGf.mhqP6pHQkC0WfzvP",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Dagger",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "fits": [
+          "belt"
+        ],
+        "hands": 1,
+        "tags": [
+          "light",
+          "melee",
+          "thrown"
+        ],
+        "weight": 0,
+        "value": 2,
+        "kind": "Weapon",
+        "blurb": "Short, quick, and easy to hide.",
+        "verbs": {
+          "strike": {
+            "value": 2,
+            "range": 3,
+            "text": "range 3 thrown"
+          }
+        },
+        "equipped": true
+      }
+    },
+    {
+      "_id": "2iFhXd19GC98E66E",
+      "_key": "!actors.items!P3zkUi9dSayXJFGf.2iFhXd19GC98E66E",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Leather Armor",
+      "type": "item",
+      "system": {
+        "slot": "body",
+        "hands": 1,
+        "tags": [
+          "armor"
+        ],
+        "weight": 5,
+        "value": 20,
+        "armor": 1,
+        "kind": "Armor",
+        "blurb": "Boiled and riveted, and it still smells of the tannery.",
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "The Unseen",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

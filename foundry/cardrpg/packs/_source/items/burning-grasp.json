@@ -1,0 +1,29 @@
+{
+  "_id": "tHdxuLrKZhMoNEGH",
+  "_key": "!items!tHdxuLrKZhMoNEGH",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Burning Grasp",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "hands": 0,
+    "tags": [
+      "melee",
+      "heavy",
+      "natural"
+    ],
+    "weight": 0,
+    "value": 0,
+    "npcGear": true,
+    "verbs": {
+      "strike": {
+        "value": 6,
+        "ignores": 1
+      }
+    }
+  }
+}

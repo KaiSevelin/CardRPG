@@ -1,0 +1,102 @@
+{
+  "_id": "1CHlsjdcRJ1CfQ0N",
+  "_key": "!actors!1CHlsjdcRJ1CfQ0N",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "The Troll King",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 85,
+      "base": 85
+    },
+    "kind": "troll-king",
+    "armorBase": 6,
+    "speed": 4,
+    "capabilities": [
+      "legs",
+      "brute",
+      "siege",
+      "dormant",
+      "commander",
+      "feral"
+    ],
+    "tactics": [
+      "brute"
+    ],
+    "targetPriority": "nearest"
+  },
+  "items": [
+    {
+      "_id": "XJA9vNfmx4hCsVlL",
+      "_key": "!actors.items!1CHlsjdcRJ1CfQ0N.XJA9vNfmx4hCsVlL",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Troll Fists",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "heavy",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 6
+          }
+        },
+        "equipped": true
+      }
+    },
+    {
+      "_id": "iNjD4dmflVyi1ItL",
+      "_key": "!actors.items!1CHlsjdcRJ1CfQ0N.iNjD4dmflVyi1ItL",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Thrown Stone",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "ranged",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 5,
+            "range": 5,
+            "ignores": 1
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "The Troll King",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

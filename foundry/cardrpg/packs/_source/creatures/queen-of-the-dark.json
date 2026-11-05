@@ -1,0 +1,101 @@
+{
+  "_id": "MVJbosoA1iG1bLzZ",
+  "_key": "!actors!MVJbosoA1iG1bLzZ",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Queen of the Dark",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 70,
+      "base": 70
+    },
+    "kind": "dark-queen",
+    "armorBase": 5,
+    "speed": 3,
+    "capabilities": [
+      "burrow",
+      "caster",
+      "summon",
+      "commander",
+      "shelter",
+      "wits"
+    ],
+    "tactics": [
+      "ambusher"
+    ],
+    "targetPriority": "caster"
+  },
+  "items": [
+    {
+      "_id": "ohhkH8J1EgLtZxLk",
+      "_key": "!actors.items!MVJbosoA1iG1bLzZ.ohhkH8J1EgLtZxLk",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Dark Lantern",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 1,
+        "tags": [
+          "arcane",
+          "natural"
+        ],
+        "weight": 1,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Focus",
+        "verbs": {
+          "cast": {
+            "value": 4,
+            "range": 3
+          }
+        },
+        "equipped": true
+      }
+    },
+    {
+      "_id": "lqT1QatsUAtxp798",
+      "_key": "!actors.items!MVJbosoA1iG1bLzZ.lqT1QatsUAtxp798",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Grave-Cold Hands",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "heavy",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 5
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Queen of the Dark",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

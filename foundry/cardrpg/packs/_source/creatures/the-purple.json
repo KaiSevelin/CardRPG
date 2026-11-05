@@ -1,0 +1,123 @@
+{
+  "_id": "QzSu18dU9HJwsNKy",
+  "_key": "!actors!QzSu18dU9HJwsNKy",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "The Purple",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 12,
+      "base": 12
+    },
+    "kind": "purple",
+    "armorBase": 1,
+    "speed": 5,
+    "capabilities": [
+      "legs",
+      "stealth",
+      "venom",
+      "wits"
+    ],
+    "tactics": [
+      "ambusher",
+      "sniper"
+    ],
+    "targetPriority": "leader"
+  },
+  "items": [
+    {
+      "_id": "a18ySrBcq8kIPAK9",
+      "_key": "!actors.items!QzSu18dU9HJwsNKy.a18ySrBcq8kIPAK9",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Crossbow",
+      "type": "item",
+      "system": {
+        "ammo": "crossbow",
+        "slot": "hands",
+        "fits": [
+          "back"
+        ],
+        "hands": 2,
+        "tags": [
+          "ranged"
+        ],
+        "weight": 3,
+        "value": 60,
+        "kind": "Weapon",
+        "blurb": "Anyone can be taught one in a week, which is why lords dislike them.",
+        "verbs": {
+          "strike": {
+            "value": 4,
+            "ignores": 1,
+            "range": 8,
+            "text": "ignores 1 armor; Ready to reload"
+          }
+        },
+        "equipped": true
+      }
+    },
+    {
+      "_id": "l0cPr5v4FokQeROq",
+      "_key": "!actors.items!QzSu18dU9HJwsNKy.l0cPr5v4FokQeROq",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Blade Venom",
+      "type": "item",
+      "system": {
+        "slot": "belt",
+        "tags": [
+          "consumable"
+        ],
+        "weight": 0,
+        "value": 40,
+        "kind": "Poison",
+        "consumed": true,
+        "blurb": "Brewed from something that was already unpleasant.",
+        "text": "Apply with a Ready. Next Strike that hits: Poisoned 1 (2), resist Might 5.",
+        "equipped": true
+      }
+    },
+    {
+      "_id": "ZisS9hKnKHCzRMO8",
+      "_key": "!actors.items!QzSu18dU9HJwsNKy.ZisS9hKnKHCzRMO8",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Serpent's Milk",
+      "type": "item",
+      "system": {
+        "slot": "belt",
+        "tags": [
+          "consumable"
+        ],
+        "weight": 0,
+        "value": 70,
+        "kind": "Poison",
+        "consumed": true,
+        "blurb": "Milked, strained and kept cold. No damage in it at all.",
+        "text": "Apply with a Ready. Next Strike that hits: Poisoned 0 (3) -- no damage, three rounds without a secondary.",
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "The Purple",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

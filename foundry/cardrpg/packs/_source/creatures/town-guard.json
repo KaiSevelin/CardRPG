@@ -1,0 +1,156 @@
+{
+  "_id": "7OHUlKoNp6MGIi3J",
+  "_key": "!actors!7OHUlKoNp6MGIi3J",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Town Guard",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 10,
+      "base": 10
+    },
+    "kind": "town-guard",
+    "armorBase": 2,
+    "speed": 3,
+    "capabilities": [
+      "legs",
+      "pack",
+      "reach",
+      "shelter",
+      "drilled"
+    ],
+    "tactics": [
+      "shieldWall",
+      "packTactics"
+    ],
+    "targetPriority": "nearest"
+  },
+  "items": [
+    {
+      "_id": "Hi8YPu5ho8m8tQs0",
+      "_key": "!actors.items!7OHUlKoNp6MGIi3J.Hi8YPu5ho8m8tQs0",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Spear",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "fits": [
+          "back"
+        ],
+        "hands": 1,
+        "tags": [
+          "melee",
+          "thrown"
+        ],
+        "weight": 2,
+        "value": 8,
+        "kind": "Weapon",
+        "blurb": "The cheapest thing that keeps a man at arm's length.",
+        "verbs": {
+          "strike": {
+            "value": 3,
+            "range": 3,
+            "text": "range 3 thrown"
+          }
+        },
+        "equipped": true
+      }
+    },
+    {
+      "_id": "Ow5IwexQ1b7agpX3",
+      "_key": "!actors.items!7OHUlKoNp6MGIi3J.Ow5IwexQ1b7agpX3",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Wooden Shield",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "fits": [
+          "back"
+        ],
+        "hands": 1,
+        "tags": [
+          "shield"
+        ],
+        "weight": 3,
+        "value": 10,
+        "kind": "Shield",
+        "blurb": "Banded oak, scarred across the face.",
+        "verbs": {
+          "strike": {
+            "value": 1
+          },
+          "defend": {
+            "value": 2
+          }
+        },
+        "equipped": true
+      }
+    },
+    {
+      "_id": "zevxs2Qcx8glGaSv",
+      "_key": "!actors.items!7OHUlKoNp6MGIi3J.zevxs2Qcx8glGaSv",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Leather Armor",
+      "type": "item",
+      "system": {
+        "slot": "body",
+        "hands": 1,
+        "tags": [
+          "armor"
+        ],
+        "weight": 5,
+        "value": 20,
+        "armor": 1,
+        "kind": "Armor",
+        "blurb": "Boiled and riveted, and it still smells of the tannery.",
+        "equipped": true
+      }
+    },
+    {
+      "_id": "uj2817tBFvEeZsZG",
+      "_key": "!actors.items!7OHUlKoNp6MGIi3J.uj2817tBFvEeZsZG",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Light Helm",
+      "type": "item",
+      "system": {
+        "slot": "head",
+        "tags": [
+          "armor"
+        ],
+        "weight": 1,
+        "value": 15,
+        "kind": "Armor",
+        "armor": 1,
+        "blurb": "An open kettle. You can still hear and still see.",
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Town Guard",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

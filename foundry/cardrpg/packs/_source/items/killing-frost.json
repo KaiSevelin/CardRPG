@@ -1,0 +1,30 @@
+{
+  "_id": "6PHheIPcOsTltE8a",
+  "_key": "!items!6PHheIPcOsTltE8a",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Killing Frost",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "hands": 0,
+    "tags": [
+      "ranged",
+      "natural"
+    ],
+    "weight": 0,
+    "value": 0,
+    "npcGear": true,
+    "verbs": {
+      "strike": {
+        "value": 7,
+        "range": 5,
+        "area": 2,
+        "ignores": 3
+      }
+    }
+  }
+}

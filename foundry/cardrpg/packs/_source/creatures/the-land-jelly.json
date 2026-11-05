@@ -1,0 +1,73 @@
+{
+  "_id": "spOeDgs3OpiB5k1w",
+  "_key": "!actors!spOeDgs3OpiB5k1w",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "The Land Jelly",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 90,
+      "base": 90
+    },
+    "kind": "land-jelly",
+    "armorBase": 3,
+    "speed": 1,
+    "capabilities": [
+      "swim",
+      "grapple",
+      "drain",
+      "shelter",
+      "transport",
+      "dormant",
+      "feral"
+    ],
+    "tactics": [
+      "grappler"
+    ],
+    "targetPriority": "nearest"
+  },
+  "items": [
+    {
+      "_id": "fC7rqIIYqIwjCUqd",
+      "_key": "!actors.items!spOeDgs3OpiB5k1w.fC7rqIIYqIwjCUqd",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Crushing Coils",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "heavy",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 6,
+            "reach": 2
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "The Land Jelly",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

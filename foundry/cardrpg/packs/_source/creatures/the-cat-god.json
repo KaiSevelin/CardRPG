@@ -1,0 +1,72 @@
+{
+  "_id": "fiPD42AienNbvSs8",
+  "_key": "!actors!fiPD42AienNbvSs8",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "The Cat God",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 55,
+      "base": 55
+    },
+    "kind": "cat-god",
+    "armorBase": 4,
+    "speed": 9,
+    "capabilities": [
+      "legs",
+      "fast",
+      "stealth",
+      "venom",
+      "reach",
+      "wits"
+    ],
+    "tactics": [
+      "ambusher",
+      "skirmisher"
+    ],
+    "targetPriority": "weakest"
+  },
+  "items": [
+    {
+      "_id": "uH5s7TwUPUjG5piq",
+      "_key": "!actors.items!fiPD42AienNbvSs8.uH5s7TwUPUjG5piq",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Grasping Claws",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 5,
+            "reach": 2
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "The Cat God",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

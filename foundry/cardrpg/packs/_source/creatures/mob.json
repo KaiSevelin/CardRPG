@@ -1,0 +1,74 @@
+{
+  "_id": "NoRUJK1oWmiP4FQi",
+  "_key": "!actors!NoRUJK1oWmiP4FQi",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Mob",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 8,
+      "base": 8
+    },
+    "kind": "mob",
+    "armorBase": 0,
+    "speed": 4,
+    "capabilities": [
+      "legs",
+      "pack",
+      "wits",
+      "brute"
+    ],
+    "tactics": [
+      "packTactics"
+    ],
+    "targetPriority": "nearest"
+  },
+  "items": [
+    {
+      "_id": "kzZcodp5i43J4wM0",
+      "_key": "!actors.items!NoRUJK1oWmiP4FQi.kzZcodp5i43J4wM0",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Dagger",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "fits": [
+          "belt"
+        ],
+        "hands": 1,
+        "tags": [
+          "light",
+          "melee",
+          "thrown"
+        ],
+        "weight": 0,
+        "value": 2,
+        "kind": "Weapon",
+        "blurb": "Short, quick, and easy to hide.",
+        "verbs": {
+          "strike": {
+            "value": 2,
+            "range": 3,
+            "text": "range 3 thrown"
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Mob",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

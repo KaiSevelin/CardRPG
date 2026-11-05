@@ -1,0 +1,160 @@
+{
+  "_id": "bD0DDDxeai9x77O4",
+  "_key": "!actors!bD0DDDxeai9x77O4",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Holy Shield",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 18,
+      "base": 18
+    },
+    "kind": "holy-shield",
+    "armorBase": 4,
+    "speed": 3,
+    "capabilities": [
+      "legs",
+      "brute",
+      "shelter",
+      "drilled"
+    ],
+    "tactics": [
+      "shieldWall",
+      "bodyguard"
+    ],
+    "targetPriority": "nearest"
+  },
+  "items": [
+    {
+      "_id": "EjPHl1OBMAFGydvY",
+      "_key": "!actors.items!bD0DDDxeai9x77O4.EjPHl1OBMAFGydvY",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Longsword",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "fits": [
+          "back"
+        ],
+        "hands": 1,
+        "tags": [
+          "heavy",
+          "melee"
+        ],
+        "weight": 2,
+        "value": 15,
+        "kind": "Weapon",
+        "blurb": "A plain cruciform blade, kept sharp.",
+        "verbs": {
+          "strike": {
+            "value": 3
+          },
+          "defend": {
+            "value": 1
+          }
+        },
+        "equipped": true
+      }
+    },
+    {
+      "_id": "4Baau4IVwKouagB4",
+      "_key": "!actors.items!bD0DDDxeai9x77O4.4Baau4IVwKouagB4",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Kite Shield",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "fits": [
+          "back"
+        ],
+        "hands": 1,
+        "tags": [
+          "shield"
+        ],
+        "weight": 4,
+        "value": 24,
+        "kind": "Shield",
+        "blurb": "Long enough to cover the leg a horseman cannot move.",
+        "verbs": {
+          "defend": {
+            "value": 2,
+            "text": "Defend 3 against Ranged"
+          }
+        },
+        "equipped": true
+      }
+    },
+    {
+      "_id": "yvcWhXgtBY27o82x",
+      "_key": "!actors.items!bD0DDDxeai9x77O4.yvcWhXgtBY27o82x",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Plate",
+      "type": "item",
+      "system": {
+        "slot": "body",
+        "tags": [
+          "armor",
+          "heavy"
+        ],
+        "weight": 20,
+        "value": 400,
+        "kind": "Armor",
+        "armor": 4,
+        "blurb": "Half your carry allowance, and nothing short of a ball goes through it.",
+        "blocksReactions": [
+          "sidestep"
+        ],
+        "text": "Blocks Sidestep reactions.",
+        "equipped": true
+      }
+    },
+    {
+      "_id": "5yQ41L8stFZc5XSf",
+      "_key": "!actors.items!bD0DDDxeai9x77O4.5yQ41L8stFZc5XSf",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Great Helm",
+      "type": "item",
+      "system": {
+        "slot": "head",
+        "tags": [
+          "armor",
+          "heavy"
+        ],
+        "weight": 3,
+        "value": 40,
+        "kind": "Armor",
+        "armor": 1,
+        "blurb": "Safe, and you cannot hear a thing through it.",
+        "text": "Disadvantage on Wits checks.",
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Holy Shield",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

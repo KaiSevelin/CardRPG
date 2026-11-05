@@ -1,0 +1,99 @@
+{
+  "_id": "xlXDwYjBgdMhUKlh",
+  "_key": "!actors!xlXDwYjBgdMhUKlh",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Smuggler",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 10,
+      "base": 10
+    },
+    "kind": "smuggler",
+    "armorBase": 1,
+    "speed": 4,
+    "capabilities": [
+      "legs",
+      "ranged",
+      "stealth",
+      "wits"
+    ],
+    "tactics": [
+      "sniper",
+      "ambusher"
+    ],
+    "targetPriority": "caster"
+  },
+  "items": [
+    {
+      "_id": "PyRrbKUUOSaBoGGZ",
+      "_key": "!actors.items!xlXDwYjBgdMhUKlh.PyRrbKUUOSaBoGGZ",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Crossbow",
+      "type": "item",
+      "system": {
+        "ammo": "crossbow",
+        "slot": "hands",
+        "fits": [
+          "back"
+        ],
+        "hands": 2,
+        "tags": [
+          "ranged"
+        ],
+        "weight": 3,
+        "value": 60,
+        "kind": "Weapon",
+        "blurb": "Anyone can be taught one in a week, which is why lords dislike them.",
+        "verbs": {
+          "strike": {
+            "value": 4,
+            "ignores": 1,
+            "range": 8,
+            "text": "ignores 1 armor; Ready to reload"
+          }
+        },
+        "equipped": true
+      }
+    },
+    {
+      "_id": "Qn23Srn2ep71CuLs",
+      "_key": "!actors.items!xlXDwYjBgdMhUKlh.Qn23Srn2ep71CuLs",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Leather Armor",
+      "type": "item",
+      "system": {
+        "slot": "body",
+        "hands": 1,
+        "tags": [
+          "armor"
+        ],
+        "weight": 5,
+        "value": 20,
+        "armor": 1,
+        "kind": "Armor",
+        "blurb": "Boiled and riveted, and it still smells of the tannery.",
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Smuggler",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

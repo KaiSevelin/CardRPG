@@ -1,0 +1,75 @@
+{
+  "_id": "gDbYIA1aFovsfFnt",
+  "_key": "!actors!gDbYIA1aFovsfFnt",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Ecstatic",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 14,
+      "base": 14
+    },
+    "kind": "ecstatic",
+    "armorBase": 0,
+    "speed": 5,
+    "capabilities": [
+      "legs",
+      "pack",
+      "feral",
+      "fast"
+    ],
+    "tactics": [
+      "packTactics",
+      "brute",
+      "skirmisher"
+    ],
+    "targetPriority": "caster"
+  },
+  "items": [
+    {
+      "_id": "xdEAEK19MY6VCBBs",
+      "_key": "!actors.items!gDbYIA1aFovsfFnt.xdEAEK19MY6VCBBs",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Warhammer",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "fits": [
+          "back"
+        ],
+        "hands": 1,
+        "tags": [
+          "heavy",
+          "melee"
+        ],
+        "weight": 3,
+        "value": 25,
+        "kind": "Weapon",
+        "blurb": "A beak on one side for the plate and a hammer on the other for the man in it.",
+        "verbs": {
+          "strike": {
+            "value": 4,
+            "ignores": 1,
+            "text": "ignores 1 armor"
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Ecstatic",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

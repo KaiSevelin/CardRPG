@@ -1,0 +1,103 @@
+{
+  "_id": "HfEbHtFkRDn1ZVNj",
+  "_key": "!actors!HfEbHtFkRDn1ZVNj",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Cultist",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 8,
+      "base": 8
+    },
+    "kind": "cultist",
+    "armorBase": 0,
+    "speed": 4,
+    "capabilities": [
+      "legs",
+      "pack",
+      "caster",
+      "wits"
+    ],
+    "tactics": [
+      "packTactics"
+    ],
+    "targetPriority": "caster"
+  },
+  "items": [
+    {
+      "_id": "4Z519Vt0xJxEjM6x",
+      "_key": "!actors.items!HfEbHtFkRDn1ZVNj.4Z519Vt0xJxEjM6x",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Carved Idol",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 1,
+        "tags": [
+          "arcane"
+        ],
+        "weight": 1,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Focus",
+        "verbs": {
+          "cast": {
+            "value": 3,
+            "range": 4
+          }
+        },
+        "equipped": true
+      }
+    },
+    {
+      "_id": "X3mOuvAowQj0XXME",
+      "_key": "!actors.items!HfEbHtFkRDn1ZVNj.X3mOuvAowQj0XXME",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Dagger",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "fits": [
+          "belt"
+        ],
+        "hands": 1,
+        "tags": [
+          "light",
+          "melee",
+          "thrown"
+        ],
+        "weight": 0,
+        "value": 2,
+        "kind": "Weapon",
+        "blurb": "Short, quick, and easy to hide.",
+        "verbs": {
+          "strike": {
+            "value": 2,
+            "range": 3,
+            "text": "range 3 thrown"
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Cultist",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

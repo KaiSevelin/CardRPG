@@ -1,0 +1,99 @@
+{
+  "_id": "De6YuGx2QcFFcYFz",
+  "_key": "!actors!De6YuGx2QcFFcYFz",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Mercenary",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 12,
+      "base": 12
+    },
+    "kind": "mercenary",
+    "armorBase": 3,
+    "speed": 4,
+    "capabilities": [
+      "legs",
+      "brute",
+      "reach",
+      "drilled"
+    ],
+    "tactics": [
+      "bodyguard",
+      "brute"
+    ],
+    "targetPriority": "nearest"
+  },
+  "items": [
+    {
+      "_id": "Zl2RmE3xSd900dV0",
+      "_key": "!actors.items!De6YuGx2QcFFcYFz.Zl2RmE3xSd900dV0",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Halberd",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 2,
+        "tags": [
+          "heavy",
+          "melee"
+        ],
+        "weight": 3,
+        "value": 35,
+        "kind": "Weapon",
+        "blurb": "Axe, spike and hook on a six-foot shaft. Reaches over the man in front of you.",
+        "verbs": {
+          "strike": {
+            "value": 4,
+            "reach": 2,
+            "text": "reach 2"
+          }
+        },
+        "equipped": true
+      }
+    },
+    {
+      "_id": "w7CiYguR6ToNSAKz",
+      "_key": "!actors.items!De6YuGx2QcFFcYFz.w7CiYguR6ToNSAKz",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Brigandine",
+      "type": "item",
+      "system": {
+        "slot": "body",
+        "tags": [
+          "armor",
+          "heavy"
+        ],
+        "weight": 12,
+        "value": 140,
+        "kind": "Armor",
+        "armor": 3,
+        "blurb": "Plates riveted between canvas. Heavy enough that you stop dodging.",
+        "blocksReactions": [
+          "sidestep"
+        ],
+        "text": "Blocks Sidestep reactions.",
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Mercenary",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}
