@@ -1,0 +1,70 @@
+{
+  "_id": "l7eOyvWFCE5WgyHR",
+  "_key": "!actors!l7eOyvWFCE5WgyHR",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Chupacabra",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 10,
+      "base": 10
+    },
+    "kind": "chupacabra",
+    "armorBase": 1,
+    "speed": 7,
+    "capabilities": [
+      "legs",
+      "pack",
+      "drain",
+      "fast",
+      "feral"
+    ],
+    "tactics": [
+      "packTactics",
+      "skirmisher"
+    ],
+    "targetPriority": "weakest"
+  },
+  "items": [
+    {
+      "_id": "jOd0B1VVpdjm97BS",
+      "_key": "!actors.items!l7eOyvWFCE5WgyHR.jOd0B1VVpdjm97BS",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Draining Bite",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 4
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Chupacabra",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

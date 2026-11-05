@@ -1,6 +1,6 @@
 # Art list
 
-**509 pieces**, of which **0** are wired up. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card.
+**540 pieces**, of which **0** are wired up. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card.
 
 ## What to supply
 
@@ -49,11 +49,11 @@ Anything under `icons/svg/` is ignored on purpose: that is Foundry's own placeho
 - **Wounds and Taint.** Two faces, fixed, and both are meant to read as damage rather than as content. One picture each at most.
 - **The levelling graph's nodes.** A node wears the art of what it hands over, so drawing a Signature draws its node too. Nothing needs art of its own.
 - **The twist deck.** 8 kinds, 30 cards, and a twist is a NAME and a COST rather than a picture. It is the GM's own deck and wears the skill back, because art for a deck one person ever sees is art nobody at the table looks at.
-- **The 21 tagged creatures.** Elves, trolls, dragons and the rest are in the content as a name and a list of capabilities, with no numbers and no actor — so there is nothing yet for a picture to be of. They arrive in the brief when they arrive in the game.
+- **The 0 tagged creatures.** Elves, trolls, dragons and the rest are in the content as a name and a list of capabilities, with no numbers and no actor — so there is nothing yet for a picture to be of. They arrive in the brief when they arrive in the game.
 
 ## Deck backs — draw these first
 
-**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 6 pictures against 503 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
+**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 6 pictures against 534 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
 
 **6 pieces**. Same 2:3 and 640 × 960 as a face, and **no safe area**: nothing is printed over a back, so the whole card is yours.
 
@@ -62,7 +62,7 @@ Anything under `icons/svg/` is ignored on purpose: that is Foundry's own placeho
 |   | **The action deck** | Face down in front of every player, all game. Cards from the common pool and all four Ways mix in one deck, so this is NOT a Way's back -- the deck is yours, not Shade's. | `backs/action.webp` |
 |   | **The fate deck** | The back players see most: it is shuffled and face down by design, and that is what makes a thin deck a risk rather than a lookup. Twenty cards, drawn from constantly. | `backs/fate.webp` |
 |   | **The skill deck** | What you do when you are NOT fighting: climbing, listening, lifting, picking a lock, talking someone round. **No weapon of any kind on this one** -- no blade, no point, no hilt, no arrowhead. A hand, a key, an eye, a knot, a lens: the tools of a scene. It has to read as clearly NOT the action deck at a glance, since both are face down in front of the same player. | `backs/skill.webp` |
-|   | **The twist deck** | The GM's deck, and the only one on their side of the table. Drawn when something goes partly wrong, so the back is a promise of a complication rather than a threat: a knot, a fork, a crack, a thing turning. Not a weapon and not a monster -- the price of a Partial is never an attack. | `backs/twist.webp` |
+|   | **The twist deck** | The GM's deck, and the only one on their side of the table. Drawn when something goes partly wrong, so the back is a promise of a complication rather than a threat: **a fork** -- one line arriving and leaving as two, mirrored left to right, with open paper around it. No knot, no spiral, no coil: nothing that fills its own space or turns rather than mirrors. Not a weapon and not a monster -- the price of a Partial is never an attack. | `backs/twist.webp` |
 |   | **The Wild Magic deck** | Drawn only when a Wild comes out of a fate deck, so its back is a promise that something strange is about to happen. | `backs/wild.webp` |
 |   | **Intent, any creature** | The back on every creature's intent deck in the game. A face-down intent says *this thing is about to act*, and which thing it is is already on the table in front of you -- so the back carries the threat rather than the species. | `backs/npc.webp` |
 
@@ -70,7 +70,7 @@ Anything under `icons/svg/` is ignored on purpose: that is Foundry's own placeho
 
 **Hands, discards and Spent piles have no back either.** A hand is face up to its owner and a discard is face up to the table, so a back on one would be art nobody ever sees.
 
-**One intent back serves all 47 creatures**, and no kind has one of its own. The argument for a goblin back — that a goblin's intents should be recognisable across the table as a goblin's — is a good one, and it loses to arithmetic. **Every creature in the roster is its own kind**, variants included: a Goblin Warrior is not a goblin as far as this lookup is concerned. So a back per kind is 47 pieces of art, bought to tell a player which creature a deck sitting in front of that creature belongs to. The builder still asks for a kind's own back before falling back to the common one, so a future exception costs one entry and no code.
+**One intent back serves all 68 creatures**, and no kind has one of its own. The argument for a goblin back — that a goblin's intents should be recognisable across the table as a goblin's — is a good one, and it loses to arithmetic. **Every creature in the roster is its own kind**, variants included: a Goblin Warrior is not a goblin as far as this lookup is concerned. So a back per kind is 68 pieces of art, bought to tell a player which creature a deck sitting in front of that creature belongs to. The builder still asks for a kind's own back before falling back to the common one, so a future exception costs one entry and no code.
 
 ## The starter deck
 
@@ -677,7 +677,7 @@ The largest group and the least urgent: an item is named on a sheet far more oft
 
 Tuned separately from player gear and never offered in a player's picker.
 
-**6 pieces**. Suggested path: `cardrpg/art/items/npc/`
+**9 pieces**. Suggested path: `cardrpg/art/items/npc/`
 
 | | Name | What it is | File |
 |---|---|---|---|
@@ -686,82 +686,113 @@ Tuned separately from player gear and never offered in a player's picker.
 |   | **Goblin Shield** | Shield | `items/npc/goblin-shield.webp` |
 |   | **Goblin Shortbow** | Weapon | `items/npc/goblin-shortbow.webp` |
 |   | **Goblin Spear** | Weapon | `items/npc/goblin-spear.webp` |
+|   | **Grave Candle** | Focus | `items/npc/grave-candle.webp` |
 |   | **Mole Pick** | Weapon | `items/npc/mole-pick.webp` |
+|   | **Tarnkappe** | Wonder · A small grey cap, greasy with age. The Alp will want it back. · Become Invisible (1). | `items/npc/tarnkappe.webp` |
+|   | **Troll Club** | Weapon | `items/npc/troll-club.webp` |
 
 ## Natural weapons
 
 A mandible, a sting, a tail club and a breath are items like any other — grown rather than carried, which is what the `natural` tag means and why none of them can be disarmed or looted. They sit on a creature's sheet, so they want the same picture an item wants.
 
-**10 pieces**. Suggested path: `cardrpg/art/items/natural/`
+**17 pieces**. Suggested path: `cardrpg/art/items/natural/`
 
 | | Name | What it is | File |
 |---|---|---|---|
 |   | **Acid Spray** | Natural | `items/natural/acid-spray.webp` |
 |   | **Claws** | Natural | `items/natural/claws.webp` |
+|   | **Crushing Coils** | Natural | `items/natural/crushing-coils.webp` |
+|   | **Dragon Jaws** | Natural | `items/natural/dragon-jaws.webp` |
+|   | **Draining Bite** | Natural | `items/natural/draining-bite.webp` |
+|   | **Elf-Bolt** | Focus | `items/natural/elf-bolt.webp` |
 |   | **Fire Spray** | Natural | `items/natural/fire-spray.webp` |
 |   | **Grasping Claws** | Natural | `items/natural/grasping-claws.webp` |
+|   | **Grave-Cold Hands** | Natural | `items/natural/grave-cold-hands.webp` |
 |   | **Heavy Mandibles** | Natural | `items/natural/heavy-mandibles.webp` |
 |   | **Mandibles** | Natural | `items/natural/mandibles.webp` |
 |   | **Nip** | Natural | `items/natural/nip.webp` |
 |   | **Sting** | Natural | `items/natural/sting.webp` |
 |   | **Tail Club** | Natural | `items/natural/tail-club.webp` |
+|   | **Thrown Stone** | Natural | `items/natural/thrown-stone.webp` |
+|   | **Troll Fists** | Natural | `items/natural/troll-fists.webp` |
 |   | **Tusks** | Natural | `items/natural/tusks.webp` |
 
 ## Creature tokens
 
 **The one piece of art per creature**, and the only group here that is not a card. It goes in both of Foundry's slots — the portrait on the sheet and the token on the map — because they are the same creature and two files is one to forget. Health, armour, speed and gear are given so the picture can be the right size and carry the right weapon; the line after the dash is the creature's own description, written when it was.
 
-**47 pieces**. **1:1, 512 × 512, transparent.** Suggested path: `cardrpg/art/tokens/`
+**68 pieces**. **1:1, 512 × 512, transparent.** Suggested path: `cardrpg/art/tokens/`
 
 | | Name | What it is | File |
 |---|---|---|---|
+|   | **Alp** | Health 12 · speed 4 · Draining Bite, Tarnkappe — a small hunched night-thing wearing a shabby grey cap pulled low -- the Tarnkappe, and it is the only thing on it that reads as clothing. Thin, long-fingered, far too light for its size, drawn crouching as though on someone's ribs | `tokens/alp.webp` |
 |   | **Armored Slug** | Health 16 · armour 4 · speed 1 · Acid Spray — slow, armoured, and it does not need to reach you | `tokens/armored-slug.webp` |
-|   | **Armored Slug Spitter** | Health 12 · armour 3 · speed 2 · Acid Spray — thinner shell, longer reach of acid: it is here to ruin somebody's concentration | `tokens/armored-slug-spitter.webp` |
+|   | **Armored Slug Spitter** | Health 12 · armour 3 · speed 2 · Acid Spray — A Armored Slug: slow, armoured, and it does not need to reach you This one thinner shell, longer reach of acid: it is here to ruin somebody's concentration | `tokens/armored-slug-spitter.webp` |
 |   | **Blind Worm** | Health 14 · armour 2 · speed 3 · Heavy Mandibles — no sight and a sense for vibration: it finds whoever moved | `tokens/blind-worm.webp` |
-|   | **Blind Worm Elder** | Health 24 · armour 3 · speed 3 · Heavy Mandibles — old enough to have learned that a held thing stops moving and stops being felt | `tokens/blind-worm-elder.webp` |
+|   | **Blind Worm Elder** | Health 24 · armour 3 · speed 3 · Heavy Mandibles — A Blind Worm: no sight and a sense for vibration: it finds whoever moved This one a single blind tube of segmented muscle, jaws at one end and the body simply ending at the other. ONE BODY AND NO TAIL: no second tapering limb, no stinger, nothing trailing | `tokens/blind-worm-elder.webp` |
 |   | **Burrower** | Health 18 · armour 2 · speed 5 · Mandibles — worms, and the steeds of the mole men: it is how they arrive under you | `tokens/burrower.webp` |
-|   | **Burrower Brood Mother** | Health 30 · armour 3 · speed 3 · Mandibles — it stopped being a steed when it started laying | `tokens/burrower-brood-mother.webp` |
+|   | **Burrower Brood Mother** | Health 30 · armour 3 · speed 3 · Mandibles — A Burrower: worms, and the steeds of the mole men: it is how they arrive under you This one it stopped being a steed when it started laying | `tokens/burrower-brood-mother.webp` |
+|   | **Changeling** | Health 8 · speed 4 · Nip — a byting: child-sized and child-shaped and not a child -- the proportions a little off, the head a little large, the hands too long, old in the eyes. Dressed in human clothes that fit badly. Nothing monstrous on it at a glance, which is the whole horror | `tokens/changeling.webp` |
+|   | **Chupacabra** | Health 10 · armour 1 · speed 7 · Draining Bite — a lean hairless quadruped, grey and leathery, with a ridge of stiff spines down the back, a long muzzle and oversized hind legs built for springing. An animal, not a person: the only one of these nine that goes on four legs | `tokens/chupacabra.webp` |
+|   | **Dhampir** | Health 14 · armour 1 · speed 5 · Draining Bite — a living person, which is the point: a lean travelling man in worn coat and boots, nothing undead about the body at all. Only the eyes are wrong, and he knows it. He is the only thing in this group that casts a shadow | `tokens/dhampir.webp` |
 |   | **Doomfly** | Health 12 · armour 1 · speed 7 · Nip — transport: it is how everything else arrived | `tokens/doomfly.webp` |
-|   | **Five Legs** | Health 15 · armour 2 · speed 4 · Claws — lieutenants, fairly intelligent: it spends its turn on somebody else's | `tokens/five-legs.webp` |
-|   | **Five Legs Adjutant** | Health 12 · armour 2 · speed 4 · Claws — it does not fight at all: it calls the next wave | `tokens/five-legs-adjutant.webp` |
-|   | **Flat Bug** | Health 5 · armour 1 · speed 3 · Mandibles — the Horde's main infantry: a goblin with a shell and no fear | `tokens/flat-bug.webp` |
-|   | **Flat Bug Runner** | Health 4 · speed 5 · Mandibles — sent ahead to find out where you are, and dies finding out | `tokens/flat-bug-runner.webp` |
-|   | **Flat Bug Shieldline** | Health 7 · armour 2 · speed 2 · Mandibles — the front rank, which is where the Horde's armour actually is | `tokens/flat-bug-shieldline.webp` |
+|   | **Dragon** | Health 50 · armour 5 · speed 6 · Dragon Jaws, Fire Spray — the biggest thing in the bestiary: a long-bodied winged worm, heavily scaled, more serpent than lizard, with a narrow head and an old intelligence in it. Wings like a bat's and far too large. It should dwarf everything drawn beside it | `tokens/dragon.webp` |
+|   | **Draugr** | Health 30 · armour 3 · speed 3 · Grave-Cold Hands — a barrow-dweller: a corpse swollen far past the size it was alive, hel-bla -- the blue-black of a drowned man -- in the rotted remains of good clothes, with grave-goods still on it. Heavy, slow, and far too strong. Not a skeleton: there is too much of it left | `tokens/draugr.webp` |
+|   | **Elf** | Health 16 · armour 1 · speed 5 · Elf-Bolt — an alva of the Nordic kind, not a tall archer: slight, pale and barefoot in a thin shift, hair unbound, drawn mid-step as if still dancing and only half attending to you. Beautiful and slightly wrong in the proportions. No armour, no bow, no pointed helm | `tokens/elf.webp` |
+|   | **Five Legs** | Health 15 · armour 2 · speed 4 · Claws — FIVE-FOLD RADIAL: five identical limbs spaced evenly around a domed carapace, no head and no front or back, like a starfish built as a predator. Nothing else here is radial | `tokens/five-legs.webp` |
+|   | **Five Legs Adjutant** | Health 12 · armour 2 · speed 4 · Claws — A Five Legs: FIVE-FOLD RADIAL: five identical limbs spaced evenly around a domed carapace, no head and no front or back, like a starfish built as a predator. Nothing else here is radial This one it does not fight at all: it calls the next wave | `tokens/five-legs-adjutant.webp` |
+|   | **Flat Bug** | Health 5 · armour 1 · speed 3 · Mandibles — a low broad arachnid plated front to back, EIGHT legs splayed under a flat shell. No goblin and no humanoid head of any kind: the head is a wedge of jaw set into the shell | `tokens/flat-bug.webp` |
+|   | **Flat Bug Runner** | Health 4 · speed 5 · Mandibles — A Flat Bug: a low broad arachnid plated front to back, EIGHT legs splayed under a flat shell. No goblin and no humanoid head of any kind: the head is a wedge of jaw set into the shell This one sent ahead to find out where you are, and dies finding out | `tokens/flat-bug-runner.webp` |
+|   | **Flat Bug Shieldline** | Health 7 · armour 2 · speed 2 · Mandibles — A Flat Bug: a low broad arachnid plated front to back, EIGHT legs splayed under a flat shell. No goblin and no humanoid head of any kind: the head is a wedge of jaw set into the shell This one the front rank, which is where the Horde's armour actually is | `tokens/flat-bug-shieldline.webp` |
+|   | **Forest Troll** | Health 20 · armour 2 · speed 4 · Troll Fists — a skogstroll: long-limbed and hunched, hide like wet bark with lichen in the seams, a cow's tail it keeps tucked, and a face that is nearly a person's and wrong about it | `tokens/forest-troll.webp` |
+|   | **Gnome** | Health 14 · armour 1 · speed 3 · Elf-Bolt — a tomte: knee-high, old-man-faced, grey homespun and a red knitted cap, with a beard far too long for the body under it. Carries itself like the owner of the place. Enormously strong for its size, which should show in the hands and the stance | `tokens/gnome.webp` |
 |   | **Goblin** | Health 5 · speed 3 · Goblin Spear | `tokens/goblin.webp` |
-|   | **Goblin Archer** | Health 5 · speed 3 · Goblin Shortbow — it earns Loose by being able to shoot, which the spearman cannot | `tokens/goblin-archer.webp` |
-|   | **Goblin Chief** | Health 11 · armour 1 · speed 3 · Goblin Spear, Goblin Shield — kill it and the Cower comes back to everybody else | `tokens/goblin-chief.webp` |
-|   | **Goblin Shaman** | Health 6 · speed 2 · Goblin Fetish — the elves taught it enough glamour to be dangerous and not enough to be free | `tokens/goblin-shaman.webp` |
-|   | **Goblin Warrior** | Health 8 · armour 1 · speed 3 · Goblin Spear, Goblin Shield — the one that does not run: a shield, a shell of discipline, and no Cower | `tokens/goblin-warrior.webp` |
-|   | **Mantiss** | Health 12 · armour 2 · speed 4 · Grasping Claws — sergeants: the first thing in the Horde that gives an order | `tokens/mantiss.webp` |
-|   | **Mantiss Veteran** | Health 18 · armour 3 · speed 4 · Grasping Claws — it has done this before and takes you out of the fight first | `tokens/mantiss-veteran.webp` |
+|   | **Goblin Archer** | Health 5 · speed 3 · Goblin Shortbow — A Goblin:  This one it earns Loose by being able to shoot, which the spearman cannot | `tokens/goblin-archer.webp` |
+|   | **Goblin Chief** | Health 11 · armour 1 · speed 3 · Goblin Spear, Goblin Shield — A Goblin:  This one kill it and the Cower comes back to everybody else | `tokens/goblin-chief.webp` |
+|   | **Goblin Shaman** | Health 6 · speed 2 · Goblin Fetish — A Goblin:  This one the elves taught it enough glamour to be dangerous and not enough to be free | `tokens/goblin-shaman.webp` |
+|   | **Goblin Warrior** | Health 8 · armour 1 · speed 3 · Goblin Spear, Goblin Shield — A Goblin:  This one the one that does not run: a shield, a shell of discipline, and no Cower | `tokens/goblin-warrior.webp` |
+|   | **Keres** | Health 8 · speed 6 · Claws — Greek death-spirits: dark ragged female figures, gaunt and bloodied to the elbow, teeth bared, drawn low over the ground as if stooping to something. Never one alone -- the shape of the picture is several of them at once | `tokens/keres.webp` |
+|   | **Lindworm** | Health 34 · armour 3 · speed 4 · Dragon Jaws, Acid Spray — a wingless serpent-dragon of the Nordic kind: a long heavy body with ONE pair of forelegs at the front and nothing behind, dragging the rest. Dull scale, blunt snout, small eyes. No wings at all -- that is what makes it a lindworm and not a dragon | `tokens/lindworm.webp` |
+|   | **Little Folk** | Health 10 · armour 1 · speed 4 · Elf-Bolt — the vattar, the underground people: small, grey and earthen, dressed like poor farmers of no particular century, with a flat look and no expression to read. Drawn half out of the ground or half out of a doorway: never fully in the open | `tokens/little-folk.webp` |
+|   | **Lugat** | Health 22 · armour 2 · speed 3 · Draining Bite — the Albanian kind: bloated and tight-skinned, still wound in its shroud with the wrapping split, moving with a full belly's slowness. Fat rather than gaunt, which is what separates it from every other corpse here | `tokens/lugat.webp` |
+|   | **Mantiss** | Health 12 · armour 2 · speed 4 · Grasping Claws — EIGHT legs, the front pair long and folded like a mantis's and the other six walking. Upright over them, taller than the infantry, with a narrow swivelling head | `tokens/mantiss.webp` |
+|   | **Mantiss Veteran** | Health 18 · armour 3 · speed 4 · Grasping Claws — A Mantiss: EIGHT legs, the front pair long and folded like a mantis's and the other six walking. Upright over them, taller than the infantry, with a narrow swivelling head This one it has done this before and takes you out of the fight first | `tokens/mantiss-veteran.webp` |
 |   | **Mega Beetle** | Health 30 · armour 4 · speed 2 · Heavy Mandibles — a wall that walks: the Scrips under its wings are the point of it | `tokens/mega-beetle.webp` |
-|   | **Mole Beast** | Health 22 · armour 2 · speed 3 · Tusks — it comes up underneath, which is what Go Under is for | `tokens/mole-beast.webp` |
-|   | **Mole Beast Tusker** | Health 30 · armour 3 · speed 3 · Tusks — the one the mole men dig behind | `tokens/mole-beast-tusker.webp` |
+|   | **Mole Beast** | Health 22 · armour 2 · speed 3 · Tusks — a true mole, enlarged: a barrel of muscle with a pink snout, tiny buried eyes and huge outward-turned digging forelimbs. Fur, not chitin -- it is not one of the Horde | `tokens/mole-beast.webp` |
+|   | **Mole Beast Tusker** | Health 30 · armour 3 · speed 3 · Tusks — A Mole Beast: a true mole, enlarged: a barrel of muscle with a pink snout, tiny buried eyes and huge outward-turned digging forelimbs. Fur, not chitin -- it is not one of the Horde This one the one the mole men dig behind | `tokens/mole-beast-tusker.webp` |
 |   | **Mole Man** | Health 8 · armour 1 · speed 3 · Mole Pick — followers of the Queen of the Dark, and the only burrower that carries a tool | `tokens/mole-man.webp` |
-|   | **Mole Man Digger** | Health 8 · armour 1 · speed 3 · Mole Pick — it is not fighting you, it is getting through the floor you are standing on | `tokens/mole-man-digger.webp` |
-|   | **Mole Man Priest** | Health 10 · armour 1 · speed 2 · Dark Lantern — the Queen of the Dark grants to those who go deep enough, and it has | `tokens/mole-man-priest.webp` |
+|   | **Mole Man Digger** | Health 8 · armour 1 · speed 3 · Mole Pick — A Mole Man: followers of the Queen of the Dark, and the only burrower that carries a tool This one carries a MOLE PICK: a short-hafted single-bladed digging pick, the haft cut short for swinging in a tunnel. Not a spear, not a polearm, not a lamp | `tokens/mole-man-digger.webp` |
+|   | **Mole Man Priest** | Health 10 · armour 1 · speed 2 · Dark Lantern — A Mole Man: followers of the Queen of the Dark, and the only burrower that carries a tool This one carries a DARK LANTERN and nothing else: a shuttered lantern in one hand, one slit open. No staff, no rod, no crook -- both arms and both hands whole and unpierced | `tokens/mole-man-priest.webp` |
+|   | **Mountain Troll** | Health 34 · armour 4 · speed 2 · Troll Fists, Thrown Stone — a bergtroll: a hunched mass of grey stone-hide with lichen and moss growing on its back and shoulders, a great hooked nose, small deep-set eyes and a mouth too wide. Vast, slow and mineral -- more cliff than animal, and no green skin anywhere | `tokens/mountain-troll.webp` |
+|   | **Nature Spirit** | Health 20 · armour 1 · speed 5 · Elf-Bolt — a skogsra: from the front a tall woman made of the wood -- bark-grained skin, moss in the hair, eyes like a deer's -- and from any other angle hollow, the back open like a rotted trunk. Draw her turning, so both are true at once. That hollow is the whole point | `tokens/nature-spirit.webp` |
 |   | **Pincer** | Health 25 · armour 3 · speed 4 · Grasping Claws — generals, intelligent, armoured: it takes somebody out of the fight rather than down | `tokens/pincer.webp` |
-|   | **Pincer Marshal** | Health 35 · armour 4 · speed 4 · Grasping Claws — a general who can call for more is the fight not ending | `tokens/pincer-marshal.webp` |
+|   | **Pincer Marshal** | Health 35 · armour 4 · speed 4 · Grasping Claws — A Pincer: generals, intelligent, armoured: it takes somebody out of the fight rather than down This one the largest armoured form in the Horde, heavy pincers held high and a thick plated hood over the front. NO FLAGS, no banners, no standards, no insignia, no cloth of any kind | `tokens/pincer-marshal.webp` |
 |   | **Processor** | Health 4 · armour 1 · speed 3 · Nip — workers: they build, and they are what a scene looks like before the fight | `tokens/processor.webp` |
-|   | **Processor Driller** | Health 6 · armour 1 · speed 3 · Mandibles — what the Horde uses instead of a siege engine, and the reason walls fall from below | `tokens/processor-driller.webp` |
+|   | **Processor Driller** | Health 6 · armour 1 · speed 3 · Mandibles — A Processor: workers: they build, and they are what a scene looks like before the fight This one what the Horde uses instead of a siege engine, and the reason walls fall from below | `tokens/processor-driller.webp` |
+|   | **Revenant** | Health 24 · armour 2 · speed 4 · Grave-Cold Hands — a body walking with a purpose and nothing else: dried rather than rotted, the clothes it was buried in, the wound that killed it still open and not bleeding. The face is intact and recognisable, which is the worst thing about it | `tokens/revenant.webp` |
 |   | **Rush Spider** | Health 10 · armour 1 · speed 8 · Mandibles — cavalry: it arrives before you have finished deciding | `tokens/rush-spider.webp` |
-|   | **Rush Spider Rider** | Health 14 · armour 1 · speed 8 · Mandibles — carrying a Mole Man, which is two statblocks arriving as one problem | `tokens/rush-spider-rider.webp` |
-|   | **Scrip** | Health 2 · speed 6 · Nip — eyes and ears, and harmless: the question is whether you spend a turn on one | `tokens/scrip.webp` |
-|   | **Scrip Watcher** | Health 2 · speed 7 · Nip — the one that is still watching after you killed the others | `tokens/scrip-watcher.webp` |
+|   | **Rush Spider Rider** | Health 14 · armour 1 · speed 8 · Mandibles — A Rush Spider: cavalry: it arrives before you have finished deciding This one carrying a Mole Man, which is two statblocks arriving as one problem | `tokens/rush-spider-rider.webp` |
+|   | **Scrip** | Health 2 · speed 6 · Nip — small and quick on EIGHT thin legs, more eye than body -- a cluster of them over a trunk barely bigger than a fist | `tokens/scrip.webp` |
+|   | **Scrip Watcher** | Health 2 · speed 7 · Nip — A Scrip: small and quick on EIGHT thin legs, more eye than body -- a cluster of them over a trunk barely bigger than a fist This one the one that is still watching after you killed the others | `tokens/scrip-watcher.webp` |
+|   | **Sea Serpent** | Health 40 · armour 3 · speed 6 · Crushing Coils, Dragon Jaws — a vast limbless water-worm, drawn as a series of humps breaking a flat surface with the head low and forward at one end -- the shape of every lake-monster sighting ever reported. Most of it is under the water and should stay there | `tokens/sea-serpent.webp` |
+|   | **Shade** | Health 10 · speed 5 · Grave Candle — barely there: the shape of a person in thin grey wash, the edges losing themselves into the paper, carrying a single guttering candle that is the most solid thing in the picture. No chains, no skull, no sheet -- just somebody almost rubbed out | `tokens/shade.webp` |
 |   | **Skaah** | Health 40 · armour 2 · speed 4 · Nip — a drop ship: balloon-like, gigantic, and full of something worse | `tokens/skaah.webp` |
-|   | **Skaah Bloated** | Health 60 · armour 1 · speed 3 · Acid Spray — full, low and leaking: it is going to come down somewhere | `tokens/skaah-bloated.webp` |
-|   | **Slitherer** | Health 7 · armour 1 · speed 4 · Mandibles — silent and venomous: the two words the world gives it, and both are mechanical | `tokens/slitherer.webp` |
-|   | **Slitherer Brood** | Health 4 · armour 1 · speed 5 · Mandibles — smaller, and there are always more of them than you counted | `tokens/slitherer-brood.webp` |
+|   | **Skaah Bloated** | Health 60 · armour 1 · speed 3 · Acid Spray — A Skaah: a drop ship: balloon-like, gigantic, and full of something worse This one full, low and leaking: it is going to come down somewhere | `tokens/skaah-bloated.webp` |
+|   | **Slitherer** | Health 7 · armour 1 · speed 4 · Mandibles — a long low body dragging between EIGHT short legs set wide along its sides -- it slithers because the body is on the ground, not because it has no legs | `tokens/slitherer.webp` |
+|   | **Slitherer Brood** | Health 4 · armour 1 · speed 5 · Mandibles — A Slitherer: a long low body dragging between EIGHT short legs set wide along its sides -- it slithers because the body is on the ground, not because it has no legs This one smaller, and there are always more of them than you counted | `tokens/slitherer-brood.webp` |
 |   | **Smash Beetle** | Health 20 · armour 3 · speed 2 · Tail Club — it is here for the wall, and you are in the way of the wall | `tokens/smash-beetle.webp` |
-|   | **Smash Beetle Breaker** | Health 28 · armour 4 · speed 1 · Tail Club — bred bigger for the gates of the Third Ring, and it does not turn quickly | `tokens/smash-beetle-breaker.webp` |
+|   | **Smash Beetle Breaker** | Health 28 · armour 4 · speed 1 · Tail Club — A Smash Beetle: it is here for the wall, and you are in the way of the wall This one bred bigger for the gates of the Third Ring, and it does not turn quickly | `tokens/smash-beetle-breaker.webp` |
 |   | **Stinger** | Health 6 · speed 6 · Sting — it goes for whoever is concentrating | `tokens/stinger.webp` |
-|   | **Stinger Drone** | Health 10 · speed 6 · Acid Spray — the sting became a nozzle somewhere in the hive's history | `tokens/stinger-drone.webp` |
-|   | **Sweeper** | Health 8 · armour 1 · speed 7 · Claws — the air force: four wings and a dive | `tokens/sweeper.webp` |
-|   | **Sweeper Carrier** | Health 12 · armour 1 · speed 6 · Nip — it is carrying something, and the something is the encounter | `tokens/sweeper-carrier.webp` |
-|   | **Sweeper Diver** | Health 6 · armour 1 · speed 9 · Claws — it comes down on whoever is concentrating | `tokens/sweeper-diver.webp` |
+|   | **Stinger Drone** | Health 10 · speed 6 · Acid Spray — A Stinger: it goes for whoever is concentrating This one the sting became a nozzle somewhere in the hive's history | `tokens/stinger-drone.webp` |
+|   | **Strigoi** | Health 28 · armour 2 · speed 4 · Draining Bite — the troubled dead of the Romanian stories: gaunt and upright and almost presentable, dressed as a living person of standing, with too-long nails and a mouth that does not close properly. It does not shamble. It arrives | `tokens/strigoi.webp` |
+|   | **Sweeper** | Health 8 · armour 1 · speed 7 · Claws — EIGHT legs folded tight under four wings. Not a bird and not a bat: the wings are thin and veined off a segmented body, and there are no feathers anywhere on it | `tokens/sweeper.webp` |
+|   | **Sweeper Carrier** | Health 12 · armour 1 · speed 6 · Nip — A Sweeper: EIGHT legs folded tight under four wings. Not a bird and not a bat: the wings are thin and veined off a segmented body, and there are no feathers anywhere on it This one it is carrying something, and the something is the encounter | `tokens/sweeper-carrier.webp` |
+|   | **Sweeper Diver** | Health 6 · armour 1 · speed 9 · Claws — A Sweeper: EIGHT legs folded tight under four wings. Not a bird and not a bat: the wings are thin and veined off a segmented body, and there are no feathers anywhere on it This one it comes down on whoever is concentrating | `tokens/sweeper-diver.webp` |
 |   | **Terror Fly** | Health 18 · armour 2 · speed 6 · Fire Spray — captains, and the first thing in the roster that burns ground | `tokens/terror-fly.webp` |
-|   | **Terror Fly Torch** | Health 14 · armour 2 · speed 6 · Fire Spray — all the fire and none of the authority | `tokens/terror-fly-torch.webp` |
-|   | **The Queen** | Health 60 · armour 4 · speed 0 · Heavy Mandibles — unique, rooted, and the only thing here that cannot walk: she spends every turn on the army instead | `tokens/the-queen.webp` |
+|   | **Terror Fly Torch** | Health 14 · armour 2 · speed 6 · Fire Spray — A Terror Fly: captains, and the first thing in the roster that burns ground This one all the fire and none of the authority | `tokens/terror-fly-torch.webp` |
+|   | **The Queen** | Health 60 · armour 4 · speed 0 · Heavy Mandibles — enormous and rooted to the floor, armoured in overlapping plate like a siege engine, heavy jaws and a crown of horn. The most frightening thing in the set: more armour than the Marshal and more mass than anything that walks | `tokens/the-queen.webp` |
+|   | **Trollkin** | Health 10 · armour 1 · speed 4 · Troll Club — knee-high to a person and broad, grey-brown and leathery, with a troll's nose and a troll's ears on a body built low to the ground. Rough homespun and a stick. A crowd animal: it should read as one of many even when it is drawn alone | `tokens/trollkin.webp` |
+|   | **Wyvern** | Health 22 · armour 2 · speed 8 · Claws — a two-legged winged worm, hawk-sized rather than dragon-sized: wings and hind legs and nothing else, a whip of a tail ending in a barb, built entirely for the stoop. Lean and quick where the dragon is heavy | `tokens/wyvern.webp` |
 
 ## The starter Warrior
 

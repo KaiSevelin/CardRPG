@@ -221,6 +221,19 @@ const composeFace = dir => `- Crop in **close**: one subject, filling the frame 
 - ONE subject. A silhouette that still reads at **128 pixels wide**, which is the smallest size a
   card is drawn at in this game.`;
 
+/*
+ * **The face capsule banned "cool hue" and got green, which is the back capsule's bug twice.**
+ *
+ * The backs said *no cyan, no magenta, no neon* and came back teal and violet, because teal is
+ * none of those three; that was fixed by naming the hues. The FACE capsule was left saying *no
+ * cool hue anywhere*, which is the same vagueness in a different dress -- nobody calls grass
+ * cool. So *Close In* asks for a strip of trodden ground, the ground arrives as grass, and 4.4%
+ * of the card is 60-150 degrees. Four intents failed this way.
+ *
+ * Naming the hues is half of it. The other half is that a fantasy picture puts grass on the
+ * ground unless told otherwise, and most of these cards have ground in them, so the ban has to
+ * say so out loud rather than leave the artist to deduce it from a hex code.
+ */
 const PALETTE_BASE = `- Line and darks: **${STOCK.ink}**
 - Paper and lights: **${STOCK.paper}**
 - Mid tone: **${STOCK.rule}**`;
@@ -247,6 +260,15 @@ const PALETTE_BASE = `- Line and darks: **${STOCK.ink}**
  * intent from another, so the prompts came back as one picture of dust and a dark mass, thirty-odd
  * times. The ban was right; applying it to the whole frame was not.
  *
+ * **And a third correction, which is a conflict rather than a mistake.** *One limb or one edge
+ * entering frame* is the right instruction for an anonymous actor and it is also an invitation to
+ * touch the frame edge -- including the top, where the card prints its own name. Sixteen of the
+ * first thirty-five intents put ink inside that strip, and three of four re-shoots came back at
+ * 8.6%, 9.4% and 9.6% against a floor of 10: close enough to be obedience, consistent enough to
+ * be the prompt rather than the dice. The same shape as the dagger on the skill back and the knot
+ * on the twist back -- a group's own direction quietly excluding what the capsule asked for. The
+ * fix belongs in the direction, never in the floor.
+ *
  * **Only the actor is shared.** The card is drawn by a goblin and a dragon alike, so the thing
  * acting has to be unreadable -- but the thing being acted on is a player character, and players
  * are human. So the receiving end, the ground, and the aftermath can all be drawn in full detail,
@@ -263,7 +285,9 @@ of thing is acting.
 - **Nothing in frame may say how big the actor is.** Scale gives it away even when anatomy does
   not, so no doorways, no trees, no furniture and no horizon that implies a standing height.
 - If the actor must appear at all it is a dark anonymous mass, cropped hard, reading as motion
-  rather than as anatomy. One limb or one edge entering frame beats a whole creature every time.
+  rather than as anatomy. One limb or one edge entering frame beats a whole creature every time --
+  **entering from a side or from below, never from the top.** The strip of bare paper across the
+  top of the picture is the one edge nothing crosses, the actor included.
 - Where the subject below names a weapon, read it as *whatever this creature strikes with*: an
   edge, a claw, a mass, a mandible. Never a sword.
 
@@ -315,7 +339,9 @@ ${PALETTE_BASE}
 ${accentFor(dir)}
 - Desaturated and earthy. ${WAY_OF_DIR[dir]
   ? "Apart from the accent named above, no hue at all: the rest of the picture is ink, paper and\n  the warm greys between them."
-  : "Warm throughout, with no cool hue anywhere."} No neon, no teal-and-orange.
+  : "Warm throughout."} **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
+  Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
+  here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
 
 STYLE.
 ${WASH}`;
@@ -324,6 +350,16 @@ ${WASH}`;
 /*
  * The token capsule. A token is a different object from a card, and the contradiction has to be
  * stated: this style is wash on paper, and a token has no paper -- it sits on a map.
+ */
+/*
+ * **A token is not held to the palette, and that is a decision rather than an oversight.**
+ *
+ * The warm sepia is a CARD rule: a hand of cards is a printed set and has to look like one. A
+ * token is a miniature on a map, seen beside other miniatures and never beside a card at a size
+ * where the difference shows -- so a mossy troll should be green and a drowned draugr should be
+ * hel-bla, and holding either to red-and-amber buys nothing and costs the creature.
+ *
+ * The gate knows this too: it scores a token on size, alpha and nothing about hue.
  */
 const TOKEN_CAPSULE = `A single creature token for a virtual tabletop.
 
@@ -342,10 +378,12 @@ COMPOSITION.
   and the only question that matters is *which creature is that*.
 
 PALETTE.
-${PALETTE_BASE}
-- One chromatic accent only: **${WAY.strength.edge}**, a warm brick red, on the one feature that
-  tells this creature from its neighbours.
-- Warm, desaturated, earthy. No cyan, no magenta, no neon.
+- **The creature is its own colour.** Draw it as the thing actually is: a mossy troll is green, a
+  drowned corpse is hel-bla, a hairless hide is grey. Nothing here is held to the warm palette the
+  cards use.
+- Desaturated and natural rather than bright -- this is still ink and wash, not poster paint -- but
+  the hue belongs to the animal and not to the deck.
+- Line and darks stay **${STOCK.ink}**, so a token reads as drawn by the same hand.
 
 STYLE.
 ${WASH}
@@ -635,9 +673,22 @@ const DIRECTION = {
   "cards/npc/drag-down":
     "a human arm and shoulder being pulled downward out of frame, fingers still open, the ground "
     + "coming up to meet them. Something has hold and is not letting go",
+  /*
+   * **Refused by the moderation filter, at the OUTPUT stage, for self-harm and violence.**
+   *
+   * It read *a shallow mark on a human forearm with the skin going wrong around it* -- and a
+   * shallow mark on a forearm is the single most recognisable self-harm image there is, so the
+   * picture that came back tripped the filter even though the prompt never asked for anything of
+   * the kind. The refusal was about the composition, not the subject: *Feed* asks for a mark at a
+   * human throat in the next entry down and draws without complaint.
+   *
+   * So the wound moves off the forearm and stops being the subject at all. What this card is
+   * about is not the cut, which is nothing: it is what travels away from it.
+   */
   "cards/npc/envenom":
-    "a small wound doing far more than it should: a shallow mark on a human forearm with the skin "
-    + "going wrong around it, drawn much larger than the blow that made it",
+    "a hand that has stopped obeying: one small puncture at the knuckle, a dark line already "
+    + "past the wrist and climbing, the fingers curling on their own. The wound is nothing -- "
+    + "what is spreading out of it is the whole picture",
   "cards/npc/feed":
     "something taken out rather than put in: a mark at a human throat and a dry pallor spreading "
     + "from it, whatever is above it reading only as a stillness",
@@ -712,6 +763,37 @@ const DIRECTION = {
    * creature -- Nip is a 1 on a scavenger and Tail Club is a 7 that ignores armour on a beetle
    * the size of a cart -- and the body part follows from that.
    */
+  /*
+   * The six the trolls and the undead brought with them. Without these they fall through to the
+   * motif tables and three of them collide, which is the same failure the first ten naturals had.
+   */
+  "items/natural/troll-fists":
+    "two hands the size of millstones hanging open at rest, the knuckles split and healed over "
+    + "again into grey callus. Nothing is being held and nothing needs to be",
+  "items/natural/thrown-stone":
+    "a boulder in flight, turning, the hand that threw it already gone from the frame and the "
+    + "shadow of it running ahead across the ground it is about to reach",
+  "items/natural/draining-bite":
+    "a mouth opened wider than a jaw should allow, two long teeth set well back and wet, and "
+    + "nothing else of the face in frame",
+  "items/natural/grave-cold-hands":
+    "two hands that have been underground: nails grown long and split, the skin drawn tight and "
+    + "dark over the bones, closing on nothing with far more grip than they ought to have",
+  "items/npc/grave-candle":
+    "a stub of candle burning low on a flat stone, the flame standing perfectly upright and "
+    + "still in air that is plainly moving everything else",
+  "items/npc/tarnkappe":
+    "a small grey cap, shapeless and greasy with age, lying where it was dropped -- and the "
+    + "patch of ground beneath it not quite as present as the ground around it",
+  "items/natural/dragon-jaws":
+    "a mouth that could take a horse, open and side-on, the teeth uneven and overlapping and the "
+    + "gum line drawn back. Scale rather than chitin, and old -- several teeth broken off short",
+  "items/natural/crushing-coils":
+    "a thick loop of serpent body closed on something that is no longer the shape it was, the "
+    + "head nowhere in the picture. Nothing is being bitten: the body is the weapon",
+  "items/npc/elf-bolt":
+    "a small knapped flint arrowhead lying in the palm of a human hand, far too old to belong to "
+    + "anyone living. Nothing about it is moving, and the hand is holding it very still",
   "items/natural/nip":
     "a small mouth of needle teeth already closed on something and not letting go. The least "
     + "dangerous weapon in the game: too small to kill anybody, close enough that the grip fills "

@@ -1353,6 +1353,32 @@ export const WAY_CARDS = [
  * heroes' armor, or flat armor cancels its hits rather than reducing them.
  */
 export const NPC_GEAR = [
+  /* A trollkin's stick is gear rather than natural: it was picked up, and it can be taken away. */
+  {
+    name: "Troll Club", slot: "hands", fits: ["back"], hands: 1, tags: ["melee", "heavy"],
+    weight: 3, value: 0, npcGear: true, kind: "Weapon",
+    verbs: { strike: verb(4) }
+  },
+  /*
+   * **The Tarnkappe is gear on purpose, because the folklore is a mechanic.**
+   *
+   * The German Alp wears a small grey cap and the stories agree on what follows: take the cap and
+   * you take the Alp's power, and it will beg for it back. That is a lootable item with an active
+   * on it, not a line of description -- so it is one here, and it is the only piece of NPC gear in
+   * the game whose loss matters more to the creature than to the party.
+   */
+  {
+    name: "Tarnkappe", slot: "head", weight: 0, value: 0, npcGear: true, kind: "Wonder",
+    group: "wonder",
+    blurb: "A small grey cap, greasy with age. The Alp will want it back.",
+    active: { text: "Become Invisible (1).", boundary: "combat" }
+  },
+  /* A shade has no hands to speak of; what it casts through is the light at a grave. */
+  {
+    name: "Grave Candle", slot: "hands", hands: 1, tags: ["arcane"],
+    weight: 0, value: 0, npcGear: true, kind: "Focus",
+    verbs: { cast: verb(4, { range: 4 }) }
+  },
   {
     name: "Goblin Spear", slot: "hands", fits: ["back"], hands: 1, tags: ["melee"],
     weight: 2, value: 0, npcGear: true, kind: "Weapon",
@@ -1691,6 +1717,58 @@ export const INTENTS = [
  * its teeth.
  */
 export const NATURAL_WEAPONS = [
+  /*
+   * **The two a troll is born with.** Both are `natural` for the same reason the mandibles are:
+   * nothing disarms a troll of its hands, and a thrown rock is not loot. `Thrown Stone` is the
+   * roster's only ranged natural that is not a spray -- it is what `siege` looks like when the
+   * creature holding it is big enough to pick the wall up.
+   */
+  {
+    name: "Troll Fists", slot: "hands", hands: 0, tags: ["melee", "heavy", "natural"],
+    weight: 0, value: 0, npcGear: true, kind: "Natural",
+    verbs: { strike: verb(6) }
+  },
+  /*
+   * **Elf-shot, which the whole hidden-folk family shares.**
+   *
+   * Across Scandinavia and the British Isles the same object is blamed for the same thing: a
+   * neolithic flint arrowhead turned up in a field, held to be the dart the hidden folk shoot
+   * cattle and sleepers with, and a sudden pain with no wound is *elfshot*. One piece of content
+   * for all four, because the folklore does not distinguish between them either.
+   */
+  {
+    name: "Elf-Bolt", slot: "hands", hands: 1, tags: ["arcane", "natural"],
+    weight: 0, value: 0, npcGear: true, kind: "Focus",
+    verbs: { cast: verb(4, { range: 5 }) }
+  },
+  /* The two the undead are born with -- or rather the two they get back. */
+  {
+    name: "Draining Bite", slot: "hands", hands: 0, tags: ["melee", "natural"],
+    weight: 0, value: 0, npcGear: true, kind: "Natural",
+    verbs: { strike: verb(4) }
+  },
+  {
+    name: "Grave-Cold Hands", slot: "hands", hands: 0, tags: ["melee", "heavy", "natural"],
+    weight: 0, value: 0, npcGear: true, kind: "Natural",
+    verbs: { strike: verb(5) }
+  },
+  /* The worm-kin. `Dragon Jaws` is the hardest single strike in the game, and `Crushing Coils`
+   * is the only natural weapon that grapples -- a serpent has no hands to do it with. */
+  {
+    name: "Dragon Jaws", slot: "hands", hands: 0, tags: ["melee", "heavy", "natural"],
+    weight: 0, value: 0, npcGear: true, kind: "Natural",
+    verbs: { strike: verb(8, { ignores: 2 }) }
+  },
+  {
+    name: "Crushing Coils", slot: "hands", hands: 0, tags: ["melee", "heavy", "natural"],
+    weight: 0, value: 0, npcGear: true, kind: "Natural",
+    verbs: { strike: verb(6, { reach: 2 }) }
+  },
+  {
+    name: "Thrown Stone", slot: "hands", hands: 0, tags: ["ranged", "natural"],
+    weight: 0, value: 0, npcGear: true, kind: "Natural",
+    verbs: { strike: verb(5, { range: 5, ignores: 1 }) }
+  },
   {
     name: "Mandibles", slot: "hands", hands: 0, tags: ["melee", "natural"],
     weight: 0, value: 0, npcGear: true, kind: "Natural",
@@ -1783,7 +1861,9 @@ export const MONSTERS = [
       tactics: ["packTactics", "shieldWall"], targetPriority: "nearest"
     },
     equipped: ["Mandibles"],
-    note: "the Horde's main infantry: a goblin with a shell and no fear"
+    note: "the Horde's main infantry: a goblin with a shell and no fear",
+    look: "a low broad arachnid plated front to back, EIGHT legs splayed under a flat shell. No "
+      + "goblin and no humanoid head of any kind: the head is a wedge of jaw set into the shell"
   },
   {
     name: "Scrip", type: "npc",
@@ -1793,7 +1873,9 @@ export const MONSTERS = [
       tactics: ["skirmisher"], targetPriority: "nearest"
     },
     equipped: ["Nip"],
-    note: "eyes and ears, and harmless: the question is whether you spend a turn on one"
+    note: "eyes and ears, and harmless: the question is whether you spend a turn on one",
+    look: "small and quick on EIGHT thin legs, more eye than body -- a cluster of them over a "
+      + "trunk barely bigger than a fist"
   },
   {
     name: "Sweeper", type: "npc",
@@ -1803,7 +1885,9 @@ export const MONSTERS = [
       tactics: ["skirmisher", "ambusher"], targetPriority: "weakest"
     },
     equipped: ["Claws"],
-    note: "the air force: four wings and a dive"
+    note: "the air force: four wings and a dive",
+    look: "EIGHT legs folded tight under four wings. Not a bird and not a bat: the wings are thin "
+      + "and veined off a segmented body, and there are no feathers anywhere on it"
   },
   {
     name: "Mantiss", type: "npc",
@@ -1813,7 +1897,9 @@ export const MONSTERS = [
       tactics: ["commander", "skirmisher"], targetPriority: "leader"
     },
     equipped: ["Grasping Claws"],
-    note: "sergeants: the first thing in the Horde that gives an order"
+    note: "sergeants: the first thing in the Horde that gives an order",
+    look: "EIGHT legs, the front pair long and folded like a mantis's and the other six walking. "
+      + "Upright over them, taller than the infantry, with a narrow swivelling head"
   },
   {
     name: "Smash Beetle", type: "npc",
@@ -1854,7 +1940,9 @@ export const MONSTERS = [
       signature: { condition: "poisoned", intensity: 2, duration: 2 }
     },
     equipped: ["Mandibles"],
-    note: "silent and venomous: the two words the world gives it, and both are mechanical"
+    note: "silent and venomous: the two words the world gives it, and both are mechanical",
+    look: "a long low body dragging between EIGHT short legs set wide along its sides -- it "
+      + "slithers because the body is on the ground, not because it has no legs"
   },
   {
     name: "Stinger", type: "npc",
@@ -1895,7 +1983,9 @@ export const MONSTERS = [
       tactics: ["commander", "packTactics"], targetPriority: "leader"
     },
     equipped: ["Claws"],
-    note: "lieutenants, fairly intelligent: it spends its turn on somebody else's"
+    note: "lieutenants, fairly intelligent: it spends its turn on somebody else's",
+    look: "FIVE-FOLD RADIAL: five identical limbs spaced evenly around a domed carapace, no head "
+      + "and no front or back, like a starfish built as a predator. Nothing else here is radial"
   },
   {
     name: "Terror Fly", type: "npc",
@@ -1927,7 +2017,10 @@ export const MONSTERS = [
     },
     equipped: ["Heavy Mandibles"],
     note: "unique, rooted, and the only thing here that cannot walk: she spends every turn "
-      + "on the army instead"
+      + "on the army instead",
+    look: "enormous and rooted to the floor, armoured in overlapping plate like a siege engine, "
+      + "heavy jaws and a crown of horn. The most frightening thing in the set: more armour "
+      + "than the Marshal and more mass than anything that walks"
   },
   {
     name: "Processor", type: "npc",
@@ -1969,7 +2062,9 @@ export const MONSTERS = [
       tactics: ["brute", "ambusher"], targetPriority: "nearest"
     },
     equipped: ["Tusks"],
-    note: "it comes up underneath, which is what Go Under is for"
+    note: "it comes up underneath, which is what Go Under is for",
+    look: "a true mole, enlarged: a barrel of muscle with a pink snout, tiny buried eyes and huge "
+      + "outward-turned digging forelimbs. Fur, not chitin -- it is not one of the Horde"
   },
   {
     name: "Mole Man", type: "npc",
@@ -1990,6 +2085,331 @@ export const MONSTERS = [
     },
     equipped: ["Mandibles"],
     note: "worms, and the steeds of the mole men: it is how they arrive under you"
+  },
+
+  /* --- the trolls, which are the first thing here that is not an insect or a goblin -----------
+   *
+   * **Nordic trolls, not the regenerating green kind.** A bergtroll is a piece of the mountain
+   * that moves at night and is a boulder again by morning, and that is not flavour here: it is
+   * exactly what `dormant` does. *Lie Still* has been sitting in the intent pool with no creature
+   * able to draw it -- the capability, the card and the folklore all say the same thing, and the
+   * card was written before anybody noticed which creature it was waiting for.
+   *
+   * The capabilities were already chosen when these were tags, so none of them is invented here.
+   * What is new is the numbers, the bodies and the weapons, which is the half a tag does not have.
+   */
+  {
+    name: "Mountain Troll", type: "npc",
+    system: {
+      health: { value: 34, base: 34 }, kind: "mountain-troll", armorBase: 4, speed: 2,
+      capabilities: ["legs", "brute", "dormant", "siege", "feral"],
+      tactics: ["brute"], targetPriority: "nearest"
+    },
+    equipped: ["Troll Fists", "Thrown Stone"],
+    note: "it was a boulder when you walked past it, and it will be a boulder again by morning",
+    look: "a bergtroll: a hunched mass of grey stone-hide with lichen and moss growing on its "
+      + "back and shoulders, a great hooked nose, small deep-set eyes and a mouth too wide. "
+      + "Vast, slow and mineral -- more cliff than animal, and no green skin anywhere"
+  },
+  {
+    name: "Forest Troll", type: "npc",
+    system: {
+      health: { value: 20, base: 20 }, kind: "forest-troll", armorBase: 2, speed: 4,
+      capabilities: ["legs", "brute", "stealth", "feral"],
+      tactics: ["ambusher", "brute"], targetPriority: "weakest"
+    },
+    equipped: ["Troll Fists"],
+    note: "it has been standing among the trunks the whole time you were deciding where to camp",
+    look: "a skogstroll: long-limbed and hunched, hide like wet bark with lichen in the seams, a "
+      + "cow's tail it keeps tucked, and a face that is nearly a person's and wrong about it"
+  },
+  {
+    name: "Changeling", type: "npc",
+    system: {
+      health: { value: 8, base: 8 }, kind: "changeling", armorBase: 0, speed: 4,
+      capabilities: ["legs", "stealth", "wits"],
+      /* Not `cowardly`: that is the goblins own tactic and the suite pins it to them. A
+       * changeling does not run when found -- it has not been found for years. */
+      tactics: ["ambusher"], targetPriority: "weakest"
+    },
+    equipped: ["Nip"],
+    note: "the one left in the cradle: it has been in the house for years and nobody said so",
+    look: "a byting: child-sized and child-shaped and not a child -- the proportions a little "
+      + "off, the head a little large, the hands too long, old in the eyes. Dressed in human "
+      + "clothes that fit badly. Nothing monstrous on it at a glance, which is the whole horror"
+  },
+  {
+    name: "Trollkin", type: "npc",
+    system: {
+      health: { value: 10, base: 10 }, kind: "trollkin", armorBase: 1, speed: 4,
+      capabilities: ["legs", "pack", "wits"],
+      tactics: ["packTactics"], targetPriority: "weakest"
+    },
+    equipped: ["Troll Club"],
+    note: "the small folk under the hill: there are more of them and they know the ground",
+    look: "knee-high to a person and broad, grey-brown and leathery, with a troll's nose and a "
+      + "troll's ears on a body built low to the ground. Rough homespun and a stick. A crowd "
+      + "animal: it should read as one of many even when it is drawn alone"
+  },
+
+  /* --- the returning dead, nine of them, each from somewhere ----------------------------------
+   *
+   * **Nine traditions rather than nine ranks of one monster.** A Draugr is Norse and guards its
+   * own howe; an Alp is German and sits on a sleeper's chest; Keres are Greek and work a
+   * battlefield; a Lugat is Albanian and bloated. They share `drain` and a direction of travel and
+   * nothing else, and the point of taking them from folklore is that each one already knows what
+   * it wants -- which is the half a statblock cannot invent.
+   *
+   * Two more pieces of vocabulary find their creature here. `drain` had *Feed* and nobody to draw
+   * it, `caster` had *Work the Weave* and nobody to draw it, and `lastAttacker` has been sitting
+   * in the config as a target priority no creature used. A revenant pursues the one who wronged
+   * it until the debt is paid; that IS `lastAttacker`, and the enumeration was waiting for it.
+   */
+  {
+    name: "Draugr", type: "npc",
+    system: {
+      health: { value: 30, base: 30 }, kind: "draugr", armorBase: 3, speed: 3,
+      capabilities: ["legs", "brute", "dormant", "feral"],
+      tactics: ["brute", "ambusher"], targetPriority: "nearest"
+    },
+    equipped: ["Grave-Cold Hands"],
+    note: "it is not hunting you. You are standing in its barrow and it wants you to put that down",
+    look: "a barrow-dweller: a corpse swollen far past the size it was alive, hel-bla -- the "
+      + "blue-black of a drowned man -- in the rotted remains of good clothes, with grave-goods still "
+      + "on it. Heavy, slow, and far too strong. Not a skeleton: there is too much of it left"
+  },
+  {
+    name: "Revenant", type: "npc",
+    system: {
+      health: { value: 24, base: 24 }, kind: "revenant", armorBase: 2, speed: 4,
+      capabilities: ["legs", "brute", "feral"],
+      /* It goes for whoever last hit it, and keeps going, which is the whole of the folklore. */
+      tactics: ["brute"], targetPriority: "lastAttacker"
+    },
+    equipped: ["Grave-Cold Hands"],
+    note: "it came back for one person and it has not worked out yet that you are not them",
+    look: "a body walking with a purpose and nothing else: dried rather than rotted, the clothes "
+      + "it was buried in, the wound that killed it still open and not bleeding. The face is "
+      + "intact and recognisable, which is the worst thing about it"
+  },
+  {
+    name: "Strigoi", type: "npc",
+    system: {
+      health: { value: 28, base: 28 }, kind: "strigoi", armorBase: 2, speed: 4,
+      capabilities: ["legs", "drain", "caster", "commander", "stealth", "wits"],
+      /* The commander CAPABILITY, which earns it Order, but not the commander TACTIC: the suite
+       * holds that tactic equivalent to `drilled`, and this thing is `wits`. Which is right --
+       * a strigoi walks the village dead out after it, it does not drill them into a line. */
+      tactics: ["ambusher"], targetPriority: "caster"
+    },
+    equipped: ["Draining Bite"],
+    note: "it went home first, which is how the village knew. The others followed it out",
+    look: "the troubled dead of the Romanian stories: gaunt and upright and almost presentable, "
+      + "dressed as a living person of standing, with too-long nails and a mouth that does not "
+      + "close properly. It does not shamble. It arrives"
+  },
+  {
+    name: "Lugat", type: "npc",
+    system: {
+      health: { value: 22, base: 22 }, kind: "lugat", armorBase: 2, speed: 3,
+      capabilities: ["legs", "drain", "brute", "feral"],
+      tactics: ["brute"], targetPriority: "nearest"
+    },
+    equipped: ["Draining Bite"],
+    note: "it comes back to eat and little else, and the stories say a wolf will settle it",
+    look: "the Albanian kind: bloated and tight-skinned, still wound in its shroud with the "
+      + "wrapping split, moving with a full belly's slowness. Fat rather than gaunt, which is "
+      + "what separates it from every other corpse here"
+  },
+  {
+    name: "Alp", type: "npc",
+    system: {
+      health: { value: 12, base: 12 }, kind: "alp", armorBase: 0, speed: 4,
+      capabilities: ["legs", "drain", "stealth", "wits"],
+      tactics: ["ambusher"], targetPriority: "weakest"
+    },
+    equipped: ["Draining Bite", "Tarnkappe"],
+    note: "it sits on the chest of whoever fell asleep, and the cap is the whole of its power",
+    look: "a small hunched night-thing wearing a shabby grey cap pulled low -- the Tarnkappe, "
+      + "and it is the only thing on it that reads as clothing. Thin, long-fingered, far too "
+      + "light for its size, drawn crouching as though on someone's ribs"
+  },
+  {
+    name: "Dhampir", type: "npc",
+    system: {
+      health: { value: 14, base: 14 }, kind: "dhampir", armorBase: 1, speed: 5,
+      capabilities: ["legs", "drain", "wits"],
+      tactics: ["skirmisher"], targetPriority: "caster"
+    },
+    equipped: ["Draining Bite"],
+    note: "half of it is alive, and that half hunts the other half's father for money",
+    look: "a living person, which is the point: a lean travelling man in worn coat and boots, "
+      + "nothing undead about the body at all. Only the eyes are wrong, and he knows it. He is "
+      + "the only thing in this group that casts a shadow"
+  },
+  {
+    name: "Keres", type: "npc",
+    system: {
+      health: { value: 8, base: 8 }, kind: "keres", armorBase: 0, speed: 6,
+      capabilities: ["legs", "venom", "pack", "feral"],
+      tactics: ["packTactics", "skirmisher"], targetPriority: "weakest"
+    },
+    equipped: ["Claws"],
+    note: "they work a battlefield, and they are not waiting for anybody to finish dying",
+    look: "Greek death-spirits: dark ragged female figures, gaunt and bloodied to the elbow, "
+      + "teeth bared, drawn low over the ground as if stooping to something. Never one alone -- "
+      + "the shape of the picture is several of them at once"
+  },
+  {
+    name: "Chupacabra", type: "npc",
+    system: {
+      health: { value: 10, base: 10 }, kind: "chupacabra", armorBase: 1, speed: 7,
+      capabilities: ["legs", "pack", "drain", "fast", "feral"],
+      tactics: ["packTactics", "skirmisher"], targetPriority: "weakest"
+    },
+    equipped: ["Draining Bite"],
+    note: "it goes through a pen in a night and leaves every animal in it unmarked but empty",
+    look: "a lean hairless quadruped, grey and leathery, with a ridge of stiff spines down the "
+      + "back, a long muzzle and oversized hind legs built for springing. An animal, not a "
+      + "person: the only one of these nine that goes on four legs"
+  },
+  {
+    name: "Shade", type: "npc",
+    system: {
+      health: { value: 10, base: 10 }, kind: "shade", armorBase: 0, speed: 5,
+      capabilities: ["legs", "stealth", "caster", "wits"],
+      tactics: ["ambusher"], targetPriority: "caster"
+    },
+    equipped: ["Grave Candle"],
+    note: "the part that stayed, and it has been repeating one evening for a very long time",
+    look: "barely there: the shape of a person in thin grey wash, the edges losing themselves "
+      + "into the paper, carrying a single guttering candle that is the most solid thing in the "
+      + "picture. No chains, no skull, no sheet -- just somebody almost rubbed out"
+  },
+
+  /* --- the hidden folk, who are not Tolkien's -------------------------------------------------
+   *
+   * **Nordic, and small, and offended.** An alf is not a tall archer: the folklore is dancing in a
+   * meadow at dawn, a ring of flattened grass, a sudden pain blamed on a flint arrowhead, and a
+   * farm spirit that will wreck a byre over a forgotten bowl of porridge. All four are `caster`
+   * and `wits` and none of them is a fighter -- they are what happens when you are rude to the
+   * ground you live on.
+   */
+  {
+    name: "Elf", type: "npc",
+    system: {
+      health: { value: 16, base: 16 }, kind: "elf", armorBase: 1, speed: 5,
+      capabilities: ["legs", "caster", "stealth", "wits"],
+      tactics: ["ambusher", "skirmisher"], targetPriority: "caster"
+    },
+    equipped: ["Elf-Bolt"],
+    note: "they were dancing where the grass is flat, and you walked through the middle of it",
+    look: "an alva of the Nordic kind, not a tall archer: slight, pale and barefoot in a thin "
+      + "shift, hair unbound, drawn mid-step as if still dancing and only half attending to you. "
+      + "Beautiful and slightly wrong in the proportions. No armour, no bow, no pointed helm"
+  },
+  {
+    name: "Gnome", type: "npc",
+    system: {
+      health: { value: 14, base: 14 }, kind: "gnome", armorBase: 1, speed: 3,
+      capabilities: ["legs", "caster", "wits"],
+      tactics: ["ambusher"], targetPriority: "nearest"
+    },
+    equipped: ["Elf-Bolt"],
+    note: "the farm is its farm. Somebody forgot the porridge and now the byre is a problem",
+    look: "a tomte: knee-high, old-man-faced, grey homespun and a red knitted cap, with a beard "
+      + "far too long for the body under it. Carries itself like the owner of the place. "
+      + "Enormously strong for its size, which should show in the hands and the stance"
+  },
+  {
+    name: "Little Folk", type: "npc",
+    system: {
+      health: { value: 10, base: 10 }, kind: "little-folk", armorBase: 1, speed: 4,
+      capabilities: ["legs", "caster", "stealth", "wits"],
+      /* Not `ambusher`: that is the Shade, with the same four capabilities, and the two would
+       * have been the same creature twice. They are many and they move -- a skirmisher. */
+      tactics: ["skirmisher"], targetPriority: "weakest"
+    },
+    equipped: ["Elf-Bolt"],
+    note: "de underjordiska: they live under the floor you are standing on and they were here first",
+    look: "the vattar, the underground people: small, grey and earthen, dressed like poor "
+      + "farmers of no particular century, with a flat look and no expression to read. "
+      + "Drawn half out of the ground or half out of a doorway: never fully in the open"
+  },
+  {
+    name: "Nature Spirit", type: "npc",
+    system: {
+      health: { value: 20, base: 20 }, kind: "nature-spirit", armorBase: 1, speed: 5,
+      capabilities: ["legs", "caster", "wits"],
+      tactics: ["skirmisher", "ambusher"], targetPriority: "caster"
+    },
+    equipped: ["Elf-Bolt"],
+    note: "a ra: the forest or the lake has an owner, and you have been taking without asking",
+    look: "a skogsra: from the front a tall woman made of the wood -- bark-grained skin, moss in "
+      + "the hair, eyes like a deer's -- and from any other angle hollow, the back open like a "
+      + "rotted trunk. Draw her turning, so both are true at once. That hollow is the whole point"
+  },
+
+  /* --- the worms, which is what a dragon is here -----------------------------------------------
+   *
+   * **Lindworm first and dragon second**, because that is the order the north tells it in: a worm
+   * is a serpent that got old and large, and wings are a late southern addition. The Sea Serpent
+   * closes the last gap in the capability vocabulary -- `swim` has had *Submerge* waiting for it
+   * since the intent pool was written, and nothing in the roster could go under the water.
+   */
+  {
+    name: "Dragon", type: "npc",
+    system: {
+      health: { value: 50, base: 50 }, kind: "dragon", armorBase: 5, speed: 6,
+      capabilities: ["flight", "spray", "brute", "caster", "wits"],
+      tactics: ["brute"], targetPriority: "nearest"
+    },
+    /* No focus: a dragon is not casting THROUGH anything. The hidden folk shoot elf-bolts and
+     * a shaman holds a fetish; this one is the source itself, and the capability stands alone. */
+    equipped: ["Dragon Jaws", "Fire Spray"],
+    note: "old, awake, and able to hold a conversation it has no intention of being swayed by",
+    look: "the biggest thing in the bestiary: a long-bodied winged worm, heavily scaled, more "
+      + "serpent than lizard, with a narrow head and an old intelligence in it. Wings like a "
+      + "bat's and far too large. It should dwarf everything drawn beside it"
+  },
+  {
+    name: "Lindworm", type: "npc",
+    system: {
+      health: { value: 34, base: 34 }, kind: "lindworm", armorBase: 3, speed: 4,
+      capabilities: ["legs", "spray", "brute", "feral"],
+      tactics: ["brute", "ambusher"], targetPriority: "nearest"
+    },
+    equipped: ["Dragon Jaws", "Acid Spray"],
+    note: "a worm that kept growing: no wings, two legs, and it has been under the church for years",
+    look: "a wingless serpent-dragon of the Nordic kind: a long heavy body with ONE pair of "
+      + "forelegs at the front and nothing behind, dragging the rest. Dull scale, blunt snout, "
+      + "small eyes. No wings at all -- that is what makes it a lindworm and not a dragon"
+  },
+  {
+    name: "Sea Serpent", type: "npc",
+    system: {
+      health: { value: 40, base: 40 }, kind: "sea-serpent", armorBase: 3, speed: 6,
+      capabilities: ["swim", "brute", "grapple", "feral"],
+      tactics: ["grappler", "brute"], targetPriority: "nearest"
+    },
+    equipped: ["Crushing Coils", "Dragon Jaws"],
+    note: "the lake has one and the village has always known it: this is the year it was seen twice",
+    look: "a vast limbless water-worm, drawn as a series of humps breaking a flat surface with "
+      + "the head low and forward at one end -- the shape of every lake-monster sighting ever "
+      + "reported. Most of it is under the water and should stay there"
+  },
+  {
+    name: "Wyvern", type: "npc",
+    system: {
+      health: { value: 22, base: 22 }, kind: "wyvern", armorBase: 2, speed: 8,
+      capabilities: ["flight", "venom", "fast", "feral"],
+      tactics: ["skirmisher"], targetPriority: "weakest"
+    },
+    equipped: ["Claws"],
+    note: "it hunts like a hawk and it is not large enough to be interesting until it is on you",
+    look: "a two-legged winged worm, hawk-sized rather than dragon-sized: wings and hind legs "
+      + "and nothing else, a whip of a tail ending in a barb, built entirely for the stoop. "
+      + "Lean and quick where the dragon is heavy"
   }
 ];
 
@@ -2006,30 +2426,9 @@ export const MONSTERS = [
  * description. Nothing can be read off a name, so nothing is claimed.
  */
 export const MONSTER_TAGS = [
-  { name: "Elves", group: "elf", caps: ["legs", "caster", "stealth", "wits"] },
-  { name: "Tomtar", group: "elf", caps: ["legs", "caster", "wits"] },
-  { name: "Little folk", group: "elf", caps: ["legs", "caster", "stealth", "wits"] },
-  { name: "Nature spirits", group: "elf", caps: ["legs", "caster", "wits"] },
 
-  { name: "Mountain trolls", group: "troll", caps: ["legs", "brute", "dormant", "siege", "feral"] },
-  { name: "Forest trolls", group: "troll", caps: ["legs", "brute", "stealth", "feral"] },
-  { name: "Changelings", group: "troll", caps: ["legs", "stealth", "wits"] },
-  { name: "Trollkin", group: "troll", caps: ["legs", "pack", "wits"] },
 
-  { name: "Strigoi", group: "undead", caps: ["legs", "drain", "caster", "commander", "stealth", "wits"] },
-  { name: "Chupacabra", group: "undead", caps: ["legs", "pack", "drain", "fast", "feral"] },
-  { name: "Alp", group: "undead", caps: ["legs", "drain", "stealth", "wits"] },
-  { name: "Dhampir", group: "undead", caps: ["legs", "drain", "wits"] },
-  { name: "Lugat", group: "undead", caps: ["legs", "drain", "brute", "feral"] },
-  { name: "Draugr", group: "undead", caps: ["legs", "brute", "dormant", "feral"] },
-  { name: "Keres", group: "undead", caps: ["legs", "venom", "pack", "feral"] },
-  { name: "Revenant", group: "undead", caps: ["legs", "brute", "feral"] },
-  { name: "Shade", group: "undead", caps: ["legs", "stealth", "caster", "wits"] },
 
-  { name: "Dragon", group: "dragon", caps: ["flight", "spray", "brute", "caster", "wits"] },
-  { name: "Lindworm", group: "dragon", caps: ["legs", "spray", "brute", "feral"] },
-  { name: "Sea serpent", group: "dragon", caps: ["swim", "brute", "grapple", "feral"] },
-  { name: "Wyvern", group: "dragon", caps: ["flight", "venom", "fast", "feral"] }
 ];
 
 /**
@@ -2153,7 +2552,9 @@ export const VARIANTS = {
     {
       name: "Blind Worm Elder", kind: "blind-worm-elder",
       health: 10, armour: 1, caps: ["+grapple"], tactics: ["+grappler"],
-      note: "old enough to have learned that a held thing stops moving and stops being felt"
+      note: "old enough to have learned that a held thing stops moving and stops being felt",
+      look: "a single blind tube of segmented muscle, jaws at one end and the body simply ending at "
+        + "the other. ONE BODY AND NO TAIL: no second tapering limb, no stinger, nothing trailing"
     }
   ],
   "armored-slug": [
@@ -2182,7 +2583,9 @@ export const VARIANTS = {
     {
       name: "Pincer Marshal", kind: "pincer-marshal",
       health: 10, armour: 1, caps: ["+summon"],
-      note: "a general who can call for more is the fight not ending"
+      note: "a general who can call for more is the fight not ending",
+      look: "the largest armoured form in the Horde, heavy pincers held high and a thick plated hood "
+        + "over the front. NO FLAGS, no banners, no standards, no insignia, no cloth of any kind"
     }
   ],
   processor: [
@@ -2212,14 +2615,18 @@ export const VARIANTS = {
     {
       name: "Mole Man Digger", kind: "mole-man-digger",
       caps: ["+siege"], gear: ["Mole Pick"], tactics: ["-packTactics"],
-      note: "it is not fighting you, it is getting through the floor you are standing on"
+      note: "it is not fighting you, it is getting through the floor you are standing on",
+      look: "carries a MOLE PICK: a short-hafted single-bladed digging pick, the haft cut short for "
+        + "swinging in a tunnel. Not a spear, not a polearm, not a lamp"
     },
     {
       name: "Mole Man Priest", kind: "mole-man-priest",
       health: 2, speed: -1, caps: ["+caster"], gear: ["Dark Lantern"], priority: "weakest",
       tactics: ["+tainting"],
       signature: { condition: "cursed", duration: 2 },
-      note: "the Queen of the Dark grants to those who go deep enough, and it has"
+      note: "the Queen of the Dark grants to those who go deep enough, and it has",
+      look: "carries a DARK LANTERN and nothing else: a shuttered lantern in one hand, one slit "
+        + "open. No staff, no rod, no crook -- both arms and both hands whole and unpierced"
     }
   ],
   burrower: [

@@ -1,0 +1,28 @@
+{
+  "_id": "GuzI0cdnNR65qaUa",
+  "_key": "!items!GuzI0cdnNR65qaUa",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Grave-Cold Hands",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "hands": 0,
+    "tags": [
+      "melee",
+      "heavy",
+      "natural"
+    ],
+    "weight": 0,
+    "value": 0,
+    "npcGear": true,
+    "verbs": {
+      "strike": {
+        "value": 5
+      }
+    }
+  }
+}

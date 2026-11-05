@@ -160,9 +160,20 @@ export function score(file, { kind = "card", size = "1024x1536" } = {}) {
   if (m.width !== wantW || m.height !== wantH) {
     faults.push(`${m.width}x${m.height}, not ${size}`);
   }
-  /* The palette is the one thing all three are held to, because it is what makes them a set. */
-  if (m.cool > GATE.maxCool) faults.push(`${pc(m.cool)} of it is outside the warm palette`);
-  if (m.grey > GATE.maxGrey) faults.push(`grey mid tones on ${pc(m.grey)}`);
+  /*
+   * **The palette binds a card and a back, and not a token.**
+   *
+   * The warm sepia is what makes a hand of cards read as one printed set. A token is a miniature
+   * on a map: it is seen beside other miniatures and never beside a card at a size where the
+   * difference shows, so a mossy troll is green and a drowned draugr is hel-bla and neither is a
+   * fault. Holding them to red-and-amber bought nothing and cost the creature.
+   *
+   * The near-black contour still binds all three, because that is the hand rather than the hue.
+   */
+  if (!token) {
+    if (m.cool > GATE.maxCool) faults.push(`${pc(m.cool)} of it is outside the warm palette`);
+    if (m.grey > GATE.maxGrey) faults.push(`grey mid tones on ${pc(m.grey)}`);
+  }
   if (m.black < GATE.minBlack) faults.push(`no true black (${pc(m.black)} under L14)`);
 
   if (kind === "card") {
@@ -273,8 +284,10 @@ export function report(s) {
       `        in window ${pc(s.inWindow)} (want ${pc(GATE.minWindow)}+)`
     ] : []),
     ...(s.kind === "token" ? [`        opaque    ${pc(s.opaque)} (want under ${pc(GATE.maxOpaque)})`] : []),
-    `        black     ${pc(s.black)} | cool ${pc(s.cool)} | grey ${pc(s.grey)}`
-      + `${s.kind === "token" ? "" : ` | paper ${pc(s.paper)}`}`,
+    s.kind === "token"
+      ? `        black     ${pc(s.black)}   (hue is the creature’s own, not the deck’s)`
+      : `        black     ${pc(s.black)} | cool ${pc(s.cool)} | grey ${pc(s.grey)}`
+        + ` | paper ${pc(s.paper)}`,
     ...(s.symmetry === undefined ? [] : [`        symmetry  ${s.symmetry.toFixed(2)}`]),
     ...s.faults.map(f => `        - ${f}`)
   ].join("\n");

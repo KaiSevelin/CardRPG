@@ -1,0 +1,68 @@
+{
+  "_id": "hFnCZ1mCpyjvDv9J",
+  "_key": "!actors!hFnCZ1mCpyjvDv9J",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Shade",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 10,
+      "base": 10
+    },
+    "kind": "shade",
+    "armorBase": 0,
+    "speed": 5,
+    "capabilities": [
+      "legs",
+      "stealth",
+      "caster",
+      "wits"
+    ],
+    "tactics": [
+      "ambusher"
+    ],
+    "targetPriority": "caster"
+  },
+  "items": [
+    {
+      "_id": "UNboKS0gtD2fSfBu",
+      "_key": "!actors.items!hFnCZ1mCpyjvDv9J.UNboKS0gtD2fSfBu",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Grave Candle",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 1,
+        "tags": [
+          "arcane"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Focus",
+        "verbs": {
+          "cast": {
+            "value": 4,
+            "range": 4
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Shade",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

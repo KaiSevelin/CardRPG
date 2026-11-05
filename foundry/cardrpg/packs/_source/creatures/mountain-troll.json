@@ -1,0 +1,101 @@
+{
+  "_id": "1V388XbL1Ti6WWyw",
+  "_key": "!actors!1V388XbL1Ti6WWyw",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Mountain Troll",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 34,
+      "base": 34
+    },
+    "kind": "mountain-troll",
+    "armorBase": 4,
+    "speed": 2,
+    "capabilities": [
+      "legs",
+      "brute",
+      "dormant",
+      "siege",
+      "feral"
+    ],
+    "tactics": [
+      "brute"
+    ],
+    "targetPriority": "nearest"
+  },
+  "items": [
+    {
+      "_id": "BW1THRJCG5VL4HbF",
+      "_key": "!actors.items!1V388XbL1Ti6WWyw.BW1THRJCG5VL4HbF",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Troll Fists",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "heavy",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 6
+          }
+        },
+        "equipped": true
+      }
+    },
+    {
+      "_id": "6nhCjssIhM1BOOxQ",
+      "_key": "!actors.items!1V388XbL1Ti6WWyw.6nhCjssIhM1BOOxQ",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Thrown Stone",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "ranged",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 5,
+            "range": 5,
+            "ignores": 1
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Mountain Troll",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "_id": "1mglF50i8QmrfZOD",
+  "_key": "!items!1mglF50i8QmrfZOD",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Elf-Bolt",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "hands": 1,
+    "tags": [
+      "arcane",
+      "natural"
+    ],
+    "weight": 0,
+    "value": 0,
+    "npcGear": true,
+    "verbs": {
+      "cast": {
+        "value": 4,
+        "range": 5
+      }
+    }
+  }
+}

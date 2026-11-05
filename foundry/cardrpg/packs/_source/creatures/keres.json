@@ -1,0 +1,69 @@
+{
+  "_id": "PvgY2LHPsCrqolod",
+  "_key": "!actors!PvgY2LHPsCrqolod",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Keres",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 8,
+      "base": 8
+    },
+    "kind": "keres",
+    "armorBase": 0,
+    "speed": 6,
+    "capabilities": [
+      "legs",
+      "venom",
+      "pack",
+      "feral"
+    ],
+    "tactics": [
+      "packTactics",
+      "skirmisher"
+    ],
+    "targetPriority": "weakest"
+  },
+  "items": [
+    {
+      "_id": "3zTukYrZUN0GIVXi",
+      "_key": "!actors.items!PvgY2LHPsCrqolod.3zTukYrZUN0GIVXi",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Claws",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 4
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Keres",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

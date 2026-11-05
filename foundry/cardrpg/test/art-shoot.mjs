@@ -4,6 +4,7 @@
  *   node test/art-shoot.mjs cards/starter/strike
  *   node test/art-shoot.mjs --group cards/starter --quality medium
  *   node test/art-shoot.mjs --all --dry-run
+ *   node test/art-shoot.mjs cards/npc --failed     # only the ones the gate rejects
  *
  * It sends **the book's own prompt** -- the capsule and the subject, imported from
  * `art-prompts.mjs` rather than copied out of the generated markdown -- so the picture bought is
@@ -70,7 +71,7 @@ const opt = (name, fallback) => {
   return at >= 0 && argv[at + 1] ? argv[at + 1] : fallback;
 };
 /* Flags that take no value, so the word after them is a piece and not an argument. */
-const BOOLEAN = new Set(["dry-run", "force", "all"]);
+const BOOLEAN = new Set(["dry-run", "force", "all", "failed"]);
 const keys = argv.filter((arg, i) => {
   if (arg.startsWith("--")) return false;
   const before = argv[i - 1];
@@ -85,10 +86,34 @@ const dryRun = flag("dry-run");
 /* The piece's kind decides which rules the gate holds it to, and it is already in the ledger. */
 const kindOf = piece => piece.back ? "back" : piece.token ? "token" : "card";
 
+/*
+ * **`--failed` narrows a selection to the pieces the gate rejects, and implies `--force`.**
+ *
+ * The alternative was a command line naming twenty files, which is how a piece gets left out of
+ * a redraw and nobody notices for a week. It reads the verdict off the files on disk rather than
+ * off a list written down after the last run, so it cannot go stale: fix the prompt, re-run the
+ * same command, and exactly what is still wrong is what gets drawn.
+ *
+ * A piece with no file yet is included too -- never drawn is not drawn right.
+ */
+function stillWrong(pieces) {
+  return pieces.filter(piece => {
+    const target = path.join(outDir, piece.file);
+    if (!fs.existsSync(target)) return true;
+    try {
+      return !score(target, { kind: kindOf(piece), size: piece.size }).ok;
+    } catch (err) {
+      console.error(`  cannot read ${piece.key}: ${err.message}`);
+      return true;
+    }
+  });
+}
+
 function chosen() {
-  if (flag("all")) return ledger;
+  const narrow = list => (flag("failed") ? stillWrong(list) : list);
+  if (flag("all")) return narrow(ledger);
   const group = opt("group", "");
-  if (group) return ledger.filter(p => p.key.startsWith(`${group}/`));
+  if (group) return narrow(ledger.filter(p => p.key.startsWith(`${group}/`)));
   /*
    * **A bare word that names a group is taken as the group.**
    *
@@ -112,7 +137,7 @@ function chosen() {
       [...new Set(ledger.map(p => p.key.split("/").slice(0, -1).join("/")))].join(", ")}`);
     process.exit(1);
   }
-  return ledger.filter(p => want.has(p.key));
+  return narrow(ledger.filter(p => want.has(p.key)));
 }
 
 const money = n => `$${n.toFixed(4)}`;
@@ -186,7 +211,8 @@ function apiKey() {
 
 async function shoot(piece) {
   const target = path.join(outDir, piece.file);
-  if (fs.existsSync(target) && !flag("force")) {
+  /* `--failed` already means replace: it only ever selects pieces that are wrong on disk. */
+  if (fs.existsSync(target) && !flag("force") && !flag("failed")) {
     console.log(`  skip   ${piece.key} -- already drawn (--force to replace)`);
     return null;
   }
@@ -248,6 +274,11 @@ async function shoot(piece) {
 
 const pieces = chosen();
 if (!pieces.length) {
+  /* With `--failed` an empty selection is the good answer, not a mistake in the command. */
+  if (flag("failed")) {
+    console.log("nothing to redraw: every piece selected is already through the gate.");
+    process.exit(0);
+  }
   console.log("nothing selected. Give a key, or --group <dir>, or --all.");
   process.exit(1);
 }

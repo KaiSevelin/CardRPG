@@ -1,0 +1,29 @@
+{
+  "_id": "PNvUhNwBqtBWBv6x",
+  "_key": "!items!PNvUhNwBqtBWBv6x",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Thrown Stone",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "hands": 0,
+    "tags": [
+      "ranged",
+      "natural"
+    ],
+    "weight": 0,
+    "value": 0,
+    "npcGear": true,
+    "verbs": {
+      "strike": {
+        "value": 5,
+        "range": 5,
+        "ignores": 1
+      }
+    }
+  }
+}

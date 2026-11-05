@@ -1,0 +1,29 @@
+{
+  "_id": "OkHGM48Qd3I5i1iu",
+  "_key": "!items!OkHGM48Qd3I5i1iu",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Crushing Coils",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "hands": 0,
+    "tags": [
+      "melee",
+      "heavy",
+      "natural"
+    ],
+    "weight": 0,
+    "value": 0,
+    "npcGear": true,
+    "verbs": {
+      "strike": {
+        "value": 6,
+        "reach": 2
+      }
+    }
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "_id": "jJKQ9dOvqnoWEntW",
+  "_key": "!actors!jJKQ9dOvqnoWEntW",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Forest Troll",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 20,
+      "base": 20
+    },
+    "kind": "forest-troll",
+    "armorBase": 2,
+    "speed": 4,
+    "capabilities": [
+      "legs",
+      "brute",
+      "stealth",
+      "feral"
+    ],
+    "tactics": [
+      "ambusher",
+      "brute"
+    ],
+    "targetPriority": "weakest"
+  },
+  "items": [
+    {
+      "_id": "ovbZ9nhdBT0lFAUI",
+      "_key": "!actors.items!jJKQ9dOvqnoWEntW.ovbZ9nhdBT0lFAUI",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Troll Fists",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "heavy",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 6
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Forest Troll",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

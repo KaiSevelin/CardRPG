@@ -1,0 +1,102 @@
+{
+  "_id": "TlpqZzNRTGoERXlm",
+  "_key": "!actors!TlpqZzNRTGoERXlm",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Sea Serpent",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 40,
+      "base": 40
+    },
+    "kind": "sea-serpent",
+    "armorBase": 3,
+    "speed": 6,
+    "capabilities": [
+      "swim",
+      "brute",
+      "grapple",
+      "feral"
+    ],
+    "tactics": [
+      "grappler",
+      "brute"
+    ],
+    "targetPriority": "nearest"
+  },
+  "items": [
+    {
+      "_id": "4ZswJLsuG85INSjq",
+      "_key": "!actors.items!TlpqZzNRTGoERXlm.4ZswJLsuG85INSjq",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Crushing Coils",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "heavy",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 6,
+            "reach": 2
+          }
+        },
+        "equipped": true
+      }
+    },
+    {
+      "_id": "1AODVoNItwtl7i8x",
+      "_key": "!actors.items!TlpqZzNRTGoERXlm.1AODVoNItwtl7i8x",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Dragon Jaws",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "heavy",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 8,
+            "ignores": 2
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Sea Serpent",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

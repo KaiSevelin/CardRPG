@@ -1,0 +1,30 @@
+{
+  "_id": "BBMNQf5TSGMdFhCo",
+  "_key": "!items!BBMNQf5TSGMdFhCo",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Troll Club",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "fits": [
+      "back"
+    ],
+    "hands": 1,
+    "tags": [
+      "melee",
+      "heavy"
+    ],
+    "weight": 3,
+    "value": 0,
+    "npcGear": true,
+    "verbs": {
+      "strike": {
+        "value": 4
+      }
+    }
+  }
+}

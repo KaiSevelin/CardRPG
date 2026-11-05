@@ -120,6 +120,38 @@ export function brief(entry) {
  * not run: a shield, a shell of discipline, and no Cower* says more about the picture than a
  * statblock does, and it was written when the creature was.
  */
+/**
+ * A variant's base, for the art only.
+ *
+ * `applyVariant` builds a creature and keeps nothing that says what it is a variant OF -- which is
+ * right for the engine, where a Skaah Bloated is simply a creature, and wrong for a token, where
+ * it is *a Skaah, but worse*. Every variant was drawn with no sight of its base and they diverged:
+ * a Bloated that was not a Skaah, a Brood that was not a Slitherer, three Sweepers that came back
+ * as an eagle, a four-winged thing and a rat.
+ *
+ * Built here from the same ROSTER and VARIANTS the engine expands, so it cannot disagree about
+ * which base a kind belongs to, and nothing is added to the documents the game creates.
+ */
+const BASE_OF = new Map();
+for (const base of content.ROSTER) {
+  for (const delta of content.VARIANTS[base.system?.kind] ?? []) BASE_OF.set(delta.kind, base);
+}
+
+/**
+ * What a creature LOOKS like, which is not what its note says.
+ *
+ * `note` is a GM's line about what the thing does in a fight -- *sergeants: the first thing in the
+ * Horde that gives an order* -- and it was being handed to an artist as the only description of
+ * the body. Role words carry their own pictures: *a general* arrived with banners, *sergeants*
+ * with human military bearing, and *a goblin with a shell* arrived with a goblin's head on it.
+ *
+ * So `look` is separate and wins where it exists. A creature without one falls back to its note,
+ * which is what every piece outside the Horde still does.
+ */
+function lookOf(creature) {
+  return creature.look || creature.note || "";
+}
+
 export function creatureBrief(creature) {
   const s = creature.system ?? {};
   const bits = [];
@@ -131,8 +163,20 @@ export function creatureBrief(creature) {
   if (s.armorBase) bits.push(`armour ${s.armorBase}`);
   if (s.speed !== undefined) bits.push(`speed ${s.speed}`);
   if (creature.equipped?.length) bits.push(creature.equipped.join(", "));
-  const line = [bits.join(" \u00b7 "), creature.note].filter(Boolean).join(" \u2014 ");
-  return line.length > 150 ? line.slice(0, 147) + "..." : line;
+  /*
+   * A variant leads with its base, so the picture is the same animal before it is a different
+   * one. The cap is 150 for a card's own line and generous here: a token's subject is the only
+   * description the artist gets, and two creatures that look alike is the one failure a token
+   * cannot survive.
+   */
+  const base = BASE_OF.get(s.kind);
+  /* A variant describes only what makes it different; the base describes the animal. Where a
+   * variant has written its own `look` that wins, and otherwise its note is the difference. */
+  const base_look = base ? lookOf(base) : "";
+  const own = creature.look || creature.note || "";
+  const look = base ? `A ${base.name}: ${base_look} This one ${own}` : lookOf(creature);
+  const line = [bits.join(" \u00b7 "), look].filter(Boolean).join(" \u2014 ");
+  return line.length > 400 ? `${line.slice(0, 397)}...` : line;
 }
 
 /*

@@ -1,0 +1,68 @@
+{
+  "_id": "hXpwBHBPJ49tJFgS",
+  "_key": "!actors!hXpwBHBPJ49tJFgS",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Wyvern",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 22,
+      "base": 22
+    },
+    "kind": "wyvern",
+    "armorBase": 2,
+    "speed": 8,
+    "capabilities": [
+      "flight",
+      "venom",
+      "fast",
+      "feral"
+    ],
+    "tactics": [
+      "skirmisher"
+    ],
+    "targetPriority": "weakest"
+  },
+  "items": [
+    {
+      "_id": "3oCBcq5uIGegRMdF",
+      "_key": "!actors.items!hXpwBHBPJ49tJFgS.3oCBcq5uIGegRMdF",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Claws",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 4
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Wyvern",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

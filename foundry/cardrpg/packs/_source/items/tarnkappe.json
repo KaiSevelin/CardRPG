@@ -1,0 +1,23 @@
+{
+  "_id": "bvOGQ9lDcmsXJRLA",
+  "_key": "!items!bvOGQ9lDcmsXJRLA",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Tarnkappe",
+  "type": "item",
+  "system": {
+    "slot": "head",
+    "weight": 0,
+    "value": 0,
+    "npcGear": true,
+    "blurb": "A small grey cap, greasy with age. The Alp will want it back.",
+    "group": "wonder",
+    "active": {
+      "text": "Become Invisible (1).",
+      "boundary": "combat"
+    }
+  }
+}

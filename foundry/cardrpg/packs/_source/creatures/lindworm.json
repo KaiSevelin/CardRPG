@@ -1,0 +1,103 @@
+{
+  "_id": "XQm3TKTDhMPY3B0X",
+  "_key": "!actors!XQm3TKTDhMPY3B0X",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Lindworm",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 34,
+      "base": 34
+    },
+    "kind": "lindworm",
+    "armorBase": 3,
+    "speed": 4,
+    "capabilities": [
+      "legs",
+      "spray",
+      "brute",
+      "feral"
+    ],
+    "tactics": [
+      "brute",
+      "ambusher"
+    ],
+    "targetPriority": "nearest"
+  },
+  "items": [
+    {
+      "_id": "4OQF4nX4OJHCFYeI",
+      "_key": "!actors.items!XQm3TKTDhMPY3B0X.4OQF4nX4OJHCFYeI",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Dragon Jaws",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "heavy",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 8,
+            "ignores": 2
+          }
+        },
+        "equipped": true
+      }
+    },
+    {
+      "_id": "kj7gNG40jWqUeSw9",
+      "_key": "!actors.items!XQm3TKTDhMPY3B0X.kj7gNG40jWqUeSw9",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Acid Spray",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "ranged",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 4,
+            "range": 3,
+            "area": 1,
+            "ignores": 2
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Lindworm",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

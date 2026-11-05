@@ -1,0 +1,29 @@
+{
+  "_id": "JRee6IBimfZygmlp",
+  "_key": "!items!JRee6IBimfZygmlp",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Dragon Jaws",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "hands": 0,
+    "tags": [
+      "melee",
+      "heavy",
+      "natural"
+    ],
+    "weight": 0,
+    "value": 0,
+    "npcGear": true,
+    "verbs": {
+      "strike": {
+        "value": 8,
+        "ignores": 2
+      }
+    }
+  }
+}

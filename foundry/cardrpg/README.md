@@ -72,7 +72,7 @@ That builds the starter Warrior, **the goblin line** — the spearman, the Warri
 Shaman and the Chief — their decks, and every slate. It is safe to run twice: anything it already
 made is reused rather than duplicated.
 
-**The other 42 creatures arrive one at a time**, because a starter world with 47 monsters in it is a
+**The other 63 creatures arrive one at a time**, because a starter world with 68 monsters in it is a
 world nobody can find anything in:
 
 ```js
@@ -80,7 +80,7 @@ game.cardrpg.buildMonster("Mole Beast");
 ```
 
 Each gets the intent deck its capabilities earn. Or drag one out of the **Creatures** compendium,
-which holds all 47 ready-made.
+which holds all 68 ready-made.
 
 **Place creatures as unlinked tokens.** Each *kind* owns its own intent deck and intent pile, and
 the goblin line shares one fate deck — so five Flat Bugs on the table draw one intent between them,

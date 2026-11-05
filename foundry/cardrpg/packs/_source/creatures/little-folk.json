@@ -1,0 +1,69 @@
+{
+  "_id": "2VknmmnJSvB9zmSz",
+  "_key": "!actors!2VknmmnJSvB9zmSz",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Little Folk",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 10,
+      "base": 10
+    },
+    "kind": "little-folk",
+    "armorBase": 1,
+    "speed": 4,
+    "capabilities": [
+      "legs",
+      "caster",
+      "stealth",
+      "wits"
+    ],
+    "tactics": [
+      "skirmisher"
+    ],
+    "targetPriority": "weakest"
+  },
+  "items": [
+    {
+      "_id": "ZwhTTXDcYakQSCIX",
+      "_key": "!actors.items!2VknmmnJSvB9zmSz.ZwhTTXDcYakQSCIX",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Elf-Bolt",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 1,
+        "tags": [
+          "arcane",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Focus",
+        "verbs": {
+          "cast": {
+            "value": 4,
+            "range": 5
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Little Folk",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

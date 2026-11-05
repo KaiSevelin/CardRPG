@@ -1,0 +1,70 @@
+{
+  "_id": "JZPpUEO7KQBR3Cca",
+  "_key": "!actors!JZPpUEO7KQBR3Cca",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Elf",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 16,
+      "base": 16
+    },
+    "kind": "elf",
+    "armorBase": 1,
+    "speed": 5,
+    "capabilities": [
+      "legs",
+      "caster",
+      "stealth",
+      "wits"
+    ],
+    "tactics": [
+      "ambusher",
+      "skirmisher"
+    ],
+    "targetPriority": "caster"
+  },
+  "items": [
+    {
+      "_id": "5hyg0Af10PLxFOVZ",
+      "_key": "!actors.items!JZPpUEO7KQBR3Cca.5hyg0Af10PLxFOVZ",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Elf-Bolt",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 1,
+        "tags": [
+          "arcane",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Focus",
+        "verbs": {
+          "cast": {
+            "value": 4,
+            "range": 5
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Elf",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

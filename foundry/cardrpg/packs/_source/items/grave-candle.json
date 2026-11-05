@@ -1,0 +1,27 @@
+{
+  "_id": "1l6xx4CBSgS9Yfhn",
+  "_key": "!items!1l6xx4CBSgS9Yfhn",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Grave Candle",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "hands": 1,
+    "tags": [
+      "arcane"
+    ],
+    "weight": 0,
+    "value": 0,
+    "npcGear": true,
+    "verbs": {
+      "cast": {
+        "value": 4,
+        "range": 4
+      }
+    }
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "_id": "xVs3Q1dejnshFLIF",
+  "_key": "!actors!xVs3Q1dejnshFLIF",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Dragon",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 50,
+      "base": 50
+    },
+    "kind": "dragon",
+    "armorBase": 5,
+    "speed": 6,
+    "capabilities": [
+      "flight",
+      "spray",
+      "brute",
+      "caster",
+      "wits"
+    ],
+    "tactics": [
+      "brute"
+    ],
+    "targetPriority": "nearest"
+  },
+  "items": [
+    {
+      "_id": "HDaaeGyRG7kCnMmC",
+      "_key": "!actors.items!xVs3Q1dejnshFLIF.HDaaeGyRG7kCnMmC",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Dragon Jaws",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "heavy",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 8,
+            "ignores": 2
+          }
+        },
+        "equipped": true
+      }
+    },
+    {
+      "_id": "XB31U6Kry5fySote",
+      "_key": "!actors.items!xVs3Q1dejnshFLIF.XB31U6Kry5fySote",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Fire Spray",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "ranged",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 5,
+            "range": 4,
+            "area": 2,
+            "ignores": 1
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Dragon",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

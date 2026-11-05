@@ -1,0 +1,67 @@
+{
+  "_id": "nnTDygWPDITgF53q",
+  "_key": "!actors!nnTDygWPDITgF53q",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Changeling",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 8,
+      "base": 8
+    },
+    "kind": "changeling",
+    "armorBase": 0,
+    "speed": 4,
+    "capabilities": [
+      "legs",
+      "stealth",
+      "wits"
+    ],
+    "tactics": [
+      "ambusher"
+    ],
+    "targetPriority": "weakest"
+  },
+  "items": [
+    {
+      "_id": "pfPoSHG53ZI8CWpQ",
+      "_key": "!actors.items!nnTDygWPDITgF53q.pfPoSHG53ZI8CWpQ",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Nip",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 1
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Changeling",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

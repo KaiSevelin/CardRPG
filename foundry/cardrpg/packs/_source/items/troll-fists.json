@@ -1,0 +1,28 @@
+{
+  "_id": "oVa5zacXfbiahZLj",
+  "_key": "!items!oVa5zacXfbiahZLj",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Troll Fists",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "hands": 0,
+    "tags": [
+      "melee",
+      "heavy",
+      "natural"
+    ],
+    "weight": 0,
+    "value": 0,
+    "npcGear": true,
+    "verbs": {
+      "strike": {
+        "value": 6
+      }
+    }
+  }
+}

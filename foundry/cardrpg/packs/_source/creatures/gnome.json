@@ -1,0 +1,68 @@
+{
+  "_id": "4GdltNHZqprLOoie",
+  "_key": "!actors!4GdltNHZqprLOoie",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Gnome",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 14,
+      "base": 14
+    },
+    "kind": "gnome",
+    "armorBase": 1,
+    "speed": 3,
+    "capabilities": [
+      "legs",
+      "caster",
+      "wits"
+    ],
+    "tactics": [
+      "ambusher"
+    ],
+    "targetPriority": "nearest"
+  },
+  "items": [
+    {
+      "_id": "ExzwTW3bMkEBZTVM",
+      "_key": "!actors.items!4GdltNHZqprLOoie.ExzwTW3bMkEBZTVM",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Elf-Bolt",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 1,
+        "tags": [
+          "arcane",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Focus",
+        "verbs": {
+          "cast": {
+            "value": 4,
+            "range": 5
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Gnome",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

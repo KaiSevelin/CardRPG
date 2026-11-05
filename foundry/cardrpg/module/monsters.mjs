@@ -93,7 +93,11 @@ export function applyVariant(base, delta) {
         ? { signature: delta.signature ?? system.signature } : {})
     },
     equipped: delta.gear ?? base.equipped ?? [],
-    note: delta.note ?? base.note ?? ""
+    note: delta.note ?? base.note ?? "",
+    /* A variant keeps its OWN look only. Inheriting the base's here made the art brief print the
+     * same sentence twice -- once as *A Scrip: ...* and again as *This one ...*. Pairing a
+     * variant with its base is the art layer's job; the engine has no business knowing it. */
+    ...(delta.look ? { look: delta.look } : {})
   };
 }
 

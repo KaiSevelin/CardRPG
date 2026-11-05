@@ -1,0 +1,70 @@
+{
+  "_id": "7asF2kK1diAsQipN",
+  "_key": "!actors!7asF2kK1diAsQipN",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Strigoi",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 28,
+      "base": 28
+    },
+    "kind": "strigoi",
+    "armorBase": 2,
+    "speed": 4,
+    "capabilities": [
+      "legs",
+      "drain",
+      "caster",
+      "commander",
+      "stealth",
+      "wits"
+    ],
+    "tactics": [
+      "ambusher"
+    ],
+    "targetPriority": "caster"
+  },
+  "items": [
+    {
+      "_id": "ykWcsP4hThK1rP41",
+      "_key": "!actors.items!7asF2kK1diAsQipN.ykWcsP4hThK1rP41",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Draining Bite",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 4
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Strigoi",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

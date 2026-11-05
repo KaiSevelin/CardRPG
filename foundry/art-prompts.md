@@ -1,6 +1,6 @@
 # Art prompts
 
-**509 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
+**540 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
 
 It walks the same `GROUPS` the art list walks, by importing it rather than copying it, so the two files cannot disagree about what exists.
 
@@ -27,7 +27,7 @@ So the numbers are gone from the capsules and the picture is in their place: **t
 
 ## Deck backs
 
-**Draw these first.** 6 pictures against 503 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
+**Draw these first.** 6 pictures against 534 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
 
 ### The capsule — paste this once
 
@@ -180,7 +180,9 @@ PALETTE.
 - Mid tone: **#c9bda8**
 - One chromatic accent only: **#a3655d**, a warm brick red. Use it on the
   one thing the picture is about, and nowhere else.
-- Desaturated and earthy. Warm throughout, with no cool hue anywhere. No neon, no teal-and-orange.
+- Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
+  Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
+  here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
 
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
@@ -348,7 +350,9 @@ PALETTE.
 - Mid tone: **#c9bda8**
 - One chromatic accent only: **#a3655d**, a warm brick red. Use it on the
   one thing the picture is about, and nowhere else.
-- Desaturated and earthy. Warm throughout, with no cool hue anywhere. No neon, no teal-and-orange.
+- Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
+  Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
+  here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
 
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
@@ -456,7 +460,9 @@ of thing is acting.
 - **Nothing in frame may say how big the actor is.** Scale gives it away even when anatomy does
   not, so no doorways, no trees, no furniture and no horizon that implies a standing height.
 - If the actor must appear at all it is a dark anonymous mass, cropped hard, reading as motion
-  rather than as anatomy. One limb or one edge entering frame beats a whole creature every time.
+  rather than as anatomy. One limb or one edge entering frame beats a whole creature every time --
+  **entering from a side or from below, never from the top.** The strip of bare paper across the
+  top of the picture is the one edge nothing crosses, the actor included.
 - Where the subject below names a weapon, read it as *whatever this creature strikes with*: an
   edge, a claw, a mass, a mandible. Never a sword.
 
@@ -503,7 +509,9 @@ PALETTE.
 - Mid tone: **#c9bda8**
 - One chromatic accent only: **#a3655d**, a warm brick red. Use it on the
   one thing the picture is about, and nowhere else.
-- Desaturated and earthy. Warm throughout, with no cool hue anywhere. No neon, no teal-and-orange.
+- Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
+  Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
+  here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
 
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
@@ -617,7 +625,7 @@ File: `cards/npc/envenom.webp`
 ```text
 SUBJECT. "Envenom" — Strike · Strike; on a hit it carries whatever you carry.
 
-Draw a small wound doing far more than it should: a shallow mark on a human forearm with the skin going wrong around it, drawn much larger than the blow that made it.
+Draw a hand that has stopped obeying: one small puncture at the knuckle, a dark line already past the wrist and climbing, the fingers curling on their own. The wound is nothing -- what is spreading out of it is the whole picture.
 ```
 
 ### Fade
@@ -939,7 +947,9 @@ PALETTE.
   deepening to **#2f3b4e** in the darkest wash. Use it on the one thing the
   picture is about, and nowhere else. No other hue appears.
 - Desaturated and earthy. Apart from the accent named above, no hue at all: the rest of the picture is ink, paper and
-  the warm greys between them. No neon, no teal-and-orange.
+  the warm greys between them. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
+  Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
+  here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
 
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
@@ -1129,7 +1139,9 @@ PALETTE.
   deepening to **#4a3330** in the darkest wash. Use it on the one thing the
   picture is about, and nowhere else. No other hue appears.
 - Desaturated and earthy. Apart from the accent named above, no hue at all: the rest of the picture is ink, paper and
-  the warm greys between them. No neon, no teal-and-orange.
+  the warm greys between them. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
+  Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
+  here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
 
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
@@ -1327,7 +1339,9 @@ PALETTE.
 - Mid tone: **#c9bda8**
 - One chromatic accent only: **#a3655d**, a warm brick red. Use it on the
   one thing the picture is about, and nowhere else.
-- Desaturated and earthy. Warm throughout, with no cool hue anywhere. No neon, no teal-and-orange.
+- Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
+  Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
+  here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
 
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
@@ -1415,7 +1429,9 @@ PALETTE.
 - Mid tone: **#c9bda8**
 - One chromatic accent only: **#a3655d**, a warm brick red. Use it on the
   one thing the picture is about, and nowhere else.
-- Desaturated and earthy. Warm throughout, with no cool hue anywhere. No neon, no teal-and-orange.
+- Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
+  Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
+  here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
 
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
@@ -1583,7 +1599,9 @@ PALETTE.
 - Mid tone: **#c9bda8**
 - One chromatic accent only: **#a3655d**, a warm brick red. Use it on the
   one thing the picture is about, and nowhere else.
-- Desaturated and earthy. Warm throughout, with no cool hue anywhere. No neon, no teal-and-orange.
+- Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
+  Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
+  here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
 
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
@@ -1753,7 +1771,9 @@ PALETTE.
   deepening to **#2f3b4e** in the darkest wash. Use it on the one thing the
   picture is about, and nowhere else. No other hue appears.
 - Desaturated and earthy. Apart from the accent named above, no hue at all: the rest of the picture is ink, paper and
-  the warm greys between them. No neon, no teal-and-orange.
+  the warm greys between them. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
+  Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
+  here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
 
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
@@ -1943,7 +1963,9 @@ PALETTE.
   deepening to **#4a3330** in the darkest wash. Use it on the one thing the
   picture is about, and nowhere else. No other hue appears.
 - Desaturated and earthy. Apart from the accent named above, no hue at all: the rest of the picture is ink, paper and
-  the warm greys between them. No neon, no teal-and-orange.
+  the warm greys between them. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
+  Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
+  here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
 
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
@@ -2133,7 +2155,9 @@ PALETTE.
   deepening to **#2f3f3a** in the darkest wash. Use it on the one thing the
   picture is about, and nowhere else. No other hue appears.
 - Desaturated and earthy. Apart from the accent named above, no hue at all: the rest of the picture is ink, paper and
-  the warm greys between them. No neon, no teal-and-orange.
+  the warm greys between them. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
+  Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
+  here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
 
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
@@ -2335,7 +2359,9 @@ PALETTE.
   deepening to **#403458** in the darkest wash. Use it on the one thing the
   picture is about, and nowhere else. No other hue appears.
 - Desaturated and earthy. Apart from the accent named above, no hue at all: the rest of the picture is ink, paper and
-  the warm greys between them. No neon, no teal-and-orange.
+  the warm greys between them. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
+  Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
+  here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
 
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
@@ -2587,7 +2613,9 @@ PALETTE.
 - Mid tone: **#c9bda8**
 - One chromatic accent only: **#a3655d**, a warm brick red. Use it on the
   one thing the picture is about, and nowhere else.
-- Desaturated and earthy. Warm throughout, with no cool hue anywhere. No neon, no teal-and-orange.
+- Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
+  Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
+  here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
 
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
@@ -2705,7 +2733,9 @@ PALETTE.
   deepening to **#2f3b4e** in the darkest wash. Use it on the one thing the
   picture is about, and nowhere else. No other hue appears.
 - Desaturated and earthy. Apart from the accent named above, no hue at all: the rest of the picture is ink, paper and
-  the warm greys between them. No neon, no teal-and-orange.
+  the warm greys between them. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
+  Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
+  here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
 
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
@@ -2787,7 +2817,9 @@ PALETTE.
   deepening to **#2f3f3a** in the darkest wash. Use it on the one thing the
   picture is about, and nowhere else. No other hue appears.
 - Desaturated and earthy. Apart from the accent named above, no hue at all: the rest of the picture is ink, paper and
-  the warm greys between them. No neon, no teal-and-orange.
+  the warm greys between them. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
+  Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
+  here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
 
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
@@ -3697,7 +3729,9 @@ PALETTE.
   deepening to **#403458** in the darkest wash. Use it on the one thing the
   picture is about, and nowhere else. No other hue appears.
 - Desaturated and earthy. Apart from the accent named above, no hue at all: the rest of the picture is ink, paper and
-  the warm greys between them. No neon, no teal-and-orange.
+  the warm greys between them. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
+  Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
+  here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
 
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
@@ -4365,7 +4399,9 @@ PALETTE.
 - Mid tone: **#c9bda8**
 - One chromatic accent only: **#a3655d**, a warm brick red. Use it on the
   one thing the picture is about, and nowhere else.
-- Desaturated and earthy. Warm throughout, with no cool hue anywhere. No neon, no teal-and-orange.
+- Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
+  Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
+  here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
 
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
@@ -4573,7 +4609,9 @@ PALETTE.
 - Mid tone: **#c9bda8**
 - One chromatic accent only: **#a3655d**, a warm brick red. Use it on the
   one thing the picture is about, and nowhere else.
-- Desaturated and earthy. Warm throughout, with no cool hue anywhere. No neon, no teal-and-orange.
+- Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
+  Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
+  here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
 
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
@@ -6100,7 +6138,7 @@ Draw a shield, face on and slightly turned, its edge nicked from use.
 
 ## NPC gear
 
-**6 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/items/npc/`.
+**9 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/items/npc/`.
 
 A monster's kit -- cruder than a player's, made or scavenged rather than bought.
 
@@ -6141,7 +6179,9 @@ PALETTE.
 - Mid tone: **#c9bda8**
 - One chromatic accent only: **#a3655d**, a warm brick red. Use it on the
   one thing the picture is about, and nowhere else.
-- Desaturated and earthy. Warm throughout, with no cool hue anywhere. No neon, no teal-and-orange.
+- Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
+  Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
+  here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
 
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
@@ -6216,6 +6256,16 @@ SUBJECT. "Goblin Spear" — Weapon
 Draw an edge, worn and sharpened back more than once.
 ```
 
+### Grave Candle
+
+File: `items/npc/grave-candle.webp`
+
+```text
+SUBJECT. "Grave Candle" — Focus
+
+Draw a stub of candle burning low on a flat stone, the flame standing perfectly upright and still in air that is plainly moving everything else.
+```
+
 ### Mole Pick
 
 File: `items/npc/mole-pick.webp`
@@ -6226,9 +6276,29 @@ SUBJECT. "Mole Pick" — Weapon
 Draw an edge, worn and sharpened back more than once; grown rather than forged -- chitin, horn, tooth or claw, still part of a body.
 ```
 
+### Tarnkappe
+
+File: `items/npc/tarnkappe.webp`
+
+```text
+SUBJECT. "Tarnkappe" — Wonder · A small grey cap, greasy with age. The Alp will want it back. · Become Invisible (1).
+
+Draw a small grey cap, shapeless and greasy with age, lying where it was dropped -- and the patch of ground beneath it not quite as present as the ground around it.
+```
+
+### Troll Club
+
+File: `items/npc/troll-club.webp`
+
+```text
+SUBJECT. "Troll Club" — Weapon
+
+Draw an edge, worn and sharpened back more than once; weight: the object sits, and the surface under it knows.
+```
+
 ## Natural weapons
 
-**10 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/items/natural/`.
+**17 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/items/natural/`.
 
 Grown rather than carried: a mandible, a sting, a tail club. It cannot be disarmed because it is part of a body, and the picture should make that obvious.
 
@@ -6269,7 +6339,9 @@ PALETTE.
 - Mid tone: **#c9bda8**
 - One chromatic accent only: **#a3655d**, a warm brick red. Use it on the
   one thing the picture is about, and nowhere else.
-- Desaturated and earthy. Warm throughout, with no cool hue anywhere. No neon, no teal-and-orange.
+- Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
+  Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
+  here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
 
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
@@ -6314,6 +6386,46 @@ SUBJECT. "Claws" — Natural
 Draw four hooked claws splayed at full reach, no two the same length, the tips worn pale where they have been dragged across stone.
 ```
 
+### Crushing Coils
+
+File: `items/natural/crushing-coils.webp`
+
+```text
+SUBJECT. "Crushing Coils" — Natural
+
+Draw a thick loop of serpent body closed on something that is no longer the shape it was, the head nowhere in the picture. Nothing is being bitten: the body is the weapon.
+```
+
+### Dragon Jaws
+
+File: `items/natural/dragon-jaws.webp`
+
+```text
+SUBJECT. "Dragon Jaws" — Natural
+
+Draw a mouth that could take a horse, open and side-on, the teeth uneven and overlapping and the gum line drawn back. Scale rather than chitin, and old -- several teeth broken off short.
+```
+
+### Draining Bite
+
+File: `items/natural/draining-bite.webp`
+
+```text
+SUBJECT. "Draining Bite" — Natural
+
+Draw a mouth opened wider than a jaw should allow, two long teeth set well back and wet, and nothing else of the face in frame.
+```
+
+### Elf-Bolt
+
+File: `items/natural/elf-bolt.webp`
+
+```text
+SUBJECT. "Elf-Bolt" — Focus
+
+Draw an object that is doing something while nobody holds it; grown rather than forged -- chitin, horn, tooth or claw, still part of a body.
+```
+
 ### Fire Spray
 
 File: `items/natural/fire-spray.webp`
@@ -6332,6 +6444,16 @@ File: `items/natural/grasping-claws.webp`
 SUBJECT. "Grasping Claws" — Natural
 
 Draw a long jointed arm thrown out to full extension from a body mostly out of frame, the pincer at the end of it closing on air at the far limit of its reach.
+```
+
+### Grave-Cold Hands
+
+File: `items/natural/grave-cold-hands.webp`
+
+```text
+SUBJECT. "Grave-Cold Hands" — Natural
+
+Draw two hands that have been underground: nails grown long and split, the skin drawn tight and dark over the bones, closing on nothing with far more grip than they ought to have.
 ```
 
 ### Heavy Mandibles
@@ -6384,6 +6506,26 @@ SUBJECT. "Tail Club" — Natural
 Draw a knot of fused bone at the end of a thick tail, caught at the top of its arc with the whole body wound up behind it. Nothing it lands on is going to be helped by armour.
 ```
 
+### Thrown Stone
+
+File: `items/natural/thrown-stone.webp`
+
+```text
+SUBJECT. "Thrown Stone" — Natural
+
+Draw a boulder in flight, turning, the hand that threw it already gone from the frame and the shadow of it running ahead across the ground it is about to reach.
+```
+
+### Troll Fists
+
+File: `items/natural/troll-fists.webp`
+
+```text
+SUBJECT. "Troll Fists" — Natural
+
+Draw two hands the size of millstones hanging open at rest, the knuckles split and healed over again into grey callus. Nothing is being held and nothing needs to be.
+```
+
 ### Tusks
 
 File: `items/natural/tusks.webp`
@@ -6396,7 +6538,7 @@ Draw two curved tusks worn smooth along their undersides by digging, swung upwar
 
 ## Creature tokens
 
-**47 prompts.** **1:1, 1024 × 1024, transparent.** Files go under `cardrpg/art/tokens/`.
+**68 prompts.** **1:1, 1024 × 1024, transparent.** Files go under `cardrpg/art/tokens/`.
 
 One picture per creature, used as both the sheet portrait and the map token.
 
@@ -6420,12 +6562,12 @@ COMPOSITION.
   and the only question that matters is *which creature is that*.
 
 PALETTE.
-- Line and darks: **#1b1714**
-- Paper and lights: **#f4efe6**
-- Mid tone: **#c9bda8**
-- One chromatic accent only: **#a3655d**, a warm brick red, on the one feature that
-  tells this creature from its neighbours.
-- Warm, desaturated, earthy. No cyan, no magenta, no neon.
+- **The creature is its own colour.** Draw it as the thing actually is: a mossy troll is green, a
+  drowned corpse is hel-bla, a hairless hide is grey. Nothing here is held to the warm palette the
+  cards use.
+- Desaturated and natural rather than bright -- this is still ink and wash, not poster paint -- but
+  the hue belongs to the animal and not to the deck.
+- Line and darks stay **#1b1714**, so a token reads as drawn by the same hand.
 
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
@@ -6455,6 +6597,16 @@ and never a white halo.
 
 </details>
 
+### Alp
+
+File: `tokens/alp.webp`
+
+```text
+SUBJECT. "Alp" — Health 12 · speed 4 · Draining Bite, Tarnkappe — a small hunched night-thing wearing a shabby grey cap pulled low -- the Tarnkappe, and it is the only thing on it that reads as clothing. Thin, long-fingered, far too light for its size, drawn crouching as though on someone's ribs
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
 ### Armored Slug
 
 File: `tokens/armored-slug.webp`
@@ -6470,7 +6622,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/armored-slug-spitter.webp`
 
 ```text
-SUBJECT. "Armored Slug Spitter" — Health 12 · armour 3 · speed 2 · Acid Spray — thinner shell, longer reach of acid: it is here to ruin somebody's concentration
+SUBJECT. "Armored Slug Spitter" — Health 12 · armour 3 · speed 2 · Acid Spray — A Armored Slug: slow, armoured, and it does not need to reach you This one thinner shell, longer reach of acid: it is here to ruin somebody's concentration
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6490,7 +6642,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/blind-worm-elder.webp`
 
 ```text
-SUBJECT. "Blind Worm Elder" — Health 24 · armour 3 · speed 3 · Heavy Mandibles — old enough to have learned that a held thing stops moving and stops being felt
+SUBJECT. "Blind Worm Elder" — Health 24 · armour 3 · speed 3 · Heavy Mandibles — A Blind Worm: no sight and a sense for vibration: it finds whoever moved This one a single blind tube of segmented muscle, jaws at one end and the body simply ending at the other. ONE BODY AND NO TAIL: no second tapering limb, no stinger, nothing trailing
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6510,7 +6662,37 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/burrower-brood-mother.webp`
 
 ```text
-SUBJECT. "Burrower Brood Mother" — Health 30 · armour 3 · speed 3 · Mandibles — it stopped being a steed when it started laying
+SUBJECT. "Burrower Brood Mother" — Health 30 · armour 3 · speed 3 · Mandibles — A Burrower: worms, and the steeds of the mole men: it is how they arrive under you This one it stopped being a steed when it started laying
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Changeling
+
+File: `tokens/changeling.webp`
+
+```text
+SUBJECT. "Changeling" — Health 8 · speed 4 · Nip — a byting: child-sized and child-shaped and not a child -- the proportions a little off, the head a little large, the hands too long, old in the eyes. Dressed in human clothes that fit badly. Nothing monstrous on it at a glance, which is the whole horror
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Chupacabra
+
+File: `tokens/chupacabra.webp`
+
+```text
+SUBJECT. "Chupacabra" — Health 10 · armour 1 · speed 7 · Draining Bite — a lean hairless quadruped, grey and leathery, with a ridge of stiff spines down the back, a long muzzle and oversized hind legs built for springing. An animal, not a person: the only one of these nine that goes on four legs
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Dhampir
+
+File: `tokens/dhampir.webp`
+
+```text
+SUBJECT. "Dhampir" — Health 14 · armour 1 · speed 5 · Draining Bite — a living person, which is the point: a lean travelling man in worn coat and boots, nothing undead about the body at all. Only the eyes are wrong, and he knows it. He is the only thing in this group that casts a shadow
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6525,12 +6707,42 @@ SUBJECT. "Doomfly" — Health 12 · armour 1 · speed 7 · Nip — transport: it
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
 
+### Dragon
+
+File: `tokens/dragon.webp`
+
+```text
+SUBJECT. "Dragon" — Health 50 · armour 5 · speed 6 · Dragon Jaws, Fire Spray — the biggest thing in the bestiary: a long-bodied winged worm, heavily scaled, more serpent than lizard, with a narrow head and an old intelligence in it. Wings like a bat's and far too large. It should dwarf everything drawn beside it
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Draugr
+
+File: `tokens/draugr.webp`
+
+```text
+SUBJECT. "Draugr" — Health 30 · armour 3 · speed 3 · Grave-Cold Hands — a barrow-dweller: a corpse swollen far past the size it was alive, hel-bla -- the blue-black of a drowned man -- in the rotted remains of good clothes, with grave-goods still on it. Heavy, slow, and far too strong. Not a skeleton: there is too much of it left
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Elf
+
+File: `tokens/elf.webp`
+
+```text
+SUBJECT. "Elf" — Health 16 · armour 1 · speed 5 · Elf-Bolt — an alva of the Nordic kind, not a tall archer: slight, pale and barefoot in a thin shift, hair unbound, drawn mid-step as if still dancing and only half attending to you. Beautiful and slightly wrong in the proportions. No armour, no bow, no pointed helm
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
 ### Five Legs
 
 File: `tokens/five-legs.webp`
 
 ```text
-SUBJECT. "Five Legs" — Health 15 · armour 2 · speed 4 · Claws — lieutenants, fairly intelligent: it spends its turn on somebody else's
+SUBJECT. "Five Legs" — Health 15 · armour 2 · speed 4 · Claws — FIVE-FOLD RADIAL: five identical limbs spaced evenly around a domed carapace, no head and no front or back, like a starfish built as a predator. Nothing else here is radial
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6540,7 +6752,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/five-legs-adjutant.webp`
 
 ```text
-SUBJECT. "Five Legs Adjutant" — Health 12 · armour 2 · speed 4 · Claws — it does not fight at all: it calls the next wave
+SUBJECT. "Five Legs Adjutant" — Health 12 · armour 2 · speed 4 · Claws — A Five Legs: FIVE-FOLD RADIAL: five identical limbs spaced evenly around a domed carapace, no head and no front or back, like a starfish built as a predator. Nothing else here is radial This one it does not fight at all: it calls the next wave
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6550,7 +6762,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/flat-bug.webp`
 
 ```text
-SUBJECT. "Flat Bug" — Health 5 · armour 1 · speed 3 · Mandibles — the Horde's main infantry: a goblin with a shell and no fear
+SUBJECT. "Flat Bug" — Health 5 · armour 1 · speed 3 · Mandibles — a low broad arachnid plated front to back, EIGHT legs splayed under a flat shell. No goblin and no humanoid head of any kind: the head is a wedge of jaw set into the shell
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6560,7 +6772,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/flat-bug-runner.webp`
 
 ```text
-SUBJECT. "Flat Bug Runner" — Health 4 · speed 5 · Mandibles — sent ahead to find out where you are, and dies finding out
+SUBJECT. "Flat Bug Runner" — Health 4 · speed 5 · Mandibles — A Flat Bug: a low broad arachnid plated front to back, EIGHT legs splayed under a flat shell. No goblin and no humanoid head of any kind: the head is a wedge of jaw set into the shell This one sent ahead to find out where you are, and dies finding out
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6570,7 +6782,27 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/flat-bug-shieldline.webp`
 
 ```text
-SUBJECT. "Flat Bug Shieldline" — Health 7 · armour 2 · speed 2 · Mandibles — the front rank, which is where the Horde's armour actually is
+SUBJECT. "Flat Bug Shieldline" — Health 7 · armour 2 · speed 2 · Mandibles — A Flat Bug: a low broad arachnid plated front to back, EIGHT legs splayed under a flat shell. No goblin and no humanoid head of any kind: the head is a wedge of jaw set into the shell This one the front rank, which is where the Horde's armour actually is
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Forest Troll
+
+File: `tokens/forest-troll.webp`
+
+```text
+SUBJECT. "Forest Troll" — Health 20 · armour 2 · speed 4 · Troll Fists — a skogstroll: long-limbed and hunched, hide like wet bark with lichen in the seams, a cow's tail it keeps tucked, and a face that is nearly a person's and wrong about it
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Gnome
+
+File: `tokens/gnome.webp`
+
+```text
+SUBJECT. "Gnome" — Health 14 · armour 1 · speed 3 · Elf-Bolt — a tomte: knee-high, old-man-faced, grey homespun and a red knitted cap, with a beard far too long for the body under it. Carries itself like the owner of the place. Enormously strong for its size, which should show in the hands and the stance
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6590,7 +6822,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/goblin-archer.webp`
 
 ```text
-SUBJECT. "Goblin Archer" — Health 5 · speed 3 · Goblin Shortbow — it earns Loose by being able to shoot, which the spearman cannot
+SUBJECT. "Goblin Archer" — Health 5 · speed 3 · Goblin Shortbow — A Goblin:  This one it earns Loose by being able to shoot, which the spearman cannot
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6600,7 +6832,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/goblin-chief.webp`
 
 ```text
-SUBJECT. "Goblin Chief" — Health 11 · armour 1 · speed 3 · Goblin Spear, Goblin Shield — kill it and the Cower comes back to everybody else
+SUBJECT. "Goblin Chief" — Health 11 · armour 1 · speed 3 · Goblin Spear, Goblin Shield — A Goblin:  This one kill it and the Cower comes back to everybody else
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6610,7 +6842,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/goblin-shaman.webp`
 
 ```text
-SUBJECT. "Goblin Shaman" — Health 6 · speed 2 · Goblin Fetish — the elves taught it enough glamour to be dangerous and not enough to be free
+SUBJECT. "Goblin Shaman" — Health 6 · speed 2 · Goblin Fetish — A Goblin:  This one the elves taught it enough glamour to be dangerous and not enough to be free
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6620,7 +6852,47 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/goblin-warrior.webp`
 
 ```text
-SUBJECT. "Goblin Warrior" — Health 8 · armour 1 · speed 3 · Goblin Spear, Goblin Shield — the one that does not run: a shield, a shell of discipline, and no Cower
+SUBJECT. "Goblin Warrior" — Health 8 · armour 1 · speed 3 · Goblin Spear, Goblin Shield — A Goblin:  This one the one that does not run: a shield, a shell of discipline, and no Cower
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Keres
+
+File: `tokens/keres.webp`
+
+```text
+SUBJECT. "Keres" — Health 8 · speed 6 · Claws — Greek death-spirits: dark ragged female figures, gaunt and bloodied to the elbow, teeth bared, drawn low over the ground as if stooping to something. Never one alone -- the shape of the picture is several of them at once
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Lindworm
+
+File: `tokens/lindworm.webp`
+
+```text
+SUBJECT. "Lindworm" — Health 34 · armour 3 · speed 4 · Dragon Jaws, Acid Spray — a wingless serpent-dragon of the Nordic kind: a long heavy body with ONE pair of forelegs at the front and nothing behind, dragging the rest. Dull scale, blunt snout, small eyes. No wings at all -- that is what makes it a lindworm and not a dragon
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Little Folk
+
+File: `tokens/little-folk.webp`
+
+```text
+SUBJECT. "Little Folk" — Health 10 · armour 1 · speed 4 · Elf-Bolt — the vattar, the underground people: small, grey and earthen, dressed like poor farmers of no particular century, with a flat look and no expression to read. Drawn half out of the ground or half out of a doorway: never fully in the open
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Lugat
+
+File: `tokens/lugat.webp`
+
+```text
+SUBJECT. "Lugat" — Health 22 · armour 2 · speed 3 · Draining Bite — the Albanian kind: bloated and tight-skinned, still wound in its shroud with the wrapping split, moving with a full belly's slowness. Fat rather than gaunt, which is what separates it from every other corpse here
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6630,7 +6902,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/mantiss.webp`
 
 ```text
-SUBJECT. "Mantiss" — Health 12 · armour 2 · speed 4 · Grasping Claws — sergeants: the first thing in the Horde that gives an order
+SUBJECT. "Mantiss" — Health 12 · armour 2 · speed 4 · Grasping Claws — EIGHT legs, the front pair long and folded like a mantis's and the other six walking. Upright over them, taller than the infantry, with a narrow swivelling head
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6640,7 +6912,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/mantiss-veteran.webp`
 
 ```text
-SUBJECT. "Mantiss Veteran" — Health 18 · armour 3 · speed 4 · Grasping Claws — it has done this before and takes you out of the fight first
+SUBJECT. "Mantiss Veteran" — Health 18 · armour 3 · speed 4 · Grasping Claws — A Mantiss: EIGHT legs, the front pair long and folded like a mantis's and the other six walking. Upright over them, taller than the infantry, with a narrow swivelling head This one it has done this before and takes you out of the fight first
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6660,7 +6932,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/mole-beast.webp`
 
 ```text
-SUBJECT. "Mole Beast" — Health 22 · armour 2 · speed 3 · Tusks — it comes up underneath, which is what Go Under is for
+SUBJECT. "Mole Beast" — Health 22 · armour 2 · speed 3 · Tusks — a true mole, enlarged: a barrel of muscle with a pink snout, tiny buried eyes and huge outward-turned digging forelimbs. Fur, not chitin -- it is not one of the Horde
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6670,7 +6942,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/mole-beast-tusker.webp`
 
 ```text
-SUBJECT. "Mole Beast Tusker" — Health 30 · armour 3 · speed 3 · Tusks — the one the mole men dig behind
+SUBJECT. "Mole Beast Tusker" — Health 30 · armour 3 · speed 3 · Tusks — A Mole Beast: a true mole, enlarged: a barrel of muscle with a pink snout, tiny buried eyes and huge outward-turned digging forelimbs. Fur, not chitin -- it is not one of the Horde This one the one the mole men dig behind
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6690,7 +6962,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/mole-man-digger.webp`
 
 ```text
-SUBJECT. "Mole Man Digger" — Health 8 · armour 1 · speed 3 · Mole Pick — it is not fighting you, it is getting through the floor you are standing on
+SUBJECT. "Mole Man Digger" — Health 8 · armour 1 · speed 3 · Mole Pick — A Mole Man: followers of the Queen of the Dark, and the only burrower that carries a tool This one carries a MOLE PICK: a short-hafted single-bladed digging pick, the haft cut short for swinging in a tunnel. Not a spear, not a polearm, not a lamp
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6700,7 +6972,27 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/mole-man-priest.webp`
 
 ```text
-SUBJECT. "Mole Man Priest" — Health 10 · armour 1 · speed 2 · Dark Lantern — the Queen of the Dark grants to those who go deep enough, and it has
+SUBJECT. "Mole Man Priest" — Health 10 · armour 1 · speed 2 · Dark Lantern — A Mole Man: followers of the Queen of the Dark, and the only burrower that carries a tool This one carries a DARK LANTERN and nothing else: a shuttered lantern in one hand, one slit open. No staff, no rod, no crook -- both arms and both hands whole and unpierced
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Mountain Troll
+
+File: `tokens/mountain-troll.webp`
+
+```text
+SUBJECT. "Mountain Troll" — Health 34 · armour 4 · speed 2 · Troll Fists, Thrown Stone — a bergtroll: a hunched mass of grey stone-hide with lichen and moss growing on its back and shoulders, a great hooked nose, small deep-set eyes and a mouth too wide. Vast, slow and mineral -- more cliff than animal, and no green skin anywhere
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Nature Spirit
+
+File: `tokens/nature-spirit.webp`
+
+```text
+SUBJECT. "Nature Spirit" — Health 20 · armour 1 · speed 5 · Elf-Bolt — a skogsra: from the front a tall woman made of the wood -- bark-grained skin, moss in the hair, eyes like a deer's -- and from any other angle hollow, the back open like a rotted trunk. Draw her turning, so both are true at once. That hollow is the whole point
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6720,7 +7012,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/pincer-marshal.webp`
 
 ```text
-SUBJECT. "Pincer Marshal" — Health 35 · armour 4 · speed 4 · Grasping Claws — a general who can call for more is the fight not ending
+SUBJECT. "Pincer Marshal" — Health 35 · armour 4 · speed 4 · Grasping Claws — A Pincer: generals, intelligent, armoured: it takes somebody out of the fight rather than down This one the largest armoured form in the Horde, heavy pincers held high and a thick plated hood over the front. NO FLAGS, no banners, no standards, no insignia, no cloth of any kind
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6740,7 +7032,17 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/processor-driller.webp`
 
 ```text
-SUBJECT. "Processor Driller" — Health 6 · armour 1 · speed 3 · Mandibles — what the Horde uses instead of a siege engine, and the reason walls fall from below
+SUBJECT. "Processor Driller" — Health 6 · armour 1 · speed 3 · Mandibles — A Processor: workers: they build, and they are what a scene looks like before the fight This one what the Horde uses instead of a siege engine, and the reason walls fall from below
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Revenant
+
+File: `tokens/revenant.webp`
+
+```text
+SUBJECT. "Revenant" — Health 24 · armour 2 · speed 4 · Grave-Cold Hands — a body walking with a purpose and nothing else: dried rather than rotted, the clothes it was buried in, the wound that killed it still open and not bleeding. The face is intact and recognisable, which is the worst thing about it
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6760,7 +7062,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/rush-spider-rider.webp`
 
 ```text
-SUBJECT. "Rush Spider Rider" — Health 14 · armour 1 · speed 8 · Mandibles — carrying a Mole Man, which is two statblocks arriving as one problem
+SUBJECT. "Rush Spider Rider" — Health 14 · armour 1 · speed 8 · Mandibles — A Rush Spider: cavalry: it arrives before you have finished deciding This one carrying a Mole Man, which is two statblocks arriving as one problem
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6770,7 +7072,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/scrip.webp`
 
 ```text
-SUBJECT. "Scrip" — Health 2 · speed 6 · Nip — eyes and ears, and harmless: the question is whether you spend a turn on one
+SUBJECT. "Scrip" — Health 2 · speed 6 · Nip — small and quick on EIGHT thin legs, more eye than body -- a cluster of them over a trunk barely bigger than a fist
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6780,7 +7082,27 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/scrip-watcher.webp`
 
 ```text
-SUBJECT. "Scrip Watcher" — Health 2 · speed 7 · Nip — the one that is still watching after you killed the others
+SUBJECT. "Scrip Watcher" — Health 2 · speed 7 · Nip — A Scrip: small and quick on EIGHT thin legs, more eye than body -- a cluster of them over a trunk barely bigger than a fist This one the one that is still watching after you killed the others
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Sea Serpent
+
+File: `tokens/sea-serpent.webp`
+
+```text
+SUBJECT. "Sea Serpent" — Health 40 · armour 3 · speed 6 · Crushing Coils, Dragon Jaws — a vast limbless water-worm, drawn as a series of humps breaking a flat surface with the head low and forward at one end -- the shape of every lake-monster sighting ever reported. Most of it is under the water and should stay there
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Shade
+
+File: `tokens/shade.webp`
+
+```text
+SUBJECT. "Shade" — Health 10 · speed 5 · Grave Candle — barely there: the shape of a person in thin grey wash, the edges losing themselves into the paper, carrying a single guttering candle that is the most solid thing in the picture. No chains, no skull, no sheet -- just somebody almost rubbed out
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6800,7 +7122,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/skaah-bloated.webp`
 
 ```text
-SUBJECT. "Skaah Bloated" — Health 60 · armour 1 · speed 3 · Acid Spray — full, low and leaking: it is going to come down somewhere
+SUBJECT. "Skaah Bloated" — Health 60 · armour 1 · speed 3 · Acid Spray — A Skaah: a drop ship: balloon-like, gigantic, and full of something worse This one full, low and leaking: it is going to come down somewhere
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6810,7 +7132,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/slitherer.webp`
 
 ```text
-SUBJECT. "Slitherer" — Health 7 · armour 1 · speed 4 · Mandibles — silent and venomous: the two words the world gives it, and both are mechanical
+SUBJECT. "Slitherer" — Health 7 · armour 1 · speed 4 · Mandibles — a long low body dragging between EIGHT short legs set wide along its sides -- it slithers because the body is on the ground, not because it has no legs
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6820,7 +7142,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/slitherer-brood.webp`
 
 ```text
-SUBJECT. "Slitherer Brood" — Health 4 · armour 1 · speed 5 · Mandibles — smaller, and there are always more of them than you counted
+SUBJECT. "Slitherer Brood" — Health 4 · armour 1 · speed 5 · Mandibles — A Slitherer: a long low body dragging between EIGHT short legs set wide along its sides -- it slithers because the body is on the ground, not because it has no legs This one smaller, and there are always more of them than you counted
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6840,7 +7162,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/smash-beetle-breaker.webp`
 
 ```text
-SUBJECT. "Smash Beetle Breaker" — Health 28 · armour 4 · speed 1 · Tail Club — bred bigger for the gates of the Third Ring, and it does not turn quickly
+SUBJECT. "Smash Beetle Breaker" — Health 28 · armour 4 · speed 1 · Tail Club — A Smash Beetle: it is here for the wall, and you are in the way of the wall This one bred bigger for the gates of the Third Ring, and it does not turn quickly
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6860,7 +7182,17 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/stinger-drone.webp`
 
 ```text
-SUBJECT. "Stinger Drone" — Health 10 · speed 6 · Acid Spray — the sting became a nozzle somewhere in the hive's history
+SUBJECT. "Stinger Drone" — Health 10 · speed 6 · Acid Spray — A Stinger: it goes for whoever is concentrating This one the sting became a nozzle somewhere in the hive's history
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Strigoi
+
+File: `tokens/strigoi.webp`
+
+```text
+SUBJECT. "Strigoi" — Health 28 · armour 2 · speed 4 · Draining Bite — the troubled dead of the Romanian stories: gaunt and upright and almost presentable, dressed as a living person of standing, with too-long nails and a mouth that does not close properly. It does not shamble. It arrives
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6870,7 +7202,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/sweeper.webp`
 
 ```text
-SUBJECT. "Sweeper" — Health 8 · armour 1 · speed 7 · Claws — the air force: four wings and a dive
+SUBJECT. "Sweeper" — Health 8 · armour 1 · speed 7 · Claws — EIGHT legs folded tight under four wings. Not a bird and not a bat: the wings are thin and veined off a segmented body, and there are no feathers anywhere on it
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6880,7 +7212,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/sweeper-carrier.webp`
 
 ```text
-SUBJECT. "Sweeper Carrier" — Health 12 · armour 1 · speed 6 · Nip — it is carrying something, and the something is the encounter
+SUBJECT. "Sweeper Carrier" — Health 12 · armour 1 · speed 6 · Nip — A Sweeper: EIGHT legs folded tight under four wings. Not a bird and not a bat: the wings are thin and veined off a segmented body, and there are no feathers anywhere on it This one it is carrying something, and the something is the encounter
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6890,7 +7222,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/sweeper-diver.webp`
 
 ```text
-SUBJECT. "Sweeper Diver" — Health 6 · armour 1 · speed 9 · Claws — it comes down on whoever is concentrating
+SUBJECT. "Sweeper Diver" — Health 6 · armour 1 · speed 9 · Claws — A Sweeper: EIGHT legs folded tight under four wings. Not a bird and not a bat: the wings are thin and veined off a segmented body, and there are no feathers anywhere on it This one it comes down on whoever is concentrating
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6910,7 +7242,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/terror-fly-torch.webp`
 
 ```text
-SUBJECT. "Terror Fly Torch" — Health 14 · armour 2 · speed 6 · Fire Spray — all the fire and none of the authority
+SUBJECT. "Terror Fly Torch" — Health 14 · armour 2 · speed 6 · Fire Spray — A Terror Fly: captains, and the first thing in the roster that burns ground This one all the fire and none of the authority
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6920,7 +7252,27 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/the-queen.webp`
 
 ```text
-SUBJECT. "The Queen" — Health 60 · armour 4 · speed 0 · Heavy Mandibles — unique, rooted, and the only thing here that cannot walk: she spends every turn on the army instead
+SUBJECT. "The Queen" — Health 60 · armour 4 · speed 0 · Heavy Mandibles — enormous and rooted to the floor, armoured in overlapping plate like a siege engine, heavy jaws and a crown of horn. The most frightening thing in the set: more armour than the Marshal and more mass than anything that walks
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Trollkin
+
+File: `tokens/trollkin.webp`
+
+```text
+SUBJECT. "Trollkin" — Health 10 · armour 1 · speed 4 · Troll Club — knee-high to a person and broad, grey-brown and leathery, with a troll's nose and a troll's ears on a body built low to the ground. Rough homespun and a stick. A crowd animal: it should read as one of many even when it is drawn alone
+
+The whole creature, three-quarter from above, filling the square on full transparency.
+```
+
+### Wyvern
+
+File: `tokens/wyvern.webp`
+
+```text
+SUBJECT. "Wyvern" — Health 22 · armour 2 · speed 8 · Claws — a two-legged winged worm, hawk-sized rather than dragon-sized: wings and hind legs and nothing else, a whip of a tail ending in a barb, built entirely for the stoop. Lean and quick where the dragon is heavy
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6951,12 +7303,12 @@ COMPOSITION.
   and the only question that matters is *which creature is that*.
 
 PALETTE.
-- Line and darks: **#1b1714**
-- Paper and lights: **#f4efe6**
-- Mid tone: **#c9bda8**
-- One chromatic accent only: **#a3655d**, a warm brick red, on the one feature that
-  tells this creature from its neighbours.
-- Warm, desaturated, earthy. No cyan, no magenta, no neon.
+- **The creature is its own colour.** Draw it as the thing actually is: a mossy troll is green, a
+  drowned corpse is hel-bla, a hairless hide is grey. Nothing here is held to the warm palette the
+  cards use.
+- Desaturated and natural rather than bright -- this is still ink and wash, not poster paint -- but
+  the hue belongs to the animal and not to the deck.
+- Line and darks stay **#1b1714**, so a token reads as drawn by the same hand.
 
 STYLE.
 Brush and ink wash on rough rag paper. A confident, almost-black contour laid in

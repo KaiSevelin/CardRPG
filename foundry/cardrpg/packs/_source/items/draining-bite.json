@@ -1,0 +1,27 @@
+{
+  "_id": "RGWNyC1isoJpHl88",
+  "_key": "!items!RGWNyC1isoJpHl88",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Draining Bite",
+  "type": "item",
+  "system": {
+    "slot": "hands",
+    "hands": 0,
+    "tags": [
+      "melee",
+      "natural"
+    ],
+    "weight": 0,
+    "value": 0,
+    "npcGear": true,
+    "verbs": {
+      "strike": {
+        "value": 4
+      }
+    }
+  }
+}

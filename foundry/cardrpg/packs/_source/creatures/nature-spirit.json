@@ -1,0 +1,69 @@
+{
+  "_id": "yKHXqqNFDkltd2PZ",
+  "_key": "!actors!yKHXqqNFDkltd2PZ",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Nature Spirit",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 20,
+      "base": 20
+    },
+    "kind": "nature-spirit",
+    "armorBase": 1,
+    "speed": 5,
+    "capabilities": [
+      "legs",
+      "caster",
+      "wits"
+    ],
+    "tactics": [
+      "skirmisher",
+      "ambusher"
+    ],
+    "targetPriority": "caster"
+  },
+  "items": [
+    {
+      "_id": "NesH7ZEszJh8djov",
+      "_key": "!actors.items!yKHXqqNFDkltd2PZ.NesH7ZEszJh8djov",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Elf-Bolt",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 1,
+        "tags": [
+          "arcane",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Focus",
+        "verbs": {
+          "cast": {
+            "value": 4,
+            "range": 5
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Nature Spirit",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

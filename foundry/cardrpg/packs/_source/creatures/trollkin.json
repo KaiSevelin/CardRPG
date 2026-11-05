@@ -1,0 +1,70 @@
+{
+  "_id": "3eCQ1aQ74Pl81CbR",
+  "_key": "!actors!3eCQ1aQ74Pl81CbR",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Trollkin",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 10,
+      "base": 10
+    },
+    "kind": "trollkin",
+    "armorBase": 1,
+    "speed": 4,
+    "capabilities": [
+      "legs",
+      "pack",
+      "wits"
+    ],
+    "tactics": [
+      "packTactics"
+    ],
+    "targetPriority": "weakest"
+  },
+  "items": [
+    {
+      "_id": "BwfMmGuOtgIXQ51z",
+      "_key": "!actors.items!3eCQ1aQ74Pl81CbR.BwfMmGuOtgIXQ51z",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Troll Club",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "fits": [
+          "back"
+        ],
+        "hands": 1,
+        "tags": [
+          "melee",
+          "heavy"
+        ],
+        "weight": 3,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Weapon",
+        "verbs": {
+          "strike": {
+            "value": 4
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Trollkin",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}

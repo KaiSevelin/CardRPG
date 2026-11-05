@@ -1,0 +1,67 @@
+{
+  "_id": "ENVMsFJSq5qnvs69",
+  "_key": "!actors!ENVMsFJSq5qnvs69",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Dhampir",
+  "type": "npc",
+  "system": {
+    "health": {
+      "value": 14,
+      "base": 14
+    },
+    "kind": "dhampir",
+    "armorBase": 1,
+    "speed": 5,
+    "capabilities": [
+      "legs",
+      "drain",
+      "wits"
+    ],
+    "tactics": [
+      "skirmisher"
+    ],
+    "targetPriority": "caster"
+  },
+  "items": [
+    {
+      "_id": "cc54fWFHwl1Fk7WI",
+      "_key": "!actors.items!ENVMsFJSq5qnvs69.cc54fWFHwl1Fk7WI",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "name": "Draining Bite",
+      "type": "item",
+      "system": {
+        "slot": "hands",
+        "hands": 0,
+        "tags": [
+          "melee",
+          "natural"
+        ],
+        "weight": 0,
+        "value": 0,
+        "npcGear": true,
+        "kind": "Natural",
+        "verbs": {
+          "strike": {
+            "value": 4
+          }
+        },
+        "equipped": true
+      }
+    }
+  ],
+  "prototypeToken": {
+    "actorLink": false,
+    "name": "Dhampir",
+    "width": 1,
+    "height": 1,
+    "depth": 1
+  }
+}
