@@ -19,7 +19,8 @@
     "capabilities": [
       "legs",
       "pack",
-      "brute"
+      "brute",
+      "drilled"
     ],
     "tactics": [
       "packTactics",

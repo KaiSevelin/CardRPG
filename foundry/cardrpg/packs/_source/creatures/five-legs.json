@@ -18,7 +18,8 @@
     "speed": 4,
     "capabilities": [
       "legs",
-      "commander"
+      "commander",
+      "drilled"
     ],
     "tactics": [
       "commander",

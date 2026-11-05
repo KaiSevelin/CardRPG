@@ -59,8 +59,16 @@ export const WARRIOR_DECK = [
     secondary: [{ verb: "move", param: 1 }]
   },
   {
+    /*
+     * **The swing that goes through, against the blow that goes round.**
+     *
+     * This and *Measure* in the common pool were the same card: `Strike +1 · / Move 1`, differing
+     * only in a reaction line, which is not something a player reads when choosing. They are now
+     * the two halves of the defence rule -- weight beats armour, placement beats a shield -- and
+     * the pair is the clearest statement of that rule in the game.
+     */
     name: "Heavy Swing", copies: 2,
-    primary: [{ verb: "strike", mod: 1 }],
+    primary: [{ verb: "strike", mod: 1, ignores: 2 }],
     secondary: [{ verb: "move", param: 1 }]
   },
   {
@@ -1411,7 +1419,21 @@ export const NPC_GEAR = [
  * one card is a goblin's dirty trick, a slitherer's venom, a Keres' disease and a Strigoi's bite.
  */
 export const INTENTS = [
-  /* --- the eight anything can draw ------------------------------------------------------------ */
+  /* --- the five anything can draw -------------------------------------------------------------
+   *
+   * **It was eight, and eight was between 67% and 100% of every deck in the game.** Median 80%:
+   * four cards in five were the same four cards whichever creature you were looking at, and the
+   * Processor's deck was the universal eight and nothing at all besides. Specials sat on top of
+   * that sameness rather than displacing it.
+   *
+   * Three of the eight left, and none of them was ever really universal -- *Hold the Line* spends
+   * your turn putting Block on the creature beside you, *Set and Wait* holds a reaction back for
+   * whoever comes, *Take Stock* does nothing this round so as to shake a condition off. Those are
+   * things a disciplined thing does and a hungry thing does not. They are gated on temperament now
+   * (config.mjs `temperaments`), which every creature has exactly one of, and the five that remain
+   * are the ones that really are true of a beetle and a general alike: close, hit and step, hit
+   * twice, hit everything next to you, and leave when it is going badly.
+   */
   {
     name: "Close In", needs: ["move"], text: "Move your speed, then Strike.",
     sequence: [{ verb: "move" }, { verb: "strike" }]
@@ -1431,24 +1453,69 @@ export const INTENTS = [
     sequence: [{ verb: "strike", area: 1, areaKind: "blast" }]
   },
   {
-    name: "Set and Wait", needs: [],
-    text: "Defend, and keep a reaction for whoever comes.",
-    sequence: [{ verb: "defend" }]
-  },
-  {
-    name: "Hold the Line", needs: [],
-    text: "Defend, and an ally adjacent to you gains Block 1.",
-    sequence: [{ verb: "defend" }, { verb: "block", param: 1, range: 1 }]
-  },
-  {
     name: "Give Ground", needs: ["move"],
     text: "Move your speed away from the nearest enemy. A hurt thing that can leave, does.",
     sequence: [{ verb: "move" }]
   },
+
+  /* --- drilled: it is part of something, and spends turns on the thing it is part of ----------
+   *
+   * Both of these were universal, and both are about somebody else: one hands Block to the
+   * creature beside you, the other keeps a reaction back for whoever arrives. `drilled` is
+   * equivalent to a `shieldWall`, `bodyguard` or `commander` tactic (config.mjs), so the line
+   * infantry, the walls that walk and every officer in the Horde draw them, and the things that
+   * hunt alone no longer do.
+   */
   {
-    name: "Take Stock", needs: [],
+    name: "Set and Wait", needs: ["drilled"],
+    text: "Defend, and keep a reaction for whoever comes.",
+    sequence: [{ verb: "defend" }]
+  },
+  {
+    name: "Hold the Line", needs: ["drilled"],
+    text: "Defend, and an ally adjacent to you gains Block 1.",
+    sequence: [{ verb: "defend" }, { verb: "block", param: 1, range: 1 }]
+  },
+
+  /* --- feral: no plan beyond the body, and the body is enough --------------------------------- */
+  {
+    name: "Gorge", needs: ["feral"],
+    text: "Strike, and eat what comes away: shake one condition off yourself.",
+    /* The feral answer to *Take Stock*, and a better-shaped card than it: a thing with no mind
+     * does not take stock, it feeds, and feeding is an attack rather than a wasted round. */
+    sequence: [{ verb: "strike" }, { verb: "shake", param: 1 }]
+  },
+  {
+    name: "Thrash", needs: ["feral", "move"],
+    text: "Strike every figure adjacent to you, then move your speed away from all of them.",
+    sequence: [{ verb: "strike", area: 1, areaKind: "blast" }, { verb: "move" }]
+  },
+  {
+    name: "Knock It Down", needs: ["feral"],
+    text: "Strike with the whole weight of you; on a hit the target is Prone.",
+    /* The only Prone in the pool. Twenty-eight intents and nothing in them put anybody on the
+     * ground, which for a roster of charging animals was a gap rather than a decision. */
+    sequence: [{ verb: "strike", condition: "prone", duration: 1 }]
+  },
+
+  /* --- wits: it can see past the thing in front of it ----------------------------------------- */
+  {
+    name: "Take Stock", needs: ["wits"],
     text: "Nothing this round, and shake one condition off.",
     sequence: [{ verb: "shake", param: 1 }]
+  },
+  {
+    name: "Pick the Soft One", needs: ["wits", "move"],
+    text: "Move your speed and Strike whoever is least ready for it, round the shield rather "
+      + "than through it: Block does not answer this.",
+    /* The monster side's first use of `ignoresBlock`, and the reason it reads as cunning rather
+     * than as strength: going round a guard is a choice, and going through one is a number. */
+    sequence: [{ verb: "move" }, { verb: "strike", ignoresBlock: true }]
+  },
+  {
+    name: "Spoil the Ground", needs: ["wits"],
+    text: "Nothing at anybody: one square within reach is a trap now, and stays one.",
+    sequence: [{ verb: "ready", ground: { shape: "square", effects: ["trap"] } }]
   },
 
   /* --- reach and distance --------------------------------------------------------------------- */
@@ -1482,7 +1549,9 @@ export const INTENTS = [
   {
     name: "Bring It Down", needs: ["siege"],
     text: "Strike a door, a wall or a held position, ignoring its armour entirely.",
-    sequence: [{ verb: "strike", ignores: 99 }]
+    /* `ignores: 99` said this by being a number larger than any armour in the game, which is a
+     * promise about the roster rather than about the card. The named field says it outright. */
+    sequence: [{ verb: "strike", ignoresArmour: true }]
   },
 
   /* --- numbers -------------------------------------------------------------------------------- */
@@ -1561,6 +1630,45 @@ export const INTENTS = [
     name: "Shelter", needs: ["shelter"],
     text: "Allies within 1 cannot be targeted at range while you stand.",
     sequence: [{ verb: "defend" }]
+  },
+
+  /* --- three cards that belong to a creature rather than to a capability -----------------------
+   *
+   * **The only authored cards in the pool, and the list is closed at three.** `only` names the
+   * kinds that draw them (`deckFor` in monsters.mjs), and each one exists because a creature's
+   * whole stated point could not be said in capabilities:
+   *
+   *  - The Queen *spends every turn on the army instead* -- and drew seven cards, the smallest
+   *    deck in the game, the same seven as the Five Legs Adjutant.
+   *  - The Skaah is *a drop ship, balloon-like, gigantic, and full of something worse* -- with no
+   *    card anywhere that let the something out.
+   *  - The Processor *is what a scene looks like before the fight* -- and its deck was the eight
+   *    universals and nothing else, the only creature in the game with no card of its own at all.
+   *
+   * Three is the whole budget. A fourth would mean the capability that should have carried it was
+   * missing, and the honest fix for that is a capability.
+   *
+   * These are also the **only intent cards whose art may show a creature**: the ban on species
+   * markers is there because an intent back sits behind a goblin and a dragon alike, and a card
+   * exactly one kind can ever draw has no such problem.
+   */
+  {
+    name: "The Hive Obeys", only: ["queen"], needs: ["commander"],
+    text: "Three allies within sight each move their speed, or one of them acts twice. "
+      + "She does nothing herself but decide.",
+    sequence: []
+  },
+  {
+    name: "Open the Hold", only: ["skaah", "skaah-bloated"], needs: ["transport"],
+    text: "The belly splits along the seam: whatever it was carrying is on the ground beside it, "
+      + "and may act this round.",
+    sequence: []
+  },
+  {
+    name: "Carry It Off", only: ["processor", "processor-driller"], needs: ["move"],
+    text: "Move your speed, take hold of a figure already down, and leave with it. "
+      + "The Horde eats what it wins.",
+    sequence: [{ verb: "move" }]
   }
 ];
 
@@ -1671,7 +1779,7 @@ export const MONSTERS = [
     name: "Flat Bug", type: "npc",
     system: {
       health: { value: 5, base: 5 }, kind: "flat-bug", armorBase: 1, speed: 3,
-      capabilities: ["legs", "pack"],
+      capabilities: ["legs", "pack", "drilled"],
       tactics: ["packTactics", "shieldWall"], targetPriority: "nearest"
     },
     equipped: ["Mandibles"],
@@ -1681,7 +1789,7 @@ export const MONSTERS = [
     name: "Scrip", type: "npc",
     system: {
       health: { value: 2, base: 2 }, kind: "scrip", armorBase: 0, speed: 6,
-      capabilities: ["flight", "pack"],
+      capabilities: ["flight", "pack", "feral"],
       tactics: ["skirmisher"], targetPriority: "nearest"
     },
     equipped: ["Nip"],
@@ -1691,7 +1799,7 @@ export const MONSTERS = [
     name: "Sweeper", type: "npc",
     system: {
       health: { value: 8, base: 8 }, kind: "sweeper", armorBase: 1, speed: 7,
-      capabilities: ["flight", "fast"],
+      capabilities: ["flight", "fast", "feral"],
       tactics: ["skirmisher", "ambusher"], targetPriority: "weakest"
     },
     equipped: ["Claws"],
@@ -1701,7 +1809,7 @@ export const MONSTERS = [
     name: "Mantiss", type: "npc",
     system: {
       health: { value: 12, base: 12 }, kind: "mantiss", armorBase: 2, speed: 4,
-      capabilities: ["legs", "reach", "commander"],
+      capabilities: ["legs", "reach", "commander", "drilled"],
       tactics: ["commander", "skirmisher"], targetPriority: "leader"
     },
     equipped: ["Grasping Claws"],
@@ -1711,7 +1819,7 @@ export const MONSTERS = [
     name: "Smash Beetle", type: "npc",
     system: {
       health: { value: 20, base: 20 }, kind: "smash-beetle", armorBase: 3, speed: 2,
-      capabilities: ["legs", "brute", "siege", "reach"],
+      capabilities: ["legs", "brute", "siege", "reach", "feral"],
       tactics: ["brute"], targetPriority: "nearest"
     },
     equipped: ["Tail Club"],
@@ -1721,7 +1829,7 @@ export const MONSTERS = [
     name: "Rush Spider", type: "npc",
     system: {
       health: { value: 10, base: 10 }, kind: "rush-spider", armorBase: 1, speed: 8,
-      capabilities: ["legs", "fast", "transport"],
+      capabilities: ["legs", "fast", "transport", "feral"],
       tactics: ["skirmisher"], targetPriority: "weakest"
     },
     equipped: ["Mandibles"],
@@ -1731,7 +1839,7 @@ export const MONSTERS = [
     name: "Mega Beetle", type: "npc",
     system: {
       health: { value: 30, base: 30 }, kind: "mega-beetle", armorBase: 4, speed: 2,
-      capabilities: ["legs", "shelter"],
+      capabilities: ["legs", "shelter", "drilled"],
       tactics: ["shieldWall", "bodyguard"], targetPriority: "nearest"
     },
     equipped: ["Heavy Mandibles"],
@@ -1741,7 +1849,7 @@ export const MONSTERS = [
     name: "Slitherer", type: "npc",
     system: {
       health: { value: 7, base: 7 }, kind: "slitherer", armorBase: 1, speed: 4,
-      capabilities: ["legs", "stealth", "venom"],
+      capabilities: ["legs", "stealth", "venom", "feral"],
       tactics: ["ambusher"], targetPriority: "weakest",
       signature: { condition: "poisoned", intensity: 2, duration: 2 }
     },
@@ -1752,7 +1860,7 @@ export const MONSTERS = [
     name: "Stinger", type: "npc",
     system: {
       health: { value: 6, base: 6 }, kind: "stinger", armorBase: 0, speed: 6,
-      capabilities: ["flight", "venom"],
+      capabilities: ["flight", "venom", "feral"],
       tactics: ["skirmisher"], targetPriority: "caster",
       signature: { condition: "poisoned", intensity: 1, duration: 3 }
     },
@@ -1763,7 +1871,7 @@ export const MONSTERS = [
     name: "Blind Worm", type: "npc",
     system: {
       health: { value: 14, base: 14 }, kind: "blind-worm", armorBase: 2, speed: 3,
-      capabilities: ["burrow", "brute"],
+      capabilities: ["burrow", "brute", "feral"],
       tactics: ["ambusher"], targetPriority: "nearest"
     },
     equipped: ["Heavy Mandibles"],
@@ -1773,7 +1881,7 @@ export const MONSTERS = [
     name: "Armored Slug", type: "npc",
     system: {
       health: { value: 16, base: 16 }, kind: "armored-slug", armorBase: 4, speed: 1,
-      capabilities: ["legs", "spray"],
+      capabilities: ["legs", "spray", "feral"],
       tactics: ["sniper"], targetPriority: "nearest"
     },
     equipped: ["Acid Spray"],
@@ -1783,7 +1891,7 @@ export const MONSTERS = [
     name: "Five Legs", type: "npc",
     system: {
       health: { value: 15, base: 15 }, kind: "five-legs", armorBase: 2, speed: 4,
-      capabilities: ["legs", "commander"],
+      capabilities: ["legs", "commander", "drilled"],
       tactics: ["commander", "packTactics"], targetPriority: "leader"
     },
     equipped: ["Claws"],
@@ -1793,7 +1901,7 @@ export const MONSTERS = [
     name: "Terror Fly", type: "npc",
     system: {
       health: { value: 18, base: 18 }, kind: "terror-fly", armorBase: 2, speed: 6,
-      capabilities: ["flight", "spray", "commander"],
+      capabilities: ["flight", "spray", "commander", "drilled"],
       tactics: ["commander", "sniper"], targetPriority: "weakest",
       signature: { condition: "burning", intensity: 2, duration: 2 }
     },
@@ -1804,7 +1912,7 @@ export const MONSTERS = [
     name: "Pincer", type: "npc",
     system: {
       health: { value: 25, base: 25 }, kind: "pincer", armorBase: 3, speed: 4,
-      capabilities: ["legs", "grapple", "commander", "reach"],
+      capabilities: ["legs", "grapple", "commander", "reach", "drilled"],
       tactics: ["commander", "grappler"], targetPriority: "leader"
     },
     equipped: ["Grasping Claws"],
@@ -1814,7 +1922,7 @@ export const MONSTERS = [
     name: "The Queen", type: "npc",
     system: {
       health: { value: 60, base: 60 }, kind: "queen", armorBase: 4, speed: 0,
-      capabilities: ["commander", "summon"],
+      capabilities: ["commander", "summon", "drilled"],
       tactics: ["commander"], targetPriority: "nearest"
     },
     equipped: ["Heavy Mandibles"],
@@ -1825,7 +1933,7 @@ export const MONSTERS = [
     name: "Processor", type: "npc",
     system: {
       health: { value: 4, base: 4 }, kind: "processor", armorBase: 1, speed: 3,
-      capabilities: ["legs"],
+      capabilities: ["legs", "wits"],
       tactics: [], targetPriority: "nearest"
     },
     equipped: ["Nip"],
@@ -1835,7 +1943,7 @@ export const MONSTERS = [
     name: "Doomfly", type: "npc",
     system: {
       health: { value: 12, base: 12 }, kind: "doomfly", armorBase: 1, speed: 7,
-      capabilities: ["flight", "transport"],
+      capabilities: ["flight", "transport", "feral"],
       tactics: [], targetPriority: "nearest"
     },
     equipped: ["Nip"],
@@ -1845,7 +1953,7 @@ export const MONSTERS = [
     name: "Skaah", type: "npc",
     system: {
       health: { value: 40, base: 40 }, kind: "skaah", armorBase: 2, speed: 4,
-      capabilities: ["flight", "transport", "shelter"],
+      capabilities: ["flight", "transport", "shelter", "drilled"],
       tactics: ["bodyguard"], targetPriority: "nearest"
     },
     equipped: ["Nip"],
@@ -1857,7 +1965,7 @@ export const MONSTERS = [
     name: "Mole Beast", type: "npc",
     system: {
       health: { value: 22, base: 22 }, kind: "mole-beast", armorBase: 2, speed: 3,
-      capabilities: ["burrow", "brute", "reach"],
+      capabilities: ["burrow", "brute", "reach", "feral"],
       tactics: ["brute", "ambusher"], targetPriority: "nearest"
     },
     equipped: ["Tusks"],
@@ -1867,7 +1975,7 @@ export const MONSTERS = [
     name: "Mole Man", type: "npc",
     system: {
       health: { value: 8, base: 8 }, kind: "mole-man", armorBase: 1, speed: 3,
-      capabilities: ["burrow", "legs", "pack"],
+      capabilities: ["burrow", "legs", "pack", "wits"],
       tactics: ["packTactics"], targetPriority: "weakest"
     },
     equipped: ["Mole Pick"],
@@ -1877,7 +1985,7 @@ export const MONSTERS = [
     name: "Burrower", type: "npc",
     system: {
       health: { value: 18, base: 18 }, kind: "burrower", armorBase: 2, speed: 5,
-      capabilities: ["burrow", "transport"],
+      capabilities: ["burrow", "transport", "feral"],
       tactics: [], targetPriority: "nearest"
     },
     equipped: ["Mandibles"],
@@ -1898,30 +2006,30 @@ export const MONSTERS = [
  * description. Nothing can be read off a name, so nothing is claimed.
  */
 export const MONSTER_TAGS = [
-  { name: "Elves", group: "elf", caps: ["legs", "caster", "stealth"] },
-  { name: "Tomtar", group: "elf", caps: ["legs", "caster"] },
-  { name: "Little folk", group: "elf", caps: ["legs", "caster", "stealth"] },
-  { name: "Nature spirits", group: "elf", caps: ["legs", "caster"] },
+  { name: "Elves", group: "elf", caps: ["legs", "caster", "stealth", "wits"] },
+  { name: "Tomtar", group: "elf", caps: ["legs", "caster", "wits"] },
+  { name: "Little folk", group: "elf", caps: ["legs", "caster", "stealth", "wits"] },
+  { name: "Nature spirits", group: "elf", caps: ["legs", "caster", "wits"] },
 
-  { name: "Mountain trolls", group: "troll", caps: ["legs", "brute", "dormant", "siege"] },
-  { name: "Forest trolls", group: "troll", caps: ["legs", "brute", "stealth"] },
-  { name: "Changelings", group: "troll", caps: ["legs", "stealth"] },
-  { name: "Trollkin", group: "troll", caps: ["legs", "pack"] },
+  { name: "Mountain trolls", group: "troll", caps: ["legs", "brute", "dormant", "siege", "feral"] },
+  { name: "Forest trolls", group: "troll", caps: ["legs", "brute", "stealth", "feral"] },
+  { name: "Changelings", group: "troll", caps: ["legs", "stealth", "wits"] },
+  { name: "Trollkin", group: "troll", caps: ["legs", "pack", "wits"] },
 
-  { name: "Strigoi", group: "undead", caps: ["legs", "drain", "caster", "commander", "stealth"] },
-  { name: "Chupacabra", group: "undead", caps: ["legs", "pack", "drain", "fast"] },
-  { name: "Alp", group: "undead", caps: ["legs", "drain", "stealth"] },
-  { name: "Dhampir", group: "undead", caps: ["legs", "drain"] },
-  { name: "Lugat", group: "undead", caps: ["legs", "drain", "brute"] },
-  { name: "Draugr", group: "undead", caps: ["legs", "brute", "dormant"] },
-  { name: "Keres", group: "undead", caps: ["legs", "venom", "pack"] },
-  { name: "Revenant", group: "undead", caps: ["legs", "brute"] },
-  { name: "Shade", group: "undead", caps: ["legs", "stealth", "caster"] },
+  { name: "Strigoi", group: "undead", caps: ["legs", "drain", "caster", "commander", "stealth", "wits"] },
+  { name: "Chupacabra", group: "undead", caps: ["legs", "pack", "drain", "fast", "feral"] },
+  { name: "Alp", group: "undead", caps: ["legs", "drain", "stealth", "wits"] },
+  { name: "Dhampir", group: "undead", caps: ["legs", "drain", "wits"] },
+  { name: "Lugat", group: "undead", caps: ["legs", "drain", "brute", "feral"] },
+  { name: "Draugr", group: "undead", caps: ["legs", "brute", "dormant", "feral"] },
+  { name: "Keres", group: "undead", caps: ["legs", "venom", "pack", "feral"] },
+  { name: "Revenant", group: "undead", caps: ["legs", "brute", "feral"] },
+  { name: "Shade", group: "undead", caps: ["legs", "stealth", "caster", "wits"] },
 
-  { name: "Dragon", group: "dragon", caps: ["flight", "spray", "brute", "caster"] },
-  { name: "Lindworm", group: "dragon", caps: ["legs", "spray", "brute"] },
-  { name: "Sea serpent", group: "dragon", caps: ["swim", "brute", "grapple"] },
-  { name: "Wyvern", group: "dragon", caps: ["flight", "venom", "fast"] }
+  { name: "Dragon", group: "dragon", caps: ["flight", "spray", "brute", "caster", "wits"] },
+  { name: "Lindworm", group: "dragon", caps: ["legs", "spray", "brute", "feral"] },
+  { name: "Sea serpent", group: "dragon", caps: ["swim", "brute", "grapple", "feral"] },
+  { name: "Wyvern", group: "dragon", caps: ["flight", "venom", "fast", "feral"] }
 ];
 
 /**
@@ -1948,7 +2056,7 @@ export const VARIANTS = {
   goblin: [
     {
       name: "Goblin Warrior", kind: "goblin-warrior",
-      health: 3, armour: 1, caps: ["+brute"], tactics: ["+shieldWall", "-cowardly"],
+      health: 3, armour: 1, caps: ["+brute", "+drilled", "-wits"], tactics: ["+shieldWall", "-cowardly"],
       gear: ["Goblin Spear", "Goblin Shield"], priority: "nearest",
       note: "the one that does not run: a shield, a shell of discipline, and no Cower"
     },
@@ -1966,7 +2074,7 @@ export const VARIANTS = {
     },
     {
       name: "Goblin Chief", kind: "goblin-chief",
-      health: 6, armour: 1, caps: ["+commander"], tactics: ["+commander", "-cowardly"],
+      health: 6, armour: 1, caps: ["+commander", "+drilled", "-wits"], tactics: ["+commander", "-cowardly"],
       gear: ["Goblin Spear", "Goblin Shield"], priority: "leader",
       note: "kill it and the Cower comes back to everybody else"
     }
@@ -1976,12 +2084,13 @@ export const VARIANTS = {
   "flat-bug": [
     {
       name: "Flat Bug Shieldline", kind: "flat-bug-shield",
-      health: 2, armour: 1, speed: -1, tactics: ["+shieldWall"], priority: "nearest",
+      health: 2, armour: 1, speed: -1, caps: ["+shelter"], tactics: ["+shieldWall"],
+      priority: "nearest",
       note: "the front rank, which is where the Horde's armour actually is"
     },
     {
       name: "Flat Bug Runner", kind: "flat-bug-runner",
-      health: -1, armour: -1, speed: 2, caps: ["+fast"], tactics: ["+skirmisher"],
+      health: -1, armour: -1, speed: 2, caps: ["+fast", "+feral", "-drilled"], tactics: ["+skirmisher", "-shieldWall"],
       note: "sent ahead to find out where you are, and dies finding out"
     }
   ],
@@ -1995,7 +2104,7 @@ export const VARIANTS = {
   sweeper: [
     {
       name: "Sweeper Diver", kind: "sweeper-diver",
-      health: -2, speed: 2, tactics: ["+ambusher"], priority: "caster",
+      health: -2, speed: 2, caps: ["+stealth"], tactics: ["+ambusher"], priority: "caster",
       note: "it comes down on whoever is concentrating"
     },
     {
@@ -2050,7 +2159,7 @@ export const VARIANTS = {
   "armored-slug": [
     {
       name: "Armored Slug Spitter", kind: "armored-slug-spitter",
-      health: -4, armour: -1, speed: 1, priority: "caster",
+      health: -4, armour: -1, speed: 1, caps: ["+ranged"], priority: "caster",
       note: "thinner shell, longer reach of acid: it is here to ruin somebody's concentration"
     }
   ],
@@ -2064,7 +2173,7 @@ export const VARIANTS = {
   "terror-fly": [
     {
       name: "Terror Fly Torch", kind: "terror-fly-torch",
-      health: -4, caps: ["-commander"], tactics: ["-commander", "+sniper"],
+      health: -4, caps: ["-commander", "+feral", "-drilled"], tactics: ["-commander", "+sniper"],
       signature: { condition: "burning", intensity: 3, duration: 2 },
       note: "all the fire and none of the authority"
     }
@@ -2260,7 +2369,7 @@ export const GOBLIN = {
      * the same kind of statement as a dragon's wings.
      */
     speed: 3,
-    capabilities: ["legs", "pack"],
+    capabilities: ["legs", "pack", "wits"],
     tactics: ["packTactics", "cowardly"],
     targetPriority: "weakest"
   },
@@ -2402,8 +2511,10 @@ export const COMMON_POOL = [
     secondary: [{ verb: "strike", mod: -1 }]
   },
   {
+    /* The other half of the pair *Heavy Swing* opens: placement rather than weight, so it goes
+     * round a raised shield and not through plate. See the note on Heavy Swing. */
     name: "Measure", copies: 1, pool: "common", needs: [], reaction: "parry",
-    primary: [{ verb: "strike", mod: 1 }],
+    primary: [{ verb: "strike", mod: 1, ignoresBlock: true }],
     secondary: [{ verb: "move", param: 1 }]
   },
   {
@@ -2467,10 +2578,10 @@ export const SHADE_POOL = [
     text: "Marked on any enemy you can see, at any range."
   },
   {
-    name: "Between the Plates", copies: 1, pool: "shade",
-    /* The same field Blood Price wants, asked for from inside a `when` clause instead. */
-    needs: ["a step that goes through armour entirely"],
-    primary: [{ verb: "strike", when: { needs: "marked", text: "ignores armor" } }],
+    name: "Between the Plates", copies: 1, pool: "shade", needs: [],
+    /* The Mark IS the gap, so the ignore hangs off the opening rather than off the step. It was
+     * `text: "ignores armor"` inside the clause, which printed correctly and did nothing. */
+    primary: [{ verb: "strike", when: { needs: "marked", ignoresArmour: true } }],
     secondary: [{ verb: "move", param: 1 }]
   },
   {
@@ -3036,9 +3147,10 @@ export const MIND_POOL = [
     name: "Open the Vein", strength: 1, pool: "mind", source: "Blood Magic",
     /*
      * Not the armour gap: `ignores` comes off armour and never off Block, which core-rules 5 is
-     * explicit about -- so going round a shield is a second field and a second line in the queue.
+     * explicit about -- so going round a shield is a second field. It is read now, and the
+     * description has stopped being a claim the engine contradicted.
      */
-    needs: ["a step that ignores Block"],
+    needs: [],
     cost: { health: 1 },
     description: "<p>Your own blood, thrown. It goes round a shield rather than through it.</p>",
     effect: { verb: "cast", range: 2, mod: 3, ignoresBlock: true }
@@ -3980,8 +4092,8 @@ export const MIND_POOL = [
 export const MIND_SIGNATURES = [
   {
     name: "Blood Price", kind: "spell", node: "mind.blood", strength: 2, source: "Blood Magic",
-    /* The Health is built; the armour is not, and it is the same field *Between the Plates* wants. */
-    needs: ["a step that goes through armour entirely"],
+    /* Both halves are built now: the Health always was, and the armour is `ignoresArmour`. */
+    needs: [],
     cost: { health: 2 },
     description: "<p>Four damage at three squares, and nothing between you and it matters. The "
       + "two Health are not a drawback; they are the school.</p>",
@@ -5173,19 +5285,24 @@ export const DECK_BACKS = {
     note: "Drawn only when a Wild comes out of a fate deck, so its back is a promise that "
       + "something strange is about to happen."
   },
-  "npc.goblin": {
-    label: "Goblin intent",
-    art: "",
-    note: "An NPC intent deck, keyed by creature kind: the back shows the kind and nothing else, "
-      + "so the table can tell a goblin's intents from anything else's at a glance."
-  },
+  /*
+   * **One intent back for every creature in the world, and no per-kind exceptions.**
+   *
+   * There was a goblin back here, on the argument that a goblin's intents should be recognisable
+   * across the table as a goblin's. It is a good argument and it loses to arithmetic: forty-seven
+   * kinds is forty-seven pieces of back art, drawn so that a player can identify a deck that is
+   * sitting in front of the creature it belongs to.
+   *
+   * `buildCreature` still asks for `npc.${kind}` before falling back to this, so a kind that
+   * earns its own back later costs one entry here and no code -- but nothing claims one today,
+   * and `validate.mjs` pins that, so the fallback cannot quietly stop being the only path.
+   */
   npc: {
     label: "Intent, any creature",
     art: "",
-    note: "The back every creature uses until it has earned one of its own. Forty-seven kinds "
-      + "would be forty-seven pieces of back art, and the roster grew faster than the art could; "
-      + "a kind with its own key uses it, and everything else uses this. The recognisability "
-      + "argument above is why the exceptions exist rather than why they all should."
+    note: "The back on every creature's intent deck in the game. A face-down intent says *this "
+      + "thing is about to act*, and which thing it is is already on the table in front of you -- "
+      + "so the back carries the threat rather than the species."
   }
 };
 

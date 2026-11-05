@@ -19,7 +19,8 @@
     "capabilities": [
       "flight",
       "transport",
-      "shelter"
+      "shelter",
+      "drilled"
     ],
     "tactics": [
       "bodyguard"

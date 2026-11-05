@@ -42,6 +42,7 @@
         "needs": [
           "move"
         ],
+        "only": [],
         "text": "Move your speed, then Strike."
       }
     },
@@ -78,6 +79,7 @@
         "needs": [
           "move"
         ],
+        "only": [],
         "text": "Strike, then move your speed away."
       }
     },
@@ -113,6 +115,7 @@
           }
         ],
         "needs": [],
+        "only": [],
         "text": "Strike, and Strike again at −1. Nothing clever, twice."
       }
     },
@@ -146,7 +149,42 @@
           }
         ],
         "needs": [],
+        "only": [],
         "text": "Strike every figure adjacent to you, friend or not."
+      }
+    },
+    {
+      "_id": "MohWUerGVnhiVEiy",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.MohWUerGVnhiVEiy",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 500,
+      "name": "Give Ground",
+      "type": "npc",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Give Ground"
+        }
+      ],
+      "back": {
+        "name": "Intent"
+      },
+      "system": {
+        "kind": "",
+        "sequence": [
+          {
+            "verb": "move"
+          }
+        ],
+        "needs": [
+          "move"
+        ],
+        "only": [],
+        "text": "Move your speed away from the nearest enemy. A hurt thing that can leave, does."
       }
     },
     {
@@ -157,7 +195,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 500,
+      "sort": 600,
       "name": "Set and Wait",
       "type": "npc",
       "face": 0,
@@ -176,7 +214,10 @@
             "verb": "defend"
           }
         ],
-        "needs": [],
+        "needs": [
+          "drilled"
+        ],
+        "only": [],
         "text": "Defend, and keep a reaction for whoever comes."
       }
     },
@@ -188,7 +229,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 600,
+      "sort": 700,
       "name": "Hold the Line",
       "type": "npc",
       "face": 0,
@@ -212,25 +253,28 @@
             "range": 1
           }
         ],
-        "needs": [],
+        "needs": [
+          "drilled"
+        ],
+        "only": [],
         "text": "Defend, and an ally adjacent to you gains Block 1."
       }
     },
     {
-      "_id": "MohWUerGVnhiVEiy",
-      "_key": "!cards.cards!89Gj8hxxjlCUI77W.MohWUerGVnhiVEiy",
+      "_id": "p1TTXVgm8YhBmkIA",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.p1TTXVgm8YhBmkIA",
       "_stats": {
         "coreVersion": "14.369",
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 700,
-      "name": "Give Ground",
+      "sort": 800,
+      "name": "Gorge",
       "type": "npc",
       "face": 0,
       "faces": [
         {
-          "name": "Give Ground"
+          "name": "Gorge"
         }
       ],
       "back": {
@@ -240,13 +284,94 @@
         "kind": "",
         "sequence": [
           {
+            "verb": "strike"
+          },
+          {
+            "verb": "shake",
+            "param": 1
+          }
+        ],
+        "needs": [
+          "feral"
+        ],
+        "only": [],
+        "text": "Strike, and eat what comes away: shake one condition off yourself."
+      }
+    },
+    {
+      "_id": "P86ihFklU34IPLGC",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.P86ihFklU34IPLGC",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 900,
+      "name": "Thrash",
+      "type": "npc",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Thrash"
+        }
+      ],
+      "back": {
+        "name": "Intent"
+      },
+      "system": {
+        "kind": "",
+        "sequence": [
+          {
+            "verb": "strike",
+            "area": 1,
+            "areaKind": "blast"
+          },
+          {
             "verb": "move"
           }
         ],
         "needs": [
+          "feral",
           "move"
         ],
-        "text": "Move your speed away from the nearest enemy. A hurt thing that can leave, does."
+        "only": [],
+        "text": "Strike every figure adjacent to you, then move your speed away from all of them."
+      }
+    },
+    {
+      "_id": "D4XizPK1QisA54AM",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.D4XizPK1QisA54AM",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1000,
+      "name": "Knock It Down",
+      "type": "npc",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Knock It Down"
+        }
+      ],
+      "back": {
+        "name": "Intent"
+      },
+      "system": {
+        "kind": "",
+        "sequence": [
+          {
+            "verb": "strike",
+            "condition": "prone",
+            "duration": 1
+          }
+        ],
+        "needs": [
+          "feral"
+        ],
+        "only": [],
+        "text": "Strike with the whole weight of you; on a hit the target is Prone."
       }
     },
     {
@@ -257,7 +382,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 800,
+      "sort": 1100,
       "name": "Take Stock",
       "type": "npc",
       "face": 0,
@@ -277,8 +402,90 @@
             "param": 1
           }
         ],
-        "needs": [],
+        "needs": [
+          "wits"
+        ],
+        "only": [],
         "text": "Nothing this round, and shake one condition off."
+      }
+    },
+    {
+      "_id": "S4p7oGrnhNrD7gap",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.S4p7oGrnhNrD7gap",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1200,
+      "name": "Pick the Soft One",
+      "type": "npc",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Pick the Soft One"
+        }
+      ],
+      "back": {
+        "name": "Intent"
+      },
+      "system": {
+        "kind": "",
+        "sequence": [
+          {
+            "verb": "move"
+          },
+          {
+            "verb": "strike",
+            "ignoresBlock": true
+          }
+        ],
+        "needs": [
+          "wits",
+          "move"
+        ],
+        "only": [],
+        "text": "Move your speed and Strike whoever is least ready for it, round the shield rather than through it: Block does not answer this."
+      }
+    },
+    {
+      "_id": "iGprhFGrqQOqtl7U",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.iGprhFGrqQOqtl7U",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1300,
+      "name": "Spoil the Ground",
+      "type": "npc",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Spoil the Ground"
+        }
+      ],
+      "back": {
+        "name": "Intent"
+      },
+      "system": {
+        "kind": "",
+        "sequence": [
+          {
+            "verb": "ready",
+            "ground": {
+              "shape": "square",
+              "effects": [
+                "trap"
+              ]
+            }
+          }
+        ],
+        "needs": [
+          "wits"
+        ],
+        "only": [],
+        "text": "Nothing at anybody: one square within reach is a trap now, and stays one."
       }
     },
     {
@@ -289,7 +496,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 900,
+      "sort": 1400,
       "name": "Loose",
       "type": "npc",
       "face": 0,
@@ -311,6 +518,7 @@
         "needs": [
           "ranged"
         ],
+        "only": [],
         "text": "Strike at your weapon's range."
       }
     },
@@ -322,7 +530,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1000,
+      "sort": 1500,
       "name": "Spray",
       "type": "npc",
       "face": 0,
@@ -345,6 +553,7 @@
         "needs": [
           "spray"
         ],
+        "only": [],
         "text": "Strike everything in the area, at range. Whatever you breathe, you breathe it on your own kind too."
       }
     },
@@ -356,7 +565,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1100,
+      "sort": 1600,
       "name": "Long Arm",
       "type": "npc",
       "face": 0,
@@ -378,6 +587,7 @@
         "needs": [
           "reach"
         ],
+        "only": [],
         "text": "Strike at reach without closing, and stay where you are."
       }
     },
@@ -389,7 +599,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1200,
+      "sort": 1700,
       "name": "Charge",
       "type": "npc",
       "face": 0,
@@ -416,6 +626,7 @@
           "fast",
           "move"
         ],
+        "only": [],
         "text": "Move double your speed in a straight line, then Strike. The distance is the damage."
       }
     },
@@ -427,7 +638,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1300,
+      "sort": 1800,
       "name": "Bull Through",
       "type": "npc",
       "face": 0,
@@ -453,6 +664,7 @@
           "brute",
           "move"
         ],
+        "only": [],
         "text": "Move your speed through a figure in the way, pushing it aside, then Strike."
       }
     },
@@ -464,7 +676,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1400,
+      "sort": 1900,
       "name": "Bring It Down",
       "type": "npc",
       "face": 0,
@@ -481,12 +693,13 @@
         "sequence": [
           {
             "verb": "strike",
-            "ignores": 99
+            "ignoresArmour": true
           }
         ],
         "needs": [
           "siege"
         ],
+        "only": [],
         "text": "Strike a door, a wall or a held position, ignoring its armour entirely."
       }
     },
@@ -498,7 +711,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1500,
+      "sort": 2000,
       "name": "Swarm",
       "type": "npc",
       "face": 0,
@@ -525,6 +738,7 @@
           "pack",
           "move"
         ],
+        "only": [],
         "text": "Move, then Strike at +1 for each ally already adjacent to your target."
       }
     },
@@ -536,7 +750,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1600,
+      "sort": 2100,
       "name": "Drag Down",
       "type": "npc",
       "face": 0,
@@ -560,6 +774,7 @@
         "needs": [
           "grapple"
         ],
+        "only": [],
         "text": "Strike; on a hit the target is Grappled and goes nowhere."
       }
     },
@@ -571,7 +786,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1700,
+      "sort": 2200,
       "name": "Envenom",
       "type": "npc",
       "face": 0,
@@ -593,6 +808,7 @@
         "needs": [
           "venom"
         ],
+        "only": [],
         "text": "Strike; on a hit it carries whatever you carry."
       }
     },
@@ -604,7 +820,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1800,
+      "sort": 2300,
       "name": "Feed",
       "type": "npc",
       "face": 0,
@@ -629,6 +845,7 @@
         "needs": [
           "drain"
         ],
+        "only": [],
         "text": "Strike an adjacent figure and heal what you took out of it."
       }
     },
@@ -640,7 +857,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1900,
+      "sort": 2400,
       "name": "Go Under",
       "type": "npc",
       "face": 0,
@@ -662,6 +879,7 @@
         "needs": [
           "burrow"
         ],
+        "only": [],
         "text": "Leave the map. Next round you arrive anywhere you could have walked to."
       }
     },
@@ -673,7 +891,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 2000,
+      "sort": 2500,
       "name": "Submerge",
       "type": "npc",
       "face": 0,
@@ -695,6 +913,7 @@
         "needs": [
           "swim"
         ],
+        "only": [],
         "text": "Go under the water. Next round you surface anywhere along it."
       }
     },
@@ -706,7 +925,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 2100,
+      "sort": 2600,
       "name": "Stoop",
       "type": "npc",
       "face": 0,
@@ -731,6 +950,7 @@
         "needs": [
           "flight"
         ],
+        "only": [],
         "text": "Arrive from above: move twice your speed, then Strike."
       }
     },
@@ -742,7 +962,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 2200,
+      "sort": 2700,
       "name": "Fade",
       "type": "npc",
       "face": 0,
@@ -770,6 +990,7 @@
           "stealth",
           "move"
         ],
+        "only": [],
         "text": "Move your speed and become Hidden. You were never standing there."
       }
     },
@@ -781,7 +1002,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 2300,
+      "sort": 2800,
       "name": "Lie Still",
       "type": "npc",
       "face": 0,
@@ -799,6 +1020,7 @@
         "needs": [
           "dormant"
         ],
+        "only": [],
         "text": "Nothing at all, and the next Strike you make cannot be answered by a reaction."
       }
     },
@@ -810,7 +1032,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 2400,
+      "sort": 2900,
       "name": "Order",
       "type": "npc",
       "face": 0,
@@ -828,6 +1050,7 @@
         "needs": [
           "commander"
         ],
+        "only": [],
         "text": "An ally within sight acts again, or moves its speed. You do nothing yourself."
       }
     },
@@ -839,7 +1062,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 2500,
+      "sort": 3000,
       "name": "Call More",
       "type": "npc",
       "face": 0,
@@ -857,6 +1080,7 @@
         "needs": [
           "summon"
         ],
+        "only": [],
         "text": "Something arrives at the edge of the scene. The GM says what and how much."
       }
     },
@@ -868,7 +1092,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 2600,
+      "sort": 3100,
       "name": "Work the Weave",
       "type": "npc",
       "face": 0,
@@ -890,6 +1114,7 @@
         "needs": [
           "caster"
         ],
+        "only": [],
         "text": "Cast one from your own short list."
       }
     },
@@ -901,7 +1126,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 2700,
+      "sort": 3200,
       "name": "Carry",
       "type": "npc",
       "face": 0,
@@ -924,6 +1149,7 @@
           "transport",
           "move"
         ],
+        "only": [],
         "text": "A willing ally rides: it moves with you, and may still act when you stop."
       }
     },
@@ -935,7 +1161,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 2800,
+      "sort": 3300,
       "name": "Shelter",
       "type": "npc",
       "face": 0,
@@ -957,7 +1183,110 @@
         "needs": [
           "shelter"
         ],
+        "only": [],
         "text": "Allies within 1 cannot be targeted at range while you stand."
+      }
+    },
+    {
+      "_id": "tyus9dsxS6GttIxz",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.tyus9dsxS6GttIxz",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 3400,
+      "name": "The Hive Obeys",
+      "type": "npc",
+      "face": 0,
+      "faces": [
+        {
+          "name": "The Hive Obeys"
+        }
+      ],
+      "back": {
+        "name": "Intent"
+      },
+      "system": {
+        "kind": "",
+        "sequence": [],
+        "needs": [
+          "commander"
+        ],
+        "only": [
+          "queen"
+        ],
+        "text": "Three allies within sight each move their speed, or one of them acts twice. She does nothing herself but decide."
+      }
+    },
+    {
+      "_id": "VPrbaZ7MI6RmEC44",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.VPrbaZ7MI6RmEC44",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 3500,
+      "name": "Open the Hold",
+      "type": "npc",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Open the Hold"
+        }
+      ],
+      "back": {
+        "name": "Intent"
+      },
+      "system": {
+        "kind": "",
+        "sequence": [],
+        "needs": [
+          "transport"
+        ],
+        "only": [
+          "skaah",
+          "skaah-bloated"
+        ],
+        "text": "The belly splits along the seam: whatever it was carrying is on the ground beside it, and may act this round."
+      }
+    },
+    {
+      "_id": "HIveEEyv40onjnOq",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.HIveEEyv40onjnOq",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 3600,
+      "name": "Carry It Off",
+      "type": "npc",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Carry It Off"
+        }
+      ],
+      "back": {
+        "name": "Intent"
+      },
+      "system": {
+        "kind": "",
+        "sequence": [
+          {
+            "verb": "move"
+          }
+        ],
+        "needs": [
+          "move"
+        ],
+        "only": [
+          "processor",
+          "processor-driller"
+        ],
+        "text": "Move your speed, take hold of a figure already down, and leave with it. The Horde eats what it wins."
       }
     }
   ]

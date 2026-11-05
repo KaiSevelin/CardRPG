@@ -19,7 +19,8 @@
     "capabilities": [
       "legs",
       "fast",
-      "transport"
+      "transport",
+      "feral"
     ],
     "tactics": [
       "skirmisher"

@@ -1341,6 +1341,39 @@ export async function resolveForesee(actor, kind) {
  * half of its own, it must suit the weapon, its `shot` step folds into this one, and it is **gone
  * whether the shot lands or misses**. `payload` is the potion a Hollow Bolt carries.
  */
+/**
+ * What a target's defences come to against one step (core-rules 4, *Going through, and going
+ * round*; core-rules 5 step 6).
+ *
+ * **Pure, exported and taking numbers rather than an Actor**, so the arithmetic can be exercised
+ * without a world, a deck, a token or a fate draw. The three ways through a defence are each one
+ * line of maths and the lines are easy to get wrong in the same direction -- `ignores` is
+ * SUBTRACTED from armour and can be out-armoured, the two booleans count a defence as zero, and
+ * neither kind has ever come off the other's defence. Grepping the resolver proves the source
+ * says that; only running it proves it is true.
+ *
+ * @param {object}  o
+ * @param {number}  o.armor    what the target is wearing
+ * @param {number}  o.block    what the target has raised
+ * @param {number}  o.pierce   `ignores N`, summed from the line, the step and the shot
+ * @param {object}  o.step     the step being resolved
+ * @param {object?} o.when     its combo clause, when it has one
+ * @param {boolean} o.opening  whether this target actually carries that opening
+ */
+export function defencesAgainst({
+  armor = 0, block = 0, pierce = 0, step = {}, when = null, opening = false
+} = {}) {
+  const pierced = !!(step.ignoresArmour || (opening && when?.ignoresArmour));
+  const rounded = !!(step.ignoresBlock || (opening && when?.ignoresBlock));
+  return {
+    // `ignores N` comes off armour and never off Block: a bolt finds a gap in plate, it does not
+    // get past a raised shield.
+    armor: pierced ? 0 : Math.max(0, armor - pierce),
+    block: rounded ? 0 : block,
+    pierced, rounded
+  };
+}
+
 export async function resolveAttack(actor, {
   verb = "strike", item, mod = 0, targets = [], step = {}, ammo = null, payload = null
 }) {
@@ -1391,11 +1424,28 @@ export async function resolveAttack(actor, {
     // `ignores N armor` comes off the armour, never off Block: a crossbow bolt finds a gap in
     // plate, it does not get past a raised shield (core-rules 5 keeps the two separate).
     const pierce = (line.ignores ?? 0) + (step.ignores ?? 0) + (shot?.ignores ?? 0);
+    /*
+     * **And the two total forms, which say what a number cannot.**
+     *
+     * `ignoresArmour` is not `ignores: 99` with better manners. A number is SUBTRACTED, so it can
+     * be out-armoured and it reads as a quantity somebody chose; this is armour counted as zero
+     * whatever the target happens to be wearing, which is what *Bring It Down* means when it says
+     * a door's armour does not apply to a thing swung at a door.
+     *
+     * Both exist on the combo clause as well, because the openings are where they belong:
+     * *Between the Plates* goes through plate only against a target it has Marked, and the gap it
+     * names is the Mark. A flag that could only be unconditional would have made that card either
+     * always-on or still prose.
+     */
     const against = who => {
-      const armor = Math.max(0, (who.system.armor ?? 0) - pierce);
-      const block = who.system.block ?? 0;
-      const combo = when && carries(who, when.needs) ? (when.mod ?? 0) : 0;
-      return { armor, block, combo, incoming: Math.max(0, fate.result + combo - armor - block) };
+      const opening = !!(when && carries(who, when.needs));
+      const hadArmor = who.system.armor ?? 0;
+      const hadBlock = who.system.block ?? 0;
+      const { armor, block, pierced, rounded } =
+        defencesAgainst({ armor: hadArmor, block: hadBlock, pierce, step, when, opening });
+      const combo = opening ? (when.mod ?? 0) : 0;
+      return { armor, block, combo, pierced, rounded, hadArmor, hadBlock,
+        incoming: Math.max(0, fate.result + combo - armor - block) };
     };
 
     /*
@@ -1411,12 +1461,20 @@ export async function resolveAttack(actor, {
 
     // 2. REDUCTION, to whoever is the target now. One reaction per trigger covers both steps, so a
     //    Bodyguard that just intercepted cannot also Brace -- it has spent its card.
-    const { armor, block, combo, incoming } = against(taker);
+    const { armor, block, combo, pierced, rounded, hadArmor, hadBlock, incoming } = against(taker);
+    /*
+     * **A step that goes round Block is not offered a shield to go round.**
+     *
+     * The option is filtered rather than the reduction zeroed afterwards, and the difference is
+     * the defender's hand: `chooseReaction` is what SPENDS the card, so leaving Block in the list
+     * would turn it sideways for nothing and the player would never learn why. Parry is left
+     * alone on purpose -- this ignores Block, and a Parry is not a Block.
+     */
+    const answers = reactionsFor(taker, "hit", { melee: !ranged })
+      .filter(option => !(rounded && option.key === "block"));
     const reaction = (missed || guard)
       ? null
-      : chooseReaction(reactionsFor(taker, "hit", { melee: !ranged }), {
-        incoming, health: taker.system.health.value
-      });
+      : chooseReaction(answers, { incoming, health: taker.system.health.value });
     if (reaction) await spendReaction(taker, reaction);
 
     const dealt = Math.max(0, incoming - (reaction?.reduce ?? 0));
@@ -1430,6 +1488,10 @@ export async function resolveAttack(actor, {
 
     rows.push({
       name: taker.name, armor, block, combo, dealt,
+      /* What was gone through, and how much of it: a defence that silently did not apply looks
+       * exactly like a defence the target never had. */
+      pierced: pierced ? hadArmor : 0,
+      rounded: rounded ? hadBlock : 0,
       opening: combo ? game.i18n.localize(CARDRPG.conditions[when.needs]?.label ?? when.needs) : null,
       down: taker.system.health.value - dealt <= 0,
       guard: guard ? { name: guard.actor.name, forName: target.name, card: guard.card } : null,
@@ -1556,7 +1618,11 @@ async function attackCard(actor, info) {
     parts.push(`<p><strong>${row.name}</strong>: ${fate.result}`
       + (row.combo ? ` ${row.combo > 0 ? "+" : "&minus;"} ${Math.abs(row.combo)} (${row.opening})` : "")
       + (row.armor ? ` &minus; ${row.armor} armor` : "")
+      /* Said out loud, because 0 armour and armour ignored subtract the same and mean different
+       * things -- and the second one is the card doing what it promised. */
+      + (row.pierced ? ` (${row.pierced} armor ignored)` : "")
       + (row.block ? ` &minus; ${row.block} Block` : "")
+      + (row.rounded ? ` (${row.rounded} Block ignored)` : "")
       + (row.reaction?.reduce ? ` &minus; ${row.reaction.reduce} ${reactionName(row.reaction.key)}` : "")
       + ` = <strong>${row.dealt}</strong> damage`
       + (row.dealt >= CARDRPG.defaults.woundAt ? ` &mdash; <em>a Wound</em>` : "")

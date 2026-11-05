@@ -166,6 +166,11 @@ export function stepField() {
      * is the ordinary case -- a bodkin finds a gap. These three are all of it, and Block and cover
      * are not armour: core-rules 5 is explicit that `ignores` comes off armour and never off Block,
      * so each needs saying separately or the engine subtracts the wrong thing.
+     *
+     * All three are read by the resolver. Two of them were not, for a while, and the content had
+     * already started using them: *Open the Vein* set `ignoresBlock` and said in its own
+     * description that it goes round a shield, while in play it went through one like anything
+     * else. A declared field nothing reads is prose that costs a schema entry.
      */
     ignoresArmour: new fields.BooleanField({ initial: false }),
     ignoresBlock: new fields.BooleanField({ initial: false }),
@@ -303,6 +308,14 @@ export function stepField() {
       mod: new fields.NumberField({ integer: true, nullable: true, initial: null }),
       advantage: new fields.BooleanField({ initial: false }),
       dc: new fields.NumberField({ integer: true, min: 0, nullable: true, initial: null }),
+      /*
+       * **The two total forms again, conditionally.** An opening is a gap, so a step that goes
+       * through armour *because* of the gap is the natural shape -- *Between the Plates* ignores
+       * armour only against a target it has Marked, and said that in `text` where nothing read
+       * it. Unconditional versions of both live on the step itself, below.
+       */
+      ignoresArmour: new fields.BooleanField({ initial: false }),
+      ignoresBlock: new fields.BooleanField({ initial: false }),
       text: new fields.StringField({ required: false, blank: true, initial: "" })
     }),
 
@@ -550,6 +563,19 @@ export class NpcCardData extends foundry.abstract.TypeDataModel {
       needs: new fields.ArrayField(new fields.StringField({
         choices: CARDRPG.intentNeeds
       })),
+      /**
+       * The kinds that alone draw this card, for a card that belongs to a creature instead of to a
+       * capability (`deckFor` in monsters.mjs).
+       *
+       * Empty on all but three cards, and it must stay that way: a pool of cards named after
+       * creatures is the authored deck this whole scheme exists to avoid. It is declared here
+       * rather than left as a property of the pool because **a key the schema does not know is
+       * dropped rather than refused** -- it would read back perfectly offline and be gone in play,
+       * which is exactly how the conditional armour fields were lost once already.
+       *
+       * No `choices`: the values are creature kinds, and `kind` above has none either.
+       */
+      only: new fields.ArrayField(new fields.StringField()),
       /** The shape in words, for the face: the engine resolves the sequence, the GM reads this. */
       text: new fields.StringField({ required: false, blank: true, initial: "" })
     };

@@ -20,7 +20,8 @@
       "legs",
       "grapple",
       "commander",
-      "reach"
+      "reach",
+      "drilled"
     ],
     "tactics": [
       "commander",

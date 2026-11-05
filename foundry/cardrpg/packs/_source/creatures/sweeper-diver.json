@@ -18,7 +18,9 @@
     "speed": 9,
     "capabilities": [
       "flight",
-      "fast"
+      "fast",
+      "feral",
+      "stealth"
     ],
     "tactics": [
       "skirmisher",

@@ -63,7 +63,8 @@
         "primary": [
           {
             "verb": "strike",
-            "mod": 1
+            "mod": 1,
+            "ignoresBlock": true
           }
         ],
         "secondary": [

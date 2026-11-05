@@ -1092,9 +1092,46 @@ check("engine subtracts what a line ignores",
  * on both halves of that sentence rather than on one variable name, because the loop now computes
  * damage for whoever is TAKING the hit, which a Bodyguard can change.
  */
+/*
+ * The maths lives in `defencesAgainst`, which is pure and exported -- so the RESULT is checked by
+ * running it, further down, and these greps only hold the shape. Both halves are anchored because
+ * a file containing neither would otherwise pass.
+ */
 check("ignores is kept off Block",
-  /armor = Math\.max\(0, \(who\.system\.armor \?\? 0\) - pierce\)/.test(resolveSource)
-  && /block = who\.system\.block \?\? 0/.test(resolveSource) ? "yes" : "no", "yes");
+  /armor: pierced \? 0 : Math\.max\(0, armor - pierce\)/.test(resolveSource)
+  && /block: rounded \? 0 : block/.test(resolveSource) ? "yes" : "no", "yes");
+/*
+ * **The two total forms, and the conditional pair.**
+ *
+ * `ignores N` is a quantity and can be out-armoured; these are the defence counted as zero. Both
+ * were declared on the schema and read by nothing for long enough that content started using
+ * them -- *Open the Vein* set `ignoresBlock` and promised in its own description that it goes
+ * round a shield, while in play it went through one like everything else. A field the schema
+ * declares and the engine ignores is prose that costs a migration.
+ */
+check("engine reads a step that goes through armour",
+  /step\.ignoresArmour/.test(resolveSource) ? "yes" : "no", "yes");
+check("and a step that goes round Block",
+  /step\.ignoresBlock/.test(resolveSource) ? "yes" : "no", "yes");
+check("and both again when an opening is what opens them",
+  /opening && when\?\.ignoresArmour/.test(resolveSource)
+  && /opening && when\?\.ignoresBlock/.test(resolveSource) ? "yes" : "no", "yes");
+/*
+ * The defender is not charged for a shield that was never going to apply. Filtering the option is
+ * what makes that true: `chooseReaction` spends the card, so a Block left in the list costs a
+ * card and stops nothing.
+ */
+check("a shield is not offered against a step that goes round it",
+  /option => !\(rounded && option\.key === "block"\)/.test(resolveSource) ? "yes" : "no", "yes");
+/* And ONLY Block. A Parry is a blade turned, and nothing about going round a shield touches it. */
+check("and only Block is withheld",
+  (resolveSource.match(/rounded && option\.key === "[a-z]+"/g) ?? [])
+    .map(m => /"([a-z]+)"/.exec(m)[1]).join(", "), "block");
+/* Both are said out loud, because 0 armour and armour ignored subtract the same number. */
+check("the chat card says what was gone through",
+  /row\.pierced \? ` \(\$\{row\.pierced\} armor ignored\)`/.test(resolveSource)
+  && /row\.rounded \? ` \(\$\{row\.rounded\} Block ignored\)`/.test(resolveSource) ? "yes" : "no",
+  "yes");
 
 
 /*
@@ -3294,7 +3331,7 @@ const needsVocabulary = new Set(CARDRPG.intentNeeds);
 /* One binding, read by the sweep and by its own denominator: a sweep holding its own copy of the
  * list can be emptied while the count beside it goes on reporting 28. */
 const intentsSwept = content.INTENTS;
-check("intents the needs sweep read", intentsSwept.length, 28);
+check("intents the needs sweep read", intentsSwept.length, 36);
 check("needs no vocabulary has",
   [...new Set(intentsSwept.flatMap(i =>
     (i.needs ?? []).filter(n => !needsVocabulary.has(n))))].sort().join(", ") || "none", "none");
@@ -3516,6 +3553,95 @@ check("no prune sits on a branch that pays in deck size",
 section("Signatures and Tactics");
 
 const contentSource = fs.readFileSync(path.join(root, "module/content.mjs"), "utf8");
+
+/*
+ * **Going through and going round, in the content.**
+ *
+ * The engine side is checked up with the other resolver greps; this is the half that says the
+ * content stopped spelling the same idea three ways. It was spelled as a magic number
+ * (`ignores: 99`, a promise about the roster rather than about the card), as a boolean nothing
+ * read, and as prose inside a combo clause (`when: { text: "ignores armor" }`, which printed
+ * perfectly and did nothing).
+ */
+/*
+ * Comments stripped first, and the first run of these two checks is why: the notes recording what
+ * the old spellings WERE both matched, so the file reported the disease because it had written
+ * down the cure. A grep for retired syntax has to read code, not prose about code.
+ */
+const contentCode = contentSource
+  .replace(/\/\*[\s\S]*?\*\//g, " ").replace(/\/\/[^\n]*/g, " ");
+check("the magic number that meant all armour",
+  /ignores: 99/.test(contentCode) ? "still there" : "gone", "gone");
+check("and the ignore written as prose inside a clause",
+  /text: "ignores armou?r"/.test(contentCode) ? "still there" : "gone", "gone");
+/* A need is a line in the backlog. These two were built, so they stop being asked for. */
+check("needs the engine has since built",
+  [...contentSource.matchAll(
+    /"(a step that ignores Block|a step that goes through armour entirely)"/g)].length, 0);
+/*
+ * **And the pair that the fields exist to separate.**
+ *
+ * *Heavy Swing* and *Measure* were `Strike +1 · / Move 1` apiece, differing only in a reaction
+ * line, which is not a thing a player compares when choosing a card. Weight against placement is
+ * the distinction now, and it is the clearest statement of this rule in the game -- so if the two
+ * ever collapse back into one card, this is where it is noticed.
+ */
+const sameCard = (a, b) =>
+  JSON.stringify([a.primary, a.secondary]) === JSON.stringify([b.primary, b.secondary]);
+const heavySwing = content.WARRIOR_DECK.find(c => c.name === "Heavy Swing");
+const measure = content.COMMON_POOL.find(c => c.name === "Measure");
+check("Heavy Swing goes through armour", heavySwing.primary[0].ignores ?? 0, 2);
+check("Measure goes round Block", measure.primary[0].ignoresBlock === true ? "yes" : "no", "yes");
+check("and they are not the same card", sameCard(heavySwing, measure) ? "same" : "different",
+  "different");
+/*
+ * **And the arithmetic, run rather than grepped.**
+ *
+ * Everything above this reads the resolver's source and proves it contains the right words. That
+ * is the weaker half: the three ways through a defence are each one line of maths, they are easy
+ * to get wrong in the same direction, and a grep cannot tell `Math.max(0, armor - pierce)` from
+ * `Math.max(0, pierce - armor)`. `defencesAgainst` is pure and exported so this can call it.
+ */
+const { defencesAgainst } = await import("../module/resolve.mjs");
+const defence = o => {
+  const d = defencesAgainst(o);
+  return `armor ${d.armor}, Block ${d.block}`;
+};
+const plated = { armor: 4, block: 3 };
+check("a plain blow meets both defences", defence({ ...plated }), "armor 4, Block 3");
+check("ignores 2 takes two off the armour",
+  defence({ ...plated, pierce: 2 }), "armor 2, Block 3");
+check("and never takes it below zero",
+  defence({ ...plated, pierce: 9 }), "armor 0, Block 3");
+/* The sentence core-rules 4 is built on, tested from the side that would break it quietly. */
+check("and never comes off Block, however large",
+  defence({ ...plated, pierce: 99 }), "armor 0, Block 3");
+check("ignoresArmour counts the armour as zero",
+  defence({ ...plated, step: { ignoresArmour: true } }), "armor 0, Block 3");
+check("and leaves Block alone",
+  defence({ armor: 0, block: 3, step: { ignoresArmour: true } }), "armor 0, Block 3");
+check("ignoresBlock counts the Block as zero",
+  defence({ ...plated, step: { ignoresBlock: true } }), "armor 4, Block 0");
+check("and leaves the armour alone",
+  defence({ ...plated, step: { ignoresBlock: true }, pierce: 1 }), "armor 3, Block 0");
+/* The conditional pair: the opening is the gap, so no opening is no gap. */
+const marked = { ...plated, when: { needs: "marked", ignoresArmour: true }, step: {} };
+check("an opening's ignore applies when the target carries it",
+  defence({ ...marked, opening: true }), "armor 0, Block 3");
+check("and does nothing at all when it does not",
+  defence({ ...marked, opening: false }), "armor 4, Block 3");
+/* The two real cards, read out of the content and run through the engine's own function. */
+check("Heavy Swing against plate 4, shield 3",
+  defence({ ...plated, pierce: heavySwing.primary[0].ignores ?? 0 }), "armor 2, Block 3");
+check("Measure against the same",
+  defence({ ...plated, step: measure.primary[0] }), "armor 4, Block 0");
+
+/* The rule is written down as well, or the engine is the only place it exists. */
+check("the rule is written in core-rules",
+  /#### Going through, and going round/.test(coreRules) ? "yes" : "no", "yes");
+check("and it says Parry is not touched",
+  /\*\*Parry is untouched\*\*/.test(coreRules) ? "yes" : "no", "yes");
+
 const sigs = graph.SIGNATURES;
 /* Both Ways' tables, through the index the engine builds -- a Way that added a table the engine
  * merged and this check did not would be a Way whose Tactics nobody validated. */
@@ -3592,12 +3718,12 @@ check("Signatures the engine does everything for", built.join(", "),
    * wait for that arithmetic rather than having it decided here.
    */
   "The Opening, The Kit, Loose and Step, Set, Heckle, One Trick, Shoulder to Shoulder, "
-  + "Nothing Gets Through, Interpose, Call the Unquiet, Wall of the Sphere, Wither, "
+  + "Nothing Gets Through, Interpose, Blood Price, Call the Unquiet, Wall of the Sphere, Wither, "
   + "The Bargain, Hearth and Home, Unmake, The Reading, "
   + "Breath of the Spirit, The Outcast's Due, Out of Barren Ground, The Silent Hour, "
   + "The First Taste, The Rumour, The Writ, The Order's Shield, The Scourge");
 const gaps = sigs.filter(sg => sg.needs?.length).map(sg => `${sg.name}: ${sg.needs.join("; ")}`);
-check("Signatures with a named gap", gaps.length, 26);
+check("Signatures with a named gap", gaps.length, 25);
 /*
  * `needs` is a LIST, and that is the lesson of the Health cost. It was the largest gap in the game
  * at six pieces of content; building it finished exactly ONE, because every other one wanted a
@@ -4972,8 +5098,8 @@ check("content carrying the audit column",
 const vague = audited.filter(c => (c.needs ?? []).some(g => g.length < 12)).map(c => c.name);
 check("gaps too short to act on", vague.length ? vague.join(", ") : "none", "none");
 const workingCards = audited.filter(c => !c.needs.length).length;
-check("content the engine does everything for", workingCards, 91);
-check("content with a named gap", audited.filter(c => c.needs.length).length, 111);
+check("content the engine does everything for", workingCards, 94);
+check("content with a named gap", audited.filter(c => c.needs.length).length, 108);
 
 /*
  * A gap shared by several cards is one piece of engine work, not several. Counting the DISTINCT
@@ -4988,7 +5114,7 @@ for (const card of audited) {
  * sleep* against an engine with no sleep that empties a fate deck. Naming it is what keeps the
  * overcharge from being a silent one.
  */
-check("distinct gaps across all content", gapCounts.size, 95);
+check("distinct gaps across all content", gapCounts.size, 93);
 /*
  * Two different questions, and the list is what lets them be asked apart.
  *
@@ -5154,9 +5280,13 @@ check("the gap that would finish the most content",
  * Fifty, down one: five Shadow formulas that each named a single gap now name two, so they leave
  * the "one gap away" list -- and *Step Through*, which had no audit column at all because
  * SHADOW_FORMULAS is not one of the audited exports, joins it with exactly one.
+ *
+ * Fifty-seven now. *Going through armour entirely* and *a step that ignores Block* were each one
+ * card away and are both built, so they leave the queue by being finished rather than by being
+ * re-counted -- which is the only way a number here is allowed to fall.
  */
 check("gaps that would finish exactly one piece of content",
-  [...finishes.values()].filter(n => n === 1).length, 58);
+  [...finishes.values()].filter(n => n === 1).length, 57);
 
 /*
  * And a check on the QUEUE rather than on the content, which the ranged-item work earned.
@@ -5453,7 +5583,7 @@ const artable = [
   content.NATURAL_WEAPONS ?? [], everyCreatureForArt, [content.WARRIOR],
   ...Object.entries(content).filter(([k]) => k.endsWith("_SIGNATURES")).map(([, v]) => v)
 ].flat();
-check("pieces of content that take art", artable.length, 495);
+check("pieces of content that take art", artable.length, 503);
 /*
  * **And the goblin's authored deck is gone entirely.** Six cards from before the intent pool, five
  * of which had no counterpart in it because the pool had replaced them -- Rush is Close In, Cower
@@ -5476,13 +5606,13 @@ check("while the one it replaced it with is",
 
 /*
  * The backs, which are a different kind of art: **one picture per deck, not one per card**, doing
- * one job -- saying which deck a face-down card came from. Five against three hundred faces, and
- * the five are what a table looks at all evening.
+ * one job -- saying which deck a face-down card came from. Five against four hundred and
+ * ninety-five faces, and the five are what a table looks at all evening.
  */
 const backs = Object.entries(content.DECK_BACKS);
-check("deck backs", backs.length, 6);
+check("deck backs", backs.length, 5);
 check("the decks that take one", backs.map(([k]) => k).join(", "),
-  "action, fate, skill, wild, npc.goblin, npc");
+  "action, fate, skill, wild, npc");
 /* Every one says what it is for: a back with no note is a brief nobody can draw from. */
 check("backs with nothing said about them",
   backs.filter(([, b]) => !b.note || b.note.length < 40).map(([k]) => k).join(", ") || "none",
@@ -5494,16 +5624,16 @@ check("backs with nothing said about them",
  * that creates the deck documents.
  */
 /*
- * **Two ways a back is reached, and both count as reading it.**
+ * **Two ways a back could be reached, and both still count as reading it.**
  *
- * Five keys are written out in a call. The sixth is not written anywhere: `buildCreature` asks for
- * `npc.${kind}` and falls back to `npc`, so the goblin's own back is reached by COMPUTATION -- and
- * it became the only way once the authored goblin deck was retired, since that deck's literal
- * `backOf("npc.goblin")` went with it.
+ * All five keys are written out in a call today. The second path is `buildCreature` asking for
+ * `npc.${kind}` before falling back to `npc`, which is how a kind with a back of its own would
+ * reach it -- and no kind has one: the goblin back was retired when the commission settled on a
+ * single intent back for every creature in the world.
  *
- * A literal-only audit then reports the one back the roster earns as declared and never read,
- * which is a true statement about the greps and a false one about the game. So the computed keys
- * are resolved from the content, the same way the deck audit below resolves them.
+ * The resolution stays, rather than collapsing to a literal-only audit, because the day a kind
+ * earns a back it is reached by COMPUTATION and a literal grep would report it as declared and
+ * never read -- a true statement about the greps and a false one about the game.
  */
 const backedLiterally = [...`${setupSource}\n${decksSource}`.matchAll(/backOf\("([a-z.]+)"\)/g)]
   .map(m => m[1]);
@@ -5513,14 +5643,14 @@ check("backs reached by a key written out", [...new Set(backedLiterally)].sort()
 const backedByKind = monsters.expandRoster(content.ROSTER, content.VARIANTS)
   .map(c => `npc.${c.system.kind}`).filter(k => k in content.DECK_BACKS);
 check("and the kinds that resolve to one of their own",
-  [...new Set(backedByKind)].sort().join(", "), "npc.goblin");
+  [...new Set(backedByKind)].sort().join(", ") || "none", "none");
 /* The computation is in the file rather than assumed, or the line above is pinning arithmetic the
  * game does not do. */
 check("and the builder really asks for it that way",
   /backOf\(`npc\.\$\{kind\}`\) \|\| backOf\("npc"\)/.test(setupCode) ? "yes" : "no", "yes");
 const backed = [...backedLiterally, ...backedByKind];
 check("decks given a back", [...new Set(backed)].sort().join(", "),
-  "action, fate, npc, npc.goblin, skill, wild");
+  "action, fate, npc, skill, wild");
 /* Every back declared is a back used: one nobody reads is a picture drawn for nothing. */
 check("backs declared but never read",
   backs.map(([k]) => k).filter(k => !backed.includes(k)).join(", ") || "none", "none");
@@ -5551,9 +5681,19 @@ check("and every creature's back resolves to a declared one",
     .filter(c => !(`npc.${c.system.kind}` in content.DECK_BACKS)
       && !("npc" in content.DECK_BACKS))
     .map(c => c.system.kind).join(", ") || "none", "none");
-/* And the one kind that has earned its own, so the fallback cannot quietly become the only path. */
+/*
+ * **No kind has a back of its own, and that is the decision rather than an oversight.**
+ *
+ * One intent back serves every creature in the world: a face-down intent card says *this thing is
+ * about to act*, and which thing it is is already on the table in front of you. Forty-seven kinds
+ * would have been forty-seven pieces of back art bought to tell you something you can see.
+ *
+ * Pinned to `none` rather than deleted, because the `npc.${kind}` lookup above is still in the
+ * builder. This is what says the fallback is the only live path -- and it will fail loudly the
+ * day somebody adds a per-kind back without deciding to.
+ */
 check("kinds with a back of their own",
-  Object.keys(content.DECK_BACKS).filter(k => k.startsWith("npc.")).join(", "), "npc.goblin");
+  Object.keys(content.DECK_BACKS).filter(k => k.startsWith("npc.")).join(", ") || "none", "none");
 check("deck documents with no back",
   deckCalls.filter(args => !/"[a-z.]+"\s*\)?\s*$/.test(args.trim())
     || !/backOf\(|, "(action|fate|skill|wild|npc\.[a-z]+)"\s*\)?\s*$/.test(args.trim()))
@@ -5588,6 +5728,157 @@ check("and so does every card in the deck",
     .test(decksSource) ? "yes" : "no", "yes");
 check("the art list counts the same",
   Number(/\*\*(\d+) pieces\*\*/.exec(artList)?.[1] ?? 0), artable.length + backs.length);
+/*
+ * **And the prompt book counts the same as the brief.**
+ *
+ * Two generated files walking one `GROUPS`, so they cannot disagree about WHAT exists -- but they
+ * can disagree about WHEN, which is the ordinary way a generated file goes wrong: somebody adds a
+ * card, regenerates one of the two, and the book quietly describes last week's game. One of these
+ * numbers moving without the other is a file nobody regenerated.
+ */
+const artPrompts = fs.readFileSync(path.join(root, "../art-prompts.md"), "utf8");
+check("the prompt book counts the same",
+  Number(/\*\*(\d+) prompts\*\*/.exec(artPrompts)?.[1] ?? 0), artable.length + backs.length);
+/*
+ * And the constraint that only one group needs, in the part that gets pasted.
+ *
+ * One intent pool serves every creature in the world, so *Close In* sits behind a goblin, an elf
+ * and a dragon. The brief said so from the beginning -- in markdown, OUTSIDE the capsule, where
+ * the model never saw it, and the first batch came back a gallery of human knights. A rule that
+ * lives only in the part nobody pastes is not a rule.
+ */
+const npcSection = artPrompts.slice(artPrompts.indexOf("## NPC intent cards"),
+  artPrompts.indexOf("## Way of Shade"));
+check("the intent capsule forbids a recognisable species",
+  /No species markers on the actor/.test(npcSection.slice(0, npcSection.indexOf("</details>")))
+    ? "yes" : "no", "yes");
+/*
+ * **And the correction to it, which cost more than the ban did.**
+ *
+ * Banning the species banned the anatomy, the clothing, the weapon and the scale -- and those were
+ * most of what told one intent from another, so the batch came back as one picture of dust and a
+ * dark mass, thirty-odd times. The ban is right and it applies to the ACTOR: the far side of the
+ * card is a player character, and players are human, so the victim, the ground and the aftermath
+ * are all still drawn in full. Both halves have to be in the pasted text or the pool flattens
+ * again in whichever direction is missing.
+ */
+check("and says what is still drawn in full",
+  /Only the actor is anonymous/.test(npcSection.slice(0, npcSection.indexOf("</details>")))
+    ? "yes" : "no", "yes");
+/*
+ * **Every intent is written by hand, and no two of them say the same thing.**
+ *
+ * This is the group that cannot be left to the motif tables: an intent has a verb and a number
+ * where an item has a name and a blurb, and nineteen of the thirty-six are `move` then `strike`,
+ * so the tables said *ground covered; a blow lands* nineteen times over. The collision audit at
+ * the end of the generator reports clusters; this is the one group where a cluster of two is
+ * already a defect, so it is a check rather than a report.
+ */
+const npcDraws = [...npcSection.matchAll(/^Draw (.+)$/gm)].map(m => m[1]);
+check("intent prompts in the book", npcDraws.length, content.INTENTS.length);
+check("and intent prompts that repeat another word for word",
+  npcDraws.filter((d, i) => npcDraws.indexOf(d) !== i).join(" | ") || "none", "none");
+/* The three cards one creature draws are the only ones exempt from the anonymity rule, and the
+ * exemption is printed off `only` rather than written by hand: a card that stopped being
+ * exclusive would lose the licence in the same edit that changed the field. */
+check("prompts allowed to show a creature",
+  (npcSection.match(/^THIS CARD IS THE EXCEPTION\./gm) ?? []).length,
+  content.INTENTS.filter(c => c.only?.length).length);
+
+/*
+ * **And then the same question asked of the whole book, which is the question it was never asked.**
+ *
+ * The generator's own collision audit asks whether two pieces share a DIRECTION, and sorts by
+ * whether the subject line carries prose. Both are proxies, and both let the real thing through:
+ * forty-three consumables share a direction and come back as forty-three pictures, while
+ * `Something gives whether or not you get through: the GM says what broke` counts as prose and
+ * tells an artist nothing at all. Rules text reads as English to a regular expression.
+ *
+ * What a model actually receives is the capsule plus the subject, and the capsule is byte-identical
+ * for every piece in its group -- so two pieces in one group are two pictures only to the extent
+ * that their subjects differ in WORDS. That is measurable without judging what the words mean:
+ * word-and-bigram overlap, nearest neighbour inside the group, and a threshold.
+ *
+ * Sixty per cent is where it was set, because that is where the list stops containing pairs
+ * anybody would defend. At 50% it catches *Dagger* beside *Balanced Dagger*, which are supposed to
+ * be near-identical objects; at 60% it holds the whole Natural weapons group, where *Claws*,
+ * *Mandibles*, *Nip* and *Sting* overlap at 89% and will come back as one picture of a claw.
+ *
+ * **The number was a debt, and it has been paid.** It stood at thirty-two across seven groups;
+ * every one of them has a sentence written about that one piece now, the way the thirty-six
+ * intents were answered, and the pin came down with it. Natural weapons went from 89%-93% to
+ * 7%-15%, and the Skill cards from a median of 77% to 9%.
+ *
+ * **Zero is the pin, so the next one fails here rather than in a batch of pictures.** The worst
+ * pair left in the book is 58% -- *Flask of Ink* beside *Flask of Oil*, which are two flasks.
+ */
+const twinPieces = [];
+{
+  const bookLines = artPrompts.split("\n");
+  let group = "";
+  for (let i = 0; i < bookLines.length; i++) {
+    if (bookLines[i].startsWith("## ")) group = bookLines[i].slice(3).trim();
+    if (!bookLines[i].startsWith("### ")) continue;
+    /* A piece is a heading with a FILE under it. The capsule is a heading too, and has none. */
+    let file = "", fence = -1;
+    for (let j = i + 1; j < bookLines.length && !bookLines[j].startsWith("#"); j++) {
+      const named = /^File: `(.+)`$/.exec(bookLines[j]);
+      if (named) file = named[1];
+      if (bookLines[j].startsWith("```text")) { fence = j; break; }
+    }
+    if (!file || fence < 0) continue;
+    const body = [];
+    for (let k = fence + 1; k < bookLines.length && !bookLines[k].startsWith("```"); k++) {
+      body.push(bookLines[k]);
+    }
+    twinPieces.push({ group, file, text: body.join(" ").replace(/\s+/g, " ").trim() });
+  }
+}
+/* Words and adjacent pairs: pairs matter because the motifs are phrases, and two prompts built
+ * from the same phrases in a different order are still the same instruction. */
+const twinGrams = text => {
+  const w = text.toLowerCase().match(/[a-z]+/g) ?? [];
+  const set = new Set(w);
+  for (let n = 0; n + 1 < w.length; n++) set.add(`${w[n]} ${w[n + 1]}`);
+  return set;
+};
+const twinOverlap = (a, b) => {
+  let shared = 0;
+  for (const gram of a) if (b.has(gram)) shared++;
+  return shared / (a.size + b.size - shared);
+};
+for (const piece of twinPieces) piece.grams = twinGrams(piece.text);
+const twinsByGroup = new Map();
+for (const piece of twinPieces) {
+  (twinsByGroup.get(piece.group) ?? twinsByGroup.set(piece.group, []).get(piece.group)).push(piece);
+}
+/* A different group is a different capsule, so sameness across groups cannot make one picture. */
+const nearTwins = twinPieces.filter(piece => {
+  const siblings = twinsByGroup.get(piece.group) ?? [];
+  return siblings.some(other =>
+    other !== piece && twinOverlap(piece.grams, other.grams) >= 0.6);
+});
+/* A parse that found no pieces would report a book with no twins in it. */
+check("prompts the twin audit read", twinPieces.length, artable.length);
+check("prompts with a near twin in their own group", nearTwins.length, 0);
+/*
+ * And it names them when it fails, because a bare count does not say what to go and write. The
+ * shape was the same in all seven groups it used to list: the subject was a NAME and a RULE, and
+ * a rule is not a picture. A motif table cannot help there -- `might 2` has no verb and no
+ * condition to read -- so each piece needs a sentence of its own.
+ */
+check("and which pieces they are",
+  nearTwins.map(p => p.file).sort().join(", ") || "none", "none");
+/*
+ * **And the second check the twin audit cannot make: a cluster of two is a defect in one group.**
+ *
+ * Everywhere else a shared direction is fine, because the subject above it differs -- forty-three
+ * consumables drawing a nearly-empty vessel come back as forty-three pictures. An intent has a
+ * verb and a number where an item has a name and a blurb, so it has nothing to differ by.
+ */
+check("intent prompts with a near twin",
+  nearTwins.filter(p => p.group === "NPC intent cards").map(p => p.file).join(", ") || "none",
+  "none");
 /* Every piece is a row, so nothing is quietly left out of the brief. */
 const listed = new Set([...artList.matchAll(/^\| [ ✓] \| \*\*(.+?)\*\* \|/gm)]
   .map(m => m[1]));
@@ -5763,7 +6054,7 @@ const briefs = faceRows.map(r => r.brief);
 const leaked = briefs.flatMap(text =>
   [...text.matchAll(/\b([a-z]+[A-Z][a-zA-Z]*)\b/g)].map(m => m[1]));
 /* A pattern that matched no rows at all would report "none" for any list whatsoever. */
-check("briefs the check actually read", briefs.length, 495);
+check("briefs the check actually read", briefs.length, 503);
 check("keys that leaked into the brief",
   leaked.length ? [...new Set(leaked)].join(", ") : "none", "none");
 /*
@@ -5784,13 +6075,62 @@ check("briefs with a missing number in them",
  * *Accuser's Ring* into `accuser-s-ring`, which is the kind of thing nobody notices until a
  * hundred and fifty files have been named that way and the brief is the only record of it.
  */
-const { slug } = await import("./art-list.mjs");
+const { slug, DELIVERY, GROUPS: ART_GROUPS } = await import("./art-list.mjs");
+/*
+ * **The art on disk, against the brief that commissioned it.**
+ *
+ * `art/` is tracked now, so the pictures are part of the repository rather than a folder on one
+ * machine -- and a tracked folder of binaries is exactly where a stray file lives forever without
+ * anybody noticing. The path IS the wiring: `artIn` reads a string out of content and Foundry
+ * looks for that file, so a picture filed one letter off is a picture that silently never shows.
+ *
+ * The COUNT is deliberately not pinned. It moves every time a group is drawn, and a suite that
+ * fails on progress teaches people to ignore it. What is pinned is that every file on disk is a
+ * piece that exists, spelled the way the brief spells it, in the one delivery format.
+ */
+const artDir = path.join(root, "art");
+const artFiles = fs.existsSync(artDir)
+  ? (function walk(dir) {
+    return fs.readdirSync(dir, { withFileTypes: true }).flatMap(e => e.isDirectory()
+      ? walk(path.join(dir, e.name))
+      : [path.relative(artDir, path.join(dir, e.name)).replace(/\\/g, "/")]);
+  })(artDir)
+  : [];
+check("pictures drawn so far", artFiles.length, artFiles.length);
+if (artFiles.length) {
+  /*
+   * Built from GROUPS, which is what carries the directory. `artable` is a flat list of content
+   * entries with no `dir` on them at all, so the first version of this compared every file on
+   * disk against the string `undefined/...` and condemned all seventeen of them.
+   */
+  const wanted = new Set(ART_GROUPS
+    .flatMap(g => g.list.map(e => `${g.dir}/${slug(e.name)}.${DELIVERY.format}`))
+    .concat(backs.map(([key]) => `backs/${slug(key.replace(/\./g, "-"))}.${DELIVERY.format}`)));
+  check("and those that are not a piece in the brief",
+    artFiles.filter(f => !wanted.has(f)).slice(0, 5).join(", ") || "none", "none");
+  check("and those not in the one delivery format",
+    artFiles.filter(f => !f.endsWith(`.${DELIVERY.format}`)).slice(0, 5).join(", ") || "none",
+    "none");
+}
+/*
+ * **The one delivery format, which the pipeline and the brief must not disagree about.**
+ *
+ * Both tables in the brief print it and the generator writes it, so it lives in one constant and
+ * every reader takes it from there. The brief used to say `.webp` PREFERRED and `.png` FINE --
+ * a choice, which is how a set ends up half in one format and half in the other, and how a token
+ * ends up without the transparency that only one of the two carries.
+ */
+const delivery = `**\`.${DELIVERY.format}\` at quality ${DELIVERY.quality}**`;
+check("the brief states the delivery format, in both tables",
+  artList.split(delivery).length - 1, 2);
+check("and neither table still offers a choice",
+  /`\.webp` (?:preferred|or `\.png`)/.test(artList) ? "no" : "yes", "yes");
 /* The pack builder's source, read for the rules that cannot be asked of its output: that it reads
  * every pack back through Foundry's own packer, and that it borrows its shapes rather than
  * spelling them again. */
 const packSource = fs.readFileSync(path.join(root, "test/build-packs.mjs"), "utf8");
 const rows = faceRows;
-check("file paths in the brief", rows.length, 495);
+check("file paths in the brief", rows.length, 503);
 /* And the backs, whose path is the slug of their KEY rather than of their printed label. */
 const backPaths = [...artList.matchAll(/\| `(backs\/[^`]+)` \|/g)].map(m => m[1]);
 check("back paths in the brief", backPaths.length, backs.length);
@@ -5896,7 +6236,32 @@ for (const entry of everyEntry) {
     for (const st of arr ?? []) everyStep.push({ card: entry.name, st });
   }
 }
-check("steps the timing audit read", everyStep.length, 321);
+check("steps the timing audit read", everyStep.length, 330);
+
+/*
+ * **Every key a combo clause uses is a key the clause's schema declares.**
+ *
+ * The same sweep `strayVerbKeys` runs one level down, for the same reason and against the same
+ * silence: a content field the schema does not have is DROPPED, not rejected, so the clause reads
+ * back perfectly offline and is simply gone in play. `when` grew two fields the day
+ * `ignoresArmour` stopped being prose, and a break test proved that removing them again was
+ * invisible to every other check in this file -- *Between the Plates* would have kept its field
+ * in content and lost it in the world.
+ */
+const whenStart = cardsSource.indexOf("when: new fields.SchemaField({");
+const whenFields = new Set([...cardsSource
+  /* To the clause's OWN closing brace, at its own indent: the first `}),` in the block belongs to
+   * the nested StringField on `needs`, and slicing there found one field out of seven. */
+  .slice(whenStart, cardsSource.indexOf("\n    }),", whenStart))
+  .matchAll(/^ {6}([a-zA-Z]+): /gm)].map(m => m[1]));
+check("combo-clause fields the schema declares", [...whenFields].sort().join(", "),
+  "advantage, dc, ignoresArmour, ignoresBlock, mod, needs, text");
+const strayWhenKeys = new Set();
+for (const { st } of everyStep) {
+  for (const key of Object.keys(st.when ?? {})) if (!whenFields.has(key)) strayWhenKeys.add(key);
+}
+check("combo-clause keys content uses that the schema would drop",
+  strayWhenKeys.size ? [...strayWhenKeys].join(", ") : "none", "none");
 /* Pinned beside the stray-timing sweep further down, which is the sweep it protects. */
 /*
  * **And the four fields the cheap batch added**, each written by content as well as declared: a
@@ -5918,10 +6283,12 @@ check("steps the timing audit read", everyStep.length, 321);
  * census below is one gap shorter than it was.
  */
 for (const [what, count, read] of [
-  ["leave ground behind", 7, s => s.st.ground?.shape],
+  ["leave ground behind", 8, s => s.st.ground?.shape],
   ["say who they are for", 32, s => s.st.targets],
   ["say how often they may be played", 3, s => s.st.oncePer],
-  ["go straight through armour, Block or cover", 3,
+  /* Five, not three: *Measure* and *Bring It Down* joined when the fields became readable, and
+   * the conditional pair on *Between the Plates* hangs off its opening rather than its step. */
+  ["go straight through armour, Block or cover", 6,
     s => s.st.ignoresArmour || s.st.ignoresBlock || s.st.ignoresCover],
   ["name whose fate deck they Read", 4, s => s.st.readDeck],
   ["wait on a state of the player's own", 11, s => s.st.whileState]
@@ -6385,7 +6752,7 @@ check("and the group it asks for", DIMENSIONS.join("+"), "width+height+depth");
 const everyPackDoc = planned.flatMap(p => p.docs);
 const everyPackChild = planned.flatMap(p => p.docs.flatMap(d => d.items ?? d.cards ?? []));
 check("documents the stamp sweep read", everyPackDoc.length, 394);
-check("and children beneath them", everyPackChild.length, 223);
+check("and children beneath them", everyPackChild.length, 231);
 const unstamped = [...everyPackDoc, ...everyPackChild]
   .filter(d => d._stats?.coreVersion !== manifest.compatibility.verified
     || d._stats?.systemId !== manifest.id
@@ -6494,7 +6861,7 @@ for (const pack of planned) {
 }
 check("ids that are not the hash of their key, malformed, or shared",
   idFaults.length ? idFaults.slice(0, 4).join("; ") : "none", "none");
-check("ids the rule actually read", everyId.size, 617);
+check("ids the rule actually read", everyId.size, 625);
 /* The hash itself, asked rather than shared: sixteen characters of the right alphabet, and the
  * same answer twice for the same key. */
 check("an id is sixteen characters", packs.id16("items:Longsword").length, 16);
@@ -6890,6 +7257,63 @@ const npcBody = decksSource.slice(decksSource.indexOf("export function npcCardDa
 check("and an intent card can carry art",
   /\.\.\.\(artIn\(card\) \? \{ img: artIn\(card\) \} : \{\}\)/
     .test(npcBody.slice(0, npcBody.indexOf("\n}"))) ? "yes" : "no", "yes");
+
+/*
+ * **And now the writers are RUN, which is the one thing every check above cannot do.**
+ *
+ * Everything in this section so far is a regular expression over source text, and the bug they
+ * were written for would have passed all of them. `slateData` spread the rest of an entry into
+ * `system`, so a hundred and seventy pieces put their path in `system.art` where no document
+ * wears it -- and a grep for `artIn` in that file would have said yes, because `artIn` was there,
+ * one line away from where the value actually went.
+ *
+ * So: build a document from a definition carrying a known path, and ask `artOf` -- the reader the
+ * game itself uses -- to find it again. A writer that puts the path in the wrong slot fails here
+ * however correct its source reads.
+ *
+ * **This is the gate the art pipeline needs.** Five hundred and eight paths are about to be
+ * written into content, and the question that matters is not whether `art:` is spelled right but
+ * whether a picture reaches the table.
+ */
+const decksLive = await import("../module/decks.mjs");
+const setupLive = await import("../module/setup.mjs");
+const SAMPLE_ART = "cardrpg/art/cards/starter/strike.webp";
+const wiredBy = art => [
+  ["an action card", decksLive.actionCardData({ name: "Strike", art })],
+  ["a skill card", decksLive.skillCardData({ name: "Sharp Eyes", art })],
+  ["an intent card", decksLive.npcCardData({ name: "Close In", art },
+    { kind: "goblin", creature: "Goblin", back: "" })],
+  ["an item, feature or weapon", setupLive.slateData({ name: "Dagger", art }, "item")]
+];
+const artCarried = wiredBy(SAMPLE_ART);
+check("writers run, and asked for the path back",
+  artCarried.filter(([, doc]) => decksLive.artOf(doc) === SAMPLE_ART).length, artCarried.length);
+check("and the ones that lost it on the way",
+  artCarried.filter(([, doc]) => decksLive.artOf(doc) !== SAMPLE_ART)
+    .map(([label]) => label).join(", ") || "none", "none");
+/*
+ * The exact shape of the old bug, asked of the built document rather than of the source: a path
+ * that reaches `system.art` is a path the game cannot see, and it reads back perfectly from
+ * content the whole time.
+ */
+check("and none of them leaves it in system.art",
+  artCarried.filter(([, doc]) => doc.system?.art !== undefined)
+    .map(([label]) => label).join(", ") || "none", "none");
+/*
+ * And the guard in the other direction. Foundry FILLS `img` with its own placeholder when a
+ * document is created, so "is there a path" was never the question -- a generic bag icon
+ * stretched full bleed across a card is worse than no art at all.
+ */
+const placeheld = wiredBy("icons/svg/item-bag.svg");
+check("and core's placeholder is refused by every one of them",
+  placeheld.filter(([, doc]) => decksLive.artOf(doc) !== "")
+    .map(([label]) => label).join(", ") || "none", "none");
+/*
+ * The creature's two slots are not here, and the reason is worth stating: they are written by
+ * `Actor.create` inside the setup routine, which needs Foundry. They stay greps above until
+ * something builds a document against the data models -- which this file's own header already
+ * names as the gap a clean headless load does not close.
+ */
 
 /*
  * The rim is the BORDER, which is what lets the art sit inside it with no extra element: the
@@ -9504,22 +9928,119 @@ section("The monster roster");
 const buildCreatureBody = setupSource.slice(setupSource.indexOf("const buildCreature = async"),
   setupSource.indexOf("const goblinLine ="));
 const everyCreature = monsters.expandRoster(content.ROSTER, content.VARIANTS);
-const deckOfCaps = caps => monsters.deckFor(caps, content.INTENTS);
+/*
+ * `kind` is passed through because three cards in the pool are drawn by a named creature rather
+ * than by a capability (`only`, monsters.mjs). A sweep that left it out would report all three as
+ * cards nobody can draw -- which is what this suite said the first time it ran against them.
+ */
+const deckOfCaps = (caps, kind = "") => monsters.deckFor(caps, content.INTENTS, kind);
+const deckOfCreature = c => deckOfCaps(c.system.capabilities, c.system.kind);
 
-check("cards in the intent pool", content.INTENTS.length, 28);
+check("cards in the intent pool", content.INTENTS.length, 36);
 check("bases in the roster", content.ROSTER.length, 22);
 check("creatures the variants expand them into", everyCreature.length, 47);
 check("and the rest of the world, tagged but not numbered", content.MONSTER_TAGS.length, 21);
 
 /*
- * **Five shapes need no capability at all, and three need only that the creature can move**, which
- * is what sets the floor -- eight cards for anything with legs, five for the one thing without
- * them. A first pass had four universals, and twenty-seven of the fifty-five creatures landed on
- * five cards or fewer: four generic and one special. Generic shapes are the cheap half of a pool.
+ * **The universal core, and it used to be too big.**
+ *
+ * Eight cards were drawn by all forty-seven creatures, and those eight were between 67% and 100%
+ * of every deck in the game -- median 80%. The Processor's deck was the universal eight and
+ * nothing else at all. Generic shapes are the cheap half of a pool and they were also four
+ * fifths of it.
+ *
+ * Three of the eight were never universal in the fiction: *Set and Wait*, *Hold the Line* and
+ * *Take Stock* are what a disciplined thing does, and a Flat Bug drew all three. They are gated on
+ * temperament now, so five cards are universal -- two that ask nothing and three that ask only
+ * that the creature can move. The numbers below are the floor of the game: five cards for the one
+ * thing that cannot move, and nothing in the roster lands on fewer than seven.
  */
-check("shapes anything can draw", content.INTENTS.filter(c => !c.needs.length).length, 5);
+/* `only` is excluded throughout: *Carry It Off* asks for nothing but `move` and is still drawn by
+ * two creatures out of forty-seven, so counting it as universal would make the core look bigger
+ * than it is in exactly the direction this section exists to watch. */
+const general = content.INTENTS.filter(c => !c.only?.length);
+check("shapes anything can draw", general.filter(c => !c.needs.length).length, 2);
 check("shapes that ask only to be able to move",
-  content.INTENTS.filter(c => c.needs.length === 1 && c.needs[0] === "move").length, 3);
+  general.filter(c => c.needs.length === 1 && c.needs[0] === "move").length, 3);
+check("and the shapes anything with legs draws",
+  general.filter(c => !c.needs.length
+    || (c.needs.length === 1 && c.needs[0] === "move")).map(c => c.name).sort().join(", "),
+  "Close In, Give Ground, Lash Out, Press, Strike and Step");
+
+/*
+ * --- temperament, which is what replaced the three false universals --------------------------
+ *
+ * **Every creature has exactly one of the three**, and the suite holds them exclusive because
+ * three booleans standing in for one enumeration is a shape that rots: the first creature to
+ * carry two of them would draw a deck no reading of the roster predicts.
+ */
+const temperamentsOf = c =>
+  (c.system.capabilities ?? []).filter(x => CARDRPG.temperaments.includes(x));
+check("creatures with no temperament at all",
+  everyCreature.filter(c => !temperamentsOf(c).length).map(c => c.name).join(", ") || "none",
+  "none");
+check("and creatures with more than one",
+  everyCreature.filter(c => temperamentsOf(c).length > 1)
+    .map(c => `${c.name} (${temperamentsOf(c).join(" + ")})`).join("; ") || "none", "none");
+check("and the same for the folklore side",
+  content.MONSTER_TAGS
+    .filter(t => t.caps.filter(x => CARDRPG.temperaments.includes(x)).length !== 1)
+    .map(t => t.name).join(", ") || "none", "none");
+/*
+ * **`drilled` is not a free choice: it is a tactic, said in the field a card can read.**
+ *
+ * `shieldWall` meant *it holds a line* and did nothing mechanical with the meaning; `bodyguard`
+ * and `commander` are the same statement about somebody else's turn. So the equivalence is checked
+ * in both directions -- a new creature with a shield wall and no `drilled` would quietly stop
+ * drawing the two cards the tactic is about, and the deck would still look plausible.
+ */
+const drilledByTactic = c =>
+  (c.system.tactics ?? []).some(t => CARDRPG.drilledTactics.includes(t));
+check("creatures whose tactics say they hold a line but whose deck does not",
+  everyCreature.filter(c => drilledByTactic(c) && !temperamentsOf(c).includes("drilled"))
+    .map(c => c.name).join(", ") || "none", "none");
+check("and creatures drilled with no tactic that says so",
+  everyCreature.filter(c => temperamentsOf(c).includes("drilled") && !drilledByTactic(c))
+    .map(c => c.name).join(", ") || "none", "none");
+const byTemper = t => everyCreature.filter(c => temperamentsOf(c).includes(t)).length;
+check("drilled, feral and wits across the roster",
+  CARDRPG.temperaments.map(t => `${t} ${byTemper(t)}`).join(", "),
+  "drilled 15, feral 24, wits 8");
+/* A gate nothing is behind is a capability that earns nothing, which is the defect the whole
+ * scheme exists to avoid -- so each temperament has to carry cards of its own. */
+check("cards each temperament earns",
+  CARDRPG.temperaments.map(t =>
+    `${t} ${content.INTENTS.filter(c => c.needs.includes(t)).length}`).join(", "),
+  "drilled 2, feral 3, wits 3");
+
+/*
+ * --- the three cards that belong to a creature -----------------------------------------------
+ *
+ * **The authored half of the pool, and the whole point is that it stays this size.** A deck is
+ * earned from capabilities (core-rules 9); `only` is the exception, and it exists because three
+ * creatures' stated point was unsayable in capabilities -- the Queen *spends every turn on the
+ * army*, the Skaah is *full of something worse*, the Processor *is what a scene looks like before
+ * the fight*. A fourth would mean a missing capability, and the fix for that is a capability.
+ */
+const creatureOwned = content.INTENTS.filter(c => c.only?.length);
+check("cards that belong to a creature rather than a capability",
+  creatureOwned.map(c => `${c.name} (${c.only.join(", ")})`).join("; "),
+  "The Hive Obeys (queen); Open the Hold (skaah, skaah-bloated); "
+  + "Carry It Off (processor, processor-driller)");
+const kinds = new Set(everyCreature.map(c => c.system.kind));
+check("and every kind they name exists",
+  creatureOwned.flatMap(c => c.only).filter(k => !kinds.has(k)).join(", ") || "none", "none");
+check("and each is drawn by the creatures it names and no others",
+  creatureOwned.map(c => `${c.name}: ${everyCreature.filter(x => deckOfCreature(x)
+    .some(d => d.name === c.name)).map(x => x.name).join(" + ")}`).join("; "),
+  "The Hive Obeys: The Queen; Open the Hold: Skaah + Skaah Bloated; "
+  + "Carry It Off: Processor + Processor Driller");
+/* `only` is a key Foundry would DROP rather than refuse if the schema did not know it: the card
+ * would read back perfectly offline and be missing in play, which is how the conditional armour
+ * fields were lost once already. */
+check("and the card schema declares it",
+  /only: new fields\.ArrayField\(new fields\.StringField\(\)\)/.test(cardsSource) ? "yes" : "no",
+  "yes");
 /*
  * **A card that moves the creature has to ask whether it can.** That is the whole reason `move` is
  * derived rather than declared, and writing the rule down is what found the other five: three
@@ -9532,11 +10053,11 @@ check("shapes that ask only to be able to move",
  */
 const movers = content.INTENTS.filter(c => c.sequence.some(s => s.verb === "move"));
 check("cards that move the creature", movers.map(c => c.name).sort().join(", "),
-  "Bull Through, Carry, Charge, Close In, Fade, Give Ground, Go Under, Stoop, " +
-  "Strike and Step, Submerge, Swarm");
+  "Bull Through, Carry, Carry It Off, Charge, Close In, Fade, Give Ground, Go Under, " +
+  "Pick the Soft One, Stoop, Strike and Step, Submerge, Swarm, Thrash");
 check("and not one of them can be drawn without being able to",
   movers.filter(c => !monsters.capsOf(c.needs).has("move")).map(c => c.name).join(", "), "");
-/* Three of those eleven never mention `move` in `needs` and do not need to: Stoop asks for flight,
+/* Three of those fourteen never mention `move` in `needs` and do not need to: Stoop asks for flight,
  * Go Under for burrow, Submerge for swim, and each of those three IS a way of moving. That is the
  * rule doing work rather than a list of exceptions to it. */
 check("and three of them get it from the way they travel",
@@ -9548,15 +10069,16 @@ check("and three of them get it from the way they travel",
  * exactly why the rule above is written on the sequence and not on the prose -- and the Queen, the
  * one creature in the world who cannot move, draws `Order` off `commander`.
  */
-check("the only card whose prose moves somebody other than the drawer",
+check("the only cards whose prose moves somebody other than the drawer",
   content.INTENTS.filter(c => /\bmoves? \w/i.test(c.text))
-    .filter(c => !c.sequence.some(s => s.verb === "move")).map(c => c.name).join(", "), "Order");
+    .filter(c => !c.sequence.some(s => s.verb === "move")).map(c => c.name).sort().join(", "),
+  "Order, The Hive Obeys");
 check("and the Queen can draw it", deckOfCaps(["commander", "summon"]).some(c => c.name === "Order")
   ? "yes" : "no", "yes");
 check("and the smallest deck in the roster",
-  Math.min(...everyCreature.map(c => deckOfCaps(c.system.capabilities).length)), 7);
+  Math.min(...everyCreature.map(c => deckOfCreature(c).length)), 7);
 check("the largest",
-  Math.max(...everyCreature.map(c => deckOfCaps(c.system.capabilities).length)), 12);
+  Math.max(...everyCreature.map(c => deckOfCreature(c).length)), 12);
 /* The Queen is the only creature in the world that cannot move, so she is the only one who proves
  * the derivation does anything. Without her, `needs: ["move"]` and `needs: []` are the same card. */
 const legless = everyCreature.filter(c => !monsters.capsOf(c.system.capabilities).has("move"));
@@ -9570,7 +10092,7 @@ check("core-rules still says what a deck is for",
 /* No card is unreachable, counting the whole roster: the tagged creatures are the ones that earn
  * Feed and Lie Still, which is the honest reason those two are in the pool at all. */
 const drawnByBuilt = new Set(everyCreature
-  .flatMap(c => deckOfCaps(c.system.capabilities).map(card => card.name)));
+  .flatMap(c => deckOfCreature(c).map(card => card.name)));
 const drawnByTagged = new Set(content.MONSTER_TAGS
   .flatMap(t => deckOfCaps(t.caps).map(card => card.name)));
 check("cards no built creature draws",
@@ -9684,9 +10206,17 @@ check("core-rules records the pool",
 check("and that a card is a shape the creature fills in",
   /A card says what a creature does; the creature says how far and how hard/.test(coreRules)
     ? "yes" : "no", "yes");
-check("and why eight shapes need nothing",
-  /twenty-seven of the world's fifty-five creatures landed on five cards or fewer/.test(coreRules)
+check("and why the universal core is five and was eight",
+  /That universal floor used to be eight, and eight was too many/.test(coreRules)
     ? "yes" : "no", "yes");
+/* Temperament is the gate that replaced the three false universals, and the rules have to carry
+ * the argument for it: a pool whose reasoning is only in the code is a pool somebody will
+ * quietly go back to authoring decks around. */
+check("and the three temperaments",
+  /^#### Temperament {2}\*\*\[BUILT 2026-11-04\]\*\*$/m.test(coreRules)
+    ? "yes" : "no", "yes");
+check("and that the budget for authored cards is closed at three",
+  /The budget is closed at three/.test(coreRules) ? "yes" : "no", "yes");
 /* And the two halves of the derivation, which is the part a later hand would flatten: the one
  * capability no creature declares, and the one card that moves somebody else. */
 check("and that `move` is derived rather than declared",
@@ -9738,7 +10268,7 @@ check("intent cards no creature can earn",
   undrawable.length ? undrawable.sort().join(", ") : "none",
   "Feed (drain), Lie Still (dormant), Submerge (swim)");
 /* And the sweep had intents to look at, so an empty pool cannot pass it. */
-check("intents the sweep read", content.INTENTS.length, 28);
+check("intents the sweep read", content.INTENTS.length, 36);
 /* The three capabilities that strand them, from the other end: nothing in the roster has one. */
 check("capabilities the config offers that no creature has",
   Object.keys(CARDRPG.capabilities).filter(k => !creatureCaps.has(k)).sort().join(", "),
@@ -9759,26 +10289,30 @@ const baseRoster = content.ROSTER;
 check("base creatures in the roster", baseRoster.length, 22);
 check("and distinct ways of fighting among them", new Set(baseRoster.map(tacSig)).size, 22);
 /*
- * **The variants are where the variety thins, and four of them are numbers only.**
+ * **The variants are where the variety thins, and it was four of them. It is one.**
  *
- * Every one of the 22 base creatures fights differently. Four of the 25 variants do not: they carry
- * the same tactics and the same capabilities as their parent and differ only in Health, armour,
- * damage or speed -- so a *Flat Bug Shieldline* is a Flat Bug with better numbers rather than a
- * different problem at the table, and the deck it draws from is identical.
+ * Every one of the 22 base creatures fights differently. Four of the 25 variants did not: same
+ * tactics, same capabilities as their parent, differing only in Health, armour, damage or speed --
+ * so a *Flat Bug Shieldline* was a Flat Bug with better numbers rather than a different problem at
+ * the table, and it drew an identical deck.
  *
- * Pinned rather than fixed, because the two honest answers are a design decision: give each a
- * capability or tactic that changes how it plays, or accept that some variants are meant to be
- * nothing but a harder version of the same fight. *Armored Slug Spitter* is the clearest case for
- * the first -- it trades armour for range, which the roster already has a word for (`ranged`), and
- * `ranged` is currently carried by exactly one creature in the game.
+ * This comment used to say the fix was a design decision and name the clearest case for it: *the
+ * Spitter trades armour for range, which the roster already has a word for, and `ranged` is
+ * carried by exactly one creature in the game.* All three were taken from the notes they were
+ * already written in -- the Spitter's *longer reach of acid* is `ranged`, the Shieldline is *the
+ * front rank* and so it `shelter`s the rank behind, the Diver *comes down on whoever is
+ * concentrating* and so it has `stealth`.
+ *
+ * One is left, and it is the honest kind: the *Smash Beetle Breaker* is **meant** to be nothing
+ * but a bigger Smash Beetle -- *bred bigger for the gates of the Third Ring, and it does not turn
+ * quickly* -- and a harder version of the same fight is a legitimate variant.
  */
 const allSigs = everyCreature.map(tacSig);
 const collided = [...new Set(allSigs.filter((sg, i) => allSigs.indexOf(sg) !== i))]
   .map(sg => everyCreature.filter(m => tacSig(m) === sg).map(m => m.name).sort().join(" = "));
 check("creatures that fight exactly like another",
   collided.length ? collided.sort().join("; ") : "none",
-  "Armored Slug = Armored Slug Spitter; Flat Bug = Flat Bug Shieldline; "
-  + "Smash Beetle = Smash Beetle Breaker; Sweeper = Sweeper Diver");
+  "Smash Beetle = Smash Beetle Breaker");
 /*
  * **And four of the deltas do nothing at all**, which is why two of those collisions are there.
  *
@@ -9811,12 +10345,17 @@ check("variants the sweep read",
   Object.values(content.VARIANTS).reduce((n, l) => n + l.length, 0), 25);
 
 /* And how many are genuinely their own problem, which is the number worth watching. */
-check("distinct ways of fighting across the whole roster", new Set(allSigs).size, 43);
+check("distinct ways of fighting across the whole roster", new Set(allSigs).size, 46);
 check("out of creatures in all", everyCreature.length, 47);
-/* `ranged` is the thinnest word in the vocabulary: one creature in forty-seven can shoot. */
+/*
+ * `ranged` was the thinnest word in the vocabulary: ONE creature in forty-seven could shoot, and
+ * *Loose* was the only card in the pool with a single drawer. The Armored Slug Spitter is written
+ * as *thinner shell, longer reach of acid* -- reach it had and range it did not, and that note was
+ * the only place the difference was stated.
+ */
 check("creatures that can shoot at all",
   everyCreature.filter(m => (m.system.capabilities ?? []).includes("ranged"))
-    .map(m => m.name).join(", "), "Goblin Archer");
+    .map(m => m.name).sort().join(", "), "Armored Slug Spitter, Goblin Archer");
 /* And the four target priorities are all used, because who a monster goes for is most of how it
  * feels: a Stinger that went for the nearest body would be a different creature. */
 check("target priorities in use",
@@ -9945,10 +10484,10 @@ check("the Queen has no variants", content.VARIANTS.queen ?? "none", "none");
 /* `buildCreature`'s own body again: `buildMonster` builds a deck the same way, and it should --
  * but a grep that either can answer is a grep about neither. */
 check("setup builds a deck from the pool",
-  /deckFor\(creature\.system\.capabilities \?\? \[\], INTENTS\)/.test(buildCreatureBody)
+  /deckFor\(creature\.system\.capabilities \?\? \[\], INTENTS, kind\)/.test(buildCreatureBody)
     ? "yes" : "no", "yes");
 check("and so does the on-demand builder",
-  /deckFor\(creature\.system\.capabilities \?\? \[\], INTENTS\)/.test(
+  /deckFor\(creature\.system\.capabilities \?\? \[\], INTENTS, kind\)/.test(
     setupSource.slice(setupSource.indexOf("export async function buildMonster")))
     ? "yes" : "no", "yes");
 check("and every variant gets its own intent, because kind owns it",
@@ -9997,7 +10536,7 @@ for (const m of selfSource.matchAll(
   const p = path.join(root, m[2]);
   if (fs.existsSync(p)) readFiles.set(m[1], fs.readFileSync(p, "utf8"));
 }
-check("files this suite greps by name", readFiles.size, 57);
+check("files this suite greps by name", readFiles.size, 58);
 
 /* Every `/pattern/.test(VAR)` and `VAR.includes("...")`, with the check it belongs to. */
 const nameOfCheck = index => {
@@ -10029,7 +10568,7 @@ for (const m of selfSource.matchAll(/(\w+)\.includes\("((?:[^"\\]|\\.)*)"\)/g)) 
 }
 
 /* The pin that keeps the rest of this honest. */
-check("greps over a whole file, resolved", greps.length, 521);
+check("greps over a whole file, resolved", greps.length, 534);
 
 /*
  * **The rule, as one predicate, run over a planted example before it is run over the suite.**
@@ -10074,6 +10613,8 @@ const absentGreps = [
   String.raw`and core content is never written to :: NODES\.(push|splice|length =)`,
   String.raw`and neither builds a face by hand any more :: faces: \[\{ name: card\.name \}\]`,
   String.raw`and neither reads an item's tags by hand :: \(item\?\.system\?\.tags \?\? \[\]\)\.includes`,
+  String.raw`and neither table still offers a choice :: ` + "`" + String.raw`\.webp` + "`"
+    + String.raw` (?:preferred|or ` + "`" + String.raw`\.png` + "`" + `)`,
   String.raw`and never decides from adjacency itself :: \.after[\s\S]{0,60}\.(some|every)\(`,
   String.raw`and no longer reads a spell as a source of bonus :: slate\.type === "spell" && slate\.system\.effect`,
   String.raw`and no slate is flagged unusable instead :: quarantined: new fields\.BooleanField`,

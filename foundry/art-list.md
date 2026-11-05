@@ -1,6 +1,6 @@
 # Art list
 
-**501 pieces**, of which **0** are wired up. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card.
+**508 pieces**, of which **0** are wired up. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card.
 
 ## What to supply
 
@@ -8,7 +8,7 @@
 |---|---|
 | Ratio | **2:3** |
 | Size | **640 × 960** (2×, for a 150px card on a retina display) |
-| Format | `.webp` preferred, `.png` fine. No transparency needed: the art is a full bleed |
+| Format | **`.webp` at quality 80**, and nothing else: the generated original is transcoded and dropped. No transparency needed: the art is a full bleed |
 | Crop | **Cover, never letterbox.** Art is supplied at the card's own ratio, so a crop is a rounding error |
 | Safe area | Keep the subject off the **top 17%** and **bottom 32%**: the name sits on one and the halves on the other |
 
@@ -37,7 +37,7 @@ Anything under `icons/svg/` is ignored on purpose: that is Foundry's own placeho
 |---|---|
 | Ratio | **1:1** |
 | Size | **512 × 512** |
-| Format | `.webp` or `.png`, and **transparency is required**: a token sits on the map, not in a frame, so a background is a square of the wrong colour around the creature |
+| Format | **`.webp` at quality 80**, and **transparency is required**: a token sits on the map, not in a frame, so a background is a square of the wrong colour around the creature |
 | Framing | **The creature fills the square**, head to foot or nose to tail. Nothing is printed over a token, so there is no safe area — but Foundry draws a health bar under it and a nameplate below that, and both sit outside the image |
 | Facing | **Top-down or three-quarter, consistently.** Whichever the table picks, every creature wants to match: one top-down dragon among forty portraits reads as a mistake |
 
@@ -53,9 +53,9 @@ Anything under `icons/svg/` is ignored on purpose: that is Foundry's own placeho
 
 ## Deck backs — draw these first
 
-**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 6 pictures against 495 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
+**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 5 pictures against 503 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
 
-**6 pieces**. Same 2:3 and 640 × 960 as a face, and **no safe area**: nothing is printed over a back, so the whole card is yours.
+**5 pieces**. Same 2:3 and 640 × 960 as a face, and **no safe area**: nothing is printed over a back, so the whole card is yours.
 
 | | Deck | What it is for | File |
 |---|---|---|---|
@@ -63,14 +63,13 @@ Anything under `icons/svg/` is ignored on purpose: that is Foundry's own placeho
 |   | **The fate deck** | The back players see most: it is shuffled and face down by design, and that is what makes a thin deck a risk rather than a lookup. Twenty cards, drawn from constantly. | `backs/fate.webp` |
 |   | **The skill deck** | The scene side's deck. Wants to read as clearly NOT the action deck at a glance, since both are face down in front of the same player. | `backs/skill.webp` |
 |   | **The Wild Magic deck** | Drawn only when a Wild comes out of a fate deck, so its back is a promise that something strange is about to happen. | `backs/wild.webp` |
-|   | **Goblin intent** | An NPC intent deck, keyed by creature kind: the back shows the kind and nothing else, so the table can tell a goblin's intents from anything else's at a glance. | `backs/npc-goblin.webp` |
-|   | **Intent, any creature** | The back every creature uses until it has earned one of its own. Forty-seven kinds would be forty-seven pieces of back art, and the roster grew faster than the art could; a kind with its own key uses it, and everything else uses this. The recognisability argument above is why the exceptions exist rather than why they all should. | `backs/npc.webp` |
+|   | **Intent, any creature** | The back on every creature's intent deck in the game. A face-down intent says *this thing is about to act*, and which thing it is is already on the table in front of you -- so the back carries the threat rather than the species. | `backs/npc.webp` |
 
 **Wound and Taint have no back of their own, deliberately.** Both go *into* the action deck, and a Wound you could see coming would not be a Wound — they wear the action back like everything else in there, which is the whole threat.
 
 **Hands, discards and Spent piles have no back either.** A hand is face up to its owner and a discard is face up to the table, so a back on one would be art nobody ever sees.
 
-**An NPC deck's back is keyed by creature kind**, because that is all it shows: a goblin's intents should be recognisable across the table as a goblin's. A kind with a back of its own uses it and the other 46 use the common one, which is what a roster that grew faster than its art could leaves you with.
+**One intent back serves all 47 creatures**, and no kind has one of its own. The argument for a goblin back — that a goblin's intents should be recognisable across the table as a goblin's — is a good one, and it loses to arithmetic. **Every creature in the roster is its own kind**, variants included: a Goblin Warrior is not a goblin as far as this lookup is concerned. So a back per kind is 47 pieces of art, bought to tell a player which creature a deck sitting in front of that creature belongs to. The builder still asks for a kind's own back before falling back to the common one, so a future exception costs one entry and no code.
 
 ## The starter deck
 
@@ -82,7 +81,7 @@ What a first session plays with. Draw these first: ten cards is a playable game.
 |---|---|---|---|
 |   | **Advance** | Move 3 · / Move 2 | `cards/starter/advance.webp` |
 |   | **Draw Steel** | Strike · / Ready | `cards/starter/draw-steel.webp` |
-|   | **Heavy Swing** | Strike +1 · / Move 1 | `cards/starter/heavy-swing.webp` |
+|   | **Heavy Swing** | Strike +1 ignores 2 armor · / Move 1 | `cards/starter/heavy-swing.webp` |
 |   | **Lunge** | Move 2, Strike · / Move 1 | `cards/starter/lunge.webp` |
 |   | **Quick Hands** | Use · / Ready | `cards/starter/quick-hands.webp` |
 |   | **Second Wind** | Heal 2 · / Use | `cards/starter/second-wind.webp` |
@@ -102,7 +101,7 @@ Six cards every Way draws on, so each one is seen by every character in the game
 |   | **Both Hands** | Ready, Strike · / Ready | `cards/common/both-hands.webp` |
 |   | **Dig In** | Heal 2 · / Move 1 | `cards/common/dig-in.webp` |
 |   | **Hold the Line** | Defend · / Strike -1 | `cards/common/hold-the-line.webp` |
-|   | **Measure** | Strike +1 · / Move 1 | `cards/common/measure.webp` |
+|   | **Measure** | Strike +1 ignores Block · / Move 1 | `cards/common/measure.webp` |
 |   | **Off-Hand Blow** | Strike · / Strike -1 | `cards/common/off-hand-blow.webp` |
 |   | **Press** | Strike, Move 1 · / Move 2 | `cards/common/press.webp` |
 
@@ -110,14 +109,15 @@ Six cards every Way draws on, so each one is seen by every character in the game
 
 Face-up on the table during a fight, which makes them the art players stare at longest. **One pool, and every creature in the world draws the subset it has earned** (core-rules 9) — so a picture here is seen behind a goblin, a troll and a dragon, and wants to be the SHAPE of the move rather than a portrait of whoever is making it. *Close In* is a thing closing in.
 
-**28 pieces**. Suggested path: `cardrpg/art/cards/npc/`
+**36 pieces**. Suggested path: `cardrpg/art/cards/npc/`
 
 | | Name | What it is | File |
 |---|---|---|---|
-|   | **Bring It Down** | Strike · Strike a door, a wall or a held position, ignoring its armour entirely. | `cards/npc/bring-it-down.webp` |
+|   | **Bring It Down** | Strike ignores armour · Strike a door, a wall or a held position, ignoring its armour entirely. | `cards/npc/bring-it-down.webp` |
 |   | **Bull Through** | Move, Strike · Move your speed through a figure in the way, pushing it aside, then Strike. | `cards/npc/bull-through.webp` |
 |   | **Call More** | Something arrives at the edge of the scene. The GM says what and how much. | `cards/npc/call-more.webp` |
 |   | **Carry** | Move · A willing ally rides: it moves with you, and may still act when you stop. | `cards/npc/carry.webp` |
+|   | **Carry It Off** | Move · Move your speed, take hold of a figure already down, and leave with it. The Horde eats what it wins. | `cards/npc/carry-it-off.webp` |
 |   | **Charge** | Move, Strike +1 · Move double your speed in a straight line, then Strike. The distance is the damage. | `cards/npc/charge.webp` |
 |   | **Close In** | Move, Strike · Move your speed, then Strike. | `cards/npc/close-in.webp` |
 |   | **Drag Down** | Strike Grappled (1) · Strike; on a hit the target is Grappled and goes nowhere. | `cards/npc/drag-down.webp` |
@@ -126,21 +126,28 @@ Face-up on the table during a fight, which makes them the art players stare at l
 |   | **Feed** | Strike, Heal · Strike an adjacent figure and heal what you took out of it. | `cards/npc/feed.webp` |
 |   | **Give Ground** | Move · Move your speed away from the nearest enemy. A hurt thing that can leave, does. | `cards/npc/give-ground.webp` |
 |   | **Go Under** | Move · Leave the map. Next round you arrive anywhere you could have walked to. | `cards/npc/go-under.webp` |
+|   | **Gorge** | Strike, Shake 1 · Strike, and eat what comes away: shake one condition off yourself. | `cards/npc/gorge.webp` |
 |   | **Hold the Line** | Defend, Block 1 range 1 · Defend, and an ally adjacent to you gains Block 1. | `cards/npc/hold-the-line.webp` |
+|   | **Knock It Down** | Strike Prone (1) · Strike with the whole weight of you; on a hit the target is Prone. | `cards/npc/knock-it-down.webp` |
 |   | **Lash Out** | Strike blast 1 · Strike every figure adjacent to you, friend or not. | `cards/npc/lash-out.webp` |
 |   | **Lie Still** | Nothing at all, and the next Strike you make cannot be answered by a reaction. | `cards/npc/lie-still.webp` |
 |   | **Long Arm** | Strike · Strike at reach without closing, and stay where you are. | `cards/npc/long-arm.webp` |
 |   | **Loose** | Strike · Strike at your weapon's range. | `cards/npc/loose.webp` |
+|   | **Open the Hold** | The belly splits along the seam: whatever it was carrying is on the ground beside it, and may act this round. | `cards/npc/open-the-hold.webp` |
 |   | **Order** | An ally within sight acts again, or moves its speed. You do nothing yourself. | `cards/npc/order.webp` |
+|   | **Pick the Soft One** | Move, Strike ignores Block · Move your speed and Strike whoever is least ready for it, round the shield rather than through it: Block does not answ... | `cards/npc/pick-the-soft-one.webp` |
 |   | **Press** | Strike, Strike -1 · Strike, and Strike again at −1. Nothing clever, twice. | `cards/npc/press.webp` |
 |   | **Set and Wait** | Defend · Defend, and keep a reaction for whoever comes. | `cards/npc/set-and-wait.webp` |
 |   | **Shelter** | Defend · Allies within 1 cannot be targeted at range while you stand. | `cards/npc/shelter.webp` |
+|   | **Spoil the Ground** | Ready · Nothing at anybody: one square within reach is a trap now, and stays one. | `cards/npc/spoil-the-ground.webp` |
 |   | **Spray** | Strike · Strike everything in the area, at range. Whatever you breathe, you breathe it on your own kind too. | `cards/npc/spray.webp` |
 |   | **Stoop** | Move, Strike · Arrive from above: move twice your speed, then Strike. | `cards/npc/stoop.webp` |
 |   | **Strike and Step** | Strike, Move · Strike, then move your speed away. | `cards/npc/strike-and-step.webp` |
 |   | **Submerge** | Move · Go under the water. Next round you surface anywhere along it. | `cards/npc/submerge.webp` |
 |   | **Swarm** | Move, Strike +1 · Move, then Strike at +1 for each ally already adjacent to your target. | `cards/npc/swarm.webp` |
 |   | **Take Stock** | Shake 1 · Nothing this round, and shake one condition off. | `cards/npc/take-stock.webp` |
+|   | **The Hive Obeys** | Three allies within sight each move their speed, or one of them acts twice. She does nothing herself but decide. | `cards/npc/the-hive-obeys.webp` |
+|   | **Thrash** | Strike blast 1, Move · Strike every figure adjacent to you, then move your speed away from all of them. | `cards/npc/thrash.webp` |
 |   | **Work the Weave** | Cast · Cast one from your own short list. | `cards/npc/work-the-weave.webp` |
 
 ## Way of Shade — pool
@@ -151,7 +158,7 @@ The minor-node cards of a built Way.
 
 | | Name | What it is | File |
 |---|---|---|---|
-|   | **Between the Plates** | Strike · / Move 1 | `cards/shade/between-the-plates.webp` |
+|   | **Between the Plates** | Strike ignores armour vs Marked · / Move 1 | `cards/shade/between-the-plates.webp` |
 |   | **Call the Shot** | Strike · / Marked (1) · Marked on any enemy you can see, at any range. | `cards/shade/call-the-shot.webp` |
 |   | **Cut and Run** | Strike, Move 2 · / Move 1 | `cards/shade/cut-and-run.webp` |
 |   | **Light Feet** | Move 3 · / Move 2 · Ignoring difficult ground. | `cards/shade/light-feet.webp` |
@@ -285,7 +292,7 @@ Eleven, not twelve: *Step Through* is in the Shadow formulas below.
 
 | | Name | What it is | File |
 |---|---|---|---|
-|   | **Blood Price** | strength 2 · Cast +4 range 3 | `signatures/mind/blood-price.webp` |
+|   | **Blood Price** | strength 2 · Cast +4 range 3 ignores armour | `signatures/mind/blood-price.webp` |
 |   | **Call the Unquiet** | strength 3 · Conjure range 2 a corpse rises and fights for you | `signatures/mind/call-the-unquiet.webp` |
 |   | **Graven Strength** | strength 1 · Graven | `signatures/mind/graven-strength.webp` |
 |   | **Hearth and Home** | strength 1 · a camp nobody unfriendly can find, for one night | `signatures/mind/hearth-and-home.webp` |
@@ -371,7 +378,7 @@ Blood Magic and Spiritualism, handed over by minor nodes.
 |   | **Longer Shadow** | strength 1 | `spells/mind/longer-shadow.webp` |
 |   | **Nothing At All** | strength 5 · your action deck becomes 4 cards, you hold all four, and may play any two halves. Costs a hand | `spells/mind/nothing-at-all.webp` |
 |   | **Nothing to Carry** | strength 1 · +2 to all Casts, and you cannot be Disarmed | `spells/mind/nothing-to-carry.webp` |
-|   | **Open the Vein** | strength 1 · Cast +3 range 2 | `spells/mind/open-the-vein.webp` |
+|   | **Open the Vein** | strength 1 · Cast +3 range 2 ignores Block | `spells/mind/open-the-vein.webp` |
 |   | **Shake It Off** | strength 2 · Shake 3 range 3 | `spells/mind/shake-it-off.webp` |
 |   | **Slick** | strength 1 · range 3 Off Balance (1) | `spells/mind/slick.webp` |
 |   | **Slippery** | strength 1 · Shake 1 range 2 Grappled until your next turn they cannot be Grappled again | `spells/mind/slippery.webp` |

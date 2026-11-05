@@ -19,11 +19,11 @@
     "capabilities": [
       "legs",
       "pack",
-      "fast"
+      "fast",
+      "feral"
     ],
     "tactics": [
       "packTactics",
-      "shieldWall",
       "skirmisher"
     ],
     "targetPriority": "nearest"

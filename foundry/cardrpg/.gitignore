@@ -9,3 +9,6 @@ packs/*/LOG.old
 
 # The round-trip directories the pack builder writes and removes. Present only if it died.
 packs/_source/.roundtrip-*
+
+# Whatever the art pipeline could not draw, and why. A record, not a source.
+art-failures.log

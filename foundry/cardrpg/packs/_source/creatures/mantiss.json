@@ -19,7 +19,8 @@
     "capabilities": [
       "legs",
       "reach",
-      "commander"
+      "commander",
+      "drilled"
     ],
     "tactics": [
       "commander",

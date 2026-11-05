@@ -18,6 +18,7 @@
     "speed": 3,
     "capabilities": [
       "burrow",
+      "feral",
       "summon"
     ],
     "tactics": [],

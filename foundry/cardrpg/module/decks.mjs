@@ -163,7 +163,10 @@ export function npcCardData(card, { kind, creature, back }) {
     face: 0,
     faces: [{ name: card.name, ...(artIn(card) ? { img: artIn(card) } : {}) }],
     back: { name: creature, ...(back ? { img: back } : {}) },
-    system: { kind, sequence: card.sequence, needs: card.needs ?? [], text: card.text ?? "" }
+    system: {
+      kind, sequence: card.sequence, needs: card.needs ?? [],
+      only: card.only ?? [], text: card.text ?? ""
+    }
   };
 }
 

@@ -19,6 +19,7 @@
     "capabilities": [
       "flight",
       "fast",
+      "feral",
       "transport"
     ],
     "tactics": [

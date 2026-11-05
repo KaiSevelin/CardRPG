@@ -19,7 +19,8 @@
     "capabilities": [
       "flight",
       "spray",
-      "commander"
+      "commander",
+      "drilled"
     ],
     "tactics": [
       "commander",

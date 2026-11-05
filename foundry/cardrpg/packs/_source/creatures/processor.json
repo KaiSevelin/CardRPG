@@ -17,7 +17,8 @@
     "armorBase": 1,
     "speed": 3,
     "capabilities": [
-      "legs"
+      "legs",
+      "wits"
     ],
     "tactics": [],
     "targetPriority": "nearest"

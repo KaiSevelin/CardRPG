@@ -19,7 +19,8 @@
     "capabilities": [
       "burrow",
       "legs",
-      "pack"
+      "pack",
+      "wits"
     ],
     "tactics": [
       "packTactics"

@@ -18,7 +18,8 @@
     "speed": 3,
     "capabilities": [
       "legs",
-      "pack"
+      "pack",
+      "wits"
     ],
     "tactics": [
       "packTactics",

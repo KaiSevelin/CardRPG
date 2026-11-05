@@ -21,6 +21,22 @@ const OUT = path.join(root, "..", "art-list.md");
 /* -------------------------------------------- */
 
 /**
+ * **What the pipeline keeps, stated once because three places need it.**
+ *
+ * The model is asked for a 1024 x 1536 original and **nothing keeps it**: the file is transcoded
+ * to webp at this quality and the original is dropped on the floor. Both tables below print this,
+ * and the generator reads it rather than carrying its own number, because a format that is
+ * written down in three places is a format that will disagree with itself.
+ *
+ * Eighty, and measured rather than picked: on the first twenty-two generated pieces it turned
+ * 58MB of PNG into 3.9MB of webp -- **93% smaller** -- at a worst-case difference of 1.88% RMSE,
+ * which is less than the brush texture varies between two generations of the same prompt. At
+ * roughly 180KB a piece the finished set is about **90MB**, and that is the number to weigh
+ * against a repository that is 26MB today.
+ */
+export const DELIVERY = { format: "webp", quality: 80 };
+
+/**
  * A filename from a card's name: lowercase, hyphenated, nothing else.
  *
  * An apostrophe is DROPPED rather than hyphenated, or *Accuser's Ring* files itself as
@@ -35,7 +51,7 @@ export function slug(name) {
 }
 
 /** A condition by its printed name, not its key: an artist should not have to read camelCase. */
-function conditionName(key) {
+export function conditionName(key) {
   const label = CARDRPG.conditions[key]?.label;
   return label ? label.split(".").pop().replace(/([a-z])([A-Z])/g, "$1 $2") : key;
 }
@@ -47,7 +63,7 @@ function conditionName(key) {
  * and the content already says that in a form nobody has to paraphrase. An artist reading "Poisoned
  * 1 (2), resist Might 5" knows more about the picture than they would from a sentence I invented.
  */
-function brief(entry) {
+export function brief(entry) {
   const bits = [];
   const step = st => {
     const parts = [];
@@ -58,6 +74,13 @@ function brief(entry) {
     if (st.mod) parts.push(`${st.mod > 0 ? "+" : ""}${st.mod}`);
     if (st.param) parts.push(String(st.param));
     if (st.range) parts.push(`range ${st.range}`);
+    /* What the step goes through. Without these the brief printed *Heavy Swing* and *Measure* as
+     * the same card, which is exactly what they stopped being. */
+    if (st.ignores) parts.push(`ignores ${st.ignores} armor`);
+    if (st.ignoresArmour) parts.push("ignores armour");
+    if (st.ignoresBlock) parts.push("ignores Block");
+    if (st.when?.ignoresArmour) parts.push(`ignores armour vs ${conditionName(st.when.needs)}`);
+    if (st.when?.ignoresBlock) parts.push(`ignores Block vs ${conditionName(st.when.needs)}`);
     if (st.area) parts.push(`${st.areaKind || "area"} ${st.area}`);
     if (st.condition) {
       parts.push(`${conditionName(st.condition)}${st.intensity ? ` ${st.intensity}` : ""}`
@@ -97,7 +120,7 @@ function brief(entry) {
  * not run: a shield, a shell of discipline, and no Cower* says more about the picture than a
  * statblock does, and it was written when the creature was.
  */
-function creatureBrief(creature) {
+export function creatureBrief(creature) {
   const s = creature.system ?? {};
   const bits = [];
   /* Only what the entry actually says. A character has no `speed` and no `armorBase` -- those are
@@ -119,7 +142,7 @@ function creatureBrief(creature) {
  * every creature that has not earned its own; a token says WHICH GOBLIN, and a Shaman that looks
  * like an Archer is a token that has failed at the only thing it does.
  */
-const CREATURES = expandRoster(content.ROSTER, content.VARIANTS);
+export const CREATURES = expandRoster(content.ROSTER, content.VARIANTS);
 
 /* -------------------------------------------- */
 
@@ -133,7 +156,14 @@ const CREATURES = expandRoster(content.ROSTER, content.VARIANTS);
 const sigs = Object.fromEntries(Object.entries(content)
   .filter(([key]) => key.endsWith("_SIGNATURES")));
 
-const GROUPS = [
+/*
+ * Exported, because the prompt book in `art-prompts.mjs` walks exactly this list.
+ *
+ * **Two generated files reading one GROUPS cannot disagree**, which is the whole reason the
+ * second one imports rather than copies: a brief that lists 501 pieces beside a prompt book that
+ * writes 494 prompts is a second printer, and this project has paid for that mistake twice.
+ */
+export const GROUPS = [
   { dir: "cards/starter", title: "The starter deck",
     why: "What a first session plays with. Draw these first: ten cards is a playable game.",
     list: content.WARRIOR_DECK },
@@ -237,7 +267,9 @@ push(
   "|---|---|",
   "| Ratio | **2:3** |",
   "| Size | **640 × 960** (2×, for a 150px card on a retina display) |",
-  "| Format | `.webp` preferred, `.png` fine. No transparency needed: the art is a full bleed |",
+  `| Format | **\`.${DELIVERY.format}\` at quality ${DELIVERY.quality}**, and nothing else: the `
+  + "generated original is transcoded and dropped. No transparency needed: the art is a "
+  + "full bleed |",
   "| Crop | **Cover, never letterbox.** Art is supplied at the card's own ratio, so a crop is a rounding error |",
   "| Safe area | Keep the subject off the **top 17%** and **bottom 32%**: the name sits on one and the halves on the other |",
   "",
@@ -285,8 +317,9 @@ push(
   "|---|---|",
   "| Ratio | **1:1** |",
   "| Size | **512 × 512** |",
-  "| Format | `.webp` or `.png`, and **transparency is required**: a token sits on the map, not in "
-  + "a frame, so a background is a square of the wrong colour around the creature |",
+  `| Format | **\`.${DELIVERY.format}\` at quality ${DELIVERY.quality}**, and **transparency is `
+  + "required**: a token sits on the map, not in a frame, so a background is a square of the "
+  + "wrong colour around the creature |",
   "| Framing | **The creature fills the square**, head to foot or nose to tail. Nothing is printed "
   + "over a token, so there is no safe area — but Foundry draws a health bar under it and a "
   + "nameplate below that, and both sit outside the image |",
@@ -321,7 +354,7 @@ push(
  * when somebody is holding one. Five pictures against three hundred, and the five are the ones a
  * table looks at all evening.
  */
-const backs = Object.entries(content.DECK_BACKS);
+export const backs = Object.entries(content.DECK_BACKS);
 push(
   "## Deck backs — draw these first",
   "",
@@ -351,10 +384,14 @@ push(
   "**Hands, discards and Spent piles have no back either.** A hand is face up to its owner and a "
   + "discard is face up to the table, so a back on one would be art nobody ever sees.",
   "",
-  "**An NPC deck's back is keyed by creature kind**, because that is all it shows: a goblin's "
-  + "intents should be recognisable across the table as a goblin's. A kind with a back of its own "
-  + `uses it and the other ${CREATURES.filter(c => !(`npc.${c.system.kind}` in content.DECK_BACKS)).length} use the common one, which is what a `
-  + "roster that grew faster than its art could leaves you with.",
+  `**One intent back serves all ${CREATURES.length} creatures**, and no kind has one of its own. `
+  + "The argument for a goblin back — that a goblin's intents should be recognisable across the "
+  + "table as a goblin's — is a good one, and it loses to arithmetic. **Every creature in the "
+  + "roster is its own kind**, variants included: a Goblin Warrior is not a goblin as far as this "
+  + `lookup is concerned. So a back per kind is ${new Set(CREATURES.map(c => c.system.kind)).size}`
+  + " pieces of art, bought to tell a player which creature a deck sitting in front of that "
+  + "creature belongs to. The builder still asks for a kind's own back before falling back to the "
+  + "common one, so a future exception costs one entry and no code.",
   ""
 );
 

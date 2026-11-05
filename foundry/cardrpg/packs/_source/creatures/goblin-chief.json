@@ -19,7 +19,8 @@
     "capabilities": [
       "legs",
       "pack",
-      "commander"
+      "commander",
+      "drilled"
     ],
     "tactics": [
       "packTactics",

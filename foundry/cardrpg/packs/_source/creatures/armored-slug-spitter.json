@@ -18,7 +18,9 @@
     "speed": 2,
     "capabilities": [
       "legs",
-      "spray"
+      "spray",
+      "feral",
+      "ranged"
     ],
     "tactics": [
       "sniper"

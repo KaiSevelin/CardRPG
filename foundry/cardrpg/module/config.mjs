@@ -886,8 +886,46 @@ CARDRPG.capabilities = {
   summon: "CARDRPG.Capability.Summon",
   caster: "CARDRPG.Capability.Caster",
   transport: "CARDRPG.Capability.Transport",
-  shelter: "CARDRPG.Capability.Shelter"
+  shelter: "CARDRPG.Capability.Shelter",
+  /*
+   * --- temperament: what it does when nothing obvious presents itself ---
+   *
+   * **Every creature in the game has exactly one of these three, and the suite holds them
+   * exclusive.** They are here because eight cards in the pool were drawn by all forty-seven
+   * creatures -- the same eight were between 67% and 100% of every deck in the game, median 80%,
+   * and the Processor's deck was the generic eight and nothing else. A roster whose decks agree
+   * four times in five does not feel like a roster, however many special cards sit on top.
+   *
+   * Three of those eight were never universal in the fiction, only in the data: *Hold the Line*
+   * spends your turn giving an ally Block, *Set and Wait* holds a reaction for whoever comes, and
+   * *Take Stock* does nothing this round in order to shake a condition off. A Flat Bug drew all
+   * three, and so did a Goblin Chief, and nothing in the deck could tell you which was which.
+   *
+   * So temperament is the gate, and it had to be a capability rather than a field of its own,
+   * because `needs` reads capabilities and nothing else (`intentNeeds` below). Three flags where
+   * one enumeration would do is the price of that, and the exclusivity check is what keeps the
+   * price honest.
+   *
+   * `drilled` is not declared freely: it is **equivalent to holding a `shieldWall`, `bodyguard` or
+   * `commander` tactic**, which is the same statement said in the field the AI already reads, and
+   * the suite fails if the two ever disagree. That is the one place in this file where a tactic
+   * became load-bearing, and it earned it -- `shieldWall` meant *it holds a line* and did nothing
+   * mechanical with the meaning.
+   */
+  drilled: "CARDRPG.Capability.Drilled",
+  feral: "CARDRPG.Capability.Feral",
+  wits: "CARDRPG.Capability.Wits"
 };
+
+/**
+ * The three temperaments, and the tactics that decide the first of them.
+ *
+ * Exported as data rather than written into the validator, for the reason `MOVERS` is in
+ * monsters.mjs: an invariant the suite can **ask about** is one a new creature cannot quietly
+ * break.
+ */
+CARDRPG.temperaments = ["drilled", "feral", "wits"];
+CARDRPG.drilledTactics = ["shieldWall", "bodyguard", "commander"];
 
 /**
  * **What an intent card may require.** The capabilities, plus `move`.

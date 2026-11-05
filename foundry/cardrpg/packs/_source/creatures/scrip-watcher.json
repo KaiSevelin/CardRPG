@@ -19,6 +19,7 @@
     "capabilities": [
       "flight",
       "pack",
+      "feral",
       "stealth"
     ],
     "tactics": [

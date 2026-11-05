@@ -32,10 +32,28 @@ export function capsOf(caps = []) {
   return set;
 }
 
-/** The cards from a pool that those capabilities earn. */
-export function deckFor(caps, pool) {
+/**
+ * The cards from a pool that those capabilities earn, for the creature of this `kind`.
+ *
+ * **`only` is the one way a card belongs to a named creature rather than to a capability**, and it
+ * exists because three creatures' whole point was unsayable in capabilities. The Queen *spends
+ * every turn on the army instead* and drew the smallest deck in the game -- seven cards, fewer than
+ * a beetle, and the same seven as the Five Legs Adjutant. A Skaah is *full of something worse* and
+ * had no way to let it out. A Processor *is what a scene looks like before the fight* and its deck
+ * was the generic eight and nothing else.
+ *
+ * It is a list of kinds and not a single one because a variant has its own `kind` (`applyVariant`
+ * below), so a card for the Skaah that did not name `skaah-bloated` would be missing from the
+ * fuller of the two. Naming them is the honest form: a prefix convention would have the engine
+ * guessing which kinds are the same creature, and nothing else in the system guesses that.
+ *
+ * `needs` still applies on top, so an `only` card may also ask for a capability and both hold.
+ */
+export function deckFor(caps, pool, kind = "") {
   const have = capsOf(caps);
-  return pool.filter(card => (card.needs ?? []).every(need => have.has(need)));
+  return pool.filter(card =>
+    (!card.only?.length || card.only.includes(kind))
+    && (card.needs ?? []).every(need => have.has(need)));
 }
 
 /**

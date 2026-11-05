@@ -19,6 +19,7 @@
     "capabilities": [
       "burrow",
       "brute",
+      "feral",
       "grapple"
     ],
     "tactics": [

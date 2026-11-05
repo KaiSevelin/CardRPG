@@ -19,7 +19,8 @@
     "capabilities": [
       "legs",
       "stealth",
-      "venom"
+      "venom",
+      "feral"
     ],
     "tactics": [
       "ambusher"

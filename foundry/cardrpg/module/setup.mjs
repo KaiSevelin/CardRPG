@@ -262,7 +262,7 @@ export async function createStarterContent() {
   const buildCreature = async (creature, fate) => {
     const kind = creature.system.kind;
     const npcBack = backOf(`npc.${kind}`) || backOf("npc");
-    const cards = deckFor(creature.system.capabilities ?? [], INTENTS)
+    const cards = deckFor(creature.system.capabilities ?? [], INTENTS, kind)
       .map(card => npcCardData(card, { kind, creature: creature.name, back: npcBack }));
     const deck = await makeCards(`${creature.name} \u2014 Intents`, "deck", `${kind}.deck`,
       cards, backOf(`npc.${kind}`) ? `npc.${kind}` : "npc");
@@ -387,7 +387,7 @@ export async function buildMonster(name) {
   const baseKind = base.system.kind;
   const npcBack = backOf(`npc.${kind}`) || backOf("npc");
 
-  const cards = deckFor(creature.system.capabilities ?? [], INTENTS)
+  const cards = deckFor(creature.system.capabilities ?? [], INTENTS, kind)
     .map(card => npcCardData(card, { kind, creature: creature.name, back: npcBack }));
 
   const find = tag => game.cards.find(d => d.getFlag("cardrpg", FLAG) === tag);

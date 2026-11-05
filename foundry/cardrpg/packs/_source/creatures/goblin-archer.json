@@ -19,6 +19,7 @@
     "capabilities": [
       "legs",
       "pack",
+      "wits",
       "ranged"
     ],
     "tactics": [

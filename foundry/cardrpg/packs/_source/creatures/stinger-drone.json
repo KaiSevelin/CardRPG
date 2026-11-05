@@ -19,6 +19,7 @@
     "capabilities": [
       "flight",
       "venom",
+      "feral",
       "spray"
     ],
     "tactics": [

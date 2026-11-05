@@ -18,7 +18,8 @@
     "speed": 2,
     "capabilities": [
       "legs",
-      "shelter"
+      "shelter",
+      "drilled"
     ],
     "tactics": [
       "shieldWall",

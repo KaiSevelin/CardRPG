@@ -18,7 +18,9 @@
     "speed": 2,
     "capabilities": [
       "legs",
-      "pack"
+      "pack",
+      "drilled",
+      "shelter"
     ],
     "tactics": [
       "packTactics",

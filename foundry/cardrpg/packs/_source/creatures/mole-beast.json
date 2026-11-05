@@ -19,7 +19,8 @@
     "capabilities": [
       "burrow",
       "brute",
-      "reach"
+      "reach",
+      "feral"
     ],
     "tactics": [
       "brute",

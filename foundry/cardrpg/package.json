@@ -6,7 +6,9 @@
   "scripts": {
     "test": "node test/validate.mjs",
     "packs": "node test/build-packs.mjs",
-    "art-list": "node test/art-list.mjs"
+    "art-list": "node test/art-list.mjs",
+    "art": "node test/art-shoot.mjs",
+    "gate": "node test/art-gate.mjs"
   },
   "devDependencies": {
     "@foundryvtt/foundryvtt-cli": "^3.0.5",

@@ -333,6 +333,30 @@ Two things fall out of the order in section 5 rather than needing their own rule
 - **Damage that does not come from an action never meets Block at all** — a Taint card's 1 damage is
   resolved where it is drawn, not through section 5.
 
+#### Going through, and going round
+
+Two different things, and the difference is the whole of why they are named separately.
+
+| | What it beats | Written as |
+|---|---|---|
+| **ignores N armor** | N points of armour. Never Block. | A number: a bodkin finds a gap in plate |
+| **ignores armour** | All of it, whatever is worn | *Bring It Down* against a door |
+| **ignores Block** | All Block, and only Block | *Measure*, *Open the Vein* |
+
+**A step that ignores Block ignores all of it and nothing else.** The Block standing on the
+defender does not apply, and the Block **reaction** is not offered — a shield raised in answer is
+still a shield. **Parry is untouched**, because a Parry is not a Block: it is a blade turned, and
+nothing about going round a shield says anything about that.
+
+Either kind may hang off an **opening** instead of the step, which is the more interesting shape:
+*Between the Plates* ignores armour **only against a target it has Marked**, because the Mark is
+the gap. An unconditional version of that card would be a different and much stronger card.
+
+> The pair to learn the rule from is *Heavy Swing* and *Measure*. Both are `Strike +1`. The first
+> ignores 2 armor and the second ignores Block, so the first is the answer to plate and the second
+> is the answer to a shield — and which of them is in your hand is a different question against a
+> knight than against a shieldwall. They were the same card until these fields existed.
+
 ### Equipped items and Ready
 
 Only equipped items can be used. There are two kinds of slot, and they work differently.
@@ -639,6 +663,7 @@ Always in this order:
 4. **Conditions** – temporary modifiers on you or the target.
 5. **Fate** – draw one card from your fate deck and apply it.
 6. **Target's defenses** – subtract armor, then Block (section 4). The result can't go below 0.
+   A step may **ignore** either of them; see *Going through, and going round* in section 4.
 
 ### Bonus groups
 
@@ -1414,16 +1439,55 @@ item says how well*.
 capabilities allow. So **declaring a monster is declaring what it can do**, and a card added to the
 pool joins every creature that already qualifies without anybody revisiting them.
 
-**Five shapes need nothing at all, and three need only that the creature can move** &mdash; eight
-cards for anything with legs. That floor is a measurement rather than a taste: with four universals,
-twenty-seven of the world's fifty-five creatures landed on five cards or fewer &mdash; four generic
-cards and one special. Generic shapes are the cheap half of a pool, and four more lifted every
-creature at once. The decks now run from **7 to 12**, which overshoots the *5 to 8* above on
+**Two shapes need nothing at all, and three need only that the creature can move** &mdash; five
+cards for anything with legs. The decks run from **7 to 12**, which overshoots the *5 to 8* above on
 purpose: a deck that repeats inside one fight is a deck the players have read by round three.
 
+That universal floor used to be eight, and eight was too many. Measured across the world's
+forty-seven built creatures, those eight cards were between **67% and 100% of every deck in the
+game**, median 80%: four cards in five were the same four cards whichever creature you were looking
+at, and the Processor's deck was the universal eight and nothing else at all. Special cards sat on
+top of that sameness instead of displacing it.
+
+#### Temperament  **[BUILT 2026-11-04]**
+
+**Every creature has exactly one of three temperaments, and some cards are only for one of them.**
+
+| | |
+|---|---|
+| **Drilled** | It is part of something, and will spend a turn on the thing it is part of. Equivalent to holding a `shieldWall`, `bodyguard` or `commander` tactic &mdash; line infantry, walls that walk, and every officer. |
+| **Feral** | No plan beyond the body, and the body is enough. |
+| **Wits** | It can see past the thing in front of it. |
+
+Three of the eight universals were never really universal, only universal in the data: *Set and
+Wait* holds a reaction back for whoever comes, *Hold the Line* spends the turn putting Block on the
+creature beside you, and *Take Stock* does nothing this round in order to shake a condition off.
+Those are things a disciplined thing does. A Flat Bug drew all three, and so did a Goblin Chief, and
+nothing in either deck could tell you which was which.
+
+So those three are drilled-only and wits-only now, and each temperament carries cards of its own:
+the feral side **gorges** on what is already down, **thrashes** everything within reach and goes,
+and **knocks you down** &mdash; the only Prone in the pool, which for a roster of charging animals
+was a gap rather than a decision. The clever side **picks the soft one** (going round a shield
+rather than through it) and **spoils the ground** with a trap.
+
+#### Three cards that belong to a creature
+
+**One exception to earning a card, and it is three cards long.** Each exists because a creature's
+whole stated point could not be said in capabilities:
+
+| | |
+|---|---|
+| *The Hive Obeys* | The Queen *spends every turn on the army instead* &mdash; and drew the smallest deck in the game, the same seven cards as a lieutenant. |
+| *Open the Hold* | A Skaah is *full of something worse*, and nothing in the pool let it out. |
+| *Carry It Off* | A Processor *is what a scene looks like before the fight*, and had no card of its own at all. |
+
+The budget is closed at three. A fourth would mean the capability that should have carried it is
+missing, and the honest fix for a missing capability is a capability.
+
 **`move` is the capability nothing declares.** It is derived from having legs, wings, fins or a
-tunnel, and eleven cards ask for it &mdash; eight directly, and three through `flight`, `burrow` or
-`swim`, which are ways of moving and so grant it. The reason to bother deriving it at all is the
+tunnel, and fourteen cards ask for it &mdash; eleven directly, and three through `flight`, `burrow`
+or `swim`, which are ways of moving and so grant it. The reason to bother deriving it at all is the
 Horde's Queen: she has none of the four, so she is the one creature who cannot draw *Close In*, and
 hers is the seven-card deck. A card whose text moves the creature and whose requirements do not say
 so is a card she walks somewhere on no legs with.
