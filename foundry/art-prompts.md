@@ -3419,7 +3419,7 @@ SUBJECT. "Graven Armour" — strength 4 · you count as Burdened always, whateve
 
 Plate, in ink, over everything. It weighs nothing and you are never again anything but weighed down.
 
-Draw that line literally: the one moment it describes, and nothing else in frame.
+Draw a bare forearm and the back of one hand, plate armour tattooed into the skin in black line -- lames, rivets and the cuff of a vambrace inked where a real one would sit, the lines following the tendons under the skin. Drawn from the elbow down and no higher, the arm entering from the bottom of the frame, and the top third of the picture bare paper.
 ```
 
 ### Graven Eye
@@ -4368,7 +4368,7 @@ SUBJECT. "Measure of the Debt" — strength 2 · a Judged enemy that dies this r
 
 A Judged enemy that dies this round pays you 3 Health. The debt is collected whether or not you were the one who called it in.
 
-Draw that line literally: the one moment it describes, and nothing else in frame.
+Draw the two halves of a split tally stick held edge to edge so the notches line up, in two hands at waist height, cropped at the wrists. The matched notches are the whole subject and the dark is ink rather than a colour. Nothing in the top third of the frame but paper.
 ```
 
 ### Name the Guilty
@@ -4560,7 +4560,7 @@ SUBJECT. "The Lie That Held" — strength 5 · a lie named before the fight is t
 
 Name the lie before the fight. While you spend a secondary each round it is true, and the GM runs the fight as though it always had been.
 
-Draw that line literally: the one moment it describes, and nothing else in frame.
+Draw a plank laid across a gap with nothing under its far end and nothing holding it up, a boot's whole weight in the middle of it and not a trace of bend in the wood. Drawn from the knee down, the gap filling the lower half in ink, and the top of the frame empty.
 ```
 
 ### The Line Holds

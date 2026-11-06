@@ -1160,6 +1160,41 @@ const DIRECTION = {
    * is the whole of what the data says, and it says it three times -- so each gets a sentence
    * about the one thing its own blurb already knows.
    */
+  /*
+   * **Three spells that took fifteen attempts between them, all on the fallback direction.**
+   *
+   * The log named `quietTop` on every one and the number was never far off -- 9.9% and 9.6%
+   * against a floor of 10 -- which reads like a threshold argument until you print the prompts.
+   * All three were getting *draw that line literally: the one moment it describes*, over text
+   * that is not a moment: *a Judged enemy that dies this round pays you 3 Health* is a rule, and
+   * *plate, in ink, over everything* is a tattooed body, which means a figure, which means a
+   * head, which goes at the top of the frame. That is the capsule's own v2 failure, written down
+   * at the top of this file years of commits ago: *a three-quarter crop of a person has a head,
+   * and a head goes at the top, so the head went at the top.*
+   *
+   * So each of these crops below the head and says where the empty paper is. Asking a single
+   * piece for a generous empty top is safe in a way that asking the whole capsule for one was
+   * not -- the capsule move changed 588 prompts at once and cost eleven pieces; this changes
+   * three that have already failed five times each.
+   *
+   * The two faith ones also name the dark as INK rather than as a colour, which is the clause
+   * that fixed The Rumour and The First Taste: handed nothing drawable, the model reaches for
+   * mood, and the mood of a Faith group is its violet accent.
+   */
+  "spells/mind/graven-armour":
+    "a bare forearm and the back of one hand, plate armour tattooed into the skin in black line "
+    + "-- lames, rivets and the cuff of a vambrace inked where a real one would sit, the lines "
+    + "following the tendons under the skin. Drawn from the elbow down and no higher, the arm "
+    + "entering from the bottom of the frame, and the top third of the picture bare paper",
+  "spells/faith/measure-of-the-debt":
+    "the two halves of a split tally stick held edge to edge so the notches line up, in two "
+    + "hands at waist height, cropped at the wrists. The matched notches are the whole subject "
+    + "and the dark is ink rather than a colour. Nothing in the top third of the frame but paper",
+  "spells/faith/the-lie-that-held":
+    "a plank laid across a gap with nothing under its far end and nothing holding it up, a "
+    + "boot's whole weight in the middle of it and not a trace of bend in the wood. Drawn from "
+    + "the knee down, the gap filling the lower half in ink, and the top of the frame empty",
+
   "items/great-axe":
     "a single-bitted axe head on a long haft, the bit chipped along its leading edge and "
     + "re-ground behind the chips. Cheap work: no fuller, no inlay, a wedge and a nail",
