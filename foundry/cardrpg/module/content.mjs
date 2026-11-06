@@ -6491,6 +6491,30 @@ export const DECK_BACKS = {
       + "chain, no lock, no key, no wrist and no neck in it** -- the band alone, and the gap at "
       + "the top is the subject."
   },
+  /*
+   * **The fourth pile, and it is a deck rather than a corner of the item deck.**
+   *
+   * A spell is a slate like an item and a feature -- `sheets.mjs` has `isItem`, `isFeature` and
+   * `isSpell` -- which is why it reads as though it ought to live in the item pile. It does not:
+   * `#leftDecks()` filters the item pile to `i.type === "item"`, and the spell pile appears beside
+   * it only for an actor that has spells, so a non-caster never sees a fourth deck at all.
+   *
+   * The device is the one the deck's own comment argues for: unprepared spells are the book, and
+   * the book is most of what a caster owns, while the count on the pile is what can be CAST. A
+   * page block with markers in it says both halves of that in one object -- the bulk is the book
+   * and the few ribbons are the prepared ones.
+   */
+  spell: {
+    label: "The spell deck",
+    art: "",
+    note: "A caster's book, and the few pages of it ready today. **A closed book seen square from "
+      + "the fore-edge, spine away, so the picture is the page block itself** -- the stacked edges "
+      + "of the leaves drawn as fine horizontal lines, with three ribbon markers hanging from the "
+      + "middle of the block, the centre one longest. Symmetrical about the middle ribbon. **No "
+      + "cover decoration, no clasp, no strap, no buckle** (that is the item deck's device), and "
+      + "**no star, no pentagram, no rune, no candle and no hand** -- paper, thread and nothing "
+      + "else, with bare paper either side of the block."
+  },
 
   /*
    * **The GM's deck, which was wearing the skill deck's back.**

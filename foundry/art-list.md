@@ -1,6 +1,6 @@
 # Art list
 
-**591 pieces**, of which **0** are wired up. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card.
+**592 pieces**, of which **0** are wired up. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card.
 
 ## What to supply
 
@@ -53,9 +53,9 @@ Anything under `icons/svg/` is ignored on purpose: that is Foundry's own placeho
 
 ## Deck backs — draw these first
 
-**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 9 pictures against 582 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
+**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 10 pictures against 582 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
 
-**9 pieces**. Same 2:3 and 640 × 960 as a face, and **no safe area**: nothing is printed over a back, so the whole card is yours.
+**10 pieces**. Same 2:3 and 640 × 960 as a face, and **no safe area**: nothing is printed over a back, so the whole card is yours.
 
 | | Deck | What it is for | File |
 |---|---|---|---|
@@ -65,6 +65,7 @@ Anything under `icons/svg/` is ignored on purpose: that is Foundry's own placeho
 |   | **The item deck** | Your gear, face down. **A strap through a plain square buckle, seen flat and from the front**, the tongue centred and the strap running off both top and bottom edges. A buckle is the one thing every carried object in this game has in common and it is bilaterally symmetrical by construction. **No weapon, no blade, no pack, no pile of loot** -- one fastening, drawn large, with bare paper either side of it. | `backs/item.webp` |
 |   | **The feature deck** | What is permanently true about you. **A keystone at the top of a shallow arch**: the wedge-shaped stone dead centre, two or three voussoirs falling away to left and right, and nothing above it. A feature is always on and load-bearing, and a keystone is the stone that holds the rest up while doing nothing at all. **Not a laurel, not a crest, not a shield shape** -- masonry, with the joints drawn. | `backs/feature.webp` |
 |   | **The condition deck** | What has been put on you, and what will wear off. **A plain open iron band -- a collar or a manacle -- hinged at the bottom centre and standing open**, the two halves rising symmetrically and not quite meeting at the top. Open, because a condition ends. **No chain, no lock, no key, no wrist and no neck in it** -- the band alone, and the gap at the top is the subject. | `backs/condition.webp` |
+|   | **The spell deck** | A caster's book, and the few pages of it ready today. **A closed book seen square from the fore-edge, spine away, so the picture is the page block itself** -- the stacked edges of the leaves drawn as fine horizontal lines, with three ribbon markers hanging from the middle of the block, the centre one longest. Symmetrical about the middle ribbon. **No cover decoration, no clasp, no strap, no buckle** (that is the item deck's device), and **no star, no pentagram, no rune, no candle and no hand** -- paper, thread and nothing else, with bare paper either side of the block. | `backs/spell.webp` |
 |   | **The twist deck** | The GM's deck, and the only one on their side of the table. Drawn when something goes partly wrong, so the back is a promise of a complication rather than a threat: **a fork** -- one line arriving and leaving as two, mirrored left to right, with open paper around it. No knot, no spiral, no coil: nothing that fills its own space or turns rather than mirrors. Not a weapon and not a monster -- the price of a Partial is never an attack. | `backs/twist.webp` |
 |   | **The Wild Magic deck** | Drawn only when a Wild comes out of a fate deck, so its back is a promise that something strange is about to happen. | `backs/wild.webp` |
 |   | **Intent, any creature** | The back on every creature's intent deck in the game. A face-down intent says *this thing is about to act*, and which thing it is is already on the table in front of you -- so the back carries the threat rather than the species. | `backs/npc.webp` |

@@ -88,13 +88,15 @@ export function backOf(key) {
  * spelled out. That check is the reason a back cannot be declared and quietly never drawn, so it
  * is worth three lines of repetition to stay inside it.
  *
- * `spells` is a pile too and deliberately gets nothing: it has no entry in `DECK_BACKS`, and the
- * same check would fail the moment one was added without a picture behind it.
+ * `spells` is here too, and it is a deck rather than a corner of the item pile: `#leftDecks()`
+ * filters items to `i.type === "item"`, and the spell pile is built only for an actor that has
+ * spells, so a non-caster never sees a fourth deck to wonder about.
  */
 export function pileBack(id) {
   if (id === "items") return backOf("item");
   if (id === "features") return backOf("feature");
   if (id === "conditions") return backOf("condition");
+  if (id === "spells") return backOf("spell");
   return "";
 }
 
