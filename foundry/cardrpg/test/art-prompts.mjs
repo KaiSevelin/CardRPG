@@ -1181,6 +1181,35 @@ const DIRECTION = {
    * that fixed The Rumour and The First Taste: handed nothing drawable, the model reaches for
    * mood, and the mood of a Faith group is its violet accent.
    */
+  /*
+   * **The one piece in the book that the API refuses to draw, and it was right to.**
+   *
+   * `safety_violations=[self-harm, violence]` at the OUTPUT stage. The subject reads *you open a
+   * vein for each of them, and for an hour nobody is tired*, and the fallback under it said *draw
+   * that line literally: the one moment it describes* -- so the prompt was a request for a picture
+   * of somebody opening their own veins. That is not a false positive and not a thing to work
+   * around; it is the fallback pointing at the wrong half of the card for the fourth time.
+   *
+   * **Its sibling is the proof.** `spells/mind/open-the-vein` has the more alarming name and drew
+   * first time, because its steps gave it a motif -- *the shape forming between the hands, thrown
+   * with the whole body* -- which aims at the blood in FLIGHT. The Red Hour's effect is plain
+   * text, so it had no steps to read and nothing aimed it anywhere.
+   *
+   * So this aims at the hour instead of the price, and takes the body out of the frame altogether
+   * rather than drawing the aftermath: a bandaged wrist is still a picture about a wound, and the
+   * moderator judges the image. A marked candle is an hour, measured, the way an hour was measured
+   * -- and it is tallow and flame, which is the one palette this set never has to argue about.
+   *
+   * It is deliberately not an hourglass: `items/hourglass-charm` is a Wonder on the neck and two
+   * sandglasses in one book is the twin audit's business.
+   */
+  "spells/mind/the-red-hour":
+    "the hour that was bought, never the price that bought it -- a thick tallow candle with hour "
+    + "lines scored across it, burned down past the first line, the flame low and one heavy fall "
+    + "of wax run down the side. The flame sits about a third of the way down and the candle runs "
+    + "to the bottom edge, so there is bare paper above it. No figure, no hand, no wrist, no "
+    + "bandage, no blade, no wound and no blood anywhere in the frame",
+
   "spells/mind/graven-armour":
     "a bare forearm and the back of one hand, plate armour tattooed into the skin in black line "
     + "-- lames, rivets and the cuff of a vambrace inked where a real one would sit, the lines "

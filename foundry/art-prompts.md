@@ -3947,7 +3947,7 @@ SUBJECT. "The Red Hour" — strength 4 · range 2 every ally within 2 may play a
 
 You open a vein for each of them, and for an hour nobody is tired.
 
-Draw that line literally: the one moment it describes, and nothing else in frame.
+Draw the hour that was bought, never the price that bought it -- a thick tallow candle with hour lines scored across it, burned down past the first line, the flame low and one heavy fall of wax run down the side. The flame sits about a third of the way down and the candle runs to the bottom edge, so there is bare paper above it. No figure, no hand, no wrist, no bandage, no blade, no wound and no blood anywhere in the frame.
 ```
 
 ### The Risen Rank

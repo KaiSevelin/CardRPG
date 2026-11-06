@@ -6277,6 +6277,31 @@ check("cards, signatures and features given an assigned person", castLines.lengt
 const npcBlock = /\n## NPC intent cards\n([\s\S]*?)\n## /.exec(artPrompts)?.[1] ?? "";
 check("and the NPC pool cast nobody, because its actor is nobody",
   /WHO IS IN IT/.test(npcBlock) ? "cast" : "none", "none");
+/*
+ * **No prompt leans on the fallback direction while its own flavour describes self-harm.**
+ *
+ * `spells/mind/the-red-hour` is the only piece in five hundred and ninety-two that the image API
+ * has refused outright -- `safety_violations=[self-harm, violence]`, at the output stage. Its
+ * flavour reads *you open a vein for each of them*, and the fallback under it said *draw that line
+ * literally: the one moment it describes*, so between them the prompt asked for a picture of
+ * somebody opening their own veins. The refusal was correct.
+ *
+ * The fallback is not the problem on its own: eighty-two pieces use it and eighty-one of them are
+ * drawn and through the gate. It is the problem where the text under it is a rule rather than a
+ * moment, and it is a REFUSAL where that text describes something no model will draw. Its own
+ * sibling `open-the-vein` has the worse name and drew first time, because its steps gave it a
+ * motif aimed at the blood in flight rather than at the act.
+ *
+ * So the pairing is what is pinned, not either half. A new blood-magic spell with a vivid line and
+ * no steps to read would land here again, and this fails in a second instead of in a 400.
+ */
+const SELF_HARM = /open(?:s|ing)? a vein|cut(?:s|ting)? (?:yourself|your own)|your own blood/i;
+const unsafeFallback = [...artPrompts.matchAll(/File: `([^`]+)`\n\n```text\n([\s\S]*?)\n```/g)]
+  .filter(([, , body]) => /Draw that line literally/.test(body) && SELF_HARM.test(body))
+  .map(([, file]) => file);
+check("prompts that ask an image model for self-harm, having nothing else to ask for",
+  unsafeFallback.join(", ") || "none", "none");
+
 const EURO = new Set(["Mediterranean", "Nordic", "Slavic", "Northwest European", "Germanic"]);
 check("western ancestries among them, which had nearly vanished",
   castLines.filter(m => EURO.has(m[2])).length, 43);
