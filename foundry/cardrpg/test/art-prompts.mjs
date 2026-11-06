@@ -205,10 +205,32 @@ const FOCAL = {
  * card. So this version says where the dark lives and says the rest goes pale, which is also what
  * brush and wash does when it is working.
  */
+/*
+ * **The fifth version, and this one is not about wording at all. The ask was the floor.**
+ *
+ * v1 to v4 argued about how to phrase the top strip, and by v4 the phrasing had won: of
+ * ninety-nine cards shot under it, the median has 0.00% of its ink inside the top tenth and only
+ * two have any ink up there at all. The model understood, and obeyed.
+ *
+ * It obeyed *too exactly*. The capsule asked for "about a tenth" and `GATE.quietTop` rejects
+ * anything under a tenth, so the instruction aimed the model at the threshold -- and a target
+ * sitting on a floor fails about half the time by arithmetic, however well it is written. The
+ * ninety-nine survivors prove it: first ink at a median of 13.0%, a tenth percentile of 10.7%
+ * and a minimum of 8.3%, which is a tight distribution centred four points above a floor it has
+ * no room to miss low of. Thirty-four of them are within a fifth of the line. Every other rule
+ * in the gate has between two and thirty-five times that margin and none of them ever fires.
+ *
+ * So: **ask for a sixth and keep accepting a tenth.** The gap between the two is the tolerance
+ * the previous four versions never had. A sixth costs the drawing the 10%-17% slice of a clear
+ * window that runs to 43%, and `inWindow` has a median of 65.5% against a 30% floor, so it is
+ * change the composition can afford and the pass rate cannot do without.
+ */
 const composeFace = dir => `- Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it.
+- **A strip of bare paper across the very top, a sixth of the height.** No head, no helmet,
+  no horns, no weapon, no hand, no banner enters it. A sixth is more than the card's own name
+  panel needs, and the extra is deliberate: ink that stops just short of the panel is ink that
+  half the time does not stop short of it.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- ${FOCAL[dir]
     ?? "a face, a blade's edge, the point of the gesture"} -- are all in that band, which is where
