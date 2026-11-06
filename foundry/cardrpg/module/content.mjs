@@ -6441,24 +6441,56 @@ export const DECK_BACKS = {
       + "of the same player."
   },
   /*
-   * **Why there is no `item`, `feature` or `condition` back here, and what it would take.**
+   * **The three slate decks, and the day the previous note was waiting for has arrived.**
    *
-   * A slate is an Item, not a Card -- it lives on a sheet or in a compendium and is never shuffled
-   * or dealt, so nothing today has a face-down state to show. But a slate is DRAWN as a card: the
-   * tray and both actor sheets render it at the card's own ratio with the same rim, which is why
-   * the question keeps coming up and why the answer is not simply no.
+   * What stood here said there was no `item`, `feature` or `condition` back because nothing had a
+   * face-down state to show, and that the day an unexpanded view wanted one, the entries should be
+   * added here and `backOf` would already answer for them. That day is this one: the three piles
+   * down the left of the tray are collapsed whenever they are not the open one -- `#leftDecks()`
+   * has carried `open: this.openPile === d.id` all along -- and a collapsed pile is a face-down
+   * deck by every test this file applies. It was drawing a hatched gradient because there was no
+   * picture to draw.
    *
-   * It would not mean turning Items into Cards. That was the first answer given here and it was
-   * wrong. A back is a `Cards` concept in Foundry -- `Cards.img` and `Card.back.img` -- and
-   * nothing in this system's own templates renders one; slates are card-shaped divs that are
-   * always face up. So the cost is a face-down state in the renderer plus one picture per type,
-   * and the schema does not move at all.
+   * **The schema does not move**, exactly as that note promised. A slate is still an Item and
+   * still never shuffled or dealt; what changed is that the pile it lives in now wears a picture
+   * when it is shut, which is one `--cr-art` on a button.
    *
-   * It is not built because nothing asks for it yet: there is no rule that hides a slate. The day
-   * an unexpanded view wants one, add the entries here and `backOf` already answers for them --
-   * and note that the suite pins that every declared back is read by something, so an entry added
-   * before a reader exists will fail rather than sit unused.
+   * **The notes below are FORMS, not categories, and that is the lesson this table has already
+   * paid for twice.** `skill` said *the scene side's deck* and came back with a dagger on it,
+   * because a sentence about which half of the rules a deck belongs to tells an artist nothing and
+   * the gap gets filled with whatever a fantasy card back usually has. `twist` named *a knot* and
+   * *a thing turning* and lost two shots to the gate, because a knot fills its own space and
+   * leaves no paper for a contour and a turning thing is rotationally rather than bilaterally
+   * symmetrical. So each of these names one centred, bilaterally symmetrical object that leaves
+   * paper around it, and says what it must not be.
    */
+  item: {
+    label: "The item deck",
+    art: "",
+    note: "Your gear, face down. **A strap through a plain square buckle, seen flat and from the "
+      + "front**, the tongue centred and the strap running off both top and bottom edges. A "
+      + "buckle is the one thing every carried object in this game has in common and it is "
+      + "bilaterally symmetrical by construction. **No weapon, no blade, no pack, no pile of "
+      + "loot** -- one fastening, drawn large, with bare paper either side of it."
+  },
+  feature: {
+    label: "The feature deck",
+    art: "",
+    note: "What is permanently true about you. **A keystone at the top of a shallow arch**: the "
+      + "wedge-shaped stone dead centre, two or three voussoirs falling away to left and right, "
+      + "and nothing above it. A feature is always on and load-bearing, and a keystone is the "
+      + "stone that holds the rest up while doing nothing at all. **Not a laurel, not a crest, "
+      + "not a shield shape** -- masonry, with the joints drawn."
+  },
+  condition: {
+    label: "The condition deck",
+    art: "",
+    note: "What has been put on you, and what will wear off. **A plain open iron band -- a collar "
+      + "or a manacle -- hinged at the bottom centre and standing open**, the two halves rising "
+      + "symmetrically and not quite meeting at the top. Open, because a condition ends. **No "
+      + "chain, no lock, no key, no wrist and no neck in it** -- the band alone, and the gap at "
+      + "the top is the subject."
+  },
 
   /*
    * **The GM's deck, which was wearing the skill deck's back.**

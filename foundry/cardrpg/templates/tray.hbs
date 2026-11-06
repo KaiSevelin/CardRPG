@@ -18,8 +18,11 @@
   {{!-- LEFT COLUMN: Items, Features, Conditions from the top --}}
   <section class="cr-hud__decks cr-hud__decks--left">
     {{#each leftDecks}}
+      {{!-- A shut pile is a face-down deck and wears that deck's back; an open one is showing its
+            cards, so it keeps the hatch and loads no texture. --}}
       <button type="button"
-            class="cr-pile{{#if this.open}} cr-pile--open{{/if}}"
+            class="cr-pile{{#if this.open}} cr-pile--open{{/if}}{{#if this.art}} cr-pile--faced{{/if}}"
+            {{#if this.art}}style="--cr-art: url('{{this.art}}')"{{/if}}
             data-action="openPile" data-pile="{{this.id}}" data-tooltip="{{this.tip}}">
       <span class="cr-pile__count">{{this.count}}</span>
       <span class="cr-pile__label">{{this.label}}</span>
@@ -114,9 +117,11 @@
         {{#each this.cards}}
           {{!-- The card body takes it out of the stack; its name turns the stack to it instead,
                 so a card behind can be read without being disturbed. --}}
+          {{!-- ONE style attribute. These were two, and a duplicate attribute is not merged by a
+                browser -- the first wins and the rest are dropped -- so every stacked card that
+                HAD art silently lost its --cr-depth and stacked at zero offset. --}}
           <div class="cr-card cr-card--spread cr-card--stacked cr-card--takeable{{#if this.action}} cr-card--base{{/if}}{{#if this.disabled}} cr-card--disabled{{/if}}{{#if this.flipped}} cr-card--back{{/if}}"
-               {{#if this.art}}style="--cr-art: url('{{this.art}}')"{{/if}}
-               style="--cr-depth: {{@index}}"
+               style="--cr-depth: {{@index}}{{#if this.art}}; --cr-art: url('{{this.art}}'){{/if}}"
                data-group="{{this.group}}" data-tooltip="{{this.tip}}"
                role="button" tabindex="0" data-action="unstack" data-half="{{../half}}"
                {{#if this.slate}}data-slate-id="{{this.id}}"{{/if}}>

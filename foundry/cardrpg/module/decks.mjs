@@ -74,6 +74,30 @@ export function backOf(key) {
   return art && !art.startsWith("icons/svg/") ? art : "";
 }
 
+/**
+ * The back a collapsed slate pile wears, by the pile's id in the tray.
+ *
+ * **The three piles down the left of the tray are face-down decks whenever they are shut**, which
+ * is what `openPile` has always meant, and a shut deck showing a hatched gradient is a deck with
+ * no back rather than a deck that wants none. Items, features and conditions have one now.
+ *
+ * **Written out rather than derived, and the suite is why.** The pile ids are plural -- they label
+ * a stack in the UI -- and `DECK_BACKS` is keyed on the singular, like the document type a slate
+ * actually has. Trimming an `s` would have worked and would also have made these three invisible
+ * to the check that every declared back is read by something, which greps this file for the key
+ * spelled out. That check is the reason a back cannot be declared and quietly never drawn, so it
+ * is worth three lines of repetition to stay inside it.
+ *
+ * `spells` is a pile too and deliberately gets nothing: it has no entry in `DECK_BACKS`, and the
+ * same check would fail the moment one was added without a picture behind it.
+ */
+export function pileBack(id) {
+  if (id === "items") return backOf("item");
+  if (id === "features") return backOf("feature");
+  if (id === "conditions") return backOf("condition");
+  return "";
+}
+
 /** A Card document from a content definition. One shape in one place: the starter decks and the
  * levelling graph both create action cards, and two spellings of the same thing would drift.
  *

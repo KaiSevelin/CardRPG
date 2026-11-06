@@ -1,6 +1,6 @@
 # Art prompts
 
-**588 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
+**591 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
 
 It walks the same `GROUPS` the art list walks, by importing it rather than copying it, so the two files cannot disagree about what exists.
 
@@ -27,7 +27,7 @@ So the numbers are gone from the capsules and the picture is in their place: **t
 
 ## Deck backs
 
-**Draw these first.** 6 pictures against 582 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
+**Draw these first.** 9 pictures against 582 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
 
 ### The capsule — paste this once
 
@@ -84,7 +84,7 @@ File: `backs/action.webp`
 ```text
 SUBJECT. A deck back for **The action deck**. Face down in front of every player, all game. Cards from the common pool and all four Ways mix in one deck, so this is NOT a Way's back -- the deck is yours, not Shade's.
 
-A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 5 in this set.
+A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 8 in this set.
 ```
 
 #### The fate deck
@@ -94,7 +94,7 @@ File: `backs/fate.webp`
 ```text
 SUBJECT. A deck back for **The fate deck**. The back players see most: it is shuffled and face down by design, and that is what makes a thin deck a risk rather than a lookup. Twenty cards, drawn from constantly.
 
-A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 5 in this set.
+A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 8 in this set.
 ```
 
 #### The skill deck
@@ -104,7 +104,37 @@ File: `backs/skill.webp`
 ```text
 SUBJECT. A deck back for **The skill deck**. What you do when you are NOT fighting: climbing, listening, lifting, picking a lock, talking someone round. **No weapon of any kind on this one** -- no blade, no point, no hilt, no arrowhead. A hand, a key, an eye, a knot, a lens: the tools of a scene. It has to read as clearly NOT the action deck at a glance, since both are face down in front of the same player.
 
-A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 5 in this set.
+A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 8 in this set.
+```
+
+#### The item deck
+
+File: `backs/item.webp`
+
+```text
+SUBJECT. A deck back for **The item deck**. Your gear, face down. **A strap through a plain square buckle, seen flat and from the front**, the tongue centred and the strap running off both top and bottom edges. A buckle is the one thing every carried object in this game has in common and it is bilaterally symmetrical by construction. **No weapon, no blade, no pack, no pile of loot** -- one fastening, drawn large, with bare paper either side of it.
+
+A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 8 in this set.
+```
+
+#### The feature deck
+
+File: `backs/feature.webp`
+
+```text
+SUBJECT. A deck back for **The feature deck**. What is permanently true about you. **A keystone at the top of a shallow arch**: the wedge-shaped stone dead centre, two or three voussoirs falling away to left and right, and nothing above it. A feature is always on and load-bearing, and a keystone is the stone that holds the rest up while doing nothing at all. **Not a laurel, not a crest, not a shield shape** -- masonry, with the joints drawn.
+
+A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 8 in this set.
+```
+
+#### The condition deck
+
+File: `backs/condition.webp`
+
+```text
+SUBJECT. A deck back for **The condition deck**. What has been put on you, and what will wear off. **A plain open iron band -- a collar or a manacle -- hinged at the bottom centre and standing open**, the two halves rising symmetrically and not quite meeting at the top. Open, because a condition ends. **No chain, no lock, no key, no wrist and no neck in it** -- the band alone, and the gap at the top is the subject.
+
+A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 8 in this set.
 ```
 
 #### The twist deck
@@ -114,7 +144,7 @@ File: `backs/twist.webp`
 ```text
 SUBJECT. A deck back for **The twist deck**. The GM's deck, and the only one on their side of the table. Drawn when something goes partly wrong, so the back is a promise of a complication rather than a threat: **a fork** -- one line arriving and leaving as two, mirrored left to right, with open paper around it. No knot, no spiral, no coil: nothing that fills its own space or turns rather than mirrors. Not a weapon and not a monster -- the price of a Partial is never an attack.
 
-A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 5 in this set.
+A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 8 in this set.
 ```
 
 #### The Wild Magic deck
@@ -124,7 +154,7 @@ File: `backs/wild.webp`
 ```text
 SUBJECT. A deck back for **The Wild Magic deck**. Drawn only when a Wild comes out of a fate deck, so its back is a promise that something strange is about to happen.
 
-A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 5 in this set.
+A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 8 in this set.
 ```
 
 #### Intent, any creature
@@ -134,7 +164,7 @@ File: `backs/npc.webp`
 ```text
 SUBJECT. A deck back for **Intent, any creature**. The back on every creature's intent deck in the game. A face-down intent says *this thing is about to act*, and which thing it is is already on the table in front of you -- so the back carries the threat rather than the species.
 
-A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 5 in this set.
+A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 8 in this set.
 ```
 
 ## The starter deck
@@ -8743,7 +8773,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 
 ## Where prompts still repeat
 
-**174 prompts in 32 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
+**177 prompts in 32 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
 
 **6 of those clusters are the ones that bite**, listed first: the ones where the subject line carries no prose either, so neither half of the prompt tells the cards apart. The rest share a direction over subjects that already differ — forty-three consumables drawing a nearly-empty vessel still come back as forty-three different pictures, because each subject names its own.
 
@@ -8769,8 +8799,8 @@ Answer a cluster by adding its keys to `DIRECTION` in `test/art-prompts.mjs` and
 | **2** | 1 | ground covered -- weight forward, the last footfall still behind | `cards/starter/advance` `signatures/shade/over-and-past` |
 | **2** | 1 | ground covered -- weight forward, the last footfall still behind; the instant a blow lands, the weapon already through -- never wound up, never posing | `cards/starter/lunge` `signatures/strength/the-lance` |
 | **2** | 1 | pulled toward something against the will | `cards/starter/taunt` `signatures/strength/play-to-the-crowd` |
+| **9** | — |  | `backs/action` `backs/fate` `backs/skill` `backs/item` `backs/feature` …+4 |
 | **7** | — | hung on a cord and drawn hanging, turned off square | `items/amulet-of-the-fed-thread` `items/amulet-of-the-mended-thread` `items/gag-of-the-nine` `items/gorget-of-the-turned-blade` `items/hourglass-charm` …+2 |
-| **6** | — |  | `backs/action` `backs/fate` `backs/skill` `backs/twist` `backs/wild` …+1 |
 | **6** | — | one hand's worth of object, drawn close and large | `items/accusers-ring` `items/gamblers-coin` `items/mnemonic-stone` `items/pact-iron` `items/serpents-tooth-ring` …+1 |
 | **6** | — | held, or just set down, the grip polished by gripping | `items/blade-of-the-eager-hand` `items/discriminating-wand` `items/gauntlet-of-the-open-palm` `items/hooked-gauntlet` `items/reavers-edge` …+1 |
 | **5** | — | cloth with weight in it, hung from one point | `items/cloak-of-the-grey` `items/cloak-of-the-grey-road` `items/deep-pockets` `items/mantle-of-the-unburdened` `items/winter-cloak` |

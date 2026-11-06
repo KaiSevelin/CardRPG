@@ -513,6 +513,23 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
   padding: 0;
 }
+/*
+ * A shut pile that has a back wears it instead of the hatch.
+ *
+ * The hatch is what a face-down deck looked like when there was no picture to put there; a real
+ * back does that job better and is the whole reason a back exists. The count and label still sit
+ * over it, so they keep a scrim of their own below -- a white number on an unknown picture is
+ * unreadable on about half of them.
+ */
+.cr-hud-layer .cr-pile--faced {
+  background: var(--cr-art) center / cover no-repeat, var(--cardrpg-harm-paper);
+}
+.cr-hud-layer .cr-pile--faced .cr-pile__count,
+.cr-hud-layer .cr-pile--faced .cr-pile__label {
+  background: rgba(0, 0, 0, 0.55);
+  border-radius: 3px;
+  padding: 0 0.35em;
+}
 .cr-hud-layer .cr-pile:hover { outline: 2px solid var(--cardrpg-group-6); }
 .cr-hud-layer .cr-pile--open { outline: 2px solid var(--cardrpg-paper); }
 .cr-hud-layer .cr-pile__count { font-size: 1.4rem; font-weight: 700; line-height: 1; }

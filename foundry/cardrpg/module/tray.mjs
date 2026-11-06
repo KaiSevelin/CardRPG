@@ -19,7 +19,7 @@
 import { CARDRPG } from "./config.mjs";
 import {
   deckOf, discardCards, retireCards, catchBreath, canCatchBreath, refill, cardName, artOf,
-  dealSkillHand, discardSkillCards,
+  dealSkillHand, discardSkillCards, pileBack,
   isReserved, reserveCard, uprightCards
 } from "./decks.mjs";
 import {
@@ -648,7 +648,16 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         id: "conditions", label: "Conditions", count: conditions.length,
         tip: "What is on you. A duration ticks down on its creator's turn."
       }
-    ].map(d => ({ ...d, open: this.openPile === d.id }));
+    ].map(d => ({
+      ...d,
+      open: this.openPile === d.id,
+      /*
+       * **A shut pile is a face-down deck, so it wears that deck's back.** Read for the shut state
+       * only: an open pile is showing its cards, and a back behind them is a picture nobody can
+       * see paid for in a texture load. `pileBack` owns the pile-id-to-deck-key mapping.
+       */
+      art: this.openPile === d.id ? "" : pileBack(d.id)
+    }));
   }
 
   /**
