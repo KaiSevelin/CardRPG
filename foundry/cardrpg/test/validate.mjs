@@ -6217,6 +6217,34 @@ check("distinct ancestries across the people",
 check("casting is hashed from the kind, not counted off the roster",
   /hash\(kind\)/.test(fs.readFileSync(path.join(root, "test/art-list.mjs"), "utf8")) ? "yes" : "no",
   "yes");
+
+/*
+ * **The verdict log, which exists because a sample of survivors was read as a sample of all.**
+ *
+ * `quietTop` was measured over the cards on disk, found to sit just above its floor, and called
+ * the rule that was rejecting pieces. Ninety-seven of those ninety-nine had PASSED it -- the band
+ * was tight because the rule was obeyed -- and the capsule was rewritten anyway, at a cost of
+ * eleven failed pieces. The reason the mistake was available to make is that a rejected piece is
+ * overwritten by the next `--failed` run, so the disk keeps only winners.
+ *
+ * These four checks hold the two halves of the fix in place: that the verdict is written whether
+ * it passed or failed, that the capsule is fingerprinted separately from the whole prompt (the
+ * prompt's own hash is unique per piece and cannot group a batch, which was the thing missing),
+ * and that neither the prompt nor the key is ever written down.
+ */
+const shootSource = fs.readFileSync(path.join(root, "test/art-shoot.mjs"), "utf8");
+/* The CALL, not the declaration: without the semicolon this pattern matches its own `function`
+ * line too, and the suite's own duplicate-grep rule caught it. */
+check("every verdict is logged, not only the failures",
+  /logVerdict\(piece, verdict, prompt\);/.test(shootSource) ? "yes" : "no", "yes");
+check("and the capsule is fingerprinted apart from the subject",
+  /capsule: fingerprint\(piece\.capsule\)/.test(shootSource) ? "yes" : "no", "yes");
+/* The one rule both logs share, and the reason either is safe to paste into an issue. */
+check("the verdict log writes a fingerprint, never the prompt text",
+  /\bprompt: fingerprint\(prompt\)/.test(shootSource) ? "yes" : "no", "yes");
+check("and the log is a record, not a source",
+  fs.readFileSync(path.join(root, ".gitignore"), "utf8").includes("art-verdicts.log")
+    ? "ignored" : "committed", "ignored");
 /* The pack builder's source, read for the rules that cannot be asked of its output: that it reads
  * every pack back through Foundry's own packer, and that it borrows its shapes rather than
  * spelling them again. */
@@ -10719,7 +10747,7 @@ for (const m of selfSource.matchAll(
   const p = path.join(root, m[2]);
   if (fs.existsSync(p)) readFiles.set(m[1], fs.readFileSync(p, "utf8"));
 }
-check("files this suite greps by name", readFiles.size, 58);
+check("files this suite greps by name", readFiles.size, 59);
 
 /* Every `/pattern/.test(VAR)` and `VAR.includes("...")`, with the check it belongs to. */
 const nameOfCheck = index => {
@@ -10751,7 +10779,7 @@ for (const m of selfSource.matchAll(/(\w+)\.includes\("((?:[^"\\]|\\.)*)"\)/g)) 
 }
 
 /* The pin that keeps the rest of this honest. */
-check("greps over a whole file, resolved", greps.length, 534);
+check("greps over a whole file, resolved", greps.length, 537);
 
 /*
  * **The rule, as one predicate, run over a planted example before it is run over the suite.**

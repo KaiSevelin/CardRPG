@@ -25,6 +25,7 @@
  */
 import fs from "node:fs";
 import path from "node:path";
+import crypto from "node:crypto";
 import { execFileSync } from "node:child_process";
 import { ledger } from "./art-prompts.mjs";
 import { DELIVERY } from "./art-list.mjs";
@@ -169,6 +170,72 @@ function logFailure(piece, status, body, form = {}) {
 }
 
 /*
+ * **Every verdict, not just the ones that survive -- because the survivors lie.**
+ *
+ * This file exists because of a wrong fix. `quietTop` was measured across the ninety-nine cards
+ * on disk, found to sit in a tight band just above its floor, and declared the rule that was
+ * doing the rejecting. It was not: ninety-seven of those ninety-nine PASSED, and the band was
+ * tight because the rule was being obeyed precisely. The capsule was rewritten on that reading
+ * and the next twenty-five pieces went 14 for 25.
+ *
+ * The mistake was unavoidable with the data to hand. A rejected piece is overwritten by the next
+ * `--failed` run, so the only sample anyone can ever measure is the one that passed -- and a
+ * sample of survivors cannot say what killed the dead. Scrollback is not a record either: the
+ * verdict was printed every time and gone by morning.
+ *
+ * So: one JSON object per attempt, appended, and nothing ever removed. It is deliberately NOT
+ * the prompt -- the same rule the failure log keeps, so this file is safe to paste anywhere --
+ * but it carries a `prompt` fingerprint and the commit, which is what makes the comparison that
+ * was missing possible: group by fingerprint and the capsule's two versions separate themselves.
+ */
+const VERDICT_NAME = "art-verdicts.log";
+const VERDICTS = path.join(root, VERDICT_NAME);
+/* Once, not per piece: fifty pieces is fifty `git rev-parse` calls for one unchanging answer. */
+const HEAD = (() => {
+  try {
+    return execFileSync("git", ["rev-parse", "--short", "HEAD"], { cwd: root, stdio: ["ignore", "pipe", "ignore"] })
+      .toString().trim();
+  } catch { return null; }
+})();
+const fingerprint = text => crypto.createHash("sha1").update(text).digest("hex").slice(0, 12);
+function logVerdict(piece, verdict, prompt) {
+  const round = n => typeof n === "number" ? Number(n.toFixed(4)) : n;
+  const entry = {
+    at: new Date().toISOString(),
+    key: piece.key,
+    kind: verdict.kind,
+    ok: verdict.ok,
+    faults: verdict.faults,
+    /* The eight rules the gate can fail a piece on, so a run can be grouped by which one bit. */
+    m: {
+      quietTop: round(verdict.quietTop), inWindow: round(verdict.inWindow),
+      black: round(verdict.black), paper: round(verdict.paper),
+      cool: round(verdict.cool), grey: round(verdict.grey),
+      edgeGrain: round(verdict.edgeGrain), opaque: round(verdict.opaque),
+      symmetry: round(verdict.symmetry)
+    },
+    model: modelFor(piece), quality,
+    /*
+     * **Two fingerprints, never the text, and the second one is the one that matters.**
+     *
+     * `prompt` covers capsule and subject together, so it identifies one exact request: two
+     * attempts at a piece that nobody re-worded share a value, which is how a re-roll is told
+     * from a rewrite. But it is unique per piece, so it cannot group a batch.
+     *
+     * `capsule` covers only the shared half -- the same string for every piece in a group -- so
+     * every attempt made under one wording shares it and a capsule edit splits the log in two by
+     * itself. That is the comparison that was missing when `quietTop` was misread: twenty-six
+     * pieces at one value went 26 for 26, twenty-five at the next went 14 for 25, and the two
+     * numbers were never beside each other until they had been paid for.
+     */
+    prompt: fingerprint(prompt),
+    capsule: fingerprint(piece.capsule),
+    head: HEAD
+  };
+  fs.appendFileSync(VERDICTS, `${JSON.stringify(entry)}\n`, "utf8");
+}
+
+/*
  * **The key, from the environment or from a file whose path is given.**
  *
  * The environment is the right default and it is also the thing that goes wrong: on Windows
@@ -269,6 +336,8 @@ async function shoot(piece) {
   /* And the gate, immediately, because a picture nobody measured is a picture nobody checked. */
   const verdict = score(target, { kind: kindOf(piece), size: piece.size });
   console.log(report(verdict));
+  /* Written whether it passed or failed: a log of successes is the sample that misled us once. */
+  logVerdict(piece, verdict, prompt);
   return { cost, ok: verdict.ok };
 }
 

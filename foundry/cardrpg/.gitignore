@@ -12,3 +12,6 @@ packs/_source/.roundtrip-*
 
 # Whatever the art pipeline could not draw, and why. A record, not a source.
 art-failures.log
+
+# Every verdict the gate ever gave, pass and fail. A record, not a source.
+art-verdicts.log
