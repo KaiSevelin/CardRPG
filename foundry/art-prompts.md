@@ -161,10 +161,8 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, a sixth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it. A sixth is more than the card's own name
-  panel needs, and the extra is deliberate: ink that stops just short of the panel is ink that
-  half the time does not stop short of it.
+- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
+  no horns, no weapon, no hand, no banner enters it.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -343,10 +341,8 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, a sixth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it. A sixth is more than the card's own name
-  panel needs, and the extra is deliberate: ink that stops just short of the panel is ink that
-  half the time does not stop short of it.
+- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
+  no horns, no weapon, no hand, no banner enters it.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -514,10 +510,8 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, a sixth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it. A sixth is more than the card's own name
-  panel needs, and the extra is deliberate: ink that stops just short of the panel is ink that
-  half the time does not stop short of it.
+- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
+  no horns, no weapon, no hand, no banner enters it.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- the point of contact, the place the ground is marked, the gap where the distance went -- are all in that band, which is where
   the picture actually happens.
@@ -962,10 +956,8 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, a sixth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it. A sixth is more than the card's own name
-  panel needs, and the extra is deliberate: ink that stops just short of the panel is ink that
-  half the time does not stop short of it.
+- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
+  no horns, no weapon, no hand, no banner enters it.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -1166,10 +1158,8 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, a sixth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it. A sixth is more than the card's own name
-  panel needs, and the extra is deliberate: ink that stops just short of the panel is ink that
-  half the time does not stop short of it.
+- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
+  no horns, no weapon, no hand, no banner enters it.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -1380,10 +1370,8 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, a sixth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it. A sixth is more than the card's own name
-  panel needs, and the extra is deliberate: ink that stops just short of the panel is ink that
-  half the time does not stop short of it.
+- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
+  no horns, no weapon, no hand, no banner enters it.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -1482,10 +1470,8 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, a sixth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it. A sixth is more than the card's own name
-  panel needs, and the extra is deliberate: ink that stops just short of the panel is ink that
-  half the time does not stop short of it.
+- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
+  no horns, no weapon, no hand, no banner enters it.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -1664,10 +1650,8 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, a sixth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it. A sixth is more than the card's own name
-  panel needs, and the extra is deliberate: ink that stops just short of the panel is ink that
-  half the time does not stop short of it.
+- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
+  no horns, no weapon, no hand, no banner enters it.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -1846,10 +1830,8 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, a sixth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it. A sixth is more than the card's own name
-  panel needs, and the extra is deliberate: ink that stops just short of the panel is ink that
-  half the time does not stop short of it.
+- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
+  no horns, no weapon, no hand, no banner enters it.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -2050,10 +2032,8 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, a sixth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it. A sixth is more than the card's own name
-  panel needs, and the extra is deliberate: ink that stops just short of the panel is ink that
-  half the time does not stop short of it.
+- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
+  no horns, no weapon, no hand, no banner enters it.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -2254,10 +2234,8 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, a sixth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it. A sixth is more than the card's own name
-  panel needs, and the extra is deliberate: ink that stops just short of the panel is ink that
-  half the time does not stop short of it.
+- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
+  no horns, no weapon, no hand, no banner enters it.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -2470,10 +2448,8 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, a sixth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it. A sixth is more than the card's own name
-  panel needs, and the extra is deliberate: ink that stops just short of the panel is ink that
-  half the time does not stop short of it.
+- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
+  no horns, no weapon, no hand, no banner enters it.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -2738,10 +2714,8 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, a sixth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it. A sixth is more than the card's own name
-  panel needs, and the extra is deliberate: ink that stops just short of the panel is ink that
-  half the time does not stop short of it.
+- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
+  no horns, no weapon, no hand, no banner enters it.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -2868,10 +2842,8 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, a sixth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it. A sixth is more than the card's own name
-  panel needs, and the extra is deliberate: ink that stops just short of the panel is ink that
-  half the time does not stop short of it.
+- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
+  no horns, no weapon, no hand, no banner enters it.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -2964,10 +2936,8 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, a sixth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it. A sixth is more than the card's own name
-  panel needs, and the extra is deliberate: ink that stops just short of the panel is ink that
-  half the time does not stop short of it.
+- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
+  no horns, no weapon, no hand, no banner enters it.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -3888,10 +3858,8 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, a sixth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it. A sixth is more than the card's own name
-  panel needs, and the extra is deliberate: ink that stops just short of the panel is ink that
-  half the time does not stop short of it.
+- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
+  no horns, no weapon, no hand, no banner enters it.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -4572,10 +4540,8 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, a sixth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it. A sixth is more than the card's own name
-  panel needs, and the extra is deliberate: ink that stops just short of the panel is ink that
-  half the time does not stop short of it.
+- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
+  no horns, no weapon, no hand, no banner enters it.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -4794,10 +4760,8 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, a sixth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it. A sixth is more than the card's own name
-  panel needs, and the extra is deliberate: ink that stops just short of the panel is ink that
-  half the time does not stop short of it.
+- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
+  no horns, no weapon, no hand, no banner enters it.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -6376,10 +6340,8 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, a sixth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it. A sixth is more than the card's own name
-  panel needs, and the extra is deliberate: ink that stops just short of the panel is ink that
-  half the time does not stop short of it.
+- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
+  no horns, no weapon, no hand, no banner enters it.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -6568,10 +6530,8 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, a sixth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it. A sixth is more than the card's own name
-  panel needs, and the extra is deliberate: ink that stops just short of the panel is ink that
-  half the time does not stop short of it.
+- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
+  no horns, no weapon, no hand, no banner enters it.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.

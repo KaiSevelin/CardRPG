@@ -206,31 +206,43 @@ const FOCAL = {
  * brush and wash does when it is working.
  */
 /*
- * **The fifth version, and this one is not about wording at all. The ask was the floor.**
+ * **The fifth version asked for a sixth instead of a tenth, and it is reverted. Do not retry it.**
  *
- * v1 to v4 argued about how to phrase the top strip, and by v4 the phrasing had won: of
- * ninety-nine cards shot under it, the median has 0.00% of its ink inside the top tenth and only
- * two have any ink up there at all. The model understood, and obeyed.
+ * The reasoning was that the capsule asked for "about a tenth" while `GATE.quietTop` rejects
+ * under a tenth, so the instruction aimed the model at the threshold -- and a target sitting on a
+ * floor should fail about half the time by arithmetic. The evidence offered was the survivors:
+ * first ink at a median of 13.0%, a tenth percentile of 10.7%, a minimum of 8.3%, and thirty-four
+ * of ninety-nine within a fifth of the line.
  *
- * It obeyed *too exactly*. The capsule asked for "about a tenth" and `GATE.quietTop` rejects
- * anything under a tenth, so the instruction aimed the model at the threshold -- and a target
- * sitting on a floor fails about half the time by arithmetic, however well it is written. The
- * ninety-nine survivors prove it: first ink at a median of 13.0%, a tenth percentile of 10.7%
- * and a minimum of 8.3%, which is a tight distribution centred four points above a floor it has
- * no room to miss low of. Thirty-four of them are within a fifth of the line. Every other rule
- * in the gate has between two and thirty-five times that margin and none of them ever fires.
+ * **That evidence could not support the claim, because survivors cannot say what killed the
+ * dead.** A tight distribution sitting just above a floor is equally the signature of a rule
+ * being obeyed precisely, and that is what it was: 97 of those 99 cards passed, and the next
+ * group went 26 for 26 under the same wording. The rule was never the one rejecting anything.
  *
- * So: **ask for a sixth and keep accepting a tenth.** The gap between the two is the tolerance
- * the previous four versions never had. A sixth costs the drawing the 10%-17% slice of a clear
- * window that runs to 43%, and `inWindow` has a median of 65.5% against a 30% floor, so it is
- * change the composition can afford and the pass rate cannot do without.
+ * Asked for a sixth, twenty-five signatures came back and ELEVEN failed. Same group, same gate,
+ * split on the commit:
+ *
+ * | asked for | n | pass | quietTop | over the cool ceiling | inWindow median | under its floor |
+ * |---|---|---|---|---|---|---|
+ * | a tenth | 26 | 26 | 11.7% | 0 | 67.1% | 0 |
+ * | a sixth | 25 | 14 | 23.4% | 10 | 45.7% | 3 |
+ *
+ * Two things went wrong, and the first caused the second. **The model overshoots this ask by
+ * about 1.4x** -- told a tenth it drew 11.7%, told a sixth it drew 23.4% -- so a sixth lands at
+ * very nearly a quarter. And the clear window ENDS at 43%, so a strip reaching 23% leaves the
+ * drawing 23%-43% to live in instead of 13%-43%: a third of the window gone, `inWindow` down from
+ * 67.1% to 45.7%, three pieces through the floor. The palette went with it, ten of twenty-five
+ * over a ceiling that had never once been touched in a hundred and twenty-five pieces -- a
+ * subject squeezed into a smaller box comes back with more colour in it.
+ *
+ * The lesson is about the gate's floors, not about this strip: **`quietTop` and `inWindow` are
+ * one constraint from opposite ends.** The top strip cannot be widened without taking the room
+ * `inWindow` needs, so neither number can be argued about alone.
  */
 const composeFace = dir => `- Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, a sixth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it. A sixth is more than the card's own name
-  panel needs, and the extra is deliberate: ink that stops just short of the panel is ink that
-  half the time does not stop short of it.
+- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
+  no horns, no weapon, no hand, no banner enters it.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- ${FOCAL[dir]
     ?? "a face, a blade's edge, the point of the gesture"} -- are all in that band, which is where
