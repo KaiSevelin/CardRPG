@@ -175,9 +175,25 @@ function lookOf(creature) {
  * ancestry does not keep arriving at the same age.
  */
 const SEX = ["a woman", "a man", "a woman", "a man", "a woman", "a man", "a woman"];
+/*
+ * **Fifteen, and three of the fifteen are new because the set had too few westerners in it.**
+ *
+ * The first list ran to thirteen and three of those were European -- Mediterranean, Nordic,
+ * Slavic -- which is 23% of the list and came out at 27% of the cast. That reads as a correction
+ * overshooting rather than as a port city: pale northern Europeans belong in this set as much as
+ * anybody, and a set that has nearly none of them has swapped one default for a different
+ * flatness.
+ *
+ * **The length matters and is not free.** Seven, fifteen and four are pairwise coprime, so the
+ * three axes do not travel together -- a creature that gets the fourth ancestry does not always
+ * get the fourth age. Fourteen would have shared a factor with the seven sexes and sixteen with
+ * the four ages, and either would have locked two axes into step. Fifteen and seventeen were the
+ * two lengths available; fifteen is the one that needed two names rather than four.
+ */
 const ANCESTRY = [
   "West African", "Levantine", "South Asian", "East Asian", "North African", "Mediterranean",
-  "Persian", "Nordic", "Horn of Africa", "Slavic", "Southeast Asian", "Caribbean", "Central Asian"
+  "Persian", "Nordic", "Horn of Africa", "Slavic", "Southeast Asian", "Caribbean",
+  "Central Asian", "Northwest European", "Germanic"
 ];
 const AGE = ["in their twenties", "in their thirties", "in their forties", "past fifty"];
 
@@ -188,13 +204,29 @@ const CAP = 480;
 const HUMAN = new Set(content.HUMAN_KINDS);
 const hash = text => [...text].reduce((h, c) => (h * 31 + c.codePointAt(0)) % 1000003, 7);
 
+/**
+ * One person, assigned from a seed string: sex, ancestry and age.
+ *
+ * **Exported because a card needs this as much as a token does, and only the token had it.** A
+ * card's capsule listed the ancestries of the city and banned the pale default by name, which is
+ * a distribution asked of a single request that cannot see the other five hundred -- the same
+ * thing that produced twenty-four pale men before the tokens were assigned, running the other
+ * way. Every card steered away from the named default, so the default nearly disappeared.
+ *
+ * A list in a capsule cannot produce a spread. Only an assignment can, and an assignment has to
+ * be made out here where something can count it.
+ */
+export function castLine(seed) {
+  const h = hash(seed);
+  return `${SEX[h % 7]} of ${ANCESTRY[(h >> 1) % ANCESTRY.length]} appearance, `
+    + `${AGE[(h >> 5) % 4]}`;
+}
+
 export function castOf(creature) {
   const kind = creature.system?.kind ?? "";
   const human = HUMAN.has(kind) || HUMAN.has(BASE_OF.get(kind)?.system?.kind);
   if (!human) return "";
-  const h = hash(kind);
-  return `Draw this one as ${SEX[h % 7]} of ${ANCESTRY[(h >> 1) % 13]} appearance, `
-    + `${AGE[(h >> 5) % 4]} -- that is fixed, not a suggestion.`;
+  return `Draw this one as ${castLine(kind)} -- that is fixed, not a suggestion.`;
 }
 
 export function creatureBrief(creature) {

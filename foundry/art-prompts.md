@@ -229,6 +229,8 @@ File: `cards/starter/advance.webp`
 SUBJECT. "Advance" — Move 3 · / Move 2
 
 Draw ground covered -- weight forward, the last footfall still behind.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of East Asian appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Draw Steel
@@ -239,6 +241,8 @@ File: `cards/starter/draw-steel.webp`
 SUBJECT. "Draw Steel" — Strike · / Ready
 
 Draw a blade coming free of the scabbard already moving forward: the draw and the cut are one motion, and the empty scabbard is still swinging from it.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Northwest European appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Heavy Swing
@@ -249,6 +253,8 @@ File: `cards/starter/heavy-swing.webp`
 SUBJECT. "Heavy Swing" — Strike +1 ignores 2 armor · / Move 1
 
 Draw a swing with everything behind it, caught at the bottom of its arc -- the committed blow of somebody who decided before they moved.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of East Asian appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Lunge
@@ -259,6 +265,8 @@ File: `cards/starter/lunge.webp`
 SUBJECT. "Lunge" — Move 2, Strike · / Move 1
 
 Draw ground covered -- weight forward, the last footfall still behind; the instant a blow lands, the weapon already through -- never wound up, never posing.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of North African appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Quick Hands
@@ -269,6 +277,8 @@ File: `cards/starter/quick-hands.webp`
 SUBJECT. "Quick Hands" — Use · / Ready
 
 Draw a hand working an object, the object mid-use rather than held up to be seen; a weapon coming to hand, caught between carried and held.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Central Asian appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Second Wind
@@ -279,6 +289,8 @@ File: `cards/starter/second-wind.webp`
 SUBJECT. "Second Wind" — Heal 2 · / Use
 
 Draw a fighter back on their feet and finding the next breath -- chest working, head coming up, the moment the body agrees to keep going.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of South Asian appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Shield Up
@@ -289,6 +301,8 @@ File: `cards/starter/shield-up.webp`
 SUBJECT. "Shield Up" — Defend Block applies to every attack until your next turn · / Move 1
 
 Draw a shield brought fully up and settled, the body behind it made small. This is cover meant to last a while rather than a parry -- nothing in the frame is moving.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Slavic appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Strike
@@ -299,6 +313,8 @@ File: `cards/starter/strike.webp`
 SUBJECT. "Strike" — Strike · / Move 1
 
 Draw the instant a blow lands, the weapon already through -- never wound up, never posing.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Slavic appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Taunt
@@ -309,6 +325,8 @@ File: `cards/starter/taunt.webp`
 SUBJECT. "Taunt" — Compelled (1) · / Move 1
 
 Draw pulled toward something against the will.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Central Asian appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Weapon Swap
@@ -319,6 +337,8 @@ File: `cards/starter/weapon-swap.webp`
 SUBJECT. "Weapon Swap" — Ready · / Strike
 
 Draw one weapon let go and falling while the other hand closes on the next. Both are in frame and neither is being held.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Central Asian appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ## The common pool
@@ -413,6 +433,8 @@ File: `cards/common/both-hands.webp`
 SUBJECT. "Both Hands" — Ready, Strike · / Ready
 
 Draw a weapon coming to hand, caught between carried and held; the instant a blow lands, the weapon already through -- never wound up, never posing.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Southeast Asian appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Dig In
@@ -423,6 +445,8 @@ File: `cards/common/dig-in.webp`
 SUBJECT. "Dig In" — Heal 2 · / Move 1
 
 Draw somebody going to ground instead of forward: down on one knee behind whatever cover there is, a hand pressed hard against a wound, breath coming back. The recovery is in refusing to advance, so nothing in the frame is moving.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of South Asian appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Hold the Line
@@ -433,6 +457,8 @@ File: `cards/common/hold-the-line.webp`
 SUBJECT. "Hold the Line" — Defend · / Strike -1
 
 Draw boots planted on ground that is not being given up, guard high and the weapon still working. The subject is the line under the feet, not the shield above them.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Persian appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Measure
@@ -443,6 +469,8 @@ File: `cards/common/measure.webp`
 SUBJECT. "Measure" — Strike +1 ignores Block · / Move 1
 
 Draw a blow placed exactly, the point going into a gap the width of a hand. Precision rather than force, and the opposite of a heavy swing.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of South Asian appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Off-Hand Blow
@@ -453,6 +481,8 @@ File: `cards/common/off-hand-blow.webp`
 SUBJECT. "Off-Hand Blow" — Strike · / Strike -1
 
 Draw the instant a blow lands, the weapon already through -- never wound up, never posing; then the weaker follow-up, off the hand that was not busy.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Central Asian appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Press
@@ -463,6 +493,8 @@ File: `cards/common/press.webp`
 SUBJECT. "Press" — Strike, Move 1 · / Move 2
 
 Draw the instant a blow lands, the weapon already through -- never wound up, never posing; ground covered -- weight forward, the last footfall still behind.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Levantine appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ## NPC intent cards
@@ -1037,6 +1069,8 @@ File: `cards/shade/between-the-plates.webp`
 SUBJECT. "Between the Plates" — Strike ignores armour vs Marked · / Move 1
 
 Draw the gap in a harness with a point already in it: a narrow blade entering where two plates meet under the arm, the armour unmarked everywhere else in frame. The seam is the subject and the blade is only what found it.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of South Asian appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Call the Shot
@@ -1047,6 +1081,8 @@ File: `cards/shade/call-the-shot.webp`
 SUBJECT. "Call the Shot" — Strike · / Marked (1) · Marked on any enemy you can see, at any range.
 
 Draw one enemy picked out of a field at distance -- a hand up with two fingers laid along the line of sight, the eye behind it narrowed, the target far off and small. Nothing has been thrown and nothing has been loosed.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Germanic appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Cut and Run
@@ -1057,6 +1093,8 @@ File: `cards/shade/cut-and-run.webp`
 SUBJECT. "Cut and Run" — Strike, Move 2 · / Move 1
 
 Draw the blow and the leaving in one gesture: a blade dragged back across the body while the feet have already turned the other way, shoulders ahead of hips. Committed to the exit rather than to a second cut.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Horn of Africa appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Light Feet
@@ -1067,6 +1105,8 @@ File: `cards/shade/light-feet.webp`
 SUBJECT. "Light Feet" — Move 3 · / Move 2 · Ignoring difficult ground.
 
 Draw two feet on bad ground and no weight resting in it -- a toe on a loose stone, the other foot already lifted, rubble and standing water all around. Drawn from the knee down and no higher.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Caribbean appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Mock
@@ -1077,6 +1117,8 @@ File: `cards/shade/mock.webp`
 SUBJECT. "Mock" — Dazed (1) · / Move 1
 
 Draw a face mid-jeer, close and turned a little away, the mouth open on a word that has already landed somewhere off-frame. The subject is the insult being enjoyed, not whoever took it.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Germanic appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Pin the Shadow
@@ -1087,6 +1129,8 @@ File: `cards/shade/pin-the-shadow.webp`
 SUBJECT. "Pin the Shadow" — Strike Slowed (1) · / Move 1
 
 Draw a blade driven through a trailing hem and into the ground under it, the cloth pulled taut and the foot above it unable to lift. The point is in the earth and not in anybody.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Persian appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Second Knife
@@ -1097,6 +1141,8 @@ File: `cards/shade/second-knife.webp`
 SUBJECT. "Second Knife" — Strike range 3 · / Strike -1
 
 Draw a second blade leaving the hand underhand while the first is still gripped in the other fist. Two knives, one in the air and one held, and the throw is the cheap short one.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Horn of Africa appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Sleight
@@ -1107,6 +1153,8 @@ File: `cards/shade/sleight.webp`
 SUBJECT. "Sleight" — Use, Strike · / Ready
 
 Draw one hand doing the obvious thing and the other doing the real one -- an object held up in plain view high in the frame while the second hand, lower and half out of it, has already taken something else.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of North African appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Slip the Knot
@@ -1117,6 +1165,8 @@ File: `cards/shade/slip-the-knot.webp`
 SUBJECT. "Slip the Knot" — Move 2 · / Shake 1
 
 Draw wrists coming out of a cord that is still tied: one hand already free and flat, the loop collapsing off the other. The knot itself is never untied and stays in the picture.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Levantine appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Smoke and Go
@@ -1127,6 +1177,8 @@ File: `cards/shade/smoke-and-go.webp`
 SUBJECT. "Smoke and Go" — Invisible (1), Move 2 · / Use · On yourself.
 
 Draw a low cloud at ankle height with nobody in it, and the far side of it disturbed -- a hem, a heel, the edge of a hand leaving the frame. Whoever stood here is already not here.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Mediterranean appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Take the Shot
@@ -1137,6 +1189,8 @@ File: `cards/shade/take-the-shot.webp`
 SUBJECT. "Take the Shot" — Strike +1 · / Move 2
 
 Draw the release itself: a bowstring gone slack and the drawing hand still open exactly where it was, the arrow already out of frame. The hand that let go is the whole subject.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of North African appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Vanish
@@ -1147,6 +1201,8 @@ File: `cards/shade/vanish.webp`
 SUBJECT. "Vanish" — Invisible (1) · / Move 2 · On yourself.
 
 Draw the outline of a person held open in the air by nothing -- dust and lamplight bending around a shape that is not there, the floor beneath it unpressed. No body, no cloak, no smoke.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Persian appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ## Way of Strength — pool
@@ -1242,6 +1298,8 @@ File: `cards/strength/armoured-advance.webp`
 SUBJECT. "Armoured Advance" — Move 3 · / Move 1 · Your armor counts +1 until your next turn.
 
 Draw a plated figure walking into something head-down, pauldrons forward and the helm tipped so the brow takes it first. The advance is in the shoulders; the ground is not the subject and barely shows.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Persian appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Beat the Blade
@@ -1252,6 +1310,8 @@ File: `cards/strength/beat-the-blade.webp`
 SUBJECT. "Beat the Blade" — Strike Disarmed (1) · / Move 1
 
 Draw a sword leaving a hand that has just been struck across the knuckles -- the grip sprung open, the fingers splayed, the hilt tumbling clear. The empty hand is the picture.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Persian appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Hammerblow
@@ -1262,6 +1322,8 @@ File: `cards/strength/hammerblow.webp`
 SUBJECT. "Hammerblow" — Strike · / Move 1
 
 Draw a two-handed weapon at the very top of its arc, both arms locked out and the whole body stacked underneath it, a half-beat before any of it comes down.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of West African appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Heave
@@ -1272,6 +1334,8 @@ File: `cards/strength/heave.webp`
 SUBJECT. "Heave" — Move 2 · / Ready · Carrying any weight without being Slowed.
 
 Draw somebody walking under a load that should not be walkable: a beam or a cask across one shoulder, the spine straight beneath it, the pace unbroken. Not the lift -- the carrying.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Southeast Asian appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Overbear
@@ -1282,6 +1346,8 @@ File: `cards/strength/overbear.webp`
 SUBJECT. "Overbear" — Grappled (2) · / Move 1
 
 Draw two bodies gone to the ground as one, the upper one's whole weight on the lower's chest and both arms wrapped. Nothing is being struck; something is being kept still.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of East Asian appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Pull Them Down
@@ -1292,6 +1358,8 @@ File: `cards/strength/pull-them-down.webp`
 SUBJECT. "Pull Them Down" — Strike · / Strike -1 · The secondary only against a Prone or Grappled target.
 
 Draw a fistful of somebody else's collar and harness, hauled downward and sideways, their knees already going. The grip is the subject and the face above it is cropped out.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Northwest European appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Roar
@@ -1302,6 +1370,8 @@ File: `cards/strength/roar.webp`
 SUBJECT. "Roar" — Compelled (1) · / Move 1 · Every adjacent enemy.
 
 Draw the roar at its source and far too close -- a jaw open to its limit and the throat working, the frame filled by the one head and nothing else in it. The cause is all there is; the effect is off-frame.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of South Asian appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Shield Bash
@@ -1312,6 +1382,8 @@ File: `cards/strength/shield-bash.webp`
 SUBJECT. "Shield Bash" — Strike · / Move 1 · No damage: push 2 and step into the square it left.
 
 Draw the flat of a shield driven forward like a door being shut, the boss dead centre and the arm straight behind it. Nothing edged anywhere in the frame.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Germanic appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Shield Wall
@@ -1322,6 +1394,8 @@ File: `cards/strength/shield-wall.webp`
 SUBJECT. "Shield Wall" — Defend · / Defend, Block 1 area 1
 
 Draw shields locked edge to edge, more than one pair of hands in frame, the seam between two of them dead centre.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of South Asian appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Shoulder Check
@@ -1332,6 +1406,8 @@ File: `cards/strength/shoulder-check.webp`
 SUBJECT. "Shoulder Check" — Strike · / Off Balance (1) · Adjacent.
 
 Draw a shoulder arriving in somebody's chest at a run, the two bodies touching along one line and the further one's heels leaving the ground.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of South Asian appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Sweep the Leg
@@ -1342,6 +1418,8 @@ File: `cards/strength/sweep-the-leg.webp`
 SUBJECT. "Sweep the Leg" — Strike Prone (1) · / Move 1
 
 Draw a low horizontal sweep through the back of a knee, drawn from the shins down: the supporting leg folding the wrong way while the other foot is still planted.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Southeast Asian appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Two-Hand It
@@ -1352,6 +1430,8 @@ File: `cards/strength/two-hand-it.webp`
 SUBJECT. "Two-Hand It" — Strike +2 · / Ready
 
 Draw both hands closing onto one hilt and a shield already dropped, falling out of the bottom of the frame. The decision is the picture: everything into the next blow and nothing left to guard with.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Persian appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Walk It Off
@@ -1362,6 +1442,8 @@ File: `cards/strength/walk-it-off.webp`
 SUBJECT. "Walk It Off" — Heal 2, Shake 2 · / Move 1 · On yourself.
 
 Draw somebody walking a wound off instead of tending it -- a hand pressed flat to one side, head up, the stride deliberately ordinary. The refusal to stop is the subject.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of West African appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ## Way cards
@@ -1456,6 +1538,8 @@ File: `cards/way/roll-with-it.webp`
 SUBJECT. "Roll With It" — Move 3 · / Move 2 · Sidestep 2, and you may end next to a different enemy
 
 Draw the end of a shoulder roll: a body coming up out of the ground onto one knee with the momentum still in it, facing a different way than it set off.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of South Asian appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Set Spear
@@ -1466,6 +1550,8 @@ File: `cards/way/set-spear.webp`
 SUBJECT. "Set Spear" — Defend · / Move 1 · an enemy ending its move adjacent takes your Strike
 
 Draw a spear butt driven into the ground and braced underfoot, the point levelled outward and steady. Nobody is holding it up; the earth is.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Caribbean appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ## Skill cards
@@ -1560,6 +1646,8 @@ File: `cards/skill/break-it.webp`
 SUBJECT. "Break It" — might 1 · Edge: Something gives whether or not you get through: the GM says what broke.
 
 Draw the instant something gives -- a board, a hasp, a shutter going at its weakest point with a hand still on it. The break is the subject and the person is barely in frame.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Slavic appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Heave
@@ -1570,6 +1658,8 @@ File: `cards/skill/heave.webp`
 SUBJECT. "Heave" — might 2
 
 Draw a load shifting at last -- shoulder into it, feet skidding, the thing finally moving.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of North African appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Inspiration
@@ -1580,6 +1670,8 @@ File: `cards/skill/inspiration.webp`
 SUBJECT. "Inspiration" — Edge: Draw 1 skill card.
 
 Draw the moment a face changes because the person has just thought of the thing. Nothing in the hands; all of it in the eyes.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Germanic appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Keep Your Footing
@@ -1590,6 +1682,8 @@ File: `cards/skill/keep-your-footing.webp`
 SUBJECT. "Keep Your Footing" — agility 1 · Edge: You do not fall, whatever else happens.
 
 Draw a body gone past the angle at which it should fall, and not falling: one foot has found the only solid thing left.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Persian appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Out of the Light
@@ -1600,6 +1694,8 @@ File: `cards/skill/out-of-the-light.webp`
 SUBJECT. "Out of the Light" — shadow 1
 
 Draw somebody stepping backwards out of a lit place into one that is not, more than half of them already gone.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of East Asian appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Quick Hands
@@ -1610,6 +1706,8 @@ File: `cards/skill/quick-hands.webp`
 SUBJECT. "Quick Hands" — agility 2
 
 Draw fingers working a catch or a knot faster than an eye follows, the other hand already started on what comes after.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Mediterranean appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Set Your Feet
@@ -1620,6 +1718,8 @@ File: `cards/skill/set-your-feet.webp`
 SUBJECT. "Set Your Feet" — might 3
 
 Draw the instant before a pull rather than during it: weight dropped, heels dug, the line gone tight and nothing moving yet.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of East Asian appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Sharp Eyes
@@ -1630,6 +1730,8 @@ File: `cards/skill/sharp-eyes.webp`
 SUBJECT. "Sharp Eyes" — wits 1 · Edge: Ask the GM one yes-or-no question about the scene.
 
 Draw a look held one second longer than anybody else's, on the single thing in the room that is wrong.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Levantine appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Soldier's Learning
@@ -1640,6 +1742,8 @@ File: `cards/skill/soldiers-learning.webp`
 SUBJECT. "Soldier's Learning" — lore 1
 
 Draw a hand reading something by touch that it has handled a thousand times before. Recognition, not study.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Nordic appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### The Loud Voice
@@ -1650,6 +1754,8 @@ File: `cards/skill/the-loud-voice.webp`
 SUBJECT. "The Loud Voice" — presence 1 · Edge: Everyone nearby hears you, and knows it was you.
 
 Draw a shout thrown across a space with the whole chest behind it, and every head in frame already turning toward it.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of South Asian appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ## Wild Magic
@@ -1744,6 +1850,8 @@ File: `cards/wild/backlash.webp`
 SUBJECT. "Backlash" — Dazed (1)
 
 Draw a caster taking their own spell in the face: the head snapped back, one hand still raised in the shape it was making, the eyes gone unfocused. It went off, and it went off here.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Central Asian appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Blink
@@ -1754,6 +1862,8 @@ File: `cards/wild/blink.webp`
 SUBJECT. "Blink" — Move 3 ignoring figures and difficult ground
 
 Draw one figure half in two places at once -- a left side at one edge of the frame and a right side at the other, nothing at all between them and no ground crossed.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Germanic appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Echo
@@ -1764,6 +1874,8 @@ File: `cards/wild/echo.webp`
 SUBJECT. "Echo" — The Cast resolves a second time, against the same target.
 
 Draw the same blow arriving twice: one figure, and a second identical shape half a pace behind it, out of step by one heartbeat.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of South Asian appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Glare
@@ -1774,6 +1886,8 @@ File: `cards/wild/glare.webp`
 SUBJECT. "Glare" — The Cast becomes a Blast 2 around its target, whoever is standing in it.
 
 Draw light going off around a standing figure rather than at it: the figure dark and central, the flare thrown outward past it in every direction, the frame's near edges washed pale.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Slavic appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Misfire
@@ -1784,6 +1898,8 @@ File: `cards/wild/misfire.webp`
 SUBJECT. "Misfire" — The Cast resolves against the nearest creature instead, ally or not.
 
 Draw a spell going off at the wrong end of the room -- the caster's hand still open and extended, and the person standing beside them taking all of it.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of North African appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Open Door
@@ -1794,6 +1910,8 @@ File: `cards/wild/open-door.webp`
 SUBJECT. "Open Door" — Invisible (1), Marked (2)
 
 Draw an open door with nobody in the doorway and something on the far side already looking this way. The invisibility is the empty frame; the marking is the attention coming back through it.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of North African appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Residue
@@ -1804,6 +1922,8 @@ File: `cards/wild/residue.webp`
 SUBJECT. "Residue" — Cursed
 
 Draw a shadow on the ground belonging to nobody standing: the figure above it lit and ordinary, the shape beneath it the wrong size and reaching the wrong way.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Levantine appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Second Sight
@@ -1814,6 +1934,8 @@ File: `cards/wild/second-sight.webp`
 SUBJECT. "Second Sight" — Blessed
 
 Draw light arriving on one person out of a dim room and on nothing else, from no source anywhere in the frame -- the face lifted into it, the hands still at whatever they were doing.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Nordic appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### The Long Step
@@ -1824,6 +1946,8 @@ File: `cards/wild/the-long-step.webp`
 SUBJECT. "The Long Step" — Move 3 ignoring figures and difficult ground, Prone (1)
 
 Draw the arrival and not the crossing: a figure already down on both hands at the far end of the move, dust still settling around it, having got there without landing.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Northwest European appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Veil
@@ -1834,6 +1958,8 @@ File: `cards/wild/veil.webp`
 SUBJECT. "Veil" — Invisible (1)
 
 Draw a sheet of air hanging like hung cloth, the room behind it displaced a finger's width to one side where it falls. Something is behind it and the picture does not say what.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of North African appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ## Signatures — Way of Shade
@@ -1929,6 +2055,8 @@ File: `signatures/shade/double-or-nothing.webp`
 SUBJECT. "Double or Nothing" — Strike · / Move 1 · Draw two fate cards -- both apply, added together. Variance, not advantage.
 
 Draw the instant a blow lands, the weapon already through -- never wound up, never posing.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Southeast Asian appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Heckle
@@ -1939,6 +2067,8 @@ File: `signatures/shade/heckle.webp`
 SUBJECT. "Heckle" — Heckled (1) · / Move 1 · An enemy arriving next to you draws fate with disadvantage until your next turn.
 
 Draw attention pulled the wrong way.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Germanic appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Lift
@@ -1949,6 +2079,8 @@ File: `signatures/shade/lift.webp`
 SUBJECT. "Lift" — Strike · / Move 1 · On a hit, take one card from the target's own deck. It is yours now, and it is in your deck for good.
 
 Draw the instant a blow lands, the weapon already through -- never wound up, never posing.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Southeast Asian appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Loose and Step
@@ -1959,6 +2091,8 @@ File: `signatures/shade/loose-and-step.webp`
 SUBJECT. "Loose and Step" — Strike, Move 1 · / Move 1
 
 Draw the blow landing, loosed from a bow or a barrel, the target well off; ground covered -- weight forward, the last footfall still behind.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Mediterranean appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Named
@@ -1969,6 +2103,8 @@ File: `signatures/shade/named.webp`
 SUBJECT. "Named" — Strike · / Marked (1) · Name one enemy. Against it, your Parry also Strikes for 1.
 
 Draw the instant a blow lands, the weapon already through -- never wound up, never posing; singled out of a crowd.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Germanic appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### One Opening
@@ -1979,6 +2115,8 @@ File: `signatures/shade/one-opening.webp`
 SUBJECT. "One Opening" — Strike · / Move 1 · Against a target that is unaware or carrying an opening, the damage is doubled.
 
 Draw the instant a blow lands, the weapon already through -- never wound up, never posing.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Central Asian appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### One Trick
@@ -1989,6 +2127,8 @@ File: `signatures/shade/one-trick.webp`
 SUBJECT. "One Trick" — You may prepare from any one school you have ever seen cast.
 
 Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Central Asian appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Over and Past
@@ -1999,6 +2139,8 @@ File: `signatures/shade/over-and-past.webp`
 SUBJECT. "Over and Past" — Move 3 · / Move 1 · You may move through enemy squares.
 
 Draw ground covered -- weight forward, the last footfall still behind.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Nordic appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Point Man
@@ -2009,6 +2151,8 @@ File: `signatures/shade/point-man.webp`
 SUBJECT. "Point Man" — Foresee · / Move 1 · While you are the furthest forward of your party, Foresee one extra type.
 
 Draw the moment before a thing happens, shown twice.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of West African appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Set
@@ -2019,6 +2163,8 @@ File: `signatures/shade/set.webp`
 SUBJECT. "Set" — Ready Slowed 2 an adjacent square; the first enemy to enter takes your Strike value · / Ready · Place a trap on an adjacent square.
 
 Draw a weapon coming to hand, caught between carried and held; movement dragging, as if through water.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Nordic appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### The Kit
@@ -2029,6 +2175,8 @@ File: `signatures/shade/the-kit.webp`
 SUBJECT. "The Kit" — item · You may never put it down. Every Hard physical obstacle becomes Normal.
 
 Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of East Asian appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### The Opening
@@ -2039,6 +2187,8 @@ File: `signatures/shade/the-opening.webp`
 SUBJECT. "The Opening" — Advantage against anyone carrying an opening -- whoever set it.
 
 Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Levantine appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ## Signatures — Way of Strength
@@ -2134,6 +2284,8 @@ File: `signatures/strength/cleave-to-the-bone.webp`
 SUBJECT. "Cleave to the Bone" — For you, the Wound threshold is 4, not 5.
 
 Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Caribbean appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Get a Grip
@@ -2144,6 +2296,8 @@ File: `signatures/strength/get-a-grip.webp`
 SUBJECT. "Get a Grip" — Grappled (2) · / Move 1 · No save at all if both your hands are empty.
 
 Draw held, and not letting go.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of North African appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Interpose
@@ -2154,6 +2308,8 @@ File: `signatures/strength/interpose.webp`
 SUBJECT. "Interpose" — Defend · / Move 1 · Take a hit meant for an adjacent ally.
 
 Draw the step across -- a body arriving in the path of a blow meant for somebody else, caught between the two of them.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Slavic appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Loaded Before the Bell
@@ -2164,6 +2320,8 @@ File: `signatures/strength/loaded-before-the-bell.webp`
 SUBJECT. "Loaded Before the Bell" — You begin every combat already loaded, and the first shot of a fight is +2.
 
 Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Caribbean appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Nothing Gets Through
@@ -2174,6 +2332,8 @@ File: `signatures/strength/nothing-gets-through.webp`
 SUBJECT. "Nothing Gets Through" — While you are Overloaded, your armor counts double.
 
 Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Nordic appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### On My Call
@@ -2184,6 +2344,8 @@ File: `signatures/strength/on-my-call.webp`
 SUBJECT. "On My Call" — Ready · / Move 1 · On an ally's turn: they may play a card in their hand halves swapped, its secondary as a primary.
 
 Draw a weapon coming to hand, caught between carried and held.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Caribbean appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Play to the Crowd
@@ -2194,6 +2356,8 @@ File: `signatures/strength/play-to-the-crowd.webp`
 SUBJECT. "Play to the Crowd" — Compelled (1) · / Move 1 · When you are hit: gain Block 2, and the attacker is Compelled (1) -- no save, because you have already been hit once.
 
 Draw pulled toward something against the will.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of South Asian appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Ranging Shot
@@ -2204,6 +2368,8 @@ File: `signatures/strength/ranging-shot.webp`
 SUBJECT. "Ranging Shot" — Strike aimed 1 · / Ready · Blast instead of Aimed, if you did not Move this turn.
 
 Draw the blow landing, loosed from a bow or a barrel, the target well off, one line only, from eye to target; a weapon coming to hand, caught between carried and held.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Horn of Africa appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Red Mist
@@ -2214,6 +2380,8 @@ File: `signatures/strength/red-mist.webp`
 SUBJECT. "Red Mist" — Strike · / Move 1 · Then draw back up to your hand size at once.
 
 Draw the instant a blow lands, the weapon already through -- never wound up, never posing.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of North African appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Shoulder to Shoulder
@@ -2224,6 +2392,8 @@ File: `signatures/strength/shoulder-to-shoulder.webp`
 SUBJECT. "Shoulder to Shoulder" — Strike, Block 1 area 1 · / Move 1
 
 Draw the instant a blow lands, the weapon already through -- never wound up, never posing; a blow stopped flat, its force going sideways.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of South Asian appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### The Lance
@@ -2234,6 +2404,8 @@ File: `signatures/strength/the-lance.webp`
 SUBJECT. "The Lance" — Move 3, Strike · / Move 1 · Advantage if you moved at least 2. Needs the mount.
 
 Draw ground covered -- weight forward, the last footfall still behind; the instant a blow lands, the weapon already through -- never wound up, never posing.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Nordic appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### The Wall
@@ -2244,6 +2416,8 @@ File: `signatures/strength/the-wall.webp`
 SUBJECT. "The Wall" — Your Blocks stack. You are the one exception to highest-wins.
 
 Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Mediterranean appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ## Signatures — Way of Mind
@@ -2341,6 +2515,8 @@ SUBJECT. "Blood Price" — strength 2 · Cast +4 range 3 ignores armour
 Four damage at three squares, and nothing between you and it matters. The two Health are not a drawback; they are the school.
 
 Draw the shape forming between the hands, thrown with the whole body, nothing held back, landing 3 squares from the one who threw it, going through whatever it is wearing as if it were not there.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of North African appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Call the Unquiet
@@ -2353,6 +2529,8 @@ SUBJECT. "Call the Unquiet" — strength 3 · Conjure range 2 a corpse rises and
 It does not know it died. It will stop when the fight does.
 
 Draw the arrival, landing 2 squares from the one who threw it.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of South Asian appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Graven Strength
@@ -2365,6 +2543,8 @@ SUBJECT. "Graven Strength" — strength 1 · Graven
 It is on your arm. It does not need remembering, and it never comes off.
 
 Draw a mark cut into flesh and holding.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Levantine appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Hearth and Home
@@ -2377,6 +2557,8 @@ SUBJECT. "Hearth and Home" — strength 1 · a camp nobody unfriendly can find, 
 Out of combat: a camp nobody unfriendly can find, for one night. A ritual, so anyone literate could do it — but somebody has to know the words.
 
 Draw that line literally: the one moment it describes, and nothing else in frame.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Nordic appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Not Here
@@ -2389,6 +2571,8 @@ SUBJECT. "Not Here" — strength 2 · Invisible (1) until you attack or are atta
 You are standing exactly where you are standing. Nobody can be told so.
 
 Draw only the shape the air makes.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Slavic appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Nothing Left to Take
@@ -2401,6 +2585,8 @@ SUBJECT. "Nothing Left to Take" — strength 1 · you cannot be reduced below 1 
 There is nothing in your hand and nothing left to lose, and the second follows from the first.
 
 Draw that line literally: the one moment it describes, and nothing else in frame.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Persian appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### The Bargain
@@ -2413,6 +2599,8 @@ SUBJECT. "The Bargain" — strength 3 · Conjure it acts once; the GM decides ho
 A minor god acts, once. The GM decides how , and that is not a hole in the spell — it is the spell.
 
 Draw something arriving that was not there a moment ago.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Mediterranean appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### The Reading
@@ -2425,6 +2613,8 @@ SUBJECT. "The Reading" — strength 2 · Foresee 3
 Three cards down somebody else's luck. Never your own — a diviner who could stack their own deck would be a damage school wearing a robe.
 
 Draw the moment before a thing happens, shown twice.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Mediterranean appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Unmake
@@ -2437,6 +2627,8 @@ SUBJECT. "Unmake" — strength 2 · a Cast you have survived before does not res
 You have felt this one before. That is the only reason you can stop it: a warder's book is a record of what the party has survived — which is a condition on LEARNING it, held by the GM, not something the engine tests.
 
 Draw that line literally: the one moment it describes, and nothing else in frame.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Slavic appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Wall of the Sphere
@@ -2449,6 +2641,8 @@ SUBJECT. "Wall of the Sphere" — strength 2 · range 3 area 3 of your element
 Three squares of whichever sphere is yours. Stand behind it and the ground in front of you is no longer anybody's.
 
 Draw that line literally: the one moment it describes, and nothing else in frame.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Horn of Africa appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Wither
@@ -2461,6 +2655,8 @@ SUBJECT. "Wither" — strength 2 · Cast Poisoned 1 (2)
 Dazed while it lasts, and one damage a turn that armour does not stop.
 
 Draw a shape held in the air between the hands, half-finished and still forming; colour draining out.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of East Asian appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ## Signatures — Way of Faith
@@ -2558,6 +2754,8 @@ SUBJECT. "Breath of the Spirit" — strength 2 · Heal 3 range 99
 Reaction: heal an ally 3, at any range, ignoring cover. The spirit drifts through all the air, so distance is not a question for it.
 
 Draw the wound closing, landing 99 squares from the one who threw it.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Germanic appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Out of Barren Ground
@@ -2570,6 +2768,8 @@ SUBJECT. "Out of Barren Ground" — strength 3 · Heal 4 range 2
 Plant it. At the start of your second turn after, every ally within 2 heals 4. Nothing he gives arrives when you ask for it.
 
 Draw the wound closing, landing 2 squares from the one who threw it.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Levantine appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### The Borrowed Face
@@ -2582,6 +2782,8 @@ SUBJECT. "The Borrowed Face" — strength 3 · range 3 Spent: one enemy spends t
 Spent: one enemy spends this round attacking its own ally. It works once, which is the god.
 
 Draw that line literally: the one moment it describes, and nothing else in frame.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Mediterranean appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### The Clean Hand
@@ -2594,6 +2796,8 @@ SUBJECT. "The Clean Hand" — strength 2 · range 3 an ally's next check or atta
 An ally's next check or attack cannot fail. One cheaper on a brother or sister in faith, which is the third tenet made arithmetic.
 
 Draw that line literally: the one moment it describes, and nothing else in frame.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of West African appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### The Club and the Line
@@ -2606,6 +2810,8 @@ SUBJECT. "The Club and the Line" — strength 2 · Cast blast 1 with the weapon 
 Strike every adjacent enemy. No free hand needed, because the club is the holy symbol — which is the gift on the node, not on the card.
 
 Draw the shape forming between the hands, reaching everything around at once.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Mediterranean appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### The Drum
@@ -2618,6 +2824,8 @@ SUBJECT. "The Drum" — strength 1 · your next Strike this turn is +3
 It starts somewhere behind you and it is already in your arms.
 
 Draw that line literally: the one moment it describes, and nothing else in frame.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Mediterranean appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### The First Taste
@@ -2630,6 +2838,8 @@ SUBJECT. "The First Taste" — strength 2 · Tainting 2 range 1
 Tainting 2 on one adjacent enemy, and 1 Taint for you. You are the first to taste it, always.
 
 Draw a cup taken away from the mouth and held out to somebody else, the taster's own lip already stained -- the stain is ink-dark and not coloured. Two hands and the cup between them, and nothing else in the frame.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Persian appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### The Long Night
@@ -2642,6 +2852,8 @@ SUBJECT. "The Long Night" — strength 3 · Cast +3 range 1 you gain the Health 
 Drain 3 Health from an adjacent living target and gain it. The only renewable pool in the game, and the node says what it costs to have one.
 
 Draw the shape forming between the hands, thrown with the whole body, nothing held back, landing 1 square from the one who threw it.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Mediterranean appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### The Long Silence
@@ -2652,6 +2864,8 @@ File: `signatures/faith/the-long-silence.webp`
 SUBJECT. "The Long Silence" — Ready 2 · / Shake 1 · Only if you did not move this round. Stillness is the whole of the order's method.
 
 Draw a weapon coming to hand, caught between carried and held; footing lost.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Central Asian appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### The Order's Shield
@@ -2662,6 +2876,8 @@ File: `signatures/faith/the-orders-shield.webp`
 SUBJECT. "The Order's Shield" — Defend, Block 2 range 1 · / Block 1 range 1 · The Block goes to an adjacent ally and never to you. The order does not defend itself.
 
 Draw a guard closing: shield, forearm or shoulder set against something off-frame; the blow stopped flat, landing 1 square from the one who threw it.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Mediterranean appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### The Outcast's Due
@@ -2674,6 +2890,8 @@ SUBJECT. "The Outcast's Due" — strength 3 · Cast blast 1 Compelled (2)
 Every enemy next to you turns on you, because the outcast is who the crowd turns on. That is not a side effect; it is the prayer.
 
 Draw the shape forming between the hands, reaching everything around at once; pulled toward something against the will.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of East Asian appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### The Rumour
@@ -2686,6 +2904,8 @@ SUBJECT. "The Rumour" — strength 2 · one enemy type acts as though a named li
 Name a lie before the fight. One enemy type acts as if it were true, for as long as you keep spending a secondary on it.
 
 Draw a mouth at an ear and a hand cupped round the words, both heads cropped at the brow so neither face is readable. The listener's eye is the one thing drawn in full, and it has already believed it.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Central Asian appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### The Scourge
@@ -2696,6 +2916,8 @@ File: `signatures/faith/the-scourge.webp`
 SUBJECT. "The Scourge" — Strike +2 · / Move 2 · Strain 1, paid before the blow lands. The drums, the dance and the whip make the same argument: pay first, strike harder.
 
 Draw the blow landing, thrown with the whole body, nothing held back.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of West African appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### The Silent Hour
@@ -2708,6 +2930,8 @@ SUBJECT. "The Silent Hour" — strength 2 · range 1 Dazed (1)
 Reaction, adjacent only: an enemy's action does not happen. Close enough to touch, which is where the knife is.
 
 Draw sight swimming.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Mediterranean appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### The Tide Knows
@@ -2720,6 +2944,8 @@ SUBJECT. "The Tide Knows" — strength 2 · range 3 an ally draws fate twice on 
 An ally draws fate twice on their next action and keeps both. The sea is not fair.
 
 Draw that line literally: the one moment it describes, and nothing else in frame.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of East Asian appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### The Writ
@@ -2730,6 +2956,8 @@ File: `signatures/faith/the-writ.webp`
 SUBJECT. "The Writ" — range 6 Judged (2) · / Move 1 · No save, at range 6. Being named is not something you resist, and the whole field may act on it.
 
 Draw seen, and found wanting.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Mediterranean appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ## Formulas — Elemental
@@ -4663,6 +4891,8 @@ File: `features/alert.webp`
 SUBJECT. "Alert" — You draw with advantage on initiative.
 
 Draw a head already turned toward a sound nobody else has heard yet, the body still facing the way it was going.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of South Asian appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Arcane Focus
@@ -4673,6 +4903,8 @@ File: `features/arcane-focus.webp`
 SUBJECT. "Arcane Focus" — +1 to all Cast values.
 
 Draw an object with more inside it than its size allows.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Germanic appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Good Aim
@@ -4683,6 +4915,8 @@ File: `features/good-aim.webp`
 SUBJECT. "Good Aim" — +2 range on Ranged and Thrown items.
 
 Draw an object that means nothing except in trained hands.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of West African appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Good Name
@@ -4693,6 +4927,8 @@ File: `features/good-name.webp`
 SUBJECT. "Good Name" — +1 on Presence checks. People have heard of you, and most of it was good.
 
 Draw an object that means nothing except in trained hands.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of South Asian appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Hard Hands
@@ -4703,6 +4939,8 @@ File: `features/hard-hands.webp`
 SUBJECT. "Hard Hands" — +1 on Might checks. Lifting, breaking, and not letting go.
 
 Draw an object that means nothing except in trained hands.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Germanic appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Light Step
@@ -4713,6 +4951,8 @@ File: `features/light-step.webp`
 SUBJECT. "Light Step" — +1 on Agility checks. Where to put a foot, decided before you need it.
 
 Draw an object that means nothing except in trained hands.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Horn of Africa appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Packhorse
@@ -4723,6 +4963,8 @@ File: `features/packhorse.webp`
 SUBJECT. "Packhorse" — +20 kg carry allowance.
 
 Draw a back under a load that would stop anybody else, straps biting in, the stride not broken by it.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of North African appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Quick
@@ -4733,6 +4975,8 @@ File: `features/quick.webp`
 SUBJECT. "Quick" — Hand size +1.
 
 Draw two things done in the time for one: a hand finishing one motion while the body has already committed to the next.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Central Asian appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Quick Eye
@@ -4743,6 +4987,8 @@ File: `features/quick-eye.webp`
 SUBJECT. "Quick Eye" — +1 on Wits checks. You notice the thing that is about to happen.
 
 Draw an object that means nothing except in trained hands.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of West African appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Quiet Worker
@@ -4753,6 +4999,8 @@ File: `features/quiet-worker.webp`
 SUBJECT. "Quiet Worker" — +1 on Shadow checks. Slowly is quietly, and you have the patience for it.
 
 Draw an object that means nothing except in trained hands.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Central Asian appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Steady
@@ -4763,6 +5011,8 @@ File: `features/steady.webp`
 SUBJECT. "Steady" — You don't become Dazed. · Drain: you don't become Dazed.
 
 Draw a face taking a hard blow without the eyes losing their focus. The head moves; the look does not.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Northwest European appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Strong
@@ -4773,6 +5023,8 @@ File: `features/strong.webp`
 SUBJECT. "Strong" — +1 damage on Strike with Heavy items.
 
 Draw something worn against the skin, shaped by the body that wore it.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Nordic appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Tough
@@ -4783,6 +5035,8 @@ File: `features/tough.webp`
 SUBJECT. "Tough" — +4 max Health.
 
 Draw a body that has been opened and closed several times already, old seams showing, entirely unbothered by the newest one.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of North African appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Well Read
@@ -4793,6 +5047,8 @@ File: `features/well-read.webp`
 SUBJECT. "Well Read" — +1 on Lore checks. Somebody has written this down, and you have read them.
 
 Draw an object that means nothing except in trained hands.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Slavic appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ## Items
@@ -6960,7 +7216,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/artillerist.webp`
 
 ```text
-SUBJECT. "Artillerist" — Health 14 · armour 3 · speed 2 · Matchlock Musket, Brigandine — A Guild Engineer: an engineer caught at the work rather than at the gun: sleeves rolled over a leather apron, a cloth cap, both hands on a tool -- a c... This one the same engineer, but down behind a long musket on a forked rest and sighting along it: shoulders low, cheek to the stock, goggles down over the eyes, a second charge between the teeth. The gun is the whole silhouette where the Engineer's was the tools Draw this one as a man of Slavic appearance, past fifty -- that is fixed, not a suggestion.
+SUBJECT. "Artillerist" — Health 14 · armour 3 · speed 2 · Matchlock Musket, Brigandine — A Guild Engineer: an engineer caught at the work rather than at the gun: sleeves rolled over a leather apron, a cloth cap, both hands on a tool -- a c... This one the same engineer, but down behind a long musket on a forked rest and sighting along it: shoulders low, cheek to the stock, goggles down over the eyes, a second charge between the teeth. The gun is the whole silhouette where the Engineer's was the tools Draw this one as a man of North African appearance, past fifty -- that is fixed, not a suggestion.
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6980,7 +7236,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/bandit.webp`
 
 ```text
-SUBJECT. "Bandit" — Health 8 · armour 1 · speed 4 · Arming Sword, Leather Armor — one roadside robber in mismatched gear: a good sword, a bad coat, a hood or a scarf across the face. Everything worn looks taken off somebody else, because it was Draw this one as a woman of Southeast Asian appearance, past fifty -- that is fixed, not a suggestion.
+SUBJECT. "Bandit" — Health 8 · armour 1 · speed 4 · Arming Sword, Leather Armor — one roadside robber in mismatched gear: a good sword, a bad coat, a hood or a scarf across the face. Everything worn looks taken off somebody else, because it was Draw this one as a woman of West African appearance, past fifty -- that is fixed, not a suggestion.
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -6990,7 +7246,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/berserker.webp`
 
 ```text
-SUBJECT. "Berserker" — Health 14 · speed 5 · Great Axe — bare-armed and unarmoured, a great axe in both hands, hair matted and the pupils wrong. Pelts at the shoulder rather than armour. Caught mid-stride with no guard up at all, because guarding is not part of it Draw this one as a man of South Asian appearance, in their forties -- that is fixed, not a suggestion.
+SUBJECT. "Berserker" — Health 14 · speed 5 · Great Axe — bare-armed and unarmoured, a great axe in both hands, hair matted and the pupils wrong. Pelts at the shoulder rather than armour. Caught mid-stride with no guard up at all, because guarding is not part of it Draw this one as a man of Persian appearance, in their forties -- that is fixed, not a suggestion.
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -7000,7 +7256,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/black-circle.webp`
 
 ```text
-SUBJECT. "Black Circle" — Health 14 · armour 2 · speed 3 · Arming Sword, Mail Shirt — a plain dark coat over mail, gloves, a flat wide hat, a sheaf of papers in one hand. Reads as an official rather than a soldier. The only frightening thing about the figure is how unhurried it is Draw this one as a woman of Nordic appearance, past fifty -- that is fixed, not a suggestion.
+SUBJECT. "Black Circle" — Health 14 · armour 2 · speed 3 · Arming Sword, Mail Shirt — a plain dark coat over mail, gloves, a flat wide hat, a sheaf of papers in one hand. Reads as an official rather than a soldier. The only frightening thing about the figure is how unhurried it is Draw this one as a woman of Southeast Asian appearance, past fifty -- that is fixed, not a suggestion.
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -7070,7 +7326,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/cult-priest.webp`
 
 ```text
-SUBJECT. "Cult Priest" — Health 14 · armour 1 · speed 4 · Carved Idol, Mace — A Cultist: one worshipper of something local and unofficial: plain robes over ordinary clothes, a crude carved figure held in both hand... This one the same plain robes with one piece of real finery on top -- a heavy pectoral, a painted stole, a crown of something -- and the carved idol held overhead rather than cradled. Eyes closed, mouth open mid-word. Alone in the frame -- the crowd it is talking to is not in the picture Draw this one as a man of Levantine appearance, in their thirties -- that is fixed, not a suggestion.
+SUBJECT. "Cult Priest" — Health 14 · armour 1 · speed 4 · Carved Idol, Mace — A Cultist: one worshipper of something local and unofficial: plain robes over ordinary clothes, a crude carved figure held in both hand... This one the same plain robes with one piece of real finery on top -- a heavy pectoral, a painted stole, a crown of something -- and the carved idol held overhead rather than cradled. Eyes closed, mouth open mid-word. Alone in the frame -- the crowd it is talking to is not in the picture Draw this one as a man of Mediterranean appearance, in their thirties -- that is fixed, not a suggestion.
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -7080,7 +7336,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/cultist.webp`
 
 ```text
-SUBJECT. "Cultist" — Health 8 · speed 4 · Carved Idol, Dagger — one worshipper of something local and unofficial: plain robes over ordinary clothes, a crude carved figure held in both hands, the face lit from below. Not a hooded skeleton -- this is somebody from the next village and you would know them in daylight Draw this one as a man of Caribbean appearance, in their thirties -- that is fixed, not a suggestion.
+SUBJECT. "Cultist" — Health 8 · speed 4 · Carved Idol, Dagger — one worshipper of something local and unofficial: plain robes over ordinary clothes, a crude carved figure held in both hands, the face lit from below. Not a hooded skeleton -- this is somebody from the next village and you would know them in daylight Draw this one as a man of Nordic appearance, in their thirties -- that is fixed, not a suggestion.
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -7090,7 +7346,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/dhampir.webp`
 
 ```text
-SUBJECT. "Dhampir" — Health 14 · armour 1 · speed 5 · Draining Bite — a living person, which is the point: a lean traveller in worn coat and boots, nothing undead about the body at all. Only the eyes are wrong, and they know it. The only thing in this group that casts a shadow Draw this one as a woman of Southeast Asian appearance, in their twenties -- that is fixed, not a suggestion.
+SUBJECT. "Dhampir" — Health 14 · armour 1 · speed 5 · Draining Bite — a living person, which is the point: a lean traveller in worn coat and boots, nothing undead about the body at all. Only the eyes are wrong, and they know it. The only thing in this group that casts a shadow Draw this one as a woman of Nordic appearance, in their twenties -- that is fixed, not a suggestion.
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -7150,7 +7406,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/ecstatic.webp`
 
 ```text
-SUBJECT. "Ecstatic" — Health 14 · speed 5 · Warhammer — A Flagellant: stripped to the shoulders under a rough habit, back and shoulders a mess of old and new scourging, a knotted cord at the belt and a mace in the hand. Ecstatic rather than angry, which is worse This one further gone than the rest: the habit discarded entirely, the body a map of old scarring, a warhammer in both hands and the head thrown back. Running, not marching Draw this one as a woman of West African appearance, past fifty -- that is fixed, not a suggestion.
+SUBJECT. "Ecstatic" — Health 14 · speed 5 · Warhammer — A Flagellant: stripped to the shoulders under a rough habit, back and shoulders a mess of old and new scourging, a knotted cord at the belt and a mace in the hand. Ecstatic rather than angry, which is worse This one further gone than the rest: the habit discarded entirely, the body a map of old scarring, a warhammer in both hands and the head thrown back. Running, not marching Draw this one as a woman of Nordic appearance, past fifty -- that is fixed, not a suggestion.
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -7220,7 +7476,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/flagellant.webp`
 
 ```text
-SUBJECT. "Flagellant" — Health 10 · speed 4 · Mace — stripped to the shoulders under a rough habit, back and shoulders a mess of old and new scourging, a knotted cord at the belt and a mace in the hand. Ecstatic rather than angry, which is worse Draw this one as a woman of Central Asian appearance, past fifty -- that is fixed, not a suggestion.
+SUBJECT. "Flagellant" — Health 10 · speed 4 · Mace — stripped to the shoulders under a rough habit, back and shoulders a mess of old and new scourging, a knotted cord at the belt and a mace in the hand. Ecstatic rather than angry, which is worse Draw this one as a woman of Persian appearance, past fifty -- that is fixed, not a suggestion.
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -7340,7 +7596,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/gods-spirit.webp`
 
 ```text
-SUBJECT. "God's Spirit" — Health 14 · armour 2 · speed 4 · Balanced Dagger, Leather Armor — A Black Circle: a plain dark coat over mail, gloves, a flat wide hat, a sheaf of papers in one hand. Reads as an official rather than a soldier. The only frightening thing about the figure is how... This one where the Black Circle looks like an official, this looks like nobody: ordinary travelling clothes, no insignia, no hat, hands empty until they are not. The one in the room you would not describe afterwards Draw this one as a man of Southeast Asian appearance, in their thirties -- that is fixed, not a suggestion.
+SUBJECT. "God's Spirit" — Health 14 · armour 2 · speed 4 · Balanced Dagger, Leather Armor — A Black Circle: a plain dark coat over mail, gloves, a flat wide hat, a sheaf of papers in one hand. Reads as an official rather than a soldier. The only frightening thing about the figure is how... This one where the Black Circle looks like an official, this looks like nobody: ordinary travelling clothes, no insignia, no hat, hands empty until they are not. The one in the room you would not describe afterwards Draw this one as a man of Horn of Africa appearance, in their thirties -- that is fixed, not a suggestion.
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -7350,7 +7606,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/grey-assassin.webp`
 
 ```text
-SUBJECT. "Grey Assassin" — Health 10 · armour 1 · speed 6 · Balanced Dagger, Blade Venom — a city killer in plain western dress: dark wool coat to the knee, close hood, gloves, a thin blade held reversed along the forearm. **Nothing wrapped, no veil, nothing eastern about it** -- this is somebody who can stand in a doorway on the Fourth District's own streets and be taken for a clerk. Nothing worn on it rattles Draw this one as a man of Persian appearance, past fifty -- that is fixed, not a suggestion.
+SUBJECT. "Grey Assassin" — Health 10 · armour 1 · speed 6 · Balanced Dagger, Blade Venom — a city killer in plain western dress: dark wool coat to the knee, close hood, gloves, a thin blade held reversed along the forearm. **Nothing wrapped, no veil, nothing eastern about it** -- this is somebody who can stand in a doorway on the Fourth District's own streets and be taken for a clerk. Nothing worn on it rattles Draw this one as a man of Caribbean appearance, past fifty -- that is fixed, not a suggestion.
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -7360,7 +7616,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/guild-engineer.webp`
 
 ```text
-SUBJECT. "Guild Engineer" — Health 12 · armour 2 · speed 3 · Arquebus, Brigandine — an engineer caught at the work rather than at the gun: sleeves rolled over a leather apron, a cloth cap, both hands on a tool -- a crank, a measuring rod, a length of chain -- and the arquebus slung across the back where it is out of the way. Standing upright and busy. **No goggles, nothing aimed, nothing braced** Draw this one as a man of Nordic appearance, in their thirties -- that is fixed, not a suggestion.
+SUBJECT. "Guild Engineer" — Health 12 · armour 2 · speed 3 · Arquebus, Brigandine — an engineer caught at the work rather than at the gun: sleeves rolled over a leather apron, a cloth cap, both hands on a tool -- a crank, a measuring rod, a length of chain -- and the arquebus slung across the back where it is out of the way. Standing upright and busy. **No goggles, nothing aimed, nothing braced** Draw this one as a man of Southeast Asian appearance, in their thirties -- that is fixed, not a suggestion.
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -7370,7 +7626,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/highwayman.webp`
 
 ```text
-SUBJECT. "Highwayman" — Health 10 · armour 2 · speed 6 · Matchlock Pistol, Arming Sword, Brigandine — A Bandit: one roadside robber in mismatched gear: a good sword, a bad coat, a hood or a scarf across the face. Everything worn looks taken off somebody else, because it was This one mounted-class robbery: a long riding coat, boots to the knee, a scarf to the eyes and a matchlock pistol levelled. Better dressed than the band it came from, which is the whole of its character Draw this one as a woman of Southeast Asian appearance, past fifty -- that is fixed, not a suggestion.
+SUBJECT. "Highwayman" — Health 10 · armour 2 · speed 6 · Matchlock Pistol, Arming Sword, Brigandine — A Bandit: one roadside robber in mismatched gear: a good sword, a bad coat, a hood or a scarf across the face. Everything worn looks taken off somebody else, because it was This one mounted-class robbery: a long riding coat, boots to the knee, a scarf to the eyes and a matchlock pistol levelled. Better dressed than the band it came from, which is the whole of its character Draw this one as a woman of Horn of Africa appearance, past fifty -- that is fixed, not a suggestion.
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -7380,7 +7636,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/holy-shield.webp`
 
 ```text
-SUBJECT. "Holy Shield" — Health 18 · armour 4 · speed 3 · Longsword, Kite Shield, Plate, Great Helm — a knight of the order in full plate and a great helm, kite shield up, the faith's mark on the surcoat. Heavy, closed, and faceless -- the helm has no opening worth drawing a face in Draw this one as a man of Persian appearance, in their twenties -- that is fixed, not a suggestion.
+SUBJECT. "Holy Shield" — Health 18 · armour 4 · speed 3 · Longsword, Kite Shield, Plate, Great Helm — a knight of the order in full plate and a great helm, kite shield up, the faith's mark on the surcoat. Heavy, closed, and faceless -- the helm has no opening worth drawing a face in Draw this one as a man of Slavic appearance, in their twenties -- that is fixed, not a suggestion.
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -7390,7 +7646,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/holy-sword.webp`
 
 ```text
-SUBJECT. "Holy Sword" — Health 18 · armour 4 · speed 4 · Longsword, Mail Shirt, Great Helm — A Holy Shield: a knight of the order in full plate and a great helm, kite shield up, the faith's mark on the surcoat. Heavy, closed, and faceless -- th... This one the other church's knight: mail rather than plate, **a longsword held in both hands** and no shield at all, a surcoat with a different mark on it. Lighter, faster and visibly poorer -- the two orders are not equally funded and both of them know it Draw this one as a man of Horn of Africa appearance, in their forties -- that is fixed, not a suggestion.
+SUBJECT. "Holy Sword" — Health 18 · armour 4 · speed 4 · Longsword, Mail Shirt, Great Helm — A Holy Shield: a knight of the order in full plate and a great helm, kite shield up, the faith's mark on the surcoat. Heavy, closed, and faceless -- th... This one the other church's knight: mail rather than plate, **a longsword held in both hands** and no shield at all, a surcoat with a different mark on it. Lighter, faster and visibly poorer -- the two orders are not equally funded and both of them know it Draw this one as a man of North African appearance, in their forties -- that is fixed, not a suggestion.
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -7490,7 +7746,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/mercenary.webp`
 
 ```text
-SUBJECT. "Mercenary" — Health 12 · armour 3 · speed 4 · Halberd, Brigandine — a hardened soldier out of the eastern forests: brigandine over travelling clothes, a halberd, an old scar and a bedroll. Professional, unbothered, and nobody's idea of a hero Draw this one as a woman of Slavic appearance, past fifty -- that is fixed, not a suggestion.
+SUBJECT. "Mercenary" — Health 12 · armour 3 · speed 4 · Halberd, Brigandine — a hardened soldier out of the eastern forests: brigandine over travelling clothes, a halberd, an old scar and a bedroll. Professional, unbothered, and nobody's idea of a hero Draw this one as a woman of Germanic appearance, past fifty -- that is fixed, not a suggestion.
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -7500,7 +7756,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/mercenary-captain.webp`
 
 ```text
-SUBJECT. "Mercenary Captain" — Health 18 · armour 4 · speed 4 · Greatsword, Brigandine, Great Helm — A Mercenary: a hardened soldier out of the eastern forests: brigandine over travelling clothes, a halberd, an old scar and a bedroll. Professional, unbothered, and nobody's idea of a hero This one the same hard soldier with a greatsword and a closed helm under one arm, a captain's sash and a whistle. Older, scarred across the hands, and watching the field rather than the man in front of it Draw this one as a woman of East Asian appearance, in their forties -- that is fixed, not a suggestion.
+SUBJECT. "Mercenary Captain" — Health 18 · armour 4 · speed 4 · Greatsword, Brigandine, Great Helm — A Mercenary: a hardened soldier out of the eastern forests: brigandine over travelling clothes, a halberd, an old scar and a bedroll. Professional, unbothered, and nobody's idea of a hero This one the same hard soldier with a greatsword and a closed helm under one arm, a captain's sash and a whistle. Older, scarred across the hands, and watching the field rather than the man in front of it Draw this one as a woman of South Asian appearance, in their forties -- that is fixed, not a suggestion.
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -7510,7 +7766,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/mob.webp`
 
 ```text
-SUBJECT. "Mob" — Health 8 · speed 4 · Dagger — A Townsfolk, and this one the same working people, no longer leaving: faces front, hands full of whatever was to hand -- a hayfork, a cobble, a bottle. Drawn as a press of bodies with no space between them, and they are not all the same person: different ages, different colours, men and women together. Frightened and coming anyway. **This is the one creature in the roster that is deliberately more than one body** Draw this one as a man of Nordic appearance, in their twenties -- that is fixed, not a suggestion.
+SUBJECT. "Mob" — Health 8 · speed 4 · Dagger — A Townsfolk, and this one the same working people, no longer leaving: faces front, hands full of whatever was to hand -- a hayfork, a cobble, a bottle. Drawn as a press of bodies with no space between them, and they are not all the same person: different ages, different colours, men and women together. Frightened and coming anyway. **This is the one creature in the roster that is deliberately more than one body** Draw this one as a man of Central Asian appearance, in their twenties -- that is fixed, not a suggestion.
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -7700,7 +7956,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/salt-baron.webp`
 
 ```text
-SUBJECT. "Salt Baron" — Health 16 · armour 2 · speed 4 · Matchlock Pistol, Arming Sword, Fine Clothes — A Smuggler: a west-coast sailor turned quiet trader: oilskin, a knitted cap, salt-stained boots, a crossbow held low and ready. **The figure and the crossbow and nothing else** -- no crates, no b... This one a west-coast magnate gone slightly to seed: a good coat over sea-weathered skin, rings, a pistol worn openly on the hip. Standing on a quay as though it were owned, because at one point it was Draw this one as a man of South Asian appearance, in their thirties -- that is fixed, not a suggestion.
+SUBJECT. "Salt Baron" — Health 16 · armour 2 · speed 4 · Matchlock Pistol, Arming Sword, Fine Clothes — A Smuggler: a west-coast sailor turned quiet trader: oilskin, a knitted cap, salt-stained boots, a crossbow held low and ready. **The figure and the crossbow and nothing else** -- no crates, no b... This one a west-coast magnate gone slightly to seed: a good coat over sea-weathered skin, rings, a pistol worn openly on the hip. Standing on a quay as though it were owned, because at one point it was Draw this one as a man of Nordic appearance, in their thirties -- that is fixed, not a suggestion.
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -7810,7 +8066,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/smuggler.webp`
 
 ```text
-SUBJECT. "Smuggler" — Health 10 · armour 1 · speed 4 · Crossbow, Leather Armor — a west-coast sailor turned quiet trader: oilskin, a knitted cap, salt-stained boots, a crossbow held low and ready. **The figure and the crossbow and nothing else** -- no crates, no barrels, no bundles, no cargo, no quay. The goods are elsewhere, which is the point of the trade Draw this one as a man of North African appearance, in their twenties -- that is fixed, not a suggestion.
+SUBJECT. "Smuggler" — Health 10 · armour 1 · speed 4 · Crossbow, Leather Armor — a west-coast sailor turned quiet trader: oilskin, a knitted cap, salt-stained boots, a crossbow held low and ready. **The figure and the crossbow and nothing else** -- no crates, no barrels, no bundles, no cargo, no quay. The goods are elsewhere, which is the point of the trade Draw this one as a man of Caribbean appearance, in their twenties -- that is fixed, not a suggestion.
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -7930,7 +8186,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/the-purple.webp`
 
 ```text
-SUBJECT. "The Purple" — Health 12 · armour 1 · speed 5 · Crossbow, Blade Venom, Serpent's Milk — A Grey Assassin: a city killer in plain western dress: dark wool coat to the knee, close hood, gloves, a thin blade held re... This one the same plain western coat, in deep purple-dyed wool and better cut, hood back, kneeling over a flat case of stoppered vials open across one knee. **No crossbow anywhere in the picture, and no blade either** -- the vials are the whole of it. Working rather than stalking Draw this one as a woman of West African appearance, in their forties -- that is fixed, not a suggestion.
+SUBJECT. "The Purple" — Health 12 · armour 1 · speed 5 · Crossbow, Blade Venom, Serpent's Milk — A Grey Assassin: a city killer in plain western dress: dark wool coat to the knee, close hood, gloves, a thin blade held re... This one the same plain western coat, in deep purple-dyed wool and better cut, hood back, kneeling over a flat case of stoppered vials open across one knee. **No crossbow anywhere in the picture, and no blade either** -- the vials are the whole of it. Working rather than stalking Draw this one as a woman of Southeast Asian appearance, in their forties -- that is fixed, not a suggestion.
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -7960,7 +8216,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/the-unseen.webp`
 
 ```text
-SUBJECT. "The Unseen" — Health 12 · armour 2 · speed 6 · Dagger, Leather Armor — A Grey Assassin: a city killer in plain western dress: dark wool coat to the knee, close hood, gloves, a thin blade held reversed along the forearm. **Nothing wrapped, no veil, nothing eastern about it** -- this is some... This one a western monastic at a glance -- plain habit, cord belt, hood up, hands inside the sleeves -- and nothing about the stance belongs to a monk. The dagger is not visible and is obviously there Draw this one as a woman of Mediterranean appearance, in their forties -- that is fixed, not a suggestion.
+SUBJECT. "The Unseen" — Health 12 · armour 2 · speed 6 · Dagger, Leather Armor — A Grey Assassin: a city killer in plain western dress: dark wool coat to the knee, close hood, gloves, a thin blade held reversed along the forearm. **Nothing wrapped, no veil, nothing eastern about it** -- this is some... This one a western monastic at a glance -- plain habit, cord belt, hood up, hands inside the sleeves -- and nothing about the stance belongs to a monk. The dagger is not visible and is obviously there Draw this one as a woman of West African appearance, in their forties -- that is fixed, not a suggestion.
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -7980,7 +8236,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/town-guard.webp`
 
 ```text
-SUBJECT. "Town Guard" — Health 10 · armour 2 · speed 3 · Spear, Wooden Shield, Leather Armor, Light Helm — a watchman in a padded coat and an open kettle helm with a spear and a round shield, a town's badge on the shield and nothing else to mark them. Tired rather than fierce Draw this one as a man of West African appearance, past fifty -- that is fixed, not a suggestion.
+SUBJECT. "Town Guard" — Health 10 · armour 2 · speed 3 · Spear, Wooden Shield, Leather Armor, Light Helm — a watchman in a padded coat and an open kettle helm with a spear and a round shield, a town's badge on the shield and nothing else to mark them. Tired rather than fierce Draw this one as a man of North African appearance, past fifty -- that is fixed, not a suggestion.
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -7990,7 +8246,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/townsfolk.webp`
 
 ```text
-SUBJECT. "Townsfolk" — Health 4 · speed 3 · Dagger — one ordinary working person of no particular century: apron, patched wool, boots worn down on one side, a basket or a bundle still in the hands. Already turning away from whatever is happening. The dagger at the belt has only ever cut bread Draw this one as a woman of Mediterranean appearance, in their twenties -- that is fixed, not a suggestion.
+SUBJECT. "Townsfolk" — Health 4 · speed 3 · Dagger — one ordinary working person of no particular century: apron, patched wool, boots worn down on one side, a basket or a bundle still in the hands. Already turning away from whatever is happening. The dagger at the belt has only ever cut bread Draw this one as a woman of West African appearance, in their twenties -- that is fixed, not a suggestion.
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -8020,7 +8276,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/watch-sergeant.webp`
 
 ```text
-SUBJECT. "Watch Sergeant" — Health 14 · armour 3 · speed 3 · Halberd, Mail Shirt, Light Helm — A Town Guard: a watchman in a padded coat and an open kettle helm with a spear and a round shield, a town's badge on the shield and nothing else to mark them. Tired rather than fierce This one an older watchman with a halberd and a mail shirt instead of a spear and a coat, a sergeant's sash and a horn at the belt. Shouting rather than fighting Draw this one as a man of Caribbean appearance, in their twenties -- that is fixed, not a suggestion.
+SUBJECT. "Watch Sergeant" — Health 14 · armour 3 · speed 3 · Halberd, Mail Shirt, Light Helm — A Town Guard: a watchman in a padded coat and an open kettle helm with a spear and a round shield, a town's badge on the shield and nothing else to mark them. Tired rather than fierce This one an older watchman with a halberd and a mail shirt instead of a spear and a coat, a sergeant's sash and a horn at the belt. Shouting rather than fighting Draw this one as a man of Mediterranean appearance, in their twenties -- that is fixed, not a suggestion.
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```

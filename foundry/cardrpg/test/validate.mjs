@@ -5853,7 +5853,30 @@ const twinOverlap = (a, b) => {
   for (const gram of a) if (b.has(gram)) shared++;
   return shared / (a.size + b.size - shared);
 };
-for (const piece of twinPieces) piece.grams = twinGrams(piece.text);
+/*
+ * **The cast line is scaffolding, and scaffolding is already excluded from this audit.**
+ *
+ * Every card, signature and feature now ends with *WHO IS IN IT. ...a woman of Nordic appearance,
+ * in their forties...*, because a list of ancestries in a capsule cannot produce a spread across
+ * five hundred requests that never see each other -- only an assignment can. It is per-piece and
+ * it carries one varying clause, but its skeleton is identical 128 times, and adding that much
+ * shared text to a prompt whose subject is a name and a rule pushed twenty-six of them over this
+ * audit's 60% line overnight.
+ *
+ * They are not twins. Nothing about the picture changed; the shared half of a new sentence did.
+ * This audit asks whether two prompts describe the same PICTURE, which is why it already ignores
+ * the capsule -- *a different group is a different capsule* below -- and the cast line is the
+ * same kind of thing: shared form, orthogonal axis. So it comes off before the grams are taken,
+ * and what is left is the subject, the flavour and the direction, exactly as before.
+ *
+ * It is cut rather than counted, so the audit cannot be quietened by making the boilerplate
+ * longer: a future sentence appended to every prompt would have to be exempted here on its own
+ * argument, in writing, like this one.
+ */
+/* Anchored on a space, not a blank line: `text` above is `body.join(" ")` with every run of
+ * whitespace collapsed, so the paragraph break the book has is gone by the time this runs. */
+const CAST_LINE = /\s*WHO IS IN IT\..*$/;
+for (const piece of twinPieces) piece.grams = twinGrams(piece.text.replace(CAST_LINE, ""));
 const twinsByGroup = new Map();
 for (const piece of twinPieces) {
   (twinsByGroup.get(piece.group) ?? twinsByGroup.set(piece.group, []).get(piece.group)).push(piece);
@@ -6210,13 +6233,55 @@ const casts = cast.map(c => castOf(c));
 check("people cast as women", casts.filter(t => t.includes("a woman")).length, 12);
 check("people cast as men", casts.filter(t => t.includes("a man")).length, 14);
 check("distinct ancestries across the people",
-  new Set(casts.map(t => t.match(/of (.+?) appearance/)[1])).size, 13);
+  new Set(casts.map(t => t.match(/of (.+?) appearance/)[1])).size, 12);
 /* And that it is a property of the creature rather than of its position in the file: an index
  * into the roster would reassign every human after an inserted one, and a token already drawn
  * and already through the gate would no longer match the prompt that would be sent for it. */
-check("casting is hashed from the kind, not counted off the roster",
-  /hash\(kind\)/.test(fs.readFileSync(path.join(root, "test/art-list.mjs"), "utf8")) ? "yes" : "no",
-  "yes");
+const listSource = fs.readFileSync(path.join(root, "test/art-list.mjs"), "utf8");
+check("casting is hashed from the seed, not counted off the roster",
+  /const h = hash\(seed\)/.test(listSource) ? "yes" : "no", "yes");
+check("and a creature seeds it with its kind",
+  /castLine\(kind\)/.test(listSource) ? "yes" : "no", "yes");
+/*
+ * **The three list lengths are pairwise coprime, which is the only reason the axes spread.**
+ *
+ * Seven sexes, fifteen ancestries, four ages, indexed off one hash by three different shifts. Any
+ * shared factor locks two of them into step -- fourteen ancestries would have married every
+ * ancestry to one sex, sixteen would have married it to one age -- and the failure is invisible
+ * in the output until somebody notices that every Nordic in the set is a man past fifty.
+ */
+const coprime = (a, b) => { while (b) [a, b] = [b, a % b]; return a === 1; };
+check("the casting axes cannot travel together",
+  [[7, 15], [7, 4], [15, 4]].every(([a, b]) => coprime(a, b)) ? "coprime" : "share a factor",
+  "coprime");
+/* And that those are still the lengths the code uses, since the check above is arithmetic on
+ * numbers that would otherwise only agree with the source by habit. */
+check("and those are the lengths in the source",
+  [/const SEX = \[(?:[^\]]*?,){6}[^\],]*\]/, /"Germanic"\n\];/, /const AGE = \[(?:[^\]]*?,){3}[^\],]*\]/]
+    .every(re => re.test(listSource)) ? "seven, fifteen, four" : "changed",
+  "seven, fifteen, four");
+
+/*
+ * **Who the cards cast, which is the half that was missing.**
+ *
+ * The token capsule binds an assigned person because something counts them out here. A card's
+ * capsule listed the city's ancestries and named the pale default as a failure, which is a
+ * distribution asked of one request that cannot see the other five hundred -- so every card
+ * steered off the default and the westerners nearly left the set. 27% of the creatures were
+ * European and the cards had no assignment at all.
+ */
+const castLines = [...artPrompts.matchAll(/that person is (a (?:wo)?man) of ([A-Za-z ]+?) appearance/g)];
+check("cards, signatures and features given an assigned person", castLines.length, 128);
+/* The NPC pool is the one group that must NOT be cast: its own capsule says the actor is nobody,
+ * because one picture is drawn behind a goblin, a troll and a dragon. */
+const npcBlock = /\n## NPC intent cards\n([\s\S]*?)\n## /.exec(artPrompts)?.[1] ?? "";
+check("and the NPC pool cast nobody, because its actor is nobody",
+  /WHO IS IN IT/.test(npcBlock) ? "cast" : "none", "none");
+const EURO = new Set(["Mediterranean", "Nordic", "Slavic", "Northwest European", "Germanic"]);
+check("western ancestries among them, which had nearly vanished",
+  castLines.filter(m => EURO.has(m[2])).length, 43);
+check("and every ancestry on the list is used somewhere",
+  new Set(castLines.map(m => m[2])).size, 15);
 
 /*
  * **The verdict log, which exists because a sample of survivors was read as a sample of all.**
@@ -10747,7 +10812,7 @@ for (const m of selfSource.matchAll(
   const p = path.join(root, m[2]);
   if (fs.existsSync(p)) readFiles.set(m[1], fs.readFileSync(p, "utf8"));
 }
-check("files this suite greps by name", readFiles.size, 59);
+check("files this suite greps by name", readFiles.size, 60);
 
 /* Every `/pattern/.test(VAR)` and `VAR.includes("...")`, with the check it belongs to. */
 const nameOfCheck = index => {
@@ -10779,7 +10844,7 @@ for (const m of selfSource.matchAll(/(\w+)\.includes\("((?:[^"\\]|\\.)*)"\)/g)) 
 }
 
 /* The pin that keeps the rest of this honest. */
-check("greps over a whole file, resolved", greps.length, 537);
+check("greps over a whole file, resolved", greps.length, 539);
 
 /*
  * **The rule, as one predicate, run over a planted example before it is run over the suite.**

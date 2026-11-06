@@ -25,7 +25,7 @@ import path from "node:path";
 import { CARDRPG } from "../module/config.mjs";
 import * as content from "../module/content.mjs";
 import {
-  CREATURES, DELIVERY, GROUPS, backs, brief, conditionName, creatureBrief, slug
+  CREATURES, DELIVERY, GROUPS, backs, brief, castLine, conditionName, creatureBrief, slug
 } from "./art-list.mjs";
 
 const root = path.join(import.meta.dirname, "..");
@@ -109,6 +109,30 @@ const WAY_OF_DIR = {
  * neutral in every group, which is what `WASH` already describes and what the strength and shade
  * pieces were doing all along.
  */
+/*
+ * **Which groups get a person assigned to them, and why the list is this short.**
+ *
+ * The token capsule binds a named sex, ancestry and age because something out in `art-list.mjs`
+ * assigns one per creature. A card's capsule instead LISTS the ancestries of the city and names
+ * the pale default as a failure -- which is a distribution demanded of one request that cannot
+ * see the other five hundred. Every card obediently steered away from the default, so westerners
+ * nearly left the set: a correction overshooting, and the same flatness wearing a different face.
+ *
+ * - **cards/npc is excluded, and that is not an oversight.** Its own capsule says the actor is
+ *   nobody, because one picture serves a goblin, a troll and a dragon. Casting the actor would
+ *   contradict the group's first rule. The far side of those cards is a player character drawn in
+ *   full, but which half of the frame a cast line would land on is not something this can know.
+ * - **items and spells are excluded** because they are objects and workings: *one item, one
+ *   light, no hand*, and *the working, not the worker*.
+ * - A card drawn as a single creature's exception is excluded too -- it has a creature, and the
+ *   creature already carries its own casting.
+ *
+ * The line is written conditionally, because plenty of these crops are a pair of feet or a jaw
+ * and a cast on a boot is noise. A condition the artist can evaluate costs nothing when it is
+ * false, where an unconditional one invites a face into a frame that did not want one.
+ */
+const CAST_GROUP = /^(?:cards\/(?!npc\b)|signatures\/|features$)/;
+
 function accentFor(dir) {
   const way = WAY_OF_DIR[dir];
   /*
@@ -1560,7 +1584,12 @@ for (const group of GROUPS) {
           + "apply here, and this picture should be unmistakably of one thing."]
         : []),
       "",
-      direction
+      direction,
+      ...(CAST_GROUP.test(group.dir) && !exclusive.length
+        ? ["", `WHO IS IN IT. If a face or any bare skin shows here, that person is `
+          + `${castLine(key)} -- fixed, not a suggestion, and not a default to fall back from. `
+          + "If this crop shows no person at all, the line does not apply."]
+        : [])
     ].join("\n");
     ledger.push({ key, name: entry.name, group: group.title, direction, flavour: !!flavour,
       prose, overridden: !!DIRECTION[key], token, capsule, subject,
