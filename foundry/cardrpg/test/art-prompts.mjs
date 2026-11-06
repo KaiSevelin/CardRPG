@@ -83,16 +83,55 @@ const WAY_OF_DIR = {
   "signatures/faith": "faith", "spells/faith": "faith"
 };
 
+/*
+ * **The accent said two things, and the bigger one won.**
+ *
+ * *Use it on the one thing the picture is about, and nowhere else* is the rule. *Deepening to
+ * `fill` in the darkest wash* was written one clause earlier and quietly cancelled it: a wash is
+ * a large area by definition, so the accent was licensed across the biggest region in the
+ * picture. For the Way of Strength that is invisible, because its accent is a warm brick red at
+ * 7 degrees and the gate's palette band runs to 60. For the other three it is fatal -- Shade is
+ * blue at 215, Mind green at 160, Faith violet at 259, and `GATE.maxCool` rejects any saturated
+ * pixel from 60 to 340 at more than 1% of the frame.
+ *
+ * Faith is where it showed, because its own blurb adds *the light in it comes from outside the
+ * frame*: an accent licensed in the wash, plus a light to put it in, is a violet-lit picture.
+ * Measured over the five pieces that would not pass: 2.1% to 5.5% off-palette, spread across
+ * 270-340 degrees. Not a tight accent at 259 -- a violet-to-magenta wash.
+ *
+ * **The gate is not the thing to move here, and that was measured before it was argued.** The
+ * band was recomputed at 0-80 and 0-100, and with a thirty-degree exemption around each group's
+ * own assigned accent on top: 5 pieces over the ceiling became 5, then 4, then 3. The hue is not
+ * sitting where an exemption would catch it. Meanwhile all ninety-nine cards clear the band as it
+ * stands, worst case 0.92%.
+ *
+ * So the accent keeps its one object and loses the wash. The wash and the light are the warm
+ * neutral in every group, which is what `WASH` already describes and what the strength and shade
+ * pieces were doing all along.
+ */
 function accentFor(dir) {
   const way = WAY_OF_DIR[dir];
+  /*
+   * **No fraction here, and that is deliberate twice over.**
+   *
+   * `GATE.maxCool` is one per cent, so an instruction naming a hundredth would aim the model at
+   * the ceiling it is measured against -- the identical mistake the top strip made, where asking
+   * for the floor exactly meant failing it half the time. And this file's own first lesson is
+   * that a percentage is not an instruction at all: *the top quarter is empty* is followable
+   * where *28% of the height* is not. So the bound is three objects a reader can picture.
+   */
+  const bound = "  **The accent is one small object's worth of colour and no more** -- a single\n"
+    + "  ribbon, a single flame, one stone set in a ring. Never the light, never the wash, never\n"
+    + "  the ground, never the sky, never a glow and never a whole figure: those are all the warm\n"
+    + "  neutral of the paper and the ink.";
   if (!way) {
     return `- One chromatic accent only: **${WAY.strength.edge}**, a warm brick red. Use it on the\n`
-      + "  one thing the picture is about, and nowhere else.";
+      + "  one thing the picture is about, and nowhere else.\n" + bound;
   }
   const label = `Way of ${way[0].toUpperCase()}${way.slice(1)}`;
-  return `- This group is the **${label}**, so its one chromatic accent is **${WAY[way].edge}**,\n`
-    + `  deepening to **${WAY[way].fill}** in the darkest wash. Use it on the one thing the\n`
-    + "  picture is about, and nowhere else. No other hue appears.";
+  return `- This group is the **${label}**, so its one chromatic accent is **${WAY[way].edge}**.\n`
+    + "  Use it on the one thing the picture is about, and nowhere else. No other hue appears.\n"
+    + bound;
 }
 
 /* -------------------------------------------- */

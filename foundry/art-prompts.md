@@ -180,6 +180,10 @@ PALETTE.
 - Mid tone: **#c9bda8**
 - One chromatic accent only: **#a3655d**, a warm brick red. Use it on the
   one thing the picture is about, and nowhere else.
+  **The accent is one small object's worth of colour and no more** -- a single
+  ribbon, a single flame, one stone set in a ring. Never the light, never the wash, never
+  the ground, never the sky, never a glow and never a whole figure: those are all the warm
+  neutral of the paper and the ink.
 - Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
   here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
@@ -360,6 +364,10 @@ PALETTE.
 - Mid tone: **#c9bda8**
 - One chromatic accent only: **#a3655d**, a warm brick red. Use it on the
   one thing the picture is about, and nowhere else.
+  **The accent is one small object's worth of colour and no more** -- a single
+  ribbon, a single flame, one stone set in a ring. Never the light, never the wash, never
+  the ground, never the sky, never a glow and never a whole figure: those are all the warm
+  neutral of the paper and the ink.
 - Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
   here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
@@ -529,6 +537,10 @@ PALETTE.
 - Mid tone: **#c9bda8**
 - One chromatic accent only: **#a3655d**, a warm brick red. Use it on the
   one thing the picture is about, and nowhere else.
+  **The accent is one small object's worth of colour and no more** -- a single
+  ribbon, a single flame, one stone set in a ring. Never the light, never the wash, never
+  the ground, never the sky, never a glow and never a whole figure: those are all the warm
+  neutral of the paper and the ink.
 - Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
   here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
@@ -973,9 +985,12 @@ PALETTE.
 - Line and darks: **#1b1714**
 - Paper and lights: **#f4efe6**
 - Mid tone: **#c9bda8**
-- This group is the **Way of Shade**, so its one chromatic accent is **#5d7aa3**,
-  deepening to **#2f3b4e** in the darkest wash. Use it on the one thing the
-  picture is about, and nowhere else. No other hue appears.
+- This group is the **Way of Shade**, so its one chromatic accent is **#5d7aa3**.
+  Use it on the one thing the picture is about, and nowhere else. No other hue appears.
+  **The accent is one small object's worth of colour and no more** -- a single
+  ribbon, a single flame, one stone set in a ring. Never the light, never the wash, never
+  the ground, never the sky, never a glow and never a whole figure: those are all the warm
+  neutral of the paper and the ink.
 - Desaturated and earthy. Apart from the accent named above, no hue at all: the rest of the picture is ink, paper and
   the warm greys between them. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
@@ -1175,9 +1190,12 @@ PALETTE.
 - Line and darks: **#1b1714**
 - Paper and lights: **#f4efe6**
 - Mid tone: **#c9bda8**
-- This group is the **Way of Strength**, so its one chromatic accent is **#a3655d**,
-  deepening to **#4a3330** in the darkest wash. Use it on the one thing the
-  picture is about, and nowhere else. No other hue appears.
+- This group is the **Way of Strength**, so its one chromatic accent is **#a3655d**.
+  Use it on the one thing the picture is about, and nowhere else. No other hue appears.
+  **The accent is one small object's worth of colour and no more** -- a single
+  ribbon, a single flame, one stone set in a ring. Never the light, never the wash, never
+  the ground, never the sky, never a glow and never a whole figure: those are all the warm
+  neutral of the paper and the ink.
 - Desaturated and earthy. Apart from the accent named above, no hue at all: the rest of the picture is ink, paper and
   the warm greys between them. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
@@ -1389,6 +1407,10 @@ PALETTE.
 - Mid tone: **#c9bda8**
 - One chromatic accent only: **#a3655d**, a warm brick red. Use it on the
   one thing the picture is about, and nowhere else.
+  **The accent is one small object's worth of colour and no more** -- a single
+  ribbon, a single flame, one stone set in a ring. Never the light, never the wash, never
+  the ground, never the sky, never a glow and never a whole figure: those are all the warm
+  neutral of the paper and the ink.
 - Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
   here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
@@ -1489,6 +1511,10 @@ PALETTE.
 - Mid tone: **#c9bda8**
 - One chromatic accent only: **#a3655d**, a warm brick red. Use it on the
   one thing the picture is about, and nowhere else.
+  **The accent is one small object's worth of colour and no more** -- a single
+  ribbon, a single flame, one stone set in a ring. Never the light, never the wash, never
+  the ground, never the sky, never a glow and never a whole figure: those are all the warm
+  neutral of the paper and the ink.
 - Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
   here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
@@ -1669,6 +1695,10 @@ PALETTE.
 - Mid tone: **#c9bda8**
 - One chromatic accent only: **#a3655d**, a warm brick red. Use it on the
   one thing the picture is about, and nowhere else.
+  **The accent is one small object's worth of colour and no more** -- a single
+  ribbon, a single flame, one stone set in a ring. Never the light, never the wash, never
+  the ground, never the sky, never a glow and never a whole figure: those are all the warm
+  neutral of the paper and the ink.
 - Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
   here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
@@ -1847,9 +1877,12 @@ PALETTE.
 - Line and darks: **#1b1714**
 - Paper and lights: **#f4efe6**
 - Mid tone: **#c9bda8**
-- This group is the **Way of Shade**, so its one chromatic accent is **#5d7aa3**,
-  deepening to **#2f3b4e** in the darkest wash. Use it on the one thing the
-  picture is about, and nowhere else. No other hue appears.
+- This group is the **Way of Shade**, so its one chromatic accent is **#5d7aa3**.
+  Use it on the one thing the picture is about, and nowhere else. No other hue appears.
+  **The accent is one small object's worth of colour and no more** -- a single
+  ribbon, a single flame, one stone set in a ring. Never the light, never the wash, never
+  the ground, never the sky, never a glow and never a whole figure: those are all the warm
+  neutral of the paper and the ink.
 - Desaturated and earthy. Apart from the accent named above, no hue at all: the rest of the picture is ink, paper and
   the warm greys between them. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
@@ -2049,9 +2082,12 @@ PALETTE.
 - Line and darks: **#1b1714**
 - Paper and lights: **#f4efe6**
 - Mid tone: **#c9bda8**
-- This group is the **Way of Strength**, so its one chromatic accent is **#a3655d**,
-  deepening to **#4a3330** in the darkest wash. Use it on the one thing the
-  picture is about, and nowhere else. No other hue appears.
+- This group is the **Way of Strength**, so its one chromatic accent is **#a3655d**.
+  Use it on the one thing the picture is about, and nowhere else. No other hue appears.
+  **The accent is one small object's worth of colour and no more** -- a single
+  ribbon, a single flame, one stone set in a ring. Never the light, never the wash, never
+  the ground, never the sky, never a glow and never a whole figure: those are all the warm
+  neutral of the paper and the ink.
 - Desaturated and earthy. Apart from the accent named above, no hue at all: the rest of the picture is ink, paper and
   the warm greys between them. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
@@ -2251,9 +2287,12 @@ PALETTE.
 - Line and darks: **#1b1714**
 - Paper and lights: **#f4efe6**
 - Mid tone: **#c9bda8**
-- This group is the **Way of Mind**, so its one chromatic accent is **#5d9a86**,
-  deepening to **#2f3f3a** in the darkest wash. Use it on the one thing the
-  picture is about, and nowhere else. No other hue appears.
+- This group is the **Way of Mind**, so its one chromatic accent is **#5d9a86**.
+  Use it on the one thing the picture is about, and nowhere else. No other hue appears.
+  **The accent is one small object's worth of colour and no more** -- a single
+  ribbon, a single flame, one stone set in a ring. Never the light, never the wash, never
+  the ground, never the sky, never a glow and never a whole figure: those are all the warm
+  neutral of the paper and the ink.
 - Desaturated and earthy. Apart from the accent named above, no hue at all: the rest of the picture is ink, paper and
   the warm greys between them. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
@@ -2465,9 +2504,12 @@ PALETTE.
 - Line and darks: **#1b1714**
 - Paper and lights: **#f4efe6**
 - Mid tone: **#c9bda8**
-- This group is the **Way of Faith**, so its one chromatic accent is **#8a74b8**,
-  deepening to **#403458** in the darkest wash. Use it on the one thing the
-  picture is about, and nowhere else. No other hue appears.
+- This group is the **Way of Faith**, so its one chromatic accent is **#8a74b8**.
+  Use it on the one thing the picture is about, and nowhere else. No other hue appears.
+  **The accent is one small object's worth of colour and no more** -- a single
+  ribbon, a single flame, one stone set in a ring. Never the light, never the wash, never
+  the ground, never the sky, never a glow and never a whole figure: those are all the warm
+  neutral of the paper and the ink.
 - Desaturated and earthy. Apart from the accent named above, no hue at all: the rest of the picture is ink, paper and
   the warm greys between them. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
@@ -2733,6 +2775,10 @@ PALETTE.
 - Mid tone: **#c9bda8**
 - One chromatic accent only: **#a3655d**, a warm brick red. Use it on the
   one thing the picture is about, and nowhere else.
+  **The accent is one small object's worth of colour and no more** -- a single
+  ribbon, a single flame, one stone set in a ring. Never the light, never the wash, never
+  the ground, never the sky, never a glow and never a whole figure: those are all the warm
+  neutral of the paper and the ink.
 - Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
   here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
@@ -2859,9 +2905,12 @@ PALETTE.
 - Line and darks: **#1b1714**
 - Paper and lights: **#f4efe6**
 - Mid tone: **#c9bda8**
-- This group is the **Way of Shade**, so its one chromatic accent is **#5d7aa3**,
-  deepening to **#2f3b4e** in the darkest wash. Use it on the one thing the
-  picture is about, and nowhere else. No other hue appears.
+- This group is the **Way of Shade**, so its one chromatic accent is **#5d7aa3**.
+  Use it on the one thing the picture is about, and nowhere else. No other hue appears.
+  **The accent is one small object's worth of colour and no more** -- a single
+  ribbon, a single flame, one stone set in a ring. Never the light, never the wash, never
+  the ground, never the sky, never a glow and never a whole figure: those are all the warm
+  neutral of the paper and the ink.
 - Desaturated and earthy. Apart from the accent named above, no hue at all: the rest of the picture is ink, paper and
   the warm greys between them. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
@@ -2953,9 +3002,12 @@ PALETTE.
 - Line and darks: **#1b1714**
 - Paper and lights: **#f4efe6**
 - Mid tone: **#c9bda8**
-- This group is the **Way of Mind**, so its one chromatic accent is **#5d9a86**,
-  deepening to **#2f3f3a** in the darkest wash. Use it on the one thing the
-  picture is about, and nowhere else. No other hue appears.
+- This group is the **Way of Mind**, so its one chromatic accent is **#5d9a86**.
+  Use it on the one thing the picture is about, and nowhere else. No other hue appears.
+  **The accent is one small object's worth of colour and no more** -- a single
+  ribbon, a single flame, one stone set in a ring. Never the light, never the wash, never
+  the ground, never the sky, never a glow and never a whole figure: those are all the warm
+  neutral of the paper and the ink.
 - Desaturated and earthy. Apart from the accent named above, no hue at all: the rest of the picture is ink, paper and
   the warm greys between them. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
@@ -3875,9 +3927,12 @@ PALETTE.
 - Line and darks: **#1b1714**
 - Paper and lights: **#f4efe6**
 - Mid tone: **#c9bda8**
-- This group is the **Way of Faith**, so its one chromatic accent is **#8a74b8**,
-  deepening to **#403458** in the darkest wash. Use it on the one thing the
-  picture is about, and nowhere else. No other hue appears.
+- This group is the **Way of Faith**, so its one chromatic accent is **#8a74b8**.
+  Use it on the one thing the picture is about, and nowhere else. No other hue appears.
+  **The accent is one small object's worth of colour and no more** -- a single
+  ribbon, a single flame, one stone set in a ring. Never the light, never the wash, never
+  the ground, never the sky, never a glow and never a whole figure: those are all the warm
+  neutral of the paper and the ink.
 - Desaturated and earthy. Apart from the accent named above, no hue at all: the rest of the picture is ink, paper and
   the warm greys between them. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
@@ -4559,6 +4614,10 @@ PALETTE.
 - Mid tone: **#c9bda8**
 - One chromatic accent only: **#a3655d**, a warm brick red. Use it on the
   one thing the picture is about, and nowhere else.
+  **The accent is one small object's worth of colour and no more** -- a single
+  ribbon, a single flame, one stone set in a ring. Never the light, never the wash, never
+  the ground, never the sky, never a glow and never a whole figure: those are all the warm
+  neutral of the paper and the ink.
 - Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
   here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
@@ -4779,6 +4838,10 @@ PALETTE.
 - Mid tone: **#c9bda8**
 - One chromatic accent only: **#a3655d**, a warm brick red. Use it on the
   one thing the picture is about, and nowhere else.
+  **The accent is one small object's worth of colour and no more** -- a single
+  ribbon, a single flame, one stone set in a ring. Never the light, never the wash, never
+  the ground, never the sky, never a glow and never a whole figure: those are all the warm
+  neutral of the paper and the ink.
 - Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
   here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
@@ -6359,6 +6422,10 @@ PALETTE.
 - Mid tone: **#c9bda8**
 - One chromatic accent only: **#a3655d**, a warm brick red. Use it on the
   one thing the picture is about, and nowhere else.
+  **The accent is one small object's worth of colour and no more** -- a single
+  ribbon, a single flame, one stone set in a ring. Never the light, never the wash, never
+  the ground, never the sky, never a glow and never a whole figure: those are all the warm
+  neutral of the paper and the ink.
 - Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
   here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
@@ -6549,6 +6616,10 @@ PALETTE.
 - Mid tone: **#c9bda8**
 - One chromatic accent only: **#a3655d**, a warm brick red. Use it on the
   one thing the picture is about, and nowhere else.
+  **The accent is one small object's worth of colour and no more** -- a single
+  ribbon, a single flame, one stone set in a ring. Never the light, never the wash, never
+  the ground, never the sky, never a glow and never a whole figure: those are all the warm
+  neutral of the paper and the ink.
 - Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
   Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
   here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
