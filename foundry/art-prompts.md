@@ -5924,7 +5924,7 @@ File: `items/healers-kit.webp`
 ```text
 SUBJECT. "Healer's Kit" — Tool · Needle, gut, lint and spirit.
 
-Draw a tool worn exactly where a hand goes and nowhere else.
+Draw a strip of cloth unrolled flat with its contents in sewn loops along it -- one curved needle, a hank of waxed gut, a folded wad of lint and a small stoppered bottle, laid out in that order. The kit is the whole subject: nobody is being treated, and there is no body, no wound and no blood in the frame.
 
 MADE OF. 20gp -- wrought iron, brass or horn.
 ```
@@ -6116,7 +6116,7 @@ File: `items/lockpicks.webp`
 ```text
 SUBJECT. "Lockpicks" — Tool · A roll of picks and a torsion wrench, in oiled cloth.
 
-Draw a tool worn exactly where a hand goes and nowhere else.
+Draw five slim steel picks lying side by side in the sewn loops of an oiled cloth, each ending in a different hook or rake, with a flat torsion wrench laid across them. The tools alone on the cloth: no lock, no keyhole, no door and no hand in the frame.
 
 MADE OF. 25gp -- wrought iron, brass or horn.
 ```
@@ -6740,7 +6740,7 @@ File: `items/the-hungry-blade.webp`
 ```text
 SUBJECT. "The Hungry Blade" — Relic · Obligation: a bound Taint the first round of each fight it does not kill. · It is not sharp. It does not need to be sharp.
 
-Draw worn through at the one spot a thumb has found.
+Draw a heavy sword lying flat and alone, its edge rounded blunt down the whole length with no bevel ground into it anywhere, the steel dark and close-grained like a bar stock that was never meant to cut. Nothing on the blade: no mark, no stain, no blood, no wound and no person in the frame.
 
 MADE OF. 4000gp -- gold, gilt and gems.
 ```
@@ -6752,7 +6752,7 @@ File: `items/the-kit.webp`
 ```text
 SUBJECT. "The Kit" — Tool · A burglar's whole trade in a roll of canvas, and they never put it down.
 
-Draw a tool worn exactly where a hand goes and nowhere else.
+Draw a fat canvas roll tied shut with a leather thong, worn pale and shiny at both ends by years of being carried and never set down. It stays closed and what is inside it is never shown: no tool, no lock, no door and no hand in the frame.
 
 MADE OF. 0gp -- tin, bone or fired clay.
 ```
@@ -8783,7 +8783,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 
 ## Where prompts still repeat
 
-**178 prompts in 32 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
+**174 prompts in 32 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
 
 **6 of those clusters are the ones that bite**, listed first: the ones where the subject line carries no prose either, so neither half of the prompt tells the cards apart. The rest share a direction over subjects that already differ — forty-three consumables drawing a nearly-empty vessel still come back as forty-three different pictures, because each subject names its own.
 
@@ -8794,8 +8794,8 @@ Answer a cluster by adding its keys to `DIRECTION` in `test/art-prompts.mjs` and
 | **18** | 2 | a glass vial, stoppered, with less in it than there was | `items/bottle-of-borrowed-pain` `items/brewers-reserve` `items/draught-of-lead` `items/draught-of-second-breath` `items/draught-of-the-hollow` …+13 |
 | **13** | 2 | one round out of the bundle, its point drawn sharply | `items/blunt-head` `items/bodkin-points` `items/chalked-shaft` `items/frost-dipped-bolt` `items/grapnel-bolt` …+8 |
 | **8** | 2 | an object with more inside it than its size allows | `features/arcane-focus` `items/focus-pendant` `items/holy-symbol` `items/pilgrims-token` `items/reliquary-band` …+3 |
-| **7** | 2 | a tool worn exactly where a hand goes and nowhere else | `items/climbing-rope` `items/healers-kit` `items/hunting-traps` `items/lantern` `items/lockpicks` …+2 |
 | **6** | 2 | used up in the open: cloth, wax or powder, half gone | `items/antidote` `items/cleansing-draught` `items/firepot` `items/flask-of-ink` `items/flask-of-oil` …+1 |
+| **4** | 2 | a tool worn exactly where a hand goes and nowhere else | `items/climbing-rope` `items/hunting-traps` `items/lantern` `items/repair-kit` |
 | **3** | 2 | an edge, worn and sharpened back more than once | `items/arming-sword` `items/trident` `items/npc/goblin-spear` |
 | **9** | 1 | set down on nothing, carried a long way among other things | `items/beggars-bowl` `items/cairn-stone` `items/cracked-spyglass` `items/locked-casket` `items/loose-cobble` …+4 |
 | **7** | 1 | the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem | `signatures/shade/one-trick` `signatures/shade/the-kit` `signatures/shade/the-opening` `signatures/strength/cleave-to-the-bone` `signatures/strength/loaded-before-the-bell` …+2 |
@@ -8815,8 +8815,8 @@ Answer a cluster by adding its keys to `DIRECTION` in `test/art-prompts.mjs` and
 | **6** | — | held, or just set down, the grip polished by gripping | `items/blade-of-the-eager-hand` `items/discriminating-wand` `items/gauntlet-of-the-open-palm` `items/hooked-gauntlet` `items/reavers-edge` …+1 |
 | **5** | — | cloth with weight in it, hung from one point | `items/cloak-of-the-grey` `items/cloak-of-the-grey-road` `items/deep-pockets` `items/mantle-of-the-unburdened` `items/winter-cloak` |
 | **5** | — | weight: the object sits, and the surface under it knows; an edge, worn and sharpened back more than once | `items/halberd` `items/lance` `items/mace` `items/pike` `items/warhammer` |
-| **5** | — | worn through at the one spot a thumb has found | `items/sessyfyns-tear` `items/the-black-lantern` `items/the-hungry-blade` `items/the-pale-crown` `items/the-unquiet-quiver` |
 | **4** | — | weight: the object sits, and the surface under it knows; the weapon drawn and held at tension | `items/arquebus` `items/heavy-crossbow` `items/longbow` `items/matchlock-musket` |
+| **4** | — | worn through at the one spot a thumb has found | `items/sessyfyns-tear` `items/the-black-lantern` `items/the-pale-crown` `items/the-unquiet-quiver` |
 | **3** | — | armour as worn metal and strap, not as a costume; weight: the object sits, and the surface under it knows | `items/brigandine` `items/great-helm` `items/plate` |
 | **3** | — | a shield, face on and slightly turned, its edge nicked from use | `items/buckler` `items/kite-shield` `items/wooden-shield` |
 | **3** | — | shaped to a skull, the hollow drawn most carefully | `items/crown-of-the-quiet-mind` `items/far-sight-monocle` `items/helm-of-the-watchful` |

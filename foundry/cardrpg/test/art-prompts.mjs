@@ -1260,6 +1260,53 @@ const DIRECTION = {
     + "weight of it resting on a spot smaller than a fingernail",
 
   /*
+   * **Four items the API refused, all of them on the same two generic motifs.**
+   *
+   * `healers-kit` and `the-hungry-blade` came back `[violence]`, `lockpicks` and `the-kit` came
+   * back `[illicit]`, and every one of those refusals was at the OUTPUT stage: the prompt was
+   * sent, an image was made, and the moderator rejected the picture. So this is not wording to
+   * soften. **The picture was the problem, and the only way to change a picture is to name a
+   * different one.**
+   *
+   * What the four had in common is what caused it. Their whole direction was *a tool worn exactly
+   * where a hand goes* or *worn through at the one spot a thumb has found* -- motifs about WEAR,
+   * which say nothing whatever about the object. Handed a crop and no object, the model built the
+   * object out of the blurb, and these four blurbs read as a use rather than a thing: *needle,
+   * gut, lint and spirit* is a wound being closed, *a roll of picks and a torsion wrench* is a
+   * lock being opened, *a burglar's whole trade* is a burglary, and *it is not sharp, it does not
+   * need to be sharp* is a blade that feeds. Each drew the sentence's verb, and the verb is the
+   * part the moderator judges.
+   *
+   * So each of these four names the object, lying still and in use by nobody, and then says what
+   * is NOT in the frame -- because the subject line is still there underneath and still reads as
+   * a use. The pattern is The Red Hour's: aim at the thing, take the act out of the picture.
+   *
+   * Twelve items sit on those two motifs and only these four refused, so the motifs are not being
+   * replaced -- wear is a real and useful instruction on a lantern or a coil of rope. But `0` of
+   * `healers-kit`, `lockpicks` and `the-kit` ever reached the gate: their one attempt each was a
+   * refusal, so they looked like pieces nobody had shot. `items/hunting-traps` is the one still on
+   * a wear motif whose blurb is also an act (*jaws and a stake*); it drew, so it is left alone.
+   */
+  "items/the-hungry-blade":
+    "a heavy sword lying flat and alone, its edge rounded blunt down the whole length with no "
+    + "bevel ground into it anywhere, the steel dark and close-grained like a bar stock that was "
+    + "never meant to cut. Nothing on the blade: no mark, no stain, no blood, no wound and no "
+    + "person in the frame",
+  "items/healers-kit":
+    "a strip of cloth unrolled flat with its contents in sewn loops along it -- one curved "
+    + "needle, a hank of waxed gut, a folded wad of lint and a small stoppered bottle, laid out "
+    + "in that order. The kit is the whole subject: nobody is being treated, and there is no "
+    + "body, no wound and no blood in the frame",
+  "items/lockpicks":
+    "five slim steel picks lying side by side in the sewn loops of an oiled cloth, each ending "
+    + "in a different hook or rake, with a flat torsion wrench laid across them. The tools alone "
+    + "on the cloth: no lock, no keyhole, no door and no hand in the frame",
+  "items/the-kit":
+    "a fat canvas roll tied shut with a leather thong, worn pale and shiny at both ends by years "
+    + "of being carried and never set down. It stays closed and what is inside it is never "
+    + "shown: no tool, no lock, no door and no hand in the frame",
+
+  /*
    * Two starter cards that are the same two steps in the other order -- `Strike · / Ready` and
    * `Ready · / Strike` -- so the motif table said the same two things twice and only the sequence
    * differed, which is not visible in a picture.
