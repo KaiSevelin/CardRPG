@@ -5564,7 +5564,7 @@ File: `items/deep-pockets.webp`
 ```text
 SUBJECT. "Deep Pockets" — Wonder · More in them than went in, and never what you wanted.
 
-Draw cloth with weight in it, hung from one point.
+Draw a coat laid out flat and open with one pocket turned inside out, its linen lining pulled into a long sack plainly deeper than the coat it came out of, a small silver clasp still on the pocket's edge. Drawn square on and wider than it is tall, the cloth's own folds the only dark in it and nothing hanging anywhere.
 
 MADE OF. 400gp -- fine wool, linen lining and silver clasps.
 ```
@@ -7098,7 +7098,7 @@ File: `items/npc/dark-lantern.webp`
 ```text
 SUBJECT. "Dark Lantern" — Focus
 
-Draw a shuttered lantern with one slit open, throwing a single hard bar of light across a dark room and lighting nothing else at all.
+Draw a shuttered lantern seen close, its panels shut and one narrow slit open, the bar of light out of that slit drawn as a single clean-edged wedge of bare paper with a few hatch strokes only where the wedge ends. Its tin body and shutters are the only ink in the frame: the room is not drawn at all, there is no wash anywhere, and the dark here is ink or it is nothing -- never a colour, never a blue, never a grey.
 
 MADE OF. 0gp -- tin, bone or fired clay.
 ```
@@ -8783,7 +8783,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 
 ## Where prompts still repeat
 
-**174 prompts in 32 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
+**173 prompts in 32 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
 
 **6 of those clusters are the ones that bite**, listed first: the ones where the subject line carries no prose either, so neither half of the prompt tells the cards apart. The rest share a direction over subjects that already differ — forty-three consumables drawing a nearly-empty vessel still come back as forty-three different pictures, because each subject names its own.
 
@@ -8813,9 +8813,9 @@ Answer a cluster by adding its keys to `DIRECTION` in `test/art-prompts.mjs` and
 | **7** | — | hung on a cord and drawn hanging, turned off square | `items/amulet-of-the-fed-thread` `items/amulet-of-the-mended-thread` `items/gag-of-the-nine` `items/gorget-of-the-turned-blade` `items/hourglass-charm` …+2 |
 | **6** | — | one hand's worth of object, drawn close and large | `items/accusers-ring` `items/gamblers-coin` `items/mnemonic-stone` `items/pact-iron` `items/serpents-tooth-ring` …+1 |
 | **6** | — | held, or just set down, the grip polished by gripping | `items/blade-of-the-eager-hand` `items/discriminating-wand` `items/gauntlet-of-the-open-palm` `items/hooked-gauntlet` `items/reavers-edge` …+1 |
-| **5** | — | cloth with weight in it, hung from one point | `items/cloak-of-the-grey` `items/cloak-of-the-grey-road` `items/deep-pockets` `items/mantle-of-the-unburdened` `items/winter-cloak` |
 | **5** | — | weight: the object sits, and the surface under it knows; an edge, worn and sharpened back more than once | `items/halberd` `items/lance` `items/mace` `items/pike` `items/warhammer` |
 | **4** | — | weight: the object sits, and the surface under it knows; the weapon drawn and held at tension | `items/arquebus` `items/heavy-crossbow` `items/longbow` `items/matchlock-musket` |
+| **4** | — | cloth with weight in it, hung from one point | `items/cloak-of-the-grey` `items/cloak-of-the-grey-road` `items/mantle-of-the-unburdened` `items/winter-cloak` |
 | **4** | — | worn through at the one spot a thumb has found | `items/sessyfyns-tear` `items/the-black-lantern` `items/the-pale-crown` `items/the-unquiet-quiver` |
 | **3** | — | armour as worn metal and strap, not as a costume; weight: the object sits, and the surface under it knows | `items/brigandine` `items/great-helm` `items/plate` |
 | **3** | — | a shield, face on and slightly turned, its edge nicked from use | `items/buckler` `items/kite-shield` `items/wooden-shield` |

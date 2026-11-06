@@ -1142,9 +1142,26 @@ const DIRECTION = {
 
   /* Both NPC foci read *an object doing something while nobody holds it*, which is the right
    * sentence for a focus and the same sentence for both. What they are is different. */
+  /*
+   * **Nine attempts, and the direction was asking for the two faults it kept getting.**
+   *
+   * *A dark room, lighting nothing else at all* is a request to fill the frame, so `paper` came
+   * back 0.0%-0.3% against a 5% floor on six of nine tries, with `black` 29-47% and `edgeGrain`
+   * 69-92 -- the signature of a wash over everything. And a room drawn dark goes BLUE: `cool` ran
+   * 1.3%-8.0% where a pass is 0.0%-0.8%, because night is the one thing the model will not render
+   * in a warm neutral unless told the dark is ink.
+   *
+   * The lantern is the subject; the room was never the subject. So the room comes out, the bar of
+   * light becomes the one shape made of bare paper, and the dark is named as ink -- the clause
+   * that fixed The Rumour and The First Taste, and for the same reason: handed an absence to
+   * draw, the model reaches for a colour.
+   */
   "items/npc/dark-lantern":
-    "a shuttered lantern with one slit open, throwing a single hard bar of light across a dark "
-    + "room and lighting nothing else at all",
+    "a shuttered lantern seen close, its panels shut and one narrow slit open, the bar of light "
+    + "out of that slit drawn as a single clean-edged wedge of bare paper with a few hatch "
+    + "strokes only where the wedge ends. Its tin body and shutters are the only ink in the "
+    + "frame: the room is not drawn at all, there is no wash anywhere, and the dark here is ink "
+    + "or it is nothing -- never a colour, never a blue, never a grey",
   "items/npc/goblin-fetish":
     "a bundle of knotted hair, bone and string hung from a bent stick, turning slowly on its own "
     + "with nobody within reach of it",
@@ -1287,6 +1304,26 @@ const DIRECTION = {
    * refusal, so they looked like pieces nobody had shot. `items/hunting-traps` is the one still on
    * a wear motif whose blurb is also an act (*jaws and a stake*); it drew, so it is left alone.
    */
+  /*
+   * **The other nine-attempt item, and its motif was placing the subject vertically.**
+   *
+   * *Cloth with weight in it, hung from one point* names a hanging point, and a hanging point is
+   * at the top of the frame: `quietTop` came in under the floor on seven of nine tries (2.6%,
+   * 6.8%, 7.8% twice, 8.1% twice, 8.6% twice). The two tries that cleared the top instead lost
+   * `inWindow` -- 20.2% and 24.2% against a 30% floor -- because obeying the top strip drops the
+   * hanging cloth below the band. One continuum, two ends, nine attempts bouncing between them.
+   *
+   * Nothing else was wrong with it: `black` stayed 4%-16% and `paper` 18%-53%, so the picture was
+   * fine and only its shape was not. The fix is to stop asking for a tall subject rather than to
+   * say where a tall one should sit -- a coat laid flat is wide, and a wide subject sits in the
+   * band without being told to. The crop is named, the placement is not.
+   */
+  "items/deep-pockets":
+    "a coat laid out flat and open with one pocket turned inside out, its linen lining pulled "
+    + "into a long sack plainly deeper than the coat it came out of, a small silver clasp still "
+    + "on the pocket's edge. Drawn square on and wider than it is tall, the cloth's own folds "
+    + "the only dark in it and nothing hanging anywhere",
+
   "items/the-hungry-blade":
     "a heavy sword lying flat and alone, its edge rounded blunt down the whole length with no "
     + "bevel ground into it anywhere, the steel dark and close-grained like a bar stock that was "
