@@ -2629,7 +2629,7 @@ SUBJECT. "The First Taste" — strength 2 · Tainting 2 range 1
 
 Tainting 2 on one adjacent enemy, and 1 Taint for you. You are the first to taste it, always.
 
-Draw the wrongness spreading, landing 1 squares from the one who threw it.
+Draw a cup taken away from the mouth and held out to somebody else, the taster's own lip already stained -- the stain is ink-dark and not coloured. Two hands and the cup between them, and nothing else in the frame.
 ```
 
 ### The Long Night
@@ -2641,7 +2641,7 @@ SUBJECT. "The Long Night" — strength 3 · Cast +3 range 1 you gain the Health 
 
 Drain 3 Health from an adjacent living target and gain it. The only renewable pool in the game, and the node says what it costs to have one.
 
-Draw the shape forming between the hands, thrown with the whole body, nothing held back, landing 1 squares from the one who threw it.
+Draw the shape forming between the hands, thrown with the whole body, nothing held back, landing 1 square from the one who threw it.
 ```
 
 ### The Long Silence
@@ -2661,7 +2661,7 @@ File: `signatures/faith/the-orders-shield.webp`
 ```text
 SUBJECT. "The Order's Shield" — Defend, Block 2 range 1 · / Block 1 range 1 · The Block goes to an adjacent ally and never to you. The order does not defend itself.
 
-Draw a guard closing: shield, forearm or shoulder set against something off-frame; the blow stopped flat, landing 1 squares from the one who threw it; then landing 1 squares from the one who threw it.
+Draw a guard closing: shield, forearm or shoulder set against something off-frame; the blow stopped flat, landing 1 square from the one who threw it.
 ```
 
 ### The Outcast's Due
@@ -2685,7 +2685,7 @@ SUBJECT. "The Rumour" — strength 2 · one enemy type acts as though a named li
 
 Name a lie before the fight. One enemy type acts as if it were true, for as long as you keep spending a secondary on it.
 
-Draw that line literally: the one moment it describes, and nothing else in frame.
+Draw a mouth at an ear and a hand cupped round the words, both heads cropped at the brow so neither face is readable. The listener's eye is the one thing drawn in full, and it has already believed it.
 ```
 
 ### The Scourge
@@ -4172,7 +4172,7 @@ SUBJECT. "Taste of the Rot" — strength 1 · Cast +1 range 1 Off Balance (1) th
 
 One adjacent enemy: 1 damage and Off-Balance, no save. A Miss costs you a Taint, which is the god being paid whether or not it worked.
 
-Draw the shape forming between the hands, the one that found its moment, landing 1 squares from the one who threw it; weight in the wrong place.
+Draw the shape forming between the hands, the one that found its moment, landing 1 square from the one who threw it; weight in the wrong place.
 ```
 
 ### The Air Between

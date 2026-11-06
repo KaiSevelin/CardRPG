@@ -663,6 +663,29 @@ const DIRECTION = {
     + "between the two of them",
 
   /*
+   * **The two pieces the gate would not pass, and the palette was the symptom.**
+   *
+   * Fourteen attempts between them, every one rejected on hue, and neither had a picture to
+   * draw. *The Rumour* was getting the fallback -- *draw that line literally: the one moment it
+   * describes* -- over a subject that reads *one enemy type acts as though a named lie were
+   * true*, which is a rule and not a moment. *The First Taste* was getting the motif table's
+   * reading of its range: *the wrongness spreading, landing 1 square from the one who threw it*.
+   *
+   * Handed nothing drawable, the model drew mood, and the mood of this group is the Way of
+   * Faith's violet. So the off-palette hue was never a palette problem -- it was the only thing
+   * left to fill a frame with. Both directions below name a moment, two bodies at most, and say
+   * the dark is INK rather than a colour, because that is the clause the hue was arriving under.
+   */
+  "signatures/faith/the-rumour":
+    "a mouth at an ear and a hand cupped round the words, both heads cropped at the brow so "
+    + "neither face is readable. The listener's eye is the one thing drawn in full, and it has "
+    + "already believed it",
+  "signatures/faith/the-first-taste":
+    "a cup taken away from the mouth and held out to somebody else, the taster's own lip already "
+    + "stained -- the stain is ink-dark and not coloured. Two hands and the cup between them, and "
+    + "nothing else in the frame",
+
+  /*
    * **Two cards whose names mean more than their steps do.**
    *
    * *Dig In* and *Second Wind* are the same two steps -- `Heal 2`, Spent -- and the motif table
@@ -1216,7 +1239,10 @@ function qualify(step) {
   if (step.requires?.tag === "ranged") q.push("loosed from a bow or a barrel, the target well off");
   if (step.requires?.tag === "light") q.push("a short blade, held close and low");
 
-  if (step.range) q.push(`landing ${step.range} squares from the one who threw it`);
+  /* `1 squares` reached four prompts before anybody read one aloud. */
+  if (step.range) {
+    q.push(`landing ${step.range} square${step.range === 1 ? "" : "s"} from the one who threw it`);
+  }
   if (step.areaKind === "blast") q.push("reaching everything around at once");
   if (step.areaKind === "aimed") q.push("one line only, from eye to target");
   if (step.ignores) q.push("going through the armour rather than round it");
@@ -1250,6 +1276,8 @@ function motifsFor(entry, group) {
 
   /* Per STEP rather than per verb, so a card's two Strikes can be two different Strikes. */
   const seen = new Set();
+  /* Which qualifiers each verb has already contributed, so a repeat says only what is new. */
+  const said = new Map();
   for (const step of steps) {
     const isVerb = !!CARDRPG.verbs[step.verb];
     const table = isVerb ? VERB_MOTIF : CARDRPG.effects[step.verb] ? EFFECT_MOTIF : null;
@@ -1261,9 +1289,23 @@ function motifsFor(entry, group) {
      * A card with two Strikes on it said *a blow lands* twice. The second one is not a second
      * picture, it is the same picture qualified -- so once a verb has been drawn, later steps
      * carry only what makes them different.
+     *
+     * **And "different" has to mean it.** The first version pushed the whole qualifier list
+     * again behind a `then`, so two steps at the same range produced *landing 1 square from the
+     * one who threw it; then landing 1 square from the one who threw it* -- and the `new Set`
+     * below could not collapse it, because the `then ` prefix makes the two strings unequal.
+     * So the qualifiers already said for this verb are subtracted, and a step that adds nothing
+     * new adds no clause at all.
      */
-    if (seen.has(step.verb) && qs.length) out.push(`then ${qs.join(", ")}`);
-    else out.push(qs.length && stem ? [stem, ...qs].join(", ") : motif(table, step.verb, kind));
+    if (seen.has(step.verb)) {
+      const already = said.get(step.verb);
+      const fresh = qs.filter(q => !already.has(q));
+      if (fresh.length) out.push(`then ${fresh.join(", ")}`);
+      for (const q of fresh) already.add(q);
+    } else {
+      out.push(qs.length && stem ? [stem, ...qs].join(", ") : motif(table, step.verb, kind));
+      said.set(step.verb, new Set(qs));
+    }
     seen.add(step.verb);
   }
   for (const key of new Set(steps.map(s => s.condition).filter(Boolean))) {
