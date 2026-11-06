@@ -1172,10 +1172,23 @@ const DIRECTION = {
    * at the top of this file years of commits ago: *a three-quarter crop of a person has a head,
    * and a head goes at the top, so the head went at the top.*
    *
-   * So each of these crops below the head and says where the empty paper is. Asking a single
-   * piece for a generous empty top is safe in a way that asking the whole capsule for one was
-   * not -- the capsule move changed 588 prompts at once and cost eleven pieces; this changes
-   * three that have already failed five times each.
+   * So each of these crops below the head. **It does NOT say where the empty paper is, and the
+   * first version of these three did, which was the same mistake again at piece scale.**
+   *
+   * That version added *the top third of the picture bare paper*, on the reasoning that asking one
+   * piece for a generous empty top is safe where asking the whole capsule for one was not. It is
+   * not safe, and the number needed to know that was already written down two comments above
+   * this one: **the model overshoots this ask by about 1.4x.** A third asked for is very nearly a
+   * half delivered, and the clear window ENDS at 43%. All three came back with the top strip
+   * fixed and `inWindow` destroyed -- 22.4%, 37.8% and 49.0% of empty top, for 17.2%, 7.9% and
+   * 0.0% of ink inside the band, against a floor of 30. The candle was drawn entirely below the
+   * window.
+   *
+   * The capsule already asks for a tenth at the top, says the dark lives between that and the
+   * halfway line, and says the bottom half goes pale. That is complete. A piece's own direction
+   * should say WHAT to draw and how to crop it; the moment it also starts placing the subject
+   * vertically it is arguing with the capsule, and `quietTop` and `inWindow` are one constraint
+   * from opposite ends, so winning that argument on one end loses it on the other.
    *
    * The two faith ones also name the dark as INK rather than as a colour, which is the clause
    * that fixed The Rumour and The First Taste: handed nothing drawable, the model reaches for
@@ -1206,19 +1219,18 @@ const DIRECTION = {
   "spells/mind/the-red-hour":
     "the hour that was bought, never the price that bought it -- a thick tallow candle with hour "
     + "lines scored across it, burned down past the first line, the flame low and one heavy fall "
-    + "of wax run down the side. The flame sits about a third of the way down and the candle runs "
-    + "to the bottom edge, so there is bare paper above it. No figure, no hand, no wrist, no "
-    + "bandage, no blade, no wound and no blood anywhere in the frame",
+    + "of wax run down the side. No figure, no hand, no wrist, no bandage, no blade, no wound and "
+    + "no blood anywhere in the frame",
 
   "spells/mind/graven-armour":
     "a bare forearm and the back of one hand, plate armour tattooed into the skin in black line "
     + "-- lames, rivets and the cuff of a vambrace inked where a real one would sit, the lines "
     + "following the tendons under the skin. Drawn from the elbow down and no higher, the arm "
-    + "entering from the bottom of the frame, and the top third of the picture bare paper",
+    + "entering from the bottom of the frame",
   "spells/faith/measure-of-the-debt":
     "the two halves of a split tally stick held edge to edge so the notches line up, in two "
     + "hands at waist height, cropped at the wrists. The matched notches are the whole subject "
-    + "and the dark is ink rather than a colour. Nothing in the top third of the frame but paper",
+    + "and the dark is ink rather than a colour",
   "spells/faith/the-lie-that-held":
     "a plank laid across a gap with nothing under its far end and nothing holding it up, a "
     + "boot's whole weight in the middle of it and not a trace of bend in the wood. Drawn from "

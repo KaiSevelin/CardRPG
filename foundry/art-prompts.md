@@ -3419,7 +3419,7 @@ SUBJECT. "Graven Armour" — strength 4 · you count as Burdened always, whateve
 
 Plate, in ink, over everything. It weighs nothing and you are never again anything but weighed down.
 
-Draw a bare forearm and the back of one hand, plate armour tattooed into the skin in black line -- lames, rivets and the cuff of a vambrace inked where a real one would sit, the lines following the tendons under the skin. Drawn from the elbow down and no higher, the arm entering from the bottom of the frame, and the top third of the picture bare paper.
+Draw a bare forearm and the back of one hand, plate armour tattooed into the skin in black line -- lames, rivets and the cuff of a vambrace inked where a real one would sit, the lines following the tendons under the skin. Drawn from the elbow down and no higher, the arm entering from the bottom of the frame.
 ```
 
 ### Graven Eye
@@ -3947,7 +3947,7 @@ SUBJECT. "The Red Hour" — strength 4 · range 2 every ally within 2 may play a
 
 You open a vein for each of them, and for an hour nobody is tired.
 
-Draw the hour that was bought, never the price that bought it -- a thick tallow candle with hour lines scored across it, burned down past the first line, the flame low and one heavy fall of wax run down the side. The flame sits about a third of the way down and the candle runs to the bottom edge, so there is bare paper above it. No figure, no hand, no wrist, no bandage, no blade, no wound and no blood anywhere in the frame.
+Draw the hour that was bought, never the price that bought it -- a thick tallow candle with hour lines scored across it, burned down past the first line, the flame low and one heavy fall of wax run down the side. No figure, no hand, no wrist, no bandage, no blade, no wound and no blood anywhere in the frame.
 ```
 
 ### The Risen Rank
@@ -4368,7 +4368,7 @@ SUBJECT. "Measure of the Debt" — strength 2 · a Judged enemy that dies this r
 
 A Judged enemy that dies this round pays you 3 Health. The debt is collected whether or not you were the one who called it in.
 
-Draw the two halves of a split tally stick held edge to edge so the notches line up, in two hands at waist height, cropped at the wrists. The matched notches are the whole subject and the dark is ink rather than a colour. Nothing in the top third of the frame but paper.
+Draw the two halves of a split tally stick held edge to edge so the notches line up, in two hands at waist height, cropped at the wrists. The matched notches are the whole subject and the dark is ink rather than a colour.
 ```
 
 ### Name the Guilty
