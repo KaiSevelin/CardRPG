@@ -437,8 +437,21 @@ ${accentFor(dir)}
 - Desaturated and earthy. ${WAY_OF_DIR[dir]
   ? "Apart from the accent named above, no hue at all: the rest of the picture is ink, paper and\n  the warm greys between them."
   : "Warm throughout."} **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
-  Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
-  here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
+  Every hue in the picture is between red and amber${dir.startsWith("items") ? "" : " -- **and that includes the ground.**"} Earth
+  here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.${
+  dir.startsWith("items")
+    ? `
+- **The one exemption in this palette: the object's own material keeps its true colour.** A gold
+  ring is gold-coloured, a silver ring is silver, steel is steel, copper is copper, brass is
+  brass and glass is glass. A silver ring rendered in brown ink is a brown ring, and the subject
+  of these pictures is the object -- so the metal is the one thing the sepia does not own.
+- **It covers the OBJECT and nothing else.** The ground it sits on, the shadow it throws and the
+  light falling across it stay the warm wash, exactly as everywhere else in the set. One lit
+  object in true material against warm paper, not a coloured picture.
+- **Silver, steel and pewter are near-white, not blue and not grey-blue** -- a bright metal is a
+  VALUE and a set of reflections rather than a hue, which is how it is drawn here. Gold, brass,
+  copper and bronze are already inside the warm range and need no special handling.`
+    : ""}
 
 PEOPLE.
 - **Where a person is drawn, decide who they are rather than defaulting.** This is a port city on
@@ -640,6 +653,153 @@ const TAG_MOTIF = {
   light: "quickness: the object is balanced on almost nothing",
   melee: "an edge, worn and sharpened back more than once"
 };
+
+/*
+ * **`kind` was on all 150 items and nothing in the art pipeline ever read it.**
+ *
+ * The motif table reads `tags` first and `group` second. 89 items have tags and 74 have a group;
+ * every single one has a `kind`, and it is finer than either. The cost of not reading it was one
+ * cluster of forty-three prompts all told to draw *a vessel, and whatever is in it is nearly
+ * gone* -- which `kind` splits into Potion 18, Ammunition 13, Consumable 8 and Poison 7, four
+ * genuinely different pictures. **And one of the four was simply wrong**: thirteen pieces of
+ * ammunition were being told to draw a half-empty bottle, which is how Net Bolt and Thunder Shot
+ * came to sit in the potion cluster.
+ *
+ * `Wonder` is the exception and gets no sentence here, because forty-three of the hundred and
+ * fifty are Wonders and one sentence for forty-three pieces is the problem rather than the fix.
+ * It is answered by `slot` below.
+ */
+/*
+ * **Ten words each, like every other row in these tables, and the first draft ran to thirty.**
+ *
+ * A motif is SHARED text, so its length is a cost paid by every piece that shares it. An item's
+ * own distinguishing prose is its blurb, and a blurb is eight words -- *charcoal, milk thistle
+ * and something the brewer will not name*. Thirty words of shared direction over eight words of
+ * unique blurb is 80% overlap by arithmetic, and the twin audit read it exactly that way: the
+ * first draft of this table drove 39 items over the line while making them more different.
+ *
+ * Every row in `TAG_MOTIF` and `GROUP_MOTIF` is eight to twelve words. That was not a style
+ * choice, it is the budget.
+ */
+const KIND_MOTIF = {
+  Potion: "a glass vial, stoppered, with less in it than there was",
+  Poison: "a small dark bottle, labelled, a residue dried at the lip",
+  Consumable: "used up in the open: cloth, wax or powder, half gone",
+  Ammunition: "one round out of the bundle, its point drawn sharply",
+  /*
+   * **Weapon, Armor and Shield are deliberately absent, and the first draft had all three.**
+   *
+   * Reading `kind` first is right where the kind is finer than the tags. For these three it is
+   * coarser: twenty weapons carry `melee`, `ranged`, `heavy`, `light` and `thrown` between them,
+   * and a single `Weapon` sentence put all twenty-three under one direction -- a 23-piece cluster
+   * where there had been none, the exact fault this table was written to fix. Armor and Shield
+   * would only have repeated what `TAG_MOTIF` already says in the same words.
+   *
+   * So they fall through to the tags, which is the finer table for them. Most specific wins is
+   * the rule; which table is most specific depends on the row.
+   */
+  Tool: "a tool worn exactly where a hand goes and nowhere else",
+  Make: "made well, by somebody who signed nothing",
+  Power: "an object with more inside it than its size allows",
+  Station: "a thing that says who somebody is before they speak",
+  Relic: "worn through at the one spot a thumb has found",
+  Implement: "scribed and calibrated, unreadable to anybody not taught it"
+};
+
+/*
+ * **Where on the body it lives, which says more about the picture than what it does.**
+ *
+ * `slot` is on all 150 items too, and `brief()` drops it: `bits.unshift(entry.kind ?? entry.slot)`
+ * prefers the kind, and every item has one, so the slot has never once been printed. Ten values,
+ * and they are composition rather than category -- a thing on the fingers is drawn at a different
+ * distance from a thing on the back.
+ *
+ * This is what breaks the forty-three Wonders apart: pack 9, neck 7, hands 6, fingers 6, cloak 5,
+ * feet 4, head 3, belt 3. Eight pictures instead of one, off a field already in the data.
+ */
+const SLOT_MOTIF = {
+  fingers: "one hand's worth of object, drawn close and large",
+  neck: "hung on a cord and drawn hanging, turned off square",
+  head: "shaped to a skull, the hollow drawn most carefully",
+  hands: "held, or just set down, the grip polished by gripping",
+  body: "the shape a torso left in it, drawn empty",
+  cloak: "cloth with weight in it, hung from one point",
+  feet: "worn unevenly, and the wear is the subject",
+  belt: "hung at the hip, the strap cut off at the frame",
+  pack: "set down on nothing, carried a long way among other things",
+  back: "big enough to need the back, strapped, seen from behind"
+};
+
+/*
+ * **What the thing is MADE of, read off its price, because a gold ring is gold-coloured.**
+ *
+ * The palette rule says every hue is between red and amber and that nothing in the set is grey.
+ * Applied to an object that is the whole subject of its picture, that turns a silver ring into a
+ * brown ring and plate armour into a leather suggestion of plate. The hue rules exist so a hand
+ * of cards reads as one printed set; they were never an argument about what metal looks like.
+ *
+ * `value` carries the answer and was never read: 0-10gp for 23 items, 11-100 for 70, 101-600 for
+ * 35, 601+ for 22. That is a four-step material scale already graded by somebody who knew what
+ * these things are worth, and it costs nothing to use. The bands are inclusive at the top so a
+ * 100gp item and a 101gp item are not the same tier by rounding.
+ *
+ * Silver and steel are named as near-neutral rather than as a colour on purpose: `GATE.maxCool`
+ * rejects saturated hue outside 0-60 degrees at 1% of the frame, and a steel rendered blue-grey
+ * is the one way this exemption could fail the gate. Real silver is a value, not a hue.
+ */
+/*
+ * **Kept to a dozen words, because the first draft was a paragraph and it had consequences.**
+ *
+ * Each tier was written out as 25-40 words explaining that silver reads as near-white and gold is
+ * the one place a real metallic colour is the point. All true, and there are only FOUR tiers for
+ * a hundred and fifty items -- so seventy of them shared one paragraph verbatim and the twin
+ * audit went from 0 near-twins to 112 in a single regeneration. It was right to.
+ *
+ * The division it taught: **the rule goes in the capsule, the datum goes in the subject.** How a
+ * metal is rendered is the same instruction for every item in the group, so it belongs in the
+ * capsule's palette section where it is written once and the audit rightly ignores it. What this
+ * particular object is made of is a fact about this object, and a fact is short.
+ */
+/*
+ * **Price alone was wrong twice: a sixty-gold potion is not made of wrought iron.**
+ *
+ * The first version read `value` and nothing else, so one of four strings went onto all hundred
+ * and fifty items. It was inaccurate -- a flask, a bolt, a cloak and a sword at the same price
+ * are made of four different things -- and because there were only four strings for a hundred and
+ * fifty pieces, seventy items shared one verbatim and the twin audit went from 0 to 112.
+ *
+ * So material is read off the price AND what the object is: six families by four tiers, twenty-
+ * four short strings instead of four long ones. More accurate and more varied by the same change,
+ * which is usually the sign that the field was the right one to read.
+ */
+const MATERIAL = {
+  vessel: ["a clay bottle, a rag stopper and pitch", "green glass, cork and sealing wax",
+    "clear glass, a turned stopper and a written label",
+    "cut crystal, silver wire and a stopper nobody has broken"],
+  ammunition: ["a split ash shaft and a plain iron head",
+    "true ash, goose fletching and a forged head",
+    "straight-grained shaft and a bright steel head",
+    "a silvered head, dyed fletching and a gilt nock"],
+  edge: ["plain iron, barely better than a tool", "wrought iron and seasoned wood",
+    "bright steel and fine leather", "watered steel, gold inlay and a stone in the pommel"],
+  plate: ["boiled hide and a few iron scales", "riveted iron and leather strap",
+    "polished steel plate and good strap", "blued steel, gilt edging and silk lining"],
+  cloth: ["sacking and undyed wool", "good wool and boiled leather",
+    "fine wool, linen lining and silver clasps", "velvet, fur and gold thread"],
+  worn: ["tin, bone or fired clay", "wrought iron, brass or horn",
+    "silver, worked bronze and fine leather", "gold, gilt and gems"]
+};
+const FAMILY = {
+  Potion: "vessel", Poison: "vessel", Consumable: "vessel",
+  Ammunition: "ammunition", Weapon: "edge", Armor: "plate", Shield: "plate"
+};
+function materialOf(entry) {
+  const v = entry.value ?? 0;
+  const tier = v <= 10 ? 0 : v <= 100 ? 1 : v <= 600 ? 2 : 3;
+  const family = FAMILY[entry.kind]
+    ?? (entry.slot === "cloak" || entry.slot === "body" ? "cloth" : "worn");
+  return `MADE OF. ${v}gp -- ${MATERIAL[family][tier]}.`;
+}
 
 /*
  * An item that does nothing on a card still belongs to one of the seven bonus groups, and the
@@ -991,6 +1151,31 @@ const DIRECTION = {
 
   /* The one pair in Items the audit flagged, and the one it was right to be unsure about: they
    * are supposed to be nearly the same object. The difference is what each is *for*. */
+  /*
+   * **The five the twin audit still named once the motifs were cut to size, and it was right.**
+   *
+   * Three heavy melee two-handers with the same tags, the same price tier and a blurb under ten
+   * words apiece; a Consumable whose name is the only thing shaping it; and a potion sitting
+   * beside its own Greater version. A motif table cannot separate these -- *heavy* and *melee*
+   * is the whole of what the data says, and it says it three times -- so each gets a sentence
+   * about the one thing its own blurb already knows.
+   */
+  "items/great-axe":
+    "a single-bitted axe head on a long haft, the bit chipped along its leading edge and "
+    + "re-ground behind the chips. Cheap work: no fuller, no inlay, a wedge and a nail",
+  "items/greatsword":
+    "four feet of straight blade filling the frame corner to corner at a slight diagonal, far "
+    + "too long for the picture, with a ricasso wrapped in leather halfway up it",
+  "items/longsword":
+    "a plain cruciform hilt and the first hand's length of blade, the cross bar straight and "
+    + "square, nothing on it that was not needed to hold it",
+  "items/caltrops":
+    "four iron spikes welded so that one always points up, several of them scattered where they "
+    + "fell, seen from low down and close so the upward point is at eye level",
+  "items/healing-potion":
+    "a stubby wide-mouthed bottle of something thick and dark that has settled, the sediment "
+    + "visible at the bottom and a fingerprint in the dust on the shoulder of the glass",
+
   "items/dagger":
     "a short blade coming out of a sleeve, most of it still hidden, only the last inch of edge "
     + "catching any light",
@@ -1335,11 +1520,36 @@ function motifsFor(entry, group) {
   for (const key of new Set(steps.map(s => s.condition).filter(Boolean))) {
     out.push(motif(CONDITION_MOTIF, key, "condition"));
   }
-  /* An item has no steps worth speaking of; what it IS carries the picture. */
+  /*
+   * An item has no steps worth speaking of; what it IS carries the picture.
+   *
+   * **`kind` first, then `slot`, and only then the tags and the group.** Every item has a kind
+   * and a slot; 89 have tags and 74 have a group. Reading the coarse fields first was what put
+   * forty-three unlike things under one sentence -- so the order now runs most specific to least,
+   * and a Wonder, which has forty-three members and no useful kind motif, is answered by where on
+   * the body it lives instead.
+   */
+  if (!out.length && KIND_MOTIF[entry.kind]) out.push(KIND_MOTIF[entry.kind]);
+  if (!out.length && entry.kind === "Wonder" && SLOT_MOTIF[entry.slot]) {
+    out.push(SLOT_MOTIF[entry.slot]);
+  }
   if (!out.length && entry.tags?.length) {
     for (const tag of entry.tags) if (TAG_MOTIF[tag]) out.push(TAG_MOTIF[tag]);
   }
   if (!out.length && entry.group) out.push(motif(GROUP_MOTIF, entry.group, "bonus group"));
+  /*
+   * **The slot is NOT added as a second clause where the kind already spoke, and it was.**
+   *
+   * *Where it is worn* and *what it is* are different facts and a picture wants both, which is
+   * the argument that put it here. Measured, it was the wrong trade: a slot is shared by every
+   * item in its slot, so all eighteen potions gained the same *hung at the hip from a strap* and
+   * the shared half of their prompts grew while the half that tells them apart -- the name and
+   * the blurb -- did not. It cost more than twice what the material line cost on the twin audit,
+   * for a clause the eighteen have in common anyway.
+   *
+   * It stays for `Wonder` above, where it is the whole point: forty-three Wonders have no finer
+   * kind to split them and the slot is what makes eight pictures out of one.
+   */
   /*
    * The last resort, and it has to know what kind of thing it is looking at. An item with nothing
    * else to say is an object; a feature with nothing else to say is a QUALITY -- *Tough*,
@@ -1589,6 +1799,12 @@ for (const group of GROUPS) {
         ? ["", `WHO IS IN IT. If a face or any bare skin shows here, that person is `
           + `${castLine(key)} -- fixed, not a suggestion, and not a default to fall back from. `
           + "If this crop shows no person at all, the line does not apply."]
+        : []),
+      /* Natural weapons are grown, not bought: a mandible has a `value` the way a sword does and
+       * it means nothing about what it is made of. Chitin is chitin at any price. */
+      ...(group.dir.startsWith("items") && group.dir !== "items/natural"
+        && entry.value !== undefined
+        ? ["", materialOf(entry)]
         : [])
     ].join("\n");
     ledger.push({ key, name: entry.name, group: group.title, direction, flavour: !!flavour,

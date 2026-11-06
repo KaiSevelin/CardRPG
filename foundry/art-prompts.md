@@ -5099,8 +5099,18 @@ PALETTE.
   the ground, never the sky, never a glow and never a whole figure: those are all the warm
   neutral of the paper and the ink.
 - Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
-  Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
+  Every hue in the picture is between red and amber Earth
   here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
+- **The one exemption in this palette: the object's own material keeps its true colour.** A gold
+  ring is gold-coloured, a silver ring is silver, steel is steel, copper is copper, brass is
+  brass and glass is glass. A silver ring rendered in brown ink is a brown ring, and the subject
+  of these pictures is the object -- so the metal is the one thing the sepia does not own.
+- **It covers the OBJECT and nothing else.** The ground it sits on, the shadow it throws and the
+  light falling across it stay the warm wash, exactly as everywhere else in the set. One lit
+  object in true material against warm paper, not a coloured picture.
+- **Silver, steel and pewter are near-white, not blue and not grey-blue** -- a bright metal is a
+  VALUE and a set of reflections rather than a hue, which is how it is drawn here. Gold, brass,
+  copper and bronze are already inside the warm range and need no special handling.
 
 PEOPLE.
 - **Where a person is drawn, decide who they are rather than defaulting.** This is a port city on
@@ -5142,7 +5152,9 @@ File: `items/accusers-ring.webp`
 ```text
 SUBJECT. "Accuser's Ring" — Wonder · It is cold on the finger that points. · One enemy within 3 is Judged (1).
 
-Draw an object behaving as though it were awake.
+Draw one hand's worth of object, drawn close and large.
+
+MADE OF. 500gp -- silver, worked bronze and fine leather.
 ```
 
 ### Amulet of the Fed Thread
@@ -5152,7 +5164,9 @@ File: `items/amulet-of-the-fed-thread.webp`
 ```text
 SUBJECT. "Amulet of the Fed Thread" — Wonder · The thread is mended. Something had to pay out the length. · When you would drop to 0 Health, drop to 1 instead.
 
-Draw an object behaving as though it were awake.
+Draw hung on a cord and drawn hanging, turned off square.
+
+MADE OF. 0gp -- tin, bone or fired clay.
 ```
 
 ### Amulet of the Mended Thread
@@ -5162,7 +5176,9 @@ File: `items/amulet-of-the-mended-thread.webp`
 ```text
 SUBJECT. "Amulet of the Mended Thread" — Wonder · A knotted thread in amber. The knot is tied, not drawn. · When you would drop to 0 Health, drop to 1 instead.
 
-Draw an object behaving as though it were awake.
+Draw hung on a cord and drawn hanging, turned off square.
+
+MADE OF. 800gp -- gold, gilt and gems.
 ```
 
 ### Antidote
@@ -5172,7 +5188,9 @@ File: `items/antidote.webp`
 ```text
 SUBJECT. "Antidote" — Consumable · Charcoal, milk thistle and something the brewer will not name.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw used up in the open: cloth, wax or powder, half gone.
+
+MADE OF. 35gp -- green glass, cork and sealing wax.
 ```
 
 ### Arming Sword
@@ -5183,6 +5201,8 @@ File: `items/arming-sword.webp`
 SUBJECT. "Arming Sword" — Weapon · A plain single-handed blade. Every town has a smith who makes them.
 
 Draw an edge, worn and sharpened back more than once.
+
+MADE OF. 12gp -- wrought iron and seasoned wood.
 ```
 
 ### Arquebus
@@ -5193,6 +5213,8 @@ File: `items/arquebus.webp`
 SUBJECT. "Arquebus" — Weapon · Loud, slow, and it does not care what you are wearing.
 
 Draw weight: the object sits, and the surface under it knows; the weapon drawn and held at tension.
+
+MADE OF. 90gp -- wrought iron and seasoned wood.
 ```
 
 ### Assassin's Tincture
@@ -5202,7 +5224,9 @@ File: `items/assassins-tincture.webp`
 ```text
 SUBJECT. "Assassin's Tincture" — Poison · Apply with a Ready. Next Strike that hits: Poisoned 1 (2), beginning at the start of their next turn. No save. · They finish the sentence ...
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw a small dark bottle, labelled, a residue dried at the lip.
+
+MADE OF. 120gp -- clear glass, a turned stopper and a written label.
 ```
 
 ### Balanced Dagger
@@ -5213,6 +5237,8 @@ File: `items/balanced-dagger.webp`
 SUBJECT. "Balanced Dagger" — Make · Weighted at the tang. It goes where you looked.
 
 Draw a throwing knife standing upright on its point, balanced and perfectly still, the whole weight of it resting on a spot smaller than a fingernail.
+
+MADE OF. 70gp -- wrought iron, brass or horn.
 ```
 
 ### Beggar's Bowl
@@ -5222,7 +5248,9 @@ File: `items/beggars-bowl.webp`
 ```text
 SUBJECT. "Beggar's Bowl" — Wonder · Whatever is dropped in it stops being anybody's. · Lift Blessed or Cursed from anyone adjacent.
 
-Draw an object behaving as though it were awake.
+Draw set down on nothing, carried a long way among other things.
+
+MADE OF. 500gp -- silver, worked bronze and fine leather.
 ```
 
 ### Black Lotus
@@ -5232,7 +5260,9 @@ File: `items/black-lotus.webp`
 ```text
 SUBJECT. "Black Lotus" — Poison · Apply with a Ready. Next Strike that hits: Poisoned 3 (2), resist Might 9. · Illegal in every district, which is how you know the price is...
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw a small dark bottle, labelled, a residue dried at the lip.
+
+MADE OF. 250gp -- clear glass, a turned stopper and a written label.
 ```
 
 ### Blade of the Eager Hand
@@ -5242,7 +5272,9 @@ File: `items/blade-of-the-eager-hand.webp`
 ```text
 SUBJECT. "Blade of the Eager Hand" — Wonder · It wants to be swung and it is not fussy about at what.
 
-Draw weight: the object sits, and the surface under it knows; an edge, worn and sharpened back more than once.
+Draw held, or just set down, the grip polished by gripping.
+
+MADE OF. 0gp -- tin, bone or fired clay.
 ```
 
 ### Blade Venom
@@ -5252,7 +5284,9 @@ File: `items/blade-venom.webp`
 ```text
 SUBJECT. "Blade Venom" — Poison · Apply with a Ready. Next Strike that hits: Poisoned 1 (2), resist Might 5. · Brewed from something that was already unpleasant.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw a small dark bottle, labelled, a residue dried at the lip.
+
+MADE OF. 40gp -- green glass, cork and sealing wax.
 ```
 
 ### Blunt Head
@@ -5262,7 +5296,9 @@ File: `items/blunt-head.webp`
 ```text
 SUBJECT. "Blunt Head" — Ammunition · Bow or crossbow. The target is Off-Balance (1). No save. · No point at all, which is the point.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw one round out of the bundle, its point drawn sharply.
+
+MADE OF. 20gp -- true ash, goose fletching and a forged head.
 ```
 
 ### Bodkin Points
@@ -5272,7 +5308,9 @@ File: `items/bodkin-points.webp`
 ```text
 SUBJECT. "Bodkin Points" — Ammunition · Bow or crossbow. Ignores 2 armor. · A square spike, hardened. It is looking for a gap and will make one.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw one round out of the bundle, its point drawn sharply.
+
+MADE OF. 25gp -- true ash, goose fletching and a forged head.
 ```
 
 ### Boots of the Long Step
@@ -5282,7 +5320,9 @@ File: `items/boots-of-the-long-step.webp`
 ```text
 SUBJECT. "Boots of the Long Step" — Wonder · The soles are never quite worn in the same places twice. · Teleport to any square you can see within 6.
 
-Draw an object behaving as though it were awake.
+Draw worn unevenly, and the wear is the subject.
+
+MADE OF. 450gp -- silver, worked bronze and fine leather.
 ```
 
 ### Boots of the Longer Step
@@ -5292,7 +5332,9 @@ File: `items/boots-of-the-longer-step.webp`
 ```text
 SUBJECT. "Boots of the Longer Step" — Wonder · Your Move values are +2. · They were barely worn because their owner could not stop.
 
-Draw an object behaving as though it were awake.
+Draw worn unevenly, and the wear is the subject.
+
+MADE OF. 0gp -- tin, bone or fired clay.
 ```
 
 ### Bottle of Borrowed Pain
@@ -5302,7 +5344,9 @@ File: `items/bottle-of-borrowed-pain.webp`
 ```text
 SUBJECT. "Bottle of Borrowed Pain" — Potion · It does not heal you. It postpones you.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw a glass vial, stoppered, with less in it than there was.
+
+MADE OF. 30gp -- green glass, cork and sealing wax.
 ```
 
 ### Brewer's Reserve
@@ -5312,7 +5356,9 @@ File: `items/brewers-reserve.webp`
 ```text
 SUBJECT. "Brewer's Reserve" — Potion · The brewer keeps a cask of it back and will not say what is in it.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw a glass vial, stoppered, with less in it than there was.
+
+MADE OF. 45gp -- green glass, cork and sealing wax.
 ```
 
 ### Brigandine
@@ -5323,6 +5369,8 @@ File: `items/brigandine.webp`
 SUBJECT. "Brigandine" — Armor · Blocks Sidestep reactions. · Plates riveted between canvas. Heavy enough that you stop dodging.
 
 Draw armour as worn metal and strap, not as a costume; weight: the object sits, and the surface under it knows.
+
+MADE OF. 140gp -- polished steel plate and good strap.
 ```
 
 ### Buckler
@@ -5333,6 +5381,8 @@ File: `items/buckler.webp`
 SUBJECT. "Buckler" — Shield · A fist-sized iron plate. Better than the hand behind it.
 
 Draw a shield, face on and slightly turned, its edge nicked from use.
+
+MADE OF. 6gp -- boiled hide and a few iron scales.
 ```
 
 ### Cairn Stone
@@ -5342,7 +5392,9 @@ File: `items/cairn-stone.webp`
 ```text
 SUBJECT. "Cairn Stone" — Wonder · Set it down: its square is high ground for the rest of the fight. · Set it down and the ground agrees to be taller.
 
-Draw an object behaving as though it were awake.
+Draw set down on nothing, carried a long way among other things.
+
+MADE OF. 450gp -- silver, worked bronze and fine leather.
 ```
 
 ### Caltrops
@@ -5352,7 +5404,9 @@ File: `items/caltrops.webp`
 ```text
 SUBJECT. "Caltrops" — Consumable · A handful of iron, however it lands.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw four iron spikes welded so that one always points up, several of them scattered where they fell, seen from low down and close so the upward point is at eye level.
+
+MADE OF. 12gp -- green glass, cork and sealing wax.
 ```
 
 ### Chalked Shaft
@@ -5362,7 +5416,9 @@ File: `items/chalked-shaft.webp`
 ```text
 SUBJECT. "Chalked Shaft" — Ammunition · Bow or crossbow. The target is Marked (1). No save. · It leaves a smear that everyone can see and nobody can wipe off.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw one round out of the bundle, its point drawn sharply.
+
+MADE OF. 40gp -- true ash, goose fletching and a forged head.
 ```
 
 ### Cleansing Draught
@@ -5372,7 +5428,9 @@ File: `items/cleansing-draught.webp`
 ```text
 SUBJECT. "Cleansing Draught" — Consumable · A temple brews it and does not sell it gladly.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw used up in the open: cloth, wax or powder, half gone.
+
+MADE OF. 150gp -- clear glass, a turned stopper and a written label.
 ```
 
 ### Climbing Rope
@@ -5383,6 +5441,8 @@ File: `items/climbing-rope.webp`
 SUBJECT. "Climbing Rope" — Tool · Fifty feet of hemp. Nobody falls alone.
 
 Draw a tool worn exactly where a hand goes and nowhere else.
+
+MADE OF. 5gp -- tin, bone or fired clay.
 ```
 
 ### Cloak of the Grey
@@ -5392,7 +5452,9 @@ File: `items/cloak-of-the-grey.webp`
 ```text
 SUBJECT. "Cloak of the Grey" — Wonder · It is the colour of whatever is behind it. · Become Invisible (1).
 
-Draw an object behaving as though it were awake.
+Draw cloth with weight in it, hung from one point.
+
+MADE OF. 500gp -- fine wool, linen lining and silver clasps.
 ```
 
 ### Cloak of the Grey Road
@@ -5402,7 +5464,9 @@ File: `items/cloak-of-the-grey-road.webp`
 ```text
 SUBJECT. "Cloak of the Grey Road" — Wonder · The road is grey. So is everything you are now to your friends. · Become Invisible (1).
 
-Draw an object behaving as though it were awake.
+Draw cloth with weight in it, hung from one point.
+
+MADE OF. 0gp -- sacking and undyed wool.
 ```
 
 ### Cracked Spyglass
@@ -5412,7 +5476,9 @@ File: `items/cracked-spyglass.webp`
 ```text
 SUBJECT. "Cracked Spyglass" — Wonder · Foresee one extra type at the start of a fight. · The crack does not matter. What you see through it has not happened yet.
 
-Draw an object behaving as though it were awake.
+Draw set down on nothing, carried a long way among other things.
+
+MADE OF. 150gp -- silver, worked bronze and fine leather.
 ```
 
 ### Crossbow
@@ -5423,6 +5489,8 @@ File: `items/crossbow.webp`
 SUBJECT. "Crossbow" — Weapon · Anyone can be taught one in a week, which is why lords dislike them.
 
 Draw the weapon drawn and held at tension.
+
+MADE OF. 60gp -- wrought iron and seasoned wood.
 ```
 
 ### Crown of the Quiet Mind
@@ -5432,7 +5500,9 @@ File: `items/crown-of-the-quiet-mind.webp`
 ```text
 SUBJECT. "Crown of the Quiet Mind" — Wonder · Thin gold. Nothing in your head hurries while it is on.
 
-Draw an object behaving as though it were awake.
+Draw shaped to a skull, the hollow drawn most carefully.
+
+MADE OF. 1400gp -- gold, gilt and gems.
 ```
 
 ### Dagger
@@ -5443,6 +5513,8 @@ File: `items/dagger.webp`
 SUBJECT. "Dagger" — Weapon · Short, quick, and easy to hide.
 
 Draw a short blade coming out of a sleeve, most of it still hidden, only the last inch of edge catching any light.
+
+MADE OF. 2gp -- plain iron, barely better than a tool.
 ```
 
 ### Deep Pockets
@@ -5452,7 +5524,9 @@ File: `items/deep-pockets.webp`
 ```text
 SUBJECT. "Deep Pockets" — Wonder · More in them than went in, and never what you wanted.
 
-Draw an object behaving as though it were awake.
+Draw cloth with weight in it, hung from one point.
+
+MADE OF. 400gp -- fine wool, linen lining and silver clasps.
 ```
 
 ### Discriminating Wand
@@ -5462,7 +5536,9 @@ File: `items/discriminating-wand.webp`
 ```text
 SUBJECT. "Discriminating Wand" — Wonder · Your Blasts count as Aimed. · It knows whose side everyone is on, which is more than most people do.
 
-Draw an object that is doing something while nobody holds it.
+Draw held, or just set down, the grip polished by gripping.
+
+MADE OF. 1100gp -- gold, gilt and gems.
 ```
 
 ### Draught of Lead
@@ -5472,7 +5548,9 @@ File: `items/draught-of-lead.webp`
 ```text
 SUBJECT. "Draught of Lead" — Potion · Heavier than it looks, and so are you now.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw a glass vial, stoppered, with less in it than there was.
+
+MADE OF. 20gp -- green glass, cork and sealing wax.
 ```
 
 ### Draught of Second Breath
@@ -5482,7 +5560,9 @@ File: `items/draught-of-second-breath.webp`
 ```text
 SUBJECT. "Draught of Second Breath" — Potion · One swallow and your lungs believe the fight has just started.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw a glass vial, stoppered, with less in it than there was.
+
+MADE OF. 90gp -- green glass, cork and sealing wax.
 ```
 
 ### Draught of the Hollow
@@ -5492,7 +5572,9 @@ File: `items/draught-of-the-hollow.webp`
 ```text
 SUBJECT. "Draught of the Hollow" — Potion · It empties something you were not keeping track of.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw a glass vial, stoppered, with less in it than there was.
+
+MADE OF. 25gp -- green glass, cork and sealing wax.
 ```
 
 ### Drowned Bell
@@ -5502,7 +5584,9 @@ File: `items/drowned-bell.webp`
 ```text
 SUBJECT. "Drowned Bell" — Wonder · It rings wet. There is no water in it. · Everything within 2 is Wet (1).
 
-Draw an object behaving as though it were awake.
+Draw hung at the hip, the strap cut off at the frame.
+
+MADE OF. 400gp -- silver, worked bronze and fine leather.
 ```
 
 ### Drowsing Oil
@@ -5512,7 +5596,9 @@ File: `items/drowsing-oil.webp`
 ```text
 SUBJECT. "Drowsing Oil" — Poison · Apply with a Ready. Next Strike that hits: Dazed (2), resist Might 5. · It does not kill. It makes a man slow about objecting.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw a small dark bottle, labelled, a residue dried at the lip.
+
+MADE OF. 50gp -- green glass, cork and sealing wax.
 ```
 
 ### Elixir of the Long Night
@@ -5522,7 +5608,9 @@ File: `items/elixir-of-the-long-night.webp`
 ```text
 SUBJECT. "Elixir of the Long Night" — Potion · It lends. It is very clear about lending.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw a glass vial, stoppered, with less in it than there was.
+
+MADE OF. 200gp -- clear glass, a turned stopper and a written label.
 ```
 
 ### Far-sight Monocle
@@ -5532,7 +5620,9 @@ File: `items/far-sight-monocle.webp`
 ```text
 SUBJECT. "Far-sight Monocle" — Wonder · Your Ranged items' range is doubled. · Ground by somebody who had opinions about distance.
 
-Draw an object behaving as though it were awake.
+Draw shaped to a skull, the hollow drawn most carefully.
+
+MADE OF. 700gp -- gold, gilt and gems.
 ```
 
 ### Fine Clothes
@@ -5543,6 +5633,8 @@ File: `items/fine-clothes.webp`
 SUBJECT. "Fine Clothes" — Station · Cut well enough that nobody asks who you are.
 
 Draw a thing that says who somebody is before they speak.
+
+MADE OF. 30gp -- good wool and boiled leather.
 ```
 
 ### Fine Longsword
@@ -5552,7 +5644,9 @@ File: `items/fine-longsword.webp`
 ```text
 SUBJECT. "Fine Longsword" — Make · A smith's mark near the hilt, and worth asking after.
 
-Draw weight: the object sits, and the surface under it knows; an edge, worn and sharpened back more than once.
+Draw made well, by somebody who signed nothing.
+
+MADE OF. 90gp -- wrought iron, brass or horn.
 ```
 
 ### Fire Wand
@@ -5562,7 +5656,9 @@ File: `items/fire-wand.webp`
 ```text
 SUBJECT. "Fire Wand" — Implement · Blackened at the tip, and warm even unused.
 
-Draw an object that is doing something while nobody holds it.
+Draw scribed and calibrated, unreadable to anybody not taught it.
+
+MADE OF. 0gp -- tin, bone or fired clay.
 ```
 
 ### Firepot
@@ -5572,7 +5668,9 @@ File: `items/firepot.webp`
 ```text
 SUBJECT. "Firepot" — Consumable · Pitch and naphtha in a clay shell. It keeps burning.
 
-Draw a vessel, and whatever is in it is nearly gone; an object mid-flight, the hand that threw it out of frame.
+Draw used up in the open: cloth, wax or powder, half gone.
+
+MADE OF. 45gp -- green glass, cork and sealing wax.
 ```
 
 ### Flask of Ink
@@ -5582,7 +5680,9 @@ File: `items/flask-of-ink.webp`
 ```text
 SUBJECT. "Flask of Ink" — Consumable · Cuttlefish black. It finds what is not there to be seen.
 
-Draw a vessel, and whatever is in it is nearly gone; an object mid-flight, the hand that threw it out of frame.
+Draw used up in the open: cloth, wax or powder, half gone.
+
+MADE OF. 20gp -- green glass, cork and sealing wax.
 ```
 
 ### Flask of Oil
@@ -5592,7 +5692,9 @@ File: `items/flask-of-oil.webp`
 ```text
 SUBJECT. "Flask of Oil" — Consumable · Lamp oil, thrown low.
 
-Draw a vessel, and whatever is in it is nearly gone; an object mid-flight, the hand that threw it out of frame.
+Draw used up in the open: cloth, wax or powder, half gone.
+
+MADE OF. 10gp -- a clay bottle, a rag stopper and pitch.
 ```
 
 ### Focus Pendant
@@ -5603,6 +5705,8 @@ File: `items/focus-pendant.webp`
 SUBJECT. "Focus Pendant" — Power · Jeweller's work. The stone is not the point; the setting is.
 
 Draw an object with more inside it than its size allows.
+
+MADE OF. 400gp -- silver, worked bronze and fine leather.
 ```
 
 ### Frost-dipped Bolt
@@ -5612,7 +5716,9 @@ File: `items/frost-dipped-bolt.webp`
 ```text
 SUBJECT. "Frost-dipped Bolt" — Ammunition · Crossbow. Frozen 1 (1). · Cold enough that the quiver frosts around it.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw one round out of the bundle, its point drawn sharply.
+
+MADE OF. 60gp -- true ash, goose fletching and a forged head.
 ```
 
 ### Gag of the Nine
@@ -5622,7 +5728,9 @@ File: `items/gag-of-the-nine.webp`
 ```text
 SUBJECT. "Gag of the Nine" — Wonder · Nine knots in a cord. Somebody counted them out loud, once. · One enemy within 3 is Silenced (1), resist Lore 5.
 
-Draw an object behaving as though it were awake.
+Draw hung on a cord and drawn hanging, turned off square.
+
+MADE OF. 700gp -- gold, gilt and gems.
 ```
 
 ### Gambler's Coin
@@ -5632,7 +5740,9 @@ File: `items/gamblers-coin.webp`
 ```text
 SUBJECT. "Gambler's Coin" — Wonder · It lands how you need it to, which is not the same as how you want it to. · Read 3 on your own fate deck.
 
-Draw an object behaving as though it were awake.
+Draw one hand's worth of object, drawn close and large.
+
+MADE OF. 600gp -- silver, worked bronze and fine leather.
 ```
 
 ### Gaming Set
@@ -5643,6 +5753,8 @@ File: `items/gaming-set.webp`
 SUBJECT. "Gaming Set" — Station · Dice, a board and a cup. Soldiers will tell a stranger anything over it.
 
 Draw a thing that says who somebody is before they speak.
+
+MADE OF. 5gp -- tin, bone or fired clay.
 ```
 
 ### Gauntlet of the Open Palm
@@ -5652,7 +5764,9 @@ File: `items/gauntlet-of-the-open-palm.webp`
 ```text
 SUBJECT. "Gauntlet of the Open Palm" — Wonder · Beautifully made, and it will not close.
 
-Draw armour as worn metal and strap, not as a costume.
+Draw held, or just set down, the grip polished by gripping.
+
+MADE OF. 0gp -- tin, bone or fired clay.
 ```
 
 ### Gorget of the Turned Blade
@@ -5662,7 +5776,9 @@ File: `items/gorget-of-the-turned-blade.webp`
 ```text
 SUBJECT. "Gorget of the Turned Blade" — Wonder · Three old cuts in it, none of them deep. · Block 3 as a reaction.
 
-Draw an object behaving as though it were awake.
+Draw hung on a cord and drawn hanging, turned off square.
+
+MADE OF. 450gp -- silver, worked bronze and fine leather.
 ```
 
 ### Grapnel Bolt
@@ -5672,7 +5788,9 @@ File: `items/grapnel-bolt.webp`
 ```text
 SUBJECT. "Grapnel Bolt" — Ammunition · Crossbow. YOU are pulled to a square adjacent to the target. · Barbed, with fifty feet of silk line. A bolt for closing.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw one round out of the bundle, its point drawn sharply.
+
+MADE OF. 70gp -- true ash, goose fletching and a forged head.
 ```
 
 ### Grave-cap Extract
@@ -5682,7 +5800,9 @@ File: `items/grave-cap-extract.webp`
 ```text
 SUBJECT. "Grave-cap Extract" — Poison · Apply with a Ready. Next Strike that hits: Poisoned 2 (2), resist Might 7. · The cap grows on what is under the cairn, not on the cairn.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw a small dark bottle, labelled, a residue dried at the lip.
+
+MADE OF. 90gp -- green glass, cork and sealing wax.
 ```
 
 ### Great Axe
@@ -5692,7 +5812,9 @@ File: `items/great-axe.webp`
 ```text
 SUBJECT. "Great Axe" — Weapon · Cheaper than a greatsword and it does not care.
 
-Draw weight: the object sits, and the surface under it knows; an edge, worn and sharpened back more than once.
+Draw a single-bitted axe head on a long haft, the bit chipped along its leading edge and re-ground behind the chips. Cheap work: no fuller, no inlay, a wedge and a nail.
+
+MADE OF. 30gp -- wrought iron and seasoned wood.
 ```
 
 ### Great Helm
@@ -5703,6 +5825,8 @@ File: `items/great-helm.webp`
 SUBJECT. "Great Helm" — Armor · Disadvantage on Wits checks. · Safe, and you cannot hear a thing through it.
 
 Draw armour as worn metal and strap, not as a costume; weight: the object sits, and the surface under it knows.
+
+MADE OF. 40gp -- riveted iron and leather strap.
 ```
 
 ### Greater Healing Potion
@@ -5712,7 +5836,9 @@ File: `items/greater-healing-potion.webp`
 ```text
 SUBJECT. "Greater Healing Potion" — Potion · Twice the price of the ordinary sort and rather more than twice the work.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw a glass vial, stoppered, with less in it than there was.
+
+MADE OF. 150gp -- clear glass, a turned stopper and a written label.
 ```
 
 ### Greatsword
@@ -5722,7 +5848,9 @@ File: `items/greatsword.webp`
 ```text
 SUBJECT. "Greatsword" — Weapon · Four feet of edge. Both hands, and nothing held back.
 
-Draw weight: the object sits, and the surface under it knows; an edge, worn and sharpened back more than once.
+Draw four feet of straight blade filling the frame corner to corner at a slight diagonal, far too long for the picture, with a ricasso wrapped in leather halfway up it.
+
+MADE OF. 40gp -- wrought iron and seasoned wood.
 ```
 
 ### Grey Water
@@ -5732,7 +5860,9 @@ File: `items/grey-water.webp`
 ```text
 SUBJECT. "Grey Water" — Potion · Somebody corked it carefully, which is the cruellest part.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw a glass vial, stoppered, with less in it than there was.
+
+MADE OF. 5gp -- a clay bottle, a rag stopper and pitch.
 ```
 
 ### Halberd
@@ -5743,6 +5873,8 @@ File: `items/halberd.webp`
 SUBJECT. "Halberd" — Weapon · Axe, spike and hook on a six-foot shaft. Reaches over the man in front of you.
 
 Draw weight: the object sits, and the surface under it knows; an edge, worn and sharpened back more than once.
+
+MADE OF. 35gp -- wrought iron and seasoned wood.
 ```
 
 ### Healer's Kit
@@ -5753,6 +5885,8 @@ File: `items/healers-kit.webp`
 SUBJECT. "Healer's Kit" — Tool · Needle, gut, lint and spirit.
 
 Draw a tool worn exactly where a hand goes and nowhere else.
+
+MADE OF. 20gp -- wrought iron, brass or horn.
 ```
 
 ### Healing Potion
@@ -5762,7 +5896,9 @@ File: `items/healing-potion.webp`
 ```text
 SUBJECT. "Healing Potion" — Consumable · Thick, red, and tastes of iron.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw a stubby wide-mouthed bottle of something thick and dark that has settled, the sediment visible at the bottom and a fingerprint in the dust on the shoulder of the glass.
+
+MADE OF. 50gp -- green glass, cork and sealing wax.
 ```
 
 ### Heavy Crossbow
@@ -5773,6 +5909,8 @@ File: `items/heavy-crossbow.webp`
 SUBJECT. "Heavy Crossbow" — Weapon · Cranked with a windlass. It goes through a shield and the arm behind it.
 
 Draw weight: the object sits, and the surface under it knows; the weapon drawn and held at tension.
+
+MADE OF. 120gp -- bright steel and fine leather.
 ```
 
 ### Helm of the Watchful
@@ -5782,7 +5920,9 @@ File: `items/helm-of-the-watchful.webp`
 ```text
 SUBJECT. "Helm of the Watchful" — Wonder · You are never surprised and cannot be Dazed. · Nothing comes at you from a side you were not already watching.
 
-Draw armour as worn metal and strap, not as a costume.
+Draw shaped to a skull, the hollow drawn most carefully.
+
+MADE OF. 1500gp -- gold, gilt and gems.
 ```
 
 ### Hollow Bolt
@@ -5792,7 +5932,9 @@ File: `items/hollow-bolt.webp`
 ```text
 SUBJECT. "Hollow Bolt" — Ammunition · Crossbow. Carries one potion; whatever you hit drinks it. · The shaft unscrews. A fiddly, brilliant, disreputable idea.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw one round out of the bundle, its point drawn sharply.
+
+MADE OF. 30gp -- true ash, goose fletching and a forged head.
 ```
 
 ### Hollow Boots
@@ -5802,7 +5944,9 @@ File: `items/hollow-boots.webp`
 ```text
 SUBJECT. "Hollow Boots" — Wonder · They sound like a far larger man coming. · Shove an adjacent enemy 2 squares.
 
-Draw an object behaving as though it were awake.
+Draw worn unevenly, and the wear is the subject.
+
+MADE OF. 350gp -- silver, worked bronze and fine leather.
 ```
 
 ### Holy Symbol
@@ -5813,6 +5957,8 @@ File: `items/holy-symbol.webp`
 SUBJECT. "Holy Symbol" — Power · Whose, and how openly, is the only question that matters in Firma.
 
 Draw an object with more inside it than its size allows.
+
+MADE OF. 10gp -- tin, bone or fired clay.
 ```
 
 ### Hooked Gauntlet
@@ -5822,7 +5968,9 @@ File: `items/hooked-gauntlet.webp`
 ```text
 SUBJECT. "Hooked Gauntlet" — Wonder · Three hooks along the knuckle, set the wrong way round. · An adjacent enemy is Disarmed (1), resist Might 5.
 
-Draw an object behaving as though it were awake.
+Draw held, or just set down, the grip polished by gripping.
+
+MADE OF. 600gp -- silver, worked bronze and fine leather.
 ```
 
 ### Hourglass Charm
@@ -5832,7 +5980,9 @@ File: `items/hourglass-charm.webp`
 ```text
 SUBJECT. "Hourglass Charm" — Wonder · The sand has not moved since you found it. · Swap your place in the initiative order with a willing ally.
 
-Draw an object behaving as though it were awake.
+Draw hung on a cord and drawn hanging, turned off square.
+
+MADE OF. 550gp -- silver, worked bronze and fine leather.
 ```
 
 ### Hunting Traps
@@ -5843,6 +5993,8 @@ File: `items/hunting-traps.webp`
 SUBJECT. "Hunting Traps" — Tool · Jaws and a stake. Patience, mostly.
 
 Draw a tool worn exactly where a hand goes and nowhere else.
+
+MADE OF. 15gp -- wrought iron, brass or horn.
 ```
 
 ### Kite Shield
@@ -5853,6 +6005,8 @@ File: `items/kite-shield.webp`
 SUBJECT. "Kite Shield" — Shield · Long enough to cover the leg a horseman cannot move.
 
 Draw a shield, face on and slightly turned, its edge nicked from use.
+
+MADE OF. 24gp -- riveted iron and leather strap.
 ```
 
 ### Lance
@@ -5863,6 +6017,8 @@ File: `items/lance.webp`
 SUBJECT. "Lance" — Weapon · A couched lance is a horse's weight arriving at one point. Needs the horse.
 
 Draw weight: the object sits, and the surface under it knows; an edge, worn and sharpened back more than once.
+
+MADE OF. 30gp -- wrought iron and seasoned wood.
 ```
 
 ### Lantern
@@ -5873,6 +6029,8 @@ File: `items/lantern.webp`
 SUBJECT. "Lantern" — Tool · Horn panes and a tallow dip. The squares it lights are not shadowed.
 
 Draw a tool worn exactly where a hand goes and nowhere else.
+
+MADE OF. 5gp -- tin, bone or fired clay.
 ```
 
 ### Leather Armor
@@ -5883,6 +6041,8 @@ File: `items/leather-armor.webp`
 SUBJECT. "Leather Armor" — Armor · Boiled and riveted, and it still smells of the tannery.
 
 Draw armour as worn metal and strap, not as a costume.
+
+MADE OF. 20gp -- riveted iron and leather strap.
 ```
 
 ### Light Helm
@@ -5893,6 +6053,8 @@ File: `items/light-helm.webp`
 SUBJECT. "Light Helm" — Armor · An open kettle. You can still hear and still see.
 
 Draw armour as worn metal and strap, not as a costume.
+
+MADE OF. 15gp -- riveted iron and leather strap.
 ```
 
 ### Locked Casket
@@ -5902,7 +6064,9 @@ File: `items/locked-casket.webp`
 ```text
 SUBJECT. "Locked Casket" — Wonder · Holds one secret. Nobody but you may learn it, by any means. · No hinge, no seam, and a keyhole that is not for a key.
 
-Draw an object behaving as though it were awake.
+Draw set down on nothing, carried a long way among other things.
+
+MADE OF. 500gp -- silver, worked bronze and fine leather.
 ```
 
 ### Lockpicks
@@ -5913,6 +6077,8 @@ File: `items/lockpicks.webp`
 SUBJECT. "Lockpicks" — Tool · A roll of picks and a torsion wrench, in oiled cloth.
 
 Draw a tool worn exactly where a hand goes and nowhere else.
+
+MADE OF. 25gp -- wrought iron, brass or horn.
 ```
 
 ### Longbow
@@ -5923,6 +6089,8 @@ File: `items/longbow.webp`
 SUBJECT. "Longbow" — Weapon · A yew stave taller than the archer. No reload -- that is what you are buying.
 
 Draw weight: the object sits, and the surface under it knows; the weapon drawn and held at tension.
+
+MADE OF. 50gp -- wrought iron and seasoned wood.
 ```
 
 ### Longsword
@@ -5932,7 +6100,9 @@ File: `items/longsword.webp`
 ```text
 SUBJECT. "Longsword" — Weapon · A plain cruciform blade, kept sharp.
 
-Draw weight: the object sits, and the surface under it knows; an edge, worn and sharpened back more than once.
+Draw a plain cruciform hilt and the first hand's length of blade, the cross bar straight and square, nothing on it that was not needed to hold it.
+
+MADE OF. 15gp -- wrought iron and seasoned wood.
 ```
 
 ### Loose Cobble
@@ -5942,7 +6112,9 @@ File: `items/loose-cobble.webp`
 ```text
 SUBJECT. "Loose Cobble" — Wonder · Set it down. The first enemy to enter its square is Off-Balance (1). · It was part of a street once and has not forgiven anyone.
 
-Draw an object behaving as though it were awake.
+Draw set down on nothing, carried a long way among other things.
+
+MADE OF. 300gp -- silver, worked bronze and fine leather.
 ```
 
 ### Mace
@@ -5953,6 +6125,8 @@ File: `items/mace.webp`
 SUBJECT. "Mace" — Weapon · Flanged. It does not cut, which is the point against a man in mail.
 
 Draw weight: the object sits, and the surface under it knows; an edge, worn and sharpened back more than once.
+
+MADE OF. 10gp -- plain iron, barely better than a tool.
 ```
 
 ### Mail Shirt
@@ -5963,6 +6137,8 @@ File: `items/mail-shirt.webp`
 SUBJECT. "Mail Shirt" — Armor · Riveted rings to the hip. The soldier's compromise for eight hundred years.
 
 Draw armour as worn metal and strap, not as a costume.
+
+MADE OF. 70gp -- riveted iron and leather strap.
 ```
 
 ### Mantle of the Unburdened
@@ -5972,7 +6148,9 @@ File: `items/mantle-of-the-unburdened.webp`
 ```text
 SUBJECT. "Mantle of the Unburdened" — Wonder · You are never Burdened or Overloaded, whatever you carry. · Everything you carry belongs to the cloak while you wear it.
 
-Draw an object behaving as though it were awake.
+Draw cloth with weight in it, hung from one point.
+
+MADE OF. 900gp -- velvet, fur and gold thread.
 ```
 
 ### Marching Boots
@@ -5983,6 +6161,8 @@ File: `items/marching-boots.webp`
 SUBJECT. "Marching Boots" — Make · Difficult ground costs you 1 instead of 2. · Nailed soles. Rubble and mud stop being a decision.
 
 Draw made well, by somebody who signed nothing.
+
+MADE OF. 12gp -- wrought iron, brass or horn.
 ```
 
 ### Marked Arrowhead
@@ -5992,7 +6172,9 @@ File: `items/marked-arrowhead.webp`
 ```text
 SUBJECT. "Marked Arrowhead" — Wonder · It has not been fired. It does not need to be. · One enemy you can see is Marked (1).
 
-Draw an object behaving as though it were awake.
+Draw hung at the hip, the strap cut off at the frame.
+
+MADE OF. 350gp -- silver, worked bronze and fine leather.
 ```
 
 ### Masterwork Crossbow
@@ -6002,7 +6184,9 @@ File: `items/masterwork-crossbow.webp`
 ```text
 SUBJECT. "Masterwork Crossbow" — Make · A steel prod and a goat's-foot lever. It reloads in the hand.
 
-Draw the weapon drawn and held at tension.
+Draw made well, by somebody who signed nothing.
+
+MADE OF. 300gp -- silver, worked bronze and fine leather.
 ```
 
 ### Matchlock Musket
@@ -6013,6 +6197,8 @@ File: `items/matchlock-musket.webp`
 SUBJECT. "Matchlock Musket" — Weapon · A rest to fire it from and a minute to load it. Worth both.
 
 Draw weight: the object sits, and the surface under it knows; the weapon drawn and held at tension.
+
+MADE OF. 150gp -- bright steel and fine leather.
 ```
 
 ### Matchlock Pistol
@@ -6023,6 +6209,8 @@ File: `items/matchlock-pistol.webp`
 SUBJECT. "Matchlock Pistol" — Weapon · One hand, so it goes beside a sword. A brace of them is two shots before a reload.
 
 Draw the weapon drawn and held at tension.
+
+MADE OF. 70gp -- wrought iron and seasoned wood.
 ```
 
 ### Mnemonic Stone
@@ -6032,7 +6220,9 @@ File: `items/mnemonic-stone.webp`
 ```text
 SUBJECT. "Mnemonic Stone" — Wonder · One extra skill card in your skill deck, of any approach you already have. · Worn smooth by a thumb that was trying to remember something.
 
-Draw an object behaving as though it were awake.
+Draw one hand's worth of object, drawn close and large.
+
+MADE OF. 800gp -- gold, gilt and gems.
 ```
 
 ### Moth-wing Fletching
@@ -6042,7 +6232,9 @@ File: `items/moth-wing-fletching.webp`
 ```text
 SUBJECT. "Moth-wing Fletching" — Ammunition · Bow. This shot ignores cover entirely. · It does not fly straight. It arrives anyway.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw one round out of the bundle, its point drawn sharply.
+
+MADE OF. 40gp -- true ash, goose fletching and a forged head.
 ```
 
 ### Net
@@ -6053,6 +6245,8 @@ File: `items/net.webp`
 SUBJECT. "Net" — Weapon · Weighted at the edges. The other half of a trident.
 
 Draw quickness: the object is balanced on almost nothing; an object mid-flight, the hand that threw it out of frame.
+
+MADE OF. 5gp -- plain iron, barely better than a tool.
 ```
 
 ### Net Bolt
@@ -6062,7 +6256,9 @@ File: `items/net-bolt.webp`
 ```text
 SUBJECT. "Net Bolt" — Ammunition · Crossbow. Grappled (1), resist Might 5. · A folded net on a blunt head. It opens in the air.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw one round out of the bundle, its point drawn sharply.
+
+MADE OF. 50gp -- true ash, goose fletching and a forged head.
 ```
 
 ### Oil of Mislaid Courage
@@ -6072,7 +6268,9 @@ File: `items/oil-of-mislaid-courage.webp`
 ```text
 SUBJECT. "Oil of Mislaid Courage" — Potion · Whatever was going to make you flinch has been taken out.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw a glass vial, stoppered, with less in it than there was.
+
+MADE OF. 20gp -- green glass, cork and sealing wax.
 ```
 
 ### Oil-wrapped Shaft
@@ -6082,7 +6280,9 @@ File: `items/oil-wrapped-shaft.webp`
 ```text
 SUBJECT. "Oil-wrapped Shaft" — Ammunition · Bow or crossbow. Burning 1 (2). · Tow and pitch below the head. Lit from the match in your teeth.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw one round out of the bundle, its point drawn sharply.
+
+MADE OF. 45gp -- true ash, goose fletching and a forged head.
 ```
 
 ### Pact Iron
@@ -6092,7 +6292,9 @@ File: `items/pact-iron.webp`
 ```text
 SUBJECT. "Pact Iron" — Wonder · Cold iron takes a debt and holds it for a while. · One Taint card is set aside for the rest of the fight.
 
-Draw an object behaving as though it were awake.
+Draw one hand's worth of object, drawn close and large.
+
+MADE OF. 1600gp -- gold, gilt and gems.
 ```
 
 ### Philtre of Borrowed Courage
@@ -6102,7 +6304,9 @@ File: `items/philtre-of-borrowed-courage.webp`
 ```text
 SUBJECT. "Philtre of Borrowed Courage" — Potion · Somebody else's nerve, and they are not getting it back.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw a glass vial, stoppered, with less in it than there was.
+
+MADE OF. 65gp -- green glass, cork and sealing wax.
 ```
 
 ### Philtre of the Loose Tongue
@@ -6112,7 +6316,9 @@ File: `items/philtre-of-the-loose-tongue.webp`
 ```text
 SUBJECT. "Philtre of the Loose Tongue" — Potion · You will mean to stop talking.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw a glass vial, stoppered, with less in it than there was.
+
+MADE OF. 15gp -- green glass, cork and sealing wax.
 ```
 
 ### Pike
@@ -6123,6 +6329,8 @@ File: `items/pike.webp`
 SUBJECT. "Pike" — Weapon · Eighteen feet. Magnificent in a line and worthless on your own.
 
 Draw weight: the object sits, and the surface under it knows; an edge, worn and sharpened back more than once.
+
+MADE OF. 20gp -- wrought iron and seasoned wood.
 ```
 
 ### Pilgrim's Shoes
@@ -6132,7 +6340,9 @@ File: `items/pilgrims-shoes.webp`
 ```text
 SUBJECT. "Pilgrim's Shoes" — Wonder · One extra rest token on every long rest. · Worn by somebody who got where they were going.
 
-Draw an object behaving as though it were awake.
+Draw worn unevenly, and the wear is the subject.
+
+MADE OF. 90gp -- wrought iron, brass or horn.
 ```
 
 ### Pilgrim's Token
@@ -6143,6 +6353,8 @@ File: `items/pilgrims-token.webp`
 SUBJECT. "Pilgrim's Token" — Power · Tin, stamped at a shrine. Worth nothing and proof of everything.
 
 Draw an object with more inside it than its size allows.
+
+MADE OF. 3gp -- tin, bone or fired clay.
 ```
 
 ### Plate
@@ -6153,6 +6365,8 @@ File: `items/plate.webp`
 SUBJECT. "Plate" — Armor · Blocks Sidestep reactions. · Half your carry allowance, and nothing short of a ball goes through it.
 
 Draw armour as worn metal and strap, not as a costume; weight: the object sits, and the surface under it knows.
+
+MADE OF. 400gp -- polished steel plate and good strap.
 ```
 
 ### Potion of Iron Skin
@@ -6162,7 +6376,9 @@ File: `items/potion-of-iron-skin.webp`
 ```text
 SUBJECT. "Potion of Iron Skin" — Potion · It goes down like filings and sits there like a breastplate.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw a glass vial, stoppered, with less in it than there was.
+
+MADE OF. 120gp -- clear glass, a turned stopper and a written label.
 ```
 
 ### Potion of Stone
@@ -6172,7 +6388,9 @@ File: `items/potion-of-stone.webp`
 ```text
 SUBJECT. "Potion of Stone" — Potion · Grit in the bottom of the flask, and it settles in you the same way.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw a glass vial, stoppered, with less in it than there was.
+
+MADE OF. 40gp -- green glass, cork and sealing wax.
 ```
 
 ### Potion of the Bear
@@ -6182,7 +6400,9 @@ File: `items/potion-of-the-bear.webp`
 ```text
 SUBJECT. "Potion of the Bear" — Potion · Thick as honey. You will want both hands to lift the bottle.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw a glass vial, stoppered, with less in it than there was.
+
+MADE OF. 60gp -- green glass, cork and sealing wax.
 ```
 
 ### Potion of the Hare
@@ -6192,7 +6412,9 @@ File: `items/potion-of-the-hare.webp`
 ```text
 SUBJECT. "Potion of the Hare" — Potion · It tastes of running, which is not a taste anyone can describe.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw a glass vial, stoppered, with less in it than there was.
+
+MADE OF. 55gp -- green glass, cork and sealing wax.
 ```
 
 ### Potion of the Owl
@@ -6202,7 +6424,9 @@ File: `items/potion-of-the-owl.webp`
 ```text
 SUBJECT. "Potion of the Owl" — Potion · Your eyes do not change. What they are willing to see does.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw a glass vial, stoppered, with less in it than there was.
+
+MADE OF. 70gp -- green glass, cork and sealing wax.
 ```
 
 ### Potion of the Quick Hand
@@ -6212,7 +6436,9 @@ File: `items/potion-of-the-quick-hand.webp`
 ```text
 SUBJECT. "Potion of the Quick Hand" — Potion · You will have put the bottle down before you remember drinking it.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw a glass vial, stoppered, with less in it than there was.
+
+MADE OF. 110gp -- clear glass, a turned stopper and a written label.
 ```
 
 ### Proofed Mail
@@ -6222,7 +6448,9 @@ File: `items/proofed-mail.webp`
 ```text
 SUBJECT. "Proofed Mail" — Make · Tested against a bodkin at ten paces and dented, not pierced.
 
-Draw armour as worn metal and strap, not as a costume.
+Draw made well, by somebody who signed nothing.
+
+MADE OF. 320gp -- fine wool, linen lining and silver clasps.
 ```
 
 ### Quartermaster's Belt
@@ -6232,7 +6460,9 @@ File: `items/quartermasters-belt.webp`
 ```text
 SUBJECT. "Quartermaster's Belt" — Wonder · Everything hangs lighter on it. Nobody knows why and nobody asks twice.
 
-Draw an object behaving as though it were awake.
+Draw hung at the hip, the strap cut off at the frame.
+
+MADE OF. 300gp -- silver, worked bronze and fine leather.
 ```
 
 ### Reaver's Edge
@@ -6242,7 +6472,9 @@ File: `items/reavers-edge.webp`
 ```text
 SUBJECT. "Reaver's Edge" — Wonder · It eats what it meets, slowly, and starts with the armour.
 
-Draw weight: the object sits, and the surface under it knows; an edge, worn and sharpened back more than once.
+Draw held, or just set down, the grip polished by gripping.
+
+MADE OF. 1300gp -- gold, gilt and gems.
 ```
 
 ### Reliquary Band
@@ -6253,6 +6485,8 @@ File: `items/reliquary-band.webp`
 SUBJECT. "Reliquary Band" — Power · A splinter of someone's finger under glass.
 
 Draw an object with more inside it than its size allows.
+
+MADE OF. 350gp -- silver, worked bronze and fine leather.
 ```
 
 ### Repair Kit
@@ -6263,6 +6497,8 @@ File: `items/repair-kit.webp`
 SUBJECT. "Repair Kit" — Tool · Files, rivets, pitch and wire. What acid leaves behind is work, not loss.
 
 Draw a tool worn exactly where a hand goes and nowhere else.
+
+MADE OF. 30gp -- wrought iron, brass or horn.
 ```
 
 ### Ring of Open Hands
@@ -6273,6 +6509,8 @@ File: `items/ring-of-open-hands.webp`
 SUBJECT. "Ring of Open Hands" — Power · You may Cast without a free hand. · Almost the ring you were hoping for.
 
 Draw an object with more inside it than its size allows.
+
+MADE OF. 0gp -- tin, bone or fired clay.
 ```
 
 ### Ring of the Open Hand
@@ -6283,6 +6521,8 @@ File: `items/ring-of-the-open-hand.webp`
 SUBJECT. "Ring of the Open Hand" — Power · You may Cast without a free hand. · Plain silver, worn thin. The gesture is already in it.
 
 Draw an object with more inside it than its size allows.
+
+MADE OF. 600gp -- silver, worked bronze and fine leather.
 ```
 
 ### Screaming Shaft
@@ -6292,7 +6532,9 @@ File: `items/screaming-shaft.webp`
 ```text
 SUBJECT. "Screaming Shaft" — Ammunition · Bow. Dazed (1), resist Presence 5. · Bored through so the air goes through it wrong.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw one round out of the bundle, its point drawn sharply.
+
+MADE OF. 35gp -- true ash, goose fletching and a forged head.
 ```
 
 ### Serpent's Milk
@@ -6302,7 +6544,9 @@ File: `items/serpents-milk.webp`
 ```text
 SUBJECT. "Serpent's Milk" — Poison · Apply with a Ready. Next Strike that hits: Poisoned 0 (3) -- no damage, three rounds without a secondary. · Milked, strained and kept cold...
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw a small dark bottle, labelled, a residue dried at the lip.
+
+MADE OF. 70gp -- green glass, cork and sealing wax.
 ```
 
 ### Serpent's Tooth Ring
@@ -6312,7 +6556,9 @@ File: `items/serpents-tooth-ring.webp`
 ```text
 SUBJECT. "Serpent's Tooth Ring" — Wonder · A fang set as a stone, still wet at the root. · One adjacent enemy is Poisoned 1 (2).
 
-Draw an object behaving as though it were awake.
+Draw one hand's worth of object, drawn close and large.
+
+MADE OF. 850gp -- gold, gilt and gems.
 ```
 
 ### Sessyfyn's Tear
@@ -6322,7 +6568,9 @@ File: `items/sessyfyns-tear.webp`
 ```text
 SUBJECT. "Sessyfyn's Tear" — Relic · Obligation: a permanent Miss AND a permanent Critical in your fate deck. · Seawater that has not dried in four hundred years. · Any one fat...
 
-Draw an object behaving as though it were awake.
+Draw worn through at the one spot a thumb has found.
+
+MADE OF. 3000gp -- gold, gilt and gems.
 ```
 
 ### Shortbow
@@ -6333,6 +6581,8 @@ File: `items/shortbow.webp`
 SUBJECT. "Shortbow" — Weapon · Horn and sinew, strung short for close country.
 
 Draw the weapon drawn and held at tension.
+
+MADE OF. 25gp -- wrought iron and seasoned wood.
 ```
 
 ### Signet Ring
@@ -6343,6 +6593,8 @@ File: `items/signet-ring.webp`
 SUBJECT. "Signet Ring" — Station · A house, a seal, and somebody who will answer for you.
 
 Draw a thing that says who somebody is before they speak.
+
+MADE OF. 60gp -- wrought iron, brass or horn.
 ```
 
 ### Silvered Head
@@ -6352,7 +6604,9 @@ File: `items/silvered-head.webp`
 ```text
 SUBJECT. "Silvered Head" — Ammunition · Bow or crossbow. You may target an Invisible enemy you have seen this fight. · Silver remembers what it was aimed at.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw one round out of the bundle, its point drawn sharply.
+
+MADE OF. 90gp -- true ash, goose fletching and a forged head.
 ```
 
 ### Smith's Hammer
@@ -6363,6 +6617,8 @@ File: `items/smiths-hammer.webp`
 SUBJECT. "Smith's Hammer" — Make · A cross-pein and a sense of what metal wants.
 
 Draw made well, by somebody who signed nothing.
+
+MADE OF. 18gp -- wrought iron, brass or horn.
 ```
 
 ### Smoke Bomb
@@ -6372,7 +6628,9 @@ File: `items/smoke-bomb.webp`
 ```text
 SUBJECT. "Smoke Bomb" — Consumable · A waxed clay ball, heavier than it looks.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw used up in the open: cloth, wax or powder, half gone.
+
+MADE OF. 40gp -- green glass, cork and sealing wax.
 ```
 
 ### Spear
@@ -6383,6 +6641,8 @@ File: `items/spear.webp`
 SUBJECT. "Spear" — Weapon · The cheapest thing that keeps a man at arm's length.
 
 Draw an edge, worn and sharpened back more than once; an object mid-flight, the hand that threw it out of frame.
+
+MADE OF. 8gp -- plain iron, barely better than a tool.
 ```
 
 ### Staff of Healing
@@ -6392,7 +6652,9 @@ File: `items/staff-of-healing.webp`
 ```text
 SUBJECT. "Staff of Healing" — Implement · Pale wood, warm to the touch.
 
-Draw an object that is doing something while nobody holds it; an edge, worn and sharpened back more than once.
+Draw scribed and calibrated, unreadable to anybody not taught it.
+
+MADE OF. 0gp -- tin, bone or fired clay.
 ```
 
 ### Surgeon's Pin
@@ -6402,7 +6664,9 @@ File: `items/surgeons-pin.webp`
 ```text
 SUBJECT. "Surgeon's Pin" — Wonder · Silver, and it has closed worse than this. · Remove one Wound from an ally.
 
-Draw an object behaving as though it were awake.
+Draw hung on a cord and drawn hanging, turned off square.
+
+MADE OF. 900gp -- gold, gilt and gems.
 ```
 
 ### Surveyor's Chain
@@ -6412,7 +6676,9 @@ File: `items/surveyors-chain.webp`
 ```text
 SUBJECT. "Surveyor's Chain" — Wonder · In a challenge, your first Progress each scene is free. · Sixty-six feet of brass links that measure what matters rather than what is there.
 
-Draw an object behaving as though it were awake.
+Draw set down on nothing, carried a long way among other things.
+
+MADE OF. 600gp -- silver, worked bronze and fine leather.
 ```
 
 ### The Black Lantern
@@ -6422,7 +6688,9 @@ File: `items/the-black-lantern.webp`
 ```text
 SUBJECT. "The Black Lantern" — Relic · Every square within 3 is shadowed, your enemies' included. Obligation: you may never carry any other light. · It is lit. You can tell becau...
 
-Draw an object behaving as though it were awake.
+Draw worn through at the one spot a thumb has found.
+
+MADE OF. 3500gp -- gold, gilt and gems.
 ```
 
 ### The Hungry Blade
@@ -6432,7 +6700,9 @@ File: `items/the-hungry-blade.webp`
 ```text
 SUBJECT. "The Hungry Blade" — Relic · Obligation: a bound Taint the first round of each fight it does not kill. · It is not sharp. It does not need to be sharp.
 
-Draw weight: the object sits, and the surface under it knows; an edge, worn and sharpened back more than once.
+Draw worn through at the one spot a thumb has found.
+
+MADE OF. 4000gp -- gold, gilt and gems.
 ```
 
 ### The Kit
@@ -6443,6 +6713,8 @@ File: `items/the-kit.webp`
 SUBJECT. "The Kit" — Tool · A burglar's whole trade in a roll of canvas, and they never put it down.
 
 Draw a tool worn exactly where a hand goes and nowhere else.
+
+MADE OF. 0gp -- tin, bone or fired clay.
 ```
 
 ### The Pale Crown
@@ -6452,7 +6724,9 @@ File: `items/the-pale-crown.webp`
 ```text
 SUBJECT. "The Pale Crown" — Relic · Obligation: you may never wear armour, and nobody but you may heal you. · Bone, and lighter than bone should be.
 
-Draw an object behaving as though it were awake.
+Draw worn through at the one spot a thumb has found.
+
+MADE OF. 5000gp -- gold, gilt and gems.
 ```
 
 ### The Quenched Blade
@@ -6462,7 +6736,9 @@ File: `items/the-quenched-blade.webp`
 ```text
 SUBJECT. "The Quenched Blade" — Wonder · Quenched in something that is still angry about it.
 
-Draw weight: the object sits, and the surface under it knows; an edge, worn and sharpened back more than once.
+Draw held, or just set down, the grip polished by gripping.
+
+MADE OF. 2000gp -- gold, gilt and gems.
 ```
 
 ### The Scrivener's Knife
@@ -6472,7 +6748,9 @@ File: `items/the-scriveners-knife.webp`
 ```text
 SUBJECT. "The Scrivener's Knife" — Wonder · For cutting out what should not have been written. · Prune one card from your action deck for the rest of the day.
 
-Draw an object behaving as though it were awake.
+Draw set down on nothing, carried a long way among other things.
+
+MADE OF. 1200gp -- gold, gilt and gems.
 ```
 
 ### The Unquiet Quiver
@@ -6482,7 +6760,9 @@ File: `items/the-unquiet-quiver.webp`
 ```text
 SUBJECT. "The Unquiet Quiver" — Relic · Every piece of magical ammunition you fire returns to it when the fight ends. Obligation: it will not hold ordinary arrows, and you may car...
 
-Draw an object behaving as though it were awake.
+Draw worn through at the one spot a thumb has found.
+
+MADE OF. 4500gp -- gold, gilt and gems.
 ```
 
 ### Thunder-shot
@@ -6492,7 +6772,9 @@ File: `items/thunder-shot.webp`
 ```text
 SUBJECT. "Thunder-shot" — Ammunition · Firearm only. The shot is Blast 1 on the target's square. · A paper cartridge of scrap. Nothing else gives a non-caster an area.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw one round out of the bundle, its point drawn sharply.
+
+MADE OF. 80gp -- true ash, goose fletching and a forged head.
 ```
 
 ### Thunderstone
@@ -6502,7 +6784,9 @@ File: `items/thunderstone.webp`
 ```text
 SUBJECT. "Thunderstone" — Wonder · Throw it down hard. Do not be holding it. · One enemy within 3 is Stunned (1), resist Might 7.
 
-Draw an object behaving as though it were awake.
+Draw set down on nothing, carried a long way among other things.
+
+MADE OF. 650gp -- gold, gilt and gems.
 ```
 
 ### Tincture of the Clear Eye
@@ -6512,7 +6796,9 @@ File: `items/tincture-of-the-clear-eye.webp`
 ```text
 SUBJECT. "Tincture of the Clear Eye" — Potion · Cloudy, and it stings going down.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw a glass vial, stoppered, with less in it than there was.
+
+MADE OF. 30gp -- green glass, cork and sealing wax.
 ```
 
 ### Tinker's Thimble
@@ -6522,7 +6808,9 @@ File: `items/tinkers-thimble.webp`
 ```text
 SUBJECT. "Tinker's Thimble" — Wonder · Strain costs you one card fewer, to a minimum of 1. · Brass, and far too small for whoever made it.
 
-Draw an object behaving as though it were awake.
+Draw one hand's worth of object, drawn close and large.
+
+MADE OF. 80gp -- wrought iron, brass or horn.
 ```
 
 ### Tower Shield
@@ -6533,6 +6821,8 @@ File: `items/tower-shield.webp`
 SUBJECT. "Tower Shield" — Shield · A wall for a man who has decided not to go anywhere.
 
 Draw a shield, face on and slightly turned, its edge nicked from use; weight: the object sits, and the surface under it knows.
+
+MADE OF. 45gp -- riveted iron and leather strap.
 ```
 
 ### Travelling Cloak
@@ -6543,6 +6833,8 @@ File: `items/travelling-cloak.webp`
 SUBJECT. "Travelling Cloak" — Station · Oiled wool. The difference between a wet night and an unbearable one.
 
 Draw a thing that says who somebody is before they speak.
+
+MADE OF. 8gp -- sacking and undyed wool.
 ```
 
 ### Trident
@@ -6553,6 +6845,8 @@ File: `items/trident.webp`
 SUBJECT. "Trident" — Weapon · Arena work. The crowd likes the shape of it.
 
 Draw an edge, worn and sharpened back more than once.
+
+MADE OF. 18gp -- wrought iron and seasoned wood.
 ```
 
 ### Vagrant's Charm
@@ -6562,7 +6856,9 @@ File: `items/vagrants-charm.webp`
 ```text
 SUBJECT. "Vagrant's Charm" — Wonder · You are never Exhausted. · A knot of road-dust and hair. Its owner never sat down.
 
-Draw an object behaving as though it were awake.
+Draw hung on a cord and drawn hanging, turned off square.
+
+MADE OF. 950gp -- gold, gilt and gems.
 ```
 
 ### Warden's Seal
@@ -6573,6 +6869,8 @@ File: `items/wardens-seal.webp`
 SUBJECT. "Warden's Seal" — Power · A tower in relief, worn smooth by thumbs that are not yours.
 
 Draw an object with more inside it than its size allows.
+
+MADE OF. 500gp -- silver, worked bronze and fine leather.
 ```
 
 ### Warhammer
@@ -6583,6 +6881,8 @@ File: `items/warhammer.webp`
 SUBJECT. "Warhammer" — Weapon · A beak on one side for the plate and a hammer on the other for the man in it.
 
 Draw weight: the object sits, and the surface under it knows; an edge, worn and sharpened back more than once.
+
+MADE OF. 25gp -- wrought iron and seasoned wood.
 ```
 
 ### Weeping Resin
@@ -6592,7 +6892,9 @@ File: `items/weeping-resin.webp`
 ```text
 SUBJECT. "Weeping Resin" — Poison · Apply with a Ready. Next Strike that hits: the target cannot be healed for 2 rounds. No save. · The wound will not close while it is in th...
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw a small dark bottle, labelled, a residue dried at the lip.
+
+MADE OF. 60gp -- green glass, cork and sealing wax.
 ```
 
 ### Whetstone of the Last Edge
@@ -6602,7 +6904,9 @@ File: `items/whetstone-of-the-last-edge.webp`
 ```text
 SUBJECT. "Whetstone of the Last Edge" — Wonder · It takes something back out of a blade that has given everything. · One Spent card returns to your discard.
 
-Draw an object behaving as though it were awake.
+Draw set down on nothing, carried a long way among other things.
+
+MADE OF. 60gp -- wrought iron, brass or horn.
 ```
 
 ### Whistling Shaft
@@ -6612,7 +6916,9 @@ File: `items/whistling-shaft.webp`
 ```text
 SUBJECT. "Whistling Shaft" — Ammunition · Bow. The target is Compelled (1) -- at you. · Whoever it passes becomes very interested in who sent it.
 
-Draw a vessel, and whatever is in it is nearly gone.
+Draw one round out of the bundle, its point drawn sharply.
+
+MADE OF. 55gp -- true ash, goose fletching and a forged head.
 ```
 
 ### Winter Cloak
@@ -6622,7 +6928,9 @@ File: `items/winter-cloak.webp`
 ```text
 SUBJECT. "Winter Cloak" — Wonder · The hem is always a little frozen, in any season. · Everything adjacent to you is Slowed (1).
 
-Draw an object behaving as though it were awake.
+Draw cloth with weight in it, hung from one point.
+
+MADE OF. 750gp -- velvet, fur and gold thread.
 ```
 
 ### Wooden Shield
@@ -6633,6 +6941,8 @@ File: `items/wooden-shield.webp`
 SUBJECT. "Wooden Shield" — Shield · Banded oak, scarred across the face.
 
 Draw a shield, face on and slightly turned, its edge nicked from use.
+
+MADE OF. 10gp -- boiled hide and a few iron scales.
 ```
 
 ## NPC gear
@@ -6683,8 +6993,18 @@ PALETTE.
   the ground, never the sky, never a glow and never a whole figure: those are all the warm
   neutral of the paper and the ink.
 - Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
-  Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
+  Every hue in the picture is between red and amber Earth
   here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
+- **The one exemption in this palette: the object's own material keeps its true colour.** A gold
+  ring is gold-coloured, a silver ring is silver, steel is steel, copper is copper, brass is
+  brass and glass is glass. A silver ring rendered in brown ink is a brown ring, and the subject
+  of these pictures is the object -- so the metal is the one thing the sepia does not own.
+- **It covers the OBJECT and nothing else.** The ground it sits on, the shadow it throws and the
+  light falling across it stay the warm wash, exactly as everywhere else in the set. One lit
+  object in true material against warm paper, not a coloured picture.
+- **Silver, steel and pewter are near-white, not blue and not grey-blue** -- a bright metal is a
+  VALUE and a set of reflections rather than a hue, which is how it is drawn here. Gold, brass,
+  copper and bronze are already inside the warm range and need no special handling.
 
 PEOPLE.
 - **Where a person is drawn, decide who they are rather than defaulting.** This is a port city on
@@ -6727,6 +7047,8 @@ File: `items/npc/carved-idol.webp`
 SUBJECT. "Carved Idol" — Focus
 
 Draw a god-figure the size of a fist, cut from one piece of wood by somebody with more faith than skill: the face barely a face, the body a column, worn smooth at the shoulders from being held.
+
+MADE OF. 0gp -- tin, bone or fired clay.
 ```
 
 ### Dark Lantern
@@ -6737,6 +7059,8 @@ File: `items/npc/dark-lantern.webp`
 SUBJECT. "Dark Lantern" — Focus
 
 Draw a shuttered lantern with one slit open, throwing a single hard bar of light across a dark room and lighting nothing else at all.
+
+MADE OF. 0gp -- tin, bone or fired clay.
 ```
 
 ### Demon's Sigil
@@ -6747,6 +7071,8 @@ File: `items/npc/demons-sigil.webp`
 SUBJECT. "Demon's Sigil" — Focus
 
 Draw a mark burned into a flat surface and still smoking faintly at the edges -- not written, pressed. Geometric, closed, and the wood or stone around it curled away from the heat.
+
+MADE OF. 0gp -- tin, bone or fired clay.
 ```
 
 ### Goblin Fetish
@@ -6757,6 +7083,8 @@ File: `items/npc/goblin-fetish.webp`
 SUBJECT. "Goblin Fetish" — Focus
 
 Draw a bundle of knotted hair, bone and string hung from a bent stick, turning slowly on its own with nobody within reach of it.
+
+MADE OF. 0gp -- tin, bone or fired clay.
 ```
 
 ### Goblin Shield
@@ -6767,6 +7095,8 @@ File: `items/npc/goblin-shield.webp`
 SUBJECT. "Goblin Shield" — Shield
 
 Draw a shield, face on and slightly turned, its edge nicked from use; grown rather than forged -- chitin, horn, tooth or claw, still part of a body.
+
+MADE OF. 0gp -- boiled hide and a few iron scales.
 ```
 
 ### Goblin Shortbow
@@ -6777,6 +7107,8 @@ File: `items/npc/goblin-shortbow.webp`
 SUBJECT. "Goblin Shortbow" — Weapon
 
 Draw the weapon drawn and held at tension.
+
+MADE OF. 0gp -- plain iron, barely better than a tool.
 ```
 
 ### Goblin Spear
@@ -6787,6 +7119,8 @@ File: `items/npc/goblin-spear.webp`
 SUBJECT. "Goblin Spear" — Weapon
 
 Draw an edge, worn and sharpened back more than once.
+
+MADE OF. 0gp -- plain iron, barely better than a tool.
 ```
 
 ### Grave Candle
@@ -6797,6 +7131,8 @@ File: `items/npc/grave-candle.webp`
 SUBJECT. "Grave Candle" — Focus
 
 Draw a stub of candle burning low on a flat stone, the flame standing perfectly upright and still in air that is plainly moving everything else.
+
+MADE OF. 0gp -- tin, bone or fired clay.
 ```
 
 ### Mole Pick
@@ -6807,6 +7143,8 @@ File: `items/npc/mole-pick.webp`
 SUBJECT. "Mole Pick" — Weapon
 
 Draw an edge, worn and sharpened back more than once; grown rather than forged -- chitin, horn, tooth or claw, still part of a body.
+
+MADE OF. 0gp -- plain iron, barely better than a tool.
 ```
 
 ### Tarnkappe
@@ -6817,6 +7155,8 @@ File: `items/npc/tarnkappe.webp`
 SUBJECT. "Tarnkappe" — Wonder · A small grey cap, greasy with age. The Alp will want it back. · Become Invisible (1).
 
 Draw a small grey cap, shapeless and greasy with age, lying where it was dropped -- and the patch of ground beneath it not quite as present as the ground around it.
+
+MADE OF. 0gp -- tin, bone or fired clay.
 ```
 
 ### Troll Club
@@ -6827,6 +7167,8 @@ File: `items/npc/troll-club.webp`
 SUBJECT. "Troll Club" — Weapon
 
 Draw an edge, worn and sharpened back more than once; weight: the object sits, and the surface under it knows.
+
+MADE OF. 0gp -- plain iron, barely better than a tool.
 ```
 
 ## Natural weapons
@@ -6877,8 +7219,18 @@ PALETTE.
   the ground, never the sky, never a glow and never a whole figure: those are all the warm
   neutral of the paper and the ink.
 - Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
-  Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
+  Every hue in the picture is between red and amber Earth
   here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
+- **The one exemption in this palette: the object's own material keeps its true colour.** A gold
+  ring is gold-coloured, a silver ring is silver, steel is steel, copper is copper, brass is
+  brass and glass is glass. A silver ring rendered in brown ink is a brown ring, and the subject
+  of these pictures is the object -- so the metal is the one thing the sepia does not own.
+- **It covers the OBJECT and nothing else.** The ground it sits on, the shadow it throws and the
+  light falling across it stay the warm wash, exactly as everywhere else in the set. One lit
+  object in true material against warm paper, not a coloured picture.
+- **Silver, steel and pewter are near-white, not blue and not grey-blue** -- a bright metal is a
+  VALUE and a set of reflections rather than a hue, which is how it is drawn here. Gold, brass,
+  copper and bronze are already inside the warm range and need no special handling.
 
 PEOPLE.
 - **Where a person is drawn, decide who they are rather than defaulting.** This is a port city on
@@ -8391,34 +8743,44 @@ The whole creature, three-quarter from above, filling the square on full transpa
 
 ## Where prompts still repeat
 
-**178 prompts in 22 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
+**174 prompts in 32 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
 
-**7 of those clusters are the ones that bite**, listed first: the ones where the subject line carries no prose either, so neither half of the prompt tells the cards apart. The rest share a direction over subjects that already differ — forty-three consumables drawing a nearly-empty vessel still come back as forty-three different pictures, because each subject names its own.
+**6 of those clusters are the ones that bite**, listed first: the ones where the subject line carries no prose either, so neither half of the prompt tells the cards apart. The rest share a direction over subjects that already differ — forty-three consumables drawing a nearly-empty vessel still come back as forty-three different pictures, because each subject names its own.
 
 Answer a cluster by adding its keys to `DIRECTION` in `test/art-prompts.mjs` and regenerating. The row shrinks or disappears when it is done.
 
 | Pieces | Bare | They share | Keys |
 |---|---|---|---|
-| **43** | 5 | a vessel, and whatever is in it is nearly gone | `items/antidote` `items/assassins-tincture` `items/black-lotus` `items/blade-venom` `items/blunt-head` …+38 |
-| **41** | 2 | an object behaving as though it were awake | `items/accusers-ring` `items/amulet-of-the-fed-thread` `items/amulet-of-the-mended-thread` `items/beggars-bowl` `items/boots-of-the-long-step` …+36 |
+| **18** | 2 | a glass vial, stoppered, with less in it than there was | `items/bottle-of-borrowed-pain` `items/brewers-reserve` `items/draught-of-lead` `items/draught-of-second-breath` `items/draught-of-the-hollow` …+13 |
+| **13** | 2 | one round out of the bundle, its point drawn sharply | `items/blunt-head` `items/bodkin-points` `items/chalked-shaft` `items/frost-dipped-bolt` `items/grapnel-bolt` …+8 |
 | **8** | 2 | an object with more inside it than its size allows | `features/arcane-focus` `items/focus-pendant` `items/holy-symbol` `items/pilgrims-token` `items/reliquary-band` …+3 |
 | **7** | 2 | a tool worn exactly where a hand goes and nowhere else | `items/climbing-rope` `items/healers-kit` `items/hunting-traps` `items/lantern` `items/lockpicks` …+2 |
-| **5** | 2 | the weapon drawn and held at tension | `items/crossbow` `items/masterwork-crossbow` `items/matchlock-pistol` `items/shortbow` `items/npc/goblin-shortbow` |
+| **6** | 2 | used up in the open: cloth, wax or powder, half gone | `items/antidote` `items/cleansing-draught` `items/firepot` `items/flask-of-ink` `items/flask-of-oil` …+1 |
 | **3** | 2 | an edge, worn and sharpened back more than once | `items/arming-sword` `items/trident` `items/npc/goblin-spear` |
-| **3** | 2 | a vessel, and whatever is in it is nearly gone; an object mid-flight, the hand that threw it out of frame | `items/firepot` `items/flask-of-ink` `items/flask-of-oil` |
+| **9** | 1 | set down on nothing, carried a long way among other things | `items/beggars-bowl` `items/cairn-stone` `items/cracked-spyglass` `items/locked-casket` `items/loose-cobble` …+4 |
 | **7** | 1 | the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem | `signatures/shade/one-trick` `signatures/shade/the-kit` `signatures/shade/the-opening` `signatures/strength/cleave-to-the-bone` `signatures/strength/loaded-before-the-bell` …+2 |
 | **7** | 1 | an object that means nothing except in trained hands | `features/good-aim` `features/good-name` `features/hard-hands` `features/light-step` `features/quick-eye` …+2 |
+| **7** | 1 | a small dark bottle, labelled, a residue dried at the lip | `items/assassins-tincture` `items/black-lotus` `items/blade-venom` `items/drowsing-oil` `items/grave-cap-extract` …+2 |
 | **5** | 1 | the instant a blow lands, the weapon already through -- never wound up, never posing | `cards/starter/strike` `signatures/shade/double-or-nothing` `signatures/shade/lift` `signatures/shade/one-opening` `signatures/strength/red-mist` |
+| **5** | 1 | made well, by somebody who signed nothing | `items/fine-longsword` `items/marching-boots` `items/masterwork-crossbow` `items/proofed-mail` `items/smiths-hammer` |
+| **4** | 1 | worn unevenly, and the wear is the subject | `items/boots-of-the-long-step` `items/boots-of-the-longer-step` `items/hollow-boots` `items/pilgrims-shoes` |
+| **4** | 1 | the weapon drawn and held at tension | `items/crossbow` `items/matchlock-pistol` `items/shortbow` `items/npc/goblin-shortbow` |
 | **4** | 1 | a thing that says who somebody is before they speak | `items/fine-clothes` `items/gaming-set` `items/signet-ring` `items/travelling-cloak` |
 | **2** | 1 | ground covered -- weight forward, the last footfall still behind | `cards/starter/advance` `signatures/shade/over-and-past` |
 | **2** | 1 | ground covered -- weight forward, the last footfall still behind; the instant a blow lands, the weapon already through -- never wound up, never posing | `cards/starter/lunge` `signatures/strength/the-lance` |
 | **2** | 1 | pulled toward something against the will | `cards/starter/taunt` `signatures/strength/play-to-the-crowd` |
-| **13** | — | weight: the object sits, and the surface under it knows; an edge, worn and sharpened back more than once | `items/blade-of-the-eager-hand` `items/fine-longsword` `items/great-axe` `items/greatsword` `items/halberd` …+8 |
+| **7** | — | hung on a cord and drawn hanging, turned off square | `items/amulet-of-the-fed-thread` `items/amulet-of-the-mended-thread` `items/gag-of-the-nine` `items/gorget-of-the-turned-blade` `items/hourglass-charm` …+2 |
 | **6** | — |  | `backs/action` `backs/fate` `backs/skill` `backs/twist` `backs/wild` …+1 |
-| **6** | — | armour as worn metal and strap, not as a costume | `items/gauntlet-of-the-open-palm` `items/helm-of-the-watchful` `items/leather-armor` `items/light-helm` `items/mail-shirt` …+1 |
+| **6** | — | one hand's worth of object, drawn close and large | `items/accusers-ring` `items/gamblers-coin` `items/mnemonic-stone` `items/pact-iron` `items/serpents-tooth-ring` …+1 |
+| **6** | — | held, or just set down, the grip polished by gripping | `items/blade-of-the-eager-hand` `items/discriminating-wand` `items/gauntlet-of-the-open-palm` `items/hooked-gauntlet` `items/reavers-edge` …+1 |
+| **5** | — | cloth with weight in it, hung from one point | `items/cloak-of-the-grey` `items/cloak-of-the-grey-road` `items/deep-pockets` `items/mantle-of-the-unburdened` `items/winter-cloak` |
+| **5** | — | weight: the object sits, and the surface under it knows; an edge, worn and sharpened back more than once | `items/halberd` `items/lance` `items/mace` `items/pike` `items/warhammer` |
+| **5** | — | worn through at the one spot a thumb has found | `items/sessyfyns-tear` `items/the-black-lantern` `items/the-hungry-blade` `items/the-pale-crown` `items/the-unquiet-quiver` |
 | **4** | — | weight: the object sits, and the surface under it knows; the weapon drawn and held at tension | `items/arquebus` `items/heavy-crossbow` `items/longbow` `items/matchlock-musket` |
 | **3** | — | armour as worn metal and strap, not as a costume; weight: the object sits, and the surface under it knows | `items/brigandine` `items/great-helm` `items/plate` |
 | **3** | — | a shield, face on and slightly turned, its edge nicked from use | `items/buckler` `items/kite-shield` `items/wooden-shield` |
-| **2** | — | an object that is doing something while nobody holds it | `items/discriminating-wand` `items/fire-wand` |
-| **2** | — | made well, by somebody who signed nothing | `items/marching-boots` `items/smiths-hammer` |
+| **3** | — | shaped to a skull, the hollow drawn most carefully | `items/crown-of-the-quiet-mind` `items/far-sight-monocle` `items/helm-of-the-watchful` |
+| **3** | — | hung at the hip, the strap cut off at the frame | `items/drowned-bell` `items/marked-arrowhead` `items/quartermasters-belt` |
+| **3** | — | armour as worn metal and strap, not as a costume | `items/leather-armor` `items/light-helm` `items/mail-shirt` |
+| **2** | — | scribed and calibrated, unreadable to anybody not taught it | `items/fire-wand` `items/staff-of-healing` |
 
