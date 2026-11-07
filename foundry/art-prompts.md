@@ -7810,7 +7810,7 @@ File: `tokens/elf.webp`
 ```text
 SUBJECT. "Elf" — Health 16 · armour 1 · speed 5 · Elf-Bolt — an alva of the Nordic kind, not a tall archer: slight, pale and barefoot in a thin shift, hair unbound, drawn mid-step as if still dancing and only half attending to you. **The whole figure glitters** -- a fine dust of light caught on the skin, the hair and the shift, as though it had been rolled in frost or crushed glass, and the air immediately around it sparkles too. Beautiful and slightly wrong in the proportions. No armour, ...
 
-The whole creature, three-quarter from above, filling the square on full transparency.
+The whole creature, three-quarter from above, filling the square on full transparency. The unbound hair is the one dark mass in the picture, inked in near-black and not washed, and the eyes are dark; the glitter is light left on the paper rather than a colour laid on it. The drawn line stays near-black the whole way round however pale the alva inside it is.
 ```
 
 ### Estrie
@@ -8570,7 +8570,7 @@ File: `tokens/the-land-jelly.webp`
 ```text
 SUBJECT. "The Land Jelly" — Health 90 · armour 3 · speed 1 · Crushing Coils — a vast translucent mass filling the whole frame, with things suspended inside it that are clearly older than the picture -- bones, worked stone, a boat. No face, no front, no limbs. The biggest and least animal thing in the set
 
-The whole creature, three-quarter from above, filling the square on full transparency.
+The whole creature, three-quarter from above, filling the square on full transparency. The near-black is everything suspended inside it: the boat, the worked stone and the bones read as dark silhouettes deep in the mass, darkest where the most jelly lies over them. The line around the whole thing stays inked however clear the jelly is.
 ```
 
 ### The Purple
@@ -8620,7 +8620,7 @@ File: `tokens/the-winter-lady.webp`
 ```text
 SUBJECT. "The Winter Lady" — Health 65 · armour 4 · speed 5 · Killing Frost, Elf-Bolt — a tall elven woman made of winter: skin the white of old ice with the grey of it underneath, hair and gown drifting upward rather than down, bare feet not melting what she stands on. Beautiful, composed, and the air around her visibly colder
 
-The whole creature, three-quarter from above, filling the square on full transparency.
+The whole creature, three-quarter from above, filling the square on full transparency. The grey beneath the ice deepens to near-black in the cracks of it and in the hollows of the gown, and the eyes are dark. The drawn line stays near-black the whole way round however white the ice is.
 ```
 
 ### Town Guard

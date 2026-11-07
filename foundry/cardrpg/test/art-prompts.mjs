@@ -1557,7 +1557,40 @@ const DIRECTION = {
     + "move, dust still settling around it, having got there without landing",
   "cards/wild/veil":
     "a sheet of air hanging like hung cloth, the room behind it displaced a finger's width to one "
-    + "side where it falls. Something is behind it and the picture does not say what"
+    + "side where it falls. Something is behind it and the picture does not say what",
+
+  /*
+   * **The three palest creatures in the set, which came out with no drawn line at all.**
+   *
+   * `minBlack` is 0.3% and the other 110 tokens clear it by seventeen times over: the median is
+   * 5.3%, the tenth percentile 2.3%, and the lowest passing token in the book is the dragon at
+   * 0.52%. These three measured 0.02%, 0.05% and 0.14% -- a clean 3.7x gap below the worst
+   * passer, with nothing in between. That is not a floor set too high, which is what it looked
+   * like from the three files alone; it is three pictures with no ink in them.
+   *
+   * Their subjects say why. *Slight, pale... the whole figure glitters... rolled in frost or
+   * crushed glass*, *a vast translucent mass*, *the white of old ice with the grey of it
+   * underneath* -- each is a creature made of pale, and the model dropped the contour along with
+   * the colour. So each of these names where the near-black lives, on a thing that is allowed to
+   * be dark on a pale creature: hair, a silhouette seen through the mass, the depth of a crack.
+   *
+   * **These three are whole sentences, not the noun phrases every other row here is.** A token's
+   * framing line is fixed and comes first, and a direction is appended to it rather than used
+   * instead of it, so a `tokens/` row has to read as the sentence that follows one.
+   */
+  "tokens/elf":
+    "The unbound hair is the one dark mass in the picture, inked in near-black and not washed, "
+    + "and the eyes are dark; the glitter is light left on the paper rather than a colour laid "
+    + "on it. The drawn line stays near-black the whole way round however pale the alva inside "
+    + "it is.",
+  "tokens/the-land-jelly":
+    "The near-black is everything suspended inside it: the boat, the worked stone and the bones "
+    + "read as dark silhouettes deep in the mass, darkest where the most jelly lies over them. "
+    + "The line around the whole thing stays inked however clear the jelly is.",
+  "tokens/the-winter-lady":
+    "The grey beneath the ice deepens to near-black in the cracks of it and in the hollows of "
+    + "the gown, and the eyes are dark. The drawn line stays near-black the whole way round "
+    + "however white the ice is."
 };
 
 /** The one place a missing motif becomes visible instead of becoming silence. */
@@ -1913,8 +1946,27 @@ for (const group of GROUPS) {
     const key = `${group.dir}/${slug(entry.name)}`;
     const ms = motifsFor(entry, group);
     /* The piece's own sentence outranks a motif table: it was written about this one thing. */
+    /*
+     * **A token's framing line is not negotiable, and until now it was also the whole direction.**
+     *
+     * Three-quarter from above, filling the square, on transparency: that is what makes 113
+     * creatures sit on one map at one scale, and no piece gets to argue with it. So the token
+     * branch said that sentence and stopped, and `DIRECTION` was unreachable for a token -- which
+     * was fine while the only thing a token needed saying was its frame.
+     *
+     * It stopped being fine on the three palest creatures in the set. The frame says nothing
+     * about ink, their own text says *pale*, *translucent* and *the white of old ice*, and the
+     * model dropped the drawn line along with the colour: 0.02%, 0.05% and 0.14% true black
+     * against a 0.3% floor that the other 110 clear by seventeen times over. The gate's own note
+     * on that rule is the answer -- the near-black contour binds a token *because that is the
+     * hand rather than the hue* -- but there was nowhere to say it to one piece.
+     *
+     * So a token keeps its framing sentence and may now carry a second one after it. The frame
+     * stays first and stays whole; the direction only ever adds.
+     */
     const direction = token
       ? "The whole creature, three-quarter from above, filling the square on full transparency."
+        + (DIRECTION[key] ? ` ${DIRECTION[key]}` : "")
       : DIRECTION[key] ? `Draw ${DIRECTION[key]}.`
         : ms.length ? `Draw ${ms.join("; ")}.`
           : "Draw that line literally: the one moment it describes, and nothing else in frame.";
