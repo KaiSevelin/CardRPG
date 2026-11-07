@@ -8,6 +8,7 @@
   },
   "name": "The Weight of It",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/the-weight-of-it.webp",
   "system": {
     "strength": 2,
     "source": "The Eternal God",

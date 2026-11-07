@@ -8,6 +8,7 @@
   },
   "name": "A Word for You",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/a-word-for-you.webp",
   "system": {
     "strength": 1,
     "source": "The Eternal Spirit",

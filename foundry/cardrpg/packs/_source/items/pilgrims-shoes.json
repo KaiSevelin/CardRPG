@@ -8,6 +8,7 @@
   },
   "name": "Pilgrim's Shoes",
   "type": "item",
+  "img": "systems/cardrpg/art/items/pilgrims-shoes.webp",
   "system": {
     "slot": "feet",
     "weight": 1,

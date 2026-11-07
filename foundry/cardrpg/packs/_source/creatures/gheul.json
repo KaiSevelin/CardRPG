@@ -8,6 +8,7 @@
   },
   "name": "Gheul",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/gheul.webp",
   "system": {
     "health": {
       "value": 14,
@@ -39,6 +40,7 @@
       },
       "name": "Draining Bite",
       "type": "item",
+      "img": "systems/cardrpg/art/items/natural/draining-bite.webp",
       "system": {
         "slot": "hands",
         "hands": 0,
@@ -64,6 +66,9 @@
     "name": "Gheul",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/gheul.webp"
+    }
   }
 }

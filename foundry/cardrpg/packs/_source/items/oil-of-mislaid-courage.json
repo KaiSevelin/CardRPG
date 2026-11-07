@@ -8,6 +8,7 @@
   },
   "name": "Oil of Mislaid Courage",
   "type": "item",
+  "img": "systems/cardrpg/art/items/oil-of-mislaid-courage.webp",
   "system": {
     "slot": "belt",
     "fits": [

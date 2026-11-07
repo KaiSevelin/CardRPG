@@ -8,6 +8,7 @@
   },
   "name": "Mandibles",
   "type": "item",
+  "img": "systems/cardrpg/art/items/natural/mandibles.webp",
   "system": {
     "slot": "hands",
     "hands": 0,

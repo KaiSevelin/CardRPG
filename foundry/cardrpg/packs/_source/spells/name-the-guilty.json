@@ -8,6 +8,7 @@
   },
   "name": "Name the Guilty",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/name-the-guilty.webp",
   "system": {
     "strength": 1,
     "source": "The Eternal God",

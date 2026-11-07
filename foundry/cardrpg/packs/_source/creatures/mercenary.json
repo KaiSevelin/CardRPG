@@ -8,6 +8,7 @@
   },
   "name": "Mercenary",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/mercenary.webp",
   "system": {
     "health": {
       "value": 12,
@@ -39,6 +40,7 @@
       },
       "name": "Halberd",
       "type": "item",
+      "img": "systems/cardrpg/art/items/halberd.webp",
       "system": {
         "slot": "hands",
         "hands": 2,
@@ -70,6 +72,7 @@
       },
       "name": "Brigandine",
       "type": "item",
+      "img": "systems/cardrpg/art/items/brigandine.webp",
       "system": {
         "slot": "body",
         "tags": [
@@ -94,6 +97,9 @@
     "name": "Mercenary",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/mercenary.webp"
+    }
   }
 }

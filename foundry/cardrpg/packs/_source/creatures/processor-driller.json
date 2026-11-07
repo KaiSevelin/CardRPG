@@ -8,6 +8,7 @@
   },
   "name": "Processor Driller",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/processor-driller.webp",
   "system": {
     "health": {
       "value": 6,
@@ -36,6 +37,7 @@
       },
       "name": "Mandibles",
       "type": "item",
+      "img": "systems/cardrpg/art/items/natural/mandibles.webp",
       "system": {
         "slot": "hands",
         "hands": 0,
@@ -61,6 +63,9 @@
     "name": "Processor Driller",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/processor-driller.webp"
+    }
   }
 }

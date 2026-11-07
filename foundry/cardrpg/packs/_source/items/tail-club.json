@@ -8,6 +8,7 @@
   },
   "name": "Tail Club",
   "type": "item",
+  "img": "systems/cardrpg/art/items/natural/tail-club.webp",
   "system": {
     "slot": "hands",
     "hands": 0,

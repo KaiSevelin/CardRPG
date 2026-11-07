@@ -8,6 +8,7 @@
   },
   "name": "Amulet of the Fed Thread",
   "type": "item",
+  "img": "systems/cardrpg/art/items/amulet-of-the-mended-thread.webp",
   "system": {
     "slot": "neck",
     "weight": 0,

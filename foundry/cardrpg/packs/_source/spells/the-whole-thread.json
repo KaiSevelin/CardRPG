@@ -8,6 +8,7 @@
   },
   "name": "The Whole Thread",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-whole-thread.webp",
   "system": {
     "strength": 5,
     "source": "Divination",

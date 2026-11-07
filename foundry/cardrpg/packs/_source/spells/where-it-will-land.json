@@ -8,6 +8,7 @@
   },
   "name": "Where It Will Land",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/where-it-will-land.webp",
   "system": {
     "strength": 1,
     "source": "Divination",

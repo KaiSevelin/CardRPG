@@ -8,6 +8,7 @@
   },
   "name": "No Step Back",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/no-step-back.webp",
   "system": {
     "strength": 2,
     "source": "Valtor",

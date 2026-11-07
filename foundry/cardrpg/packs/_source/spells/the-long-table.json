@@ -8,6 +8,7 @@
   },
   "name": "The Long Table",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-long-table.webp",
   "system": {
     "strength": 3,
     "source": "Household Magic",

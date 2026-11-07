@@ -8,6 +8,7 @@
   },
   "name": "Graven Heart",
   "type": "feature",
+  "img": "systems/cardrpg/art/spells/mind/graven-heart.webp",
   "system": {
     "strength": 3,
     "source": "Tattoo Magic",

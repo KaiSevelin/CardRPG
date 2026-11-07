@@ -8,6 +8,7 @@
   },
   "name": "Highwayman",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/highwayman.webp",
   "system": {
     "health": {
       "value": 10,
@@ -40,6 +41,7 @@
       },
       "name": "Matchlock Pistol",
       "type": "item",
+      "img": "systems/cardrpg/art/items/matchlock-pistol.webp",
       "system": {
         "ammo": "firearm",
         "slot": "hands",
@@ -75,6 +77,7 @@
       },
       "name": "Arming Sword",
       "type": "item",
+      "img": "systems/cardrpg/art/items/arming-sword.webp",
       "system": {
         "slot": "hands",
         "fits": [
@@ -109,6 +112,7 @@
       },
       "name": "Brigandine",
       "type": "item",
+      "img": "systems/cardrpg/art/items/brigandine.webp",
       "system": {
         "slot": "body",
         "tags": [
@@ -133,6 +137,9 @@
     "name": "Highwayman",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/highwayman.webp"
+    }
   }
 }

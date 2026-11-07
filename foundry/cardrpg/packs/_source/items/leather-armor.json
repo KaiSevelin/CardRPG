@@ -8,6 +8,7 @@
   },
   "name": "Leather Armor",
   "type": "item",
+  "img": "systems/cardrpg/art/items/leather-armor.webp",
   "system": {
     "slot": "body",
     "hands": 1,

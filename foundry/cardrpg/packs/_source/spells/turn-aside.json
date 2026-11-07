@@ -8,6 +8,7 @@
   },
   "name": "Turn Aside",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/turn-aside.webp",
   "system": {
     "strength": 2,
     "source": "Ward Magic",

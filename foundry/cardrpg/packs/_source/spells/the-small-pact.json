@@ -8,6 +8,7 @@
   },
   "name": "The Small Pact",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-small-pact.webp",
   "system": {
     "strength": 1,
     "source": "Spiritualism",

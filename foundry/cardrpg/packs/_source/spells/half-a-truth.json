@@ -8,6 +8,7 @@
   },
   "name": "Half a Truth",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/half-a-truth.webp",
   "system": {
     "strength": 2,
     "source": "The Yellow",

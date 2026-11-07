@@ -8,6 +8,7 @@
   },
   "name": "Accuser's Ring",
   "type": "item",
+  "img": "systems/cardrpg/art/items/accusers-ring.webp",
   "system": {
     "slot": "fingers",
     "weight": 0,

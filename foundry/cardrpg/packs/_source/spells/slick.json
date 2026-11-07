@@ -8,6 +8,7 @@
   },
   "name": "Slick",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/slick.webp",
   "system": {
     "strength": 1,
     "source": "Poison",

@@ -8,6 +8,7 @@
   },
   "name": "The Quenched Blade",
   "type": "item",
+  "img": "systems/cardrpg/art/items/the-quenched-blade.webp",
   "system": {
     "slot": "hands",
     "fits": [

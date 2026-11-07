@@ -8,6 +8,7 @@
   },
   "name": "Grey Water",
   "type": "item",
+  "img": "systems/cardrpg/art/items/grey-water.webp",
   "system": {
     "slot": "belt",
     "fits": [

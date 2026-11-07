@@ -8,6 +8,7 @@
   },
   "name": "The Body Made Clean",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/the-body-made-clean.webp",
   "system": {
     "strength": 5,
     "source": "The Eternal God",

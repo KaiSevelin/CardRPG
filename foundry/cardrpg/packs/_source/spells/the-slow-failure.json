@@ -8,6 +8,7 @@
   },
   "name": "The Slow Failure",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/the-slow-failure.webp",
   "system": {
     "strength": 5,
     "source": "The Purple",

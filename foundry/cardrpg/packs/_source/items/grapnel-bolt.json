@@ -8,6 +8,7 @@
   },
   "name": "Grapnel Bolt",
   "type": "item",
+  "img": "systems/cardrpg/art/items/grapnel-bolt.webp",
   "system": {
     "slot": "belt",
     "tags": [

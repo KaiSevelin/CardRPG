@@ -8,6 +8,7 @@
   },
   "name": "Stand Where I Stand",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/stand-where-i-stand.webp",
   "system": {
     "strength": 1,
     "source": "Vax",

@@ -8,6 +8,7 @@
   },
   "name": "Mega Beetle",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/mega-beetle.webp",
   "system": {
     "health": {
       "value": 30,
@@ -38,6 +39,7 @@
       },
       "name": "Heavy Mandibles",
       "type": "item",
+      "img": "systems/cardrpg/art/items/natural/heavy-mandibles.webp",
       "system": {
         "slot": "hands",
         "hands": 0,
@@ -64,6 +66,9 @@
     "name": "Mega Beetle",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/mega-beetle.webp"
+    }
   }
 }

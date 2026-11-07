@@ -8,6 +8,7 @@
   },
   "name": "Brewer's Reserve",
   "type": "item",
+  "img": "systems/cardrpg/art/items/brewers-reserve.webp",
   "system": {
     "slot": "belt",
     "fits": [

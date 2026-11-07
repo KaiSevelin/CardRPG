@@ -8,6 +8,7 @@
   },
   "name": "Dragon Jaws",
   "type": "item",
+  "img": "systems/cardrpg/art/items/natural/dragon-jaws.webp",
   "system": {
     "slot": "hands",
     "hands": 0,

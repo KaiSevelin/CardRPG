@@ -8,6 +8,7 @@
   },
   "name": "Mole Man Priest",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/mole-man-priest.webp",
   "system": {
     "health": {
       "value": 10,
@@ -44,6 +45,7 @@
       },
       "name": "Dark Lantern",
       "type": "item",
+      "img": "systems/cardrpg/art/items/npc/dark-lantern.webp",
       "system": {
         "slot": "hands",
         "hands": 1,
@@ -70,6 +72,9 @@
     "name": "Mole Man Priest",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/mole-man-priest.webp"
+    }
   }
 }

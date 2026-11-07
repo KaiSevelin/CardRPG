@@ -8,6 +8,7 @@
   },
   "name": "The War Drum",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/the-war-drum.webp",
   "system": {
     "strength": 4,
     "source": "Valtor",

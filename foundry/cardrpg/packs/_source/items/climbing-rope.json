@@ -8,6 +8,7 @@
   },
   "name": "Climbing Rope",
   "type": "item",
+  "img": "systems/cardrpg/art/items/climbing-rope.webp",
   "system": {
     "slot": "pack",
     "weight": 3,

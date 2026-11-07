@@ -8,6 +8,7 @@
   },
   "name": "The Clean Field",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/the-clean-field.webp",
   "system": {
     "strength": 4,
     "source": "The Eternal God",

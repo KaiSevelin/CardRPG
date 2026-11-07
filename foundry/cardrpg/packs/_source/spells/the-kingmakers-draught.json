@@ -8,6 +8,7 @@
   },
   "name": "The Kingmaker's Draught",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-kingmakers-draught.webp",
   "system": {
     "strength": 5,
     "source": "Poison",

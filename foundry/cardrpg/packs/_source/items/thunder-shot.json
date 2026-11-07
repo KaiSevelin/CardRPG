@@ -8,6 +8,7 @@
   },
   "name": "Thunder-shot",
   "type": "item",
+  "img": "systems/cardrpg/art/items/thunder-shot.webp",
   "system": {
     "slot": "belt",
     "tags": [

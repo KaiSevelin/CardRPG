@@ -8,6 +8,7 @@
   },
   "name": "Serpent's Milk",
   "type": "item",
+  "img": "systems/cardrpg/art/items/serpents-milk.webp",
   "system": {
     "slot": "belt",
     "tags": [

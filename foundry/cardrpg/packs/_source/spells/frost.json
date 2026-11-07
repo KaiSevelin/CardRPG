@@ -8,6 +8,7 @@
   },
   "name": "Frost",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/elemental/frost.webp",
   "system": {
     "strength": 1,
     "source": "Elemental Magic",

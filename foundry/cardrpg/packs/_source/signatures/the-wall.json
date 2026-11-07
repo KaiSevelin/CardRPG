@@ -8,6 +8,7 @@
   },
   "name": "The Wall",
   "type": "feature",
+  "img": "systems/cardrpg/art/signatures/strength/the-wall.webp",
   "system": {
     "text": "Your Blocks stack. You are the one exception to highest-wins."
   }

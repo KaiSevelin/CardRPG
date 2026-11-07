@@ -8,6 +8,7 @@
   },
   "name": "The Lie That Held",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/the-lie-that-held.webp",
   "system": {
     "strength": 5,
     "source": "The Yellow",

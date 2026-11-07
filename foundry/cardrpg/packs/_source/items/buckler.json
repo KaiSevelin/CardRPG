@@ -8,6 +8,7 @@
   },
   "name": "Buckler",
   "type": "item",
+  "img": "systems/cardrpg/art/items/buckler.webp",
   "system": {
     "slot": "hands",
     "fits": [

@@ -8,6 +8,7 @@
   },
   "name": "Cleansing Draught",
   "type": "item",
+  "img": "systems/cardrpg/art/items/cleansing-draught.webp",
   "system": {
     "slot": "belt",
     "fits": [

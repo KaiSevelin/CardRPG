@@ -8,6 +8,7 @@
   },
   "name": "The Sea Decides",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/the-sea-decides.webp",
   "system": {
     "strength": 5,
     "source": "Sessyfyn",

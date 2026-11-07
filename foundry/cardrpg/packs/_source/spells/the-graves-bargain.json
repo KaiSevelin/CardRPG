@@ -8,6 +8,7 @@
   },
   "name": "The Grave's Bargain",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-graves-bargain.webp",
   "system": {
     "strength": 5,
     "source": "Necromancy",

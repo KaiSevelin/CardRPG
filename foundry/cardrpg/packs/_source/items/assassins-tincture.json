@@ -8,6 +8,7 @@
   },
   "name": "Assassin's Tincture",
   "type": "item",
+  "img": "systems/cardrpg/art/items/assassins-tincture.webp",
   "system": {
     "slot": "belt",
     "tags": [

@@ -8,6 +8,7 @@
   },
   "name": "Tough",
   "type": "feature",
+  "img": "systems/cardrpg/art/features/tough.webp",
   "system": {
     "grants": {
       "health": 4

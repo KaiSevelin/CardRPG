@@ -8,6 +8,7 @@
   },
   "name": "The Grey Sickness",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-grey-sickness.webp",
   "system": {
     "strength": 2,
     "source": "Poison",

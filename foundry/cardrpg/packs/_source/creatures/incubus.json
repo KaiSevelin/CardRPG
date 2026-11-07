@@ -8,6 +8,7 @@
   },
   "name": "Incubus",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/incubus.webp",
   "system": {
     "health": {
       "value": 18,
@@ -39,6 +40,7 @@
       },
       "name": "Demon's Sigil",
       "type": "item",
+      "img": "systems/cardrpg/art/items/npc/demons-sigil.webp",
       "system": {
         "slot": "hands",
         "hands": 1,
@@ -68,6 +70,7 @@
       },
       "name": "Draining Bite",
       "type": "item",
+      "img": "systems/cardrpg/art/items/natural/draining-bite.webp",
       "system": {
         "slot": "hands",
         "hands": 0,
@@ -93,6 +96,9 @@
     "name": "Incubus",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/incubus.webp"
+    }
   }
 }

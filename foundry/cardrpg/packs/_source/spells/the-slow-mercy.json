@@ -8,6 +8,7 @@
   },
   "name": "The Slow Mercy",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/the-slow-mercy.webp",
   "system": {
     "strength": 2,
     "source": "Brendan",

@@ -8,6 +8,7 @@
   },
   "name": "The Mirror",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-mirror.webp",
   "system": {
     "strength": 3,
     "source": "Ward Magic",

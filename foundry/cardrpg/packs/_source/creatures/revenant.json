@@ -8,6 +8,7 @@
   },
   "name": "Revenant",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/revenant.webp",
   "system": {
     "health": {
       "value": 24,
@@ -37,6 +38,7 @@
       },
       "name": "Grave-Cold Hands",
       "type": "item",
+      "img": "systems/cardrpg/art/items/natural/grave-cold-hands.webp",
       "system": {
         "slot": "hands",
         "hands": 0,
@@ -63,6 +65,9 @@
     "name": "Revenant",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/revenant.webp"
+    }
   }
 }

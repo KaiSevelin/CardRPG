@@ -8,6 +8,7 @@
   },
   "name": "The Long Step",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-long-step.webp",
   "system": {
     "strength": 1,
     "source": "Shadow Magic",

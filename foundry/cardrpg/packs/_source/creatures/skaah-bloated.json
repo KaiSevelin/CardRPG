@@ -8,6 +8,7 @@
   },
   "name": "Skaah Bloated",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/skaah-bloated.webp",
   "system": {
     "health": {
       "value": 60,
@@ -39,6 +40,7 @@
       },
       "name": "Acid Spray",
       "type": "item",
+      "img": "systems/cardrpg/art/items/natural/acid-spray.webp",
       "system": {
         "slot": "hands",
         "hands": 0,
@@ -67,6 +69,9 @@
     "name": "Skaah Bloated",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/skaah-bloated.webp"
+    }
   }
 }

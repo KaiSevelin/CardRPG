@@ -8,6 +8,7 @@
   },
   "name": "Goblin Fetish",
   "type": "item",
+  "img": "systems/cardrpg/art/items/npc/goblin-fetish.webp",
   "system": {
     "slot": "hands",
     "hands": 1,

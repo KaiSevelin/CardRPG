@@ -8,6 +8,7 @@
   },
   "name": "The Quick Dose",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-quick-dose.webp",
   "system": {
     "strength": 3,
     "source": "Poison",

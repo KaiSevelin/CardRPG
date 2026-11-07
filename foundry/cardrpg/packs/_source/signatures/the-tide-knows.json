@@ -8,6 +8,7 @@
   },
   "name": "The Tide Knows",
   "type": "spell",
+  "img": "systems/cardrpg/art/signatures/faith/the-tide-knows.webp",
   "system": {
     "strength": 2,
     "source": "Sessyfyn",

@@ -8,6 +8,7 @@
   },
   "name": "The Evil Eye",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-evil-eye.webp",
   "system": {
     "strength": 2,
     "source": "Glamour",

@@ -8,6 +8,7 @@
   },
   "name": "The Driven Out",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/the-driven-out.webp",
   "system": {
     "strength": 4,
     "source": "Vulpet",

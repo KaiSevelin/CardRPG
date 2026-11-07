@@ -8,6 +8,7 @@
   },
   "name": "Holy Symbol",
   "type": "item",
+  "img": "systems/cardrpg/art/items/holy-symbol.webp",
   "system": {
     "slot": "hands",
     "hands": 1,

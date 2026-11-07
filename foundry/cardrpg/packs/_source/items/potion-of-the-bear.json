@@ -8,6 +8,7 @@
   },
   "name": "Potion of the Bear",
   "type": "item",
+  "img": "systems/cardrpg/art/items/potion-of-the-bear.webp",
   "system": {
     "slot": "belt",
     "fits": [

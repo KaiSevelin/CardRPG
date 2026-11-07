@@ -8,6 +8,7 @@
   },
   "name": "Cult Priest",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/cult-priest.webp",
   "system": {
     "health": {
       "value": 14,
@@ -39,6 +40,7 @@
       },
       "name": "Carved Idol",
       "type": "item",
+      "img": "systems/cardrpg/art/items/npc/carved-idol.webp",
       "system": {
         "slot": "hands",
         "hands": 1,
@@ -68,6 +70,7 @@
       },
       "name": "Mace",
       "type": "item",
+      "img": "systems/cardrpg/art/items/mace.webp",
       "system": {
         "slot": "hands",
         "fits": [
@@ -98,6 +101,9 @@
     "name": "Cult Priest",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/cult-priest.webp"
+    }
   }
 }

@@ -8,6 +8,7 @@
   },
   "name": "Flask of Ink",
   "type": "item",
+  "img": "systems/cardrpg/art/items/flask-of-ink.webp",
   "system": {
     "slot": "belt",
     "fits": [

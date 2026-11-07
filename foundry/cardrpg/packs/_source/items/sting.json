@@ -8,6 +8,7 @@
   },
   "name": "Sting",
   "type": "item",
+  "img": "systems/cardrpg/art/items/natural/sting.webp",
   "system": {
     "slot": "hands",
     "hands": 0,

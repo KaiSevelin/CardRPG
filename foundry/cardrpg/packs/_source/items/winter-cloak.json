@@ -8,6 +8,7 @@
   },
   "name": "Winter Cloak",
   "type": "item",
+  "img": "systems/cardrpg/art/items/winter-cloak.webp",
   "system": {
     "slot": "cloak",
     "weight": 2,

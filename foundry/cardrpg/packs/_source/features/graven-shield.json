@@ -8,6 +8,7 @@
   },
   "name": "Graven Shield",
   "type": "feature",
+  "img": "systems/cardrpg/art/spells/mind/graven-shield.webp",
   "system": {
     "strength": 2,
     "source": "Tattoo Magic",

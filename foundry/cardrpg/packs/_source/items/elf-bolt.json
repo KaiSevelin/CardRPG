@@ -8,6 +8,7 @@
   },
   "name": "Elf-Bolt",
   "type": "item",
+  "img": "systems/cardrpg/art/items/natural/elf-bolt.webp",
   "system": {
     "slot": "hands",
     "hands": 1,

@@ -8,6 +8,7 @@
   },
   "name": "Grave-cap Extract",
   "type": "item",
+  "img": "systems/cardrpg/art/items/grave-cap-extract.webp",
   "system": {
     "slot": "belt",
     "tags": [

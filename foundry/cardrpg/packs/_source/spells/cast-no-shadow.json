@@ -8,6 +8,7 @@
   },
   "name": "Cast No Shadow",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/cast-no-shadow.webp",
   "system": {
     "strength": 2,
     "source": "Shadow Magic",

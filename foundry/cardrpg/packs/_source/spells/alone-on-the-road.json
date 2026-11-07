@@ -8,6 +8,7 @@
   },
   "name": "Alone on the Road",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/alone-on-the-road.webp",
   "system": {
     "strength": 1,
     "source": "Vulpet",

@@ -8,6 +8,7 @@
   },
   "name": "Smith's Hammer",
   "type": "item",
+  "img": "systems/cardrpg/art/items/smiths-hammer.webp",
   "system": {
     "slot": "pack",
     "weight": 2,

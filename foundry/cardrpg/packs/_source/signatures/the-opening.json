@@ -8,6 +8,7 @@
   },
   "name": "The Opening",
   "type": "feature",
+  "img": "systems/cardrpg/art/signatures/shade/the-opening.webp",
   "system": {
     "advantage": {
       "vsOpening": true

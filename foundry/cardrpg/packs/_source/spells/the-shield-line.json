@@ -8,6 +8,7 @@
   },
   "name": "The Shield Line",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/the-shield-line.webp",
   "system": {
     "strength": 2,
     "source": "Vax",

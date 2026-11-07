@@ -8,6 +8,7 @@
   },
   "name": "Cleave to the Bone",
   "type": "feature",
+  "img": "systems/cardrpg/art/signatures/strength/cleave-to-the-bone.webp",
   "system": {
     "text": "For you, the Wound threshold is 4, not 5."
   }

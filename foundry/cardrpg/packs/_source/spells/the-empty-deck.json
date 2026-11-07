@@ -8,6 +8,7 @@
   },
   "name": "The Empty Deck",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-empty-deck.webp",
   "system": {
     "strength": 4,
     "source": "Asceticism",

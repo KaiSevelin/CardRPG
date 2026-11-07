@@ -8,6 +8,7 @@
   },
   "name": "Blade Venom",
   "type": "item",
+  "img": "systems/cardrpg/art/items/blade-venom.webp",
   "system": {
     "slot": "belt",
     "tags": [

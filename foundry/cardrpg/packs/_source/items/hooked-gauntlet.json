@@ -8,6 +8,7 @@
   },
   "name": "Hooked Gauntlet",
   "type": "item",
+  "img": "systems/cardrpg/art/items/hooked-gauntlet.webp",
   "system": {
     "slot": "hands",
     "hands": 1,

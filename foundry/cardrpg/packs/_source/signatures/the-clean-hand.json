@@ -8,6 +8,7 @@
   },
   "name": "The Clean Hand",
   "type": "spell",
+  "img": "systems/cardrpg/art/signatures/faith/the-clean-hand.webp",
   "system": {
     "strength": 2,
     "source": "The Eternal God",

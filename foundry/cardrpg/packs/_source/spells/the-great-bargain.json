@@ -8,6 +8,7 @@
   },
   "name": "The Great Bargain",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-great-bargain.webp",
   "system": {
     "strength": 5,
     "source": "Spiritualism",

@@ -8,6 +8,7 @@
   },
   "name": "Bottle of Borrowed Pain",
   "type": "item",
+  "img": "systems/cardrpg/art/items/bottle-of-borrowed-pain.webp",
   "system": {
     "slot": "belt",
     "fits": [

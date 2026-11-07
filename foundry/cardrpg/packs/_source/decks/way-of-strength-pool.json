@@ -8,6 +8,7 @@
   },
   "name": "Way of Strength — Pool",
   "type": "deck",
+  "img": "systems/cardrpg/art/backs/action.webp",
   "cards": [
     {
       "_id": "1IRsyVGzZdooOYcS",
@@ -23,9 +24,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Shoulder Check"
+          "name": "Shoulder Check",
+          "img": "systems/cardrpg/art/cards/strength/shoulder-check.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -57,9 +62,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Shield Bash"
+          "name": "Shield Bash",
+          "img": "systems/cardrpg/art/cards/strength/shield-bash.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -91,9 +100,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Hammerblow"
+          "name": "Hammerblow",
+          "img": "systems/cardrpg/art/cards/strength/hammerblow.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -128,9 +141,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Sweep the Leg"
+          "name": "Sweep the Leg",
+          "img": "systems/cardrpg/art/cards/strength/sweep-the-leg.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -169,9 +186,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Overbear"
+          "name": "Overbear",
+          "img": "systems/cardrpg/art/cards/strength/overbear.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -209,9 +230,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Shield Wall"
+          "name": "Shield Wall",
+          "img": "systems/cardrpg/art/cards/strength/shield-wall.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -246,9 +271,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Two-Hand It"
+          "name": "Two-Hand It",
+          "img": "systems/cardrpg/art/cards/strength/two-hand-it.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -282,9 +311,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Heave"
+          "name": "Heave",
+          "img": "systems/cardrpg/art/cards/strength/heave.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -316,9 +349,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Armoured Advance"
+          "name": "Armoured Advance",
+          "img": "systems/cardrpg/art/cards/strength/armoured-advance.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -351,9 +388,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Pull Them Down"
+          "name": "Pull Them Down",
+          "img": "systems/cardrpg/art/cards/strength/pull-them-down.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -385,9 +426,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Beat the Blade"
+          "name": "Beat the Blade",
+          "img": "systems/cardrpg/art/cards/strength/beat-the-blade.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -422,9 +467,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Roar"
+          "name": "Roar",
+          "img": "systems/cardrpg/art/cards/strength/roar.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -463,9 +512,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Walk It Off"
+          "name": "Walk It Off",
+          "img": "systems/cardrpg/art/cards/strength/walk-it-off.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {

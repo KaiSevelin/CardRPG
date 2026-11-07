@@ -8,6 +8,7 @@
   },
   "name": "What Grows Out of Us",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/what-grows-out-of-us.webp",
   "system": {
     "strength": 5,
     "source": "Brendan",

@@ -8,6 +8,7 @@
   },
   "name": "The Long Preparation",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-long-preparation.webp",
   "system": {
     "strength": 1,
     "source": "Necromancy",

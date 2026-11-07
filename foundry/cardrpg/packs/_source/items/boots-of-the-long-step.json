@@ -8,6 +8,7 @@
   },
   "name": "Boots of the Long Step",
   "type": "item",
+  "img": "systems/cardrpg/art/items/boots-of-the-long-step.webp",
   "system": {
     "slot": "feet",
     "weight": 1,

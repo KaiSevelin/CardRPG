@@ -8,6 +8,7 @@
   },
   "name": "The Kit",
   "type": "item",
+  "img": "systems/cardrpg/art/signatures/shade/the-kit.webp",
   "system": {
     "slot": "pack",
     "weight": 3,

@@ -8,6 +8,7 @@
   },
   "name": "Matchlock Musket",
   "type": "item",
+  "img": "systems/cardrpg/art/items/matchlock-musket.webp",
   "system": {
     "ammo": "firearm",
     "slot": "hands",

@@ -8,6 +8,7 @@
   },
   "name": "Shade",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/shade.webp",
   "system": {
     "health": {
       "value": 10,
@@ -38,6 +39,7 @@
       },
       "name": "Grave Candle",
       "type": "item",
+      "img": "systems/cardrpg/art/items/npc/grave-candle.webp",
       "system": {
         "slot": "hands",
         "hands": 1,
@@ -63,6 +65,9 @@
     "name": "Shade",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/shade.webp"
+    }
   }
 }

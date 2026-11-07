@@ -8,6 +8,7 @@
   },
   "name": "Familiar",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/familiar.webp",
   "system": {
     "health": {
       "value": 6,
@@ -37,6 +38,7 @@
       },
       "name": "Nip",
       "type": "item",
+      "img": "systems/cardrpg/art/items/natural/nip.webp",
       "system": {
         "slot": "hands",
         "hands": 0,
@@ -62,6 +64,9 @@
     "name": "Familiar",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/familiar.webp"
+    }
   }
 }

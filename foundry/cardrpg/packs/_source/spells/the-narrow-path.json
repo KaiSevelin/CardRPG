@@ -8,6 +8,7 @@
   },
   "name": "The Narrow Path",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/the-narrow-path.webp",
   "system": {
     "strength": 1,
     "source": "The Eternal God",

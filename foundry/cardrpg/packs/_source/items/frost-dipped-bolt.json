@@ -8,6 +8,7 @@
   },
   "name": "Frost-dipped Bolt",
   "type": "item",
+  "img": "systems/cardrpg/art/items/frost-dipped-bolt.webp",
   "system": {
     "slot": "belt",
     "tags": [

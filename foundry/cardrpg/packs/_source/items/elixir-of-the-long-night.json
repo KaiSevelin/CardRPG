@@ -8,6 +8,7 @@
   },
   "name": "Elixir of the Long Night",
   "type": "item",
+  "img": "systems/cardrpg/art/items/elixir-of-the-long-night.webp",
   "system": {
     "slot": "belt",
     "fits": [

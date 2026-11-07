@@ -8,6 +8,7 @@
   },
   "name": "Loaded Before the Bell",
   "type": "feature",
+  "img": "systems/cardrpg/art/signatures/strength/loaded-before-the-bell.webp",
   "system": {
     "text": "You begin every combat already loaded, and the first shot of a fight is +2."
   }

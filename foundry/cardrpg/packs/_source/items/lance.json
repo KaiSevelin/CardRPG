@@ -8,6 +8,7 @@
   },
   "name": "Lance",
   "type": "item",
+  "img": "systems/cardrpg/art/items/lance.webp",
   "system": {
     "slot": "hands",
     "hands": 1,

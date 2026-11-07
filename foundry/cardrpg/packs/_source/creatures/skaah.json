@@ -8,6 +8,7 @@
   },
   "name": "Skaah",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/skaah.webp",
   "system": {
     "health": {
       "value": 40,
@@ -38,6 +39,7 @@
       },
       "name": "Nip",
       "type": "item",
+      "img": "systems/cardrpg/art/items/natural/nip.webp",
       "system": {
         "slot": "hands",
         "hands": 0,
@@ -63,6 +65,9 @@
     "name": "Skaah",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/skaah.webp"
+    }
   }
 }

@@ -8,6 +8,7 @@
   },
   "name": "Marked Arrowhead",
   "type": "item",
+  "img": "systems/cardrpg/art/items/marked-arrowhead.webp",
   "system": {
     "slot": "belt",
     "weight": 0,

@@ -8,6 +8,7 @@
   },
   "name": "Mole Man",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/mole-man.webp",
   "system": {
     "health": {
       "value": 8,
@@ -38,6 +39,7 @@
       },
       "name": "Mole Pick",
       "type": "item",
+      "img": "systems/cardrpg/art/items/npc/mole-pick.webp",
       "system": {
         "slot": "hands",
         "hands": 1,
@@ -64,6 +66,9 @@
     "name": "Mole Man",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/mole-man.webp"
+    }
   }
 }

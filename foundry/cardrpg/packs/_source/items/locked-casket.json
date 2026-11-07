@@ -8,6 +8,7 @@
   },
   "name": "Locked Casket",
   "type": "item",
+  "img": "systems/cardrpg/art/items/locked-casket.webp",
   "system": {
     "slot": "pack",
     "weight": 3,

@@ -8,6 +8,7 @@
   },
   "name": "Tarnkappe",
   "type": "item",
+  "img": "systems/cardrpg/art/items/npc/tarnkappe.webp",
   "system": {
     "slot": "head",
     "weight": 0,

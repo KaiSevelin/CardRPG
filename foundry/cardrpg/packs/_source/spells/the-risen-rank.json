@@ -8,6 +8,7 @@
   },
   "name": "The Risen Rank",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-risen-rank.webp",
   "system": {
     "strength": 4,
     "source": "Necromancy",

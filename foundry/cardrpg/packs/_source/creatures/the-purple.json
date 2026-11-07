@@ -8,6 +8,7 @@
   },
   "name": "The Purple",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/the-purple.webp",
   "system": {
     "health": {
       "value": 12,
@@ -39,6 +40,7 @@
       },
       "name": "Crossbow",
       "type": "item",
+      "img": "systems/cardrpg/art/items/crossbow.webp",
       "system": {
         "ammo": "crossbow",
         "slot": "hands",
@@ -74,6 +76,7 @@
       },
       "name": "Blade Venom",
       "type": "item",
+      "img": "systems/cardrpg/art/items/blade-venom.webp",
       "system": {
         "slot": "belt",
         "tags": [
@@ -98,6 +101,7 @@
       },
       "name": "Serpent's Milk",
       "type": "item",
+      "img": "systems/cardrpg/art/items/serpents-milk.webp",
       "system": {
         "slot": "belt",
         "tags": [
@@ -118,6 +122,9 @@
     "name": "The Purple",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/the-purple.webp"
+    }
   }
 }

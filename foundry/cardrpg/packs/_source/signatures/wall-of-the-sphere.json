@@ -8,6 +8,7 @@
   },
   "name": "Wall of the Sphere",
   "type": "spell",
+  "img": "systems/cardrpg/art/signatures/mind/wall-of-the-sphere.webp",
   "system": {
     "strength": 2,
     "source": "Elemental Magic",

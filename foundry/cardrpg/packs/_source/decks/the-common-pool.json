@@ -8,6 +8,7 @@
   },
   "name": "The Common Pool",
   "type": "deck",
+  "img": "systems/cardrpg/art/backs/action.webp",
   "cards": [
     {
       "_id": "gPbLOFpCgNu3SFZB",
@@ -23,9 +24,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Off-Hand Blow"
+          "name": "Off-Hand Blow",
+          "img": "systems/cardrpg/art/cards/common/off-hand-blow.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -56,9 +61,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Measure"
+          "name": "Measure",
+          "img": "systems/cardrpg/art/cards/common/measure.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -91,9 +100,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Hold the Line"
+          "name": "Hold the Line",
+          "img": "systems/cardrpg/art/cards/common/hold-the-line.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -124,9 +137,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Press"
+          "name": "Press",
+          "img": "systems/cardrpg/art/cards/common/press.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -161,9 +178,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Both Hands"
+          "name": "Both Hands",
+          "img": "systems/cardrpg/art/cards/common/both-hands.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -196,9 +217,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Dig In"
+          "name": "Dig In",
+          "img": "systems/cardrpg/art/cards/common/dig-in.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {

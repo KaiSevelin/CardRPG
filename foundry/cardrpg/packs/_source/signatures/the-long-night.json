@@ -8,6 +8,7 @@
   },
   "name": "The Long Night",
   "type": "spell",
+  "img": "systems/cardrpg/art/signatures/faith/the-long-night.webp",
   "system": {
     "strength": 3,
     "source": "The First",

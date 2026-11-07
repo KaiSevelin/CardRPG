@@ -8,6 +8,7 @@
   },
   "name": "Become the Shadow",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/become-the-shadow.webp",
   "system": {
     "strength": 5,
     "source": "Shadow Magic",

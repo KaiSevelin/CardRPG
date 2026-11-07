@@ -8,6 +8,7 @@
   },
   "name": "Drowned Bell",
   "type": "item",
+  "img": "systems/cardrpg/art/items/drowned-bell.webp",
   "system": {
     "slot": "belt",
     "weight": 2,

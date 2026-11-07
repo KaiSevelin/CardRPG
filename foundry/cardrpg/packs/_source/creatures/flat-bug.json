@@ -8,6 +8,7 @@
   },
   "name": "Flat Bug",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/flat-bug.webp",
   "system": {
     "health": {
       "value": 5,
@@ -38,6 +39,7 @@
       },
       "name": "Mandibles",
       "type": "item",
+      "img": "systems/cardrpg/art/items/natural/mandibles.webp",
       "system": {
         "slot": "hands",
         "hands": 0,
@@ -63,6 +65,9 @@
     "name": "Flat Bug",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/flat-bug.webp"
+    }
   }
 }

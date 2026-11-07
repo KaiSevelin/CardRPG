@@ -8,6 +8,7 @@
   },
   "name": "The Shadow Road",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-shadow-road.webp",
   "system": {
     "strength": 4,
     "source": "Shadow Magic",

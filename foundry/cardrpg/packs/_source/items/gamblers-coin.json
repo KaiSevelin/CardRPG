@@ -8,6 +8,7 @@
   },
   "name": "Gambler's Coin",
   "type": "item",
+  "img": "systems/cardrpg/art/items/gamblers-coin.webp",
   "system": {
     "slot": "fingers",
     "weight": 0,

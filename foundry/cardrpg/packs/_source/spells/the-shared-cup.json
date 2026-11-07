@@ -8,6 +8,7 @@
   },
   "name": "The Shared Cup",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-shared-cup.webp",
   "system": {
     "strength": 4,
     "source": "Poison",

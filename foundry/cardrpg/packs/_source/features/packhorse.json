@@ -8,6 +8,7 @@
   },
   "name": "Packhorse",
   "type": "feature",
+  "img": "systems/cardrpg/art/features/packhorse.webp",
   "system": {
     "grants": {
       "carry": 20

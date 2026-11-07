@@ -8,6 +8,7 @@
   },
   "name": "Warhammer",
   "type": "item",
+  "img": "systems/cardrpg/art/items/warhammer.webp",
   "system": {
     "slot": "hands",
     "fits": [

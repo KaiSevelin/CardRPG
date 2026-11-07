@@ -8,6 +8,7 @@
   },
   "name": "Potion of the Hare",
   "type": "item",
+  "img": "systems/cardrpg/art/items/potion-of-the-hare.webp",
   "system": {
     "slot": "belt",
     "fits": [

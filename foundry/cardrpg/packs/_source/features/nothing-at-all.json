@@ -8,6 +8,7 @@
   },
   "name": "Nothing At All",
   "type": "feature",
+  "img": "systems/cardrpg/art/spells/mind/nothing-at-all.webp",
   "system": {
     "strength": 5,
     "source": "Asceticism",

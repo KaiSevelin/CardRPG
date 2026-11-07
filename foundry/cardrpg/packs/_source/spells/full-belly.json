@@ -8,6 +8,7 @@
   },
   "name": "Full Belly",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/full-belly.webp",
   "system": {
     "strength": 1,
     "source": "Brendan",

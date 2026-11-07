@@ -8,6 +8,7 @@
   },
   "name": "Taste of the Rot",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/taste-of-the-rot.webp",
   "system": {
     "strength": 1,
     "source": "The Purple",

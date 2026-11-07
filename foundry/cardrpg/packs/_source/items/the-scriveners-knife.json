@@ -8,6 +8,7 @@
   },
   "name": "The Scrivener's Knife",
   "type": "item",
+  "img": "systems/cardrpg/art/items/the-scriveners-knife.webp",
   "system": {
     "slot": "pack",
     "weight": 0,

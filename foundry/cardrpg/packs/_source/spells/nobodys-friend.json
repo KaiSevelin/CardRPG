@@ -8,6 +8,7 @@
   },
   "name": "Nobody's Friend",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/nobodys-friend.webp",
   "system": {
     "strength": 2,
     "source": "Vulpet",

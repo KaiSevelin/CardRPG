@@ -8,6 +8,7 @@
   },
   "name": "Matchlock Pistol",
   "type": "item",
+  "img": "systems/cardrpg/art/items/matchlock-pistol.webp",
   "system": {
     "ammo": "firearm",
     "slot": "hands",

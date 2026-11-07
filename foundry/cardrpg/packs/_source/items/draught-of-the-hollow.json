@@ -8,6 +8,7 @@
   },
   "name": "Draught of the Hollow",
   "type": "item",
+  "img": "systems/cardrpg/art/items/draught-of-the-hollow.webp",
   "system": {
     "slot": "belt",
     "fits": [

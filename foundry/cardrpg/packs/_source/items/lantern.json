@@ -8,6 +8,7 @@
   },
   "name": "Lantern",
   "type": "item",
+  "img": "systems/cardrpg/art/items/lantern.webp",
   "system": {
     "slot": "hands",
     "hands": 1,

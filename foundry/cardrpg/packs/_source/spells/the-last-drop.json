@@ -8,6 +8,7 @@
   },
   "name": "The Last Drop",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-last-drop.webp",
   "system": {
     "strength": 5,
     "source": "Blood Magic",

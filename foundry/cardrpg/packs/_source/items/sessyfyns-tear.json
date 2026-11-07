@@ -8,6 +8,7 @@
   },
   "name": "Sessyfyn's Tear",
   "type": "item",
+  "img": "systems/cardrpg/art/items/sessyfyns-tear.webp",
   "system": {
     "slot": "neck",
     "weight": 0,

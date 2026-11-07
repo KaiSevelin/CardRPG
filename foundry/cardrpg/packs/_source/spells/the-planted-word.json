@@ -8,6 +8,7 @@
   },
   "name": "The Planted Word",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/the-planted-word.webp",
   "system": {
     "strength": 1,
     "source": "The Yellow",

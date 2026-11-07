@@ -8,6 +8,7 @@
   },
   "name": "Slitherer",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/slitherer.webp",
   "system": {
     "health": {
       "value": 7,
@@ -43,6 +44,7 @@
       },
       "name": "Mandibles",
       "type": "item",
+      "img": "systems/cardrpg/art/items/natural/mandibles.webp",
       "system": {
         "slot": "hands",
         "hands": 0,
@@ -68,6 +70,9 @@
     "name": "Slitherer",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/slitherer.webp"
+    }
   }
 }

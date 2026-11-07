@@ -8,6 +8,7 @@
   },
   "name": "Empty Hand",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/empty-hand.webp",
   "system": {
     "strength": 1,
     "source": "Asceticism",

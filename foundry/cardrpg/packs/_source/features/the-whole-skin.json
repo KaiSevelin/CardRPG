@@ -8,6 +8,7 @@
   },
   "name": "The Whole Skin",
   "type": "feature",
+  "img": "systems/cardrpg/art/spells/mind/the-whole-skin.webp",
   "system": {
     "strength": 5,
     "source": "Tattoo Magic",

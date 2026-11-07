@@ -8,6 +8,7 @@
   },
   "name": "Mole Man Digger",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/mole-man-digger.webp",
   "system": {
     "health": {
       "value": 8,
@@ -37,6 +38,7 @@
       },
       "name": "Mole Pick",
       "type": "item",
+      "img": "systems/cardrpg/art/items/npc/mole-pick.webp",
       "system": {
         "slot": "hands",
         "hands": 1,
@@ -63,6 +65,9 @@
     "name": "Mole Man Digger",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/mole-man-digger.webp"
+    }
   }
 }

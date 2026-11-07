@@ -8,6 +8,7 @@
   },
   "name": "Watcher",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/watcher.webp",
   "system": {
     "health": {
       "value": 26,
@@ -38,6 +39,7 @@
       },
       "name": "Demon's Sigil",
       "type": "item",
+      "img": "systems/cardrpg/art/items/npc/demons-sigil.webp",
       "system": {
         "slot": "hands",
         "hands": 1,
@@ -63,6 +65,9 @@
     "name": "Watcher",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/watcher.webp"
+    }
   }
 }

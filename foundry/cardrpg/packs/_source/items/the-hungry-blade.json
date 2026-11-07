@@ -8,6 +8,7 @@
   },
   "name": "The Hungry Blade",
   "type": "item",
+  "img": "systems/cardrpg/art/items/the-hungry-blade.webp",
   "system": {
     "slot": "hands",
     "fits": [

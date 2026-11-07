@@ -8,6 +8,7 @@
   },
   "name": "Wild Magic",
   "type": "deck",
+  "img": "systems/cardrpg/art/backs/wild.webp",
   "cards": [
     {
       "_id": "zaditDDT313z9XAk",
@@ -23,9 +24,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Echo"
+          "name": "Echo",
+          "img": "systems/cardrpg/art/cards/wild/echo.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [],
         "secondary": [],
@@ -48,9 +53,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Blink"
+          "name": "Blink",
+          "img": "systems/cardrpg/art/cards/wild/blink.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [],
         "secondary": [],
@@ -72,9 +81,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Veil"
+          "name": "Veil",
+          "img": "systems/cardrpg/art/cards/wild/veil.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [],
         "secondary": [],
@@ -96,9 +109,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Second Sight"
+          "name": "Second Sight",
+          "img": "systems/cardrpg/art/cards/wild/second-sight.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [],
         "secondary": [],
@@ -120,9 +137,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Backlash"
+          "name": "Backlash",
+          "img": "systems/cardrpg/art/cards/wild/backlash.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [],
         "secondary": [],
@@ -144,9 +165,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Misfire"
+          "name": "Misfire",
+          "img": "systems/cardrpg/art/cards/wild/misfire.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [],
         "secondary": [],
@@ -169,9 +194,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Residue"
+          "name": "Residue",
+          "img": "systems/cardrpg/art/cards/wild/residue.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [],
         "secondary": [],
@@ -193,9 +222,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Glare"
+          "name": "Glare",
+          "img": "systems/cardrpg/art/cards/wild/glare.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [],
         "secondary": [],
@@ -218,9 +251,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Open Door"
+          "name": "Open Door",
+          "img": "systems/cardrpg/art/cards/wild/open-door.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [],
         "secondary": [],
@@ -242,9 +279,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "The Long Step"
+          "name": "The Long Step",
+          "img": "systems/cardrpg/art/cards/wild/the-long-step.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [],
         "secondary": [],

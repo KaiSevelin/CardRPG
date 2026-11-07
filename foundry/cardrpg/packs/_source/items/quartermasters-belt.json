@@ -8,6 +8,7 @@
   },
   "name": "Quartermaster's Belt",
   "type": "item",
+  "img": "systems/cardrpg/art/items/quartermasters-belt.webp",
   "system": {
     "slot": "belt",
     "weight": 1,

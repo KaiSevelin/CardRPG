@@ -8,6 +8,7 @@
   },
   "name": "Burning Grasp",
   "type": "item",
+  "img": "systems/cardrpg/art/items/natural/burning-grasp.webp",
   "system": {
     "slot": "hands",
     "hands": 0,

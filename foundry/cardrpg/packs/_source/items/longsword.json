@@ -8,6 +8,7 @@
   },
   "name": "Longsword",
   "type": "item",
+  "img": "systems/cardrpg/art/items/longsword.webp",
   "system": {
     "slot": "hands",
     "fits": [

@@ -8,6 +8,7 @@
   },
   "name": "Ecstatic",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/ecstatic.webp",
   "system": {
     "health": {
       "value": 14,
@@ -40,6 +41,7 @@
       },
       "name": "Warhammer",
       "type": "item",
+      "img": "systems/cardrpg/art/items/warhammer.webp",
       "system": {
         "slot": "hands",
         "fits": [
@@ -70,6 +72,9 @@
     "name": "Ecstatic",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/ecstatic.webp"
+    }
   }
 }

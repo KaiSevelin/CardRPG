@@ -8,6 +8,7 @@
   },
   "name": "Oil-wrapped Shaft",
   "type": "item",
+  "img": "systems/cardrpg/art/items/oil-wrapped-shaft.webp",
   "system": {
     "slot": "belt",
     "tags": [

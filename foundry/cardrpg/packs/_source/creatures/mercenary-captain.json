@@ -8,6 +8,7 @@
   },
   "name": "Mercenary Captain",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/mercenary-captain.webp",
   "system": {
     "health": {
       "value": 18,
@@ -40,6 +41,7 @@
       },
       "name": "Greatsword",
       "type": "item",
+      "img": "systems/cardrpg/art/items/greatsword.webp",
       "system": {
         "slot": "hands",
         "hands": 2,
@@ -69,6 +71,7 @@
       },
       "name": "Brigandine",
       "type": "item",
+      "img": "systems/cardrpg/art/items/brigandine.webp",
       "system": {
         "slot": "body",
         "tags": [
@@ -97,6 +100,7 @@
       },
       "name": "Great Helm",
       "type": "item",
+      "img": "systems/cardrpg/art/items/great-helm.webp",
       "system": {
         "slot": "head",
         "tags": [
@@ -118,6 +122,9 @@
     "name": "Mercenary Captain",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/mercenary-captain.webp"
+    }
   }
 }

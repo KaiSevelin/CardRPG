@@ -8,6 +8,7 @@
   },
   "name": "Goblin Spear",
   "type": "item",
+  "img": "systems/cardrpg/art/items/npc/goblin-spear.webp",
   "system": {
     "slot": "hands",
     "fits": [

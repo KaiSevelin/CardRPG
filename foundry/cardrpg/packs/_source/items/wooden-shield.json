@@ -8,6 +8,7 @@
   },
   "name": "Wooden Shield",
   "type": "item",
+  "img": "systems/cardrpg/art/items/wooden-shield.webp",
   "system": {
     "slot": "hands",
     "fits": [

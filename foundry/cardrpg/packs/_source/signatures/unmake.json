@@ -8,6 +8,7 @@
   },
   "name": "Unmake",
   "type": "spell",
+  "img": "systems/cardrpg/art/signatures/mind/unmake.webp",
   "system": {
     "strength": 2,
     "source": "Ward Magic",

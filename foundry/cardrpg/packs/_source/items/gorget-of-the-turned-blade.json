@@ -8,6 +8,7 @@
   },
   "name": "Gorget of the Turned Blade",
   "type": "item",
+  "img": "systems/cardrpg/art/items/gorget-of-the-turned-blade.webp",
   "system": {
     "slot": "neck",
     "weight": 1,

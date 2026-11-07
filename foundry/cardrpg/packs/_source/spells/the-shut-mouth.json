@@ -8,6 +8,7 @@
   },
   "name": "The Shut Mouth",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-shut-mouth.webp",
   "system": {
     "strength": 2,
     "source": "Ward Magic",

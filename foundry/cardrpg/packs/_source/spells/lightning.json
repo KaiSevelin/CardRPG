@@ -8,6 +8,7 @@
   },
   "name": "Lightning",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/elemental/lightning.webp",
   "system": {
     "strength": 2,
     "source": "Elemental Magic",

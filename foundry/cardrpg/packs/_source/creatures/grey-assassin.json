@@ -8,6 +8,7 @@
   },
   "name": "Grey Assassin",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/grey-assassin.webp",
   "system": {
     "health": {
       "value": 10,
@@ -40,6 +41,7 @@
       },
       "name": "Balanced Dagger",
       "type": "item",
+      "img": "systems/cardrpg/art/items/balanced-dagger.webp",
       "system": {
         "slot": "hands",
         "fits": [
@@ -76,6 +78,7 @@
       },
       "name": "Blade Venom",
       "type": "item",
+      "img": "systems/cardrpg/art/items/blade-venom.webp",
       "system": {
         "slot": "belt",
         "tags": [
@@ -96,6 +99,9 @@
     "name": "Grey Assassin",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/grey-assassin.webp"
+    }
   }
 }

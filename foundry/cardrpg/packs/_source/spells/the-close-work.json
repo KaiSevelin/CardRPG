@@ -8,6 +8,7 @@
   },
   "name": "The Close Work",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/the-close-work.webp",
   "system": {
     "strength": 2,
     "source": "The Grey",

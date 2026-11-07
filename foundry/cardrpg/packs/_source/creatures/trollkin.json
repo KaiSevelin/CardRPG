@@ -8,6 +8,7 @@
   },
   "name": "Trollkin",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/trollkin.webp",
   "system": {
     "health": {
       "value": 10,
@@ -37,6 +38,7 @@
       },
       "name": "Troll Club",
       "type": "item",
+      "img": "systems/cardrpg/art/items/npc/troll-club.webp",
       "system": {
         "slot": "hands",
         "fits": [
@@ -65,6 +67,9 @@
     "name": "Trollkin",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/trollkin.webp"
+    }
   }
 }

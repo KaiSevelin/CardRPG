@@ -8,6 +8,7 @@
   },
   "name": "The Second Heartbeat",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-second-heartbeat.webp",
   "system": {
     "strength": 3,
     "source": "Blood Magic",

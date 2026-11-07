@@ -8,6 +8,7 @@
   },
   "name": "The Turning Tide",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/the-turning-tide.webp",
   "system": {
     "strength": 2,
     "source": "Sessyfyn",

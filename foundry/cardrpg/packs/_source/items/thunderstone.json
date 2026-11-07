@@ -8,6 +8,7 @@
   },
   "name": "Thunderstone",
   "type": "item",
+  "img": "systems/cardrpg/art/items/thunderstone.webp",
   "system": {
     "slot": "pack",
     "weight": 1,

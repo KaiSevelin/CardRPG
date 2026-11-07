@@ -8,6 +8,7 @@
   },
   "name": "Grave Candle",
   "type": "item",
+  "img": "systems/cardrpg/art/items/npc/grave-candle.webp",
   "system": {
     "slot": "hands",
     "hands": 1,

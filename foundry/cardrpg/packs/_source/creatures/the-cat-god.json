@@ -8,6 +8,7 @@
   },
   "name": "The Cat God",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/the-cat-god.webp",
   "system": {
     "health": {
       "value": 55,
@@ -41,6 +42,7 @@
       },
       "name": "Grasping Claws",
       "type": "item",
+      "img": "systems/cardrpg/art/items/natural/grasping-claws.webp",
       "system": {
         "slot": "hands",
         "hands": 0,
@@ -67,6 +69,9 @@
     "name": "The Cat God",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/the-cat-god.webp"
+    }
   }
 }

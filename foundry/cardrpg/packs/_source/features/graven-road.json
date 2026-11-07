@@ -8,6 +8,7 @@
   },
   "name": "Graven Road",
   "type": "feature",
+  "img": "systems/cardrpg/art/spells/mind/graven-road.webp",
   "system": {
     "strength": 1,
     "source": "Tattoo Magic",

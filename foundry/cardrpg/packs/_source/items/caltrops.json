@@ -8,6 +8,7 @@
   },
   "name": "Caltrops",
   "type": "item",
+  "img": "systems/cardrpg/art/items/caltrops.webp",
   "system": {
     "slot": "pack",
     "tags": [

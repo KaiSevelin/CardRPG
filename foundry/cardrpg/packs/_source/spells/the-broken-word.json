@@ -8,6 +8,7 @@
   },
   "name": "The Broken Word",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-broken-word.webp",
   "system": {
     "strength": 5,
     "source": "Ward Magic",

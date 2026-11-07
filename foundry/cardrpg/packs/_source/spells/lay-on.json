@@ -8,6 +8,7 @@
   },
   "name": "Lay On",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/lay-on.webp",
   "system": {
     "strength": 1,
     "source": "The Eternal Spirit",

@@ -8,6 +8,7 @@
   },
   "name": "Acid Spray",
   "type": "item",
+  "img": "systems/cardrpg/art/items/natural/acid-spray.webp",
   "system": {
     "slot": "hands",
     "hands": 0,

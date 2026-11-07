@@ -8,6 +8,7 @@
   },
   "name": "The Nine Names",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-nine-names.webp",
   "system": {
     "strength": 1,
     "source": "Spiritualism",

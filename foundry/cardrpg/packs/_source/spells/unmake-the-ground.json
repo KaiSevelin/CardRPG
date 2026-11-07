@@ -8,6 +8,7 @@
   },
   "name": "Unmake the Ground",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/unmake-the-ground.webp",
   "system": {
     "strength": 5,
     "source": "Elemental Magic",

@@ -8,6 +8,7 @@
   },
   "name": "Salt Baron",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/salt-baron.webp",
   "system": {
     "health": {
       "value": 16,
@@ -42,6 +43,7 @@
       },
       "name": "Matchlock Pistol",
       "type": "item",
+      "img": "systems/cardrpg/art/items/matchlock-pistol.webp",
       "system": {
         "ammo": "firearm",
         "slot": "hands",
@@ -77,6 +79,7 @@
       },
       "name": "Arming Sword",
       "type": "item",
+      "img": "systems/cardrpg/art/items/arming-sword.webp",
       "system": {
         "slot": "hands",
         "fits": [
@@ -111,6 +114,7 @@
       },
       "name": "Fine Clothes",
       "type": "item",
+      "img": "systems/cardrpg/art/items/fine-clothes.webp",
       "system": {
         "slot": "body",
         "weight": 2,
@@ -132,6 +136,9 @@
     "name": "Salt Baron",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/salt-baron.webp"
+    }
   }
 }

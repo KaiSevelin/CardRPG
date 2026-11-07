@@ -8,6 +8,7 @@
   },
   "name": "The Black Lantern",
   "type": "item",
+  "img": "systems/cardrpg/art/items/the-black-lantern.webp",
   "system": {
     "slot": "hands",
     "hands": 1,

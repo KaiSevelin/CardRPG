@@ -8,6 +8,7 @@
   },
   "name": "Trident",
   "type": "item",
+  "img": "systems/cardrpg/art/items/trident.webp",
   "system": {
     "slot": "hands",
     "fits": [

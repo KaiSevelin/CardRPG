@@ -8,6 +8,7 @@
   },
   "name": "The Unseen",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/the-unseen.webp",
   "system": {
     "health": {
       "value": 12,
@@ -38,6 +39,7 @@
       },
       "name": "Dagger",
       "type": "item",
+      "img": "systems/cardrpg/art/items/dagger.webp",
       "system": {
         "slot": "hands",
         "fits": [
@@ -73,6 +75,7 @@
       },
       "name": "Leather Armor",
       "type": "item",
+      "img": "systems/cardrpg/art/items/leather-armor.webp",
       "system": {
         "slot": "body",
         "hands": 1,
@@ -93,6 +96,9 @@
     "name": "The Unseen",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/the-unseen.webp"
+    }
   }
 }

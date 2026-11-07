@@ -8,6 +8,7 @@
   },
   "name": "Surgeon's Pin",
   "type": "item",
+  "img": "systems/cardrpg/art/items/surgeons-pin.webp",
   "system": {
     "slot": "neck",
     "weight": 0,

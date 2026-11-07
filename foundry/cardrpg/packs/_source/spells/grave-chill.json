@@ -8,6 +8,7 @@
   },
   "name": "Grave Chill",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/grave-chill.webp",
   "system": {
     "strength": 2,
     "source": "Necromancy",

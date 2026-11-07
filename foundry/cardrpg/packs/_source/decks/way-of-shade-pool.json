@@ -8,6 +8,7 @@
   },
   "name": "Way of Shade — Pool",
   "type": "deck",
+  "img": "systems/cardrpg/art/backs/action.webp",
   "cards": [
     {
       "_id": "6MZL4SsIQCxDU9mQ",
@@ -23,9 +24,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Call the Shot"
+          "name": "Call the Shot",
+          "img": "systems/cardrpg/art/cards/shade/call-the-shot.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -57,9 +62,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Between the Plates"
+          "name": "Between the Plates",
+          "img": "systems/cardrpg/art/cards/shade/between-the-plates.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -94,9 +103,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Take the Shot"
+          "name": "Take the Shot",
+          "img": "systems/cardrpg/art/cards/shade/take-the-shot.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -135,9 +148,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Pin the Shadow"
+          "name": "Pin the Shadow",
+          "img": "systems/cardrpg/art/cards/shade/pin-the-shadow.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -179,9 +196,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Cut and Run"
+          "name": "Cut and Run",
+          "img": "systems/cardrpg/art/cards/shade/cut-and-run.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -216,9 +237,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Light Feet"
+          "name": "Light Feet",
+          "img": "systems/cardrpg/art/cards/shade/light-feet.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -251,9 +276,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Slip the Knot"
+          "name": "Slip the Knot",
+          "img": "systems/cardrpg/art/cards/shade/slip-the-knot.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -285,9 +314,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Second Knife"
+          "name": "Second Knife",
+          "img": "systems/cardrpg/art/cards/shade/second-knife.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -325,9 +358,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Mock"
+          "name": "Mock",
+          "img": "systems/cardrpg/art/cards/shade/mock.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -361,9 +398,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Sleight"
+          "name": "Sleight",
+          "img": "systems/cardrpg/art/cards/shade/sleight.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -396,9 +437,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Vanish"
+          "name": "Vanish",
+          "img": "systems/cardrpg/art/cards/shade/vanish.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -435,9 +480,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Smoke and Go"
+          "name": "Smoke and Go",
+          "img": "systems/cardrpg/art/cards/shade/smoke-and-go.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {

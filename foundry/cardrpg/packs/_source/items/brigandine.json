@@ -8,6 +8,7 @@
   },
   "name": "Brigandine",
   "type": "item",
+  "img": "systems/cardrpg/art/items/brigandine.webp",
   "system": {
     "slot": "body",
     "tags": [

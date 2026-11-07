@@ -8,6 +8,7 @@
   },
   "name": "Beggar's Bowl",
   "type": "item",
+  "img": "systems/cardrpg/art/items/beggars-bowl.webp",
   "system": {
     "slot": "pack",
     "weight": 1,

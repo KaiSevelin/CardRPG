@@ -8,6 +8,7 @@
   },
   "name": "Black Lotus",
   "type": "item",
+  "img": "systems/cardrpg/art/items/black-lotus.webp",
   "system": {
     "slot": "belt",
     "tags": [

@@ -8,6 +8,7 @@
   },
   "name": "The Face of a Friend",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-face-of-a-friend.webp",
   "system": {
     "strength": 3,
     "source": "Glamour",

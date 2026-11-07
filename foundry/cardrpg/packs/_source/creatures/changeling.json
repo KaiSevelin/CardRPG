@@ -8,6 +8,7 @@
   },
   "name": "Changeling",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/changeling.webp",
   "system": {
     "health": {
       "value": 8,
@@ -37,6 +38,7 @@
       },
       "name": "Nip",
       "type": "item",
+      "img": "systems/cardrpg/art/items/natural/nip.webp",
       "system": {
         "slot": "hands",
         "hands": 0,
@@ -62,6 +64,9 @@
     "name": "Changeling",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/changeling.webp"
+    }
   }
 }

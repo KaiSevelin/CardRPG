@@ -8,6 +8,7 @@
   },
   "name": "Helm of the Watchful",
   "type": "item",
+  "img": "systems/cardrpg/art/items/helm-of-the-watchful.webp",
   "system": {
     "slot": "head",
     "tags": [

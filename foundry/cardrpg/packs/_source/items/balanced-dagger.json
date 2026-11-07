@@ -8,6 +8,7 @@
   },
   "name": "Balanced Dagger",
   "type": "item",
+  "img": "systems/cardrpg/art/items/balanced-dagger.webp",
   "system": {
     "slot": "hands",
     "fits": [

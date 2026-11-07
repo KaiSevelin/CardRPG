@@ -8,6 +8,7 @@
   },
   "name": "Plate",
   "type": "item",
+  "img": "systems/cardrpg/art/items/plate.webp",
   "system": {
     "slot": "body",
     "tags": [

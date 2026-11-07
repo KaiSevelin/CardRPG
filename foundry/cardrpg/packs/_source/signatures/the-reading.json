@@ -8,6 +8,7 @@
   },
   "name": "The Reading",
   "type": "spell",
+  "img": "systems/cardrpg/art/signatures/mind/the-reading.webp",
   "system": {
     "strength": 2,
     "source": "Divination",

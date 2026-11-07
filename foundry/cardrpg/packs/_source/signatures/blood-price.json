@@ -8,6 +8,7 @@
   },
   "name": "Blood Price",
   "type": "spell",
+  "img": "systems/cardrpg/art/signatures/mind/blood-price.webp",
   "system": {
     "strength": 2,
     "source": "Blood Magic",

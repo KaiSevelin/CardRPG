@@ -8,6 +8,7 @@
   },
   "name": "Smuggler",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/smuggler.webp",
   "system": {
     "health": {
       "value": 10,
@@ -39,6 +40,7 @@
       },
       "name": "Crossbow",
       "type": "item",
+      "img": "systems/cardrpg/art/items/crossbow.webp",
       "system": {
         "ammo": "crossbow",
         "slot": "hands",
@@ -74,6 +76,7 @@
       },
       "name": "Leather Armor",
       "type": "item",
+      "img": "systems/cardrpg/art/items/leather-armor.webp",
       "system": {
         "slot": "body",
         "hands": 1,
@@ -94,6 +97,9 @@
     "name": "Smuggler",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/smuggler.webp"
+    }
   }
 }

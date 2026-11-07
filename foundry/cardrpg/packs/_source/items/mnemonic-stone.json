@@ -8,6 +8,7 @@
   },
   "name": "Mnemonic Stone",
   "type": "item",
+  "img": "systems/cardrpg/art/items/mnemonic-stone.webp",
   "system": {
     "slot": "fingers",
     "weight": 0,

@@ -8,6 +8,7 @@
   },
   "name": "Keres",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/keres.webp",
   "system": {
     "health": {
       "value": 8,
@@ -39,6 +40,7 @@
       },
       "name": "Claws",
       "type": "item",
+      "img": "systems/cardrpg/art/items/natural/claws.webp",
       "system": {
         "slot": "hands",
         "hands": 0,
@@ -64,6 +66,9 @@
     "name": "Keres",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/keres.webp"
+    }
   }
 }

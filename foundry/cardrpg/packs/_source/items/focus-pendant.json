@@ -8,6 +8,7 @@
   },
   "name": "Focus Pendant",
   "type": "item",
+  "img": "systems/cardrpg/art/items/focus-pendant.webp",
   "system": {
     "slot": "neck",
     "weight": 0,

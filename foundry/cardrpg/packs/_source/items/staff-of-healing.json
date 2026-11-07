@@ -8,6 +8,7 @@
   },
   "name": "Staff of Healing",
   "type": "item",
+  "img": "systems/cardrpg/art/items/staff-of-healing.webp",
   "system": {
     "slot": "hands",
     "fits": [

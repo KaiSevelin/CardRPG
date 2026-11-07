@@ -8,6 +8,7 @@
   },
   "name": "Breath for the Dying",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/breath-for-the-dying.webp",
   "system": {
     "strength": 5,
     "source": "The Eternal Spirit",

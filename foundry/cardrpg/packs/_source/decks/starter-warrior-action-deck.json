@@ -8,6 +8,7 @@
   },
   "name": "Starter Warrior — Action Deck",
   "type": "deck",
+  "img": "systems/cardrpg/art/backs/action.webp",
   "cards": [
     {
       "_id": "VWsALCK66zdcvdVm",
@@ -23,9 +24,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Strike"
+          "name": "Strike",
+          "img": "systems/cardrpg/art/cards/starter/strike.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -56,9 +61,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Strike"
+          "name": "Strike",
+          "img": "systems/cardrpg/art/cards/starter/strike.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -89,9 +98,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Strike"
+          "name": "Strike",
+          "img": "systems/cardrpg/art/cards/starter/strike.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -122,9 +135,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Heavy Swing"
+          "name": "Heavy Swing",
+          "img": "systems/cardrpg/art/cards/starter/heavy-swing.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -157,9 +174,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Heavy Swing"
+          "name": "Heavy Swing",
+          "img": "systems/cardrpg/art/cards/starter/heavy-swing.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -192,9 +213,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Lunge"
+          "name": "Lunge",
+          "img": "systems/cardrpg/art/cards/starter/lunge.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -229,9 +254,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Shield Up"
+          "name": "Shield Up",
+          "img": "systems/cardrpg/art/cards/starter/shield-up.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -263,9 +292,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Shield Up"
+          "name": "Shield Up",
+          "img": "systems/cardrpg/art/cards/starter/shield-up.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -297,9 +330,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Advance"
+          "name": "Advance",
+          "img": "systems/cardrpg/art/cards/starter/advance.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -331,9 +368,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Advance"
+          "name": "Advance",
+          "img": "systems/cardrpg/art/cards/starter/advance.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -365,9 +406,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Draw Steel"
+          "name": "Draw Steel",
+          "img": "systems/cardrpg/art/cards/starter/draw-steel.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -397,9 +442,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Draw Steel"
+          "name": "Draw Steel",
+          "img": "systems/cardrpg/art/cards/starter/draw-steel.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -429,9 +478,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Quick Hands"
+          "name": "Quick Hands",
+          "img": "systems/cardrpg/art/cards/starter/quick-hands.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -461,9 +514,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Second Wind"
+          "name": "Second Wind",
+          "img": "systems/cardrpg/art/cards/starter/second-wind.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -498,9 +555,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Taunt"
+          "name": "Taunt",
+          "img": "systems/cardrpg/art/cards/starter/taunt.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -534,9 +595,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Weapon Swap"
+          "name": "Weapon Swap",
+          "img": "systems/cardrpg/art/cards/starter/weapon-swap.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {

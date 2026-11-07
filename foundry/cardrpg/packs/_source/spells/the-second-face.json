@@ -8,6 +8,7 @@
   },
   "name": "The Second Face",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/the-second-face.webp",
   "system": {
     "strength": 1,
     "source": "Fagar",

@@ -8,6 +8,7 @@
   },
   "name": "A Word Withdrawn",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/a-word-withdrawn.webp",
   "system": {
     "strength": 1,
     "source": "The Eternal Spirit",

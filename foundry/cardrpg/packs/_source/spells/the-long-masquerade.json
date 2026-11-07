@@ -8,6 +8,7 @@
   },
   "name": "The Long Masquerade",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-long-masquerade.webp",
   "system": {
     "strength": 5,
     "source": "Glamour",

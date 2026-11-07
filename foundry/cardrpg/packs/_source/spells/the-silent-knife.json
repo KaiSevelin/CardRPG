@@ -8,6 +8,7 @@
   },
   "name": "The Silent Knife",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/the-silent-knife.webp",
   "system": {
     "strength": 5,
     "source": "The Grey",

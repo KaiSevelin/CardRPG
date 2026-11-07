@@ -8,6 +8,7 @@
   },
   "name": "The Red Hour",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-red-hour.webp",
   "system": {
     "strength": 4,
     "source": "Blood Magic",

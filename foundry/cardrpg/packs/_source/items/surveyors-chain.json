@@ -8,6 +8,7 @@
   },
   "name": "Surveyor's Chain",
   "type": "item",
+  "img": "systems/cardrpg/art/items/surveyors-chain.webp",
   "system": {
     "slot": "pack",
     "weight": 2,

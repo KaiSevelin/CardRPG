@@ -8,6 +8,7 @@
   },
   "name": "Call the Unquiet",
   "type": "spell",
+  "img": "systems/cardrpg/art/signatures/mind/call-the-unquiet.webp",
   "system": {
     "strength": 3,
     "source": "Necromancy",

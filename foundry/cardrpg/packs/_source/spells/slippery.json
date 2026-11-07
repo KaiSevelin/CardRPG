@@ -8,6 +8,7 @@
   },
   "name": "Slippery",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/slippery.webp",
   "system": {
     "strength": 1,
     "source": "Elemental Magic",

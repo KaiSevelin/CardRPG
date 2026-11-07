@@ -8,6 +8,7 @@
   },
   "name": "Steady the Hand",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/steady-the-hand.webp",
   "system": {
     "strength": 1,
     "source": "The Eternal God",

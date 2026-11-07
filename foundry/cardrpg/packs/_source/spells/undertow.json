@@ -8,6 +8,7 @@
   },
   "name": "Undertow",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/undertow.webp",
   "system": {
     "strength": 2,
     "source": "Sessyfyn",

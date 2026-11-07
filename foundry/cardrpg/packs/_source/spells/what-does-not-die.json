@@ -8,6 +8,7 @@
   },
   "name": "What Does Not Die",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/what-does-not-die.webp",
   "system": {
     "strength": 3,
     "source": "The First",

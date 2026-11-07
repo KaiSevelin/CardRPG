@@ -8,6 +8,7 @@
   },
   "name": "The Troll King",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/the-troll-king.webp",
   "system": {
     "health": {
       "value": 85,
@@ -40,6 +41,7 @@
       },
       "name": "Troll Fists",
       "type": "item",
+      "img": "systems/cardrpg/art/items/natural/troll-fists.webp",
       "system": {
         "slot": "hands",
         "hands": 0,
@@ -70,6 +72,7 @@
       },
       "name": "Thrown Stone",
       "type": "item",
+      "img": "systems/cardrpg/art/items/natural/thrown-stone.webp",
       "system": {
         "slot": "hands",
         "hands": 0,
@@ -97,6 +100,9 @@
     "name": "The Troll King",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/the-troll-king.webp"
+    }
   }
 }

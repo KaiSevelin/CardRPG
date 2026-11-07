@@ -8,6 +8,7 @@
   },
   "name": "Shortbow",
   "type": "item",
+  "img": "systems/cardrpg/art/items/shortbow.webp",
   "system": {
     "ammo": "bow",
     "slot": "hands",

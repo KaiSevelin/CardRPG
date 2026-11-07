@@ -8,6 +8,7 @@
   },
   "name": "Carved Idol",
   "type": "item",
+  "img": "systems/cardrpg/art/items/npc/carved-idol.webp",
   "system": {
     "slot": "hands",
     "hands": 1,

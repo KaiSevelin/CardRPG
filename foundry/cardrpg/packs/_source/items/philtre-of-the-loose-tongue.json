@@ -8,6 +8,7 @@
   },
   "name": "Philtre of the Loose Tongue",
   "type": "item",
+  "img": "systems/cardrpg/art/items/philtre-of-the-loose-tongue.webp",
   "system": {
     "slot": "belt",
     "fits": [

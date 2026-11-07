@@ -8,6 +8,7 @@
   },
   "name": "Great Axe",
   "type": "item",
+  "img": "systems/cardrpg/art/items/great-axe.webp",
   "system": {
     "slot": "hands",
     "hands": 2,

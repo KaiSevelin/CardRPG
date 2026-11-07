@@ -8,6 +8,7 @@
   },
   "name": "Pact Iron",
   "type": "item",
+  "img": "systems/cardrpg/art/items/pact-iron.webp",
   "system": {
     "slot": "fingers",
     "weight": 0,

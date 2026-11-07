@@ -8,6 +8,7 @@
   },
   "name": "Ink Spray",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/ink-spray.webp",
   "system": {
     "strength": 1,
     "source": "Glamour",

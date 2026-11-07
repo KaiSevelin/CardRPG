@@ -8,6 +8,7 @@
   },
   "name": "Gag of the Nine",
   "type": "item",
+  "img": "systems/cardrpg/art/items/gag-of-the-nine.webp",
   "system": {
     "slot": "neck",
     "weight": 0,

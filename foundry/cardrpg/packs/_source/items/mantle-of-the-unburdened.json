@@ -8,6 +8,7 @@
   },
   "name": "Mantle of the Unburdened",
   "type": "item",
+  "img": "systems/cardrpg/art/items/mantle-of-the-unburdened.webp",
   "system": {
     "slot": "cloak",
     "weight": 1,

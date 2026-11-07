@@ -8,6 +8,7 @@
   },
   "name": "Pilgrim's Token",
   "type": "item",
+  "img": "systems/cardrpg/art/items/pilgrims-token.webp",
   "system": {
     "slot": "neck",
     "weight": 0,

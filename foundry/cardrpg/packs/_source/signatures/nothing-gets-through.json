@@ -8,6 +8,7 @@
   },
   "name": "Nothing Gets Through",
   "type": "feature",
+  "img": "systems/cardrpg/art/signatures/strength/nothing-gets-through.webp",
   "system": {
     "armor": {
       "doubleWhenOverloaded": true

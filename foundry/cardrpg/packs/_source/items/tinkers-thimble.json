@@ -8,6 +8,7 @@
   },
   "name": "Tinker's Thimble",
   "type": "item",
+  "img": "systems/cardrpg/art/items/tinkers-thimble.webp",
   "system": {
     "slot": "fingers",
     "weight": 0,

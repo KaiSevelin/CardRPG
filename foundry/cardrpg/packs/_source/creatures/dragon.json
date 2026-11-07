@@ -8,6 +8,7 @@
   },
   "name": "Dragon",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/dragon.webp",
   "system": {
     "health": {
       "value": 50,
@@ -39,6 +40,7 @@
       },
       "name": "Dragon Jaws",
       "type": "item",
+      "img": "systems/cardrpg/art/items/natural/dragon-jaws.webp",
       "system": {
         "slot": "hands",
         "hands": 0,
@@ -70,6 +72,7 @@
       },
       "name": "Fire Spray",
       "type": "item",
+      "img": "systems/cardrpg/art/items/natural/fire-spray.webp",
       "system": {
         "slot": "hands",
         "hands": 0,
@@ -98,6 +101,9 @@
     "name": "Dragon",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/dragon.webp"
+    }
   }
 }

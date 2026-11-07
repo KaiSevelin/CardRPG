@@ -8,6 +8,7 @@
   },
   "name": "Nothing to Carry",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/nothing-to-carry.webp",
   "system": {
     "strength": 1,
     "source": "Asceticism",

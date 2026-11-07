@@ -8,6 +8,7 @@
   },
   "name": "Measure of the Debt",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/measure-of-the-debt.webp",
   "system": {
     "strength": 2,
     "source": "The First",

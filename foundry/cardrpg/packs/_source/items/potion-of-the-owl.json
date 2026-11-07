@@ -8,6 +8,7 @@
   },
   "name": "Potion of the Owl",
   "type": "item",
+  "img": "systems/cardrpg/art/items/potion-of-the-owl.webp",
   "system": {
     "slot": "belt",
     "fits": [

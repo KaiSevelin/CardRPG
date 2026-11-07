@@ -8,6 +8,7 @@
   },
   "name": "Screaming Shaft",
   "type": "item",
+  "img": "systems/cardrpg/art/items/screaming-shaft.webp",
   "system": {
     "slot": "belt",
     "tags": [

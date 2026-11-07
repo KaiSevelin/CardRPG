@@ -8,6 +8,7 @@
   },
   "name": "The Land Beneath",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/the-land-beneath.webp",
   "system": {
     "strength": 5,
     "source": "Vulpet",

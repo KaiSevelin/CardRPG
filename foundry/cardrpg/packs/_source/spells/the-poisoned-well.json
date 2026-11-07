@@ -8,6 +8,7 @@
   },
   "name": "The Poisoned Well",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/the-poisoned-well.webp",
   "system": {
     "strength": 4,
     "source": "The Purple",

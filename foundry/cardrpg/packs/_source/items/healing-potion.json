@@ -8,6 +8,7 @@
   },
   "name": "Healing Potion",
   "type": "item",
+  "img": "systems/cardrpg/art/items/healing-potion.webp",
   "system": {
     "slot": "belt",
     "fits": [

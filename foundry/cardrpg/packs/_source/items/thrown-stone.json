@@ -8,6 +8,7 @@
   },
   "name": "Thrown Stone",
   "type": "item",
+  "img": "systems/cardrpg/art/items/natural/thrown-stone.webp",
   "system": {
     "slot": "hands",
     "hands": 0,

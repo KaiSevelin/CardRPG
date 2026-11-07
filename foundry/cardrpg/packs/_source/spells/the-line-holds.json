@@ -8,6 +8,7 @@
   },
   "name": "The Line Holds",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/the-line-holds.webp",
   "system": {
     "strength": 4,
     "source": "Vax",

@@ -39,6 +39,8 @@ import { deckOf, allStacks, actionCardData } from "./decks.mjs";
  * by the offline validator, where Foundry's globals do not exist, and config.mjs fills this
  * object at module scope so an import is enough. */
 import { CARDRPG } from "./config.mjs";
+/* Where a picture lives, derived from the list that commissioned it rather than written down. */
+import { artPathOf } from "./art.mjs";
 /* The one shape a slate takes, shared with the setup routine rather than spelled twice. */
 import { slateData } from "./setup.mjs";
 
@@ -684,7 +686,21 @@ export async function takeNode(actor, id) {
  */
 export function slateFieldsOf(def) {
   const { kind, node, needs, pool, ...fields } = def;
-  return fields;
+  /*
+   * **And the picture, resolved here while the original entry is still in hand.**
+   *
+   * `art.mjs` derives a path from the list a piece is on, and it recognises the piece by being
+   * handed the very object content declared. This function's whole job is to make a NEW object
+   * out of that one, so everything downstream of it -- the pack builder, a node's grant, a
+   * resolver's source -- was asking about an object that is on no list.
+   *
+   * It worked for all but six pieces, because a name is enough when a name is unique, and it
+   * failed for exactly the six the book uses twice: *The Kit* is a Signature and an item, *The
+   * Long Step* is a Wild card and a formula. Three documents came out of the packs with no `img`.
+   * Resolving it at the one place the original is still available fixes all of them at once.
+   */
+  const art = fields.art || artPathOf(def);
+  return art ? { ...fields, art } : fields;
 }
 
 /**

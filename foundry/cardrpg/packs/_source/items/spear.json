@@ -8,6 +8,7 @@
   },
   "name": "Spear",
   "type": "item",
+  "img": "systems/cardrpg/art/items/spear.webp",
   "system": {
     "slot": "hands",
     "fits": [

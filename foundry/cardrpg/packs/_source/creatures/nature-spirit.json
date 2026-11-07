@@ -8,6 +8,7 @@
   },
   "name": "Nature Spirit",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/nature-spirit.webp",
   "system": {
     "health": {
       "value": 20,
@@ -38,6 +39,7 @@
       },
       "name": "Elf-Bolt",
       "type": "item",
+      "img": "systems/cardrpg/art/items/natural/elf-bolt.webp",
       "system": {
         "slot": "hands",
         "hands": 1,
@@ -64,6 +66,9 @@
     "name": "Nature Spirit",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/nature-spirit.webp"
+    }
   }
 }

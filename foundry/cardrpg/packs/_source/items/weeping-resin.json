@@ -8,6 +8,7 @@
   },
   "name": "Weeping Resin",
   "type": "item",
+  "img": "systems/cardrpg/art/items/weeping-resin.webp",
   "system": {
     "slot": "belt",
     "tags": [

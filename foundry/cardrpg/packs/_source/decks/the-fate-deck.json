@@ -8,6 +8,7 @@
   },
   "name": "The Fate Deck",
   "type": "deck",
+  "img": "systems/cardrpg/art/backs/fate.webp",
   "cards": [
     {
       "_id": "dAnH9GXHdOUTZVrX",

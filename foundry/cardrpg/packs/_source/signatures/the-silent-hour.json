@@ -8,6 +8,7 @@
   },
   "name": "The Silent Hour",
   "type": "spell",
+  "img": "systems/cardrpg/art/signatures/faith/the-silent-hour.webp",
   "system": {
     "strength": 2,
     "source": "The Grey",

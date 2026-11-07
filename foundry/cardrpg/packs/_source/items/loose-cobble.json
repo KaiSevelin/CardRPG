@@ -8,6 +8,7 @@
   },
   "name": "Loose Cobble",
   "type": "item",
+  "img": "systems/cardrpg/art/items/loose-cobble.webp",
   "system": {
     "slot": "pack",
     "weight": 4,

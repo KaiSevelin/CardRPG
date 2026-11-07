@@ -8,6 +8,7 @@
   },
   "name": "The Unquiet Quiver",
   "type": "item",
+  "img": "systems/cardrpg/art/items/the-unquiet-quiver.webp",
   "system": {
     "slot": "back",
     "weight": 2,

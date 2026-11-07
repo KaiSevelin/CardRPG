@@ -8,6 +8,7 @@
   },
   "name": "The Sixth District",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/the-sixth-district.webp",
   "system": {
     "strength": 5,
     "source": "Vax",

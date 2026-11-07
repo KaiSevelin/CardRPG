@@ -8,6 +8,7 @@
   },
   "name": "Starter Warrior",
   "type": "character",
+  "img": "systems/cardrpg/art/tokens/starter-warrior.webp",
   "system": {
     "health": {
       "value": 12,
@@ -33,6 +34,7 @@
       },
       "name": "Longsword",
       "type": "item",
+      "img": "systems/cardrpg/art/items/longsword.webp",
       "system": {
         "slot": "hands",
         "fits": [
@@ -68,6 +70,7 @@
       },
       "name": "Wooden Shield",
       "type": "item",
+      "img": "systems/cardrpg/art/items/wooden-shield.webp",
       "system": {
         "slot": "hands",
         "fits": [
@@ -102,6 +105,7 @@
       },
       "name": "Leather Armor",
       "type": "item",
+      "img": "systems/cardrpg/art/items/leather-armor.webp",
       "system": {
         "slot": "body",
         "hands": 1,
@@ -126,6 +130,7 @@
       },
       "name": "Healing Potion",
       "type": "item",
+      "img": "systems/cardrpg/art/items/healing-potion.webp",
       "system": {
         "slot": "belt",
         "fits": [
@@ -159,6 +164,7 @@
       },
       "name": "Dagger",
       "type": "item",
+      "img": "systems/cardrpg/art/items/dagger.webp",
       "system": {
         "slot": "hands",
         "fits": [
@@ -193,6 +199,7 @@
       },
       "name": "Strong",
       "type": "feature",
+      "img": "systems/cardrpg/art/features/strong.webp",
       "system": {
         "group": "body",
         "bonus": {
@@ -209,6 +216,9 @@
     "name": "Starter Warrior",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/starter-warrior.webp"
+    }
   }
 }

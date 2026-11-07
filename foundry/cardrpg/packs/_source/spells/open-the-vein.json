@@ -8,6 +8,7 @@
   },
   "name": "Open the Vein",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/open-the-vein.webp",
   "system": {
     "strength": 1,
     "source": "Blood Magic",

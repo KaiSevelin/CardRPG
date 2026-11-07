@@ -8,6 +8,7 @@
   },
   "name": "Far-sight Monocle",
   "type": "item",
+  "img": "systems/cardrpg/art/items/far-sight-monocle.webp",
   "system": {
     "slot": "head",
     "weight": 0,

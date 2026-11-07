@@ -8,6 +8,7 @@
   },
   "name": "Graven Strength",
   "type": "feature",
+  "img": "systems/cardrpg/art/signatures/mind/graven-strength.webp",
   "system": {
     "strength": 1,
     "source": "Tattoo Magic",

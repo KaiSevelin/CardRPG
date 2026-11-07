@@ -8,6 +8,7 @@
   },
   "name": "Smoke Bomb",
   "type": "item",
+  "img": "systems/cardrpg/art/items/smoke-bomb.webp",
   "system": {
     "slot": "belt",
     "fits": [

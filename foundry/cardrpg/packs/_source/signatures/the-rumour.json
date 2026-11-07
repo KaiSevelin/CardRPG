@@ -8,6 +8,7 @@
   },
   "name": "The Rumour",
   "type": "spell",
+  "img": "systems/cardrpg/art/signatures/faith/the-rumour.webp",
   "system": {
     "strength": 2,
     "source": "The Yellow",

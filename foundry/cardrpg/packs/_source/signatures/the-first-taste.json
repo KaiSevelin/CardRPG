@@ -8,6 +8,7 @@
   },
   "name": "The First Taste",
   "type": "spell",
+  "img": "systems/cardrpg/art/signatures/faith/the-first-taste.webp",
   "system": {
     "strength": 2,
     "source": "The Purple",

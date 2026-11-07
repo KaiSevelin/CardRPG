@@ -8,6 +8,7 @@
   },
   "name": "Alp",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/alp.webp",
   "system": {
     "health": {
       "value": 12,
@@ -38,6 +39,7 @@
       },
       "name": "Draining Bite",
       "type": "item",
+      "img": "systems/cardrpg/art/items/natural/draining-bite.webp",
       "system": {
         "slot": "hands",
         "hands": 0,
@@ -67,6 +69,7 @@
       },
       "name": "Tarnkappe",
       "type": "item",
+      "img": "systems/cardrpg/art/items/npc/tarnkappe.webp",
       "system": {
         "slot": "head",
         "weight": 0,
@@ -88,6 +91,9 @@
     "name": "Alp",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/alp.webp"
+    }
   }
 }

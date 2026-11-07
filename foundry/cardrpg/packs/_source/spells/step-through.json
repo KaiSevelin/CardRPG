@@ -8,6 +8,7 @@
   },
   "name": "Step Through",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/shadow/step-through.webp",
   "system": {
     "strength": 2,
     "source": "Shadow Magic",

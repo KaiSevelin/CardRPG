@@ -8,6 +8,7 @@
   },
   "name": "Dagger",
   "type": "item",
+  "img": "systems/cardrpg/art/items/dagger.webp",
   "system": {
     "slot": "hands",
     "fits": [

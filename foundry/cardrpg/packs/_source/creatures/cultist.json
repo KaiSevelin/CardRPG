@@ -8,6 +8,7 @@
   },
   "name": "Cultist",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/cultist.webp",
   "system": {
     "health": {
       "value": 8,
@@ -38,6 +39,7 @@
       },
       "name": "Carved Idol",
       "type": "item",
+      "img": "systems/cardrpg/art/items/npc/carved-idol.webp",
       "system": {
         "slot": "hands",
         "hands": 1,
@@ -67,6 +69,7 @@
       },
       "name": "Dagger",
       "type": "item",
+      "img": "systems/cardrpg/art/items/dagger.webp",
       "system": {
         "slot": "hands",
         "fits": [
@@ -98,6 +101,9 @@
     "name": "Cultist",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/cultist.webp"
+    }
   }
 }

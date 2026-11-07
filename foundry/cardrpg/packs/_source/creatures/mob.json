@@ -8,6 +8,7 @@
   },
   "name": "Mob",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/mob.webp",
   "system": {
     "health": {
       "value": 8,
@@ -38,6 +39,7 @@
       },
       "name": "Dagger",
       "type": "item",
+      "img": "systems/cardrpg/art/items/dagger.webp",
       "system": {
         "slot": "hands",
         "fits": [
@@ -69,6 +71,9 @@
     "name": "Mob",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/mob.webp"
+    }
   }
 }

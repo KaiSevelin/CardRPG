@@ -8,6 +8,7 @@
   },
   "name": "Reliquary Band",
   "type": "item",
+  "img": "systems/cardrpg/art/items/reliquary-band.webp",
   "system": {
     "slot": "fingers",
     "weight": 0,

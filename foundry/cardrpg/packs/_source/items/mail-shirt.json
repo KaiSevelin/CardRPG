@@ -8,6 +8,7 @@
   },
   "name": "Mail Shirt",
   "type": "item",
+  "img": "systems/cardrpg/art/items/mail-shirt.webp",
   "system": {
     "slot": "body",
     "tags": [

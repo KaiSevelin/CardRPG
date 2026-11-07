@@ -13,6 +13,7 @@
 import { CARDRPG } from "./config.mjs";
 /* The deck backs, which are content: one picture per deck rather than one per card. */
 import { DECK_BACKS } from "./content.mjs";
+import { artPathOf, backPath } from "./art.mjs";
 
 /* -------------------------------------------- */
 /*  Primitives                                  */
@@ -55,9 +56,15 @@ export function artOf(doc) {
  * change is needed* -- was only true of cards. An Item's `art` fell into `slateData`'s `...rest`
  * and settled in `system.art`, where nothing reads it, which was a hundred and seventy of the four
  * hundred and twenty pieces commissioned.
+ *
+ * **`def.art` still wins, and it is still the documented way to overrule this.** What changed is
+ * the fallback: for 588 pieces nobody ever wrote the string, so the field was empty everywhere and
+ * `artIn` answered nothing for everything. The path is derivable -- the group's directory and the
+ * slug of the name -- so `art.mjs` derives it from the one list that commissioned the picture, and
+ * a definition only carries `art:` when it wants a file the rule would not have named.
  */
 export function artIn(def) {
-  const art = def?.art ?? "";
+  const art = def?.art || artPathOf(def);
   return art && !art.startsWith("icons/svg/") ? art : "";
 }
 
@@ -68,9 +75,14 @@ export function artIn(def) {
  * shows for the stack, and `Card.back.img`, which is what a face-down card shows. One answer here
  * rather than two spellings of the same path -- and the same `icons/svg/` guard a face gets, since
  * Foundry fills these slots with its own placeholder too.
+ *
+ * A declared back with no `art:` of its own takes the derived path, the same way a card does --
+ * all ten were declared with `art: ""` and the four newest were drawn months after the field was
+ * added. An UNDECLARED key still answers nothing: `backPath` would happily name a file for a deck
+ * that does not exist, and a back is the one picture two decks must never share.
  */
 export function backOf(key) {
-  const art = DECK_BACKS[key]?.art ?? "";
+  const art = DECK_BACKS[key] ? DECK_BACKS[key].art || backPath(key) : "";
   return art && !art.startsWith("icons/svg/") ? art : "";
 }
 

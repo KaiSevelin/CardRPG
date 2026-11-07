@@ -8,6 +8,7 @@
   },
   "name": "Quiet Worker",
   "type": "feature",
+  "img": "systems/cardrpg/art/features/quiet-worker.webp",
   "system": {
     "group": "training",
     "bonus": {

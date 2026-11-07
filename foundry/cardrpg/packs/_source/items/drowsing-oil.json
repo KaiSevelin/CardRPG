@@ -8,6 +8,7 @@
   },
   "name": "Drowsing Oil",
   "type": "item",
+  "img": "systems/cardrpg/art/items/drowsing-oil.webp",
   "system": {
     "slot": "belt",
     "tags": [

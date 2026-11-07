@@ -8,6 +8,7 @@
   },
   "name": "Black Circle",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/black-circle.webp",
   "system": {
     "health": {
       "value": 14,
@@ -38,6 +39,7 @@
       },
       "name": "Arming Sword",
       "type": "item",
+      "img": "systems/cardrpg/art/items/arming-sword.webp",
       "system": {
         "slot": "hands",
         "fits": [
@@ -72,6 +74,7 @@
       },
       "name": "Mail Shirt",
       "type": "item",
+      "img": "systems/cardrpg/art/items/mail-shirt.webp",
       "system": {
         "slot": "body",
         "tags": [
@@ -91,6 +94,9 @@
     "name": "Black Circle",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/black-circle.webp"
+    }
   }
 }

@@ -8,6 +8,7 @@
   },
   "name": "Draining Bite",
   "type": "item",
+  "img": "systems/cardrpg/art/items/natural/draining-bite.webp",
   "system": {
     "slot": "hands",
     "hands": 0,

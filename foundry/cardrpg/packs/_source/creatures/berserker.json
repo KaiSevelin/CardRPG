@@ -8,6 +8,7 @@
   },
   "name": "Berserker",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/berserker.webp",
   "system": {
     "health": {
       "value": 14,
@@ -38,6 +39,7 @@
       },
       "name": "Great Axe",
       "type": "item",
+      "img": "systems/cardrpg/art/items/great-axe.webp",
       "system": {
         "slot": "hands",
         "hands": 2,
@@ -63,6 +65,9 @@
     "name": "Berserker",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/berserker.webp"
+    }
   }
 }

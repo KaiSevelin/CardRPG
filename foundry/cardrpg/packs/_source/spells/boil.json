@@ -8,6 +8,7 @@
   },
   "name": "Boil",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/boil.webp",
   "system": {
     "strength": 3,
     "source": "Blood Magic",

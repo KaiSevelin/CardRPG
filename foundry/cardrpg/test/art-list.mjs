@@ -14,6 +14,8 @@ import path from "node:path";
 import { CARDRPG } from "../module/config.mjs";
 import * as content from "../module/content.mjs";
 import { expandRoster } from "../module/monsters.mjs";
+import { DELIVERY, slug, SHELVES } from "../module/art.mjs";
+import { artIn, backOf } from "../module/decks.mjs";
 
 const root = path.join(import.meta.dirname, "..");
 const OUT = path.join(root, "..", "art-list.md");
@@ -34,21 +36,14 @@ const OUT = path.join(root, "..", "art-list.md");
  * roughly 180KB a piece the finished set is about **90MB**, and that is the number to weigh
  * against a repository that is 26MB today.
  */
-export const DELIVERY = { format: "webp", quality: 80 };
-
-/**
- * A filename from a card's name: lowercase, hyphenated, nothing else.
- *
- * An apostrophe is DROPPED rather than hyphenated, or *Accuser's Ring* files itself as
- * `accuser-s-ring` -- which is the sort of thing nobody notices until a hundred and fifty files
- * are named that way.
+/*
+ * Both of these moved to `module/art.mjs` when the game became a reader of them: the runtime
+ * derives the same paths this brief prints, and module code cannot import out of `test/`. They
+ * are re-exported here because the validator imports them from this file by name, and because a
+ * brief that does not spell its own format and its own slug rule is a brief with a second rule
+ * hiding in it.
  */
-export function slug(name) {
-  return String(name).toLowerCase()
-    .replace(/['’]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
+export { DELIVERY, slug };
 
 /** A condition by its printed name, not its key: an artist should not have to read camelCase. */
 export function conditionName(key) {
@@ -311,90 +306,91 @@ const sigs = Object.fromEntries(Object.entries(content)
  * second one imports rather than copies: a brief that lists 501 pieces beside a prompt book that
  * writes 494 prompts is a second printer, and this project has paid for that mistake twice.
  */
-export const GROUPS = [
-  { dir: "cards/starter", title: "The starter deck",
-    why: "What a first session plays with. Draw these first: ten cards is a playable game.",
-    list: content.WARRIOR_DECK },
-  { dir: "cards/common", title: "The common pool",
-    why: "Six cards every Way draws on, so each one is seen by every character in the game.",
-    list: content.COMMON_POOL },
-  { dir: "cards/npc", title: "NPC intent cards",
+/*
+ * **What the brief says about each shelf, and nothing about where its content is.**
+ *
+ * The pairing of a directory with the content that goes in it moved to `module/art.mjs`, because
+ * the game derives its own picture paths from it now and three readers of one table cannot
+ * disagree. What is left here is the prose -- the title and the reason the group matters -- which
+ * is this document talking and has no business in the engine.
+ *
+ * Keyed by shelf, so the two that share `tokens/` are still two entries: a creature's token and the
+ * starter Warrior's are the same kind of picture and want the same words said differently.
+ */
+const PROSE = {
+  "cards/starter": { title: "The starter deck",
+    why: "What a first session plays with. Draw these first: ten cards is a playable game." },
+  "cards/common": { title: "The common pool",
+    why: "Six cards every Way draws on, so each one is seen by every character in the game." },
+  "cards/npc": { title: "NPC intent cards",
     why: "Face-up on the table during a fight, which makes them the art players stare at longest. "
       + "**One pool, and every creature in the world draws the subset it has earned** "
       + "(core-rules 9) \u2014 so a picture here is seen behind a goblin, a troll and a dragon, and "
       + "wants to be the SHAPE of the move rather than a portrait of whoever is making it. "
-      + "*Close In* is a thing closing in.",
-    list: content.INTENTS },
-  { dir: "cards/shade", title: "Way of Shade — pool",
-    why: "The minor-node cards of a built Way.", list: content.SHADE_POOL },
-  { dir: "cards/strength", title: "Way of Strength — pool",
-    why: "The minor-node cards of a built Way.", list: content.STRENGTH_POOL },
-  { dir: "cards/way", title: "Way cards",
-    why: "Written for the reach weapons and shared between Ways.", list: content.WAY_CARDS },
-  { dir: "cards/skill", title: "Skill cards",
-    why: "The scene tray's hand: four of these are face up whenever nobody is fighting.",
-    list: content.WARRIOR_SKILLS },
-  { dir: "cards/wild", title: "Wild Magic",
-    why: "Drawn on a Wild, so each one is a surprise and wants to look like one.",
-    list: content.WILD_MAGIC },
+      + "*Close In* is a thing closing in." },
+  "cards/shade": { title: "Way of Shade — pool",
+    why: "The minor-node cards of a built Way." },
+  "cards/strength": { title: "Way of Strength — pool",
+    why: "The minor-node cards of a built Way." },
+  "cards/way": { title: "Way cards",
+    why: "Written for the reach weapons and shared between Ways." },
+  "cards/skill": { title: "Skill cards",
+    why: "The scene tray's hand: four of these are face up whenever nobody is fighting." },
+  "cards/wild": { title: "Wild Magic",
+    why: "Drawn on a Wild, so each one is a surprise and wants to look like one." },
 
-  { dir: "signatures/shade", title: "Signatures — Way of Shade",
-    why: "A title's own piece of content, and what its node wears in the levelling graph.",
-    list: sigs.SHADE_SIGNATURES },
-  { dir: "signatures/strength", title: "Signatures — Way of Strength",
-    why: "A title's own piece of content, and what its node wears in the levelling graph.",
-    list: sigs.STRENGTH_SIGNATURES },
-  { dir: "signatures/mind", title: "Signatures — Way of Mind",
-    why: "Eleven, not twelve: *Step Through* is in the Shadow formulas below.",
-    list: sigs.MIND_SIGNATURES },
-  { dir: "signatures/faith", title: "Signatures — Way of Faith",
-    why: "A god's first and defining miracle.", list: sigs.FAITH_SIGNATURES },
+  "signatures/shade": { title: "Signatures — Way of Shade",
+    why: "A title's own piece of content, and what its node wears in the levelling graph." },
+  "signatures/strength": { title: "Signatures — Way of Strength",
+    why: "A title's own piece of content, and what its node wears in the levelling graph." },
+  "signatures/mind": { title: "Signatures — Way of Mind",
+    why: "Eleven, not twelve: *Step Through* is in the Shadow formulas below." },
+  "signatures/faith": { title: "Signatures — Way of Faith",
+    why: "A god's first and defining miracle." },
 
-  { dir: "spells/elemental", title: "Formulas — Elemental",
-    why: "The combo pair and its two readers: the oldest spells in the game.",
-    list: content.FORMULAS },
-  { dir: "spells/shadow", title: "Formulas — Shadow", why: "Pays in a permanent Wild card.",
-    list: content.SHADOW_FORMULAS },
-  { dir: "spells/mind", title: "Formulas — Way of Mind pool",
-    why: "Blood Magic and Spiritualism, handed over by minor nodes.", list: content.MIND_POOL },
-  { dir: "spells/faith", title: "Miracles — Way of Faith pool",
-    why: "Twelve gods' lesser miracles, handed over by minor nodes.", list: content.FAITH_POOL },
+  "spells/elemental": { title: "Formulas — Elemental",
+    why: "The combo pair and its two readers: the oldest spells in the game." },
+  "spells/shadow": { title: "Formulas — Shadow", why: "Pays in a permanent Wild card." },
+  "spells/mind": { title: "Formulas — Way of Mind pool",
+    why: "Blood Magic and Spiritualism, handed over by minor nodes." },
+  "spells/faith": { title: "Miracles — Way of Faith pool",
+    why: "Twelve gods' lesser miracles, handed over by minor nodes." },
 
-  { dir: "features", title: "Features",
-    why: "Always on, so a feature's picture is on the sheet for the character's whole life.",
-    list: content.FEATURES },
-  { dir: "items", title: "Items",
+  "features": { title: "Features",
+    why: "Always on, so a feature's picture is on the sheet for the character's whole life." },
+  "items": { title: "Items",
     why: "The largest group and the least urgent: an item is named on a sheet far more often than "
-      + "it is looked at. A generic picture per KIND would serve until there is art per item.",
-    /*
-     * **A counterfeit is not a piece.** The four items in `COUNTERFEIT` wear the picture of the
-     * honest item they forge, because being indistinguishable from it is the whole of what they
-     * are, so there is nothing of their own to draw and nothing of their own to pay for. They are
-     * still items, still in the packs, still on the shelf -- they are just not commissions.
-     */
-    list: content.ITEMS.filter(i => !i.npc && !content.forges(i.name)) },
-  { dir: "items/npc", title: "NPC gear",
-    why: "Tuned separately from player gear and never offered in a player's picker.",
-    list: content.NPC_GEAR ?? [] },
-  { dir: "items/natural", title: "Natural weapons",
+      + "it is looked at. A generic picture per KIND would serve until there is art per item." },
+  "items/npc": { title: "NPC gear",
+    why: "Tuned separately from player gear and never offered in a player's picker." },
+  "items/natural": { title: "Natural weapons",
     why: "A mandible, a sting, a tail club and a breath are items like any other \u2014 grown "
       + "rather than carried, which is what the `natural` tag means and why none of them can be "
       + "disarmed or looted. They sit on a creature's sheet, so they want the same picture an "
-      + "item wants.",
-    list: content.NATURAL_WEAPONS ?? [] },
+      + "item wants." },
 
-  { dir: "tokens", title: "Creature tokens", kind: "token",
+  "tokens": { title: "Creature tokens",
     why: "**The one piece of art per creature**, and the only group here that is not a card. It "
       + "goes in both of Foundry's slots \u2014 the portrait on the sheet and the token on the map "
       + "\u2014 because they are the same creature and two files is one to forget. Health, armour, "
       + "speed and gear are given so the picture can be the right size and carry the right "
-      + "weapon; the line after the dash is the creature's own description, written when it was.",
-    list: CREATURES, brief: creatureBrief },
-  { dir: "tokens", title: "The starter Warrior", kind: "token",
+      + "weapon; the line after the dash is the creature's own description, written when it was.", brief: creatureBrief },
+  "tokens/warrior": { title: "The starter Warrior",
     why: "The pregenerated character a first session plays. One token, same shape as a "
-      + "creature's, and the only player-side one in the brief: a real party arrives with its own.",
-    list: [content.WARRIOR], brief: creatureBrief }
-];
+      + "creature's, and the only player-side one in the brief: a real party arrives with its own.", brief: creatureBrief }
+};
+
+/**
+ * Every group in the brief: the shelf that says where its pictures live, and the prose that says
+ * why they are worth drawing.
+ *
+ * **Exported, because the prompt book walks exactly this list.** Two generated files reading one
+ * table cannot disagree, which is the whole reason the second one imports rather than copies: a
+ * brief that lists 588 pieces beside a prompt book that writes 584 prompts is a second printer,
+ * and this project has paid for that mistake twice.
+ */
+export const GROUPS = SHELVES.map(shelf => ({ ...shelf, ...PROSE[shelf.key] }));
+
 
 /* -------------------------------------------- */
 
@@ -402,10 +398,16 @@ const lines = [];
 const push = (...rows) => lines.push(...rows);
 
 let total = Object.keys(content.DECK_BACKS).length;
-let drawn = Object.values(content.DECK_BACKS).filter(b => b.art).length;
+/*
+ * **"Wired up" used to mean somebody had typed the path, and nobody ever had.** It now means what
+ * a reader of this document actually wants to know: that the game will show the picture. Both
+ * halves ask the engine the same question Foundry asks it -- `artIn` and `backOf` -- rather than
+ * looking at a field, so a piece counted here is a piece that appears in play.
+ */
+let drawn = Object.keys(content.DECK_BACKS).filter(k => backOf(k)).length;
 for (const group of GROUPS) {
   total += group.list.length;
-  drawn += group.list.filter(e => e.art).length;
+  drawn += group.list.filter(e => artIn(e)).length;
 }
 
 push(
@@ -517,8 +519,8 @@ push(
   + "— and these are what a table looks at all evening, since a deck is face down from the first "
   + "second of play.",
   "",
-  `**${backs.length} pieces**${backs.filter(([, b]) => b.art).length
-    ? `, ${backs.filter(([, b]) => b.art).length} wired up` : ""}. `
+  `**${backs.length} pieces**${backs.filter(([k]) => backOf(k)).length
+    ? `, ${backs.filter(([k]) => backOf(k)).length} wired up` : ""}. `
   + "Same 2:3 and 640 × 960 as a face, and **no safe area**: nothing is printed over a back, so "
   + "the whole card is yours.",
   "",
@@ -526,7 +528,7 @@ push(
   "|---|---|---|---|"
 );
 for (const [key, back] of backs) {
-  push(`| ${back.art ? "✓" : " "} | **${back.label}** | ${back.note} `
+  push(`| ${backOf(key) ? "✓" : " "} | **${back.label}** | ${back.note} `
     + `| \`backs/${slug(key.replace(/\./g, "-"))}.webp\` |`);
 }
 push(
@@ -551,7 +553,7 @@ push(
 
 for (const group of GROUPS) {
   if (!group.list?.length) continue;
-  const have = group.list.filter(e => e.art).length;
+  const have = group.list.filter(e => artIn(e)).length;
   const describe = group.brief ?? brief;
   push(
     `## ${group.title}`,
@@ -570,7 +572,7 @@ for (const group of GROUPS) {
     "|---|---|---|---|"
   );
   for (const entry of [...group.list].sort((a, b) => a.name.localeCompare(b.name))) {
-    push(`| ${entry.art ? "✓" : " "} | **${entry.name}** | ${describe(entry) || "—"} `
+    push(`| ${artIn(entry) ? "✓" : " "} | **${entry.name}** | ${describe(entry) || "—"} `
       + `| \`${group.dir}/${slug(entry.name)}.webp\` |`);
   }
   push("");

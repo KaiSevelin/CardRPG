@@ -8,6 +8,7 @@
   },
   "name": "Hollow Boots",
   "type": "item",
+  "img": "systems/cardrpg/art/items/hollow-boots.webp",
   "system": {
     "slot": "feet",
     "weight": 1,

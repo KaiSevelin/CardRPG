@@ -8,6 +8,7 @@
   },
   "name": "Healer's Kit",
   "type": "item",
+  "img": "systems/cardrpg/art/items/healers-kit.webp",
   "system": {
     "slot": "pack",
     "weight": 2,

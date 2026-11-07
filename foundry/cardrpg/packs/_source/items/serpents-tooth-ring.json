@@ -8,6 +8,7 @@
   },
   "name": "Serpent's Tooth Ring",
   "type": "item",
+  "img": "systems/cardrpg/art/items/serpents-tooth-ring.webp",
   "system": {
     "slot": "fingers",
     "weight": 0,

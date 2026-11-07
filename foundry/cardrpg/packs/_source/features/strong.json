@@ -8,6 +8,7 @@
   },
   "name": "Strong",
   "type": "feature",
+  "img": "systems/cardrpg/art/features/strong.webp",
   "system": {
     "group": "body",
     "bonus": {

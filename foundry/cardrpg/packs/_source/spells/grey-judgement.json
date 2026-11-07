@@ -8,6 +8,7 @@
   },
   "name": "Grey Judgement",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/grey-judgement.webp",
   "system": {
     "strength": 2,
     "source": "The Grey",

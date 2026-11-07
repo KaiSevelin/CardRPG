@@ -8,6 +8,7 @@
   },
   "name": "Fahlas",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/fahlas.webp",
   "system": {
     "health": {
       "value": 60,
@@ -40,6 +41,7 @@
       },
       "name": "Grave Candle",
       "type": "item",
+      "img": "systems/cardrpg/art/items/npc/grave-candle.webp",
       "system": {
         "slot": "hands",
         "hands": 1,
@@ -69,6 +71,7 @@
       },
       "name": "Arming Sword",
       "type": "item",
+      "img": "systems/cardrpg/art/items/arming-sword.webp",
       "system": {
         "slot": "hands",
         "fits": [
@@ -99,6 +102,9 @@
     "name": "Fahlas",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/fahlas.webp"
+    }
   }
 }

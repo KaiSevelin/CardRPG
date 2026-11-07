@@ -8,6 +8,7 @@
   },
   "name": "Draught of Second Breath",
   "type": "item",
+  "img": "systems/cardrpg/art/items/draught-of-second-breath.webp",
   "system": {
     "slot": "belt",
     "fits": [

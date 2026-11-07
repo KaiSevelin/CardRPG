@@ -8,6 +8,7 @@
   },
   "name": "Gaming Set",
   "type": "item",
+  "img": "systems/cardrpg/art/items/gaming-set.webp",
   "system": {
     "slot": "pack",
     "weight": 1,

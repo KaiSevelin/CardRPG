@@ -8,6 +8,7 @@
   },
   "name": "Goblin Shortbow",
   "type": "item",
+  "img": "systems/cardrpg/art/items/npc/goblin-shortbow.webp",
   "system": {
     "ammo": "bow",
     "slot": "hands",

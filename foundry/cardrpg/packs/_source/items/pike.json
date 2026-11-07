@@ -8,6 +8,7 @@
   },
   "name": "Pike",
   "type": "item",
+  "img": "systems/cardrpg/art/items/pike.webp",
   "system": {
     "slot": "hands",
     "hands": 2,

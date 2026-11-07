@@ -8,6 +8,7 @@
   },
   "name": "Quick Eye",
   "type": "feature",
+  "img": "systems/cardrpg/art/features/quick-eye.webp",
   "system": {
     "group": "training",
     "bonus": {

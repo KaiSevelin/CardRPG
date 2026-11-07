@@ -8,6 +8,7 @@
   },
   "name": "Goblin Chief",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/goblin-chief.webp",
   "system": {
     "health": {
       "value": 11,
@@ -39,6 +40,7 @@
       },
       "name": "Goblin Spear",
       "type": "item",
+      "img": "systems/cardrpg/art/items/npc/goblin-spear.webp",
       "system": {
         "slot": "hands",
         "fits": [
@@ -70,6 +72,7 @@
       },
       "name": "Goblin Shield",
       "type": "item",
+      "img": "systems/cardrpg/art/items/npc/goblin-shield.webp",
       "system": {
         "slot": "hands",
         "hands": 1,
@@ -96,6 +99,9 @@
     "name": "Goblin Chief",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/goblin-chief.webp"
+    }
   }
 }

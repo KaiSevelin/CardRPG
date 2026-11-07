@@ -8,6 +8,7 @@
   },
   "name": "Cairn Stone",
   "type": "item",
+  "img": "systems/cardrpg/art/items/cairn-stone.webp",
   "system": {
     "slot": "pack",
     "weight": 4,

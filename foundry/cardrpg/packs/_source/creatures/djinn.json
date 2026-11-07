@@ -8,6 +8,7 @@
   },
   "name": "Djinn",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/djinn.webp",
   "system": {
     "health": {
       "value": 24,
@@ -39,6 +40,7 @@
       },
       "name": "Demon's Sigil",
       "type": "item",
+      "img": "systems/cardrpg/art/items/npc/demons-sigil.webp",
       "system": {
         "slot": "hands",
         "hands": 1,
@@ -68,6 +70,7 @@
       },
       "name": "Fire Spray",
       "type": "item",
+      "img": "systems/cardrpg/art/items/natural/fire-spray.webp",
       "system": {
         "slot": "hands",
         "hands": 0,
@@ -96,6 +99,9 @@
     "name": "Djinn",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/djinn.webp"
+    }
   }
 }

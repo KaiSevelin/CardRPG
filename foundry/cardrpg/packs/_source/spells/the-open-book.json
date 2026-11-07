@@ -8,6 +8,7 @@
   },
   "name": "The Open Book",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-open-book.webp",
   "system": {
     "strength": 4,
     "source": "Divination",

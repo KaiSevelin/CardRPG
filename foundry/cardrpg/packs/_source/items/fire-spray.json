@@ -8,6 +8,7 @@
   },
   "name": "Fire Spray",
   "type": "item",
+  "img": "systems/cardrpg/art/items/natural/fire-spray.webp",
   "system": {
     "slot": "hands",
     "hands": 0,

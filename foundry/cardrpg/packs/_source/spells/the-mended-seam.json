@@ -8,6 +8,7 @@
   },
   "name": "The Mended Seam",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-mended-seam.webp",
   "system": {
     "strength": 1,
     "source": "Household Magic",

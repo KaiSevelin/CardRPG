@@ -8,6 +8,7 @@
   },
   "name": "Town Guard",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/town-guard.webp",
   "system": {
     "health": {
       "value": 10,
@@ -40,6 +41,7 @@
       },
       "name": "Spear",
       "type": "item",
+      "img": "systems/cardrpg/art/items/spear.webp",
       "system": {
         "slot": "hands",
         "fits": [
@@ -74,6 +76,7 @@
       },
       "name": "Wooden Shield",
       "type": "item",
+      "img": "systems/cardrpg/art/items/wooden-shield.webp",
       "system": {
         "slot": "hands",
         "fits": [
@@ -108,6 +111,7 @@
       },
       "name": "Leather Armor",
       "type": "item",
+      "img": "systems/cardrpg/art/items/leather-armor.webp",
       "system": {
         "slot": "body",
         "hands": 1,
@@ -132,6 +136,7 @@
       },
       "name": "Light Helm",
       "type": "item",
+      "img": "systems/cardrpg/art/items/light-helm.webp",
       "system": {
         "slot": "head",
         "tags": [
@@ -151,6 +156,9 @@
     "name": "Town Guard",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/town-guard.webp"
+    }
   }
 }

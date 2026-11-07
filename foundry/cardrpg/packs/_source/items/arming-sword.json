@@ -8,6 +8,7 @@
   },
   "name": "Arming Sword",
   "type": "item",
+  "img": "systems/cardrpg/art/items/arming-sword.webp",
   "system": {
     "slot": "hands",
     "fits": [

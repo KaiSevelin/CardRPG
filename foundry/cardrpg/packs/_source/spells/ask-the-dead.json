@@ -8,6 +8,7 @@
   },
   "name": "Ask the Dead",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/ask-the-dead.webp",
   "system": {
     "strength": 1,
     "source": "Necromancy",

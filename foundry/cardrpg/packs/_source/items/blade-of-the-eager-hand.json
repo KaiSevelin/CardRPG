@@ -8,6 +8,7 @@
   },
   "name": "Blade of the Eager Hand",
   "type": "item",
+  "img": "systems/cardrpg/art/items/blade-of-the-eager-hand.webp",
   "system": {
     "slot": "hands",
     "fits": [

@@ -8,6 +8,7 @@
   },
   "name": "Cloak of the Grey",
   "type": "item",
+  "img": "systems/cardrpg/art/items/cloak-of-the-grey.webp",
   "system": {
     "slot": "cloak",
     "weight": 1,

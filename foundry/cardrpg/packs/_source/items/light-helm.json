@@ -8,6 +8,7 @@
   },
   "name": "Light Helm",
   "type": "item",
+  "img": "systems/cardrpg/art/items/light-helm.webp",
   "system": {
     "slot": "head",
     "tags": [

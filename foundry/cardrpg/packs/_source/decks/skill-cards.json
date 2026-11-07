@@ -8,6 +8,7 @@
   },
   "name": "Skill Cards",
   "type": "deck",
+  "img": "systems/cardrpg/art/backs/skill.webp",
   "cards": [
     {
       "_id": "0qEzAkdTjSIWfOPg",
@@ -23,9 +24,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Set Your Feet"
+          "name": "Set Your Feet",
+          "img": "systems/cardrpg/art/cards/skill/set-your-feet.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/skill.webp"
+      },
       "system": {
         "approach": "might",
         "value": 3,
@@ -46,9 +51,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Heave"
+          "name": "Heave",
+          "img": "systems/cardrpg/art/cards/skill/heave.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/skill.webp"
+      },
       "system": {
         "approach": "might",
         "value": 2,
@@ -69,9 +78,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Break It"
+          "name": "Break It",
+          "img": "systems/cardrpg/art/cards/skill/break-it.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/skill.webp"
+      },
       "system": {
         "approach": "might",
         "value": 1,
@@ -93,9 +106,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Quick Hands"
+          "name": "Quick Hands",
+          "img": "systems/cardrpg/art/cards/skill/quick-hands.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/skill.webp"
+      },
       "system": {
         "approach": "agility",
         "value": 2,
@@ -116,9 +133,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Keep Your Footing"
+          "name": "Keep Your Footing",
+          "img": "systems/cardrpg/art/cards/skill/keep-your-footing.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/skill.webp"
+      },
       "system": {
         "approach": "agility",
         "value": 1,
@@ -140,9 +161,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Out of the Light"
+          "name": "Out of the Light",
+          "img": "systems/cardrpg/art/cards/skill/out-of-the-light.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/skill.webp"
+      },
       "system": {
         "approach": "shadow",
         "value": 1,
@@ -163,9 +188,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Sharp Eyes"
+          "name": "Sharp Eyes",
+          "img": "systems/cardrpg/art/cards/skill/sharp-eyes.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/skill.webp"
+      },
       "system": {
         "approach": "wits",
         "value": 1,
@@ -187,9 +216,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Soldier's Learning"
+          "name": "Soldier's Learning",
+          "img": "systems/cardrpg/art/cards/skill/soldiers-learning.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/skill.webp"
+      },
       "system": {
         "approach": "lore",
         "value": 1,
@@ -210,9 +243,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "The Loud Voice"
+          "name": "The Loud Voice",
+          "img": "systems/cardrpg/art/cards/skill/the-loud-voice.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/skill.webp"
+      },
       "system": {
         "approach": "presence",
         "value": 1,
@@ -234,9 +271,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Inspiration"
+          "name": "Inspiration",
+          "img": "systems/cardrpg/art/cards/skill/inspiration.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/skill.webp"
+      },
       "system": {
         "approach": "",
         "value": 1,

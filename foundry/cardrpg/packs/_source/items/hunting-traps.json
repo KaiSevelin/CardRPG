@@ -8,6 +8,7 @@
   },
   "name": "Hunting Traps",
   "type": "item",
+  "img": "systems/cardrpg/art/items/hunting-traps.webp",
   "system": {
     "slot": "pack",
     "weight": 4,

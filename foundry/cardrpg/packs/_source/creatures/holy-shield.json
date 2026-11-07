@@ -8,6 +8,7 @@
   },
   "name": "Holy Shield",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/holy-shield.webp",
   "system": {
     "health": {
       "value": 18,
@@ -39,6 +40,7 @@
       },
       "name": "Longsword",
       "type": "item",
+      "img": "systems/cardrpg/art/items/longsword.webp",
       "system": {
         "slot": "hands",
         "fits": [
@@ -74,6 +76,7 @@
       },
       "name": "Kite Shield",
       "type": "item",
+      "img": "systems/cardrpg/art/items/kite-shield.webp",
       "system": {
         "slot": "hands",
         "fits": [
@@ -106,6 +109,7 @@
       },
       "name": "Plate",
       "type": "item",
+      "img": "systems/cardrpg/art/items/plate.webp",
       "system": {
         "slot": "body",
         "tags": [
@@ -134,6 +138,7 @@
       },
       "name": "Great Helm",
       "type": "item",
+      "img": "systems/cardrpg/art/items/great-helm.webp",
       "system": {
         "slot": "head",
         "tags": [
@@ -155,6 +160,9 @@
     "name": "Holy Shield",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/holy-shield.webp"
+    }
   }
 }

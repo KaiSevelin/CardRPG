@@ -8,6 +8,7 @@
   },
   "name": "Bear It for Them",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/bear-it-for-them.webp",
   "system": {
     "strength": 2,
     "source": "The Eternal Spirit",

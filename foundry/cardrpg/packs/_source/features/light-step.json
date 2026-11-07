@@ -8,6 +8,7 @@
   },
   "name": "Light Step",
   "type": "feature",
+  "img": "systems/cardrpg/art/features/light-step.webp",
   "system": {
     "group": "training",
     "bonus": {

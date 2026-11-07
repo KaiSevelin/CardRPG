@@ -8,6 +8,7 @@
   },
   "name": "Artillerist",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/artillerist.webp",
   "system": {
     "health": {
       "value": 14,
@@ -39,6 +40,7 @@
       },
       "name": "Matchlock Musket",
       "type": "item",
+      "img": "systems/cardrpg/art/items/matchlock-musket.webp",
       "system": {
         "ammo": "firearm",
         "slot": "hands",
@@ -72,6 +74,7 @@
       },
       "name": "Brigandine",
       "type": "item",
+      "img": "systems/cardrpg/art/items/brigandine.webp",
       "system": {
         "slot": "body",
         "tags": [
@@ -96,6 +99,9 @@
     "name": "Artillerist",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/artillerist.webp"
+    }
   }
 }

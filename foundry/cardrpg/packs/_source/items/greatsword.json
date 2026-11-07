@@ -8,6 +8,7 @@
   },
   "name": "Greatsword",
   "type": "item",
+  "img": "systems/cardrpg/art/items/greatsword.webp",
   "system": {
     "slot": "hands",
     "hands": 2,

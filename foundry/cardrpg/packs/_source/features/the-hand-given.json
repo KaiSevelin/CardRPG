@@ -8,6 +8,7 @@
   },
   "name": "The Hand Given",
   "type": "feature",
+  "img": "systems/cardrpg/art/spells/mind/the-hand-given.webp",
   "system": {
     "strength": 3,
     "source": "Asceticism",

@@ -8,6 +8,7 @@
   },
   "name": "Good Aim",
   "type": "feature",
+  "img": "systems/cardrpg/art/features/good-aim.webp",
   "system": {
     "group": "training",
     "bonus": {

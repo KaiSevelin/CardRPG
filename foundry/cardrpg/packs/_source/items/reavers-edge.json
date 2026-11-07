@@ -8,6 +8,7 @@
   },
   "name": "Reaver's Edge",
   "type": "item",
+  "img": "systems/cardrpg/art/items/reavers-edge.webp",
   "system": {
     "slot": "hands",
     "fits": [

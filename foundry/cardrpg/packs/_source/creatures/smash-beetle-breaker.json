@@ -8,6 +8,7 @@
   },
   "name": "Smash Beetle Breaker",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/smash-beetle-breaker.webp",
   "system": {
     "health": {
       "value": 28,
@@ -39,6 +40,7 @@
       },
       "name": "Tail Club",
       "type": "item",
+      "img": "systems/cardrpg/art/items/natural/tail-club.webp",
       "system": {
         "slot": "hands",
         "hands": 0,
@@ -67,6 +69,9 @@
     "name": "Smash Beetle Breaker",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/smash-beetle-breaker.webp"
+    }
   }
 }

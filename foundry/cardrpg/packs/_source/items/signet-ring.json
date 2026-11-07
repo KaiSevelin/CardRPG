@@ -8,6 +8,7 @@
   },
   "name": "Signet Ring",
   "type": "item",
+  "img": "systems/cardrpg/art/items/signet-ring.webp",
   "system": {
     "slot": "fingers",
     "weight": 0,

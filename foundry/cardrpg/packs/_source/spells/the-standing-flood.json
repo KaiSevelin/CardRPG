@@ -8,6 +8,7 @@
   },
   "name": "The Standing Flood",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-standing-flood.webp",
   "system": {
     "strength": 3,
     "source": "Elemental Magic",

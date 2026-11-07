@@ -8,6 +8,7 @@
   },
   "name": "Hearth and Home",
   "type": "spell",
+  "img": "systems/cardrpg/art/signatures/mind/hearth-and-home.webp",
   "system": {
     "strength": 1,
     "source": "Household Magic",

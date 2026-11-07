@@ -8,6 +8,7 @@
   },
   "name": "Shake It Off",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/shake-it-off.webp",
   "system": {
     "strength": 2,
     "source": "Ward Magic",

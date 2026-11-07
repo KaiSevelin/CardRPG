@@ -8,6 +8,7 @@
   },
   "name": "Terror Fly Torch",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/terror-fly-torch.webp",
   "system": {
     "health": {
       "value": 14,
@@ -42,6 +43,7 @@
       },
       "name": "Fire Spray",
       "type": "item",
+      "img": "systems/cardrpg/art/items/natural/fire-spray.webp",
       "system": {
         "slot": "hands",
         "hands": 0,
@@ -70,6 +72,9 @@
     "name": "Terror Fly Torch",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/terror-fly-torch.webp"
+    }
   }
 }

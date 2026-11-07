@@ -8,6 +8,7 @@
   },
   "name": "Tower Shield",
   "type": "item",
+  "img": "systems/cardrpg/art/items/tower-shield.webp",
   "system": {
     "slot": "hands",
     "hands": 1,

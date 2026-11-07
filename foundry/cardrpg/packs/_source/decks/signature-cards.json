@@ -8,6 +8,7 @@
   },
   "name": "Signature Cards",
   "type": "deck",
+  "img": "systems/cardrpg/art/backs/action.webp",
   "cards": [
     {
       "_id": "IlRVsmaTFg8I0ewr",
@@ -23,9 +24,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Point Man"
+          "name": "Point Man",
+          "img": "systems/cardrpg/art/signatures/shade/point-man.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -57,9 +62,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Named"
+          "name": "Named",
+          "img": "systems/cardrpg/art/signatures/shade/named.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -91,9 +100,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "One Opening"
+          "name": "One Opening",
+          "img": "systems/cardrpg/art/signatures/shade/one-opening.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -129,9 +142,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Lift"
+          "name": "Lift",
+          "img": "systems/cardrpg/art/signatures/shade/lift.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -163,9 +180,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Loose and Step"
+          "name": "Loose and Step",
+          "img": "systems/cardrpg/art/signatures/shade/loose-and-step.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -203,9 +224,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Set"
+          "name": "Set",
+          "img": "systems/cardrpg/art/signatures/shade/set.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -245,9 +270,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Over and Past"
+          "name": "Over and Past",
+          "img": "systems/cardrpg/art/signatures/shade/over-and-past.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -280,9 +309,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Heckle"
+          "name": "Heckle",
+          "img": "systems/cardrpg/art/signatures/shade/heckle.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -317,9 +350,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Double or Nothing"
+          "name": "Double or Nothing",
+          "img": "systems/cardrpg/art/signatures/shade/double-or-nothing.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -351,9 +388,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Shoulder to Shoulder"
+          "name": "Shoulder to Shoulder",
+          "img": "systems/cardrpg/art/signatures/strength/shoulder-to-shoulder.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -389,9 +430,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Ranging Shot"
+          "name": "Ranging Shot",
+          "img": "systems/cardrpg/art/signatures/strength/ranging-shot.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -427,9 +472,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "On My Call"
+          "name": "On My Call",
+          "img": "systems/cardrpg/art/signatures/strength/on-my-call.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -461,9 +510,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "The Lance"
+          "name": "The Lance",
+          "img": "systems/cardrpg/art/signatures/strength/the-lance.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -499,9 +552,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Red Mist"
+          "name": "Red Mist",
+          "img": "systems/cardrpg/art/signatures/strength/red-mist.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -537,9 +594,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Play to the Crowd"
+          "name": "Play to the Crowd",
+          "img": "systems/cardrpg/art/signatures/strength/play-to-the-crowd.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -574,9 +635,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Get a Grip"
+          "name": "Get a Grip",
+          "img": "systems/cardrpg/art/signatures/strength/get-a-grip.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -611,9 +676,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Interpose"
+          "name": "Interpose",
+          "img": "systems/cardrpg/art/signatures/strength/interpose.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -645,9 +714,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "The Writ"
+          "name": "The Writ",
+          "img": "systems/cardrpg/art/signatures/faith/the-writ.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -681,9 +754,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "The Order's Shield"
+          "name": "The Order's Shield",
+          "img": "systems/cardrpg/art/signatures/faith/the-orders-shield.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -721,9 +798,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "The Long Silence"
+          "name": "The Long Silence",
+          "img": "systems/cardrpg/art/signatures/faith/the-long-silence.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -756,9 +837,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "The Scourge"
+          "name": "The Scourge",
+          "img": "systems/cardrpg/art/signatures/faith/the-scourge.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {

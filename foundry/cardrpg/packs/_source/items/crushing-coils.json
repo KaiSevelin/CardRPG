@@ -8,6 +8,7 @@
   },
   "name": "Crushing Coils",
   "type": "item",
+  "img": "systems/cardrpg/art/items/natural/crushing-coils.webp",
   "system": {
     "slot": "hands",
     "hands": 0,

@@ -8,6 +8,7 @@
   },
   "name": "The Long Look",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-long-look.webp",
   "system": {
     "strength": 3,
     "source": "Divination",

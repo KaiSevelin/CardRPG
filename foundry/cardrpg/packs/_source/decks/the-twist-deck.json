@@ -8,6 +8,7 @@
   },
   "name": "The Twist Deck",
   "type": "deck",
+  "img": "systems/cardrpg/art/backs/skill.webp",
   "cards": [
     {
       "_id": "6xKxbiUAFX86m12q",
@@ -20,6 +21,7 @@
       "sort": 100,
       "name": "Noise",
       "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
       "system": {
         "cost": "Attention. The opposition now knows something is wrong.",
         "pressure": 0,
@@ -37,6 +39,7 @@
       "sort": 200,
       "name": "Noise",
       "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
       "system": {
         "cost": "Attention. The opposition now knows something is wrong.",
         "pressure": 0,
@@ -54,6 +57,7 @@
       "sort": 300,
       "name": "Noise",
       "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
       "system": {
         "cost": "Attention. The opposition now knows something is wrong.",
         "pressure": 0,
@@ -71,6 +75,7 @@
       "sort": 400,
       "name": "Noise",
       "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
       "system": {
         "cost": "Attention. The opposition now knows something is wrong.",
         "pressure": 0,
@@ -88,6 +93,7 @@
       "sort": 500,
       "name": "Time",
       "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
       "system": {
         "cost": "The clock. Pressure +1 on top of the normal cost.",
         "pressure": 1,
@@ -105,6 +111,7 @@
       "sort": 600,
       "name": "Time",
       "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
       "system": {
         "cost": "The clock. Pressure +1 on top of the normal cost.",
         "pressure": 1,
@@ -122,6 +129,7 @@
       "sort": 700,
       "name": "Time",
       "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
       "system": {
         "cost": "The clock. Pressure +1 on top of the normal cost.",
         "pressure": 1,
@@ -139,6 +147,7 @@
       "sort": 800,
       "name": "Time",
       "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
       "system": {
         "cost": "The clock. Pressure +1 on top of the normal cost.",
         "pressure": 1,
@@ -156,6 +165,7 @@
       "sort": 900,
       "name": "Gear",
       "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
       "system": {
         "cost": "A tool. It breaks or is lost: no tool bonus until repaired or replaced.",
         "pressure": 0,
@@ -173,6 +183,7 @@
       "sort": 1000,
       "name": "Gear",
       "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
       "system": {
         "cost": "A tool. It breaks or is lost: no tool bonus until repaired or replaced.",
         "pressure": 0,
@@ -190,6 +201,7 @@
       "sort": 1100,
       "name": "Gear",
       "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
       "system": {
         "cost": "A tool. It breaks or is lost: no tool bonus until repaired or replaced.",
         "pressure": 0,
@@ -207,6 +219,7 @@
       "sort": 1200,
       "name": "Gear",
       "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
       "system": {
         "cost": "A tool. It breaks or is lost: no tool bonus until repaired or replaced.",
         "pressure": 0,
@@ -224,6 +237,7 @@
       "sort": 1300,
       "name": "Strain",
       "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
       "system": {
         "cost": "Cards. Discard 1 skill card of the GM's choice from your hand.",
         "pressure": 0,
@@ -241,6 +255,7 @@
       "sort": 1400,
       "name": "Strain",
       "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
       "system": {
         "cost": "Cards. Discard 1 skill card of the GM's choice from your hand.",
         "pressure": 0,
@@ -258,6 +273,7 @@
       "sort": 1500,
       "name": "Strain",
       "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
       "system": {
         "cost": "Cards. Discard 1 skill card of the GM's choice from your hand.",
         "pressure": 0,
@@ -275,6 +291,7 @@
       "sort": 1600,
       "name": "Strain",
       "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
       "system": {
         "cost": "Cards. Discard 1 skill card of the GM's choice from your hand.",
         "pressure": 0,
@@ -292,6 +309,7 @@
       "sort": 1700,
       "name": "Strain",
       "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
       "system": {
         "cost": "Cards. Discard 1 skill card of the GM's choice from your hand.",
         "pressure": 0,
@@ -309,6 +327,7 @@
       "sort": 1800,
       "name": "Hurt",
       "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
       "system": {
         "cost": "Health. Lose 2 Health, or gain a condition that fits.",
         "pressure": 0,
@@ -326,6 +345,7 @@
       "sort": 1900,
       "name": "Hurt",
       "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
       "system": {
         "cost": "Health. Lose 2 Health, or gain a condition that fits.",
         "pressure": 0,
@@ -343,6 +363,7 @@
       "sort": 2000,
       "name": "Hurt",
       "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
       "system": {
         "cost": "Health. Lose 2 Health, or gain a condition that fits.",
         "pressure": 0,
@@ -360,6 +381,7 @@
       "sort": 2100,
       "name": "Arrival",
       "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
       "system": {
         "cost": "Someone new. A third party walks into the scene.",
         "pressure": 0,
@@ -377,6 +399,7 @@
       "sort": 2200,
       "name": "Arrival",
       "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
       "system": {
         "cost": "Someone new. A third party walks into the scene.",
         "pressure": 0,
@@ -394,6 +417,7 @@
       "sort": 2300,
       "name": "Arrival",
       "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
       "system": {
         "cost": "Someone new. A third party walks into the scene.",
         "pressure": 0,
@@ -411,6 +435,7 @@
       "sort": 2400,
       "name": "Arrival",
       "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
       "system": {
         "cost": "Someone new. A third party walks into the scene.",
         "pressure": 0,
@@ -428,6 +453,7 @@
       "sort": 2500,
       "name": "Secret",
       "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
       "system": {
         "cost": "Information, in either direction. You learn something unwelcome, or they learn something about you.",
         "pressure": 0,
@@ -445,6 +471,7 @@
       "sort": 2600,
       "name": "Secret",
       "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
       "system": {
         "cost": "Information, in either direction. You learn something unwelcome, or they learn something about you.",
         "pressure": 0,
@@ -462,6 +489,7 @@
       "sort": 2700,
       "name": "Opening",
       "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
       "system": {
         "cost": "Nothing — this one gives. The complication also creates an opportunity.",
         "pressure": 0,
@@ -479,6 +507,7 @@
       "sort": 2800,
       "name": "Opening",
       "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
       "system": {
         "cost": "Nothing — this one gives. The complication also creates an opportunity.",
         "pressure": 0,
@@ -496,6 +525,7 @@
       "sort": 2900,
       "name": "Opening",
       "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
       "system": {
         "cost": "Nothing — this one gives. The complication also creates an opportunity.",
         "pressure": 0,
@@ -513,6 +543,7 @@
       "sort": 3000,
       "name": "Opening",
       "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
       "system": {
         "cost": "Nothing — this one gives. The complication also creates an opportunity.",
         "pressure": 0,

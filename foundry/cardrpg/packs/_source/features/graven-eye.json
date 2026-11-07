@@ -8,6 +8,7 @@
   },
   "name": "Graven Eye",
   "type": "feature",
+  "img": "systems/cardrpg/art/spells/mind/graven-eye.webp",
   "system": {
     "strength": 1,
     "source": "Tattoo Magic",

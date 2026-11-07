@@ -8,6 +8,7 @@
   },
   "name": "Tincture of the Clear Eye",
   "type": "item",
+  "img": "systems/cardrpg/art/items/tincture-of-the-clear-eye.webp",
   "system": {
     "slot": "belt",
     "fits": [

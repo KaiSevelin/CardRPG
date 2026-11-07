@@ -8,6 +8,7 @@
   },
   "name": "Discriminating Wand",
   "type": "item",
+  "img": "systems/cardrpg/art/items/discriminating-wand.webp",
   "system": {
     "slot": "hands",
     "hands": 1,

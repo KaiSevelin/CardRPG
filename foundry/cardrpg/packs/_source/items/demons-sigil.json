@@ -8,6 +8,7 @@
   },
   "name": "Demon's Sigil",
   "type": "item",
+  "img": "systems/cardrpg/art/items/npc/demons-sigil.webp",
   "system": {
     "slot": "hands",
     "hands": 1,

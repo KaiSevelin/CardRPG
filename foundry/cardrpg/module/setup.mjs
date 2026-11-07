@@ -65,7 +65,13 @@ export function slateData(entry, type) {
      * pieces -- had a path in content that no document ever wore. The levelling graph read it
      * straight from content and showed it on a node, which is what made the gap invisible.
      */
-    ...(artIn({ art }) ? { img: artIn({ art }) } : {}),
+    /*
+     * **And the whole entry is handed over, not just its `art`.** `artIn({ art })` was enough
+     * while the field was the only answer; now the path is derived from the list a piece is on,
+     * and a freshly-made `{ art }` is on no list. `art` is still destructured out above so it
+     * cannot land in `system.art` again, and `artIn` still prefers it when it is set.
+     */
+    ...(artIn(entry) ? { img: artIn(entry) } : {}),
     system: {
       ...rest,
       ...(group ? { group } : {}),

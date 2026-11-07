@@ -8,6 +8,7 @@
   },
   "name": "Hard Hands",
   "type": "feature",
+  "img": "systems/cardrpg/art/features/hard-hands.webp",
   "system": {
     "group": "training",
     "bonus": {

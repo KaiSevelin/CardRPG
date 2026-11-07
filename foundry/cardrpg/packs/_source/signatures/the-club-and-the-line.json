@@ -8,6 +8,7 @@
   },
   "name": "The Club and the Line",
   "type": "spell",
+  "img": "systems/cardrpg/art/signatures/faith/the-club-and-the-line.webp",
   "system": {
     "strength": 2,
     "source": "Vax",

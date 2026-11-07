@@ -8,6 +8,7 @@
   },
   "name": "Travelling Cloak",
   "type": "item",
+  "img": "systems/cardrpg/art/items/travelling-cloak.webp",
   "system": {
     "slot": "cloak",
     "weight": 2,

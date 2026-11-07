@@ -8,6 +8,7 @@
   },
   "name": "Marching Boots",
   "type": "item",
+  "img": "systems/cardrpg/art/items/marching-boots.webp",
   "system": {
     "slot": "feet",
     "weight": 1,

@@ -8,6 +8,7 @@
   },
   "name": "Repair Kit",
   "type": "item",
+  "img": "systems/cardrpg/art/items/repair-kit.webp",
   "system": {
     "slot": "pack",
     "weight": 3,

@@ -8,6 +8,7 @@
   },
   "name": "Fine Clothes",
   "type": "item",
+  "img": "systems/cardrpg/art/items/fine-clothes.webp",
   "system": {
     "slot": "body",
     "weight": 2,

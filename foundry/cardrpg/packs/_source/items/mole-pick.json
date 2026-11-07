@@ -8,6 +8,7 @@
   },
   "name": "Mole Pick",
   "type": "item",
+  "img": "systems/cardrpg/art/items/npc/mole-pick.webp",
   "system": {
     "slot": "hands",
     "hands": 1,

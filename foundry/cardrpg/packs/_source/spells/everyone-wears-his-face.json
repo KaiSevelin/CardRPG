@@ -8,6 +8,7 @@
   },
   "name": "Everyone Wears His Face",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/everyone-wears-his-face.webp",
   "system": {
     "strength": 5,
     "source": "Fagar",

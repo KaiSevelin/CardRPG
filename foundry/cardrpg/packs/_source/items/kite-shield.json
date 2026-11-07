@@ -8,6 +8,7 @@
   },
   "name": "Kite Shield",
   "type": "item",
+  "img": "systems/cardrpg/art/items/kite-shield.webp",
   "system": {
     "slot": "hands",
     "fits": [

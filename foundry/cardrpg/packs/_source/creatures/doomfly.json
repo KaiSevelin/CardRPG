@@ -8,6 +8,7 @@
   },
   "name": "Doomfly",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/doomfly.webp",
   "system": {
     "health": {
       "value": 12,
@@ -35,6 +36,7 @@
       },
       "name": "Nip",
       "type": "item",
+      "img": "systems/cardrpg/art/items/natural/nip.webp",
       "system": {
         "slot": "hands",
         "hands": 0,
@@ -60,6 +62,9 @@
     "name": "Doomfly",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/doomfly.webp"
+    }
   }
 }

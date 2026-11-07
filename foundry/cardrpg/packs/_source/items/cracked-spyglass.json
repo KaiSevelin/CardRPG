@@ -8,6 +8,7 @@
   },
   "name": "Cracked Spyglass",
   "type": "item",
+  "img": "systems/cardrpg/art/items/cracked-spyglass.webp",
   "system": {
     "slot": "pack",
     "weight": 1,

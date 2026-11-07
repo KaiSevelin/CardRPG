@@ -8,6 +8,7 @@
   },
   "name": "The Outcast's Due",
   "type": "spell",
+  "img": "systems/cardrpg/art/signatures/faith/the-outcasts-due.webp",
   "system": {
     "strength": 3,
     "source": "Vulpet",

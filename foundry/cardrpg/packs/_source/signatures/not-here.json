@@ -8,6 +8,7 @@
   },
   "name": "Not Here",
   "type": "spell",
+  "img": "systems/cardrpg/art/signatures/mind/not-here.webp",
   "system": {
     "strength": 2,
     "source": "Glamour",

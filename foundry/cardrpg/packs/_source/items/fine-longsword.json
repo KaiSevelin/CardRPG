@@ -8,6 +8,7 @@
   },
   "name": "Fine Longsword",
   "type": "item",
+  "img": "systems/cardrpg/art/items/fine-longsword.webp",
   "system": {
     "slot": "hands",
     "fits": [

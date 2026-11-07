@@ -8,6 +8,7 @@
   },
   "name": "The Unlatched Door",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-unlatched-door.webp",
   "system": {
     "strength": 2,
     "source": "Household Magic",

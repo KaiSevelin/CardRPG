@@ -8,6 +8,7 @@
   },
   "name": "Graven Armour",
   "type": "feature",
+  "img": "systems/cardrpg/art/spells/mind/graven-armour.webp",
   "system": {
     "strength": 4,
     "source": "Tattoo Magic",

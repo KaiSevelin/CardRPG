@@ -8,6 +8,7 @@
   },
   "name": "Crown of the Quiet Mind",
   "type": "item",
+  "img": "systems/cardrpg/art/items/crown-of-the-quiet-mind.webp",
   "system": {
     "slot": "head",
     "weight": 1,

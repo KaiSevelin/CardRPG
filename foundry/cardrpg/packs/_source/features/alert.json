@@ -8,6 +8,7 @@
   },
   "name": "Alert",
   "type": "feature",
+  "img": "systems/cardrpg/art/features/alert.webp",
   "system": {
     "text": "You draw with advantage on initiative."
   }

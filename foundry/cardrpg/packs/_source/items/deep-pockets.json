@@ -8,6 +8,7 @@
   },
   "name": "Deep Pockets",
   "type": "item",
+  "img": "systems/cardrpg/art/items/deep-pockets.webp",
   "system": {
     "slot": "cloak",
     "weight": 1,

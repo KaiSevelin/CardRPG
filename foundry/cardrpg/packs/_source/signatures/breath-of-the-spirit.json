@@ -8,6 +8,7 @@
   },
   "name": "Breath of the Spirit",
   "type": "spell",
+  "img": "systems/cardrpg/art/signatures/faith/breath-of-the-spirit.webp",
   "system": {
     "strength": 2,
     "source": "The Eternal Spirit",

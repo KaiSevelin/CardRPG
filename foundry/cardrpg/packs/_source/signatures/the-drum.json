@@ -8,6 +8,7 @@
   },
   "name": "The Drum",
   "type": "spell",
+  "img": "systems/cardrpg/art/signatures/faith/the-drum.webp",
   "system": {
     "strength": 1,
     "source": "Valtor",

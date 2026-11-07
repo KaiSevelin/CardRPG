@@ -8,6 +8,7 @@
   },
   "name": "Greater Healing Potion",
   "type": "item",
+  "img": "systems/cardrpg/art/items/greater-healing-potion.webp",
   "system": {
     "slot": "belt",
     "fits": [

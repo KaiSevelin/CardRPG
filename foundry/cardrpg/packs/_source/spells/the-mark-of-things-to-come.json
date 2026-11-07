@@ -8,6 +8,7 @@
   },
   "name": "The Mark of Things to Come",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-mark-of-things-to-come.webp",
   "system": {
     "strength": 2,
     "source": "Divination",

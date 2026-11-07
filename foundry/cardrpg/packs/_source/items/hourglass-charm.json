@@ -8,6 +8,7 @@
   },
   "name": "Hourglass Charm",
   "type": "item",
+  "img": "systems/cardrpg/art/items/hourglass-charm.webp",
   "system": {
     "slot": "neck",
     "weight": 0,

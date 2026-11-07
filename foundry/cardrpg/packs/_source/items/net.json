@@ -8,6 +8,7 @@
   },
   "name": "Net",
   "type": "item",
+  "img": "systems/cardrpg/art/items/net.webp",
   "system": {
     "slot": "hands",
     "fits": [

@@ -8,6 +8,7 @@
   },
   "name": "The Standing Ward",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-standing-ward.webp",
   "system": {
     "strength": 4,
     "source": "Ward Magic",

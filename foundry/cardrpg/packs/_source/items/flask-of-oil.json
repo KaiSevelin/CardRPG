@@ -8,6 +8,7 @@
   },
   "name": "Flask of Oil",
   "type": "item",
+  "img": "systems/cardrpg/art/items/flask-of-oil.webp",
   "system": {
     "slot": "belt",
     "fits": [

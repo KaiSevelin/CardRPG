@@ -8,6 +8,7 @@
   },
   "name": "The Sphere Entire",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-sphere-entire.webp",
   "system": {
     "strength": 4,
     "source": "Elemental Magic",

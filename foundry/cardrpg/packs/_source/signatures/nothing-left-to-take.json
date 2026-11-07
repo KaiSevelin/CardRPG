@@ -8,6 +8,7 @@
   },
   "name": "Nothing Left to Take",
   "type": "spell",
+  "img": "systems/cardrpg/art/signatures/mind/nothing-left-to-take.webp",
   "system": {
     "strength": 1,
     "source": "Asceticism",

@@ -8,6 +8,7 @@
   },
   "name": "Valtor's Own",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/faith/valtors-own.webp",
   "system": {
     "strength": 5,
     "source": "Valtor",

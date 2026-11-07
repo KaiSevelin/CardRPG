@@ -8,6 +8,7 @@
   },
   "name": "Arquebus",
   "type": "item",
+  "img": "systems/cardrpg/art/items/arquebus.webp",
   "system": {
     "ammo": "firearm",
     "slot": "hands",

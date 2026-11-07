@@ -8,6 +8,7 @@
   },
   "name": "One Trick",
   "type": "feature",
+  "img": "systems/cardrpg/art/signatures/shade/one-trick.webp",
   "system": {
     "text": "You may prepare from any one school you have ever seen cast."
   }

@@ -8,6 +8,7 @@
   },
   "name": "Great Helm",
   "type": "item",
+  "img": "systems/cardrpg/art/items/great-helm.webp",
   "system": {
     "slot": "head",
     "tags": [

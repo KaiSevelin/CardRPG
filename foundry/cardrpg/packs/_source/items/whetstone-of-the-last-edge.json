@@ -8,6 +8,7 @@
   },
   "name": "Whetstone of the Last Edge",
   "type": "item",
+  "img": "systems/cardrpg/art/items/whetstone-of-the-last-edge.webp",
   "system": {
     "slot": "pack",
     "weight": 1,

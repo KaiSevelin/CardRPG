@@ -8,6 +8,7 @@
   },
   "name": "Troll Club",
   "type": "item",
+  "img": "systems/cardrpg/art/items/npc/troll-club.webp",
   "system": {
     "slot": "hands",
     "fits": [

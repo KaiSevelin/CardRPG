@@ -8,6 +8,7 @@
   },
   "name": "Proofed Mail",
   "type": "item",
+  "img": "systems/cardrpg/art/items/proofed-mail.webp",
   "system": {
     "slot": "body",
     "tags": [

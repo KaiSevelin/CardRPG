@@ -8,6 +8,7 @@
   },
   "name": "Good Name",
   "type": "feature",
+  "img": "systems/cardrpg/art/features/good-name.webp",
   "system": {
     "group": "training",
     "bonus": {

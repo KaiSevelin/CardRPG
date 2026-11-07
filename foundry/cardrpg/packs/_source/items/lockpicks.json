@@ -8,6 +8,7 @@
   },
   "name": "Lockpicks",
   "type": "item",
+  "img": "systems/cardrpg/art/items/lockpicks.webp",
   "system": {
     "slot": "belt",
     "weight": 0,

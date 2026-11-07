@@ -8,6 +8,7 @@
   },
   "name": "The Land Jelly",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/the-land-jelly.webp",
   "system": {
     "health": {
       "value": 90,
@@ -41,6 +42,7 @@
       },
       "name": "Crushing Coils",
       "type": "item",
+      "img": "systems/cardrpg/art/items/natural/crushing-coils.webp",
       "system": {
         "slot": "hands",
         "hands": 0,
@@ -68,6 +70,9 @@
     "name": "The Land Jelly",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/the-land-jelly.webp"
+    }
   }
 }

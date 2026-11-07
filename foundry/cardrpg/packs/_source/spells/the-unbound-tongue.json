@@ -8,6 +8,7 @@
   },
   "name": "The Unbound Tongue",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-unbound-tongue.webp",
   "system": {
     "strength": 1,
     "source": "Ward Magic",

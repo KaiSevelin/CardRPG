@@ -5981,10 +5981,40 @@ const listed = new Set([...artList.matchAll(/^\| [ ✓] \| \*\*(.+?)\*\* \|/gm)]
 check("pieces missing from the art list",
   artable.filter(e => !listed.has(e.name)).map(e => e.name).slice(0, 5).join(", ") || "none",
   "none");
-/* And the count of what is drawn is the count of what carries a path. */
+/*
+ * And the count of what is wired up is the count the engine answers for.
+ *
+ * **It used to be the count of entries carrying an `art:` string, and that count was nought** --
+ * for every piece in the book, the ten deck backs included, which were declared with `art: ""`.
+ * The field is still the way to overrule a path; it is no longer the way one is found, so asking
+ * for it measured a thing nobody fills in. Both sides now ask `artIn` and `backOf`, which are the
+ * functions Foundry's own documents are built with: a piece counted here appears in play.
+ */
+const { artIn: artInLive, backOf: backOfLive } = await import("../module/decks.mjs");
 check("the list agrees on what is wired up",
   Number(/of which \*\*(\d+)\*\* are wired up/.exec(artList)?.[1] ?? -1),
-  artable.filter(e => e.art).length + backs.filter(([, b]) => b.art).length);
+  artable.filter(e => artInLive(e)).length + backs.filter(([k]) => backOfLive(k)).length);
+/*
+ * **And every path the game hands Foundry names a file that is there.**
+ *
+ * This is the check the wiring needed, and it is a different question from the two either side of
+ * it. *Is there a path* is answered above and *is every file a piece* is answered further down,
+ * from the directory inward; neither notices a path that is well-formed, counted, and points at
+ * nothing. A missing texture in Foundry is a silent fallback to core's placeholder, so a picture
+ * filed one letter off is a picture that never shows and never complains -- and the paths are now
+ * derived from a name, which means a renamed card moves its own path and leaves its file behind.
+ *
+ * Asked of `artIn` and `backOf` rather than of the shelves, so it tests the answer the game gets.
+ */
+const artRoot = path.join(root, "art");
+const fileFor = p => path.join(artRoot, String(p).replace(/^systems\/cardrpg\/art\//, ""));
+const pathless = [
+  ...artable.map(e => [e.name, artInLive(e)]),
+  ...backs.map(([k, b]) => [b.label ?? k, backOfLive(k)])
+].filter(([, p]) => p && !fs.existsSync(fileFor(p)));
+check("art paths the game would hand Foundry", artable.length + backs.length, 588);
+check("and those naming a file that is not there",
+  pathless.map(([name, p]) => `${name} -> ${p}`).slice(0, 5).join(", ") || "none", "none");
 /*
  * **Every group in the brief lands in a slot something writes.**
  *
@@ -6068,9 +6098,10 @@ check("and the brief says so before either table",
 check("and a size", /\| Size \| \*\*512 \u00d7 512\*\* \|/.test(artList) ? "yes" : "no", "yes");
 check("and transparency, which a card does not want",
   /\*\*transparency is required\*\*/.test(artList) ? "yes" : "no", "yes");
-/* Said again per group, so the row an artist is reading carries the shape of the row. */
+/* Said again per group, so the row an artist is reading carries the shape of the row. The count of
+ * what is wired up sits between the two now, and used to be absent because it was always nought. */
 const tokenGroups = [...artList.matchAll(
-  /\*\*(\d+) pieces?\*\*\. \*\*1:1, 512 \u00d7 512, transparent\.\*\* Suggested path: `cardrpg\/art\/(\S+?)\/`/g)]
+  /\*\*(\d+) pieces?\*\*(?:, \d+ wired up)?\. \*\*1:1, 512 \u00d7 512, transparent\.\*\* Suggested path: `cardrpg\/art\/(\S+?)\/`/g)]
   .map(m => m[2]);
 check("groups that restate the token shape", tokenGroups.join(", "), "tokens, tokens");
 /* One picture in both slots, which is the economy and wants saying where it is read. */
@@ -7506,8 +7537,14 @@ for (const [label, builder] of [["an action card", "actionCardData"], ["a skill 
  * bug: one `img` in the file passed for all four slots.
  */
 const slateBody = setupSource.slice(setupSource.indexOf("export function slateData"));
+/*
+ * **And the whole entry goes in, not a fresh `{ art }`.** The path is derived from the list a
+ * piece is on and `art.mjs` knows a piece by the object content declared, so handing it an object
+ * built on the spot asks about something that is on no list. `{ art }` was enough while the field
+ * was the only answer; it is now the one spelling that cannot work.
+ */
 check("an item definition can carry art",
-  /\.\.\.\(artIn\(\{ art \}\) \? \{ img: artIn\(\{ art \}\) \} : \{\}\)/
+  /\.\.\.\(artIn\(entry\) \? \{ img: artIn\(entry\) \} : \{\}\)/
     .test(slateBody.slice(0, slateBody.indexOf("\n}"))) ? "yes" : "no", "yes");
 check("and `art` is destructured out, so it cannot fall into system again",
   /const \{ name, group, active, grants, bonus, text, copies, art, \.\.\.rest \} = entry;/

@@ -8,6 +8,7 @@
   },
   "name": "The Door Home",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-door-home.webp",
   "system": {
     "strength": 5,
     "source": "Household Magic",

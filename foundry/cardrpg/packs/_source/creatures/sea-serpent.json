@@ -8,6 +8,7 @@
   },
   "name": "Sea Serpent",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/sea-serpent.webp",
   "system": {
     "health": {
       "value": 40,
@@ -39,6 +40,7 @@
       },
       "name": "Crushing Coils",
       "type": "item",
+      "img": "systems/cardrpg/art/items/natural/crushing-coils.webp",
       "system": {
         "slot": "hands",
         "hands": 0,
@@ -70,6 +72,7 @@
       },
       "name": "Dragon Jaws",
       "type": "item",
+      "img": "systems/cardrpg/art/items/natural/dragon-jaws.webp",
       "system": {
         "slot": "hands",
         "hands": 0,
@@ -97,6 +100,9 @@
     "name": "Sea Serpent",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/sea-serpent.webp"
+    }
   }
 }

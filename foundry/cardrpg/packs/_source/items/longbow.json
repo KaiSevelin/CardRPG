@@ -8,6 +8,7 @@
   },
   "name": "Longbow",
   "type": "item",
+  "img": "systems/cardrpg/art/items/longbow.webp",
   "system": {
     "ammo": "bow",
     "slot": "hands",

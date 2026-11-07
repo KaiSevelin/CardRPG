@@ -8,6 +8,7 @@
   },
   "name": "Queen of the Dark",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/queen-of-the-dark.webp",
   "system": {
     "health": {
       "value": 70,
@@ -40,6 +41,7 @@
       },
       "name": "Dark Lantern",
       "type": "item",
+      "img": "systems/cardrpg/art/items/npc/dark-lantern.webp",
       "system": {
         "slot": "hands",
         "hands": 1,
@@ -70,6 +72,7 @@
       },
       "name": "Grave-Cold Hands",
       "type": "item",
+      "img": "systems/cardrpg/art/items/natural/grave-cold-hands.webp",
       "system": {
         "slot": "hands",
         "hands": 0,
@@ -96,6 +99,9 @@
     "name": "Queen of the Dark",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/queen-of-the-dark.webp"
+    }
   }
 }

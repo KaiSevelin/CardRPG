@@ -8,6 +8,7 @@
   },
   "name": "The Borrowed Body",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-borrowed-body.webp",
   "system": {
     "strength": 3,
     "source": "Spiritualism",

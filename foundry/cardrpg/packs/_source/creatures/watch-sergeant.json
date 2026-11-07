@@ -8,6 +8,7 @@
   },
   "name": "Watch Sergeant",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/watch-sergeant.webp",
   "system": {
     "health": {
       "value": 14,
@@ -42,6 +43,7 @@
       },
       "name": "Halberd",
       "type": "item",
+      "img": "systems/cardrpg/art/items/halberd.webp",
       "system": {
         "slot": "hands",
         "hands": 2,
@@ -73,6 +75,7 @@
       },
       "name": "Mail Shirt",
       "type": "item",
+      "img": "systems/cardrpg/art/items/mail-shirt.webp",
       "system": {
         "slot": "body",
         "tags": [
@@ -96,6 +99,7 @@
       },
       "name": "Light Helm",
       "type": "item",
+      "img": "systems/cardrpg/art/items/light-helm.webp",
       "system": {
         "slot": "head",
         "tags": [
@@ -115,6 +119,9 @@
     "name": "Watch Sergeant",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/watch-sergeant.webp"
+    }
   }
 }

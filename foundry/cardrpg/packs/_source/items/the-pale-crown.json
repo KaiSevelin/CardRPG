@@ -8,6 +8,7 @@
   },
   "name": "The Pale Crown",
   "type": "item",
+  "img": "systems/cardrpg/art/items/the-pale-crown.webp",
   "system": {
     "slot": "head",
     "weight": 1,

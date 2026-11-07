@@ -8,6 +8,7 @@
   },
   "name": "Way Cards",
   "type": "deck",
+  "img": "systems/cardrpg/art/backs/action.webp",
   "cards": [
     {
       "_id": "UXw0VEFlETUWFouk",
@@ -23,9 +24,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Set Spear"
+          "name": "Set Spear",
+          "img": "systems/cardrpg/art/cards/way/set-spear.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {
@@ -57,9 +62,13 @@
       "face": 0,
       "faces": [
         {
-          "name": "Roll With It"
+          "name": "Roll With It",
+          "img": "systems/cardrpg/art/cards/way/roll-with-it.webp"
         }
       ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
       "system": {
         "primary": [
           {

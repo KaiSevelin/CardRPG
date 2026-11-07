@@ -8,6 +8,7 @@
   },
   "name": "Warden's Seal",
   "type": "item",
+  "img": "systems/cardrpg/art/items/wardens-seal.webp",
   "system": {
     "slot": "fingers",
     "weight": 0,

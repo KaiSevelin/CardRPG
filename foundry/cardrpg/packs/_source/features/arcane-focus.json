@@ -8,6 +8,7 @@
   },
   "name": "Arcane Focus",
   "type": "feature",
+  "img": "systems/cardrpg/art/features/arcane-focus.webp",
   "system": {
     "group": "power",
     "bonus": {

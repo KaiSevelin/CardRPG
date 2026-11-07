@@ -8,6 +8,7 @@
   },
   "name": "Hollow Bolt",
   "type": "item",
+  "img": "systems/cardrpg/art/items/hollow-bolt.webp",
   "system": {
     "slot": "belt",
     "tags": [

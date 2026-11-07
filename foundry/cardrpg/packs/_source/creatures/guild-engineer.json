@@ -8,6 +8,7 @@
   },
   "name": "Guild Engineer",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/guild-engineer.webp",
   "system": {
     "health": {
       "value": 12,
@@ -38,6 +39,7 @@
       },
       "name": "Arquebus",
       "type": "item",
+      "img": "systems/cardrpg/art/items/arquebus.webp",
       "system": {
         "ammo": "firearm",
         "slot": "hands",
@@ -74,6 +76,7 @@
       },
       "name": "Brigandine",
       "type": "item",
+      "img": "systems/cardrpg/art/items/brigandine.webp",
       "system": {
         "slot": "body",
         "tags": [
@@ -98,6 +101,9 @@
     "name": "Guild Engineer",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/guild-engineer.webp"
+    }
   }
 }

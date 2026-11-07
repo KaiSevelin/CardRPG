@@ -8,6 +8,7 @@
   },
   "name": "Moth-wing Fletching",
   "type": "item",
+  "img": "systems/cardrpg/art/items/moth-wing-fletching.webp",
   "system": {
     "slot": "belt",
     "tags": [

@@ -8,6 +8,7 @@
   },
   "name": "Mother Longhand",
   "type": "npc",
+  "img": "systems/cardrpg/art/tokens/mother-longhand.webp",
   "system": {
     "health": {
       "value": 72,
@@ -41,6 +42,7 @@
       },
       "name": "Grasping Claws",
       "type": "item",
+      "img": "systems/cardrpg/art/items/natural/grasping-claws.webp",
       "system": {
         "slot": "hands",
         "hands": 0,
@@ -71,6 +73,7 @@
       },
       "name": "Elf-Bolt",
       "type": "item",
+      "img": "systems/cardrpg/art/items/natural/elf-bolt.webp",
       "system": {
         "slot": "hands",
         "hands": 1,
@@ -97,6 +100,9 @@
     "name": "Mother Longhand",
     "width": 1,
     "height": 1,
-    "depth": 1
+    "depth": 1,
+    "texture": {
+      "src": "systems/cardrpg/art/tokens/mother-longhand.webp"
+    }
   }
 }

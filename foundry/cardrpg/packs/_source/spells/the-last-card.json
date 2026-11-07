@@ -8,6 +8,7 @@
   },
   "name": "The Last Card",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-last-card.webp",
   "system": {
     "strength": 2,
     "source": "Asceticism",

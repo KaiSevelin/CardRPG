@@ -8,6 +8,7 @@
   },
   "name": "The House That Was",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/the-house-that-was.webp",
   "system": {
     "strength": 4,
     "source": "Household Magic",

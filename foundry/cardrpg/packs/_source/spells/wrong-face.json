@@ -8,6 +8,7 @@
   },
   "name": "Wrong Face",
   "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/wrong-face.webp",
   "system": {
     "strength": 2,
     "source": "Glamour",
