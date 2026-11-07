@@ -7322,7 +7322,7 @@ File: `items/natural/burning-grasp.webp`
 ```text
 SUBJECT. "Burning Grasp" — Natural
 
-Draw an edge, worn and sharpened back more than once; weight: the object sits, and the surface under it knows; grown rather than forged -- chitin, horn, tooth or claw, still part of a body.
+Draw a huge open hand reaching with no weapon in it, the skin split into plates like cooled lava and the cracks between them inked near-black, widest across the palm. Drawn from the wrist and no further -- no arm, no body -- and the heat in the splits is bare paper rather than a colour or a glow.
 ```
 
 ### Claws
@@ -7372,7 +7372,7 @@ File: `items/natural/elf-bolt.webp`
 ```text
 SUBJECT. "Elf-Bolt" — Focus
 
-Draw an object that is doing something while nobody holds it; grown rather than forged -- chitin, horn, tooth or claw, still part of a body.
+Draw a small knapped flint arrowhead lying in the palm of a human hand, far too old to belong to anyone living. Nothing about it is moving, and the hand is holding it very still.
 ```
 
 ### Fire Spray
@@ -7422,7 +7422,7 @@ File: `items/natural/killing-frost.webp`
 ```text
 SUBJECT. "Killing Frost" — Natural
 
-Draw the weapon drawn and held at tension; grown rather than forged -- chitin, horn, tooth or claw, still part of a body.
+Draw frost taking hold where no frost should be: a hard-edged patch of it spreading across standing grass and dark wet earth, the blades inside the edge furred stiff and the ones outside it still soft, the line between them sharp enough to trace. The frost is bare paper and the earth is ink; nothing holds it and nobody is in the frame.
 ```
 
 ### Mandibles
@@ -8823,4 +8823,9 @@ Answer a cluster by adding its keys to `DIRECTION` in `test/art-prompts.mjs` and
 | **3** | — | hung at the hip, the strap cut off at the frame | `items/drowned-bell` `items/marked-arrowhead` `items/quartermasters-belt` |
 | **3** | — | armour as worn metal and strap, not as a costume | `items/leather-armor` `items/light-helm` `items/mail-shirt` |
 | **2** | — | scribed and calibrated, unreadable to anybody not taught it | `items/fire-wand` `items/staff-of-healing` |
+
+## Directions that match no piece
+
+**None.** Every row in `DIRECTION` is keyed to a piece that exists. A key typed by hand is the one thing in this file that can be wrong without anything failing, so it is counted here rather than trusted.
+
 

@@ -1105,9 +1105,36 @@ const DIRECTION = {
   "items/natural/crushing-coils":
     "a thick loop of serpent body closed on something that is no longer the shape it was, the "
     + "head nowhere in the picture. Nothing is being bitten: the body is the weapon",
-  "items/npc/elf-bolt":
+  /*
+   * **This was keyed `items/npc/elf-bolt` and the piece is `items/natural/elf-bolt`,** so the
+   * direction was written, committed, and never applied to anything. A key that matches no piece
+   * fails silently -- the lookup misses, the piece falls through to its group motif, and the only
+   * way to notice is to read the picture. There is a check for it at the bottom of this file now.
+   *
+   * The fall-through was the worst available: the natural-weapon motif says *grown rather than
+   * forged -- chitin, horn, tooth or claw, still part of a body*, and an elf-bolt is a knapped
+   * flint arrowhead. Of everything in this book it is the single most forged-not-grown object,
+   * and the motif asserted the opposite of it in those words.
+   */
+  "items/natural/elf-bolt":
     "a small knapped flint arrowhead lying in the palm of a human hand, far too old to belong to "
     + "anyone living. Nothing about it is moving, and the hand is holding it very still",
+  /*
+   * The other two in the group that the chitin-and-tooth motif was simply false for. A frost is
+   * not held at tension and a demon's grasp has no edge to sharpen, which is what those two were
+   * being told to draw. Both name what is ink and what is paper, because neither subject has an
+   * obvious dark in it and that is how `items/npc/dark-lantern` went blue nine times.
+   */
+  "items/natural/killing-frost":
+    "frost taking hold where no frost should be: a hard-edged patch of it spreading across "
+    + "standing grass and dark wet earth, the blades inside the edge furred stiff and the ones "
+    + "outside it still soft, the line between them sharp enough to trace. The frost is bare "
+    + "paper and the earth is ink; nothing holds it and nobody is in the frame",
+  "items/natural/burning-grasp":
+    "a huge open hand reaching with no weapon in it, the skin split into plates like cooled lava "
+    + "and the cracks between them inked near-black, widest across the palm. Drawn from the "
+    + "wrist and no further -- no arm, no body -- and the heat in the splits is bare paper "
+    + "rather than a colour or a glow",
   "items/natural/nip":
     "a small mouth of needle teeth already closed on something and not letting go. The least "
     + "dangerous weapon in the game: too small to kill anybody, close enough that the grip fills "
@@ -2098,6 +2125,38 @@ for (const [direction, members] of clusters) {
 }
 push("");
 
+/*
+ * **Directions keyed to a path no piece has, which is a bug that cannot be seen.**
+ *
+ * `items/npc/elf-bolt` was written, committed and never applied: the piece is
+ * `items/natural/elf-bolt`, the lookup missed, and the piece quietly fell through to a group
+ * motif that happened to describe the opposite of what it is. Nothing failed. The book
+ * regenerated, the suite passed, the picture was drawn and paid for, and the only way to find it
+ * was for somebody to look at the picture and say it seemed wrong.
+ *
+ * Every other table here is keyed on something the content supplies -- a verb, a tag, a kind --
+ * so a bad key there means a `[GAP]` marker in the prompt. `DIRECTION` is keyed on a path typed
+ * by hand, which is the one place in this file where a mistake is silent. So it is listed, and
+ * the suite pins the list at none.
+ */
+const orphans = (() => {
+  const keys = new Set(ledger.map(p => p.key));
+  return Object.keys(DIRECTION).filter(k => !keys.has(k)).sort();
+})();
+
+push("## Directions that match no piece", "",
+  orphans.length
+    ? `**${orphans.length} row${orphans.length === 1 ? "" : "s"} in \`DIRECTION\` ${
+      orphans.length === 1 ? "is" : "are"} keyed to a path no piece has**, so ${
+      orphans.length === 1 ? "it was" : "they were"} never used and the piece ${
+      orphans.length === 1 ? "it names" : "they name"} fell through to a motif. Fix the key in `
+      + "`test/art-prompts.mjs` and regenerate."
+    : "**None.** Every row in `DIRECTION` is keyed to a piece that exists. A key typed by hand "
+      + "is the one thing in this file that can be wrong without anything failing, so it is "
+      + "counted here rather than trusted.",
+  "",
+  ...orphans.map(k => `- \`${k}\``), orphans.length ? "" : "");
+
 if (gaps.length) {
   const seen = [...new Set(gaps)].sort();
   push("## Gaps", "",
@@ -2112,6 +2171,10 @@ if (process.argv[1] && process.argv[1].endsWith("art-prompts.mjs")) {
   console.log(`wrote ${path.relative(process.cwd(), OUT)}: ${total} prompts`
     + `${gaps.length ? `, ${new Set(gaps).size} vocabulary gaps` : ", no gaps"}`);
   console.log(`  ${ledger.filter(p => p.overridden).length} directions written by hand`);
+  if (orphans.length) {
+    console.log(`  ${orphans.length} keyed to a path no piece has, so never used:`);
+    for (const k of orphans) console.log(`    ${k}`);
+  }
   console.log(`  ${shared} prompts in ${clusters.length} clusters share a direction,`
     + ` ${biting.length} of them with nothing in the subject to tell them apart either`);
   for (const [direction, members] of biting.slice(0, 4)) {

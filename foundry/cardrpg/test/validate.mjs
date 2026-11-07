@@ -5746,6 +5746,23 @@ const artPrompts = fs.readFileSync(path.join(root, "../art-prompts.md"), "utf8")
 check("the prompt book counts the same",
   Number(/\*\*(\d+) prompts\*\*/.exec(artPrompts)?.[1] ?? 0), artable.length + backs.length);
 /*
+ * **A hand-written direction keyed to a path no piece has.**
+ *
+ * `DIRECTION` in `art-prompts.mjs` is the one table in the book keyed on a path typed out rather
+ * than on something the content supplies, so it is the one place where a mistake costs nothing at
+ * the time. `items/npc/elf-bolt` was written for `items/natural/elf-bolt`: the lookup missed, the
+ * piece fell through to the natural-weapon motif -- *grown rather than forged, chitin, horn,
+ * tooth or claw* for a knapped flint arrowhead -- and the book regenerated, this suite passed and
+ * the picture was drawn and paid for before anyone looked at it and said it seemed wrong.
+ *
+ * The generator now lists them and this pins the list empty, so the next one costs a test run
+ * instead of an image.
+ */
+const orphanBlock = artPrompts.slice(artPrompts.indexOf("## Directions that match no piece"));
+check("directions keyed to a piece that does not exist",
+  /^\*\*None\.\*\*/m.test(orphanBlock.slice(0, orphanBlock.indexOf("\n## ") + 1 || undefined))
+    ? "none" : (orphanBlock.match(/^- `([^`]+)`$/gm) ?? []).join(", "), "none");
+/*
  * And the constraint that only one group needs, in the part that gets pasted.
  *
  * One intent pool serves every creature in the world, so *Close In* sits behind a goblin, an elf
