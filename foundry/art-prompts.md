@@ -6080,7 +6080,7 @@ File: `items/lockpicks.webp`
 ```text
 SUBJECT. "Lockpicks" — Tool · A roll of picks and a torsion wrench, in oiled cloth.
 
-Draw five slim steel picks lying side by side in the sewn loops of an oiled cloth, each ending in a different hook or rake, with a flat torsion wrench laid across them. The tools alone on the cloth: no lock, no keyhole, no door and no hand in the frame.
+Draw a strip of oiled cloth unrolled flat and empty, its sewn loops holding nothing at all, the tools long gone out of it. What they are is readable only in the cloth: a row of five slim dark stains worn into it where each slender one lay, and one flat wider stain across them. The cloth is the whole subject -- no tool of any kind in the frame, no metal, no lock, no keyhole, no door and no hand.
 
 MADE OF. 25gp -- wrought iron, brass or horn.
 ```

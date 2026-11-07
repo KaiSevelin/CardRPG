@@ -1361,10 +1361,32 @@ const DIRECTION = {
     + "needle, a hank of waxed gut, a folded wad of lint and a small stoppered bottle, laid out "
     + "in that order. The kit is the whole subject: nobody is being treated, and there is no "
     + "body, no wound and no blood in the frame",
+  /*
+   * **Three refusals, and the second one was on the fix for the first.**
+   *
+   * `[illicit]` at the OUTPUT stage every time. The first attempt was the bare wear motif. The
+   * second named the tools and took away the context -- *no lock, no keyhole, no door and no
+   * hand* -- on the theory that the crime in the picture was the lock being opened. It was not.
+   * Drawing five picks and a torsion wrench clearly and well IS the thing the moderator will not
+   * emit, and stripping the context only made them the sole and unmistakable subject.
+   *
+   * **`items/the-kit` is the proof, and it is the same category.** It refused once and then drew
+   * first time, because its direction never puts a pick in the frame: a canvas roll, tied shut.
+   * The rule that works is not *remove the crime*, it is **do not draw the tool**.
+   *
+   * So this draws the cloth and not what goes in it: an empty roll, the loops holding nothing,
+   * and the only trace of the tools is the oil worn into the cloth where each one lies. It is
+   * honest to a subject that reads *a roll of picks and a torsion wrench, IN OILED CLOTH*, it is
+   * nothing like The Kit's closed roll, and there is no pick in it to reject. A stain is not a
+   * tool -- which is the whole bet, and if this one refuses as well the subject is simply one
+   * this API will not draw, and the answer is to hand Lockpicks another item's picture.
+   */
   "items/lockpicks":
-    "five slim steel picks lying side by side in the sewn loops of an oiled cloth, each ending "
-    + "in a different hook or rake, with a flat torsion wrench laid across them. The tools alone "
-    + "on the cloth: no lock, no keyhole, no door and no hand in the frame",
+    "a strip of oiled cloth unrolled flat and empty, its sewn loops holding nothing at all, the "
+    + "tools long gone out of it. What they are is readable only in the cloth: a row of five "
+    + "slim dark stains worn into it where each slender one lay, and one flat wider stain across "
+    + "them. The cloth is the whole subject -- no tool of any kind in the frame, no metal, no "
+    + "lock, no keyhole, no door and no hand",
   "items/the-kit":
     "a fat canvas roll tied shut with a leather thong, worn pale and shiny at both ends by years "
     + "of being carried and never set down. It stays closed and what is inside it is never "
