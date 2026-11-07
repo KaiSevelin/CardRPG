@@ -1,6 +1,6 @@
 # Art list
 
-**592 pieces**, of which **0** are wired up. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card.
+**588 pieces**, of which **0** are wired up. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card.
 
 ## What to supply
 
@@ -53,7 +53,7 @@ Anything under `icons/svg/` is ignored on purpose: that is Foundry's own placeho
 
 ## Deck backs — draw these first
 
-**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 10 pictures against 582 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
+**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 10 pictures against 578 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
 
 **10 pieces**. Same 2:3 and 640 × 960 as a face, and **no safe area**: nothing is printed over a back, so the whole card is yours.
 
@@ -522,12 +522,11 @@ Always on, so a feature's picture is on the sheet for the character's whole life
 
 The largest group and the least urgent: an item is named on a sheet far more often than it is looked at. A generic picture per KIND would serve until there is art per item.
 
-**150 pieces**. Suggested path: `cardrpg/art/items/`
+**146 pieces**. Suggested path: `cardrpg/art/items/`
 
 | | Name | What it is | File |
 |---|---|---|---|
 |   | **Accuser's Ring** | Wonder · It is cold on the finger that points. · One enemy within 3 is Judged (1). | `items/accusers-ring.webp` |
-|   | **Amulet of the Fed Thread** | Wonder · The thread is mended. Something had to pay out the length. · When you would drop to 0 Health, drop to 1 instead. | `items/amulet-of-the-fed-thread.webp` |
 |   | **Amulet of the Mended Thread** | Wonder · A knotted thread in amber. The knot is tied, not drawn. · When you would drop to 0 Health, drop to 1 instead. | `items/amulet-of-the-mended-thread.webp` |
 |   | **Antidote** | Consumable · Charcoal, milk thistle and something the brewer will not name. | `items/antidote.webp` |
 |   | **Arming Sword** | Weapon · A plain single-handed blade. Every town has a smith who makes them. | `items/arming-sword.webp` |
@@ -541,7 +540,6 @@ The largest group and the least urgent: an item is named on a sheet far more oft
 |   | **Blunt Head** | Ammunition · Bow or crossbow. The target is Off-Balance (1). No save. · No point at all, which is the point. | `items/blunt-head.webp` |
 |   | **Bodkin Points** | Ammunition · Bow or crossbow. Ignores 2 armor. · A square spike, hardened. It is looking for a gap and will make one. | `items/bodkin-points.webp` |
 |   | **Boots of the Long Step** | Wonder · The soles are never quite worn in the same places twice. · Teleport to any square you can see within 6. | `items/boots-of-the-long-step.webp` |
-|   | **Boots of the Longer Step** | Wonder · Your Move values are +2. · They were barely worn because their owner could not stop. | `items/boots-of-the-longer-step.webp` |
 |   | **Bottle of Borrowed Pain** | Potion · It does not heal you. It postpones you. | `items/bottle-of-borrowed-pain.webp` |
 |   | **Brewer's Reserve** | Potion · The brewer keeps a cask of it back and will not say what is in it. | `items/brewers-reserve.webp` |
 |   | **Brigandine** | Armor · Blocks Sidestep reactions. · Plates riveted between canvas. Heavy enough that you stop dodging. | `items/brigandine.webp` |
@@ -552,7 +550,6 @@ The largest group and the least urgent: an item is named on a sheet far more oft
 |   | **Cleansing Draught** | Consumable · A temple brews it and does not sell it gladly. | `items/cleansing-draught.webp` |
 |   | **Climbing Rope** | Tool · Fifty feet of hemp. Nobody falls alone. | `items/climbing-rope.webp` |
 |   | **Cloak of the Grey** | Wonder · It is the colour of whatever is behind it. · Become Invisible (1). | `items/cloak-of-the-grey.webp` |
-|   | **Cloak of the Grey Road** | Wonder · The road is grey. So is everything you are now to your friends. · Become Invisible (1). | `items/cloak-of-the-grey-road.webp` |
 |   | **Cracked Spyglass** | Wonder · Foresee one extra type at the start of a fight. · The crack does not matter. What you see through it has not happened yet. | `items/cracked-spyglass.webp` |
 |   | **Crossbow** | Weapon · Anyone can be taught one in a week, which is why lords dislike them. | `items/crossbow.webp` |
 |   | **Crown of the Quiet Mind** | Wonder · Thin gold. Nothing in your head hurries while it is on. | `items/crown-of-the-quiet-mind.webp` |
@@ -639,7 +636,6 @@ The largest group and the least urgent: an item is named on a sheet far more oft
 |   | **Reaver's Edge** | Wonder · It eats what it meets, slowly, and starts with the armour. | `items/reavers-edge.webp` |
 |   | **Reliquary Band** | Power · A splinter of someone's finger under glass. | `items/reliquary-band.webp` |
 |   | **Repair Kit** | Tool · Files, rivets, pitch and wire. What acid leaves behind is work, not loss. | `items/repair-kit.webp` |
-|   | **Ring of Open Hands** | Power · You may Cast without a free hand. · Almost the ring you were hoping for. | `items/ring-of-open-hands.webp` |
 |   | **Ring of the Open Hand** | Power · You may Cast without a free hand. · Plain silver, worn thin. The gesture is already in it. | `items/ring-of-the-open-hand.webp` |
 |   | **Screaming Shaft** | Ammunition · Bow. Dazed (1), resist Presence 5. · Bored through so the air goes through it wrong. | `items/screaming-shaft.webp` |
 |   | **Serpent's Milk** | Poison · Apply with a Ready. Next Strike that hits: Poisoned 0 (3) -- no damage, three rounds without a secondary. · Milked, strained and kept cold... | `items/serpents-milk.webp` |
@@ -676,6 +672,15 @@ The largest group and the least urgent: an item is named on a sheet far more oft
 |   | **Whistling Shaft** | Ammunition · Bow. The target is Compelled (1) -- at you. · Whoever it passes becomes very interested in who sent it. | `items/whistling-shaft.webp` |
 |   | **Winter Cloak** | Wonder · The hem is always a little frozen, in any season. · Everything adjacent to you is Slowed (1). | `items/winter-cloak.webp` |
 |   | **Wooden Shield** | Shield · Banded oak, scarred across the face. | `items/wooden-shield.webp` |
+
+**4 more items are on this shelf and are not commissions.** Each is a cursed forgery of one honest item, and being impossible to tell from it is the whole of what it is: the picture it wears is that item's picture, and it is not drawn twice. `COUNTERFEIT` in `module/content.mjs` is where the pairing is declared.
+
+| Counterfeit | Found as | Wears the picture of | File |
+|---|---|---|---|
+| **Ring of Open Hands** | a plain silver ring | Ring of the Open Hand | `items/ring-of-the-open-hand.webp` |
+| **Cloak of the Grey Road** | a grey travelling cloak | Cloak of the Grey | `items/cloak-of-the-grey.webp` |
+| **Boots of the Longer Step** | good boots, barely worn | Boots of the Long Step | `items/boots-of-the-long-step.webp` |
+| **Amulet of the Fed Thread** | a knotted thread in amber | Amulet of the Mended Thread | `items/amulet-of-the-mended-thread.webp` |
 
 ## NPC gear
 

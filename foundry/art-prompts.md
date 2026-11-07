@@ -1,6 +1,6 @@
 # Art prompts
 
-**592 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
+**588 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
 
 It walks the same `GROUPS` the art list walks, by importing it rather than copying it, so the two files cannot disagree about what exists.
 
@@ -27,7 +27,7 @@ So the numbers are gone from the capsules and the picture is in their place: **t
 
 ## Deck backs
 
-**Draw these first.** 10 pictures against 582 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
+**Draw these first.** 10 pictures against 578 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
 
 ### The capsule — paste this once
 
@@ -5093,7 +5093,7 @@ WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of S
 
 ## Items
 
-**150 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/items/`.
+**146 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/items/`.
 
 An object, drawn as a plate from a catalogue of things: one item, one light, no hand.
 
@@ -5195,18 +5195,6 @@ SUBJECT. "Accuser's Ring" — Wonder · It is cold on the finger that points. ·
 Draw one hand's worth of object, drawn close and large.
 
 MADE OF. 500gp -- silver, worked bronze and fine leather.
-```
-
-### Amulet of the Fed Thread
-
-File: `items/amulet-of-the-fed-thread.webp`
-
-```text
-SUBJECT. "Amulet of the Fed Thread" — Wonder · The thread is mended. Something had to pay out the length. · When you would drop to 0 Health, drop to 1 instead.
-
-Draw hung on a cord and drawn hanging, turned off square.
-
-MADE OF. 0gp -- tin, bone or fired clay.
 ```
 
 ### Amulet of the Mended Thread
@@ -5365,18 +5353,6 @@ Draw worn unevenly, and the wear is the subject.
 MADE OF. 450gp -- silver, worked bronze and fine leather.
 ```
 
-### Boots of the Longer Step
-
-File: `items/boots-of-the-longer-step.webp`
-
-```text
-SUBJECT. "Boots of the Longer Step" — Wonder · Your Move values are +2. · They were barely worn because their owner could not stop.
-
-Draw worn unevenly, and the wear is the subject.
-
-MADE OF. 0gp -- tin, bone or fired clay.
-```
-
 ### Bottle of Borrowed Pain
 
 File: `items/bottle-of-borrowed-pain.webp`
@@ -5495,18 +5471,6 @@ SUBJECT. "Cloak of the Grey" — Wonder · It is the colour of whatever is behin
 Draw cloth with weight in it, hung from one point.
 
 MADE OF. 500gp -- fine wool, linen lining and silver clasps.
-```
-
-### Cloak of the Grey Road
-
-File: `items/cloak-of-the-grey-road.webp`
-
-```text
-SUBJECT. "Cloak of the Grey Road" — Wonder · The road is grey. So is everything you are now to your friends. · Become Invisible (1).
-
-Draw cloth with weight in it, hung from one point.
-
-MADE OF. 0gp -- sacking and undyed wool.
 ```
 
 ### Cracked Spyglass
@@ -6539,18 +6503,6 @@ SUBJECT. "Repair Kit" — Tool · Files, rivets, pitch and wire. What acid leave
 Draw a tool worn exactly where a hand goes and nowhere else.
 
 MADE OF. 30gp -- wrought iron, brass or horn.
-```
-
-### Ring of Open Hands
-
-File: `items/ring-of-open-hands.webp`
-
-```text
-SUBJECT. "Ring of Open Hands" — Power · You may Cast without a free hand. · Almost the ring you were hoping for.
-
-Draw an object with more inside it than its size allows.
-
-MADE OF. 0gp -- tin, bone or fired clay.
 ```
 
 ### Ring of the Open Hand
@@ -8783,7 +8735,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 
 ## Where prompts still repeat
 
-**173 prompts in 32 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
+**169 prompts in 32 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
 
 **6 of those clusters are the ones that bite**, listed first: the ones where the subject line carries no prose either, so neither half of the prompt tells the cards apart. The rest share a direction over subjects that already differ — forty-three consumables drawing a nearly-empty vessel still come back as forty-three different pictures, because each subject names its own.
 
@@ -8793,7 +8745,7 @@ Answer a cluster by adding its keys to `DIRECTION` in `test/art-prompts.mjs` and
 |---|---|---|---|
 | **18** | 2 | a glass vial, stoppered, with less in it than there was | `items/bottle-of-borrowed-pain` `items/brewers-reserve` `items/draught-of-lead` `items/draught-of-second-breath` `items/draught-of-the-hollow` …+13 |
 | **13** | 2 | one round out of the bundle, its point drawn sharply | `items/blunt-head` `items/bodkin-points` `items/chalked-shaft` `items/frost-dipped-bolt` `items/grapnel-bolt` …+8 |
-| **8** | 2 | an object with more inside it than its size allows | `features/arcane-focus` `items/focus-pendant` `items/holy-symbol` `items/pilgrims-token` `items/reliquary-band` …+3 |
+| **7** | 2 | an object with more inside it than its size allows | `features/arcane-focus` `items/focus-pendant` `items/holy-symbol` `items/pilgrims-token` `items/reliquary-band` …+2 |
 | **6** | 2 | used up in the open: cloth, wax or powder, half gone | `items/antidote` `items/cleansing-draught` `items/firepot` `items/flask-of-ink` `items/flask-of-oil` …+1 |
 | **4** | 2 | a tool worn exactly where a hand goes and nowhere else | `items/climbing-rope` `items/hunting-traps` `items/lantern` `items/repair-kit` |
 | **3** | 2 | an edge, worn and sharpened back more than once | `items/arming-sword` `items/trident` `items/npc/goblin-spear` |
@@ -8803,22 +8755,22 @@ Answer a cluster by adding its keys to `DIRECTION` in `test/art-prompts.mjs` and
 | **7** | 1 | a small dark bottle, labelled, a residue dried at the lip | `items/assassins-tincture` `items/black-lotus` `items/blade-venom` `items/drowsing-oil` `items/grave-cap-extract` …+2 |
 | **5** | 1 | the instant a blow lands, the weapon already through -- never wound up, never posing | `cards/starter/strike` `signatures/shade/double-or-nothing` `signatures/shade/lift` `signatures/shade/one-opening` `signatures/strength/red-mist` |
 | **5** | 1 | made well, by somebody who signed nothing | `items/fine-longsword` `items/marching-boots` `items/masterwork-crossbow` `items/proofed-mail` `items/smiths-hammer` |
-| **4** | 1 | worn unevenly, and the wear is the subject | `items/boots-of-the-long-step` `items/boots-of-the-longer-step` `items/hollow-boots` `items/pilgrims-shoes` |
 | **4** | 1 | the weapon drawn and held at tension | `items/crossbow` `items/matchlock-pistol` `items/shortbow` `items/npc/goblin-shortbow` |
 | **4** | 1 | a thing that says who somebody is before they speak | `items/fine-clothes` `items/gaming-set` `items/signet-ring` `items/travelling-cloak` |
+| **3** | 1 | worn unevenly, and the wear is the subject | `items/boots-of-the-long-step` `items/hollow-boots` `items/pilgrims-shoes` |
 | **2** | 1 | ground covered -- weight forward, the last footfall still behind | `cards/starter/advance` `signatures/shade/over-and-past` |
 | **2** | 1 | ground covered -- weight forward, the last footfall still behind; the instant a blow lands, the weapon already through -- never wound up, never posing | `cards/starter/lunge` `signatures/strength/the-lance` |
 | **2** | 1 | pulled toward something against the will | `cards/starter/taunt` `signatures/strength/play-to-the-crowd` |
 | **10** | — |  | `backs/action` `backs/fate` `backs/skill` `backs/item` `backs/feature` …+5 |
-| **7** | — | hung on a cord and drawn hanging, turned off square | `items/amulet-of-the-fed-thread` `items/amulet-of-the-mended-thread` `items/gag-of-the-nine` `items/gorget-of-the-turned-blade` `items/hourglass-charm` …+2 |
 | **6** | — | one hand's worth of object, drawn close and large | `items/accusers-ring` `items/gamblers-coin` `items/mnemonic-stone` `items/pact-iron` `items/serpents-tooth-ring` …+1 |
+| **6** | — | hung on a cord and drawn hanging, turned off square | `items/amulet-of-the-mended-thread` `items/gag-of-the-nine` `items/gorget-of-the-turned-blade` `items/hourglass-charm` `items/surgeons-pin` …+1 |
 | **6** | — | held, or just set down, the grip polished by gripping | `items/blade-of-the-eager-hand` `items/discriminating-wand` `items/gauntlet-of-the-open-palm` `items/hooked-gauntlet` `items/reavers-edge` …+1 |
 | **5** | — | weight: the object sits, and the surface under it knows; an edge, worn and sharpened back more than once | `items/halberd` `items/lance` `items/mace` `items/pike` `items/warhammer` |
 | **4** | — | weight: the object sits, and the surface under it knows; the weapon drawn and held at tension | `items/arquebus` `items/heavy-crossbow` `items/longbow` `items/matchlock-musket` |
-| **4** | — | cloth with weight in it, hung from one point | `items/cloak-of-the-grey` `items/cloak-of-the-grey-road` `items/mantle-of-the-unburdened` `items/winter-cloak` |
 | **4** | — | worn through at the one spot a thumb has found | `items/sessyfyns-tear` `items/the-black-lantern` `items/the-pale-crown` `items/the-unquiet-quiver` |
 | **3** | — | armour as worn metal and strap, not as a costume; weight: the object sits, and the surface under it knows | `items/brigandine` `items/great-helm` `items/plate` |
 | **3** | — | a shield, face on and slightly turned, its edge nicked from use | `items/buckler` `items/kite-shield` `items/wooden-shield` |
+| **3** | — | cloth with weight in it, hung from one point | `items/cloak-of-the-grey` `items/mantle-of-the-unburdened` `items/winter-cloak` |
 | **3** | — | shaped to a skull, the hollow drawn most carefully | `items/crown-of-the-quiet-mind` `items/far-sight-monocle` `items/helm-of-the-watchful` |
 | **3** | — | hung at the hip, the strap cut off at the frame | `items/drowned-bell` `items/marked-arrowhead` `items/quartermasters-belt` |
 | **3** | — | armour as worn metal and strap, not as a costume | `items/leather-armor` `items/light-helm` `items/mail-shirt` |

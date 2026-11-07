@@ -1240,6 +1240,43 @@ export const ITEMS = [
   }
 ];
 
+/**
+ * **Which honest item each counterfeit is pretending to be.**
+ *
+ * Four of the six cursed items are built as forgeries of a specific thing on the same shelf, and
+ * the pairing is the joke: *Ring of Open Hands* grants exactly what *Ring of the Open Hand*
+ * grants, and is found as `a plain silver ring`, which is what the real one is -- *plain silver,
+ * worn thin*. The only tell is a plural, and you cannot read it until the ring is on.
+ *
+ * **So they share one picture, and this is where that is said rather than in the art layer.** A
+ * forgery that looked cheaper than the thing it forges would give itself away in the one place a
+ * player looks before deciding, and the art pipeline derives material from `value` -- which is
+ * `0` on all six, meaning *not for sale* and read as *tin, bone or fired clay*. A 600gp silver
+ * ring beside the same ring in tin is a solved mystery. One file for both, and the item that owns
+ * the file is the honest one.
+ *
+ * `Gauntlet of the Open Palm` and `Blade of the Eager Hand` are deliberately absent: they are
+ * cursed and unidentified without forging anything in particular (`a fine plated gauntlet`, `an
+ * old sword, very sharp`), so there is no counterpart to borrow and each keeps its own picture.
+ * Pairing them would make a Hooked Gauntlet and a Longsword ambiguous for no design reason.
+ */
+export const COUNTERFEIT = {
+  "Ring of Open Hands": "Ring of the Open Hand",
+  "Cloak of the Grey Road": "Cloak of the Grey",
+  "Boots of the Longer Step": "Boots of the Long Step",
+  "Amulet of the Fed Thread": "Amulet of the Mended Thread"
+};
+
+/**
+ * The honest item a counterfeit wears the picture of, or nothing.
+ *
+ * One spelling, because the art list, the prompt book and the shoot all have to agree about which
+ * pieces exist, and three readings of one object literal is two chances to drift.
+ */
+export function forges(name) {
+  return COUNTERFEIT[name] ?? "";
+}
+
 
 /* -------------------------------------------- */
 /*  Wild Magic                                  */

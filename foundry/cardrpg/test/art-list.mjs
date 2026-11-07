@@ -366,7 +366,13 @@ export const GROUPS = [
   { dir: "items", title: "Items",
     why: "The largest group and the least urgent: an item is named on a sheet far more often than "
       + "it is looked at. A generic picture per KIND would serve until there is art per item.",
-    list: content.ITEMS.filter(i => !i.npc) },
+    /*
+     * **A counterfeit is not a piece.** The four items in `COUNTERFEIT` wear the picture of the
+     * honest item they forge, because being indistinguishable from it is the whole of what they
+     * are, so there is nothing of their own to draw and nothing of their own to pay for. They are
+     * still items, still in the packs, still on the shelf -- they are just not commissions.
+     */
+    list: content.ITEMS.filter(i => !i.npc && !content.forges(i.name)) },
   { dir: "items/npc", title: "NPC gear",
     why: "Tuned separately from player gear and never offered in a player's picker.",
     list: content.NPC_GEAR ?? [] },
@@ -568,6 +574,30 @@ for (const group of GROUPS) {
       + `| \`${group.dir}/${slug(entry.name)}.webp\` |`);
   }
   push("");
+  /*
+   * **The items that are missing from the table above on purpose**, said under the group they
+   * would otherwise be in. Four items out of a hundred and fifty are absent from a list that
+   * calls itself the whole of the game's art, and a reader who notices deserves the reason in
+   * the same place rather than in a source comment they will never open.
+   */
+  if (group.dir === "items" && Object.keys(content.COUNTERFEIT).length) {
+    push(
+      `**${Object.keys(content.COUNTERFEIT).length} more items are on this shelf and are not `
+      + "commissions.** Each is a cursed forgery of one honest item, and being impossible to "
+      + "tell from it is the whole of what it is: the picture it wears is that item's picture, "
+      + "and it is not drawn twice. `COUNTERFEIT` in `module/content.mjs` is where the pairing "
+      + "is declared.",
+      "",
+      "| Counterfeit | Found as | Wears the picture of | File |",
+      "|---|---|---|---|"
+    );
+    for (const [fake, real] of Object.entries(content.COUNTERFEIT)) {
+      const it = content.ITEMS.find(i => i.name === fake);
+      push(`| **${fake}** | ${it?.unidentifiedName ?? "—"} | ${real} `
+        + `| \`${group.dir}/${slug(real)}.webp\` |`);
+    }
+    push("");
+  }
 }
 
 /*

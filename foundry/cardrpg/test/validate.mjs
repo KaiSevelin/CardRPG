@@ -5579,11 +5579,36 @@ const artable = [
   content.WARRIOR_DECK, content.INTENTS, content.COMMON_POOL, content.WAY_CARDS,
   content.SHADE_POOL, content.STRENGTH_POOL, content.WARRIOR_SKILLS, content.WILD_MAGIC,
   content.FORMULAS, content.SHADOW_FORMULAS, content.MIND_POOL, content.FAITH_POOL,
-  content.FEATURES, content.ITEMS.filter(i => !i.npc), content.NPC_GEAR ?? [],
+  content.FEATURES, content.ITEMS.filter(i => !i.npc && !content.forges(i.name)),
+  content.NPC_GEAR ?? [],
   content.NATURAL_WEAPONS ?? [], everyCreatureForArt, [content.WARRIOR],
   ...Object.entries(content).filter(([k]) => k.endsWith("_SIGNATURES")).map(([, v]) => v)
 ].flat();
-check("pieces of content that take art", artable.length, 582);
+check("pieces of content that take art", artable.length, 578);
+/*
+ * **The four items that are content without being commissions, and the item each one wears.**
+ *
+ * `artable` excludes them through `content.forges`, which is the same call the art list filters
+ * on, so neither file can drift from the other -- and that is exactly why the pairing itself has
+ * to be pinned here instead. A one-line edit to `COUNTERFEIT` would otherwise take an item out of
+ * the brief, out of the book and out of the shoot with every count still agreeing and nothing to
+ * say a picture had stopped being commissioned.
+ *
+ * The honest half of each pair must be a piece in its own right. A counterfeit pointed at another
+ * counterfeit, or at an item nobody draws, is a cursed ring with no picture at all.
+ */
+check("counterfeits, and the item each one is drawn as",
+  Object.entries(content.COUNTERFEIT).map(([f, r]) => `${f} -> ${r}`).join(" | "),
+  "Ring of Open Hands -> Ring of the Open Hand "
+  + "| Cloak of the Grey Road -> Cloak of the Grey "
+  + "| Boots of the Longer Step -> Boots of the Long Step "
+  + "| Amulet of the Fed Thread -> Amulet of the Mended Thread");
+check("and each is cursed, and each one it forges is not",
+  Object.entries(content.COUNTERFEIT).filter(([fake, real]) => {
+    const f = content.ITEMS.find(i => i.name === fake);
+    const r = content.ITEMS.find(i => i.name === real);
+    return !f?.curse || !r || r.curse || content.forges(real) || !artable.includes(r);
+  }).map(([f]) => f).join(", ") || "none", "none");
 /*
  * **And the goblin's authored deck is gone entirely.** Six cards from before the intent pool, five
  * of which had no counterpart in it because the pool had replaced them -- Rush is Close In, Cower
@@ -6125,7 +6150,7 @@ const briefs = faceRows.map(r => r.brief);
 const leaked = briefs.flatMap(text =>
   [...text.matchAll(/\b([a-z]+[A-Z][a-zA-Z]*)\b/g)].map(m => m[1]));
 /* A pattern that matched no rows at all would report "none" for any list whatsoever. */
-check("briefs the check actually read", briefs.length, 582);
+check("briefs the check actually read", briefs.length, 578);
 check("keys that leaked into the brief",
   leaked.length ? [...new Set(leaked)].join(", ") : "none", "none");
 /*
@@ -6357,7 +6382,7 @@ check("and the log is a record, not a source",
  * spelling them again. */
 const packSource = fs.readFileSync(path.join(root, "test/build-packs.mjs"), "utf8");
 const rows = faceRows;
-check("file paths in the brief", rows.length, 582);
+check("file paths in the brief", rows.length, 578);
 /* And the backs, whose path is the slug of their KEY rather than of their printed label. */
 const backPaths = [...artList.matchAll(/\| `(backs\/[^`]+)` \|/g)].map(m => m[1]);
 check("back paths in the brief", backPaths.length, backs.length);
