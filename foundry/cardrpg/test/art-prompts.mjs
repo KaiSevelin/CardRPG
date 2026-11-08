@@ -215,6 +215,13 @@ const FOCAL = {
    * what it has to show is **the thing being undone pushing back**. Not a monster and not a
    * spell going off: a working that has turned, in a room where people have been at it for days.
    */
+  /*
+   * An intruder is the only card a player does not want, which makes it the one they look at
+   * hardest. What it must NOT be is an attack: nothing here is being done to you in the picture,
+   * because by the time the card is in your hand it has already happened and what is left is
+   * carrying it.
+   */
+  "cards/harm": "what is left after the thing happened, carried rather than suffered",
   "cards/ritual": "the moment a long patient job turns on the people doing it, in a room that "
     + "has been lived in for days",
   "cards/npc": "the point of contact, the place the ground is marked, the gap where the distance "
@@ -1437,6 +1444,40 @@ const DIRECTION = {
    * arithmetic. So the moment is competence around a loss that is still visible.
    */
   /*
+   * **The eight intruder faces.** The brief called these *"two faces, fixed"* and filed them under
+   * what does not need art -- written when there were two of them, and the argument did not
+   * survive the fifth. They are read more often than most of what was drawn.
+   *
+   * Each one is the **cost**, not the cause: a Wound is dead weight, a Fear is ground given up, a
+   * Compulsion is the rest you are not allowed. None of them is a blow landing, because by the
+   * time the card is in a hand the blow is over.
+   */
+  "cards/harm/wound":
+    "an arm bound tight and held close, doing nothing and plainly unable to -- the rest of the "
+    + "body still upright and still in the fight",
+  "cards/harm/taint-body":
+    "a hand's veins gone dark and standing up under the skin, traced further than a hand should "
+    + "reach, the fingers still working",
+  "cards/harm/taint-mind":
+    "a face lit from somewhere that is not in the picture, looking slightly past the viewer at "
+    + "something it has been looking at for a while",
+  "cards/harm/fear":
+    "a single backward step already taken: the front foot lifted and turned, the ground where it "
+    + "was standing empty and marked",
+  "cards/harm/doubt":
+    "a hand stopped halfway to the thing it was reaching for, and the gap between them as the "
+    + "subject of the picture",
+  "cards/harm/rage":
+    "a swing already committed to, seen from behind the shoulder, with nothing in front of it "
+    + "worth swinging at",
+  "cards/harm/compulsion":
+    "somebody who cannot sit down: the chair there, plainly there, and the body going past it "
+    + "again",
+  "cards/harm/confusion":
+    "a group that has lost its one direction -- each of them turned a different way, none of "
+    + "them moving",
+
+  /*
    * **The eight ritual twists.** A twist is a NAME and a COST, so there is no action in the text
    * to draw -- the same problem the features had, and the same answer: each one names its own
    * moment instead of being handed a good instruction eight times.
@@ -1917,6 +1958,11 @@ const FRAME = {
   "items/npc": "A monster's kit -- cruder than a player's, made or scavenged rather than bought.",
   "items/natural": "Grown rather than carried: a mandible, a sting, a tail club. It cannot be "
     + "disarmed because it is part of a body, and the picture should make that obvious.",
+  "cards/harm": "A card nobody chose to put in a deck: it sits in a hand of five being useless, "
+    + "or comes up at a moment nobody picked. It must read as WRONG at a glance and at thumbnail "
+    + "size, under a dark red wash the interface puts over it — so: strong simple shapes, "
+    + "little fine detail, and no weapon, no attacker and no blood. The harm has already "
+    + "happened; this is what is left of it.",
   "cards/ritual": "A ritual going wrong. Days of work, out of combat, on one of the party's own "
     + "characters -- so the room is quiet and worked-in, and what has turned is the working "
     + "itself rather than anything arriving. No monster, no blade, no summoning circle.",

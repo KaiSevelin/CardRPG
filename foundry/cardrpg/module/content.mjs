@@ -4004,6 +4004,42 @@ export const RITUALS = [
       + "is very little room to go wrong. The name is the real gate &mdash; it is the one thing in "
       + "the four that no amount of coin buys, because somebody has to find out who did this.</p>"
   },
+  /*
+   * --- and the three lesser recipes, which the levelling graph hands out ---
+   *
+   * **The four above are found and these three are learned**, which is the split worth stating.
+   * A Regrowth is *more of a quest than a service* (ideas.md) and belongs in the world where a GM
+   * can place it; mending a deck full of Wounds is what a person who studied rituals should simply
+   * be able to do. So these sit on nodes off **Letters** -- the node that grants *reading and
+   * writing*, which is the world document's own gate for the whole school: *anyone literate can
+   * do it*.
+   *
+   * Cheap in Progress on purpose. A ritual specialist should be the person who tidies up after a
+   * fight, and that is worth being without being worth eight checks.
+   */
+  {
+    name: "Recipe: Mending", ritual: "wounds", slot: "pack", weight: 1, value: 120, kind: "Recipe",
+    text: "Lore, Progress 2, Pressure 4. Removes every Wound from one character's deck.",
+    description: "<p>A long rest takes one Wound and a treatment takes one. This takes all of "
+      + "them, which is a different thing to want: a party out of its third fight has a deck "
+      + "nobody can play, and one a night is not an answer to that.</p>"
+  },
+  {
+    name: "Recipe: Quiet Night", ritual: "lasting", slot: "pack", weight: 1, value: 200,
+    kind: "Recipe",
+    text: "Presence, Progress 2, Pressure 3. A lasting injury's remaining days are spent at once.",
+    description: "<p>The only thing in the game that shortens a lasting injury. The four greater "
+      + "rituals lift the <em>permanent</em> kind and have nothing to say about the other, so "
+      + "a &minus;1 on the injury draw used to mean two weeks and no recourse.</p>"
+  },
+  {
+    name: "Recipe: Unknotting", ritual: "held", slot: "pack", weight: 1, value: 250,
+    kind: "Recipe",
+    text: "Lore, Progress 3, Pressure 3. Lifts one condition that has no duration to spend.",
+    description: "<p>Shake Off pays in the number a condition already has, so a condition with no "
+      + "number is beyond it &mdash; Blessed, Cursed, and the rest that simply sit there. That is "
+      + "the other half of core-rules &sect;7, and what the Lift effect was written for.</p>"
+  },
   {
     name: "Recipe: Cleansing", ritual: "corruption", slot: "pack", weight: 1, value: 300, kind: "Recipe",
     text: "Lore, Progress 4, Pressure 4. Removes Taint, or one Corruption. Needs a healer or a temple.",
@@ -6957,6 +6993,35 @@ export const RITUAL_TWISTS = [
       + "the way an obligation's Taint is bound (core-rules \u00a78). The recipe is not spent." }
 ];
 
+/**
+ * **The faces of the cards nobody chose to put in a deck.**
+ *
+ * The brief used to say *"Wounds and Taint. Two faces, fixed... one picture each at most"* and
+ * list them under what does not need art. That was written when there were two; there are seven,
+ * and the argument did not survive the fifth. **These are the cards a player stares at.** A Wound
+ * is dead weight in a hand of five, a Fear moves you, a Compulsion forbids the one thing that
+ * refills your deck -- they are read more often than most of the content that was drawn, and a
+ * negative card that is only a dark rectangle is the one card in the game with nothing to look at.
+ *
+ * It lives here rather than beside the `INTRUDERS` dial table because an art shelf is read from
+ * content.mjs and the dials are in decks.mjs, which imports the art module -- so a shelf reaching
+ * the other way would close a circle. The validator checks the two lists against each other in
+ * **both** directions, which is the arrangement that makes a second list safe to have at all.
+ *
+ * Taint has two faces because core-rules 8 splits it by which deck it goes into, and the two are
+ * genuinely different pictures: a disease and a horror.
+ */
+export const HARM_FACES = [
+  { name: "Wound", kind: "wound" },
+  { name: "Taint (body)", kind: "taint" },
+  { name: "Taint (mind)", kind: "taint" },
+  { name: "Fear", kind: "fear" },
+  { name: "Doubt", kind: "doubt" },
+  { name: "Rage", kind: "rage" },
+  { name: "Compulsion", kind: "compulsion" },
+  { name: "Confusion", kind: "confusion" }
+];
+
 export const LANGUAGES = [
   { name: "Imperial", of: "the old language and the diplomatic lingua franca" },
   { name: "Valgar", of: "lost language from the fifth district" },
@@ -7288,8 +7353,33 @@ export const NODES = [
     id: "shade.footwork", name: "Footwork", after: ["shade"],
     grants: { card: "Measure", prune: 1 }
   },
+  /*
+   * **A node that teaches a tool training issues the tool.**  **[BUILT 2026-11-08]**
+   *
+   * leveling.md 4 describes a training as *a tool type, at the full bonus* -- and an uncapped
+   * bonus on a tool nobody owns is a reward worth nothing until somebody goes shopping. The suite
+   * already counts the trainings that **change no number anywhere**; for the six that do reach a
+   * tool, the number only existed if the character happened to have bought it.
+   *
+   * So: one sentence applied seven times rather than seven gifts. **Trained and issued.** Every
+   * one is a tool between 5 and 30 gold -- the cheap end of the catalogue -- because what is being
+   * fixed is a reward that read as empty, not a reward that was too small.
+   *
+   * **It stops at tools, deliberately.** A service weapon or a suit of armour is the obvious next
+   * thought, and the answer is no: a weapon and armour are **measured** numbers -- Plate wins
+   * 100.0% of the published fights -- so issuing one moves the fight this whole game is balanced
+   * against, and would want measuring before it wanted writing. A tool changes a check nobody has
+   * simulated and caps at +2. The line is between a number this project has pinned and one it has
+   * not, which is the only line worth drawing here.
+   *
+   * **And not on a crossing**, which is where this first went wrong. leveling.md 1 prices a crossing
+   * in *access, not in grants* -- the cards are behind the title it opens -- and two of the seven
+   * nodes that teach a tool training are crossings. Issuing there put the reward curve flat between
+   * levels 9 and 10, which is how the rule got found: the suite asserts the back half does not
+   * taper, and an item is worth as much as a card.
+   */
   { id: "shade.quiet", name: "Quiet Hands", after: ["shade.footwork"],
-    grants: { training: "lockpicks", expertise: "shadow" } },
+    grants: { item: "Lockpicks", training: "lockpicks", expertise: "shadow" } },
   { id: "shade.patience", name: "Patience", after: ["shade.quiet"], grants: { health: 1 } },
 
   /* --- the three titles off the trunk --- */
@@ -7347,7 +7437,7 @@ export const NODES = [
     grants: { card: "Lift" }
   },
 
-  { id: "shade.thief.ropework", name: "Ropework", after: ["shade.thief"], grants: { training: "rope and climbing" } },
+  { id: "shade.thief.ropework", name: "Ropework", after: ["shade.thief"], grants: { item: "Climbing Rope", training: "rope and climbing" } },
   { id: "shade.thief.night", name: "Night Work", after: ["shade.thief.ropework"],
     grants: { carry: 1, mastery: "shadow" } },
   {
@@ -7593,7 +7683,7 @@ export const NODES = [
     grants: { carry: 10, mastery: "might" } },
   {
     id: "strength.infantry.armoury", name: "Armoury", after: ["strength.infantry.load"],
-    bespoke: true, grants: { training: "armour and its repair", knowHow: "what a dent means" }
+    bespoke: true, grants: { item: "Repair Kit", training: "armour and its repair", knowHow: "what a dent means" }
   },
   {
     id: "strength.ironclad", name: "Ironclad", after: ["strength.infantry.armoury"],
@@ -7751,6 +7841,35 @@ export const NODES = [
     grants: { training: "reading and writing", spellSlots: 1, language: "Imperial",
       expertise: "lore" }
   },
+  /*
+   * --- ritual magic: three ordinary nodes off Letters ---
+   *
+   * **Off `mind.letters` and nowhere else, because that node grants *reading and writing*** and
+   * the world document's gate for this entire school is *"anyone literate can do it"*
+   * (specializations.md). The prerequisite was already in the graph; nothing had hung off it.
+   *
+   * **Ordinary nodes and not a title**, which is the same finding specializations.md records for
+   * the crafts: a major node is a fighting identity, and ritual magic is explicitly not one -- it
+   * sits outside the Way's count of twelve for that reason. What it is instead is a thing to be
+   * between fights, and skill-rules puts those on minor nodes.
+   *
+   * Each grants a **recipe**, which is an item. That is the whole mechanism: the gate on a ritual
+   * is the recipe rather than the caster, so handing one over is how a graph rewards this at all.
+   * A spell slot would have been the wrong currency -- a ritual is never prepared and never cast.
+   */
+  {
+    id: "mind.ritual", name: "The Recipe Book", after: ["mind.letters"],
+    grants: { item: "Recipe: Mending", training: "ritual magic" }
+  },
+  {
+    id: "mind.ritual.nights", name: "Quiet Nights", after: ["mind.ritual"],
+    grants: { item: "Recipe: Quiet Night" }
+  },
+  {
+    id: "mind.ritual.knots", name: "Knots and Bindings", after: ["mind.ritual.nights"],
+    grants: { item: "Recipe: Unknotting", expertise: "lore" }
+  },
+
   {
     /* The common card a caster gets is the one about spacing, because where to stand is the hard
      * problem this whole Way's Tactics are written about (way-cards 2.5). */
@@ -7801,7 +7920,7 @@ export const NODES = [
     /* The other half of "treating wounds": a mage who knows what a body is made of can use a
      * Healer's Kit to its printed value, and a training granted twice is one training (actors.mjs
      * dedupes `learned`). */
-    grants: { knowHow: "what a body is made of, living or dead", training: "treating wounds",
+    grants: { item: "Healer's Kit", knowHow: "what a body is made of, living or dead", training: "treating wounds",
       feature: "Well Read" }
   },
   {
@@ -8401,7 +8520,7 @@ export const NODES = [
   { id: "faith.order.cloister", name: "The Cloister", after: ["faith.ordination"],
     /* The infirmary is monastic in this world as in ours, and the training was the one a tool
      * named and no node taught: a Healer's Kit is Lore +2 and was capped at +1 for ever. */
-    grants: { restTokens: 1, training: "treating wounds" } },
+    grants: { item: "Healer's Kit", restTokens: 1, training: "treating wounds" } },
   { id: "faith.order.drums", name: "The Drums", after: ["faith.ordination"],
     grants: { knowHow: "working a crowd into a state" } },
 

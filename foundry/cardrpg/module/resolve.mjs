@@ -23,7 +23,7 @@ import { expandRoster } from "./monsters.mjs";
 import { slateData } from "./setup.mjs";
 import {
   drawFate, deckOf, uprightCards, discardCards, cardName, addFateCards, moveRandom, move,
-  applyFear, removeCard, intruderStack, allStacks, addFateCards as addFate
+  applyFear, removeCard, intruderStack, allStacks, harmCardData, addFateCards as addFate
 } from "./decks.mjs";
 
 /* -------------------------------------------- */
@@ -532,11 +532,7 @@ export async function resolveWound(target, { reason = "", injuryMode = 0 } = {})
   if (!target) return false;
   const stack = deckOf(target, "actionDiscard");
   if (!stack) return false;
-  await stack.createEmbeddedDocuments("Card", [{
-    name: "Wound",
-    type: "wound",
-    system: { source: reason }
-  }]);
+  await stack.createEmbeddedDocuments("Card", [harmCardData("wound", { source: reason })]);
   /*
    * **And this is the one moment a character can be changed forever.**
    *
@@ -567,11 +563,8 @@ export async function resolveTaint(actor, { amount = 1, target, flavour = "body"
   }
 
   const n = Math.max(1, amount);
-  await stack.createEmbeddedDocuments("Card", Array.from({ length: n }, () => ({
-    name: flavour === "mind" ? "Taint (mind)" : "Taint (body)",
-    type: "taint",
-    system: { flavour, source }
-  })));
+  await stack.createEmbeddedDocuments("Card",
+    Array.from({ length: n }, () => harmCardData("taint", { source, flavour })));
 
   /*
    * Fast taint resolves on arrival, because the card's own text fires "when drawn" and a card put
@@ -625,11 +618,8 @@ export async function resolveFear(actor, { amount = 1, target, fast = false, sou
   }
 
   const n = Math.max(1, amount);
-  const made = await stack.createEmbeddedDocuments("Card", Array.from({ length: n }, () => ({
-    name: "Fear",
-    type: "fear",
-    system: { source }
-  })));
+  const made = await stack.createEmbeddedDocuments("Card",
+    Array.from({ length: n }, () => harmCardData("fear", { source })));
 
   /*
    * Fast fear resolves on arrival, for the reason fast Taint does: the card's own text fires "when
@@ -681,11 +671,8 @@ export async function resolveDoubt(actor, { amount = 1, target, fast = false, so
   }
 
   const n = Math.max(1, amount);
-  await stack.createEmbeddedDocuments("Card", Array.from({ length: n }, () => ({
-    name: "Doubt",
-    type: "doubt",
-    system: { source }
-  })));
+  await stack.createEmbeddedDocuments("Card",
+    Array.from({ length: n }, () => harmCardData("doubt", { source })));
 
   /*
    * Nothing resolves on arrival, fast or slow, because a Doubt has nothing to resolve. `fast` still
@@ -722,10 +709,10 @@ async function dealIntruder(actor, kind, { amount = 1, target, fast = false, sou
   }
 
   const n = Math.max(1, amount);
-  const name = kind[0].toUpperCase() + kind.slice(1);
-  await stack.createEmbeddedDocuments("Card", Array.from({ length: n }, () => ({
-    name, type: kind, system: { source }
-  })));
+  /* Named by the builder, so the capitalisation rule is in one place rather than two. */
+  const made = Array.from({ length: n }, () => harmCardData(kind, { source }));
+  const name = made[0].name;
+  await stack.createEmbeddedDocuments("Card", made);
 
   await ChatMessage.create({
     speaker: ChatMessage.getSpeaker({ actor }),

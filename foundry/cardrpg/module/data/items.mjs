@@ -449,7 +449,16 @@ export class ItemSlateData extends SlateData {
        */
       ritual: new fields.StringField({
         required: false, blank: true, initial: "",
-        choices: [...Object.keys(CARDRPG.injuryCategories), ""]
+        /*
+         * Both tables: a category of permanent injury, or one of the lesser things a ritual mends.
+         * One field because a recipe is a recipe -- what differs is what it is for, and that is
+         * what the value says.
+         */
+        choices: [
+          ...Object.keys(CARDRPG.injuryCategories),
+          ...Object.keys(CARDRPG.lesserRituals),
+          ""
+        ]
       }),
 
       /*
@@ -543,13 +552,26 @@ export class ItemSlateData extends SlateData {
     return !!this.ritual;
   }
 
-  /** The challenge this recipe lets a party run, or null. */
+  /**
+   * The challenge this recipe lets a party run, or null.
+   *
+   * Two tables, one answer. A recipe either lifts a **category of permanent injury** or mends one
+   * of the **lesser** things, and the shape a caller gets back is the same either way -- a name,
+   * an approach and two tracks -- because what a ritual *is* does not differ between them.
+   */
   get ritualChallenge() {
-    const cat = CARDRPG.injuryCategories[this.ritual];
-    if (!cat?.ritual) return null;
+    const entry = CARDRPG.injuryCategories[this.ritual] ?? CARDRPG.lesserRituals[this.ritual];
+    if (!entry?.ritual) return null;
     return {
-      name: cat.ritual, lifts: this.ritual, approach: cat.approach,
-      progress: cat.progress, pressure: cat.pressure, needsName: !!cat.needsName
+      name: entry.ritual,
+      lifts: this.ritual,
+      approach: entry.approach,
+      progress: entry.progress,
+      pressure: entry.pressure,
+      needsName: !!entry.needsName,
+      /* Whether it is one of the four that touch something permanent, which is the only place a
+       * caller needs to tell them apart: the cap and the one-per-category rule are about those. */
+      permanent: Object.hasOwn(CARDRPG.injuryCategories, this.ritual)
     };
   }
 

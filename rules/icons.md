@@ -159,6 +159,17 @@ The −2 … +2 cards are numerals and need no symbol.
 | ✖ | **Fear** | Spent when drawn: one square away from the nearest enemy. Action deck only | **[OPEN]** not chosen |
 | – | **Injury** | Permanent — a *slate* on the sheet, not a card in a deck (core-rules §8) | Severed hand |
 
+> **[CHANGED 2026-11-08] The intruders have card faces now, not only icons.**
+> The art brief filed them under *what does not need art* &mdash; *"two faces, fixed... one picture
+> each at most"* &mdash; which was written when there were two of them, and the argument did not
+> survive the fifth. **They are the cards a player stares at**: a Wound is dead weight in a hand of
+> five, a Fear moves you, a Compulsion forbids the one thing that refills your deck. Eight faces
+> are in the brief (Taint keeps its two, body and mind), drawn to read as **wrong** at thumbnail
+> size under the interface's dark red wash &mdash; so strong shapes, no fine detail, and no weapon,
+> no attacker and no blood. The harm has already happened; the picture is what is left of it.
+>
+> The icons below stay: an icon is what the rules print and a face is what the card wears.
+
 ### Injury categories (5)  **[BUILT 2026-11-08]**
 
 A category names the ritual that lifts it (core-rules §8), so each needs a face on the sheet.

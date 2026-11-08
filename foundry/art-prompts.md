@@ -1,6 +1,6 @@
 # Art prompts
 
-**605 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
+**613 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
 
 It walks the same `GROUPS` the art list walks, by importing it rather than copying it, so the two files cannot disagree about what exists.
 
@@ -27,7 +27,7 @@ So the numbers are gone from the capsules and the picture is in their place: **t
 
 ## Deck backs
 
-**Draw these first.** 11 pictures against 594 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
+**Draw these first.** 11 pictures against 602 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
 
 ### The capsule — paste this once
 
@@ -2251,6 +2251,186 @@ SUBJECT. "The Long Way"
 Draw a page turned back to and read again, the diagram on it plainly not matching what has been built on the table in front of it.
 
 WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Caribbean appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+## undefined
+
+**8 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/cards/harm/`.
+
+A card nobody chose to put in a deck: it sits in a hand of five being useless, or comes up at a moment nobody picked. It must read as WRONG at a glance and at thumbnail size, under a dark red wash the interface puts over it — so: strong simple shapes, little fine detail, and no weapon, no attacker and no blood. The harm has already happened; this is what is left of it.
+
+<details><summary><b>The capsule — paste this once, at the top of a fresh chat</b></summary>
+
+```text
+A single illustration for a playing card in a tabletop fantasy RPG.
+
+THIS GROUP. A card nobody chose to put in a deck: it sits in a hand of five being useless, or comes up at a moment nobody picked. It must read as WRONG at a glance and at thumbnail size, under a dark red wash the interface puts over it — so: strong simple shapes, little fine detail, and no weapon, no attacker and no blood. The harm has already happened; this is what is left of it.
+
+FORMAT.
+- Portrait, aspect ratio exactly 2:3, 1024 x 1536.
+- Full bleed, edge to edge. No border, no frame, no card template, no rounded corners, no drop
+  shadow, no mat, no margin.
+- ABSOLUTELY NO TEXT of any kind: no letters, numerals, runes, glyphs, signature, watermark, or
+  anything that reads as writing. Not on a shield, not on a banner, not in the background.
+
+COMPOSITION. The card prints its own name and rules text over this image in opaque panels, so the
+layout is fixed and has been measured:
+- Crop in **close**: one subject, filling the frame from side to side.
+  Never a whole figure standing in a landscape, never an object laid out on a table.
+- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
+  no horns, no weapon, no hand, no banner enters it.
+- **All of the dark lives between that strip and the halfway line.** The near-black contour, the
+  deepest wash and the point of the action -- what is left after the thing happened, carried rather than suffered -- are all in that band, which is where
+  the picture actually happens.
+- **Below the halfway line the picture goes pale** and stays pale: the wash thins out, the ground
+  falls away to bare paper, and there is no dark mass down there at all. The card prints its rules
+  across that half, so that half has to be the quiet one.
+- Together those two make the test: **the picture must still read with its bottom half covered.**
+  Cover it in your head and check before you call it done.
+- ONE subject. A silhouette that still reads at **128 pixels wide**, which is the smallest size a
+  card is drawn at in this game.
+
+PALETTE.
+- Line and darks: **#1b1714**
+- Paper and lights: **#f4efe6**
+- Mid tone: **#c9bda8**
+- One chromatic accent only: **#a3655d**, a warm brick red. Use it on the
+  one thing the picture is about, and nowhere else.
+  **The accent is one small object's worth of colour and no more** -- a single
+  ribbon, a single flame, one stone set in a ring. Never the light, never the wash, never
+  the ground, never the sky, never a glow and never a whole figure: those are all the warm
+  neutral of the paper and the ink.
+- Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
+  Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
+  here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
+
+PEOPLE.
+- **Where a person is drawn, decide who they are rather than defaulting.** This is a port city on
+  a trade road: the people in the set are Black, brown, Levantine, Persian, South and East Asian,
+  Mediterranean and northern-pale in roughly the proportions a crowd there would be, and women
+  are as common in it as men. A sepia palette is not a statement about skin -- warm ink renders
+  every complexion, and a deck in which every figure is the same pale man is a failure of the
+  drawing and not of the paper.
+- Nothing here asks for a particular face unless the subject says so in words, and where it does
+  say so -- a named sex, an ancestry, an age -- that is binding.
+
+STYLE.
+Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
+with a loaded brush; then large soft washes for the mass; then generous untouched paper where the
+light falls. Loose and economical -- a few strokes doing the work of many. Visible bleed and
+granulation where a wash pools, dry-brush where it runs out.
+
+Three things this style does wrong at card size, and must not do here:
+- **Never neutral grey.** Every wash is warm: sepia, bistre, burnt earth. If a passage reads as
+  grey it is wrong.
+- **Never soft all over.** The contour is near-black #1b1714 and holds a hard edge. Only the
+  washes are soft. A picture with no true black in it has failed.
+- **Never evenly toned.** The darkest mass must sit directly against untouched paper, so the
+  subject separates from the ground in one glance at thumbnail size.
+
+Use the full range, both ends of it:
+- The lightest passage is **bare #f4efe6 paper, near white**, and there is a lot of it.
+- The darkest line is **near-black #1b1714**, and the two touch each other somewhere.
+- A picture whose every value sits between those ends is the failure above, however warm and
+  however well drawn. Mid tone is the background, not the picture.
+```
+
+</details>
+
+### Compulsion
+
+File: `cards/harm/compulsion.webp`
+
+```text
+SUBJECT. "Compulsion"
+
+Draw somebody who cannot sit down: the chair there, plainly there, and the body going past it again.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Slavic appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Confusion
+
+File: `cards/harm/confusion.webp`
+
+```text
+SUBJECT. "Confusion"
+
+Draw a group that has lost its one direction -- each of them turned a different way, none of them moving.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of West African appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Doubt
+
+File: `cards/harm/doubt.webp`
+
+```text
+SUBJECT. "Doubt"
+
+Draw a hand stopped halfway to the thing it was reaching for, and the gap between them as the subject of the picture.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Levantine appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Fear
+
+File: `cards/harm/fear.webp`
+
+```text
+SUBJECT. "Fear"
+
+Draw a single backward step already taken: the front foot lifted and turned, the ground where it was standing empty and marked.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of East Asian appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Rage
+
+File: `cards/harm/rage.webp`
+
+```text
+SUBJECT. "Rage"
+
+Draw a swing already committed to, seen from behind the shoulder, with nothing in front of it worth swinging at.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of North African appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Taint (body)
+
+File: `cards/harm/taint-body.webp`
+
+```text
+SUBJECT. "Taint (body)"
+
+Draw a hand's veins gone dark and standing up under the skin, traced further than a hand should reach, the fingers still working.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Southeast Asian appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Taint (mind)
+
+File: `cards/harm/taint-mind.webp`
+
+```text
+SUBJECT. "Taint (mind)"
+
+Draw a face lit from somewhere that is not in the picture, looking slightly past the viewer at something it has been looking at for a while.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Nordic appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Wound
+
+File: `cards/harm/wound.webp`
+
+```text
+SUBJECT. "Wound"
+
+Draw an arm bound tight and held close, doing nothing and plainly unable to -- the rest of the body still upright and still in the fight.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Caribbean appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ## Signatures — Way of Shade

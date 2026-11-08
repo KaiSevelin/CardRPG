@@ -1,0 +1,19 @@
+{
+  "_id": "uDn5813DwdBZgb9t",
+  "_key": "!items!uDn5813DwdBZgb9t",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Recipe: Unknotting",
+  "type": "item",
+  "system": {
+    "ritual": "held",
+    "slot": "pack",
+    "weight": 1,
+    "value": 250,
+    "description": "<p>Shake Off pays in the number a condition already has, so a condition with no number is beyond it &mdash; Blessed, Cursed, and the rest that simply sit there. That is the other half of core-rules &sect;7, and what the Lift effect was written for.</p>",
+    "text": "Lore, Progress 3, Pressure 3. Lifts one condition that has no duration to spend."
+  }
+}

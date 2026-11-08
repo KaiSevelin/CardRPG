@@ -989,6 +989,51 @@ CARDRPG.injuryCategories = {
  */
 CARDRPG.injuryHealsIn = { lasting: 14, permanent: 0 };
 
+/**
+ * **The lesser rituals: the ones that are not about a permanent injury.**
+ *
+ * A second table rather than more rows in `injuryCategories`, because a category of injury and a
+ * thing a ritual can mend are not the same kind of key -- the four above exist so a **ritual can
+ * name a category**, and these name no category at all. Putting them in one table would have made
+ * `cap`, `needsName` and the one-per-category rule meaningless on three of its seven rows.
+ *
+ * **Each one has to earn itself against something that already exists**, which is the test a
+ * Burden card failed and a Hex passed by turning out to be a Miss:
+ *
+ * - `wounds` against **treatment** (Lore 5 and a Healer's Kit) and a **long rest**, both of which
+ *   take **one** Wound. This takes *all* of them, which is a different thing to want: a party
+ *   limping out of three fights has a deck nobody can play, and one Wound a night is not an
+ *   answer to it.
+ * - `lasting` against the fourteen days a lasting injury takes anyway. It spends them at once,
+ *   and nothing else in the game accelerates that -- the four category rituals lift the
+ *   **permanent** kind and have nothing to say about the other.
+ * - `held` against **Shake Off**, which spends a condition's duration. These are the conditions
+ *   with **no duration to spend** -- Blessed, Cursed, the `liftable` ones -- which is the other
+ *   half of that rule and exactly what the `lift` effect was written for.
+ *
+ * There is deliberately **no Taint recipe**: a Cleansing already removes Taint (core-rules 8), and
+ * a second one would be the fourth name for a rule this game states twice already.
+ *
+ * They are cheap in Progress and that is the point: a ritual specialist should be the person who
+ * tidies up after a fight, which is a thing worth being and is not worth eight checks.
+ */
+CARDRPG.lesserRituals = {
+  wounds: {
+    label: "CARDRPG.Ritual.Mending", ritual: "Mending", approach: "lore", progress: 2, pressure: 4,
+    text: "Removes every Wound from one character's deck."
+  },
+  lasting: {
+    label: "CARDRPG.Ritual.QuietNight", ritual: "Quiet Night", approach: "presence",
+    progress: 2, pressure: 3,
+    text: "A lasting injury's remaining days of rest are spent at once."
+  },
+  held: {
+    label: "CARDRPG.Ritual.Unknotting", ritual: "Unknotting", approach: "lore",
+    progress: 3, pressure: 3,
+    text: "Lifts one condition that has no duration to spend \u2014 what Shake Off cannot reach."
+  }
+};
+
 CARDRPG.capabilities = {
   /* how it gets about */
   legs: "CARDRPG.Capability.Legs",

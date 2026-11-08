@@ -385,13 +385,16 @@
             <button type="button" data-action="startChallenge"
                     data-tooltip="Begin a challenge: a Progress track to fill and a Pressure track to stay under.">Challenge</button>
           {{/unless}}
-          {{#if scene.twists.exists}}
-            {{!-- The twist deck is drawn by hand, never by a result: skill-rules 4 says the GM can
-                  always choose a cost directly, and that a twist which makes no sense goes back. --}}
+          {{!-- Only when a cost is actually due. `TRACK_MOVES` owes a twist on a Partial and a
+                Fail and on nothing else, so these two controls used to sit in the scene area
+                through every scene that never drew one. Still drawn by hand and never by a
+                result: skill-rules 4 says the GM can always choose a cost directly, and that a
+                twist which makes no sense goes back. --}}
+          {{#if scene.twists.needed}}
             <button type="button" data-action="twist"
-                    data-tooltip="Draw one twist. {{scene.twists.deck}} left in the deck.">Twist</button>
+                    data-tooltip="A {{scene.twists.kind}} twist is owed. Draw one — {{scene.twists.deck}} left in the deck. Or choose a cost yourself and ignore this.">{{scene.twists.label}}</button>
             <button type="button" data-action="twist" data-two="yes"
-                    data-tooltip="Draw two and pick one — for a dramatic failure, or when the first card does not fit the scene.">Twist ×2</button>
+                    data-tooltip="Draw two and pick one — for a dramatic failure, or when the first card does not fit the scene.">{{scene.twists.label}} ×2</button>
           {{/if}}
           {{#if scene.call}}
             <button type="button" data-action="callCheck"

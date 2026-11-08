@@ -35,12 +35,34 @@ function findExisting(collection, tag) {
 }
 
 /** A Cards document: core provides deck, hand and pile; our subtypes live on the cards inside. */
-async function makeCards(name, type, tag, cards = [], back = "") {
+/**
+ * **GM-only, declared rather than inherited.**
+ *
+ * A twist deck was already unreadable by players, and only by accident: Foundry's default
+ * ownership happens to be NONE, so nothing had to say so. That is the kind of true-for-now this
+ * project keeps finding -- a world whose default ownership was raised, for any of the ordinary
+ * reasons a table raises it, would have put the GM's costs in the sidebar for everybody.
+ *
+ * The draw is already gated twice over (`drawTwist` refuses a non-GM, and the result is
+ * whispered), so this is the third lock on the same door -- the document itself.
+ *
+ * A function and not a constant, because `CONST` is a Foundry global and this module must import
+ * cleanly outside Foundry -- the suite checks for exactly that, and it caught this on the first
+ * run. A global read at module scope is a module that can only ever be validated by reading it.
+ */
+const gmOnly = () => ({ default: CONST.DOCUMENT_OWNERSHIP_LEVELS.NONE });
+
+async function makeCards(name, type, tag, cards = [], back = "", ownership = null) {
   const existing = findExisting(game.cards, tag);
   if (existing) return existing;
   /* `img` is what Foundry shows for the stack, which is the back of the deck as a pile of cards. */
   const art = back ? backOf(back) : "";
-  return Cards.create({ name, type, cards, ...(art ? { img: art } : {}), ...stamp(tag) });
+  return Cards.create({
+    name, type, cards,
+    ...(art ? { img: art } : {}),
+    ...(ownership ? { ownership } : {}),
+    ...stamp(tag)
+  });
 }
 
 /** Expand a card definition's `copies` into that many Card documents. */
@@ -312,8 +334,8 @@ export async function createStarterContent() {
    * deck runs out* and nothing else.
    */
   const twists = await makeCards("Twist Deck", "deck", "twist-deck",
-    expand(TWISTS, def => twistCardData(def)), "twist");
-  await makeCards("Twist Discard", "pile", "twist-discard");
+    expand(TWISTS, def => twistCardData(def)), "twist", gmOnly());
+  await makeCards("Twist Discard", "pile", "twist-discard", [], "", gmOnly());
   made.decks += 2;
 
   /*
@@ -328,8 +350,8 @@ export async function createStarterContent() {
    * the same reason: a ritual is run on whoever needs it, and the deck belongs to neither.
    */
   await makeCards("Ritual Twist Deck", "deck", "ritual-twist-deck",
-    expand(RITUAL_TWISTS, def => twistCardData(def, "ritual")), "ritual");
-  await makeCards("Ritual Twist Discard", "pile", "ritual-twist-discard");
+    expand(RITUAL_TWISTS, def => twistCardData(def, "ritual")), "ritual", gmOnly());
+  await makeCards("Ritual Twist Discard", "pile", "ritual-twist-discard", [], "", gmOnly());
   made.decks += 2;
 
   await buildActor(WARRIOR, {

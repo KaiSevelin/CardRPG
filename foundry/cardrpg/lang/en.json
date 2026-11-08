@@ -349,5 +349,8 @@
   "CARDRPG.Injury.Curse": "Curse",
   "CARDRPG.Injury.Corruption": "Corruption",
   "CARDRPG.Injury.Obligation": "Obligation",
-  "CARDRPG.Effect.Maiming": "Maiming"
+  "CARDRPG.Effect.Maiming": "Maiming",
+  "CARDRPG.Ritual.Mending": "Mending",
+  "CARDRPG.Ritual.QuietNight": "Quiet Night",
+  "CARDRPG.Ritual.Unknotting": "Unknotting"
 }

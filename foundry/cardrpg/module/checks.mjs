@@ -223,6 +223,24 @@ export const TRACK_MOVES = {
   fail: { progress: 0, pressure: 1, twist: true }
 };
 
+/**
+ * **One writer for the challenge flag, because there were three and each rebuilt it by hand.**
+ *
+ * `startChallenge`, `advanceChallenge` and the Catch Breath branch each wrote the whole object
+ * out field by field -- five named keys, three times -- so a sixth field would have survived in
+ * whichever of them was edited and been dropped by the other two. That is not a hypothetical: the
+ * two fields added below would have vanished on the first check of any challenge.
+ *
+ * A merge over what is live, so a caller names only what it changes.
+ */
+async function writeChallenge(patch) {
+  const scene = game.scenes?.active;
+  const live = scene?.getFlag?.("cardrpg", CHALLENGE);
+  if (!game.user.isGM || !scene || !live) return null;
+  await scene.setFlag("cardrpg", CHALLENGE, { ...live, ...patch });
+  return readChallenge();
+}
+
 /** The challenge in play, or null. */
 export function readChallenge() {
   const scene = game.scenes?.active ?? null;
@@ -239,19 +257,46 @@ export function readChallenge() {
      * success whose cleanliness is the pressure left over, pressure full is a failure that should
      * lead to a new situation rather than a dead end. */
     won: progress >= progressMax,
-    lost: pressure >= pressureMax
+    lost: pressure >= pressureMax,
+    /**
+     * **Whether this challenge is a ritual, which is the deck a twist comes from.**
+     *
+     * A ritual's failures are about the thing being lifted rather than about the scene
+     * (skill-rules 6), so it draws from its own deck -- and *which deck* is the whole difference
+     * between the two, exactly as it was for the intruders. Carrying it on the challenge rather
+     * than offering a second pair of buttons is what keeps the scene area from doubling.
+     */
+    ritual: !!live.ritual,
+    /**
+     * **Whether a twist is owed right now.**
+     *
+     * `TRACK_MOVES` has carried `twist: true` on partial and fail since the table was written and
+     * **nothing read it** -- the fifth field in this project found with no reader. This is the
+     * reader: a Partial or a Fail sets it, drawing one clears it, and the scene area shows the
+     * button only while it is set.
+     *
+     * It does not draw anything. skill-rules 4 is explicit that *the GM can always choose a cost
+     * directly... the deck is there for when inspiration runs out, not to override the GM*, so
+     * this is a prompt and never a consequence.
+     */
+    owed: !!live.owed
   };
 }
 
 /** Start one. GM only, like everything about a scene. */
-export async function startChallenge({ progressMax = 5, pressureMax = 3, note = "" } = {}) {
+export async function startChallenge({
+  progressMax = 5, pressureMax = 3, note = "", ritual = false
+} = {}) {
   const scene = game.scenes?.active;
   if (!game.user.isGM || !scene) return null;
   await scene.setFlag("cardrpg", CHALLENGE, {
     progress: 0, pressure: 0,
     progressMax: Math.max(1, Number(progressMax) || 5),
     pressureMax: Math.max(1, Number(pressureMax) || 3),
-    note
+    note,
+    /* A ritual draws its twists from its own deck, and nothing else about it differs. */
+    ritual: !!ritual,
+    owed: false
   });
   return readChallenge();
 }
@@ -280,12 +325,15 @@ export async function advanceChallenge(outcome) {
   if (!game.user.isGM || !scene || !live) return null;
   const move = TRACK_MOVES[outcome];
   if (!move) return null;
-  await scene.setFlag("cardrpg", CHALLENGE, {
+  await writeChallenge({
     progress: live.progress + move.progress,
     pressure: live.pressure + move.pressure,
-    progressMax: live.progressMax,
-    pressureMax: live.pressureMax,
-    note: live.note
+    /*
+     * **And the table's own `twist` flag, finally read.** A Partial and a Fail owe one; a Success
+     * and a Critical clear the debt, because a twist owed two checks ago and never taken is a
+     * button left lit over a scene that has moved on.
+     */
+    owed: !!move.twist
   });
   const now = readChallenge();
   const line = `Progress ${now.progress}/${now.progressMax}`
@@ -349,9 +397,18 @@ export async function catchBreathInChallenge(actor, spentCardId = null) {
 /* -------------------------------------------- */
 
 /** The GM's deck and its discard, by the tag setup stamped on them. */
-function twistStacks() {
+/**
+ * The two stacks of a twist deck, by which deck it is.
+ *
+ * `"scene"` is the GM's general deck and `"ritual"` the one whose failures are about the thing
+ * being lifted (skill-rules 6). A **tag prefix** rather than two functions, because the only
+ * difference between them is which pile is read -- and a second copy of this would be a second
+ * place to remember when a third deck arrives.
+ */
+function twistStacks(which = "scene") {
+  const prefix = which === "ritual" ? "ritual-twist" : "twist";
   const find = tag => game.cards?.find(d => d.getFlag("cardrpg", "cardrpgContent") === tag) ?? null;
-  return { deck: find("twist-deck"), discard: find("twist-discard") };
+  return { deck: find(`${prefix}-deck`), discard: find(`${prefix}-discard`) };
 }
 
 /**
@@ -368,7 +425,17 @@ function twistStacks() {
  */
 export async function drawTwist({ two = false } = {}) {
   if (!game.user.isGM) return null;
-  const { deck, discard } = twistStacks();
+  /*
+   * **Which deck is read off the challenge, not chosen at the button.**
+   *
+   * A ritual draws from the ritual twist deck and everything else from the twist deck, and that
+   * is the entire difference between them -- the same shape the intruder table settled on, where
+   * the deck a card lands in was the dial all along. Deciding it here rather than in the panel is
+   * what keeps the scene area to one Twist button instead of two pairs, and it means a GM running
+   * a ritual cannot reach the wrong deck by clicking the wrong thing.
+   */
+  const live = readChallenge();
+  const { deck, discard } = twistStacks(live?.ritual ? "ritual" : "scene");
   if (!deck || !discard) {
     ui.notifications.warn(game.i18n.localize("CARDRPG.Twist.NoDeck"));
     return null;
@@ -390,6 +457,12 @@ export async function drawTwist({ two = false } = {}) {
     await move(deck, discard, [card.id]);
   }
 
+  /*
+   * The debt is paid. `TRACK_MOVES` sets it on a Partial or a Fail and this is the only thing
+   * that clears it, so the button goes out as soon as it has been used.
+   */
+  if (live?.owed) await writeChallenge({ owed: false });
+
   const body = drawn.map(t => `<p><strong>${t.name}</strong>`
     + `${t.pressure ? " (Pressure +1 as well)" : ""}`
     + `${t.gives ? " &mdash; this one gives" : ""}<br>${t.cost}</p>`).join("");
@@ -402,9 +475,30 @@ export async function drawTwist({ two = false } = {}) {
 }
 
 /** How much of the deck is left, for the GM's own readout. */
+/**
+ * What the scene area needs to know about twists, which is less than it was showing.
+ *
+ * **`needed` is the whole point.** The buttons used to appear whenever a deck existed, which is
+ * always, so two controls sat in the scene area through every scene that never drew one. A twist
+ * is owed on a Partial or a Fail and on nothing else (`TRACK_MOVES`), and that flag had no reader
+ * until the challenge grew one -- so the panel can now show the button exactly when the rules say
+ * a cost is due.
+ *
+ * `kind` is which deck the next draw will come from, so the button can say so rather than leave
+ * a GM in a ritual wondering which pile they are about to disturb.
+ */
 export function twistCounts() {
-  const { deck, discard } = twistStacks();
-  return { deck: deck?.cards?.size ?? 0, discard: discard?.cards?.size ?? 0, exists: !!deck };
+  const live = readChallenge();
+  const ritual = !!live?.ritual;
+  const { deck, discard } = twistStacks(ritual ? "ritual" : "scene");
+  return {
+    deck: deck?.cards?.size ?? 0,
+    discard: discard?.cards?.size ?? 0,
+    exists: !!deck,
+    kind: ritual ? "ritual" : "scene",
+    label: ritual ? "Ritual twist" : "Twist",
+    needed: !!live?.owed
+  };
 }
 
 /* -------------------------------------------- */
@@ -427,13 +521,7 @@ export function registerCheckHooks() {
     const pressure = message.getFlag?.("cardrpg", "pressure");
     if (pressure) {
       const live = readChallenge();
-      const scene = game.scenes?.active;
-      if (live && scene) {
-        await scene.setFlag("cardrpg", CHALLENGE, {
-          progress: live.progress, pressure: live.pressure + Number(pressure),
-          progressMax: live.progressMax, pressureMax: live.pressureMax, note: live.note
-        });
-      }
+      if (live) await writeChallenge({ pressure: live.pressure + Number(pressure) });
     }
   });
 }

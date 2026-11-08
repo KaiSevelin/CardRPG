@@ -409,8 +409,13 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       for (const slate of this.#assigned(half)) {
         const item = slate.type === "item";
         const spell = slate.type === "spell";
-        // Only a slate with a half to choose can be moved; the rest serve whatever needs them.
-        const movable = item && slate.system.availableVerbs.length > 1;
+        /*
+         * Movable when there is a choice to make: a slate with two verbs has to be told which
+         * half it serves, and a slate competing with another for the same verb has to be told
+         * whether it is the one. Everything else serves whatever needs it.
+         */
+        const movable = item
+          && (slate.system.availableVerbs.length > 1 || this.#competes(slate));
         /*
          * **An offered feature can be waved away and a spent one cannot**, because a spent one is
          * a record rather than a suggestion: it is in the stack to say the ability was used, and a
@@ -609,9 +614,37 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     ];
   }
 
-  /** Which stack a played item is shown in. Resolution uses #itemFor, which is subtler than this. */
+  /**
+   * **Does another equipped slate do the same job as this one?**
+   *
+   * Two different questions were being answered by one test. *Choosy* -- more than one verb of
+   * its own -- is about whether a slate has to be told which half to serve: a longsword strikes
+   * and defends, so it must be placed. **Competing** is about whether the player has a choice to
+   * make at all, and a dagger with one verb can still be the wrong dagger.
+   *
+   * The gap that found this: two **strike-only** weapons were both unchoosy, so neither got an
+   * arrow, both sat in the primary, and the engine simply took the better-valued one. The only
+   * way to pick the other was the default star -- a standing choice, which is the wrong shape for
+   * *this turn I want the axe*. A hand axe and a dagger are a real decision and the tray gave no
+   * way to make it.
+   */
+  #competes(item) {
+    const mine = new Set(item.system.availableVerbs ?? []);
+    if (!mine.size) return false;
+    return this.actor.items.some(other => other.id !== item.id
+      && other.type === "item" && other.system.equipped
+      && !CARDRPG.slots[other.system.equippedSlot]?.stows
+      && (other.system.availableVerbs ?? []).some(v => mine.has(v)));
+  }
+
+  /**
+   * Which stack a played item is shown in. Resolution uses #itemFor, which is subtler than this.
+   *
+   * The role if it has one, and the primary otherwise -- which is what the old special case for
+   * single-verb items already did, since an item nobody has moved has no role. Dropping the case
+   * is what lets a competing one-verb weapon stay where it is put.
+   */
   #stackOf(item) {
-    if (item.system.availableVerbs.length < 2) return "primary";
     return this.roles.get(item.id) ?? "primary";
   }
 
@@ -1336,6 +1369,11 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     if (candidates.length < 2) return candidates[0] ?? null;
     const choosy = i => i.system.availableVerbs.length > 1;
     const preferred = this.actor.system.defaultFor?.(verb) ?? null;
+    /*
+     * An unplaced slate is still "any" -- it can serve either half, and that is the right default
+     * for a weapon nobody has thought about. What changed is that a competing one-verb slate can
+     * now BE placed, so `roles` answers for it and the arrow means something.
+     */
     const rank = i => {
       const role = this.roles.get(i.id) ?? (choosy(i) ? "primary" : "any");
       return role === half ? 0 : role === "any" ? 1 : 2;

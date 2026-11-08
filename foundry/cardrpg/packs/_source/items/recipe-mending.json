@@ -1,0 +1,19 @@
+{
+  "_id": "qU8jqoCZatqATeIM",
+  "_key": "!items!qU8jqoCZatqATeIM",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Recipe: Mending",
+  "type": "item",
+  "system": {
+    "ritual": "wounds",
+    "slot": "pack",
+    "weight": 1,
+    "value": 120,
+    "description": "<p>A long rest takes one Wound and a treatment takes one. This takes all of them, which is a different thing to want: a party out of its third fight has a deck nobody can play, and one a night is not an answer to that.</p>",
+    "text": "Lore, Progress 2, Pressure 4. Removes every Wound from one character's deck."
+  }
+}

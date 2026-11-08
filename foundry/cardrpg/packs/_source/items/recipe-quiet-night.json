@@ -1,0 +1,19 @@
+{
+  "_id": "ioVI0kFgg5NJ2rkm",
+  "_key": "!items!ioVI0kFgg5NJ2rkm",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Recipe: Quiet Night",
+  "type": "item",
+  "system": {
+    "ritual": "lasting",
+    "slot": "pack",
+    "weight": 1,
+    "value": 200,
+    "description": "<p>The only thing in the game that shortens a lasting injury. The four greater rituals lift the <em>permanent</em> kind and have nothing to say about the other, so a &minus;1 on the injury draw used to mean two weeks and no recourse.</p>",
+    "text": "Presence, Progress 2, Pressure 3. A lasting injury's remaining days are spent at once."
+  }
+}

@@ -1796,11 +1796,30 @@ check("no tuned constants in the policy",
  * deciding: whether an NPC takes them at all is the first question, and **72 of the 75 creatures in
  * the roster have more than 4 Health**, so the answer is not obvious.
  */
+/*
+ * **Asked of who ISSUES one, which is a different question from who spells the subtype.**
+ *
+ * These grepped `type: "wound"` and `type: "taint"`, and both literals have gone: all seven
+ * intruders are built by one `harmCardData` in decks.mjs, where the type is the argument. Five
+ * call sites used to write the card out by hand, which was fine while a card was three fields and
+ * stopped being fine the moment it had a picture -- five places to add an `img`, and whichever
+ * one was missed would have worn Foundry's placeholder in silence.
+ *
+ * So the checks follow the consolidation rather than forcing the literal back: one module builds
+ * an intruder, and what is worth pinning is which modules **hand one out**.
+ */
 const woundCreators = ["resolve.mjs", "decks.mjs", "graph.mjs", "tray.mjs", "setup.mjs"]
-  .filter(f => /type: "wound"/.test(fs.readFileSync(path.join(root, "module", f), "utf8")));
-check("modules that create a Wound card", woundCreators.join(", ") || "none", "resolve.mjs");
-check("and the one that creates a Taint, which is the contrast",
-  /type: "taint"/.test(resolveSource) ? "resolve.mjs" : "none", "resolve.mjs");
+  .filter(f => /harmCardData\("wound"/
+    .test(fs.readFileSync(path.join(root, "module", f), "utf8")));
+check("modules that issue a Wound card", woundCreators.join(", ") || "none", "resolve.mjs");
+check("and the one that issues a Taint, which is the contrast",
+  /harmCardData\("taint"/.test(resolveSource) ? "resolve.mjs" : "none", "resolve.mjs");
+check("and one builder makes every intruder",
+  /export function harmCardData\(kind, \{ source = "", flavour = "" \} = \{\}\)/
+    .test(decksSource) ? "yes" : "no", "yes");
+check("and no caller writes a subtype out by hand any more",
+  (resolveSource.match(/type: "(?:wound|taint|fear|doubt|rage|compulsion|confusion)"/g) ?? [])
+    .length, 0);
 check("times the Wound threshold is read at all",
   (resolveSource.match(/defaults\.woundAt/g) ?? []).length, 3);
 /*
@@ -2526,7 +2545,7 @@ const graphSource = fs.readFileSync(path.join(root, "module/graph.mjs"), "utf8")
 const nodes = content.NODES;
 const byId = graph.GRAPH;
 
-check("nodes defined", nodes.length, 204);
+check("nodes defined", nodes.length, 207);
 check("duplicate node ids", nodes.length === byId.size ? "none" : "yes", "none");
 
 /* Every prerequisite must resolve, or a branch is silently unreachable. */
@@ -3088,7 +3107,7 @@ check("a pool card granted twice on one path",
  */
 const minors = nodes.filter(n => !n.title && n.id !== graph.ROOT);
 const bespoke = minors.filter(n => n.bespoke);
-check("minor nodes", minors.length, 147);
+check("minor nodes", minors.length, 150);
 check("bespoke minor nodes", bespoke.length, 29);
 /*
  * **The budget is a ceiling, and it is the number of bespoke PIECES.** leveling 1 sizes it exactly
@@ -3108,7 +3127,7 @@ check("bespoke pieces, against a budget of about forty", bespoke.length <= 40, t
  * because bespoke content was DELETED would move this number too, and would have to be explained.
  */
 check("the bespoke share is under the budget ceiling", bespoke.length / minors.length <= 0.4, true);
-check("and what the share is now", (bespoke.length / minors.length).toFixed(3), "0.197");
+check("and what the share is now", (bespoke.length / minors.length).toFixed(3), "0.193");
 /*
  * And each bespoke node sits LAST on its run -- which asked for the title it leads to until Way of
  * Faith had no titles to lead to. Faith spends its depth sideways: the gods are the titles and they
@@ -3200,7 +3219,7 @@ check("Mind cells that drifted from the document",
   mindDrift.length ? mindDrift.join("; ") : "none", "none");
 
 const mindAll = nodes.filter(n => n.id === "mind" || n.id.startsWith("mind."));
-check("Way of Mind nodes", mindAll.length, 46);
+check("Way of Mind nodes", mindAll.length, 49);
 /* One predecessor each, so there is no crossing and no `all` node anywhere in the Way. */
 const mindForks = mindAll.filter(n => (n.after ?? []).length > 1).map(n => n.id);
 check("Mind nodes with more than one way in",
@@ -5124,7 +5143,13 @@ check("and grants the graph hands out that section 4 never offered",
 check("the rewards only one or two nodes grant",
   Object.entries(rewardKeys).filter(([k]) => timesGranted(k) <= 2)
     .map(([k, label]) => `${label} ${timesGranted(k)}`).sort().join(", "),
-  "Deck cap 1, Item 1");
+  /*
+   * **Item left this list, and that is the finding.** It named the rewards so rare that one or two
+   * nodes carry them, and an item was one of them -- until the ritual recipes made a slate
+   * something a branch hands over three times on one run. A reward nobody gives is worth noticing;
+   * this one is now given as ordinarily as a card.
+   */
+  "Deck cap 1");
 /*
  * The two character grants that no reward row offers and no node grants, each for a stated reason.
  * **handSize** is measured: specializations.md puts a card of hand size at 6 to 10 points of win
@@ -5190,7 +5215,7 @@ const hollow = capstones.filter(n => {
   const keys = Object.keys(n.grants ?? {});
   return keys.length > 0 && keys.every(k => FLAVOUR.has(k));
 });
-check("capstones", capstones.length, 38);
+check("capstones", capstones.length, 39);
 check("capstones granting nothing a fight would notice",
   hollow.map(n => `${n.name} (lv ${graph.levelFor(n.id)})`).join(", ") || "none", "none");
 /*
@@ -5281,11 +5306,11 @@ const reachOneWay = titleId => {
 };
 const sizeOf = way => nodes.filter(n => n.id === way || n.id.startsWith(`${way}.`)).length;
 check("nodes in each Way", WAYS.map(w => `${w} ${sizeOf(w)}`).join(", "),
-  "strength 39, shade 41, mind 46, faith 77");
+  "strength 39, shade 41, mind 49, faith 77");
 check("and how many of them one character can ever own",
   [["strength.infantry", "strength"], ["shade.thief", "shade"], ["mind.blood", "mind"]]
     .map(([t, w]) => `${w} ${reachOneWay(t)}/${sizeOf(w)}`).join(", "),
-  "strength 39/39, shade 41/41, mind 46/46");
+  "strength 39/39, shade 41/41, mind 49/49");
 check("a priest of a pantheon, and of a lone god",
   `${reachOneWay("faith.sessyfyn")}/77, ${reachOneWay("faith.vax")}/77`, "33/77, 21/77");
 
@@ -6018,6 +6043,8 @@ const everyCreatureForArt = monsters.expandRoster(content.ROSTER, content.VARIAN
 const artable = [
   content.WARRIOR_DECK, content.INTENTS, content.COMMON_POOL, content.WAY_CARDS,
   content.SHADE_POOL, content.STRENGTH_POOL, content.WARRIOR_SKILLS, content.WILD_MAGIC,
+  /* The intruders: the only cards a player does not want, so the ones they look at hardest. */
+  content.HARM_FACES,
   /* The ritual twist deck has faces; the general twist deck deliberately does not. */
   content.RITUAL_TWISTS,
   content.FORMULAS, content.SHADOW_FORMULAS, content.MIND_POOL, content.FAITH_POOL,
@@ -6026,7 +6053,7 @@ const artable = [
   content.NATURAL_WEAPONS ?? [], everyCreatureForArt, [content.WARRIOR],
   ...Object.entries(content).filter(([k]) => k.endsWith("_SIGNATURES")).map(([, v]) => v)
 ].flat();
-check("pieces of content that take art", artable.length, 594);
+check("pieces of content that take art", artable.length, 602);
 /*
  * **The four items that are content without being commissions, and the item each one wears.**
  *
@@ -6184,9 +6211,14 @@ check("kinds with a back of their own",
  * a list of valid values is a thing that goes stale the moment the valid values change.
  */
 const backKeys = `${backs.map(([k]) => k.replace(/\./g, "\\.")).join("|")}|npc\\.[a-z]+`;
+/*
+ * **Anywhere in the arguments, not last.** This required the back to be the final argument, which
+ * it stopped being the moment the two twist decks began declaring their own ownership -- and the
+ * failure read *deck documents with no back: 2*, which is not what was wrong. What the check is
+ * about is that every deck names one, and position was never part of that.
+ */
 check("deck documents with no back",
-  deckCalls.filter(args => !/"[a-z.]+"\s*\)?\s*$/.test(args.trim())
-    || !new RegExp(`backOf\\(|, "(${backKeys})"\\s*\\)?\\s*$`).test(args.trim()))
+  deckCalls.filter(args => !new RegExp(`backOf\\(|, "(${backKeys})"`).test(args.trim()))
     .length, 0);
 /*
  * A Wound and a Taint wear the ACTION back, which is not an oversight: both go into the action
@@ -6471,7 +6503,7 @@ const pathless = [
   ...artable.map(e => [e.name, artInLive(e)]),
   ...backs.map(([k, b]) => [b.label ?? k, backOfLive(k)])
 ].filter(([, p]) => p && !fs.existsSync(fileFor(p)));
-check("art paths the game would hand Foundry", artable.length + backs.length, 605);
+check("art paths the game would hand Foundry", artable.length + backs.length, 613);
 /*
  * **The shoot queue, declared rather than carried quietly.**
  *
@@ -6487,6 +6519,7 @@ check("art paths the game would hand Foundry", artable.length + backs.length, 60
  *
  *   node test/art-shoot.mjs features/adapted
  *   node test/art-shoot.mjs cards/npc --failed
+ *   node test/art-shoot.mjs cards/harm
  *
  * The three NPC cards are a DELIBERATE deletion, not a gap: each is a card only one creature can
  * draw, and until now nothing told the model that such a card should look unlike its thirty-four
@@ -6496,8 +6529,9 @@ check("art paths the game would hand Foundry", artable.length + backs.length, 60
  */
 check("and those naming a file that is not there",
   pathless.map(([name]) => name).sort().join(", ") || "none",
-  "Adapted, Backlash, Carry It Off, Deeper, It Answers, It Sets, Not Alone, Open the Hold, "
-  + "Residue, Spoiled, The Hive Obeys, The Long Way, The ritual twist deck");
+  "Adapted, Backlash, Carry It Off, Compulsion, Confusion, Deeper, Doubt, Fear, It Answers, "
+  + "It Sets, Not Alone, Open the Hold, Rage, Residue, Spoiled, Taint (body), Taint (mind), "
+  + "The Hive Obeys, The Long Way, The ritual twist deck, Wound");
 /*
  * **Every group in the brief lands in a slot something writes.**
  *
@@ -6517,13 +6551,13 @@ const ART_SLOTS = {
   "signatures/shade": "face", "signatures/strength": "face", "signatures/mind": "face",
   "signatures/faith": "face", "spells/elemental": "face", "spells/shadow": "face",
   "spells/mind": "face", "spells/faith": "face",
-  "cards/ritual": "face",
+  "cards/harm": "face", "cards/ritual": "face",
   features: "item", items: "item", "items/npc": "item", "items/natural": "item",
   tokens: "actor"
 };
 const briefDirs = [...new Set([...artList.matchAll(/Suggested path: `cardrpg\/art\/(.+?)\/`/g)]
   .map(m => m[1]))];
-check("directories the brief commissions into", briefDirs.length, 22);
+check("directories the brief commissions into", briefDirs.length, 23);
 check("and every one of them has a slot",
   briefDirs.filter(d => !(d in ART_SLOTS)).join(", ") || "none", "none");
 /* And no slot is declared for a group that is not in the brief, or this list rots quietly. */
@@ -6665,7 +6699,7 @@ const briefs = faceRows.map(r => r.brief);
 const leaked = briefs.flatMap(text =>
   [...text.matchAll(/\b([a-z]+[A-Z][a-zA-Z]*)\b/g)].map(m => m[1]));
 /* A pattern that matched no rows at all would report "none" for any list whatsoever. */
-check("briefs the check actually read", briefs.length, 594);
+check("briefs the check actually read", briefs.length, 602);
 check("keys that leaked into the brief",
   leaked.length ? [...new Set(leaked)].join(", ") : "none", "none");
 /*
@@ -6828,7 +6862,7 @@ check("and those are the lengths in the source",
  * European and the cards had no assignment at all.
  */
 const castLines = [...artPrompts.matchAll(/that person is (a (?:wo)?man) of ([A-Za-z ]+?) appearance/g)];
-check("cards, signatures and features given an assigned person", castLines.length, 141);
+check("cards, signatures and features given an assigned person", castLines.length, 149);
 /* The NPC pool is the one group that must NOT be cast: its own capsule says the actor is nobody,
  * because one picture is drawn behind a goblin, a troll and a dragon. */
 const npcBlock = /\n## NPC intent cards\n([\s\S]*?)\n## /.exec(artPrompts)?.[1] ?? "";
@@ -6861,7 +6895,7 @@ check("prompts that ask an image model for self-harm, having nothing else to ask
 
 const EURO = new Set(["Mediterranean", "Nordic", "Slavic", "Northwest European", "Germanic"]);
 check("western ancestries among them, which had nearly vanished",
-  castLines.filter(m => EURO.has(m[2])).length, 48);
+  castLines.filter(m => EURO.has(m[2])).length, 50);
 check("and every ancestry on the list is used somewhere",
   new Set(castLines.map(m => m[2])).size, 15);
 
@@ -6897,7 +6931,7 @@ check("and the log is a record, not a source",
  * spelling them again. */
 const packSource = fs.readFileSync(path.join(root, "test/build-packs.mjs"), "utf8");
 const rows = faceRows;
-check("file paths in the brief", rows.length, 594);
+check("file paths in the brief", rows.length, 602);
 /* And the backs, whose path is the slug of their KEY rather than of their printed label. */
 const backPaths = [...artList.matchAll(/\| `(backs\/[^`]+)` \|/g)].map(m => m[1]);
 check("back paths in the brief", backPaths.length, backs.length);
@@ -7506,7 +7540,7 @@ const planned = packs.planDocuments();
 check("compendium packs", planned.length, 8);
 check("and what each one holds",
   planned.map(p => `${p.name}:${p.docs.length}`).join(" "),
-  "creatures:112 characters:1 items:184 features:24 spells:118 injuries:14 signatures:30 decks:12");
+  "creatures:112 characters:1 items:187 features:24 spells:118 injuries:14 signatures:30 decks:12");
 /* Faults the generator records rather than throws: a filename collision silently drops a document,
  * so the build reports it and this refuses to pass with one outstanding. */
 check("faults the generator reported", planned[0].faults.join("; ") || "none", "none");
@@ -7550,7 +7584,7 @@ check("and the group it asks for", DIMENSIONS.join("+"), "width+height+depth");
  */
 const everyPackDoc = planned.flatMap(p => p.docs);
 const everyPackChild = planned.flatMap(p => p.docs.flatMap(d => d.items ?? d.cards ?? []));
-check("documents the stamp sweep read", everyPackDoc.length, 495);
+check("documents the stamp sweep read", everyPackDoc.length, 498);
 check("and children beneath them", everyPackChild.length, 369);
 const unstamped = [...everyPackDoc, ...everyPackChild]
   .filter(d => d._stats?.coreVersion !== manifest.compatibility.verified
@@ -7596,7 +7630,7 @@ const packedFromContent = {
 check("features the content holds", packedFromContent.features, 24);
 /* Same reason, for the two this build moved: a literal beside each derivation. */
 check("injuries the content holds", packedFromContent.injuries, 14);
-check("and rituals among the formulas", content.RITUALS.length, 4);
+check("and recipes among the items", content.RITUALS.length, 7);
 check("packs whose size disagrees with the content",
   planned.filter(p => p.docs.length !== packedFromContent[p.name])
     .map(p => `${p.name}: ${p.docs.length} vs ${packedFromContent[p.name]}`).join(", ") || "none",
@@ -7633,7 +7667,7 @@ check("pack sources that disagree with the content",
   stale.length ? `${stale.length}: ${stale.slice(0, 4).join(", ")}` : "none", "none");
 /* A comparison that read no files would report "none" for a repository with no packs at all. */
 check("documents the comparison actually read",
-  planned.reduce((n, p) => n + p.docs.length, 0), 495);
+  planned.reduce((n, p) => n + p.docs.length, 0), 498);
 
 /*
  * **An id is a promise.** A world that imports a creature keeps the pack's id, and so does every
@@ -7666,7 +7700,7 @@ for (const pack of planned) {
 }
 check("ids that are not the hash of their key, malformed, or shared",
   idFaults.length ? idFaults.slice(0, 4).join("; ") : "none", "none");
-check("ids the rule actually read", everyId.size, 864);
+check("ids the rule actually read", everyId.size, 867);
 /* The hash itself, asked rather than shared: sixteen characters of the right alphabet, and the
  * same answer twice for the same key. */
 check("an id is sixteen characters", packs.id16("items:Longsword").length, 16);
@@ -8260,7 +8294,7 @@ check("the indexes are refilled rather than replaced",
 /* ---- what it refuses, asked rather than read ---- */
 
 const coreNodes = [...graph.LIVE_NODES];
-check("the graph starts as core content", coreNodes.length, 204);
+check("the graph starts as core content", coreNodes.length, 207);
 
 /* A prerequisite that does not exist: the first price section 8 names. */
 check("a node following nothing that exists",
@@ -8322,7 +8356,7 @@ check("and the graph is still whole", graph.GRAPH.has("shade.thief"), true);
 
 /* Back to core, so every check after this section is asking about the shipped graph. */
 check("the graph can be put back", graph.rebuildGraph({}).length, 0);
-check("and it is core again", graph.LIVE_NODES.length, 204);
+check("and it is core again", graph.LIVE_NODES.length, 207);
 check("with the replaced node restored", graph.GRAPH.get("shade.footwork")?.name, "Footwork");
 
 /* ---- the lock, which is the answer to "not in an active campaign" ---- */
@@ -8794,11 +8828,55 @@ const ritualNames = content.RITUALS.map(r => r.name);
 check("rituals the categories name",
   Object.values(injuryCats).map(c => c.ritual).filter(Boolean).sort().join(", "),
   "Cleansing, Quieting, Regrowth, Unbinding");
-check("and the recipes that exist", [...ritualNames].sort().join(", "),
+/*
+ * **Two kinds of recipe, split by which table names them.**
+ *
+ * The four **greater** rituals lift a category of permanent injury and are **found** -- a Regrowth
+ * is *more of a quest than a service* (ideas.md), so it belongs in the world where a GM can place
+ * it. The three **lesser** ones mend what a fight left behind and are **learned**, on a run of
+ * nodes off Letters -- because that node grants *reading and writing*, and the world document's
+ * gate for this whole school is *anyone literate can do it*. The prerequisite was in the graph
+ * already and nothing had ever hung off it.
+ *
+ * Splitting them here rather than counting seven is the point: the cap, the one-per-category rule
+ * and `needsName` are about the four, and the check below read all seven as one list and reported
+ * the three lesser ones as recipes whose category nothing lifts -- true, and not a fault.
+ */
+const greaterRecipes = content.RITUALS.filter(r => Object.hasOwn(injuryCats, r.ritual));
+const lesserRecipes = content.RITUALS.filter(r => !Object.hasOwn(injuryCats, r.ritual));
+check("and the greater recipes that exist", greaterRecipes.map(r => r.name).sort().join(", "),
   "Recipe: Cleansing, Recipe: Quieting, Recipe: Regrowth, Recipe: Unbinding");
+check("and the lesser ones", lesserRecipes.map(r => r.name).sort().join(", "),
+  "Recipe: Mending, Recipe: Quiet Night, Recipe: Unknotting");
 check("recipes whose category nothing lifts",
-  content.RITUALS.filter(r => !injuryCats[r.ritual]?.ritual).map(r => r.name).join(", ")
+  greaterRecipes.filter(r => !injuryCats[r.ritual]?.ritual).map(r => r.name).join(", ")
     || "none", "none");
+check("and lesser recipes naming nothing in their own table",
+  lesserRecipes.filter(r => !configLive.lesserRituals[r.ritual]?.ritual)
+    .map(r => r.name).join(", ") || "none", "none");
+/* Both directions, so no lesser ritual is a table entry nobody can reach. */
+check("lesser rituals with no recipe",
+  Object.keys(configLive.lesserRituals)
+    .filter(k => !content.RITUALS.some(r => r.ritual === k)).join(", ") || "none", "none");
+/*
+ * **And the graph hands all three over**, which is the whole of what *rewarded for specialising*
+ * means here. A spell slot would have been the wrong currency: a ritual is never prepared and
+ * never cast, so what a node can give is the recipe.
+ */
+check("lesser recipes no node grants",
+  lesserRecipes.filter(r => !nodes.some(n => n.grants?.item === r.name))
+    .map(r => r.name).join(", ") || "none", "none");
+check("and the run they sit on",
+  nodes.filter(n => n.id.startsWith("mind.ritual")).map(n => n.id).join(", "),
+  "mind.ritual, mind.ritual.nights, mind.ritual.knots");
+check("which hangs off the node that teaches letters",
+  nodes.find(n => n.id === "mind.ritual").after.join(", "), "mind.letters");
+check("because that is where reading is taught",
+  nodes.find(n => n.id === "mind.letters").grants.training, "reading and writing");
+/* None of the four greater recipes is granted, because those are found rather than learned. */
+check("greater recipes a node hands over",
+  greaterRecipes.filter(r => nodes.some(n => n.grants?.item === r.name))
+    .map(r => r.name).join(", ") || "none", "none");
 check("and categories with a ritual but no recipe",
   Object.entries(injuryCats).filter(([k, c]) => c.ritual
     && !content.RITUALS.some(r => r.ritual === k)).map(([k]) => k).join(", ") || "none", "none");
@@ -8838,7 +8916,7 @@ check("recipes that are not a thing you can carry",
     || "none", "none");
 check("and each one costs gold rather than a slot",
   content.RITUALS.map(r => `${r.ritual}:${r.value}`).join(" "),
-  "maiming:900 breaking:450 curse:1200 corruption:300");
+  "maiming:900 breaking:450 curse:1200 wounds:120 lasting:200 held:250 corruption:300");
 check("which specializations.md states the price of",
   /\*\*Ritual Magic\*\*[^|]*\| Rituell magik \| \*\(out of combat\)\* \| Time, and a recipe that can go wrong/
     .test(specDoc) ? "yes" : "no", "yes");
@@ -10378,7 +10456,7 @@ for (const item of content.ITEMS) {
     trainingTools.set(want, [...(trainingTools.get(want) ?? []), item.name]);
   }
 }
-check("trainings taught by a node", taught.size, 15);
+check("trainings taught by a node", taught.size, 16);
 check("and the ones that reach a tool",
   [...taught].filter(t => trainingTools.has(t)).sort().join(", "),
   "armour and its repair, games of chance, lockpicks, rope and climbing, traps, treating wounds");
@@ -10386,9 +10464,57 @@ check("and the ones that reach a tool",
 check("and the ones that change no number anywhere",
   [...taught].filter(t => !trainingTools.has(t)).sort().join(", "),
   "appraisal, disguise, firearms and their cleaning, reading, reading and writing, riding, "
-  + "siege engines, tattooing, the holy books");
+  + "ritual magic, siege engines, tattooing, the holy books");
 check("which is how many of the fifteen",
-  [...taught].filter(t => !trainingTools.has(t)).length, 9);
+  [...taught].filter(t => !trainingTools.has(t)).length, 10);
+/*
+ * **Trained and issued: a node that teaches a tool training hands over the tool.**
+ *  **[BUILT 2026-11-08]**
+ *
+ * leveling.md 4 calls a training *a tool type, at the full bonus*, and an uncapped bonus on a tool
+ * nobody owns changes no number until somebody goes shopping. The check above counts the trainings
+ * that reach no tool at all; this is the other half of the same question, and it was the quieter
+ * one -- six trainings **did** reach a tool, and whether the number existed depended on whether
+ * the character had happened to buy it.
+ *
+ * **Except on a crossing**, and that exception is not a carve-out. leveling.md 1 prices a crossing
+ * in *access, not in grants* -- the cards are behind the title it opens -- and two of the seven
+ * candidate nodes are crossings. Issuing there was tried and the reward curve went flat between
+ * levels 9 and 10, because an item is worth as much as a card: the back-half invariant caught a
+ * rule the graph already had written down somewhere else.
+ */
+const toolTrainers = nodes.filter(n => n.grants?.training
+  && trainingTools.has(n.grants.training));
+check("nodes that teach a tool training", toolTrainers.length, 7);
+check("and the ones that issue nothing, which may only be crossings",
+  toolTrainers.filter(n => !n.grants.item).map(n => n.id).join(", "),
+  "shade.cross.odds1, shade.cross.wire1");
+check("and every one of those is a crossing",
+  toolTrainers.filter(n => !n.grants.item && !n.id.includes(".cross.")).map(n => n.id).join(", ")
+    || "none", "none");
+/* And what each issues is a tool its own training uncaps, not merely some item. */
+check("issued tools that the node's training does not uncap",
+  toolTrainers.filter(n => n.grants.item
+    && !(trainingTools.get(n.grants.training) ?? []).includes(n.grants.item))
+    .map(n => `${n.id}:${n.grants.item}`).join(", ") || "none", "none");
+check("what each one is issued",
+  toolTrainers.filter(n => n.grants.item).map(n => `${n.grants.training}:${n.grants.item}`)
+    .sort().join(", "),
+  "armour and its repair:Repair Kit, lockpicks:Lockpicks, rope and climbing:Climbing Rope, "
+  + "treating wounds:Healer's Kit, treating wounds:Healer's Kit");
+/*
+ * **And nothing measured is issued.** A service weapon or a suit of armour is the obvious next
+ * thought and the answer is no: those are numbers this project has simulated -- Plate wins 100.0%
+ * of the published fights -- so handing one out moves the fight the game is balanced against. A
+ * tool changes a check nobody has simulated and caps at +2. This pins the line.
+ */
+check("nodes that issue a weapon or armour",
+  nodes.filter(n => {
+    const it = n.grants?.item && content.ITEMS.find(i => i.name === n.grants.item);
+    if (!it) return false;
+    return (it.armor ?? 0) > 0 || Object.keys(it.verbs ?? {}).some(v => v === "strike");
+  }).map(n => `${n.id}:${n.grants.item}`).join(", ") || "none", "none");
+
 /* The three the catalogue could already carry, so a later edit cannot quietly un-pair them. */
 for (const [training, tool] of [["rope and climbing", "Climbing Rope"],
   ["traps", "Hunting Traps"], ["games of chance", "Gaming Set"]]) {
@@ -10489,7 +10615,23 @@ check("and it is registered",
 check("the deck is built at setup",
   /makeCards\("Twist Deck", "deck", "twist-deck"/.test(setupSource) ? "yes" : "no", "yes");
 check("with a discard beside it",
-  /makeCards\("Twist Discard", "pile", "twist-discard"\)/.test(setupSource) ? "yes" : "no", "yes");
+  /makeCards\("Twist Discard", "pile", "twist-discard", \[\], "", gmOnly\(\)\)/
+    .test(setupSource) ? "yes" : "no", "yes");
+/*
+ * **And both of them say out loud that they are the GM's.** They were already unreadable by a
+ * player and only by accident: Foundry's default ownership happens to be NONE, so nothing had to
+ * declare it. A world that raised its default -- for any of the ordinary reasons a table does --
+ * would have put the GM's costs in the sidebar for everyone, and no check here would have minded.
+ */
+check("twist stacks that do not declare GM-only ownership",
+  (setupSource.match(/makeCards\("(?:Ritual )?Twist [A-Za-z]+"[^;]*?gmOnly\(\)\)/g) ?? []).length, 4);
+check("and the ownership is read lazily, not at module scope",
+  /const gmOnly = \(\) => \(\{ default: CONST\.DOCUMENT_OWNERSHIP_LEVELS\.NONE \}\);/
+    .test(setupSource) ? "yes" : "no", "yes");
+/* The ritual deck is the fourth lock's other half: its own stacks, created beside the first. */
+check("the ritual twist deck is built into a world",
+  /makeCards\("Ritual Twist Deck", "deck", "ritual-twist-deck"/.test(setupSource)
+    ? "yes" : "no", "yes");
 /*
  * **Drawn by hand and never by a result**, which is §4's own instruction: *the GM can always choose
  * a cost directly... the deck is there for when inspiration runs out, not to override the GM*. So
@@ -10954,20 +11096,20 @@ check("of which the trainings that reach a tool",
  */
 const expertiseNodes = nodes.filter(n => n.grants?.expertise);
 const masteryNodes = nodes.filter(n => n.grants?.mastery);
-check("nodes granting an expertise", expertiseNodes.length, 8);
+check("nodes granting an expertise", expertiseNodes.length, 9);
 check("nodes granting a mastery", masteryNodes.length, 4);
 /* Two per Way and one per Way: every Way scales its own approaches, and nobody scales all six. */
 check("expertise, by Way",
   ["strength", "shade", "mind", "faith"]
     .map(w => `${w} ${expertiseNodes.filter(n => n.id.startsWith(w)).length}`).join(", "),
-  "strength 2, shade 2, mind 2, faith 2");
+  "strength 2, shade 2, mind 3, faith 2");
 check("mastery, by Way",
   ["strength", "shade", "mind", "faith"]
     .map(w => `${w} ${masteryNodes.filter(n => n.id.startsWith(w)).length}`).join(", "),
   "strength 1, shade 1, mind 1, faith 1");
 check("and the approaches each scales",
   expertiseNodes.map(n => `${n.id.split(".")[0]}:${n.grants.expertise}`).sort().join(", "),
-  "faith:lore, faith:presence, mind:lore, mind:presence, "
+  "faith:lore, faith:presence, mind:lore, mind:lore, mind:presence, "
   + "shade:shadow, shade:wits, strength:agility, strength:might");
 /* All six approaches reachable, and a mastery only in four: the deeper step is scarcer. */
 check("approaches an expertise exists for",
@@ -10987,7 +11129,7 @@ check("a mastery is always deeper than that Way's expertise",
   }).map(m => m.id).join(", ") || "none", "none");
 
 /* Nothing new was added to the graph for any of it. */
-check("nodes in the graph", nodes.length, 204);
+check("nodes in the graph", nodes.length, 207);
 check("and every expertise rides a node that was already there",
   expertiseNodes.filter(n => Object.keys(n.grants).length < 2).map(n => n.id).join(", ") || "none",
   "none");
@@ -12416,7 +12558,7 @@ for (const m of selfSource.matchAll(/(\w+)\.includes\("((?:[^"\\]|\\.)*)"\)/g)) 
 }
 
 /* The pin that keeps the rest of this honest. */
-check("greps over a whole file, resolved", greps.length, 637);
+check("greps over a whole file, resolved", greps.length, 640);
 
 /*
  * **The rule, as one predicate, run over a planted example before it is run over the suite.**

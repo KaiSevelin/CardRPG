@@ -1,6 +1,6 @@
 # Art list
 
-**605 pieces**, of which **605** are wired up. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card.
+**613 pieces**, of which **613** are wired up. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card.
 
 ## What to supply
 
@@ -54,7 +54,7 @@ Anything under `icons/svg/` is ignored on purpose: that is Foundry's own placeho
 
 ## Deck backs — draw these first
 
-**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 11 pictures against 594 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
+**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 11 pictures against 602 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
 
 **11 pieces**, 11 wired up. Same 2:3 and 640 × 960 as a face, and **no safe area**: nothing is printed over a back, so the whole card is yours.
 
@@ -270,6 +270,23 @@ undefined
 | ✓ | **Residue** | — | `cards/ritual/residue.webp` |
 | ✓ | **Spoiled** | — | `cards/ritual/spoiled.webp` |
 | ✓ | **The Long Way** | — | `cards/ritual/the-long-way.webp` |
+
+## undefined
+
+undefined
+
+**8 pieces**, 8 wired up. Suggested path: `cardrpg/art/cards/harm/`
+
+| | Name | What it is | File |
+|---|---|---|---|
+| ✓ | **Compulsion** | — | `cards/harm/compulsion.webp` |
+| ✓ | **Confusion** | — | `cards/harm/confusion.webp` |
+| ✓ | **Doubt** | — | `cards/harm/doubt.webp` |
+| ✓ | **Fear** | — | `cards/harm/fear.webp` |
+| ✓ | **Rage** | — | `cards/harm/rage.webp` |
+| ✓ | **Taint (body)** | — | `cards/harm/taint-body.webp` |
+| ✓ | **Taint (mind)** | — | `cards/harm/taint-mind.webp` |
+| ✓ | **Wound** | — | `cards/harm/wound.webp` |
 
 ## Signatures — Way of Shade
 

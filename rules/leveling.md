@@ -357,6 +357,35 @@ one thing instead of another.
 | **Action card** | Add a card to your action deck | The deck is the main currency of progression |
 | **Skill card** | Add one, or upgrade one ([skill-rules.md](skill-rules.md) §8) | **[OPEN]** The one reward on this list with no key in the accumulator, so no node can grant it: measured in [skill-rules.md](skill-rules.md) §8, where it means a skill check barely scales with levelling |
 | **Training** | A tool type, at the full bonus instead of +1 | Skill rules §2 already says training comes from the Way trees |
+| **Item** | A slate, handed over outright | A node that teaches a tool training also **issues the tool** — see below |
+
+> **Trained and issued.**  **[BUILT 2026-11-08]**
+>
+> A training is *a tool type, at the full bonus* &mdash; and an uncapped bonus on a tool nobody owns
+> changes no number until somebody goes shopping. Six of the trainings a node teaches reach a tool
+> the catalogue carries, and whether the reward did anything depended on whether the character had
+> happened to buy one. So the node hands it over:
+>
+> | Node | Teaches | Issues |
+> |---|---|---|
+> | **Quiet Hands** | lockpicks | Lockpicks |
+> | **Ropework** | rope and climbing | Climbing Rope |
+> | **Armoury** | armour and its repair | Repair Kit |
+> | **Anatomy** | treating wounds | Healer's Kit |
+> | **The Cloister** | treating wounds | Healer's Kit |
+>
+> **Except on a crossing**, and that is this section's own rule rather than an exception to it: a
+> crossing is paid in **access, not in grants** (§1), because the cards are behind the title it
+> opens. Two nodes that teach a tool training are crossings &mdash; *The Tables* and *Tripwire* &mdash;
+> and they issue nothing. It was tried the other way first and the reward curve went flat between
+> levels 9 and 10, because an item is weighted like a card: the back-half invariant found a rule
+> this document had already written down somewhere else.
+>
+> **And it stops at tools.** A service weapon or a suit of armour is the obvious next thought, and
+> the answer is no: those are **measured** numbers &mdash; Plate wins 100.0% of the published fights
+> &mdash; so issuing one moves the fight the whole game is balanced against, and would want
+> measuring before it wanted writing. A tool changes a check nobody has simulated and caps at +2.
+> The line is between a number this project has pinned and one it has not.
 | **Know-how** | A situation you have **advantage** in | A background gives one; a Way gives more |
 | **Expertise** | Raise one skill card of a named approach by 1, to the cap of 3 | **[BUILT 2026-11-02]** The upgrade of [skill-rules.md](skill-rules.md) §8, in place: it asks which card, the way a prune asks which to drop |
 | **Mastery** | Your passive score in a named approach is 1 higher | **[BUILT 2026-11-02]** The only reward that moves what a character notices without drawing anything |

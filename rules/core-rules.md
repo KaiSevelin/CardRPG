@@ -2098,6 +2098,27 @@ instead is the recipe, which is a thing you find.
 | **Recipe: Unbinding** | a Curse | Lore, Progress 8, Pressure 3, *and the curser's name* | 1200 |
 | **Recipe: Cleansing** | a Corruption, or Taint | Lore, Progress 4, Pressure 4 | 300 |
 
+**And three lesser recipes, which a levelling branch hands out.**  **[BUILT 2026-11-08]**
+
+| Recipe | Mends | The challenge | Gold |
+|---|---|---|---|
+| **Recipe: Mending** | **every** Wound in one character's deck | Lore, Progress 2, Pressure 4 | 120 |
+| **Recipe: Quiet Night** | a **lasting** injury: its remaining days are spent at once | Presence, Progress 2, Pressure 3 | 200 |
+| **Recipe: Unknotting** | one condition with **no duration to spend** | Lore, Progress 3, Pressure 3 | 250 |
+
+> **The four greater rituals are found; these three are learned.** A Regrowth is *more of a quest
+> than a service*, so it belongs in the world where a GM can place it. Mending a deck full of
+> Wounds is what somebody who studied rituals should simply be able to do &mdash; so they sit on a
+> run of three ordinary nodes off **Letters**, the node that grants *reading and writing*, because
+> the world document's gate for this whole school is *"anyone literate can do it."* The
+> prerequisite was in the levelling graph already and nothing had ever hung off it.
+>
+> **Each earns itself against something that exists**, which is the test a *Burden* card failed:
+> treatment and a long rest each take **one** Wound, and *Mending* takes all of them, which is a
+> different thing to want; nothing else in the game shortens a **lasting** injury; and *Shake Off*
+> spends a condition's duration, so a condition with none is beyond it. There is deliberately **no**
+> Taint recipe &mdash; a Cleansing already removes Taint.
+
 > **[RESOLVED 2026-11-08] These were formulas, and a formula could not say this.** On a spell,
 > strength is the **slot cost** &mdash; and a ritual is the only slate in the game that is never
 > prepared and never cast, so a slot cost had nothing to mean. Any number above zero quietly closed

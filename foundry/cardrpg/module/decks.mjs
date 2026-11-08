@@ -181,6 +181,31 @@ export function twistCardData(def, back = "twist") {
  */
 export const TWIST_BACKS = [backOf("twist"), backOf("ritual")];
 
+/**
+ * **One intruder, as a Card** -- and one builder where there were five hand-written literals.
+ *
+ * `resolveWound`, `resolveTaint`, `resolveFear`, `resolveDoubt` and `dealIntruder` each wrote
+ * their own `{ name, type, system }` out by hand, which was fine while a card was three fields
+ * and stopped being fine the moment it had a picture: five places to add an `img`, and the one
+ * that was missed would have been a card that quietly wore Foundry's placeholder.
+ *
+ * The name carries the flavour where a kind has two -- Taint is a disease or a horror depending
+ * on which deck it goes in -- because the name is what resolves the art, and the two are
+ * genuinely different pictures.
+ */
+export function harmCardData(kind, { source = "", flavour = "" } = {}) {
+  const name = kind === "taint"
+    ? (flavour === "mind" ? "Taint (mind)" : "Taint (body)")
+    : kind[0].toUpperCase() + kind.slice(1);
+  const art = artIn({ name });
+  return {
+    name,
+    type: kind,
+    ...(art ? { faces: [{ name, img: art }], face: 0 } : {}),
+    system: { source, ...(kind === "taint" ? { flavour } : {}) }
+  };
+}
+
 export function actionCardData(def) {
   return {
     name: def.name,

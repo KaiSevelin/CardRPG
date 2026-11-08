@@ -89,6 +89,12 @@ export const SHELVES = [
    * trying to undo pushing back. That is the one GM deck with an audience.
    */
   { key: "cards/ritual", list: content.RITUAL_TWISTS },
+  /*
+   * The intruders. They are the only cards in the game a player does not want, which makes them
+   * the ones a player looks at hardest -- and they had no pictures because the decision was taken
+   * when there were two of them.
+   */
+  { key: "cards/harm", list: content.HARM_FACES },
 
   { key: "signatures/shade", list: content.SHADE_SIGNATURES },
   { key: "signatures/strength", list: content.STRENGTH_SIGNATURES },
