@@ -1,3 +1,10 @@
+# LF in the working tree, on every machine. core.autocrlf is true where this is checked out,
+# and validate.mjs reads these files with multi-line regexes that do not match across CRLF -- so
+# without this line a fresh clone comes up red for a reason that has nothing to do with the game.
+# It is first on purpose: the rules below are narrower and must win over it, and in this file the
+# later pattern is the one that applies.
+* text=auto eol=lf
+
 # Compendium packs are LevelDB: binary, byte-exact, and ruined by newline translation.
 #
 # This repository is checked out on Windows, where git rewrites LF to CRLF in anything it thinks
