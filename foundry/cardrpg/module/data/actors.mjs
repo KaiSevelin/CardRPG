@@ -66,6 +66,98 @@ function healthField(base) {
 /*  Character                                   */
 /* -------------------------------------------- */
 
+/**
+ * **How many things a slot really holds, for either kind of actor.**
+ *
+ * Shared for the same reason `blockedReactionsOf` is: the tray's `#makeRoom` equips gear onto
+ * whatever actor it was handed, and a monster is one of those. A method on the character model
+ * alone would have thrown the first time a GM put a sword in a troll's hand.
+ */
+function slotCapacityOf(system, slot) {
+  const base = CARDRPG.slots[slot]?.capacity;
+  if (base === null || base === undefined) return base;
+  if (slot !== "hands") return base;
+  let lost = 0;
+  for (const slate of system.parent?.items ?? []) {
+    if (slate.type === "injury") lost += slate.system.takes?.handSlots ?? 0;
+  }
+  return Math.max(0, base - lost);
+}
+
+/**
+ * **Reactions switched off right now (core-rules 3), for either kind of actor.**
+ *
+ * This getter was written out **twice**, identically, once in each actor model -- which is the
+ * defect this project keeps finding, and the reason to fix it here rather than later is that
+ * injuries are the third thing that can take a reaction away. Adding them to one copy and not
+ * the other would have left a maimed character reacting on their own sheet and not in a fight,
+ * and every check would still have passed. The DEAD set in combat_sim.py was the same lesson in
+ * another language on the same day.
+ *
+ * Three sentences that must not share a field, and now visibly do not:
+ *
+ * - a **condition** takes all of them (Stunned, Unconscious);
+ * - **worn gear** takes the ones it names, and a stowed thing takes nothing -- Plate in the pack
+ *   is luggage;
+ * - an **injury** takes the ones it names and there is nothing to take off, which is what makes
+ *   it an injury. `firstRoundOnly` is the one dial on that: *Shattered nerves* blocks only in
+ *   round 1, so the hero who survives the opening keeps their reactions for the rest of it.
+ */
+/**
+ * **How far a printed line really reaches, which nothing has ever worked out.**
+ *
+ * **[FOUND IN CODE 2026-11-08]** `bonus.range` has been a field on the item and feature schemas
+ * since tools were built, and **no code has ever read it**. `collectBonuses` skips a bonus with
+ * no `value` on its first line, and only ever sums `value` -- so **Good Aim**, a shipped feature
+ * whose entire text is *"+2 range on Ranged and Thrown items"*, has done nothing at all since the
+ * day it was written. The sheet and the tray print `l.range` straight off the item.
+ *
+ * It came to light from the other direction: *Lost Eye* is *"range -2 with a ranged weapon"*, and
+ * writing it as a negative `bonus.range` would have been the same nothing with a minus sign.
+ *
+ * This is the same defect as `bonus.approach` on a feature, one field along: **the field existed
+ * and the reader did not.** Range is never *enforced* by the engine -- figures are pushed around
+ * by hand, like Move -- so what a modifier to it can change is the number printed on the line,
+ * which is exactly where the player reads it. That makes this the counterpart of `movePlayed`.
+ *
+ * Floored at 1: a ranged line that reaches zero squares is not a weapon, and two lost eyes is
+ * not a thing the cap allows anyway.
+ */
+function rangeOnLine(system, line, item) {
+  const base = line?.range ?? null;
+  if (base === null) return null;
+  let n = 0;
+  for (const slate of system.parent?.items ?? []) {
+    const bonus = slate.system?.bonus;
+    if (!bonus?.range || bonus.verb !== "strike") continue;
+    /* Equipped-or-standing, the same law grants.mjs encodes: a ring in the pack grants nothing. */
+    if (slate.type === "item"
+      && (!slate.system.equipped || CARDRPG.slots[slate.system.equippedSlot]?.stows)) continue;
+    if (slate.system.drained) continue;
+    /* The tag is about the weapon the line belongs to, not the slate carrying the bonus. */
+    if (bonus.requiresTag && !(item?.system?.tags ?? []).includes(bonus.requiresTag)) continue;
+    n += bonus.range;
+  }
+  return Math.max(1, base + n);
+}
+
+function blockedReactionsOf(system) {
+  const blocked = new Set();
+  if (system.noReactions) return new Set(Object.keys(CARDRPG.reactions));
+  const round = game.combat?.round ?? 0;
+  for (const slate of system.parent?.items ?? []) {
+    if (slate.type === "injury") {
+      if (slate.system.firstRoundOnly && round > 1) continue;
+      for (const key of slate.system.blocksReactions ?? []) blocked.add(key);
+      continue;
+    }
+    if (slate.type !== "item" || !slate.system.equipped) continue;
+    if (CARDRPG.slots[slate.system.equippedSlot]?.stows) continue;
+    for (const key of slate.system.blocksReactions ?? []) blocked.add(key);
+  }
+  return blocked;
+}
+
 export class CharacterData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     const d = CARDRPG.defaults;
@@ -419,19 +511,14 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
     return this.activeConditions.some(c => CARDRPG.conditions[c.key]?.blocksReactions);
   }
 
-  /**
-   * Reactions switched off right now (core-rules 3). A condition takes all of them, worn gear takes
-   * the ones it names, and a stowed thing takes nothing -- Plate in the pack is luggage.
-   */
+  /** Reactions switched off right now (core-rules 3). One answer for both models, above. */
   get blockedReactions() {
-    const blocked = new Set();
-    if (this.noReactions) return new Set(Object.keys(CARDRPG.reactions));
-    for (const slate of this.parent?.items ?? []) {
-      if (slate.type !== "item" || !slate.system.equipped) continue;
-      if (CARDRPG.slots[slate.system.equippedSlot]?.stows) continue;
-      for (const key of slate.system.blocksReactions ?? []) blocked.add(key);
-    }
-    return blocked;
+    return blockedReactionsOf(this);
+  }
+
+  /** A printed range as it actually reads, once Good Aim and a lost eye have had their say. */
+  rangeOnLine(line, item) {
+    return rangeOnLine(this, line, item);
   }
 
   /**
@@ -443,7 +530,7 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
     return this.activeConditions.some(c => CARDRPG.conditions[c.key]?.halvesMove);
   }
 
-  /** How much is taken off a Move after halving (Frozen). The highest applies; they do not add. */
+  /** How much a condition takes off a Move after halving. The highest applies; they do not add. */
   get moveReduction() {
     let worst = 0;
     for (const c of this.activeConditions) {
@@ -452,9 +539,57 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
     return worst;
   }
 
-  /** A printed Move value as it actually plays: halved, then reduced, floored at 0 (core-rules 7). */
+  /**
+   * **How much an injury takes off a Move, which is a different subtraction with a different
+   * floor** -- and folding the two together was a real bug, caught by measuring it.
+   *
+   * ideas.md wrote *Bad leg: all Move values -1 (**minimum 1**)*, and that parenthesis is the
+   * whole of this comment. Dropped, a bad leg measured at **-25.4 win rate** against the published
+   * encounters and **-38.5 against archers** -- 40.0% down to 1.5%, seven times the most
+   * expensive card in the game. The cause is not that -1 is harsh: it is that the starter deck's
+   * commonest Move value **is** 1, so a flat -1 with a floor of zero does not slow the hero down,
+   * it deletes half their movement, and the archer fight is entirely about closing.
+   *
+   * So the two subtractions keep their own floors, and the sentence each one is reads cleanly:
+   * **a bad leg slows you (floor 1); a frozen leg stops you (floor 0).** The highest injury
+   * applies rather than the sum, as conditions already do.
+   */
+  get injuryMoveReduction() {
+    let worst = 0;
+    for (const slate of this.parent?.items ?? []) {
+      if (slate.type !== "injury") continue;
+      worst = Math.max(worst, slate.system.takes?.move ?? 0);
+    }
+    return worst;
+  }
+
+  /**
+   * **How many hands this slot really holds**, which was `CARDRPG.slots[slot].capacity` read
+   * straight out of config in two places -- the sheet's slot panel and the tray's `#makeRoom`.
+   *
+   * Two readers of one constant is how a rule comes to be true in whichever place was edited
+   * last, and *Lost hand* is the first thing in the game that makes the constant wrong. So it is
+   * a derived number now and both callers ask for it.
+   *
+   * `null` stays `null`: the pack has no capacity and an injury does not give it one.
+   */
+  slotCapacity(slot) {
+    return slotCapacityOf(this, slot);
+  }
+
+  /**
+   * A printed Move value as it actually plays (core-rules 7, 8).
+   *
+   * In order, and the order is the rule: the **injury** first, which can never take you below 1
+   * square; then **halved** if a condition halves it; then the **condition's** own reduction,
+   * which can take you to 0. A leg that healed wrong is not the same sentence as a leg frozen to
+   * the ground, and before they were the same subtraction.
+   */
   movePlayed(printed) {
-    const halved = this.moveHalved ? Math.floor(printed / 2) : printed;
+    const injured = printed > 0
+      ? Math.max(1, printed - this.injuryMoveReduction)
+      : printed;
+    const halved = this.moveHalved ? Math.floor(injured / 2) : injured;
     return Math.max(0, halved - this.moveReduction);
   }
 
@@ -619,13 +754,16 @@ export class NpcData extends foundry.abstract.TypeDataModel {
   }
 
   get blockedReactions() {
-    const blocked = new Set();
-    if (this.noReactions) return new Set(Object.keys(CARDRPG.reactions));
-    for (const slate of this.parent?.items ?? []) {
-      if (slate.type !== "item" || !slate.system.equipped) continue;
-      if (CARDRPG.slots[slate.system.equippedSlot]?.stows) continue;
-      for (const key of slate.system.blocksReactions ?? []) blocked.add(key);
-    }
-    return blocked;
+    return blockedReactionsOf(this);
+  }
+
+  /** A monster can lose a hand too, and the tray equips gear through this. */
+  slotCapacity(slot) {
+    return slotCapacityOf(this, slot);
+  }
+
+  /** And a monster with a bow reads its range the same way. */
+  rangeOnLine(line, item) {
+    return rangeOnLine(this, line, item);
   }
 }

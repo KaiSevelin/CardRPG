@@ -106,11 +106,20 @@ Direct magic is cast in combat. Ritual magic is not, and anyone literate can do 
 | **Household Magic** | Hushållsmagi | *(out of combat)* | Negotiation with elf-kin, as an obligation |
 | **Ward Magic** ✱ | Bannmagi | **Reactions** | Spent — a ward held in reserve is a card gone for the fight |
 | **Divination** ✱ | Spådom | **Support** | Someone else's turn — and a prophecy the GM holds over you |
-| **Ritual Magic** | Rituell magik | *(out of combat)* | Time, and a recipe that can go wrong |
+| **Ritual Magic** ✦ | Rituell magik | *(out of combat)* | Time, and a recipe that can go wrong |
 | **Brewer** | Bryggare | *(craft)* | — |
 | **Smith** | Smeder | *(craft)* | — |
 | **Jeweller** | Juvelerare | *(craft)* | — |
 | **Orator** | Oratorer | *(social)* | — |
+
+✦ **Ritual Magic has content now, and this row is why it is the right shape.**  **[BUILT 2026-11-08]**
+Four rituals, one per category of permanent injury &mdash; **Regrowth**, **Quieting**,
+**Unbinding** and **Cleansing** ([core-rules.md](core-rules.md) §8). The node had been listed
+since this Way was written and had never held a single formula, and both halves of what it needed
+were already in the two words of its price: *time* is a **Progress** track and *a recipe that can
+go wrong* is a **Pressure** track, so a ritual is a downtime challenge (skill-rules.md §6) rather
+than a cast. And *"anyone literate can do it"* settles the gate: the scarce thing is the **recipe**,
+not the caster, so no party is ever locked out of mending a character by how somebody levelled.
 
 ✱ **Divination and Ward Magic are not in the world document.** Divination was added for the Support
 axis; Ward Magic replaces **Priest Magic**, which has become a Way of its own. Priest magic was one
@@ -930,7 +939,8 @@ as well, which is the shape the node always claimed.
    **12** after three professions were demoted and one weapon absorbed, Mind **12** once Divination
    and Ward Magic replaced the overloaded Priest node, and Faith is **12 gods across 6 religions**.
    Ritual magic, household magic and the four crafts sit outside the count because they are not
-   fighting identities (finding 5).
+   fighting identities (finding 5) &mdash; and ritual magic has content now without changing that:
+   four rituals that lift permanent injuries, none of which is a thing you do in a fight.
 5. **The crafts are probably not major nodes at all.** Brewer, Smith, Jeweller, Orator, Spy, Fence
    and Politician are about what you do *between* fights, and a major node is a fighting identity.
    Since **skills live on minor nodes** ([leveling.md](leveling.md) §4), these are most likely

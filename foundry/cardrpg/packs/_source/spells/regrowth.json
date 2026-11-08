@@ -1,0 +1,22 @@
+{
+  "_id": "ZX1BDOPD3uccUtHU",
+  "_key": "!items!ZX1BDOPD3uccUtHU",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Regrowth",
+  "type": "spell",
+  "system": {
+    "strength": 1,
+    "effect": {
+      "timing": "ritual",
+      "text": "lift one Maiming over Progress 6, Pressure 4 (Lore)"
+    },
+    "description": "<p>ideas.md calls regeneration magic <em>\"rare and expensive, more of a quest than a service\"</em>. Progress 6 is the quest, and the likeness is what the party has to go and get.</p>",
+    "kind": "formula",
+    "prepared": false,
+    "text": "Lore, Progress 6, Pressure 4. Regrows what was lost. Needs the part, or a likeness of it."
+  }
+}

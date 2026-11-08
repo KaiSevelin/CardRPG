@@ -1,0 +1,22 @@
+{
+  "_id": "bV2g511xjFD5FHyq",
+  "_key": "!items!bV2g511xjFD5FHyq",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Lost Hand",
+  "type": "injury",
+  "system": {
+    "category": "maiming",
+    "takes": {
+      "handSlots": 1
+    },
+    "description": "<p>A shield or a sword, and never the pair. A hook helps with the second problem and not the first.</p>",
+    "grants": {
+      "carry": -2
+    },
+    "text": "One hand slot instead of two. You may carry less."
+  }
+}

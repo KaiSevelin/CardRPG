@@ -348,6 +348,31 @@
           {{/each}}
         </ul>
       </section>
+
+      <section class="cr-block">
+        <h3>Injuries</h3>
+        <p class="cr-note">A permanent injury is a feature you did not choose. One of each category
+          at most, and a ritual is what lifts it &mdash; except an obligation, which lifts for
+          nobody.</p>
+        <ul class="cr-slates">
+          {{#each injuries as |entry|}}
+            <li class="cr-slate-row" data-group="{{entry.doc.system.category}}">
+              <span class="cr-slate-row__name">{{crIcon entry.icon}}{{entry.doc.name}}</span>
+              <span class="cr-note">{{entry.doc.system.text}}</span>
+              <span class="cr-note">{{entry.category}} &mdash; {{entry.lasts}}. {{entry.lift}}.</span>
+              {{#if entry.doc.system.cause}}
+                <span class="cr-note">{{entry.doc.system.cause}}</span>
+              {{/if}}
+              <button type="button" data-action="editSlate" data-slate-id="{{entry.doc.id}}">Edit</button>
+            </li>
+          {{else}}
+            <li class="cr-note">No injuries.</li>
+          {{/each}}
+        </ul>
+        {{#if injuryRoom}}
+          <p class="cr-note">Still open: {{injuryRoom}}.</p>
+        {{/if}}
+      </section>
     {{/if}}
 
     {{#if onNotes}}

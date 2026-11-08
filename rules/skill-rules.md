@@ -620,6 +620,19 @@ Activities between adventures (crafting, research, training, earning money, buil
 | Earning money | Any that fits the job | Job-specific |
 | Building contacts | Presence, Shadow | Fine clothes, coin |
 | Training | The approach being trained | A teacher |
+| **Rituals** | **Lore, or Presence for a Quieting** | **A recipe, and what it asks for** |
+
+> **The four rituals are downtime challenges, and that was the world document's decision rather
+> than a choice made here.**  **[BUILT 2026-11-08]** **Ritual Magic**'s price in
+> [specializations.md](specializations.md) is *"Time, and a recipe that can go wrong"* — which is
+> this section's two tracks in the two words it took to say it. *Time* is **Progress**, one check
+> per unit of it; *a recipe that can go wrong* is **Pressure**, and pressure filling is the recipe
+> going wrong rather than a dead end.
+>
+> They lift **permanent injuries** ([core-rules.md](core-rules.md) §8): Regrowth 6, Quieting 6,
+> Unbinding 8, Cleansing 4. **Cleansing's numbers are not new** — core-rules has published it as
+> *a downtime challenge (Lore, Progress 4)* since Taint was written, which is the first thing this
+> system was ever asked to run and the reason it could be specified before it existed.
 
 ---
 

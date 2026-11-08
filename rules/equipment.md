@@ -908,6 +908,12 @@ right price for skipping the queue at the jeweller's.
 Which means the rules for it already exist and need no additions:
 
 - **It cannot be removed.** Not by taking it off, not by a rest, not by a level.
+> **[CHANGED 2026-11-08] Two of the six said "lifted by a Cleansing" and now say "an Unbinding".**
+> Once the categories of permanent harm were written (core-rules §8), a **Cleansing** is the ritual
+> for **Corruption** — Taint gone past where a cure reaches — and a curse somebody laid on purpose
+> is an **Unbinding**, which costs more (Progress 8) and demands the curser's **name**. That name is
+> the better story anyway: it turns taking a curse off into finding out who put it on.
+
 - **The text names the one thing that lifts it** — and the price should be what the curse bought,
   the same rule a necromancer's bound Taint follows.
 - **It binds in text**, the loosest rung, because an item everyone at the table can read the curse
@@ -922,12 +928,12 @@ Thread*. A party that has heard of the good one is exactly the party that will p
 
 | Item | Slot | Looks like | Does | **Curse** |
 |---|---|---|---|---|
-| **Blade of the Eager Hand** | 1 hand | an old sword, very sharp | **Strike 5** | You must ⚔ Strike the **nearest** living creature every turn, ally or not. *Lifted by:* a Cleansing |
+| **Blade of the Eager Hand** | 1 hand | an old sword, very sharp | **Strike 5** | You must ⚔ Strike the **nearest** living creature every turn, ally or not. *Lifted by:* an Unbinding |
 | **Ring of Open Hands** | Fingers | a plain silver ring | You may ✦ Cast without a free hand | You may **never hold anything** in your other hand again. *Lifted by:* the jeweller who made it, who is dead |
 | **Cloak of the Grey Road** | Cloak | a grey travelling cloak | **Drain:** **Invisible (1)**. *Recharge: combat* | Allies may not target you with **anything beneficial** either. *Lifted by:* a cure |
 | **Boots of the Longer Step** | Feet | good boots, barely worn | Your Move values are **+2** | You may **never end your turn** in the square you began it in. *Lifted by:* walking a pilgrimage barefoot |
 | **Amulet of the Fed Thread** | Neck | a knotted thread in amber | **Drain:** drop to **1** instead of 0. *Recharge: long rest* | Each time it saves you, **one ally takes 3 damage**. *Lifted by:* dying anyway |
-| **Gauntlet of the Open Palm** | 1 hand | a fine plated gauntlet | **+1** to all 🛡 Defend | You may **not hold a weapon** in that hand. *Lifted by:* a Cleansing |
+| **Gauntlet of the Open Palm** | 1 hand | a fine plated gauntlet | **+1** to all 🛡 Defend | You may **not hold a weapon** in that hand. *Lifted by:* an Unbinding |
 
 **Four of the six are strictly good until they are not**, which is the only honest way to write a
 curse: *Boots of the Longer Step* really do give +2 Move, and a Trapmaker or an Artillerist — whose
@@ -1185,12 +1191,19 @@ part: the target gets one clean turn, so a poisoner who uses it is betting on th
 - **[OPEN]** **A mount.** The Lance needs one, the Culverin implies draught animals, and
   [conditions.md](conditions.md) §4.2 settled only that a mount is *not* a condition. Its Move,
   Health, turn and the rules for being unhorsed are all unwritten.
-- **[OPEN]** **Nothing in the engine enforces a curse.** `curse` is a string and `identified` a
-  boolean, and both are honest records the GM reads — but nothing stops a player unequipping a cursed
-  item, and the sheet does not yet use `shownName` to hide an unidentified one. That is the same
-  `[OPEN]` [leveling.md](leveling.md) §4 already carries for prohibitions in general: *"you may not
-  wear armour" needs the HUD or the rules to stop it, or it is a text obligation after all.* A cursed
-  item is the first case where that gap is visible at the table.
+- **[PARTLY ANSWERED 2026-11-08] Nothing in the engine enforces a curse — unless the curse is a
+  card.** `curse` is still a string and `identified` still a boolean, and nothing stops a player
+  unequipping a cursed item. But there is now one shape of obligation that enforces itself: **an
+  intruder card in your deck** (core-rules §8). The engine already moves cards, so a bargain
+  written as one keeps itself without anybody remembering to.
+  - The proof is **the Blade of the Eager Hand**. Its curse — *"you must Strike the nearest living
+    creature every turn, ally or not"* — is the **Rage** card's rule word for word, written here in
+    prose two months before that card existed. The injury *The Eager Hand* is two Rage cards, and
+    it is the same sentence with an engine behind it.
+  - What is left open is the **prohibition** half: *"you may not hold a weapon in that hand"* is
+    still text, and so is *"you may not wear armour"* in [leveling.md](leveling.md) §4. A curse that
+    **adds** something is now enforceable; a curse that **forbids** something still needs the HUD.
+    Compulsion is the hint at how to close it — it forbids Catch Breath *by being a card in hand*.
 - **[OPEN]** **Heavy Armor's drawback is enforced now, and still free.** It is a field rather than a
   sentence — `blocksReactions: ["sidestep"]` on Brigandine and Plate — so the engine takes the
   reaction away. That was the implementation half. The *pricing* half is untouched: Plate wins 100.0%

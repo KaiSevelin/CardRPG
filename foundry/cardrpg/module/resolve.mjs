@@ -16,13 +16,14 @@
 
 import { CARDRPG } from "./config.mjs";
 import {
-  MINOR_GODS, ROSTER, VARIANTS, NATURAL_WEAPONS, NPC_GEAR, ITEMS, FEATURES, TRANSFORMATIONS
+  MINOR_GODS, ROSTER, VARIANTS, NATURAL_WEAPONS, NPC_GEAR, ITEMS, FEATURES, TRANSFORMATIONS,
+  INJURIES
 } from "./content.mjs";
 import { expandRoster } from "./monsters.mjs";
 import { slateData } from "./setup.mjs";
 import {
   drawFate, deckOf, uprightCards, discardCards, cardName, addFateCards, moveRandom, move,
-  applyFear, removeCard, intruderStack, addFateCards as addFate
+  applyFear, removeCard, intruderStack, allStacks, addFateCards as addFate
 } from "./decks.mjs";
 
 /* -------------------------------------------- */
@@ -517,7 +518,17 @@ export async function liftCondition(actor, { target, key }) {
  * has no target. Four careers grant it, and the finding belongs to them rather than to this
  * function; it is recorded in core-rules 8.
  */
-export async function resolveWound(target, { reason = "" } = {}) {
+/**
+ * **The reason string that is also a rule**, and therefore a constant.
+ *
+ * Three call sites pass it -- combat.mjs's damage application and two in this file -- and it is
+ * no longer only a line of prose on a card face: it is the test that decides whether an injury
+ * is drawn for. A magic string read in four places is the next version of the defect this file
+ * is full of notes about, so it gets a name before it can become one.
+ */
+export const DROPPED = "dropped to 0";
+
+export async function resolveWound(target, { reason = "", injuryMode = 0 } = {}) {
   if (!target) return false;
   const stack = deckOf(target, "actionDiscard");
   if (!stack) return false;
@@ -526,6 +537,22 @@ export async function resolveWound(target, { reason = "" } = {}) {
     type: "wound",
     system: { source: reason }
   }]);
+  /*
+   * **And this is the one moment a character can be changed forever.**
+   *
+   * core-rules 8 gives two reasons for a Wound -- five past armour, and dropping to 0 -- and only
+   * the second one is also the moment an injury is drawn for. Hanging the draw here rather than
+   * at the three call sites that pass `DROPPED` is the whole of the design: permanence passes
+   * through one gate, and a card that wants to make it worse modifies the gate instead of
+   * inflicting an injury of its own.
+   *
+   * That is not a style preference. A card reading *permanently blind the target* would put the
+   * most consequential rule in the game in as many places as there are cards, and this project
+   * has paid for that shape twice already: the Wound threshold was a constant read in two places,
+   * and `wound || taint` was written out three times before the intruder table closed it. The
+   * `maiming` keyword is the modifier, and it is disadvantage on this draw and nothing else.
+   */
+  if (reason === DROPPED) await resolveInjury(target, { mode: injuryMode, cause: reason });
   return true;
 }
 export async function resolveTaint(actor, { amount = 1, target, flavour = "body", fast = false, source = "" }) {
@@ -558,7 +585,7 @@ export async function resolveTaint(actor, { amount = 1, target, flavour = "body"
       "system.health.value": Math.max(0, before - n)
     });
     /* A dose that drops you is still a drop (core-rules 8), even though no taint reaches five. */
-    if (before - n <= 0) await resolveWound(target, { reason: "dropped to 0" });
+    if (before - n <= 0) await resolveWound(target, { reason: DROPPED });
   }
 
   await ChatMessage.create({
@@ -743,17 +770,242 @@ export async function resolveConfusion(actor, options) {
  * willingly. A Hex is that transaction with the consent removed, and it needed no new vocabulary,
  * no new subtype and no new resolution path -- only a name for the GM to call it by.
  */
-export async function resolveHex(actor, { amount = 1, target } = {}) {
+export async function resolveHex(actor, { amount = 1, target, source = "a hex" } = {}) {
   if (!target) return null;
   const n = Math.max(1, amount);
-  const made = await addFate(target, { special: "miss", count: n, temporary: false });
+  // The source is what makes it liftable: a dealt Miss has one and the deck's own Miss does not.
+  const made = await addFate(target, { special: "miss", count: n, temporary: false, source });
   await ChatMessage.create({
     speaker: ChatMessage.getSpeaker({ actor }),
     content: `<div class="cardrpg"><p><strong>${target.name}</strong>: Hex <strong>${n}</strong> `
       + `&mdash; ${made} permanent Miss ${made === 1 ? "card" : "cards"} shuffled into the fate `
-      + `deck. Only a cure takes one out.</p></div>`
+      + `deck. Only a cure or an Unbinding takes one out.</p></div>`
   });
   return { amount: made };
+}
+
+/* -------------------------------------------- */
+/*  Permanent injuries                         */
+/* -------------------------------------------- */
+
+/** Which injury categories this character already carries. The cap counts these. */
+export function injuryCategoriesTaken(actor) {
+  const taken = new Set();
+  for (const slate of actor?.items ?? []) {
+    if (slate.type === "injury") taken.add(slate.system.category);
+  }
+  return taken;
+}
+
+/**
+ * The categories still open to this character.
+ *
+ * **One injury per category, which is a cap on four rather than on nothing.** ideas.md's worry
+ * about this list was that injuries stack into a death spiral, and a cap of one per category
+ * answers it with the categories that already had to exist: four liftable kinds plus an
+ * obligation is five slates at the very worst, and realistically four, because nobody takes on
+ * an obligation by falling over.
+ *
+ * It also gives a category a second job. Naming a ritual was the first, and a value that does
+ * only one thing is the kind this project keeps finding in dropdowns.
+ */
+export function openInjuryCategories(actor) {
+  const taken = injuryCategoriesTaken(actor);
+  return Object.keys(CARDRPG.injuryCategories).filter(k => !taken.has(k));
+}
+
+/**
+ * **The injury draw: the one place a character becomes permanently different.**
+ *
+ * ideas.md wrote this rule before anything could run it: *when you fall Unconscious, draw a fate
+ * card -- a Miss is a permanent injury, a -2 or -1 is a lasting one that heals after days of
+ * rest, anything else is only the normal Wound.* Every piece of it already existed. The draw is
+ * `drawFate`, the three outcomes are a fate card's own faces, and *how long* is one number on
+ * the slate rather than a second kind of thing.
+ *
+ * **`mode` is where every modifier lands**, and it is the existing advantage dial rather than a
+ * new one: `maiming` draws two and keeps the worse, a Healer's Kit in reach draws two and keeps
+ * the better, and the two cancel without a rule saying they do. A keyword that wanted to inflict
+ * an injury directly would have needed a vocabulary of its own; a keyword that bends this draw
+ * needs a number between -1 and 1.
+ *
+ * **It reports rather than decides which injury.** Which one you take is *"chosen by the GM to
+ * fit what hit you"*, and that is fiction -- an axe takes a hand and a horror takes your nerve.
+ * So this draws, says how bad it is, lists the categories still open, and stops. `applyInjury`
+ * is the other half, and it is a separate call because a human makes the choice in between.
+ */
+export async function resolveInjury(target, { mode = 0, cause = "" } = {}) {
+  if (!target) return null;
+  // No fate deck, no draw. The same shape as a Wound's guard: ask the data, not the type.
+  if (!deckOf(target, "fate")) return null;
+
+  const fate = await drawFate(target, 0, mode);
+  const card = fate.used;
+  if (!card) return null;
+
+  const permanent = card.system.special === "miss";
+  /*
+   * -2 and -1 are the lasting band, tested on the **value** rather than the rank.
+   *
+   * That is what settles the Wild, which is the one face this rule had no answer for: a Wild has
+   * no value and a rank of 0, so it falls through to **no injury at all**. Right, and for the
+   * reason a Wild exists -- it is the card whose result is a question for the table (`drawFate`
+   * announces it wherever it is drawn), and the one draw in the game that must not become a
+   * question is the one that changes a character for ever.
+   */
+  const lasting = !permanent && (card.system.value ?? 0) <= -1;
+  const open = openInjuryCategories(target);
+  const healsIn = permanent
+    ? CARDRPG.injuryHealsIn.permanent
+    : CARDRPG.injuryHealsIn.lasting;
+
+  const face = cardName(card);
+  let line;
+  if (permanent) {
+    line = `<strong>${face}</strong> &mdash; a <strong>permanent injury</strong>.`;
+  } else if (lasting) {
+    line = `<strong>${face}</strong> &mdash; a <strong>lasting injury</strong>, healed by `;
+    line += `${CARDRPG.injuryHealsIn.lasting} days of rest.`;
+  } else {
+    line = `<strong>${face}</strong> &mdash; no injury. The Wound is all of it.`;
+  }
+  const names = open.map(k => game.i18n.localize(CARDRPG.injuryCategories[k].label));
+  const left = names.length ? names.join(", ") : "<em>nothing &mdash; every category is taken</em>";
+  const room = permanent || lasting ? `<p>Still open: ${left}.</p>` : "";
+  const how = mode === 0 ? "" : mode > 0 ? " (advantage)" : " (maiming: two, worse)";
+
+  await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor: target }),
+    content: `<div class="cardrpg"><p><strong>${target.name}</strong> fell. `
+      + `Injury draw${how}: ${line}</p>${room}</div>`
+  });
+
+  return { permanent, lasting, healsIn: permanent || lasting ? healsIn : null, open, cause, face };
+}
+
+/**
+ * Put a named injury on a character, with its cap and its teeth.
+ *
+ * **The teeth are the interesting part.** Five of the fourteen injuries own **intruder cards**
+ * and one owns a **permanent Miss**, and dealing those is what makes a permanent condition
+ * something that happens to you rather than a number you subtract. It is also how a curse comes
+ * to be enforced at all: equipment.md 11 has an `[OPEN]` saying nothing in the engine can make
+ * you keep a curse's bargain, and a bargain written as a card in your deck keeps itself.
+ *
+ * Everything dealt here carries the injury's name as its `source`, which is the only reason
+ * `liftInjury` can take back exactly what was dealt and nothing else.
+ */
+export async function applyInjury(actor, which, { cause = "", healsIn = 0, target = actor } = {}) {
+  const def = typeof which === "string" ? INJURIES.find(i => i.name === which) : which;
+  if (!def || !target) {
+    ui.notifications.warn(`No injury named "${which}".`);
+    return null;
+  }
+  if (injuryCategoriesTaken(target).has(def.category)) {
+    const label = game.i18n.localize(CARDRPG.injuryCategories[def.category].label);
+    ui.notifications.warn(`${target.name} already carries a ${label}. One per category.`);
+    return null;
+  }
+
+  const doc = slateData(def, "injury");
+  const [slate] = await target.createEmbeddedDocuments("Item", [{
+    ...doc,
+    system: { ...doc.system, category: def.category, healsIn, cause }
+  }]);
+
+  if (def.takes?.fateMiss) {
+    await resolveHex(actor, { amount: def.takes.fateMiss, target, source: def.name });
+  }
+  if (def.intruder?.kind) {
+    await dealIntruder(actor, def.intruder.kind, {
+      amount: def.intruder.amount ?? 1, target, source: def.name
+    });
+  }
+
+  const ritual = slate.system.liftedBy;
+  const lasts = healsIn ? `Heals after ${healsIn} days of rest.` : "<strong>Permanent.</strong>";
+  const lift = ritual ? `Lifted by a ${ritual}.` : "No ritual lifts it.";
+  await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor: target }),
+    content: `<div class="cardrpg"><p><strong>${target.name}</strong>: `
+      + `<strong>${def.name}</strong> &mdash; ${slate.system.text}</p>`
+      + `<p>${lasts} ${lift}</p></div>`
+  });
+  return slate;
+}
+
+/**
+ * Lift an injury, which is what a completed ritual does.
+ *
+ * **The challenge is played at the table and this is what happens when it is won.** A ritual is a
+ * challenge and not a check (skill-rules 3, 6) because Ritual Magic's price is *"Time, and a
+ * recipe that can go wrong"*; challenges are not in the engine, so the GM runs the tracks and
+ * calls this. What the engine owes that arrangement is the part a human would get wrong: taking
+ * back **exactly** the cards the injury dealt and leaving the deck's own alone.
+ *
+ * **A permanent obligation refuses, and that refusal is the point.** Bound Taint has had this asymmetry
+ * since it was written -- *neither a cure nor Cleansing lifts it; the obligation names the one
+ * thing that does* -- and it is what keeps four rituals from turning into a laundry service. A
+ * `ritual` of `null` in config is how a category says so, and this is the line that reads it.
+ */
+export async function liftInjury(actor, injury) {
+  if (!actor || injury?.type !== "injury") return false;
+  const ritual = injury.system.liftedBy;
+  /*
+   * **A lasting injury heals on its own, and the category has nothing to say about it.**
+   *
+   * Only a **permanent** injury needs a ritual, and this guard used to ask the category alone --
+   * which meant a *lasting* obligation could never be removed by anything at all. It would have
+   * sat on the sheet past its fourteen days of rest, refusing, because the one path that takes
+   * cards back out was gated on a question about permanence it never asked.
+   *
+   * This is also the only removal path there is, deliberately: whatever the reason an injury
+   * leaves, the cards it dealt have to leave with it, and one exit is how that stays true.
+   */
+  if (injury.system.permanent && !ritual) {
+    ui.notifications.warn(`${injury.name} is a permanent obligation: no ritual lifts it. `
+      + "The one who is owed says what does.");
+    return false;
+  }
+  const how = ritual && injury.system.permanent
+    ? ritual
+    : `${injury.system.healsIn} days of rest`;
+
+  // The intruder cards it owns, wherever they ended up: hand, discard or deck.
+  let pulled = 0;
+  const kind = injury.system.intruder?.kind;
+  if (kind) {
+    for (const stack of allStacks(actor)) {
+      for (const card of [...(stack?.cards ?? [])]) {
+        if (card.type !== kind || card.system.source !== injury.name) continue;
+        await removeCard(actor, card);
+        pulled++;
+      }
+    }
+  }
+
+  // And the permanent Misses, which is why a fate card carries a source at all.
+  let unhexed = 0;
+  if (injury.system.takes?.fateMiss) {
+    for (const stack of [deckOf(actor, "fate"), deckOf(actor, "fateDiscard")]) {
+      for (const card of [...(stack?.cards ?? [])]) {
+        if (card.system.source !== injury.name) continue;
+        await card.delete();
+        unhexed++;
+      }
+    }
+  }
+
+  const name = injury.name;
+  await injury.delete();
+  const cards = pulled ? ` ${pulled} ${kind} card${pulled === 1 ? "" : "s"} gone.` : "";
+  const misses = unhexed ? ` ${unhexed} Miss gone from the fate deck.` : "";
+  await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<div class="cardrpg"><p><strong>${actor.name}</strong>: `
+      + `<strong>${how}</strong> lifts <strong>${name}</strong>.${cards}${misses}</p></div>`
+  });
+  return true;
 }
 
 /**
@@ -1733,7 +1985,7 @@ export async function resolveAttack(actor, {
      */
     const dropped = before - dealt <= 0 && dealt > 0;
     if (dropped || dealt >= CARDRPG.defaults.woundAt) {
-      await resolveWound(taker, { reason: dropped ? "dropped to 0" : "a heavy blow" });
+      await resolveWound(taker, { reason: dropped ? DROPPED : "a heavy blow" });
     }
 
     rows.push({

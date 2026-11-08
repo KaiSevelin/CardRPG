@@ -1,0 +1,20 @@
+{
+  "_id": "LKsLi3gajGBsoRdf",
+  "_key": "!items!LKsLi3gajGBsoRdf",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "The Eager Hand",
+  "type": "injury",
+  "system": {
+    "category": "curse",
+    "intruder": {
+      "kind": "rage",
+      "amount": 2
+    },
+    "description": "<p>The curse the Blade of the Eager Hand has carried in prose since equipment.md 11.4 was written, in the cards that do what the prose says. Put the blade down and the hand still wants it.</p>",
+    "text": "Two Rage cards in your action deck. Each strikes the nearest creature, ally or enemy."
+  }
+}

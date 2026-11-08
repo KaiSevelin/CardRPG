@@ -1,0 +1,19 @@
+{
+  "_id": "eGFt6P4IYmSx2Vvi",
+  "_key": "!items!eGFt6P4IYmSx2Vvi",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Hexed Blood",
+  "type": "injury",
+  "system": {
+    "category": "curse",
+    "takes": {
+      "fateMiss": 1
+    },
+    "description": "<p>Measured at &minus;3.5 against the published encounters &mdash; five Wounds, in one card that is drawn for every action you take. Shadow Magic buys the gentler version of this willingly, one Wild per formula.</p>",
+    "text": "A permanent Miss in your fate deck. It survives every reshuffle."
+  }
+}

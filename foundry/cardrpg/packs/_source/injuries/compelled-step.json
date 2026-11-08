@@ -1,0 +1,20 @@
+{
+  "_id": "wtBTTqGk1C4K9QDM",
+  "_key": "!items!wtBTTqGk1C4K9QDM",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Compelled Step",
+  "type": "injury",
+  "system": {
+    "category": "curse",
+    "intruder": {
+      "kind": "compulsion",
+      "amount": 1
+    },
+    "description": "<p>Somebody decided you would not be allowed to stop, and then went away.</p>",
+    "text": "A Compulsion card in your action deck. While it is in hand you may not Catch Breath."
+  }
+}

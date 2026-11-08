@@ -1,0 +1,19 @@
+{
+  "_id": "Z7icEOIbROT4yx95",
+  "_key": "!items!Z7icEOIbROT4yx95",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Bad Leg",
+  "type": "injury",
+  "system": {
+    "category": "maiming",
+    "takes": {
+      "move": 1
+    },
+    "description": "<p>It set wrong, and it set. You walk everywhere you used to walk, and you arrive after everyone else.</p>",
+    "text": "Every Move value you play is &minus;1."
+  }
+}

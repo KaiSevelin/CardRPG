@@ -260,6 +260,13 @@ class Config:
     # Hex: extra permanent MISS cards in the hero's fate deck. Not a new card -- a Miss already is
     # one, and Shadow Magic buys the same mechanism willingly, one permanent Wild per formula.
     hex: int = 0
+    # --- permanent injuries (core-rules 8). Four of the fourteen are measurable here. ---
+    # Bad Leg: every Move value you play is -1. A slate, not a card, so it never dilutes anything
+    # -- which makes it the clean test of what tempo alone is worth.
+    bad_leg: int = 0
+    # Shattered Nerves: no reactions in round 1. The engine knows rounds rather than
+    # per-character firsts, and so does this.
+    shattered_nerves: bool = False
     deck_cut: int = 0             # remove N cards from the action deck
     deck_cut_random: bool = False  # False: the weakest N (a deck-building choice)
                                    # True: N at random (Overloaded, core-rules 4)
@@ -619,12 +626,20 @@ class Game:
         return any(CONDITIONS[c['key']].get('blocks_secondary') for c in self.w['conds'])
 
     def move_mod(self, n):
-        """A printed Move as it plays: halved, then reduced, floored at 0 (core-rules 7)."""
+        """A printed Move as it plays: injury, then halved, then reduced (core-rules 7, 8)."""
         # Grappled blocks the Move icon entirely -- the half cannot be played at all (core-rules 10).
         if any(CONDITIONS[c['key']].get('blocks_move') for c in self.w['conds']):
             return 0
+        # The injury first, and it can never take you below one square.
+        if n > 0 and self.cfg.bad_leg:
+            n = max(1, n - self.cfg.bad_leg)
         if self.burdened or any(CONDITIONS[c['key']].get('halves_move') for c in self.w['conds']):
             n //= 2
+        # An injury and a condition are different subtractions with different floors, and folding
+        # them together was a real bug: ideas.md writes *Bad leg: all Move values -1 (MINIMUM 1)*,
+        # and without that floor a bad leg measured -25.4 win rate and -38.5 against archers
+        # (2026-11-08), because the starter deck's commonest Move value IS 1. A bad leg slows you;
+        # a frozen leg stops you. The engine does this in movePlayed.
         worst = max([c['value'] for c in self.w['conds']
                      if CONDITIONS[c['key']].get('reduces_move')] or [0])
         return max(0, n - worst)
@@ -675,6 +690,15 @@ class Game:
             return c['value'] * turns + (1.5 * turns if f.get('blocks_secondary') else 0)
         return max(relief(c) for c in pool)
 
+    def can_react(self):
+        """Whether reactions are available at all this round (core-rules 3, 8).
+
+        One gate for both paths, because there are two: the sidestep on arrival and the
+        damage-reduction brace. Shattered Nerves blocking one and not the other would be the same
+        defect as a dead card that is dead in five places out of six.
+        """
+        return not (self.cfg.shattered_nerves and self.round <= 1)
+
     def sidestep(self, g):
         """An enemy that ENDS its movement next to you hands you a Sidestep (core-rules 11).
 
@@ -684,6 +708,8 @@ class Game:
         """
         w = self.w
         if not self.cfg.sidestep or self.heavy_armor or w['exhausted'] or not w['hand']:
+            return False
+        if not self.can_react():
             return False
         if foe(g['weapon'])['ranged']:
             return False        # stepping one square does not get you out of a bow's range
@@ -782,8 +808,11 @@ class Game:
             dmg = cfg.strike_base + op[1] + (1 if cfg.strong else 0)
             return dmg if b['adj'] else dmg * 0.25      # can't swing at nothing
         if kind == 'move':
-            closes = min(op[1], max(0, b['gap'] - 1))   # squares that actually close the gap
-            kiting = 0.8 * op[1] if b['ranged'] else 0  # archers run; you need the legs
+            # Taken off here as well as where the step happens, or the hero would keep choosing
+            # cards for squares it cannot walk -- with the same floor of 1, or the two disagree.
+            squares = max(1, op[1] - cfg.bad_leg) if op[1] > 0 else 0
+            closes = min(squares, max(0, b['gap'] - 1))   # squares that actually close the gap
+            kiting = 0.8 * squares if b['ranged'] else 0  # archers run; you need the legs
             return 1.2 * closes + kiting
         if kind == 'defend':
             return 0.8 * cfg.shield_def * max(1, min(b['adj'] + b['ranged'], 3))
@@ -1162,14 +1191,17 @@ class Game:
             w['hp'] += gain
             self.s['react_use'] += 1
             self.log(f"  Warrior reacts: drinks potion +{gain}")
-        if d > 0 and w['hand'] and not w['exhausted']:
+        if d > 0 and w['hand'] and not w['exhausted'] and self.can_react():
             lethal = w['hp'] - d <= 0
             spare = len(w['hand']) - (0 if lethal else reserve)
             if spare > 0:
                 def red(c):
                     r = self.cards[c][2]
                     return 3 if r == 'block' else 2 if (r == 'parry' and melee) else 1
-                bracers = [c for c in w['hand'] if c != 'Wound']
+                # A seventh site that compared 'Wound' by name. DEAD was introduced for the other
+                # six on 2026-11-08 and this one was missed, so a Compulsion could be spent as a
+                # brace -- a card that cannot be played, played.
+                bracers = [c for c in w['hand'] if c not in DEAD]
                 if not bracers:
                     bracers = None
                 card = max(bracers, key=lambda c: (min(red(c), d), -self.keep(c))) if bracers \

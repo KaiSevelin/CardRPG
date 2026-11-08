@@ -12,7 +12,7 @@
 
 import { CARDRPG } from "./config.mjs";
 import { deckOf, moveRandom, move, normalizeDeck, allStacks, available } from "./decks.mjs";
-import { resolveWound } from "./resolve.mjs";
+import { resolveWound, DROPPED } from "./resolve.mjs";
 
 /* -------------------------------------------- */
 /*  Initiative                                  */
@@ -248,7 +248,7 @@ export async function onTurnStart(combat) {
      * a tick is not a hit, it meets neither armor nor Block, and its bands are tight because of
      * that. So a tick wounds only by finishing you.
      */
-    if (before - damage <= 0) await resolveWound(actor, { reason: "dropped to 0" });
+    if (before - damage <= 0) await resolveWound(actor, { reason: DROPPED });
   }
 }
 

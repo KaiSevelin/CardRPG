@@ -1,0 +1,22 @@
+{
+  "_id": "drEw8OpFtWPGT9b3",
+  "_key": "!items!drEw8OpFtWPGT9b3",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Unbinding",
+  "type": "spell",
+  "system": {
+    "strength": 1,
+    "effect": {
+      "timing": "ritual",
+      "text": "lift one Curse over Progress 8, Pressure 3 (Lore); name the curser"
+    },
+    "description": "<p>The hardest and the shortest-fused: Progress 8 against Pressure 3, so there is very little room to go wrong. The name is the real gate &mdash; it is the one thing in the four that no amount of coin buys, because somebody has to find out who did this.</p>",
+    "kind": "formula",
+    "prepared": false,
+    "text": "Lore, Progress 8, Pressure 3. Lifts a curse &mdash; and you must name who laid it."
+  }
+}

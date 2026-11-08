@@ -144,6 +144,67 @@
     </section>
   {{/if}}
 
+  {{#if isInjury}}
+    {{!-- A category does exactly one job: it names the ritual that lifts it (core-rules 8). --}}
+    <section class="cr-block">
+      <h3>Category</h3>
+      <select name="system.category">
+        {{selectOptions injuryCategories selected=system.category labelAttr="label" localize=true}}
+      </select>
+      <p class="cr-note">{{#if system.liftedBy}}Lifted by a <strong>{{system.liftedBy}}</strong>,
+        a downtime challenge.{{else}}<strong>No ritual lifts this.</strong> An obligation names the
+        one thing that does, and that is the GM's.{{/if}} One injury of each category at most.</p>
+    </section>
+
+    <section class="cr-block">
+      <h3>How long</h3>
+      <label class="cr-stat">Days of rest that heal it
+        <input type="number" name="system.healsIn" value="{{system.healsIn}}" min="0">
+      </label>
+      <p class="cr-note"><strong>0 is permanent.</strong> The fate draw on falling Unconscious
+        leaves 0 on a Miss and 14 on a &minus;2 or &minus;1.</p>
+      <label>What did this
+        <input type="text" name="system.cause" value="{{system.cause}}"
+               placeholder="the ogre's second swing, at the ford">
+      </label>
+    </section>
+
+    {{!-- `grants` pointed the other way: the two numbers nothing could lower until now. --}}
+    <section class="cr-block">
+      <h3>Takes</h3>
+      <div class="cr-vitals">
+        <label class="cr-stat">Off every Move
+          <input type="number" name="system.takes.move" value="{{system.takes.move}}" min="0">
+        </label>
+        <label class="cr-stat">Hand slots
+          <input type="number" name="system.takes.handSlots" value="{{system.takes.handSlots}}" min="0">
+        </label>
+        <label class="cr-stat">Permanent Misses
+          <input type="number" name="system.takes.fateMiss" value="{{system.takes.fateMiss}}" min="0">
+        </label>
+      </div>
+      <p class="cr-note">A Move reduction joins the one conditions already use &mdash; the highest
+        applies, they do not add. A permanent Miss is the most expensive card measured in this
+        game, at &minus;3.5 win rate each.</p>
+    </section>
+
+    {{!-- The teeth: a flat number is the same every round and a card is not. --}}
+    <section class="cr-block">
+      <h3>Intruder cards it owns</h3>
+      <div class="cr-vitals">
+        <label class="cr-stat">Kind
+          <input type="text" name="system.intruder.kind" value="{{system.intruder.kind}}"
+                 placeholder="fear, rage, compulsion, doubt">
+        </label>
+        <label class="cr-stat">How many
+          <input type="number" name="system.intruder.amount" value="{{system.intruder.amount}}" min="0">
+        </label>
+      </div>
+      <p class="cr-note">Dealt when the injury is applied and taken back when it is lifted. Not
+        <em>confusion</em> &mdash; that one goes in a monster type's deck, not a person's.</p>
+    </section>
+  {{/if}}
+
   {{#if isFeature}}
     <section class="cr-block">
       <h3>Effect</h3>

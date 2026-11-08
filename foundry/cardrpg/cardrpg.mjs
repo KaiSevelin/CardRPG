@@ -21,7 +21,7 @@ import { answerArrival } from "./module/resolve.mjs";
 /* The graph is assembled at runtime from core content plus whatever the world has added. */
 import { rebuildGraph } from "./module/graph.mjs";
 import { CharacterData, NpcData } from "./module/data/actors.mjs";
-import { ItemSlateData, FeatureSlateData, SpellSlateData } from "./module/data/items.mjs";
+import { ItemSlateData, FeatureSlateData, SpellSlateData, InjurySlateData } from "./module/data/items.mjs";
 import {
   ActionCardData, FateCardData, NpcCardData, WoundCardData, TaintCardData, FearCardData,
   DoubtCardData, RageCardData, CompulsionCardData, ConfusionCardData, WildCardData,
@@ -46,6 +46,9 @@ Hooks.once("init", () => {
   CONFIG.Item.dataModels = {
     item: ItemSlateData,
     feature: FeatureSlateData,
+    // The fourth slate kind core-rules 1 has always listed: a feature you did not choose, which a
+    // ritual lifts rather than a level-up prunes.
+    injury: InjurySlateData,
     // A spell is a slate too, but what it occupies is a spell slot rather than a slot on your body.
     spell: SpellSlateData
   };

@@ -1,0 +1,20 @@
+{
+  "_id": "FBWP2VSPn4LfORKf",
+  "_key": "!items!FBWP2VSPn4LfORKf",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "The Debt",
+  "type": "injury",
+  "system": {
+    "category": "obligation",
+    "intruder": {
+      "kind": "compulsion",
+      "amount": 1
+    },
+    "description": "<p>You agreed to this, which is the whole difference between it and a curse &mdash; and the reason no amount of Lore will undo it (leveling.md 4).</p>",
+    "text": "A Compulsion card in your action deck. No ritual lifts it. The one who is owed says what does."
+  }
+}

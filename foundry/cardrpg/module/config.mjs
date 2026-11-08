@@ -127,7 +127,26 @@ CARDRPG.effects = {
    * openings are excluded on purpose, the derived pair answer to arithmetic, and Unconscious answers
    * to Health. When Cleansing is built, Taint is the third thing this should reach.
    */
-  lift: { label: "CARDRPG.Effect.Lift", icon: "magic-palm" }
+  lift: { label: "CARDRPG.Effect.Lift", icon: "magic-palm" },
+  /*
+   * **Maiming: draw two for the injury and take the worse.**
+   *
+   * It does not inflict an injury, and that is the whole design. Permanence passes through one
+   * moment in the game -- the fate draw when you fall Unconscious (core-rules 8) -- and a thing
+   * that reads *permanently blind the target* would put the most consequential rule in the game
+   * in as many places as there are cards. This project has paid for that shape twice: the Wound
+   * threshold was a constant read in two places, and `wound || taint` was written out three
+   * times before the intruder table closed it. One gate, many modifiers.
+   *
+   * `param` 2 is the normal dose and the disadvantage shape the game already uses everywhere:
+   * draw that many, keep the worst. A Healer's Kit in reach is the same dial pointed the other
+   * way, and the two cancel without a rule saying they do.
+   *
+   * It is rare on purpose. Nothing in a pool carries it -- a named threat does, and a trap does,
+   * and the price of a drop that forces the draw without the drop is that it belongs to a
+   * creature with a name.
+   */
+  maiming: { label: "CARDRPG.Effect.Maiming", icon: "knee-bandage" }
 };
 
 /**
@@ -880,6 +899,75 @@ CARDRPG.timings = {
  * nine features now, and a feature is permanent by having no gate to pass, so the word had nothing
  * left to mean on a step.
  */
+
+/**
+ * **Permanent harm, and the ritual that lifts each kind.**
+ *
+ * An injury is the fourth slate kind. core-rules 1 has listed it as one since the slate table was
+ * written -- *"item slates, feature slates, secret slates, permanent injuries"* -- and items.mjs
+ * names the same four in its own first paragraph. Three of them had a data model.
+ *
+ * **A category exists for exactly one reason: so a ritual can name one.** That is the whole of its
+ * job, and it is why the ritual is a field here rather than prose somewhere else -- a category
+ * whose `ritual` nothing reads would be a value that is only an entry in a dropdown, which is the
+ * defect this project keeps finding. `liftRitual` reads it, and the one-per-category cap on the
+ * sheet reads the keys.
+ *
+ * `progress` and `pressure` are a **challenge** (skill-rules 3 and 6), not a check, and the world
+ * document is what chose that: Ritual Magic's price is *"Time, and a recipe that can go wrong"*,
+ * which is a Progress track and a Pressure track in the two words it took to say it. Cleansing's
+ * numbers are not new here -- core-rules 8 has published them as Lore, Progress 4 since Taint was
+ * written, and this is the table that finally holds them.
+ *
+ * **Obligation lifts for nobody, and `ritual: null` is how it says so.** Bound Taint already has
+ * this exact asymmetry -- *neither a cure nor Cleansing lifts it; the obligation names the one
+ * thing that does* -- and keeping it is what stops a ritual list becoming a laundry service. The
+ * four that lift are a service. The fifth is a story, and it is the GM's.
+ */
+CARDRPG.injuryCategories = {
+  /* Flesh and bone that did not grow back: an eye, fingers, a hand, a leg that sets wrong. */
+  maiming: {
+    label: "CARDRPG.Injury.Maiming", icon: "severed-hand",
+    ritual: "Regrowth", approach: "lore", progress: 6, pressure: 4
+  },
+  /* Nerve, memory and conviction. The body is whole and something behind it is not. */
+  breaking: {
+    label: "CARDRPG.Injury.Breaking", icon: "oppression",
+    ritual: "Quieting", approach: "presence", progress: 6, pressure: 4
+  },
+  /*
+   * Somebody did this on purpose, which is the only category that names a person -- so the ritual
+   * has to name them too, and `needsName` is the dial that says a recipe alone is not enough.
+   * That is also the one gate in the four that a party cannot buy its way through.
+   */
+  curse: {
+    label: "CARDRPG.Injury.Curse", icon: "bottled-bolt",
+    ritual: "Unbinding", approach: "lore", progress: 8, pressure: 3, needsName: true
+  },
+  /* Taint nobody ever cured, gone past the point a cure reaches. Cleansing's own numbers. */
+  corruption: {
+    label: "CARDRPG.Injury.Corruption", icon: "virus",
+    ritual: "Cleansing", approach: "lore", progress: 4, pressure: 4
+  },
+  /* A pact, a debt, a curse you picked up knowingly. No ritual, on purpose. */
+  obligation: {
+    label: "CARDRPG.Injury.Obligation", icon: "lock-spy",
+    ritual: null, approach: null, progress: null, pressure: null
+  }
+};
+
+/**
+ * **How much a permanent injury costs you, as the one number the engine can price.**
+ *
+ * Every injury in content.mjs says what it does in fields that already existed -- a negative
+ * `bonus`, a negative `grants`, a blocked reaction, a step. This is the exception that is not a
+ * field: *lasting* injuries heal after days of rest and permanent ones do not, and the difference
+ * between them is a number of days rather than a different mechanism.
+ *
+ * Zero means permanent. It is zero and not null because the sheet subtracts it from a rest count,
+ * and a null would have to be special-cased in the one place that reads it.
+ */
+CARDRPG.injuryHealsIn = { lasting: 14, permanent: 0 };
 
 CARDRPG.capabilities = {
   /* how it gets about */

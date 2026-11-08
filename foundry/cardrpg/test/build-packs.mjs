@@ -275,6 +275,8 @@ for (const [table, list, type] of [
   ["ITEMS", content.ITEMS, "item"], ["NPC_GEAR", content.NPC_GEAR, "item"],
   ["NATURAL_WEAPONS", content.NATURAL_WEAPONS, "item"],
   ["FEATURES", content.FEATURES, "feature"],
+  ["INJURIES", content.INJURIES, "injury"],
+  ["RITUALS", content.RITUALS, "spell"],
   ["TAUGHT_FEATURES", TAUGHT_FEATURES, "feature"],
   ["SPELLS", [...SPELLS.values()], "spell"],
   ["SIGNATURES", SIGNATURES.filter(s => s.kind !== "card"), s => s.kind]
@@ -345,6 +347,18 @@ const PACK_PLAN = [
     docs: () => [...SPELLS.values()]
       .filter(s => !SIGNATURE_SPELLS.has(s.name))
       .map(s => itemDoc(s, "spell", "spells"))
+      // The four rituals are formulas, and this is the pack a GM looks in for one. Ritual Magic
+      // has been a node of Way of Mind since the Way was written and had no content at all.
+      .concat(content.RITUALS.map(r => itemDoc(r, "spell", "spells")))
+  },
+  /*
+   * **The GM draws from this one.** ideas.md says which injury you take is picked *"from an injury
+   * deck, or chosen by the GM to fit what hit you"*, and a pack is that deck: fourteen slates in
+   * five categories, which is what the cap counts and what the rituals name.
+   */
+  {
+    name: "injuries", label: "Injuries", type: "Item", folder: "Card RPG",
+    docs: () => content.INJURIES.map(i => itemDoc(i, "injury", "injuries"))
   },
   /*
    * **A title's own content, in its own pack.** A Signature is not a thing a shop sells or a

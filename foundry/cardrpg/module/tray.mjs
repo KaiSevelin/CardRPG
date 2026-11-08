@@ -261,8 +261,11 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       weight: i.system.weight,
       lines: Object.entries(i.system.verbs ?? {})
         .filter(([, l]) => l.value !== null)
+        // Range is asked of the actor, not read off the item: Good Aim lengthens it and a lost
+        // eye shortens it, and neither had a reader until the injuries were built.
         .map(([v, l]) => `${v} ${l.value}`
-          + (l.range ? `/r${l.range}` : "") + (l.reach ? `/reach ${l.reach}` : ""))
+          + ((r => r ? `/r${r}` : "")(actor.system.rangeOnLine(l, i)))
+          + (l.reach ? `/reach ${l.reach}` : ""))
         .join(" · ") || (i.system.armor ? `armor ${i.system.armor}` : "")
     });
 
@@ -559,7 +562,9 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
                     : "Click to equip it.",
       blurb: i.system.blurb,
       lines: verbs
-        .map(([v, l]) => `${v} ${l.value ?? ""}${l.range ? ` \u00b7 range ${l.range}` : ""}`
+        // Same question, same asker: the printed range is a derived number now.
+        .map(([v, l]) => `${v} ${l.value ?? ""}`
+          + ((r => r ? ` \u00b7 range ${r}` : "")(actor.system.rangeOnLine(l, i)))
           + `${l.reach ? ` \u00b7 reach ${l.reach}${l.reachMin > 1 ? ` from ${l.reachMin}` : ""}` : ""}`
           + `${l.area ? ` \u00b7 ${l.areaKind || "blast"} ${l.area}` : ""}`)
         .concat(i.system.armor ? [`armor ${i.system.armor}`] : []),
@@ -2204,7 +2209,8 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   static async #makeRoom(actor, item, slot = item.system.slot) {
-    const capacity = CARDRPG.slots[slot]?.capacity;
+    // Asked of the actor, not of config: a hand this character no longer has is not a hand.
+    const capacity = actor.system.slotCapacity(slot);
     if (capacity === null || capacity === undefined) return [];
 
     const size = i => (i.system.isTwoHanded ? 2 : 1);

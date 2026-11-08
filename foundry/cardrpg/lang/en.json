@@ -342,5 +342,12 @@
   "CARDRPG.Effect.Forestall": "Forestall",
   "CARDRPG.Effect.Sift": "Sift",
   "CARDRPG.Capability.Terrify": "Terrify",
-  "CARDRPG.Foresee.Nothing": "No intent card is in play for that type yet."
+  "CARDRPG.Foresee.Nothing": "No intent card is in play for that type yet.",
+  "TYPES.Item.injury": "Injury",
+  "CARDRPG.Injury.Maiming": "Maiming",
+  "CARDRPG.Injury.Breaking": "Breaking",
+  "CARDRPG.Injury.Curse": "Curse",
+  "CARDRPG.Injury.Corruption": "Corruption",
+  "CARDRPG.Injury.Obligation": "Obligation",
+  "CARDRPG.Effect.Maiming": "Maiming"
 }

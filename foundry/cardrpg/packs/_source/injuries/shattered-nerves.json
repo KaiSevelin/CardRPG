@@ -1,0 +1,29 @@
+{
+  "_id": "ObswbFFVaGGcrP1n",
+  "_key": "!items!ObswbFFVaGGcrP1n",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Shattered Nerves",
+  "type": "injury",
+  "system": {
+    "category": "breaking",
+    "blocksReactions": [
+      "parry",
+      "block",
+      "sidestep",
+      "counter",
+      "use",
+      "heckle",
+      "bodyguard",
+      "unmake",
+      "mend",
+      "bargain"
+    ],
+    "firstRoundOnly": true,
+    "description": "<p>The fight starts and you are somewhere else for a moment. Brace is still yours &mdash; it is the one nobody can take (core-rules 3).</p>",
+    "text": "You may play no reactions in the first round of a combat."
+  }
+}

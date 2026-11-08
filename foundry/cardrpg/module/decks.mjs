@@ -427,11 +427,25 @@ export async function applyRage(actor, card) {
  */
 export async function removeCard(actor, card) {
   if (!card) return false;
-  const deck = deckOf(actor, "action");
   const parent = card.parent;
-  if (deck && parent && parent.id !== deck.id && deck.cards.get(card.id)) {
-    await move(parent, deck, [card.id]);
-    await deck.cards.get(card.id)?.delete();
+  /*
+   * **The home deck is searched for, not assumed to be the action deck.**
+   *
+   * It used to be `deckOf(actor, "action")`, which was true of every caller until an injury owned
+   * a **Doubt**: that card lives in the **skill** deck, and the old test
+   * `deck.cards.get(card.id)` would simply have come back empty, fallen through to
+   * `card.delete()` and deleted the dealt copy -- leaving the home card flagged `drawn` and
+   * invisible. That is precisely the silent deck-shrink this function exists to prevent, one deck
+   * over, and it would have shown up as a skill deck quietly two cards smaller after a Cleansing.
+   *
+   * `Cards#pass` deals a COPY and marks the home card drawn, and `normalizeDeck` *restores* that
+   * flag rather than clearing it -- so the copy has to go home before it can be destroyed, and
+   * which pile home is depends on the card.
+   */
+  const home = allStacks(actor).find(s => s.id !== parent?.id && s.cards.get(card.id));
+  if (home) {
+    await move(parent, home, [card.id]);
+    await home.cards.get(card.id)?.delete();
     return true;
   }
   await card.delete();
@@ -746,7 +760,7 @@ export function applyFate(value, card) {
  *
  * @returns {Promise<number>} how many cards went in.
  */
-export async function addFateCards(actor, { special, count = 1, temporary = false } = {}) {
+export async function addFateCards(actor, { special, count = 1, temporary = false, source = "" } = {}) {
   const rule = CARDRPG.fateSpecials[special];
   const deck = deckOf(actor, "fate");
   if (!rule || !deck || count < 1) return 0;
@@ -755,7 +769,7 @@ export async function addFateCards(actor, { special, count = 1, temporary = fals
   await deck.createEmbeddedDocuments("Card", Array.from({ length: count }, () => ({
     name: temporary ? `${label} (temporary)` : label,
     type: "fate",
-    system: { special, temporary }
+    system: { special, temporary, source }
   })));
   await deck.shuffle({ chatNotification: false });
   return count;

@@ -1,0 +1,20 @@
+{
+  "_id": "AoIuYfWuERCOqydQ",
+  "_key": "!items!AoIuYfWuERCOqydQ",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Hollow Eyes",
+  "type": "injury",
+  "system": {
+    "category": "corruption",
+    "intruder": {
+      "kind": "doubt",
+      "amount": 2
+    },
+    "description": "<p>The skill deck returns on a rest and not on a breath, which is why a Doubt costs more than a Wound (skill-rules 1). Two of them, for as long as this lasts.</p>",
+    "text": "Two Doubt cards in your skill deck. They clear when a scene ends, and come back."
+  }
+}

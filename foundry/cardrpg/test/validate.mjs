@@ -814,6 +814,14 @@ const itemBlock = itemSource.slice(
   itemSource.indexOf("export class ItemSlateData"),
   itemSource.indexOf("export class FeatureSlateData")
 );
+/*
+ * **The other two slate classes, bounded.** A check about one class cannot be a grep over the
+ * file that holds four of them, and the `bonus.approach` finding below is what that costs.
+ */
+const featureOwnBlock = itemSource.slice(
+  itemSource.indexOf("export class FeatureSlateData"),
+  itemSource.indexOf("export class InjurySlateData"));
+const injuryBlock = itemSource.slice(itemSource.indexOf("export class InjurySlateData"));
 const itemFields = new Set([...itemBlock.matchAll(/^      ([a-zA-Z]+): /gm)].map(m => m[1]));
 // Written by hand into the entry rather than being schema fields of their own.
 for (const extra of ["name", "blurb", "kind", "copies"]) itemFields.add(extra);
@@ -1689,8 +1697,15 @@ const promiseDrift = slates.filter(i =>
 check("slates whose text and field disagree",
   promiseDrift.length ? promiseDrift.join(", ") : "none", "none");
 
+/*
+ * **Scoped to the item class, because there are two of these now.** An injury carries
+ * `blocksReactions` as well -- it is the third thing that can take a reaction away, after a
+ * condition and worn gear -- so a test over the whole file stopped meaning what its label says.
+ */
 check("the item schema carries the field",
-  /blocksReactions: new fields\.SetField/.test(itemSource) ? "yes" : "no", "yes");
+  /blocksReactions: new fields\.SetField/.test(itemBlock) ? "yes" : "no", "yes");
+check("and so does the injury schema, which is the third way to lose one",
+  /blocksReactions: new fields\.SetField/.test(injuryBlock) ? "yes" : "no", "yes");
 check("both actor models read it",
   (actorsSource.match(/get blockedReactions\(\)/g) ?? []).length, 2);
 /*
@@ -1803,7 +1818,7 @@ check("times the Wound threshold is read at all",
  * which is the same sentence read as code.
  */
 check("the routine that makes a Wound",
-  /export async function resolveWound\(target, \{ reason = "" \} = \{\}\)/
+  /export async function resolveWound\(target, \{ reason = "", injuryMode = 0 \} = \{\}\)/
     .test(resolveSource) ? "yes" : "no", "yes");
 check("and the guard is the target having a deck of its own",
   /const stack = deckOf\(target, "actionDiscard"\);\s*\n\s*if \(!stack\) return false;/
@@ -1814,7 +1829,7 @@ check("a blow that both drops you and deals five gives one Wound",
     ? "yes" : "no", "yes");
 /* A tick can only ever fire the second event, and the comment beside it says why. */
 check("a condition tick wounds only by finishing you",
-  /if \(before - damage <= 0\) await resolveWound\(actor, \{ reason: "dropped to 0" \}\);/
+  /if \(before - damage <= 0\) await resolveWound\(actor, \{ reason: DROPPED \}\);/
     .test(fs.readFileSync(path.join(root, "module/combat.mjs"), "utf8")) ? "yes" : "no", "yes");
 /*
  * **And the read that had to be fixed to write any of it.** `down` was
@@ -7461,10 +7476,10 @@ const packs = await import("./build-packs.mjs");
  * looking at different files. */
 const planned = packs.planDocuments();
 
-check("compendium packs", planned.length, 7);
+check("compendium packs", planned.length, 8);
 check("and what each one holds",
   planned.map(p => `${p.name}:${p.docs.length}`).join(" "),
-  "creatures:112 characters:1 items:180 features:23 spells:118 signatures:30 decks:11");
+  "creatures:112 characters:1 items:180 features:23 spells:122 injuries:14 signatures:30 decks:11");
 /* Faults the generator records rather than throws: a filename collision silently drops a document,
  * so the build reports it and this refuses to pass with one outstanding. */
 check("faults the generator reported", planned[0].faults.join("; ") || "none", "none");
@@ -7508,7 +7523,7 @@ check("and the group it asks for", DIMENSIONS.join("+"), "width+height+depth");
  */
 const everyPackDoc = planned.flatMap(p => p.docs);
 const everyPackChild = planned.flatMap(p => p.docs.flatMap(d => d.items ?? d.cards ?? []));
-check("documents the stamp sweep read", everyPackDoc.length, 475);
+check("documents the stamp sweep read", everyPackDoc.length, 493);
 check("and children beneath them", everyPackChild.length, 345);
 const unstamped = [...everyPackDoc, ...everyPackChild]
   .filter(d => d._stats?.coreVersion !== manifest.compatibility.verified
@@ -7538,8 +7553,11 @@ const packedFromContent = {
   features: content.FEATURES.length
     + graph.TEACHINGS.filter(t => graph.teachingKind(t) === "feature"
       && !graph.SIGNATURES.some(g => g.name === t.name)).length,
+  /* Plus the four rituals, which are formulas and go in the formulas pack. */
   spells: [...graph.SPELLS.values()]
-    .filter(s => !graph.SIGNATURES.some(g => g.kind === "spell" && g.name === s.name)).length,
+    .filter(s => !graph.SIGNATURES.some(g => g.kind === "spell" && g.name === s.name)).length
+    + content.RITUALS.length,
+  injuries: content.INJURIES.length,
   signatures: graph.SIGNATURES.filter(s => s.kind !== "card").length,
   decks: 11
 };
@@ -7549,6 +7567,9 @@ const packedFromContent = {
  * derivation at the pack and passed, which is exactly that failure with the comment still above it.
  */
 check("features the content holds", packedFromContent.features, 23);
+/* Same reason, for the two this build moved: a literal beside each derivation. */
+check("injuries the content holds", packedFromContent.injuries, 14);
+check("and rituals among the formulas", content.RITUALS.length, 4);
 check("packs whose size disagrees with the content",
   planned.filter(p => p.docs.length !== packedFromContent[p.name])
     .map(p => `${p.name}: ${p.docs.length} vs ${packedFromContent[p.name]}`).join(", ") || "none",
@@ -7585,7 +7606,7 @@ check("pack sources that disagree with the content",
   stale.length ? `${stale.length}: ${stale.slice(0, 4).join(", ")}` : "none", "none");
 /* A comparison that read no files would report "none" for a repository with no packs at all. */
 check("documents the comparison actually read",
-  planned.reduce((n, p) => n + p.docs.length, 0), 475);
+  planned.reduce((n, p) => n + p.docs.length, 0), 493);
 
 /*
  * **An id is a promise.** A world that imports a creature keeps the pack's id, and so does every
@@ -7618,7 +7639,7 @@ for (const pack of planned) {
 }
 check("ids that are not the hash of their key, malformed, or shared",
   idFaults.length ? idFaults.slice(0, 4).join("; ") : "none", "none");
-check("ids the rule actually read", everyId.size, 820);
+check("ids the rule actually read", everyId.size, 838);
 /* The hash itself, asked rather than shared: sixteen characters of the right alphabet, and the
  * same answer twice for the same key. */
 check("an id is sixteen characters", packs.id16("items:Longsword").length, 16);
@@ -7677,7 +7698,7 @@ check("comparing what came back with what went in",
  */
 check("packs declared in the manifest",
   (manifest.packs ?? []).map(p => p.name).join(", "),
-  "creatures, characters, items, features, spells, signatures, decks");
+  "creatures, characters, items, features, spells, injuries, signatures, decks");
 const onDiskPacks = fs.readdirSync(path.join(root, "packs"))
   .filter(f => !f.startsWith("_") && fs.statSync(path.join(root, "packs", f)).isDirectory());
 check("declared packs with no directory",
@@ -7749,7 +7770,7 @@ check("subtypes the rule read",
     ...p.docs.flatMap(d => (d.cards ?? []).map(c => `Card/${c.type}`))
   ]))].sort().join(", "),
   "Actor/character, Actor/npc, Card/action, Card/fate, Card/npc, Card/skill, Card/twist, "
-  + "Cards/deck, Item/feature, Item/item, Item/spell");
+  + "Cards/deck, Item/feature, Item/injury, Item/item, Item/spell");
 
 /*
  * **And a packed document carries nothing the schema will drop.** This is the sweep the item
@@ -8358,7 +8379,7 @@ for (const [doc, types] of Object.entries(manifest.documentTypes)) {
 }
 check("document subtypes with no sheet", uncovered.length ? uncovered.join(", ") : "none", "none");
 check("subtypes checked", Object.values(manifest.documentTypes)
-  .reduce((n, types) => n + Object.keys(types).length, 0), 18);
+  .reduce((n, types) => n + Object.keys(types).length, 0), 19);
 
 /* -------------------------------------------- */
 
@@ -8450,8 +8471,22 @@ check("and no longer stops dealing at the first dose",
  * clearing it, on purpose.
  */
 check("a card taken out of the game goes home before it dies",
-  /await move\(parent, deck, \[card\.id\]\);\s*\n\s*await deck\.cards\.get\(card\.id\)\?\.delete\(\);/
+  /await move\(parent, home, \[card\.id\]\);\s*\n\s*await home\.cards\.get\(card\.id\)\?\.delete\(\);/
     .test(decksSource) ? "yes" : "no", "yes");
+/*
+ * **And home is searched for rather than assumed.** It used to be `deckOf(actor, "action")`,
+ * which was true of every caller until an injury owned a **Doubt** -- a skill-deck card. The old
+ * test would have come back empty, fallen through to `card.delete()`, and destroyed the dealt
+ * copy while the home card stayed flagged `drawn` and invisible: the exact silent deck-shrink
+ * this function exists to prevent, one deck over, surfacing as a skill deck two cards smaller
+ * some time after a Cleansing.
+ */
+check("and home is whichever stack actually holds it",
+  /const home = allStacks\(actor\)\.find\(s => s\.id !== parent\?\.id && s\.cards\.get\(card\.id\)\);/
+    .test(decksSource) ? "yes" : "no", "yes");
+check("and no caller is assumed to mean the action deck",
+  /const deck = deckOf\(actor, "action"\);\s*\n\s*const parent = card\.parent;/
+    .test(decksSource) ? "still there" : "gone", "gone");
 check("and fear does not outlive the fight that caused it",
   /await clearFear\(actor\);/.test(decksSource) ? "yes" : "no", "yes");
 
@@ -8529,7 +8564,7 @@ check("a Compulsion in hand forbids Catch Breath",
  * willingly, one permanent Wild per formula.
  */
 check("Hex reuses the fate deck rather than adding a subtype",
-  /const made = await addFate\(target, \{ special: "miss", count: n, temporary: false \}\)/
+  /addFate\(target, \{ special: "miss", count: n, temporary: false, source \}\)/
     .test(resolveSource) ? "yes" : "no", "yes");
 check("and no hex subtype was declared",
   Object.hasOwn(manifest.documentTypes.Card ?? {}, "hex") ? "there is one" : "none", "none");
@@ -8539,6 +8574,361 @@ check("and no burden subtype either",
 check("because Overloaded already does it",
   /Cards set aside by being Overloaded come back when the load is dropped, not on a rest/
     .test(decksSource) ? "yes" : "no", "yes");
+
+/* -------------------------------------------- */
+/*  Permanent injuries, and the rituals         */
+/* -------------------------------------------- */
+
+/*
+ * **The fourth slate kind, and the thing a category is for.**
+ *
+ * core-rules 1's slate table has named four kinds since it was written -- *item slates, feature
+ * slates, secret slates, permanent injuries* -- and data/items.mjs names the same four in its own
+ * first paragraph. Three of them had a data model.
+ *
+ * A category does exactly one job: **it names the ritual that lifts it**. So these checks run in
+ * the two directions that job implies -- every category reaches a ritual, and every ritual is
+ * reached by a category -- because a category whose ritual nothing reads is a value that is only
+ * an entry in a dropdown, which is the defect this suite exists to find.
+ */
+const configLive = (await import("../module/config.mjs")).CARDRPG;
+const injuryCats = configLive.injuryCategories;
+check("kinds of permanent injury", Object.keys(injuryCats).join(", "),
+  "maiming, breaking, curse, corruption, obligation");
+
+/* Every category declares every dial, the same two-direction test the intruder table gets. */
+for (const [key, cat] of Object.entries(injuryCats)) {
+  check(`${key} declares every dial`,
+    ["label", "icon", "ritual", "approach", "progress", "pressure"]
+      .filter(k => Object.hasOwn(cat, k)).join(" "),
+    "label icon ritual approach progress pressure");
+}
+
+/*
+ * **Exactly one category lifts for nobody, and that asymmetry is load-bearing.**
+ *
+ * Bound Taint has had it since it was written -- *neither a cure nor Cleansing lifts it; the
+ * obligation names the one thing that does* (core-rules 8) -- and it is what keeps four rituals
+ * from becoming a laundry service. A fifth ritual appearing here would be somebody quietly
+ * deciding that everything is for sale.
+ */
+const unliftable = Object.entries(injuryCats).filter(([, c]) => !c.ritual).map(([k]) => k);
+check("categories no ritual lifts", unliftable.join(", "), "obligation");
+/*
+ * And it refuses on **permanence**, not on the category alone. Asking only which category it is
+ * would strand a *lasting* obligation on the sheet for ever: fourteen days of rest would pass and
+ * the one path that takes an injury's cards back out would still say no.
+ */
+check("and the engine refuses rather than failing silently",
+  /if \(injury\.system\.permanent && !ritual\) \{\s*\n\s*ui\.notifications\.warn/.test(resolveSource) ? "yes" : "no", "yes");
+check("and a lasting one heals without needing a ritual at all",
+  /const how = ritual && injury\.system\.permanent/.test(resolveSource) ? "yes" : "no", "yes");
+
+/* Both directions between the categories and RITUALS. */
+const ritualNames = content.RITUALS.map(r => r.name);
+check("rituals the categories name",
+  Object.values(injuryCats).map(c => c.ritual).filter(Boolean).sort().join(", "),
+  "Cleansing, Quieting, Regrowth, Unbinding");
+check("and the rituals that exist", [...ritualNames].sort().join(", "),
+  "Cleansing, Quieting, Regrowth, Unbinding");
+check("rituals no category reaches",
+  ritualNames.filter(n => !Object.values(injuryCats).some(c => c.ritual === n)).join(", ")
+    || "none", "none");
+
+/*
+ * **Cleansing's numbers are not new, which is the point of checking them against the prose.**
+ * core-rules 8 published it as *a downtime challenge (Lore, Progress 4)* long before anything
+ * could run one, and if this table had quietly chosen different numbers the document would have
+ * been wrong in the one place a GM looks.
+ */
+check("Cleansing's approach and progress, as core-rules 8 prints them",
+  `${injuryCats.corruption.approach} ${injuryCats.corruption.progress}`, "lore 4");
+check("and core-rules still prints them",
+  /\*\*Cleansing\*\*: a downtime challenge \(Lore, Progress 4\)/.test(coreRules)
+    ? "yes" : "no", "yes");
+
+/*
+ * **A ritual is a challenge, and the world document is what decided that.** Ritual Magic's price
+ * in specializations.md is *"Time, and a recipe that can go wrong"*, which is a Progress track and
+ * a Pressure track in the words it took to say it. Neither is optional on a liftable category.
+ */
+for (const [key, cat] of Object.entries(injuryCats)) {
+  if (!cat.ritual) continue;
+  check(`${cat.ritual} runs on two tracks`,
+    cat.progress > 0 && cat.pressure > 0 ? "yes" : "no", "yes");
+  check(`and lifts ${key} at an approach somebody can roll`,
+    Object.hasOwn(configLive.approaches, cat.approach) ? "yes" : "no", "yes");
+}
+check("and the ritual timing is the one that already existed",
+  content.RITUALS.every(r => r.effect?.timing === "ritual") ? "yes" : "no", "yes");
+check("which specializations.md states the price of",
+  /\*\*Ritual Magic\*\*[^|]*\| Rituell magik \| \*\(out of combat\)\* \| Time, and a recipe that can go wrong/
+    .test(specDoc) ? "yes" : "no", "yes");
+
+/*
+ * **Every injury's category exists, and every category has content.**
+ *
+ * The second half is the one worth having. A category with no injury in it is a ritual for a thing
+ * that cannot happen, and it would pass every other check in this section.
+ */
+check("injuries whose category the config does not know",
+  content.INJURIES.filter(i => !Object.hasOwn(injuryCats, i.category))
+    .map(i => i.name).join(", ") || "none", "none");
+check("categories with no injury in them",
+  Object.keys(injuryCats).filter(k => !content.INJURIES.some(i => i.category === k)).join(", ")
+    || "none", "none");
+check("injuries per category",
+  Object.keys(injuryCats)
+    .map(k => `${k}:${content.INJURIES.filter(i => i.category === k).length}`).join(" "),
+  "maiming:5 breaking:3 curse:3 corruption:2 obligation:1");
+
+/*
+ * **The intruder cards an injury owns, checked where the schema deliberately does not.**
+ *
+ * `intruder.kind` has no `choices` on the model, because a data model that imported `INTRUDERS`
+ * would reach a module full of Foundry globals from the one layer that must not need them. That
+ * trade is only honest if the check happens here, and it buys something a `choices` list could
+ * not: **the deck has to be one a person actually has.**
+ *
+ * `confusion` is the kind that makes this worth writing. Its deck is an NPC *type's* intent deck
+ * (core-rules 3 draws intent one card per type), so an injury dealing one would put a card in a
+ * stack the injured character does not own -- `intruderStack` would hand back a name no `deckOf`
+ * resolves, and the deal would warn and do nothing. A plausible mistake that fails quietly.
+ */
+const withTeeth = content.INJURIES.filter(i => i.intruder?.kind);
+check("injuries that own intruder cards",
+  withTeeth.map(i => `${i.name}:${i.intruder.kind}×${i.intruder.amount}`).join(" "),
+  "Night Fears:fear×1 The Eager Hand:rage×2 Compelled Step:compulsion×1 "
+  + "Hollow Eyes:doubt×2 The Debt:compulsion×1");
+check("kinds no intruder table row declares",
+  withTeeth.filter(i => !intruderKinds.includes(i.intruder.kind)).map(i => i.name).join(", ")
+    || "none", "none");
+check("kinds whose deck belongs to a monster rather than a person",
+  withTeeth.filter(i => decksLive.INTRUDERS[i.intruder.kind]?.deck === "npc"
+    || i.intruder.kind === "confusion").map(i => i.name).join(", ") || "none", "none");
+check("and every one of them deals at least one",
+  withTeeth.filter(i => !(i.intruder.amount > 0)).map(i => i.name).join(", ") || "none", "none");
+
+/*
+ * **A permanent Miss is a curse and nothing else.** It is the most expensive single card measured
+ * in this game -- -3.5 win rate against the published encounters, five Wounds in one card -- and
+ * the categories are about *what lifts a thing*, so a Miss that a Regrowth could remove would be
+ * saying that a bone-setter can undo somebody's malice.
+ */
+check("injuries that put a permanent Miss in the fate deck",
+  content.INJURIES.filter(i => i.takes?.fateMiss).map(i => `${i.name} (${i.category})`).join(", "),
+  "Hexed Blood (curse)");
+
+/*
+ * **Every injury does something the engine reads, or is one of the two that cannot.**
+ *
+ * Twelve of fourteen carry a number. The two that do not are prose for a stated reason: *Scarred
+ * Face* cuts both ways depending on who is looking at you, and *Lost Fingers* is a **cap** rather
+ * than a penalty -- it makes a fine tool behave as if untrained, and nothing on a slate can reach
+ * the untrained cap where skill-rules 2 applies it. Naming them here is what stops a third one
+ * joining quietly, which is how a mechanic comes to be finished in seven places and do nothing.
+ */
+const proseOnly = content.INJURIES.filter(i =>
+  !i.bonus && !i.grants && !i.takes && !i.blocksReactions && !i.intruder).map(i => i.name);
+check("injuries the engine reads no number on", proseOnly.join(", "),
+  "Lost Fingers, Scarred Face");
+check("and the rest carry one", content.INJURIES.length - proseOnly.length, 12);
+check("every injury says what it does in its own text",
+  content.INJURIES.filter(i => !i.text).map(i => i.name).join(", ") || "none", "none");
+
+/*
+ * **One injury per category, which is a cap on four rather than on nothing.**
+ *
+ * ideas.md's worry about this list was that injuries stack into a death spiral, and the cap
+ * answers it with the categories that already had to exist. It also gives a category a second job
+ * -- and a value that does only one thing is the kind this suite keeps finding in dropdowns.
+ */
+check("the cap is counted from the slates, not stored",
+  /export function injuryCategoriesTaken\(actor\)/.test(resolveSource) ? "yes" : "no", "yes");
+check("and applying one asks it first",
+  /if \(injuryCategoriesTaken\(target\)\.has\(def\.category\)\)/.test(resolveSource)
+    ? "yes" : "no", "yes");
+check("and the draw reports what is still open",
+  /export function openInjuryCategories\(actor\)/.test(resolveSource) ? "yes" : "no", "yes");
+
+/*
+ * **Permanence passes through one gate, and this is the check that it is one.**
+ *
+ * `resolveWound` is called with `DROPPED` from three places -- combat.mjs's damage application and
+ * two in resolve.mjs -- so hanging the injury draw inside it is what makes the gate single. A
+ * fourth call site gets the draw for free; a card that wanted to inflict an injury directly would
+ * have put the most consequential rule in the game in as many places as there are cards, which is
+ * the shape this project has already paid for twice (the Wound threshold, and `wound || taint`).
+ */
+check("the drop is a constant rather than a string in four places",
+  /export const DROPPED = "dropped to 0";/.test(resolveSource) ? "yes" : "no", "yes");
+const droppedSites = ["module/resolve.mjs", "module/combat.mjs"]
+  .map(f => fs.readFileSync(path.join(root, f), "utf8"))
+  .reduce((n, src) => n + (src.match(/reason: (?:dropped \? )?DROPPED/g) ?? []).length, 0);
+check("call sites that pass it", droppedSites, 3);
+check("and nobody still writes the words",
+  ["module/resolve.mjs", "module/combat.mjs"]
+    .map(f => fs.readFileSync(path.join(root, f), "utf8"))
+    .reduce((n, src) => n + (src.match(/reason: "dropped to 0"/g) ?? []).length, 0), 0);
+check("the gate draws for an injury",
+  /if \(reason === DROPPED\) await resolveInjury\(target, \{ mode: injuryMode, cause: reason \}\)/
+    .test(resolveSource) ? "yes" : "no", "yes");
+
+/*
+ * **And a card bends the draw instead of inflicting one.** `maiming` is disadvantage on this draw
+ * and nothing else, which is why it needed no vocabulary of its own: a Healer's Kit in reach is
+ * the same dial the other way, and the two cancel without a rule saying they do.
+ */
+check("the keyword that makes the draw worse",
+  Object.hasOwn(configLive.effects, "maiming") ? "yes" : "no", "yes");
+check("and it is a mode on the draw rather than an injury of its own",
+  /export async function resolveInjury\(target, \{ mode = 0, cause = "" \} = \{\}\)/
+    .test(resolveSource) ? "yes" : "no", "yes");
+check("and nothing in the content deals an injury directly",
+  /verb: "maiming"[\s\S]{0,120}injury:/.test(contentSource) ? "something does" : "none", "none");
+
+/*
+ * **The three outcomes of the draw are a fate card's own faces**, which is why this rule could be
+ * written in ideas.md before anything could run it: a Miss is permanent, a -2 or -1 is lasting,
+ * and anything else is only the normal Wound.
+ */
+check("a Miss is permanent",
+  /const permanent = card\.system\.special === "miss";/.test(resolveSource) ? "yes" : "no", "yes");
+check("and the lasting band is the two bad numbers",
+  /const lasting = !permanent && \(card\.system\.value \?\? 0\) <= -1;/.test(resolveSource)
+    ? "yes" : "no", "yes");
+check("and how long is one number on the slate",
+  `${configLive.injuryHealsIn.permanent} ${configLive.injuryHealsIn.lasting}`, "0 14");
+
+/*
+ * **A lift takes back exactly what was dealt, and that is what the fate card's `source` is for.**
+ *
+ * A fate deck is born with **one** Miss. `resolveHex` announced *"only a cure takes one out"* and
+ * nothing could, because a dealt Miss was indistinguishable from that one -- so a lift that
+ * guessed would have cured the deck instead of the character, silently and permanently.
+ */
+check("a fate card records what put it there",
+  /source: new fields\.StringField/.test(
+    cardsSource.slice(cardsSource.indexOf("export class FateCardData"),
+      cardsSource.indexOf("export class NpcCardData"))) ? "yes" : "no", "yes");
+check("and the dealer sets it",
+  /addFateCards\(actor, \{ special, count = 1, temporary = false, source = "" \} = \{\}\)/
+    .test(decksSource) ? "yes" : "no", "yes");
+check("and the lift matches on it rather than on the face",
+  /if \(card\.system\.source !== injury\.name\) continue;/.test(resolveSource) ? "yes" : "no", "yes");
+check("and the intruder cards it owns are matched the same way",
+  /if \(card\.type !== kind \|\| card\.system\.source !== injury\.name\) continue;/
+    .test(resolveSource) ? "yes" : "no", "yes");
+check("and they go home before they are deleted",
+  /await removeCard\(actor, card\);/.test(resolveSource) ? "yes" : "no", "yes");
+
+/*
+ * **An injury is simply true**, the law grants.mjs encodes -- and the word in it had to widen. It
+ * read *a feature is simply true, an item has to be equipped*; an injury has nothing to equip and
+ * nothing to prepare, so the set is what carries the rule now.
+ */
+check("the kinds that need no equipping",
+  /const STANDING = new Set\(\["feature", "injury"\]\);/.test(
+    fs.readFileSync(path.join(root, "module/grants.mjs"), "utf8")) ? "yes" : "no", "yes");
+
+/*
+ * **And one reader for reactions, where there were two identical ones.**
+ *
+ * `blockedReactions` was written out twice, once per actor model, and an injury is the third thing
+ * that can take a reaction away. Adding it to one copy and not the other would have left a maimed
+ * character reacting in a fight and not on their sheet, with every check still passing -- the DEAD
+ * set in combat_sim.py was the same lesson in another language on the same day.
+ */
+check("one routine answers for both models",
+  (actorsSource.match(/function blockedReactionsOf\(system\)/g) ?? []).length, 1);
+check("and it reads an injury's own list",
+  /if \(slate\.type === "injury"\) \{[\s\S]{0,200}blocksReactions/.test(actorsSource)
+    ? "yes" : "no", "yes");
+check("and the one dial on that is the opening round",
+  /if \(slate\.system\.firstRoundOnly && round > 1\) continue;/.test(actorsSource)
+    ? "yes" : "no", "yes");
+
+/*
+ * **A hand this character no longer has is not a hand.** Slot capacity was `CARDRPG.slots[slot]
+ * .capacity` read straight out of config in two places, the sheet's panel and the tray's
+ * `#makeRoom`, and *Lost Hand* is the first thing in the game that makes the constant wrong.
+ */
+check("capacity is derived, for both kinds of actor",
+  (actorsSource.match(/slotCapacity\(slot\) \{\s*\n\s*return slotCapacityOf\(this, slot\);/g)
+    ?? []).length, 2);
+check("the sheet asks the actor",
+  /capacity: system\.slotCapacity\(key\),/.test(sheetSource) ? "yes" : "no", "yes");
+check("and so does the tray",
+  /const capacity = actor\.system\.slotCapacity\(slot\);/.test(traySource) ? "yes" : "no", "yes");
+/*
+ * **A slate nobody can see is a slate nobody has**, which is the shape of defect this suite was
+ * built around: a mechanic finished in seven places that did nothing, because the eighth was the
+ * one a player looks at. So the sheet is pinned too.
+ */
+check("the sheet gathers them",
+  /const injuries = slates\.filter\(i => i\.type === "injury"\);/.test(sheetSource)
+    ? "yes" : "no", "yes");
+check("and prints each one's category and what lifts it",
+  /category: game\.i18n\.localize/.test(sheetSource) && /lift: i\.system\.liftedBy/.test(sheetSource)
+    ? "yes" : "no", "yes");
+check("and says which categories are still open",
+  /injuryRoom: Object\.entries\(CARDRPG\.injuryCategories\)/.test(sheetSource) ? "yes" : "no", "yes");
+check("and the template has a block for them",
+  /\{\{#each injuries as \|entry\|\}\}/.test(charTemplate) ? "yes" : "no", "yes");
+check("and an empty state, so the tab never reads as broken",
+  /<li class="cr-note">No injuries\.<\/li>/.test(charTemplate) ? "yes" : "no", "yes");
+
+/*
+ * **[MEASURED 2026-11-08] A bad leg and a frozen leg are different subtractions, and measuring
+ * them as one found a real bug.**
+ *
+ * ideas.md writes *Bad leg: all Move values -1 (**minimum 1**)*. Folded into `moveReduction`, which
+ * floors at 0 because Frozen must be able to stop you, that parenthesis was lost -- and a bad leg
+ * measured **-25.4** win rate against the published encounters, **-38.5** against archers, taking
+ * them from 40.0% to **1.5%**. Seven times the most expensive card in the game, from a clause.
+ *
+ * The cause is not that -1 is harsh. The starter deck's commonest printed Move **is** 1, so a
+ * floor of zero deletes half the hero's movement rather than slowing it, and the archer fight is
+ * entirely about closing. Hence two reductions with two floors, and the order between them.
+ */
+check("an injury's move reduction is its own, with its own floor",
+  /get injuryMoveReduction\(\)/.test(actorsSource) ? "yes" : "no", "yes");
+check("and it can never take you below one square",
+  /Math\.max\(1, printed - this\.injuryMoveReduction\)/.test(actorsSource) ? "yes" : "no", "yes");
+check("while a condition still can take you to none",
+  /return Math\.max\(0, halved - this\.moveReduction\);/.test(actorsSource) ? "yes" : "no", "yes");
+/* And the simulator agrees, or a measurement is of a different game. Its source is already read at the top of this suite. */
+check("and the simulator floors it the same way",
+  /n = max\(1, n - self\.cfg\.bad_leg\)/.test(simSource) ? "yes" : "no", "yes");
+check("and values a card by what it can actually walk",
+  /squares = max\(1, op\[1\] - cfg\.bad_leg\) if op\[1\] > 0 else 0/.test(simSource)
+    ? "yes" : "no", "yes");
+
+/*
+ * **[FOUND IN CODE 2026-11-08] `bonus.range` had no reader, and Good Aim has never done anything.**
+ *
+ * The field has been on both schemas since tools were built. `collectBonuses` skips a bonus with
+ * no `value` on its first line and only ever sums `value`, and the sheet and tray printed
+ * `l.range` straight off the item -- so **Good Aim**, whose entire text is *"+2 range on Ranged
+ * and Thrown items"*, changed no number from the day it was written.
+ *
+ * It surfaced from the other side: *Lost Eye* is *"range -2 with a ranged weapon"*, which as a
+ * negative `bonus.range` would have been the same nothing with a minus sign. Range is never
+ * enforced by the engine -- figures are moved by hand, like Move -- so what a modifier to it can
+ * change is the printed number, which is where a player reads it.
+ */
+check("the reader bonus.range never had",
+  /function rangeOnLine\(system, line, item\)/.test(actorsSource) ? "yes" : "no", "yes");
+check("and both models expose it",
+  (actorsSource.match(/rangeOnLine\(line, item\) \{\s*\n\s*return rangeOnLine\(this, line, item\);/g)
+    ?? []).length, 2);
+check("and both printers ask for it",
+  (traySource.match(/actor\.system\.rangeOnLine\(l, i\)/g) ?? []).length, 2);
+check("and nothing prints a raw item range any more",
+  (traySource.match(/\$\{l\.range\}/g) ?? []).length, 0);
+check("the two entries that set it, one of each sign",
+  [...content.FEATURES, ...content.INJURIES].filter(e => e.bonus?.range)
+    .map(e => `${e.name}:${e.bonus.range}`).join(" "), "Good Aim:2 Lost Eye:-2");
 
 /* One routine deals every kind with nothing to resolve on arrival; the wrappers are one line. */
 check("the routine that deals the quiet kinds",
@@ -10163,8 +10553,33 @@ check("and one for each approach",
 check("all of them +1", [...new Set(skillFeatures.map(f => f.bonus.value))].join(", "), "1");
 check("and all of them grouped, so two of an approach cannot stack",
   skillFeatures.filter(f => !f.group).length, 0);
-check("and the schema has always had somewhere to put one",
-  /approach: new fields\.StringField/.test(itemSource) ? "yes" : "no", "yes");
+/*
+ * **[FOUND IN CODE 2026-11-08] This check is how the bug it was written to prevent survived.**
+ *
+ * It read `itemSource` -- the whole of data/items.mjs -- and matched `approach: new
+ * fields.StringField` on **ItemSlateData**, sixty lines above the class it is about. The feature
+ * schema had no `approach` at all. So all six of these features set a key Foundry strips off
+ * `system` before anything reads it, `collectSkillBonuses` compared `undefined` against the
+ * approach and skipped every one, and **step 3 of a check returned 0 for every check ever made**
+ * -- after the repair that was written to stop it doing exactly that.
+ *
+ * Fourteen **items** set the same key and were always fine, because on an item the field is real.
+ * That is what made this invisible: the content looked consistent, and two thirds of it was.
+ *
+ * The comment on `collectSkillBonuses` makes the same mistake in prose: *a tool's skill line
+ * lives in `bonus.approach` (data/items.mjs), which is the field this reads*. True of the item,
+ * and the reader is features-only.
+ *
+ * The lesson is narrow and worth keeping: **a check that greps a whole file cannot assert
+ * anything about one class in it.** This one now reads the feature's own block, which is what it
+ * always claimed to do.
+ */
+check("and the feature schema has somewhere to put one",
+  /approach: new fields\.StringField/.test(featureOwnBlock) ? "yes" : "no", "yes");
+/* The six are useless without the reader, and the reader looks only at features. */
+check("and the reader looks at features for it",
+  /slate\.type !== "feature"\) continue;[\s\S]{0,200}bonus\.approach !== approach/
+    .test(resolveSource) ? "yes" : "no", "yes");
 /* Every one of them is on a node, or it is a feature nobody can be given. */
 check("nodes that hand them over",
   skillFeatures.filter(f => !nodes.some(n => n.grants?.feature === f.name)).join(", ") || "none",
@@ -10827,8 +11242,16 @@ check("features that grant a standing number",
     .map(f => f.name).sort().join(", "),
   "Graven Armour, Graven Heart, Graven Shield, Packhorse, Quick, The Whole Skin, Tough");
 
-/* While a feature has both, which is where the nine went. */
-const featureBlock = itemSource.slice(itemSource.indexOf("export class FeatureSlateData"));
+/*
+ * While a feature has both, which is where the nine went.
+ *
+ * Bounded at the injury class, which did not used to exist. A slice to end-of-file would read
+ * `InjurySlateData`'s fields as the feature's -- and since an injury EXTENDS a feature, every
+ * check here would still have passed while testing the wrong class.
+ */
+const featureBlock = itemSource.slice(
+  itemSource.indexOf("export class FeatureSlateData"),
+  itemSource.indexOf("export class InjurySlateData"));
 for (const name of ["bonus", "grants", "effect"]) {
   check(`the feature schema has a ${name}`,
     new RegExp(`${name}: (new fields\\.SchemaField|stepField\\(\\))`).test(featureBlock)
@@ -11745,7 +12168,7 @@ for (const m of selfSource.matchAll(/(\w+)\.includes\("((?:[^"\\]|\\.)*)"\)/g)) 
 }
 
 /* The pin that keeps the rest of this honest. */
-check("greps over a whole file, resolved", greps.length, 583);
+check("greps over a whole file, resolved", greps.length, 617);
 
 /*
  * **The rule, as one predicate, run over a planted example before it is run over the suite.**
@@ -11796,9 +12219,11 @@ const absentGreps = [
   String.raw`and neither table still offers a choice :: ` + "`" + String.raw`\.webp` + "`"
     + String.raw` (?:preferred|or ` + "`" + String.raw`\.png` + "`" + `)`,
   String.raw`and never decides from adjacency itself :: \.after[\s\S]{0,60}\.(some|every)\(`,
+  String.raw`and no caller is assumed to mean the action deck :: const deck = deckOf\(actor, "action"\);\s*\n\s*const parent = card\.parent;`,
   String.raw`and no longer reads a spell as a source of bonus :: slate\.type === "spell" && slate\.system\.effect`,
   String.raw`and no longer stops dealing at the first dose :: taint\+\+;\s*\n\s*break;`,
   String.raw`and no slate is flagged unusable instead :: quarantined: new fields\.BooleanField`,
+  String.raw`and nothing in the content deals an injury directly :: verb: "maiming"[\s\S]{0,120}injury:`,
   String.raw`and reads the change rather than the state :: item\.system\.prepared`,
   String.raw`and the chain is gone :: if \(effect === "taint"\)`,
   String.raw`and the literal Fear used to carry is gone :: const which = fast \? "actionHand" : "actionDiscard";`,

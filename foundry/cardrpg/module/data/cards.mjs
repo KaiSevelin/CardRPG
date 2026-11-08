@@ -500,7 +500,22 @@ export class FateCardData extends foundry.abstract.TypeDataModel {
        * (core-rules 6) -- impossible if they are indistinguishable from the permanent ones, so the
        * face has to show it too.
        */
-      temporary: new fields.BooleanField({ initial: false })
+      temporary: new fields.BooleanField({ initial: false }),
+
+      /**
+       * **What put this card in the deck, for the one case that has to take it back out.**
+       *
+       * Every intruder card in the game carries a `source` and this one did not, because until
+       * now nothing permanent was ever added to a fate deck and then removed. A Hex is a
+       * permanent Miss (core-rules 8), and `resolveHex` announces *"only a cure takes one out"* --
+       * which nothing could do, because a dealt Miss was indistinguishable from the Miss the deck
+       * is built with. There is exactly one natural Miss in a fate deck, and a lift that guessed
+       * wrong would have quietly cured the deck instead of the character.
+       *
+       * Blank for the twenty-one cards a fate deck is born with, which is how the natural Miss
+       * stays out of reach of every lift.
+       */
+      source: new fields.StringField({ required: false, blank: true, initial: "" })
     };
   }
 

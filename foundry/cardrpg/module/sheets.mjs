@@ -100,6 +100,13 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     const slates = actor.items.contents;
     const items = slates.filter(i => i.type === "item");
     const features = slates.filter(i => i.type === "feature");
+    /*
+     * **A slate nobody can see is a slate nobody has.** An injury is a feature you did not choose
+     * (core-rules 8), and it sits beside them on this tab rather than in a panel of its own --
+     * which is the honest layout, because what the character can do and what was done to them are
+     * read together or not at all.
+     */
+    const injuries = slates.filter(i => i.type === "injury");
 
     // Group equipped gear by slot so the sheet mirrors the slot rules rather than a flat list.
     const equipped = {};
@@ -107,7 +114,7 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       if (key === "pack") continue;
       equipped[key] = {
         label: game.i18n.localize(cfg.label),
-        capacity: cfg.capacity,
+        capacity: system.slotCapacity(key),
         icon: cfg.icon,
         items: items.filter(i => i.system.equippedSlot === key)
       };
@@ -149,6 +156,25 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       equipped,
       pack: items.filter(i => !i.system.equipped),
       features: features.map(f => ({ doc: f, drain: describeDrain(f) })),
+      injuries: injuries.map(i => {
+        const cat = CARDRPG.injuryCategories[i.system.category] ?? {};
+        return {
+          doc: i,
+          category: game.i18n.localize(cat.label ?? i.system.category),
+          icon: cat.icon ?? "",
+          // The ritual, or the sentence that says there is not one. Never a blank.
+          lift: i.system.liftedBy
+            ? `Lifted by a ${i.system.liftedBy}`
+            : "No ritual lifts it",
+          lasts: i.system.permanent
+            ? "Permanent"
+            : `Heals after ${i.system.healsIn} days of rest`
+        };
+      }),
+      /* What is still open, so the GM can see the cap without counting. */
+      injuryRoom: Object.entries(CARDRPG.injuryCategories)
+        .filter(([key]) => !injuries.some(i => i.system.category === key))
+        .map(([, cat]) => game.i18n.localize(cat.label)).join(", "),
 
       // Deck validation: 12-20 cards, the maximum raised by features. Wounds and Taint don't count,
       // so a wounded character is never locked out of adding a card.
@@ -463,8 +489,16 @@ export class SlateSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
       system: slate.system,
       config: CARDRPG,
       isItem: slate.type === "item",
-      isFeature: slate.type === "feature",
+      /*
+       * **An injury is a feature, for everything the editor shows.** It extends the feature slate,
+       * so `isFeature` is true for one as well -- which is the point of that inheritance: a
+       * negative grant is edited in the same box as a positive one, and nothing had to be built
+       * twice. `isInjury` adds the three fields a feature has no use for.
+       */
+      isFeature: slate.type === "feature" || slate.type === "injury",
+      isInjury: slate.type === "injury",
       isSpell: slate.type === "spell",
+      injuryCategories: CARDRPG.injuryCategories,
       approaches: CARDRPG.approaches,
       elements: CARDRPG.elements,
       reactions: CARDRPG.reactions,
@@ -643,7 +677,7 @@ export function registerSheets() {
    * sheet is content nobody can read, let alone correct, so the validator now counts them.
    */
   DocumentSheetConfig.registerSheet(Item, "cardrpg", SlateSheet, {
-    types: ["item", "feature", "spell"], makeDefault: true, label: "CARDRPG.Sheet.Slate"
+    types: ["item", "feature", "injury", "spell"], makeDefault: true, label: "CARDRPG.Sheet.Slate"
   });
   DocumentSheetConfig.registerSheet(Card, "cardrpg", CardConfigSheet, {
     types: ["action", "fate", "npc", "wound", "taint", "fear", "doubt", "rage", "compulsion",

@@ -1,0 +1,16 @@
+{
+  "_id": "Ta8DNOijXBvMAiI5",
+  "_key": "!items!Ta8DNOijXBvMAiI5",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Lost Fingers",
+  "type": "injury",
+  "system": {
+    "category": "maiming",
+    "description": "<p>A lockpick needs three fingers and patience. You have the patience.</p>",
+    "text": "Fine tools give at most +1, as if you were untrained with them."
+  }
+}

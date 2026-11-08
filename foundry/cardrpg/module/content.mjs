@@ -3761,6 +3761,234 @@ export const GOBLIN_ARCHER = applyVariant(GOBLIN, VARIANTS.goblin
  * creature in it whose numbers were measured rather than reasoned, so everything else is a ratio to
  * this entry (sim/analysis-2026-10-21.md onward).
  */
+/**
+ * **The fourteen permanent injuries, and what each one is written in.**
+ *
+ * Nothing here is a new mechanism, which is the claim worth checking rather than believing:
+ *
+ * | Written in | Existed for | Used by |
+ * |---|---|---|
+ * | a negative `bonus.range` | Good Aim, which had no reader until now | Lost Eye |
+ * | a negative `grants` | a feature that raises a standing number | Lost Hand, Shaken Faith, Rotted |
+ * | `takes.move` | Frozen's `moveReduction` | Bad Leg |
+ * | `takes.handSlots` | the hands slot's capacity | Lost Hand |
+ * | `blocksReactions` | Plate taking your Parry | Shattered Nerves |
+ * | `takes.fateMiss` | `resolveHex`, and Shadow Magic's own price | Hexed Blood |
+ * | `intruder` | the whole intruder table (core-rules 8) | five of them |
+ * | prose | the table adjudicating | Lost Fingers, Scarred Face |
+ *
+ * **Twelve of the fourteen are a number the engine reads.** The two that are prose are prose for a
+ * stated reason rather than for want of trying: *Scarred Face* cuts both ways and the direction
+ * depends on who is looking at you, and *Lost Fingers* is a **cap** rather than a penalty -- it
+ * makes a fine tool behave as if untrained, and nothing on a slate can reach the untrained cap
+ * where it is applied. That is the honest `[OPEN]` in this table, and it is one field away.
+ *
+ * **Five of them carry intruder cards, and that is where a permanent condition gets teeth.** A
+ * flat -1 is the same every round and a card is not: *Night Fears* moves you when the deck
+ * decides, and *The Eager Hand* swings at whoever is nearest. The curse the engine could not
+ * enforce (equipment.md 11's `[OPEN]`) is enforced by owning cards.
+ *
+ * **The distribution is lopsided on purpose, and it is worth seeing.** Five of the fourteen are
+ * Maimings, because ideas.md's six examples were all written as what a sword does to a body. With
+ * a cap of one injury per category, that means a character who has lost an eye can never lose a
+ * leg -- the same ritual regrows both, so they are one category, and the cap follows the ritual
+ * rather than the anatomy. **[OPEN]** Whether that is too coarse is a question for play, and the
+ * dial is a Maiming/Blinding split with a second ritual behind it. It is not a question the
+ * arithmetic can answer.
+ */
+export const INJURIES = [
+  /* --- Maiming: flesh and bone that did not grow back. Lifted by a Regrowth. --- */
+  {
+    name: "Lost Eye", category: "maiming",
+    text: "Range &minus;2 with a ranged weapon. Disadvantage on Wits checks that need both eyes.",
+    bonus: { verb: "strike", range: -2, requiresTag: "ranged" },
+    description: "<p>Depth is a thing you had and now estimate. The bow still draws; the arrow "
+      + "lands where you guessed.</p>"
+  },
+  {
+    name: "Lost Fingers", category: "maiming",
+    text: "Fine tools give at most +1, as if you were untrained with them.",
+    description: "<p>A lockpick needs three fingers and patience. You have the patience.</p>"
+  },
+  {
+    name: "Lost Hand", category: "maiming",
+    text: "One hand slot instead of two. You may carry less.",
+    takes: { handSlots: 1 }, grants: { carry: -2 },
+    description: "<p>A shield or a sword, and never the pair. A hook helps with the second "
+      + "problem and not the first.</p>"
+  },
+  {
+    name: "Bad Leg", category: "maiming",
+    text: "Every Move value you play is &minus;1.",
+    takes: { move: 1 },
+    description: "<p>It set wrong, and it set. You walk everywhere you used to walk, and you "
+      + "arrive after everyone else.</p>"
+  },
+  {
+    name: "Scarred Face", category: "maiming",
+    text: "Disadvantage on Presence with strangers. Advantage when you mean to frighten them.",
+    description: "<p>The first thing anyone learns about you, before you have said a word. "
+      + "Sometimes that is the whole negotiation.</p>"
+  },
+
+  /* --- Breaking: nerve, memory and conviction. Lifted by a Quieting. --- */
+  {
+    name: "Shattered Nerves", category: "breaking",
+    text: "You may play no reactions in the first round of a combat.",
+    blocksReactions: ["parry", "block", "sidestep", "counter", "use", "heckle", "bodyguard",
+      "unmake", "mend", "bargain"],
+    firstRoundOnly: true,
+    description: "<p>The fight starts and you are somewhere else for a moment. Brace is still "
+      + "yours &mdash; it is the one nobody can take (core-rules 3).</p>"
+  },
+  {
+    name: "Shaken Faith", category: "breaking",
+    text: "One spell slot fewer. What you knew is still written down.",
+    grants: { spellSlots: -1 },
+    description: "<p>The formula is intact and the conviction is not, and only one of those is "
+      + "the part that casts.</p>"
+  },
+  {
+    name: "Night Fears", category: "breaking",
+    text: "A Fear card is in your action deck, and no rest takes it out.",
+    intruder: { kind: "fear", amount: 1 },
+    description: "<p>It comes up when it comes up, and you are one square further from whatever "
+      + "you were about to do.</p>"
+  },
+
+  /* --- Curse: somebody did this on purpose, so the ritual has to name them. --- */
+  {
+    name: "Hexed Blood", category: "curse",
+    text: "A permanent Miss in your fate deck. It survives every reshuffle.",
+    takes: { fateMiss: 1 },
+    description: "<p>Measured at &minus;3.5 against the published encounters &mdash; five Wounds, "
+      + "in one card that is drawn for every action you take. Shadow Magic buys the gentler "
+      + "version of this willingly, one Wild per formula.</p>"
+  },
+  {
+    name: "The Eager Hand", category: "curse",
+    text: "Two Rage cards in your action deck. Each strikes the nearest creature, ally or enemy.",
+    intruder: { kind: "rage", amount: 2 },
+    description: "<p>The curse the Blade of the Eager Hand has carried in prose since equipment.md "
+      + "11.4 was written, in the cards that do what the prose says. Put the blade down and the "
+      + "hand still wants it.</p>"
+  },
+  {
+    name: "Compelled Step", category: "curse",
+    text: "A Compulsion card in your action deck. While it is in hand you may not Catch Breath.",
+    intruder: { kind: "compulsion", amount: 1 },
+    description: "<p>Somebody decided you would not be allowed to stop, and then went away.</p>"
+  },
+
+  /* --- Corruption: Taint that went past the point a cure reaches. Lifted by a Cleansing. --- */
+  {
+    name: "Rotted", category: "corruption",
+    text: "Maximum Health &minus;2. A cure does nothing; the rot is what you are made of now.",
+    grants: { health: -2 },
+    description: "<p>Afflicted ends when you are under three Taint (core-rules 8). This does "
+      + "not end.</p>"
+  },
+  {
+    name: "Hollow Eyes", category: "corruption",
+    text: "Two Doubt cards in your skill deck. They clear when a scene ends, and come back.",
+    intruder: { kind: "doubt", amount: 2 },
+    description: "<p>The skill deck returns on a rest and not on a breath, which is why a Doubt "
+      + "costs more than a Wound (skill-rules 1). Two of them, for as long as this lasts.</p>"
+  },
+
+  /*
+   * --- Obligation: no ritual, on purpose. ---
+   *
+   * Bound Taint has had this asymmetry since it was written -- *neither a cure nor Cleansing lifts
+   * it; the obligation names the one thing that does* -- and keeping it is what stops the ritual
+   * list becoming a laundry service. The four that lift are a service; this is a story.
+   */
+  {
+    name: "The Debt", category: "obligation",
+    text: "A Compulsion card in your action deck. No ritual lifts it. The one who is owed says what does.",
+    intruder: { kind: "compulsion", amount: 1 },
+    description: "<p>You agreed to this, which is the whole difference between it and a curse "
+      + "&mdash; and the reason no amount of Lore will undo it (leveling.md 4).</p>"
+  }
+];
+
+/**
+ * **The four rituals, and Ritual Magic's first content of any kind.**
+ *
+ * These are not new spells in a school. specializations.md has listed **Ritual Magic** as a node of
+ * Way of Mind since the Way was written, with a price already stated -- *"Time, and a recipe that
+ * can go wrong"* -- and a gate already stated: *"Direct magic is cast in combat. Ritual magic is
+ * not, and anyone literate can do it."* Nothing had ever been written for it. The count even says
+ * so out loud: *"13 for Mind only if ritual magic counts."*
+ *
+ * Both halves of that price are a **challenge** (skill-rules 3 and 6), in the two words it took to
+ * say it: *time* is the Progress track, one check per unit of time, and *a recipe that can go
+ * wrong* is the Pressure track. So a ritual is not a check and not a cast. It is the thing the
+ * downtime system was already for, which is why **Cleansing** could be published as a challenge in
+ * core-rules 8 long before anything could run one.
+ *
+ * **And the gate is the recipe, not the caster.** That is the world document's line, not a choice
+ * made here, and it is the better design: a party cannot be locked out of mending a character
+ * because nobody levelled the right way, and the GM keeps a real scarcity to hand out. A recipe is
+ * a thing you find.
+ *
+ * **[OPEN] All four are `strength: 1`, which is the field at its floor rather than a judgement.**
+ * On a spell, `strength` is the **slot cost** -- *a strength-3 formula fills three slots*
+ * (data/items.mjs) -- and these are the first slates in the game that are never **prepared** and
+ * never **cast**: what resolves a ritual is winning a challenge, not `payToCast`. So there is
+ * nothing for a slot cost to mean, and a 4 on *Regrowth* would have quietly told a non-mage with
+ * no spell slots that the hardest ritual in the game was closed to them &mdash; which is the exact
+ * opposite of *"anyone literate can do it"*.
+ *
+ * Difficulty is already said twice over, in the places that are read: **Progress** and the
+ * **Pressure** it runs against. Regrowth is 6 against 4 and Unbinding is 8 against 3, and those
+ * are the numbers a table feels.
+ *
+ * The dial, if this wants to be exact rather than at a floor, is to make a recipe an **item** --
+ * which is what *the gate is the recipe* really says, and a recipe is a thing you find. It needs
+ * one field that does not exist yet: an item slate has no `effect` step, so it has nowhere to
+ * carry `timing: "ritual"`. Worth doing when something else wants that field too.
+ *
+ * `timing: "ritual"` is likewise not new. It has been a timing with a reader (`isRitual`) and five
+ * users in this file since Household Magic was built, documented as *overnight work and not a thing
+ * you hold ready*. A `permanent` timing was removed from config.mjs earlier as "a slot budget
+ * wearing a timing's clothes"; this is what the word was actually for.
+ */
+export const RITUALS = [
+  {
+    name: "Regrowth", strength: 1,
+    text: "Lore, Progress 6, Pressure 4. Regrows what was lost. Needs the part, or a likeness of it.",
+    effect: { timing: "ritual", text: "lift one Maiming over Progress 6, Pressure 4 (Lore)" },
+    description: "<p>ideas.md calls regeneration magic <em>\"rare and expensive, more of a quest "
+      + "than a service\"</em>. Progress 6 is the quest, and the likeness is what the party has to "
+      + "go and get.</p>"
+  },
+  {
+    name: "Quieting", strength: 1,
+    text: "Presence, Progress 6, Pressure 4. Settles what was broken. Needs somebody who knew you before.",
+    effect: { timing: "ritual", text: "lift one Breaking over Progress 6, Pressure 4 (Presence)" },
+    description: "<p>The one ritual that is not Lore, and the only approach that could have been: "
+      + "what mends a nerve is a person, and Presence is the approach for a person. It is also the "
+      + "cheapest of the four to attempt and the easiest to attempt badly.</p>"
+  },
+  {
+    name: "Unbinding", strength: 1,
+    text: "Lore, Progress 8, Pressure 3. Lifts a curse &mdash; and you must name who laid it.",
+    effect: { timing: "ritual", text: "lift one Curse over Progress 8, Pressure 3 (Lore); name the curser" },
+    description: "<p>The hardest and the shortest-fused: Progress 8 against Pressure 3, so there "
+      + "is very little room to go wrong. The name is the real gate &mdash; it is the one thing in "
+      + "the four that no amount of coin buys, because somebody has to find out who did this.</p>"
+  },
+  {
+    name: "Cleansing", strength: 1,
+    text: "Lore, Progress 4, Pressure 4. Removes Taint, or one Corruption. Needs a healer or a temple.",
+    effect: { timing: "ritual", text: "lift one Corruption, or Taint, over Progress 4, Pressure 4 (Lore)" },
+    description: "<p>Published in core-rules 8 as <em>a downtime challenge (Lore, Progress 4)</em> "
+      + "before any of this existed, and the numbers here are those numbers. The easiest of the "
+      + "four, and the one a town can actually provide.</p>"
+  }
+];
+
 export const ROSTER = [GOBLIN, ...MONSTERS];
 
 /* -------------------------------------------- */

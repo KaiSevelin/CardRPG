@@ -4,6 +4,12 @@
  * A slate is laid out face up and never shuffled (core-rules 1). Items, features, injuries and
  * secrets are slates; anything drawn from a deck is a Card instead. Combat playtest scope covers
  * `item` and `feature`.
+ *
+ * **This paragraph named four kinds and the file held three**, for as long as it has existed, and
+ * core-rules 1's own slate table names the same four -- *"item slates, feature slates, secret
+ * slates, permanent injuries"*. An injury is now the fourth. Secrets are still prose, and they are
+ * prose for a reason the injury did not have: a secret is a slate the GM keeps and the player
+ * cannot read, so nothing on the character sheet is its home.
  */
 
 import { CARDRPG } from "../config.mjs";
@@ -585,6 +591,32 @@ export class FeatureSlateData extends SlateData {
        * it is the thing a bonus group caps: one bonus per group per action.
        */
       bonus: new fields.SchemaField({
+        /**
+         * **Which approach it helps on a check, which is the half of this field that was missing.**
+         *
+         * `collectSkillBonuses` reads `bonus.approach` **on features only** -- the tool comes in
+         * through its own term, where the untrained cap lives -- and it has read that field since
+         * step 3 of a check was repaired. The field was never here. **Six features** in
+         * `FEATURES` exist for nothing else (*"+1 on Might checks"*), and for every one of them
+         * `bonus.approach` was a key Foundry strips off `system` before anything can read it.
+         * The fourteen other entries that set it are **items**, where the field is real -- which
+         * is exactly why the mistake was invisible.
+         *
+         * So step 3 still returned **0 for every check ever made**, after the repair that was
+         * written to stop it doing that. The note on `collectSkillBonuses` says *a tool's skill
+         * line lives in `bonus.approach` (data/items.mjs), which is the field this reads* -- true
+         * of the item sixty lines up, and that is the whole mistake. The reader was pointed at a
+         * real field on the wrong model.
+         *
+         * It is the same defect as the one in this module's own header, turned around. There it
+         * was *the field existed and the reader did not*; here the reader existed and the field
+         * did not, and both passed every check because a dropped key reads as absent rather than
+         * as wrong.
+         */
+        approach: new fields.StringField({
+          required: false, blank: true, initial: "",
+          choices: [...Object.keys(CARDRPG.approaches), ""]
+        }),
         verb: new fields.StringField({
           required: false, blank: true, initial: "",
           choices: [...Object.keys(CARDRPG.verbs), ""]
@@ -664,5 +696,182 @@ export class FeatureSlateData extends SlateData {
   /** Passive or active is the pricing dial: a passive feature is simply true. */
   get isPassive() {
     return !this.isActive;
+  }
+}
+
+/* -------------------------------------------- */
+/*  Injury slate                                */
+/* -------------------------------------------- */
+
+/**
+ * **An injury is a feature you did not choose.**
+ *
+ * It extends the feature slate rather than standing beside it, and that inheritance is the whole
+ * argument for building it this way: every one of the six injuries in ideas.md says what it does
+ * in a field a feature already had. *Lost eye* is a negative `bonus.range`. *Lost hand* is a
+ * negative `grants`. *Shattered nerves* is a blocked reaction. *Bad leg* is a step. Nothing here
+ * is a new mechanism -- though one of the fields turned out to have no reader, which is its own
+ * note on `rangeOnLine` in data/actors.mjs.
+ *
+ * What it adds is the three things a feature cannot say:
+ *
+ * 1. `category` -- so a ritual can name it, and so the cap can count it.
+ * 2. `healsIn` -- days of rest, or 0 for permanent. The *lasting* injury from the same fate draw
+ *    is not a different mechanism, it is this number.
+ * 3. `blocksReactions` -- which only worn gear had, because only worn gear could take one away.
+ *
+ * **It is not a condition, and that is deliberate.** A condition carries a duration and can be
+ * Shaken Off (core-rules 7); a permanent condition would be a duration field that lies and a
+ * Shake Off that has to be special-cased. Nothing here needs special-casing: a slate is simply
+ * true, which is what permanent means in the vocabulary this game already has.
+ */
+export class InjurySlateData extends FeatureSlateData {
+  static defineSchema() {
+    return {
+      ...super.defineSchema(),
+
+      /**
+       * Which of the five kinds this is, and therefore which ritual lifts it (config.mjs).
+       *
+       * Required and not blank, because an injury no ritual can name is the one thing this field
+       * exists to prevent -- and `obligation` is a real answer, not the absence of one.
+       */
+      category: new fields.StringField({
+        required: true, blank: false, initial: "maiming",
+        choices: Object.keys(CARDRPG.injuryCategories)
+      }),
+
+      /**
+       * Days of rest that heal it, or **0 for permanent**.
+       *
+       * The fate draw on falling Unconscious has three outcomes and this is the field that tells
+       * two of them apart (core-rules 8): a Miss leaves a 0 and a -2 or -1 leaves a count of
+       * days. One number rather than two subtypes, because a lasting injury and a permanent one
+       * do the same thing to a character for as long as they last.
+       */
+      healsIn: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 }),
+
+      /**
+       * Reactions this injury switches off, the same SetField worn gear uses.
+       *
+       * It is here and not on the feature slate because of what the two mean: a feature is
+       * something you can do, and the things that take a reaction away are the things done TO
+       * you -- a condition, Plate, and now this. *Shattered nerves* is the first of them that is
+       * neither temporary nor removable by taking it off.
+       */
+      blocksReactions: new fields.SetField(
+        new fields.StringField({ choices: Object.keys(CARDRPG.reactions) })
+      ),
+
+      /**
+       * Whether the block is only for the opening round.
+       *
+       * ideas.md wrote *"blocks reactions on your first turn of each combat"* and the engine knows
+       * **rounds**, not per-character firsts, so this reads round 1. The difference is a half-turn
+       * for whoever acts late in the order, and naming the round is worth more than hiding that:
+       * a rule the engine can enforce beats a rule that reads better and has to be remembered.
+       */
+      firstRoundOnly: new fields.BooleanField({ initial: false }),
+
+      /**
+       * **What an injury takes, which is `grants` pointed the other way.**
+       *
+       * A negative `grants` already covers the five standing numbers a feature can raise, so
+       * *Lost hand* takes its carry that way and needs nothing here. These two are the numbers
+       * `grants` has no key for, because until now nothing could lower them:
+       *
+       * - `move` comes off every Move value you play, which `movePlayed` already computes for
+       *   Frozen. It joins that number rather than adding a second one, and so inherits its
+       *   rule: **the highest applies, they do not add.** A bad leg and a frozen one are one bad
+       *   leg, which is both the simpler sentence and the kinder one.
+       * - `handSlots` comes off the capacity of the hands slot. Only the hands, because that is
+       *   the only slot an injury can close -- a belt does not care whether you have a hand, and
+       *   a back even less.
+       *
+       * **Not expressed as a condition with no duration.** That was the other way to build all of
+       * this and it is a worse one: a condition carries a duration and can be Shaken Off
+       * (core-rules 7), so a permanent one is a duration that lies next to a Shake Off that has
+       * to be told to refuse. A slate is simply true, and that is already what permanent means.
+       */
+      takes: new fields.SchemaField({
+        move: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 }),
+        handSlots: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 }),
+        /**
+         * **Permanent Miss cards in your fate deck**, which is what a Hex is (core-rules 8).
+         *
+         * Not a new mechanism: `resolveHex` deals these already, built on `addFateCards`, which
+         * has dealt them since the deck existed. What this field adds is that the slate now
+         * *remembers* them, so lifting the injury can take back exactly what applying it dealt.
+         *
+         * It is also the most expensive thing an injury can carry, and the number is known:
+         * **-3.5 win rate per card** against the published encounters, measured 2026-11-08.
+         * One is five Wounds. Two should be a story the whole table remembers.
+         */
+        fateMiss: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 })
+      }),
+
+      /**
+       * **Intruder cards this injury owns**, and the answer to a question equipment.md asks.
+       *
+       * equipment.md 11 carries an `[OPEN]`: *"Nothing in the engine enforces a curse. `curse` is
+       * a string and `identified` a boolean, and both are honest records the GM reads... or it is
+       * a text obligation after all."* This is the enforcement. A curse whose obligation is a
+       * **card in your deck** enforces itself, because the engine already moves the card: the
+       * Blade of the Eager Hand's *"you must Strike the nearest living creature every turn, ally
+       * or not"* is `applyRage`'s rule word for word, written in prose two months earlier.
+       *
+       * It is also what makes a permanent condition **dynamic** rather than a flat penalty. A
+       * negative number on a slate is the same every round; a card that comes up when the deck
+       * decides is the thing the intruder table was built for, and an injury is how one stops
+       * leaving. The escalation reads in one line: **a card that keeps coming back is a slate,
+       * and the slate is what a ritual can name.**
+       *
+       * `kind` has no `choices`, deliberately. The list lives in `INTRUDERS` in decks.mjs, and a
+       * data model that imported it would reach a module full of Foundry globals from the one
+       * layer that must not need them. The validator checks every kind against that table
+       * instead, which is this project's answer to content pointed at a value that does not
+       * exist -- and the check is the better place for it, because it can also refuse a kind
+       * whose deck makes no sense for a person.
+       */
+      intruder: new fields.SchemaField({
+        kind: new fields.StringField({ required: false, blank: true, initial: "" }),
+        amount: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 })
+      }),
+
+      /**
+       * **What it cost to get, in the GM's own words.** An injury that nobody can tell the story
+       * of is a penalty, and the one thing ideas.md asks of this list is that it *"becomes part of
+       * the character"*. Free text, because what hit you is fiction.
+       */
+      cause: new fields.StringField({ required: false, blank: true, initial: "" })
+    };
+  }
+
+  /** Permanent, or merely lasting? Zero days of rest is what permanent means here. */
+  get permanent() {
+    return this.healsIn === 0;
+  }
+
+  /** The ritual that lifts this kind, or null for an obligation -- which lifts for nobody. */
+  get liftedBy() {
+    return CARDRPG.injuryCategories[this.category]?.ritual ?? null;
+  }
+
+  /**
+   * The challenge that lifting it is, or null.
+   *
+   * A ritual is a **challenge** and not a check (skill-rules 3, 6), and the reason is in the world
+   * document rather than here: Ritual Magic's price is *"Time, and a recipe that can go wrong"*,
+   * which is a Progress track and a Pressure track already. A check could only ever say whether
+   * it worked.
+   */
+  get ritual() {
+    const cat = CARDRPG.injuryCategories[this.category];
+    if (!cat?.ritual) return null;
+    return {
+      name: cat.ritual, approach: cat.approach,
+      progress: cat.progress, pressure: cat.pressure,
+      needsName: !!cat.needsName
+    };
   }
 }

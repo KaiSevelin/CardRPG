@@ -157,7 +157,24 @@ The −2 … +2 cards are numerals and need no symbol.
 | ☣ | **Taint (body)** | Disease and bodily corruption — goes in the **action** deck | Virus |
 | ☣ | **Taint (mind)** | Dark magic and horrors — goes in the **skill** deck | Squid head |
 | ✖ | **Fear** | Spent when drawn: one square away from the nearest enemy. Action deck only | **[OPEN]** not chosen |
-| – | **Injury** | Permanent — a *slate* on the sheet, not a card in a deck (see [ideas.md](ideas.md)) | Severed hand |
+| – | **Injury** | Permanent — a *slate* on the sheet, not a card in a deck (core-rules §8) | Severed hand |
+
+### Injury categories (5)  **[BUILT 2026-11-08]**
+
+A category names the ritual that lifts it (core-rules §8), so each needs a face on the sheet.
+**All five are placeholders pointing at icons already in the set** — the config requires a file
+that exists, and a fifth unchosen slug would have been a red build rather than an open question.
+
+| Category | Placeholder in use | Why that one | game-icons.net |
+|---|---|---|---|
+| **Maiming** | `severed-hand` | it is literally the thing | **keep** — Severed hand |
+| **Breaking** | `oppression` | something behind the body gave way | **[OPEN]** not chosen |
+| **Curse** | `bottled-bolt` | a spell put in a bottle and handed to you | **[OPEN]** not chosen |
+| **Corruption** | `virus` | **deliberate reuse** — this category *is* Taint made permanent | **keep** — Virus |
+| **Obligation** | `lock-spy` | a lock somebody else holds the key to | **[OPEN]** not chosen |
+
+And the keyword that makes an injury draw worse, **Maiming**, uses `knee-bandage` — the Wound's
+own face, reused on purpose: making a Wound worse is the whole of what the keyword does.
 
 Taint has two faces because core-rules §8 already splits it by which deck it goes into. For the data
 model that's one card type with a `flavour` field (`body` / `mind`) selecting the icon, not two types.

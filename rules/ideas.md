@@ -38,7 +38,18 @@ Still an idea: **Fear / Madness** cards in the skill deck, from horrors.
 
 **Favourite still parked:** boss phases.
 
-## Permanent injuries
+## Permanent injuries  **[BUILT 2026-11-08]**
+
+> **Built as written, and the design held up because of one decision made here.** *An injury is a
+> negative feature, a slate and not a card* turned out to need **no new effect machinery at all**:
+> every example below is expressible in a field a feature already had, which is why this list could
+> be written long before the engine could run any of it. Twelve of the fourteen built injuries
+> carry a number the engine reads; the two that do not are the two below marked as such.
+>
+> The rules are now in [core-rules.md](core-rules.md) §8, with the parts this section left open
+> filled in: **five categories** (so a ritual can name one), **one injury per category**, and the
+> four rituals as **downtime challenges** rather than spells &mdash; which is what*"more of a quest
+> than a service"* below turned into once Ritual Magic's own price was read.
 
 An injury is a **negative feature**: a permanent **slate** on the character sheet, not a card in a deck.
 
@@ -49,18 +60,23 @@ An injury is a **negative feature**: a permanent **slate** on the character shee
 
 ### Effects use existing rules
 
-| Injury | Effect | Uses |
-|---|---|---|
-| Lost eye | Range −2 on ranged attacks. Disadvantage on sight-based Wits checks. | Range, situational disadvantage |
-| Lost fingers | Fine tools give at most +1 (as if untrained). | Tool training |
-| Lost hand | Only 1 hand slot. | Item slots |
-| Bad leg | All Move values −1 (minimum 1). | Card values |
-| Scarred face | Disadvantage on Presence with strangers, advantage on intimidation. | Advantage |
-| Shattered nerves | Blocks ⚡ reactions on your first turn of each combat. | Blocked icons |
+| Injury | Effect | Uses | Built as |
+|---|---|---|---|
+| Lost eye | Range −2 on ranged attacks. Disadvantage on sight-based Wits checks. | Range, situational disadvantage | `bonus.range: -2` |
+| Lost fingers | Fine tools give at most +1 (as if untrained). | Tool training | **prose** — a cap, not a penalty |
+| Lost hand | Only 1 hand slot. | Item slots | `takes.handSlots` |
+| Bad leg | All Move values −1 (minimum 1). | Card values | `takes.move` |
+| Scarred face | Disadvantage on Presence with strangers, advantage on intimidation. | Advantage | **prose** — it cuts both ways |
+| Shattered nerves | Blocks ⚡ reactions on your first turn of each combat. | Blocked icons | `blocksReactions`, round 1 |
 
 Injuries can cut both ways (scarred face) and become part of the character. The final list waits for the world.
 
 ### Gaining injuries
+
+> Built exactly as below, and it is the **only** gate: nothing else in the game inflicts an injury.
+> A card that wants to maim you gives this draw **disadvantage** instead (the `maiming` keyword),
+> which is why it needed no vocabulary of its own.
+
 When you fall Unconscious, draw a fate card:
 - **Miss:** permanent injury (from an injury deck, or chosen by the GM to fit what hit you).
 - **−2 / −1:** lasting injury that heals after some days of rest.
@@ -70,6 +86,9 @@ When you fall Unconscious, draw a fate card:
 - **Items:** hook hand (takes the hand slot, has its own Strike line), glass eye, crutch.
 - **Adaptation:** a leveling option, *Adapted: ignore one injury's penalty*.
 - **Regeneration magic:** rare and expensive, more of a quest than a service.
+  - Built as **Regrowth**, a downtime challenge at Progress 6 &mdash; because a challenge is what
+    "a quest rather than a service" is in this game's existing vocabulary, and because Ritual
+    Magic's price was already *"time, and a recipe that can go wrong"*.
 
 ### Optional: escaping death
 When your character would die, you may take a **permanent injury instead**. Limited to once per character, or once per level.

@@ -1908,6 +1908,18 @@ shuffled into your own decks, where they clog your hand until you get rid of the
 > have been a fourth name for a rule this document already states twice. It is not built, and that
 > is the finding.
 
+#### And the kind that is not a card at all  **[BUILT 2026-11-08]**
+
+Every kind above is a card somebody put in a deck you play from. The sixth kind of lasting harm is
+a **slate**: a permanent **injury**, which is a negative feature on your sheet rather than anything
+that can be drawn. It arrives at one moment only &mdash; the fate draw when you drop to 0 Health
+&mdash; and it leaves only to a ritual. See *Unconscious and death* below.
+
+The two are not rivals, they are the two ends of one line: **a card that keeps coming back is a
+slate, and a slate is what a ritual can name.** Five injuries own intruder cards for exactly that
+reason, so a permanent condition can be something that *happens* to you and not only a number
+subtracted from you.
+
 #### Acid, and the only damage that costs you gear
 
 **Corrode N** takes **N off the target's armor**, and it does not come back on a rest.
@@ -1978,6 +1990,173 @@ the Way graphs is which nodes offer what, not the rule.
   - a potion poured into your mouth by an adjacent ally (a **Use** action).
 - A stabilized character who takes damage again is dying again.
 - **NPCs** die at 0 Health unless the GM decides otherwise (e.g. to take a prisoner).
+
+#### The injury draw  **[BUILT 2026-11-08]**
+
+**When you fall Unconscious, draw a fate card.** This is the only moment in the game that can
+change a character permanently.
+
+| The card | What it leaves |
+|---|---|
+| **Miss** | a **permanent injury** |
+| **&minus;2** or **&minus;1** | a **lasting injury**, which heals after 14 days of rest |
+| anything else | nothing. The Wound you already gained is all of it |
+| a **Wild** | nothing &mdash; see below |
+
+Which injury it is is the GM's, chosen to fit what hit you or drawn from the Injuries compendium.
+**How bad** is this draw's; **which** is fiction's.
+
+**A Wild leaves nothing**, and that is the one face worth stating outright. A Wild has no value and
+a rank of 0, so it falls through the table above &mdash; which is right, and for the reason a Wild
+exists: it is the card whose result is *a question for the table* (section 6), and the single draw
+in this game that must not become a question is the one that changes a character for ever.
+
+> **Why this is the only gate, and why nothing else inflicts an injury.**
+>
+> A card reading *permanently blind the target* would put the most consequential rule in the game
+> in as many places as there are cards. This document has paid for that shape twice already: the
+> Wound threshold was *a constant read in two places*, and the test for a dead card was written out
+> three times before the intruder table closed it (section 8).
+>
+> So things that want to maim you **bend this draw** instead:
+>
+> | | What it does to the draw |
+> |---|---|
+> | **Maiming** (a keyword) | draw two, take the worse |
+> | a **Healer's Kit** in reach | draw two, take the better |
+> | a **curse** | a Miss here lands as a Curse rather than a Maiming |
+>
+> The two dials are the same advantage dial the rest of the game uses, so they cancel without a
+> rule saying they do.
+>
+> **Maiming is rare on purpose.** Nothing in a card pool carries it. A named threat does, and a
+> trap does, and the price of a thing that forces this draw *without* dropping you to 0 is that it
+> belongs to a creature with a name.
+
+#### Permanent injuries  **[BUILT 2026-11-08]**
+
+**An injury is a negative feature: a slate on your sheet, not a card in a deck.** Section 1's slate
+table has said so since it was written &mdash; *item slates, feature slates, secret slates,
+permanent injuries*.
+
+| | Wound | Taint | **Injury** |
+|---|---|---|---|
+| Where | action deck | action or skill deck | **the character sheet** |
+| Lasts | until a rest or healing | until a cure or a Cleansing | **until a ritual, or never** |
+
+> **It is deliberately not a condition.** A condition carries a duration and can be **Shaken Off**
+> (section 7), so a *permanent condition* would be a duration field that lies sitting next to a
+> Shake Off that has to be told to refuse. A slate is simply true, and that is already what
+> permanent means in this game's vocabulary.
+
+##### The five categories
+
+A category does exactly one job: **it names the ritual that lifts it.**
+
+| Category | What it is | Lifted by | The challenge |
+|---|---|---|---|
+| **Maiming** | flesh and bone that did not grow back | **Regrowth** | Lore, Progress 6, Pressure 4 |
+| **Breaking** | nerve, memory, conviction | **Quieting** | Presence, Progress 6, Pressure 4 |
+| **Curse** | somebody did this on purpose | **Unbinding** | Lore, Progress 8, Pressure 3 &mdash; *and you must name who laid it* |
+| **Corruption** | Taint gone past where a cure reaches | **Cleansing** | Lore, Progress 4, Pressure 4 |
+| **Obligation** | a pact, a debt, a bargain you made | **nothing** | &mdash; |
+
+**You may carry at most one injury of each category.** So four at the very worst, and a character
+who has lost an eye cannot also lose a leg &mdash; the same ritual regrows both, so they are one
+category, and the cap follows the ritual rather than the anatomy.
+
+> **Obligation lifts for nobody, and that asymmetry is load-bearing.** **Bound Taint** has had it
+> since it was written (section 8): *neither a cure nor Cleansing lifts it. The obligation names the
+> one thing that does.* Keeping it is what stops four rituals becoming a laundry service. The four
+> that lift are a service; this one is a story, and it is the GM's.
+
+##### A ritual is a challenge, not a cast
+
+Lifting an injury is a **downtime challenge** (skill-rules.md §3, §6) with a Progress track and a
+Pressure track. It is not a check, and the world document is what decided that: **Ritual Magic's**
+price is *"Time, and a recipe that can go wrong"* (specializations.md), which is those two tracks in
+the words it took to say it. Pressure filling is the recipe going wrong.
+
+**The gate is the recipe, not the caster** &mdash; *"anyone literate can do it."* A party cannot be
+locked out of mending a character because nobody levelled the right way, and what the GM hands out
+instead is the recipe, which is a thing you find.
+
+##### Living with one
+
+- **Items** help with the consequence and not the injury: a hook hand, a glass eye, a crutch.
+- **[OPEN] Adapted**, a levelling option that ignores one injury's penalty
+  ([ideas.md](ideas.md)). **Not built**, and it is the one piece of this that cannot be a field: no
+  number on a slate can express *ignore that other slate*, so it wants either a node that names an
+  injury or a flag on the injury itself. It also waits on the Way graphs, which decide what any
+  node offers.
+- Five injuries carry **intruder cards** rather than a flat number (section 8) &mdash; *Night Fears*
+  puts a Fear in your deck, *The Eager Hand* two Rage. A flat &minus;1 is the same every round and a
+  card is not.
+- **An injury's cards leave when it does, and only then.** No rest removes them and no cure reaches
+  them: they belong to the slate, so a Cleansing that lifts a Corruption takes its Doubt with it
+  and a bandage does not. A **lasting** injury takes its cards away when the fourteen days are up,
+  for the same reason &mdash; it is the injury leaving, and that is the only thing that moves them.
+- And a **lasting obligation** heals like any other lasting injury. It is only a **permanent** one
+  that no ritual can touch, because what the asymmetry above is about is permanence rather than the
+  word *obligation*.
+
+> **This is also what gives a curse teeth.** equipment.md §11 carries an `[OPEN]`: *nothing in the
+> engine enforces a curse.* A curse whose obligation is **a card in your deck** enforces itself,
+> because the engine already moves the card. The Blade of the Eager Hand's *"you must Strike the
+> nearest living creature every turn, ally or not"* is the Rage card's rule word for word, written
+> in prose two months before the card existed.
+
+> **[MEASURED 2026-11-08] What a permanent injury costs.** 4000 fights a cell, against the
+> published encounters, from the hero's side.
+>
+> | | 3 spears | 4 spears | 5 spears | 2 spear 2 bow | mean |
+> |---|---|---|---|---|---|
+> | **Bad Leg** | &minus;0.5 | &minus;4.8 | &minus;5.9 | &minus;21.1 | **&minus;8.1** |
+> | **Rotted** | &minus;0.9 | &minus;5.2 | &minus;6.8 | &minus;8.6 | **&minus;5.4** |
+> | **Hexed Blood** | &minus;1.1 | &minus;3.4 | &minus;6.3 | &minus;3.1 | **&minus;3.5** |
+> | **Lost Hand** | &minus;0.5 | &minus;2.4 | &minus;3.2 | &minus;0.3 | **&minus;1.6** |
+> | **Compelled Step** | &minus;0.3 | &minus;0.3 | &minus;2.0 | &minus;3.1 | **&minus;1.5** |
+> | **Shattered Nerves** | &minus;0.5 | &minus;1.2 | &minus;1.0 | &minus;2.2 | **&minus;1.2** |
+> | **Night Fears** | +0.2 | &minus;0.1 | +0.9 | &minus;4.8 | **&minus;1.0** |
+>
+> Set against a **Wound** at &minus;0.7, the whole range is one Wound to eleven. Two of them are
+> cross-checks rather than new numbers and both came back to the decimal: *Hexed Blood* is the Hex
+> measured on its own (&minus;3.5), and *Compelled Step* is one Compulsion (&minus;1.6). The
+> instrument agrees with itself.
+>
+> **Bad Leg is the most expensive thing measured in this game, and it is the shape that is
+> interesting.** Almost free against three spears and &minus;21.1 against archers &mdash; because
+> the archer fight is about closing, and a leg is what closes. Nothing else in this document has a
+> spread that wide, and it is the mirror of *Confusion*'s +29.7 in the same cell for the same
+> reason. **Tempo is worth more than cards, and it is worth most to whoever is behind.**
+>
+> **[FOUND BY MEASURING] And it caught a dropped clause.** ideas.md writes *all Move values
+> &minus;1 (**minimum 1**)*. Built without that parenthesis, folded into the reduction Frozen
+> already uses &mdash; which floors at 0, because Frozen must be able to stop you &mdash; a bad leg
+> measured **&minus;25.4**, and **&minus;38.5** against archers, taking them from 40.0% to
+> **1.5%**. The cause was not that &minus;1 is harsh: the starter deck's commonest printed Move
+> **is** 1, so a floor of zero deleted half the hero's movement instead of slowing it. A bad leg
+> slows you; a frozen leg stops you, and they are two subtractions with two floors.
+>
+> **Hollow Eyes has a number from the other instrument.** Two Doubt take the **shutout** rate
+> &mdash; the share of an approach's calls with no card that can answer them &mdash; from 33.5% to
+> **59.7%** (skill-rules.md §1). A fight simulator cannot see the skill deck at all, which is why
+> that instrument exists.
+>
+> **Four have no number, each for a stated reason.** *The Eager Hand* strikes your allies and the
+> simulator models **one hero**, so it would resolve as a free extra Strike and measure as a
+> *benefit* &mdash; worse than no number; what would fill it is a party. *Lost Eye* costs range and
+> the published hero carries a sword, so there is no range to lose; what would fill it is a ranged
+> career. *Shaken Faith* costs a spell slot, which a fight simulator has no model of. And *Lost
+> Fingers* and *Scarred Face* are prose, so there is nothing to dial.
+
+> **[OPEN]** Whether one Maiming is too coarse. Five of the fourteen injuries are Maimings, because
+> the examples were all written as what a sword does to a body, and the dial if play wants more is a
+> Maiming/Blinding split with a second ritual behind it. Not a question the arithmetic can answer.
+
+> **[OPEN]** Taking a **permanent injury instead of death**, once per character or per level. It is
+> the one piece of this that changes what a death means, which makes it a table's decision rather
+> than a rule's.
 
 ### After combat
 

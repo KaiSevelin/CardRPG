@@ -1,0 +1,16 @@
+{
+  "_id": "LbRx2XG5dpQSPEE5",
+  "_key": "!items!LbRx2XG5dpQSPEE5",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Scarred Face",
+  "type": "injury",
+  "system": {
+    "category": "maiming",
+    "description": "<p>The first thing anyone learns about you, before you have said a word. Sometimes that is the whole negotiation.</p>",
+    "text": "Disadvantage on Presence with strangers. Advantage when you mean to frighten them."
+  }
+}

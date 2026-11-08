@@ -1,0 +1,21 @@
+{
+  "_id": "Pzr3ZeEOqp4tC4C8",
+  "_key": "!items!Pzr3ZeEOqp4tC4C8",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Lost Eye",
+  "type": "injury",
+  "system": {
+    "category": "maiming",
+    "description": "<p>Depth is a thing you had and now estimate. The bow still draws; the arrow lands where you guessed.</p>",
+    "bonus": {
+      "verb": "strike",
+      "range": -2,
+      "requiresTag": "ranged"
+    },
+    "text": "Range &minus;2 with a ranged weapon. Disadvantage on Wits checks that need both eyes."
+  }
+}

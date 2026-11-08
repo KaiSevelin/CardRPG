@@ -1,0 +1,19 @@
+{
+  "_id": "z4jMvCF5wGl9LpOC",
+  "_key": "!items!z4jMvCF5wGl9LpOC",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Rotted",
+  "type": "injury",
+  "system": {
+    "category": "corruption",
+    "description": "<p>Afflicted ends when you are under three Taint (core-rules 8). This does not end.</p>",
+    "grants": {
+      "health": -2
+    },
+    "text": "Maximum Health &minus;2. A cure does nothing; the rot is what you are made of now."
+  }
+}

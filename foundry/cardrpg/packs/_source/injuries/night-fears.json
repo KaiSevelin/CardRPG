@@ -1,0 +1,20 @@
+{
+  "_id": "jCC5QfC3T3Q33WLQ",
+  "_key": "!items!jCC5QfC3T3Q33WLQ",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Night Fears",
+  "type": "injury",
+  "system": {
+    "category": "breaking",
+    "intruder": {
+      "kind": "fear",
+      "amount": 1
+    },
+    "description": "<p>It comes up when it comes up, and you are one square further from whatever you were about to do.</p>",
+    "text": "A Fear card is in your action deck, and no rest takes it out."
+  }
+}

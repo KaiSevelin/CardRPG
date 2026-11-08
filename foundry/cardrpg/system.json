@@ -44,6 +44,11 @@
           "description"
         ]
       },
+      "injury": {
+        "htmlFields": [
+          "description"
+        ]
+      },
       "spell": {
         "htmlFields": [
           "description"
@@ -140,6 +145,18 @@
       }
     },
     {
+      "name": "injuries",
+      "label": "Injuries",
+      "path": "packs/injuries",
+      "type": "Item",
+      "system": "cardrpg",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "TRUSTED": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
       "name": "signatures",
       "label": "Signatures",
       "path": "packs/signatures",
@@ -175,6 +192,7 @@
         "items",
         "features",
         "spells",
+        "injuries",
         "signatures",
         "decks"
       ]

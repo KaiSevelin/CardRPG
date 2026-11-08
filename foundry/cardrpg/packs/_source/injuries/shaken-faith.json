@@ -1,0 +1,19 @@
+{
+  "_id": "yyDGCHsbqaF0leSM",
+  "_key": "!items!yyDGCHsbqaF0leSM",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Shaken Faith",
+  "type": "injury",
+  "system": {
+    "category": "breaking",
+    "description": "<p>The formula is intact and the conviction is not, and only one of those is the part that casts.</p>",
+    "grants": {
+      "spellSlots": -1
+    },
+    "text": "One spell slot fewer. What you knew is still written down."
+  }
+}

@@ -10,16 +10,29 @@
  * pulled out of a resolver: a data model cannot be imported outside Foundry, so arithmetic left
  * inside one can only ever be *read* by the validator and never *asked*. This one is asked.
  *
- * The rule it encodes is one sentence and worth keeping in one place: **a feature is simply true,
- * an item has to be equipped.** That is what makes a ring granting a spell slot something you can
- * take off (equipment.md 9.2), and what makes a looted amulet stop working when it comes off the
- * thing you looted it from.
+ * The rule it encodes is one sentence and worth keeping in one place: **what you are is simply
+ * true, an item has to be equipped.** It used to read *a feature is simply true*, and an injury is
+ * the thing that made the wider word the right one -- there is nothing to equip and nothing to
+ * prepare, and *Lost hand* grants its -1 carry by the same law a feature grants its +4 Health.
+ *
+ * The other half is what makes a ring granting a spell slot something you can take off
+ * (equipment.md 9.2), and what makes a looted amulet stop working when it comes off the thing you
+ * looted it from.
  */
+
+/**
+ * The slate kinds that are **simply true**: nothing to equip, nothing to prepare.
+ *
+ * A set rather than two comparisons, because this file has one job and the list of kinds that do
+ * not need equipping is the whole of it. The same shape as the DEAD set in combat_sim.py and the
+ * intruder table in decks.mjs, and for the same reason: a fourth kind should be a word here.
+ */
+const STANDING = new Set(["feature", "injury"]);
 
 /** Does this slate's grant count right now? */
 export function slateCounts(slate) {
   if (!slate) return false;
-  if (slate.type === "feature") return true;
+  if (STANDING.has(slate.type)) return true;
   /*
    * **A spell grants nothing standing**, and that is the whole of it now.
    *
