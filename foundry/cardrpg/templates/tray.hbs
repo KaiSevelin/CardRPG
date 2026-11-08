@@ -120,10 +120,14 @@
           {{!-- ONE style attribute. These were two, and a duplicate attribute is not merged by a
                 browser -- the first wins and the rest are dropped -- so every stacked card that
                 HAD art silently lost its --cr-depth and stacked at zero offset. --}}
-          <div class="cr-card cr-card--spread cr-card--stacked cr-card--takeable{{#if this.action}} cr-card--base{{/if}}{{#if this.disabled}} cr-card--disabled{{/if}}{{#if this.flipped}} cr-card--back{{/if}}"
+          {{!-- A fixed card is a condition: it has no control at all, because it is not a choice.
+                Dropping `cr-card--takeable` and the unstack action is what says so -- a
+                tooltip saying "you cannot remove this" beside a button that removes it would be
+                the sheet arguing with itself. --}}
+          <div class="cr-card cr-card--spread cr-card--stacked{{#unless this.fixed}} cr-card--takeable{{/unless}}{{#if this.condition}} cr-card--condition{{/if}}{{#if this.assisted}} cr-card--assisted{{/if}}{{#if this.action}} cr-card--base{{/if}}{{#if this.disabled}} cr-card--disabled{{/if}}{{#if this.flipped}} cr-card--back{{/if}}"
                style="--cr-depth: {{@index}}{{#if this.art}}; --cr-art: url('{{this.art}}'){{/if}}"
                data-group="{{this.group}}" data-tooltip="{{this.tip}}"
-               role="button" tabindex="0" data-action="unstack" data-half="{{../half}}"
+               {{#unless this.fixed}}role="button" tabindex="0" data-action="unstack" data-half="{{../half}}"{{/unless}}
                {{#if this.slate}}data-slate-id="{{this.id}}"{{/if}}>
             <div class="cr-card__name">
               {{#if this.icon}}{{crIcon this.icon}}{{/if}}
@@ -134,6 +138,13 @@
                 <button type="button" class="cr-card__half" data-action="moveHalf"
                         data-slate-id="{{this.id}}"
                         data-tooltip="Move it to the {{this.moveTo}} stack">{{this.moveArrow}}</button>
+              {{/if}}
+              {{!-- Only what the assist offered. A spent feature has no cross: it is a record of
+                    what was used, and un-spending it is not what a cross should mean. --}}
+              {{#if this.waveId}}
+                <button type="button" class="cr-card__wave" data-action="wave"
+                        data-wave-id="{{this.waveId}}"
+                        data-tooltip="Put here for you. Click to leave it out of this action.">&#10005;</button>
               {{/if}}
               {{#if this.flippable}}
                 <button type="button" class="cr-card__flip" data-action="flipCard" data-card-id="{{this.id}}"
@@ -408,6 +419,14 @@
           {{#if this.flippable}}
             <button type="button" class="cr-card__flip" data-action="flipCard" data-card-id="{{this.id}}"
                     data-tooltip="Turn it over for value, weight and type">&#8634;</button>
+          {{/if}}
+          {{!-- The one this character reaches for. A toggle, because the second useful gesture
+                after "this one from now on" is "actually, ask me" -- and a player holding two
+                swords and preferring neither should be asked. --}}
+          {{#if this.defaultKind}}
+            <button type="button" class="cr-card__default{{#if this.isDefault}} cr-card__default--on{{/if}}"
+                    data-action="setDefault" data-slate-id="{{this.id}}"
+                    data-tooltip="{{#if this.isDefault}}Your default {{this.defaultKind}}: it goes into the stack by itself. Click to stop.{{else}}Make it your default {{this.defaultKind}}, so staging the action brings it along.{{/if}}">&#9733;</button>
           {{/if}}
         </div>
 

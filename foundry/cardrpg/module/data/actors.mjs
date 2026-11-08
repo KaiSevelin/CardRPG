@@ -221,6 +221,27 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
 
       // The Cards documents this character plays from. Copies of an actor share these ids, which is
       // how NPCs of one type come to share a deck -- see npc below.
+      /**
+       * **The weapon and the formula this character reaches for without being asked.**
+       *
+       * Two ids, at most one of each, and the thing they are for is a tray that does not have to
+       * ask: staging a Strike should put a weapon in the stack and staging a Cast should put a
+       * formula there, without a second click whose answer is the same every turn of the game.
+       *
+       * **It is a preference and not a rule**, which is the whole of why it lives here rather than
+       * anywhere the engine reads. `resolveAttack` still takes the item it is handed and `itemFor`
+       * still works out what can serve a verb; nothing downstream knows this field exists. A
+       * default that silently changed what an action *did* would be a rule written in a settings
+       * panel, which is the worst place to keep one.
+       *
+       * Blank is a real answer. A character holding two swords and preferring neither should be
+       * asked, because for them it is a decision every turn rather than a formality.
+       */
+      defaults: new fields.SchemaField({
+        weapon: new fields.StringField({ required: false, blank: true, initial: "" }),
+        spell: new fields.StringField({ required: false, blank: true, initial: "" })
+      }),
+
       decks: new fields.SchemaField({
         action: new fields.DocumentIdField(),
         actionHand: new fields.DocumentIdField(),
@@ -523,6 +544,30 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
   /** True while a condition costs you your reactions (Stunned, Unconscious). */
   get noReactions() {
     return this.activeConditions.some(c => CARDRPG.conditions[c.key]?.blocksReactions);
+  }
+
+  /**
+   * **The default for a verb, resolved rather than trusted.**
+   *
+   * An id outlives the thing it names: a default weapon can be dropped, sold, unequipped, slung
+   * over a back or corroded past use, and a stale id would put a ghost in the stack. So this asks
+   * the actor every time and answers `null` the moment the answer stops being true.
+   *
+   * **A spell has to be prepared and an item has to be equipped**, which are two laws that already
+   * exist rather than new ones (core-rules 4; `payToCast`). Neither is softened for being a
+   * favourite. And it has to be able to do the thing -- a shield is equipped and strikes with
+   * nothing -- so the verb is checked against what the slate actually offers.
+   */
+  defaultFor(verb) {
+    const id = verb === "cast" ? this.defaults?.spell : this.defaults?.weapon;
+    if (!id) return null;
+    const slate = this.parent?.items?.get(id);
+    if (!slate) return null;
+    if (slate.type === "spell") return slate.system.prepared ? slate : null;
+    if (slate.type !== "item") return null;
+    if (!slate.system.equipped) return null;
+    if (CARDRPG.slots[slate.system.equippedSlot]?.stows) return null;
+    return slate.system.availableVerbs.includes(verb) ? slate : null;
   }
 
   /** Reactions switched off right now (core-rules 3). One answer for both models, above. */

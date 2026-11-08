@@ -179,6 +179,63 @@ highest value first.
 
 A passive feature is in no stack and cannot be clicked: it is simply true.
 
+### 3.5.0 The assist: the stack knows what the action is  **[BUILT 2026-11-08]**
+
+A stack already filled itself in part: gear is in it because it is in your hand, and a feature
+because it has been spent. Neither of those knows what you are about to do. **Once a half is
+staged, the stack does** — and three things follow, which are the three a player would otherwise
+click every turn with the same answer.
+
+| What arrives | Why | Can it be taken out? |
+|---|---|---|
+| the **default formula**, on a Cast | a prepared spell is in a spell slot, which is not a stack, so a Cast had nothing in front of it | **yes**, the cross beside its name |
+| **ready features** that could serve this half | a feature you could use and did not is the commonest thing to forget | **yes** |
+| **conditions that bear on this half** | the one about to stop the action is the thing you most need to see before clicking | **no** |
+
+**Nothing arrives until a half is staged.** A stack standing with no action above it is a state
+the play area supports on purpose, because gear is equipped long before a hand is dealt, and
+guessing then would fill both stacks before the turn begins.
+
+**The default weapon is not in that table, and that is not an inconsistency.** An equipped weapon
+is already in the stack, because it is in your hand. What a default weapon does instead is settle
+**which of two** — and only as a tie-break, after the half you placed a slate on. A player holding
+two swords has the same ambiguity every turn and the default is their standing answer to it; a
+default that outranked a click would be a settings panel overruling a decision just made, so a
+default sword never takes a Strike away from the axe you deliberately put in the primary.
+
+Set either with the **star** on a slate in the panel. It is a toggle, because the second useful
+gesture after *this one from now on* is *actually, ask me* — and a character with two swords and no
+preference should be asked, because for them it is a decision rather than a formality.
+
+#### Why a condition has no cross
+
+This is the only interesting line in the feature, and it is worth stating as a rule rather than as
+a layout choice.
+
+> **A feature is yours; a condition is something done to you.**
+
+So a feature is **offered** and can be waved away — an assist you cannot refuse is a helper that
+plays the turn for you. A condition carries a duration and ends when the duration does
+(core-rules §7), so it is **shown**: no cross, no arrow, and the stack does not make it clickable
+at all. The one thing this panel must never offer is declining the Dazed you are carrying, and a
+tooltip saying *this cannot be removed* beside a button that removes it would be the tray arguing
+with itself.
+
+A condition sits last in the stack, inset and without a rim, so it reads as the **circumstances**
+of the action rather than part of it. An offer is dashed, because dashed is this interface's word
+for provisional.
+
+**Relevance is read off the condition's own config flags**, never from a list of names — the same
+arrangement the tray already uses for Dazed, Stunned and Halted, and for the same reason: a flag
+nothing reads is a flag that is not true. A condition bears on a half when it blocks one of the
+half's icons (Grappled on a Move, Silenced on a Cast), carries a bonus for one of its verbs,
+changes a Move the half makes, takes the turn or the secondary, or changes the fate draw at all —
+which is how Blessed and Cursed turn up, being the easiest things on a sheet to forget.
+
+**[OPEN]** Whether the offers should be ranked rather than listed. Four ready features on one
+Strike is four cards in a stack, and at some point a list stops being an assist. Waiting for a
+character with four.
+
 ### 3.5.1 Disabled for a while
 
 Both items and features can be **disabled for a number of turns** — `drained`, with `drainedFor`

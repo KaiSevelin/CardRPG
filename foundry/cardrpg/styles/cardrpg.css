@@ -197,6 +197,58 @@
 }
 
 /*
+ * **The assist: what the tray put in a stack without being asked.**
+ *
+ * Two states and they mean opposite things, so they must not look alike.
+ *
+ * `--assisted` is an **offer**: a formula or a ready feature that could serve the action staged
+ * above it. A dashed edge, because dashed is the vocabulary for *provisional* and the card can be
+ * waved out with the cross beside its name.
+ *
+ * `--condition` is a **circumstance**: something done to you, with a duration, that ends when the
+ * duration does. It has no control of any kind -- no cross, no arrow, and the stack does not even
+ * make it clickable -- because the one thing this panel must never offer is declining the Dazed
+ * you are carrying. So it reads as part of the table rather than part of the hand: no rim, inset
+ * slightly, and unlifted.
+ */
+.cardrpg .cr-card--assisted {
+  border-style: dashed;
+}
+.cardrpg .cr-card--condition {
+  border-color: var(--cardrpg-rule);
+  background-color: var(--cardrpg-scrim);
+  box-shadow: none;
+  /* Narrower than the cards it sits under, so the stack reads as action over circumstance. */
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+  cursor: default;
+}
+.cardrpg .cr-card--condition .cr-card__name {
+  color: var(--cardrpg-dim);
+}
+
+/* The cross that waves an offer away, and the star that makes a slate the default. */
+.cardrpg .cr-card__wave,
+.cardrpg .cr-card__default {
+  margin-left: auto;
+  padding: 0 0.25em;
+  border: 0;
+  background: none;
+  color: var(--cardrpg-dim);
+  font-size: 0.85em;
+  line-height: 1;
+  cursor: pointer;
+}
+.cardrpg .cr-card__wave:hover,
+.cardrpg .cr-card__default:hover {
+  color: var(--cardrpg-ink);
+}
+/* Set, and visibly so at panel size: the star is the only thing on the card that is not ink. */
+.cardrpg .cr-card__default--on {
+  color: var(--cardrpg-group-7);
+}
+
+/*
  * **A card only one creature can draw.**
  *
  * **Not the rim**, which means a bonus group and nothing else, system-wide. A second meaning on

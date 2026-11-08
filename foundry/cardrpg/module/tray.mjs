@@ -47,6 +47,24 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     /** Staged halves, in click order. @type {{cardId: string, half: string}[]} */
     this.staged = [];
     /**
+     * **What the player has waved out of the assist.**
+     *
+     * The assist puts things in a stack so nobody has to click what they would always click, and
+     * a helper you cannot refuse is worse than no helper -- so anything it *offers* can be taken
+     * back out, and this remembers which. Ids rather than a count, because which one was refused
+     * is the whole of the information.
+     *
+     * **Conditions are never in it, and cannot be.** A condition is not a choice: it is something
+     * done to you, with a duration, that ends when the duration does (core-rules 7). Letting one
+     * be waved out of a stack would be letting a player decline the Dazed they are carrying --
+     * not a UI preference but a rule quietly unmade in the one place a player looks.
+     *
+     * It clears when the play area does, because it is about one staged action and not about the
+     * character.
+     * @type {Set<string>}
+     */
+    this.waved = new Set();
+    /**
      * Which half each played item is serving: "primary" or "secondary".
      *
      * A card says the verb and the item says the value, so a longsword that both strikes and
@@ -91,6 +109,8 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     window: { frame: false, positioned: false },
     actions: {
       stage: CardRPGTray.#onStage,
+      wave: CardRPGTray.#onWave,
+      setDefault: CardRPGTray.#onSetDefault,
       clear: CardRPGTray.#onClear,
       play: CardRPGTray.#onPlay,
       breathe: CardRPGTray.#onBreathe,
@@ -384,12 +404,22 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       const base = entry ? this.#actionCard(entry, half, blocked, dazed) : null;
       if (base) cards.push(base);
 
+      const verbs = this.#verbsOf(half);
+
       for (const slate of this.#assigned(half)) {
         const item = slate.type === "item";
+        const spell = slate.type === "spell";
         // Only a slate with a half to choose can be moved; the rest serve whatever needs them.
         const movable = item && slate.system.availableVerbs.length > 1;
+        /*
+         * **An offered feature can be waved away and a spent one cannot**, because a spent one is
+         * a record rather than a suggestion: it is in the stack to say the ability was used, and a
+         * remove button on that would offer to un-spend it.
+         */
+        const offered = (slate.type === "feature" && !slate.system.drained) || spell;
         cards.push(Object.assign(
-          item ? this.#itemCard(slate, true) : this.#featureCard(slate),
+          item ? this.#itemCard(slate, true)
+            : spell ? this.#spellCard(slate) : this.#featureCard(slate),
           {
             slate: true,
             // A feature is in a stack only because it has been used, so fading it says nothing.
@@ -397,11 +427,45 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
             // An arrow that points, not one that swaps: the rules already spend ⇄ on Ready.
             moveTo: movable ? (half === "primary" ? "secondary" : "primary") : null,
             moveArrow: half === "primary" ? "→" : "←",
+            ...(offered ? { waveId: slate.id, assisted: true } : {}),
             tip: slate.system.drained && item
               ? `Disabled until it recharges: ${slate.system.rechargeLabel ?? "—"}. `
                 + "Click to put it back in the Items deck."
-              : `In the ${half} stack. Click to put it back in its deck.`
+              : offered
+                ? "Put here for this action because it can serve it. Click the cross to leave "
+                  + "it out."
+                : `In the ${half} stack. Click to put it back in its deck.`
           }));
+      }
+
+      /*
+       * **And the conditions that bear on this half, which have no cross.**
+       *
+       * Last in the stack, so they read as the circumstances of the action rather than part of it,
+       * and `fixed` so the template gives them no control at all. A condition is not a choice --
+       * it has a duration and ends when the duration does (core-rules 7) -- and the one thing this
+       * panel must not offer is declining the Dazed you are carrying.
+       */
+      for (const c of this.#conditionsFor(half, verbs)) {
+        const rule = CARDRPG.conditions[c.key] ?? {};
+        const blocked = (rule.blocks ?? []).some(icon =>
+          verbs.some(v => CARDRPG.verbs[v]?.icon === icon));
+        cards.push({
+          id: `condition.${c.key}`,
+          name: game.i18n.localize(rule.label ?? c.key),
+          icon: rule.icon,
+          slate: true,
+          fixed: true,
+          condition: true,
+          // The one that stops the action reads as stopped, which is what a player needs first.
+          disabled: blocked,
+          lines: [blocked ? "This action cannot be played while it lasts." : ""].filter(Boolean),
+          note: c.duration === null || c.duration === undefined
+            ? "No duration"
+            : `${c.duration} round(s)${c.value ? ` · ${c.value}` : ""}`,
+          tip: "A condition, not a choice: it is here because it changes this action, and it "
+            + "cannot be taken out."
+        });
       }
 
       // Where each card sits before the carousel turns anything, so clicking a name can turn to it.
@@ -423,6 +487,84 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   /**
+   * **What the half staged here is actually trying to do.**
+   *
+   * A half is a list of steps and each step names a verb, so one half can want two things --
+   * *Lunge* is a Move and then a Strike. All of them come back, because the assist has to answer
+   * for every one: a card that moves and strikes still wants the weapon.
+   *
+   * Empty when nothing is staged, which is the common case before a hand is dealt, and the reason
+   * the assist adds nothing then. Gear sitting in a stack with no action above it is a state the
+   * play area already supported on purpose -- *a stack stands without an action card too, because
+   * gear is equipped long before a hand is dealt* -- and guessing at it would fill both stacks
+   * before the turn began.
+   */
+  #verbsOf(half) {
+    const entry = this.staged.find(s => s.half === half);
+    if (!entry) return [];
+    const card = deckOf(this.actor, "actionHand")?.cards.get(entry.cardId);
+    const steps = card?.system?.[half] ?? [];
+    return [...new Set(steps.map(s => s.verb).filter(Boolean))];
+  }
+
+  /**
+   * **The conditions that bear on this half, and no others.**
+   *
+   * *Relevant* has to mean something narrow, or the stack fills with every condition a character
+   * is carrying -- and a stack that shows everything shows nothing. Every test below is read off
+   * a **config flag** rather than a list of keys, which is the arrangement the tray already uses
+   * for Dazed, Stunned and Halted; the note on those says why, and it is this project's commonest
+   * finding: a flag nothing reads is a flag that is not true.
+   *
+   * - `blocks` names **icons**, and a verb carries its icon, so this is the exact test for *the
+   *   thing you are about to click cannot happen*. Grappled blocks `boot-prints`, Silenced blocks
+   *   `magic-swirl`, Disarmed blocks `school-bag`. It is the most worth showing of the seven.
+   * - a **carried bonus** for one of the half's verbs -- a tattoo's `graven`, which is where a
+   *   spell's bonus goes now.
+   * - `halvesMove` or `reducesMove`, when the half moves.
+   * - `blocksTurn`, which takes everything.
+   * - `blocksSecondary`, when this is the secondary.
+   * - `drawsWithDisadvantage`, `grantsAdvantage` and `temporaryFate`, which change the draw on
+   *   any action rather than on a named one. Blessed and Cursed are in the game precisely to be
+   *   remembered at this moment and are the easiest thing on a sheet to forget.
+   */
+  #conditionsFor(half, verbs) {
+    const icons = new Set(verbs.map(v => CARDRPG.verbs[v]?.icon).filter(Boolean));
+    const moves = verbs.includes("move");
+    return (this.actor.system.activeConditions ?? []).filter(c => {
+      const rule = CARDRPG.conditions[c.key];
+      if (!rule) return false;
+      if ((rule.blocks ?? []).some(icon => icons.has(icon))) return true;
+      if (c.bonus?.value && verbs.includes(c.bonus.verb)) return true;
+      if (moves && (rule.halvesMove || rule.reducesMove)) return true;
+      if (rule.blocksTurn) return true;
+      if (rule.blocksSecondary && half === "secondary") return true;
+      return !!(rule.drawsWithDisadvantage || rule.grantsAdvantage || rule.temporaryFate);
+    });
+  }
+
+  /**
+   * **The features that could be used on this half right now.**
+   *
+   * Ready rather than drained, and either unfussy about the verb or asking for one this half has.
+   * A feature already used is in the stack for a different reason -- it shows what was spent --
+   * and `#assigned` keeps that case.
+   *
+   * **Offered, not imposed**, and that is the one line between these and the conditions above: a
+   * feature is something you choose to use, so an assist that used it for you would be playing the
+   * turn. The line is between *yours* and *done to you*, and it is worth being able to say in one
+   * sentence, because it is the only thing deciding which of these has a remove button.
+   */
+  #featuresFor(verbs) {
+    return this.actor.items.filter(f => {
+      if (f.type !== "feature" || !f.system.ready) return false;
+      if (this.waved.has(f.id)) return false;
+      const verb = f.system.bonus?.verb;
+      return !verb || verbs.includes(verb);
+    });
+  }
+
+  /**
    * The slates assigned to a half.
    *
    * An item that could modify more than one action sits in the stack it was put in; one with a
@@ -438,7 +580,33 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     const features = half === "primary"
       ? this.actor.items.filter(f => f.type === "feature" && f.system.isActive && f.system.drained)
       : [];
-    return [...items, ...features];
+
+    /*
+     * **The assist**, which adds nothing until a half is staged.
+     *
+     * The two above are the stack as it stood: gear is in it because it is in your hand, and a
+     * feature is in it because it has been spent. Neither knows what you are about to do. Once a
+     * card is staged the stack does know, and these three are the things a player would otherwise
+     * click every single turn with the same answer.
+     *
+     * The **default formula** is added and the default weapon is not, which looks inconsistent and
+     * is not: an equipped weapon is already here, because it is in your hand. A prepared spell is
+     * in a spell slot, which is not a stack, so a Cast had nothing in front of it. What the
+     * default weapon does instead is settle **which** of two, over in `#itemFor`.
+     */
+    const verbs = this.#verbsOf(half);
+    if (!verbs.length) return [...items, ...features];
+
+    const spell = verbs.includes("cast") ? this.actor.system.defaultFor("cast") : null;
+    const offered = this.#featuresFor(verbs).filter(f => !features.includes(f));
+
+    return [
+      ...items,
+      ...(spell && !this.waved.has(spell.id) ? [spell] : []),
+      ...features,
+      /* Only the primary carries the offers, or a two-half turn shows each one twice. */
+      ...(half === "primary" ? offered : [])
+    ];
   }
 
   /** Which stack a played item is shown in. Resolution uses #itemFor, which is subtler than this. */
@@ -499,6 +667,8 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       id: slate.id,
       name: slate.name,
       art: artOf(slate),
+      isDefault: this.#isDefault(slate),
+      defaultKind: "spell",
       icon: CARDRPG.verbs.cast?.icon ?? null,
       lines: lines.length ? lines : ["\u2014"],
       /* The book is not clickable: you change what is prepared between fights, never during one. */
@@ -513,6 +683,12 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   /** One item, as a card. `played` means equipped. */
+  /** Is this slate the one the assist reaches for? Read by both panels and both stacks. */
+  #isDefault(slate) {
+    const defaults = this.actor.system.defaults ?? {};
+    return !!slate?.id && (slate.id === defaults.weapon || slate.id === defaults.spell);
+  }
+
   #itemCard(i, played) {
     const verbs = Object.entries(i.system.verbs ?? {}).filter(([, l]) => l.value !== null || l.text);
     // Only a slate that could modify more than one action has a half to choose.
@@ -530,6 +706,9 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     return {
       id: i.id,
       name: i.name,
+      /* The one the assist reaches for, so the panel says which without being asked. */
+      isDefault: this.#isDefault(i),
+      defaultKind: "weapon",
       art: artOf(i),
       group: i.system.group || "",
       flippable: true,
@@ -1141,17 +1320,30 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
    * nothing to choose. Anything else in play is a last resort. So a longsword on the primary and a
    * shield on the secondary strike and defend respectively, with nothing to set beyond the clicks
    * that put them there.
+   *
+   * **And the default breaks the tie, which is the only place it is allowed to.** A player holding
+   * two swords has the same ambiguity every turn, and the preference is their standing answer to
+   * it -- so it is a **tie-break and not a preference order**: it sorts within equal rank, after
+   * the half a slate was placed on and after the value `#itemsFor` already ordered by.
+   *
+   * The distinction matters. Moving a weapon into a stack is a decision a player just made, and a
+   * default that outranked it would be a settings panel overruling a click -- so a default sword
+   * never takes a Strike away from the axe you deliberately put in the primary. It only answers
+   * the question nobody asked.
    */
   #itemFor(verb, half = "primary", requires = null) {
     const candidates = this.#itemsFor(verb, requires);
     if (candidates.length < 2) return candidates[0] ?? null;
     const choosy = i => i.system.availableVerbs.length > 1;
+    const preferred = this.actor.system.defaultFor?.(verb) ?? null;
     const rank = i => {
       const role = this.roles.get(i.id) ?? (choosy(i) ? "primary" : "any");
       return role === half ? 0 : role === "any" ? 1 : 2;
     };
     // #itemsFor already orders by value, and sort is stable, so equal ranks keep the better item.
-    return [...candidates].sort((a, b) => rank(a) - rank(b))[0];
+    return [...candidates]
+      .sort((a, b) => rank(a) - rank(b)
+        || (b.id === preferred?.id) - (a.id === preferred?.id))[0];
   }
 
   /**
@@ -1175,11 +1367,48 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   /*  Actions                                     */
   /* -------------------------------------------- */
 
+  /**
+   * Take one of the assist's offers back out of this staged action.
+   *
+   * A toggle rather than a one-way door, so a mis-click costs a click -- and it is the whole of
+   * what makes the assist acceptable. A helper that put things in a stack and would not take them
+   * out again is a helper that plays the turn for you.
+   */
+  static async #onWave(event, target) {
+    const { waveId } = target.dataset;
+    if (!waveId) return;
+    if (this.waved.has(waveId)) this.waved.delete(waveId);
+    else this.waved.add(waveId);
+    this.render();
+  }
+
+  /**
+   * **Set, or unset, the weapon or formula this character reaches for.**
+   *
+   * A toggle, because the useful gesture is *this one from now on* and the second useful gesture
+   * is *actually, ask me*. Clicking the same slate twice is the second one, and a character with
+   * two swords and no preference should be asked rather than quietly handed the first.
+   *
+   * The key comes from the slate's own kind rather than from the markup, so a formula can never
+   * land in the weapon field: that would be a stored id `defaultFor` has to refuse later, which
+   * is the shape of every stale-reference bug.
+   */
+  static async #onSetDefault(event, target) {
+    const slate = this.actor.items.get(target.dataset.slateId);
+    if (!slate) return;
+    const key = slate.type === "spell" ? "spell" : "weapon";
+    const now = this.actor.system.defaults?.[key] ?? "";
+    await this.actor.update({ [`system.defaults.${key}`]: now === slate.id ? "" : slate.id });
+    this.render();
+  }
+
   static async #onStage(event, target) {
     const { cardId, half } = target.dataset;
     const already = this.staged.findIndex(s => s.cardId === cardId && s.half === half);
     if (already >= 0) {
       this.staged.splice(already, 1);
+      /* Unstaging the last half ends the action, and the refusals were about that action. */
+      if (!this.staged.length) this.waved.clear();
       return this.render();
     }
     if (this.staged.some(s => s.half === half)) {
@@ -1557,10 +1786,24 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   /** Empty the play area: both action cards back to hand, every slate back to its deck. */
   static async #onClear() {
     for (const half of ["primary", "secondary"]) {
-      for (const slate of this.#assigned(half)) await this.#takeOut(slate);
+      /*
+       * **Only what the player actually put there.**
+       *
+       * `#assigned` now also returns what the assist offered -- a prepared formula and the ready
+       * features that could serve this half -- and those were never *placed*, so there is nothing
+       * to put back. `#takeOut` would have unequipped them: it writes `equipped: false` on
+       * anything that is not a feature, so Clear would have quietly unprepared the formula the
+       * assist had merely shown you.
+       *
+       * The two that stay are the two that are a player's doing: an item is in the stack because
+       * they equipped it, and a **drained** feature because they used it, which is the undo this
+       * was written for.
+       */
+      const placed = this.#assigned(half).filter(s =>
+        s.type === "item" || (s.type === "feature" && s.system.drained));
+      for (const slate of placed) await this.#takeOut(slate);
     }
-    this.staged = [];
-    this.tops = { primary: 0, secondary: 0 };
+    this.#resetPlay();
     this.render();
   }
 
@@ -1587,8 +1830,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
           + `<em>${burned.map(c => cardName(c)).join(", ")}</em> — out until a rest.</p></div>`
       });
     }
-    this.staged = [];
-    this.tops = { primary: 0, secondary: 0 };
+    this.#resetPlay();
     this.render();
   }
 
@@ -2119,6 +2361,19 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
    *
    * It also cancels the Ready the slate owed -- a slate that is not in play was never readied.
    */
+  /**
+   * **Empty the play area's own state.**
+   *
+   * Three copies of two lines, in Clear, in Play and in Catch Breath -- and the assist added a
+   * third thing to forget, which is exactly when a copied pair becomes a method. A refusal that
+   * outlived the action it was about would quietly leave a feature out of the next turn.
+   */
+  #resetPlay() {
+    this.staged = [];
+    this.tops = { primary: 0, secondary: 0 };
+    this.waved.clear();
+  }
+
   async #takeOut(slate) {
     await slate.update(slate.type === "feature"
       ? { "system.drained": false, "system.drainedFor": null }
@@ -2274,8 +2529,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         `Not enough in the discard to catch breath: it recovers `
         + `${CARDRPG.defaults.breathRecovery} cards, all or nothing.`);
     }
-    this.staged = [];
-    this.tops = { primary: 0, secondary: 0 };
+    this.#resetPlay();
     this.render();
   }
 

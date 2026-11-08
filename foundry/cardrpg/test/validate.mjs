@@ -8603,6 +8603,136 @@ check("because Overloaded already does it",
     .test(decksSource) ? "yes" : "no", "yes");
 
 /* -------------------------------------------- */
+/*  The assist: what the tray fills in          */
+/* -------------------------------------------- */
+
+/*
+ * **A stack that knows what the action is, so nobody clicks the same answer every turn.**
+ *
+ * The play area was already a derived list -- gear is in a stack because it is in your hand, and a
+ * feature because it has been spent -- and neither of those knows what you are about to do. Once a
+ * half is staged the stack does know, and three things follow from that.
+ *
+ * The checks here are almost all about **one line**: which of the three a player may take out
+ * again. An offer they cannot refuse is a helper that plays the turn; a condition they *can*
+ * refuse is a rule unmade in the one place a player looks.
+ */
+check("the character remembers a default weapon and formula",
+  /defaults: new fields\.SchemaField\(\{\s*\n\s*weapon:/.test(actorsSource) ? "yes" : "no", "yes");
+check("and at most one of each, because a list would be a rule",
+  (actorsSource.match(/weapon: new fields\.StringField/g) ?? []).length, 1);
+/*
+ * **Resolved rather than trusted**, because an id outlives the thing it names: a default weapon can
+ * be dropped, sold, unequipped or slung over a back, and a stale id would put a ghost in a stack.
+ */
+check("and the default is resolved every time it is asked for",
+  /defaultFor\(verb\) \{[\s\S]{0,600}return slate\.system\.availableVerbs\.includes\(verb\)/
+    .test(actorsSource) ? "yes" : "no", "yes");
+check("and a formula still has to be prepared",
+  /if \(slate\.type === "spell"\) return slate\.system\.prepared \? slate : null;/
+    .test(actorsSource) ? "yes" : "no", "yes");
+check("and an item still has to be equipped and in hand",
+  /if \(!slate\.system\.equipped\) return null;[\s\S]{0,160}\?\.stows\) return null;/
+    .test(actorsSource) ? "yes" : "no", "yes");
+
+/*
+ * **The engine does not know this field exists**, which is the whole of why a preference is safe to
+ * have. `resolveAttack` takes the item it is handed; the default only ever breaks a tie in the
+ * tray, after the half a slate was placed on. A default that outranked a click would be a settings
+ * panel overruling a decision the player just made.
+ */
+check("nothing in the resolver reads a default",
+  /defaultFor|system\.defaults/.test(resolveSource) ? "it does" : "none", "none");
+check("and in the tray it breaks the tie after the half",
+  /rank\(a\) - rank\(b\)\s*\n\s*\|\| \(b\.id === preferred\?\.id\) - \(a\.id === preferred\?\.id\)/
+    .test(traySource) ? "yes" : "no", "yes");
+
+/*
+ * **What the assist adds, and when.** Nothing at all until a half is staged: a stack standing with
+ * no action above it is a state the play area supports on purpose, because gear is equipped long
+ * before a hand is dealt, and guessing then would fill both stacks before the turn began.
+ */
+check("the assist reads the staged half's own verbs",
+  /#verbsOf\(half\) \{[\s\S]{0,300}steps\.map\(s => s\.verb\)/.test(traySource) ? "yes" : "no", "yes");
+check("and adds nothing before a half is staged",
+  /const verbs = this\.#verbsOf\(half\);\s*\n\s*if \(!verbs\.length\) return \[\.\.\.items, \.\.\.features\];/
+    .test(traySource) ? "yes" : "no", "yes");
+check("the formula comes in on a Cast",
+  /verbs\.includes\("cast"\) \? this\.actor\.system\.defaultFor\("cast"\) : null/
+    .test(traySource) ? "yes" : "no", "yes");
+
+/*
+ * **Relevance is read off config flags, never off a list of keys.** The tray already does this for
+ * Dazed, Stunned and Halted and the note on those says why: a flag nothing reads is a flag that is
+ * not true. `blocks` names icons and a verb carries its icon, which makes *the thing you are about
+ * to click cannot happen* an exact test rather than a guess.
+ */
+check("a condition is relevant by flag, not by name",
+  /\(rule\.blocks \?\? \[\]\)\.some\(icon => icons\.has\(icon\)\)/.test(traySource) ? "yes" : "no", "yes");
+/*
+ * Sliced from the **definition**, not the first mention of the name: the first is the call in the
+ * renderer, and a slice starting there spans the condition card as well and reports its label and
+ * icon as relevance flags. The same mistake as a check that greps a whole file for one class.
+ */
+const relevanceBody = traySource.slice(
+  traySource.indexOf("  #conditionsFor(half, verbs) {"),
+  traySource.indexOf("  #featuresFor(verbs) {"));
+check("and the flags it reads",
+  [...new Set([...relevanceBody.matchAll(/rule\.(\w+)/g)].map(m => m[1]))].sort().join(", "),
+  "blocks, blocksSecondary, blocksTurn, drawsWithDisadvantage, grantsAdvantage, halvesMove, "
+  + "reducesMove, temporaryFate");
+check("and no condition is named by key in the assist",
+  /c\.key === "/.test(relevanceBody) ? "one is" : "none", "none");
+
+/*
+ * **The line, and it is the only interesting thing here.** A feature is yours, so the assist offers
+ * it and you may wave it away. A condition is something done to you, with a duration, that ends
+ * when the duration does -- so it has no control of any kind: no cross, no arrow, and the stack
+ * does not even make it clickable. A tooltip saying *this cannot be removed* beside a button that
+ * removes it would be the sheet arguing with itself.
+ */
+check("an offer can be waved away",
+  /static async #onWave\(event, target\)/.test(traySource) ? "yes" : "no", "yes");
+check("and it is a toggle, so a mis-click costs a click",
+  /if \(this\.waved\.has\(waveId\)\) this\.waved\.delete\(waveId\);/.test(traySource)
+    ? "yes" : "no", "yes");
+check("a condition is fixed in the stack",
+  /fixed: true,\s*\n\s*condition: true,/.test(traySource) ? "yes" : "no", "yes");
+check("and the template gives a fixed card no control at all",
+  /\{\{#unless this\.fixed\}\}role="button" tabindex="0" data-action="unstack"/.test(trayTemplate)
+    ? "yes" : "no", "yes");
+check("and no cross either",
+  /\{\{#if this\.waveId\}\}[\s\S]{0,240}data-action="wave"/.test(trayTemplate) ? "yes" : "no", "yes");
+check("and nothing ever puts a condition in the waved set",
+  /waved\.add\(.*condition/i.test(traySource) ? "something does" : "none", "none");
+
+/*
+ * **A spent feature has no cross**, because it is a record rather than a suggestion: it is in the
+ * stack to say the ability was used, and a cross on that would offer to un-spend it.
+ */
+check("only an unspent feature or a formula is an offer",
+  /const offered = \(slate\.type === "feature" && !slate\.system\.drained\) \|\| spell;/
+    .test(traySource) ? "yes" : "no", "yes");
+
+/*
+ * **And Clear only puts back what the player put there.** `#assigned` now also returns the assist's
+ * offers, and `#takeOut` writes `equipped: false` on anything that is not a feature -- so without
+ * this filter, emptying the play area would have quietly unprepared the formula the tray had merely
+ * shown you.
+ */
+check("Clear takes out only what was placed",
+  /s\.type === "item" \|\| \(s\.type === "feature" && s\.system\.drained\)/.test(traySource)
+    ? "yes" : "no", "yes");
+/* Three copies of two lines became one method when the assist added a third thing to forget. */
+check("one routine empties the play area",
+  /#resetPlay\(\) \{/.test(traySource) ? "yes" : "no", "yes");
+check("and every caller uses it",
+  (traySource.match(/this\.#resetPlay\(\);/g) ?? []).length, 3);
+/* Two sites: unstaging the last half, and emptying the play area. Both are the point. */
+check("and a refusal never outlives its action",
+  (traySource.match(/this\.waved\.clear\(\);/g) ?? []).length, 2);
+
+/* -------------------------------------------- */
 /*  Permanent injuries, and the rituals         */
 /* -------------------------------------------- */
 
@@ -12286,7 +12416,7 @@ for (const m of selfSource.matchAll(/(\w+)\.includes\("((?:[^"\\]|\\.)*)"\)/g)) 
 }
 
 /* The pin that keeps the rest of this honest. */
-check("greps over a whole file, resolved", greps.length, 618);
+check("greps over a whole file, resolved", greps.length, 637);
 
 /*
  * **The rule, as one predicate, run over a planted example before it is run over the suite.**
@@ -12341,6 +12471,7 @@ const absentGreps = [
   String.raw`and no longer reads a spell as a source of bonus :: slate\.type === "spell" && slate\.system\.effect`,
   String.raw`and no longer stops dealing at the first dose :: taint\+\+;\s*\n\s*break;`,
   String.raw`and no slate is flagged unusable instead :: quarantined: new fields\.BooleanField`,
+  String.raw`and nothing ever puts a condition in the waved set :: waved\.add\(.*condition`,
   String.raw`and nothing in the content deals an injury directly :: verb: "maiming"[\s\S]{0,120}injury:`,
   String.raw`and reads the change rather than the state :: item\.system\.prepared`,
   String.raw`and the chain is gone :: if \(effect === "taint"\)`,
@@ -12354,6 +12485,7 @@ const absentGreps = [
   String.raw`and the unpatched line is gone :: Object\.create\(Array\.prototype\)`,
   String.raw`nothing builds a fate card by hand any more :: createEmbeddedDocuments\("Card", \[\{\s*name: fateCard`,
   String.raw`nothing draws a twist automatically :: drawTwist\(`,
+  String.raw`nothing in the resolver reads a default :: defaultFor|system\.defaults`,
   String.raw`reaction timer retired from config :: reactionTimer`,
   String.raw`reaction timer retired from settings :: reactionTimer`,
   String.raw`reaction timer retired from the HUD spec :: \*\*Setting: ` + "`" + String.raw`reactionTimer` + "`" + String.raw`\*\*`,
