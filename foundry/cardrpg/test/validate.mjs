@@ -4152,6 +4152,47 @@ for (const [flag, key, getter, what] of BLOCKS) {
       + `\\.some\\(c => CARDRPG\\.conditions\\[c\\.key\\]\\?\\.${flag}\\)`)
       .test(actorsSource) ? "yes" : "no", "yes");
 }
+/*
+ * **And the getter is read by something, which is the link that was actually missing.**
+ *
+ * The three checks above walk flag -> condition -> getter and stop there, and stopping there is
+ * what let this sit: `noTurn` and `noSecondary` both existed, both read their flag correctly, both
+ * passed every check in this block, and **nothing anywhere called either of them**. The tray greyed
+ * the halves out by testing `blocksTurn` on the config entry itself, so the UI looked right while
+ * the rule was unenforced -- a Halted actor resolved a whole turn from a macro without a word.
+ *
+ * A chain checked link by link with the last link missing is the shape of almost every defect this
+ * suite has found. So the chain now runs one step further: somebody outside the model has to ask.
+ */
+const engineSource = resolveSource + traySource;
+for (const [, , getter] of BLOCKS) {
+  check(`and something outside the model reads ${getter}`,
+    (engineSource.match(new RegExp(`\\b${getter}\\b`, "g")) ?? []).length >= 1 ? "yes" : "no",
+    "yes");
+}
+/*
+ * **One routine answers for all three**, for the reason every shared helper in this project exists:
+ * three call sites each testing their own getter is three places for the fourth condition to be
+ * forgotten. `refusesAction` warns with the condition's own name, read off the flag rather than
+ * hard-coded, so Unconscious stopping a turn does not report itself as Halted.
+ */
+check("one routine refuses an action for all of them",
+  /export function refusesAction\(actor, \{ half = null, what = "that" \} = \{\}\)/
+    .test(resolveSource) ? "yes" : "no", "yes");
+/* Anchored to the indent, so the doc comment's own worked example above the function does not
+ * count as a sixth call site. A grep for a call that matches the prose describing the call is a
+ * mistake this suite has made twice -- the other was `backOf("...")` quoted in a comment. */
+check("and it is the engine that refuses, not only the tray",
+  (resolveSource.match(/^  if \(refusesAction\(actor, /gm) ?? []).length, 5);
+/*
+ * **The cast is guarded before its price is paid.** `payToCast` charges Health and a slot, and the
+ * effect resolves two lines later; a refusal that waited for `#resolveStep` would take the payment
+ * and then decline to cast. resolve.mjs already states the rule for the other refusal on that path
+ * -- *a refused cast must charge nothing* -- and this is the same rule.
+ */
+check("and the cast is refused before it is paid for",
+  traySource.indexOf("refusesAction(this.actor, { what: `casting") <
+  traySource.indexOf("await payToCast(this.actor, slate)") ? "yes" : "no", "yes");
 /* And no flag is declared by a condition with no reader at all, which is how a fourth would arrive
  * and do nothing. */
 const flagsDeclared = new Set(Object.values(CARDRPG.conditions)
@@ -6602,10 +6643,7 @@ check("and refusals recorded for a file that is there",
  */
 check("and those naming a file that is not there",
   pathless.map(([name]) => name).sort().join(", ") || "none",
-  "Where It Is Held");
-check("every one of which is a refusal with a reason",
-  pathless.map(([name]) => ART_REFUSED[name] ? "declared" : `UNDECLARED: ${name}`)
-    .sort().join(", ") || "none", "declared");
+  "none");
 /*
  * **Every group in the brief lands in a slot something writes.**
  *
@@ -12656,7 +12694,7 @@ for (const m of selfSource.matchAll(/(\w+)\.includes\("((?:[^"\\]|\\.)*)"\)/g)) 
 }
 
 /* The pin that keeps the rest of this honest. */
-check("greps over a whole file, resolved", greps.length, 641);
+check("greps over a whole file, resolved", greps.length, 642);
 
 /*
  * **The rule, as one predicate, run over a planted example before it is run over the suite.**

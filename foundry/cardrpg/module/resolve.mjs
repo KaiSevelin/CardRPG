@@ -1930,9 +1930,56 @@ export function defencesAgainst({
   };
 }
 
+/**
+ * **A turn that does not happen refuses the actions in it** (core-rules 7, Halted).
+ *
+ * `noTurn` and `noSecondary` have existed on both actor models since conditions did, and **nothing
+ * read either of them**. The tray greyed the halves out by testing `blocksTurn` on the config entry
+ * directly, which is the UI being helpful rather than the rule being true: a macro, a chat command
+ * or any second caller resolved a Halted actor's whole turn without a word. That is this project's
+ * commonest finding wearing a new hat -- a getter nothing asks -- and the fix is a reader, here.
+ *
+ * **The warning names the condition that did it** rather than saying "you cannot do that". A player
+ * whose turn silently refuses assumes a bug; one told *Halted: the whole turn does not happen* knows
+ * the rule and can argue with it.
+ *
+ * Returns **true when the action is refused**, so a call site reads as a guard clause:
+ *
+ *     if (refusesAction(actor, { what: "a strike" })) return null;
+ *
+ * `half` is optional because most callers neither know it nor need it: the turn-wide ban needs no
+ * half. Pass it where it is known and the **secondary** ban arrives with it -- Dazed, and Halted
+ * again, which carries `blocksSecondary` precisely so a reader that only knew `blocksTurn` would
+ * not grey out the wrong thing. That is the one rule here that depends on which half is in play,
+ * and `noSecondary` had no reader either.
+ */
+export function refusesAction(actor, { half = null, what = "that" } = {}) {
+  const system = actor?.system;
+  if (!system) return false;
+  const named = key => CARDRPG.conditions[key]
+    ? (game.i18n?.localize(CARDRPG.conditions[key].label) ?? key) : key;
+  /* Which condition to blame, read off the flag rather than a name: Unconscious stops a turn too,
+   * and a message hard-coded to Halted would lie about it. */
+  const blame = flag => (system.activeConditions ?? [])
+    .map(c => c.key).find(key => CARDRPG.conditions[key]?.[flag]);
+
+  if (system.noTurn) {
+    ui.notifications?.warn(`${actor.name} is ${named(blame("blocksTurn"))}: the whole turn does `
+      + `not happen, so ${what} cannot be played.`);
+    return true;
+  }
+  if (half === "secondary" && system.noSecondary) {
+    ui.notifications?.warn(`${actor.name} is ${named(blame("blocksSecondary"))} and loses the `
+      + `secondary half, so ${what} cannot be played there.`);
+    return true;
+  }
+  return false;
+}
+
 export async function resolveAttack(actor, {
   verb = "strike", item, mod = 0, targets = [], step = {}, ammo = null, payload = null
 }) {
+  if (refusesAction(actor, { what: `a ${verb}` })) return null;
   const line = item?.system.verbs?.[verb];
   if (!line || line.value === null) {
     ui.notifications.warn(`${item?.name ?? "That item"} has no ${verb} line.`);
@@ -2285,6 +2332,7 @@ async function attackCard(actor, info) {
  * as a secondary or a reaction it covers one attack only.
  */
 export async function resolveDefend(actor, { item, half = "primary" }) {
+  if (refusesAction(actor, { half, what: "a Defend" })) return null;
   const value = item?.system.verbs?.defend?.value;
   if (!value) {
     ui.notifications.warn(`${item?.name ?? "That item"} has no defend line.`);
@@ -2366,6 +2414,7 @@ export async function grantBlock(actor, { amount = 0, radius = 1, includeSelf = 
 
 /** Healing draws fate, same as damage. */
 export async function resolveHeal(actor, { amount, target = actor, source = "" }) {
+  if (refusesAction(actor, { what: "a heal" })) return null;
   const fate = await drawFate(actor, amount, 0);
   const healed = Math.min(fate.result, target.system.health.max - target.system.health.value);
   await target.update({ "system.health.value": target.system.health.value + healed });
@@ -2381,6 +2430,7 @@ export async function resolveHeal(actor, { amount, target = actor, source = "" }
 
 /** Use a belt consumable. Consumed items are deleted when spent. */
 export async function resolveUse(actor, { item, target = actor }) {
+  if (refusesAction(actor, { what: `using ${item?.name ?? "that"}` })) return null;
   const line = item?.system.verbs?.use;
   if (!line) {
     ui.notifications.warn(`${item?.name ?? "That item"} has no use line.`);
@@ -2481,6 +2531,9 @@ export async function resolveCheck(actor, {
   item = null, mode = 0, improvise = false
 } = {}) {
   if (!actor || !approach) return null;
+  /* A check is an action of the turn like any other. An ANSWER to somebody else's check is not,
+   * and `answerCheck` does not come through here. */
+  if (refusesAction(actor, { what: "a check" })) return null;
 
   const base = improvise ? 0 : (card?.system?.worth?.(approach) ?? null);
   if (base === null && !improvise) {

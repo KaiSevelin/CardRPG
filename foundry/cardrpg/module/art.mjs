@@ -43,13 +43,20 @@ export const DELIVERY = { format: "webp", quality: 80 };
  *
  * Kept beside `DELIVERY` because both are facts about *supplying* art rather than about the game,
  * and `art-list.mjs` already reads this file for exactly that.
+ *
+ * **Empty, which is the resting state**, and the same arrangement the shoot queue settled into: a
+ * name belongs here only while its file is genuinely absent, so the validator fails both ways --
+ * a missing file with no entry, and an entry whose file has arrived. A list that keeps dead names
+ * is a list nobody reads.
+ *
+ * It held one entry for about an hour. *Where It Is Held* was refused as "Strike a target it
+ * already has hold of": the words were never the problem, the composition was -- an immobilised
+ * figure under a weapon -- and no rewording of that sentence was going to pass. Rewritten to the
+ * hand and the harness ("A hand already on the strap"), it drew first time. The card reads better
+ * for it, which is the argument for rewriting a refused brief rather than retrying it, and the
+ * reason this constant is worth keeping now that it is empty.
  */
-export const ART_REFUSED = {
-  "Where It Is Held": "A grapple creature striking a target it already holds: the brief put an "
-    + "immobilised figure under a weapon, which is the composition the filter stops rather than "
-    + "anything in the words. Rewritten to the hand and the harness instead -- see the card's own "
-    + "text, which now means what the card's name always said."
-};
+export const ART_REFUSED = {};
 
 /**
  * **Absolute from Foundry's data root, because a relative path here is a bug with a record.**

@@ -27,7 +27,8 @@ import {
   reachableAmmo, isUsable,
   resolveTaint, resolveCorrode, liftCondition, resolveForesee, collectBonuses,
   resolveConjure, resolveShape,
-  itemMeets, requireText, payToCast, answerCast, grantBlock, resolveCheck, passiveScore
+  itemMeets, requireText, payToCast, answerCast, grantBlock, resolveCheck, passiveScore,
+  refusesAction
 } from "./resolve.mjs";
 import {
   readCall, setCall, clearCall, describeCall, cardAnswers, bestTool, helpOptions,
@@ -1852,6 +1853,13 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
 
     if (!await this.#settleReady(hand)) return;
     if (!await this.#settleStrain(hand)) return;
+    /*
+     * **Before the first step, and before anything is spent.** The halves are already greyed out,
+     * so reaching here means a second route in -- but a guard that only fires once the cards are
+     * resolving is a guard that charges for the turn it refuses.
+     */
+    if (this.staged.some(({ half }) => refusesAction(this.actor, { half, what: "this card" })))
+      return;
 
     for (const { cardId, half } of this.staged) {
       const card = hand?.cards.get(cardId);
@@ -2047,6 +2055,9 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
    */
   async #resolveStep(step, half, targets, source = null) {
     const actor = this.actor;
+    /* The backstop. Every verb funnels through here, so a step reached by any route this class
+     * grows later is covered without the new route having to remember. */
+    if (refusesAction(actor, { half, what: `a ${step.verb}` })) return;
 
     switch (step.verb) {
       case "strike":
@@ -2302,6 +2313,14 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
      */
     if (slate.type === "spell") {
       const targets = [...(game.user.targets ?? [])].map(t => t.actor).filter(a => a);
+      /*
+       * **Before `payToCast`, which is the whole reason this guard is not left to `#resolveStep`.**
+       * The spell's price is paid here and the effect resolves two lines later; a refusal inside the
+       * resolver would take the Health and the slot and then decline to cast. The file already says
+       * a refused cast must charge nothing -- it says it about affording the Health -- and a turn
+       * that does not happen is the same kind of refusal.
+       */
+      if (refusesAction(this.actor, { what: `casting ${slate.name}` })) return;
       if (!await payToCast(this.actor, slate)) return;
       /*
        * The price is paid before the ward fires, and that is deliberate: *Unmake* stops the spell

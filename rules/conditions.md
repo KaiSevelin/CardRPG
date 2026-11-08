@@ -463,12 +463,20 @@ The author's choice, and it should follow what the thing actually does:
 The engine's posture everywhere is **advise, don't enforce** — it shows you what is legal and lets
 the table play. This column says which half of that each condition gets.
 
+**The three conditions that take a whole category away are the exception, and they are enforced.**
+Dazed costs you a half, Stunned your reactions, Halted the turn; none of those is a choice the table
+is making, and a greyed-out button is not a rule. Each has a getter on the actor — `noSecondary`,
+`noReactions`, `noTurn` — and `refusesAction` in the resolver reads them before an action resolves,
+naming the condition in the refusal so a player knows why rather than suspecting a bug. **It refuses
+a cast before the cast is paid for**, which is the reason the guard is in the engine and not only in
+the tray: the price and the effect are two separate steps.
+
 | Condition | Enforced | How |
 |---|---|---|
 | **Dazed** | **yes** | the tray allows a primary only, and says so |
-| **Stunned** | advisory | a "No reactions" badge; reactions have no legality gate |
+| **Stunned** | **yes** | `reactionsFor` returns nothing at all while `noReactions` is true, so there is no reaction to offer — this row said "advisory, reactions have no legality gate" long after that gate was written |
 | **Graven** | advisory | the bonus it carries is read by `collectBonuses`, grouped under `graven` so two tattoos on the same verb cap each other |
-| **Halted** | advisory | a "No turn" badge. `blocksTurn` is read by `noTurn` on the actor; nothing enforces a skipped turn, because initiative order is the GM's to run |
+| **Halted** | **yes** | `refusesAction` refuses every Strike, Cast, Defend, heal, Use and check, in the resolver rather than the tray. **It does not skip the turn in initiative** — whose turn it is stays the GM's to run; it makes the turn do nothing, which is what the condition says |
 | **Heckled** | **yes** | the fate draw reads it, the same way Invisible is read |
 | **Slowed** | **yes, on the face** | the printed Move is halved — Move itself is never resolved, figures are moved by hand |
 | **Grappled** / **Silenced** / **Disarmed** | **yes** | via `blocks` → blocked icons; Disarmed's *"⚔ with the disarmed item"* half is not modelled |

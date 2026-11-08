@@ -1,6 +1,6 @@
 # Art list
 
-**622 pieces**, of which **621** are drawn, **1** refused. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
+**622 pieces**, of which **622** are drawn. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
 
 ## What to supply
 
@@ -117,7 +117,7 @@ Six cards every Way draws on, so each one is seen by every character in the game
 
 Face-up on the table during a fight, which makes them the art players stare at longest. **One pool, and every creature in the world draws the subset it has earned** (core-rules 9) — so a picture here is seen behind a goblin, a troll and a dragon, and wants to be the SHAPE of the move rather than a portrait of whoever is making it. *Close In* is a thing closing in.
 
-**43 pieces**, 42 wired up. Suggested path: `cardrpg/art/cards/npc/`
+**43 pieces**, 43 wired up. Suggested path: `cardrpg/art/cards/npc/`
 
 | | Name | What it is | File |
 |---|---|---|---|
@@ -161,7 +161,7 @@ Face-up on the table during a fight, which makes them the art players stare at l
 | ✓ | **Take the Legs** | Move, Strike Off Balance (1) · Move and Strike low; on a hit the target is Off Balance. | `cards/npc/take-the-legs.webp` |
 | ✓ | **The Hive Obeys** | Three allies within sight each move their speed, or one of them acts twice. She does nothing herself but decide. | `cards/npc/the-hive-obeys.webp` |
 | ✓ | **Thrash** | Strike blast 1, Move · Strike every figure adjacent to you, then move your speed away from all of them. | `cards/npc/thrash.webp` |
-| ✗ | **Where It Is Held** | Strike ignores armour · A hand already on the strap. Armour does not apply: it is not holding anything on. | `cards/npc/where-it-is-held.webp` |
+| ✓ | **Where It Is Held** | Strike ignores armour · A hand already on the strap. Armour does not apply: it is not holding anything on. | `cards/npc/where-it-is-held.webp` |
 | ✓ | **Work the Weave** | Cast · Cast one from your own short list. | `cards/npc/work-the-weave.webp` |
 | ✓ | **Worry It** | Strike ignores armour vs Off Balance · Tear at a target already off balance, and armour does not come into it. | `cards/npc/worry-it.webp` |
 
@@ -914,14 +914,4 @@ The pregenerated character a first session plays. One token, same shape as a cre
 | | Name | What it is | File |
 |---|---|---|---|
 | ✓ | **Starter Warrior** | Health 12 · Longsword, Wooden Shield, Leather Armor, Healing Potion | `tokens/starter-warrior.webp` |
-
-## Refused
-
-Briefs an image model would not draw, marked **x** in the tables above. A refusal is a **state**, not a gap: without this section a blocked piece is indistinguishable from one nobody has reached, so it sits in the queue looking pending, gets re-run, and is refused again. Declared in `ART_REFUSED` in `module/art.mjs`.
-
-Each of these needs its **brief** changed rather than another attempt at the same words. The brief is generated from the card's rules text, so that is where the rewrite goes — and if the rewrite makes the card read better, which it generally does, the refusal paid for itself.
-
-| Name | File | Why it was refused |
-|---|---|---|
-| **Where It Is Held** | `cards/npc/where-it-is-held.webp` | A grapple creature striking a target it already holds: the brief put an immobilised figure under a weapon, which is the composition the filter stops rather than anything in the words. Rewritten to the hand and the harness instead -- see the card's own text, which now means what the card's name always said. |
 
