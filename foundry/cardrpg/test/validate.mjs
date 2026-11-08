@@ -141,7 +141,7 @@ check("and the unpatched line is gone",
   /Object\.create\(Array\.prototype\)/.test(cytoscape) ? "still there" : "gone", "gone");
 
 const manifest = JSON.parse(fs.readFileSync(path.join(root, "system.json"), "utf8"));
-check("manifest declares Card subtypes", Object.keys(manifest.documentTypes.Card ?? {}).length, 13);
+check("manifest declares Card subtypes", Object.keys(manifest.documentTypes.Card ?? {}).length, 14);
 /*
  * **The verified build is a build, not a generation**, and it is load-bearing in two places.
  *
@@ -6203,7 +6203,7 @@ const deckCalls = [...setupSource.matchAll(/makeCards\(([\s\S]*?)\n?\s*\);/g)]
  * back otherwise. That is the only computed back key in the file, which is why the check below
  * exists: a computed key cannot be audited by reading the call, so it is audited from the content.
  */
-check("deck documents created", deckCalls.length, 8);
+check("deck documents created", deckCalls.length, 9);
 check("and every creature's back resolves to a declared one",
   monsters.expandRoster(content.ROSTER, content.VARIANTS)
     .filter(c => !(`npc.${c.system.kind}` in content.DECK_BACKS)
@@ -6234,9 +6234,21 @@ const backKeys = `${backs.map(([k]) => k.replace(/\./g, "\\.")).join("|")}|npc\\
  * failure read *deck documents with no back: 2*, which is not what was wrong. What the check is
  * about is that every deck names one, and position was never part of that.
  */
-check("deck documents with no back",
-  deckCalls.filter(args => !new RegExp(`backOf\\(|, "(${backKeys})"`).test(args.trim()))
-    .length, 0);
+/*
+ * **One deck has no back, and it is the critical deck.**
+ *
+ * Every other deck is face down at some point, which is the whole job of a back. This one is
+ * turned face up the instant a Critical lands and read out, so it is never face down in front of
+ * anybody -- the same reason hands, discards and Spent piles have none, which the art brief
+ * already states. A back for it would be a picture nobody ever sees.
+ *
+ * Named rather than counted, so a *second* backless deck cannot arrive quietly: that is the
+ * failure this check exists for, and "one of them" would not have caught it.
+ */
+const backless = deckCalls
+  .filter(args => !new RegExp(`backOf\\(|, "(${backKeys})"`).test(args.trim()))
+  .map(args => (/"([^"]+)"/.exec(args) ?? [])[1] ?? args.trim().slice(0, 40));
+check("deck documents with no back", backless.join(", ") || "none", "Critical Deck");
 /*
  * A Wound and a Taint wear the ACTION back, which is not an oversight: both go into the action
  * deck (core-rules 8), and a Wound you could see coming would not be a Wound.
@@ -6551,7 +6563,7 @@ check("art paths the game would hand Foundry", artable.length + backs.length, 62
  */
 check("and those naming a file that is not there",
   pathless.map(([name]) => name).sort().join(", ") || "none",
-  "Find the Joint, Prise It Open, Round the Guard, Take the Legs, Where It Is Held, Worry It");
+  "Where It Is Held");
 /*
  * **Every group in the brief lands in a slot something writes.**
  *
@@ -7562,7 +7574,7 @@ const planned = packs.planDocuments();
 check("compendium packs", planned.length, 8);
 check("and what each one holds",
   planned.map(p => `${p.name}:${p.docs.length}`).join(" "),
-  "creatures:112 characters:1 items:187 features:24 spells:118 injuries:14 signatures:30 decks:12");
+  "creatures:112 characters:1 items:187 features:24 spells:118 injuries:14 signatures:30 decks:13");
 /* Faults the generator records rather than throws: a filename collision silently drops a document,
  * so the build reports it and this refuses to pass with one outstanding. */
 check("faults the generator reported", planned[0].faults.join("; ") || "none", "none");
@@ -7606,8 +7618,8 @@ check("and the group it asks for", DIMENSIONS.join("+"), "width+height+depth");
  */
 const everyPackDoc = planned.flatMap(p => p.docs);
 const everyPackChild = planned.flatMap(p => p.docs.flatMap(d => d.items ?? d.cards ?? []));
-check("documents the stamp sweep read", everyPackDoc.length, 498);
-check("and children beneath them", everyPackChild.length, 378);
+check("documents the stamp sweep read", everyPackDoc.length, 499);
+check("and children beneath them", everyPackChild.length, 388);
 const unstamped = [...everyPackDoc, ...everyPackChild]
   .filter(d => d._stats?.coreVersion !== manifest.compatibility.verified
     || d._stats?.systemId !== manifest.id
@@ -7642,7 +7654,7 @@ const packedFromContent = {
     .filter(s => !graph.SIGNATURES.some(g => g.kind === "spell" && g.name === s.name)).length,
   injuries: content.INJURIES.length,
   signatures: graph.SIGNATURES.filter(s => s.kind !== "card").length,
-  decks: 12
+  decks: 13
 };
 /*
  * And the features count as a literal beside the derivation. This check's own comment says why -- *a
@@ -7689,7 +7701,7 @@ check("pack sources that disagree with the content",
   stale.length ? `${stale.length}: ${stale.slice(0, 4).join(", ")}` : "none", "none");
 /* A comparison that read no files would report "none" for a repository with no packs at all. */
 check("documents the comparison actually read",
-  planned.reduce((n, p) => n + p.docs.length, 0), 498);
+  planned.reduce((n, p) => n + p.docs.length, 0), 499);
 
 /*
  * **An id is a promise.** A world that imports a creature keeps the pack's id, and so does every
@@ -7722,7 +7734,7 @@ for (const pack of planned) {
 }
 check("ids that are not the hash of their key, malformed, or shared",
   idFaults.length ? idFaults.slice(0, 4).join("; ") : "none", "none");
-check("ids the rule actually read", everyId.size, 876);
+check("ids the rule actually read", everyId.size, 887);
 /* The hash itself, asked rather than shared: sixteen characters of the right alphabet, and the
  * same answer twice for the same key. */
 check("an id is sixteen characters", packs.id16("items:Longsword").length, 16);
@@ -7852,8 +7864,8 @@ check("subtypes the rule read",
     ...p.docs.flatMap(d => (d.items ?? []).map(c => `Item/${c.type}`)),
     ...p.docs.flatMap(d => (d.cards ?? []).map(c => `Card/${c.type}`))
   ]))].sort().join(", "),
-  "Actor/character, Actor/npc, Card/action, Card/fate, Card/npc, Card/skill, Card/twist, "
-  + "Cards/deck, Item/feature, Item/injury, Item/item, Item/spell");
+  "Actor/character, Actor/npc, Card/action, Card/crit, Card/fate, Card/npc, Card/skill, "
+  + "Card/twist, Cards/deck, Item/feature, Item/injury, Item/item, Item/spell");
 
 /*
  * **And a packed document carries nothing the schema will drop.** This is the sweep the item
@@ -7950,7 +7962,8 @@ check("the starter routine reads the tables rather than a pack",
 check("and the one shape builder is shared with the packs",
   /import \{ slateData \} from "\.\.\/module\/setup\.mjs"/.test(packSource) ? "yes" : "no", "yes");
 check("as are the card builders",
-  /actionCardData, skillCardData, twistCardData, npcCardData/.test(packSource) ? "yes" : "no",
+  /actionCardData, skillCardData, twistCardData, critCardData, npcCardData/.test(packSource)
+    ? "yes" : "no",
   "yes");
 /* And the classification of what is a card, a spell or a slate is `graph.mjs`'s, not a second
  * opinion: a pack that disagreed about whether Step Through is a spell would file it twice. */
@@ -8462,7 +8475,7 @@ for (const [doc, types] of Object.entries(manifest.documentTypes)) {
 }
 check("document subtypes with no sheet", uncovered.length ? uncovered.join(", ") : "none", "none");
 check("subtypes checked", Object.values(manifest.documentTypes)
-  .reduce((n, types) => n + Object.keys(types).length, 0), 19);
+  .reduce((n, types) => n + Object.keys(types).length, 0), 20);
 
 /* -------------------------------------------- */
 

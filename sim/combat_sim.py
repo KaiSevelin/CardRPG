@@ -221,7 +221,10 @@ CONDITIONS = {
     'exposed':  dict(valued=True, reduces_armour=True),
     'prone':    dict(enemy_melee_advantage=True, reduces_move=True),
     'grappled': dict(blocks_move=True),
-    'offBalance': dict(opening=True),
+    # Off Balance: an opening, AND a point off Block. One entry, because this dict had two
+    # 'offBalance' keys for a while and Python keeps the last -- so reduces_block was silently
+    # dropped and every figure measured with it understated the critical deck by two cards in ten.
+    'offBalance': dict(opening=True, reduces_block=True),
     'wet':      dict(opening=True, cancels=('burning',)),
     'marked':   dict(opening=True),
     'blessed':  dict(no_duration=True, liftable=True, fate='CRIT'),
@@ -312,6 +315,15 @@ class Config:
     pierce_intent: int = 0
     # The condition route: an intent that Exposes rather than piercing. 0 leaves it out of the deck.
     expose_value: int = 0
+    # **The critical deck**: a Critical draws what it did instead of simply doubling (core-rules 5).
+    #
+    # Ten cards -- 4 double, 2 Expose 2, 2 Off Balance, 1 Halted, 1 draw-two-others -- so doubling
+    # falls from certain to 40% and the other six buy something a doubled number could not. Both
+    # sides draw from it, so this dial moves the goblins as well as the hero.
+    crit_deck: bool = False
+    # Whether a condition face doubles the damage **as well as** applying its effect, rather than
+    # instead of it. The deck as written is either/or; this is the one dial on it.
+    crit_deck_rides: bool = False
     # Shattered Nerves: no reactions in round 1. The engine knows rounds rather than
     # per-character firsts, and so does this.
     shattered_nerves: bool = False
@@ -1228,6 +1240,33 @@ class Game:
         # *Nothing Gets Through*: while Overloaded, armour counts double. Overloaded is not free --
         # the hero is Slowed and two cards are Spent for the fight -- so this reads both prices.
         armor = cfg.armor * 2 if (cfg.armor_doubles_overloaded and self.overloaded) else cfg.armor
+        # **The critical deck decides what the Critical did** (core-rules 5), so the doubling is no
+        # longer certain. Modelled as its distribution: ten cards reshuffled on empty is close
+        # enough to independent draws at one crit in twenty attacks.
+        #
+        # **Drawn BEFORE armour and Block are read**, because that is where the engine draws it:
+        # `resolveAttack` calls `drawCritEffect` and only then snapshots `hadArmor`/`hadBlock`
+        # (resolve.mjs), so the gap a Critical opens is a gap the same blow goes through. That
+        # ordering is the only thing that makes a non-doubling face worth drawing against Plate.
+        #
+        # *Driven Down* -- Halted, the next turn does not happen -- is drawn and its damage half
+        # resolved, but the lost turn is NOT modelled: nothing in this file skips a turn from a
+        # condition. So these figures still understate the deck by one card in ten, and
+        # understating is the right direction for a number used to decide whether to ship it.
+        if crit and cfg.crit_deck:
+            face = self.rng.random()
+            if face >= 0.4:
+                if not cfg.crit_deck_rides:
+                    raw = raw // 2                      # not doubled: the plain figure
+                if face < 0.6:
+                    self.apply_cond('exposed', 1, 2)    # Find the Gap
+                elif face < 0.8:
+                    self.apply_cond('offBalance', 1)    # Off the Feet
+                elif face < 0.9:
+                    pass                                # Driven Down: the turn is not modelled
+                else:
+                    self.apply_cond('exposed', 1, 2)    # Both, as the two this file can see
+                    self.apply_cond('offBalance', 1)
         # `ignores N` comes off armour and never off Block (core-rules 5).
         # Exposed comes off armour before the hit, as the engine takes it off the derived number.
         exposed = max([c['value'] for c in w['conds']
@@ -1237,7 +1276,10 @@ class Game:
         if (crit and cfg.crit_pierces) or (plus2 and cfg.plus2_pierces):
             armor = 0
         d = max(0, raw - armor)
-        absorbed = 0 if (crit and cfg.crit_unblockable) else min(w['block'], d)
+        off_balance = max([c.get('value') or 1 for c in w['conds']
+                           if CONDITIONS[c['key']].get('reduces_block')] or [0])
+        block_now = max(0, w['block'] - off_balance)
+        absorbed = 0 if (crit and cfg.crit_unblockable) else min(block_now, d)
         if not cfg.persistent_block:
             w['block'] -= absorbed          # old rule: one hit used the whole block up
         d -= absorbed

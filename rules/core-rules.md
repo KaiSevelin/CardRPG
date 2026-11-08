@@ -828,9 +828,81 @@ Each character has their own 20-card fate deck:
 | +0 | 8 | |
 | +1 | 4 | |
 | +2 | 1 | |
-| Critical | 1 | Double the value. Shuffle the fate deck after the action. |
+| Critical | 1 | **On an attack, draw from the critical deck** (below). On anything else, double the value. Shuffle the fate deck after the action. |
 
 - **Blessed**: shuffle a temporary *Critical* into your fate deck. It is removed when drawn.
+
+#### The critical deck  **[BUILT 2026-11-08]**
+
+**A Critical on an attack draws one card from the critical deck, face up, and reads it out.** Ten
+cards, five faces:
+
+| Face | Copies | What it does |
+|---|---|---|
+| **Through and Through** | 4 | Double the damage, as a Critical always did. |
+| **Find the Gap** | 2 | **Exposed 2** &mdash; their armour counts 2 less for a turn. Not doubled. |
+| **Off the Feet** | 2 | **Off Balance** &mdash; their Block counts 1 less, and it is an opening. Not doubled. |
+| **Driven Down** | 1 | **Halted** &mdash; their next turn does not happen. Not doubled. |
+| **Both** | 1 | Draw two **others** and take both. |
+
+**The draw comes before armour and Block are read**, so the gap a Critical opens is a gap that
+same blow goes through: *Find the Gap* takes 2 off the armour of the hit that found it. `resolveAttack`
+draws first and snapshots the defences afterwards, and the simulator was corrected to match.
+
+**One draw per action**, like the fate draw it hangs off: an Area attack that crits draws once and
+every target gets the same answer. The conditions land on the first target.
+
+**It has no back and never will.** It is turned face up the instant it is drawn and read aloud, so
+it is never face down in front of anybody &mdash; the same reason a hand, a discard and a Spent pile
+have none. A back for it would be a picture nobody would ever see.
+
+**Attacks only.** A Critical on a check or a heal simply doubles, as before. This deck is about what
+a critical *hit* did to a body; a Lore check that drew *Off the Feet* would be a deck reaching
+somewhere it has no business.
+
+**Both sides draw from it.** One deck for the table, not two tunings of one rule &mdash; and that is
+what the measurement below is about.
+
+> **[MEASURED 2026-11-08] Exposed *N* beats doubling only when *N* is larger than the printed
+> damage, so an either/or deck is a nerf to whoever hits hard and a buff to whoever hits light.**
+>
+> This is arithmetic before it is a simulation. Doubling adds the printed damage; *Find the Gap*
+> adds 2. A goblin spear prints 3, so against a goblin **every condition face is worse than
+> doubling at every armour rung** &mdash; at Plate, Through and Through gets 6&minus;4 = 2 through
+> where Find the Gap gets 3&minus;2 = 1. The monsters hit hard, so the deck as written takes their
+> best card away. A Shade card printing 1 or 2 is the other way round, which is the finesse path
+> working as intended &mdash; but the hero was never the worry.
+>
+> 2500 fights a cell. Win %, and HP left on a win at rung 4:
+>
+> | | 3 spears | 4 spears | 5 spears | 2 spear 2 bow |
+> |---|---|---|---|---|
+> | **armour 1** | | | | |
+> | *before the deck* | 98.8 | 88.9 | 65.0 | 36.2 |
+> | **as written (either/or)** | **99.2** | **90.9** | **69.7** | **40.5** |
+> | *effect rides along* | 98.5 | 88.1 | 63.6 | 36.8 |
+> | **armour 3** | | | | |
+> | *before the deck* | 100.0 | 99.8 | 99.3 | 99.8 |
+> | **as written** | 100.0 | 99.9 | 99.4 | 99.8 |
+> | *rides along* | 100.0 | 99.5 | **97.6** | 99.2 |
+> | **armour 4** | | | | |
+> | *before the deck* | 100.0 | 100.0 | 100.0 | 100.0 |
+> | **as written** | 100.0 | 100.0 | 100.0 | 100.0 |
+> | *rides along* | 100.0 | 100.0 | **99.9** | 100.0 |
+>
+> **As written, a character in Leather is safer by up to 4.7 points.** A critical should not be
+> less frightening than it was. The dial is one word in the content &mdash; whether a face applies
+> its effect **as well as** doubling instead of instead of it &mdash; and riding along restores the
+> threat at rung 1, bites at rung 3 where the conditions are worth something (&minus;1.7 against
+> five spears), and is the only row that ever moves rung 4 at all.
+>
+> Left as written, because *either/or* is the design as asked for and this is a weighting call, not
+> a bug. Recorded here because the number disagrees with it.
+>
+> **And it is not the answer to armour either way.** 100.0 to 100.0 at rung 4, because
+> **the Critical floor (section 5) already did that job**: Exposed 2 against armour 4 lets a spear
+> through for 1, which is exactly what the floor guarantees for nothing. What answers armour is the
+> floor plus Exposed arriving from a *card* that prints more than 2, and both are measured elsewhere.
 - **Cursed**: shuffle a temporary *Miss* into your fate deck. It is removed when drawn.
 - **Wild**: a **permanent** passenger, and the third special card.
 

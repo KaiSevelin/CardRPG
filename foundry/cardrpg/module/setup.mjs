@@ -8,13 +8,13 @@
 
 import { CARDRPG } from "./config.mjs";
 /* The one shape a skill card takes, shared with anything that grants one rather than spelled here. */
-import { skillCardData, twistCardData, npcCardData, backOf, artIn } from "./decks.mjs";
+import { skillCardData, twistCardData, critCardData, npcCardData, backOf, artIn } from "./decks.mjs";
 /* A deck is the subset of the pool a creature's capabilities earn, and a variant is a delta from
  * its base. Both are arithmetic, and both live where the validator can ask them. */
 import { deckFor, expandRoster } from "./monsters.mjs";
 import {
   fateCards, WARRIOR_DECK, ITEMS, NPC_GEAR, FEATURES, FORMULAS, WARRIOR_SKILLS,
-  TWISTS, RITUAL_TWISTS, INTENTS, NATURAL_WEAPONS, ROSTER, VARIANTS,
+  TWISTS, RITUAL_TWISTS, CRIT_EFFECTS, INTENTS, NATURAL_WEAPONS, ROSTER, VARIANTS,
   SHADOW_FORMULAS, WILD_MAGIC,
   WARRIOR, GOBLIN, GOBLIN_ARCHER
 } from "./content.mjs";
@@ -352,6 +352,18 @@ export async function createStarterContent() {
   await makeCards("Ritual Twist Deck", "deck", "ritual-twist-deck",
     expand(RITUAL_TWISTS, def => twistCardData(def, "ritual")), "ritual", gmOnly());
   await makeCards("Ritual Twist Discard", "pile", "ritual-twist-discard", [], "", gmOnly());
+  made.decks += 2;
+
+  /*
+   * **The critical deck, which belongs to nobody and is read by everybody.**
+   *
+   * No ownership and no back: both sides crit, so one deck serves the table, and it is turned
+   * face up the instant a Critical lands. The twist decks are the GM's and locked; this is the
+   * opposite kind of deck and is deliberately left open.
+   */
+  await makeCards("Critical Deck", "deck", "crit-deck",
+    expand(CRIT_EFFECTS, def => critCardData(def)));
+  await makeCards("Critical Discard", "pile", "crit-discard");
   made.decks += 2;
 
   await buildActor(WARRIOR, {

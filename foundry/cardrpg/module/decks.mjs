@@ -206,6 +206,35 @@ export function harmCardData(kind, { source = "", flavour = "" } = {}) {
   };
 }
 
+/** One face of the critical deck, as a Card. Face up from the moment it is drawn. */
+export function critCardData(def) {
+  return {
+    name: def.name,
+    type: "crit",
+    /* No back. It is turned over the instant a Critical lands and read out, so it is never face
+     * down in front of anybody -- the same reason a hand and a discard have none. */
+    face: 0,
+    faces: [{ name: def.name }],
+    system: {
+      doubles: !!def.doubles,
+      draws: def.draws ?? 0,
+      text: def.text ?? "",
+      ...(def.effect ? { effect: def.effect } : {})
+    }
+  };
+}
+
+/**
+ * The critical deck and its discard, which belong to the world rather than to anybody.
+ *
+ * One deck for the table, because both sides crit: a goblin that rolls one draws from the same
+ * ten cards a player does. Two decks would be two tunings of one rule.
+ */
+export function critStacks() {
+  const find = tag => game.cards?.find(c => c.getFlag("cardrpg", "cardrpgContent") === tag) ?? null;
+  return { deck: find("crit-deck"), discard: find("crit-discard") };
+}
+
 export function actionCardData(def) {
   return {
     name: def.name,

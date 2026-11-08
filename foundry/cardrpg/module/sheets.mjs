@@ -690,7 +690,7 @@ export function registerSheets() {
     types: ["item", "feature", "injury", "spell"], makeDefault: true, label: "CARDRPG.Sheet.Slate"
   });
   DocumentSheetConfig.registerSheet(Card, "cardrpg", CardConfigSheet, {
-    types: ["action", "fate", "npc", "wound", "taint", "fear", "doubt", "rage", "compulsion",
+    types: ["action", "fate", "npc", "crit", "wound", "taint", "fear", "doubt", "rage", "compulsion",
       "confusion", "wild", "skill", "twist"],
     makeDefault: true, label: "CARDRPG.Sheet.Card"
   });

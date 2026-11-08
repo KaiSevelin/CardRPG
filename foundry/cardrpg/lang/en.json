@@ -353,5 +353,6 @@
   "CARDRPG.Ritual.Mending": "Mending",
   "CARDRPG.Ritual.QuietNight": "Quiet Night",
   "CARDRPG.Ritual.Unknotting": "Unknotting",
-  "CARDRPG.Condition.Exposed": "Exposed"
+  "CARDRPG.Condition.Exposed": "Exposed",
+  "TYPES.Card.crit": "Critical Effect"
 }

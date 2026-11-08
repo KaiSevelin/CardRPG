@@ -492,6 +492,11 @@ push(
   + "a back, a Miss, a Critical — not twenty illustrations.",
   "- **Wounds and Taint.** Two faces, fixed, and both are meant to read as damage rather than as "
   + "content. One picture each at most.",
+  `- **The critical deck.** ${content.CRIT_EFFECTS.length} faces, `
+  + `${content.CRIT_EFFECTS.reduce((n, e) => n + (e.copies ?? 1), 0)} cards, and it needs neither `
+  + "faces nor a **back**. A card is drawn face up the instant a Critical lands and read out, so "
+  + "it is never face down in front of anybody — which is the same reason hands, discards and "
+  + "Spent piles have no back. A back is for a deck somebody looks at while wondering.",
   "- **The levelling graph's nodes.** A node wears the art of what it hands over, so drawing a "
   + "Signature draws its node too. Nothing needs art of its own.",
   `- **The twist deck.** ${content.TWISTS.length} kinds, `

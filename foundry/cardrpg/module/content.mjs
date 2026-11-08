@@ -7177,6 +7177,65 @@ export const HARM_FACES = [
   { name: "Confusion", kind: "confusion" }
 ];
 
+/**
+ * **The critical deck: what a critical hit actually does.**
+ *
+ * A Critical doubled, and that was the whole of it. Doubling is the right *common* answer and a
+ * poor *only* answer, because it scales backwards against the thing a critical ought to beat:
+ * against four points of armour a doubled Strike of 3 gets **2** through, and the card whose
+ * entire purpose is *this one gets through* was being flattened by the rung it should punish.
+ *
+ * So a Critical now draws, and doubling is one face of five. The other four are mechanisms this
+ * game already has, which is the test a new deck has to pass -- a deck that needed new rules
+ * would be a fourth name for something:
+ *
+ * | Face | Is | Copies |
+ * |---|---|---|
+ * | *Through and Through* | the old behaviour, doubled | **4** |
+ * | *Find the Gap* | **Exposed 2** | 2 |
+ * | *Off the Feet* | **Off Balance** | 2 |
+ * | *Driven Down* | **Halted** -- the next turn does not happen | 1 |
+ * | *Both* | draw two others and take both | 1 |
+ *
+ * **Four of ten still double**, which is the number that matters: a Critical remains the card you
+ * want, and six times in ten it buys something a doubled number could not. Exposed and Off
+ * Balance are the two that answer armour and Block, and they are worth more than doubling exactly
+ * where doubling is worth least -- against a defended target, which is what section 5 says a
+ * Critical is for.
+ *
+ * **Attacks only.** A Critical on a check or a heal still simply doubles: `apply` is untouched,
+ * and this deck is about what a critical hit does to a body. A Lore check that drew *Off the Feet*
+ * would be a deck reaching somewhere it has no business.
+ *
+ * **Both draws two OTHERS**, so it cannot find itself. One sentence rather than a recursion rule,
+ * and it is the same decision the fate deck makes about a Wild: the strange face does not compound.
+ */
+export const CRIT_EFFECTS = [
+  {
+    name: "Through and Through", copies: 4, doubles: true,
+    text: "Double the damage, as a Critical always did."
+  },
+  {
+    name: "Find the Gap", copies: 2,
+    effect: { condition: "exposed", intensity: 2, duration: 1 },
+    text: "Exposed 2: their armour counts 2 less for a turn. The hit itself is not doubled."
+  },
+  {
+    name: "Off the Feet", copies: 2,
+    effect: { condition: "offBalance", duration: 1 },
+    text: "Off Balance: their Block counts 1 less, and it is an opening. Not doubled."
+  },
+  {
+    name: "Driven Down", copies: 1,
+    effect: { condition: "halted", duration: 1 },
+    text: "Halted: their next turn does not happen. Not doubled."
+  },
+  {
+    name: "Both", copies: 1, draws: 2,
+    text: "Draw two others and take both."
+  }
+];
+
 export const LANGUAGES = [
   { name: "Imperial", of: "the old language and the diplomatic lingua franca" },
   { name: "Valgar", of: "lost language from the fifth district" },

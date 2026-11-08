@@ -658,6 +658,54 @@ export class SkillCardData extends foundry.abstract.TypeDataModel {
  * are the two the rules make arithmetic: `pressure` is Time's extra point in a challenge, and
  * `gives` marks Opening as the one twist that hands something over.
  */
+/**
+ * **One face of the critical deck: what a critical hit did.**
+ *
+ * A Critical doubled and that was the whole of it -- the right common answer and a poor only
+ * answer, because doubling scales backwards against the defence a critical ought to beat: against
+ * four points of armour a doubled Strike of 3 gets **2** through.
+ *
+ * **Every face is a mechanism the game already had**, which is the test a new deck has to pass.
+ * `doubles` is the old behaviour; the conditions are Exposed, Off Balance and Halted; `draws` is
+ * the deck reading itself again. Nothing here needed a rule written for it, which is why there is
+ * no new vocabulary in the schema either -- the effect is a **step**, the same `stepField` a card
+ * half and a spell use, so a face that wanted to apply a condition with a duration and an
+ * intensity already had somewhere to say so.
+ */
+export class CritCardData extends foundry.abstract.TypeDataModel {
+  static defineSchema() {
+    return {
+      /** The old behaviour: the damage is doubled and nothing else happens. */
+      doubles: new fields.BooleanField({ initial: false }),
+
+      /**
+       * What it does instead, as a step.
+       *
+       * A step rather than a condition key and two numbers, because a step is the one vocabulary
+       * this game has for *a thing a card does*, and a face that later wants a different kind of
+       * effect should not need the schema widened to say it.
+       */
+      effect: stepField(),
+
+      /**
+       * **Draw this many others and take all of them.**
+       *
+       * Others, so it cannot find itself. One number rather than a recursion rule, and the same
+       * decision the fate deck makes about a Wild: the strange face does not compound.
+       */
+      draws: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 }),
+
+      /** What it says on the face, because this deck is read aloud. */
+      text: new fields.StringField({ required: false, blank: true, initial: "" })
+    };
+  }
+
+  /** A face that does nothing at all would be a card nobody can resolve. */
+  get acts() {
+    return this.doubles || this.draws > 0 || !!this.effect?.condition;
+  }
+}
+
 export class TwistCardData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {

@@ -25,7 +25,7 @@ import { ItemSlateData, FeatureSlateData, SpellSlateData, InjurySlateData } from
 import {
   ActionCardData, FateCardData, NpcCardData, WoundCardData, TaintCardData, FearCardData,
   DoubtCardData, RageCardData, CompulsionCardData, ConfusionCardData, WildCardData,
-  SkillCardData, TwistCardData
+  SkillCardData, TwistCardData, CritCardData
 } from "./module/data/cards.mjs";
 
 /* -------------------------------------------- */
@@ -70,7 +70,9 @@ Hooks.once("init", () => {
     // The skill side's own card: one approach and a value (skill-rules 1).
     skill: SkillCardData,
     // The GM's deck: what a Partial costs and what a Fail does instead (skill-rules 4).
-    twist: TwistCardData
+    twist: TwistCardData,
+    /* What a critical hit did, drawn face up the moment one lands. */
+    crit: CritCardData
   };
 
   // --- combat

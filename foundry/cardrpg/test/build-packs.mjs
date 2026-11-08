@@ -28,7 +28,7 @@ import {
 } from "../module/graph.mjs";
 import { expandRoster } from "../module/monsters.mjs";
 import { slateData } from "../module/setup.mjs";
-import { actionCardData, skillCardData, twistCardData, npcCardData, artIn, backOf }
+import { actionCardData, skillCardData, twistCardData, critCardData, npcCardData, artIn, backOf }
   from "../module/decks.mjs";
 
 const root = path.join(import.meta.dirname, "..");
@@ -404,6 +404,12 @@ const PACK_PLAN = [
        */
       { name: "The Twist Deck", back: "twist", build: twistCardData,
         list: expand(content.TWISTS, d => d) },
+      /*
+       * The critical deck, with no back: it is turned face up the instant a Critical lands and
+       * read out, so it is never face down in front of anybody.
+       */
+      { name: "The Critical Deck", build: critCardData,
+        list: expand(content.CRIT_EFFECTS, d => d) },
       /* And the ritual twist deck, whose failures are about the thing being lifted. */
       { name: "The Ritual Twist Deck", back: "ritual", build: twistCardData,
         list: expand(content.RITUAL_TWISTS, d => d) },

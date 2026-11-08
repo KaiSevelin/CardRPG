@@ -1,0 +1,265 @@
+{
+  "_id": "r0pa2MHw4SZlvFVo",
+  "_key": "!cards!r0pa2MHw4SZlvFVo",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "The Critical Deck",
+  "type": "deck",
+  "cards": [
+    {
+      "_id": "PiaoHJMFgy63MAO4",
+      "_key": "!cards.cards!r0pa2MHw4SZlvFVo.PiaoHJMFgy63MAO4",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 100,
+      "name": "Through and Through",
+      "type": "crit",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Through and Through"
+        }
+      ],
+      "system": {
+        "doubles": true,
+        "draws": 0,
+        "text": "Double the damage, as a Critical always did."
+      }
+    },
+    {
+      "_id": "df4XjWIAT57q9rzj",
+      "_key": "!cards.cards!r0pa2MHw4SZlvFVo.df4XjWIAT57q9rzj",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 200,
+      "name": "Through and Through",
+      "type": "crit",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Through and Through"
+        }
+      ],
+      "system": {
+        "doubles": true,
+        "draws": 0,
+        "text": "Double the damage, as a Critical always did."
+      }
+    },
+    {
+      "_id": "ozXmrtA05vAFNmga",
+      "_key": "!cards.cards!r0pa2MHw4SZlvFVo.ozXmrtA05vAFNmga",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 300,
+      "name": "Through and Through",
+      "type": "crit",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Through and Through"
+        }
+      ],
+      "system": {
+        "doubles": true,
+        "draws": 0,
+        "text": "Double the damage, as a Critical always did."
+      }
+    },
+    {
+      "_id": "4QltWq5s37DJAhMm",
+      "_key": "!cards.cards!r0pa2MHw4SZlvFVo.4QltWq5s37DJAhMm",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 400,
+      "name": "Through and Through",
+      "type": "crit",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Through and Through"
+        }
+      ],
+      "system": {
+        "doubles": true,
+        "draws": 0,
+        "text": "Double the damage, as a Critical always did."
+      }
+    },
+    {
+      "_id": "nyKsWTt5TfUO3LPQ",
+      "_key": "!cards.cards!r0pa2MHw4SZlvFVo.nyKsWTt5TfUO3LPQ",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 500,
+      "name": "Find the Gap",
+      "type": "crit",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Find the Gap"
+        }
+      ],
+      "system": {
+        "doubles": false,
+        "draws": 0,
+        "text": "Exposed 2: their armour counts 2 less for a turn. The hit itself is not doubled.",
+        "effect": {
+          "condition": "exposed",
+          "intensity": 2,
+          "duration": 1
+        }
+      }
+    },
+    {
+      "_id": "Wm0mmFcHnDoFp3IR",
+      "_key": "!cards.cards!r0pa2MHw4SZlvFVo.Wm0mmFcHnDoFp3IR",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 600,
+      "name": "Find the Gap",
+      "type": "crit",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Find the Gap"
+        }
+      ],
+      "system": {
+        "doubles": false,
+        "draws": 0,
+        "text": "Exposed 2: their armour counts 2 less for a turn. The hit itself is not doubled.",
+        "effect": {
+          "condition": "exposed",
+          "intensity": 2,
+          "duration": 1
+        }
+      }
+    },
+    {
+      "_id": "bHsvx3uzEvL9Vf0a",
+      "_key": "!cards.cards!r0pa2MHw4SZlvFVo.bHsvx3uzEvL9Vf0a",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 700,
+      "name": "Off the Feet",
+      "type": "crit",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Off the Feet"
+        }
+      ],
+      "system": {
+        "doubles": false,
+        "draws": 0,
+        "text": "Off Balance: their Block counts 1 less, and it is an opening. Not doubled.",
+        "effect": {
+          "condition": "offBalance",
+          "duration": 1
+        }
+      }
+    },
+    {
+      "_id": "FvNVZppIihJVF3xF",
+      "_key": "!cards.cards!r0pa2MHw4SZlvFVo.FvNVZppIihJVF3xF",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 800,
+      "name": "Off the Feet",
+      "type": "crit",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Off the Feet"
+        }
+      ],
+      "system": {
+        "doubles": false,
+        "draws": 0,
+        "text": "Off Balance: their Block counts 1 less, and it is an opening. Not doubled.",
+        "effect": {
+          "condition": "offBalance",
+          "duration": 1
+        }
+      }
+    },
+    {
+      "_id": "TQBj3V4LV8MBj7I0",
+      "_key": "!cards.cards!r0pa2MHw4SZlvFVo.TQBj3V4LV8MBj7I0",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 900,
+      "name": "Driven Down",
+      "type": "crit",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Driven Down"
+        }
+      ],
+      "system": {
+        "doubles": false,
+        "draws": 0,
+        "text": "Halted: their next turn does not happen. Not doubled.",
+        "effect": {
+          "condition": "halted",
+          "duration": 1
+        }
+      }
+    },
+    {
+      "_id": "pmUqokDwgilTB9Fw",
+      "_key": "!cards.cards!r0pa2MHw4SZlvFVo.pmUqokDwgilTB9Fw",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1000,
+      "name": "Both",
+      "type": "crit",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Both"
+        }
+      ],
+      "system": {
+        "doubles": false,
+        "draws": 2,
+        "text": "Draw two others and take both."
+      }
+    }
+  ]
+}

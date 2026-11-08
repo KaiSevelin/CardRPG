@@ -23,7 +23,9 @@ import { expandRoster } from "./monsters.mjs";
 import { slateData } from "./setup.mjs";
 import {
   drawFate, deckOf, uprightCards, discardCards, cardName, addFateCards, moveRandom, move,
-  applyFear, removeCard, intruderStack, allStacks, harmCardData, addFateCards as addFate
+  available,
+  applyFear, removeCard, intruderStack, allStacks, harmCardData, critStacks,
+  addFateCards as addFate
 } from "./decks.mjs";
 
 /* -------------------------------------------- */
@@ -518,6 +520,73 @@ export async function liftCondition(actor, { target, key }) {
  * has no target. Four careers grant it, and the finding belongs to them rather than to this
  * function; it is recorded in core-rules 8.
  */
+/**
+ * **What a critical hit did, drawn rather than assumed.**
+ *
+ * A Critical doubled and that was the whole of it. Doubling is the right common answer and a poor
+ * only answer, because it scales backwards against the defence a critical ought to beat: against
+ * four points of armour a doubled Strike of 3 gets **2** through, so the card whose entire purpose
+ * is *this one gets through* was flattest exactly where it should have been sharpest.
+ *
+ * Four of the ten faces still double. The rest apply Exposed, Off Balance or Halted, or draw two
+ * others -- all mechanisms the game already had, which is the test a new deck has to pass.
+ *
+ * **Attacks only.** A Critical on a check or a heal still simply doubles: `FateCardData#apply` is
+ * untouched and this is a layer over the attack path. A Lore check that drew *Off the Feet* would
+ * be a deck reaching somewhere it has no business.
+ *
+ * **No deck is no error.** A world built before this deck existed, or a GM who would rather not
+ * use it, gets the old behaviour: `doubles` is what the absence of a card means, so the rule
+ * degrades to the rule it replaced rather than to nothing.
+ *
+ * Returns `{ doubles, faces, lines }` -- what the caller needs to total the damage and what to
+ * print. The conditions are applied here because they land on the target whatever the damage does.
+ */
+export async function drawCritEffect(actor, target) {
+  const { deck, discard } = critStacks();
+  if (!deck || !discard) return { doubles: true, faces: [], lines: [] };
+
+  const faces = [];
+  const take = async () => {
+    if (!available(deck).length) {
+      const back = [...discard.cards.contents].map(c => c.id);
+      if (back.length) await move(discard, deck, back);
+      await deck.shuffle({ chatNotification: false });
+    }
+    const [card] = await moveRandom(deck, discard, 1);
+    return card ?? null;
+  };
+
+  const first = await take();
+  if (!first) return { doubles: true, faces: [], lines: [] };
+  /*
+   * **Two others, so it cannot find itself.** One loop rather than a recursion rule, and the same
+   * decision the fate deck makes about a Wild: the strange face does not compound.
+   */
+  if (first.system.draws > 0) {
+    for (let i = 0; i < first.system.draws; i++) {
+      const next = await take();
+      if (!next) break;
+      if (next.system.draws > 0) { i--; continue; }
+      faces.push(next);
+    }
+  } else {
+    faces.push(first);
+  }
+
+  const lines = [];
+  let doubles = false;
+  for (const face of faces) {
+    if (face.system.doubles) doubles = true;
+    lines.push(`<strong>${face.name}</strong> &mdash; ${face.system.text}`);
+    const step = face.system.effect;
+    if (step?.condition && target) {
+      await resolveCondition(actor, { step, target });
+    }
+  }
+  return { doubles, faces, lines };
+}
+
 /**
  * **The reason string that is also a rule**, and therefore a constant.
  *
@@ -1923,6 +1992,26 @@ export async function resolveAttack(actor, {
    * changes is that the one card whose whole purpose is *this one gets through* now does.
    */
   const critical = fate.used?.system.special === "crit";
+  /*
+   * **One draw per action, like the fate draw it hangs off** (core-rules 6). An Area attack that
+   * crits draws one critical card and every target gets the same answer, which is the rule fate
+   * already follows and the only one that keeps a Blast legible.
+   *
+   * The conditions it carries land on the **first** target, because a card reading *Exposed 2 on
+   * everyone it hit* would be a different and much larger card. The faces are printed either way.
+   */
+  const crit = critical
+    ? await drawCritEffect(actor, targets[0] ?? null)
+    : { doubles: true, faces: [], lines: [] };
+  /*
+   * **And the undoubled figure, which the deck may send us back to.**
+   *
+   * `fate.result` has the doubling baked in by `FateCardData#apply`, and that is right for a check
+   * and a heal -- only an attack asks the deck what the critical did. So a face that is not
+   * *Through and Through* resolves at the value the attack would have had, and the card's own
+   * effect is what it bought instead.
+   */
+  const landed = critical && !crit.doubles ? before : fate.result;
 
   const rows = [];
   for (const target of targets) {
@@ -1949,7 +2038,7 @@ export async function resolveAttack(actor, {
       const { armor, block, pierced, rounded } =
         defencesAgainst({ armor: hadArmor, block: hadBlock, pierce, step, when, opening });
       const combo = opening ? (when.mod ?? 0) : 0;
-      const got = Math.max(0, fate.result + combo - armor - block);
+      const got = Math.max(0, landed + combo - armor - block);
       return { armor, block, combo, pierced, rounded, hadArmor, hadBlock,
         /* The floor is on the total, after armour and Block, so a Critical is never shrugged off
          * entirely however the target is defended. */
@@ -2110,6 +2199,18 @@ async function attackCard(actor, info) {
     `<p>${chain.join(" &middot; ")}</p>`,
     `<p>Fate${modeLabel}: <strong>${fateLabel}</strong> &rarr; ${fate.result}</p>`
   ];
+
+  /*
+   * **What the critical deck said, printed whether it doubled or not.**
+   *
+   * A face that is not *Through and Through* changes the number the attack resolves at, so the
+   * line has to say both: what was drawn, and that the hit was not doubled. A total that silently
+   * stopped being double would be the one thing a player reads and cannot account for.
+   */
+  if (crit.lines.length) {
+    parts.push(`<p>Critical: ${crit.lines.join("<br>")}</p>`);
+    if (!crit.doubles) parts.push(`<p class="cr-note">Not doubled: ${landed}.</p>`);
+  }
 
   if (reasons.length) parts.push(`<p class="cr-note">${reasons.join("; ")}</p>`);
 
