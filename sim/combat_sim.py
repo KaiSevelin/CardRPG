@@ -62,12 +62,15 @@ FATE_DIST = {m: _fate_dist(m) for m in (-1, 0, 1)}
 
 
 class FateDeck:
-    def __init__(self, rng):
+    def __init__(self, rng, hexes=0):
         self.rng = rng
+        # A Hex is a permanent MISS shuffled in, and permanent means it survives the reshuffle --
+        # a Miss reshuffles the deck when it is drawn (core-rules 6), so it comes straight back.
+        self.hexes = hexes
         self.reshuffle()
 
     def reshuffle(self):
-        self.cards = FATE[:]
+        self.cards = FATE[:] + ['MISS'] * self.hexes
         self.rng.shuffle(self.cards)
 
     def _one(self):
@@ -150,6 +153,13 @@ ARMOUR = {
 # core-rules 4: the limit is 40 kg, over it you are Burdened (Slowed), over half again
 # Overloaded (Burdened, and 2 random cards are Spent).
 CARRY_LIMIT = 40
+# The cards in your hand that cannot be played at all (core-rules 8). 'Wound' was compared by
+# name in six places in this file, which is the same defect the engine had on the JavaScript side
+# and was fixed there on 2026-11-08: a second dead card added to one of the six and not the others
+# would have been playable in a simulator and not in the game, and the numbers would still have
+# looked fine. A set, so a third one is a word here.
+DEAD = {'Wound', 'Compulsion'}
+
 # core-rules 8: a single hit of this much past armor leaves a Wound.
 WOUND_AT = 5
 
@@ -239,6 +249,17 @@ class Config:
     # the hand never comes up short. What it costs is the square, which is the only intruder priced
     # that way and the reason it needs its own model rather than a deck_cut.
     fear: int = 0
+    # Compulsion: dead cards that ALSO forbid Catch Breath while one is in hand (core-rules 8).
+    # The interesting one, because it is the card that makes every other action-deck intruder cost
+    # what it is supposed to: dilution cannot bite until the draw pile empties, and this is what
+    # stops the hero emptying it on their own terms.
+    compulsion: int = 0
+    # Confusion in the GOBLINS' deck: drawn as that type's intent, it means the type has no plan
+    # and each may only Move this round (core-rules 3 draws intent one card per type).
+    confusion: int = 0
+    # Hex: extra permanent MISS cards in the hero's fate deck. Not a new card -- a Miss already is
+    # one, and Shadow Magic buys the same mechanism willingly, one permanent Wild per formula.
+    hex: int = 0
     deck_cut: int = 0             # remove N cards from the action deck
     deck_cut_random: bool = False  # False: the weakest N (a deck-building choice)
                                    # True: N at random (Overloaded, core-rules 4)
@@ -534,6 +555,7 @@ class Game:
         # a config dial rather than a count here, because they arrive from an enemy and not from
         # the collection -- a deck with a Fear card in it is a deck somebody frightened.
         self.cards['Fear'] = ([], [], None, 0)
+        self.cards['Compulsion'] = ([], [], None, 0)
         self.cards.update(cfg.card_overrides)
         deck = [name for name, c in self.cards.items() for _ in range(c[3])]
         self.w = dict(pos=(1, 4), hp=cfg.hp, block=0, potions=cfg.potions, hand=[], draw=deck,
@@ -567,6 +589,7 @@ class Game:
                     pool = [n for n in deck if not self.gives_use(n)] or deck
                 deck.remove(min(pool, key=self.prune_value))
         deck += ['Fear'] * cfg.fear
+        deck += ['Compulsion'] * cfg.compulsion
         rng.shuffle(deck)
         # Stamina caps what comes to the fight: own twenty, bring ten, and which ten is the
         # question. The rest is `reserve` -- not spent, just not here.
@@ -578,7 +601,7 @@ class Game:
         if self.overloaded:
             for _ in range(min(2, len(deck))):
                 self.w['spent'].append(deck.pop(rng.randrange(len(deck))))
-        self.fate_w, self.fate_g = FateDeck(rng), FateDeck(rng)
+        self.fate_w, self.fate_g = FateDeck(rng, cfg.hex), FateDeck(rng)
         self.gdeck = []
         self.s = collections.Counter()
         self.plays = collections.Counter()
@@ -665,7 +688,7 @@ class Game:
         if foe(g['weapon'])['ranged']:
             return False        # stepping one square does not get you out of a bow's range
         cards = [c for c in w['hand']
-                 if c != 'Wound' and self.cards[c][2] == 'sidestep']
+                 if c not in DEAD and self.cards[c][2] == 'sidestep']
         if not cards:
             return False
         blocked = {o['pos'] for o in self.alive()}
@@ -854,7 +877,7 @@ class Game:
         # read as a hand -- and the first run with Wounds on reported the hero winning MORE in hard
         # fights because of exactly that: dead cards padding the hand and the post-Catch-Breath
         # deck, delaying an exhaustion that should have arrived sooner.
-        w['exhausted'] = len([c for c in w['hand'] if c != 'Wound']) < 2 and out
+        w['exhausted'] = len([c for c in w['hand'] if c not in DEAD]) < 2 and out
 
     def take_fear(self):
         """One square directly away from the nearest goblin, and the card is spent.
@@ -876,6 +899,22 @@ class Game:
             return
         w['pos'] = nxt
         self.s['fear_squares'] += 1
+
+    def goblin_move_only(self, g):
+        """A confused type repositions and does nothing else.
+
+        It still closes, because Confusion is not a lost turn -- so against a swarm already in
+        contact it costs almost nothing, and against archers it costs them the shot. The same
+        asymmetry Fear has from the other side of the board.
+        """
+        alive_pos = {o['pos'] for o in self.alive() if o is not g}
+        blocked = alive_pos | {self.w['pos']}
+        prof = foe(g['weapon'])
+        if cheb(g['pos'], self.w['pos']) <= prof['rng']:
+            return                      # already where it wants to be: it shuffles and waits
+        nxt = step_toward(g['pos'], self.w['pos'], blocked)
+        if nxt:
+            g['pos'] = nxt
 
     def gob(self, gid):
         for g in self.gobs:
@@ -915,7 +954,7 @@ class Game:
     def draw_intent(self):
         """One card per NPC type per round, face down (core-rules 3, Intent)."""
         if not self.gdeck:
-            self.gdeck = list(GOBLIN_CARDS)
+            self.gdeck = list(GOBLIN_CARDS) + ['Confusion'] * self.cfg.confusion
             self.rng.shuffle(self.gdeck)
         card = self.gdeck.pop()
         self.gplays[card] += 1
@@ -939,7 +978,13 @@ class Game:
                 else:
                     g = self.gob(c)
                     if g['hp'] > 0:
-                        self.goblin_act(g, intent)
+                        # No plan: every creature of the type may only Move this round, which is
+                        # a reposition and not a lost turn (core-rules 8).
+                        if intent == 'Confusion':
+                            self.s['confused_rounds'] += 1
+                            self.goblin_move_only(g)
+                        else:
+                            self.goblin_act(g, intent)
                 if self.w['hp'] <= 0:
                     return self.result(False)
                 if not self.alive():
@@ -957,7 +1002,7 @@ class Game:
         w = self.w
         # A Wound takes up a slot and is not an option (core-rules 8).
         hand = self.w['hand']
-        live = [i for i, c in enumerate(hand) if c != 'Wound']
+        live = [i for i, c in enumerate(hand) if c not in DEAD]
         single = self.dazed() or len(live) < 2
         opts = []
         if single:
@@ -1051,11 +1096,14 @@ class Game:
                 return
         if w['exhausted']:
             self.s['exhausted_turns'] += 1
+        # A Compulsion in hand forbids the breath outright (core-rules 8). It is the only intruder
+        # that takes an OPTION rather than a resource, and this is the line that is the whole card.
         if (len(w['discard']) >= BREATH_RECOVERY and not w['draw']
+                and 'Compulsion' not in w['hand']
                 and (w['exhausted'] or len(w['hand']) <= cfg.cb_threshold)):
             if self.catch_breath():
                 return
-        if not any(c != 'Wound' for c in w['hand']):
+        if not any(c not in DEAD for c in w['hand']):
             return
         best, best_val = None, -1e9
         for played, ops in self.options():
@@ -1084,9 +1132,10 @@ class Game:
         # "At the end of your turn, discard this card" -- so a Wound costs a hand slot for exactly
         # one turn and then goes back round, which is what makes it a tax on the deck's cycle
         # rather than a permanent cut.
-        for _ in range(w['hand'].count('Wound')):
-            w['hand'].remove('Wound')
-            w['discard'].append('Wound')
+        for name in list(DEAD):
+            for _ in range(w['hand'].count(name)):
+                w['hand'].remove(name)
+                w['discard'].append(name)
 
     def take_hit(self, raw, melee, src):
         w, cfg = self.w, self.cfg
@@ -1251,7 +1300,7 @@ def run_scenario(cfg, fights, seed):
                   'react_block', 'react_parry', 'react_brace', 'react_use', 'react_sidestep',
                   'prevented_react', 'reloads', 'shots_fired', 'cards_spent',
                   'prevented_armor', 'prevented_shieldup', 'dmg_taken', 'heavy_hit_discards', 'wounds_taken',
-                  'fears_taken', 'fears_cornered', 'fear_squares',
+                  'fears_taken', 'fears_cornered', 'fear_squares', 'confused_rounds',
                   'goblin_disadv', 'goblin_adv', 'goblins_fled', 'fate_miss', 'fate_crit'):
             agg[k].append(g.s[k])
         if 'deck_empty_round' in g.s:
@@ -1316,6 +1365,13 @@ SCENARIOS = [
     Config(name='AC Fear 2, 2 spear + 2 bow', fear=2,
            goblins=('spear', 'spear', 'bow', 'bow')),
     Config(name='AD Fear 2 against a raw 8', fear=2, goblin_dmg=8),
+    # The other three intruders that reach the action deck or the fate deck. Rage is absent on
+    # purpose: it costs you a swing aimed at an ally, and there are no allies in here.
+    Config(name='AE Compulsion 1, 4 spears', compulsion=1, goblins=('spear',) * 4),
+    Config(name='AF Hex 1, 4 spears', hex=1, goblins=('spear',) * 4),
+    Config(name='AG Confusion 2, 4 spears', confusion=2, goblins=('spear',) * 4),
+    Config(name='AH Confusion 2, 2 spear + 2 bow', confusion=2,
+           goblins=('spear', 'spear', 'bow', 'bow')),
 ]
 
 

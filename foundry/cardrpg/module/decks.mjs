@@ -353,6 +353,66 @@ export async function reserveCard(card, on = null) {
 }
 
 /**
+ * Rage: Strike the nearest creature, whatever it is.
+ *
+ * **The target is a rule, not a choice.** Nearest by Chebyshev, and the lowest Health of any tied --
+ * so a player cannot aim their own affliction at the enemy and a GM cannot aim it at the cleric.
+ * That is the whole of what makes this a card rather than a table argument, and the tie-break
+ * matters more than it looks: ties are common on a square grid, and "nearest" alone would have left
+ * the choice sitting there unmade.
+ *
+ * It goes through `resolveAttack`, so it is a real Strike: fate is drawn, armour applies, and the
+ * target may react to it exactly as to any other hit. An ally can Block their friend's swing, which
+ * is both correct and the reason this is survivable.
+ *
+ * The import is dynamic because resolve.mjs imports this module -- the same shape combat.mjs
+ * already uses to reach `afterCombat`. Nothing is loaded twice; by the time a card is drawn the
+ * resolver has been in memory since init.
+ */
+export async function applyRage(actor, card) {
+  const say = text => ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<div class="cardrpg"><p><strong>${actor.name}</strong> draws <em>${card.name}</em>: `
+      + `${text}</p></div>`
+  });
+
+  const token = actor?.getActiveTokens?.()[0];
+  const cell = canvas?.grid?.size;
+  if (!token || !canvas?.ready || !cell) {
+    await say("Strike the nearest creature, ally or enemy. <em>No token placed &mdash; the GM "
+      + "resolves it.</em>");
+    return;
+  }
+
+  const others = canvas.tokens.placeables.filter(t => t.id !== token.id && t.actor);
+  if (!others.length) {
+    await say("nothing within reach of it. The card is spent and the swing goes nowhere.");
+    return;
+  }
+
+  const cheb = t => Math.max(Math.abs(t.x - token.x), Math.abs(t.y - token.y)) / cell;
+  const health = t => t.actor?.system?.health?.value ?? Infinity;
+  const victim = others.reduce((a, b) => {
+    const d = cheb(b) - cheb(a);
+    if (d < 0) return b;
+    if (d > 0) return a;
+    return health(b) < health(a) ? b : a;     // the rule's tie-break, not a preference
+  });
+
+  const weapon = actor.items?.find(i => (i.system?.verbs?.strike?.value ?? null) !== null);
+  if (!weapon) {
+    await say(`nothing equipped to swing at <strong>${victim.document.name}</strong>. The card is `
+      + `spent.`);
+    return;
+  }
+
+  const { resolveAttack } = await import("./resolve.mjs");
+  await say(`a Strike at <strong>${victim.document.name}</strong> &mdash; the nearest creature, `
+    + `ally or enemy.`);
+  await resolveAttack(actor, { verb: "strike", item: weapon, targets: [victim.actor] });
+}
+
+/**
  * Take a card out of the game entirely, wherever it happens to be sitting.
  *
  * **A dealt card is a copy.** `Cards#pass` marks the home card `drawn` and creates a second
@@ -445,6 +505,39 @@ export const INTRUDERS = {
   doubt: {
     dead: true, onDraw: null, short: false, after: null, deck: "skill",
     line: "Can't be played. Discard it when the scene ends."
+  },
+  /*
+   * Rage is the first intruder whose cost lands on somebody who did not draw it, and the target is
+   * named by a RULE rather than chosen: the nearest creature, and the lowest Health of those tied.
+   * GM's choice or holder's choice would both turn it into an argument about whose fault the dead
+   * cleric was, and the rule is what keeps it a card instead.
+   */
+  rage: {
+    dead: true, onDraw: "rage", short: false, after: "discard", deck: "action",
+    line: "When drawn: Strike the nearest creature, ally or enemy. Then discard."
+  },
+  /*
+   * Compulsion takes an OPTION rather than a resource, which is the cheapest kind of intruder to
+   * build and the nastiest to hold: the draw pile is the loss condition (core-rules 8) and Catch
+   * Breath is the only thing that refills it. It is also what makes every other action-deck
+   * intruder cost what it is supposed to -- dilution cannot bite until the pile empties, and this
+   * is the card that stops you emptying it on your own terms.
+   */
+  compulsion: {
+    dead: true, onDraw: null, short: false, after: null, deck: "action",
+    line: "Can't be played, and you may not Catch Breath. Discard at the end of your turn."
+  },
+  /*
+   * Confusion is the only intruder that goes into an ENEMY's deck, and the one that answers the
+   * question Wounds could not: core-rules 3 draws intent one card per TYPE, so a species shares the
+   * deck a Wound would have gone in. That is fatal for a Wound and exactly right for this -- what
+   * you are corrupting is the type's PLAN, which is a thing a species really does share. It is
+   * worth more against a swarm than against an elite for the same reason Forestall is, which is the
+   * one shape of enemy-facing effect in this game that does not reward sniping the biggest thing.
+   */
+  confusion: {
+    dead: true, onDraw: null, short: false, after: null, deck: "action",
+    line: "No plan: every creature of this type may only Move this round."
   }
 };
 
@@ -710,9 +803,8 @@ export async function refill(actor) {
 
   const size = actor.system.handSize?.max ?? CARDRPG.defaults.handSize;
   let drawn = 0;
-  let taint = 0;
-  let fear = 0;
   let short = 0;            // slots an intruder took away with it, so the hand comes up short
+  const resolved = {};      // how many of each kind resolved on the way in
 
   while (hand.cards.size + short < size && available(deck).length > 0) {
     const [card] = await moveRandom(deck, hand, 1);
@@ -725,8 +817,8 @@ export async function refill(actor) {
        * the card's own dial and not a case here; a kind that replaces itself simply does not add
        * to `short`, and the loop carries on filling the hand.
        */
-      if (effect === "taint") { await applyTaint(actor, card); taint++; }
-      else if (effect === "fear") { await applyFear(actor, card); fear++; }
+      await ON_DRAW[effect]?.(actor, card);
+      resolved[effect] = (resolved[effect] ?? 0) + 1;
       if (afterDrawing(card) === "gone") await removeCard(actor, card);
       else await move(hand, discard, [card.id]);
       if (costsTheSlot(card)) short++;
@@ -735,8 +827,23 @@ export async function refill(actor) {
     drawn++;
   }
 
-  return { drawn, taint, fear, short };
+  return {
+    drawn, short,
+    taint: resolved.taint ?? 0,
+    fear: resolved.fear ?? 0,
+    rage: resolved.rage ?? 0
+  };
 }
+
+/*
+ * **What each kind does as it is dealt**, keyed by the `onDraw` in the table above.
+ *
+ * A table rather than the if/else chain this was: with two kinds a chain is shorter, with three it
+ * is a list of names in a second place, which is the whole defect the intruder table exists to
+ * close. Declared after the functions it names so each one is a plain declaration rather than a
+ * forward reference.
+ */
+const ON_DRAW = { taint: applyTaint, fear: applyFear, rage: applyRage };
 
 /** Taint: 1 damage ignoring armor. */
 async function applyTaint(actor, card) {
@@ -910,7 +1017,15 @@ export async function retireCards(actor, plays) {
 /** Can this actor Catch Breath at all? The discard has to cover the recovery in full. */
 export function canCatchBreath(actor) {
   const discard = deckOf(actor, "actionDiscard");
-  return (discard?.cards.size ?? 0) >= CARDRPG.defaults.breathRecovery;
+  if ((discard?.cards.size ?? 0) < CARDRPG.defaults.breathRecovery) return false;
+
+  /*
+   * **A Compulsion is the one intruder that takes an option rather than a resource** (core-rules 8),
+   * and it is tested here rather than in the tray because the tray is one caller of three and the
+   * rule is about whether the breath is legal, not about whether a button is drawn.
+   */
+  const hand = deckOf(actor, "actionHand");
+  return ![...(hand?.cards ?? [])].some(c => c.type === "compulsion");
 }
 
 /**

@@ -141,7 +141,7 @@ check("and the unpatched line is gone",
   /Object\.create\(Array\.prototype\)/.test(cytoscape) ? "still there" : "gone", "gone");
 
 const manifest = JSON.parse(fs.readFileSync(path.join(root, "system.json"), "utf8"));
-check("manifest declares Card subtypes", Object.keys(manifest.documentTypes.Card ?? {}).length, 10);
+check("manifest declares Card subtypes", Object.keys(manifest.documentTypes.Card ?? {}).length, 13);
 /*
  * **The verified build is a build, not a generation**, and it is load-bearing in two places.
  *
@@ -8358,7 +8358,7 @@ for (const [doc, types] of Object.entries(manifest.documentTypes)) {
 }
 check("document subtypes with no sheet", uncovered.length ? uncovered.join(", ") : "none", "none");
 check("subtypes checked", Object.values(manifest.documentTypes)
-  .reduce((n, types) => n + Object.keys(types).length, 0), 15);
+  .reduce((n, types) => n + Object.keys(types).length, 0), 18);
 
 /* -------------------------------------------- */
 
@@ -8382,7 +8382,7 @@ const intruderTable = decksSource.slice(
   decksSource.indexOf("export const INTRUDERS = {"),
   decksSource.indexOf("/** Is this one of the cards nobody chose"));
 const intruderKinds = [...intruderTable.matchAll(/^  (\w+): \{/gm)].map(m => m[1]);
-check("kinds of intruder", intruderKinds.join(", "), "wound, taint, fear, doubt");
+check("kinds of intruder", intruderKinds.join(", "), "wound, taint, fear, doubt, rage, compulsion, confusion");
 
 /*
  * Every kind declares every dial. A row that leaves one out reads as a default nobody chose, and
@@ -8488,6 +8488,68 @@ check("and it goes to the skill discard, which a shuffle does not return",
   /if \(stale\.length\) await discardSkillCards\(actor, stale\.map\(c => c\.id\)\);/
     .test(decksSource) ? "yes" : "no", "yes");
 
+/*
+ * **The dispatch is a table now, because three branches of if/else is a second list of names.**
+ * With two kinds a chain was shorter than a map; with three it was exactly the defect the intruder
+ * table exists to close, so `ON_DRAW` is keyed on the same strings the table declares.
+ */
+check("what resolves on draw is a table, not a chain",
+  /const ON_DRAW = \{ taint: applyTaint, fear: applyFear, rage: applyRage \};/
+    .test(decksSource) ? "yes" : "no", "yes");
+check("and the chain is gone",
+  /if \(effect === "taint"\)/.test(decksSource) ? "still there" : "gone", "gone");
+/* Every kind the table says resolves on draw has something in that map to resolve it. */
+const onDrawMap = (decksSource.match(/const ON_DRAW = \{([^}]*)\}/) ?? [, ""])[1];
+const resolvers = [...onDrawMap.matchAll(/(\w+):/g)].map(m => m[1]).sort();
+const wantResolvers = intruderKinds
+  .filter(k => new RegExp(`${k}: \\{[^}]*onDraw: "`).test(intruderTable)).sort();
+check("kinds that resolve on draw have a resolver", resolvers.join(", "), wantResolvers.join(", "));
+
+/*
+ * **Rage's target is a rule**, and the tie-break is the half that would have been left unmade:
+ * ties are common on a square grid, so "nearest" alone is an unfinished sentence.
+ */
+check("Rage strikes the nearest creature",
+  /const victim = others\.reduce\(/.test(decksSource) ? "yes" : "no", "yes");
+check("and the lowest Health of any tied",
+  /return health\(b\) < health\(a\) \? b : a;/.test(decksSource) ? "yes" : "no", "yes");
+/* A real Strike, so the target may react to it: an ally can Block their friend's swing. */
+check("and it goes through the attack path",
+  /await resolveAttack\(actor, \{ verb: "strike", item: weapon, targets: \[victim\.actor\] \}\)/
+    .test(decksSource) ? "yes" : "no", "yes");
+
+/* Compulsion's whole rule is one sentence canCatchBreath reads. */
+check("a Compulsion in hand forbids Catch Breath",
+  /c\.type === "compulsion"/.test(decksSource) ? "yes" : "no", "yes");
+
+/*
+ * **The Hex is not a card**, and the check is that nobody made one: the fate deck has no hand and
+ * no slots, so an intruder there is a fate card with a bad face. A Miss already is one, and
+ * `addFateCards` has dealt them since the deck was built -- Shadow Magic buys the same mechanism
+ * willingly, one permanent Wild per formula.
+ */
+check("Hex reuses the fate deck rather than adding a subtype",
+  /const made = await addFate\(target, \{ special: "miss", count: n, temporary: false \}\)/
+    .test(resolveSource) ? "yes" : "no", "yes");
+check("and no hex subtype was declared",
+  Object.hasOwn(manifest.documentTypes.Card ?? {}, "hex") ? "there is one" : "none", "none");
+/* And no Burden either: weight already taxes the deck, by removal rather than insertion. */
+check("and no burden subtype either",
+  Object.hasOwn(manifest.documentTypes.Card ?? {}, "burden") ? "there is one" : "none", "none");
+check("because Overloaded already does it",
+  /Cards set aside by being Overloaded come back when the load is dropped, not on a rest/
+    .test(decksSource) ? "yes" : "no", "yes");
+
+/* One routine deals every kind with nothing to resolve on arrival; the wrappers are one line. */
+check("the routine that deals the quiet kinds",
+  /async function dealIntruder\(actor, kind, \{ amount = 1, target, fast = false, source = "" \}\)/
+    .test(resolveSource) ? "yes" : "no", "yes");
+for (const kind of ["Rage", "Compulsion", "Confusion"]) {
+  check(`and the GM's name for ${kind}`,
+    new RegExp(`export async function resolve${kind}\\(actor, options\\)`).test(resolveSource)
+      ? "yes" : "no", "yes");
+}
+
 /* Fear's own routine, and the dial it deliberately does not have. */
 check("the routine that deals Fear",
   /export async function resolveFear\(actor, \{ amount = 1, target, fast = false, source = "" \}\)/
@@ -8527,9 +8589,10 @@ check("Card subtypes missing a data model or a label",
  * And the two directions that matter: the kinds the engine knows are exactly the kinds the rules
  * print a row for. Either list growing alone is a kind of harm that half the game believes in.
  */
-const docKinds = [...coreRules.matchAll(/^> \| \*\*(Wound|Taint|Fear|Doubt)\*\* \|/gm)]
+const docKinds = [...coreRules.matchAll(
+  /^> \| \*\*(Wound|Taint|Fear|Doubt|Rage|Compulsion|Confusion)\*\* \|/gm)]
   .map(m => m[1].toLowerCase());
-check("intruders the rules table names", docKinds.join(", "), "wound, taint, fear, doubt");
+check("intruders the rules table names", docKinds.join(", "), "wound, taint, fear, doubt, rage, compulsion, confusion");
 check("and the engine's table agrees, both ways",
   [...intruderKinds].sort().join(",") === [...docKinds].sort().join(",") ? "it does" : "it does not",
   "it does");
@@ -11682,7 +11745,7 @@ for (const m of selfSource.matchAll(/(\w+)\.includes\("((?:[^"\\]|\\.)*)"\)/g)) 
 }
 
 /* The pin that keeps the rest of this honest. */
-check("greps over a whole file, resolved", greps.length, 574);
+check("greps over a whole file, resolved", greps.length, 583);
 
 /*
  * **The rule, as one predicate, run over a planted example before it is run over the suite.**
@@ -11737,6 +11800,7 @@ const absentGreps = [
   String.raw`and no longer stops dealing at the first dose :: taint\+\+;\s*\n\s*break;`,
   String.raw`and no slate is flagged unusable instead :: quarantined: new fields\.BooleanField`,
   String.raw`and reads the change rather than the state :: item\.system\.prepared`,
+  String.raw`and the chain is gone :: if \(effect === "taint"\)`,
   String.raw`and the literal Fear used to carry is gone :: const which = fast \? "actionHand" : "actionDiscard";`,
   String.raw`and the old disjunction is gone from the hand filter :: c\.type !== "wound" && c\.type !== "taint"`,
   String.raw`and the old sentence is gone :: Faith is \*\*wide and shallow\*\*`,

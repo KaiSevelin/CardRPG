@@ -24,7 +24,7 @@ import { CharacterData, NpcData } from "./module/data/actors.mjs";
 import { ItemSlateData, FeatureSlateData, SpellSlateData } from "./module/data/items.mjs";
 import {
   ActionCardData, FateCardData, NpcCardData, WoundCardData, TaintCardData, FearCardData,
-  DoubtCardData, WildCardData,
+  DoubtCardData, RageCardData, CompulsionCardData, ConfusionCardData, WildCardData,
   SkillCardData, TwistCardData
 } from "./module/data/cards.mjs";
 
@@ -60,6 +60,9 @@ Hooks.once("init", () => {
     taint: TaintCardData,
     fear: FearCardData,
     doubt: DoubtCardData,
+    rage: RageCardData,
+    compulsion: CompulsionCardData,
+    confusion: ConfusionCardData,
     wild: WildCardData,
     // The skill side's own card: one approach and a value (skill-rules 1).
     skill: SkillCardData,

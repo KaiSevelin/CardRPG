@@ -22,7 +22,7 @@ import { expandRoster } from "./monsters.mjs";
 import { slateData } from "./setup.mjs";
 import {
   drawFate, deckOf, uprightCards, discardCards, cardName, addFateCards, moveRandom, move,
-  applyFear, removeCard, intruderStack
+  applyFear, removeCard, intruderStack, addFateCards as addFate
 } from "./decks.mjs";
 
 /* -------------------------------------------- */
@@ -671,6 +671,89 @@ export async function resolveDoubt(actor, { amount = 1, target, fast = false, so
       + `&mdash; ${n} into the skill ${fast ? "hand" : "discard"}.</p></div>`
   });
   return { amount: n, fast };
+}
+
+/**
+ * One routine for every intruder that has nothing to resolve on arrival.  **[BUILT 2026-11-08]**
+ *
+ * Rage, Compulsion and Confusion differ in what they do when they are DRAWN, which is the table's
+ * business in decks.mjs, and not at all in how they are dealt: N cards of one kind into the stack
+ * the table names, slow into the discard or fast into the hand. So they share this, and each gets a
+ * named wrapper below for the GM to call -- the wrappers are one line each because the difference
+ * between them is genuinely one word.
+ *
+ * Fear and Taint keep their own routines because they resolve on arrival when dealt fast, and that
+ * is a real difference rather than a parameter.
+ */
+async function dealIntruder(actor, kind, { amount = 1, target, fast = false, source = "" }) {
+  if (!target) return null;
+  const which = intruderStack(kind, fast);
+  const stack = deckOf(target, which);
+  if (!stack) {
+    ui.notifications.warn(`${target.name} has no ${which} for a ${kind}.`);
+    return null;
+  }
+
+  const n = Math.max(1, amount);
+  const name = kind[0].toUpperCase() + kind.slice(1);
+  await stack.createEmbeddedDocuments("Card", Array.from({ length: n }, () => ({
+    name, type: kind, system: { source }
+  })));
+
+  await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<div class="cardrpg"><p><strong>${target.name}</strong>: ${name} `
+      + `<strong>${n}</strong> &mdash; ${n} into the ${fast ? "hand" : "discard"}.</p></div>`
+  });
+  return { amount: n, fast, kind };
+}
+
+/** Rage N: strikes the nearest creature when drawn, ally or enemy (core-rules 8). */
+export async function resolveRage(actor, options) {
+  return dealIntruder(actor, "rage", options);
+}
+
+/** Compulsion N: dead cards that also forbid Catch Breath while held (core-rules 8). */
+export async function resolveCompulsion(actor, options) {
+  return dealIntruder(actor, "compulsion", options);
+}
+
+/**
+ * Confusion N: into an NPC **type's** deck, where it will be drawn as that type's intent.
+ *
+ * The target is the type rather than the individual, and that is the point: core-rules 3 draws
+ * intent one card per type, so this is the one thing you can put in a monster's deck that the
+ * sharing does not ruin. A Wound could not go there because a wound belongs to a body; a plan
+ * belongs to a species.
+ */
+export async function resolveConfusion(actor, options) {
+  return dealIntruder(actor, "confusion", options);
+}
+
+/**
+ * Hex N: N permanent **Miss** cards into the target's fate deck (core-rules 6).
+ *
+ * **It is not a new kind of card, and finding that out is most of what this is.** The fate deck has
+ * no hand and no slots, so nothing in it can be *dead* -- an intruder there has to be a fate card
+ * with a bad face, and the game already has one: a Miss, which makes the action do nothing and then
+ * reshuffles, so it stays. `addFateCards` has dealt them since the fate deck was built.
+ *
+ * The fate deck has also had a priced intruder in it the whole time. Shadow Magic's entire cost is
+ * *a permanent Wild card per formula* (specializations.md), which is this mechanism bought
+ * willingly. A Hex is that transaction with the consent removed, and it needed no new vocabulary,
+ * no new subtype and no new resolution path -- only a name for the GM to call it by.
+ */
+export async function resolveHex(actor, { amount = 1, target } = {}) {
+  if (!target) return null;
+  const n = Math.max(1, amount);
+  const made = await addFate(target, { special: "miss", count: n, temporary: false });
+  await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<div class="cardrpg"><p><strong>${target.name}</strong>: Hex <strong>${n}</strong> `
+      + `&mdash; ${made} permanent Miss ${made === 1 ? "card" : "cards"} shuffled into the fate `
+      + `deck. Only a cure takes one out.</p></div>`
+  });
+  return { amount: made };
 }
 
 /**

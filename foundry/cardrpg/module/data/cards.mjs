@@ -733,3 +733,47 @@ export class DoubtCardData extends foundry.abstract.TypeDataModel {
     };
   }
 }
+
+/**
+ * Rage strikes the nearest creature when drawn, ally or enemy, and then discards itself.
+ *
+ * The same one field, and for the fourth time: what is worth recording about an intruder is what
+ * put it there. Everything else about this one is the rule, not the card -- the target is named by
+ * core-rules 8 rather than chosen, so there is nothing here to choose it with.
+ */
+export class RageCardData extends foundry.abstract.TypeDataModel {
+  static defineSchema() {
+    return {
+      source: new fields.StringField({ required: false, blank: true, initial: "" })
+    };
+  }
+}
+
+/**
+ * Compulsion cannot be played and stops you catching breath while it is in your hand.
+ *
+ * It is the only intruder that takes an **option** instead of a resource, which is why it has no
+ * fields and no effect to resolve: the whole of it is a sentence `canCatchBreath` reads.
+ */
+export class CompulsionCardData extends foundry.abstract.TypeDataModel {
+  static defineSchema() {
+    return {
+      source: new fields.StringField({ required: false, blank: true, initial: "" })
+    };
+  }
+}
+
+/**
+ * Confusion sits in an NPC **type's** deck and is drawn as that type's intent.
+ *
+ * The one intruder on the other side of the table. It needs no resolution code at all: an intent
+ * card is read rather than executed (core-rules 3), so a card whose text says the type has no plan
+ * is a complete rule the moment it is drawn.
+ */
+export class ConfusionCardData extends foundry.abstract.TypeDataModel {
+  static defineSchema() {
+    return {
+      source: new fields.StringField({ required: false, blank: true, initial: "" })
+    };
+  }
+}

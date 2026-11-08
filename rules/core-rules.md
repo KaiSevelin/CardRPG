@@ -1431,6 +1431,9 @@ shuffled into your own decks, where they clog your hand until you get rid of the
 > | **Taint** | either | 1 damage, past armour | **no** — your hand is a card short | back to the discard, until a cure or Cleansing lifts it |
 > | **Fear** | action | one square away from the nearest enemy | yes | **gone** — spent the moment it is drawn |
 > | **Doubt** | **skill** | nothing — it sits dead in a hand of four until the scene ends | at the next scene | back to the skill discard, until a long rest lifts it |
+> | **Rage** | action | a Strike at the nearest creature, ally or enemy | yes | back to the discard, until a long rest lifts it |
+> | **Compulsion** | action | nothing — but you may not Catch Breath while you hold it | yes | back to the discard, until a long rest lifts it |
+> | **Confusion** | *an NPC type's* | that type has no plan: each may only Move this round | — | stays in its deck for the rest of the fight |
 >
 > And a fourth dial that belongs to whatever deals it rather than to the card itself: **which
 > pile**. The discard, where it comes round at a moment nobody chose, or straight into the hand,
@@ -1726,6 +1729,184 @@ shuffled into your own decks, where they clog your hand until you get rid of the
 > fault: skill-rules' third design goal says *your hand rarely has the perfect card, so help from
 > others matters*, and this is the first number anybody has put on it. A Doubt does not introduce
 > that pressure, it leans on a third of the game that was already leaning.
+
+#### Rage  **[BUILT 2026-11-08]**
+
+```
+┌───────────────────────┐
+│ ✖ RAGE                │
+│ Can't be played.      │
+│ When drawn: Strike    │
+│ the nearest creature, │
+│ ally or enemy.        │
+│ Then discard.         │
+└───────────────────────┘
+```
+
+- **You gain Rage** from what the fiction says gives it: a battle-fury, a possession, a drug, a
+  god who does not care who you hit. There is no keyword for it, unlike Fear — a thing that
+  enrages you does it by what it *is* and not by something it can do, so there is no creature
+  capability to gate it on.
+- **When drawn:** you Strike the **nearest creature**, and of any equally near, the one with the
+  **lowest Health**. It is a real Strike: fate is drawn, armour applies, and the target may react
+  to it as to any other hit — an ally *can* Block their friend's swing, which is both correct and
+  the reason this is survivable.
+- **The target is a rule and never a choice.** Not the holder's, because then it would always
+  find an enemy and cost nothing; not the GM's, because then every death it causes is an
+  accusation. The tie-break matters more than it looks: ties are common on a square grid, and
+  *nearest* alone would have left the choice sitting there unmade.
+- A replacement **is** drawn, so your hand does not come up short. What Rage costs is a swing
+  aimed at the wrong person.
+- **Removing one:** a **long rest** removes 1 Rage, the same as a Wound.
+
+> **[OPEN] It cannot be priced yet, and the reason is the instrument rather than the card.**
+> `sim/combat_sim.py` models **one hero**. A card whose entire cost is that it sometimes hits your
+> friends has no cost at all in a simulator with no friends in it -- it would resolve as a free
+> extra Strike at the nearest goblin and measure as a *benefit*, which is worse than no number:
+> it is a confident wrong one. Every other intruder in this section has a figure against the
+> published encounters and this one has a blank, deliberately. What would fill it is a party in
+> the simulator, which is a bigger job than this card and the first thing in the project to
+> actually need one.
+>
+> **[OPEN]** Nothing in the catalogue deals it yet, and the keyword question stays open until
+> something does. If a creature should be able to enrage you, it wants a capability like
+> `terrify`; if only fiction and items should, it wants none. That is a world question and the
+> world does not exist (section 13).
+
+#### Compulsion  **[BUILT 2026-11-08]**
+
+```
+┌───────────────────────┐
+│ ✖ COMPULSION          │
+│ Can't be played, and  │
+│ you may not Catch     │
+│ Breath. Discard at    │
+│ the end of your turn. │
+└───────────────────────┘
+```
+
+- **You gain Compulsion** from a geas, an obsession, a vow held too tightly, a thing you cannot
+  stop doing. Like Rage it has no keyword yet, for the same reason.
+- **While it is in your hand you may not Catch Breath.** That is the whole card. It takes an
+  **option** rather than a resource, which makes it the cheapest kind of intruder to write and
+  the most unpleasant to hold: your draw pile *is* the loss condition, and Catch Breath is the
+  only thing that refills it.
+- **Discard it at the end of your turn**, exactly like a Wound — so it costs you the one breath
+  you most wanted to take, and not every breath after.
+- **Removing one:** a **long rest** removes 1.
+
+> **Why it is also what makes the others cost anything.** Every action-deck intruder is priced by
+> dilution, and dilution cannot bite until the draw pile empties — the Wound measurement above is
+> the whole argument. A Compulsion is the card that stops you emptying it on your own terms, so a
+> hand holding one makes every other intruder in the deck worth more than it was.
+
+> **[MEASURED 2026-11-08]** 4000 fights a cell, against the published encounters.
+>
+> | | 3 spears | 4 spears | 5 spears | 2 spear 2 bow | mean |
+> |---|---|---|---|---|---|
+> | **Compulsion 1** | −0.2 | −1.2 | −2.2 | −2.8 | **−1.6** |
+> | **Compulsion 2** | −0.4 | −2.8 | −6.6 | −6.4 | **−4.1** |
+>
+> **One copy costs more than twice a Wound** (−0.7), and it costs it where the fight is hard:
+> almost nothing against three spears and −2.8 against archers. That is the right shape for a
+> card about not being allowed to stop.
+>
+> **And it almost never actually stops a breath.** Breaths a fight: 2.13 at base, 2.10 with one
+> Compulsion, 2.09 with two. The prohibition fires perhaps three times in a hundred fights — and
+> doubles the price of the card anyway, because the breath it forbids is *the one you needed*. A
+> hero who cannot breathe this turn breathes next turn instead, and the cost is the turn in
+> between, spent on a hand that was already too small. A number that barely moves hiding a cost
+> that doubles is worth keeping in mind next time an average looks reassuring.
+
+#### Confusion  **[BUILT 2026-11-08]**
+
+```
+┌───────────────────────┐
+│ ✖ CONFUSION           │
+│ No plan: every        │
+│ creature of this type │
+│ may only Move this    │
+│ round.                │
+└───────────────────────┘
+```
+
+- **The only intruder that goes into an enemy's deck**, and it answers the question a Wound could
+  not. Section 3 draws intent **one card per type** — *one for all the goblins* — so a species
+  shares the deck a Wound would have gone in, which is fatal for a wound and exactly right for
+  this. What you are corrupting is the type's **plan**, and a plan is a thing a species really
+  does share.
+- **When it is drawn as that type's intent:** the type has no plan this round. Every creature of
+  it may **Move** and nothing else — no Strike, no reaction, no card.
+- **It is not a lost turn.** They still move, so a confused enemy repositions rather than standing
+  still, and it cannot be used to simply delete a round of a boss's existence.
+- **Worth more against a swarm than against an elite**, because intent is per type: five goblins
+  lose their plan together and the one ogre loses only its own. That is the same shape as
+  Forestall, and it is the only kind of enemy-facing effect in this game that does not reward
+  sniping the biggest thing on the board.
+- **It stays in that type's deck for the rest of the fight.** NPC decks reshuffle rather than
+  running out, so a confused type keeps being confused — which is what the card is for.
+
+> **[MEASURED 2026-11-08] It is far too strong, and the measurement is the reason to say so
+> before anything deals it.** 4000 fights a cell, from the hero's side:
+>
+> | | 3 spears | 4 spears | 5 spears | 2 spear 2 bow | mean |
+> |---|---|---|---|---|---|
+> | **Confusion 1** | +0.5 | +2.2 | +6.6 | +16.9 | **+6.5** |
+> | **Confusion 2** | +0.7 | +4.7 | +12.3 | **+29.7** | **+11.8** |
+>
+> Two copies take the archer fight from 40.0% to 69.7%. Nothing else in this document moves a
+> number that far, and the reason is arithmetic rather than design: **an NPC deck is small**, so
+> two cards in it are drawn as the type's intent **5.86 rounds out of 9.7**. A card that costs a
+> player one slot of sixteen costs a monster type most of its fight.
+>
+> It is also worth most exactly where the hero is weakest — +29.7 against archers, +0.7 against
+> three spears — which is the mirror of Fear's own measurement (−9.5 in that same cell). Both act
+> on tempo, and the archer fight is the one where tempo is everything. A card that fixes your
+> worst matchup is not a tax, it is an answer, and answers are priced differently.
+>
+> **So if anything deals it, it deals exactly one and not for the whole fight.** The dial is
+> `after`: a Confusion that left the deck once drawn would cost the type one round rather than
+> most of them, and that is the version worth pricing next.
+
+> **[OPEN]** Nothing deals it yet, and this is still the obvious thing for *Cleave to the Bone*
+> to become. That feature lowers the Wound threshold for its holder and has no legal target at
+> all — 75 of 75 creatures are NPCs — and this is what it was reaching for: the thing that does
+> to a monster what a dead card does to a person. It affects four careers, so it is a design call
+> and not a patch — and on these numbers it is a call about **one** card that does **not** stay.
+
+> **[RESOLVED 2026-11-08] Two more kinds were drafted and both were already in the game.**
+>
+> **A Hex** — an intruder in the **fate deck** — is not a new card and working out why is most of
+> what it taught. The fate deck has no hand and no slots, so nothing in it can be *dead*: an
+> intruder there has to be a fate card with a bad face, and the game has had one since the deck
+> was built. A **Miss** makes the action do nothing and then reshuffles, so it stays in. `Hex N`
+> is therefore N permanent Miss cards and nothing else, which is a name for the GM to call rather
+> than a mechanism to build.
+>
+> It has also been *priced* the whole time, and bought willingly: Shadow Magic's entire cost is
+> **a permanent Wild card per formula** (specializations.md). That is this transaction with the
+> consent left in. A Hex is a school's price charged to somebody who did not choose it.
+>
+> **[MEASURED 2026-11-08] And it is the most expensive single card in this section.** 4000
+> fights a cell: **Hex 1 costs −3.5** on the published mean (−1.1, −3.4, −6.3, −3.1) and **Hex 2
+> costs −8.2**. One extra Miss in twenty-one cards is about five per cent of every action in the
+> fight doing nothing, it is drawn for attacks and checks alike, and it never leaves. Set against
+> the rest: a Hex is five Wounds, two Compulsions, or nearly three Fear — per card.
+>
+> **[OPEN] Which means Shadow Magic now has a number it did not have.** Its price is a permanent
+> **Wild**, not a Miss, and a Wild is the gentler card: *the action resolves at its plain value*,
+> so it flattens the swing instead of eating the action. So −3.5 is an **upper bound** on what
+> each formula of that school costs its caster, and the first hard figure anybody has had for it.
+> The school was priced by assertion (specializations.md §4); it can be measured now, and the
+> measurement wants doing before the next formula is written.
+>
+> **A Burden** — a dead card you can only discard by putting something down — is what **weight**
+> already does, and it does it from the other direction. Being Overloaded Spends **2 random**
+> cards for as long as the load is carried (section 4, *Carrying*), and the engine keeps them out
+> of a rest on purpose: *cards set aside by being Overloaded come back when the load is dropped,
+> not on a rest*. Removing cards and inserting dead ones are the same tax, and a Burden card would
+> have been a fourth name for a rule this document already states twice. It is not built, and that
+> is the finding.
 
 #### Acid, and the only damage that costs you gear
 

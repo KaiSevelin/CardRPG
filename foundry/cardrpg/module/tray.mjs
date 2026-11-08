@@ -1197,9 +1197,16 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     if (this.dealtAt === key) {
       return ui.notifications.info("Already dealt this turn. You draw again next turn.");
     }
-    const { drawn, taint } = await refill(this.actor);
+    /*
+     * Every kind that resolved on the way in counts as something having happened: a refill that
+     * dealt nothing but a Fear is not an empty draw pile, and warning about one would send the
+     * player looking for a problem they do not have.
+     */
+    const { drawn, taint, fear, rage } = await refill(this.actor);
     this.dealtAt = key;
-    if (!drawn && !taint) ui.notifications.warn("Draw pile is empty. Catch Breath to recover some.");
+    if (!drawn && !taint && !fear && !rage) {
+      ui.notifications.warn("Draw pile is empty. Catch Breath to recover some.");
+    }
     this.render();
   }
 
