@@ -1,6 +1,6 @@
 # Art prompts
 
-**616 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
+**622 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
 
 It walks the same `GROUPS` the art list walks, by importing it rather than copying it, so the two files cannot disagree about what exists.
 
@@ -27,7 +27,7 @@ So the numbers are gone from the capsules and the picture is in their place: **t
 
 ## Deck backs
 
-**Draw these first.** 11 pictures against 605 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
+**Draw these first.** 11 pictures against 611 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
 
 ### The capsule — paste this once
 
@@ -549,7 +549,7 @@ WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of L
 
 ## NPC intent cards
 
-**37 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/cards/npc/`.
+**43 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/cards/npc/`.
 
 Face-up on the table during a fight, and seen behind a goblin, a troll and a dragon alike. Draw the **shape of the move**, never a portrait of who is making it: *Close In* is a thing closing in.
 
@@ -773,6 +773,16 @@ SUBJECT. "Feed" — Strike, Heal · Strike an adjacent figure and heal what you 
 Draw something taken out rather than put in: a mark at a human throat and a dry pallor spreading from it, whatever is above it reading only as a stillness.
 ```
 
+### Find the Joint
+
+File: `cards/npc/find-the-joint.webp`
+
+```text
+SUBJECT. "Find the Joint" — Strike ignores 2 armor · Strike where the harness is buckled rather than where it is thickest: ignores 2 armour.
+
+Draw a buckle and its strap, taken hold of from outside the frame -- the plate it closes still whole and now beside the point.
+```
+
 ### Give Ground
 
 File: `cards/npc/give-ground.webp`
@@ -906,6 +916,16 @@ SUBJECT. "Press" — Strike, Strike -1 · Strike, and Strike again at −1. Noth
 Draw the same blow arriving twice -- the first impact closing over the face of a human shield, the second coming in behind it lower and plainly less ready. Nothing clever: twice.
 ```
 
+### Prise It Open
+
+File: `cards/npc/prise-it-open.webp`
+
+```text
+SUBJECT. "Prise It Open" — Strike Exposed 2 (1) · Get into the harness and lever. Exposed 2: armour counts 2 less for a turn.
+
+Draw a breastplate levered away from the body beneath it, the strap gone and the gap held open by something that does not belong in it.
+```
+
 ### Rattle
 
 File: `cards/npc/rattle.webp`
@@ -914,6 +934,16 @@ File: `cards/npc/rattle.webp`
 SUBJECT. "Rattle" — Strike · Strike, and the target discards one card out of their hand — their choice.
 
 Draw the instant a blow lands, the weapon already through -- never wound up, never posing.
+```
+
+### Round the Guard
+
+File: `cards/npc/round-the-guard.webp`
+
+```text
+SUBJECT. "Round the Guard" — Strike ignores Block · Strike before the shield comes across. Block does not answer this.
+
+Draw a shield still coming across and already too late, the gap between its edge and the body closing on nothing.
 ```
 
 ### Set and Wait
@@ -1006,6 +1036,16 @@ SUBJECT. "Take Stock" — Shake 1 · Nothing this round, and shake one condition
 Draw a round spent on itself: nothing attacking anywhere in frame, a haze lifting off and away from a dark shape standing square, dust falling rather than rising.
 ```
 
+### Take the Legs
+
+File: `cards/npc/take-the-legs.webp`
+
+```text
+SUBJECT. "Take the Legs" — Move, Strike Off Balance (1) · Move and Strike low; on a hit the target is Off Balance.
+
+Draw a foot taken out from under, the weight already past the point of recovery and the shield swinging wide of everything.
+```
+
 ### The Hive Obeys
 
 File: `cards/npc/the-hive-obeys.webp`
@@ -1029,6 +1069,16 @@ SUBJECT. "Thrash" — Strike blast 1, Move · Strike every figure adjacent to yo
 Draw one full circle of motion: a blurred sweep running all the way around a single point, grit and dust flung to the frame's edges, and the centre of it already empty.
 ```
 
+### Where It Is Held
+
+File: `cards/npc/where-it-is-held.webp`
+
+```text
+SUBJECT. "Where It Is Held" — Strike ignores armour · Strike a target it already has hold of. Armour does not apply: nothing is moving.
+
+Draw an arm pinned flat and a point resting on it, unhurried, with nowhere for the arm to go.
+```
+
 ### Work the Weave
 
 File: `cards/npc/work-the-weave.webp`
@@ -1037,6 +1087,16 @@ File: `cards/npc/work-the-weave.webp`
 SUBJECT. "Work the Weave" — Cast · Cast one from your own short list.
 
 Draw the air around a raised limb going wrong -- light bending, grit lifting off the ground in a slow curve. Nothing is being struck; something is being made.
+```
+
+### Worry It
+
+File: `cards/npc/worry-it.webp`
+
+```text
+SUBJECT. "Worry It" — Strike ignores armour vs Off Balance · Tear at a target already off balance, and armour does not come into it.
+
+Draw a body already down and the ground churned where it is being worked at, the armour irrelevant because nothing is being aimed.
 ```
 
 ## Way of Shade — pool
@@ -9285,4 +9345,10 @@ Answer a cluster by adding its keys to `DIRECTION` in `test/art-prompts.mjs` and
 
 **None.** Every row in `DIRECTION` is keyed to a piece that exists. A key typed by hand is the one thing in this file that can be wrong without anything failing, so it is counted here rather than trusted.
 
+
+## Gaps
+
+**1 piece of the game's vocabulary have no motif**, so the prompts that use them carry a `[GAP]` marker instead of a picture. Write one in `test/art-prompts.mjs` and regenerate.
+
+- condition `exposed`
 

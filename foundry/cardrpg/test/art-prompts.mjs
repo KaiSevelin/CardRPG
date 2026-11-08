@@ -1052,6 +1052,31 @@ const DIRECTION = {
    * creature, and the exception is generated from `only` rather than written here, so a card that
    * stopped being exclusive could not keep the licence (see the entry loop below).
    */
+  /*
+   * **Six intents about a defence, and the capsule's rule holds: the actor is nobody.**
+   *
+   * No species, no anatomy, no scale -- one picture serves a goblin and a dragon. So each of
+   * these is the **defence failing**, not the creature doing it: the harness, the shield, the
+   * footing. That is also why they do not repeat *Between the Plates*, which owns the seam with a
+   * point already in it on the players' side.
+   */
+  "cards/npc/find-the-joint":
+    "a buckle and its strap, taken hold of from outside the frame -- the plate it closes still "
+    + "whole and now beside the point",
+  "cards/npc/where-it-is-held":
+    "an arm pinned flat and a point resting on it, unhurried, with nowhere for the arm to go",
+  "cards/npc/worry-it":
+    "a body already down and the ground churned where it is being worked at, the armour "
+    + "irrelevant because nothing is being aimed",
+  "cards/npc/round-the-guard":
+    "a shield still coming across and already too late, the gap between its edge and the body "
+    + "closing on nothing",
+  "cards/npc/prise-it-open":
+    "a breastplate levered away from the body beneath it, the strap gone and the gap held open "
+    + "by something that does not belong in it",
+  "cards/npc/take-the-legs":
+    "a foot taken out from under, the weight already past the point of recovery and the shield "
+    + "swinging wide of everything",
   "cards/npc/the-hive-obeys":
     "an enormous rooted body that does not fight: seen from below and behind, one vast limb lifted "
     + "in a signal, and the whole floor between it and the far wall already in motion",

@@ -1788,6 +1788,101 @@ export const INTENTS = [
     text: "Move your speed through a figure in the way, pushing it aside, then Strike.",
     sequence: [{ verb: "move" }, { verb: "strike" }]
   },
+  /*
+   * --- four intents that answer armour, and the arithmetic that sized them ---
+   *
+   * The roster could already pierce, but only as a property of **what a creature is**: a Tail Club
+   * ignores 2, an Acid Spray ignores 2, and 22 of the roster's 82 attacks carry a number. What it
+   * could not do was have a **round** where it went for the gap -- two intents in thirty-seven
+   * touched either flag.
+   *
+   * **The sizing constraint is the deck, and it is severe.** An intent deck is 7 to 14 cards
+   * (median 10) and core-rules 3 draws one card per **type**, so a card fires roughly once a
+   * fight -- and when it does, *every creature of that type* acts on it. Against a character in
+   * Plate:
+   *
+   * | | per attacker | five of them |
+   * |---|---|---|
+   * | `ignores: 2` | 3 - (4-2) = **1** | 5 in that round |
+   * | `ignoresArmour` | **3** | **15**, which kills a 12-Health hero outright |
+   *
+   * So the two flags cannot share a gate. A **number** is safe on a broad capability; a **total**
+   * bypass is only safe where swarms cannot reach it, and that is a fact about the roster rather
+   * than a judgement: of the eight creatures with `grapple`, **none** has `pack`. The base Goblin
+   * has `wits`, which is why `wits` gets the number and not the bypass.
+   */
+  {
+    name: "Find the Joint", needs: ["wits"],
+    text: "Strike where the harness is buckled rather than where it is thickest: ignores 2 armour.",
+    sequence: [{ verb: "strike", ignores: 2 }]
+  },
+  {
+    /*
+     * The total bypass, and it is safe here for a reason that is counted rather than felt: no
+     * creature in the roster has both `grapple` and `pack`, so this can never be multiplied by a
+     * swarm. *Drag Down* already applies Grappled on the same gate, so the pair is a real sequence
+     * a GM can play: hold it still, then put the point where you like.
+     */
+    name: "Where It Is Held", needs: ["grapple"],
+    text: "Strike a target it already has hold of. Armour does not apply: nothing is moving.",
+    sequence: [{ verb: "strike", ignoresArmour: true }]
+  },
+  {
+    /*
+     * Conditional, which is how a broad gate can carry the total bypass: ten of the forty-four
+     * feral creatures run in packs, and none of them can use this until something has knocked the
+     * target off balance. The same shape as *Between the Plates*, whose gap is a Mark.
+     */
+    name: "Worry It", needs: ["feral"],
+    text: "Tear at a target already off balance, and armour does not come into it.",
+    sequence: [{ verb: "strike", when: { needs: "offBalance", ignoresArmour: true } }]
+  },
+  {
+    /*
+     * **The setup, which is what makes the rest of these affordable.**
+     *
+     * `exposed` is armour counted less for a turn, and it is the answer to a problem a flag could
+     * not solve: on the NPC side a piercing card is drawn once per *type*, so `ignoresArmour` on a
+     * swarm is five attackers at full damage in one round and `ignores: 2` is almost nothing.
+     * Exposing instead makes the big hit cost **two** rounds, lets the second one come from
+     * somebody else, shows on the token while it lasts, and can be Shaken Off -- none of which a
+     * flag on a step could do.
+     *
+     * `brute` because it is a thing done with weight: 24 creatures have it and only two run in
+     * packs, so the two-round play belongs to the big single enemies that need it.
+     */
+    name: "Prise It Open", needs: ["brute"],
+    text: "Get into the harness and lever. Exposed 2: armour counts 2 less for a turn.",
+    sequence: [{ verb: "strike", condition: "exposed", intensity: 2, duration: 1 }]
+  },
+  {
+    /*
+     * **And the other setup, which nothing on this side of the table could do.**
+     *
+     * Three cards apply Off Balance and **all three are the players'** -- so four cards keyed off
+     * it, *Worry It* among them, and a monster had no way to make its own opening. A card gated on
+     * a condition its own side cannot create is dead content, which is this project's commonest
+     * defect wearing a different hat.
+     *
+     * `pack` and `move`, because this is the thing a swarm is for: one of them takes your legs
+     * and the rest are already on top of you. Off Balance now costs a point of Block as well as
+     * being an opening, so the round it buys is worth having.
+     */
+    name: "Take the Legs", needs: ["pack", "move"],
+    text: "Move and Strike low; on a hit the target is Off Balance.",
+    sequence: [{ verb: "move" }, { verb: "strike", condition: "offBalance", duration: 1 }]
+  },
+  {
+    /*
+     * The other axis, which was thinner still: one intent in thirty-seven went round a shield.
+     * `fast` rather than `wits` because this is about being quicker than the arm holding it, and
+     * because Block is a smaller number than armour -- going round one is worth less than going
+     * through the other, so a broader gate is affordable.
+     */
+    name: "Round the Guard", needs: ["fast"],
+    text: "Strike before the shield comes across. Block does not answer this.",
+    sequence: [{ verb: "strike", ignoresBlock: true }]
+  },
   {
     name: "Bring It Down", needs: ["siege"],
     text: "Strike a door, a wall or a held position, ignoring its armour entirely.",

@@ -352,5 +352,6 @@
   "CARDRPG.Effect.Maiming": "Maiming",
   "CARDRPG.Ritual.Mending": "Mending",
   "CARDRPG.Ritual.QuietNight": "Quiet Night",
-  "CARDRPG.Ritual.Unknotting": "Unknotting"
+  "CARDRPG.Ritual.Unknotting": "Unknotting",
+  "CARDRPG.Condition.Exposed": "Exposed"
 }

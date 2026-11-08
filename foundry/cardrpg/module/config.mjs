@@ -303,6 +303,33 @@ CARDRPG.conditions = {
    * still play both halves and keep your reactions, so core-rules 7's ban on taking a turn away
    * holds. That is also what separates it from Grappled, which blocks the Move half outright.
    */
+  /**
+ * **Exposed N: armour counts N less while it lasts.**
+ *
+ * The alternative to a card that ignores armour, and a better one for a reason the measurements
+ * made plain. A piercing **card** is a flag on one step: it fires or it does not, it is invisible
+ * until the damage is totalled, and sizing it is hopeless on the NPC side -- an intent is drawn
+ * once per *type*, so `ignoresArmour` on a swarm's card is five attackers at full damage in the
+ * same round and `ignores: 2` is almost nothing. There is no number between them.
+ *
+ * A **condition** has every property the flag lacks. It is a *tracked* number, so it composes
+ * with armour, Block, `ignores N` and everything else rather than overriding them. It is
+ * **visible** -- it shows on the token and the sheet, and the armour figure a player reads drops,
+ * which is the difference between a rule and a surprise. It is **setup and payoff**, so the big
+ * hit costs two actions and the second one can be somebody else's. And it can be **Shaken Off**,
+ * which means it is answerable, where a flag never was.
+ *
+ * `valued`, so *Exposed 2* is a real thing to write and the duration and the depth are separate
+ * dials. `reducesArmour` mirrors Frozen's `reducesMove` exactly, down to the rule that the
+ * highest applies and they do not add.
+ *
+ * **Not an opening**, deliberately. Openings are the four a combo clause may key off and the
+ * Thief's Signature hits *whatever you set up*; a fifth would widen that card silently and the
+ * count of four is pinned in three places. This is a number, not a tell.
+ */
+  exposed: {
+    label: "CARDRPG.Condition.Exposed", icon: "drop-weapon", valued: true, reducesArmour: true
+  },
   frozen: {
     label: "CARDRPG.Condition.Frozen",
     icon: "frozen-body",
@@ -398,7 +425,20 @@ CARDRPG.conditions = {
 
   // --- Openings. One per Way, and each does nothing until a card reads it.
   wet: { label: "CARDRPG.Condition.Wet", icon: "droplets", opening: true, cancels: ["burning"] },
-  offBalance: { label: "CARDRPG.Condition.OffBalance", icon: "foot-trip", opening: true },
+  /*
+   * **Off Balance now takes a point of Block as well as being an opening.**
+   *
+   * It was `{ opening: true }` and nothing else -- a pure tell, which three cards apply and four
+   * key off. That is a legitimate shape for an opening, and it is also a condition whose own name
+   * says a defence should be worse: somebody off balance is not getting their shield across.
+   *
+   * It is the Block half of what Exposed is for armour, and it goes here rather than on a new
+   * condition because the game already had the right word for it. Not `valued`: one point, which
+   * is most of a Wooden Shield, and the opening is still the larger part of what it does.
+   */
+  offBalance: {
+    label: "CARDRPG.Condition.OffBalance", icon: "foot-trip", opening: true, reducesBlock: true
+  },
   marked: { label: "CARDRPG.Condition.Marked", icon: "crosshair", opening: true },
   judged: { label: "CARDRPG.Condition.Judged", icon: "scales", opening: true }
 };

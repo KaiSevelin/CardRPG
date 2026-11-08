@@ -1,6 +1,6 @@
 # Art list
 
-**616 pieces**, of which **616** are wired up. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card.
+**622 pieces**, of which **622** are wired up. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card.
 
 ## What to supply
 
@@ -54,7 +54,7 @@ Anything under `icons/svg/` is ignored on purpose: that is Foundry's own placeho
 
 ## Deck backs — draw these first
 
-**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 11 pictures against 605 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
+**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 11 pictures against 611 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
 
 **11 pieces**, 11 wired up. Same 2:3 and 640 × 960 as a face, and **no safe area**: nothing is printed over a back, so the whole card is yours.
 
@@ -116,7 +116,7 @@ Six cards every Way draws on, so each one is seen by every character in the game
 
 Face-up on the table during a fight, which makes them the art players stare at longest. **One pool, and every creature in the world draws the subset it has earned** (core-rules 9) — so a picture here is seen behind a goblin, a troll and a dragon, and wants to be the SHAPE of the move rather than a portrait of whoever is making it. *Close In* is a thing closing in.
 
-**37 pieces**, 37 wired up. Suggested path: `cardrpg/art/cards/npc/`
+**43 pieces**, 43 wired up. Suggested path: `cardrpg/art/cards/npc/`
 
 | | Name | What it is | File |
 |---|---|---|---|
@@ -131,6 +131,7 @@ Face-up on the table during a fight, which makes them the art players stare at l
 | ✓ | **Envenom** | Strike · Strike; on a hit it carries whatever you carry. | `cards/npc/envenom.webp` |
 | ✓ | **Fade** | Move, Strike Invisible (1) · Move your speed and become Hidden. You were never standing there. | `cards/npc/fade.webp` |
 | ✓ | **Feed** | Strike, Heal · Strike an adjacent figure and heal what you took out of it. | `cards/npc/feed.webp` |
+| ✓ | **Find the Joint** | Strike ignores 2 armor · Strike where the harness is buckled rather than where it is thickest: ignores 2 armour. | `cards/npc/find-the-joint.webp` |
 | ✓ | **Give Ground** | Move · Move your speed away from the nearest enemy. A hurt thing that can leave, does. | `cards/npc/give-ground.webp` |
 | ✓ | **Go Under** | Move · Leave the map. Next round you arrive anywhere you could have walked to. | `cards/npc/go-under.webp` |
 | ✓ | **Gorge** | Strike, Shake 1 · Strike, and eat what comes away: shake one condition off yourself. | `cards/npc/gorge.webp` |
@@ -144,7 +145,9 @@ Face-up on the table during a fight, which makes them the art players stare at l
 | ✓ | **Order** | An ally within sight acts again, or moves its speed. You do nothing yourself. | `cards/npc/order.webp` |
 | ✓ | **Pick the Soft One** | Move, Strike ignores Block · Move your speed and Strike whoever is least ready for it, round the shield rather than through it: Block does not answ... | `cards/npc/pick-the-soft-one.webp` |
 | ✓ | **Press** | Strike, Strike -1 · Strike, and Strike again at −1. Nothing clever, twice. | `cards/npc/press.webp` |
+| ✓ | **Prise It Open** | Strike Exposed 2 (1) · Get into the harness and lever. Exposed 2: armour counts 2 less for a turn. | `cards/npc/prise-it-open.webp` |
 | ✓ | **Rattle** | Strike · Strike, and the target discards one card out of their hand — their choice. | `cards/npc/rattle.webp` |
+| ✓ | **Round the Guard** | Strike ignores Block · Strike before the shield comes across. Block does not answer this. | `cards/npc/round-the-guard.webp` |
 | ✓ | **Set and Wait** | Defend · Defend, and keep a reaction for whoever comes. | `cards/npc/set-and-wait.webp` |
 | ✓ | **Shelter** | Defend · Allies within 1 cannot be targeted at range while you stand. | `cards/npc/shelter.webp` |
 | ✓ | **Spoil the Ground** | Ready · Nothing at anybody: one square within reach is a trap now, and stays one. | `cards/npc/spoil-the-ground.webp` |
@@ -154,9 +157,12 @@ Face-up on the table during a fight, which makes them the art players stare at l
 | ✓ | **Submerge** | Move · Go under the water. Next round you surface anywhere along it. | `cards/npc/submerge.webp` |
 | ✓ | **Swarm** | Move, Strike +1 · Move, then Strike at +1 for each ally already adjacent to your target. | `cards/npc/swarm.webp` |
 | ✓ | **Take Stock** | Shake 1 · Nothing this round, and shake one condition off. | `cards/npc/take-stock.webp` |
+| ✓ | **Take the Legs** | Move, Strike Off Balance (1) · Move and Strike low; on a hit the target is Off Balance. | `cards/npc/take-the-legs.webp` |
 | ✓ | **The Hive Obeys** | Three allies within sight each move their speed, or one of them acts twice. She does nothing herself but decide. | `cards/npc/the-hive-obeys.webp` |
 | ✓ | **Thrash** | Strike blast 1, Move · Strike every figure adjacent to you, then move your speed away from all of them. | `cards/npc/thrash.webp` |
+| ✓ | **Where It Is Held** | Strike ignores armour · Strike a target it already has hold of. Armour does not apply: nothing is moving. | `cards/npc/where-it-is-held.webp` |
 | ✓ | **Work the Weave** | Cast · Cast one from your own short list. | `cards/npc/work-the-weave.webp` |
+| ✓ | **Worry It** | Strike ignores armour vs Off Balance · Tear at a target already off balance, and armour does not come into it. | `cards/npc/worry-it.webp` |
 
 ## Way of Shade — pool
 

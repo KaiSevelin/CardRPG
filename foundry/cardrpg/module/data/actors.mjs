@@ -86,6 +86,26 @@ function bitingInjuries(system) {
   return slates.filter(s => injuryBites(s, adapted));
 }
 
+/**
+ * **How much a condition takes off a defence**, for either kind of actor.
+ *
+ * Shared for the reason `blockedReactionsOf` is: a monster's armour is cut by Exposed exactly as
+ * a character's is, and the NPC model derives its own `armor`. A getter on the character alone
+ * would have subtracted `undefined` on every creature in the game -- not a wrong number but a
+ * **NaN**, which would have shown as an empty armour box and stopped every comparison silently.
+ * That is the third time this pair of models has needed the same answer in two places.
+ *
+ * The highest applies; they do not add. The same rule the Move reduction already had, because two
+ * sources of one kind of loss are one loss.
+ */
+function reductionOf(system, flag) {
+  let worst = 0;
+  for (const c of system.activeConditions ?? []) {
+    if (CARDRPG.conditions[c.key]?.[flag]) worst = Math.max(worst, c.value ?? 1);
+  }
+  return worst;
+}
+
 function slotCapacityOf(system, slot) {
   const base = CARDRPG.slots[slot]?.capacity;
   if (base === null || base === undefined) return base;
@@ -413,9 +433,15 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
      * said, which made five of the ten slots unusable for armour and is why nothing had ever been
      * written for cloak, head, neck, fingers or feet (rules/equipment.md 5).
      */
-    this.armor = grants.armor + slates
+    /*
+     * **Exposed comes off here, not in the resolver**, so the number on the sheet is the number
+     * the attack will meet. A defence that is quietly worse than it looks is the worst kind of
+     * rule, and this is the same decision `movePlayed` makes about a card's printed Move.
+     */
+    this.armor = Math.max(0, grants.armor + slates
       .filter(i => i.type === "item" && CARDRPG.slots[i.system.equippedSlot]?.worn)
-      .reduce((n, i) => n + (i.system.armorNow ?? i.system.armor ?? 0), 0);
+      .reduce((n, i) => n + (i.system.armorNow ?? i.system.armor ?? 0), 0)
+      - this.armorReduction);
 
     /*
      * --- armour again, for the one feature that reads the encumbrance tier
@@ -587,6 +613,35 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
    */
   get moveHalved() {
     return this.activeConditions.some(c => CARDRPG.conditions[c.key]?.halvesMove);
+  }
+
+  /**
+   * **How much a condition takes off armour and off Block.** The highest applies; they do not add.
+   *
+   * The same rule and the same shape as the Move reduction below, and for the same reason: two
+   * sources of the same kind of loss are one loss, which is both the simpler sentence and the
+   * kinder one. Taken off the **derived** numbers rather than inside the resolver, so the figure
+   * a player reads on the sheet and in the tray is the figure the attack will meet -- a defence
+   * that is quietly worse than it looks is the worst kind of rule.
+   */
+  get armorReduction() {
+    return reductionOf(this, "reducesArmour");
+  }
+
+  get blockReduction() {
+    return reductionOf(this, "reducesBlock");
+  }
+
+  /**
+   * **Block as it stands now**, after Off Balance has taken its point.
+   *
+   * `blockNow` rather than making `block` derived, because Block is **spent**: an attack consumes
+   * it and the resolver writes the remainder back, so it has to stay a stored field. The name is
+   * the convention a worn item already uses for the same situation -- `armorNow` beside `armor`,
+   * where the base is the printed number and the `Now` is what corrosion has left of it.
+   */
+  get blockNow() {
+    return Math.max(0, (this.block ?? 0) - this.blockReduction);
   }
 
   /** How much a condition takes off a Move after halving. The highest applies; they do not add. */
@@ -763,9 +818,11 @@ export class NpcData extends foundry.abstract.TypeDataModel {
 
   prepareDerivedData() {
     const gear = this.parent.items.filter(i => i.type === "item" && i.system.equipped);
-    this.armor = this.armorBase + gear
+    /* Exposed cuts a monster's armour the same way: the condition is not the player's alone. */
+    this.armor = Math.max(0, this.armorBase + gear
       .filter(i => CARDRPG.slots[i.system.equippedSlot]?.worn)
-      .reduce((n, i) => n + (i.system.armorNow ?? i.system.armor ?? 0), 0);
+      .reduce((n, i) => n + (i.system.armorNow ?? i.system.armor ?? 0), 0)
+      - this.armorReduction);
 
     /*
      * --- what a monster's features and gear grant
@@ -818,6 +875,20 @@ export class NpcData extends foundry.abstract.TypeDataModel {
   /** A monster can lose a hand too, and the tray equips gear through this. */
   slotCapacity(slot) {
     return slotCapacityOf(this, slot);
+  }
+
+  /** Exposed and Off Balance cut a monster's defences as they cut a character's. */
+  get armorReduction() {
+    return reductionOf(this, "reducesArmour");
+  }
+
+  get blockReduction() {
+    return reductionOf(this, "reducesBlock");
+  }
+
+  /** And a monster's Block is spent the same way, so it is a stored field here too. */
+  get blockNow() {
+    return Math.max(0, (this.block ?? 0) - this.blockReduction);
   }
 
   /** And a monster with a bow reads its range the same way. */

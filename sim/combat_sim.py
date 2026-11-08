@@ -117,6 +117,11 @@ WARRIOR_CARDS = {
 }
 
 GOBLIN_CARDS = {
+    # One round where the type goes for the buckles rather than the breastplate. The third element
+    # of a strike op is armour the STEP ignores, the same as on the hero's side.
+    'Find the Joint': [('strike', 0, None)],
+    # Strike, and the target is Exposed 2 for a turn: the setup half of the two-round play.
+    'Prise It Open': [('strike', 0, 'expose')],
     'Stab & Scurry': [('strike', 0, None), ('move', 2)],
     'Rush':          [('move', 3), ('strike', 0, None)],
     'Swarm':         [('move', 2), ('strike', 'swarm', None)],
@@ -210,6 +215,10 @@ CONDITIONS = {
     'burning':  dict(valued=True, damage=True, cancels=('wet', 'frozen')),
     'poisoned': dict(valued=True, damage=True, blocks_secondary=True),
     'frozen':   dict(valued=True, reduces_move=True, cancels=('burning',)),
+    # Exposed N: armour counts N less while it lasts (core-rules 7). The condition route to
+    # defeating armour, against the flag route -- tracked, visible, and shakeable, where a flag on
+    # a step is none of those.
+    'exposed':  dict(valued=True, reduces_armour=True),
     'prone':    dict(enemy_melee_advantage=True, reduces_move=True),
     'grappled': dict(blocks_move=True),
     'offBalance': dict(opening=True),
@@ -294,6 +303,15 @@ class Config:
     # it is the rule now rather than a proposal: 15 of the roster's 112 creatures could not hurt a
     # character in Plate at all without it. False re-runs the old arithmetic.
     crit_floor: bool = True
+    # **An intent card in the goblins' deck that ignores N armour** (core-rules 3, 5).
+    #
+    # The point of the dial is the deck, not the card: an intent deck is 7 to 14 cards and intent
+    # is drawn once per TYPE, so when a piercing card comes up EVERY goblin acts on it. One card
+    # in nine fires about once a fight, and five spears all going through two points of armour in
+    # the same round is a different number from one of them doing it.
+    pierce_intent: int = 0
+    # The condition route: an intent that Exposes rather than piercing. 0 leaves it out of the deck.
+    expose_value: int = 0
     # Shattered Nerves: no reactions in round 1. The engine knows rounds rather than
     # per-character firsts, and so does this.
     shattered_nerves: bool = False
@@ -1018,6 +1036,10 @@ class Game:
         """One card per NPC type per round, face down (core-rules 3, Intent)."""
         if not self.gdeck:
             self.gdeck = list(GOBLIN_CARDS) + ['Confusion'] * self.cfg.confusion
+            if self.cfg.pierce_intent:
+                self.gdeck.append('Find the Joint')
+            if self.cfg.expose_value:
+                self.gdeck.append('Prise It Open')
             self.rng.shuffle(self.gdeck)
         card = self.gdeck.pop()
         self.gplays[card] += 1
@@ -1200,12 +1222,17 @@ class Game:
                 w['hand'].remove(name)
                 w['discard'].append(name)
 
-    def take_hit(self, raw, melee, src, crit=False, plus2=False):
+    def take_hit(self, raw, melee, src, crit=False, plus2=False, pierce=0):
         w, cfg = self.w, self.cfg
         self._board = self.board()
         # *Nothing Gets Through*: while Overloaded, armour counts double. Overloaded is not free --
         # the hero is Slowed and two cards are Spent for the fight -- so this reads both prices.
         armor = cfg.armor * 2 if (cfg.armor_doubles_overloaded and self.overloaded) else cfg.armor
+        # `ignores N` comes off armour and never off Block (core-rules 5).
+        # Exposed comes off armour before the hit, as the engine takes it off the derived number.
+        exposed = max([c['value'] for c in w['conds']
+                       if CONDITIONS[c['key']].get('reduces_armour')] or [0])
+        armor = max(0, armor - pierce - exposed)
         # A face that finds the gap in the plate takes no armour off at all.
         if (crit and cfg.crit_pierces) or (plus2 and cfg.plus2_pierces):
             armor = 0
@@ -1347,7 +1374,13 @@ class Game:
                     self.s['goblin_adv'] += 1
                 fc = self.fate_g.draw(int(adv) - int(dis))
                 raw = fate_apply(value, fc)
-                self.take_hit(raw, not ranged, g['id'], crit=(fc == 'CRIT'), plus2=(fc == 2))
+                # The intent's own piercing, which is a property of the round rather than of the
+                # creature: armour is reduced for every goblin acting on this card.
+                pierce = self.cfg.pierce_intent if card == 'Find the Joint' else 0
+                self.take_hit(raw, not ranged, g['id'], crit=(fc == 'CRIT'), plus2=(fc == 2),
+                              pierce=pierce)
+                if kind == 'strike' and op[2] == 'expose' and fc != 'MISS':
+                    self.apply_cond('exposed', 1, self.cfg.expose_value)
                 if kind == 'strike' and op[2] == 'daze' and fc != 'MISS':
                     self.apply_cond(self.cfg.goblin_condition,
                                     self.cfg.goblin_cond_dur,

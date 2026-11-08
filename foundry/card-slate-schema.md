@@ -55,7 +55,7 @@ schema too, so a face can render without a second convention.
 
 #### `text` was carrying the game  **[MEASURED 2026-11-02]**
 
-**Of 367 steps, 127 carried prose** `-` and a step that is only prose used to do *nothing at all*
+**Of 374 steps, 127 carried prose** `-` and a step that is only prose used to do *nothing at all*
 when played. `case ""` in the tray broke out of a switch that
 is the end of the method: no effect, no prompt, not a line in chat. The branch below it already
 announced any verb the engine did not recognise, so the arrangement was exactly backwards `-` **a

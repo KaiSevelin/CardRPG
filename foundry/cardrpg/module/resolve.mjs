@@ -1682,7 +1682,7 @@ export async function counter(actor, enemy, option) {
   if (!option || !enemy) return null;
 
   const armor = enemy.system.armor ?? 0;
-  const block = enemy.system.block ?? 0;
+  const block = enemy.system.blockNow ?? enemy.system.block ?? 0;
   const dealt = Math.max(0, (option.hits ?? 0) - armor - block);
   const choice = await spendReaction(actor, option);
 
@@ -1945,7 +1945,7 @@ export async function resolveAttack(actor, {
     const against = who => {
       const opening = !!(when && carries(who, when.needs));
       const hadArmor = who.system.armor ?? 0;
-      const hadBlock = who.system.block ?? 0;
+      const hadBlock = who.system.blockNow ?? who.system.block ?? 0;
       const { armor, block, pierced, rounded } =
         defencesAgainst({ armor: hadArmor, block: hadBlock, pierce, step, when, opening });
       const combo = opening ? (when.mod ?? 0) : 0;

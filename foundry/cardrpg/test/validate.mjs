@@ -252,7 +252,7 @@ if (!fs.existsSync(specPath)) {
   for (const m of configSource.matchAll(/^  ([a-zA-Z]+): \{\s*\n\s*label: "CARDRPG\.Condition\./gm)) {
     conditions.add(m[1]);
   }
-  check("conditions found in config", conditions.size, 24);
+  check("conditions found in config", conditions.size, 25);
 
 
   /*
@@ -272,7 +272,7 @@ if (!fs.existsSync(specPath)) {
     const body = bodyOf(k);
     return !body.includes("opening:") && !body.includes("noDuration:");
   });
-  check("conditions that can be shaken off", shakeable.length, 14);
+  check("conditions that can be shaken off", shakeable.length, 15);
 
   /*
    * How every condition is got rid of, as an EXHAUSTIVE partition -- which is the only honest answer
@@ -303,7 +303,7 @@ if (!fs.existsSync(specPath)) {
     else buckets[b] = (buckets[b] ?? 0) + 1;
   }
   check("conditions with no way out at all", homeless.length ? homeless.join(", ") : "none", "none");
-  check("removed by Shake Off", buckets.shake ?? 0, 14);
+  check("removed by Shake Off", buckets.shake ?? 0, 15);
   check("removed by Lift", buckets.lift ?? 0, 2);
   check("removed by dropping weight", buckets.weight ?? 0, 2);
   check("removed by the clock, by design", buckets.clock ?? 0, 4);
@@ -404,6 +404,8 @@ if (!fs.existsSync(specPath)) {
   check("the flags section was located", flagsAt >= 0 && flagTable.length > 0, true);
   const flags = new Set([
     "blocks", "blocksSecondary", "blocksReactions", "halvesMove", "reducesMove",
+    /* The two that take a defence rather than a movement, added with Exposed. */
+    "reducesArmour", "reducesBlock",
     "noDuration", "derived", "opening", "cancels", "valued", "damagePerTurn"
   ]);
   const stray = [...new Set([...flagTable.matchAll(/`([A-Za-z]+)`/g)].map(m => m[1]))]
@@ -778,7 +780,8 @@ for (const step of steps) {
 check("step keys not in stepField", strayKeys.size ? [...strayKeys].join(", ") : "none", "none");
 
 const clauses = steps.filter(step => step?.when?.needs);
-check("combo clauses found", clauses.length, 2);
+/* Three: *Between the Plates*, one more, and *Worry It* -- the first clause on an NPC card. */
+check("combo clauses found", clauses.length, 3);
 
 const openings = new Set(
   [...configSource.matchAll(/^  ([a-zA-Z]+): \{[^}]*opening: true/gm)].map(m => m[1])
@@ -787,8 +790,20 @@ check("openings declared in config", openings.size, 4);
 const notOpenings = clauses.filter(s => !openings.has(s.when.needs)).map(s => s.when.needs);
 check("clauses that read an opening", notOpenings.length ? notOpenings.join(", ") : "all", "all");
 
+/*
+ * **A clause must GIVE something, and a piercing flag is something.**
+ *
+ * This listed `mod`, `advantage` and `dc` because those were the three a clause could carry when
+ * it was written. `ignoresArmour` and `ignoresBlock` became readable on a clause afterwards --
+ * *Between the Plates* goes through plate against a Marked target and carries nothing else -- so
+ * a clause whose whole gift is defeating a defence read here as a clause that only gates.
+ *
+ * The check's point stands: a clause that gates and gives nothing is a condition requirement
+ * dressed up as a combo. What changed is the list of ways to give.
+ */
 const gates = clauses.filter(s =>
   !s.when.mod && !s.when.advantage && !s.when.dc
+  && !s.when.ignoresArmour && !s.when.ignoresBlock && !s.when.ignoresCover
 ).map(s => s.when.needs);
 check("clauses that only gate", gates.length ? gates.join(", ") : "none", "none");
 
@@ -3539,7 +3554,7 @@ const needsVocabulary = new Set(CARDRPG.intentNeeds);
 /* One binding, read by the sweep and by its own denominator: a sweep holding its own copy of the
  * list can be emptied while the count beside it goes on reporting 28. */
 const intentsSwept = content.INTENTS;
-check("intents the needs sweep read", intentsSwept.length, 37);
+check("intents the needs sweep read", intentsSwept.length, 43);
 check("needs no vocabulary has",
   [...new Set(intentsSwept.flatMap(i =>
     (i.needs ?? []).filter(n => !needsVocabulary.has(n))))].sort().join(", ") || "none", "none");
@@ -6055,7 +6070,7 @@ const artable = [
   content.NATURAL_WEAPONS ?? [], everyCreatureForArt, [content.WARRIOR],
   ...Object.entries(content).filter(([k]) => k.endsWith("_SIGNATURES")).map(([, v]) => v)
 ].flat();
-check("pieces of content that take art", artable.length, 605);
+check("pieces of content that take art", artable.length, 611);
 /*
  * **The four items that are content without being commissions, and the item each one wears.**
  *
@@ -6505,7 +6520,7 @@ const pathless = [
   ...artable.map(e => [e.name, artInLive(e)]),
   ...backs.map(([k, b]) => [b.label ?? k, backOfLive(k)])
 ].filter(([, p]) => p && !fs.existsSync(fileFor(p)));
-check("art paths the game would hand Foundry", artable.length + backs.length, 616);
+check("art paths the game would hand Foundry", artable.length + backs.length, 622);
 /*
  * **The shoot queue, declared rather than carried quietly.**
  *
@@ -6536,7 +6551,7 @@ check("art paths the game would hand Foundry", artable.length + backs.length, 61
  */
 check("and those naming a file that is not there",
   pathless.map(([name]) => name).sort().join(", ") || "none",
-  "Find the Seam, Half-Hilt, Round the Shield");
+  "Find the Joint, Prise It Open, Round the Guard, Take the Legs, Where It Is Held, Worry It");
 /*
  * **Every group in the brief lands in a slot something writes.**
  *
@@ -6704,7 +6719,7 @@ const briefs = faceRows.map(r => r.brief);
 const leaked = briefs.flatMap(text =>
   [...text.matchAll(/\b([a-z]+[A-Z][a-zA-Z]*)\b/g)].map(m => m[1]));
 /* A pattern that matched no rows at all would report "none" for any list whatsoever. */
-check("briefs the check actually read", briefs.length, 605);
+check("briefs the check actually read", briefs.length, 611);
 check("keys that leaked into the brief",
   leaked.length ? [...new Set(leaked)].join(", ") : "none", "none");
 /*
@@ -6936,7 +6951,7 @@ check("and the log is a record, not a source",
  * spelling them again. */
 const packSource = fs.readFileSync(path.join(root, "test/build-packs.mjs"), "utf8");
 const rows = faceRows;
-check("file paths in the brief", rows.length, 605);
+check("file paths in the brief", rows.length, 611);
 /* And the backs, whose path is the slug of their KEY rather than of their printed label. */
 const backPaths = [...artList.matchAll(/\| `(backs\/[^`]+)` \|/g)].map(m => m[1]);
 check("back paths in the brief", backPaths.length, backs.length);
@@ -7043,7 +7058,7 @@ for (const entry of everyEntry) {
     for (const st of arr ?? []) everyStep.push({ card: entry.name, st });
   }
 }
-check("steps the timing audit read", everyStep.length, 367);
+check("steps the timing audit read", everyStep.length, 374);
 
 /*
  * **Every key a combo clause uses is a key the clause's schema declares.**
@@ -7097,7 +7112,7 @@ for (const [what, count, read] of [
    * the conditional pair on *Between the Plates* hangs off its opening rather than its step. Eight
    * now, and the three that joined are Way of Shade cards written for exactly this: the Way that
    * bypasses a defence rather than breaking it. */
-  ["go straight through armour, Block or cover", 8,
+  ["go straight through armour, Block or cover", 10,
     s => s.st.ignoresArmour || s.st.ignoresBlock || s.st.ignoresCover],
   ["name whose fate deck they Read", 4, s => s.st.readDeck],
   ["wait on a state of the player's own", 11, s => s.st.whileState]
@@ -7592,7 +7607,7 @@ check("and the group it asks for", DIMENSIONS.join("+"), "width+height+depth");
 const everyPackDoc = planned.flatMap(p => p.docs);
 const everyPackChild = planned.flatMap(p => p.docs.flatMap(d => d.items ?? d.cards ?? []));
 check("documents the stamp sweep read", everyPackDoc.length, 498);
-check("and children beneath them", everyPackChild.length, 372);
+check("and children beneath them", everyPackChild.length, 378);
 const unstamped = [...everyPackDoc, ...everyPackChild]
   .filter(d => d._stats?.coreVersion !== manifest.compatibility.verified
     || d._stats?.systemId !== manifest.id
@@ -7707,7 +7722,7 @@ for (const pack of planned) {
 }
 check("ids that are not the hash of their key, malformed, or shared",
   idFaults.length ? idFaults.slice(0, 4).join("; ") : "none", "none");
-check("ids the rule actually read", everyId.size, 870);
+check("ids the rule actually read", everyId.size, 876);
 /* The hash itself, asked rather than shared: sixteen characters of the right alphabet, and the
  * same answer twice for the same key. */
 check("an id is sixteen characters", packs.id16("items:Longsword").length, 16);
@@ -9803,8 +9818,20 @@ check("and neither reads an item's tags by hand",
 /* And flat armour, which had no home in the game at all until this. */
 check("flat armour is a grant a character reads",
   grants.CHARACTER_GRANTS.includes("armor") ? "yes" : "no", "yes");
+/*
+ * **And it still adds it, with Exposed taken off the same expression.** The grep moved because the
+ * sum is now wrapped in a floor: a condition that cuts armour cuts the **derived** number, so the
+ * figure on the sheet is the figure the attack meets. A defence quietly worse than it looks is the
+ * worst kind of rule, and it is the same decision `movePlayed` makes about a printed Move.
+ */
 check("and the derived armour adds it",
-  /this\.armor = grants\.armor \+ slates/.test(actorsSource) ? "yes" : "no", "yes");
+  /this\.armor = Math\.max\(0, grants\.armor \+ slates/.test(actorsSource) ? "yes" : "no", "yes");
+check("and Exposed comes off it, on both models",
+  (actorsSource.match(/- this\.armorReduction\);/g) ?? []).length, 2);
+check("and off Block, which is spent and so stays a field",
+  (actorsSource.match(/get blockNow\(\)/g) ?? []).length, 2);
+check("and one routine answers for both models",
+  /function reductionOf\(system, flag\)/.test(actorsSource) ? "yes" : "no", "yes");
 check("while an NPC has no such grant, having armorBase instead",
   grants.NPC_GRANTS.includes("armor") ? "yes" : "no", "no");
 /* The three teachings that grant it, which is the whole reason the field exists. */
@@ -11872,7 +11899,7 @@ const everyCreature = monsters.expandRoster(content.ROSTER, content.VARIANTS);
 const deckOfCaps = (caps, kind = "") => monsters.deckFor(caps, content.INTENTS, kind);
 const deckOfCreature = c => deckOfCaps(c.system.capabilities, c.system.kind);
 
-check("cards in the intent pool", content.INTENTS.length, 37);
+check("cards in the intent pool", content.INTENTS.length, 43);
 check("bases in the roster", content.ROSTER.length, 75);
 check("creatures the variants expand them into", everyCreature.length, 112);
 check("and the rest of the world, tagged but not numbered", content.MONSTER_TAGS.length, 0);
@@ -11947,7 +11974,7 @@ check("drilled, feral and wits across the roster",
 check("cards each temperament earns",
   CARDRPG.temperaments.map(t =>
     `${t} ${content.INTENTS.filter(c => c.needs.includes(t)).length}`).join(", "),
-  "drilled 2, feral 3, wits 3");
+  "drilled 2, feral 4, wits 4");
 
 /*
  * --- the three cards that belong to a creature -----------------------------------------------
@@ -11990,7 +12017,7 @@ check("and the card schema declares it",
 const movers = content.INTENTS.filter(c => c.sequence.some(s => s.verb === "move"));
 check("cards that move the creature", movers.map(c => c.name).sort().join(", "),
   "Bull Through, Carry, Carry It Off, Charge, Close In, Fade, Give Ground, Go Under, " +
-  "Pick the Soft One, Stoop, Strike and Step, Submerge, Swarm, Thrash");
+  "Pick the Soft One, Stoop, Strike and Step, Submerge, Swarm, Take the Legs, Thrash");
 check("and not one of them can be drawn without being able to",
   movers.filter(c => !monsters.capsOf(c.needs).has("move")).map(c => c.name).join(", "), "");
 /* Three of those fourteen never mention `move` in `needs` and do not need to: Stoop asks for flight,
@@ -12014,7 +12041,7 @@ check("and the Queen can draw it", deckOfCaps(["commander", "summon"]).some(c =>
 check("and the smallest deck in the roster",
   Math.min(...everyCreature.map(c => deckOfCreature(c).length)), 7);
 check("the largest",
-  Math.max(...everyCreature.map(c => deckOfCreature(c).length)), 14);
+  Math.max(...everyCreature.map(c => deckOfCreature(c).length)), 16);
 /* The Queen is the only creature in the world that cannot move, so she is the only one who proves
  * the derivation does anything. Without her, `needs: ["move"]` and `needs: []` are the same card. */
 const legless = everyCreature.filter(c => !monsters.capsOf(c.system.capabilities).has("move"));
@@ -12216,7 +12243,7 @@ check("intent cards no creature can earn",
   undrawable.length ? undrawable.sort().join(", ") : "none",
   "none");
 /* And the sweep had intents to look at, so an empty pool cannot pass it. */
-check("intents the sweep read", content.INTENTS.length, 37);
+check("intents the sweep read", content.INTENTS.length, 43);
 /* The three capabilities that strand them, from the other end: nothing in the roster has one. */
 check("capabilities the config offers that no creature has",
   Object.keys(CARDRPG.capabilities).filter(k => !creatureCaps.has(k)).sort().join(", ")
@@ -12565,7 +12592,7 @@ for (const m of selfSource.matchAll(/(\w+)\.includes\("((?:[^"\\]|\\.)*)"\)/g)) 
 }
 
 /* The pin that keeps the rest of this honest. */
-check("greps over a whole file, resolved", greps.length, 640);
+check("greps over a whole file, resolved", greps.length, 641);
 
 /*
  * **The rule, as one predicate, run over a planted example before it is run over the suite.**
