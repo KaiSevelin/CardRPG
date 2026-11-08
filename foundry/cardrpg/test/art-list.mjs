@@ -6,7 +6,19 @@
  * content the game does, so a piece that exists in the game is in the brief and a piece in the
  * brief exists in the game.
  *
- * It also reports what is already drawn, so the file doubles as the commission's progress.
+ * It also reports what is already drawn, so the file doubles as the commission's progress -- and
+ * that half **was wrong for as long as it existed**. It counted `artIn(entry)`, which asks whether
+ * a piece has a path wired into the game, and every piece in content has one by construction. So
+ * it printed "622 pieces, 622 wired up" while a file was missing from the disk, which is the
+ * project's own recurring defect wearing a progress bar: a field that reads as one thing and
+ * asserts another.
+ *
+ * It now asks the **disk**, and reports three states rather than one:
+ *
+ *   - **drawn**   -- the file is there. The only one that means a picture exists.
+ *   - **refused** -- an image model would not draw the brief (`ART_REFUSED` in art.mjs). A state,
+ *                    not a gap: without it a blocked piece looks pending for ever.
+ *   - **pending** -- nobody has got to it yet.
  */
 
 import fs from "node:fs";
@@ -14,8 +26,8 @@ import path from "node:path";
 import { CARDRPG } from "../module/config.mjs";
 import * as content from "../module/content.mjs";
 import { expandRoster } from "../module/monsters.mjs";
-import { DELIVERY, slug, SHELVES } from "../module/art.mjs";
-import { artIn, backOf } from "../module/decks.mjs";
+import { DELIVERY, slug, SHELVES, ART_REFUSED } from "../module/art.mjs";
+import { backOf } from "../module/decks.mjs";
 
 const root = path.join(import.meta.dirname, "..");
 const OUT = path.join(root, "..", "art-list.md");
@@ -401,21 +413,56 @@ let total = Object.keys(content.DECK_BACKS).length;
 /*
  * **"Wired up" used to mean somebody had typed the path, and nobody ever had.** It now means what
  * a reader of this document actually wants to know: that the game will show the picture. Both
- * halves ask the engine the same question Foundry asks it -- `artIn` and `backOf` -- rather than
+ * halves ask the engine the same question Foundry asks it -- `backOf` -- rather than
  * looking at a field, so a piece counted here is a piece that appears in play.
  */
+/**
+ * **Is the file actually there?** `artIn` cannot answer this and was never asking: it is the
+ * engine's question, *does this card know where its picture lives*, and it is used to decide
+ * whether to put one on a card at all. Delivery is a question about a filesystem, so it is asked
+ * of the filesystem -- and asked through the same `slug` the game uses, because the one time this
+ * check was written with a hand-rolled slug it reported thirty-one missing files that were all
+ * present under their real names. Every apostrophe in the book was a false positive.
+ */
+const ART_DIR = path.join(root, "art");
+const onDisk = (group, entry) =>
+  fs.existsSync(path.join(ART_DIR, group.dir, `${slug(entry.name)}.${DELIVERY.format}`));
+
+const refusedNames = new Set(Object.keys(ART_REFUSED));
+const state = (group, entry) => onDisk(group, entry) ? "drawn"
+  : refusedNames.has(entry.name) ? "refused" : "pending";
+
 let drawn = Object.keys(content.DECK_BACKS).filter(k => backOf(k)).length;
+let refused = 0, pending = 0;
+const refusedRows = [];
 for (const group of GROUPS) {
   total += group.list.length;
-  drawn += group.list.filter(e => artIn(e)).length;
+  for (const entry of group.list) {
+    const s = state(group, entry);
+    if (s === "drawn") drawn++;
+    else if (s === "refused") { refused++; refusedRows.push([group, entry]); }
+    else pending++;
+  }
 }
+
+/*
+ * **A refusal nobody declared is a failure, not a state.** If a brief comes back blocked and is
+ * not in ART_REFUSED, this file says so by name rather than counting it quietly as pending --
+ * otherwise the whole mechanism is optional and the queue silently absorbs it again.
+ */
+const undeclared = [...refusedNames].filter(n =>
+  !GROUPS.some(g => g.list.some(e => e.name === n && state(g, e) === "refused")));
 
 push(
   "# Art list",
   "",
-  `**${total} pieces**, of which **${drawn}** are wired up. Generated from the game's own content `
+  `**${total} pieces**, of which **${drawn}** are drawn`
+  + `${refused ? `, **${refused}** refused` : ""}`
+  + `${pending ? ` and **${pending}** still to shoot` : ""}. Generated from the game's own content `
   + "by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the "
-  + "game the first time somebody adds a card.",
+  + "game the first time somebody adds a card. **Drawn means the file is on the disk**, not that "
+  + "the game knows where it would go: every piece in content knows that, so the older count was "
+  + "always the total.",
   "",
   "## What to supply",
   "",
@@ -568,7 +615,7 @@ push(
 
 for (const group of GROUPS) {
   if (!group.list?.length) continue;
-  const have = group.list.filter(e => artIn(e)).length;
+  const have = group.list.filter(e => state(group, e) === "drawn").length;
   const describe = group.brief ?? brief;
   push(
     `## ${group.title}`,
@@ -587,7 +634,8 @@ for (const group of GROUPS) {
     "|---|---|---|---|"
   );
   for (const entry of [...group.list].sort((a, b) => a.name.localeCompare(b.name))) {
-    push(`| ${artIn(entry) ? "✓" : " "} | **${entry.name}** | ${describe(entry) || "—"} `
+    const mark = { drawn: "✓", refused: "✗", pending: " " }[state(group, entry)];
+    push(`| ${mark} | **${entry.name}** | ${describe(entry) || "—"} `
       + `| \`${group.dir}/${slug(entry.name)}.webp\` |`);
   }
   push("");
@@ -617,6 +665,52 @@ for (const group of GROUPS) {
   }
 }
 
+
+/*
+ * **The refusals, last, with the reason in the brief itself.**
+ *
+ * In the brief rather than only in `art.mjs` because the brief is what somebody has open when they
+ * are working through the queue, and a piece marked **x** in a table with no explanation anywhere
+ * near it is worse than one marked pending.
+ */
+if (refusedRows.length) {
+  push(
+    "## Refused",
+    "",
+    "Briefs an image model would not draw, marked **x** in the tables above. A refusal is a "
+    + "**state**, not a gap: without this section a blocked piece is indistinguishable from one "
+    + "nobody has reached, so it sits in the queue looking pending, gets re-run, and is refused "
+    + "again. Declared in `ART_REFUSED` in `module/art.mjs`.",
+    "",
+    "Each of these needs its **brief** changed rather than another attempt at the same words. The "
+    + "brief is generated from the card's rules text, so that is where the rewrite goes — and if "
+    + "the rewrite makes the card read better, which it generally does, the refusal paid for "
+    + "itself.",
+    "",
+    "| Name | File | Why it was refused |",
+    "|---|---|---|"
+  );
+  for (const [group, entry] of refusedRows)
+    push(`| **${entry.name}** | \`${group.dir}/${slug(entry.name)}.${DELIVERY.format}\` `
+      + `| ${ART_REFUSED[entry.name]} |`);
+  push("");
+}
+
+/*
+ * **A name in ART_REFUSED that is not refused any more.** Either its file arrived, in which case
+ * the entry is stale and should go, or it names nothing in content at all. Said out loud rather
+ * than ignored, because a refusal list that quietly keeps dead entries is a list nobody trusts.
+ */
+if (undeclared.length) {
+  push(
+    "> **Stale refusals.** `ART_REFUSED` names " + undeclared.map(n => `**${n}**`).join(", ")
+    + ", which " + (undeclared.length === 1 ? "is" : "are")
+    + " no longer refused — the file arrived, or the name matches nothing in content. Remove "
+    + (undeclared.length === 1 ? "it" : "them") + " from `module/art.mjs`.",
+    ""
+  );
+}
+
 /*
  * Written when run as a script, not when imported. The validator imports this for `slug`, because
  * the rule "a path is the slug of the name" has to be checked with the generator's own slug: a
@@ -624,5 +718,7 @@ for (const group of GROUPS) {
  */
 if (process.argv[1] && process.argv[1].endsWith("art-list.mjs")) {
   fs.writeFileSync(OUT, lines.join("\n") + "\n", "utf8");
-  console.log(`wrote ${path.relative(process.cwd(), OUT)}: ${total} pieces, ${drawn} wired up`);
+  console.log(`wrote ${path.relative(process.cwd(), OUT)}: ${total} pieces, ${drawn} drawn, `
+    + `${refused} refused, ${pending} to shoot`);
+  for (const name of undeclared) console.log(`  stale refusal: ${name}`);
 }

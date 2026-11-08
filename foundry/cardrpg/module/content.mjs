@@ -1823,8 +1823,22 @@ export const INTENTS = [
      * swarm. *Drag Down* already applies Grappled on the same gate, so the pair is a real sequence
      * a GM can play: hold it still, then put the point where you like.
      */
+    /*
+     * **The text was rewritten because an image model would not draw the first one** (`art.mjs`,
+     * ART_REFUSED). The rule is untouched -- a grapple creature striking what it already holds,
+     * past armour -- but the brief is generated from this line, and a brief that reads as a pinned
+     * body under a weapon is a brief that gets refused however it is worded.
+     *
+     * The rewrite is better anyway, which is the argument for making it rather than retrying:
+     * *where it is held* now means **where the armour is held**, the strap and the buckle under a
+     * hand that is already there. That is what the card's name says, and the old line did not.
+     *
+     * Not the same card as *Prise It Open*, and the difference is worth keeping straight: that one
+     * levers a harness open as a two-round setup and leaves the target Exposed for anybody, while
+     * this one goes through the gap it is already holding, once, now.
+     */
     name: "Where It Is Held", needs: ["grapple"],
-    text: "Strike a target it already has hold of. Armour does not apply: nothing is moving.",
+    text: "A hand already on the strap. Armour does not apply: it is not holding anything on.",
     sequence: [{ verb: "strike", ignoresArmour: true }]
   },
   {

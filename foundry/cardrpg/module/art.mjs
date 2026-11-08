@@ -30,6 +30,28 @@ import { expandRoster } from "./monsters.mjs";
 export const DELIVERY = { format: "webp", quality: 80 };
 
 /**
+ * **Briefs an image model refused to draw, and what was asked for instead.**
+ *
+ * A refusal is a **state**, not a gap. Without this list a blocked piece is indistinguishable from
+ * one nobody has got to yet: it sits in the queue looking pending, somebody re-runs it, it is
+ * refused again, and the only record is in a chat log. Naming it here costs one line and makes the
+ * re-write reviewable.
+ *
+ * It is keyed on the piece's **name** rather than its path, because the name is what survives a
+ * shelf moving, and the value is the reason -- which is the part worth keeping. A reason of "the
+ * brief was rewritten" with no new refusal means the entry can go.
+ *
+ * Kept beside `DELIVERY` because both are facts about *supplying* art rather than about the game,
+ * and `art-list.mjs` already reads this file for exactly that.
+ */
+export const ART_REFUSED = {
+  "Where It Is Held": "A grapple creature striking a target it already holds: the brief put an "
+    + "immobilised figure under a weapon, which is the composition the filter stops rather than "
+    + "anything in the words. Rewritten to the hand and the harness instead -- see the card's own "
+    + "text, which now means what the card's name always said."
+};
+
+/**
  * **Absolute from Foundry's data root, because a relative path here is a bug with a record.**
  * `cardrpg.mjs` carries the scar: a relative icon path resolved against the stylesheet and became
  * `systems/cardrpg/styles/systems/cardrpg/icons/...`. Every other path in this system is spelled

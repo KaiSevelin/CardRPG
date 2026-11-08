@@ -6496,7 +6496,9 @@ check("intent prompts with a near twin",
   nearTwins.filter(p => p.group === "NPC intent cards").map(p => p.file).join(", ") || "none",
   "none");
 /* Every piece is a row, so nothing is quietly left out of the brief. */
-const listed = new Set([...artList.matchAll(/^\| [ ✓] \| \*\*(.+?)\*\* \|/gm)]
+/* `[ ✓✗]`: a refused piece is still a row, and leaving it out of this set would report it
+ * missing from the brief it is actually printed in. */
+const listed = new Set([...artList.matchAll(/^\| [ ✓✗] \| \*\*(.+?)\*\* \|/gm)]
   .map(m => m[1]));
 check("pieces missing from the art list",
   artable.filter(e => !listed.has(e.name)).map(e => e.name).slice(0, 5).join(", ") || "none",
@@ -6511,9 +6513,10 @@ check("pieces missing from the art list",
  * functions Foundry's own documents are built with: a piece counted here appears in play.
  */
 const { artIn: artInLive, backOf: backOfLive } = await import("../module/decks.mjs");
-check("the list agrees on what is wired up",
-  Number(/of which \*\*(\d+)\*\* are wired up/.exec(artList)?.[1] ?? -1),
-  artable.filter(e => artInLive(e)).length + backs.filter(([k]) => backOfLive(k)).length);
+/* Every piece the game can hand Foundry a path for, which is all of them: kept as the denominator
+ * the three states below have to add up to, and no longer printed as progress. */
+check("pieces the game has a path for", artable.filter(e => artInLive(e)).length
+  + backs.filter(([k]) => backOfLive(k)).length, 622);
 /*
  * **And every path the game hands Foundry names a file that is there.**
  *
@@ -6533,6 +6536,42 @@ const pathless = [
   ...backs.map(([k, b]) => [b.label ?? k, backOfLive(k)])
 ].filter(([, p]) => p && !fs.existsSync(fileFor(p)));
 check("art paths the game would hand Foundry", artable.length + backs.length, 622);
+/*
+ * **The brief's progress line used to be the total, and nobody noticed for months.**
+ *
+ * It counted `artIn(entry)` -- *does this piece have a path wired into the game* -- which is true
+ * of every piece in content by construction, so it printed "622 pieces, 622 wired up" while a file
+ * was missing from the disk. The pin agreed with it, because the pin asked the same wrong question
+ * of the same wrong function. A progress line that can only ever read 100% is not a progress line.
+ *
+ * It now reports **drawn**, which is a question about a filesystem and is asked of one, and the two
+ * numbers beside it account for the rest. These two checks are the ones that would have caught it:
+ * the first ties the headline to the disk, and the second makes the three states sum to the book.
+ */
+check("the list reports what is on the disk",
+  Number(/of which \*\*(\d+)\*\* are drawn/.exec(artList)?.[1] ?? -1),
+  artable.length + backs.length - pathless.length);
+check("and its three states account for every piece",
+  Number(/of which \*\*(\d+)\*\* are drawn/.exec(artList)?.[1] ?? -1)
+  + Number(/\*\*(\d+)\*\* refused/.exec(artList)?.[1] ?? 0)
+  + Number(/\*\*(\d+)\*\* still to shoot/.exec(artList)?.[1] ?? 0),
+  artable.length + backs.length);
+/*
+ * **A file that is missing is either shot or declared refused, and nothing else.**
+ *
+ * This replaces a hand-maintained name with a rule. The pin below used to spell the one missing
+ * piece, which meant shooting it failed the suite until somebody edited the literal -- fine while
+ * the queue was the point, and wrong now that a refusal has somewhere to live. A new missing file
+ * now fails here unless its brief is recorded as refused in `ART_REFUSED`, which is the only state
+ * a missing file is allowed to be in.
+ */
+const { ART_REFUSED } = await import("../module/art.mjs");
+check("files missing with no refusal recorded",
+  pathless.map(([name]) => name).filter(n => !(n in ART_REFUSED)).sort().join(", ") || "none",
+  "none");
+check("and refusals recorded for a file that is there",
+  Object.keys(ART_REFUSED).filter(n => !pathless.some(([m]) => m === n)).sort().join(", ")
+  || "none", "none");
 /*
  * **The shoot queue, declared rather than carried quietly.**
  *
@@ -6564,6 +6603,9 @@ check("art paths the game would hand Foundry", artable.length + backs.length, 62
 check("and those naming a file that is not there",
   pathless.map(([name]) => name).sort().join(", ") || "none",
   "Where It Is Held");
+check("every one of which is a refusal with a reason",
+  pathless.map(([name]) => ART_REFUSED[name] ? "declared" : `UNDECLARED: ${name}`)
+    .sort().join(", ") || "none", "declared");
 /*
  * **Every group in the brief lands in a slot something writes.**
  *
@@ -6724,7 +6766,7 @@ check("and it counts them off the content rather than in prose",
  * below would be the wrong rule for it.
  */
 const faceRows = [...artList.matchAll(
-  /^\| [ ✓] \| \*\*(.+?)\*\* \|([^|]*)\| `([^`]+)` \|/gm)]
+  /^\| [ ✓✗] \| \*\*(.+?)\*\* \|([^|]*)\| `([^`]+)` \|/gm)]
   .map(m => ({ name: m[1], brief: m[2], path: m[3] }))
   .filter(r => !r.path.startsWith("backs/"));
 const briefs = faceRows.map(r => r.brief);

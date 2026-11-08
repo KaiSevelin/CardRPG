@@ -776,7 +776,7 @@
           "grapple"
         ],
         "only": [],
-        "text": "Strike a target it already has hold of. Armour does not apply: nothing is moving."
+        "text": "A hand already on the strap. Armour does not apply: it is not holding anything on."
       }
     },
     {
