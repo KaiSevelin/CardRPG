@@ -6521,7 +6521,12 @@ check("art paths the game would hand Foundry", artable.length + backs.length, 61
  *   node test/art-shoot.mjs cards/npc --failed
  *   node test/art-shoot.mjs cards/harm
  *
- * The three NPC cards are a DELIBERATE deletion, not a gap: each is a card only one creature can
+ * **Back to "none", which is the resting state.** The queue was a declared list while thirteen
+ * pieces were waiting; they are being shot now, so the list would be stale between one piece and
+ * the next. A name reappears here the moment a path has no file behind it, which is the check doing
+ * its job rather than a list to maintain.
+ *
+ * The three NPC cards were a DELIBERATE deletion, not a gap: each is a card only one creature can
  * draw, and until now nothing told the model that such a card should look unlike its thirty-four
  * neighbours. It now carries a composition direction of its own -- fill the frame, crowd the edges
  * -- so the pictures on disk were shot to a brief that no longer describes them. Git still has
@@ -6529,9 +6534,7 @@ check("art paths the game would hand Foundry", artable.length + backs.length, 61
  */
 check("and those naming a file that is not there",
   pathless.map(([name]) => name).sort().join(", ") || "none",
-  "Adapted, Backlash, Carry It Off, Compulsion, Confusion, Deeper, Doubt, Fear, It Answers, "
-  + "It Sets, Not Alone, Open the Hold, Rage, Residue, Spoiled, Taint (body), Taint (mind), "
-  + "The Hive Obeys, The Long Way, The ritual twist deck, Wound");
+  "none");
 /*
  * **Every group in the brief lands in a slot something writes.**
  *

@@ -52,11 +52,66 @@ the reason first written ([analysis §§11–13](../sim/analysis-2026-10-30.md))
   this game has not written yet.** A GM should read them as *a different enemy roster*, not as a
   better coat, and the old corollary stands: when heroes reach armour, retire the trash mob rather
   than fielding more of it.
+  - **[CORRECTED 2026-11-08] Those monsters have been written.** The roster holds **36 attacks of
+    Strike 5 or more** out of 82, the hardest is **8** (dragon jaws), and **22 of them ignore
+    armour** — a Smash Beetle's Tail Club is 7 and ignores 2, so Plate's four stops two of it. The
+    sentence was true of the four published *encounters*, which are all goblin groups, and the
+    simulator runs those because they are what it was built for. **The ladder is waiting on the
+    simulator's roster, not the game's.**
 - **The Heavy Armor drawback is free, which is a fault.** Plate wins 100.0% with the ⚡ Sidestep block
   and 100.0% without it, because at armor 4 nothing can hurt you and so you never needed to dodge.
   **A drawback that bites only when the item is weak is not a price** — it costs Brigandine something
-  and Plate nothing, which is backwards. `[OPEN]` below. (It is at least *charged* now: the engine
-  reads it off a field rather than off the sentence on the card.)
+  and Plate nothing, which is backwards. (It is at least *charged* now: the engine reads it off a
+  field rather than off the sentence on the card.)
+
+  > **[MEASURED 2026-11-08] A Move penalty was the obvious second attempt, and it is the same
+  > mistake.** 2500 fights a cell. What a &minus;1 on every Move value costs Plate, against enemies
+  > sorted by how hard they hit:
+  >
+  > | Enemy | Strike | What the Move penalty costs Plate |
+  > |---|---|---|
+  > | 5 spears | 3 | **+0.1** |
+  > | 2 spear 2 bow | 3 | &minus;0.3 |
+  > | 2 brutes | 6 | &minus;0.5 |
+  > | 1 ogre | 12 | **&minus;3.5** |
+  >
+  > It costs **nothing** against everything Plate is meant to shrug off, and most against the one
+  > enemy Plate is already losing to (39.7%). That is not merely weak, it is **inverted**: a price
+  > should bite hardest when the item is doing its job, and this bites hardest when the item has
+  > already failed. Sidestep is free at rung 4 because you never needed to dodge; a Move penalty is
+  > free at rung 4 because when nothing can hurt you, time is free. Two drawbacks, one shape.
+  >
+  > **Doubling it changes nothing, and the rounds column says where it went.** Against the published
+  > encounters, 3000 fights a cell:
+  >
+  > | | win rate | rounds a fight |
+  > |---|---|---|
+  > | **Plate** | 100.0 | 10.3 |
+  > | **Plate &minus;1 Move** | 99.9 | 12.2 |
+  > | **Plate &minus;2 Move** | 99.9 | **13.2** |
+  > | **Plate + 18 kg of loot** | **82.5** | 21.5 |
+  >
+  > A &minus;2 on every Move value &mdash; which would turn the starter deck's Move 1, 2 and 3 into
+  > 1, 1 and 1 &mdash; costs **a tenth of a point** of win rate and three extra rounds. **The
+  > penalty is paid in fight length, not in losses.** That is the whole finding in one line: a Move
+  > penalty on an invulnerable figure buys the enemy time it has no way to spend.
+  >
+  > The last row is the control, and it is the price that works: eighteen kilograms of loot costs
+  > **&minus;17.4**, which is a hundred and seventy times what a &minus;1 Move costs and thirty-five
+  > times a &minus;2. **The drawback this coat already has is its weight**, and it is the only one of
+  > the three that the fight cannot refuse to charge.
+  >
+  > **And the rung turns out not to need pricing at all.** What Plate buys over Brigandine, by the
+  > same runs: **+0.7** and **+0.2** against goblins, **+7.1** against brutes, **+10.2** against the
+  > ogre. Against the published encounters, eight more kilograms buys about half a point of win
+  > rate — and eight kilograms is eight kilograms of loot you cannot carry, out of forty. **Plate is
+  > a bad buy against goblins and a good one against things that out-strike Brigandine**, which is
+  > exactly what the top rung of a ladder should be. The cliff is at **3**, not 4, and the
+  > overpowered coat is Brigandine at 140 gold and twelve kilos.
+  >
+  > So the recommendation is the other option this document already offered: **stop calling the
+  > Sidestep ban a cost.** The weight is the price, it is the largest number on this page, and it
+  > is the one that prices rung 4 correctly without anybody adding a number.
 - **The weight is the whole cost, and it is the largest number on this page.** Plate alone is free
   (100.0%); Plate and 18 kg of loot is **31.4%**, and the control proves it is the kilograms rather
   than the coat — Mail burdened to the same 43 kg collapses further still, to **7.2%**. Burdened
@@ -1204,14 +1259,20 @@ part: the target gets one clean turn, so a poisoner who uses it is betting on th
     still text, and so is *"you may not wear armour"* in [leveling.md](leveling.md) §4. A curse that
     **adds** something is now enforceable; a curse that **forbids** something still needs the HUD.
     Compulsion is the hint at how to close it — it forbids Catch Breath *by being a card in hand*.
-- **[OPEN]** **Heavy Armor's drawback is enforced now, and still free.** It is a field rather than a
-  sentence — `blocksReactions: ["sidestep"]` on Brigandine and Plate — so the engine takes the
-  reaction away. That was the implementation half. The *pricing* half is untouched: Plate wins 100.0%
-  with the Sidestep block and 100.0% without it, because at armor 4 nothing can hurt you and the
-  dodge was never needed, so the drawback costs **Brigandine** something and **Plate** nothing, which
-  is backwards for a price meant to rise with the rung. Candidates unchanged: move it onto something
-  armour cannot substitute for (a Move penalty, which Burdened already shows is enormous), or accept
-  it as flavour and stop calling it a cost.
+- **[ANSWERED 2026-11-08] Heavy Armor's drawback is free, and it should stop claiming to be a cost.**
+  It is a field rather than a sentence — `blocksReactions: ["sidestep"]` on Brigandine and Plate —
+  so the engine takes the reaction away, and that half was never the problem. The two candidates
+  were *move it onto something armour cannot substitute for (a Move penalty)* or *accept it as
+  flavour*. **The first was measured and it fails the same way**: a &minus;1 on every Move costs
+  Plate +0.1 against five spears and &minus;3.5 against an ogre, so it is free exactly where Plate
+  is strong and expensive where Plate is already losing — inverted, not weak.
+  - The reason both fail is the same, and it is not about which axis you pick: **at armour 4 against
+    Strike 3 nothing can reach you, so every cost denominated in the fight is free.** A price that
+    bites has to be denominated in something the fight does not pay for, and the game already has
+    one — **kilograms**, forty of them, of which Plate is twenty.
+  - So: the ban stays as a rule, because an armoured figure that cannot dodge is right, and it stops
+    being described as the rung's price. **[OPEN]** remains only for the sentence on the card and in
+    §3, which still reads as though it were one.
 - **[OPEN]** **`Heavy` does three unrelated jobs now** — the weight class that blocks Sidestep, the
   gate on ✊ Strong's +1, and, since the Sidestep ban became a field, a word that does **not** mean
   Heavy Armor: a heavy **helm** is heavy armour and is not Heavy Armor, so the field had to be set by
