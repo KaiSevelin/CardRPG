@@ -1997,8 +1997,9 @@ export async function resolveAttack(actor, {
    * crits draws one critical card and every target gets the same answer, which is the rule fate
    * already follows and the only one that keeps a Blast legible.
    *
-   * The conditions it carries land on the **first** target, because a card reading *Exposed 2 on
-   * everyone it hit* would be a different and much larger card. The faces are printed either way.
+   * The conditions it carries land on the **first** target, because a card that stripped the armour
+   * off *everyone it hit* would be a different and much larger card -- more so now that Exposed
+   * takes armour to 0 rather than down by 2. The faces are printed either way.
    */
   const crit = critical
     ? await drawCritEffect(actor, targets[0] ?? null)

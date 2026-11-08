@@ -312,23 +312,38 @@ CARDRPG.conditions = {
  * once per *type*, so `ignoresArmour` on a swarm's card is five attackers at full damage in the
  * same round and `ignores: 2` is almost nothing. There is no number between them.
  *
- * A **condition** has every property the flag lacks. It is a *tracked* number, so it composes
- * with armour, Block, `ignores N` and everything else rather than overriding them. It is
- * **visible** -- it shows on the token and the sheet, and the armour figure a player reads drops,
- * which is the difference between a rule and a surprise. It is **setup and payoff**, so the big
- * hit costs two actions and the second one can be somebody else's. And it can be **Shaken Off**,
- * which means it is answerable, where a flag never was.
+ * A **condition** has every property the flag lacks -- and since it zeroes the defence, it is only
+ * fair to say that it *does* override rather than compose, which an earlier version of this comment
+ * claimed as a virtue. Three of the four reasons survive that honestly, and they were always the
+ * load-bearing three.
  *
- * `valued`, so *Exposed 2* is a real thing to write and the duration and the depth are separate
- * dials. `reducesArmour` mirrors Frozen's `reducesMove` exactly, down to the rule that the
- * highest applies and they do not add.
+ * It is **visible** -- it shows on the token and the sheet, and the armour figure a player reads
+ * goes to 0, which is the difference between a rule and a surprise. It is **setup and payoff**, so
+ * the big hit costs two actions and the second one can be somebody else's; a flag on a step was
+ * one action by one creature. And it can be **Shaken Off**, which means it is answerable, where a
+ * flag never was.
+ *
+ * The fourth reason is replaced by a better one: it is **proportional**. See below.
+ *
+ * **Exposed takes armour to 0**, not down by a number. Not `valued`: there is no depth to write,
+ * only a duration, which is the one dial that matters -- a turn of no armour at all.
+ *
+ * Zeroing rather than reducing is what makes it *proportional*, and proportion was always the
+ * whole argument for a condition here. It costs the character in Plate 4 points and the one in
+ * Leather 1, so it is worth exactly as much as what the target was relying on. A flat -2 was
+ * worth most to whoever had least to lose, which is backwards.
+ *
+ * It is also the only shape under which Exposed ever beats doubling a Critical. Doubling adds the
+ * printed damage; Exposed adds the armour. So Exposed wins when `armour > printed damage`, and
+ * against a goblin spear printing 3 that means rung 4 and nowhere else -- which is precisely the
+ * rung this condition was written for.
  *
  * **Not an opening**, deliberately. Openings are the four a combo clause may key off and the
  * Thief's Signature hits *whatever you set up*; a fifth would widen that card silently and the
  * count of four is pinned in three places. This is a number, not a tell.
  */
   exposed: {
-    label: "CARDRPG.Condition.Exposed", icon: "drop-weapon", valued: true, reducesArmour: true
+    label: "CARDRPG.Condition.Exposed", icon: "drop-weapon", zeroesArmour: true
   },
   frozen: {
     label: "CARDRPG.Condition.Frozen",
@@ -432,12 +447,19 @@ CARDRPG.conditions = {
    * key off. That is a legitimate shape for an opening, and it is also a condition whose own name
    * says a defence should be worse: somebody off balance is not getting their shield across.
    *
-   * It is the Block half of what Exposed is for armour, and it goes here rather than on a new
-   * condition because the game already had the right word for it. Not `valued`: one point, which
-   * is most of a Wooden Shield, and the opening is still the larger part of what it does.
+   * It is the Block half of what Exposed is for armour: **Block counts 0** for the duration, not
+   * one less. Not `valued` for the same reason Exposed is not -- there is no depth to write, and
+   * the shield is either across you or it is not.
+   *
+   * **This one is set far more cheaply than Exposed, and that is the thing to watch.** Exposed has
+   * two appliers in the whole game and both are a Critical or a brute's intent. Off-Balance has a
+   * dozen, several of them free and unsaveable -- a Flask of Oil is 10 g, a Blunt Head arrow 20 g,
+   * a Loose Cobble sits on the floor. At one point off Block that was a fair trade for a
+   * consumable; at *all* of it, a 10 g flask switches off a Tower Shield. The measurement in
+   * core-rules 7 is the one to read before pricing any new applier.
    */
   offBalance: {
-    label: "CARDRPG.Condition.OffBalance", icon: "foot-trip", opening: true, reducesBlock: true
+    label: "CARDRPG.Condition.OffBalance", icon: "foot-trip", opening: true, zeroesBlock: true
   },
   marked: { label: "CARDRPG.Condition.Marked", icon: "crosshair", opening: true },
   judged: { label: "CARDRPG.Condition.Judged", icon: "scales", opening: true }

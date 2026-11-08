@@ -161,9 +161,14 @@ The combat simulator is the tie-breaker for numbers. Decisions it has already se
 - **Position-denial is worth exactly what the target's position was worth.** Grappled costs its
   victim **9.1 points** and Prone **6.0** against a damage rung at **7.4** — so a Grapple beats a
   Strike and a Trip loses a little, against a mixed group. Against a brute that wanted to be adjacent
-  anyway, both are worth nothing. **Grapple the archer; hit the ogre.** And **Off-Balance measures at
-  exactly 0.0**, which is the opening design holding: it was written to do nothing until a card reads
-  it, and it does nothing ([../sim/analysis-2026-10-30.md](../sim/analysis-2026-10-30.md) §7).
+  anyway, both are worth nothing. **Grapple the archer; hit the ogre.**
+  ([../sim/analysis-2026-10-30.md](../sim/analysis-2026-10-30.md) §7.)
+- **Off-Balance measured at exactly 0.0 for as long as it did nothing, and now it is unmeasurable.**
+  It was written as a pure opening and the 0.0 was the design holding. It now takes Block to **0**,
+  and that half **cannot be measured in this simulator at all**: the hero's shield size is inert in
+  it, Block 1 to Block 4 moving the win rate less than the noise at every armour rung. So its price
+  is set by argument, and the argument is that a 10 g Flask of Oil should probably not switch off a
+  Tower Shield ([core-rules.md](core-rules.md) §7).
 - **Mobility is the most valuable thing in a starter deck, and its worth is set by the enemy's
   reach.** Taking the hero's one movement card away costs **29.5 points** against two spears and two
   bows, **3.5** against five spears and **nothing** against three

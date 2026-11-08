@@ -847,7 +847,6 @@
           {
             "verb": "strike",
             "condition": "exposed",
-            "intensity": 2,
             "duration": 1
           }
         ],
@@ -855,7 +854,7 @@
           "brute"
         ],
         "only": [],
-        "text": "Get into the harness and lever. Exposed 2: armour counts 2 less for a turn."
+        "text": "Get into the harness and lever. Exposed: their armour counts 0 for a turn."
       }
     },
     {

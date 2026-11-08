@@ -42,7 +42,7 @@ These take something away. They are the fighter's vocabulary.
 | **Silenced** | `silenced` | silenced | Blocks ✦ Cast — casting needs speech. |
 | **Disarmed** | `disarmed` | drop-weapon | Blocks ⇄ Ready, and ⚔ with the disarmed item. |
 | **Burning** | `burning` | fire-silhouette | **Burning N**: N damage at the start of your turn. Meets neither armor nor Block. **Cancels with Wet and Frozen** (§6). |
-| **Exposed** | `exposed` | drop-weapon | **Exposed N**: your **armor counts N less**, floor 0. Block is untouched &mdash; that is Off-Balance's half. |
+| **Exposed** | `exposed` | drop-weapon | Your **armor counts 0**. Block is untouched &mdash; that is Off-Balance's half. No value: there is no depth to write, only a duration. |
 | **Frozen** | `frozen` | frozen-body | **Frozen N**: your Move values are **reduced by N**, floor 0. You still play both halves and keep your reactions. **Cancels with Burning** (§6). |
 | **Poisoned** | `poisoned` | vomiting | **Poisoned N**: you are **Dazed**, and take N damage at the start of your turn, past armor and Block. **N may be 0** — the sickness with nothing behind it. Water does nothing for it. |
 | **Invisible** | `invisible` | invisible | Enemies can't target you. Ends early if you Strike or Cast at an enemy. |
@@ -86,7 +86,7 @@ the card that reads it, never here ([core-rules.md](core-rules.md) §7,
 | Condition | Key | Icon | Effect | Set most easily by |
 |---|---|---|---|---|
 | **Wet** | `wet` | droplets | Nothing by itself. | Mind — Elemental |
-| **Off-Balance** | `offBalance` | foot-trip | Your **Block counts 1 less**. | Strength |
+| **Off-Balance** | `offBalance` | foot-trip | Your **Block counts 0**. | Strength |
 | **Marked** | `marked` | crosshair | Nothing by itself. | Shade |
 | **Judged** | `judged` | scales | Nothing by itself. | Faith |
 
@@ -98,10 +98,16 @@ the card that reads it, never here ([core-rules.md](core-rules.md) §7,
 > in one round &mdash; measured at 99.9% to **94.4%** against Plate &mdash; while `ignores 2` is
 > almost nothing, 99.9% to 99.5%. There is no number in between.
 >
-> A condition has what the flag lacks. It is **tracked**, so it composes with armour, Block and
-> `ignores N` instead of overriding them. It is **visible**, and the figure on the sheet drops.
+> A condition has what the flag lacks. It is **visible**, and the figure on the sheet goes to 0.
 > It is **setup and payoff**, so the big hit costs two rounds and the second can be somebody
-> else's. And it can be **Shaken Off**, which means it is answerable &mdash; a flag never was.
+> else's &mdash; a flag on a step was one action by one creature. It can be **Shaken Off**, which
+> means it is answerable, where a flag never was. And it is **proportional**: worth 4 against Plate
+> and 1 against Leather, which is the whole of the argument below.
+>
+> It does **override** armour rather than composing with it, now that it zeroes. An earlier draft
+> of this section claimed composition as the fourth virtue; that was true of *Exposed 2* and is not
+> true of this, so it is struck rather than quietly kept. The other three stand, and proportion is
+> the better fourth.
 >
 > **[MEASURED 2026-11-08] And the shape is the argument.** One intent in a five-goblin deck, 1500
 > fights a cell, by the hero's armour:
@@ -111,20 +117,25 @@ the card that reads it, never here ([core-rules.md](core-rules.md) §7,
 > | *today* | 64.4 | 99.5 | 100.0 |
 > | `ignores 2` | **60.5** | 95.3 | 100.0 |
 > | `ignoresArmour` | **60.5** | 91.5 | 95.5 |
-> | **Exposed 2** | **64.5** | 97.9 | 100.0 |
+> | **Exposed** (armour &rarr; 0) | **63.1** | 96.8 | 99.0 |
 >
-> **Look at the first column.** A piercing flag costs the character in Leather **3.9 points** --
+> **Look at the first column.** A piercing flag costs the character in Leather **5.0 points** --
 > as much as it costs anybody -- because the flag fires whether there was armour to defeat or not.
-> Exposed costs them **nothing**: +0.1, which is noise. It is the only candidate measured in this
-> project that is **proportional to what the target was relying on**, and that is what a price for
-> armour should be. The Sidestep ban and a Move penalty were free exactly where armour was strong;
-> a piercing flag is flat; this one is none of those.
+> Exposed costs them **0.3**, which is noise. It is the only candidate measured in this project
+> that is **proportional to what the target was relying on**, and that is what a price for armour
+> should be. The Sidestep ban and a Move penalty were free exactly where armour was strong; a
+> piercing flag is flat; this one is none of those.
 >
-> The depth dial behaves, which is what `valued` is for: at armour 1 the hero is unmoved at every
-> value (64.4, 64.5, 64.5, 64.5 for none, 2, 3, 4), while Brigandine falls 99.5 to 96.5. And at
-> rung 4 it buys what the original complaint asked for rather than a defeat: 100.0% to 99.5%, but
-> **11.1 Health left on a win down to 10.7, and the first Wounds a plated character has ever
-> taken** from the published encounters -- 0.00 to 0.03. A fight that costs something.
+> **[MEASURED 2026-11-08] Taking armour to 0 rather than down by 2 keeps that proportion and buys
+> the thing the depth dial could not.** The figures above are the zeroing version. At rung 4 it
+> costs 0.7 points of win rate where *Exposed 2* cost nothing measurable, drops Health left on a
+> win from 10.9 to 10.7, and takes the Wounds a plated character suffers from **0.01 to 0.03** --
+> the published encounters finally costing a plated hero something. And it stays free at rung 1,
+> which is the property that mattered.
+>
+> `valued` is gone with it. There was no depth left to write: a defence is either across you or it
+> is not, and the duration is the whole dial. That also retires the question of whether two
+> sources add, since they cannot add past nothing.
 >
 > **[OPEN]** No player card applies Exposed yet. The Way most obviously owed one is Strength --
 > levering a harness open is weight rather than finesse, and Shade already has the three cards
@@ -357,8 +368,8 @@ What `CARDRPG.conditions` carries. Anything not listed is absent on that entry.
 | `burdened` | | `noDuration`, `derived`, `halvesMove` |
 | `overloaded` | | `noDuration`, `derived`, `halvesMove` |
 | `wet` | | `opening`, `cancels` → `burning` |
-| `exposed` | | `valued`, `reducesArmour` |
-| `offBalance` | | `opening`, `reducesBlock` |
+| `exposed` | | `zeroesArmour` |
+| `offBalance` | | `opening`, `zeroesBlock` |
 | `marked` | | `opening` |
 | `judged` | | `opening` |
 
@@ -461,7 +472,7 @@ the table play. This column says which half of that each condition gets.
 | **Heckled** | **yes** | the fate draw reads it, the same way Invisible is read |
 | **Slowed** | **yes, on the face** | the printed Move is halved — Move itself is never resolved, figures are moved by hand |
 | **Grappled** / **Silenced** / **Disarmed** | **yes** | via `blocks` → blocked icons; Disarmed's *"⚔ with the disarmed item"* half is not modelled |
-| **Exposed**, **Off-Balance** | **yes, on the sheet** | taken off the derived `armor` and off `blockNow`, so the number a player reads is the number the attack meets &mdash; the same decision Slowed makes about a printed Move |
+| **Exposed**, **Off-Balance** | **yes, on the sheet** | the derived `armor` and `blockNow` read **0**, so the number a player reads is the number the attack meets &mdash; the same decision Slowed makes about a printed Move |
 | **Burning**, **Poisoned** | **yes** | their value in damage at the start of the victim's turn, off the `damagePerTurn` flag, and they add |
 | **Poisoned**'s Dazed | **yes** | the same `blocksSecondary` flag Dazed uses, so it cost no code |
 | **Prone** | **yes** | melee advantage; *"standing up costs Move 1"* is not modelled, because Move is not |
@@ -551,7 +562,7 @@ removal in the content, and the gaps are the point.
 | **Burning** | **Wet or Frozen** (they cancel) · **Shake Off** · the duration |
 | **Frozen** | **Burning** (it thaws) · **Shake Off** · the duration |
 | **Wet** | **Burning** (it steams) · the duration. Not shakeable — an opening, *by design* |
-| **Exposed** | **Shake Off** · the duration. A point of armour back per point shaken, which is what makes it answerable where a card that ignored armour never was |
+| **Exposed** | **Shake Off** · the duration. All of your armour back at once, which is what makes it answerable where a card that ignored armour never was |
 | **Slowed**, **Prone**, **Poisoned** | **Shake Off** · the duration. An **antidote** is the item form of a Shake Off on Poisoned |
 | **Off-Balance** | **the duration**, and only the duration — an opening cannot be shaken off, *by design* |
 | **Prone** | also standing up, for Move 1 |

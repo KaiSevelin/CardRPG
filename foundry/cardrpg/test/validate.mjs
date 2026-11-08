@@ -404,8 +404,8 @@ if (!fs.existsSync(specPath)) {
   check("the flags section was located", flagsAt >= 0 && flagTable.length > 0, true);
   const flags = new Set([
     "blocks", "blocksSecondary", "blocksReactions", "halvesMove", "reducesMove",
-    /* The two that take a defence rather than a movement, added with Exposed. */
-    "reducesArmour", "reducesBlock",
+    /* The two that ZERO a defence rather than reducing it, added with Exposed. */
+    "zeroesArmour", "zeroesBlock",
     "noDuration", "derived", "opening", "cancels", "valued", "damagePerTurn"
   ]);
   const stray = [...new Set([...flagTable.matchAll(/`([A-Za-z]+)`/g)].map(m => m[1]))]
@@ -9838,13 +9838,22 @@ check("flat armour is a grant a character reads",
  * worst kind of rule, and it is the same decision `movePlayed` makes about a printed Move.
  */
 check("and the derived armour adds it",
-  /this\.armor = Math\.max\(0, grants\.armor \+ slates/.test(actorsSource) ? "yes" : "no", "yes");
-check("and Exposed comes off it, on both models",
-  (actorsSource.match(/- this\.armorReduction\);/g) ?? []).length, 2);
+  /this\.armor = this\.armorZeroed \? 0 : Math\.max\(0, grants\.armor \+ slates/
+    .test(actorsSource) ? "yes" : "no", "yes");
+/*
+ * **Exposed zeroes armour rather than reducing it**, so this is a ternary in front of the sum and
+ * not a subtraction behind it. Counted on both models, which is the failure this pin exists for:
+ * an NPC derives its own `armor`, so Exposed reaching one model and not the other would have left
+ * a monster armoured through a condition that visibly stripped a character.
+ */
+check("and Exposed takes it to nothing, on both models",
+  (actorsSource.match(/this\.armorZeroed \? 0 :/g) ?? []).length, 2);
+check("and Block likewise, where it is a stored field because it is spent",
+  (actorsSource.match(/this\.blockZeroed \? 0 :/g) ?? []).length, 2);
 check("and off Block, which is spent and so stays a field",
   (actorsSource.match(/get blockNow\(\)/g) ?? []).length, 2);
 check("and one routine answers for both models",
-  /function reductionOf\(system, flag\)/.test(actorsSource) ? "yes" : "no", "yes");
+  /function zeroedBy\(system, flag\)/.test(actorsSource) ? "yes" : "no", "yes");
 check("while an NPC has no such grant, having armorBase instead",
   grants.NPC_GRANTS.includes("armor") ? "yes" : "no", "no");
 /* The three teachings that grant it, which is the whole reason the field exists. */

@@ -1841,19 +1841,23 @@ export const INTENTS = [
     /*
      * **The setup, which is what makes the rest of these affordable.**
      *
-     * `exposed` is armour counted less for a turn, and it is the answer to a problem a flag could
+     * `exposed` is **armour counting 0** for a turn, and it is the answer to a problem a flag could
      * not solve: on the NPC side a piercing card is drawn once per *type*, so `ignoresArmour` on a
      * swarm is five attackers at full damage in one round and `ignores: 2` is almost nothing.
      * Exposing instead makes the big hit cost **two** rounds, lets the second one come from
      * somebody else, shows on the token while it lasts, and can be Shaken Off -- none of which a
      * flag on a step could do.
      *
+     * It zeroes rather than reduces, which is the version worth what the target was relying on: 4
+     * points against Plate and 1 against Leather. A flat -2 was worth most to whoever had least to
+     * lose, which is backwards.
+     *
      * `brute` because it is a thing done with weight: 24 creatures have it and only two run in
      * packs, so the two-round play belongs to the big single enemies that need it.
      */
     name: "Prise It Open", needs: ["brute"],
-    text: "Get into the harness and lever. Exposed 2: armour counts 2 less for a turn.",
-    sequence: [{ verb: "strike", condition: "exposed", intensity: 2, duration: 1 }]
+    text: "Get into the harness and lever. Exposed: their armour counts 0 for a turn.",
+    sequence: [{ verb: "strike", condition: "exposed", duration: 1 }]
   },
   {
     /*
@@ -7192,8 +7196,8 @@ export const HARM_FACES = [
  * | Face | Is | Copies |
  * |---|---|---|
  * | *Through and Through* | the old behaviour, doubled | **4** |
- * | *Find the Gap* | **Exposed 2** | 2 |
- * | *Off the Feet* | **Off Balance** | 2 |
+ * | *Find the Gap* | **Exposed** -- armour counts 0 | 2 |
+ * | *Off the Feet* | **Off-Balance** -- Block counts 0 | 2 |
  * | *Driven Down* | **Halted** -- the next turn does not happen | 1 |
  * | *Both* | draw two others and take both | 1 |
  *
@@ -7217,13 +7221,13 @@ export const CRIT_EFFECTS = [
   },
   {
     name: "Find the Gap", copies: 2,
-    effect: { condition: "exposed", intensity: 2, duration: 1 },
-    text: "Exposed 2: their armour counts 2 less for a turn. The hit itself is not doubled."
+    effect: { condition: "exposed", duration: 1 },
+    text: "Exposed: their armour counts 0 for a turn. The hit itself is not doubled."
   },
   {
     name: "Off the Feet", copies: 2,
     effect: { condition: "offBalance", duration: 1 },
-    text: "Off Balance: their Block counts 1 less, and it is an opening. Not doubled."
+    text: "Off Balance: their Block counts 0 for a turn, and it is an opening. Not doubled."
   },
   {
     name: "Driven Down", copies: 1,

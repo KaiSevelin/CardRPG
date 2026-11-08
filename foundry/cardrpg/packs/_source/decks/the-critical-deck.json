@@ -121,10 +121,9 @@
       "system": {
         "doubles": false,
         "draws": 0,
-        "text": "Exposed 2: their armour counts 2 less for a turn. The hit itself is not doubled.",
+        "text": "Exposed: their armour counts 0 for a turn. The hit itself is not doubled.",
         "effect": {
           "condition": "exposed",
-          "intensity": 2,
           "duration": 1
         }
       }
@@ -149,10 +148,9 @@
       "system": {
         "doubles": false,
         "draws": 0,
-        "text": "Exposed 2: their armour counts 2 less for a turn. The hit itself is not doubled.",
+        "text": "Exposed: their armour counts 0 for a turn. The hit itself is not doubled.",
         "effect": {
           "condition": "exposed",
-          "intensity": 2,
           "duration": 1
         }
       }
@@ -177,7 +175,7 @@
       "system": {
         "doubles": false,
         "draws": 0,
-        "text": "Off Balance: their Block counts 1 less, and it is an opening. Not doubled.",
+        "text": "Off Balance: their Block counts 0 for a turn, and it is an opening. Not doubled.",
         "effect": {
           "condition": "offBalance",
           "duration": 1
@@ -204,7 +202,7 @@
       "system": {
         "doubles": false,
         "draws": 0,
-        "text": "Off Balance: their Block counts 1 less, and it is an opening. Not doubled.",
+        "text": "Off Balance: their Block counts 0 for a turn, and it is an opening. Not doubled.",
         "effect": {
           "condition": "offBalance",
           "duration": 1

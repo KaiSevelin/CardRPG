@@ -393,10 +393,17 @@ is no fifth.** A candidate would have to fill a hole in that grid rather than me
 an *armour pried open* opening — the obvious suggestion — is already what *Between the Plates* and
 *The Weight of It* do by reading Marked and Judged.
 
-> **Off-Balance is the one to argue about.** Its case is not fictional but financial: **Prone** would
-> be a better opening in every way except that it is far too strong to set for free, so Off-Balance
-> exists to be the cheap thing a secondary may hand out and *Sweep the Leg* exists to convert it. That
-> is a pricing job dressed as a condition, and if one of the four is ever cut it is this one.
+> **Off-Balance is the one to argue about, and the argument got sharper.** Its case was never
+> fictional but financial: **Prone** would be a better opening in every way except that it is far too
+> strong to set for free, so Off-Balance existed to be the cheap thing a secondary may hand out and
+> *Sweep the Leg* existed to convert it. That is a pricing job dressed as a condition, and if one of
+> the four is ever cut it is this one.
+>
+> **[2026-11-08]** It is no longer cheap. Off-Balance now takes Block to **0** for the turn, which
+> is the Block half of what Exposed is for armour. The cards that hand it out for a secondary, or
+> for 10 g, were priced against *one point* off Block. See the **[OPEN]** in
+> [core-rules.md](core-rules.md) §7: either those appliers set the opening alone, or they want a
+> save, or they want repricing.
 
 > **The one real candidate for a fifth is an opening set on an **ally** —** a prepared or anointed
 > friend whose next card reads it. It is the purest party mechanic imaginable and it is **rejected on

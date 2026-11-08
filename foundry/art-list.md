@@ -146,7 +146,7 @@ Face-up on the table during a fight, which makes them the art players stare at l
 | ✓ | **Order** | An ally within sight acts again, or moves its speed. You do nothing yourself. | `cards/npc/order.webp` |
 | ✓ | **Pick the Soft One** | Move, Strike ignores Block · Move your speed and Strike whoever is least ready for it, round the shield rather than through it: Block does not answ... | `cards/npc/pick-the-soft-one.webp` |
 | ✓ | **Press** | Strike, Strike -1 · Strike, and Strike again at −1. Nothing clever, twice. | `cards/npc/press.webp` |
-| ✓ | **Prise It Open** | Strike Exposed 2 (1) · Get into the harness and lever. Exposed 2: armour counts 2 less for a turn. | `cards/npc/prise-it-open.webp` |
+| ✓ | **Prise It Open** | Strike Exposed (1) · Get into the harness and lever. Exposed: their armour counts 0 for a turn. | `cards/npc/prise-it-open.webp` |
 | ✓ | **Rattle** | Strike · Strike, and the target discards one card out of their hand — their choice. | `cards/npc/rattle.webp` |
 | ✓ | **Round the Guard** | Strike ignores Block · Strike before the shield comes across. Block does not answer this. | `cards/npc/round-the-guard.webp` |
 | ✓ | **Set and Wait** | Defend · Defend, and keep a reaction for whoever comes. | `cards/npc/set-and-wait.webp` |

@@ -215,16 +215,21 @@ CONDITIONS = {
     'burning':  dict(valued=True, damage=True, cancels=('wet', 'frozen')),
     'poisoned': dict(valued=True, damage=True, blocks_secondary=True),
     'frozen':   dict(valued=True, reduces_move=True, cancels=('burning',)),
-    # Exposed N: armour counts N less while it lasts (core-rules 7). The condition route to
-    # defeating armour, against the flag route -- tracked, visible, and shakeable, where a flag on
-    # a step is none of those.
-    'exposed':  dict(valued=True, reduces_armour=True),
+    # Exposed: armour counts **0** while it lasts (core-rules 7). The condition route to defeating
+    # armour, against the flag route -- visible, shakeable, and paid for over two turns, where a
+    # flag on a step is none of those.
+    #
+    # Zeroing is what makes it proportional: worth 4 against Plate and 1 against Leather, where a
+    # flat -2 was worth most to whoever had least to lose. It is also the only shape under which
+    # Exposed beats doubling a Critical, since doubling adds the printed damage and Exposed adds
+    # the armour -- so Exposed wins exactly when armour > printed damage.
+    'exposed':  dict(zeroes_armour=True),
     'prone':    dict(enemy_melee_advantage=True, reduces_move=True),
     'grappled': dict(blocks_move=True),
-    # Off Balance: an opening, AND a point off Block. One entry, because this dict had two
-    # 'offBalance' keys for a while and Python keeps the last -- so reduces_block was silently
+    # Off Balance: an opening, AND **Block counts 0**. One entry, because this dict had two
+    # 'offBalance' keys for a while and Python keeps the last -- so the Block half was silently
     # dropped and every figure measured with it understated the critical deck by two cards in ten.
-    'offBalance': dict(opening=True, reduces_block=True),
+    'offBalance': dict(opening=True, zeroes_block=True),
     'wet':      dict(opening=True, cancels=('burning',)),
     'marked':   dict(opening=True),
     'blessed':  dict(no_duration=True, liftable=True, fate='CRIT'),
@@ -313,11 +318,12 @@ class Config:
     # in nine fires about once a fight, and five spears all going through two points of armour in
     # the same round is a different number from one of them doing it.
     pierce_intent: int = 0
-    # The condition route: an intent that Exposes rather than piercing. 0 leaves it out of the deck.
-    expose_value: int = 0
+    # The condition route: an intent that Exposes rather than piercing. A boolean now that Exposed
+    # zeroes armour -- there is no depth left to sweep, only whether the card is in the deck.
+    expose_intent: bool = False
     # **The critical deck**: a Critical draws what it did instead of simply doubling (core-rules 5).
     #
-    # Ten cards -- 4 double, 2 Expose 2, 2 Off Balance, 1 Halted, 1 draw-two-others -- so doubling
+    # Ten cards -- 4 double, 2 Exposed, 2 Off Balance, 1 Halted, 1 draw-two-others -- so doubling
     # falls from certain to 40% and the other six buy something a doubled number could not. Both
     # sides draw from it, so this dial moves the goblins as well as the hero.
     crit_deck: bool = False
@@ -1050,7 +1056,7 @@ class Game:
             self.gdeck = list(GOBLIN_CARDS) + ['Confusion'] * self.cfg.confusion
             if self.cfg.pierce_intent:
                 self.gdeck.append('Find the Joint')
-            if self.cfg.expose_value:
+            if self.cfg.expose_intent:
                 self.gdeck.append('Prise It Open')
             self.rng.shuffle(self.gdeck)
         card = self.gdeck.pop()
@@ -1259,26 +1265,28 @@ class Game:
                 if not cfg.crit_deck_rides:
                     raw = raw // 2                      # not doubled: the plain figure
                 if face < 0.6:
-                    self.apply_cond('exposed', 1, 2)    # Find the Gap
+                    self.apply_cond('exposed', 1)       # Find the Gap
                 elif face < 0.8:
                     self.apply_cond('offBalance', 1)    # Off the Feet
                 elif face < 0.9:
                     pass                                # Driven Down: the turn is not modelled
                 else:
-                    self.apply_cond('exposed', 1, 2)    # Both, as the two this file can see
+                    self.apply_cond('exposed', 1)       # Both, as the two this file can see
                     self.apply_cond('offBalance', 1)
         # `ignores N` comes off armour and never off Block (core-rules 5).
-        # Exposed comes off armour before the hit, as the engine takes it off the derived number.
-        exposed = max([c['value'] for c in w['conds']
-                       if CONDITIONS[c['key']].get('reduces_armour')] or [0])
-        armor = max(0, armor - pierce - exposed)
+        # **Exposed zeroes armour**, read off the derived number exactly as the engine reads it.
+        if any(CONDITIONS[c['key']].get('zeroes_armour') for c in w['conds']):
+            armor = 0
+        else:
+            armor = max(0, armor - pierce)
         # A face that finds the gap in the plate takes no armour off at all.
         if (crit and cfg.crit_pierces) or (plus2 and cfg.plus2_pierces):
             armor = 0
         d = max(0, raw - armor)
-        off_balance = max([c.get('value') or 1 for c in w['conds']
-                           if CONDITIONS[c['key']].get('reduces_block')] or [0])
-        block_now = max(0, w['block'] - off_balance)
+        # **Off Balance zeroes Block.** Block stays a stored, spent field, so this is a view of it
+        # and not a write -- the same split the engine makes between `block` and `blockNow`.
+        off_balance = any(CONDITIONS[c['key']].get('zeroes_block') for c in w['conds'])
+        block_now = 0 if off_balance else max(0, w['block'])
         absorbed = 0 if (crit and cfg.crit_unblockable) else min(block_now, d)
         if not cfg.persistent_block:
             w['block'] -= absorbed          # old rule: one hit used the whole block up
@@ -1422,7 +1430,7 @@ class Game:
                 self.take_hit(raw, not ranged, g['id'], crit=(fc == 'CRIT'), plus2=(fc == 2),
                               pierce=pierce)
                 if kind == 'strike' and op[2] == 'expose' and fc != 'MISS':
-                    self.apply_cond('exposed', 1, self.cfg.expose_value)
+                    self.apply_cond('exposed', 1)
                 if kind == 'strike' and op[2] == 'daze' and fc != 'MISS':
                     self.apply_cond(self.cfg.goblin_condition,
                                     self.cfg.goblin_cond_dur,

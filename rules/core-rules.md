@@ -371,12 +371,32 @@ What each of these is worth depends entirely on **how much the target's position
 
 | Condition | Costs its victim | |
 |---|---|---|
-| **Off-Balance (1)** | **0.0** | nothing at all — it is an opening, and that is the design holding |
+| **Off-Balance (1)** | *unmeasured* | it zeroes Block, and this simulator cannot price Block — see below |
 | **Dazed (1)** | 4.0 | half a rung |
 | **Prone (1)** | 6.0 | **0.8 of a rung** — so a Trip loses a little against Striking |
 | **Grappled (1)** | 9.1 | **1.2 rungs** — a Grapple beats Striking |
 | **Grappled (2)** | 18.3 | two and a half rungs |
 
+> **[MEASURED 2026-11-08] Off-Balance's row is a blank, not a zero, and the blank is the finding.**
+> It read 0.0 for as long as the condition did nothing but be an opening. Now it takes Block to 0,
+> and the figure cannot be re-taken, because **the simulator cannot price Block at all**: sweeping
+> the hero's shield from Block 1 to Block 4 moves the win rate by less than the noise at every
+> armour rung &mdash; 37.6 / 38.8 / 38.3 at armour 0, and 61.9 / 65.0 / 62.6 at armour 1, which is
+> not even monotonic. Its planner rarely spends a turn Defending, so persistent Block is seldom up
+> when a hit lands, and the 3.6 points a fight that Block does prevent arrive through the
+> *reaction* path instead. A number taken from that sweep would be a number about nothing.
+>
+> So Off-Balance's Block half is priced by argument rather than by measurement &mdash; and the
+> argument says **its appliers are now mispriced**. Exposed has two appliers in the whole game,
+> both of them a Critical or a brute's two-round setup. Off-Balance has a dozen, several free and
+> unsaveable: a **Flask of Oil at 10 g**, a **Blunt Head arrow at 20 g**, a **Loose Cobble** left
+> on the floor, *Slick*, *Shoulder Check*, *Taste of the Rot*, and the universal **Trip**. One
+> point off Block was a fair trade for a 10 g consumable. *All* of Block is not: that flask now
+> switches a Tower Shield off for a turn, with no save.
+>
+> **[OPEN]** Either those appliers set only the opening and not the Block half, or they want a
+> save, or they want repricing. Read this before adding another one.
+>
 > **Position-denial is worth exactly what the target's position was worth.** Those numbers are from a
 > mixed group, where mobility is worth 29.5 points (§11). Against a brute that wanted to stand next
 > to you anyway, a Grapple is worth nothing and the Strike would have been better. **Grapple the
@@ -840,8 +860,8 @@ cards, five faces:
 | Face | Copies | What it does |
 |---|---|---|
 | **Through and Through** | 4 | Double the damage, as a Critical always did. |
-| **Find the Gap** | 2 | **Exposed 2** &mdash; their armour counts 2 less for a turn. Not doubled. |
-| **Off the Feet** | 2 | **Off Balance** &mdash; their Block counts 1 less, and it is an opening. Not doubled. |
+| **Find the Gap** | 2 | **Exposed** &mdash; their armour counts **0** for a turn. Not doubled. |
+| **Off the Feet** | 2 | **Off-Balance** &mdash; their Block counts **0** for a turn, and it is an opening. Not doubled. |
 | **Driven Down** | 1 | **Halted** &mdash; their next turn does not happen. Not doubled. |
 | **Both** | 1 | Draw two **others** and take both. |
 
@@ -863,46 +883,47 @@ somewhere it has no business.
 **Both sides draw from it.** One deck for the table, not two tunings of one rule &mdash; and that is
 what the measurement below is about.
 
-> **[MEASURED 2026-11-08] Exposed *N* beats doubling only when *N* is larger than the printed
-> damage, so an either/or deck is a nerf to whoever hits hard and a buff to whoever hits light.**
+> **[MEASURED 2026-11-08] Exposed beats doubling exactly when the armour is larger than the
+> printed damage** &mdash; so an either/or deck is still a nerf to whoever hits hard, but it is no
+> longer a nerf everywhere.
 >
 > This is arithmetic before it is a simulation. Doubling adds the printed damage; *Find the Gap*
-> adds 2. A goblin spear prints 3, so against a goblin **every condition face is worse than
-> doubling at every armour rung** &mdash; at Plate, Through and Through gets 6&minus;4 = 2 through
-> where Find the Gap gets 3&minus;2 = 1. The monsters hit hard, so the deck as written takes their
-> best card away. A Shade card printing 1 or 2 is the other way round, which is the finesse path
-> working as intended &mdash; but the hero was never the worry.
+> adds **the armour**, because it takes it to 0. A goblin spear prints 3, so a condition face is
+> worse than doubling at rungs 1 and 3 and **better at rung 4**: against Plate, Through and Through
+> gets 6&minus;4 = 2 through where Find the Gap gets the full 3. Rung 4 is the one rung this deck
+> improves, and it is the rung the complaint was about.
 >
-> 2500 fights a cell. Win %, and HP left on a win at rung 4:
+> 2500 fights a cell:
 >
 > | | 3 spears | 4 spears | 5 spears | 2 spear 2 bow |
 > |---|---|---|---|---|
 > | **armour 1** | | | | |
-> | *before the deck* | 98.8 | 88.9 | 65.0 | 36.2 |
-> | **as written (either/or)** | **99.2** | **90.9** | **69.7** | **40.5** |
-> | *effect rides along* | 98.5 | 88.1 | 63.6 | 36.8 |
+> | *before the deck* | 98.6 | 88.4 | 63.4 | 34.8 |
+> | **as written (either/or)** | **99.0** | **90.3** | **70.2** | **36.7** |
+> | *effect rides along* | 97.9 | 86.9 | 61.1 | 33.4 |
 > | **armour 3** | | | | |
-> | *before the deck* | 100.0 | 99.8 | 99.3 | 99.8 |
-> | **as written** | 100.0 | 99.9 | 99.4 | 99.8 |
-> | *rides along* | 100.0 | 99.5 | **97.6** | 99.2 |
+> | *before the deck* | 100.0 | 99.6 | 97.8 | 98.5 |
+> | **as written** | 100.0 | 99.9 | 98.1 | 99.0 |
+> | *rides along* | 99.9 | 98.8 | **94.2** | **94.7** |
 > | **armour 4** | | | | |
-> | *before the deck* | 100.0 | 100.0 | 100.0 | 100.0 |
-> | **as written** | 100.0 | 100.0 | 100.0 | 100.0 |
-> | *rides along* | 100.0 | 100.0 | **99.9** | 100.0 |
+> | *before the deck* | 100.0 | 100.0 | 99.7 | 100.0 |
+> | **as written** | 100.0 | 100.0 | **99.3** | **99.5** |
+> | *rides along* | 100.0 | 99.5 | **97.5** | **97.2** |
 >
-> **As written, a character in Leather is safer by up to 4.7 points.** A critical should not be
-> less frightening than it was. The dial is one word in the content &mdash; whether a face applies
-> its effect **as well as** doubling instead of instead of it &mdash; and riding along restores the
-> threat at rung 1, bites at rung 3 where the conditions are worth something (&minus;1.7 against
-> five spears), and is the only row that ever moves rung 4 at all.
+> **Rung 4 moves for the first time**, which no version of this deck managed while Exposed took
+> only 2 off. Back then the Critical floor already let a spear through for 1 and *Exposed 2* against
+> armour 4 bought exactly that same 1, so the deck was pure redundancy there. **Zeroing is what
+> gets past the floor**, and that is the whole value of this change.
+>
+> **The either/or weighting still makes a character in Leather safer**, by up to 6.8 points against
+> five spears. That has not changed and will not, because against a lightly armoured target the
+> armour is small and the doubling is not: a critical that trades 3 damage away for 1 point of
+> armour is a critical that got weaker. The dial is one word in the content &mdash; whether a face
+> applies its effect **as well as** doubling rather than instead of it &mdash; and riding along
+> restores the threat at rung 1 and is the only row that bites at rungs 3 and 4 together.
 >
 > Left as written, because *either/or* is the design as asked for and this is a weighting call, not
-> a bug. Recorded here because the number disagrees with it.
->
-> **And it is not the answer to armour either way.** 100.0 to 100.0 at rung 4, because
-> **the Critical floor (section 5) already did that job**: Exposed 2 against armour 4 lets a spear
-> through for 1, which is exactly what the floor guarantees for nothing. What answers armour is the
-> floor plus Exposed arriving from a *card* that prints more than 2, and both are measured elsewhere.
+> a bug. Recorded here because the number disagrees with it at rung 1 and agrees with it at rung 4.
 - **Cursed**: shuffle a temporary *Miss* into your fate deck. It is removed when drawn.
 - **Wild**: a **permanent** passenger, and the third special card.
 
