@@ -12,6 +12,7 @@
 
 import { CARDRPG } from "./config.mjs";
 import { deckOf, moveRandom, move, normalizeDeck, allStacks, available } from "./decks.mjs";
+import { resolveWound } from "./resolve.mjs";
 
 /* -------------------------------------------- */
 /*  Initiative                                  */
@@ -239,7 +240,15 @@ export async function onTurnStart(combat) {
     .filter(c => CARDRPG.conditions[c.key]?.damagePerTurn);
   const damage = bites.reduce((n, c) => n + (c.value ?? 1), 0);
   if (damage > 0) {
-    await actor.update({ "system.health.value": Math.max(0, actor.system.health.value - damage) });
+    const before = actor.system.health.value;
+    await actor.update({ "system.health.value": Math.max(0, before - damage) });
+    /*
+     * **Burning to death is dropping to 0**, which is the second of core-rules 8's two Wound
+     * events. The first one -- five or more from a single hit -- cannot fire here and should not:
+     * a tick is not a hit, it meets neither armor nor Block, and its bands are tight because of
+     * that. So a tick wounds only by finishing you.
+     */
+    if (before - damage <= 0) await resolveWound(actor, { reason: "dropped to 0" });
   }
 }
 

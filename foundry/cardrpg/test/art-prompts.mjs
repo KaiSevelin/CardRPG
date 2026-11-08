@@ -15,7 +15,7 @@
  * every Strike card shares a gesture, so the table learns the art the way it learned the icons.
  *
  * The motif tables and the style capsules are written by hand, once, and they are short on
- * purpose: six verbs, fifteen effects, twenty-four conditions. A vocabulary with no motif prints
+ * purpose: six verbs, seventeen effects, twenty-four conditions. A vocabulary with no motif prints
  * `[GAP]` into the file rather than falling through silently, because a missing motif is a
  * picture nobody thought about and should look like one.
  */
@@ -601,6 +601,7 @@ const VERB_STEM = {
 const EFFECT_STEM = {
   heal: "the wound closing", block: "the blow stopped flat", conjure: "the arrival",
   shape: "matter bending", foresee: "the moment shown twice", range: "the distance crossed",
+  forestall: "the plan taken back", sift: "the one looked at and let fall",
   blast: "the force travelling out", aimed: "the single line", advantage: "the second chance",
   disadvantage: "the ground against you", charging: "the mass committed", shake: "footing lost",
   tainting: "the wrongness spreading", corrode: "metal giving way", lift: "the weight taken off"
@@ -612,6 +613,8 @@ const EFFECT_MOTIF = {
   conjure: "something arriving that was not there a moment ago",
   shape: "matter bending to a hand",
   foresee: "the moment before a thing happens, shown twice",
+  forestall: "a motion broken off half-made, and begun again as a different one",
+  sift: "a hand turning one thing over and letting it drop",
   range: "distance crossed by the eye and not the body",
   blast: "an edge of force travelling outward",
   aimed: "one line, from eye to target, and nothing else in frame",

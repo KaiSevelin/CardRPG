@@ -110,6 +110,38 @@ rather than a flat bonus:
 A caster who can Foresee every round shouldn't exist. Price it as a once-per-combat feature, a card
 half that competes with attacking, or a spell with a cost.
 
+#### Forestall  **[BUILT 2026-11-07]**
+
+Foresee's twin, and the only thing in the game that **touches** an intent card rather than reading
+it:
+
+> **Forestall** — Discard one NPC type's intent card for this round. That type draws a new one at
+> once, **face down**.
+
+It is a **reroll, not a cancellation**, and that is the whole of its balance. A type that loses its
+turn outright is a dozen goblins standing still for a round, which is more than any card should buy.
+A type that draws again has lost the plan you spoiled and keeps the turn.
+
+| | |
+|---|---|
+| **When** | Before the first NPC of that type has acted. Once one of them has acted the card is public and already being carried out, and nothing recalls it. |
+| **Once per type per round** | Or it is a rerolling engine: pay a card, see a worse card, pay again. |
+| **The new card is face down** | Even to the player who had Foreseen the first one. You spoiled what you knew and you are blind again, which is a cost that needs no number. |
+| **Short deck** | The discarded intent goes to that type's discard and the deck reshuffles when it runs out, exactly as section 9 already says. |
+| **No icon** | A named effect, like *Foresee*, *Read* and *Taunt*. |
+
+**Foresee and Forestall are two cards in two hands**, which is the shape section 7's openings
+already use: one player learns what is coming and another spends a card to undo it. Forestall
+without Foresee is a guess — you are discarding a card you never saw, and what replaces it may be
+worse.
+
+> **It is the first enemy-facing effect in the game worth *more* against a swarm than against a
+> boss**, and that is deliberate. Blessed, Cursed and Read all sharpen as the target grows in
+> importance, because precision scales with importance (section 6) — so every one of them rewards
+> sniping the elite. An intent card is drawn **per type**, so Forestalling eight goblins spoils
+> eight turns and Forestalling a lone ogre spoils one. The party finally has a tool whose best use
+> is the mob, which is also the fight they have the fewest answers to.
+
 ### Surprise
 
 If one side has clearly caught the other — an ambush, a sprung trap, a charge into an unaware camp — the surprising side takes a full round of turns before the loser of the surprise acts at all. Then the normal order begins. This is the GM's call, and it replaces the initiative draw for round 1.
@@ -140,6 +172,11 @@ your hand can offer fires, the card goes to your **discard**, and play continues
 |---|---|
 | **you are hit** | Parry, Block, Brace, Use — and *Bodyguard*, which is this trigger seen from one square over |
 | **an enemy ends its move next to you** | Sidestep, Counter |
+
+**A third exists, only a prepared spell may use it, and Way of Mind's Ward Magic is already built on
+it** — *a ✦ Cast is made against you or within your reach*. Nothing drawn from a deck gets it. What
+lets this one fire by itself is that each warding formula prints its own gate, readable **before**
+anything is drawn. See *Reaction spells, and the one that counters* in section 4.
 
 **A reaction fires when the hit is serious, and the rules already say twice what that means:** when
 it stops a **Wound** (5 or more past armour, section 8) or stops you being **dropped** to 0. Nothing
@@ -175,6 +212,45 @@ rolls.
 > asked **before** the trigger instead of after it: what the rule reads off your hand is not a guess
 > about your intentions, it is a declaration you already made. It is also why the threshold above can
 > be as blunt as it is.
+
+#### Showing a card  **[BUILT 2026-11-07]**
+
+**Showing a card from your hand is free and legal at any time** — the same latitude turning one
+sideways has, and for the same reason: it is a declaration rather than an action.
+
+- It costs nothing, plays nothing and reserves nothing. The card stays in your hand, upright, and
+  may still be played or react.
+- Any number of cards, to anyone, at any time, including in the middle of someone else's turn.
+- Hand **contents** stay private otherwise ([../foundry/hud-spec.md](../foundry/hud-spec.md) §7).
+  What you show, you chose to show.
+
+> **This exists because the combos need it.** Section 7's openings are the one place two players'
+> cards combine, and they are deliberately split across two hands — one player sets Wet,
+> Off-Balance, Marked or Judged, and another reads it. That only works if the second player can
+> find out the first is holding the setup, and hands are private. Table talk was doing the work and
+> the rules neither permitted nor priced it. Now the channel is a rule, it is free, and it runs
+> **one way**: you may show what you hold, and nothing in these rules makes anybody show you.
+>
+> It also puts a reveal in reach as a **cost** with no new machinery. A half may ask you to show a
+> card, and what it takes is information — the cheapest thing there is, and a rung below Strain on
+> §1.3's ladder in [way-cards.md](way-cards.md).
+
+**Showing is not a declaration of intent.** A card shown is a card you hold, not a card you have
+promised to play; the sideways row is where a commitment is made.
+
+> **And there is nobody to bluff, which is worth writing down.** This is players against the GM, and
+> an NPC's action is **drawn rather than chosen** — one intent card per type, face down, before
+> anybody acts (*Intent*, above). So there is no read to exploit: a goblin does not go for whoever
+> looks dangerous, it does what its card says, and showing a card you mean to Strain away deceives
+> nothing. **The hidden-information game runs one way on purpose.** The GM hides intent and the
+> players spend cards to learn it (*Foresee*) or spoil it (*Forestall*); nothing runs back the other
+> way, because there is nothing at the far end making reads.
+>
+> Which is also why the deception this game *does* have is built the way it is. *The Rumour* (The
+> Yellow, [way-cards.md](way-cards.md) §3.5) names a lie before the fight and **one enemy type acts
+> as if it were true**, for as long as a secondary keeps it up — a lie with mechanical force,
+> binding by rule rather than by anyone being fooled. That is the only shape a bluff can take
+> against an opponent who *draws* their intentions: not a read you mislead, but a card that compels.
 
 **One reaction per trigger.** **One** reaction fires against any single trigger. Parry and Brace never
 stack on the same hit, and a whole hand is never thrown at one attack.
@@ -494,6 +570,42 @@ want a weapon — that is the decision the rule exists to create.
 
 **Speech** is what **Silenced** already takes away (section 7). It blocks ✦ Cast wherever the magic
 came from, because a wand has a command word too; gags, water and held breath hang off the same hook.
+
+#### Reaction spells, and the one that counters  **[BUILT 2026-11-07]**
+
+A prepared spell may be a **reaction**. It costs no half, because it was never in your hand to play
+— it is in your head, and it fires on a trigger the way a card's ⚡ row does. A miracle already works
+this way, and it is a counter in everything but its name: *The Silent Hour* (The Grey, strength 2),
+*"Reaction, adjacent only: an enemy's action does not happen."*
+
+Which answers the question a Way of Mind player will ask first. **Can a spell be countered?** It
+already can: **Ward Magic** is a school of eight formulas built on exactly this trigger, four of
+them Cast-answering reactions ([way-cards.md](way-cards.md) §3.4). *Unmake* stops a ✦ Cast you have
+survived before, *The Mirror* turns one back on its own caster, *The Standing Ward* stops every Cast
+on the field including yours, and the title feature *The Standing Guard* grants an extra reaction
+each round usable only against a Cast.
+
+- **Never a drawn card.** Simulation settled this for dispels and the reasoning transfers whole: a
+  one-of-sixteen card is in hand 31% of turns and must coincide with its trigger, so it is played
+  **0.22 times a fight at best** ([../sim/](../sim/)). A counter that is usually not in your hand is
+  not a counter — and Ward Magic is the school that finding vindicated.
+- **The trigger is the third in the game and the only one it gets.** Section 3 holds to two because
+  an automatic reaction has to be decidable without asking you, and this one is: every gate Ward
+  Magic prints is knowable **before anything is drawn** — whether you have survived this Cast
+  before, whether it is aimed at you, or no gate at all.
+- **The gate is per formula, not one global threshold.** Every other reaction resolves *after* the
+  fate draw, which is what makes *stops a Wound or stops you being dropped* a number at all. A
+  counter must fire **before** the draw or it is not countering, it is reducing — so it cannot use
+  that threshold, and Ward Magic's answer is to print a condition on each formula instead. Any new
+  Cast-answering spell owes the same: a gate that can be read off the table with nothing drawn.
+
+**And the Cast trigger has no order, which the other two do.** A hit resolves redirection before
+reduction, and an arrival resolves Sidestep, then Heckle, then Counter (section 3). One reaction
+still answers one Cast — but *several characters may each answer the same trigger*, and two warders
+in one party can both reach for it. **Prevention outranks redirection**: a Cast that does not
+resolve has nothing left to aim anywhere, so *Unmake* and *The Standing Ward* resolve before *The
+Mirror*. If an ally unmakes it, your Mirror is unspent — the same courtesy the redirection step
+already pays on a hit.
 
 ### Carrying
 
@@ -1217,6 +1329,41 @@ Your action deck is your stamina.
   > mastery. That is the same ladder [specializations.md](specializations.md) uses for Divination —
   > *read* at the trunk, *order* at the title, *avert* and *hold* beyond it.
 
+#### Sift  **[BUILT 2026-11-07]**
+
+**Read** (section 6) points at a **fate** deck and never at an action deck, and that omission is a
+decision now rather than an oversight:
+
+> **A fate deck is drawn one card at a time mid-action; an action deck is drawn as a batch at a
+> known moment.** Arranging the top three of a deck you are about to refill three cards from is not
+> aiming a draw, it is **choosing your next hand** — a tutor by another route, and the rule above
+> has already ruled tutors out. The fence that holds *Read* is missing here too: nothing scrambles
+> an action deck on a swing, so an order you set stays set.
+
+So the operation that is safe on your own deck is **see and reject**, never see and arrange:
+
+| | |
+|---|---|
+| **Look at the top card and change nothing** | free, and needs no keyword — section 6 already says that looking at one card and putting it back is just looking. It makes *Catch Breath* a decision instead of a guess, and tells you whether the reaction in your hand is worth holding. |
+| **Sift 1** — look at the top card of your draw pile; you may put it in your **discard** | a **named** owner's trick, on the terms above: one card, paid for with a card or a slot, and never repeatable within a fight |
+| **Read N with reorder, on an action deck** | **never.** It is a tutor. |
+
+Sift costs the fight nothing — what it moves goes to the discard, where a breath can return it — so
+what it buys is a worse next hand traded for a better one after that. The no-repeat clause is what
+stops it being a dig.
+
+**The owner is not open either, and it was settled before this keyword existed.**
+[specializations.md](specializations.md) worked through *a diviner peeks, but at what?* and ruled
+three targets out — an enemy's intent is **Foresee**, another player's hand is private by design, and
+**your own action deck or hand is the Deck shape axis, which Tattoo Magic and Asceticism already
+hold**. A Divinator is explicitly *not a deck-shaper*. So a Sift is a **carving or a discipline**,
+never a prophecy, and the two schools split it along the line this table already draws:
+
+| | holds | because |
+|---|---|---|
+| **Tattoo Magic** | the **seeing** — permanently, and more of it | its teachings are always-on carvings, and knowing is not doing, so it needs no limit |
+| **Asceticism** | the **binning** — *Sift 1*, once a fight | a card off the top of the draw pile is the draw pile getting emptier, which is the condition that school exists to exploit |
+
 You may Catch Breath at any time on your turn, even before you are Exhausted — but there is rarely a
 reason to. Two cards is two cards whenever you take them, and a turn spent breathing while you still
 have a hand is a turn the enemy gets for free.
@@ -1244,6 +1391,30 @@ coming back (see *Lingering damage* below) — the deck does not get smaller, it
 - **Spent** cards stay out until your next **short or long rest**, even after the combat ends (see
   *Rests* below).
 
+#### Where a played card goes  **[BUILT 2026-11-07]**
+
+A card you play has four destinations and a half may name any of them. Two are in use and two are
+open — a dial for whoever writes cards rather than a rule anybody has to hold in their head:
+
+| Destination | | What it costs you |
+|---|---|---|
+| **Discard** | the default | the round — a breath brings it back |
+| **Spent** | in use | the fight |
+| **Draw pile, top** | open | **nothing.** You draw it again at your next refill: a reward rung, not a cost |
+| **Draw pile, bottom** | open | more than Strain and less than Spent — it returns, but only once you have cycled, which in most fights you do not |
+| Your hand | **never** | nothing, which is the problem |
+
+- **The top of the draw pile is the safe recursion.** It hands back a card you already chose to
+  play, so it cannot fish for one you did not — which is exactly why reaching into a **discard**
+  needs a named owner and this does not. A half that does it wants to be weak, or the card is a
+  loop with a Strike in it.
+- **The bottom of the draw pile is a cost, and it is the rung the ladder has nothing on**
+  ([way-cards.md](way-cards.md) §1.3). Harsher than Strain, because no breath reaches it; softer
+  than Spent, because the deck is a cycle and a long fight comes round.
+- **A card that returns to your hand is a card played every turn for ever.** Nothing in the game
+  does it, and anything that ever does needs a once-per-turn clause — or it is not a card, it is a
+  feature with a picture.
+
 ### Lingering damage
 
 Some harm stays with you after the fight. It's represented by **negative cards** shuffled into your own decks. They clog your hand until you get rid of them.
@@ -1268,6 +1439,96 @@ Some harm stays with you after the fight. It's represented by **negative cards**
   - **long rest:** remove 1 Wound;
   - **treatment:** a Lore check (Normal 5) with a Healer's Kit removes 1 Wound. Once per patient per day;
   - healing magic or items that say so.
+
+> **[FOUND 2026-11-07, BUILT 2026-11-07] Everything about a Wound was built except the thing that
+> makes one. It makes them now.**
+>
+> The card type was finished in seven places and a reader could not tell. The sheet counted wounds,
+> the upright filter refused to let one react, the deck limits excluded them, the tray printed the
+> card's own sentence, a prune could not take one, the data model had its one field, and the art
+> brief deliberately gave them the **action** back — *a Wound you could see coming would not be a
+> Wound*. Each of those was a passing check. **No code path made one**, and the threshold above was
+> read in exactly two places: the reaction policy, to decide whether a reaction is worth spending,
+> and one chat row, to label a hit. The contrast that made it a gap rather than a missing vocabulary
+> was **Taint**, which sits in this same section and *was* created, with a flavour and a source.
+>
+> It surfaced from a long way off — a career balance pass asking why **Executioner** measured as
+> paid in neither the combat nor the out-of-fight ledger.
+>
+> **The two events are wired, at the three places a character can lose Health.** A hit of five or
+> more past armour, and dropping to nought: from a blow, from a condition tick (*burning to death is
+> still dropping*), and from a fast dose of Taint. A tick cannot fire the first event and should not
+> — a tick is not a hit, it meets neither armour nor Block, and its bands are tight because of that.
+> And a single blow that both deals five and drops you gives **one** Wound, because the rule above
+> says *you gain 1 Wound when* and then lists two triggers.
+>
+> ### An NPC cannot be wounded, and the reason is in the rules
+>
+> This was the question that had to be answered before anything could be written, and it is not a
+> balance judgement. A Wound is a dead card in **your action discard pile**. Section 3 draws NPC
+> intent **one card per type** — *one for all the goblins* — so an NPC's deck belongs to its species
+> while a Wound belongs to an individual. Putting one in would make hurting a single goblin degrade
+> every goblin on the board, which conflates *what this type does this round* with *how hurt one of
+> them is*.
+>
+> So there is nowhere to put it, and the guard in the engine is that fact rather than a check on
+> type: the routine asks for the target's own action discard and stops if there is none. A creature
+> without a deck of its own is a creature that cannot hold a dead card.
+>
+> **[DECIDED] Wounds are a player-side mechanic.** *The Long Table* (every Wound shed and every rest
+> token returned) is unaffected and always was — it is about the people at the table.
+>
+> ### What that costs Executioner, Knight, Musketeer and Berserker
+>
+> *Cleave to the Bone* reads **for you, the Wound threshold is 4, not 5** and its own `needs` line
+> recorded that the threshold is read as the defender's constant rather than the attacker's. That is
+> now the smaller half of the problem. The feature is attacker-side, and **every creature in the
+> roster is an NPC**, so against the game as written it has no target at all — 75 of 75. Four careers
+> grant it, and for **Executioner** it is the whole of the level, which is exactly why that career
+> measured as paid in neither ledger.
+>
+> **[OPEN]** What the feature should be instead. The honest options are a threshold that applies when
+> the *player* is the target (a drawback, not a Signature), something that does to a monster what a
+> dead card does to a person, or a different Signature altogether. That is a decision about four
+> careers' identity and it is not a damage function's to make.
+
+> **[MEASURED 2026-11-07] What issuing Wounds costs, and the one thing about the rule that is
+> backwards.**
+>
+> Every combat figure this project has published was measured in a game where a Wound never arrived,
+> so the first question was whether those figures need re-measuring. They do not. Against the
+> published encounters, 6000 fights a cell:
+>
+> | | 3 spears | 4 spears | 5 spears | 2 spear 2 bow | mean |
+> |---|---|---|---|---|---|
+> | no Wounds | 99.0 | 91.3 | 68.0 | 40.5 | 74.7 |
+> | **Wounds** | 99.0 | 90.0 | 66.8 | 40.3 | **74.0** |
+> | | −0.0 | −1.3 | −1.2 | −0.2 | **−0.7** |
+>
+> **The threshold is why it is so small.** A Goblin Spear is 3 against leather, so only a
+> **critical** — which doubles — reaches five past armour. **0.2 Wounds a fight.** The rule barely
+> fires against the enemy the game is calibrated on, which is the right place for it to be quiet.
+>
+> **And then it inverts.** Against something that reaches the threshold without a critical, the sign
+> flips: at a raw 5 the hero wins **+0.4** more with Wounds on, at 6 **+0.5**, at 8 **+1.2**, taking
+> 1.74 Wounds a fight. **The harder you are hit, the more a Wound helps.**
+>
+> That is not a simulator artefact; it is the rule as written. A Wound takes a hand slot, and *at
+> the end of your turn, discard this card* — so the next refill draws a replacement. **A Wound is a
+> free extra draw** that costs one turn of having four live cards instead of five. Its only real
+> price is diluting the deck, and dilution needs the draw pile to run out before it can bite.
+>
+> The control says exactly that. Cutting a card **permanently** — dead weight that never cycles —
+> costs **−2.2** against four spears and **−0.1** at raw 8. At raw 8 the fight is over in 4.7 rounds
+> and the draw pile does not empty until round 5.9, so there is no dilution to pay and the extra
+> draw is pure profit.
+>
+> **[OPEN]** Whether that is acceptable. It is defensible — a wound that makes you burn through your
+> stamina faster is a real image, and §8 already says *your action deck is your stamina*. But a hero
+> who is being hit for 8 at a time should not be **helped** by it. The dial is the end-of-turn
+> discard: a Wound that stayed in hand until a Catch Breath would be pure cost at every damage
+> level, and that is a one-word change to this section rather than a new mechanism. It wants a
+> decision rather than a patch.
 
 #### Taint
 
@@ -1500,6 +1761,36 @@ so is a card she walks somewhere on no legs with.
 carry* &mdash; so a goblin's dirty trick, a slitherer's venom, a Keres' disease and a Strigoi's bite
 are the same card and four different creatures.
 
+#### One card reaches into a hand  **[BUILT 2026-11-07]**
+
+Nothing an enemy did ever subtracted from a player's hand. Wounds and Taint **add** to a deck, and
+Overloaded Spends two cards but the load is on your own back — so **every card a player lost, they
+chose to lose**. That left one strategy with no counter at all: section 3 says you may turn your
+whole hand sideways and calls it *"a character playing for their turns rather than their skin"*, and
+against an enemy that can only deal damage, holding reactions is free.
+
+| Card | Needs | Does |
+|---|---|---|
+| *Rattle* | `terrify` | ⚔ Strike. The target **discards 1 card**, their choice. |
+
+- **Discard, never Spent.** Spent, off a card an enemy can draw every other round, takes the fight
+  away; what a discard costs is the round, because a breath brings it back. It is the line section 8
+  already draws between Strain and Spent, read from the other side of the table.
+- **The player chooses which.** It is still a tax — a card out of your hand *now* is the thing
+  Strain is priced on — and letting them choose is what keeps it from being a fishing expedition.
+  **GM's choice is a different card**, and it belongs to an elite with a face-up reaction rather
+  than to the pool.
+- **It needs a capability and no temperament.** A shrieking thing and a calculating thing can both
+  make you flinch, so `terrify` is what earns the card and nothing else gates it.
+- **It aims itself.** A player holding four reserved reactions has four things to lose; a player who
+  spent their hand on their own turn has nothing to take and eats a plain Strike. Nothing has to be
+  printed to make it the answer to a held hand — it simply is one.
+
+**And nothing mills a draw pile.** The draw pile *is* the loss condition (section 8), so burning it
+accelerates a defeat the player cannot interact with. The card that did it would be at once the
+scariest and the dullest in the pool; if it ever exists it is a boss's once-a-fight, not a shape
+anything earns.
+
 #### Variants are deltas
 
 A monster is a base and a handful of deltas. Numbers are **offsets**, so correcting a base moves
@@ -1583,6 +1874,14 @@ Starter list of tactic keywords (to grow over time):
 | **Venomous X** | On hit: **Poisoned X** (section 7) — Dazed, and X a turn past armor. | Kill it first, or carry an antidote. |
 
 Target priorities: **Nearest**, **Weakest** (lowest Health), **Caster** (anyone who Cast last round), **Last attacker**, **Leader** (GM's choice).
+
+**A target priority is a rule, and that is why the GM may not see a hand.** Hand *contents* are
+private from the GM as well as from the other players
+([../foundry/hud-spec.md](../foundry/hud-spec.md) §7), because every priority above reads something
+**public** — distance, Health, who Cast, who struck last. Let the GM see hands and *Weakest* quietly
+becomes *whoever has no Parry left*, which is the one read that would make holding a reaction
+worthless. The privacy is not there so that players can bluff — there is nobody to bluff (section 3,
+*Showing a card*). It is there so that a declared priority stays declared.
 
 ### [OPEN] Cowardly needs rewriting
 
@@ -1869,6 +2168,19 @@ This is the one generic rule. Items or features can make exceptions (e.g. a feat
   a Way, take a background, assemble a starter deck) is easy to write and easy to get wrong before
   anyone has played, so it waits for evidence. Until then, play with the pregenerated starter
   Warrior in [starter-cards.md](starter-cards.md).
+- **[OPEN]** **The opening hand.** Round 1 step 1 is the same refill as every other round, so a
+  character's first hand is five cards off a shuffled sixteen with no mulligan, no redraw and
+  nothing that looks at it. It is the one draw in a fight where nobody holds information and nobody
+  has spent anything, and it may matter more here than in most games: taking the hero's one movement
+  card away is worth **29.5 points** of win rate against two spears and two bows (section 11), and
+  an opening hand with no 👣 Move in it is that position for as long as it takes to cycle. Three
+  answers are open — a mulligan, a rule that guarantees the first hand a Move, or *variance in the
+  opening hand is the game* — and the third is a real answer. **This waits on the playtest, with
+  character creation**, because all three are cheap to write and only evidence tells them apart.
+- **[OPEN]** **Drawing on demand.** *Red Mist* is the only thing in the game that draws a card
+  outside a refill, and nothing general does it. That is probably right rather than missing —
+  refilling to hand size **is** the economy, and a half that draws competes with it directly — but
+  it has never been decided, only left unbuilt. Decide it before a Way graph wants it, not after.
 
 Settled since draft 0.1:
 

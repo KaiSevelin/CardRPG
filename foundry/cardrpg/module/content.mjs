@@ -125,6 +125,167 @@ export const WARRIOR_DECK = [
 ];
 
 
+/* -------------------------------------------- */
+/*  Shade action deck                           */
+/* -------------------------------------------- */
+
+/**
+ * **The second chassis, and the first thing two Ways could be compared on.**
+ *
+ * Every figure this project has published about a Way was measured on the Warrior's sixteen,
+ * because it was the only deck there was. That made one question unanswerable and nobody had said
+ * so: a Way of Shade career played a sword and a shield, so *are Shade's cards worse, or only
+ * worse matched to a lone melee?* way-cards 1.2 and 1.3 each end on the same sentence -- *the
+ * difference between those two readings is a simulator that models a Way* -- and a simulator
+ * cannot model a Way it has no deck for.
+ *
+ * **It is built to the Warrior deck's own budget, and that is the whole method.** Sixteen cards in
+ * ten designs, nine Strike halves, eight reaction copies across four designs, four cards carrying
+ * Ready, one Spent, no Strain, one heal, one condition, two Use halves and eight printed Move on
+ * primaries -- each of those is the Warrior's number, pinned in the validator against both decks so
+ * neither can drift from the other. What differs is **shape**: the blade is Light, the defence is a
+ * printed Block rather than a shield, the reactions step instead of blocking, and two more points
+ * of Move sit on secondaries, which way-cards 1.6 calls the cheapest space in the game.
+ *
+ * Holding the budget is what makes the comparison mean anything. Two decks of different size would
+ * have measured size; these measure the shape, which is the thing a Way *is*.
+ *
+ * > **[MEASURED 2026-11-07] The deck is worth -3.4 points of win rate against the Warrior's on the
+ * > published encounters, and the whole of it is one reaction.**
+ * >
+ * > Same gear, 3000 fights, seed 1: **-1.0** against three spears, **-2.8** against four, **-3.5**
+ * > against five and **-6.4** against two spears and two bows. The gap widens with the pressure,
+ * > which is the shape of a deck short of defence rather than short of damage.
+ * >
+ * > Three isolations say where it comes from, and the first two are the surprise:
+ * >
+ * > | Variant | Mean |
+ * > |---|---|
+ * > | Shade as written | 71.0 |
+ * > | its defensive primary made a **persistent shield Defend**, as *Shield Up* is | **71.0** |
+ * > | its defensive primary raised to **Block 4** | 69.2 |
+ * > | one design's reaction changed from **Sidestep** to **Block** | **73.5** |
+ * >
+ * > **The defensive primary is not worth anything measurable and the reaction is worth the entire
+ * > gap.** Handing *Shed the Blow* the persistent shield Defend off *Shield Up* -- the most valuable
+ * > primary in the starter deck by the published figures -- moves nothing at all, and raising its
+ * > printed Block makes the deck *worse*, because the AI then spends turns not striking. Printing
+ * > **Block** on one Shade design instead of Sidestep recovers 2.5 of the 3.4.
+ * >
+ * > So Shade starts behind by one reaction, and **the reaction is the shield**: Block is *your
+ * > shield's Defend value +1* (core-rules 3), and a Shade carries no shield. This sharpens a
+ * > published figure rather than repeating it -- specializations.md measured *the shield* at
+ * > **0.4 to 1.8** by taking its Defend value away and keeping the deck, and what that could not
+ * > see is that the shield's worth is in the **reaction it unlocks**, not in the number printed on
+ * > it. The deck is left at -3.4 rather than levelled with a Block it cannot carry, and the trade
+ * > is stated in starter-cards.md rather than buried in a card.
+ *
+ * > **[MEASURED 2026-11-07] And it settles what a Way is worth: the deck is 4 points and the
+ * > shopping list is 36.** A two-by-two of both decks against both kits (Longsword, Wooden Shield
+ * > and Leather against Dagger and no shield) gives a **deck** main effect of **+4.0** to the
+ * > Warrior, a **gear** main effect of **+35.8**, and an interaction of **-1.1** -- so the two
+ * > factors barely talk to each other and one of them is nine times the other. The 4.0 is the same
+ * > number the career table reports between the Ways at tier 2 (Strength 66.8, Shade 62.8), which
+ * > means that gap was never about the careers: it is this deck, counted twice.
+ *
+ * **Two gaps are declared rather than quietly carried.** No piece of art is commissioned for these
+ * ten designs, so the deck is deliberately **not on an art shelf** -- a shelved piece with no file
+ * is a path Foundry resolves to nothing, and a brief is not the place for cards no session can be
+ * dealt yet. And `setup.mjs` still deals the Warrior: choosing between the two chassis is character
+ * creation, which core-rules 12 defers until after the first playtest on purpose. Both are pinned.
+ */
+export const SHADE_DECK = [
+  {
+    /*
+     * The Warrior's *Strike*, and Parry stays on it. That is not a flavour choice: Parry is the
+     * reaction a blade in the hand gives you, and the isolation above is what says moving a
+     * reaction off a three-copy card is the most expensive edit available to this deck.
+     */
+    name: "Knife Work", copies: 3, reaction: "parry",
+    primary: [{ verb: "strike" }],
+    secondary: [{ verb: "move", param: 1 }]
+  },
+  {
+    /*
+     * Shade's dedicated +1, which way-cards 1.2 allows a starter deck exactly one of. *Heavy
+     * Swing* buys its +1 with weight and spends it going through two points of armour; this one
+     * buys the same +1 with placement and pays for it by **requiring a Light item**, so it is the
+     * one card in the deck a Shade cannot play with somebody else's longsword.
+     */
+    name: "Open Vein", copies: 2,
+    primary: [{ verb: "strike", mod: 1, requires: { tag: "light" } }],
+    secondary: [{ verb: "move", param: 1 }]
+  },
+  {
+    // *Lunge*, and the one shape both Ways share: way-cards 1.2 lists Move-then-Strike as the
+    // cheapest two-verb half to balance, and a knife closes the same way a sword does.
+    name: "Slip In", copies: 1,
+    primary: [{ verb: "move", param: 2 }, { verb: "strike" }],
+    secondary: [{ verb: "move", param: 1 }]
+  },
+  {
+    /*
+     * The defensive primary, and the deck's answer to carrying no shield: a **printed Block 2**,
+     * which is the soak a shield gives without the shield. It is one-shot where *Shield Up* is
+     * persistent, and the measurement says that difference is worth nothing anybody can see --
+     * what a Shade loses for having no shield is the Block *reaction*, not this half.
+     */
+    name: "Shed the Blow", copies: 2, reaction: "sidestep",
+    primary: [{ verb: "block", param: 2 }],
+    secondary: [{ verb: "move", param: 2 }]
+  },
+  {
+    // *Advance*. The Move 3 primary is where the Way's claim on Position starts, and this is the
+    // only card in either starter deck that is pure movement on both halves.
+    name: "Quick Step", copies: 2, reaction: "sidestep",
+    primary: [{ verb: "move", param: 3 }],
+    secondary: [{ verb: "move", param: 2 }]
+  },
+  {
+    name: "Draw the Knife", copies: 2,
+    primary: [{ verb: "strike" }],
+    secondary: [{ verb: "ready" }]
+  },
+  {
+    // *Quick Hands*, down to the reaction: the Use trigger answers the hit after this one, and a
+    // thief with a belt is the character it was written for.
+    name: "Light Fingers", copies: 1, reaction: "use",
+    primary: [{ verb: "use" }],
+    secondary: [{ verb: "ready" }]
+  },
+  {
+    // The deck's one Spent card, at the floor way-cards 1.3 sets and not above it.
+    name: "Bind the Wound", copies: 1,
+    primary: [{ verb: "heal", param: 2 }],
+    secondary: [{ verb: "use" }],
+    costs: { primary: { spent: true } }
+  },
+  {
+    /*
+     * The deck's one condition, and it is **Dazed** where the Warrior's is Compelled. *Taunt*
+     * pulls an enemy onto you, which is a card for somebody who wants to be hit; a Shade would
+     * rather take the turn away. Same rung on way-cards 1.6's ladder, opposite intent -- and the
+     * pool's *Mock* is this card grown up, which is the relationship *Strike* and *Heavy Swing*
+     * have with half of Way of Strength.
+     */
+    name: "Jeer", copies: 1,
+    primary: [{ condition: "dazed", duration: 1, resist: "presence", dc: 5 }],
+    secondary: [{ verb: "move", param: 1 }]
+  },
+  {
+    /*
+     * *Weapon Swap*'s opposite number, carrying the same declared exception: Strike on a secondary
+     * is a levelling reward rather than a starter card (way-cards 1.2), and each starter deck keeps
+     * exactly **one** copy. Giving Shade none would have put the asymmetry inside the thing being
+     * measured -- the budget is the method, so the exception is held in common.
+     */
+    name: "Off Hand", copies: 1,
+    primary: [{ verb: "ready" }],
+    secondary: [{ verb: "strike" }]
+  }
+];
+
+
 
 /* -------------------------------------------- */
 /*  Transformations                             */
@@ -468,7 +629,7 @@ export const ITEMS = [
   {
     name: "Climbing Rope", slot: "pack", weight: 3, value: 5, kind: "Tool", group: "tool",
     blurb: "Fifty feet of hemp. Nobody falls alone.",
-    bonus: { approach: "might", value: 1, situation: "climbing" }
+    bonus: { approach: "might", value: 2, training: "rope and climbing", situation: "climbing" }
   },
   {
     name: "Healer's Kit", slot: "pack", weight: 2, value: 20, kind: "Tool", group: "tool",
@@ -485,7 +646,8 @@ export const ITEMS = [
   {
     name: "Hunting Traps", slot: "pack", weight: 4, value: 15, kind: "Tool", group: "tool",
     blurb: "Jaws and a stake. Patience, mostly.",
-    bonus: { approach: "wits", value: 1, situation: "tracking and trapping animals" }
+    bonus: { approach: "wits", value: 2, training: "traps",
+      situation: "tracking and trapping animals" }
   },
   {
     name: "Lantern", slot: "hands", hands: 1, weight: 2, value: 5, kind: "Tool", group: "tool",
@@ -508,7 +670,8 @@ export const ITEMS = [
   {
     name: "Gaming Set", slot: "pack", weight: 1, value: 5, kind: "Station", group: "station",
     blurb: "Dice, a board and a cup. Soldiers will tell a stranger anything over it.",
-    bonus: { approach: "presence", value: 1, situation: "soldiers, taverns, gamblers" }
+    bonus: { approach: "presence", value: 2, training: "games of chance",
+      situation: "soldiers, taverns, gamblers" }
   },
   {
     name: "Smith's Hammer", slot: "pack", weight: 2, value: 18, kind: "Make", group: "make",
@@ -735,6 +898,9 @@ export const ITEMS = [
     name: "Gambler's Coin", slot: "fingers", weight: 0, value: 600,
     kind: "Wonder", group: "wonder",
     blurb: "It lands how you need it to, which is not the same as how you want it to.",
+    /* The one thing in the game that reads its holder's OWN fate deck, and it says so in prose on
+     * purpose: `readDeck` is a Card field and this is an Item, and the enum dropped `own` when
+     * Divination lost it (*the seer is blind to themselves*). A coin is not a prophecy. */
     active: { text: "Read 3 on your own fate deck.", boundary: "combat" }
   },
 
@@ -1646,6 +1812,22 @@ export const INTENTS = [
   {
     name: "Envenom", needs: ["venom"],
     text: "Strike; on a hit it carries whatever you carry.",
+    sequence: [{ verb: "strike" }]
+  },
+  {
+    /*
+     * The only card in the pool that takes a card out of a player's hand, and the discard is a
+     * text rider on a Strike for the same reason Envenom's venom is: the engine has no verb for
+     * it. Discard and never Spent -- what a discard costs is the round, because a breath brings it
+     * back, and Spent off a card an enemy redraws every other round takes the fight away.
+     *
+     * The PLAYER chooses which card. It is still a tax, and the choice is what keeps it from being
+     * a fishing expedition; GM's choice is a different card and belongs to an elite with a face-up
+     * reaction. And it aims itself -- four reserved reactions is four things to lose, while a
+     * player who already spent their hand eats a plain Strike.
+     */
+    name: "Rattle", needs: ["terrify"],
+    text: "Strike, and the target discards one card out of their hand — their choice.",
     sequence: [{ verb: "strike" }]
   },
   {
@@ -3048,7 +3230,9 @@ export const VARIANTS = {
     },
     {
       name: "Goblin Shaman", kind: "goblin-shaman",
-      health: 1, speed: -1, caps: ["+caster"], tactics: ["+tainting"],
+      /* `terrify` is what makes it the one goblin that reaches a player's hand: the glamour the
+       * elves taught it is half a curse and half a fright, and *Rattle* is the fright. */
+      health: 1, speed: -1, caps: ["+caster", "+terrify"], tactics: ["+tainting"],
       gear: ["Goblin Fetish"], priority: "weakest",
       signature: { condition: "cursed", duration: 2 },
       note: "the elves taught it enough glamour to be dangerous and not enough to be free"
@@ -3822,6 +4006,35 @@ export const SHADE_POOL = [
     text: "On yourself."
   },
   {
+    /*
+     * --- two cards that look into your own deck, and why neither of them bins anything ---
+     *
+     * core-rules 8 gives the plain top-card peek to EVERYBODY, free, so a card half granting *that*
+     * would print a line everyone already has -- the trap that killed the first draft of *Graven
+     * Sight*. These grant DEPTH instead, and depth is safe where choice is not: the no-repeat fence
+     * on Sift exists to stop a dig, and nothing that changes nothing can dig. So these two need no
+     * limit and may be played every time they are drawn.
+     *
+     * The binning version is deliberately absent from both. It would want `oncePer` set to a fight,
+     * which `CARDRPG.limits` does not offer yet, and without that a one-of-sixteen Sift comes back
+     * on every Catch Breath and the deck stops having a bottom. Asceticism keeps the bin.
+     */
+    name: "Count the Odds", copies: 1, pool: "shade",
+    needs: ["seeing further than the top card of your own draw pile"],
+    primary: [{ verb: "strike" }],
+    secondary: [{ verb: "sift", param: 2 }],
+    reaction: "parry",
+    text: "The secondary is seeing only — you may not reorder them, and you discard nothing."
+  },
+  {
+    name: "Scout Ahead", copies: 1, pool: "shade",
+    needs: ["seeing further than the top card of your own draw pile"],
+    primary: [{ verb: "move", param: 3 }],
+    secondary: [{ verb: "sift", param: 3 }],
+    reaction: "sidestep",
+    text: "Seeing only, and one card deeper than most: you looked where you were going."
+  },
+  {
     name: "Smoke and Go", copies: 1, pool: "shade", needs: [],
     primary: [{ condition: "invisible", duration: 1 }, { verb: "move", param: 2 }],
     secondary: [{ verb: "use" }],
@@ -3947,6 +4160,42 @@ export const STRENGTH_POOL = [
     secondary: [{ verb: "move", param: 1 }],
     costs: { primary: { spent: true } },
     text: "On yourself."
+  },
+  {
+    /*
+     * The first card in the game to pay the top of way-cards 1.3 -- Spent AND Strain -- and the
+     * scaling is what keeps it from being a trap. "Strain your hand but one" strains NOTHING once
+     * your hand is down to this card and one other, so a flat bonus would be free exactly when a
+     * desperation card should cost most. +1 per card strained inverts that.
+     *
+     * It prints no secondary and no reaction on purpose. Forcing the kept card to be played empties
+     * your hand by the end of the round, so you cannot react at all -- and nothing had to print
+     * that, which is the cost core-rules 3 charges for turning a whole hand sideways, read the
+     * other way round.
+     */
+    name: "Nothing Held Back", copies: 1, pool: "strength",
+    needs: ["Strain of every card in hand but one",
+      "a kept card the engine makes you play this turn",
+      "a Strike that scales with the number of cards strained"],
+    primary: [{ verb: "strike" }],
+    secondary: [],
+    costs: { primary: { spent: true, strain: 1 } },
+    text: "Strain your hand but one — that card must be played this turn. Strike +1 per card "
+      + "strained."
+  },
+  {
+    /*
+     * Forestall on a secondary, where it competes with the Move 1 every other card offers -- which
+     * is the right price, since mobility is the most valuable thing a figure does. The card is
+     * deliberately worth nothing some rounds: a Forestall spent on a type that has already acted
+     * is spent on nothing, and one spent blind may hand them something worse. It wants a Foresee
+     * first, and it wants the enemy to be MANY.
+     */
+    name: "Call It", copies: 1, pool: "strength",
+    needs: ["Forestall — discarding a type's intent card and drawing it a new one"],
+    primary: [{ verb: "strike" }],
+    secondary: [{ verb: "forestall", param: 1 }],
+    text: "The secondary names one NPC type."
   }
 ];
 
@@ -4207,7 +4456,7 @@ export const STRENGTH_SIGNATURES = [
   },
   {
     name: "Cleave to the Bone", kind: "feature", node: "strength.executioner",
-    needs: ["the Wound threshold as the attacker's, where the reaction policy reads a constant"],
+    needs: ["a target that can hold a Wound, which an NPC cannot: core-rules 3 draws intent one card per TYPE, so a species shares the deck a Wound would go in"],
     text: "For you, the Wound threshold is 4, not 5."
   },
   {
@@ -4785,6 +5034,21 @@ export const MIND_POOL = [
     effect: { text: "you are never surprised" }
   },
   {
+    /*
+     * The seeing half of Sift, and it is a tattoo rather than a card because core-rules 8 gives
+     * the plain top-card peek to EVERYBODY -- a carving that granted what everyone already has
+     * would be worth nothing. So this one grants more of it, permanently, and still cannot tutor:
+     * knowing is not doing, and there is no reorder here to turn it into a choice.
+     */
+    name: "Graven Sight", kind: "feature", strength: 1, pool: "mind", source: "Tattoo Magic",
+    needs: ["seeing further than the top card of your own draw pile",
+      "a spell slot spent for good"],
+    description: "<p>Two small eyes carved behind the ear, looking the way you came. You always "
+      + "know the next two cards you will draw. You may not change their order, and the knowing "
+      + "is worth exactly as much as what you do about it.</p>",
+    effect: { verb: "sift", param: 2, text: "seeing only -- you may not reorder them" }
+  },
+  {
     name: "Graven Shield", kind: "feature", strength: 2, pool: "mind", source: "Tattoo Magic",
     needs: ["a spell slot spent for good"],
     description: "<p>A shield you cannot put down, drawn across your back by somebody who knew "
@@ -4883,6 +5147,21 @@ export const MIND_POOL = [
       whileState: "handsEmpty",
       text: "+2 to all Casts, and you cannot be Disarmed"
     }
+  },
+  {
+    /*
+     * The binning half of Sift, and this school is where it belongs: a card off the top of the
+     * draw pile is the draw pile getting shorter, which is the state *The Empty Deck* reads. The
+     * once-a-fight limit is core-rules 8's price for choosing rather than counting -- without it,
+     * a repeatable Sift is a dig through your own deck and the deck stops having a bottom.
+     */
+    name: "One Less Thing", strength: 1, pool: "mind", source: "Asceticism",
+    needs: ["Sift -- looking at the top of your own draw pile and discarding what you saw",
+      "a once-a-fight limit on a prepared spell"],
+    description: "<p>You look at what is coming and decide you do not want it. The card is not "
+      + "lost -- it is in the discard with everything else, and a breath brings it back -- but the "
+      + "draw pile is one shorter, which is the direction this school always walks.</p>",
+    effect: { verb: "sift", param: 1, text: "once a fight" }
   },
   {
     name: "The Last Card", strength: 2, pool: "mind", source: "Asceticism",
@@ -5202,8 +5481,9 @@ export const MIND_POOL = [
   {
     name: "Where It Will Land", strength: 1, pool: "mind", source: "Divination",
     needs: [],
-    description: "<p>Your own deck, one card down. The cheapest certainty in the game.</p>",
-    effect: { verb: "foresee", param: 1, readDeck: "own" }
+    description: "<p>Somebody else's deck, one card down. The cheapest certainty in the game, and "
+      + "never your own: the seer is blind to themselves.</p>",
+    effect: { verb: "foresee", param: 1, readDeck: "other" }
   },
   {
     name: "The Mark of Things to Come", strength: 2, pool: "mind", source: "Divination",
@@ -6790,7 +7070,28 @@ export const NODES = [
   {
     /* Politician, the third. It sits on the way to Bard, which is where the room already was. */
     id: "shade.duellist.politician", name: "Politician", after: ["shade.duellist.timing"], bespoke: true,
-    grants: { knowHow: "a council chamber that has already decided", training: "oratory" }
+    /*
+     * **This node paid twice for one idea and one of the payments was nought.** It granted a
+     * know-how about a room that has made up its mind AND a training in `oratory`, and no tool in
+     * the catalogue names oratory -- so skill-rules 2's cap could never bite and the training
+     * changed no number. Dropping it would have left the node paying once; what replaced it is the
+     * reward the situation was already asking for.
+     *
+     * **A mastery was the obvious replacement and a declared rule says no.** A politician's edge is
+     * that they read a room without being asked, which is a mastery exactly -- but masteries are
+     * **one per Way** and expertises **two per Way**, on purpose: *every Way scales its own
+     * approaches, and nobody scales all six.* Shade has both of each already, so the fitting reward
+     * was the unavailable one, and an invariant that only holds until it is inconvenient is not an
+     * invariant.
+     *
+     * **A language is the rung-1 reward the node can have, and it is the right one anyway.**
+     * leveling 4 places a language *where its speakers are studied* and calls Imperial *the
+     * diplomatic lingua franca*; a politician speaking it needs no further argument. Two nodes
+     * already teach it -- a scholar's *Letters* and a spy's *Spy* -- and a language granted twice is
+     * one language, because `learned` dedupes, so a third teacher costs nothing. The Duellist run
+     * is the only route to this node and it passes neither of the other two.
+     */
+    grants: { knowHow: "a council chamber that has already decided", language: "Imperial" }
   },
   {
     id: "shade.bard", name: "Bard", after: ["shade.duellist.politician"], title: "Bard",
@@ -6851,9 +7152,77 @@ export const NODES = [
 /* --- the Strength trunk: three ordinary nodes before the first title --- */
   /* Expertise sits where a Way already teaches that kind of work, two per Way, in the
    * approaches skill-rules 1 says the Way is thick in. */
+  /*
+   * **A menu on the martial side, for the reason 4a built one on the caster side.**
+   * **[BUILT 2026-11-07]**
+   *
+   * leveling 4a opens on *a pool larger than the nodes that draw on it is a menu nobody can order
+   * from*, and it measured that against the spell lists: 147 formulas, three nodes a branch, 95 of
+   * them on no node at all. The same section then calls a named grant *the right shape for a card
+   * pool, where a Way's thirteen cards meet about twenty pool nodes* -- and **that sentence has
+   * expired.** The martial pools hold **35** cards and **21 are on no node at all**: four of the
+   * six common, nine of the fourteen Shade, eight of the fifteen Strength. Six in ten.
+   *
+   * So the condition is the one 4a was written for, and the answer it gives is a menu rather than
+   * a card-placement pass -- its own words: *a menu node is one more node on each branch, not a
+   * rewrite of the ones there.* Twenty-one named grants would have been that rewrite, and 5b's
+   * curve would have had to be re-tilted around them.
+   *
+   * **Directly behind the Way's own title, because that is the checked rule and the first draft
+   * broke it twice.** These were written hanging off all three tier-1 titles of each Way, to land
+   * at level 6 in the middle band rather than on the trunk 5b records as the richest. Two rules
+   * said no: a menu *sits directly behind the title whose list it offers* -- 4a's reasoning from a
+   * caster's **first day** with a school -- and an edge arriving at a **minor** node from three
+   * branches is a crossing arriving past a title, which 1 refuses. `faith.ordination` gets away
+   * with twelve predecessors because it is a door into one room that every god opens; a menu is not
+   * that shape.
+   *
+   * So level **2**, which is a fighter's first day with their Way, and one predecessor each.
+   *
+   * **The common pool keeps named grants only**: a menu sits behind the title whose list it offers
+   * and the common pool is nobody's title. Its four unplaced cards stay a smaller, separate gap.
+   */
+  { id: "shade.repertoire", name: "What You Favour", after: ["shade"],
+    grants: { choose: { from: "Shade" } } },
+  /* The Strength half of the pair above: same shape, same level, its own list. */
+  { id: "strength.repertoire", name: "What You Lean On", after: ["strength"],
+    grants: { choose: { from: "Warrior" } } },
+
   { id: "strength.drill", name: "Drill", after: ["strength"],
     grants: { card: "Hold the Line", expertise: "might" } },
-  { id: "strength.march", name: "The March", after: ["strength.drill"], grants: { carry: 5 } },
+  /*
+   * **The deck cap had never been granted by anything, and this is the Way it belongs to.**
+   *
+   * `deckMax` is on leveling.md 4's reward list, it is named in 1 among the generic pool, the
+   * accumulator has carried it since the data model was written, and **no node in the graph used
+   * it** -- one wonder did (*Deep Pockets*) and that was all. Way of Shade's `footwork` puts a
+   * prune on its trunk so every Shade gets one chance to drop a dead card; Strength had the mirror
+   * of that reward available and empty. Shade refines its deck, Strength adds to it.
+   *
+   * **It goes on the March because core-rules 8 already says what a deck is**: *your action deck is
+   * your stamina.* A soldier who has marched can keep going longer, which is the same sentence read
+   * twice -- so this node now grants the two things a march gives you, weight and stamina, and it
+   * needed no new vocabulary to say so.
+   *
+   * > **[MEASURED 2026-11-07] A deck cap is worth +1.5 to +4.3 in a brawl, nothing if you fill it
+   * > badly, and it is NEGATIVE in a chase.** Against the published encounters (3000 fights, seed
+   * > 1), filling the extra slots with the deck's best card: **+1.5** at 18 cards, **+3.3** at 20,
+   * > **+4.3** at 22. Filling them with a card that does nothing in that fight: **+0.6**, **+0.1**,
+   * > **-1.8** -- so the cap is permission rather than power, which is exactly what 8's grow/prune
+   * > tension says it should be.
+   * >
+   * > **And against two spears and two bows it loses money even filled well**: 40.5 at sixteen
+   * > cards, 37.6 at eighteen, 36.5 at twenty-two. The reason is the published one -- *mobility is
+   * > the most valuable thing in a starter deck* -- and a bigger deck draws your one Move card less
+   * > often. A cap is therefore worth most to the Way that stands and fights and worth less than
+   * > nothing to the Way that has to close a gap, which is the strongest argument available for
+   * > putting it here and not on the Shade trunk.
+   * >
+   * > **2 rather than 1** because one card measures at about +0.75, which is thin for a rung-2
+   * > reward; two lands it level with the prune it mirrors.
+   */
+  { id: "strength.march", name: "The March", after: ["strength.drill"],
+    grants: { carry: 5, deckMax: 2 } },
   { id: "strength.scars", name: "Old Scars", after: ["strength.march"], grants: { health: 1 } },
 
   /* --- the three titles off the trunk: how you stand, how you strike, who you stand in front of --- */
@@ -6929,7 +7298,15 @@ export const NODES = [
   },
 
   /* --- Executioner's three --- */
-  { id: "strength.exec.seat", name: "The Seat", after: ["strength.executioner"], grants: { training: "riding" } },
+  /*
+   * **The one dead training kept on purpose.** `riding` is the only one of the seventeen that is
+   * not waiting on a tool or on a reward kind: it waits on **mounts**, which core-rules 12 leaves
+   * open and tangles with figure size (conditions.md 4.2). Converting it would spend the decision
+   * before it is made, so the training stays and the node stops paying nothing: the know-how is
+   * what a rider knows that no saddle gives them.
+   */
+  { id: "strength.exec.seat", name: "The Seat", after: ["strength.executioner"],
+    grants: { training: "riding", knowHow: "a long ride, and what it costs the animal" } },
   {
     id: "strength.exec.stable", name: "Stablework", after: ["strength.exec.seat"],
     /* Reading an animal that has decided something is Wits, and this node already says so. */
@@ -6995,7 +7372,11 @@ export const NODES = [
    * (specializations.md, Way of Strength). Neither grants a card: a crossing teaches you about the
    * other trade and the cards stay behind the title.
    */
-  { id: "strength.cross.door1", name: "One Charge", after: ["strength.guardian"], grants: { training: "close protection" } },
+  /* `close protection` was a practice, not a tool type, so it uncapped nothing. What a bodyguard
+   * actually has is a situation, and the node after this one already reads a room -- this one reads
+   * the people outside it. */
+  { id: "strength.cross.door1", name: "One Charge", after: ["strength.guardian"],
+    grants: { knowHow: "a crowd at a gate, and who in it is waiting" } },
   {
     id: "strength.cross.door", name: "The One You Keep", after: ["strength.cross.door1"],
     bespoke: true, grants: { knowHow: "a room, and which door in it matters" }
@@ -7285,8 +7666,10 @@ export const NODES = [
    * hold no more than 12 cards*; a prune on the shared trunk would pre-pay that price for a
    * character who has not sworn to him yet, and hand every other priest a reward he has to earn.
    */
+  /* `liturgy` is the rite itself, which no tool holds. What vows actually teach is when a rite has
+   * gone wrong -- and, the harder half, whether that mattered. */
   { id: "faith.vows", name: "Vows", after: ["faith"],
-    grants: { training: "liturgy", spellSlots: 1 } },
+    grants: { knowHow: "a rite done wrong, and whether it mattered", spellSlots: 1 } },
   {
     id: "faith.pilgrimage", name: "Pilgrimage", after: ["faith.vows"],
     grants: { card: "Hold the Line", spellSlots: 1, expertise: "presence" }
@@ -7314,10 +7697,24 @@ export const NODES = [
   },
   { id: "faith.eg.scripture", name: "Scripture", after: ["faith.eg.office"],
     grants: { training: "the holy books", expertise: "lore" } },
-  { id: "faith.eg.clean", name: "The Clean Body", after: ["faith.eg.scripture"], grants: { spellSlots: 1 } },
+  /*
+   * --- the top of a god's ladder sits at the bottom of its branch  [BUILT 2026-11-07]
+   *
+   * **Strength is the slot cost** (way-cards 1.4), so a god's 4 and its 5 are the two miracles only
+   * a caster deep enough to hold five slots can cast at all. They were written and placed on no
+   * node, which made the end of every creed branch the weakest part of it: slots, Health, and a
+   * know-how. Putting the **4 on the second-deepest node and the 5 on the capstone** fixes both
+   * halves at once -- it is the only depth where the slots exist, and it is what leveling 5b means
+   * by *the reward climbs with the branch*.
+   *
+   * Two miracles per god stay unplaced on purpose: the god's menu node (4a) sits at depth 6 and has
+   * to have something left to offer.
+   */
+  { id: "faith.eg.clean", name: "The Clean Body", after: ["faith.eg.scripture"],
+    grants: { spellSlots: 1, spell: "The Clean Field" } },
   {
     id: "faith.eg.alms", name: "Alms", after: ["faith.eg.clean"], bespoke: true,
-    grants: { knowHow: "which houses of the faith will take you in" }
+    grants: { knowHow: "which houses of the faith will take you in", spell: "The Body Made Clean" }
   },
 
   {
@@ -7333,10 +7730,14 @@ export const NODES = [
   { id: "faith.es.word", name: "The Given Word", after: ["faith.es.breath"], grants: { spell: "A Word for You" } },
   { id: "faith.es.air", name: "The Open Air", after: ["faith.es.word"], grants: { carry: 1 } },
   { id: "faith.es.unseen", name: "The Unseen", after: ["faith.es.air"], grants: { restTokens: 1 } },
-  { id: "faith.es.hand", name: "The Open Hand", after: ["faith.es.unseen"], grants: { spellSlots: 1 } },
+  { id: "faith.es.hand", name: "The Open Hand", after: ["faith.es.unseen"],
+    grants: { spellSlots: 1, spell: "The Air Between" } },
   {
     id: "faith.es.distance", name: "Distance", after: ["faith.es.hand"], bespoke: true,
-    grants: { knowHow: "how far a voice carries, and where it will not", mastery: "presence" }
+    grants: {
+      knowHow: "how far a voice carries, and where it will not", mastery: "presence",
+      spell: "Breath for the Dying"
+    }
   },
 
   {
@@ -7352,12 +7753,21 @@ export const NODES = [
   { id: "faith.vax.club", name: "The Club", after: ["faith.vax"], grants: { spell: "Stand Where I Stand" } },
   { id: "faith.vax.shield", name: "The Shield", after: ["faith.vax.club"], grants: { spell: "The Shield Line" } },
   { id: "faith.vax.ranks", name: "The Ranks", after: ["faith.vax.shield"], grants: { health: 1 } },
+  /* Vax is war plainly, and `shield and club` named two weapons rather than a tool type. A soldier
+   * of Vax knows the fight nobody chose: close, crowded, and no room to swing. */
   { id: "faith.vax.drill", name: "Drill", after: ["faith.vax.ranks"],
-    grants: { training: "shield and club", feature: "Hard Hands" } },
+    grants: { knowHow: "a brawl in a confined space", feature: "Hard Hands" } },
   { id: "faith.vax.blood", name: "Blood Paid", after: ["faith.vax.drill"], grants: { health: 1 } },
   {
+    /*
+     * Vax takes its **5 only**, and the 4 stays off the graph. Vax has the shortest full litany of
+     * the eleven uncapped gods, so granting both would make it the second source a character can be
+     * handed entire -- and *The First is the one* is an invariant with a reason (its ladder stops
+     * at 3), not a number with room in it. The miracle and the node were already named the same
+     * thing, which is how the gap was found.
+     */
     id: "faith.vax.sixth", name: "The Sixth", after: ["faith.vax.blood"], bespoke: true,
-    grants: { knowHow: "the Sixth District, and who owes the temple" }
+    grants: { knowHow: "the Sixth District, and who owes the temple", spell: "The Sixth District" }
   },
 
   {
@@ -7401,8 +7811,15 @@ export const NODES = [
     grants: { spellSlots: 1 }
   },
   {
+    /*
+     * The one capstone with no miracle to hand over: The First's Obedience caps its slots at 3 and
+     * therefore caps its ladder there (way-cards 3.5), so there is no 4 and no 5 to place. It pays
+     * in a **prune** instead, which is not a consolation -- The First's axis IS deck shape, and a
+     * second prune is the deepest version of the thing the whole branch is about. It is also the
+     * reward leveling 4 calls *the one that asks the player a question*.
+     */
     id: "faith.first.echterhof", name: "Echterhof", after: ["faith.first.rest"], bespoke: true,
-    grants: { knowHow: "Echterhof, and what is buried under it" }
+    grants: { knowHow: "Echterhof, and what is buried under it", prune: 1 }
   },
 
   /* --- The Five: five doors, four of them re-openable, so each branch runs two nodes --- */
@@ -7415,9 +7832,21 @@ export const NODES = [
     grants: { spell: "The Tide Knows" }
   },
   { id: "faith.sess.tides", name: "The Tides", after: ["faith.sessyfyn"], grants: { spell: "Undertow" } },
+  /*
+   * --- a minor god's branch ends on its 5  [BUILT 2026-11-07]
+   *
+   * The eight minor gods' branches all ended on a know-how, a training or a rest token -- the
+   * smallest rewards on leveling 4's list -- while each god's **5 sat on no node at all**. The
+   * reason to put it here is the one already written down for the schools: *the 5 is what makes the
+   * branch worth walking to the end*. A minor god's branch is three nodes, so the 5 goes on the
+   * third and the **4 stays off the graph** for the god's menu node (4a) to offer.
+   *
+   * Nothing already on these nodes moved. The 5 is added beside it, which is why Driven Out still
+   * teaches Burrowing and Fury still grants its Health.
+   */
   {
     id: "faith.sess.salt", name: "Salt Wisdom", after: ["faith.sess.tides"], bespoke: true,
-    grants: { knowHow: "the sea, and what it does not forgive" }
+    grants: { knowHow: "the sea, and what it does not forgive", spell: "The Sea Decides" }
   },
 
   {
@@ -7429,7 +7858,8 @@ export const NODES = [
     grants: { spell: "The Drum" }
   },
   { id: "faith.valtor.drums", name: "The Drums", after: ["faith.valtor"], grants: { spell: "No Step Back" } },
-  { id: "faith.valtor.fury", name: "Fury", after: ["faith.valtor.drums"], grants: { health: 1 } },
+  { id: "faith.valtor.fury", name: "Fury", after: ["faith.valtor.drums"],
+    grants: { health: 1, spell: "Valtor's Own" } },
 
   {
     id: "faith.fagar", name: "Fagar", after: ["faith.calling"], title: "Fagar",
@@ -7440,7 +7870,10 @@ export const NODES = [
     grants: { spell: "The Borrowed Face" }
   },
   { id: "faith.fagar.masks", name: "Masks", after: ["faith.fagar"], grants: { spell: "The Second Thought" } },
-  { id: "faith.fagar.trick", name: "The Trick", after: ["faith.fagar.masks"], grants: { training: "sleight of hand" } },
+  /* Fagar's thesis is *the trick that works once*, so the know-how is the other side of it: the
+   * trick you have already been shown, which is the one that will not work on you. */
+  { id: "faith.fagar.trick", name: "The Trick", after: ["faith.fagar.masks"],
+    grants: { knowHow: "a trick you have already seen done", spell: "Everyone Wears His Face" } },
 
   {
     id: "faith.vulpet", name: "Vulpet", after: ["faith.calling"], title: "Vulpet",
@@ -7457,7 +7890,10 @@ export const NODES = [
     /* **Burrowing**, the lingua franca of the burrower group (Firma.md). Vulpet was driven out by
      * everyone and became ruler of the land beneath, and the mole men down there follow the Queen
      * of the Dark: this node already knows where the unwanted go, and this is what they speak. */
-    grants: { knowHow: "where the unwanted go, and who feeds them", language: "Burrowing" }
+    grants: {
+      knowHow: "where the unwanted go, and who feeds them", language: "Burrowing",
+      spell: "The Land Beneath"
+    }
   },
 
   {
@@ -7470,7 +7906,8 @@ export const NODES = [
     grants: { spell: "Out of Barren Ground" }
   },
   { id: "faith.brendan.seed", name: "The Seed", after: ["faith.brendan"], grants: { spell: "Full Belly" } },
-  { id: "faith.brendan.ground", name: "Slow Ground", after: ["faith.brendan.seed"], grants: { restTokens: 1 } },
+  { id: "faith.brendan.ground", name: "Slow Ground", after: ["faith.brendan.seed"],
+    grants: { restTokens: 1, spell: "What Grows Out of Us" } },
 
   /* --- The Grey: three doors, matching its three holy books and three sects --- */
   {
@@ -7482,7 +7919,10 @@ export const NODES = [
     grants: { spell: "The Silent Hour" }
   },
   { id: "faith.grey.quiet", name: "The Quiet Step", after: ["faith.grey"], grants: { spell: "Grey Judgement" } },
-  { id: "faith.grey.arm", name: "Arm's Length", after: ["faith.grey.quiet"], grants: { training: "the knife" } },
+  /* The Grey is the silent approach, and `the knife` was a weapon wearing a training's clothes.
+   * The knowledge is the approach rather than the blade: distance, and how much noise it costs. */
+  { id: "faith.grey.arm", name: "Arm's Length", after: ["faith.grey.quiet"],
+    grants: { knowHow: "how close you have to be, and how quiet", spell: "The Silent Knife" } },
 
   {
     id: "faith.purple", name: "The Purple", after: ["faith.calling"], title: "The Purple",
@@ -7496,7 +7936,7 @@ export const NODES = [
   { id: "faith.purple.dose", name: "The Dose", after: ["faith.purple"], grants: { spell: "Taste of the Rot" } },
   {
     id: "faith.purple.cup", name: "The Cup", after: ["faith.purple.dose"], bespoke: true,
-    grants: { knowHow: "what is in the water, and who put it there" }
+    grants: { knowHow: "what is in the water, and who put it there", spell: "The Slow Failure" }
   },
 
   {
@@ -7511,7 +7951,7 @@ export const NODES = [
   { id: "faith.yellow.whispers", name: "Whispers", after: ["faith.yellow"], grants: { spell: "The Planted Word" } },
   {
     id: "faith.yellow.network", name: "The Network", after: ["faith.yellow.whispers"], bespoke: true,
-    grants: { knowHow: "who carries a rumour, and how fast" }
+    grants: { knowHow: "who carries a rumour, and how fast", spell: "The Lie That Held" }
   },
 
   /* --- the twenty-four menu nodes ---
@@ -7616,14 +8056,19 @@ export const NODES = [
     after: ["faith.eternalgod", "faith.eternalspirit", "faith.vax", "faith.first",
       "faith.sessyfyn", "faith.valtor", "faith.fagar", "faith.vulpet", "faith.brendan",
       "faith.grey", "faith.purple", "faith.yellow"],
-    grants: { training: "the rule of an order" } },
+    /* The hub of the four orders, and `the rule of an order` is a text, not a tool. What an
+     * ordinand learns is the rule AND who is quietly outside it, which is the same shape as the
+     * Black Circle's know-how one node along. */
+    grants: { knowHow: "an order's rule, and the brother breaking it" } },
 
   /* One path node each, so the order arrives at level 8 like every other tier-2 title, and so the
    * level spent getting there is a level spent on the order rather than on the god. */
   { id: "faith.order.circle", name: "The Black Circle", after: ["faith.ordination"],
     grants: { knowHow: "who in a congregation is lying, and to whom" } },
+  /* `shield and formation` was drill, and drill is not a tool either. The Holy Shield's knowledge
+   * is the formation's failure point, which is what standing in one all day teaches. */
   { id: "faith.order.shield", name: "The Holy Shield", after: ["faith.ordination"],
-    grants: { training: "shield and formation" } },
+    grants: { knowHow: "a shield wall, and where it is about to give" } },
   { id: "faith.order.cloister", name: "The Cloister", after: ["faith.ordination"],
     /* The infirmary is monastic in this world as in ours, and the training was the one a tool
      * named and no node taught: a Healer's Kit is Lore +2 and was capped at +1 for ever. */

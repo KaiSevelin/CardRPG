@@ -858,6 +858,42 @@
       }
     },
     {
+      "_id": "WpXPA4IYlcJ6n2Kd",
+      "_key": "!cards.cards!89Gj8hxxjlCUI77W.WpXPA4IYlcJ6n2Kd",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 2300,
+      "name": "Rattle",
+      "type": "npc",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Rattle",
+          "img": "systems/cardrpg/art/cards/npc/rattle.webp"
+        }
+      ],
+      "back": {
+        "name": "Intent",
+        "img": "systems/cardrpg/art/backs/npc.webp"
+      },
+      "system": {
+        "kind": "",
+        "sequence": [
+          {
+            "verb": "strike"
+          }
+        ],
+        "needs": [
+          "terrify"
+        ],
+        "only": [],
+        "text": "Strike, and the target discards one card out of their hand — their choice."
+      }
+    },
+    {
       "_id": "ERKHe8wKQSjs9IY5",
       "_key": "!cards.cards!89Gj8hxxjlCUI77W.ERKHe8wKQSjs9IY5",
       "_stats": {
@@ -865,7 +901,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 2300,
+      "sort": 2400,
       "name": "Feed",
       "type": "npc",
       "face": 0,
@@ -904,7 +940,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 2400,
+      "sort": 2500,
       "name": "Go Under",
       "type": "npc",
       "face": 0,
@@ -940,7 +976,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 2500,
+      "sort": 2600,
       "name": "Submerge",
       "type": "npc",
       "face": 0,
@@ -976,7 +1012,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 2600,
+      "sort": 2700,
       "name": "Stoop",
       "type": "npc",
       "face": 0,
@@ -1015,7 +1051,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 2700,
+      "sort": 2800,
       "name": "Fade",
       "type": "npc",
       "face": 0,
@@ -1057,7 +1093,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 2800,
+      "sort": 2900,
       "name": "Lie Still",
       "type": "npc",
       "face": 0,
@@ -1089,7 +1125,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 2900,
+      "sort": 3000,
       "name": "Order",
       "type": "npc",
       "face": 0,
@@ -1121,7 +1157,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 3000,
+      "sort": 3100,
       "name": "Call More",
       "type": "npc",
       "face": 0,
@@ -1153,7 +1189,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 3100,
+      "sort": 3200,
       "name": "Work the Weave",
       "type": "npc",
       "face": 0,
@@ -1189,7 +1225,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 3200,
+      "sort": 3300,
       "name": "Carry",
       "type": "npc",
       "face": 0,
@@ -1226,7 +1262,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 3300,
+      "sort": 3400,
       "name": "Shelter",
       "type": "npc",
       "face": 0,
@@ -1262,7 +1298,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 3400,
+      "sort": 3500,
       "name": "The Hive Obeys",
       "type": "npc",
       "face": 0,
@@ -1296,7 +1332,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 3500,
+      "sort": 3600,
       "name": "Open the Hold",
       "type": "npc",
       "face": 0,
@@ -1331,7 +1367,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 3600,
+      "sort": 3700,
       "name": "Carry It Off",
       "type": "npc",
       "face": 0,

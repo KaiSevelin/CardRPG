@@ -21,7 +21,8 @@
       "legs",
       "pack",
       "wits",
-      "caster"
+      "caster",
+      "terrify"
     ],
     "tactics": [
       "packTactics",

@@ -494,6 +494,39 @@ export async function liftCondition(actor, { target, key }) {
  * `flavour` decides which deck, and the rules already set the split: **body** taint (poison,
  * disease) goes in the action deck, **mind** taint (dark magic, horrors) in the skill deck.
  */
+/**
+ * **A Wound, which is the one card the rules named and nothing ever made.**  **[BUILT 2026-11-07]**
+ *
+ * Everything else about a Wound has existed for a long time: the card type and its one-field data
+ * model, the sheet count, the upright filter that refuses to let one react, the deck limits that
+ * exclude it, the tray's own sentence for it, the prune that cannot take it, and a back in the art
+ * brief. Two rules in core-rules 8 say when one arrives -- **5 or more damage from a single hit,
+ * after armor**, and **dropping to 0 Health** -- and no code path made one, so a mechanic that was
+ * finished in seven places did nothing at all.
+ *
+ * **An NPC cannot be wounded, and the guard for that is the data rather than a type check.**
+ * A Wound is a dead card in *your action discard pile*, and core-rules 3 draws NPC intent **one
+ * card per type** -- *one for all the goblins*. So an NPC's deck belongs to its species while a
+ * Wound belongs to an individual, and putting one in would make hurting a single goblin degrade
+ * every goblin on the board. There is nowhere to put it, which is why asking `deckOf` is the whole
+ * of the check: a creature with no action discard of its own is a creature that cannot hold one.
+ *
+ * That also settles what *Cleave to the Bone* is worth. Its text moves the threshold **for you**,
+ * as the attacker, and every creature in the roster is an NPC -- so against the game as written it
+ * has no target. Four careers grant it, and the finding belongs to them rather than to this
+ * function; it is recorded in core-rules 8.
+ */
+export async function resolveWound(target, { reason = "" } = {}) {
+  if (!target) return false;
+  const stack = deckOf(target, "actionDiscard");
+  if (!stack) return false;
+  await stack.createEmbeddedDocuments("Card", [{
+    name: "Wound",
+    type: "wound",
+    system: { source: reason }
+  }]);
+  return true;
+}
 export async function resolveTaint(actor, { amount = 1, target, flavour = "body", fast = false, source = "" }) {
   if (!target) return null;
   const which = flavour === "mind"
@@ -519,9 +552,12 @@ export async function resolveTaint(actor, { amount = 1, target, flavour = "body"
   let dealt = 0;
   if (fast) {
     dealt = n;
+    const before = target.system.health.value;
     await target.update({
-      "system.health.value": Math.max(0, target.system.health.value - n)
+      "system.health.value": Math.max(0, before - n)
     });
+    /* A dose that drops you is still a drop (core-rules 8), even though no taint reaches five. */
+    if (before - n <= 0) await resolveWound(target, { reason: "dropped to 0" });
   }
 
   await ChatMessage.create({
@@ -1485,13 +1521,34 @@ export async function resolveAttack(actor, {
     if (reaction) await spendReaction(taker, reaction);
 
     const dealt = Math.max(0, incoming - (reaction?.reduce ?? 0));
+    /*
+     * **Health before the blow, because two things below need it and one of them was wrong.**
+     *
+     * `down` used to read `taker.system.health.value - dealt <= 0` AFTER the update had landed, so
+     * it subtracted the damage twice: a hero on 4 Health taking 3 was reported **down** at 1. The
+     * document reflects the new value the moment the update resolves, which is exactly the kind of
+     * read that looks right on the page. One local fixes it and gives the Wound rules the number
+     * they are written about.
+     */
+    const before = taker.system.health.value;
 
     await taker.update({
-      "system.health.value": Math.max(0, taker.system.health.value - dealt),
+      "system.health.value": Math.max(0, before - dealt),
       // A Defend secondary or reaction covers one attack, so it is spent whatever it stopped; a
       // primary holds until the start of the defender's next turn and is cleared there instead.
       ...(block && !taker.system.blockPersists ? { "system.block": 0 } : {})
     });
+
+    /*
+     * The two events of core-rules 8, and **one Wound per blow**: the rules say *you gain 1 Wound
+     * when* and then list two triggers, so a single hit that both deals five and drops you is one
+     * Wound rather than two. Dropping is named first because it is the worse of the two and the
+     * reason the card says what it says.
+     */
+    const dropped = before - dealt <= 0 && dealt > 0;
+    if (dropped || dealt >= CARDRPG.defaults.woundAt) {
+      await resolveWound(taker, { reason: dropped ? "dropped to 0" : "a heavy blow" });
+    }
 
     rows.push({
       name: taker.name, armor, block, combo, dealt,
@@ -1500,7 +1557,7 @@ export async function resolveAttack(actor, {
       pierced: pierced ? hadArmor : 0,
       rounded: rounded ? hadBlock : 0,
       opening: combo ? game.i18n.localize(CARDRPG.conditions[when.needs]?.label ?? when.needs) : null,
-      down: taker.system.health.value - dealt <= 0,
+      down: dropped,
       guard: guard ? { name: guard.actor.name, forName: target.name, card: guard.card } : null,
       reaction: reaction
         ? { key: reaction.key, card: cardName(reaction.card), reduce: reaction.reduce ?? 0,

@@ -1,6 +1,6 @@
 # Art prompts
 
-**588 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
+**595 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
 
 It walks the same `GROUPS` the art list walks, by importing it rather than copying it, so the two files cannot disagree about what exists.
 
@@ -27,7 +27,7 @@ So the numbers are gone from the capsules and the picture is in their place: **t
 
 ## Deck backs
 
-**Draw these first.** 10 pictures against 578 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
+**Draw these first.** 10 pictures against 585 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
 
 ### The capsule — paste this once
 
@@ -539,7 +539,7 @@ WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of L
 
 ## NPC intent cards
 
-**36 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/cards/npc/`.
+**37 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/cards/npc/`.
 
 Face-up on the table during a fight, and seen behind a goblin, a troll and a dragon alike. Draw the **shape of the move**, never a portrait of who is making it: *Close In* is a thing closing in.
 
@@ -894,6 +894,16 @@ SUBJECT. "Press" — Strike, Strike -1 · Strike, and Strike again at −1. Noth
 Draw the same blow arriving twice -- the first impact closing over the face of a human shield, the second coming in behind it lower and plainly less ready. Nothing clever: twice.
 ```
 
+### Rattle
+
+File: `cards/npc/rattle.webp`
+
+```text
+SUBJECT. "Rattle" — Strike · Strike, and the target discards one card out of their hand — their choice.
+
+Draw the instant a blow lands, the weapon already through -- never wound up, never posing.
+```
+
 ### Set and Wait
 
 File: `cards/npc/set-and-wait.webp`
@@ -1018,7 +1028,7 @@ Draw the air around a raised limb going wrong -- light bending, grit lifting off
 
 ## Way of Shade — pool
 
-**12 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/cards/shade/`.
+**14 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/cards/shade/`.
 
 A Way of Shade card: low light, cover, and the moment before being noticed.
 
@@ -1125,6 +1135,18 @@ Draw one enemy picked out of a field at distance -- a hand up with two fingers l
 WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Germanic appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
+### Count the Odds
+
+File: `cards/shade/count-the-odds.webp`
+
+```text
+SUBJECT. "Count the Odds" — Strike · / Sift 2 · The secondary is seeing only — you may not reorder them, and you discard nothing.
+
+Draw the instant a blow lands, the weapon already through -- never wound up, never posing; a hand turning one thing over and letting it drop.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Nordic appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
 ### Cut and Run
 
 File: `cards/shade/cut-and-run.webp`
@@ -1171,6 +1193,18 @@ SUBJECT. "Pin the Shadow" — Strike Slowed (1) · / Move 1
 Draw a blade driven through a trailing hem and into the ground under it, the cloth pulled taut and the foot above it unable to lift. The point is in the earth and not in anybody.
 
 WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Persian appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Scout Ahead
+
+File: `cards/shade/scout-ahead.webp`
+
+```text
+SUBJECT. "Scout Ahead" — Move 3 · / Sift 3 · Seeing only, and one card deeper than most: you looked where you were going.
+
+Draw ground covered -- weight forward, the last footfall still behind; a hand turning one thing over and letting it drop.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Southeast Asian appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Second Knife
@@ -1247,7 +1281,7 @@ WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Per
 
 ## Way of Strength — pool
 
-**13 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/cards/strength/`.
+**15 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/cards/strength/`.
 
 A Way of Strength card: mass, leverage, and weight already moving.
 
@@ -1354,6 +1388,18 @@ Draw a sword leaving a hand that has just been struck across the knuckles -- the
 WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Persian appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
+### Call It
+
+File: `cards/strength/call-it.webp`
+
+```text
+SUBJECT. "Call It" — Strike · / Forestall 1 · The secondary names one NPC type.
+
+Draw the instant a blow lands, the weapon already through -- never wound up, never posing; a motion broken off half-made, and begun again as a different one.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Central Asian appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
 ### Hammerblow
 
 File: `cards/strength/hammerblow.webp`
@@ -1376,6 +1422,18 @@ SUBJECT. "Heave" — Move 2 · / Ready · Carrying any weight without being Slow
 Draw somebody walking under a load that should not be walkable: a beam or a cask across one shoulder, the spine straight beneath it, the pace unbroken. Not the lift -- the carrying.
 
 WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Southeast Asian appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Nothing Held Back
+
+File: `cards/strength/nothing-held-back.webp`
+
+```text
+SUBJECT. "Nothing Held Back" — Strike · Strain your hand but one — that card must be played this turn. Strike +1 per card strained.
+
+Draw the instant a blow lands, the weapon already through -- never wound up, never posing.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Nordic appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Overbear
@@ -3231,7 +3289,7 @@ Draw that line literally: the one moment it describes, and nothing else in frame
 
 ## Formulas — Way of Mind pool
 
-**70 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/spells/mind/`.
+**72 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/spells/mind/`.
 
 Blood magic and spiritualism: the working, not the worker.
 
@@ -3470,6 +3528,18 @@ A shield you cannot put down, drawn across your back by somebody who knew what t
 Draw that line literally: the one moment it describes, and nothing else in frame.
 ```
 
+### Graven Sight
+
+File: `spells/mind/graven-sight.webp`
+
+```text
+SUBJECT. "Graven Sight" — strength 1 · Sift 2 seeing only -- you may not reorder them
+
+Two small eyes carved behind the ear, looking the way you came. You always know the next two cards you will draw. You may not change their order, and the knowing is worth exactly as much as what you do about it.
+
+Draw a hand turning one thing over and letting it drop.
+```
+
 ### Hold to the Bargain
 
 File: `spells/mind/hold-to-the-bargain.webp`
@@ -3528,6 +3598,18 @@ SUBJECT. "Nothing to Carry" — strength 1 · +2 to all Casts, and you cannot be
 Nothing in either hand, and nothing anybody can take out of them. The bonus to Casts is incidental; the point is that Disarm stops being a word.
 
 Draw that line literally: the one moment it describes, and nothing else in frame.
+```
+
+### One Less Thing
+
+File: `spells/mind/one-less-thing.webp`
+
+```text
+SUBJECT. "One Less Thing" — strength 1 · Sift 1 once a fight
+
+You look at what is coming and decide you do not want it. The card is not lost -- it is in the discard with everything else, and a breath brings it back -- but the draw pile is one shorter, which is the direction this school always walks.
+
+Draw a hand turning one thing over and letting it drop.
 ```
 
 ### Open the Vein
@@ -4137,7 +4219,7 @@ File: `spells/mind/where-it-will-land.webp`
 ```text
 SUBJECT. "Where It Will Land" — strength 1 · Foresee 1
 
-Your own deck, one card down. The cheapest certainty in the game.
+Somebody else's deck, one card down. The cheapest certainty in the game, and never your own: the seer is blind to themselves.
 
 Draw the moment before a thing happens, shown twice.
 ```
@@ -8735,7 +8817,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 
 ## Where prompts still repeat
 
-**169 prompts in 32 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
+**171 prompts in 32 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
 
 **6 of those clusters are the ones that bite**, listed first: the ones where the subject line carries no prose either, so neither half of the prompt tells the cards apart. The rest share a direction over subjects that already differ — forty-three consumables drawing a nearly-empty vessel still come back as forty-three different pictures, because each subject names its own.
 
@@ -8750,10 +8832,10 @@ Answer a cluster by adding its keys to `DIRECTION` in `test/art-prompts.mjs` and
 | **4** | 2 | a tool worn exactly where a hand goes and nowhere else | `items/climbing-rope` `items/hunting-traps` `items/lantern` `items/repair-kit` |
 | **3** | 2 | an edge, worn and sharpened back more than once | `items/arming-sword` `items/trident` `items/npc/goblin-spear` |
 | **9** | 1 | set down on nothing, carried a long way among other things | `items/beggars-bowl` `items/cairn-stone` `items/cracked-spyglass` `items/locked-casket` `items/loose-cobble` …+4 |
+| **7** | 1 | the instant a blow lands, the weapon already through -- never wound up, never posing | `cards/starter/strike` `cards/npc/rattle` `cards/strength/nothing-held-back` `signatures/shade/double-or-nothing` `signatures/shade/lift` …+2 |
 | **7** | 1 | the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem | `signatures/shade/one-trick` `signatures/shade/the-kit` `signatures/shade/the-opening` `signatures/strength/cleave-to-the-bone` `signatures/strength/loaded-before-the-bell` …+2 |
 | **7** | 1 | an object that means nothing except in trained hands | `features/good-aim` `features/good-name` `features/hard-hands` `features/light-step` `features/quick-eye` …+2 |
 | **7** | 1 | a small dark bottle, labelled, a residue dried at the lip | `items/assassins-tincture` `items/black-lotus` `items/blade-venom` `items/drowsing-oil` `items/grave-cap-extract` …+2 |
-| **5** | 1 | the instant a blow lands, the weapon already through -- never wound up, never posing | `cards/starter/strike` `signatures/shade/double-or-nothing` `signatures/shade/lift` `signatures/shade/one-opening` `signatures/strength/red-mist` |
 | **5** | 1 | made well, by somebody who signed nothing | `items/fine-longsword` `items/marching-boots` `items/masterwork-crossbow` `items/proofed-mail` `items/smiths-hammer` |
 | **4** | 1 | the weapon drawn and held at tension | `items/crossbow` `items/matchlock-pistol` `items/shortbow` `items/npc/goblin-shortbow` |
 | **4** | 1 | a thing that says who somebody is before they speak | `items/fine-clothes` `items/gaming-set` `items/signet-ring` `items/travelling-cloak` |

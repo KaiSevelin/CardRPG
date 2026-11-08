@@ -1,0 +1,24 @@
+{
+  "_id": "19IBqXuXIHBTDaw5",
+  "_key": "!items!19IBqXuXIHBTDaw5",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "One Less Thing",
+  "type": "spell",
+  "img": "systems/cardrpg/art/spells/mind/one-less-thing.webp",
+  "system": {
+    "strength": 1,
+    "source": "Asceticism",
+    "description": "<p>You look at what is coming and decide you do not want it. The card is not lost -- it is in the discard with everything else, and a breath brings it back -- but the draw pile is one shorter, which is the direction this school always walks.</p>",
+    "effect": {
+      "verb": "sift",
+      "param": 1,
+      "text": "once a fight"
+    },
+    "kind": "formula",
+    "prepared": false
+  }
+}

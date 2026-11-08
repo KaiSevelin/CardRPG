@@ -111,11 +111,46 @@ So a node may name a **source** instead of a spell:
 | Nothing left to teach | the node says so rather than charging a level for a duplicate |
 | A source nobody wrote | a **graph fault**, refused at assembly (§8) |
 
-**Twenty-four of these exist, one behind every school and every god**, and they sit immediately
+**Twenty-six of these exist, one behind every school, every god and each martial Way**, and they sit immediately
 behind the title rather than deeper in: §3.4 argues the bottom of a school's ladder from a caster's
 *first day* with the school, and a node three steps further in would be arguing about their fourth.
 Nine of them are the first thing behind their title at all — the level-8 schools were leaves, so
 you arrived, took the Signature, and the school had nothing else in it.
+
+
+> **[BUILT 2026-11-07] Twenty-six now, because the sentence above about card pools expired.**
+>
+> This section says a named grant is *the right shape for a card pool, where a Way's thirteen cards
+> meet about twenty pool nodes.* Asked of the content for the first time: the martial pools hold
+> **35** cards and **21 of them are on no node at all** — four of the six common, nine of the
+> fourteen Shade, eight of the fifteen Strength. Six in ten, which is the condition the first
+> paragraph of this section describes: *a pool larger than the nodes that draw on it is a menu
+> nobody can order from.*
+>
+> So the mechanism generalises and the reasoning does not change. Two menu nodes join the
+> twenty-four — *What You Favour* behind **Shade** and *What You Lean On* behind **Warrior** — and
+> the unreachable count falls from 21 to **5**. The alternative was placing twenty-one cards on
+> nodes by hand, which is the rewrite this section's own argument rejects: *a menu node is one more
+> node on each branch, not a rewrite of the ones there.*
+>
+> **Three things about the card side differ, and each one came from a rule rather than from taste.**
+>
+> | | |
+> |---|---|
+> | **It sits at level 2, not deeper** | The first draft hung each menu off all three of its Way's tier-1 titles, to land at level 6 in the middle band rather than on the trunk §5b records as the richest. Two checked rules refused it: a menu *sits directly behind the title whose list it offers*, and an edge arriving at a **minor** node from three branches is a crossing arriving past a title (§1). A Way's title is at level 1, so its first day is level 2 — which is the same argument §3.4 makes for a caster's first day with a school |
+| **The top cost rung is not on a menu** | A spell menu fences itself: strength **is** the slot cost, so a caster offered a strength-5 miracle can take it and cannot cast it. **A card has no such fence** — it is playable the turn it is drawn. The dearest Shade and common cards pay Strain 1 or Spent, which way-cards §1.3 calls *a few per deck*; one card pays **Spent and Strain**, the rung §1.3 reserves at *once in a deck*. *Nothing Held Back* therefore stays under a named grant, where its branch decides when it arrives |
+| **The common pool has no menu** | A menu sits behind the title whose list it offers, and the common pool is nobody's title. Its four unplaced cards are a separate and smaller gap |
+>
+> What is left unreachable is those five cards, and a check now names them and asserts that every
+> one is one of the two declared cases — so the number can shrink but it cannot grow quietly, and
+> nobody has to take the explanation on trust.
+>
+> **[FOUND 2026-11-07] And one measurement of this was wrong before it was right.** A career pass
+> reported *no martial career is ever offered a menu pick, 0 of 24*, counting menus on a career's
+> **cheapest route**. By that measure it is **0 of 56 titles**, casters included: no menu node is on
+> any cheapest route anywhere, because all twenty-six are leaves nothing depends on. A menu is a
+> level you may spend, never one you must. The real asymmetry was **availability** — Mind 12, Faith
+> 12, Shade 0, Strength 0 — and that is what these two nodes fix.
 
 **Nothing already on a branch changed.** Every named grant is still the formula its branch was
 written around: Rain and Lightning are still two nodes six slots apart, which is the price §1.4 of
@@ -331,9 +366,57 @@ one thing instead of another.
 | **Item** | A slate you keep | For signature gear a Way grants, not ordinary loot |
 | **Prune** | Remove one card from a deck, permanently | The only way to drop a dead card (§8). **[BUILT 2026-11-01]** — the one reward that asks the player a question, since only they know which card died |
 | **Deck cap** | Raise your action deck maximum | A flat trait, so **not** bonus-grouped |
+| **Carry** | Raise your carrying limit, in kilograms | **[FOUND 2026-11-07]** A flat trait like the deck cap, granted by **six** nodes before it had a row here at all — and the second hole the reward audit found, pointing the other way: a reward the graph hands out that this table never offered. See below for what it is worth |
 | **Spell slot** | One more point of **formula strength** you may prepare (core-rules §4) | Way of Mind's and Way of Faith's version of a deck cap |
 | **Health** | Raise max Health | |
 | **Rest token** | One more (§8 promises these come from leveling) | |
+
+> **[FOUND 2026-11-07, FIXED 2026-11-07] This table was read in one direction for the first time,
+> and it had a hole at each end.**
+>
+> Every check on the rewards started from the **graph**: here are the keys the nodes use, does each
+> have a price, does each have a rung. Nothing started from **this table** and asked which of its
+> rows no node has ever granted — and nothing at all asked the reverse, which of the graph's grants
+> this table never offered. Both questions had answers.
+>
+> | Direction | What was missing |
+> |---|---|
+> | **the rules offer it, nothing grants it** | **Deck cap.** On this list, named in §1 among the generic pool, carried by the accumulator since the data model was written, and granted by **no node in the game**. One *wonder* granted it and that was all |
+> | **the graph grants it, the rules never offered it** | **Carry.** Six nodes grant it, it has had a rung in §5b since that section was written, and this table had **no row for it** until today |
+>
+> Both are fixed: *The March* on the Way of Strength trunk grants the deck cap, and Carry has a row.
+> Both directions are now pinned, so neither end can open again quietly.
+>
+> **The deck cap went to Strength because it was measured, not because the slot was empty.** Way of
+> Shade's trunk *prunes* and Way of Strength's trunk now *caps*: Shade refines its deck, Strength
+> adds to it, which is the one axis the two Ways were supposed to be opposites on and only one of
+> them had a lever ([specializations.md](specializations.md) §5a.1 puts four titles on **Deck shape**
+> per Way, and two of Strength's — Ironclad and Berserker — had nothing on their route that touched
+> a deck at all). Against the published encounters, 3000 fights:
+>
+> | | 3 spears | 4 spears | 5 spears | 2 spear 2 bow | mean |
+> |---|---|---|---|---|---|
+> | 16 cards | 99.0 | 90.8 | 67.6 | **40.5** | 74.5 |
+> | 20 cards, filled with the best card | 99.6 | 94.6 | 79.5 | **37.2** | 77.7 |
+> | 20 cards, filled with a dead card | 98.9 | 89.7 | 68.6 | 41.3 | 74.6 |
+> | 22 cards, filled with a dead card | 97.4 | 87.9 | 66.7 | 38.9 | **72.7** |
+>
+> **A cap is permission, not power** — which is exactly what §8's grow/prune tension says it should
+> be. Filled well it is worth **+1.5 at eighteen cards, +3.3 at twenty, +4.3 at twenty-two**; filled
+> badly it is worth nothing, and at twenty-two cards it is worth **−1.8**. And look at the archer
+> column: **against two spears and two bows the cap loses money even filled well**, 40.5 down to
+> 37.2, for the reason core-rules §11 already published — *mobility is the most valuable thing in a
+> starter deck* — because a bigger deck draws your one Move card less often. So the cap is worth
+> most to the Way that stands and fights and less than nothing to the Way that has to close a gap,
+> which is the strongest argument available for where it went.
+>
+> **Carry, measured the same way, is worth nothing in a fight at all**, and that is not a complaint
+> about the reward. The limit is **40 kg** and the heaviest loadout in the catalogue — Plate, a
+> longsword and a shield — is **25**, so no amount of armour makes the limit bite. What makes it
+> bite is loot, and core-rules §4 prices going over at **68 to 82 points of win rate**, the most
+> expensive state in the game. So carry is all-or-nothing by design: worth zero until the party
+> picks something up, and worth more than any other rung-1 reward the moment it does. Rung 1 is
+> right because the *reward* is narrow, not because the effect is small.
 
 > **[BUILT 2026-11-02] A language is taught where its speakers are studied.** The world's
 > *Languages* list (worldinfo/Firma.md) is the brief and the content is a transcription of it,
@@ -342,7 +425,7 @@ one thing instead of another.
 >
 > | Language | Taught by | Because |
 > |---|---|---|
-> | **Imperial** | *Letters* (Mind trunk), *Spy* (Shade) | The diplomatic lingua franca, so it belongs where reading does — and a spy speaks what a scholar reads, which is why two nodes teach one tongue |
+> | **Imperial** | *Letters* (Mind trunk), *Spy* (Shade), *Politician* (Shade) | The diplomatic lingua franca, so it belongs where reading does — and a spy speaks what a scholar reads, which is why more than one node teaches one tongue. **[2026-11-07]** The Politician is the third, and it arrived by subtraction: that node granted a training in `oratory` that no tool could ever uncap, and a diplomat's tongue is the rung-1 reward it should have had |
 > | **Elvish** | *Debts* (Spiritualism) | The elves' and *most of the lesser gods'*, and that node already knows who owes whom among them |
 > | **Troll** | *Nine Names* (Spiritualism) | The Troll King is a minor god and *essentially all trolls follow him* |
 > | **Demonic** | **Blood Magic** | Blood is the currency it is spoken in: the demons let the necromancers use the Third Side *in exchange for human sacrifices* |
@@ -685,6 +768,94 @@ first reading of that was a forced **prune** — a deletion, which is invisible 
 Deck shape instead of Preparation, and spends the same verb as one of section 4's rewards. A bound
 Taint card is the same fiction read as **dilution**, and it is felt every few draws for the rest of
 the character's life. [specializations.md](specializations.md) argues it out in full.
+
+## 5b. The reward climbs with the branch  **[BUILT 2026-11-07]**
+
+> **A level late in a branch must not buy less than a level early in it.**
+
+§5a makes a branch *cost* more as it deepens — *depth takes commitment* — and said nothing about what
+the deeper node hands back. Measured, the graph was doing the opposite at both ends of the longest
+runs, and the cause was structural rather than careless: titles and their Signatures land in the
+middle of the graph, so whatever trails behind a title was written as filler.
+
+### How it is measured
+
+Level is the **cheapest legal route** (§7.1), and the reward is scored on §4's own ranking of its
+list rather than on a new one:
+
+| Weight | Rewards | Why that rung |
+|---|---|---|
+| **3** | action card, formula or miracle, a §4a choice, feature, item, **Signature** | §4: *cards are the backbone, features are the spice* |
+| **2** | Health, spell slot, prune, expertise, deck cap | a permanent number that is always on |
+| **1** | training, know-how, mastery, a language, carry, rest token | narrow, binary, or conditional on fiction |
+
+Two things are scored apart from their grants, because their reward is not a grant:
+
+- **A title** is excluded from the curve. Titles are placed by §5a's stringency devices and by §7.1's
+  tiers, which is why they cluster at levels 5 and 8 — that is the tier rule working, not a reward
+  curve to flatten.
+- **A crossing is paid in access.** §1 prices it that way — *a cross edge to a title is cheap, past
+  one is the leak* — and the crossings grant no card on purpose, because **the cards are behind the
+  title**. A node whose only purpose is to put a title on the frontier is credited with that, or the
+  measurement punishes the design for working.
+
+### What the measurement found
+
+> **[FOUND 2026-11-07, FIXED 2026-11-07] Every god's 4 and its 5 were written and on no node at
+> all**, and that one gap was most of the problem.
+>
+> §3.4 of [way-cards.md](way-cards.md) already gives the reason they belong at the bottom of a
+> branch — *the 5 is what makes the branch worth walking to the end* — and §1.4 gives the reason
+> they **can only** sit there: **strength is the slot cost**, so a 5 is a miracle no caster can cast
+> until they hold five slots. The two arguments point at the same node and nobody had put them
+> together, so the ladder tops sat in the lists, reachable only by spending a §4a menu pick on them.
+>
+> Meanwhile the **four deepest nodes in the game** — *Alms*, *Distance*, *The Sixth*, *Echterhof*,
+> all at level 11, all the last node of a creed — granted a know-how each and nothing else, and the
+> eight minor gods' branches all ended the same way. **Nine of the graph's leaves granted nothing a
+> fight would notice.** The longest-invested characters were getting the least.
+
+The rule that came out of it: **a god's 5 goes on its branch's last node, and its 4 on the
+second-last where the branch is long enough to have one.** Eleven 5s and four 4s were placed.
+Nothing already on those nodes moved — *Driven Out* still teaches Burrowing, *Fury* still grants its
+Health — because the point was never to replace the flavour, only to stop it being the whole reward.
+
+Two miracles per god stay off the graph on purpose, so the god's §4a menu node still has something
+to offer. **Vax takes its 5 only**, because granting both would make it the second source a
+character can be handed entire, and *The First is the one* is an invariant with a reason behind it.
+
+> **[BUILT 2026-11-07] The First is the exception, and its own Obedience is why.** Its slots are
+> capped at 3, so its ladder stops at 3 (§3.5 of [way-cards.md](way-cards.md)) and there is no 4 and
+> no 5 to place. *Echterhof* pays in a **second prune** instead. That is not a consolation prize:
+> The First's axis **is** deck shape, and a prune is the deepest version of what the whole branch is
+> about — as well as the one reward §4 calls *the one that asks the player a question*.
+
+### Where it stands
+
+| | Before | After |
+|---|---|---|
+| Leaves granting nothing a fight would notice | **9** | **0** |
+| Mean reward, levels 8 / 9 / 10 / 11 | 2.50 / 2.33 / 1.44 / **1.25** | 2.50 / 2.89 / 3.22 / **4.00** |
+| Mean level of a granted **4** | — *(on no node)* | **8.50** |
+| Mean level of a granted **5** | — *(on no node)* | **8.09** |
+| Mean level of a granted 1, 2 or 3 | 6.14 | 6.14 |
+
+The back half of the graph now **rises monotonically** — 2.50, 2.89, 3.22, 4.00 — and the strength
+of what a caster is handed climbs with it, which it could not do before because the top two rungs of
+every litany were unreachable by name.
+
+**The load stays varied, and that is deliberate.** The spread at every level is two or three
+different weights wide; a level-8 node still grants a single point of carry, and a crossing still
+pays a level for a training. What was removed is not the low rewards, it is the low rewards being
+*the end of the road*.
+
+> **[OPEN] The trunk is still the richest part of the graph, and the sag is at levels 8 and 9.**
+> The four Way trunks average 4.50 against 3.44 across the middle and 2.82 at levels 8–9, so the
+> curve is a rich on-ramp, a mild sag, then a rise — not a clean climb. The trunk is rich on purpose
+> (§1.4 of [way-cards.md](way-cards.md) put a slot on every trunk node so that every caster reaches
+> five), and the sag is where the long creed branches keep their generic rewards. Fixing it properly
+> means moving **cards** later, and cards are placed by Way pool rather than by depth (§3.2, §3.3 of
+> [way-cards.md](way-cards.md)), so it is a content pass of its own and not a number to nudge.
 
 ## 6. A second Way
 

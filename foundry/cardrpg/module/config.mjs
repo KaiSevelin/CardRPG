@@ -78,6 +78,22 @@ CARDRPG.effects = {
    * the card for free.
    */
   foresee: { label: "CARDRPG.Effect.Foresee", icon: "all-seeing-eye" },
+  /*
+   * Forestall: discard one NPC type's intent card for this round; it draws a new one, face down
+   * (core-rules 3). Foresee's twin, and it carries an icon for the same reason Foresee does -- a
+   * card half has to print something. It is a REROLL and not a cancellation: a type that loses its
+   * turn outright is worth more than any card should buy, so the turn survives and only the plan
+   * dies. Worth more against a swarm than against a boss, because an intent card is drawn per
+   * type -- the one enemy-facing effect in the game that does not reward sniping the elite.
+   */
+  forestall: { label: "CARDRPG.Effect.Forestall", icon: "card-random" },
+  /*
+   * Sift N: look at the top N of your own draw pile and you may discard what you saw (core-rules
+   * 8). Deliberately NOT `foresee` with a different deck, and deliberately not Read: an action deck
+   * is drawn as a batch at a known moment, so reordering its top is choosing your next hand, which
+   * is a tutor and is banned. See and reject, never see and arrange.
+   */
+  sift: { label: "CARDRPG.Effect.Sift", icon: "card-pick" },
   range: { label: "CARDRPG.Effect.Range", icon: "bullseye" },
   blast: { label: "CARDRPG.Effect.Blast", icon: "mushroom-cloud" },
   aimed: { label: "CARDRPG.Effect.Aimed", icon: "laser-sparks" },
@@ -815,8 +831,15 @@ CARDRPG.limits = {
  * is why the field is here rather than inside the foresee effect: a Read can be the action or it
  * can be the smaller half of one.
  */
+/*
+ * **`own` was dropped on 2026-11-07, and what it cost is worth recording.** It had exactly one user
+ * -- Divination's *Where It Will Land* -- and that was the formula contradicting its own node's
+ * stated price: *no divination of yours may look at or reorder your own fate deck, ever*. Fixing
+ * the formula left the value with nobody. The Gambler's Coin still reads its holder's own deck, but
+ * it is an Item and this enum is a Card field, so its Read stays prose. A value that is only an
+ * entry in a dropdown is the defect this project keeps digging out of its own history.
+ */
 CARDRPG.readDecks = {
-  own: "CARDRPG.Read.Own",
   other: "CARDRPG.Read.Other",
   target: "CARDRPG.Read.Target",
   all: "CARDRPG.Read.All"
@@ -887,6 +910,14 @@ CARDRPG.capabilities = {
   caster: "CARDRPG.Capability.Caster",
   transport: "CARDRPG.Capability.Transport",
   shelter: "CARDRPG.Capability.Shelter",
+  /*
+   * `terrify` is the only capability that reaches a player's HAND, and it exists because holding
+   * reactions had no counter. core-rules 3 calls turning your whole hand sideways "a character
+   * playing for their turns rather than their skin" and means it -- but against an enemy that can
+   * only deal damage, holding is free. It is a capability rather than a temperament because a
+   * shrieking thing and a calculating thing can both make you flinch.
+   */
+  terrify: "CARDRPG.Capability.Terrify",
   /*
    * --- temperament: what it does when nothing obvious presents itself ---
    *

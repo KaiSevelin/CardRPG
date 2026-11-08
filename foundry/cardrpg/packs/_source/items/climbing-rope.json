@@ -17,7 +17,8 @@
     "group": "tool",
     "bonus": {
       "approach": "might",
-      "value": 1,
+      "value": 2,
+      "training": "rope and climbing",
       "situation": "climbing"
     }
   }

@@ -472,7 +472,7 @@ if (mindFrom < 0 || mindTo < 0) {
     unplayable.length ? unplayable.join(", ") : "none", "none");
 
   formulaCount = [...schools.values()].reduce((n, f) => n + f.length, 0);
-  check("formulas written in total", formulaCount, 85);
+  check("formulas written in total", formulaCount, 87);
 
   /*
    * Every school carries a formula at every strength from 1 to 5. The low end is what a two-slot
@@ -597,7 +597,7 @@ for (const m of configSource.matchAll(/halfIcons\s*=\s*\{[^}]*\}/gs)) {
   for (const k of m[0].matchAll(/"([a-z0-9-]+)"/g)) iconKeys.add(k[1]);
 }
 
-check("icon files on disk", onDisk.size, 80);
+check("icon files on disk", onDisk.size, 81);
 const absent = [...iconKeys].filter(k => !onDisk.has(k)).sort();
 check("config icons present as files", absent.length ? absent.join(", ") : "all", "all");
 
@@ -649,6 +649,80 @@ check("cards carrying Ready", content.WARRIOR_DECK.filter(c =>
   [...(c.primary ?? []), ...(c.secondary ?? [])].some(s => s.verb === "ready")
 ).reduce((n, c) => n + (c.copies ?? 1), 0), 4);
 
+/*
+ * **The second starter deck, checked against the first rather than against taste.**
+ *
+ * `SHADE_DECK` exists to make one question answerable: way-cards 1.2 and 1.3 both end on *the
+ * difference between those two readings is a simulator that models a Way*, and until there were two
+ * chassis every figure about a Way was measured on the Warrior's sixteen. A second deck only
+ * answers it if the two are **the same size in every currency the rules have a name for** -- two
+ * decks of different budget would measure the budget, not the Way.
+ *
+ * So the budget is not described, it is computed off both decks and compared field by field. The
+ * one field allowed to differ is the printed Move total, which is the difference the deck is FOR:
+ * way-cards 1.6 calls a secondary the cheapest space in the game, and Shade spends two more points
+ * of it there. Every other row being equal is what makes `sim/careers_sim.py` honest.
+ */
+const deckBudget = (deck) => {
+  const t = {
+    cards: 0, designs: deck.length, strikeHalves: 0, movePrinted: 0, movePrimary: 0,
+    readyCards: 0, spent: 0, strain: 0, heal: 0, conditions: 0, use: 0,
+    reactionCopies: 0, reactionDesigns: 0, defensivePrimaries: 0
+  };
+  for (const d of deck) {
+    const n = d.copies ?? 1;
+    const primary = d.primary ?? [], secondary = d.secondary ?? [];
+    t.cards += n;
+    if (d.reaction) { t.reactionCopies += n; t.reactionDesigns += 1; }
+    if (d.costs?.primary?.spent || d.costs?.secondary?.spent) t.spent += n;
+    if (d.costs?.primary?.strain || d.costs?.secondary?.strain) t.strain += n;
+    if ([...primary, ...secondary].some(s => s.verb === "ready")) t.readyCards += n;
+    if (primary.some(s => s.verb === "defend" || s.verb === "block")) t.defensivePrimaries += n;
+    for (const [half, steps] of [["primary", primary], ["secondary", secondary]]) {
+      for (const s of steps) {
+        if (s.verb === "strike") t.strikeHalves += n;
+        if (s.verb === "move") {
+          t.movePrinted += n * (s.param ?? 0);
+          if (half === "primary") t.movePrimary += n * (s.param ?? 0);
+        }
+        if (s.verb === "heal") t.heal += n;
+        if (s.verb === "use") t.use += n;
+        if (s.condition) t.conditions += n;
+      }
+    }
+  }
+  return t;
+};
+const warriorBudget = deckBudget(content.WARRIOR_DECK);
+const shadeBudget = deckBudget(content.SHADE_DECK);
+check("Shade deck total cards", shadeBudget.cards, 16);
+check("Shade distinct designs", shadeBudget.designs, 10);
+/* The whole method in one line: name every field where the two decks differ. */
+check("budget fields where the two starter decks differ",
+  Object.keys(warriorBudget).filter(k => warriorBudget[k] !== shadeBudget[k]).join(", ")
+    || "none",
+  "movePrinted");
+check("and the Warrior's printed Move against the Shade's",
+  `${warriorBudget.movePrinted} vs ${shadeBudget.movePrinted}`, "21 vs 23");
+/*
+ * **And the document's table is the content's table.** A second deck doubles the chance of the
+ * failure this whole file exists against -- a rule written in prose that the code never agreed to --
+ * so the ten rows are parsed back out of starter-cards.md and compared by name and copy count. The
+ * Warrior's table has never had this and now does, because the same parse answers both.
+ */
+const starterDoc = fs.readFileSync(path.join(root, "../../rules/starter-cards.md"), "utf8");
+const docDeck = (heading) => {
+  const from = starterDoc.indexOf(`## Action deck – "${heading}"`);
+  const body = starterDoc.slice(from, starterDoc.indexOf("\n---", from));
+  return [...body.matchAll(/^\| \d+ \| (.+?) \|(?:.*\|)\s*(\d+) \|$/gm)]
+    .map(m => `${m[1].trim()} x${m[2]}`).join(", ");
+};
+const contentDeck = (deck) => deck.map(c => `${c.name} x${c.copies ?? 1}`).join(", ");
+check("the Shade deck's table matches the content",
+  docDeck("Shade") || "(no rows parsed)", contentDeck(content.SHADE_DECK));
+check("and the Warrior's does too",
+  docDeck("Warrior") || "(no rows parsed)", contentDeck(content.WARRIOR_DECK));
+
 const fate = content.fateCards();
 check("fate deck size", fate.length, 20);
 const dist = {};
@@ -676,7 +750,7 @@ for (const [key, want] of Object.entries({ miss: 1, "-2": 1, "-1": 4, "0": 8, "+
 const steps = [];
 /* The intent pool rather than the goblin's old six: the rules below are about what a card step
  * may say, and an NPC's steps are steps. Twenty-eight cards where six used to be read. */
-for (const card of [...content.WARRIOR_DECK, ...content.INTENTS]) {
+for (const card of [...content.WARRIOR_DECK, ...content.SHADE_DECK, ...content.INTENTS]) {
   steps.push(...(card.primary ?? []), ...(card.secondary ?? []), ...(card.sequence ?? []));
 }
 for (const spell of content.FORMULAS) steps.push(spell.effect);
@@ -1515,12 +1589,13 @@ const signatureExports = Object.entries(content)
   .filter(([key]) => key.endsWith("_SIGNATURES"))
   .flatMap(([, list]) => list);
 check("Signature exports found", signatureExports.length >= 24, true);
-const carried = [...content.WARRIOR_DECK, ...content.WAY_CARDS, ...content.COMMON_POOL,
+const carried = [...content.WARRIOR_DECK, ...content.SHADE_DECK, ...content.WAY_CARDS,
+  ...content.COMMON_POOL,
   ...signatureExports.filter(c => c.kind === "card")];
 const printed = carried.filter(c => c.reaction);
 check("starter cards with a printed reaction",
   content.WARRIOR_DECK.filter(c => c.reaction).length, 4);
-check("cards with a printed reaction", printed.length, 15);
+check("cards with a printed reaction", printed.length, 19);
 const strayPrinted = printed.filter(c => !reactionKeys.includes(c.reaction))
   .map(c => `${c.name}: ${c.reaction}`);
 check("cards printing a reaction that does not exist",
@@ -1674,6 +1749,93 @@ check("no tuned constants in the policy",
   /[^.\w](?:0\.\d|1\.\d|[2-9]\.\d)/.test(policy) ? "found one" : "none", "none");
 
 /*
+ * **Nothing in the game ever creates a Wound.**  **[FOUND 2026-11-07]**
+ *
+ * The card type is finished everywhere a finished type is visible. The sheet counts them, the
+ * upright filter refuses to let one react, the deck limits exclude them, the tray prints their own
+ * sentence, a prune cannot take one, and the art brief gave them the action back on purpose --
+ * *a Wound you could see coming would not be a Wound*. Every one of those is already a check in
+ * this file, which is how a mechanic can look complete from six directions at once.
+ *
+ * **And no code path issues one.** core-rules 8 names two events that must -- *5 or more damage from
+ * a single hit, after armor*, and *you drop to 0 Health* -- and `woundAt` is read in exactly two
+ * places: the reaction policy just above, to decide whether a reaction is worth spending, and one
+ * chat row, to label a hit. Neither creates a card. The contrast with **Taint** is what makes this
+ * a gap rather than a missing vocabulary: `resolve.mjs` creates Taint cards with a flavour and a
+ * source, and does not create a Wound.
+ *
+ * It was found from the far end -- a career balance pass asking why **Executioner** measures as
+ * paid in neither ledger. Its whole tier-1 reward is *Cleave to the Bone*, **for you the Wound
+ * threshold is 4, not 5**, whose own `needs` line already says the threshold is read as the
+ * defender's constant rather than the attacker's. What the needs line does not say is that there is
+ * no Wound for a threshold to govern. Four careers hold the feature -- Executioner, Knight,
+ * Musketeer and Berserker -- and for Executioner it is the whole of the level.
+ *
+ * Pinned rather than fixed, because issuing a Wound is a change in the damage path and wants
+ * deciding: whether an NPC takes them at all is the first question, and **72 of the 75 creatures in
+ * the roster have more than 4 Health**, so the answer is not obvious.
+ */
+const woundCreators = ["resolve.mjs", "decks.mjs", "graph.mjs", "tray.mjs", "setup.mjs"]
+  .filter(f => /type: "wound"/.test(fs.readFileSync(path.join(root, "module", f), "utf8")));
+check("modules that create a Wound card", woundCreators.join(", ") || "none", "resolve.mjs");
+check("and the one that creates a Taint, which is the contrast",
+  /type: "taint"/.test(resolveSource) ? "resolve.mjs" : "none", "resolve.mjs");
+check("times the Wound threshold is read at all",
+  (resolveSource.match(/defaults\.woundAt/g) ?? []).length, 3);
+/*
+ * **How a Wound arrives, now that one does.**  **[BUILT 2026-11-07]**
+ *
+ * Three places can take Health off a character and the two rules of core-rules 8 do not divide
+ * evenly between them. **Five or more from a single hit** can only happen on a hit, and must not
+ * fire on a condition tick: a tick is not a hit, it meets neither armour nor Block, and its bands
+ * are tight because of that. **Dropping to nought** can happen on all three -- a blow, a tick
+ * (burning to death is still dropping) and a fast dose of Taint.
+ *
+ * And the guard that stops an NPC being wounded is `deckOf`, not a type test: core-rules 3 draws
+ * intent **one card per type**, so a species shares the deck a Wound would sit in and an
+ * individual has nowhere to hold one. A creature with no action discard cannot hold a dead card,
+ * which is the same sentence read as code.
+ */
+check("the routine that makes a Wound",
+  /export async function resolveWound\(target, \{ reason = "" \} = \{\}\)/
+    .test(resolveSource) ? "yes" : "no", "yes");
+check("and the guard is the target having a deck of its own",
+  /const stack = deckOf\(target, "actionDiscard"\);\s*\n\s*if \(!stack\) return false;/
+    .test(resolveSource) ? "yes" : "no", "yes");
+/* One Wound per blow: the rule says *you gain 1 Wound when* and then lists two triggers. */
+check("a blow that both drops you and deals five gives one Wound",
+  /if \(dropped \|\| dealt >= CARDRPG\.defaults\.woundAt\) \{/.test(resolveSource)
+    ? "yes" : "no", "yes");
+/* A tick can only ever fire the second event, and the comment beside it says why. */
+check("a condition tick wounds only by finishing you",
+  /if \(before - damage <= 0\) await resolveWound\(actor, \{ reason: "dropped to 0" \}\);/
+    .test(fs.readFileSync(path.join(root, "module/combat.mjs"), "utf8")) ? "yes" : "no", "yes");
+/*
+ * **And the read that had to be fixed to write any of it.** `down` was
+ * `taker.system.health.value - dealt <= 0` evaluated AFTER the update resolved, so it subtracted
+ * the damage twice and reported a hero on 4 Health taking 3 as **down** at 1. The document
+ * reflects the new value the moment the update lands. One local before the update fixes it and
+ * gives the Wound rules the number they are written about.
+ */
+check("the blow reads Health from before the blow",
+  /const before = taker\.system\.health\.value;/.test(resolveSource) ? "yes" : "no", "yes");
+check("and down is not computed from the updated document",
+  /down: taker\.system\.health\.value - dealt/.test(resolveSource) ? "it is" : "it is not",
+  "it is not");
+check("and the feature that waits on a Wound existing",
+  Object.values(content).filter(Array.isArray).flat()
+    .filter(e => e && /Wound threshold/.test(e.text ?? "")).map(e => e.name)
+    .filter((n, i, a) => a.indexOf(n) === i).join(", ") || "none",
+  "Cleave to the Bone");
+/* And who pays a level for it, which is the reason it was looked at. */
+const woundGraph = await import("../module/graph.mjs");
+check("and the careers whose route grants it",
+  content.NODES.filter(n => n.title && woundGraph.grantsOf(
+    new Set([woundGraph.ROOT, ...(woundGraph.REACH.get(n.id) ?? []), n.id]))
+    .features.includes("Cleave to the Bone")).map(n => n.title).sort().join(", "),
+  "Berserker, Executioner, Knight, Musketeer");
+
+/*
  * The two steps, in the order core-rules 3 gives them, and both AFTER the draw -- Parry fires on
  * being hit and Brace on taking damage, so a Miss costs the defender nothing.
  */
@@ -1783,8 +1945,8 @@ for (const block of wayDoc.split(/\n\s*\n/)) {
 }
 const column = poolRows.filter(e => e.cell && e.cell !== "-" && e.cell !== "\u2013");
 const bare = column.filter(e => reactionKeys.includes(e.cell.toLowerCase()) || e.cell === "Brace");
-check("reaction cells in the card pools", column.length, 14);
-check("cells that are a bare key", bare.length, 12);
+check("reaction cells in the card pools", column.length, 16);
+check("cells that are a bare key", bare.length, 14);
 const needKeys = column.filter(e => !bare.includes(e)).map(e => e.name);
 check("cells no key could express", needKeys.join(", "), "Set Spear, Roll With It");
 /* Which must be exactly the cards the engine carries, or the selection rule is a story. */
@@ -2343,7 +2505,7 @@ const graphSource = fs.readFileSync(path.join(root, "module/graph.mjs"), "utf8")
 const nodes = content.NODES;
 const byId = graph.GRAPH;
 
-check("nodes defined", nodes.length, 202);
+check("nodes defined", nodes.length, 204);
 check("duplicate node ids", nodes.length === byId.size ? "none" : "yes", "none");
 
 /* Every prerequisite must resolve, or a branch is silently unreachable. */
@@ -2841,8 +3003,14 @@ for (const node of nodes.filter(n => n.id.startsWith("faith.") && !n.title && n.
 }
 check("minor nodes handing over another god's miracle",
   offGod.length ? offGod.join("; ") : "none", "none");
+/*
+ * **[2026-11-07] Sixteen became twenty-nine when every god's 5 was put on its branch end.** The
+ * ladder tops were written and on no node (4a's menus could reach them, no branch named one), which
+ * made the last node of every creed the smallest reward on it -- leveling 5b is the rule that came
+ * out of measuring it.
+ */
 check("Faith minor nodes granting a miracle",
-  nodes.filter(n => n.id.startsWith("faith.") && !n.title && n.grants?.spell).length, 16);
+  nodes.filter(n => n.id.startsWith("faith.") && !n.title && n.grants?.spell).length, 29);
 
 /* Derived, and on the sheet: an obedience nobody can read is an obedience nobody keeps. */
 check("the actor derives every god's terms",
@@ -2899,7 +3067,7 @@ check("a pool card granted twice on one path",
  */
 const minors = nodes.filter(n => !n.title && n.id !== graph.ROOT);
 const bespoke = minors.filter(n => n.bespoke);
-check("minor nodes", minors.length, 145);
+check("minor nodes", minors.length, 147);
 check("bespoke minor nodes", bespoke.length, 29);
 /*
  * **The budget is a ceiling, and it is the number of bespoke PIECES.** leveling 1 sizes it exactly
@@ -2919,7 +3087,7 @@ check("bespoke pieces, against a budget of about forty", bespoke.length <= 40, t
  * because bespoke content was DELETED would move this number too, and would have to be explained.
  */
 check("the bespoke share is under the budget ceiling", bespoke.length / minors.length <= 0.4, true);
-check("and what the share is now", (bespoke.length / minors.length).toFixed(3), "0.200");
+check("and what the share is now", (bespoke.length / minors.length).toFixed(3), "0.197");
 /*
  * And each bespoke node sits LAST on its run -- which asked for the title it leads to until Way of
  * Faith had no titles to lead to. Faith spends its depth sideways: the gods are the titles and they
@@ -3092,7 +3260,7 @@ const unbuiltSpells = nodes.filter(n => n.grants?.spell)
   .map(n => `${n.id}: ${n.grants.spell}`);
 check("formulas granted but never built",
   unbuiltSpells.length ? unbuiltSpells.join(", ") : "none", "none");
-check("formulas a node can hand over", graph.SPELLS.size, 139);
+check("formulas a node can hand over", graph.SPELLS.size, 140);
 /*
  * And the nine that a node hands over as features instead. `teachingKind` is asked rather than
  * `kind` read, because `kind` on content carries two vocabularies: the slate type on a Signature,
@@ -3101,7 +3269,7 @@ check("formulas a node can hand over", graph.SPELLS.size, 139);
  * spell list, and the only thing that noticed was a check about a different school.
  */
 check("and features it hands over instead",
-  graph.TEACHINGS.filter(t => graph.teachingKind(t) === "feature").length, 9);
+  graph.TEACHINGS.filter(t => graph.teachingKind(t) === "feature").length, 10);
 check("while the two vocabularies of `kind` stay apart",
   graph.TEACHINGS.filter(t => t.kind && !["feature", "item", "spell"].includes(t.kind))
     .map(t => `${t.name} (${t.kind})`).sort().join(", "),
@@ -3331,7 +3499,7 @@ const needsVocabulary = new Set(CARDRPG.intentNeeds);
 /* One binding, read by the sweep and by its own denominator: a sweep holding its own copy of the
  * list can be emptied while the count beside it goes on reporting 28. */
 const intentsSwept = content.INTENTS;
-check("intents the needs sweep read", intentsSwept.length, 36);
+check("intents the needs sweep read", intentsSwept.length, 37);
 check("needs no vocabulary has",
   [...new Set(intentsSwept.flatMap(i =>
     (i.needs ?? []).filter(n => !needsVocabulary.has(n))))].sort().join(", ") || "none", "none");
@@ -3440,7 +3608,8 @@ check("and that a crossing carries its own minors",
 check("way-cards records the printed Brace",
   /Dig In should not print ⚡ Brace/.test(wayDoc) ? "yes" : "no", "yes");
 /* The content agrees with it: nothing prints a reaction the config has no key for. */
-const printedReactions = [...content.COMMON_POOL, ...content.WARRIOR_DECK, ...content.WAY_CARDS]
+const printedReactions = [...content.COMMON_POOL, ...content.WARRIOR_DECK, ...content.SHADE_DECK,
+  ...content.WAY_CARDS]
   .filter(c => c.reaction).map(c => c.reaction);
 check("cards printing a reaction the config lacks",
   printedReactions.filter(r => !(r in CARDRPG.reactions)).join(", ") || "none", "none");
@@ -3520,7 +3689,14 @@ check("taking a node performs every prune it grants",
     ? "yes" : "no", "yes");
 const pruners = nodes.filter(n => n.grants?.prune);
 check("nodes granting a prune", pruners.map(n => n.id).join(", "),
-  "shade.footwork, mind.vigil, faith.first.narrow");
+  "shade.footwork, mind.vigil, faith.first.narrow, faith.first.echterhof");
+/*
+ * **[2026-11-07] The fourth is a capstone, and it is the one god with no 5 to give.** The First's
+ * Obedience caps its slots at 3 and so caps its ladder there, so when leveling 5b put every god's
+ * top miracle on its branch end, The First had none to put. It pays in the reward its own axis is
+ * made of instead: a second prune on the deck-shape god is not a substitute for the 5, it is the
+ * deepest version of what that branch is about.
+ */
 /* And the documents say where it sits and why, since where a prune sits is a balance decision. */
 check("leveling says why the prune is on the trunk",
   /Way of Shade's prune sits on the trunk, not on the Cutpurse run/.test(levDoc) ? "yes" : "no",
@@ -3853,10 +4029,12 @@ check("and the other two spell-reactions are printed by the spells they were bui
  */
 check("everything that prints a reaction",
   everything.filter(c => c.reaction).map(c => `${c.name} (${c.reaction})`).sort().join("; "),
-  "Bear It for Them (mend); Both Hands (use); Breath of the Spirit (mend); Heckle (heckle); "
+  "Bear It for Them (mend); Both Hands (use); Breath of the Spirit (mend); "
+  + "Count the Odds (parry); Heckle (heckle); "
   + "Hold the Line (parry); Hold to the Bargain (bargain); Interpose (bodyguard); "
   + "Light Feet (sidestep); Measure (parry); Named (parry); Over and Past (sidestep); "
-  + "Press (sidestep); Shake It Off (mend); Shield Bash (block); Shield Wall (block); "
+  + "Press (sidestep); Scout Ahead (sidestep); "
+  + "Shake It Off (mend); Shield Bash (block); Shield Wall (block); "
   + "Sleight (use); Slip the Knot (sidestep); The Close Work (parry); The Mirror (unmake); "
   + "The Order's Shield (block); The Turning Tide (mend); Turn Aside (mend); Unmake (unmake)");
 check("the healer needed no new trigger",
@@ -3931,7 +4109,8 @@ check("Heckled spoils the carrier's own draw",
 /* Not an opening: an opening is a setup worth nothing alone, and this one already pays. */
 check("Heckled is not an opening", CARDRPG.openings.includes("heckled"), false);
 check("nothing else applies it",
-  [...content.WARRIOR_DECK, ...content.WAY_CARDS, ...content.COMMON_POOL, ...content.INTENTS,
+  [...content.WARRIOR_DECK, ...content.SHADE_DECK, ...content.WAY_CARDS, ...content.COMMON_POOL,
+    ...content.INTENTS,
     ...sigs.filter(c => c.kind === "card")]
     .filter(c => [...(c.primary ?? []), ...(c.secondary ?? [])]
       .some(st => st.condition === "heckled")).map(c => c.name).join(", "),
@@ -4102,8 +4281,8 @@ const pools = {
   shade: content.SHADE_POOL, strength: content.STRENGTH_POOL, mind: content.MIND_POOL,
   faith: content.FAITH_POOL
 };
-check("Shade's pool", pools.shade.length, 12);
-check("Strength's pool", pools.strength.length, 13);
+check("Shade's pool", pools.shade.length, 14);
+check("Strength's pool", pools.strength.length, 15);
 /*
  * Mind's pool is formulas rather than cards, and it is **seventy**, which is a different kind of
  * list from the other two Ways: a Way pool is a dozen cards and this is twelve SCHOOLS, each with
@@ -4113,7 +4292,7 @@ check("Strength's pool", pools.strength.length, 13);
  * two schools earlier passes had reached. The other ten schools were written in the world document
  * and nothing in the game had them.
  */
-check("Mind's pool", pools.mind.length, 70);
+check("Mind's pool", pools.mind.length, 72);
 check("the schools Mind's pool draws on",
   [...new Set(pools.mind.map(f => f.source))].sort().join(", "),
   "Asceticism, Blood Magic, Divination, Elemental Magic, Glamour, Household Magic, Necromancy, "
@@ -4163,7 +4342,7 @@ const spellTables = (() => {
 
 /* A parser that matched nothing would say every list below was complete. */
 /* 145 with a number, plus the one ritual, which is the row the exception below is about. */
-check("rows read out of way-cards 3.4 and 3.5", spellTables.length, 146);
+check("rows read out of way-cards 3.4 and 3.5", spellTables.length, 148);
 check("and the schools and gods they fall under",
   new Set(spellTables.map(r => r.group)).size, 24);
 check("twelve of them are schools",
@@ -4195,15 +4374,15 @@ check("rows with no numeric strength", unnumbered.map(r => `${r.name}: ${r.stren
 const everySpell = new Map([...content.MIND_POOL, ...content.FAITH_POOL, ...content.FORMULAS,
   ...content.SHADOW_FORMULAS, ...signatureExports.filter(s => s.kind !== "card" && s.source)]
   .map(s => [s.name, s]));
-check("teachings built in all", everySpell.size, 148);
+check("teachings built in all", everySpell.size, 150);
 /* And the split, so neither half can quietly become the whole. */
 check("of which formulas and miracles",
-  [...everySpell.values()].filter(t => graph.teachingKind(t) === "spell").length, 139);
+  [...everySpell.values()].filter(t => graph.teachingKind(t) === "spell").length, 140);
 check("and features a school teaches",
   [...everySpell.values()].filter(t => graph.teachingKind(t) === "feature")
     .map(t => t.name).sort().join(", "),
-  "Graven Armour, Graven Eye, Graven Heart, Graven Road, Graven Shield, Graven Strength, "
-  + "Nothing At All, The Hand Given, The Whole Skin");
+  "Graven Armour, Graven Eye, Graven Heart, Graven Road, Graven Shield, Graven Sight, "
+  + "Graven Strength, Nothing At All, The Hand Given, The Whole Skin");
 
 /* Every row in the document exists in the game. This is the check the eighty-five were written for. */
 const unwritten = spellTables.filter(r => !everySpell.has(r.name))
@@ -4308,8 +4487,9 @@ check("prose Health prices that name no gap",
 /*
  * ---- and how much of it a character can actually be handed ----
  *
- * **Fifty-two of the hundred and forty-seven are named by a node; the other ninety-five are
- * reached by choosing.** way-cards 3 writes this content as POOLS rather than assignments -- *a
+ * **[2026-11-07] Sixty-five of the hundred and forty-seven are named by a node; the other
+ * eighty-two are reached by choosing** -- it was fifty-two and ninety-five until leveling 5b put
+ * every god's top miracle on its branch end, which named thirteen more. way-cards 3 writes this content as POOLS rather than assignments -- *a
  * pool is a set of cards the minor nodes along a branch draw from; when the graph is authored, a
  * node's `grants[]` names one* -- and a school branch of three nodes names three of its school's
  * six, which left ninety-five formulas written down and on no node at all.
@@ -4319,9 +4499,9 @@ check("prose Health prices that name no gap",
  * grant is a decision the branch was written around; a choice is the list being a list.
  */
 const spellGrants = nodes.filter(n => n.grants?.spell).map(n => n.grants.spell);
-check("nodes that hand over a named spell", spellGrants.length, 51);
+check("nodes that hand over a named spell", spellGrants.length, 64);
 /*
- * And the fifty-second, which hands over a feature: *Graven Strength*, because a tattoo is never
+ * And the one that hands over a feature rather than a spell: *Graven Strength*, because a tattoo is never
  * prepared. It needed no new code -- `grantSlate` has created features since Signatures were
  * written and `SLATES` has always held this one -- so the key on the node is the whole change.
  */
@@ -4330,7 +4510,7 @@ check("and the school node that hands over a feature by name",
   "Graven Strength");
 check("and no two of them hand over the same one", new Set(spellGrants).size, spellGrants.length);
 const onNoNode = [...everySpell.keys()].filter(name => !spellGrants.includes(name));
-check("spells no node in the graph hands over", onNoNode.length, 97);
+check("spells no node in the graph hands over", onNoNode.length, 86);
 /* The First is the one source a character can be handed entire, because its ladder stops at 3. */
 const complete = [...ladders.keys()].filter(src =>
   [...everySpell.values()].filter(s => s.source === src)
@@ -4579,12 +4759,12 @@ check("and says the same thing about each",
  * every one of the seven sits on a node whose own reward already names those speakers.
  */
 const tongueNodes = nodes.filter(n => n.grants?.language);
-check("nodes that teach a language", tongueNodes.length, 8);
+check("nodes that teach a language", tongueNodes.length, 9);
 check("and which tongue each teaches",
   tongueNodes.map(n => `${n.id}=${n.grants.language}`).sort().join(", "),
   "faith.vulpet.driven=Burrowing, mind.blood=Demonic, mind.divination=Valgar, "
   + "mind.letters=Imperial, mind.necromancy=Reversed, mind.spirit.debts=Elvish, "
-  + "mind.spirit.names=Troll, shade.scout.spy=Imperial");
+  + "mind.spirit.names=Troll, shade.duellist.politician=Imperial, shade.scout.spy=Imperial");
 /* Eight nodes and seven tongues: Imperial is taught twice, read by a scholar and spoken by a spy,
  * and `learned` dedupes it. A language is binary -- you read Reversed or you do not. */
 check("tongues the graph teaches at all",
@@ -4842,6 +5022,181 @@ check("Way of Mind", profileOf("mind"), "hp 0.1 carry 0.0 slots 5.1 cards 1.0 sp
 check("Way of Faith", profileOf("faith"), "hp 0.0 carry 0.0 slots 5.0 cards 2.0 spells 1.0");
 
 /*
+ * ---- leveling 5b: the reward climbs with the branch ----
+ *
+ * §5a makes a branch COST more as it deepens and said nothing about what the deeper node hands
+ * back. Measured, the graph did the opposite: the four deepest nodes in it granted a know-how each,
+ * because titles land mid-graph and whatever trails a title got written as filler.
+ *
+ * The weights are leveling 4's own ranking of its reward list, not a new one -- *cards are the
+ * backbone, features are the spice* is rung 3, a permanent number is rung 2, and a reward that is
+ * narrow, binary or conditional on fiction is rung 1.
+ */
+const RUNG = {
+  card: 3, spell: 3, choose: 3, feature: 3, item: 3, signature: 3,
+  health: 2, spellSlots: 2, prune: 2, expertise: 2, caps: 2, deckMax: 2,
+  training: 1, knowHow: 1, mastery: 1, language: 1, carry: 1, restTokens: 1,
+};
+check("every grant key the graph uses has a rung",
+  [...new Set(nodes.flatMap(n => Object.keys(n.grants ?? {})))]
+    .filter(k => !(k in RUNG)).join(", ") || "none", "none");
+
+/*
+ * **Every reward leveling.md 4 offers is a reward some node actually hands over.**
+ * **[FOUND 2026-11-07, FIXED 2026-11-07]**
+ *
+ * The rung table above reads the grant keys the graph **uses** and checks each has a price. Nothing
+ * read the list in the other direction -- 4's own table of fifteen rewards -- and asked which of
+ * them no node has ever granted. That is the same one-way check the training invariant was, and it
+ * found the same kind of hole: **`deckMax` was offered by the rules, carried by the accumulator
+ * since the data model was written, named in 1 among the generic pool, and granted by no node at
+ * all.** One wonder granted it (*Deep Pockets*) and nothing else in the game did.
+ *
+ * It is granted now, by *The March* on the Way of Strength trunk, and the reasoning is in content:
+ * Shade's trunk prunes and Strength's trunk caps, which is the one axis where the two Ways were
+ * supposed to be opposites and only one of them had a lever.
+ *
+ * **`handSize` is the exception, and it is not on 4's list either.** The key exists on the
+ * character and in `CHARACTER_GRANTS`, and no reward row offers it -- which is deliberate and
+ * measured rather than forgotten: specializations.md prices **a card of hand size at 6 to 10 points
+ * of win rate**, the most expensive stat measured anywhere in this project, *which is worth
+ * remembering before anything offers one.* A key with no reward row is the correct state for a
+ * reward too expensive to print, and pinning it is how that decision stays a decision.
+ */
+const rewardKeys = {
+  card: "Action card", training: "Training", knowHow: "Know-how", expertise: "Expertise",
+  mastery: "Mastery", language: "A language", feature: "Feature", item: "Item",
+  prune: "Prune", deckMax: "Deck cap", carry: "Carry", spellSlots: "Spell slot",
+  health: "Health", restTokens: "Rest token", spell: "Spell", choose: "Choose from a list"
+};
+const charGrants = (await import("../module/grants.mjs")).CHARACTER_GRANTS;
+const grantedSomewhere = new Set();
+for (const n of nodes) for (const k of Object.keys(n.grants ?? {})) grantedSomewhere.add(k);
+const timesGranted = k => nodes.filter(n => n.grants?.[k] !== undefined).length;
+/*
+ * Direction one: the rules offer it and nothing hands it over. This is where `deckMax` was.
+ *
+ * **And the map above has to carry the rewards that have no key at all**, or this check reads
+ * "none" by construction -- which is the failure it exists to find, committed by the check itself.
+ * `skillCard` is one: leveling 4 offers *Skill card: add one, or upgrade one*, and skill-rules 8
+ * says plainly that **the accumulator has no key for it**, so no node can grant one and a
+ * character's skill deck at level 20 is the deck they started with. It is listed here with a null
+ * key so it counts as offered, and it is the one row this check is allowed to find.
+ */
+const KEYLESS = { skillCard: "Skill card" };
+check("rewards section 4 offers that no node grants",
+  [...Object.entries(rewardKeys).filter(([k]) => !grantedSomewhere.has(k)),
+    ...Object.entries(KEYLESS)].map(([, label]) => label).sort().join(", ") || "none",
+  "Skill card");
+/* ...and it is blocked on a mechanism rather than on content, which is why it is not fixed here. */
+check("and the grant accumulator has no key for it",
+  "skillCard" in (await import("../module/graph.mjs")).grantsOf(new Set()) ? "yes" : "no", "no");
+check("which skill-rules 8 records as the open mechanism",
+  /The mechanism this section needs is a `skillCard` grant/.test(
+    fs.readFileSync(path.join(root, "../../rules/skill-rules.md"), "utf8")) ? "yes" : "no", "yes");
+/* Direction two, which is the one nobody had asked: the graph hands it over and the rules never
+ * called it a reward. This is where `carry` was, six nodes deep. */
+check("and grants the graph hands out that section 4 never offered",
+  [...grantedSomewhere].filter(k => !(k in rewardKeys) && k !== "caps" && k !== "signature")
+    .sort().join(", ") || "none", "none");
+/* And how thin the thinnest of them is, because "granted once" is a different thing from placed. */
+check("the rewards only one or two nodes grant",
+  Object.entries(rewardKeys).filter(([k]) => timesGranted(k) <= 2)
+    .map(([k, label]) => `${label} ${timesGranted(k)}`).sort().join(", "),
+  "Deck cap 1, Item 1");
+/*
+ * The two character grants that no reward row offers and no node grants, each for a stated reason.
+ * **handSize** is measured: specializations.md puts a card of hand size at 6 to 10 points of win
+ * rate, the dearest stat anywhere in this project, `which is worth remembering before anything
+ * offers one`. **armor** is gear -- it comes off a rung of armour you bought, and 4's own
+ * reasoning about gold applies unchanged: a level is a permanent change to who you are, and armour
+ * is something you find and can be parted from.
+ */
+check("character grants with no reward row and no node",
+  charGrants.filter(k => !(k in rewardKeys) && timesGranted(k) === 0).join(", "),
+  "handSize, armor");
+check("because the rules price hand size as the dearest stat measured",
+  /Hand size is the most expensive stat measured/.test(specDoc) ? "yes" : "no", "yes");
+
+/*
+ * **A crossing is paid in access, not in grants.** leveling 1 prices it that way -- *a cross edge
+ * to a title is cheap, past one is the leak* -- and the crossings grant no card on purpose because
+ * the cards are behind the title. A node whose only purpose is to put a title on the frontier is
+ * credited with that, or the measurement punishes the design for working. The whole chain counts,
+ * not just its last node: neither half of a crossing has any other purpose.
+ */
+const openToTitle = new Set();
+for (const n of nodes) if (n.title) for (const a of n.after ?? []) openToTitle.add(a);
+for (let pass = 0; pass < 4; pass++) {
+  for (const n of nodes) {
+    if (!openToTitle.has(n.id) || n.title) continue;
+    for (const a of n.after ?? []) if (a.includes(".cross.")) openToTitle.add(a);
+  }
+}
+const rewardOf = n => {
+  let w = n.signature ? RUNG.signature : 0;
+  for (const k of Object.keys(n.grants ?? {})) w += (RUNG[k] ?? 0);
+  return w + ((openToTitle.has(n.id) && !n.title) ? 2 : 0);
+};
+/*
+ * Titles are excluded from the curve on purpose. They are placed by §5a's stringency devices and by
+ * §7.1's tiers, which is why they cluster at levels 5 and 8 -- that is the tier rule working, and
+ * averaging them in would read a deliberate shape as a defect.
+ */
+const curveNodes = nodes.filter(n => !n.title && n.id !== graph.ROOT);
+const meanAt = lv => {
+  const at = curveNodes.filter(n => graph.levelFor(n.id) === lv);
+  return at.length ? avg(at.map(rewardOf)) : null;
+};
+/*
+ * **The invariant, one-sided like §7.1's.** Not *every level pays more than the last* -- the load is
+ * varied on purpose and the spread at each level is two or three weights wide -- but *the back half
+ * does not taper*. This is the pin that failed before the fix: 2.50, 2.33, 1.44, 1.25.
+ */
+check("mean reward at levels 8 through 11",
+  [8, 9, 10, 11].map(lv => meanAt(lv).toFixed(2)).join(", "), "2.50, 2.89, 3.22, 4.00");
+check("and it rises every step of the back half",
+  [8, 9, 10].every(lv => meanAt(lv) < meanAt(lv + 1)), true);
+/*
+ * **A capstone is a node nothing follows and no title stands behind.** It is the last thing a
+ * character on that branch will ever take, so way-cards 3.4's *a branch has to be worth walking to
+ * the end* is about exactly these -- and nine of them granted nothing a fight would notice.
+ */
+const FLAVOUR = new Set(["knowHow", "mastery", "carry", "language", "restTokens"]);
+const followed = new Set(nodes.flatMap(n => n.after ?? []));
+const capstones = nodes.filter(n => !followed.has(n.id) && !n.title);
+const hollow = capstones.filter(n => {
+  const keys = Object.keys(n.grants ?? {});
+  return keys.length > 0 && keys.every(k => FLAVOUR.has(k));
+});
+check("capstones", capstones.length, 38);
+check("capstones granting nothing a fight would notice",
+  hollow.map(n => `${n.name} (lv ${graph.levelFor(n.id)})`).join(", ") || "none", "none");
+/*
+ * And the reason it came out right: a litany's top two rungs are the two a caster cannot cast until
+ * they are deep, because **strength is the slot cost** (way-cards 1.4). So the 4s and the 5s have to
+ * average deeper than the 1s, 2s and 3s, and before the fix they averaged nowhere -- every one of
+ * them was on no node at all.
+ */
+const strengthAt = band => {
+  const ls = nodes.filter(n => n.grants?.spell && band.includes(everySpell.get(n.grants.spell)?.strength))
+    .map(n => graph.levelFor(n.id));
+  return ls.length ? avg(ls) : null;
+};
+check("mean level a 1, 2 or 3 is granted at", strengthAt([1, 2, 3]).toFixed(2), "6.14");
+check("and a 4 or a 5", strengthAt([4, 5]).toFixed(2), "8.20");
+check("so the top of a litany lands deeper than its bottom",
+  strengthAt([4, 5]) > strengthAt([1, 2, 3]), true);
+/*
+ * The documents say the rule, so a graph that drifted back could not do it quietly.
+ */
+check("leveling states the rule", /^## 5b\. The reward climbs with the branch/m.test(levDoc)
+  ? "yes" : "no", "yes");
+check("and that a level late in a branch must not buy less than one early in it",
+  /\*\*A level late in a branch must not buy less than a level early in it\.\*\*/.test(levDoc)
+    ? "yes" : "no", "yes");
+
+/*
  * **The trade a priest makes at level 8, and it is the sharpest thing in this audit.** An order's
  * lead-in grants no miracles, because a node open to all twelve gods cannot know which list to
  * grant from -- so the three levels that buy an order are three levels that buy no miracle. A
@@ -4905,11 +5260,11 @@ const reachOneWay = titleId => {
 };
 const sizeOf = way => nodes.filter(n => n.id === way || n.id.startsWith(`${way}.`)).length;
 check("nodes in each Way", WAYS.map(w => `${w} ${sizeOf(w)}`).join(", "),
-  "strength 38, shade 40, mind 46, faith 77");
+  "strength 39, shade 41, mind 46, faith 77");
 check("and how many of them one character can ever own",
   [["strength.infantry", "strength"], ["shade.thief", "shade"], ["mind.blood", "mind"]]
     .map(([t, w]) => `${w} ${reachOneWay(t)}/${sizeOf(w)}`).join(", "),
-  "strength 38/38, shade 40/40, mind 46/46");
+  "strength 39/39, shade 41/41, mind 46/46");
 check("a priest of a pantheon, and of a lone god",
   `${reachOneWay("faith.sessyfyn")}/77, ${reachOneWay("faith.vax")}/77`, "33/77, 21/77");
 
@@ -4923,11 +5278,11 @@ const listsOf = way => listsBySource
   .filter(([src]) => nodes.find(n => n.title === src)?.id.startsWith(way));
 check("mean list size, mind against faith",
   ["mind", "faith"].map(w => avg(listsOf(w).map(([, l]) => l.length)).toFixed(1)).join(" / "),
-  "7.2 / 5.2");
+  "7.3 / 5.2");
 check("and mean list weight in slots",
   ["mind", "faith"].map(w => avg(listsOf(w)
     .map(([, l]) => l.reduce((a, s) => a + s.strength, 0))).toFixed(1)).join(" / "),
-  "18.4 / 14.2");
+  "18.6 / 14.2");
 
 /*
  * And the one difference between specializations that is nobody's design: **how much of each list
@@ -4979,9 +5334,30 @@ const ladderOrder = [...graph.SPELLS_BY_SOURCE.values()]
 check("source lists that are not in strength order", ladderOrder.length, 0);
 
 const menuNodes = nodes.filter(n => n.grants?.choose?.from);
-check("nodes that offer a choice", menuNodes.length, 24);
-check("one behind every school and every god",
-  new Set(menuNodes.map(n => n.grants.choose.from)).size, 24);
+check("nodes that offer a choice", menuNodes.length, 26);
+/*
+ * **Twenty-six now: one behind every school, every god, and each martial Way.**
+ * **[BUILT 2026-11-07]**
+ *
+ * The two new ones are Shade's and Strength's, and they close the gap 4a's own opening sentence
+ * describes -- *a pool larger than the nodes that draw on it is a menu nobody can order from.*
+ * That section measured it on the spell side and then called a named grant *the right shape for a
+ * card pool, where a Way's thirteen cards meet about twenty pool nodes*; the martial pools hold
+ * **35** cards with **21 on no node at all**, so the sentence had expired and the mechanism, not
+ * the reasoning, was what needed extending.
+ */
+check("one behind every school, every god and each martial Way",
+  new Set(menuNodes.map(n => n.grants.choose.from)).size, 26);
+/* And what each martial menu may offer, which is every rung of the cost ladder but the top one:
+ * way-cards 1.3 reserves Spent + Strain at "once in a deck", and a card has no slot budget to
+ * fence it the way a spell's strength fences a formula. */
+check("cards a martial menu offers",
+  [...graph.CARDS_BY_SOURCE].map(([k, v]) => `${k} ${v.length}`).join(", "),
+  "Shade 14, Warrior 14");
+check("and the card held back from one",
+  [...content.SHADE_POOL, ...content.STRENGTH_POOL].filter(graph.topRung)
+    .map(c => c.name).join(", ") || "none",
+  "Nothing Held Back");
 /* Each sits directly behind its own title, which is the earliest the choice can honestly be
  * offered: 3.4 argues the bottom of the ladder from a caster's FIRST day with the school. */
 const offBranch = menuNodes.filter(n => {
@@ -4994,21 +5370,62 @@ check("menu nodes not sitting behind their own title",
 check("menu nodes marked bespoke",
   menuNodes.filter(n => n.bespoke).length, 0);
 
-/* And the point of all of it: nothing is written down and unreachable any more. */
+/*
+ * And the point of all of it: nothing is written down and unreachable any more.
+ *
+ * **Asked of both kinds of list now.** A menu names a spell source or a card source, so the sweep
+ * has to read whichever it is -- and the card half is the question that prompted the martial menus
+ * in the first place. It was **21 of 35** before them.
+ */
+const spellMenus = menuNodes.filter(n => graph.SPELLS_BY_SOURCE.has(n.grants.choose.from));
+const cardMenus = menuNodes.filter(n => graph.CARDS_BY_SOURCE.has(n.grants.choose.from));
+check("menu nodes, split by the kind of list they name",
+  `${spellMenus.length} spell, ${cardMenus.length} card`, "24 spell, 2 card");
+
 const namedByNodes = nodes.filter(n => n.grants?.spell).map(n => n.grants.spell);
-const choosable = new Set(menuNodes
+const choosable = new Set(spellMenus
   .flatMap(n => graph.SPELLS_BY_SOURCE.get(n.grants.choose.from).map(sp => sp.name)));
 const unreachableSpells = [...graph.SPELLS.keys()]
   .filter(name => !namedByNodes.includes(name) && !choosable.has(name));
 check("spells no node can hand over at all",
   unreachableSpells.length ? unreachableSpells.join(", ") : "none", "none");
+
+/*
+ * The same question of the card pools, which had never been asked and is why the martial menus
+ * exist. What is left is the shape the fix leaves behind rather than a leftover:
+ *
+ *  - the **common pool**, which has no menu because a menu sits behind the title whose list it
+ *    offers and the common pool is nobody's title;
+ *  - *Nothing Held Back*, deliberately held back -- the top rung of way-cards 1.3's ladder stays
+ *    under a named grant, because a card has no slot budget to fence it with.
+ */
+const namedCards = new Set(nodes.filter(n => n.grants?.card).map(n => n.grants.card));
+const choosableCards = new Set(cardMenus
+  .flatMap(n => graph.CARDS_BY_SOURCE.get(n.grants.choose.from).map(c => c.name)));
+const poolCards = [...content.COMMON_POOL, ...content.SHADE_POOL, ...content.STRENGTH_POOL];
+const unreachableCards = poolCards.map(c => c.name)
+  .filter(name => !namedCards.has(name) && !choosableCards.has(name));
+check("pool cards in total", poolCards.length, 35);
+check("cards no node can hand over at all",
+  unreachableCards.length ? unreachableCards.sort().join(", ") : "none",
+  "Both Hands, Dig In, Nothing Held Back, Off-Hand Blow, Press");
+check("and all of them are one of the two declared cases",
+  unreachableCards.every(name => {
+    const card = poolCards.find(c => c.name === name);
+    return card.pool === "common" || graph.topRung(card);
+  }), true);
 /* Which is a different number from before, and it is the one the last pass pinned at ninety-five. */
 check("spells reachable only through a choice",
-  [...graph.SPELLS.keys()].filter(n => !namedByNodes.includes(n)).length, 88);
+  [...graph.SPELLS.keys()].filter(n => !namedByNodes.includes(n)).length, 76);
 
-/* The engine reads the key in all four places a grant has to be read. */
+/* The engine reads the key in all four places a grant has to be read -- and since 2026-11-07 it
+ * reads WHICH KIND of list the source names, because a card and a spell are different documents. */
 check("taking a node asks the question",
-  /if \(grants\.choose\?\.from\) await grantSpellChoice\(actor, grants\.choose\.from, id\);/
+  /CARDS_BY_SOURCE\.has\(grants\.choose\.from\)\s*\n\s*\? grantCardChoice\(actor, grants\.choose\.from\)\s*\n\s*: grantSpellChoice\(actor, grants\.choose\.from, id\)/
+    .test(graphSource) ? "yes" : "no", "yes");
+/* And one function answers "what does this source offer", so no caller asks it twice. */
+check("one question, one answer, for either kind of list",
+  /export const choiceList = source =>\s*\n\s*SPELLS_BY_SOURCE\.get\(source\) \?\? CARDS_BY_SOURCE\.get\(source\) \?\? null;/
     .test(graphSource) ? "yes" : "no", "yes");
 /*
  * **And the choice dispatches on kind, which is one branch at the end of the menu.**
@@ -5033,9 +5450,11 @@ check("and what is already held counts either kind",
 check("what the player already knows is left out of the list",
   /const open = list\.filter\(spell => !held\.has\(spell\.name\)\);/.test(graphSource)
     ? "yes" : "no", "yes");
-check("and a node with nothing left to teach says so",
-  /if \(!open\.length\) \{[\s\S]{0,120}CARDRPG\.Level\.NothingLeft/.test(graphSource)
-    ? "yes" : "no", "yes");
+/* Both menus say so, which is why this counts rather than finds: a spell menu and a card menu
+  * each spend the level either way, and a silent empty dialog is the failure in both. */
+check("menus that say so when there is nothing left to give",
+  (graphSource.match(/if \(!open\.length\) \{[\s\S]{0,160}?CARDRPG\.Level\.NothingLeft/g) ?? [])
+    .length, 2);
 check("the pane reads the choice out loud",
   /if \(g\.choose\?\.from\) \{[\s\S]{0,200}CARDRPG\.Level\.Choose/.test(graphSource)
     ? "yes" : "no", "yes");
@@ -5050,7 +5469,7 @@ check("a blank sheet has been offered no choices", graph.grantsOf(new Set()).cho
 check("a choice from a source with no spells is refused",
   graph.graphFaults([...content.NODES,
     { id: "mind.ghost", after: ["mind"], grants: { choose: { from: "Ghost Magic" } } }])
-    .join("; "), "mind.ghost offers a choice from Ghost Magic, which has no spells");
+    .join("; "), "mind.ghost offers a choice from Ghost Magic, which has nothing in it");
 check("and the live graph has no such fault", graph.graphFaults(graph.LIVE_NODES).length, 0);
 
 /*
@@ -5099,7 +5518,7 @@ const vague = audited.filter(c => (c.needs ?? []).some(g => g.length < 12)).map(
 check("gaps too short to act on", vague.length ? vague.join(", ") : "none", "none");
 const workingCards = audited.filter(c => !c.needs.length).length;
 check("content the engine does everything for", workingCards, 94);
-check("content with a named gap", audited.filter(c => c.needs.length).length, 108);
+check("content with a named gap", audited.filter(c => c.needs.length).length, 114);
 
 /*
  * A gap shared by several cards is one piece of engine work, not several. Counting the DISTINCT
@@ -5114,7 +5533,7 @@ for (const card of audited) {
  * sleep* against an engine with no sleep that empties a fate deck. Naming it is what keeps the
  * overcharge from being a silent one.
  */
-check("distinct gaps across all content", gapCounts.size, 93);
+check("distinct gaps across all content", gapCounts.size, 100);
 /*
  * Two different questions, and the list is what lets them be asked apart.
  *
@@ -5250,14 +5669,14 @@ const topOfQueue = [...queue].filter(([, n]) => n >= 4)
   .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
   .map(([gap, n]) => `${n} ${gap}`);
 check("the gaps four or more pieces of content wait on", topOfQueue.join(" | "),
-  "7 a spell slot spent for good | 6 skill cards set aside to pay for a formula | "
+  "8 a spell slot spent for good | 6 skill cards set aside to pay for a formula | "
   + "5 a condition applied to an area | "
   + "5 a spell that taints its caster | "
   + "5 a Wild that leaves the fate deck when you sleep | "
   + "4 an enemy that attacks its own side");
 
 check("the gap mentioned by the most content", `${worst.join("; ")} (${most})`,
-  "a spell slot spent for good (7)");
+  "a spell slot spent for good (8)");
 
 const finishes = new Map();
 for (const card of audited) {
@@ -5286,7 +5705,7 @@ check("the gap that would finish the most content",
  * re-counted -- which is the only way a number here is allowed to fall.
  */
 check("gaps that would finish exactly one piece of content",
-  [...finishes.values()].filter(n => n === 1).length, 57);
+  [...finishes.values()].filter(n => n === 1).length, 58);
 
 /*
  * And a check on the QUEUE rather than on the content, which the ranged-item work earned.
@@ -5584,7 +6003,7 @@ const artable = [
   content.NATURAL_WEAPONS ?? [], everyCreatureForArt, [content.WARRIOR],
   ...Object.entries(content).filter(([k]) => k.endsWith("_SIGNATURES")).map(([, v]) => v)
 ].flat();
-check("pieces of content that take art", artable.length, 578);
+check("pieces of content that take art", artable.length, 585);
 /*
  * **The four items that are content without being commissions, and the item each one wears.**
  *
@@ -5623,6 +6042,23 @@ check("the authored goblin deck is retired",
  * suite, and both times it looked right in every reading of the source. */
 const setupCode = setupSource.replace(/\/\*[\s\S]*?\*\//g, "")
   .split("\n").map(line => line.replace(/\/\/.*$/, "")).join("\n");
+/*
+ * **Two gaps declared rather than carried quietly**, because each one is the kind that passes every
+ * check by being absent.
+ *
+ * A piece on an art shelf gets a path derived from its name, and a path with no file behind it is a
+ * silent fallback to Foundry's placeholder -- so ten undrawn designs on a shelf would be ten
+ * pictures that never show and never complain. The deck stays off the shelves until somebody draws
+ * it, and `artable` above is the list that would have to grow.
+ *
+ * And the starter routine still deals the Warrior. Choosing between two chassis is character
+ * creation, which core-rules 12 defers until after the first playtest **on purpose**; a deck the
+ * rules describe and no routine deals is the honest state of that decision.
+ */
+check("the Shade deck is on an art shelf",
+  artable.includes(content.SHADE_DECK[0]) ? "yes" : "no", "no");
+check("and the starter routine deals one chassis, not two",
+  /SHADE_DECK/.test(setupCode) ? "two" : "one", "one");
 check("and nothing builds a document for it",
   /goblin\.action/.test(setupCode) ? "still built" : "gone", "gone");
 /* And the grep is not vacuous: the key the creature builder DOES use is still there to be found. */
@@ -6012,7 +6448,7 @@ const pathless = [
   ...artable.map(e => [e.name, artInLive(e)]),
   ...backs.map(([k, b]) => [b.label ?? k, backOfLive(k)])
 ].filter(([, p]) => p && !fs.existsSync(fileFor(p)));
-check("art paths the game would hand Foundry", artable.length + backs.length, 588);
+check("art paths the game would hand Foundry", artable.length + backs.length, 595);
 check("and those naming a file that is not there",
   pathless.map(([name, p]) => `${name} -> ${p}`).slice(0, 5).join(", ") || "none", "none");
 /*
@@ -6181,7 +6617,7 @@ const briefs = faceRows.map(r => r.brief);
 const leaked = briefs.flatMap(text =>
   [...text.matchAll(/\b([a-z]+[A-Z][a-zA-Z]*)\b/g)].map(m => m[1]));
 /* A pattern that matched no rows at all would report "none" for any list whatsoever. */
-check("briefs the check actually read", briefs.length, 578);
+check("briefs the check actually read", briefs.length, 585);
 check("keys that leaked into the brief",
   leaked.length ? [...new Set(leaked)].join(", ") : "none", "none");
 /*
@@ -6344,7 +6780,7 @@ check("and those are the lengths in the source",
  * European and the cards had no assignment at all.
  */
 const castLines = [...artPrompts.matchAll(/that person is (a (?:wo)?man) of ([A-Za-z ]+?) appearance/g)];
-check("cards, signatures and features given an assigned person", castLines.length, 128);
+check("cards, signatures and features given an assigned person", castLines.length, 132);
 /* The NPC pool is the one group that must NOT be cast: its own capsule says the actor is nobody,
  * because one picture is drawn behind a goblin, a troll and a dragon. */
 const npcBlock = /\n## NPC intent cards\n([\s\S]*?)\n## /.exec(artPrompts)?.[1] ?? "";
@@ -6377,7 +6813,7 @@ check("prompts that ask an image model for self-harm, having nothing else to ask
 
 const EURO = new Set(["Mediterranean", "Nordic", "Slavic", "Northwest European", "Germanic"]);
 check("western ancestries among them, which had nearly vanished",
-  castLines.filter(m => EURO.has(m[2])).length, 43);
+  castLines.filter(m => EURO.has(m[2])).length, 45);
 check("and every ancestry on the list is used somewhere",
   new Set(castLines.map(m => m[2])).size, 15);
 
@@ -6413,7 +6849,7 @@ check("and the log is a record, not a source",
  * spelling them again. */
 const packSource = fs.readFileSync(path.join(root, "test/build-packs.mjs"), "utf8");
 const rows = faceRows;
-check("file paths in the brief", rows.length, 578);
+check("file paths in the brief", rows.length, 585);
 /* And the backs, whose path is the slug of their KEY rather than of their printed label. */
 const backPaths = [...artList.matchAll(/\| `(backs\/[^`]+)` \|/g)].map(m => m[1]);
 check("back paths in the brief", backPaths.length, backs.length);
@@ -6509,7 +6945,8 @@ check("and the retired one is gone from the step choices",
  * entries are deduplicated by identity, because the same object seen through two tables is one
  * piece of content and not two.
  */
-const everyEntry = new Set([content.WARRIOR_DECK, content.COMMON_POOL, content.WAY_CARDS,
+const everyEntry = new Set([content.WARRIOR_DECK, content.SHADE_DECK, content.COMMON_POOL,
+  content.WAY_CARDS,
   content.SHADE_POOL, content.STRENGTH_POOL, content.WILD_MAGIC, content.INTENTS,
   graph.SIGNATURES, graph.TEACHINGS].flatMap(l => l ?? []));
 const everyStep = [];
@@ -6519,7 +6956,7 @@ for (const entry of everyEntry) {
     for (const st of arr ?? []) everyStep.push({ card: entry.name, st });
   }
 }
-check("steps the timing audit read", everyStep.length, 330);
+check("steps the timing audit read", everyStep.length, 361);
 
 /*
  * **Every key a combo clause uses is a key the clause's schema declares.**
@@ -6784,7 +7221,8 @@ check("and each step names one that exists",
  */
 const formSlateNames = new Set([...content.ITEMS, ...content.NPC_GEAR, ...content.NATURAL_WEAPONS,
   ...content.FEATURES].map(e => e.name));
-const formCardNames = new Set([...content.WARRIOR_DECK, ...content.COMMON_POOL, ...content.WAY_CARDS,
+const formCardNames = new Set([...content.WARRIOR_DECK, ...content.SHADE_DECK,
+  ...content.COMMON_POOL, ...content.WAY_CARDS,
   ...content.SHADE_POOL, ...content.STRENGTH_POOL].map(c => c.name));
 const grantFaults = [];
 for (const t of content.TRANSFORMATIONS) {
@@ -6948,7 +7386,7 @@ const proseLeft = everyStep.filter(s => s.st.text);
  * start and 33 now. A step with prose beside its fields is a step the engine resolves and the
  * table reads; a step with prose alone is one the engine drops on the floor.
  */
-check("steps still carrying prose", proseLeft.length, 112);
+check("steps still carrying prose", proseLeft.length, 114);
 /* And the schema document says the same numbers, read off the same sweep rather than typed into
  * prose a second time: a document that counts the content is a document that goes stale. */
 check("the schema document records what the sweep found",
@@ -7020,7 +7458,7 @@ const planned = packs.planDocuments();
 check("compendium packs", planned.length, 7);
 check("and what each one holds",
   planned.map(p => `${p.name}:${p.docs.length}`).join(" "),
-  "creatures:112 characters:1 items:180 features:22 spells:117 signatures:30 decks:11");
+  "creatures:112 characters:1 items:180 features:23 spells:118 signatures:30 decks:11");
 /* Faults the generator records rather than throws: a filename collision silently drops a document,
  * so the build reports it and this refuses to pass with one outstanding. */
 check("faults the generator reported", planned[0].faults.join("; ") || "none", "none");
@@ -7064,8 +7502,8 @@ check("and the group it asks for", DIMENSIONS.join("+"), "width+height+depth");
  */
 const everyPackDoc = planned.flatMap(p => p.docs);
 const everyPackChild = planned.flatMap(p => p.docs.flatMap(d => d.items ?? d.cards ?? []));
-check("documents the stamp sweep read", everyPackDoc.length, 473);
-check("and children beneath them", everyPackChild.length, 340);
+check("documents the stamp sweep read", everyPackDoc.length, 475);
+check("and children beneath them", everyPackChild.length, 345);
 const unstamped = [...everyPackDoc, ...everyPackChild]
   .filter(d => d._stats?.coreVersion !== manifest.compatibility.verified
     || d._stats?.systemId !== manifest.id
@@ -7104,7 +7542,7 @@ const packedFromContent = {
  * pack that lost half its entries would otherwise agree with itself* -- and a break test pointed the
  * derivation at the pack and passed, which is exactly that failure with the comment still above it.
  */
-check("features the content holds", packedFromContent.features, 22);
+check("features the content holds", packedFromContent.features, 23);
 check("packs whose size disagrees with the content",
   planned.filter(p => p.docs.length !== packedFromContent[p.name])
     .map(p => `${p.name}: ${p.docs.length} vs ${packedFromContent[p.name]}`).join(", ") || "none",
@@ -7141,7 +7579,7 @@ check("pack sources that disagree with the content",
   stale.length ? `${stale.length}: ${stale.slice(0, 4).join(", ")}` : "none", "none");
 /* A comparison that read no files would report "none" for a repository with no packs at all. */
 check("documents the comparison actually read",
-  planned.reduce((n, p) => n + p.docs.length, 0), 473);
+  planned.reduce((n, p) => n + p.docs.length, 0), 475);
 
 /*
  * **An id is a promise.** A world that imports a creature keeps the pack's id, and so does every
@@ -7174,7 +7612,7 @@ for (const pack of planned) {
 }
 check("ids that are not the hash of their key, malformed, or shared",
   idFaults.length ? idFaults.slice(0, 4).join("; ") : "none", "none");
-check("ids the rule actually read", everyId.size, 813);
+check("ids the rule actually read", everyId.size, 820);
 /* The hash itself, asked rather than shared: sixteen characters of the right alphabet, and the
  * same answer twice for the same key. */
 check("an id is sixteen characters", packs.id16("items:Longsword").length, 16);
@@ -7379,6 +7817,7 @@ const nameUse = new Map();
 for (const [table, list] of [
   ["POOL", [...graph.POOL.values()]], ["SPELLS", [...graph.SPELLS.values()]],
   ["INTENTS", content.INTENTS], ["WARRIOR_DECK", content.WARRIOR_DECK],
+  ["SHADE_DECK", content.SHADE_DECK],
   ["WARRIOR_SKILLS", content.WARRIOR_SKILLS], ["WILD_MAGIC", content.WILD_MAGIC],
   ["TWISTS", content.TWISTS]
 ]) {
@@ -7767,7 +8206,7 @@ check("the indexes are refilled rather than replaced",
 /* ---- what it refuses, asked rather than read ---- */
 
 const coreNodes = [...graph.LIVE_NODES];
-check("the graph starts as core content", coreNodes.length, 202);
+check("the graph starts as core content", coreNodes.length, 204);
 
 /* A prerequisite that does not exist: the first price section 8 names. */
 check("a node following nothing that exists",
@@ -7829,7 +8268,7 @@ check("and the graph is still whole", graph.GRAPH.has("shade.thief"), true);
 
 /* Back to core, so every check after this section is asking about the shipped graph. */
 check("the graph can be put back", graph.rebuildGraph({}).length, 0);
-check("and it is core again", graph.LIVE_NODES.length, 202);
+check("and it is core again", graph.LIVE_NODES.length, 204);
 check("with the replaced node restored", graph.GRAPH.get("shade.footwork")?.name, "Footwork");
 
 /* ---- the lock, which is the answer to "not in an active campaign" ---- */
@@ -8327,7 +8766,7 @@ check("timings the content actually uses",
  * a step is not about a gate, and the gate is the only thing the three subtypes differ by.
  */
 const permanents = graph.TEACHINGS.filter(t => graph.teachingKind(t) === "feature");
-check("features a school teaches", permanents.length, 9);
+check("features a school teaches", permanents.length, 10);
 check("and the two schools that teach them",
   [...new Set(permanents.map(t => t.source))].sort().join(", "), "Asceticism, Tattoo Magic");
 /* All seven of Tattoo Magic, which makes it the one school in the game that teaches no spells. */
@@ -8335,7 +8774,7 @@ check("and the school that teaches nothing else",
   [...graph.SPELLS.values()].filter(s => s.source === "Tattoo Magic").length, 0);
 check("while its ladder is still a ladder",
   permanents.filter(t => t.source === "Tattoo Magic").map(t => t.strength).sort().join(""),
-  "1112345");
+  "11112345");
 /*
  * A permanent carries a field when it grants a standing number OR when its step applies a condition
  * that carries a bonus. The second half is the correction: this read `s.bonus`, a field on the
@@ -8350,7 +8789,7 @@ check("and the five that carry a field rather than a sentence",
  * inside a gap about bonuses. */
 check("and the four that still want a flag",
   permanents.filter(s => !carries(s)).map(s => s.name).sort().join(", "),
-  "Graven Eye, Graven Road, Nothing At All, The Hand Given");
+  "Graven Eye, Graven Road, Graven Sight, Nothing At All, The Hand Given");
 /* Both of the two that give a bonus deliver it as Graven, which is the whole change: ink you can
  * see on the token rather than a number on the sheet that nothing mentions. */
 check("teachings that give their bonus as a condition",
@@ -9040,13 +9479,67 @@ check("a tool that names no training is not capped",
 const taught = new Set(nodes.filter(n => n.grants?.training)
   .map(n => String(n.grants.training).trim().toLowerCase()));
 const overOne = content.ITEMS.filter(i => (i.bonus?.value ?? 0) > 1);
-check("tools whose bonus the untrained cap bites", overOne.length, 5);
+check("tools whose bonus the untrained cap bites", overOne.length, 8);
 check("and every one of them names a training",
   overOne.filter(i => !(i.bonus.training ?? "").trim()).map(i => i.name).join(", ") || "none",
   "none");
 check("and every training they name is taught by a node",
   overOne.filter(i => !taught.has((i.bonus.training ?? "").trim().toLowerCase()))
     .map(i => `${i.name} wants ${i.bonus.training}`).join(", ") || "none", "none");
+/*
+ * ---- and the other direction, which had never been asked  **[FOUND 2026-11-07]**
+ *
+ * The invariant above runs **one way only**: it starts at a tool printed over +1 and checks that
+ * somebody teaches what it names. Nothing started at a *node* and asked whether the training it
+ * teaches reaches anything -- and skill-rules 2 is explicit that *a tool that names no training is
+ * not capped*, so **a training naming no tool over +1 changes no number anywhere in the game.** It
+ * is a reward that reads like a reward and is arithmetically nothing.
+ *
+ * Asked for the first time: **23 trainings are taught by 24 nodes and 3 of them reached a tool.**
+ * Not a near miss -- seven eighths of the reward was decorative, and the eight most vivid names on
+ * the list were among the dead: oratory, disguise, riding, reading, appraisal, siege engines, the
+ * holy books, sleight of hand.
+ *
+ * **Three were fixed by reading the catalogue rather than adding to it.** *Climbing Rope*,
+ * *Hunting Traps* and *Gaming Set* were each printed at +1 beside a node teaching `rope and
+ * climbing`, `traps` and `games of chance` -- the tool and the training were written as a pair and
+ * the link between them was simply never made. Each is +2 now and names its training, which is the
+ * whole of the fix: no new content, and three rewards that were nothing are worth a point each.
+ *
+ * **The other seventeen are pinned rather than invented, and they are two different problems.**
+ *
+ * | | |
+ * |---|---|
+ * | **8 want a tool nobody has written** | appraisal wants scales, disguise a kit, tattooing needles, firearms a cleaning kit, siege engines a quadrant, reading and the holy books a book. Each is a catalogue entry, and a catalogue entry is a **commission** -- art-list.md would grow eight rows and eight pictures |
+ * | **9 are not tool trainings at all** | `shield and club`, `shield and formation`, `the knife`, `close protection`, `riding`, `oratory`, `liturgy`, `sleight of hand`, `the rule of an order` are **practices**. There is no tool to uncap and there should not be one, so leveling.md 4's *a tool type, at the full bonus* does not describe them. They want a different reward kind -- a know-how is the mechanism that exists and is scarce -- and which one is a design decision rather than a repair |
+ *
+ * The list is pinned whole so it can only ever get shorter, and so that a node teaching a
+ * **new** dead training cannot be added quietly: that is the failure this check exists for, and it
+ * is the one the first direction could never have caught.
+ */
+const trainingTools = new Map();
+for (const item of content.ITEMS) {
+  const want = (item.bonus?.training ?? "").trim().toLowerCase();
+  if (want && (item.bonus?.value ?? 0) > 1) {
+    trainingTools.set(want, [...(trainingTools.get(want) ?? []), item.name]);
+  }
+}
+check("trainings taught by a node", taught.size, 15);
+check("and the ones that reach a tool",
+  [...taught].filter(t => trainingTools.has(t)).sort().join(", "),
+  "armour and its repair, games of chance, lockpicks, rope and climbing, traps, treating wounds");
+/* A training that uncaps nothing is a reward worth nought. Shorter is better; longer is a bug. */
+check("and the ones that change no number anywhere",
+  [...taught].filter(t => !trainingTools.has(t)).sort().join(", "),
+  "appraisal, disguise, firearms and their cleaning, reading, reading and writing, riding, "
+  + "siege engines, tattooing, the holy books");
+check("which is how many of the fifteen",
+  [...taught].filter(t => !trainingTools.has(t)).length, 9);
+/* The three the catalogue could already carry, so a later edit cannot quietly un-pair them. */
+for (const [training, tool] of [["rope and climbing", "Climbing Rope"],
+  ["traps", "Hunting Traps"], ["games of chance", "Gaming Set"]]) {
+  check(`${training} is unlocked by`, (trainingTools.get(training) ?? []).join(", "), tool);
+}
 /* The one that was taught by nothing, and the two nodes that now teach it. A training granted
  * twice is one training: `learned` dedupes, so the cloister and the anatomist agree. */
 check("who teaches treating wounds",
@@ -9442,7 +9935,7 @@ const mean8 = f => (lv8.reduce((a, g) => a + f(g), 0) / lv8.length).toFixed(1);
 check("what level 8 adds to the skill side",
   `trainings ${mean8(g => g.trainings.length)} know-how ${mean8(g => g.knowHow.length)}`
   + ` languages ${mean8(g => g.languages.length)} rest ${mean8(g => g.restTokens)}`,
-  "trainings 1.3 know-how 0.5 languages 0.6 rest 0.2");
+  "trainings 0.9 know-how 0.8 languages 0.6 rest 0.2");
 check("and to the action deck and the body",
   `cards ${mean8(g => g.cards.length)} slots ${mean8(g => g.spellSlots)}`
   + ` carry ${mean8(g => g.carry)} health ${mean8(g => g.health)}`,
@@ -9492,10 +9985,49 @@ check("skill-rules records the measurement",
     ? "yes" : "no", "yes");
 check("and names the three things levelling can add",
   /\*\*\+1\*\*, and only with the tool it names/.test(skillDoc) ? "yes" : "no", "yes");
-/* And the two halves it compares, so the table cannot lose the thing that makes it an argument. */
+/*
+ * **And the two halves it compares, computed, not quoted.**  **[FOUND 2026-11-07]**
+ *
+ * This check used to grep the paragraph for *against 2.3 action cards, 2.3 spell slots, 1.9 carry
+ * and 0.7 Health* and pass when it found them. It found them for months while every one of those
+ * numbers drifted, because **it was reading the prose out of the prose**: the sentence agreed with
+ * itself and nothing compared it to the graph. Three of the four were a tenth out by the time
+ * anybody looked, and the skill half beside them was not pinned at all.
+ *
+ * A pin on prose is not a pin on a number. Both halves are summed off the cheapest route to every
+ * tier-2 title now -- which is what the sentence claims to describe -- and the document has to say
+ * what the graph says.
+ */
+const tier2Titles = nodes.filter(n => n.title && graph.tierOf(n.id) === 2);
+const routeMean = (pick) => {
+  const total = tier2Titles.reduce((sum, n) => {
+    const owned = new Set([graph.ROOT, ...(graph.REACH.get(n.id) ?? []), n.id]);
+    return sum + pick(graph.grantsOf(owned));
+  }, 0);
+  return (total / tier2Titles.length).toFixed(1);
+};
+check("tier-2 titles the route figures average over", tier2Titles.length, 31);
 check("and sets the two halves of a career against each other",
-  /against \*\*2\.3 action cards, 2\.3 spell slots, 1\.9 carry and 0\.7\n> Health\*\*/
-    .test(skillDoc) ? "yes" : "no", "yes");
+  `${routeMean(g => g.cards.length)} action cards, ${routeMean(g => g.spellSlots)} spell slots, `
+  + `${routeMean(g => g.carry)} carry and ${routeMean(g => g.health)} Health`,
+  "2.4 action cards, 2.2 spell slots, 1.8 carry and 0.7 Health");
+check("and the document says the same",
+  skillDoc.includes(`against **${routeMean(g => g.cards.length)} action cards, `
+    + `${routeMean(g => g.spellSlots)} spell slots, ${routeMean(g => g.carry)} carry and `
+    + `${routeMean(g => g.health)}\n> Health**`) ? "yes" : "no", "yes");
+/* The skill half, which had no check of either kind -- and the live/dead split under its trainings,
+ * which is the number that was really being overstated. */
+check("and the skill half it is weighed against",
+  `${routeMean(g => g.trainings.length)} trainings, ${routeMean(g => g.knowHow.length)} know-how, `
+  + `${routeMean(g => g.languages.length)} languages and ${routeMean(g => g.restTokens)} rest tokens`,
+  "0.9 trainings, 0.8 know-how, 0.6 languages and 0.2 rest tokens");
+check("and the document says that too",
+  skillDoc.includes(`carries **${routeMean(g => g.trainings.length)} trainings, `
+    + `${routeMean(g => g.knowHow.length)} know-how, ${routeMean(g => g.languages.length)}\n`
+    + `> languages and ${routeMean(g => g.restTokens)} rest tokens**`) ? "yes" : "no", "yes");
+check("of which the trainings that reach a tool",
+  routeMean(g => g.trainings.filter(t => trainingTools.has(String(t).trim().toLowerCase())).length),
+  "0.4");
 
 /* ---- expertise, mastery, and how a check's randomness behaves  [BUILT 2026-11-02] ---- */
 
@@ -9544,7 +10076,7 @@ check("a mastery is always deeper than that Way's expertise",
   }).map(m => m.id).join(", ") || "none", "none");
 
 /* Nothing new was added to the graph for any of it. */
-check("nodes in the graph", nodes.length, 202);
+check("nodes in the graph", nodes.length, 204);
 check("and every expertise rides a node that was already there",
   expertiseNodes.filter(n => Object.keys(n.grants).length < 2).map(n => n.id).join(", ") || "none",
   "none");
@@ -9724,8 +10256,25 @@ check("and no literal band is left in it",
 /* The table sees the doubling, or it is arithmetic nobody can check at the table. */
 check("the chat line prints the card and the doubling",
   resolveSource.includes("CHECK_SWING} = ${swing") ? "yes" : "no", "yes");
+/*
+ * **Scoped to the check code on 2026-11-07, because it was a whole-file grep on a variable name.**
+ *
+ * The invariant is real: a check's total must not be floored at nought, or the Partial and Fail
+ * bands below the difficulty stop existing. The grep that guarded it looked for `Math.max(0, before`
+ * **anywhere in resolve.mjs**, and it held for one accidental reason -- nothing in the file was
+ * called `before`. Wiring Wounds introduced a local of that name in the damage path, clamping
+ * **Health**, which has been clamped since the file was written and must be. A true invariant read
+ * as a violation.
+ *
+ * It asks the check-and-save region now, which is what the sentence means, and it asks about a
+ * total rather than about a name.
+ */
+const checkRegion = resolveSource.slice(resolveSource.indexOf("export function checkOutcome"),
+  resolveSource.indexOf("export async function resolveSave"));
+check("the check region was really found", checkRegion.length > 1000, true);
 check("and the engine clamps neither total",
-  /Math\.max\(0, before/.test(resolveSource) ? "it clamps" : "it does not", "it does not");
+  /Math\.max\(0, (?:total|before|sum|margin)/.test(checkRegion) ? "it clamps" : "it does not",
+  "it does not");
 
 /*
  * **No check is ever certain, in either direction.** A Miss is a Fail whatever the total and a
@@ -10255,7 +10804,7 @@ const everyCreature = monsters.expandRoster(content.ROSTER, content.VARIANTS);
 const deckOfCaps = (caps, kind = "") => monsters.deckFor(caps, content.INTENTS, kind);
 const deckOfCreature = c => deckOfCaps(c.system.capabilities, c.system.kind);
 
-check("cards in the intent pool", content.INTENTS.length, 36);
+check("cards in the intent pool", content.INTENTS.length, 37);
 check("bases in the roster", content.ROSTER.length, 75);
 check("creatures the variants expand them into", everyCreature.length, 112);
 check("and the rest of the world, tagged but not numbered", content.MONSTER_TAGS.length, 0);
@@ -10599,7 +11148,7 @@ check("intent cards no creature can earn",
   undrawable.length ? undrawable.sort().join(", ") : "none",
   "none");
 /* And the sweep had intents to look at, so an empty pool cannot pass it. */
-check("intents the sweep read", content.INTENTS.length, 36);
+check("intents the sweep read", content.INTENTS.length, 37);
 /* The three capabilities that strand them, from the other end: nothing in the roster has one. */
 check("capabilities the config offers that no creature has",
   Object.keys(CARDRPG.capabilities).filter(k => !creatureCaps.has(k)).sort().join(", ")
@@ -10916,7 +11465,7 @@ for (const m of selfSource.matchAll(
   const p = path.join(root, m[2]);
   if (fs.existsSync(p)) readFiles.set(m[1], fs.readFileSync(p, "utf8"));
 }
-check("files this suite greps by name", readFiles.size, 60);
+check("files this suite greps by name", readFiles.size, 61);
 
 /* Every `/pattern/.test(VAR)` and `VAR.includes("...")`, with the check it belongs to. */
 const nameOfCheck = index => {
@@ -10948,7 +11497,7 @@ for (const m of selfSource.matchAll(/(\w+)\.includes\("((?:[^"\\]|\\.)*)"\)/g)) 
 }
 
 /* The pin that keeps the rest of this honest. */
-check("greps over a whole file, resolved", greps.length, 539);
+check("greps over a whole file, resolved", greps.length, 546);
 
 /*
  * **The rule, as one predicate, run over a planted example before it is run over the suite.**
@@ -10991,6 +11540,7 @@ check("greps a second printer could answer",
 const absentGreps = [
   String.raw`a pile is never given one :: "pile",[^)]*backOf\(`,
   String.raw`and core content is never written to :: NODES\.(push|splice|length =)`,
+  String.raw`and down is not computed from the updated document :: down: taker\.system\.health\.value - dealt`,
   String.raw`and neither builds a face by hand any more :: faces: \[\{ name: card\.name \}\]`,
   String.raw`and neither reads an item's tags by hand :: \(item\?\.system\?\.tags \?\? \[\]\)\.includes`,
   String.raw`and neither table still offers a choice :: ` + "`" + String.raw`\.webp` + "`"
@@ -10999,7 +11549,6 @@ const absentGreps = [
   String.raw`and no longer reads a spell as a source of bonus :: slate\.type === "spell" && slate\.system\.effect`,
   String.raw`and no slate is flagged unusable instead :: quarantined: new fields\.BooleanField`,
   String.raw`and reads the change rather than the state :: item\.system\.prepared`,
-  String.raw`and the engine clamps neither total :: Math\.max\(0, before`,
   String.raw`and the old sentence is gone :: Faith is \*\*wide and shallow\*\*`,
   String.raw`and the resolver reads the flag :: conditionsOf\(actor\)\.includes\("invisible"\)`,
   String.raw`and the token is not given a file of its own :: texture: \{ src: (?!art \})`,

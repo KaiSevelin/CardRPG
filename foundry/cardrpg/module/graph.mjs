@@ -75,6 +75,71 @@ export const TEACHINGS = [...MIND_POOL, ...FAITH_POOL, ...FORMULAS, ...SHADOW_FO
   ...SIGNATURES.filter(s => s.kind !== "card" && s.source)];
 
 /**
+ * **The cards a node may offer a choice from, by pool.**  **[BUILT 2026-11-07]**
+ *
+ * The twin of `SPELLS_BY_SOURCE`, and it exists for the reason 4a of the levelling rules gives
+ * for that one: *a pool larger than the nodes that draw on it is a menu nobody can order from.*
+ * 4a measured that against the spell lists -- 147 formulas, three nodes a branch, 95 of them on no
+ * node at all -- and settled that a node may name a **source** instead of a spell.
+ *
+ * The same section calls a named grant *the right shape for a card pool, where a Way's thirteen
+ * cards meet about twenty pool nodes*, and that sentence has expired: the martial pools hold **35**
+ * cards and **21 of them are on no node at all**. Six in ten. So the condition 4a was written for
+ * now holds on the card side too, and the mechanism generalises rather than being invented again.
+ *
+ * A card's `pool` is what a spell's `source` is, so the map is the same two lines -- with two
+ * differences that both come from a rule rather than from taste: the name a node writes is its own
+ * **title**, and the **top rung of the cost ladder is not on a menu**. Both are explained below.
+ *
+ * The **common pool** has no menu, because a menu sits behind the title whose list it offers and
+ * the common pool is nobody's title. Its four unplaced cards stay a named-grant gap.
+ */
+/*
+ * **The source a node names is its own title**, which is the rule 4a already checks for the
+ * schools: a menu sits directly behind the title whose list it offers, and the two strings have to
+ * be the same string. A Way's title is `Shade` and `Warrior`, so those are the names here -- not
+ * "Way of Shade", which reads better and would put the menu behind nothing.
+ */
+export const CARD_SOURCES = { shade: "Shade", strength: "Warrior" };
+
+/**
+ * **What the top rung of the cost ladder does to a menu, and why one card is not on one.**
+ *
+ * A spell menu limits itself. way-cards 1.4 makes **strength the slot cost**, so a caster offered a
+ * strength-5 miracle on their first day can take it and cannot cast it -- the budget is the fence,
+ * and `grantSpellChoice` sorts cheapest-first because of it.
+ *
+ * **A card has no such fence.** A card in the deck is playable the turn it is drawn, so a menu
+ * offering a whole pool hands over its dearest card as readily as its cheapest. On the Shade and
+ * common lists that is survivable: the dearest pay **Strain 1** or **Spent**, which way-cards 1.3
+ * calls *a few per deck* and *at most 2 in a 16-card deck*. One card is not survivable, and it is
+ * the one the ladder itself singles out: *Nothing Held Back* pays **Spent AND Strain**, the top
+ * rung, which 1.3 reserves at **once in a deck**.
+ *
+ * So a menu offers every rung but the top one, and the top rung stays under a **named** grant where
+ * the branch decides when it arrives. That is not a special case for one card -- it is the ladder's
+ * own "once in a deck" read as a rule about who hands it over.
+ */
+export const topRung = card => [card?.costs?.primary, card?.costs?.secondary]
+  .some(half => half?.spent && half?.strain);
+
+export const CARDS_BY_SOURCE = (() => {
+  const out = new Map();
+  for (const card of [...SHADE_POOL, ...STRENGTH_POOL]) {
+    const label = CARD_SOURCES[card.pool];
+    if (!label || topRung(card)) continue;
+    if (!out.has(label)) out.set(label, []);
+    out.get(label).push(card);
+  }
+  for (const list of out.values()) list.sort((a, b) => a.name.localeCompare(b.name));
+  return out;
+})();
+
+/** What a menu offers, whichever kind of list it names. One question, one answer. */
+export const choiceList = source =>
+  SPELLS_BY_SOURCE.get(source) ?? CARDS_BY_SOURCE.get(source) ?? null;
+
+/**
  * **What kind of slate a teaching is.**
  *
  * A pool entry used to carry no `kind` and be a spell by that silence, which was fine while every
@@ -274,8 +339,8 @@ export function graphFaults(nodes) {
    */
   for (const node of nodes) {
     const from = node?.grants?.choose?.from;
-    if (from && !SPELLS_BY_SOURCE.has(from)) {
-      faults.push(`${node.id} offers a choice from ${from}, which has no spells`);
+    if (from && !choiceList(from)) {
+      faults.push(`${node.id} offers a choice from ${from}, which has nothing in it`);
     }
     /* A language the world does not have is a reward that reads as flavour and means nothing --
      * the same failure as a node granting a card nobody wrote, caught in the same place. */
@@ -591,7 +656,7 @@ export function describeGrants(node) {
   if (g.spell) lines.push(`${game.i18n.localize("CARDRPG.Level.Spell")}: ${g.spell}`);
   if (g.choose?.from) {
     lines.push(game.i18n.format("CARDRPG.Level.Choose", {
-      source: g.choose.from, n: SPELLS_BY_SOURCE.get(g.choose.from)?.length ?? 0
+      source: g.choose.from, n: choiceList(g.choose.from)?.length ?? 0
     }));
   }
   if (g.training) lines.push(`${game.i18n.localize("CARDRPG.Level.Training")}: ${g.training}`);
@@ -664,7 +729,12 @@ export async function takeNode(actor, id) {
   if (grants.feature) await grantSlate(actor, grants.feature, "feature");
   if (grants.item) await grantSlate(actor, grants.item, "item");
   if (grants.spell) await grantSpell(actor, grants.spell, id);
-  if (grants.choose?.from) await grantSpellChoice(actor, grants.choose.from, id);
+  /* A menu names either kind of list, and which one decides the document that gets made. */
+  if (grants.choose?.from) {
+    await (CARDS_BY_SOURCE.has(grants.choose.from)
+      ? grantCardChoice(actor, grants.choose.from)
+      : grantSpellChoice(actor, grants.choose.from, id));
+  }
   if (grants.expertise) await raiseSkillCard(actor, grants.expertise);
   for (let i = 0; i < (grants.prune ?? 0); i++) await prune(actor);
   return true;
@@ -932,4 +1002,39 @@ async function grantCard(actor, name) {
   }
   await deck.createEmbeddedDocuments("Card", [actionCardData(def)]);
   return true;
+}
+
+/**
+ * **One card of the player's choosing, from a pool.**  **[BUILT 2026-11-07]**
+ *
+ * `grantSpellChoice`'s opposite number, and deliberately the same shape: the offer is everything in
+ * the source they do not already hold, a source with nothing left to give says so rather than
+ * spending the level on a duplicate, and the player answers once.
+ *
+ * Two things differ, and both follow from a card being a card. **What counts as already held is the
+ * action deck**, not the item list -- a card is a document in a deck, which is why `grantCard`
+ * above exists at all. And the list is sorted by **name** rather than by cost: a spell's strength
+ * is its slot price and a caster reading for a 1 wants the cheap end first, where a pool card has
+ * no such number and alphabetical is the only honest order.
+ */
+async function grantCardChoice(actor, source) {
+  const deck = deckOf(actor, "action");
+  const list = CARDS_BY_SOURCE.get(source) ?? [];
+  if (!deck) return false;
+  const held = new Set(deck.cards.map(c => c.name));
+  const open = list.filter(card => !held.has(card.name));
+  if (!open.length) {
+    ui.notifications?.warn(game.i18n.format("CARDRPG.Level.NothingLeft", { source }));
+    return false;
+  }
+  const options = open.map(card =>
+    `<option value="${foundry.utils.escapeHTML(card.name)}">`
+    + `${foundry.utils.escapeHTML(card.name)}</option>`).join("");
+  const chosen = await foundry.applications.api.DialogV2.prompt({
+    window: { title: game.i18n.format("CARDRPG.Level.Choose", { source, n: open.length }) },
+    content: `<select name="card">${options}</select>`,
+    ok: { callback: (_event, button) => button.form.elements.card.value }
+  }).catch(() => null);
+  if (!chosen) return false;
+  return grantCard(actor, chosen);
 }

@@ -243,6 +243,39 @@ Only equipped or easily reached items count. Pulling something from deep in your
 
 **Training:** anyone can use a tool, but an untrained user gets at most **+1** from it. Trained users get the full bonus. Training comes from backgrounds and from the Way graphs, where it is one of the benefits a node can offer ([leveling.md](leveling.md) §4).
 
+> **[FOUND 2026-11-07] Twenty of the twenty-four training grants on the Way graphs changed no
+> number anywhere, and the check that would have found it had only ever been run backwards.**
+>
+> The invariant written above runs from the **tool**: every tool over +1 names a training, and every
+> training it names is taught by a node. Both halves held. Nothing had ever started at a **node**
+> and asked the other question — *does the training this node teaches reach anything?* — and the
+> sentence directly above is what makes that question load-bearing: **a tool that names no training
+> is not capped.** So a training naming no tool over +1 uncaps nothing, and the node that taught it
+> handed over a reward that reads like one and is arithmetically zero.
+>
+> Asked for the first time: **23 distinct trainings, taught by 24 nodes, and 3 reached a tool.** The
+> eight most vivid names on the list were among the dead — oratory, disguise, riding, reading,
+> appraisal, siege engines, the holy books, sleight of hand.
+>
+> **Three were fixed by reading the catalogue rather than adding to it.** *Climbing Rope*, *Hunting
+> Traps* and *Gaming Set* sat at +1 beside nodes teaching `rope and climbing`, `traps` and `games of
+> chance`: the tool and the training had been written as a pair and the link was never made. Each is
+> **+2** now and names its training ([equipment.md](equipment.md) §3), which cost no new content and
+> turned three rewards worth nought into three worth a point each — **about 13 points of success
+> chance**, by this section's own measure.
+>
+> **The remaining seventeen are two different problems and neither is a typo.**
+>
+> | | Which | What they want |
+> |---|---|---|
+> | **8 want a tool nobody wrote** | appraisal, disguise, tattooing, firearms and their cleaning, siege engines, reading, reading and writing, the holy books | scales, a kit, needles, a cleaning kit, a quadrant, a book. Each is a catalogue entry, and a catalogue entry is a **commission** |
+> | **9 are not tool trainings at all** | shield and club, shield and formation, the knife, close protection, riding, oratory, liturgy, sleight of hand, the rule of an order | nothing. They are **practices**, and *a tool type at the full bonus* does not describe a practice. They want a different reward kind, and which one is a design decision |
+>
+> The list is pinned whole, so it can only get shorter and a node teaching a **new** dead training
+> cannot be added quietly. **That is the failure the first direction could never catch**, and it is
+> the fourth time this project has met the same shape: a rule stated in one direction, checked in
+> that direction, and false in the other.
+
 ### Push and help
 
 - **Push:** play a second card of the **same approach** from your hand to add its value. This costs you more cards and lets a specialist reach Hard and Heroic checks.
@@ -610,15 +643,41 @@ Travel isn't a skill system of its own. It's a frame for **encounters**:
 >
 > | | worth | when |
 > |---|---|---|
-> | **A training** | **+1**, and only with the tool it names | five tools have a bonus the cap bites |
+> | **A training** | **+1**, and only with the tool it names | **eight** tools have a bonus the cap bites, and **six** trainings reach one |
 > | **A know-how** | advantage, which the fate deck makes **+0.51** | in its situation only |
 > | **A feature** | whatever it prints | **no feature in the game carries a skill bonus** |
 > | A language, a rest token | nothing to a total | |
 >
-> At level 8 the cheapest route to a tier-2 title carries **1.3 trainings, 0.5 know-how, 0.6
-> languages and 0.2 rest tokens** &mdash; against **2.3 action cards, 2.3 spell slots, 1.9 carry and 0.7
+> At level 8 the cheapest route to a tier-2 title carries **0.9 trainings, 0.8 know-how, 0.6
+> languages and 0.2 rest tokens** &mdash; against **2.4 action cards, 2.2 spell slots, 1.8 carry and 0.7
 > Health** on the other side. The combat half compounds and the skill half adds about one point,
 > situationally, for the whole of a career.
+>
+> **[FOUND 2026-11-07] The trainings figure used to read 1.3, and only 0.2 of it reached a tool.**
+> It counted trainings, not trainings that do anything, and §2's audit found **20 of the 24 training
+> grants in the game uncapped nothing at all** &mdash; so the skill half of levelling was thinner than
+> this paragraph already said, by about a factor of six. Two passes closed most of it:
+>
+> - **Three were paired with tools that already existed.** *Climbing Rope*, *Hunting Traps* and
+>   *Gaming Set* each sat at +1 beside a node teaching `rope and climbing`, `traps` and `games of
+>   chance`. The tool and the training had been written together and never linked.
+> - **Eight were not tool trainings at all**, and became **know-how**. `shield and club`,
+>   `shield and formation`, `the knife`, `close protection`, `liturgy`, `sleight of hand`,
+>   `the rule of an order` and `oratory` named *practices*, and *a tool type at the full bonus*
+>   does not describe a practice. A know-how is a situation, which is what each of them was really
+>   describing &mdash; so the know-how figure rises from 0.5 to **0.8** as the trainings figure falls
+>   from 1.3 to **0.9**, and the route is worth more than it was while granting the same number of
+>   things.
+>
+> **Nine are still dead and are pinned in §2**, for two stated reasons: eight want a tool nobody has
+> written, and `riding` waits on **mounts**, which core-rules §12 leaves open.
+>
+> **Four of the numbers above had also gone stale**, and the way they managed it is the finding:
+> languages, action cards, spell slots and carry each moved by a tenth as the graph grew. A check
+> *was* reading three of them &mdash; and it was reading them **out of this paragraph**, confirming that
+> the sentence still said what it had always said while the content underneath it moved. A pin on
+> prose is not a pin on a number. The check computes all four off the graph now and compares them to
+> what is written here, which is the difference between the two kinds of pin.
 >
 > **And §2's ladder is calibrated to a starter deck.** A specialist's best card is 3, a trained tool
 > makes **5**, a push makes **7**, help makes **9** &mdash; which is Easy, Normal, Hard and Heroic exactly.

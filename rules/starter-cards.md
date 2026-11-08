@@ -55,6 +55,99 @@ Warrior has nothing that expensive; the first ones belong in a caster deck.
 
 ---
 
+## Action deck – "Shade" (16 cards)  **[BUILT 2026-11-07]**
+
+The second chassis. Until this deck existed there was one, and every figure this project had
+published about a Way was measured on the Warrior's sixteen — so a Way of Shade career was measured
+playing a sword and a shield, and the question *are Shade's cards worse, or only worse matched to a
+lone melee?* had no way of being asked. [way-cards.md](way-cards.md) §1.2 and §1.3 each end on the
+same sentence: *the difference between those two readings is a simulator that models a Way.*
+
+| # | Card | Primary | Secondary | Reaction | Copies |
+|---|---|---|---|---|---|
+| 1 | Knife Work | Strike | Move 1 | Parry | 3 |
+| 2 | Open Vein | Strike +1 — needs a *Light* item | Move 1 | – | 2 |
+| 3 | Slip In | Move 2, then Strike | Move 1 | – | 1 |
+| 4 | Shed the Blow | **Block 2** | Move 2 | Sidestep | 2 |
+| 5 | Quick Step | Move 3 | Move 2 | Sidestep | 2 |
+| 6 | Draw the Knife | Strike | Ready | – | 2 |
+| 7 | Light Fingers | Use | Ready | Use | 1 |
+| 8 | Bind the Wound | Heal yourself 2 — **Spent** | Use | – | 1 |
+| 9 | Jeer | Target enemy is **Dazed (1)**, resist 👑 Presence 5 | Move 1 | – | 1 |
+| 10 | Off Hand | Ready | Strike | – | 1 |
+
+**It is built to the Warrior deck's budget, and that is the whole method.** Sixteen cards in ten
+designs, nine Strike halves, eight reaction copies across four designs, four cards carrying Ready,
+one Spent, no Strain, one heal, one condition, two Use halves, two defensive primaries and eight
+printed Move on primaries — every one of those is the Warrior's own number, computed off both decks
+and compared field by field in the validator. **Exactly one field is allowed to differ**: the
+printed Move total, 21 against 23, because §1.6 calls a secondary the cheapest space in the game
+and two more points of it there is the difference this deck is *for*.
+
+Two decks of different budget would have measured the budget. These measure the **shape**, which is
+the thing a Way is.
+
+### What differs, and what it costs
+
+> **[MEASURED 2026-11-07] The Shade deck is worth −3.4 points of win rate against the Warrior's,
+> and the whole of it is one reaction.**
+>
+> Same gear, 3000 fights, seed 1, against the published encounters: **−1.0** against three spears,
+> **−2.8** against four, **−3.5** against five, **−6.4** against two spears and two bows. The gap
+> widens with the pressure, which is the shape of a deck short of defence rather than of damage.
+>
+> | Variant | Mean win % |
+> |---|---|
+> | Warrior deck | 74.5 |
+> | **Shade deck as written** | **71.0** |
+> | its defensive primary made a persistent shield Defend, as *Shield Up* is | 71.0 |
+> | its defensive primary raised to Block 4 | 69.2 |
+> | one design's reaction changed from ⚡ Sidestep to ⚡ Block | **73.5** |
+>
+> **The defensive primary is not worth anything measurable, and the reaction is worth the whole
+> gap.** Handing *Shed the Blow* the persistent shield Defend off *Shield Up* — on the published
+> figures the most valuable primary in the starter deck — moves nothing at all, and raising its
+> printed Block makes the deck *worse*, because the hero then spends turns not striking. Printing
+> **Block** on one design instead of Sidestep recovers 2.5 of the 3.4.
+>
+> So a Shade starts behind by one reaction, and **the reaction is the shield**: Block is *your
+> shield's Defend value +1*, and a Shade carries no shield. That sharpens a published figure rather
+> than repeating it — [specializations.md](specializations.md) measured *the shield* at **0.4 to
+> 1.8** by taking its Defend value away and leaving the deck alone, and what that could not see is
+> that a shield's worth is in the **reaction it unlocks**, not in the number printed on it.
+>
+> The deck is left at −3.4 rather than levelled with a Block it cannot carry. A Way that starts
+> three points behind in a lone melee and is paid elsewhere is a Way; a Way that is three points
+> behind by accident is a bug. Which this is, is answered below.
+
+> **[MEASURED 2026-11-07] And it settles what a Way is worth: the deck is 4 points, the shopping
+> list is 36.** Both decks against both kits — Longsword, Wooden Shield and Leather against Dagger
+> and no shield — gives a **deck** main effect of **+4.0** to the Warrior, a **gear** main effect of
+> **+35.8**, and an interaction of **−1.1**, so the two factors barely talk to each other and one of
+> them is nine times the other.
+>
+> | | sword + shield | dagger, no shield |
+> |---|---|---|
+> | **Warrior deck** | 74.5 | 39.2 |
+> | **Shade deck** | 71.0 | 34.7 |
+>
+> The 4.0 is the same number [../sim/careers_sim.py](../sim/careers_sim.py) reports between the two
+> Ways at tier 2 (Strength 66.8, Shade 62.8) — which means that gap was never about the careers at
+> all. It is this deck, counted twice.
+
+### Two things this deck does not have yet
+
+- **No art.** Ten designs, no commissions, and the deck is deliberately kept **off the art shelves**
+  ([../foundry/art-list.md](../foundry/art-list.md)): a shelved piece gets a path derived from its
+  name, and a path with no file behind it is a silent fallback to Foundry's placeholder — ten
+  pictures that never show and never complain. Pinned, so it cannot be forgotten.
+- **Nothing deals it.** The starter routine still builds the Warrior. Choosing between two chassis
+  **is** character creation, which [core-rules.md](core-rules.md) §12 defers until after the first
+  playtest on purpose. A deck the rules describe and no routine deals is the honest state of that
+  decision, and it is pinned too.
+
+---
+
 ## Skill deck – generic starter (15 cards)
 
 A stand-in until the Ways have card lists. Every approach appears twice, so any character can try anything, and the deck lasts about a day of play.

@@ -467,6 +467,83 @@
       }
     },
     {
+      "_id": "u0Rpa5Wljn6XfDGd",
+      "_key": "!cards.cards!NHP0PBXJoAQv67Vk.u0Rpa5Wljn6XfDGd",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1200,
+      "name": "Count the Odds",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Count the Odds",
+          "img": "systems/cardrpg/art/cards/shade/count-the-odds.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "strike"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "sift",
+            "param": 2
+          }
+        ],
+        "reaction": "parry",
+        "costs": {},
+        "text": "The secondary is seeing only — you may not reorder them, and you discard nothing."
+      }
+    },
+    {
+      "_id": "r2JjsF094LkcfT9B",
+      "_key": "!cards.cards!NHP0PBXJoAQv67Vk.r2JjsF094LkcfT9B",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1300,
+      "name": "Scout Ahead",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Scout Ahead",
+          "img": "systems/cardrpg/art/cards/shade/scout-ahead.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "move",
+            "param": 3
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "sift",
+            "param": 3
+          }
+        ],
+        "reaction": "sidestep",
+        "costs": {},
+        "text": "Seeing only, and one card deeper than most: you looked where you were going."
+      }
+    },
+    {
       "_id": "rGnEEwvBHbRoJtDs",
       "_key": "!cards.cards!NHP0PBXJoAQv67Vk.rGnEEwvBHbRoJtDs",
       "_stats": {
@@ -474,7 +551,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1200,
+      "sort": 1400,
       "name": "Smoke and Go",
       "type": "action",
       "face": 0,

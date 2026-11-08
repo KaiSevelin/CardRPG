@@ -267,14 +267,14 @@ Tools work like weapons: the card says what you try, the tool says how well. **U
 | Item | Slot | kg | Value | Group | Skill line |
 |---|---|---|---|---|---|
 | **Lockpicks** | Belt | 0 | 25 g | Tool | 🌑 Shadow +2 (locks and mechanisms) |
-| **Climbing Rope** | Pack | 3 | 5 g | Tool | ✊ Might / 🌀 Agility +1 (climbing, and nobody falls alone) |
+| **Climbing Rope** | Pack | 3 | 5 g | Tool | ✊ Might / 🌀 Agility +2 (climbing, and nobody falls alone) |
 | **Healer's Kit** | Pack | 2 | 20 g | Tool | 📜 Lore +2 (treating wounds; removes 1 Wound on a Normal 5) |
 | **Repair Kit** | Pack | 3 | 30 g | Tool | 📜 Lore +2, and overnight it clears **1 Corrode** from one item |
-| **Hunting Traps** | Pack | 4 | 15 g | Tool | 👁 Wits +1 (tracking and trapping animals) |
+| **Hunting Traps** | Pack | 4 | 15 g | Tool | 👁 Wits +2 (tracking and trapping animals) |
 | **Lantern** | 1 hand | 2 | 5 g | Tool | 👁 Wits +1 in the dark — and the squares it lights are **not shadowed** |
 | **The Kit** | Pack | 3 | — | Tool | 🌑 Shadow +2, and every **Hard** physical obstacle counts as Normal |
 | **Holy Symbol** | 1 hand | 0 | 10 g | Power | 📜 Lore +1 (religion, undead) |
-| **Gaming Set** | Pack | 1 | 5 g | Station | 👑 Presence +1 (soldiers, taverns, gamblers) |
+| **Gaming Set** | Pack | 1 | 5 g | Station | 👑 Presence +2 (soldiers, taverns, gamblers) |
 | **Smith's Hammer** | Pack | 2 | 18 g | Make | 📜 Lore +2 (metalwork); repairs **1 Corrode** overnight |
 
 **The Lantern is now a positional item**, because core-rules §11 defines **shadowed** squares and an

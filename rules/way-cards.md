@@ -82,17 +82,28 @@ until your next turn* ([design-direction.md](design-direction.md)).
 
 Four rungs, cheapest first. **Pick one.**
 
+> **Below the ladder sits a rung that is not a card at all**: a half may ask you to **show** a card
+> from your hand, and what it takes is information (core-rules §3, *Showing a card*). And the ladder
+> prices what a cost *is* — where the card itself **goes** is a separate dial with two unused
+> settings, in core-rules §8, *Where a played card goes*.
+
 | Cost | Buys | How often |
 |---|---|---|
 | *nothing* | a re-arrangement of verbs you already have — *Move 2, then Strike* | freely |
 | **Strain 1** | an effect worth about one card | a few per deck |
 | **Spent** | an effect worth the rest of the fight | **at most 2 in a 16-card deck** |
-| **Spent + Strain** | a Signature, and only a Signature | once |
+| **Spent + Strain** | a Signature, or one card a node hands out | **once in a deck** |
 
 > **[FOUND IN CODE 2026-11-02] The top rung has never been spent.** Of the **22** card Signatures
 > in the game, **19 cost nothing at all**; *One Opening* and *Red Mist* pay Spent and *The Scourge*
 > pays Strain, and **not one pays Spent + Strain** — the rung this table reserves for a Signature
 > and for nothing else.
+
+> **[BUILT 2026-11-07] The rung has an occupant now, and it is not a Signature.** *Nothing Held
+> Back* (§3.2) pays **Spent** and Strains the hand but one, which is this rung exactly. Writing it
+> meant reading the restriction again: what the top rung guards is **how often**, not **which kind
+> of card**, so the row now reads *once in a deck*. The finding above still stands — no Signature
+> pays it, and the first card that does is one a minor node hands over.
 >
 > That is permitted and not broken: the ladder says what a Signature **may** cost, not what it must.
 > But the consequence had never been written down, so it is here now: **a Signature is priced like
@@ -1143,7 +1154,7 @@ handed. The −1 is what keeps it from making plain *Strike* obsolete.
 already carries *Second Wind*, so taking this one spends the ceiling. That is the decision, and no
 branch should offer a third.
 
-### 3.2 Way of Strength — fourteen cards
+### 3.2 Way of Strength — sixteen cards
 
 Weight, armor, Block, adjacency and the Wound threshold are the levers the **major** nodes own
 ([specializations.md](specializations.md)); these touch them without taking them.
@@ -1164,6 +1175,8 @@ Weight, armor, Block, adjacency and the Wound threshold are the levers the **maj
 | **Beat the Blade** | ⚔ Strike · on a hit, **Disarmed (1)**, resist ✊ 5 | 👣 Move 1 | – | – |
 | **Roar** | every adjacent enemy is **Compelled (1)**, resist 👑 5 | 👣 Move 1 | – | ⤵ **Strain 1** |
 | **Walk It Off** | ✚ Heal 2 · ⛓ **Shake Off 2** on yourself | 👣 Move 1 | Brace | 🔥 **Spent** |
+| **Nothing Held Back** | ⤵ **Strain your hand but one** — that card must be played this turn · ⚔ Strike, **+1 per card strained** | – | – | 🔥 **Spent** |
+| **Call It** | ⚔ Strike | **Forestall** one NPC type (core-rules §3) | – | – |
 
 > **Overbear may be the strongest card in this document, and the saving throw is what carries it.**
 > Grappled (2) costs its victim **18.3 points of win rate** against a mixed group — two and a half
@@ -1178,7 +1191,40 @@ a condition the card was already attempting, and the same again on a longer cond
 whole of §1.6's reader table, deliberately, so the band has three worked instances rather than an
 assertion.
 
-### 3.3 Way of Shade — thirteen cards
+**Nothing Held Back is the first card to pay the top of §1.3's ladder, and the scaling is what makes
+it a card instead of a trap.** *Strain your hand but one* strains **nothing** when your hand is
+already down to this card and one other — so a flat bonus would be free exactly when a desperation
+card should cost most, and dear exactly when you could afford it. **+1 per card strained** inverts
+that: a full hand buys a bomb, a bare hand buys a plain Strike, and the card decays as the fight
+does. The clause forcing the kept card to be played is what buys the rest of the cost — your hand is
+**empty** when the round ends, so you cannot react at all, and nothing had to print that.
+
+> **It is the active voice of a strategy core-rules §3 already named.** Turning your whole hand
+> sideways is *"a character playing for their turns rather than their skin"*; this is the same hand
+> spent the other way, on one blow instead of held against one. The **reaction economy** was the
+> last unclaimed mechanic on Way of Strength's list
+> ([design-direction.md](design-direction.md)) and this is the card that spends it.
+>
+> **It is also not the Berserker's.** *Red Mist* is Spent and then refills the hand, so one role
+> would own emptying it and filling it both — the kind of pair §5a's swap test exists to catch. This
+> card belongs to a minor node, which is the other reason §1.3's top rung had to stop saying
+> *Signature*.
+>
+> **The number is a guess and is marked as one.** A damage rung is 7.4 points of win rate, giving up
+> a turn to breathe costs 22 in the hardest fight, and *Valtor's Own* pays whole-hand Strain for a
+> **fight-long** extra secondary — so a one-shot paying that, plus Spent, plus a round with no
+> defence, is probably worth more than the +4 a full hand buys here. Raising it needs the simulator,
+> which is the rule for every number in this document.
+
+**Call It carries Forestall, and it belongs on the Tactician's branch** — the node whose Signature
+is *On My Call*, and the one Way of Strength node core-rules §8 already lets reach into a discard.
+The card is deliberately worth nothing some rounds: a Forestall spent on a type that has already
+acted is spent on nothing, and one spent blind may hand them something worse. It is at its best
+where **Foresee has been spent first** and where the type is **many** — the swarm fight the party
+has fewest answers to, and the one fight where every other enemy-facing trick in the game gets
+weaker rather than stronger.
+
+### 3.3 Way of Shade — fifteen cards
 
 | Card | ▲ Primary | ▼ Secondary | ⚡ Reaction | Cost |
 |---|---|---|---|---|
@@ -1194,6 +1240,8 @@ assertion.
 | **Mock** | **Dazed (1)**, resist 👑 5 | 👣 Move 1 | – | – |
 | **Sleight** | 🧪 Use a belt item, then ⚔ Strike | ⇄ Ready | Use | – |
 | **Vanish** | **Invisible (1)** on yourself | 👣 Move 2 | – | ⤵ **Strain 1** |
+| **Count the Odds** | ⚔ Strike | **Sift 2** — seeing only | Parry | – |
+| **Scout Ahead** | 👣 Move 3 | **Sift 3** — seeing only | Sidestep | – |
 | **Smoke and Go** | **Invisible (1)**, then 👣 Move 2 | 🧪 Use | – | 🔥 **Spent** |
 
 **Roll With It's second clause is already the rule, which makes it the card's one open question.**
@@ -1212,6 +1260,27 @@ half.
 deal against an ironclad and nothing at all against a goblin, so its value is set by the **target**
 rather than by the card, and no band can price it. It is the one card in this section most worth
 simulating.
+
+**The two that look into your own deck grant depth and never choice, and that is the whole of why
+they need no limit.** Core-rules §8 gives the plain top-card peek to **everybody**, free — so a half
+printing *that* would print a line every character already has, which is the trap the first draft of
+*Graven Sight* fell into. These grant **more** of it instead, and seeing cannot dig: the no-repeat
+fence on Sift is there to stop a card fishing through a deck, and nothing that changes nothing
+fishes. So they may be played every time they are drawn.
+
+> **Neither of them bins anything, and that is not an oversight.** The binning half of Sift wants a
+> **once-a-fight** limit, which `CARDRPG.limits` does not offer — it has `day` and `pactPerFight` and
+> nothing between them. Without it a one-of-sixteen Sift returns on every Catch Breath and the deck
+> stops having a bottom, which is exactly what §8's fence was written against. **Asceticism keeps the
+> bin** (*One Less Thing*), where the once-a-fight is prose and declared as a gap; Shade gets the
+> sight. If the limit is ever built, this is the first card that wants it.
+>
+> **And it is a shared capability rather than a stolen one.** [specializations.md](specializations.md)
+> rules that peeking at your own deck is the **Deck shape** axis and that Tattoo Magic and Asceticism
+> hold it — a ruling about what a *school* may be built on, made to keep Divination off it. A card
+> half that only ever *looks* is the same shape as the discard reach §8 shares across seven nodes:
+> what makes each one its own trick is the **depth** of the reach, not the fact of it. Tattoo Magic
+> still owns it permanently and Asceticism still owns the choice.
 
 ### 3.4 Way of Mind — the twelve schools  **[BUILT 2026-11-01]**
 
@@ -1421,6 +1490,7 @@ no longer is a slot cost, which is the gap below.
 |---|---|---|
 | ✦ **Graven Strength** | 1 | Permanent: **+2 Strike with Heavy items**. |
 | **Graven Eye** | 1 | Permanent: you are never surprised. |
+| **Graven Sight** | 1 | Permanent: you may always see the top **two** cards of your draw pile. Seeing only — you may not reorder them (core-rules §8). |
 | **Graven Shield** | 2 | Permanent: **+1 armor**. |
 | **Graven Road** | 1 | Permanent: your Move is **never halved** — Slowed, Burdened and Overloaded do not slow you. |
 | **Graven Armour** | 4 | Permanent: **+3 armor** — and you count as **Burdened** always, whatever you carry. |
@@ -1450,11 +1520,12 @@ no longer is a slot cost, which is the gap below.
 
 The **last two rungs are not formulas.** *The Hand Given* and *Nothing At All* are permanent and so
 arrive as **features** (§2.4 of [card-slate-schema](../foundry/card-slate-schema.md)): there is
-nothing to prepare once you have given the hand. The other five are formulas.
+nothing to prepare once you have given the hand. The other six are formulas.
 
 | Teaching | Str | Effect |
 |---|---|---|
 | ✦ **Nothing Left to Take** | 1 | While your **hand is empty**, you cannot be reduced below 1 Health. |
+| **One Less Thing** | 1 | **Sift 1** (core-rules §8) — once a fight. The top of your deck is one card nearer the bottom. |
 | **Empty Hand** | 1 | While your hand is empty you may ⚔ Strike with no item, at your own ✊ Might. |
 | **Nothing to Carry** | 1 | While both your hands are empty: **+2** to all ✦ Casts, and you cannot be **Disarmed**. |
 | **The Last Card** | 2 | While your hand is exactly **one** card, you may play that card for **both halves**. |
@@ -1548,10 +1619,24 @@ nothing to prepare once you have given the hand. The other five are formulas.
 | Formula | Str | Effect |
 |---|---|---|
 | ✦ **The Reading** | 2 | **Read 3** (core-rules §6) on any one fate deck **except your own**. |
-| **Where It Will Land** | 1 | **Read 1** on your own fate deck. |
+| **Where It Will Land** | 1 | **Read 1** on any one fate deck **except your own**. |
 | **The Mark of Things to Come** | 2 | **Marked (1)** on an enemy at any range, and **Read 1** on its fate deck. |
 | **The Long Look** | 3 | Out of combat: ask the GM **one question** about the next scene. The answer is true — **and the GM writes a prophecy** you do not get to read. |
 | **The Open Book** | 4 | Until your next turn every ally draws fate with **advantage**, and you may **Read 2** on each of their decks. |
+
+> **[FIXED 2026-11-07] *Where It Will Land* was doing the one thing this node gives up.** It read
+> *"Read 1 on your own fate deck"*, and the Divinator's price is stated three times over — *"no
+> divination of yours may look at or reorder your own fate deck, **ever**"*
+> ([specializations.md](specializations.md), [leveling.md](leveling.md) §7) and *"a Divinator may
+> never read their own"* (core-rules §6). The cheapest formula in the school was the counterexample
+> to the school's own thesis, which is the kind of contradiction a list grows when the price lives in
+> one document and the content in another. It now reads **any deck except your own**, which is also
+> what the node's axis wants: a Divinator *pays in someone else's turn*, so a look that only an ally
+> can cash is the school working as written.
+>
+> **What is not broken: *Gambler's Coin*** ([equipment.md](equipment.md)) does *Read 3* on your own
+> fate deck, and that stands. The ban is on **a divination of yours**, not on a thing you carry — and
+> the Gambler is a different node with a different price.
 | **The Whole Thread** | 5 | Before the fight, the GM shows you the enemy's **intent cards for the whole fight, in order**. The GM writes **three** prophecies. |
 
 > **The prophecy is the price, and it is the only one that is paid later.** *The Long Look* buys a
@@ -1669,7 +1754,7 @@ whole party out of turn is the largest tempo swing in the Way.
 |---|---|---|
 | ✦ **The Borrowed Face** | 3 | 🔥 **Spent**: one enemy spends this round attacking **its own ally**. |
 | **The Second Thought** | 1 | One enemy spends its secondary this round doing nothing, resist 👑 7. |
-| **The Second Face** | 1 | 🔥 **Spent**: read one enemy's **intent card** for this round before anyone acts. |
+| **The Second Face** | 1 | 🔥 **Spent**: read one enemy **type's intent card** for this round before anyone acts. |
 | **The Mask of the Captain** | 4 | One enemy obeys you for a round — **you play its turn**. |
 | **Everyone Wears His Face** | 5 | Until your next turn no enemy can tell friend from foe: **every enemy attack targets another enemy**. |
 
@@ -1916,8 +2001,16 @@ nobody would ever see one at a table.
   a pricing one rather than a fictional one.
 - **[OPEN]** A **multi-step spell**. The slate carries one effect; *Move, then Strike* exists on cards
   but has no spell equivalent, and *Wall of the Sphere* is already straining against the single step.
-- **[OPEN]** **The Rumour** needs the GM-facing half written: what "acts as if it were true" does to
-  an intent card is the interesting part and it is not specified.
+- **[BUILT 2026-11-07]** **The Rumour**'s GM-facing half is **Forestall** (core-rules §3), made
+  conditional. At the start of each round, if that type's intent card **contradicts the lie**,
+  discard it and draw **one** replacement — and the replacement **stands**, whether it fits the lie
+  or not. One redraw, never a filter: a strength-2 miracle that kept drawing until the enemy's plan
+  suited it would be choosing the enemy's turn every round for the rest of the fight. The GM judges
+  *contradicts*, which is the right call to leave with them — a lie is prose and an intent card is
+  prose, and nothing else in the game compares two pieces of fiction. So the miracle is a **standing
+  conditional Forestall** that costs a secondary a round to keep up, and it needs no number of its
+  own: Forestall is already priced as a reroll, and The Rumour buys one that fires only when it
+  would help.
 - **[OPEN]** Whether **The Clean Hand** is too strong at strength 2. *Cannot fail* removes the fate
   draw entirely, which no other miracle does, and the Eternal God is already the most restrictive
   choice in the game.

@@ -1,0 +1,22 @@
+{
+  "_id": "SqHFFr4PYGOcITiM",
+  "_key": "!items!SqHFFr4PYGOcITiM",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "Graven Sight",
+  "type": "feature",
+  "img": "systems/cardrpg/art/spells/mind/graven-sight.webp",
+  "system": {
+    "strength": 1,
+    "source": "Tattoo Magic",
+    "description": "<p>Two small eyes carved behind the ear, looking the way you came. You always know the next two cards you will draw. You may not change their order, and the knowing is worth exactly as much as what you do about it.</p>",
+    "effect": {
+      "verb": "sift",
+      "param": 2,
+      "text": "seeing only -- you may not reorder them"
+    }
+  }
+}

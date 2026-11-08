@@ -1,2 +1,4 @@
 __pycache__/
 *.pyc
+sim/careers.json
+sim/careers-combat.json

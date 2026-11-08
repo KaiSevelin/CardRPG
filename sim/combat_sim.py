@@ -150,6 +150,8 @@ ARMOUR = {
 # core-rules 4: the limit is 40 kg, over it you are Burdened (Slowed), over half again
 # Overloaded (Burdened, and 2 random cards are Spent).
 CARRY_LIMIT = 40
+# core-rules 8: a single hit of this much past armor leaves a Wound.
+WOUND_AT = 5
 
 
 # ---------------------------------------------------------------- foes
@@ -251,6 +253,18 @@ class Config:
     # Sidestep had a name on Advance and no behaviour anywhere, so every number published before
     # 2026-10-30 was measured with one of the starter deck's reactions inert. False restores that,
     # which is how the old figures are reproduced and how the reaction is priced.
+    # core-rules 8's two Wound events. Nothing in the engine issued a Wound until 2026-11-07, so
+    # every figure this file published before then was measured in a game where one never arrived --
+    # the same shape as `sidestep`, and False reproduces those numbers the same way.
+    #
+    # It is the rule, so it is the default. What it costs, measured over 6000 fights a cell against
+    # the published encounters: -0.0 against three spears, -1.3 against four, -1.2 against five,
+    # -0.2 against two spears and two bows. A mean of -0.7, which is inside the noise on a single
+    # encounter and not worth re-measuring the published figures over.
+    #
+    # The reason it is that small is the threshold: a Goblin Spear is 3 against armour 1, so only a
+    # CRITICAL -- which doubles -- reaches five past armour. 0.2 Wounds a fight.
+    wounds: bool = True
     sidestep: bool = True
     # Which reading of core-rules 11 to play. The sentence is "an enemy that ENDS ITS MOVEMENT next
     # to you hands you a Sidestep", introduced by "leaving is free, arriving is answered" -- and the
@@ -285,6 +299,33 @@ class Config:
     # With it on: a fight starts with min(stamina, collection) random cards in the deck, the discard
     # tops the deck back up while the budget lasts, and you are Exhausted when the budget is gone.
     stamina: int = 0
+    # The whole action deck, as {name: (primary, secondary, reaction, copies)}. None is the starter
+    # Warrior's sixteen, which is every published figure. careers_sim.py sets it to what a Way
+    # graph career actually holds, so the deck under test is content rather than a scenario knob.
+    deck: object = None
+    # Cards printed **Spent** (way-cards 1.3), as {name: halves} where halves is 'P', 'S' or 'PS'.
+    # Playing that half puts the card out of the fight instead of into the discard, so a breath
+    # never brings it back. Two Signatures are printed this way -- Assassin's *One Opening* and
+    # Berserker's *Red Mist* -- and without this they were the only cards in the game whose price
+    # was free. The AI still plays them as soon as they are worth a half, which if anything spends
+    # them sooner than a player would.
+    spent_cards: object = None
+    # ---- Signatures that are FEATURES rather than cards, for careers_sim.py.
+    #
+    # Three of the six are expressible here; the other three are not, and saying which is which is
+    # the point of listing them:
+    #   *The Wall*            (Guardian)  -> wall
+    #   *Nothing Gets Through* (Ironclad)  -> armor_doubles_overloaded
+    #   *Loaded Before the Bell* (Musketeer) -> first_shot_bonus
+    #   *The Opening*         -- advantage against anyone carrying an opening. Nothing sets an
+    #                            opening in a SOLO fight, so its true value here is zero and
+    #                            modelling it would be inventing an ally.
+    #   *Cleave to the Bone*  -- moves the Wound threshold, and Wounds are not in this simulator.
+    #   *One Trick*           -- prepare from any school; there is no spell engine.
+    wall: bool = False                      # your Blocks stack: the exception to highest-wins
+    armor_doubles_overloaded: bool = False  # armour counts double while Overloaded
+    first_shot_bonus: int = 0               # the first shot of a fight is +N
+    carry_limit: int = CARRY_LIMIT          # raised by a career's carry grants
 
 
 def cheb(a, b):
@@ -372,6 +413,9 @@ class Sim:
                 adj = reach
                 # Strong is +1 with Heavy items only (starter-cards.md Features).
                 value = prof['strike'] + op[1] + (1 if cfg.strong and prof['heavy'] else 0)
+                # *Loaded Before the Bell*: you begin loaded and the fight's first shot is +2.
+                if cfg.first_shot_bonus and self.game.s['shots_fired'] == 0 and prof.get('reload'):
+                    value += cfg.first_shot_bonus
                 # Ranged in melee: disadvantage while an enemy is adjacent (core-rules 11).
                 ranged_pen = prof['rng'] > 1 and any(
                     cheb(self.wpos, g[0]) == 1 for g in self.alive())
@@ -407,7 +451,13 @@ class Sim:
                     if prof.get('reload'):
                         self.loaded = False
             elif kind == 'defend':
-                self.block = cfg.shield_def
+                # *The Wall* is the one exception to highest-wins (core-rules 5): Blocks stack.
+                self.block = (self.block + cfg.shield_def) if cfg.wall else cfg.shield_def
+            elif kind == 'blockn':
+                # A printed Block N, which is not a shield: it ADDS to whatever is already up.
+                # Way of Strength spends a half on it (Shoulder to Shoulder, Shield Wall), so it
+                # has to be worth something on a turn that is also striking.
+                self.block += op[1]
             elif kind in ('heal', 'use'):
                 if kind == 'use':
                     if self.potions <= 0:
@@ -459,7 +509,7 @@ class Sim:
 class Game:
     def __init__(self, cfg, rng, verbose=False):
         self.cfg, self.rng, self.verbose = cfg, rng, verbose
-        self.cards = dict(WARRIOR_CARDS)
+        self.cards = dict(cfg.deck) if cfg.deck else dict(WARRIOR_CARDS)
         if not cfg.double_strike:
             p, s, r, n = self.cards['Weapon Swap']
             self.cards['Weapon Swap'] = (p, [('move', 1)], r, n)
@@ -470,6 +520,10 @@ class Game:
             p, sec, r, n = self.cards['Strike']
             self.cards['Strike'] = (p, sec, r, n - 1)
             self.cards['Shrug It Off'] = ([('strike', 0)], [('shake', 1)], 'parry', 1)
+        # A Wound is a card in the deck with no halves and no reaction: it cannot be played, "not
+        # even for Brace" (core-rules 8). Zero copies, so none is dealt at the start -- they arrive
+        # only from a hit. It lives in the table so every lookup keyed on a hand card still works.
+        self.cards['Wound'] = ([], [], None, 0)
         self.cards.update(cfg.card_overrides)
         deck = [name for name, c in self.cards.items() for _ in range(c[3])]
         self.w = dict(pos=(1, 4), hp=cfg.hp, block=0, potions=cfg.potions, hand=[], draw=deck,
@@ -483,8 +537,8 @@ class Game:
         # the only rung on the ladder that is paid for in weight, so this is where its price lands.
         self.load = (ARMOUR[cfg.armor]['kg'] + WEAPONS[cfg.weapon]['kg'] + cfg.shield_kg
                      + (WEAPONS[cfg.sling]['kg'] if cfg.sling else 0) + cfg.extra_kg)
-        self.burdened = self.load > CARRY_LIMIT
-        self.overloaded = self.load > CARRY_LIMIT * 1.5
+        self.burdened = self.load > cfg.carry_limit
+        self.overloaded = self.load > cfg.carry_limit * 1.5
         # Heavy Armor blocks the Sidestep reaction (core-rules 10), which is the top two rungs'
         # real price and the half of it that has nothing to do with weight.
         self.heavy_armor = (ARMOUR[cfg.armor]['heavy'] if cfg.heavy_armor is None
@@ -599,7 +653,8 @@ class Game:
             return False
         if foe(g['weapon'])['ranged']:
             return False        # stepping one square does not get you out of a bow's range
-        cards = [c for c in w['hand'] if self.cards[c][2] == 'sidestep']
+        cards = [c for c in w['hand']
+                 if c != 'Wound' and self.cards[c][2] == 'sidestep']
         if not cards:
             return False
         blocked = {o['pos'] for o in self.alive()}
@@ -698,6 +753,10 @@ class Game:
             return 1.2 * closes + kiting
         if kind == 'defend':
             return 0.8 * cfg.shield_def * max(1, min(b['adj'] + b['ranged'], 3))
+        if kind == 'blockn':
+            # Priced like Defend per point, so a Block 1 beside a Strike is not free and not
+            # overvalued either -- it is the same soak the shield gives, one point of it.
+            return 0.8 * op[1] * max(1, min(b['adj'] + b['ranged'], 3))
         if kind == 'heal':
             return (2.0 if b['hurt'] else 0.3) * op[1]
         if kind == 'use':
@@ -773,7 +832,12 @@ class Game:
         if not w['draw'] and 'deck_empty_round' not in self.s:
             self.s['deck_empty_round'] = self.round
         out = (w['budget'] is not None and w['budget'] <= 0) or not w['draw']
-        w['exhausted'] = len(w['hand']) < 2 and out
+        # Exhaustion is about cards you can PLAY. A Wound takes up a slot and cannot be played,
+        # "not even for Brace" (core-rules 8), so counting it here would let a hand of dead cards
+        # read as a hand -- and the first run with Wounds on reported the hero winning MORE in hard
+        # fights because of exactly that: dead cards padding the hand and the post-Catch-Breath
+        # deck, delaying an exhaustion that should have arrived sooner.
+        w['exhausted'] = len([c for c in w['hand'] if c != 'Wound']) < 2 and out
 
     def gob(self, gid):
         for g in self.gobs:
@@ -852,17 +916,21 @@ class Game:
 
     # --- warrior
     def options(self):
-        w, hand = self.w, self.w['hand']
-        single = self.dazed() or len(hand) < 2
+        w = self.w
+        # A Wound takes up a slot and is not an option (core-rules 8).
+        hand = self.w['hand']
+        live = [i for i, c in enumerate(hand) if c != 'Wound']
+        single = self.dazed() or len(live) < 2
         opts = []
         if single:
-            for i, c in enumerate(hand):
-                opts.append(([(i, 'P')], self.cards[c][0]))
+            for i in live:
+                opts.append(([(i, 'P')], self.cards[hand[i]][0]))
         else:
-            for i, a in enumerate(hand):
-                for j, b in enumerate(hand):
+            for i in live:
+                for j in live:
                     if i == j:
                         continue
+                    a, b = hand[i], hand[j]
                     pa, sb = self.cards[a][0], self.cards[b][1]
                     opts.append(([(i, 'P'), (j, 'S')], pa + sb))
                     opts.append(([(i, 'P'), (j, 'S')], sb + pa))
@@ -949,7 +1017,7 @@ class Game:
                 and (w['exhausted'] or len(w['hand']) <= cfg.cb_threshold)):
             if self.catch_breath():
                 return
-        if not w['hand']:
+        if not any(c != 'Wound' for c in w['hand']):
             return
         best, best_val = None, -1e9
         for played, ops in self.options():
@@ -966,20 +1034,36 @@ class Game:
         sim = Sim(self)
         sim.run(ops, real=True)
         sim.commit()
-        for i in sorted((i for i, _ in played), reverse=True):
-            w['discard'].append(w['hand'].pop(i))
+        spent_halves = cfg.spent_cards or {}
+        for i, h in sorted(played, key=lambda t: -t[0]):
+            name = w['hand'].pop(i)
+            if h in spent_halves.get(name, ''):
+                w['spent'].append(name)
+                self.s['cards_spent'] += 1
+                self.log(f"  {name} is Spent")
+            else:
+                w['discard'].append(name)
+        # "At the end of your turn, discard this card" -- so a Wound costs a hand slot for exactly
+        # one turn and then goes back round, which is what makes it a tax on the deck's cycle
+        # rather than a permanent cut.
+        for _ in range(w['hand'].count('Wound')):
+            w['hand'].remove('Wound')
+            w['discard'].append('Wound')
 
     def take_hit(self, raw, melee, src):
         w, cfg = self.w, self.cfg
         self._board = self.board()
-        d = max(0, raw - cfg.armor)
+        # *Nothing Gets Through*: while Overloaded, armour counts double. Overloaded is not free --
+        # the hero is Slowed and two cards are Spent for the fight -- so this reads both prices.
+        armor = cfg.armor * 2 if (cfg.armor_doubles_overloaded and self.overloaded) else cfg.armor
+        d = max(0, raw - armor)
         absorbed = min(w['block'], d)
         if not cfg.persistent_block:
             w['block'] -= absorbed          # old rule: one hit used the whole block up
         d -= absorbed
         self.s['prevented_armor'] += min(raw, cfg.armor)
         self.s['prevented_shieldup'] += absorbed
-        can_react = not w['exhausted'] and w['hand']
+        can_react = not w['exhausted'] and any(c != 'Wound' for c in w['hand'])
         reserve = 0 if w['acted'] else 2
         # emergency potion via a Use reaction
         if can_react and w['hp'] - d <= 2 and w['potions'] and 'Quick Hands' in w['hand']:
@@ -998,9 +1082,13 @@ class Game:
                 def red(c):
                     r = self.cards[c][2]
                     return 3 if r == 'block' else 2 if (r == 'parry' and melee) else 1
-                card = max(w['hand'], key=lambda c: (min(red(c), d), -self.keep(c)))
-                cut = min(red(card), d)
-                if cut >= 2 or lethal or (w['hp'] - d <= 3):
+                bracers = [c for c in w['hand'] if c != 'Wound']
+                if not bracers:
+                    bracers = None
+                card = max(bracers, key=lambda c: (min(red(c), d), -self.keep(c))) if bracers \
+                    else None
+                cut = min(red(card), d) if card else 0
+                if card and (cut >= 2 or lethal or (w['hp'] - d <= 3)):
                     kind = {3: 'block', 2: 'parry', 1: 'brace'}[red(card)]
                     w['hand'].remove(card)
                     w['discard'].append(card)
@@ -1011,6 +1099,11 @@ class Game:
         w['hp'] -= d
         self.s['dmg_taken'] += d
         self.log(f"  Goblin {src} hits for {raw} -> warrior takes {d}, HP {w['hp']}")
+        # core-rules 8: five or more from a single hit, after armor. Dropping to 0 is the other
+        # event and needs no code here -- the fight is over and the deck is reshuffled anyway.
+        if cfg.wounds and d >= WOUND_AT:
+            w['discard'].append('Wound')
+            self.s['wounds_taken'] += 1
         if cfg.heavy_hits and d >= 5 and w['hand']:
             lost = min(w['hand'], key=self.keep)
             w['hand'].remove(lost)
@@ -1118,8 +1211,8 @@ def run_scenario(cfg, fights, seed):
         for k in ('rounds', 'hp_left', 'catch_breath', 'exhausted_turns', 'dazed_turns', 'daze_applied',
               'tick_damage', 'shaken', 'shaken_off', 'lifted', 'cancelled',
                   'react_block', 'react_parry', 'react_brace', 'react_use', 'react_sidestep',
-                  'prevented_react', 'reloads', 'shots_fired',
-                  'prevented_armor', 'prevented_shieldup', 'dmg_taken', 'heavy_hit_discards',
+                  'prevented_react', 'reloads', 'shots_fired', 'cards_spent',
+                  'prevented_armor', 'prevented_shieldup', 'dmg_taken', 'heavy_hit_discards', 'wounds_taken',
                   'goblin_disadv', 'goblin_adv', 'goblins_fled', 'fate_miss', 'fate_crit'):
             agg[k].append(g.s[k])
         if 'deck_empty_round' in g.s:

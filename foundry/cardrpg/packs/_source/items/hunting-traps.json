@@ -17,7 +17,8 @@
     "group": "tool",
     "bonus": {
       "approach": "wits",
-      "value": 1,
+      "value": 2,
+      "training": "traps",
       "situation": "tracking and trapping animals"
     }
   }

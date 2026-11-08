@@ -544,6 +544,82 @@
         },
         "text": "On yourself."
       }
+    },
+    {
+      "_id": "LKfGVwYCbNozy35n",
+      "_key": "!cards.cards!nfIAB5yBnWRwobEb.LKfGVwYCbNozy35n",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1400,
+      "name": "Nothing Held Back",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Nothing Held Back",
+          "img": "systems/cardrpg/art/cards/strength/nothing-held-back.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "strike"
+          }
+        ],
+        "secondary": [],
+        "reaction": "",
+        "costs": {
+          "primary": {
+            "spent": true,
+            "strain": 1
+          }
+        },
+        "text": "Strain your hand but one — that card must be played this turn. Strike +1 per card strained."
+      }
+    },
+    {
+      "_id": "RBECDR63N4OkqVlr",
+      "_key": "!cards.cards!nfIAB5yBnWRwobEb.RBECDR63N4OkqVlr",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1500,
+      "name": "Call It",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Call It",
+          "img": "systems/cardrpg/art/cards/strength/call-it.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "strike"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "forestall",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {},
+        "text": "The secondary names one NPC type."
+      }
     }
   ]
 }

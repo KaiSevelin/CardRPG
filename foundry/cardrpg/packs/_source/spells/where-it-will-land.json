@@ -12,11 +12,11 @@
   "system": {
     "strength": 1,
     "source": "Divination",
-    "description": "<p>Your own deck, one card down. The cheapest certainty in the game.</p>",
+    "description": "<p>Somebody else's deck, one card down. The cheapest certainty in the game, and never your own: the seer is blind to themselves.</p>",
     "effect": {
       "verb": "foresee",
       "param": 1,
-      "readDeck": "own"
+      "readDeck": "other"
     },
     "kind": "formula",
     "prepared": false

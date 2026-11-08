@@ -55,13 +55,20 @@ schema too, so a face can render without a second convention.
 
 #### `text` was carrying the game  **[MEASURED 2026-11-02]**
 
-**Of 330 steps, 127 carried prose** `-` and a step that is only prose used to do *nothing at all*
+**Of 361 steps, 127 carried prose** `-` and a step that is only prose used to do *nothing at all*
 when played. `case ""` in the tray broke out of a switch that
 is the end of the method: no effect, no prompt, not a line in chat. The branch below it already
 announced any verb the engine did not recognise, so the arrangement was exactly backwards `-` **a
 step with a made-up verb reached the table and a step with a blank one was discarded.** The
 schema's `initial: ""` on `verb` is what hid it, because content omits the key and the data model
 fills it in.
+
+> **The denominator moved on 2026-11-07 and the numerator did not.** The sweep read 340 steps when
+> it was run; writing a second starter deck (`SHADE_DECK`, ten designs) added **21**, and **not one
+> of them carries prose** -- it was built from the Warrior deck's own steps, which had already been
+> through this. So 127 is still the count of steps that carried prose, measured against a game that
+> is 21 steps larger. The check reads the live sweep, which is why this sentence had to be edited
+> rather than quietly left behind.
 
 The prose turned out to be mostly not special actions. Grouped, 104 of the 127 fell into families
 the designer had already named in the words of the prose itself:
@@ -171,7 +178,7 @@ extra reaction per trigger, fate twice, a check that cannot fail, a failure that
 One value per card is a free-text special wearing an enum's clothes. **The uniform half is who; the
 varied half stays prose.**
 
-**112 steps still carry prose, 26 of them prose alone** `-` the same first number as before, which
+**114 steps still carry prose, 26 of them prose alone** `-` the same first number as before, which
 is not a failure to make progress, and a second number that went **up** by five. That is honest
 rather than a regression: `timing: "permanent"` was the only field on five of the Graven steps, and
 it was a slot budget wearing a timing's clothes rather than a rule about when anything happens. Nine

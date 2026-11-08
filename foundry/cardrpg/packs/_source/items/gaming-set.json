@@ -17,7 +17,8 @@
     "group": "station",
     "bonus": {
       "approach": "presence",
-      "value": 1,
+      "value": 2,
+      "training": "games of chance",
       "situation": "soldiers, taverns, gamblers"
     }
   }

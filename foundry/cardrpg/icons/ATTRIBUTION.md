@@ -1,6 +1,6 @@
 # Icon attribution
 
-The 80 icons in `icons/` come from [game-icons.net](https://game-icons.net) and are used under the
+The 81 icons in `icons/` come from [game-icons.net](https://game-icons.net) and are used under the
 **Creative Commons Attribution 3.0** licence (CC BY 3.0). The licence requires a credit, which is
 what this file is — it ships with the system.
 
@@ -66,6 +66,11 @@ modification; this records what was changed.
 | `laser-sparks` | Lorc |
 | `thumb-up` | Delapouite |
 | `thumb-down` | Delapouite |
+| `card-pick` | Faithtoken |
+
+`card-pick` is Sift and `card-random` is Forestall. The second is listed under the HUD below and
+reused here, the same way `card-burn` and `card-discard` are reused from Costs — one icon doing two
+jobs is a reuse, not a second file.
 
 ### Approaches
 

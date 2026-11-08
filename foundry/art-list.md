@@ -1,6 +1,6 @@
 # Art list
 
-**588 pieces**, of which **588** are wired up. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card.
+**595 pieces**, of which **595** are wired up. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card.
 
 ## What to supply
 
@@ -53,7 +53,7 @@ Anything under `icons/svg/` is ignored on purpose: that is Foundry's own placeho
 
 ## Deck backs — draw these first
 
-**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 10 pictures against 578 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
+**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 10 pictures against 585 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
 
 **10 pieces**, 10 wired up. Same 2:3 and 640 × 960 as a face, and **no safe area**: nothing is printed over a back, so the whole card is yours.
 
@@ -114,7 +114,7 @@ Six cards every Way draws on, so each one is seen by every character in the game
 
 Face-up on the table during a fight, which makes them the art players stare at longest. **One pool, and every creature in the world draws the subset it has earned** (core-rules 9) — so a picture here is seen behind a goblin, a troll and a dragon, and wants to be the SHAPE of the move rather than a portrait of whoever is making it. *Close In* is a thing closing in.
 
-**36 pieces**, 36 wired up. Suggested path: `cardrpg/art/cards/npc/`
+**37 pieces**, 37 wired up. Suggested path: `cardrpg/art/cards/npc/`
 
 | | Name | What it is | File |
 |---|---|---|---|
@@ -142,6 +142,7 @@ Face-up on the table during a fight, which makes them the art players stare at l
 | ✓ | **Order** | An ally within sight acts again, or moves its speed. You do nothing yourself. | `cards/npc/order.webp` |
 | ✓ | **Pick the Soft One** | Move, Strike ignores Block · Move your speed and Strike whoever is least ready for it, round the shield rather than through it: Block does not answ... | `cards/npc/pick-the-soft-one.webp` |
 | ✓ | **Press** | Strike, Strike -1 · Strike, and Strike again at −1. Nothing clever, twice. | `cards/npc/press.webp` |
+| ✓ | **Rattle** | Strike · Strike, and the target discards one card out of their hand — their choice. | `cards/npc/rattle.webp` |
 | ✓ | **Set and Wait** | Defend · Defend, and keep a reaction for whoever comes. | `cards/npc/set-and-wait.webp` |
 | ✓ | **Shelter** | Defend · Allies within 1 cannot be targeted at range while you stand. | `cards/npc/shelter.webp` |
 | ✓ | **Spoil the Ground** | Ready · Nothing at anybody: one square within reach is a trap now, and stays one. | `cards/npc/spoil-the-ground.webp` |
@@ -159,16 +160,18 @@ Face-up on the table during a fight, which makes them the art players stare at l
 
 The minor-node cards of a built Way.
 
-**12 pieces**, 12 wired up. Suggested path: `cardrpg/art/cards/shade/`
+**14 pieces**, 14 wired up. Suggested path: `cardrpg/art/cards/shade/`
 
 | | Name | What it is | File |
 |---|---|---|---|
 | ✓ | **Between the Plates** | Strike ignores armour vs Marked · / Move 1 | `cards/shade/between-the-plates.webp` |
 | ✓ | **Call the Shot** | Strike · / Marked (1) · Marked on any enemy you can see, at any range. | `cards/shade/call-the-shot.webp` |
+| ✓ | **Count the Odds** | Strike · / Sift 2 · The secondary is seeing only — you may not reorder them, and you discard nothing. | `cards/shade/count-the-odds.webp` |
 | ✓ | **Cut and Run** | Strike, Move 2 · / Move 1 | `cards/shade/cut-and-run.webp` |
 | ✓ | **Light Feet** | Move 3 · / Move 2 · Ignoring difficult ground. | `cards/shade/light-feet.webp` |
 | ✓ | **Mock** | Dazed (1) · / Move 1 | `cards/shade/mock.webp` |
 | ✓ | **Pin the Shadow** | Strike Slowed (1) · / Move 1 | `cards/shade/pin-the-shadow.webp` |
+| ✓ | **Scout Ahead** | Move 3 · / Sift 3 · Seeing only, and one card deeper than most: you looked where you were going. | `cards/shade/scout-ahead.webp` |
 | ✓ | **Second Knife** | Strike range 3 · / Strike -1 | `cards/shade/second-knife.webp` |
 | ✓ | **Sleight** | Use, Strike · / Ready | `cards/shade/sleight.webp` |
 | ✓ | **Slip the Knot** | Move 2 · / Shake 1 | `cards/shade/slip-the-knot.webp` |
@@ -180,14 +183,16 @@ The minor-node cards of a built Way.
 
 The minor-node cards of a built Way.
 
-**13 pieces**, 13 wired up. Suggested path: `cardrpg/art/cards/strength/`
+**15 pieces**, 15 wired up. Suggested path: `cardrpg/art/cards/strength/`
 
 | | Name | What it is | File |
 |---|---|---|---|
 | ✓ | **Armoured Advance** | Move 3 · / Move 1 · Your armor counts +1 until your next turn. | `cards/strength/armoured-advance.webp` |
 | ✓ | **Beat the Blade** | Strike Disarmed (1) · / Move 1 | `cards/strength/beat-the-blade.webp` |
+| ✓ | **Call It** | Strike · / Forestall 1 · The secondary names one NPC type. | `cards/strength/call-it.webp` |
 | ✓ | **Hammerblow** | Strike · / Move 1 | `cards/strength/hammerblow.webp` |
 | ✓ | **Heave** | Move 2 · / Ready · Carrying any weight without being Slowed. | `cards/strength/heave.webp` |
+| ✓ | **Nothing Held Back** | Strike · Strain your hand but one — that card must be played this turn. Strike +1 per card strained. | `cards/strength/nothing-held-back.webp` |
 | ✓ | **Overbear** | Grappled (2) · / Move 1 | `cards/strength/overbear.webp` |
 | ✓ | **Pull Them Down** | Strike · / Strike -1 · The secondary only against a Prone or Grappled target. | `cards/strength/pull-them-down.webp` |
 | ✓ | **Roar** | Compelled (1) · / Move 1 · Every adjacent enemy. | `cards/strength/roar.webp` |
@@ -361,7 +366,7 @@ Pays in a permanent Wild card.
 
 Blood Magic and Spiritualism, handed over by minor nodes.
 
-**70 pieces**, 70 wired up. Suggested path: `cardrpg/art/spells/mind/`
+**72 pieces**, 72 wired up. Suggested path: `cardrpg/art/spells/mind/`
 
 | | Name | What it is | File |
 |---|---|---|---|
@@ -378,11 +383,13 @@ Blood Magic and Spiritualism, handed over by minor nodes.
 | ✓ | **Graven Heart** | strength 3 | `spells/mind/graven-heart.webp` |
 | ✓ | **Graven Road** | strength 1 · your Move is never halved | `spells/mind/graven-road.webp` |
 | ✓ | **Graven Shield** | strength 2 | `spells/mind/graven-shield.webp` |
+| ✓ | **Graven Sight** | strength 1 · Sift 2 seeing only -- you may not reorder them | `spells/mind/graven-sight.webp` |
 | ✓ | **Hold to the Bargain** | strength 2 · an ally's failed check becomes a Partial | `spells/mind/hold-to-the-bargain.webp` |
 | ✓ | **Ink Spray** | strength 1 · Blast area 2 end Invisible in the area, and nothing in it may become Invisible until your next turn | `spells/mind/ink-spray.webp` |
 | ✓ | **Longer Shadow** | strength 1 | `spells/mind/longer-shadow.webp` |
 | ✓ | **Nothing At All** | strength 5 · your action deck becomes 4 cards, you hold all four, and may play any two halves. Costs a hand | `spells/mind/nothing-at-all.webp` |
 | ✓ | **Nothing to Carry** | strength 1 · +2 to all Casts, and you cannot be Disarmed | `spells/mind/nothing-to-carry.webp` |
+| ✓ | **One Less Thing** | strength 1 · Sift 1 once a fight | `spells/mind/one-less-thing.webp` |
 | ✓ | **Open the Vein** | strength 1 · Cast +3 range 2 ignores Block | `spells/mind/open-the-vein.webp` |
 | ✓ | **Shake It Off** | strength 2 · Shake 3 range 3 | `spells/mind/shake-it-off.webp` |
 | ✓ | **Slick** | strength 1 · range 3 Off Balance (1) | `spells/mind/slick.webp` |
