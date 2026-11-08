@@ -13,7 +13,7 @@ import {
 } from "../graph.mjs";
 /* The one place the grant sum lives, in a module with no Foundry global so the validator can ask
  * it rather than read it. */
-import { sumGrants, CHARACTER_GRANTS, NPC_GRANTS } from "../grants.mjs";
+import { sumGrants, CHARACTER_GRANTS, NPC_GRANTS, adaptedNames, injuryBites } from "../grants.mjs";
 
 const fields = foundry.data.fields;
 
@@ -73,14 +73,25 @@ function healthField(base) {
  * whatever actor it was handed, and a monster is one of those. A method on the character model
  * alone would have thrown the first time a GM put a sword in a troll's hand.
  */
+/**
+ * **The injuries on this actor whose arithmetic still applies.**
+ *
+ * One list, asked by all four readers below, because *Adapted* has to reach every one of them or
+ * it is a levelling option that works on a sheet and not in a fight. The fifth reader is the
+ * grant sum, which does this inside `sumGrants` for the same reason.
+ */
+function bitingInjuries(system) {
+  const slates = [...(system.parent?.items ?? [])];
+  const adapted = adaptedNames(slates);
+  return slates.filter(s => injuryBites(s, adapted));
+}
+
 function slotCapacityOf(system, slot) {
   const base = CARDRPG.slots[slot]?.capacity;
   if (base === null || base === undefined) return base;
   if (slot !== "hands") return base;
   let lost = 0;
-  for (const slate of system.parent?.items ?? []) {
-    if (slate.type === "injury") lost += slate.system.takes?.handSlots ?? 0;
-  }
+  for (const slate of bitingInjuries(system)) lost += slate.system.takes?.handSlots ?? 0;
   return Math.max(0, base - lost);
 }
 
@@ -127,9 +138,13 @@ function rangeOnLine(system, line, item) {
   const base = line?.range ?? null;
   if (base === null) return null;
   let n = 0;
-  for (const slate of system.parent?.items ?? []) {
+  const slates = [...(system.parent?.items ?? [])];
+  const adapted = adaptedNames(slates);
+  for (const slate of slates) {
     const bonus = slate.system?.bonus;
     if (!bonus?.range || bonus.verb !== "strike") continue;
+    /* An adapted Lost Eye reaches as far as it ever did. */
+    if (slate.type === "injury" && !injuryBites(slate, adapted)) continue;
     /* Equipped-or-standing, the same law grants.mjs encodes: a ring in the pack grants nothing. */
     if (slate.type === "item"
       && (!slate.system.equipped || CARDRPG.slots[slate.system.equippedSlot]?.stows)) continue;
@@ -145,12 +160,11 @@ function blockedReactionsOf(system) {
   const blocked = new Set();
   if (system.noReactions) return new Set(Object.keys(CARDRPG.reactions));
   const round = game.combat?.round ?? 0;
+  for (const slate of bitingInjuries(system)) {
+    if (slate.system.firstRoundOnly && round > 1) continue;
+    for (const key of slate.system.blocksReactions ?? []) blocked.add(key);
+  }
   for (const slate of system.parent?.items ?? []) {
-    if (slate.type === "injury") {
-      if (slate.system.firstRoundOnly && round > 1) continue;
-      for (const key of slate.system.blocksReactions ?? []) blocked.add(key);
-      continue;
-    }
     if (slate.type !== "item" || !slate.system.equipped) continue;
     if (CARDRPG.slots[slate.system.equippedSlot]?.stows) continue;
     for (const key of slate.system.blocksReactions ?? []) blocked.add(key);
@@ -556,8 +570,7 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
    */
   get injuryMoveReduction() {
     let worst = 0;
-    for (const slate of this.parent?.items ?? []) {
-      if (slate.type !== "injury") continue;
+    for (const slate of bitingInjuries(this)) {
       worst = Math.max(worst, slate.system.takes?.move ?? 0);
     }
     return worst;

@@ -75,6 +75,20 @@ export const SHELVES = [
   { key: "cards/way", list: content.WAY_CARDS },
   { key: "cards/skill", list: content.WARRIOR_SKILLS },
   { key: "cards/wild", list: content.WILD_MAGIC },
+  /*
+   * **The ritual twist deck has faces, and the general twist deck does not.**
+   *
+   * That asymmetry is a decision rather than an oversight, and the art list states the other half
+   * of it: a twist is *"a NAME and a COST rather than a picture... the GM's own deck, and art for
+   * a deck one person ever sees is art nobody at the table looks at."* Every word of that is still
+   * true of `TWISTS`.
+   *
+   * It is not true here. A ritual is a **downtime challenge the whole party runs**, over days, on
+   * one of their own characters -- so a ritual twist is turned face up in front of four people who
+   * have been working toward this for a session, and what it shows them is the thing they are
+   * trying to undo pushing back. That is the one GM deck with an audience.
+   */
+  { key: "cards/ritual", list: content.RITUAL_TWISTS },
 
   { key: "signatures/shade", list: content.SHADE_SIGNATURES },
   { key: "signatures/strength", list: content.STRENGTH_SIGNATURES },

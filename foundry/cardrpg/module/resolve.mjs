@@ -790,11 +790,30 @@ export async function resolveHex(actor, { amount = 1, target, source = "a hex" }
 
 /** Which injury categories this character already carries. The cap counts these. */
 export function injuryCategoriesTaken(actor) {
-  const taken = new Set();
+  const taken = new Map();
   for (const slate of actor?.items ?? []) {
-    if (slate.type === "injury") taken.add(slate.system.category);
+    if (slate.type !== "injury") continue;
+    const key = slate.system.category;
+    taken.set(key, (taken.get(key) ?? 0) + 1);
   }
   return taken;
+}
+
+/**
+ * Is there room for another injury of this category?
+ *
+ * **The cap is a dial per category and only Maiming is uncapped**, because the cap read absurdly
+ * there and nowhere else: one Regrowth regrows an eye and a leg alike, so they are one category,
+ * and a cap that follows the ritual was telling a one-eyed character their legs were safe for
+ * ever. A Regrowth still lifts **one**, so three maimings is three rituals, which is content
+ * rather than a loophole.
+ *
+ * What keeps that from being a death spiral is *Adapted*, not this.
+ */
+export function roomForInjury(actor, category) {
+  const cap = CARDRPG.injuryCategories[category]?.cap ?? 1;
+  if (cap === null) return true;
+  return (injuryCategoriesTaken(actor).get(category) ?? 0) < cap;
 }
 
 /**
@@ -810,8 +829,7 @@ export function injuryCategoriesTaken(actor) {
  * only one thing is the kind this project keeps finding in dropdowns.
  */
 export function openInjuryCategories(actor) {
-  const taken = injuryCategoriesTaken(actor);
-  return Object.keys(CARDRPG.injuryCategories).filter(k => !taken.has(k));
+  return Object.keys(CARDRPG.injuryCategories).filter(k => roomForInjury(actor, k));
 }
 
 /**
@@ -901,9 +919,10 @@ export async function applyInjury(actor, which, { cause = "", healsIn = 0, targe
     ui.notifications.warn(`No injury named "${which}".`);
     return null;
   }
-  if (injuryCategoriesTaken(target).has(def.category)) {
-    const label = game.i18n.localize(CARDRPG.injuryCategories[def.category].label);
-    ui.notifications.warn(`${target.name} already carries a ${label}. One per category.`);
+  if (!roomForInjury(target, def.category)) {
+    const cat = CARDRPG.injuryCategories[def.category];
+    const label = game.i18n.localize(cat.label);
+    ui.notifications.warn(`${target.name} already carries ${cat.cap} ${label}. That is the cap.`);
     return null;
   }
 

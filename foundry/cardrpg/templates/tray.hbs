@@ -185,7 +185,7 @@
       {{#each cards as |card|}}
         {{!-- `--cr-art` is the only thing art needs: the rim is the border and the art is the
               background inside it, so a card with no picture needs no different markup. --}}
-        <div class="cr-card{{#if card.harm}} cr-card--harm{{/if}}{{#if card.reaction.reserved}} cr-card--reserved{{/if}}"
+        <div class="cr-card{{#if card.harm}} cr-card--harm{{/if}}{{#if card.sole}} cr-card--sole{{/if}}{{#if card.reaction.reserved}} cr-card--reserved{{/if}}"
              {{#if card.art}}style="--cr-art: url('{{card.art}}')"{{/if}}>
           <div class="cr-card__name">{{card.name}}</div>
           {{#if card.harm}}
@@ -398,7 +398,7 @@
   {{#if viewer}}
     <section class="cr-hud__spread" data-group-label="{{viewer.label}} — not in play">
       {{#each viewer.cards}}
-      <div class="cr-card cr-card--spread{{#if this.harm}} cr-card--harm{{/if}}{{#if this.flipped}} cr-card--back{{/if}}{{#if this.passive}} cr-card--passive{{else}} cr-card--takeable{{/if}}"
+      <div class="cr-card cr-card--spread{{#if this.harm}} cr-card--harm{{/if}}{{#if this.sole}} cr-card--sole{{/if}}{{#if this.flipped}} cr-card--back{{/if}}{{#if this.passive}} cr-card--passive{{else}} cr-card--takeable{{/if}}"
            data-group="{{this.group}}" data-tooltip="{{this.tip}}"
            {{#if this.art}}style="--cr-art: url('{{this.art}}')"{{/if}}
            {{#unless this.passive}}role="button" tabindex="0" data-action="playSlate" data-slate-id="{{this.id}}"{{/unless}}>

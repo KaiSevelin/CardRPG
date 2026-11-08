@@ -3600,6 +3600,34 @@ export const HUMAN_KINDS = [
  * bonus-grouped, because a group caps bonuses to one action while these change a standing number.
  */
 export const FEATURES = [
+  /**
+   * **Adapted, the only feature in the game that points at another slate.**
+   *
+   * ideas.md asked for it as *"a levelling option, Adapted: ignore one injury's penalty"*, and it
+   * is the counterweight that had to exist before Maimings could be uncapped: a *Bad Leg* alone
+   * measures -8.1 win rate against the published encounters and -21.1 against archers, so three
+   * of them stacked is a character nobody wants to play.
+   *
+   * **It does not remove the injury**, and that is the whole of its design. A Regrowth removes
+   * one; this leaves the slate on the sheet with its arithmetic switched off, so the eye is still
+   * gone and the scar is still something a GM can write into a scene. Healing and learning to
+   * live with it should not be the same mechanic.
+   *
+   * `adapts` is set by the player when they take it, to the name of an injury they carry, so the
+   * copy in this catalogue is deliberately blank -- an entry that named one injury would be
+   * content deciding which one.
+   *
+   * **No bonus group.** A group caps one bonus per action, and this is not a bonus: it switches
+   * off a standing number, the way a grant raises one (core-rules 4, 5). Two Adapted naming two
+   * different injuries are both true, which is exactly what an uncapped category needs.
+   */
+  {
+    name: "Adapted", adapts: "",
+    text: "Name one injury you carry. Its penalty no longer applies. The injury remains.",
+    description: "<p>You still have one eye. You have simply stopped being surprised by it.</p>"
+      + "<p>Take it again for a second injury &mdash; which is what makes an uncapped Maiming "
+      + "survivable, and why it is the brake that had to be fitted before the cap came off.</p>"
+  },
   /*
    * --- six features that help a skill check, one per approach ---
    *
@@ -3932,23 +3960,23 @@ export const INJURIES = [
  * because nobody levelled the right way, and the GM keeps a real scarcity to hand out. A recipe is
  * a thing you find.
  *
- * **[OPEN] All four are `strength: 1`, which is the field at its floor rather than a judgement.**
- * On a spell, `strength` is the **slot cost** -- *a strength-3 formula fills three slots*
- * (data/items.mjs) -- and these are the first slates in the game that are never **prepared** and
- * never **cast**: what resolves a ritual is winning a challenge, not `payToCast`. So there is
- * nothing for a slot cost to mean, and a 4 on *Regrowth* would have quietly told a non-mage with
- * no spell slots that the hardest ritual in the game was closed to them &mdash; which is the exact
- * opposite of *"anyone literate can do it"*.
+ * **[RESOLVED 2026-11-08] They are recipes, which is what *the gate is the recipe* always meant.**
  *
- * Difficulty is already said twice over, in the places that are read: **Progress** and the
- * **Pressure** it runs against. Regrowth is 6 against 4 and Unbinding is 8 against 3, and those
- * are the numbers a table feels.
+ * They were spells, carried at `strength: 1` with an `[OPEN]` against them, because on a spell
+ * `strength` is the **slot cost** and a ritual is the first slate in the game that is never
+ * prepared and never cast. Any number above zero quietly closed the hardest ritual to a non-mage
+ * with no slots, which is the opposite of *"anyone literate can do it"* -- and a 1 was a floor
+ * rather than a judgement, which is a value nobody chose.
  *
- * The dial, if this wants to be exact rather than at a floor, is to make a recipe an **item** --
- * which is what *the gate is the recipe* really says, and a recipe is a thing you find. It needs
- * one field that does not exist yet: an item slate has no `effect` step, so it has nowhere to
- * carry `timing: "ritual"`. Worth doing when something else wants that field too.
+ * An **item** has no slot budget, no preparation and nothing to cast, so the contradiction simply
+ * is not expressible: a recipe is bought, stolen, copied and lent, and a GM hands one out the way
+ * they hand out a key. It also puts the scarcity somewhere a party can act on. Difficulty is
+ * still said where it was always said -- Progress against Pressure, in `injuryCategories`.
  *
+ * The prices are the first thing in the game to put a number on *"more of a quest than a
+ * service"*: a Cleansing recipe is 300 gold against the Cleansing Draught's 150, and an Unbinding
+ * is 1200. **[OPEN]** Those are placed against the equipment ladder by eye and have not been
+ * measured against what a party actually earns.
  * `timing: "ritual"` is likewise not new. It has been a timing with a reader (`isRitual`) and five
  * users in this file since Household Magic was built, documented as *overnight work and not a thing
  * you hold ready*. A `permanent` timing was removed from config.mjs earlier as "a slot budget
@@ -3956,33 +3984,29 @@ export const INJURIES = [
  */
 export const RITUALS = [
   {
-    name: "Regrowth", strength: 1,
+    name: "Recipe: Regrowth", ritual: "maiming", slot: "pack", weight: 1, value: 900, kind: "Recipe",
     text: "Lore, Progress 6, Pressure 4. Regrows what was lost. Needs the part, or a likeness of it.",
-    effect: { timing: "ritual", text: "lift one Maiming over Progress 6, Pressure 4 (Lore)" },
     description: "<p>ideas.md calls regeneration magic <em>\"rare and expensive, more of a quest "
       + "than a service\"</em>. Progress 6 is the quest, and the likeness is what the party has to "
       + "go and get.</p>"
   },
   {
-    name: "Quieting", strength: 1,
+    name: "Recipe: Quieting", ritual: "breaking", slot: "pack", weight: 1, value: 450, kind: "Recipe",
     text: "Presence, Progress 6, Pressure 4. Settles what was broken. Needs somebody who knew you before.",
-    effect: { timing: "ritual", text: "lift one Breaking over Progress 6, Pressure 4 (Presence)" },
     description: "<p>The one ritual that is not Lore, and the only approach that could have been: "
       + "what mends a nerve is a person, and Presence is the approach for a person. It is also the "
       + "cheapest of the four to attempt and the easiest to attempt badly.</p>"
   },
   {
-    name: "Unbinding", strength: 1,
+    name: "Recipe: Unbinding", ritual: "curse", slot: "pack", weight: 1, value: 1200, kind: "Recipe",
     text: "Lore, Progress 8, Pressure 3. Lifts a curse &mdash; and you must name who laid it.",
-    effect: { timing: "ritual", text: "lift one Curse over Progress 8, Pressure 3 (Lore); name the curser" },
     description: "<p>The hardest and the shortest-fused: Progress 8 against Pressure 3, so there "
       + "is very little room to go wrong. The name is the real gate &mdash; it is the one thing in "
       + "the four that no amount of coin buys, because somebody has to find out who did this.</p>"
   },
   {
-    name: "Cleansing", strength: 1,
+    name: "Recipe: Cleansing", ritual: "corruption", slot: "pack", weight: 1, value: 300, kind: "Recipe",
     text: "Lore, Progress 4, Pressure 4. Removes Taint, or one Corruption. Needs a healer or a temple.",
-    effect: { timing: "ritual", text: "lift one Corruption, or Taint, over Progress 4, Pressure 4 (Lore)" },
     description: "<p>Published in core-rules 8 as <em>a downtime challenge (Lore, Progress 4)</em> "
       + "before any of this existed, and the numbers here are those numbers. The easiest of the "
       + "four, and the one a town can actually provide.</p>"
@@ -6876,6 +6900,63 @@ export const TWISTS = [
     cost: "Nothing \u2014 this one gives. The complication also creates an opportunity." }
 ];
 
+/**
+ * **The ritual twist deck: what happens when a recipe goes wrong.**
+ *
+ * Ritual Magic's price is *"Time, and a recipe that can go wrong"* (specializations.md), and the
+ * second half of that had no cards. A ritual is a downtime challenge, so a Partial or a Fail
+ * already draws a twist -- and drawing from `TWISTS` was the wrong answer for a reason worth
+ * writing down.
+ *
+ * **A second deck has to earn itself, or it is a fourth name for a rule this file already has.**
+ * That is the mistake a Burden card would have been, and the one a Hex avoided by turning out to
+ * be a Miss. What earns this one is that a ritual's failures are *about the thing being lifted*:
+ * every card here is the injury, the curse or the god answering back, which is not a shape any
+ * general twist can take. *Noise* costs you attention; **It Answers** costs you the attention of
+ * the one who did this to you.
+ *
+ * Eight kinds, 24 cards, and the same card model the twist deck uses -- a name, a prose cost, and
+ * two fields for the two that are not only prose. **Which deck it is drawn from is the whole
+ * difference**, which is the lesson the intruder table paid for: the deck a card lands in is the
+ * dial, and here it is the only one that was needed.
+ *
+ * **Nothing here inflicts an injury**, and that is deliberate rather than an oversight. Permanence
+ * passes through one gate in this game -- the fate draw on falling Unconscious (core-rules 8) --
+ * and a ritual twist that handed out a fresh injury would be the second, which is how the most
+ * consequential rule in a game comes to be stated in two places. **It Sets** is the worst card
+ * here and it does the other thing instead: it makes the injury *bound*, which is Bound Taint's
+ * existing rule and needs no new vocabulary.
+ */
+export const RITUAL_TWISTS = [
+  { name: "Backlash", copies: 4,
+    cost: "The working turns. The subject takes 2 damage, ignoring armor." },
+  { name: "It Answers", copies: 4,
+    cost: "Whatever did this knows the ritual is happening. The curser, the god, the rot "
+      + "itself \u2014 and it has time to arrive before you finish." },
+  { name: "Residue", copies: 3,
+    cost: "Magic leaves marks. 1 Taint into the subject's deck, in the flavour that fits." },
+  { name: "Deeper", copies: 3,
+    cost: "The injury speaks for itself: it lands as a condition that fits, for the rest of the "
+      + "ritual. A bad leg is Slowed, a shattered nerve is Stunned." },
+  { name: "Spoiled", copies: 3,
+    cost: "A component is consumed wrongly. No further check until it is replaced, and the GM "
+      + "says what replacing it takes." },
+  { name: "Not Alone", copies: 3,
+    cost: "The working reaches somebody else present. One ally takes a Doubt, or the condition "
+      + "the subject just took." },
+  { name: "The Long Way", copies: 3, pressure: 1,
+    cost: "The recipe was wrong about the order. Pressure +1, and the next check needs a "
+      + "different approach than the one you have been using." },
+  /*
+   * One copy, and it is the only card in either twist deck that changes a character permanently
+   * -- by *closing* a door rather than opening one, which is the only way to do that without
+   * becoming a second gate for permanence.
+   */
+  { name: "It Sets", copies: 1,
+    cost: "The injury becomes **bound**: no ritual lifts it until the GM's own condition is met, "
+      + "the way an obligation's Taint is bound (core-rules \u00a78). The recipe is not spent." }
+];
+
 export const LANGUAGES = [
   { name: "Imperial", of: "the old language and the diplomatic lingua franca" },
   { name: "Valgar", of: "lost language from the fifth district" },
@@ -6976,6 +7057,26 @@ export const DECK_BACKS = {
    * in weapons is also the exact failure the rest of the note warns about: it has to read as NOT
    * the action deck, and a blade is the action deck's whole vocabulary.
    */
+  /*
+   * **The ritual twist deck's back, and the one the general twist deck should have been wearing.**
+   *
+   * Both are the GM's, and both are drawn when something goes partly wrong -- so this one has to
+   * read as *not* the twist back while sitting beside it on the same side of the table. The twist
+   * back is a fork: one line arriving and leaving as two, a complication branching. This one is
+   * the opposite motion.
+   */
+  ritual: {
+    label: "The ritual twist deck",
+    art: "",
+    note: "Drawn when a ritual goes wrong, and a ritual is days of work on something that does "
+      + "not want to be undone. Where the twist back is a fork branching outward, this is a line "
+      + "that has been drawn back on itself: a single stroke that leaves the bottom edge, rises, "
+      + "and returns to the same edge a little to one side -- a loop that does not close, with "
+      + "open paper inside it and around it. The subject is that it comes BACK. No knot, no "
+      + "spiral, no star, no candle, no circle of runes and nothing that could be read as a "
+      + "summoning diagram; the price of a ritual is never a monster arriving. One stroke, and "
+      + "the gap where it fails to close is the whole of it."
+  },
   skill: {
     label: "The skill deck",
     art: "",

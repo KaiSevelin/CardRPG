@@ -12,6 +12,7 @@ import { LevelUpPane } from "./levelup.mjs";
 import { GRAPH } from "./graph.mjs";
 /* One answer to "is there art on this", shared with the tray rather than spelled twice. */
 import { artOf, isIntruder, intruderLine } from "./decks.mjs";
+import { isSole } from "./monsters.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2, ItemSheetV2 } = foundry.applications.sheets;
@@ -552,6 +553,15 @@ export class CardConfigSheet extends HandlebarsApplicationMixin(
       isAction: type === "action",
       isFate: type === "fate",
       isNpcCard: type === "npc",
+      /*
+       * **A card only one creature can draw, flagged so a GM can see it in a hand.**
+       *
+       * Four cards in five in an NPC deck are the same four whichever creature you are looking at,
+       * which is why the common pool exists. So the rare card that is this creature's alone is the
+       * one worth picking out without reading, and a deck where everything looks equally generic
+       * hides its own best card.
+       */
+      isSole: type === "npc" && isSole(card.system),
       isWound: type === "wound",
       isTaint: type === "taint",
       isFear: type === "fear",

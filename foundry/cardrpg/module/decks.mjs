@@ -143,16 +143,24 @@ export function skillCardData(def) {
 /**
  * One twist, as a Card. The name is the kind and the face is the cost, which is all a twist is.
  *
- * It shares the skill back, because a twist is drawn in a scene and not in a fight -- and because
- * the GM's deck having its own art would be a piece of art for a deck only one person ever sees.
+ * **Its own back, and the comment here used to say the opposite.** It read *"it shares the skill
+ * back... the GM's deck having its own art would be a piece of art for a deck only one person
+ * ever sees"*, three lines above a comment saying *"its own back, not the skill deck's"* -- one
+ * decision changed and one half of the prose edited, which is this project's signature defect
+ * landing in a doc comment. The code was right: `backs/twist.webp` is drawn, with a brief of its
+ * own, and the GM's deck is face down opposite a player's skill deck all game. Two decks wearing
+ * one picture is the one thing a back must not do.
+ *
+ * `back` is a parameter because there are **two** twist decks now. A ritual twist is the same
+ * card -- a name and a prose cost -- drawn from a different deck, and which deck it came from is
+ * the whole difference. That is the intruder table's lesson in another place: the deck is the
+ * dial, so it is an argument rather than a second function.
  */
-export function twistCardData(def) {
+export function twistCardData(def, back = "twist") {
   return {
     name: def.name,
     type: "twist",
-    /* Its own back, not the skill deck's: the GM's deck is face down opposite a player's
-     * skill deck all game, and two decks wearing one picture is the one thing a back must not do. */
-    img: backOf("twist") || undefined,
+    img: backOf(back) || undefined,
     system: {
       cost: def.cost ?? "",
       pressure: def.pressure ?? 0,
@@ -160,6 +168,18 @@ export function twistCardData(def) {
     }
   };
 }
+
+/*
+ * **The two keys written out**, which is what makes the audit on them work: the suite greps this
+ * module for calls with a literal key, and a back reached only through a variable would read as
+ * declared-and-never-used -- a true statement about the greps and a false one about the game.
+ *
+ * The sentence above deliberately does not quote the call it is about. It did, and the grep read
+ * the comment: a back named `key` appeared in the audit's own output, invented by the prose
+ * explaining the audit. The suite warns about this exact shape twice -- *a grep answered by the
+ * prose about itself is a grep about nothing* -- and it is easier to walk into than it looks.
+ */
+export const TWIST_BACKS = [backOf("twist"), backOf("ritual")];
 
 export function actionCardData(def) {
   return {

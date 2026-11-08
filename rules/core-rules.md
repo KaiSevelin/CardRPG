@@ -2061,9 +2061,17 @@ A category does exactly one job: **it names the ritual that lifts it.**
 | **Corruption** | Taint gone past where a cure reaches | **Cleansing** | Lore, Progress 4, Pressure 4 |
 | **Obligation** | a pact, a debt, a bargain you made | **nothing** | &mdash; |
 
-**You may carry at most one injury of each category.** So four at the very worst, and a character
-who has lost an eye cannot also lose a leg &mdash; the same ritual regrows both, so they are one
-category, and the cap follows the ritual rather than the anatomy.
+**You may carry at most one injury of each category &mdash; except Maimings, which are uncapped.**
+
+The cap is what keeps an injury from becoming a death spiral, and it read absurdly in exactly one
+place: one Regrowth regrows an eye and a leg alike, so they are one category, and a cap that
+followed the ritual was telling a one-eyed character that their legs were safe for ever. A Regrowth
+still lifts **one**, so three maimings is three rituals.
+
+> **It is not free, and *Adapted* is what pays for it.** A *Bad Leg* alone measures &minus;8.1 win
+> rate against the published encounters and &minus;21.1 against archers, so three stacked maimings
+> is a character nobody wants to play. Uncapping without a brake would have been taking one out
+> and not fitting the one that was designed for it.
 
 > **Obligation lifts for nobody, and that asymmetry is load-bearing.** **Bound Taint** has had it
 > since it was written (section 8): *neither a cure nor Cleansing lifts it. The obligation names the
@@ -2081,14 +2089,40 @@ the words it took to say it. Pressure filling is the recipe going wrong.
 locked out of mending a character because nobody levelled the right way, and what the GM hands out
 instead is the recipe, which is a thing you find.
 
+**So a recipe is an item**, carried in a pack like anything else:
+
+| Recipe | Lifts | The challenge | Gold |
+|---|---|---|---|
+| **Recipe: Regrowth** | a Maiming | Lore, Progress 6, Pressure 4 | 900 |
+| **Recipe: Quieting** | a Breaking | Presence, Progress 6, Pressure 4 | 450 |
+| **Recipe: Unbinding** | a Curse | Lore, Progress 8, Pressure 3, *and the curser's name* | 1200 |
+| **Recipe: Cleansing** | a Corruption, or Taint | Lore, Progress 4, Pressure 4 | 300 |
+
+> **[RESOLVED 2026-11-08] These were formulas, and a formula could not say this.** On a spell,
+> strength is the **slot cost** &mdash; and a ritual is the only slate in the game that is never
+> prepared and never cast, so a slot cost had nothing to mean. Any number above zero quietly closed
+> the hardest ritual to a character with no spell slots, which is the exact opposite of *anyone
+> literate can do it*. An item has no slot budget, nothing to prepare and nothing to cast, so the
+> contradiction is not expressible &mdash; and a recipe can be bought, stolen, copied and lent,
+> which puts the scarcity somewhere a party can act on.
+>
+> The gold is the first number anybody has put on *"more of a quest than a service"*: a Cleansing
+> recipe is 300 against the Cleansing Draught's 150, and an Unbinding is 1200. **[OPEN]** Placed
+> against the equipment ladder by eye, and not measured against what a party earns.
+
 ##### Living with one
 
 - **Items** help with the consequence and not the injury: a hook hand, a glass eye, a crutch.
-- **[OPEN] Adapted**, a levelling option that ignores one injury's penalty
-  ([ideas.md](ideas.md)). **Not built**, and it is the one piece of this that cannot be a field: no
-  number on a slate can express *ignore that other slate*, so it wants either a node that names an
-  injury or a flag on the injury itself. It also waits on the Way graphs, which decide what any
-  node offers.
+- **Adapted**  **[BUILT 2026-11-08]** &mdash; a levelling option: *name one injury you carry; its
+  penalty no longer applies.* **The injury stays on the sheet.** A Regrowth removes one; this
+  leaves it there with its arithmetic switched off, because healing and learning to live with it
+  should not be the same mechanic &mdash; and the scar is still something to write into a scene.
+  - Take it again for a second injury. That is what makes an uncapped Maiming survivable, and it
+    is why it had to exist before the cap came off.
+  - It is the only feature in the game that points at **another slate**, which is why it is a
+    field rather than a number: no amount of negative grants can express *ignore that other thing*.
+  - **[OPEN]** Which node offers it. That waits on the Way graphs, like everything else about what
+    a node hands over.
 - Five injuries carry **intruder cards** rather than a flat number (section 8) &mdash; *Night Fears*
   puts a Fear in your deck, *The Eager Hand* two Rage. A flat &minus;1 is the same every round and a
   card is not.
@@ -2150,9 +2184,10 @@ instead is the recipe, which is a thing you find.
 > career. *Shaken Faith* costs a spell slot, which a fight simulator has no model of. And *Lost
 > Fingers* and *Scarred Face* are prose, so there is nothing to dial.
 
-> **[OPEN]** Whether one Maiming is too coarse. Five of the fourteen injuries are Maimings, because
-> the examples were all written as what a sword does to a body, and the dial if play wants more is a
-> Maiming/Blinding split with a second ritual behind it. Not a question the arithmetic can answer.
+> **[ANSWERED 2026-11-08]** Whether one Maiming is too coarse: it was, and the fix was the **cap**
+> rather than the category. Splitting Maiming into limb and sense would have bought two rituals and
+> a longer table to say one thing, which is that a one-eyed character can still break a leg. One
+> ritual regrows both, so one category is right; what was wrong was a cap that followed the ritual.
 
 > **[OPEN]** Taking a **permanent injury instead of death**, once per character or per level. It is
 > the one piece of this that changes what a death means, which makes it a table's decision rather

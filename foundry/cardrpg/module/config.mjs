@@ -913,6 +913,23 @@ CARDRPG.timings = {
  * defect this project keeps finding. `liftRitual` reads it, and the one-per-category cap on the
  * sheet reads the keys.
  *
+ * **`cap` is how many of this kind you may carry, and only one category is uncapped.**
+ *
+ * Every other cap is 1, which is what keeps a character from stacking into a death spiral. A
+ * **Maiming** is uncapped because the cap read absurdly there and nowhere else: one ritual regrows
+ * an eye and a leg alike, so they are one category, and a cap that follows the ritual was telling
+ * a one-eyed character their legs were safe for ever.
+ *
+ * It is not free. Measured against the published encounters, a *Bad Leg* alone is **-8.1** win
+ * rate and **-21.1** against archers; *Rotted* is -5.4 and *Lost Hand* -1.6. Three maimings is
+ * more than two of the most expensive card in the game, stacked. What keeps that from being a
+ * spiral is the thing ideas.md specified for it and nothing had built: **Adapted**, which switches
+ * one injury's penalty off and leaves the injury on the sheet. Uncapping without it would have
+ * taken out a brake and not fitted the one designed to replace it.
+ *
+ * A `null` cap is uncapped; it is not the absence of an answer, which is why every category
+ * states one.
+ *
  * `progress` and `pressure` are a **challenge** (skill-rules 3 and 6), not a check, and the world
  * document is what chose that: Ritual Magic's price is *"Time, and a recipe that can go wrong"*,
  * which is a Progress track and a Pressure track in the two words it took to say it. Cleansing's
@@ -928,12 +945,14 @@ CARDRPG.injuryCategories = {
   /* Flesh and bone that did not grow back: an eye, fingers, a hand, a leg that sets wrong. */
   maiming: {
     label: "CARDRPG.Injury.Maiming", icon: "severed-hand",
-    ritual: "Regrowth", approach: "lore", progress: 6, pressure: 4
+    ritual: "Regrowth", approach: "lore", progress: 6, pressure: 4,
+    /* The one uncapped kind. A Regrowth lifts ONE, so three maimings is three rituals. */
+    cap: null
   },
   /* Nerve, memory and conviction. The body is whole and something behind it is not. */
   breaking: {
     label: "CARDRPG.Injury.Breaking", icon: "oppression",
-    ritual: "Quieting", approach: "presence", progress: 6, pressure: 4
+    ritual: "Quieting", approach: "presence", progress: 6, pressure: 4, cap: 1
   },
   /*
    * Somebody did this on purpose, which is the only category that names a person -- so the ritual
@@ -942,17 +961,18 @@ CARDRPG.injuryCategories = {
    */
   curse: {
     label: "CARDRPG.Injury.Curse", icon: "bottled-bolt",
-    ritual: "Unbinding", approach: "lore", progress: 8, pressure: 3, needsName: true
+    ritual: "Unbinding", approach: "lore", progress: 8, pressure: 3, needsName: true,
+    cap: 1
   },
   /* Taint nobody ever cured, gone past the point a cure reaches. Cleansing's own numbers. */
   corruption: {
     label: "CARDRPG.Injury.Corruption", icon: "virus",
-    ritual: "Cleansing", approach: "lore", progress: 4, pressure: 4
+    ritual: "Cleansing", approach: "lore", progress: 4, pressure: 4, cap: 1
   },
   /* A pact, a debt, a curse you picked up knowingly. No ritual, on purpose. */
   obligation: {
     label: "CARDRPG.Injury.Obligation", icon: "lock-spy",
-    ritual: null, approach: null, progress: null, pressure: null
+    ritual: null, approach: null, progress: null, pressure: null, cap: 1
   }
 };
 

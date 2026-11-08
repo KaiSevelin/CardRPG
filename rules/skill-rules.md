@@ -634,6 +634,38 @@ Activities between adventures (crafting, research, training, earning money, buil
 > *a downtime challenge (Lore, Progress 4)* since Taint was written, which is the first thing this
 > system was ever asked to run and the reason it could be specified before it existed.
 
+### The ritual twist deck  **[BUILT 2026-11-08]**
+
+A Partial or a Fail in a **ritual** draws from the ritual twist deck, not the twist deck. Eight
+kinds, 24 cards, and the GM's, as the twist deck is.
+
+| Card | Copies | What it costs |
+|---|---|---|
+| **Backlash** | 4 | The subject takes 2 damage, ignoring armor. |
+| **It Answers** | 4 | Whatever did this knows the ritual is happening, and has time to arrive. |
+| **Residue** | 3 | 1 Taint into the subject's deck. |
+| **Deeper** | 3 | The injury lands as a condition that fits, for the rest of the ritual. |
+| **Spoiled** | 3 | A component is consumed wrongly. No further check until it is replaced. |
+| **Not Alone** | 3 | The working reaches an ally present: a Doubt, or the subject's condition. |
+| **The Long Way** | 3 | Pressure +1, and the next check needs a different approach. |
+| **It Sets** | 1 | The injury becomes **bound**: no ritual lifts it until the GM's own condition is met. |
+
+> **Why a second deck rather than the twist deck.** A deck has to earn itself or it is a fourth
+> name for a rule the game already has — which is what a *Burden* card would have been, and what a
+> *Hex* avoided by turning out to be a Miss (core-rules §8). This one earns it because a ritual's
+> failures are **about the thing being lifted**: every card is the injury, the curse or the rot
+> answering back, which is a shape no general twist can take. *Noise* costs you attention;
+> **It Answers** costs you the attention of whoever did this to you.
+>
+> **Nothing in it inflicts an injury**, and that is deliberate. Permanence passes through one gate
+> in this game — the fate draw on dropping to 0 Health — and a ritual twist handing out a fresh
+> injury would be a second one. **It Sets** does the opposite instead: it closes a door rather than
+> opening one, by making the injury *bound*, which is Bound Taint's existing rule and needed no new
+> vocabulary.
+>
+> It is also the **one deck on the GM's side with an audience**, which is why its cards are drawn
+> and a twist's are not.
+
 ---
 
 ## 7. Travel

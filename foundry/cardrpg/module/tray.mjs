@@ -789,6 +789,8 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       id: c.id,
       name: cardName(c),
       harm: isIntruder(c),
+      /* One creature's own card, which is the one worth spotting in a hand. */
+      sole: isSole(c.system),
       flipped: false,
       // A discard is a record, not a slate: there is nothing to put into play.
       passive: true,

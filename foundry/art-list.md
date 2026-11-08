@@ -1,6 +1,6 @@
 # Art list
 
-**595 pieces**, of which **595** are wired up. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card.
+**605 pieces**, of which **605** are wired up. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card.
 
 ## What to supply
 
@@ -48,19 +48,21 @@ Anything under `icons/svg/` is ignored on purpose: that is Foundry's own placeho
 - **Fate cards.** Twenty cards that are a number and a reshuffle marker. They want a *design* — a back, a Miss, a Critical — not twenty illustrations.
 - **Wounds and Taint.** Two faces, fixed, and both are meant to read as damage rather than as content. One picture each at most.
 - **The levelling graph's nodes.** A node wears the art of what it hands over, so drawing a Signature draws its node too. Nothing needs art of its own.
-- **The twist deck.** 8 kinds, 30 cards, and a twist is a NAME and a COST rather than a picture. It is the GM's own deck and wears the skill back, because art for a deck one person ever sees is art nobody at the table looks at.
+- **The twist deck.** 8 kinds, 30 cards, and a twist is a NAME and a COST rather than a picture: no faces. It has a back of its own (`backs/twist.webp`) and the prose here said it wore the skill deck's for months after that back was drawn — while the cards had been asking for the right one all along. Art for a deck one person ever sees is art nobody at the table looks at, which is still why there are no faces.
+- **The ritual twist deck is the exception, and has faces.** 8 kinds, 24 cards. Every word of the sentence above is true of the twist deck and none of it is true here: a ritual is a downtime challenge the whole party runs, over days, on one of their own characters — so a ritual twist is turned face up in front of four people who have been working toward it for a session, and what it shows them is the thing they are trying to undo pushing back. It is the one deck on the GM's side with an audience.
 - **The 0 tagged creatures.** Elves, trolls, dragons and the rest are in the content as a name and a list of capabilities, with no numbers and no actor — so there is nothing yet for a picture to be of. They arrive in the brief when they arrive in the game.
 
 ## Deck backs — draw these first
 
-**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 10 pictures against 585 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
+**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 11 pictures against 594 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
 
-**10 pieces**, 10 wired up. Same 2:3 and 640 × 960 as a face, and **no safe area**: nothing is printed over a back, so the whole card is yours.
+**11 pieces**, 11 wired up. Same 2:3 and 640 × 960 as a face, and **no safe area**: nothing is printed over a back, so the whole card is yours.
 
 | | Deck | What it is for | File |
 |---|---|---|---|
 | ✓ | **The action deck** | Face down in front of every player, all game. Cards from the common pool and all four Ways mix in one deck, so this is NOT a Way's back -- the deck is yours, not Shade's. | `backs/action.webp` |
 | ✓ | **The fate deck** | The back players see most: it is shuffled and face down by design, and that is what makes a thin deck a risk rather than a lookup. Twenty cards, drawn from constantly. | `backs/fate.webp` |
+| ✓ | **The ritual twist deck** | Drawn when a ritual goes wrong, and a ritual is days of work on something that does not want to be undone. Where the twist back is a fork branching outward, this is a line that has been drawn back on itself: a single stroke that leaves the bottom edge, rises, and returns to the same edge a little to one side -- a loop that does not close, with open paper inside it and around it. The subject is that it comes BACK. No knot, no spiral, no star, no candle, no circle of runes and nothing that could be read as a summoning diagram; the price of a ritual is never a monster arriving. One stroke, and the gap where it fails to close is the whole of it. | `backs/ritual.webp` |
 | ✓ | **The skill deck** | What you do when you are NOT fighting: climbing, listening, lifting, picking a lock, talking someone round. **No weapon of any kind on this one** -- no blade, no point, no hilt, no arrowhead. A hand, a key, an eye, a knot, a lens: the tools of a scene. It has to read as clearly NOT the action deck at a glance, since both are face down in front of the same player. | `backs/skill.webp` |
 | ✓ | **The item deck** | Your gear, face down. **A strap through a plain square buckle, seen flat and from the front**, the tongue centred and the strap running off both top and bottom edges. A buckle is the one thing every carried object in this game has in common and it is bilaterally symmetrical by construction. **No weapon, no blade, no pack, no pile of loot** -- one fastening, drawn large, with bare paper either side of it. | `backs/item.webp` |
 | ✓ | **The feature deck** | What is permanently true about you. **A keystone at the top of a shallow arch**: the wedge-shaped stone dead centre, two or three voussoirs falling away to left and right, and nothing above it. A feature is always on and load-bearing, and a keystone is the stone that holds the rest up while doing nothing at all. **Not a laurel, not a crest, not a shield shape** -- masonry, with the joints drawn. | `backs/feature.webp` |
@@ -251,6 +253,23 @@ Drawn on a Wild, so each one is a surprise and wants to look like one.
 | ✓ | **Second Sight** | Blessed | `cards/wild/second-sight.webp` |
 | ✓ | **The Long Step** | Move 3 ignoring figures and difficult ground, Prone (1) | `cards/wild/the-long-step.webp` |
 | ✓ | **Veil** | Invisible (1) | `cards/wild/veil.webp` |
+
+## undefined
+
+undefined
+
+**8 pieces**, 8 wired up. Suggested path: `cardrpg/art/cards/ritual/`
+
+| | Name | What it is | File |
+|---|---|---|---|
+| ✓ | **Backlash** | — | `cards/ritual/backlash.webp` |
+| ✓ | **Deeper** | — | `cards/ritual/deeper.webp` |
+| ✓ | **It Answers** | — | `cards/ritual/it-answers.webp` |
+| ✓ | **It Sets** | — | `cards/ritual/it-sets.webp` |
+| ✓ | **Not Alone** | — | `cards/ritual/not-alone.webp` |
+| ✓ | **Residue** | — | `cards/ritual/residue.webp` |
+| ✓ | **Spoiled** | — | `cards/ritual/spoiled.webp` |
+| ✓ | **The Long Way** | — | `cards/ritual/the-long-way.webp` |
 
 ## Signatures — Way of Shade
 
@@ -506,10 +525,11 @@ Twelve gods' lesser miracles, handed over by minor nodes.
 
 Always on, so a feature's picture is on the sheet for the character's whole life.
 
-**14 pieces**, 14 wired up. Suggested path: `cardrpg/art/features/`
+**15 pieces**, 15 wired up. Suggested path: `cardrpg/art/features/`
 
 | | Name | What it is | File |
 |---|---|---|---|
+| ✓ | **Adapted** | Name one injury you carry. Its penalty no longer applies. The injury remains. | `features/adapted.webp` |
 | ✓ | **Alert** | You draw with advantage on initiative. | `features/alert.webp` |
 | ✓ | **Arcane Focus** | +1 to all Cast values. | `features/arcane-focus.webp` |
 | ✓ | **Good Aim** | +2 range on Ranged and Thrown items. | `features/good-aim.webp` |

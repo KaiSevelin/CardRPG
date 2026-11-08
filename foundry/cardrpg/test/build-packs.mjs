@@ -276,7 +276,7 @@ for (const [table, list, type] of [
   ["NATURAL_WEAPONS", content.NATURAL_WEAPONS, "item"],
   ["FEATURES", content.FEATURES, "feature"],
   ["INJURIES", content.INJURIES, "injury"],
-  ["RITUALS", content.RITUALS, "spell"],
+  ["RITUALS", content.RITUALS, "item"],
   ["TAUGHT_FEATURES", TAUGHT_FEATURES, "feature"],
   ["SPELLS", [...SPELLS.values()], "spell"],
   ["SIGNATURES", SIGNATURES.filter(s => s.kind !== "card"), s => s.kind]
@@ -332,7 +332,10 @@ const PACK_PLAN = [
     docs: () => [
       ...content.ITEMS.map(i => itemDoc(i, "item", "items")),
       ...content.NPC_GEAR.map(i => itemDoc(i, "item", "items")),
-      ...content.NATURAL_WEAPONS.map(i => itemDoc(i, "item", "items"))
+      ...content.NATURAL_WEAPONS.map(i => itemDoc(i, "item", "items")),
+      // The four ritual recipes. A recipe is a thing you find, which is what makes it an item:
+      // the gate on lifting a permanent injury is the recipe rather than the caster.
+      ...content.RITUALS.map(r => itemDoc(r, "item", "items"))
     ]
   },
   {
@@ -347,9 +350,6 @@ const PACK_PLAN = [
     docs: () => [...SPELLS.values()]
       .filter(s => !SIGNATURE_SPELLS.has(s.name))
       .map(s => itemDoc(s, "spell", "spells"))
-      // The four rituals are formulas, and this is the pack a GM looks in for one. Ritual Magic
-      // has been a node of Way of Mind since the Way was written and had no content at all.
-      .concat(content.RITUALS.map(r => itemDoc(r, "spell", "spells")))
   },
   /*
    * **The GM draws from this one.** ideas.md says which injury you take is picked *"from an injury
@@ -394,8 +394,19 @@ const PACK_PLAN = [
       { name: "Skill Cards", back: "skill", build: skillCardData, list: content.WARRIOR_SKILLS },
       { name: "Wild Magic", back: "wild", build: actionCardData, list: content.WILD_MAGIC },
       { name: "The Fate Deck", back: "fate", build: c => c, list: content.fateCards() },
-      { name: "The Twist Deck", back: "skill", build: twistCardData,
+      /*
+       * **`back: "skill"` here was a drawn picture nothing ever showed.** `backs/twist.webp`
+       * exists, with a brief of its own in the art list -- *a fork, one line arriving and leaving
+       * as two* -- and this deck was built wearing the skill back, so the file was commissioned,
+       * passed the gate, and reached no table. The prose in the art list said the deck *"wears the
+       * skill back"* two sections above its own tick, which is one document disagreeing with
+       * itself in the ordinary way: the decision changed and one half of it was edited.
+       */
+      { name: "The Twist Deck", back: "twist", build: twistCardData,
         list: expand(content.TWISTS, d => d) },
+      /* And the ritual twist deck, whose failures are about the thing being lifted. */
+      { name: "The Ritual Twist Deck", back: "ritual", build: twistCardData,
+        list: expand(content.RITUAL_TWISTS, d => d) },
       /* The pool itself, not one creature's share of it: a GM browsing the compendium wants to
        * read the twenty-eight shapes, and `buildCreature` deals each creature the subset its
        * capabilities earn (core-rules 9). */

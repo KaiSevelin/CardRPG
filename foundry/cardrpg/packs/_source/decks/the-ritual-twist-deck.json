@@ -1,0 +1,446 @@
+{
+  "_id": "IpJYCLAFy6DmViqJ",
+  "_key": "!cards!IpJYCLAFy6DmViqJ",
+  "_stats": {
+    "coreVersion": "14.369",
+    "systemId": "cardrpg",
+    "systemVersion": "0.2.0"
+  },
+  "name": "The Ritual Twist Deck",
+  "type": "deck",
+  "img": "systems/cardrpg/art/backs/ritual.webp",
+  "cards": [
+    {
+      "_id": "GzxAc56C4YihmmRq",
+      "_key": "!cards.cards!IpJYCLAFy6DmViqJ.GzxAc56C4YihmmRq",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 100,
+      "name": "Backlash",
+      "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
+      "system": {
+        "cost": "The working turns. The subject takes 2 damage, ignoring armor.",
+        "pressure": 0,
+        "gives": false
+      }
+    },
+    {
+      "_id": "xBJTU0xFqrXNg31N",
+      "_key": "!cards.cards!IpJYCLAFy6DmViqJ.xBJTU0xFqrXNg31N",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 200,
+      "name": "Backlash",
+      "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
+      "system": {
+        "cost": "The working turns. The subject takes 2 damage, ignoring armor.",
+        "pressure": 0,
+        "gives": false
+      }
+    },
+    {
+      "_id": "uQvyZzUaN4A2E9Er",
+      "_key": "!cards.cards!IpJYCLAFy6DmViqJ.uQvyZzUaN4A2E9Er",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 300,
+      "name": "Backlash",
+      "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
+      "system": {
+        "cost": "The working turns. The subject takes 2 damage, ignoring armor.",
+        "pressure": 0,
+        "gives": false
+      }
+    },
+    {
+      "_id": "p405iwqHFD4kG1eD",
+      "_key": "!cards.cards!IpJYCLAFy6DmViqJ.p405iwqHFD4kG1eD",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 400,
+      "name": "Backlash",
+      "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
+      "system": {
+        "cost": "The working turns. The subject takes 2 damage, ignoring armor.",
+        "pressure": 0,
+        "gives": false
+      }
+    },
+    {
+      "_id": "X1M4i6hOySISvnke",
+      "_key": "!cards.cards!IpJYCLAFy6DmViqJ.X1M4i6hOySISvnke",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 500,
+      "name": "It Answers",
+      "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
+      "system": {
+        "cost": "Whatever did this knows the ritual is happening. The curser, the god, the rot itself — and it has time to arrive before you finish.",
+        "pressure": 0,
+        "gives": false
+      }
+    },
+    {
+      "_id": "gEPoq3kJ4udHdjF2",
+      "_key": "!cards.cards!IpJYCLAFy6DmViqJ.gEPoq3kJ4udHdjF2",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 600,
+      "name": "It Answers",
+      "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
+      "system": {
+        "cost": "Whatever did this knows the ritual is happening. The curser, the god, the rot itself — and it has time to arrive before you finish.",
+        "pressure": 0,
+        "gives": false
+      }
+    },
+    {
+      "_id": "2q7XGSErZoLzh5n3",
+      "_key": "!cards.cards!IpJYCLAFy6DmViqJ.2q7XGSErZoLzh5n3",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 700,
+      "name": "It Answers",
+      "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
+      "system": {
+        "cost": "Whatever did this knows the ritual is happening. The curser, the god, the rot itself — and it has time to arrive before you finish.",
+        "pressure": 0,
+        "gives": false
+      }
+    },
+    {
+      "_id": "9J8Wr8xgMyeOAD9d",
+      "_key": "!cards.cards!IpJYCLAFy6DmViqJ.9J8Wr8xgMyeOAD9d",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 800,
+      "name": "It Answers",
+      "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
+      "system": {
+        "cost": "Whatever did this knows the ritual is happening. The curser, the god, the rot itself — and it has time to arrive before you finish.",
+        "pressure": 0,
+        "gives": false
+      }
+    },
+    {
+      "_id": "Y6ItZV9fPA3AMEmE",
+      "_key": "!cards.cards!IpJYCLAFy6DmViqJ.Y6ItZV9fPA3AMEmE",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 900,
+      "name": "Residue",
+      "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
+      "system": {
+        "cost": "Magic leaves marks. 1 Taint into the subject's deck, in the flavour that fits.",
+        "pressure": 0,
+        "gives": false
+      }
+    },
+    {
+      "_id": "41uE7fXRJ7thNwId",
+      "_key": "!cards.cards!IpJYCLAFy6DmViqJ.41uE7fXRJ7thNwId",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1000,
+      "name": "Residue",
+      "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
+      "system": {
+        "cost": "Magic leaves marks. 1 Taint into the subject's deck, in the flavour that fits.",
+        "pressure": 0,
+        "gives": false
+      }
+    },
+    {
+      "_id": "w4boHDZ2mxNi8LZt",
+      "_key": "!cards.cards!IpJYCLAFy6DmViqJ.w4boHDZ2mxNi8LZt",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1100,
+      "name": "Residue",
+      "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
+      "system": {
+        "cost": "Magic leaves marks. 1 Taint into the subject's deck, in the flavour that fits.",
+        "pressure": 0,
+        "gives": false
+      }
+    },
+    {
+      "_id": "gOMkMaAaERrF5M4m",
+      "_key": "!cards.cards!IpJYCLAFy6DmViqJ.gOMkMaAaERrF5M4m",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1200,
+      "name": "Deeper",
+      "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
+      "system": {
+        "cost": "The injury speaks for itself: it lands as a condition that fits, for the rest of the ritual. A bad leg is Slowed, a shattered nerve is Stunned.",
+        "pressure": 0,
+        "gives": false
+      }
+    },
+    {
+      "_id": "R9jd2cWkwJ7l9K3B",
+      "_key": "!cards.cards!IpJYCLAFy6DmViqJ.R9jd2cWkwJ7l9K3B",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1300,
+      "name": "Deeper",
+      "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
+      "system": {
+        "cost": "The injury speaks for itself: it lands as a condition that fits, for the rest of the ritual. A bad leg is Slowed, a shattered nerve is Stunned.",
+        "pressure": 0,
+        "gives": false
+      }
+    },
+    {
+      "_id": "8HgeTmJI5ZadtZGV",
+      "_key": "!cards.cards!IpJYCLAFy6DmViqJ.8HgeTmJI5ZadtZGV",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1400,
+      "name": "Deeper",
+      "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
+      "system": {
+        "cost": "The injury speaks for itself: it lands as a condition that fits, for the rest of the ritual. A bad leg is Slowed, a shattered nerve is Stunned.",
+        "pressure": 0,
+        "gives": false
+      }
+    },
+    {
+      "_id": "eF7NByXmJ8KAtY8Q",
+      "_key": "!cards.cards!IpJYCLAFy6DmViqJ.eF7NByXmJ8KAtY8Q",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1500,
+      "name": "Spoiled",
+      "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
+      "system": {
+        "cost": "A component is consumed wrongly. No further check until it is replaced, and the GM says what replacing it takes.",
+        "pressure": 0,
+        "gives": false
+      }
+    },
+    {
+      "_id": "FHX5n5KdrwJJpk9N",
+      "_key": "!cards.cards!IpJYCLAFy6DmViqJ.FHX5n5KdrwJJpk9N",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1600,
+      "name": "Spoiled",
+      "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
+      "system": {
+        "cost": "A component is consumed wrongly. No further check until it is replaced, and the GM says what replacing it takes.",
+        "pressure": 0,
+        "gives": false
+      }
+    },
+    {
+      "_id": "3dcJBEkaHFIGvBqe",
+      "_key": "!cards.cards!IpJYCLAFy6DmViqJ.3dcJBEkaHFIGvBqe",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1700,
+      "name": "Spoiled",
+      "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
+      "system": {
+        "cost": "A component is consumed wrongly. No further check until it is replaced, and the GM says what replacing it takes.",
+        "pressure": 0,
+        "gives": false
+      }
+    },
+    {
+      "_id": "PG2yPDu0WYLHFL4c",
+      "_key": "!cards.cards!IpJYCLAFy6DmViqJ.PG2yPDu0WYLHFL4c",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1800,
+      "name": "Not Alone",
+      "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
+      "system": {
+        "cost": "The working reaches somebody else present. One ally takes a Doubt, or the condition the subject just took.",
+        "pressure": 0,
+        "gives": false
+      }
+    },
+    {
+      "_id": "TYJA24XjGGny5aWX",
+      "_key": "!cards.cards!IpJYCLAFy6DmViqJ.TYJA24XjGGny5aWX",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1900,
+      "name": "Not Alone",
+      "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
+      "system": {
+        "cost": "The working reaches somebody else present. One ally takes a Doubt, or the condition the subject just took.",
+        "pressure": 0,
+        "gives": false
+      }
+    },
+    {
+      "_id": "Qnj5COj29vugXWSO",
+      "_key": "!cards.cards!IpJYCLAFy6DmViqJ.Qnj5COj29vugXWSO",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 2000,
+      "name": "Not Alone",
+      "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
+      "system": {
+        "cost": "The working reaches somebody else present. One ally takes a Doubt, or the condition the subject just took.",
+        "pressure": 0,
+        "gives": false
+      }
+    },
+    {
+      "_id": "NH0XQCxqC8P7g6ov",
+      "_key": "!cards.cards!IpJYCLAFy6DmViqJ.NH0XQCxqC8P7g6ov",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 2100,
+      "name": "The Long Way",
+      "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
+      "system": {
+        "cost": "The recipe was wrong about the order. Pressure +1, and the next check needs a different approach than the one you have been using.",
+        "pressure": 1,
+        "gives": false
+      }
+    },
+    {
+      "_id": "X9A2JrEzOCK7Aueo",
+      "_key": "!cards.cards!IpJYCLAFy6DmViqJ.X9A2JrEzOCK7Aueo",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 2200,
+      "name": "The Long Way",
+      "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
+      "system": {
+        "cost": "The recipe was wrong about the order. Pressure +1, and the next check needs a different approach than the one you have been using.",
+        "pressure": 1,
+        "gives": false
+      }
+    },
+    {
+      "_id": "90BinUWJ0zxeUOCg",
+      "_key": "!cards.cards!IpJYCLAFy6DmViqJ.90BinUWJ0zxeUOCg",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 2300,
+      "name": "The Long Way",
+      "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
+      "system": {
+        "cost": "The recipe was wrong about the order. Pressure +1, and the next check needs a different approach than the one you have been using.",
+        "pressure": 1,
+        "gives": false
+      }
+    },
+    {
+      "_id": "Cy954p1Ap8A0A6rM",
+      "_key": "!cards.cards!IpJYCLAFy6DmViqJ.Cy954p1Ap8A0A6rM",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 2400,
+      "name": "It Sets",
+      "type": "twist",
+      "img": "systems/cardrpg/art/backs/twist.webp",
+      "system": {
+        "cost": "The injury becomes **bound**: no ritual lifts it until the GM's own condition is met, the way an obligation's Taint is bound (core-rules §8). The recipe is not spent.",
+        "pressure": 0,
+        "gives": false
+      }
+    }
+  ]
+}

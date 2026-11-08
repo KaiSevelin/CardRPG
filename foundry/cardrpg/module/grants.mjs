@@ -29,6 +29,42 @@
  */
 const STANDING = new Set(["feature", "injury"]);
 
+/**
+ * **Which injuries this pile of slates has adapted around.**
+ *
+ * *Adapted* is ideas.md's release valve, and the only levelling option in the game that points at
+ * another slate: **ignore one injury's penalty.** The injury stays on the sheet, because the eye
+ * is still gone and the story is still true -- what switches off is the arithmetic.
+ *
+ * It lives here, in the module that touches no Foundry global, for the same reason the grant sum
+ * does: **five different readers have to agree about it.** An injury's numbers are read by the
+ * grant sum, the move reduction, the hand-slot capacity, the blocked reactions and the printed
+ * range, and an Adapted that reached four of the five would be a feature that works on a sheet
+ * and not in a fight. That is this project's signature defect, found five times already.
+ *
+ * Matched **by name**, which is what a player picks from a list. Every category but Maiming is
+ * capped at one, so a name is unambiguous on a sheet; two maimings of the same name is the case
+ * it cannot tell apart, and content holds no duplicate names by construction.
+ */
+export function adaptedNames(slates) {
+  const out = new Set();
+  for (const slate of slates ?? []) {
+    if (slate?.type === "feature" && slate.system?.adapts) out.add(slate.system.adapts);
+  }
+  return out;
+}
+
+/**
+ * Does this injury's arithmetic apply, or has it been adapted around?
+ *
+ * The question every reader of an injury number asks first, so *ignore one injury's penalty* is
+ * one sentence in one place rather than five tests that have to be kept in step.
+ */
+export function injuryBites(slate, adapted) {
+  if (slate?.type !== "injury") return false;
+  return !adapted?.has(slate.name);
+}
+
 /** Does this slate's grant count right now? */
 export function slateCounts(slate) {
   if (!slate) return false;
@@ -56,8 +92,11 @@ export function slateCounts(slate) {
 export function sumGrants(slates, keys) {
   const out = {};
   for (const key of keys) out[key] = 0;
+  /* An adapted injury grants nothing -- which for an injury means it takes nothing. */
+  const adapted = adaptedNames(slates);
   for (const slate of slates ?? []) {
     if (!slateCounts(slate)) continue;
+    if (slate.type === "injury" && !injuryBites(slate, adapted)) continue;
     for (const key of keys) out[key] += slate.system?.grants?.[key] ?? 0;
   }
   return out;

@@ -1,6 +1,6 @@
 # Art prompts
 
-**595 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
+**605 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
 
 It walks the same `GROUPS` the art list walks, by importing it rather than copying it, so the two files cannot disagree about what exists.
 
@@ -27,7 +27,7 @@ So the numbers are gone from the capsules and the picture is in their place: **t
 
 ## Deck backs
 
-**Draw these first.** 10 pictures against 585 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
+**Draw these first.** 11 pictures against 594 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
 
 ### The capsule — paste this once
 
@@ -84,7 +84,7 @@ File: `backs/action.webp`
 ```text
 SUBJECT. A deck back for **The action deck**. Face down in front of every player, all game. Cards from the common pool and all four Ways mix in one deck, so this is NOT a Way's back -- the deck is yours, not Shade's.
 
-A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 9 in this set.
+A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 10 in this set.
 ```
 
 #### The fate deck
@@ -94,7 +94,17 @@ File: `backs/fate.webp`
 ```text
 SUBJECT. A deck back for **The fate deck**. The back players see most: it is shuffled and face down by design, and that is what makes a thin deck a risk rather than a lookup. Twenty cards, drawn from constantly.
 
-A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 9 in this set.
+A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 10 in this set.
+```
+
+#### The ritual twist deck
+
+File: `backs/ritual.webp`
+
+```text
+SUBJECT. A deck back for **The ritual twist deck**. Drawn when a ritual goes wrong, and a ritual is days of work on something that does not want to be undone. Where the twist back is a fork branching outward, this is a line that has been drawn back on itself: a single stroke that leaves the bottom edge, rises, and returns to the same edge a little to one side -- a loop that does not close, with open paper inside it and around it. The subject is that it comes BACK. No knot, no spiral, no star, no candle, no circle of runes and nothing that could be read as a summoning diagram; the price of a ritual is never a monster arriving. One stroke, and the gap where it fails to close is the whole of it.
+
+A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 10 in this set.
 ```
 
 #### The skill deck
@@ -104,7 +114,7 @@ File: `backs/skill.webp`
 ```text
 SUBJECT. A deck back for **The skill deck**. What you do when you are NOT fighting: climbing, listening, lifting, picking a lock, talking someone round. **No weapon of any kind on this one** -- no blade, no point, no hilt, no arrowhead. A hand, a key, an eye, a knot, a lens: the tools of a scene. It has to read as clearly NOT the action deck at a glance, since both are face down in front of the same player.
 
-A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 9 in this set.
+A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 10 in this set.
 ```
 
 #### The item deck
@@ -114,7 +124,7 @@ File: `backs/item.webp`
 ```text
 SUBJECT. A deck back for **The item deck**. Your gear, face down. **A strap through a plain square buckle, seen flat and from the front**, the tongue centred and the strap running off both top and bottom edges. A buckle is the one thing every carried object in this game has in common and it is bilaterally symmetrical by construction. **No weapon, no blade, no pack, no pile of loot** -- one fastening, drawn large, with bare paper either side of it.
 
-A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 9 in this set.
+A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 10 in this set.
 ```
 
 #### The feature deck
@@ -124,7 +134,7 @@ File: `backs/feature.webp`
 ```text
 SUBJECT. A deck back for **The feature deck**. What is permanently true about you. **A keystone at the top of a shallow arch**: the wedge-shaped stone dead centre, two or three voussoirs falling away to left and right, and nothing above it. A feature is always on and load-bearing, and a keystone is the stone that holds the rest up while doing nothing at all. **Not a laurel, not a crest, not a shield shape** -- masonry, with the joints drawn.
 
-A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 9 in this set.
+A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 10 in this set.
 ```
 
 #### The condition deck
@@ -134,7 +144,7 @@ File: `backs/condition.webp`
 ```text
 SUBJECT. A deck back for **The condition deck**. What has been put on you, and what will wear off. **A plain open iron band -- a collar or a manacle -- hinged at the bottom centre and standing open**, the two halves rising symmetrically and not quite meeting at the top. Open, because a condition ends. **No chain, no lock, no key, no wrist and no neck in it** -- the band alone, and the gap at the top is the subject.
 
-A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 9 in this set.
+A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 10 in this set.
 ```
 
 #### The spell deck
@@ -144,7 +154,7 @@ File: `backs/spell.webp`
 ```text
 SUBJECT. A deck back for **The spell deck**. A caster's book, and the few pages of it ready today. **A closed book seen square from the fore-edge, spine away, so the picture is the page block itself** -- the stacked edges of the leaves drawn as fine horizontal lines, with three ribbon markers hanging from the middle of the block, the centre one longest. Symmetrical about the middle ribbon. **No cover decoration, no clasp, no strap, no buckle** (that is the item deck's device), and **no star, no pentagram, no rune, no candle and no hand** -- paper, thread and nothing else, with bare paper either side of the block.
 
-A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 9 in this set.
+A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 10 in this set.
 ```
 
 #### The twist deck
@@ -154,7 +164,7 @@ File: `backs/twist.webp`
 ```text
 SUBJECT. A deck back for **The twist deck**. The GM's deck, and the only one on their side of the table. Drawn when something goes partly wrong, so the back is a promise of a complication rather than a threat: **a fork** -- one line arriving and leaving as two, mirrored left to right, with open paper around it. No knot, no spiral, no coil: nothing that fills its own space or turns rather than mirrors. Not a weapon and not a monster -- the price of a Partial is never an attack.
 
-A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 9 in this set.
+A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 10 in this set.
 ```
 
 #### The Wild Magic deck
@@ -164,7 +174,7 @@ File: `backs/wild.webp`
 ```text
 SUBJECT. A deck back for **The Wild Magic deck**. Drawn only when a Wild comes out of a fate deck, so its back is a promise that something strange is about to happen.
 
-A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 9 in this set.
+A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 10 in this set.
 ```
 
 #### Intent, any creature
@@ -174,7 +184,7 @@ File: `backs/npc.webp`
 ```text
 SUBJECT. A deck back for **Intent, any creature**. The back on every creature's intent deck in the game. A face-down intent says *this thing is about to act*, and which thing it is is already on the table in front of you -- so the back carries the threat rather than the species.
 
-A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 9 in this set.
+A design rather than a scene: one central device, near-symmetrical, legible upside down, and unmistakable beside the other 10 in this set.
 ```
 
 ## The starter deck
@@ -698,6 +708,7 @@ File: `cards/npc/carry-it-off.webp`
 SUBJECT. "Carry It Off" — Move · Move your speed, take hold of a figure already down, and leave with it. The Horde eats what it wins.
 
 THIS CARD IS THE EXCEPTION. Only Processor and Processor Driller ever draws it, so draw that creature: the capsule's rules about species, anatomy and scale do not apply here, and this picture should be unmistakably of one thing.
+COMPOSE IT AS THE EXCEPTION. The other cards on this shelf are a fragment of a scene with open paper around it, because one picture has to serve every creature. This one does not: let the subject FILL the frame and crowd its own edges, close enough that the eye has nowhere else to go. It should be the card in a hand of eight that does not look like the other seven, from arm's length and before it is read.
 
 Draw two small workers leaving with somebody: a human arm trailing between them, heels marking the dirt, the pair of them already turned away toward the dark.
 ```
@@ -860,6 +871,7 @@ File: `cards/npc/open-the-hold.webp`
 SUBJECT. "Open the Hold" — The belly splits along the seam: whatever it was carrying is on the ground beside it, and may act this round.
 
 THIS CARD IS THE EXCEPTION. Only Skaah and Skaah Bloated ever draws it, so draw that creature: the capsule's rules about species, anatomy and scale do not apply here, and this picture should be unmistakably of one thing.
+COMPOSE IT AS THE EXCEPTION. The other cards on this shelf are a fragment of a scene with open paper around it, because one picture has to serve every creature. This one does not: let the subject FILL the frame and crowd its own edges, close enough that the eye has nowhere else to go. It should be the card in a hand of eight that does not look like the other seven, from arm's length and before it is read.
 
 Draw a gigantic sagging body splitting along the belly seam, and what was inside it coming out onto the ground underneath -- more of it than the shape above could hold.
 ```
@@ -1002,6 +1014,7 @@ File: `cards/npc/the-hive-obeys.webp`
 SUBJECT. "The Hive Obeys" — Three allies within sight each move their speed, or one of them acts twice. She does nothing herself but decide.
 
 THIS CARD IS THE EXCEPTION. Only The Queen ever draws it, so draw that creature: the capsule's rules about species, anatomy and scale do not apply here, and this picture should be unmistakably of one thing.
+COMPOSE IT AS THE EXCEPTION. The other cards on this shelf are a fragment of a scene with open paper around it, because one picture has to serve every creature. This one does not: let the subject FILL the frame and crowd its own edges, close enough that the eye has nowhere else to go. It should be the card in a hand of eight that does not look like the other seven, from arm's length and before it is read.
 
 Draw an enormous rooted body that does not fight: seen from below and behind, one vast limb lifted in a signal, and the whole floor between it and the far wall already in motion.
 ```
@@ -2058,6 +2071,186 @@ SUBJECT. "Veil" — Invisible (1)
 Draw a sheet of air hanging like hung cloth, the room behind it displaced a finger's width to one side where it falls. Something is behind it and the picture does not say what.
 
 WHO IS IN IT. If a face or any bare skin shows here, that person is a man of North African appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+## undefined
+
+**8 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/cards/ritual/`.
+
+A ritual going wrong. Days of work, out of combat, on one of the party's own characters -- so the room is quiet and worked-in, and what has turned is the working itself rather than anything arriving. No monster, no blade, no summoning circle.
+
+<details><summary><b>The capsule — paste this once, at the top of a fresh chat</b></summary>
+
+```text
+A single illustration for a playing card in a tabletop fantasy RPG.
+
+THIS GROUP. A ritual going wrong. Days of work, out of combat, on one of the party's own characters -- so the room is quiet and worked-in, and what has turned is the working itself rather than anything arriving. No monster, no blade, no summoning circle.
+
+FORMAT.
+- Portrait, aspect ratio exactly 2:3, 1024 x 1536.
+- Full bleed, edge to edge. No border, no frame, no card template, no rounded corners, no drop
+  shadow, no mat, no margin.
+- ABSOLUTELY NO TEXT of any kind: no letters, numerals, runes, glyphs, signature, watermark, or
+  anything that reads as writing. Not on a shield, not on a banner, not in the background.
+
+COMPOSITION. The card prints its own name and rules text over this image in opaque panels, so the
+layout is fixed and has been measured:
+- Crop in **close**: one subject, filling the frame from side to side.
+  Never a whole figure standing in a landscape, never an object laid out on a table.
+- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
+  no horns, no weapon, no hand, no banner enters it.
+- **All of the dark lives between that strip and the halfway line.** The near-black contour, the
+  deepest wash and the point of the action -- the moment a long patient job turns on the people doing it, in a room that has been lived in for days -- are all in that band, which is where
+  the picture actually happens.
+- **Below the halfway line the picture goes pale** and stays pale: the wash thins out, the ground
+  falls away to bare paper, and there is no dark mass down there at all. The card prints its rules
+  across that half, so that half has to be the quiet one.
+- Together those two make the test: **the picture must still read with its bottom half covered.**
+  Cover it in your head and check before you call it done.
+- ONE subject. A silhouette that still reads at **128 pixels wide**, which is the smallest size a
+  card is drawn at in this game.
+
+PALETTE.
+- Line and darks: **#1b1714**
+- Paper and lights: **#f4efe6**
+- Mid tone: **#c9bda8**
+- One chromatic accent only: **#a3655d**, a warm brick red. Use it on the
+  one thing the picture is about, and nowhere else.
+  **The accent is one small object's worth of colour and no more** -- a single
+  ribbon, a single flame, one stone set in a ring. Never the light, never the wash, never
+  the ground, never the sky, never a glow and never a whole figure: those are all the warm
+  neutral of the paper and the ink.
+- Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
+  Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
+  here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
+
+PEOPLE.
+- **Where a person is drawn, decide who they are rather than defaulting.** This is a port city on
+  a trade road: the people in the set are Black, brown, Levantine, Persian, South and East Asian,
+  Mediterranean and northern-pale in roughly the proportions a crowd there would be, and women
+  are as common in it as men. A sepia palette is not a statement about skin -- warm ink renders
+  every complexion, and a deck in which every figure is the same pale man is a failure of the
+  drawing and not of the paper.
+- Nothing here asks for a particular face unless the subject says so in words, and where it does
+  say so -- a named sex, an ancestry, an age -- that is binding.
+
+STYLE.
+Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
+with a loaded brush; then large soft washes for the mass; then generous untouched paper where the
+light falls. Loose and economical -- a few strokes doing the work of many. Visible bleed and
+granulation where a wash pools, dry-brush where it runs out.
+
+Three things this style does wrong at card size, and must not do here:
+- **Never neutral grey.** Every wash is warm: sepia, bistre, burnt earth. If a passage reads as
+  grey it is wrong.
+- **Never soft all over.** The contour is near-black #1b1714 and holds a hard edge. Only the
+  washes are soft. A picture with no true black in it has failed.
+- **Never evenly toned.** The darkest mass must sit directly against untouched paper, so the
+  subject separates from the ground in one glance at thumbnail size.
+
+Use the full range, both ends of it:
+- The lightest passage is **bare #f4efe6 paper, near white**, and there is a lot of it.
+- The darkest line is **near-black #1b1714**, and the two touch each other somewhere.
+- A picture whose every value sits between those ends is the failure above, however warm and
+  however well drawn. Mid tone is the background, not the picture.
+```
+
+</details>
+
+### Backlash
+
+File: `cards/ritual/backlash.webp`
+
+```text
+SUBJECT. "Backlash"
+
+Draw the working coming back up the arms of the person leading it -- hands still in position, the body already folding away from them.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Germanic appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Deeper
+
+File: `cards/ritual/deeper.webp`
+
+```text
+SUBJECT. "Deeper"
+
+Draw the subject's own injury answering for itself -- a body going wrong again in the exact place it went wrong the first time, mid-ritual, with the work still laid out around it.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Levantine appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### It Answers
+
+File: `cards/ritual/it-answers.webp`
+
+```text
+SUBJECT. "It Answers"
+
+Draw every flame in the room leaning the same way at once, toward something outside the frame that has just taken an interest.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Mediterranean appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### It Sets
+
+File: `cards/ritual/it-sets.webp`
+
+```text
+SUBJECT. "It Sets"
+
+Draw a thing closing rather than opening: the work gone still and settled, the room's tension simply absent, and nothing to show for the days but a subject unchanged.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Caribbean appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Not Alone
+
+File: `cards/ritual/not-alone.webp`
+
+```text
+SUBJECT. "Not Alone"
+
+Draw the person who was only helping, suddenly holding their own arm -- the subject still on the table between them, untouched by this.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Levantine appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Residue
+
+File: `cards/ritual/residue.webp`
+
+```text
+SUBJECT. "Residue"
+
+Draw what is left on the table when the working lifts: a stain spreading out from where the subject's hand was, in the grain of the wood.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of East Asian appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Spoiled
+
+File: `cards/ritual/spoiled.webp`
+
+```text
+SUBJECT. "Spoiled"
+
+Draw a prepared component ruined in the instant of use: the vessel cracked through, its contents already across the table and unusable.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Slavic appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### The Long Way
+
+File: `cards/ritual/the-long-way.webp`
+
+```text
+SUBJECT. "The Long Way"
+
+Draw a page turned back to and read again, the diagram on it plainly not matching what has been built on the table in front of it.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Caribbean appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ## Signatures — Way of Shade
@@ -4923,7 +5116,7 @@ Draw that line literally: the one moment it describes, and nothing else in frame
 
 ## Features
 
-**14 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/features/`.
+**15 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/features/`.
 
 Always on, so this picture sits on a character's sheet for their whole life. A quality rather than an action.
 
@@ -5004,6 +5197,20 @@ Use the full range, both ends of it:
 ```
 
 </details>
+
+### Adapted
+
+File: `features/adapted.webp`
+
+```text
+SUBJECT. "Adapted" — Name one injury you carry. Its penalty no longer applies. The injury remains.
+
+You still have one eye. You have simply stopped being surprised by it. Take it again for a second injury — which is what makes an uncapped Maiming survivable, and why it is the brake that had to be fitted before the cap came off.
+
+Draw a hand doing something awkward entirely without hesitation -- the missing fingers plainly missing, the grip worked out long ago and no longer thought about.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Central Asian appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
 
 ### Alert
 
@@ -8817,7 +9024,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 
 ## Where prompts still repeat
 
-**171 prompts in 32 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
+**172 prompts in 32 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
 
 **6 of those clusters are the ones that bite**, listed first: the ones where the subject line carries no prose either, so neither half of the prompt tells the cards apart. The rest share a direction over subjects that already differ — forty-three consumables drawing a nearly-empty vessel still come back as forty-three different pictures, because each subject names its own.
 
@@ -8843,7 +9050,7 @@ Answer a cluster by adding its keys to `DIRECTION` in `test/art-prompts.mjs` and
 | **2** | 1 | ground covered -- weight forward, the last footfall still behind | `cards/starter/advance` `signatures/shade/over-and-past` |
 | **2** | 1 | ground covered -- weight forward, the last footfall still behind; the instant a blow lands, the weapon already through -- never wound up, never posing | `cards/starter/lunge` `signatures/strength/the-lance` |
 | **2** | 1 | pulled toward something against the will | `cards/starter/taunt` `signatures/strength/play-to-the-crowd` |
-| **10** | — |  | `backs/action` `backs/fate` `backs/skill` `backs/item` `backs/feature` …+5 |
+| **11** | — |  | `backs/action` `backs/fate` `backs/ritual` `backs/skill` `backs/item` …+6 |
 | **6** | — | one hand's worth of object, drawn close and large | `items/accusers-ring` `items/gamblers-coin` `items/mnemonic-stone` `items/pact-iron` `items/serpents-tooth-ring` …+1 |
 | **6** | — | hung on a cord and drawn hanging, turned off square | `items/amulet-of-the-mended-thread` `items/gag-of-the-nine` `items/gorget-of-the-turned-blade` `items/hourglass-charm` `items/surgeons-pin` …+1 |
 | **6** | — | held, or just set down, the grip polished by gripping | `items/blade-of-the-eager-hand` `items/discriminating-wand` `items/gauntlet-of-the-open-palm` `items/hooked-gauntlet` `items/reavers-edge` …+1 |

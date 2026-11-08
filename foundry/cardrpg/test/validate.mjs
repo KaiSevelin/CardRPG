@@ -6018,13 +6018,15 @@ const everyCreatureForArt = monsters.expandRoster(content.ROSTER, content.VARIAN
 const artable = [
   content.WARRIOR_DECK, content.INTENTS, content.COMMON_POOL, content.WAY_CARDS,
   content.SHADE_POOL, content.STRENGTH_POOL, content.WARRIOR_SKILLS, content.WILD_MAGIC,
+  /* The ritual twist deck has faces; the general twist deck deliberately does not. */
+  content.RITUAL_TWISTS,
   content.FORMULAS, content.SHADOW_FORMULAS, content.MIND_POOL, content.FAITH_POOL,
   content.FEATURES, content.ITEMS.filter(i => !i.npc && !content.forges(i.name)),
   content.NPC_GEAR ?? [],
   content.NATURAL_WEAPONS ?? [], everyCreatureForArt, [content.WARRIOR],
   ...Object.entries(content).filter(([k]) => k.endsWith("_SIGNATURES")).map(([, v]) => v)
 ].flat();
-check("pieces of content that take art", artable.length, 585);
+check("pieces of content that take art", artable.length, 594);
 /*
  * **The four items that are content without being commissions, and the item each one wears.**
  *
@@ -6092,9 +6094,9 @@ check("while the one it replaced it with is",
  * ninety-five faces, and the five are what a table looks at all evening.
  */
 const backs = Object.entries(content.DECK_BACKS);
-check("deck backs", backs.length, 10);
+check("deck backs", backs.length, 11);
 check("the decks that take one", backs.map(([k]) => k).join(", "),
-  "action, fate, skill, item, feature, condition, spell, twist, wild, npc");
+  "action, fate, ritual, skill, item, feature, condition, spell, twist, wild, npc");
 /* Every one says what it is for: a back with no note is a brief nobody can draw from. */
 check("backs with nothing said about them",
   backs.filter(([, b]) => !b.note || b.note.length < 40).map(([k]) => k).join(", ") || "none",
@@ -6120,7 +6122,7 @@ check("backs with nothing said about them",
 const backedLiterally = [...`${setupSource}\n${decksSource}`.matchAll(/backOf\("([a-z.]+)"\)/g)]
   .map(m => m[1]);
 check("backs reached by a key written out", [...new Set(backedLiterally)].sort().join(", "),
-  "action, condition, fate, feature, item, npc, skill, spell, twist, wild");
+  "action, condition, fate, feature, item, npc, ritual, skill, spell, twist, wild");
 /* The computed one, asked of the roster: every kind's own key, where one is declared. */
 const backedByKind = monsters.expandRoster(content.ROSTER, content.VARIANTS)
   .map(c => `npc.${c.system.kind}`).filter(k => k in content.DECK_BACKS);
@@ -6132,7 +6134,7 @@ check("and the builder really asks for it that way",
   /backOf\(`npc\.\$\{kind\}`\) \|\| backOf\("npc"\)/.test(setupCode) ? "yes" : "no", "yes");
 const backed = [...backedLiterally, ...backedByKind];
 check("decks given a back", [...new Set(backed)].sort().join(", "),
-  "action, condition, fate, feature, item, npc, skill, spell, twist, wild");
+  "action, condition, fate, feature, item, npc, ritual, skill, spell, twist, wild");
 /* Every back declared is a back used: one nobody reads is a picture drawn for nothing. */
 check("backs declared but never read",
   backs.map(([k]) => k).filter(k => !backed.includes(k)).join(", ") || "none", "none");
@@ -6157,7 +6159,7 @@ const deckCalls = [...setupSource.matchAll(/makeCards\(([\s\S]*?)\n?\s*\);/g)]
  * back otherwise. That is the only computed back key in the file, which is why the check below
  * exists: a computed key cannot be audited by reading the call, so it is audited from the content.
  */
-check("deck documents created", deckCalls.length, 7);
+check("deck documents created", deckCalls.length, 8);
 check("and every creature's back resolves to a declared one",
   monsters.expandRoster(content.ROSTER, content.VARIANTS)
     .filter(c => !(`npc.${c.system.kind}` in content.DECK_BACKS)
@@ -6469,9 +6471,33 @@ const pathless = [
   ...artable.map(e => [e.name, artInLive(e)]),
   ...backs.map(([k, b]) => [b.label ?? k, backOfLive(k)])
 ].filter(([, p]) => p && !fs.existsSync(fileFor(p)));
-check("art paths the game would hand Foundry", artable.length + backs.length, 595);
+check("art paths the game would hand Foundry", artable.length + backs.length, 605);
+/*
+ * **The shoot queue, declared rather than carried quietly.**
+ *
+ * This check wanted "none" while the brief and the art were in lockstep, and new content breaks
+ * that lockstep by existing: a piece is on a shelf so it can be shot, and until it is shot its
+ * path names no file. The alternative is the Shade deck's arrangement -- stay off the shelves
+ * entirely until somebody draws it -- which is right for a whole deck nobody is drawing yet and
+ * wrong for one piece somebody is about to.
+ *
+ * So the queue is a **list**, and the list is the pin. Shooting a piece makes this check fail
+ * until its name comes out, which is the same way every count in this suite works, and it is the
+ * difference between a gap that is waiting and a gap that was forgotten.
+ *
+ *   node test/art-shoot.mjs features/adapted
+ *   node test/art-shoot.mjs cards/npc --failed
+ *
+ * The three NPC cards are a DELIBERATE deletion, not a gap: each is a card only one creature can
+ * draw, and until now nothing told the model that such a card should look unlike its thirty-four
+ * neighbours. It now carries a composition direction of its own -- fill the frame, crowd the edges
+ * -- so the pictures on disk were shot to a brief that no longer describes them. Git still has
+ * them at the commit before this one if the new ones come back worse.
+ */
 check("and those naming a file that is not there",
-  pathless.map(([name, p]) => `${name} -> ${p}`).slice(0, 5).join(", ") || "none", "none");
+  pathless.map(([name]) => name).sort().join(", ") || "none",
+  "Adapted, Backlash, Carry It Off, Deeper, It Answers, It Sets, Not Alone, Open the Hold, "
+  + "Residue, Spoiled, The Hive Obeys, The Long Way, The ritual twist deck");
 /*
  * **Every group in the brief lands in a slot something writes.**
  *
@@ -6491,12 +6517,13 @@ const ART_SLOTS = {
   "signatures/shade": "face", "signatures/strength": "face", "signatures/mind": "face",
   "signatures/faith": "face", "spells/elemental": "face", "spells/shadow": "face",
   "spells/mind": "face", "spells/faith": "face",
+  "cards/ritual": "face",
   features: "item", items: "item", "items/npc": "item", "items/natural": "item",
   tokens: "actor"
 };
 const briefDirs = [...new Set([...artList.matchAll(/Suggested path: `cardrpg\/art\/(.+?)\/`/g)]
   .map(m => m[1]))];
-check("directories the brief commissions into", briefDirs.length, 21);
+check("directories the brief commissions into", briefDirs.length, 22);
 check("and every one of them has a slot",
   briefDirs.filter(d => !(d in ART_SLOTS)).join(", ") || "none", "none");
 /* And no slot is declared for a group that is not in the brief, or this list rots quietly. */
@@ -6638,7 +6665,7 @@ const briefs = faceRows.map(r => r.brief);
 const leaked = briefs.flatMap(text =>
   [...text.matchAll(/\b([a-z]+[A-Z][a-zA-Z]*)\b/g)].map(m => m[1]));
 /* A pattern that matched no rows at all would report "none" for any list whatsoever. */
-check("briefs the check actually read", briefs.length, 585);
+check("briefs the check actually read", briefs.length, 594);
 check("keys that leaked into the brief",
   leaked.length ? [...new Set(leaked)].join(", ") : "none", "none");
 /*
@@ -6801,7 +6828,7 @@ check("and those are the lengths in the source",
  * European and the cards had no assignment at all.
  */
 const castLines = [...artPrompts.matchAll(/that person is (a (?:wo)?man) of ([A-Za-z ]+?) appearance/g)];
-check("cards, signatures and features given an assigned person", castLines.length, 132);
+check("cards, signatures and features given an assigned person", castLines.length, 141);
 /* The NPC pool is the one group that must NOT be cast: its own capsule says the actor is nobody,
  * because one picture is drawn behind a goblin, a troll and a dragon. */
 const npcBlock = /\n## NPC intent cards\n([\s\S]*?)\n## /.exec(artPrompts)?.[1] ?? "";
@@ -6834,7 +6861,7 @@ check("prompts that ask an image model for self-harm, having nothing else to ask
 
 const EURO = new Set(["Mediterranean", "Nordic", "Slavic", "Northwest European", "Germanic"]);
 check("western ancestries among them, which had nearly vanished",
-  castLines.filter(m => EURO.has(m[2])).length, 45);
+  castLines.filter(m => EURO.has(m[2])).length, 48);
 check("and every ancestry on the list is used somewhere",
   new Set(castLines.map(m => m[2])).size, 15);
 
@@ -6870,7 +6897,7 @@ check("and the log is a record, not a source",
  * spelling them again. */
 const packSource = fs.readFileSync(path.join(root, "test/build-packs.mjs"), "utf8");
 const rows = faceRows;
-check("file paths in the brief", rows.length, 585);
+check("file paths in the brief", rows.length, 594);
 /* And the backs, whose path is the slug of their KEY rather than of their printed label. */
 const backPaths = [...artList.matchAll(/\| `(backs\/[^`]+)` \|/g)].map(m => m[1]);
 check("back paths in the brief", backPaths.length, backs.length);
@@ -7479,7 +7506,7 @@ const planned = packs.planDocuments();
 check("compendium packs", planned.length, 8);
 check("and what each one holds",
   planned.map(p => `${p.name}:${p.docs.length}`).join(" "),
-  "creatures:112 characters:1 items:180 features:23 spells:122 injuries:14 signatures:30 decks:11");
+  "creatures:112 characters:1 items:184 features:24 spells:118 injuries:14 signatures:30 decks:12");
 /* Faults the generator records rather than throws: a filename collision silently drops a document,
  * so the build reports it and this refuses to pass with one outstanding. */
 check("faults the generator reported", planned[0].faults.join("; ") || "none", "none");
@@ -7523,8 +7550,8 @@ check("and the group it asks for", DIMENSIONS.join("+"), "width+height+depth");
  */
 const everyPackDoc = planned.flatMap(p => p.docs);
 const everyPackChild = planned.flatMap(p => p.docs.flatMap(d => d.items ?? d.cards ?? []));
-check("documents the stamp sweep read", everyPackDoc.length, 493);
-check("and children beneath them", everyPackChild.length, 345);
+check("documents the stamp sweep read", everyPackDoc.length, 495);
+check("and children beneath them", everyPackChild.length, 369);
 const unstamped = [...everyPackDoc, ...everyPackChild]
   .filter(d => d._stats?.coreVersion !== manifest.compatibility.verified
     || d._stats?.systemId !== manifest.id
@@ -7543,7 +7570,9 @@ check("the version the stamp carries", `${manifest.id} ${manifest.version} on `
 const packedFromContent = {
   creatures: monsters.expandRoster(content.ROSTER, content.VARIANTS).length,
   characters: 1,
-  items: content.ITEMS.length + content.NPC_GEAR.length + content.NATURAL_WEAPONS.length,
+  /* Plus the four ritual recipes, which are items: a recipe is a thing you find. */
+  items: content.ITEMS.length + content.NPC_GEAR.length + content.NATURAL_WEAPONS.length
+    + content.RITUALS.length,
   /*
    * Features, plus the eight a school teaches that are neither Signatures nor in `FEATURES`: seven
    * of Tattoo Magic and one of Asceticism's two renunciations. They were in the spells pack until
@@ -7553,20 +7582,18 @@ const packedFromContent = {
   features: content.FEATURES.length
     + graph.TEACHINGS.filter(t => graph.teachingKind(t) === "feature"
       && !graph.SIGNATURES.some(g => g.name === t.name)).length,
-  /* Plus the four rituals, which are formulas and go in the formulas pack. */
   spells: [...graph.SPELLS.values()]
-    .filter(s => !graph.SIGNATURES.some(g => g.kind === "spell" && g.name === s.name)).length
-    + content.RITUALS.length,
+    .filter(s => !graph.SIGNATURES.some(g => g.kind === "spell" && g.name === s.name)).length,
   injuries: content.INJURIES.length,
   signatures: graph.SIGNATURES.filter(s => s.kind !== "card").length,
-  decks: 11
+  decks: 12
 };
 /*
  * And the features count as a literal beside the derivation. This check's own comment says why -- *a
  * pack that lost half its entries would otherwise agree with itself* -- and a break test pointed the
  * derivation at the pack and passed, which is exactly that failure with the comment still above it.
  */
-check("features the content holds", packedFromContent.features, 23);
+check("features the content holds", packedFromContent.features, 24);
 /* Same reason, for the two this build moved: a literal beside each derivation. */
 check("injuries the content holds", packedFromContent.injuries, 14);
 check("and rituals among the formulas", content.RITUALS.length, 4);
@@ -7606,7 +7633,7 @@ check("pack sources that disagree with the content",
   stale.length ? `${stale.length}: ${stale.slice(0, 4).join(", ")}` : "none", "none");
 /* A comparison that read no files would report "none" for a repository with no packs at all. */
 check("documents the comparison actually read",
-  planned.reduce((n, p) => n + p.docs.length, 0), 493);
+  planned.reduce((n, p) => n + p.docs.length, 0), 495);
 
 /*
  * **An id is a promise.** A world that imports a creature keeps the pack's id, and so does every
@@ -7639,7 +7666,7 @@ for (const pack of planned) {
 }
 check("ids that are not the hash of their key, malformed, or shared",
   idFaults.length ? idFaults.slice(0, 4).join("; ") : "none", "none");
-check("ids the rule actually read", everyId.size, 838);
+check("ids the rule actually read", everyId.size, 864);
 /* The hash itself, asked rather than shared: sixteen characters of the right alphabet, and the
  * same answer twice for the same key. */
 check("an id is sixteen characters", packs.id16("items:Longsword").length, 16);
@@ -8624,16 +8651,32 @@ check("and the engine refuses rather than failing silently",
 check("and a lasting one heals without needing a ritual at all",
   /const how = ritual && injury\.system\.permanent/.test(resolveSource) ? "yes" : "no", "yes");
 
-/* Both directions between the categories and RITUALS. */
+/*
+ * **Both directions between the categories and the recipes.**
+ *
+ * A recipe is an **item**, which is the resolution of the `[OPEN]` these were carried at. They
+ * were spells, and on a spell `strength` is the slot cost -- but a ritual is never prepared and
+ * never cast, so a slot cost had nothing to mean and any number above zero quietly closed the
+ * hardest ritual to a character with no spell slots. The world document's own line is *anyone
+ * literate can do it*, and *the gate is the recipe* names an object you can find, buy or steal.
+ */
 const ritualNames = content.RITUALS.map(r => r.name);
 check("rituals the categories name",
   Object.values(injuryCats).map(c => c.ritual).filter(Boolean).sort().join(", "),
   "Cleansing, Quieting, Regrowth, Unbinding");
-check("and the rituals that exist", [...ritualNames].sort().join(", "),
-  "Cleansing, Quieting, Regrowth, Unbinding");
-check("rituals no category reaches",
-  ritualNames.filter(n => !Object.values(injuryCats).some(c => c.ritual === n)).join(", ")
+check("and the recipes that exist", [...ritualNames].sort().join(", "),
+  "Recipe: Cleansing, Recipe: Quieting, Recipe: Regrowth, Recipe: Unbinding");
+check("recipes whose category nothing lifts",
+  content.RITUALS.filter(r => !injuryCats[r.ritual]?.ritual).map(r => r.name).join(", ")
     || "none", "none");
+check("and categories with a ritual but no recipe",
+  Object.entries(injuryCats).filter(([k, c]) => c.ritual
+    && !content.RITUALS.some(r => r.ritual === k)).map(([k]) => k).join(", ") || "none", "none");
+/* No slot cost, and nothing to prepare: that is the whole of what moving them bought. */
+check("recipes that still claim a spell slot",
+  content.RITUALS.filter(r => r.strength).map(r => r.name).join(", ") || "none", "none");
+check("and the engine can read one off the item",
+  /get ritualChallenge\(\)/.test(itemSource) ? "yes" : "no", "yes");
 
 /*
  * **Cleansing's numbers are not new, which is the point of checking them against the prose.**
@@ -8659,8 +8702,13 @@ for (const [key, cat] of Object.entries(injuryCats)) {
   check(`and lifts ${key} at an approach somebody can roll`,
     Object.hasOwn(configLive.approaches, cat.approach) ? "yes" : "no", "yes");
 }
-check("and the ritual timing is the one that already existed",
-  content.RITUALS.every(r => r.effect?.timing === "ritual") ? "yes" : "no", "yes");
+/* A recipe is carried, so it has a slot and a weight like anything else in a pack. */
+check("recipes that are not a thing you can carry",
+  content.RITUALS.filter(r => r.slot !== "pack" || !r.weight).map(r => r.name).join(", ")
+    || "none", "none");
+check("and each one costs gold rather than a slot",
+  content.RITUALS.map(r => `${r.ritual}:${r.value}`).join(" "),
+  "maiming:900 breaking:450 curse:1200 corruption:300");
 check("which specializations.md states the price of",
   /\*\*Ritual Magic\*\*[^|]*\| Rituell magik \| \*\(out of combat\)\* \| Time, and a recipe that can go wrong/
     .test(specDoc) ? "yes" : "no", "yes");
@@ -8746,8 +8794,46 @@ check("every injury says what it does in its own text",
 check("the cap is counted from the slates, not stored",
   /export function injuryCategoriesTaken\(actor\)/.test(resolveSource) ? "yes" : "no", "yes");
 check("and applying one asks it first",
-  /if \(injuryCategoriesTaken\(target\)\.has\(def\.category\)\)/.test(resolveSource)
-    ? "yes" : "no", "yes");
+  /if \(!roomForInjury\(target, def\.category\)\)/.test(resolveSource) ? "yes" : "no", "yes");
+/*
+ * **Only Maiming is uncapped, and the reason is that the cap read absurdly there alone.** One
+ * Regrowth regrows an eye and a leg alike, so they are one category, and a cap following the
+ * ritual was telling a one-eyed character their legs were safe for ever. A Regrowth still lifts
+ * ONE, so three maimings is three rituals -- content rather than a loophole.
+ */
+check("categories with no cap", Object.entries(injuryCats)
+  .filter(([, c]) => c.cap === null).map(([k]) => k).join(", "), "maiming");
+check("and every other kind states one", Object.entries(injuryCats)
+  .filter(([, c]) => c.cap === undefined).map(([k]) => k).join(", ") || "none", "none");
+/*
+ * **And the brake that had to be fitted before the cap came off.** A *Bad Leg* alone measures
+ * -8.1 win rate and -21.1 against archers, so three stacked maimings is a character nobody wants
+ * to play. *Adapted* is what ideas.md specified for that and nothing had built.
+ *
+ * The checks below are about **reach**, because that is the only way this can go wrong: an
+ * injury's numbers are read in five places, and an Adapted that reached four of them would be a
+ * levelling option that works on a sheet and not in a fight.
+ */
+check("the feature that ignores one injury's penalty",
+  content.FEATURES.filter(f => Object.hasOwn(f, "adapts")).map(f => f.name).join(", "), "Adapted");
+check("and it names no injury in the catalogue, because the player picks",
+  content.FEATURES.find(f => f.name === "Adapted").adapts === "" ? "blank" : "named", "blank");
+check("and the schema can hold the name",
+  /adapts: new fields\.StringField/.test(featureOwnBlock) ? "yes" : "no", "yes");
+check("one predicate answers for every reader",
+  /export function injuryBites\(slate, adapted\)/.test(
+    fs.readFileSync(path.join(root, "module/grants.mjs"), "utf8")) ? "yes" : "no", "yes");
+check("and the grant sum asks it",
+  /if \(slate\.type === "injury" && !injuryBites\(slate, adapted\)\) continue;/.test(
+    fs.readFileSync(path.join(root, "module/grants.mjs"), "utf8")) ? "yes" : "no", "yes");
+check("and the other four ask one list",
+  (actorsSource.match(/bitingInjuries\(/g) ?? []).length, 4);
+/*
+ * The one left is the bonus walk, where the skip has to be per-slate: a bonus can sit on an item,
+ * a feature or an injury, so there is no filtered list to loop over.
+ */
+check("and nothing reads an injury's numbers without asking",
+  (actorsSource.match(/slate\.type === "injury"/g) ?? []).length, 1);
 check("and the draw reports what is still open",
   /export function openInjuryCategories\(actor\)/.test(resolveSource) ? "yes" : "no", "yes");
 
@@ -8842,8 +8928,8 @@ check("the kinds that need no equipping",
 check("one routine answers for both models",
   (actorsSource.match(/function blockedReactionsOf\(system\)/g) ?? []).length, 1);
 check("and it reads an injury's own list",
-  /if \(slate\.type === "injury"\) \{[\s\S]{0,200}blocksReactions/.test(actorsSource)
-    ? "yes" : "no", "yes");
+  /for \(const slate of bitingInjuries\(system\)\) \{[\s\S]{0,160}blocksReactions/
+    .test(actorsSource) ? "yes" : "no", "yes");
 check("and the one dial on that is the opening round",
   /if \(slate\.system\.firstRoundOnly && round > 1\) continue;/.test(actorsSource)
     ? "yes" : "no", "yes");
@@ -10224,13 +10310,45 @@ check("and the one that gives rather than takes",
 check("every twist says what it costs",
   twistDefs.filter(t => !(t.cost ?? "").length).length, 0);
 
-/* The document's table is the brief, the same way the world's language list is. */
-const twistRows = [...skillDoc.matchAll(/^\| \*\*(\w+)\*\* \| (\d+) \|/gm)]
+/*
+ * The document's table is the brief, the same way the world's language list is.
+ *
+ * **Sliced by section, because there are two of these tables now.** A ritual twist is the same
+ * card shape -- a name, a count, a prose cost -- so a scrape over the whole document read twelve
+ * rows as one deck and reported four of them as content that disagreed with itself. A pattern
+ * that was unambiguous while there was one table is the ordinary way a check goes wrong.
+ */
+const twistTable = skillDoc.slice(0, skillDoc.indexOf("### The ritual twist deck"));
+const ritualTable = skillDoc.slice(skillDoc.indexOf("### The ritual twist deck"));
+const rowsOf = src => [...src.matchAll(/^\| \*\*([\w ]+)\*\* \| (\d+) \|/gm)]
   .map(m => ({ name: m[1], copies: Number(m[2]) }));
+const twistRows = rowsOf(twistTable);
 check("twist rows in skill-rules", twistRows.length, 8);
 check("and the content matches them",
   twistRows.filter(r => twistDefs.find(t => t.name === r.name)?.copies !== r.copies)
     .map(r => r.name).join(", ") || "none", "none");
+
+/* And the second deck, both directions, so neither table can drift from its own content. */
+const ritualRows = rowsOf(ritualTable);
+check("ritual twist rows in skill-rules", ritualRows.length, content.RITUAL_TWISTS.length);
+check("and the content matches them",
+  ritualRows.filter(r => content.RITUAL_TWISTS.find(t => t.name === r.name)?.copies !== r.copies)
+    .map(r => r.name).join(", ") || "none", "none");
+check("ritual twists the document does not print",
+  content.RITUAL_TWISTS.filter(t => !ritualRows.some(r => r.name === t.name))
+    .map(t => t.name).join(", ") || "none", "none");
+check("and every one of them says what it costs",
+  content.RITUAL_TWISTS.filter(t => !(t.cost ?? "").length).length, 0);
+/*
+ * **The one card in either deck that changes a character for good**, and it does it by closing a
+ * door: permanence passes through the fate draw on dropping to 0 Health, so a ritual twist that
+ * handed out an injury would be a second gate for the most consequential rule in the game.
+ */
+check("ritual twists that inflict an injury",
+  content.RITUAL_TWISTS.filter(t => /injury becomes|gain an injury|new injury/i.test(t.cost)
+    && !/bound/i.test(t.cost)).map(t => t.name).join(", ") || "none", "none");
+check("and the one that binds instead",
+  content.RITUAL_TWISTS.filter(t => /bound/i.test(t.cost)).map(t => t.name).join(", "), "It Sets");
 
 /* A twist is a Card, like everything else that is drawn. */
 check("the twist card is a subtype",
@@ -12168,7 +12286,7 @@ for (const m of selfSource.matchAll(/(\w+)\.includes\("((?:[^"\\]|\\.)*)"\)/g)) 
 }
 
 /* The pin that keeps the rest of this honest. */
-check("greps over a whole file, resolved", greps.length, 617);
+check("greps over a whole file, resolved", greps.length, 618);
 
 /*
  * **The rule, as one predicate, run over a planted example before it is run over the suite.**

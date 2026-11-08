@@ -49,6 +49,26 @@ export function capsOf(caps = []) {
  *
  * `needs` still applies on top, so an `only` card may also ask for a capability and both hold.
  */
+/**
+ * **Is this card one creature's alone?**
+ *
+ * An intent with `only` names the kinds that may draw it, and all three that exist name **one
+ * creature** -- *The Hive Obeys* is the queen's, *Open the Hold* is the Skaah's in both of its
+ * forms, *Carry It Off* is the Processor's and its driller. A base and its variant are the same
+ * creature, which is why the field is a list of kinds rather than one kind.
+ *
+ * It is worth a predicate because it is worth **showing**. Four cards in five in an NPC deck are
+ * the same four whichever creature you are looking at -- that finding is why the common pool
+ * exists -- so the rare card belonging to this creature and nothing else is the one a GM should
+ * be able to pick out of a hand without reading it. A deck where everything looks equally generic
+ * hides its own best card.
+ *
+ * `sole` rather than `only` as a name, because `only` is the field and this is the question.
+ */
+export function isSole(card) {
+  return (card?.only?.length ?? 0) > 0;
+}
+
 export function deckFor(caps, pool, kind = "") {
   const have = capsOf(caps);
   return pool.filter(card =>

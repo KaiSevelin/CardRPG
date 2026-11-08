@@ -1,22 +1,19 @@
 {
-  "_id": "QBC0tZFIyaYaY9jP",
-  "_key": "!items!QBC0tZFIyaYaY9jP",
+  "_id": "CO1UIcdxW71qoHl3",
+  "_key": "!items!CO1UIcdxW71qoHl3",
   "_stats": {
     "coreVersion": "14.369",
     "systemId": "cardrpg",
     "systemVersion": "0.2.0"
   },
-  "name": "Quieting",
-  "type": "spell",
+  "name": "Recipe: Quieting",
+  "type": "item",
   "system": {
-    "strength": 1,
-    "effect": {
-      "timing": "ritual",
-      "text": "lift one Breaking over Progress 6, Pressure 4 (Presence)"
-    },
+    "ritual": "breaking",
+    "slot": "pack",
+    "weight": 1,
+    "value": 450,
     "description": "<p>The one ritual that is not Lore, and the only approach that could have been: what mends a nerve is a person, and Presence is the approach for a person. It is also the cheapest of the four to attempt and the easiest to attempt badly.</p>",
-    "kind": "formula",
-    "prepared": false,
     "text": "Presence, Progress 6, Pressure 4. Settles what was broken. Needs somebody who knew you before."
   }
 }

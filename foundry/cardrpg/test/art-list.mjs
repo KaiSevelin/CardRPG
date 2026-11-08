@@ -496,8 +496,18 @@ push(
   + "Signature draws its node too. Nothing needs art of its own.",
   `- **The twist deck.** ${content.TWISTS.length} kinds, `
   + `${content.TWISTS.reduce((n, t) => n + (t.copies ?? 1), 0)} cards, and a twist is a NAME and a `
-  + "COST rather than a picture. It is the GM's own deck and wears the skill back, because art for "
-  + "a deck one person ever sees is art nobody at the table looks at.",
+  + "COST rather than a picture: no faces. It has a back of its own (`backs/twist.webp`) and the "
+  + "prose here said it wore the skill deck's for months after that back was drawn — while the "
+  + "cards had been asking for the right one all along. Art for a deck one person ever sees is "
+  + "art nobody at the table looks at, which is still why there are no faces.",
+  `- **The ritual twist deck is the exception, and has faces.** `
+  + `${content.RITUAL_TWISTS.length} kinds, `
+  + `${content.RITUAL_TWISTS.reduce((n, t) => n + (t.copies ?? 1), 0)} cards. Every word of the `
+  + "sentence above is true of the twist deck and none of it is true here: a ritual is a downtime "
+  + "challenge the whole party runs, over days, on one of their own characters — so a ritual "
+  + "twist is turned face up in front of four people who have been working toward it for a "
+  + "session, and what it shows them is the thing they are trying to undo pushing back. It is the "
+  + "one deck on the GM's side with an audience.",
   `- **The ${content.MONSTER_TAGS.length} tagged creatures.** Elves, trolls, dragons and the rest `
   + "are in the content as a name and a list of capabilities, with no numbers and no actor — so "
   + "there is nothing yet for a picture to be of. They arrive in the brief when they arrive in the "

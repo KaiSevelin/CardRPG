@@ -1,22 +1,19 @@
 {
-  "_id": "u5r8JEpPovdLIpoV",
-  "_key": "!items!u5r8JEpPovdLIpoV",
+  "_id": "nMb1HmO3HHBkHQEL",
+  "_key": "!items!nMb1HmO3HHBkHQEL",
   "_stats": {
     "coreVersion": "14.369",
     "systemId": "cardrpg",
     "systemVersion": "0.2.0"
   },
-  "name": "Cleansing",
-  "type": "spell",
+  "name": "Recipe: Cleansing",
+  "type": "item",
   "system": {
-    "strength": 1,
-    "effect": {
-      "timing": "ritual",
-      "text": "lift one Corruption, or Taint, over Progress 4, Pressure 4 (Lore)"
-    },
+    "ritual": "corruption",
+    "slot": "pack",
+    "weight": 1,
+    "value": 300,
     "description": "<p>Published in core-rules 8 as <em>a downtime challenge (Lore, Progress 4)</em> before any of this existed, and the numbers here are those numbers. The easiest of the four, and the one a town can actually provide.</p>",
-    "kind": "formula",
-    "prepared": false,
     "text": "Lore, Progress 4, Pressure 4. Removes Taint, or one Corruption. Needs a healer or a temple."
   }
 }

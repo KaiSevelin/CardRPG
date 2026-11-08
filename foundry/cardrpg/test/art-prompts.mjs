@@ -210,6 +210,13 @@ const FORMAT_FACE = `- Portrait, aspect ratio exactly 2:3, 1024 x 1536.
  * paragraph and asked for them in the next.
  */
 const FOCAL = {
+  /*
+   * A ritual twist is the only card in the game drawn from the GM's side with an audience, and
+   * what it has to show is **the thing being undone pushing back**. Not a monster and not a
+   * spell going off: a working that has turned, in a room where people have been at it for days.
+   */
+  "cards/ritual": "the moment a long patient job turns on the people doing it, in a room that "
+    + "has been lived in for days",
   "cards/npc": "the point of contact, the place the ground is marked, the gap where the distance "
     + "went"
 };
@@ -1423,6 +1430,48 @@ const DIRECTION = {
    * instruction and it is the same good instruction twenty-five times, so each one here names the
    * moment instead.
    */
+  /*
+   * **Adapted is the only one of these that is about an injury**, and the brief has to hold the
+   * line the rule holds: the injury is NOT gone. A picture of a healed hand would say the
+   * opposite of the mechanic, which leaves the slate on the sheet and switches off its
+   * arithmetic. So the moment is competence around a loss that is still visible.
+   */
+  /*
+   * **The eight ritual twists.** A twist is a NAME and a COST, so there is no action in the text
+   * to draw -- the same problem the features had, and the same answer: each one names its own
+   * moment instead of being handed a good instruction eight times.
+   *
+   * All eight are the working turning, and none of them is a monster arriving. The thing pushing
+   * back is the injury, the curse or the rot, and those have no body of their own: what is on the
+   * card is its effect on the room and on the people in it.
+   */
+  "cards/ritual/backlash":
+    "the working coming back up the arms of the person leading it -- hands still in position, "
+    + "the body already folding away from them",
+  "cards/ritual/it-answers":
+    "every flame in the room leaning the same way at once, toward something outside the frame "
+    + "that has just taken an interest",
+  "cards/ritual/residue":
+    "what is left on the table when the working lifts: a stain spreading out from where the "
+    + "subject's hand was, in the grain of the wood",
+  "cards/ritual/deeper":
+    "the subject's own injury answering for itself -- a body going wrong again in the exact "
+    + "place it went wrong the first time, mid-ritual, with the work still laid out around it",
+  "cards/ritual/spoiled":
+    "a prepared component ruined in the instant of use: the vessel cracked through, its "
+    + "contents already across the table and unusable",
+  "cards/ritual/not-alone":
+    "the person who was only helping, suddenly holding their own arm -- the subject still on "
+    + "the table between them, untouched by this",
+  "cards/ritual/the-long-way":
+    "a page turned back to and read again, the diagram on it plainly not matching what has "
+    + "been built on the table in front of it",
+  "cards/ritual/it-sets":
+    "a thing closing rather than opening: the work gone still and settled, the room's tension "
+    + "simply absent, and nothing to show for the days but a subject unchanged",
+  "features/adapted":
+    "a hand doing something awkward entirely without hesitation -- the missing fingers plainly "
+    + "missing, the grip worked out long ago and no longer thought about",
   "features/alert":
     "a head already turned toward a sound nobody else has heard yet, the body still facing the "
     + "way it was going",
@@ -1868,6 +1917,9 @@ const FRAME = {
   "items/npc": "A monster's kit -- cruder than a player's, made or scavenged rather than bought.",
   "items/natural": "Grown rather than carried: a mandible, a sting, a tail club. It cannot be "
     + "disarmed because it is part of a body, and the picture should make that obvious.",
+  "cards/ritual": "A ritual going wrong. Days of work, out of combat, on one of the party's own "
+    + "characters -- so the room is quiet and worked-in, and what has turned is the working "
+    + "itself rather than anything arriving. No monster, no blade, no summoning circle.",
   tokens: "One picture per creature, used as both the sheet portrait and the map token."
 };
 
@@ -2055,7 +2107,30 @@ for (const group of GROUPS) {
       ...(exclusive.length
         ? ["", `THIS CARD IS THE EXCEPTION. Only ${exclusive.join(" and ")} ever draws it, so `
           + "draw that creature: the capsule's rules about species, anatomy and scale do not "
-          + "apply here, and this picture should be unmistakably of one thing."]
+          + "apply here, and this picture should be unmistakably of one thing.",
+          /*
+           * **And it has to be special at a glance, not only on reading.**
+           *
+           * The licence above told the model it *may* draw a creature. It did not say the picture
+           * should look unlike its thirty-four neighbours, and the neighbours are built on the
+           * opposite instruction -- the intent capsule asks for *the point of contact, the place
+           * the ground is marked, the gap where the distance is*, which is deliberately a fragment
+           * of a scene with air around it, because one picture has to serve a goblin and a dragon.
+           *
+           * So four cards in five in an NPC deck look alike by design, and the rare card that is
+           * one creature's own looked alike too. A composition direction is what separates them,
+           * and it is the inverse of the capsule's: **fill the frame.** A card that crowds its own
+           * edges reads as different from arm's length, before a word of it is read.
+           *
+           * The tray marks it as well (`cr-card--sole`, a folded corner), and the two are not
+           * redundant: the corner says *this one is special* on a card you are holding, and the
+           * composition says it on a card lying on the table.
+           */
+          `COMPOSE IT AS THE EXCEPTION. The other cards on this shelf are a fragment of a scene `
+          + "with open paper around it, because one picture has to serve every creature. This one "
+          + "does not: let the subject FILL the frame and crowd its own edges, close enough that "
+          + "the eye has nowhere else to go. It should be the card in a hand of eight that does "
+          + "not look like the other seven, from arm's length and before it is read."]
         : []),
       "",
       direction,

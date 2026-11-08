@@ -13,8 +13,35 @@
   --cardrpg-rule: #c9bda8;
   --cardrpg-dim: #635a4b;
   --cardrpg-blocked: #b0a89a;
-  --cardrpg-harm-paper: #221d1a;
-  --cardrpg-harm-ink: #efe6dc;
+  /*
+   * **Dark, which is not the same statement as wrong.**
+   *
+   * `--cardrpg-harm-paper` was doing three unrelated jobs: the ground of a **Wound**, the ground
+   * of a **fate card**, and the ground of a **face-down pile**. Only the first of those is
+   * negative -- a fate card is the engine of every good outcome in the game and a shut deck is
+   * furniture -- so an intruder in your hand was the same colour as the two most ordinary objects
+   * on the table, and "obviously wrong in a hand of five" was only ever obviously *different*.
+   *
+   * So the dark ground keeps its own name, and harm gets a hue.
+   */
+  --cardrpg-dark: #221d1a;
+  --cardrpg-dark-ink: #efe6dc;
+
+  /*
+   * **Negative, as a place on the colour scale rather than an absence of one.**
+   *
+   * Oxblood, sitting under `--cardrpg-group-1` (#9b3b2f, Body) so it reads as the same family
+   * seen in shadow: the palette already spends red on the body, and harm is what happens to one.
+   * Dark enough to carry the inverted ink a card in a hand needs, saturated enough that a
+   * negative card and a face-down deck are never the same object at a glance.
+   *
+   * The edge is the louder half. A hue at card size is a smudge behind art, and a 2px rule around
+   * the whole card survives being overlapped in a fan -- which is the condition a hand is
+   * actually read in.
+   */
+  --cardrpg-harm-paper: #2e1613;
+  --cardrpg-harm-ink: #f2ded8;
+  --cardrpg-harm-edge: #8c2f22;
 
   /* Bonus group borders. Seven is past where hue alone reads, so each pairs with a border style. */
   --cardrpg-group-1: #9b3b2f;  /* Body */
@@ -169,11 +196,61 @@
   color: var(--cardrpg-dim);
 }
 
-/* Wounds, Taint and injuries invert, to be obviously wrong in a hand of five. */
+/*
+ * **A card only one creature can draw.**
+ *
+ * **Not the rim**, which means a bonus group and nothing else, system-wide. A second meaning on
+ * the rim would make every tinted card ambiguous, and the rim is already load-bearing in two
+ * sheets and the tray.
+ *
+ * So a folded top-right corner, which is a **shape** rather than a hue: it survives being
+ * overlapped in a fan from the left, it reads at tray size, it costs nothing inside the printed
+ * face, and it is legible to anybody who cannot separate an oxblood rim from a brown one.
+ */
+.cardrpg .cr-card--sole {
+  position: relative;
+}
+.cardrpg .cr-card--sole::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1.15em;
+  height: 1.15em;
+  background: linear-gradient(225deg, var(--cardrpg-ink) 0 50%, transparent 50%);
+  border-top-right-radius: 3px;
+  pointer-events: none;
+}
+
+/*
+ * **Wounds, Taint, Fear, Doubt, Rage, Compulsion: the cards nobody chose to put in a deck.**
+ *
+ * Inverted to be obviously wrong in a hand of five, and now obviously wrong rather than merely
+ * obviously dark: the ground is oxblood rather than the neutral dark a fate card and a shut pile
+ * wear, and the edge states it at the size a card is actually read at.
+ *
+ * The inset is what does the work in a fan. A hand overlaps its cards, so the only part of a card
+ * behind the front one that can be seen is its left edge and its top -- a border alone is covered
+ * by the next card, and a second line inside it is not.
+ */
 .cardrpg .cr-card--harm {
-  background: var(--cardrpg-harm-paper);
   color: var(--cardrpg-harm-ink);
-  border-color: #000;
+  border-color: var(--cardrpg-harm-edge);
+  box-shadow: inset 0 0 0 2px var(--cardrpg-harm-edge);
+  /*
+   * **A tint over the art rather than instead of it**, which also fixes something: this rule
+   * used the `background` shorthand, and a shorthand resets `background-image` -- so every harm
+   * card has been throwing its own picture away since the art was wired up. A Wound has a back in
+   * the art brief and a face nobody could see.
+   *
+   * Two layers: a flat oxblood wash on top, the card's own art underneath. The wash is opaque
+   * enough that the hue is never in doubt and thin enough that the picture still reads, which is
+   * the whole point of drawing one.
+   */
+  background-color: var(--cardrpg-harm-paper);
+  background-image:
+    linear-gradient(rgba(46, 22, 19, 0.74), rgba(46, 22, 19, 0.74)),
+    var(--cr-art, none);
 }
 
 /* A fate card is read in a row at tiny size: one enormous glyph, nothing else. */
@@ -502,12 +579,12 @@
   justify-content: center;
   gap: 0.15em;
   cursor: pointer;
-  color: var(--cardrpg-paper);
+  color: var(--cardrpg-dark-ink);
   /* Hatched, so a stack reads as face-down at a glance. */
   background:
     repeating-linear-gradient(45deg,
       rgba(255, 255, 255, 0.07) 0 6px, rgba(0, 0, 0, 0) 6px 12px),
-    var(--cardrpg-harm-paper);
+    var(--cardrpg-dark);
   border: 1px solid var(--cardrpg-ink);
   border-radius: 5px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
@@ -522,7 +599,7 @@
  * unreadable on about half of them.
  */
 .cr-hud-layer .cr-pile--faced {
-  background: var(--cr-art) center / cover no-repeat, var(--cardrpg-harm-paper);
+  background: var(--cr-art) center / cover no-repeat, var(--cardrpg-dark);
 }
 .cr-hud-layer .cr-pile--faced .cr-pile__count,
 .cr-hud-layer .cr-pile--faced .cr-pile__label {

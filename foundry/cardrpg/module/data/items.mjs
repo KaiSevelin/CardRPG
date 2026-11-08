@@ -429,6 +429,29 @@ export class ItemSlateData extends SlateData {
       identified: new fields.BooleanField({ initial: true }),
       unidentifiedName: new fields.StringField({ required: false, blank: true, initial: "" }),
 
+      /**
+       * **The category of permanent injury this item is the recipe for**, or blank.
+       *
+       * This closes the `[OPEN]` the four rituals were carried at: they were **spells**, and on a
+       * spell `strength` is the **slot cost** -- *a strength-3 formula fills three slots*. But a
+       * ritual is the first slate in the game that is never **prepared** and never **cast**: what
+       * resolves one is winning a challenge, not `payToCast`. So a slot cost had nothing to mean,
+       * and any number above zero quietly told a non-mage with no slots that the ritual was closed
+       * to them -- the exact opposite of the world document's *"anyone literate can do it."*
+       *
+       * **The gate is the recipe, so the recipe is a thing you find.** That sentence was in the
+       * design before this field existed, and it names an item rather than a formula: a recipe is
+       * bought, stolen, copied and lent, and a GM hands one out the way they hand out a key. It
+       * also puts the scarcity somewhere a party can act on, which a spell slot never was.
+       *
+       * The challenge's numbers stay in `CARDRPG.injuryCategories`, where one category names one
+       * ritual, so there is still exactly one place that says what a Regrowth costs.
+       */
+      ritual: new fields.StringField({
+        required: false, blank: true, initial: "",
+        choices: [...Object.keys(CARDRPG.injuryCategories), ""]
+      }),
+
       /*
        * The curse, as the obligation it is. Its PRESENCE is what makes an item cursed, so there is
        * no second boolean to disagree with -- the same shape `temporaryFate` uses on a condition.
@@ -515,6 +538,21 @@ export class ItemSlateData extends SlateData {
     return !!this.curse;
   }
 
+  /** Is this a ritual recipe? The same shape of question as `cursed`. */
+  get isRecipe() {
+    return !!this.ritual;
+  }
+
+  /** The challenge this recipe lets a party run, or null. */
+  get ritualChallenge() {
+    const cat = CARDRPG.injuryCategories[this.ritual];
+    if (!cat?.ritual) return null;
+    return {
+      name: cat.ritual, lifts: this.ritual, approach: cat.approach,
+      progress: cat.progress, pressure: cat.pressure, needsName: !!cat.needsName
+    };
+  }
+
   /**
    * What to put in front of the player. An unidentified item shows what it LOOKS like and nothing
    * it does -- including, pointedly, its curse. The GM reads the real fields off the same slate.
@@ -566,6 +604,28 @@ export class FeatureSlateData extends SlateData {
     return {
       text: new fields.StringField({ required: false, blank: true, initial: "" }),
       group: groupField(),
+
+      /**
+       * **The one injury this feature adapts around**, by name. Blank on every other feature.
+       *
+       * ideas.md's *Adapted: ignore one injury's penalty* is the only levelling option in the game
+       * that points at **another slate**, which is why it has to be a field: no amount of negative
+       * `grants` can express *ignore that other thing*.
+       *
+       * The injury is not removed. A **Regrowth** removes one; this leaves it on the sheet with
+       * its arithmetic switched off, which is the difference between healing and learning to live
+       * with it -- and the reason the scar is still there for a GM to write into a scene.
+       *
+       * It also exists because Maimings are **uncapped** (config.mjs). Three of them measure past
+       * two of the most expensive card in the game, so the brake had to be fitted before the cap
+       * came off.
+       *
+       * Read through `adaptedNames` in grants.mjs by **every** reader of an injury's numbers,
+       * because there are five of them -- the grant sum, the move reduction, the hand-slot
+       * capacity, the blocked reactions and the printed range -- and an Adapted that reached four
+       * would be a feature that works on a sheet and not in a fight.
+       */
+      adapts: new fields.StringField({ required: false, blank: true, initial: "" }),
       ...drainFields(),
 
       /**

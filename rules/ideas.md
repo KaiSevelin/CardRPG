@@ -85,10 +85,15 @@ When you fall Unconscious, draw a fate card:
 ### Living with injuries
 - **Items:** hook hand (takes the hand slot, has its own Strike line), glass eye, crutch.
 - **Adaptation:** a leveling option, *Adapted: ignore one injury's penalty*.
+  - **[BUILT 2026-11-08]** As written, and it turned out to be load-bearing rather than a nicety:
+    Maimings are **uncapped** (core-rules §8), and a *Bad Leg* alone measures &minus;8.1, so this
+    is the brake that had to be fitted before the cap could come off. The injury **stays on the
+    sheet** &mdash; it is the only feature in the game that points at another slate.
 - **Regeneration magic:** rare and expensive, more of a quest than a service.
-  - Built as **Regrowth**, a downtime challenge at Progress 6 &mdash; because a challenge is what
-    "a quest rather than a service" is in this game's existing vocabulary, and because Ritual
-    Magic's price was already *"time, and a recipe that can go wrong"*.
+  - Built as **Recipe: Regrowth**, a downtime challenge at Progress 6 &mdash; because a challenge
+    is what "a quest rather than a service" is in this game's existing vocabulary, and because
+    Ritual Magic's price was already *"time, and a recipe that can go wrong"*. It is an **item**,
+    at 900 gold: the recipe is the gate, so the gate is a thing you find.
 
 ### Optional: escaping death
 When your character would die, you may take a **permanent injury instead**. Limited to once per character, or once per level.

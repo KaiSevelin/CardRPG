@@ -14,7 +14,7 @@ import { skillCardData, twistCardData, npcCardData, backOf, artIn } from "./deck
 import { deckFor, expandRoster } from "./monsters.mjs";
 import {
   fateCards, WARRIOR_DECK, ITEMS, NPC_GEAR, FEATURES, FORMULAS, WARRIOR_SKILLS,
-  TWISTS, INTENTS, NATURAL_WEAPONS, ROSTER, VARIANTS,
+  TWISTS, RITUAL_TWISTS, INTENTS, NATURAL_WEAPONS, ROSTER, VARIANTS,
   SHADOW_FORMULAS, WILD_MAGIC,
   WARRIOR, GOBLIN, GOBLIN_ARCHER
 } from "./content.mjs";
@@ -314,6 +314,22 @@ export async function createStarterContent() {
   const twists = await makeCards("Twist Deck", "deck", "twist-deck",
     expand(TWISTS, def => twistCardData(def)), "twist");
   await makeCards("Twist Discard", "pile", "twist-discard");
+  made.decks += 2;
+
+  /*
+   * **And the ritual twist deck, which is the other half of a price the world document stated.**
+   *
+   * Ritual Magic costs *"Time, and a recipe that can go wrong"* (specializations.md). Time is the
+   * Progress track and had a system; *a recipe that can go wrong* had nothing, so the only thing
+   * a failed ritual could do was draw a general twist -- and a general twist costs you attention,
+   * a tool or some Health, none of which is the thing you are trying to undo pushing back.
+   *
+   * It is the GM's, like the twist deck, and it lives on the world rather than on a character for
+   * the same reason: a ritual is run on whoever needs it, and the deck belongs to neither.
+   */
+  await makeCards("Ritual Twist Deck", "deck", "ritual-twist-deck",
+    expand(RITUAL_TWISTS, def => twistCardData(def, "ritual")), "ritual");
+  await makeCards("Ritual Twist Discard", "pile", "ritual-twist-discard");
   made.decks += 2;
 
   await buildActor(WARRIOR, {
