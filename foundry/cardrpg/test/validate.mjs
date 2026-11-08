@@ -4321,7 +4321,7 @@ const pools = {
   shade: content.SHADE_POOL, strength: content.STRENGTH_POOL, mind: content.MIND_POOL,
   faith: content.FAITH_POOL
 };
-check("Shade's pool", pools.shade.length, 14);
+check("Shade's pool", pools.shade.length, 17);
 check("Strength's pool", pools.strength.length, 15);
 /*
  * Mind's pool is formulas rather than cards, and it is **seventy**, which is a different kind of
@@ -5399,7 +5399,7 @@ check("one behind every school, every god and each martial Way",
  * fence it the way a spell's strength fences a formula. */
 check("cards a martial menu offers",
   [...graph.CARDS_BY_SOURCE].map(([k, v]) => `${k} ${v.length}`).join(", "),
-  "Shade 14, Warrior 14");
+  "Shade 17, Warrior 14");
 check("and the card held back from one",
   [...content.SHADE_POOL, ...content.STRENGTH_POOL].filter(graph.topRung)
     .map(c => c.name).join(", ") || "none",
@@ -5451,7 +5451,7 @@ const choosableCards = new Set(cardMenus
 const poolCards = [...content.COMMON_POOL, ...content.SHADE_POOL, ...content.STRENGTH_POOL];
 const unreachableCards = poolCards.map(c => c.name)
   .filter(name => !namedCards.has(name) && !choosableCards.has(name));
-check("pool cards in total", poolCards.length, 35);
+check("pool cards in total", poolCards.length, 38);
 check("cards no node can hand over at all",
   unreachableCards.length ? unreachableCards.sort().join(", ") : "none",
   "Both Hands, Dig In, Nothing Held Back, Off-Hand Blow, Press");
@@ -5563,7 +5563,7 @@ check("content carrying the audit column",
 const vague = audited.filter(c => (c.needs ?? []).some(g => g.length < 12)).map(c => c.name);
 check("gaps too short to act on", vague.length ? vague.join(", ") : "none", "none");
 const workingCards = audited.filter(c => !c.needs.length).length;
-check("content the engine does everything for", workingCards, 94);
+check("content the engine does everything for", workingCards, 97);
 check("content with a named gap", audited.filter(c => c.needs.length).length, 114);
 
 /*
@@ -5860,8 +5860,10 @@ check("and nothing when there is nothing", resolve.requireText(null), "");
 /* The content side: every requirement names a real tag, and one no item carries is a dead card. */
 const reqSteps = audited.flatMap(c => [...(c.primary ?? []), ...(c.secondary ?? [])]
   .filter(st => st.requires).map(st => ({ card: c.name, verb: st.verb, ...st.requires })));
-check("steps carrying a kit requirement", reqSteps.length, 7);
-check("cards carrying one", new Set(reqSteps.map(r => r.card)).size, 6);
+/* Three more, all Shade: every card that answers armour wants a light weapon, which is the Way's
+ * own price for owning that axis. */
+check("steps carrying a kit requirement", reqSteps.length, 10);
+check("cards carrying one", new Set(reqSteps.map(r => r.card)).size, 9);
 check("requirements naming a tag that is not an item tag",
   reqSteps.filter(r => r.tag && !CARDRPG.itemTags.includes(r.tag))
     .map(r => `${r.card}: ${r.tag}`).join(", ") || "none", "none");
@@ -6053,7 +6055,7 @@ const artable = [
   content.NATURAL_WEAPONS ?? [], everyCreatureForArt, [content.WARRIOR],
   ...Object.entries(content).filter(([k]) => k.endsWith("_SIGNATURES")).map(([, v]) => v)
 ].flat();
-check("pieces of content that take art", artable.length, 602);
+check("pieces of content that take art", artable.length, 605);
 /*
  * **The four items that are content without being commissions, and the item each one wears.**
  *
@@ -6503,7 +6505,7 @@ const pathless = [
   ...artable.map(e => [e.name, artInLive(e)]),
   ...backs.map(([k, b]) => [b.label ?? k, backOfLive(k)])
 ].filter(([, p]) => p && !fs.existsSync(fileFor(p)));
-check("art paths the game would hand Foundry", artable.length + backs.length, 613);
+check("art paths the game would hand Foundry", artable.length + backs.length, 616);
 /*
  * **The shoot queue, declared rather than carried quietly.**
  *
@@ -6534,7 +6536,7 @@ check("art paths the game would hand Foundry", artable.length + backs.length, 61
  */
 check("and those naming a file that is not there",
   pathless.map(([name]) => name).sort().join(", ") || "none",
-  "none");
+  "Find the Seam, Half-Hilt, Round the Shield");
 /*
  * **Every group in the brief lands in a slot something writes.**
  *
@@ -6702,7 +6704,7 @@ const briefs = faceRows.map(r => r.brief);
 const leaked = briefs.flatMap(text =>
   [...text.matchAll(/\b([a-z]+[A-Z][a-zA-Z]*)\b/g)].map(m => m[1]));
 /* A pattern that matched no rows at all would report "none" for any list whatsoever. */
-check("briefs the check actually read", briefs.length, 602);
+check("briefs the check actually read", briefs.length, 605);
 check("keys that leaked into the brief",
   leaked.length ? [...new Set(leaked)].join(", ") : "none", "none");
 /*
@@ -6865,7 +6867,7 @@ check("and those are the lengths in the source",
  * European and the cards had no assignment at all.
  */
 const castLines = [...artPrompts.matchAll(/that person is (a (?:wo)?man) of ([A-Za-z ]+?) appearance/g)];
-check("cards, signatures and features given an assigned person", castLines.length, 149);
+check("cards, signatures and features given an assigned person", castLines.length, 152);
 /* The NPC pool is the one group that must NOT be cast: its own capsule says the actor is nobody,
  * because one picture is drawn behind a goblin, a troll and a dragon. */
 const npcBlock = /\n## NPC intent cards\n([\s\S]*?)\n## /.exec(artPrompts)?.[1] ?? "";
@@ -6934,7 +6936,7 @@ check("and the log is a record, not a source",
  * spelling them again. */
 const packSource = fs.readFileSync(path.join(root, "test/build-packs.mjs"), "utf8");
 const rows = faceRows;
-check("file paths in the brief", rows.length, 602);
+check("file paths in the brief", rows.length, 605);
 /* And the backs, whose path is the slug of their KEY rather than of their printed label. */
 const backPaths = [...artList.matchAll(/\| `(backs\/[^`]+)` \|/g)].map(m => m[1]);
 check("back paths in the brief", backPaths.length, backs.length);
@@ -7041,7 +7043,7 @@ for (const entry of everyEntry) {
     for (const st of arr ?? []) everyStep.push({ card: entry.name, st });
   }
 }
-check("steps the timing audit read", everyStep.length, 361);
+check("steps the timing audit read", everyStep.length, 367);
 
 /*
  * **Every key a combo clause uses is a key the clause's schema declares.**
@@ -7092,8 +7094,10 @@ for (const [what, count, read] of [
   ["say who they are for", 32, s => s.st.targets],
   ["say how often they may be played", 3, s => s.st.oncePer],
   /* Five, not three: *Measure* and *Bring It Down* joined when the fields became readable, and
-   * the conditional pair on *Between the Plates* hangs off its opening rather than its step. */
-  ["go straight through armour, Block or cover", 6,
+   * the conditional pair on *Between the Plates* hangs off its opening rather than its step. Eight
+   * now, and the three that joined are Way of Shade cards written for exactly this: the Way that
+   * bypasses a defence rather than breaking it. */
+  ["go straight through armour, Block or cover", 8,
     s => s.st.ignoresArmour || s.st.ignoresBlock || s.st.ignoresCover],
   ["name whose fate deck they Read", 4, s => s.st.readDeck],
   ["wait on a state of the player's own", 11, s => s.st.whileState]
@@ -7588,7 +7592,7 @@ check("and the group it asks for", DIMENSIONS.join("+"), "width+height+depth");
 const everyPackDoc = planned.flatMap(p => p.docs);
 const everyPackChild = planned.flatMap(p => p.docs.flatMap(d => d.items ?? d.cards ?? []));
 check("documents the stamp sweep read", everyPackDoc.length, 498);
-check("and children beneath them", everyPackChild.length, 369);
+check("and children beneath them", everyPackChild.length, 372);
 const unstamped = [...everyPackDoc, ...everyPackChild]
   .filter(d => d._stats?.coreVersion !== manifest.compatibility.verified
     || d._stats?.systemId !== manifest.id
@@ -7703,7 +7707,7 @@ for (const pack of planned) {
 }
 check("ids that are not the hash of their key, malformed, or shared",
   idFaults.length ? idFaults.slice(0, 4).join("; ") : "none", "none");
-check("ids the rule actually read", everyId.size, 867);
+check("ids the rule actually read", everyId.size, 870);
 /* The hash itself, asked rather than shared: sixteen characters of the right alphabet, and the
  * same answer twice for the same key. */
 check("an id is sixteen characters", packs.id16("items:Longsword").length, 16);

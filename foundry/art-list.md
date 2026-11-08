@@ -1,6 +1,6 @@
 # Art list
 
-**613 pieces**, of which **613** are wired up. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card.
+**616 pieces**, of which **616** are wired up. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card.
 
 ## What to supply
 
@@ -54,7 +54,7 @@ Anything under `icons/svg/` is ignored on purpose: that is Foundry's own placeho
 
 ## Deck backs — draw these first
 
-**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 11 pictures against 602 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
+**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 11 pictures against 605 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
 
 **11 pieces**, 11 wired up. Same 2:3 and 640 × 960 as a face, and **no safe area**: nothing is printed over a back, so the whole card is yours.
 
@@ -162,7 +162,7 @@ Face-up on the table during a fight, which makes them the art players stare at l
 
 The minor-node cards of a built Way.
 
-**14 pieces**, 14 wired up. Suggested path: `cardrpg/art/cards/shade/`
+**17 pieces**, 17 wired up. Suggested path: `cardrpg/art/cards/shade/`
 
 | | Name | What it is | File |
 |---|---|---|---|
@@ -170,9 +170,12 @@ The minor-node cards of a built Way.
 | ✓ | **Call the Shot** | Strike · / Marked (1) · Marked on any enemy you can see, at any range. | `cards/shade/call-the-shot.webp` |
 | ✓ | **Count the Odds** | Strike · / Sift 2 · The secondary is seeing only — you may not reorder them, and you discard nothing. | `cards/shade/count-the-odds.webp` |
 | ✓ | **Cut and Run** | Strike, Move 2 · / Move 1 | `cards/shade/cut-and-run.webp` |
+| ✓ | **Find the Seam** | Strike -1 ignores armour · / Move 1 · Armour does not apply. A point weaker than a plain Strike. | `cards/shade/find-the-seam.webp` |
+| ✓ | **Half-Hilt** | Strike ignores 2 armor · / Move 1 · Ignores 2 armour. Reversed grip, straight into the gap. | `cards/shade/half-hilt.webp` |
 | ✓ | **Light Feet** | Move 3 · / Move 2 · Ignoring difficult ground. | `cards/shade/light-feet.webp` |
 | ✓ | **Mock** | Dazed (1) · / Move 1 | `cards/shade/mock.webp` |
 | ✓ | **Pin the Shadow** | Strike Slowed (1) · / Move 1 | `cards/shade/pin-the-shadow.webp` |
+| ✓ | **Round the Shield** | Strike -1 range 3 ignores Block · / Move 1 · A thrown knife that answers neither a raised shield nor cover. Range 3. | `cards/shade/round-the-shield.webp` |
 | ✓ | **Scout Ahead** | Move 3 · / Sift 3 · Seeing only, and one card deeper than most: you looked where you were going. | `cards/shade/scout-ahead.webp` |
 | ✓ | **Second Knife** | Strike range 3 · / Strike -1 | `cards/shade/second-knife.webp` |
 | ✓ | **Sleight** | Use, Strike · / Ready | `cards/shade/sleight.webp` |

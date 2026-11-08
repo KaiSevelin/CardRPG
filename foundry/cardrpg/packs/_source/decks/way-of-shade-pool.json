@@ -49,6 +49,136 @@
       }
     },
     {
+      "_id": "HCE7ZMLlQs06a7v6",
+      "_key": "!cards.cards!NHP0PBXJoAQv67Vk.HCE7ZMLlQs06a7v6",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 200,
+      "name": "Find the Seam",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Find the Seam",
+          "img": "systems/cardrpg/art/cards/shade/find-the-seam.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "strike",
+            "mod": -1,
+            "ignoresArmour": true,
+            "requires": {
+              "tag": "light"
+            }
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {},
+        "text": "Armour does not apply. A point weaker than a plain Strike."
+      }
+    },
+    {
+      "_id": "C23pzfKsgcl3simk",
+      "_key": "!cards.cards!NHP0PBXJoAQv67Vk.C23pzfKsgcl3simk",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 300,
+      "name": "Half-Hilt",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Half-Hilt",
+          "img": "systems/cardrpg/art/cards/shade/half-hilt.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "strike",
+            "ignores": 2,
+            "requires": {
+              "tag": "light"
+            }
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {},
+        "text": "Ignores 2 armour. Reversed grip, straight into the gap."
+      }
+    },
+    {
+      "_id": "Nm2rFLVg0uSG5aPo",
+      "_key": "!cards.cards!NHP0PBXJoAQv67Vk.Nm2rFLVg0uSG5aPo",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 400,
+      "name": "Round the Shield",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Round the Shield",
+          "img": "systems/cardrpg/art/cards/shade/round-the-shield.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "strike",
+            "mod": -1,
+            "range": 3,
+            "ignoresBlock": true,
+            "ignoresCover": true,
+            "requires": {
+              "tag": "light"
+            }
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "",
+        "costs": {},
+        "text": "A thrown knife that answers neither a raised shield nor cover. Range 3."
+      }
+    },
+    {
       "_id": "7vTEZ0gcS3mkvD4t",
       "_key": "!cards.cards!NHP0PBXJoAQv67Vk.7vTEZ0gcS3mkvD4t",
       "_stats": {
@@ -56,7 +186,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 200,
+      "sort": 500,
       "name": "Between the Plates",
       "type": "action",
       "face": 0,
@@ -97,7 +227,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 300,
+      "sort": 600,
       "name": "Take the Shot",
       "type": "action",
       "face": 0,
@@ -142,7 +272,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 400,
+      "sort": 700,
       "name": "Pin the Shadow",
       "type": "action",
       "face": 0,
@@ -190,7 +320,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 500,
+      "sort": 800,
       "name": "Cut and Run",
       "type": "action",
       "face": 0,
@@ -231,7 +361,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 600,
+      "sort": 900,
       "name": "Light Feet",
       "type": "action",
       "face": 0,
@@ -270,7 +400,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 700,
+      "sort": 1000,
       "name": "Slip the Knot",
       "type": "action",
       "face": 0,
@@ -308,7 +438,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 800,
+      "sort": 1100,
       "name": "Second Knife",
       "type": "action",
       "face": 0,
@@ -352,7 +482,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 900,
+      "sort": 1200,
       "name": "Mock",
       "type": "action",
       "face": 0,
@@ -392,7 +522,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1000,
+      "sort": 1300,
       "name": "Sleight",
       "type": "action",
       "face": 0,
@@ -431,7 +561,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1100,
+      "sort": 1400,
       "name": "Vanish",
       "type": "action",
       "face": 0,
@@ -474,7 +604,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1200,
+      "sort": 1500,
       "name": "Count the Odds",
       "type": "action",
       "face": 0,
@@ -512,7 +642,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1300,
+      "sort": 1600,
       "name": "Scout Ahead",
       "type": "action",
       "face": 0,
@@ -551,7 +681,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1400,
+      "sort": 1700,
       "name": "Smoke and Go",
       "type": "action",
       "face": 0,

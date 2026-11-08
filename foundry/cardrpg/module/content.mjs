@@ -4227,6 +4227,66 @@ export const SHADE_POOL = [
     secondary: [{ condition: "marked", duration: 1 }],
     text: "Marked on any enemy you can see, at any range."
   },
+  /*
+   * --- the three cards that answer armour, and why they are Shade's ---
+   *
+   * **Way of Shade bypasses; Way of Strength breaks.** That is the split, and it was already half
+   * written: *Between the Plates* goes through plate against a Marked target, *Heavy Swing* takes
+   * two points off by hitting harder. Shade's strikes are mod 0 and &minus;1 where Strength's run
+   * to +2, so the Way is already the worse one at delivering damage -- what it should be is the
+   * one that does not need to.
+   *
+   * The three mechanisms the engine has are genuinely different, and one card each is why these
+   * are three cards rather than one:
+   *
+   * | Card | Mechanism | Reads as |
+   * |---|---|---|
+   * | *Find the Seam* | `ignoresArmour` | **through** it, whatever it is |
+   * | *Half-Hilt* | `ignores: 2` | through **two points** of it, and out-armoured by more |
+   * | *Round the Shield* | `ignoresBlock` + `ignoresCover` | not through at all, **around** |
+   *
+   * core-rules 5 keeps armour and Block separate on purpose -- `ignores` comes off armour and
+   * never off Block -- so the third is not a stronger version of the first two, it answers a
+   * different defence. A raised shield and a plate cuirass are two problems and a knife has two
+   * answers.
+   *
+   * **Every one of them is paid for in damage**, which is the Way's price for this: &minus;1 on
+   * two of the three, and all three want a `light` weapon, so none of them can be carried by the
+   * character who also hits hardest. They are reachable through *shade.repertoire*, which offers a
+   * choice from the Shade pool, so they need no node of their own.
+   */
+  {
+    name: "Find the Seam", copies: 1, pool: "shade", needs: [],
+    primary: [{ verb: "strike", mod: -1, ignoresArmour: true, requires: { tag: "light" } }],
+    secondary: [{ verb: "move", param: 1 }],
+    text: "Armour does not apply. A point weaker than a plain Strike."
+  },
+  {
+    /*
+     * **No reaction on this one, and that is a check rather than a taste.** A requirement is checked
+     * where the tray picks an item and a reaction never goes through the tray -- it fires on somebody
+     * else's turn, from the resolver, with no face to grey out. A card carrying both would gate
+     * silently, which the suite already refuses, so a Shade card that asks for a light weapon
+     * cannot also be a Parry.
+     *
+     * The text says nothing about what it is held in either: "both hands" is a kit requirement, and
+     * a card that prints one in words while the field carries another is this project's recurring
+     * defect in its oldest form.
+     */
+    name: "Half-Hilt", copies: 1, pool: "shade", needs: [],
+    primary: [{ verb: "strike", ignores: 2, requires: { tag: "light" } }],
+    secondary: [{ verb: "move", param: 1 }],
+    text: "Ignores 2 armour. Reversed grip, straight into the gap."
+  },
+  {
+    name: "Round the Shield", copies: 1, pool: "shade", needs: [],
+    primary: [{
+      verb: "strike", mod: -1, range: 3,
+      ignoresBlock: true, ignoresCover: true, requires: { tag: "light" }
+    }],
+    secondary: [{ verb: "move", param: 1 }],
+    text: "A thrown knife that answers neither a raised shield nor cover. Range 3."
+  },
   {
     name: "Between the Plates", copies: 1, pool: "shade", needs: [],
     /* The Mark IS the gap, so the ignore hangs off the opening rather than off the step. It was

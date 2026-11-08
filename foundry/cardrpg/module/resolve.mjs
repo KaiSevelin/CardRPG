@@ -1905,6 +1905,24 @@ export async function resolveAttack(actor, {
   const fate = await drawFate(actor, before, mode);
   // A Miss is a shot that went wide: nothing arrives, so nothing the piece promised arrives either.
   const missed = fate.used?.system.special === "miss";
+  /*
+   * **A Critical always gets at least one point through.**
+   *
+   * The rule exists because of a count: **15 of the roster's 112 creatures could not hurt a
+   * character in Plate at all** -- not on a Critical, not ever. A Scrip's Nip is 1, doubled to 2,
+   * against four points of armour; a Townsfolk's Dagger is 2, doubled to 4, against four. An
+   * encounter built from any of them was unlosable, which is not a difficulty setting, it is the
+   * absence of a fight.
+   *
+   * It is a **floor on the Critical and nothing else**, which is what makes it cheap: a goblin's
+   * spear is 3, doubled to 6, and already gets 2 through four points of armour -- so the floor
+   * never fires in any published encounter and changes none of their numbers. It fires exactly
+   * where the attack was too small to matter, which is exactly where the problem was.
+   *
+   * It also keeps armour doing its job. Nineteen of twenty faces are still stopped dead; what
+   * changes is that the one card whose whole purpose is *this one gets through* now does.
+   */
+  const critical = fate.used?.system.special === "crit";
 
   const rows = [];
   for (const target of targets) {
@@ -1931,8 +1949,11 @@ export async function resolveAttack(actor, {
       const { armor, block, pierced, rounded } =
         defencesAgainst({ armor: hadArmor, block: hadBlock, pierce, step, when, opening });
       const combo = opening ? (when.mod ?? 0) : 0;
+      const got = Math.max(0, fate.result + combo - armor - block);
       return { armor, block, combo, pierced, rounded, hadArmor, hadBlock,
-        incoming: Math.max(0, fate.result + combo - armor - block) };
+        /* The floor is on the total, after armour and Block, so a Critical is never shrugged off
+         * entirely however the target is defended. */
+        incoming: critical ? Math.max(1, got) : got };
     };
 
     /*

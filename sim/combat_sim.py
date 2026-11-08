@@ -290,6 +290,10 @@ class Config:
     # initiative and the injury draw, and every face it has means something on every one of those.
     # "Ignores armour" does not, so a face that said only that would be a blank on most draws.
     plus2_pierces: bool = False
+    # **A Critical always gets at least one point through** (core-rules 5). On by default, because
+    # it is the rule now rather than a proposal: 15 of the roster's 112 creatures could not hurt a
+    # character in Plate at all without it. False re-runs the old arithmetic.
+    crit_floor: bool = True
     # Shattered Nerves: no reactions in round 1. The engine knows rounds rather than
     # per-character firsts, and so does this.
     shattered_nerves: bool = False
@@ -1210,6 +1214,9 @@ class Game:
         if not cfg.persistent_block:
             w['block'] -= absorbed          # old rule: one hit used the whole block up
         d -= absorbed
+        # A Critical always gets at least one point through, after armour and Block alike.
+        if crit and cfg.crit_floor:
+            d = max(1, d)
         self.s['prevented_armor'] += min(raw, cfg.armor)
         self.s['prevented_shieldup'] += absorbed
         can_react = not w['exhausted'] and any(c != 'Wound' for c in w['hand'])

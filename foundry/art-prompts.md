@@ -1,6 +1,6 @@
 # Art prompts
 
-**613 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
+**616 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
 
 It walks the same `GROUPS` the art list walks, by importing it rather than copying it, so the two files cannot disagree about what exists.
 
@@ -27,7 +27,7 @@ So the numbers are gone from the capsules and the picture is in their place: **t
 
 ## Deck backs
 
-**Draw these first.** 11 pictures against 602 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
+**Draw these first.** 11 pictures against 605 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
 
 ### The capsule — paste this once
 
@@ -1041,7 +1041,7 @@ Draw the air around a raised limb going wrong -- light bending, grit lifting off
 
 ## Way of Shade — pool
 
-**14 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/cards/shade/`.
+**17 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/cards/shade/`.
 
 A Way of Shade card: low light, cover, and the moment before being noticed.
 
@@ -1172,6 +1172,30 @@ Draw the blow and the leaving in one gesture: a blade dragged back across the bo
 WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Horn of Africa appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
+### Find the Seam
+
+File: `cards/shade/find-the-seam.webp`
+
+```text
+SUBJECT. "Find the Seam" — Strike -1 ignores armour · / Move 1 · Armour does not apply. A point weaker than a plain Strike.
+
+Draw a hand laid flat on a breastplate, feeling for something through it, the knife still held low and unused -- the search is the subject, not the stab.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of South Asian appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Half-Hilt
+
+File: `cards/shade/half-hilt.webp`
+
+```text
+SUBJECT. "Half-Hilt" — Strike ignores 2 armor · / Move 1 · Ignores 2 armour. Reversed grip, straight into the gap.
+
+Draw a knife held reversed and close, the pommel at the heel of the hand, driven short and straight where a long swing could not go.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Central Asian appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
 ### Light Feet
 
 File: `cards/shade/light-feet.webp`
@@ -1206,6 +1230,18 @@ SUBJECT. "Pin the Shadow" — Strike Slowed (1) · / Move 1
 Draw a blade driven through a trailing hem and into the ground under it, the cloth pulled taut and the foot above it unable to lift. The point is in the earth and not in anybody.
 
 WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Persian appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Round the Shield
+
+File: `cards/shade/round-the-shield.webp`
+
+```text
+SUBJECT. "Round the Shield" — Strike -1 range 3 ignores Block · / Move 1 · A thrown knife that answers neither a raised shield nor cover. Range 3.
+
+Draw a shield raised square and squarely useless: the knife already past its edge and behind it, and the shield still exactly where it was put.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Levantine appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Scout Ahead

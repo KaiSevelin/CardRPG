@@ -1576,6 +1576,23 @@ const DIRECTION = {
    */
 
   /* The Shade deck: twelve cards about reach, precision and not being there afterwards. */
+  /*
+   * **Three cards about defeating a defence, and they must not be three pictures of a knife.**
+   *
+   * *Between the Plates* below already owns *the seam, with a point in it*, so these take the
+   * other two mechanisms on their own terms: one goes through armour whatever it is, one goes
+   * through two points of it, and one does not go through anything at all -- it goes round. The
+   * defence is the subject of each, and the blade is only what answered it.
+   */
+  "cards/shade/find-the-seam":
+    "a hand laid flat on a breastplate, feeling for something through it, the knife still held "
+    + "low and unused -- the search is the subject, not the stab",
+  "cards/shade/half-hilt":
+    "a knife held reversed and close, the pommel at the heel of the hand, driven short and "
+    + "straight where a long swing could not go",
+  "cards/shade/round-the-shield":
+    "a shield raised square and squarely useless: the knife already past its edge and behind "
+    + "it, and the shield still exactly where it was put",
   "cards/shade/between-the-plates":
     "the gap in a harness with a point already in it: a narrow blade entering where two plates "
     + "meet under the arm, the armour unmarked everywhere else in frame. The seam is the subject "
