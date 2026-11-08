@@ -10,6 +10,7 @@
   "TYPES.Card.wound": "Wound",
   "TYPES.Card.taint": "Taint",
   "TYPES.Card.fear": "Fear",
+  "TYPES.Card.doubt": "Doubt",
   "TYPES.Card.wild": "Wild Magic",
   "TYPES.Card.skill": "Skill Card",
   "TYPES.Card.twist": "Twist",

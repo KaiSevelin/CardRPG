@@ -1425,11 +1425,12 @@ shuffled into your own decks, where they clog your hand until you get rid of the
 > Wounds, Taint and Fear are one mechanism at three settings rather than three rules, which is why
 > a fourth kind is a row in a table and not a new section:
 >
-> | | When it surfaces | Replacement drawn | Afterwards |
-> |---|---|---|---|
-> | **Wound** | nothing — it sits dead in your hand until the end of your turn | yes | back to the discard, until a rest or treatment lifts it |
-> | **Taint** | 1 damage, past armour | **no** — your hand is a card short | back to the discard, until a cure or Cleansing lifts it |
-> | **Fear** | one square away from the nearest enemy | yes | **gone** — spent the moment it is drawn |
+> | | Deck | When it surfaces | Replacement | Afterwards |
+> |---|---|---|---|---|
+> | **Wound** | action | nothing — it sits dead in your hand until the end of your turn | yes | back to the discard, until a rest or treatment lifts it |
+> | **Taint** | either | 1 damage, past armour | **no** — your hand is a card short | back to the discard, until a cure or Cleansing lifts it |
+> | **Fear** | action | one square away from the nearest enemy | yes | **gone** — spent the moment it is drawn |
+> | **Doubt** | **skill** | nothing — it sits dead in a hand of four until the scene ends | at the next scene | back to the skill discard, until a long rest lifts it |
 >
 > And a fourth dial that belongs to whatever deals it rather than to the card itself: **which
 > pile**. The discard, where it comes round at a moment nobody chose, or straight into the hand,
@@ -1437,13 +1438,19 @@ shuffled into your own decks, where they clog your hand until you get rid of the
 > a different pile* — the sentence Taint's own fast/slow dial was built around, and every kind of
 > intruder gets it for nothing.
 >
-> **The dial that sets the price is the replacement, and it is worth saying plainly because it is
-> not obvious.** A card that discards itself and is replaced costs almost nothing, because
-> dilution cannot bite until the draw pile empties — which is why a Wound measures at −0.7 against
-> the published encounters and actually *helps* a hero who is being hit hard enough (see the
-> measurement under Wounds). Anything meant to be felt has to take the slot with it like Taint,
-> or refuse to leave, or cost a Spend to be rid of. A kind of harm whose cost is *tempo* rather
-> than cards — Fear — is priced by a different mechanism entirely and may replace itself freely.
+> **Which deck it lands in sets the clock, and the clock is most of the price.** The action deck
+> launders itself every Catch Breath, so an intruder there is paid for within one fight and a card
+> that replaces itself costs almost nothing at all — dilution cannot bite until the draw pile
+> empties, which is why a Wound measures at −0.7 against the published encounters and actually
+> *helps* a hero who is being hit hard enough. The skill discard comes back only on a **rest**
+> (skill-rules §1), so one **Doubt** is paid for across a session and costs more than two Fear
+> ever will. Measured: one Doubt turns **11.6 points more of every call into an improvise**, where
+> two Fear cost 2.5 points of a combat win rate.
+>
+> After the deck, the replacement. Anything meant to be felt inside one fight has to take the slot
+> with it like Taint, or refuse to leave, or cost a Spend to be rid of. And a kind whose price is
+> *tempo* rather than cards — Fear — is priced by a different mechanism entirely and may replace
+> itself freely, because a square is not a tax on everybody equally and a card is.
 
 #### Wounds
 
@@ -1667,6 +1674,59 @@ shuffled into your own decks, where they clog your hand until you get rid of the
 > sentence — it needs a hero who wanted the distance anyway, which is a Shade with a bow and a
 > deck nothing deals yet (starter-cards.md).
 
+#### Doubt  **[BUILT 2026-11-08]**
+
+```
+┌───────────────────────┐
+│ ✖ DOUBT               │
+│ Can't be played.      │
+│ Discard it when the   │
+│ scene ends.           │
+└───────────────────────┘
+```
+
+- **You gain Doubt** from the same **`terrify`** keyword that deals Fear, and which one you get
+  depends on what the source attacks. *A shriek puts Fear in your legs; a thing you cannot unsee
+  puts Doubt in your head.* It is the split `tainting` already draws between body and mind, read on
+  a different pair of decks — which is why neither needed a keyword of its own.
+- **Skill deck**, and that is the whole of what makes it different. It has no effect when drawn, it
+  cannot be played, and it takes one of your **four** skill-hand slots until the scene ends. The
+  source says how much, and whether it goes into the skill **discard** or straight into the **hand**
+  you are holding now — the second costs you *this* scene instead of a later one.
+- **Discard it when the scene ends**, and it goes to the skill discard like a played card. The skill
+  discard comes back on a **rest** and not on a shuffle (see [skill-rules.md](skill-rules.md) §1),
+  so a Doubt costs you one scene now and then waits to cost you another.
+- **Removing one:** a **long rest** removes 1 Doubt. Or the fiction that caused it is settled, and
+  the GM says so — the thing you could not unsee is explained, the accusation is answered. That is
+  Bound Taint's shape rather than a cure's: what lifts it is named by what caused it.
+
+> **[MEASURED 2026-11-08] One Doubt is the most expensive card in this section, and not for the
+> reason it looks like.**
+>
+> A check is one card out of a hand of four (skill-rules §2), so this is arithmetic rather than a
+> simulation: every hand the fifteen-card starter deck can produce, enumerated, against each of the
+> six approaches. `sim/skill_hand.py`.
+>
+> | | reach | with 1 Doubt | with 2 | shutout | with 1 | with 2 |
+> |---|---|---|---|---|---|---|
+> | mean of the six approaches | 0.895 | 0.730 | 0.530 | **33.5%** | **45.1%** | **59.7%** |
+>
+> **The reach barely moves and it does not matter.** Losing 0.165 of a point of card value is 2.2
+> points of success chance in this project's unit, which is less than a tool. The cost is the
+> **shutout**: the share of calls where you hold no card of that approach at all and must
+> improvise — value 0 *with disadvantage*, which is not a smaller number but a different and much
+> worse kind of turn. One Doubt moves that from 33.5% to **45.1%**, and two take it past half.
+>
+> So the ranking across the whole section is: one Doubt costs more than two Fear (2.5 points of a
+> combat win rate) and more than a Wound (−0.7), because the skill discard returns on a rest and
+> the action deck returns every Catch Breath. **The deck was the dial all along.**
+>
+> **And the baseline is a finding of its own.** A Warrior already holds nothing for the called
+> approach **33.5%** of the time, and 52.4% of the time when the call is Presence. That is not a
+> fault: skill-rules' third design goal says *your hand rarely has the perfect card, so help from
+> others matters*, and this is the first number anybody has put on it. A Doubt does not introduce
+> that pressure, it leans on a third of the game that was already leaning.
+
 #### Acid, and the only damage that costs you gear
 
 **Corrode N** takes **N off the target's armor**, and it does not come back on a rest.
@@ -1880,8 +1940,9 @@ against an enemy that can only deal damage, holding reactions is free.
   than to the pool.
 - **It needs a capability and no temperament.** A shrieking thing and a calculating thing can both
   make you flinch, so `terrify` is what earns the card and nothing else gates it. The same keyword
-  is what lets a creature put **Fear** in your deck (section 8) — one keyword, a card and an
-  intruder, the way `tainting` is both a printed effect and the keyword a sickness arrives under.
+  is what lets a creature put **Fear** or **Doubt** in your decks (section 8) — one keyword, a
+  card and two intruders, the way `tainting` is both a printed effect and the keyword a sickness
+  arrives under. Which of the two a source deals is what it attacks: the legs or the head.
 - **It aims itself.** A player holding four reserved reactions has four things to lose; a player who
   spent their hand on their own turn has nothing to take and eats a plain Strike. Nothing has to be
   printed to make it the answer to a held hand — it simply is one.

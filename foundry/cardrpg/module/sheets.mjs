@@ -521,6 +521,7 @@ export class CardConfigSheet extends HandlebarsApplicationMixin(
       isWound: type === "wound",
       isTaint: type === "taint",
       isFear: type === "fear",
+      isDoubt: type === "doubt",
       /*
        * One predicate and one line, both from the table in decks.mjs. This used to be a second
        * disjunction naming the two intruders that existed, and the template behind it was worse:
@@ -645,7 +646,7 @@ export function registerSheets() {
     types: ["item", "feature", "spell"], makeDefault: true, label: "CARDRPG.Sheet.Slate"
   });
   DocumentSheetConfig.registerSheet(Card, "cardrpg", CardConfigSheet, {
-    types: ["action", "fate", "npc", "wound", "taint", "fear", "wild", "skill", "twist"],
+    types: ["action", "fate", "npc", "wound", "taint", "fear", "doubt", "wild", "skill", "twist"],
     makeDefault: true, label: "CARDRPG.Sheet.Card"
   });
 }

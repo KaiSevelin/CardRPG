@@ -62,6 +62,12 @@ Some cards also have a small **edge**: a bonus effect that triggers when the car
 - Played cards go to the skill discard pile.
 - The skill discard pile is **not** reshuffled automatically. It comes back on a **short rest** (needs a rest token) or a **long rest**. See *Rests* in the core rules.
 - **Fatigue:** if your skill deck and hand are both empty, you can still **improvise**: value 0, with disadvantage.
+- **Your skill deck can be clogged too.** Mind **Taint** and **Doubt** both live here
+  ([core-rules.md](core-rules.md) §8), and this is the expensive deck to put them in: a played card
+  comes back on a rest rather than on a shuffle, so an intruder here is paid for across a session
+  rather than within a fight. One Doubt takes a quarter of a hand and moves the chance you hold
+  nothing for the approach that was called from **33.5%** to **45.1%** — measured by enumerating
+  every hand this deck can produce, `sim/skill_hand.py`.
 - Inside a challenge you can't rest, but you can **Catch Breath** (section 3).
 
 ---

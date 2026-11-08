@@ -141,7 +141,7 @@ check("and the unpatched line is gone",
   /Object\.create\(Array\.prototype\)/.test(cytoscape) ? "still there" : "gone", "gone");
 
 const manifest = JSON.parse(fs.readFileSync(path.join(root, "system.json"), "utf8"));
-check("manifest declares Card subtypes", Object.keys(manifest.documentTypes.Card ?? {}).length, 9);
+check("manifest declares Card subtypes", Object.keys(manifest.documentTypes.Card ?? {}).length, 10);
 /*
  * **The verified build is a build, not a generation**, and it is load-bearing in two places.
  *
@@ -8358,7 +8358,7 @@ for (const [doc, types] of Object.entries(manifest.documentTypes)) {
 }
 check("document subtypes with no sheet", uncovered.length ? uncovered.join(", ") : "none", "none");
 check("subtypes checked", Object.values(manifest.documentTypes)
-  .reduce((n, types) => n + Object.keys(types).length, 0), 14);
+  .reduce((n, types) => n + Object.keys(types).length, 0), 15);
 
 /* -------------------------------------------- */
 
@@ -8382,7 +8382,7 @@ const intruderTable = decksSource.slice(
   decksSource.indexOf("export const INTRUDERS = {"),
   decksSource.indexOf("/** Is this one of the cards nobody chose"));
 const intruderKinds = [...intruderTable.matchAll(/^  (\w+): \{/gm)].map(m => m[1]);
-check("kinds of intruder", intruderKinds.join(", "), "wound, taint, fear");
+check("kinds of intruder", intruderKinds.join(", "), "wound, taint, fear, doubt");
 
 /*
  * Every kind declares every dial. A row that leaves one out reads as a default nobody chose, and
@@ -8392,8 +8392,9 @@ check("kinds of intruder", intruderKinds.join(", "), "wound, taint, fear");
 for (const kind of intruderKinds) {
   const from = intruderTable.indexOf(`  ${kind}: {`);
   const row = intruderTable.slice(from, intruderTable.indexOf("}", from));
-  const dials = ["dead", "onDraw", "short", "after", "line"].filter(k => row.includes(`${k}:`));
-  check(`${kind} declares every dial`, dials.join(" "), "dead onDraw short after line");
+  const dials = ["dead", "onDraw", "short", "after", "deck", "line"]
+    .filter(k => row.includes(`${k}:`));
+  check(`${kind} declares every dial`, dials.join(" "), "dead onDraw short after deck line");
 }
 
 /* One predicate each, and every one of them is read by somebody below. */
@@ -8454,15 +8455,58 @@ check("a card taken out of the game goes home before it dies",
 check("and fear does not outlive the fight that caused it",
   /await clearFear\(actor\);/.test(decksSource) ? "yes" : "no", "yes");
 
+/*
+ * **The deck dial is read, and by both resolvers.** A dial only a validator looks at is the
+ * dropdown-only value this project keeps digging out of its own history, so `intruderStack` turns
+ * the kind's deck and the fast/slow dial into the one expression both of them use. Taint answers
+ * null on purpose -- its flavour picks the deck, which is why it is the one kind declared
+ * `"either"`.
+ */
+check("the stack a dose arrives in comes from the table",
+  /export function intruderStack\(kind, fast = false\)/.test(decksSource) ? "yes" : "no", "yes");
+check("and Fear asks it rather than naming a stack",
+  /const which = intruderStack\("fear", fast\);/.test(resolveSource) ? "yes" : "no", "yes");
+check("and so does Doubt",
+  /const which = intruderStack\("doubt", fast\);/.test(resolveSource) ? "yes" : "no", "yes");
+check("and the literal Fear used to carry is gone",
+  /const which = fast \? "actionHand" : "actionDiscard";/.test(resolveSource)
+    ? "still there" : "gone", "gone");
+
+/*
+ * **Doubt's clock is the scene, and the engine is told a scene ended exactly once** -- when the
+ * skill hand is dealt. So that is where the fright from the last one goes out, before the new hand
+ * comes in. Without it a Doubt would sit in a hand that never empties and cost every scene there
+ * is, which is a different rule from the one core-rules 8 prints.
+ */
+check("the routine that deals Doubt",
+  /export async function resolveDoubt\(actor, \{ amount = 1, target, fast = false, source = "" \}\)/
+    .test(resolveSource) ? "yes" : "no", "yes");
+check("a scene ending clears the Doubt it clogged",
+  /const stale = \[\.\.\.hand\.cards\]\.filter\(c => c\.type === "doubt"\);/
+    .test(decksSource) ? "yes" : "no", "yes");
+check("and it goes to the skill discard, which a shuffle does not return",
+  /if \(stale\.length\) await discardSkillCards\(actor, stale\.map\(c => c\.id\)\);/
+    .test(decksSource) ? "yes" : "no", "yes");
+
 /* Fear's own routine, and the dial it deliberately does not have. */
 check("the routine that deals Fear",
   /export async function resolveFear\(actor, \{ amount = 1, target, fast = false, source = "" \}\)/
     .test(resolveSource) ? "yes" : "no", "yes");
-const fearBody = resolveSource.slice(
-  resolveSource.indexOf("export async function resolveFear"),
-  resolveSource.indexOf("export async function resolveCorrode"));
-/* Action deck only: a Fear card moves you, and the skill deck is not drawn in a fight. */
-check("Fear reaches the skill deck", /skill/.test(fearBody) ? "it does" : "it does not",
+/*
+ * The region is Fear's own body and nothing after it. It used to run to resolveCorrode, which was
+ * true until resolveDoubt was written between them -- and then this check read Doubt's skill deck
+ * and reported Fear reaching it. An end anchored on the NEXT export rather than on a named one.
+ */
+const fearStart = resolveSource.indexOf("export async function resolveFear");
+const fearBody = resolveSource.slice(fearStart,
+  resolveSource.indexOf("\nexport async function", fearStart + 10));
+/*
+ * Action deck only: a Fear card moves you, and the skill deck is not drawn in a fight. It asks for
+ * a STACK NAME rather than for the word, because the comment above the routine says "skill" twice
+ * explaining why there is none -- and the first version of this check read that comment and
+ * reported the rule broken by its own rationale.
+ */
+check("Fear names a skill stack", /"skill[A-Za-z]*"/.test(fearBody) ? "it does" : "it does not",
   "it does not");
 check("and a fast dose is spent rather than discarded",
   /await removeCard\(target, card\);/.test(fearBody) ? "yes" : "no", "yes");
@@ -8483,9 +8527,9 @@ check("Card subtypes missing a data model or a label",
  * And the two directions that matter: the kinds the engine knows are exactly the kinds the rules
  * print a row for. Either list growing alone is a kind of harm that half the game believes in.
  */
-const docKinds = [...coreRules.matchAll(/^> \| \*\*(Wound|Taint|Fear)\*\* \|/gm)]
+const docKinds = [...coreRules.matchAll(/^> \| \*\*(Wound|Taint|Fear|Doubt)\*\* \|/gm)]
   .map(m => m[1].toLowerCase());
-check("intruders the rules table names", docKinds.join(", "), "wound, taint, fear");
+check("intruders the rules table names", docKinds.join(", "), "wound, taint, fear, doubt");
 check("and the engine's table agrees, both ways",
   [...intruderKinds].sort().join(",") === [...docKinds].sort().join(",") ? "it does" : "it does not",
   "it does");
@@ -11638,7 +11682,7 @@ for (const m of selfSource.matchAll(/(\w+)\.includes\("((?:[^"\\]|\\.)*)"\)/g)) 
 }
 
 /* The pin that keeps the rest of this honest. */
-check("greps over a whole file, resolved", greps.length, 567);
+check("greps over a whole file, resolved", greps.length, 574);
 
 /*
  * **The rule, as one predicate, run over a planted example before it is run over the suite.**
@@ -11693,6 +11737,7 @@ const absentGreps = [
   String.raw`and no longer stops dealing at the first dose :: taint\+\+;\s*\n\s*break;`,
   String.raw`and no slate is flagged unusable instead :: quarantined: new fields\.BooleanField`,
   String.raw`and reads the change rather than the state :: item\.system\.prepared`,
+  String.raw`and the literal Fear used to carry is gone :: const which = fast \? "actionHand" : "actionDiscard";`,
   String.raw`and the old disjunction is gone from the hand filter :: c\.type !== "wound" && c\.type !== "taint"`,
   String.raw`and the old sentence is gone :: Faith is \*\*wide and shallow\*\*`,
   String.raw`and the resolver reads the flag :: conditionsOf\(actor\)\.includes\("invisible"\)`,

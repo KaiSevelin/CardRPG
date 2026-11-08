@@ -83,9 +83,20 @@ const out = {
   /* Only the cards a career can actually hold, plus the starter sixteen, which is the chassis
    * every career is measured on because character creation does not exist yet (core-rules §13). */
   cards: [...held].sort().map(name => shape(cardDefs.get(name))),
-  starter: (content.WARRIOR_DECK ?? []).map(shape)
+  starter: (content.WARRIOR_DECK ?? []).map(shape),
+  /*
+   * The skill deck, for `sim/skill_hand.py`. It crosses as the approach and value of every copy,
+   * because that is all a hand of four is: which approaches you are holding and how good they are.
+   * Written out per copy rather than as a composition, so the Python side counts cards rather than
+   * trusting a number somebody typed.
+   */
+  skills: (content.WARRIOR_SKILLS ?? []).flatMap(c =>
+    Array.from({ length: c.copies ?? 1 }, () => ({
+      name: c.name, approach: c.wild ? "any" : c.approach, value: c.value
+    })))
 };
 const dest = path.join(import.meta.dirname, "../../../sim/careers.json");
 fs.writeFileSync(dest, JSON.stringify(out, null, 1) + "\n");
 console.log(`${careers.length} careers, ${out.cards.length} cards, `
-  + `${out.starter.length} starter cards -> ${path.relative(process.cwd(), dest)}`);
+  + `${out.starter.length} starter cards, ${out.skills.length} skill cards `
+  + `-> ${path.relative(process.cwd(), dest)}`);

@@ -406,6 +406,10 @@ export async function removeCard(actor, card) {
  *                comes up one card shorter. **This is the dial that sets the price**, and
  *                core-rules 8 records why -- a card that replaces itself is very nearly free,
  *                because dilution cannot bite until the draw pile empties.
+ *  - `deck`   -- whose deck it clogs, which is the dial that sets the CLOCK. The action deck
+ *                recycles every Catch Breath, so an intruder there is priced per fight; the skill
+ *                discard comes back only on a rest (skill-rules 1), so one there is priced per
+ *                session. Taint is `"either"` because its own flavour picks, body or mind.
  *  - `after`  -- where it goes once it has resolved. The discard, where it will come round again
  *                until something lifts it, or `"gone"` -- out of the game, which is how a kind of
  *                harm that does not last is written. Fear is the first of those: it is spent the
@@ -420,16 +424,27 @@ export const INTRUDERS = {
   /* A Wound never resolves on draw at all: the player discards it at the end of their turn, so
    * it has no `after` of its own and stays in the hand until then. */
   wound: {
-    dead: true, onDraw: null, short: false, after: null,
+    dead: true, onDraw: null, short: false, after: null, deck: "action",
     line: "Can't be played. Discard at the end of your turn."
   },
   taint: {
-    dead: true, onDraw: "taint", short: true, after: "discard",
+    dead: true, onDraw: "taint", short: true, after: "discard", deck: "either",
     line: "When drawn: 1 damage, ignoring armor. Discard, and draw no replacement."
   },
   fear: {
-    dead: true, onDraw: "fear", short: false, after: "gone",
+    dead: true, onDraw: "fear", short: false, after: "gone", deck: "action",
     line: "When drawn: move 1 square directly away from the nearest enemy, then discard."
+  },
+  /*
+   * Doubt is the first intruder in the SKILL deck, and nothing about it is new except that -- it is
+   * a Wound on a slower clock. It does nothing when drawn, cannot be played, and sits in a hand of
+   * four until the scene ends. That is why it needed no new effect and why it is expensive anyway:
+   * the action deck launders itself every Catch Breath, and the skill discard comes back only on a
+   * rest. Which deck an intruder lands in is most of what it costs.
+   */
+  doubt: {
+    dead: true, onDraw: null, short: false, after: null, deck: "skill",
+    line: "Can't be played. Discard it when the scene ends."
   }
 };
 
@@ -451,6 +466,20 @@ export function drawEffect(card) {
 /** Does it take the slot with it, leaving the hand a card short? */
 export function costsTheSlot(card) {
   return !!INTRUDERS[card?.type]?.short;
+}
+
+/**
+ * Which stack a dose of this kind arrives in, slow or fast.
+ *
+ * The two dials of core-rules 8 read as one expression: the kind's own deck, and then the discard
+ * where it comes round at a moment nobody chose or the hand where it resolves at once. Taint is the
+ * exception and says so in the table -- its flavour picks the deck, so it answers null here and
+ * keeps its own line.
+ */
+export function intruderStack(kind, fast = false) {
+  const deck = INTRUDERS[kind]?.deck;
+  if (!deck || deck === "either") return null;
+  return fast ? `${deck}Hand` : `${deck}Discard`;
 }
 
 /** Where it goes once it has resolved: "discard", "gone", or null if it never resolves itself. */
@@ -821,13 +850,24 @@ export async function discardCards(actor, cardIds) {
 export async function dealSkillHand(actor) {
   const deck = deckOf(actor, "skill");
   const hand = deckOf(actor, "skillHand");
-  if (!deck || !hand) return { drawn: 0 };
+  if (!deck || !hand) return { drawn: 0, cleared: 0 };
+
+  /*
+   * **A Doubt is discarded when the scene it clogged ends** (core-rules 8), and this is the only
+   * moment the engine is ever told that a scene ended: the skill hand is dealt at the start of one
+   * and nothing else marks the boundary. So the old fright goes out before the new hand comes in,
+   * which is that sentence read from the only hook there is. It goes to the skill discard like any
+   * played card, and the skill discard comes back on a rest rather than on a shuffle -- so a Doubt
+   * costs one scene now and waits to cost another.
+   */
+  const stale = [...hand.cards].filter(c => c.type === "doubt");
+  if (stale.length) await discardSkillCards(actor, stale.map(c => c.id));
 
   const size = CARDRPG.defaults.skillHandSize;
   const want = Math.max(0, size - hand.cards.size);
-  if (!want) return { drawn: 0 };
+  if (!want) return { drawn: 0, cleared: stale.length };
   const moved = await moveRandom(deck, hand, want);
-  return { drawn: moved.length };
+  return { drawn: moved.length, cleared: stale.length };
 }
 
 /** A played skill card goes to the skill discard, which only a rest brings back. */

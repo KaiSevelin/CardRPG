@@ -717,3 +717,19 @@ export class FearCardData extends foundry.abstract.TypeDataModel {
     };
   }
 }
+
+/**
+ * Doubt is a dead card in the SKILL deck, and that is the whole of what makes it new.
+ *
+ * It does nothing when drawn, cannot be played, and takes one of four slots until the scene ends.
+ * No effect of its own, because it needs none: the skill discard comes back on a rest and not on a
+ * shuffle (skill-rules 1), so the clock it is on is the session rather than the fight. One field,
+ * the same one, for the same reason -- what is worth recording is what put it there.
+ */
+export class DoubtCardData extends foundry.abstract.TypeDataModel {
+  static defineSchema() {
+    return {
+      source: new fields.StringField({ required: false, blank: true, initial: "" })
+    };
+  }
+}

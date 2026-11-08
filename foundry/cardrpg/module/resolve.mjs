@@ -22,7 +22,7 @@ import { expandRoster } from "./monsters.mjs";
 import { slateData } from "./setup.mjs";
 import {
   drawFate, deckOf, uprightCards, discardCards, cardName, addFateCards, moveRandom, move,
-  applyFear, removeCard
+  applyFear, removeCard, intruderStack
 } from "./decks.mjs";
 
 /* -------------------------------------------- */
@@ -590,7 +590,7 @@ export async function resolveTaint(actor, { amount = 1, target, flavour = "body"
  */
 export async function resolveFear(actor, { amount = 1, target, fast = false, source = "" }) {
   if (!target) return null;
-  const which = fast ? "actionHand" : "actionDiscard";
+  const which = intruderStack("fear", fast);
   const stack = deckOf(target, which);
   if (!stack) {
     ui.notifications.warn(`${target.name} has no ${which} to be frightened into.`);
@@ -629,6 +629,48 @@ export async function resolveFear(actor, { amount = 1, target, fast = false, sou
       + `.</p></div>`
   });
   return { amount: n, fast, moved };
+}
+
+/**
+ * Doubt N: N Doubt cards into the target's skill deck (core-rules 8).  **[BUILT 2026-11-08]**
+ *
+ * **Fear's other half, under the same keyword.** `terrify` deals both, and which one depends on
+ * what the source attacks: a shriek puts Fear in your legs, a thing you cannot unsee puts Doubt in
+ * your head. That is the split `tainting` already draws between body and mind, read on a different
+ * pair of decks -- and it is the reason neither needed a keyword of its own.
+ *
+ * **It has no effect, and that is deliberate.** A Doubt does nothing when drawn: it is dead, it
+ * takes one of four slots, and it goes when the scene does. What makes it expensive is the deck it
+ * is in. The action deck launders itself every Catch Breath; the skill discard comes back only on a
+ * rest (skill-rules 1), so a dose bought here is paid for across a session rather than a fight.
+ */
+export async function resolveDoubt(actor, { amount = 1, target, fast = false, source = "" }) {
+  if (!target) return null;
+  const which = intruderStack("doubt", fast);
+  const stack = deckOf(target, which);
+  if (!stack) {
+    ui.notifications.warn(`${target.name} has no ${which} to be shaken in.`);
+    return null;
+  }
+
+  const n = Math.max(1, amount);
+  await stack.createEmbeddedDocuments("Card", Array.from({ length: n }, () => ({
+    name: "Doubt",
+    type: "doubt",
+    system: { source }
+  })));
+
+  /*
+   * Nothing resolves on arrival, fast or slow, because a Doubt has nothing to resolve. `fast` still
+   * means something: it puts the card in the hand the player is holding NOW, which costs them this
+   * scene instead of a later one.
+   */
+  await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<div class="cardrpg"><p><strong>${target.name}</strong>: Doubt <strong>${n}</strong> `
+      + `&mdash; ${n} into the skill ${fast ? "hand" : "discard"}.</p></div>`
+  });
+  return { amount: n, fast };
 }
 
 /**
