@@ -921,7 +921,7 @@ Draw the same blow arriving twice -- the first impact closing over the face of a
 File: `cards/npc/prise-it-open.webp`
 
 ```text
-SUBJECT. "Prise It Open" — Strike Exposed 2 (1) · Get into the harness and lever. Exposed 2: armour counts 2 less for a turn.
+SUBJECT. "Prise It Open" — Strike Exposed (1) · Get into the harness and lever. Exposed: their armour counts 0 for a turn.
 
 Draw a breastplate levered away from the body beneath it, the strap gone and the gap held open by something that does not belong in it.
 ```
@@ -1074,7 +1074,7 @@ Draw one full circle of motion: a blurred sweep running all the way around a sin
 File: `cards/npc/where-it-is-held.webp`
 
 ```text
-SUBJECT. "Where It Is Held" — Strike ignores armour · Strike a target it already has hold of. Armour does not apply: nothing is moving.
+SUBJECT. "Where It Is Held" — Strike ignores armour · A hand already on the strap. Armour does not apply: it is not holding anything on.
 
 Draw an arm pinned flat and a point resting on it, unhurried, with nowhere for the arm to go.
 ```

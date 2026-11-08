@@ -99,7 +99,7 @@ the card that reads it, never here ([core-rules.md](core-rules.md) §7,
 > almost nothing, 99.9% to 99.5%. There is no number in between.
 >
 > A condition has what the flag lacks. It is **visible**, and the figure on the sheet goes to 0.
-> It is **setup and payoff**, so the big hit costs two rounds and the second can be somebody
+> It is **setup and payoff**, so the big hit costs two rounds and the second **must** be somebody
 > else's &mdash; a flag on a step was one action by one creature. It can be **Shaken Off**, which
 > means it is answerable, where a flag never was. And it is **proportional**: worth 4 against Plate
 > and 1 against Leather, which is the whole of the argument below.
@@ -137,9 +137,28 @@ the card that reads it, never here ([core-rules.md](core-rules.md) §7,
 > is not, and the duration is the whole dial. That also retires the question of whether two
 > sources add, since they cannot add past nothing.
 >
-> **[OPEN]** No player card applies Exposed yet. The Way most obviously owed one is Strength --
-> levering a harness open is weight rather than finesse, and Shade already has the three cards
-> that go through and around armour without needing it opened first.
+> **[DECIDED 2026-11-08] No player card applies Exposed, and none is going to.** A player's route
+> to it is *Find the Gap* out of the critical deck: one card in twenty, on a Critical, and the deck
+> is drawn by whichever side scored one. The Way most obviously owed a card was Strength --
+> levering a harness open is weight rather than finesse, and Shade already has the three that go
+> through and around armour without needing it opened first -- and that is exactly the card not to
+> print. **An applier on a card is a schedule.** A condition that takes a whole defence to nothing
+> should be a turn of the deck, not a play you can plan around, and Off-Balance is what the other
+> answer looks like after a while: the same size of effect with a dozen appliers, several of them
+> consumables under 20 gold, every one of them priced when it was worth a single point of Block.
+>
+> The standing exception is the NPC intent *Prise It Open*, which keeps it. **The applier list is
+> pinned from both ends** -- the cards that apply it, and the deck face that does -- so a new card
+> cannot quietly join and the deck cannot quietly lose the only face there is.
+>
+> **[MEASURED 2026-11-08] And the exception is worth less than it reads.** Durations tick at the
+> start of their **creator's** turn, which is what makes `duration: 1` cost the victim exactly one
+> turn wherever the creator sits in the order -- so an Exposed set by a brute is gone before that
+> brute acts again, and the second attacker has to be a creature of another type. Against five
+> attackers all acting on one intent card, nobody attacks during the window at all: the card costs
+> the hero **0.3 / 1.1 / 0.6** points of win rate at armour 1 / 3 / 4, and the card's own comment
+> used to claim the two-round play *belongs to the big single enemies*. A big single enemy is the
+> one creature that cannot collect it.
 >
 > So armour has **Exposed** and Block has **Off-Balance**, which already existed and did nothing
 > by itself. A condition whose own name says a defence should be worse is the right place to put
@@ -505,7 +524,7 @@ Every source in the content as it stands ([way-cards.md](way-cards.md),
 
 | Condition | Applied by |
 |---|---|
-| **Exposed** | NPC: *Prise It Open* (`brute`) &mdash; nothing of the players' yet, which is the `[OPEN]` below |
+| **Exposed** | **the critical deck**: *Find the Gap*, 2 cards in 10, either side &middot; NPC: *Prise It Open* (`brute`). **Nothing else, and no player card** &mdash; decided 2026-11-08 and pinned both ways round |
 | **Dazed** | *Dirty Trick* (goblin) · *Mock* (Shade) · *Wrong Face* (Glamour) · *Grave Chill* (Necromancy) |
 | **Slowed** | *Set* (Trapmaker) · *Pin the Shadow* (Shade) · *Frost* (Elemental) |
 | **Stunned** | *Lightning* (Elemental) |

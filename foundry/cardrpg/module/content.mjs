@@ -1864,10 +1864,33 @@ export const INTENTS = [
      *
      * It zeroes rather than reduces, which is the version worth what the target was relying on: 4
      * points against Plate and 1 against Leather. A flat -2 was worth most to whoever had least to
-     * lose, which is backwards.
+     * lose, which is backwards -- and that is not an argument, it is now a measurement. Swapping
+     * this card to `ignores: 1` costs the hero **5.0** points of win rate in Leather and **0.0**
+     * in Plate, because ignoring 1 of 1 armour is ignoring all of it. The regressive version is
+     * the one that hurts the lightly armoured character.
      *
      * `brute` because it is a thing done with weight: 24 creatures have it and only two run in
-     * packs, so the two-round play belongs to the big single enemies that need it.
+     * packs.
+     *
+     * **[MEASURED 2026-11-08] And the two in packs are the only ones who can use it, which is the
+     * reverse of what this comment used to claim.** It said the two-round play *belongs to the big
+     * single enemies that need it*. A big single enemy is the one creature that cannot collect it:
+     * durations tick at the start of their CREATOR's turn (`tickConditionsCreatedBy`, combat.mjs),
+     * which is what makes `duration: 1` cost the victim exactly one turn wherever the creator sits
+     * in the order -- so an Exposed set here is gone before the brute that set it acts again. The
+     * second attacker has to be somebody else: another creature of another type in the same
+     * encounter, or one of the two brute kinds that run in packs.
+     *
+     * That is why the card measures at **0.3 / 1.1 / 0.6** points of the hero's win rate at armour
+     * 1 / 3 / 4 and no more -- against five attackers all acting on one intent, nobody attacks
+     * during the window it opens. 2500 fights a cell. The card is kept because it is cheap and it
+     * reads well at the table, not because the number is large.
+     *
+     * **It is also the only thing in the game besides the Critical that applies Exposed, and no
+     * player card may join it** (2026-11-08 decision; conditions.md 9). A player's route to Exposed
+     * is *Find the Gap* out of the critical deck and nothing else, which is what keeps a condition
+     * that takes a whole defence to nothing on the far side of a 5% draw rather than on a schedule.
+     * The validator pins the applier list both ways round.
      */
     name: "Prise It Open", needs: ["brute"],
     text: "Get into the harness and lever. Exposed: their armour counts 0 for a turn.",

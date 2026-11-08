@@ -388,7 +388,9 @@ What each of these is worth depends entirely on **how much the target's position
 >
 > So Off-Balance's Block half is priced by argument rather than by measurement &mdash; and the
 > argument says **its appliers are now mispriced**. Exposed has two appliers in the whole game,
-> both of them a Critical or a brute's two-round setup. Off-Balance has a dozen, several free and
+> both of them a Critical or a brute's two-round setup, and since 2026-11-08 that is a **pinned
+> rule rather than a count that happens to be low**: no player card applies it and the validator
+> says so from both ends. Off-Balance has a dozen, several free and
 > unsaveable: a **Flask of Oil at 10 g**, a **Blunt Head arrow at 20 g**, a **Loose Cobble** left
 > on the floor, *Slick*, *Shoulder Check*, *Taste of the Rot*, and the universal **Trip**. One
 > point off Block was a fair trade for a 10 g consumable. *All* of Block is not: that flask now
@@ -447,6 +449,26 @@ nothing about going round a shield says anything about that.
 Either kind may hang off an **opening** instead of the step, which is the more interesting shape:
 *Between the Plates* ignores armour **only against a target it has Marked**, because the Mark is
 the gap. An unconditional version of that card would be a different and much stronger card.
+
+> **An unconditional total bypass may not reach a creature that runs in packs**, and on the NPC
+> side that is a rule rather than a preference. Intent is drawn once per **type** (§3), so every
+> creature of that type acts on the card: against a character in Plate, `ignores 2` is 1 damage an
+> attacker and `ignores armour` is 3, which is 5 against **15** for five of them &mdash; and 15
+> kills a 12-Health hero outright. So a **number** is safe on a broad capability and a **total** is
+> only safe where a swarm cannot reach it. That is a fact about the roster, which means it can be
+> checked, and since 2026-11-08 it is: the validator lists the gates carrying an unconditional
+> bypass and the ones that reach a creature with `pack`.
+>
+> A bypass that waits on an **opening** is exempt, and that is how a broad gate carries one safely:
+> *Worry It* is on `feral`, 10 of whose 44 creatures pack, and it cannot fire until something has
+> put the target Off Balance.
+>
+> **[OPEN] `siege` breaks the rule today.** *Bring It Down* carries an unconditional bypass and the
+> **Mole Man Digger** has both `siege` and `pack`. The card names *a door, a wall or a held
+> position* and nothing in the engine holds it to that, so a pack of diggers may swing it at a
+> person in Plate for full damage each. Three ways out: hold the card to objects, gate it on an
+> opening, or take `pack` off the Digger. Recorded rather than hidden, which is why the pin reads
+> `siege` instead of `none`.
 
 > The pair to learn the rule from is *Heavy Swing* and *Measure*. Both are `Strike +1`. The first
 > ignores 2 armor and the second ignores Block, so the first is the answer to plate and the second
@@ -866,7 +888,7 @@ cards, five faces:
 | **Both** | 1 | Draw two **others** and take both. |
 
 **The draw comes before armour and Block are read**, so the gap a Critical opens is a gap that
-same blow goes through: *Find the Gap* takes 2 off the armour of the hit that found it. `resolveAttack`
+same blow goes through: *Find the Gap* takes the armour of the hit that found it to **0**. `resolveAttack`
 draws first and snapshots the defences afterwards, and the simulator was corrected to match.
 
 **One draw per action**, like the fate draw it hangs off: an Area attack that crits draws once and

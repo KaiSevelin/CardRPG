@@ -6832,8 +6832,33 @@ check("briefs with a missing number in them",
  * *Accuser's Ring* into `accuser-s-ring`, which is the kind of thing nobody notices until a
  * hundred and fifty files have been named that way and the brief is the only record of it.
  */
-const { slug, DELIVERY, GROUPS: ART_GROUPS, CREATURES: ART_CREATURES, creatureBrief, castOf }
-  = await import("./art-list.mjs");
+const { slug, DELIVERY, GROUPS: ART_GROUPS, CREATURES: ART_CREATURES, creatureBrief, castOf,
+  brief: artBrief } = await import("./art-list.mjs");
+
+/*
+ * **And both generated files say what the content says TODAY.**
+ *
+ * Every count in this file was pinned and both files were still wrong. The brief and the prompt
+ * book are generated, which was quietly taken to mean they are current -- and generated means
+ * current only if somebody regenerates. Two commits' worth of rewording sat in the committed book:
+ * *Prise It Open* still offered **Exposed 2: armour counts 2 less for a turn** after the condition
+ * started zeroing, and *Where It Is Held* still described the composition that was refused, which
+ * is the one sentence in the whole book that had to change. Every count agreed the whole time,
+ * because a count cannot see a sentence.
+ *
+ * So the check is the text and not the tally: the brief line each piece is commissioned with has
+ * to appear, verbatim, in both files. A break test against the book as committed names exactly the
+ * two pieces that were stale and nothing else.
+ *
+ * `g.brief` because the creature groups build theirs differently -- a token's line is its statline
+ * and its own description, not a card's verbs -- and a check that assumed one builder would have
+ * been 112 false failures.
+ */
+for (const [what, text] of [["brief", artList], ["prompt book", artPrompts]]) {
+  check(`pieces the ${what} describes out of date`, ART_GROUPS
+    .flatMap(g => g.list.filter(e => !text.includes((g.brief ?? artBrief)(e))).map(e => e.name))
+    .join(", ") || "none", "none");
+}
 /*
  * **The art on disk, against the brief that commissioned it.**
  *
@@ -7211,6 +7236,76 @@ for (const [what, count, read] of [
 ]) {
   check(`steps that ${what}`, everyStep.filter(read).length, count);
 }
+
+/*
+ * **Who may apply Exposed, pinned from both ends** (core-rules 5, conditions.md 9).
+ *
+ * Exposed takes a whole defence to nothing, so it is the **critical deck's** to hand out: *Find
+ * the Gap*, one card in twenty, drawn by whichever side scored the Critical. The one standing
+ * exception is the NPC intent *Prise It Open*, which sets it as a two-round play -- and **no
+ * player card applies it**, which is a decision taken on 2026-11-08 rather than a gap waiting to
+ * be filled. The Way most obviously owed one is Strength, and it is not getting one: an applier
+ * printed on a card is a schedule, and a condition this size should be a turn of the deck.
+ *
+ * Off-Balance is why the rule is worth pinning. It is the same size of effect -- Block to nothing
+ * -- and it accumulated a dozen appliers, several of them consumables under 20 gold, every one
+ * priced when it was worth a single point. core-rules 7 carries the open question that earned.
+ *
+ * **Stated from both ends, because either end rots on its own.** A new card could quietly add an
+ * applier; the deck could quietly lose the only one there is. This sweep walks every array content
+ * exports rather than `everyStep`, which reads nine lists and not MIND_POOL or FAITH_POOL.
+ */
+const appliersOf = key => {
+  const out = [];
+  for (const [list, entries] of Object.entries(content)) {
+    if (!Array.isArray(entries)) continue;
+    for (const entry of entries) {
+      for (const arr of [entry?.primary, entry?.secondary, entry?.sequence, entry?.steps,
+        entry?.effect ? [entry.effect] : null, entry?.shot ? [entry.shot] : null,
+        entry?.signature ? [entry.signature] : null]) {
+        for (const st of arr ?? []) if (st?.condition === key) out.push(`${list}: ${entry.name}`);
+      }
+    }
+  }
+  return [...new Set(out)].sort();
+};
+check("everything in the game that applies Exposed", appliersOf("exposed").join(" | "),
+  "CRIT_EFFECTS: Find the Gap | INTENTS: Prise It Open");
+/* And the deck face is the half a player can ever be the source of, which is the point of it. */
+check("and the player's only route to it", content.CRIT_EFFECTS
+  .filter(f => f.effect?.condition === "exposed").map(f => f.name).sort().join(", "),
+  "Find the Gap");
+
+/*
+ * **A total bypass may not reach a creature that runs in packs**, which is the rule *Find the
+ * Joint* argues for in content.mjs and nothing checked.
+ *
+ * Its arithmetic: against a character in Plate, `ignores: 2` is 1 damage an attacker and
+ * `ignoresArmour` is 3, and intent is drawn once per TYPE so every creature of that type acts on
+ * the card. Five of them is 5 against 15, and 15 kills a 12-Health hero outright. So a number is
+ * safe on a broad capability and a total bypass is only safe where a swarm cannot reach it -- and
+ * that is a fact about the roster, which means it can be checked and can rot.
+ *
+ * `when.ignoresArmour` is deliberately not counted: a bypass that waits for an opening is how a
+ * broad gate carries one safely, which is *Worry It* on `feral` -- 10 of 44 feral creatures pack,
+ * and the card cannot fire until something has put the target Off Balance.
+ *
+ * **[OPEN] `siege` fails this today and is recorded rather than hidden.** *Bring It Down* carries
+ * an unconditional bypass and the **Mole Man Digger** has both `siege` and `pack`. The card names
+ * "a door, a wall or a held position" and nothing in the engine holds it to that, so a pack of
+ * diggers may swing it at a person in Plate for full damage each. The three ways out are the same
+ * three as ever: hold the card to objects, gate it on an opening, or take `pack` off the Digger.
+ */
+const creaturesByGate = monsters.expandRoster(content.ROSTER, content.VARIANTS);
+const capsOf = c => c.capabilities ?? c.system?.capabilities ?? [];
+const bypassGates = [...new Set(content.INTENTS
+  .filter(i => (i.sequence ?? []).some(s => s.ignoresArmour))
+  .flatMap(i => i.needs ?? []))].sort();
+check("gates that carry an unconditional total bypass", bypassGates.join(", "), "grapple, siege");
+check("and the ones that reach a creature which packs",
+  bypassGates.filter(g =>
+    creaturesByGate.some(c => capsOf(c).includes(g) && capsOf(c).includes("pack"))).join(", ")
+  || "none", "siege");
 /* Every value of the two bigger enums is used, or it is an entry in a dropdown and nothing else. */
 for (const [name, table, read] of [
   ["ground shapes", CARDRPG.groundShapes, s => s.st.ground?.shape],
