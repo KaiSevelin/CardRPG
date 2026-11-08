@@ -151,13 +151,66 @@ the reason first written ([analysis §§11–13](../sim/analysis-2026-10-30.md))
   > card, no change to a twenty-card deck, and the fiction is the oldest one there is: a critical
   > hit finds the gap in the plate.
   >
+  > **[MEASURED 2026-11-08] And if it were changed, the choice of face matters.** Against five
+  > spears, 2500 fights a cell:
+  >
+  > | Armour | today | the +2 pierces | the Critical pierces | both |
+  > |---|---|---|---|---|
+  > | **1** Leather | 66.9 | 63.3 | 62.3 | 61.4 |
+  > | **2** Mail | 90.5 | 86.2 | 82.7 | 78.0 |
+  > | **3** Brigandine | 99.2 | 97.4 | 92.9 | 89.1 |
+  > | **4** Plate | 99.9 | 99.6 | 96.5 | 93.2 |
+  >
+  > Keeping the Critical pure and giving the rider to the one **+2** is the gentler half of the
+  > change — Plate 99.6% rather than 96.5% — and it leaves the Critical as the damage-doubler the
+  > rules describe.
+  >
+  > **And the Wounds column is the sharpest number in this whole section.** Wounds taken a fight:
+  >
+  > | Armour | today | +2 pierces | Critical pierces |
+  > |---|---|---|---|
+  > | **1** Leather | 0.32 | 0.42 | 0.43 |
+  > | **2** Mail | 0.07 | 0.18 | 0.36 |
+  > | **4** Plate | **0.00** | 0.07 | 0.25 |
+  >
+  > **Plate takes no Wounds at all** — not one in 2500 fights — because a Wound needs 5 past armour
+  > and nothing in the published roster can produce 5 past four points. That is the complaint
+  > *a fight where one side cannot be hurt is not a fight* stated as a number, and it is a better
+  > statement of it than any win rate: the hero is not merely winning, they are leaving with
+  > nothing to carry out of the fight.
+  >
   > **The second half of the proposal does not pay.** Making a Critical ignore **Block** as well
   > measures at 96.5 &rarr; 96.6 against Plate &mdash; nothing &mdash; while costing Leather and
   > Mail another 0.5 and 2.3 points. Block is a reaction a player spends, and the players who spend
   > it are the ones with no armour, so an unblockable Critical taxes exactly the wrong people. It is
   > the inverted shape a third time.
   >
-  > **[OPEN]** Whether to make the change. It is the most-drawn card in the game and it cuts both
+  > **[ANSWERED 2026-11-08] None of it, because the answer belongs on an action card and is already
+  > built.** `ignoresArmour`, `ignoresBlock` and `ignoresCover` are fields on a **card step**
+  > (data/cards.mjs), all three read by the resolver, and `ignores: N` is a fourth. That is the
+  > right home for three reasons the fate deck cannot meet:
+  >
+  > 1. **A fate card is a lottery and an action card is a decision.** Finding bare flesh and
+  >    feinting past a shield are things a fighter does *on purpose*; a 1-in-20 face cannot be
+  >    aimed at the one armoured enemy on the board.
+  > 2. **The fate deck is a universal resolver** — drawn for attacks, checks, saving throws, heals,
+  >    initiative and the injury draw — and every face it has means something on all of them: a
+  >    Miss does nothing, a Critical doubles, a Wild asks the table. *Ignores armour* means nothing
+  >    on a Lore check, so such a face would be a **blank on most draws**, which is worse than a 0.
+  > 3. Twenty is load-bearing, and two more cards would dilute the Miss and the Critical from one
+  >    in twenty to one in twenty-two — weakening the two faces the whole swing is built on.
+  >
+  > **So the gap is content, not mechanism**, and it is a thin seam: **one** card sets
+  > `ignoresArmour` (*Blood Price*), **two** set `ignoresBlock` (*Measure*, *Open the Vein*), one
+  > sets `ignoresCover`, and one sets `ignores: N` — *Heavy Swing*, in the starter Warrior deck, at
+  > 2. Writing more of them is cheap, aimed, and costs the fate deck nothing.
+  >
+  > **[OPEN]** Which careers get an answer to armour. *Heavy Swing* means the Warrior already has
+  > one; a Shade with a knife does not, and whether that is a hole or the Shade's problem to solve
+  > with a crossbow is a design call rather than a repair.
+
+  > **[OPEN]** Whether to change the Critical as well. It is the most-drawn card in the game and it
+  > cuts both
   > ways &mdash; players crit monsters too, and 22 of the roster's attacks already ignore armour, so
   > the roster is the other half of this question.
   >

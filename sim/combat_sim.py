@@ -89,12 +89,23 @@ class FateDeck:
 
 # ---------------------------------------------------------------- cards
 # name: (primary ops, secondary ops, reaction, copies)
+#
+# A strike op is ('strike', mod) or ('strike', mod, ignores) -- the third element is armour the
+# STEP goes through, which is a different thing from armour the weapon goes through.
+#
+# **[FOUND IN CODE 2026-11-08] Heavy Swing has printed `ignores: 2` since the starter deck was
+# written, the engine reads it off the step, and this file only ever read `ignores` off the WEAPON
+# profile.** So the Warrior's one answer to an armoured enemy was switched off in every
+# measurement this project has made -- including the ones against the `guard` and `plated` foes,
+# which exist for no other purpose than to be armoured. The same shape as the DEAD set and as
+# `bonus.approach`: a field the engine reads and the simulator does not, so the numbers are of a
+# slightly different game.
 # A card's worth to the AI is NOT stored here -- it is computed from its ops against the
 # current board (see Game.card_value). A static table cannot express that Advance is junk
 # against three adjacent spears and essential against two kiting archers.
 WARRIOR_CARDS = {
     'Strike':      ([('strike', 0)], [('move', 1)], 'parry', 3),
-    'Heavy Swing': ([('strike', 1)], [('move', 1)], None, 2),
+    'Heavy Swing': ([('strike', 1, 2)], [('move', 1)], None, 2),
     'Lunge':       ([('move', 2), ('strike', 0)], [('move', 1)], None, 1),
     'Shield Up':   ([('defend',)], [('move', 1)], 'block', 2),
     'Advance':     ([('move', 3)], [('move', 2)], 'sidestep', 2),
@@ -273,6 +284,12 @@ class Config:
     # And whether Block answers it. A crit nobody can Block makes the 5% card un-answerable, which
     # is a bigger change than the armour half: Block is the player's own reaction, not a coat.
     crit_unblockable: bool = False
+    # Keeping the Critical as the damage-doubler and giving the armour-ignoring job to the ONE +2
+    # instead. Same frequency -- one card in twenty -- and it needs no new card, which matters
+    # because the fate deck is a universal resolver: it is drawn for checks, saving throws, heals,
+    # initiative and the injury draw, and every face it has means something on every one of those.
+    # "Ignores armour" does not, so a face that said only that would be a blank on most draws.
+    plus2_pierces: bool = False
     # Shattered Nerves: no reactions in round 1. The engine knows rounds rather than
     # per-character firsts, and so does this.
     shattered_nerves: bool = False
@@ -464,9 +481,13 @@ class Sim:
                     cheb(self.wpos, g[0]) == 1 for g in self.alive())
 
                 # Armour comes off every hit, and `ignores N` is what a crossbow or a firearm
-                # buys with its reload (equipment.md 1.3).
+                # buys with its reload (equipment.md 1.3) -- and what a card can buy on its own,
+                # which is the half this file was missing. The two add: a Heavy Swing with a Mace
+                # goes through three points, and core-rules 5 says armour only.
+                step_ignores = op[2] if len(op) > 2 else 0
                 def soak(g):
-                    return max(0, foe(g[2]['weapon']).get('armor', 0) - prof.get('ignores', 0))
+                    return max(0, foe(g[2]['weapon']).get('armor', 0)
+                               - prof.get('ignores', 0) - step_ignores)
 
                 def est(g):
                     e = pk = 0.0
@@ -1175,14 +1196,14 @@ class Game:
                 w['hand'].remove(name)
                 w['discard'].append(name)
 
-    def take_hit(self, raw, melee, src, crit=False):
+    def take_hit(self, raw, melee, src, crit=False, plus2=False):
         w, cfg = self.w, self.cfg
         self._board = self.board()
         # *Nothing Gets Through*: while Overloaded, armour counts double. Overloaded is not free --
         # the hero is Slowed and two cards are Spent for the fight -- so this reads both prices.
         armor = cfg.armor * 2 if (cfg.armor_doubles_overloaded and self.overloaded) else cfg.armor
-        # A Critical that finds the gap in the plate takes no armour off at all.
-        if crit and cfg.crit_pierces:
+        # A face that finds the gap in the plate takes no armour off at all.
+        if (crit and cfg.crit_pierces) or (plus2 and cfg.plus2_pierces):
             armor = 0
         d = max(0, raw - armor)
         absorbed = 0 if (crit and cfg.crit_unblockable) else min(w['block'], d)
@@ -1319,7 +1340,7 @@ class Game:
                     self.s['goblin_adv'] += 1
                 fc = self.fate_g.draw(int(adv) - int(dis))
                 raw = fate_apply(value, fc)
-                self.take_hit(raw, not ranged, g['id'], crit=(fc == 'CRIT'))
+                self.take_hit(raw, not ranged, g['id'], crit=(fc == 'CRIT'), plus2=(fc == 2))
                 if kind == 'strike' and op[2] == 'daze' and fc != 'MISS':
                     self.apply_cond(self.cfg.goblin_condition,
                                     self.cfg.goblin_cond_dur,
