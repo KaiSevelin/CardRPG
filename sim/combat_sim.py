@@ -264,6 +264,15 @@ class Config:
     # Bad Leg: every Move value you play is -1. A slate, not a card, so it never dilutes anything
     # -- which makes it the clean test of what tempo alone is worth.
     bad_leg: int = 0
+    # --- the proposed Critical, for testing "nothing reaches you at armour 4" ---
+    # A Critical that finds the gap: it still doubles, and the doubled figure ignores armour.
+    # Doubling alone already scales badly against a high rung -- at armour 4 a strike-3 crit does
+    # 6-4=2 -- so the question is whether ignoring armour puts the threat back without making a
+    # crit against an unarmoured hero worse than it is now (5 today, 6 under this).
+    crit_pierces: bool = False
+    # And whether Block answers it. A crit nobody can Block makes the 5% card un-answerable, which
+    # is a bigger change than the armour half: Block is the player's own reaction, not a coat.
+    crit_unblockable: bool = False
     # Shattered Nerves: no reactions in round 1. The engine knows rounds rather than
     # per-character firsts, and so does this.
     shattered_nerves: bool = False
@@ -1166,14 +1175,17 @@ class Game:
                 w['hand'].remove(name)
                 w['discard'].append(name)
 
-    def take_hit(self, raw, melee, src):
+    def take_hit(self, raw, melee, src, crit=False):
         w, cfg = self.w, self.cfg
         self._board = self.board()
         # *Nothing Gets Through*: while Overloaded, armour counts double. Overloaded is not free --
         # the hero is Slowed and two cards are Spent for the fight -- so this reads both prices.
         armor = cfg.armor * 2 if (cfg.armor_doubles_overloaded and self.overloaded) else cfg.armor
+        # A Critical that finds the gap in the plate takes no armour off at all.
+        if crit and cfg.crit_pierces:
+            armor = 0
         d = max(0, raw - armor)
-        absorbed = min(w['block'], d)
+        absorbed = 0 if (crit and cfg.crit_unblockable) else min(w['block'], d)
         if not cfg.persistent_block:
             w['block'] -= absorbed          # old rule: one hit used the whole block up
         d -= absorbed
@@ -1307,7 +1319,7 @@ class Game:
                     self.s['goblin_adv'] += 1
                 fc = self.fate_g.draw(int(adv) - int(dis))
                 raw = fate_apply(value, fc)
-                self.take_hit(raw, not ranged, g['id'])
+                self.take_hit(raw, not ranged, g['id'], crit=(fc == 'CRIT'))
                 if kind == 'strike' and op[2] == 'daze' and fc != 'MISS':
                     self.apply_cond(self.cfg.goblin_condition,
                                     self.cfg.goblin_cond_dur,

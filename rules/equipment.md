@@ -46,18 +46,32 @@ the reason first written ([analysis §§11–13](../sim/analysis-2026-10-30.md))
 - **One point of armour is worth up to 48.5 points of win rate** — Leather to Mail against a mixed
   group. That is more than mobility (29.5) and six times a damage rung (7.4). **Armour is the
   strongest single axis this project has measured**, and nine kilograms is a cheap way to buy it.
-- **The cliff is at the point where armour equals the enemy's Strike.** A goblin strikes for 3, so at
-  armor 3 the only thing that lands is a +2 or a Critical — two cards in twenty. Every published
-  encounter is **99.5% or better by Brigandine**, which means **rungs 3 and 4 are priced for monsters
-  this game has not written yet.** A GM should read them as *a different enemy roster*, not as a
-  better coat, and the old corollary stands: when heroes reach armour, retire the trash mob rather
-  than fielding more of it.
-  - **[CORRECTED 2026-11-08] Those monsters have been written.** The roster holds **36 attacks of
-    Strike 5 or more** out of 82, the hardest is **8** (dragon jaws), and **22 of them ignore
-    armour** — a Smash Beetle's Tail Club is 7 and ignores 2, so Plate's four stops two of it. The
-    sentence was true of the four published *encounters*, which are all goblin groups, and the
-    simulator runs those because they are what it was built for. **The ladder is waiting on the
-    simulator's roster, not the game's.**
+- **The cliff is at the point where armour equals the enemy's Strike.** A goblin strikes for 3, and
+  what reaches you is the fate deck's top end:
+
+  | Armour | Faces that land | Of twenty | For |
+  |---|---|---|---|
+  | **1** (Leather) | &minus;1 and up | **18** | 1 to 5 |
+  | **3** (Brigandine) | +1, +2, Critical | **6** | 1 to 3 |
+  | **4** (Plate) | +2, Critical | **2** | 1 or 2 |
+
+  > **[CORRECTED 2026-11-08] This said *at armor 3 the only thing that lands is a +2 or a Critical
+  > — two cards in twenty*, and that is rung **4**'s figure written against rung 3.** At armour 3
+  > the four +1s land as well, so **six** cards in twenty get through, for 1 to 3. One rung off is
+  > the difference between *hard to hurt* and *almost impossible to hurt*, and it is the sentence
+  > that made rung 4 read as invulnerable &mdash; which it is not, quite: 2 in 20 still land.
+
+  Every published encounter is **99.5% or better by Brigandine**, which means **rungs 3 and 4 are
+  priced for monsters the simulator has not been given yet.** A GM should read them as *a different
+  enemy roster*, not as a better coat, and the old corollary stands: when heroes reach armour,
+  retire the trash mob rather than fielding more of it.
+  - **[CORRECTED 2026-11-08] Those monsters are written.** The roster holds **36 attacks of Strike 5
+    or more** out of 82, the hardest is **8** (dragon jaws), and **22 of them ignore armour** — a
+    Smash Beetle's Tail Club is 7 and ignores 2, so Plate's four stops two of it. The claim was true
+    of the four published *encounters*, which are all goblin groups, and the simulator runs those
+    because they are what it was built for. **The ladder is waiting on the simulator's roster, not
+    the game's.**
+
 - **The Heavy Armor drawback is free, which is a fault.** Plate wins 100.0% with the ⚡ Sidestep block
   and 100.0% without it, because at armor 4 nothing can hurt you and so you never needed to dodge.
   **A drawback that bites only when the item is weak is not a price** — it costs Brigandine something
@@ -109,9 +123,49 @@ the reason first written ([analysis §§11–13](../sim/analysis-2026-10-30.md))
   > exactly what the top rung of a ladder should be. The cliff is at **3**, not 4, and the
   > overpowered coat is Brigandine at 140 gold and twelve kilos.
   >
-  > So the recommendation is the other option this document already offered: **stop calling the
-  > Sidestep ban a cost.** The weight is the price, it is the largest number on this page, and it
-  > is the one that prices rung 4 correctly without anybody adding a number.
+  > **[MEASURED 2026-11-08] A Critical that ignores armour is the one candidate that works, and it
+  > is not a new card.** 2500 fights a cell. What changes if a Critical still doubles and the
+  > doubled figure then ignores armour:
+  >
+  > | Armour | Win rate today | With a piercing Critical | HP left on a win, today &rarr; after |
+  > |---|---|---|---|
+  > | **1** Leather | 66.9 | 62.3 | 7.4 &rarr; 7.4 |
+  > | **2** Mail | 90.5 | 82.7 | 8.4 &rarr; 8.2 |
+  > | **3** Brigandine | 99.2 | 92.9 | 9.8 &rarr; 8.9 |
+  > | **4** Plate | 99.9 | 96.5 | 11.2 &rarr; **9.7** |
+  >
+  > **Read the last column, not the first.** The complaint this answers is not *Plate wins too
+  > often*, it is *a fight where one side cannot be hurt is not a fight* &mdash; and the health
+  > column is the only thing measured here that gets steeper as the rung rises: **0.0, 0.2, 0.9,
+  > 1.5**. Plate still wins 96.5%, which is correct, and it now pays nearly two Health to do it.
+  >
+  > The win-rate column does the opposite, and it is worth saying so plainly: the loss peaks at
+  > **Mail** (&minus;7.8, and &minus;11.1 against archers) and is smallest at Plate. That is because
+  > Plate has slack &mdash; eleven Health left over &mdash; and Mail has none. **A rung-2 character
+  > feels this most in losses and a rung-4 character in health**, which is the honest summary.
+  >
+  > **And it is the Critical's own job.** Section 5's order already makes a Critical *"frightening to
+  > a defended target"* because doubling happens before Block is subtracted &mdash; armour is simply
+  > the one defence that beats it, since doubling a Strike of 3 against armour 4 leaves 2. So this
+  > is not a new rule so much as the existing one reaching the rung that was flattening it. No new
+  > card, no change to a twenty-card deck, and the fiction is the oldest one there is: a critical
+  > hit finds the gap in the plate.
+  >
+  > **The second half of the proposal does not pay.** Making a Critical ignore **Block** as well
+  > measures at 96.5 &rarr; 96.6 against Plate &mdash; nothing &mdash; while costing Leather and
+  > Mail another 0.5 and 2.3 points. Block is a reaction a player spends, and the players who spend
+  > it are the ones with no armour, so an unblockable Critical taxes exactly the wrong people. It is
+  > the inverted shape a third time.
+  >
+  > **[OPEN]** Whether to make the change. It is the most-drawn card in the game and it cuts both
+  > ways &mdash; players crit monsters too, and 22 of the roster's attacks already ignore armour, so
+  > the roster is the other half of this question.
+  >
+  > And the other option this document already offered: **stop calling the
+  > Sidestep ban a cost.** The weight is the price, it is the largest number on this page, and it is
+  > the one that prices rung 4 correctly without anybody adding a number. The two are not
+  > alternatives: the ban stops claiming to be a price either way, and a piercing Critical is about
+  > whether the fight is a fight rather than about what the coat costs.
 - **The weight is the whole cost, and it is the largest number on this page.** Plate alone is free
   (100.0%); Plate and 18 kg of loot is **31.4%**, and the control proves it is the kilograms rather
   than the coat — Mail burdened to the same 43 kg collapses further still, to **7.2%**. Burdened
