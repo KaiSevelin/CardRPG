@@ -20,7 +20,7 @@ import { CARDRPG } from "./config.mjs";
 import {
   deckOf, discardCards, retireCards, catchBreath, canCatchBreath, refill, cardName, artOf,
   dealSkillHand, discardSkillCards, pileBack,
-  isReserved, reserveCard, uprightCards
+  isReserved, reserveCard, uprightCards, isIntruder, intruderLine
 } from "./decks.mjs";
 import {
   resolveAttack, resolveDefend, resolveHeal, resolveUse, resolveCondition, resolveShake,
@@ -783,7 +783,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     const cards = (stack?.cards.contents ?? []).map(c => ({
       id: c.id,
       name: cardName(c),
-      harm: c.type === "wound" || c.type === "taint",
+      harm: isIntruder(c),
       flipped: false,
       // A discard is a record, not a slate: there is nothing to put into play.
       passive: true,
@@ -798,8 +798,8 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         : card.system.special === "crit" ? "Critical — double the value, then reshuffle"
           : `${card.system.value > 0 ? "+" : ""}${card.system.value}`;
     }
-    if (card.type === "wound") return "Dead card. Discard at the end of your turn.";
-    if (card.type === "taint") return "1 damage when drawn, ignoring armor.";
+    // One line per intruder, read from the table that defines them rather than retyped here.
+    if (isIntruder(card)) return intruderLine(card);
     const half = (name, steps) => (steps ?? [])
       .map(s => `${s.verb ?? ""}${s.param ? ` ${s.param}` : ""}${s.mod ? ` ${s.mod > 0 ? "+" : ""}${s.mod}` : ""}`)
       .join(", ");
@@ -1063,7 +1063,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       };
     };
 
-    if (card.type === "wound" || card.type === "taint") {
+    if (isIntruder(card)) {
       return { id: card.id, name: cardName(card), harm: true, art: artOf(card), halves: [] };
     }
     return {

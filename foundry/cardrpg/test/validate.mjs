@@ -141,7 +141,7 @@ check("and the unpatched line is gone",
   /Object\.create\(Array\.prototype\)/.test(cytoscape) ? "still there" : "gone", "gone");
 
 const manifest = JSON.parse(fs.readFileSync(path.join(root, "system.json"), "utf8"));
-check("manifest declares Card subtypes", Object.keys(manifest.documentTypes.Card ?? {}).length, 8);
+check("manifest declares Card subtypes", Object.keys(manifest.documentTypes.Card ?? {}).length, 9);
 /*
  * **The verified build is a build, not a generation**, and it is load-bearing in two places.
  *
@@ -1718,10 +1718,16 @@ const moveBody = decksSource.slice(decksSource.indexOf("export async function mo
   decksSource.indexOf("/* -------------------------------------------- */\n/*  Reserved"));
 check("moving a card clears it",
   /flags\.cardrpg\.-=\$\{RESERVED\}/.test(moveBody) ? "yes" : "no", "yes");
-/* A Wound "can't be played, not even for Brace" (core-rules 8), and Taint resolves when drawn. */
+/*
+ * A Wound "can't be played, not even for Brace" (core-rules 8), and Taint resolves when drawn.
+ *
+ * **This check used to pin the wrong thing.** It read `c.type !== "wound" && c.type !== "taint"`
+ * literally, which made it a check that the two kinds were named here BY HAND -- so the honest
+ * generalisation was the one edit it would have refused, and a third kind of intruder arriving
+ * would have satisfied it while being spendable for a Brace. It asks for the category now.
+ */
 const upright = decksSource.slice(decksSource.indexOf("export function uprightCards"));
-check("dead cards cannot react",
-  /c\.type !== "wound" && c\.type !== "taint"/.test(upright) ? "yes" : "no", "yes");
+check("dead cards cannot react", /!isDeadCard\(c\)/.test(upright) ? "yes" : "no", "yes");
 check("reserved cards cannot react", /!isReserved\(c\)/.test(upright) ? "yes" : "no", "yes");
 /* The tray's reaction row is the switch, not a readout and not a play. */
 check("the tray's reaction row toggles reserved",
@@ -8352,7 +8358,142 @@ for (const [doc, types] of Object.entries(manifest.documentTypes)) {
 }
 check("document subtypes with no sheet", uncovered.length ? uncovered.join(", ") : "none", "none");
 check("subtypes checked", Object.values(manifest.documentTypes)
-  .reduce((n, types) => n + Object.keys(types).length, 0), 13);
+  .reduce((n, types) => n + Object.keys(types).length, 0), 14);
+
+/* -------------------------------------------- */
+
+/*
+ * **Intruders, and the predicate that now defines them.**  **[BUILT 2026-11-08]**
+ *
+ * A Wound, a Taint and a Fear card are the cards nobody chose to put in a deck, and until today
+ * that category existed only as three hand-written disjunctions -- `type === "wound" ||
+ * type === "taint"` in decks.mjs, in the card sheet and in the tray. Three copies of one rule, so
+ * a fourth kind would have been spendable for a Brace in one place, rendered as a playable card in
+ * another, and printed with somebody else's rules on its face in the third: the sheet's template
+ * asked `{{#if isWound}}` and ELSE printed the Taint text, which is a two-way guess dressed as a
+ * conditional. Nothing would have reported any of it.
+ *
+ * So the category is a table with four dials and the rest is read from it. The checks below are in
+ * two directions on purpose: that every kind declares every dial, and that the kinds the engine
+ * knows are exactly the kinds core-rules 8 prints a row for. A kind in one and not the other is
+ * the defect this project keeps finding, and it is the whole reason the table exists.
+ */
+const intruderTable = decksSource.slice(
+  decksSource.indexOf("export const INTRUDERS = {"),
+  decksSource.indexOf("/** Is this one of the cards nobody chose"));
+const intruderKinds = [...intruderTable.matchAll(/^  (\w+): \{/gm)].map(m => m[1]);
+check("kinds of intruder", intruderKinds.join(", "), "wound, taint, fear");
+
+/*
+ * Every kind declares every dial. A row that leaves one out reads as a default nobody chose, and
+ * `after` is the one that would hurt: an intruder with no answer for where it goes after resolving
+ * would silently go to the discard and come round for ever.
+ */
+for (const kind of intruderKinds) {
+  const from = intruderTable.indexOf(`  ${kind}: {`);
+  const row = intruderTable.slice(from, intruderTable.indexOf("}", from));
+  const dials = ["dead", "onDraw", "short", "after", "line"].filter(k => row.includes(`${k}:`));
+  check(`${kind} declares every dial`, dials.join(" "), "dead onDraw short after line");
+}
+
+/* One predicate each, and every one of them is read by somebody below. */
+check("the predicate for the category",
+  /export function isIntruder\(card\)/.test(decksSource) ? "yes" : "no", "yes");
+check("and for the ones that can never be played",
+  /export function isDeadCard\(card\)/.test(decksSource) ? "yes" : "no", "yes");
+check("and for what resolves as it is dealt",
+  /export function drawEffect\(card\)/.test(decksSource) ? "yes" : "no", "yes");
+check("and for the one that costs the slot",
+  /export function costsTheSlot\(card\)/.test(decksSource) ? "yes" : "no", "yes");
+check("and for where it goes afterwards",
+  /export function afterDrawing\(card\)/.test(decksSource) ? "yes" : "no", "yes");
+check("and for the line it prints",
+  /export function intruderLine\(card\)/.test(decksSource) ? "yes" : "no", "yes");
+
+/* The three call sites that used to name the kinds, and the fourth that used to guess between them. */
+check("the card sheet asks the category",
+  /isHarm: isIntruder\(card\)/.test(sheetSource) ? "yes" : "no", "yes");
+check("and prints the card's own line",
+  /harmLine: intruderLine\(card\)/.test(sheetSource) ? "yes" : "no", "yes");
+check("the tray's pile rows ask the category",
+  /harm: isIntruder\(c\)/.test(traySource) ? "yes" : "no", "yes");
+check("and its detail line comes from the table",
+  /if \(isIntruder\(card\)\) return intruderLine\(card\)/.test(traySource) ? "yes" : "no", "yes");
+check("the face prints one line, never a guess between two",
+  /<span>\{\{harmLine\}\}<\/span>/.test(cardTemplate) ? "yes" : "no", "yes");
+check("and the old disjunction is gone from the hand filter",
+  /c\.type !== "wound" && c\.type !== "taint"/.test(decksSource) ? "still there" : "gone", "gone");
+check("and from the card sheet",
+  /type === "wound" \|\| type === "taint"/.test(sheetSource) ? "still there" : "gone", "gone");
+check("and from the tray",
+  /c\.type === "wound" \|\| c\.type === "taint"/.test(traySource) ? "still there" : "gone", "gone");
+check("and the template no longer asks which kind it is",
+  /\{\{#if isWound\}\}/.test(cardTemplate) ? "still there" : "gone", "gone");
+
+/*
+ * **The refill's shortfall, which was wrong before any of this.** `break` on the first Taint does
+ * not mean "draw no replacement", it means "stop refilling" -- a hand of five that drew its dose
+ * fourth came up with three cards rather than four, and a second dose behind it cost nothing
+ * because the loop had already gone. core-rules 8 says one card short per dose.
+ */
+check("the refill counts the shortfall",
+  /hand\.cards\.size \+ short < size/.test(decksSource) ? "yes" : "no", "yes");
+check("and no longer stops dealing at the first dose",
+  /taint\+\+;\s*\n\s*break;/.test(decksSource) ? "it does" : "it does not", "it does not");
+
+/*
+ * **A card that leaves the game has to go home first.** `Cards#pass` marks the home card `drawn`
+ * and deals a COPY, so deleting the copy in a hand leaves the original in the deck, flagged and
+ * permanently unavailable -- the deck quietly one card smaller with nothing to say why. And
+ * `normalizeDeck` would not rescue it, because that function restores the flag rather than
+ * clearing it, on purpose.
+ */
+check("a card taken out of the game goes home before it dies",
+  /await move\(parent, deck, \[card\.id\]\);\s*\n\s*await deck\.cards\.get\(card\.id\)\?\.delete\(\);/
+    .test(decksSource) ? "yes" : "no", "yes");
+check("and fear does not outlive the fight that caused it",
+  /await clearFear\(actor\);/.test(decksSource) ? "yes" : "no", "yes");
+
+/* Fear's own routine, and the dial it deliberately does not have. */
+check("the routine that deals Fear",
+  /export async function resolveFear\(actor, \{ amount = 1, target, fast = false, source = "" \}\)/
+    .test(resolveSource) ? "yes" : "no", "yes");
+const fearBody = resolveSource.slice(
+  resolveSource.indexOf("export async function resolveFear"),
+  resolveSource.indexOf("export async function resolveCorrode"));
+/* Action deck only: a Fear card moves you, and the skill deck is not drawn in a fight. */
+check("Fear reaches the skill deck", /skill/.test(fearBody) ? "it does" : "it does not",
+  "it does not");
+check("and a fast dose is spent rather than discarded",
+  /await removeCard\(target, card\);/.test(fearBody) ? "yes" : "no", "yes");
+
+/*
+ * **The registration, in all four places a card subtype has to appear.** The sheet was the one
+ * this suite already asked about; the data model, the manifest and the label it did not, and a
+ * subtype missing its model is a card whose `system` is a bare object with no fields at all.
+ */
+const intruderLang = JSON.parse(fs.readFileSync(path.join(root, "lang/en.json"), "utf8"));
+const unmodelled = Object.keys(manifest.documentTypes.Card ?? {}).filter(type =>
+  !new RegExp(`^    ${type}: \\w+CardData,?$`, "m").test(entrySource)
+  || !Object.hasOwn(intruderLang, `TYPES.Card.${type}`));
+check("Card subtypes missing a data model or a label",
+  unmodelled.length ? unmodelled.join(", ") : "none", "none");
+
+/*
+ * And the two directions that matter: the kinds the engine knows are exactly the kinds the rules
+ * print a row for. Either list growing alone is a kind of harm that half the game believes in.
+ */
+const docKinds = [...coreRules.matchAll(/^> \| \*\*(Wound|Taint|Fear)\*\* \|/gm)]
+  .map(m => m[1].toLowerCase());
+check("intruders the rules table names", docKinds.join(", "), "wound, taint, fear");
+check("and the engine's table agrees, both ways",
+  [...intruderKinds].sort().join(",") === [...docKinds].sort().join(",") ? "it does" : "it does not",
+  "it does");
+/* Fear is the one with no removal line, and the rules say so rather than leaving it to be noticed. */
+check("the rules say Fear needs no cure",
+  /\*\*Fear does not last\*\*, and it is the only intruder with no removal line/.test(coreRules)
+    ? "yes" : "no", "yes");
+
 
 /* ---- what a card does is editable, not just what it is called ---- */
 
@@ -11497,7 +11638,7 @@ for (const m of selfSource.matchAll(/(\w+)\.includes\("((?:[^"\\]|\\.)*)"\)/g)) 
 }
 
 /* The pin that keeps the rest of this honest. */
-check("greps over a whole file, resolved", greps.length, 546);
+check("greps over a whole file, resolved", greps.length, 567);
 
 /*
  * **The rule, as one predicate, run over a planted example before it is run over the suite.**
@@ -11541,16 +11682,21 @@ const absentGreps = [
   String.raw`a pile is never given one :: "pile",[^)]*backOf\(`,
   String.raw`and core content is never written to :: NODES\.(push|splice|length =)`,
   String.raw`and down is not computed from the updated document :: down: taker\.system\.health\.value - dealt`,
+  String.raw`and from the card sheet :: type === "wound" \|\| type === "taint"`,
+  String.raw`and from the tray :: c\.type === "wound" \|\| c\.type === "taint"`,
   String.raw`and neither builds a face by hand any more :: faces: \[\{ name: card\.name \}\]`,
   String.raw`and neither reads an item's tags by hand :: \(item\?\.system\?\.tags \?\? \[\]\)\.includes`,
   String.raw`and neither table still offers a choice :: ` + "`" + String.raw`\.webp` + "`"
     + String.raw` (?:preferred|or ` + "`" + String.raw`\.png` + "`" + `)`,
   String.raw`and never decides from adjacency itself :: \.after[\s\S]{0,60}\.(some|every)\(`,
   String.raw`and no longer reads a spell as a source of bonus :: slate\.type === "spell" && slate\.system\.effect`,
+  String.raw`and no longer stops dealing at the first dose :: taint\+\+;\s*\n\s*break;`,
   String.raw`and no slate is flagged unusable instead :: quarantined: new fields\.BooleanField`,
   String.raw`and reads the change rather than the state :: item\.system\.prepared`,
+  String.raw`and the old disjunction is gone from the hand filter :: c\.type !== "wound" && c\.type !== "taint"`,
   String.raw`and the old sentence is gone :: Faith is \*\*wide and shallow\*\*`,
   String.raw`and the resolver reads the flag :: conditionsOf\(actor\)\.includes\("invisible"\)`,
+  String.raw`and the template no longer asks which kind it is :: \{\{#if isWound\}\}`,
   String.raw`and the token is not given a file of its own :: texture: \{ src: (?!art \})`,
   String.raw`and the two retired vocabularies are gone from config :: conjureSources|conjureSides`,
   String.raw`and the unpatched line is gone :: Object\.create\(Array\.prototype\)`,

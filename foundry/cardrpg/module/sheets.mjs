@@ -11,7 +11,7 @@ import { LevelUpPane } from "./levelup.mjs";
 /* The node index, so the sheet can name what it is taking back rather than printing an id. */
 import { GRAPH } from "./graph.mjs";
 /* One answer to "is there art on this", shared with the tray rather than spelled twice. */
-import { artOf } from "./decks.mjs";
+import { artOf, isIntruder, intruderLine } from "./decks.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2, ItemSheetV2 } = foundry.applications.sheets;
@@ -520,7 +520,15 @@ export class CardConfigSheet extends HandlebarsApplicationMixin(
       isNpcCard: type === "npc",
       isWound: type === "wound",
       isTaint: type === "taint",
-      isHarm: type === "wound" || type === "taint",
+      isFear: type === "fear",
+      /*
+       * One predicate and one line, both from the table in decks.mjs. This used to be a second
+       * disjunction naming the two intruders that existed, and the template behind it was worse:
+       * it printed the Wound text or ELSE the Taint text, so a third kind of intruder would have
+       * rendered with somebody else's rules on its face and nothing would have complained.
+       */
+      isHarm: isIntruder(card),
+      harmLine: intruderLine(card),
       isWild: type === "wild",
       isSkill: type === "skill",
       /*
@@ -637,7 +645,7 @@ export function registerSheets() {
     types: ["item", "feature", "spell"], makeDefault: true, label: "CARDRPG.Sheet.Slate"
   });
   DocumentSheetConfig.registerSheet(Card, "cardrpg", CardConfigSheet, {
-    types: ["action", "fate", "npc", "wound", "taint", "wild", "skill", "twist"],
+    types: ["action", "fate", "npc", "wound", "taint", "fear", "wild", "skill", "twist"],
     makeDefault: true, label: "CARDRPG.Sheet.Card"
   });
 }

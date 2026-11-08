@@ -149,17 +149,23 @@ deck is an ordinary Critical or Miss and uses those faces, so all four icons are
 
 The −2 … +2 cards are numerals and need no symbol.
 
-### Lingering damage (4)
+### Lingering damage (5)
 
 | Placeholder | Name | Notes | game-icons.net |
 |---|---|---|---|
 | ✖ | **Wound** | A card in your action deck that can't be played | Knee bandage |
 | ☣ | **Taint (body)** | Disease and bodily corruption — goes in the **action** deck | Virus |
 | ☣ | **Taint (mind)** | Dark magic and horrors — goes in the **skill** deck | Squid head |
+| ✖ | **Fear** | Spent when drawn: one square away from the nearest enemy. Action deck only | **[OPEN]** not chosen |
 | – | **Injury** | Permanent — a *slate* on the sheet, not a card in a deck (see [ideas.md](ideas.md)) | Severed hand |
 
 Taint has two faces because core-rules §8 already splits it by which deck it goes into. For the data
 model that's one card type with a `flavour` field (`body` / `mind`) selecting the icon, not two types.
+
+**Fear's face is not chosen yet**, and nothing in the system reads one: `WoundCardData` declares no
+icon either, and both fall back to the card face's own placeholder. It is listed here because the
+spec is what says a face is wanted, and an intruder with no face in the tray is the kind of silent
+gap this file exists to stop.
 
 ---
 

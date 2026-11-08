@@ -23,7 +23,7 @@ import { rebuildGraph } from "./module/graph.mjs";
 import { CharacterData, NpcData } from "./module/data/actors.mjs";
 import { ItemSlateData, FeatureSlateData, SpellSlateData } from "./module/data/items.mjs";
 import {
-  ActionCardData, FateCardData, NpcCardData, WoundCardData, TaintCardData, WildCardData,
+  ActionCardData, FateCardData, NpcCardData, WoundCardData, TaintCardData, FearCardData, WildCardData,
   SkillCardData, TwistCardData
 } from "./module/data/cards.mjs";
 
@@ -57,6 +57,7 @@ Hooks.once("init", () => {
     npc: NpcCardData,
     wound: WoundCardData,
     taint: TaintCardData,
+    fear: FearCardData,
     wild: WildCardData,
     // The skill side's own card: one approach and a value (skill-rules 1).
     skill: SkillCardData,

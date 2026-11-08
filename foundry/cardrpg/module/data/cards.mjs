@@ -701,3 +701,19 @@ export class TaintCardData extends foundry.abstract.TypeDataModel {
     return this.flavour === "body" ? "vomiting" : "squid-head";
   }
 }
+
+/**
+ * Fear resolves the moment it is drawn and moves you one square away from the nearest enemy, then
+ * discards itself -- and a replacement IS drawn, so what it costs is the square and not the card.
+ *
+ * Same single field as a Wound, and for the same reason: the text and the face are fixed, and the
+ * only thing worth recording is what frightened you. The *pile* it arrives in is the dial that
+ * matters and that belongs to whatever deals it (core-rules 8), not to the card.
+ */
+export class FearCardData extends foundry.abstract.TypeDataModel {
+  static defineSchema() {
+    return {
+      source: new fields.StringField({ required: false, blank: true, initial: "" })
+    };
+  }
+}

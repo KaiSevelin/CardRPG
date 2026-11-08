@@ -21,7 +21,8 @@ import {
 import { expandRoster } from "./monsters.mjs";
 import { slateData } from "./setup.mjs";
 import {
-  drawFate, deckOf, uprightCards, discardCards, cardName, addFateCards, moveRandom
+  drawFate, deckOf, uprightCards, discardCards, cardName, addFateCards, moveRandom, move,
+  applyFear, removeCard
 } from "./decks.mjs";
 
 /* -------------------------------------------- */
@@ -568,6 +569,66 @@ export async function resolveTaint(actor, { amount = 1, target, flavour = "body"
       + `.</p></div>`
   });
   return { amount: n, flavour, fast, dealt };
+}
+
+/**
+ * Fear N: N Fear cards into the target's action deck (core-rules 8).  **[BUILT 2026-11-08]**
+ *
+ * **The same two dials as Tainting, because it is the same mechanism:** how many, and which pile.
+ * Slow puts them in the discard, where they come round at a moment nobody chose; fast puts them
+ * straight into the hand, where they resolve at once and move you now. A shriek is fast and a
+ * haunting is slow, and those are the same card in a different pile.
+ *
+ * **Dealt by a keyword and not by a card**, which is also Tainting's model: core-rules 8 says you
+ * gain Fear from sources with `terrify`, the source says how much, and this is the GM's tool for
+ * saying it. That is why nothing new went into the card pools to carry it -- `terrify` already
+ * exists as a capability, the Goblin Shaman already has it, and a second vocabulary entry for the
+ * same idea would be the dropdown-only value this project keeps digging out of its own history.
+ *
+ * **Action deck only.** A Fear card moves you, and the skill deck is not drawn in a fight. Mind
+ * Taint can live in the skill deck because damage does not care where you are standing; this does.
+ */
+export async function resolveFear(actor, { amount = 1, target, fast = false, source = "" }) {
+  if (!target) return null;
+  const which = fast ? "actionHand" : "actionDiscard";
+  const stack = deckOf(target, which);
+  if (!stack) {
+    ui.notifications.warn(`${target.name} has no ${which} to be frightened into.`);
+    return null;
+  }
+
+  const n = Math.max(1, amount);
+  const made = await stack.createEmbeddedDocuments("Card", Array.from({ length: n }, () => ({
+    name: "Fear",
+    type: "fear",
+    system: { source }
+  })));
+
+  /*
+   * Fast fear resolves on arrival, for the reason fast Taint does: the card's own text fires "when
+   * drawn", and a card put into a hand was never drawn. Resolving it here keeps that text true
+   * instead of adding a case to it. Each one moves you a square and then goes to the discard, so
+   * two doses are two squares -- and the second is measured from where the first one left you.
+   */
+  let moved = 0;
+  if (fast) {
+    for (const card of made) {
+      await applyFear(target, card);
+      /* Spent the moment it resolves, and out of the game rather than into the discard: core-rules
+       * 8 gives Fear no removal line because it needs none. */
+      await removeCard(target, card);
+      moved++;
+    }
+  }
+
+  await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<div class="cardrpg"><p><strong>${target.name}</strong>: Fear <strong>${n}</strong> `
+      + `&mdash; ${n} into the ${fast ? "hand" : "discard"}`
+      + (moved ? `, resolving at once` : "")
+      + `.</p></div>`
+  });
+  return { amount: n, fast, moved };
 }
 
 /**

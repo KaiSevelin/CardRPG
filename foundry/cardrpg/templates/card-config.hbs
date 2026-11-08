@@ -66,11 +66,8 @@
       <div class="cr-card cr-card--harm">
         <div class="cr-card__name">{{card.name}}</div>
         <div class="cr-half">
-          {{#if isWound}}
-            <span>Can't be played. Discard at the end of your turn.</span>
-          {{else}}
-            <span>When drawn: 1 damage, ignoring armor. Discard, and draw no replacement.</span>
-          {{/if}}
+          {{!-- The card's own line, from the intruder table. Never an if/else over the kinds. --}}
+          <span>{{harmLine}}</span>
         </div>
       </div>
       <p class="cr-note">No bands, because it can't be played &mdash; that absence is the signal.
@@ -178,13 +175,12 @@
           <option value="mind" {{#if (crEq system.flavour "mind")}}selected{{/if}}>Mind &mdash; skill deck</option>
         </select>
       </label>
-      <label class="cr-stat">Source
-        <input type="text" name="system.source" value="{{system.source}}">
-      </label>
     </section>
   {{/if}}
 
-  {{#if isWound}}
+  {{!-- Every intruder records what put it there, so the source field is the category's, not one
+        kind's. Taint keeps its own section above for the flavour, which only it has. --}}
+  {{#if isHarm}}
     <section class="cr-block">
       <label>Source <input type="text" name="system.source" value="{{system.source}}"></label>
     </section>

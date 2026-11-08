@@ -1417,7 +1417,33 @@ open — a dial for whoever writes cards rather than a rule anybody has to hold 
 
 ### Lingering damage
 
-Some harm stays with you after the fight. It's represented by **negative cards** shuffled into your own decks. They clog your hand until you get rid of them.
+Some harm stays with you after the fight. It is represented by **intruders** — cards nobody chose,
+shuffled into your own decks, where they clog your hand until you get rid of them.
+
+> **[BUILT 2026-11-08] Three kinds, and the four dials that make a kind of it.**
+>
+> Wounds, Taint and Fear are one mechanism at three settings rather than three rules, which is why
+> a fourth kind is a row in a table and not a new section:
+>
+> | | When it surfaces | Replacement drawn | Afterwards |
+> |---|---|---|---|
+> | **Wound** | nothing — it sits dead in your hand until the end of your turn | yes | back to the discard, until a rest or treatment lifts it |
+> | **Taint** | 1 damage, past armour | **no** — your hand is a card short | back to the discard, until a cure or Cleansing lifts it |
+> | **Fear** | one square away from the nearest enemy | yes | **gone** — spent the moment it is drawn |
+>
+> And a fourth dial that belongs to whatever deals it rather than to the card itself: **which
+> pile**. The discard, where it comes round at a moment nobody chose, or straight into the hand,
+> where it resolves now. *A shriek is fast and a haunting is slow, and those are the same card in
+> a different pile* — the sentence Taint's own fast/slow dial was built around, and every kind of
+> intruder gets it for nothing.
+>
+> **The dial that sets the price is the replacement, and it is worth saying plainly because it is
+> not obvious.** A card that discards itself and is replaced costs almost nothing, because
+> dilution cannot bite until the draw pile empties — which is why a Wound measures at −0.7 against
+> the published encounters and actually *helps* a hero who is being hit hard enough (see the
+> measurement under Wounds). Anything meant to be felt has to take the slot with it like Taint,
+> or refuse to leave, or cost a Spend to be rid of. A kind of harm whose cost is *tempo* rather
+> than cards — Fear — is priced by a different mechanism entirely and may replace itself freely.
 
 #### Wounds
 
@@ -1568,6 +1594,78 @@ Some harm stays with you after the fight. It's represented by **negative cards**
 - **Afflicted:** while you have **3 or more Taint** in your decks, you are Afflicted. Your max Health is −3, and the source adds its own effect (e.g. a sickness or mutation). It ends when you're below 3 Taint again.
 
 **[OPEN]** A list of afflictions per Taint source. Waits for world creation.
+
+#### Fear  **[BUILT 2026-11-08]**
+
+```
+┌───────────────────────┐
+│ ✖ FEAR                │
+│ Can't be played.      │
+│ When drawn: move 1    │
+│ square directly away  │
+│ from the nearest      │
+│ enemy, then discard.  │
+└───────────────────────┘
+```
+
+- **You gain Fear** from sources with the **`terrify`** keyword: a shriek, a glamour, a thing whose
+  shape is wrong. The source says how much, and which pile — the **discard** for a dread that comes
+  round later, or straight into the **hand** for a shriek that moves you *now*.
+- **Action deck only.** A Fear card moves you, and your skill deck is not drawn in a fight. Mind
+  Taint can live in the skill deck because damage does not care where you are standing; this does.
+- **When drawn:** move **1 square directly away** from the nearest enemy, then discard it. A
+  replacement **is** drawn, so your hand does not come up short. What Fear costs you is the square
+  you chose to be standing in, and nothing else.
+- **Cornered counts.** If every square further from that enemy is occupied or off the map, you stand
+  where you are and the card is still spent. So does having nothing to be afraid of: Fear drawn with
+  no enemy on the board does nothing but go. The card's text is what it tells you to do, not what it
+  achieves.
+- **Fear does not last**, and it is the only intruder with no removal line. It is spent the moment
+  it is drawn, and any still sitting in your deck when the fight ends go with it — a fright nobody
+  is owed any more. Nothing cures it because nothing has to.
+
+> **Why it is the one intruder that costs no cards.** It is the first kind of harm in the game
+> whose price depends on the shape of the fight rather than on its size. Dilution is a tax on
+> everybody equally; a square is not, so Fear needed no card cost bolted on top of it.
+
+> **[MEASURED 2026-11-08] What Fear costs, and the one fight where it is brutal.**
+>
+> Fear cards shuffled into the deck at the start, 6000 fights a cell:
+>
+> | | 3 spears | 4 spears | 5 spears | 2 spear 2 bow | published mean |
+> |---|---|---|---|---|---|
+> | no Fear | 98.7 | 90.3 | 66.3 | 39.9 | 73.8 |
+> | **Fear 1** | 98.8 | 89.9 | 67.2 | 35.5 | **72.9** |
+> | **Fear 2** | 98.5 | 89.6 | 66.2 | 30.9 | **71.3** |
+> | **Fear 4** | 98.1 | 88.6 | 65.9 | 23.4 | **69.0** |
+> | *control: 1 card cut* | 98.2 | 87.3 | 62.0 | 34.7 | *70.5* |
+>
+> **Two Fear cost −2.5 on the published mean and −9.0 of it lands in one cell.** Against four
+> spears it is −0.7, against five −0.1, and against two spears and two bows **−9.0**. That is not
+> noise and it is not about how many enemies there are: it is about whether the hero needs to
+> *close*. Pushed a square back from the goblin in front of you, you have given two archers
+> another free shot and you have to walk it again. In a scrum of five there is nowhere further to
+> go — `step_away` finds no square and the card does nothing — so the same intruder is almost
+> free. **0.15 of every two doses are drawn cornered**, and in the scrum nearly all of them are.
+>
+> **And against something that hits hard it is a favour.** At a raw 6 it costs −0.8; at a raw 8 it
+> is **+0.7**, because being dragged out of reach of a thing that deals 8 is what you should have
+> done yourself. That is the second time this project has found an intruder helping the hero it
+> lands on (see the Wound measurement above), and this time it is not the end-of-turn discard
+> doing it — it is that fleeing is sometimes correct. A card that makes you do the right thing by
+> force is only a punishment when you were already in the right place.
+>
+> **The control says the cost is not dilution.** A card permanently cut costs −3.3 on the
+> published mean against Fear 2's −2.5, and it costs it *evenly* — −0.5, −3.0, −4.3, −5.2 across
+> the four cells, always negative. Fear's spread is −0.2, −0.7, −0.1, −9.0. So two Fear are worth
+> about three-quarters of one lost card on average and nothing like it in distribution, which is
+> the whole argument for pricing harm by tempo rather than by cards: it is the one dial that can
+> be cheap against one encounter and savage against the next.
+>
+> **[OPEN]** Whether it reads the same from the other side of the hero. The simulator models a
+> Warrior, so *Fear routs a front line and leaves the back one where it was* is still an untested
+> sentence — it needs a hero who wanted the distance anyway, which is a Shade with a bow and a
+> deck nothing deals yet (starter-cards.md).
 
 #### Acid, and the only damage that costs you gear
 
@@ -1781,7 +1879,9 @@ against an enemy that can only deal damage, holding reactions is free.
   **GM's choice is a different card**, and it belongs to an elite with a face-up reaction rather
   than to the pool.
 - **It needs a capability and no temperament.** A shrieking thing and a calculating thing can both
-  make you flinch, so `terrify` is what earns the card and nothing else gates it.
+  make you flinch, so `terrify` is what earns the card and nothing else gates it. The same keyword
+  is what lets a creature put **Fear** in your deck (section 8) — one keyword, a card and an
+  intruder, the way `tainting` is both a printed effect and the keyword a sickness arrives under.
 - **It aims itself.** A player holding four reserved reactions has four things to lose; a player who
   spent their hand on their own turn has nothing to take and eats a plain Strike. Nothing has to be
   printed to make it the answer to a held hand — it simply is one.

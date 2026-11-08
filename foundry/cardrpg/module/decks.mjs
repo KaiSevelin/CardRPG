@@ -353,19 +353,137 @@ export async function reserveCard(card, on = null) {
 }
 
 /**
+ * Take a card out of the game entirely, wherever it happens to be sitting.
+ *
+ * **A dealt card is a copy.** `Cards#pass` marks the home card `drawn` and creates a second
+ * document in the destination, which is what stops a deck dealing the same card twice -- so
+ * deleting the copy in a hand leaves the home card in the deck, flagged, invisible and permanently
+ * unavailable. The deck would quietly be one card smaller with nothing to say why, and
+ * `normalizeDeck` would not rescue it: that function RESTORES the flag rather than clearing it,
+ * on purpose, because clearing it across a deck is what used to let a deck deal a card twice.
+ *
+ * So it goes home first and dies there. Two operations for what looks like one, and the comment is
+ * the reason it is not one.
+ */
+export async function removeCard(actor, card) {
+  if (!card) return false;
+  const deck = deckOf(actor, "action");
+  const parent = card.parent;
+  if (deck && parent && parent.id !== deck.id && deck.cards.get(card.id)) {
+    await move(parent, deck, [card.id]);
+    await deck.cards.get(card.id)?.delete();
+    return true;
+  }
+  await card.delete();
+  return true;
+}
+
+/* -------------------------------------------- */
+/*  Intruders                                  */
+/* -------------------------------------------- */
+
+/**
+ * **The cards in your deck that nobody chose to put there.**  **[BUILT 2026-11-08]**
+ *
+ * A Wound, a Taint and a Fear card are not content. Nothing in the catalogue deals them to you as
+ * a card, no node grants one and no deck was ever built with one in it -- they arrive because
+ * something happened to you, they sit in a pile that is otherwise entirely your own choices, and
+ * they come round again on that pile's own clock.
+ *
+ * That is a category, and it had been three hand-written disjunctions: `type === "wound" ||
+ * type === "taint"` in this file, in the card sheet and in the tray. Which is this project's own
+ * recurring defect wearing a new hat -- a rule stated in three places and true in whichever one
+ * somebody last edited. A fourth kind of intruder would have been spendable for a Brace in one of
+ * them and rendered as an ordinary playable card in another, and nothing would have said so.
+ *
+ * Three dials, and the table below is the whole of it:
+ *
+ *  - `dead`   -- may not be played, and may not be spent on a reaction. Every intruder so far is,
+ *                and it is the one exception to *no card in your hand is dead* (core-rules 3).
+ *  - `onDraw` -- it resolves as it is dealt rather than waiting to be played. Taint takes its
+ *                damage, Fear moves you, and a Wound does nothing at all but take up the slot.
+ *  - `short`  -- it costs the slot as well: no replacement is drawn and the hand legitimately
+ *                comes up one card shorter. **This is the dial that sets the price**, and
+ *                core-rules 8 records why -- a card that replaces itself is very nearly free,
+ *                because dilution cannot bite until the draw pile empties.
+ *  - `after`  -- where it goes once it has resolved. The discard, where it will come round again
+ *                until something lifts it, or `"gone"` -- out of the game, which is how a kind of
+ *                harm that does not last is written. Fear is the first of those: it is spent the
+ *                moment it is drawn, and a shriek you have already flinched at is not still owed.
+ *
+ * Which pile it lands in is a fourth dial and belongs to whatever deals it rather than here: the
+ * discard, where it comes round at a moment nobody chose, or straight into the hand, where it
+ * resolves at once. `resolveTaint` has carried that parameter since Taint was built, and every
+ * intruder gets it for nothing.
+ */
+export const INTRUDERS = {
+  /* A Wound never resolves on draw at all: the player discards it at the end of their turn, so
+   * it has no `after` of its own and stays in the hand until then. */
+  wound: {
+    dead: true, onDraw: null, short: false, after: null,
+    line: "Can't be played. Discard at the end of your turn."
+  },
+  taint: {
+    dead: true, onDraw: "taint", short: true, after: "discard",
+    line: "When drawn: 1 damage, ignoring armor. Discard, and draw no replacement."
+  },
+  fear: {
+    dead: true, onDraw: "fear", short: false, after: "gone",
+    line: "When drawn: move 1 square directly away from the nearest enemy, then discard."
+  }
+};
+
+/** Is this one of the cards nobody chose to put in the deck? */
+export function isIntruder(card) {
+  return !!card?.type && Object.hasOwn(INTRUDERS, card.type);
+}
+
+/** Can this card never be played -- not even for Brace? */
+export function isDeadCard(card) {
+  return !!INTRUDERS[card?.type]?.dead;
+}
+
+/** What resolves the moment this card is dealt, or null if nothing does. */
+export function drawEffect(card) {
+  return INTRUDERS[card?.type]?.onDraw ?? null;
+}
+
+/** Does it take the slot with it, leaving the hand a card short? */
+export function costsTheSlot(card) {
+  return !!INTRUDERS[card?.type]?.short;
+}
+
+/** Where it goes once it has resolved: "discard", "gone", or null if it never resolves itself. */
+export function afterDrawing(card) {
+  return INTRUDERS[card?.type]?.after ?? null;
+}
+
+/**
+ * What the card says, for whoever is printing it.
+ *
+ * The sheet and the tray both print this and they had written their own wordings -- the tray said
+ * "Dead card. Discard at the end of your turn." where the card face says "Can't be played." Two
+ * texts for one card is the same defect as two predicates for one category, so the line lives with
+ * the dials that explain it.
+ */
+export function intruderLine(card) {
+  return INTRUDERS[card?.type]?.line ?? "";
+}
+/**
  * The cards in a hand that may react: upright, and not a dead card.
  *
- * A Wound "can't be played, not even for Brace" (core-rules 8) and Taint resolves the moment it is
- * drawn, so neither is a card you can spend on a reaction -- which is the one exception to "no card
- * in your hand is dead", and the reason it is tested here rather than in the resolver.
+ * An intruder is never one: a Wound "can't be played, not even for Brace" (core-rules 8) and Taint
+ * resolves the moment it is drawn, so neither is a card you can spend on a reaction -- the one
+ * exception to "no card in your hand is dead", and the reason it is tested here rather than in the
+ * resolver. It asks `isDeadCard` rather than naming the types, so a new kind of intruder is one
+ * row in the table above and not an edit here.
  */
 export function uprightCards(actor) {
   // Asked of every neighbour of every lethal hit, and an NPC holds no hand at all (core-rules 9),
   // so the absence is tested rather than reported: deckOf warns, and this is not a misconfiguration.
   if (!actor?.system?.decks?.actionHand) return [];
   const hand = deckOf(actor, "actionHand");
-  return (hand?.cards.contents ?? []).filter(c =>
-    c.type !== "wound" && c.type !== "taint" && !isReserved(c));
+  return (hand?.cards.contents ?? []).filter(c => !isDeadCard(c) && !isReserved(c));
 }
 
 /** A card's readable name, never Foundry's "Unknown (<deck>)" placeholder for a faceless card. */
@@ -538,9 +656,18 @@ export async function reshuffleFate(actor) {
 /**
  * Refill the hand at the start of a round.
  *
- * Taint resolves the moment it is drawn -- 1 damage ignoring armor, discard, and draw NO
- * replacement -- so the hand legitimately comes up short. A Wound just sits in the hand as a dead
- * card until the end of the turn.
+ * An intruder that resolves on draw does so here, and the table says what that costs. Taint takes
+ * its damage and the slot with it, so the hand legitimately comes up a card short. Fear moves you
+ * and replaces itself, so a full hand stays full and what it spends is the square you were
+ * standing in. A Wound does nothing on arrival and just sits there as a dead card until the end
+ * of the turn.
+ *
+ * **The shortfall used to be wrong, and it was wrong in the expensive direction.** The old code
+ * `break`-ed out of the refill on the first Taint, which does not mean "draw no replacement" --
+ * it means "stop refilling". A hand of five that drew its Taint fourth came up with three cards
+ * rather than four, and a second Taint behind it cost nothing at all because the loop had already
+ * gone. The shortfall is counted now and the refill carries on, which is what core-rules 8 says:
+ * *you don't draw a replacement, so your hand is one card short* -- one per dose.
  */
 export async function refill(actor) {
   const deck = deckOf(actor, "action");
@@ -555,22 +682,31 @@ export async function refill(actor) {
   const size = actor.system.handSize?.max ?? CARDRPG.defaults.handSize;
   let drawn = 0;
   let taint = 0;
+  let fear = 0;
+  let short = 0;            // slots an intruder took away with it, so the hand comes up short
 
-  while (hand.cards.size < size && available(deck).length > 0) {
+  while (hand.cards.size + short < size && available(deck).length > 0) {
     const [card] = await moveRandom(deck, hand, 1);
     if (!card) break;
 
-    if (card.type === "taint") {
-      // Resolves at once, and costs the slot: no replacement is drawn.
-      await applyTaint(actor, card);
-      await move(hand, discard, [card.id]);
-      taint++;
-      break;
+    const effect = drawEffect(card);
+    if (effect) {
+      /*
+       * It resolves as it is dealt and then goes to the discard. Whether it also costs the slot is
+       * the card's own dial and not a case here; a kind that replaces itself simply does not add
+       * to `short`, and the loop carries on filling the hand.
+       */
+      if (effect === "taint") { await applyTaint(actor, card); taint++; }
+      else if (effect === "fear") { await applyFear(actor, card); fear++; }
+      if (afterDrawing(card) === "gone") await removeCard(actor, card);
+      else await move(hand, discard, [card.id]);
+      if (costsTheSlot(card)) short++;
+      continue;
     }
     drawn++;
   }
 
-  return { drawn, taint };
+  return { drawn, taint, fear, short };
 }
 
 /** Taint: 1 damage ignoring armor. */
@@ -582,6 +718,84 @@ async function applyTaint(actor, card) {
     content: `<p><strong>${actor.name}</strong> draws <em>${card.name}</em>: 1 damage, ignoring armor. `
       + `No replacement card.</p>`
   });
+}
+
+/**
+ * Fear: one square directly away from the nearest enemy, and then the card is gone.
+ *
+ * **What it spends is the square you chose to be standing in, and nothing else.** A replacement
+ * IS drawn, unlike Taint, so a full hand stays full -- the whole price is tempo and position. That
+ * makes it the first intruder whose cost depends on how well you were doing: it is worth most
+ * against the Way whose stated thesis is that *standing next to somebody is worth something*, and
+ * very nearly nothing to an archer who wanted the distance anyway. The asymmetry is the point.
+ * Fear routs a front line and leaves the back one exactly where it was.
+ *
+ * It moves the token itself where it can, the way `sidestep` does and for the same reason: a
+ * forced move the player makes by hand is a forced move the player can quietly not make. With no
+ * tokens on a scene it says so and leaves the step to the GM, which is what `pullShooterTo` does.
+ *
+ * Two ways it can buy nothing, and both are legal. **Nothing to flee from** -- drawn with no enemy
+ * on the board, which is what happens when a fight ends before your deck has cycled. And
+ * **cornered**: every square that is further away is occupied or off the grid, so you stand there
+ * and are afraid. The card is spent either way, because the card's text is what it tells you to
+ * do and not what it achieves.
+ */
+export async function applyFear(actor, card) {
+  const say = text => ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<div class="cardrpg"><p><strong>${actor.name}</strong> draws <em>${card.name}</em>: `
+      + `${text}</p></div>`
+  });
+
+  const token = actor?.getActiveTokens?.()[0];
+  const cell = canvas?.grid?.size;
+  if (!token || !canvas?.ready || !cell) {
+    await say("move 1 square directly away from the nearest enemy. <em>No token placed &mdash; the "
+      + "GM moves it.</em>");
+    return;
+  }
+
+  const hostile = canvas.tokens.placeables.filter(t =>
+    t.id !== token.id && t.document?.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE);
+  if (!hostile.length) {
+    await say("nothing on the board to be afraid of. The card is spent and you stand your ground.");
+    return;
+  }
+
+  /* Chebyshev throughout, because the scene's diagonals are equidistant (core-rules 11). */
+  const cheb = (ax, ay, bx, by) => Math.max(Math.abs(ax - bx), Math.abs(ay - by)) / cell;
+  const from = hostile.reduce((a, b) =>
+    (cheb(b.x, b.y, token.x, token.y) < cheb(a.x, a.y, token.x, token.y) ? b : a));
+
+  const taken = new Set(canvas.tokens.placeables
+    .filter(t => t.id !== token.id)
+    .map(t => `${t.x},${t.y}`));
+  const here = cheb(token.x, token.y, from.x, from.y);
+
+  const legal = [];
+  for (let dx = -1; dx <= 1; dx++) {
+    for (let dy = -1; dy <= 1; dy++) {
+      if (!dx && !dy) continue;
+      const x = token.x + dx * cell;
+      const y = token.y + dy * cell;
+      if (taken.has(`${x},${y}`)) continue;
+      // A step that does not increase the distance is not flight, whatever direction it faces.
+      if (cheb(x, y, from.x, from.y) <= here) continue;
+      legal.push({ x, y });
+    }
+  }
+  if (!legal.length) {
+    await say(`cornered by <strong>${from.document.name}</strong> &mdash; there is nowhere further `
+      + `to go. The card is spent.`);
+    return;
+  }
+
+  // The furthest of them, so the flight is the best step available rather than an arbitrary one.
+  const to = legal.reduce((a, b) =>
+    (cheb(b.x, b.y, from.x, from.y) > cheb(a.x, a.y, from.x, from.y) ? b : a));
+  await token.document.update({ x: to.x, y: to.y });
+  await say(`1 square away from <strong>${from.document.name}</strong>. A replacement card is `
+    + `drawn &mdash; what this costs is the square.`);
 }
 
 /** Move cards out of the hand and into the discard: played halves, and Strain paid from hand. */
@@ -740,6 +954,7 @@ export async function setOverloaded(actor, overloaded) {
 
 /** After combat: hand and discard go back into the deck. Spent cards stay out. */
 export async function afterCombat(actor) {
+  await clearFear(actor);
   const deck = deckOf(actor, "action");
   for (const which of ["actionHand", "actionDiscard"]) {
     const pile = deckOf(actor, which);
@@ -747,6 +962,33 @@ export async function afterCombat(actor) {
   }
   await deck?.shuffle({ chatNotification: false });
   await actor.update({ "system.block": 0, "system.blockPersists": false });
+}
+
+/**
+ * Fear does not outlive the fight that caused it (core-rules 8).
+ *
+ * A Wound and a Taint are swept back into the deck by `afterCombat` because they are supposed to
+ * still be there next time; a Fear card that was never drawn is a fright nobody is owed any more.
+ * The piles go first and through `removeCard`, because a card sitting in a hand may be a copy whose
+ * home is in the deck -- and then the deck itself, for the ones that were never dealt.
+ */
+async function clearFear(actor) {
+  let gone = 0;
+  for (const which of ["actionHand", "actionDiscard"]) {
+    const pile = deckOf(actor, which);
+    for (const card of [...(pile?.cards ?? [])]) {
+      if (card.type !== "fear") continue;
+      await removeCard(actor, card);
+      gone++;
+    }
+  }
+  const deck = deckOf(actor, "action");
+  for (const card of [...(deck?.cards ?? [])]) {
+    if (card.type !== "fear") continue;
+    await card.delete();
+    gone++;
+  }
+  return gone;
 }
 
 /** A rest returns Spent cards. A long rest also heals 5 and removes a Wound. */

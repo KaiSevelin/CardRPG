@@ -233,6 +233,12 @@ class Config:
     cb_threshold: int = 3         # catch breath when draw pile empty and hand <= this
     double_strike: bool = True    # Weapon Swap secondary is Strike (False: Move 1)
     persistent_block: bool = True  # Defend primary blocks every attack until your next turn
+    # Fear cards shuffled into the deck at the start, which is how a fight against something
+    # with `terrify` begins (core-rules 8). Each one, when drawn, moves the hero one square
+    # directly away from the nearest goblin and then LEAVES the game -- a replacement is drawn, so
+    # the hand never comes up short. What it costs is the square, which is the only intruder priced
+    # that way and the reason it needs its own model rather than a deck_cut.
+    fear: int = 0
     deck_cut: int = 0             # remove N cards from the action deck
     deck_cut_random: bool = False  # False: the weakest N (a deck-building choice)
                                    # True: N at random (Overloaded, core-rules 4)
@@ -524,6 +530,10 @@ class Game:
         # even for Brace" (core-rules 8). Zero copies, so none is dealt at the start -- they arrive
         # only from a hit. It lives in the table so every lookup keyed on a hand card still works.
         self.cards['Wound'] = ([], [], None, 0)
+        # Fear, same shape and for the same reason: it is never played, only drawn. Its copies are
+        # a config dial rather than a count here, because they arrive from an enemy and not from
+        # the collection -- a deck with a Fear card in it is a deck somebody frightened.
+        self.cards['Fear'] = ([], [], None, 0)
         self.cards.update(cfg.card_overrides)
         deck = [name for name, c in self.cards.items() for _ in range(c[3])]
         self.w = dict(pos=(1, 4), hp=cfg.hp, block=0, potions=cfg.potions, hand=[], draw=deck,
@@ -556,6 +566,7 @@ class Game:
                 if cfg.potions and sum(1 for n in deck if self.gives_use(n)) <= 1:
                     pool = [n for n in deck if not self.gives_use(n)] or deck
                 deck.remove(min(pool, key=self.prune_value))
+        deck += ['Fear'] * cfg.fear
         rng.shuffle(deck)
         # Stamina caps what comes to the fight: own twenty, bring ten, and which ten is the
         # question. The rest is `reserve` -- not spent, just not here.
@@ -828,7 +839,13 @@ class Game:
                 w['budget'] -= 1
             elif not w['draw']:
                 break
-            w['hand'].append(w['draw'].pop())
+            card = w['draw'].pop()
+            if card == 'Fear':
+                # Resolves as it is dealt and is then out of the game: no discard, so it never
+                # comes round again, and the loop carries on filling the hand.
+                self.take_fear()
+                continue
+            w['hand'].append(card)
         if not w['draw'] and 'deck_empty_round' not in self.s:
             self.s['deck_empty_round'] = self.round
         out = (w['budget'] is not None and w['budget'] <= 0) or not w['draw']
@@ -838,6 +855,27 @@ class Game:
         # fights because of exactly that: dead cards padding the hand and the post-Catch-Breath
         # deck, delaying an exhaustion that should have arrived sooner.
         w['exhausted'] = len([c for c in w['hand'] if c != 'Wound']) < 2 and out
+
+    def take_fear(self):
+        """One square directly away from the nearest goblin, and the card is spent.
+
+        Cornered counts: with every further square blocked or off the grid, `step_away` returns
+        None and the hero stands there, which is the rule and not a shortcut. Nothing to flee from
+        counts too -- a Fear drawn after the last goblin dropped does nothing at all.
+        """
+        self.s['fears_taken'] += 1
+        alive = self.alive()
+        if not alive:
+            return
+        w = self.w
+        threat = min(alive, key=lambda g: cheb(w['pos'], g['pos']))['pos']
+        blocked = {g['pos'] for g in alive}
+        nxt = step_away(w['pos'], threat, blocked)
+        if nxt is None:
+            self.s['fears_cornered'] += 1
+            return
+        w['pos'] = nxt
+        self.s['fear_squares'] += 1
 
     def gob(self, gid):
         for g in self.gobs:
@@ -1213,6 +1251,7 @@ def run_scenario(cfg, fights, seed):
                   'react_block', 'react_parry', 'react_brace', 'react_use', 'react_sidestep',
                   'prevented_react', 'reloads', 'shots_fired', 'cards_spent',
                   'prevented_armor', 'prevented_shieldup', 'dmg_taken', 'heavy_hit_discards', 'wounds_taken',
+                  'fears_taken', 'fears_cornered', 'fear_squares',
                   'goblin_disadv', 'goblin_adv', 'goblins_fled', 'fate_miss', 'fate_crit'):
             agg[k].append(g.s[k])
         if 'deck_empty_round' in g.s:
@@ -1269,6 +1308,14 @@ SCENARIOS = [
            goblins=('spear',) * 4),
     Config(name='Z  overloaded, 2 spear + 2 bow', deck_cut=2, deck_cut_random=True,
            goblins=('spear', 'spear', 'bow', 'bow')),
+    # What a fright costs, and the cell it all lands in: Fear is nearly free in a scrum and
+    # savage when the hero has to CLOSE, because every square back is another free shot
+    # (core-rules 8).
+    Config(name='AA Fear 2, 3 spears', fear=2),
+    Config(name='AB Fear 2, 5 spears', fear=2, goblins=('spear',) * 5),
+    Config(name='AC Fear 2, 2 spear + 2 bow', fear=2,
+           goblins=('spear', 'spear', 'bow', 'bow')),
+    Config(name='AD Fear 2 against a raw 8', fear=2, goblin_dmg=8),
 ]
 
 
