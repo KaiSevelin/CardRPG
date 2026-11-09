@@ -990,7 +990,7 @@ and it costs them days rather than only coin.
 
 §4 prices four firearms and never says where one comes from. The world document always has:
 
-> Vargtoppen's "advanced technology in gunpowder and firearms helps. The materials for powder are
+> Wolf Peak's "advanced technology in gunpowder and firearms helps. The materials for powder are
 > inside the mountain: never-failing guano fields from bats and large sulphur deposits from the
 > volcanism, while charcoal is harvested from fast-growing trees." Its priesthood "are rarely met
 > outside the enclave."
@@ -998,7 +998,7 @@ and it costs them days rather than only coin.
 **So a firearm is not a thing you buy, it is a thing you were given** — and the powder is the real
 constraint rather than the gun:
 
-- **Nobody sells a firearm outside Vargtoppen.** The table above has no row for one, on purpose.
+- **Nobody sells a firearm outside Wolf Peak.** The table above has no row for one, on purpose.
 - **Powder comes from the faith of the Fire or not at all**, which makes a Musketeer's ammunition a
   standing relationship with a church that does not travel, and a GM lever no other weapon family
   has.
@@ -1195,7 +1195,7 @@ part: the target gets one clean turn, so a poisoner who uses it is betting on th
   freely.
 
   **The firearm rule was the find.** §4 had priced four firearms since the first draft and never said
-  where one comes from, while `worldinfo/Firma.md` has always held the answer — **Vargtoppen owns the
+  where one comes from, while `worldinfo/Firma.md` has always held the answer — **Wolf Peak owns the
   only powder in the world** and its priesthood does not travel. So nobody sells a firearm, and a
   Musketeer's ammunition is a relationship with a church rather than a purchase.
 

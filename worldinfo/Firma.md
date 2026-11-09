@@ -54,7 +54,7 @@ cars connect the five mountains.
 ## The Second District
 
 The Second District is the second largest and protects the coastal land and the islands of the west
-coast; six enormous lighthouses mark where the borders run. The capital Svarthamn ("Black Harbour")
+coast; six enormous lighthouses mark where the borders run. The capital Black Harbour
 shares the region with a number of villages and a couple of towns. The area was previously the seat
 of power for an association of fishing barons, smugglers and pirates known as the Salt Barons. The
 old faith in The Five is strong here, and the Church of the Eternal God is seen as blasphemy. The
@@ -126,22 +126,22 @@ These are the most important:
 
 The island where the feared — or heroic, depending on who you ask — blood mages live. Hyrlock is a
 largish island a week's sailing from the abandoned port towns west of the First District. The enclave
-of Tångviken ("Kelp Cove") is the only one left on that coast and protected from the Horde, and on
+of Kelp Bay is the only one left on that coast and protected from the Horde, and on
 rare occasions a ship makes it across from Hyrlock; otherwise the island is isolated. Hyrlock is a
-divided society centred on the city of Manderklippan ("Mander Cliff"). The island has a caste system
+divided society centred on the city of Mander Cliff. The island has a caste system
 with the mage caste at the top, followed by administrators and merchants. The religion followed is
 that of the blood goddess Parfebe. The worker caste has it hard, but better at least than the thralls,
 who are bred to be used in blood sacrifice. The Red Tower stands fifty metres high at the top of
-Manderklippan, and all power in the enclave radiates from the blood mages within it. The other
+Mander Cliff, and all power in the enclave radiates from the blood mages within it. The other
 districts and enclaves pay an annual tax in goods and thralls to Hyrlock to maintain the protective
 enchantments — commonly called the **blood tax**.
 
 It is the only source of income, but it is a large one, and it forces monthly, dangerous boat freight
-from Tångviken to Hyrlock.
+from Kelp Bay to Hyrlock.
 
-## Tångviken
+## Kelp Bay
 
-Tångviken was an insignificant port town before year 0, but now that it is the only surviving port on
+Kelp Bay was an insignificant port town before year 0, but now that it is the only surviving port on
 the west coast its importance has grown. As the sole way in to Hyrlock and the important blood tax, it
 has drawn adventurers willing to take the risk of signing onto a ship, for the rich payment that
 brings if you survive. Three large shipping companies rule the town and run the voyages in an unstable
@@ -172,16 +172,16 @@ deliveries of the supplies the enclave depends on. The enclave is linked to the 
 unsafe tunnel through cave-riddled limestone, the **Cracked Road** (*Spruckna leden*). A large
 underground lake midway along it has given rise to two harbour villages named From and To.
 
-## Vargtoppen
+## Wolf Peak
 
 A religious centre of those who profess the faith of the Fire, at the top of a lone dormant volcano
-north of the Sixth District, has held out undefeated against the Horde. Vargtoppen ("Wolf Peak") has
+north of the Sixth District, has held out undefeated against the Horde. Wolf Peak has
 roads to the summit that are easy to defend, and its ingenious use of the surfaces outside and inside
 the mountain, together with careful husbandry of resources, makes it self-sufficient. The enclave's
 advanced technology in gunpowder and firearms helps. The materials for powder are inside the mountain:
 never-failing guano fields from bats and large sulphur deposits from the volcanism, while charcoal is
 harvested from fast-growing trees that thrive in the fertile volcanic soil. The priesthood of
-Vargtoppen's temple and monastery have a language of their own, Perga, and a style of dress, and are
+Wolf Peak's temple and monastery have a language of their own, Perga, and a style of dress, and are
 always covered in tattoos. They are rarely met outside the enclave.
 
 ## Echterhof
@@ -417,7 +417,7 @@ remain.
 * **Vax**, war, Sixth District. (Spiked club)
 * **Parfebe**, blood, Hyrlock. (Red drop)
 * **The Primal Mother**, fertility, Solemn. (Giant octopus)
-* **The Fire**, fire, Vargtoppen. (Upside-down flame)
+* **The Fire**, fire, Wolf Peak. (Upside-down flame)
 * **The First**, vampirism, Echterhof. (Sun cross)
 * **Aecht**, death, Saag et Haar. (Skull)
 

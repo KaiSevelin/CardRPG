@@ -74,7 +74,7 @@ means hypocrisy and religious persecution walk together. The city stands on five
 on top and everyone else in the valleys between, and cable cars run from height to height.
 
 **The Second.** The west coast and its islands, with six enormous lighthouses marking where the ring
-runs. The capital is **Svarthamn**, Black Harbour, and the region used to belong to the Salt Barons,
+runs. The capital is **Black Harbour**, and the region used to belong to the Salt Barons,
 an association of fishing magnates, smugglers and pirates. The old faith of the Five is strong here and
 the Church of the Eternal God is considered blasphemy. It lands most of the continent's fish. The
 **West Road**, a broad tunnel with underground cities along it, ties it to the First.
@@ -87,8 +87,8 @@ Religion and politics are relaxed. A voted council governs from **Tanto**, at th
 coastal cities, none of which dominates the others.
 
 **The Fourth.** The northern half of the Hyena Desert and the mineral-rich Mouse Mountains above it.
-**Sammel**, in the oasis, is the only large city and nearly matches Geistburg. The Grey and his
-siblings are worshipped here. Emirs rule, and they have cut Sammel into sealed quarters called
+**Sammel**, in the oasis, is the only large city and nearly matches Geistburg. **The Grey**
+and his siblings are worshipped here. Emirs rule, and they have cut Sammel into sealed quarters called
 **Rote**; the old assassin state holds the central one, around the Ziggurat, the tallest building in
 the region. Its embassies sell services under the table in every district but the Sixth. The **East
 Road** connects it to the First and is the least safe of the roads, because the mining lets monsters
@@ -117,13 +117,13 @@ everybody has heard of.
 
 **Hyrlock.** The island of the blood mages, feared or revered depending on who you ask, a week's
 sailing from the abandoned ports west of the First District. A caste society under the city of
-**Manderklippan**: mages at the top, then administrators and merchants, then workers, and beneath them
+**Mander Cliff**: mages at the top, then administrators and merchants, then workers, and beneath them
 the thralls, who are bred to be spent in sacrifice. Power radiates from the **Red Tower**, fifty metres
 of it at the cliff's summit. The faith is of the blood goddess **Parfebe**. Every other district and
 enclave pays Hyrlock an annual tribute in goods and thralls to keep the wards up, and everyone calls
 it the **blood tax**.
 
-**Tångviken.** Kelp Cove was a nothing port before year 0 and is now the only one left on the west
+**Kelp Bay.** It was a nothing port before year 0 and is now the only one left on the west
 coast, which makes it the single way in to Hyrlock and the blood tax. Three shipping companies run the
 voyages in an unstable cartel, and the pay for surviving one draws adventurers. Fog moves through
 cobbled alleys lit blue for bars, red for brothels and green for business best not described. The
@@ -142,7 +142,7 @@ of a strict hierarchy. It hires its cavalry out to other districts in exchange f
 cannot grow. The **Cracked Road** reaches the First District through cave-riddled limestone and is not
 safe; halfway along it a large underground lake has two harbour villages on it, named From and To.
 
-**Vargtoppen.** Wolf Peak, a religious centre of the faith of **the Fire**, on a dormant volcano north
+**Wolf Peak.** A religious centre of the faith of **the Fire**, on a dormant volcano north
 of the Sixth District, never once taken. The roads to the summit are easy to hold and the mountain
 feeds itself inside and out. It also has the best gunpowder and firearms on the continent, because the
 ingredients are all in the mountain: bat guano that never runs out, sulphur from the volcanism, and
@@ -155,7 +155,7 @@ human mayor is appointed to keep order and choose who is eaten, usually criminal
 run short it is done by lot, by grudge or by whim. The city welcomes visitors, because the more people
 there are the less likely you are the one chosen. The **Guest Law** guarantees that a guest will not be
 killed, and guarantees that a guest who breaks any of its many clauses will be. It also offers land and
-the prospect of a title, to keep people coming. They worship the First Vampire.
+the prospect of a title, to keep people coming. They worship **The First**, the first vampire.
 
 **Velderon.** The elves' embassy on Firma, east of the Second District: an ancient elven ruin with one
 restored corner. The elves are neutral and live on the Second Side; their own magic keeps the Horde
@@ -195,8 +195,8 @@ chitin of the dead. The enormous flying **Skaah** that were mistaken for airship
 here. The Queen sits here.
 
 **The underworld** is not empty either. Demons, minor gods and monsters pushed off the surface have
-strongholds down there. The Queen of the Dark and the Troll King have always been there and do not
-care for visitors. Other stretches are infested with the Horde.
+strongholds down there. **The Queen of the Dark** and **the Troll King** have always been there
+and do not care for visitors. Other stretches are infested with the Horde.
 
 ### What people believe
 
@@ -220,10 +220,10 @@ now and then. Inside it: **God's Spirit** as its secret police, **the Holy Sword
 **The Five.** The largest religion before Athor, known all along the coasts. **Sessyfyn** the winged
 fish, goddess of fishing and seafaring. **Valtor** the two-pointed spear, her brother and husband, god
 of strength and battle. **Fagar** the mask of fish scales, their child, the trickster. **Vulpet** the
-shark, daughter of Fagar and Sessyfyn, driven out for being so ugly. **Brendan** the conch horn, son of
-Fagar and Valtor, who stands for the beauty that can come out of ugly things. Its **Mummers** walk
-about in animal masks singing and pressing drink on people; its **Berserkers** work themselves up with
-drums and dancing before a battle.
+shark, daughter of **Fagar** and **Sessyfyn**, driven out for being so ugly. **Brendan** the conch
+horn, son of **Fagar** and **Valtor**, who stands for the beauty that can come out of ugly things.
+Its **Mummers** walk about in animal masks singing and pressing drink on people; its **Berserkers**
+work themselves up with drums and dancing before a battle.
 
 **The Grey.** Three siblings and three books. **The Grey** embodies assassination, and the Grey Book is
 on avoiding discovery and killing quietly. **The Purple** brews poison, and the Purple Book is recipes.
@@ -231,15 +231,16 @@ on avoiding discovery and killing quietly. **The Purple** brews poison, and the 
 disguise. The three sects match the three books.
 
 **Local gods.** **Vax**, war, in the Sixth District. **Parfebe**, blood, on Hyrlock. **The Primal
-Mother**, fertility, on Solemn. **The Fire**, fire, at Vargtoppen. **The First**, vampirism, in
+Mother**, fertility, on Solemn. **The Fire**, fire, at Wolf Peak. **The First**, vampirism, in
 Echterhof. **Aecht**, death, in Saag et Haar.
 
 **The minor gods, who demonstrably exist.** Perhaps a hundred powerful nature spirits and beings,
 forced into remote places and underground when Athor took the continent. They grant no miracles, and
-they are what the school of Spiritualism is built on. Among the known: the Winter Lady, the Queen of
-the Dark, the Troll King, Baal Fagor, the Land Jelly, the Cat God, Fahlas, Mother Longhand. Cults
-gather round them: **the Silent** follow the Winter Lady, **the Soot Club** try to summon Baal Fagor,
-and **the Dancers** use drugs to speak with the Land Jelly.
+they are what the school of Spiritualism is built on. Among the known: **the Winter Lady**,
+**the Queen of the Dark**, **the Troll King**, **Baal Fagor**, **the Land Jelly**, **the Cat God**,
+**Fahlas** and **Mother Longhand**. Cults gather round them: **the Silent** follow **the Winter
+Lady**, **the Soot Club** try to summon **Baal Fagor**, and **the Dancers** use drugs to speak with
+**the Land Jelly**.
 
 ### Languages
 
@@ -247,7 +248,7 @@ and **the Dancers** use drugs to speak with the Land Jelly.
 |---|---|
 | **Imperial** | The old language, and the diplomatic common tongue |
 | **Valgar** | The lost language of the Fifth District, kept by its engineering guilds |
-| **Perga** | Spoken at Vargtoppen |
+| **Perga** | Spoken at Wolf Peak |
 | **Veche** | The local tongue of Saag et Haar |
 | **Elvish** | Common among the elves and most of the lesser gods |
 | **Demonic** | Common among demons |
@@ -837,10 +838,11 @@ miracle belongs to Way of Faith, including the priests who are only lightly magi
 **Faith asks.** Its spells are **miracles**: granted rather than learned, and paid for every single
 time you ask. A first Way of Faith node also grants 2 spell slots.
 
-**Everything priestly is here**, and nowhere else. A priest's list is their god's list: the Eternal
-God and the Eternal Spirit, the Five, the three of the Grey, Vax and the First. A school of magic
-is something a scholar studies; a miracle is something a god hands over, and no amount of study
-substitutes for having sworn.
+**Everything priestly is here**, and nowhere else. A priest's list is their god's list, and there
+are twelve: **the Eternal God** and **the Eternal Spirit**; **Sessyfyn**, **Valtor**, **Fagar**,
+**Vulpet** and **Brendan** of the Five; **the Grey**, **the Purple** and **the Yellow**; and **Vax**
+and **the First**. A school of magic is something a scholar studies; a miracle is something a god
+hands over, and no amount of study substitutes for having sworn.
 
 Faith is built out of twelve gods, and this is the one Way where a choice is final. **Swearing to a
 god closes every other god permanently**, along with everything that could only be reached through

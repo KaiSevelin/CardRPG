@@ -7364,6 +7364,49 @@ check("and box-drawing art, for the same reason",
   (handbook.match(/[\u2500-\u257F]/g) ?? []).length, 0);
 
 /*
+ * **A god's name is bold wherever the lore names the god, and a place has one name.**
+ *
+ * Two conventions of the handbook's lore chapter, both of which drifted while being written by
+ * hand. Bolding is how a player picks a proper noun out of five pages of prose, and the chapter had
+ * fourteen god names set plain: the whole list of minor gods, both halves of the underworld's pair,
+ * the twelve-god summary in chapter 14, and the back-references inside the Five's own paragraph.
+ *
+ * **Checked against the prose only.** The generated chapters name gods constantly and must not bold
+ * them: *Vulpet's priests understand this condition from the inside* is a spell's own text, and
+ * `### Vax` is a heading. Bold spans are stripped and the names are looked for in what is left,
+ * which is why a name that collides with an ordinary English word is not on the list below --
+ * **the Grey**, **the Purple** and **the Yellow** each own a Book that is correctly plain, and
+ * *the First* and *the Fire* collide with an ordinal and with fire. Those five are checked by the
+ * zero-hit greps underneath instead, which name the exact phrases that were wrong.
+ *
+ * **And the place names.** Firma.md supplies an English name for each of the four Scandinavian
+ * ones as a parenthetical gloss of its own -- `Svarthamn ("Black Harbour")` -- so the handbook was
+ * carrying the native name, the gloss, or both, in a document whose readers have no Swedish. The
+ * gloss is the name now, everywhere in the repository, and Kelp Bay is the one place where the
+ * chosen name differs from the gloss Firma.md had ("Kelp Cove").
+ */
+const handbookProse = handbook
+  .replace(/<!-- generated: (\w+) -->[\s\S]*?<!-- \/generated: \1 -->/g, "");
+const unbolded = handbookProse.replace(/\*\*[\s\S]*?\*\*/g, "");
+const GOD_NAMES = ["Sessyfyn", "Valtor", "Fagar", "Vulpet", "Brendan", "Parfebe", "Aecht",
+  "Fahlas", "Baal Fagor", "Mother Longhand", "Winter Lady", "Land Jelly", "Troll King",
+  "Queen of the Dark", "Cat God", "Eternal Spirit", "Primal Mother", "Vax"];
+check("gods the lore chapter names without bolding them",
+  GOD_NAMES.filter(g => unbolded.includes(g)).join(", ") || "none", "none");
+/* The five whose names are also ordinary words, by the phrases that were actually wrong. */
+check("and the five that collide with English words",
+  ["They worship the First Vampire", "the three of the Grey",
+    "Geistburg. The Grey and his", "and the Eternal Spirit, the Five"]
+    .filter(s => handbookProse.includes(s)).join(" | ") || "none", "none");
+/* One name per place, and it is the English one. */
+check("native place names left in the handbook",
+  ["Svarthamn", "T\u00e5ngviken", "Vargtoppen", "Manderklippan"]
+    .filter(n => handbook.includes(n)).join(", ") || "none", "none");
+check("and the English ones are all present",
+  ["Black Harbour", "Kelp Bay", "Wolf Peak", "Mander Cliff"]
+    .filter(n => handbook.includes(n)).length, 4);
+
+/*
  * **[FOUND 2026-11-09] A twist was the one thing a player meets that the handbook never named.**
  *
  * The word appeared nowhere in it, while the *Surveyor's Chain* in its own items chapter promised
