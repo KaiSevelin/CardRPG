@@ -431,7 +431,7 @@ Tools work like weapons: the card says what you try, the tool says how well. **U
 | **Lockpicks** | Belt | 0 | 25 g | Tool | 🌑 Shadow +2 (locks and mechanisms) |
 | **Climbing Rope** | Pack | 3 | 5 g | Tool | ✊ Might / 🌀 Agility +2 (climbing, and nobody falls alone) |
 | **Healer's Kit** | Pack | 2 | 20 g | Tool | 📜 Lore +2 (treating wounds; removes 1 Wound on a Normal 5) |
-| **Repair Kit** | Pack | 3 | 30 g | Tool | 📜 Lore +2, and overnight it clears **1 Corrode** from one item |
+| **Repair Kit** | Pack | 3 | 30 g | Tool | 📜 Lore +2 on **repairs** &mdash; the tool a Repair action wants |
 <!-- [2026-11-09] This line, the Smith's Hammer below it, The Mended Seam and two backgrounds all
      promised a repair for months while Corrode had no inverse at all -- the ritual's own `needs`
      line said so out loud. `resolveRepair` exists now, and `resolveRepairCheck` is the Lore check
@@ -442,7 +442,7 @@ Tools work like weapons: the card says what you try, the tool says how well. **U
 | **The Kit** | Pack | 3 | — | Tool | 🌑 Shadow +2, and every **Hard** physical obstacle counts as Normal |
 | **Holy Symbol** | 1 hand | 0 | 10 g | Power | 📜 Lore +1 (religion, undead) |
 | **Gaming Set** | Pack | 1 | 5 g | Station | 👑 Presence +2 (soldiers, taverns, gamblers) |
-| **Smith's Hammer** | Pack | 2 | 18 g | Make | 📜 Lore +2 (metalwork); repairs **1 Corrode** overnight |
+| **Smith's Hammer** | Pack | 2 | 18 g | Make | 📜 Lore +2 (**metalwork**) |
 
 **The Lantern is now a positional item**, because core-rules §11 defines **shadowed** squares and an
 entire magic school reads them. A lantern is therefore an answer to a Shadow mage, which is a thing a

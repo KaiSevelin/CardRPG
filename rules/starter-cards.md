@@ -248,7 +248,7 @@ these was **named somewhere before it existed**, which is the whole reason it is
 | **Antidote** | Belt, 1 hand | Consumable | 0 | 35 g | Use: ⛓ **Shake Off 2**, Poisoned only | conditions.md §9.1, which calls it *"the item form"* |
 | **Flask of Ink** | Belt, 1 hand | Consumable, Thrown | 0 | 20 g | Use: ✸ Blast 1 at range 3 — ends **Invisible** in it | way-cards §3.6: *"the item version is cheaper and should exist"* |
 | **Flask of Oil** | Belt, 1 hand | Consumable, Thrown | 0 | 10 g | Use: one target is **Off-Balance (1)**, no save | the same note |
-| **Repair Kit** | Pack | Tool | 3 | 30 g | 📜 Lore +2, and overnight it clears **1 Corrode** from one item | core-rules §8: *"a smith and coin, or a Lore check with the right tools"* |
+| **Repair Kit** | Pack | Tool | 3 | 30 g | 📜 Lore +2 on **repairs** — the tool a Repair action wants | core-rules §8: *"Repair is an action, taken in play: a Lore check with the right tools"* |
 | **Cleansing Draught** | Belt, 1 hand | Consumable | 0 | 150 g | Use: remove **1 Taint** that is not bound | core-rules §8: *"a cure: priest magic, a rare potion or a special item"* |
 | **The Kit** | Pack | Tool | 3 | — | 🌑 Shadow +2, and every **Hard** physical obstacle counts as Normal | the Burglar's Signature, which **is** this item (way-cards §2.2) |
 

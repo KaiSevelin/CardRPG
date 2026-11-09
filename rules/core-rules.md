@@ -2128,11 +2128,21 @@ burn (§7). What acid does that nothing else in the game does is eat your **equi
 - It eats the **armour itself**, not your armor score, so the loss follows the armour when it comes
   off and a borrowed breastplate is only as good as its last fight. **Blunt** is the same rule one
   printed number over: it eats the weapon, so it follows the weapon when it changes hands.
-- **Repair** is a downtime matter: a smith and coin, or a Lore check with the right tools. Printed
-  armor says what the item *is*; corrosion is tracked against it, so a repair is a reset rather than
-  a memory test. A **Critical** on that check puts back 2; a Success 1; a **Partial** is a night
-  spent with the thing in pieces on the bench and nothing to show, because a breastplate either
-  holds or it does not.
+- **Repair is an action, taken in play**: a Lore check with the right tools. Printed armor says
+  what the item *is*; corrosion is tracked against it, so a repair is a reset rather than a memory
+  test. A **Critical** on that check puts back 2; a Success 1; a **Partial** spends the action and
+  puts back nothing, because a breastplate either holds or it does not. A smith and coin still does
+  it for anyone who would rather pay than try.
+
+  > **[CHANGED 2026-11-09] This was *a downtime matter* and is not.** Downtime was the wrong home
+  > for it twice over. It made the only answer to the one loss that outlives a fight into something
+  > that happens off-screen, between sessions, with no decision in it — and it put the repair on
+  > the far side of the next fight from the damage, so a stoved-in breastplate was simply worse
+  > armour for a whole adventure. As an action it is a real choice with a real price: a turn not
+  > spent fighting, a check that can come to nothing, and a tool you had to have bought.
+  >
+  > **The Mended Seam keeps its ritual timing**, which is now the exception rather than the rule. A
+  > ritual being overnight is a fact about rituals (§8, Ritual Magic) and not about repairing.
 - **Both are permanent, both are cumulative, and neither destroys anything.** They stop at 0 and
   cannot pass it: an armour at protection 0 is still armour, still worn, still taking up its slot
   and its weight, and still repairable. A weapon battered to Strike 0 is a club with no weight

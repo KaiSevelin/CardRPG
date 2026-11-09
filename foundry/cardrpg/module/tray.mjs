@@ -2176,8 +2176,8 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       /*
        * **Repair, where `param` is what says whether a skill is involved.**
        *
-       *  - **With a number** it is a promise being kept -- *repair one item overnight*, from a
-       *    ritual or a tool -- and that many points come off flat.
+       *  - **With a number** it is a promise being kept -- *repair one item overnight*, which is
+       *    The Mended Seam and its ritual timing -- and that many points come off flat.
        *  - **Without one** it is somebody trying, so it is a check: `lore`, which is where both
        *    backgrounds that grant *armour and its repair* already put their bonus, so the training
        *    a character bought is the training that pays.

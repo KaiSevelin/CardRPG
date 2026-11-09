@@ -640,8 +640,11 @@ export const ITEMS = [
   {
     name: "Repair Kit", slot: "pack", weight: 3, value: 30, kind: "Tool", group: "tool",
     blurb: "Files, rivets, pitch and wire. What acid leaves behind is work, not loss.",
+    /* The flat *overnight it clears 1 Corrode* went with downtime (core-rules 8, 2026-11-09).
+     * A repair is an action and a check now, so what this kit is for is the check: `situation` is
+     * what the tool dropdown prints beside it, and `training` is what lifts the cap from +1. */
     bonus: { approach: "lore", value: 2, training: "armour and its repair",
-      situation: "repairs; overnight it clears 1 Corrode" }
+      situation: "repairs" }
   },
   {
     name: "Hunting Traps", slot: "pack", weight: 4, value: 15, kind: "Tool", group: "tool",
@@ -677,7 +680,7 @@ export const ITEMS = [
     name: "Smith's Hammer", slot: "pack", weight: 2, value: 18, kind: "Make", group: "make",
     blurb: "A cross-pein and a sense of what metal wants.",
     bonus: { approach: "lore", value: 2, training: "armour and its repair",
-      situation: "metalwork; repairs 1 Corrode overnight" }
+      situation: "metalwork" }
   },
 
   /* ---- consumables: the Brewer's craft, and the cheap answer to a condition ---- */

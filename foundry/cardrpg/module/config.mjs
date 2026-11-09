@@ -131,10 +131,13 @@ CARDRPG.effects = {
   /*
    * Repair N: put N back, which is what Corrode and Blunt had no inverse for.
    *
-   * It was promised in prose by two backgrounds and a ritual long before anything could do it --
-   * *overnight it clears 1 Corrode*, *repairs 1 Corrode overnight*, *repair one item overnight,
-   * including corroded armour* -- and The Mended Seam's own `needs` line said so out loud:
-   * *repairing an item, which Corrode has no inverse for*.
+   * It was promised in prose by two tools and a ritual long before anything could do it, and The
+   * Mended Seam's own `needs` line said so out loud: *repairing an item, which Corrode has no
+   * inverse for*.
+   *
+   * **An action, not downtime** (core-rules 8, changed 2026-11-09). With a number it is flat, which
+   * is the ritual; without one it is a Lore check, which is anybody with a kit and a turn to
+   * spend.
    */
   repair: { label: "CARDRPG.Effect.Repair", icon: "anvil" },
   /*

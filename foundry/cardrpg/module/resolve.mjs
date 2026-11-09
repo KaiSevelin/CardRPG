@@ -1223,11 +1223,15 @@ export async function resolveGearEffect(actor, { step, target }) {
 /**
  * Repair N: put N back on one item, which is what Corrode and Blunt had no inverse for.
  *
- * **It was promised in prose for a long time before anything could do it.** Two backgrounds grant
- * *armour and its repair* with the situational line *overnight it clears 1 Corrode*; The Mended
- * Seam is a ritual to *repair one item overnight, including corroded armour*; and that ritual's own
- * `needs` line read *repairing an item, which Corrode has no inverse for*. Three pieces of content
- * describing a mechanism, and the mechanism was the missing half.
+ * **It was promised in prose for a long time before anything could do it.** A Repair Kit and a
+ * Smith's Hammer both grant *armour and its repair*; The Mended Seam is a ritual to *repair one
+ * item overnight, including corroded armour*; and that ritual's own `needs` line read *repairing an
+ * item, which Corrode has no inverse for*. Three pieces of content describing a mechanism, and the
+ * mechanism was the missing half.
+ *
+ * **[2026-11-09] And a repair is an ACTION rather than downtime** (core-rules 8), so this is
+ * reached in play. The two tools stopped promising a flat point overnight when that changed: what
+ * they are for is the check, which is what their `bonus` was always describing.
  *
  * Armour first, then the strike, because a character who has had both eaten wants the defence
  * back before the damage -- and because one call per point keeps *clears 1* meaning one thing.
@@ -1276,11 +1280,11 @@ export async function resolveRepair(actor, { item, amount = 1, which = "" } = {}
  * The four results are the four results (skill-rules 2), read through `checkOutcome` like every
  * other check rather than scored again here:
  *
- *  - **Critical**: 2 points back. A night that went better than the work deserved.
+ *  - **Critical**: 2 points back. It went better than the work deserved.
  *  - **Success**: 1.
- *  - **Partial**: nothing back, and the night is gone. It is apart on the bench and not yet
- *    together, which is the honest reading of *partly repaired* for a thing that either holds or
- *    does not.
+ *  - **Partial**: nothing back, and the action is spent. That is the honest reading of *partly
+ *    repaired* for a thing that either holds or does not -- and it is what gives the action its
+ *    price, now that it is taken in play rather than between sessions.
  *  - **Fail**: nothing. Nothing worse, either -- a failed repair does not eat the item, for the
  *    same reason Corrode does not: gear here is spent, not deleted.
  */
@@ -1295,11 +1299,11 @@ export async function resolveRepairCheck(actor,
    * **`improvise`, and no `item`, and both of those were wrong when this shipped.**
    *
    * `resolveCheck` reads its base off a CARD -- that is what a check is in this game -- and
-   * refuses with *"That card is not a Lore card"* when there is none. A repair is not a card
-   * played from a hand: it is a night's work in downtime, which is exactly what `improvise`
-   * means, and without it this routine could not succeed once. It would warn about a card nobody
-   * had played and return null, which is the shape of defect this file is full of notes about:
-   * a path that looks wired and silently does nothing.
+   * refuses with *"That card is not a Lore card"* when there is none. **No card from the skill
+   * deck is spent on a repair**, which is exactly what `improvise` means: the base is 0 and the
+   * tools are the whole of the difference. Without it this routine could not succeed once -- it
+   * would warn about a card nobody had played and return null, which is the shape of defect this
+   * file is full of notes about: a path that looks wired and silently does nothing.
    *
    * And `item` on `resolveCheck` means **the tool**, not the thing being worked on. Passing the
    * broken armour there read its `bonus` as a tool bonus -- a breastplate helping you mend a
@@ -1324,7 +1328,7 @@ export async function resolveRepairCheck(actor,
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor }),
       content: `<div class="cardrpg"><p><strong>${actor.name}</strong> works on `
-        + `<strong>${item.name}</strong> all night and it is no better than it was.</p></div>`
+        + `<strong>${item.name}</strong> and it is no better than it was.</p></div>`
     });
     return { result: check.result, back: 0 };
   }
