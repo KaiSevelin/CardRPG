@@ -581,6 +581,8 @@ export function grantsOf(owned) {
      * time a passive is computed.
      */
     expertise: [], masteries: [],
+    /* Whether any sworn god lets this character cast with both hands full. */
+    freehandCast: false,
     /* The sources a character has been offered a choice from, which is not the same as what they
      * chose: the spell itself is a document and is counted by the book, not by this. */
     choices: [],
@@ -608,6 +610,13 @@ export function grantsOf(owned) {
     if (g.feature) out.features.push(g.feature);
     if (g.spell) out.spells.push(g.spell);
     if (g.choose?.from) out.choices.push(g.choose.from);
+    /*
+     * **The one gift that is a rule rather than a number.** Vax's club is his holy symbol,
+     * which in the engine means his miracles do not want the empty hand every other prepared
+     * spell wants. The prose says so on the node for the player; this is the half a resolver
+     * can read.
+     */
+    if (g.freehandCast) out.freehandCast = true;
     if (g.caps?.spellSlots !== undefined) {
       out.slotCap = out.slotCap === null
         ? g.caps.spellSlots

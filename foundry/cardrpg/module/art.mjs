@@ -97,6 +97,15 @@ export function backPath(key) {
  */
 export const SHELVES = [
   { key: "cards/starter", list: content.WARRIOR_DECK },
+  /*
+   * **[FOUND BY A READER 2026-11-09] The other starter deck, which was on no shelf.**
+   *
+   * `cards/starter` held the Warrior and nothing held the Shade, so ten of the twenty cards a
+   * first session touches were never commissioned -- and the brief could not say so, because it
+   * counts what is on a shelf and reported 622 of 622 drawn the whole time. The handbook page
+   * rendering ten blank rows is what found it.
+   */
+  { key: "cards/shade-starter", list: content.SHADE_DECK },
   { key: "cards/common", list: content.COMMON_POOL },
   { key: "cards/npc", list: content.INTENTS },
   { key: "cards/shade", list: content.SHADE_POOL },
@@ -105,18 +114,18 @@ export const SHELVES = [
   { key: "cards/skill", list: content.WARRIOR_SKILLS },
   { key: "cards/wild", list: content.WILD_MAGIC },
   /*
-   * **The ritual twist deck has faces, and the general twist deck does not.**
+   * **Both twist decks have faces, and the argument that one should not was wrong.**
    *
-   * That asymmetry is a decision rather than an oversight, and the art list states the other half
-   * of it: a twist is *"a NAME and a COST rather than a picture... the GM's own deck, and art for
-   * a deck one person ever sees is art nobody at the table looks at."* Every word of that is still
-   * true of `TWISTS`.
+   * The brief used to say a twist is *"a NAME and a COST rather than a picture... the GM's own
+   * deck, and art for a deck one person ever sees is art nobody at the table looks at"*, and drew
+   * the ritual deck on the grounds that a ritual twist is turned face up in front of the party.
    *
-   * It is not true here. A ritual is a **downtime challenge the whole party runs**, over days, on
-   * one of their own characters -- so a ritual twist is turned face up in front of four people who
-   * have been working toward this for a session, and what it shows them is the thing they are
-   * trying to undo pushing back. That is the one GM deck with an audience.
+   * The premise does not survive being said out loud: **the GM is somebody at the table.** They
+   * draw from this deck more often than any player draws from any other, they are the one person
+   * who will see all thirty cards in a session, and a deck somebody reads from constantly is
+   * exactly the deck worth drawing. Audience size was never the right measure.
    */
+  { key: "cards/twist", list: content.TWISTS },
   { key: "cards/ritual", list: content.RITUAL_TWISTS },
   /*
    * The intruders. They are the only cards in the game a player does not want, which makes them

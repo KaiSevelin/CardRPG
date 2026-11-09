@@ -263,6 +263,24 @@ export async function payToCast(actor, slate) {
     ui.notifications.warn(`${slate?.name ?? "That spell"} is in your book, not in your head.`);
     return false;
   }
+  /*
+   * **A free hand, which is the other half of what a prepared spell costs (core-rules 4).**
+   *
+   * `needsFreeHand` is true of every spell slate by construction -- that is what makes it a spell
+   * rather than a wand -- and it is asked rather than assumed so a slate that one day says
+   * otherwise is obeyed. The exemptions are derived on the actor: the two rings, and a god whose
+   * gift is that the weapon in your hand is the holy symbol.
+   *
+   * Refused here rather than warned about, because this is the gate a prepared spell is paid at
+   * and an unpayable cost is not a cast. A player holding a sword and a shield who wants to cast
+   * has a Ready to spend, which is the decision the rule exists to create.
+   */
+  if (slate.system.needsFreeHand && !actor?.system?.castsFreehanded
+    && (actor?.system?.handsFree ?? 0) < 1) {
+    ui.notifications.warn(`${actor?.name ?? "You"} has no hand free to cast `
+      + `${slate.name} with. A prepared spell is gestured, and both hands are full.`);
+    return false;
+  }
   const cost = slate.system.cost?.health ?? 0;
   /*
    * **The second price, and the engine collected nothing for it until now.** `wilds` has been a

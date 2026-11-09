@@ -358,6 +358,7 @@ one thing instead of another.
 | **Skill card** | Add one, or upgrade one ([skill-rules.md](skill-rules.md) §8) | **[OPEN]** The one reward on this list with no key in the accumulator, so no node can grant it: measured in [skill-rules.md](skill-rules.md) §8, where it means a skill check barely scales with levelling |
 | **Training** | A tool type, at the full bonus instead of +1 | Skill rules §2 already says training comes from the Way trees |
 | **Item** | A slate, handed over outright | A node that teaches a tool training also **issues the tool** — see below |
+| **A rule set aside** | One rule stops applying to you, for good | Only Vax grants one, and only his: *his miracles need no free hand, because the spiked club is the holy symbol*. The gift half of a bargain whose other half is that every miracle costs Health ([way-cards.md](way-cards.md) §3.5) |
 
 > **Trained and issued.**  **[BUILT 2026-11-08]**
 >

@@ -462,6 +462,35 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       .reduce((n, i) => n + (i.system.armorNow ?? i.system.armor ?? 0), 0));
 
     /*
+     * --- hands, and whether one of them is free
+     *
+     * **[BUILT 2026-11-09] A prepared spell needs a free hand, and nothing checked.**
+     * `needsFreeHand` has been a getter on the spell slate since the slate was written, returning
+     * `true` with a comment saying it was *stated for the resolver to read* -- and the resolver
+     * never read it. So the rule core-rules 4 spends a table on, the rule that makes a shield cost
+     * a caster something and makes the staff a worse hand than the wand, was a rule the engine did
+     * not have. Two rings and a god's gift sold an exemption from it.
+     *
+     * A free hand means an **empty** one, so this is capacity less what is held: `slotCapacity`
+     * rather than `CARDRPG.slots`, because a hand an injury has taken is not a hand. A stowed
+     * weapon is on your back and not in your fist, which `equippedSlot` already distinguishes.
+     *
+     * An implement needs no special case and gets none: a staff is two hands and leaves none, a
+     * wand is one and leaves one, which is exactly what the rules table says.
+     */
+    const inHand = slates.filter(i => i.type === "item" && i.system.equippedSlot === "hands");
+    this.handsUsed = inHand.reduce((n, i) => n + (i.system.isTwoHanded ? 2 : 1), 0);
+    this.handsFree = Math.max(0, (this.slotCapacity("hands") ?? 0) - this.handsUsed);
+    /*
+     * And who is excused the rule: the two rings that say so, and any god sworn to whose gift is
+     * that their symbol is the weapon already in your hand.
+     */
+    this.castsFreehanded = fromNodes.freehandCast
+      || inHand.some(i => i.system.castsFreehanded)
+      || slates.some(i => i.type === "item" && i.system.equipped
+        && CARDRPG.slots[i.system.equippedSlot]?.worn && i.system.castsFreehanded);
+
+    /*
      * --- armour again, for the one feature that reads the encumbrance tier
      *
      * This has to come after the tier is known, which is why it is not up with the armour sum: the

@@ -330,8 +330,32 @@ const sigs = Object.fromEntries(Object.entries(content)
  * starter Warrior's are the same kind of picture and want the same words said differently.
  */
 const PROSE = {
-  "cards/starter": { title: "The starter deck",
+  "cards/starter": { title: "The starter Warrior's deck",
     why: "What a first session plays with. Draw these first: ten cards is a playable game." },
+  /*
+   * **[FOUND 2026-11-09] Four shelves had no entry here and printed `## undefined` as their
+   * heading**, two of them for months: `cards/ritual` and `cards/harm` were added to `SHELVES`
+   * and never given a title, and the brief is the document an artist reads. A shelf without one
+   * is now a failure rather than a heading nobody could parse.
+   */
+  "cards/shade-starter": { title: "The starter Shade's deck",
+    why: "The other half of a first session, and the half that was on no shelf at all until a "
+      + "reader noticed ten blank rows in the handbook. Same brief as the Warrior's: ten cards, "
+      + "and the pair of them is a playable game for two people." },
+  "cards/twist": { title: "The twist deck",
+    why: "**The GM is somebody at the table**, and this is the deck they draw from more often "
+      + "than any player draws from anything. One person seeing all thirty in a session is a "
+      + "reason to draw them, not a reason to skip them, which is the argument this list used to "
+      + "get backwards. A twist is a complication rather than an attack: show the cost arriving, "
+      + "not a weapon." },
+  "cards/ritual": { title: "The ritual twist deck",
+    why: "Turned face up in front of four people who have been working toward this for a "
+      + "session, so it is the one GM card with a real audience. Every one of them is the thing "
+      + "the party is trying to undo pushing back: the injury, the curse or the rot answering." },
+  "cards/harm": { title: "Wounds and Taint",
+    why: "The only cards in the game a player does not want, which makes them the ones a player "
+      + "looks at hardest. They arrive in a deck that was theirs and stay there, so they have to "
+      + "read as an intrusion at a glance, from across the table, in somebody else's hand." },
   "cards/common": { title: "The common pool",
     why: "Six cards every Way draws on, so each one is seen by every character in the game." },
   "cards/npc": { title: "NPC intent cards",
@@ -546,20 +570,6 @@ push(
   + "Spent piles have no back. A back is for a deck somebody looks at while wondering.",
   "- **The levelling graph's nodes.** A node wears the art of what it hands over, so drawing a "
   + "Signature draws its node too. Nothing needs art of its own.",
-  `- **The twist deck.** ${content.TWISTS.length} kinds, `
-  + `${content.TWISTS.reduce((n, t) => n + (t.copies ?? 1), 0)} cards, and a twist is a NAME and a `
-  + "COST rather than a picture: no faces. It has a back of its own (`backs/twist.webp`) and the "
-  + "prose here said it wore the skill deck's for months after that back was drawn — while the "
-  + "cards had been asking for the right one all along. Art for a deck one person ever sees is "
-  + "art nobody at the table looks at, which is still why there are no faces.",
-  `- **The ritual twist deck is the exception, and has faces.** `
-  + `${content.RITUAL_TWISTS.length} kinds, `
-  + `${content.RITUAL_TWISTS.reduce((n, t) => n + (t.copies ?? 1), 0)} cards. Every word of the `
-  + "sentence above is true of the twist deck and none of it is true here: a ritual is a downtime "
-  + "challenge the whole party runs, over days, on one of their own characters — so a ritual "
-  + "twist is turned face up in front of four people who have been working toward it for a "
-  + "session, and what it shows them is the thing they are trying to undo pushing back. It is the "
-  + "one deck on the GM's side with an audience.",
   `- **The ${content.MONSTER_TAGS.length} tagged creatures.** Elves, trolls, dragons and the rest `
   + "are in the content as a name and a list of capabilities, with no numbers and no actor — so "
   + "there is nothing yet for a picture to be of. They arrive in the brief when they arrive in the "

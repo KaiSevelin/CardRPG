@@ -343,6 +343,12 @@ export class ItemSlateData extends SlateData {
        * (Stunned) and a worn thing takes the ones it names -- two different sentences that must not
        * share one field. Deliberately NOT an item tag: `heavy` already does two unrelated jobs.
        */
+      /*
+       * **Casting needs a free hand (core-rules 4), and this is what sets that aside.** A
+       * boolean rather than a set, because unlike `blocksReactions` there is only one rule
+       * to lift: you either gesture with an empty hand or you do not need to.
+       */
+      freehandCast: new fields.BooleanField({ required: false, initial: false }),
       blocksReactions: new fields.SetField(
         new fields.StringField({ choices: Object.keys(CARDRPG.reactions) })
       ),
@@ -653,6 +659,18 @@ export class ItemSlateData extends SlateData {
   /** A two-hander is only two-handed while it is in the hands. Slung, it is one object on a back. */
   get isTwoHanded() {
     return this.equippedSlot === "hands" && this.hands === 2;
+  }
+
+  /**
+   * **Whether this item lets its wearer cast with both hands full.**
+   *
+   * Two items say so in prose and said it nowhere a resolver could read: the *Ring of the Open
+   * Hand* at six hundred gold and the cursed *Ring of Open Hands* that came out of the same
+   * workshop. Matching the sentence would have been a second copy of the rule, and the sentence is
+   * for the player, so the flag sits beside it.
+   */
+  get castsFreehanded() {
+    return !!this.freehandCast;
   }
 }
 

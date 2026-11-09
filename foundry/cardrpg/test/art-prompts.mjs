@@ -847,6 +847,52 @@ const GROUP_MOTIF = {
  * noticed. The audit is the point: this table is where it gets answered, one cluster at a time.
  */
 const DIRECTION = {
+  /*
+   * **The twist deck, eight kinds, newly commissioned.**
+   *
+   * Without a direction apiece these came out as eight near-identical prompts, because a twist
+   * carries a name and a cost and nothing a camera can point at. The subject of each is the
+   * **cost arriving**, never the thing that caused it: the price of a Partial is not an attack.
+   * Each names a different object and a different kind of motion, which is what keeps eight cards
+   * from the one deck apart in the hand.
+   */
+  "cards/twist/noise":
+    "a lantern turned toward the viewer from a dark doorway, the shutter half open, somebody "
+    + "behind it who has stopped to listen. The subject is the light and the pause, not the person",
+  "cards/twist/time":
+    "a candle burnt past where it was meant to be, the pool of wax spreading off the holder and "
+    + "over the table. Nothing is on fire; the subject is how much is gone",
+  "cards/twist/gear":
+    "a lockpick snapped off short, the broken half still standing in the keyway. Clean metal at "
+    + "the break and the rest of the roll laid out beside it, suddenly useless",
+  "cards/twist/strain":
+    "a hand that has let go: one card falling away face down, the others still fanned and held. "
+    + "The subject is the gap it left rather than the card",
+  "cards/twist/hurt":
+    "a wrapped forearm with the cloth gone dark at one edge, held against the body. Close, plain, "
+    + "and no weapon anywhere in the frame",
+  "cards/twist/arrival":
+    "a second shadow entering the frame along the floor, cast by somebody still out of shot. The "
+    + "subject is the shadow and the empty doorway it comes from",
+  "cards/twist/secret":
+    "a letter unfolded by somebody whose hands are not steady, the writing turned away from the "
+    + "viewer. What it says is withheld; the subject is the unfolding",
+  "cards/twist/opening":
+    "a door swung wide on an empty room beyond, the bolt hanging loose and nobody there. The one "
+    + "card in this deck that gives: the frame is open and lit where the others are closed",
+
+  /*
+   * **The starter Shade's deck, two of whose ten read as twins of each other.** *Draw the Knife*
+   * and *Off Hand* are both a hand producing a blade, so they needed separating by what the hand
+   * is doing rather than by what it holds.
+   */
+  "cards/shade-starter/draw-the-knife":
+    "a knife coming clear of a sleeve, the cuff still falling back from the wrist. One hand, one "
+    + "blade, and the motion is the draw",
+  "cards/shade-starter/off-hand":
+    "the second blade already working, held low and reversed in the weaker hand while the strong "
+    + "hand is busy above frame. Two blades in play, and this is the one nobody was watching",
+
   "cards/starter/shield-up":
     "a shield brought fully up and settled, the body behind it made small. This is cover meant to "
     + "last a while rather than a parry -- nothing in the frame is moving",

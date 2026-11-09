@@ -1,6 +1,6 @@
 # Art list
 
-**622 pieces**, of which **622** are drawn. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
+**640 pieces**, of which **622** are drawn and **18** still to shoot. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
 
 ## What to supply
 
@@ -49,13 +49,11 @@ Anything under `icons/svg/` is ignored on purpose: that is Foundry's own placeho
 - **Wounds and Taint.** Two faces, fixed, and both are meant to read as damage rather than as content. One picture each at most.
 - **The critical deck.** 7 faces, 12 cards, and it needs neither faces nor a **back**. A card is drawn face up the instant a Critical lands and read out, so it is never face down in front of anybody — which is the same reason hands, discards and Spent piles have no back. A back is for a deck somebody looks at while wondering.
 - **The levelling graph's nodes.** A node wears the art of what it hands over, so drawing a Signature draws its node too. Nothing needs art of its own.
-- **The twist deck.** 8 kinds, 30 cards, and a twist is a NAME and a COST rather than a picture: no faces. It has a back of its own (`backs/twist.webp`) and the prose here said it wore the skill deck's for months after that back was drawn — while the cards had been asking for the right one all along. Art for a deck one person ever sees is art nobody at the table looks at, which is still why there are no faces.
-- **The ritual twist deck is the exception, and has faces.** 8 kinds, 24 cards. Every word of the sentence above is true of the twist deck and none of it is true here: a ritual is a downtime challenge the whole party runs, over days, on one of their own characters — so a ritual twist is turned face up in front of four people who have been working toward it for a session, and what it shows them is the thing they are trying to undo pushing back. It is the one deck on the GM's side with an audience.
 - **The 0 tagged creatures.** Elves, trolls, dragons and the rest are in the content as a name and a list of capabilities, with no numbers and no actor — so there is nothing yet for a picture to be of. They arrive in the brief when they arrive in the game.
 
 ## Deck backs — draw these first
 
-**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 11 pictures against 611 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
+**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 11 pictures against 629 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
 
 **11 pieces**, 11 wired up. Same 2:3 and 640 × 960 as a face, and **no safe area**: nothing is printed over a back, so the whole card is yours.
 
@@ -79,7 +77,7 @@ Anything under `icons/svg/` is ignored on purpose: that is Foundry's own placeho
 
 **One intent back serves all 112 creatures**, and no kind has one of its own. The argument for a goblin back — that a goblin's intents should be recognisable across the table as a goblin's — is a good one, and it loses to arithmetic. **Every creature in the roster is its own kind**, variants included: a Goblin Warrior is not a goblin as far as this lookup is concerned. So a back per kind is 112 pieces of art, bought to tell a player which creature a deck sitting in front of that creature belongs to. The builder still asks for a kind's own back before falling back to the common one, so a future exception costs one entry and no code.
 
-## The starter deck
+## The starter Warrior's deck
 
 What a first session plays with. Draw these first: ten cards is a playable game.
 
@@ -97,6 +95,25 @@ What a first session plays with. Draw these first: ten cards is a playable game.
 | ✓ | **Strike** | Strike · / Move 1 | `cards/starter/strike.webp` |
 | ✓ | **Taunt** | Compelled (1) · / Move 1 | `cards/starter/taunt.webp` |
 | ✓ | **Weapon Swap** | Ready · / Strike | `cards/starter/weapon-swap.webp` |
+
+## The starter Shade's deck
+
+The other half of a first session, and the half that was on no shelf at all until a reader noticed ten blank rows in the handbook. Same brief as the Warrior's: ten cards, and the pair of them is a playable game for two people.
+
+**10 pieces**. Suggested path: `cardrpg/art/cards/shade-starter/`
+
+| | Name | What it is | File |
+|---|---|---|---|
+|   | **Bind the Wound** | Heal 2 · / Use | `cards/shade-starter/bind-the-wound.webp` |
+|   | **Draw the Knife** | Strike · / Ready | `cards/shade-starter/draw-the-knife.webp` |
+|   | **Jeer** | Dazed (1) · / Move 1 | `cards/shade-starter/jeer.webp` |
+|   | **Knife Work** | Strike · / Move 1 | `cards/shade-starter/knife-work.webp` |
+|   | **Light Fingers** | Use · / Ready | `cards/shade-starter/light-fingers.webp` |
+|   | **Off Hand** | Ready · / Strike | `cards/shade-starter/off-hand.webp` |
+|   | **Open Vein** | Strike +1 · / Move 1 | `cards/shade-starter/open-vein.webp` |
+|   | **Quick Step** | Move 3 · / Move 2 | `cards/shade-starter/quick-step.webp` |
+|   | **Shed the Blow** | Block 2 · / Move 2 | `cards/shade-starter/shed-the-blow.webp` |
+|   | **Slip In** | Move 2, Strike · / Move 1 | `cards/shade-starter/slip-in.webp` |
 
 ## The common pool
 
@@ -264,9 +281,26 @@ Drawn on a Wild, so each one is a surprise and wants to look like one.
 | ✓ | **The Long Step** | Move 3 ignoring figures and difficult ground, Prone (1) | `cards/wild/the-long-step.webp` |
 | ✓ | **Veil** | Invisible (1) | `cards/wild/veil.webp` |
 
-## undefined
+## The twist deck
 
-undefined
+**The GM is somebody at the table**, and this is the deck they draw from more often than any player draws from anything. One person seeing all thirty in a session is a reason to draw them, not a reason to skip them, which is the argument this list used to get backwards. A twist is a complication rather than an attack: show the cost arriving, not a weapon.
+
+**8 pieces**. Suggested path: `cardrpg/art/cards/twist/`
+
+| | Name | What it is | File |
+|---|---|---|---|
+|   | **Arrival** | — | `cards/twist/arrival.webp` |
+|   | **Gear** | — | `cards/twist/gear.webp` |
+|   | **Hurt** | — | `cards/twist/hurt.webp` |
+|   | **Noise** | — | `cards/twist/noise.webp` |
+|   | **Opening** | — | `cards/twist/opening.webp` |
+|   | **Secret** | — | `cards/twist/secret.webp` |
+|   | **Strain** | — | `cards/twist/strain.webp` |
+|   | **Time** | — | `cards/twist/time.webp` |
+
+## The ritual twist deck
+
+Turned face up in front of four people who have been working toward this for a session, so it is the one GM card with a real audience. Every one of them is the thing the party is trying to undo pushing back: the injury, the curse or the rot answering.
 
 **8 pieces**, 8 wired up. Suggested path: `cardrpg/art/cards/ritual/`
 
@@ -281,9 +315,9 @@ undefined
 | ✓ | **Spoiled** | — | `cards/ritual/spoiled.webp` |
 | ✓ | **The Long Way** | — | `cards/ritual/the-long-way.webp` |
 
-## undefined
+## Wounds and Taint
 
-undefined
+The only cards in the game a player does not want, which makes them the ones a player looks at hardest. They arrive in a deck that was theirs and stay there, so they have to read as an intrusion at a glance, from across the table, in somebody else's hand.
 
 **8 pieces**, 8 wired up. Suggested path: `cardrpg/art/cards/harm/`
 

@@ -5421,6 +5421,9 @@ const RUNG = {
   card: 3, spell: 3, choose: 3, feature: 3, item: 3, signature: 3,
   health: 2, spellSlots: 2, prune: 2, expertise: 2, caps: 2, deckMax: 2,
   training: 1, knowHow: 1, mastery: 1, language: 1, carry: 1, restTokens: 1,
+  /* Binary, and worth nothing at all to a character who does not cast: rung 1 by 4's own
+   * ranking, even though what it lifts is a rule rather than a cap. */
+  freehandCast: 1,
 };
 check("every grant key the graph uses has a rung",
   [...new Set(nodes.flatMap(n => Object.keys(n.grants ?? {})))]
@@ -5452,7 +5455,9 @@ const rewardKeys = {
   card: "Action card", training: "Training", knowHow: "Know-how", expertise: "Expertise",
   mastery: "Mastery", language: "A language", feature: "Feature", item: "Item",
   prune: "Prune", deckMax: "Deck cap", carry: "Carry", spellSlots: "Spell slot",
-  health: "Health", restTokens: "Rest token", spell: "Spell", choose: "Choose from a list"
+  health: "Health", restTokens: "Rest token", spell: "Spell", choose: "Choose from a list",
+  /* A rule set aside rather than a number raised: the only one is Vax's free hand. */
+  freehandCast: "A rule set aside"
 };
 const charGrants = (await import("../module/grants.mjs")).CHARACTER_GRANTS;
 const grantedSomewhere = new Set();
@@ -5494,7 +5499,7 @@ check("the rewards only one or two nodes grant",
    * something a branch hands over three times on one run. A reward nobody gives is worth noticing;
    * this one is now given as ordinarily as a card.
    */
-  "Deck cap 1");
+  "A rule set aside 1, Deck cap 1");
 /*
  * The two character grants that no reward row offers and no node grants, each for a stated reason.
  * **handSize** is measured: specializations.md puts a card of hand size at 6 to 10 points of win
@@ -6403,20 +6408,21 @@ const cardSchemaDoc = fs.readFileSync(path.join(root, "../card-slate-schema.md")
  * better brief than anything invented for the purpose.
  */
 const everyCreatureForArt = monsters.expandRoster(content.ROSTER, content.VARIANTS);
-const artable = [
-  content.WARRIOR_DECK, content.INTENTS, content.COMMON_POOL, content.WAY_CARDS,
-  content.SHADE_POOL, content.STRENGTH_POOL, content.WARRIOR_SKILLS, content.WILD_MAGIC,
-  /* The intruders: the only cards a player does not want, so the ones they look at hardest. */
-  content.HARM_FACES,
-  /* The ritual twist deck has faces; the general twist deck deliberately does not. */
-  content.RITUAL_TWISTS,
-  content.FORMULAS, content.SHADOW_FORMULAS, content.MIND_POOL, content.FAITH_POOL,
-  content.FEATURES, content.ITEMS.filter(i => !i.npc && !content.forges(i.name)),
-  content.NPC_GEAR ?? [],
-  content.NATURAL_WEAPONS ?? [], everyCreatureForArt, [content.WARRIOR],
-  ...Object.entries(content).filter(([k]) => k.endsWith("_SIGNATURES")).map(([, v]) => v)
-].flat();
-check("pieces of content that take art", artable.length, 611);
+/*
+ * **[FOUND IN CODE 2026-11-09] This was a second copy of `SHELVES`, kept by hand.**
+ *
+ * It listed twenty-odd content arrays in the same order `art.mjs` lists them, which meant every
+ * shelf had to be written twice and the two could disagree without either looking wrong. They
+ * did: the day `SHADE_DECK` and `TWISTS` were put on shelves, four checks here failed with
+ * numbers eighteen apart and none of them said why, because the thing they disagreed with was
+ * this list rather than the content.
+ *
+ * Derived now, from the one list that commissions the pictures. A shelf added to `art.mjs` is a
+ * shelf this file counts, and the count below is a golden number about the GAME rather than about
+ * the agreement of two lists: it moves when content is written, which is what it should mean.
+ */
+const artable = (await import("../module/art.mjs")).SHELVES.flatMap(s => s.list ?? []);
+check("pieces of content that take art", artable.length, 629);
 /*
  * **The four items that are content without being commissions, and the item each one wears.**
  *
@@ -6456,20 +6462,26 @@ check("the authored goblin deck is retired",
 const setupCode = setupSource.replace(/\/\*[\s\S]*?\*\//g, "")
   .split("\n").map(line => line.replace(/\/\/.*$/, "")).join("\n");
 /*
- * **Two gaps declared rather than carried quietly**, because each one is the kind that passes every
- * check by being absent.
+ * **One gap declared rather than carried quietly**, because it is the kind that passes every check
+ * by being absent.
  *
- * A piece on an art shelf gets a path derived from its name, and a path with no file behind it is a
- * silent fallback to Foundry's placeholder -- so ten undrawn designs on a shelf would be ten
- * pictures that never show and never complain. The deck stays off the shelves until somebody draws
- * it, and `artable` above is the list that would have to grow.
+ * **The Shade deck is on a shelf now, and that reverses a decision this check used to hold.** The
+ * argument for keeping it off was sound and is worth keeping: a piece on a shelf gets a path
+ * derived from its name, and a path with no file behind it falls back to Foundry's placeholder, so
+ * ten undrawn designs on a shelf are ten pictures that never show and never complain. What settled
+ * it the other way is that the complaint now exists. The brief counts a shelved piece with no file
+ * as *still to shoot* and prints the number at the top; the queue below names them one by one; and
+ * the handbook page reports every row it could not illustrate. A gap that three things say out loud
+ * is a commission rather than a silence.
  *
- * And the starter routine still deals the Warrior. Choosing between two chassis is character
- * creation, which core-rules 12 defers until after the first playtest **on purpose**; a deck the
- * rules describe and no routine deals is the honest state of that decision.
+ * **The starter routine still deals the Warrior**, which is the half of that decision still
+ * standing: choosing between two chassis is character creation, and core-rules 12 defers it until
+ * after the first playtest on purpose. A deck the rules describe, the brief commissions, and no
+ * routine deals is the honest state of it.
  */
 check("the Shade deck is on an art shelf",
-  artable.includes(content.SHADE_DECK[0]) ? "yes" : "no", "no");
+  (await import("../module/art.mjs")).SHELVES.some(s => s.list === content.SHADE_DECK)
+    ? "yes" : "no", "yes");
 check("and the starter routine deals one chassis, not two",
   /SHADE_DECK/.test(setupCode) ? "two" : "one", "one");
 check("and nothing builds a document for it",
@@ -6926,7 +6938,7 @@ const { artIn: artInLive, backOf: backOfLive } = await import("../module/decks.m
 /* Every piece the game can hand Foundry a path for, which is all of them: kept as the denominator
  * the three states below have to add up to, and no longer printed as progress. */
 check("pieces the game has a path for", artable.filter(e => artInLive(e)).length
-  + backs.filter(([k]) => backOfLive(k)).length, 622);
+  + backs.filter(([k]) => backOfLive(k)).length, 640);
 /*
  * **And every path the game hands Foundry names a file that is there.**
  *
@@ -6945,7 +6957,7 @@ const pathless = [
   ...artable.map(e => [e.name, artInLive(e)]),
   ...backs.map(([k, b]) => [b.label ?? k, backOfLive(k)])
 ].filter(([, p]) => p && !fs.existsSync(fileFor(p)));
-check("art paths the game would hand Foundry", artable.length + backs.length, 622);
+check("art paths the game would hand Foundry", artable.length + backs.length, 640);
 /*
  * **The brief's progress line used to be the total, and nobody noticed for months.**
  *
@@ -6976,9 +6988,29 @@ check("and its three states account for every piece",
  * a missing file is allowed to be in.
  */
 const { ART_REFUSED } = await import("../module/art.mjs");
+/*
+ * **The queue is a declared list again**, which this file's own note below says is the right shape
+ * while pieces are waiting: eighteen were commissioned on 2026-11-09, the starter Shade's ten and
+ * the twist deck's eight, and neither set is drawn yet. Shooting one fails this check until its
+ * name comes out, which is the difference between a gap that is waiting and a gap that was
+ * forgotten.
+ *
+ *   node test/art-shoot.mjs --group cards/shade-starter
+ *   node test/art-shoot.mjs --group cards/twist
+ */
+const ART_QUEUE = [
+  /* the starter Shade's deck */
+  "Knife Work", "Open Vein", "Slip In", "Shed the Blow", "Quick Step", "Draw the Knife",
+  "Light Fingers", "Bind the Wound", "Jeer", "Off Hand",
+  /* the twist deck */
+  "Noise", "Time", "Gear", "Strain", "Hurt", "Arrival", "Secret", "Opening"
+];
 check("files missing with no refusal recorded",
-  pathless.map(([name]) => name).filter(n => !(n in ART_REFUSED)).sort().join(", ") || "none",
+  pathless.map(([name]) => name)
+    .filter(n => !(n in ART_REFUSED) && !ART_QUEUE.includes(n)).sort().join(", ") || "none",
   "none");
+check("and queued names that have been shot",
+  ART_QUEUE.filter(n => !pathless.some(([m]) => m === n)).sort().join(", ") || "none", "none");
 check("and refusals recorded for a file that is there",
   Object.keys(ART_REFUSED).filter(n => !pathless.some(([m]) => m === n)).sort().join(", ")
   || "none", "none");
@@ -7011,7 +7043,7 @@ check("and refusals recorded for a file that is there",
  * them at the commit before this one if the new ones come back worse.
  */
 check("and those naming a file that is not there",
-  pathless.map(([name]) => name).sort().join(", ") || "none",
+  pathless.map(([name]) => name).filter(n => !ART_QUEUE.includes(n)).sort().join(", ") || "none",
   "none");
 /*
  * **Every group in the brief lands in a slot something writes.**
@@ -7033,12 +7065,15 @@ const ART_SLOTS = {
   "signatures/faith": "face", "spells/elemental": "face", "spells/shadow": "face",
   "spells/mind": "face", "spells/faith": "face",
   "cards/harm": "face", "cards/ritual": "face",
+  /* Both newly commissioned: the other starter deck, and the twist deck now that the
+   * argument against drawing it has been withdrawn. Both are card faces like the rest. */
+  "cards/shade-starter": "face", "cards/twist": "face",
   features: "item", items: "item", "items/npc": "item", "items/natural": "item",
   tokens: "actor"
 };
 const briefDirs = [...new Set([...artList.matchAll(/Suggested path: `cardrpg\/art\/(.+?)\/`/g)]
   .map(m => m[1]))];
-check("directories the brief commissions into", briefDirs.length, 23);
+check("directories the brief commissions into", briefDirs.length, 25);
 check("and every one of them has a slot",
   briefDirs.filter(d => !(d in ART_SLOTS)).join(", ") || "none", "none");
 /* And no slot is declared for a group that is not in the brief, or this list rots quietly. */
@@ -7143,8 +7178,10 @@ check("and the brief asks for that same size",
  * And the three groups that are deliberately absent, each with its reason in the file. A piece of
  * content with no art and no stated reason is indistinguishable from one somebody forgot.
  */
-check("the brief says why a twist has no picture",
-  /a twist is a NAME and a COST rather than a picture/.test(artList) ? "yes" : "no", "yes");
+check("both twist decks are commissioned",
+  ["cards/twist", "cards/ritual"].filter(k =>
+    (artList.match(new RegExp(`Suggested path: \`cardrpg/art/${k}/\``, "g")) ?? []).length)
+    .length, 2)
 check("and why the tagged creatures are not commissioned",
   /there is nothing yet for a picture to be of/.test(artList) ? "yes" : "no", "yes");
 check("and it counts them off the content rather than in prose",
@@ -7180,7 +7217,7 @@ const briefs = faceRows.map(r => r.brief);
 const leaked = briefs.flatMap(text =>
   [...text.matchAll(/\b([a-z]+[A-Z][a-zA-Z]*)\b/g)].map(m => m[1]));
 /* A pattern that matched no rows at all would report "none" for any list whatsoever. */
-check("briefs the check actually read", briefs.length, 611);
+check("briefs the check actually read", briefs.length, 629);
 check("keys that leaked into the brief",
   leaked.length ? [...new Set(leaked)].join(", ") : "none", "none");
 /*
@@ -7422,23 +7459,27 @@ check("markdown left unrendered on the page",
  */
 const NO_PICTURE = [
   /*
-   * The eight general twists, which have no faces **by design** and the brief says why: *a twist
-   * is a NAME and a COST rather than a picture... art for a deck one person ever sees is art
-   * nobody at the table looks at.* The ritual twists are the exception and do have faces, because
-   * that is the one deck on the GM's side with an audience.
+   * **All eighteen are commissioned and not yet shot**, which is a different thing from absent.
+   * The twist deck used to be here on the brief's own argument that *art for a deck one person
+   * ever sees is art nobody at the table looks at*; that argument was withdrawn on 2026-11-09,
+   * because the GM is somebody at the table and draws from this deck more often than any player
+   * draws from anything. The starter Shade's ten were deliberately kept off the shelves until
+   * somebody drew them, and are on a shelf now for the same reason.
+   *
+   * So this list and `ART_QUEUE` above are the same eighteen pieces seen from two directions: the
+   * queue is what to shoot, and this is what the page cannot illustrate until it is shot. Both
+   * shrink together, and both fail when one is edited without the other.
    */
   "twists/Noise", "twists/Time", "twists/Gear", "twists/Strain",
   "twists/Hurt", "twists/Arrival", "twists/Secret", "twists/Opening",
-  /*
-   * **The starter Shade's deck, which is on no art shelf at all.** `SHELVES` has
-   * `cards/starter` for `WARRIOR_DECK` and nothing for `SHADE_DECK`, so these ten were never
-   * commissioned and the brief cannot say so: it counts what is on a shelf, which is the same
-   * one-directional check this file keeps finding. A commission, not a bug in the page.
-   */
   "actions/Knife Work", "actions/Open Vein", "actions/Slip In", "actions/Shed the Blow",
   "actions/Quick Step", "actions/Draw the Knife", "actions/Light Fingers",
   "actions/Bind the Wound", "actions/Jeer", "actions/Off Hand"
 ];
+/* The two lists are the same eighteen, so a piece shot has to leave both or this fails. */
+check("the page's blanks and the shoot queue disagree",
+  NO_PICTURE.map(m => m.split("/").slice(1).join("/")).filter(n => !ART_QUEUE.includes(n))
+    .join(", ") || "none", "none");
 check("rows on the page with no picture, beyond the declared ones",
   bookBuilt.missed.filter(m => !NO_PICTURE.includes(m)).join(", ") || "none", "none");
 check("and declared ones that now have one",
@@ -7475,6 +7516,79 @@ check("trigger labels that do not read as a clause",
     .filter(t => /^[A-Z]/.test(lang[`CARDRPG.Trigger.${t[0].toUpperCase()}${t.slice(1)}`] ?? ""))
     .join(", ") || "none", "none");
 /* And the sentence that was wrong is gone. */
+/*
+ * **[BUILT 2026-11-09] A prepared spell needs a free hand, and for the life of the project
+ * nothing checked.**
+ *
+ * `needsFreeHand` has been a getter on the spell slate since the slate was written. It returns
+ * `true` with a comment saying it is *stated for the resolver to read*, and the resolver never
+ * read it, so core-rules 4 spends a table and a worked example on a rule the engine did not have.
+ * It is the rule that makes a shield cost a caster something, that makes the staff a better item
+ * and a worse hand than the wand, and that two rings and a god's gift sell an exemption from. All
+ * of that was decoration.
+ *
+ * Three things are pinned: that the field is read, that the arithmetic exists on the character,
+ * and -- the one worth having -- that **the worked table in core-rules 4 still matches what the
+ * catalogue would actually compute.** A rule stated in prose and checked only in prose is the
+ * shape of defect this file has now found six times.
+ */
+const handsSource = resolveSource;
+check("the cast gate reads the field that was written for it",
+  /slate\.system\.needsFreeHand/.test(handsSource) ? "yes" : "no", "yes");
+check("and refuses rather than warning and continuing",
+  /needsFreeHand[\s\S]{0,400}?return false;/.test(handsSource) ? "yes" : "no", "yes");
+check("the character counts its hands",
+  /this\.handsFree = Math\.max\(0, \(this\.slotCapacity\("hands"\) \?\? 0\) - this\.handsUsed\)/
+    .test(actorModel) ? "yes" : "no", "yes");
+/* Asked of the actor rather than of config, because a hand an injury took is not a hand. */
+check("and asks itself, not the config, how many it has",
+  /slotCapacity\("hands"\)/.test(actorModel) ? "yes" : "no", "yes");
+
+/*
+ * **core-rules 4's worked table, recomputed from the catalogue.**
+ *
+ * Four rows, each naming real items, each stating whether a prepared spell is castable. The
+ * numbers come from the items; the answers come from the document. If somebody makes the Staff
+ * one-handed, or writes a second two-handed implement, this is what notices.
+ */
+const handsOf = name => {
+  const item = content.ITEMS.find(i => i.name === name);
+  if (!item) return null;
+  return item.slot === "hands" ? (item.hands ?? 1) : 0;
+};
+const CAST_TABLE = [
+  [["Staff of Healing"], false],
+  [["Fire Wand"], true],
+  [["Longsword", "Wooden Shield"], false],
+  [["Longsword"], true]
+];
+check("items in core-rules 4's casting table that are not in the catalogue",
+  CAST_TABLE.flatMap(([held]) => held).filter(n => handsOf(n) === null).join(", ") || "none",
+  "none");
+check("and hands it computes against what the table says",
+  CAST_TABLE.map(([held, canCast]) => {
+    const used = held.reduce((n, name) => n + handsOf(name), 0);
+    const free = Math.max(0, CARDRPG.slots.hands.capacity - used);
+    return `${held.join(" + ")}: ${(free > 0) === canCast ? "agrees" : `DISAGREES (${free} free)`}`;
+  }).filter(s => s.includes("DISAGREES")).join(", ") || "all four agree", "all four agree");
+
+/*
+ * **Who is excused, counted.** Two rings and one god, and each says so twice: once in prose for
+ * the player and once in a field the engine reads. A prose-only exemption is an exemption that
+ * does not happen, which is what both rings were until now.
+ */
+const freehandItems = content.ITEMS.filter(i => i.freehandCast).map(i => i.name).sort();
+check("items that excuse the free hand", freehandItems.join(", "),
+  "Ring of Open Hands, Ring of the Open Hand");
+check("and each of them still says so in its own words",
+  content.ITEMS.filter(i => i.freehandCast && !/without a free hand/.test(i.text ?? ""))
+    .map(i => i.name).join(", ") || "none", "none");
+const freehandGods = [...byId.values()].filter(n => n.grants?.freehandCast)
+  .map(n => n.title ?? n.name);
+check("gods whose gift is that the weapon is the symbol", freehandGods.join(", "), "Vax");
+check("and Vax's gift says so to the player too",
+  /need no free hand/.test(byId.get("faith.vax").gift ?? "") ? "yes" : "no", "yes");
+
 check("the claim that there are two triggers",
   handbook.includes("There are two triggers") ? "still there" : "none", "none");
 
@@ -7760,7 +7874,7 @@ check("and those are the lengths in the source",
  * European and the cards had no assignment at all.
  */
 const castLines = [...artPrompts.matchAll(/that person is (a (?:wo)?man) of ([A-Za-z ]+?) appearance/g)];
-check("cards, signatures and features given an assigned person", castLines.length, 152);
+check("cards, signatures and features given an assigned person", castLines.length, 170);
 /* The NPC pool is the one group that must NOT be cast: its own capsule says the actor is nobody,
  * because one picture is drawn behind a goblin, a troll and a dragon. */
 const npcBlock = /\n## NPC intent cards\n([\s\S]*?)\n## /.exec(artPrompts)?.[1] ?? "";
@@ -7793,7 +7907,7 @@ check("prompts that ask an image model for self-harm, having nothing else to ask
 
 const EURO = new Set(["Mediterranean", "Nordic", "Slavic", "Northwest European", "Germanic"]);
 check("western ancestries among them, which had nearly vanished",
-  castLines.filter(m => EURO.has(m[2])).length, 50);
+  castLines.filter(m => EURO.has(m[2])).length, 58);
 check("and every ancestry on the list is used somewhere",
   new Set(castLines.map(m => m[2])).size, 15);
 
@@ -7829,7 +7943,7 @@ check("and the log is a record, not a source",
  * spelling them again. */
 const packSource = fs.readFileSync(path.join(root, "test/build-packs.mjs"), "utf8");
 const rows = faceRows;
-check("file paths in the brief", rows.length, 611);
+check("file paths in the brief", rows.length, 629);
 /* And the backs, whose path is the slug of their KEY rather than of their printed label. */
 const backPaths = [...artList.matchAll(/\| `(backs\/[^`]+)` \|/g)].map(m => m[1]);
 check("back paths in the brief", backPaths.length, backs.length);
@@ -10711,7 +10825,7 @@ const unread = assigned.filter(name => {
 });
 check("derived values nothing reads", unread.length ? unread.join(", ") : "none", "none");
 /* A detector that found nothing to look at would pass the line above while checking nothing. */
-check("derived values on the character", assigned.length, 16);
+check("derived values on the character", assigned.length, 19);
 
 /* And the three that were found, now shown rather than deleted. */
 check("the sheet shows which Ways were walked",
@@ -12041,7 +12155,7 @@ check("hud-spec records it as collapsible",
  * neither does a passive score, since a passive is read off that deck.
  */
 const grantKeys = Object.keys(graph.grantsOf(new Set([graph.ROOT])));
-check("keys the grants accumulator carries", grantKeys.length, 17);
+check("keys the grants accumulator carries", grantKeys.length, 18);
 /* And the two that were added for it, which is the half of skill-rules 8 that a node can express:
  * an expertise asks the player which card to raise, a mastery is a number read off the owned set. */
 check("the two the skill side gained",

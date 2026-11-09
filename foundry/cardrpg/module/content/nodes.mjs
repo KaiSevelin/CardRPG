@@ -920,7 +920,7 @@ export const NODES = [
      * the handbook both print to a player: nothing else in the game sets aside the free-hand
      * rule, and that is what makes a cleric-fighter possible. True, and not a player's business. */
     gift: "His miracles need no free hand: the spiked club is the holy symbol.",
-    grants: { spell: "The Club and the Line" }
+    grants: { spell: "The Club and the Line", freehandCast: true }
   },
   { id: "faith.vax.club", name: "The Club", after: ["faith.vax"], grants: { spell: "Stand Where I Stand" } },
   { id: "faith.vax.shield", name: "The Shield", after: ["faith.vax.club"], grants: { spell: "The Shield Line" } },

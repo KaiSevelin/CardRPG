@@ -392,6 +392,7 @@ export const ITEMS = [
     kind: "Power", group: "power",
     // Answers a rule rather than a number: core-rules 4 says a spell needs a free hand.
     blurb: "Plain silver, worn thin. The gesture is already in it.",
+    freehandCast: true,
     text: "You may Cast without a free hand."
   },
   {
@@ -923,6 +924,7 @@ export const ITEMS = [
     kind: "Power", group: "power",
     identified: false, unidentifiedName: "a plain silver ring",
     blurb: "Almost the ring you were hoping for.",
+    freehandCast: true,
     text: "You may Cast without a free hand.",
     curse: "You may never hold anything in your other hand again. Lifted by the jeweller who made it, who is dead."
   },

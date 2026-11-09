@@ -14,6 +14,7 @@
     "weight": 0,
     "value": 600,
     "blurb": "Plain silver, worn thin. The gesture is already in it.",
+    "freehandCast": true,
     "group": "power",
     "text": "You may Cast without a free hand."
   }
