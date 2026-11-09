@@ -1056,7 +1056,7 @@ SUBJECT. "The Hive Obeys" — Three allies within sight each move their speed, o
 THIS CARD IS THE EXCEPTION. Only The Queen ever draws it, so draw that creature: the capsule's rules about species, anatomy and scale do not apply here, and this picture should be unmistakably of one thing.
 COMPOSE IT AS THE EXCEPTION. The other cards on this shelf are a fragment of a scene with open paper around it, because one picture has to serve every creature. This one does not: let the subject FILL the frame and crowd its own edges, close enough that the eye has nowhere else to go. It should be the card in a hand of eight that does not look like the other seven, from arm's length and before it is read.
 
-Draw an enormous rooted body that does not fight: seen from below and behind, one vast limb lifted in a signal, and the whole floor between it and the far wall already in motion.
+Draw one vast limb raised in a signal and held there, filling the frame from below -- and at the foot of it, small and already turned the same way, the first few of the things that obey.
 ```
 
 ### Thrash

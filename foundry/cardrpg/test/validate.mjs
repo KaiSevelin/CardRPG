@@ -6413,6 +6413,41 @@ check("the prompt book counts the same",
  * The generator now lists them and this pins the list empty, so the next one costs a test run
  * instead of an image.
  */
+/*
+ * **A brief that says FILL THE FRAME must not also name a far background**, because those are a
+ * close-up and an establishing shot in the same picture and no amount of redrawing resolves them.
+ *
+ * The three `only` cards -- the ones exactly one creature can ever draw -- are the only pieces
+ * that get the *crowd its own edges, close enough that the eye has nowhere else to go* capsule.
+ * *The Hive Obeys* then asked for **the whole floor between it and the far wall already in motion**
+ * on top of it, and also for two camera positions at once (*from below and behind*). It took four
+ * exports of one picture before anybody read the brief back, and the brief was the problem: a
+ * model handed a contradiction oscillates between its halves.
+ *
+ * The word list is small and is exactly what that one failure taught. It is the same shape as the
+ * capsule's ban on writing in a picture -- a rule a generator can check, standing in for a
+ * judgement it cannot.
+ */
+const FRAME_FILLERS = content.INTENTS.filter(i => i.only).map(i => i.name);
+const FAR_AWAY = ["far wall", "the whole floor", "in the distance", "and behind", "the far ",
+  "background", "from far off"];
+const twoScales = [];
+for (const name of FRAME_FILLERS) {
+  const at = artPrompts.indexOf(`### ${name}\n`);
+  if (at < 0) { twoScales.push(`${name}: no section in the book`); continue; }
+  const next = artPrompts.indexOf("\n### ", at + 1);
+  const subject = artPrompts.slice(at, next < 0 ? undefined : next);
+  const drawn = subject.slice(subject.lastIndexOf("\nDraw ")).toLowerCase();
+  const hits = FAR_AWAY.filter(w => drawn.includes(w));
+  if (hits.length) twoScales.push(`${name}: ${hits.join(", ")}`);
+}
+check("frame-filling briefs that also name a far background",
+  twoScales.join(" | ") || "none", "none");
+/* And the three of them are the three the exception capsule is written for, so the sweep above
+ * cannot quietly start covering nothing. */
+check("and the briefs that get that capsule", FRAME_FILLERS.sort().join(", "),
+  "Carry It Off, Open the Hold, The Hive Obeys");
+
 const orphanBlock = artPrompts.slice(artPrompts.indexOf("## Directions that match no piece"));
 check("directions keyed to a piece that does not exist",
   /^\*\*None\.\*\*/m.test(orphanBlock.slice(0, orphanBlock.indexOf("\n## ") + 1 || undefined))

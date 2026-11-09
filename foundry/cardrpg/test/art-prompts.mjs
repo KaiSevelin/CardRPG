@@ -1077,9 +1077,30 @@ const DIRECTION = {
   "cards/npc/take-the-legs":
     "a foot taken out from under, the weight already past the point of recovery and the shield "
     + "swinging wide of everything",
+  /*
+   * **This one asked for a close-up and an establishing shot in the same frame, and took four
+   * attempts before anybody read it back.**
+   *
+   * It said *seen from below and behind* -- two camera positions -- and then *the whole floor
+   * between it and the far wall already in motion*, while the exception capsule this card gets is
+   * the instruction to **fill the frame and crowd its own edges, close enough that the eye has
+   * nowhere else to go**. Those cannot both be drawn. A model handed both oscillates between them,
+   * which is what four re-exports of one picture looks like from the outside.
+   *
+   * Every other direction on this shelf is **one close idea in one frame** -- *a buckle and its
+   * strap*, *an arm pinned flat*, *a foot taken out from under*. This was the only one that named
+   * two scales, and the fix is the same one *Where It Is Held* needed: rewrite the composition
+   * rather than the words, and the card reads better for it (art.mjs, `ART_REFUSED`).
+   *
+   * What the card means is kept, and it is the whole of what it means: **she does nothing herself
+   * but decide.** So the picture is the signal and the obedience, at one scale -- the raised limb
+   * close and from below for size, and the obeying implied by the few shapes at the foot of it
+   * that have already turned. A floor-wide crowd was never needed to say *the hive obeys*; one
+   * creature turning the same way says it, and can be drawn.
+   */
   "cards/npc/the-hive-obeys":
-    "an enormous rooted body that does not fight: seen from below and behind, one vast limb lifted "
-    + "in a signal, and the whole floor between it and the far wall already in motion",
+    "one vast limb raised in a signal and held there, filling the frame from below -- and at the "
+    + "foot of it, small and already turned the same way, the first few of the things that obey",
   "cards/npc/open-the-hold":
     "a gigantic sagging body splitting along the belly seam, and what was inside it coming out "
     + "onto the ground underneath -- more of it than the shape above could hold",
