@@ -7403,6 +7403,30 @@ check("and the two that leave a permanent mark",
     .join(", "), "Stove In (corrode), Turn the Edge (blunt)");
 
 /*
+ * **And which weapon a Blunt takes: the best, and a tie to the first.**
+ *
+ * Run rather than grepped, which is the point of the rule being a rule. It was a prompt for about
+ * an hour -- the attacker choosing had an argument, since the client resolving the attack is the
+ * attacker's -- and a dialog in the middle of every critical is both worse to play and impossible
+ * to check. These four cases are what a prompt could not have.
+ *
+ * `bestWeapon` reads `system.valueFor("strike")` and nothing else, so a plain object is a weapon
+ * as far as it is concerned.
+ */
+const weap = (name, strike) => ({ name, system: { valueFor: () => strike } });
+check("the best weapon takes it", resolve.bestWeapon(
+  [weap("Dagger", 1), weap("Longsword", 3), weap("Club", 2)])?.name, "Longsword");
+/* Strictly greater, so an equal later weapon never displaces the one already holding the value.
+ * `first` is first in the actor's own item order, which is stable across a session and clients. */
+check("and a tie goes to the first", resolve.bestWeapon(
+  [weap("Axe", 3), weap("Longsword", 3)])?.name, "Axe");
+/* By what it strikes for NOW, which is the whole reason `valueFor` exists: a sword battered below
+ * the axe behind it stops being the one that takes the next hit. */
+check("and a battered weapon stops being the best", resolve.bestWeapon(
+  [weap("Longsword", 1), weap("Axe", 2)])?.name, "Axe");
+check("and nothing in hand is nothing to blunt", resolve.bestWeapon([]), null);
+
+/*
  * **A total bypass may not reach a creature that runs in packs**, which is the rule *Find the
  * Joint* argues for in content.mjs and nothing checked.
  *

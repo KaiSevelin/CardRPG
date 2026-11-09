@@ -1141,47 +1141,34 @@ export async function resolveCorrode(actor, { amount = 1, target }) {
 }
 
 /**
- * **Which weapon takes it, when more than one is in hand.**
+ * **Which weapon takes it, when more than one is in hand: the best one, and a tie goes to the
+ * first.**
  *
- * Armour needed no such rule: there is one body slot, so there is one answer. Hands are not like
- * that -- a hero may be holding a sword and an axe, or a sword and a shield that strikes -- so a
- * routine that picked silently would be picking the most important thing about the effect.
+ * Armour needed no such rule -- one body slot, one answer -- but hands are not like that: a hero
+ * may be holding a sword and an axe, or a sword and a shield that strikes. So this is a rule and
+ * not an accident, and it is **automatic**: no prompt, no dialog, nothing to answer mid-attack.
  *
- * **The attacker chooses, and the default is the best weapon.** Two halves, and each is a rule:
+ *  - **The best weapon**, because *weakest* or *random* would let anybody opt out of the effect by
+ *    carrying a knife, and an effect you can dodge by owning junk is not an effect. Best means the
+ *    highest value it strikes for **now**, so a sword already battered below the axe behind it
+ *    stops being the one that takes the next hit.
+ *  - **A tie goes to the first**, in the order the actor's own items come in, which is stable
+ *    across a session and across clients. `reduce` with a strict `>` is what keeps it there: the
+ *    first weapon to hold the highest value is never displaced by a later equal one.
  *
- *  - *The attacker*, because this is damage being done. The client resolving the attack is the
- *    attacker's, so the prompt lands in front of whoever is swinging -- the GM for a monster's
- *    critical, the player for their own. Asking the victim which of their weapons to ruin would be
- *    asking the wrong person, and it is the one choice in this file whose answer is adversarial.
- *  - *The best weapon by default*, which is what a closed dialog or an absent user resolves to.
- *    Highest current value, ties by name so it is never arbitrary. The alternative -- weakest, or
- *    random -- makes the effect dodgeable by carrying a knife, and an effect you can opt out of by
- *    owning junk is not an effect.
- *
- * It offers what is EQUIPPED and strikes for something: a weapon in a pack is not in the blow's
+ * It considers what is EQUIPPED and strikes for something: a weapon in a pack is not in the blow's
  * way, and one already battered to 0 has nothing left to take.
+ *
+ * **It was a prompt for about an hour.** The attacker choosing had an argument -- this is damage
+ * being done, and the client resolving the attack is the attacker's -- but a dialog in the middle
+ * of resolving a hit is a dialog on every critical, and the answer it was asking for is one a rule
+ * can give. A deterministic rule is also a testable one, which a prompt is not.
  */
-async function chooseWeapon(target, weapons) {
-  if (weapons.length <= 1) return weapons[0] ?? null;
-  const sorted = [...weapons].sort((a, b) =>
-    (b.system.valueFor("strike") ?? 0) - (a.system.valueFor("strike") ?? 0)
-    || a.name.localeCompare(b.name));
-
-  const options = sorted.map(w =>
-    `<option value="${w.id}">${foundry.utils.escapeHTML(w.name)} `
-    + `(strike ${w.system.valueFor("strike")})</option>`).join("");
-  const chosen = await foundry.applications.api.DialogV2.prompt({
-    window: { title: game.i18n.format("CARDRPG.Degrade.ChooseTitle", { name: target.name }) },
-    content: `<p>${game.i18n.localize("CARDRPG.Degrade.ChooseBody")}</p>`
-      + `<select name="weapon" style="width: 100%">${options}</select>`,
-    ok: {
-      label: game.i18n.localize("CARDRPG.Degrade.ChooseConfirm"),
-      callback: (event, button) => button.form.elements.weapon.value
-    },
-    rejectClose: false
-  }).catch(() => null);
-
-  return sorted.find(w => w.id === chosen) ?? sorted[0];
+export function bestWeapon(weapons) {
+  return weapons.reduce(
+    (best, w) => ((w.system.valueFor("strike") ?? 0) > (best.system.valueFor("strike") ?? 0)
+      ? w : best),
+    weapons[0] ?? null);
 }
 
 /**
@@ -1196,7 +1183,7 @@ export async function resolveBlunt(actor, { amount = 1, target, item = null }) {
   if (!target) return null;
   const weapons = (target.items ?? []).filter(i =>
     i.type === "item" && i.system.equipped && (i.system.valueFor?.("strike") ?? 0) > 0);
-  const weapon = item ?? await chooseWeapon(target, weapons);
+  const weapon = item ?? bestWeapon(weapons);
   if (!weapon) {
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor }),

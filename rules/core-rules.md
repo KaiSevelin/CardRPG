@@ -2143,11 +2143,13 @@ burn (§7). What acid does that nothing else in the game does is eat your **equi
   > nothing to repair. Gear here is **spent, not deleted** — which is the same shape as every other
   > loss in this section: a Wound is a card in your deck, not a character sheet torn up.
 
-- **Which weapon takes a Blunt, when both hands are full:** the **attacker** chooses, and the
-  default is the **best** of what is equipped. Armour needed no such rule — one body slot, one
-  answer — but hands are not like that. The attacker chooses because this is damage being done, and
-  the best weapon is the default because *weakest* or *random* would let anyone opt out of the
-  effect by carrying a knife. An effect you can dodge by owning junk is not an effect.
+- **Which weapon takes a Blunt, when both hands are full: the best one, and a tie goes to the
+  first.** Armour needed no such rule — one body slot, one answer — but hands are not like that, so
+  this is a rule rather than an accident, and nobody is asked: it happens. The **best** weapon
+  because *weakest* or *random* would let anyone opt out of the effect by carrying a knife, and an
+  effect you can dodge by owning junk is not an effect. Best means what it strikes for **now**, so a
+  sword already battered below the axe behind it stops being the one that takes the next hit. A
+  **tie** goes to whichever is first in your own gear, which is stable and needs no coin flip.
 - **Armor behaves like a cliff edge** — a point of it is worth far more against four goblins with
   Strike 3 than against one ogre — so Corrode 1 is already a strong effect and **Corrode 2 belongs to
   a monster.**
