@@ -1550,7 +1550,7 @@ const reactionLines = [...reactionBlock
   .matchAll(/^  ([a-zA-Z]+): \{([^}]*)\}/gm)]
   .map(m => ({ key: m[1], body: m[2] }));
 check("reactions declared", reactionLines.map(r => r.key).join(", "),
-  "parry, block, sidestep, counter, use, heckle, bodyguard, unmake, mend, bargain");
+  "parry, block, sidestep, counter, use, heckle, bodyguard, unmake, mend, bargain, deflect");
 
 /* Every reaction must name a trigger that exists, or it is a reaction nothing can ever fire. */
 const triggerOf = r => /trigger: "([a-zA-Z]+)"/.exec(r.body)?.[1] ?? "";
@@ -1569,7 +1569,8 @@ check("reactions naming a trigger that does not exist",
 check("Use fires on a hit", triggerOf(reactionLines.find(r => r.key === "use")), "hit");
 check("reactions that fire on a hit",
   reactionLines.filter(r => triggerOf(r) === "hit").map(r => r.key).join(", "),
-  "parry, block, use");
+  /* Four, and the fourth is the one The Close Work needed: a spell that answers being hit. */
+  "parry, block, use, deflect");
 check("reactions that fire on an arrival",
   reactionLines.filter(r => triggerOf(r) === "arrival").map(r => r.key).join(", "),
   "sidestep, counter, heckle");
@@ -1842,7 +1843,7 @@ check("and no caller writes a subtype out by hand any more",
   (resolveSource.match(/type: "(?:wound|taint|fear|doubt|rage|compulsion|confusion)"/g) ?? [])
     .length, 0);
 check("times the Wound threshold is read at all",
-  (resolveSource.match(/defaults\.woundAt/g) ?? []).length, 3);
+  (resolveSource.match(/defaults\.woundAt/g) ?? []).length, 4);
 /*
  * **How a Wound arrives, now that one does.**  **[BUILT 2026-11-07]**
  *
@@ -1907,9 +1908,14 @@ check("the draw comes before any reaction",
   at("const fate = await drawFate") < at("await redirectHit") ? "yes" : "no", "yes");
 check("redirection resolves before reduction",
   at("await redirectHit") < at("chooseReaction(") ? "yes" : "no", "yes");
+/* Three steps now, and a Miss has to skip all three: deflect, redirect, reduce. */
 check("a Miss is answered by nothing",
-  /const guard = missed \? null : await redirectHit/.test(attackBody)
+  /const sent = missed \? null : await deflectHit/.test(attackBody)
+  && /const guard = \(missed \|\| sent\) \? null/.test(attackBody)
   && /\(missed \|\| guard\)\s*\?\s*null/.test(attackBody) ? "yes" : "no", "yes");
+/* And a deflect settles before a bodyguard: nobody steps in front of a blow going elsewhere. */
+check("a deflect resolves before a bodyguard",
+  at("await deflectHit") < at("await redirectHit") ? "yes" : "no", "yes");
 /* One reaction per trigger covers both steps: a Bodyguard that intercepted cannot also Brace. */
 check("one reaction covers both steps",
   /\(missed \|\| guard\)/.test(attackBody) ? "yes" : "no", "yes");
@@ -4379,7 +4385,7 @@ check("everything that prints a reaction",
   + "Light Feet (sidestep); Measure (parry); Named (parry); Over and Past (sidestep); "
   + "Press (sidestep); Scout Ahead (sidestep); "
   + "Shake It Off (mend); Shield Bash (block); Shield Wall (block); "
-  + "Sleight (use); Slip the Knot (sidestep); The Close Work (parry); The Mirror (unmake); "
+  + "Sleight (use); Slip the Knot (sidestep); The Close Work (deflect); The Mirror (unmake); "
   + "The Order's Shield (block); The Turning Tide (mend); Turn Aside (mend); Unmake (unmake)");
 check("the healer needed no new trigger",
   waitingFor("Breath of the Spirit") || "nothing", "nothing");
@@ -4412,7 +4418,7 @@ check("and what a merge has to prove",
 
 check("a reaction spell carries the flag that says where to look",
   Object.entries(CARDRPG.reactions).filter(([, r]) => r.spell).map(([k]) => k).join(", "),
-  "unmake, mend, bargain");
+  "unmake, mend, bargain, deflect");
 check("Heckle fires on an arrival", CARDRPG.reactions.heckle?.trigger, "arrival");
 check("the card prints it", sigs.find(sg => sg.name === "Heckle")?.reaction, "heckle");
 check("and applies Heckled rather than something borrowed",
@@ -6989,28 +6995,30 @@ check("and its three states account for every piece",
  */
 const { ART_REFUSED } = await import("../module/art.mjs");
 /*
- * **The queue is a declared list again**, which this file's own note below says is the right shape
- * while pieces are waiting: eighteen were commissioned on 2026-11-09, the starter Shade's ten and
- * the twist deck's eight, and neither set is drawn yet. Shooting one fails this check until its
- * name comes out, which is the difference between a gap that is waiting and a gap that was
- * forgotten.
+ * **What is still to shoot, read off the brief rather than listed here.**
+ *
+ * This was a hand-kept list twice, and both times the note beside it said the same thing: a
+ * declared queue is right while pieces are waiting and stale the moment somebody starts drawing
+ * them. On 2026-11-09 it was stale within the hour, because the shoot was running in another
+ * terminal while the suite was being edited.
+ *
+ * The brief already knows. It ticks a row when the file is on disk and leaves it blank when it is
+ * not, and it is regenerated from the shelves and the disk every build. So an unticked row is the
+ * queue, the queue maintains itself, and the check keeps its teeth: a path with no file and no
+ * row in the brief still fails, which is the case this was written for.
  *
  *   node test/art-shoot.mjs --group cards/shade-starter
  *   node test/art-shoot.mjs --group cards/twist
  */
-const ART_QUEUE = [
-  /* the starter Shade's deck */
-  "Knife Work", "Open Vein", "Slip In", "Shed the Blow", "Quick Step", "Draw the Knife",
-  "Light Fingers", "Bind the Wound", "Jeer", "Off Hand",
-  /* the twist deck */
-  "Noise", "Time", "Gear", "Strain", "Hurt", "Arrival", "Secret", "Opening"
-];
+const toShoot = new Set([...artList.matchAll(/^\|\s{2,}\| \*\*([^*]+)\*\* \|/gm)]
+  .map(m => m[1]));
+check("the brief knows what is still to shoot",
+  toShoot.size === Number(/\*\*(\d+)\*\* still to shoot/.exec(artList)?.[1] ?? -1)
+    ? "yes" : `${toShoot.size} rows against its own total`, "yes");
 check("files missing with no refusal recorded",
   pathless.map(([name]) => name)
-    .filter(n => !(n in ART_REFUSED) && !ART_QUEUE.includes(n)).sort().join(", ") || "none",
+    .filter(n => !(n in ART_REFUSED) && !toShoot.has(n)).sort().join(", ") || "none",
   "none");
-check("and queued names that have been shot",
-  ART_QUEUE.filter(n => !pathless.some(([m]) => m === n)).sort().join(", ") || "none", "none");
 check("and refusals recorded for a file that is there",
   Object.keys(ART_REFUSED).filter(n => !pathless.some(([m]) => m === n)).sort().join(", ")
   || "none", "none");
@@ -7043,7 +7051,7 @@ check("and refusals recorded for a file that is there",
  * them at the commit before this one if the new ones come back worse.
  */
 check("and those naming a file that is not there",
-  pathless.map(([name]) => name).filter(n => !ART_QUEUE.includes(n)).sort().join(", ") || "none",
+  pathless.map(([name]) => name).filter(n => !toShoot.has(n)).sort().join(", ") || "none",
   "none");
 /*
  * **Every group in the brief lands in a slot something writes.**
@@ -7457,33 +7465,16 @@ check("markdown left unrendered on the page",
  * What is left is declared rather than tolerated, with the reason, so the list can only get
  * shorter and a new blank row fails here instead of being noticed by somebody reading.
  */
-const NO_PICTURE = [
-  /*
-   * **All eighteen are commissioned and not yet shot**, which is a different thing from absent.
-   * The twist deck used to be here on the brief's own argument that *art for a deck one person
-   * ever sees is art nobody at the table looks at*; that argument was withdrawn on 2026-11-09,
-   * because the GM is somebody at the table and draws from this deck more often than any player
-   * draws from anything. The starter Shade's ten were deliberately kept off the shelves until
-   * somebody drew them, and are on a shelf now for the same reason.
-   *
-   * So this list and `ART_QUEUE` above are the same eighteen pieces seen from two directions: the
-   * queue is what to shoot, and this is what the page cannot illustrate until it is shot. Both
-   * shrink together, and both fail when one is edited without the other.
-   */
-  "twists/Noise", "twists/Time", "twists/Gear", "twists/Strain",
-  "twists/Hurt", "twists/Arrival", "twists/Secret", "twists/Opening",
-  "actions/Knife Work", "actions/Open Vein", "actions/Slip In", "actions/Shed the Blow",
-  "actions/Quick Step", "actions/Draw the Knife", "actions/Light Fingers",
-  "actions/Bind the Wound", "actions/Jeer", "actions/Off Hand"
-];
-/* The two lists are the same eighteen, so a piece shot has to leave both or this fails. */
-check("the page's blanks and the shoot queue disagree",
-  NO_PICTURE.map(m => m.split("/").slice(1).join("/")).filter(n => !ART_QUEUE.includes(n))
-    .join(", ") || "none", "none");
-check("rows on the page with no picture, beyond the declared ones",
-  bookBuilt.missed.filter(m => !NO_PICTURE.includes(m)).join(", ") || "none", "none");
-check("and declared ones that now have one",
-  NO_PICTURE.filter(m => !bookBuilt.missed.includes(m)).join(", ") || "none", "none");
+/*
+ * **Every row the page could not illustrate is a row the brief is still waiting on.**
+ *
+ * Declared by name twice and stale both times, for the reason above. The two facts are the same
+ * eighteen pieces seen from two sides -- the brief's queue is what to shoot and this is what the
+ * page cannot show until it is shot -- so one of them derives from the other and neither is typed.
+ */
+check("rows on the page with no picture that the brief is not waiting on",
+  bookBuilt.missed.map(m => m.split("/").slice(1).join("/"))
+    .filter(n => !toShoot.has(n)).join(", ") || "none", "none");
 /* Which is the Shade deck's absence stated where it is actionable, rather than only as a blank. */
 check("starter decks on an art shelf",
   (await import("../module/art.mjs")).SHELVES.filter(s => s.key.startsWith("cards/starter")).length, 1);

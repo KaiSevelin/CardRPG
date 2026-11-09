@@ -1887,6 +1887,50 @@ async function spendReaction(actor, choice) {
  * scratch would kill the bodyguard for nothing by round two. Among those who could, the first in
  * **initiative order** takes it, which is the order core-rules 3 already gives this step.
  */
+/**
+ * **The blow moved onto one of the attacker's own**, which is The Grey's whole register.
+ *
+ * The same slot `redirectHit` uses, and deliberately so: substituting the taker is already how
+ * this engine expresses *somebody else takes this*, and everything downstream recomputes against
+ * whoever that turns out to be -- armour, Block, the Wound threshold and the reaction the new
+ * taker gets to make for themselves. A redirect that patched the damage afterwards would have had
+ * to repeat all four.
+ *
+ * **Gated on the blow being serious**, the same way a bodyguard is. A reaction resolves by itself
+ * (core-rules 3), and a prepared spell spent on a scratch is a slot spent on nothing -- so this
+ * fires when the hit would Wound or drop, which is what the handbook already promises of every
+ * reaction.
+ *
+ * **The victim has to be the attacker's neighbour, not the target's.** You are moving the
+ * attacker's arm, so the blow goes where that arm can reach, and what it finds there is one of
+ * their own side.
+ */
+async function deflectHit(attacker, target, incoming) {
+  if (incoming <= 0) return null;
+  const serious = incoming >= CARDRPG.defaults.woundAt
+    || incoming >= (target?.system?.health?.value ?? 0);
+  if (!serious) return null;
+
+  const options = reactionsFor(target, "hit")
+    .filter(o => CARDRPG.reactions[o.key]?.kind === "redirect");
+  if (!options.length) return null;
+
+  const victim = neighbours(attacker)
+    .find(who => who.id !== target.id && who.id !== attacker?.id && who.type === attacker?.type);
+  if (!victim) return null;
+
+  const option = options[0];
+  await spendReaction(target, option);
+  await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor: target }),
+    content: `<div class="cardrpg"><p><strong>${target.name}</strong> moves `
+      + `${attacker?.name ?? "the attacker"}'s arm with `
+      + `<em>${option.slate?.name ?? "a word"}</em>: <strong>${victim.name}</strong> takes it `
+      + "instead, and neither of them understands what happened.</p></div>"
+  });
+  return { actor: victim, from: target };
+}
+
 export async function redirectHit(attacker, target, incoming) {
   if (incoming < (target?.system?.health?.value ?? 0)) return null;
 
@@ -2342,8 +2386,15 @@ export async function resolveAttack(actor, {
      * 1. REDIRECTION changes who is being hit, so it goes first; the original target is never
      *    asked to spend a card against a blow an ally has already taken for them.
      */
-    const guard = missed ? null : await redirectHit(actor, target, against(target).incoming);
-    const taker = guard?.actor ?? target;
+    /*
+     * **A deflect comes before a bodyguard**, because they answer the same blow from opposite
+     * sides: a bodyguard steps in front of it and a deflect sends it somewhere else entirely.
+     * Nobody has to step in front of a blow that is no longer arriving.
+     */
+    const sent = missed ? null : await deflectHit(actor, target, against(target).incoming);
+    const guard = (missed || sent) ? null
+      : await redirectHit(actor, target, against(target).incoming);
+    const taker = sent?.actor ?? guard?.actor ?? target;
 
     // 2. REDUCTION, to whoever is the target now. One reaction per trigger covers both steps, so a
     //    Bodyguard that just intercepted cannot also Brace -- it has spent its card.

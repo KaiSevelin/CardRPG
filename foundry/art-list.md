@@ -1,6 +1,6 @@
 # Art list
 
-**640 pieces**, of which **622** are drawn and **18** still to shoot. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
+**640 pieces**, of which **638** are drawn and **2** still to shoot. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
 
 ## What to supply
 
@@ -100,20 +100,20 @@ What a first session plays with. Draw these first: ten cards is a playable game.
 
 The other half of a first session, and the half that was on no shelf at all until a reader noticed ten blank rows in the handbook. Same brief as the Warrior's: ten cards, and the pair of them is a playable game for two people.
 
-**10 pieces**. Suggested path: `cardrpg/art/cards/shade-starter/`
+**10 pieces**, 10 wired up. Suggested path: `cardrpg/art/cards/shade-starter/`
 
 | | Name | What it is | File |
 |---|---|---|---|
-|   | **Bind the Wound** | Heal 2 · / Use | `cards/shade-starter/bind-the-wound.webp` |
-|   | **Draw the Knife** | Strike · / Ready | `cards/shade-starter/draw-the-knife.webp` |
-|   | **Jeer** | Dazed (1) · / Move 1 | `cards/shade-starter/jeer.webp` |
-|   | **Knife Work** | Strike · / Move 1 | `cards/shade-starter/knife-work.webp` |
-|   | **Light Fingers** | Use · / Ready | `cards/shade-starter/light-fingers.webp` |
-|   | **Off Hand** | Ready · / Strike | `cards/shade-starter/off-hand.webp` |
-|   | **Open Vein** | Strike +1 · / Move 1 | `cards/shade-starter/open-vein.webp` |
-|   | **Quick Step** | Move 3 · / Move 2 | `cards/shade-starter/quick-step.webp` |
-|   | **Shed the Blow** | Block 2 · / Move 2 | `cards/shade-starter/shed-the-blow.webp` |
-|   | **Slip In** | Move 2, Strike · / Move 1 | `cards/shade-starter/slip-in.webp` |
+| ✓ | **Bind the Wound** | Heal 2 · / Use | `cards/shade-starter/bind-the-wound.webp` |
+| ✓ | **Draw the Knife** | Strike · / Ready | `cards/shade-starter/draw-the-knife.webp` |
+| ✓ | **Jeer** | Dazed (1) · / Move 1 | `cards/shade-starter/jeer.webp` |
+| ✓ | **Knife Work** | Strike · / Move 1 | `cards/shade-starter/knife-work.webp` |
+| ✓ | **Light Fingers** | Use · / Ready | `cards/shade-starter/light-fingers.webp` |
+| ✓ | **Off Hand** | Ready · / Strike | `cards/shade-starter/off-hand.webp` |
+| ✓ | **Open Vein** | Strike +1 · / Move 1 | `cards/shade-starter/open-vein.webp` |
+| ✓ | **Quick Step** | Move 3 · / Move 2 | `cards/shade-starter/quick-step.webp` |
+| ✓ | **Shed the Blow** | Block 2 · / Move 2 | `cards/shade-starter/shed-the-blow.webp` |
+| ✓ | **Slip In** | Move 2, Strike · / Move 1 | `cards/shade-starter/slip-in.webp` |
 
 ## The common pool
 
@@ -285,17 +285,17 @@ Drawn on a Wild, so each one is a surprise and wants to look like one.
 
 **The GM is somebody at the table**, and this is the deck they draw from more often than any player draws from anything. One person seeing all thirty in a session is a reason to draw them, not a reason to skip them, which is the argument this list used to get backwards. A twist is a complication rather than an attack: show the cost arriving, not a weapon.
 
-**8 pieces**. Suggested path: `cardrpg/art/cards/twist/`
+**8 pieces**, 6 wired up. Suggested path: `cardrpg/art/cards/twist/`
 
 | | Name | What it is | File |
 |---|---|---|---|
-|   | **Arrival** | — | `cards/twist/arrival.webp` |
+| ✓ | **Arrival** | — | `cards/twist/arrival.webp` |
 |   | **Gear** | — | `cards/twist/gear.webp` |
-|   | **Hurt** | — | `cards/twist/hurt.webp` |
-|   | **Noise** | — | `cards/twist/noise.webp` |
-|   | **Opening** | — | `cards/twist/opening.webp` |
-|   | **Secret** | — | `cards/twist/secret.webp` |
-|   | **Strain** | — | `cards/twist/strain.webp` |
+| ✓ | **Hurt** | — | `cards/twist/hurt.webp` |
+| ✓ | **Noise** | — | `cards/twist/noise.webp` |
+| ✓ | **Opening** | — | `cards/twist/opening.webp` |
+| ✓ | **Secret** | — | `cards/twist/secret.webp` |
+| ✓ | **Strain** | — | `cards/twist/strain.webp` |
 |   | **Time** | — | `cards/twist/time.webp` |
 
 ## The ritual twist deck

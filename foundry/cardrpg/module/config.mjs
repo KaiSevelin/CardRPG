@@ -805,6 +805,23 @@ CARDRPG.reactions = {
    */
   bargain: {
     label: "CARDRPG.Reaction.Bargain", kind: "other", trigger: "check", spell: true
+  },
+  /*
+   * **[FOUND 2026-11-09] The Grey's *The Close Work* printed `parry` and could never fire.**
+   *
+   * `parry` has no `spell: true`, so `reactionsFor` looked for it among `uprightCards(actor)` --
+   * the action hand -- and a prepared spell is never in the hand. The card has read *you move his
+   * arm, the man behind him takes it* since it was written, and the engine had no way to express
+   * that: the three spell reactions answered a cast, an ally being hit, and a failed check, and
+   * none of them answered **you** being hit.
+   *
+   * So this is the fourth, and it is the trigger that was missing rather than a new idea: `hit`,
+   * which every card reaction already uses, on a spell. `redirect` is the kind bodyguard already
+   * carries, and it means the same thing here as there -- somebody else takes this -- except that
+   * the somebody is one of the attacker's own.
+   */
+  deflect: {
+    label: "CARDRPG.Reaction.Deflect", kind: "redirect", trigger: "hit", spell: true
   }
 };
 

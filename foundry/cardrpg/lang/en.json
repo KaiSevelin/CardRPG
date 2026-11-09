@@ -106,6 +106,7 @@
   "CARDRPG.Trigger.Cast": "a spell is cast",
   "CARDRPG.Reaction.Bodyguard": "Bodyguard",
   "CARDRPG.Reaction.Counter": "Counter",
+  "CARDRPG.Reaction.Deflect": "Deflect",
   "CARDRPG.Reaction.Brace": "Brace",
   "CARDRPG.Trigger.Hit": "you are hit",
   "CARDRPG.Trigger.AllyHit": "an ally within reach is hit",

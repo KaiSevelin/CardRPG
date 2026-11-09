@@ -95,7 +95,9 @@ const SHELVES_FOR = {
   /* A Signature spell is filed with the signatures, not with the spells: one per school and
    * one per god, twenty of the hundred and forty, and they were the twenty with no picture. */
   spells: ["spells/", "signatures/mind", "signatures/faith"],
-  twists: ["cards/ritual"],
+  /* Both decks now, since the general twists were commissioned on 2026-11-09 and this still
+   * only looked at the ritual shelf. */
+  twists: ["cards/twist", "cards/ritual"],
   creeds: []
 };
 

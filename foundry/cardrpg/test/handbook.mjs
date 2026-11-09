@@ -349,7 +349,9 @@ export const REACTION_TEXT = {
   unmake: "You have felt this spell before, and that is the only reason you can stop it.",
   mend: "Help reaches an ally on the turn they were hit rather than on yours, which is most of "
     + "what makes it worth a prepared slot.",
-  bargain: "A check you had just failed is intervened in, once, by something that owes you."
+  bargain: "A check you had just failed is intervened in, once, by something that owes you.",
+  deflect: "You move the attacker's arm, and one of their own takes the blow instead. It has to "
+    + "be a serious one, and it has to be somebody standing next to them."
 };
 
 /** Every reaction in the order config lists them, with Brace first because it is the common one. */

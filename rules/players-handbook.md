@@ -415,9 +415,10 @@ casting Ways, because they are printed on a prepared spell rather than on a card
 | Reaction | Fires when | What it does | Printed on |
 |---|---|---|---|
 | **Brace** | you are hit | Reduce the damage, barely. Any card whose own reaction cannot fire is still worth this much, which is deliberately too little to be worth spending a good card on. | any card that cannot answer otherwise |
-| **Parry** | you are hit | Turn the blow with what you are already holding. Reduces the damage by your weapon's own Defend value, so a sword parries better than a knife. | 11 cards |
+| **Parry** | you are hit | Turn the blow with what you are already holding. Reduces the damage by your weapon's own Defend value, so a sword parries better than a knife. | 10 cards |
 | **Block** | you are hit | The shield comes up. Reduces the damage by the shield's Defend value and one more for being a shield, which is the best answer to a hit in the game. | 5 cards |
 | **Use** | you are hit | Something off your belt, drunk or broken open as the blow lands. Heals you by the item's Use value, and the item is spent doing it. | 4 cards |
+| **Deflect** | you are hit | You move the attacker's arm, and one of their own takes the blow instead. It has to be a serious one, and it has to be somebody standing next to them. | a prepared spell |
 | **Sidestep** | an enemy ends its move next to you | Step out of reach as they arrive, by the number the card prints. The attack that was walking toward you never arrives. | 12 cards |
 | **Counter** | an enemy ends its move next to you | They walked onto your point. A free Strike at the enemy that just arrived, for your weapon's full value, and it is the only reaction in the game that deals damage. | 1 card |
 | **Heckle** | an enemy ends its move next to you | A word, at the moment they close. The enemy that just arrived draws fate with disadvantage, so the attack it came to make is already spoiled. | 1 card |
@@ -1100,7 +1101,7 @@ do not hold them: they are simply true once the node is yours.
 |---|---|---|---|---|---|
 | **Bear It for Them** | You take what is on them onto yourself, entire. *Whatever is on them is on you instead, at its full duration. The Spirit's priests are the only ones who can do this and the only ones who would.* | – | – | Mend | 1 |
 | **The Turning Tide** | The sea is not fair, and today it is not fair to them. *The sea is not fair. They draw again and must keep the second card, and a Miss joins your own deck for having asked.* | – | – | Mend | 1 |
-| **The Close Work** | You move his arm, and the man behind him takes it. *You move his arm. The man behind him takes it, and neither of them understands what happened.* | – | – | Parry | 1 |
+| **The Close Work** | You move his arm, and the man behind him takes it. *You move his arm. The man behind him takes it, and neither of them understands what happened.* | – | – | Deflect | 1 |
 | **Breath of the Spirit** | Help arrives through the air, from anywhere you can be heard. *Reaction: heal an ally 3, at any range, ignoring cover. The spirit drifts through all the air, so distance is not a question for it.* | – | – | Mend | 1 |
 | **The Writ** | Named at range, with no appeal, and the whole field may act on it. *No save, at range 6. Being named is not something you resist, and the whole field may act on it.* | at range 6 → judged (2) | Move 1 | – | 1 |
 | **The Order's Shield** | The guard goes to somebody else, and never to you. *The Block goes to an adjacent ally and never to you. The order does not defend itself.* | Defend, then Block 2 at range 1 | Block 1 at range 1 | Block | 1 |

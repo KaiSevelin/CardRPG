@@ -176,9 +176,10 @@
 <thead><tr><th>Reaction</th><th>Fires when</th><th>What it does</th><th>Printed on</th></tr></thead>
 <tbody>
 <tr><th scope="row"><strong>Brace</strong></th><td>you are hit</td><td>Reduce the damage, barely. Any card whose own reaction cannot fire is still worth this much, which is deliberately too little to be worth spending a good card on.</td><td>any card that cannot answer otherwise</td></tr>
-<tr><th scope="row"><strong>Parry</strong></th><td>you are hit</td><td>Turn the blow with what you are already holding. Reduces the damage by your weapon's own Defend value, so a sword parries better than a knife.</td><td>11 cards</td></tr>
+<tr><th scope="row"><strong>Parry</strong></th><td>you are hit</td><td>Turn the blow with what you are already holding. Reduces the damage by your weapon's own Defend value, so a sword parries better than a knife.</td><td>10 cards</td></tr>
 <tr><th scope="row"><strong>Block</strong></th><td>you are hit</td><td>The shield comes up. Reduces the damage by the shield's Defend value and one more for being a shield, which is the best answer to a hit in the game.</td><td>5 cards</td></tr>
 <tr><th scope="row"><strong>Use</strong></th><td>you are hit</td><td>Something off your belt, drunk or broken open as the blow lands. Heals you by the item's Use value, and the item is spent doing it.</td><td>4 cards</td></tr>
+<tr><th scope="row"><strong>Deflect</strong></th><td>you are hit</td><td>You move the attacker's arm, and one of their own takes the blow instead. It has to be a serious one, and it has to be somebody standing next to them.</td><td>a prepared spell</td></tr>
 <tr><th scope="row"><strong>Sidestep</strong></th><td>an enemy ends its move next to you</td><td>Step out of reach as they arrive, by the number the card prints. The attack that was walking toward you never arrives.</td><td>12 cards</td></tr>
 <tr><th scope="row"><strong>Counter</strong></th><td>an enemy ends its move next to you</td><td>They walked onto your point. A free Strike at the enemy that just arrived, for your weapon's full value, and it is the only reaction in the game that deals damage.</td><td>1 card</td></tr>
 <tr><th scope="row"><strong>Heckle</strong></th><td>an enemy ends its move next to you</td><td>A word, at the moment they close. The enemy that just arrived draws fate with disadvantage, so the attack it came to make is already spoiled.</td><td>1 card</td></tr>
@@ -335,14 +336,14 @@
 <div class="scroller"><table>
 <thead><tr><th>Twist</th><th>Copies</th><th>What it costs</th></tr></thead>
 <tbody>
-<tr><th scope="row"><strong>Noise</strong></th><td>4</td><td>Attention. The opposition now knows something is wrong.</td></tr>
+<tr><th scope="row" class="named"><img src="../foundry/cardrpg/art/cards/twist/noise.webp" alt="" loading="lazy" decoding="async"><span><strong>Noise</strong></span></th><td>4</td><td>Attention. The opposition now knows something is wrong.</td></tr>
 <tr><th scope="row"><strong>Time</strong></th><td>4</td><td>The clock. Pressure +1 on top of the normal cost.</td></tr>
 <tr><th scope="row"><strong>Gear</strong></th><td>4</td><td>A tool. It breaks or is lost: no tool bonus until repaired or replaced.</td></tr>
-<tr><th scope="row"><strong>Strain</strong></th><td>5</td><td>Cards. Discard 1 skill card of the GM's choice from your hand.</td></tr>
-<tr><th scope="row"><strong>Hurt</strong></th><td>3</td><td>Health. Lose 2 Health, or gain a condition that fits.</td></tr>
-<tr><th scope="row"><strong>Arrival</strong></th><td>4</td><td>Someone new. A third party walks into the scene.</td></tr>
-<tr><th scope="row"><strong>Secret</strong></th><td>2</td><td>Information, in either direction. You learn something unwelcome, or they learn something about you.</td></tr>
-<tr><th scope="row"><strong>Opening</strong></th><td>4</td><td>Nothing, this one gives. The complication also creates an opportunity.</td></tr>
+<tr><th scope="row" class="named"><img src="../foundry/cardrpg/art/cards/twist/strain.webp" alt="" loading="lazy" decoding="async"><span><strong>Strain</strong></span></th><td>5</td><td>Cards. Discard 1 skill card of the GM's choice from your hand.</td></tr>
+<tr><th scope="row" class="named"><img src="../foundry/cardrpg/art/cards/twist/hurt.webp" alt="" loading="lazy" decoding="async"><span><strong>Hurt</strong></span></th><td>3</td><td>Health. Lose 2 Health, or gain a condition that fits.</td></tr>
+<tr><th scope="row" class="named"><img src="../foundry/cardrpg/art/cards/twist/arrival.webp" alt="" loading="lazy" decoding="async"><span><strong>Arrival</strong></span></th><td>4</td><td>Someone new. A third party walks into the scene.</td></tr>
+<tr><th scope="row" class="named"><img src="../foundry/cardrpg/art/cards/twist/secret.webp" alt="" loading="lazy" decoding="async"><span><strong>Secret</strong></span></th><td>2</td><td>Information, in either direction. You learn something unwelcome, or they learn something about you.</td></tr>
+<tr><th scope="row" class="named"><img src="../foundry/cardrpg/art/cards/twist/opening.webp" alt="" loading="lazy" decoding="async"><span><strong>Opening</strong></span></th><td>4</td><td>Nothing, this one gives. The complication also creates an opportunity.</td></tr>
 </tbody></table></div>
 <p>That is <strong>30</strong> cards.</p>
 <h3 id="the-ritual-twist-deck">The ritual twist deck</h3>
@@ -509,16 +510,16 @@
 <div class="scroller"><table>
 <thead><tr><th>Card</th><th>What it is</th><th>Primary</th><th>Secondary</th><th>Reaction</th><th>Copies</th></tr></thead>
 <tbody>
-<tr><th scope="row"><strong>Knife Work</strong></th><td>Close, quick and unremarkable, which is the whole idea.</td><td>Strike</td><td>Move 1</td><td>Parry</td><td>3</td></tr>
-<tr><th scope="row"><strong>Open Vein</strong></th><td>Not a killing blow. A bleeding one, which does its work later.</td><td>Strike +1</td><td>Move 1</td><td>–</td><td>2</td></tr>
-<tr><th scope="row"><strong>Slip In</strong></th><td>Cross the gap along the wall and arrive beside them.</td><td>Move 2, then Strike</td><td>Move 1</td><td>–</td><td>1</td></tr>
-<tr><th scope="row"><strong>Shed the Blow</strong></th><td>Turn with it rather than against it, and be elsewhere afterwards.</td><td>Block 2</td><td>Move 2</td><td>Sidestep</td><td>2</td></tr>
-<tr><th scope="row"><strong>Quick Step</strong></th><td>Three squares before anybody has decided you were worth watching.</td><td>Move 3</td><td>Move 2</td><td>Sidestep</td><td>2</td></tr>
-<tr><th scope="row"><strong>Draw the Knife</strong></th><td>Something sharp is out before the other hand has found the next one.</td><td>Strike</td><td>Ready</td><td>–</td><td>2</td></tr>
-<tr><th scope="row"><strong>Light Fingers</strong></th><td>Use it without being seen to use it.</td><td>Use</td><td>Ready</td><td>Use</td><td>1</td></tr>
-<tr><th scope="row"><strong>Bind the Wound</strong></th><td>Press the cloth hard and keep moving.</td><td>Heal 2</td><td>Use</td><td>–</td><td>1</td></tr>
-<tr><th scope="row"><strong>Jeer</strong></th><td>A word in the right place, and they lose the thread of what they were doing.</td><td>→ dazed (1)</td><td>Move 1</td><td>–</td><td>1</td></tr>
-<tr><th scope="row"><strong>Off Hand</strong></th><td>The second blade comes out and goes to work.</td><td>Ready</td><td>Strike</td><td>–</td><td>1</td></tr>
+<tr><th scope="row" class="named"><img src="../foundry/cardrpg/art/cards/shade-starter/knife-work.webp" alt="" loading="lazy" decoding="async"><span><strong>Knife Work</strong></span></th><td>Close, quick and unremarkable, which is the whole idea.</td><td>Strike</td><td>Move 1</td><td>Parry</td><td>3</td></tr>
+<tr><th scope="row" class="named"><img src="../foundry/cardrpg/art/cards/shade-starter/open-vein.webp" alt="" loading="lazy" decoding="async"><span><strong>Open Vein</strong></span></th><td>Not a killing blow. A bleeding one, which does its work later.</td><td>Strike +1</td><td>Move 1</td><td>–</td><td>2</td></tr>
+<tr><th scope="row" class="named"><img src="../foundry/cardrpg/art/cards/shade-starter/slip-in.webp" alt="" loading="lazy" decoding="async"><span><strong>Slip In</strong></span></th><td>Cross the gap along the wall and arrive beside them.</td><td>Move 2, then Strike</td><td>Move 1</td><td>–</td><td>1</td></tr>
+<tr><th scope="row" class="named"><img src="../foundry/cardrpg/art/cards/shade-starter/shed-the-blow.webp" alt="" loading="lazy" decoding="async"><span><strong>Shed the Blow</strong></span></th><td>Turn with it rather than against it, and be elsewhere afterwards.</td><td>Block 2</td><td>Move 2</td><td>Sidestep</td><td>2</td></tr>
+<tr><th scope="row" class="named"><img src="../foundry/cardrpg/art/cards/shade-starter/quick-step.webp" alt="" loading="lazy" decoding="async"><span><strong>Quick Step</strong></span></th><td>Three squares before anybody has decided you were worth watching.</td><td>Move 3</td><td>Move 2</td><td>Sidestep</td><td>2</td></tr>
+<tr><th scope="row" class="named"><img src="../foundry/cardrpg/art/cards/shade-starter/draw-the-knife.webp" alt="" loading="lazy" decoding="async"><span><strong>Draw the Knife</strong></span></th><td>Something sharp is out before the other hand has found the next one.</td><td>Strike</td><td>Ready</td><td>–</td><td>2</td></tr>
+<tr><th scope="row" class="named"><img src="../foundry/cardrpg/art/cards/shade-starter/light-fingers.webp" alt="" loading="lazy" decoding="async"><span><strong>Light Fingers</strong></span></th><td>Use it without being seen to use it.</td><td>Use</td><td>Ready</td><td>Use</td><td>1</td></tr>
+<tr><th scope="row" class="named"><img src="../foundry/cardrpg/art/cards/shade-starter/bind-the-wound.webp" alt="" loading="lazy" decoding="async"><span><strong>Bind the Wound</strong></span></th><td>Press the cloth hard and keep moving.</td><td>Heal 2</td><td>Use</td><td>–</td><td>1</td></tr>
+<tr><th scope="row" class="named"><img src="../foundry/cardrpg/art/cards/shade-starter/jeer.webp" alt="" loading="lazy" decoding="async"><span><strong>Jeer</strong></span></th><td>A word in the right place, and they lose the thread of what they were doing.</td><td>→ dazed (1)</td><td>Move 1</td><td>–</td><td>1</td></tr>
+<tr><th scope="row" class="named"><img src="../foundry/cardrpg/art/cards/shade-starter/off-hand.webp" alt="" loading="lazy" decoding="async"><span><strong>Off Hand</strong></span></th><td>The second blade comes out and goes to work.</td><td>Ready</td><td>Strike</td><td>–</td><td>1</td></tr>
 </tbody></table></div>
 <h3 id="the-common-pool-which-any-way-may-draw-from">The common pool, which any Way may draw from</h3>
 <div class="scroller"><table>
@@ -606,7 +607,7 @@
 <tbody>
 <tr><th scope="row" class="named"><img src="../foundry/cardrpg/art/spells/faith/bear-it-for-them.webp" alt="" loading="lazy" decoding="async"><span><strong>Bear It for Them</strong></span></th><td>You take what is on them onto yourself, entire. <em>Whatever is on them is on you instead, at its full duration. The Spirit's priests are the only ones who can do this and the only ones who would.</em></td><td>–</td><td>–</td><td>Mend</td><td>1</td></tr>
 <tr><th scope="row" class="named"><img src="../foundry/cardrpg/art/spells/faith/the-turning-tide.webp" alt="" loading="lazy" decoding="async"><span><strong>The Turning Tide</strong></span></th><td>The sea is not fair, and today it is not fair to them. <em>The sea is not fair. They draw again and must keep the second card, and a Miss joins your own deck for having asked.</em></td><td>–</td><td>–</td><td>Mend</td><td>1</td></tr>
-<tr><th scope="row" class="named"><img src="../foundry/cardrpg/art/spells/faith/the-close-work.webp" alt="" loading="lazy" decoding="async"><span><strong>The Close Work</strong></span></th><td>You move his arm, and the man behind him takes it. <em>You move his arm. The man behind him takes it, and neither of them understands what happened.</em></td><td>–</td><td>–</td><td>Parry</td><td>1</td></tr>
+<tr><th scope="row" class="named"><img src="../foundry/cardrpg/art/spells/faith/the-close-work.webp" alt="" loading="lazy" decoding="async"><span><strong>The Close Work</strong></span></th><td>You move his arm, and the man behind him takes it. <em>You move his arm. The man behind him takes it, and neither of them understands what happened.</em></td><td>–</td><td>–</td><td>Deflect</td><td>1</td></tr>
 <tr><th scope="row" class="named"><img src="../foundry/cardrpg/art/signatures/faith/breath-of-the-spirit.webp" alt="" loading="lazy" decoding="async"><span><strong>Breath of the Spirit</strong></span></th><td>Help arrives through the air, from anywhere you can be heard. <em>Reaction: heal an ally 3, at any range, ignoring cover. The spirit drifts through all the air, so distance is not a question for it.</em></td><td>–</td><td>–</td><td>Mend</td><td>1</td></tr>
 <tr><th scope="row" class="named"><img src="../foundry/cardrpg/art/signatures/faith/the-writ.webp" alt="" loading="lazy" decoding="async"><span><strong>The Writ</strong></span></th><td>Named at range, with no appeal, and the whole field may act on it. <em>No save, at range 6. Being named is not something you resist, and the whole field may act on it.</em></td><td>at range 6 → judged (2)</td><td>Move 1</td><td>–</td><td>1</td></tr>
 <tr><th scope="row" class="named"><img src="../foundry/cardrpg/art/signatures/faith/the-orders-shield.webp" alt="" loading="lazy" decoding="async"><span><strong>The Order's Shield</strong></span></th><td>The guard goes to somebody else, and never to you. <em>The Block goes to an adjacent ally and never to you. The order does not defend itself.</em></td><td>Defend, then Block 2 at range 1</td><td>Block 1 at range 1</td><td>Block</td><td>1</td></tr>

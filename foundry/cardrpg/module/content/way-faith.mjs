@@ -658,7 +658,7 @@ export const FAITH_POOL = [
    */
   {
     name: "The Close Work", strength: 2, pool: "faith", source: "The Grey",
-    reaction: "parry",
+    reaction: "deflect",
     needs: ["an enemy that attacks its own side"],
     description: "<p>You move his arm. The man behind him takes it, and neither of them "
       + "understands what happened.</p>",
