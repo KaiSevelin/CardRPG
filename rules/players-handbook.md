@@ -64,6 +64,35 @@ death. A month later the Horde came through the gap, and the district fell.
 That is the arithmetic you live in. Five districts and some twenty enclaves, a thousand years of it,
 and rumour this year says the Horde is close to getting through a ring that still holds.
 
+### The shape of it
+
+One continent, and you can hold the whole of it in your head.
+
+**The middle is a plain**, ringed by the **Spear Mountains**, and the oldest of the safe places sits
+inside them. **West** is coast and islands, cold and wet, and that is where the fishing is.
+**South-east** is rolling hills, warm, and that is where the wine is. **South** is the **Hyena
+Desert**, with the mineral-rich **Mouse Mountains** standing over its northern edge. **East**, and
+furthest from everything, is forest: dense wet conifer, lakes and bogs, with trolls in it and
+dragons over it. The **north-east** was the workshop of the continent until it fell, and the roads
+that ran through it are the ones nobody uses any more.
+
+**It is three layers, and you will travel in all of them.**
+
+- **Inside the rings.** Five districts and some twenty enclaves. Safe, because the blood magic says
+  so, and paid for every year in people.
+- **Outside them.** Everything else, which is the Horde's. The roads between safe places are
+  strangled and the caravans that leave are hunted, so open country is crossed only by those who
+  have decided the crossing is worth it.
+- **Underneath.** The tunnels, dug so that one safe place could reach another, with underground
+  cities and harbour villages strung along the named roads. Parts have been forgotten, parts have
+  been taken by monsters, landslides have let the Horde into others, and here and there the digging
+  broke into elven ruins. Below even that is the underworld, which has its own occupants and does
+  not want visitors.
+
+**So distance is not measured in miles.** It is measured in whether there is a road, whether the
+road is still open, and what it costs to go anyway. Two towns a week apart by tunnel can be
+neighbours, and two a day apart overland can be unreachable.
+
 ### The five districts that are left
 
 **The First.** Inland, on the plain inside the Spear Mountains. It protects **Geistburg**, Athor's old
@@ -339,7 +368,7 @@ one.
 | **Strike** ⚔ | Attack with an equipped weapon. |
 | **Cast** ✦ | Cast a prepared spell. |
 | **Defend** 🛡 | Gain Block. |
-| **Use** | Use an equipped item. |
+| **Use** 🧪 | Use an equipped item. |
 | **Move** 👣 | Move that many squares. |
 | **Ready** ⇄ | Equip or swap one item. |
 
@@ -1009,8 +1038,14 @@ do not hold them: they are simply true once the node is yours.
 
 ## 16. Items
 
-Everything in the catalogue, by kind. **Slot** is where it has to sit to be used, and a weapon's
-hands are in brackets. **Weight** counts against your 40 kg limit. **Gold** is what it costs.
+What you can walk into a town and buy, by kind. **Slot** is where it has to sit to be used, and a
+weapon's hands are in brackets. **Weight** counts against your 40 kg limit. **Gold** is what it
+costs.
+
+**Magical gear is not here, and that is deliberate.** A staff, a wand, an enchanted ring, a brewed
+potion, a poison, a named blade: those are things the GM hands you, not things you choose off a
+page. You will know one when you are holding it. What is listed is the kit, and the kit is most of
+what you will ever carry.
 
 <!-- generated: items -->
 
@@ -1038,13 +1073,6 @@ hands are in brackets. **Weight** counts against your 40 kg limit. **Gold** is w
 | **Matchlock Pistol** | hands (1h) | 1 | 70 | Strike 3 (ignores 2 armor; Ready to reload) | One hand, so it goes beside a sword. A brace of them is two shots before a reload. |
 | **Arquebus** | hands (2h) | 4 | 90 | Strike 5 (ignores 2 armor; Ready to reload) | Loud, slow, and it does not care what you are wearing. |
 | **Matchlock Musket** | hands (2h) | 5 | 150 | Strike 6 (ignores 2 armor; Ready to reload) | A rest to fire it from and a minute to load it. Worth both. |
-
-### Implements
-
-| Item | Slot | Weight | Gold | What it does | What it is |
-|---|---|---|---|---|---|
-| **Staff of Healing** | hands (2h) | 2 | 0 | Strike 1, Cast 3 (Heal 3), Defend 1 | Pale wood, warm to the touch. |
-| **Fire Wand** | hands (1h) | 0 | 0 | Cast 2 | Blackened at the tip, and warm even unused. |
 
 ### Shields
 
@@ -1094,11 +1122,6 @@ hands are in brackets. **Weight** counts against your 40 kg limit. **Gold** is w
 |---|---|---|---|---|---|
 | **Pilgrim's Token** | neck | 0 | 3 | lore +1 (matters of one named faith) | Tin, stamped at a shrine. Worth nothing and proof of everything. |
 | **Holy Symbol** | hands (1h) | 0 | 10 | lore +1 (religion and undead) | Whose, and how openly, is the only question that matters in Firma. |
-| **Focus Pendant** | neck | 0 | 400 | Cast +1 | Jeweller's work. The stone is not the point; the setting is. |
-| **Ring of the Open Hand** | fingers | 0 | 600 | You may Cast without a free hand | Plain silver, worn thin. The gesture is already in it. |
-| **Reliquary Band** | fingers | 0 | 350 | Spell slots +1 | A splinter of someone's finger under glass. |
-| **Warden's Seal** | fingers | 0 | 500 | Defend +1 | A tower in relief, worn smooth by thumbs that are not yours. |
-| **Ring of Open Hands** | fingers | 0 | 0 | You may Cast without a free hand. Curse: You may never hold anything in your other hand again. Lifted by the jeweller who made it, who is dead | Almost the ring you were hoping for. |
 
 ### Makes
 
@@ -1122,59 +1145,6 @@ hands are in brackets. **Weight** counts against your 40 kg limit. **Gold** is w
 | **Hunting Traps** | pack | 4 | 15 | wits +2 (tracking and trapping animals) | Jaws and a stake. Patience, mostly. |
 | **Lantern** | hands (1h) | 2 | 5 | wits +1 (anything you need to see in the dark) | Horn panes and a tallow dip. The squares it lights are not shadowed. |
 | **The Kit** | pack | 3 | 0 | shadow +2 (every Hard physical obstacle counts as Normal) | A burglar's whole trade in a roll of canvas, and they never put it down. |
-
-### Potions
-
-| Item | Slot | Weight | Gold | What it does | What it is |
-|---|---|---|---|---|---|
-| **Tincture of the Clear Eye** | belt (1h) | 0 | 30 | Use 0 (Shake Off 1 on anything) | Cloudy, and it stings going down. |
-| **Potion of Stone** | belt (1h) | 0 | 40 | Use 0 (for the fight you cannot be moved -- and your Move is 0) | Grit in the bottom of the flask, and it settles in you the same way. |
-| **Brewer's Reserve** | belt (1h) | 0 | 45 | Use 0 (your next Cast is +2) | The brewer keeps a cask of it back and will not say what is in it. |
-| **Greater Healing Potion** | belt (1h) | 0 | 150 | Use 0 (Heal 8) | Twice the price of the ordinary sort and rather more than twice the work. |
-| **Potion of the Hare** | belt (1h) | 0 | 55 | Use 0 (for the fight your Move values are +2) | It tastes of running, which is not a taste anyone can describe. |
-| **Potion of the Bear** | belt (1h) | 0 | 60 | Use 0 (for the scene, carry +20 kg and Might +2) | Thick as honey. You will want both hands to lift the bottle. |
-| **Philtre of Borrowed Courage** | belt (1h) | 0 | 65 | Use 0 (for the fight you cannot be Compelled) | Somebody else's nerve, and they are not getting it back. |
-| **Potion of the Owl** | belt (1h) | 0 | 70 | Use 0 (for the fight no square is shadowed for you) | Your eyes do not change. What they are willing to see does. |
-| **Draught of Second Breath** | belt (1h) | 0 | 90 | Use 0 (Catch Breath without spending your turn) | One swallow and your lungs believe the fight has just started. |
-| **Potion of the Quick Hand** | belt (1h) | 0 | 110 | Use 0 (one extra reaction this round) | You will have put the bottle down before you remember drinking it. |
-| **Potion of Iron Skin** | belt (1h) | 0 | 120 | Use 0 (for the fight, armor +2) | It goes down like filings and sits there like a breastplate. |
-| **Elixir of the Long Night** | belt (1h) | 0 | 200 | Use 0 (+6 temporary Health; it fades at your next rest) | It lends. It is very clear about lending. |
-| **Grey Water** | belt (1h) | 0 | 5 | Use 0 (Nothing at all. It is water.) | Somebody corked it carefully, which is the cruellest part. |
-| **Philtre of the Loose Tongue** | belt (1h) | 0 | 15 | Use 0 (you must say what you intend before each of your turns) | You will mean to stop talking. |
-| **Draught of Lead** | belt (1h) | 0 | 20 | Use 0 (for the fight your Move is 0) | Heavier than it looks, and so are you now. |
-| **Oil of Mislaid Courage** | belt (1h) | 0 | 20 | Use 0 (for the fight you may play no reactions) | Whatever was going to make you flinch has been taken out. |
-| **Draught of the Hollow** | belt (1h) | 0 | 25 | Use 0 (for the fight your hand size is 1 lower) | It empties something you were not keeping track of. |
-| **Bottle of Borrowed Pain** | belt (1h) | 0 | 30 | Use 0 (Heal 4 -- and take 4 when the fight ends) | It does not heal you. It postpones you. |
-
-### Ammunitions
-
-| Item | Slot | Weight | Gold | What it does | What it is |
-|---|---|---|---|---|---|
-| **Blunt Head** | belt | 0 | 20 | Bow or crossbow. The target is Off-Balance (1). No save | No point at all, which is the point. |
-| **Bodkin Points** | belt | 0 | 25 | Bow or crossbow. Ignores 2 armor | A square spike, hardened. It is looking for a gap and will make one. |
-| **Hollow Bolt** | belt | 0 | 30 | Carries a potion. Crossbow. Carries one potion; whatever you hit drinks it | The shaft unscrews. A fiddly, brilliant, disreputable idea. |
-| **Screaming Shaft** | belt | 0 | 35 | Bow. Dazed (1), resist Presence 5 | Bored through so the air goes through it wrong. |
-| **Chalked Shaft** | belt | 0 | 40 | Bow or crossbow. The target is Marked (1). No save | It leaves a smear that everyone can see and nobody can wipe off. |
-| **Moth-wing Fletching** | belt | 0 | 40 | Ignores cover. Bow. This shot ignores cover entirely | It does not fly straight. It arrives anyway. |
-| **Oil-wrapped Shaft** | belt | 0 | 45 | Bow or crossbow. Burning 1 (2) | Tow and pitch below the head. Lit from the match in your teeth. |
-| **Net Bolt** | belt | 0 | 50 | Crossbow. Grappled (1), resist Might 5 | A folded net on a blunt head. It opens in the air. |
-| **Whistling Shaft** | belt | 0 | 55 | Bow. The target is Compelled (1) -- at you | Whoever it passes becomes very interested in who sent it. |
-| **Frost-dipped Bolt** | belt | 0 | 60 | Crossbow. Frozen 1 (1) | Cold enough that the quiver frosts around it. |
-| **Grapnel Bolt** | belt | 0 | 70 | Pulls you to the target. Crossbow. YOU are pulled to a square adjacent to the target | Barbed, with fifty feet of silk line. A bolt for closing. |
-| **Thunder-shot** | belt | 0 | 80 | Firearm only. The shot is Blast 1 on the target's square | A paper cartridge of scrap. Nothing else gives a non-caster an area. |
-| **Silvered Head** | belt | 0 | 90 | May target the Invisible. Bow or crossbow. You may target an Invisible enemy you have seen this fight | Silver remembers what it was aimed at. |
-
-### Poisons
-
-| Item | Slot | Weight | Gold | What it does | What it is |
-|---|---|---|---|---|---|
-| **Blade Venom** | belt | 0 | 40 | Apply with a Ready. Next Strike that hits: Poisoned 1 (2), resist Might 5 | Brewed from something that was already unpleasant. |
-| **Drowsing Oil** | belt | 0 | 50 | Apply with a Ready. Next Strike that hits: Dazed (2), resist Might 5 | It does not kill. It makes a man slow about objecting. |
-| **Weeping Resin** | belt | 0 | 60 | Apply with a Ready. Next Strike that hits: the target cannot be healed for 2 rounds. No save | The wound will not close while it is in there. |
-| **Serpent's Milk** | belt | 0 | 70 | Apply with a Ready. Next Strike that hits: Poisoned 0 (3) -- no damage, three rounds without a secondary | Milked, strained and kept cold. No damage in it at all. |
-| **Grave-cap Extract** | belt | 0 | 90 | Apply with a Ready. Next Strike that hits: Poisoned 2 (2), resist Might 7 | The cap grows on what is under the cairn, not on the cairn. |
-| **Assassin's Tincture** | belt | 0 | 120 | Apply with a Ready. Next Strike that hits: Poisoned 1 (2), beginning at the start of their next turn. No save | They finish the sentence they were saying. |
-| **Black Lotus** | belt | 0 | 250 | Apply with a Ready. Next Strike that hits: Poisoned 3 (2), resist Might 9 | Illegal in every district, which is how you know the price is right. |
 
 <!-- /generated: items -->
 

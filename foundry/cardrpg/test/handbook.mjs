@@ -151,26 +151,45 @@ function does(item) {
 }
 
 /**
- * **The two kinds a player's handbook does not print.**
+ * **What a player's handbook does not print, and why each one.**
  *
- * A Wonder and a Relic are treasure: the GM decides one exists and hands it over, and nothing in
- * either list is on a shelf anywhere. Printing all forty-eight with prices made the handbook a
- * catalogue of every magic item in the game, which spoils the only reward in it that is meant to
- * be a surprise, and invited a player to shop from a list nobody is selling from.
+ * The catalogue a player reads is the kit they can walk into a town and buy. Everything magical is
+ * the GM's to hand over, and printing it with a price did two bad things at once: it spoiled the
+ * only reward in the game meant to be a surprise, and it invited a player to shop from lists that
+ * nobody is selling from.
  *
- * **The three crafts stay**, and the line is drawn there on purpose: worldinfo/Firma.md names
- * smiths, jewellers and brewers as the makers of exceptional weapons, magical jewellery and
- * potions, so a Make, a Power and a Potion are **goods** with a maker and a price. A Wonder has
- * neither. Bought things belong in a player's catalogue however magical they are; found things
- * do not.
+ * **Kept as a keyed table with a reason apiece**, which is the same shape as the art directions and
+ * the card blurbs, and for the same reason: an editorial judgement is not derivable from the data,
+ * so writing it down where it can be read and argued with beats a rule that only looks principled.
+ * The suite imports both of these rather than copying them, and checks that every name is a real
+ * item and every kind a real kind, so a list cannot rot from either end.
  */
-const TREASURE = new Set(["Wonder", "Relic"]);
+export const GM_KINDS = {
+  Wonder: "treasure: the GM decides one exists, and nothing in the list is on a shelf anywhere",
+  Relic: "treasure, and usually the thing a whole campaign was driving at",
+  Implement: "a caster's staff or wand arrives with the node that teaches the casting, not from a shop",
+  Potion: "the brewer's magical stock. The plain Healing Potion is a Consumable and stays",
+  Ammunition: "the content's own heading for this block is *magical ammunition*",
+  Poison: "bought from somebody who does not advertise, and never off a list"
+};
+
+/** And the pieces of an otherwise ordinary kind that are magical anyway. */
+export const GM_ITEMS = {
+  /* Powers are the jeweller's craft, and five of the seven are magical jewellery. The two that
+   * stay are a tin pilgrim's token and a holy symbol, which are devotional objects a priest needs
+   * on the first day and which cost three and ten gold. */
+  "Focus Pendant": "raises every Cast, which nothing else in a shop does",
+  "Ring of the Open Hand": "answers a rule rather than a number: casting without a free hand",
+  "Reliquary Band": "a spell slot, which is the one thing no amount of money should buy",
+  "Warden's Seal": "a standing bonus to Defend, worn on a finger",
+  "Ring of Open Hands": "cursed, and the curse is the point of finding it rather than buying it"
+};
 
 function itemChapter() {
-  const kinds = [...new Set(ITEMS.map(i => i.kind))].filter(k => !TREASURE.has(k));
+  const kinds = [...new Set(ITEMS.map(i => i.kind))].filter(k => !(k in GM_KINDS));
   const out = [];
   for (const kind of kinds) {
-    const rows = ITEMS.filter(i => i.kind === kind);
+    const rows = ITEMS.filter(i => i.kind === kind && !(i.name in GM_ITEMS));
     out.push(`### ${kind}${rows.length === 1 ? "" : "s"}`, "");
     out.push("| Item | Slot | Weight | Gold | What it does | What it is |",
       "|---|---|---|---|---|---|");
@@ -351,10 +370,10 @@ if (process.argv[1] && process.argv[1].endsWith("handbook.mjs")) {
   const before = fs.readFileSync(OUT, "utf8");
   const after = fill(before);
   fs.writeFileSync(OUT, after, "utf8");
-  /* Counted off what was WRITTEN, not off the content: the item chapter leaves the treasure out,
-   * and a summary reading `ITEMS.length` would have claimed 150 rows while printing 102. */
+  /* Counted off what was WRITTEN, not off the content: the item chapter leaves the magical gear
+   * out, and a summary reading `ITEMS.length` would have claimed 150 rows while printing 57. */
   const rows = name => CHAPTERS[name]().filter(l => l.startsWith("| **")).length;
   console.log(`wrote the handbook's reference chapters: ${rows("actions")} action cards, `
-    + `${rows("items")} of ${ITEMS.length} items (treasure left out), ${rows("features")} features, `
-    + `${rows("spells")} spells, ${rows("twists")} twists`);
+    + `${rows("items")} of ${ITEMS.length} items (the magical gear is the GM's), `
+    + `${rows("features")} features, ${rows("spells")} spells, ${rows("twists")} twists`);
 }

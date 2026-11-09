@@ -7293,20 +7293,37 @@ const handbookChapter = name => handbook
 const handbookRows = name => handbookChapter(name).split("\n").filter(l => l.startsWith("| **"));
 
 /*
- * **Treasure is not in a player's catalogue.** A Wonder and a Relic are handed over by the GM and
- * are on no shelf anywhere, so printing all forty-eight with prices made the handbook a list of
- * every magic item in the game. The three crafts stay: a Make, a Power and a Potion have a maker
- * and a price, and a bought thing belongs in a player's catalogue however magical it is.
+ * **The magical gear is the GM's, and the catalogue is the kit a player can buy.**
+ *
+ * Printing every Wonder and Relic with a price made the handbook a list of every magic item in the
+ * game, which spoils the only reward meant to be a surprise. The same argument then took the
+ * implements, the potions, the ammunition the content itself calls magical, the poisons, and the
+ * five Powers that are magical jewellery rather than a priest's tin token.
+ *
+ * **The policy is imported rather than restated here.** It is an editorial judgement, not something
+ * derivable from the data, so it lives as a keyed table in the generator with a reason apiece and
+ * this checks that table against the content: a name that no longer matches an item, or a kind that
+ * no longer exists, is a list that has rotted at one end while still looking like a policy.
  */
-const TREASURE_KINDS = ["Wonder", "Relic"];
-const forSale = content.ITEMS.filter(i => !TREASURE_KINDS.includes(i.kind));
+const { GM_KINDS, GM_ITEMS } = await import("./handbook.mjs");
+const isGMs = i => (i.kind in GM_KINDS) || (i.name in GM_ITEMS);
+const forSale = content.ITEMS.filter(i => !isGMs(i));
 check("items the handbook's catalogue lists", handbookRows("items").length, forSale.length);
-check("and none of the treasure is in it",
-  content.ITEMS.filter(i => TREASURE_KINDS.includes(i.kind))
+check("and none of the GM's gear is in it",
+  content.ITEMS.filter(isGMs)
     .filter(i => handbookChapter("items").includes(`| **${i.name}**`)).map(i => i.name).join(", ")
   || "none", "none");
-check("and the catalogue is still most of the game",
-  forSale.length > content.ITEMS.length / 2 ? "yes" : "no", "yes");
+/* Both ends of both tables, because a keyed list rots from both. */
+check("names withheld that match no item",
+  Object.keys(GM_ITEMS).filter(n => !content.ITEMS.some(i => i.name === n)).join(", ") || "none",
+  "none");
+check("and kinds withheld that no item has",
+  Object.keys(GM_KINDS).filter(k => !content.ITEMS.some(i => i.kind === k)).join(", ") || "none",
+  "none");
+/* A reason apiece, so the next person can argue with the judgement rather than guess at it. */
+check("entries withheld without a stated reason",
+  [...Object.entries(GM_KINDS), ...Object.entries(GM_ITEMS)]
+    .filter(([, why]) => !why || why.length < 20).map(([k]) => k).join(", ") || "none", "none");
 
 /*
  * **[FOUND 2026-11-09] Every row says what the item does, and sixty of them did not.**
@@ -7405,6 +7422,19 @@ check("native place names left in the handbook",
 check("and the English ones are all present",
   ["Black Harbour", "Kelp Bay", "Wolf Peak", "Mander Cliff"]
     .filter(n => handbook.includes(n)).length, 4);
+
+/*
+ * **Every verb in the six-verb table carries its glyph, and Use carried none.**
+ *
+ * Five of the six were given one when the table was written and `Use` was missed, which read as
+ * though Use were a lesser verb rather than one of the six. Config gives each verb an icon name
+ * for the tray (`use: potion-ball`) and the handbook picks a glyph to match, so the two cannot be
+ * compared directly; what is checked is that no row is bare, which is the thing that went wrong.
+ */
+const verbRows = [...handbookProse.matchAll(/^\| \*\*(Strike|Cast|Defend|Use|Move|Ready)\*\*([^|]*)\|/gm)];
+check("verbs the six-verb table lists", verbRows.length, Object.keys(CARDRPG.verbs).length);
+check("and any of them printed without a glyph",
+  verbRows.filter(m => !/[^ -]/.test(m[2])).map(m => m[1]).join(", ") || "none", "none");
 
 /*
  * **[FOUND 2026-11-09] A twist was the one thing a player meets that the handbook never named.**
