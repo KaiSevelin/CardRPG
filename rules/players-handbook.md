@@ -311,14 +311,13 @@ decks you draw from, and that is the whole of what makes them frightening.
 
 ## 2. Your action cards
 
-```
-┌───────────────────────────┐
-│ HEAVY SWING               │
-│ ▲ Primary:   Strike +1    │
-│ ▼ Secondary: Move 1       │
-│ ⚡ Reaction:  Parry        │
-└───────────────────────────┘
-```
+A card carries three lines, and *Heavy Swing* has all three:
+
+| | |
+|---|---|
+| **Primary** | Strike +1 |
+| **Secondary** | Move 1 |
+| **Reaction** | Parry |
 
 - **Primary**, the strong half. Your main action.
 - **Secondary**, the weak half. Your second action.

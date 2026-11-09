@@ -7339,6 +7339,31 @@ check("citations of the rules documents left in the handbook",
     .join(", ") || "none", "none");
 
 /*
+ * **The handbook's house style, which until now only a person's grep enforced.**
+ *
+ * Four constraints have been stated about this document and none of them was checked, so each one
+ * held exactly as long as somebody remembered it. Every one of the four has already been broken at
+ * least once by content flowing into a generated chapter, which is the case a pin exists for: the
+ * prose is written by hand and reviewed, and the three hundred generated rows are not.
+ *
+ * - **No em dashes.** The stated reason is that they read as machine-written. They arrived twice,
+ *   once from two cards' `text` and once from the generator's own substitution leaving `" , "`.
+ * - **No "slate".** It is this project's internal word for a card that is kept rather than drawn.
+ *   For a player everything is a card, and some are simply not shuffled.
+ * - **No fenced blocks or box-drawing art.** The one card diagram was twenty-seven dashes of
+ *   `U+2500` in a monospace fence, which survives a terminal and not a paste into a document: the
+ *   handbook is read in a word processor as often as in a repository, and a table carries the same
+ *   three lines in a form that travels.
+ * - And no citation of a rules document, pinned directly above.
+ */
+check("em dashes in the handbook", (handbook.match(/\u2014|&mdash;/g) ?? []).length, 0);
+check("and the internal word for a kept card", (handbook.match(/\bslates?\b/gi) ?? []).length, 0);
+check("and fenced blocks, which do not survive a paste",
+  (handbook.match(/```/g) ?? []).length, 0);
+check("and box-drawing art, for the same reason",
+  (handbook.match(/[\u2500-\u257F]/g) ?? []).length, 0);
+
+/*
  * **[FOUND 2026-11-09] A twist was the one thing a player meets that the handbook never named.**
  *
  * The word appeared nowhere in it, while the *Surveyor's Chain* in its own items chapter promised
