@@ -1,12 +1,11 @@
 # Player's Handbook
 
 Everything you need to play a character. Nothing here is for the GM, and nothing here explains why
-a rule is the way it is — the reasoning lives in [core-rules.md](core-rules.md) and the documents
-beside it, and you never need it at the table.
+a rule is the way it is. You never need that at the table.
 
 **The short version.** You have a deck of cards that is both your abilities and your stamina. Each
 turn you play two of them. When you attack, you draw one card of luck. When you run out of cards,
-you are exhausted — not because you were hurt, but because you have been fighting.
+you are exhausted, not because you were hurt, but because you have been fighting.
 
 ---
 
@@ -16,22 +15,26 @@ you are exhausted — not because you were hurt, but because you have been fight
 |---|---|
 | **Action deck** | 12–20 cards. What your character can *do* in a fight, and how long they can keep doing it. |
 | **Skill deck** | About 15 cards. What your character can *attempt* outside a fight. |
-| **Fate deck** | 20 cards. Your luck. Shared by nothing — it is yours. |
-| **Item slates** | Everything you own, laid face up. Only **equipped** items can be used. |
-| **Feature slates** | Permanent traits: *Strong*, *Tough*, *Good Aim*. |
+| **Fate deck** | 20 cards. Your luck, and nobody else's. |
+| **Item cards** | Everything you own, laid face up. Only **equipped** items can be used. |
+| **Feature cards** | Permanent traits: *Strong*, *Tough*, *Good Aim*. |
 | **Health** | At 0 you are down. |
 | **Conditions** | Temporary effects with a number counting down. |
 
-### Cards and slates are different things
+### Two kinds of card
 
-Everything is printed the same size, so two words keep them apart.
+Everything in this game is a card. What tells them apart is whether they move.
 
-- A **card** lives in a deck. It is shuffled, drawn, played and discarded.
-- A **slate** lies face up in front of you. It is never shuffled and never drawn.
+- Cards that **live in a deck** are shuffled, drawn, played and discarded. Your action cards, your
+  skill cards, your fate cards.
+- Cards that **lie face up in front of you** are never shuffled and never drawn. Your items, your
+  features, your injuries. They are simply there, and they stay there.
 
-A slate can still be *spent* — a one-use item is gone after you use it — but it never enters a deck.
-The exceptions worth knowing: **Wounds** and **Taint** are cards, and they really are shuffled into
-your decks.
+A card in front of you can still be **spent**. A one-use item is gone once you use it. What it never
+does is go into a deck.
+
+Watch for the two that cross over: **Wounds** and **Taint** really are shuffled into your decks, and
+that is the whole of what makes them frightening.
 
 ---
 
@@ -46,16 +49,16 @@ your decks.
 └───────────────────────────┘
 ```
 
-- **Primary** — the strong half. Your main action.
-- **Secondary** — the weak half. Your second action.
-- **Reaction** — what the card does on somebody else's turn.
+- **Primary**, the strong half. Your main action.
+- **Secondary**, the weak half. Your second action.
+- **Reaction**, what the card does on somebody else's turn.
 
 **You can never use both halves of the same card.** A turn is one card's primary and a *different*
 card's secondary.
 
 Any card whose reaction cannot fire is still a **Brace: reduce incoming damage by 1**. That is
 deliberately too little to be worth spending a good card on. Its purpose is that no card in your
-hand is ever completely dead, and it matters exactly once — the hit that would have killed you, by
+hand is ever completely dead, and it matters exactly once, the hit that would have killed you, by
 one.
 
 ### The six verbs
@@ -73,8 +76,8 @@ one.
 
 ## 3. A round
 
-1. Everyone draws one fate card for initiative, once per fight. **Highest acts first** — Miss is
-   lowest, Critical highest — and ties are redrawn until the order settles. The order then holds for
+1. Everyone draws one fate card for initiative, once per fight. **Highest acts first** (Miss is
+   lowest, Critical highest), and ties are redrawn until the order settles. The order then holds for
    the whole fight.
 2. The GM draws one intent card per kind of enemy, face down.
 3. Each character takes a turn in order.
@@ -86,7 +89,7 @@ one.
 - Both go to your discard pile.
 - The rest of your hand stays in front of you, ready to react.
 
-Two attacks in one turn are legal if they come from two different cards — a Strike primary plus a
+Two attacks in one turn are legal if they come from two different cards, a Strike primary plus a
 card that has Strike on its secondary. Those cards are rare, and they are earned by levelling.
 
 ---
@@ -103,7 +106,7 @@ There are two triggers:
 | **You are hit** | Parry, Block, Brace, Use |
 | **An enemy ends its move next to you** | Sidestep, Counter |
 
-A reaction fires when the hit is **serious** — when it would deal a Wound (5 or more past armour) or
+A reaction fires when the hit is **serious**, when it would deal a Wound (5 or more past armour) or
 drop you to 0. A scratch is a scratch, and a hand spent on scratches is a hand you do not have when
 the real blow lands.
 
@@ -118,7 +121,7 @@ Three things are always true:
 ### Turning a card sideways
 
 **A card turned sideways will not react.** That is the whole of the decision, and you take it in
-advance, at leisure — not in the half-second after the dice would have landed in another game.
+advance, at leisure, not in the half-second after the dice would have landed in another game.
 
 ---
 
@@ -126,12 +129,12 @@ advance, at leisure — not in the half-second after the dice would have landed 
 
 Always in this order:
 
-1. **Base value** — the item's line for the verb. A Longsword's Strike is 3.
-2. **Card modifier** — the bonus printed on the action card. *Strike +1.*
-3. **Features** — permanent modifiers. *Strong: +1 on Strike with Heavy items.*
-4. **Conditions** — temporary modifiers, on you or on the target.
-5. **Fate** — draw one card from your fate deck and apply it.
-6. **Their defences** — subtract **armour**, then **Block**. Never below 0.
+1. **Base value**, the item's line for the verb. A Longsword's Strike is 3.
+2. **Card modifier**, the bonus printed on the action card. *Strike +1.*
+3. **Features**, permanent modifiers. *Strong: +1 on Strike with Heavy items.*
+4. **Conditions**, temporary modifiers on you or on the target.
+5. **Fate**, draw one card from your fate deck and apply it.
+6. **Their defences**, subtract **armour**, then **Block**. Never below 0.
 
 **Fate is drawn for damage and healing only.** Move, Ready and Defend never draw fate.
 
@@ -140,7 +143,7 @@ applies the same answer to all of them.
 
 ### Bonuses do not stack from the same kind of source
 
-Every slate that grants a numeric bonus belongs to one of seven groups: **Body, Training, Tool,
+Every card that grants a numeric bonus belongs to one of seven groups: **Body, Training, Tool,
 Make, Power, Station, Wonder.** One action takes **at most one bonus from each group**. Muscle and a
 tool stack; two kinds of muscle do not.
 
@@ -171,15 +174,15 @@ deck from a fresh one, and you can see that coming. It reshuffles on a Miss or a
 
 ### The critical deck
 
-A Critical on an attack draws one card from the critical deck — twelve cards, shared by the whole
+A Critical on an attack draws one card from the critical deck: twelve cards, shared by the whole
 table, read out face up.
 
 | Face | Copies | What it does |
 |---|---|---|
 | **Through and Through** | 4 | Double the damage. |
-| **Find the Gap** | 2 | **Exposed** — their armour counts 0 until the end of your next turn. Not this hit, and not doubled. |
-| **Off the Feet** | 2 | **Off-Balance** — their Block counts 0 until the end of your next turn, and it is an opening. Not this hit, and not doubled. |
-| **Driven Down** | 1 | **Halted** — their next turn does not happen. Not doubled. |
+| **Find the Gap** | 2 | **Exposed**, their armour counts 0 until the end of your next turn. Not this hit, and not doubled. |
+| **Off the Feet** | 2 | **Off-Balance**, their Block counts 0 until the end of your next turn, and it is an opening. Not this hit, and not doubled. |
+| **Driven Down** | 1 | **Halted**, their next turn does not happen. Not doubled. |
 | **Stove In** | 1 | Their armour is one point worse until it is repaired. Permanent. Not doubled. |
 | **Turn the Edge** | 1 | Their weapon strikes for one less until it is repaired. Permanent. Not doubled. |
 | **Both** | 1 | Draw two others and take both. |
@@ -200,7 +203,7 @@ A Critical always gets **at least one point** through, however well armoured the
 | **Secondary** | Against the **next** attack only |
 | **Reaction** | Against the attack that triggered it |
 
-Blocks from different sources do not stack — **use the highest**, and that source's duration is the
+Blocks from different sources do not stack. **Use the highest**, and that source's duration is the
 one that applies, so a Defend secondary played behind a Defend primary never shortens the stance you
 already had.
 
@@ -209,7 +212,7 @@ They are different things and a card says which: a bodkin finds a gap in plate, 
 in answer does not care.
 
 **Damaged gear.** Corrode takes points off armour; Blunt takes points off what a weapon strikes for.
-Both are permanent until repaired, both stop at 0, and **neither destroys anything** — armour at 0
+Both are permanent until repaired, both stop at 0, and **neither destroys anything**. Armour at 0
 is still armour and still repairable. Repair is an action: a **Lore check** with the right tools. A
 Critical puts back 2, a Success 1, a Partial nothing and the time is gone.
 
@@ -217,7 +220,7 @@ Critical puts back 2, a Success 1, a Partial nothing and the time is gone.
 
 ## 8. Conditions
 
-A condition is a token with a number — its duration. It remembers who created it, and it runs out at
+A condition is a token with a number, its duration. It remembers who created it, and it runs out at
 the **end of that creature's next turn**. So a condition you inflict lasts through your own next
 turn, and you can use it.
 
@@ -242,8 +245,8 @@ turn, and you can use it.
 | **Burdened / Overloaded** | See *Carrying*. |
 | **Unconscious** | At 0 Health. No turns, no reactions, Prone. |
 
-**Shake Off** spends a condition's duration rather than waiting for it. **Openings** — Wet,
-Off-Balance, Marked, Judged — do nothing by themselves; they exist for other cards to key off, and
+**Shake Off** spends a condition's duration rather than waiting for it. **Openings** (Wet,
+Off-Balance, Marked and Judged) do nothing by themselves; they exist for other cards to key off, and
 they cannot be shaken off.
 
 ---
@@ -281,7 +284,7 @@ your bonuses, and draw fate.
 | **Partial** | 1–4 below | You do it, **but** it costs something. |
 | **Fail** | 5 or more below, or a Miss | You don't, **and** the situation changes. |
 
-A Critical comes off the card, so a Critical that still falls short is a success with a bonus — not a
+A Critical comes off the card, so a Critical that still falls short is a success with a bonus, not a
 near miss. A Miss is a Fail however high the total was.
 
 **Tools** help the approach they name. An **untrained** user gets at most +1 from a tool however good
@@ -291,11 +294,11 @@ it is; training is what unlocks the rest, and training comes from levelling.
 
 ## 10. Running out
 
-Your action deck is your stamina. You do not run out of spells — you run out of deck.
+Your action deck is your stamina. You do not run out of spells. You run out of deck.
 
 - **Exhausted**: if you cannot refill to at least **2 cards** because your draw pile is empty, you
   are Exhausted. You may play only **one** card a turn, and you cannot react.
-- **Catch Breath**: spend your whole turn — no cards played — to shuffle your discard and move **2
+- **Catch Breath**: spend your whole turn, no cards played, to shuffle your discard and move **2
   cards at random** back into your draw pile. You need 2 in the discard or you cannot do it, and you
   do not choose which.
 
@@ -308,7 +311,7 @@ to get back on top. The discard always comes back, so what a breath costs is the
 drop to **0 Health**.
 
 A Wound is a card. It goes into your action discard and comes back around like any other. When you
-draw one it takes a slot in your hand, cannot be played — not even for Brace — and is discarded at
+draw one it takes a slot in your hand, cannot be played, not even for Brace, and is discarded at
 the end of your turn. Wounds stay between fights.
 
 Removing one: a long rest takes off 1; a **Lore check (Normal 5)** with a Healer's Kit takes off 1,
@@ -331,14 +334,14 @@ Both need a safe place.
 | **Limit** | Costs a rest token | Once a day |
 | **Action deck** | Spent cards return | Spent cards return |
 | **Skill deck** | Discard and Spent shuffle back in | Same |
-| **Rest tokens** | — | Regain all |
+| **Rest tokens** | | Regain all |
 | **Health** | Heal 1 | Heal 5 |
-| **Wounds** | — | Remove 1 |
+| **Wounds** | | Remove 1 |
 
 You start with **one rest token**. More come from levelling.
 
 **After a fight**, shuffle your hand and discard back into your action deck. **Spent cards stay
-out** — several fights without rest wear you down.
+out.** Several fights without rest wear you down.
 
 ---
 
@@ -351,13 +354,13 @@ Your carrying limit is **40 kg**, counting everything.
 
 | Load | | Effect |
 |---|---|---|
-| Up to the limit | **Unburdened** | — |
+| Up to the limit | **Unburdened** | no penalty |
 | 41–60 kg | **Burdened** | Slowed, and disadvantage on Agility and Shadow checks |
 | 61–80 kg | **Overloaded** | Burdened, **and 2 random cards are Spent** |
-| 81 kg + | — | You cannot pick it up. Make two trips. |
+| 81 kg + | | You cannot pick it up. Make two trips. |
 
-Neither state has a duration — they last until you drop the weight, and dropping things is never an
-action.
+Neither state has a duration, so they last until you drop the weight, and dropping things is never
+an action.
 
 ---
 
@@ -369,20 +372,20 @@ A level-up is a step on one shared graph. Your **frontier** is every node that a
 own points at, and you take one of them. Taking it spends the level and puts that node's own
 successors on your frontier.
 
-**The node is the reward.** Nothing is offered and nothing is passed over — taking the node *is*
+**The node is the reward.** Nothing is offered and nothing is passed over. Taking the node *is*
 taking the reward. What a node gives is one of:
 
 | Reward | What it does |
 |---|---|
-| **Action card** | A card added to your deck — the main currency of growing |
+| **Action card** | A card added to your deck, the main currency of growing |
 | **Training** | A tool type at its full bonus instead of +1, and the tool is issued with it |
-| **Item** | A slate, handed over |
+| **Item** | A card, handed over |
 
-A **specialization node** gives you a **title** as well as its reward — what people call you, and
+A **specialization node** gives you a **title** as well as its reward, what people call you, and
 the Tactic that comes with it. You only ever have your deepest title's Tactic.
 
 The decision is **a direction, not a menu**. What you give up is the other directions you could have
-gone this level — and a branch you walk past is usually still there next time.
+gone this level, and a branch you walk past is usually still there next time.
 
 **Except when it is not.** Some nodes belong to an exclusive group: taking one **permanently**
 disables every other node in that group, and everything reachable only through them. Swearing to a
@@ -398,7 +401,7 @@ god is the clearest case. You will be told before it happens.
 | Action deck | 12–20 cards |
 | Exhausted | Cannot refill to 2 |
 | Catch Breath | Whole turn, 2 random cards back, needs 2 in the discard |
-| Brace | Reduce damage by 1 — any card, always available |
+| Brace | Reduce damage by 1, any card, always available |
 | Wound | 5+ damage from one hit, after armour; or dropping to 0 |
 | Difficulties | Easy 3 · Normal 5 · Hard 7 · Heroic 9 |
 | Partial | 1–4 below the difficulty |
