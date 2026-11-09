@@ -1126,8 +1126,9 @@ const DIRECTION = {
    * not something a model can act on: bare paper above and light tone below are.
    */
   "cards/npc/the-hive-obeys":
-    "a huge plated head and the one lifted limb beside it, both held across the upper middle with "
-    + "bare paper above them -- her rooted bulk below carried in light tone rather than ink, and "
+    "a huge plated head and the one lifted limb beside it, both held across the upper middle, with "
+    + "the whole top quarter of the picture left as empty paper -- her crown of horn begins below "
+    + "that quarter and never enters it. Her rooted bulk below is light tone rather than ink, and "
     + "small against it, already turned the same way, the first few of the things that obey",
   "cards/npc/open-the-hold":
     "a gigantic sagging body splitting along the belly seam, and what was inside it coming out "
@@ -2298,8 +2299,8 @@ for (const group of GROUPS) {
            */
           `COMPOSE IT AS THE EXCEPTION. The other cards on this shelf are a fragment of a scene `
           + "with open paper around it, because one picture has to serve every creature. This one "
-          + "does not: let the subject FILL the frame and crowd its own edges, close enough that "
-          + "the eye has nowhere else to go. It should be the card in a hand of eight that does "
+          + "does not: let the subject FILL the frame, close enough that the eye has nowhere "
+          + "else to go. It should be the card in a hand of eight that does "
           + "not look like the other seven, from arm's length and before it is read.",
           /*
            * **And the clause that was missing, which cost four exports of one picture.**
@@ -2311,12 +2312,28 @@ for (const group of GROUPS) {
            * under the same instruction score 0.503 and 0.320. The instruction was not wrong; it
            * was half an instruction.
            */
-          "FILLING THE FRAME IS NOT THE SAME AS SPREADING THE INK. Crowd the edges with the "
-          + "subject, and still put the WEIGHT of the drawing -- the true blacks, the modelled "
-          + "detail, the part that reads from arm's length -- in the upper middle, with bare "
-          + "paper above it and the lower half carried in light tone. A subject that runs from "
-          + "the top edge to the bottom one fills the frame and fails the card: the top is behind "
-          + "the name and the bottom is behind the rules text."]
+          "FILLING THE FRAME IS NOT THE SAME AS SPREADING THE INK. Crowd the LEFT AND RIGHT "
+          + "edges with the subject -- never the top. Put the WEIGHT of the drawing -- the true "
+          + "blacks, the modelled detail, the part that reads from arm's length -- in the upper "
+          + "middle, and carry the lower half in light tone. A subject that runs from the top "
+          + "edge to the bottom one fills the frame and fails the card: the top is behind the "
+          + "name and the bottom is behind the rules text.",
+          /*
+           * **And the top said as a region, because *bare paper above* was read as a margin.**
+           *
+           * The clause above took this card from 17.6% in the window to 46.4%, past the floor and
+           * past both of its neighbours -- and it still failed on the other rule, with ink 8.6%
+           * down from the top against a clear tenth. A miss of 1.4 points, which is about twenty
+           * pixels, and it is the same mistake this book has already made once: *keep the focal
+           * point at about 30% of the height* got six full standing figures with their heads above
+           * the panel line, because a number is not something a model can act on. **An empty
+           * quarter is.** So the top is named as a band that is empty rather than as a margin that
+           * is bare, which is the wording that worked the first time.
+           */
+          "THE TOP QUARTER OF THE PICTURE IS EMPTY PAPER. Not a thin margin -- a quarter. Nothing "
+          + "crosses into it: no horn, no raised limb, no wing tip, no spray. Whatever is tallest "
+          + "in the subject BEGINS below that quarter, because the card prints its own name across "
+          + "the top and anything up there is printed over."]
         : []),
       "",
       direction,
