@@ -204,6 +204,8 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
 
     const cytoscape = await loadCytoscape();
     this.cy?.destroy();
+    /* A fresh canvas has not been fitted yet, whatever the last one did. */
+    this.fitted = false;
     this.cy = cytoscape({
       container: host,
       elements: this.#elements(),
@@ -228,11 +230,55 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
       this.#runLayout();
     });
 
+    this.#watchSize(host);
     this.#renderDetail();
+  }
+
+  /**
+   * **Cytoscape measures its container once, when it is constructed, and this pane hands it a box
+   * that has no size yet.**
+   *
+   * `.cr-graph` takes its height entirely from flex: `flex: 1 1 auto` inside a body that is
+   * `flex: 1 1 auto` inside a frame that is `height: 100%`. Every one of those resolves against the
+   * window, and an ApplicationV2 window is **injected before it is sized** -- so at `_onRender` the
+   * box is 0 tall, the canvas is built 0x0, and nothing is ever drawn on it again. The border is
+   * CSS on the div and shows up regardless, which is why the result reads as *the graph is empty*
+   * rather than *the graph is broken*: the frame is there, the counts beside it are right, and the
+   * 207 nodes are all present in a canvas with no pixels.
+   *
+   * **Refit did not help either**, and that is the tell. `layout({ fit: true })` fits the graph to
+   * the viewport Cytoscape believes it has, and it believed it had none.
+   *
+   * So the box is watched rather than measured once. It also answers the other half: this window
+   * has a resize handle, and a graph that ignored the drag would be the same bug on a slower clock.
+   *
+   * **`resize` always, `fit` only the first time.** The canvas has to track the box or it is wrong
+   * again; the view must not, because this pane's whole premise is that a player comparing two
+   * nodes keeps their pan and zoom (see the template). Fitting on every resize would snatch the
+   * view back each time the window moved.
+   */
+  #watchSize(host) {
+    this.sizer?.disconnect();
+    if (typeof ResizeObserver === "undefined") return;
+    this.sizer = new ResizeObserver(() => {
+      if (!this.cy || this.cy.destroyed?.()) return;
+      /* A box with no size is the state we are waiting out, not one to resize into. */
+      if (!host.clientWidth || !host.clientHeight) return;
+      this.cy.resize();
+      if (!this.fitted) {
+        this.cy.fit(undefined, 40);
+        this.fitted = true;
+      }
+    });
+    this.sizer.observe(host);
   }
 
   /** Cytoscape holds the canvas; closing the window has to take it down with it. */
   async _preClose(options) {
+    /* The observer holds the host element and the instance; dropping the canvas without it would
+     * leave a callback firing into a destroyed graph every time the window moved. */
+    this.sizer?.disconnect();
+    this.sizer = null;
     this.cy?.destroy();
     this.cy = null;
     LevelUpPane.#open.delete(this.actor?.id);

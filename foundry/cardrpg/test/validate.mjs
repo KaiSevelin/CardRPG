@@ -3628,6 +3628,36 @@ check("what the branch has granted", `${g.health} health, ${g.cards.length} card
 section("the level-up pane");
 
 const levelup = fs.readFileSync(path.join(root, "module/levelup.mjs"), "utf8");
+
+/*
+ * **The graph canvas tracks the box it is in, instead of measuring it once.**
+ *
+ * Cytoscape takes its container's size at construction, and this pane hands it a box that has none
+ * yet: `.cr-graph` is `flex: 1 1 auto` inside a body that is `flex: 1 1 auto` inside a frame that
+ * is `height: 100%`, and every one of those resolves against a window ApplicationV2 injects before
+ * it sizes. So the canvas was built 0x0 and never drawn on again -- and the symptom was not a
+ * broken window but an **empty** one: the border is CSS on the div, the legend beside it counted
+ * 4 nodes available out of 207, and the graph was all there in a canvas with no pixels. Refit did
+ * not help, which was the tell: `layout({ fit: true })` fits to the viewport Cytoscape thinks it
+ * has, and it thought it had none.
+ *
+ * Three checks, because the fix has three parts and the last two are the ones that rot.
+ */
+check("the graph watches its box for a size",
+  /this\.sizer = new ResizeObserver\(/.test(levelup) ? "yes" : "no", "yes");
+/*
+ * **`resize` every time, `fit` only the first.** The canvas has to follow the box or it is wrong
+ * again on the next drag of the window's handle; the VIEW must not follow it, because this pane's
+ * whole premise is that a player comparing two nodes keeps their pan and zoom. A fit on every
+ * resize would snatch the view back each time the window moved.
+ */
+check("and resizes the canvas without stealing the view",
+  /this\.cy\.resize\(\);[\s\S]{0,80}if \(!this\.fitted\)/.test(levelup) ? "yes" : "no", "yes");
+/* And it is let go with the canvas: an observer outliving the graph fires into a destroyed
+ * instance every time the window moves. */
+check("and the observer is dropped when the pane closes",
+  /this\.sizer\?\.disconnect\(\);\s*\n\s*this\.sizer = null;/.test(levelup) ? "yes" : "no",
+  "yes");
 const sheets = fs.readFileSync(path.join(root, "module/sheets.mjs"), "utf8");
 const panePart = fs.readFileSync(path.join(root, "templates/levelup.hbs"), "utf8");
 const actorModel = fs.readFileSync(path.join(root, "module/data/actors.mjs"), "utf8");
@@ -13076,7 +13106,7 @@ for (const m of selfSource.matchAll(/(\w+)\.includes\("((?:[^"\\]|\\.)*)"\)/g)) 
 }
 
 /* The pin that keeps the rest of this honest. */
-check("greps over a whole file, resolved", greps.length, 655);
+check("greps over a whole file, resolved", greps.length, 658);
 
 /*
  * **The rule, as one predicate, run over a planted example before it is run over the suite.**
