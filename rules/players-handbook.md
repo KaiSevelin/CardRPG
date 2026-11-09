@@ -676,6 +676,16 @@ stack where everyone else takes only the highest, every ally beside you gains Bl
 your Parry also strikes the one enemy you named. Its answer to armour is to hit through it, and its
 characteristic card takes two points off armour by hitting harder.
 
+**Strong at** standing in the way. It has the most Health and the heaviest armour, it is the only
+Way whose answer to a defended enemy is to go through the defence rather than around it, and several
+of its Signatures protect the people next to you rather than you. In a straight fight it is the Way
+that is hardest to remove.
+
+**Weak at** everything that is not a straight fight. Its skill deck is thin outside Might, and the
+armour it wants is paid for in weight: a fighter in plate with a shield and a pack is one bad
+decision away from **Burdened**, which is Slowed plus disadvantage on exactly the Agility and Shadow
+checks it was already worst at. Nothing it does is quiet, and nothing it does is a surprise.
+
 Its specialists are the sword, the two-hander, the polearm, the dagger and the empty hand; formation
 fighting, crossbows, artillery and muskets; protection, blunt weapons, gladiators, berserkers,
 cavalry and sappers.
@@ -688,6 +698,16 @@ deliberately the weakest in the game so that not needing to hit hard is the poin
 card that was waiting for one. It sees what is coming, it is worth most against a target that does
 not know you are there, and one of its cards takes a card out of an enemy's deck and keeps it.
 
+**Strong at** arriving before the problem does. It has the best Shadow and Agility in the game, it
+sees what is coming where other Ways guess, and against a target that is unaware or carrying an
+opening it does damage no other Way can match in one blow. Armour and shields barely slow it down,
+because it was never trying to get through them.
+
+**Weak at** a fair fight. Its strikes are **mod 0 and minus 1** where Strength's run to plus 2, so a
+Shade who has arranged nothing is a worse fighter than the Warrior standing beside them, and that is
+deliberate. It is lightly armoured, it is spending cards to set up the hit rather than to survive
+one, and an enemy that cannot be surprised or unbalanced takes away most of what it is for.
+
 Its specialists are thieves, assassins, spies, trapmakers and fences; bards, politicians, archers,
 pistoliers and duellists; acrobats and half-mages.
 
@@ -696,6 +716,16 @@ pistoliers and duellists; acrobats and half-mages.
 **Mind studies.** Its spells are **formulas**: learned once, paid for once in your own substance, and
 then yours. A first Way of Mind node grants **2 spell slots**, and a prepared spell occupies one
 until you prepare something else.
+
+**Strong at** answers nobody else has. It puts conditions on people, changes the ground they are
+standing on, hits several enemies at once, reaches further than a weapon does, raises the dead and
+wards against what is coming. It is the most adaptable Way between fights, because what it can do
+tomorrow is whatever it prepares tonight.
+
+**Weak at** doing it twice. Spell slots are few, a first node grants **two**, and a prepared spell
+holds one until you prepare something else, so the decision of what you can do is made before you
+know what you will meet. Several schools charge Health for the privilege. And **Silenced** switches
+the entire Way off, because casting needs speech.
 
 Its schools are blood magic, necromancy, elemental magic, poison, glamour, strength, asceticism,
 shadow magic, spiritualism, household magic, ward magic and divination, with ritual magic for the
@@ -713,9 +743,164 @@ them. In exchange you carry that god's **Obedience**, which applies to everythin
 and unlike a Tactic you carry every Obedience you have sworn to rather than only your deepest. A
 devotee of two of the Five pays both.
 
+**Strong at** holding a party together. Its miracles heal, protect and lift what has been put on
+somebody, and because a miracle is granted rather than learned it does not have to be studied first.
+Its gods give standing benefits that are simply true of you from the day you swear.
+
+**Weak at** flexibility, in every direction at once. A miracle is paid for **every single time** you
+ask, not once when you learn it. Its slots are as few as Mind's. **Silenced** shuts it off the same
+way. And the Obedience you took on is permanent: it is a restriction on how you may behave for the
+rest of the character's life, and you carry every one you have sworn, while the doors you closed
+swearing the first oath never reopen.
+
 ---
 
-## 15. Items
+## 15. Action cards
+
+Every card a character can hold, by where it comes from. A card shows what it does as a **primary**,
+what it does as a **secondary**, and what it does as a **reaction** on somebody else's turn. A dash
+means the card has no such half.
+
+Some Signatures are standing features rather than cards, and those are not listed here, because you
+do not hold them: they are simply true once the node is yours.
+
+<!-- generated: actions -->
+
+### The starter Warrior's deck
+
+| Card | Primary | Secondary | Reaction | Copies |
+|---|---|---|---|---|
+| **Strike** | Strike | Move 1 | parry | 3 |
+| **Heavy Swing** | Strike +1 (ignores 2 armour) | Move 1 | – | 2 |
+| **Lunge** | Move 2, then Strike | Move 1 | – | 1 |
+| **Shield Up** | Defend | Move 1 | block | 2 |
+| **Advance** | Move 3 | Move 2 | sidestep | 2 |
+| **Draw Steel** | Strike | Ready | – | 2 |
+| **Quick Hands** | Use | Ready | use | 1 |
+| **Second Wind** | Heal 2 | Use | – | 1 |
+| **Taunt** | → compelled (1) | Move 1 | – | 1 |
+| **Weapon Swap** | Ready | Strike | – | 1 |
+
+### The starter Shade's deck
+
+| Card | Primary | Secondary | Reaction | Copies |
+|---|---|---|---|---|
+| **Knife Work** | Strike | Move 1 | parry | 3 |
+| **Open Vein** | Strike +1 | Move 1 | – | 2 |
+| **Slip In** | Move 2, then Strike | Move 1 | – | 1 |
+| **Shed the Blow** | Block 2 | Move 2 | sidestep | 2 |
+| **Quick Step** | Move 3 | Move 2 | sidestep | 2 |
+| **Draw the Knife** | Strike | Ready | – | 2 |
+| **Light Fingers** | Use | Ready | use | 1 |
+| **Bind the Wound** | Heal 2 | Use | – | 1 |
+| **Jeer** | → dazed (1) | Move 1 | – | 1 |
+| **Off Hand** | Ready | Strike | – | 1 |
+
+### The common pool, which any Way may draw from
+
+| Card | Primary | Secondary | Reaction | Copies |
+|---|---|---|---|---|
+| **Off-Hand Blow** | Strike | Strike -1 | – | 1 |
+| **Measure** | Strike +1 (ignores Block) | Move 1 | parry | 1 |
+| **Hold the Line** | Defend | Strike -1 | parry | 1 |
+| **Press** | Strike, then Move 1 | Move 2 | sidestep | 1 |
+| **Both Hands** | Ready, then Strike | Ready | use | 1 |
+| **Dig In** | Heal 2 | Move 1 | – | 1 |
+
+### Way of Strength
+
+| Card | Primary | Secondary | Reaction | Copies |
+|---|---|---|---|---|
+| **Shoulder Check** | Strike | → offBalance (1) | – | 1 |
+| **Shield Bash** | Strike | Move 1 | block | 1 |
+| **Hammerblow** | Strike when they are offBalance | Move 1 | – | 1 |
+| **Sweep the Leg** | Strike → prone (1) when they are offBalance | Move 1 | – | 1 |
+| **Overbear** | → grappled (2) when they are offBalance | Move 1 | – | 1 |
+| **Shield Wall** | Defend | Defend, then Block 1 in an area of 1 | block | 1 |
+| **Two-Hand It** | Strike +2 | Ready | – | 1 |
+| **Heave** | Move 2 | Ready | – | 1 |
+| **Armoured Advance** | Move 3 | Move 1 | – | 1 |
+| **Pull Them Down** | Strike | Strike -1 | – | 1 |
+| **Beat the Blade** | Strike → disarmed (1) | Move 1 | – | 1 |
+| **Roar** | → compelled (1) | Move 1 | – | 1 |
+| **Walk It Off** | Heal 2, then Shake 2 | Move 1 | – | 1 |
+| **Nothing Held Back** | Strike | – | – | 1 |
+| **Call It** | Strike | Forestall 1 | – | 1 |
+| **Shoulder to Shoulder** | Strike, then Block 1 in an area of 1 | Move 1 | – | 1 |
+| **Ranging Shot** | Strike in an area of 1 | Ready | – | 1 |
+| **On My Call** | Ready | Move 1 | – | 1 |
+| **The Lance** | Move 3, then Strike | Move 1 | – | 1 |
+| **Red Mist** | Strike | Move 1 | – | 1 |
+| **Play to the Crowd** | → compelled (1) | Move 1 | – | 1 |
+| **Get a Grip** | → grappled (2) | Move 1 | – | 1 |
+| **Interpose** | Defend | Move 1 | bodyguard | 1 |
+
+### Way of Shade
+
+| Card | Primary | Secondary | Reaction | Copies |
+|---|---|---|---|---|
+| **Call the Shot** | Strike | → marked (1) | – | 1 |
+| **Find the Seam** | Strike -1 (ignores armour) | Move 1 | – | 1 |
+| **Half-Hilt** | Strike (ignores 2 armour) | Move 1 | – | 1 |
+| **Round the Shield** | Strike -1 (ignores Block) at range 3 | Move 1 | – | 1 |
+| **Between the Plates** | Strike when they are marked | Move 1 | – | 1 |
+| **Take the Shot** | Strike +1 when they are marked | Move 2 | – | 1 |
+| **Pin the Shadow** | Strike → slowed (1) when they are marked | Move 1 | – | 1 |
+| **Cut and Run** | Strike, then Move 2 | Move 1 | – | 1 |
+| **Light Feet** | Move 3 | Move 2 | sidestep | 1 |
+| **Slip the Knot** | Move 2 | Shake 1 | sidestep | 1 |
+| **Second Knife** | Strike at range 3 | Strike -1 | – | 1 |
+| **Mock** | → dazed (1) | Move 1 | – | 1 |
+| **Sleight** | Use, then Strike | Ready | use | 1 |
+| **Vanish** | → invisible (1) | Move 2 | – | 1 |
+| **Count the Odds** | Strike | Sift 2 | parry | 1 |
+| **Scout Ahead** | Move 3 | Sift 3 | sidestep | 1 |
+| **Smoke and Go** | → invisible (1), then Move 2 | Use | – | 1 |
+| **Point Man** | Foresee | Move 1 | – | 1 |
+| **Named** | Strike | → marked (1) | parry | 1 |
+| **One Opening** | Strike | Move 1 | – | 1 |
+| **Lift** | Strike | Move 1 | – | 1 |
+| **Loose and Step** | Strike, then Move 1 | Move 1 | – | 1 |
+| **Set** | Ready → slowed | Ready | – | 1 |
+| **Over and Past** | Move 3 | Move 1 | sidestep | 1 |
+| **Heckle** | → heckled (1) | Move 1 | heckle | 1 |
+| **Double or Nothing** | Strike | Move 1 | – | 1 |
+
+### Way of Mind
+
+| Card | Primary | Secondary | Reaction | Copies |
+|---|---|---|---|---|
+| **Hold to the Bargain** | – | – | bargain | 1 |
+| **Turn Aside** | – | – | mend | 1 |
+| **Shake It Off** | – | – | mend | 1 |
+| **The Mirror** | – | – | unmake | 1 |
+| **Unmake** | – | – | unmake | 1 |
+
+### Way of Faith
+
+| Card | Primary | Secondary | Reaction | Copies |
+|---|---|---|---|---|
+| **Bear It for Them** | – | – | mend | 1 |
+| **The Turning Tide** | – | – | mend | 1 |
+| **The Close Work** | – | – | parry | 1 |
+| **Breath of the Spirit** | – | – | mend | 1 |
+| **The Writ** | at range 6 → judged (2) | Move 1 | – | 1 |
+| **The Order's Shield** | Defend, then Block 2 at range 1 | Block 1 at range 1 | block | 1 |
+| **The Long Silence** | Ready 2 | Shake 1 | – | 1 |
+| **The Scourge** | Strike +2 | Move 2 | – | 1 |
+
+### Way cards
+
+| Card | Primary | Secondary | Reaction | Copies |
+|---|---|---|---|---|
+| **Set Spear** | Defend | Move 1 | counter | 1 |
+| **Roll With It** | Move 3 | Move 2 | sidestep | 1 |
+
+<!-- /generated: actions -->
+
+---
+
+## 16. Items
 
 Everything in the catalogue, by kind. **Slot** is where it has to sit to be used, and a weapon's
 hands are in brackets. **Weight** counts against your 40 kg limit. **Gold** is what it costs.
@@ -946,7 +1131,7 @@ hands are in brackets. **Weight** counts against your 40 kg limit. **Gold** is w
 
 ---
 
-## 16. Features
+## 17. Features
 
 Permanent traits. A feature is never shuffled and never spent: it is simply true of you.
 
@@ -974,7 +1159,7 @@ Permanent traits. A feature is never shuffled and never spent: it is simply true
 
 ---
 
-## 17. Spells
+## 18. Spells
 
 Formulas for Way of Mind and miracles for Way of Faith, by where they come from. **Strength** is how
 many spell slots preparing one costs.

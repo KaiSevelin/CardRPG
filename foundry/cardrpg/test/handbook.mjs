@@ -16,7 +16,8 @@
  */
 import fs from "node:fs";
 import path from "node:path";
-import { ITEMS, FEATURES } from "../module/content.mjs";
+import * as CONTENT from "../module/content.mjs";
+const { ITEMS, FEATURES } = CONTENT;
 import { SPELLS } from "../module/graph.mjs";
 
 const OUT = path.join(import.meta.dirname, "..", "..", "..", "rules", "players-handbook.md");
@@ -100,8 +101,71 @@ function spellChapter() {
 }
 
 /* -------------------------------------------- */
+/*  Action cards                                */
+/* -------------------------------------------- */
+
+/**
+ * One half of a card, as a player reads it off the face: the verb, then whatever number or
+ * condition the step carries. A half with nothing in it is a half the card does not have.
+ */
+function half(steps) {
+  if (!steps?.length) return "";
+  return steps.map(s => {
+    const verb = s.verb ? s.verb[0].toUpperCase() + s.verb.slice(1) : "";
+    const bits = [verb];
+    if (s.mod) bits.push(s.mod > 0 ? `+${s.mod}` : `${s.mod}`);
+    if (s.param !== null && s.param !== undefined) bits.push(String(s.param));
+    if (s.ignoresArmour) bits.push("(ignores armour)");
+    else if (s.ignores) bits.push(`(ignores ${s.ignores} armour)`);
+    if (s.ignoresBlock) bits.push("(ignores Block)");
+    if (s.area) bits.push(`in an area of ${s.area}`);
+    if (s.range) bits.push(`at range ${s.range}`);
+    if (s.condition) {
+      bits.push(`→ ${s.condition}${s.duration ? ` (${s.duration})` : ""}`);
+    }
+    if (s.when?.needs) bits.push(`when they are ${s.when.needs}`);
+    return bits.filter(Boolean).join(" ");
+  }).join(", then ");
+}
+
+/**
+ * **Cards only.** The Way pools carry spells as well, and those have their own chapter; a Signature
+ * may be a standing feature rather than a card, and those are not played from a hand at all. What
+ * belongs here is what you can hold.
+ */
+const isCard = e => !!(e.primary?.length || e.secondary?.length || e.reaction);
+
+function actionChapter() {
+  const shelves = [
+    ["The starter Warrior's deck", CONTENT.WARRIOR_DECK],
+    ["The starter Shade's deck", CONTENT.SHADE_DECK],
+    ["The common pool, which any Way may draw from", CONTENT.COMMON_POOL],
+    ["Way of Strength", [...CONTENT.STRENGTH_POOL, ...CONTENT.STRENGTH_SIGNATURES]],
+    ["Way of Shade", [...CONTENT.SHADE_POOL, ...CONTENT.SHADE_SIGNATURES]],
+    ["Way of Mind", [...CONTENT.MIND_POOL, ...CONTENT.MIND_SIGNATURES]],
+    ["Way of Faith", [...CONTENT.FAITH_POOL, ...CONTENT.FAITH_SIGNATURES]],
+    ["Way cards", CONTENT.WAY_CARDS]
+  ];
+  const out = [];
+  for (const [label, list] of shelves) {
+    const cards = (list ?? []).filter(isCard);
+    if (!cards.length) continue;
+    out.push(`### ${label}`, "");
+    out.push("| Card | Primary | Secondary | Reaction | Copies |", "|---|---|---|---|---|");
+    for (const c of cards) {
+      out.push(`| **${c.name}** | ${cell(half(c.primary)) || "–"} `
+        + `| ${cell(half(c.secondary)) || "–"} | ${c.reaction ?? "–"} `
+        + `| ${c.copies ?? 1} |`);
+    }
+    out.push("");
+  }
+  return out;
+}
+
+/* -------------------------------------------- */
 
 export const CHAPTERS = {
+  actions: actionChapter,
   items: itemChapter,
   features: featureChapter,
   spells: spellChapter
@@ -126,6 +190,7 @@ if (process.argv[1] && process.argv[1].endsWith("handbook.mjs")) {
   const before = fs.readFileSync(OUT, "utf8");
   const after = fill(before);
   fs.writeFileSync(OUT, after, "utf8");
-  console.log(`wrote the handbook's reference chapters: ${ITEMS.length} items, `
-    + `${FEATURES.length} features, ${SPELLS.size} spells`);
+  const cards = CHAPTERS.actions().filter(l => l.startsWith("| **")).length;
+  console.log(`wrote the handbook's reference chapters: ${cards} action cards, `
+    + `${ITEMS.length} items, ${FEATURES.length} features, ${SPELLS.size} spells`);
 }
