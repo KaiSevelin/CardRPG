@@ -630,7 +630,8 @@ kinds, so that is two cards. If there were four goblins they would still share o
 
 ### Round one
 
-The intents are **Close In** for the goblin kind and **Loose** for the archer kind.
+The intents are **Close In** for the goblin kind and **Loose** for the archer kind. Turns run in
+the initiative order drawn above, which is why the Archer goes first and the Warrior goes last.
 
 **1. The Archer** plays *Loose*: Strike at the weapon's range. The Warrior is exactly six squares
 away and the bow reaches six. Shortbow **3**, fate **+0**, total **3**. The Warrior's armour takes
@@ -661,7 +662,10 @@ react: *Strike, Shield Up, Advance*. Eleven are left in the draw pile.
 
 ### Round two
 
-Two fresh intents: **Find the Joint** for the goblin and **Loose** again for the archer.
+**Nobody draws for initiative again.** It is drawn once for the whole fight, so the order is the
+same one as before: Archer, Goblin, Warrior. The numbers below are that order repeating, not a
+new one. What is new each round is the intents, and this round they are **Find the Joint** for
+the goblin and **Loose** again for the archer.
 
 **1. The Archer** looses again: **3**, fate **−1**, total **2**. Armour takes 1, so **1 damage**.
 Warrior at **6**.
