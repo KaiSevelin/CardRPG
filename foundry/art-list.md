@@ -1,6 +1,6 @@
 # Art list
 
-**640 pieces**, of which **638** are drawn and **2** still to shoot. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
+**640 pieces**, of which **639** are drawn and **1** still to shoot. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
 
 ## What to supply
 
@@ -285,7 +285,7 @@ Drawn on a Wild, so each one is a surprise and wants to look like one.
 
 **The GM is somebody at the table**, and this is the deck they draw from more often than any player draws from anything. One person seeing all thirty in a session is a reason to draw them, not a reason to skip them, which is the argument this list used to get backwards. A twist is a complication rather than an attack: show the cost arriving, not a weapon.
 
-**8 pieces**, 6 wired up. Suggested path: `cardrpg/art/cards/twist/`
+**8 pieces**, 7 wired up. Suggested path: `cardrpg/art/cards/twist/`
 
 | | Name | What it is | File |
 |---|---|---|---|
@@ -296,7 +296,7 @@ Drawn on a Wild, so each one is a surprise and wants to look like one.
 | ✓ | **Opening** | — | `cards/twist/opening.webp` |
 | ✓ | **Secret** | — | `cards/twist/secret.webp` |
 | ✓ | **Strain** | — | `cards/twist/strain.webp` |
-|   | **Time** | — | `cards/twist/time.webp` |
+| ✓ | **Time** | — | `cards/twist/time.webp` |
 
 ## The ritual twist deck
 

@@ -846,7 +846,20 @@ const GROUP_MOTIF = {
  * the collision audit at the bottom of this file, so the next cluster is found rather than
  * noticed. The audit is the point: this table is where it gets answered, one cluster at a time.
  */
-const DIRECTION = {
+export const DIRECTION = {
+  /*
+   * **Refused as `illicit`, because the generic Signature direction asks for *the person it
+   * describes, caught in the second that proves it* -- and the person this describes is a burglar
+   * at work.** The Kit is the one Signature that is an object, so it gets drawn as the object,
+   * and as the object at rest rather than in a keyway: a tool in a lock is a picture of a crime
+   * being committed and a tool on a bench is a picture of a trade.
+   */
+  "signatures/shade/the-kit":
+    "a worn canvas roll laid open on a workbench, its loops and pockets each shaped to something "
+    + "that is not in them, the canvas gone dark along every fold from years of being rolled and "
+    + "unrolled. The subject is how used it is. No tool, no metal, no lock, no keyhole, no door "
+    + "and no person anywhere in the frame",
+
   /*
    * **The twist deck, eight kinds, newly commissioned.**
    *
@@ -868,9 +881,16 @@ const DIRECTION = {
   "cards/twist/strain":
     "a hand that has let go: one card falling away face down, the others still fanned and held. "
     + "The subject is the gap it left rather than the card",
+  /*
+   * **Written as a wrapped forearm, and refused as self-harm.** The cost of this card is Health,
+   * and the obvious picture of Health is a body -- which an output classifier cannot tell from the
+   * thing it is there to stop. So the cost is on the gear instead: a helmet that has just been hit
+   * says somebody took it without a body in the frame at all.
+   */
   "cards/twist/hurt":
-    "a wrapped forearm with the cloth gone dark at one edge, held against the body. Close, plain, "
-    + "and no weapon anywhere in the frame",
+    "an open-faced helmet lying on its side on bare ground, one fresh bright dent crushed into the "
+    + "brow of it and the lining torn loose inside. Nobody is in the frame: no head, no hand, no "
+    + "limb, no skin, no blood, no bandage and no weapon",
   "cards/twist/arrival":
     "a second shadow entering the frame along the floor, cast by somebody still out of shot. The "
     + "subject is the shadow and the empty doorway it comes from",
@@ -2232,9 +2252,41 @@ for (const group of GROUPS) {
   );
 
   for (const entry of [...group.list].sort((a, b) => a.name.localeCompare(b.name))) {
-    const what = describe(entry) || "";
-    const flavour = flavourOf(entry);
     const key = `${group.dir}/${slug(entry.name)}`;
+    /*
+     * An item's brief carries its blurb inside the mechanical line -- `Tool — A roll of picks
+     * and a torsion wrench, in oiled cloth` -- so suppressing `flavour` is not enough for the
+     * hundred and fifty items. The mechanics stay, because a strength and a range are facts and
+     * not instructions about what to put in the frame; the sentence goes, for the reason above.
+     * `brief()` itself is left alone: `art-list.md` is the document that says what a piece IS.
+     */
+    const described = describe(entry) || "";
+    const what = DIRECTION[key] && entry.blurb
+      /* The brief joins its parts with a MIDDLE DOT, so that is what is left dangling. The
+       * first version of this stripped an em dash and left `Tool ·` on every item. */
+      ? described.replace(entry.blurb, "").replace(/[\s\u00b7\u2014-]+$/, "").trim()
+      : described;
+    /*
+     * **[FOUND 2026-11-09] A hand-written direction REPLACES the piece's own sentence; it used to
+     * follow it, and the model obeyed the sentence.**
+     *
+     * Forty-nine images were refused by output moderation across twenty pieces, and the prompts
+     * were already written to avoid exactly that. *Lockpicks* asks for *a strip of oiled cloth
+     * unrolled flat and empty, the tools long gone out of it* -- and the line above it still read
+     * *A roll of picks and a torsion wrench, in oiled cloth*, so the model drew the picks and the
+     * classifier called it `illicit`, twelve times. *The Red Hour* asks for *the hour that was
+     * bought, never the price that bought it, a thick tallow candle* -- above *You open a vein for
+     * each of them*, and came back `self-harm`.
+     *
+     * Two instructions, the second overriding the first, and the model following the first: the
+     * same shape as every other defect this project has found, and this time it was being paid
+     * for by the image. A direction exists precisely because the piece's own sentence is the wrong
+     * thing to draw, so sending both was never right, whatever the classifier thinks of it.
+     *
+     * The sentence is not lost: it is what `art-list.md` prints for a human, which is the document
+     * that says what a piece IS. This is the one that says what to draw.
+     */
+    const flavour = DIRECTION[key] ? "" : flavourOf(entry);
     const ms = motifsFor(entry, group);
     /* The piece's own sentence outranks a motif table: it was written about this one thing. */
     /*

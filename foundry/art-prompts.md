@@ -2497,7 +2497,7 @@ File: `cards/twist/hurt.webp`
 ```text
 SUBJECT. "Hurt"
 
-Draw a wrapped forearm with the cloth gone dark at one edge, held against the body. Close, plain, and no weapon anywhere in the frame.
+Draw an open-faced helmet lying on its side on bare ground, one fresh bright dent crushed into the brow of it and the lining torn loose inside. Nobody is in the frame: no head, no hand, no limb, no skin, no blood, no bandage and no weapon.
 
 WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Southeast Asian appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
@@ -3134,7 +3134,7 @@ File: `signatures/shade/the-kit.webp`
 ```text
 SUBJECT. "The Kit" — item · You may never put it down. Every Hard physical obstacle becomes Normal.
 
-Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+Draw a worn canvas roll laid open on a workbench, its loops and pockets each shaped to something that is not in them, the canvas gone dark along every fold from years of being rolled and unrolled. The subject is how used it is. No tool, no metal, no lock, no keyhole, no door and no person anywhere in the frame.
 
 WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of East Asian appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
@@ -3795,8 +3795,6 @@ File: `signatures/faith/the-first-taste.webp`
 ```text
 SUBJECT. "The First Taste" — strength 2 · Tainting 2 range 1
 
-Tainting 2 on one adjacent enemy, and 1 Taint for you. You are the first to taste it, always.
-
 Draw a cup taken away from the mouth and held out to somebody else, the taster's own lip already stained -- the stain is ink-dark and not coloured. Two hands and the cup between them, and nothing else in the frame.
 
 WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Persian appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
@@ -3860,8 +3858,6 @@ File: `signatures/faith/the-rumour.webp`
 
 ```text
 SUBJECT. "The Rumour" — strength 2 · one enemy type acts as though a named lie were true
-
-Name a lie before the fight. One enemy type acts as if it were true, for as long as you keep spending a secondary on it.
 
 Draw a mouth at an ear and a hand cupped round the words, both heads cropped at the brow so neither face is readable. The listener's eye is the one thing drawn in full, and it has already believed it.
 
@@ -4336,8 +4332,6 @@ File: `spells/mind/graven-armour.webp`
 
 ```text
 SUBJECT. "Graven Armour" — strength 4 · you count as Burdened always, whatever you carry
-
-Plate, in ink, over everything. It weighs nothing and you are never again anything but weighed down.
 
 Draw a bare forearm and the back of one hand, plate armour tattooed into the skin in black line -- lames, rivets and the cuff of a vambrace inked where a real one would sit, the lines following the tendons under the skin. Drawn from the elbow down and no higher, the arm entering from the bottom of the frame.
 ```
@@ -4889,8 +4883,6 @@ File: `spells/mind/the-red-hour.webp`
 ```text
 SUBJECT. "The Red Hour" — strength 4 · range 2 every ally within 2 may play a second secondary
 
-You open a vein for each of them, and for an hour nobody is tired.
-
 Draw the hour that was bought, never the price that bought it -- a thick tallow candle with hour lines scored across it, burned down past the first line, the flame low and one heavy fall of wax run down the side. No figure, no hand, no wrist, no bandage, no blade, no wound and no blood anywhere in the frame.
 ```
 
@@ -5310,8 +5302,6 @@ File: `spells/faith/measure-of-the-debt.webp`
 ```text
 SUBJECT. "Measure of the Debt" — strength 2 · a Judged enemy that dies this round: you gain 3 Health
 
-A Judged enemy that dies this round pays you 3 Health. The debt is collected whether or not you were the one who called it in.
-
 Draw the two halves of a split tally stick held edge to edge so the notches line up, in two hands at waist height, cropped at the wrists. The matched notches are the whole subject and the dark is ink rather than a colour.
 ```
 
@@ -5501,8 +5491,6 @@ File: `spells/faith/the-lie-that-held.webp`
 
 ```text
 SUBJECT. "The Lie That Held" — strength 5 · a lie named before the fight is true
-
-Name the lie before the fight. While you spend a secondary each round it is true, and the GM runs the fight as though it always had been.
 
 Draw a plank laid across a gap with nothing under its far end and nothing holding it up, a boot's whole weight in the middle of it and not a trace of bend in the wood. Drawn from the knee down, the gap filling the lower half in ink, and the top of the frame empty.
 ```
@@ -5874,8 +5862,6 @@ File: `features/adapted.webp`
 ```text
 SUBJECT. "Adapted" — Name one injury you carry. Its penalty no longer applies. The injury remains.
 
-You still have one eye. You have simply stopped being surprised by it. Take it again for a second injury — which is what makes an uncapped Maiming survivable, and why it is the brake that had to be fitted before the cap came off.
-
 Draw a hand doing something awkward entirely without hesitation -- the missing fingers plainly missing, the grip worked out long ago and no longer thought about.
 
 WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Central Asian appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
@@ -6220,7 +6206,7 @@ MADE OF. 120gp -- clear glass, a turned stopper and a written label.
 File: `items/balanced-dagger.webp`
 
 ```text
-SUBJECT. "Balanced Dagger" — Make · Weighted at the tang. It goes where you looked.
+SUBJECT. "Balanced Dagger" — Make
 
 Draw a throwing knife standing upright on its point, balanced and perfectly still, the whole weight of it resting on a spot smaller than a fingernail.
 
@@ -6376,7 +6362,7 @@ MADE OF. 450gp -- silver, worked bronze and fine leather.
 File: `items/caltrops.webp`
 
 ```text
-SUBJECT. "Caltrops" — Consumable · A handful of iron, however it lands.
+SUBJECT. "Caltrops" — Consumable
 
 Draw four iron spikes welded so that one always points up, several of them scattered where they fell, seen from low down and close so the upward point is at eye level.
 
@@ -6472,7 +6458,7 @@ MADE OF. 1400gp -- gold, gilt and gems.
 File: `items/dagger.webp`
 
 ```text
-SUBJECT. "Dagger" — Weapon · Short, quick, and easy to hide.
+SUBJECT. "Dagger" — Weapon
 
 Draw a short blade coming out of a sleeve, most of it still hidden, only the last inch of edge catching any light.
 
@@ -6484,7 +6470,7 @@ MADE OF. 2gp -- plain iron, barely better than a tool.
 File: `items/deep-pockets.webp`
 
 ```text
-SUBJECT. "Deep Pockets" — Wonder · More in them than went in, and never what you wanted.
+SUBJECT. "Deep Pockets" — Wonder
 
 Draw a coat laid out flat and open with one pocket turned inside out, its linen lining pulled into a long sack plainly deeper than the coat it came out of, a small silver clasp still on the pocket's edge. Drawn square on and wider than it is tall, the cloth's own folds the only dark in it and nothing hanging anywhere.
 
@@ -6772,7 +6758,7 @@ MADE OF. 90gp -- green glass, cork and sealing wax.
 File: `items/great-axe.webp`
 
 ```text
-SUBJECT. "Great Axe" — Weapon · Cheaper than a greatsword and it does not care.
+SUBJECT. "Great Axe" — Weapon
 
 Draw a single-bitted axe head on a long haft, the bit chipped along its leading edge and re-ground behind the chips. Cheap work: no fuller, no inlay, a wedge and a nail.
 
@@ -6808,7 +6794,7 @@ MADE OF. 150gp -- clear glass, a turned stopper and a written label.
 File: `items/greatsword.webp`
 
 ```text
-SUBJECT. "Greatsword" — Weapon · Four feet of edge. Both hands, and nothing held back.
+SUBJECT. "Greatsword" — Weapon
 
 Draw four feet of straight blade filling the frame corner to corner at a slight diagonal, far too long for the picture, with a ricasso wrapped in leather halfway up it.
 
@@ -6844,7 +6830,7 @@ MADE OF. 35gp -- wrought iron and seasoned wood.
 File: `items/healers-kit.webp`
 
 ```text
-SUBJECT. "Healer's Kit" — Tool · Needle, gut, lint and spirit.
+SUBJECT. "Healer's Kit" — Tool
 
 Draw a strip of cloth unrolled flat with its contents in sewn loops along it -- one curved needle, a hank of waxed gut, a folded wad of lint and a small stoppered bottle, laid out in that order. The kit is the whole subject: nobody is being treated, and there is no body, no wound and no blood in the frame.
 
@@ -6856,7 +6842,7 @@ MADE OF. 20gp -- wrought iron, brass or horn.
 File: `items/healing-potion.webp`
 
 ```text
-SUBJECT. "Healing Potion" — Consumable · Thick, red, and tastes of iron.
+SUBJECT. "Healing Potion" — Consumable
 
 Draw a stubby wide-mouthed bottle of something thick and dark that has settled, the sediment visible at the bottom and a fingerprint in the dust on the shoulder of the glass.
 
@@ -7036,7 +7022,7 @@ MADE OF. 500gp -- silver, worked bronze and fine leather.
 File: `items/lockpicks.webp`
 
 ```text
-SUBJECT. "Lockpicks" — Tool · A roll of picks and a torsion wrench, in oiled cloth.
+SUBJECT. "Lockpicks" — Tool
 
 Draw a strip of oiled cloth unrolled flat and empty, its sewn loops holding nothing at all, the tools long gone out of it. What they are is readable only in the cloth: a row of five slim dark stains worn into it where each slender one lay, and one flat wider stain across them. The cloth is the whole subject -- no tool of any kind in the frame, no metal, no lock, no keyhole, no door and no hand.
 
@@ -7060,7 +7046,7 @@ MADE OF. 50gp -- wrought iron and seasoned wood.
 File: `items/longsword.webp`
 
 ```text
-SUBJECT. "Longsword" — Weapon · A plain cruciform blade, kept sharp.
+SUBJECT. "Longsword" — Weapon
 
 Draw a plain cruciform hilt and the first hand's length of blade, the cross bar straight and square, nothing on it that was not needed to hold it.
 
@@ -7648,7 +7634,7 @@ MADE OF. 3500gp -- gold, gilt and gems.
 File: `items/the-hungry-blade.webp`
 
 ```text
-SUBJECT. "The Hungry Blade" — Relic · Obligation: a bound Taint the first round of each fight it does not kill. · It is not sharp. It does not need to be sharp.
+SUBJECT. "The Hungry Blade" — Relic · Obligation: a bound Taint the first round of each fight it does not kill.
 
 Draw a heavy sword lying flat and alone, its edge rounded blunt down the whole length with no bevel ground into it anywhere, the steel dark and close-grained like a bar stock that was never meant to cut. Nothing on the blade: no mark, no stain, no blood, no wound and no person in the frame.
 
@@ -7660,7 +7646,7 @@ MADE OF. 4000gp -- gold, gilt and gems.
 File: `items/the-kit.webp`
 
 ```text
-SUBJECT. "The Kit" — Tool · A burglar's whole trade in a roll of canvas, and they never put it down.
+SUBJECT. "The Kit" — Tool
 
 Draw a fat canvas roll tied shut with a leather thong, worn pale and shiny at both ends by years of being carried and never set down. It stays closed and what is inside it is never shown: no tool, no lock, no door and no hand in the frame.
 
@@ -8102,7 +8088,7 @@ MADE OF. 0gp -- plain iron, barely better than a tool.
 File: `items/npc/tarnkappe.webp`
 
 ```text
-SUBJECT. "Tarnkappe" — Wonder · A small grey cap, greasy with age. The Alp will want it back. · Become Invisible (1).
+SUBJECT. "Tarnkappe" — Wonder ·  · Become Invisible (1).
 
 Draw a small grey cap, shapeless and greasy with age, lying where it was dropped -- and the patch of ground beneath it not quite as present as the ground around it.
 
@@ -9693,7 +9679,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 
 ## Where prompts still repeat
 
-**177 prompts in 33 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
+**176 prompts in 33 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
 
 **10 of those clusters are the ones that bite**, listed first: the ones where the subject line carries no prose either, so neither half of the prompt tells the cards apart. The rest share a direction over subjects that already differ — forty-three consumables drawing a nearly-empty vessel still come back as forty-three different pictures, because each subject names its own.
 
@@ -9712,9 +9698,9 @@ Answer a cluster by adding its keys to `DIRECTION` in `test/art-prompts.mjs` and
 | **3** | 2 | an edge, worn and sharpened back more than once | `items/arming-sword` `items/trident` `items/npc/goblin-spear` |
 | **2** | 2 | a hand working an object, the object mid-use rather than held up to be seen; a weapon coming to hand, caught between carried and held | `cards/starter/quick-hands` `cards/shade-starter/light-fingers` |
 | **9** | 1 | set down on nothing, carried a long way among other things | `items/beggars-bowl` `items/cairn-stone` `items/cracked-spyglass` `items/locked-casket` `items/loose-cobble` …+4 |
-| **7** | 1 | the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem | `signatures/shade/one-trick` `signatures/shade/the-kit` `signatures/shade/the-opening` `signatures/strength/cleave-to-the-bone` `signatures/strength/loaded-before-the-bell` …+2 |
 | **7** | 1 | an object that means nothing except in trained hands | `features/good-aim` `features/good-name` `features/hard-hands` `features/light-step` `features/quick-eye` …+2 |
 | **7** | 1 | a small dark bottle, labelled, a residue dried at the lip | `items/assassins-tincture` `items/black-lotus` `items/blade-venom` `items/drowsing-oil` `items/grave-cap-extract` …+2 |
+| **6** | 1 | the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem | `signatures/shade/one-trick` `signatures/shade/the-opening` `signatures/strength/cleave-to-the-bone` `signatures/strength/loaded-before-the-bell` `signatures/strength/nothing-gets-through` …+1 |
 | **5** | 1 | made well, by somebody who signed nothing | `items/fine-longsword` `items/marching-boots` `items/masterwork-crossbow` `items/proofed-mail` `items/smiths-hammer` |
 | **4** | 1 | the weapon drawn and held at tension | `items/crossbow` `items/matchlock-pistol` `items/shortbow` `items/npc/goblin-shortbow` |
 | **4** | 1 | a thing that says who somebody is before they speak | `items/fine-clothes` `items/gaming-set` `items/signet-ring` `items/travelling-cloak` |

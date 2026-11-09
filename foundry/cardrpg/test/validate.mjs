@@ -7268,11 +7268,61 @@ const { slug, DELIVERY, GROUPS: ART_GROUPS, CREATURES: ART_CREATURES, creatureBr
  * and its own description, not a card's verbs -- and a check that assumed one builder would have
  * been 112 false failures.
  */
-for (const [what, text] of [["brief", artList], ["prompt book", artPrompts]]) {
-  check(`pieces the ${what} describes out of date`, ART_GROUPS
-    .flatMap(g => g.list.filter(e => !text.includes((g.brief ?? artBrief)(e))).map(e => e.name))
-    .join(", ") || "none", "none");
-}
+check("pieces the brief describes out of date", ART_GROUPS
+  .flatMap(g => g.list.filter(e => !artList.includes((g.brief ?? artBrief)(e))).map(e => e.name))
+  .join(", ") || "none", "none");
+
+/*
+ * **The prompt book carries a different sentence for a directed piece, and now says so.**
+ *
+ * This used to require the brief line verbatim in BOTH files, which was true until 2026-11-09 and
+ * is the reason forty-nine images were refused: a piece with a hand-written direction was being
+ * sent its own sentence AND the direction written to override it, and the model obeyed the
+ * sentence. The direction replaces it now, so the book no longer contains it.
+ *
+ * Split rather than loosened, and the result is stronger than what it replaces. An undirected
+ * piece is still checked on its brief line. A **directed** one is checked on its direction, which
+ * the old check never looked at at all -- so a reworded direction left unregenerated used to pass
+ * and now fails, and that is the edit most likely to happen to this book.
+ */
+const { DIRECTION: ART_DIRECTION } = await import("./art-prompts.mjs");
+const directedPieces = ART_GROUPS.flatMap(g => g.list
+  .map(e => ({ e, key: `${g.dir}/${slug(e.name)}`, line: (g.brief ?? artBrief)(e) })))
+  .filter(p => ART_DIRECTION[p.key]);
+check("directed pieces the prompt book describes out of date",
+  directedPieces.filter(p => !artPrompts.includes(ART_DIRECTION[p.key]))
+    .map(p => p.e.name).join(", ") || "none", "none");
+check("and the rest of them", ART_GROUPS
+  .flatMap(g => g.list
+    .filter(e => !ART_DIRECTION[`${g.dir}/${slug(e.name)}`]
+      && !artPrompts.includes((g.brief ?? artBrief)(e)))
+    .map(e => e.name))
+  .join(", ") || "none", "none");
+/*
+ * And the thing the refusals were actually about: a directed piece must not also be carrying the
+ * sentence its direction exists to replace. Checked on the blurb, which is the half that described
+ * what to put in the frame -- the mechanical half is a strength and a range, which instruct
+ * nobody.
+ */
+/*
+ * Read per piece rather than by rebuilding the line. The first version of this check guessed that
+ * the brief joined its parts with an em dash; it uses a middle dot, so the pattern matched nothing
+ * and the check passed while the bug it was written for was deliberately reintroduced to test it.
+ * A check that cannot fail is worse than no check, and the only reason this one was caught is that
+ * it was negative-tested.
+ */
+const promptBlockOf = file => {
+  const at = artPrompts.indexOf(`File: \`${file}\``);
+  if (at < 0) return "";
+  const next = artPrompts.indexOf("\n### ", at);
+  return artPrompts.slice(at, next < 0 ? undefined : next);
+};
+check("the blocks this check reads but cannot find",
+  directedPieces.filter(p => !promptBlockOf(`${p.key}.${DELIVERY.format}`)).length, 0);
+check("directed pieces still sent the sentence they override",
+  directedPieces.filter(p => p.e.blurb
+    && promptBlockOf(`${p.key}.${DELIVERY.format}`).includes(p.e.blurb))
+    .map(p => p.e.name).join(", ") || "none", "none");
 
 /*
  * **And the player's handbook, whose three reference chapters are generated for the same reason.**
