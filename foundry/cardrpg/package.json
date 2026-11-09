@@ -7,6 +7,7 @@
     "test": "node test/validate.mjs",
     "packs": "node test/build-packs.mjs",
     "art-list": "node test/art-list.mjs",
+    "handbook": "node test/handbook.mjs",
     "art": "node test/art-shoot.mjs",
     "gate": "node test/art-gate.mjs",
     "verdicts": "node test/art-verdicts.mjs"

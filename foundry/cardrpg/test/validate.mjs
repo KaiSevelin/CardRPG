@@ -7228,6 +7228,24 @@ for (const [what, text] of [["brief", artList], ["prompt book", artPrompts]]) {
     .flatMap(g => g.list.filter(e => !text.includes((g.brief ?? artBrief)(e))).map(e => e.name))
     .join(", ") || "none", "none");
 }
+
+/*
+ * **And the player's handbook, whose three reference chapters are generated for the same reason.**
+ *
+ * The prose in it is written for a reader and changes when the rules do. The items, the features
+ * and the spells are three hundred rows of catalogue that move every time somebody prices a sword,
+ * and a catalogue copied by hand is wrong by the end of the week. This is the exact check rather
+ * than the per-name one above: the generator is run against the file that exists and has to produce
+ * the file that exists, so a changed blurb is caught as surely as a missing item.
+ */
+const { fill: fillHandbook } = await import("./handbook.mjs");
+const handbook = fs.readFileSync(path.join(root, "../../rules/players-handbook.md"), "utf8");
+check("the handbook's reference chapters are current",
+  fillHandbook(handbook) === handbook ? "yes" : "stale, run npm run handbook", "yes");
+/* And the catalogue is all of it: a chapter that silently covered half the items would still be
+ * "current" by the check above, because the generator would agree with itself. */
+check("items the handbook lists", (handbook.match(/^\| \*\*/gm) ?? []).length >= content.ITEMS.length
+  + content.FEATURES.length ? "all of them" : "some missing", "all of them");
 /*
  * **The art on disk, against the brief that commissioned it.**
  *
@@ -13290,7 +13308,7 @@ for (const m of selfSource.matchAll(
  */
 readFiles.set("contentSource", contentSource);
 readFiles.set("decksSource", decksSource);
-check("files this suite greps by name", readFiles.size, 61);
+check("files this suite greps by name", readFiles.size, 62);
 
 /* Every `/pattern/.test(VAR)` and `VAR.includes("...")`, with the check it belongs to. */
 const nameOfCheck = index => {
