@@ -100,7 +100,18 @@ export function resyncPlan({ built, want, held }) {
   return "rebuild";
 }
 
-async function resync(stack, tag, cards) {
+async function resync(stack, tag, cards, art = "") {
+  /*
+   * **The back first, and on its own terms.** It is the stack's own picture rather than its
+   * contents, so it is brought in line even when the cards cannot be -- a deck with a game in
+   * progress still deserves a back.
+   *
+   * It needed to be: `img` was set when the stack was created and never looked at again, so a
+   * world built before a back was drawn has been showing a blank one ever since, and no amount of
+   * re-running setup changed it. Ten backs were drawn over the weeks after the decks were made.
+   */
+  if (art && stack.img !== art) await stack.update({ img: art });
+
   const want = signature(cards);
   const plan = resyncPlan({
     built: stack.getFlag("cardrpg", BUILT), want, held: stack.cards.size
@@ -145,10 +156,10 @@ function findExisting(collection, tag) {
 const gmOnly = () => ({ default: CONST.DOCUMENT_OWNERSHIP_LEVELS.NONE });
 
 async function makeCards(name, type, tag, cards = [], back = "", ownership = null) {
-  const existing = findExisting(game.cards, tag);
-  if (existing) return resync(existing, tag, cards);
   /* `img` is what Foundry shows for the stack, which is the back of the deck as a pile of cards. */
   const art = back ? backOf(back) : "";
+  const existing = findExisting(game.cards, tag);
+  if (existing) return resync(existing, tag, cards, art);
   return Cards.create({
     name, type, cards,
     ...(art ? { img: art } : {}),

@@ -31,6 +31,7 @@ import {
   ownedIds, closedIds, reachable, canTake, stateOf,
   levelOf, titleOf, describeGrants, wouldClose, takeNode
 } from "./graph.mjs";
+import { artIn } from "./decks.mjs";
 import { CARDRPG } from "./config.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -306,7 +307,11 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
     const ways = new Set([...GRAPH.keys()].map(wayOf).filter(w => w !== "root"));
     for (const way of ways) {
       const paint = WAY_COLOUR[way] ?? WAY_COLOUR.root;
-      nodes.push({ data: { id: `territory-${way}`, label: paint.label, ...paint } });
+      /* `art` explicitly, because a territory grants nothing and so has no picture -- and a node
+       * datum with no `art` at all is the same unreadable value as an empty one. The `:parent`
+       * rule below sets `background-image: none` too, but the `node` rule is applied first and is
+       * where the parse happens. */
+      nodes.push({ data: { id: `territory-${way}`, label: paint.label, ...paint, art: "none" } });
     }
 
     for (const [id, node] of GRAPH) {
@@ -742,12 +747,32 @@ function wayOf(id) {
  * a title wears the card or slate it hands over and a minor node wears whatever it grants. Nothing
  * to show is the common case today and stays blank rather than falling back to a placeholder.
  */
+/**
+ * The picture a node wears: the art of the thing it hands over, or **"none"**.
+ *
+ * **Two bugs lived in six lines here, and they were the same bug.**
+ *
+ * It read `def.art` directly, and nothing in the content carries an `art` field -- the path is
+ * **derived** from the entry, which is what `artIn` is for and what every other reader of art in
+ * this system uses. So this was a second, shorter copy of a rule, and the short copy returned
+ * nothing: **0 of 207 nodes resolved a picture**, and the feature the stylesheet describes --
+ * *the Signature's art when the node has one, so a title wears the card it hands over* -- had
+ * never once fired. Through `artIn` it resolves for 109 of the 122 nodes that grant something.
+ *
+ * And the empty string it returned is what **crashed the pane**. `background-image: data(art)`
+ * with an empty value is not "no image", it is a value Cytoscape's style parser cannot read, and
+ * it threw out of `recalculateRenderedStyle` -- so the graph rendered nothing at all. The comment
+ * above that style rule has said `none` since it was written; the code said `""`. `none` is the
+ * word that means no image, and it is the word this returns now.
+ *
+ * It never reproduced headlessly, which is worth writing down: the throw is on the **render** path,
+ * so a Node test of the same elements and the same stylesheet passes every property on every one.
+ */
 function artFor(node) {
   const name = node?.grants?.card ?? node?.grants?.spell ?? node?.grants?.feature
     ?? node?.grants?.item ?? null;
-  if (!name) return "";
-  const def = POOL.get(name) ?? SPELLS.get(name) ?? SLATES.get(name) ?? null;
-  return def?.art ?? "";
+  const def = name ? (POOL.get(name) ?? SPELLS.get(name) ?? SLATES.get(name) ?? null) : null;
+  return (def && artIn(def)) || "none";
 }
 
 const STYLE = [

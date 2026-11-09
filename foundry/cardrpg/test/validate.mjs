@@ -2424,9 +2424,21 @@ check("the record is of what the cards say, not how many",
     ? "yes" : "no", "yes");
 /* The one call site that matters: finding a stack must go through the resync, not past it. */
 check("an existing stack is resynced rather than handed back",
-  /if \(existing\) return resync\(existing, tag, cards\);/.test(setupSource) ? "yes" : "no", "yes");
+  /if \(existing\) return resync\(existing, tag, cards, art\);/.test(setupSource) ? "yes" : "no", "yes");
 /* And the report names what it would not touch, because *run it again outside combat* is
  * actionable and silence is not. */
+/*
+ * **A deck's back is brought in line even when its cards cannot be.** `img` is the stack's own
+ * picture rather than its contents, and it was set when the stack was created and never looked at
+ * again -- so a world built before a back was drawn showed a blank one for good, and ten of the
+ * backs were drawn in the weeks after the decks were made. It is the one thing a deck with a game
+ * in progress can still have put right, so it happens before the plan is even decided.
+ */
+check("a resync is given the back as well as the cards",
+  /async function resync\(stack, tag, cards, art = ""\)/.test(setupSource) ? "yes" : "no", "yes");
+check("and sets it before deciding what to do with the cards",
+  /if \(art && stack\.img !== art\) await stack\.update\(\{ img: art \}\);/.test(setupSource)
+    ? "yes" : "no", "yes");
 check("and the run says which decks it left alone",
   /decks left alone, cards still in play/.test(setupSource) ? "yes" : "no", "yes");
 check("the world builds the deck",
@@ -3658,6 +3670,35 @@ check("and resizes the canvas without stealing the view",
 check("and the observer is dropped when the pane closes",
   /this\.sizer\?\.disconnect\(\);\s*\n\s*this\.sizer = null;/.test(levelup) ? "yes" : "no",
   "yes");
+
+/*
+ * **Every node hands the stylesheet a value it can read**, which is what the graph crashed on.
+ *
+ * `background-image: data(art)` with an **empty** value is not "no image" -- it is a value
+ * Cytoscape's style parser cannot read, and it threw out of `recalculateRenderedStyle`, so nothing
+ * was drawn at all. The style rule's own comment has said `none` since it was written; the code
+ * said `""`, and the four territory parents said nothing at all.
+ *
+ * It does not reproduce headlessly: the throw is on the render path, so a Node run of the same
+ * elements against the same stylesheet passes every property on every element. That is why this is
+ * pinned on the SHAPE of the value rather than on a test that would pass either way.
+ */
+check("a node with no picture says so in a word the parser knows",
+  /return \(def && artIn\(def\)\) \|\| "none";/.test(levelup) ? "yes" : "no", "yes");
+check("and a territory says it too",
+  /\.\.\.paint, art: "none"/.test(levelup) ? "yes" : "no", "yes");
+/*
+ * **And it resolves art the one way this system resolves art.**
+ *
+ * It read `def.art` directly, and nothing in the content carries an `art` field -- the path is
+ * derived from the entry, which is what `artIn` is for. So it was a second, shorter copy of a rule,
+ * and the short copy returned nothing: **0 of 207 nodes resolved a picture** and the feature the
+ * stylesheet describes had never fired. Through `artIn` it is 109 of the 122 that grant something.
+ */
+check("the pane resolves art through the one resolver",
+  /import \{ artIn \} from "\.\/decks\.mjs";/.test(levelup) ? "yes" : "no", "yes");
+check("and no longer reads an art field the content has not got",
+  /def\?\.art \?\? ""/.test(levelup) ? "still does" : "none", "none");
 const sheets = fs.readFileSync(path.join(root, "module/sheets.mjs"), "utf8");
 const panePart = fs.readFileSync(path.join(root, "templates/levelup.hbs"), "utf8");
 const actorModel = fs.readFileSync(path.join(root, "module/data/actors.mjs"), "utf8");
@@ -13106,7 +13147,7 @@ for (const m of selfSource.matchAll(/(\w+)\.includes\("((?:[^"\\]|\\.)*)"\)/g)) 
 }
 
 /* The pin that keeps the rest of this honest. */
-check("greps over a whole file, resolved", greps.length, 658);
+check("greps over a whole file, resolved", greps.length, 664);
 
 /*
  * **The rule, as one predicate, run over a planted example before it is run over the suite.**
@@ -13159,6 +13200,7 @@ const absentGreps = [
   String.raw`and never decides from adjacency itself :: \.after[\s\S]{0,60}\.(some|every)\(`,
   String.raw`and no caller is assumed to mean the action deck :: const deck = deckOf\(actor, "action"\);\s*\n\s*const parent = card\.parent;`,
   String.raw`and no longer reads a spell as a source of bonus :: slate\.type === "spell" && slate\.system\.effect`,
+  String.raw`and no longer reads an art field the content has not got :: def\?\.art \?\? ""`,
   String.raw`and no longer stops dealing at the first dose :: taint\+\+;\s*\n\s*break;`,
   String.raw`and no slate is flagged unusable instead :: quarantined: new fields\.BooleanField`,
   String.raw`and nothing ever puts a condition in the waved set :: waved\.add\(.*condition`,
