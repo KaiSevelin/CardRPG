@@ -112,7 +112,7 @@ for (const file of modules) {
 check("modules using CARDRPG without importing it",
   freeNames.length ? freeNames.join(", ") : "none", "none");
 /* And the sweep found users, so a strip that ate the whole file cannot pass it. */
-check("modules that use it at all", importers, 14);
+check("modules that use it at all", importers, 15);
 
 /*
  * **The vendored cytoscape carries a patch, and the patch has to still be there.**
@@ -1737,7 +1737,13 @@ check("the resolver reads it",
 /*
  * Reserved: the one decision an automatic reaction still asks for.
  */
-const decksSource = fs.readFileSync(path.join(root, "module/decks.mjs"), "utf8");
+/* The deck LAYER, for the same reason `contentSource` is: decks.mjs is a door onto six files, and
+ * a pin about what the deck layer does should not care which room it does it in. */
+const decksSource = [
+  ...fs.readdirSync(path.join(root, "module/decks")).filter(f => f.endsWith(".mjs"))
+    .map(f => `module/decks/${f}`),
+  "module/decks.mjs"
+].map(f => fs.readFileSync(path.join(root, f), "utf8")).join("\n");
 check("the flag exists", /export const RESERVED = "reserved"/.test(decksSource) ? "yes" : "no", "yes");
 /*
  * It has to clear at the ONE chokepoint every card passes through. A reserved card that came back
@@ -13219,6 +13225,7 @@ for (const m of selfSource.matchAll(
  * the sweep used to find, so the total is unchanged.
  */
 readFiles.set("contentSource", contentSource);
+readFiles.set("decksSource", decksSource);
 check("files this suite greps by name", readFiles.size, 61);
 
 /* Every `/pattern/.test(VAR)` and `VAR.includes("...")`, with the check it belongs to. */
