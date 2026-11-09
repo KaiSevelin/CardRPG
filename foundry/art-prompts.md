@@ -1222,7 +1222,7 @@ WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of G
 File: `cards/shade/count-the-odds.webp`
 
 ```text
-SUBJECT. "Count the Odds" — Strike · / Sift 2 · The secondary is seeing only — you may not reorder them, and you discard nothing.
+SUBJECT. "Count the Odds" — Strike · / Sift 2 · The secondary is seeing only, so you may not reorder them, and you discard nothing.
 
 Draw the instant a blow lands, the weapon already through -- never wound up, never posing; a hand turning one thing over and letting it drop.
 
@@ -1547,7 +1547,7 @@ WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Sou
 File: `cards/strength/nothing-held-back.webp`
 
 ```text
-SUBJECT. "Nothing Held Back" — Strike · Strain your hand but one — that card must be played this turn. Strike +1 per card strained.
+SUBJECT. "Nothing Held Back" — Strike · Strain your hand but one, and that card must be played this turn. Strike +1 per card strained.
 
 Draw the instant a blow lands, the weapon already through -- never wound up, never posing.
 

@@ -141,7 +141,7 @@ export const STRENGTH_POOL = [
     primary: [{ verb: "strike" }],
     secondary: [],
     costs: { primary: { spent: true, strain: 1 } },
-    text: "Strain your hand but one — that card must be played this turn. Strike +1 per card "
+    text: "Strain your hand but one, and that card must be played this turn. Strike +1 per card "
       + "strained."
   },
   {

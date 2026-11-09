@@ -258,9 +258,9 @@ and **the Dancers** use drugs to speak with the Land Jelly.
 
 Your Way is the direction you grow in, and each one ends in specialists the world has names for.
 
-**Way of Mind** runs to ritual magic, priest magic, and the schools of direct magic: blood,
-necromancy, elemental, poison, glamour, strength, asceticism, shadow, spiritualism and household
-magic. It also covers the trades that are not magic at all: brewers, smiths, jewellers and orators.
+**Way of Mind** runs to ritual magic and the schools of direct magic: blood, necromancy, elemental,
+poison, glamour, asceticism, shadow, spiritualism, household, ward and divination. It also covers the
+trades that are not magic at all: brewers, smiths, jewellers and orators.
 
 **Way of Strength** runs to the sword, the two-hander, the polearm, the dagger and the empty hand; to
 formation fighting, crossbows, artillery and muskets; to protection, blunt weapons, gladiators,
@@ -270,6 +270,8 @@ berserkers, cavalry and sappers.
 archers, pistoliers and duellists; to acrobats and half-mages.
 
 **Way of Faith** runs to the churches and the gods above, and swearing to one closes the others.
+Everything a priest does is here: the orders, the saints and the miracles of whichever god you swore
+to.
 
 ---
 
@@ -727,15 +729,24 @@ holds one until you prepare something else, so the decision of what you can do i
 know what you will meet. Several schools charge Health for the privilege. And **Silenced** switches
 the entire Way off, because casting needs speech.
 
-Its schools are blood magic, necromancy, elemental magic, poison, glamour, strength, asceticism,
-shadow magic, spiritualism, household magic, ward magic and divination, with ritual magic for the
+Its eleven schools are blood magic, spiritualism, necromancy, elemental magic, poison, glamour,
+asceticism, shadow magic, household magic, ward magic and divination, with ritual magic for the
 things that take days rather than a turn. It also covers the trades that are not magic at all:
 brewers, smiths, jewellers and orators.
+
+**No part of it is priestly.** A school is studied out of a book, and that is the whole difference
+between the two casting Ways: what Mind learns, Faith is given. Every god, every order and every
+miracle belongs to Way of Faith, including the priests who are only lightly magical.
 
 ### Way of Faith
 
 **Faith asks.** Its spells are **miracles**: granted rather than learned, and paid for every single
 time you ask. A first Way of Faith node also grants 2 spell slots.
+
+**Everything priestly is here**, and nowhere else. A priest's list is their god's list: the Eternal
+God and the Eternal Spirit, the Five, the three of the Grey, Vax and the First. A school of magic
+is something a scholar studies; a miracle is something a god hands over, and no amount of study
+substitutes for having sworn.
 
 Faith is built out of twelve gods, and this is the one Way where a choice is final. **Swearing to a
 god closes every other god permanently**, along with everything that could only be reached through
@@ -824,7 +835,7 @@ do not hold them: they are simply true once the node is yours.
 | **Beat the Blade** | Knock the weapon aside hard enough that they lose it. | Strike → disarmed (1) | Move 1 | – | 1 |
 | **Roar** | Everything near you hears it, and the fight goes out of them. *Every adjacent enemy.* | → compelled (1) | Move 1 | – | 1 |
 | **Walk It Off** | Whatever is on you comes off, because you have decided it will. *On yourself.* | Heal 2, then Shake 2 | Move 1 | – | 1 |
-| **Nothing Held Back** | Commit the whole hand to one blow and have nothing left afterwards. *Strain your hand but one — that card must be played this turn. Strike +1 per card strained.* | Strike | – | – | 1 |
+| **Nothing Held Back** | Commit the whole hand to one blow and have nothing left afterwards. *Strain your hand but one, and that card must be played this turn. Strike +1 per card strained.* | Strike | – | – | 1 |
 | **Call It** | Name what you are facing, and your people know what to do about it. *The secondary names one NPC type.* | Strike | Forestall 1 | – | 1 |
 | **Shoulder to Shoulder** | You swing, and every ally at your elbow is covered by it. | Strike, then Block 1 in an area of 1 | Move 1 | – | 1 |
 | **Ranging Shot** | Stand still, and the shot spreads where it is wanted. *Blast instead of Aimed, if you did not Move this turn.* | Strike in an area of 1 | Ready | – | 1 |
@@ -853,7 +864,7 @@ do not hold them: they are simply true once the node is yours.
 | **Mock** | Say the one thing that makes them stop thinking. | → dazed (1) | Move 1 | – | 1 |
 | **Sleight** | Your hands do two things and they only see one. | Use, then Strike | Ready | use | 1 |
 | **Vanish** | Be somewhere the eye slides off. *On yourself.* | → invisible (1) | Move 2 | – | 1 |
-| **Count the Odds** | Look at what is coming before you commit to anything. *The secondary is seeing only — you may not reorder them, and you discard nothing.* | Strike | Sift 2 | parry | 1 |
+| **Count the Odds** | Look at what is coming before you commit to anything. *The secondary is seeing only, so you may not reorder them, and you discard nothing.* | Strike | Sift 2 | parry | 1 |
 | **Scout Ahead** | Go first, look further, and come back knowing. *Seeing only, and one card deeper than most: you looked where you were going.* | Move 3 | Sift 3 | sidestep | 1 |
 | **Smoke and Go** | Something hits the ground, and you are not where you were. *On yourself.* | → invisible (1), then Move 2 | Use | – | 1 |
 | **Point Man** | Walking in front has its uses, and this is the one. *While you are the furthest forward of your party, Foresee one extra type.* | Foresee | Move 1 | – | 1 |
@@ -873,8 +884,8 @@ do not hold them: they are simply true once the node is yours.
 | **Hold to the Bargain** | Something that owes you intervenes, once. *It was going to fail. Something intervened, once, because it owes you.* | – | – | bargain | 1 |
 | **Turn Aside** | Their shield is suddenly worth twice what it was. *You do not stop the blow; you make their shield worth twice what it was for exactly as long as it takes.* | – | – | mend | 1 |
 | **Shake It Off** | Whatever is on them comes off now, not on their turn. *Whatever is on them, off, on the turn it happened rather than on yours. Three is enough for anything the game can print.* | – | – | mend | 1 |
-| **The Mirror** | The blow goes back the way it came, in full. *Not stopped. Returned, in full, to the man who sent it , which is worse for him than for you and is the whole reason to prepare this instead of Unmake.* | – | – | unmake | 1 |
-| **Unmake** | You have read this spell before, and that is the only reason it stops. *You have felt this one before. That is the only reason you can stop it: a warder's book is a record of what the party has survived , which is a condition on LEARNING it, held by the GM, not something the engine tests.* | – | – | unmake | 1 |
+| **The Mirror** | The blow goes back the way it came, in full. *Not stopped. Returned, in full, to the man who sent it, which is worse for him than for you and is the whole reason to prepare this instead of Unmake.* | – | – | unmake | 1 |
+| **Unmake** | You have read this spell before, and that is the only reason it stops. *You have felt this one before. That is the only reason you can stop it: a warder's book is a record of what the party has survived, which is a condition on LEARNING it, held by the GM, not something the engine tests.* | – | – | unmake | 1 |
 
 ### Way of Faith
 
@@ -1181,20 +1192,20 @@ many spell slots preparing one costs.
 
 | Spell | Strength | What it does |
 |---|---|---|
-| **The Small Pact** | 1 | Name the god you are pacted with, and it does the thing written on the pact. The same thing, every time , which is what makes this a spell and not a wish. |
+| **The Small Pact** | 1 | Name the god you are pacted with, and it does the thing written on the pact. The same thing, every time, which is what makes this a spell and not a wish. |
 | **The Nine Names** | 1 | Out of combat. A minor god names who in this place it is angry with, and will not say why. |
 | **Hold to the Bargain** | 2 | It was going to fail. Something intervened, once, because it owes you. |
-| **The Borrowed Body** | 3 | A spirit lends you its shape. Your deck, your Health and whatever is wrong with you come along , a body is what you fight with, not who you are. |
-| **The Bargain** | 3 | A minor god acts, once. The GM decides how , and that is not a hole in the spell , it is the spell. |
+| **The Borrowed Body** | 3 | A spirit lends you its shape. Your deck, your Health and whatever is wrong with you come along, a body is what you fight with, not who you are. |
+| **The Bargain** | 3 | A minor god acts, once. The GM decides how, and that is not a hole in the spell, it is the spell. |
 | **The Gathered Pact** | 4 | Every pact at once, called in on the same turn. Each god does exactly what it promised and no more, which is why this is worth four slots and not five. |
-| **The Great Bargain** | 5 | It is actually here, for three rounds. The GM plays it as an ally and then it goes, and afterwards it takes something the GM chooses , which is the only honest way to price a favour that large. |
+| **The Great Bargain** | 5 | It is actually here, for three rounds. The GM plays it as an ally and then it goes, and afterwards it takes something the GM chooses, which is the only honest way to price a favour that large. |
 
 ### Necromancy
 
 | Spell | Strength | What it does |
 |---|---|---|
 | **The Long Preparation** | 1 | You read about them the night before. It is not insight; it is homework, and it only works on the thing you did it for. |
-| **Ask the Dead** | 1 | It answers three questions truthfully, as far as it knew , which is usually less than you hoped and occasionally much more. |
+| **Ask the Dead** | 1 | It answers three questions truthfully, as far as it knew, which is usually less than you hoped and occasionally much more. |
 | **Grave Chill** | 2 | The cold that comes off a body, aimed. Two squares of it, and everything in them is slow to understand what happened. |
 | **Call the Unquiet** | 3 | It does not know it died. It will stop when the fight does. |
 | **The Risen Rank** | 4 | Every body within three squares, up at once, for one round. Then they are bodies again, and the ground is worse than it was. |
@@ -1209,11 +1220,11 @@ many spell slots preparing one costs.
 | **Scorch** | 1 | Carries no combo clause at all, and is still the proof that an opening is not always worth having: water and fire cancel, so a Wet target takes the Cast and sheds the Burning. The interaction is on Burning, where the rules put it. |
 | **Flesh of the Earth** | 2 | Acid, which is nobody's sphere. It eats the armour as well as the man, and the man notices second. |
 | **Rain** | 2 | A squall out of nothing, over three squares, and the water does not care who it lands on. It is not an attack and nothing resists it. |
-| **Lightning** | 2 | Reads a Wet target two ways at once: harder to shrug off, and it hurts more. Against a dry one it is still a Cast that tries to stun, which is the point , the opening sharpens the card, it does not switch it on. |
+| **Lightning** | 2 | Reads a Wet target two ways at once: harder to shrug off, and it hurts more. Against a dry one it is still a Cast that tries to stun, which is the point, the opening sharpens the card, it does not switch it on. |
 | **Wall of the Sphere** | 2 | Three squares of whichever sphere is yours. Stand behind it and the ground in front of you is no longer anybody's. |
 | **The Standing Flood** | 3 | Deep water where there was a floor. Everything in it is Wet, which is the opening half this school is built to set up. |
 | **The Sphere Entire** | 4 | Five squares of whichever sphere is yours, and standing in it costs you something every turn you stay. |
-| **Unmake the Ground** | 5 | A line across the battlefield that is no longer there. For the rest of the fight, nobody crosses it , you included, which is the half of this that gets casters killed. |
+| **Unmake the Ground** | 5 | A line across the battlefield that is no longer there. For the rest of the fight, nobody crosses it, you included, which is the half of this that gets casters killed. |
 
 ### Poison
 
@@ -1259,7 +1270,7 @@ many spell slots preparing one costs.
 | **The Long Step** | 1 | Four squares, through whatever is in between, so long as both ends are dark. Movement is a sentence the table applies (core-rules 11), so the only thing the engine would have to know is which squares are shadowed. |
 | **Cast No Shadow** | 2 | For one round you are only there if they are standing next to you. Archers and casters are simply out of the conversation. |
 | **Step Through** | 2 | You are in the shadow, and then you are in another one. Every reach into the dark leaves something of the dark in you: a Wild card joins your fate deck, and it does not leave until you have slept. |
-| **The Borrowed Dark** | 3 | Every square on the map, dark at once , for your allies as much as for you, and for anyone else who knows what to do with it. |
+| **The Borrowed Dark** | 3 | Every square on the map, dark at once, for your allies as much as for you, and for anyone else who knows what to do with it. |
 | **The Shadow Road** | 4 | You take them with you. The whole front rank arrives behind the enemy line at once, which is the only thing in this school that wins a fight outright. |
 | **Become the Shadow** | 5 | Not in a shadow: in every shadow, at once, until the fight ends. Nothing can reach you and you can reach anything standing in the dark. |
 
@@ -1267,11 +1278,11 @@ many spell slots preparing one costs.
 
 | Spell | Strength | What it does |
 |---|---|---|
-| **The Clean Pot** | 1 | Food never spoils and water is always safe. A day's rations for the party, every day, for ever , which quietly deletes a whole column of the equipment list. |
-| **The Mended Seam** | 1 | One item, overnight, including corroded armour , which until now was the only damage in the game nothing undid. |
-| **Hearth and Home** | 1 | Out of combat: a camp nobody unfriendly can find, for one night. A ritual, so anyone literate could do it , but somebody has to know the words. |
+| **The Clean Pot** | 1 | Food never spoils and water is always safe. A day's rations for the party, every day, for ever, which quietly deletes a whole column of the equipment list. |
+| **The Mended Seam** | 1 | One item, overnight, including corroded armour, which until now was the only damage in the game nothing undid. |
+| **Hearth and Home** | 1 | Out of combat: a camp nobody unfriendly can find, for one night. A ritual, so anyone literate could do it, but somebody has to know the words. |
 | **The Unlatched Door** | 2 | Any door or lock that was ever opened by somebody who lived there opens for you. Most doors were, which is the joke and also the spell. |
-| **The Long Table** | 3 | One meal, taken together, and nobody is carrying anything from before it. Once a day, and the elf-kin keep the tally , which is this school's price doing exactly what a price should. |
+| **The Long Table** | 3 | One meal, taken together, and nobody is carrying anything from before it. Once a day, and the elf-kin keep the tally, which is this school's price doing exactly what a price should. |
 | **The House That Was** | 4 | Overnight a ruin is a house again: warm, defensible, and worth sleeping in. The party rests as though they had reached somewhere. |
 | **The Door Home** | 5 | A door you have opened before becomes a door to any other door you have opened before. It is the school's thesis: a householder is never far from anywhere they have been. |
 
@@ -1283,10 +1294,10 @@ many spell slots preparing one costs.
 | **Turn Aside** | 2 | You do not stop the blow; you make their shield worth twice what it was for exactly as long as it takes. |
 | **The Shut Mouth** | 2 | A caster who cannot speak is a man in a robe. Lore resists it, because the ones who understand the word are the ones who can get out from under it. |
 | **Shake It Off** | 2 | Whatever is on them, off, on the turn it happened rather than on yours. Three is enough for anything the game can print. |
-| **Unmake** | 2 | You have felt this one before. That is the only reason you can stop it: a warder's book is a record of what the party has survived , which is a condition on LEARNING it, held by the GM, not something the engine tests. |
-| **The Mirror** | 3 | Not stopped. Returned, in full, to the man who sent it , which is worse for him than for you and is the whole reason to prepare this instead of Unmake. |
+| **Unmake** | 2 | You have felt this one before. That is the only reason you can stop it: a warder's book is a record of what the party has survived, which is a condition on LEARNING it, held by the GM, not something the engine tests. |
+| **The Mirror** | 3 | Not stopped. Returned, in full, to the man who sent it, which is worse for him than for you and is the whole reason to prepare this instead of Unmake. |
 | **The Standing Ward** | 4 | Spent: for one round there is no magic on the field. Yours included, which is what makes this a ward and not an attack. |
-| **The Broken Word** | 5 | They still have the slot. They no longer have the words, and will not until tomorrow , which to a caster is worse than a wound. |
+| **The Broken Word** | 5 | They still have the slot. They no longer have the words, and will not until tomorrow, which to a caster is worse than a wound. |
 
 ### Divination
 
@@ -1294,8 +1305,8 @@ many spell slots preparing one costs.
 |---|---|---|
 | **Where It Will Land** | 1 | Somebody else's deck, one card down. The cheapest certainty in the game, and never your own: the seer is blind to themselves. |
 | **The Mark of Things to Come** | 2 | Marked at any range, and you know what its luck is about to do. The condition lands by itself; the reading is the half that does not. |
-| **The Reading** | 2 | Three cards down somebody else's luck. Never your own , a diviner who could stack their own deck would be a damage school wearing a robe. |
-| **The Long Look** | 3 | One question about the next scene, answered truthfully , and the GM writes a prophecy you do not get to read. The price is the better half of the formula. |
+| **The Reading** | 2 | Three cards down somebody else's luck. Never your own, a diviner who could stack their own deck would be a damage school wearing a robe. |
+| **The Long Look** | 3 | One question about the next scene, answered truthfully, and the GM writes a prophecy you do not get to read. The price is the better half of the formula. |
 | **The Open Book** | 4 | For one round the whole party is lucky and you can see why. Two cards down each of their decks, and a better draw on top of it. |
 | **The Whole Thread** | 5 | The whole fight, in order, before it starts. The GM writes three prophecies for it, and a diviner who uses this twice in a week is in a story they no longer steer. |
 
@@ -1380,7 +1391,7 @@ many spell slots preparing one costs.
 | **Grey Judgement** | 2 | A Judged adjacent enemy acts last in the round, whatever its initiative. |
 | **The Close Work** | 2 | You move his arm. The man behind him takes it, and neither of them understands what happened. |
 | **The Silent Hour** | 2 | Reaction, adjacent only: an enemy's action does not happen. Close enough to touch, which is where the knife is. |
-| **The Grey Hour** | 4 | Its whole turn does not happen. Not interrupted , it simply never took place, and the round moves on without it. |
+| **The Grey Hour** | 4 | Its whole turn does not happen. Not interrupted, it simply never took place, and the round moves on without it. |
 | **The Silent Knife** | 5 | Adjacent only. One enemy is dead. There is no roll of any kind, which is what a god of the silent approach has instead of a spell. |
 
 ### The Purple
@@ -1391,7 +1402,7 @@ many spell slots preparing one costs.
 | **The Brewer's Tithe** | 2 | Slow, and still there next week. A disease rather than a poison, which is the distinction the whole cult is built on. |
 | **The First Taste** | 2 | Tainting 2 on one adjacent enemy, and 1 Taint for you. You are the first to taste it, always. |
 | **The Poisoned Well** | 4 | Three squares of it, fast. Everything standing in the water carries it away. |
-| **The Slow Failure** | 5 | Tainting 3 on them and two Taint on you , which with the first taste is Afflicted. A priest of The Purple who casts their thesis is ill for good. |
+| **The Slow Failure** | 5 | Tainting 3 on them and two Taint on you, which with the first taste is Afflicted. A priest of The Purple who casts their thesis is ill for good. |
 
 ### The Yellow
 
@@ -1409,7 +1420,7 @@ many spell slots preparing one costs.
 |---|---|---|
 | **Stand Where I Stand** | 1 | Allies adjacent to you cannot be reduced below 1 Health until your next turn. Costs 2 Health, because his miracles are paid in yours. Costs 2 Health. |
 | **The Shield Line** | 2 | Every ally adjacent to you gains your armor value as Block until your next turn. One Health per ally, so a long line is a dear one. Costs 1 Health. |
-| **The Club and the Line** | 2 | Strike every adjacent enemy. No free hand needed, because the club is the holy symbol , which is the gift on the node, not on the card. Costs 2 Health. |
+| **The Club and the Line** | 2 | Strike every adjacent enemy. No free hand needed, because the club is the holy symbol, which is the gift on the node, not on the card. Costs 2 Health. |
 | **The Line Holds** | 4 | Nobody beside you is moved, knocked down or turned. It costs two Health a man, and Vax expects you to count them first. Costs 2 Health. |
 | **The Sixth District** | 5 | Your armour is theirs, your Block is theirs, and everything aimed at them arrives in you. It will cost enough, which is how Vax prices war plainly. |
 
@@ -1418,7 +1429,7 @@ many spell slots preparing one costs.
 | Spell | Strength | What it does |
 |---|---|---|
 | **Measure of the Debt** | 2 | A Judged enemy that dies this round pays you 3 Health. The debt is collected whether or not you were the one who called it in. |
-| **What Does Not Die** | 3 | When you would drop to 0 Health, drop to 1 instead , and lose a spell slot permanently. |
+| **What Does Not Die** | 3 | When you would drop to 0 Health, drop to 1 instead, and lose a spell slot permanently. |
 | **The Long Night** | 3 | Drain 3 Health from an adjacent living target and gain it. The only renewable pool in the game, and the node says what it costs to have one. |
 
 <!-- /generated: spells -->

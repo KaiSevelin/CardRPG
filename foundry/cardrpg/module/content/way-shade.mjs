@@ -179,7 +179,7 @@ export const SHADE_POOL = [
     primary: [{ verb: "strike" }],
     secondary: [{ verb: "sift", param: 2 }],
     reaction: "parry",
-    text: "The secondary is seeing only — you may not reorder them, and you discard nothing."
+    text: "The secondary is seeing only, so you may not reorder them, and you discard nothing."
   },
   {
     name: "Scout Ahead", copies: 1, pool: "shade",

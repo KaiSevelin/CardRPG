@@ -24,8 +24,13 @@ const OUT = path.join(import.meta.dirname, "..", "..", "..", "rules", "players-h
 
 /** Content writes descriptions as HTML, and a handbook table wants a sentence. */
 const plain = html => String(html ?? "")
-  .replace(/<[^>]+>/g, " ").replace(/&mdash;/g, ",").replace(/&[a-z]+;/g, " ")
-  .replace(/\s+/g, " ").trim();
+  .replace(/<[^>]+>/g, " ")
+  /* An em dash becomes a comma, and takes the space in front of it with it: " &mdash; " left
+   * " , " behind in twenty-three rows. The handbook does not print em dashes. */
+  .replace(/\s*(?:&mdash;|—)\s*/g, ", ").replace(/&[a-z]+;/g, " ")
+  .replace(/\s+/g, " ")
+  /* Tags are stripped to a SPACE, so "how</strong>," arrives as "how ,". */
+  .replace(/\s+([,.;:!?])/g, "$1").trim();
 
 /** A table cell may not contain the character that ends a table cell. */
 const cell = s => plain(s).replace(/\|/g, "/");

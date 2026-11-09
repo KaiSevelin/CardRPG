@@ -175,7 +175,7 @@ The minor-node cards of a built Way.
 |---|---|---|---|
 | ✓ | **Between the Plates** | Strike ignores armour vs Marked · / Move 1 | `cards/shade/between-the-plates.webp` |
 | ✓ | **Call the Shot** | Strike · / Marked (1) · Marked on any enemy you can see, at any range. | `cards/shade/call-the-shot.webp` |
-| ✓ | **Count the Odds** | Strike · / Sift 2 · The secondary is seeing only — you may not reorder them, and you discard nothing. | `cards/shade/count-the-odds.webp` |
+| ✓ | **Count the Odds** | Strike · / Sift 2 · The secondary is seeing only, so you may not reorder them, and you discard nothing. | `cards/shade/count-the-odds.webp` |
 | ✓ | **Cut and Run** | Strike, Move 2 · / Move 1 | `cards/shade/cut-and-run.webp` |
 | ✓ | **Find the Seam** | Strike -1 ignores armour · / Move 1 · Armour does not apply. A point weaker than a plain Strike. | `cards/shade/find-the-seam.webp` |
 | ✓ | **Half-Hilt** | Strike ignores 2 armor · / Move 1 · Ignores 2 armour. Reversed grip, straight into the gap. | `cards/shade/half-hilt.webp` |
@@ -204,7 +204,7 @@ The minor-node cards of a built Way.
 | ✓ | **Call It** | Strike · / Forestall 1 · The secondary names one NPC type. | `cards/strength/call-it.webp` |
 | ✓ | **Hammerblow** | Strike · / Move 1 | `cards/strength/hammerblow.webp` |
 | ✓ | **Heave** | Move 2 · / Ready · Carrying any weight without being Slowed. | `cards/strength/heave.webp` |
-| ✓ | **Nothing Held Back** | Strike · Strain your hand but one — that card must be played this turn. Strike +1 per card strained. | `cards/strength/nothing-held-back.webp` |
+| ✓ | **Nothing Held Back** | Strike · Strain your hand but one, and that card must be played this turn. Strike +1 per card strained. | `cards/strength/nothing-held-back.webp` |
 | ✓ | **Overbear** | Grappled (2) · / Move 1 | `cards/strength/overbear.webp` |
 | ✓ | **Pull Them Down** | Strike · / Strike -1 · The secondary only against a Prone or Grappled target. | `cards/strength/pull-them-down.webp` |
 | ✓ | **Roar** | Compelled (1) · / Move 1 · Every adjacent enemy. | `cards/strength/roar.webp` |
