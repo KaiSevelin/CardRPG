@@ -482,7 +482,14 @@ push(
   "",
   `**${total} pieces**, of which **${drawn}** are drawn`
   + `${refused ? `, **${refused}** refused` : ""}`
-  + `${pending ? ` and **${pending}** still to shoot` : ""}. Generated from the game's own content `
+  /*
+   * **Always, including zero.** This read `${pending ? ... : ""}` and vanished when the queue
+   * emptied -- which is the good state, and the one state the check over it could not read: it
+   * looks for `**N** still to shoot`, found nothing, and failed the hour everything was finally
+   * drawn. A line that disappears when the answer is good is a line whose absence somebody has
+   * to interpret, and the Gaps section in `art-prompts.mjs` had the same bug on the same day.
+   */
+  + ` and **${pending}** still to shoot. Generated from the game's own content `
   + "by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the "
   + "game the first time somebody adds a card. **Drawn means the file is on the disk**, not that "
   + "the game knows where it would go: every piece in content knows that, so the older count was "

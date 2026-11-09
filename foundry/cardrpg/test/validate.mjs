@@ -8247,6 +8247,36 @@ check("exposed is reached by one piece, and that piece is directed",
   ART_DIRECTION["cards/npc/prise-it-open"] ? "directed" : "generated", "directed");
 
 /*
+ * **A shared motif is a prompt for every piece that reaches it, so an unsafe one is unsafe N
+ * times over.**
+ *
+ * **[BUILT 2026-11-09]** `EFFECT_MOTIF.heal` read *a wound closing, or breath coming back*, and
+ * `cards/shade-starter/bind-the-wound` has no hand-written direction, so that sentence WAS its
+ * prompt. It was blocked `[self-harm, violence]` three times -- and it drew successfully at 14:43
+ * and was refused at 15:00 on identical words, because output-stage moderation judges the picture
+ * that came back. The same wording is a lottery; different wording is what moves the odds.
+ *
+ * Six pieces reached the wound through the motif and its stem. The two fixes written before this
+ * one were both hand-written directions on a single piece (`items/healers-kit`,
+ * `cards/twist/hurt`), which is why the third piece was still carrying it.
+ *
+ * **The rule, which is the general form of all three:** a motif may name a wound or blood only
+ * while ruling it out of the frame. The phrasing that cost money named it in the positive; the
+ * phrasing that draws names it to exclude it. This check cannot be written as "never say wound",
+ * because the sentences that WORK are the ones that say *no wound, no blood*.
+ */
+const injuryWords = /\b(wound|blood|bleeding)\b/i;
+const naming = Object.entries({ ...EFFECT_MOTIF, ...CONDITION_MOTIF })
+  .filter(([, text]) => injuryWords.test(text));
+check("motifs that name an injury at all", naming.map(([k]) => k).join(", ") || "none", "heal");
+check("and any that name one without ruling it out of the frame",
+  naming.filter(([, text]) => !/\bno (?:wound|blood|bandage)\b/i.test(text))
+    .map(([k]) => k).join(", ") || "none", "none");
+/* And the phrase itself, gone from every prompt in the book rather than from the table only. */
+check("prompts describing a wound closing",
+  (artPrompts.match(/\bwound closing\b/g) ?? []).length, 0);
+
+/*
  * **And the one composition this API will not draw, which was written down twice and fixed once.**
  *
  * The rule is in `art-prompts.mjs` at `items/lockpicks`, bought with twelve paid refusals: it is

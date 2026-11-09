@@ -613,7 +613,8 @@ const VERB_STEM = {
 };
 
 const EFFECT_STEM = {
-  heal: "the wound closing", block: "the blow stopped flat", conjure: "the arrival",
+  /* See `heal` in EFFECT_MOTIF below: the wound was the half that got refused. */
+  heal: "breath coming back", block: "the blow stopped flat", conjure: "the arrival",
   shape: "matter bending", foresee: "the moment shown twice", range: "the distance crossed",
   forestall: "the plan taken back", sift: "the one looked at and let fall",
   blast: "the force travelling out", aimed: "the single line", advantage: "the second chance",
@@ -623,7 +624,29 @@ const EFFECT_STEM = {
 };
 
 export const EFFECT_MOTIF = {
-  heal: "a wound closing, or breath coming back",
+  /*
+   * **[REWRITTEN 2026-11-09] It read "a wound closing, or breath coming back", and the fix was
+   * to delete the first half.**
+   *
+   * `cards/shade-starter/bind-the-wound` has no hand-written direction, so this motif IS its
+   * prompt -- and it was blocked `[self-harm, violence]` at the output stage twice. It drew
+   * successfully at 14:43 and was refused at 15:00 on the identical wording, which is the thing
+   * to understand about output-stage moderation: it judges the picture that came back, so the
+   * same words are a lottery. Re-rolling is not useless, it is bad odds; different words are
+   * what move the odds.
+   *
+   * **The lesson was already in this file twice.** `items/healers-kit` was blocked and rewritten
+   * to say *nobody is being treated, and there is no body, no wound and no blood in the frame*,
+   * and `cards/twist/hurt` only drew once it became a dented helmet. Both were hand-written
+   * directions on one piece each. This is the shared word six pieces reach through, so fixing it
+   * here fixes all six -- which is the difference between patching a picture and fixing a rule.
+   *
+   * And the safe picture was already here, second in the list, behind an `or`. Healing in this
+   * game is cloth, water and breath; the injury is what the card is about and not what the
+   * picture should be.
+   */
+  heal: "breath coming back -- a chest filling again, a hand steady that was not steady. "
+    + "No wound, no blood and no bandage in the frame",
   block: "a blow stopped flat, its force going sideways",
   conjure: "something arriving that was not there a moment ago",
   shape: "matter bending to a hand",
@@ -900,6 +923,24 @@ export const DIRECTION = {
     + "that is not in them, the canvas gone dark along every fold from years of being rolled and "
     + "unrolled. The subject is how used it is. No tool, no metal, no lock, no keyhole, no door "
     + "and no person anywhere in the frame",
+
+  /*
+   * **Blocked three times, and its own title is working against it.**
+   *
+   * The shared `heal` motif was the first cause and is fixed where it lives, but this piece is
+   * called *Bind the Wound*, and the card's name is printed in the subject line where it cannot
+   * be changed -- it is the card. So this one gets a direction as well, on the rule that drew
+   * `items/healers-kit` after it was refused: **the object is the subject, and nobody is being
+   * treated.**
+   *
+   * Specifically NOT a wrapped forearm. That is what `cards/twist/hurt` was written as and
+   * refused as self-harm for, and a limb with cloth round it is the picture the classifier is
+   * looking for. There is no body in this frame at all.
+   */
+  "cards/shade-starter/bind-the-wound":
+    "a strip of torn linen trailing from a closed fist, knotted once and pulled tight, the far "
+    + "end running out of frame. The cloth and the knot are the whole subject: no body, no limb, "
+    + "no wound and no blood anywhere in the picture",
 
   /*
    * **The three held shots.** One card written three times, so they need separating by the weapon

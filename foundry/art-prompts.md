@@ -482,7 +482,7 @@ File: `cards/shade-starter/bind-the-wound.webp`
 ```text
 SUBJECT. "Bind the Wound" — Heal 2 · / Use
 
-Draw a wound closing, or breath coming back; a hand working an object, the object mid-use rather than held up to be seen.
+Draw a strip of torn linen trailing from a closed fist, knotted once and pulled tight, the far end running out of frame. The cloth and the knot are the whole subject: no body, no limb, no wound and no blood anywhere in the picture.
 
 WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Levantine appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
@@ -3749,7 +3749,7 @@ SUBJECT. "Breath of the Spirit" — strength 2 · Heal 3 range 99
 
 Reaction: heal an ally 3, at any range, ignoring cover. The spirit drifts through all the air, so distance is not a question for it.
 
-Draw the wound closing, landing 99 squares from the one who threw it.
+Draw breath coming back, landing 99 squares from the one who threw it.
 
 WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Germanic appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
@@ -3763,7 +3763,7 @@ SUBJECT. "Out of Barren Ground" — strength 3 · Heal 4 range 2
 
 Plant it. At the start of your second turn after, every ally within 2 heals 4. Nothing he gives arrives when you ask for it.
 
-Draw the wound closing, landing 2 squares from the one who threw it.
+Draw breath coming back, landing 2 squares from the one who threw it.
 
 WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Levantine appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
@@ -5244,7 +5244,7 @@ SUBJECT. "Alone on the Road" — strength 1 · Heal 2 at the start of your turn
 
 While no ally is within 2 squares, heal 2 at the start of your turn. The only healing a priest of hers can ever receive.
 
-Draw a wound closing, or breath coming back.
+Draw breath coming back -- a chest filling again, a hand steady that was not steady. No wound, no blood and no bandage in the frame.
 ```
 
 ### Bear It for Them
@@ -5328,7 +5328,7 @@ SUBJECT. "Lay On" — strength 1 · Heal 2 range 3
 
 Hands, and three squares of air between you.
 
-Draw the wound closing, landing 3 squares from the one who threw it.
+Draw breath coming back, landing 3 squares from the one who threw it.
 ```
 
 ### Measure of the Debt
@@ -5576,7 +5576,7 @@ SUBJECT. "The Orchard" — strength 4 · Heal 4 and sheds one condition
 
 Two turns from now the whole party heals four and sheds something. Planting is the god's only verb.
 
-Draw a wound closing, or breath coming back.
+Draw breath coming back -- a chest filling again, a hand steady that was not steady. No wound, no blood and no bandage in the frame.
 ```
 
 ### The Planted Word

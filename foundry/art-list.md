@@ -1,6 +1,6 @@
 # Art list
 
-**643 pieces**, of which **639** are drawn and **4** still to shoot. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
+**643 pieces**, of which **643** are drawn and **0** still to shoot. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
 
 ## What to supply
 
@@ -186,11 +186,11 @@ Face-up on the table during a fight, which makes them the art players stare at l
 
 The minor-node cards of a built Way.
 
-**19 pieces**, 17 wired up. Suggested path: `cardrpg/art/cards/shade/`
+**19 pieces**, 19 wired up. Suggested path: `cardrpg/art/cards/shade/`
 
 | | Name | What it is | File |
 |---|---|---|---|
-|   | **At Full Draw** | Ready · / Move 1 · A bow or a crossbow. The first enemy to walk into the ground you are watching takes the shot, at the bow's own value, out to its... | `cards/shade/at-full-draw.webp` |
+| ✓ | **At Full Draw** | Ready · / Move 1 · A bow or a crossbow. The first enemy to walk into the ground you are watching takes the shot, at the bow's own value, out to its... | `cards/shade/at-full-draw.webp` |
 | ✓ | **Between the Plates** | Strike ignores armour vs Marked · / Move 1 | `cards/shade/between-the-plates.webp` |
 | ✓ | **Call the Shot** | Strike · / Marked (1) · Marked on any enemy you can see, at any range. | `cards/shade/call-the-shot.webp` |
 | ✓ | **Count the Odds** | Strike · / Sift 2 · The secondary is seeing only, so you may not reorder them, and you discard nothing. | `cards/shade/count-the-odds.webp` |
@@ -207,14 +207,14 @@ The minor-node cards of a built Way.
 | ✓ | **Slip the Knot** | Move 2 · / Shake 1 | `cards/shade/slip-the-knot.webp` |
 | ✓ | **Smoke and Go** | Invisible (1), Move 2 · / Use · On yourself. | `cards/shade/smoke-and-go.webp` |
 | ✓ | **Take the Shot** | Strike +1 · / Move 2 | `cards/shade/take-the-shot.webp` |
-|   | **The Held Knife** | Ready · / Move 1 · A weapon you can throw. The first enemy to walk into the ground you are watching takes it, at the blade's own value and no furth... | `cards/shade/the-held-knife.webp` |
+| ✓ | **The Held Knife** | Ready · / Move 1 · A weapon you can throw. The first enemy to walk into the ground you are watching takes it, at the blade's own value and no furth... | `cards/shade/the-held-knife.webp` |
 | ✓ | **Vanish** | Invisible (1) · / Move 2 · On yourself. | `cards/shade/vanish.webp` |
 
 ## Way of Strength — pool
 
 The minor-node cards of a built Way.
 
-**16 pieces**, 15 wired up. Suggested path: `cardrpg/art/cards/strength/`
+**16 pieces**, 16 wired up. Suggested path: `cardrpg/art/cards/strength/`
 
 | | Name | What it is | File |
 |---|---|---|---|
@@ -224,7 +224,7 @@ The minor-node cards of a built Way.
 | ✓ | **Hammerblow** | Strike · / Move 1 | `cards/strength/hammerblow.webp` |
 | ✓ | **Heave** | Move 2 · / Ready · Carrying any weight without being Slowed. | `cards/strength/heave.webp` |
 | ✓ | **Nothing Held Back** | Strike · Strain your hand but one, and that card must be played this turn. Strike +1 per card strained. | `cards/strength/nothing-held-back.webp` |
-|   | **On the Rest** | Ready · / Move 1 · A firearm, levelled on its rest. The first enemy to walk into the ground you are watching takes it, armour and all, out to the b... | `cards/strength/on-the-rest.webp` |
+| ✓ | **On the Rest** | Ready · / Move 1 · A firearm, levelled on its rest. The first enemy to walk into the ground you are watching takes it, armour and all, out to the b... | `cards/strength/on-the-rest.webp` |
 | ✓ | **Overbear** | Grappled (2) · / Move 1 | `cards/strength/overbear.webp` |
 | ✓ | **Pull Them Down** | Strike · / Strike -1 · The secondary only against a Prone or Grappled target. | `cards/strength/pull-them-down.webp` |
 | ✓ | **Roar** | Compelled (1) · / Move 1 · Every adjacent enemy. | `cards/strength/roar.webp` |
@@ -288,12 +288,12 @@ Drawn on a Wild, so each one is a surprise and wants to look like one.
 
 **The GM is somebody at the table**, and this is the deck they draw from more often than any player draws from anything. One person seeing all thirty in a session is a reason to draw them, not a reason to skip them, which is the argument this list used to get backwards. A twist is a complication rather than an attack: show the cost arriving, not a weapon.
 
-**8 pieces**, 7 wired up. Suggested path: `cardrpg/art/cards/twist/`
+**8 pieces**, 8 wired up. Suggested path: `cardrpg/art/cards/twist/`
 
 | | Name | What it is | File |
 |---|---|---|---|
 | ✓ | **Arrival** | — | `cards/twist/arrival.webp` |
-|   | **Gear** | — | `cards/twist/gear.webp` |
+| ✓ | **Gear** | — | `cards/twist/gear.webp` |
 | ✓ | **Hurt** | — | `cards/twist/hurt.webp` |
 | ✓ | **Noise** | — | `cards/twist/noise.webp` |
 | ✓ | **Opening** | — | `cards/twist/opening.webp` |
