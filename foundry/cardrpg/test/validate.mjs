@@ -8268,18 +8268,30 @@ check("exposed is reached by one piece, and that piece is directed",
 const { GATE } = await import("./art-gate.mjs");
 const FRACTION = { tenth: 1 / 10, ninth: 1 / 9, eighth: 1 / 8, seventh: 1 / 7, sixth: 1 / 6,
   fifth: 1 / 5, quarter: 1 / 4, third: 1 / 3 };
-const askedStrip = /between a (\w+) and an? (\w+) of the height/.exec(artPrompts);
+const askedStrip = /between an? (\w+) and an? (\w+) of the height/.exec(artPrompts);
 check("the capsule names the bare strip as a range, not a single number",
-  askedStrip ? `${askedStrip[1]} to ${askedStrip[2]}` : "one number or none", "tenth to eighth");
+  askedStrip ? `${askedStrip[1]} to ${askedStrip[2]}` : "one number or none", "eighth to sixth");
 const [lo, hi] = [FRACTION[askedStrip?.[1]], FRACTION[askedStrip?.[2]]];
 check("and its floor is at least what the gate enforces",
   lo >= GATE.quietTop ? "at least" : "under", "at least");
-check("and its ceiling does not reach into the clear window",
-  hi <= GATE.window[0] ? "clear" : "overruns", "clear");
+/*
+ * **The ceiling is 0.18 by measurement, and `GATE.window[0]` was my inference.**
+ *
+ * The first version of this check said the strip must not reach past where the clear window
+ * begins, on the reasoning that ink displaced past it lands outside the band. The band analysis
+ * does not agree: mean `inWindow` is 0.64 from 0.10 to 0.14 and still 0.60 from 0.14 to 0.18,
+ * and only falls off at 0.45 from 0.18 to 0.25 and 0.23 above that. The window's nominal start
+ * is not the point where a bigger strip starts costing anything -- a strip of a sixth leaves 26
+ * of the window's 30 points, which is plenty. So the ceiling is the measured knee, not the
+ * nominal edge, and three of the pieces already through the gate sit at 0.14, 0.18 and 0.24.
+ */
+const STRIP_CEILING = 0.18;
+check("and its ceiling stops short of where the window score falls off",
+  hi <= STRIP_CEILING ? "clear" : "overruns", "clear");
 /* Printed as a number, so noticing how little room there is does not require doing the sum. */
 check("the corridor the ask has to land in",
-  `${(GATE.quietTop * 100).toFixed(0)} to ${(GATE.window[0] * 100).toFixed(0)} points of height`,
-  "10 to 13 points of height");
+  `${(GATE.quietTop * 100).toFixed(0)} to ${(STRIP_CEILING * 100).toFixed(0)} points of height`,
+  "10 to 18 points of height");
 /*
  * **And the dark band is anchored absolutely rather than to the strip.** This is the one that
  * mattered: it read *all of the dark lives between that strip and the halfway line*, so widening
@@ -8291,7 +8303,7 @@ check("the dark band is anchored to the frame, not to the strip", (() => {
    * here matches 24 times and the suite's own duplicate-grep rule says so. */
   const anchored = (artPrompts
     .match(/All of the dark lives in the band from an eighth of the height/g) ?? []).length;
-  const asks = (artPrompts.match(/between a \w+ and an? \w+ of the height/g) ?? []).length;
+  const asks = (artPrompts.match(/between an? \w+ and an? \w+ of the height/g) ?? []).length;
   return asks > 0 && anchored === asks ? "the frame" : "the strip";
 })(), "the frame");
 check("and the old relative anchor is gone",
@@ -8299,7 +8311,7 @@ check("and the old relative anchor is gone",
 /* "more is fine" was false, and an open-ended ask is what produced the 0.301 median. */
 check("and the ask is not open-ended in either direction", (() => {
   const capped = (artPrompts.match(/and\s+no more than that/g) ?? []).length;
-  const asks = (artPrompts.match(/between a \w+ and an? \w+ of the height/g) ?? []).length;
+  const asks = (artPrompts.match(/between an? \w+ and an? \w+ of the height/g) ?? []).length;
   return asks > 0 && capped === asks ? "bounded" : "open-ended";
 })(), "bounded");
 check("and the gate's own table no longer describes the old capsule",

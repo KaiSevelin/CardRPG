@@ -211,7 +211,7 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, between a tenth and an eighth of the height, and
+- **A strip of bare paper across the very top, between an eighth and a sixth of the height, and
   no more than that.** No head, no helmet, no horns, no weapon, no hand, no banner enters it, and
   it is a narrow strip rather than an empty upper third.
 - **All of the dark lives in the band from an eighth of the height down to just under halfway**,
@@ -421,7 +421,7 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, between a tenth and an eighth of the height, and
+- **A strip of bare paper across the very top, between an eighth and a sixth of the height, and
   no more than that.** No head, no helmet, no horns, no weapon, no hand, no banner enters it, and
   it is a narrow strip rather than an empty upper third.
 - **All of the dark lives in the band from an eighth of the height down to just under halfway**,
@@ -631,7 +631,7 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, between a tenth and an eighth of the height, and
+- **A strip of bare paper across the very top, between an eighth and a sixth of the height, and
   no more than that.** No head, no helmet, no horns, no weapon, no hand, no banner enters it, and
   it is a narrow strip rather than an empty upper third.
 - **All of the dark lives in the band from an eighth of the height down to just under halfway**,
@@ -822,7 +822,7 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, between a tenth and an eighth of the height, and
+- **A strip of bare paper across the very top, between an eighth and a sixth of the height, and
   no more than that.** No head, no helmet, no horns, no weapon, no hand, no banner enters it, and
   it is a narrow strip rather than an empty upper third.
 - **All of the dark lives in the band from an eighth of the height down to just under halfway**,
@@ -1360,7 +1360,7 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, between a tenth and an eighth of the height, and
+- **A strip of bare paper across the very top, between an eighth and a sixth of the height, and
   no more than that.** No head, no helmet, no horns, no weapon, no hand, no banner enters it, and
   it is a narrow strip rather than an empty upper third.
 - **All of the dark lives in the band from an eighth of the height down to just under halfway**,
@@ -1434,7 +1434,7 @@ File: `cards/shade/at-full-draw.webp`
 ```text
 SUBJECT. "At Full Draw" — Ready · / Move 1 · A bow or a crossbow. The first enemy to walk into the ground you are watching takes the shot, at the bow's own value, out to its...
 
-Draw the drawing hand at full draw, three fingers hooked hard on the string with the arrow's nock between them and the string bent sharp either side. The bow's limbs are cut off by the frame and the arrow runs out of it level. No head, no face and no shoulder: the hand and the string are the whole subject.
+Draw the drawing hand at full draw, three fingers hooked hard on the string with the arrow's nock between them and the string bent sharp either side. The bow's limbs are cut off by the frame and the arrow runs out of it level. No head, no face and no shoulder: the hand and the string are the whole subject. The arrowhead and every metal edge are warm grey, never blue.
 
 WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Horn of Africa appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
@@ -1679,7 +1679,7 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, between a tenth and an eighth of the height, and
+- **A strip of bare paper across the very top, between an eighth and a sixth of the height, and
   no more than that.** No head, no helmet, no horns, no weapon, no hand, no banner enters it, and
   it is a narrow strip rather than an empty upper third.
 - **All of the dark lives in the band from an eighth of the height down to just under halfway**,
@@ -1962,7 +1962,7 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, between a tenth and an eighth of the height, and
+- **A strip of bare paper across the very top, between an eighth and a sixth of the height, and
   no more than that.** No head, no helmet, no horns, no weapon, no hand, no banner enters it, and
   it is a narrow strip rather than an empty upper third.
 - **All of the dark lives in the band from an eighth of the height down to just under halfway**,
@@ -2076,7 +2076,7 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, between a tenth and an eighth of the height, and
+- **A strip of bare paper across the very top, between an eighth and a sixth of the height, and
   no more than that.** No head, no helmet, no horns, no weapon, no hand, no banner enters it, and
   it is a narrow strip rather than an empty upper third.
 - **All of the dark lives in the band from an eighth of the height down to just under halfway**,
@@ -2286,7 +2286,7 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, between a tenth and an eighth of the height, and
+- **A strip of bare paper across the very top, between an eighth and a sixth of the height, and
   no more than that.** No head, no helmet, no horns, no weapon, no hand, no banner enters it, and
   it is a narrow strip rather than an empty upper third.
 - **All of the dark lives in the band from an eighth of the height down to just under halfway**,
@@ -2496,7 +2496,7 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, between a tenth and an eighth of the height, and
+- **A strip of bare paper across the very top, between an eighth and a sixth of the height, and
   no more than that.** No head, no helmet, no horns, no weapon, no hand, no banner enters it, and
   it is a narrow strip rather than an empty upper third.
 - **All of the dark lives in the band from an eighth of the height down to just under halfway**,
@@ -2682,7 +2682,7 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, between a tenth and an eighth of the height, and
+- **A strip of bare paper across the very top, between an eighth and a sixth of the height, and
   no more than that.** No head, no helmet, no horns, no weapon, no hand, no banner enters it, and
   it is a narrow strip rather than an empty upper third.
 - **All of the dark lives in the band from an eighth of the height down to just under halfway**,
@@ -2868,7 +2868,7 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, between a tenth and an eighth of the height, and
+- **A strip of bare paper across the very top, between an eighth and a sixth of the height, and
   no more than that.** No head, no helmet, no horns, no weapon, no hand, no banner enters it, and
   it is a narrow strip rather than an empty upper third.
 - **All of the dark lives in the band from an eighth of the height down to just under halfway**,
@@ -3054,7 +3054,7 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, between a tenth and an eighth of the height, and
+- **A strip of bare paper across the very top, between an eighth and a sixth of the height, and
   no more than that.** No head, no helmet, no horns, no weapon, no hand, no banner enters it, and
   it is a narrow strip rather than an empty upper third.
 - **All of the dark lives in the band from an eighth of the height down to just under halfway**,
@@ -3289,7 +3289,7 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, between a tenth and an eighth of the height, and
+- **A strip of bare paper across the very top, between an eighth and a sixth of the height, and
   no more than that.** No head, no helmet, no horns, no weapon, no hand, no banner enters it, and
   it is a narrow strip rather than an empty upper third.
 - **All of the dark lives in the band from an eighth of the height down to just under halfway**,
@@ -3524,7 +3524,7 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, between a tenth and an eighth of the height, and
+- **A strip of bare paper across the very top, between an eighth and a sixth of the height, and
   no more than that.** No head, no helmet, no horns, no weapon, no hand, no banner enters it, and
   it is a narrow strip rather than an empty upper third.
 - **All of the dark lives in the band from an eighth of the height down to just under halfway**,
@@ -3769,7 +3769,7 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, between a tenth and an eighth of the height, and
+- **A strip of bare paper across the very top, between an eighth and a sixth of the height, and
   no more than that.** No head, no helmet, no horns, no weapon, no hand, no banner enters it, and
   it is a narrow strip rather than an empty upper third.
 - **All of the dark lives in the band from an eighth of the height down to just under halfway**,
@@ -4072,7 +4072,7 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, between a tenth and an eighth of the height, and
+- **A strip of bare paper across the very top, between an eighth and a sixth of the height, and
   no more than that.** No head, no helmet, no horns, no weapon, no hand, no banner enters it, and
   it is a narrow strip rather than an empty upper third.
 - **All of the dark lives in the band from an eighth of the height down to just under halfway**,
@@ -4210,7 +4210,7 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, between a tenth and an eighth of the height, and
+- **A strip of bare paper across the very top, between an eighth and a sixth of the height, and
   no more than that.** No head, no helmet, no horns, no weapon, no hand, no banner enters it, and
   it is a narrow strip rather than an empty upper third.
 - **All of the dark lives in the band from an eighth of the height down to just under halfway**,
@@ -4313,7 +4313,7 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, between a tenth and an eighth of the height, and
+- **A strip of bare paper across the very top, between an eighth and a sixth of the height, and
   no more than that.** No head, no helmet, no horns, no weapon, no hand, no banner enters it, and
   it is a narrow strip rather than an empty upper third.
 - **All of the dark lives in the band from an eighth of the height down to just under halfway**,
@@ -5264,7 +5264,7 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, between a tenth and an eighth of the height, and
+- **A strip of bare paper across the very top, between an eighth and a sixth of the height, and
   no more than that.** No head, no helmet, no horns, no weapon, no hand, no banner enters it, and
   it is a narrow strip rather than an empty upper third.
 - **All of the dark lives in the band from an eighth of the height down to just under halfway**,
@@ -5951,7 +5951,7 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, between a tenth and an eighth of the height, and
+- **A strip of bare paper across the very top, between an eighth and a sixth of the height, and
   no more than that.** No head, no helmet, no horns, no weapon, no hand, no banner enters it, and
   it is a narrow strip rather than an empty upper third.
 - **All of the dark lives in the band from an eighth of the height down to just under halfway**,
@@ -6221,7 +6221,7 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, between a tenth and an eighth of the height, and
+- **A strip of bare paper across the very top, between an eighth and a sixth of the height, and
   no more than that.** No head, no helmet, no horns, no weapon, no hand, no banner enters it, and
   it is a narrow strip rather than an empty upper third.
 - **All of the dark lives in the band from an eighth of the height down to just under halfway**,
@@ -8073,7 +8073,7 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, between a tenth and an eighth of the height, and
+- **A strip of bare paper across the very top, between an eighth and a sixth of the height, and
   no more than that.** No head, no helmet, no horns, no weapon, no hand, no banner enters it, and
   it is a narrow strip rather than an empty upper third.
 - **All of the dark lives in the band from an eighth of the height down to just under halfway**,
@@ -8305,7 +8305,7 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, between a tenth and an eighth of the height, and
+- **A strip of bare paper across the very top, between an eighth and a sixth of the height, and
   no more than that.** No head, no helmet, no horns, no weapon, no hand, no banner enters it, and
   it is a narrow strip rather than an empty upper third.
 - **All of the dark lives in the band from an eighth of the height down to just under halfway**,

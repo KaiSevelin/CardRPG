@@ -214,11 +214,24 @@ const FORMAT_FACE = `- Portrait, aspect ratio exactly 2:3, 1024 x 1536.
  * states the band **absolutely**, from an eighth down to just under halfway, and the strip is
  * simply the space above it.
  *
- * **And the ask now has a ceiling, because "more is fine" was false.** More is not fine: the
- * corridor is only three points wide, between the tenth the gate enforces and the eighth where
- * the clear window begins. I had the band analysis that said so -- mean `inWindow` of 0.45 from
- * 0.18 to 0.25 and 0.23 above it -- and wrote an open-ended floor anyway, which is the whole
- * lesson: an instruction with one bound drifts to the other end of the range.
+ * **And the ask has a ceiling, because "more is fine" was false.** An instruction with one
+ * bound drifts to the other end of its range.
+ *
+ * **[THIRD PASS] The bounded range worked and was aimed half a point too low.** Asked for a
+ * tenth to an eighth, three draws came back at 0.0938, 0.0938 and 0.0964 -- a spread of three
+ * tenths of a point, where the open-ended ask had scattered from 0.25 to 0.33 and the original
+ * had scattered either side of the floor. Bounding it made the model precise. It also put the
+ * centre just under the line.
+ *
+ * **And the pictures were right.** Measuring the ink row by row: rows 0 to 35 carry no ink at
+ * all, and then 86% to 99% of a row is inked from row 37. That is a clean bare strip with a hard
+ * edge, placed two or three rows out of 384 too high -- not a composition creeping into the
+ * panel. Nothing about those pictures needed changing; the strip needed to be asked for bigger.
+ *
+ * So: an eighth to a sixth. With a three-tenths-of-a-point spread that should land near 0.12,
+ * which is also where the band analysis puts the best `inWindow` scores (0.64 mean from 0.10 to
+ * 0.14, still 0.60 from 0.14 to 0.18). The pieces that DO pass sit at 0.14, 0.18 and 0.24, so
+ * this is the range the model reaches when it is left room.
  *
  * 790 verdicts, 399 pieces, 52% through the gate -- two paid attempts per picture. `quietTop` is
  * 253 of those 790 failures and every other rule together is barely a third of that. And the
@@ -368,7 +381,7 @@ const FOCAL = {
  */
 const composeFace = dir => `- Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, between a tenth and an eighth of the height, and
+- **A strip of bare paper across the very top, between an eighth and a sixth of the height, and
   no more than that.** No head, no helmet, no horns, no weapon, no hand, no banner enters it, and
   it is a narrow strip rather than an empty upper third.
 - **All of the dark lives in the band from an eighth of the height down to just under halfway**,
@@ -1033,7 +1046,8 @@ export const DIRECTION = {
     "the drawing hand at full draw, three fingers hooked hard on the string with the arrow's "
     + "nock between them and the string bent sharp either side. The bow's limbs are cut off "
     + "by the frame and the arrow runs out of it level. No head, no face and no shoulder: the "
-    + "hand and the string are the whole subject",
+    + "hand and the string are the whole subject. The arrowhead and every metal edge are warm "
+    + "grey, never blue",
   "cards/strength/on-the-rest":
     "a musket barrel laid across a forked rest driven into the ground, levelled flat down one line "
     + "and sighted along, the match smouldering. Not fired: waiting",
