@@ -1,0 +1,302 @@
+/*
+ * The player's handbook, for a screen.
+ *
+ * Hand-written and hand-edited: this is the one file in the pipeline that is design rather than
+ * derived, so it is the one to open when the page should look different. `test/book.mjs` writes
+ * the HTML and never writes this.
+ *
+ * Built for reading on a laptop rather than for print, which was the decision that shaped the
+ * rest: one column at a comfortable measure, a contents list that follows you down the page,
+ * real links, and the catalogue tables allowed to be wide and scroll sideways on a phone instead
+ * of being broken across columns. There are no `@page` rules and no page numbers, on purpose.
+ */
+
+:root {
+  --measure: 38rem;          /* about 70 characters of Spectral at 18px */
+  --gutter: 1.5rem;
+  --toc: 15rem;
+
+  --ink: #1b1714;
+  --ink-soft: #5c5147;
+  --ink-faint: #8a7d70;
+  --page: #f7f3ec;
+  --panel: #efe8dc;
+  --rule: #ddd2c1;
+  --accent: #8c2f1e;         /* the red of a rubricated initial */
+  --accent-soft: #b8543c;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ink: #e8e1d6;
+    --ink-soft: #b3a899;
+    --ink-faint: #80776b;
+    --page: #16130f;
+    --panel: #201b16;
+    --rule: #342c23;
+    --accent: #e0745a;
+    --accent-soft: #c75b40;
+  }
+}
+
+:root[data-theme="dark"] {
+  --ink: #e8e1d6;
+  --ink-soft: #b3a899;
+  --ink-faint: #80776b;
+  --page: #16130f;
+  --panel: #201b16;
+  --rule: #342c23;
+  --accent: #e0745a;
+  --accent-soft: #c75b40;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; scroll-padding-top: 2rem; }
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font: 400 18px/1.62 Spectral, Georgia, "Times New Roman", serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* --- the frame ----------------------------------------------------------- */
+
+main {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: 4rem var(--gutter) 8rem;
+}
+
+@media (min-width: 72rem) {
+  main { margin-left: calc(50% - var(--measure) / 2); }
+}
+
+.skip {
+  position: absolute;
+  left: -9999px;
+}
+.skip:focus {
+  left: 1rem; top: 1rem;
+  z-index: 10;
+  padding: .5rem .75rem;
+  background: var(--accent);
+  color: var(--page);
+}
+
+/* --- contents ------------------------------------------------------------ */
+
+#toc {
+  padding: 2rem var(--gutter);
+  border-bottom: 1px solid var(--rule);
+  background: var(--panel);
+}
+.toc__title {
+  margin: 0 0 .75rem;
+  font: 700 .75rem/1 Cinzel, Georgia, serif;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  border: 0;
+}
+#toc ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  columns: 2;
+  column-gap: 2rem;
+  font-size: .9rem;
+}
+#toc li { break-inside: avoid; }
+#toc a {
+  display: block;
+  padding: .18rem 0;
+  color: var(--ink-soft);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  padding-left: .6rem;
+}
+#toc a:hover { color: var(--accent); }
+#toc a[aria-current] {
+  color: var(--ink);
+  border-left-color: var(--accent);
+}
+
+@media (min-width: 72rem) {
+  #toc {
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    width: var(--toc);
+    overflow-y: auto;
+    padding: 3rem 1.25rem;
+    border-bottom: 0;
+    border-right: 1px solid var(--rule);
+  }
+  #toc ol { columns: 1; }
+}
+
+/* --- headings ------------------------------------------------------------ */
+
+h1, h2, h3, h4 {
+  font-family: Cinzel, Georgia, serif;
+  font-weight: 700;
+  line-height: 1.18;
+  text-wrap: balance;
+}
+
+h1 {
+  margin: 0 0 2rem;
+  font-size: 2.6rem;
+  letter-spacing: .01em;
+}
+
+h2 {
+  margin: 4.5rem 0 1.5rem;
+  padding-bottom: .5rem;
+  font-size: 1.7rem;
+  border-bottom: 2px solid var(--accent);
+}
+
+h3 {
+  margin: 2.75rem 0 .9rem;
+  font-size: 1.18rem;
+  color: var(--accent);
+}
+
+h4 {
+  margin: 2rem 0 .7rem;
+  font-size: .82rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  font-weight: 600;
+}
+
+/* The opening line of the document, and of each numbered chapter, gets a rubricated initial. */
+h1 + p::first-letter {
+  float: left;
+  margin: .1em .08em -.1em 0;
+  font: 700 3.6em/0.78 Cinzel, Georgia, serif;
+  color: var(--accent);
+}
+
+/* --- prose --------------------------------------------------------------- */
+
+p { margin: 0 0 1.1rem; }
+
+strong { font-weight: 600; color: var(--ink); }
+em { color: var(--ink-soft); }
+
+ul, ol { margin: 0 0 1.2rem; padding-left: 1.3rem; }
+li { margin-bottom: .45rem; }
+li::marker { color: var(--ink-faint); }
+
+hr {
+  margin: 3.5rem auto;
+  width: 7rem;
+  border: 0;
+  border-top: 1px solid var(--rule);
+}
+
+/* --- tables -------------------------------------------------------------- */
+
+.scroller {
+  margin: 0 0 1.8rem;
+  overflow-x: auto;
+  /* A long catalogue is allowed to be wider than the prose, because squeezing six columns into
+     the measure makes every cell two words tall. */
+  max-width: none;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .88rem;
+  line-height: 1.45;
+}
+
+thead th {
+  padding: .45rem .6rem;
+  text-align: left;
+  vertical-align: bottom;
+  font: 600 .7rem/1.2 Cinzel, Georgia, serif;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  border-bottom: 1px solid var(--accent);
+  white-space: nowrap;
+}
+
+tbody th, tbody td {
+  padding: .5rem .6rem;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--rule);
+  font-weight: 400;
+}
+
+tbody th { color: var(--ink); }
+tbody tr:hover { background: var(--panel); }
+
+/* --- the reference chapters ---------------------------------------------- */
+
+/*
+ * Everything between a pair of generated markers. These are three hundred rows of catalogue and
+ * they want to read differently from the prose: wider, tighter, and with the picture on the row.
+ */
+.reference {
+  margin: 0 0 2rem;
+}
+
+@media (min-width: 72rem) {
+  /* Let the catalogue out of the measure, toward the empty right-hand side of the page. */
+  .reference .scroller { width: min(58rem, calc(100vw - var(--toc) - 6rem)); }
+}
+
+.reference table { font-size: .83rem; }
+
+.reference h3 {
+  margin-top: 2.25rem;
+  font-size: 1rem;
+}
+
+/* The row label, with its art. */
+th.named {
+  display: flex;
+  gap: .6rem;
+  align-items: center;
+  min-width: 11rem;
+}
+th.named img {
+  flex: 0 0 auto;
+  width: 2.6rem;
+  height: 2.6rem;
+  object-fit: cover;
+  border-radius: 3px;
+  background: var(--panel);
+  box-shadow: 0 0 0 1px var(--rule);
+}
+
+/* Two columns of catalogue is unreadable, so the only concession at phone width is that the art
+   steps out of the way. */
+@media (max-width: 34rem) {
+  th.named img { display: none; }
+  th.named { display: table-cell; min-width: 0; }
+}
+
+/* --- the game's own icons ------------------------------------------------ */
+
+.glyph {
+  width: 1.15em;
+  height: 1.15em;
+  vertical-align: -0.22em;
+  margin-left: .45em;
+  color: var(--accent-soft);
+}
+
+/* --- quiet the last rule before the footerless end ---------------------- */
+
+main > hr:last-of-type { display: none; }

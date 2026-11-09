@@ -7375,6 +7375,43 @@ check("citations of the rules documents left in the handbook",
  */
 check("em dashes in the handbook", (handbook.match(/\u2014|&mdash;/g) ?? []).length, 0);
 check("and the internal word for a kept card", (handbook.match(/\bslates?\b/gi) ?? []).length, 0);
+/*
+ * **The handbook as a page, which is the same document with the art on it.**
+ *
+ * `test/book.mjs` renders the markdown to `rules/players-handbook.html`, and the two facts worth
+ * holding are the two things it does that a markdown reader could not: it puts the art on the
+ * rows, because `art.mjs` already names every file after the content it belongs to, and it shows
+ * the game's own icons for the six verbs and six approaches, because config already names those
+ * files.
+ *
+ * Both are counted rather than described. An art count fallen to zero is the shape of failure
+ * here: the page would still build, still validate, and simply be a worse document, which is
+ * exactly the quiet loss this suite exists to refuse.
+ */
+const { buildPage } = await import("./book.mjs");
+const bookPage = fs.readFileSync(path.join(root, "../../rules/players-handbook.html"), "utf8");
+const bookBuilt = buildPage(handbook);
+check("the handbook's page is current",
+  bookBuilt.html === bookPage ? "yes" : "stale, run npm run book", "yes");
+check("chapters on the page", bookBuilt.chapters, 20);
+/* One table on the page per separator row in the markdown: a table that stopped rendering shows
+ * up here rather than as a wall of pipes nobody reads. */
+check("and tables", bookBuilt.tables, (handbook.match(/^\|---/gm) ?? []).length);
+/* Twelve: the six verbs and the six approaches. `any` is an approach the handbook never prints. */
+check("and emoji replaced by the game's own icons", bookBuilt.icons, 12);
+/* Not pinned exactly, because it rises every time a picture is drawn and progress must not fail
+ * the suite. Pinned as the claim itself: most of the catalogue carries its picture. */
+check("and rows carrying their art", bookBuilt.art > 250 ? "most of them" : `only ${bookBuilt.art}`,
+  "most of them");
+/* Nothing of the markdown survives into the page: a stray pipe is a table that did not render. */
+check("markdown left unrendered on the page",
+  (bookBuilt.html.split("<main")[1].match(/\*\*|^\|/gm) ?? []).length, 0);
+/* The stylesheet is the one hand-written file in this pipeline, so the page must actually ask
+ * for it: a generated page linking a stylesheet that is not there is a page nobody styled. */
+check("the page links the stylesheet", bookBuilt.html.includes('href="book.css"') ? "yes" : "no", "yes");
+check("and the stylesheet is there",
+  fs.existsSync(path.join(root, "../../rules/book.css")) ? "yes" : "no", "yes");
+
 check("and fenced blocks, which do not survive a paste",
   (handbook.match(/```/g) ?? []).length, 0);
 check("and box-drawing art, for the same reason",
@@ -13588,7 +13625,9 @@ for (const m of selfSource.matchAll(
  */
 readFiles.set("contentSource", contentSource);
 readFiles.set("decksSource", decksSource);
-check("files this suite greps by name", readFiles.size, 62);
+/* 63 since the handbook became a page as well as a markdown file: `bookPage` is the one more
+ * read, and the greps over it are what hold the art and the icons on the rows. */
+check("files this suite greps by name", readFiles.size, 63);
 
 /* Every `/pattern/.test(VAR)` and `VAR.includes("...")`, with the check it belongs to. */
 const nameOfCheck = index => {

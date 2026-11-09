@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "test": "node test/validate.mjs",
-    "build": "npm run packs && npm run art-list && npm run art-prompts && npm run handbook",
+    "build": "npm run packs && npm run art-list && npm run art-prompts && npm run handbook && npm run book",
     "packs": "node test/build-packs.mjs",
     "art-prompts": "node test/art-prompts.mjs",
     "art-list": "node test/art-list.mjs",
     "handbook": "node test/handbook.mjs",
+    "book": "node test/book.mjs",
     "art": "node test/art-shoot.mjs",
     "gate": "node test/art-gate.mjs",
     "verdicts": "node test/art-verdicts.mjs"

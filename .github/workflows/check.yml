@@ -66,10 +66,11 @@ jobs:
           cache: npm
           cache-dependency-path: foundry/cardrpg/package-lock.json
       - run: npm ci
-      # Four things are generated from the content and committed beside it: the compiled packs,
-      # the art brief, the prompt book and the player's handbook's reference chapters. Every one of
-      # them can be stale, and a stale one is worse than a missing one because it looks like an
-      # answer. Rebuilding and asking git whether anything moved is the whole test.
+      # Five things are generated and committed beside the content: the compiled packs, the art
+      # brief, the prompt book, the player's handbook's reference chapters, and the handbook as a
+      # page to read. Every one of them can be stale, and a stale one is worse than a missing one
+      # because it looks like an answer. Rebuilding and asking git whether anything moved is the
+      # whole test.
       #
       # Only `packs/_source` is compared for the packs: the LevelDB files underneath are rewritten
       # byte-wise on every build and say nothing about whether the content changed.
@@ -78,7 +79,7 @@ jobs:
       - name: and nothing in it moved
         run: |
           STALE=0
-          for path in packs/_source ../art-list.md ../art-prompts.md ../../rules/players-handbook.md; do
+          for path in packs/_source ../art-list.md ../art-prompts.md ../../rules/players-handbook.md ../../rules/players-handbook.html; do
             if ! git diff --quiet -- "$path"; then
               echo "::error::$path disagrees with the content"
               git diff --stat -- "$path"
@@ -89,4 +90,4 @@ jobs:
             echo "::error::run 'npm run build' and commit what changes"
             exit 1
           fi
-          echo "the packs, the art brief, the prompt book and the handbook are all current"
+          echo "the packs, the art brief, the prompt book and both handbooks are all current"
