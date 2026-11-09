@@ -11,30 +11,35 @@ you are exhausted, not because you were hurt, but because you have been fighting
 
 ## 1. What you have
 
+Six stacks of cards, a seventh if you cast, and one number. Everything you own is in one of them.
+
 | | What it is |
 |---|---|
 | **Action deck** | 12–20 cards. What your character can *do* in a fight, and how long they can keep doing it. |
 | **Skill deck** | About 15 cards. What your character can *attempt* outside a fight. |
 | **Fate deck** | 20 cards. Your luck, and nobody else's. |
-| **Item cards** | Everything you own, laid face up. Only **equipped** items can be used. |
-| **Feature cards** | Permanent traits: *Strong*, *Tough*, *Good Aim*. |
+| **Items** | Everything you own. Only **equipped** items can be used. |
+| **Features** | Permanent traits: *Strong*, *Tough*, *Good Aim*. |
+| **Conditions** | What is currently on you, each with a number counting down. |
+| **Spells** | Your book, if you have one. The count is what you have **prepared**. |
 | **Health** | At 0 you are down. |
-| **Conditions** | Temporary effects with a number counting down. |
 
-### Two kinds of card
+### Decks you draw from, and decks you keep
 
-Everything in this game is a card. What tells them apart is whether they move.
+Every one of those stacks is a deck of cards, printed the same size, held the same way. What tells
+them apart is what happens to the deck.
 
-- Cards that **live in a deck** are shuffled, drawn, played and discarded. Your action cards, your
-  skill cards, your fate cards.
-- Cards that **lie face up in front of you** are never shuffled and never drawn. Your items, your
-  features, your injuries. They are simply there, and they stay there.
+- **Decks you draw from.** Action, skill and fate. These are shuffled, drawn from, played and
+  discarded, and you do not get to choose what comes up.
+- **Decks you keep.** Items, features, conditions, and your spellbook. Nothing in them is shuffled
+  and nothing is drawn. You open the stack and look through it, because a stack is simply how you
+  hold a lot of cards at a table.
 
-A card in front of you can still be **spent**. A one-use item is gone once you use it. What it never
-does is go into a deck.
+A card you keep can still be **spent**. A one-use item is gone once you use it. What it never does
+is go into a deck you draw from.
 
-Watch for the two that cross over: **Wounds** and **Taint** really are shuffled into your decks, and
-that is the whole of what makes them frightening.
+Watch for the two that cross over. **Wounds** and **Taint** are not kept. They are shuffled into the
+decks you draw from, and that is the whole of what makes them frightening.
 
 ---
 
