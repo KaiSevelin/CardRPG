@@ -311,7 +311,7 @@ export const FAITH_POOL = [
     needs: ["a floor under an ally's Health"],
     cost: { health: 2 },
     description: "<p>Allies adjacent to you cannot be reduced below 1 Health until your next "
-      + "turn. Costs 2 Health, because his miracles are paid in yours.</p>",
+      + "turn. His miracles are paid in yours.</p>",
     effect: { range: 1, targets: "adjacentAllies",
     text: "adjacent allies cannot be reduced below 1 Health" }
   },

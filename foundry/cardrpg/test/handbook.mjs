@@ -18,7 +18,7 @@ import fs from "node:fs";
 import path from "node:path";
 import * as CONTENT from "../module/content.mjs";
 const { ITEMS, FEATURES } = CONTENT;
-import { SPELLS } from "../module/graph.mjs";
+import { SPELLS, GRAPH } from "../module/graph.mjs";
 import { CARDRPG } from "../module/config.mjs";
 
 const OUT = path.join(import.meta.dirname, "..", "..", "..", "rules", "players-handbook.md");
@@ -303,6 +303,77 @@ function actionChapter() {
 /* -------------------------------------------- */
 
 /* -------------------------------------------- */
+/*  Obediences and gifts                        */
+/* -------------------------------------------- */
+
+/**
+ * **What each god asks of a priest, and what the four lone gods give back.**
+ *
+ * An Obedience is the price of a miracle, and it is the one price in the game that is not paid at a
+ * moment: a formula is paid for once when it is learned, and a miracle is paid for by *how you have
+ * to live*. That is what makes twelve gods twelve different kinds of caster rather than twelve
+ * lists of effects, so it is the single most important thing a player choosing Way of Faith has to
+ * read, and the handbook explained the mechanism without ever printing one of them.
+ *
+ * **Grouped by creed, because the creed is the decision and not the god.** Swearing closes every
+ * rival creed and not every rival god: the Five share one, the Grey's three share one, and the four
+ * lone gods each stand alone. So a devotee may take all five of the Five and pay five obediences,
+ * and the names here are derived from the graph rather than listed, so a god moved between creeds
+ * moves in this table too.
+ */
+const CREED_NAMES = { five: "The Five", grey: "The three of the Grey" };
+
+function swornNodes(family) {
+  return [...GRAPH.values()].filter(n => n.obedience && n.exclusive === family);
+}
+
+function creedChapter() {
+  const gods = swornNodes("faith");
+  const byCreed = new Map();
+  for (const n of gods) {
+    const key = n.creed ?? n.id;
+    if (!byCreed.has(key)) byCreed.set(key, []);
+    byCreed.get(key).push(n);
+  }
+  /* Pantheons first, largest first, then the gods who stand alone in one table of their own. */
+  const groups = [...byCreed].filter(([, ns]) => ns.length > 1)
+    .sort((a, b) => b[1].length - a[1].length);
+  const alone = [...byCreed].filter(([, ns]) => ns.length === 1).flatMap(([, ns]) => ns);
+
+  const out = [];
+  const table = (rows, gift) => {
+    out.push(gift ? "| God | Obedience | What the god gives back |" : "| God | Obedience |",
+      gift ? "|---|---|---|" : "|---|---|");
+    for (const n of rows) {
+      out.push(`| **${n.title ?? n.name}** | ${cell(n.obedience)}`
+        + (gift ? ` | ${cell(n.gift)} |` : " |"));
+    }
+    out.push("");
+  };
+
+  for (const [creed, rows] of groups) {
+    const name = CREED_NAMES[creed] ?? creed;
+    out.push(`#### ${name}`, "",
+      `Swear to one of these and the other ${rows.length - 1} stay open to you. Take two and you `
+      + "pay two obediences, take all of them and you pay all of them.", "");
+    table(rows, false);
+  }
+  out.push("#### The gods who stand alone", "",
+    "One each, and swearing to any of them closes the other eleven gods for good. Each of the four "
+    + "gives something back that no other god does, which is the other half of the bargain.", "");
+  table(alone, true);
+
+  const orders = swornNodes("order");
+  out.push("#### The four orders", "",
+    "An order is sworn separately and carries a rule of its own, so a priest in an order pays that "
+    + "**and** their god's Obedience. You may belong to one order.", "");
+  out.push("| Order | Rule |", "|---|---|");
+  for (const n of orders) out.push(`| **${n.title ?? n.name}** | ${cell(n.obedience)} |`);
+  out.push("");
+  return out;
+}
+
+/* -------------------------------------------- */
 /*  Twists                                      */
 /* -------------------------------------------- */
 
@@ -348,6 +419,7 @@ export const CHAPTERS = {
   items: itemChapter,
   features: featureChapter,
   spells: spellChapter,
+  creeds: creedChapter,
   twists: twistChapter
 };
 
@@ -375,5 +447,6 @@ if (process.argv[1] && process.argv[1].endsWith("handbook.mjs")) {
   const rows = name => CHAPTERS[name]().filter(l => l.startsWith("| **")).length;
   console.log(`wrote the handbook's reference chapters: ${rows("actions")} action cards, `
     + `${rows("items")} of ${ITEMS.length} items (the magical gear is the GM's), `
-    + `${rows("features")} features, ${rows("spells")} spells, ${rows("twists")} twists`);
+    + `${rows("features")} features, ${rows("spells")} spells, ${rows("creeds")} creeds `
+    + `and orders, ${rows("twists")} twists`);
 }

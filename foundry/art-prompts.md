@@ -4974,7 +4974,7 @@ File: `spells/faith/stand-where-i-stand.webp`
 ```text
 SUBJECT. "Stand Where I Stand" — strength 1 · range 1 adjacent allies cannot be reduced below 1 Health
 
-Allies adjacent to you cannot be reduced below 1 Health until your next turn. Costs 2 Health, because his miracles are paid in yours.
+Allies adjacent to you cannot be reduced below 1 Health until your next turn. His miracles are paid in yours.
 
 Draw that line literally: the one moment it describes, and nothing else in frame.
 ```

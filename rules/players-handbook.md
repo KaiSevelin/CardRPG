@@ -873,11 +873,16 @@ are twelve: **the Eternal God** and **the Eternal Spirit**; **Sessyfyn**, **Valt
 and **the First**. A school of magic is something a scholar studies; a miracle is something a god
 hands over, and no amount of study substitutes for having sworn.
 
-Faith is built out of twelve gods, and this is the one Way where a choice is final. **Swearing to a
-god closes every other god permanently**, along with everything that could only be reached through
-them. In exchange you carry that god's **Obedience**, which applies to everything they ever grant,
-and unlike a Tactic you carry every Obedience you have sworn to rather than only your deepest. A
-devotee of two of the Five pays both.
+Faith is built out of twelve gods, and this is the one Way where a choice is final. **Swearing
+closes every rival creed permanently**, along with everything reachable only through it, and what
+counts as a creed is the thing to get right: the Five are one creed, the three of **the Grey** are
+one, and the four remaining gods each stand alone. So swearing to **Sessyfyn** leaves the other four
+of the Five open to you, and shuts the other seven gods for good.
+
+In exchange you carry that god's **Obedience**, which applies to everything they ever grant. Unlike
+a Tactic, which is only ever your deepest title's, you carry **every** Obedience you have sworn to.
+An order is sworn separately and carries a rule of the same kind, so a priest in an order pays that
+as well. Six is the most anybody can carry: all five of the Five, and one order.
 
 **Strong at** holding a party together. Its miracles heal, protect and lift what has been put on
 somebody, and because a miracle is granted rather than learned it does not have to be studied first.
@@ -888,6 +893,58 @@ ask, not once when you learn it. Its slots are as few as Mind's. **Silenced** sh
 way. And the Obedience you took on is permanent: it is a restriction on how you may behave for the
 rest of the character's life, and you carry every one you have sworn, while the doors you closed
 swearing the first oath never reopen.
+
+**So read these before you swear.** An Obedience is not a price you pay at a moment, it is a way you
+have to live, and it is the whole of what makes one priest a different character from another rather
+than a different spell list. Four of the gods also give something back that nobody else can do.
+
+<!-- generated: creeds -->
+
+#### The Five
+
+Swear to one of these and the other 4 stay open to you. Take two and you pay two obediences, take all of them and you pay all of them.
+
+| God | Obedience |
+|---|---|
+| **Sessyfyn** | A permanent Miss AND a permanent Critical in your fate deck. Not one or the other. |
+| **Valtor** | Every miracle costs Strain 1 on top of its slots. |
+| **Fagar** | Each miracle may be cast once per fight. A trick works once. |
+| **Vulpet** | You may not accept help: no ally may Heal you, Interpose for you, or Shake a condition off you. |
+| **Brendan** | Nothing he gives arrives on the turn you ask for it: every miracle resolves at the start of your next turn at the earliest. |
+
+#### The three of the Grey
+
+Swear to one of these and the other 2 stay open to you. Take two and you pay two obediences, take all of them and you pay all of them.
+
+| God | Obedience |
+|---|---|
+| **The Grey** | Adjacent only. Every miracle of The Grey reaches one square and no further. |
+| **The Purple** | The first miracle you cast each fight gives you 1 Taint. You are the first to taste it, always. |
+| **The Yellow** | A lie must be kept up: every miracle ends the moment you fail to spend a secondary on it. |
+
+#### The gods who stand alone
+
+One each, and swearing to any of them closes the other eleven gods for good. Each of the four gives something back that no other god does, which is the other half of the bargain.
+
+| God | Obedience | What the god gives back |
+|---|---|---|
+| **The Eternal God** | Your action deck may hold no more than 12 cards, and the faith names what may not be in it. | Solidarity: his miracles cast on a brother or sister in faith cost one less -- no Strain, no Spent. |
+| **The Eternal Spirit** | You must stay Unburdened, and wear no armour heavier than Leather. | The spirit drifts through all the air: his miracles ignore range and cover. |
+| **Vax** | Every miracle costs at least 1 Health, and the card may ask more. | His miracles need no free hand: the spiked club is the holy symbol. |
+| **The First** | Your spell slots are capped at 3, for ever. | His miracles return what they take: Health drained from a living target comes back to you, which is the only renewable pool in the game. |
+
+#### The four orders
+
+An order is sworn separately and carries a rule of its own, so a priest in an order pays that **and** their god's Obedience. You may belong to one order.
+
+| Order | Rule |
+|---|---|
+| **Inquisitor** | You hold one thing about every ally that the others do not know, and the order may ask you for it. |
+| **Shieldsworn** | You may not give ground: while an ally stands further forward than you, you may not move away from the enemy. |
+| **Anchorite** | Three skill cards are set aside each morning and are not yours until the next. The cloister keeps them. |
+| **Flagellant** | One Wild stays in your fate deck for good. An ecstasy is not a thing you put down. |
+
+<!-- /generated: creeds -->
 
 ---
 
@@ -1426,7 +1483,7 @@ many spell slots preparing one costs.
 
 | Spell | Strength | What it does |
 |---|---|---|
-| **Stand Where I Stand** | 1 | Allies adjacent to you cannot be reduced below 1 Health until your next turn. Costs 2 Health, because his miracles are paid in yours. Costs 2 Health. |
+| **Stand Where I Stand** | 1 | Allies adjacent to you cannot be reduced below 1 Health until your next turn. His miracles are paid in yours. Costs 2 Health. |
 | **The Shield Line** | 2 | Every ally adjacent to you gains your armor value as Block until your next turn. One Health per ally, so a long line is a dear one. Costs 1 Health. |
 | **The Club and the Line** | 2 | Strike every adjacent enemy. No free hand needed, because the club is the holy symbol, which is the gift on the node, not on the card. Costs 2 Health. |
 | **The Line Holds** | 4 | Nobody beside you is moved, knocked down or turned. It costs two Health a man, and Vax expects you to count them first. Costs 2 Health. |

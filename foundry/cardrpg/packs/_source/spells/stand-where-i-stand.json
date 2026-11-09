@@ -15,7 +15,7 @@
     "cost": {
       "health": 2
     },
-    "description": "<p>Allies adjacent to you cannot be reduced below 1 Health until your next turn. Costs 2 Health, because his miracles are paid in yours.</p>",
+    "description": "<p>Allies adjacent to you cannot be reduced below 1 Health until your next turn. His miracles are paid in yours.</p>",
     "effect": {
       "range": 1,
       "targets": "adjacentAllies",

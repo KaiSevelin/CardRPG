@@ -7434,7 +7434,7 @@ check("and the English ones are all present",
 const verbRows = [...handbookProse.matchAll(/^\| \*\*(Strike|Cast|Defend|Use|Move|Ready)\*\*([^|]*)\|/gm)];
 check("verbs the six-verb table lists", verbRows.length, Object.keys(CARDRPG.verbs).length);
 check("and any of them printed without a glyph",
-  verbRows.filter(m => !/[^ -]/.test(m[2])).map(m => m[1]).join(", ") || "none", "none");
+  verbRows.filter(m => !/[^ -~]/.test(m[2])).map(m => m[1]).join(", ") || "none", "none");
 
 /*
  * **[FOUND 2026-11-09] A twist was the one thing a player meets that the handbook never named.**
@@ -7456,6 +7456,63 @@ check("with the totals the two decks actually hold",
 check("and tells a player how a challenge is won and lost",
   ["the Progress bar fills", "the Pressure bar fills first", "both fill on the same check"]
     .filter(s => handbook.includes(s)).length, 3);
+
+/*
+ * **[FOUND 2026-11-09] The handbook explained Obedience and printed not one of them, and the
+ * sentence it did print about swearing was false.**
+ *
+ * An Obedience is the price of a miracle and the only price in this game not paid at a moment: a
+ * formula is paid for once when it is learned, a miracle is paid for by how you have to live. It is
+ * therefore the single most load-bearing thing a player choosing Way of Faith reads, and sixteen of
+ * them existed on the graph while the handbook described the mechanism in the abstract.
+ *
+ * **And the exclusivity rule was stated wrong in the one place it mattered.** The handbook read
+ * *swearing to a god closes every other god permanently*, which contradicted its own next sentence
+ * (*a devotee of two of the Five pays both*) and contradicted the engine: `closedIds` keys on
+ * `creed ?? id`, so what a vow closes is every rival **creed**. The Five share one creed, the
+ * Grey's three share one, and the four remaining gods stand alone. Swearing to Sessyfyn leaves four
+ * gods open, not none.
+ *
+ * So the rule is asked of the engine here rather than read off the prose, which is the difference
+ * this file has paid for four times: a sentence that describes a mechanism agrees with itself for
+ * ever, and the mechanism moves underneath it.
+ */
+const swornTo = family => [...byId.values()].filter(n => n.obedience && n.exclusive === family);
+check("gods that can be sworn to", swornTo("faith").length, 12);
+check("and orders", swornTo("order").length, 4);
+check("every one of them in the handbook",
+  [...swornTo("faith"), ...swornTo("order")]
+    .filter(n => !handbookChapter("creeds").includes(`| **${n.title ?? n.name}**`))
+    .map(n => n.title ?? n.name).join(", ") || "none", "none");
+/* A god with no Obedience is a god that grants its miracles free, which is the whole bargain gone.
+ * §3.5 is pinned against the design document elsewhere; this asks the graph. */
+check("and none of them granting miracles free",
+  [...swornTo("faith"), ...swornTo("order")].filter(n => (n.obedience ?? "").length < 20)
+    .map(n => n.title ?? n.name).join(", ") || "none", "none");
+/* The four lone gods give something back and the eight in a pantheon do not: that asymmetry IS the
+ * reason to stand alone, so it is worth holding rather than drifting. */
+check("gods that stand alone", swornTo("faith").filter(n => !n.creed || swornTo("faith")
+  .filter(o => (o.creed ?? o.id) === (n.creed ?? n.id)).length === 1).length, 4);
+check("and they are exactly the ones with a gift",
+  swornTo("faith").filter(n => n.gift).length, 4);
+
+/*
+ * **What a vow actually closes, asked of the engine.** This is the check the false sentence needed:
+ * swear to one of the Five and the other four are still takeable, while every other creed is shut.
+ */
+const afterSessyfyn = graph.closedIds(new Set(["faith.sessyfyn"]));
+check("gods left open by swearing to one of the Five",
+  swornTo("faith").filter(n => !afterSessyfyn.has(n.id)).map(n => n.title ?? n.name).sort()
+    .join(", "),
+  "Brendan, Fagar, Sessyfyn, Valtor, Vulpet");
+check("and orders are a separate vow, so none of them is closed by it",
+  swornTo("order").filter(n => afterSessyfyn.has(n.id)).length, 0);
+/* Which is what the handbook now says, in the words a player reads. */
+check("and the handbook states the creed rule rather than the god rule",
+  /\*\*Swearing\s*\n?closes every rival creed permanently\*\*/.test(handbook) ? "yes" : "no",
+  "yes");
+check("and the sentence that was false is gone",
+  handbook.includes("closes every other god permanently") ? "still there" : "none", "none");
 /*
  * **The art on disk, against the brief that commissioned it.**
  *
@@ -13639,6 +13696,7 @@ const absentGreps = [
   String.raw`and the old sentence is gone :: Faith is \*\*wide and shallow\*\*`,
   String.raw`and the repair hands its own item to the check :: resolveCheck\(actor, \{ approach: "lore", dc, item \}\)`,
   String.raw`and the resolver reads the flag :: conditionsOf\(actor\)\.includes\("invisible"\)`,
+  String.raw`and the sentence that was false is gone :: closes every other god permanently`,
   String.raw`and the template no longer asks which kind it is :: \{\{#if isWound\}\}`,
   String.raw`and the token is not given a file of its own :: texture: \{ src: (?!art \})`,
   String.raw`and the two retired vocabularies are gone from config :: conjureSources|conjureSides`,

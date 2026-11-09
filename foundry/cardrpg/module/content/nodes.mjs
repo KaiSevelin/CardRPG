@@ -916,8 +916,10 @@ export const NODES = [
     axis: "Position", resource: "Health",
     signature: "The Club and the Line", tactic: "The Line of Vax",
     obedience: "Every miracle costs at least 1 Health, and the card may ask more.",
-    gift: "His miracles need no free hand: the spiked club is the holy symbol. Nothing else in "
-      + "the game sets aside the free-hand rule, and it is what makes a cleric-fighter possible.",
+    /* The second sentence used to carry the design argument for this gift, which the sheet and
+     * the handbook both print to a player: nothing else in the game sets aside the free-hand
+     * rule, and that is what makes a cleric-fighter possible. True, and not a player's business. */
+    gift: "His miracles need no free hand: the spiked club is the holy symbol.",
     grants: { spell: "The Club and the Line" }
   },
   { id: "faith.vax.club", name: "The Club", after: ["faith.vax"], grants: { spell: "Stand Where I Stand" } },
