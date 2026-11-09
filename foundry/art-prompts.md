@@ -211,8 +211,9 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it.
+- **A strip of bare paper across the very top: AT LEAST a sixth of the height, and more is
+  fine.** No head, no helmet, no horns, no weapon, no hand, no banner enters it. Err on the side
+  of too much bare paper here, never too little.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -415,8 +416,9 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it.
+- **A strip of bare paper across the very top: AT LEAST a sixth of the height, and more is
+  fine.** No head, no helmet, no horns, no weapon, no hand, no banner enters it. Err on the side
+  of too much bare paper here, never too little.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -619,8 +621,9 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it.
+- **A strip of bare paper across the very top: AT LEAST a sixth of the height, and more is
+  fine.** No head, no helmet, no horns, no weapon, no hand, no banner enters it. Err on the side
+  of too much bare paper here, never too little.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -804,8 +807,9 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it.
+- **A strip of bare paper across the very top: AT LEAST a sixth of the height, and more is
+  fine.** No head, no helmet, no horns, no weapon, no hand, no banner enters it. Err on the side
+  of too much bare paper here, never too little.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- the point of contact, the place the ground is marked, the gap where the distance went -- are all in that band, which is where
   the picture actually happens.
@@ -1336,8 +1340,9 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it.
+- **A strip of bare paper across the very top: AT LEAST a sixth of the height, and more is
+  fine.** No head, no helmet, no horns, no weapon, no hand, no banner enters it. Err on the side
+  of too much bare paper here, never too little.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -1649,8 +1654,9 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it.
+- **A strip of bare paper across the very top: AT LEAST a sixth of the height, and more is
+  fine.** No head, no helmet, no horns, no weapon, no hand, no banner enters it. Err on the side
+  of too much bare paper here, never too little.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -1926,8 +1932,9 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it.
+- **A strip of bare paper across the very top: AT LEAST a sixth of the height, and more is
+  fine.** No head, no helmet, no horns, no weapon, no hand, no banner enters it. Err on the side
+  of too much bare paper here, never too little.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -2034,8 +2041,9 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it.
+- **A strip of bare paper across the very top: AT LEAST a sixth of the height, and more is
+  fine.** No head, no helmet, no horns, no weapon, no hand, no banner enters it. Err on the side
+  of too much bare paper here, never too little.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -2238,8 +2246,9 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it.
+- **A strip of bare paper across the very top: AT LEAST a sixth of the height, and more is
+  fine.** No head, no helmet, no horns, no weapon, no hand, no banner enters it. Err on the side
+  of too much bare paper here, never too little.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -2442,8 +2451,9 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it.
+- **A strip of bare paper across the very top: AT LEAST a sixth of the height, and more is
+  fine.** No head, no helmet, no horns, no weapon, no hand, no banner enters it. Err on the side
+  of too much bare paper here, never too little.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -2622,8 +2632,9 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it.
+- **A strip of bare paper across the very top: AT LEAST a sixth of the height, and more is
+  fine.** No head, no helmet, no horns, no weapon, no hand, no banner enters it. Err on the side
+  of too much bare paper here, never too little.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- the moment a long patient job turns on the people doing it, in a room that has been lived in for days -- are all in that band, which is where
   the picture actually happens.
@@ -2802,8 +2813,9 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it.
+- **A strip of bare paper across the very top: AT LEAST a sixth of the height, and more is
+  fine.** No head, no helmet, no horns, no weapon, no hand, no banner enters it. Err on the side
+  of too much bare paper here, never too little.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- what is left after the thing happened, carried rather than suffered -- are all in that band, which is where
   the picture actually happens.
@@ -2982,8 +2994,9 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it.
+- **A strip of bare paper across the very top: AT LEAST a sixth of the height, and more is
+  fine.** No head, no helmet, no horns, no weapon, no hand, no banner enters it. Err on the side
+  of too much bare paper here, never too little.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -3211,8 +3224,9 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it.
+- **A strip of bare paper across the very top: AT LEAST a sixth of the height, and more is
+  fine.** No head, no helmet, no horns, no weapon, no hand, no banner enters it. Err on the side
+  of too much bare paper here, never too little.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -3440,8 +3454,9 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it.
+- **A strip of bare paper across the very top: AT LEAST a sixth of the height, and more is
+  fine.** No head, no helmet, no horns, no weapon, no hand, no banner enters it. Err on the side
+  of too much bare paper here, never too little.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -3679,8 +3694,9 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it.
+- **A strip of bare paper across the very top: AT LEAST a sixth of the height, and more is
+  fine.** No head, no helmet, no horns, no weapon, no hand, no banner enters it. Err on the side
+  of too much bare paper here, never too little.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -3976,8 +3992,9 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it.
+- **A strip of bare paper across the very top: AT LEAST a sixth of the height, and more is
+  fine.** No head, no helmet, no horns, no weapon, no hand, no banner enters it. Err on the side
+  of too much bare paper here, never too little.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -4108,8 +4125,9 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it.
+- **A strip of bare paper across the very top: AT LEAST a sixth of the height, and more is
+  fine.** No head, no helmet, no horns, no weapon, no hand, no banner enters it. Err on the side
+  of too much bare paper here, never too little.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -4205,8 +4223,9 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it.
+- **A strip of bare paper across the very top: AT LEAST a sixth of the height, and more is
+  fine.** No head, no helmet, no horns, no weapon, no hand, no banner enters it. Err on the side
+  of too much bare paper here, never too little.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -5150,8 +5169,9 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it.
+- **A strip of bare paper across the very top: AT LEAST a sixth of the height, and more is
+  fine.** No head, no helmet, no horns, no weapon, no hand, no banner enters it. Err on the side
+  of too much bare paper here, never too little.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -5831,8 +5851,9 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it.
+- **A strip of bare paper across the very top: AT LEAST a sixth of the height, and more is
+  fine.** No head, no helmet, no horns, no weapon, no hand, no banner enters it. Err on the side
+  of too much bare paper here, never too little.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -6095,8 +6116,9 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it.
+- **A strip of bare paper across the very top: AT LEAST a sixth of the height, and more is
+  fine.** No head, no helmet, no horns, no weapon, no hand, no banner enters it. Err on the side
+  of too much bare paper here, never too little.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -7941,8 +7963,9 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it.
+- **A strip of bare paper across the very top: AT LEAST a sixth of the height, and more is
+  fine.** No head, no helmet, no horns, no weapon, no hand, no banner enters it. Err on the side
+  of too much bare paper here, never too little.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.
@@ -8167,8 +8190,9 @@ COMPOSITION. The card prints its own name and rules text over this image in opaq
 layout is fixed and has been measured:
 - Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it.
+- **A strip of bare paper across the very top: AT LEAST a sixth of the height, and more is
+  fine.** No head, no helmet, no horns, no weapon, no hand, no banner enters it. Err on the side
+  of too much bare paper here, never too little.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
   the picture actually happens.

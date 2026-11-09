@@ -197,6 +197,36 @@ const FORMAT_FACE = `- Portrait, aspect ratio exactly 2:3, 1024 x 1536.
   anything that reads as writing. Not on a shield, not on a banner, not in the background.`;
 
 /*
+ * **[MEASURED 2026-11-09] It asked for "about a tenth" and the gate rejects below a tenth, so
+ * half of every pass failed by construction.**
+ *
+ * 790 verdicts, 399 pieces, 52% through the gate -- two paid attempts per picture. `quietTop` is
+ * 253 of those 790 failures and every other rule together is barely a third of that. And the
+ * shape of it is the tell: the failures run to a maximum of 0.099 with a median of 0.086, and the
+ * passes have a median of 0.130. The distribution straddles the line because the ASK sat on the
+ * line. "About a tenth" is a target to approximate, and an approximation goes under as readily as
+ * over.
+ *
+ * **Two changes, and the second one matters more than the number.** A floor instead of a target
+ * -- *at least*, with *more is fine* -- because the variance was the problem and "about" is what
+ * licensed it. And a sixth rather than a tenth, so the lower tail still clears the gate.
+ *
+ * **A sixth, and not a fifth, because the window rule disagrees above that.** This is where
+ * measuring beat arguing: ink above 13% is outside the clear window, so emptying more of the top
+ * ought to HELP `inWindow`, and it does not. Banding 790 attempts by `quietTop` and reading the
+ * mean `inWindow` in each band gives 0.62 at 0.06-0.10, 0.64 at 0.10-0.14, 0.60 at 0.14-0.18,
+ * 0.45 at 0.18-0.25 and 0.23 above that; the correlation is -0.15. The two rules mildly oppose
+ * each other, so a fifth would trade 29% of attempts failing one rule for a slice failing the
+ * other. A sixth lands the bulk of the distribution inside the measured 0.10-0.18 band where both
+ * rules are comfortable.
+ *
+ * **The prediction, so the next pass can falsify it:** `quietTop` failures fall from 29% of
+ * attempts toward single digits, and window failures stay near their present 7%. The verdict
+ * log's `capsule` fingerprint separates before from after by itself -- that is what it is for,
+ * and this is the first change made with both halves of the sample in hand. The last capsule
+ * rewrite was made on the survivors alone and the next twenty-five pieces went 14 for 25.
+ */
+/*
  * The composition rule, and the one thing the test actually changed.
  *
  * "Keep the focal point at about 30% of the height" produced six full standing figures with their
@@ -318,8 +348,9 @@ const FOCAL = {
  */
 const composeFace = dir => `- Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top, about a tenth of the height.** No head, no helmet,
-  no horns, no weapon, no hand, no banner enters it.
+- **A strip of bare paper across the very top: AT LEAST a sixth of the height, and more is
+  fine.** No head, no helmet, no horns, no weapon, no hand, no banner enters it. Err on the side
+  of too much bare paper here, never too little.
 - **All of the dark lives between that strip and the halfway line.** The near-black contour, the
   deepest wash and the point of the action -- ${FOCAL[dir]
     ?? "a face, a blade's edge, the point of the gesture"} -- are all in that band, which is where

@@ -10,7 +10,7 @@
  *
  * | capsule says | measured as |
  * |---|---|
- * | the top quarter is empty | the first row carrying ink is at or below 25% of the height |
+ * | a bare strip at the top, at least a sixth | the first row carrying ink is at or below `quietTop` |
  * | the focal is above the middle | the centroid of the dark mass is above 50% |
  * | a picture with no true black has failed | some pixels under L14 |
  * | generous untouched paper | some pixels over L86 |
@@ -41,6 +41,14 @@ import { execFileSync } from "node:child_process";
 export const GATE = {
   window: [0.13, 0.43], // the band the name panel and the rules text leave clear
   minWindow: 0.30,      // ...and the share of the dark ink that must land inside it
+  /*
+   * **Deliberately below what the capsule asks for, and that is the whole relationship.**
+   *
+   * The capsule asks for at least a sixth; this enforces a tenth. Asking for exactly what you
+   * enforce is what made half of 790 attempts fail -- so the ask carries the margin and the gate
+   * holds the layout fact, which is that the name panel covers the top tenth. Moving this number
+   * moves what the card can print over; moving the capsule's moves the odds of a draw.
+   */
   quietTop: 0.10,       // the strip of bare paper at the top, as a fraction of the height
   minBlack: 0.003,      // fraction of pixels under L14
   minPaper: 0.05,       // fraction over L86

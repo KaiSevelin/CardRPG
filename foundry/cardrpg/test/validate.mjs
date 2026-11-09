@@ -8130,6 +8130,7 @@ check("and every ancestry on the list is used somewhere",
  * and that neither the prompt nor the key is ever written down.
  */
 const shootSource = fs.readFileSync(path.join(root, "test/art-shoot.mjs"), "utf8");
+const gateSource = fs.readFileSync(path.join(root, "test/art-gate.mjs"), "utf8");
 /* The CALL, not the declaration: without the semicolon this pattern matches its own `function`
  * line too, and the suite's own duplicate-grep rule caught it. */
 check("every verdict is logged, not only the failures",
@@ -8245,6 +8246,48 @@ check("the motif that reached a prompt and was shot",
     ? "repair" : "none", "repair");
 check("exposed is reached by one piece, and that piece is directed",
   ART_DIRECTION["cards/npc/prise-it-open"] ? "directed" : "generated", "directed");
+
+/*
+ * **What the capsule ASKS for must be more than what the gate ENFORCES, and for 790 attempts it
+ * was exactly equal.**
+ *
+ * **[BUILT 2026-11-09]** The capsule said *a strip of bare paper across the very top, about a
+ * tenth of the height* and `GATE.quietTop` rejects anything under a tenth. An instruction aimed
+ * at the threshold goes under it as often as over, so half of every pass failed on arithmetic
+ * rather than on draughtsmanship: 253 of 790 attempts, against barely a third of that for every
+ * other rule combined, with the failures topping out at 0.099 and the passes centred on 0.130.
+ *
+ * The gate's number is a layout fact -- the name panel covers the top tenth -- so it is the ASK
+ * that has to carry the margin. This check is the relationship itself, which is the thing that
+ * was never written down anywhere: if somebody tunes either number to match the other, the
+ * failure mode comes back and this says so.
+ *
+ * It is also a floor now rather than a target. "About" was what licensed the undershoot, so
+ * `AT LEAST` is pinned as well as the fraction.
+ */
+const { GATE } = await import("./art-gate.mjs");
+const FRACTION = { tenth: 1 / 10, ninth: 1 / 9, eighth: 1 / 8, seventh: 1 / 7, sixth: 1 / 6,
+  fifth: 1 / 5, quarter: 1 / 4, third: 1 / 3 };
+const askedStrip = /AT LEAST a (\w+) of the height/.exec(artPrompts);
+check("the capsule names the bare strip as a fraction", askedStrip?.[1] ?? "none", "sixth");
+check("and asks for more than the gate enforces",
+  FRACTION[askedStrip?.[1]] > GATE.quietTop ? "more" : "equal or less", "more");
+/* The margin, as a number, so shrinking it is a visible decision rather than a quiet edit. */
+check("and the margin between the two",
+  `${((FRACTION[askedStrip?.[1]] - GATE.quietTop) * 100).toFixed(1)} points of height`,
+  "6.7 points of height");
+/*
+ * A target invites an approximation from either side; a floor does not. Counted rather than
+ * grepped, and counted against the ask itself: the capsule is printed once per group, so a bare
+ * `.test` here matches 24 times and the suite's own duplicate-grep rule says so.
+ */
+check("and states it as a floor rather than a target", (() => {
+  const floors = (artPrompts.match(/never too little/g) ?? []).length;
+  const asks = (artPrompts.match(/AT LEAST a \w+ of the height/g) ?? []).length;
+  return asks > 0 && floors === asks ? "floor" : "target";
+})(), "floor");
+check("and the gate's own table no longer describes the old capsule",
+  gateSource.includes("the top quarter is empty") ? "stale" : "current", "current");
 
 /*
  * **A shared motif is a prompt for every piece that reaches it, so an unsafe one is unsafe N
@@ -14170,9 +14213,9 @@ for (const m of selfSource.matchAll(
  */
 readFiles.set("contentSource", contentSource);
 readFiles.set("decksSource", decksSource);
-/* 63 since the handbook became a page as well as a markdown file: `bookPage` is the one more
- * read, and the greps over it are what hold the art and the icons on the rows. */
-check("files this suite greps by name", readFiles.size, 63);
+/* 64 since the art gate's thresholds became checkable: `gateSource` is the one more read, and
+ * the grep over it is what keeps its documentation from describing a retired capsule. */
+check("files this suite greps by name", readFiles.size, 64);
 
 /* Every `/pattern/.test(VAR)` and `VAR.includes("...")`, with the check it belongs to. */
 const nameOfCheck = index => {
@@ -14276,6 +14319,7 @@ const absentGreps = [
   String.raw`and nothing stores one on the character :: facing: new fields`,
   String.raw`and reads the change rather than the state :: item\.system\.prepared`,
   String.raw`and the chain is gone :: if \(effect === "taint"\)`,
+  String.raw`and the gate's own table no longer describes the old capsule :: the top quarter is empty`,
   String.raw`and the literal Fear used to carry is gone :: const which = fast \? "actionHand" : "actionDiscard";`,
   String.raw`and the old disjunction is gone from the hand filter :: c\.type !== "wound" && c\.type !== "taint"`,
   String.raw`and the old sentence is gone :: Faith is \*\*wide and shallow\*\*`,
