@@ -710,6 +710,7 @@ SUBJECT. "Carry It Off" — Move · Move your speed, take hold of a figure alrea
 THIS CARD IS THE EXCEPTION. Only Processor and Processor Driller ever draws it, so draw that creature: the capsule's rules about species, anatomy and scale do not apply here, and this picture should be unmistakably of one thing.
 THE CREATURE, FROM THE BESTIARY: a single worker, unarmoured and unarmed, built for carrying rather than fighting: a low six-legged body with the front pair held up and loaded, mouthparts busy. Caught mid-task and not looking up -- and -- what the Horde uses instead of a siege engine, and the reason walls fall from below. That is what it is; the last line is what it is doing.
 COMPOSE IT AS THE EXCEPTION. The other cards on this shelf are a fragment of a scene with open paper around it, because one picture has to serve every creature. This one does not: let the subject FILL the frame and crowd its own edges, close enough that the eye has nowhere else to go. It should be the card in a hand of eight that does not look like the other seven, from arm's length and before it is read.
+FILLING THE FRAME IS NOT THE SAME AS SPREADING THE INK. Crowd the edges with the subject, and still put the WEIGHT of the drawing -- the true blacks, the modelled detail, the part that reads from arm's length -- in the upper middle, with bare paper above it and the lower half carried in light tone. A subject that runs from the top edge to the bottom one fills the frame and fails the card: the top is behind the name and the bottom is behind the rules text.
 
 Draw two small workers leaving with somebody: a human arm trailing between them, heels marking the dirt, the pair of them already turned away toward the dark.
 ```
@@ -884,6 +885,7 @@ SUBJECT. "Open the Hold" — The belly splits along the seam: whatever it was ca
 THIS CARD IS THE EXCEPTION. Only Skaah and Skaah Bloated ever draws it, so draw that creature: the capsule's rules about species, anatomy and scale do not apply here, and this picture should be unmistakably of one thing.
 THE CREATURE, FROM THE BESTIARY: a drop ship: balloon-like, gigantic, and full of something worse -- and -- full, low and leaking: it is going to come down somewhere. That is what it is; the last line is what it is doing.
 COMPOSE IT AS THE EXCEPTION. The other cards on this shelf are a fragment of a scene with open paper around it, because one picture has to serve every creature. This one does not: let the subject FILL the frame and crowd its own edges, close enough that the eye has nowhere else to go. It should be the card in a hand of eight that does not look like the other seven, from arm's length and before it is read.
+FILLING THE FRAME IS NOT THE SAME AS SPREADING THE INK. Crowd the edges with the subject, and still put the WEIGHT of the drawing -- the true blacks, the modelled detail, the part that reads from arm's length -- in the upper middle, with bare paper above it and the lower half carried in light tone. A subject that runs from the top edge to the bottom one fills the frame and fails the card: the top is behind the name and the bottom is behind the rules text.
 
 Draw a gigantic sagging body splitting along the belly seam, and what was inside it coming out onto the ground underneath -- more of it than the shape above could hold.
 ```
@@ -1058,8 +1060,9 @@ SUBJECT. "The Hive Obeys" — Three allies within sight each move their speed, o
 THIS CARD IS THE EXCEPTION. Only The Queen ever draws it, so draw that creature: the capsule's rules about species, anatomy and scale do not apply here, and this picture should be unmistakably of one thing.
 THE CREATURE, FROM THE BESTIARY: enormous and rooted to the floor, armoured in overlapping plate like a siege engine, heavy jaws and a crown of horn. The most frightening thing in the set: more armour than the Marshal and more mass than anything that walks. That is what it is; the last line is what it is doing.
 COMPOSE IT AS THE EXCEPTION. The other cards on this shelf are a fragment of a scene with open paper around it, because one picture has to serve every creature. This one does not: let the subject FILL the frame and crowd its own edges, close enough that the eye has nowhere else to go. It should be the card in a hand of eight that does not look like the other seven, from arm's length and before it is read.
+FILLING THE FRAME IS NOT THE SAME AS SPREADING THE INK. Crowd the edges with the subject, and still put the WEIGHT of the drawing -- the true blacks, the modelled detail, the part that reads from arm's length -- in the upper middle, with bare paper above it and the lower half carried in light tone. A subject that runs from the top edge to the bottom one fills the frame and fails the card: the top is behind the name and the bottom is behind the rules text.
 
-Draw one vast limb raised in a signal and held there, filling the frame from below -- and at the foot of it, small and already turned the same way, the first few of the things that obey.
+Draw a huge plated head and the one lifted limb beside it, both held across the upper middle with bare paper above them -- her rooted bulk below carried in light tone rather than ink, and small against it, already turned the same way, the first few of the things that obey.
 ```
 
 ### Thrash

@@ -1098,9 +1098,37 @@ const DIRECTION = {
    * that have already turned. A floor-wide crowd was never needed to say *the hive obeys*; one
    * creature turning the same way says it, and can be drawn.
    */
+  /*
+   * **[MEASURED 2026-11-09] And then the gate said why it still would not finish: 17.6% in the
+   * window against a floor of 30%, with ink 6% from the top against a clear tenth.**
+   *
+   * Both ends at once, which names the fault exactly: a **tall vertical subject**. *One vast limb
+   * raised... filling the frame from below -- and at the foot of it* asks for a thing that spans
+   * the picture, so its top reaches into the name panel and its weight settles under the rules
+   * text. The centre of its ink came out at 61.5% of the height where every piece that passes sits
+   * between 44.6% and 54.6%.
+   *
+   * | | quietTop | inWindow | centre of ink |
+   * |---|---|---|---|
+   * | *Carry It Off* (exception, passes) | 0.104 | **0.503** | 0.463 |
+   * | *Open the Hold* (exception, passes) | 0.120 | **0.320** | 0.546 |
+   * | *Prise It Open* (ordinary) | 0.109 | **0.471** | 0.461 |
+   * | *The Hive Obeys* | **0.060** | **0.176** | **0.615** |
+   *
+   * The exception capsule is not the problem -- the other two obey it and pass -- but *Open the
+   * Hold* scrapes through at 0.320 and it is the other gigantic body on the shelf, so **a huge
+   * subject is marginal here by nature** and this one has to be composed rather than described.
+   *
+   * So the ink goes where the card is clear: **the head and the signal carry the weight, high, and
+   * her bulk below is light tone rather than ink.** She is still enormous -- enormous is what the
+   * bestiary line says, and it says it in the brief now -- but what is *drawn dark* is the part a
+   * player can see once the card is printed. No numbers in the direction, because a percentage is
+   * not something a model can act on: bare paper above and light tone below are.
+   */
   "cards/npc/the-hive-obeys":
-    "one vast limb raised in a signal and held there, filling the frame from below -- and at the "
-    + "foot of it, small and already turned the same way, the first few of the things that obey",
+    "a huge plated head and the one lifted limb beside it, both held across the upper middle with "
+    + "bare paper above them -- her rooted bulk below carried in light tone rather than ink, and "
+    + "small against it, already turned the same way, the first few of the things that obey",
   "cards/npc/open-the-hold":
     "a gigantic sagging body splitting along the belly seam, and what was inside it coming out "
     + "onto the ground underneath -- more of it than the shape above could hold",
@@ -2272,7 +2300,23 @@ for (const group of GROUPS) {
           + "with open paper around it, because one picture has to serve every creature. This one "
           + "does not: let the subject FILL the frame and crowd its own edges, close enough that "
           + "the eye has nowhere else to go. It should be the card in a hand of eight that does "
-          + "not look like the other seven, from arm's length and before it is read."]
+          + "not look like the other seven, from arm's length and before it is read.",
+          /*
+           * **And the clause that was missing, which cost four exports of one picture.**
+           *
+           * *Fill the frame* is about the frame and says nothing about where the ink goes, so a
+           * brief that obeyed it put a tall subject from the top edge to the bottom one -- into
+           * the name panel at one end and under the rules text at the other. Measured: 17.6% of
+           * the drawing in the clear band against a floor of 30%, on a card whose two neighbours
+           * under the same instruction score 0.503 and 0.320. The instruction was not wrong; it
+           * was half an instruction.
+           */
+          "FILLING THE FRAME IS NOT THE SAME AS SPREADING THE INK. Crowd the edges with the "
+          + "subject, and still put the WEIGHT of the drawing -- the true blacks, the modelled "
+          + "detail, the part that reads from arm's length -- in the upper middle, with bare "
+          + "paper above it and the lower half carried in light tone. A subject that runs from "
+          + "the top edge to the bottom one fills the frame and fails the card: the top is behind "
+          + "the name and the bottom is behind the rules text."]
         : []),
       "",
       direction,
