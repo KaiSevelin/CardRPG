@@ -383,6 +383,19 @@ export class ItemSlateData extends SlateData {
        * rather than guesswork about what the number used to be.
        */
       corroded: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 }),
+      /**
+       * And how much of what it STRIKES for has been battered away -- the same idea one printed
+       * number over, which is why it is a second field and not a second meaning for the first: an
+       * item may carry an `armor` and a `strike` at once, and a shield that has been dented is not
+       * a shield that has been eaten.
+       *
+       * **Neither counter can take its number below 0, and neither destroys the item.** The
+       * appliers cap what they take at what is left, so these never exceed what is printed and the
+       * derived figures never go negative. A breastplate at armour 0 is still a breastplate: it
+       * takes up its slot, it weighs what it weighed, and a repair brings it back. Gear in this
+       * game is spent, not deleted (core-rules 8).
+       */
+      blunted: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 }),
 
       /*
        * What wearing this raises, the same shape a feature uses -- a ring that grants a spell slot,
@@ -591,6 +604,32 @@ export class ItemSlateData extends SlateData {
    */
   get armorNow() {
     return Math.max(0, (this.armor ?? 0) - (this.corroded ?? 0));
+  }
+
+  /**
+   * What this item actually strikes for, after anything that has battered it.
+   *
+   * The twin of `armorNow` and deliberately shaped like it: printed stays printed, the loss is its
+   * own number, and the floor is 0 rather than a negative. A line this item does not have returns
+   * `null`, which is the answer `verbs[verb].value` gives and what every caller already tests for
+   * -- so this can stand in for the raw read without a second kind of nothing.
+   *
+   * `blunted` is read for every verb that delivers a value, which in practice is `strike` and
+   * `cast`: those are what `resolveAttack` is called with. It is not subtracted from a potion's
+   * `use`, because nothing blunts a potion and a shared field with a per-verb exception list would
+   * be a rule in two places.
+   */
+  valueFor(verb) {
+    const printed = this.verbs?.[verb]?.value;
+    if (printed === null || printed === undefined) return null;
+    return verb === "strike" || verb === "cast"
+      ? Math.max(0, printed - (this.blunted ?? 0))
+      : printed;
+  }
+
+  /** Is anything on this item waiting for a repair? */
+  get needsRepair() {
+    return (this.corroded ?? 0) > 0 || (this.blunted ?? 0) > 0;
   }
 
   /** Which verbs this item can actually serve. */

@@ -25,7 +25,8 @@ import {
 import {
   resolveAttack, resolveDefend, resolveHeal, resolveUse, resolveCondition, resolveShake,
   reachableAmmo, isUsable,
-  resolveTaint, resolveCorrode, liftCondition, resolveForesee, collectBonuses,
+  resolveTaint, resolveGearEffect, resolveRepair, resolveRepairCheck,
+  liftCondition, resolveForesee, collectBonuses,
   resolveConjure, resolveShape,
   itemMeets, requireText, payToCast, answerCast, grantBlock, resolveCheck, passiveScore,
   refusesAction
@@ -1394,12 +1395,15 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
    * and then checked it would refuse to fire a bow the character is holding.
    */
   #itemsFor(verb, requires = null) {
+    /* By what they do NOW, not what is printed on them: a sort on the printed number offers a
+     * hero the sword that has been battered to 0 over the axe behind it. */
+    const worth = i => i.system.valueFor?.(verb) ?? i.system.verbs?.[verb]?.value ?? 0;
     return this.actor.items
       .filter(i => i.type === "item" && i.system.equipped
         && !CARDRPG.slots[i.system.equippedSlot]?.stows
         && (i.system.verbs?.[verb]?.value !== null || i.system.verbs?.[verb]?.text))
       .filter(i => itemMeets(i, requires))
-      .sort((a, b) => (b.system.verbs[verb].value ?? 0) - (a.system.verbs[verb].value ?? 0));
+      .sort((a, b) => (worth(b) - worth(a)));
   }
 
   /* -------------------------------------------- */
@@ -2162,9 +2166,55 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         }
         break;
 
+      /* Both gear effects through the one mapping in resolve.mjs, which the critical deck's
+       * riders go through as well -- so a third of them is added in one place. */
       case "corrode":
-        for (const t of targets) await resolveCorrode(actor, { amount: step.param ?? 1, target: t });
+      case "blunt":
+        for (const t of targets) await resolveGearEffect(actor, { step, target: t });
         break;
+
+      /*
+       * **Repair, where `param` is what says whether a skill is involved.**
+       *
+       *  - **With a number** it is a promise being kept -- *repair one item overnight*, from a
+       *    ritual or a tool -- and that many points come off flat.
+       *  - **Without one** it is somebody trying, so it is a check: `lore`, which is where both
+       *    backgrounds that grant *armour and its repair* already put their bonus, so the training
+       *    a character bought is the training that pays.
+       *
+       * One verb for both, because they are one action with and without a guarantee. A second verb
+       * would be a second place to remember that repairing exists at all -- and this mechanism
+       * spent a long time existing only in the prose of three pieces of content.
+       */
+      case "repair": {
+        const hurt = actor.items.filter(i => i.type === "item" && i.system.needsRepair);
+        if (!hurt.length) {
+          ui.notifications.info("Nothing of yours needs mending.");
+          break;
+        }
+        const id = hurt.length === 1 ? hurt[0].id : await foundry.applications.api.DialogV2.wait({
+          window: { title: "Repair" },
+          content: `<div class="cardrpg"><p>Which do you mend?</p></div>`,
+          buttons: [
+            ...hurt.map(i => ({
+              action: i.id,
+              label: `${i.name} (${i.system.corroded ? `armor -${i.system.corroded}` : ""}`
+                + `${i.system.corroded && i.system.blunted ? ", " : ""}`
+                + `${i.system.blunted ? `strike -${i.system.blunted}` : ""})`
+            })),
+            { action: "cancel", label: "None", callback: () => null }
+          ],
+          modal: true,
+          rejectClose: false
+        });
+        const pick = hurt.find(i => i.id === id);
+        if (pick) {
+          await (step.param === null || step.param === undefined
+            ? resolveRepairCheck(actor, { item: pick })
+            : resolveRepair(actor, { item: pick, amount: step.param }));
+        }
+        break;
+      }
 
       case "lift": {
         // The complement of shake: what has no duration to spend. Same pick-one shape.

@@ -702,7 +702,7 @@ export class CritCardData extends foundry.abstract.TypeDataModel {
 
   /** A face that does nothing at all would be a card nobody can resolve. */
   get acts() {
-    return this.doubles || this.draws > 0 || !!this.effect?.condition;
+    return this.doubles || this.draws > 0 || !!this.effect?.condition || !!this.effect?.verb;
   }
 }
 

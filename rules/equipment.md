@@ -432,6 +432,11 @@ Tools work like weapons: the card says what you try, the tool says how well. **U
 | **Climbing Rope** | Pack | 3 | 5 g | Tool | ✊ Might / 🌀 Agility +2 (climbing, and nobody falls alone) |
 | **Healer's Kit** | Pack | 2 | 20 g | Tool | 📜 Lore +2 (treating wounds; removes 1 Wound on a Normal 5) |
 | **Repair Kit** | Pack | 3 | 30 g | Tool | 📜 Lore +2, and overnight it clears **1 Corrode** from one item |
+<!-- [2026-11-09] This line, the Smith's Hammer below it, The Mended Seam and two backgrounds all
+     promised a repair for months while Corrode had no inverse at all -- the ritual's own `needs`
+     line said so out loud. `resolveRepair` exists now, and `resolveRepairCheck` is the Lore check
+     core-rules 8 names: Critical 2 points back, Success 1, Partial a wasted night. Blunt, the
+     weapon twin of Corrode, is cleared by the same routines. -->
 | **Hunting Traps** | Pack | 4 | 15 g | Tool | 👁 Wits +2 (tracking and trapping animals) |
 | **Lantern** | 1 hand | 2 | 5 g | Tool | 👁 Wits +1 in the dark — and the squares it lights are **not shadowed** |
 | **The Kit** | Pack | 3 | — | Tool | 🌑 Shadow +2, and every **Hard** physical obstacle counts as Normal |

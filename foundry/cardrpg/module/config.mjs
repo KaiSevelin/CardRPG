@@ -119,6 +119,25 @@ CARDRPG.effects = {
    */
   corrode: { label: "CARDRPG.Effect.Corrode", icon: "melting-metal" },
   /*
+   * Blunt N: N off the value the target's weapon strikes for, until it is repaired.
+   *
+   * **The same mechanism as Corrode, one slot over**, and they are two effects rather than one
+   * because they eat two different printed numbers: an item can carry both an `armor` and a
+   * `strike`, and a shield that has been battered is not the same item as a shield that has been
+   * eaten. Neither can take anything below **0** and neither destroys what it has finished with --
+   * a breastplate at 0 is still a breastplate, and still repairable (core-rules 8).
+   */
+  blunt: { label: "CARDRPG.Effect.Blunt", icon: "breaking-chain" },
+  /*
+   * Repair N: put N back, which is what Corrode and Blunt had no inverse for.
+   *
+   * It was promised in prose by two backgrounds and a ritual long before anything could do it --
+   * *overnight it clears 1 Corrode*, *repairs 1 Corrode overnight*, *repair one item overnight,
+   * including corroded armour* -- and The Mended Seam's own `needs` line said so out loud:
+   * *repairing an item, which Corrode has no inverse for*.
+   */
+  repair: { label: "CARDRPG.Effect.Repair", icon: "anvil" },
+  /*
    * Lift: remove a condition that has no duration to spend, which is the other half of Shake Off.
    *
    *   Shake Off spends a duration. Lift removes what has no duration to spend.

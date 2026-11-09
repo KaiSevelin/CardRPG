@@ -7228,9 +7228,11 @@ export const HARM_FACES = [
  * against four points of armour a doubled Strike of 3 gets **2** through, and the card whose
  * entire purpose is *this one gets through* was being flattened by the rung it should punish.
  *
- * So a Critical now draws, and doubling is one face of five. The other four are mechanisms this
+ * So a Critical now draws, and doubling is one face of seven. The other six are mechanisms this
  * game already has, which is the test a new deck has to pass -- a deck that needed new rules
- * would be a fourth name for something:
+ * would be a fourth name for something. *Stove In* and *Turn the Edge* are the newest pair and
+ * they pass it too: Corrode was built for acid and had no other applier, and Blunt is Corrode one
+ * printed number over:
  *
  * | Face | Is | Copies |
  * |---|---|---|
@@ -7238,10 +7240,12 @@ export const HARM_FACES = [
  * | *Find the Gap* | **Exposed** -- armour counts 0, from after this hit | 2 |
  * | *Off the Feet* | **Off-Balance** -- Block counts 0, from after this hit | 2 |
  * | *Driven Down* | **Halted** -- the next turn does not happen | 1 |
+ * | *Stove In* | **Corrode 1** -- their armour is a point worse, for good | 1 |
+ * | *Turn the Edge* | **Blunt 1** -- their weapon strikes for a point less, for good | 1 |
  * | *Both* | draw two others and take both | 1 |
  *
- * **Four of ten still double**, which is the number that matters: a Critical remains the card you
- * want, and six times in ten it buys something a doubled number could not. Exposed and Off
+ * **Four of twelve still double**, which is the number that matters: a Critical remains the card
+ * you want, and eight times in twelve it buys something a doubled number could not. Exposed and Off
  * Balance are the two that answer armour and Block, and they are worth more than doubling exactly
  * where doubling is worth least -- against a defended target, which is what section 5 says a
  * Critical is for.
@@ -7286,6 +7290,26 @@ export const CRIT_EFFECTS = [
     name: "Driven Down", copies: 1,
     effect: { condition: "halted", duration: 1 },
     text: "Halted: their next turn does not happen. Not doubled."
+  },
+  /*
+   * **The two faces that do not wear off**, and they are the reason the deck grew rather than
+   * being re-cut: every other face here is spent by the end of the round after it, and a critical
+   * hit that leaves a mark on the gear is a different kind of memorable.
+   *
+   * They are one copy each, like *Driven Down*, because permanence is worth more than it measures.
+   * Nothing here can take a number below 0 and nothing here destroys an item: a breastplate at
+   * armour 0 is still a breastplate and still repairable, which is what keeps these from being a
+   * way to delete 300 gold of plate with a lucky card (core-rules 8).
+   */
+  {
+    name: "Stove In", copies: 1,
+    effect: { verb: "corrode", param: 1 },
+    text: "Their armour is 1 worse until it is repaired. Permanent, and not doubled."
+  },
+  {
+    name: "Turn the Edge", copies: 1,
+    effect: { verb: "blunt", param: 1 },
+    text: "Their weapon strikes for 1 less until it is repaired. Permanent, and not doubled."
   },
   {
     name: "Both", copies: 1, draws: 2,

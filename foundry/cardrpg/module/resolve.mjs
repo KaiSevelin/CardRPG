@@ -595,7 +595,10 @@ export async function drawCritEffect(actor) {
     if (face.system.doubles) doubles = true;
     lines.push(`<strong>${face.name}</strong> &mdash; ${face.system.text}`);
     const step = face.system.effect;
-    if (step?.condition) riders.push(step);
+    /* A rider is anything the face does that is not arithmetic on this blow: a condition, or one
+     * of the gear effects. `effect` is a full step, which the schema chose precisely so a face
+     * wanting a different KIND of effect would not need it widened -- and two faces now want one. */
+    if (step?.condition || step?.verb) riders.push(step);
   }
   return { doubles, faces, lines, riders };
 }
@@ -1099,9 +1102,18 @@ export async function liftInjury(actor, injury) {
 /**
  * Corrode N: take N off the target's armor until it is repaired (core-rules 8).
  *
- * The only effect in the game that spends **gear**, which is a resource leveling 5a.1 names and
- * nothing implemented. It eats the equipped body slate rather than the actor's armor number, so the
- * loss follows the armour when it is taken off, and a repair is a reset rather than a guess.
+ * It eats the equipped body slate rather than the actor's armor number, so the loss follows the
+ * armour when it is taken off, and a repair is a reset rather than a guess.
+ *
+ * **Permanent and cumulative, floored at 0, and it never destroys anything.** What it takes is
+ * capped at what is left, so `corroded` cannot pass the printed `armor` and `armorNow` cannot go
+ * negative. A breastplate at armour 0 is still a breastplate: it fills its slot, it weighs what it
+ * weighed, and `resolveRepair` brings it back. Gear here is **spent, not deleted** -- an item that
+ * vanished at 0 would make a 10 g flask of acid the cheapest way to delete 300 g of plate, and
+ * would leave the repair skill nothing to repair.
+ *
+ * `resolveBlunt` is the same routine one printed number over. The two are kept apart because an
+ * item can carry an `armor` and a `strike` at once.
  */
 export async function resolveCorrode(actor, { amount = 1, target }) {
   if (!target) return null;
@@ -1126,6 +1138,184 @@ export async function resolveCorrode(actor, { amount = 1, target }) {
       + `${before} &rarr; <strong>${before - eaten}</strong>, until it is repaired.</p></div>`
   });
   return { item: armour.name, before, now: before - eaten };
+}
+
+/**
+ * **Which weapon takes it, when more than one is in hand.**
+ *
+ * Armour needed no such rule: there is one body slot, so there is one answer. Hands are not like
+ * that -- a hero may be holding a sword and an axe, or a sword and a shield that strikes -- so a
+ * routine that picked silently would be picking the most important thing about the effect.
+ *
+ * **The attacker chooses, and the default is the best weapon.** Two halves, and each is a rule:
+ *
+ *  - *The attacker*, because this is damage being done. The client resolving the attack is the
+ *    attacker's, so the prompt lands in front of whoever is swinging -- the GM for a monster's
+ *    critical, the player for their own. Asking the victim which of their weapons to ruin would be
+ *    asking the wrong person, and it is the one choice in this file whose answer is adversarial.
+ *  - *The best weapon by default*, which is what a closed dialog or an absent user resolves to.
+ *    Highest current value, ties by name so it is never arbitrary. The alternative -- weakest, or
+ *    random -- makes the effect dodgeable by carrying a knife, and an effect you can opt out of by
+ *    owning junk is not an effect.
+ *
+ * It offers what is EQUIPPED and strikes for something: a weapon in a pack is not in the blow's
+ * way, and one already battered to 0 has nothing left to take.
+ */
+async function chooseWeapon(target, weapons) {
+  if (weapons.length <= 1) return weapons[0] ?? null;
+  const sorted = [...weapons].sort((a, b) =>
+    (b.system.valueFor("strike") ?? 0) - (a.system.valueFor("strike") ?? 0)
+    || a.name.localeCompare(b.name));
+
+  const options = sorted.map(w =>
+    `<option value="${w.id}">${foundry.utils.escapeHTML(w.name)} `
+    + `(strike ${w.system.valueFor("strike")})</option>`).join("");
+  const chosen = await foundry.applications.api.DialogV2.prompt({
+    window: { title: game.i18n.format("CARDRPG.Degrade.ChooseTitle", { name: target.name }) },
+    content: `<p>${game.i18n.localize("CARDRPG.Degrade.ChooseBody")}</p>`
+      + `<select name="weapon" style="width: 100%">${options}</select>`,
+    ok: {
+      label: game.i18n.localize("CARDRPG.Degrade.ChooseConfirm"),
+      callback: (event, button) => button.form.elements.weapon.value
+    },
+    rejectClose: false
+  }).catch(() => null);
+
+  return sorted.find(w => w.id === chosen) ?? sorted[0];
+}
+
+/**
+ * Blunt N: take N off what the target's weapon strikes for, until it is repaired (core-rules 8).
+ *
+ * `resolveCorrode` for the other printed number, and everything true of that is true here: the
+ * loss lives on the **item**, so it follows the weapon when it changes hands; it is permanent and
+ * cumulative; what it takes is capped at what is left, so nothing goes negative; and a weapon at
+ * strike 0 is still a weapon. It is a club with no weight behind it until somebody mends it.
+ */
+export async function resolveBlunt(actor, { amount = 1, target, item = null }) {
+  if (!target) return null;
+  const weapons = (target.items ?? []).filter(i =>
+    i.type === "item" && i.system.equipped && (i.system.valueFor?.("strike") ?? 0) > 0);
+  const weapon = item ?? await chooseWeapon(target, weapons);
+  if (!weapon) {
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor }),
+      content: `<div class="cardrpg"><p><strong>${target.name}</strong> has nothing in hand `
+        + `left to blunt.</p></div>`
+    });
+    return null;
+  }
+
+  const before = weapon.system.valueFor("strike");
+  const taken = Math.min(before, Math.max(1, amount));
+  await weapon.update({ "system.blunted": (weapon.system.blunted ?? 0) + taken });
+
+  await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<div class="cardrpg"><p><strong>${target.name}</strong>: ${weapon.name} strikes for `
+      + `${before} &rarr; <strong>${before - taken}</strong>, until it is repaired.</p></div>`
+  });
+  return { item: weapon.name, before, now: before - taken };
+}
+
+/**
+ * **The gear effects behind one name**, because two different callers apply them: a card half
+ * played from the tray, and a critical's rider applied inside `resolveAttack`.
+ *
+ * One mapping rather than two switches. The alternative was a `case` list in the tray and an `if`
+ * chain in the resolver -- the same decision written twice, drifting the moment a third effect
+ * arrives, which is this project's commonest defect in its original form.
+ */
+export async function resolveGearEffect(actor, { step, target }) {
+  const amount = step.param ?? 1;
+  if (step.verb === "corrode") return resolveCorrode(actor, { amount, target });
+  if (step.verb === "blunt") return resolveBlunt(actor, { amount, target });
+  return null;
+}
+
+/**
+ * Repair N: put N back on one item, which is what Corrode and Blunt had no inverse for.
+ *
+ * **It was promised in prose for a long time before anything could do it.** Two backgrounds grant
+ * *armour and its repair* with the situational line *overnight it clears 1 Corrode*; The Mended
+ * Seam is a ritual to *repair one item overnight, including corroded armour*; and that ritual's own
+ * `needs` line read *repairing an item, which Corrode has no inverse for*. Three pieces of content
+ * describing a mechanism, and the mechanism was the missing half.
+ *
+ * Armour first, then the strike, because a character who has had both eaten wants the defence
+ * back before the damage -- and because one call per point keeps *clears 1* meaning one thing.
+ * Returns what moved, or null when there was nothing to mend.
+ */
+export async function resolveRepair(actor, { item, amount = 1, which = "" } = {}) {
+  if (!item) return null;
+  const take = (field, printed, now) => {
+    const spent = item.system[field] ?? 0;
+    if (!spent) return null;
+    const back = Math.min(spent, Math.max(1, amount));
+    return { field, back, from: now, to: now + back, printed };
+  };
+  const armour = which === "blunted" ? null
+    : take("corroded", item.system.armor ?? 0, item.system.armorNow ?? 0);
+  const edge = which === "corroded" || armour ? null
+    : take("blunted", item.system.verbs?.strike?.value ?? 0, item.system.valueFor?.("strike") ?? 0);
+  const fix = armour ?? edge;
+  if (!fix) {
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor }),
+      content: `<div class="cardrpg"><p><strong>${item.name}</strong> has nothing wrong with `
+        + `it.</p></div>`
+    });
+    return null;
+  }
+
+  await item.update({ [`system.${fix.field}`]: (item.system[fix.field] ?? 0) - fix.back });
+  const what = fix.field === "corroded" ? "armor" : "strike";
+  await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<div class="cardrpg"><p><strong>${actor.name}</strong> mends <strong>${item.name}`
+      + `</strong>: ${what} ${fix.from} &rarr; <strong>${fix.to}</strong>`
+      + `${fix.to >= fix.printed ? ", as it was printed" : ""}.</p></div>`
+  });
+  return { item: item.name, ...fix };
+}
+
+/**
+ * **A repair is a skill**, which is the half the user asked for and the content already assumed.
+ *
+ * The approach is `lore` because that is what the two backgrounds that grant *armour and its
+ * repair* put their bonus on, so the training a character bought is the training that pays here --
+ * no new field, no second vocabulary, and a character without it may still try.
+ *
+ * The four results are the four results (skill-rules 2), read through `checkOutcome` like every
+ * other check rather than scored again here:
+ *
+ *  - **Critical**: 2 points back. A night that went better than the work deserved.
+ *  - **Success**: 1.
+ *  - **Partial**: nothing back, and the night is gone. It is apart on the bench and not yet
+ *    together, which is the honest reading of *partly repaired* for a thing that either holds or
+ *    does not.
+ *  - **Fail**: nothing. Nothing worse, either -- a failed repair does not eat the item, for the
+ *    same reason Corrode does not: gear here is spent, not deleted.
+ */
+export async function resolveRepairCheck(actor, { item, dc = CARDRPG.difficulties.normal } = {}) {
+  if (!actor || !item) return null;
+  if (!item.system?.needsRepair) {
+    ui.notifications?.info(`${item.name} has nothing wrong with it.`);
+    return null;
+  }
+  const check = await resolveCheck(actor, { approach: "lore", dc, item });
+  if (!check) return null;
+  const back = check.result === "critical" ? 2 : check.result === "success" ? 1 : 0;
+  if (!back) {
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor }),
+      content: `<div class="cardrpg"><p><strong>${actor.name}</strong> works on `
+        + `<strong>${item.name}</strong> all night and it is no better than it was.</p></div>`
+    });
+    return { result: check.result, back: 0 };
+  }
+  const done = await resolveRepair(actor, { item, amount: back });
+  return { result: check.result, back, ...done };
 }
 
 /**
@@ -2011,7 +2201,9 @@ export async function resolveAttack(actor, {
   const shot = ammo ? ammo.system.shot : null;
   const effect = ammo?.system.shotEffect ?? "";
 
-  const base = line.value;
+  /* The battered value, not the printed one: `valueFor` is `armorNow` for a weapon and returns
+   * the same `null` the raw read does for a line the item has not got. */
+  const base = item?.system?.valueFor?.(verb) ?? line.value;
   const bonuses = collectBonuses(actor, verb, item);
   const before = base + mod + (shot?.mod ?? 0) + bonuses.total;
 
@@ -2214,7 +2406,9 @@ export async function resolveAttack(actor, {
    * the target was actually wearing, and the gap is what the NEXT attack walks through.
    */
   for (const step of crit.riders ?? []) {
-    if (first) await resolveCondition(actor, { step, target: first });
+    if (!first) break;
+    if (step.condition) await resolveCondition(actor, { step, target: first });
+    else await resolveGearEffect(actor, { step, target: first });
   }
 
   if (!missed) {

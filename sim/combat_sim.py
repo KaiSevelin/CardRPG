@@ -116,6 +116,34 @@ WARRIOR_CARDS = {
     'Weapon Swap': ([('ready',)], [('strike', 0)], None, 1),
 }
 
+# **The critical deck, as a distribution** (core-rules 5). Twelve cards, seven faces, reshuffled
+# on empty, which is close enough to independent draws at one crit in twenty attacks.
+#
+# `doubles` is whether the damage is still doubled; `rider` is what it leaves behind. One table
+# read by BOTH sides, because one deck is the rule -- the hero's crits draw from it too, and for a
+# long time this file only ever drew it for the goblins.
+CRIT_DECK = (
+    (4, True,  None),          # Through and Through
+    (2, False, 'exposed'),     # Find the Gap
+    (2, False, 'offBalance'),  # Off the Feet
+    (1, False, None),          # Driven Down -- Halted, and the lost turn is NOT modelled
+    (1, False, 'corrode'),     # Stove In
+    (1, False, 'blunt'),       # Turn the Edge
+    (1, False, 'both'),        # Both -- the two this file can see
+)
+CRIT_CARDS = sum(n for n, _, _ in CRIT_DECK)
+
+
+def crit_face(rng):
+    """One draw: (doubles, rider)."""
+    roll = rng.randrange(CRIT_CARDS)
+    for n, doubles, rider in CRIT_DECK:
+        if roll < n:
+            return doubles, rider
+        roll -= n
+    return True, None
+
+
 GOBLIN_CARDS = {
     # One round where the type goes for the buckles rather than the breastplate. The third element
     # of a strike op is armour the STEP ignores, the same as on the hero's side.
@@ -512,7 +540,8 @@ class Sim:
                     continue
                 adj = reach
                 # Strong is +1 with Heavy items only (starter-cards.md Features).
-                value = prof['strike'] + op[1] + (1 if cfg.strong and prof['heavy'] else 0)
+                value = (max(0, prof['strike'] - self.game.blunt_lost)
+                         + op[1] + (1 if cfg.strong and prof['heavy'] else 0))
                 # *Loaded Before the Bell*: you begin loaded and the fight's first shot is +2.
                 if cfg.first_shot_bonus and self.game.s['shots_fired'] == 0 and prof.get('reload'):
                     value += cfg.first_shot_bonus
@@ -539,7 +568,24 @@ class Sim:
                 target = max(adj, key=lambda g: (est(g)[1], -g[1]))
                 if real:
                     card = self.game.fate_w.draw(-1 if ranged_pen else 0)
-                    d = max(0, fate_apply(value, card) - soak(target))
+                    landed = fate_apply(value, card)
+                    # **The hero draws from the same deck** (core-rules 5), which this file did not
+                    # model at all until 2026-11-09: a hero's Critical always doubled here while a
+                    # goblin's drew a face, so every figure for this deck was its effect on the
+                    # hero as a DEFENDER and none of its cost to the hero as an attacker.
+                    #
+                    # The doubling half is modelled and the rider half is not: a goblin has no
+                    # armour to Stove In, no Block to take, and nothing here reads a condition on a
+                    # goblin. So these figures understate what the hero GETS from the deck and are
+                    # honest about what it COSTS them, which is the safe direction for a number
+                    # used to decide a weighting.
+                    if card == 'CRIT' and cfg.crit_deck:
+                        doubles, rider = crit_face(self.game.rng)
+                        if not doubles and not cfg.crit_deck_rides:
+                            landed = value
+                        if rider == 'blunt':
+                            target[2]['blunted'] = target[2].get('blunted', 0) + 1
+                    d = max(0, landed - soak(target))
                     self.game.stat_fate(card)
                     if prof.get('reload'):
                         self.loaded = False
@@ -644,6 +690,12 @@ class Game:
                           weapon=wpn) for i, wpn in enumerate(cfg.goblins)]
         # What is on the hero's back, in kilograms, and what that costs (core-rules 4). Armour is
         # the only rung on the ladder that is paid for in weight, so this is where its price lands.
+        # **What the critical deck has taken off the hero's gear, for good** (core-rules 8). Both
+        # are permanent and cumulative within the fight, neither can take its number below 0, and
+        # neither destroys anything: at armour 0 the breastplate is still worn and still repairable,
+        # which is why these are counters and not a `del`.
+        self.armor_lost = 0
+        self.blunt_lost = 0
         self.load = (ARMOUR[cfg.armor]['kg'] + WEAPONS[cfg.weapon]['kg'] + cfg.shield_kg
                      + (WEAPONS[cfg.sling]['kg'] if cfg.sling else 0) + cfg.extra_kg)
         self.burdened = self.load > cfg.carry_limit
@@ -1256,6 +1308,7 @@ class Game:
         # *Nothing Gets Through*: while Overloaded, armour counts double. Overloaded is not free --
         # the hero is Slowed and two cards are Spent for the fight -- so this reads both prices.
         armor = cfg.armor * 2 if (cfg.armor_doubles_overloaded and self.overloaded) else cfg.armor
+        armor = max(0, armor - self.armor_lost)   # Stove In, and it does not come back
         # **The critical deck decides what the Critical did** (core-rules 5), so the doubling is no
         # longer certain. Modelled as its distribution: ten cards reshuffled on empty is close
         # enough to independent draws at one crit in twenty attacks.
@@ -1278,18 +1331,10 @@ class Game:
         # understating is the right direction for a number used to decide whether to ship it.
         riders = []
         if crit and cfg.crit_deck:
-            face = self.rng.random()
-            if face >= 0.4:
-                if not cfg.crit_deck_rides:
-                    raw = raw // 2                      # not doubled: the plain figure
-                if face < 0.6:
-                    riders = ['exposed']                # Find the Gap
-                elif face < 0.8:
-                    riders = ['offBalance']             # Off the Feet
-                elif face < 0.9:
-                    riders = []                         # Driven Down: the turn is not modelled
-                else:
-                    riders = ['exposed', 'offBalance']  # Both, as the two this file can see
+            doubles, rider = crit_face(self.rng)
+            if not doubles and not cfg.crit_deck_rides:
+                raw = raw // 2                          # not doubled: the plain figure
+            riders = ['exposed', 'offBalance'] if rider == 'both' else [rider] if rider else []
         # `ignores N` comes off armour and never off Block (core-rules 5).
         # **Exposed zeroes armour**, read off the derived number exactly as the engine reads it.
         if any(CONDITIONS[c['key']].get('zeroes_armour') for c in w['conds']):
@@ -1365,7 +1410,16 @@ class Game:
         # The critical deck's rider, after the blow it arrived with. `by=src` so it ticks on the
         # clock of the creature that drew the card, which is what lets that creature use it.
         for key in riders:
-            self.apply_cond(key, 1, by=src)
+            if key in ('corrode', 'blunt'):
+                self.s['gear_' + key] += 1
+            if key == 'corrode':
+                # Stove In: a point off the armour, for the rest of the fight.
+                self.armor_lost = min(cfg.armor, self.armor_lost + 1)
+            elif key == 'blunt':
+                # Turn the Edge: a point off what the hero strikes for, for the rest of the fight.
+                self.blunt_lost = min(WEAPONS[self.w['weapon']]['strike'], self.blunt_lost + 1)
+            else:
+                self.apply_cond(key, 1, by=src)
 
     # --- goblins
     def routs(self, g):
@@ -1426,6 +1480,10 @@ class Game:
                     rng_ = prof['rng']
                     value = prof.get('dmg') or self.cfg.goblin_dmg
                     ranged = prof['ranged']
+                # Turn the Edge, from the hero's side of the same deck. Thrown rocks included:
+                # a blunted goblin throws the same rock, so this sits outside the branch on
+                # purpose -- it is the creature's damage, not the weapon's profile.
+                value = max(0, value - g.get('blunted', 0))
                 if dist > rng_:
                     continue
                 if kind == 'strike' and op[1] == 'swarm' and any(cheb(o, wp()) == 1 for o in others):
@@ -1482,7 +1540,9 @@ def run_scenario(cfg, fights, seed):
                   'prevented_react', 'reloads', 'shots_fired', 'cards_spent',
                   'prevented_armor', 'prevented_shieldup', 'dmg_taken', 'heavy_hit_discards', 'wounds_taken',
                   'fears_taken', 'fears_cornered', 'fear_squares', 'confused_rounds',
-                  'goblin_disadv', 'goblin_adv', 'goblins_fled', 'fate_miss', 'fate_crit'):
+                  'goblin_disadv', 'goblin_adv', 'goblins_fled', 'fate_miss', 'fate_crit',
+                  # The two faces of the critical deck whose loss outlives the fight.
+                  'gear_corrode', 'gear_blunt'):
             agg[k].append(g.s[k])
         if 'deck_empty_round' in g.s:
             agg['deck_empty_round'].append(g.s['deck_empty_round'])

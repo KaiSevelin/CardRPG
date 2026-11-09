@@ -876,8 +876,8 @@ Each character has their own 20-card fate deck:
 
 #### The critical deck  **[BUILT 2026-11-08]**
 
-**A Critical on an attack draws one card from the critical deck, face up, and reads it out.** Ten
-cards, five faces:
+**A Critical on an attack draws one card from the critical deck, face up, and reads it out.**
+Twelve cards, seven faces:
 
 | Face | Copies | What it does |
 |---|---|---|
@@ -885,7 +885,32 @@ cards, five faces:
 | **Find the Gap** | 2 | **Exposed** &mdash; their armour counts **0** until the end of your next turn. Not doubled, and not this hit. |
 | **Off the Feet** | 2 | **Off-Balance** &mdash; their Block counts **0** until the end of your next turn, and it is an opening. Not doubled, and not this hit. |
 | **Driven Down** | 1 | **Halted** &mdash; their next turn does not happen. Not doubled. |
+| **Stove In** | 1 | **Corrode 1** &mdash; their armour is a point worse until it is repaired. Permanent. Not doubled. |
+| **Turn the Edge** | 1 | **Blunt 1** &mdash; their weapon strikes for a point less until it is repaired. Permanent. Not doubled. |
 | **Both** | 1 | Draw two **others** and take both. |
+
+> **The last two are the only faces that do not wear off**, which is why the deck grew by two rather
+> than being re-cut, and why they are one copy each. Everything else here is spent by the end of the
+> round after it; a critical that leaves a mark on the gear is a different kind of memorable. They
+> take nothing below 0 and destroy nothing &mdash; see *Damage that costs you gear* in &sect;8, and
+> note that **Reaver's Edge** has corroded on a Critical since long before this deck existed, which
+> is where the idea comes from.
+>
+> **[MEASURED 2026-11-09] One copy each is about once every thirteen fights, which is the right
+> rate for a permanent loss.** Per fight, against the hero, 2500 fights a cell:
+>
+> | | 3 spears | 5 spears | 2 spear 2 bow |
+> |---|---|---|---|
+> | *Stove In*, armour 1 | 0.025 | 0.062 | 0.066 |
+> | *Stove In*, armour 4 | 0.023 | 0.081 | 0.073 |
+> | *Turn the Edge*, armour 1 | 0.028 | 0.061 | 0.063 |
+> | *Turn the Edge*, armour 4 | 0.022 | 0.067 | 0.076 |
+>
+> So a hero in the hardest published encounter loses a point of armour to this about **once in
+> twelve fights**, and a point off their weapon about as often. That is an **event**, not an
+> attrition tax: it is remembered, it sends somebody to a smith, and it does not quietly grind a
+> party's gear down over a campaign. The rate is a property of one copy in twelve on a 5% draw, so
+> a second copy of either would double it &mdash; which is the argument for leaving them at one.
 
 **The draw decides the damage; the condition lands after it.** The doubling is settled before
 armour and Block are read, because that is what the face changes about *this* blow. The condition
@@ -935,32 +960,46 @@ what the measurement below is about.
 > was, and the unarmoured hero against two spears and two bows went from 34.8 to **31.4** before any
 > deck is drawn. A table that only re-took the deck rows would have credited that to the deck.
 >
-> 2500 fights a cell:
+> 2500 fights a cell, over the **twelve**-card deck, with **both sides drawing it**:
 >
 > | | 3 spears | 4 spears | 5 spears | 2 spear 2 bow |
 > |---|---|---|---|---|
 > | **armour 1** | | | | |
 > | *before the deck* | 98.1 | 88.4 | 61.9 | 31.4 |
-> | **as written (either/or)** | **98.5** | **89.9** | **66.2** | **33.9** |
-> | *effect rides along* | 98.0 | 87.2 | 62.1 | 28.7 |
+> | **as written (either/or)** | **98.6** | **89.8** | **66.2** | **31.8** |
+> | *effect rides along* | 97.5 | 85.1 | 60.6 | 28.4 |
 > | **armour 3** | | | | |
 > | *before the deck* | 99.9 | 99.0 | 94.4 | 90.6 |
-> | **as written** | 100.0 | 98.8 | 94.6 | 90.8 |
-> | *rides along* | 99.7 | 98.2 | **90.2** | **86.0** |
+> | **as written** | 99.9 | 98.7 | 94.4 | 90.0 |
+> | *rides along* | 99.8 | 97.6 | **89.5** | **86.1** |
 > | **armour 4** | | | | |
 > | *before the deck* | 100.0 | 99.6 | 97.1 | 96.2 |
-> | **as written** | 99.9 | 99.4 | 96.9 | 95.3 |
-> | *rides along* | 99.9 | 99.1 | **94.7** | **93.2** |
+> | **as written** | 100.0 | 99.4 | 96.8 | 94.5 |
+> | *rides along* | 99.9 | 99.0 | 95.8 | **91.7** |
 >
-> **Read the deltas, not the rows.** As written the deck is worth **+0.4 / +1.5 / +4.3 / +2.5** to
-> the hero at armour 1, **about nothing** at armour 3, and **&minus;0.1 to &minus;0.9** at armour 4.
-> So it still tilts towards the lightly armoured character, which is the open question below, but
-> less than half as far as it did: the 5-spear figure at armour 1 was +6.8 and is +4.3.
+> **Read the deltas, not the rows.** As written the deck is worth **+0.5 / +1.4 / +4.3 / +0.4** to
+> the hero at armour 1, **0.0 to &minus;0.6** at armour 3, and **0.0 to &minus;1.7** at armour 4. So
+> it still tilts towards the lightly armoured character, which is the open question below &mdash;
+> but the 5-spear figure at armour 1 was **+6.8** before the ordering changed, and the archer
+> encounter has come almost all the way back, from +1.9 to +0.4.
 >
-> **And rides-along is now plainly the monsters' deck**, which it was not before. Every face
-> doubling *and* carrying its condition costs the hero 4.2 points at armour 3 and 3.0 at armour 4
-> against five spears &mdash; it is worse than drawing no deck at all at every rung but the first.
-> The dial stays because the question is a weighting, but the answer it gives has changed sign.
+> **And rides-along is plainly the monsters' deck**, which it was not when this table was first
+> taken. Every face doubling *as well as* carrying its effect costs the hero 4.9 points at armour 3
+> and 4.5 at armour 4 against two spears and two bows &mdash; worse than drawing no deck at all at
+> every rung. The dial stays, because the question is a weighting; the answer it gives has changed
+> sign.
+>
+> > **[2026-11-09] And this table says something it could not say before: the hero draws too.** For
+> > as long as this deck has existed the simulator gave a hero's Critical an automatic double and
+> > only ever drew a face for the goblins &mdash; so every figure published here was the deck's
+> > effect on the hero as a **defender**, with its cost to them as an **attacker** unmeasured, under
+> > a heading that said *both sides draw from it*. Modelling the hero's own draw is what took the
+> > archer cell from +1.9 to +0.4.
+> >
+> > What is still not modelled is the **rider** on the hero's own draw: a goblin has no armour to
+> > Stove In, no Block to take and nothing in the simulator reads a condition on a goblin. So these
+> > figures understate what the deck **gives** the hero and are honest about what it **costs** them,
+> > which is the safe direction for a number used to settle a weighting.
 >
 > **Rung 4 moves for the first time**, which no version of this deck managed while Exposed took
 > only 2 off. Back then the Critical floor already let a spear through for 1 and *Exposed 2* against
@@ -2073,9 +2112,10 @@ slate, and a slate is what a ritual can name.** Five injuries own intruder cards
 reason, so a permanent condition can be something that *happens* to you and not only a number
 subtracted from you.
 
-#### Acid, and the only damage that costs you gear
+#### Damage that costs you gear
 
-**Corrode N** takes **N off the target's armor**, and it does not come back on a rest.
+**Corrode N** takes **N off the target's armor**, and **Blunt N** takes **N off what the target's
+weapon strikes for**. Neither comes back on a rest.
 
 Acid needs no condition of its own. What acid does to *you* is already written — **Burning** is the
 right mechanic and even the right fiction, because water ends it and washing is how you treat an acid
@@ -2086,10 +2126,28 @@ burn (§7). What acid does that nothing else in the game does is eat your **equi
 > resource a specialization may be priced in. Until now nothing in the rules could actually take any.
 
 - It eats the **armour itself**, not your armor score, so the loss follows the armour when it comes
-  off and a borrowed breastplate is only as good as its last fight.
+  off and a borrowed breastplate is only as good as its last fight. **Blunt** is the same rule one
+  printed number over: it eats the weapon, so it follows the weapon when it changes hands.
 - **Repair** is a downtime matter: a smith and coin, or a Lore check with the right tools. Printed
   armor says what the item *is*; corrosion is tracked against it, so a repair is a reset rather than
-  a memory test.
+  a memory test. A **Critical** on that check puts back 2; a Success 1; a **Partial** is a night
+  spent with the thing in pieces on the bench and nothing to show, because a breastplate either
+  holds or it does not.
+- **Both are permanent, both are cumulative, and neither destroys anything.** They stop at 0 and
+  cannot pass it: an armour at protection 0 is still armour, still worn, still taking up its slot
+  and its weight, and still repairable. A weapon battered to Strike 0 is a club with no weight
+  behind it, and it is still yours.
+
+  > **Why nothing is destroyed.** An item that vanished at 0 would make a 10 g flask of acid the
+  > cheapest way in the game to delete 300 g of plate, and it would leave the repair skill with
+  > nothing to repair. Gear here is **spent, not deleted** — which is the same shape as every other
+  > loss in this section: a Wound is a card in your deck, not a character sheet torn up.
+
+- **Which weapon takes a Blunt, when both hands are full:** the **attacker** chooses, and the
+  default is the **best** of what is equipped. Armour needed no such rule — one body slot, one
+  answer — but hands are not like that. The attacker chooses because this is damage being done, and
+  the best weapon is the default because *weakest* or *random* would let anyone opt out of the
+  effect by carrying a knife. An effect you can dodge by owning junk is not an effect.
 - **Armor behaves like a cliff edge** — a point of it is worth far more against four goblins with
   Strike 3 than against one ogre — so Corrode 1 is already a strong effect and **Corrode 2 belongs to
   a monster.**

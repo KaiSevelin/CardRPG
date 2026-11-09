@@ -237,6 +237,60 @@
       }
     },
     {
+      "_id": "GcTSYOpB1QFslmpw",
+      "_key": "!cards.cards!r0pa2MHw4SZlvFVo.GcTSYOpB1QFslmpw",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1000,
+      "name": "Stove In",
+      "type": "crit",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Stove In"
+        }
+      ],
+      "system": {
+        "doubles": false,
+        "draws": 0,
+        "text": "Their armour is 1 worse until it is repaired. Permanent, and not doubled.",
+        "effect": {
+          "verb": "corrode",
+          "param": 1
+        }
+      }
+    },
+    {
+      "_id": "4DhkHMJJERFgEh8C",
+      "_key": "!cards.cards!r0pa2MHw4SZlvFVo.4DhkHMJJERFgEh8C",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 1100,
+      "name": "Turn the Edge",
+      "type": "crit",
+      "face": 0,
+      "faces": [
+        {
+          "name": "Turn the Edge"
+        }
+      ],
+      "system": {
+        "doubles": false,
+        "draws": 0,
+        "text": "Their weapon strikes for 1 less until it is repaired. Permanent, and not doubled.",
+        "effect": {
+          "verb": "blunt",
+          "param": 1
+        }
+      }
+    },
+    {
       "_id": "pmUqokDwgilTB9Fw",
       "_key": "!cards.cards!r0pa2MHw4SZlvFVo.pmUqokDwgilTB9Fw",
       "_stats": {
@@ -244,7 +298,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1000,
+      "sort": 1200,
       "name": "Both",
       "type": "crit",
       "face": 0,

@@ -7346,6 +7346,63 @@ check("and the player's only route to it", content.CRIT_EFFECTS
   "Find the Gap");
 
 /*
+ * --- gear is spent, not deleted ----------------------------------------------------------------
+ *
+ * **Corrode eats armour and Blunt eats what a weapon strikes for, and neither one destroys the
+ * item** (core-rules 8). That is the rule worth pinning, because the obvious implementation of
+ * *reduce it to nothing* is to delete the thing, and deleting it would make a **10 g flask of
+ * acid the cheapest way in the game to remove 300 g of plate** -- and would leave the repair
+ * skill nothing to repair. An armour at protection 0 is still armour: worn, carried, repairable.
+ *
+ * Three checks, because there are three ways to break it: delete the item, let a counter run past
+ * what is printed, or let a derived number go negative.
+ */
+check("appliers that delete the gear they spend",
+  (resolveSource.match(/(?:armour|weapon)\.delete\(\)/g) ?? []).length, 0);
+check("and both cap what they take at what is left",
+  (resolveSource.match(/Math\.min\(before, Math\.max\(1, amount\)\)/g) ?? []).length, 2);
+check("and both derived numbers have a floor of zero",
+  (itemSource.match(/Math\.max\(0, \(this\.armor \?\? 0\) - \(this\.corroded \?\? 0\)\)/g) ?? []).length
+  + (itemSource.match(/Math\.max\(0, printed - \(this\.blunted \?\? 0\)\)/g) ?? []).length, 2);
+/*
+ * **One mapping from a gear effect to the routine that applies it.** Two callers reach these -- a
+ * card half played from the tray, and a critical's rider inside `resolveAttack` -- and a `case`
+ * list in one with an `if` chain in the other is the same decision written twice. The second check
+ * is the one that rots: it fails the moment a caller names a routine directly again.
+ */
+check("one mapping from a gear effect to its routine",
+  /export async function resolveGearEffect/.test(resolveSource) ? "yes" : "no", "yes");
+check("and callers that name the routines instead",
+  (traySource.match(/resolveCorrode\(|resolveBlunt\(/g) ?? []).length, 0);
+/*
+ * **A repair is the check the rules already named.** core-rules 8 has said *a smith and coin, or a
+ * Lore check with the right tools* for as long as Corrode has existed, and starter-cards quotes
+ * that sentence back. So the approach is not a choice made here, and the two backgrounds that
+ * grant *armour and its repair* put their bonus on `lore` -- which means the training a character
+ * bought is the training that pays, with no new field anywhere.
+ */
+check("a repair is resolved as a Lore check",
+  /resolveCheck\(actor, \{ approach: "lore", dc, item \}\)/.test(resolveSource) ? "yes" : "no",
+  "yes");
+/* And Corrode finally has the inverse three pieces of content have promised for months -- two
+ * backgrounds, a ritual, and the ritual's own `needs` line saying there was not one. */
+check("Corrode has an inverse",
+  /export async function resolveRepair\(/.test(resolveSource) ? "yes" : "no", "yes");
+
+/*
+ * **The deck's shape**, which two faces have just changed. Pinned as the three numbers the rules
+ * document prints, so a face added without the document moving fails here.
+ */
+check("cards in the critical deck",
+  content.CRIT_EFFECTS.reduce((n, f) => n + (f.copies ?? 0), 0), 12);
+check("and faces", content.CRIT_EFFECTS.length, 7);
+check("and the copies that still double",
+  content.CRIT_EFFECTS.filter(f => f.doubles).reduce((n, f) => n + (f.copies ?? 0), 0), 4);
+check("and the two that leave a permanent mark",
+  content.CRIT_EFFECTS.filter(f => f.effect?.verb).map(f => `${f.name} (${f.effect.verb})`)
+    .join(", "), "Stove In (corrode), Turn the Edge (blunt)");
+
+/*
  * **A total bypass may not reach a creature that runs in packs**, which is the rule *Find the
  * Joint* argues for in content.mjs and nothing checked.
  *
@@ -7863,7 +7920,7 @@ check("and the group it asks for", DIMENSIONS.join("+"), "width+height+depth");
 const everyPackDoc = planned.flatMap(p => p.docs);
 const everyPackChild = planned.flatMap(p => p.docs.flatMap(d => d.items ?? d.cards ?? []));
 check("documents the stamp sweep read", everyPackDoc.length, 499);
-check("and children beneath them", everyPackChild.length, 388);
+check("and children beneath them", everyPackChild.length, 390);
 const unstamped = [...everyPackDoc, ...everyPackChild]
   .filter(d => d._stats?.coreVersion !== manifest.compatibility.verified
     || d._stats?.systemId !== manifest.id
@@ -7978,7 +8035,7 @@ for (const pack of planned) {
 }
 check("ids that are not the hash of their key, malformed, or shared",
   idFaults.length ? idFaults.slice(0, 4).join("; ") : "none", "none");
-check("ids the rule actually read", everyId.size, 887);
+check("ids the rule actually read", everyId.size, 889);
 /* The hash itself, asked rather than shared: sixteen characters of the right alphabet, and the
  * same answer twice for the same key. */
 check("an id is sixteen characters", packs.id16("items:Longsword").length, 16);
@@ -12858,7 +12915,7 @@ for (const m of selfSource.matchAll(/(\w+)\.includes\("((?:[^"\\]|\\.)*)"\)/g)) 
 }
 
 /* The pin that keeps the rest of this honest. */
-check("greps over a whole file, resolved", greps.length, 648);
+check("greps over a whole file, resolved", greps.length, 651);
 
 /*
  * **The rule, as one predicate, run over a planted example before it is run over the suite.**
