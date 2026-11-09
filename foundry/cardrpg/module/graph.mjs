@@ -34,13 +34,12 @@ import {
 export const SIGNATURES = [...SHADE_SIGNATURES, ...STRENGTH_SIGNATURES, ...MIND_SIGNATURES,
   ...FAITH_SIGNATURES];
 export const ALL_TACTICS = { ...TACTICS, ...STRENGTH_TACTICS, ...MIND_TACTICS, ...FAITH_TACTICS };
-import { deckOf, allStacks, actionCardData } from "./decks.mjs";
+import { deckOf, allStacks, actionCardData, artIn } from "./decks.mjs";
 /* The approach list, imported rather than reached through the global: `graphFaults` is called
  * by the offline validator, where Foundry's globals do not exist, and config.mjs fills this
  * object at module scope so an import is enough. */
 import { CARDRPG } from "./config.mjs";
 /* Where a picture lives, derived from the list that commissioned it rather than written down. */
-import { artPathOf } from "./art.mjs";
 /* The one shape a slate takes, shared with the setup routine rather than spelled twice. */
 import { slateData } from "./setup.mjs";
 
@@ -768,8 +767,17 @@ export function slateFieldsOf(def) {
    * failed for exactly the six the book uses twice: *The Kit* is a Signature and an item, *The
    * Long Step* is a Wild card and a formula. Three documents came out of the packs with no `img`.
    * Resolving it at the one place the original is still available fixes all of them at once.
+   *
+   * **Through `artIn`, which is the one answer to this question.** This line used to spell the
+   * rule out itself -- `fields.art || artPathOf(def)` -- and it was the third place in the system
+   * to do so. The third copy is how the second one gets found: the shortest of the three, in
+   * levelup.mjs, left out the derivation and so resolved a picture for none of 207 nodes.
+   *
+   * This copy left out the other half, the guard against Foundry's own `icons/svg/` placeholders,
+   * so a piece whose entry carried one wrote the placeholder into the slate as though somebody had
+   * chosen it. Gone with the duplication rather than fixed beside it.
    */
-  const art = fields.art || artPathOf(def);
+  const art = artIn(def);
   return art ? { ...fields, art } : fields;
 }
 
