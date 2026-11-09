@@ -20,14 +20,106 @@ import {
 } from "./content.mjs";
 
 const FLAG = "cardrpgContent";
+/**
+ * **What setup last built into a stack**, which is the field that lets a re-run tell a content
+ * change from a game in progress.
+ *
+ * Without it, `makeCards` found a stack by its tag and handed it back untouched, so **a world
+ * built once never saw a content change again**: the critical deck gained two faces and kept ten
+ * cards, and *Find the Gap* kept wording the engine had stopped using. The only advice was *start
+ * a new world*, which is not advice, it is a missing feature.
+ */
+const BUILT = "cardrpgBuilt";
 
 /* -------------------------------------------- */
 /*  Helpers                                     */
 /* -------------------------------------------- */
 
 /** Mark what we created, so a second run can find it instead of duplicating it. */
-function stamp(tag) {
-  return { flags: { cardrpg: { [FLAG]: tag } } };
+function stamp(tag, cards = null) {
+  return {
+    flags: {
+      cardrpg: { [FLAG]: tag, ...(cards ? { [BUILT]: signature(cards) } : {}) }
+    }
+  };
+}
+
+/**
+ * **What a stack should hold, as one string.**
+ *
+ * The card data itself rather than a count or a list of names, because the changes that need
+ * noticing are not all changes of number: *Find the Gap* kept its name and its one copy while the
+ * sentence on it changed twice. Content order is deterministic (`expand` walks the list), so this
+ * is stable between runs and differs the moment any card does.
+ */
+function signature(cards) {
+  return JSON.stringify(cards);
+}
+
+/**
+ * **What the last run did to each stack it already had**, for the report at the end.
+ *
+ * Module scope because `makeCards` is called from a dozen places and from `buildCreature` as well,
+ * and threading a tally through all of them would be the worse of the two evils.
+ */
+const resynced = { rebuilt: [], held: [], unchanged: [] };
+
+/**
+ * **Which of the four things to do with a stack that already exists**, as a pure decision so it
+ * can be run rather than argued about. `resync` below does the writing.
+ *
+ * Bring an existing stack back in line with the content, or refuse and say so.
+ *
+ * **The refusal is the point.** There is no per-card identity to diff against -- a stack's cards
+ * carry Foundry ids and nothing that says which content entry they came from -- so the only exact
+ * way to apply a content change is to rebuild the stack's cards from the content. That is safe
+ * only while every card the stack was built with is still **in** it: a card dealt into a hand or a
+ * discard is not here to be recreated, and rebuilding around it would leave an orphan in play.
+ *
+ * So the recorded signature does double duty. It says what the cards should be, and its **length**
+ * says how many were put here -- so a stack holding a different number is a stack with a game in
+ * progress, and it is left exactly alone and named in the report.
+ *
+ * A stack with no signature at all is a world built before this existed. There is nothing to
+ * compare, so it is rebuilt: that is the one-time upgrade, and it is why the report says to run
+ * this outside combat.
+ *
+ * Piles are never touched. Content puts nothing in a discard, so there is nothing to bring into
+ * line and a pile full of played cards is not a disagreement.
+ */
+export function resyncPlan({ built, want, held }) {
+  if (built === want) return "unchanged";
+  /* Content puts nothing in a pile, so there is nothing to bring into line and a discard full of
+   * played cards is not a disagreement. It records the signature and is otherwise left alone. */
+  if (want === "[]") return "pile";
+  const was = built ? JSON.parse(built).length : null;
+  /* A stack holding a different number than it was built with has a game in progress. */
+  if (was !== null && held !== was) return "held";
+  /* `was === null` is a world built before any of this: nothing to compare, so it is rebuilt, and
+   * that is the one-time upgrade the report tells you to run outside combat. */
+  return "rebuild";
+}
+
+async function resync(stack, tag, cards) {
+  const want = signature(cards);
+  const plan = resyncPlan({
+    built: stack.getFlag("cardrpg", BUILT), want, held: stack.cards.size
+  });
+
+  if (plan === "unchanged") { resynced.unchanged.push(tag); return stack; }
+  if (plan === "pile") {
+    await stack.setFlag("cardrpg", BUILT, want);
+    resynced.unchanged.push(tag);
+    return stack;
+  }
+  if (plan === "held") { resynced.held.push(tag); return stack; }
+
+  const ids = stack.cards.map(c => c.id);
+  if (ids.length) await stack.deleteEmbeddedDocuments("Card", ids);
+  await stack.createEmbeddedDocuments("Card", cards);
+  await stack.setFlag("cardrpg", BUILT, want);
+  resynced.rebuilt.push(tag);
+  return stack;
 }
 
 function findExisting(collection, tag) {
@@ -54,14 +146,14 @@ const gmOnly = () => ({ default: CONST.DOCUMENT_OWNERSHIP_LEVELS.NONE });
 
 async function makeCards(name, type, tag, cards = [], back = "", ownership = null) {
   const existing = findExisting(game.cards, tag);
-  if (existing) return existing;
+  if (existing) return resync(existing, tag, cards);
   /* `img` is what Foundry shows for the stack, which is the back of the deck as a pile of cards. */
   const art = back ? backOf(back) : "";
   return Cards.create({
     name, type, cards,
     ...(art ? { img: art } : {}),
     ...(ownership ? { ownership } : {}),
-    ...stamp(tag)
+    ...stamp(tag, cards)
   });
 }
 
@@ -111,7 +203,12 @@ export function slateData(entry, type) {
 
 /**
  * Create the starter Warrior, the goblins, their decks and all the slates.
- * Safe to run twice: anything already stamped is reused rather than duplicated.
+ *
+ * **Safe to run twice, and worth running twice.** Anything already stamped is found rather than
+ * duplicated, and a deck whose content has changed since it was built is **brought back in line**
+ * -- which is new, and which is what made *start a new world* stop being the answer to every
+ * content change. A deck with cards still out in play is left alone and named in the report, so
+ * the one thing to know is to run it outside combat.
  */
 export async function createStarterContent() {
   if (!game.user.isGM) {
@@ -119,7 +216,11 @@ export async function createStarterContent() {
     return;
   }
 
-  const made = { cards: 0, actors: 0, slates: 0, reused: 0 };
+  /* `decks` was missing from here and `made.decks += 2` has been adding 2 to `undefined` ever
+   * since -- NaN, in a field nothing printed. It is printed now, which is the only reason anybody
+   * would have noticed. */
+  const made = { cards: 0, actors: 0, slates: 0, reused: 0, decks: 0 };
+  for (const key of Object.keys(resynced)) resynced[key].length = 0;
   const note = msg => console.log(`Card RPG | ${msg}`);
 
   /* --- the Warrior's six Cards documents ---------------------------------
@@ -385,10 +486,27 @@ export async function createStarterContent() {
    * pair shared one deck, which is why both of them threw rocks.
    */
 
-  note(`done: ${made.actors} actors, ${made.slates} slates`);
+  note(`done: ${made.actors} actors, ${made.slates} slates, ${made.decks} decks`);
+  if (resynced.rebuilt.length) {
+    note(`decks brought in line with the content: ${resynced.rebuilt.join(", ")}`);
+  }
+  /*
+   * **And the ones it would not touch, named.** A stack holding a different number of cards than
+   * it was built with has a game in progress -- something is in a hand, a discard or a pile -- and
+   * rebuilding it would leave that card orphaned. Saying which ones and why is the whole value of
+   * refusing: *run it again outside combat* is actionable, silence is not.
+   */
+  if (resynced.held.length) {
+    note(`decks left alone, cards still in play: ${resynced.held.join(", ")}`);
+  }
   ui.notifications.info(
-    `Card RPG: ${made.actors} actors and ${made.slates} slates created. ` +
-    `Place goblins as unlinked tokens so they share one deck but keep their own health.`
+    `Card RPG: ${made.actors} actors and ${made.slates} slates created`
+    + (resynced.rebuilt.length ? `, ${resynced.rebuilt.length} decks updated` : "")
+    + (resynced.held.length
+      ? `. ${resynced.held.length} decks still have cards in play and were left alone -- `
+        + "end the combat and run this again to update them"
+      : ".")
+    + ` Place goblins as unlinked tokens so they share one deck but keep their own health.`
   );
 }
 

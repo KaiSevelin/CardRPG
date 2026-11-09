@@ -2382,6 +2382,53 @@ check("surges naming a condition that does not exist",
 check("the card subtype is registered",
   /wild: WildCardData/.test(entry) ? "yes" : "no", "yes");
 const setupSource = fs.readFileSync(path.join(root, "module/setup.mjs"), "utf8");
+
+/*
+ * --- a deck already in a world ------------------------------------------------------------------
+ *
+ * **A re-run brings a deck back in line with the content, and refuses where it cannot.**
+ *
+ * `makeCards` used to find a stack by its tag and hand it back untouched, so a world built once
+ * never saw a content change again: the critical deck gained two faces and kept ten cards, and
+ * *Find the Gap* kept wording the engine had stopped using. The only advice was *start a new
+ * world*, which is not advice -- it is a missing feature with a workaround.
+ *
+ * There is no per-card identity to diff against, so the only exact way to apply a change is to
+ * rebuild the stack's cards from the content, and that is safe only while every card it was built
+ * with is still in it. The recorded signature does both jobs: it says what the cards should be, and
+ * its length says how many were put there -- so a stack holding a different number has a game in
+ * progress and is left alone.
+ *
+ * Six cases, run rather than grepped, which is why the decision is a pure function.
+ */
+const { resyncPlan } = await import("../module/setup.mjs");
+const sigOf = n => JSON.stringify(Array.from({ length: n }, (_, i) => ({ name: `c${i}` })));
+for (const [label, input, want] of [
+  ["nothing has changed", { built: sigOf(10), want: sigOf(10), held: 10 }, "unchanged"],
+  /* Content puts nothing in a discard, so a pile full of played cards is not a disagreement. */
+  ["a pile is always left alone", { built: "", want: "[]", held: 7 }, "pile"],
+  ["content grew and the deck is whole", { built: sigOf(10), want: sigOf(12), held: 10 }, "rebuild"],
+  /* Fewer than were built: something is in a hand, a discard or a pile. */
+  ["content grew and cards are in play", { built: sigOf(10), want: sigOf(12), held: 8 }, "held"],
+  /* And MORE than were built is just as much a reason not to touch it -- a GM has added one. */
+  ["a card was put in by hand", { built: sigOf(10), want: sigOf(12), held: 11 }, "held"],
+  /* No signature at all is a world older than this feature: nothing to compare, so it upgrades. */
+  ["a world older than the record", { built: undefined, want: sigOf(12), held: 10 }, "rebuild"]
+]) {
+  check(`a deck where ${label}`, resyncPlan(input), want);
+}
+/* And the signature is the card DATA, not a count or a list of names: *Find the Gap* kept its name
+ * and its one copy while the sentence on it changed twice. */
+check("the record is of what the cards say, not how many",
+  /function signature\(cards\) \{\s*\n\s*return JSON\.stringify\(cards\);/.test(setupSource)
+    ? "yes" : "no", "yes");
+/* The one call site that matters: finding a stack must go through the resync, not past it. */
+check("an existing stack is resynced rather than handed back",
+  /if \(existing\) return resync\(existing, tag, cards\);/.test(setupSource) ? "yes" : "no", "yes");
+/* And the report names what it would not touch, because *run it again outside combat* is
+ * actionable and silence is not. */
+check("and the run says which decks it left alone",
+  /decks left alone, cards still in play/.test(setupSource) ? "yes" : "no", "yes");
 check("the world builds the deck",
   /makeCards\("Wild Magic", "deck", "wild\.deck"/.test(setupSource) ? "yes" : "no", "yes");
 check("a Wild draw deals a surge",
@@ -13029,7 +13076,7 @@ for (const m of selfSource.matchAll(/(\w+)\.includes\("((?:[^"\\]|\\.)*)"\)/g)) 
 }
 
 /* The pin that keeps the rest of this honest. */
-check("greps over a whole file, resolved", greps.length, 652);
+check("greps over a whole file, resolved", greps.length, 655);
 
 /*
  * **The rule, as one predicate, run over a planted example before it is run over the suite.**
