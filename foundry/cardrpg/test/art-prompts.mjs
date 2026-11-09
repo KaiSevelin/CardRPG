@@ -381,6 +381,10 @@ const composeFace = dir => `- Crop in **close**: one subject, filling the frame 
   across that half, so that half has to be the quiet one.
 - Together those two make the test: **the picture must still read with its bottom half covered.**
   Cover it in your head and check before you call it done.
+- **If the subject is taller than that band, CROP it rather than shrink it.** A bow, a raised
+  arm, a spear, a standing figure: the frame cuts through it and the part that matters stays in
+  the band. Never fit a tall thing in by making it small, and never let its top reach into the
+  bare strip to get all of it in.
 - ONE subject. A silhouette that still reads at **128 pixels wide**, which is the smallest size a
   card is drawn at in this game.`;
 
@@ -999,12 +1003,37 @@ export const DIRECTION = {
    * and by what waiting looks like with it in your hands. None of them is a shot being taken:
    * the subject of all three is the moment before, which is the whole of what the card is.
    */
+  /*
+   * **[REWRITTEN 2026-11-09] Rejected by the gate three times, and the direction was the
+   * cause rather than the capsule.**
+   *
+   * *Arm back and still* puts a raised arm in the frame, and a raised arm's top is the top
+   * of the picture: `quietTop` came in at 0.065, 0.117 and 0.096 against a floor of 0.10
+   * while the window score stayed healthy at 0.61-0.69. Three capsule versions could not fix
+   * a subject that reaches upward by construction. The hand is the highest thing in it now,
+   * and the arm leaves at the bottom corner.
+   *
+   * The second fault was `cool` at 2.3% against a 1% ceiling, which is blade steel: steel
+   * is drawn blue unless the picture is told otherwise, so it is told.
+   */
   "cards/shade/the-held-knife":
-    "a knife held by the blade between finger and thumb, arm back and still, the point steady and "
-    + "aimed out of frame. Nothing is in flight and nothing has been hit",
+    "a knife held by the blade between finger and thumb, the hand filling the upper middle of "
+    + "the frame and the forearm running out of the bottom corner. The point is steady and "
+    + "aimed out of frame to one side. Nothing above the hand: no head and no shoulder in "
+    + "the picture. The steel is warm grey, never blue",
+  /*
+   * **[REWRITTEN 2026-11-09] *Tight against the jaw* asks for a head, and a head is tall.**
+   *
+   * A bow at full draw with a face in it is the one composition this card cannot have: the
+   * head goes under the name panel every time, at 0.096, 0.099 and 0.078. So the crop moves
+   * to the hands, which is also the better picture -- the strain is in the fingers and the
+   * string, not in the expression.
+   */
   "cards/shade/at-full-draw":
-    "a bow at full draw and held there -- the string fingers tight against the jaw, the arm locked, "
-    + "the arrow level and the whole frame motionless. The strain of holding it is the subject",
+    "the drawing hand at full draw, three fingers hooked hard on the string with the arrow's "
+    + "nock between them and the string bent sharp either side. The bow's limbs are cut off "
+    + "by the frame and the arrow runs out of it level. No head, no face and no shoulder: the "
+    + "hand and the string are the whole subject",
   "cards/strength/on-the-rest":
     "a musket barrel laid across a forked rest driven into the ground, levelled flat down one line "
     + "and sighted along, the match smouldering. Not fired: waiting",
@@ -1075,9 +1104,15 @@ export const DIRECTION = {
   "cards/shade-starter/draw-the-knife":
     "a knife coming clear of a sleeve, the cuff still falling back from the wrist. One hand, one "
     + "blade, and the motion is the draw",
+  /*
+   * **[REWRITTEN 2026-11-09] It said *the strong hand is busy above frame*, which is an
+   * instruction to fill the top edge.** `quietTop` at 0.089, 0.253 and 0.073. The second
+   * blade is the subject, and the other hand does not need to be anywhere.
+   */
   "cards/shade-starter/off-hand":
-    "the second blade already working, held low and reversed in the weaker hand while the strong "
-    + "hand is busy above frame. Two blades in play, and this is the one nobody was watching",
+    "the second blade already working, held low and reversed in the weaker hand, the blade and "
+    + "the knuckles filling the middle of the frame and the wrist leaving at the bottom edge. "
+    + "Nothing above the hand: no head, no shoulder and no second arm in the picture",
 
   "cards/starter/shield-up":
     "a shield brought fully up and settled, the body behind it made small. This is cover meant to "

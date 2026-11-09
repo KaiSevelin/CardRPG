@@ -223,6 +223,10 @@ layout is fixed and has been measured:
   across that half, so that half has to be the quiet one.
 - Together those two make the test: **the picture must still read with its bottom half covered.**
   Cover it in your head and check before you call it done.
+- **If the subject is taller than that band, CROP it rather than shrink it.** A bow, a raised
+  arm, a spear, a standing figure: the frame cuts through it and the part that matters stays in
+  the band. Never fit a tall thing in by making it small, and never let its top reach into the
+  bare strip to get all of it in.
 - ONE subject. A silhouette that still reads at **128 pixels wide**, which is the smallest size a
   card is drawn at in this game.
 
@@ -429,6 +433,10 @@ layout is fixed and has been measured:
   across that half, so that half has to be the quiet one.
 - Together those two make the test: **the picture must still read with its bottom half covered.**
   Cover it in your head and check before you call it done.
+- **If the subject is taller than that band, CROP it rather than shrink it.** A bow, a raised
+  arm, a spear, a standing figure: the frame cuts through it and the part that matters stays in
+  the band. Never fit a tall thing in by making it small, and never let its top reach into the
+  bare strip to get all of it in.
 - ONE subject. A silhouette that still reads at **128 pixels wide**, which is the smallest size a
   card is drawn at in this game.
 
@@ -546,7 +554,7 @@ File: `cards/shade-starter/off-hand.webp`
 ```text
 SUBJECT. "Off Hand" — Ready · / Strike
 
-Draw the second blade already working, held low and reversed in the weaker hand while the strong hand is busy above frame. Two blades in play, and this is the one nobody was watching.
+Draw the second blade already working, held low and reversed in the weaker hand, the blade and the knuckles filling the middle of the frame and the wrist leaving at the bottom edge. Nothing above the hand: no head, no shoulder and no second arm in the picture.
 
 WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Southeast Asian appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
@@ -635,6 +643,10 @@ layout is fixed and has been measured:
   across that half, so that half has to be the quiet one.
 - Together those two make the test: **the picture must still read with its bottom half covered.**
   Cover it in your head and check before you call it done.
+- **If the subject is taller than that band, CROP it rather than shrink it.** A bow, a raised
+  arm, a spear, a standing figure: the frame cuts through it and the part that matters stays in
+  the band. Never fit a tall thing in by making it small, and never let its top reach into the
+  bare strip to get all of it in.
 - ONE subject. A silhouette that still reads at **128 pixels wide**, which is the smallest size a
   card is drawn at in this game.
 
@@ -822,6 +834,10 @@ layout is fixed and has been measured:
   across that half, so that half has to be the quiet one.
 - Together those two make the test: **the picture must still read with its bottom half covered.**
   Cover it in your head and check before you call it done.
+- **If the subject is taller than that band, CROP it rather than shrink it.** A bow, a raised
+  arm, a spear, a standing figure: the frame cuts through it and the part that matters stays in
+  the band. Never fit a tall thing in by making it small, and never let its top reach into the
+  bare strip to get all of it in.
 - ONE subject. A silhouette that still reads at **128 pixels wide**, which is the smallest size a
   card is drawn at in this game.
 
@@ -1356,6 +1372,10 @@ layout is fixed and has been measured:
   across that half, so that half has to be the quiet one.
 - Together those two make the test: **the picture must still read with its bottom half covered.**
   Cover it in your head and check before you call it done.
+- **If the subject is taller than that band, CROP it rather than shrink it.** A bow, a raised
+  arm, a spear, a standing figure: the frame cuts through it and the part that matters stays in
+  the band. Never fit a tall thing in by making it small, and never let its top reach into the
+  bare strip to get all of it in.
 - ONE subject. A silhouette that still reads at **128 pixels wide**, which is the smallest size a
   card is drawn at in this game.
 
@@ -1414,7 +1434,7 @@ File: `cards/shade/at-full-draw.webp`
 ```text
 SUBJECT. "At Full Draw" — Ready · / Move 1 · A bow or a crossbow. The first enemy to walk into the ground you are watching takes the shot, at the bow's own value, out to its...
 
-Draw a bow at full draw and held there -- the string fingers tight against the jaw, the arm locked, the arrow level and the whole frame motionless. The strain of holding it is the subject.
+Draw the drawing hand at full draw, three fingers hooked hard on the string with the arrow's nock between them and the string bent sharp either side. The bow's limbs are cut off by the frame and the arrow runs out of it level. No head, no face and no shoulder: the hand and the string are the whole subject.
 
 WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Horn of Africa appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
@@ -1618,7 +1638,7 @@ File: `cards/shade/the-held-knife.webp`
 ```text
 SUBJECT. "The Held Knife" — Ready · / Move 1 · A weapon you can throw. The first enemy to walk into the ground you are watching takes it, at the blade's own value and no furth...
 
-Draw a knife held by the blade between finger and thumb, arm back and still, the point steady and aimed out of frame. Nothing is in flight and nothing has been hit.
+Draw a knife held by the blade between finger and thumb, the hand filling the upper middle of the frame and the forearm running out of the bottom corner. The point is steady and aimed out of frame to one side. Nothing above the hand: no head and no shoulder in the picture. The steel is warm grey, never blue.
 
 WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of North African appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
@@ -1671,6 +1691,10 @@ layout is fixed and has been measured:
   across that half, so that half has to be the quiet one.
 - Together those two make the test: **the picture must still read with its bottom half covered.**
   Cover it in your head and check before you call it done.
+- **If the subject is taller than that band, CROP it rather than shrink it.** A bow, a raised
+  arm, a spear, a standing figure: the frame cuts through it and the part that matters stays in
+  the band. Never fit a tall thing in by making it small, and never let its top reach into the
+  bare strip to get all of it in.
 - ONE subject. A silhouette that still reads at **128 pixels wide**, which is the smallest size a
   card is drawn at in this game.
 
@@ -1950,6 +1974,10 @@ layout is fixed and has been measured:
   across that half, so that half has to be the quiet one.
 - Together those two make the test: **the picture must still read with its bottom half covered.**
   Cover it in your head and check before you call it done.
+- **If the subject is taller than that band, CROP it rather than shrink it.** A bow, a raised
+  arm, a spear, a standing figure: the frame cuts through it and the part that matters stays in
+  the band. Never fit a tall thing in by making it small, and never let its top reach into the
+  bare strip to get all of it in.
 - ONE subject. A silhouette that still reads at **128 pixels wide**, which is the smallest size a
   card is drawn at in this game.
 
@@ -2060,6 +2088,10 @@ layout is fixed and has been measured:
   across that half, so that half has to be the quiet one.
 - Together those two make the test: **the picture must still read with its bottom half covered.**
   Cover it in your head and check before you call it done.
+- **If the subject is taller than that band, CROP it rather than shrink it.** A bow, a raised
+  arm, a spear, a standing figure: the frame cuts through it and the part that matters stays in
+  the band. Never fit a tall thing in by making it small, and never let its top reach into the
+  bare strip to get all of it in.
 - ONE subject. A silhouette that still reads at **128 pixels wide**, which is the smallest size a
   card is drawn at in this game.
 
@@ -2266,6 +2298,10 @@ layout is fixed and has been measured:
   across that half, so that half has to be the quiet one.
 - Together those two make the test: **the picture must still read with its bottom half covered.**
   Cover it in your head and check before you call it done.
+- **If the subject is taller than that band, CROP it rather than shrink it.** A bow, a raised
+  arm, a spear, a standing figure: the frame cuts through it and the part that matters stays in
+  the band. Never fit a tall thing in by making it small, and never let its top reach into the
+  bare strip to get all of it in.
 - ONE subject. A silhouette that still reads at **128 pixels wide**, which is the smallest size a
   card is drawn at in this game.
 
@@ -2472,6 +2508,10 @@ layout is fixed and has been measured:
   across that half, so that half has to be the quiet one.
 - Together those two make the test: **the picture must still read with its bottom half covered.**
   Cover it in your head and check before you call it done.
+- **If the subject is taller than that band, CROP it rather than shrink it.** A bow, a raised
+  arm, a spear, a standing figure: the frame cuts through it and the part that matters stays in
+  the band. Never fit a tall thing in by making it small, and never let its top reach into the
+  bare strip to get all of it in.
 - ONE subject. A silhouette that still reads at **128 pixels wide**, which is the smallest size a
   card is drawn at in this game.
 
@@ -2654,6 +2694,10 @@ layout is fixed and has been measured:
   across that half, so that half has to be the quiet one.
 - Together those two make the test: **the picture must still read with its bottom half covered.**
   Cover it in your head and check before you call it done.
+- **If the subject is taller than that band, CROP it rather than shrink it.** A bow, a raised
+  arm, a spear, a standing figure: the frame cuts through it and the part that matters stays in
+  the band. Never fit a tall thing in by making it small, and never let its top reach into the
+  bare strip to get all of it in.
 - ONE subject. A silhouette that still reads at **128 pixels wide**, which is the smallest size a
   card is drawn at in this game.
 
@@ -2836,6 +2880,10 @@ layout is fixed and has been measured:
   across that half, so that half has to be the quiet one.
 - Together those two make the test: **the picture must still read with its bottom half covered.**
   Cover it in your head and check before you call it done.
+- **If the subject is taller than that band, CROP it rather than shrink it.** A bow, a raised
+  arm, a spear, a standing figure: the frame cuts through it and the part that matters stays in
+  the band. Never fit a tall thing in by making it small, and never let its top reach into the
+  bare strip to get all of it in.
 - ONE subject. A silhouette that still reads at **128 pixels wide**, which is the smallest size a
   card is drawn at in this game.
 
@@ -3018,6 +3066,10 @@ layout is fixed and has been measured:
   across that half, so that half has to be the quiet one.
 - Together those two make the test: **the picture must still read with its bottom half covered.**
   Cover it in your head and check before you call it done.
+- **If the subject is taller than that band, CROP it rather than shrink it.** A bow, a raised
+  arm, a spear, a standing figure: the frame cuts through it and the part that matters stays in
+  the band. Never fit a tall thing in by making it small, and never let its top reach into the
+  bare strip to get all of it in.
 - ONE subject. A silhouette that still reads at **128 pixels wide**, which is the smallest size a
   card is drawn at in this game.
 
@@ -3249,6 +3301,10 @@ layout is fixed and has been measured:
   across that half, so that half has to be the quiet one.
 - Together those two make the test: **the picture must still read with its bottom half covered.**
   Cover it in your head and check before you call it done.
+- **If the subject is taller than that band, CROP it rather than shrink it.** A bow, a raised
+  arm, a spear, a standing figure: the frame cuts through it and the part that matters stays in
+  the band. Never fit a tall thing in by making it small, and never let its top reach into the
+  bare strip to get all of it in.
 - ONE subject. A silhouette that still reads at **128 pixels wide**, which is the smallest size a
   card is drawn at in this game.
 
@@ -3480,6 +3536,10 @@ layout is fixed and has been measured:
   across that half, so that half has to be the quiet one.
 - Together those two make the test: **the picture must still read with its bottom half covered.**
   Cover it in your head and check before you call it done.
+- **If the subject is taller than that band, CROP it rather than shrink it.** A bow, a raised
+  arm, a spear, a standing figure: the frame cuts through it and the part that matters stays in
+  the band. Never fit a tall thing in by making it small, and never let its top reach into the
+  bare strip to get all of it in.
 - ONE subject. A silhouette that still reads at **128 pixels wide**, which is the smallest size a
   card is drawn at in this game.
 
@@ -3721,6 +3781,10 @@ layout is fixed and has been measured:
   across that half, so that half has to be the quiet one.
 - Together those two make the test: **the picture must still read with its bottom half covered.**
   Cover it in your head and check before you call it done.
+- **If the subject is taller than that band, CROP it rather than shrink it.** A bow, a raised
+  arm, a spear, a standing figure: the frame cuts through it and the part that matters stays in
+  the band. Never fit a tall thing in by making it small, and never let its top reach into the
+  bare strip to get all of it in.
 - ONE subject. A silhouette that still reads at **128 pixels wide**, which is the smallest size a
   card is drawn at in this game.
 
@@ -4020,6 +4084,10 @@ layout is fixed and has been measured:
   across that half, so that half has to be the quiet one.
 - Together those two make the test: **the picture must still read with its bottom half covered.**
   Cover it in your head and check before you call it done.
+- **If the subject is taller than that band, CROP it rather than shrink it.** A bow, a raised
+  arm, a spear, a standing figure: the frame cuts through it and the part that matters stays in
+  the band. Never fit a tall thing in by making it small, and never let its top reach into the
+  bare strip to get all of it in.
 - ONE subject. A silhouette that still reads at **128 pixels wide**, which is the smallest size a
   card is drawn at in this game.
 
@@ -4154,6 +4222,10 @@ layout is fixed and has been measured:
   across that half, so that half has to be the quiet one.
 - Together those two make the test: **the picture must still read with its bottom half covered.**
   Cover it in your head and check before you call it done.
+- **If the subject is taller than that band, CROP it rather than shrink it.** A bow, a raised
+  arm, a spear, a standing figure: the frame cuts through it and the part that matters stays in
+  the band. Never fit a tall thing in by making it small, and never let its top reach into the
+  bare strip to get all of it in.
 - ONE subject. A silhouette that still reads at **128 pixels wide**, which is the smallest size a
   card is drawn at in this game.
 
@@ -4253,6 +4325,10 @@ layout is fixed and has been measured:
   across that half, so that half has to be the quiet one.
 - Together those two make the test: **the picture must still read with its bottom half covered.**
   Cover it in your head and check before you call it done.
+- **If the subject is taller than that band, CROP it rather than shrink it.** A bow, a raised
+  arm, a spear, a standing figure: the frame cuts through it and the part that matters stays in
+  the band. Never fit a tall thing in by making it small, and never let its top reach into the
+  bare strip to get all of it in.
 - ONE subject. A silhouette that still reads at **128 pixels wide**, which is the smallest size a
   card is drawn at in this game.
 
@@ -5200,6 +5276,10 @@ layout is fixed and has been measured:
   across that half, so that half has to be the quiet one.
 - Together those two make the test: **the picture must still read with its bottom half covered.**
   Cover it in your head and check before you call it done.
+- **If the subject is taller than that band, CROP it rather than shrink it.** A bow, a raised
+  arm, a spear, a standing figure: the frame cuts through it and the part that matters stays in
+  the band. Never fit a tall thing in by making it small, and never let its top reach into the
+  bare strip to get all of it in.
 - ONE subject. A silhouette that still reads at **128 pixels wide**, which is the smallest size a
   card is drawn at in this game.
 
@@ -5883,6 +5963,10 @@ layout is fixed and has been measured:
   across that half, so that half has to be the quiet one.
 - Together those two make the test: **the picture must still read with its bottom half covered.**
   Cover it in your head and check before you call it done.
+- **If the subject is taller than that band, CROP it rather than shrink it.** A bow, a raised
+  arm, a spear, a standing figure: the frame cuts through it and the part that matters stays in
+  the band. Never fit a tall thing in by making it small, and never let its top reach into the
+  bare strip to get all of it in.
 - ONE subject. A silhouette that still reads at **128 pixels wide**, which is the smallest size a
   card is drawn at in this game.
 
@@ -6149,6 +6233,10 @@ layout is fixed and has been measured:
   across that half, so that half has to be the quiet one.
 - Together those two make the test: **the picture must still read with its bottom half covered.**
   Cover it in your head and check before you call it done.
+- **If the subject is taller than that band, CROP it rather than shrink it.** A bow, a raised
+  arm, a spear, a standing figure: the frame cuts through it and the part that matters stays in
+  the band. Never fit a tall thing in by making it small, and never let its top reach into the
+  bare strip to get all of it in.
 - ONE subject. A silhouette that still reads at **128 pixels wide**, which is the smallest size a
   card is drawn at in this game.
 
@@ -7997,6 +8085,10 @@ layout is fixed and has been measured:
   across that half, so that half has to be the quiet one.
 - Together those two make the test: **the picture must still read with its bottom half covered.**
   Cover it in your head and check before you call it done.
+- **If the subject is taller than that band, CROP it rather than shrink it.** A bow, a raised
+  arm, a spear, a standing figure: the frame cuts through it and the part that matters stays in
+  the band. Never fit a tall thing in by making it small, and never let its top reach into the
+  bare strip to get all of it in.
 - ONE subject. A silhouette that still reads at **128 pixels wide**, which is the smallest size a
   card is drawn at in this game.
 
@@ -8225,6 +8317,10 @@ layout is fixed and has been measured:
   across that half, so that half has to be the quiet one.
 - Together those two make the test: **the picture must still read with its bottom half covered.**
   Cover it in your head and check before you call it done.
+- **If the subject is taller than that band, CROP it rather than shrink it.** A bow, a raised
+  arm, a spear, a standing figure: the frame cuts through it and the part that matters stays in
+  the band. Never fit a tall thing in by making it small, and never let its top reach into the
+  bare strip to get all of it in.
 - ONE subject. A silhouette that still reads at **128 pixels wide**, which is the smallest size a
   card is drawn at in this game.
 
