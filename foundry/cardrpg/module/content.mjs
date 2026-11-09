@@ -12,6 +12,7 @@
  * a variant, a forgery from the thing it forges -- and each of those pairs stayed in one file.
  */
 export * from "./content/cards.mjs";
+export * from "./content/card-blurbs.mjs";
 export * from "./content/way-shade.mjs";
 export * from "./content/way-strength.mjs";
 export * from "./content/way-mind.mjs";

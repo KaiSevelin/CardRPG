@@ -151,9 +151,15 @@ function actionChapter() {
     const cards = (list ?? []).filter(isCard);
     if (!cards.length) continue;
     out.push(`### ${label}`, "");
-    out.push("| Card | Primary | Secondary | Reaction | Copies |", "|---|---|---|---|---|");
+    out.push("| Card | What it is | Primary | Secondary | Reaction | Copies |",
+      "|---|---|---|---|---|---|");
     for (const c of cards) {
-      out.push(`| **${c.name}** | ${cell(half(c.primary)) || "–"} `
+      /* The blurb says what it is; a card's own `text` qualifies the rule, and a reader wants
+       * both in the one place they are looking. */
+      const note = cell(c.text || c.description);
+      const what = [CONTENT.CARD_BLURBS[c.name] ?? "", note ? `*${note}*` : ""]
+        .filter(Boolean).join(" ");
+      out.push(`| **${c.name}** | ${what} | ${cell(half(c.primary)) || "–"} `
         + `| ${cell(half(c.secondary)) || "–"} | ${c.reaction ?? "–"} `
         + `| ${c.copies ?? 1} |`);
     }

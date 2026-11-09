@@ -7238,6 +7238,41 @@ for (const [what, text] of [["brief", artList], ["prompt book", artPrompts]]) {
  * than the per-name one above: the generator is run against the file that exists and has to produce
  * the file that exists, so a changed blurb is caught as surely as a missing item.
  */
+/*
+ * **Every action card says what it is, and nothing says it about a card that does not exist.**
+ *
+ * A card already says what it DOES, in its halves, and several carry a `text` that qualifies the
+ * rule: *Adjacent.*, *On yourself.* Those are written for somebody resolving a turn and are no use
+ * to somebody deciding whether they want the card, which is the question asked at a level-up and
+ * on every line of the handbook's ninety-row table.
+ *
+ * Checked in both directions, because a keyed list rots from both ends: a card written without a
+ * line would be a blank cell and a silent tooltip, and a line left behind by a renamed card would
+ * sit there looking like content forever. This is the same shape as the art directions, and the
+ * reason is the same.
+ */
+const everyActionCard = new Set();
+for (const list of ["WARRIOR_DECK", "SHADE_DECK", "COMMON_POOL", "STRENGTH_POOL", "SHADE_POOL",
+  "MIND_POOL", "FAITH_POOL", "STRENGTH_SIGNATURES", "SHADE_SIGNATURES", "MIND_SIGNATURES",
+  "FAITH_SIGNATURES", "WAY_CARDS"]) {
+  for (const e of content[list] ?? []) {
+    if (e.primary?.length || e.secondary?.length || e.reaction) everyActionCard.add(e.name);
+  }
+}
+check("action cards with no line saying what they are",
+  [...everyActionCard].filter(n => !content.CARD_BLURBS[n]).sort().join(", ") || "none", "none");
+check("and lines written for a card that is gone",
+  Object.keys(content.CARD_BLURBS).filter(n => !everyActionCard.has(n)).sort().join(", ") || "none",
+  "none");
+/* One sentence, which is the whole brief: a paragraph here is a card that needed two cards. */
+check("and any that run to more than a sentence",
+  Object.entries(content.CARD_BLURBS)
+    .filter(([, t]) => (t.match(/[.!?](\s|$)/g) ?? []).length > 2).map(([n]) => n).join(", ")
+  || "none", "none");
+/* The tooltip is the other half of the point: the handbook is read once and the tray every turn. */
+check("the tray hands the line to the card it draws",
+  /blurb: CARD_BLURBS\[cardName\(card\)\]/.test(traySource) ? "yes" : "no", "yes");
+
 const { fill: fillHandbook } = await import("./handbook.mjs");
 const handbook = fs.readFileSync(path.join(root, "../../rules/players-handbook.md"), "utf8");
 check("the handbook's reference chapters are current",

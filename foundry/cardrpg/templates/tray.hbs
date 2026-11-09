@@ -199,7 +199,7 @@
               background inside it, so a card with no picture needs no different markup. --}}
         <div class="cr-card{{#if card.harm}} cr-card--harm{{/if}}{{#if card.sole}} cr-card--sole{{/if}}{{#if card.reaction.reserved}} cr-card--reserved{{/if}}"
              {{#if card.art}}style="--cr-art: url('{{card.art}}')"{{/if}}>
-          <div class="cr-card__name">{{card.name}}</div>
+          <div class="cr-card__name"{{#if card.blurb}} data-tooltip="{{card.blurb}}"{{/if}}>{{card.name}}</div>
           {{#if card.harm}}
             <div class="cr-half"><span class="cr-note">Can't be played, not even for Brace.</span></div>
           {{else}}

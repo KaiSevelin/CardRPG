@@ -17,6 +17,7 @@
  */
 
 import { CARDRPG } from "./config.mjs";
+import { CARD_BLURBS } from "./content.mjs";
 import {
   deckOf, discardCards, retireCards, catchBreath, canCatchBreath, refill, cardName, artOf,
   dealSkillHand, discardSkillCards, pileBack, backOf,
@@ -1300,6 +1301,13 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       name: cardName(card),
       harm: false,
       art: artOf(card),
+      /*
+       * **What the card IS**, for the tooltip on its name. The halves below say what it does and
+       * the icons say it again in pictures; neither answers the question a player asks when they
+       * do not recognise a card, which is what it is for. Keyed by name in content/card-blurbs,
+       * so a card the table has never seen still has a sentence.
+       */
+      blurb: CARD_BLURBS[cardName(card)] ?? "",
       halves: [half("primary", card.system.primary), half("secondary", card.system.secondary)],
       reaction: this.#reactionRow(card)
     };

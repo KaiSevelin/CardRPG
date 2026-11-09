@@ -768,133 +768,133 @@ do not hold them: they are simply true once the node is yours.
 
 ### The starter Warrior's deck
 
-| Card | Primary | Secondary | Reaction | Copies |
-|---|---|---|---|---|
-| **Strike** | Strike | Move 1 | parry | 3 |
-| **Heavy Swing** | Strike +1 (ignores 2 armour) | Move 1 | – | 2 |
-| **Lunge** | Move 2, then Strike | Move 1 | – | 1 |
-| **Shield Up** | Defend | Move 1 | block | 2 |
-| **Advance** | Move 3 | Move 2 | sidestep | 2 |
-| **Draw Steel** | Strike | Ready | – | 2 |
-| **Quick Hands** | Use | Ready | use | 1 |
-| **Second Wind** | Heal 2 | Use | – | 1 |
-| **Taunt** | → compelled (1) | Move 1 | – | 1 |
-| **Weapon Swap** | Ready | Strike | – | 1 |
+| Card | What it is | Primary | Secondary | Reaction | Copies |
+|---|---|---|---|---|---|
+| **Strike** | The plain swing every fighter has, and the card you will play more than any other. | Strike | Move 1 | parry | 3 |
+| **Heavy Swing** | Weight behind it, aimed where the plates meet rather than where they are thickest. | Strike +1 (ignores 2 armour) | Move 1 | – | 2 |
+| **Lunge** | Close the distance and put the point in before they have finished turning. | Move 2, then Strike | Move 1 | – | 1 |
+| **Shield Up** | Get it across and keep it there, for everything that comes this round. | Defend | Move 1 | block | 2 |
+| **Advance** | Ground taken quickly, while somebody else is still deciding. | Move 3 | Move 2 | sidestep | 2 |
+| **Draw Steel** | Hit with what is already in your hand, then get the right thing into it. | Strike | Ready | – | 2 |
+| **Quick Hands** | Use what you are carrying faster than anyone expects, and have the next thing ready. | Use | Ready | use | 1 |
+| **Second Wind** | You are not finished. You had simply stopped breathing properly. | Heal 2 | Use | – | 1 |
+| **Taunt** | Make yourself the only thing in the room worth hitting. | → compelled (1) | Move 1 | – | 1 |
+| **Weapon Swap** | The wrong tool goes away, the right one arrives, and the swing follows it. | Ready | Strike | – | 1 |
 
 ### The starter Shade's deck
 
-| Card | Primary | Secondary | Reaction | Copies |
-|---|---|---|---|---|
-| **Knife Work** | Strike | Move 1 | parry | 3 |
-| **Open Vein** | Strike +1 | Move 1 | – | 2 |
-| **Slip In** | Move 2, then Strike | Move 1 | – | 1 |
-| **Shed the Blow** | Block 2 | Move 2 | sidestep | 2 |
-| **Quick Step** | Move 3 | Move 2 | sidestep | 2 |
-| **Draw the Knife** | Strike | Ready | – | 2 |
-| **Light Fingers** | Use | Ready | use | 1 |
-| **Bind the Wound** | Heal 2 | Use | – | 1 |
-| **Jeer** | → dazed (1) | Move 1 | – | 1 |
-| **Off Hand** | Ready | Strike | – | 1 |
+| Card | What it is | Primary | Secondary | Reaction | Copies |
+|---|---|---|---|---|---|
+| **Knife Work** | Close, quick and unremarkable, which is the whole idea. | Strike | Move 1 | parry | 3 |
+| **Open Vein** | Not a killing blow. A bleeding one, which does its work later. | Strike +1 | Move 1 | – | 2 |
+| **Slip In** | Cross the gap along the wall and arrive beside them. | Move 2, then Strike | Move 1 | – | 1 |
+| **Shed the Blow** | Turn with it rather than against it, and be elsewhere afterwards. | Block 2 | Move 2 | sidestep | 2 |
+| **Quick Step** | Three squares before anybody has decided you were worth watching. | Move 3 | Move 2 | sidestep | 2 |
+| **Draw the Knife** | Something sharp is out before the other hand has found the next one. | Strike | Ready | – | 2 |
+| **Light Fingers** | Use it without being seen to use it. | Use | Ready | use | 1 |
+| **Bind the Wound** | Press the cloth hard and keep moving. | Heal 2 | Use | – | 1 |
+| **Jeer** | A word in the right place, and they lose the thread of what they were doing. | → dazed (1) | Move 1 | – | 1 |
+| **Off Hand** | The second blade comes out and goes to work. | Ready | Strike | – | 1 |
 
 ### The common pool, which any Way may draw from
 
-| Card | Primary | Secondary | Reaction | Copies |
-|---|---|---|---|---|
-| **Off-Hand Blow** | Strike | Strike -1 | – | 1 |
-| **Measure** | Strike +1 (ignores Block) | Move 1 | parry | 1 |
-| **Hold the Line** | Defend | Strike -1 | parry | 1 |
-| **Press** | Strike, then Move 1 | Move 2 | sidestep | 1 |
-| **Both Hands** | Ready, then Strike | Ready | use | 1 |
-| **Dig In** | Heal 2 | Move 1 | – | 1 |
+| Card | What it is | Primary | Secondary | Reaction | Copies |
+|---|---|---|---|---|---|
+| **Off-Hand Blow** | Two hands, two strikes, and the second is the weaker for it. | Strike | Strike -1 | – | 1 |
+| **Measure** | Watch where the shield is going and put the point where it is not. | Strike +1 (ignores Block) | Move 1 | parry | 1 |
+| **Hold the Line** | Hold the ground, and make them pay for every step onto it. | Defend | Strike -1 | parry | 1 |
+| **Press** | Hit them, and follow as they give way. | Strike, then Move 1 | Move 2 | sidestep | 1 |
+| **Both Hands** | Change what you are holding and swing with it in the same motion. | Ready, then Strike | Ready | use | 1 |
+| **Dig In** | Stop, breathe, and patch whatever is bleeding. | Heal 2 | Move 1 | – | 1 |
 
 ### Way of Strength
 
-| Card | Primary | Secondary | Reaction | Copies |
-|---|---|---|---|---|
-| **Shoulder Check** | Strike | → offBalance (1) | – | 1 |
-| **Shield Bash** | Strike | Move 1 | block | 1 |
-| **Hammerblow** | Strike when they are offBalance | Move 1 | – | 1 |
-| **Sweep the Leg** | Strike → prone (1) when they are offBalance | Move 1 | – | 1 |
-| **Overbear** | → grappled (2) when they are offBalance | Move 1 | – | 1 |
-| **Shield Wall** | Defend | Defend, then Block 1 in an area of 1 | block | 1 |
-| **Two-Hand It** | Strike +2 | Ready | – | 1 |
-| **Heave** | Move 2 | Ready | – | 1 |
-| **Armoured Advance** | Move 3 | Move 1 | – | 1 |
-| **Pull Them Down** | Strike | Strike -1 | – | 1 |
-| **Beat the Blade** | Strike → disarmed (1) | Move 1 | – | 1 |
-| **Roar** | → compelled (1) | Move 1 | – | 1 |
-| **Walk It Off** | Heal 2, then Shake 2 | Move 1 | – | 1 |
-| **Nothing Held Back** | Strike | – | – | 1 |
-| **Call It** | Strike | Forestall 1 | – | 1 |
-| **Shoulder to Shoulder** | Strike, then Block 1 in an area of 1 | Move 1 | – | 1 |
-| **Ranging Shot** | Strike in an area of 1 | Ready | – | 1 |
-| **On My Call** | Ready | Move 1 | – | 1 |
-| **The Lance** | Move 3, then Strike | Move 1 | – | 1 |
-| **Red Mist** | Strike | Move 1 | – | 1 |
-| **Play to the Crowd** | → compelled (1) | Move 1 | – | 1 |
-| **Get a Grip** | → grappled (2) | Move 1 | – | 1 |
-| **Interpose** | Defend | Move 1 | bodyguard | 1 |
+| Card | What it is | Primary | Secondary | Reaction | Copies |
+|---|---|---|---|---|---|
+| **Shoulder Check** | Your whole weight into theirs, at the range where weight wins. *Adjacent.* | Strike | → offBalance (1) | – | 1 |
+| **Shield Bash** | The shield is not only for stopping things. *No damage: push 2 and step into the square it left.* | Strike | Move 1 | block | 1 |
+| **Hammerblow** | A blow that needs them off balance, and settles it once they are. | Strike when they are offBalance | Move 1 | – | 1 |
+| **Sweep the Leg** | Take the feet from under somebody who has already lost their footing. | Strike → prone (1) when they are offBalance | Move 1 | – | 1 |
+| **Overbear** | Get hold of them while they are going down, and do not let go. | → grappled (2) when they are offBalance | Move 1 | – | 1 |
+| **Shield Wall** | Your shield covers the person beside you as well as yourself. | Defend | Defend, then Block 1 in an area of 1 | block | 1 |
+| **Two-Hand It** | Both hands on the haft, and nothing kept back for defence. | Strike +2 | Ready | – | 1 |
+| **Heave** | Lift what should not be liftable, and walk with it. *Carrying any weight without being Slowed.* | Move 2 | Ready | – | 1 |
+| **Armoured Advance** | Come on through it. The plate is doing its job. *Your armor counts +1 until your next turn.* | Move 3 | Move 1 | – | 1 |
+| **Pull Them Down** | Somebody already down or held is somebody you can finish. *The secondary only against a Prone or Grappled target.* | Strike | Strike -1 | – | 1 |
+| **Beat the Blade** | Knock the weapon aside hard enough that they lose it. | Strike → disarmed (1) | Move 1 | – | 1 |
+| **Roar** | Everything near you hears it, and the fight goes out of them. *Every adjacent enemy.* | → compelled (1) | Move 1 | – | 1 |
+| **Walk It Off** | Whatever is on you comes off, because you have decided it will. *On yourself.* | Heal 2, then Shake 2 | Move 1 | – | 1 |
+| **Nothing Held Back** | Commit the whole hand to one blow and have nothing left afterwards. *Strain your hand but one — that card must be played this turn. Strike +1 per card strained.* | Strike | – | – | 1 |
+| **Call It** | Name what you are facing, and your people know what to do about it. *The secondary names one NPC type.* | Strike | Forestall 1 | – | 1 |
+| **Shoulder to Shoulder** | You swing, and every ally at your elbow is covered by it. | Strike, then Block 1 in an area of 1 | Move 1 | – | 1 |
+| **Ranging Shot** | Stand still, and the shot spreads where it is wanted. *Blast instead of Aimed, if you did not Move this turn.* | Strike in an area of 1 | Ready | – | 1 |
+| **On My Call** | An ally plays their card the wrong way round because you told them to. *On an ally's turn: they may play a card in their hand halves swapped, its secondary as a primary.* | Ready | Move 1 | – | 1 |
+| **The Lance** | Weight, speed and a long point, which is the whole argument of cavalry. *Advantage if you moved at least 2. Needs the mount.* | Move 3, then Strike | Move 1 | – | 1 |
+| **Red Mist** | Spend everything and draw straight back up, because stopping is not in it. *Then draw back up to your hand size at once.* | Strike | Move 1 | – | 1 |
+| **Play to the Crowd** | Take the hit where they can see it, and make the man who gave it the villain. *When you are hit: gain Block 2, and the attacker is Compelled (1) -- no save, because you have already been hit once.* | → compelled (1) | Move 1 | – | 1 |
+| **Get a Grip** | Empty hands are no disadvantage once they are on somebody. *No save at all if both your hands are empty.* | → grappled (2) | Move 1 | – | 1 |
+| **Interpose** | The blow meant for your friend arrives at you instead. *Take a hit meant for an adjacent ally.* | Defend | Move 1 | bodyguard | 1 |
 
 ### Way of Shade
 
-| Card | Primary | Secondary | Reaction | Copies |
-|---|---|---|---|---|
-| **Call the Shot** | Strike | → marked (1) | – | 1 |
-| **Find the Seam** | Strike -1 (ignores armour) | Move 1 | – | 1 |
-| **Half-Hilt** | Strike (ignores 2 armour) | Move 1 | – | 1 |
-| **Round the Shield** | Strike -1 (ignores Block) at range 3 | Move 1 | – | 1 |
-| **Between the Plates** | Strike when they are marked | Move 1 | – | 1 |
-| **Take the Shot** | Strike +1 when they are marked | Move 2 | – | 1 |
-| **Pin the Shadow** | Strike → slowed (1) when they are marked | Move 1 | – | 1 |
-| **Cut and Run** | Strike, then Move 2 | Move 1 | – | 1 |
-| **Light Feet** | Move 3 | Move 2 | sidestep | 1 |
-| **Slip the Knot** | Move 2 | Shake 1 | sidestep | 1 |
-| **Second Knife** | Strike at range 3 | Strike -1 | – | 1 |
-| **Mock** | → dazed (1) | Move 1 | – | 1 |
-| **Sleight** | Use, then Strike | Ready | use | 1 |
-| **Vanish** | → invisible (1) | Move 2 | – | 1 |
-| **Count the Odds** | Strike | Sift 2 | parry | 1 |
-| **Scout Ahead** | Move 3 | Sift 3 | sidestep | 1 |
-| **Smoke and Go** | → invisible (1), then Move 2 | Use | – | 1 |
-| **Point Man** | Foresee | Move 1 | – | 1 |
-| **Named** | Strike | → marked (1) | parry | 1 |
-| **One Opening** | Strike | Move 1 | – | 1 |
-| **Lift** | Strike | Move 1 | – | 1 |
-| **Loose and Step** | Strike, then Move 1 | Move 1 | – | 1 |
-| **Set** | Ready → slowed | Ready | – | 1 |
-| **Over and Past** | Move 3 | Move 1 | sidestep | 1 |
-| **Heckle** | → heckled (1) | Move 1 | heckle | 1 |
-| **Double or Nothing** | Strike | Move 1 | – | 1 |
+| Card | What it is | Primary | Secondary | Reaction | Copies |
+|---|---|---|---|---|---|
+| **Call the Shot** | Pick your man out of the crowd, and keep him picked. *Marked on any enemy you can see, at any range.* | Strike | → marked (1) | – | 1 |
+| **Find the Seam** | Not through the armour. Between it. *Armour does not apply. A point weaker than a plain Strike.* | Strike -1 (ignores armour) | Move 1 | – | 1 |
+| **Half-Hilt** | Hand on the blade, point driven into the gap by main force. *Ignores 2 armour. Reversed grip, straight into the gap.* | Strike (ignores 2 armour) | Move 1 | – | 1 |
+| **Round the Shield** | A knife thrown at the one angle a shield was never going to cover. *A thrown knife that answers neither a raised shield nor cover. Range 3.* | Strike -1 (ignores Block) at range 3 | Move 1 | – | 1 |
+| **Between the Plates** | A gap you marked earlier, and a point that fits it. | Strike when they are marked | Move 1 | – | 1 |
+| **Take the Shot** | You have been waiting for this, and the waiting is what makes it land. | Strike +1 when they are marked | Move 2 | – | 1 |
+| **Pin the Shadow** | Put something through cloth and leg together. | Strike → slowed (1) when they are marked | Move 1 | – | 1 |
+| **Cut and Run** | Open them up and be gone before they decide what to do about it. | Strike, then Move 2 | Move 1 | – | 1 |
+| **Light Feet** | Rubble, mud and bodies are all the same floor to you. *Ignoring difficult ground.* | Move 3 | Move 2 | sidestep | 1 |
+| **Slip the Knot** | Whatever had hold of you does not, any more. | Move 2 | Shake 1 | sidestep | 1 |
+| **Second Knife** | There was always a second knife. | Strike at range 3 | Strike -1 | – | 1 |
+| **Mock** | Say the one thing that makes them stop thinking. | → dazed (1) | Move 1 | – | 1 |
+| **Sleight** | Your hands do two things and they only see one. | Use, then Strike | Ready | use | 1 |
+| **Vanish** | Be somewhere the eye slides off. *On yourself.* | → invisible (1) | Move 2 | – | 1 |
+| **Count the Odds** | Look at what is coming before you commit to anything. *The secondary is seeing only — you may not reorder them, and you discard nothing.* | Strike | Sift 2 | parry | 1 |
+| **Scout Ahead** | Go first, look further, and come back knowing. *Seeing only, and one card deeper than most: you looked where you were going.* | Move 3 | Sift 3 | sidestep | 1 |
+| **Smoke and Go** | Something hits the ground, and you are not where you were. *On yourself.* | → invisible (1), then Move 2 | Use | – | 1 |
+| **Point Man** | Walking in front has its uses, and this is the one. *While you are the furthest forward of your party, Foresee one extra type.* | Foresee | Move 1 | – | 1 |
+| **Named** | One enemy, named aloud, and from then on your parry cuts. *Name one enemy. Against it, your Parry also Strikes for 1.* | Strike | → marked (1) | parry | 1 |
+| **One Opening** | Somebody who does not know you are there needs only the one. *Against a target that is unaware or carrying an opening, the damage is doubled.* | Strike | Move 1 | – | 1 |
+| **Lift** | Take a card out of their deck, and keep it. *On a hit, take one card from the target's own deck. It is yours now, and it is in your deck for good.* | Strike | Move 1 | – | 1 |
+| **Loose and Step** | Shoot, and be a square away by the time they look. | Strike, then Move 1 | Move 1 | – | 1 |
+| **Set** | Leave something on the ground for whoever comes next. *Place a trap on an adjacent square.* | Ready → slowed | Ready | – | 1 |
+| **Over and Past** | Their line is not a wall if you simply go through it. *You may move through enemy squares.* | Move 3 | Move 1 | sidestep | 1 |
+| **Heckle** | Anybody who closes on you is rattled before they arrive. *An enemy arriving next to you draws fate with disadvantage until your next turn.* | → heckled (1) | Move 1 | heckle | 1 |
+| **Double or Nothing** | Two fate cards, both of them counting, which is weather and not advantage. *Draw two fate cards -- both apply, added together. Variance, not advantage.* | Strike | Move 1 | – | 1 |
 
 ### Way of Mind
 
-| Card | Primary | Secondary | Reaction | Copies |
-|---|---|---|---|---|
-| **Hold to the Bargain** | – | – | bargain | 1 |
-| **Turn Aside** | – | – | mend | 1 |
-| **Shake It Off** | – | – | mend | 1 |
-| **The Mirror** | – | – | unmake | 1 |
-| **Unmake** | – | – | unmake | 1 |
+| Card | What it is | Primary | Secondary | Reaction | Copies |
+|---|---|---|---|---|---|
+| **Hold to the Bargain** | Something that owes you intervenes, once. *It was going to fail. Something intervened, once, because it owes you.* | – | – | bargain | 1 |
+| **Turn Aside** | Their shield is suddenly worth twice what it was. *You do not stop the blow; you make their shield worth twice what it was for exactly as long as it takes.* | – | – | mend | 1 |
+| **Shake It Off** | Whatever is on them comes off now, not on their turn. *Whatever is on them, off, on the turn it happened rather than on yours. Three is enough for anything the game can print.* | – | – | mend | 1 |
+| **The Mirror** | The blow goes back the way it came, in full. *Not stopped. Returned, in full, to the man who sent it , which is worse for him than for you and is the whole reason to prepare this instead of Unmake.* | – | – | unmake | 1 |
+| **Unmake** | You have read this spell before, and that is the only reason it stops. *You have felt this one before. That is the only reason you can stop it: a warder's book is a record of what the party has survived , which is a condition on LEARNING it, held by the GM, not something the engine tests.* | – | – | unmake | 1 |
 
 ### Way of Faith
 
-| Card | Primary | Secondary | Reaction | Copies |
-|---|---|---|---|---|
-| **Bear It for Them** | – | – | mend | 1 |
-| **The Turning Tide** | – | – | mend | 1 |
-| **The Close Work** | – | – | parry | 1 |
-| **Breath of the Spirit** | – | – | mend | 1 |
-| **The Writ** | at range 6 → judged (2) | Move 1 | – | 1 |
-| **The Order's Shield** | Defend, then Block 2 at range 1 | Block 1 at range 1 | block | 1 |
-| **The Long Silence** | Ready 2 | Shake 1 | – | 1 |
-| **The Scourge** | Strike +2 | Move 2 | – | 1 |
+| Card | What it is | Primary | Secondary | Reaction | Copies |
+|---|---|---|---|---|---|
+| **Bear It for Them** | You take what is on them onto yourself, entire. *Whatever is on them is on you instead, at its full duration. The Spirit's priests are the only ones who can do this and the only ones who would.* | – | – | mend | 1 |
+| **The Turning Tide** | The sea is not fair, and today it is not fair to them. *The sea is not fair. They draw again and must keep the second card, and a Miss joins your own deck for having asked.* | – | – | mend | 1 |
+| **The Close Work** | You move his arm, and the man behind him takes it. *You move his arm. The man behind him takes it, and neither of them understands what happened.* | – | – | parry | 1 |
+| **Breath of the Spirit** | Help arrives through the air, from anywhere you can be heard. *Reaction: heal an ally 3, at any range, ignoring cover. The spirit drifts through all the air, so distance is not a question for it.* | – | – | mend | 1 |
+| **The Writ** | Named at range, with no appeal, and the whole field may act on it. *No save, at range 6. Being named is not something you resist, and the whole field may act on it.* | at range 6 → judged (2) | Move 1 | – | 1 |
+| **The Order's Shield** | The guard goes to somebody else, and never to you. *The Block goes to an adjacent ally and never to you. The order does not defend itself.* | Defend, then Block 2 at range 1 | Block 1 at range 1 | block | 1 |
+| **The Long Silence** | Stand entirely still, because the stillness is the method. *Only if you did not move this round. Stillness is the whole of the order's method.* | Ready 2 | Shake 1 | – | 1 |
+| **The Scourge** | Pay in your own skin first, and the blow lands harder for it. *Strain 1, paid before the blow lands. The drums, the dance and the whip make the same argument: pay first, strike harder.* | Strike +2 | Move 2 | – | 1 |
 
 ### Way cards
 
-| Card | Primary | Secondary | Reaction | Copies |
-|---|---|---|---|---|
-| **Set Spear** | Defend | Move 1 | counter | 1 |
-| **Roll With It** | Move 3 | Move 2 | sidestep | 1 |
+| Card | What it is | Primary | Secondary | Reaction | Copies |
+|---|---|---|---|---|---|
+| **Set Spear** | Brace the butt in the dirt and let them run onto it. *an enemy ending its move adjacent takes your Strike* | Defend | Move 1 | counter | 1 |
+| **Roll With It** | Go with the blow, and come up somewhere more useful. *Sidestep 2, and you may end next to a different enemy* | Move 3 | Move 2 | sidestep | 1 |
 
 <!-- /generated: actions -->
 
