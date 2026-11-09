@@ -3095,3 +3095,72 @@ export async function resolveCondition(actor, { step, target }) {
   });
   return landed;
 }
+
+/* -------------------------------------------- */
+/*  Cards that resolve as they are dealt        */
+/* -------------------------------------------- */
+
+/**
+ * Rage: Strike the nearest creature, whatever it is.
+ *
+ * **The target is a rule, not a choice.** Nearest by Chebyshev, and the lowest Health of any tied --
+ * so a player cannot aim their own affliction at the enemy and a GM cannot aim it at the cleric.
+ * That is the whole of what makes this a card rather than a table argument, and the tie-break
+ * matters more than it looks: ties are common on a square grid, and "nearest" alone would have left
+ * the choice sitting there unmade.
+ *
+ * It goes through `resolveAttack`, so it is a real Strike: fate is drawn, armour applies, and the
+ * target may react to it exactly as to any other hit. An ally can Block their friend's swing, which
+ * is both correct and the reason this is survivable.
+ *
+ * **It lives here rather than in decks.mjs, which is what broke the import cycle.** It used to sit
+ * beside `applyTaint` and `applyFear` and reach back for `resolveAttack` through a deferred
+ * `import()` -- deliberate, documented, and still a cycle: decks could not be read without reading
+ * the resolver. The other two belong where they were, because what they do is damage and a square;
+ * this one draws fate, meets armour and offers the target a reaction, which is resolution. It was
+ * the only reason the two modules pointed at each other.
+ *
+ * `refill` takes it as a handler from its one caller, so the deck module still decides WHEN a
+ * drawn card resolves and no longer needs to know what this one does.
+ */
+export async function applyRage(actor, card) {
+  const say = text => ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<div class="cardrpg"><p><strong>${actor.name}</strong> draws <em>${card.name}</em>: `
+      + `${text}</p></div>`
+  });
+
+  const token = actor?.getActiveTokens?.()[0];
+  const cell = canvas?.grid?.size;
+  if (!token || !canvas?.ready || !cell) {
+    await say("Strike the nearest creature, ally or enemy. <em>No token placed &mdash; the GM "
+      + "resolves it.</em>");
+    return;
+  }
+
+  const others = canvas.tokens.placeables.filter(t => t.id !== token.id && t.actor);
+  if (!others.length) {
+    await say("nothing within reach of it. The card is spent and the swing goes nowhere.");
+    return;
+  }
+
+  const cheb = t => Math.max(Math.abs(t.x - token.x), Math.abs(t.y - token.y)) / cell;
+  const health = t => t.actor?.system?.health?.value ?? Infinity;
+  const victim = others.reduce((a, b) => {
+    const d = cheb(b) - cheb(a);
+    if (d < 0) return b;
+    if (d > 0) return a;
+    return health(b) < health(a) ? b : a;     // the rule's tie-break, not a preference
+  });
+
+  const weapon = actor.items?.find(i => (i.system?.verbs?.strike?.value ?? null) !== null);
+  if (!weapon) {
+    await say(`nothing equipped to swing at <strong>${victim.document.name}</strong>. The card is `
+      + `spent.`);
+    return;
+  }
+
+  await say(`a Strike at <strong>${victim.document.name}</strong> &mdash; the nearest creature, `
+    + `ally or enemy.`);
+  await resolveAttack(actor, { verb: "strike", item: weapon, targets: [victim.actor] });
+}

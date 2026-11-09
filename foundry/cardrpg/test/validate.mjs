@@ -3868,12 +3868,53 @@ section("granting and spending a level");
 const entrySource = fs.readFileSync(path.join(root, "cardrpg.mjs"), "utf8");
 
 /*
- * graph.mjs must stay importable outside Foundry, because the engine checks above are only possible
- * while it is. Destructuring a Foundry global at module scope breaks that, and it broke it once.
+ * --- what loads outside Foundry ------------------------------------------------------------------
+ *
+ * **This is the property the rest of this file rests on, and it was defended in one place.**
+ *
+ * Eleven of the eighteen modules import cleanly in plain Node. That is why this suite can RUN the
+ * engine rather than grep it -- `bestWeapon` against four hands, `resyncPlan` against six worlds,
+ * `passiveScore` against a real deck -- and every one of those checks exists because its module
+ * happens not to touch a Foundry global while it is being evaluated.
+ *
+ * It was checked for `graph.mjs` and nothing else, by grepping for two spellings of the mistake.
+ * So any of the other ten could have acquired a module-scope `game.` tomorrow, and the day one did,
+ * a large part of this file would have stopped being possible -- reported as an import error in
+ * whichever check happened to touch it first, rather than as the architectural change it was.
+ *
+ * It is an import now rather than a grep, which is both stronger and simpler: there are more ways
+ * to need Foundry at module scope than there are spellings of `const x = game.`, and loading the
+ * module tries all of them at once.
  */
-check("the engine touches no Foundry global at module scope",
-  /^const \{[^}]*\} = foundry\./m.test(graphSource)
-  || /^const \w+ = game\./m.test(graphSource) ? "it does" : "no", "no");
+const MODULE_DIR = path.join(root, "module");
+const everyModule = [
+  ...fs.readdirSync(MODULE_DIR).filter(f => f.endsWith(".mjs")).map(f => f.slice(0, -4)),
+  ...fs.readdirSync(path.join(MODULE_DIR, "data")).filter(f => f.endsWith(".mjs"))
+    .map(f => `data/${f.slice(0, -4)}`)
+];
+/* The engine and the content: no Foundry global at module scope, so they can be exercised here. */
+const LOADS_ANYWHERE = ["art", "checks", "config", "content", "decks", "enrichers", "grants",
+  "graph", "monsters", "resolve", "setup"];
+/*
+ * And the ones that legitimately cannot: three data models extending Foundry's own classes, three
+ * applications extending ApplicationV2, and the combat document. Every one of them is a SUBCLASS
+ * of something Foundry owns, which is the honest reason to need it at evaluation time -- and it is
+ * worth naming as a rule rather than a list, because a twelfth module that needs Foundry for any
+ * other reason is a design decision rather than an inheritance.
+ */
+const NEEDS_FOUNDRY = ["combat", "levelup", "sheets", "tray",
+  "data/actors", "data/cards", "data/items"];
+
+check("modules on neither list",
+  everyModule.filter(m => !LOADS_ANYWHERE.includes(m) && !NEEDS_FOUNDRY.includes(m))
+    .join(", ") || "none", "none");
+const wontLoad = [];
+for (const m of LOADS_ANYWHERE) {
+  try { await import(`../module/${m}.mjs`); }
+  catch (e) { wontLoad.push(`${m}: ${String(e.message).split("\n")[0].slice(0, 60)}`); }
+}
+check("and the ones that must load outside Foundry and do not", wontLoad.join(" | ") || "none",
+  "none");
 
 /* One pane per actor. Two sharing a window id makes the second re-render the first. */
 check("panes are kept per actor", /static #open = new Map\(\)/.test(levelup) ? "yes" : "no", "yes");
@@ -9158,13 +9199,21 @@ check("and it goes to the skill discard, which a shuffle does not return",
  * table exists to close, so `ON_DRAW` is keyed on the same strings the table declares.
  */
 check("what resolves on draw is a table, not a chain",
-  /const ON_DRAW = \{ taint: applyTaint, fear: applyFear, rage: applyRage \};/
+  /const ON_DRAW = \{ taint: applyTaint, fear: applyFear \};/
     .test(decksSource) ? "yes" : "no", "yes");
 check("and the chain is gone",
   /if \(effect === "taint"\)/.test(decksSource) ? "still there" : "gone", "gone");
 /* Every kind the table says resolves on draw has something in that map to resolve it. */
+/*
+ * **Both halves, because the table is no longer the whole answer.** `ON_DRAW` is what decks.mjs
+ * can resolve by itself; `FROM_CALLER` is what it has to be handed, which is `rage` and is `rage`
+ * because resolving a Strike belongs to the resolver. A kind in neither is a card that does
+ * nothing at all when it is drawn, which is what this check has always been for.
+ */
 const onDrawMap = (decksSource.match(/const ON_DRAW = \{([^}]*)\}/) ?? [, ""])[1];
-const resolvers = [...onDrawMap.matchAll(/(\w+):/g)].map(m => m[1]).sort();
+const fromCaller = (decksSource.match(/const FROM_CALLER = \[([^\]]*)\]/) ?? [, ""])[1];
+const resolvers = [...[...onDrawMap.matchAll(/(\w+):/g)].map(m => m[1]),
+  ...[...fromCaller.matchAll(/"(\w+)"/g)].map(m => m[1])].sort();
 const wantResolvers = intruderKinds
   .filter(k => new RegExp(`${k}: \\{[^}]*onDraw: "`).test(intruderTable)).sort();
 check("kinds that resolve on draw have a resolver", resolvers.join(", "), wantResolvers.join(", "));
@@ -9173,14 +9222,38 @@ check("kinds that resolve on draw have a resolver", resolvers.join(", "), wantRe
  * **Rage's target is a rule**, and the tie-break is the half that would have been left unmade:
  * ties are common on a square grid, so "nearest" alone is an unfinished sentence.
  */
+/* In the resolver since 2026-11-09, which is what took the import cycle out: a Rage card is a
+ * Strike, and resolving a Strike is not the deck module's job. */
 check("Rage strikes the nearest creature",
-  /const victim = others\.reduce\(/.test(decksSource) ? "yes" : "no", "yes");
+  /const victim = others\.reduce\(/.test(resolveSource) ? "yes" : "no", "yes");
 check("and the lowest Health of any tied",
-  /return health\(b\) < health\(a\) \? b : a;/.test(decksSource) ? "yes" : "no", "yes");
+  /return health\(b\) < health\(a\) \? b : a;/.test(resolveSource) ? "yes" : "no", "yes");
 /* A real Strike, so the target may react to it: an ally can Block their friend's swing. */
 check("and it goes through the attack path",
   /await resolveAttack\(actor, \{ verb: "strike", item: weapon, targets: \[victim\.actor\] \}\)/
-    .test(decksSource) ? "yes" : "no", "yes");
+    .test(resolveSource) ? "yes" : "no", "yes");
+
+/*
+ * **And the two modules no longer point at each other.**
+ *
+ * `decks.mjs` reached the resolver through a deferred `import()` so that the cycle would not bite
+ * at load time. It was deliberate and documented, and it was still a cycle: the deck module could
+ * not be read without reading the resolver, and the only reason was one card. Moving `applyRage`
+ * to where Strikes are resolved left the dependency pointing one way, and `refill` takes what it
+ * cannot resolve from the one caller that has it.
+ *
+ * Checked as an absence AND as a shape, because an absence alone would pass if somebody made the
+ * import static instead.
+ */
+check("the deck module reaches back into the resolver",
+  /resolve\.mjs"\)/.test(decksSource) || /from "\.\/resolve\.mjs"/.test(decksSource)
+    ? "it does" : "no", "no");
+check("and refill is handed what it cannot resolve itself",
+  /export async function refill\(actor, \{ handlers = \{\} \} = \{\}\)/.test(decksSource)
+    ? "yes" : "no", "yes");
+check("and its one caller hands it over",
+  /refill\(this\.actor, \{ handlers: \{ rage: applyRage \} \}\)/.test(traySource)
+    ? "yes" : "no", "yes");
 
 /* Compulsion's whole rule is one sentence canCatchBreath reads. */
 check("a Compulsion in hand forbids Catch Breath",
@@ -13146,8 +13219,19 @@ for (const m of selfSource.matchAll(/(\w+)\.includes\("((?:[^"\\]|\\.)*)"\)/g)) 
   });
 }
 
-/* The pin that keeps the rest of this honest. */
-check("greps over a whole file, resolved", greps.length, 664);
+/*
+ * **There was a count of the greps here, and it is gone.**
+ *
+ * `check("greps over a whole file, resolved", greps.length, 664)` was a golden number for *how
+ * many checks this file contains*, which is a fact about the file rather than about the game. It
+ * failed on five separate commits on 2026-11-09, every time because a check had just been added,
+ * and it caught nothing on any of them -- a toll on the one activity this suite most wants to be
+ * cheap.
+ *
+ * What it was guarding is guarded better below and always was: `greps that correctly match
+ * nothing` names every zero-hit pattern, so a grep that goes quiet is reported by name rather than
+ * inferred from a total moving. A count cannot say WHICH, and which is the whole question.
+ */
 
 /*
  * **The rule, as one predicate, run over a planted example before it is run over the suite.**
@@ -13223,8 +13307,8 @@ const absentGreps = [
   String.raw`reaction timer retired from settings :: reactionTimer`,
   String.raw`reaction timer retired from the HUD spec :: \*\*Setting: ` + "`" + String.raw`reactionTimer` + "`" + String.raw`\*\*`,
   String.raw`reaction timer retired from the HUD spec :: ^### 6\.1 The reaction timer$`,
-  String.raw`the engine touches no Foundry global at module scope :: ^const \w+ = game\.`,
-  String.raw`the engine touches no Foundry global at module scope :: ^const \{[^}]*\} = foundry\.`,
+  String.raw`the deck module reaches back into the resolver :: from "\.\/resolve\.mjs"`,
+  String.raw`the deck module reaches back into the resolver :: resolve\.mjs"\)`,
   String.raw`the fate bar no longer assumes twenty :: \(counts\.fate \?\? 0\) \/ 20`,
   String.raw`the grant accumulator no longer asks a spell about its timing :: slate\.type === "spell"`,
   String.raw`the old bare rank map is gone :: CARDRPG\.fateRank`,

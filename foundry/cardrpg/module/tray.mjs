@@ -24,6 +24,7 @@ import {
 } from "./decks.mjs";
 import {
   resolveAttack, resolveDefend, resolveHeal, resolveUse, resolveCondition, resolveShake,
+  applyRage,
   reachableAmmo, isUsable,
   resolveTaint, resolveGearEffect, resolveRepair, resolveRepairCheck,
   liftCondition, resolveForesee, collectBonuses,
@@ -1481,7 +1482,9 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
      * dealt nothing but a Fear is not an empty draw pile, and warning about one would send the
      * player looking for a problem they do not have.
      */
-    const { drawn, taint, fear, rage } = await refill(this.actor);
+    /* `applyRage` comes from the resolver: a Rage card is a Strike, and decks.mjs does not resolve
+     * Strikes. See `FROM_CALLER` there. */
+    const { drawn, taint, fear, rage } = await refill(this.actor, { handlers: { rage: applyRage } });
     this.dealtAt = key;
     if (!drawn && !taint && !fear && !rage) {
       ui.notifications.warn("Draw pile is empty. Catch Breath to recover some.");

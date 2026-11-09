@@ -1,0 +1,82 @@
+# The gate, run by a machine rather than by a habit.
+#
+# Everything this project does to defend itself lives in one file -- `test/validate.mjs`, 2,000-odd
+# checks -- and until now it ran when somebody remembered to type `npm test`. A quality system that
+# depends on being remembered is a quality system with a single point of failure, and it is the one
+# that would take every other check down with it.
+#
+# Two jobs, because they fail for different reasons and the difference is worth reading off the
+# summary: a module that will not parse is broken, and a check that will not pass is a disagreement.
+name: check
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  parse:
+    name: every module parses
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      # `node --check` on every ES module in the system, the entry point included. This is the
+      # cheapest check there is and it is the one that matters most: a syntax error in validate.mjs
+      # takes the whole suite with it, and a syntax error in the engine takes the game.
+      - name: parse
+        run: |
+          set -e
+          find foundry/cardrpg -name '*.mjs' -not -path '*/node_modules/*' -not -path '*/lib/*' \
+            -print0 | xargs -0 -n1 node --check
+          echo "all modules parse"
+
+  suite:
+    name: the suite
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: foundry/cardrpg
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: foundry/cardrpg/package-lock.json
+      # `npm ci` rather than `npm install`: the suite checks the Handlebars templates when
+      # handlebars is present and quietly skips them when it is not, so an install that drifted
+      # would turn a template failure into a silent pass.
+      - run: npm ci
+      - run: npm test
+
+  packs:
+    name: the packs match the content
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: foundry/cardrpg
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: foundry/cardrpg/package-lock.json
+      - run: npm ci
+      # The compiled packs are committed, so they can be stale, and a stale pack is a world built
+      # from yesterday's content. Rebuilding and asking git whether anything moved is the whole
+      # test. Only `_source` is compared: the LevelDB files underneath it are rewritten byte-wise
+      # on every build and say nothing about whether the content changed.
+      - name: rebuild
+        run: npm run packs
+      - name: and nothing in them moved
+        run: |
+          if ! git diff --quiet -- packs/_source; then
+            echo "::error::the committed packs disagree with the content -- run 'npm run packs'"
+            git diff --stat -- packs/_source
+            exit 1
+          fi
+          echo "packs are current"

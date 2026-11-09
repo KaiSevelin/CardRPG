@@ -1248,3 +1248,32 @@ CARDRPG.defaults = {
    */
   brace: 1
 };
+
+/* -------------------------------------------- */
+/*  And then it stops changing                  */
+/* -------------------------------------------- */
+
+/**
+ * **`CARDRPG` is one mutable object that thirteen modules read, and nothing wrote to it twice.**
+ *
+ * That is the arrangement working, not the arrangement being safe. This file imports nothing, so
+ * it is always the first thing evaluated and the table is always complete before anybody looks --
+ * but that is a property of the import graph holding still, and the graph is not a promise. A
+ * single `CARDRPG.conditions = ...` anywhere, at any time, would rewrite the vocabulary of the
+ * whole system for the rest of the session, silently, with no event and nothing to grep for
+ * afterwards.
+ *
+ * Frozen, it is a throw at the line that did it. Deeply, because the interesting mutation is not
+ * `CARDRPG.conditions = {}` -- nobody writes that by accident -- it is
+ * `CARDRPG.conditions.halted.blocksTurn = false`, one flag, in a branch, under a condition that
+ * fires twice a session.
+ *
+ * Nothing in the system writes to it today: that was swept before this was added, which is why
+ * this could be added at all. The freeze is what stops the fourteenth reader deciding to become a
+ * writer, and what makes the sweep stay true without anybody re-running it.
+ */
+const freezeDeep = o => {
+  for (const v of Object.values(o)) if (v && typeof v === "object") freezeDeep(v);
+  return Object.freeze(o);
+};
+freezeDeep(CARDRPG);
