@@ -3676,6 +3676,37 @@ check("and resizes the canvas without stealing the view",
   /this\.cy\.resize\(\);[\s\S]{0,80}if \(!this\.fitted\)/.test(levelup) ? "yes" : "no", "yes");
 /* And it is let go with the canvas: an observer outliving the graph fires into a destroyed
  * instance every time the window moves. */
+/*
+ * **The pane opens on what you can take, not on all 207 nodes.**
+ *
+ * Fitting the whole graph is a wall: the four a character may take are four boxes among two
+ * hundred, and the first thing anybody has to do is hunt for them. The frontier plus one step
+ * beyond it is what a level-up is about, and the step beyond is deliberate -- a choice you cannot
+ * see the consequence of is not a choice being offered. The **Fit** button still shows everything,
+ * which is what a button called Fit is for.
+ */
+check("the pane frames the frontier rather than the graph",
+  /const frontier = this\.cy\.nodes\("\[state = 'owned'\], \[state = 'available'\]"\)/
+    .test(levelup) ? "yes" : "no", "yes");
+check("and one step past it, so a choice shows what it leads to",
+  /frontier\.closedNeighborhood\(\)\.nodes\(\)/.test(levelup) ? "yes" : "no", "yes");
+/*
+ * A layout is framed when it STOPS, not when `run()` returns: `cose` is still moving nodes after
+ * that, so fitting early frames positions that no longer exist. `fit: false` on the layout and the
+ * frame afterwards is one decision in two places, and both halves are checked.
+ */
+check("and a new layout is framed once it has settled",
+  /run\.one\("layoutstop", \(\) => this\.#focus\(\)\)/.test(levelup) ? "yes" : "no", "yes");
+/*
+ * Read with the comments stripped, and the first run of this is why: the note above `#watchSize`
+ * explains the bug by quoting `layout({ fit: true })`, and the grep found the explanation. The
+ * suite warns about this shape twice already -- *a grep answered by the prose about itself is a
+ * grep about nothing* -- and it is still easier to walk into than it looks.
+ */
+check("and the layout itself does not fit first",
+  /fit: true/.test(levelup.replace(/\/\*[\s\S]*?\*\//g, " ").replace(/\/\/[^\n]*/g, " "))
+    ? "it does" : "no", "no");
+
 check("and the observer is dropped when the pane closes",
   /this\.sizer\?\.disconnect\(\);\s*\n\s*this\.sizer = null;/.test(levelup) ? "yes" : "no",
   "yes");
@@ -6147,6 +6178,22 @@ section("what a card requires in hand");
 
 const resolve = await import("../module/resolve.mjs");
 const trayTemplate = fs.readFileSync(path.join(root, "templates/tray.hbs"), "utf8");
+
+/*
+ * **Every face-down stack in the HUD wears its back, and the action deck did not.**
+ *
+ * The three piles beside it have worn theirs since `pileBack` was written. The action deck is
+ * built from a different object in a different method, and the field was never added -- so the one
+ * deck a player looks at every turn was the one showing the bare hatch, while `backs/action.webp`
+ * sat on the disk the whole time. A second builder for the same kind of thing, drifting.
+ *
+ * Both halves are checked, because either alone passes while the picture stays missing: the data
+ * has to carry the back, and the template has to put it on.
+ */
+check("the action deck carries a back", /art: backOf\("action"\)/.test(traySource) ? "yes" : "no",
+  "yes");
+check("and the stacks that wear one in the template",
+  (trayTemplate.match(/cr-pile--faced/g) ?? []).length, 2);
 const kit = (tags, twoHanded = false) =>
   ({ system: { tags: new Set(tags), isTwoHanded: twoHanded } });
 const bow = kit(["ranged"]);
@@ -9284,6 +9331,23 @@ check("and refill is handed what it cannot resolve itself",
 check("and its one caller hands it over",
   /refill\(this\.actor, \{ handlers: \{ rage: applyRage \} \}\)/.test(traySource)
     ? "yes" : "no", "yes");
+
+/*
+ * **The HUD follows the sidebar's edge by watching it, not by being told once.**
+ *
+ * `collapseSidebar` fires when the collapse BEGINS and Foundry animates the bar, so the rect
+ * measured at that instant is the width it is leaving -- the hook fires at the right moment for a
+ * state change and the wrong moment for a measurement. And it was one of three ways the edge
+ * moves: a sidebar dragged wider does not fire it, and a chat popped out or docked back does not
+ * fire it either. Same lesson as the level-up canvas, one surface over.
+ */
+check("the HUD watches the sidebar for its edge",
+  /new ResizeObserver\(\(\) => CardRPGTray\.refitAll\(\)\)/.test(traySource) ? "yes" : "no",
+  "yes");
+/* And it is re-attached on a scene change, because Foundry rebuilds parts of the interface and an
+ * observer holding a replaced node is watching something nobody can see. */
+check("and re-attaches it when the canvas is rebuilt",
+  /Hooks\.on\("canvasReady", watchSidebar\)/.test(traySource) ? "yes" : "no", "yes");
 
 /* Compulsion's whole rule is one sentence canCatchBreath reads. */
 check("a Compulsion in hand forbids Catch Breath",

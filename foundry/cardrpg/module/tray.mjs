@@ -19,7 +19,7 @@
 import { CARDRPG } from "./config.mjs";
 import {
   deckOf, discardCards, retireCards, catchBreath, canCatchBreath, refill, cardName, artOf,
-  dealSkillHand, discardSkillCards, pileBack,
+  dealSkillHand, discardSkillCards, pileBack, backOf,
   isReserved, reserveCard, uprightCards, isIntruder, intruderLine
 } from "./decks.mjs";
 import {
@@ -891,6 +891,13 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       label: "Action deck",
       count: this.actor.system.deckCounts?.draw ?? 0,
       spent: dealt,
+      /*
+       * **The back, which this deck never had.** The three piles beside it have worn theirs since
+       * `pileBack` was written; this one was built from a different object in a different method
+       * and the field was simply never added, so the one deck a player looks at every turn was the
+       * one showing the bare hatch. `backs/action.webp` has existed the whole time.
+       */
+      art: backOf("action"),
       // The deck says what it will do next, under its name.
       state: dealt ? "cards dealt" : "draw",
       tip: dealt
@@ -2690,6 +2697,35 @@ export function registerTrayHooks() {
   // Collapsing the sidebar moves the edge the right column is measured against.
   Hooks.on("collapseSidebar", () => CardRPGTray.refitAll());
   window.addEventListener("resize", () => CardRPGTray.refitAll());
+
+  /*
+   * **And watch the sidebar itself, because the two lines above are not enough and look like they
+   * are.**
+   *
+   * `collapseSidebar` fires when the collapse BEGINS, and Foundry animates the bar -- so the rect
+   * `#fitSidebar` measures at that instant is the width it is leaving, and the HUD settles against
+   * an edge that is no longer there. A hook that fires at the right moment for a state change is
+   * the wrong moment for a measurement.
+   *
+   * And it was only ever one of three ways the edge moves. A sidebar dragged to a new width does
+   * not fire it; a chat popped out or docked back does not fire it. The observer catches the
+   * settled size and catches all three, which is the same lesson the level-up canvas taught: a box
+   * whose size matters is watched, not measured once.
+   */
+  let sidebarWatch = null;
+  const watchSidebar = () => {
+    if (typeof ResizeObserver === "undefined") return;
+    const own = ui.sidebar?.element;
+    const node = own instanceof HTMLElement ? own : (own?.[0] ?? document.getElementById("sidebar"));
+    if (!node) return;
+    sidebarWatch?.disconnect();
+    sidebarWatch = new ResizeObserver(() => CardRPGTray.refitAll());
+    sidebarWatch.observe(node);
+  };
+  Hooks.once("ready", watchSidebar);
+  /* Again on a scene change: Foundry rebuilds parts of the interface, and an observer holding a
+   * node that has been replaced is watching something nobody can see. */
+  Hooks.on("canvasReady", watchSidebar);
 
   Hooks.on("updateActor", refreshFor);
   Hooks.on("createItem", refreshFor);

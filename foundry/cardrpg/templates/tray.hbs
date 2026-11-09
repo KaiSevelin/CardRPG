@@ -33,7 +33,8 @@
   {{!-- BOTTOM-LEFT CORNER: the action deck --}}
   <section class="cr-hud__decks cr-hud__decks--action">
     <button type="button"
-          class="cr-pile cr-pile--action{{#if actionDeck.spent}} cr-pile--spent{{/if}}"
+          class="cr-pile cr-pile--action{{#if actionDeck.spent}} cr-pile--spent{{/if}}{{#if actionDeck.art}} cr-pile--faced{{/if}}"
+          {{#if actionDeck.art}}style="--cr-art: url('{{actionDeck.art}}')"{{/if}}
           data-action="dealHand" data-tooltip="{{actionDeck.tip}}">
       <span class="cr-pile__count">{{actionDeck.count}}</span>
       <span class="cr-pile__label">{{actionDeck.label}}</span>

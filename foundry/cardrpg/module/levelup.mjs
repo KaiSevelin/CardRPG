@@ -216,7 +216,10 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
       minZoom: 0.25,
       maxZoom: 2.5,
       wheelSensitivity: 0.25,
-      layout: { name: "preset", positions: tierLayout([...GRAPH.keys()]), fit: true, padding: 40 }
+      /* `fit: false` here too: the frame is the frontier, and it is taken once the box has a
+       * size. See `#focus` and `#watchSize`. */
+      layout: { name: "preset", positions: tierLayout([...GRAPH.keys()]), fit: false,
+        padding: 40 }
     });
 
     /* A territory is scenery, not a node: tapping one picks nothing and says nothing. */
@@ -232,6 +235,9 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
     });
 
     this.#watchSize(host);
+    /* Belt and braces: the observer frames it the moment the box has a size, and this covers the
+     * case where it already had one and the first callback is all there is. */
+    this.#focus();
     this.#renderDetail();
   }
 
@@ -267,11 +273,30 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
       if (!host.clientWidth || !host.clientHeight) return;
       this.cy.resize();
       if (!this.fitted) {
-        this.cy.fit(undefined, 40);
+        this.#focus();
         this.fitted = true;
       }
     });
     this.sizer.observe(host);
+  }
+
+  /**
+   * **Open on what you can actually take.**
+   *
+   * Fitting the whole graph puts 207 nodes on the screen, which at this size is a wall: the four
+   * a character may take are four boxes among two hundred, somewhere, and the first thing anybody
+   * has to do is hunt for them. The frontier -- what is owned and what is available -- plus one
+   * step beyond it is the part of the graph a level-up is about, and one step beyond is there on
+   * purpose: a choice you cannot see the consequence of is not a choice being offered.
+   *
+   * The **Fit** button still shows everything, which is what it is for. This is where the pane
+   * starts and where a change of layout leaves it.
+   */
+  #focus() {
+    if (!this.cy) return;
+    const frontier = this.cy.nodes("[state = 'owned'], [state = 'available']");
+    const around = frontier.length ? frontier.closedNeighborhood().nodes() : this.cy.nodes();
+    this.cy.fit(around.length ? around : this.cy.nodes(), 60);
   }
 
   /** Cytoscape holds the canvas; closing the window has to take it down with it. */
@@ -359,14 +384,18 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
   #runLayout() {
     if (!this.cy) return;
     const chosen = LAYOUTS[this.layout];
-    if (!chosen?.cy) {
+    /*
+     * `fit: false`, and the frontier is framed once the layout has settled instead. A layout that
+     * fitted first would show the whole graph for a frame and then jump, and `layoutstop` is the
+     * only moment the positions are final -- `cose` does not finish when `run()` returns.
+     */
+    const spec = chosen?.cy
+      ? { ...chosen.cy, fit: false }
       /* The parents are not laid out: a compound node takes its place from its children. */
-      this.cy.layout({
-        name: "preset", positions: tierLayout([...GRAPH.keys()]), fit: true, padding: 40
-      }).run();
-      return;
-    }
-    this.cy.layout({ ...chosen.cy, fit: true, padding: 40 }).run();
+      : { name: "preset", positions: tierLayout([...GRAPH.keys()]), fit: false };
+    const run = this.cy.layout(spec);
+    run.one("layoutstop", () => this.#focus());
+    run.run();
   }
 
   /* -------------------------------------------- */
