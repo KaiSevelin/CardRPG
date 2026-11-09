@@ -618,10 +618,11 @@ const EFFECT_STEM = {
   forestall: "the plan taken back", sift: "the one looked at and let fall",
   blast: "the force travelling out", aimed: "the single line", advantage: "the second chance",
   disadvantage: "the ground against you", charging: "the mass committed", shake: "footing lost",
-  tainting: "the wrongness spreading", corrode: "metal giving way", lift: "the weight taken off"
+  tainting: "the wrongness spreading", corrode: "metal giving way", lift: "the weight taken off",
+  repair: "the metal made continuous again"
 };
 
-const EFFECT_MOTIF = {
+export const EFFECT_MOTIF = {
   heal: "a wound closing, or breath coming back",
   block: "a blow stopped flat, its force going sideways",
   conjure: "something arriving that was not there a moment ago",
@@ -638,10 +639,40 @@ const EFFECT_MOTIF = {
   shake: "footing lost",
   tainting: "something going wrong under the skin",
   corrode: "metal giving way",
-  lift: "a weight taken off"
+  lift: "a weight taken off",
+  /*
+   * **Two more the brief's own counter never reported**, because a gap is only counted when a
+   * description reaches for it, and nothing currently does. They were found by asking
+   * `CARDRPG.effects` what words exist rather than asking the prompts what words they used --
+   * which is the check that would have caught `repair` the day it was added.
+   */
+  blunt: "an edge rolled over and gone dull, the steel pushed out of true and bright where it was",
+  /*
+   * **Written away from the body on purpose, and the record is the reason.**
+   *
+   * Injury is the subject this API refuses most: `cards/npc/envenom`, `cards/npc/gorge`,
+   * `cards/strength/walk-it-off`, `cards/ritual/deeper` and `cards/twist/hurt` were all blocked
+   * as `[self-harm]` or `[violence]` at the output stage, and `cards/twist/hurt` only drew once
+   * it became a dented helmet. So this names what is permanent rather than what is open: the
+   * moment is not the picture, the setting is.
+   */
+  maiming: "a change that has set -- the shape a thing healed into is the shape it keeps now",
+  /*
+   * **[BUILT 2026-11-09] `spells/mind/the-mended-seam` was drawn from the words `Draw [GAP]`.**
+   *
+   * The marker did its job -- it is the one thing in this file designed to be visible rather than
+   * silent -- and then nobody looked at the two lines the brief prints under every build. The
+   * picture on disk is whatever the model made of *Draw [GAP] no motif written for effect
+   * `repair`*, which is the only piece in this game drawn from an instruction with a hole in it.
+   *
+   * It is the exact opposite of `corrode`, so it is written as the reverse of that sentence: the
+   * metal is continuous where a moment ago it was not. Nothing new, and no hand in it -- a repair
+   * in this game is an hour with a file, not a miracle.
+   */
+  repair: "metal continuous again across a place that had given way, and the mend still visible"
 };
 
-const CONDITION_MOTIF = {
+export const CONDITION_MOTIF = {
   dazed: "sight swimming", slowed: "movement dragging, as if through water",
   stunned: "a body gone still in the middle of an action", halted: "stopped dead at a line",
   invisible: "only the shape the air makes", heckled: "attention pulled the wrong way",
@@ -654,7 +685,17 @@ const CONDITION_MOTIF = {
   cursed: "a shadow that chose someone", burdened: "carrying too much",
   overloaded: "past what can be carried at all", wet: "soaked through",
   offBalance: "weight in the wrong place", marked: "singled out of a crowd",
-  judged: "seen, and found wanting"
+  judged: "seen, and found wanting",
+  /*
+   * **The second gap, and it is written about armour on purpose.**
+   *
+   * `exposed` means *your armour counts 0*, and the obvious picture of exposure is a body, which
+   * is how `cards/npc/gorge` earned a `[sexual, violence]` block at the output stage. The
+   * condition is not about skin: it is about a plate that is no longer between anything. So the
+   * motif names the armour and leaves the person out, the same way `items/lockpicks` names the
+   * cloth and leaves the tools out.
+   */
+  exposed: "a plate swung away on a cut strap, the gap under it open and nothing filling it"
 };
 
 /* An item is a thing, so its motif comes from what KIND of thing it is. */
@@ -890,9 +931,26 @@ export const DIRECTION = {
   "cards/twist/time":
     "a candle burnt past where it was meant to be, the pool of wax spreading off the holder and "
     + "over the table. Nothing is on fire; the subject is how much is gone",
+  /*
+   * **Refused twice as `[illicit]`, and the lesson was already written down in this file.**
+   *
+   * It read *a lockpick snapped off short, the broken half still standing in the keyway*. That is
+   * the exact composition `items/lockpicks` was refused twelve times for, and the rule that
+   * finally drew it is three hundred lines below: **it is not *remove the crime*, it is do not
+   * draw the tool.** The rule was found, written out at length, applied to Lockpicks and to The
+   * Kit -- and never carried to the third piece in this game that describes the burglar's trade,
+   * because nothing was looking for a second place that needed it. Twelve paid attempts bought
+   * that sentence and two pieces used it.
+   *
+   * **And a lockpick was the wrong subject regardless.** This twist is the one that breaks ANY
+   * tool -- *no tool bonus until repaired or replaced* -- so drawing the burglar's was narrowing
+   * a card that covers a smith's hammer, a healer's kit and a climbing rope down to the one trade
+   * whose tools this API will not emit. A snapped file is more honest to the card AND has nothing
+   * in it to refuse.
+   */
   "cards/twist/gear":
-    "a lockpick snapped off short, the broken half still standing in the keyway. Clean metal at "
-    + "the break and the rest of the roll laid out beside it, suddenly useless",
+    "a steel file snapped clean in two, both halves lying where they fell on a workbench, the "
+    + "bright break at each end still unworn. No lock, no keyhole and no hand in the frame",
   "cards/twist/strain":
     "a hand that has let go: one card falling away face down, the others still fanned and held. "
     + "The subject is the gap it left rather than the card",
@@ -2573,14 +2631,29 @@ push("## Directions that match no piece", "",
   "",
   ...orphans.map(k => `- \`${k}\``), orphans.length ? "" : "");
 
-if (gaps.length) {
-  const seen = [...new Set(gaps)].sort();
-  push("## Gaps", "",
-    `**${seen.length} piece${seen.length === 1 ? "" : "s"} of the game's vocabulary have no `
-    + "motif**, so the prompts that use them carry a `[GAP]` marker instead of a picture. Write "
-    + "one in `test/art-prompts.mjs` and regenerate.", "",
-    ...seen.map(g => `- ${g}`), "");
-}
+/*
+ * **Printed whether or not there are any, the way the section above it is.**
+ *
+ * **[BUILT 2026-11-09]** This was inside `if (gaps.length)`, so a brief with no gaps had no Gaps
+ * section at all -- and a section that disappears when the answer is good is one whose absence
+ * somebody has to interpret. Its sibling directly above prints `**None.**` with the reason, for
+ * exactly this argument, and it was right.
+ *
+ * It matters more here than there, because it is what a check can read. `spells/mind/the-mended-
+ * seam` was shot from a subject line reading *Draw [GAP]* while this section was correctly
+ * naming the missing motif -- in a file nobody had to open.
+ */
+const seenGaps = [...new Set(gaps)].sort();
+push("## Gaps", "",
+  seenGaps.length
+    ? `**${seenGaps.length} piece${seenGaps.length === 1 ? "" : "s"} of the game's vocabulary `
+      + "have no motif**, so the prompts that use them carry a `[GAP]` marker instead of a "
+      + "picture. Write one in `test/art-prompts.mjs` and regenerate."
+    : "**None.** Every verb, effect, condition and bonus group a prompt reaches for has a motif "
+      + "written, so no prompt goes out with a hole in it. A `[GAP]` is loud by design and was "
+      + "still shot once, so it is counted here rather than trusted.",
+  "",
+  ...seenGaps.map(g => `- ${g}`), seenGaps.length ? "" : "");
 
 if (process.argv[1] && process.argv[1].endsWith("art-prompts.mjs")) {
   fs.writeFileSync(OUT, lines.join("\n") + "\n", "utf8");

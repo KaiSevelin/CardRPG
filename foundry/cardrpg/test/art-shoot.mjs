@@ -143,6 +143,15 @@ function chosen() {
 
 const money = n => `$${n.toFixed(4)}`;
 
+/* Once, not per piece: fifty pieces is fifty `git rev-parse` calls for one unchanging answer. */
+const HEAD = (() => {
+  try {
+    return execFileSync("git", ["rev-parse", "--short", "HEAD"], { cwd: root, stdio: ["ignore", "pipe", "ignore"] })
+      .toString().trim();
+  } catch { return null; }
+})();
+const fingerprint = text => crypto.createHash("sha1").update(text).digest("hex").slice(0, 12);
+
 /*
  * **Failures go to a file, because a terminal is not always something you can copy out of.**
  *
@@ -153,7 +162,20 @@ const money = n => `$${n.toFixed(4)}`;
  */
 const LOG_NAME = "art-failures.log";
 const LOG = path.join(root, LOG_NAME);
-function logFailure(piece, status, body, form = {}) {
+/*
+ * **It carries the prompt's fingerprint, and it did not, and that cost twelve paid attempts.**
+ *
+ * **[BUILT 2026-11-09]** `items/lockpicks` was refused twelve times and `cards/ritual/deeper`
+ * seven, and this file could not say whether anybody changed a word between any two of them. The
+ * verdict log has carried a fingerprint since it was written and its own comment says why: *two
+ * attempts at a piece that nobody re-worded share a value, which is how a re-roll is told from a
+ * rewrite*. That is the comparison you need most when the thing being repeated is the request
+ * you are being billed for -- and the log that records refusals was the one without it.
+ *
+ * A fingerprint is not the prompt, so the promise above still holds: this file is safe to paste
+ * anywhere, and a hash of a capsule is not a capsule.
+ */
+function logFailure(piece, status, body, form = {}, prompt = null) {
   /* The form AS SENT, not as defaulted: the retry asks for png, and a log that said webp for
    * both attempts made two different requests look like one repeated request. */
   const sent = Object.entries({ output_format: DELIVERY.format, ...form })
@@ -162,12 +184,53 @@ function logFailure(piece, status, body, form = {}) {
     `--- ${new Date().toISOString()}  ${piece.key}`,
     `model ${modelFor(piece)}, ${piece.size}, ${quality}, ${sent}`
       + `${piece.token ? ", background transparent" : ""}`,
+    `prompt ${prompt ? fingerprint(prompt) : "unrecorded"}${HEAD ? `, head ${HEAD}` : ""}`,
     `HTTP ${status}`,
     body.trim(),
     ""
   ].join("\n");
   fs.appendFileSync(LOG, `${entry}\n`, "utf8");
 }
+
+/*
+ * **What this piece has already been refused for, read back out of the log.**
+ *
+ * **[BUILT 2026-11-09]** The log was written for a person to read in the morning and nothing has
+ * ever read it, which is why `items/lockpicks` was sent twelve times, `cards/ritual/deeper`
+ * seven, `cards/npc/where-it-is-held` six and `spells/mind/the-red-hour` five. Every one of
+ * those was a paid request for a composition the API had already declined, and the record of the
+ * decline was sitting in a file in this directory.
+ *
+ * **A moderation block is not a rate limit and must not be retried like one.** The two arrive
+ * through the same HTTP 400 and that is the whole of the confusion: a 429 clears by waiting, and
+ * a `moderation_blocked` at the OUTPUT stage -- which is all forty-nine of ours -- means the
+ * model drew the thing and the classifier would not hand it over. Waiting changes nothing.
+ * Re-rolling changes nothing reliably. The only thing that changes it is different words.
+ *
+ * So the fingerprint decides, and `--force` is the override for somebody who means it. A piece
+ * whose history is from before the fingerprint existed cannot be judged this way, so it warns
+ * with the count and lets the request through: a guess is not grounds to refuse to spend money
+ * the operator has asked to spend.
+ */
+const priorBlocks = (() => {
+  let text = "";
+  try { text = fs.readFileSync(LOG, "utf8"); } catch { return () => []; }
+  const seen = [];
+  for (const entry of text.split(/\n(?=--- )/)) {
+    if (!entry.includes("moderation_blocked")) continue;
+    const head = /^--- (\S+)\s+(\S+)/.exec(entry);
+    if (!head) continue;
+    seen.push({
+      at: head[1],
+      key: head[2],
+      /* `unrecorded` for the entries written before the log carried one. */
+      prompt: /^prompt ([0-9a-f]{12})/m.exec(entry)?.[1] ?? null,
+      why: (/safety_violations=\[([^\]]*)\]/.exec(entry)?.[1] ?? "unstated")
+        .split(/,\s*/).filter(Boolean)
+    });
+  }
+  return key => seen.filter(b => b.key === key);
+})();
 
 /*
  * **Every verdict, not just the ones that survive -- because the survivors lie.**
@@ -190,14 +253,6 @@ function logFailure(piece, status, body, form = {}) {
  */
 const VERDICT_NAME = "art-verdicts.log";
 const VERDICTS = path.join(root, VERDICT_NAME);
-/* Once, not per piece: fifty pieces is fifty `git rev-parse` calls for one unchanging answer. */
-const HEAD = (() => {
-  try {
-    return execFileSync("git", ["rev-parse", "--short", "HEAD"], { cwd: root, stdio: ["ignore", "pipe", "ignore"] })
-      .toString().trim();
-  } catch { return null; }
-})();
-const fingerprint = text => crypto.createHash("sha1").update(text).digest("hex").slice(0, 12);
 function logVerdict(piece, verdict, prompt) {
   const round = n => typeof n === "number" ? Number(n.toFixed(4)) : n;
   const entry = {
@@ -285,6 +340,25 @@ async function shoot(piece) {
   }
   const prompt = `${piece.capsule}\n\n${piece.subject}`;
 
+  /*
+   * Before the key, before the money: has this exact request already been declined?
+   */
+  const before = priorBlocks(piece.key);
+  if (before.length) {
+    const why = [...new Set(before.flatMap(b => b.why))].join(", ");
+    const same = before.filter(b => b.prompt === fingerprint(prompt));
+    if (same.length && !flag("force")) {
+      console.error(`  held   ${piece.key} -- blocked ${before.length}x `
+        + `(${why}), and this wording is one that was blocked`);
+      console.error("    rewrite the direction in test/art-prompts.mjs, "
+        + "or --force to pay for the same request again");
+      return { held: true };
+    }
+    const how = same.length ? "forced" : before.some(b => b.prompt)
+      ? "reworded since" : "no wording recorded for those, so sending";
+    console.log(`  note   ${piece.key} -- blocked ${before.length}x before (${why}), ${how}`);
+  }
+
   if (dryRun) {
     console.log(`  would shoot ${piece.key} -> ${path.relative(root, target)}`);
     console.log(`    ${piece.size}, ${quality}, ${DELIVERY.format} q${DELIVERY.quality}, `
@@ -313,7 +387,7 @@ async function shoot(piece) {
     const body = await res.text();
     console.error(`  FAILED ${piece.key}: HTTP ${res.status} -- written to ${LOG_NAME}`);
     console.error(`    ${body.slice(0, 300)}`);
-    logFailure(piece, res.status, body, webpDirect);
+    logFailure(piece, res.status, body, webpDirect, prompt);
     return { error: res.status };
   }
   const body = await res.json();
@@ -355,14 +429,20 @@ const models = [...new Set(pieces.map(modelFor))].join(" + ");
 console.log(`${pieces.length} piece${pieces.length === 1 ? "" : "s"}, ${models}, ${quality} quality`
   + `${dryRun ? ", DRY RUN" : ""}`);
 
-let spent = 0, passed = 0, drawn = 0;
+let spent = 0, passed = 0, drawn = 0, held = 0;
 for (const piece of pieces) {
   const result = await shoot(piece);
-  if (!result || result.dry || result.error) continue;
+  if (result?.held) held++;
+  if (!result || result.dry || result.error || result.held) continue;
   drawn++; spent += result.cost;
   if (result.ok) passed++;
 }
 if (drawn) {
   console.log(`\n${drawn} drawn, ${passed} through the gate, ${money(spent)} spent`
     + `${drawn > 1 ? ` (${money(spent / drawn)} each)` : ""}`);
+}
+/* Loudly, and last: a held piece needs a person to write something, not another run. */
+if (held) {
+  console.log(`\n${held} piece${held === 1 ? "" : "s"} held: the API has already declined that `
+    + "wording. Rewrite the direction rather than paying again.");
 }

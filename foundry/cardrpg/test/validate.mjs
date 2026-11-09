@@ -7286,7 +7286,7 @@ check("pieces the brief describes out of date", ART_GROUPS
  * the old check never looked at at all -- so a reworded direction left unregenerated used to pass
  * and now fails, and that is the edit most likely to happen to this book.
  */
-const { DIRECTION: ART_DIRECTION } = await import("./art-prompts.mjs");
+const { DIRECTION: ART_DIRECTION, EFFECT_MOTIF, CONDITION_MOTIF } = await import("./art-prompts.mjs");
 const directedPieces = ART_GROUPS.flatMap(g => g.list
   .map(e => ({ e, key: `${g.dir}/${slug(e.name)}`, line: (g.brief ?? artBrief)(e) })))
   .filter(p => ART_DIRECTION[p.key]);
@@ -8142,6 +8142,133 @@ check("the verdict log writes a fingerprint, never the prompt text",
 check("and the log is a record, not a source",
   fs.readFileSync(path.join(root, ".gitignore"), "utf8").includes("art-verdicts.log")
     ? "ignored" : "committed", "ignored");
+check("and so is the failure log, for the same reason",
+  fs.readFileSync(path.join(root, ".gitignore"), "utf8").includes("art-failures.log")
+    ? "ignored" : "committed", "ignored");
+
+/*
+ * **The shoot reads its own record before it spends, which for forty-nine refusals it did not.**
+ *
+ * **[BUILT 2026-11-09]** `items/lockpicks` was sent twelve times, `cards/ritual/deeper` seven,
+ * `cards/npc/where-it-is-held` six, `spells/mind/the-red-hour` five. All forty-nine blocks in
+ * the log are `moderation_blocked` at the OUTPUT stage, which does not clear by waiting and does
+ * not reliably clear by re-rolling: the model drew the picture and the classifier would not hand
+ * it over, so only different words change the answer. The log said all of this and nothing read
+ * it, because a log written for a person to read in the morning is read when somebody remembers.
+ *
+ * Two halves, and both are pinned: the failure log has to carry the wording's fingerprint (the
+ * verdict log has carried one since it was written, which is the comparison this needed), and
+ * the shoot has to consult it before it asks for a key.
+ */
+check("a refusal records which wording was refused",
+  /logFailure\(piece, res\.status, body, webpDirect, prompt\);/.test(shootSource) ? "yes" : "no",
+  "yes");
+check("and the entry carries the fingerprint rather than the prompt",
+  /`prompt \$\{prompt \? fingerprint\(prompt\) : "unrecorded"\}/.test(shootSource) ? "yes" : "no",
+  "yes");
+check("and the shoot reads the log back before it spends",
+  /const before = priorBlocks\(piece\.key\);/.test(shootSource) ? "yes" : "no", "yes");
+/* Before the key is even fetched, so a held piece cannot cost anything, including a dry run. */
+check("and it decides before it asks for the key",
+  shootSource.indexOf("const before = priorBlocks") < shootSource.indexOf("const key = apiKey();")
+    ? "before" : "after", "before");
+check("and a dry run says what would be held",
+  shootSource.indexOf("const before = priorBlocks") < shootSource.indexOf("  if (dryRun) {")
+    ? "yes" : "no", "yes");
+/* A held piece is not a drawn piece, or the run reports a cost per picture it never took. */
+check("and a held piece is not counted as drawn",
+  /result\.error \|\| result\.held\) continue;/.test(shootSource) ? "yes" : "no", "yes");
+check("and there is an override for somebody who means it",
+  /if \(same\.length && !flag\("force"\)\)/.test(shootSource) ? "yes" : "no", "yes");
+
+/*
+ * **No prompt may be sent with a hole in it, and one was.**
+ *
+ * **[BUILT 2026-11-09]** `spells/mind/the-mended-seam` is on disk, drawn from a prompt whose
+ * subject line read *Draw [GAP] no motif written for effect `repair`*. The marker worked exactly
+ * as designed -- it is the one thing in `art-prompts.mjs` built to be loud instead of silent, and
+ * the brief counts it and names the gap under every build. It still got shot, because a line
+ * printed at the end of a build is read when somebody remembers to read it, and this is the
+ * second thing in this one investigation that was written down and not looked at.
+ *
+ * So it is a check now. A gap is a fine state for a piece nobody has drawn; it is not a fine
+ * state for a piece about to be paid for, and the only difference between those two is whether
+ * anything is enforcing it.
+ */
+/*
+ * The marker in FULL, and not the bare `[GAP]`, because the bare form is what the Gaps section
+ * writes about itself -- and the first version of this check was answered by its own prose, which
+ * is the fifth time that trap has been sprung in this project and the first time by the check
+ * that caught it in the same minute.
+ */
+check("prompts carrying a hole where a motif should be",
+  (artPrompts.match(/\[GAP\] no motif written for/g) ?? []).length, 0);
+check("and the brief says so in words as well",
+  /^\*\*(?:None|No)\b/m.test(artPrompts.slice(artPrompts.lastIndexOf("## Gaps")))
+    ? "no gaps" : "gaps", "no gaps");
+/*
+ * **And the general rule the two gaps were instances of: every word has a picture.**
+ *
+ * Asked of the TABLES, which are exported for this, rather than grepped out of the file -- the
+ * comments beside those entries discuss the words they define, and a grep would be answered by
+ * them. The whole of this investigation is that lesson twice over.
+ *
+ * `CARDRPG.conditions` and `CARDRPG.effects` are the vocabulary a card may reach for, so this is
+ * the check that would have caught both gaps the day the words were added instead of after one
+ * of them was paid for.
+ */
+check("conditions with no motif for an artist",
+  Object.keys(CARDRPG.conditions).filter(k => !CONDITION_MOTIF[k]).sort().join(", ") || "none",
+  "none");
+check("and effects with none", (() => {
+  /* `strike`, `cast` and the other four verbs have their own table; this is the rest. */
+  const verbs = new Set(Object.keys(CARDRPG.verbs ?? {}));
+  return Object.keys(CARDRPG.effects).filter(k => !verbs.has(k) && !EFFECT_MOTIF[k])
+    .sort().join(", ") || "none";
+})(), "none");
+/*
+ * **And why the brief said two gaps while only ONE `[GAP]` was ever in the file.**
+ *
+ * `spells/mind/the-mended-seam` has no hand-written direction, so its generated description went
+ * out as the prompt, hole and all -- that is the one that was paid for. `exposed` is reached by
+ * exactly one art piece, `cards/npc/prise-it-open`, and that piece HAS a direction, so its
+ * description was built, counted, and then thrown away in favour of the written one. (*Find the
+ * Gap* also carries the condition, and is a critical-deck face: criticals take no art, so it
+ * never reached the generator at all.)
+ *
+ * Which is the counter being right. A hole in the vocabulary is worth reporting even where
+ * nothing is currently falling through it, because what falls through tomorrow is whichever
+ * piece somebody writes next without a direction.
+ */
+check("the motif that reached a prompt and was shot",
+  artPrompts.includes("metal continuous again across a place that had given way")
+    ? "repair" : "none", "repair");
+check("exposed is reached by one piece, and that piece is directed",
+  ART_DIRECTION["cards/npc/prise-it-open"] ? "directed" : "generated", "directed");
+
+/*
+ * **And the one composition this API will not draw, which was written down twice and fixed once.**
+ *
+ * The rule is in `art-prompts.mjs` at `items/lockpicks`, bought with twelve paid refusals: it is
+ * not *remove the crime*, it is **do not draw the tool**. It was applied to Lockpicks and to The
+ * Kit, and `cards/twist/gear` -- the third piece in this game that described the burglar's trade
+ * -- kept *a lockpick snapped off short, the broken half still standing in the keyway* and was
+ * refused twice for it.
+ *
+ * Checked against the DIRECTION table rather than the file, because that comment now quotes the
+ * old wording and a grep over the source would be answered by the prose about itself. That trap
+ * has been sprung four times in this project; here it is avoided by asking the value.
+ */
+const burglary = ["items/lockpicks", "items/the-kit", "cards/twist/gear"];
+check("the pieces that describe the burglar's trade", burglary.length, 3);
+check("and none of them puts a tool in a lock",
+  burglary.filter(k => /\b(?:in the keyway|in the keyhole|in the lock|picking)\b/
+    .test(ART_DIRECTION[k] ?? "")).join(", ") || "none", "none");
+/* Each says so in the positive as well, which is the half a negation cannot be read off. */
+check("and each one says what is not in the frame",
+  burglary.filter(k => !/\bno (?:lock|tool|metal)\b/i.test(ART_DIRECTION[k] ?? "")).join(", ")
+  || "none", "none");
+
 /* The pack builder's source, read for the rules that cannot be asked of its output: that it reads
  * every pack back through Foundry's own packer, and that it borrows its shapes rather than
  * spelling them again. */

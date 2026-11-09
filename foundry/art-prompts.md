@@ -2521,7 +2521,7 @@ File: `cards/twist/gear.webp`
 ```text
 SUBJECT. "Gear"
 
-Draw a lockpick snapped off short, the broken half still standing in the keyway. Clean metal at the break and the rest of the roll laid out beside it, suddenly useless.
+Draw a steel file snapped clean in two, both halves lying where they fell on a workbench, the bright break at each end still unworn. No lock, no keyhole and no hand in the frame.
 
 WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Nordic appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
@@ -4861,7 +4861,7 @@ SUBJECT. "The Mended Seam" — strength 1 · Repair 1 repair one item overnight,
 
 One item, overnight, including corroded armour — which until now was the only damage in the game nothing undid.
 
-Draw [GAP] no motif written for effect `repair`.
+Draw metal continuous again across a place that had given way, and the mend still visible.
 ```
 
 ### The Mirror
@@ -9764,8 +9764,6 @@ Answer a cluster by adding its keys to `DIRECTION` in `test/art-prompts.mjs` and
 
 ## Gaps
 
-**2 pieces of the game's vocabulary have no motif**, so the prompts that use them carry a `[GAP]` marker instead of a picture. Write one in `test/art-prompts.mjs` and regenerate.
+**None.** Every verb, effect, condition and bonus group a prompt reaches for has a motif written, so no prompt goes out with a hole in it. A `[GAP]` is loud by design and was still shot once, so it is counted here rather than trusted.
 
-- condition `exposed`
-- effect `repair`
 
