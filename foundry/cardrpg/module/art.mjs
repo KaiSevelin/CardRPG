@@ -155,6 +155,35 @@ export const SHELVES = [
   { key: "tokens/warrior", dir: "tokens", kind: "token", list: [content.WARRIOR] }
 ].map(shelf => ({ ...shelf, dir: shelf.dir ?? shelf.key }));
 
+/**
+ * **Maps, which are art and are deliberately not a shelf.**
+ *
+ * **[BUILT 2026-11-09]** Everything under `art/` has to be a piece somebody can account for --
+ * the suite asserts it, and that check has earned its keep. A map is still art, so it needs an
+ * entry; but it is not a piece of the CATALOGUE, and making it one would be wrong in four
+ * separate ways:
+ *
+ * - The brief exists to tell an artist what to draw next, and a map is not drawn next. It is one
+ *   commissioned artefact, directed by hand over a long afternoon, not a row in a queue of 643.
+ * - The capsule is written for a card: portrait, 2:3, a bare strip under the name panel, one
+ *   subject cropped close. Every clause of it is wrong for a continent.
+ * - The gate measures a card: `quietTop` against the name panel, `inWindow` against the rules
+ *   text. A landscape map fails all of it while being perfectly good.
+ * - And a shelf implies a slug-per-entry naming rule, which a map does not need because there is
+ *   one of them.
+ *
+ * So maps are a short declared list of their own. The invariant the suite cares about is
+ * unchanged -- every file under `art/` is named somewhere -- it is simply named here rather than
+ * in `SHELVES`.
+ */
+export const MAPS = [
+  { name: "Firma", blurb: "The continent, coast to coast: land and sea, with no borders, no "
+    + "names and nothing built. Everything political goes on top of it as a layer." }
+];
+
+/** Where a map's file sits. Same slug rule as everything else, different list. */
+export const mapPath = name => `${ROOT}/maps/${slug(name)}.${DELIVERY.format}`;
+
 /** The path a piece's file sits at, from the shelf it is on and its own name. */
 const fileOf = (shelf, entry) => `${ROOT}/${shelf.dir}/${slug(entry.name)}.${DELIVERY.format}`;
 

@@ -8044,6 +8044,22 @@ check("and the sentence that was false is gone",
  * fails on progress teaches people to ignore it. What is pinned is that every file on disk is a
  * piece that exists, spelled the way the brief spells it, in the one delivery format.
  */
+const { MAPS: content_MAPS, mapPath } = await import("../module/art.mjs");
+/*
+ * **Maps are art and are not catalogue pieces**, so they are pinned here rather than counted in
+ * with the 643. One map, one declared name, one path the game can hand Foundry.
+ */
+check("maps declared", content_MAPS.map(m => m.name).join(", "), "Firma");
+check("and the path the game would use", mapPath("Firma"),
+  "systems/cardrpg/art/maps/firma.webp");
+check("and each one is actually on the disk",
+  content_MAPS.filter(m => !fs.existsSync(
+    path.join(root, "art", "maps", `${slug(m.name)}.${DELIVERY.format}`)))
+    .map(m => m.name).join(", ") || "all of them", "all of them");
+/* A map carries no brief row, no prompt and no gate verdict, and that is deliberate. */
+check("and no map is on a shelf",
+  ART_GROUPS.filter(g => g.dir.startsWith("maps")).map(g => g.dir).join(", ") || "none", "none");
+
 const artDir = path.join(root, "art");
 const artFiles = fs.existsSync(artDir)
   ? (function walk(dir) {
@@ -8059,9 +8075,22 @@ if (artFiles.length) {
    * entries with no `dir` on them at all, so the first version of this compared every file on
    * disk against the string `undefined/...` and condemned all seventeen of them.
    */
+  /*
+   * **And maps, which are named in their own list rather than on a shelf.**
+   *
+   * **[BUILT 2026-11-09]** The rule this check holds is *every file under `art/` is a piece
+   * somebody declared*, and that rule is worth keeping exactly as strict as it was. A map is
+   * still a declared piece; it is simply declared in `MAPS` instead of in `SHELVES`, because the
+   * brief, the capsule and the gate are all written for a card and every one of them is wrong
+   * for a continent. `art.mjs` records the four reasons beside the list.
+   *
+   * The exception is the list, not the directory: a file in `art/maps/` that no map names still
+   * fails here, which is the case this was written for.
+   */
   const wanted = new Set(ART_GROUPS
     .flatMap(g => g.list.map(e => `${g.dir}/${slug(e.name)}.${DELIVERY.format}`))
-    .concat(backs.map(([key]) => `backs/${slug(key.replace(/\./g, "-"))}.${DELIVERY.format}`)));
+    .concat(backs.map(([key]) => `backs/${slug(key.replace(/\./g, "-"))}.${DELIVERY.format}`))
+    .concat(content_MAPS.map(m => `maps/${slug(m.name)}.${DELIVERY.format}`)));
   check("and those that are not a piece in the brief",
     artFiles.filter(f => !wanted.has(f)).slice(0, 5).join(", ") || "none", "none");
   check("and those not in the one delivery format",
