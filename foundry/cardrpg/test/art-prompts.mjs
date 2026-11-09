@@ -2047,6 +2047,9 @@ export const ledger = [];
 
 /** Kind to creature name, for the three cards that belong to a creature rather than a capability. */
 const CREATURE_NAME = new Map(CREATURES.map(c => [c.system?.kind, c.name]));
+/* The creature itself, not only its name: an exception card is told to draw one, and until
+ * 2026-11-09 nothing in the brief said what it looked like. See `exclusive` below. */
+const CREATURE_BY_KIND = new Map(CREATURES.map(c => [c.system?.kind, c]));
 
 let total = backs.length;
 for (const group of GROUPS) total += group.list.length;
@@ -2205,6 +2208,32 @@ for (const group of GROUPS) {
       return creature;
     });
     /*
+     * **And what that creature looks like, which the brief forgot to say for as long as these
+     * cards have existed.**
+     *
+     * The paragraph below tells the model *draw that creature* and *this picture should be
+     * unmistakably of one thing*, and then never says what the thing is. Three briefs got away
+     * with it because their hand-written direction happened to describe a body as well as an
+     * action -- *a gigantic sagging body splitting along the belly seam*, *two small workers
+     * leaving with somebody*. The Queen's did too, until the two-scale contradiction was taken out
+     * of it and the body went with the contradiction: what was left asked for *one vast limb* of
+     * nothing in particular, and a model with no creature to draw invents a different one every
+     * time. Four exports of one picture, and then a fifth.
+     *
+     * So the body comes off the **roster**, which is where every other brief in this book gets it
+     * -- the token shelf has printed `look` since it existed. One source, no hand-copying, and a
+     * creature whose description is rewritten takes its card's brief with it.
+     *
+     * The division is: the **bestiary owns the body**, the **direction owns the scene**. That is
+     * why the line says *from the bestiary* out loud -- the Processor's description opens *a single
+     * worker* while its card's direction asks for two of them, and the reader has to know which
+     * sentence is telling them what to draw and which is telling them what it is.
+     */
+    const bodies = (entry.only ?? [])
+      .map(kind => CREATURE_BY_KIND.get(kind))
+      .map(c => c?.look || c?.note)
+      .filter(Boolean);
+    /*
      * **The subject is built once and used twice**: printed into the book, and carried on the
      * ledger for the generator to send. Two spellings of this would be two prompts, and the
      * second would drift from the first in exactly the way nobody notices -- the book would
@@ -2217,6 +2246,10 @@ for (const group of GROUPS) {
         ? ["", `THIS CARD IS THE EXCEPTION. Only ${exclusive.join(" and ")} ever draws it, so `
           + "draw that creature: the capsule's rules about species, anatomy and scale do not "
           + "apply here, and this picture should be unmistakably of one thing.",
+          ...(bodies.length
+            ? [`THE CREATURE, FROM THE BESTIARY: ${bodies.join(" -- and -- ")}. That is what it `
+              + "is; the last line is what it is doing."]
+            : []),
           /*
            * **And it has to be special at a glance, not only on reading.**
            *

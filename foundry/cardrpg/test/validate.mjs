@@ -6447,6 +6447,35 @@ check("frame-filling briefs that also name a far background",
  * cannot quietly start covering nothing. */
 check("and the briefs that get that capsule", FRAME_FILLERS.sort().join(", "),
   "Carry It Off, Open the Hold, The Hive Obeys");
+/*
+ * **And an exception brief says what the creature IS, off the roster.**
+ *
+ * The capsule for these three tells the model *draw that creature* and *this picture should be
+ * unmistakably of one thing*, and for as long as they have existed it never said what the thing
+ * was. Two of them got away with it because their hand-written direction described a body as well
+ * as an action; the third stopped getting away with it the moment its direction was rewritten to
+ * fix something else, and what was left asked for *one vast limb* of nothing in particular. A
+ * model with no creature to draw invents a different one every time, which is a brief that cannot
+ * be finished rather than one that is merely wrong.
+ *
+ * Checked against the roster's own `look` and not a copy of it, so a creature whose description is
+ * rewritten takes its card's brief with it. The bestiary owns the body; the direction owns the
+ * scene.
+ */
+const bodyOfKind = new Map(everyCreatureForArt.map(c => [c.system?.kind, c.look || c.note]));
+const bodyless = [];
+for (const entry of content.INTENTS.filter(i => i.only)) {
+  const at = artPrompts.indexOf(`### ${entry.name}\n`);
+  const next = at < 0 ? -1 : artPrompts.indexOf("\n### ", at + 1);
+  const block = at < 0 ? "" : artPrompts.slice(at, next < 0 ? undefined : next);
+  for (const kind of entry.only) {
+    const body = bodyOfKind.get(kind);
+    if (!body) bodyless.push(`${entry.name}: \`${kind}\` has no description to print`);
+    else if (!block.includes(body)) bodyless.push(`${entry.name}: \`${kind}\` not described`);
+  }
+}
+check("exception briefs that never say what the creature is",
+  bodyless.join(" | ") || "none", "none");
 
 const orphanBlock = artPrompts.slice(artPrompts.indexOf("## Directions that match no piece"));
 check("directions keyed to a piece that does not exist",
