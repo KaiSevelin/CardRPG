@@ -197,8 +197,28 @@ const FORMAT_FACE = `- Portrait, aspect ratio exactly 2:3, 1024 x 1536.
   anything that reads as writing. Not on a shield, not on a banner, not in the background.`;
 
 /*
- * **[MEASURED 2026-11-09] It asked for "about a tenth" and the gate rejects below a tenth, so
- * half of every pass failed by construction.**
+ * **[MEASURED 2026-11-09, CORRECTED THE SAME DAY] The first fix cured one rule and broke the
+ * other, and the real bug was not a number at all.**
+ *
+ * It asked for *about a tenth* while the gate rejects below a tenth, so half of every pass failed
+ * on arithmetic: of 790 attempts, 32% came in under the floor, failures topping out at 0.099
+ * against passes centred on 0.130. That diagnosis was right. The fix was *AT LEAST a sixth, and
+ * more is fine*, and the next four draws came back at a median `quietTop` of 0.301 -- **no
+ * failures at all on that rule, and three of four failing `inWindow` instead**, at 0.15 to 0.25
+ * against a floor of 0.30. Traded a 32% failure for a 75% one.
+ *
+ * **The band was specified RELATIVE to the strip**: *all of the dark lives between that strip and
+ * the halfway line*. So widening the strip did not free up the top, it dragged the whole
+ * composition downward, out of the 13%-43% window the panels leave clear. No number fixes that,
+ * because every number is wrong against a relative anchor -- which is why the corrected version
+ * states the band **absolutely**, from an eighth down to just under halfway, and the strip is
+ * simply the space above it.
+ *
+ * **And the ask now has a ceiling, because "more is fine" was false.** More is not fine: the
+ * corridor is only three points wide, between the tenth the gate enforces and the eighth where
+ * the clear window begins. I had the band analysis that said so -- mean `inWindow` of 0.45 from
+ * 0.18 to 0.25 and 0.23 above it -- and wrote an open-ended floor anyway, which is the whole
+ * lesson: an instruction with one bound drifts to the other end of the range.
  *
  * 790 verdicts, 399 pieces, 52% through the gate -- two paid attempts per picture. `quietTop` is
  * 253 of those 790 failures and every other rule together is barely a third of that. And the
@@ -348,11 +368,12 @@ const FOCAL = {
  */
 const composeFace = dir => `- Crop in **close**: one subject, filling the frame from side to side.
   Never a whole figure standing in a landscape, never an object laid out on a table.
-- **A strip of bare paper across the very top: AT LEAST a sixth of the height, and more is
-  fine.** No head, no helmet, no horns, no weapon, no hand, no banner enters it. Err on the side
-  of too much bare paper here, never too little.
-- **All of the dark lives between that strip and the halfway line.** The near-black contour, the
-  deepest wash and the point of the action -- ${FOCAL[dir]
+- **A strip of bare paper across the very top, between a tenth and an eighth of the height, and
+  no more than that.** No head, no helmet, no horns, no weapon, no hand, no banner enters it, and
+  it is a narrow strip rather than an empty upper third.
+- **All of the dark lives in the band from an eighth of the height down to just under halfway**,
+  and it begins immediately under the bare strip with nothing empty between the two. The
+  near-black contour, the deepest wash and the point of the action -- ${FOCAL[dir]
     ?? "a face, a blade's edge, the point of the gesture"} -- are all in that band, which is where
   the picture actually happens.
 - **Below the halfway line the picture goes pale** and stays pale: the wash thins out, the ground

@@ -8248,44 +8248,60 @@ check("exposed is reached by one piece, and that piece is directed",
   ART_DIRECTION["cards/npc/prise-it-open"] ? "directed" : "generated", "directed");
 
 /*
- * **What the capsule ASKS for must be more than what the gate ENFORCES, and for 790 attempts it
- * was exactly equal.**
+ * **The capsule's ask has to land in the corridor between the two rules, and the corridor is
+ * three points wide.**
  *
- * **[BUILT 2026-11-09]** The capsule said *a strip of bare paper across the very top, about a
- * tenth of the height* and `GATE.quietTop` rejects anything under a tenth. An instruction aimed
- * at the threshold goes under it as often as over, so half of every pass failed on arithmetic
- * rather than on draughtsmanship: 253 of 790 attempts, against barely a third of that for every
- * other rule combined, with the failures topping out at 0.099 and the passes centred on 0.130.
+ * **[BUILT 2026-11-09, REWRITTEN THE SAME DAY]** The first version of this check said *the ask
+ * must exceed what the gate enforces*, which was true and not enough. The capsule had said
+ * *about a tenth* against a floor of a tenth, so 32% of 790 attempts came in under it; the fix
+ * said *AT LEAST a sixth, and more is fine*, delivery moved to a median of 0.301, and three of
+ * the next four failed `inWindow` at 0.15-0.25 against its floor of 0.30. A 32% failure traded
+ * for a 75% one.
  *
- * The gate's number is a layout fact -- the name panel covers the top tenth -- so it is the ASK
- * that has to carry the margin. This check is the relationship itself, which is the thing that
- * was never written down anywhere: if somebody tunes either number to match the other, the
- * failure mode comes back and this says so.
+ * **Because there are two bounds, not one.** The strip must be at least `GATE.quietTop`, or the
+ * name panel covers drawing; and it must not reach past `GATE.window[0]`, where the clear band
+ * begins, or the ink it displaces lands outside the band and `inWindow` collapses. Ten points to
+ * thirteen. That is the whole room there is, and it is why this is hard rather than badly tuned.
  *
- * It is also a floor now rather than a target. "About" was what licensed the undershoot, so
- * `AT LEAST` is pinned as well as the fraction.
+ * An instruction with one bound drifts to the other end of its range, so the ask names both.
  */
 const { GATE } = await import("./art-gate.mjs");
 const FRACTION = { tenth: 1 / 10, ninth: 1 / 9, eighth: 1 / 8, seventh: 1 / 7, sixth: 1 / 6,
   fifth: 1 / 5, quarter: 1 / 4, third: 1 / 3 };
-const askedStrip = /AT LEAST a (\w+) of the height/.exec(artPrompts);
-check("the capsule names the bare strip as a fraction", askedStrip?.[1] ?? "none", "sixth");
-check("and asks for more than the gate enforces",
-  FRACTION[askedStrip?.[1]] > GATE.quietTop ? "more" : "equal or less", "more");
-/* The margin, as a number, so shrinking it is a visible decision rather than a quiet edit. */
-check("and the margin between the two",
-  `${((FRACTION[askedStrip?.[1]] - GATE.quietTop) * 100).toFixed(1)} points of height`,
-  "6.7 points of height");
+const askedStrip = /between a (\w+) and an? (\w+) of the height/.exec(artPrompts);
+check("the capsule names the bare strip as a range, not a single number",
+  askedStrip ? `${askedStrip[1]} to ${askedStrip[2]}` : "one number or none", "tenth to eighth");
+const [lo, hi] = [FRACTION[askedStrip?.[1]], FRACTION[askedStrip?.[2]]];
+check("and its floor is at least what the gate enforces",
+  lo >= GATE.quietTop ? "at least" : "under", "at least");
+check("and its ceiling does not reach into the clear window",
+  hi <= GATE.window[0] ? "clear" : "overruns", "clear");
+/* Printed as a number, so noticing how little room there is does not require doing the sum. */
+check("the corridor the ask has to land in",
+  `${(GATE.quietTop * 100).toFixed(0)} to ${(GATE.window[0] * 100).toFixed(0)} points of height`,
+  "10 to 13 points of height");
 /*
- * A target invites an approximation from either side; a floor does not. Counted rather than
- * grepped, and counted against the ask itself: the capsule is printed once per group, so a bare
- * `.test` here matches 24 times and the suite's own duplicate-grep rule says so.
+ * **And the dark band is anchored absolutely rather than to the strip.** This is the one that
+ * mattered: it read *all of the dark lives between that strip and the halfway line*, so widening
+ * the strip slid the whole composition down and out of the window. A relative anchor makes every
+ * possible number for the strip wrong.
  */
-check("and states it as a floor rather than a target", (() => {
-  const floors = (artPrompts.match(/never too little/g) ?? []).length;
-  const asks = (artPrompts.match(/AT LEAST a \w+ of the height/g) ?? []).length;
-  return asks > 0 && floors === asks ? "floor" : "target";
-})(), "floor");
+check("the dark band is anchored to the frame, not to the strip", (() => {
+  /* Counted against the ask, not tested: the capsule prints once per group, so a bare `.test`
+   * here matches 24 times and the suite's own duplicate-grep rule says so. */
+  const anchored = (artPrompts
+    .match(/All of the dark lives in the band from an eighth of the height/g) ?? []).length;
+  const asks = (artPrompts.match(/between a \w+ and an? \w+ of the height/g) ?? []).length;
+  return asks > 0 && anchored === asks ? "the frame" : "the strip";
+})(), "the frame");
+check("and the old relative anchor is gone",
+  artPrompts.includes("the dark lives between that strip") ? "still there" : "gone", "gone");
+/* "more is fine" was false, and an open-ended ask is what produced the 0.301 median. */
+check("and the ask is not open-ended in either direction", (() => {
+  const capped = (artPrompts.match(/and\s+no more than that/g) ?? []).length;
+  const asks = (artPrompts.match(/between a \w+ and an? \w+ of the height/g) ?? []).length;
+  return asks > 0 && capped === asks ? "bounded" : "open-ended";
+})(), "bounded");
 check("and the gate's own table no longer describes the old capsule",
   gateSource.includes("the top quarter is empty") ? "stale" : "current", "current");
 
@@ -14322,6 +14338,7 @@ const absentGreps = [
   String.raw`and the gate's own table no longer describes the old capsule :: the top quarter is empty`,
   String.raw`and the literal Fear used to carry is gone :: const which = fast \? "actionHand" : "actionDiscard";`,
   String.raw`and the old disjunction is gone from the hand filter :: c\.type !== "wound" && c\.type !== "taint"`,
+  String.raw`and the old relative anchor is gone :: the dark lives between that strip`,
   String.raw`and the old sentence is gone :: Faith is \*\*wide and shallow\*\*`,
   String.raw`and the repair hands its own item to the check :: resolveCheck\(actor, \{ approach: "lore", dc, item \}\)`,
   String.raw`and the resolver reads the flag :: conditionsOf\(actor\)\.includes\("invisible"\)`,
