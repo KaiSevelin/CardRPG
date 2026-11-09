@@ -3414,9 +3414,12 @@ for (const node of mindAll) {
 const wiredWays = ["shade", "strength", "mind", "faith"]
   .filter(w => nodes.some(n => n.id.startsWith(w + ".")));
 check("Ways with a branch behind them", wiredWays.join(", "), "shade, strength, mind, faith");
+/* In content/nodes.mjs since the content was split: the sentence belongs beside the graph it
+ * describes rather than at the top of a door. */
 check("and the file says so at the top",
   /All four Ways are built/
-    .test(fs.readFileSync(path.join(root, "module/content.mjs"), "utf8")) ? "yes" : "no", "yes");
+    .test(fs.readFileSync(path.join(root, "module/content/nodes.mjs"), "utf8")) ? "yes" : "no",
+  "yes");
 
 check("the document says why Mind does not cross",
   /^#### Way of Mind has no cross edges, and that is the design$/m.test(specDoc) ? "yes" : "no",
@@ -3890,11 +3893,15 @@ const MODULE_DIR = path.join(root, "module");
 const everyModule = [
   ...fs.readdirSync(MODULE_DIR).filter(f => f.endsWith(".mjs")).map(f => f.slice(0, -4)),
   ...fs.readdirSync(path.join(MODULE_DIR, "data")).filter(f => f.endsWith(".mjs"))
-    .map(f => `data/${f.slice(0, -4)}`)
+    .map(f => `data/${f.slice(0, -4)}`),
+  ...fs.readdirSync(path.join(MODULE_DIR, "content")).filter(f => f.endsWith(".mjs"))
+    .map(f => `content/${f.slice(0, -4)}`)
 ];
 /* The engine and the content: no Foundry global at module scope, so they can be exercised here. */
+const CONTENT_MODULES = fs.readdirSync(path.join(MODULE_DIR, "content"))
+  .filter(f => f.endsWith(".mjs")).map(f => `content/${f.slice(0, -4)}`);
 const LOADS_ANYWHERE = ["art", "checks", "config", "content", "decks", "enrichers", "grants",
-  "graph", "monsters", "resolve", "setup"];
+  "graph", "monsters", "resolve", "setup", ...CONTENT_MODULES];
 /*
  * And the ones that legitimately cannot: three data models extending Foundry's own classes, three
  * applications extending ApplicationV2, and the combat document. Every one of them is a SUBCLASS
@@ -4011,7 +4018,24 @@ check("no prune sits on a branch that pays in deck size",
 
 section("Signatures and Tactics");
 
-const contentSource = fs.readFileSync(path.join(root, "module/content.mjs"), "utf8");
+/*
+ * **The content LAYER, not the file.**
+ *
+ * content.mjs is twenty-six lines and a dozen `export *` now, so a grep against it would find
+ * nothing -- and almost every grep here is an absence check: *the magic number that meant all
+ * armour*, *the ignore written as prose*, *nothing in the content deals an injury directly*. Every
+ * one of them would have gone on passing, against a door, for the wrong reason. That is the one
+ * real hazard of putting a barrel in front of a split, and it is worth saying out loud because the
+ * failure is silent in exactly the direction nobody checks.
+ *
+ * Read as one string because that is what these pins are about: what the content SAYS, not which
+ * room it says it in.
+ */
+const contentSource = [
+  ...fs.readdirSync(path.join(root, "module/content")).filter(f => f.endsWith(".mjs"))
+    .map(f => `module/content/${f}`),
+  "module/content.mjs"
+].map(f => fs.readFileSync(path.join(root, f), "utf8")).join("\n");
 
 /*
  * **Going through and going round, in the content.**
@@ -13188,6 +13212,13 @@ for (const m of selfSource.matchAll(
   const p = path.join(root, m[2]);
   if (fs.existsSync(p)) readFiles.set(m[1], fs.readFileSync(p, "utf8"));
 }
+/*
+ * `contentSource` is a layer rather than a single read, so the declaration sweep above cannot see
+ * it -- and the greps against it are the absence checks that most need watching. Added by hand,
+ * which is the one entry here that is not discovered -- and it replaces the single-file read
+ * the sweep used to find, so the total is unchanged.
+ */
+readFiles.set("contentSource", contentSource);
 check("files this suite greps by name", readFiles.size, 61);
 
 /* Every `/pattern/.test(VAR)` and `VAR.includes("...")`, with the check it belongs to. */
