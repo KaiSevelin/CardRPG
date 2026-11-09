@@ -446,10 +446,48 @@ export function facingOf(actor) {
 }
 
 /**
+ * **Is the line to that square stopped by something solid?**
+ *
+ * **[BUILT 2026-11-09]** The one place in this game where the grid is asked about a wall, and the
+ * reason it is asked here and nowhere else is worth writing down.
+ *
+ * Cover is **declared**, deliberately: `advantageOn` says why -- tracing a line past every figure
+ * would move the disadvantage on every ranged attack in the game, and every win rate this project
+ * has published was measured without it. None of that applies to a wall. A full obstacle is not
+ * cover at all and carries no disadvantage: *it blocks the line, and you cannot target through it*
+ * (core-rules 11), which is a gate rather than a modifier, so it moves no measured number -- a
+ * shot that cannot happen was never in the simulation.
+ *
+ * And that rule has been in the book since cover was written, enforced by nothing, because until
+ * now **every** ranged attack in this game was aimed by a player who could see the wall. A held
+ * shot is the first and only thing that picks its own target, so it is the first place the engine
+ * has ever needed to know.
+ *
+ * `sight` is the right restriction and not an approximation of one: a window blocks movement and
+ * not sight, and you can shoot through a window; a curtain blocks sight and not movement, and you
+ * cannot shoot through a curtain. Walls carry no `shot` channel because sight already is one.
+ *
+ * **No backend, no wall knowledge, and the shot is allowed.** A scene with no walls drawn and a
+ * headless run look identical from here, and refusing on both would make the card do nothing in
+ * the common case rather than the rare one.
+ */
+function lineBlocked(from, to) {
+  const backend = CONFIG?.Canvas?.polygonBackends?.sight;
+  if (!backend?.testCollision || !from || !to) return false;
+  try {
+    return !!backend.testCollision(from, to, { type: "sight", mode: "any" });
+  } catch (err) {
+    console.warn("CardRPG | no wall test available for a held shot", err);
+    return false;
+  }
+}
+
+/**
  * **Is that square inside the ground this actor is watching?**
  *
- * Three questions, and all three have to be yes: the weapon reaches that far, the square is in
- * front rather than beside or behind, and there is a weapon that can be loosed at all.
+ * Four questions, and all four have to be yes: the weapon reaches that far, the square is in
+ * front rather than beside or behind, there is nothing solid in between, and there is a weapon
+ * that can be loosed at all.
  *
  * The arc test is on the ANGLE and not on a shape of squares, because a shape has to be written
  * out once per facing and the diagonals would be written differently from the orthogonals -- which
@@ -476,7 +514,16 @@ export function watches(actor, point, item) {
   /* Screen angles: y grows downward, so north is -y and the angle runs clockwise from it. */
   const bearing = (Math.atan2(dx, -dy) * 180 / Math.PI + 360) % 360;
   const off = Math.abs(((bearing - facing.angle + 540) % 360) - 180);
-  return off <= CARDRPG.watchArc / 2;
+  if (off > CARDRPG.watchArc / 2) return false;
+
+  /*
+   * Last, because it is the only test here that asks the canvas to trace anything, and the three
+   * cheap ones have already thrown out all but a handful of squares.
+   *
+   * Centre to centre, and for a figure larger than a square that is the centre of the square it
+   * entered rather than of the whole creature -- which is inside the creature either way.
+   */
+  return !lineBlocked(token.center, { x: point.x + size / 2, y: point.y + size / 2 });
 }
 
 export function neighbours(actor) {

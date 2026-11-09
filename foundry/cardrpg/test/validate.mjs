@@ -7732,6 +7732,53 @@ check("and that node is a leaf of a ranged title",
   ["shade.archer.held", "shade.assassin.held", "strength.musketeer.held"]
     .filter(id => byId.get(id)).length, 3);
 
+/*
+ * **A wall stops a held shot, and this is the only rule in the game that asks the grid about one.**
+ *
+ * The pin that matters here is the NEGATIVE one at the bottom. Cover is declared on purpose --
+ * `advantageOn` records the reason, which is that every published win rate was measured without a
+ * traced line -- and a wall test is not a crack in that decision, because a full obstacle carries
+ * no disadvantage at all. It is a gate: *it blocks the line, and you cannot target through it*. So
+ * the engine may compute exactly one of the two halves of core-rules 11, and these checks say
+ * which half, and how many places are allowed to ask.
+ */
+check("a held shot asks whether the line is blocked",
+  /return !lineBlocked\(token\.center,/.test(resolveSource) ? "yes" : "no", "yes");
+check("and it asks about sight, which is what a shot follows",
+  /testCollision\(from, to, \{ type: "sight", mode: "any" \}\)/.test(resolveSource) ? "yes" : "no",
+  "yes");
+/* One definition and one caller. A second place asking is a second rule about walls. */
+check("and exactly one thing in the game asks",
+  (resolveSource.match(/lineBlocked\(/g) ?? []).length, 2);
+const tracers = modules
+  .filter(f => fs.readFileSync(f, "utf8").indexOf("testCollision") >= 0)
+  .map(f => path.basename(f));
+check("and nothing else in the system traces a line at all", tracers.join(", "), "resolve.mjs");
+/* No backend, no wall knowledge, and the shot is allowed: a headless run must not throw, and a
+ * scene with no walls drawn looks identical from here. */
+check("a missing backend does not refuse the shot",
+  /if \(!backend\?\.testCollision \|\| !from \|\| !to\) return false;/.test(resolveSource)
+    ? "allowed" : "refused", "allowed");
+/*
+ * And the declared half stays declared. If this ever reads `computed`, somebody has started
+ * tracing cover from figures, and every win rate in sim/ is measuring a different game than the
+ * one it claims to.
+ */
+check("cover from figures is still declared rather than computed",
+  /target\?\.system\?\.cover && !ignoresCover/.test(resolveSource) ? "declared" : "computed",
+  "declared");
+
+/* The book says so in all three places it has to: the rule, the player's copy, and the table. */
+check("the rule is written down for the GM",
+  coreRules.includes("A wall stops it, and this is the only rule in the game that asks the grid")
+    ? "yes" : "no", "yes");
+check("and the full-obstacle line says which half is built",
+  coreRules.includes("This is the one half of this section the engine does") ? "yes" : "no", "yes");
+check("and the handbook tells a player a wall stops it",
+  handbook.includes("The lane is ground you can see") ? "yes" : "no", "yes");
+check("and the reaction table says how far the lane reaches",
+  handbookChapter("reactions").includes("no further than you can see") ? "yes" : "no", "yes");
+
 /* And the Tactic that named this rule for months now describes the ground rather than sight. */
 /* The Tactic's own wording, not the phrase: three card texts say "the ground you are watching"
  * too, so the loose version had four answers and would have survived the Tactic being deleted. */

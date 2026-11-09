@@ -185,7 +185,14 @@ when the blow lands.
 
 Two things are true of every reaction in the game:
 
-- > **Facing, and the held shot.**  **[BUILT 2026-11-09]**
+- **A reaction never draws fate.** A Parry is your item's *Defend* value, a Brace is 1, a Counter is
+  your item's *Strike* value. Flat, every one of them — which is what lets the rule above be written
+  down at all: a threshold has no meaning against a number nobody has drawn yet.
+- **A reaction's damage is not itself a trigger.** A Counter hits, and nothing answers it. A reaction
+  answering a reaction is where *one per trigger* stops meaning anything, and this is a cleaner floor
+  under it than counting how deep the answers go.
+
+> **Facing, and the held shot.**  **[BUILT 2026-11-09]**
 >
 > **Facing is a new primitive and it exists for one rule.** Nothing else in this game has ever
 > asked which way a figure points: a Parry answers a blow from any direction, a Sidestep is *away*
@@ -213,17 +220,26 @@ Two things are true of every reaction in the game:
 > tags would have taken two requirements to say one thing and would have excluded the knife the
 > first of these cards was written for.
 >
+> **A wall stops it, and this is the only rule in the game that asks the grid about one.**
+> Cover stays declared for the reason the cover section gives, and none of that reason is about
+> walls: a full obstacle carries no disadvantage at all, it *blocks the line and you cannot target
+> through it*, which is a gate and not a modifier, so switching it on moves no number anybody has
+> measured. A shot that cannot happen was never in a simulation.
+>
+> It had to be built here because a held shot is **the first thing in this game that picks its own
+> target**. Every other ranged attack is aimed by a player who can see the wall, which is why the
+> rule could sit in the book for as long as it has with nothing enforcing it. The test is on
+> **sight**, which is not an approximation: you can shoot through a window, which stops movement
+> and not sight, and you cannot shoot through a curtain, which stops sight and not movement.
+>
+> It also decides something the arc alone could not. A figure crossing the lane from behind a
+> pillar is **entering** the ground you watch at the moment it steps into the open, so a held shot
+> answers somebody leaving cover, which is what a held shot is for.
+>
 > And the Archer's Tactic has been **called Overwatch** since that title was written, promising
 > *when an enemy ends its movement in your line of sight and within range, Strike it as a reaction*
 > with no trigger in the engine that could raise it. Its wording now matches the ground, which is
 > narrower than line of sight and is the half that makes it a decision.
-
-**A reaction never draws fate.** A Parry is your item's *Defend* value, a Brace is 1, a Counter is
-  your item's *Strike* value. Flat, every one of them — which is what lets the rule above be written
-  down at all: a threshold has no meaning against a number nobody has drawn yet.
-- **A reaction's damage is not itself a trigger.** A Counter hits, and nothing answers it. A reaction
-  answering a reaction is where *one per trigger* stops meaning anything, and this is a cleaner floor
-  under it than counting how deep the answers go.
 
 #### Turning a card sideways
 
@@ -2922,7 +2938,9 @@ Two limits on it:
 
 - **Melee Strikes against an adjacent target ignore cover.** You are both behind the same crate.
 - A **full** obstacle — a wall, a pillar — is not cover at all. It blocks the line, and you cannot
-  target through it.
+  target through it. **[BUILT 2026-11-09]** This is the one half of this section the engine does
+  compute, and it computes it in one place: a held shot (*Facing, and the held shot*, section 3),
+  which is the only attack in the game that chooses its own target. Everywhere else the player is looking at the wall.
 
 > **The GM marks cover; the grid does not compute it.** Tracing the line past every figure on the
 > board would put a disadvantage on most shots in a crowded fight — which is a defensible rule, but

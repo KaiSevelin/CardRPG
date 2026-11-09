@@ -353,9 +353,9 @@ export const REACTION_TEXT = {
   deflect: "You move the attacker's arm, and one of their own takes the blow instead. It has to "
     + "be a serious one, and it has to be somebody standing next to them.",
   overwatch: "A held shot, loosed at the first enemy to walk into the ground you are watching: "
-    + "your weapon's own range, through a sixty degree arc on the way you are facing. The weapon "
-    + "decides what arrives, so a thrown knife and a musket are the same card and nothing like "
-    + "each other."
+    + "your weapon's own range, through a sixty degree arc on the way you are facing, and no "
+    + "further than you can see. The weapon decides what arrives, so a thrown knife and a musket "
+    + "are the same card and nothing like each other."
 };
 
 /** Every reaction in the order config lists them, with Brace first because it is the common one. */

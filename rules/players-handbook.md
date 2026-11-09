@@ -414,7 +414,7 @@ casting Ways, because they are printed on a prepared spell rather than on a card
 
 | Reaction | Fires when | What it does | Printed on |
 |---|---|---|---|
-| **Overwatch** | an enemy walks into the ground you are watching | A held shot, loosed at the first enemy to walk into the ground you are watching: your weapon's own range, through a sixty degree arc on the way you are facing. The weapon decides what arrives, so a thrown knife and a musket are the same card and nothing like each other. | 3 cards |
+| **Overwatch** | an enemy walks into the ground you are watching | A held shot, loosed at the first enemy to walk into the ground you are watching: your weapon's own range, through a sixty degree arc on the way you are facing, and no further than you can see. The weapon decides what arrives, so a thrown knife and a musket are the same card and nothing like each other. | 3 cards |
 | **Brace** | you are hit | Reduce the damage, barely. Any card whose own reaction cannot fire is still worth this much, which is deliberately too little to be worth spending a good card on. | any card that cannot answer otherwise |
 | **Parry** | you are hit | Turn the blow with what you are already holding. Reduces the damage by your weapon's own Defend value, so a sword parries better than a knife. | 10 cards |
 | **Block** | you are hit | The shield comes up. Reduces the damage by the shield's Defend value and one more for being a shield, which is the best answer to a hit in the game. | 5 cards |
@@ -444,6 +444,13 @@ arrival is about the step that brings somebody next to you.
 **The weapon decides what arrives**, which is why one card covers a thrown knife and a musket. A
 knife watches three squares and lands for 2; a longbow watches ten and lands for 3; a musket
 watches twelve and lands for 6 through two points of armour. The card only chooses the moment.
+
+**A wall stops it.** The lane is ground you can see, so a pillar, a corner or a closed door is
+the end of it, and a window is not. This is the only rule in the game that works the wall out for
+you, and it is because a held shot is the only attack that aims itself.
+
+So a held shot answers somebody **stepping out of cover**, which is most of what you will use it
+for. Walking into the open is walking into the lane.
 
 **Only one shot answers a step.** The first watcher in initiative order looses, spends their card,
 and that is the step dealt with. Four archers watching the same gap do not all fire into it.
