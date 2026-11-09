@@ -539,12 +539,26 @@ export async function liftCondition(actor, { target, key }) {
  * use it, gets the old behaviour: `doubles` is what the absence of a card means, so the rule
  * degrades to the rule it replaced rather than to nothing.
  *
- * Returns `{ doubles, faces, lines }` -- what the caller needs to total the damage and what to
- * print. The conditions are applied here because they land on the target whatever the damage does.
+ * Returns `{ doubles, faces, lines, riders }` -- what the caller needs to total the damage, what
+ * to print, and the condition steps to apply **once the damage is done**.
+ *
+ * **The riders are returned rather than applied, which is the one ordering rule here.** They used
+ * to land inside this function, before `resolveAttack` read the target's armour, so *Find the Gap*
+ * stripped the armour off the very hit that found the gap: the card both gave up its doubling and
+ * collected the whole benefit immediately, on one target, once. That made the crit deck the only
+ * thing in the game that applied a condition before its own damage -- the tray applies a step's
+ * `condition` after `resolveAttack` returns, and ammunition's `shot.condition` lands at the bottom
+ * of it -- so this was an exception nobody had argued for.
+ *
+ * Landing it afterwards makes the condition faces a **trade** instead of a discount: give up the
+ * double now, and the next attack on that target meets no armour. That only became worth drawing
+ * when `duration: 1` started meaning *through my next turn* (combat.mjs, `turnJustEnded`); under
+ * the old clock the condition expired before the attacker could use it, and the face would have
+ * been a gift to whoever moved next.
  */
-export async function drawCritEffect(actor, target) {
+export async function drawCritEffect(actor) {
   const { deck, discard } = critStacks();
-  if (!deck || !discard) return { doubles: true, faces: [], lines: [] };
+  if (!deck || !discard) return { doubles: true, faces: [], lines: [], riders: [] };
 
   const faces = [];
   const take = async () => {
@@ -558,7 +572,7 @@ export async function drawCritEffect(actor, target) {
   };
 
   const first = await take();
-  if (!first) return { doubles: true, faces: [], lines: [] };
+  if (!first) return { doubles: true, faces: [], lines: [], riders: [] };
   /*
    * **Two others, so it cannot find itself.** One loop rather than a recursion rule, and the same
    * decision the fate deck makes about a Wild: the strange face does not compound.
@@ -575,16 +589,15 @@ export async function drawCritEffect(actor, target) {
   }
 
   const lines = [];
+  const riders = [];
   let doubles = false;
   for (const face of faces) {
     if (face.system.doubles) doubles = true;
     lines.push(`<strong>${face.name}</strong> &mdash; ${face.system.text}`);
     const step = face.system.effect;
-    if (step?.condition && target) {
-      await resolveCondition(actor, { step, target });
-    }
+    if (step?.condition) riders.push(step);
   }
-  return { doubles, faces, lines };
+  return { doubles, faces, lines, riders };
 }
 
 /**
@@ -2049,8 +2062,8 @@ export async function resolveAttack(actor, {
    * takes armour to 0 rather than down by 2. The faces are printed either way.
    */
   const crit = critical
-    ? await drawCritEffect(actor, targets[0] ?? null)
-    : { doubles: true, faces: [], lines: [] };
+    ? await drawCritEffect(actor)
+    : { doubles: true, faces: [], lines: [], riders: [] };
   /*
    * **And the undoubled figure, which the deck may send us back to.**
    *
@@ -2190,6 +2203,18 @@ export async function resolveAttack(actor, {
 
   if (shot?.condition && !missed) {
     for (const target of targets) await resolveCondition(actor, { step: shot, target });
+  }
+
+  /*
+   * **The critical deck's rider, here with every other condition an attack carries.**
+   *
+   * On the FIRST target, which is the rule the deck was written with: a face that stripped the
+   * armour off everything it hit would be a different and much larger card. And after the damage,
+   * which is the whole of the change -- the hit that found the gap is resolved against the armour
+   * the target was actually wearing, and the gap is what the NEXT attack walks through.
+   */
+  for (const step of crit.riders ?? []) {
+    if (first) await resolveCondition(actor, { step, target: first });
   }
 
   if (!missed) {
@@ -2842,7 +2867,12 @@ export async function resolveCondition(actor, { step, target }) {
       if (already) {
         already.duration = Math.max(already.duration ?? 0, landed.duration);
         if (landed.value) already.value = Math.max(already.value ?? 0, landed.value);
-      } else conditions.push({ ...landed, creatorId: actor.id });
+        /* A refresh restarts the clock as well as the count: the new application is the one whose
+         * turn the duration now hangs off, or a condition re-applied on the creator's own turn
+         * would tick at the end of it. */
+        already.creatorId = actor.id;
+        already.round = game.combat?.round ?? null;
+      } else conditions.push({ ...landed, creatorId: actor.id, round: game.combat?.round ?? null });
     }
     await target.update({ "system.conditions": conditions });
   }

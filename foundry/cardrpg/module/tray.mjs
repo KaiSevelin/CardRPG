@@ -864,7 +864,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       }] : []),
       {
         id: "conditions", label: "Conditions", count: conditions.length,
-        tip: "What is on you. A duration ticks down on its creator's turn."
+        tip: "What is on you. A duration runs out at the end of its creator's next turn."
       }
     ].map(d => ({
       ...d,

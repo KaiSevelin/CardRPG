@@ -729,15 +729,25 @@ class Game:
         if have:
             have['duration'] = max(have['duration'], duration)
             have['value'] = max(have['value'], value)
+            # A refresh restarts the clock as well as the count (resolve.mjs says the same).
+            have['by'], have['round'] = by, self.round
         else:
-            self.w['conds'].append(dict(key=key, duration=duration, value=value, by=by))
+            self.w['conds'].append(
+                dict(key=key, duration=duration, value=value, by=by, round=self.round))
         self.s[f'applied_{key}'] += 1
         return True
 
     def tick_conds(self, creator_id):
-        """Tick everything this creator made. The whole of the core-rules 7 clock."""
+        """Tick everything this creator made, at the END of their turn (core-rules 7).
+
+        Never on the round it was applied, which is the whole of why the record carries one: the
+        turn a condition lands on is a turn that ends, so without the guard a duration-1 condition
+        would tick the instant it landed and nobody -- creator or ally -- would see it in play.
+        """
         for c in list(self.w['conds']):
             if CONDITIONS[c['key']].get('no_duration') or c['by'] != creator_id:
+                continue
+            if c.get('round') == self.round:
                 continue
             c['duration'] -= 1
             if c['duration'] <= 0:
@@ -1250,29 +1260,36 @@ class Game:
         # longer certain. Modelled as its distribution: ten cards reshuffled on empty is close
         # enough to independent draws at one crit in twenty attacks.
         #
-        # **Drawn BEFORE armour and Block are read**, because that is where the engine draws it:
-        # `resolveAttack` calls `drawCritEffect` and only then snapshots `hadArmor`/`hadBlock`
-        # (resolve.mjs), so the gap a Critical opens is a gap the same blow goes through. That
-        # ordering is the only thing that makes a non-doubling face worth drawing against Plate.
+        # **The DOUBLING is settled here and the RIDER is applied at the bottom**, which is where
+        # the engine puts each of them: `drawCritEffect` returns its riders and `resolveAttack`
+        # applies them after the damage, beside the ammunition's condition (resolve.mjs). So the
+        # hit that found the gap meets the armour the target is actually wearing, and the gap is
+        # what the NEXT attack walks through.
+        #
+        # [CHANGED 2026-11-09] It used to apply before the armour read, and that is the ordering
+        # the published table in core-rules 5 was measured under: the condition face both gave up
+        # its doubling and collected the whole benefit immediately, on the same blow. The deck is a
+        # trade now rather than a discount, and it is only worth drawing because `duration: 1`
+        # reaches the attacker's own next turn.
         #
         # *Driven Down* -- Halted, the next turn does not happen -- is drawn and its damage half
         # resolved, but the lost turn is NOT modelled: nothing in this file skips a turn from a
         # condition. So these figures still understate the deck by one card in ten, and
         # understating is the right direction for a number used to decide whether to ship it.
+        riders = []
         if crit and cfg.crit_deck:
             face = self.rng.random()
             if face >= 0.4:
                 if not cfg.crit_deck_rides:
                     raw = raw // 2                      # not doubled: the plain figure
                 if face < 0.6:
-                    self.apply_cond('exposed', 1)       # Find the Gap
+                    riders = ['exposed']                # Find the Gap
                 elif face < 0.8:
-                    self.apply_cond('offBalance', 1)    # Off the Feet
+                    riders = ['offBalance']             # Off the Feet
                 elif face < 0.9:
-                    pass                                # Driven Down: the turn is not modelled
+                    riders = []                         # Driven Down: the turn is not modelled
                 else:
-                    self.apply_cond('exposed', 1)       # Both, as the two this file can see
-                    self.apply_cond('offBalance', 1)
+                    riders = ['exposed', 'offBalance']  # Both, as the two this file can see
         # `ignores N` comes off armour and never off Block (core-rules 5).
         # **Exposed zeroes armour**, read off the derived number exactly as the engine reads it.
         if any(CONDITIONS[c['key']].get('zeroes_armour') for c in w['conds']):
@@ -1345,6 +1362,10 @@ class Game:
             w['hand'].remove(lost)
             w['discard'].append(lost)
             self.s['heavy_hit_discards'] += 1
+        # The critical deck's rider, after the blow it arrived with. `by=src` so it ticks on the
+        # clock of the creature that drew the card, which is what lets that creature use it.
+        for key in riders:
+            self.apply_cond(key, 1, by=src)
 
     # --- goblins
     def routs(self, g):
@@ -1355,8 +1376,6 @@ class Game:
 
     def goblin_act(self, g, card):
         """One goblin takes its turn, on its type's intent card for this round."""
-        # a condition ticks at the start of its creator's turn
-        self.tick_conds(g['id'])
         wp = lambda: self.w['pos']
         # routing is not the same as playing Cower: a Cower goblin retreats and comes back,
         # a routed one leaves the fight for good
@@ -1430,12 +1449,19 @@ class Game:
                 self.take_hit(raw, not ranged, g['id'], crit=(fc == 'CRIT'), plus2=(fc == 2),
                               pierce=pierce)
                 if kind == 'strike' and op[2] == 'expose' and fc != 'MISS':
-                    self.apply_cond('exposed', 1)
+                    # `by=g['id']`, which it was missing: an Exposed with no creator fell through
+                    # to the victim's clock instead of the goblin's, so every expose_intent figure
+                    # before 2026-11-09 was measured on the wrong turn.
+                    self.apply_cond('exposed', 1, by=g['id'])
                 if kind == 'strike' and op[2] == 'daze' and fc != 'MISS':
                     self.apply_cond(self.cfg.goblin_condition,
                                     self.cfg.goblin_cond_dur,
                                     self.cfg.goblin_cond_value, g['id'])
                     self.s['daze_applied'] += 1
+        # **The clock runs out at the END of this creature's turn** (core-rules 7), and never on
+        # the turn a condition landed -- `tick_conds` carries that guard. An early return above
+        # means the warrior is down and the fight is over, so there is nothing to tick.
+        self.tick_conds(g['id'])
 
 
 # ---------------------------------------------------------------- runner

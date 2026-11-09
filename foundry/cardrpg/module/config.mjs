@@ -202,8 +202,9 @@ CARDRPG.approaches = {
 /* -------------------------------------------- */
 
 /**
- * Conditions carry a duration AND a creator: the duration ticks at the start of the creator's turn,
- * or the victim's if the creator has left combat (core-rules 7). Foundry's token status overlays
+ * Conditions carry a duration, a creator AND the round they landed in: the duration ticks at the
+ * **end** of the creator's turn, or the victim's if the creator has left combat, and never on the
+ * turn it was applied (core-rules 7). Foundry's token status overlays
  * can't express that, so the tray owns conditions and these are our own records.
  *
  * `blocks` lists the icon keys a condition switches off (core-rules 10, Blocked icons).

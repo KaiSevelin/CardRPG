@@ -1872,19 +1872,21 @@ export const INTENTS = [
      * `brute` because it is a thing done with weight: 24 creatures have it and only two run in
      * packs.
      *
-     * **[MEASURED 2026-11-08] And the two in packs are the only ones who can use it, which is the
-     * reverse of what this comment used to claim.** It said the two-round play *belongs to the big
-     * single enemies that need it*. A big single enemy is the one creature that cannot collect it:
-     * durations tick at the start of their CREATOR's turn (`tickConditionsCreatedBy`, combat.mjs),
-     * which is what makes `duration: 1` cost the victim exactly one turn wherever the creator sits
-     * in the order -- so an Exposed set here is gone before the brute that set it acts again. The
-     * second attacker has to be somebody else: another creature of another type in the same
-     * encounter, or one of the two brute kinds that run in packs.
+     * **[2026-11-08] This card is why the condition clock changed.** The comment here used to say
+     * the two-round play *belongs to the big single enemies that need it*, and a big single enemy
+     * was the one creature that could not collect it: durations ticked at the START of their
+     * creator's turn, so an Exposed set here was gone before the brute that set it swung again.
+     * The second attacker had to be a creature of another type, and of the 24 with `brute` only
+     * **2** run in packs. The card measured at **0.3 / 1.1 / 0.6** points of the hero's win rate
+     * at armour 1 / 3 / 4 -- against five attackers all acting on one intent card, nobody attacked
+     * during the window it opened at all.
      *
-     * That is why the card measures at **0.3 / 1.1 / 0.6** points of the hero's win rate at armour
-     * 1 / 3 / 4 and no more -- against five attackers all acting on one intent, nobody attacks
-     * during the window it opens. 2500 fights a cell. The card is kept because it is cheap and it
-     * reads well at the table, not because the number is large.
+     * **[MEASURED 2026-11-09] The clock now runs from the end of the creator's turn to the end of
+     * their next, and the same card measures 2.1 / 4.6 / 2.5** -- four times what it was, with
+     * nothing about the card changed. The creature that spends a turn levering a harness open is
+     * the one who gets to hit the gap. That is the whole of what *setup and payoff* was supposed
+     * to mean, and for as long as the clock ran the other way this card was the proof it did not.
+     * 2500 fights a cell, five spears.
      *
      * **It is also the only thing in the game besides the Critical that applies Exposed, and no
      * player card may join it** (2026-11-08 decision; conditions.md 9). A player's route to Exposed
@@ -7233,8 +7235,8 @@ export const HARM_FACES = [
  * | Face | Is | Copies |
  * |---|---|---|
  * | *Through and Through* | the old behaviour, doubled | **4** |
- * | *Find the Gap* | **Exposed** -- armour counts 0 | 2 |
- * | *Off the Feet* | **Off-Balance** -- Block counts 0 | 2 |
+ * | *Find the Gap* | **Exposed** -- armour counts 0, from after this hit | 2 |
+ * | *Off the Feet* | **Off-Balance** -- Block counts 0, from after this hit | 2 |
  * | *Driven Down* | **Halted** -- the next turn does not happen | 1 |
  * | *Both* | draw two others and take both | 1 |
  *
@@ -7243,6 +7245,18 @@ export const HARM_FACES = [
  * Balance are the two that answer armour and Block, and they are worth more than doubling exactly
  * where doubling is worth least -- against a defended target, which is what section 5 says a
  * Critical is for.
+ *
+ * **[2026-11-09] But not on the hit that drew them.** The rider lands after the damage now
+ * (`drawCritEffect` returns it and `resolveAttack` applies it beside the ammunition's condition),
+ * so a condition face is a **trade** rather than a discount: give up the double, and the next
+ * attack on that target meets no armour or no Block. It is only worth taking because the same
+ * change made `duration: 1` reach the attacker's own next turn -- under the old clock the face
+ * handed its benefit to whoever moved next, which is not a trade anybody would make.
+ *
+ * The deck is worth **+0.4 to +4.3** points of win rate to a hero in Leather and **-0.1 to -0.9**
+ * to one in Plate; it was +6.8 at the top of that range before the ordering changed. Which way the
+ * tilt should run is still open and still one word (`doubles`) in the faces below.
+ * [MEASURED 2026-11-09, 2500 fights a cell.]
  *
  * **Attacks only.** A Critical on a check or a heal still simply doubles: `apply` is untouched,
  * and this deck is about what a critical hit does to a body. A Lore check that drew *Off the Feet*
@@ -7259,12 +7273,14 @@ export const CRIT_EFFECTS = [
   {
     name: "Find the Gap", copies: 2,
     effect: { condition: "exposed", duration: 1 },
-    text: "Exposed: their armour counts 0 for a turn. The hit itself is not doubled."
+    text: "Exposed: their armour counts 0 until the end of your next turn. "
+      + "Not this hit, and not doubled."
   },
   {
     name: "Off the Feet", copies: 2,
     effect: { condition: "offBalance", duration: 1 },
-    text: "Off Balance: their Block counts 0 for a turn, and it is an opening. Not doubled."
+    text: "Off Balance: their Block counts 0 until the end of your next turn, and it is an "
+      + "opening. Not this hit, and not doubled."
   },
   {
     name: "Driven Down", copies: 1,

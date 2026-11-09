@@ -882,14 +882,28 @@ cards, five faces:
 | Face | Copies | What it does |
 |---|---|---|
 | **Through and Through** | 4 | Double the damage, as a Critical always did. |
-| **Find the Gap** | 2 | **Exposed** &mdash; their armour counts **0** for a turn. Not doubled. |
-| **Off the Feet** | 2 | **Off-Balance** &mdash; their Block counts **0** for a turn, and it is an opening. Not doubled. |
+| **Find the Gap** | 2 | **Exposed** &mdash; their armour counts **0** until the end of your next turn. Not doubled, and not this hit. |
+| **Off the Feet** | 2 | **Off-Balance** &mdash; their Block counts **0** until the end of your next turn, and it is an opening. Not doubled, and not this hit. |
 | **Driven Down** | 1 | **Halted** &mdash; their next turn does not happen. Not doubled. |
 | **Both** | 1 | Draw two **others** and take both. |
 
-**The draw comes before armour and Block are read**, so the gap a Critical opens is a gap that
-same blow goes through: *Find the Gap* takes the armour of the hit that found it to **0**. `resolveAttack`
-draws first and snapshots the defences afterwards, and the simulator was corrected to match.
+**The draw decides the damage; the condition lands after it.** The doubling is settled before
+armour and Block are read, because that is what the face changes about *this* blow. The condition
+is applied once the damage is done, so **the hit that found the gap still meets the armour the
+target is wearing** &mdash; the gap is what the *next* attack walks through.
+
+> **[CHANGED 2026-11-09] It used to land before the armour read**, which made *Find the Gap* take
+> the armour off the very hit that found it: the face gave up its doubling and collected the whole
+> benefit immediately, on one target, once. That made this deck **the only thing in the game that
+> applied a condition before its own damage** &mdash; the tray applies a step's printed condition
+> after the attack resolves, and ammunition's lands at the bottom of `resolveAttack` &mdash; so it
+> was an exception nobody had argued for.
+>
+> The face is a **trade** now instead of a discount: give up the double, and your next attack on
+> that target meets nothing. That is only worth drawing because of the other half of the same
+> change &mdash; `duration: 1` reaching the creator's own next turn (&sect;7). Under the old clock
+> the condition expired before the attacker could use it and the face was a gift to whoever moved
+> next.
 
 **One draw per action**, like the fate draw it hangs off: an Area attack that crits draws once and
 every target gets the same answer. The conditions land on the first target.
@@ -905,32 +919,48 @@ somewhere it has no business.
 **Both sides draw from it.** One deck for the table, not two tunings of one rule &mdash; and that is
 what the measurement below is about.
 
-> **[MEASURED 2026-11-08] Exposed beats doubling exactly when the armour is larger than the
-> printed damage** &mdash; so an either/or deck is still a nerf to whoever hits hard, but it is no
-> longer a nerf everywhere.
+> **[MEASURED 2026-11-09, and the whole table was re-taken] Exposed beats doubling exactly when
+> the armour is larger than the printed damage &mdash; but it beats it on the NEXT attack now, not
+> on the hit that drew it.**
 >
-> This is arithmetic before it is a simulation. Doubling adds the printed damage; *Find the Gap*
-> adds **the armour**, because it takes it to 0. A goblin spear prints 3, so a condition face is
-> worse than doubling at rungs 1 and 3 and **better at rung 4**: against Plate, Through and Through
-> gets 6&minus;4 = 2 through where Find the Gap gets the full 3. Rung 4 is the one rung this deck
-> improves, and it is the rung the complaint was about.
+> The arithmetic that built this deck is unchanged and no longer applies where it was pointed.
+> Doubling adds the printed damage; taking armour to 0 adds **the armour**. A goblin spear prints 3,
+> so against Plate doubling gets 6&minus;4 = 2 through where armour-0 would have got the full 3 —
+> which is why rung 4 was the rung this deck was built to fix. With the condition landing after the
+> damage, that 3 is no longer collected by the blow that found the gap: it is collected by whatever
+> attacks next, and only if something does.
+>
+> Both halves of the 2026-11-09 timing change are in these numbers, so **the baseline moved too**.
+> The goblins' own conditions now reach their next turn as well: *Dirty Trick* is worth more than it
+> was, and the unarmoured hero against two spears and two bows went from 34.8 to **31.4** before any
+> deck is drawn. A table that only re-took the deck rows would have credited that to the deck.
 >
 > 2500 fights a cell:
 >
 > | | 3 spears | 4 spears | 5 spears | 2 spear 2 bow |
 > |---|---|---|---|---|
 > | **armour 1** | | | | |
-> | *before the deck* | 98.6 | 88.4 | 63.4 | 34.8 |
-> | **as written (either/or)** | **99.0** | **90.3** | **70.2** | **36.7** |
-> | *effect rides along* | 97.9 | 86.9 | 61.1 | 33.4 |
+> | *before the deck* | 98.1 | 88.4 | 61.9 | 31.4 |
+> | **as written (either/or)** | **98.5** | **89.9** | **66.2** | **33.9** |
+> | *effect rides along* | 98.0 | 87.2 | 62.1 | 28.7 |
 > | **armour 3** | | | | |
-> | *before the deck* | 100.0 | 99.6 | 97.8 | 98.5 |
-> | **as written** | 100.0 | 99.9 | 98.1 | 99.0 |
-> | *rides along* | 99.9 | 98.8 | **94.2** | **94.7** |
+> | *before the deck* | 99.9 | 99.0 | 94.4 | 90.6 |
+> | **as written** | 100.0 | 98.8 | 94.6 | 90.8 |
+> | *rides along* | 99.7 | 98.2 | **90.2** | **86.0** |
 > | **armour 4** | | | | |
-> | *before the deck* | 100.0 | 100.0 | 99.7 | 100.0 |
-> | **as written** | 100.0 | 100.0 | **99.3** | **99.5** |
-> | *rides along* | 100.0 | 99.5 | **97.5** | **97.2** |
+> | *before the deck* | 100.0 | 99.6 | 97.1 | 96.2 |
+> | **as written** | 99.9 | 99.4 | 96.9 | 95.3 |
+> | *rides along* | 99.9 | 99.1 | **94.7** | **93.2** |
+>
+> **Read the deltas, not the rows.** As written the deck is worth **+0.4 / +1.5 / +4.3 / +2.5** to
+> the hero at armour 1, **about nothing** at armour 3, and **&minus;0.1 to &minus;0.9** at armour 4.
+> So it still tilts towards the lightly armoured character, which is the open question below, but
+> less than half as far as it did: the 5-spear figure at armour 1 was +6.8 and is +4.3.
+>
+> **And rides-along is now plainly the monsters' deck**, which it was not before. Every face
+> doubling *and* carrying its condition costs the hero 4.2 points at armour 3 and 3.0 at armour 4
+> against five spears &mdash; it is worse than drawing no deck at all at every rung but the first.
+> The dial stays because the question is a weighting, but the answer it gives has changed sign.
 >
 > **Rung 4 moves for the first time**, which no version of this deck managed while Exposed took
 > only 2 off. Back then the Critical floor already let a spear through for 1 and *Exposed 2* against
@@ -1089,11 +1119,19 @@ because nothing else has a reading between a candle and a dragon, and *Dazed 3* 
 > the engine. Effects are repeated here because a rule you have to follow a link for is a rule nobody
 > reads.
 
-- The duration ticks down by 1 at the **start of the creator's turn**. At 0 the condition is removed.
-- So *Dazed (1)* from a goblin lasts until the start of that goblin's next turn. The victim always suffers it for exactly one of their own turns, wherever the creator sits in the initiative order — if the goblin acts before them the condition bites this round, if it acts after them it bites next round, but it always costs exactly one turn.
-- Conditions you put on yourself (e.g. Invisible from a Smoke Bomb) tick at the start of your own turn.
+- The duration ticks down by 1 at the **end of the creator's turn**, and never on the turn it was applied. At 0 the condition is removed.
+- So *Dazed (1)* from a goblin **starts when that goblin's turn ends and lasts until the end of its next one**. The victim suffers it for one of their own turns and the goblin gets one turn of it as well, which is the half that used to be missing.
+- Conditions you put on yourself (e.g. Invisible from a Smoke Bomb) run to the end of your own next turn.
 - Conditions with no creator (fire, poison gas, a trap) count the affected character as the creator.
-- If the creator leaves combat, its conditions tick at the start of the **affected** character's turn instead, so they still last exactly one of the victim's turns.
+- If the creator leaves combat, its conditions tick at the end of the **affected** character's turn instead.
+
+> **[CHANGED 2026-11-09] This used to tick at the START of the creator's turn**, which read as the
+> tidier rule — *it always costs the victim exactly one of their own turns* — and quietly broke every
+> setup card in the game. A condition set by a creature expired before that creature acted again, so
+> *setup and payoff* could only ever be paid off by a **different** creature. On the monsters' side
+> that meant *Prise It Open* worked for 2 of the 24 creatures that can play it; on the players' side
+> it meant the critical deck's condition faces handed their benefit to whoever moved next. Starting
+> the clock at the end of the creator's turn costs the symmetry and buys the mechanic.
 
 ### Putting a condition on someone
 

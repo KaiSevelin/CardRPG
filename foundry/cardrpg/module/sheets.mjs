@@ -352,8 +352,13 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   }
 
   /**
-   * Apply a condition. The creator matters: a duration ticks down at the start of the creator's
-   * turn, which is what makes a duration-1 condition cost the victim exactly one turn.
+   * Apply a condition. The creator matters: a duration ticks down at the **end** of the creator's
+   * turn, which is what makes a duration-1 condition last through the creator's next one.
+   *
+   * **The round has to be stamped here too**, which is the cost of this being the second place in
+   * the codebase that builds a condition record -- `resolveCondition` is the other. Without it the
+   * round reads null, the tick has nothing to compare against, and a condition a GM drops on a
+   * token during that creature's own turn is gone at the end of it.
    */
   static async #onAddCondition(event, target) {
     const root = target.closest(".cr-add-condition");
@@ -368,7 +373,8 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     conditions.push({
       key,
       duration,
-      creatorId: root.querySelector("[data-condition-creator]")?.value ?? ""
+      creatorId: root.querySelector("[data-condition-creator]")?.value ?? "",
+      round: game.combat?.round ?? null
     });
     await this.document.update({ "system.conditions": conditions });
   }

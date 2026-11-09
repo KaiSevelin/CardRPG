@@ -7,7 +7,9 @@
  *    ties are redrawn until the order settles (core-rules 3).
  *  - One card is drawn per NPC **type** per round, face down, and every NPC of that type acts on it
  *    at its own place in the order. So the draw and the acting are separate steps.
- *  - A condition's duration ticks at the start of its **creator's** turn, not the victim's.
+ *  - A condition's duration ticks at the **end** of its **creator's** turn, not the victim's, so
+ *    `duration: 1` lasts through the creator's next turn and the creature that spent a turn
+ *    setting something up is the one who gets to use it.
  */
 
 import { CARDRPG } from "./config.mjs";
@@ -211,20 +213,45 @@ export async function revealIntent(actor) {
  * Start of a turn, for the combatant whose turn it is:
  *
  *  - Block clears, because a Defend primary holds only until the start of your next turn.
- *  - Conditions **this combatant created** tick down. That is the unusual part: a condition ticks
- *    on its creator's turn, which is what makes a duration-1 condition cost the victim exactly one
- *    turn wherever the creator sits in the order.
- *  - Numeric recharges count down, using the same tick.
+ *  - Conditions created by the combatant whose turn just **ended** tick down. That is the unusual
+ *    part, and it is unusual twice over: a condition ticks on its CREATOR's clock rather than its
+ *    victim's, and it ticks at the END of that turn rather than the start.
+ *  - Numeric recharges count down, on the acting combatant's own turn.
  *  - An NPC reveals its type's intent card, since the moment it acts the card is public anyway.
+ *
+ * **Why the end and not the start.** `duration: 1` used to mean *through the turn after this one*,
+ * which expired before the creator could act on it: a brute set a target Exposed and the Exposed
+ * was gone by the time the brute swung again, so the setup could only ever be collected by
+ * somebody else. Of the 24 creatures with `brute`, two run in packs -- the card's working audience
+ * was two creatures, and the comment on it claimed the opposite. `duration: 1` now means *through
+ * my next turn*: it starts when the creator's turn ends and stops when their next one does, and
+ * the creature that spent a turn setting something up is the one who gets to use it.
  */
 export async function onTurnStart(combat) {
   if (!game.user.isGM) return;
   const actor = combat.combatant?.actor;
   if (!actor) return;
 
+  /*
+   * **Once per turn, whichever hook announced it.**
+   *
+   * Foundry fires `combatRound` for a round advance and `combatTurn` for a step inside one, and
+   * for a long time only the second of those did this work -- so the **first combatant of every
+   * round after the first** never had their Block cleared, never ticked a recharge, and never had
+   * their conditions ticked. A condition created by whoever leads the order could not expire. Both
+   * hooks call this now, and this marker is what makes that safe: if a build ever fires both for
+   * one transition, the second call does nothing rather than ticking everything twice.
+   */
+  const at = `${combat.round}:${combat.turn}`;
+  if (combat.getFlag("cardrpg", "turnDone") === at) return;
+  await combat.setFlag("cardrpg", "turnDone", at);
+
   await actor.update({ "system.block": 0, "system.blockPersists": false });
 
-  await tickConditionsCreatedBy(combat, actor);
+  /* The turn that just finished is the clock that just ran, so the tick belongs to that actor and
+   * not to the one about to play. On the first turn of a fight there is nothing behind us. */
+  const ended = turnJustEnded(combat);
+  if (ended?.actor) await tickConditionsCreatedBy(combat, ended.actor, ended.round);
   await tickRecharges(actor);
 
   if (actor.type === "npc") await revealIntent(actor);
@@ -252,8 +279,32 @@ export async function onTurnStart(combat) {
   }
 }
 
+/**
+ * **Whose turn just ended, and which round it ended in.**
+ *
+ * Derived from the order rather than read off `combat.previous`: the combatant one step back from
+ * the current index IS the one who just finished, and at a round boundary the modular step takes
+ * the last combatant of the previous round, which is the right answer and the case a hand-rolled
+ * `turn - 1` gets wrong.
+ *
+ * The round matters as much as the actor. A creator who acts last in the order sees `combat.round`
+ * increment before this runs, so a tick that compared against the CURRENT round would tick a
+ * condition on the very turn it was applied -- for exactly the creatures at the bottom of the
+ * order and no others, which is the kind of bug that reads as bad luck for a month.
+ */
+function turnJustEnded(combat) {
+  const turns = combat.turns ?? [];
+  const at = combat.turn;
+  if (!turns.length || at === null || at === undefined) return null;
+  const wrapped = at === 0;
+  // Nothing has ended yet on the first turn of the first round.
+  if (wrapped && (combat.round ?? 0) <= 1) return null;
+  const combatant = turns[(at - 1 + turns.length) % turns.length];
+  return { actor: combatant?.actor ?? null, round: (combat.round ?? 0) - (wrapped ? 1 : 0) };
+}
+
 /** Tick every condition whose creator is this actor, wherever the victim sits in the order. */
-async function tickConditionsCreatedBy(combat, creator) {
+async function tickConditionsCreatedBy(combat, creator, endedRound) {
   for (const combatant of combat.combatants) {
     const victim = combatant.actor;
     if (!victim) continue;
@@ -275,6 +326,13 @@ async function tickConditionsCreatedBy(combat, creator) {
         || (creatorGone && victim.id === creator.id);
 
       if (!mine) { kept.push(condition); continue; }
+      /*
+       * **Not on the turn it was applied.** The duration starts when the creator's turn ends, and
+       * the turn it was applied on is a turn that ends -- so without this a `duration: 1` would
+       * tick the instant it landed and nobody, creator or ally, would ever see it in play.
+       */
+      if (condition.round !== null && condition.round !== undefined
+        && condition.round === endedRound) { kept.push(condition); continue; }
 
       const duration = condition.duration - 1;
       changed = true;
@@ -329,7 +387,13 @@ export async function onCombatEnd(combat) {
 /* -------------------------------------------- */
 
 export function registerCombatHooks() {
-  Hooks.on("combatRound", combat => onRoundStart(combat));
+  /* A round advance is a turn start as well, and only one of these two hooks fires for it: the
+   * first combatant of round 3 is as much a turn start as the second combatant of round 2. Intents
+   * are drawn first, because the turn start is what reveals the acting NPC's. */
+  Hooks.on("combatRound", async combat => {
+    await onRoundStart(combat);
+    await onTurnStart(combat);
+  });
   Hooks.on("combatTurn", combat => onTurnStart(combat));
   Hooks.on("combatStart", async combat => {
     await onRoundStart(combat);

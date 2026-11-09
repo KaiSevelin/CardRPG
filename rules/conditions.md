@@ -10,10 +10,18 @@ what you look at while writing a card or a sheet, and it is **checked against th
 [../foundry/cardrpg/module/config.mjs](../foundry/cardrpg/module/config.mjs) and not here, or the
 other way round.
 
-A condition is a **token with a number** (its duration) that remembers **who created it**. The
-duration ticks at the start of the **creator's** turn, so a condition always costs its victim
-exactly one of their own turns wherever the creator sits in the initiative order
+A condition is a **token with a number** (its duration) that remembers **who created it** and the
+**round it landed in**. The duration ticks at the **end** of the creator's turn and never on the
+turn it was applied, so **`duration: 1` means *through the creator's next turn***
 ([core-rules.md](core-rules.md) §7).
+
+> **[CHANGED 2026-11-09] It used to tick at the start of the creator's turn**, which made a
+> duration-1 condition cost the victim exactly one of their own turns and cost the creator its whole
+> point: the condition expired *before* the creature that set it could act on it. A brute played
+> *Prise It Open*, left a target Exposed, and the armour was back up by the time the brute swung
+> again &mdash; so the setup was only ever collectable by somebody else, and of the 24 creatures
+> with `brute` exactly **2** run in packs. The clock starts when the creator's turn ends and stops
+> when their next one does, which is what makes setup and payoff a thing one creature can do.
 
 **Three of the twenty-one carry a second number.** A `valued` condition has an **intensity** as well
 as a duration, printed before it: **Burning 3 (2)** is three damage a turn for two turns. Only fire,
@@ -151,14 +159,17 @@ the card that reads it, never here ([core-rules.md](core-rules.md) §7,
 > pinned from both ends** -- the cards that apply it, and the deck face that does -- so a new card
 > cannot quietly join and the deck cannot quietly lose the only face there is.
 >
-> **[MEASURED 2026-11-08] And the exception is worth less than it reads.** Durations tick at the
-> start of their **creator's** turn, which is what makes `duration: 1` cost the victim exactly one
-> turn wherever the creator sits in the order -- so an Exposed set by a brute is gone before that
-> brute acts again, and the second attacker has to be a creature of another type. Against five
-> attackers all acting on one intent card, nobody attacks during the window at all: the card costs
-> the hero **0.3 / 1.1 / 0.6** points of win rate at armour 1 / 3 / 4, and the card's own comment
-> used to claim the two-round play *belongs to the big single enemies*. A big single enemy is the
-> one creature that cannot collect it.
+> **[MEASURED 2026-11-09] And that exception is what the condition clock was changed for.** It
+> used to be worth almost nothing: durations ticked at the **start** of the creator's turn, so an
+> Exposed set by a brute was gone before that brute acted again and the second attacker had to be
+> a creature of another type. Against five attackers all acting on one intent card nobody attacked
+> during the window at all, and the card cost the hero **0.3 / 1.1 / 0.6** points of win rate at
+> armour 1 / 3 / 4. Its own comment claimed the two-round play *belongs to the big single enemies*;
+> a big single enemy was the one creature that could not collect it.
+>
+> With the clock running to the end of the creator's next turn, the same card measures **2.1 / 4.6
+> / 2.5** &mdash; four times what it was, with nothing about the card changed. &sect;1 has the rule
+> and why it moved.
 >
 > So armour has **Exposed** and Block has **Off-Balance**, which already existed and did nothing
 > by itself. A condition whose own name says a defence should be worse is the right place to put

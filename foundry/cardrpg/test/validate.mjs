@@ -2183,6 +2183,75 @@ const loose = [["decks", decksSource], ["combat", combatSource], ["cards", cards
 check("files deciding a reshuffle from bare specialness",
   loose.length ? loose.join(", ") : "none", "none");
 
+/*
+ * --- the condition clock -----------------------------------------------------------------------
+ *
+ * **A duration ticks at the END of its creator's turn, and never on the turn it was applied**
+ * (core-rules 7). Three checks because the rule has three parts and each one breaks on its own.
+ *
+ * It used to tick at the start of the creator's turn, which read as the tidier rule -- *a
+ * condition always costs its victim exactly one of their own turns* -- and quietly broke every
+ * setup card in the game: the condition expired before the creature that set it could act on it,
+ * so *setup and payoff* could only ever be paid off by somebody else. *Prise It Open* measured at
+ * 0.3 / 1.1 / 0.6 points of the hero's win rate under that clock and 2.1 / 4.6 / 2.5 under this
+ * one, with nothing about the card changed.
+ */
+check("the tick belongs to the turn that just ended",
+  /const ended = turnJustEnded\(combat\);\s*\n\s*if \(ended\?\.actor\) await tickConditionsCreatedBy\(/
+    .test(combatSource) ? "yes" : "no", "yes");
+/* Derived from the order rather than from `combat.previous`, and the round comes with the actor:
+ * a creator at the bottom of the order sees the round increment before the tick runs, so a guard
+ * that compared against the CURRENT round would tick on the turn of application for exactly those
+ * creatures and no others. */
+check("and it carries the round that turn ran in",
+  /function turnJustEnded\(combat\)/.test(combatSource)
+  && /round: \(combat\.round \?\? 0\) - \(wrapped \? 1 : 0\)/.test(combatSource) ? "yes" : "no",
+  "yes");
+check("and nothing ticks on the round it landed",
+  /condition\.round === endedRound/.test(combatSource) ? "yes" : "no", "yes");
+/*
+ * **And the tick actually fires on every turn, which it did not.** Foundry fires `combatRound` for
+ * a round advance and `combatTurn` for a step inside one -- only one of the two -- and for a long
+ * time only `combatTurn` did this work. So the first combatant of every round after the first
+ * never had their Block cleared, never ticked a recharge, and never ticked a condition: whoever
+ * led the initiative order could create a condition that never expired. Both hooks call it now,
+ * and the marker is what keeps that from double-ticking if a build ever fires both.
+ */
+check("hooks that start a turn besides combatTurn",
+  (combatSource.match(/await onTurnStart\(combat\);/g) ?? []).length, 2);
+check("and a turn's work happens once however it was announced",
+  /combat\.getFlag\("cardrpg", "turnDone"\) === at/.test(combatSource) ? "yes" : "no", "yes");
+/*
+ * **And every writer of a condition record stamps the round**, which is the half that rots. There
+ * are three: a fresh application, a refresh of one already there, and the GM dropping one on a
+ * token from the sheet. A writer that forgets leaves `round` null, the guard has nothing to
+ * compare, and the condition ticks at the end of the turn it was applied on -- which looks exactly
+ * like the old behaviour nobody wanted, in one of three places.
+ */
+check("writers of a condition that stamp the round",
+  (resolveSource.match(/game\.combat\?\.round \?\? null/g) ?? []).length
+  + (fs.readFileSync(path.join(root, "module/sheets.mjs"), "utf8")
+    .match(/game\.combat\?\.round \?\? null/g) ?? []).length, 3);
+
+/*
+ * **A critical's rider lands after the damage it came with**, beside every other condition an
+ * attack carries (core-rules 5).
+ *
+ * This was the one exception in the game: the tray applies a step's printed condition after
+ * `resolveAttack` returns and ammunition's lands at the bottom of it, while the critical deck
+ * applied its own inside `drawCritEffect`, before the target's armour had been read. So *Find the
+ * Gap* stripped the armour off the very hit that found the gap -- the face gave up its doubling
+ * and collected the whole benefit immediately, which is not the trade the deck was written as.
+ *
+ * Pinned by position, because that is what the rule is: the index of the application against the
+ * index of the damage write.
+ */
+check("the deck hands its riders back rather than applying them",
+  /return \{ doubles, faces, lines, riders \};/.test(resolveSource) ? "yes" : "no", "yes");
+check("and the rider is applied after the damage",
+  resolveSource.indexOf("for (const step of crit.riders ?? [])")
+  > resolveSource.indexOf('await taker.update({') ? "yes" : "no", "yes");
+
 /* One insertion path, because there are two reasons to insert and they differ in one field. */
 check("one path puts a card into a fate deck",
   /export async function addFateCards/.test(decksSource) ? "yes" : "no", "yes");
@@ -12789,7 +12858,7 @@ for (const m of selfSource.matchAll(/(\w+)\.includes\("((?:[^"\\]|\\.)*)"\)/g)) 
 }
 
 /* The pin that keeps the rest of this honest. */
-check("greps over a whole file, resolved", greps.length, 642);
+check("greps over a whole file, resolved", greps.length, 648);
 
 /*
  * **The rule, as one predicate, run over a planted example before it is run over the suite.**

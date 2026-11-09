@@ -22,8 +22,14 @@ const fields = foundry.data.fields;
 /* -------------------------------------------- */
 
 /**
- * A condition instance. The creator is load-bearing: the duration ticks at the start of the
+ * A condition instance. The creator is load-bearing: the duration ticks at the **end** of the
  * creator's turn, or the victim's if the creator has left combat (core-rules 7).
+ *
+ * **`duration: 1` means *through my next turn*.** It used to mean *through the turn after this
+ * one*, which ticked at the start of the creator's turn and so expired before the creator could
+ * ever act on it -- a brute set a target Exposed and the Exposed was gone by the time the brute
+ * swung again, so the only creature who could use the setup was somebody else. The clock now
+ * starts when the creator's turn ends and stops when their next one does.
  */
 function conditionField() {
   return new fields.ArrayField(new fields.SchemaField({
@@ -38,6 +44,18 @@ function conditionField() {
      */
     value: new fields.NumberField({ integer: true, min: 0, nullable: true, initial: null }),
     creatorId: new fields.StringField({ required: false, blank: true, initial: "" }),
+    /*
+     * **The round it was applied in, which is what makes *starts after my turn* implementable.**
+     *
+     * The tick fires when the creator's turn ends, and the turn it was applied on is a turn that
+     * ends -- so without this the condition would tick the instant it landed and a `duration: 1`
+     * would never survive to be used. Compared against the round of the turn that just finished,
+     * not against the current round: a creator acting last in the order sees the round number
+     * change before the tick runs.
+     *
+     * Null outside combat, where there are no turns to count and nothing ticks anyway.
+     */
+    round: new fields.NumberField({ integer: true, min: 0, nullable: true, initial: null }),
     /*
      * **A bonus this instance of the condition carries.**
      *
