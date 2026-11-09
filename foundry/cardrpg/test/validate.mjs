@@ -7445,13 +7445,39 @@ check("and callers that name the routines instead",
  * grant *armour and its repair* put their bonus on `lore` -- which means the training a character
  * bought is the training that pays, with no new field anywhere.
  */
-check("a repair is resolved as a Lore check",
-  /resolveCheck\(actor, \{ approach: "lore", dc, item \}\)/.test(resolveSource) ? "yes" : "no",
-  "yes");
+check("a repair is resolved as an improvised Lore check, with the tool",
+  /resolveCheck\(actor, \{ approach: "lore", dc, improvise: true, item: tool \}\)/
+    .test(resolveSource) ? "yes" : "no", "yes");
 /* And Corrode finally has the inverse three pieces of content have promised for months -- two
  * backgrounds, a ritual, and the ritual's own `needs` line saying there was not one. */
 check("Corrode has an inverse",
   /export async function resolveRepair\(/.test(resolveSource) ? "yes" : "no", "yes");
+/*
+ * **And every caller of `resolveCheck` either plays a card or says it is improvising.**
+ *
+ * A check takes its base off a card -- that is what a check is here -- and `resolveCheck` refuses
+ * with *"That card is not a Lore card"* when there is none. So a caller that passes neither has
+ * written a path that cannot succeed and says so to the player in words about a card they never
+ * played. `resolveRepairCheck` shipped exactly that: the repair skill, the one the rules have
+ * named since Corrode existed, could not have worked once.
+ *
+ * Two call sites, which is why this is worth checking rather than remembering. The skill pane
+ * passes a real card; a repair improvises, because a night in downtime is not a card out of a
+ * hand.
+ */
+const checkCallers = [["resolve", resolveSource], ["tray", traySource]].flatMap(([where, src]) =>
+  [...src.matchAll(/resolveCheck\((?!actor, \{\s*$)/g)]
+    .filter(m => !/export async function resolveCheck/.test(src.slice(m.index - 40, m.index + 20)))
+    .map(m => ({ where, at: m.index, near: src.slice(m.index, m.index + 320) })));
+check("call sites that resolve a check", checkCallers.length, 2);
+check("and those passing neither a card nor improvise",
+  checkCallers.filter(c => !/\bcard\b|improvise/.test(c.near))
+    .map(c => c.where).join(", ") || "none", "none");
+/* And the thing being mended is never handed over as the TOOL: `item` on a check is what helps
+ * you, so the broken armour there was a breastplate helping mend a breastplate. */
+check("and the repair hands its own item to the check",
+  /resolveCheck\(actor, \{ approach: "lore", dc, item \}\)/.test(resolveSource) ? "still does"
+    : "none", "none");
 
 /*
  * **The deck's shape**, which two faces have just changed. Pinned as the three numbers the rules
@@ -13003,7 +13029,7 @@ for (const m of selfSource.matchAll(/(\w+)\.includes\("((?:[^"\\]|\\.)*)"\)/g)) 
 }
 
 /* The pin that keeps the rest of this honest. */
-check("greps over a whole file, resolved", greps.length, 651);
+check("greps over a whole file, resolved", greps.length, 652);
 
 /*
  * **The rule, as one predicate, run over a planted example before it is run over the suite.**
@@ -13065,6 +13091,7 @@ const absentGreps = [
   String.raw`and the literal Fear used to carry is gone :: const which = fast \? "actionHand" : "actionDiscard";`,
   String.raw`and the old disjunction is gone from the hand filter :: c\.type !== "wound" && c\.type !== "taint"`,
   String.raw`and the old sentence is gone :: Faith is \*\*wide and shallow\*\*`,
+  String.raw`and the repair hands its own item to the check :: resolveCheck\(actor, \{ approach: "lore", dc, item \}\)`,
   String.raw`and the resolver reads the flag :: conditionsOf\(actor\)\.includes\("invisible"\)`,
   String.raw`and the template no longer asks which kind it is :: \{\{#if isWound\}\}`,
   String.raw`and the token is not given a file of its own :: texture: \{ src: (?!art \})`,

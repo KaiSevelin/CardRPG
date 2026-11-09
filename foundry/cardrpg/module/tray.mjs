@@ -2208,11 +2208,35 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
           rejectClose: false
         });
         const pick = hurt.find(i => i.id === id);
-        if (pick) {
-          await (step.param === null || step.param === undefined
-            ? resolveRepairCheck(actor, { item: pick })
-            : resolveRepair(actor, { item: pick, amount: step.param }));
+        if (!pick) break;
+        if (step.param !== null && step.param !== undefined) {
+          await resolveRepair(actor, { item: pick, amount: step.param });
+          break;
         }
+        /*
+         * A check, so the kit matters. Same eligibility rule as the skill pane -- an equipped item
+         * with a bonus on this approach -- and the same reason the player chooses rather than the
+         * engine: `situation` is a sentence for a person to read, and picking for them would mean
+         * matching it by hand.
+         */
+        const kit = actor.items.filter(i => i.type === "item" && i.system.equipped
+          && ["lore", "any"].includes(i.system.bonus?.approach));
+        const toolId = !kit.length ? "" : await foundry.applications.api.DialogV2.wait({
+          window: { title: "Repair" },
+          content: `<div class="cardrpg"><p>What are you working with?</p></div>`,
+          buttons: [
+            ...kit.map(i => ({
+              action: i.id,
+              label: `${i.name} (+${i.system.bonus.value ?? 0}`
+                + `${i.system.bonus.situation ? `, ${i.system.bonus.situation}` : ""})`
+            })),
+            { action: "", label: "Bare hands" }
+          ],
+          modal: true,
+          rejectClose: false
+        });
+        await resolveRepairCheck(actor,
+          { item: pick, tool: kit.find(i => i.id === toolId) ?? null });
         break;
       }
 

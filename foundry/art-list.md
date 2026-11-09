@@ -465,7 +465,7 @@ Blood Magic and Spiritualism, handed over by minor nodes.
 | ✓ | **The Long Step** | strength 1 · Move +4 through anything, if you begin and end in shadow | `spells/mind/the-long-step.webp` |
 | ✓ | **The Long Table** | strength 3 · the party sheds every Wound and all rest tokens return | `spells/mind/the-long-table.webp` |
 | ✓ | **The Mark of Things to Come** | strength 2 · range 99 Marked (1) and Read 1 | `spells/mind/the-mark-of-things-to-come.webp` |
-| ✓ | **The Mended Seam** | strength 1 · repair one item overnight, including corroded armour | `spells/mind/the-mended-seam.webp` |
+| ✓ | **The Mended Seam** | strength 1 · Repair 1 repair one item overnight, including corroded armour | `spells/mind/the-mended-seam.webp` |
 | ✓ | **The Mirror** | strength 3 · Spent: a Cast aimed at you resolves against its own caster | `spells/mind/the-mirror.webp` |
 | ✓ | **The Nine Names** | strength 1 · a minor god names who here it is angry with | `spells/mind/the-nine-names.webp` |
 | ✓ | **The Open Book** | strength 4 · every ally draws fate with advantage, and Read 2 | `spells/mind/the-open-book.webp` |

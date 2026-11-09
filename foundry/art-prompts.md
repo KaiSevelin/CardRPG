@@ -4443,11 +4443,11 @@ Draw singled out of a crowd.
 File: `spells/mind/the-mended-seam.webp`
 
 ```text
-SUBJECT. "The Mended Seam" — strength 1 · repair one item overnight, including corroded armour
+SUBJECT. "The Mended Seam" — strength 1 · Repair 1 repair one item overnight, including corroded armour
 
 One item, overnight, including corroded armour — which until now was the only damage in the game nothing undid.
 
-Draw that line literally: the one moment it describes, and nothing else in frame.
+Draw [GAP] no motif written for effect `repair`.
 ```
 
 ### The Mirror
@@ -9357,7 +9357,8 @@ Answer a cluster by adding its keys to `DIRECTION` in `test/art-prompts.mjs` and
 
 ## Gaps
 
-**1 piece of the game's vocabulary have no motif**, so the prompts that use them carry a `[GAP]` marker instead of a picture. Write one in `test/art-prompts.mjs` and regenerate.
+**2 pieces of the game's vocabulary have no motif**, so the prompts that use them carry a `[GAP]` marker instead of a picture. Write one in `test/art-prompts.mjs` and regenerate.
 
 - condition `exposed`
+- effect `repair`
 

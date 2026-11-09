@@ -5839,7 +5839,13 @@ export const MIND_POOL = [
     needs: ["repairing an item, which Corrode has no inverse for"],
     description: "<p>One item, overnight, including corroded armour &mdash; which until now was "
       + "the only damage in the game nothing undid.</p>",
-    effect: { timing: "ritual", text: "repair one item overnight, including corroded armour" }
+    /* **And it plays the verb now rather than describing it.** `effect` is a `stepField`, so the
+     * ritual that was written for *repairing an item, which Corrode has no inverse for* can say
+     * so in the one vocabulary the engine reads. `param: 1` because the ritual is a promise and
+     * not an attempt: a night, an item, a point back, no check. The Lore check is the other route
+     * -- for a character with a kit and no spell -- and it is the one that can fail. */
+    effect: { timing: "ritual", verb: "repair", param: 1,
+      text: "repair one item overnight, including corroded armour" }
   },
   {
     name: "The Unlatched Door", strength: 2, pool: "mind", source: "Household Magic",

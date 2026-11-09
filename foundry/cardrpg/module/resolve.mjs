@@ -1284,13 +1284,40 @@ export async function resolveRepair(actor, { item, amount = 1, which = "" } = {}
  *  - **Fail**: nothing. Nothing worse, either -- a failed repair does not eat the item, for the
  *    same reason Corrode does not: gear here is spent, not deleted.
  */
-export async function resolveRepairCheck(actor, { item, dc = CARDRPG.difficulties.normal } = {}) {
+export async function resolveRepairCheck(actor,
+  { item, tool = null, dc = CARDRPG.difficulties.normal } = {}) {
   if (!actor || !item) return null;
   if (!item.system?.needsRepair) {
     ui.notifications?.info(`${item.name} has nothing wrong with it.`);
     return null;
   }
-  const check = await resolveCheck(actor, { approach: "lore", dc, item });
+  /*
+   * **`improvise`, and no `item`, and both of those were wrong when this shipped.**
+   *
+   * `resolveCheck` reads its base off a CARD -- that is what a check is in this game -- and
+   * refuses with *"That card is not a Lore card"* when there is none. A repair is not a card
+   * played from a hand: it is a night's work in downtime, which is exactly what `improvise`
+   * means, and without it this routine could not succeed once. It would warn about a card nobody
+   * had played and return null, which is the shape of defect this file is full of notes about:
+   * a path that looks wired and silently does nothing.
+   *
+   * And `item` on `resolveCheck` means **the tool**, not the thing being worked on. Passing the
+   * broken armour there read its `bonus` as a tool bonus -- a breastplate helping you mend a
+   * breastplate. The thing being repaired goes to `resolveRepair` below and nowhere else.
+   *
+   * **`tool` is separate, and it is the whole reason the Repair Kit has a `bonus`.** *Lore +2,
+   * training "armour and its repair", situation "repairs"* is the tool mechanism spelled out, and
+   * a first version of this threw it away by passing nothing: a character with the right kit got
+   * no more out of a repair than one with bare hands. `resolveCheck` caps an untrained user at +1
+   * however good the tool is, which is the rule that makes the training worth buying.
+   *
+   * Which tool is the player's to choose, as it is in the skill pane: `situation` exists to be
+   * read by a person -- *repairs*, *metalwork* -- and the pane prints it beside each tool for
+   * exactly that reason. Picking for them would mean matching that sentence by hand, which this
+   * file already warns about: the tool bonus once matched a tool's LAST WORD against the
+   * trainings a character held, and eleven of fourteen tools could never be trained.
+   */
+  const check = await resolveCheck(actor, { approach: "lore", dc, improvise: true, item: tool });
   if (!check) return null;
   const back = check.result === "critical" ? 2 : check.result === "success" ? 1 : 0;
   if (!back) {
