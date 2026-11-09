@@ -52,8 +52,8 @@ jobs:
       - run: npm ci
       - run: npm test
 
-  packs:
-    name: the packs match the content
+  derived:
+    name: everything derived from the content is current
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -66,17 +66,27 @@ jobs:
           cache: npm
           cache-dependency-path: foundry/cardrpg/package-lock.json
       - run: npm ci
-      # The compiled packs are committed, so they can be stale, and a stale pack is a world built
-      # from yesterday's content. Rebuilding and asking git whether anything moved is the whole
-      # test. Only `_source` is compared: the LevelDB files underneath it are rewritten byte-wise
-      # on every build and say nothing about whether the content changed.
-      - name: rebuild
-        run: npm run packs
-      - name: and nothing in them moved
+      # Four things are generated from the content and committed beside it: the compiled packs,
+      # the art brief, the prompt book and the player's handbook's reference chapters. Every one of
+      # them can be stale, and a stale one is worse than a missing one because it looks like an
+      # answer. Rebuilding and asking git whether anything moved is the whole test.
+      #
+      # Only `packs/_source` is compared for the packs: the LevelDB files underneath are rewritten
+      # byte-wise on every build and say nothing about whether the content changed.
+      - name: rebuild everything derived
+        run: npm run build
+      - name: and nothing in it moved
         run: |
-          if ! git diff --quiet -- packs/_source; then
-            echo "::error::the committed packs disagree with the content -- run 'npm run packs'"
-            git diff --stat -- packs/_source
+          STALE=0
+          for path in packs/_source ../art-list.md ../art-prompts.md ../../rules/players-handbook.md; do
+            if ! git diff --quiet -- "$path"; then
+              echo "::error::$path disagrees with the content"
+              git diff --stat -- "$path"
+              STALE=1
+            fi
+          done
+          if [ "$STALE" = "1" ]; then
+            echo "::error::run 'npm run build' and commit what changes"
             exit 1
           fi
-          echo "packs are current"
+          echo "the packs, the art brief, the prompt book and the handbook are all current"
