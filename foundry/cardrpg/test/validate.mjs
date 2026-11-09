@@ -7408,6 +7408,76 @@ check("markdown left unrendered on the page",
   (bookBuilt.html.split("<main")[1].match(/\*\*|^\|/gm) ?? []).length, 0);
 /* The stylesheet is the one hand-written file in this pipeline, so the page must actually ask
  * for it: a generated page linking a stylesheet that is not there is a page nobody styled. */
+/*
+ * **[FOUND BY A READER 2026-11-09] Rows that render without their picture.**
+ *
+ * Twenty spells came out blank, one per school and one per god, because a Signature spell is
+ * filed on the signatures shelf and the lookup only consulted `spells/`. Seven reaction spells in
+ * the action chapter went the same way, because the Mind and Faith pools ARE the spell shelves.
+ * Every file was on disk, and the art brief read *622 pieces, 622 drawn, 0 to shoot*, so nothing
+ * upstream was wrong and nothing upstream could have seen it: the whole loss was in the asking.
+ *
+ * What is left is declared rather than tolerated, with the reason, so the list can only get
+ * shorter and a new blank row fails here instead of being noticed by somebody reading.
+ */
+const NO_PICTURE = [
+  /*
+   * The eight general twists, which have no faces **by design** and the brief says why: *a twist
+   * is a NAME and a COST rather than a picture... art for a deck one person ever sees is art
+   * nobody at the table looks at.* The ritual twists are the exception and do have faces, because
+   * that is the one deck on the GM's side with an audience.
+   */
+  "twists/Noise", "twists/Time", "twists/Gear", "twists/Strain",
+  "twists/Hurt", "twists/Arrival", "twists/Secret", "twists/Opening",
+  /*
+   * **The starter Shade's deck, which is on no art shelf at all.** `SHELVES` has
+   * `cards/starter` for `WARRIOR_DECK` and nothing for `SHADE_DECK`, so these ten were never
+   * commissioned and the brief cannot say so: it counts what is on a shelf, which is the same
+   * one-directional check this file keeps finding. A commission, not a bug in the page.
+   */
+  "actions/Knife Work", "actions/Open Vein", "actions/Slip In", "actions/Shed the Blow",
+  "actions/Quick Step", "actions/Draw the Knife", "actions/Light Fingers",
+  "actions/Bind the Wound", "actions/Jeer", "actions/Off Hand"
+];
+check("rows on the page with no picture, beyond the declared ones",
+  bookBuilt.missed.filter(m => !NO_PICTURE.includes(m)).join(", ") || "none", "none");
+check("and declared ones that now have one",
+  NO_PICTURE.filter(m => !bookBuilt.missed.includes(m)).join(", ") || "none", "none");
+/* Which is the Shade deck's absence stated where it is actionable, rather than only as a blank. */
+check("starter decks on an art shelf",
+  (await import("../module/art.mjs")).SHELVES.filter(s => s.key.startsWith("cards/starter")).length, 1);
+
+/*
+ * **[FOUND 2026-11-09] Every reaction says what it does, and the handbook named ten and explained
+ * none.** Chapter 4 read *there are two triggers* and listed the reactions by name, so a player
+ * holding a card that printed `sidestep` or `heckle` had the word and nothing else. There are five
+ * triggers; the three that were missing are the ones belonging to the casting Ways, so the gap
+ * fell hardest on the players least able to guess.
+ *
+ * Checked in both directions, because a keyed list of prose rots from both ends, and the mechanics
+ * are read off config rather than restated: only the sentence is written by hand.
+ */
+const { REACTION_TEXT } = await import("./handbook.mjs");
+const describedReactions = ["brace", ...Object.keys(CARDRPG.reactions)];
+check("reactions with no line saying what they do",
+  describedReactions.filter(k => !REACTION_TEXT[k]).join(", ") || "none", "none");
+check("and lines written for a reaction that is gone",
+  Object.keys(REACTION_TEXT).filter(k => !describedReactions.includes(k)).join(", ") || "none", "none");
+check("reactions the handbook now describes", (handbook.match(/^\| \*\*\w[^|]*\| (?:you are hit|an enemy ends|an ally within|a spell is cast|a check fails)/gm) ?? []).length,
+  describedReactions.length);
+/* The action table printed the raw key -- `parry`, `mend` -- where the label was right there. */
+check("raw reaction keys left in the action table",
+  (handbook.match(/^\| \*\*[^|]+\|[^|]*\|[^|]*\|[^|]*\| (?:parry|block|sidestep|counter|use|heckle|bodyguard|unmake|mend|bargain) \|/gm) ?? []).length, 0);
+/* All five triggers read as a clause, so "fires when ..." works wherever one is printed. */
+check("trigger labels that do not read as a clause",
+  Object.values(CARDRPG.reactions).map(r => r.trigger)
+    .filter((t, i, a) => a.indexOf(t) === i)
+    .filter(t => /^[A-Z]/.test(lang[`CARDRPG.Trigger.${t[0].toUpperCase()}${t.slice(1)}`] ?? ""))
+    .join(", ") || "none", "none");
+/* And the sentence that was wrong is gone. */
+check("the claim that there are two triggers",
+  handbook.includes("There are two triggers") ? "still there" : "none", "none");
+
 check("the page links the stylesheet", bookBuilt.html.includes('href="book.css"') ? "yes" : "no", "yes");
 check("and the stylesheet is there",
   fs.existsSync(path.join(root, "../../rules/book.css")) ? "yes" : "no", "yes");
@@ -13747,6 +13817,7 @@ const absentGreps = [
   String.raw`reaction timer retired from settings :: reactionTimer`,
   String.raw`reaction timer retired from the HUD spec :: \*\*Setting: ` + "`" + String.raw`reactionTimer` + "`" + String.raw`\*\*`,
   String.raw`reaction timer retired from the HUD spec :: ^### 6\.1 The reaction timer$`,
+  String.raw`the claim that there are two triggers :: There are two triggers`,
   String.raw`the deck module reaches back into the resolver :: from "\.\/resolve\.mjs"`,
   String.raw`the deck module reaches back into the resolver :: resolve\.mjs"\)`,
   String.raw`the fate bar no longer assumes twenty :: \(counts\.fate \?\? 0\) \/ 20`,

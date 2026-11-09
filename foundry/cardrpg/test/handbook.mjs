@@ -66,6 +66,9 @@ const plain = html => String(html ?? "")
   /* Tags are stripped to a SPACE, so "how</strong>," arrives as "how ,". */
   .replace(/\s+([,.;:!?])/g, "$1").trim();
 
+/** "1 card", "11 cards". Counted things are printed in a dozen places and one of them read "1 cards". */
+const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
+
 /** A table cell may not contain the character that ends a table cell. */
 const cell = s => plain(s).replace(/\|/g, "/");
 
@@ -292,7 +295,7 @@ function actionChapter() {
       const what = [CONTENT.CARD_BLURBS[c.name] ?? "", note ? `*${note}*` : ""]
         .filter(Boolean).join(" ");
       out.push(`| **${c.name}** | ${what} | ${cell(half(c.primary)) || "–"} `
-        + `| ${cell(half(c.secondary)) || "–"} | ${c.reaction ?? "–"} `
+        + `| ${cell(half(c.secondary)) || "–"} | ${c.reaction ? say(CARDRPG.reactions[c.reaction]?.label) : "–"} `
         + `| ${c.copies ?? 1} |`);
     }
     out.push("");
@@ -301,6 +304,94 @@ function actionChapter() {
 }
 
 /* -------------------------------------------- */
+
+/* -------------------------------------------- */
+/*  Reactions                                   */
+/* -------------------------------------------- */
+
+/**
+ * **What each reaction actually does, which the handbook named and never explained.**
+ *
+ * Chapter 4 said *there are two triggers* and listed the reactions by name, so a player holding a
+ * card that reads `sidestep` or `heckle` had the word and nothing else. There are **five**
+ * triggers, not two: being hit, an enemy arriving, an **ally** being hit, a spell being cast, and
+ * a check failing. The last three were missing entirely, and they are the three that belong to the
+ * casting Ways, so the omission fell hardest on exactly the players least able to guess.
+ *
+ * **Everything mechanical is read, not written here.** The trigger, the kind, and what the
+ * reaction requires all come from `CARDRPG.reactions`; the labels come from the lang file; the
+ * count of cards carrying each one is counted off the content. Only the sentence is authored, and
+ * it is checked against the config in both directions, so a reaction added without a line fails
+ * and a line naming no reaction fails.
+ *
+ * **Brace is in the table and not in the config**, which is a real asymmetry rather than an
+ * oversight: it is the fallback in `reactionsFor` for a card whose own reaction cannot fire, and
+ * its value is `CARDRPG.defaults.brace`. It is also the reaction a player meets most, so leaving
+ * it out of a reference because the vocabulary does not list it would be the wrong kind of tidy.
+ */
+export const REACTION_TEXT = {
+  brace: "Reduce the damage, barely. Any card whose own reaction cannot fire is still worth this "
+    + "much, which is deliberately too little to be worth spending a good card on.",
+  parry: "Turn the blow with what you are already holding. Reduces the damage by your weapon's "
+    + "own Defend value, so a sword parries better than a knife.",
+  block: "The shield comes up. Reduces the damage by the shield's Defend value and one more for "
+    + "being a shield, which is the best answer to a hit in the game.",
+  use: "Something off your belt, drunk or broken open as the blow lands. Heals you by the item's "
+    + "Use value, and the item is spent doing it.",
+  sidestep: "Step out of reach as they arrive, by the number the card prints. The attack that was "
+    + "walking toward you never arrives.",
+  counter: "They walked onto your point. A free Strike at the enemy that just arrived, for your "
+    + "weapon's full value, and it is the only reaction in the game that deals damage.",
+  heckle: "A word, at the moment they close. The enemy that just arrived draws fate with "
+    + "disadvantage, so the attack it came to make is already spoiled.",
+  bodyguard: "The blow meant for your friend arrives at you instead. It is settled before any "
+    + "other answer, because stepping in front of somebody has to happen first.",
+  unmake: "You have felt this spell before, and that is the only reason you can stop it.",
+  mend: "Help reaches an ally on the turn they were hit rather than on yours, which is most of "
+    + "what makes it worth a prepared slot.",
+  bargain: "A check you had just failed is intervened in, once, by something that owes you."
+};
+
+/** Every reaction in the order config lists them, with Brace first because it is the common one. */
+function reactionRows() {
+  const carriers = new Map();
+  for (const list of Object.values(CONTENT)) {
+    if (!Array.isArray(list)) continue;
+    for (const e of list) {
+      if (!e?.reaction || !isCard(e)) continue;
+      carriers.set(e.reaction, (carriers.get(e.reaction) ?? 0) + (e.copies ?? 1));
+    }
+  }
+  /*
+   * Grouped by trigger rather than left in config order, because the first question a player has
+   * is *what just happened*, and config lists them by the order they were built.
+   */
+  const ORDER = ["hit", "arrival", "allyHit", "cast", "check"];
+  const rows = [["brace", null]];
+  for (const [key, rule] of Object.entries(CARDRPG.reactions)) rows.push([key, rule]);
+  rows.sort((a, b) => ORDER.indexOf(a[1]?.trigger ?? "hit") - ORDER.indexOf(b[1]?.trigger ?? "hit"));
+  return rows.map(([key, rule]) => ({
+    key,
+    label: say(rule ? rule.label : "CARDRPG.Reaction.Brace"),
+    when: rule ? say(CARDRPG.triggers?.[rule.trigger]?.label
+      ?? `CARDRPG.Trigger.${rule.trigger[0].toUpperCase()}${rule.trigger.slice(1)}`)
+      : say("CARDRPG.Trigger.Hit"),
+    text: REACTION_TEXT[key] ?? "",
+    on: rule?.spell ? "a prepared spell"
+      : key === "brace" ? "any card that cannot answer otherwise"
+        : plural(carriers.get(key) ?? 0, "card")
+  }));
+}
+
+function reactionChapter() {
+  const out = ["| Reaction | Fires when | What it does | Printed on |", "|---|---|---|---|"];
+  for (const r of reactionRows()) {
+    /* The trigger reads as a clause in the lang file (*you are hit*), so it needs no rewriting. */
+    out.push(`| **${r.label}** | ${cell(r.when)} | ${cell(r.text)} | ${r.on} |`);
+  }
+  out.push("");
+  return out;
+}
 
 /* -------------------------------------------- */
 /*  Obediences and gifts                        */
@@ -419,6 +510,7 @@ export const CHAPTERS = {
   items: itemChapter,
   features: featureChapter,
   spells: spellChapter,
+  reactions: reactionChapter,
   creeds: creedChapter,
   twists: twistChapter
 };

@@ -87,10 +87,14 @@ for (const [, table] of [["verbs", CARDRPG.verbs], ["approaches", CARDRPG.approa
  * about is what keeps the action table from showing a monster's picture.
  */
 const SHELVES_FOR = {
-  actions: ["cards/", "signatures/"],
+  /* A reaction spell appears in the action chapter and is filed with the spells, because the
+   * Mind and Faith pools ARE the spell shelves: Turn Aside, The Mirror, Bear It for Them. */
+  actions: ["cards/", "signatures/", "spells/mind", "spells/faith"],
   items: ["items"],
   features: ["features"],
-  spells: ["spells/"],
+  /* A Signature spell is filed with the signatures, not with the spells: one per school and
+   * one per god, twenty of the hundred and forty, and they were the twenty with no picture. */
+  spells: ["spells/", "signatures/mind", "signatures/faith"],
   twists: ["cards/ritual"],
   creeds: []
 };
@@ -132,6 +136,20 @@ const anchor = s => slug(s.replace(/\*\*/g, ""));
  * reference. Those get no `thead` at all rather than an empty one, so no reader and no screen
  * reader is told there is a header there.
  */
+/**
+ * **Rows that went out without their picture**, collected as the page is built.
+ *
+ * [FOUND 2026-11-09] Twenty spells rendered blank, one per school and one per god, because a
+ * Signature spell is filed on the signatures shelf rather than the spells shelf and the lookup
+ * only looked at `spells/`. Every file was on disk and the art brief read 622 of 622 drawn, so
+ * nothing upstream was wrong and nothing upstream could have noticed: the loss was entirely in
+ * the asking. A reader found it, which is the expensive way.
+ *
+ * So the builder now says what it could not place, and the suite reads it. A chapter with an art
+ * index is a chapter where a blank row is a bug rather than a gap.
+ */
+const MISSED = [];
+
 function table(rows, chapter) {
   const cells = row => row.replace(/^\||\|$/g, "").split("|").map(c => c.trim());
   const head = cells(rows[0]);
@@ -142,7 +160,9 @@ function table(rows, chapter) {
   }
   out.push("<tbody>");
   for (const row of body) {
-    const art = chapter && ART[chapter]?.get(row[0]?.replace(/\*\*/g, ""));
+    const name = row[0]?.replace(/\*\*/g, "");
+    const art = chapter && ART[chapter]?.get(name);
+    if (chapter && !art && ART[chapter]?.size) MISSED.push(`${chapter}/${name}`);
     const first = art
       ? `<th scope="row" class="named"><img src="${ART_HREF}/${art}" alt="" loading="lazy"`
         + ` decoding="async"><span>${inline(row[0])}</span></th>`
@@ -311,6 +331,7 @@ for (const m of marks) spy.observe(m);
  * source does not quietly rot. Nothing here writes.
  */
 export function buildPage(md) {
+  MISSED.length = 0;
   const rendered = render(md);
   const { html: body, swapped } = useRealIcons(rendered.body);
   return {
@@ -318,7 +339,8 @@ export function buildPage(md) {
     chapters: rendered.toc.length,
     tables: (body.match(/<table>/g) ?? []).length,
     art: (body.match(/<img src="/g) ?? []).length,
-    icons: swapped
+    icons: swapped,
+    missed: [...MISSED]
   };
 }
 
@@ -328,4 +350,8 @@ if (process.argv[1] && process.argv[1].endsWith("book.mjs")) {
   console.log(`wrote rules/players-handbook.html: ${built.chapters} chapters, `
     + `${built.tables} tables, ${built.art} pieces of art placed, `
     + `${built.icons} emoji replaced by the game's own icons`);
+  if (built.missed.length) {
+    console.log(`  ${built.missed.length} rows went without a picture:`);
+    for (const m of built.missed) console.log(`    ${m}`);
+  }
 }
