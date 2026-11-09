@@ -561,6 +561,101 @@ near miss. A Miss is a Fail however high the total was.
 **Tools** help the approach they name. An **untrained** user gets at most +1 from a tool however good
 it is; training is what unlocks the rest, and training comes from levelling.
 
+### Challenges
+
+A big situation is not one check. Getting into a manor, chasing a thief over rooftops, crossing a
+mountain, talking a duke round: each is a **challenge**, and the whole party plays into two tracks.
+
+- **Progress**, how much you need to achieve.
+- **Pressure**, how much can go wrong before it fails or turns ugly.
+
+Each round, every character takes **one** action: a check, a help, or anything else that fits.
+
+| Result | Progress | Pressure |
+|---|---|---|
+| **Critical** | +2 | – |
+| **Success** | +1 | – |
+| **Partial** | +1 | +1 |
+| **Fail** | – | +1, and a twist |
+
+**You can watch both of them.** While a challenge is running, two bars sit on your tray: *Progress
+3/6* filling from one side and *Pressure 1/4* from the other. You always know how close you are to
+either ending, and that is the point of showing them, because every turn of a challenge is a
+decision about whether to push or play safe, and you cannot take that decision blind.
+
+**You win the moment the Progress bar fills.** You have done the thing, and whatever Pressure is
+left unspent is how cleanly you did it. A manor entered on one point of Pressure is a quiet
+burglary; the same manor entered on three is one the household will be talking about for a month.
+
+**You lose if the Pressure bar fills first.** The alarm goes, the thief is gone, the duke walks out.
+That is meant to open a new situation rather than close the road, and very often the new situation
+is a fight.
+
+**If both fill on the same check, you win.** You got there, and the cost arrives with you.
+
+Neither bar stops at full, so a last check can push one well past the end, and the GM says what the
+overshoot looks like here.
+
+The GM may say a step **needs** a particular approach. That is when the right card in the right hand
+matters, and when the party has to plan as a group rather than as four people taking turns.
+
+**Catch Breath in a challenge.** Instead of a check you may take a breath, which costs the party
+**Pressure +1**, because a breath is time the other side also gets: the guard changes shift, the
+duke grows impatient. Then shuffle your skill discard back into your skill deck, set **1** card of
+your choice aside as Spent until your next rest, and draw up to hand size.
+
+### Twists
+
+**A Partial costs you a twist. A Fail is one.**
+
+A twist is a card the GM draws that names the *kind* of trouble rather than the trouble: the card
+says *Gear* and the GM says a lockpick snapped off in the lock. Most of them are a question for the
+GM to answer that way. **Time** adds a second point of Pressure, and **Opening** is the one that
+gives you something instead of taking it.
+
+A twist is **on top of** the Pressure a Fail already costs, never instead of it.
+
+You will usually not see the card. It reaches you as something that has happened, and a ritual draws
+from a deck of its own, because a ritual goes wrong in ways nothing else does.
+
+<!-- generated: twists -->
+
+### The twist deck
+
+Thirty cards, drawn when a check outside a ritual asks for one.
+
+| Twist | Copies | What it costs |
+|---|---|---|
+| **Noise** | 4 | Attention. The opposition now knows something is wrong. |
+| **Time** | 4 | The clock. Pressure +1 on top of the normal cost. |
+| **Gear** | 4 | A tool. It breaks or is lost: no tool bonus until repaired or replaced. |
+| **Strain** | 5 | Cards. Discard 1 skill card of the GM's choice from your hand. |
+| **Hurt** | 3 | Health. Lose 2 Health, or gain a condition that fits. |
+| **Arrival** | 4 | Someone new. A third party walks into the scene. |
+| **Secret** | 2 | Information, in either direction. You learn something unwelcome, or they learn something about you. |
+| **Opening** | 4 | Nothing, this one gives. The complication also creates an opportunity. |
+
+That is **30** cards.
+
+### The ritual twist deck
+
+Twenty-four cards, and a ritual draws from these instead. Every one of them is the thing you are trying to lift answering back.
+
+| Twist | Copies | What it costs |
+|---|---|---|
+| **Backlash** | 4 | The working turns. The subject takes 2 damage, ignoring armor. |
+| **It Answers** | 4 | Whatever did this knows the ritual is happening. The curser, the god, the rot itself, and it has time to arrive before you finish. |
+| **Residue** | 3 | Magic leaves marks. 1 Taint into the subject's deck, in the flavour that fits. |
+| **Deeper** | 3 | The injury speaks for itself: it lands as a condition that fits, for the rest of the ritual. A bad leg is Slowed, a shattered nerve is Stunned. |
+| **Spoiled** | 3 | A component is consumed wrongly. No further check until it is replaced, and the GM says what replacing it takes. |
+| **Not Alone** | 3 | The working reaches somebody else present. One ally takes a Doubt, or the condition the subject just took. |
+| **The Long Way** | 3 | The recipe was wrong about the order. Pressure +1, and the next check needs a different approach than the one you have been using. |
+| **It Sets** | 1 | The injury becomes **bound**: no ritual lifts it until the GM's own condition is met, the way an obligation's Taint is bound. The recipe is not spent. |
+
+That is **24** cards.
+
+<!-- /generated: twists -->
+
 ---
 
 ## 10. Running out
@@ -923,31 +1018,31 @@ hands are in brackets. **Weight** counts against your 40 kg limit. **Gold** is w
 | Item | Slot | Weight | Gold | What it does | What it is |
 |---|---|---|---|---|---|
 | **Longsword** | hands (1h) | 2 | 15 | Strike 3, Defend 1 | A plain cruciform blade, kept sharp. |
-| **Dagger** | hands (1h) | 0 | 2 | Strike 2 | Short, quick, and easy to hide. |
+| **Dagger** | hands (1h) | 0 | 2 | Strike 2 (range 3 thrown) | Short, quick, and easy to hide. |
 | **Shortbow** | hands (2h) | 1 | 25 | Strike 2 | Horn and sinew, strung short for close country. |
 | **Arming Sword** | hands (1h) | 1 | 12 | Strike 3, Defend 1 | A plain single-handed blade. Every town has a smith who makes them. |
 | **Greatsword** | hands (2h) | 3 | 40 | Strike 5 | Four feet of edge. Both hands, and nothing held back. |
 | **Great Axe** | hands (2h) | 4 | 30 | Strike 5 | Cheaper than a greatsword and it does not care. |
-| **Mace** | hands (1h) | 2 | 10 | Strike 3 | Flanged. It does not cut, which is the point against a man in mail. |
-| **Warhammer** | hands (1h) | 3 | 25 | Strike 4 | A beak on one side for the plate and a hammer on the other for the man in it. |
-| **Spear** | hands (1h) | 2 | 8 | Strike 3 | The cheapest thing that keeps a man at arm's length. |
-| **Halberd** | hands (2h) | 3 | 35 | Strike 4 | Axe, spike and hook on a six-foot shaft. Reaches over the man in front of you. |
-| **Pike** | hands (2h) | 4 | 20 | Strike 3 | Eighteen feet. Magnificent in a line and worthless on your own. |
-| **Lance** | hands (1h) | 3 | 30 | Strike 5 | A couched lance is a horse's weight arriving at one point. Needs the horse. |
-| **Trident** | hands (1h) | 2 | 18 | Strike 3 | Arena work. The crowd likes the shape of it. |
-| **Net** | hands (1h) | 1 | 5 | Strike 0 | Weighted at the edges. The other half of a trident. |
+| **Mace** | hands (1h) | 2 | 10 | Strike 3 (ignores 1 armor) | Flanged. It does not cut, which is the point against a man in mail. |
+| **Warhammer** | hands (1h) | 3 | 25 | Strike 4 (ignores 1 armor) | A beak on one side for the plate and a hammer on the other for the man in it. |
+| **Spear** | hands (1h) | 2 | 8 | Strike 3 (range 3 thrown) | The cheapest thing that keeps a man at arm's length. |
+| **Halberd** | hands (2h) | 3 | 35 | Strike 4 (reach 2) | Axe, spike and hook on a six-foot shaft. Reaches over the man in front of you. |
+| **Pike** | hands (2h) | 4 | 20 | Strike 3 (reach 3; useless adjacent) | Eighteen feet. Magnificent in a line and worthless on your own. |
+| **Lance** | hands (1h) | 3 | 30 | Strike 5 (needs a mount) | A couched lance is a horse's weight arriving at one point. Needs the horse. |
+| **Trident** | hands (1h) | 2 | 18 | Strike 3 (reach 2) | Arena work. The crowd likes the shape of it. |
+| **Net** | hands (1h) | 1 | 5 | Strike 0 (Grappled (1), resist Might 5) | Weighted at the edges. The other half of a trident. |
 | **Longbow** | hands (2h) | 2 | 50 | Strike 3 | A yew stave taller than the archer. No reload -- that is what you are buying. |
-| **Crossbow** | hands (2h) | 3 | 60 | Strike 4 | Anyone can be taught one in a week, which is why lords dislike them. |
-| **Heavy Crossbow** | hands (2h) | 5 | 120 | Strike 5 | Cranked with a windlass. It goes through a shield and the arm behind it. |
-| **Matchlock Pistol** | hands (1h) | 1 | 70 | Strike 3 | One hand, so it goes beside a sword. A brace of them is two shots before a reload. |
-| **Arquebus** | hands (2h) | 4 | 90 | Strike 5 | Loud, slow, and it does not care what you are wearing. |
-| **Matchlock Musket** | hands (2h) | 5 | 150 | Strike 6 | A rest to fire it from and a minute to load it. Worth both. |
+| **Crossbow** | hands (2h) | 3 | 60 | Strike 4 (ignores 1 armor; Ready to reload) | Anyone can be taught one in a week, which is why lords dislike them. |
+| **Heavy Crossbow** | hands (2h) | 5 | 120 | Strike 5 (ignores 1 armor; Ready to reload) | Cranked with a windlass. It goes through a shield and the arm behind it. |
+| **Matchlock Pistol** | hands (1h) | 1 | 70 | Strike 3 (ignores 2 armor; Ready to reload) | One hand, so it goes beside a sword. A brace of them is two shots before a reload. |
+| **Arquebus** | hands (2h) | 4 | 90 | Strike 5 (ignores 2 armor; Ready to reload) | Loud, slow, and it does not care what you are wearing. |
+| **Matchlock Musket** | hands (2h) | 5 | 150 | Strike 6 (ignores 2 armor; Ready to reload) | A rest to fire it from and a minute to load it. Worth both. |
 
 ### Implements
 
 | Item | Slot | Weight | Gold | What it does | What it is |
 |---|---|---|---|---|---|
-| **Staff of Healing** | hands (2h) | 2 | 0 | Strike 1, Cast 3, Defend 1 | Pale wood, warm to the touch. |
+| **Staff of Healing** | hands (2h) | 2 | 0 | Strike 1, Cast 3 (Heal 3), Defend 1 | Pale wood, warm to the touch. |
 | **Fire Wand** | hands (1h) | 0 | 0 | Cast 2 | Blackened at the tip, and warm even unused. |
 
 ### Shields
@@ -956,8 +1051,8 @@ hands are in brackets. **Weight** counts against your 40 kg limit. **Gold** is w
 |---|---|---|---|---|---|
 | **Wooden Shield** | hands (1h) | 3 | 10 | Strike 1, Defend 2 | Banded oak, scarred across the face. |
 | **Buckler** | hands (1h) | 1 | 6 | Defend 1 | A fist-sized iron plate. Better than the hand behind it. |
-| **Kite Shield** | hands (1h) | 4 | 24 | Defend 2 | Long enough to cover the leg a horseman cannot move. |
-| **Tower Shield** | hands (1h) | 8 | 45 | Defend 3 | A wall for a man who has decided not to go anywhere. |
+| **Kite Shield** | hands (1h) | 4 | 24 | Defend 2 (Defend 3 against Ranged) | Long enough to cover the leg a horseman cannot move. |
+| **Tower Shield** | hands (1h) | 8 | 45 | Defend 3 (your Move is halved while it is in hand) | A wall for a man who has decided not to go anywhere. |
 
 ### Armors
 
@@ -965,23 +1060,23 @@ hands are in brackets. **Weight** counts against your 40 kg limit. **Gold** is w
 |---|---|---|---|---|---|
 | **Leather Armor** | body (1h) | 5 | 20 | Armor 1 | Boiled and riveted, and it still smells of the tannery. |
 | **Mail Shirt** | body | 9 | 70 | Armor 2 | Riveted rings to the hip. The soldier's compromise for eight hundred years. |
-| **Brigandine** | body | 12 | 140 | Armor 3 | Plates riveted between canvas. Heavy enough that you stop dodging. |
-| **Plate** | body | 20 | 400 | Armor 4 | Half your carry allowance, and nothing short of a ball goes through it. |
+| **Brigandine** | body | 12 | 140 | Armor 3. Blocks Sidestep reactions | Plates riveted between canvas. Heavy enough that you stop dodging. |
+| **Plate** | body | 20 | 400 | Armor 4. Blocks Sidestep reactions | Half your carry allowance, and nothing short of a ball goes through it. |
 | **Light Helm** | head | 1 | 15 | Armor 1 | An open kettle. You can still hear and still see. |
-| **Great Helm** | head | 3 | 40 | Armor 1 | Safe, and you cannot hear a thing through it. |
+| **Great Helm** | head | 3 | 40 | Armor 1. Disadvantage on Wits checks | Safe, and you cannot hear a thing through it. |
 
 ### Consumables
 
 | Item | Slot | Weight | Gold | What it does | What it is |
 |---|---|---|---|---|---|
-| **Healing Potion** | belt (1h) | 0 | 50 | Use 4 | Thick, red, and tastes of iron. |
-| **Smoke Bomb** | belt (1h) | 0 | 40 |  | A waxed clay ball, heavier than it looks. |
-| **Antidote** | belt (1h) | 0 | 35 | Use 2 | Charcoal, milk thistle and something the brewer will not name. |
-| **Flask of Ink** | belt (1h) | 0 | 20 | Use 0 | Cuttlefish black. It finds what is not there to be seen. |
-| **Flask of Oil** | belt (1h) | 0 | 10 | Use 0 | Lamp oil, thrown low. |
-| **Firepot** | belt (1h) | 1 | 45 | Use 0 | Pitch and naphtha in a clay shell. It keeps burning. |
-| **Cleansing Draught** | belt (1h) | 0 | 150 | Use 1 | A temple brews it and does not sell it gladly. |
-| **Caltrops** | pack | 2 | 12 | Use 0 | A handful of iron, however it lands. |
+| **Healing Potion** | belt (1h) | 0 | 50 | Use 4 (Heal 4, then discard the item) | Thick, red, and tastes of iron. |
+| **Smoke Bomb** | belt (1h) | 0 | 40 | Use: You become Invisible (1) | A waxed clay ball, heavier than it looks. |
+| **Antidote** | belt (1h) | 0 | 35 | Use 2 (Shake Off 2, Poisoned only) | Charcoal, milk thistle and something the brewer will not name. |
+| **Flask of Ink** | belt (1h) | 0 | 20 | Use 0 (ends Invisible in the area) | Cuttlefish black. It finds what is not there to be seen. |
+| **Flask of Oil** | belt (1h) | 0 | 10 | Use 0 (Off-Balance (1), no save) | Lamp oil, thrown low. |
+| **Firepot** | belt (1h) | 1 | 45 | Use 0 (Burning 1 (2)) | Pitch and naphtha in a clay shell. It keeps burning. |
+| **Cleansing Draught** | belt (1h) | 0 | 150 | Use 1 (remove 1 Taint that is not bound) | A temple brews it and does not sell it gladly. |
+| **Caltrops** | pack | 2 | 12 | Use 0 (the area is difficult ground for the fight) | A handful of iron, however it lands. |
 
 ### Stations
 
@@ -998,21 +1093,21 @@ hands are in brackets. **Weight** counts against your 40 kg limit. **Gold** is w
 |---|---|---|---|---|---|
 | **Pilgrim's Token** | neck | 0 | 3 | lore +1 (matters of one named faith) | Tin, stamped at a shrine. Worth nothing and proof of everything. |
 | **Holy Symbol** | hands (1h) | 0 | 10 | lore +1 (religion and undead) | Whose, and how openly, is the only question that matters in Firma. |
-| **Focus Pendant** | neck | 0 | 400 | undefined +1 | Jeweller's work. The stone is not the point; the setting is. |
-| **Ring of the Open Hand** | fingers | 0 | 600 |  | Plain silver, worn thin. The gesture is already in it. |
-| **Reliquary Band** | fingers | 0 | 350 |  | A splinter of someone's finger under glass. |
-| **Warden's Seal** | fingers | 0 | 500 | undefined +1 | A tower in relief, worn smooth by thumbs that are not yours. |
-| **Ring of Open Hands** | fingers | 0 | 0 |  | Almost the ring you were hoping for. |
+| **Focus Pendant** | neck | 0 | 400 | Cast +1 | Jeweller's work. The stone is not the point; the setting is. |
+| **Ring of the Open Hand** | fingers | 0 | 600 | You may Cast without a free hand | Plain silver, worn thin. The gesture is already in it. |
+| **Reliquary Band** | fingers | 0 | 350 | Spell slots +1 | A splinter of someone's finger under glass. |
+| **Warden's Seal** | fingers | 0 | 500 | Defend +1 | A tower in relief, worn smooth by thumbs that are not yours. |
+| **Ring of Open Hands** | fingers | 0 | 0 | You may Cast without a free hand. Curse: You may never hold anything in your other hand again. Lifted by the jeweller who made it, who is dead | Almost the ring you were hoping for. |
 
 ### Makes
 
 | Item | Slot | Weight | Gold | What it does | What it is |
 |---|---|---|---|---|---|
-| **Marching Boots** | feet | 1 | 12 |  | Nailed soles. Rubble and mud stop being a decision. |
+| **Marching Boots** | feet | 1 | 12 | Difficult ground costs you 1 instead of 2 | Nailed soles. Rubble and mud stop being a decision. |
 | **Smith's Hammer** | pack | 2 | 18 | lore +2 (metalwork) | A cross-pein and a sense of what metal wants. |
-| **Fine Longsword** | hands (1h) | 2 | 90 | Strike 3, Defend 1, undefined +1 | A smith's mark near the hilt, and worth asking after. |
-| **Masterwork Crossbow** | hands (2h) | 3 | 300 | Strike 4 | A steel prod and a goat's-foot lever. It reloads in the hand. |
-| **Balanced Dagger** | hands (1h) | 0 | 70 | Strike 3 | Weighted at the tang. It goes where you looked. |
+| **Fine Longsword** | hands (1h) | 2 | 90 | Strike 3, Defend 1, Strike +1 | A smith's mark near the hilt, and worth asking after. |
+| **Masterwork Crossbow** | hands (2h) | 3 | 300 | Strike 4 (ignores 1 armor; reloads on a free hand, not a Ready) | A steel prod and a goat's-foot lever. It reloads in the hand. |
+| **Balanced Dagger** | hands (1h) | 0 | 70 | Strike 3 (range 5 thrown) | Weighted at the tang. It goes where you looked. |
 | **Proofed Mail** | body | 9 | 320 | Armor 3 | Tested against a bodkin at ten paces and dented, not pierced. |
 
 ### Tools
@@ -1027,116 +1122,58 @@ hands are in brackets. **Weight** counts against your 40 kg limit. **Gold** is w
 | **Lantern** | hands (1h) | 2 | 5 | wits +1 (anything you need to see in the dark) | Horn panes and a tallow dip. The squares it lights are not shadowed. |
 | **The Kit** | pack | 3 | 0 | shadow +2 (every Hard physical obstacle counts as Normal) | A burglar's whole trade in a roll of canvas, and they never put it down. |
 
-### Wonders
-
-| Item | Slot | Weight | Gold | What it does | What it is |
-|---|---|---|---|---|---|
-| **Cloak of the Grey** | cloak | 1 | 500 |  | It is the colour of whatever is behind it. |
-| **Amulet of the Mended Thread** | neck | 0 | 800 |  | A knotted thread in amber. The knot is tied, not drawn. |
-| **Boots of the Long Step** | feet | 1 | 450 |  | The soles are never quite worn in the same places twice. |
-| **Helm of the Watchful** | head | 2 | 1500 | Armor 1 | Nothing comes at you from a side you were not already watching. |
-| **The Quenched Blade** | hands (1h) | 2 | 2000 | Strike 3, Defend 1 | Quenched in something that is still angry about it. |
-| **Whetstone of the Last Edge** | pack | 1 | 60 |  | It takes something back out of a blade that has given everything. |
-| **Tinker's Thimble** | fingers | 0 | 80 |  | Brass, and far too small for whoever made it. |
-| **Pilgrim's Shoes** | feet | 1 | 90 |  | Worn by somebody who got where they were going. |
-| **Cracked Spyglass** | pack | 1 | 150 |  | The crack does not matter. What you see through it has not happened yet. |
-| **Quartermaster's Belt** | belt | 1 | 300 |  | Everything hangs lighter on it. Nobody knows why and nobody asks twice. |
-| **Hollow Boots** | feet | 1 | 350 |  | They sound like a far larger man coming. |
-| **Marked Arrowhead** | belt | 0 | 350 |  | It has not been fired. It does not need to be. |
-| **Deep Pockets** | cloak | 1 | 400 |  | More in them than went in, and never what you wanted. |
-| **Cairn Stone** | pack | 4 | 450 |  | Set it down and the ground agrees to be taller. |
-| **Gorget of the Turned Blade** | neck | 1 | 450 |  | Three old cuts in it, none of them deep. |
-| **Accuser's Ring** | fingers | 0 | 500 |  | It is cold on the finger that points. |
-| **Beggar's Bowl** | pack | 1 | 500 |  | Whatever is dropped in it stops being anybody's. |
-| **Hourglass Charm** | neck | 0 | 550 |  | The sand has not moved since you found it. |
-| **Gambler's Coin** | fingers | 0 | 600 |  | It lands how you need it to, which is not the same as how you want it to. |
-| **Surgeon's Pin** | neck | 0 | 900 |  | Silver, and it has closed worse than this. |
-| **Mantle of the Unburdened** | cloak | 1 | 900 |  | Everything you carry belongs to the cloak while you wear it. |
-| **Reaver's Edge** | hands (1h) | 2 | 1300 | Strike 4 | It eats what it meets, slowly, and starts with the armour. |
-| **Crown of the Quiet Mind** | head | 1 | 1400 |  | Thin gold. Nothing in your head hurries while it is on. |
-| **Pact Iron** | fingers | 0 | 1600 |  | Cold iron takes a debt and holds it for a while. |
-| **Loose Cobble** | pack | 4 | 300 |  | It was part of a street once and has not forgiven anyone. |
-| **Drowned Bell** | belt | 2 | 400 |  | It rings wet. There is no water in it. |
-| **Hooked Gauntlet** | hands (1h) | 2 | 600 |  | Three hooks along the knuckle, set the wrong way round. |
-| **Thunderstone** | pack | 1 | 650 |  | Throw it down hard. Do not be holding it. |
-| **Gag of the Nine** | neck | 0 | 700 |  | Nine knots in a cord. Somebody counted them out loud, once. |
-| **Winter Cloak** | cloak | 2 | 750 |  | The hem is always a little frozen, in any season. |
-| **Serpent's Tooth Ring** | fingers | 0 | 850 |  | A fang set as a stone, still wet at the root. |
-| **Locked Casket** | pack | 3 | 500 |  | No hinge, no seam, and a keyhole that is not for a key. |
-| **Surveyor's Chain** | pack | 2 | 600 |  | Sixty-six feet of brass links that measure what matters rather than what is there. |
-| **Far-sight Monocle** | head | 0 | 700 |  | Ground by somebody who had opinions about distance. |
-| **Mnemonic Stone** | fingers | 0 | 800 |  | Worn smooth by a thumb that was trying to remember something. |
-| **Vagrant's Charm** | neck | 0 | 950 |  | A knot of road-dust and hair. Its owner never sat down. |
-| **Discriminating Wand** | hands (1h) | 0 | 1100 |  | It knows whose side everyone is on, which is more than most people do. |
-| **The Scrivener's Knife** | pack | 0 | 1200 |  | For cutting out what should not have been written. |
-| **Blade of the Eager Hand** | hands (1h) | 2 | 0 | Strike 5 | It wants to be swung and it is not fussy about at what. |
-| **Cloak of the Grey Road** | cloak | 1 | 0 |  | The road is grey. So is everything you are now to your friends. |
-| **Boots of the Longer Step** | feet | 1 | 0 |  | They were barely worn because their owner could not stop. |
-| **Amulet of the Fed Thread** | neck | 0 | 0 |  | The thread is mended. Something had to pay out the length. |
-| **Gauntlet of the Open Palm** | hands (1h) | 2 | 0 | undefined +1 | Beautifully made, and it will not close. |
-
-### Relics
-
-| Item | Slot | Weight | Gold | What it does | What it is |
-|---|---|---|---|---|---|
-| **Sessyfyn's Tear** | neck | 0 | 3000 |  | Seawater that has not dried in four hundred years. |
-| **The Black Lantern** | hands (1h) | 2 | 3500 |  | It is lit. You can tell because of how much less you can see. |
-| **The Hungry Blade** | hands (1h) | 2 | 4000 | Strike 5 | It is not sharp. It does not need to be sharp. |
-| **The Pale Crown** | head | 1 | 5000 |  | Bone, and lighter than bone should be. |
-| **The Unquiet Quiver** | back | 2 | 4500 |  | It rattles when there is nothing in it. |
-
 ### Potions
 
 | Item | Slot | Weight | Gold | What it does | What it is |
 |---|---|---|---|---|---|
-| **Tincture of the Clear Eye** | belt (1h) | 0 | 30 | Use 0 | Cloudy, and it stings going down. |
-| **Potion of Stone** | belt (1h) | 0 | 40 | Use 0 | Grit in the bottom of the flask, and it settles in you the same way. |
-| **Brewer's Reserve** | belt (1h) | 0 | 45 | Use 0 | The brewer keeps a cask of it back and will not say what is in it. |
-| **Greater Healing Potion** | belt (1h) | 0 | 150 | Use 0 | Twice the price of the ordinary sort and rather more than twice the work. |
-| **Potion of the Hare** | belt (1h) | 0 | 55 | Use 0 | It tastes of running, which is not a taste anyone can describe. |
-| **Potion of the Bear** | belt (1h) | 0 | 60 | Use 0 | Thick as honey. You will want both hands to lift the bottle. |
-| **Philtre of Borrowed Courage** | belt (1h) | 0 | 65 | Use 0 | Somebody else's nerve, and they are not getting it back. |
-| **Potion of the Owl** | belt (1h) | 0 | 70 | Use 0 | Your eyes do not change. What they are willing to see does. |
-| **Draught of Second Breath** | belt (1h) | 0 | 90 | Use 0 | One swallow and your lungs believe the fight has just started. |
-| **Potion of the Quick Hand** | belt (1h) | 0 | 110 | Use 0 | You will have put the bottle down before you remember drinking it. |
-| **Potion of Iron Skin** | belt (1h) | 0 | 120 | Use 0 | It goes down like filings and sits there like a breastplate. |
-| **Elixir of the Long Night** | belt (1h) | 0 | 200 | Use 0 | It lends. It is very clear about lending. |
-| **Grey Water** | belt (1h) | 0 | 5 | Use 0 | Somebody corked it carefully, which is the cruellest part. |
-| **Philtre of the Loose Tongue** | belt (1h) | 0 | 15 | Use 0 | You will mean to stop talking. |
-| **Draught of Lead** | belt (1h) | 0 | 20 | Use 0 | Heavier than it looks, and so are you now. |
-| **Oil of Mislaid Courage** | belt (1h) | 0 | 20 | Use 0 | Whatever was going to make you flinch has been taken out. |
-| **Draught of the Hollow** | belt (1h) | 0 | 25 | Use 0 | It empties something you were not keeping track of. |
-| **Bottle of Borrowed Pain** | belt (1h) | 0 | 30 | Use 0 | It does not heal you. It postpones you. |
+| **Tincture of the Clear Eye** | belt (1h) | 0 | 30 | Use 0 (Shake Off 1 on anything) | Cloudy, and it stings going down. |
+| **Potion of Stone** | belt (1h) | 0 | 40 | Use 0 (for the fight you cannot be moved -- and your Move is 0) | Grit in the bottom of the flask, and it settles in you the same way. |
+| **Brewer's Reserve** | belt (1h) | 0 | 45 | Use 0 (your next Cast is +2) | The brewer keeps a cask of it back and will not say what is in it. |
+| **Greater Healing Potion** | belt (1h) | 0 | 150 | Use 0 (Heal 8) | Twice the price of the ordinary sort and rather more than twice the work. |
+| **Potion of the Hare** | belt (1h) | 0 | 55 | Use 0 (for the fight your Move values are +2) | It tastes of running, which is not a taste anyone can describe. |
+| **Potion of the Bear** | belt (1h) | 0 | 60 | Use 0 (for the scene, carry +20 kg and Might +2) | Thick as honey. You will want both hands to lift the bottle. |
+| **Philtre of Borrowed Courage** | belt (1h) | 0 | 65 | Use 0 (for the fight you cannot be Compelled) | Somebody else's nerve, and they are not getting it back. |
+| **Potion of the Owl** | belt (1h) | 0 | 70 | Use 0 (for the fight no square is shadowed for you) | Your eyes do not change. What they are willing to see does. |
+| **Draught of Second Breath** | belt (1h) | 0 | 90 | Use 0 (Catch Breath without spending your turn) | One swallow and your lungs believe the fight has just started. |
+| **Potion of the Quick Hand** | belt (1h) | 0 | 110 | Use 0 (one extra reaction this round) | You will have put the bottle down before you remember drinking it. |
+| **Potion of Iron Skin** | belt (1h) | 0 | 120 | Use 0 (for the fight, armor +2) | It goes down like filings and sits there like a breastplate. |
+| **Elixir of the Long Night** | belt (1h) | 0 | 200 | Use 0 (+6 temporary Health; it fades at your next rest) | It lends. It is very clear about lending. |
+| **Grey Water** | belt (1h) | 0 | 5 | Use 0 (Nothing at all. It is water.) | Somebody corked it carefully, which is the cruellest part. |
+| **Philtre of the Loose Tongue** | belt (1h) | 0 | 15 | Use 0 (you must say what you intend before each of your turns) | You will mean to stop talking. |
+| **Draught of Lead** | belt (1h) | 0 | 20 | Use 0 (for the fight your Move is 0) | Heavier than it looks, and so are you now. |
+| **Oil of Mislaid Courage** | belt (1h) | 0 | 20 | Use 0 (for the fight you may play no reactions) | Whatever was going to make you flinch has been taken out. |
+| **Draught of the Hollow** | belt (1h) | 0 | 25 | Use 0 (for the fight your hand size is 1 lower) | It empties something you were not keeping track of. |
+| **Bottle of Borrowed Pain** | belt (1h) | 0 | 30 | Use 0 (Heal 4 -- and take 4 when the fight ends) | It does not heal you. It postpones you. |
 
 ### Ammunitions
 
 | Item | Slot | Weight | Gold | What it does | What it is |
 |---|---|---|---|---|---|
-| **Blunt Head** | belt | 0 | 20 | offBalance | No point at all, which is the point. |
-| **Bodkin Points** | belt | 0 | 25 |  | A square spike, hardened. It is looking for a gap and will make one. |
-| **Hollow Bolt** | belt | 0 | 30 |  | The shaft unscrews. A fiddly, brilliant, disreputable idea. |
-| **Screaming Shaft** | belt | 0 | 35 | dazed | Bored through so the air goes through it wrong. |
-| **Chalked Shaft** | belt | 0 | 40 | marked | It leaves a smear that everyone can see and nobody can wipe off. |
-| **Moth-wing Fletching** | belt | 0 | 40 |  | It does not fly straight. It arrives anyway. |
-| **Oil-wrapped Shaft** | belt | 0 | 45 | burning | Tow and pitch below the head. Lit from the match in your teeth. |
-| **Net Bolt** | belt | 0 | 50 | grappled | A folded net on a blunt head. It opens in the air. |
-| **Whistling Shaft** | belt | 0 | 55 | compelled | Whoever it passes becomes very interested in who sent it. |
-| **Frost-dipped Bolt** | belt | 0 | 60 | frozen | Cold enough that the quiver frosts around it. |
-| **Grapnel Bolt** | belt | 0 | 70 |  | Barbed, with fifty feet of silk line. A bolt for closing. |
-| **Thunder-shot** | belt | 0 | 80 |  | A paper cartridge of scrap. Nothing else gives a non-caster an area. |
-| **Silvered Head** | belt | 0 | 90 |  | Silver remembers what it was aimed at. |
+| **Blunt Head** | belt | 0 | 20 | Bow or crossbow. The target is Off-Balance (1). No save | No point at all, which is the point. |
+| **Bodkin Points** | belt | 0 | 25 | Bow or crossbow. Ignores 2 armor | A square spike, hardened. It is looking for a gap and will make one. |
+| **Hollow Bolt** | belt | 0 | 30 | Carries a potion. Crossbow. Carries one potion; whatever you hit drinks it | The shaft unscrews. A fiddly, brilliant, disreputable idea. |
+| **Screaming Shaft** | belt | 0 | 35 | Bow. Dazed (1), resist Presence 5 | Bored through so the air goes through it wrong. |
+| **Chalked Shaft** | belt | 0 | 40 | Bow or crossbow. The target is Marked (1). No save | It leaves a smear that everyone can see and nobody can wipe off. |
+| **Moth-wing Fletching** | belt | 0 | 40 | Ignores cover. Bow. This shot ignores cover entirely | It does not fly straight. It arrives anyway. |
+| **Oil-wrapped Shaft** | belt | 0 | 45 | Bow or crossbow. Burning 1 (2) | Tow and pitch below the head. Lit from the match in your teeth. |
+| **Net Bolt** | belt | 0 | 50 | Crossbow. Grappled (1), resist Might 5 | A folded net on a blunt head. It opens in the air. |
+| **Whistling Shaft** | belt | 0 | 55 | Bow. The target is Compelled (1) -- at you | Whoever it passes becomes very interested in who sent it. |
+| **Frost-dipped Bolt** | belt | 0 | 60 | Crossbow. Frozen 1 (1) | Cold enough that the quiver frosts around it. |
+| **Grapnel Bolt** | belt | 0 | 70 | Pulls you to the target. Crossbow. YOU are pulled to a square adjacent to the target | Barbed, with fifty feet of silk line. A bolt for closing. |
+| **Thunder-shot** | belt | 0 | 80 | Firearm only. The shot is Blast 1 on the target's square | A paper cartridge of scrap. Nothing else gives a non-caster an area. |
+| **Silvered Head** | belt | 0 | 90 | May target the Invisible. Bow or crossbow. You may target an Invisible enemy you have seen this fight | Silver remembers what it was aimed at. |
 
 ### Poisons
 
 | Item | Slot | Weight | Gold | What it does | What it is |
 |---|---|---|---|---|---|
-| **Blade Venom** | belt | 0 | 40 |  | Brewed from something that was already unpleasant. |
-| **Drowsing Oil** | belt | 0 | 50 |  | It does not kill. It makes a man slow about objecting. |
-| **Weeping Resin** | belt | 0 | 60 |  | The wound will not close while it is in there. |
-| **Serpent's Milk** | belt | 0 | 70 |  | Milked, strained and kept cold. No damage in it at all. |
-| **Grave-cap Extract** | belt | 0 | 90 |  | The cap grows on what is under the cairn, not on the cairn. |
-| **Assassin's Tincture** | belt | 0 | 120 |  | They finish the sentence they were saying. |
-| **Black Lotus** | belt | 0 | 250 |  | Illegal in every district, which is how you know the price is right. |
+| **Blade Venom** | belt | 0 | 40 | Apply with a Ready. Next Strike that hits: Poisoned 1 (2), resist Might 5 | Brewed from something that was already unpleasant. |
+| **Drowsing Oil** | belt | 0 | 50 | Apply with a Ready. Next Strike that hits: Dazed (2), resist Might 5 | It does not kill. It makes a man slow about objecting. |
+| **Weeping Resin** | belt | 0 | 60 | Apply with a Ready. Next Strike that hits: the target cannot be healed for 2 rounds. No save | The wound will not close while it is in there. |
+| **Serpent's Milk** | belt | 0 | 70 | Apply with a Ready. Next Strike that hits: Poisoned 0 (3) -- no damage, three rounds without a secondary | Milked, strained and kept cold. No damage in it at all. |
+| **Grave-cap Extract** | belt | 0 | 90 | Apply with a Ready. Next Strike that hits: Poisoned 2 (2), resist Might 7 | The cap grows on what is under the cairn, not on the cairn. |
+| **Assassin's Tincture** | belt | 0 | 120 | Apply with a Ready. Next Strike that hits: Poisoned 1 (2), beginning at the start of their next turn. No save | They finish the sentence they were saying. |
+| **Black Lotus** | belt | 0 | 250 | Apply with a Ready. Next Strike that hits: Poisoned 3 (2), resist Might 9 | Illegal in every district, which is how you know the price is right. |
 
 <!-- /generated: items -->
 
@@ -1245,7 +1282,7 @@ many spell slots preparing one costs.
 | **Ink Spray** | 1 | Two squares of ink in the air. Nobody in it is invisible, and nobody in it is going to be. |
 | **A Clear Head** | 1 | You say the thing they needed to hear, and they come back to themselves in time to do something about it. |
 | **Wrong Face** | 2 | Your face is briefly somebody they were not expecting. Two rounds of trying to work out what they are looking at. |
-| **The Evil Eye** | 2 | A temporary Miss in their fate deck, until it is drawn. The condition shuffles the card in by itself (core-rules 6), which is why the pair of these needed no mechanism of their own. |
+| **The Evil Eye** | 2 | A temporary Miss in their fate deck, until it is drawn. The condition shuffles the card in by itself, which is why the pair of these needed no mechanism of their own. |
 | **Not Here** | 2 | You are standing exactly where you are standing. Nobody can be told so. |
 | **The Face of a Friend** | 3 | It will not attack you. It will take a hit meant for you. It will do both until the moment you attack it, and then it will remember everything. |
 | **The Crowded Room** | 4 | For one round nobody can tell who is who, and the fate deck decides who swings at whom. It is as likely to help them as you. |
@@ -1267,7 +1304,7 @@ many spell slots preparing one costs.
 | Spell | Strength | What it does |
 |---|---|---|
 | **Longer Shadow** | 1 | The dark you are standing in reaches one square further, all the way round, which is enough to make the next formula work. |
-| **The Long Step** | 1 | Four squares, through whatever is in between, so long as both ends are dark. Movement is a sentence the table applies (core-rules 11), so the only thing the engine would have to know is which squares are shadowed. |
+| **The Long Step** | 1 | Four squares, through whatever is in between, so long as both ends are dark. Movement is a sentence the table applies, so the only thing the engine would have to know is which squares are shadowed. |
 | **Cast No Shadow** | 2 | For one round you are only there if they are standing next to you. Archers and casters are simply out of the conversation. |
 | **Step Through** | 2 | You are in the shadow, and then you are in another one. Every reach into the dark leaves something of the dark in you: a Wild card joins your fate deck, and it does not leave until you have slept. |
 | **The Borrowed Dark** | 3 | Every square on the map, dark at once, for your allies as much as for you, and for anyone else who knows what to do with it. |
@@ -1315,7 +1352,7 @@ many spell slots preparing one costs.
 | Spell | Strength | What it does |
 |---|---|---|
 | **Name the Guilty** | 1 | No save. Being named is not something you resist. |
-| **Steady the Hand** | 1 | Ends Compelled on an ally, and accuses whoever did it. Answer and accuse, which is what a targeted counter has to do to be worth a slot (way-cards 3.6). |
+| **Steady the Hand** | 1 | Ends Compelled on an ally, and accuses whoever did it. Answer and accuse, which is what a targeted counter has to do to be worth a slot. |
 | **The Narrow Path** | 1 | Less to carry, less to remember, and the words come easier. A thin deck is the clean body, written as arithmetic. |
 | **The Weight of It** | 2 | Named, and then weighed. For one round its armour is worth nothing to anybody on the field, which is a gift to the whole line rather than to you. |
 | **The Clean Hand** | 2 | An ally's next check or attack cannot fail. One cheaper on a brother or sister in faith, which is the third tenet made arithmetic. |
@@ -1327,7 +1364,7 @@ many spell slots preparing one costs.
 | Spell | Strength | What it does |
 |---|---|---|
 | **Lay On** | 1 | Hands, and three squares of air between you. |
-| **A Word for You** | 1 | Blessed: a temporary Critical in their fate deck, until it is drawn. The condition shuffles the card in by itself (core-rules 6). |
+| **A Word for You** | 1 | Blessed: a temporary Critical in their fate deck, until it is drawn. The condition shuffles the card in by itself. |
 | **A Word Withdrawn** | 1 | The marker and the card both: a blessing withdrawn is a Critical taken back out of the deck, and a curse withdrawn is a Miss. It works on anybody, including the enemy you blessed by mistake. |
 | **Bear It for Them** | 2 | Whatever is on them is on you instead, at its full duration. The Spirit's priests are the only ones who can do this and the only ones who would. |
 | **Breath of the Spirit** | 2 | Reaction: heal an ally 3, at any range, ignoring cover. The spirit drifts through all the air, so distance is not a question for it. |
@@ -1338,7 +1375,7 @@ many spell slots preparing one costs.
 
 | Spell | Strength | What it does |
 |---|---|---|
-| **Undertow** | 2 | Wet, and everything in it moved a square you choose. Moving figures is a sentence the table applies (core-rules 11), so this card is complete. |
+| **Undertow** | 2 | Wet, and everything in it moved a square you choose. Moving figures is a sentence the table applies, so this card is complete. |
 | **The Turning Tide** | 2 | The sea is not fair. They draw again and must keep the second card, and a Miss joins your own deck for having asked. |
 | **The Tide Knows** | 2 | An ally draws fate twice on their next action and keeps both. The sea is not fair. |
 | **The Spring Tide** | 4 | For one round the whole party has the tide with them: two cards each, and both of them count. |
@@ -1350,7 +1387,7 @@ many spell slots preparing one costs.
 |---|---|---|
 | **The Drum** | 1 | It starts somewhere behind you and it is already in your arms. |
 | **No Step Back** | 2 | Every ally within 2 gains Block 2 until your next turn. Valtor's answer to being outnumbered is that nobody moves. |
-| **The Charge** | 2 | Strain 2, and the whole line moves at once. Movement is a sentence the table applies (core-rules 11), so this miracle is finished as written. |
+| **The Charge** | 2 | Strain 2, and the whole line moves at once. Movement is a sentence the table applies, so this miracle is finished as written. |
 | **The War Drum** | 4 | Strain 3, and everybody near you goes again. The same mechanism Blood Magic's thesis wants, bought with pain instead of blood. |
 | **Valtor's Own** | 5 | Your whole hand, strained, and for the rest of the fight you act like three men. There is nothing left to play it with, which is the god's idea of a bargain. |
 
@@ -1451,3 +1488,5 @@ many spell slots preparing one costs.
 | Carry limit | 40 kg |
 | Rest tokens | Start with 1 |
 | A condition ends | At the end of its creator's next turn |
+| A challenge | Two tracks: Progress and Pressure |
+| A twist | Owed on a Partial or a Fail, and never instead of the Pressure |

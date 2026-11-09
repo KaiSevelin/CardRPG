@@ -239,6 +239,52 @@
           <p class="cr-note">None.</p>
         {{/if}}
       </section>
+
+      {{!--
+        **What you know, on the tab that already holds what you have.** Training, know-how and
+        languages lived on the Notes tab, behind biography and appearance, which is where a player
+        looks for prose they wrote rather than for a fact about their character. Training is not
+        prose: it is the one binary in the game that changes a number, because an untrained user
+        caps a tool bonus at +1. It belongs where Gold is, on the first tab, with the rest of what
+        is simply true of you.
+      --}}
+      <section class="cr-block">
+        <h3>Training</h3>
+        <p class="cr-note">Structured &mdash; an untrained user caps a tool bonus at +1.</p>
+        <input type="text" name="system.trainingsText" value="{{trainingsText}}" placeholder="lockpicks, gaming set">
+        <h3>Know-how</h3>
+        <p class="cr-note">A situation, not an approach. The GM reads this; nothing automates it.</p>
+        <input type="text" name="system.knowHowText" value="{{knowHowText}}" placeholder="Military matters; forests and tracking">
+        <h3>Languages</h3>
+        {{!-- Binary the way a training is, and it arrives from two directions: a background gives
+              what you grew up with, the graph gives what you studied. This field is the first. --}}
+        <p class="cr-note">What you grew up with. What you studied is below, from your nodes.</p>
+        <input type="text" name="system.languagesText" value="{{languagesText}}" placeholder="Imperial, Veche">
+
+        {{!--
+          What the graph has added, which is NOT editable here: it is derived from the nodes you own
+          (leveling 9), so correcting it means correcting the node. The field above holds what a
+          background gave you and stays yours to type in; these are the ones you levelled for.
+        --}}
+        {{#if fromNodes.trainings.length}}
+          <h3>Trained by your nodes</h3>
+          <ul class="cr-learned">
+            {{#each fromNodes.trainings}}<li>{{this}}</li>{{/each}}
+          </ul>
+        {{/if}}
+        {{#if fromNodes.languages.length}}
+          <h3>Languages your nodes taught you</h3>
+          <ul class="cr-learned">
+            {{#each fromNodes.languages}}<li>{{this}}</li>{{/each}}
+          </ul>
+        {{/if}}
+        {{#if fromNodes.knowHow.length}}
+          <h3>Know-how from your nodes</h3>
+          <ul class="cr-learned">
+            {{#each fromNodes.knowHow}}<li>{{this}}</li>{{/each}}
+          </ul>
+        {{/if}}
+      </section>
     {{/if}}
 
     {{#if onDeck}}
@@ -376,43 +422,6 @@
     {{/if}}
 
     {{#if onNotes}}
-      <section class="cr-block">
-        <h3>Training</h3>
-        <p class="cr-note">Structured &mdash; an untrained user caps a tool bonus at +1.</p>
-        <input type="text" name="system.trainingsText" value="{{trainingsText}}" placeholder="lockpicks, gaming set">
-        <h3>Know-how</h3>
-        <p class="cr-note">A situation, not an approach. The GM reads this; nothing automates it.</p>
-        <input type="text" name="system.knowHowText" value="{{knowHowText}}" placeholder="Military matters; forests and tracking">
-        <h3>Languages</h3>
-        {{!-- Binary the way a training is, and it arrives from two directions: a background gives
-              what you grew up with, the graph gives what you studied. This field is the first. --}}
-        <p class="cr-note">What you grew up with. What you studied is below, from your nodes.</p>
-        <input type="text" name="system.languagesText" value="{{languagesText}}" placeholder="Imperial, Veche">
-
-        {{!--
-          What the graph has added, which is NOT editable here: it is derived from the nodes you own
-          (leveling 9), so correcting it means correcting the node. The field above holds what a
-          background gave you and stays yours to type in; these are the ones you levelled for.
-        --}}
-        {{#if fromNodes.trainings.length}}
-          <h3>Trained by your nodes</h3>
-          <ul class="cr-learned">
-            {{#each fromNodes.trainings}}<li>{{this}}</li>{{/each}}
-          </ul>
-        {{/if}}
-        {{#if fromNodes.languages.length}}
-          <h3>Languages your nodes taught you</h3>
-          <ul class="cr-learned">
-            {{#each fromNodes.languages}}<li>{{this}}</li>{{/each}}
-          </ul>
-        {{/if}}
-        {{#if fromNodes.knowHow.length}}
-          <h3>Know-how from your nodes</h3>
-          <ul class="cr-learned">
-            {{#each fromNodes.knowHow}}<li>{{this}}</li>{{/each}}
-          </ul>
-        {{/if}}
-      </section>
 
       <section class="cr-block">
         <h3>Biography</h3>

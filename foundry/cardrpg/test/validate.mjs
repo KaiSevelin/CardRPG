@@ -7277,10 +7277,87 @@ const { fill: fillHandbook } = await import("./handbook.mjs");
 const handbook = fs.readFileSync(path.join(root, "../../rules/players-handbook.md"), "utf8");
 check("the handbook's reference chapters are current",
   fillHandbook(handbook) === handbook ? "yes" : "stale, run npm run handbook", "yes");
-/* And the catalogue is all of it: a chapter that silently covered half the items would still be
- * "current" by the check above, because the generator would agree with itself. */
-check("items the handbook lists", (handbook.match(/^\| \*\*/gm) ?? []).length >= content.ITEMS.length
-  + content.FEATURES.length ? "all of them" : "some missing", "all of them");
+/*
+ * And the catalogue is all of it: a chapter that silently covered half the items would still be
+ * "current" by the check above, because the generator would agree with itself.
+ *
+ * **[FOUND IN CODE 2026-11-09] The check that said so counted `| **` across the WHOLE file**, and
+ * compared it to the items plus the features. Every chapter's rows went into that one number, so
+ * the three hundred and sixty rows of actions, items, features, spells and twists cleared a bar of
+ * a hundred and sixty-five without the items chapter being read at all. It stayed green while that
+ * chapter lost forty-eight rows. Counted per chapter and exactly now, which is the difference
+ * between a count and a count of the right thing.
+ */
+const handbookChapter = name => handbook
+  .split(`<!-- generated: ${name} -->`)[1].split(`<!-- /generated: ${name} -->`)[0];
+const handbookRows = name => handbookChapter(name).split("\n").filter(l => l.startsWith("| **"));
+
+/*
+ * **Treasure is not in a player's catalogue.** A Wonder and a Relic are handed over by the GM and
+ * are on no shelf anywhere, so printing all forty-eight with prices made the handbook a list of
+ * every magic item in the game. The three crafts stay: a Make, a Power and a Potion have a maker
+ * and a price, and a bought thing belongs in a player's catalogue however magical it is.
+ */
+const TREASURE_KINDS = ["Wonder", "Relic"];
+const forSale = content.ITEMS.filter(i => !TREASURE_KINDS.includes(i.kind));
+check("items the handbook's catalogue lists", handbookRows("items").length, forSale.length);
+check("and none of the treasure is in it",
+  content.ITEMS.filter(i => TREASURE_KINDS.includes(i.kind))
+    .filter(i => handbookChapter("items").includes(`| **${i.name}**`)).map(i => i.name).join(", ")
+  || "none", "none");
+check("and the catalogue is still most of the game",
+  forSale.length > content.ITEMS.length / 2 ? "yes" : "no", "yes");
+
+/*
+ * **[FOUND 2026-11-09] Every row says what the item does, and sixty of them did not.**
+ *
+ * `does()` read four of the nine places an entry can carry an effect: the verbs, the armour, the
+ * bonus and the shot. It never read `grants`, `active`, `text`, `curse`, `shotEffect`, nor the
+ * prose on a verb line. *Sessyfyn's Tear* is the case that shows the cost: a three-thousand-gold
+ * relic whose `active` redraws any fate card on the field, printed as a blank.
+ *
+ * **A blank cell does not read as missing, it reads as an answer** -- *this item is a trinket* --
+ * which is the same trap the stale art brief set, and the reason this is pinned on the OUTPUT
+ * rather than on the generator: what matters is that no row is empty, not which fields were read.
+ */
+check("catalogue rows that do not say what the item does",
+  handbookRows("items").filter(l => l.split("|")[5].trim() === "")
+    .map(l => l.split("|")[1].trim()).join(", ") || "none", "none");
+/* `undefined` reached four rows, because a bonus names EITHER a verb or an approach and the
+ * generator read `bonus.approach` unconditionally. A leaked `CARDRPG.` key is the same mistake in
+ * the other direction: a vocabulary key printed instead of the word it stands for. */
+check("and no chapter prints a value it failed to resolve",
+  (handbook.match(/undefined|CARDRPG\.[A-Z]/g) ?? []).join(", ") || "none", "none");
+/*
+ * **No citation of a document the reader has not got.** Content cites the design docs in its own
+ * prose, because a spell description is written for whoever maintains the rule. Six of those
+ * reached players, who cannot follow `(core-rules 6)` anywhere. The generator strips them, and the
+ * pattern is built from the filenames in `rules/` so a new document cannot open the leak again.
+ */
+check("citations of the rules documents left in the handbook",
+  (handbook.match(/\((?:core-rules|skill-rules|way-cards|leveling|equipment|conditions|specializations|starter-cards|backgrounds|icons|ideas|design-direction)[^)]*\)/g) ?? [])
+    .join(", ") || "none", "none");
+
+/*
+ * **[FOUND 2026-11-09] A twist was the one thing a player meets that the handbook never named.**
+ *
+ * The word appeared nowhere in it, while the *Surveyor's Chain* in its own items chapter promised
+ * that *in a challenge, your first Progress each scene is free* -- so the handbook referred to a
+ * challenge and to Progress without ever saying what either was. Both decks are described now,
+ * and the copies are printed because the counts are the deck's tone rather than arithmetic.
+ */
+check("the handbook describes both twist decks",
+  ["The twist deck", "The ritual twist deck"]
+    .filter(h => handbookChapter("twists").includes(`### ${h}`)).length, 2);
+check("and prints every face of each",
+  handbookRows("twists").length, content.TWISTS.length + content.RITUAL_TWISTS.length);
+check("with the totals the two decks actually hold",
+  [content.TWISTS, content.RITUAL_TWISTS]
+    .map(deck => deck.reduce((n, t) => n + (t.copies ?? 1), 0)).join(" and "), "30 and 24");
+/* And it tells a player how a multi-step test ends, which is the half a bar cannot show. */
+check("and tells a player how a challenge is won and lost",
+  ["the Progress bar fills", "the Pressure bar fills first", "both fill on the same check"]
+    .filter(s => handbook.includes(s)).length, 3);
 /*
  * **The art on disk, against the brief that commissioned it.**
  *
@@ -11067,6 +11144,19 @@ check("the call is a module of its own",
  * file-wide grep was a claim about the module and not about the call: any one of the other eight
  * would have answered it.
  */
+/*
+ * **How a challenge ends, which the handbook now prints to the player.** Progress full is a win,
+ * Pressure full is a loss, and `won` is resolved BEFORE `lost`, so a check that fills both at once
+ * is a win with the cost arriving alongside it. The handbook says exactly that, so the rule and
+ * the sentence are pinned to each other rather than each to itself.
+ */
+check("a challenge is won on the progress track",
+  /won: progress >= progressMax/.test(checksSource) ? "yes" : "no", "yes");
+check("and lost on the pressure track",
+  /lost: pressure >= pressureMax/.test(checksSource) ? "yes" : "no", "yes");
+check("and a win is read first, so filling both is a win",
+  /now\.won \? [\s\S]{0,80}: now\.lost \?/.test(checksSource) ? "yes" : "no", "yes");
+
 const readCallBody = checksSource.slice(checksSource.indexOf("export function readCall"),
   checksSource.indexOf("export async function setCall"));
 check("and it lives on the active scene",

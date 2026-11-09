@@ -19,12 +19,46 @@ import path from "node:path";
 import * as CONTENT from "../module/content.mjs";
 const { ITEMS, FEATURES } = CONTENT;
 import { SPELLS } from "../module/graph.mjs";
+import { CARDRPG } from "../module/config.mjs";
 
 const OUT = path.join(import.meta.dirname, "..", "..", "..", "rules", "players-handbook.md");
+
+/*
+ * **The label tables, read rather than retyped.** Several things an item carries are vocabulary
+ * keys rather than prose -- `shotEffect: "ignoresCover"`, `boundary: "combat"` -- and the engine
+ * already turns each into a word through `CARDRPG` and the lang file. Resolving them the same way
+ * keeps one vocabulary: a shot effect added to config without a string shows up here as the bare
+ * key rather than as silence, and the suite pins the grant words so a new grant cannot slip in.
+ */
+const LANG = JSON.parse(fs.readFileSync(
+  path.join(import.meta.dirname, "..", "lang", "en.json"), "utf8"));
+/* The lang file is FLAT -- "CARDRPG.Shot.IgnoresCover" is one key, not three levels of object. */
+const say = key => (key ? LANG[key] ?? key : "");
+
+/** What a grant is called on the sheet. The keys are `grants.mjs`'s CHARACTER_GRANTS. */
+const GRANT_WORDS = {
+  health: "CARDRPG.Health", handSize: "CARDRPG.HandSize", carry: "CARDRPG.Carry",
+  deckMax: "CARDRPG.DeckMax", spellSlots: "CARDRPG.SpellSlots", armor: "CARDRPG.Armor"
+};
+
+/*
+ * **The rules documents, named by the directory rather than by a list.**
+ *
+ * Content cites the design docs in its own prose, because a spell's description is written for
+ * whoever maintains the rule: *"The condition shuffles the card in by itself (core-rules 6)"*. The
+ * handbook must not print those, and six were reaching players, who have no such file and cannot
+ * follow the reference. Derived from the filenames so that a new rules document cannot introduce a
+ * leak the way the last one did, and so this list cannot go stale on its own.
+ */
+const DOCS = fs.readdirSync(path.join(import.meta.dirname, "..", "..", "..", "rules"))
+  .filter(f => f.endsWith(".md") && f !== "players-handbook.md")
+  .map(f => f.replace(/\.md$/, "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+const CITATION = new RegExp(`\\s*\\((?:${DOCS.join("|")})[^)]*\\)`, "g");
 
 /** Content writes descriptions as HTML, and a handbook table wants a sentence. */
 const plain = html => String(html ?? "")
   .replace(/<[^>]+>/g, " ")
+  .replace(CITATION, "")
   /* An em dash becomes a comma, and takes the space in front of it with it: " &mdash; " left
    * " , " behind in twenty-three rows. The handbook does not print em dashes. */
   .replace(/\s*(?:&mdash;|—)\s*/g, ", ").replace(/&[a-z]+;/g, " ")
@@ -40,26 +74,100 @@ const cell = s => plain(s).replace(/\|/g, "/");
 /* -------------------------------------------- */
 
 /**
- * What an item DOES, in as few characters as carry the point: the verbs it serves, the armour it
- * is, the bonus it grants. A player looking down a list of a hundred and fifty wants the number.
+ * What an item DOES: every field the entry can carry an effect in.
+ *
+ * **[FOUND 2026-11-09] It read four fields of the eight, so sixty of a hundred and fifty items
+ * printed an empty cell and four printed the word `undefined`.** *Sessyfyn's Tear* is the clearest
+ * case: a three-thousand-gold relic whose `active` redraws any fate card on the field and whose
+ * `text` is the obligation it costs, and the handbook said it did nothing at all. The reader's
+ * conclusion from a blank cell is not *the generator missed a field*, it is *this item is a
+ * trinket* -- so an omission here does not read as missing, it reads as an answer, which is the
+ * same trap the stale art brief set.
+ *
+ * The eight places an effect can live, and the four that were read: `verbs` ✓, `armor` ✓,
+ * `bonus` ✓, `shot` ✓, and `grants`, `active`, `text`, `curse`, `shotEffect` ✗.
+ *
+ * **A bonus names EITHER a verb or an approach**, never both: `{ verb: "cast", value: 1 }` on the
+ * Focus Pendant and `{ approach: "shadow", value: 2 }` on the Lockpicks. Reading `bonus.approach`
+ * unconditionally is what printed `undefined +1` on the Fine Longsword, the Focus Pendant, the
+ * Warden's Seal and the Gauntlet of the Open Palm.
+ *
+ * `consumed` is deliberately NOT printed: the kind heading above the row already says Consumable,
+ * Potion, Poison or Ammunition, and forty-six rows saying *one use* under a heading that says so
+ * is noise rather than information.
  */
 function does(item) {
-  const bits = [];
+  const cap = s => `${String(s)[0].toUpperCase()}${String(s).slice(1)}`;
+  /* The numbers first, comma-joined, because a player scanning a long table wants those. */
+  const stats = [];
+  /*
+   * A verb line is a number AND a qualification, and only the number was read. Forty-eight lines
+   * carry prose that is the whole difference between two rows reading alike: a Mace and a Spear
+   * are both *Strike 3*, and one ignores a point of armour while the other throws three squares.
+   * A null value with a text is an effect and not an absence -- the Smoke Bomb's entire effect is
+   * `use: verb(null, { text: "You become Invisible (1)" })`.
+   */
   for (const [verb, line] of Object.entries(item.verbs ?? {})) {
-    if (line?.value === null || line?.value === undefined) continue;
-    bits.push(`${verb[0].toUpperCase()}${verb.slice(1)} ${line.value}`);
+    const number = line?.value !== null && line?.value !== undefined;
+    if (!number && !line?.text) continue;
+    const head = number ? `${cap(verb)} ${line.value}` : cap(verb);
+    stats.push(!line.text ? head
+      : number ? `${head} (${plain(line.text)})` : `${head}: ${plain(line.text)}`);
   }
-  if (item.armor) bits.push(`Armor ${item.armor}`);
-  if (item.bonus?.value) {
-    bits.push(`${item.bonus.approach} +${item.bonus.value}`
-      + (item.bonus.situation ? ` (${item.bonus.situation})` : ""));
+  if (item.armor) stats.push(`Armor ${item.armor}`);
+  const b = item.bonus;
+  if (b && (b.value || b.range)) {
+    const what = b.verb ? cap(b.verb) : (b.approach ?? "");
+    const much = b.value ? `+${b.value}` : `+${b.range} range`;
+    stats.push(`${`${what} ${much}`.trim()}${b.situation ? ` (${b.situation})` : ""}`);
   }
-  if (item.shot?.condition) bits.push(item.shot.condition);
-  return bits.join(", ");
+  /*
+   * `shot.condition` is the mechanical key and `text` is the authored sentence, and on all seven
+   * pieces that carry both the sentence says it better: `offBalance` against *The target is
+   * Off-Balance (1). No save.* So the prose wins where there is prose, and the key is the fallback
+   * for a piece written without any -- resolved to its label, because `offBalance` is not a word.
+   */
+  if (item.shot?.condition && !item.text) {
+    stats.push(say(CARDRPG.conditions[item.shot.condition]?.label) || item.shot.condition);
+  }
+  /* A grant is a number too, and the words come from the lang file the sheet labels itself from. */
+  for (const [key, n] of Object.entries(item.grants ?? {})) {
+    stats.push(`${say(GRANT_WORDS[key]) ?? cap(key)} +${n}`);
+  }
+
+  /* Then the sentences, which are what the empty cells were hiding. */
+  const prose = [];
+  if (item.shotEffect) prose.push(say(CARDRPG.shotEffects[item.shotEffect]?.label));
+  if (item.active?.text) {
+    const every = item.active.boundary ? `once per ${say(CARDRPG.recharges[item.active.boundary])}`
+      : item.active.recharge ? `every ${item.active.recharge} turns` : "";
+    prose.push(plain(item.active.text) + (every ? ` (${every})` : ""));
+  }
+  if (item.text) prose.push(plain(item.text));
+  if (item.curse) prose.push(`Curse: ${plain(item.curse)}`);
+
+  return [stats.join(", "), ...prose].filter(Boolean)
+    .map(s => s.replace(/\.$/, "")).join(". ");
 }
 
+/**
+ * **The two kinds a player's handbook does not print.**
+ *
+ * A Wonder and a Relic are treasure: the GM decides one exists and hands it over, and nothing in
+ * either list is on a shelf anywhere. Printing all forty-eight with prices made the handbook a
+ * catalogue of every magic item in the game, which spoils the only reward in it that is meant to
+ * be a surprise, and invited a player to shop from a list nobody is selling from.
+ *
+ * **The three crafts stay**, and the line is drawn there on purpose: worldinfo/Firma.md names
+ * smiths, jewellers and brewers as the makers of exceptional weapons, magical jewellery and
+ * potions, so a Make, a Power and a Potion are **goods** with a maker and a price. A Wonder has
+ * neither. Bought things belong in a player's catalogue however magical they are; found things
+ * do not.
+ */
+const TREASURE = new Set(["Wonder", "Relic"]);
+
 function itemChapter() {
-  const kinds = [...new Set(ITEMS.map(i => i.kind))];
+  const kinds = [...new Set(ITEMS.map(i => i.kind))].filter(k => !TREASURE.has(k));
   const out = [];
   for (const kind of kinds) {
     const rows = ITEMS.filter(i => i.kind === kind);
@@ -175,11 +283,53 @@ function actionChapter() {
 
 /* -------------------------------------------- */
 
+/* -------------------------------------------- */
+/*  Twists                                      */
+/* -------------------------------------------- */
+
+/**
+ * The two twist decks.
+ *
+ * **A twist was the one thing in the game a player meets and could not read about.** The handbook
+ * printed the word nowhere, while the *Surveyor's Chain* in its own items chapter promised that
+ * *in a challenge, your first Progress each scene is free* — so the handbook referred to a
+ * challenge and to Progress without ever saying what either was.
+ *
+ * **Copies are printed because the counts are the tone.** *Strain*, *Noise*, *Time*, *Gear*,
+ * *Arrival* and *Opening* are common and mostly push the story sideways; *Hurt* and *Secret* are
+ * rare and land hard when they come. A player who can see that the deck is mostly complications
+ * and rarely damage reads the risk of a Partial correctly, which is the point of showing it.
+ *
+ * **What is left out is the GM's half**: the two columns of worked examples, when to draw two and
+ * pick, and when to put a card back. Those are improvisation aids for whoever runs the scene, and
+ * the twist arrives as their decision.
+ */
+function twistChapter() {
+  const out = [];
+  for (const [heading, deck, note] of [
+    ["The twist deck", CONTENT.TWISTS,
+      "Thirty cards, drawn when a check outside a ritual asks for one."],
+    ["The ritual twist deck", CONTENT.RITUAL_TWISTS,
+      "Twenty-four cards, and a ritual draws from these instead. Every one of them is the thing "
+      + "you are trying to lift answering back."]
+  ]) {
+    const total = deck.reduce((n, t) => n + (t.copies ?? 1), 0);
+    out.push(`### ${heading}`, "", note, "",
+      "| Twist | Copies | What it costs |", "|---|---|---|");
+    for (const t of deck) out.push(`| **${t.name}** | ${t.copies ?? 1} | ${cell(t.cost)} |`);
+    out.push("", `That is **${total}** cards.`, "");
+  }
+  return out;
+}
+
+/* -------------------------------------------- */
+
 export const CHAPTERS = {
   actions: actionChapter,
   items: itemChapter,
   features: featureChapter,
-  spells: spellChapter
+  spells: spellChapter,
+  twists: twistChapter
 };
 
 /** Replace what lies between a pair of markers, and leave the rest of the file alone. */
@@ -201,7 +351,10 @@ if (process.argv[1] && process.argv[1].endsWith("handbook.mjs")) {
   const before = fs.readFileSync(OUT, "utf8");
   const after = fill(before);
   fs.writeFileSync(OUT, after, "utf8");
-  const cards = CHAPTERS.actions().filter(l => l.startsWith("| **")).length;
-  console.log(`wrote the handbook's reference chapters: ${cards} action cards, `
-    + `${ITEMS.length} items, ${FEATURES.length} features, ${SPELLS.size} spells`);
+  /* Counted off what was WRITTEN, not off the content: the item chapter leaves the treasure out,
+   * and a summary reading `ITEMS.length` would have claimed 150 rows while printing 102. */
+  const rows = name => CHAPTERS[name]().filter(l => l.startsWith("| **")).length;
+  console.log(`wrote the handbook's reference chapters: ${rows("actions")} action cards, `
+    + `${rows("items")} of ${ITEMS.length} items (treasure left out), ${rows("features")} features, `
+    + `${rows("spells")} spells, ${rows("twists")} twists`);
 }
