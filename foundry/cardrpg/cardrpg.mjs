@@ -17,7 +17,7 @@ import { registerCheckHooks } from "./module/checks.mjs";
 import { registerEnrichers, registerEnricherClicks } from "./module/enrichers.mjs";
 import { LevelUpPane } from "./module/levelup.mjs";
 import * as decks from "./module/decks.mjs";
-import { answerArrival } from "./module/resolve.mjs";
+import { answerArrival, answerWatch, watches } from "./module/resolve.mjs";
 /* The graph is assembled at runtime from core content plus whatever the world has added. */
 import { rebuildGraph } from "./module/graph.mjs";
 import { CharacterData, NpcData } from "./module/data/actors.mjs";
@@ -382,6 +382,20 @@ async function onArrival(mover, from) {
     if (!reach(placed, now) || reach(placed, from)) continue;      // not an arrival, for this one
     await answerArrival(who, mover);
   }
+
+  /*
+   * **And then the held shots, which are a different question.**
+   *
+   * The loop above asks every neighbour *did it stop next to me*. That question has no ranged
+   * answer, which is why an archer holding a drawn bow had no rule to hold it with: the arrival
+   * trigger is adjacency and always was.
+   *
+   * `watch` asks *did it walk into the ground I am covering*, and the ground is the weapon's range
+   * through an arc on the facing. Entering is what matters, the same way arriving is: a figure
+   * already in the lane that shuffles one square inside it has not walked into anything, so a
+   * watcher who covered the old square too is not asked.
+   */
+  await answerWatch(mover, now, from);
 }
 
 /**

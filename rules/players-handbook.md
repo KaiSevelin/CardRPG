@@ -414,6 +414,7 @@ casting Ways, because they are printed on a prepared spell rather than on a card
 
 | Reaction | Fires when | What it does | Printed on |
 |---|---|---|---|
+| **Overwatch** | an enemy walks into the ground you are watching | A held shot, loosed at the first enemy to walk into the ground you are watching: your weapon's own range, through a sixty degree arc on the way you are facing. The weapon decides what arrives, so a thrown knife and a musket are the same card and nothing like each other. | 3 cards |
 | **Brace** | you are hit | Reduce the damage, barely. Any card whose own reaction cannot fire is still worth this much, which is deliberately too little to be worth spending a good card on. | any card that cannot answer otherwise |
 | **Parry** | you are hit | Turn the blow with what you are already holding. Reduces the damage by your weapon's own Defend value, so a sword parries better than a knife. | 10 cards |
 | **Block** | you are hit | The shield comes up. Reduces the damage by the shield's Defend value and one more for being a shield, which is the best answer to a hit in the game. | 5 cards |
@@ -428,6 +429,28 @@ casting Ways, because they are printed on a prepared spell rather than on a card
 | **Hold to the Bargain** | a check fails | A check you had just failed is intervened in, once, by something that owes you. | a prepared spell |
 
 <!-- /generated: reactions -->
+
+### Facing, and the ground you watch
+
+**Which way you are pointing matters for exactly one thing, and this is it.** Turn your figure and
+you are watching the ground in front of it: your weapon's own range, through a narrow arc of
+**sixty degrees**, thirty either side of the way you face. On the board that is **one square at one
+pace, three from two paces out, and five from four**, so it is a lane rather than a quadrant.
+
+A held shot answers the first enemy to **walk into** that lane. Not one standing in it already, and
+not one shuffling about inside it: the lane is about the step that crosses into it, the same way an
+arrival is about the step that brings somebody next to you.
+
+**The weapon decides what arrives**, which is why one card covers a thrown knife and a musket. A
+knife watches three squares and lands for 2; a longbow watches ten and lands for 3; a musket
+watches twelve and lands for 6 through two points of armour. The card only chooses the moment.
+
+**Only one shot answers a step.** The first watcher in initiative order looses, spends their card,
+and that is the step dealt with. Four archers watching the same gap do not all fire into it.
+
+Nothing else in the game asks which way you are pointing. A Parry answers a blow from anywhere, a
+Sidestep is away rather than backward, and reach is a circle. If nobody at your table is holding a
+shot, facing never comes up.
 
 **A reaction spell has no fallback.** It is prepared or it is not, and once it has answered
 something this fight it is spent. A card that cannot answer is still worth a Brace; a spell that
@@ -1030,6 +1053,7 @@ do not hold them: they are simply true once the node is yours.
 
 | Card | What it is | Primary | Secondary | Reaction | Copies |
 |---|---|---|---|---|---|
+| **On the Rest** | The barrel laid on its rest and levelled down one line, and you simply wait. *A firearm, levelled on its rest. The first enemy to walk into the ground you are watching takes it, armour and all, out to the barrel's own range.* | Ready | Move 1 | Overwatch | 1 |
 | **Shoulder Check** | Your whole weight into theirs, at the range where weight wins. *Adjacent.* | Strike | → offBalance (1) | – | 1 |
 | **Shield Bash** | The shield is not only for stopping things. *No damage: push 2 and step into the square it left.* | Strike | Move 1 | Block | 1 |
 | **Hammerblow** | A blow that needs them off balance, and settles it once they are. | Strike when they are offBalance | Move 1 | – | 1 |
@@ -1058,6 +1082,8 @@ do not hold them: they are simply true once the node is yours.
 
 | Card | What it is | Primary | Secondary | Reaction | Copies |
 |---|---|---|---|---|---|
+| **The Held Knife** | A blade balanced and not yet thrown, waiting for somebody to cross in front of you. *A weapon you can throw. The first enemy to walk into the ground you are watching takes it, at the blade's own value and no further than it flies.* | Ready | Move 1 | Overwatch | 1 |
+| **At Full Draw** | Held at full draw, watching one approach and nothing else. *A bow or a crossbow. The first enemy to walk into the ground you are watching takes the shot, at the bow's own value, out to its own range.* | Ready | Move 1 | Overwatch | 1 |
 | **Call the Shot** | Pick your man out of the crowd, and keep him picked. *Marked on any enemy you can see, at any range.* | Strike | → marked (1) | – | 1 |
 | **Find the Seam** | Not through the armour. Between it. *Armour does not apply. A point weaker than a plain Strike.* | Strike -1 (ignores armour) | Move 1 | – | 1 |
 | **Half-Hilt** | Hand on the blade, point driven into the gap by main force. *Ignores 2 armour. Reversed grip, straight into the gap.* | Strike (ignores 2 armour) | Move 1 | – | 1 |

@@ -861,6 +861,21 @@ export const DIRECTION = {
     + "and no person anywhere in the frame",
 
   /*
+   * **The three held shots.** One card written three times, so they need separating by the weapon
+   * and by what waiting looks like with it in your hands. None of them is a shot being taken:
+   * the subject of all three is the moment before, which is the whole of what the card is.
+   */
+  "cards/shade/the-held-knife":
+    "a knife held by the blade between finger and thumb, arm back and still, the point steady and "
+    + "aimed out of frame. Nothing is in flight and nothing has been hit",
+  "cards/shade/at-full-draw":
+    "a bow at full draw and held there -- the string fingers tight against the jaw, the arm locked, "
+    + "the arrow level and the whole frame motionless. The strain of holding it is the subject",
+  "cards/strength/on-the-rest":
+    "a musket barrel laid across a forked rest driven into the ground, levelled flat down one line "
+    + "and sighted along, the match smouldering. Not fired: waiting",
+
+  /*
    * **The twist deck, eight kinds, newly commissioned.**
    *
    * Without a direction apiece these came out as eight near-identical prompts, because a twist

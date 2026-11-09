@@ -584,6 +584,47 @@ CARDRPG.fateValueOf = card =>
  *
  * The pack is unbounded by slots and bounded by weight instead.
  */
+/**
+ * **Facing, in eight directions, which is a primitive this game did not have.**
+ *
+ * Nothing until now cared which way a figure pointed. A Parry answers a blow from anywhere, a
+ * Sidestep is away rather than backward, and reach is a radius. Overwatch is the first rule that
+ * needs a front, because a held shot covers the ground you are watching and not the ground behind
+ * your head.
+ *
+ * **Read off the token's own rotation**, which is the thing a player already turns and the only
+ * place a facing can live without becoming a second copy of it. `0` is north and the angle runs
+ * clockwise, which is what a rotated token already means.
+ *
+ * Eight and not four, because a square grid has eight neighbours and a front that cannot be aimed
+ * diagonally would leave half the board unwatchable.
+ */
+CARDRPG.facings = {
+  n: { label: "CARDRPG.Facing.N", angle: 0 },
+  ne: { label: "CARDRPG.Facing.NE", angle: 45 },
+  e: { label: "CARDRPG.Facing.E", angle: 90 },
+  se: { label: "CARDRPG.Facing.SE", angle: 135 },
+  s: { label: "CARDRPG.Facing.S", angle: 180 },
+  sw: { label: "CARDRPG.Facing.SW", angle: 225 },
+  w: { label: "CARDRPG.Facing.W", angle: 270 },
+  nw: { label: "CARDRPG.Facing.NW", angle: 315 }
+};
+
+/**
+ * **How wide the ground in front of you is: sixty degrees, thirty either side of the facing.**
+ *
+ * Narrow on purpose, and this is the number that makes it narrow without making it useless. On a
+ * square grid it works out as **one square at one pace, three from two paces out, five from four**,
+ * which means a watcher covers a lane rather than a quadrant: an archer has to choose which
+ * approach they are watching, and an enemy with room to move has somewhere to go.
+ *
+ * A quarter turn (90) was the first draft and it is too kind -- three squares at one pace and
+ * five at two covers most of the ground anyone would cross, so facing stops being a decision. A
+ * single lane (45) is the other failure: on a square grid it is one square wide at every range, so
+ * a bow watching eight squares of corridor catches nobody who is not already walking down it.
+ */
+CARDRPG.watchArc = 60;
+
 CARDRPG.slots = {
   hands: { label: "CARDRPG.Slot.Hands", icon: "hand", capacity: 2, worn: false },
   /*
@@ -743,7 +784,14 @@ CARDRPG.reactionTriggers = {
   arrival: "CARDRPG.Trigger.Arrival",
   cast: "CARDRPG.Trigger.Cast",
   /* A failed skill check, which could not be an event until something resolved a check. */
-  check: "CARDRPG.Trigger.Check"
+  check: "CARDRPG.Trigger.Check",
+  /*
+   * **Raised by a token ending its move, like `arrival`, and asking a different question.**
+   * `arrival` asks *did it stop next to me*, which has no ranged answer and never could.
+   * This asks *did it walk into the ground I am covering*, where the ground is the weapon's
+   * range through `CARDRPG.watchArc` on the facing. Same event site, different geometry.
+   */
+  watch: "CARDRPG.Trigger.Watch"
 };
 
 /**
@@ -822,6 +870,26 @@ CARDRPG.reactions = {
    */
   deflect: {
     label: "CARDRPG.Reaction.Deflect", kind: "redirect", trigger: "hit", spell: true
+  },
+  /*
+   * **The held shot, and the first reaction in the game that answers at range.**
+   *
+   * Every other arrival reaction is about somebody reaching you: `sidestep` steps away from a
+   * figure now adjacent, `counter` is a braced spear, `heckle` is a word at closing distance. All
+   * three ask one question -- *did it stop next to me* -- and that question has no ranged answer,
+   * so an archer holding a drawn bow had no rule to hold it with.
+   *
+   * `watch` asks a different one: *did it walk into the ground I am covering*. The ground is the
+   * weapon's own range through `CARDRPG.watchArc` on the facing, so the weapon and the direction
+   * decide rather than adjacency.
+   *
+   * **`needsRange` rather than a tag.** A thrown dagger is tagged `melee`/`thrown` and a longbow
+   * `ranged`, and both can be loosed at something four squares off -- what they share is a `range`
+   * on the strike line, which is the thing this rule actually needs. Gating on tags would have
+   * taken two requirements to say one thing, and would have left the dagger out.
+   */
+  overwatch: {
+    label: "CARDRPG.Reaction.Overwatch", kind: "other", trigger: "watch", needsRange: 2
   }
 };
 

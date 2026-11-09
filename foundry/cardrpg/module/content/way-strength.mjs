@@ -14,6 +14,29 @@
  * assertion.
  */
 export const STRENGTH_POOL = [
+  /*
+   * --- the held shot, and why these are one card written three times ---
+   *
+   * All three print the same halves and the same reaction. What makes them play unlike each other
+   * is the weapon in the hand: a thrown dagger watches three squares and arrives for 2, a bow ten
+   * and 3, a musket twelve and 6 through two points of armour. One reaction scaling off the weapon
+   * is a smaller rule than three reactions that each name a weapon class, and it is the only
+   * version that lets the dagger in at all -- a thrown blade is tagged `melee`, so a tag test
+   * would have excluded the card the knife was written for.
+   *
+   * **The halves are the plainest in the game on purpose.** This is a card held for its bottom
+   * row, which is the shape Interpose and Set Spear already have: a baseline primary, Move 1, and
+   * the whole point in the reaction. `ready` rather than a Strike, because levelling, nocking or
+   * balancing a blade is what the turn before a held shot is actually spent on -- and on a musket
+   * it reloads, which is the one weapon that needs the half it is given.
+   */
+  {
+    name: "On the Rest", copies: 1, pool: "strength", needs: [],
+    primary: [{ verb: "ready" }],
+    secondary: [{ verb: "move", param: 1 }],
+    reaction: "overwatch",
+    text: "A firearm, levelled on its rest. The first enemy to walk into the ground you are watching takes it, armour and all, out to the barrel's own range."
+  },
   {
     name: "Shoulder Check", copies: 1, pool: "strength", needs: [],
     primary: [{ verb: "strike" }],

@@ -1543,14 +1543,14 @@ const reactionBlock = configSource.slice(
 const triggers = [...reactionBlock
   .slice(0, reactionBlock.indexOf("CARDRPG.reactions = {"))
   .matchAll(/^  ([a-zA-Z]+): "/gm)].map(m => m[1]);
-check("triggers declared", triggers.join(", "), "hit, allyHit, arrival, cast, check");
+check("triggers declared", triggers.join(", "), "hit, allyHit, arrival, cast, check, watch");
 
 const reactionLines = [...reactionBlock
   .slice(reactionBlock.indexOf("CARDRPG.reactions = {"))
   .matchAll(/^  ([a-zA-Z]+): \{([^}]*)\}/gm)]
   .map(m => ({ key: m[1], body: m[2] }));
 check("reactions declared", reactionLines.map(r => r.key).join(", "),
-  "parry, block, sidestep, counter, use, heckle, bodyguard, unmake, mend, bargain, deflect");
+  "parry, block, sidestep, counter, use, heckle, bodyguard, unmake, mend, bargain, deflect, overwatch");
 
 /* Every reaction must name a trigger that exists, or it is a reaction nothing can ever fire. */
 const triggerOf = r => /trigger: "([a-zA-Z]+)"/.exec(r.body)?.[1] ?? "";
@@ -2700,7 +2700,7 @@ const graphSource = fs.readFileSync(path.join(root, "module/graph.mjs"), "utf8")
 const nodes = content.NODES;
 const byId = graph.GRAPH;
 
-check("nodes defined", nodes.length, 207);
+check("nodes defined", nodes.length, 210);
 check("duplicate node ids", nodes.length === byId.size ? "none" : "yes", "none");
 
 /* Every prerequisite must resolve, or a branch is silently unreachable. */
@@ -3241,7 +3241,7 @@ const unbuilt = cardGrants.filter(n => !graph.POOL.has(n.grants.card))
   .map(n => `${n.id}: ${n.grants.card}`);
 /* Six pool draws on the minor nodes, plus nine Signature cards on the majors. */
 /* The pool draws on the minor nodes, plus every Signature that is a card. */
-check("nodes granting a card", cardGrants.length, 37);
+check("nodes granting a card", cardGrants.length, 40);
 check("cards granted but never built", unbuilt.length ? unbuilt.join(", ") : "none", "none");
 
 /* A pool card twice on one path would be a node that gives you a card you already have. */
@@ -3262,7 +3262,7 @@ check("a pool card granted twice on one path",
  */
 const minors = nodes.filter(n => !n.title && n.id !== graph.ROOT);
 const bespoke = minors.filter(n => n.bespoke);
-check("minor nodes", minors.length, 150);
+check("minor nodes", minors.length, 153);
 check("bespoke minor nodes", bespoke.length, 29);
 /*
  * **The budget is a ceiling, and it is the number of bespoke PIECES.** leveling 1 sizes it exactly
@@ -3282,7 +3282,7 @@ check("bespoke pieces, against a budget of about forty", bespoke.length <= 40, t
  * because bespoke content was DELETED would move this number too, and would have to be explained.
  */
 check("the bespoke share is under the budget ceiling", bespoke.length / minors.length <= 0.4, true);
-check("and what the share is now", (bespoke.length / minors.length).toFixed(3), "0.193");
+check("and what the share is now", (bespoke.length / minors.length).toFixed(3), "0.190");
 /*
  * And each bespoke node sits LAST on its run -- which asked for the title it leads to until Way of
  * Faith had no titles to lead to. Faith spends its depth sideways: the gods are the titles and they
@@ -4299,7 +4299,7 @@ check("core-rules still calls it a named effect",
  * a spell. A trigger is an event SITE, and a site needs code that reaches it.
  */
 check("the triggers, and the event each one has",
-  Object.keys(CARDRPG.reactionTriggers).join(", "), "hit, allyHit, arrival, cast, check");
+  Object.keys(CARDRPG.reactionTriggers).join(", "), "hit, allyHit, arrival, cast, check, watch");
 /*
  * Every trigger has code that raises it, which is the thing a trigger actually IS. A key with no
  * event site is a reaction nothing can ever fire, and this project spent five documents asking for
@@ -4310,7 +4310,9 @@ const raised = {
   allyHit: /reactionsFor\(who, "allyHit"\)/,
   arrival: /reactionsFor\(actor, "arrival"\)/,
   cast: /reactionsFor\(who, "cast"\)/,
-  check: /reactionsFor\(who, "check"\)/
+  check: /reactionsFor\(who, "check"\)/,
+  /* Raised in `answerWatch`, which the movement hook calls after the adjacency loop. */
+  watch: /reactionsFor\(who, "watch"\)/
 };
 const unraised = Object.keys(CARDRPG.reactionTriggers)
   .filter(t => !raised[t] || !raised[t].test(resolveSource));
@@ -4379,14 +4381,13 @@ check("and the other two spell-reactions are printed by the spells they were bui
  */
 check("everything that prints a reaction",
   everything.filter(c => c.reaction).map(c => `${c.name} (${c.reaction})`).sort().join("; "),
-  "Bear It for Them (mend); Both Hands (use); Breath of the Spirit (mend); "
-  + "Count the Odds (parry); Heckle (heckle); "
-  + "Hold the Line (parry); Hold to the Bargain (bargain); Interpose (bodyguard); "
-  + "Light Feet (sidestep); Measure (parry); Named (parry); Over and Past (sidestep); "
-  + "Press (sidestep); Scout Ahead (sidestep); "
-  + "Shake It Off (mend); Shield Bash (block); Shield Wall (block); "
-  + "Sleight (use); Slip the Knot (sidestep); The Close Work (deflect); The Mirror (unmake); "
-  + "The Order's Shield (block); The Turning Tide (mend); Turn Aside (mend); Unmake (unmake)");
+  "At Full Draw (overwatch); Bear It for Them (mend); Both Hands (use); Breath of the Spirit (mend"
+  + "); Count the Odds (parry); Heckle (heckle); Hold the Line (parry); Hold to the Bargain (bargain"
+  + "); Interpose (bodyguard); Light Feet (sidestep); Measure (parry); Named (parry); On the Rest (o"
+  + "verwatch); Over and Past (sidestep); Press (sidestep); Scout Ahead (sidestep); Shake It Off (me"
+  + "nd); Shield Bash (block); Shield Wall (block); Sleight (use); Slip the Knot (sidestep); The Clo"
+  + "se Work (deflect); The Held Knife (overwatch); The Mirror (unmake); The Order's Shield (block);"
+  + " The Turning Tide (mend); Turn Aside (mend); Unmake (unmake)");
 check("the healer needed no new trigger",
   waitingFor("Breath of the Spirit") || "nothing", "nothing");
 /* And it got one, which is why this reads as finished now. */
@@ -4672,8 +4673,8 @@ const pools = {
   shade: content.SHADE_POOL, strength: content.STRENGTH_POOL, mind: content.MIND_POOL,
   faith: content.FAITH_POOL
 };
-check("Shade's pool", pools.shade.length, 17);
-check("Strength's pool", pools.strength.length, 15);
+check("Shade's pool", pools.shade.length, 19);
+check("Strength's pool", pools.strength.length, 16);
 /*
  * Mind's pool is formulas rather than cards, and it is **seventy**, which is a different kind of
  * list from the other two Ways: a Way pool is a dozen cards and this is twelve SCHOOLS, each with
@@ -5556,7 +5557,7 @@ const meanAt = lv => {
  * does not taper*. This is the pin that failed before the fix: 2.50, 2.33, 1.44, 1.25.
  */
 check("mean reward at levels 8 through 11",
-  [8, 9, 10, 11].map(lv => meanAt(lv).toFixed(2)).join(", "), "2.50, 2.89, 3.22, 4.00");
+  [8, 9, 10, 11].map(lv => meanAt(lv).toFixed(2)).join(", "), "2.50, 2.90, 3.20, 4.00");
 check("and it rises every step of the back half",
   [8, 9, 10].every(lv => meanAt(lv) < meanAt(lv + 1)), true);
 /*
@@ -5571,7 +5572,7 @@ const hollow = capstones.filter(n => {
   const keys = Object.keys(n.grants ?? {});
   return keys.length > 0 && keys.every(k => FLAVOUR.has(k));
 });
-check("capstones", capstones.length, 39);
+check("capstones", capstones.length, 42);
 check("capstones granting nothing a fight would notice",
   hollow.map(n => `${n.name} (lv ${graph.levelFor(n.id)})`).join(", ") || "none", "none");
 /*
@@ -5662,11 +5663,11 @@ const reachOneWay = titleId => {
 };
 const sizeOf = way => nodes.filter(n => n.id === way || n.id.startsWith(`${way}.`)).length;
 check("nodes in each Way", WAYS.map(w => `${w} ${sizeOf(w)}`).join(", "),
-  "strength 39, shade 41, mind 49, faith 77");
+  "strength 40, shade 43, mind 49, faith 77");
 check("and how many of them one character can ever own",
   [["strength.infantry", "strength"], ["shade.thief", "shade"], ["mind.blood", "mind"]]
     .map(([t, w]) => `${w} ${reachOneWay(t)}/${sizeOf(w)}`).join(", "),
-  "strength 39/39, shade 41/41, mind 49/49");
+  "strength 40/40, shade 43/43, mind 49/49");
 check("a priest of a pantheon, and of a lone god",
   `${reachOneWay("faith.sessyfyn")}/77, ${reachOneWay("faith.vax")}/77`, "33/77, 21/77");
 
@@ -5755,7 +5756,7 @@ check("one behind every school, every god and each martial Way",
  * fence it the way a spell's strength fences a formula. */
 check("cards a martial menu offers",
   [...graph.CARDS_BY_SOURCE].map(([k, v]) => `${k} ${v.length}`).join(", "),
-  "Shade 17, Warrior 14");
+  "Shade 19, Warrior 15");
 check("and the card held back from one",
   [...content.SHADE_POOL, ...content.STRENGTH_POOL].filter(graph.topRung)
     .map(c => c.name).join(", ") || "none",
@@ -5807,7 +5808,7 @@ const choosableCards = new Set(cardMenus
 const poolCards = [...content.COMMON_POOL, ...content.SHADE_POOL, ...content.STRENGTH_POOL];
 const unreachableCards = poolCards.map(c => c.name)
   .filter(name => !namedCards.has(name) && !choosableCards.has(name));
-check("pool cards in total", poolCards.length, 38);
+check("pool cards in total", poolCards.length, 41);
 check("cards no node can hand over at all",
   unreachableCards.length ? unreachableCards.sort().join(", ") : "none",
   "Both Hands, Dig In, Nothing Held Back, Off-Hand Blow, Press");
@@ -5919,7 +5920,7 @@ check("content carrying the audit column",
 const vague = audited.filter(c => (c.needs ?? []).some(g => g.length < 12)).map(c => c.name);
 check("gaps too short to act on", vague.length ? vague.join(", ") : "none", "none");
 const workingCards = audited.filter(c => !c.needs.length).length;
-check("content the engine does everything for", workingCards, 97);
+check("content the engine does everything for", workingCards, 100);
 check("content with a named gap", audited.filter(c => c.needs.length).length, 114);
 
 /*
@@ -6170,7 +6171,7 @@ check("minor nodes granting another Way's card",
 /* The trunk draws on the common pool, the branches on the Way's own. */
 const wayGrants = nodes.filter(n => !n.title && n.grants?.card)
   .filter(n => graph.POOL.get(n.grants.card)?.pool !== "common").length;
-check("minor nodes granting their own Way's card", wayGrants, 12);
+check("minor nodes granting their own Way's card", wayGrants, 15);
 
 /* -------------------------------------------- */
 
@@ -6428,7 +6429,7 @@ const everyCreatureForArt = monsters.expandRoster(content.ROSTER, content.VARIAN
  * the agreement of two lists: it moves when content is written, which is what it should mean.
  */
 const artable = (await import("../module/art.mjs")).SHELVES.flatMap(s => s.list ?? []);
-check("pieces of content that take art", artable.length, 629);
+check("pieces of content that take art", artable.length, 632);
 /*
  * **The four items that are content without being commissions, and the item each one wears.**
  *
@@ -6944,7 +6945,7 @@ const { artIn: artInLive, backOf: backOfLive } = await import("../module/decks.m
 /* Every piece the game can hand Foundry a path for, which is all of them: kept as the denominator
  * the three states below have to add up to, and no longer printed as progress. */
 check("pieces the game has a path for", artable.filter(e => artInLive(e)).length
-  + backs.filter(([k]) => backOfLive(k)).length, 640);
+  + backs.filter(([k]) => backOfLive(k)).length, 643);
 /*
  * **And every path the game hands Foundry names a file that is there.**
  *
@@ -6963,7 +6964,7 @@ const pathless = [
   ...artable.map(e => [e.name, artInLive(e)]),
   ...backs.map(([k, b]) => [b.label ?? k, backOfLive(k)])
 ].filter(([, p]) => p && !fs.existsSync(fileFor(p)));
-check("art paths the game would hand Foundry", artable.length + backs.length, 640);
+check("art paths the game would hand Foundry", artable.length + backs.length, 643);
 /*
  * **The brief's progress line used to be the total, and nobody noticed for months.**
  *
@@ -7225,7 +7226,7 @@ const briefs = faceRows.map(r => r.brief);
 const leaked = briefs.flatMap(text =>
   [...text.matchAll(/\b([a-z]+[A-Z][a-zA-Z]*)\b/g)].map(m => m[1]));
 /* A pattern that matched no rows at all would report "none" for any list whatsoever. */
-check("briefs the check actually read", briefs.length, 629);
+check("briefs the check actually read", briefs.length, 632);
 check("keys that leaked into the brief",
   leaked.length ? [...new Set(leaked)].join(", ") : "none", "none");
 /*
@@ -7545,7 +7546,7 @@ check("reactions with no line saying what they do",
   describedReactions.filter(k => !REACTION_TEXT[k]).join(", ") || "none", "none");
 check("and lines written for a reaction that is gone",
   Object.keys(REACTION_TEXT).filter(k => !describedReactions.includes(k)).join(", ") || "none", "none");
-check("reactions the handbook now describes", (handbook.match(/^\| \*\*\w[^|]*\| (?:you are hit|an enemy ends|an ally within|a spell is cast|a check fails)/gm) ?? []).length,
+check("reactions the handbook now describes", (handbook.match(/^\| \*\*\w[^|]*\| (?:you are hit|an enemy ends|an enemy walks|an ally within|a spell is cast|a check fails)/gm) ?? []).length,
   describedReactions.length);
 /* The action table printed the raw key -- `parry`, `mend` -- where the label was right there. */
 check("raw reaction keys left in the action table",
@@ -7629,6 +7630,121 @@ const freehandGods = [...byId.values()].filter(n => n.grants?.freehandCast)
 check("gods whose gift is that the weapon is the symbol", freehandGods.join(", "), "Vax");
 check("and Vax's gift says so to the player too",
   /need no free hand/.test(byId.get("faith.vax").gift ?? "") ? "yes" : "no", "yes");
+
+/*
+ * **[BUILT 2026-11-09] Overwatch, which is the sixth rule this project found written down and
+ * never built.**
+ *
+ * The Archer's Tactic has been **called Overwatch** since that title was written, and said *once a
+ * round, when an enemy ends its movement in your line of sight and within range, Strike it as a
+ * reaction*. No trigger in the engine could raise it. `arrival` asks *did it stop next to me* --
+ * `onArrival` hardcodes a reach of 1 -- so every ranged answer in the game was unreachable by
+ * construction, and the Tactic was decoration beside `needsFreeHand`, fifteen Obediences and
+ * `The Close Work`.
+ *
+ * Facing is the new primitive and it is pinned on the geometry rather than on the prose, because
+ * the arc is the entire tuning and an arc nobody measures is an arc that drifts. The three numbers
+ * below are the ones the handbook prints to a player: one square at one pace, three from two, five
+ * from four.
+ */
+check("the arc of the ground you watch", CARDRPG.watchArc, 60);
+check("and the eight facings", Object.keys(CARDRPG.facings).join(","), "n,ne,e,se,s,sw,w,nw");
+check("and each one carries its angle",
+  Object.values(CARDRPG.facings).map(f => f.angle).join(","), "0,45,90,135,180,225,270,315");
+
+/*
+ * **The arc, measured.** A square at offset (ox, oy) is watched when the angle between the facing
+ * and the offset is within half the arc. Computed here the same way `watches` computes it, so this
+ * is a check on the NUMBER rather than a second copy of the rule: change `watchArc` and these
+ * widths move, which is exactly when somebody should be made to look at them.
+ */
+const watchedWidth = (facingAngle, away) => {
+  let n = 0;
+  for (let ox = -away; ox <= away; ox++) {
+    for (let oy = -away; oy <= away; oy++) {
+      if (Math.max(Math.abs(ox), Math.abs(oy)) !== away) continue;
+      const bearing = (Math.atan2(ox, -oy) * 180 / Math.PI + 360) % 360;
+      const off = Math.abs(((bearing - facingAngle + 540) % 360) - 180);
+      if (off <= CARDRPG.watchArc / 2) n++;
+    }
+  }
+  return n;
+};
+check("squares watched at one, two, three and four paces, facing north",
+  [1, 2, 3, 4].map(a => watchedWidth(0, a)).join(", "), "1, 3, 3, 5");
+/*
+ * And a diagonal facing, which is NOT identical and should not be asserted to be. An angular arc
+ * on a square grid cannot be symmetric between the orthogonals and the diagonals: a diagonal
+ * watches five at three paces where north watches three, because the ring of squares at that
+ * distance sits differently against the arc. Two squares across a whole lane, recorded rather than
+ * tuned away -- the alternative is a hand-written shape per facing, which is eight chances to get
+ * it wrong and no way to notice.
+ */
+check("and facing north-east",
+  [1, 2, 3, 4].map(a => watchedWidth(45, a)).join(", "), "1, 3, 5, 5");
+/* Behind you is never watched, whatever the range: that is the whole point of a facing. */
+check("squares watched directly behind",
+  [1, 2, 3, 4].map(a => {
+    const bearing = 180;
+    const off = Math.abs(((bearing - 0 + 540) % 360) - 180);
+    return off <= CARDRPG.watchArc / 2 ? "watched" : "no";
+  }).join(","), "no,no,no,no");
+
+/* The geometry lives in one function, asked of the token rather than stored. */
+check("facing is read off the token rather than stored",
+  /export function facingOf\(actor\)/.test(resolveSource) ? "yes" : "no", "yes");
+/* Specific enough to be about this line: `rotation` alone matches three places in the resolver,
+ * and a grep with more than one answer is a grep the thing it is about could be deleted from. */
+check("and off the rotation, with the document's value preferred",
+  /token\.document\?\.rotation \?\? token\.rotation/.test(resolveSource) ? "yes" : "no", "yes");
+check("and nothing stores one on the character",
+  /facing: new fields/.test(actorModel) ? "it does" : "none", "none");
+/* The one requirement, and it is the strike's range rather than a tag, so the dagger is in. */
+check("what a held shot requires", CARDRPG.reactions.overwatch.needsRange, 2);
+check("and the weapons that satisfy it",
+  content.ITEMS.filter(i => (i.verbs?.strike?.range ?? 0) >= 2).length >= 10
+    ? "ten or more" : "too few", "ten or more");
+/* The thrown things, which a `ranged` tag test would have excluded entirely. The Net is in and
+ * should be: it strikes for 0 and Grapples, so a held net is a snare across a doorway. */
+check("including thrown weapons, which no tag test would have caught",
+  content.ITEMS.filter(i => (i.verbs?.strike?.range ?? 0) >= 2
+    && (i.tags ?? []).includes("thrown")).map(i => i.name).sort().join(", "),
+  "Balanced Dagger, Dagger, Net, Spear");
+
+/*
+ * **The three cards, and that they are held for the reaction.** Baseline halves and a reaction no
+ * other card carries is the shape Interpose and Set Spear already have, and it is what the request
+ * was for: cards whose impact is in the bottom row.
+ */
+const heldShots = [...content.SHADE_POOL, ...content.STRENGTH_POOL]
+  .filter(c => c.reaction === "overwatch");
+check("cards that hold a shot", heldShots.map(c => c.name).sort().join(", "),
+  "At Full Draw, On the Rest, The Held Knife");
+check("and all of them keep their halves plain",
+  heldShots.filter(c => c.primary?.length !== 1 || c.primary[0].verb !== "ready"
+    || c.secondary?.length !== 1 || c.secondary[0].verb !== "move" || c.secondary[0].param !== 1)
+    .map(c => c.name).join(", ") || "none", "none");
+/* Rare: each is the last node of a specialist run, and nothing else grants it. */
+check("and each is granted by exactly one node",
+  heldShots.map(c => [...byId.values()].filter(n => n.grants?.card === c.name).length).join(","),
+  "1,1,1");
+check("and that node is a leaf of a ranged title",
+  ["shade.archer.held", "shade.assassin.held", "strength.musketeer.held"]
+    .filter(id => byId.get(id)).length, 3);
+
+/* And the Tactic that named this rule for months now describes the ground rather than sight. */
+/* The Tactic's own wording, not the phrase: three card texts say "the ground you are watching"
+ * too, so the loose version had four answers and would have survived the Tactic being deleted. */
+check("the Archer's Tactic agrees with the mechanism",
+  /Once a round, and without spending a card/.test(contentSource) ? "yes" : "no", "yes");
+/*
+ * Against `contentCode` and not `contentSource`: the comment above this block quotes the old
+ * wording to explain the find, so grepping the raw file would have been this file answering a
+ * question about itself. That trap is recorded twice already and it caught a third attempt here.
+ */
+check("the Tactic's old promise of line of sight",
+  contentCode.includes("in your line of sight and within range") ? "still there" : "none",
+  "none");
 
 check("the claim that there are two triggers",
   handbook.includes("There are two triggers") ? "still there" : "none", "none");
@@ -7915,7 +8031,7 @@ check("and those are the lengths in the source",
  * European and the cards had no assignment at all.
  */
 const castLines = [...artPrompts.matchAll(/that person is (a (?:wo)?man) of ([A-Za-z ]+?) appearance/g)];
-check("cards, signatures and features given an assigned person", castLines.length, 170);
+check("cards, signatures and features given an assigned person", castLines.length, 173);
 /* The NPC pool is the one group that must NOT be cast: its own capsule says the actor is nobody,
  * because one picture is drawn behind a goblin, a troll and a dragon. */
 const npcBlock = /\n## NPC intent cards\n([\s\S]*?)\n## /.exec(artPrompts)?.[1] ?? "";
@@ -7984,7 +8100,7 @@ check("and the log is a record, not a source",
  * spelling them again. */
 const packSource = fs.readFileSync(path.join(root, "test/build-packs.mjs"), "utf8");
 const rows = faceRows;
-check("file paths in the brief", rows.length, 629);
+check("file paths in the brief", rows.length, 632);
 /* And the backs, whose path is the slug of their KEY rather than of their printed label. */
 const backPaths = [...artList.matchAll(/\| `(backs\/[^`]+)` \|/g)].map(m => m[1]);
 check("back paths in the brief", backPaths.length, backs.length);
@@ -8091,7 +8207,7 @@ for (const entry of everyEntry) {
     for (const st of arr ?? []) everyStep.push({ card: entry.name, st });
   }
 }
-check("steps the timing audit read", everyStep.length, 374);
+check("steps the timing audit read", everyStep.length, 380);
 
 /*
  * **Every key a combo clause uses is a key the clause's schema declares.**
@@ -8817,7 +8933,7 @@ check("and the group it asks for", DIMENSIONS.join("+"), "width+height+depth");
 const everyPackDoc = planned.flatMap(p => p.docs);
 const everyPackChild = planned.flatMap(p => p.docs.flatMap(d => d.items ?? d.cards ?? []));
 check("documents the stamp sweep read", everyPackDoc.length, 499);
-check("and children beneath them", everyPackChild.length, 390);
+check("and children beneath them", everyPackChild.length, 393);
 const unstamped = [...everyPackDoc, ...everyPackChild]
   .filter(d => d._stats?.coreVersion !== manifest.compatibility.verified
     || d._stats?.systemId !== manifest.id
@@ -8932,7 +9048,7 @@ for (const pack of planned) {
 }
 check("ids that are not the hash of their key, malformed, or shared",
   idFaults.length ? idFaults.slice(0, 4).join("; ") : "none", "none");
-check("ids the rule actually read", everyId.size, 889);
+check("ids the rule actually read", everyId.size, 892);
 /* The hash itself, asked rather than shared: sixteen characters of the right alphabet, and the
  * same answer twice for the same key. */
 check("an id is sixteen characters", packs.id16("items:Longsword").length, 16);
@@ -9527,7 +9643,7 @@ check("the indexes are refilled rather than replaced",
 /* ---- what it refuses, asked rather than read ---- */
 
 const coreNodes = [...graph.LIVE_NODES];
-check("the graph starts as core content", coreNodes.length, 207);
+check("the graph starts as core content", coreNodes.length, 210);
 
 /* A prerequisite that does not exist: the first price section 8 names. */
 check("a node following nothing that exists",
@@ -9589,7 +9705,7 @@ check("and the graph is still whole", graph.GRAPH.has("shade.thief"), true);
 
 /* Back to core, so every check after this section is asking about the shipped graph. */
 check("the graph can be put back", graph.rebuildGraph({}).length, 0);
-check("and it is core again", graph.LIVE_NODES.length, 207);
+check("and it is core again", graph.LIVE_NODES.length, 210);
 check("with the replaced node restored", graph.GRAPH.get("shade.footwork")?.name, "Footwork");
 
 /* ---- the lock, which is the answer to "not in an active campaign" ---- */
@@ -12445,7 +12561,7 @@ check("a mastery is always deeper than that Way's expertise",
   }).map(m => m.id).join(", ") || "none", "none");
 
 /* Nothing new was added to the graph for any of it. */
-check("nodes in the graph", nodes.length, 207);
+check("nodes in the graph", nodes.length, 210);
 check("and every expertise rides a node that was already there",
   expertiseNodes.filter(n => Object.keys(n.grants).length < 2).map(n => n.id).join(", ") || "none",
   "none");
@@ -13953,6 +14069,7 @@ const absentGreps = [
   String.raw`and no slate is flagged unusable instead :: quarantined: new fields\.BooleanField`,
   String.raw`and nothing ever puts a condition in the waved set :: waved\.add\(.*condition`,
   String.raw`and nothing in the content deals an injury directly :: verb: "maiming"[\s\S]{0,120}injury:`,
+  String.raw`and nothing stores one on the character :: facing: new fields`,
   String.raw`and reads the change rather than the state :: item\.system\.prepared`,
   String.raw`and the chain is gone :: if \(effect === "taint"\)`,
   String.raw`and the literal Fear used to carry is gone :: const which = fast \? "actionHand" : "actionDiscard";`,

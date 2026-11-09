@@ -185,7 +185,40 @@ when the blow lands.
 
 Two things are true of every reaction in the game:
 
-- **A reaction never draws fate.** A Parry is your item's *Defend* value, a Brace is 1, a Counter is
+- > **Facing, and the held shot.**  **[BUILT 2026-11-09]**
+>
+> **Facing is a new primitive and it exists for one rule.** Nothing else in this game has ever
+> asked which way a figure points: a Parry answers a blow from any direction, a Sidestep is *away*
+> rather than backward, and reach is a radius. A held shot cannot be any of those, because the
+> whole idea is that you are covering some ground and not the rest of it.
+>
+> It is read off the **token's own rotation**, rounded to one of eight, because that is the thing a
+> player already turns and a stored facing would be a second copy of it that disagreed the first
+> time somebody dragged a token.
+>
+> **The ground you watch** is your weapon's range through **60 degrees**, thirty either side of the
+> facing: one square at one pace, three from two out, five from four. The number is the whole of the
+> tuning. A quarter turn is too kind -- three squares at one pace covers most of what anyone would
+> cross, and facing stops being a decision. A single 45-degree lane is one square wide at every
+> range, so a bow watching eight squares of corridor catches nobody not already walking down it.
+>
+> **`watch` is a trigger and not a mechanism**, raised where `arrival` is raised: a token ending its
+> move. The two ask different questions of the same event. `arrival` asks *did it stop next to me*,
+> which is adjacency and has no ranged answer; `watch` asks *did it walk into the ground I am
+> covering*. Entering is what counts in both, so a figure already in the lane that moves within it
+> is not a new shot.
+>
+> **One weapon requirement, not three.** A thrown dagger is tagged `melee`, a longbow `ranged`, and
+> what they share is a **range on the strike line** -- which is the thing the rule needs. Gating on
+> tags would have taken two requirements to say one thing and would have excluded the knife the
+> first of these cards was written for.
+>
+> And the Archer's Tactic has been **called Overwatch** since that title was written, promising
+> *when an enemy ends its movement in your line of sight and within range, Strike it as a reaction*
+> with no trigger in the engine that could raise it. Its wording now matches the ground, which is
+> narrower than line of sight and is the half that makes it a decision.
+
+**A reaction never draws fate.** A Parry is your item's *Defend* value, a Brace is 1, a Counter is
   your item's *Strike* value. Flat, every one of them — which is what lets the rule above be written
   down at all: a threshold has no meaning against a number nobody has drawn yet.
 - **A reaction's damage is not itself a trigger.** A Counter hits, and nothing answers it. A reaction

@@ -11,6 +11,44 @@
   "img": "systems/cardrpg/art/backs/action.webp",
   "cards": [
     {
+      "_id": "fAaBDDXt9mh329bW",
+      "_key": "!cards.cards!nfIAB5yBnWRwobEb.fAaBDDXt9mh329bW",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 100,
+      "name": "On the Rest",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "On the Rest",
+          "img": "systems/cardrpg/art/cards/strength/on-the-rest.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "ready"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "overwatch",
+        "costs": {},
+        "text": "A firearm, levelled on its rest. The first enemy to walk into the ground you are watching takes it, armour and all, out to the barrel's own range."
+      }
+    },
+    {
       "_id": "1IRsyVGzZdooOYcS",
       "_key": "!cards.cards!nfIAB5yBnWRwobEb.1IRsyVGzZdooOYcS",
       "_stats": {
@@ -18,7 +56,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 100,
+      "sort": 200,
       "name": "Shoulder Check",
       "type": "action",
       "face": 0,
@@ -56,7 +94,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 200,
+      "sort": 300,
       "name": "Shield Bash",
       "type": "action",
       "face": 0,
@@ -94,7 +132,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 300,
+      "sort": 400,
       "name": "Hammerblow",
       "type": "action",
       "face": 0,
@@ -135,7 +173,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 400,
+      "sort": 500,
       "name": "Sweep the Leg",
       "type": "action",
       "face": 0,
@@ -180,7 +218,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 500,
+      "sort": 600,
       "name": "Overbear",
       "type": "action",
       "face": 0,
@@ -224,7 +262,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 600,
+      "sort": 700,
       "name": "Shield Wall",
       "type": "action",
       "face": 0,
@@ -265,7 +303,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 700,
+      "sort": 800,
       "name": "Two-Hand It",
       "type": "action",
       "face": 0,
@@ -305,7 +343,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 800,
+      "sort": 900,
       "name": "Heave",
       "type": "action",
       "face": 0,
@@ -343,7 +381,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 900,
+      "sort": 1000,
       "name": "Armoured Advance",
       "type": "action",
       "face": 0,
@@ -382,7 +420,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1000,
+      "sort": 1100,
       "name": "Pull Them Down",
       "type": "action",
       "face": 0,
@@ -420,7 +458,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1100,
+      "sort": 1200,
       "name": "Beat the Blade",
       "type": "action",
       "face": 0,
@@ -461,7 +499,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1200,
+      "sort": 1300,
       "name": "Roar",
       "type": "action",
       "face": 0,
@@ -506,7 +544,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1300,
+      "sort": 1400,
       "name": "Walk It Off",
       "type": "action",
       "face": 0,
@@ -553,7 +591,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1400,
+      "sort": 1500,
       "name": "Nothing Held Back",
       "type": "action",
       "face": 0,
@@ -591,7 +629,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1500,
+      "sort": 1600,
       "name": "Call It",
       "type": "action",
       "face": 0,

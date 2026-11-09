@@ -139,6 +139,10 @@ export const NODES = [
      * runs walked rather than one. It is also the only content that exercises the `all` flag, and
      * an untested flag is a flag that does not work.
      */
+    id: "shade.assassin.held", name: "The Held Knife", after: ["shade.assassin"],
+    grants: { card: "The Held Knife" }
+  },
+  {
     id: "shade.assassin", name: "Assassin", all: true,
     after: ["shade.thief.shadowing", "shade.thief.crowds"], title: "Assassin",
     axis: "Tempo", resource: "Spent",
@@ -178,6 +182,20 @@ export const NODES = [
     signature: "Loose and Step", tactic: "Overwatch",
     grants: { card: "Loose and Step" }
   },
+  /*
+   * **[BUILT 2026-11-09] The held shot, one node past each of the three ranged titles.**
+   *
+   * All three of Archer, Musketeer and Artillerist were graph LEAVES, which is the honest place
+   * for this: a card whose whole value is a reaction nobody else in the game can make should be
+   * the last thing a specialist reaches, not something a generalist picks up on the way past.
+   *
+   * The Archer's own Tactic has been called **Overwatch** since the title was written, and said
+   * *once a round, when an enemy ends its movement in your line of sight and within range, Strike
+   * it as a reaction* -- with no trigger in the engine that could ever raise it. The mechanism
+   * exists now, and these are the cards that hold it.
+   */
+  { id: "shade.archer.held", name: "At Full Draw", after: ["shade.archer"],
+    grants: { card: "At Full Draw" } },
 
   { id: "shade.scout.groundwork", name: "Groundwork", after: ["shade.scout"],
     grants: { restTokens: 1, expertise: "wits" } },
@@ -474,6 +492,10 @@ export const NODES = [
   {
     id: "strength.exec.drillshot", name: "The Volley", after: ["strength.exec.powder"],
     bespoke: true, grants: { training: "firearms and their cleaning" }
+  },
+  {
+    id: "strength.musketeer.held", name: "On the Rest", after: ["strength.musketeer"],
+    grants: { card: "On the Rest" }
   },
   {
     id: "strength.musketeer", name: "Musketeer", after: ["strength.exec.drillshot"],

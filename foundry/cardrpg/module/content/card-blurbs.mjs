@@ -63,6 +63,7 @@ export const CARD_BLURBS = {
   "Roar": "Everything near you hears it, and the fight goes out of them.",
   "Walk It Off": "Whatever is on you comes off, because you have decided it will.",
   "Nothing Held Back": "Commit the whole hand to one blow and have nothing left afterwards.",
+  "On the Rest": "The barrel laid on its rest and levelled down one line, and you simply wait.",
   "Call It": "Name what you are facing, and your people know what to do about it.",
 
   /* --- Way of Shade -------------------------------------------------------- */
@@ -80,6 +81,8 @@ export const CARD_BLURBS = {
   "Mock": "Say the one thing that makes them stop thinking.",
   "Sleight": "Your hands do two things and they only see one.",
   "Vanish": "Be somewhere the eye slides off.",
+  "The Held Knife": "A blade balanced and not yet thrown, waiting for somebody to cross in front of you.",
+  "At Full Draw": "Held at full draw, watching one approach and nothing else.",
   "Count the Odds": "Look at what is coming before you commit to anything.",
   "Scout Ahead": "Go first, look further, and come back knowing.",
   "Smoke and Go": "Something hits the ground, and you are not where you were.",

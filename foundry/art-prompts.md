@@ -1,6 +1,6 @@
 # Art prompts
 
-**640 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
+**643 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
 
 It walks the same `GROUPS` the art list walks, by importing it rather than copying it, so the two files cannot disagree about what exists.
 
@@ -27,7 +27,7 @@ So the numbers are gone from the capsules and the picture is in their place: **t
 
 ## Deck backs
 
-**Draw these first.** 11 pictures against 629 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
+**Draw these first.** 11 pictures against 632 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
 
 ### The capsule — paste this once
 
@@ -1314,7 +1314,7 @@ Draw a body already down and the ground churned where it is being worked at, the
 
 ## Way of Shade — pool
 
-**17 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/cards/shade/`.
+**19 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/cards/shade/`.
 
 A Way of Shade card: low light, cover, and the moment before being noticed.
 
@@ -1396,6 +1396,18 @@ Use the full range, both ends of it:
 ```
 
 </details>
+
+### At Full Draw
+
+File: `cards/shade/at-full-draw.webp`
+
+```text
+SUBJECT. "At Full Draw" — Ready · / Move 1 · A bow or a crossbow. The first enemy to walk into the ground you are watching takes the shot, at the bow's own value, out to its...
+
+Draw a bow at full draw and held there -- the string fingers tight against the jaw, the arm locked, the arrow level and the whole frame motionless. The strain of holding it is the subject.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Horn of Africa appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
 
 ### Between the Plates
 
@@ -1589,6 +1601,18 @@ Draw the release itself: a bowstring gone slack and the drawing hand still open 
 WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of North African appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
+### The Held Knife
+
+File: `cards/shade/the-held-knife.webp`
+
+```text
+SUBJECT. "The Held Knife" — Ready · / Move 1 · A weapon you can throw. The first enemy to walk into the ground you are watching takes it, at the blade's own value and no furth...
+
+Draw a knife held by the blade between finger and thumb, arm back and still, the point steady and aimed out of frame. Nothing is in flight and nothing has been hit.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of North African appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
 ### Vanish
 
 File: `cards/shade/vanish.webp`
@@ -1603,7 +1627,7 @@ WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Per
 
 ## Way of Strength — pool
 
-**15 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/cards/strength/`.
+**16 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/cards/strength/`.
 
 A Way of Strength card: mass, leverage, and weight already moving.
 
@@ -1756,6 +1780,18 @@ SUBJECT. "Nothing Held Back" — Strike · Strain your hand but one, and that ca
 Draw the instant a blow lands, the weapon already through -- never wound up, never posing.
 
 WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Nordic appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### On the Rest
+
+File: `cards/strength/on-the-rest.webp`
+
+```text
+SUBJECT. "On the Rest" — Ready · / Move 1 · A firearm, levelled on its rest. The first enemy to walk into the ground you are watching takes it, armour and all, out to the b...
+
+Draw a musket barrel laid across a forked rest driven into the ground, levelled flat down one line and sighted along, the match smouldering. Not fired: waiting.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Horn of Africa appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ### Overbear

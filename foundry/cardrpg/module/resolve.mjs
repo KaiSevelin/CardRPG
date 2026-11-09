@@ -430,6 +430,55 @@ export function advantageFor(actor, target, {
  * Empty when nothing is placed, which is deliberate: an unplaced fight has no geometry, and a rule
  * that needs geometry should do nothing rather than guess.
  */
+/**
+ * **Which way a figure is pointing, as one of the eight.**
+ *
+ * The token's rotation rounded to the nearest eighth of a turn. Rotation is a free angle and a
+ * facing is one of eight, so the rounding is the whole of the conversion -- and it is done here
+ * rather than stored, because a stored facing is a second copy of the thing the player just
+ * turned, and the two would disagree the first time somebody dragged a token.
+ */
+export function facingOf(actor) {
+  const token = actor?.getActiveTokens?.()[0];
+  if (!token) return null;
+  const eighth = Math.round(((token.document?.rotation ?? token.rotation ?? 0) % 360) / 45) % 8;
+  return Object.keys(CARDRPG.facings)[(eighth + 8) % 8] ?? "n";
+}
+
+/**
+ * **Is that square inside the ground this actor is watching?**
+ *
+ * Three questions, and all three have to be yes: the weapon reaches that far, the square is in
+ * front rather than beside or behind, and there is a weapon that can be loosed at all.
+ *
+ * The arc test is on the ANGLE and not on a shape of squares, because a shape has to be written
+ * out once per facing and the diagonals would be written differently from the orthogonals -- which
+ * is four chances to get it wrong and no way to notice. One angle comparison is the same rule in
+ * all eight directions, and `CARDRPG.watchArc` is the only number in it.
+ *
+ * Distance is Chebyshev, the same measure `neighbours` uses, so a range of 3 means the same thing
+ * here as it does everywhere else in this game.
+ */
+export function watches(actor, point, item) {
+  const token = actor?.getActiveTokens?.()[0];
+  if (!token || !canvas?.ready || !point) return false;
+  const reach = item?.system?.verbs?.strike?.range ?? 0;
+  if (reach < (CARDRPG.reactions.overwatch.needsRange ?? 2)) return false;
+
+  const size = canvas.grid.size;
+  const dx = (point.x - token.x) / size;
+  const dy = (point.y - token.y) / size;
+  const away = Math.max(Math.abs(dx), Math.abs(dy));
+  if (away < 1 || away > reach) return false;
+
+  const facing = CARDRPG.facings[facingOf(actor)];
+  if (!facing) return false;
+  /* Screen angles: y grows downward, so north is -y and the angle runs clockwise from it. */
+  const bearing = (Math.atan2(dx, -dy) * 180 / Math.PI + 360) % 360;
+  const off = Math.abs(((bearing - facing.angle + 540) % 360) - 180);
+  return off <= CARDRPG.watchArc / 2;
+}
+
 export function neighbours(actor) {
   const token = actor?.getActiveTokens?.()[0];
   if (!token || !canvas?.ready) return [];
@@ -1788,6 +1837,15 @@ export function reactionsFor(actor, trigger, { melee = false } = {}) {
     } else if (live && key === "use") {
       const belt = withinReach(actor).find(i => isUsable(i));
       if (belt) printed = { key, card, item: belt, reduce: 0, heal: belt.system.verbs.use.value ?? 0 };
+    } else if (live && key === "overwatch") {
+      /*
+       * A weapon that can be loosed, answering with its own Strike line -- the same shape as
+       * `counter`, and for the same reason: a held shot is the weapon's shot, not the card's. The
+       * card chose the moment and the weapon decides what arrives.
+       */
+      const item = equipped.find(i => (i.system.verbs?.strike?.range ?? 0)
+        >= (rule.needsRange ?? 2) && (i.system.verbs?.strike?.value ?? null) !== null);
+      if (item) printed = { key, card, item, reduce: 0, hits: item.system.verbs.strike.value };
     } else if (live && key === "counter") {
       /*
        * A reach weapon, answering with its own Strike line -- the only reaction that deals damage.
@@ -2085,6 +2143,73 @@ export async function answerArrival(actor, enemy) {
   const set = options.find(o => o.key === "counter");
   return set ? await counter(actor, enemy, set) : null;
 }
+
+/**
+ * **A held shot, loosed at whoever walked into the ground being watched.**
+ *
+ * The same resolution as a counter and deliberately not shared with it: a counter answers a figure
+ * now adjacent and this answers one that may be eight squares off, so the two have nothing in
+ * common but the arithmetic, and the arithmetic is three lines. What they do share is that neither
+ * draws fate -- core-rules 3, every reaction is flat -- which is what keeps a held shot from being
+ * a better attack than an attack.
+ */
+export async function overwatchShot(actor, enemy, option) {
+  const armor = enemy.system.armor ?? 0;
+  const block = enemy.system.blockNow ?? enemy.system.block ?? 0;
+  const dealt = Math.max(0, (option.hits ?? 0) - armor - block);
+  const health = Math.max(0, (enemy.system.health.value ?? 0) - dealt);
+  const choice = await spendReaction(actor, option);
+  await enemy.update({
+    "system.health.value": health,
+    ...(block && !enemy.system.blockPersists ? { "system.block": 0 } : {})
+  });
+  await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<div class="cardrpg"><p><strong>${actor.name}</strong> was watching that ground: `
+      + `${enemy.name} walks into it and takes ${option.item.name}, spending `
+      + `<em>${cardName(choice.card)}</em>: ${option.hits}`
+      + (armor ? ` &minus; ${armor} armor` : "")
+      + (block ? ` &minus; ${block} Block` : "")
+      + ` = <strong>${dealt}</strong> damage`
+      + (health <= 0 ? ", <strong>down</strong>" : "")
+      + ".</p></div>"
+  });
+  return { card: cardName(choice.card), dealt };
+}
+
+/**
+ * Everyone watching the ground an enemy just walked into, and the one shot that answers.
+ *
+ * **One shooter, not every shooter.** The first enemy into the lane takes one shot, because a
+ * reaction is one card and a rule that let four archers all answer the same step would end a fight
+ * before anybody had a turn. Initiative order decides, the same way it decides which bodyguard
+ * steps in front.
+ */
+export async function answerWatch(mover, point, from = null) {
+  if (!mover || !canvas?.ready) return null;
+  const order = game.combat?.turns ?? [];
+  const place = who => {
+    const at = order.findIndex(t => t.actor?.id === who.id);
+    return at < 0 ? Number.MAX_SAFE_INTEGER : at;
+  };
+  const watchers = canvas.tokens.placeables
+    .map(placed => placed.actor)
+    .filter(who => who && who.id !== mover.id && who.type !== mover.type)
+    .map(who => ({ who, options: reactionsFor(who, "watch") }))
+    /*
+     * Entering the lane, not standing in it. A watcher who covered the square the mover came from
+     * has already had their moment: one shot answers one approach, and a figure crossing a long
+     * lane would otherwise be shot at every step of it.
+     */
+    .filter(entry => entry.options.length
+      && watches(entry.who, point, entry.options[0].item)
+      && !(from && watches(entry.who, from, entry.options[0].item)))
+    .sort((a, b) => place(a.who) - place(b.who));
+  if (!watchers.length) return null;
+  const { who, options } = watchers[0];
+  return overwatchShot(who, mover, options[0]);
+}
+
 
 /**
  * A Cast is being made. Anyone on the other side who has a ward prepared may stop it.

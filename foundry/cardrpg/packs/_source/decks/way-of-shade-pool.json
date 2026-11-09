@@ -11,6 +11,82 @@
   "img": "systems/cardrpg/art/backs/action.webp",
   "cards": [
     {
+      "_id": "QuFmLxk6D5Dn8iuI",
+      "_key": "!cards.cards!NHP0PBXJoAQv67Vk.QuFmLxk6D5Dn8iuI",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 100,
+      "name": "The Held Knife",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "The Held Knife",
+          "img": "systems/cardrpg/art/cards/shade/the-held-knife.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "ready"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "overwatch",
+        "costs": {},
+        "text": "A weapon you can throw. The first enemy to walk into the ground you are watching takes it, at the blade's own value and no further than it flies."
+      }
+    },
+    {
+      "_id": "BVcq58bUl8Xiqv96",
+      "_key": "!cards.cards!NHP0PBXJoAQv67Vk.BVcq58bUl8Xiqv96",
+      "_stats": {
+        "coreVersion": "14.369",
+        "systemId": "cardrpg",
+        "systemVersion": "0.2.0"
+      },
+      "sort": 200,
+      "name": "At Full Draw",
+      "type": "action",
+      "face": 0,
+      "faces": [
+        {
+          "name": "At Full Draw",
+          "img": "systems/cardrpg/art/cards/shade/at-full-draw.webp"
+        }
+      ],
+      "back": {
+        "img": "systems/cardrpg/art/backs/action.webp"
+      },
+      "system": {
+        "primary": [
+          {
+            "verb": "ready"
+          }
+        ],
+        "secondary": [
+          {
+            "verb": "move",
+            "param": 1
+          }
+        ],
+        "reaction": "overwatch",
+        "costs": {},
+        "text": "A bow or a crossbow. The first enemy to walk into the ground you are watching takes the shot, at the bow's own value, out to its own range."
+      }
+    },
+    {
       "_id": "6MZL4SsIQCxDU9mQ",
       "_key": "!cards.cards!NHP0PBXJoAQv67Vk.6MZL4SsIQCxDU9mQ",
       "_stats": {
@@ -18,7 +94,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 100,
+      "sort": 300,
       "name": "Call the Shot",
       "type": "action",
       "face": 0,
@@ -56,7 +132,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 200,
+      "sort": 400,
       "name": "Find the Seam",
       "type": "action",
       "face": 0,
@@ -99,7 +175,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 300,
+      "sort": 500,
       "name": "Half-Hilt",
       "type": "action",
       "face": 0,
@@ -141,7 +217,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 400,
+      "sort": 600,
       "name": "Round the Shield",
       "type": "action",
       "face": 0,
@@ -186,7 +262,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 500,
+      "sort": 700,
       "name": "Between the Plates",
       "type": "action",
       "face": 0,
@@ -227,7 +303,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 600,
+      "sort": 800,
       "name": "Take the Shot",
       "type": "action",
       "face": 0,
@@ -272,7 +348,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 700,
+      "sort": 900,
       "name": "Pin the Shadow",
       "type": "action",
       "face": 0,
@@ -320,7 +396,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 800,
+      "sort": 1000,
       "name": "Cut and Run",
       "type": "action",
       "face": 0,
@@ -361,7 +437,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 900,
+      "sort": 1100,
       "name": "Light Feet",
       "type": "action",
       "face": 0,
@@ -400,7 +476,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1000,
+      "sort": 1200,
       "name": "Slip the Knot",
       "type": "action",
       "face": 0,
@@ -438,7 +514,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1100,
+      "sort": 1300,
       "name": "Second Knife",
       "type": "action",
       "face": 0,
@@ -482,7 +558,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1200,
+      "sort": 1400,
       "name": "Mock",
       "type": "action",
       "face": 0,
@@ -522,7 +598,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1300,
+      "sort": 1500,
       "name": "Sleight",
       "type": "action",
       "face": 0,
@@ -561,7 +637,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1400,
+      "sort": 1600,
       "name": "Vanish",
       "type": "action",
       "face": 0,
@@ -604,7 +680,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1500,
+      "sort": 1700,
       "name": "Count the Odds",
       "type": "action",
       "face": 0,
@@ -642,7 +718,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1600,
+      "sort": 1800,
       "name": "Scout Ahead",
       "type": "action",
       "face": 0,
@@ -681,7 +757,7 @@
         "systemId": "cardrpg",
         "systemVersion": "0.2.0"
       },
-      "sort": 1700,
+      "sort": 1900,
       "name": "Smoke and Go",
       "type": "action",
       "face": 0,

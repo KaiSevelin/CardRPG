@@ -23,6 +23,36 @@
  * since the reach weapons and the reaction row were built.
  */
 export const SHADE_POOL = [
+  /*
+   * --- the held shot, and why these are one card written three times ---
+   *
+   * All three print the same halves and the same reaction. What makes them play unlike each other
+   * is the weapon in the hand: a thrown dagger watches three squares and arrives for 2, a bow ten
+   * and 3, a musket twelve and 6 through two points of armour. One reaction scaling off the weapon
+   * is a smaller rule than three reactions that each name a weapon class, and it is the only
+   * version that lets the dagger in at all -- a thrown blade is tagged `melee`, so a tag test
+   * would have excluded the card the knife was written for.
+   *
+   * **The halves are the plainest in the game on purpose.** This is a card held for its bottom
+   * row, which is the shape Interpose and Set Spear already have: a baseline primary, Move 1, and
+   * the whole point in the reaction. `ready` rather than a Strike, because levelling, nocking or
+   * balancing a blade is what the turn before a held shot is actually spent on -- and on a musket
+   * it reloads, which is the one weapon that needs the half it is given.
+   */
+  {
+    name: "The Held Knife", copies: 1, pool: "shade", needs: [],
+    primary: [{ verb: "ready" }],
+    secondary: [{ verb: "move", param: 1 }],
+    reaction: "overwatch",
+    text: "A weapon you can throw. The first enemy to walk into the ground you are watching takes it, at the blade's own value and no further than it flies."
+  },
+  {
+    name: "At Full Draw", copies: 1, pool: "shade", needs: [],
+    primary: [{ verb: "ready" }],
+    secondary: [{ verb: "move", param: 1 }],
+    reaction: "overwatch",
+    text: "A bow or a crossbow. The first enemy to walk into the ground you are watching takes the shot, at the bow's own value, out to its own range."
+  },
   {
     /*
      * The best setter in the game, and it should be: the only one that works at ANY range. Marked
@@ -366,9 +396,17 @@ export const TACTICS = {
   "Through the Window":
     "You ignore difficult ground, and no enemy blocks your movement in a square that holds an "
     + "obstacle.",
+  /*
+   * **This Tactic named the rule for months and the engine had no trigger that could raise it.**
+   * It read *in your line of sight and within range*, which is a wider promise than the mechanism
+   * built for it: the ground you watch is your weapon's range through a sixty-degree arc on your
+   * facing, so a figure behind you is not in it however clearly you can see them. Reworded to the
+   * geometry rather than the other way round, because a lane an archer has to choose is the
+   * decision this rule exists to create.
+   */
   "Overwatch":
-    "Once a round, when an enemy ends its movement in your line of sight and within range, "
-    + "Strike it as a reaction.",
+    "Once a round, and without spending a card: an enemy that walks into the ground you are "
+    + "watching takes a Strike as a reaction.",
   "The Ground You Chose":
     "Every square you have occupied this fight is difficult ground for your enemies.",
   "Never Cornered":

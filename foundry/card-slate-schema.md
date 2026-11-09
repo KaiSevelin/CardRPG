@@ -55,7 +55,7 @@ schema too, so a face can render without a second convention.
 
 #### `text` was carrying the game  **[MEASURED 2026-11-02]**
 
-**Of 374 steps, 127 carried prose** `-` and a step that is only prose used to do *nothing at all*
+**Of 380 steps, 127 carried prose** `-` and a step that is only prose used to do *nothing at all*
 when played. `case ""` in the tray broke out of a switch that
 is the end of the method: no effect, no prompt, not a line in chat. The branch below it already
 announced any verb the engine did not recognise, so the arrangement was exactly backwards `-` **a
@@ -69,6 +69,12 @@ fills it in.
 > through this. So 127 is still the count of steps that carried prose, measured against a game that
 > is 21 steps larger. The check reads the live sweep, which is why this sentence had to be edited
 > rather than quietly left behind.
+>
+> **And again on 2026-11-09**, for the same reason and with the same answer: the three held-shot
+> cards added **6** steps, a Ready and a Move 1 apiece, and not one of them carries prose. 380
+> now, numerator unchanged. Three edits to one sentence is the check working: a measurement with a
+> denominator in it goes stale every time the game grows, and the only two honest options are to
+> read it live or to edit the prose each time. This file does both.
 
 The prose turned out to be mostly not special actions. Grouped, 104 of the 127 fell into families
 the designer had already named in the words of the prose itself:
