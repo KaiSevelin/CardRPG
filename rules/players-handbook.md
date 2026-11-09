@@ -607,6 +607,97 @@ they cannot be shaken off.
 
 ---
 
+## Two rounds, played out
+
+Everything above, running. One character, two enemies, and every number taken from the cards and
+stat blocks in this book rather than invented for the example.
+
+**The Warrior** is a starting character: **12 Health**, a **Longsword** (Strike 3, Defend 1), a
+**Wooden Shield** (Defend 2), **Leather Armor** (Armor 1) and a **Healing Potion** on the belt.
+One feature, **Strong**: +1 damage on Strike with Heavy items, and the Longsword is Heavy. The
+action deck is 16 cards and the hand is 5.
+
+**A Goblin** stands next to him: 5 Health, no armour, speed 3, a spear that Strikes for 3. **A
+Goblin Archer** is six squares back down the tunnel: 5 Health, no armour, a shortbow that Strikes
+for 3 out to range 6.
+
+**Initiative.** Everyone draws one fate card, once for the whole fight. The Archer draws **+2**,
+the Goblin **+1**, the Warrior **−1**. The order is **Archer, Goblin, Warrior**, and it holds for
+the rest of the fight. Acting last is a bad draw and it is going to cost him.
+
+**Two intent cards, face down, one per kind of enemy.** The Goblin and the Archer are different
+kinds, so that is two cards. If there were four goblins they would still share one.
+
+### Round one
+
+The intents are **Close In** for the goblin kind and **Loose** for the archer kind.
+
+**1. The Archer** plays *Loose*: Strike at the weapon's range. The Warrior is exactly six squares
+away and the bow reaches six. Shortbow **3**, fate **+0**, total **3**. The Warrior's armour takes
+1, so **2 damage**. Warrior at **10**.
+
+Nothing in the Warrior's hand is asked about it. A reaction fires only on a **serious** hit, and 2
+is neither a Wound nor enough to drop him.
+
+**2. The Goblin** plays *Close In*: move your speed, then Strike. It is already adjacent, so it
+moves nothing. Spear **3**, fate **+1**, total **4**. Armour takes 1, so **3 damage**. Warrior at
+**7**. Still not serious.
+
+**3. The Warrior** refills to five and holds *Strike, Strike, Heavy Swing, Shield Up, Advance*.
+
+- **Primary: Heavy Swing** at the Goblin. The order from section 5: base **3** for the Longsword,
+  **+1** for the card, **+1** for Strong, which is **5** before luck. Fate **−1** gives **4**.
+  The goblin has no armour and no Block, so **4 damage**: it drops to **1 Health**. Heavy Swing
+  also ignores 2 armour, which buys nothing here, because a goblin has none to ignore.
+- **Secondary: Strike**, for its Move 1, one step, keeping the goblin in reach.
+
+He wanted the shield up as well, and he cannot have it. *Shield Up* carries Defend on its
+**primary**, and the primary is spent on Heavy Swing. **You never get both halves of one card**,
+and two cards whose useful halves are both primaries compete for the same slot. That is most of
+what a turn is.
+
+Heavy Swing and the one Strike go to the discard. **Three cards stay in front of him**, ready to
+react: *Strike, Shield Up, Advance*. Eleven are left in the draw pile.
+
+### Round two
+
+Two fresh intents: **Find the Joint** for the goblin and **Loose** again for the archer.
+
+**1. The Archer** looses again: **3**, fate **−1**, total **2**. Armour takes 1, so **1 damage**.
+Warrior at **6**.
+
+**2. The Goblin** plays *Find the Joint*: Strike where the harness is buckled rather than where
+it is thickest, **ignoring 2 armour**. The Warrior's armour is 1, so all of it counts for nothing.
+Spear **3**, fate **+2**, total **5**, and no armour stands in the way: **5 incoming**.
+
+**That is a Wound**, and a Wound is serious, so the hand is asked. The best answer in it is
+**Shield Up** as a **Block**: the Wooden Shield's Defend is 2, and one more for being a shield, so
+it takes **3** off. **2 damage** gets through, and because 2 is under the Wound line, **the Wound
+never happens**. Shield Up goes to the discard. Warrior at **4**.
+
+That is the whole of the reaction rule in one blow. Nothing answered the 1s, 2s and 3s, because a
+reaction fires only when it **changes the outcome**: when it stops a Wound, or stops you being
+dropped. A hand spent on scratches is a hand you do not have for this.
+
+**3. The Warrior** refills to five: *Strike, Advance, Lunge, Quick Hands, Second Wind*.
+
+- **Primary: Strike** at the Goblin, on 1 Health. Base **3** plus **1** for Strong is **4**, and
+  the fate card is a **Critical**. So he draws from the critical deck and turns up **Through and
+  Through**: double the damage, **8**. The goblin is down. The fate deck shuffles, because a
+  Critical always does.
+- **Secondary: Second Wind**, for its **Use**, the Healing Potion. Use **4**, fate **+0**,
+  **4 Health back**, and the potion is spent doing it. Warrior at **8**.
+
+*Second Wind* is printed **Spent** on its primary and he played the secondary, so it is only
+discarded. A cost on one half is not a cost on the other.
+
+**Where the fight stands.** The Warrior is on **8 of 12** with a goblin down, the Archer untouched
+six squares away and still shooting, three cards in hand, five in the discard and eight to draw.
+He is winning and he has spent a quarter of his deck to do it, which is the arithmetic the whole
+game is about: you do not run out of spells, you run out of deck.
+
+---
+
 ## 9. Checks, outside a fight
 
 Draw a hand of **4** skill cards. Each shows one **approach** and a value of 1–3.

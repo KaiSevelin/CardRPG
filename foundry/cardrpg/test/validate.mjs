@@ -7389,6 +7389,98 @@ const handbookChapter = name => handbook
 const handbookRows = name => handbookChapter(name).split("\n").filter(l => l.startsWith("| **"));
 
 /*
+ * **The worked example is a copy of the rules, so every number in it is checked against them.**
+ *
+ * **[BUILT 2026-11-09]** Two rounds played out in the handbook, between the conditions chapter
+ * and the checks. It is hand-written prose and it cites fourteen numbers that live somewhere
+ * else: a Longsword's Strike, a goblin's Health, the Wound line, the Block bonus, a potion's Use.
+ * Change any of them and the example becomes a confident lie in the most-read part of the book,
+ * with nothing to say so -- which is the same defect as a count that cannot see a sentence, in
+ * the one chapter a new player is most likely to trust.
+ *
+ * So the arithmetic is recomputed here from the content and matched against the prose. These are
+ * not a second copy of the example: they are the content's own values, asserted to appear in it.
+ */
+const example = handbook.slice(handbook.indexOf("## Two rounds, played out"),
+  handbook.indexOf("## 9. Checks, outside a fight"));
+const exItem = name => content.ITEMS.find(i => i.name === name);
+const exCard = name => content.WARRIOR_DECK.find(c => c.name === name);
+const exIntent = name => content.INTENTS.find(i => i.name === name);
+
+check("the worked example is in the book", example.length > 1500 ? "yes" : "missing", "yes");
+
+/* The character it is played with, which is the only one the game fully specifies. */
+check("and the Warrior's Health is what the example says",
+  content.WARRIOR.system.health.max ?? content.WARRIOR.system.health.base, 12);
+check("and the Longsword strikes for what it says",
+  exItem("Longsword").verbs.strike.value, 3);
+check("and the Wooden Shield defends for what it says",
+  exItem("Wooden Shield").verbs.defend.value, 2);
+check("and the Leather Armor stops what it says", exItem("Leather Armor").armor, 1);
+check("and the Healing Potion heals what it says", exItem("Healing Potion").verbs.use.value, 4);
+check("and Strong adds what it says",
+  content.FEATURES.find(f => f.name === "Strong").bonus.value, 1);
+/* The example's whole first blow: base plus card plus feature, before luck. */
+const exHeavySwing = exCard("Heavy Swing").primary[0];
+check("Heavy Swing's printed modifier", exHeavySwing.mod, 1);
+check("so the example's opening blow computes to", (() => {
+  const base = exItem("Longsword").verbs.strike.value;
+  const strong = content.FEATURES.find(f => f.name === "Strong").bonus.value;
+  return base + exHeavySwing.mod + strong;
+})(), 5);
+check("and the example prints that number",
+  /base \*\*3\*\* for the Longsword[\s\S]{0,120}which is \*\*5\*\* before luck/.test(example)
+    ? "yes" : "no", "yes");
+
+/* The enemies, and the two intents the example plays. */
+check("the Goblin's Health", content.GOBLIN.system.health.base, 5);
+check("and its spear's Strike",
+  content.NPC_GEAR.find(g => g.name === "Goblin Spear").verbs.strike.value, 3);
+check("and the Archer's bow reaches as far as the example stands",
+  content.NPC_GEAR.find(g => g.name === "Goblin Shortbow").verbs.strike.range, 6);
+check("and Find the Joint ignores what the example says",
+  exIntent("Find the Joint").sequence[0].ignores, 2);
+/* Both intents it plays have to be in the deck the goblin actually builds, or the example is
+ * showing a card that creature cannot draw. */
+const goblinDeck = (await import("../module/monsters.mjs"))
+  .deckFor(content.GOBLIN.system.capabilities, content.INTENTS, content.GOBLIN.system.kind)
+  .map(c => c.name);
+check("and the intents the example gives the goblin are in its own deck",
+  ["Close In", "Find the Joint"].filter(n => !goblinDeck.includes(n)).join(", ") || "both",
+  "both");
+
+/*
+ * **The reaction, which is the one piece of arithmetic a reader is most likely to check.**
+ *
+ * Five past armour is a Wound, so the hand is asked; the shield takes its Defend plus one for
+ * being a shield; two gets through and the Wound is prevented because the reduction crosses the
+ * line. All four of those numbers are the engine's.
+ */
+check("the Wound line", CARDRPG.defaults.woundAt, 5);
+check("and the Block reaction's bonus for being a shield", CARDRPG.reactions.block.bonus, 1);
+check("so the example's Block takes off", (() => {
+  return exItem("Wooden Shield").verbs.defend.value + CARDRPG.reactions.block.bonus;
+})(), 3);
+check("and the example says so, and says the Wound is prevented",
+  /it takes \*\*3\*\* off/.test(example) && /the Wound[\s\S]{0,3}never happens/.test(example)
+    ? "yes" : "no", "yes");
+/* And the rule that explains why nothing answered the small hits. */
+check("a reduce reaction fires only when it changes the outcome",
+  /reaction fires only when it \*\*changes the outcome\*\*/.test(example) ? "yes" : "no",
+  "yes");
+
+/* The deck bookkeeping, which is the game's real subject and the easiest thing to get wrong. */
+check("the starter Warrior's deck size",
+  content.WARRIOR_DECK.reduce((t, c) => t + (c.copies ?? 1), 0), 16);
+check("and the example's three piles add up to it",
+  /three cards in hand, five in the discard and eight to draw/.test(example) ? "16" : "no",
+  "16");
+/* Second Wind is Spent on its primary only, which is why playing its secondary just discards it. */
+check("Second Wind costs Spent on one half only",
+  Object.keys(exCard("Second Wind").costs).join(","), "primary");
+
+
+/*
  * **The magical gear is the GM's, and the catalogue is the kit a player can buy.**
  *
  * Printing every Wonder and Relic with a price made the handbook a list of every magic item in the
@@ -7489,7 +7581,9 @@ const bookPage = fs.readFileSync(path.join(root, "../../rules/players-handbook.h
 const bookBuilt = buildPage(handbook);
 check("the handbook's page is current",
   bookBuilt.html === bookPage ? "yes" : "stale, run npm run book", "yes");
-check("chapters on the page", bookBuilt.chapters, 20);
+/* 21 since the worked example was added between the conditions chapter and the checks: it is
+ * prose rather than a generated block, and the page counts it like any other chapter. */
+check("chapters on the page", bookBuilt.chapters, 21);
 /* One table on the page per separator row in the markdown: a table that stopped rendering shows
  * up here rather than as a wall of pipes nobody reads. */
 check("and tables", bookBuilt.tables, (handbook.match(/^\|---/gm) ?? []).length);
