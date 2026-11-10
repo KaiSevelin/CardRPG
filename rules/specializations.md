@@ -23,7 +23,7 @@ is a rule this game already has or has already parked:
 | **Poison** | preparing costs **skill cards set aside equal to the formula's strength** | **Strain**, on the skill deck (core-rules §8) |
 | **Shadow** | a permanent **Wild card** in your deck per formula | **Overcast / wild magic** ([ideas.md](ideas.md)) |
 | **Blood** | learning costs **damage equal to the strength**; 4–5 is permanent | Health, and **permanent injuries** ([ideas.md](ideas.md)) |
-| **Tattoo (Styrka)** | each formula gives the GM a **secret** against you | **Secrets** (skill-rules §5) |
+| **Tattoo Magic** | each formula gives the GM a **secret** against you | **Secrets** (skill-rules §5) |
 | **Asceticism** | you give up **body parts** | **permanent injuries** ([ideas.md](ideas.md)) |
 | **Elemental** | money and materials | downtime (skill-rules §6) |
 | **Glamour** | the elves do not teach for free | an **obligation** ([leveling.md](leveling.md) §4) |
@@ -92,25 +92,25 @@ Two consequences worth seeing before this is built:
 
 Direct magic is cast in combat. Ritual magic is not, and anyone literate can do it.
 
-| Node | Swedish | Leans on | Pays in |
-|---|---|---|---|
-| **Blood Magic** | Blodsmagik | Tempo | Health to learn, and blood to cast — often your own |
-| **Necromancy** | Nekromanti | Preparation | A bound **Taint (mind)** card per formula learned |
-| **Elemental Magic** | Elementarmagi | Position | Money and materials (Air, Water, Earth, Fire, Ether) |
-| **Poison** | Gift | Control | Skill cards set aside equal to the formula's strength |
-| **Glamour** | Glamour | Control | An elven debt, as an obligation |
-| **Tattoo Magic** | Styrka | Deck shape | A secret the GM holds against you, per formula |
-| **Asceticism** | Asketism | Deck shape | Parts of your body |
-| **Shadow Magic** | Skugga | Position | A **Wild card per spell cast**, until you sleep (core-rules §6) |
-| **Spiritualism** | Spiritualism | Preparation | A pact with a minor god, per formula, as an obligation |
-| **Household Magic** | Hushållsmagi | *(out of combat)* | Negotiation with elf-kin, as an obligation |
-| **Ward Magic** ✱ | Bannmagi | **Reactions** | Spent — a ward held in reserve is a card gone for the fight |
-| **Divination** ✱ | Spådom | **Support** | Someone else's turn — and a prophecy the GM holds over you |
-| **Ritual Magic** ✦ | Rituell magik | *(out of combat)* | Time, and a recipe that can go wrong |
-| **Brewer** | Bryggare | *(craft)* | — |
-| **Smith** | Smeder | *(craft)* | — |
-| **Jeweller** | Juvelerare | *(craft)* | — |
-| **Orator** | Oratorer | *(social)* | — |
+| Node | Leans on | Pays in |
+|---|---|---|
+| **Blood Magic** | Tempo | Health to learn, and blood to cast — often your own |
+| **Necromancy** | Preparation | A bound **Taint (mind)** card per formula learned |
+| **Elemental Magic** | Position | Money and materials (Air, Water, Earth, Fire, Ether) |
+| **Poison** | Control | Skill cards set aside equal to the formula's strength |
+| **Glamour** | Control | An elven debt, as an obligation |
+| **Tattoo Magic** | Deck shape | A secret the GM holds against you, per formula |
+| **Asceticism** | Deck shape | Parts of your body |
+| **Shadow Magic** | Position | A **Wild card per spell cast**, until you sleep (core-rules §6) |
+| **Spiritualism** | Preparation | A pact with a minor god, per formula, as an obligation |
+| **Household Magic** | *(out of combat)* | Negotiation with elf-kin, as an obligation |
+| **Ward Magic** ✱ | **Reactions** | Spent — a ward held in reserve is a card gone for the fight |
+| **Divination** ✱ | **Support** | Someone else's turn — and a prophecy the GM holds over you |
+| **Ritual Magic** ✦ | *(out of combat)* | Time, and a recipe that can go wrong |
+| **Brewer** | *(craft)* | — |
+| **Smith** | *(craft)* | — |
+| **Jeweller** | *(craft)* | — |
+| **Orator** | *(social)* | — |
 
 ✦ **Ritual Magic has content now, and this row is why it is the right shape.**  **[BUILT 2026-11-08]**
 Four rituals, one per category of permanent injury &mdash; **Regrowth**, **Quieting**,
@@ -141,7 +141,7 @@ A mage who acts on someone else's turn is answering something, so:
 
 | Part | |
 |---|---|
-| **Title** | **Warder** (*Bannmagi*) |
+| **Title** | **Warder** |
 | **Stance** | You do not cast the first spell in a fight. You cast the last one. |
 | **Leans on** | **Reactions** |
 | **Pays in** | **Spent.** A ward is held in reserve and burns a card for the fight whether or not anything comes. |
@@ -293,8 +293,8 @@ needs no bookkeeping, is enforceable by eye, and is the oldest thing in the myth
 also does the balancing: a diviner who could stack their own deck would be a damage school with a
 tell, and the ban is what forces the node onto Support instead.
 
-**The price is the mirror of Tattoo Magic.** Styrka gives the GM a **secret about your past**
-(skill-rules §5); Spådom gives them a **prophecy about your future** and forbids you to dodge it. Same
+**The price is the mirror of Tattoo Magic.** Tattoo Magic gives the GM a **secret about your past**
+(skill-rules §5); Divination gives them a **prophecy about your future** and forbids you to dodge it. Same
 shape, opposite direction, and it stays on §4's loosest rung — a sentence the table enforces, with
 nothing to run.
 
@@ -336,20 +336,20 @@ colliding with its neighbours in both Ways. It is absorbed.
 **Bard had no price at all.** The Pays in column was blank — the tell for a node nobody has decided
 anything about yet.
 
-| Node | Swedish | Leans on | Pays in | Follows |
-|---|---|---|---|---|
-| **Thief** | Tjuvar | Control | A free hand and a light weapon | Shade |
-| **Scout** ✱ | Spanare | **Support** | **Being alone** — ahead of the party, where nobody can reach you | Shade |
-| **Duellist** | Duellister | Reactions | **A hand** — no shield, ever | Shade |
-| **Assassin** | Lönnmördare | Tempo | **Spent** — the opening is a card gone for the whole fight | Thief |
-| **Cutpurse** ✱ | Ficktjuv | Deck shape | **Deck size** — what you lift goes into your deck, and you did not choose it | Thief |
-| **Burglar** ✱ | Inbrottstjuv | Preparation | **Weight** — the kit, the rope, the bar, the lantern | Thief |
-| **Archer** | Bågskyttar | Position | **Range** — hands full, and ruined by anything adjacent | Scout |
-| **Trapmaker** | Fällmakare | Preparation | **A turn spent early**, on a guess about where the fight happens | Scout |
-| **Acrobat** | Akrobater | Position | **Weight** — carries nothing heavy | Duellist |
-| **Bard** | Barder | Reactions | **Someone else's turn** — your cards fire on theirs, never on yours | Duellist |
-| **Gambler** ✱ | Dobblare | Deck shape | **The fate deck** — a Miss *and* a Critical of your own, permanently | Duellist |
-| **Half-mage** | Halvmagiker | Preparation | **Spell slots** — few, and neither one thing nor the other | Duellist |
+| Node | Leans on | Pays in | Follows |
+|---|---|---|---|
+| **Thief** | Control | A free hand and a light weapon | Shade |
+| **Scout** ✱ | **Support** | **Being alone** — ahead of the party, where nobody can reach you | Shade |
+| **Duellist** | Reactions | **A hand** — no shield, ever | Shade |
+| **Assassin** | Tempo | **Spent** — the opening is a card gone for the whole fight | Thief |
+| **Cutpurse** ✱ | Deck shape | **Deck size** — what you lift goes into your deck, and you did not choose it | Thief |
+| **Burglar** ✱ | Preparation | **Weight** — the kit, the rope, the bar, the lantern | Thief |
+| **Archer** | Position | **Range** — hands full, and ruined by anything adjacent | Scout |
+| **Trapmaker** | Preparation | **A turn spent early**, on a guess about where the fight happens | Scout |
+| **Acrobat** | Position | **Weight** — carries nothing heavy | Duellist |
+| **Bard** | Reactions | **Someone else's turn** — your cards fire on theirs, never on yours | Duellist |
+| **Gambler** ✱ | Deck shape | **The fate deck** — a Miss *and* a Critical of your own, permanently | Duellist |
+| **Half-mage** | Preparation | **Spell slots** — few, and neither one thing nor the other | Duellist |
 
 ✱ **Scout, Cutpurse, Burglar and Gambler are not in the world document.** The first three are in
 [leveling.md](leveling.md) §1's sketch of this very Way, which turned out to be right before the list

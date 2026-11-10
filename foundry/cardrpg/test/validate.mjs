@@ -7943,6 +7943,32 @@ check("and the English ones are all present",
     .filter(n => handbook.includes(n)).length, 4);
 
 /*
+ * **And no Swedish anywhere in the three documents, which is now a rule rather than a tidy-up.**
+ *
+ * **[BUILT 2026-11-10]** These documents were translated from a Swedish original and kept the
+ * original words in three different shapes, each of which had to be removed differently. Glosses
+ * -- `the **Steel Road** (*Stålleden*)` -- were pure redundancy and simply went. A whole column
+ * headed *Swedish* in specializations.md's two node tables went with them, and one check had
+ * quietly come to depend on it, matching a table row through the Swedish cell. And the nature
+ * spirits were not glosses at all but the creatures' own names, sitting in a list that is
+ * deliberately international -- Nuno, Xana, Nixie, Will-o'-the-wisp -- so those were renamed into
+ * the same folklore register rather than deleted.
+ *
+ * The letters are the cheapest test that catches all three, since no Swedish word of any length
+ * avoids them for long. **Möbius is the one allowed word**: it is a German mathematician's name
+ * and the ring is the Grey's symbol, so it is stripped before the search rather than excused
+ * afterwards.
+ */
+const noSwedish = [["the world's file", worldDoc], ["the handbook", handbook],
+  ["specializations.md", specDoc]]
+  .filter(([, text]) => /[åäöÅÄÖ]/.test(text.replace(/Möbius/g, "")));
+check("documents still carrying a Swedish letter",
+  noSwedish.map(([name]) => name).join(", ") || "none", "none");
+/* And the column, by its heading, because a reinstated column would carry no accent in its name. */
+check("and no table offers a Swedish column",
+  /\| Swedish \|/.test(specDoc) ? "still there" : "gone", "gone");
+
+/*
  * **The geography is written down twice, and nothing was holding the two copies together.**
  *
  * **[BUILT 2026-11-10]** `worldinfo/Firma.md` is the world's own file and the handbook's lore
@@ -10810,7 +10836,7 @@ check("and each one costs gold rather than a slot",
   content.RITUALS.map(r => `${r.ritual}:${r.value}`).join(" "),
   "maiming:900 breaking:450 curse:1200 wounds:120 lasting:200 held:250 corruption:300");
 check("which specializations.md states the price of",
-  /\*\*Ritual Magic\*\*[^|]*\| Rituell magik \| \*\(out of combat\)\* \| Time, and a recipe that can go wrong/
+  /\*\*Ritual Magic\*\*[^|]*\| \*\(out of combat\)\* \| Time, and a recipe that can go wrong/
     .test(specDoc) ? "yes" : "no", "yes");
 
 /*
@@ -14561,6 +14587,7 @@ const absentGreps = [
   String.raw`and no longer reads an art field the content has not got :: def\?\.art \?\? ""`,
   String.raw`and no longer stops dealing at the first dose :: taint\+\+;\s*\n\s*break;`,
   String.raw`and no slate is flagged unusable instead :: quarantined: new fields\.BooleanField`,
+  String.raw`and no table offers a Swedish column :: \| Swedish \|`,
   String.raw`and nothing ever puts a condition in the waved set :: waved\.add\(.*condition`,
   String.raw`and nothing in the content deals an injury directly :: verb: "maiming"[\s\S]{0,120}injury:`,
   String.raw`and nothing stores one on the character :: facing: new fields`,

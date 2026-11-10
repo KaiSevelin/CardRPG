@@ -166,7 +166,7 @@ into three rings. Within each ring are further walls dividing the rings into sec
 invasion as long as possible. The city has a military government with a strict hierarchy and a Marshal
 of the Realm at the top. Companies of its cavalry are hired out to other districts in exchange for
 deliveries of the supplies the enclave depends on. The enclave is linked to the First District by an
-unsafe tunnel through cave-riddled limestone, the **Cracked Road** (*Spruckna leden*). A large
+unsafe tunnel through cave-riddled limestone, the **Cracked Road**. A large
 underground lake midway along it has given rise to two sketchy harbour villages named From and To.
 
 ## Wolf Peak
@@ -217,17 +217,17 @@ slaves in Sammel and pays with silver, gold and gemstones from the mines outside
 
 ## The Triple Enclave
 
-The Triple Enclave (*Trippelenklaven*) is three frontier enclaves north of the Fourth District. The
+The Triple Enclave is three frontier enclaves north of the Fourth District. The
 towns of Farsight, Bogtown and Highfall are walled small towns, each around a central castle ruled by
 a duke. Farsight lies on a steppe, Bogtown in the middle of a dry patch in a swamp, and Highfall on a
 mountain. All three have enchantments from a shared group of blood mages. The enclaves have a common
-safe tunnel connecting them, the **Steel Road** (*Stålleden*).
+safe tunnel connecting them, the **Steel Road**.
 
 The towns were important outposts for Denaria before year 0, and they still recognise the emperor in
 Denaria as their ruler, even if exchange between them is sporadic these days. In Farsight the Church
 of the Eternal God holds total power and the duchess also carries the title of cardinal; religion
-stands behind every law. Bogtown has the swamp as the source of its export, **dreamwort**
-(*drömört*), a flower whose seeds are dried into a powerful drug. The duke of the town is powerless
+stands behind every law. Bogtown has the swamp as the source of its export, **dreamwort**, a
+flower whose seeds are dried into a powerful drug. The duke of the town is powerless
 and real power lies with the **Dream Guild**, a criminal organisation with branches in every district.
 They are even said to have a treaty with the Horde for safe passage for their caravans. Highfall tries
 to operate as in the old days and keep morale high and its citizens safe; to manage it they help the
@@ -692,13 +692,13 @@ areas, but most have gone to the Second Side, drawn by the elves.
 
 Examples of spirits:
 
-* **Vittra** — tied to cattle herds
-* **Skogsrå** — forest
-* **Bergsrå** — mountain
-* **Sjörå** — lake
+* **Underfolk** — tied to cattle herds
+* **Wood-wife** — forest
+* **Hill-wife** — mountain
+* **Lake-wife** — lake
 * **Nuno** — anthills
-* **Nixie** or **Näcken** — rivers
-* **Glo-so** — graveyards
+* **Nixie** — rivers
+* **Church Grim** — graveyards
 * **Sirens** — reefs
 * **Xana** — waterfalls
 * **Will-o'-the-wisp** — bogs
