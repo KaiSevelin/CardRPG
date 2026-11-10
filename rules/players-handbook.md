@@ -95,28 +95,34 @@ neighbours, and two a day apart overland can be unreachable.
 
 ### The five districts that are left
 
-**The First.** Inland, on the plain inside the Spear Mountains. It protects **Geistburg**, Athor's old
-capital, eight satellite cities and the farmland between them, and the realm is still called Denaria.
-Geistburg is a melting pot of complicated politics, a dozen corrupt noble houses and a powerless man
-who is still titled emperor. The mages' academy is here and so is the Church of the Eternal God, which
-means hypocrisy and religious persecution walk together. The city stands on five mesas with the rich
-on top and everyone else in the valleys between, and cable cars run from height to height.
+**The First.** Inland, on the fertile damp plain inside the Spear Mountains. It protects **Geistburg**,
+Athor's old capital, five satellite cities and the farmland between them, and the realm is still called
+Denaria. Geistburg is a melting pot of complicated politics, a dozen corrupt noble houses and a
+powerless man who is still titled emperor. The mages' academy and the cathedral of the Church of the
+Eternal God stand apart out on the plain, each grown into a small town of its own around its magic or
+its religion, which is how hypocrisy and religious persecution come to walk together. The capital is
+built on one huge mesa, with the rich and noble inside Geistburg itself, slums over the rest of the
+rock, and ordinary people out in the satellite cities. Cable cars connect the mesa to the plain below.
 
-**The Second.** The broken northern coast and its islands, with six enormous lighthouses marking where
-the ring runs. The capital is **Black Harbour**, and the region used to belong to the Salt Barons,
-an association of fishing magnates, smugglers and pirates. The old faith of the Five is strong here and
+**The Second.** The westernmost of the three great fiords of the northern coast, where the sea cuts
+deep inland, with a few islands lying close enough in to belong to the district and six enormous
+lighthouses marking where the ring runs. The capital is **Black Harbour**, which shares the district
+with a handful of fishing villages and one fortified northern town, and the region used to belong to
+the Salt Barons, an association of fishing magnates, smugglers and pirates. The old faith of the Five is strong here and
 the Church of the Eternal God is considered blasphemy. It lands most of the continent's fish. The
 **West Road**, a broad tunnel with underground cities along it, ties it to the First.
 
 **The Third.** Rolling hills in the south-east, warm, famous for wine and fruit, where the rich once
 built winter palaces. The coast feeds it fish and the farmland the rest, but wine is what it is known
 for. The **South Road** runs to the First District, and the underground city of **Sol** is where the
-rich of the First go to enjoy themselves, with a reputation that everything is permitted there.
-Religion and politics are relaxed. A voted council governs from **Tanto**, at the centre of five
-coastal cities, none of which dominates the others.
+rich of the First and the Third go to enjoy themselves, with a reputation that everything is permitted
+there. Religion and politics are relaxed. A voted council governs from **Tanto**, at the centre of
+three coastal cities, none of which dominates the others.
 
 **The Fourth.** The northern half of the Hyena Desert and the mineral-rich Mouse Mountains above it.
-**Sammel**, in the oasis, is the only large city and nearly matches Geistburg. **The Grey**
+**Sammel**, in the northern oasis, is the only large city and nearly matches Geistburg; out at the
+western oasis stands a holy town, thinly peopled, and the rest of the desert is desolate but for a
+couple of caravan camps where there is water. **The Grey**
 and his siblings are worshipped here. Emirs rule, and they have cut Sammel into sealed quarters called
 **Rote**; the old assassin state holds the central one, around the Ziggurat, the tallest building in
 the region. Its embassies sell services under the table in every district but the Sixth. The **East
@@ -127,15 +133,17 @@ passengers through tunnels black with its own coal smoke.
 **The Sixth.** The far east, the second largest district and the one that was never entirely tamed.
 Dragons turn up. Trolls live in the forests and the mountains. Dense wet conifer forest covers most of
 it, broken by lakes, bogs and hills. Timber was the export until the Fifth fell and took the routes
-with it, and now the capital **Karmat** is in decline and mercenaries are the only thing it sells: a
+with it, and now the inland capital **Karmat**, two small coastal towns and a scatter of villages are
+all there is of it. Karmat is in decline and mercenaries are the only thing it sells: a
 squadron of hard soldiers fights its way through the wilderness to the Fourth District once a year.
 The forest barons are broken but not gone, every town runs itself, and the mayor's chair changes hands
 bloodily and often. The war god **Vax** has the most followers, and nobody minds what you believe.
 
-**The Fifth is gone.** It was the centre of smithing and manufacture, with an alchemical academy and a
-centre of magical research called the Rune Temple in the labyrinth city of **Weder**, once the third
-largest city on the continent. Technology and magic mattered there and religion did not. The Fifth
-built the Fourth's trains, the Second's sea defences and the First's cable cars. Its refugees founded
+**The Fifth is gone.** It lay in the north-east, and was the centre of smithing and manufacture, with
+an alchemical academy and a centre of magical research called the Rune Temple in the labyrinth city of
+**Weder**, once the third largest city on the continent. Technology and magic mattered there and
+religion did not. The Fifth built the Fourth's trains, the Second's sea defences and the First's cable
+cars. Its damp pine forest has gone to barren bog since the Horde came in, and Weder is ruins. Its refugees founded
 engineering guilds in every surviving district and kept their language, **Valgar**, and their lack of
 religion, which still causes trouble in the First District.
 
@@ -158,14 +166,14 @@ voyages in an unstable cartel, and the pay for surviving one draws adventurers. 
 cobbled alleys lit blue for bars, red for brothels and green for business best not described. The
 smell is rotting bodies, spilt beer and cheap perfume, under the fermenting kelp.
 
-**Solemn.** A white limestone island south of the Third District, home of the witches, a sisterhood
+**Solemn.** A white limestone island south-east of the Third District, home of the witches, a sisterhood
 with a magic they keep to themselves. They follow the **Primal Mother**, a fertility goddess, and they
 are one of the few enclaves that needs no blood magic: their own ward holds, and nobody outside knows
 how. It is guessed to have something to do with how thin the island's borders are to the Second and
 Third Sides. Their city **Sonebra** sits walled at the top, all towers and spires.
 
-**Regensburg.** The militaristic realm north-east of the First District, and the most important inland
-enclave. Three concentric walls ten metres high divide the city into rings, each ring subdivided again,
+**Regensburg.** The militaristic realm in a valley of the Spear Mountains, north-east of the First
+District, and the most important inland enclave. Three concentric walls ten metres high divide the city into rings, each ring subdivided again,
 all of it designed to make an invasion take as long as possible. A Marshal of the Realm sits at the top
 of a strict hierarchy. It hires its cavalry out to other districts in exchange for the supplies it
 cannot grow. The **Cracked Road** reaches the First District through cave-riddled limestone and is not
@@ -178,7 +186,8 @@ ingredients are all in the mountain: bat guano that never runs out, sulphur from
 charcoal from fast trees that love the soil. The priesthood has its own language, **Perga**, its own
 dress, and tattoos over every inch. They are rarely seen outside.
 
-**Echterhof.** A large neutral city in the middle of Horde territory, ruled by Strigoi princes. Strigoi
+**Echterhof.** A large neutral city in the middle of Horde territory, ruled by Strigoi princes, with
+farmland around it the Horde has left alone. Strigoi
 live off humans, so a large human population lives there caught between the vampires and the Horde. A
 human mayor is appointed to keep order and choose who is eaten, usually criminals, and when criminals
 run short it is done by lot, by grudge or by whim. The city welcomes visitors, because the more people
@@ -208,6 +217,10 @@ criminal organisation with branches in every district, holds the real power. The
 a safe-passage treaty with the Horde. **Highfall** is built into a mountain with a waterfall coming
 over its walls, and tries to run things the old way: it lends the Dream Guild troops, and takes money
 and sacrificial slaves from the Fourth District in exchange.
+
+**Desert Stream.** The third oasis of the Hyena Desert, outside the Fourth District's ward and holding
+a small one of its own that covers the water and nothing else. The isolation has told on the people
+there and their reputation is poor, but the oasis feeds everyone who reaches it.
 
 ### The hives
 

@@ -7943,6 +7943,102 @@ check("and the English ones are all present",
     .filter(n => handbook.includes(n)).length, 4);
 
 /*
+ * **The geography is written down twice, and nothing was holding the two copies together.**
+ *
+ * **[BUILT 2026-11-10]** `worldinfo/Firma.md` is the world's own file and the handbook's lore
+ * chapter is a retelling of it for players. That is a reasonable arrangement -- they are written
+ * for different readers and should not be the same prose -- but it means every fact about the
+ * continent exists in two places, and a copy of a fact is a second fact that can drift.
+ *
+ * It drifted. The world's file was revised to match the drawn map and the handbook was not, so
+ * for a while the two documents disagreed about how many satellite cities Geistburg protects
+ * (five or eight), whether the capital stands on one mesa or five, how many cities the Third
+ * District's council speaks for (three or five), which coast the Second District holds, which way
+ * Solemn lies from the Third, and where the Fifth District used to be. The suite passed
+ * throughout, because nothing here knew the facts were paired.
+ *
+ * So each one is read out of both files by its own pattern and pinned to the same value. The
+ * patterns run against whitespace-flattened copies, because the two documents wrap their lines
+ * differently and a fact should not escape a check by falling across a line break. **A pattern
+ * that stops matching reports NOT FOUND rather than passing**, which is the whole point: the
+ * failure being guarded against is somebody rewording one document, and a check that quietly
+ * matches nothing would wave exactly that through.
+ */
+const geoWorld = worldDoc.replace(/\s+/g, " ");
+const geoBook = handbook.replace(/\s+/g, " ");
+const geoRead = (text, re) => text.match(re)?.[1]?.toLowerCase() ?? "NOT FOUND";
+
+check("satellite cities Geistburg protects, in the world's file",
+  geoRead(geoWorld, /(\w+) satellite cities/), "five");
+check("and in the handbook",
+  geoRead(geoBook, /(\w+) satellite cities/), "five");
+/* One mesa, not five: the capital was rebuilt onto a single rock and the plural is the old text. */
+check("and neither file still has Geistburg on more than one",
+  [["the world's file", geoWorld], ["the handbook", geoBook]]
+    .filter(([, t]) => /mesas/i.test(t)).map(([n]) => n).join(", ") || "none", "none");
+
+check("cities the Third District's council speaks for, in the world's file",
+  geoRead(geoWorld, /(\w+) smaller cities lie along the coast/), "three");
+check("and in the handbook",
+  geoRead(geoBook, /at the centre of (\w+) coastal cities/), "three");
+
+check("coastal towns left to the Sixth, in the world's file",
+  geoRead(geoWorld, /(\w+) smaller coastal towns/), "two");
+check("and in the handbook",
+  geoRead(geoBook, /(\w+) small coastal towns/), "two");
+
+check("which way Solemn lies from the Third, in the world's file",
+  geoRead(geoWorld, /white limestone island ([\w-]+) of the Third District/), "south-east");
+check("and in the handbook",
+  geoRead(geoBook, /white limestone island ([\w-]+) of the Third District/), "south-east");
+
+/*
+ * **The Second District holds the north coast, and that is what makes Kelp Bay possible.**
+ * Both files used to give the Second the west coast while also calling Kelp Bay the only port
+ * left on that coast -- a district of fishing barons, smugglers and pirates sitting on the
+ * shoreline that was supposed to have one surviving harbour on it. The district moved north.
+ */
+check("the coast the Second District holds, in the world's file",
+  geoRead(geoWorld, /Second District .{0,120}?fiords in the (\w+) coast/), "north");
+check("and in the handbook",
+  geoRead(geoBook, /The Second\.\*\* The westernmost of the three great fiords of the (\w+)ern coast/),
+  "north");
+check("and neither file gives the Second the west coast any more",
+  [["the world's file", geoWorld], ["the handbook", geoBook]]
+    .filter(([, t]) => /islands of the west coast|The west coast and its islands/.test(t))
+    .map(([n]) => n).join(", ") || "none", "none");
+/* The sentence the move was made to protect. It was right all along and wanted no edit. */
+check("and Kelp Bay is still the only port on the west",
+  [["the world's file", /only surviving port on the west coast/.test(geoWorld)],
+    ["the handbook", /the only one left on the west coast/.test(geoBook)]]
+    .filter(([, hit]) => !hit).map(([n]) => n).join(", ") || "both say so", "both say so");
+
+check("where the Fifth District lay, in the world's file",
+  geoRead(geoWorld, /The ([\w-]+?)(?:ern)? Fifth District was linked/), "north-east");
+check("and in the handbook",
+  geoRead(geoBook, /The Fifth is gone\.\*\* It lay in the ([\w-]+)/), "north-east");
+
+/* Regensburg sits in the mountain ring itself, not out on the plain the ring encloses. */
+check("the range Regensburg sits in, in the world's file",
+  geoRead(geoWorld, /situated in a valley of (Spear Mountains)/), "spear mountains");
+check("and in the handbook",
+  geoRead(geoBook, /in a valley of the (Spear Mountains)/), "spear mountains");
+
+/*
+ * **Three oases in the Hyena Desert, and each one is somewhere different.** Sammel is in the
+ * northern one, a holy town stands at the western one, and Desert Stream is the third -- the only
+ * one outside the Fourth District's ward, carrying a small ward of its own.
+ */
+check("the oasis Sammel sits in, in the world's file",
+  geoRead(geoWorld, /The city of Sammel in the (\w+) oasis/), "north");
+check("and in the handbook",
+  geoRead(geoBook, /\*\*Sammel\*\*, in the (\w+)ern oasis/), "north");
+check("which oasis Desert Stream is, in the world's file",
+  geoRead(geoWorld, /Desert Stream is the (\w+) oasis/), "third");
+check("and in the handbook",
+  geoRead(geoBook, /Desert Stream\.\*\* The (\w+) oasis/), "third");
+
+/*
  * **Every verb in the six-verb table carries its glyph, and Use carried none.**
  *
  * Five of the six were given one when the table was written and `Use` was missed, which read as

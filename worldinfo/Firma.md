@@ -42,24 +42,21 @@ against district, and internal schisms over religion, power and politics are und
 
 ## The First District
 
-The First District lies inland on the plain encircled by the Spear Mountains (*Spjutbergen*). It
-protects Geistburg, the ancient capital of Athor's empire, eight satellite cities and the land
+The First District lies inland on the fertile moist plain encircled by the **Spear Mountains**. The district
+protects Geistburg, the ancient capital of Athor's empire, five satellite cities and the land
 between them. After the empire's collapse the realm went by the name Denaria. Geistburg is a melting
 pot with complicated politics and a long lineage tied to a dozen corrupt noble houses beneath a
-powerless ruler who is still titled emperor. It is the centre of the mages' academy and of the Church
-of the Eternal God. Hypocrisy and religious persecution go hand in hand. The city is built on five
-mesas where the rich live, while ordinary people and slums occupy the valleys between them. Cable
-cars connect the five mountains.
+powerless ruler who is still titled emperor. The centre of the mages' academy and the cathedral of the Church
+of the Eternal God lies on the plain and can be regarded as small towns on their own, centered around magic and religion. Hypocrisy and religious persecution go hand in hand. The capital is built on a huge mesa, the rich and noble live inside Geistburg, the rest of the mesa is covered by slums, and ordinary people occupy the satellite cities. Cable
+cars connect the mesa with the underlying plain.
 
 ## The Second District
 
-The Second District is the second largest and protects the coastal land and the islands of the north
-coast, where the sea cuts deep inland and the islands lie close enough in to be part of the same
-country; six enormous lighthouses mark where the borders run. The capital Black Harbour
-shares the region with a number of villages and a couple of towns. The area was previously the seat
+The Second District is the second largest and protects the westernmost of the three large fiords in the north coast, where the sea cuts deep inland and a few islands lie close enough in to be part of the same district; six enormous lighthouses mark where the borders run. The capital Black Harbour
+shares the region with a few fishing villages and a fortified northern town. The area was previously the seat
 of power for an association of fishing barons, smugglers and pirates known as the Salt Barons. The
 old faith in The Five is strong here, and the Church of the Eternal God is seen as blasphemy. The
-district is the largest producer of fish, and a broad tunnel, the **West Road** (*Västleden*), with a
+district is the largest producer of fish, and a broad tunnel, the **West Road**, with a
 couple of underground cities, ties the district to the First District.
 
 ## The Third District
@@ -67,38 +64,37 @@ couple of underground cities, ties the district to the First District.
 The rolling hills of the south-east form the Third District. Historically a region of pleasant
 temperature where the rich built their winter palaces, known for its wines and fruit orchards. The
 coast supplies the district with fish and its farmland with meat, vegetables and grain, but wine is
-the best-known export. The **South Road** (*Sydleden*) ties the district to the First. The
-underground city of Sol is a retreat for the rich of the First District who want to enjoy themselves;
+the best-known export. The **South Road**  ties the district to the First. The
+underground city of Sol is a retreat for the rich of the First and Third District who want to enjoy themselves;
 they say everything is permitted there. Religion and politics are fairly relaxed in the Third
-District, which is governed by a council voted in by the various districts. Five smaller cities lie
+District, which is governed by a council voted in by the various districts. Three smaller cities lie
 along the coast, and although none of them dominates, the council sits in the city at the centre,
 Tanto.
 
 ## The Fourth District
 
-The Fourth District covers the northern half of the Hyena Desert (*Hyenaöknen*) and the mineral-rich
-Mouse Mountains (*Musbergen*) north of it. The city of Sammel in the oasis is the only large city,
-and nearly the size of Geistburg. Villages and mining camps are scattered through the Mouse
-Mountains, but the rest of the Hyena Desert is desolate apart from a couple of caravan camps where
-there is water. The Grey and his siblings are worshipped in the district, which is ruled by emirs who
+The Fourth District covers a roughly square northern half of the Hyena Desert and the mineral-rich
+Mouse Mountains north of it. The city of Sammel in the north oasis is the only large city,
+and nearly the size of Geistburg. Villages and a few mining camps are scattered through the Mouse
+Mountains, but the rest of the Hyena Desert is desolate apart from a couple of caravan camps and a holy, sparsely populated town at the western oasis where there is water. The Grey and his siblings are worshipped in the district, which is ruled by emirs who
 have divided Sammel into separate, isolated **Rote**. The former assassin state now rules the central
 Rote around the region's tallest building, the Ziggurat. Embassies that offer services under the
 table can be found in every district except the Sixth, and in a couple of enclaves. The city is linked
-to the First District by the **East Road** (*Östleden*), a less safe tunnel system, since the whole
+to the First District by the **East Road**, a less safe tunnel system, since the whole
 region's mine workings give rise to countless break-ins by monsters and the Horde. A freight and
-passenger train, the **Night Express** (*Nattexpressen*), runs regularly through the tunnels, which
+passenger train, the **Night Express**, runs regularly through the tunnels, which
 are sooted by the coal that drives the engine.
 
 ## The Fifth District
 
-The Fifth District was linked to the First by the **North-East Road** (*Nordostleden*), to the Fourth
-by a rail line, the Mine Line, through the **Mine Road** (*Gruvleden*), and to the Sixth by the
-**River Road** (*Flodleden*), which could handle timber vessels. The tunnels have been unsafe for the
+The north-eastern Fifth District was linked to the First by the **North-East Road**, to the Fourth
+by a rail line, the Mine Line, through the **Mine Road**, and to the Sixth by the
+**River Road**, an underground river route which could handle timber vessels. The tunnels have been unsafe for the
 past hundred years and the train no longer runs. The Fifth District was the centre of smithing and
 manufacture, and had an alchemical academy and a centre of magical research, the Rune Temple, in the
 labyrinthine city of Weder, once the third largest city on the continent. Technology and magic
 mattered more than religion here, and it was the Fifth District that built the trains of the Fourth,
-the sea defences off the Second and the cable cars between the heights of the First. Refugees from the
+the sea defences off the Second and the cable cars between the heights of the First. The once moist pine forests of the Fifth district turned in to a barren bog land after the Horde's invasion and the city of Weder is but ruins. Refugees from the
 catastrophe of 879 have formed engineering guilds in every district and have kept their language,
 Valgar, and their lack of religion — which causes trouble in the First District now and then.
 
@@ -108,7 +104,7 @@ The Sixth District is the most easterly and covers the second largest area of th
 region of coastal wilderness that was never entirely civilised. Dragons turn up from time to time, and
 trolls are found in both forests and mountains. Dense, damp conifer forest covers most of the
 territory, with lakes, bogs and mountains here and there. The largest export was timber, before the
-Fifth District collapsed and the export routes were cut. Four smaller coastal towns and an inland
+Fifth District collapsed and the export routes were cut. Two smaller coastal towns, a few villages and an inland
 capital, Karmat, which is now in decline since the forest barons' export income was cut off.
 Mercenaries have become the only export, and a squadron of hardened soldiers makes its way each year
 through the wilderness and the Horde to the nearest district, the Fourth.
@@ -153,7 +149,7 @@ then through the all-pervading stench of fermenting kelp.
 
 ## Solemn
 
-The white limestone island south of the Third District is the centre of the fabled witches, a
+The white limestone island south-east of the Third District is the centre of the fabled witches, a
 sisterhood with a magic of their own that they keep to themselves. Religiously they follow the
 Primal Mother, a fertility goddess. Solemn is one of the few enclaves that does not rely on blood
 magic for protection; the witches have their own protective enchantment. How it works is unknown, but
@@ -163,7 +159,7 @@ is the enclave's centre.
 
 ## Regensburg
 
-The capital of the militaristic western realm north-east of the First District is the most important
+The capital of the militaristic western realm situated in a valley of Spear Mountains in the north-east of the First District is the most important
 inland enclave. Regensburg has preserved its military background and could certainly survive a couple
 of years without enchantments. The three concentric city walls are ten metres high and divide the city
 into three rings. Within each ring are further walls dividing the rings into sections, all to resist
@@ -171,7 +167,7 @@ invasion as long as possible. The city has a military government with a strict h
 of the Realm at the top. Companies of its cavalry are hired out to other districts in exchange for
 deliveries of the supplies the enclave depends on. The enclave is linked to the First District by an
 unsafe tunnel through cave-riddled limestone, the **Cracked Road** (*Spruckna leden*). A large
-underground lake midway along it has given rise to two harbour villages named From and To.
+underground lake midway along it has given rise to two sketchy harbour villages named From and To.
 
 ## Wolf Peak
 
@@ -182,12 +178,12 @@ the mountain, together with careful husbandry of resources, makes it self-suffic
 advanced technology in gunpowder and firearms helps. The materials for powder are inside the mountain:
 never-failing guano fields from bats and large sulphur deposits from the volcanism, while charcoal is
 harvested from fast-growing trees that thrive in the fertile volcanic soil. The priesthood of
-Wolf Peak's temple and monastery have a language of their own, Perga, and a style of dress, and are
+Wolf Peak's temple and monastery have a language of their own, Perga, and a unique style of dress, and are
 always covered in tattoos. They are rarely met outside the enclave.
 
 ## Echterhof
 
-Echterhof is ruled by Strigoi princes and is a neutral large city in the middle of Horde territory.
+Echterhof is ruled by Strigoi princes and is a neutral large city in the middle of Horde territory. The farm land around the city has been left untouched by the horde.
 Strigoi live off humans, so there is a large population of humans in the city caught in an unpleasant
 bind between the Strigoi and the Horde. To keep its citizens in order a human mayor has been appointed
 and a treaty signed. The mayor selects food for the vampires, usually criminals, but when they run
@@ -237,6 +233,9 @@ They are even said to have a treaty with the Horde for safe passage for their ca
 to operate as in the old days and keep morale high and its citizens safe; to manage it they help the
 Dream Guild with troops and receive money and blood-sacrifice slaves from the Fourth District in
 return. The town is set into a mountain with a waterfall that falls over its walls.
+
+## Desert Stream
+Desert Stream is the third oasis in the Hyena Desert, outside the Fourth District's protective ward, but with a small ward of its own just covering the oasis. People here have gone weird from the isolation and have a bad reputation, but the oasis provides food for everyone.
 
 # Hives
 
