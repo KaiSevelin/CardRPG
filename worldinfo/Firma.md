@@ -53,8 +53,9 @@ cars connect the five mountains.
 
 ## The Second District
 
-The Second District is the second largest and protects the coastal land and the islands of the west
-coast; six enormous lighthouses mark where the borders run. The capital Black Harbour
+The Second District is the second largest and protects the coastal land and the islands of the north
+coast, where the sea cuts deep inland and the islands lie close enough in to be part of the same
+country; six enormous lighthouses mark where the borders run. The capital Black Harbour
 shares the region with a number of villages and a couple of towns. The area was previously the seat
 of power for an association of fishing barons, smugglers and pirates known as the Salt Barons. The
 old faith in The Five is strong here, and the Church of the Eternal God is seen as blasphemy. The

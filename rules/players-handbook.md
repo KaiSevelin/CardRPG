@@ -102,8 +102,8 @@ who is still titled emperor. The mages' academy is here and so is the Church of 
 means hypocrisy and religious persecution walk together. The city stands on five mesas with the rich
 on top and everyone else in the valleys between, and cable cars run from height to height.
 
-**The Second.** The west coast and its islands, with six enormous lighthouses marking where the ring
-runs. The capital is **Black Harbour**, and the region used to belong to the Salt Barons,
+**The Second.** The broken northern coast and its islands, with six enormous lighthouses marking where
+the ring runs. The capital is **Black Harbour**, and the region used to belong to the Salt Barons,
 an association of fishing magnates, smugglers and pirates. The old faith of the Five is strong here and
 the Church of the Eternal God is considered blasphemy. It lands most of the continent's fish. The
 **West Road**, a broad tunnel with underground cities along it, ties it to the First.

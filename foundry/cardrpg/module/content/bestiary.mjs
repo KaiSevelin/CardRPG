@@ -628,7 +628,7 @@ export const MONSTERS = [
    * a mercenary -- and half are read straight off `worldinfo/Firma.md` rather than invented: the
    * Flagellants and the Holy Shield and the Black Circle are the Church of the Eternal God's own
    * named groupings, the Grey are the Fourth District's assassin sect, the Mummers and Berserkers
-   * are how the Five are worshipped in the Second, the Salt Barons ran the west coast, and the
+   * are how the Five are worshipped in the Second, the Salt Barons ran the north coast, and the
    * Fifth District's refugee engineers brought gunpowder and their own language with them.
    *
    * **They carry ITEMS rather than creature gear**, which is new: a guard's Spear is the Spear a
@@ -789,7 +789,7 @@ export const MONSTERS = [
     },
     equipped: ["Crossbow", "Leather Armor"],
     note: "the Salt Barons are gone and the routes they ran are not, and somebody still runs them",
-    look: "a west-coast sailor turned quiet trader: oilskin, a knitted cap, salt-stained boots, "
+    look: "a north-coast sailor turned quiet trader: oilskin, a knitted cap, salt-stained boots, "
       + "a crossbow held low and ready. **The figure and the crossbow and nothing else** -- no "
       + "crates, no barrels, no bundles, no cargo, no quay. The goods are elsewhere, which is "
       + "the point of the trade"
@@ -1485,7 +1485,7 @@ export const VARIANTS = {
       health: 6, armour: 1, caps: ["+commander", "+pack"], tactics: ["+packTactics"],
       gear: ["Matchlock Pistol", "Arming Sword", "Fine Clothes"], priority: "leader",
       note: "the association is a hundred years dead and the title is still worth killing over",
-      look: "a west-coast magnate gone slightly to seed: a good coat over sea-weathered skin, "
+      look: "a north-coast magnate gone slightly to seed: a good coat over sea-weathered skin, "
         + "rings, a pistol worn openly on the hip. Standing on a quay as though it were owned, "
         + "because at one point it was"
     }

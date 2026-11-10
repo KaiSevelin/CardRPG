@@ -9424,7 +9424,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/salt-baron.webp`
 
 ```text
-SUBJECT. "Salt Baron" — Health 16 · armour 2 · speed 4 · Matchlock Pistol, Arming Sword, Fine Clothes — A Smuggler: a west-coast sailor turned quiet trader: oilskin, a knitted cap, salt-stained boots, a crossbow held low and ready. **The figure and the crossbow and nothing else** -- no crates, no b... This one a west-coast magnate gone slightly to seed: a good coat over sea-weathered skin, rings, a pistol worn openly on the hip. Standing on a quay as though it were owned, because at one point it was Draw this one as a man of Nordic appearance, in their thirties -- that is fixed, not a suggestion.
+SUBJECT. "Salt Baron" — Health 16 · armour 2 · speed 4 · Matchlock Pistol, Arming Sword, Fine Clothes — A Smuggler: a north-coast sailor turned quiet trader: oilskin, a knitted cap, salt-stained boots, a crossbow held low and ready. **The figure and the crossbow and nothing else** -- no crates, no... This one a north-coast magnate gone slightly to seed: a good coat over sea-weathered skin, rings, a pistol worn openly on the hip. Standing on a quay as though it were owned, because at one point it was Draw this one as a man of Nordic appearance, in their thirties -- that is fixed, not a suggestion.
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
@@ -9534,7 +9534,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/smuggler.webp`
 
 ```text
-SUBJECT. "Smuggler" — Health 10 · armour 1 · speed 4 · Crossbow, Leather Armor — a west-coast sailor turned quiet trader: oilskin, a knitted cap, salt-stained boots, a crossbow held low and ready. **The figure and the crossbow and nothing else** -- no crates, no barrels, no bundles, no cargo, no quay. The goods are elsewhere, which is the point of the trade Draw this one as a man of Caribbean appearance, in their twenties -- that is fixed, not a suggestion.
+SUBJECT. "Smuggler" — Health 10 · armour 1 · speed 4 · Crossbow, Leather Armor — a north-coast sailor turned quiet trader: oilskin, a knitted cap, salt-stained boots, a crossbow held low and ready. **The figure and the crossbow and nothing else** -- no crates, no barrels, no bundles, no cargo, no quay. The goods are elsewhere, which is the point of the trade Draw this one as a man of Caribbean appearance, in their twenties -- that is fixed, not a suggestion.
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```
