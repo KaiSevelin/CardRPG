@@ -160,7 +160,7 @@ export const SHELVES = [
  *
  * **[BUILT 2026-11-09]** Everything under `art/` has to be a piece somebody can account for --
  * the suite asserts it, and that check has earned its keep. A map is still art, so it needs an
- * entry; but it is not a piece of the CATALOGUE, and making it one would be wrong in four
+ * entry; but it is not a piece of the CATALOGUE, and making it one would be wrong in three
  * separate ways:
  *
  * - The brief exists to tell an artist what to draw next, and a map is not drawn next. It is one
@@ -169,16 +169,28 @@ export const SHELVES = [
  *   subject cropped close. Every clause of it is wrong for a continent.
  * - The gate measures a card: `quietTop` against the name panel, `inWindow` against the rules
  *   text. A landscape map fails all of it while being perfectly good.
- * - And a shelf implies a slug-per-entry naming rule, which a map does not need because there is
- *   one of them.
  *
  * So maps are a short declared list of their own. The invariant the suite cares about is
  * unchanged -- every file under `art/` is named somewhere -- it is simply named here rather than
  * in `SHELVES`.
+ *
+ * **[2026-11-11] There were four reasons and the fourth has gone.** It read *a shelf implies a
+ * slug-per-entry naming rule, which a map does not need because there is one of them*. There are
+ * two now, and `mapPath` has always put them through the same `slug` as everything else, so that
+ * reason was describing the list's length rather than anything about maps. The three above are
+ * about what a map IS and hold at any count.
  */
 export const MAPS = [
   { name: "Firma", blurb: "The continent, coast to coast: land and sea, with no borders, no "
-    + "names and nothing built. Everything political goes on top of it as a layer." }
+    + "names and nothing built. Everything political goes on top of it as a layer." },
+  /*
+   * The layer that blurb promises, drawn onto a copy rather than over the top: the six districts
+   * with their borders and their names, the enclaves ringed, and every place the world's file
+   * mentions labelled. The plain one stays because it is the one to redraw on -- a border moves
+   * and a district gets renamed roughly every other week, and annotation is the perishable part.
+   */
+  { name: "Firma Annotated", blurb: "The same continent with the politics on: district borders "
+    + "and names, the enclaves ringed, seas and ranges and every settled place labelled." }
 ];
 
 /** Where a map's file sits. Same slug rule as everything else, different list. */

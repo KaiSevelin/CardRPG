@@ -8231,11 +8231,18 @@ check("and the sentence that was false is gone",
 const { MAPS: content_MAPS, mapPath } = await import("../module/art.mjs");
 /*
  * **Maps are art and are not catalogue pieces**, so they are pinned here rather than counted in
- * with the 643. One map, one declared name, one path the game can hand Foundry.
+ * with the 643. Each one is a declared name and a path the game can hand Foundry.
+ *
+ * **[2026-11-11] Two of them now**, and they are not alternatives: `Firma` is the bare continent
+ * and `Firma Annotated` is that continent with the districts, the borders and the names drawn on.
+ * The bare one is kept deliberately. Annotation is the part that rots -- in the last two days a
+ * district moved coast and six of them were renamed twice -- and redrawing it means starting from
+ * a map with nothing written on it.
  */
-check("maps declared", content_MAPS.map(m => m.name).join(", "), "Firma");
-check("and the path the game would use", mapPath("Firma"),
-  "systems/cardrpg/art/maps/firma.webp");
+check("maps declared", content_MAPS.map(m => m.name).join(", "), "Firma, Firma Annotated");
+check("and the paths the game would use",
+  content_MAPS.map(m => mapPath(m.name)).join(", "),
+  "systems/cardrpg/art/maps/firma.webp, systems/cardrpg/art/maps/firma-annotated.webp");
 check("and each one is actually on the disk",
   content_MAPS.filter(m => !fs.existsSync(
     path.join(root, "art", "maps", `${slug(m.name)}.${DELIVERY.format}`)))
