@@ -961,7 +961,7 @@ export const NODES = [
      * thing, which is how the gap was found.
      */
     id: "faith.vax.sixth", name: "The Sixth", after: ["faith.vax.blood"], bespoke: true,
-    grants: { knowHow: "the East District, and who owes the temple", spell: "The East District" }
+    grants: { knowHow: "the Amber District, and who owes the temple", spell: "The Amber District" }
   },
 
   {

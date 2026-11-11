@@ -5545,6 +5545,18 @@ For one round everybody answers twice. The reaction policy allows one per trigge
 Draw that line literally: the one moment it describes, and nothing else in frame.
 ```
 
+### The Amber District
+
+File: `spells/faith/the-amber-district.webp`
+
+```text
+SUBJECT. "The Amber District" — strength 5 · until the fight ends every adjacent ally shares your armor and Block, and damage dealt to them is dealt to you instead
+
+Your armour is theirs, your Block is theirs, and everything aimed at them arrives in you. It will cost enough, which is how Vax prices war plainly.
+
+Draw that line literally: the one moment it describes, and nothing else in frame.
+```
+
 ### The Body Made Clean
 
 File: `spells/faith/the-body-made-clean.webp`
@@ -5615,18 +5627,6 @@ SUBJECT. "The Driven Out" — strength 4 · area 3 Compelled (1) and you gain Bl
 Everything within three squares wants you and nothing else, and you are three Block better off for each one of them. It is a good trade and a terrible position.
 
 Draw pulled toward something against the will.
-```
-
-### The East District
-
-File: `spells/faith/the-east-district.webp`
-
-```text
-SUBJECT. "The East District" — strength 5 · until the fight ends every adjacent ally shares your armor and Block, and damage dealt to them is dealt to you instead
-
-Your armour is theirs, your Block is theirs, and everything aimed at them arrives in you. It will cost enough, which is how Vax prices war plainly.
-
-Draw that line literally: the one moment it describes, and nothing else in frame.
 ```
 
 ### The Grey Hour
@@ -9074,7 +9074,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 File: `tokens/grey-assassin.webp`
 
 ```text
-SUBJECT. "Grey Assassin" — Health 10 · armour 1 · speed 6 · Balanced Dagger, Blade Venom — a city killer in plain western dress: dark wool coat to the knee, close hood, gloves, a thin blade held reversed along the forearm. **Nothing wrapped, no veil, nothing eastern about it** -- this is somebody who can stand in a doorway on the Rote District's own streets and be taken for a clerk. Nothing worn on it rattles Draw this one as a man of Caribbean appearance, past fifty -- that is fixed, not a suggestion.
+SUBJECT. "Grey Assassin" — Health 10 · armour 1 · speed 6 · Balanced Dagger, Blade Venom — a city killer in plain western dress: dark wool coat to the knee, close hood, gloves, a thin blade held reversed along the forearm. **Nothing wrapped, no veil, nothing eastern about it** -- this is somebody who can stand in a doorway on the Iron District's own streets and be taken for a clerk. Nothing worn on it rattles Draw this one as a man of Caribbean appearance, past fifty -- that is fixed, not a suggestion.
 
 The whole creature, three-quarter from above, filling the square on full transparency.
 ```

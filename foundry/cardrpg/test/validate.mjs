@@ -8008,7 +8008,7 @@ check("cities the Ruby District's council speaks for, in the world's file",
 check("and in the handbook",
   geoRead(geoBook, /at the centre of (\w+) coastal cities/), "three");
 
-check("coastal towns left to the East, in the world's file",
+check("coastal towns left to the Amber, in the world's file",
   geoRead(geoWorld, /(\w+) smaller coastal towns/), "two");
 check("and in the handbook",
   geoRead(geoBook, /(\w+) small coastal towns/), "two");
@@ -8053,7 +8053,7 @@ check("and in the handbook",
 /*
  * **Three oases in the Hyena Desert, and each one is somewhere different.** Sammel is in the
  * northern one, a holy town stands at the western one, and Desert Stream is the third -- the only
- * one outside the Rote District's ward, carrying a small ward of its own.
+ * one outside the Iron District's ward, carrying a small ward of its own.
  */
 check("the oasis Sammel sits in, in the world's file",
   geoRead(geoWorld, /The city of Sammel in the (\w+) oasis/), "north");
@@ -8080,7 +8080,7 @@ check("and in the handbook",
 check("and no document still calls it Bogtown",
   [["the world's file", worldDoc], ["the handbook", handbook], ["specializations.md", specDoc]]
     .filter(([, text]) => /Bogtown/.test(text)).map(([name]) => name).join(", ") || "none", "none");
-/* And the range, because "north of the Rote District" alone put them nowhere in particular. */
+/* And the range, because "north of the Iron District" alone put them nowhere in particular. */
 check("the range the enclaves stand on, in the world's file",
   geoRead(geoWorld, /Triple Enclave .{0,90}?western slopes of the (Spear Mountains)/),
   "spear mountains");
@@ -8089,29 +8089,38 @@ check("and in the handbook",
   "spear mountains");
 
 /*
- * **The districts have names now, and an ordinal left behind is not a stale label.**
+ * **The districts have names now, and a retired one left behind is not a stale label.**
  *
  * **[BUILT 2026-11-11]** They were the First through the Sixth; they are the Core, the Fiord, the
- * Ruby, the Rote, the Furnace and the East. The rename crossed nine files, a spell, a pack source
- * and a piece of art, and what it leaves behind is worse than an inconsistency: `the Fourth
- * District` surviving in a creature's note or a node's grant does not read as the old name of the
- * Rote, it reads as a seventh district nobody has written.
+ * Ruby, the Iron, the Furnace and the Amber. Two of those six were named twice -- the Iron was
+ * briefly the Rote and the Amber the East -- and both were renamed again because the first name
+ * collided with something already in the setting.
  *
- * The ordinals are still in use elsewhere and must stay -- the four **Sides** are First through
- * Fourth, and **The First** is the vampire god -- so the sweep wants the word `District` beside
- * the ordinal and nothing looser than that.
+ * What a half-done rename leaves behind is worse than an inconsistency: `the Fourth District`
+ * surviving in a creature's note or a node's grant does not read as the old name of the Iron, it
+ * reads as a seventh district nobody has written.
+ *
+ * Every retired word is still in use elsewhere and must stay -- the four **Sides** are First
+ * through Fourth, **The First** is the vampire god, **Rote** are the sealed quarters of Sammel the
+ * district was named after, and the **East Road** runs out of the desert. So the sweep wants the
+ * word `District` beside the name and nothing looser than that.
  */
-const ordinalDistrict = /\b(?:First|Second|Third|Fourth|Fifth|Sixth)\s+District\b/i;
-check("documents still naming a district by its ordinal",
+const retiredDistrict = /\b(?:First|Second|Third|Fourth|Fifth|Sixth|East|Rote)\s+District\b/i;
+check("documents still naming a district by a retired name",
   [["the world's file", worldDoc], ["the handbook", handbook], ["specializations.md", specDoc]]
-    .filter(([, text]) => ordinalDistrict.test(text)).map(([name]) => name).join(", ") || "none",
+    .filter(([, text]) => retiredDistrict.test(text)).map(([name]) => name).join(", ") || "none",
   "none");
+/* And the two words the rename had to leave standing, each of which is why a name was retired. */
+check("Sammel's quarters are still called Rote",
+  /sealed quarters called \*\*Rote\*\*/.test(geoBook) ? "yes" : "no", "yes");
+check("and the road out of the desert is still the East Road",
+  /\*\*East Road\*\*/.test(geoWorld) ? "yes" : "no", "yes");
 /* And the names themselves, in the order the world's file introduces them. */
 check("the districts the world's file heads a section with",
   [...worldDoc.matchAll(/^## The (\w+) District$/gm)].map(m => m[1]).join(", "),
-  "Core, Fiord, Ruby, Rote, Furnace, East");
+  "Core, Fiord, Ruby, Iron, Furnace, Amber");
 check("and the five the handbook still calls live",
-  ["Core", "Fiord", "Ruby", "Rote", "East"]
+  ["Core", "Fiord", "Ruby", "Iron", "Amber"]
     .filter(name => !new RegExp(`\\*\\*The ${name}\\.\\*\\*`).test(geoBook)).join(", ") || "all five",
   "all five");
 check("and the one it calls gone",

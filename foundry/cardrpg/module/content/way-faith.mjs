@@ -782,7 +782,7 @@ export const FAITH_POOL = [
      * standing rule rather than once. "It will cost enough" is the document's own pricing and it
      * is right: a priest of Vax holding a line of four is taking four men's hits.
      */
-    name: "The East District", strength: 5, pool: "faith", source: "Vax",
+    name: "The Amber District", strength: 5, pool: "faith", source: "Vax",
     needs: ["damage dealt to an ally dealt to you instead",
       "allies that share the caster's armor"],
     description: "<p>Your armour is theirs, your Block is theirs, and everything aimed at them "

@@ -627,7 +627,7 @@ export const MONSTERS = [
    * Half of these are the generic folk any game needs -- townsfolk, a guard, a bandit, a cultist,
    * a mercenary -- and half are read straight off `worldinfo/Firma.md` rather than invented: the
    * Flagellants and the Holy Shield and the Black Circle are the Church of the Eternal God's own
-   * named groupings, the Grey are the Rote District's assassin sect, the Mummers and Berserkers
+   * named groupings, the Grey are the Iron District's assassin sect, the Mummers and Berserkers
    * are how the Five are worshipped in the Fiord, the Salt Barons ran the north coast, and the
    * Furnace District's refugee engineers brought gunpowder and their own language with them.
    *
@@ -696,7 +696,7 @@ export const MONSTERS = [
       tactics: ["bodyguard", "brute"], targetPriority: "nearest"
     },
     equipped: ["Halberd", "Brigandine"],
-    note: "the East District's only remaining export, and it walks to the Rote to be sold",
+    note: "the Amber District's only remaining export, and it walks to the Iron to be sold",
     look: "a hardened soldier out of the eastern forests: brigandine over travelling clothes, a "
       + "halberd, an old scar and a bedroll. Professional, unbothered, and nobody's idea of a "
       + "hero"
@@ -748,10 +748,10 @@ export const MONSTERS = [
       tactics: ["ambusher", "skirmisher"], targetPriority: "caster"
     },
     equipped: ["Balanced Dagger", "Blade Venom"],
-    note: "the Rote District's traditional sect, and the central Rote used to be a state",
+    note: "the Iron District's traditional sect, and the central Rote used to be a state",
     look: "a city killer in plain western dress: dark wool coat to the knee, close hood, gloves, "
       + "a thin blade held reversed along the forearm. **Nothing wrapped, no veil, nothing "
-      + "eastern about it** -- this is somebody who can stand in a doorway on the Rote "
+      + "eastern about it** -- this is somebody who can stand in a doorway on the Iron "
       + "District's own streets and be taken for a clerk. Nothing worn on it rattles"
   },
   {
@@ -821,7 +821,7 @@ export const MONSTERS = [
    * across several of them -- Enochian, Arabic, Persian, Hindu, Jewish and medieval European. So
    * the folklore supplies what the document does not, the same way it did for the trolls.
    *
-   * It also settles where they belong. The Rote District is the Hyena Desert, ruled by emirs
+   * It also settles where they belong. The Iron District is the Hyena Desert, ruled by emirs
    * from a Ziggurat, and the ghul of Arabic folklore is **a grave demon**: it lives where the
    * dead are buried and it eats what it finds there. The Djinn, the Ifrit, the Marid and the Div
    * all come from the same part of the map. That was already in the geography.

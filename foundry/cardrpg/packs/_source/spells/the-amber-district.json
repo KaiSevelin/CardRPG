@@ -1,14 +1,14 @@
 {
-  "_id": "StcT5GCYPtJEPRFA",
-  "_key": "!items!StcT5GCYPtJEPRFA",
+  "_id": "WUfNit4hclBuPucP",
+  "_key": "!items!WUfNit4hclBuPucP",
   "_stats": {
     "coreVersion": "14.369",
     "systemId": "cardrpg",
     "systemVersion": "0.2.0"
   },
-  "name": "The East District",
+  "name": "The Amber District",
   "type": "spell",
-  "img": "systems/cardrpg/art/spells/faith/the-east-district.webp",
+  "img": "systems/cardrpg/art/spells/faith/the-amber-district.webp",
   "system": {
     "strength": 5,
     "source": "Vax",

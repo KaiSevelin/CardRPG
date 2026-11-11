@@ -497,7 +497,7 @@ god's magic is *like*; it is a lineage note, not an equals sign.
 | **The Grey** | The Grey | Shadow | the unseen approach, the silent kill |
 | **The Purple** | The Grey | Poison | the dose, the brew, the slow failure |
 | **The Yellow** | The Grey | Glamour | the lie, the rumour, the false face |
-| **Vax** | Vax of the East District | Strength | war, plainly — the club, the shield, the line |
+| **Vax** | Vax of the Amber District | Strength | war, plainly — the club, the shield, the line |
 | **The First** | The First of Echterhof | Ether | blood, the long night, what does not die |
 
 Two things this unlocks, both of them the point of the change:
@@ -507,7 +507,7 @@ Two things this unlocks, both of them the point of the change:
   techniques and a network of rumour-spreaders. They share a flavour and nothing else, and under the
   old mapping only one of them could exist.
 - **Valtor and Vax may both be "Strength".** One is the berserker's god of fury and drums; the other
-  is war as an institution, in the East District, with a spiked club. Again: same word, different
+  is war as an institution, in the Amber District, with a spiked club. Again: same word, different
   god, different list.
 
 **The old selection rule — one god per miracle — is retired.** It bought a tidy table and paid for it
@@ -612,7 +612,7 @@ of **how many gods its religion has** — which is content, not a rule.
 | **Church of the Eternal Spirit** | 1 | every other god, the Eternal God included |
 | **The Five** | 5 | every god outside The Five |
 | **The Grey** | 3 | every god outside The Grey |
-| **Vax, of the East District** | 1 | every other god |
+| **Vax, of the Amber District** | 1 | every other god |
 | **The First, of Echterhof** | 1 | every other god |
 
 The world supports it closely. The Church of the Eternal God's first tenet is *"All other gods are

@@ -119,30 +119,30 @@ rich of the Core and the Ruby go to enjoy themselves, with a reputation that eve
 there. Religion and politics are relaxed. A voted council governs from **Tanto**, at the centre of
 three coastal cities, none of which dominates the others.
 
-**The Rote.** The northern half of the Hyena Desert and the mineral-rich Mouse Mountains above it.
+**The Iron.** The northern half of the Hyena Desert and the mineral-rich Mouse Mountains above it.
 **Sammel**, in the northern oasis, is the only large city and nearly matches Geistburg; out at the
 western oasis stands a holy town, thinly peopled, and the rest of the desert is desolate but for a
 couple of caravan camps where there is water. **The Grey**
 and his siblings are worshipped here. Emirs rule, and they have cut Sammel into sealed quarters called
 **Rote**; the old assassin state holds the central one, around the Ziggurat, the tallest building in
-the region. Its embassies sell services under the table in every district but the East. The **East
+the region. Its embassies sell services under the table in every district but the Amber. The **East
 Road** connects it to the Core and is the least safe of the roads, because the mining lets monsters
 and the Horde break in constantly. The **Night Express** runs it anyway, hauling freight and
 passengers through tunnels black with its own coal smoke.
 
-**The East.** The far side of the continent, the second largest district and the one that was never
-entirely tamed. Dragons turn up. Trolls live in the forests and the mountains. Dense wet conifer
-forest covers most of it, broken by lakes, bogs and hills. Timber was the export until the Furnace fell and took the routes
+**The Amber.** The far east, the second largest district and the one that was never entirely
+tamed. Dragons turn up. Trolls live in the forests and the mountains. Dense wet conifer forest
+covers most of it, broken by lakes, bogs and hills. Timber was the export until the Furnace fell and took the routes
 with it, and now the inland capital **Karmat**, two small coastal towns and a scatter of villages are
 all there is of it. Karmat is in decline and mercenaries are the only thing it sells: a
-squadron of hard soldiers fights its way through the wilderness to the Rote District once a year.
+squadron of hard soldiers fights its way through the wilderness to the Iron District once a year.
 The forest barons are broken but not gone, every town runs itself, and the mayor's chair changes hands
 bloodily and often. The war god **Vax** has the most followers, and nobody minds what you believe.
 
 **The Furnace is gone.** It lay in the north-east, and was the centre of smithing and manufacture,
 with an alchemical academy and a centre of magical research called the Rune Temple in the labyrinth
 city of **Weder**, once the third largest city on the continent. Technology and magic mattered there and
-religion did not. The Furnace built the Rote's trains, the Fiord's sea defences and the Core's cable
+religion did not. The Furnace built the Iron's trains, the Fiord's sea defences and the Core's cable
 cars. Its damp pine forest has gone to barren bog since the Horde came in, and Weder is ruins. Its refugees founded
 engineering guilds in every surviving district and kept their language, **Valgar**, and their lack of
 religion, which still causes trouble in the Core District.
@@ -180,7 +180,7 @@ cannot grow. The **Cracked Road** reaches the Core District through cave-riddled
 safe; halfway along it a large underground lake has two harbour villages on it, named From and To.
 
 **Wolf Peak.** A religious centre of the faith of **the Fire**, on a dormant volcano north
-of the East District, never once taken. The roads to the summit are easy to hold and the mountain
+of the Amber District, never once taken. The roads to the summit are easy to hold and the mountain
 feeds itself inside and out. It also has the best gunpowder and firearms on the continent, because the
 ingredients are all in the mountain: bat guano that never runs out, sulphur from the volcanism, and
 charcoal from fast trees that love the soil. The priesthood has its own language, **Perga**, its own
@@ -208,7 +208,7 @@ and the tongue is **Veche**. A trade road runs to Sammel through the Third Side:
 and a demon-permitted road between them, paid for in human sacrifice. The city buys slaves in Sammel
 and pays in silver, gold and gemstones out of its own mines.
 
-**The Triple Enclave.** Three frontier towns north of the Rote District, on the western slopes of
+**The Triple Enclave.** Three frontier towns north of the Iron District, on the western slopes of
 the Spear Mountains and all of them in mountainous country, each walled around a castle and a duke,
 sharing one group of blood mages and one safe tunnel, the **Steel Road**.
 **Farsight** stands on the open upper slopes and the Church of the Eternal God holds it absolutely, its duchess also a
@@ -217,9 +217,9 @@ cardinal, religion behind every law. **Marke** sits above the high bogs of its v
 criminal organisation with branches in every district, holds the real power. They are rumoured to have
 a safe-passage treaty with the Horde. **Highfall** is built into a mountain with a waterfall coming
 over its walls, and tries to run things the old way: it lends the Dream Guild troops, and takes money
-and sacrificial slaves from the Rote District in exchange.
+and sacrificial slaves from the Iron District in exchange.
 
-**Desert Stream.** The third oasis of the Hyena Desert, outside the Rote District's ward and holding
+**Desert Stream.** The third oasis of the Hyena Desert, outside the Iron District's ward and holding
 a small one of its own that covers the water and nothing else. The isolation has told on the people
 there and their reputation is poor, but the oasis feeds everyone who reaches it.
 
@@ -273,7 +273,7 @@ on avoiding discovery and killing quietly. **The Purple** brews poison, and the 
 **The Yellow** stands for lies, deceit and betrayal, and the Yellow Book is misinformation and
 disguise. The three sects match the three books.
 
-**Local gods.** **Vax**, war, in the East District. **Parfebe**, blood, on Hyrlock. **The Primal
+**Local gods.** **Vax**, war, in the Amber District. **Parfebe**, blood, on Hyrlock. **The Primal
 Mother**, fertility, on Solemn. **The Fire**, fire, at Wolf Peak. **The First**, vampirism, in
 Echterhof. **Aecht**, death, in Saag et Haar.
 
@@ -1655,7 +1655,7 @@ many spell slots preparing one costs.
 | **The Shield Line** | 2 | Every ally adjacent to you gains your armor value as Block until your next turn. One Health per ally, so a long line is a dear one. Costs 1 Health. |
 | **The Club and the Line** | 2 | Strike every adjacent enemy. No free hand needed, because the club is the holy symbol, which is the gift on the node, not on the card. Costs 2 Health. |
 | **The Line Holds** | 4 | Nobody beside you is moved, knocked down or turned. It costs two Health a man, and Vax expects you to count them first. Costs 2 Health. |
-| **The East District** | 5 | Your armour is theirs, your Block is theirs, and everything aimed at them arrives in you. It will cost enough, which is how Vax prices war plainly. |
+| **The Amber District** | 5 | Your armour is theirs, your Block is theirs, and everything aimed at them arrives in you. It will cost enough, which is how Vax prices war plainly. |
 
 ### The First
 

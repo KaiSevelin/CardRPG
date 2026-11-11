@@ -71,15 +71,15 @@ District, which is governed by a council voted in by the various districts. Thre
 along the coast, and although none of them dominates, the council sits in the city at the centre,
 Tanto.
 
-## The Rote District
+## The Iron District
 
-The Rote District covers a roughly square northern half of the Hyena Desert and the mineral-rich
+The Iron District covers a roughly square northern half of the Hyena Desert and the mineral-rich
 Mouse Mountains north of it. The city of Sammel in the north oasis is the only large city,
 and nearly the size of Geistburg. Villages and a few mining camps are scattered through the Mouse
 Mountains, but the rest of the Hyena Desert is desolate apart from a couple of caravan camps and a holy, sparsely populated town at the western oasis where there is water. The Grey and his siblings are worshipped in the district, which is ruled by emirs who
 have divided Sammel into separate, isolated **Rote**. The former assassin state now rules the central
 Rote around the region's tallest building, the Ziggurat. Embassies that offer services under the
-table can be found in every district except the East, and in a couple of enclaves. The city is linked
+table can be found in every district except the Amber, and in a couple of enclaves. The city is linked
 to the Core District by the **East Road**, a less safe tunnel system, since the whole
 region's mine workings give rise to countless break-ins by monsters and the Horde. A freight and
 passenger train, the **Night Express**, runs regularly through the tunnels, which
@@ -87,27 +87,27 @@ are sooted by the coal that drives the engine.
 
 ## The Furnace District
 
-The north-eastern Furnace District was linked to the Core by the **North-East Road**, to the Rote
-by a rail line, the Mine Line, through the **Mine Road**, and to the East by the
+The north-eastern Furnace District was linked to the Core by the **North-East Road**, to the Iron
+by a rail line, the Mine Line, through the **Mine Road**, and to the Amber by the
 **River Road**, an underground river route which could handle timber vessels. The tunnels have been unsafe for the
 past hundred years and the train no longer runs. The Furnace District was the centre of smithing and
 manufacture, and had an alchemical academy and a centre of magical research, the Rune Temple, in the
 labyrinthine city of Weder, once the third largest city on the continent. Technology and magic
-mattered more than religion here, and it was the Furnace District that built the trains of the Rote,
+mattered more than religion here, and it was the Furnace District that built the trains of the Iron,
 the sea defences off the Fiord and the cable cars between the heights of the Core. The once moist pine forests of the Furnace District turned in to a barren bog land after the Horde's invasion and the city of Weder is but ruins. Refugees from the
 catastrophe of 879 have formed engineering guilds in every district and have kept their language,
 Valgar, and their lack of religion — which causes trouble in the Core District now and then.
 
-## The East District
+## The Amber District
 
-The East District is the most easterly and covers the second largest area of the districts. It is a
+The Amber District is the most easterly and covers the second largest area of the districts. It is a
 region of coastal wilderness that was never entirely civilised. Dragons turn up from time to time, and
 trolls are found in both forests and mountains. Dense, damp conifer forest covers most of the
 territory, with lakes, bogs and mountains here and there. The largest export was timber, before the
 Furnace District collapsed and the export routes were cut. Two smaller coastal towns, a few villages and an inland
 capital, Karmat, which is now in decline since the forest barons' export income was cut off.
 Mercenaries have become the only export, and a squadron of hardened soldiers makes its way each year
-through the wilderness and the Horde to the nearest district, the Rote.
+through the wilderness and the Horde to the nearest district, the Iron.
 
 The forest barons' grip on the district is broken but remains a force, and every town and village is
 independent, with regular bloody internal struggles over the mayor's seat. Religiously the district is
@@ -172,7 +172,7 @@ underground lake midway along it has given rise to two sketchy harbour villages 
 ## Wolf Peak
 
 A religious centre of those who profess the faith of the Fire, at the top of a lone dormant volcano
-north of the East District, has held out undefeated against the Horde. Wolf Peak has
+north of the Amber District, has held out undefeated against the Horde. Wolf Peak has
 roads to the summit that are easy to defend, and its ingenious use of the surfaces outside and inside
 the mountain, together with careful husbandry of resources, makes it self-sufficient. The enclave's
 advanced technology in gunpowder and firearms helps. The materials for powder are inside the mountain:
@@ -217,7 +217,7 @@ slaves in Sammel and pays with silver, gold and gemstones from the mines outside
 
 ## The Triple Enclave
 
-The Triple Enclave is three frontier enclaves north of the Rote District on the western slopes of the Spear Mountains. The
+The Triple Enclave is three frontier enclaves north of the Iron District on the western slopes of the Spear Mountains. The
 towns of Farsight, Highfall and Marke are walled small towns, each around a central castle ruled by
 a duke. They all lie in mountainous country. All three have enchantments from a shared group of blood mages. The enclaves have a common
 safe tunnel connecting them, the **Steel Road**.
@@ -230,11 +230,11 @@ flower whose seeds are dried into a powerful drug. The duke of the town is power
 and real power lies with the **Dream Guild**, a criminal organisation with branches in every district.
 They are even said to have a treaty with the Horde for safe passage for their caravans. Highfall tries
 to operate as in the old days and keep morale high and its citizens safe; to manage it they help the
-Dream Guild with troops and receive money and blood-sacrifice slaves from the Rote District in
+Dream Guild with troops and receive money and blood-sacrifice slaves from the Iron District in
 return. The town is set into a mountain with a waterfall that falls over its walls.
 
 ## Desert Stream
-Desert Stream is the third oasis in the Hyena Desert, outside the Rote District's protective ward, but with a small ward of its own just covering the oasis. People here have gone weird from the isolation and have a bad reputation, but the oasis provides food for everyone.
+Desert Stream is the third oasis in the Hyena Desert, outside the Iron District's protective ward, but with a small ward of its own just covering the oasis. People here have gone weird from the isolation and have a bad reputation, but the oasis provides food for everyone.
 
 # Hives
 
@@ -413,7 +413,7 @@ remain.
 
 ### Gods
 
-* **Vax**, war, East District. (Spiked club)
+* **Vax**, war, Amber District. (Spiked club)
 * **Parfebe**, blood, Hyrlock. (Red drop)
 * **The Primal Mother**, fertility, Solemn. (Giant octopus)
 * **The Fire**, fire, Wolf Peak. (Upside-down flame)
