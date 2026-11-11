@@ -8046,7 +8046,7 @@ check("and in the handbook",
 
 /* Regensburg sits in the mountain ring itself, not out on the plain the ring encloses. */
 check("the range Regensburg sits in, in the world's file",
-  geoRead(geoWorld, /situated in a valley of (Spear Mountains)/), "spear mountains");
+  geoRead(geoWorld, /situated in a valley of (?:the )?(Spear Mountains)/), "spear mountains");
 check("and in the handbook",
   geoRead(geoBook, /in a valley of the (Spear Mountains)/), "spear mountains");
 
@@ -8063,6 +8063,30 @@ check("which oasis Desert Stream is, in the world's file",
   geoRead(geoWorld, /Desert Stream is the (\w+) oasis/), "third");
 check("and in the handbook",
   geoRead(geoBook, /Desert Stream\.\*\* The (\w+) oasis/), "third");
+
+/*
+ * **The Triple Enclave was rewritten in one paragraph and left standing in the next.**
+ *
+ * **[BUILT 2026-11-11]** The world's file moved all three towns onto the western slopes of the
+ * Spear Mountains and renamed the third one `Marke`. The paragraph directly below it still called
+ * that town `Bogtown` and still had it standing in a swamp -- and so did the handbook, and so did
+ * `specializations.md`, which names the town the Dream Guild moves dreamwort out of. One rename,
+ * three documents, and only the first sentence of one of them had been changed.
+ */
+check("the third enclave town, in the world's file",
+  geoRead(geoWorld, /towns of Farsight, Highfall and (\w+)/), "marke");
+check("and in the handbook",
+  geoRead(geoBook, /\*\*(\w+)\*\* sits above the high bogs/), "marke");
+check("and no document still calls it Bogtown",
+  [["the world's file", worldDoc], ["the handbook", handbook], ["specializations.md", specDoc]]
+    .filter(([, text]) => /Bogtown/.test(text)).map(([name]) => name).join(", ") || "none", "none");
+/* And the range, because "north of the Fourth District" alone put them nowhere in particular. */
+check("the range the enclaves stand on, in the world's file",
+  geoRead(geoWorld, /Triple Enclave .{0,90}?western slopes of the (Spear Mountains)/),
+  "spear mountains");
+check("and in the handbook",
+  geoRead(geoBook, /Triple Enclave\.\*\* .{0,90}?western slopes of the (Spear Mountains)/),
+  "spear mountains");
 
 /*
  * **Every verb in the six-verb table carries its glyph, and Use carried none.**

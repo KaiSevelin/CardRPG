@@ -208,10 +208,11 @@ and the tongue is **Veche**. A trade road runs to Sammel through the Third Side:
 and a demon-permitted road between them, paid for in human sacrifice. The city buys slaves in Sammel
 and pays in silver, gold and gemstones out of its own mines.
 
-**The Triple Enclave.** Three frontier towns north of the Fourth District, each walled around a
-castle and a duke, sharing one group of blood mages and one safe tunnel, the **Steel Road**.
-**Farsight** is on a steppe and the Church of the Eternal God holds it absolutely, its duchess also a
-cardinal, religion behind every law. **Bogtown** sits on dry ground in a swamp and exports
+**The Triple Enclave.** Three frontier towns north of the Fourth District, on the western slopes of
+the Spear Mountains and all of them in mountainous country, each walled around a castle and a duke,
+sharing one group of blood mages and one safe tunnel, the **Steel Road**.
+**Farsight** stands on the open upper slopes and the Church of the Eternal God holds it absolutely, its duchess also a
+cardinal, religion behind every law. **Marke** sits above the high bogs of its valley and exports
 **dreamwort**, whose dried seed is a powerful drug; its duke is powerless and the **Dream Guild**, a
 criminal organisation with branches in every district, holds the real power. They are rumoured to have
 a safe-passage treaty with the Horde. **Highfall** is built into a mountain with a waterfall coming

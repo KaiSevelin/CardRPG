@@ -159,7 +159,7 @@ is the enclave's centre.
 
 ## Regensburg
 
-The capital of the militaristic western realm situated in a valley of Spear Mountains in the north-east of the First District is the most important
+The capital of the militaristic western realm situated in a valley of the Spear Mountains in the north-east of the First District is the most important
 inland enclave. Regensburg has preserved its military background and could certainly survive a couple
 of years without enchantments. The three concentric city walls are ten metres high and divide the city
 into three rings. Within each ring are further walls dividing the rings into sections, all to resist
@@ -217,16 +217,15 @@ slaves in Sammel and pays with silver, gold and gemstones from the mines outside
 
 ## The Triple Enclave
 
-The Triple Enclave is three frontier enclaves north of the Fourth District. The
-towns of Farsight, Bogtown and Highfall are walled small towns, each around a central castle ruled by
-a duke. Farsight lies on a steppe, Bogtown in the middle of a dry patch in a swamp, and Highfall on a
-mountain. All three have enchantments from a shared group of blood mages. The enclaves have a common
+The Triple Enclave is three frontier enclaves north of the Fourth District on the western slopes of the Spear Mountains. The
+towns of Farsight, Highfall and Marke are walled small towns, each around a central castle ruled by
+a duke. They all lie in mountainous country. All three have enchantments from a shared group of blood mages. The enclaves have a common
 safe tunnel connecting them, the **Steel Road**.
 
 The towns were important outposts for Denaria before year 0, and they still recognise the emperor in
 Denaria as their ruler, even if exchange between them is sporadic these days. In Farsight the Church
 of the Eternal God holds total power and the duchess also carries the title of cardinal; religion
-stands behind every law. Bogtown has the swamp as the source of its export, **dreamwort**, a
+stands behind every law. Marke has the high bogs of its valley as the source of its export, **dreamwort**, a
 flower whose seeds are dried into a powerful drug. The duke of the town is powerless
 and real power lies with the **Dream Guild**, a criminal organisation with branches in every district.
 They are even said to have a treaty with the Horde for safe passage for their caravans. Highfall tries

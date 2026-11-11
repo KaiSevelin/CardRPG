@@ -433,7 +433,7 @@ all mechanical, which makes the whole Way feel self-taught, and it leaves the ob
 ([leveling.md](leveling.md) §4) serving five Mind nodes and nothing else.
 
 The world already has the creditor. The **Dream Guild** is *a criminal organisation with branches in
-every district* ([../worldinfo/Firma.md](../worldinfo/Firma.md)), it moves dreamwort out of Bogtown,
+every district* ([../worldinfo/Firma.md](../worldinfo/Firma.md)), it moves dreamwort out of Marke,
 it is said to hold a treaty with the Horde, and Highfall pays it in troops and slaves. Nobody learns
 to pick a lock in that city without somebody knowing.
 
