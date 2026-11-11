@@ -268,12 +268,14 @@ th.named {
   display: flex;
   gap: .6rem;
   align-items: center;
-  min-width: 11rem;
+  min-width: 11.8rem;
 }
+/* 2026-11-11: up from 2.6rem. The art is a card, and at the old size the subject of a portrait
+   crop was legible only as a silhouette. The row grows with it rather than clipping. */
 th.named img {
   flex: 0 0 auto;
-  width: 2.6rem;
-  height: 2.6rem;
+  width: 3.4rem;
+  height: 3.4rem;
   object-fit: cover;
   border-radius: 3px;
   background: var(--panel);
@@ -286,6 +288,86 @@ th.named img {
   th.named img { display: none; }
   th.named { display: table-cell; min-width: 0; }
 }
+
+/* --- the map ------------------------------------------------------------- */
+
+/*
+ * The continent is 3504px across and its labels are unreadable at the width of a column, so the
+ * figure is a thumbnail that opens the same file at its own size in a dialog you scroll. Both
+ * images are the one file: the browser downscales one of them and nothing has to be kept in step.
+ */
+figure.map {
+  margin: 2rem 0 2.4rem;
+}
+figure.map .map__open {
+  display: block;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  overflow: hidden;
+  background: var(--panel);
+  line-height: 0;
+}
+figure.map img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+figure.map .map__open:hover { border-color: var(--accent); }
+figure.map .map__open:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+figure.map figcaption {
+  margin-top: .5rem;
+  font-size: .82rem;
+  color: var(--ink-faint);
+}
+
+/* Let the map out of the measure on a wide screen, the way the catalogue is let out. */
+@media (min-width: 72rem) {
+  figure.map { width: min(58rem, calc(100vw - var(--toc) - 6rem)); }
+}
+
+dialog.mapview {
+  width: 96vw;
+  max-width: 96vw;
+  height: 92vh;
+  max-height: 92vh;
+  padding: 0;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  background: var(--panel);
+  overflow: hidden;
+}
+dialog.mapview::backdrop { background: rgb(0 0 0 / .72); }
+
+/* The scrolling window itself. The image inside is at its natural size, so both axes scroll. */
+.mapview__scroll {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.mapview__scroll img {
+  display: block;
+  width: auto;
+  max-width: none;
+  height: auto;
+}
+
+.mapview__close {
+  position: absolute;
+  top: .4rem;
+  right: .6rem;
+  z-index: 1;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  background: var(--panel);
+  color: var(--ink);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.mapview__close:hover { border-color: var(--accent); color: var(--accent); }
 
 /* --- the game's own icons ------------------------------------------------ */
 

@@ -215,7 +215,7 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     const d = CARDRPG.defaults;
     return {
-      health: healthField(12),
+      health: healthField(d.startingHealth),
 
       // Transient: cleared at the start of your turn. A Defend primary holds for the round.
       block: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 }),
@@ -232,8 +232,8 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       }),
 
       rest: new fields.SchemaField({
-        tokens: new fields.NumberField({ required: true, integer: true, min: 0, initial: 1 }),
-        max: new fields.NumberField({ required: true, integer: true, min: 0, initial: 1 })
+        tokens: new fields.NumberField({ required: true, integer: true, min: 0, initial: d.restTokens }),
+        max: new fields.NumberField({ required: true, integer: true, min: 0, initial: d.restTokens })
       }),
 
       // Only the base is stored; bonus, max and the carried total are derived.

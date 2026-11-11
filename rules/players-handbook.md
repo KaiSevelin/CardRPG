@@ -9,7 +9,7 @@ you are exhausted, not because you were hurt, but because you have been fighting
 
 ---
 
-## The world
+## 1. The world
 
 **The year is 1034, and humanity lives behind walls it pays for in blood.**
 
@@ -65,6 +65,8 @@ That is the arithmetic you live in. Five districts and some twenty enclaves, a t
 and rumour this year says the Horde is close to getting through a ring that still holds.
 
 ### The shape of it
+
+<!-- map: Firma Annotated -->
 
 One continent, and you can hold the whole of it in your head.
 
@@ -319,7 +321,7 @@ to.
 
 ---
 
-## 1. What you have
+## 2. What you have
 
 Six stacks of cards, a seventh if you cast, and one number. Everything you own is in one of them.
 
@@ -353,7 +355,39 @@ decks you draw from, and that is the whole of what makes them frightening.
 
 ---
 
-## 2. Your action cards
+## 3. Your numbers
+
+There are no ability scores. Nothing on this list is rolled when you make a character and nothing
+on it is a bonus you add to a card. Every one of them is a count of something you can point at on
+the table, which is why the game has no character sheet worth the name.
+
+Two of them move constantly, and the fight is about both: your Health, and how much of your action
+deck you have left.
+
+<!-- generated: stats -->
+
+| | Starts at | What moves it | Where the rule is |
+|---|---|---|---|
+| **Health** | 12 | Levelling, and some features | *Running out* |
+| **Hand size** | 5 cards | Some features | *A round* |
+| **Action deck** | 12–20 cards | Levelling, and what you are given | *What you have* |
+| **Skill hand** | 4 cards | Refills once a scene, not once a round | *Checks, outside a fight* |
+| **Fate deck** | 20 cards | Nothing. It is the same twenty for everyone | *The fate deck* |
+| **Block** | None | A Defend, and only for as long as the card says | *Armour, Block and getting past them* |
+| **Armour** | What you wear | Armour, and Corrode takes it off | *Armour, Block and getting past them* |
+| **Carrying limit** | 40 kg | Some features | *Carrying and equipping* |
+| **Spell slots** | None | A Way of Mind or Way of Faith node | *The four Ways* |
+| **Rest tokens** | 1 | Levelling | *Rests* |
+| **Gold** | What your background gave you | Spending it | *Items* |
+
+<!-- /generated: stats -->
+
+Your **level** is not here, because it is not a number you spend. It is how many nodes you have
+taken, and what each one bought is on the graph rather than on your sheet.
+
+---
+
+## 4. Your action cards
 
 A card carries three lines, and *Heavy Swing* has all three:
 
@@ -388,7 +422,7 @@ one.
 
 ---
 
-## 3. A round
+## 5. A round
 
 1. Everyone draws one fate card for initiative, once per fight. **Highest acts first** (Miss is
    lowest, Critical highest), and ties are redrawn until the order settles. The order then holds for
@@ -408,7 +442,7 @@ card that has Strike on its secondary. Those cards are rare, and they are earned
 
 ---
 
-## 4. Reactions
+## 6. Reactions
 
 **Reactions resolve by themselves. You are not asked.** When a trigger happens, the best reaction
 your hand can offer fires, that card goes to your discard, and play continues.
@@ -495,7 +529,7 @@ advance, at leisure, not in the half-second after the dice would have landed in 
 
 ---
 
-## 5. Resolving an action
+## 7. Resolving an action
 
 Always in this order:
 
@@ -522,7 +556,7 @@ out.
 
 ---
 
-## 6. The fate deck
+## 8. The fate deck
 
 Twenty cards, yours alone.
 
@@ -561,7 +595,7 @@ A Critical always gets **at least one point** through, however well armoured the
 
 ---
 
-## 7. Armour, Block and getting past them
+## 9. Armour, Block and getting past them
 
 - **Armour** is worn. It subtracts from every hit.
 - **Block** is earned by a Defend, and subtracts after armour. How long it lasts depends on how you
@@ -588,7 +622,7 @@ Critical puts back 2, a Success 1, a Partial nothing and the time is gone.
 
 ---
 
-## 8. Conditions
+## 10. Conditions
 
 A condition is a token with a number, its duration. It remembers who created it, and it runs out at
 the **end of that creature's next turn**. So a condition you inflict lasts through your own next
@@ -621,7 +655,41 @@ they cannot be shaken off.
 
 ---
 
-## Two rounds, played out
+## 11. How a fight goes
+
+Every chapter up to here answers one question. This is the order those questions come up in, so
+you have the shape of a fight before you watch one.
+
+**Before anybody moves.** Everyone draws once for initiative and that order holds for the whole
+fight. The GM draws a face-down intent for each kind of enemy, so you know something is coming
+without knowing what. *A round* owns this.
+
+**Your turn is two halves of two different cards.** Refill your hand, then play one card for its
+primary and another for its secondary. You can never use both halves of one card, and that single
+restriction is what the game is built on: every card you spend attacking is a card you are not
+holding to defend with. *Your action cards* and *A round* own this.
+
+**Whatever is left in your hand is your defence.** On somebody else's turn a card in your hand can
+fire its reaction, and a card whose reaction does not fit can still Brace. Nothing you hold is
+dead. *Reactions* owns this.
+
+**An attack is a card, a draw and two subtractions.** Play the card, draw one fate card for luck,
+add them together, then take off their armour and then their Block. *Resolving an action*, *The
+fate deck* and *Armour, Block and getting past them* own those steps between them.
+
+**You never run out of magic. You run out of deck.** Your action deck is your stamina, Wounds are
+shuffled into it, and when you cannot refill your hand you are Exhausted and can barely act.
+Health is how you fall over; the deck is how you tire. *Running out* owns this.
+
+**Conditions are the fight's memory.** Each is a word with a number counting down, and most of
+what a card does beyond damage is to put one on somebody. *Conditions* owns this.
+
+Nothing above is a rule. Every number lives in the chapter named beside it, and what follows is
+two rounds of all of it at once, with the arithmetic shown.
+
+---
+
+## 12. Two rounds, played out
 
 Everything above, running. One character, two enemies, and every number taken from the cards and
 stat blocks in this book rather than invented for the example.
@@ -660,7 +728,7 @@ moves nothing. Spear **3**, fate **+1**, total **4**. Armour takes 1, so **3 dam
 
 **3. The Warrior** refills to five and holds *Strike, Strike, Heavy Swing, Shield Up, Advance*.
 
-- **Primary: Heavy Swing** at the Goblin. The order from section 5: base **3** for the Longsword,
+- **Primary: Heavy Swing** at the Goblin. The order from *Resolving an action*: base **3** for the Longsword,
   **+1** for the card, **+1** for Strong, which is **5** before luck. Fate **−1** gives **4**.
   The goblin has no armour and no Block, so **4 damage**: it drops to **1 Health**. Heavy Swing
   also ignores 2 armour, which buys nothing here, because a goblin has none to ignore.
@@ -716,7 +784,7 @@ game is about: you do not run out of spells, you run out of deck.
 
 ---
 
-## 9. Checks, outside a fight
+## 13. Checks, outside a fight
 
 Draw a hand of **4** skill cards. Each shows one **approach** and a value of 1–3.
 
@@ -852,7 +920,7 @@ That is **24** cards.
 
 ---
 
-## 10. Running out
+## 14. Running out
 
 Your action deck is your stamina. You do not run out of spells. You run out of deck.
 
@@ -884,7 +952,7 @@ dying until somebody treats you.
 
 ---
 
-## 11. Rests
+## 15. Rests
 
 Both need a safe place.
 
@@ -905,7 +973,7 @@ out.** Several fights without rest wear you down.
 
 ---
 
-## 12. Carrying and equipping
+## 16. Carrying and equipping
 
 **Only equipped items can be used.** A **Ready** buys one equip or one swap; because an item only
 comes off by being replaced, those are the same transaction.
@@ -924,7 +992,7 @@ an action.
 
 ---
 
-## 13. Levelling up
+## 17. Levelling up
 
 **The GM says when.** There is no experience to count.
 
@@ -953,7 +1021,7 @@ god is the clearest case. You will be told before it happens.
 
 ---
 
-## 14. The four Ways
+## 18. The four Ways
 
 A Way is the direction your character grows in. It is not a class you are locked into: it is which
 part of the graph you are walking, and the four do genuinely different things rather than the same
@@ -1113,7 +1181,7 @@ An order is sworn separately and carries a rule of its own, so a priest in an or
 
 ---
 
-## 15. Action cards
+## 19. Action cards
 
 Every card a character can hold, by where it comes from. A card shows what it does as a **primary**,
 what it does as a **secondary**, and what it does as a **reaction** on somebody else's turn. A dash
@@ -1261,7 +1329,7 @@ do not hold them: they are simply true once the node is yours.
 
 ---
 
-## 16. Items
+## 20. Items
 
 What you can walk into a town and buy, by kind. **Slot** is where it has to sit to be used, and a
 weapon's hands are in brackets. **Weight** counts against your 40 kg limit. **Gold** is what it
@@ -1375,7 +1443,7 @@ what you will ever carry.
 
 ---
 
-## 17. Features
+## 21. Features
 
 Permanent traits. A feature is never shuffled and never spent: it is simply true of you.
 
@@ -1403,7 +1471,7 @@ Permanent traits. A feature is never shuffled and never spent: it is simply true
 
 ---
 
-## 18. Spells
+## 22. Spells
 
 Formulas for Way of Mind and miracles for Way of Faith, by where they come from. **Strength** is how
 many spell slots preparing one costs.
@@ -1669,7 +1737,7 @@ many spell slots preparing one costs.
 
 ---
 
-## Quick reference
+## 23. Quick reference
 
 | | |
 |---|---|

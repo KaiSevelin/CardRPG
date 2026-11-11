@@ -1313,6 +1313,14 @@ CARDRPG.targetPriorities = {
 CARDRPG.wildDeck = "wildMagic";
 
 CARDRPG.defaults = {
+  /*
+   * **[2026-11-11] What a character starts with**, moved here out of the schema so the handbook's
+   * table of a player's numbers can be generated rather than retyped. Both were literals in
+   * `CharacterData.defineSchema` and neither was written down anywhere a reader could find it.
+   * The NPC's 5 Health stays a literal there: it is a template's default, not a player's stat.
+   */
+  startingHealth: 12,
+  restTokens: 1,
   handSize: 5,
   /* The skill hand is four and it refills per SCENE, not per round (skill-rules 1). */
   skillHandSize: 4,

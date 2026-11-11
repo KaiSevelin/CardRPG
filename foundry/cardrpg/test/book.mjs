@@ -28,7 +28,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { CARDRPG } from "../module/config.mjs";
-import { SHELVES, slug, DELIVERY } from "../module/art.mjs";
+import { SHELVES, MAPS, slug, DELIVERY } from "../module/art.mjs";
 
 const HERE = import.meta.dirname;
 const REPO = path.join(HERE, "..", "..", "..");
@@ -152,6 +152,45 @@ const anchor = s => slug(s.replace(/\*\*/g, ""));
  */
 const MISSED = [];
 
+/* -------------------------------------------- */
+/*  The map                                     */
+/* -------------------------------------------- */
+
+/**
+ * **A map, from a marker in the markdown.**
+ *
+ * **[BUILT 2026-11-11]** The handbook's one picture that is not a row. It is declared the same way
+ * the generated chapters are, with a comment the markdown reader ignores and this renderer reads,
+ * so the source file stays plain text with no tag of its own.
+ *
+ * The name in the marker is looked up in `MAPS`, which means a map that is not declared cannot be
+ * put on the page, and a map renamed in one place is a build error rather than a broken image.
+ *
+ * **Why the full file twice.** The continent is 3504 pixels across and unreadable at the width of
+ * a column, so the page shows it small and opens it at its own size in a dialog you scroll. Both
+ * `img` elements point at the same file: one downscaled by the browser, one not. A separate
+ * thumbnail would be a second file to keep in step with the first, and the saving is a download
+ * the reader has already made by the time they click.
+ *
+ * Without script the figure is still a link straight to the image, which is the whole of what the
+ * dialog does, more slowly.
+ */
+function mapFigure(name) {
+  const declared = MAPS.find(m => m.name === name);
+  if (!declared) throw new Error(`the handbook asks for a map named "${name}", which MAPS has not got`);
+  const href = `${ART_HREF}/maps/${slug(name)}.${DELIVERY.format}`;
+  const id = `map-${slug(name)}`;
+  return `<figure class="map">
+<a class="map__open" href="${href}" data-map="${id}" aria-label="Open ${escape(name)} at full size">`
+    + `<img src="${href}" alt="" loading="lazy" decoding="async"></a>
+<figcaption>${inline(name)}. Open it to read the names.</figcaption>
+<dialog id="${id}" class="mapview" aria-label="${escape(name)}">
+<form method="dialog"><button class="mapview__close" aria-label="Close the map">&times;</button></form>
+<div class="mapview__scroll"><img src="${href}" alt="${escape(declared.blurb)}" loading="lazy" decoding="async"></div>
+</dialog>
+</figure>`;
+}
+
 function table(rows, chapter) {
   const cells = row => row.replace(/^\||\|$/g, "").split("|").map(c => c.trim());
   const head = cells(rows[0]);
@@ -201,6 +240,8 @@ function render(md) {
       continue;
     }
     if (close) { flush(); chapter = null; out.push("</div>"); continue; }
+    const map = /^<!-- map: (.+) -->$/.exec(line.trim());
+    if (map) { flush(); out.push(mapFigure(map[1])); continue; }
     if (line.trim().startsWith("<!--")) continue;
 
     const heading = /^(#{1,4}) (.+)$/.exec(line);
@@ -317,6 +358,24 @@ const spy = new IntersectionObserver(entries => {
   }
 }, { rootMargin: "-10% 0px -85% 0px" });
 for (const m of marks) spy.observe(m);
+
+/* The map opens at its own size in a dialog you scroll. The link it upgrades is a real link to
+   the image, so with no script, or a browser without dialog, clicking still shows the map. */
+for (const open of document.querySelectorAll(".map__open")) {
+  const dialog = document.getElementById(open.dataset.map);
+  if (!dialog || typeof dialog.showModal !== "function") continue;
+  open.addEventListener("click", e => {
+    e.preventDefault();
+    dialog.showModal();
+    /* Start in the middle rather than the top-left corner, which is open sea. */
+    const box = dialog.querySelector(".mapview__scroll");
+    box.scrollLeft = (box.scrollWidth - box.clientWidth) / 2;
+    box.scrollTop = (box.scrollHeight - box.clientHeight) / 2;
+  });
+  /* Clicking the backdrop closes it: the dialog's own box is the image, so a click that lands on
+     the element itself rather than on anything inside it landed outside the picture. */
+  dialog.addEventListener("click", e => { if (e.target === dialog) dialog.close(); });
+}
 </script>
 </body>
 </html>
@@ -340,7 +399,9 @@ export function buildPage(md) {
     html: page({ body, toc: rendered.toc }),
     chapters: rendered.toc.length,
     tables: (body.match(/<table>/g) ?? []).length,
-    art: (body.match(/<img src="/g) ?? []).length,
+    /* Counted off the rows, so the map's two copies of one picture do not read as two pieces. */
+    art: (body.match(/<th scope="row" class="named"><img src="/g) ?? []).length,
+    maps: (body.match(/<figure class="map">/g) ?? []).length,
     icons: swapped,
     missed: [...MISSED]
   };
@@ -350,7 +411,7 @@ if (process.argv[1] && process.argv[1].endsWith("book.mjs")) {
   const built = buildPage(fs.readFileSync(MD, "utf8"));
   fs.writeFileSync(OUT, built.html, "utf8");
   console.log(`wrote rules/players-handbook.html: ${built.chapters} chapters, `
-    + `${built.tables} tables, ${built.art} pieces of art placed, `
+    + `${built.tables} tables, ${built.art} pieces of art placed, ${built.maps} map, `
     + `${built.icons} emoji replaced by the game's own icons`);
   if (built.missed.length) {
     console.log(`  ${built.missed.length} rows went without a picture:`);

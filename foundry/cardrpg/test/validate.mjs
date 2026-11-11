@@ -7401,8 +7401,8 @@ const handbookRows = name => handbookChapter(name).split("\n").filter(l => l.sta
  * So the arithmetic is recomputed here from the content and matched against the prose. These are
  * not a second copy of the example: they are the content's own values, asserted to appear in it.
  */
-const example = handbook.slice(handbook.indexOf("## Two rounds, played out"),
-  handbook.indexOf("## 9. Checks, outside a fight"));
+const example = handbook.slice(handbook.indexOf("## 12. Two rounds, played out"),
+  handbook.indexOf("## 13. Checks, outside a fight"));
 const exItem = name => content.ITEMS.find(i => i.name === name);
 const exCard = name => content.WARRIOR_DECK.find(c => c.name === name);
 const exIntent = name => content.INTENTS.find(i => i.name === name);
@@ -7581,9 +7581,9 @@ const bookPage = fs.readFileSync(path.join(root, "../../rules/players-handbook.h
 const bookBuilt = buildPage(handbook);
 check("the handbook's page is current",
   bookBuilt.html === bookPage ? "yes" : "stale, run npm run book", "yes");
-/* 21 since the worked example was added between the conditions chapter and the checks: it is
- * prose rather than a generated block, and the page counts it like any other chapter. */
-check("chapters on the page", bookBuilt.chapters, 21);
+/* Every h2 in the document, which is now every chapter: the numbering below asserts that no
+ * section sits outside the sequence, so this count and that sequence are the same claim twice. */
+check("chapters on the page", bookBuilt.chapters, 23);
 /* One table on the page per separator row in the markdown: a table that stopped rendering shows
  * up here rather than as a wall of pipes nobody reads. */
 check("and tables", bookBuilt.tables, (handbook.match(/^\|---/gm) ?? []).length);
@@ -7596,6 +7596,109 @@ check("and rows carrying their art", bookBuilt.art > 250 ? "most of them" : `onl
 /* Nothing of the markdown survives into the page: a stray pipe is a table that did not render. */
 check("markdown left unrendered on the page",
   (bookBuilt.html.split("<main")[1].match(/\*\*|^\|/gm) ?? []).length, 0);
+
+/*
+ * **The handbook is numbered straight through, and used not to be.**
+ *
+ * **[FOUND 2026-11-11]** Three sections had no number at all: the lore chapter at the front, the
+ * worked example sitting between chapters eight and nine, and the quick reference at the back.
+ * The eighteen that were numbered were numbered around them, so a reader who finished `8.
+ * Conditions`, read an unnumbered chapter and arrived at `9. Checks` had no way to tell whether
+ * they had skipped something. Two more chapters were added the same day, which would have made
+ * it worse in both directions.
+ *
+ * So the numbering is now the sequence itself: every `##` in the file, counted from one, in the
+ * order they appear. That is the only arrangement a reader can check without being told it.
+ */
+const bookChapters = [...handbook.matchAll(/^## (\d+)\. (.+)$/gm)].map(m => [Number(m[1]), m[2]]);
+check("chapters the handbook numbers", bookChapters.length,
+  (handbook.match(/^## /gm) ?? []).length);
+check("and the first number that is not its own place in the order",
+  bookChapters.findIndex(([n], i) => n !== i + 1) + 1 || "none", "none");
+
+/*
+ * **Chapters cross-reference each other by name, never by number.**
+ *
+ * `Your numbers` ends every row with the chapter that owns the rule, and `How a fight goes` names
+ * one for each stage of a fight. Both were written the day the numbering changed, which is the
+ * argument for names: a number cross-reference would have been wrong before the page was built.
+ *
+ * It was not hypothetical. The worked example cited *the order from section 5*, written when
+ * `Resolving an action` was the fifth chapter; it is the seventh now, and that sentence had been
+ * pointing at the fate deck with nothing to say so.
+ */
+const namedChapters = new Set(bookChapters.map(([, title]) => title));
+const sectionOf = heading => handbook.slice(handbook.indexOf(heading))
+  .split(/\n## /)[0];
+const crossRefs = [["Your numbers", "## 3. Your numbers"], ["How a fight goes", "## 11. How a fight goes"]]
+  /* Soft-wrapped at a hundred columns, so a chapter name can arrive with a newline inside it. */
+  .flatMap(([label, heading]) => [...sectionOf(heading).matchAll(/(?<!\*)\*([^*]+)\*(?!\*)/g)]
+    .map(m => [label, m[1].replace(/\s+/g, " ")]))
+  .filter(([, name]) => !namedChapters.has(name));
+check("cross-references naming a chapter that does not exist",
+  crossRefs.map(([label, name]) => `${label}: ${name}`).join(", ") || "none", "none");
+
+/*
+ * **The introduction states no number, because every number in it would be a second copy.**
+ *
+ * It sits in front of the worked example and summarises eight chapters. Every sentence of it is
+ * therefore one sentence away from being a rule stated twice, which is this project's oldest
+ * defect and the one the worked example already needed fourteen checks to contain. The rule it
+ * is written under is simple enough to enforce: it may say what happens and which chapter owns
+ * it, and it may not say how much. A digit in it is the first sign that line has been crossed.
+ */
+check("digits in the fight introduction",
+  (sectionOf("## 11. How a fight goes").replace(/^## .*$/m, "").match(/\d/g) ?? []).length, 0);
+
+/*
+ * **The player's numbers are generated, and the prose that states them is not.**
+ *
+ * **[BUILT 2026-11-11]** The new chapter reads `CARDRPG.defaults` and the fate deck, so its own
+ * column cannot drift. What it does create is a second place each number appears, because eight
+ * chapters already state them in prose, so each of those sentences is pinned to config here.
+ *
+ * Starting Health was the reason for the chapter: 12 lived in `CharacterData.defineSchema` as a
+ * literal and appeared nowhere in the handbook at all. A player could read the book front to
+ * back and not learn what they begin with.
+ */
+const { STAT_ROWS } = await import("./handbook.mjs");
+const d = CARDRPG.defaults;
+check("the numbers the handbook's table takes from config",
+  STAT_ROWS().map(([name, start]) => `${name} ${start}`).join(", "),
+  `Health ${d.startingHealth}, Hand size ${d.handSize} cards, `
+  + `Action deck ${d.actionDeckMin}–${d.actionDeckMax} cards, Skill hand ${d.skillHandSize} cards, `
+  + "Fate deck 20 cards, Block None, Armour What you wear, "
+  + `Carrying limit ${d.carryLimit} kg, Spell slots None, Rest tokens ${d.restTokens}, `
+  + "Gold What your background gave you");
+check("and the prose chapters that state the same numbers",
+  [["hand size", `Refill your hand to **${d.handSize} cards**`],
+    ["the skill hand", `Draw a hand of **${d.skillHandSize}** skill cards`],
+    ["the action deck", `| ${d.actionDeckMin}–${d.actionDeckMax} cards.`],
+    ["the carrying limit", `carrying limit is **${d.carryLimit} kg**`],
+    ["rest tokens", `You start with **one rest token**`],
+    ["the fate deck", "Twenty cards, yours alone"]]
+    .filter(([, text]) => !handbook.includes(text)).map(([name]) => name).join(", ") || "all of them",
+  "all of them");
+
+/*
+ * **The map on the page, which is the one picture that is not a row.**
+ *
+ * Declared by a marker the markdown reader ignores, resolved against `MAPS`, and rendered as a
+ * thumbnail that opens the full file in a dialog you scroll. A map named in the handbook and not
+ * declared throws at build time rather than rendering a broken image, which is why there is no
+ * check for that here: it cannot reach the page.
+ */
+check("maps on the page", bookBuilt.maps, 1);
+check("and it is the annotated one, not the bare one",
+  /<figure class="map">[\s\S]{0,200}maps\/firma-annotated\.webp/.test(bookBuilt.html) ? "yes" : "no",
+  "yes");
+check("and it opens into something you can scroll",
+  /<dialog [^>]*class="mapview"[\s\S]{0,400}class="mapview__scroll"/.test(bookBuilt.html)
+    ? "yes" : "no", "yes");
+/* Without script the figure is still a plain link to the image, which is the whole of the dialog
+ * more slowly. A thumbnail that only works with JavaScript is a thumbnail that sometimes does not. */
+check("and works with the script turned off",
+  /<a class="map__open" href="[^"]*firma-annotated\.webp"/.test(bookBuilt.html) ? "yes" : "no", "yes");
 /* The stylesheet is the one hand-written file in this pipeline, so the page must actually ask
  * for it: a generated page linking a stylesheet that is not there is a page nobody styled. */
 /*

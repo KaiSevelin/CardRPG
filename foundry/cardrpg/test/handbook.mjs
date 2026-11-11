@@ -511,7 +511,56 @@ function twistChapter() {
 
 /* -------------------------------------------- */
 
+/**
+ * **A player's numbers, which were scattered across eight chapters and never collected.**
+ *
+ * **[BUILT 2026-11-11]** Every value here already exists in `CARDRPG.defaults` or in the fate
+ * deck, and several of them -- starting Health above all -- were nowhere in the handbook at all.
+ * A player could read the book front to back and never learn what they begin with.
+ *
+ * Generated rather than written for the ordinary reason: a table of eleven numbers retyped by
+ * hand is the catalogue problem in miniature, and this one would be worse than the catalogue,
+ * because it sits beside eight chapters that state the same numbers in prose. Here it is one
+ * reading of config; the suite separately pins that the prose agrees with config too, so the
+ * duplication this section creates cannot drift in either direction.
+ *
+ * **The last column names its chapter instead of numbering it.** Chapter numbers move -- they
+ * moved the day this was written -- and a cross-reference that rots silently is worse than none.
+ * The suite checks every name here is a heading that actually exists.
+ */
+export const STAT_ROWS = () => {
+  const d = CARDRPG.defaults;
+  const fate = CARDRPG.fateDeck.reduce((n, c) => n + (c.count ?? 1), 0);
+  return [
+    ["Health", `${d.startingHealth}`, "Levelling, and some features", "Running out"],
+    ["Hand size", `${d.handSize} cards`, "Some features", "A round"],
+    ["Action deck", `${d.actionDeckMin}–${d.actionDeckMax} cards`,
+      "Levelling, and what you are given", "What you have"],
+    ["Skill hand", `${d.skillHandSize} cards`, "Refills once a scene, not once a round",
+      "Checks, outside a fight"],
+    ["Fate deck", `${fate} cards`, "Nothing. It is the same twenty for everyone", "The fate deck"],
+    ["Block", "None", "A Defend, and only for as long as the card says",
+      "Armour, Block and getting past them"],
+    ["Armour", "What you wear", "Armour, and Corrode takes it off",
+      "Armour, Block and getting past them"],
+    ["Carrying limit", `${d.carryLimit} kg`, "Some features", "Carrying and equipping"],
+    ["Spell slots", "None", "A Way of Mind or Way of Faith node", "The four Ways"],
+    ["Rest tokens", `${d.restTokens}`, "Levelling", "Rests"],
+    ["Gold", "What your background gave you", "Spending it", "Items"]
+  ];
+};
+
+function statsChapter() {
+  const out = ["| | Starts at | What moves it | Where the rule is |", "|---|---|---|---|"];
+  for (const [name, start, moves, where] of STAT_ROWS()) {
+    out.push(`| **${name}** | ${start} | ${moves} | *${where}* |`);
+  }
+  out.push("");
+  return out;
+}
+
 export const CHAPTERS = {
+  stats: statsChapter,
   actions: actionChapter,
   items: itemChapter,
   features: featureChapter,
