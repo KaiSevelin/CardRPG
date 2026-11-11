@@ -149,7 +149,7 @@ export const WARRIOR = {
 
 export const LANGUAGES = [
   { name: "Imperial", of: "the old language and the diplomatic lingua franca" },
-  { name: "Valgar", of: "lost language from the fifth district" },
+  { name: "Valgar", of: "lost language from the Furnace District" },
   { name: "Perga", of: "the language at wolf's peak" },
   { name: "Veche", of: "the local tongue in Saag et Haar" },
   { name: "Elvish", of: "lingua franca within the elf group and most of lesser gods" },

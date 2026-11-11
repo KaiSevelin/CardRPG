@@ -627,9 +627,9 @@ export const MONSTERS = [
    * Half of these are the generic folk any game needs -- townsfolk, a guard, a bandit, a cultist,
    * a mercenary -- and half are read straight off `worldinfo/Firma.md` rather than invented: the
    * Flagellants and the Holy Shield and the Black Circle are the Church of the Eternal God's own
-   * named groupings, the Grey are the Fourth District's assassin sect, the Mummers and Berserkers
-   * are how the Five are worshipped in the Second, the Salt Barons ran the north coast, and the
-   * Fifth District's refugee engineers brought gunpowder and their own language with them.
+   * named groupings, the Grey are the Rote District's assassin sect, the Mummers and Berserkers
+   * are how the Five are worshipped in the Fiord, the Salt Barons ran the north coast, and the
+   * Furnace District's refugee engineers brought gunpowder and their own language with them.
    *
    * **They carry ITEMS rather than creature gear**, which is new: a guard's Spear is the Spear a
    * player loots off it. That is what a human is, mechanically -- a body with a kit.
@@ -696,7 +696,7 @@ export const MONSTERS = [
       tactics: ["bodyguard", "brute"], targetPriority: "nearest"
     },
     equipped: ["Halberd", "Brigandine"],
-    note: "the Sixth District's only remaining export, and it walks to the Fourth to be sold",
+    note: "the East District's only remaining export, and it walks to the Rote to be sold",
     look: "a hardened soldier out of the eastern forests: brigandine over travelling clothes, a "
       + "halberd, an old scar and a bedroll. Professional, unbothered, and nobody's idea of a "
       + "hero"
@@ -748,10 +748,10 @@ export const MONSTERS = [
       tactics: ["ambusher", "skirmisher"], targetPriority: "caster"
     },
     equipped: ["Balanced Dagger", "Blade Venom"],
-    note: "the Fourth District's traditional sect, and the central Rote used to be a state",
+    note: "the Rote District's traditional sect, and the central Rote used to be a state",
     look: "a city killer in plain western dress: dark wool coat to the knee, close hood, gloves, "
       + "a thin blade held reversed along the forearm. **Nothing wrapped, no veil, nothing "
-      + "eastern about it** -- this is somebody who can stand in a doorway on the Fourth "
+      + "eastern about it** -- this is somebody who can stand in a doorway on the Rote "
       + "District's own streets and be taken for a clerk. Nothing worn on it rattles"
   },
   {
@@ -802,7 +802,7 @@ export const MONSTERS = [
       tactics: ["sniper"], targetPriority: "nearest"
     },
     equipped: ["Arquebus", "Brigandine"],
-    note: "Fifth District refugees who kept their trade, their language and their lack of a god",
+    note: "Furnace District refugees who kept their trade, their language and their lack of a god",
     look: "an engineer caught at the work rather than at the gun: sleeves rolled over a leather "
       + "apron, a cloth cap, both hands on a tool -- a crank, a measuring rod, a length of chain "
       + "-- and the arquebus slung across the back where it is out of the way. Standing upright "
@@ -821,7 +821,7 @@ export const MONSTERS = [
    * across several of them -- Enochian, Arabic, Persian, Hindu, Jewish and medieval European. So
    * the folklore supplies what the document does not, the same way it did for the trolls.
    *
-   * It also settles where they belong. The Fourth District is the Hyena Desert, ruled by emirs
+   * It also settles where they belong. The Rote District is the Hyena Desert, ruled by emirs
    * from a Ziggurat, and the ghul of Arabic folklore is **a grave demon**: it lives where the
    * dead are buried and it eats what it finds there. The Djinn, the Ifrit, the Marid and the Div
    * all come from the same part of the map. That was already in the geography.
@@ -1349,7 +1349,7 @@ export const VARIANTS = {
    * **Two of these are not upgrades, and that is the point.** The Holy Sword and God's Spirit are
    * the Church of the Eternal Spirit's answers to the Holy Shield and the Black Circle -- the same
    * job for the other faith, which is how Firma describes them: each church lists a knightly order
-   * and a secret police in its own groupings, and the two churches are the First District's
+   * and a secret police in its own groupings, and the two churches are the Core District's
    * standing argument. Statting them as variants says they are the same creature wearing the
    * other badge, which is both cheaper and truer than writing them twice.
    */
@@ -1496,7 +1496,7 @@ export const VARIANTS = {
       /* Likewise: a gun on a rest is not a shield wall, whatever it looks like from the front. */
       health: 2, armour: 1, speed: -1, caps: ["+reach"],
       gear: ["Matchlock Musket", "Brigandine"], priority: "leader",
-      note: "the Fifth District built the trains and the sea defences, and this is what is left",
+      note: "the Furnace District built the trains and the sea defences, and this is what is left",
       look: "the same engineer, but down behind a long musket on a forked rest and sighting along "
         + "it: shoulders low, cheek to the stock, goggles down over the eyes, a second charge "
         + "between the teeth. The gun is the whole silhouette where the Engineer's was the tools"

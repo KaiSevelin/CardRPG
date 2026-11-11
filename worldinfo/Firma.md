@@ -32,7 +32,7 @@ sections, landslides let the Horde into others, while human dissidents formed in
 elsewhere. Ancient underground elven ruins were struck here and there.
 
 The annual human sacrifices were not popular, and in 879 an enraged mob beat the blood mages of the
-Fifth District to death. A month later the Horde broke in and the district fell.
+Furnace District to death. A month later the Horde broke in and the district fell.
 
 The year is 1034. The Horde has continued to develop, and rumour says it is close to being able to
 penetrate the districts. Humanity is still divided; enclave stands against enclave and district
@@ -40,9 +40,9 @@ against district, and internal schisms over religion, power and politics are und
 
 # Districts
 
-## The First District
+## The Core District
 
-The First District lies inland on the fertile moist plain encircled by the **Spear Mountains**. The district
+The Core District lies inland on the fertile moist plain encircled by the **Spear Mountains**. The district
 protects Geistburg, the ancient capital of Athor's empire, five satellite cities and the land
 between them. After the empire's collapse the realm went by the name Denaria. Geistburg is a melting
 pot with complicated politics and a long lineage tied to a dozen corrupt noble houses beneath a
@@ -50,64 +50,64 @@ powerless ruler who is still titled emperor. The centre of the mages' academy an
 of the Eternal God lies on the plain and can be regarded as small towns on their own, centered around magic and religion. Hypocrisy and religious persecution go hand in hand. The capital is built on a huge mesa, the rich and noble live inside Geistburg, the rest of the mesa is covered by slums, and ordinary people occupy the satellite cities. Cable
 cars connect the mesa with the underlying plain.
 
-## The Second District
+## The Fiord District
 
-The Second District is the second largest and protects the westernmost of the three large fiords in the north coast, where the sea cuts deep inland and a few islands lie close enough in to be part of the same district; six enormous lighthouses mark where the borders run. The capital Black Harbour
+The Fiord District is the second largest and protects the westernmost of the three large fiords in the north coast, where the sea cuts deep inland and a few islands lie close enough in to be part of the same district; six enormous lighthouses mark where the borders run. The capital Black Harbour
 shares the region with a few fishing villages and a fortified northern town. The area was previously the seat
 of power for an association of fishing barons, smugglers and pirates known as the Salt Barons. The
 old faith in The Five is strong here, and the Church of the Eternal God is seen as blasphemy. The
 district is the largest producer of fish, and a broad tunnel, the **West Road**, with a
-couple of underground cities, ties the district to the First District.
+couple of underground cities, ties the district to the Core District.
 
-## The Third District
+## The Ruby District
 
-The rolling hills of the south-east form the Third District. Historically a region of pleasant
+The rolling hills of the south-east form the Ruby District. Historically a region of pleasant
 temperature where the rich built their winter palaces, known for its wines and fruit orchards. The
 coast supplies the district with fish and its farmland with meat, vegetables and grain, but wine is
-the best-known export. The **South Road**  ties the district to the First. The
-underground city of Sol is a retreat for the rich of the First and Third District who want to enjoy themselves;
-they say everything is permitted there. Religion and politics are fairly relaxed in the Third
+the best-known export. The **South Road**  ties the district to the Core. The
+underground city of Sol is a retreat for the rich of the Core and Ruby District who want to enjoy themselves;
+they say everything is permitted there. Religion and politics are fairly relaxed in the Ruby
 District, which is governed by a council voted in by the various districts. Three smaller cities lie
 along the coast, and although none of them dominates, the council sits in the city at the centre,
 Tanto.
 
-## The Fourth District
+## The Rote District
 
-The Fourth District covers a roughly square northern half of the Hyena Desert and the mineral-rich
+The Rote District covers a roughly square northern half of the Hyena Desert and the mineral-rich
 Mouse Mountains north of it. The city of Sammel in the north oasis is the only large city,
 and nearly the size of Geistburg. Villages and a few mining camps are scattered through the Mouse
 Mountains, but the rest of the Hyena Desert is desolate apart from a couple of caravan camps and a holy, sparsely populated town at the western oasis where there is water. The Grey and his siblings are worshipped in the district, which is ruled by emirs who
 have divided Sammel into separate, isolated **Rote**. The former assassin state now rules the central
 Rote around the region's tallest building, the Ziggurat. Embassies that offer services under the
-table can be found in every district except the Sixth, and in a couple of enclaves. The city is linked
-to the First District by the **East Road**, a less safe tunnel system, since the whole
+table can be found in every district except the East, and in a couple of enclaves. The city is linked
+to the Core District by the **East Road**, a less safe tunnel system, since the whole
 region's mine workings give rise to countless break-ins by monsters and the Horde. A freight and
 passenger train, the **Night Express**, runs regularly through the tunnels, which
 are sooted by the coal that drives the engine.
 
-## The Fifth District
+## The Furnace District
 
-The north-eastern Fifth District was linked to the First by the **North-East Road**, to the Fourth
-by a rail line, the Mine Line, through the **Mine Road**, and to the Sixth by the
+The north-eastern Furnace District was linked to the Core by the **North-East Road**, to the Rote
+by a rail line, the Mine Line, through the **Mine Road**, and to the East by the
 **River Road**, an underground river route which could handle timber vessels. The tunnels have been unsafe for the
-past hundred years and the train no longer runs. The Fifth District was the centre of smithing and
+past hundred years and the train no longer runs. The Furnace District was the centre of smithing and
 manufacture, and had an alchemical academy and a centre of magical research, the Rune Temple, in the
 labyrinthine city of Weder, once the third largest city on the continent. Technology and magic
-mattered more than religion here, and it was the Fifth District that built the trains of the Fourth,
-the sea defences off the Second and the cable cars between the heights of the First. The once moist pine forests of the Fifth district turned in to a barren bog land after the Horde's invasion and the city of Weder is but ruins. Refugees from the
+mattered more than religion here, and it was the Furnace District that built the trains of the Rote,
+the sea defences off the Fiord and the cable cars between the heights of the Core. The once moist pine forests of the Furnace District turned in to a barren bog land after the Horde's invasion and the city of Weder is but ruins. Refugees from the
 catastrophe of 879 have formed engineering guilds in every district and have kept their language,
-Valgar, and their lack of religion — which causes trouble in the First District now and then.
+Valgar, and their lack of religion — which causes trouble in the Core District now and then.
 
-## The Sixth District
+## The East District
 
-The Sixth District is the most easterly and covers the second largest area of the districts. It is a
+The East District is the most easterly and covers the second largest area of the districts. It is a
 region of coastal wilderness that was never entirely civilised. Dragons turn up from time to time, and
 trolls are found in both forests and mountains. Dense, damp conifer forest covers most of the
 territory, with lakes, bogs and mountains here and there. The largest export was timber, before the
-Fifth District collapsed and the export routes were cut. Two smaller coastal towns, a few villages and an inland
+Furnace District collapsed and the export routes were cut. Two smaller coastal towns, a few villages and an inland
 capital, Karmat, which is now in decline since the forest barons' export income was cut off.
 Mercenaries have become the only export, and a squadron of hardened soldiers makes its way each year
-through the wilderness and the Horde to the nearest district, the Fourth.
+through the wilderness and the Horde to the nearest district, the Rote.
 
 The forest barons' grip on the district is broken but remains a force, and every town and village is
 independent, with regular bloody internal struggles over the mayor's seat. Religiously the district is
@@ -122,7 +122,7 @@ These are the most important:
 ## Hyrlock
 
 The island where the feared — or heroic, depending on who you ask — blood mages live. Hyrlock is a
-largish island a week's sailing from the abandoned port towns west of the First District. The enclave
+largish island a week's sailing from the abandoned port towns west of the Core District. The enclave
 of Kelp Bay is the only one left on that coast and protected from the Horde, and on
 rare occasions a ship makes it across from Hyrlock; otherwise the island is isolated. Hyrlock is a
 divided society centred on the city of Mander Cliff. The island has a caste system
@@ -149,7 +149,7 @@ then through the all-pervading stench of fermenting kelp.
 
 ## Solemn
 
-The white limestone island south-east of the Third District is the centre of the fabled witches, a
+The white limestone island south-east of the Ruby District is the centre of the fabled witches, a
 sisterhood with a magic of their own that they keep to themselves. Religiously they follow the
 Primal Mother, a fertility goddess. Solemn is one of the few enclaves that does not rely on blood
 magic for protection; the witches have their own protective enchantment. How it works is unknown, but
@@ -159,20 +159,20 @@ is the enclave's centre.
 
 ## Regensburg
 
-The capital of the militaristic western realm situated in a valley of the Spear Mountains in the north-east of the First District is the most important
+The capital of the militaristic western realm situated in a valley of the Spear Mountains in the north-east of the Core District is the most important
 inland enclave. Regensburg has preserved its military background and could certainly survive a couple
 of years without enchantments. The three concentric city walls are ten metres high and divide the city
 into three rings. Within each ring are further walls dividing the rings into sections, all to resist
 invasion as long as possible. The city has a military government with a strict hierarchy and a Marshal
 of the Realm at the top. Companies of its cavalry are hired out to other districts in exchange for
-deliveries of the supplies the enclave depends on. The enclave is linked to the First District by an
+deliveries of the supplies the enclave depends on. The enclave is linked to the Core District by an
 unsafe tunnel through cave-riddled limestone, the **Cracked Road**. A large
 underground lake midway along it has given rise to two sketchy harbour villages named From and To.
 
 ## Wolf Peak
 
 A religious centre of those who profess the faith of the Fire, at the top of a lone dormant volcano
-north of the Sixth District, has held out undefeated against the Horde. Wolf Peak has
+north of the East District, has held out undefeated against the Horde. Wolf Peak has
 roads to the summit that are easy to defend, and its ingenious use of the surfaces outside and inside
 the mountain, together with careful husbandry of resources, makes it self-sufficient. The enclave's
 advanced technology in gunpowder and firearms helps. The materials for powder are inside the mountain:
@@ -200,7 +200,7 @@ Velderon is the elves' embassy on Firma. It is an ancient ruin from the elves' t
 which has been restored to its former glory. The elves are neutral and have removed themselves to the
 Second Side; their own magic protects them from the Horde here, and the embassy's main purpose is to
 watch the Horde on the ground and make sure it does not begin to threaten the Second Side. Velderon is
-a closed place that you do not enter without invitation, located on the coast east of the Second
+a closed place that you do not enter without invitation, located on the coast east of the Fiord
 District.
 
 ## Saag et Haar
@@ -217,7 +217,7 @@ slaves in Sammel and pays with silver, gold and gemstones from the mines outside
 
 ## The Triple Enclave
 
-The Triple Enclave is three frontier enclaves north of the Fourth District on the western slopes of the Spear Mountains. The
+The Triple Enclave is three frontier enclaves north of the Rote District on the western slopes of the Spear Mountains. The
 towns of Farsight, Highfall and Marke are walled small towns, each around a central castle ruled by
 a duke. They all lie in mountainous country. All three have enchantments from a shared group of blood mages. The enclaves have a common
 safe tunnel connecting them, the **Steel Road**.
@@ -230,11 +230,11 @@ flower whose seeds are dried into a powerful drug. The duke of the town is power
 and real power lies with the **Dream Guild**, a criminal organisation with branches in every district.
 They are even said to have a treaty with the Horde for safe passage for their caravans. Highfall tries
 to operate as in the old days and keep morale high and its citizens safe; to manage it they help the
-Dream Guild with troops and receive money and blood-sacrifice slaves from the Fourth District in
+Dream Guild with troops and receive money and blood-sacrifice slaves from the Rote District in
 return. The town is set into a mountain with a waterfall that falls over its walls.
 
 ## Desert Stream
-Desert Stream is the third oasis in the Hyena Desert, outside the Fourth District's protective ward, but with a small ward of its own just covering the oasis. People here have gone weird from the isolation and have a bad reputation, but the oasis provides food for everyone.
+Desert Stream is the third oasis in the Hyena Desert, outside the Rote District's protective ward, but with a small ward of its own just covering the oasis. People here have gone weird from the isolation and have a bad reputation, but the oasis provides food for everyone.
 
 # Hives
 
@@ -245,7 +245,7 @@ Twelve hives are known.
 ## Xtchaargh
 
 Xtchaargh is the only hive that receives human envoys for negotiation. It is said that this is where a
-group from the Fifth District went shortly before the blood mages were killed, and that the Horde was
+group from the Furnace District went shortly before the blood mages were killed, and that the Horde was
 behind it. The hive has a human quarter with ordinary houses and squares in the middle of the mound's
 chaotic tunnels and chambers, the **Summer Village**, where human subjects of the Horde live and train
 spies to destabilise enclaves and districts.
@@ -413,7 +413,7 @@ remain.
 
 ### Gods
 
-* **Vax**, war, Sixth District. (Spiked club)
+* **Vax**, war, East District. (Spiked club)
 * **Parfebe**, blood, Hyrlock. (Red drop)
 * **The Primal Mother**, fertility, Solemn. (Giant octopus)
 * **The Fire**, fire, Wolf Peak. (Upside-down flame)
@@ -914,7 +914,7 @@ Worms and steeds of the mole men
 
 # Languages
 * Imperial - the old language and the diplomatic lingua franca
-* Valgar - lost language from the fifth district
+* Valgar - lost language from the Furnace District
 * Perga - The language at wolf's peak
 * Veche - The local tongue in Saag et Haar
 * Elvish - lingua franca within the elf group and most of lesser gods

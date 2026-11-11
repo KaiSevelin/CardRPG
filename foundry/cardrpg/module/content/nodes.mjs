@@ -820,7 +820,7 @@ export const NODES = [
     id: "mind.divination", name: "Divination", after: ["mind.spirit.gathered"], title: "Divination",
     axis: "Support", resource: "someone else's turn",
     signature: "The Reading", tactic: "Already Seen",
-    /* **Valgar** is a *lost* language from the fifth district (Firma.md), and a lost language is
+    /* **Valgar** is a *lost* language from the Furnace District (Firma.md), and a lost language is
      * not learned from a speaker. It is read, which is what this school is for. */
     grants: { spell: "The Reading", language: "Valgar" }
   },
@@ -961,7 +961,7 @@ export const NODES = [
      * thing, which is how the gap was found.
      */
     id: "faith.vax.sixth", name: "The Sixth", after: ["faith.vax.blood"], bespoke: true,
-    grants: { knowHow: "the Sixth District, and who owes the temple", spell: "The Sixth District" }
+    grants: { knowHow: "the East District, and who owes the temple", spell: "The East District" }
   },
 
   {

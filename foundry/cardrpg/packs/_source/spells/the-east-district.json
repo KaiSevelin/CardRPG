@@ -1,14 +1,14 @@
 {
-  "_id": "6I3b0zLyi4x8tQSZ",
-  "_key": "!items!6I3b0zLyi4x8tQSZ",
+  "_id": "StcT5GCYPtJEPRFA",
+  "_key": "!items!StcT5GCYPtJEPRFA",
   "_stats": {
     "coreVersion": "14.369",
     "systemId": "cardrpg",
     "systemVersion": "0.2.0"
   },
-  "name": "The Sixth District",
+  "name": "The East District",
   "type": "spell",
-  "img": "systems/cardrpg/art/spells/faith/the-sixth-district.webp",
+  "img": "systems/cardrpg/art/spells/faith/the-east-district.webp",
   "system": {
     "strength": 5,
     "source": "Vax",

@@ -7979,8 +7979,8 @@ check("and no table offers a Swedish column",
  * It drifted. The world's file was revised to match the drawn map and the handbook was not, so
  * for a while the two documents disagreed about how many satellite cities Geistburg protects
  * (five or eight), whether the capital stands on one mesa or five, how many cities the Third
- * District's council speaks for (three or five), which coast the Second District holds, which way
- * Solemn lies from the Third, and where the Fifth District used to be. The suite passed
+ * District's council speaks for (three or five), which coast the Fiord District holds, which way
+ * Solemn lies from the Ruby, and where the Furnace District used to be. The suite passed
  * throughout, because nothing here knew the facts were paired.
  *
  * So each one is read out of both files by its own pattern and pinned to the same value. The
@@ -8003,33 +8003,33 @@ check("and neither file still has Geistburg on more than one",
   [["the world's file", geoWorld], ["the handbook", geoBook]]
     .filter(([, t]) => /mesas/i.test(t)).map(([n]) => n).join(", ") || "none", "none");
 
-check("cities the Third District's council speaks for, in the world's file",
+check("cities the Ruby District's council speaks for, in the world's file",
   geoRead(geoWorld, /(\w+) smaller cities lie along the coast/), "three");
 check("and in the handbook",
   geoRead(geoBook, /at the centre of (\w+) coastal cities/), "three");
 
-check("coastal towns left to the Sixth, in the world's file",
+check("coastal towns left to the East, in the world's file",
   geoRead(geoWorld, /(\w+) smaller coastal towns/), "two");
 check("and in the handbook",
   geoRead(geoBook, /(\w+) small coastal towns/), "two");
 
-check("which way Solemn lies from the Third, in the world's file",
-  geoRead(geoWorld, /white limestone island ([\w-]+) of the Third District/), "south-east");
+check("which way Solemn lies from the Ruby, in the world's file",
+  geoRead(geoWorld, /white limestone island ([\w-]+) of the Ruby District/), "south-east");
 check("and in the handbook",
-  geoRead(geoBook, /white limestone island ([\w-]+) of the Third District/), "south-east");
+  geoRead(geoBook, /white limestone island ([\w-]+) of the Ruby District/), "south-east");
 
 /*
- * **The Second District holds the north coast, and that is what makes Kelp Bay possible.**
- * Both files used to give the Second the west coast while also calling Kelp Bay the only port
+ * **The Fiord District holds the north coast, and that is what makes Kelp Bay possible.**
+ * Both files used to give the Fiord the west coast while also calling Kelp Bay the only port
  * left on that coast -- a district of fishing barons, smugglers and pirates sitting on the
  * shoreline that was supposed to have one surviving harbour on it. The district moved north.
  */
-check("the coast the Second District holds, in the world's file",
-  geoRead(geoWorld, /Second District .{0,120}?fiords in the (\w+) coast/), "north");
+check("the coast the Fiord District holds, in the world's file",
+  geoRead(geoWorld, /Fiord District .{0,120}?fiords in the (\w+) coast/), "north");
 check("and in the handbook",
-  geoRead(geoBook, /The Second\.\*\* The westernmost of the three great fiords of the (\w+)ern coast/),
+  geoRead(geoBook, /The Fiord\.\*\* The westernmost of the three great fiords of the (\w+)ern coast/),
   "north");
-check("and neither file gives the Second the west coast any more",
+check("and neither file gives the Fiord the west coast any more",
   [["the world's file", geoWorld], ["the handbook", geoBook]]
     .filter(([, t]) => /islands of the west coast|The west coast and its islands/.test(t))
     .map(([n]) => n).join(", ") || "none", "none");
@@ -8039,10 +8039,10 @@ check("and Kelp Bay is still the only port on the west",
     ["the handbook", /the only one left on the west coast/.test(geoBook)]]
     .filter(([, hit]) => !hit).map(([n]) => n).join(", ") || "both say so", "both say so");
 
-check("where the Fifth District lay, in the world's file",
-  geoRead(geoWorld, /The ([\w-]+?)(?:ern)? Fifth District was linked/), "north-east");
+check("where the Furnace District lay, in the world's file",
+  geoRead(geoWorld, /The ([\w-]+?)(?:ern)? Furnace District was linked/), "north-east");
 check("and in the handbook",
-  geoRead(geoBook, /The Fifth is gone\.\*\* It lay in the ([\w-]+)/), "north-east");
+  geoRead(geoBook, /The Furnace is gone\.\*\* It lay in the ([\w-]+)/), "north-east");
 
 /* Regensburg sits in the mountain ring itself, not out on the plain the ring encloses. */
 check("the range Regensburg sits in, in the world's file",
@@ -8053,7 +8053,7 @@ check("and in the handbook",
 /*
  * **Three oases in the Hyena Desert, and each one is somewhere different.** Sammel is in the
  * northern one, a holy town stands at the western one, and Desert Stream is the third -- the only
- * one outside the Fourth District's ward, carrying a small ward of its own.
+ * one outside the Rote District's ward, carrying a small ward of its own.
  */
 check("the oasis Sammel sits in, in the world's file",
   geoRead(geoWorld, /The city of Sammel in the (\w+) oasis/), "north");
@@ -8080,13 +8080,42 @@ check("and in the handbook",
 check("and no document still calls it Bogtown",
   [["the world's file", worldDoc], ["the handbook", handbook], ["specializations.md", specDoc]]
     .filter(([, text]) => /Bogtown/.test(text)).map(([name]) => name).join(", ") || "none", "none");
-/* And the range, because "north of the Fourth District" alone put them nowhere in particular. */
+/* And the range, because "north of the Rote District" alone put them nowhere in particular. */
 check("the range the enclaves stand on, in the world's file",
   geoRead(geoWorld, /Triple Enclave .{0,90}?western slopes of the (Spear Mountains)/),
   "spear mountains");
 check("and in the handbook",
   geoRead(geoBook, /Triple Enclave\.\*\* .{0,90}?western slopes of the (Spear Mountains)/),
   "spear mountains");
+
+/*
+ * **The districts have names now, and an ordinal left behind is not a stale label.**
+ *
+ * **[BUILT 2026-11-11]** They were the First through the Sixth; they are the Core, the Fiord, the
+ * Ruby, the Rote, the Furnace and the East. The rename crossed nine files, a spell, a pack source
+ * and a piece of art, and what it leaves behind is worse than an inconsistency: `the Fourth
+ * District` surviving in a creature's note or a node's grant does not read as the old name of the
+ * Rote, it reads as a seventh district nobody has written.
+ *
+ * The ordinals are still in use elsewhere and must stay -- the four **Sides** are First through
+ * Fourth, and **The First** is the vampire god -- so the sweep wants the word `District` beside
+ * the ordinal and nothing looser than that.
+ */
+const ordinalDistrict = /\b(?:First|Second|Third|Fourth|Fifth|Sixth)\s+District\b/i;
+check("documents still naming a district by its ordinal",
+  [["the world's file", worldDoc], ["the handbook", handbook], ["specializations.md", specDoc]]
+    .filter(([, text]) => ordinalDistrict.test(text)).map(([name]) => name).join(", ") || "none",
+  "none");
+/* And the names themselves, in the order the world's file introduces them. */
+check("the districts the world's file heads a section with",
+  [...worldDoc.matchAll(/^## The (\w+) District$/gm)].map(m => m[1]).join(", "),
+  "Core, Fiord, Ruby, Rote, Furnace, East");
+check("and the five the handbook still calls live",
+  ["Core", "Fiord", "Ruby", "Rote", "East"]
+    .filter(name => !new RegExp(`\\*\\*The ${name}\\.\\*\\*`).test(geoBook)).join(", ") || "all five",
+  "all five");
+check("and the one it calls gone",
+  geoRead(geoBook, /\*\*The (\w+) is gone\.\*\*/), "furnace");
 
 /*
  * **Every verb in the six-verb table carries its glyph, and Use carried none.**

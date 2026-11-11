@@ -1675,7 +1675,7 @@ see below, because that is the point of it rather than a gap.
 
 The two bands mean the same here as in §3.4 — a 4 changes the fight for a round, a 5 is the god's
 thesis — but a god's 5 reads differently, because the obedience is paid *again* for it. A priest of
-Vax does not spend slots on *The Sixth District* so much as agree to take the whole party's wounds.
+Vax does not spend slots on *The East District* so much as agree to take the whole party's wounds.
 
 ---
 
@@ -1866,7 +1866,7 @@ next month.
 | **Stand Where I Stand** | 1 | Until your next turn, allies adjacent to you cannot be reduced below 1 Health. Costs **2 Health**. |
 | **The Shield Line** | 2 | Every ally **adjacent to you** gains your armor value as **Block** until your next turn. Costs **1 Health per ally**. |
 | **The Line Holds** | 4 | Allies adjacent to you cannot be moved, knocked **Prone** or **Compelled** until your next turn. Costs **2 Health per ally**. |
-| **The Sixth District** | 5 | Until the fight ends, every ally adjacent to you shares your armor and your Block — and **damage dealt to them is dealt to you instead**. It will cost enough. |
+| **The East District** | 5 | Until the fight ends, every ally adjacent to you shares your armor and your Block — and **damage dealt to them is dealt to you instead**. It will cost enough. |
 
 **Every Vax miracle is about a line of men standing next to each other**, which is what his Position
 axis means, and every one of them is paid for out of the priest's own body. He is the cleric-fighter
@@ -1984,7 +1984,7 @@ nobody would ever see one at a table.
   §1.4 calls a 4 *changes the fight for a round* and a 5 *the reason the branch exists*, so these are
   precisely the spells whose being wrong is most expensive. Four to measure first: *The Last Drop* (a
   whole extra turn for half your Health), *The Silent Knife* (one enemy dead, no roll — the only
-  effect in the game with no fate draw at all), *The Sixth District* (one character taking the whole
+  effect in the game with no fate draw at all), *The East District* (one character taking the whole
   party's damage) and *Nothing At All* (a four-card action deck, which the deck-size simulation says
   is the most dangerous number to get wrong).
 - **Settled: every god has three miracles and a stated Obedience** (§3.5). A god's list stays shorter

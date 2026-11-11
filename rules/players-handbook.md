@@ -58,7 +58,7 @@ reach another, and the network grew until parts of it were forgotten. Monsters t
 landslides let the Horde into others, dissidents built their own communities out in the dark, and here
 and there the digging broke into elven ruins older than anyone's records.
 
-**The sacrifices were never popular.** In 879 a mob in the Fifth District beat its blood mages to
+**The sacrifices were never popular.** In 879 a mob in the Furnace District beat its blood mages to
 death. A month later the Horde came through the gap, and the district fell.
 
 That is the arithmetic you live in. Five districts and some twenty enclaves, a thousand years of it,
@@ -95,7 +95,7 @@ neighbours, and two a day apart overland can be unreachable.
 
 ### The five districts that are left
 
-**The First.** Inland, on the fertile damp plain inside the Spear Mountains. It protects **Geistburg**,
+**The Core.** Inland, on the fertile damp plain inside the Spear Mountains. It protects **Geistburg**,
 Athor's old capital, five satellite cities and the farmland between them, and the realm is still called
 Denaria. Geistburg is a melting pot of complicated politics, a dozen corrupt noble houses and a
 powerless man who is still titled emperor. The mages' academy and the cathedral of the Church of the
@@ -104,48 +104,48 @@ its religion, which is how hypocrisy and religious persecution come to walk toge
 built on one huge mesa, with the rich and noble inside Geistburg itself, slums over the rest of the
 rock, and ordinary people out in the satellite cities. Cable cars connect the mesa to the plain below.
 
-**The Second.** The westernmost of the three great fiords of the northern coast, where the sea cuts
+**The Fiord.** The westernmost of the three great fiords of the northern coast, where the sea cuts
 deep inland, with a few islands lying close enough in to belong to the district and six enormous
 lighthouses marking where the ring runs. The capital is **Black Harbour**, which shares the district
 with a handful of fishing villages and one fortified northern town, and the region used to belong to
 the Salt Barons, an association of fishing magnates, smugglers and pirates. The old faith of the Five is strong here and
 the Church of the Eternal God is considered blasphemy. It lands most of the continent's fish. The
-**West Road**, a broad tunnel with underground cities along it, ties it to the First.
+**West Road**, a broad tunnel with underground cities along it, ties it to the Core.
 
-**The Third.** Rolling hills in the south-east, warm, famous for wine and fruit, where the rich once
+**The Ruby.** Rolling hills in the south-east, warm, famous for wine and fruit, where the rich once
 built winter palaces. The coast feeds it fish and the farmland the rest, but wine is what it is known
-for. The **South Road** runs to the First District, and the underground city of **Sol** is where the
-rich of the First and the Third go to enjoy themselves, with a reputation that everything is permitted
+for. The **South Road** runs to the Core District, and the underground city of **Sol** is where the
+rich of the Core and the Ruby go to enjoy themselves, with a reputation that everything is permitted
 there. Religion and politics are relaxed. A voted council governs from **Tanto**, at the centre of
 three coastal cities, none of which dominates the others.
 
-**The Fourth.** The northern half of the Hyena Desert and the mineral-rich Mouse Mountains above it.
+**The Rote.** The northern half of the Hyena Desert and the mineral-rich Mouse Mountains above it.
 **Sammel**, in the northern oasis, is the only large city and nearly matches Geistburg; out at the
 western oasis stands a holy town, thinly peopled, and the rest of the desert is desolate but for a
 couple of caravan camps where there is water. **The Grey**
 and his siblings are worshipped here. Emirs rule, and they have cut Sammel into sealed quarters called
 **Rote**; the old assassin state holds the central one, around the Ziggurat, the tallest building in
-the region. Its embassies sell services under the table in every district but the Sixth. The **East
-Road** connects it to the First and is the least safe of the roads, because the mining lets monsters
+the region. Its embassies sell services under the table in every district but the East. The **East
+Road** connects it to the Core and is the least safe of the roads, because the mining lets monsters
 and the Horde break in constantly. The **Night Express** runs it anyway, hauling freight and
 passengers through tunnels black with its own coal smoke.
 
-**The Sixth.** The far east, the second largest district and the one that was never entirely tamed.
-Dragons turn up. Trolls live in the forests and the mountains. Dense wet conifer forest covers most of
-it, broken by lakes, bogs and hills. Timber was the export until the Fifth fell and took the routes
+**The East.** The far side of the continent, the second largest district and the one that was never
+entirely tamed. Dragons turn up. Trolls live in the forests and the mountains. Dense wet conifer
+forest covers most of it, broken by lakes, bogs and hills. Timber was the export until the Furnace fell and took the routes
 with it, and now the inland capital **Karmat**, two small coastal towns and a scatter of villages are
 all there is of it. Karmat is in decline and mercenaries are the only thing it sells: a
-squadron of hard soldiers fights its way through the wilderness to the Fourth District once a year.
+squadron of hard soldiers fights its way through the wilderness to the Rote District once a year.
 The forest barons are broken but not gone, every town runs itself, and the mayor's chair changes hands
 bloodily and often. The war god **Vax** has the most followers, and nobody minds what you believe.
 
-**The Fifth is gone.** It lay in the north-east, and was the centre of smithing and manufacture, with
-an alchemical academy and a centre of magical research called the Rune Temple in the labyrinth city of
-**Weder**, once the third largest city on the continent. Technology and magic mattered there and
-religion did not. The Fifth built the Fourth's trains, the Second's sea defences and the First's cable
+**The Furnace is gone.** It lay in the north-east, and was the centre of smithing and manufacture,
+with an alchemical academy and a centre of magical research called the Rune Temple in the labyrinth
+city of **Weder**, once the third largest city on the continent. Technology and magic mattered there and
+religion did not. The Furnace built the Rote's trains, the Fiord's sea defences and the Core's cable
 cars. Its damp pine forest has gone to barren bog since the Horde came in, and Weder is ruins. Its refugees founded
 engineering guilds in every surviving district and kept their language, **Valgar**, and their lack of
-religion, which still causes trouble in the First District.
+religion, which still causes trouble in the Core District.
 
 ### The enclaves
 
@@ -153,7 +153,7 @@ Some twenty of them hold out on small territories with the Horde all around. The
 everybody has heard of.
 
 **Hyrlock.** The island of the blood mages, feared or revered depending on who you ask, a week's
-sailing from the abandoned ports west of the First District. A caste society under the city of
+sailing from the abandoned ports west of the Core District. A caste society under the city of
 **Mander Cliff**: mages at the top, then administrators and merchants, then workers, and beneath them
 the thralls, who are bred to be spent in sacrifice. Power radiates from the **Red Tower**, fifty metres
 of it at the cliff's summit. The faith is of the blood goddess **Parfebe**. Every other district and
@@ -166,21 +166,21 @@ voyages in an unstable cartel, and the pay for surviving one draws adventurers. 
 cobbled alleys lit blue for bars, red for brothels and green for business best not described. The
 smell is rotting bodies, spilt beer and cheap perfume, under the fermenting kelp.
 
-**Solemn.** A white limestone island south-east of the Third District, home of the witches, a sisterhood
+**Solemn.** A white limestone island south-east of the Ruby District, home of the witches, a sisterhood
 with a magic they keep to themselves. They follow the **Primal Mother**, a fertility goddess, and they
 are one of the few enclaves that needs no blood magic: their own ward holds, and nobody outside knows
 how. It is guessed to have something to do with how thin the island's borders are to the Second and
 Third Sides. Their city **Sonebra** sits walled at the top, all towers and spires.
 
-**Regensburg.** The militaristic realm in a valley of the Spear Mountains, north-east of the First
+**Regensburg.** The militaristic realm in a valley of the Spear Mountains, north-east of the Core
 District, and the most important inland enclave. Three concentric walls ten metres high divide the city into rings, each ring subdivided again,
 all of it designed to make an invasion take as long as possible. A Marshal of the Realm sits at the top
 of a strict hierarchy. It hires its cavalry out to other districts in exchange for the supplies it
-cannot grow. The **Cracked Road** reaches the First District through cave-riddled limestone and is not
+cannot grow. The **Cracked Road** reaches the Core District through cave-riddled limestone and is not
 safe; halfway along it a large underground lake has two harbour villages on it, named From and To.
 
 **Wolf Peak.** A religious centre of the faith of **the Fire**, on a dormant volcano north
-of the Sixth District, never once taken. The roads to the summit are easy to hold and the mountain
+of the East District, never once taken. The roads to the summit are easy to hold and the mountain
 feeds itself inside and out. It also has the best gunpowder and firearms on the continent, because the
 ingredients are all in the mountain: bat guano that never runs out, sulphur from the volcanism, and
 charcoal from fast trees that love the soil. The priesthood has its own language, **Perga**, its own
@@ -195,7 +195,7 @@ there are the less likely you are the one chosen. The **Guest Law** guarantees t
 killed, and guarantees that a guest who breaks any of its many clauses will be. It also offers land and
 the prospect of a title, to keep people coming. They worship **The First**, the first vampire.
 
-**Velderon.** The elves' embassy on Firma, east of the Second District: an ancient elven ruin with one
+**Velderon.** The elves' embassy on Firma, east of the Fiord District: an ancient elven ruin with one
 restored corner. The elves are neutral and live on the Second Side; their own magic keeps the Horde
 out, and the embassy exists to watch the Horde and make sure it never starts looking upward. You do
 not go in without an invitation.
@@ -208,7 +208,7 @@ and the tongue is **Veche**. A trade road runs to Sammel through the Third Side:
 and a demon-permitted road between them, paid for in human sacrifice. The city buys slaves in Sammel
 and pays in silver, gold and gemstones out of its own mines.
 
-**The Triple Enclave.** Three frontier towns north of the Fourth District, on the western slopes of
+**The Triple Enclave.** Three frontier towns north of the Rote District, on the western slopes of
 the Spear Mountains and all of them in mountainous country, each walled around a castle and a duke,
 sharing one group of blood mages and one safe tunnel, the **Steel Road**.
 **Farsight** stands on the open upper slopes and the Church of the Eternal God holds it absolutely, its duchess also a
@@ -217,9 +217,9 @@ cardinal, religion behind every law. **Marke** sits above the high bogs of its v
 criminal organisation with branches in every district, holds the real power. They are rumoured to have
 a safe-passage treaty with the Horde. **Highfall** is built into a mountain with a waterfall coming
 over its walls, and tries to run things the old way: it lends the Dream Guild troops, and takes money
-and sacrificial slaves from the Fourth District in exchange.
+and sacrificial slaves from the Rote District in exchange.
 
-**Desert Stream.** The third oasis of the Hyena Desert, outside the Fourth District's ward and holding
+**Desert Stream.** The third oasis of the Hyena Desert, outside the Rote District's ward and holding
 a small one of its own that covers the water and nothing else. The isolation has told on the people
 there and their reputation is poor, but the oasis feeds everyone who reaches it.
 
@@ -231,7 +231,7 @@ chambers for larvae and for each of the Horde's roles. **Twelve are known.**
 **Xtchaargh** is the only hive that will receive human envoys. It has a human quarter in the middle of
 its tunnels, with ordinary houses and squares, called the **Summer Village**, where humans who serve
 the Horde live and train spies to pull enclaves and districts apart. It is said that a delegation from
-the Fifth District went there shortly before its blood mages were killed.
+the Furnace District went there shortly before its blood mages were killed.
 
 **Chguuth** is the main hive, in the south-east, twice the height of any other and reinforced with the
 chitin of the dead. The enormous flying **Skaah** that were mistaken for airships all set out from
@@ -273,7 +273,7 @@ on avoiding discovery and killing quietly. **The Purple** brews poison, and the 
 **The Yellow** stands for lies, deceit and betrayal, and the Yellow Book is misinformation and
 disguise. The three sects match the three books.
 
-**Local gods.** **Vax**, war, in the Sixth District. **Parfebe**, blood, on Hyrlock. **The Primal
+**Local gods.** **Vax**, war, in the East District. **Parfebe**, blood, on Hyrlock. **The Primal
 Mother**, fertility, on Solemn. **The Fire**, fire, at Wolf Peak. **The First**, vampirism, in
 Echterhof. **Aecht**, death, in Saag et Haar.
 
@@ -290,7 +290,7 @@ Lady**, **the Soot Club** try to summon **Baal Fagor**, and **the Dancers** use 
 | | |
 |---|---|
 | **Imperial** | The old language, and the diplomatic common tongue |
-| **Valgar** | The lost language of the Fifth District, kept by its engineering guilds |
+| **Valgar** | The lost language of the Furnace District, kept by its engineering guilds |
 | **Perga** | Spoken at Wolf Peak |
 | **Veche** | The local tongue of Saag et Haar |
 | **Elvish** | Common among the elves and most of the lesser gods |
@@ -1655,7 +1655,7 @@ many spell slots preparing one costs.
 | **The Shield Line** | 2 | Every ally adjacent to you gains your armor value as Block until your next turn. One Health per ally, so a long line is a dear one. Costs 1 Health. |
 | **The Club and the Line** | 2 | Strike every adjacent enemy. No free hand needed, because the club is the holy symbol, which is the gift on the node, not on the card. Costs 2 Health. |
 | **The Line Holds** | 4 | Nobody beside you is moved, knocked down or turned. It costs two Health a man, and Vax expects you to count them first. Costs 2 Health. |
-| **The Sixth District** | 5 | Your armour is theirs, your Block is theirs, and everything aimed at them arrives in you. It will cost enough, which is how Vax prices war plainly. |
+| **The East District** | 5 | Your armour is theirs, your Block is theirs, and everything aimed at them arrives in you. It will cost enough, which is how Vax prices war plainly. |
 
 ### The First
 
