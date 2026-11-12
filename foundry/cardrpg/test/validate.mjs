@@ -13566,6 +13566,73 @@ check("what advantage is worth on a total", advWorth, "0.51");
  */
 const ladder = Object.values(CARDRPG.difficulties);
 check("the four difficulties", ladder.join(", "), "3, 5, 7, 9");
+
+/*
+ * **The handbook's combo section is derived from the cards, not retyped beside them.**
+ * **[BUILT 2026-11-12]**
+ *
+ * Chapter 10 gained *Putting two together*, which names the cards that read an opening and says
+ * what each one gains. Every one of those gains lives on a card as a `when: { needs, dc, mod }`
+ * clause, so the section is a second copy of nine facts, and a second copy of a fact is a second
+ * fact that can drift.
+ *
+ * Two assertions, and the first is the one with teeth: **every** card carrying a combo clause is
+ * named in the section. A new one fails this until somebody writes it up, which is the right
+ * failure to have -- a combo a player cannot read about is a combo that does not exist for them.
+ *
+ * **Judged is the exception and it is deliberate.** It carries no `when.needs` clause anywhere:
+ * its payoffs are written on Faith's own miracles as effect prose, so nothing here would find it
+ * and the section covers it in its own row. **[OPEN]** Whether that asymmetry is worth closing, or
+ * whether an opening read only by one Way's prose is a fifth thing wearing an opening's name.
+ */
+const comboSection = handbook
+  .slice(handbook.indexOf("### Putting two together"), handbook.indexOf("## 11. How a fight goes"));
+check("the handbook explains combining conditions", comboSection.length > 900 ? "yes" : "missing",
+  "yes");
+
+const comboSteps = [];
+for (const key of ["COMMON_POOL", "STRENGTH_POOL", "SHADE_POOL", "MIND_POOL", "FAITH_POOL",
+  "WARRIOR_DECK", "SHADE_DECK", "WAY_CARDS"]) {
+  for (const card of content[key] ?? []) {
+    for (const step of [...(card.primary ?? []), ...(card.secondary ?? []),
+      ...(card.effect ? [card.effect] : [])]) {
+      if (step?.when?.needs) comboSteps.push([card.name, step.when]);
+    }
+  }
+}
+/* `FORMULAS` and `SHADOW_FORMULAS`, not `SPELLS`: there is no such export, and the first run of
+ * this check found 7 clauses rather than 9 and said which opening was missing. Wet's two are
+ * Elemental formulas, so a check that walked only the card pools would have passed a section that
+ * described a combo the game does not have. */
+for (const spell of [...(content.FORMULAS ?? []), ...(content.SHADOW_FORMULAS ?? []),
+  ...(content.MIND_SIGNATURES ?? []), ...(content.FAITH_SIGNATURES ?? [])]) {
+  if (spell?.effect?.when?.needs) comboSteps.push([spell.name, spell.effect.when]);
+}
+/* The NPC side reads an opening too, and a player who does not know that is a player who thinks
+ * Off-Balance is only ever theirs. `Worry It` is in the section for that reason. */
+for (const intent of content.INTENTS ?? []) {
+  for (const step of intent.sequence ?? []) {
+    if (step?.when?.needs) comboSteps.push([intent.name, step.when]);
+  }
+}
+check("cards that read an opening", comboSteps.length, 9);
+check("and openings a card reads",
+  [...new Set(comboSteps.map(([, w]) => w.needs))].sort().join(", "),
+  "marked, offBalance, wet");
+const comboUnnamed = [...new Set(comboSteps.map(([name]) => name))]
+  .filter(name => !comboSection.includes(`**${name}**`));
+check("combo cards the handbook does not name",
+  comboUnnamed.length ? comboUnnamed.join(", ") : "none", "none");
+/* And the difficulty each clause sets, in the handbook's own words rather than as a number the
+ * reader would have to look up. A clause that moved its DC would leave the word behind. */
+const WORD = { 3: "Easy", 5: "Normal", 7: "Hard", 9: "Heroic" };
+const comboDcGap = comboSteps
+  .filter(([, w]) => w.dc !== undefined)
+  .filter(([name, w]) => !comboSection.includes(`**${WORD[w.dc]}**`)
+    || !comboSection.includes(`**${name}**`))
+  .map(([name, w]) => `${name} -> ${w.dc}`);
+check("combo clauses whose difficulty the handbook does not state",
+  comboDcGap.length ? comboDcGap.join(", ") : "none", "none");
 check("and the starter deck's best card plus every stack",
   [3, 3 + 2, 3 + 2 + 2, 3 + 2 + 2 + 2].join(", "), "3, 5, 7, 9");
 

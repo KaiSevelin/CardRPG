@@ -655,6 +655,38 @@ turn, and you can use it.
 Off-Balance, Marked and Judged) do nothing by themselves; they exist for other cards to key off, and
 they cannot be shaken off.
 
+### Putting two together
+
+Most conditions are worth more beside another one than they are alone, and the clock is what makes
+that possible. A condition you inflict runs out at the end of **your** next turn, so it is still
+sitting there through everybody else's. One of you opens and another one finishes.
+
+**The four openings are the whole combo system.** They do nothing at all by themselves. They sit on
+a target waiting for a card that reads them, and that card is usually not the card that set them.
+
+| Set this | And these want it |
+|---|---|
+| **Off-Balance** | **Hammerblow** strikes at **+2**. **Sweep the Leg** goes from Normal to **Heroic** to save against, and **Overbear** from Normal to **Hard**. Goblins know it too: **Worry It** ignores armour against an off-balance target |
+| **Marked** | **Between the Plates** ignores armour, so it goes through plate. **Take the Shot** draws with **advantage**. **Pin the Shadow** goes from Normal to **Hard** |
+| **Wet** | **Lightning** hits for **2** more and goes from Hard to **Heroic**. **Frost** goes from Normal to **Heroic** |
+| **Judged** | Faith reads it on its own miracles. **The Weight of It** puts a judged enemy's armour at **0 against everyone**, and **Grey Judgement** makes them act last this round |
+
+Three things worth knowing beyond the openings.
+
+**Armour and Block come off separately, and both can go.** Exposed puts armour at 0, Off-Balance
+puts Block at 0. A figure carrying both has nothing between the fate card and their Health.
+
+**Take their answer away first.** Stunned means no reactions, so no Parry and no Block however many
+cards they are holding. Exposed and Stunned together is armour gone and nothing to be done about
+it. Halted is the whole turn, and Grappled on a Prone figure keeps them down, because standing up
+costs Move 1 and Grappled means you cannot Move at all.
+
+**Some of them cancel, so the order matters.** Burning cancels with Wet and with Frozen. Wet is the
+setup for a Frost or a Lightning, and it is also a bucket of water: drop Burning on a wet target and
+you have spent both for nothing. The ones that slow you do stack, in a fixed order: the injury
+first, which never takes you below one square, then halved if something halves it, then the
+condition's own reduction, which can take you to nothing.
+
 ---
 
 ## 11. How a fight goes
