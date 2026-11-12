@@ -733,13 +733,15 @@ helpless — just easy to catch.
 > being over your limit is the first rung** — which is a problem for the second one, recorded in
 > [equipment.md](equipment.md) §12.
 
-**Overloaded** costs you stamina, which in this game means deck. Shuffle your action deck, turn up
-**2 cards at random** and set them aside as **Spent**; they return, shuffled back into your draw
-pile, when you are no longer Overloaded, or on your next rest.
+**Overloaded costs you 2 stamina**, for as long as the load is on your back.  **[RULED 2026-11-12]**
 
-- **Spent, not discarded.** A discarded card comes straight back on your next Catch Breath. Spent
-  cards stay out, so a heavy load genuinely shortens your deck and brings exhaustion forward —
-  roughly a round earlier in testing.
+- **It always said *stamina*** and used to charge it in cards, because the deck was the stamina.
+  Now that they are two things, the sentence charges the one it names.
+- **[MEASURED 2026-11-12]** Two cards set aside as Spent is worth **−0.1 / −0.2 / +0.8 / −0.5** —
+  nothing at all, because a card nobody played costs nothing. Two stamina off fourteen is
+  **−2.0 / −5.7 / −10.2 / −8.3**, against the old reading's measured −2.3 / −6.5 / −11.2 / −8.5. The
+  number did not move; only the currency did.
+  ([../sim/analysis-2026-11-12.md](../sim/analysis-2026-11-12.md) §5.)
 - **Random, not chosen.** A pack doesn't care which of your tricks it costs you. Choosing would let
   you shed your dead cards, which is a reward for being overloaded rather than a price — and it
   would turn every pickup into a deck-pruning decision.
@@ -1523,40 +1525,67 @@ autopilot in which laying down an opening is simply correct, and that is deliber
 
 ## 8. Exhaustion, lingering damage and rests
 
-Your action deck is your stamina.
+**Your stamina is how many cards you can play in a fight, and it has nothing to do with the size
+of your deck.**  **[RULED 2026-11-12]**
 
-- **Exhausted**: if you can't refill to at least **2 cards** because your draw pile is empty, you are Exhausted. You can only play **one** card per turn (primary *or* secondary), and you can't react.
-- **Catch Breath**: you may spend your whole turn (no cards played) to catch your breath:
-  1. Shuffle your discard pile.
-  2. Move **2 cards, at random**, into your draw pile.
-  3. Draw up to hand size as normal next round.
+It is a number on your sheet, like Health, and it starts at **14**. Every card you play costs 1 — as
+a primary, as a secondary, or as a reaction, and whether it goes to your discard or to your Spent
+pile. **Nothing you did not play costs anything**: a Wound discarded at the end of your turn, a Fear
+that resolves as it is drawn, a card knocked out of your hand.
 
-  **You need 2 in the discard, or you can't do it.** The recovery is all or nothing — a one-card
-  discard does not buy a whole turn for one card.
+**Your deck is a cycle, and the cycle is free.** When your draw pile runs out and you still have
+stamina, shuffle your discard and it is your draw pile again. In a long fight you will see your whole
+deck more than once, and seeing it costs nothing. Playing is what costs.
 
-  **Two is the Exhausted line.** You are Exhausted when you can't refill to 2, so a breath buys you
-  exactly one turn that is not Exhausted, and not one card more. It is a way to keep playing, never
-  a way to get back on top: you give up a turn to have a normal one next round.
+- **Exhausted**: at **1** stamina you may play **one** card a turn (primary *or* secondary), and you
+  can't react.
+- **At 0 you are finished.** Discard the rest of your draw pile. You play no card and fire no
+  reaction. The one thing you may still do is catch your breath.
+- **Catch Breath**: spend your whole turn, playing nothing, and regain **2 stamina** — never above
+  your maximum.
 
-  **The discard always comes back.** Breathing takes nothing out of your deck permanently; what it
-  costs is the turn. Breathe often enough and every discarded card returns, which is what makes the
-  discard a cycle rather than a drain.
+> **What this replaced, and why.**  **[RULED 2026-11-12]**
+>
+> This section used to open *your action deck is your stamina*, which made a card's contents and a
+> character's endurance **the same number**. Acquiring any card made you last longer and pruning a
+> bad one made you last less, so pruning was a punishment and every card that arrived was a little
+> endurance nobody had designed.
+>
+> Split, each one says one thing: **the deck decides what you can do, the stat decides how long you
+> can keep doing it.**
+>
+> **[MEASURED 2026-11-12]** Fourteen is not a guess, and it is deliberately not the deck's sixteen:
+> stamina 14 reproduces the four published encounters within 3.7 points, because a hero under the old
+> rule plays about **17** cards in a hard fight — sixteen, plus what the breaths put back.
+> [../sim/analysis-2026-11-12.md](../sim/analysis-2026-11-12.md) §1.
 
-  **The recovery is random.** Choosing would let you fish your best card back every time you
-  stopped for breath, which turns a recovery into a tutor. **Nothing general will ever let you
-  search your discard** — it is the kind of rule that quietly rewrites every deck in the game, since
-  a deck you can search is a deck with no weak cards in it.
+  **Breathing early is wasted.** The recovery stops at your maximum, so a turn spent breathing while
+  your stamina is full buys nothing at all and hands the enemy a free round. There is one moment
+  worth doing it, and it is when you have run out.
+
+  **It is a way to keep playing, never a way to get back on top.** Two stamina is one full turn: you
+  give up this turn to have a normal one next round. There is no limit on how often — so running out
+  is an **interval**, not an ending, and a hero at the end of their stamina fights on at half rate
+  for as long as the fight lasts. That is a decision and not an accident; the alternative is a wall,
+  and a wall ends the character's participation rather than slowing it.
+
+  **Nothing general will ever let you
+  search your discard** — under this rule the discard is not a
+  waiting room, it is the back half of your deck: it returns on its own, every cycle, without
+  anybody spending a turn to fetch it. A deck you can search is a deck with no weak cards in it, and
+  that rewrites every deck in the game rather than one card.
 
   > **But a named thing may.** This is a rule worth one owner, the way *Over and Past* owns walking
   > through enemies (section 11) and *The Wall* owns stacking Blocks (section 4): a specific spell,
   > a specific node or a specific combo may reach into a discard **by name**, and then it is that
-  > character's trick rather than everybody's habit. What such an effect has to pay is set by what
-  > breathing costs:
+  > character's trick rather than everybody's habit. Two of the three conditions on it still hold,
+  > and the one that set the **number** has lost its anchor:
   >
-  > - it takes **one** card, not two — a breath's whole yield is two, and choosing is worth more
-  >   than counting;
   > - it costs a **card or a slot**, never a free rider on something else;
   > - and it may not be repeatable within a fight, or the deck stops having a bottom.
+  > - **[OPEN]** How many cards. The old answer was *one, not two, because a breath's whole yield is
+  >   two* — and a breath no longer moves cards at all. What a **chosen** card out of the discard is
+  >   worth now that the cycle returns every card for free is a number nobody has.
   >
   > **Seven nodes get it, and none of them the same way.** *Asceticism* and *Divination* in Mind,
   > *Scout* and *Gambler* in Shade, the **local gods** and *Fagar* in Faith, and the *Tactician* in
@@ -1589,8 +1618,8 @@ So the operation that is safe on your own deck is **see and reject**, never see 
 | **Sift 1** — look at the top card of your draw pile; you may put it in your **discard** | a **named** owner's trick, on the terms above: one card, paid for with a card or a slot, and never repeatable within a fight |
 | **Read N with reorder, on an action deck** | **never.** It is a tutor. |
 
-Sift costs the fight nothing — what it moves goes to the discard, where a breath can return it — so
-what it buys is a worse next hand traded for a better one after that. The no-repeat clause is what
+Sift costs the fight nothing — what it moves goes to the discard, which the next cycle brings back
+on its own — so what it buys is a worse next hand traded for a better one after that. The no-repeat clause is what
 stops it being a dig.
 
 **The owner is not open either, and it was settled before this keyword existed.**
@@ -1622,8 +1651,8 @@ spend**:
   your hand, your choice**. They go to the discard like anything else, so Catch Breath gets them
   back; what Strain costs you is *this round*, not the fight. If you can't pay it in full, you can't
   play the half. A powerful spell that strains 2 is asking for a third of your hand.
-- **Overloaded** — 2 random cards Spent while the load is on your back (section 7). The one leak you
-  did not choose, and the reason weight is a real decision.
+- **Overloaded** — **2 stamina** while the load is on your back (section 7). The one leak you did
+  not choose, and the reason weight is a real decision.
 
 So a long fight wears you down two ways, and neither is a tax on breathing. You burn your own good
 cards to stay ahead, and the **Wounds and Taint** you take shuffle into the same cycle and keep
@@ -1800,9 +1829,11 @@ shuffled into your own decks, where they clog your hand until you get rid of the
 > and the draw pile does not empty until round 5.9, so there is no dilution to pay and the extra
 > draw is pure profit.
 >
-> **[OPEN]** Whether that is acceptable. It is defensible — a wound that makes you burn through your
-> stamina faster is a real image, and §8 already says *your action deck is your stamina*. But a hero
-> who is being hit for 8 at a time should not be **helped** by it. The dial is the end-of-turn
+> **[OPEN]** Whether that is acceptable — and the one argument for it has gone. It used to be
+> defensible on the grounds that a wound makes you burn through your stamina faster, because §8 said
+> *your action deck is your stamina*. §8 no longer says it, and a Wound is never **played**, so it
+> now costs **no stamina at all**: it is one hand slot for one turn. A hero who is being hit for 8 at
+> a time should not be **helped** by it. The dial is the end-of-turn
 > discard: a Wound that stayed in hand until a Catch Breath would be pure cost at every damage
 > level, and that is a one-word change to this section rather than a new mechanism. It wants a
 > decision rather than a patch.

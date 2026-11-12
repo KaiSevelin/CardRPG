@@ -2339,8 +2339,12 @@ check("which is the one the document says is permanent",
   /\*\*Five\*\* Wild cards join your fate deck, for good/.test(waycards) ? "yes" : "no", "yes");
 
 /*
- * Searching the discard: refused in general, and left open to ONE owner by name. Catch Breath's
- * randomness is load-bearing -- a deck you can search is a deck with no weak cards in it.
+ * Searching the discard: refused in general, and left open to ONE owner by name.
+ *
+ * **[2026-11-12]** The reason used to be that Catch Breath's randomness is load-bearing. A breath
+ * no longer moves cards at all, and the rule is stronger without that crutch: the discard is the
+ * back half of your deck and the cycle returns every card for free, so a deck you can search is a
+ * deck with no weak cards in it.
  */
 check("core-rules still refuses a general discard search",
   /\*\*Nothing general will ever let you\s+search your discard\*\*/.test(coreRules) ? "yes" : "no", "yes");
@@ -7679,6 +7683,54 @@ check("and the prose chapters that state the same numbers",
     ["the fate deck", "Twenty cards, yours alone"]]
     .filter(([, text]) => !handbook.includes(text)).map(([name]) => name).join(", ") || "all of them",
   "all of them");
+
+/*
+ * **[2026-11-12] Stamina is how many cards you can play, and it is not your deck.**
+ *
+ * The retired sentence -- *your action deck is your stamina* -- was restated in seven documents,
+ * and a ruling is only as good as its last copy. The negative check is written as a filter over a
+ * list rather than as a bare `.test`, so it is NOT auto-discovered and wants no `absentGreps`
+ * entry: it is meant to find nothing, and saying so twice is how this suite waves a rule through.
+ */
+const directionDoc = fs.readFileSync(path.join(root, "../../rules/design-direction.md"), "utf8");
+const liveClaim = /(?<!\*)action deck is your stamina(?!\*)/;
+check("documents still claiming your deck is your stamina",
+  [["core-rules.md", coreRules], ["the handbook", handbook],
+    ["design-direction.md", directionDoc], ["system.json", manifest.description]]
+    .filter(([, text]) => liveClaim.test(text)).map(([name]) => name).join(", ") || "none",
+  "none");
+/* It survives only as its own obituary: italicised, in the two places that explain the change. */
+check("and the times it survives as history, in core-rules",
+  (coreRules.match(/\*your action deck is your stamina\*/g) ?? []).length, 2);
+
+check("core-rules states the live rule",
+  /\*\*Your stamina is how many cards you can play in a fight, and it has nothing to do with the size\s+of your deck\.\*\*/
+    .test(coreRules) ? "yes" : "no", "yes");
+check("and the handbook states it too",
+  /\*\*Your stamina is how many cards you can play in a fight\.\*\*/.test(handbook) ? "yes" : "no",
+  "yes");
+/* The document's number and the engine's are one fact, which is the whole point of this pair. */
+check("the stamina core-rules starts you at",
+  /It is a number on your sheet, like Health, and it starts at \*\*(\d+)\*\*/.exec(coreRules)?.[1],
+  String(d.stamina));
+
+/* A breath moves no cards any more: it buys back the stat, and never above the maximum. */
+check("Catch Breath recovers stamina in both documents",
+  [["core-rules.md", coreRules, /regain \*\*2 stamina\*\* — never above\s+your maximum/],
+    ["the handbook", handbook, /regain \*\*2 stamina\*\*, never above\s+your maximum/]]
+    .filter(([, text, re]) => !re.test(text)).map(([name]) => name).join(", ") || "both",
+  "both");
+check("and running out is an interval rather than an ending",
+  /running out\s+is an \*\*interval\*\*, not an ending/.test(coreRules) ? "yes" : "no", "yes");
+
+/* Overloaded always said it cost stamina and charged it in cards. Now it charges what it names. */
+check("Overloaded's price, in core-rules",
+  /\*\*Overloaded costs you (\d+) stamina\*\*/.exec(coreRules)?.[1], String(d.overloadedStamina));
+check("and stated the same way where a fight's costs are listed",
+  /\*\*Overloaded\*\* — \*\*2 stamina\*\* while the load is on your back/.test(coreRules)
+    ? "yes" : "no", "yes");
+check("and in the decisions log",
+  /\| \*\*Overloaded costs 2 stamina\*\* \|/.test(directionDoc) ? "yes" : "no", "yes");
 
 /*
  * **The map on the page, which is the one picture that is not a row.**
@@ -14660,7 +14712,7 @@ readFiles.set("contentSource", contentSource);
 readFiles.set("decksSource", decksSource);
 /* 64 since the art gate's thresholds became checkable: `gateSource` is the one more read, and
  * the grep over it is what keeps its documentation from describing a retired capsule. */
-check("files this suite greps by name", readFiles.size, 64);
+check("files this suite greps by name", readFiles.size, 65);
 
 /* Every `/pattern/.test(VAR)` and `VAR.includes("...")`, with the check it belongs to. */
 const nameOfCheck = index => {

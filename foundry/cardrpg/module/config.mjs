@@ -1322,6 +1322,23 @@ CARDRPG.defaults = {
   startingHealth: 12,
   restTokens: 1,
   handSize: 5,
+  /*
+   * **[2026-11-12] Stamina: how many cards you may play in a fight**, and nothing to do with the
+   * size of your deck (core-rules 8). Every card you play costs 1 -- primary, secondary or
+   * reaction, discarded or Spent -- and nothing you did not play costs anything.
+   *
+   * **Fourteen, and deliberately not the deck's sixteen.** It reproduces all four published
+   * encounters within 3.7 points, because a hero under the retired rule plays about 17 cards in a
+   * hard fight: sixteen, plus what the breaths put back
+   * ([../../../sim/analysis-2026-11-12.md](../../../sim/analysis-2026-11-12.md) §1).
+   *
+   * It is the steepest dial in the game and the only one measured here that does not flatten as it
+   * rises -- a point is worth about two points of Health -- so it is a dangerous thing to grant
+   * and must never be granted two at a time.
+   */
+  stamina: 14,
+  /* What Overloaded takes off it (core-rules 4, 8): the number the old reading charged in cards. */
+  overloadedStamina: 2,
   /* The skill hand is four and it refills per SCENE, not per round (skill-rules 1). */
   skillHandSize: 4,
   carryLimit: 40,

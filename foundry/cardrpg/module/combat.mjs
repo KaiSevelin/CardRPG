@@ -124,9 +124,13 @@ export class CardRPGCombat extends Combat {
 /**
  * Start of a round: draw one intent card per NPC type.
  *
- * Hands are NOT dealt here. Drawing is the player's own act -- they click their deck -- because the
- * draw pile is the stamina clock and watching it empty is the point. Filling it for them would make
- * the cost invisible.
+ * Hands are NOT dealt here. Drawing is the player's own act -- they click their deck -- because
+ * playing a card is what spends the clock and watching your own stamina fall is the point. Filling
+ * the hand for them would make the cost invisible.
+ *
+ * **[2026-11-12] The draw pile is no longer the clock**, and this comment used to say it was. The
+ * deck cycles for free while stamina lasts, so an empty draw pile means only that the discard is
+ * about to become one. `system.stamina` is the clock, which is why the HUD shows it.
  *
  * The intent card is drawn face down. Once the first NPC of a type acts it is public knowledge
  * anyway, so it flips automatically -- which is exactly what makes Foresee worth something only

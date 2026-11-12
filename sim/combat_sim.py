@@ -272,6 +272,9 @@ def shakeable(key):
 # Catch Breath recovers exactly this many, all or nothing: the Exhausted threshold, so a
 # breath buys one turn that is not Exhausted and no more (core-rules 8).
 BREATH_RECOVERY = 2
+# What Overloaded takes off your stamina (core-rules 4, 8). Two, which is what it used to take off
+# the deck -- the number is unchanged, the currency is not.
+OVERLOADED_STAMINA = 2
 
 
 @dataclass
@@ -742,9 +745,17 @@ class Game:
         # Stamina counts cards PLAYED, so it does not decide what comes to the fight. The whole
         # deck comes, and it cycles while the budget lasts.
         self.w['budget'] = cfg.stamina if cfg.stamina else None
+        # **Overloaded costs 2 stamina** (ruled 2026-11-12), not two cards off the deck.
+        # core-rules 8 always said it "costs you stamina", and read that as deck because the deck
+        # WAS the stamina. Measured under the new rule, the two set-aside cards were worth
+        # -0.1/-0.2/+0.8/-0.5 -- nothing, because a card nobody played costs nothing. Taking it
+        # off the budget restores roughly the price the old reading charged.
         if self.overloaded:
-            for _ in range(min(2, len(deck))):
-                self.w['spent'].append(deck.pop(rng.randrange(len(deck))))
+            if cfg.stamina:
+                self.w['budget'] -= OVERLOADED_STAMINA
+            else:
+                for _ in range(min(2, len(deck))):
+                    self.w['spent'].append(deck.pop(rng.randrange(len(deck))))
         self.fate_w, self.fate_g = FateDeck(rng, cfg.hex), FateDeck(rng)
         self.gdeck = []
         self.s = collections.Counter()
@@ -1269,8 +1280,13 @@ class Game:
         # Under stamina a breath has to buy BUDGET as well as cards, or it buys nothing at all:
         # the deck already feeds itself from the discard, so moving cards would change which card
         # comes next and not how many more there are.
+        #
+        # **Up to the max** (ruled 2026-11-12), which is a no-op in every figure measured here --
+        # the policy only breathes at a stalled budget, so there is never headroom to overshoot.
+        # It is written anyway, because a rule the code does not hold is a rule that drifts the
+        # first time something else chooses to breathe early.
         if w['budget'] is not None:
-            w['budget'] += BREATH_RECOVERY
+            w['budget'] = min(self.cfg.stamina, w['budget'] + BREATH_RECOVERY)
         self.rng.shuffle(w['draw'])
         self.s['catch_breath'] += 1
         self.log(f"  Warrior catches breath (recovers {take}, "

@@ -3,9 +3,10 @@
 Everything you need to play a character. Nothing here is for the GM, and nothing here explains why
 a rule is the way it is. You never need that at the table.
 
-**The short version.** You have a deck of cards that is both your abilities and your stamina. Each
-turn you play two of them. When you attack, you draw one card of luck. When you run out of cards,
-you are exhausted, not because you were hurt, but because you have been fighting.
+**The short version.** You have a deck of cards that is your abilities, and a **stamina** that is
+how many of them you can play. Each turn you play two. When you attack, you draw one card of luck.
+Your deck comes round again for nothing; what runs out is the stamina, so you tire not because you
+were hurt, but because you have been fighting.
 
 ---
 
@@ -677,9 +678,10 @@ dead. *Reactions* owns this.
 add them together, then take off their armour and then their Block. *Resolving an action*, *The
 fate deck* and *Armour, Block and getting past them* own those steps between them.
 
-**You never run out of magic. You run out of deck.** Your action deck is your stamina, Wounds are
-shuffled into it, and when you cannot refill your hand you are Exhausted and can barely act.
-Health is how you fall over; the deck is how you tire. *Running out* owns this.
+**You never run out of magic. You run out of stamina.** Stamina is how many cards you can play in
+a fight, whatever your deck holds; your deck itself cycles for free. Wounds shuffle into it and clog
+your hand without costing stamina, because you never play them. Health is how you fall over;
+stamina is how you tire. *Running out* owns this.
 
 **Conditions are the fight's memory.** Each is a word with a number counting down, and most of
 what a card does beyond damage is to put one on somebody. *Conditions* owns this.
@@ -922,16 +924,26 @@ That is **24** cards.
 
 ## 14. Running out
 
-Your action deck is your stamina. You do not run out of spells. You run out of deck.
+**Your stamina is how many cards you can play in a fight.** It is a number on your sheet and it
+has nothing to do with how big your deck is. You do not run out of spells, and you do not run out of
+deck, because your deck cycles for nothing. You run out of stamina.
 
-- **Exhausted**: if you cannot refill to at least **2 cards** because your draw pile is empty, you
-  are Exhausted. You may play only **one** card a turn, and you cannot react.
-- **Catch Breath**: spend your whole turn, no cards played, to shuffle your discard and move **2
-  cards at random** back into your draw pile. You need 2 in the discard or you cannot do it, and you
-  do not choose which.
+Every card you play costs 1: as a primary, as a secondary, or as a reaction, and whether it goes to
+your discard or to your Spent pile. Nothing you did not play costs anything.
 
-A breath buys you exactly one turn that is not Exhausted. It is a way to keep playing, never a way
-to get back on top. The discard always comes back, so what a breath costs is the turn.
+- **The cycle is free.** When your draw pile runs out and you still have stamina, shuffle your
+  discard and it is your draw pile again.
+- **Exhausted**: at **1** stamina you may play only **one** card a turn, and you cannot react.
+- **At 0** you discard the rest of your draw pile, and the only thing you may do is catch your
+  breath.
+- **Catch Breath**: spend your whole turn, playing nothing, and regain **2 stamina**, never above
+  your maximum.
+
+Two stamina is one full turn, so a breath gives up this turn to buy a normal one next round. There
+is no limit on how often you may do it. Running out is therefore a change of pace and not an
+ending: you keep fighting, at half the rate, for as long as the fight lasts.
+
+Breathing before you have run out is simply wasted, because the recovery stops at your maximum.
 
 ### Wounds
 
