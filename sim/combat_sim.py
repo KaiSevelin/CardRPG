@@ -416,7 +416,8 @@ class Config:
     # Swap one copy of Strike for a card whose secondary is Shake Off 1, to price a dispel.
     shake_card: bool = False
     card_overrides: dict = field(default_factory=dict)
-    # Stamina: how many cards you may DRAW in a fight, as a stat rather than as your deck size.
+    # Stamina: how many cards you may PLAY in a fight, as a stat on the actor rather than as
+    # your deck size. **Ruled 2026-11-12**, replacing the variant measured on 2026-11-01.
     #
     # Today the deck IS the stamina, which has a defect: acquiring any card makes you last longer
     # and pruning a bad one makes you last less, so a card's contents and a character's endurance
@@ -424,9 +425,27 @@ class Config:
     # stat decides how long you can keep doing it.
     #
     # 0 keeps the old rule, which is how every figure published before this is reproduced.
-    # With it on: a fight starts with min(stamina, collection) random cards in the deck, the discard
-    # tops the deck back up while the budget lasts, and you are Exhausted when the budget is gone.
+    # With it on:
+    #   - **a card you play costs 1**, as a primary, a secondary or a reaction, and whether it is
+    #     discarded or Spent. Nothing you did not play costs any: a Wound discarded at the end of
+    #     your turn, a Fear resolving as it is dealt, a card knocked out of your hand by a heavy
+    #     hit and Overloaded's two are all free, because none of them was played.
+    #   - **the whole deck comes to the fight and cycles for nothing.** An empty draw pile with
+    #     stamina left is shuffled back from the discard, so a thin collection means the same
+    #     cards come round sooner rather than a shorter fight.
+    #   - **at 0 the rest of the draw pile is discarded**, which is what makes you Exhausted
+    #     through the rule that already exists rather than through a new state.
+    #   - **Catch Breath moves 2 cards back AND regains 2 stamina.** Under this rule a breath that
+    #     moved only cards would buy nothing, because the deck already feeds itself.
+    #
+    # 2026-11-01's variant capped cards DRAWN and brought only min(stamina, collection), so that
+    # document's section 2 table is not reproducible from this code. Deliberate: one dial for one
+    # concept beats two stamina rules living in one simulator.
     stamina: int = 0
+    # Which reading of the wall. True: at 0 you play nothing and react with nothing until a
+    # breath. False: only the draw pile is gone, so the hand in front of you still plays out and
+    # a big hand is worth a second helping of stamina. See scratchpad note of 2026-11-12.
+    stamina_hard: bool = True
     # The whole action deck, as {name: (primary, secondary, reaction, copies)}. None is the starter
     # Warrior's sixteen, which is every published figure. careers_sim.py sets it to what a Way
     # graph career actually holds, so the deck under test is content rather than a scenario knob.
@@ -720,13 +739,9 @@ class Game:
         deck += ['Fear'] * cfg.fear
         deck += ['Compulsion'] * cfg.compulsion
         rng.shuffle(deck)
-        # Stamina caps what comes to the fight: own twenty, bring ten, and which ten is the
-        # question. The rest is `reserve` -- not spent, just not here.
+        # Stamina counts cards PLAYED, so it does not decide what comes to the fight. The whole
+        # deck comes, and it cycles while the budget lasts.
         self.w['budget'] = cfg.stamina if cfg.stamina else None
-        self.w['reserve'] = []
-        if cfg.stamina and len(deck) > cfg.stamina:
-            self.w['reserve'] = deck[cfg.stamina:]
-            del deck[cfg.stamina:]
         if self.overloaded:
             for _ in range(min(2, len(deck))):
                 self.w['spent'].append(deck.pop(rng.randrange(len(deck))))
@@ -828,8 +843,39 @@ class Game:
         One gate for both paths, because there are two: the sidestep on arrival and the
         damage-reduction brace. Shattered Nerves blocking one and not the other would be the same
         defect as a dead card that is dead in five places out of six.
+
+        A reaction is a card played, so under the hard wall an empty budget takes it -- which is
+        the same sentence core-rules 8 already writes for Exhausted, *and you can't react*.
         """
-        return not (self.cfg.shattered_nerves and self.round <= 1)
+        if self.cfg.shattered_nerves and self.round <= 1:
+            return False
+        return not self.out_of_stamina()
+
+    def out_of_stamina(self):
+        """Whether the stat has stopped you. False whenever the rule is off, so nothing changes."""
+        w = self.w
+        return bool(self.cfg.stamina_hard and w['budget'] is not None and w['budget'] <= 0)
+
+    def spend_stamina(self, n=1):
+        """A card you play costs 1 stamina, and nothing you did not play costs any.
+
+        One gate for all four play sites -- the turn's two halves, the Sidestep, the Use and the
+        brace -- because a budget four places decrement separately is four rules, and this project
+        has caught that defect once already in `DEAD` (take_hit's seventh site).
+
+        At 0 the rest of the draw pile is discarded. That is the whole of the wall: no new state,
+        because an empty draw pile is already how you become Exhausted, and the discard is still
+        there for a breath to reach.
+        """
+        w = self.w
+        if w['budget'] is None:
+            return
+        w['budget'] -= n
+        self.s['cards_played'] += n
+        if w['budget'] <= 0 and w['draw']:
+            self.s['deck_dumped'] += len(w['draw'])
+            w['discard'].extend(w['draw'])
+            w['draw'].clear()
 
     def sidestep(self, g):
         """An enemy that ENDS its movement next to you hands you a Sidestep (core-rules 11).
@@ -863,6 +909,7 @@ class Game:
         card = min(cards, key=self.keep)
         w['hand'].remove(card)
         w['discard'].append(card)
+        self.spend_stamina()
         w['pos'] = best[1]
         self.s['react_sidestep'] += 1
         self.log(f"  Warrior sidesteps goblin {g['id']} with {card} -> {w['pos']}")
@@ -1008,20 +1055,14 @@ class Game:
     def refill(self):
         w = self.w
         while len(w['hand']) < self.cfg.hand_size:
-            if w['budget'] is not None:
-                if w['budget'] <= 0:
-                    break
-                # The deck tops itself back up from the discard while the budget lasts: a thin
-                # collection means the same cards come round again, which is the price of a thin
-                # collection rather than a shorter fight.
-                if not w['draw'] and w['discard']:
-                    self.rng.shuffle(w['discard'])
-                    for _ in range(min(w['budget'], len(w['discard']))):
-                        w['draw'].append(w['discard'].pop())
-                if not w['draw']:
-                    break
-                w['budget'] -= 1
-            elif not w['draw']:
+            # The deck tops itself back up from the discard while the budget lasts: a thin
+            # collection means the same cards come round sooner, which is the price of a thin
+            # collection rather than a shorter fight. Drawing is free -- playing is what costs.
+            if not w['draw'] and w['discard'] and w['budget'] is not None and w['budget'] > 0:
+                self.rng.shuffle(w['discard'])
+                w['draw'].extend(w['discard'])
+                w['discard'].clear()
+            if not w['draw']:
                 break
             card = w['draw'].pop()
             if card == 'Fear':
@@ -1168,7 +1209,9 @@ class Game:
         # A Wound takes up a slot and is not an option (core-rules 8).
         hand = self.w['hand']
         live = [i for i, c in enumerate(hand) if c not in DEAD]
-        single = self.dazed() or len(live) < 2
+        # One card left in the budget buys one half, the same way Dazed and a hand of one do.
+        thin = (self.cfg.stamina_hard and self.w['budget'] is not None and self.w['budget'] <= 1)
+        single = self.dazed() or len(live) < 2 or thin
         opts = []
         if single:
             for i in live:
@@ -1263,11 +1306,18 @@ class Game:
             self.s['exhausted_turns'] += 1
         # A Compulsion in hand forbids the breath outright (core-rules 8). It is the only intruder
         # that takes an OPTION rather than a resource, and this is the line that is the whole card.
-        if (len(w['discard']) >= BREATH_RECOVERY and not w['draw']
+        # A breath plays no card, so it is legal at 0 stamina and is the only thing that is:
+        # it is how the wall becomes an interval rather than an end. Hence `stalled` in both
+        # halves of the gate -- a hero with a full hand and an empty budget is not Exhausted by
+        # the hand-size test, and without this would simply stand there.
+        stalled = self.out_of_stamina()
+        if (len(w['discard']) >= BREATH_RECOVERY and (not w['draw'] or stalled)
                 and 'Compulsion' not in w['hand']
-                and (w['exhausted'] or len(w['hand']) <= cfg.cb_threshold)):
+                and (w['exhausted'] or stalled or len(w['hand']) <= cfg.cb_threshold)):
             if self.catch_breath():
                 return
+        if stalled:
+            return
         if not any(c not in DEAD for c in w['hand']):
             return
         best, best_val = None, -1e9
@@ -1294,6 +1344,7 @@ class Game:
                 self.log(f"  {name} is Spent")
             else:
                 w['discard'].append(name)
+        self.spend_stamina(len(played))
         # "At the end of your turn, discard this card" -- so a Wound costs a hand slot for exactly
         # one turn and then goes back round, which is what makes it a tax on the deck's cycle
         # rather than a permanent cut.
@@ -1358,12 +1409,14 @@ class Game:
             d = max(1, d)
         self.s['prevented_armor'] += min(raw, cfg.armor)
         self.s['prevented_shieldup'] += absorbed
-        can_react = not w['exhausted'] and any(c != 'Wound' for c in w['hand'])
+        can_react = (not w['exhausted'] and any(c != 'Wound' for c in w['hand'])
+                     and not self.out_of_stamina())
         reserve = 0 if w['acted'] else 2
         # emergency potion via a Use reaction
         if can_react and w['hp'] - d <= 2 and w['potions'] and 'Quick Hands' in w['hand']:
             w['hand'].remove('Quick Hands')
             w['discard'].append('Quick Hands')
+            self.spend_stamina()
             w['potions'] -= 1
             card = self.fate_w.draw(0)
             gain = min(fate_apply(4, card), cfg.hp - w['hp'])
@@ -1390,6 +1443,7 @@ class Game:
                     kind = {3: 'block', 2: 'parry', 1: 'brace'}[red(card)]
                     w['hand'].remove(card)
                     w['discard'].append(card)
+                    self.spend_stamina()
                     d -= cut
                     self.s['react_' + kind] += 1
                     self.s['prevented_react'] += cut
@@ -1538,6 +1592,9 @@ def run_scenario(cfg, fights, seed):
               'tick_damage', 'shaken', 'shaken_off', 'lifted', 'cancelled',
                   'react_block', 'react_parry', 'react_brace', 'react_use', 'react_sidestep',
                   'prevented_react', 'reloads', 'shots_fired', 'cards_spent',
+                  # The stamina rule's own two: what the budget actually bought, and the dump
+                  # that is the wall. Both are 0 when the rule is off, which is how a run says so.
+                  'cards_played', 'deck_dumped',
                   'prevented_armor', 'prevented_shieldup', 'dmg_taken', 'heavy_hit_discards', 'wounds_taken',
                   'fears_taken', 'fears_cornered', 'fear_squares', 'confused_rounds',
                   'goblin_disadv', 'goblin_adv', 'goblins_fled', 'fate_miss', 'fate_crit',
