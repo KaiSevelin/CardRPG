@@ -358,10 +358,15 @@ export const NODES = [
    * prune on its trunk so every Shade gets one chance to drop a dead card; Strength had the mirror
    * of that reward available and empty. Shade refines its deck, Strength adds to it.
    *
-   * **It goes on the March because core-rules 8 already says what a deck is**: *your action deck is
-   * your stamina.* A soldier who has marched can keep going longer, which is the same sentence read
-   * twice -- so this node now grants the two things a march gives you, weight and stamina, and it
-   * needed no new vocabulary to say so.
+   * **It goes on the March because a soldier who has marched can keep going longer**, so this node
+   * grants the two things a march gives you: weight and stamina.
+   *
+   * > **[2026-11-12]** This paragraph used to reach that conclusion through *your action deck is
+   * > your stamina*, quoting the sentence core-rules 8 no longer contains. The grant was corrected
+   * > the day the rule changed and the reasoning above it was not, which is the drift this project
+   * > keeps finding: a fact written in two places is a second fact. The measurement below prices a
+   * > **deck cap**, which this node has not granted since that day -- it is kept as the record of
+   * > why the grant moved, and reads as history rather than as a price.
    *
    * > **[MEASURED 2026-11-07] A deck cap is worth +1.5 to +4.3 in a brawl, nothing if you fill it
    * > badly, and it is NEGATIVE in a chase.** Against the published encounters (3000 fights, seed
@@ -479,7 +484,34 @@ export const NODES = [
   },
 
   { id: "strength.exec.temper", name: "Temper", after: ["strength.executioner"], grants: { card: "Hammerblow" } },
-  { id: "strength.exec.fury", name: "Fury", after: ["strength.exec.temper"], grants: { health: 1 } },
+  /*
+   * **The first reward in the graph that takes something away, and the name said it first.**
+   * **[BUILT 2026-11-12]**
+   *
+   * leveling 4 had no row for hand size at all, and the validator pinned the absence shut as a
+   * decision rather than an oversight: *a key with no reward row is the correct state for a reward
+   * too expensive to print.* It was too expensive because it is the dearest stat measured anywhere
+   * here -- a card of it is **+0.8 / +4.0 / +7.4 / +9.6** across the four published encounters,
+   * which is above every member of rung 2 and most of rung 3.
+   *
+   * **Priced, it fits a node.** At **-1 stamina** -- a card more in your hand, a card fewer you
+   * may play -- it measures **+0.3 / +2.1 / +2.6 / +4.5**, which is about one point of Health:
+   * below both of its rung-2 neighbours on three encounters and level with them on the fourth. The
+   * two halves simply add (predicted +0.1/+1.7/+2.5/+4.9), so the price does what it says and
+   * nothing else. At **-2** it goes negative or flat on all four and becomes a trap row, which is
+   * the measurement that matters most here: the intuitive price was the wrong one.
+   *
+   * **And the price is paid in tempo, not in defence.** Reactions do not move (4.60 -> 4.62);
+   * breaths do (1.53 -> 1.81 on the Deadly encounter). So the node reads as *a better hand, bought
+   * with a third of a turn spent standing still* -- which is why it sits on the **Executioner**
+   * run, whose axis is Tempo and whose resource is halves. The axis is stated in the grants.
+   *
+   * **Fury, which used to grant a point of Health.** The name was doing nothing mechanical and now
+   * carries the whole trade: you hold more and you last less. It keeps its place on the curve and
+   * loses half a rung, which the scorer reads honestly and the measurement says is about right.
+   */
+  { id: "strength.exec.fury", name: "Fury", after: ["strength.exec.temper"],
+    grants: { handSize: 1, stamina: -1 } },
   {
     id: "strength.berserker", name: "Berserker",
     after: ["strength.exec.fury", "strength.cross.rage"], title: "Berserker",

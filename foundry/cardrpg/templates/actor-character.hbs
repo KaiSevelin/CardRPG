@@ -150,7 +150,11 @@
         --}}
         <label class="cr-stat">Hand size
           <input type="number" name="system.handSize.base" value="{{system.handSize.base}}" min="1">
-          <span class="cr-stat__derived" data-tooltip="Base plus features and nodes">&rarr; {{system.handSize.max}}</span>
+          <span class="cr-stat__derived" data-tooltip="Base plus features and nodes, to the cap of {{system.handSize.cap}}">&rarr; {{system.handSize.max}}</span>
+          {{!-- A grant the cap ate is said out loud, or it is a reward that changes no number. --}}
+          {{#if system.handSize.wasted}}
+          <span class="cr-warn" data-tooltip="You hold grants for {{system.handSize.wasted}} more card(s) than the cap of {{system.handSize.cap}} allows, so that many are doing nothing. Hand size is the dearest stat in the game and 7 is where the priced curve flattens.">at the cap, {{system.handSize.wasted}} wasted</span>
+          {{/if}}
         </label>
         <label class="cr-stat">Carry
           <input type="number" name="system.carry.base" value="{{system.carry.base}}" min="0">

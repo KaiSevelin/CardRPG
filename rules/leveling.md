@@ -396,10 +396,46 @@ one thing instead of another.
 | **Item** | A slate you keep | For signature gear a Way grants, not ordinary loot |
 | **Prune** | Remove one card from a deck, permanently | The only way to drop a dead card (§8). **[BUILT 2026-11-01]** — the one reward that asks the player a question, since only they know which card died |
 | **Stamina** | Raise how many cards you may play in a fight (core-rules §8) | **[RULED 2026-11-12]** Replaced the deck cap when stamina stopped meaning deck. A flat trait, so **not** bonus-grouped — and **one point is the whole of what a node may grant**, for the reason in §5b |
+| **Hand size** | Raise how many cards you hold, to the cap of **7 cards** | **[BUILT 2026-11-12]** The one reward on this list that **takes something back**: **one card more in hand, one card fewer you may play**. Unpriced it is the dearest reward in the game and had no row here at all. See below |
 | **Carry** | Raise your carrying limit, in kilograms | **[FOUND 2026-11-07]** A flat trait like the deck cap, granted by **six** nodes before it had a row here at all — and the second hole the reward audit found, pointing the other way: a reward the graph hands out that this table never offered. See below for what it is worth |
 | **Spell slot** | One more point of **formula strength** you may prepare (core-rules §4) | Way of Mind's and Way of Faith's version of a deck cap |
 | **Health** | Raise max Health | |
 | **Rest token** | One more (§8 promises these come from leveling) | |
+
+> **Hand size is the only reward here with a price, and the price is what made it printable.**
+> **[MEASURED 2026-11-12]**
+>
+> It is the most expensive stat measured anywhere in this project. A card of it is worth
+> **+0.8 / +4.0 / +7.4 / +9.6** across the four published encounters, which is above every member of
+> rung 2 and most of rung 3 &mdash; and that is why this table had **no row for it** for as long as
+> the table has existed. The validator pinned the absence shut on purpose: *a key with no reward row
+> is the correct state for a reward too expensive to print.*
+>
+> **What changed is §8.** Under *your action deck is your stamina* a big hand carried a hidden
+> drawback, because every card held was a card out of a finite draw pile; the curve saturated and
+> the sixth card read as selection rather than endurance. Drawing is **free** now, so hand size is
+> pure selection with no counterweight, and the curve stopped saturating and started
+> *accelerating*: **+9.6**, **+11.9**, **+11.1** for the fifth, sixth and seventh card on the Deadly
+> encounter. The reward got dearer the day the rule got simpler.
+>
+> **So it is sold rather than given.** At **&minus;1 stamina** it measures **+0.3 / +2.1 / +2.6 /
+> +4.5**, about one point of Health: below both of its rung-2 neighbours on three encounters and
+> level with them on the fourth, which is a row a player can turn down. The two halves simply add,
+> so the price does what it says and nothing else. At &minus;2 it goes negative or flat on all four
+> and becomes a trap, which is the finding that mattered most &mdash; the intuitive price was the
+> wrong one.
+>
+> **And the price is paid in tempo.** Reactions do not move (4.60 to 4.62 a fight); breaths do (1.53
+> to 1.81). A card of hand size costs you about a third of a turn standing still, which is why the
+> row sits on the **Executioner** run, whose axis is Tempo.
+>
+> **The cap is 7, and three arguments arrive at it.** It is where the *priced* curve flattens
+> (+0.1 / +0.0 / &minus;2.0 / +3.3 from 7 to 8). It is what the content already builds to, because
+> base 5 plus *Quick* plus the *Crown of the Quiet Mind* is 7 and both are already paid for, so a
+> cap of 6 would have cancelled a trait or a 1400-value wonder. And the tray's hand wraps, so the
+> legibility half of the original argument does not need 6 either. A grant the cap eats is shown on
+> the sheet rather than swallowed, because a reward that reads correctly and changes no number is
+> this project's signature defect.
 
 > **[FOUND 2026-11-07, FIXED 2026-11-07] This table was read in one direction for the first time,
 > and it had a hole at each end.**
@@ -822,7 +858,7 @@ list rather than on a new one:
 
 | Weight | Rewards | Why that rung |
 |---|---|---|
-| **3** | action card, formula or miracle, a §4a choice, feature, item, **Signature** | §4: *cards are the backbone, features are the spice* |
+| **3** | action card, formula or miracle, a §4a choice, feature, item, **Signature**, **hand size** | §4: *cards are the backbone, features are the spice* |
 | **2** | Health, spell slot, prune, expertise, **stamina** | a permanent number that is always on |
 | **1** | training, know-how, mastery, a language, carry, rest token | narrow, binary, or conditional on fiction |
 
@@ -842,6 +878,19 @@ list rather than on a new one:
 >
 > **[OPEN]** Whether a rung 4 should exist rather than a footnote on rung 2. It would be honest and
 > it would be the first change to this table's shape, so it wants a decision and not a patch.
+
+> **Hand size sits on rung 3 gross, and a price subtracts its own rung.**  **[BUILT 2026-11-12]**
+>
+> A card of hand size measures **+0.8 / +4.0 / +7.4 / +9.6**, which is rung-3 money by §4's own
+> ranking and the reason the reward waited this long for a row. *Fury* is the only node that grants
+> it and it pays a point of **stamina** back, so the weight the curve sees is **3 &minus; 2 = 1**:
+> the first node in the game whose grants do not all add.
+>
+> **One is half a rung low, and the lowness is honest rather than a bug.** The rungs are integers,
+> the reward is a 3 and the price is a 2, so a priced reward lands between them wherever it is
+> really worth. The measurement is the authority (**+0.3 / +2.1 / +2.6 / +4.5**, about a point of
+> Health, which is what the node granted before) and the weight is the graph's coarse view of it.
+> A scorer that read the keys and ignored the values would have called this node a **5**.
 
 Two things are scored apart from their grants, because their reward is not a grant:
 

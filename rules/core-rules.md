@@ -63,7 +63,10 @@ Any card whose printed reaction cannot fire — the wrong trigger, or a drawback
 
 ## 3. The round
 
-1. **Refill** – every character draws back up to hand size (default **5**).
+1. **Refill** – every character draws back up to hand size (default **5**). Levelling and
+   features raise it, and you may never hold more than **7**.  **[RULED 2026-11-12]** It is the
+   dearest number on your sheet: a card of hand size is worth about as much as four points of
+   Health in a hard fight, and under §8 it costs you nothing to hold, so the ceiling is the price.
 2. **Intent** – the GM draws one card per NPC **type** and lays it **face down** (see below).
 3. **Turns** – everyone takes a turn, one at a time, in initiative order.
 

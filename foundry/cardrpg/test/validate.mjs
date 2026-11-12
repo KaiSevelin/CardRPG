@@ -5283,12 +5283,28 @@ const pathGrants = way => {
   if (!mine.length) return null;
   const sums = mine.map(n => graph.grantsOf(new Set([...(graph.REACH.get(n.id) ?? []), n.id])));
   const mean = pick => (sums.reduce((a, g) => a + pick(g), 0) / sums.length).toFixed(1);
-  return `hp ${mean(g => g.health)} carry ${mean(g => g.carry)} cards ${mean(g => g.cards.length)}`;
+  /*
+   * **[2026-11-12] hand and stamina joined the report**, because a route can now move both and one
+   * of them can move *down*. Fury trades a card of hand size for a point of stamina, so a Strength
+   * route is the first in the game where the cheapest road to a title leaves you with less of
+   * something than you started with -- and a signed total is the only way this check can see that.
+   */
+  return `hp ${mean(g => g.health)} carry ${mean(g => g.carry)} cards ${mean(g => g.cards.length)}`
+    + ` hand ${mean(g => g.handSize)} stamina ${mean(g => g.stamina)}`;
 };
+/*
+ * **Strength is the only Way whose route moves either of the two new columns**, and it moves them
+ * in opposite directions: the March grants a point of stamina on the trunk and *Fury* sells one
+ * back for a card of hand size further out. `stamina 0.9` is that arithmetic -- nine tier-2 titles,
+ * every route through the March, one route through Fury -- and `hand 0.1` is the same one route.
+ *
+ * It also makes the Health gap between Strength and Shade close: Fury used to grant the point that
+ * put Strength level with Shade at 1.2, and now grants a trade instead.
+ */
 check("what a tier-2 title in Way of Strength is reached with", pathGrants("strength"),
-  "hp 1.2 carry 6.1 cards 3.1");
-check("and in Way of Shade", pathGrants("shade"), "hp 1.2 carry 0.1 cards 3.1");
-check("and in Way of Mind", pathGrants("mind"), "hp 0.1 carry 0.0 cards 1.0");
+  "hp 1.1 carry 6.1 cards 3.1 hand 0.1 stamina 0.9");
+check("and in Way of Shade", pathGrants("shade"), "hp 1.2 carry 0.1 cards 3.1 hand 0.0 stamina 0.0");
+check("and in Way of Mind", pathGrants("mind"), "hp 0.1 carry 0.0 cards 1.0 hand 0.0 stamina 0.0");
 /*
  * And Way of Faith, which had no tier-2 title to compare until the orders were built. It is the
  * flattest route of the four, and that is the trunk showing through: a priest walks four shared
@@ -5296,7 +5312,8 @@ check("and in Way of Mind", pathGrants("mind"), "hp 0.1 carry 0.0 cards 1.0");
  * rest token and the trunk's slot ladder. The two cards are Pilgrimage's and the order's own
  * Signature.
  */
-check("and in Way of Faith, built 2026-11-02", pathGrants("faith"), "hp 0.0 carry 0.0 cards 2.0");
+check("and in Way of Faith, built 2026-11-02", pathGrants("faith"),
+  "hp 0.0 carry 0.0 cards 2.0 hand 0.0 stamina 0.0");
 
 /*
  * ---- the four Ways against each other, on this project's own standards  [2026-11-02] ----
@@ -5415,7 +5432,7 @@ const profileOf = way => {
     + `cards ${m(g => g.cards.length)} spells ${m(g => g.spells.length)}`;
 };
 check("a level-8 Way of Strength title is reached with",
-  profileOf("strength"), "hp 1.2 carry 6.1 slots 0.0 cards 3.1 spells 0.0");
+  profileOf("strength"), "hp 1.1 carry 6.1 slots 0.0 cards 3.1 spells 0.0");
 check("Way of Shade", profileOf("shade"), "hp 1.3 carry 0.1 slots 0.4 cards 3.0 spells 0.0");
 check("Way of Mind", profileOf("mind"), "hp 0.1 carry 0.0 slots 5.1 cards 1.0 spells 3.2");
 check("Way of Faith", profileOf("faith"), "hp 0.0 carry 0.0 slots 5.0 cards 2.0 spells 1.0");
@@ -5436,6 +5453,15 @@ const RUNG = {
   /* Stamina took the deck cap's rung on 2026-11-12, and is the dearest thing on it: one point is
    * about two points of Health, which shares the rung. One point is all a node may grant. */
   health: 2, spellSlots: 2, prune: 2, expertise: 2, caps: 2, stamina: 2,
+  /*
+   * **Hand size is rung 3, which is where its gross belongs.**  **[MEASURED 2026-11-12]**
+   *
+   * A card of it is +0.8 / +4.0 / +7.4 / +9.6 across the four published encounters -- above every
+   * member of rung 2 and inside rung 3's range, which is the measured reason it had no reward row
+   * for as long as it had none. It is on rung 3 *gross* and the only node that grants it pays rung
+   * 2 back, so what a player actually takes is a 1: see `rewardOf` below.
+   */
+  handSize: 3,
   training: 1, knowHow: 1, mastery: 1, language: 1, carry: 1, restTokens: 1,
   /* Binary, and worth nothing at all to a character who does not cast: rung 1 by 4's own
    * ranking, even though what it lifts is a rule rather than a cap. */
@@ -5460,17 +5486,25 @@ check("every grant key the graph uses has a rung",
  * Shade's trunk prunes and Strength's trunk caps, which is the one axis where the two Ways were
  * supposed to be opposites and only one of them had a lever.
  *
- * **`handSize` is the exception, and it is not on 4's list either.** The key exists on the
- * character and in `CHARACTER_GRANTS`, and no reward row offers it -- which is deliberate and
- * measured rather than forgotten: specializations.md prices **a card of hand size at 6 to 10 points
- * of win rate**, the most expensive stat measured anywhere in this project, *which is worth
- * remembering before anything offers one.* A key with no reward row is the correct state for a
- * reward too expensive to print, and pinning it is how that decision stays a decision.
+ * **`handSize` was the exception, and on 2026-11-12 it stopped being one.**
+ *
+ * The key existed on the character and in `CHARACTER_GRANTS` and no reward row offered it, which
+ * was deliberate and measured rather than forgotten: specializations.md prices **a card of hand
+ * size at 6 to 10 points of win rate**, the most expensive stat measured anywhere in this project,
+ * *which is worth remembering before anything offers one.* A key with no reward row was the
+ * correct state for a reward too expensive to print.
+ *
+ * **What changed is that it got a price and a ceiling.** Priced at a point of stamina it measures
+ * +0.3 / +2.1 / +2.6 / +4.5, about one point of Health, which is a node's worth; capped at 7 it
+ * cannot stack past what the content already builds to. *Fury* grants it, leveling 4 offers it,
+ * and the decision that kept it off the list is recorded above rather than deleted -- because the
+ * reason it was too expensive is still true of the **unpriced** reward.
  */
 const rewardKeys = {
   card: "Action card", training: "Training", knowHow: "Know-how", expertise: "Expertise",
   mastery: "Mastery", language: "A language", feature: "Feature", item: "Item",
-  prune: "Prune", stamina: "Stamina", carry: "Carry", spellSlots: "Spell slot",
+  prune: "Prune", stamina: "Stamina", handSize: "Hand size", carry: "Carry",
+  spellSlots: "Spell slot",
   health: "Health", restTokens: "Rest token", spell: "Spell", choose: "Choose from a list",
   /* A rule set aside rather than a number raised: the only one is Vax's free hand. */
   freehandCast: "A rule set aside"
@@ -5478,7 +5512,24 @@ const rewardKeys = {
 const charGrants = (await import("../module/grants.mjs")).CHARACTER_GRANTS;
 const grantedSomewhere = new Set();
 for (const n of nodes) for (const k of Object.keys(n.grants ?? {})) grantedSomewhere.add(k);
-const timesGranted = k => nodes.filter(n => n.grants?.[k] !== undefined).length;
+/*
+ * **How many nodes hand this reward over -- and a price is not a reward.**  **[2026-11-12]**
+ *
+ * This counted *mentions*, which was the same thing as grants until *Fury* took a point of stamina
+ * off you. It then read `Stamina 2` on the check for the thinnest rewards in the game, reporting a
+ * reward as less rare because something charges it: a node that takes stamina away is not a second
+ * node that grants it, and the thinness this check exists to find was quietly papered over.
+ *
+ * A negative **number** is a price. Nothing else is: every other grant value is a name, a list or
+ * a flag, and `expertise: "shadow"` is not a quantity at all.
+ */
+const timesGranted = k => nodes.filter(n => {
+  const v = n.grants?.[k];
+  return v !== undefined && !(typeof v === "number" && v < 0);
+}).length;
+/* And the other direction, for the one thing no check could ask before today: who charges. */
+const timesCharged = k => nodes.filter(n => typeof n.grants?.[k] === "number"
+  && n.grants[k] < 0).length;
 /*
  * Direction one: the rules offer it and nothing hands it over. This is where `deckMax` was.
  *
@@ -5515,7 +5566,12 @@ check("the rewards only one or two nodes grant",
    * something a branch hands over three times on one run. A reward nobody gives is worth noticing;
    * this one is now given as ordinarily as a card.
    */
-  "A rule set aside 1, Stamina 1");
+  /*
+   * **[2026-11-12] Hand size joined them on the day it got a row**, granted by *Fury* and by
+   * nothing else. One node for the dearest reward in the game is the scarcity doing the same work
+   * it does for stamina: there is no safe second point, so there is no second node.
+   */
+  "A rule set aside 1, Hand size 1, Stamina 1");
 /*
  * The character grants that no reward row offers and no node grants, each for a stated reason.
  * **handSize** is measured: specializations.md puts a card of hand size at 6 to 10 points of win
@@ -5529,10 +5585,24 @@ check("the rewards only one or two nodes grant",
  * two spears and two bows). The accumulator still carries the key and `actionDeck.max` is still
  * derived from it, so a world that wants a cap can still set one -- but nothing in the game raises
  * it any more, and leveling 4 no longer offers it. **[OPEN]** Whether the field should go too.
+ *
+ * **And handSize left on the same day, in the opposite direction**: it is offered by 4 and granted
+ * by *Fury* now that it has a price and a ceiling. So the two keys crossed, which is worth one
+ * sentence -- a reward left this list because it became cheap enough to print, and another joined
+ * it because it became a drawback. The same ruling did both.
  */
 check("character grants with no reward row and no node",
   charGrants.filter(k => !(k in rewardKeys) && timesGranted(k) === 0).join(", "),
-  "handSize, deckMax, armor");
+  "deckMax, armor");
+/*
+ * **And which stats a node is allowed to charge you**, which is the list this project would most
+ * like to stay short. One node charges one stat, and the row it pays for is the dearest reward in
+ * the game: see `rewardOf` for what that does to the curve.
+ */
+check("nodes that charge a stat rather than granting one",
+  Object.keys(RUNG).filter(k => timesCharged(k) > 0)
+    .map(k => `${rewardKeys[k] ?? k} ${timesCharged(k)}`).join(", ") || "none",
+  "Stamina 1");
 check("because the rules price hand size as the dearest stat measured",
   /Hand size is the most expensive stat measured/.test(specDoc) ? "yes" : "no", "yes");
 
@@ -5551,9 +5621,28 @@ for (let pass = 0; pass < 4; pass++) {
     for (const a of n.after ?? []) if (a.includes(".cross.")) openToTitle.add(a);
   }
 }
+/*
+ * **A grant that takes something away subtracts its rung.**  **[2026-11-12]**
+ *
+ * The scorer summed the rungs of a node's grant *keys* and never looked at the values, which was
+ * correct for as long as every grant added. *Fury* is the first that does not: it hands over a
+ * card of hand size and takes a point of stamina, and summed blind it would have scored 5 -- a
+ * Signature's weight, for a node that measures at about one point of Health.
+ *
+ * Signed, it scores **1**, against the 2 it scored while it granted Health. That is half a rung
+ * low and the lowness is honest rather than a bug: rungs are integers, the reward is rung 3 and
+ * the price is rung 2, and a priced reward lands between them wherever it is really worth. The
+ * measurement is the authority on the real value (+0.3 / +2.1 / +2.6 / +4.5, about a point of
+ * Health) and this number is the graph's coarse view of it.
+ *
+ * Only a **numeric negative** subtracts. Every other grant value is a name, a list or a flag, and
+ * a card called nothing is not a card taken away.
+ */
 const rewardOf = n => {
   let w = n.signature ? RUNG.signature : 0;
-  for (const k of Object.keys(n.grants ?? {})) w += (RUNG[k] ?? 0);
+  for (const [k, v] of Object.entries(n.grants ?? {})) {
+    w += (RUNG[k] ?? 0) * (typeof v === "number" && v < 0 ? -1 : 1);
+  }
   return w + ((openToTitle.has(n.id) && !n.title) ? 2 : 0);
 };
 /*
@@ -7680,7 +7769,8 @@ const { STAT_ROWS } = await import("./handbook.mjs");
 const d = CARDRPG.defaults;
 check("the numbers the handbook's table takes from config",
   STAT_ROWS().map(([name, start]) => `${name} ${start}`).join(", "),
-  `Health ${d.startingHealth}, Hand size ${d.handSize} cards, `
+  `Health ${d.startingHealth}, Stamina ${d.stamina} cards, `
+  + `Hand size ${d.handSize} cards, `
   + `Action deck ${d.actionDeckMin}–${d.actionDeckMax} cards, Skill hand ${d.skillHandSize} cards, `
   + "Fate deck 20 cards, Block None, Armour What you wear, "
   + `Carrying limit ${d.carryLimit} kg, Spell slots None, Rest tokens ${d.restTokens}, `
@@ -7742,6 +7832,67 @@ check("and stated the same way where a fight's costs are listed",
     ? "yes" : "no", "yes");
 check("and in the decisions log",
   /\| \*\*Overloaded costs 2 stamina\*\* \|/.test(directionDoc) ? "yes" : "no", "yes");
+
+/*
+ * **The cap on hand size, in the four places that state it.**  **[RULED 2026-11-12]**
+ *
+ * It is the first ceiling the stat has ever had, and the first number here whose argument is
+ * partly about the HUD -- so every one of these is a place it could drift. The engine's default is
+ * the authority and the three documents are checked against it, which is the shape this suite uses
+ * for every number a player can read.
+ *
+ * **Why 7 and not 6:** base 5 plus *Quick* plus the *Crown of the Quiet Mind* is already 7 and
+ * already paid for, so a cap of 6 would have cancelled a trait or a 1400-value Wonder -- and the
+ * tray's hand wraps, so the legibility half of the argument does not need 6 either. 7 is also
+ * where the **priced** curve flattens: +0.1 / +0.0 / -2.0 / +3.3 from 7 to 8.
+ */
+check("the engine caps hand size at", d.handSizeMax, 7);
+check("and the actor clamps to it rather than adding past it",
+  /this\.handSize\.max = Math\.min\(d\.handSizeMax, wanted\)/.test(actorModel) ? "yes" : "no",
+  "yes");
+/* A grant the cap ate has to be visible, or one of Quick, the Crown and Fury is a reward that
+ * reads correctly and changes no number -- the defect `sumGrants` was written to end. */
+check("and says how many grants the cap ate",
+  /this\.handSize\.wasted = Math\.max\(0, wanted - this\.handSize\.max\)/.test(actorModel)
+    ? "yes" : "no", "yes");
+/* The readout itself, not the field: `handSize.wasted` is in the guard and twice in the tooltip,
+ * and a pin three things answer is a pin whose subject can be deleted. */
+check("and the sheet shows a grant the cap ate",
+  /at the cap, \{\{system\.handSize\.wasted\}\} wasted/.test(charTemplate) ? "yes" : "no",
+  "yes");
+check("the cap core-rules states",
+  /you may never hold more than \*\*(\d+)\*\*/.exec(coreRules)?.[1], String(d.handSizeMax));
+check("and the cap the handbook states",
+  /never more than \*\*(\d+) cards\*\*/.exec(handbook)?.[1], String(d.handSizeMax));
+check("and the cap leveling 4 states",
+  /to the cap of \*\*(\d+) cards\*\*/.exec(levDoc)?.[1], String(d.handSizeMax));
+
+/*
+ * **And the price, which is the whole reason the row exists.** An unpriced card of hand size is
+ * +0.8 / +4.0 / +7.4 / +9.6 and belongs on no rung this table has; priced at a point of stamina it
+ * is +0.3 / +2.1 / +2.6 / +4.5, about a point of Health. A row that lost its price would be the
+ * dearest reward in the game printed at a node's cost, so it is pinned in the graph and in the
+ * document that offers it.
+ */
+check("the node that offers hand size charges for it",
+  JSON.stringify(content.NODES.find(n => n.id === "strength.exec.fury")?.grants),
+  JSON.stringify({ handSize: 1, stamina: -1 }));
+/*
+ * **And the player is told the price in the dialog that charges it.** Two printers formatted a
+ * grant as `+${n}`, which was correct while every grant added: the level-up pane and the
+ * handbook's item tables would both have offered *Stamina +-1*. The pane is the one that matters,
+ * because it is where a player decides.
+ */
+check("the level-up pane signs a grant rather than assuming a plus",
+  /lines\.push\(`\$\{label\} \$\{g\[key\] < 0 \? "" : "\+"\}\$\{g\[key\]\}`\)/
+    .test(graphSource) ? "yes" : "no", "yes");
+check("and so does the handbook's table of what an item grants",
+  /\$\{n < 0 \? "" : "\+"\}\$\{n\}/
+    .test(fs.readFileSync(path.join(root, "test/handbook.mjs"), "utf8")) ? "yes" : "no", "yes");
+
+check("and leveling 4 prints the same price",
+  /\*\*one card more in hand, one card fewer you may play\*\*/.test(levDoc) ? "yes" : "no",
+  "yes");
 
 /*
  * **The map on the page, which is the one picture that is not a row.**

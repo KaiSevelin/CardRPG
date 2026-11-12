@@ -1323,6 +1323,24 @@ CARDRPG.defaults = {
   restTokens: 1,
   handSize: 5,
   /*
+   * **[2026-11-12] The ceiling on hand size, and the first one the stat has ever had.**
+   *
+   * Hand size is the dearest stat measured anywhere in this project and it was uncapped: base 5,
+   * plus *Quick*, plus *Crown of the Quiet Mind*, and nothing stopping a fourth source. Under the
+   * retired rule that was survivable because a big hand bought earlier exhaustion -- every card
+   * held was a card out of a finite draw pile. Drawing is free now, so hand size is pure selection
+   * quality with no counterweight at all, and the curve stopped saturating: a card was worth
+   * +9.6 / +11.9 / +11.1 at 5->6, 6->7 and 7->8 on the Deadly encounter, accelerating
+   * ([../../../sim/analysis-2026-11-12.md](../../../sim/analysis-2026-11-12.md) 7).
+   *
+   * **Seven, and three arguments arrive at it.** It is where the curve flattens once the reward is
+   * PRICED -- a hand bought at 1 stamina a card is +0.1 / +0.0 / -2.0 / +3.3 from 7 to 8. It is
+   * what the content already builds to, so it cancels nothing that is already written and paid
+   * for. And the tray's hand wraps, so the HUD does not break there either -- which means the cap
+   * is a balance number wearing a legibility argument, and worth saying so plainly.
+   */
+  handSizeMax: 7,
+  /*
    * **[2026-11-12] Stamina: how many cards you may play in a fight**, and nothing to do with the
    * size of your deck (core-rules 8). Every card you play costs 1 -- primary, secondary or
    * reaction, discarded or Spent -- and nothing you did not play costs anything.

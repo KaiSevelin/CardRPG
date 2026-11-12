@@ -469,7 +469,19 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
     this.spellSlots.free = this.spellSlots.max - this.spellSlots.used;
 
     // --- hand size and deck limits
-    this.handSize.max = this.handSize.base + grants.handSize;
+    /*
+     * **Hand size is capped** (core-rules 2, leveling 4).  **[RULED 2026-11-12]**
+     *
+     * `wanted` is kept because a grant that silently does nothing is this project's signature
+     * defect: a character holding *Quick*, the *Crown of the Quiet Mind* and the node would be
+     * over the cap by one, and the sheet has to be able to say which. The cap applied quietly
+     * would make one of the three a reward that reads correctly and changes no number -- the exact
+     * failure `sumGrants` exists to have fixed once.
+     */
+    const wanted = this.handSize.base + grants.handSize;
+    this.handSize.max = Math.min(d.handSizeMax, wanted);
+    this.handSize.cap = d.handSizeMax;
+    this.handSize.wasted = Math.max(0, wanted - this.handSize.max);
     this.actionDeck.bonus = grants.deckMax;
     this.actionDeck.max = this.actionDeck.base + grants.deckMax;
     this.actionDeck.min = d.actionDeckMin;

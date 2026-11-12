@@ -37,7 +37,8 @@ const say = key => (key ? LANG[key] ?? key : "");
 
 /** What a grant is called on the sheet. The keys are `grants.mjs`'s CHARACTER_GRANTS. */
 const GRANT_WORDS = {
-  health: "CARDRPG.Health", handSize: "CARDRPG.HandSize", carry: "CARDRPG.Carry",
+  health: "CARDRPG.Health", stamina: "CARDRPG.Stamina",
+  handSize: "CARDRPG.HandSize", carry: "CARDRPG.Carry",
   deckMax: "CARDRPG.DeckMax", spellSlots: "CARDRPG.SpellSlots", armor: "CARDRPG.Armor"
 };
 
@@ -133,9 +134,15 @@ function does(item) {
   if (item.shot?.condition && !item.text) {
     stats.push(say(CARDRPG.conditions[item.shot.condition]?.label) || item.shot.condition);
   }
-  /* A grant is a number too, and the words come from the lang file the sheet labels itself from. */
+  /*
+   * A grant is a number too, and the words come from the lang file the sheet labels itself from.
+   *
+   * **The sign is the value's, not a literal.** This printed `+${n}` and a grant that takes
+   * something away would have read *Carry +-1* -- which nothing in the catalogue does today and
+   * *Lost hand* does on the injury list, one reader away.
+   */
   for (const [key, n] of Object.entries(item.grants ?? {})) {
-    stats.push(`${say(GRANT_WORDS[key]) ?? cap(key)} +${n}`);
+    stats.push(`${say(GRANT_WORDS[key]) ?? cap(key)} ${n < 0 ? "" : "+"}${n}`);
   }
 
   /* Then the sentences, which are what the empty cells were hiding. */
@@ -533,9 +540,19 @@ export const STAT_ROWS = () => {
   const fate = CARDRPG.fateDeck.reduce((n, c) => n + (c.count ?? 1), 0);
   return [
     ["Health", `${d.startingHealth}`, "Levelling, and some features", "Running out"],
-    ["Hand size", `${d.handSize} cards`, "Some features", "A round"],
+    /*
+     * **[2026-11-12] Stamina was missing from the table of a player's numbers**, on the day it
+     * became the number that decides how long a fight lasts for them. The ruling added the stat,
+     * the HUD, the rules and the pins, and the one generated table a new player reads first still
+     * listed ten stats and not this one.
+     */
+    ["Stamina", `${d.stamina} cards`, "Levelling, and what you carry", "Running out"],
+    ["Hand size", `${d.handSize} cards`,
+      `Levelling and some features, to a cap of ${d.handSizeMax}`, "A round"],
+    /* And the deck no longer moves with levelling: nothing in the game raises the cap, and a
+     * bigger deck is a measured drawback. What moves it is loot and pruning. */
     ["Action deck", `${d.actionDeckMin}–${d.actionDeckMax} cards`,
-      "Levelling, and what you are given", "What you have"],
+      "What you are given, and pruning", "What you have"],
     ["Skill hand", `${d.skillHandSize} cards`, "Refills once a scene, not once a round",
       "Checks, outside a fight"],
     ["Fate deck", `${fate} cards`, "Nothing. It is the same twenty for everyone", "The fate deck"],

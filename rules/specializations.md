@@ -1100,7 +1100,15 @@ Way of Shade a resource the Way did not have.
 
 > **Two findings that were not the question.** **Hand size is the most expensive stat measured
 > anywhere in this project** at 6–10 points a card, which is worth remembering before anything
-> offers one. And **a shield is worth almost nothing** (0.4–1.8) — against a Buckler at 6 gold and a
+> offers one.
+>
+> > **[REMEASURED 2026-11-12] And it got dearer, not cheaper.** That 6–10 was measured while *your
+> > action deck was your stamina*, when a big hand bought earlier exhaustion and the curve
+> > saturated. Drawing is free under core-rules §8 now, so the drawback is gone and the curve
+> > *accelerates*: **+9.6 / +11.9 / +11.1** for the fifth, sixth and seventh card on the Deadly
+> > encounter. The sentence above is more true than when it was written, which is why
+> > [leveling.md](leveling.md) §4 prints the reward with a **price** and a **cap of 7** rather than
+> > printing it plainly. And **a shield is worth almost nothing** (0.4–1.8) — against a Buckler at 6 gold and a
 > Longsword at 15, that is a catalogue problem rather than a node problem
 > ([equipment.md](equipment.md) §12).
 

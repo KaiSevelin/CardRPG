@@ -370,8 +370,9 @@ deck you have left.
 | | Starts at | What moves it | Where the rule is |
 |---|---|---|---|
 | **Health** | 12 | Levelling, and some features | *Running out* |
-| **Hand size** | 5 cards | Some features | *A round* |
-| **Action deck** | 12–20 cards | Levelling, and what you are given | *What you have* |
+| **Stamina** | 14 cards | Levelling, and what you carry | *Running out* |
+| **Hand size** | 5 cards | Levelling and some features, to a cap of 7 | *A round* |
+| **Action deck** | 12–20 cards | What you are given, and pruning | *What you have* |
 | **Skill hand** | 4 cards | Refills once a scene, not once a round | *Checks, outside a fight* |
 | **Fate deck** | 20 cards | Nothing. It is the same twenty for everyone | *The fate deck* |
 | **Block** | None | A Defend, and only for as long as the card says | *Armour, Block and getting past them* |
@@ -1753,10 +1754,11 @@ many spell slots preparing one costs.
 
 | | |
 |---|---|
-| Hand size | **5** action cards, **4** skill cards |
-| Action deck | 12–20 cards |
-| Exhausted | Cannot refill to 2 |
-| Catch Breath | Whole turn, 2 random cards back, needs 2 in the discard |
+| Hand size | **5** action cards, never more than **7 cards**, and **4** skill cards |
+| Stamina | **14** cards to play in a fight, counting reactions |
+| Action deck | 12–20 cards, and it cycles for free |
+| Exhausted | **1** stamina left: one card a turn, and no reactions |
+| Catch Breath | Whole turn, play nothing, **2** stamina back |
 | Brace | Reduce damage by 1, any card, always available |
 | Wound | 5+ damage from one hit, after armour; or dropping to 0 |
 | Difficulties | Easy 3 · Normal 5 · Hard 7 · Heroic 9 |

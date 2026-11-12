@@ -657,8 +657,15 @@ export function termsOf(owned) {
 export function describeGrants(node) {
   const g = node?.grants ?? {};
   const lines = [];
+  /*
+   * **The sign is the value's, not a literal.**  **[2026-11-12]**
+   *
+   * This printed `+${g[key]}`, so *Fury* -- the first node in the game that charges for what it
+   * gives -- would have offered the player **Stamina +-1** in the one dialog that tells them what
+   * a level buys. The same literal was in the handbook's generator and is fixed there too.
+   */
   const number = (key, label) => {
-    if (g[key]) lines.push(`${label} +${g[key]}`);
+    if (g[key]) lines.push(`${label} ${g[key] < 0 ? "" : "+"}${g[key]}`);
   };
   if (g.card) lines.push(`${game.i18n.localize("CARDRPG.Level.Card")}: ${g.card}`);
   if (g.feature) lines.push(`${game.i18n.localize("CARDRPG.Level.Feature")}: ${g.feature}`);
