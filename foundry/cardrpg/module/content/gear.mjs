@@ -583,6 +583,27 @@ export const ITEMS = [
     name: "Crown of the Quiet Mind", slot: "head", weight: 1, value: 1400,
     kind: "Wonder", group: "wonder",
     blurb: "Thin gold. Nothing in your head hurries while it is on.",
+    /*
+     * **[OPEN 2026-11-12] This grants for free what a node charges a point of stamina for.**
+     *
+     * leveling 4 prices a card of hand size at **-1 stamina**, because unpriced it measures
+     * +0.8 / +4.0 / +7.4 / +9.6 across the published encounters -- rung-3 money, and the reason
+     * the reward had no row at all until it got a price. *Fury* pays that price. This pays 1400
+     * gold once and nothing thereafter.
+     *
+     * It is also half of why the cap is **7** rather than 6: base 5 plus *Quick* plus this is
+     * already 7 and already written, so a cap of 6 would have cancelled one of them. So the cap
+     * stands on this item's existence while the item sidesteps the cap's own pricing.
+     *
+     * Two ways out and this file should not pick one: charge it a point of stamina like the node,
+     * or leave it as the one piece of loot that buys the dearest stat in the game and let 1400
+     * gold be the price. The second is defensible -- a wonder is *supposed* to be better than a
+     * level -- and 2026-11-01's rule cuts the other way: stamina is *a dangerous thing to hand out
+     * on an item*, and this hands out the thing stamina now buys.
+     *
+     * Measured, it is **+21.5** on the Deadly encounter as part of the live hand-7 stack
+     * ([../../../sim/analysis-2026-11-12.md](../../../sim/analysis-2026-11-12.md) 8).
+     */
     grants: { handSize: 1 }
   },
   {

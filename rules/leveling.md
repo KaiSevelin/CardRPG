@@ -470,6 +470,14 @@ one thing instead of another.
 > legibility half of the original argument does not need 6 either. A grant the cap eats is shown on
 > the sheet rather than swallowed, because a reward that reads correctly and changes no number is
 > this project's signature defect.
+>
+> **[OPEN]** **Two things grant hand size for nothing, and this row charges for it.** *Quick* is a
+> trait and the *Crown of the Quiet Mind* is a 1400-gold wonder, and both hand over a card with no
+> price at all &mdash; while a whole node pays a point of stamina for the same card. The cap stands
+> on their existence, so they cannot simply be cut; the question is whether either should pay what
+> this row pays. [equipment.md](equipment.md)'s own rule cuts one way (stamina is *a dangerous
+> thing to hand out on an item*) and *a wonder is supposed to be better than a level* cuts the
+> other.
 
 > **[FOUND 2026-11-07, FIXED 2026-11-07] This table was read in one direction for the first time,
 > and it had a hole at each end.**
