@@ -2387,6 +2387,14 @@ still lifts **one**, so three maimings is three rituals.
 > still does the job it was set for: four liftable kinds at two apiece is eight slates at the very
 > worst, against five before.
 >
+> **And it is measured now rather than reasoned.** **[MEASURED 2026-11-12]** Injuries **add and do
+> not multiply**: every pair lands within noise of the sum of its parts, and the worst legal
+> character is *sub-additive* &mdash; &minus;21.1 against the Deadly encounter where the parts sum
+> to &minus;30.3, because an injured hero loses faster and there are fewer rounds left in which to
+> suffer. The spiral this cap was set blind against is a **floor**. Raising three caps to two costs
+> about **two points** of win rate at the very worst
+> ([../sim/analysis-2026-11-12.md](../sim/analysis-2026-11-12.md) §9).
+>
 > **The obligation is the exception, and the reason is the missing ritual rather than the
 > severity.** Every other injury has a way out, so a second one is a harder fight and a longer
 > road. A second obligation is a second slate nothing in the game can remove &mdash; not a ritual,
