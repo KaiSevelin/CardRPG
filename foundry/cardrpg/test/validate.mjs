@@ -5430,7 +5430,9 @@ check("Way of Faith", profileOf("faith"), "hp 0.0 carry 0.0 slots 5.0 cards 2.0 
  */
 const RUNG = {
   card: 3, spell: 3, choose: 3, feature: 3, item: 3, signature: 3,
-  health: 2, spellSlots: 2, prune: 2, expertise: 2, caps: 2, deckMax: 2,
+  /* Stamina took the deck cap's rung on 2026-11-12, and is the dearest thing on it: one point is
+   * about two points of Health, which shares the rung. One point is all a node may grant. */
+  health: 2, spellSlots: 2, prune: 2, expertise: 2, caps: 2, stamina: 2,
   training: 1, knowHow: 1, mastery: 1, language: 1, carry: 1, restTokens: 1,
   /* Binary, and worth nothing at all to a character who does not cast: rung 1 by 4's own
    * ranking, even though what it lifts is a rule rather than a cap. */
@@ -5465,7 +5467,7 @@ check("every grant key the graph uses has a rung",
 const rewardKeys = {
   card: "Action card", training: "Training", knowHow: "Know-how", expertise: "Expertise",
   mastery: "Mastery", language: "A language", feature: "Feature", item: "Item",
-  prune: "Prune", deckMax: "Deck cap", carry: "Carry", spellSlots: "Spell slot",
+  prune: "Prune", stamina: "Stamina", carry: "Carry", spellSlots: "Spell slot",
   health: "Health", restTokens: "Rest token", spell: "Spell", choose: "Choose from a list",
   /* A rule set aside rather than a number raised: the only one is Vax's free hand. */
   freehandCast: "A rule set aside"
@@ -5510,18 +5512,24 @@ check("the rewards only one or two nodes grant",
    * something a branch hands over three times on one run. A reward nobody gives is worth noticing;
    * this one is now given as ordinarily as a card.
    */
-  "A rule set aside 1, Deck cap 1");
+  "A rule set aside 1, Stamina 1");
 /*
- * The two character grants that no reward row offers and no node grants, each for a stated reason.
+ * The character grants that no reward row offers and no node grants, each for a stated reason.
  * **handSize** is measured: specializations.md puts a card of hand size at 6 to 10 points of win
  * rate, the dearest stat anywhere in this project, `which is worth remembering before anything
  * offers one`. **armor** is gear -- it comes off a rung of armour you bought, and 4's own
  * reasoning about gold applies unchanged: a level is a permanent change to who you are, and armour
  * is something you find and can be parted from.
+ *
+ * **[2026-11-12] deckMax joined them, from the other direction.** It was a reward until stamina
+ * stopped meaning deck and a bigger deck became a measured drawback (-12.4 at twenty cards against
+ * two spears and two bows). The accumulator still carries the key and `actionDeck.max` is still
+ * derived from it, so a world that wants a cap can still set one -- but nothing in the game raises
+ * it any more, and leveling 4 no longer offers it. **[OPEN]** Whether the field should go too.
  */
 check("character grants with no reward row and no node",
   charGrants.filter(k => !(k in rewardKeys) && timesGranted(k) === 0).join(", "),
-  "handSize, armor");
+  "handSize, deckMax, armor");
 check("because the rules price hand size as the dearest stat measured",
   /Hand size is the most expensive stat measured/.test(specDoc) ? "yes" : "no", "yes");
 
@@ -12129,7 +12137,7 @@ check("the grant loop is written once",
  * does not exist. It is refused here rather than summed into nothing.
  */
 check("grant keys a character reads", grants.CHARACTER_GRANTS.join(", "),
-  "health, handSize, carry, deckMax, spellSlots, armor");
+  "health, stamina, handSize, carry, deckMax, spellSlots, armor");
 check("and the ones a monster has a field for", grants.NPC_GRANTS.join(", "), "health");
 check("the model has no field for the other four",
   grants.CHARACTER_GRANTS.filter(k => k !== "health")
@@ -13056,7 +13064,7 @@ check("hud-spec records it as collapsible",
  * neither does a passive score, since a passive is read off that deck.
  */
 const grantKeys = Object.keys(graph.grantsOf(new Set([graph.ROOT])));
-check("keys the grants accumulator carries", grantKeys.length, 18);
+check("keys the grants accumulator carries", grantKeys.length, 19);
 /* And the two that were added for it, which is the half of skill-rules 8 that a node can express:
  * an expertise asks the player which card to raise, a mastery is a number read off the owned set. */
 check("the two the skill side gained",

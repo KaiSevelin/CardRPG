@@ -103,7 +103,7 @@ export function sumGrants(slates, keys) {
 }
 
 /** The keys a character's sheet can raise. */
-export const CHARACTER_GRANTS = ["health", "handSize", "carry", "deckMax", "spellSlots",
+export const CHARACTER_GRANTS = ["health", "stamina", "handSize", "carry", "deckMax", "spellSlots",
   /* Flat armour, which had no home in the game until the Graven line needed one: a worn
    * item's `armor` is a number and a feature's is `doubleWhenOverloaded`, so a thing that
    * simply makes you harder to hurt had nowhere to say so. */

@@ -507,7 +507,16 @@ export const ITEMS = [
     name: "Deep Pockets", slot: "cloak", weight: 1, value: 400,
     kind: "Wonder", group: "wonder",
     blurb: "More in them than went in, and never what you wanted.",
-    grants: { deckMax: 2 }
+    /*
+     * **[2026-11-12] It granted `deckMax` and now grants what its name says.** A deck cap was the
+     * only kind of capacity the game had when this was written, so a cloak with deep pockets said
+     * *more cards* because it could not say *more room*. Since stamina stopped meaning deck, a
+     * bigger deck is a drawback, so the old grant made this Wonder worse to wear.
+     *
+     * Carry and not stamina: a point of stamina is worth about two of Health and does not flatten,
+     * and analysis-2026-11-01 calls it "a dangerous thing to hand out on an item".
+     */
+    grants: { carry: 8 }
   },
   {
     name: "Cairn Stone", slot: "pack", weight: 4, value: 450,

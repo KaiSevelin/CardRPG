@@ -16,7 +16,7 @@
     "blurb": "More in them than went in, and never what you wanted.",
     "group": "wonder",
     "grants": {
-      "deckMax": 2
+      "carry": 8
     }
   }
 }

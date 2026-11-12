@@ -381,7 +381,7 @@ export const NODES = [
    * > reward; two lands it level with the prune it mirrors.
    */
   { id: "strength.march", name: "The March", after: ["strength.drill"],
-    grants: { carry: 5, deckMax: 2 } },
+    grants: { carry: 5, stamina: 1 } },
   { id: "strength.scars", name: "Old Scars", after: ["strength.march"], grants: { health: 1 } },
 
   /* --- the three titles off the trunk: how you stand, how you strike, who you stand in front of --- */

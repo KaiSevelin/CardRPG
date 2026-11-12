@@ -572,7 +572,7 @@ export function waysOf(owned) {
  */
 export function grantsOf(owned) {
   const out = {
-    health: 0, handSize: 0, carry: 0, deckMax: 0, spellSlots: 0, restTokens: 0,
+    health: 0, stamina: 0, handSize: 0, carry: 0, deckMax: 0, spellSlots: 0, restTokens: 0,
     trainings: [], knowHow: [], languages: [], cards: [], features: [], spells: [], prunes: 0,
     /*
      * The two steps a skill card can climb (skill-rules 8). **Expertise is a question and mastery
@@ -597,7 +597,8 @@ export function grantsOf(owned) {
   for (const id of owned) {
     const g = GRAPH.get(id)?.grants;
     if (!g) continue;
-    for (const key of ["health", "handSize", "carry", "deckMax", "spellSlots", "restTokens"]) {
+    for (const key of ["health", "stamina", "handSize", "carry", "deckMax", "spellSlots",
+      "restTokens"]) {
       out[key] += g[key] ?? 0;
     }
     out.prunes += g.prune ?? 0;
@@ -681,6 +682,7 @@ export function describeGrants(node) {
       { approach: game.i18n.localize(CARDRPG.approaches[g.mastery]?.label ?? g.mastery) }));
   }
   number("health", game.i18n.localize("CARDRPG.Health"));
+  number("stamina", game.i18n.localize("CARDRPG.Stamina"));
   number("handSize", game.i18n.localize("CARDRPG.HandSize"));
   number("carry", game.i18n.localize("CARDRPG.Carry"));
   number("deckMax", game.i18n.localize("CARDRPG.DeckMax"));

@@ -72,8 +72,15 @@ function conditionField() {
   }));
 }
 
-/** Health, with the base stored and the max derived. */
-function healthField(base) {
+/**
+ * **A pool with the base stored and the max derived**: Health, and stamina, which work the same
+ * way. `base` is what levelling and gear move, `value` is what is left right now, and `max` is
+ * derived so that a grant can never be baked into the stored number and counted twice.
+ *
+ * It was called `healthField` until stamina needed the same shape on 2026-11-12, and a function
+ * named for one of its two callers is a name that will mislead the third.
+ */
+function poolField(base) {
   return new fields.SchemaField({
     value: new fields.NumberField({ required: true, integer: true, min: 0, initial: base }),
     base: new fields.NumberField({ required: true, integer: true, min: 1, initial: base })
@@ -215,7 +222,19 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     const d = CARDRPG.defaults;
     return {
-      health: healthField(d.startingHealth),
+      health: poolField(d.startingHealth),
+
+      /*
+       * **Stamina: how many cards you may play in a fight** (core-rules 8), and **nothing to do
+       * with the size of your deck** -- that sentence was the rule until 2026-11-12 and is now the
+       * defect the split exists to fix.
+       *
+       * Every card played costs 1, as a primary, a secondary or a reaction, and whether it is
+       * discarded or Spent. Nothing that was not played costs anything. The deck cycles for free
+       * while this lasts; at 0 the draw pile is discarded, which is how a hero becomes Exhausted
+       * through a rule that already existed rather than through a new state.
+       */
+      stamina: poolField(d.stamina),
 
       // Transient: cleared at the start of your turn. A Defend primary holds for the round.
       block: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 }),
@@ -411,6 +430,18 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
     this.health.max = Math.max(1,
       this.health.base + grants.health - (this.afflicted ? d.afflictedHealthPenalty : 0));
     this.health.value = Math.min(this.health.value, this.health.max);
+
+    /*
+     * --- stamina (core-rules 8). Same two lines as Health, because it is the same shape: a pool
+     * whose max is derived and whose value is clamped into it, so a node that grants stamina is
+     * summed by the line that sums a node granting Health.
+     *
+     * **A point of this is worth about two points of Health** and the stat does not flatten as it
+     * rises ([../../../sim/analysis-2026-11-12.md](../../../sim/analysis-2026-11-12.md) §3), so
+     * nothing should ever grant two at once.
+     */
+    this.stamina.max = Math.max(1, this.stamina.base + grants.stamina);
+    this.stamina.value = Math.min(this.stamina.value, this.stamina.max);
 
     // --- rest tokens. The stored max is the base, as health's is; a node may add to it (section 4).
     this.rest.max = this.rest.max + fromNodes.restTokens;
@@ -780,7 +811,7 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
 export class NpcData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
-      health: healthField(5),
+      health: poolField(5),
       block: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 }),
       blockPersists: new fields.BooleanField({ initial: false }),
       /*

@@ -395,7 +395,7 @@ one thing instead of another.
 | **Obligation** | A feature you **cannot remove**, binding in text, in the action deck or in the fate deck | What you owe for what you were taught — see below |
 | **Item** | A slate you keep | For signature gear a Way grants, not ordinary loot |
 | **Prune** | Remove one card from a deck, permanently | The only way to drop a dead card (§8). **[BUILT 2026-11-01]** — the one reward that asks the player a question, since only they know which card died |
-| **Deck cap** | Raise your action deck maximum | A flat trait, so **not** bonus-grouped |
+| **Stamina** | Raise how many cards you may play in a fight (core-rules §8) | **[RULED 2026-11-12]** Replaced the deck cap when stamina stopped meaning deck. A flat trait, so **not** bonus-grouped — and **one point is the whole of what a node may grant**, for the reason in §5b |
 | **Carry** | Raise your carrying limit, in kilograms | **[FOUND 2026-11-07]** A flat trait like the deck cap, granted by **six** nodes before it had a row here at all — and the second hole the reward audit found, pointing the other way: a reward the graph hands out that this table never offered. See below for what it is worth |
 | **Spell slot** | One more point of **formula strength** you may prepare (core-rules §4) | Way of Mind's and Way of Faith's version of a deck cap |
 | **Health** | Raise max Health | |
@@ -416,6 +416,13 @@ one thing instead of another.
 >
 > Both are fixed: *The March* on the Way of Strength trunk grants the deck cap, and Carry has a row.
 > Both directions are now pinned, so neither end can open again quietly.
+>
+> > **[2026-11-12] And the pins earned their keep, on the same row.** When stamina became a stat of
+> > its own, *your action deck is your stamina* stopped being true and a bigger deck became a
+> > **drawback** — so the deck cap was a reward that took something away, in both places that
+> > granted it. The two checks above fired on the next run: one reporting a reward the rules offered
+> > that nothing granted, the other a grant the rules never offered. The row is now **Stamina**, the
+> > March grants a point of it instead, and *Deep Pockets* grants carry.
 >
 > **The deck cap went to Strength because it was measured, not because the slot was empty.** Way of
 > Shade's trunk *prunes* and Way of Strength's trunk now *caps*: Shade refines its deck, Strength
@@ -816,8 +823,25 @@ list rather than on a new one:
 | Weight | Rewards | Why that rung |
 |---|---|---|
 | **3** | action card, formula or miracle, a §4a choice, feature, item, **Signature** | §4: *cards are the backbone, features are the spice* |
-| **2** | Health, spell slot, prune, expertise, deck cap | a permanent number that is always on |
+| **2** | Health, spell slot, prune, expertise, **stamina** | a permanent number that is always on |
 | **1** | training, know-how, mastery, a language, carry, rest token | narrow, binary, or conditional on fiction |
+
+> **Stamina sits on rung 2 because it replaced the deck cap there, and it is the dearest thing on
+> the rung.**  **[MEASURED 2026-11-12]**
+>
+> One point is worth **+0.7 / +2.4 / +5.0 / +4.3** across the four published encounters, against a
+> point of Health at **+0.25 / +1.17 / +2.63 / +3.17** — so it is about **twice** a point of Health,
+> which shares the rung with it. Two points of stamina is a rung-3 reward wearing a rung-2 row.
+>
+> **The scarcity is the price, and it is the only one available.** A node grants **one** point, never
+> two, and the stat is the only one in the game that does not flatten as it rises
+> ([../sim/analysis-2026-11-12.md](../sim/analysis-2026-11-12.md) §1) — so there is no upper end
+> where a second point would be safe. That is also why no **item** grants it: 2026-11-01 calls
+> stamina *a dangerous thing to hand out on an item*, and *Deep Pockets* — the one wonder that
+> granted the deck cap — now grants carry instead.
+>
+> **[OPEN]** Whether a rung 4 should exist rather than a footnote on rung 2. It would be honest and
+> it would be the first change to this table's shape, so it wants a decision and not a patch.
 
 Two things are scored apart from their grants, because their reward is not a grant:
 
