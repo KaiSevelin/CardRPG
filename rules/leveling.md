@@ -904,12 +904,19 @@ list rather than on a new one:
 | **2** | Health, spell slot, prune, expertise, **stamina** | a permanent number that is always on |
 | **1** | training, know-how, mastery, a language, carry, rest token | narrow, binary, or conditional on fiction |
 
-> **Stamina sits on rung 2 because it replaced the deck cap there, and it is the dearest thing on
-> the rung.**  **[MEASURED 2026-11-12]**
+> **Stamina sits on rung 2 because it is a permanent number that is always on, which is what this
+> table's rung 2 means.**  **[MEASURED 2026-11-12]**
 >
 > One point is worth **+0.7 / +2.4 / +5.0 / +4.3** across the four published encounters, against a
-> point of Health at **+0.25 / +1.17 / +2.63 / +3.17** — so it is about **twice** a point of Health,
-> which shares the rung with it. Two points of stamina is a rung-3 reward wearing a rung-2 row.
+> point of Health at **+0.25 / +1.17 / +2.63 / +3.17** — about **twice** a point of Health, which
+> shares the rung with it.
+>
+> **That is a fact about the stat and not about the row.** This table sorts rewards by **kind**, and
+> the last column says so: *cards are the backbone* is rung 3, *a permanent number that is always
+> on* is rung 2, *narrow, binary, or conditional on fiction* is rung 1. Health and stamina are
+> different stats that move different things, and they are the same **kind** of reward — so they
+> share a rung, and the measurement above belongs to the question of **how much to hand out**, which
+> is a different question and has its own answer below.
 >
 > **The scarcity is the price, and it is the only one available.** A node grants **one** point, never
 > two, and the stat is the only one in the game that does not flatten as it rises
@@ -918,8 +925,26 @@ list rather than on a new one:
 > stamina *a dangerous thing to hand out on an item*, and *Deep Pockets* — the one wonder that
 > granted the deck cap — now grants carry instead.
 >
-> **[OPEN]** Whether a rung 4 should exist rather than a footnote on rung 2. It would be honest and
-> it would be the first change to this table's shape, so it wants a decision and not a patch.
+> > **[RULED 2026-11-12] No rung 4, and the question was built on a confusion this note used to
+> > contain.**
+> >
+> > It used to end *"two points of stamina is a rung-3 reward wearing a rung-2 row"*, which swapped
+> > the table's unit from kind to win rate in one sentence and made a fourth rung look necessary.
+> > Three reasons it is not.
+> >
+> > **The unit.** Rungs are an ordinal of kinds. Setting them from win rate would mean re-deriving
+> > every other row in win rate — what is a prune worth, what is an expertise worth, what is *a
+> > language* worth to a character who never meets its speakers — and the last column would become
+> > false the moment the first one moved.
+> >
+> > **The check it serves.** This weight exists for one thing: §5b's invariant that the back half of
+> > a branch does not taper, measured as the **mean** reward at each level. A fourth rung for one key
+> > inflates whichever levels happen to contain that key and leaves the rest, so the taper signal
+> > gets noisier rather than sharper. A coarse ordinal is what a taper detector wants.
+> >
+> > **The lever already exists and it is sharper.** *One point per node, never two, and no item* is a
+> > content rule with a check behind it, and it constrains the thing that actually matters — how much
+> > arrives — instead of relabelling it. A weight describes a reward; scarcity limits one.
 
 > **Hand size sits on rung 3 gross, and a price subtracts its own rung.**  **[BUILT 2026-11-12]**
 >
