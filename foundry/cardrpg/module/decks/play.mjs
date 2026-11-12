@@ -84,7 +84,21 @@ export async function refill(actor, { handlers = {} } = {}) {
   let short = 0;            // slots an intruder took away with it, so the hand comes up short
   const resolved = {};      // how many of each kind resolved on the way in
 
-  while (hand.cards.size + short < size && available(deck).length > 0) {
+  while (hand.cards.size + short < size) {
+    /*
+     * **The deck is a cycle and the cycle is free** (core-rules 8). An empty draw pile with
+     * stamina left is the discard shuffled back, which costs nothing and no turn -- so a thin
+     * deck means the same cards come round sooner rather than a shorter fight.
+     *
+     * With no stamina left it does NOT cycle, which is what makes 0 a wall: `spendStamina` has
+     * already emptied the draw pile into the discard, and this is the line that leaves it there.
+     */
+    if (!available(deck).length && discard?.cards.size && (actor.system?.stamina?.value ?? 0) > 0) {
+      await move(discard, deck, discard.cards.map(c => c.id));
+      await deck.shuffle({ chatNotification: false });
+    }
+    if (!available(deck).length) break;
+
     const [card] = await moveRandom(deck, hand, 1);
     if (!card) break;
 
@@ -242,6 +256,51 @@ export async function discardCards(actor, cardIds) {
 }
 
 /**
+ * **A card you play costs 1 stamina, and nothing you did not play costs any** (core-rules 8).
+ *
+ * One gate for every play site -- the turn's two halves through `retireCards`, and the reaction
+ * through `spendReaction` -- because a budget three places decrement separately is three rules,
+ * and the `DEAD` set in resolve.mjs is this project's standing proof of how that ends.
+ *
+ * **It is deliberately not called from `discardCards`.** A card reaches the discard for reasons
+ * that are not playing it: a Wound retired at the end of a turn, an intruder resolved on the way
+ * into a hand, a card knocked out of your grip by a heavy hit, Strain. Charging stamina there
+ * would charge for all of them, and core-rules 8 says plainly that it charges for none.
+ *
+ * **At 0 the rest of the draw pile is discarded.** That is the whole of the wall and it needs no
+ * new state: the discard is still there, so a breath can still reach the stat, and the cards come
+ * back the moment there is stamina to cycle them with.
+ *
+ * @param {Actor} actor
+ * @param {number} n How many cards were played.
+ */
+export async function spendStamina(actor, n = 1) {
+  const stamina = actor.system?.stamina;
+  if (!stamina || n <= 0) return null;
+
+  const left = Math.max(0, stamina.value - n);
+  await actor.update({ "system.stamina.value": left });
+
+  let dumped = 0;
+  if (left === 0) {
+    const deck = deckOf(actor, "action");
+    const discard = deckOf(actor, "actionDiscard");
+    const ids = available(deck).map(c => c.id);
+    if (ids.length && discard) {
+      await move(deck, discard, ids);
+      dumped = ids.length;
+    }
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor }),
+      content: `<p><strong>${actor.name}</strong> is out of <strong>stamina</strong>`
+        + (dumped ? `: ${dumped} cards left the draw pile.` : ".")
+        + ` Nothing left but to catch breath.</p>`
+    });
+  }
+  return { left, dumped };
+}
+
+/**
  * Draw up to the skill hand size, which happens **at the start of a scene** rather than on a turn.
  *
  * That is the whole difference between the two decks' rhythms and it is a difference in kind: an
@@ -311,13 +370,25 @@ export async function retireCards(actor, plays) {
 
   if (discards.length) await discardCards(actor, discards);
   if (burns.length) await move(hand, spentPile, burns.map(c => c.id));
+  /*
+   * Both halves cost the same 1, whether the card went to the discard or to the Spent pile:
+   * core-rules 8 charges for *playing*, and Spent is already a steeper price in cards.
+   */
+  await spendStamina(actor, discards.length + burns.length);
   return burns;
 }
 
-/** Can this actor Catch Breath at all? The discard has to cover the recovery in full. */
+/**
+ * Can this actor Catch Breath at all?
+ *
+ * **[2026-11-12]** The gate used to be *the discard has to cover the recovery in full*, because a
+ * breath moved two cards out of it. A breath moves no cards now -- it buys back the stat, and the
+ * cycle returns the cards on its own -- so the only thing that can make one pointless is having
+ * nothing to buy back. Breathing at full stamina is refused rather than wasted.
+ */
 export function canCatchBreath(actor) {
-  const discard = deckOf(actor, "actionDiscard");
-  if ((discard?.cards.size ?? 0) < CARDRPG.defaults.breathRecovery) return false;
+  const stamina = actor.system?.stamina;
+  if (stamina && stamina.value >= stamina.max) return false;
 
   /*
    * **A Compulsion is the one intruder that takes an option rather than a resource** (core-rules 8),
@@ -329,79 +400,60 @@ export function canCatchBreath(actor) {
 }
 
 /**
- * Catch Breath. Spend your whole turn to recover **2** cards from the discard, at random.
+ * Catch Breath. Spend your whole turn, playing nothing, and regain **2 stamina**.
  *
- * Two, because two is the Exhausted threshold (core-rules 8): a breath buys exactly one turn that
- * is not Exhausted, and no more. A fixed, small recovery means breathing never bails you out of a
- * fight -- it keeps you playing one more round, at the price of this one.
+ * **Never above your maximum**, so breathing before you have run out is refused rather than
+ * wasted. Two, because two stamina is one full turn: the trade is this turn for a normal one next
+ * round, which is what keeps a breath a way to keep playing and never a way to get back on top.
  *
- * Nothing is Spent by breathing. The discard is a cycle, not a drain: breathe often enough and
- * every card in it comes back, and what the breath costs is the turn. What leaves the deck for good
- * is what the player chose to spend -- a half printed *Spent*, or the weight they chose to carry.
+ * **There is no limit on how often**, so running out is an interval and not an ending -- a hero at
+ * the end of their stamina fights on at half rate for as long as the fight lasts. That is the
+ * ruling of 2026-11-12 and the alternative was a wall, which ends a character's participation
+ * rather than slowing it.
  *
- * The recovery is random, because choosing would turn a recovery into a tutor.
+ * **[2026-11-12] It moves no cards.** It used to shuffle two out of the discard at random, and the
+ * randomness was load-bearing because choosing would have made a recovery into a tutor. The deck
+ * now cycles for free the moment the draw pile empties, so moving cards here would change which
+ * card comes next and not how many more there are -- the only thing a breath can usefully buy is
+ * the stat. `refill` does the shuffling, as a consequence of having stamina rather than as a
+ * reward for spending a turn.
  *
- * @returns {Promise<object|null>} null when the discard cannot cover the recovery in full.
+ * @returns {Promise<object|null>} null when there is no stamina to buy back.
  */
 export async function catchBreath(actor) {
-  const deck = deckOf(actor, "action");
-  const discard = deckOf(actor, "actionDiscard");
-  if (!deck || !discard) return null;
+  const stamina = actor.system?.stamina;
+  if (!stamina || stamina.value >= stamina.max) return null;
 
-  // All or nothing: a partial breath would let a one-card discard buy a whole turn.
   const take = CARDRPG.defaults.breathRecovery;
-  if (discard.cards.size < take) return null;
-
-  const recovered = await moveRandom(discard, deck, take);
-  await deck.shuffle({ chatNotification: false });
+  const left = Math.min(stamina.max, stamina.value + take);
+  await actor.update({ "system.stamina.value": left });
 
   await ChatMessage.create({
     speaker: ChatMessage.getSpeaker({ actor }),
-    content: `<p><strong>${actor.name}</strong> catches breath: recovered ${recovered.length}`
-      + `, ${discard.cards.size} still in the discard.</p>`
+    content: `<p><strong>${actor.name}</strong> catches breath: `
+      + `<strong>${left - stamina.value}</strong> stamina back, ${left} of ${stamina.max} left.</p>`
   });
 
-  return { recovered: recovered.length, left: discard.cards.size };
+  return { recovered: left - stamina.value, left, max: stamina.max };
 }
 
-/**
- * Becoming Overloaded sets aside random cards as Spent; dropping below it shuffles them back.
- * This is the one derived state that mutates card state, so it fires on the transition rather than
- * on every recompute.
+/*
+ * **[2026-11-12] `setOverloaded` is gone, and so is the flag, the setting and the rest's special
+ * case for the cards it held.**
+ *
+ * It set aside two random cards as Spent and shuffled them back when the load came off: thirty-odd
+ * lines, a flag, a world setting and a branch in `rest`, all to mutate card state on a transition
+ * of a derived value. core-rules 8 always said Overloaded *costs you stamina* and charged it in
+ * cards because the deck WAS the stamina.
+ *
+ * Measured once they were two things, two cards set aside was worth -0.1 / -0.2 / +0.8 / -0.5 --
+ * nothing at all, because a card nobody played costs nothing. Two stamina is -2.0 / -5.7 / -10.2 /
+ * -8.3, against the old reading's measured -2.3 / -6.5 / -11.2 / -8.5.
+ *
+ * So it is now one clause on `stamina.max` in `CharacterData.prepareDerivedData`, beside the
+ * afflicted Health penalty it reads exactly like. A derived cost for a derived state, which is
+ * what it should always have been.
  */
-export async function setOverloaded(actor, overloaded) {
-  const deck = deckOf(actor, "action");
-  const hand = deckOf(actor, "actionHand");
-  const spent = deckOf(actor, "actionSpent");
-  if (!deck || !spent) return;
-
-  const flagged = actor.getFlag("cardrpg", "overloadedSpent") ?? [];
-
-  if (overloaded && !flagged.length) {
-    const n = game.settings.get("cardrpg", "overloadedSpent");
-    // Normally you pick a load up between fights, when the deck is whole; mid-fight it comes off
-    // the draw pile, or the hand if that is empty.
-    let moved = await moveRandom(deck, spent, n);
-    if (moved.length < n && hand) {
-      moved = moved.concat(await moveRandom(hand, spent, n - moved.length));
-    }
-    await actor.setFlag("cardrpg", "overloadedSpent", moved.map(c => c.id));
-    if (moved.length) {
-      await ChatMessage.create({
-        speaker: ChatMessage.getSpeaker({ actor }),
-        content: `<p><strong>${actor.name}</strong> is <strong>Overloaded</strong>: `
-          + `${moved.length} cards set aside as Spent.</p>`
-      });
-    }
-  } else if (!overloaded && flagged.length) {
-    const ids = flagged.filter(id => spent.cards.get(id));
-    if (ids.length) {
-      await move(spent, deck, ids);
-      await deck.shuffle({ chatNotification: false });
-    }
-    await actor.unsetFlag("cardrpg", "overloadedSpent");
-  }
-}
 
 /* -------------------------------------------- */
 /*  Between fights                              */
@@ -416,7 +468,16 @@ export async function afterCombat(actor) {
     if (pile?.cards.size) await move(pile, deck, pile.cards.map(c => c.id));
   }
   await deck?.shuffle({ chatNotification: false });
-  await actor.update({ "system.block": 0, "system.blockPersists": false });
+  /*
+   * **Stamina comes back in full when the fight ends**, because it measures one fight. What a
+   * fight costs you past its own end is Spent cards, Wounds and Taint -- the things `afterCombat`
+   * deliberately does not sweep up.
+   */
+  await actor.update({
+    "system.block": 0,
+    "system.blockPersists": false,
+    "system.stamina.value": actor.system.stamina?.max ?? CARDRPG.defaults.stamina
+  });
 }
 
 /**
@@ -452,14 +513,15 @@ export async function rest(actor, { long = false } = {}) {
   const spent = deckOf(actor, "actionSpent");
 
   if (spent?.cards.size) {
-    // Cards set aside by being Overloaded come back when the load is dropped, not on a rest.
-    const held = actor.getFlag("cardrpg", "overloadedSpent") ?? [];
-    const ids = spent.cards.filter(c => !held.includes(c.id)).map(c => c.id);
-    if (ids.length) await move(spent, deck, ids);
+    /*
+     * Every Spent card comes back. There is no longer a set held out by being Overloaded: that
+     * drawback is two points of stamina now and never touches a card.
+     */
+    await move(spent, deck, spent.cards.map(c => c.id));
   }
   await deck?.shuffle({ chatNotification: false });
 
-  const update = {};
+  const update = { "system.stamina.value": actor.system.stamina?.max ?? CARDRPG.defaults.stamina };
   const heal = long ? 5 : 1;
   update["system.health.value"] = Math.min(actor.system.health.max, actor.system.health.value + heal);
   if (long) update["system.rest.tokens"] = actor.system.rest.max;

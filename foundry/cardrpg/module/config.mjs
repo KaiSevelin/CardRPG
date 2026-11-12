@@ -1347,7 +1347,7 @@ CARDRPG.defaults = {
   goldPerKilo: 100,
   afflictedAt: 3,
   afflictedHealthPenalty: 3,
-  overloadedSpent: 2,
+
   // Exactly the Exhausted threshold (core-rules 8): breathing buys one turn that is not Exhausted.
   breathRecovery: 2,
   woundAt: 5,

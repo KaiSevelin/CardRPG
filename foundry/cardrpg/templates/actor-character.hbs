@@ -193,7 +193,7 @@
         </div>
         <p class="cr-note">100 gold weighs 1 kg, so a chest of treasure is a problem.</p>
         {{#if encumbrance.isOverloaded}}
-          <p class="cr-warn">Overloaded: {{config.defaults.overloadedSpent}} random cards are Spent while this lasts.</p>
+          <p class="cr-warn">Overloaded: <strong>{{config.defaults.overloadedStamina}} stamina</strong> while this lasts &mdash; that many fewer cards you can play.</p>
         {{/if}}
         {{#if encumbrance.isImmobile}}
           <p class="cr-warn">Over double your limit &mdash; you can't pick this up. Make two trips.</p>

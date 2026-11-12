@@ -1487,3 +1487,34 @@ a.cr-enriched { cursor: pointer; white-space: nowrap; }
 .cr-tactic { display: block; font-size: 0.9em; }
 .cr-tactic__text { opacity: 0.8; }
 .cr-level-button--ready { box-shadow: 0 0 0 1px #7fb2ef inset; font-weight: bold; }
+
+/* --- the stamina readout: the cards you have left to play (core-rules 8) --------------------- */
+/*
+ * It sits in the tray's flag row because it is the same kind of fact -- a public count of what
+ * this character can still do -- but it is a number rather than a word, so it reads as one: the
+ * figure large, the denominator quiet beside it.
+ */
+.cr-tray__stamina {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.3em;
+  padding: 0.1rem 0.5rem;
+  border: 1px solid var(--cr-line, rgba(255, 255, 255, 0.2));
+  border-radius: 0.6rem;
+  font-variant-numeric: tabular-nums;
+}
+.cr-tray__stamina-n { font-size: 1.15em; font-weight: 600; }
+.cr-tray__stamina-of { opacity: 0.65; font-size: 0.85em; }
+/* Out of stamina is not a warning about something coming; it is the wall. */
+.cr-tray__stamina--out {
+  border-color: var(--cr-warn, #c2410c);
+  color: var(--cr-warn, #c2410c);
+}
+/* The hold-all toggle wears the flag row's shape, because it reports a state as well as setting
+ * one -- and a button that looks like the flag beside it is a button whose effect is legible. */
+.cr-tray__flag--button {
+  cursor: pointer;
+  font: inherit;
+  background: none;
+}
+.cr-tray__flag--button:hover { filter: brightness(1.25); }

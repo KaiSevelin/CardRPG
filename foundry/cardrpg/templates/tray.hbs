@@ -73,10 +73,26 @@
           {{/each}}
         </span>
       </div>
+      {{!-- The clock. Not the draw pile: the deck cycles for free, so this is what runs out. --}}
+      {{#if stamina}}
+      <div class="cr-tray__stamina{{#if outOfStamina}} cr-tray__stamina--out{{/if}}"
+           data-tooltip="Cards you can still play this fight, as primaries, secondaries or reactions. Your deck cycles for free; this is what runs out. A breath buys back 2.">
+        <span class="cr-tray__stamina-n">{{stamina.value}}</span>
+        <span class="cr-tray__stamina-of">/ {{stamina.max}} to play</span>
+      </div>
+      {{/if}}
+      {{#if outOfStamina}}<div class="cr-tray__flag" data-tooltip="No cards and no reactions until you catch your breath, which buys back 2">Out of stamina</div>{{/if}}
       {{#if exhausted}}<div class="cr-tray__flag" data-tooltip="One card per turn, and no reactions">Exhausted</div>{{/if}}
       {{#if dazed}}<div class="cr-tray__flag" data-tooltip="No secondary this turn">Dazed</div>{{/if}}
       {{#if stunned}}<div class="cr-tray__flag" data-tooltip="No reactions">Stunned</div>{{/if}}
       {{#if reserved}}<div class="cr-tray__flag" data-tooltip="Turned sideways and held back, so they will not react. {{upright}} card(s) still able to.">Held {{reserved}}</div>{{/if}}
+      {{!-- core-rules 3: you may turn your WHOLE hand sideways, and saying so took five clicks. --}}
+      {{#if cards.length}}
+      <button type="button" class="cr-tray__flag cr-tray__flag--button" data-action="reserveAll"
+              data-tooltip="{{#if allReserved}}Bring the whole hand back upright, so it reacts again.{{else}}Turn the whole hand sideways: nothing reacts, and every card is still yours to play. Playing for your turns rather than your skin.{{/if}}">
+        {{#if allReserved}}All upright{{else}}Hold all{{/if}}
+      </button>
+      {{/if}}
       {{#if encumbered}}<div class="cr-tray__flag">{{encumbered}}</div>{{/if}}
       {{#if staged}}
       <div class="cr-options__staged">

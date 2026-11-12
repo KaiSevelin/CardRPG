@@ -538,19 +538,44 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       .reduce((n, i) => n + (i.system.weight ?? 0), 0);
     this.carry.value = gear + Math.floor(this.cash.gold / d.goldPerKilo);
     this.encumbrance = CharacterData.encumbranceTier(this.carry.value, this.carry.max);
+    /*
+     * **Overloaded costs 2 stamina** (core-rules 4, 8), and it is applied here rather than beside
+     * the pool because `encumbrance` is not known until carry is derived, forty lines further
+     * down than Health.
+     *
+     * It reads exactly like the afflicted Health penalty above, and that is the point: a derived
+     * cost for a derived state. It used to be `setOverloaded` moving two random cards into the
+     * Spent pile on a transition -- thirty lines, a flag, a world setting and a branch in `rest`
+     * -- which measured at **nothing** once a card nobody played stopped costing anything.
+     */
+    if (["overloaded", "immobile"].includes(this.encumbrance)) {
+      this.stamina.max = Math.max(1, this.stamina.max - d.overloadedStamina);
+      this.stamina.value = Math.min(this.stamina.value, this.stamina.max);
+    }
     if (["overloaded", "immobile"].includes(this.encumbrance)
       && slates.some(i => i.type === "feature" && i.system.armor?.doubleWhenOverloaded)) {
       this.armor *= 2;
       this.armorDoubled = true;
     }
 
-    // --- exhaustion is a deck fact, so it is derived too
+    // --- exhaustion is a stamina fact, so it is derived too
     const hand = this.#deck("actionHand");
     const draw = this.#deck("action");
     // A card flagged `drawn` is out in the hand, not in the pile, so it is not counted here --
     // otherwise the draw bar reads full while the deck has nothing left to give.
     const left = available(draw).length;
-    this.exhausted = left === 0 && (hand?.cards.size ?? 0) < 2;
+    /*
+     * **[2026-11-12] It used to be `the draw pile is empty and the hand is under two`**, which was
+     * the right reading while the deck was the stamina. The deck cycles for free now, so an empty
+     * draw pile means only that the discard is about to become one -- and a hero can hold a full
+     * hand with nothing left to spend on it.
+     *
+     * Exhausted is **one** point of stamina: one half a turn, and no reactions. At **zero** there
+     * is nothing but a breath, which is a stronger state and a separate flag, because the old
+     * Exhausted let you play one card and this does not.
+     */
+    this.exhausted = this.stamina.value <= 1;
+    this.outOfStamina = this.stamina.value <= 0;
 
     this.deckCounts = {
       draw: left,

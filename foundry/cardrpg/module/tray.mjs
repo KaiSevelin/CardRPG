@@ -130,6 +130,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       flipCard: CardRPGTray.#onFlipCard,
       // The reaction row is the only thing on a card in hand you can click that does not play it.
       reserve: CardRPGTray.#onReserve,
+      reserveAll: CardRPGTray.#onReserveAll,
       // The scene side: the GM says when a scene starts, and a card is played AT a difficulty.
       dealSkills: CardRPGTray.#onDealSkills,
       check: CardRPGTray.#onCheck,
@@ -329,6 +330,20 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       upright: uprightCards(actor).length,
       reserved: (hand?.cards.contents ?? []).filter(c => isReserved(c)).length,
       exhausted: system.exhausted,
+      /*
+       * **Stamina: the cards you have left to play** (core-rules 8), which is the clock now that
+       * the draw pile is not one. It belongs beside `upright` for the same reason that number is
+       * public: with reactions automatic, how much a character can still do is the most
+       * informative thing on the board, and it is a count rather than a hand's contents.
+       */
+      stamina: system.stamina,
+      outOfStamina: system.outOfStamina,
+      /*
+       * Whether the whole hand is already held back, so one button can say both things. A hand
+       * with nothing in it is not "all held" -- it is empty, and the button is hidden.
+       */
+      allReserved: (hand?.cards.size ?? 0) > 0
+        && uprightCards(actor).length === 0,
       encumbered: encumbered
         ? game.i18n.localize(CARDRPG.conditions[encumbered.key].label)
         : null,
@@ -1361,6 +1376,33 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     const card = hand?.cards.get(target.dataset.cardId);
     if (!card) return;
     await reserveCard(card);
+    this.render();
+  }
+
+  /**
+   * **Turn the whole hand sideways, or bring it all back upright.**
+   *
+   * core-rules 3 has always allowed this -- *you may turn your whole hand sideways; that is a
+   * character playing for their turns rather than their skin, and it is a real strategy* -- and
+   * saying it took one click per card, which is how a real strategy reads as a chore.
+   *
+   * It is a toggle rather than two buttons: if anything in the hand can still react, the hand goes
+   * down; if nothing can, it all comes up. One button, and its label says which way it will go.
+   *
+   * Dead cards are turned with the rest. A Wound cannot react in the first place, so sideways
+   * means nothing to it -- but skipping it would leave the hand in a state where `allReserved` is
+   * false and the button has nothing left to do, which is a button that lies.
+   */
+  static async #onReserveAll(event, target) {
+    const hand = deckOf(this.actor, "actionHand");
+    const cards = hand?.cards.contents ?? [];
+    if (!cards.length) return;
+
+    const down = uprightCards(this.actor).length > 0;
+    for (const card of cards) {
+      if (isReserved(card) !== down) continue;
+      await reserveCard(card);
+    }
     this.render();
   }
 

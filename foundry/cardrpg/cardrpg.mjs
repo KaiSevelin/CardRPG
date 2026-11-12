@@ -238,14 +238,12 @@ function registerSettings() {
     default: d.carryLimit
   });
 
-  game.settings.register("cardrpg", "overloadedSpent", {
-    name: "CARDRPG.Settings.OverloadedSpent.Name",
-    hint: "CARDRPG.Settings.OverloadedSpent.Hint",
-    scope: "world",
-    config: true,
-    type: Number,
-    default: d.overloadedSpent
-  });
+  /*
+   * **[2026-11-12] `overloadedSpent` is gone.** It set how many cards Overloaded put in the Spent
+   * pile, and Overloaded costs stamina now -- a derived clause on `stamina.max`, not a number of
+   * cards anybody moves. `CARDRPG.defaults.overloadedStamina` is the number, and it is not a world
+   * setting because nothing asked for one.
+   */
 }
 
 /* -------------------------------------------- */
@@ -300,14 +298,11 @@ Hooks.once("ready", async () => {
   }
 
   // Overloaded mutates card state, so it fires on the transition rather than on every recompute.
-  Hooks.on("updateActor", async (actor, change) => {
-    if (!game.user.isGM || actor.type !== "character") return;
-    const touchesLoad = foundry.utils.hasProperty(change, "system.cash")
-      || foundry.utils.hasProperty(change, "system.carry");
-    if (!touchesLoad) return;
-    const overloaded = ["overloaded", "immobile"].includes(actor.system.encumbrance);
-    await decks.setOverloaded(actor, overloaded);
-  });
+  /*
+   * **[2026-11-12] The load hook is gone with `setOverloaded`.** It existed to notice the moment a
+   * character crossed the Overloaded line and move cards in response. The price is derived now, so
+   * crossing the line changes `stamina.max` on the next recompute and there is nothing to fire.
+   */
   /*
    * **A spell going into somebody's head, which nothing used to notice.**
    *
@@ -325,9 +320,12 @@ Hooks.once("ready", async () => {
     if (!item.parent || !game.user.isGM) return;
     await payToPrepare(item.parent, item);
   });
-  Hooks.on("createItem", item => onLoadChanged(item));
-  Hooks.on("updateItem", item => onLoadChanged(item));
-  Hooks.on("deleteItem", item => onLoadChanged(item));
+  /*
+   * **[2026-11-12] Three item hooks went with `onLoadChanged`.** They fired on every item create,
+   * update and delete to notice a character crossing the Overloaded line and move cards for it.
+   * The price is a derived clause on `stamina.max` now, so weight changing recomputes a number and
+   * there is nothing left to listen for.
+   */
 
   /*
    * The Sidestep trigger (core-rules 11). A hit is an event the resolver owns; an ARRIVAL is not --
@@ -402,10 +400,7 @@ async function onArrival(mover, from) {
  * Carried weight changes whenever a slate is added, altered or removed, so the Overloaded
  * transition has to be checked there too -- not just on actor updates.
  */
-async function onLoadChanged(item) {
-  if (!game.user.isGM) return;
-  const actor = item.parent;
-  if (!actor || actor.type !== "character") return;
-  const overloaded = ["overloaded", "immobile"].includes(actor.system.encumbrance);
-  await decks.setOverloaded(actor, overloaded);
-}
+/*
+ * **[2026-11-12] `onLoadChanged` is gone**, for the same reason as the hook above: picking a load
+ * up or putting it down now changes a derived number and moves no cards.
+ */

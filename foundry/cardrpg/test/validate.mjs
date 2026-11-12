@@ -4615,7 +4615,10 @@ check("the feature schema carries the armour doubling",
   /armor: new fields\.SchemaField\(\{\s*\n\s*doubleWhenOverloaded/.test(itemSource)
     ? "yes" : "no", "yes");
 check("the actor applies it after the encumbrance tier",
-  /this\.encumbrance = CharacterData\.encumbranceTier[\s\S]{0,260}doubleWhenOverloaded/
+  /* The window widened on 2026-11-12: Overloaded's own stamina clause now sits between the tier
+   * and this, which is the same ordering requirement for the same reason. The check that matters
+   * is "and not before it" below -- an index comparison, which no amount of text can fool. */
+  /this\.encumbrance = CharacterData\.encumbranceTier[\s\S]{0,1200}doubleWhenOverloaded/
     .test(actorModel) ? "yes" : "no", "yes");
 /* After, not before: the tier is itself derived from weight, so order is the whole correctness. */
 check("and not before it",
@@ -10779,11 +10782,21 @@ check("Hex reuses the fate deck rather than adding a subtype",
     .test(resolveSource) ? "yes" : "no", "yes");
 check("and no hex subtype was declared",
   Object.hasOwn(manifest.documentTypes.Card ?? {}, "hex") ? "there is one" : "none", "none");
-/* And no Burden either: weight already taxes the deck, by removal rather than insertion. */
+/*
+ * And no Burden either: weight taxes the character directly.
+ *
+ * **[2026-11-12]** It used to tax *the deck*, "by removal rather than insertion", and the pin here
+ * held the sentence in `rest` that kept Overloaded's cards out of a rest's recovery. Overloaded
+ * costs 2 stamina now and never touches a card, so that sentence is gone and this checks the
+ * replacement: the price is a derived clause, and every Spent card comes back on a rest.
+ */
 check("and no burden subtype either",
   Object.hasOwn(manifest.documentTypes.Card ?? {}, "burden") ? "there is one" : "none", "none");
-check("because Overloaded already does it",
-  /Cards set aside by being Overloaded come back when the load is dropped, not on a rest/
+check("because Overloaded taxes stamina instead",
+  /this\.stamina\.max = Math\.max\(1, this\.stamina\.max - d\.overloadedStamina\)/
+    .test(actorModel) ? "yes" : "no", "yes");
+check("and a rest now returns every Spent card",
+  /Every Spent card comes back\. There is no longer a set held out by being Overloaded/
     .test(decksSource) ? "yes" : "no", "yes");
 
 /* -------------------------------------------- */
@@ -11734,7 +11747,7 @@ const unread = assigned.filter(name => {
 });
 check("derived values nothing reads", unread.length ? unread.join(", ") : "none", "none");
 /* A detector that found nothing to look at would pass the line above while checking nothing. */
-check("derived values on the character", assigned.length, 19);
+check("derived values on the character", assigned.length, 20);
 
 /* And the three that were found, now shown rather than deleted. */
 check("the sheet shows which Ways were walked",

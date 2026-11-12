@@ -23,6 +23,8 @@ import { expandRoster } from "./monsters.mjs";
 import { slateData } from "./setup.mjs";
 import {
   drawFate, deckOf, uprightCards, discardCards, cardName, addFateCards, moveRandom, move,
+  /* A reaction is a card played, so it costs stamina (core-rules 8). */
+  spendStamina,
   available,
   applyFear, removeCard, intruderStack, allStacks, harmCardData, critStacks,
   addFateCards as addFate
@@ -1981,6 +1983,14 @@ async function spendReaction(actor, choice) {
     return choice;
   }
   await discardCards(actor, [choice.card.id]);
+  /*
+   * **A reaction is a card played, so it costs 1 stamina** (core-rules 8) -- the same 1 a primary
+   * or a secondary costs, which is why a turn costs 2 and a reaction costs half a turn.
+   *
+   * The spell above pays nothing, and that is not an oversight: a prepared spell was never in your
+   * hand and is not a card. It drains the slate instead, which is Ward Magic's own price.
+   */
+  await spendStamina(actor, 1);
   return choice;
 }
 
