@@ -34,7 +34,13 @@ export const FEATURES = [
    * >
    * > What it costs: the scar no longer survives its own repair. Under *Adapted* the slate stayed
    * > on the sheet with its arithmetic off, which was a thing a GM could write into a scene. A
-   * > pruned injury is gone. **[OPEN]** Whether a *scar* with no numbers is worth a slate kind.
+   * > pruned injury is gone.
+   * >
+   * > **[RULED 2026-11-12] No slate with no mechanical impact.** A *scar* kind carrying no numbers
+   * > was the obvious patch and it is refused: a slate is a thing the engine reads, and one that
+   * > changes nothing costs a schema, a picture, a row in the handbook and a line in every count,
+   * > for nothing a fight can see. What a healed injury leaves is fiction, and fiction needs no
+   * > document.
    */
   /*
    * --- six features that help a skill check, one per approach ---

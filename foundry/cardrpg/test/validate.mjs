@@ -8024,8 +8024,50 @@ check("and it opens into something you can scroll",
  * more slowly. A thumbnail that only works with JavaScript is a thumbnail that sometimes does not. */
 check("and works with the script turned off",
   /<a class="map__open" href="[^"]*firma-annotated\.webp"/.test(bookBuilt.html) ? "yes" : "no", "yes");
+/*
+ * **And every row's picture opens the same way.**  **[BUILT 2026-11-12]**
+ *
+ * The thumbnail is 3.4rem square with `object-fit: cover` and the art is 1024x1536, so the page
+ * shows a square crop of a 2:3 portrait: about a third of each picture, 320 times over. The link
+ * is the rest of it.
+ *
+ * **One dialog, not 320.** The map has its own because there is one map; a dialog per row would
+ * put 320 more elements and a second 320 image tags on a page that already carries 320, to show
+ * one at a time. So the count below is the pin that matters: it is the only thing standing between
+ * this and somebody generating a dialog per row, which would build, render and pass every other
+ * check on this page.
+ */
+const artOpens = (bookBuilt.html.match(/<a class="art__open" href="/g) ?? []).length;
+check("rows whose picture opens at full size", artOpens, bookBuilt.art);
+check("and one dialog serves all of them",
+  (bookBuilt.html.match(/<dialog id="artview"/g) ?? []).length, 1);
+/* Sized to the viewport, not scrolled: a card fits any screen, which is the whole difference
+ * between this and the map above and the reason it is not the same element. */
+check("and it is sized to fit rather than scrolled",
+  /class="artview__img"/.test(bookBuilt.html)
+  && !/artview__scroll/.test(bookBuilt.html) ? "yes" : "no", "yes");
+/* The same progressive arrangement the map uses: the thumbnail is a real link to the file, so
+ * with no script, or a browser without dialog, clicking still shows the picture. */
+check("and works with the script turned off, like the map",
+  /<a class="art__open" href="[^"]+\.webp" data-name="/.test(bookBuilt.html) ? "yes" : "no",
+  "yes");
+/* And the file it points at is on the disk. The paths are derived from a name, so a renamed piece
+ * moves its own link and leaves its file behind -- which is the defect the art wiring was
+ * rewritten to end, and this is the one place the page could re-acquire it. */
+const bookArtPaths = [...bookBuilt.html.matchAll(/<a class="art__open" href="([^"]+)"/g)]
+  .map(m => m[1]);
+const bookArtMissing = bookArtPaths
+  .filter(p => !fs.existsSync(path.join(root, "../../rules", p)));
+check("pictures a row links that are not on the disk",
+  bookArtMissing.length ? `${bookArtMissing.length}: ${bookArtMissing[0]}` : "none", "none");
+
 /* The stylesheet is the one hand-written file in this pipeline, so the page must actually ask
  * for it: a generated page linking a stylesheet that is not there is a page nobody styled. */
+/* And it styles what the page now generates: a dialog with no rules is a picture at its natural
+ * size over whatever was behind it. */
+const bookCss = fs.readFileSync(path.join(root, "../../rules/book.css"), "utf8");
+check("the stylesheet dresses the picture dialog",
+  /dialog\.artview \{/.test(bookCss) && /\.artview__img \{/.test(bookCss) ? "yes" : "no", "yes");
 /*
  * **[FOUND BY A READER 2026-11-09] Rows that render without their picture.**
  *
@@ -15010,9 +15052,11 @@ readFiles.set("contentSource", contentSource);
 readFiles.set("decksSource", decksSource);
 /* 64 since the art gate's thresholds became checkable: `gateSource` is the one more read, and
  * the grep over it is what keeps its documentation from describing a retired capsule. */
-/* 66 since 2026-11-12: `grantsText` reads grants.mjs where the retired predicate used to be, in
- * a section of the file that runs long before `grantsSource` is declared. */
-check("files this suite greps by name", readFiles.size, 66);
+/* 67 since 2026-11-12, from two reads added the same day: `grantsText` reads grants.mjs where the
+ * retired predicate used to be, in a section of the file that runs long before `grantsSource` is
+ * declared, and `bookCss` reads the one hand-written file in the book pipeline, which now has to
+ * dress a dialog the page generates. */
+check("files this suite greps by name", readFiles.size, 67);
 
 /* Every `/pattern/.test(VAR)` and `VAR.includes("...")`, with the check it belongs to. */
 const nameOfCheck = index => {

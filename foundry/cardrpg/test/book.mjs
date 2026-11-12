@@ -204,9 +204,22 @@ function table(rows, chapter) {
     const name = row[0]?.replace(/\*\*/g, "");
     const art = chapter && ART[chapter]?.get(name);
     if (chapter && !art && ART[chapter]?.size) MISSED.push(`${chapter}/${name}`);
+    /*
+     * **The thumbnail opens the picture.**  **[BUILT 2026-11-12]**
+     *
+     * It is 3.4rem square with `object-fit: cover` and every piece of art is 1024x1536, so the
+     * page shows a square crop of a 2:3 portrait: about a third of each picture, 320 times. The
+     * link is what gets you the rest, and it is a **real link to the file** so that with no script
+     * it still works -- the same arrangement `mapFigure` uses, and for the same reason.
+     *
+     * Only the `img` is inside the link. The name beside it stays text, because a row whose name
+     * is a link reads as a cross-reference to somewhere else in the book.
+     */
     const first = art
-      ? `<th scope="row" class="named"><img src="${ART_HREF}/${art}" alt="" loading="lazy"`
-        + ` decoding="async"><span>${inline(row[0])}</span></th>`
+      ? `<th scope="row" class="named"><a class="art__open" href="${ART_HREF}/${art}"`
+        + ` data-name="${escape(name)}" aria-label="Open the picture for ${escape(name)}">`
+        + `<img src="${ART_HREF}/${art}" alt="" loading="lazy" decoding="async"></a>`
+        + `<span>${inline(row[0])}</span></th>`
       : `<th scope="row">${inline(row[0])}</th>`;
     out.push("<tr>" + first
       + row.slice(1).map(c => `<td>${inline(c)}</td>`).join("") + "</tr>");
@@ -345,6 +358,23 @@ ${nav}
 <main id="main">
 ${body}
 </main>
+<!--
+  One dialog for all 320 pictures, and its src is set on the click.
+
+  The map has a dialog of its own because there is one map. A dialog per row would put 320 more
+  elements and a second 320 "img" tags on a page that already carries 320, in order to show one
+  at a time. The thumbnail is a real link to the file, so this element is an upgrade and not the
+  mechanism: with no script, or a browser without "dialog", the link shows the picture.
+
+  No scroll box either. The continent is 3504 pixels across and needs a window you drag; a piece
+  of card art is 1024x1536 and fits any screen, so the image is sized to the viewport and there is
+  nothing to scroll.
+-->
+<dialog id="artview" class="artview" aria-label="The picture, at full size">
+<form method="dialog"><button class="artview__close" aria-label="Close the picture">&times;</button></form>
+<img class="artview__img" alt="" decoding="async">
+<p class="artview__name"></p>
+</dialog>
 <script>
 /* Marks the section being read, so the contents list says where you are. Progressive: with no
    script the page is the whole document and every link still works. */
@@ -376,6 +406,29 @@ for (const open of document.querySelectorAll(".map__open")) {
      the element itself rather than on anything inside it landed outside the picture. */
   dialog.addEventListener("click", e => { if (e.target === dialog) dialog.close(); });
 }
+
+/* A row's picture opens at full size. One handler on the document rather than 320 listeners, and
+   one dialog rather than 320: the link in the row carries everything the dialog needs. */
+const artview = document.getElementById("artview");
+if (artview && typeof artview.showModal === "function") {
+  const shown = artview.querySelector(".artview__img");
+  const caption = artview.querySelector(".artview__name");
+  document.addEventListener("click", e => {
+    const open = e.target.closest(".art__open");
+    if (!open) return;
+    e.preventDefault();
+    /* Set before showing, so the dialog never opens on the picture it showed last. */
+    shown.src = open.getAttribute("href");
+    shown.alt = open.dataset.name || "";
+    caption.textContent = open.dataset.name || "";
+    artview.showModal();
+  });
+  /* The backdrop closes it, the same way the map's does: a click on the dialog element itself
+     rather than on anything inside it landed outside the picture. */
+  artview.addEventListener("click", e => { if (e.target === artview) artview.close(); });
+  /* And the src is dropped on close, so a page left open is not holding a decoded image. */
+  artview.addEventListener("close", () => { shown.removeAttribute("src"); });
+}
 </script>
 </body>
 </html>
@@ -400,7 +453,9 @@ export function buildPage(md) {
     chapters: rendered.toc.length,
     tables: (body.match(/<table>/g) ?? []).length,
     /* Counted off the rows, so the map's two copies of one picture do not read as two pieces. */
-    art: (body.match(/<th scope="row" class="named"><img src="/g) ?? []).length,
+    /* The `a` went in on 2026-11-12: the count follows the link rather than the img, because the
+       img is now one tag deeper and a count that missed it would have read zero and said nothing. */
+    art: (body.match(/<th scope="row" class="named"><a class="art__open"/g) ?? []).length,
     maps: (body.match(/<figure class="map">/g) ?? []).length,
     icons: swapped,
     missed: [...MISSED]

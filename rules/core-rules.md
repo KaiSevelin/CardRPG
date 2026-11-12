@@ -2469,8 +2469,15 @@ instead is the recipe, which is a thing you find.
   > and not in a fight. A prune does the job with a mechanism that already existed.
   >
   > **What it cost to retire.** The scar no longer survives its own repair: *Adapted* left something
-  > for a GM to write into a scene, and a pruned injury is gone. **[OPEN]** Whether a *scar* with
-  > no numbers on it is worth a slate kind of its own.
+  > for a GM to write into a scene, and a pruned injury is gone.
+  >
+  > **[RULED 2026-11-12] And it stays gone: no slate with no mechanical impact.** A *scar* kind
+  > carrying no numbers was the obvious patch and it is refused. A slate is a thing the engine
+  > reads, and one that changes nothing is a row on the sheet that the rules must keep describing,
+  > the art pipeline must keep a picture for, and the validator must keep counting, in exchange for
+  > nothing a fight or a check can see. What a healed injury leaves behind is **fiction**, and
+  > fiction does not need a document: the GM remembers the eye, the same way they remember every
+  > other thing that happened and left no number.
 - Five injuries carry **intruder cards** rather than a flat number (section 8) &mdash; *Night Fears*
   puts a Fear in your deck, *The Eager Hand* two Rage. A flat &minus;1 is the same every round and a
   card is not.

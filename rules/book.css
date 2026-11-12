@@ -369,6 +369,72 @@ dialog.mapview::backdrop { background: rgb(0 0 0 / .72); }
 }
 .mapview__close:hover { border-color: var(--accent); color: var(--accent); }
 
+/* --- a row's picture, at full size -------------------------------------- */
+/*
+ * 2026-11-12. The thumbnail is 3.4rem square with `object-fit: cover` and the art is 1024x1536,
+ * so the page shows a square crop of a 2:3 portrait: about a third of each picture. This is the
+ * rest of it.
+ *
+ * Sized to the viewport rather than scrolled. A card fits any screen at 88vh, which is the whole
+ * difference between this and `mapview` above, and the reason it is not the same element.
+ */
+.art__open {
+  display: block;
+  line-height: 0;
+  border-radius: 3px;
+  cursor: zoom-in;
+}
+.art__open:hover img { box-shadow: 0 0 0 1px var(--accent); }
+.art__open:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+dialog.artview {
+  padding: 0;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  background: var(--panel);
+  max-width: 96vw;
+  max-height: 94vh;
+  overflow: hidden;
+}
+dialog.artview::backdrop { background: rgb(0 0 0 / .72); }
+.artview__img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 96vw;
+  /* The caption takes the rest, so the two together stay inside 94vh. */
+  max-height: 88vh;
+}
+.artview__name {
+  margin: 0;
+  padding: .45rem .9rem .5rem;
+  font-family: Cinzel, serif;
+  font-size: .82rem;
+  letter-spacing: .02em;
+  color: var(--ink-faint);
+  text-align: center;
+}
+.artview__close {
+  position: absolute;
+  top: .4rem;
+  right: .6rem;
+  z-index: 1;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  background: var(--panel);
+  color: var(--ink);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.artview__close:hover { border-color: var(--accent); color: var(--accent); }
+/* The art steps out of the row at phone width, so there is nothing there to click. */
+@media (max-width: 34rem) {
+  .art__open { display: none; }
+}
+
 /* --- the game's own icons ------------------------------------------------ */
 
 .glyph {
