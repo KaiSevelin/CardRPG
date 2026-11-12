@@ -41,12 +41,26 @@
  * enforce (equipment.md 11's `[OPEN]`) is enforced by owning cards.
  *
  * **The distribution is lopsided on purpose, and it is worth seeing.** Five of the fourteen are
- * Maimings, because ideas.md's six examples were all written as what a sword does to a body. With
- * a cap of one injury per category, that means a character who has lost an eye can never lose a
- * leg -- the same ritual regrows both, so they are one category, and the cap follows the ritual
- * rather than the anatomy. **[OPEN]** Whether that is too coarse is a question for play, and the
- * dial is a Maiming/Blinding split with a second ritual behind it. It is not a question the
- * arithmetic can answer.
+ * Maimings, because ideas.md's six examples were all written as what a sword does to a body. The
+ * category follows the **ritual** rather than the anatomy, because one Regrowth regrows an eye and
+ * a leg alike.
+ *
+ * > **[RESOLVED 2026-11-12] The Maiming/Blinding split is withdrawn, and the cap moved instead.**
+ * >
+ * > This carried an `[OPEN]`: with one injury per category a character who had lost an eye could
+ * > never lose a leg, and the proposed dial was **a Maiming/Blinding split with a second ritual
+ * > behind it.** It is withdrawn, because it was solving a problem the data model had already
+ * > solved another way. `cap` is per category in config and already takes `null`; **Maiming has
+ * > been the uncapped one all along**, so the coarseness was never about Maiming at all -- it was
+ * > about the three categories that still said one.
+ * >
+ * > Those are **two** now. A split would have added a category, a ritual, a recipe, an icon and a
+ * > row to five documents; a cap of two adds a digit. And the split would not have helped the
+ * > character who cannot be both shaken and afraid of the dark, which is the same complaint one
+ * > category further along.
+ * >
+ * > **Obligation stays at one**, and the reason is the missing ritual rather than the severity:
+ * > a second slate nothing can remove is not a harder fight, it is a sheet that only accumulates.
  */
 export const INJURIES = [
   /* --- Maiming: flesh and bone that did not grow back. Lifted by a Regrowth. --- */

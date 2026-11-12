@@ -11481,6 +11481,35 @@ check("categories with no cap", Object.entries(injuryCats)
 check("and every other kind states one", Object.entries(injuryCats)
   .filter(([, c]) => c.cap === undefined).map(([k]) => k).join(", ") || "none", "none");
 /*
+ * **And what each cap actually is.**  **[FOUND 2026-11-12]**
+ *
+ * The two checks above ask which category has **no** cap and which has **no cap field**, so
+ * between them they established that a cap exists and never once what it was. Three of them were
+ * raised from 1 to 2 and the suite passed green -- the number that decides how far a character can
+ * be ground down had no pin at all.
+ *
+ * Read out as a list rather than as a count, because the finding wanted is *which category*: a cap
+ * is a different decision per kind, and one of them moving is the thing to be told about.
+ */
+check("the cap on each kind of injury", Object.entries(injuryCats)
+  .map(([k, c]) => `${k} ${c.cap === null ? "uncapped" : c.cap}`).join(", "),
+  "maiming uncapped, breaking 2, curse 2, corruption 2, obligation 1");
+/*
+ * **Obligation is the one still at one, and the reason is the missing ritual.** Every other injury
+ * has a way out, so a second is a harder fight; a second obligation is a second slate nothing in
+ * the game removes. So the two facts are checked as the pair they are -- the category with no
+ * ritual is the category with the lowest cap, and either one moving alone is the bug.
+ */
+check("and the kind with no ritual is the kind capped lowest", Object.entries(injuryCats)
+  .filter(([, c]) => c.ritual === null).map(([k, c]) => `${k} ${c.cap}`).join(", "),
+  "obligation 1");
+/* And core-rules states the same number, in the sentence a player reads it from. */
+check("the cap core-rules states",
+  /You may carry at most (\w+) injuries of each category/.exec(coreRules)?.[1], "two");
+check("and that core-rules names both exceptions",
+  /except Maimings, which are\s+uncapped, and an Obligation, which is one/.test(coreRules)
+    ? "yes" : "no", "yes");
+/*
  * **The brake on an uncapped Maiming is a prune now, and *Adapted* is gone.**
  * **[RETIRED 2026-11-12]**
  *

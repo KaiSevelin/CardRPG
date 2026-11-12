@@ -1120,9 +1120,19 @@ CARDRPG.injuryCategories = {
     cap: null
   },
   /* Nerve, memory and conviction. The body is whole and something behind it is not. */
+  /*
+   * **[RULED 2026-11-12] Two, not one.** The cap exists to stop a death spiral and it was set at
+   * one, blind, before anything had measured a stack -- and at one it says a character whose
+   * nerve went can never also come to fear the dark, which is the same absurdity the Maiming
+   * uncap was granted for. Two is the smallest number that is not a denial.
+   *
+   * The release valve moved the same day and in the harder direction: *Adapted* was repeatable and
+   * a **prune** is scarce, four nodes in the whole graph. So this is deliberately two rather than
+   * `null` -- see the note on `obligation` for the one that stays at one.
+   */
   breaking: {
     label: "CARDRPG.Injury.Breaking", icon: "oppression",
-    ritual: "Quieting", approach: "presence", progress: 6, pressure: 4, cap: 1
+    ritual: "Quieting", approach: "presence", progress: 6, pressure: 4, cap: 2
   },
   /*
    * Somebody did this on purpose, which is the only category that names a person -- so the ritual
@@ -1132,14 +1142,23 @@ CARDRPG.injuryCategories = {
   curse: {
     label: "CARDRPG.Injury.Curse", icon: "bottled-bolt",
     ritual: "Unbinding", approach: "lore", progress: 8, pressure: 3, needsName: true,
-    cap: 1
+    cap: 2
   },
   /* Taint nobody ever cured, gone past the point a cure reaches. Cleansing's own numbers. */
   corruption: {
     label: "CARDRPG.Injury.Corruption", icon: "virus",
-    ritual: "Cleansing", approach: "lore", progress: 4, pressure: 4, cap: 1
+    ritual: "Cleansing", approach: "lore", progress: 4, pressure: 4, cap: 2
   },
-  /* A pact, a debt, a curse you picked up knowingly. No ritual, on purpose. */
+  /*
+   * A pact, a debt, a curse you picked up knowingly. No ritual, on purpose.
+   *
+   * **And the one category that stays at one**, while the other three went to two on 2026-11-12.
+   * The reason is the missing ritual rather than the severity: every other injury has a way out,
+   * so a second one is a harder fight and a longer road. A second obligation is a second slate
+   * **nothing in the game can remove** -- not a ritual, not a rest, not a prune -- which is not a
+   * harder fight, it is a sheet that only accumulates. The asymmetry that makes one obligation
+   * interesting is what makes two of them a trap.
+   */
   obligation: {
     label: "CARDRPG.Injury.Obligation", icon: "lock-spy",
     ritual: null, approach: null, progress: null, pressure: null, cap: 1

@@ -2367,12 +2367,31 @@ A category does exactly one job: **it names the ritual that lifts it.**
 | **Corruption** | Taint gone past where a cure reaches | **Cleansing** | Lore, Progress 4, Pressure 4 |
 | **Obligation** | a pact, a debt, a bargain you made | **nothing** | &mdash; |
 
-**You may carry at most one injury of each category &mdash; except Maimings, which are uncapped.**
+**You may carry at most two injuries of each category &mdash; except Maimings, which are
+uncapped, and an Obligation, which is one.**  **[RULED 2026-11-12]**
 
 The cap is what keeps an injury from becoming a death spiral, and it read absurdly in exactly one
 place: one Regrowth regrows an eye and a leg alike, so they are one category, and a cap that
 followed the ritual was telling a one-eyed character that their legs were safe for ever. A Regrowth
 still lifts **one**, so three maimings is three rituals.
+
+> **It was one, and one was a denial rather than a cap.**  **[RULED 2026-11-12]** At one, a
+> character whose nerve had gone could never also come to fear the dark, and a cursed one could not
+> be both hexed and compelled &mdash; which is the same absurdity the Maiming uncap was granted
+> for, one category further along. **Two** is the smallest number that is not a denial, and the cap
+> still does the job it was set for: four liftable kinds at two apiece is eight slates at the very
+> worst, against five before.
+>
+> **The obligation is the exception, and the reason is the missing ritual rather than the
+> severity.** Every other injury has a way out, so a second one is a harder fight and a longer
+> road. A second obligation is a second slate nothing in the game can remove &mdash; not a ritual,
+> not a rest, not a prune &mdash; and the asymmetry that makes one of them interesting is what
+> makes two a trap.
+>
+> **And the proposed alternative is withdrawn.** The dial on record was a **Maiming/Blinding
+> split** with a second ritual behind it, which would have added a category, a ritual, a recipe, an
+> icon and a row to five documents &mdash; to fix a complaint that was never about Maiming, the one
+> category already uncapped.
 
 > **It is not free, and a prune is what pays for it.**  **[RULED 2026-11-12]** A *Bad Leg* alone
 > measures &minus;8.1 win rate against the published encounters and &minus;21.1 against archers, so
