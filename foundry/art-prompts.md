@@ -1,6 +1,6 @@
 # Art prompts
 
-**643 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
+**642 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
 
 It walks the same `GROUPS` the art list walks, by importing it rather than copying it, so the two files cannot disagree about what exists.
 
@@ -27,7 +27,7 @@ So the numbers are gone from the capsules and the picture is in their place: **t
 
 ## Deck backs
 
-**Draw these first.** 11 pictures against 632 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
+**Draw these first.** 11 pictures against 631 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
 
 ### The capsule — paste this once
 
@@ -5929,7 +5929,7 @@ Draw that line literally: the one moment it describes, and nothing else in frame
 
 ## Features
 
-**15 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/features/`.
+**14 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/features/`.
 
 Always on, so this picture sits on a character's sheet for their whole life. A quality rather than an action.
 
@@ -6016,18 +6016,6 @@ Use the full range, both ends of it:
 ```
 
 </details>
-
-### Adapted
-
-File: `features/adapted.webp`
-
-```text
-SUBJECT. "Adapted" — Name one injury you carry. Its penalty no longer applies. The injury remains.
-
-Draw a hand doing something awkward entirely without hesitation -- the missing fingers plainly missing, the grip worked out long ago and no longer thought about.
-
-WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Central Asian appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
-```
 
 ### Alert
 

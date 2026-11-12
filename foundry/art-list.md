@@ -1,6 +1,6 @@
 # Art list
 
-**643 pieces**, of which **643** are drawn and **0** still to shoot. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
+**642 pieces**, of which **642** are drawn and **0** still to shoot. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
 
 ## What to supply
 
@@ -53,7 +53,7 @@ Anything under `icons/svg/` is ignored on purpose: that is Foundry's own placeho
 
 ## Deck backs — draw these first
 
-**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 11 pictures against 632 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
+**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 11 pictures against 631 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
 
 **11 pieces**, 11 wired up. Same 2:3 and 640 × 960 as a face, and **no safe area**: nothing is printed over a back, so the whole card is yours.
 
@@ -589,11 +589,10 @@ Twelve gods' lesser miracles, handed over by minor nodes.
 
 Always on, so a feature's picture is on the sheet for the character's whole life.
 
-**15 pieces**, 15 wired up. Suggested path: `cardrpg/art/features/`
+**14 pieces**, 14 wired up. Suggested path: `cardrpg/art/features/`
 
 | | Name | What it is | File |
 |---|---|---|---|
-| ✓ | **Adapted** | Name one injury you carry. Its penalty no longer applies. The injury remains. | `features/adapted.webp` |
 | ✓ | **Alert** | You draw with advantage on initiative. | `features/alert.webp` |
 | ✓ | **Arcane Focus** | +1 to all Cast values. | `features/arcane-focus.webp` |
 | ✓ | **Good Aim** | +2 range on Ranged and Thrown items. | `features/good-aim.webp` |

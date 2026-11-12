@@ -684,27 +684,16 @@ export class FeatureSlateData extends SlateData {
       text: new fields.StringField({ required: false, blank: true, initial: "" }),
       group: groupField(),
 
-      /**
-       * **The one injury this feature adapts around**, by name. Blank on every other feature.
+      /*
+       * **[RETIRED 2026-11-12] `adapts` is gone with *Adapted*.**
        *
-       * ideas.md's *Adapted: ignore one injury's penalty* is the only levelling option in the game
-       * that points at **another slate**, which is why it has to be a field: no amount of negative
-       * `grants` can express *ignore that other thing*.
-       *
-       * The injury is not removed. A **Regrowth** removes one; this leaves it on the sheet with
-       * its arithmetic switched off, which is the difference between healing and learning to live
-       * with it -- and the reason the scar is still there for a GM to write into a scene.
-       *
-       * It also exists because Maimings are **uncapped** (config.mjs). Three of them measure past
-       * two of the most expensive card in the game, so the brake had to be fitted before the cap
-       * came off.
-       *
-       * Read through `adaptedNames` in grants.mjs by **every** reader of an injury's numbers,
-       * because there are five of them -- the grant sum, the move reduction, the hand-slot
-       * capacity, the blocked reactions and the printed range -- and an Adapted that reached four
-       * would be a feature that works on a sheet and not in a fight.
+       * It held the name of the one injury a feature switched off, and it was the only field in
+       * the game that pointed at another slate: no amount of negative `grants` can express *ignore
+       * that other thing*. A prune removes the injury instead (leveling 4), so nothing needs to
+       * name one any more and the five readers of an injury's numbers stopped having a question to
+       * ask. Removing a field is a migration on any world that stored one, and this one stored a
+       * name on exactly one feature nobody can own now.
        */
-      adapts: new fields.StringField({ required: false, blank: true, initial: "" }),
       ...drainFields(),
 
       /**

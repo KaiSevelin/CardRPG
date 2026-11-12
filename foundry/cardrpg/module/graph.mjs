@@ -34,7 +34,14 @@ import {
 export const SIGNATURES = [...SHADE_SIGNATURES, ...STRENGTH_SIGNATURES, ...MIND_SIGNATURES,
   ...FAITH_SIGNATURES];
 export const ALL_TACTICS = { ...TACTICS, ...STRENGTH_TACTICS, ...MIND_TACTICS, ...FAITH_TACTICS };
-import { deckOf, allStacks, actionCardData, artIn } from "./decks.mjs";
+import { deckOf, allStacks, actionCardData, artIn, isIntruder } from "./decks.mjs";
+/*
+ * **One import from the resolver, and it is not a cycle.** `resolve.mjs` does not import this
+ * module, so the dependency points one way -- unlike the deferred `import()` the deck module used
+ * to carry, which was documented and was still a cycle. A prune that removes an injury has to take
+ * the cards that injury dealt with it, and `liftInjury` is where that sentence already lives.
+ */
+import { liftInjury } from "./resolve.mjs";
 /* The approach list, imported rather than reached through the global: `graphFaults` is called
  * by the offline validator, where Foundry's globals do not exist, and config.mjs fills this
  * object at module scope so an import is enough. */
@@ -973,23 +980,108 @@ export async function raiseSkillCard(actor, approach) {
   return true;
 }
 
+/**
+ * **A prune takes one card, or one injury.**  **[RULED 2026-11-12]**
+ *
+ * It used to offer `card.type === "action"` and nothing else, which left two kinds of thing a
+ * player would call a card out of the list:
+ *
+ *  - **the intruders** -- a Wound, a Taint, a Doubt, a Rage, a Compulsion. Nobody chose to put one
+ *    in the deck, they cannot be played, and they come round again on the pile's own clock. *For
+ *    the user everything is cards*, and the one card they would most like to drop was the one card
+ *    the dialog would not list.
+ *  - **the injuries**, which is what retired *Adapted*. That read *name one injury you carry; its
+ *    penalty no longer applies*, and it was the brake fitted before the Maiming cap came off. A
+ *    prune removes the injury rather than muting it, so the brake is still there and the game has
+ *    one mechanism fewer that points at another slate.
+ *
+ * **An injury goes through `liftInjury`, never by deleting the slate.** Five injuries deal intruder
+ * cards, so the two halves of this list are connected: delete the slate and its Fears and Rages
+ * stay in the deck for ever, with nothing left on the sheet to say where they came from. That
+ * function's own comment already made the rule -- *whatever the reason an injury leaves, the cards
+ * it dealt have to leave with it, and one exit is how that stays true* -- and routing through it
+ * means the one thing a prune must not do is refused in one place rather than two.
+ *
+ * **A permanent obligation refuses, and that is the whole reason this routes.** *The Debt* says in
+ * its own text that no ritual lifts it, and it deals a Compulsion. A prune that reached either half
+ * of it would have made the one injury nothing can lift the easiest one in the game to walk away
+ * from, on a reward the Shade trunk hands to everybody.
+ *
+ * **The deck floor applies to real cards only** (core-rules 8). An intruder does not count toward
+ * the deck limit on the way in, so it cannot be what stops you dropping one on the way out, and an
+ * injury is not in the deck at all.
+ */
 export async function prune(actor) {
-  const cards = allStacks(actor)
-    .flatMap(stack => stack.cards.contents)
-    .filter(card => card.type === "action");
+  const inDecks = allStacks(actor).flatMap(stack => stack.cards.contents);
+  const cards = inDecks.filter(card => card.type === "action");
+  /* `isIntruder` rather than a list of type names: the table in decks.mjs is the rule, and a
+   * fourth kind of unwanted card should not have to be remembered here as well. */
+  const intruders = inDecks.filter(isIntruder);
+  /*
+   * **Two kinds of injury are left off the list, and for different reasons.**
+   *
+   * A **lasting** one heals on its own after so many days of rest, so spending the rarest reward
+   * in the game on one is a mistake the dialog should not offer to make.
+   *
+   * An **obligation** cannot be removed at all -- *The Debt* says in its own text that no ritual
+   * lifts it -- and `liftInjury` refuses it. That refusal is the backstop and not the interface:
+   * `takeNode` spends a prune whether or not it worked, so offering the thing that will be refused
+   * is offering a player the chance to burn a level on a notification. `liftedBy` is the slate's
+   * own getter and is `null` for exactly that one category, so this is a field read rather than a
+   * second copy of the rule.
+   */
+  const injuries = [...(actor.items ?? [])]
+    .filter(slate => slate.type === "injury" && slate.system?.permanent
+      && slate.system?.liftedBy);
 
-  if (cards.length <= (actor.system.actionDeck?.min ?? 0)) {
+  const floored = cards.length <= (actor.system.actionDeck?.min ?? 0);
+  if (floored && !intruders.length && !injuries.length) {
     ui.notifications?.warn(game.i18n.format("CARDRPG.Level.PruneFloor",
       { min: actor.system.actionDeck?.min ?? 0 }));
     return false;
   }
 
-  /* Sorted and counted, because a deck holds three Strikes and "which Strike" is not a question. */
-  const counts = new Map();
-  for (const card of cards) counts.set(card.name, (counts.get(card.name) ?? 0) + 1);
-  const options = [...counts.entries()].sort((a, b) => a[0].localeCompare(b[0]))
-    .map(([name, n]) => `<option value="${foundry.utils.escapeHTML(name)}">`
-      + `${foundry.utils.escapeHTML(name)}${n > 1 ? ` (${n})` : ""}</option>`).join("");
+  const esc = s => foundry.utils.escapeHTML(s);
+
+  /*
+   * **The value is an index into `offers`, never a name.**  **[FOUND 2026-11-12]**
+   *
+   * It used to be the name, escaped on the way out and compared raw on the way back, so
+   * `The Order's Shield` returned as `The Order&#x27;s Shield`, matched nothing, and the prune
+   * returned false -- after `takeNode` had already counted it as spent. One action card in
+   * ninety-three carries an apostrophe, which is exactly the frequency a bug like this survives at.
+   *
+   * An index also lets the label say more than the thing is called: `Strike (3)` is a count and
+   * not a name, and nothing has to parse it back off again.
+   */
+  const offers = [];
+  const option = (label, target) => {
+    offers.push(target);
+    return `<option value="${offers.length - 1}">${esc(label)}</option>`;
+  };
+  const group = (label, items) => items.length
+    ? `<optgroup label="${esc(label)}">${items.join("")}</optgroup>` : "";
+
+  /* Sorted and counted, because a deck holds three Strikes and "which Strike" is not a question:
+   * the copies are identical documents, so the offer carries whichever one is first. */
+  const byName = list => {
+    const copies = new Map();
+    for (const card of list) copies.set(card.name, [...(copies.get(card.name) ?? []), card]);
+    return [...copies.entries()].sort((a, b) => a[0].localeCompare(b[0]))
+      .map(([name, held]) => option(held.length > 1 ? `${name} (${held.length})` : name,
+        { injury: false, doc: held[0] }));
+  };
+
+  const options = group(game.i18n.localize("CARDRPG.Level.PruneCards"),
+    floored ? [] : byName(cards))
+    + group(game.i18n.localize("CARDRPG.Level.PruneIntruders"), byName(intruders))
+    + group(game.i18n.localize("CARDRPG.Level.PruneInjuries"),
+      injuries.sort((a, b) => a.name.localeCompare(b.name))
+        .map(slate => option(slate.name, { injury: true, doc: slate })));
+  if (!offers.length) {
+    ui.notifications?.warn(game.i18n.localize("CARDRPG.Level.PruneNothing"));
+    return false;
+  }
 
   /* Reached through the global rather than destructured at module scope: this module is imported by
    * the offline validator, where `foundry` does not exist, and the engine's testability depends on
@@ -1006,11 +1098,14 @@ export async function prune(actor) {
   });
   if (!chosen) return false;
 
-  /* Whichever copy is easiest to reach: they are identical documents by this point. */
-  const victim = cards.find(card => card.name === chosen);
-  if (!victim) return false;
-  await victim.delete();
-  ui.notifications?.info(game.i18n.format("CARDRPG.Level.Pruned", { name: chosen }));
+  const target = offers[Number(chosen)];
+  if (!target) return false;
+  /* `liftInjury` reports what it did and refuses what it must, so nothing is said twice here. */
+  if (target.injury) return liftInjury(actor, target.doc);
+
+  const name = target.doc.name;
+  await target.doc.delete();
+  ui.notifications?.info(game.i18n.format("CARDRPG.Level.Pruned", { name }));
   return true;
 }
 

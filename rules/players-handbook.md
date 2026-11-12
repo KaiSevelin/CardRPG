@@ -1464,7 +1464,6 @@ Permanent traits. A feature is never shuffled and never spent: it is simply true
 
 | Feature | What it does |
 |---|---|
-| **Adapted** | Name one injury you carry. Its penalty no longer applies. The injury remains. |
 | **Hard Hands** | +1 on Might checks. Lifting, breaking, and not letting go. |
 | **Light Step** | +1 on Agility checks. Where to put a foot, decided before you need it. |
 | **Quiet Worker** | +1 on Shadow checks. Slowly is quietly, and you have the patience for it. |

@@ -4016,11 +4016,85 @@ check("the actor derives level, title and Ways",
 check("prune is implemented", /export async function prune\(actor\)/.test(graphSource) ? "yes" : "no", "yes");
 /* The comparison itself, not a mention of the floor: the warning names `min` too, so a check that
  * looked for the field survived the floor being removed. */
-check("it checks the deck floor before asking",
-  /cards\.length <= \(actor\.system\.actionDeck\?\.min[\s\S]{0,900}DialogV2\.prompt/
+/*
+ * **The floor is read before the question is asked, and it governs real cards only.**
+ *
+ * **[2026-11-12]** It used to be the one gate and an early return. A prune reaches intruders and
+ * injuries now, and neither is a reason a character can be made illegal: an intruder does not
+ * count toward the deck limit on the way **in** (core-rules 8), so it cannot be what stops you
+ * dropping one on the way out, and an injury is not in the deck at all. So `floored` is computed
+ * first and then spends itself in two places -- it refuses outright only when there is nothing
+ * else to offer, and otherwise it withholds the deck's own cards from the list.
+ */
+check("it reads the deck floor before asking",
+  /const floored = cards\.length <= \(actor\.system\.actionDeck\?\.min[\s\S]{0,2600}DialogV2\.prompt/
     .test(graphSource) ? "yes" : "no", "yes");
-check("it only ever removes an action card",
-  /\.filter\(card => card\.type === "action"\)/.test(graphSource) ? "yes" : "no", "yes");
+check("and only the deck's own cards are withheld by it",
+  /floored \? \[\] : byName\(cards\)/.test(graphSource) ? "yes" : "no", "yes");
+
+/*
+ * **A prune takes one card, or one injury.**  **[RULED 2026-11-12]**
+ *
+ * It offered `type === "action"` and nothing else, which left out the two things a player would
+ * most like to drop: the **intruders**, which nobody chose and nobody can play, and the
+ * **injuries**, which is the job retired *Adapted*.
+ *
+ * `isIntruder` rather than a list of type names, because the table in decks.mjs is the rule and a
+ * fourth kind of unwanted card must not have to be remembered in a second place -- which is the
+ * defect that table was built to end.
+ */
+check("a prune offers the cards nobody chose",
+  /const intruders = inDecks\.filter\(isIntruder\)/.test(graphSource) ? "yes" : "no", "yes");
+/*
+ * **And it offers a permanent injury only.** A lasting one heals itself after so many days of
+ * rest, so spending the rarest reward in the game on one is a mistake the dialog should not offer
+ * to make.
+ */
+check("and the permanent injuries, which is what Adapted used to mute",
+  /slate\.type === "injury" && slate\.system\?\.permanent/.test(graphSource) ? "yes" : "no",
+  "yes");
+/*
+ * **And it offers nothing `liftInjury` would refuse.** `takeNode` spends a prune whether or not it
+ * worked, so a dialog that listed *The Debt* would be offering a player the chance to spend a
+ * level on a notification. Checked as the pair it is: the dialog filters on `liftedBy` and the
+ * resolver refuses on the same field being null, and one of those changing alone is the bug.
+ */
+check("and leaves out what cannot be removed at all",
+  /&& slate\.system\?\.liftedBy/.test(graphSource) ? "yes" : "no", "yes");
+check("which is the same field the refusal reads",
+  /const ritual = injury\.system\.liftedBy;/.test(resolveSource) ? "yes" : "no", "yes");
+/*
+ * **The one thing it must not do.** Five injuries deal intruder cards -- Night Fears, The Eager
+ * Hand, Compelled Step, Hollow Eyes and The Debt -- so deleting the slate would leave its Fears
+ * and Rages in the deck for ever with nothing left on the sheet to say where they came from. And
+ * *The Debt* says in its own text that **no ritual lifts it**: a prune that reached it would make
+ * the one injury nothing can lift the easiest one in the game to walk away from.
+ *
+ * `liftInjury` already refuses that and already takes the cards back, and its own comment says why
+ * it is the only exit. So this is checked as a shape rather than as a rule restated here.
+ */
+check("and an injury leaves through the one exit, not by deleting a slate",
+  /if \(target\.injury\) return liftInjury\(actor, target\.doc\);/.test(graphSource)
+    ? "yes" : "no", "yes");
+/*
+ * **And the dialog answers with an index, not a name.**  **[FOUND 2026-11-12]**
+ *
+ * The value was the name run through `escapeHTML` and compared raw on the way back, so
+ * `The Order's Shield` -- one action card in ninety-three -- came back unmatchable and the prune
+ * did nothing while `takeNode` counted it as spent. Pinned as a shape, because the failure mode is
+ * silence: there is no error, no warning and no card gone.
+ */
+check("the prune answers with an index rather than a name",
+  /<option value="\$\{offers\.length - 1\}">/.test(graphSource) ? "yes" : "no", "yes");
+check("and nothing matches a document back by its escaped name",
+  /find\(card => card\.name === name\)/.test(graphSource) ? "it does" : "no", "no");
+check("which is the function that takes the cards it dealt with it",
+  /the cards it dealt have to leave with it/.test(resolveSource) ? "yes" : "no", "yes");
+check("and refuses a permanent obligation",
+  /if \(injury\.system\.permanent && !ritual\)/.test(resolveSource) ? "yes" : "no", "yes");
+/* One way only: the resolver must not come back for the graph, or this is a cycle. */
+check("and the dependency points one way",
+  /from "\.\/graph\.mjs"/.test(resolveSource) ? "it does not" : "one way", "one way");
 check("taking a node performs every prune it grants",
   /for \(let i = 0; i < \(grants\.prune \?\? 0\); i\+\+\) await prune\(actor\)/.test(graphSource)
     ? "yes" : "no", "yes");
@@ -6533,7 +6607,8 @@ const everyCreatureForArt = monsters.expandRoster(content.ROSTER, content.VARIAN
  * the agreement of two lists: it moves when content is written, which is what it should mean.
  */
 const artable = (await import("../module/art.mjs")).SHELVES.flatMap(s => s.list ?? []);
-check("pieces of content that take art", artable.length, 632);
+/* 631 since 2026-11-12: *Adapted* was retired and took its own brief and picture with it. */
+check("pieces of content that take art", artable.length, 631);
 /*
  * **The four items that are content without being commissions, and the item each one wears.**
  *
@@ -7049,7 +7124,7 @@ const { artIn: artInLive, backOf: backOfLive } = await import("../module/decks.m
 /* Every piece the game can hand Foundry a path for, which is all of them: kept as the denominator
  * the three states below have to add up to, and no longer printed as progress. */
 check("pieces the game has a path for", artable.filter(e => artInLive(e)).length
-  + backs.filter(([k]) => backOfLive(k)).length, 643);
+  + backs.filter(([k]) => backOfLive(k)).length, 642);
 /*
  * **And every path the game hands Foundry names a file that is there.**
  *
@@ -7068,7 +7143,7 @@ const pathless = [
   ...artable.map(e => [e.name, artInLive(e)]),
   ...backs.map(([k, b]) => [b.label ?? k, backOfLive(k)])
 ].filter(([, p]) => p && !fs.existsSync(fileFor(p)));
-check("art paths the game would hand Foundry", artable.length + backs.length, 643);
+check("art paths the game would hand Foundry", artable.length + backs.length, 642);
 /*
  * **The brief's progress line used to be the total, and nobody noticed for months.**
  *
@@ -7330,7 +7405,7 @@ const briefs = faceRows.map(r => r.brief);
 const leaked = briefs.flatMap(text =>
   [...text.matchAll(/\b([a-z]+[A-Z][a-zA-Z]*)\b/g)].map(m => m[1]));
 /* A pattern that matched no rows at all would report "none" for any list whatsoever. */
-check("briefs the check actually read", briefs.length, 632);
+check("briefs the check actually read", briefs.length, 631);
 check("keys that leaked into the brief",
   leaked.length ? [...new Set(leaked)].join(", ") : "none", "none");
 /*
@@ -7889,6 +7964,42 @@ check("the level-up pane signs a grant rather than assuming a plus",
 check("and so does the handbook's table of what an item grants",
   /\$\{n < 0 \? "" : "\+"\}\$\{n\}/
     .test(fs.readFileSync(path.join(root, "test/handbook.mjs"), "utf8")) ? "yes" : "no", "yes");
+
+/*
+ * **Adapted is retired in every document that described it.**  **[RULED 2026-11-12]**
+ *
+ * It was named in four: core-rules §8 twice (the brake under the uncapped Maiming, and the entry
+ * under *Living with one*), the handbook's generated feature table, and ideas.md, which is where
+ * the idea came from. The engine checks above say the mechanism is gone; these say the documents
+ * do not still offer it, which is the half that goes stale quietly -- a retired rule a player can
+ * still read is a rule, and this project has caught that on seven documents once already.
+ *
+ * Written as a filter over a list rather than as four greps, because the finding wanted is *which
+ * document* and a `/re/.test(VAR)` can only say yes.
+ */
+const liveAdapted = /\*\*Adapted\*\*\s+\*\*\[BUILT|name one injury you carry; its\s+penalty no longer applies\.\* \*\*The injury stays/;
+check("documents still offering Adapted as a live option",
+  [["core-rules.md", coreRules], ["the handbook", handbook], ["ideas.md", fs.readFileSync(path.join(root, "../../rules/ideas.md"), "utf8")],
+    ["leveling.md", levDoc]]
+    .filter(([, text]) => liveAdapted.test(text)).map(([name]) => name).join(", ") || "none",
+  "none");
+/* And the feature itself is out of the generated table a player reads it from. */
+check("and the handbook's feature table no longer lists it",
+  /\| \*\*Adapted\*\* \|/.test(handbook) ? "it does" : "gone", "gone");
+/*
+ * **And what replaced it, in the two documents that have to agree about the brake.** core-rules §8
+ * uncapped Maimings on the argument that a brake was fitted; leveling 4 is where the brake lives.
+ * One of those moving without the other is the cap standing on a reward that stopped existing.
+ */
+check("core-rules names the brake on an uncapped Maiming",
+  /\*\*It is not free, and a prune is what pays for it\.\*\*/.test(coreRules) ? "yes" : "no",
+  "yes");
+check("and leveling 4's prune reaches an injury",
+  /Remove one card, or one permanent injury, permanently/.test(levDoc) ? "yes" : "no", "yes");
+/* The two it must not reach, stated where a reader will meet them rather than only in the code. */
+check("and says it reaches neither an Obligation nor a lasting injury",
+  /\*\*It does not reach an Obligation\.\*\*/.test(coreRules)
+  && /It does not reach a lasting injury either/.test(coreRules) ? "yes" : "no", "yes");
 
 check("and leveling 4 prints the same price",
   /\*\*one card more in hand, one card fewer you may play\*\*/.test(levDoc) ? "yes" : "no",
@@ -8709,7 +8820,7 @@ check("and those are the lengths in the source",
  * European and the cards had no assignment at all.
  */
 const castLines = [...artPrompts.matchAll(/that person is (a (?:wo)?man) of ([A-Za-z ]+?) appearance/g)];
-check("cards, signatures and features given an assigned person", castLines.length, 173);
+check("cards, signatures and features given an assigned person", castLines.length, 172);
 /* The NPC pool is the one group that must NOT be cast: its own capsule says the actor is nobody,
  * because one picture is drawn behind a goblin, a troll and a dragon. */
 const npcBlock = /\n## NPC intent cards\n([\s\S]*?)\n## /.exec(artPrompts)?.[1] ?? "";
@@ -9006,7 +9117,7 @@ check("and each one says what is not in the frame",
  * spelling them again. */
 const packSource = fs.readFileSync(path.join(root, "test/build-packs.mjs"), "utf8");
 const rows = faceRows;
-check("file paths in the brief", rows.length, 632);
+check("file paths in the brief", rows.length, 631);
 /* And the backs, whose path is the slug of their KEY rather than of their printed label. */
 const backPaths = [...artList.matchAll(/\| `(backs\/[^`]+)` \|/g)].map(m => m[1]);
 check("back paths in the brief", backPaths.length, backs.length);
@@ -9794,7 +9905,7 @@ const planned = packs.planDocuments();
 check("compendium packs", planned.length, 8);
 check("and what each one holds",
   planned.map(p => `${p.name}:${p.docs.length}`).join(" "),
-  "creatures:112 characters:1 items:187 features:24 spells:118 injuries:14 signatures:30 decks:13");
+  "creatures:112 characters:1 items:187 features:23 spells:118 injuries:14 signatures:30 decks:13");
 /* Faults the generator records rather than throws: a filename collision silently drops a document,
  * so the build reports it and this refuses to pass with one outstanding. */
 check("faults the generator reported", planned[0].faults.join("; ") || "none", "none");
@@ -9838,7 +9949,7 @@ check("and the group it asks for", DIMENSIONS.join("+"), "width+height+depth");
  */
 const everyPackDoc = planned.flatMap(p => p.docs);
 const everyPackChild = planned.flatMap(p => p.docs.flatMap(d => d.items ?? d.cards ?? []));
-check("documents the stamp sweep read", everyPackDoc.length, 499);
+check("documents the stamp sweep read", everyPackDoc.length, 498);
 check("and children beneath them", everyPackChild.length, 393);
 const unstamped = [...everyPackDoc, ...everyPackChild]
   .filter(d => d._stats?.coreVersion !== manifest.compatibility.verified
@@ -9881,7 +9992,7 @@ const packedFromContent = {
  * pack that lost half its entries would otherwise agree with itself* -- and a break test pointed the
  * derivation at the pack and passed, which is exactly that failure with the comment still above it.
  */
-check("features the content holds", packedFromContent.features, 24);
+check("features the content holds", packedFromContent.features, 23);
 /* Same reason, for the two this build moved: a literal beside each derivation. */
 check("injuries the content holds", packedFromContent.injuries, 14);
 check("and recipes among the items", content.RITUALS.length, 7);
@@ -9921,7 +10032,7 @@ check("pack sources that disagree with the content",
   stale.length ? `${stale.length}: ${stale.slice(0, 4).join(", ")}` : "none", "none");
 /* A comparison that read no files would report "none" for a repository with no packs at all. */
 check("documents the comparison actually read",
-  planned.reduce((n, p) => n + p.docs.length, 0), 499);
+  planned.reduce((n, p) => n + p.docs.length, 0), 498);
 
 /*
  * **An id is a promise.** A world that imports a creature keeps the pack's id, and so does every
@@ -9954,7 +10065,7 @@ for (const pack of planned) {
 }
 check("ids that are not the hash of their key, malformed, or shared",
   idFaults.length ? idFaults.slice(0, 4).join("; ") : "none", "none");
-check("ids the rule actually read", everyId.size, 892);
+check("ids the rule actually read", everyId.size, 891);
 /* The hash itself, asked rather than shared: sixteen characters of the right alphabet, and the
  * same answer twice for the same key. */
 check("an id is sixteen characters", packs.id16("items:Longsword").length, 16);
@@ -11328,34 +11439,49 @@ check("categories with no cap", Object.entries(injuryCats)
 check("and every other kind states one", Object.entries(injuryCats)
   .filter(([, c]) => c.cap === undefined).map(([k]) => k).join(", ") || "none", "none");
 /*
- * **And the brake that had to be fitted before the cap came off.** A *Bad Leg* alone measures
- * -8.1 win rate and -21.1 against archers, so three stacked maimings is a character nobody wants
- * to play. *Adapted* is what ideas.md specified for that and nothing had built.
+ * **The brake on an uncapped Maiming is a prune now, and *Adapted* is gone.**
+ * **[RETIRED 2026-11-12]**
  *
- * The checks below are about **reach**, because that is the only way this can go wrong: an
- * injury's numbers are read in five places, and an Adapted that reached four of them would be a
- * levelling option that works on a sheet and not in a fight.
+ * A *Bad Leg* alone measures -8.1 win rate and -21.1 against archers, so three stacked maimings is
+ * a character nobody wants to play, and the cap came off on the argument that *Adapted* was the
+ * brake fitted for exactly that. It read *name one injury you carry; its penalty no longer
+ * applies* -- and it was the only levelling option in the game that pointed at **another slate**,
+ * which cost it a field on the feature schema, a predicate in `grants.mjs`, and the same question
+ * asked in all five readers of an injury's numbers. Four readers out of five would have been a
+ * reward that works on a sheet and not in a fight: this project's signature defect, standing on
+ * one feature.
+ *
+ * A prune removes the injury instead. The brake is still fitted, it is a reward the game already
+ * had, and five readers agreeing about nothing cannot disagree.
  */
-check("the feature that ignores one injury's penalty",
-  content.FEATURES.filter(f => Object.hasOwn(f, "adapts")).map(f => f.name).join(", "), "Adapted");
-check("and it names no injury in the catalogue, because the player picks",
-  content.FEATURES.find(f => f.name === "Adapted").adapts === "" ? "blank" : "named", "blank");
-check("and the schema can hold the name",
-  /adapts: new fields\.StringField/.test(featureOwnBlock) ? "yes" : "no", "yes");
-check("one predicate answers for every reader",
-  /export function injuryBites\(slate, adapted\)/.test(
-    fs.readFileSync(path.join(root, "module/grants.mjs"), "utf8")) ? "yes" : "no", "yes");
-check("and the grant sum asks it",
-  /if \(slate\.type === "injury" && !injuryBites\(slate, adapted\)\) continue;/.test(
-    fs.readFileSync(path.join(root, "module/grants.mjs"), "utf8")) ? "yes" : "no", "yes");
-check("and the other four ask one list",
+check("the feature that ignored one injury's penalty",
+  content.FEATURES.filter(f => Object.hasOwn(f, "adapts")).map(f => f.name).join(", ") || "none",
+  "none");
+check("and the field it needed is off the schema",
+  /adapts: new fields\.StringField/.test(featureOwnBlock) ? "still there" : "gone", "gone");
+/* Read here rather than through `grantsSource`, which is declared further down the file. */
+const grantsText = fs.readFileSync(path.join(root, "module/grants.mjs"), "utf8");
+/* `export function`, not the bare names: the comment above the gap says what is gone, and a check
+ * that reads prose rather than code is the thing this suite exists to refuse. It found them. */
+check("and the predicate the five readers shared",
+  /export function (injuryBites|adaptedNames)/.test(grantsText) ? "still there" : "gone", "gone");
+check("so the grant sum asks nothing about an injury",
+  /slate\.type === "injury"/.test(grantsText) ? "still asks" : "every injury bites",
+  "every injury bites");
+/* The list survives for the one job it still does: four readers, one definition of *injury*. */
+check("and the other four still ask one list",
   (actorsSource.match(/bitingInjuries\(/g) ?? []).length, 4);
 /*
- * The one left is the bonus walk, where the skip has to be per-slate: a bonus can sit on an item,
- * a feature or an injury, so there is no filtered list to loop over.
+ * **It used to be 1 and the 1 was the point**: the bonus walk is the one reader with no filtered
+ * list to loop over, so *Adapted*'s skip had to be written per-slate there. Every injury bites, so
+ * the question is gone from the only place it was ever asked twice.
  */
-check("and nothing reads an injury's numbers without asking",
-  (actorsSource.match(/slate\.type === "injury"/g) ?? []).length, 1);
+check("and nothing reads an injury's numbers through a muted check",
+  (actorsSource.match(/slate\.type === "injury"/g) ?? []).length, 0);
+/* And the one levelling option that pointed at another slate is the kind of thing that comes
+ * back, so the absence of the field is pinned in the content as well as in the schema. */
+check("no content names an injury to adapt around",
+  JSON.stringify(content.FEATURES).includes("adapts") ? "one does" : "none", "none");
 check("and the draw reports what is still open",
   /export function openInjuryCategories\(actor\)/.test(resolveSource) ? "yes" : "no", "yes");
 
@@ -14884,7 +15010,9 @@ readFiles.set("contentSource", contentSource);
 readFiles.set("decksSource", decksSource);
 /* 64 since the art gate's thresholds became checkable: `gateSource` is the one more read, and
  * the grep over it is what keeps its documentation from describing a retired capsule. */
-check("files this suite greps by name", readFiles.size, 65);
+/* 66 since 2026-11-12: `grantsText` reads grants.mjs where the retired predicate used to be, in
+ * a section of the file that runs long before `grantsSource` is declared. */
+check("files this suite greps by name", readFiles.size, 66);
 
 /* Every `/pattern/.test(VAR)` and `VAR.includes("...")`, with the check it belongs to. */
 const nameOfCheck = index => {
@@ -14986,14 +15114,18 @@ const absentGreps = [
   String.raw`and no table offers a Swedish column :: \| Swedish \|`,
   String.raw`and nothing ever puts a condition in the waved set :: waved\.add\(.*condition`,
   String.raw`and nothing in the content deals an injury directly :: verb: "maiming"[\s\S]{0,120}injury:`,
+  String.raw`and nothing matches a document back by its escaped name :: find\(card => card\.name === name\)`,
   String.raw`and nothing stores one on the character :: facing: new fields`,
   String.raw`and reads the change rather than the state :: item\.system\.prepared`,
   String.raw`and the chain is gone :: if \(effect === "taint"\)`,
+  String.raw`and the dependency points one way :: from "\.\/graph\.mjs"`,
   String.raw`and the gate's own table no longer describes the old capsule :: the top quarter is empty`,
+  String.raw`and the handbook's feature table no longer lists it :: \| \*\*Adapted\*\* \|`,
   String.raw`and the literal Fear used to carry is gone :: const which = fast \? "actionHand" : "actionDiscard";`,
   String.raw`and the old disjunction is gone from the hand filter :: c\.type !== "wound" && c\.type !== "taint"`,
   String.raw`and the old relative anchor is gone :: the dark lives between that strip`,
   String.raw`and the old sentence is gone :: Faith is \*\*wide and shallow\*\*`,
+  String.raw`and the predicate the five readers shared :: export function (injuryBites|adaptedNames)`,
   String.raw`and the repair hands its own item to the check :: resolveCheck\(actor, \{ approach: "lore", dc, item \}\)`,
   String.raw`and the resolver reads the flag :: conditionsOf\(actor\)\.includes\("invisible"\)`,
   String.raw`and the sentence that was false is gone :: closes every other god permanently`,
@@ -15008,6 +15140,7 @@ const absentGreps = [
   String.raw`reaction timer retired from settings :: reactionTimer`,
   String.raw`reaction timer retired from the HUD spec :: \*\*Setting: ` + "`" + String.raw`reactionTimer` + "`" + String.raw`\*\*`,
   String.raw`reaction timer retired from the HUD spec :: ^### 6\.1 The reaction timer$`,
+  String.raw`so the grant sum asks nothing about an injury :: slate\.type === "injury"`,
   String.raw`the claim that there are two triggers :: There are two triggers`,
   String.raw`the deck module reaches back into the resolver :: from "\.\/resolve\.mjs"`,
   String.raw`the deck module reaches back into the resolver :: resolve\.mjs"\)`,

@@ -18,26 +18,24 @@ export const FEATURES = [
    * measures -8.1 win rate against the published encounters and -21.1 against archers, so three
    * of them stacked is a character nobody wants to play.
    *
-   * **It does not remove the injury**, and that is the whole of its design. A Regrowth removes
-   * one; this leaves the slate on the sheet with its arithmetic switched off, so the eye is still
-   * gone and the scar is still something a GM can write into a scene. Healing and learning to
-   * live with it should not be the same mechanic.
-   *
-   * `adapts` is set by the player when they take it, to the name of an injury they carry, so the
-   * copy in this catalogue is deliberately blank -- an entry that named one injury would be
-   * content deciding which one.
-   *
-   * **No bonus group.** A group caps one bonus per action, and this is not a bonus: it switches
-   * off a standing number, the way a grant raises one (core-rules 4, 5). Two Adapted naming two
-   * different injuries are both true, which is exactly what an uncapped category needs.
+   * > **[RETIRED 2026-11-12] *Adapted* is gone, and a prune replaced it.**
+   * >
+   * > It read *name one injury you carry; its penalty no longer applies*, and it was the only
+   * > levelling option in the game that pointed at **another slate** -- which cost it a field on
+   * > the feature schema, a predicate in `grants.mjs` and a question in all five readers of an
+   * > injury's numbers. An option that reached four of the five would have worked on a sheet and
+   * > not in a fight, and that was a standing risk for one reward.
+   * >
+   * > **A prune does the same job and removes the injury rather than muting it.** leveling 4's
+   * > prune now takes an injury as well as a card, through `liftInjury`, which already takes the
+   * > intruder cards an injury dealt out with it. So the brake on an uncapped Maiming is still
+   * > fitted, it is a reward this game already had, and *healing* and *learning to live with it*
+   * > stopped being two mechanics that needed telling apart.
+   * >
+   * > What it costs: the scar no longer survives its own repair. Under *Adapted* the slate stayed
+   * > on the sheet with its arithmetic off, which was a thing a GM could write into a scene. A
+   * > pruned injury is gone. **[OPEN]** Whether a *scar* with no numbers is worth a slate kind.
    */
-  {
-    name: "Adapted", adapts: "",
-    text: "Name one injury you carry. Its penalty no longer applies. The injury remains.",
-    description: "<p>You still have one eye. You have simply stopped being surprised by it.</p>"
-      + "<p>Take it again for a second injury &mdash; which is what makes an uncapped Maiming "
-      + "survivable, and why it is the brake that had to be fitted before the cap came off.</p>"
-  },
   /*
    * --- six features that help a skill check, one per approach ---
    *

@@ -1866,9 +1866,6 @@ export const DIRECTION = {
   "cards/ritual/it-sets":
     "a thing closing rather than opening: the work gone still and settled, the room's tension "
     + "simply absent, and nothing to show for the days but a subject unchanged",
-  "features/adapted":
-    "a hand doing something awkward entirely without hesitation -- the missing fingers plainly "
-    + "missing, the grip worked out long ago and no longer thought about",
   "features/alert":
     "a head already turned toward a sound nobody else has heard yet, the body still facing the "
     + "way it was going",

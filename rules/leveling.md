@@ -394,13 +394,47 @@ one thing instead of another.
 | **Feature** | A feature slate, passive or active | Bounded by bonus groups (§5). **[BUILT 2026-11-01]** — and a granted feature carries text only, never a figure: see below |
 | **Obligation** | A feature you **cannot remove**, binding in text, in the action deck or in the fate deck | What you owe for what you were taught — see below |
 | **Item** | A slate you keep | For signature gear a Way grants, not ordinary loot |
-| **Prune** | Remove one card from a deck, permanently | The only way to drop a dead card (§8). **[BUILT 2026-11-01]** — the one reward that asks the player a question, since only they know which card died |
+| **Prune** | Remove one card, or one permanent injury, permanently | The only way to drop a dead card (§8). **[BUILT 2026-11-01, WIDENED 2026-11-12]** — the one reward that asks the player a question, since only they know which card died. It reaches the cards nobody chose and the injuries you are done carrying: see below |
 | **Stamina** | Raise how many cards you may play in a fight (core-rules §8) | **[RULED 2026-11-12]** Replaced the deck cap when stamina stopped meaning deck. A flat trait, so **not** bonus-grouped — and **one point is the whole of what a node may grant**, for the reason in §5b |
 | **Hand size** | Raise how many cards you hold, to the cap of **7 cards** | **[BUILT 2026-11-12]** The one reward on this list that **takes something back**: **one card more in hand, one card fewer you may play**. Unpriced it is the dearest reward in the game and had no row here at all. See below |
 | **Carry** | Raise your carrying limit, in kilograms | **[FOUND 2026-11-07]** A flat trait like the deck cap, granted by **six** nodes before it had a row here at all — and the second hole the reward audit found, pointing the other way: a reward the graph hands out that this table never offered. See below for what it is worth |
 | **Spell slot** | One more point of **formula strength** you may prepare (core-rules §4) | Way of Mind's and Way of Faith's version of a deck cap |
 | **Health** | Raise max Health | |
 | **Rest token** | One more (§8 promises these come from leveling) | |
+
+> **A prune takes one card, or one injury &mdash; and that is what retired *Adapted*.**
+> **[RULED 2026-11-12]**
+>
+> It offered action cards and nothing else, which left out the two things a player would most like
+> to drop.
+>
+> **The cards nobody chose.** A Wound, a Taint, a Doubt, a Rage, a Compulsion. Nobody put one in
+> the deck, none of them can be played, and they come round again on the pile's own clock. *For the
+> player everything in a deck is a card*, and the one card they would most want gone was the one
+> card the dialog would not list.
+>
+> **And the injuries**, which is the job *Adapted* used to do. That read *name one injury you
+> carry; its penalty no longer applies*, and it was the brake fitted before core-rules §8 uncapped
+> Maimings. A prune removes the injury instead of muting it, so the brake is still fitted with a
+> reward the game already had, and the one levelling option that pointed at **another slate** is
+> gone &mdash; it cost a schema field, a predicate and the same question in all five readers of an
+> injury's numbers, and four readers out of five would have been a reward that works on a sheet and
+> not in a fight.
+>
+> **The two halves are connected, which is why this is one ruling and not two.** Five injuries deal
+> an intruder card: *Night Fears*, *The Eager Hand*, *Compelled Step*, *Hollow Eyes* and *The Debt*.
+> A prune that reached any card on the table would have let a player pull an injury's teeth while
+> the injury stood &mdash; so a pruned injury goes out through the same door a ritual uses, which
+> already takes back exactly the cards that injury dealt.
+>
+> **Two things it does not reach.** An **Obligation**: *The Debt* says in its own text that no
+> ritual lifts it, and the one injury nothing can lift must not become the easiest one in the game
+> to walk away from. And a **lasting** injury, which heals itself after so many days of rest —
+> spending the rarest reward here on one is a mistake the dialog should not offer to make.
+>
+> **The deck floor is unchanged and applies to the deck's own cards only** (§8). An intruder does
+> not count toward the deck limit on the way in, so it cannot be the thing that stops you dropping
+> one on the way out, and an injury was never in the deck at all.
 
 > **Hand size is the only reward here with a price, and the price is what made it printable.**
 > **[MEASURED 2026-11-12]**

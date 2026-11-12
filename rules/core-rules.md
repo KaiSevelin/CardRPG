@@ -2374,10 +2374,19 @@ place: one Regrowth regrows an eye and a leg alike, so they are one category, an
 followed the ritual was telling a one-eyed character that their legs were safe for ever. A Regrowth
 still lifts **one**, so three maimings is three rituals.
 
-> **It is not free, and *Adapted* is what pays for it.** A *Bad Leg* alone measures &minus;8.1 win
-> rate against the published encounters and &minus;21.1 against archers, so three stacked maimings
-> is a character nobody wants to play. Uncapping without a brake would have been taking one out
-> and not fitting the one that was designed for it.
+> **It is not free, and a prune is what pays for it.**  **[RULED 2026-11-12]** A *Bad Leg* alone
+> measures &minus;8.1 win rate against the published encounters and &minus;21.1 against archers, so
+> three stacked maimings is a character nobody wants to play. Uncapping without a brake would have
+> been taking one out and not fitting another.
+>
+> The brake used to be *Adapted*, a levelling option that switched one injury's arithmetic off and
+> left the slate on the sheet. It is **retired**: a **prune** ([leveling.md](leveling.md) §4) now
+> removes a permanent injury outright, which is a reward this game already had, and the removal
+> goes through the same door a ritual uses so the cards an injury dealt leave with it.
+>
+> **So there are two ways out of a Maiming and they cost different things.** A **Regrowth** is a
+> downtime challenge gated on a recipe you have to find, and it is the GM's to hand out. A **prune**
+> is a level, and it is yours. Neither reaches an Obligation.
 
 > **Obligation lifts for nobody, and that asymmetry is load-bearing.** **Bound Taint** has had it
 > since it was written (section 8): *neither a cure nor Cleansing lifts it. The obligation names the
@@ -2440,16 +2449,28 @@ instead is the recipe, which is a thing you find.
 ##### Living with one
 
 - **Items** help with the consequence and not the injury: a hook hand, a glass eye, a crutch.
-- **Adapted**  **[BUILT 2026-11-08]** &mdash; a levelling option: *name one injury you carry; its
-  penalty no longer applies.* **The injury stays on the sheet.** A Regrowth removes one; this
-  leaves it there with its arithmetic switched off, because healing and learning to live with it
-  should not be the same mechanic &mdash; and the scar is still something to write into a scene.
-  - Take it again for a second injury. That is what makes an uncapped Maiming survivable, and it
-    is why it had to exist before the cap came off.
-  - It is the only feature in the game that points at **another slate**, which is why it is a
-    field rather than a number: no amount of negative grants can express *ignore that other thing*.
-  - **[OPEN]** Which node offers it. That waits on the Way graphs, like everything else about what
-    a node hands over.
+- **A prune**  **[RULED 2026-11-12]** &mdash; leveling.md §4's prune removes **one card, or one
+  permanent injury**. It is the brake on an uncapped Maiming, and it is the second way out of one:
+  a Regrowth is the GM's to hand out because it is gated on a recipe, and a level is yours.
+  - **It removes the injury rather than muting it**, and it takes the cards the injury dealt with
+    it &mdash; five injuries put an intruder in a deck, so those are one thing and not two.
+  - **It does not reach an Obligation.** *The Debt* says no ritual lifts it, and a prune is not a
+    ritual: the one injury nothing can lift must not become the easiest one to walk away from.
+  - **It does not reach a lasting injury either**, which heals itself after so many days of rest.
+    Spending the rarest reward in the game on one is a mistake the game should not offer.
+
+  > **[RETIRED 2026-11-12] This used to be *Adapted***: *name one injury you carry; its penalty no
+  > longer applies*, with the slate left on the sheet and its arithmetic switched off, because
+  > *healing* and *learning to live with it* should not be the same mechanic.
+  >
+  > It was the only feature in the game that pointed at **another slate**, and that cost it a field
+  > on the feature schema, a predicate of its own, and the same question asked in all five readers
+  > of an injury's numbers &mdash; four out of five would have been a reward that works on a sheet
+  > and not in a fight. A prune does the job with a mechanism that already existed.
+  >
+  > **What it cost to retire.** The scar no longer survives its own repair: *Adapted* left something
+  > for a GM to write into a scene, and a pruned injury is gone. **[OPEN]** Whether a *scar* with
+  > no numbers on it is worth a slate kind of its own.
 - Five injuries carry **intruder cards** rather than a flat number (section 8) &mdash; *Night Fears*
   puts a Fear in your deck, *The Eager Hand* two Rage. A flat &minus;1 is the same every round and a
   card is not.

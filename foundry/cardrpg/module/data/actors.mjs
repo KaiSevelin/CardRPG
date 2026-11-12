@@ -13,7 +13,7 @@ import {
 } from "../graph.mjs";
 /* The one place the grant sum lives, in a module with no Foundry global so the validator can ask
  * it rather than read it. */
-import { sumGrants, CHARACTER_GRANTS, NPC_GRANTS, adaptedNames, injuryBites } from "../grants.mjs";
+import { sumGrants, CHARACTER_GRANTS, NPC_GRANTS } from "../grants.mjs";
 
 const fields = foundry.data.fields;
 
@@ -99,16 +99,16 @@ function poolField(base) {
  * alone would have thrown the first time a GM put a sword in a troll's hand.
  */
 /**
- * **The injuries on this actor whose arithmetic still applies.**
+ * **The injuries on this actor.** All of them bite.
  *
- * One list, asked by all four readers below, because *Adapted* has to reach every one of them or
- * it is a levelling option that works on a sheet and not in a fight. The fifth reader is the
- * grant sum, which does this inside `sumGrants` for the same reason.
+ * One list, asked by all four readers below. It used to filter out whatever *Adapted* had switched
+ * off, which was the reason the list existed at all -- a question four readers had to ask the same
+ * way or one of them would have been reading a number the sheet said was gone. **[2026-11-12]**
+ * *Adapted* is retired and a prune removes the injury instead, so there is nothing to filter and
+ * the list is kept for the one job it still does: four readers, one definition of *injury*.
  */
 function bitingInjuries(system) {
-  const slates = [...(system.parent?.items ?? [])];
-  const adapted = adaptedNames(slates);
-  return slates.filter(s => injuryBites(s, adapted));
+  return [...(system.parent?.items ?? [])].filter(s => s.type === "injury");
 }
 
 /**
@@ -185,12 +185,9 @@ function rangeOnLine(system, line, item) {
   if (base === null) return null;
   let n = 0;
   const slates = [...(system.parent?.items ?? [])];
-  const adapted = adaptedNames(slates);
   for (const slate of slates) {
     const bonus = slate.system?.bonus;
     if (!bonus?.range || bonus.verb !== "strike") continue;
-    /* An adapted Lost Eye reaches as far as it ever did. */
-    if (slate.type === "injury" && !injuryBites(slate, adapted)) continue;
     /* Equipped-or-standing, the same law grants.mjs encodes: a ring in the pack grants nothing. */
     if (slate.type === "item"
       && (!slate.system.equipped || CARDRPG.slots[slate.system.equippedSlot]?.stows)) continue;
