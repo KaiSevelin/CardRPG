@@ -7932,6 +7932,60 @@ check("and says how many grants the cap ate",
     ? "yes" : "no", "yes");
 /* The readout itself, not the field: `handSize.wasted` is in the guard and twice in the tooltip,
  * and a pin three things answer is a pin whose subject can be deleted. */
+/*
+ * **A turn that is over leaves a hand that will not react.**  **[RULED 2026-11-12]**
+ *
+ * A reaction costs a point of stamina and the engine reacts off whatever is upright, so the two
+ * rules together made an armed hand a standing order to spend. The default inverted: the turn's
+ * actions finish, the leftovers go sideways, and arming one is deliberate.
+ *
+ * Checked at **both** ends of a turn, because a breath is a turn too and the one that is easy to
+ * forget -- a hero who breathes has just bought stamina back and would otherwise hand it straight
+ * to the next four hits.
+ */
+check("a played turn disarms what is left in hand",
+  /stops being an automatic bill against stamina\. \*\/\s*\n\s*await this\.#disarmHand\(\);/
+    .test(traySource) ? "yes" : "no", "yes");
+check("and a breath does too, because a breath is a turn",
+  (traySource.match(/await this\.#disarmHand\(\)/g) ?? []).length, 2);
+/*
+ * **And it goes through one gate that takes the state to end in.**  **[FIXED 2026-11-12]**
+ *
+ * The *Hold all* button toggled card by card on `if (isReserved(card) !== down) continue`, which
+ * skips exactly the cards that need changing -- so it turned the HELD cards upright and left the
+ * upright ones alone, every press, from the day it shipped. The bug was invisible to every check
+ * here because nothing asserted what the button does, only that it exists.
+ *
+ * `reserveHand(actor, on)` takes the target state, so the inversion is not expressible. Both
+ * callers use it and neither has a loop of its own.
+ */
+check("the whole hand turns through one gate",
+  /export async function reserveHand\(actor, on = true\)/.test(decksSource) ? "yes" : "no", "yes");
+check("and it sets the state rather than toggling",
+  /if \(isReserved\(card\) === !!on\) continue;\s*\n\s*await reserveCard\(card, on\);/
+    .test(decksSource) ? "yes" : "no", "yes");
+check("and the tray keeps no loop of its own",
+  /for \(const card of cards\) \{\s*\n\s*if \(isReserved/.test(traySource) ? "it does" : "no",
+  "no");
+/* Both documents say it, because a default nobody can read about is a default that surprises. */
+check("core-rules states the new default",
+  /what is left in your hand turns sideways by itself/.test(coreRules) ? "yes" : "no", "yes");
+check("and the handbook says it in the player's words",
+  /the rest of your hand turns sideways on its own/.test(handbook) ? "yes" : "no", "yes");
+/*
+ * **And the breath's refusals no longer describe the retired rule.** Three strings promised cards
+ * out of the discard -- the tray's warning, the Breath tooltip and the discard pile's tip -- and a
+ * breath has bought stamina and moved nothing since the ruling. The refusal has two reasons now
+ * and neither is about the discard.
+ */
+check("the breath refusal names the two reasons it can fail",
+  /is at full stamina/.test(traySource) && /A Compulsion in your hand takes the option/
+    .test(traySource) ? "yes" : "no", "yes");
+check("and no breath string still promises cards back",
+  [["the tray", traySource], ["its template", trayTemplate]]
+    .filter(([, text]) => /cards out of the discard|cards in the discard|all or nothing/.test(text))
+    .map(([name]) => name).join(", ") || "none", "none");
+
 check("and the sheet shows a grant the cap ate",
   /at the cap, \{\{system\.handSize\.wasted\}\} wasted/.test(charTemplate) ? "yes" : "no",
   "yes");
@@ -15271,6 +15325,7 @@ const absentGreps = [
   String.raw`and the sentence that was false is gone :: closes every other god permanently`,
   String.raw`and the template no longer asks which kind it is :: \{\{#if isWound\}\}`,
   String.raw`and the token is not given a file of its own :: texture: \{ src: (?!art \})`,
+  String.raw`and the tray keeps no loop of its own :: for \(const card of cards\) \{\s*\n\s*if \(isReserved`,
   String.raw`and the two retired vocabularies are gone from config :: conjureSources|conjureSides`,
   String.raw`and the unpatched line is gone :: Object\.create\(Array\.prototype\)`,
   String.raw`nothing builds a fate card by hand any more :: createEmbeddedDocuments\("Card", \[\{\s*name: fateCard`,

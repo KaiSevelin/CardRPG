@@ -529,6 +529,15 @@ Three things are always true:
 **A card turned sideways will not react.** That is the whole of the decision, and you take it in
 advance, at leisure, not in the half-second after the dice would have landed in another game.
 
+**When your turn is over, the rest of your hand turns sideways on its own.** A reaction costs you a
+point of stamina, and the game reacts for you off whatever is still upright, so a full hand left
+upright is a promise to spend four or five of the cards you can still play. If you mean to Parry,
+turn that card back upright before you end your turn. There is a button that does the whole hand at
+once, either way.
+
+Cards you draw at the start of a round arrive upright. What goes sideways is the set you already
+chose not to play.
+
 ---
 
 ## 7. Resolving an action

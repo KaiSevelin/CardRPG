@@ -89,7 +89,7 @@
       {{!-- core-rules 3: you may turn your WHOLE hand sideways, and saying so took five clicks. --}}
       {{#if cards.length}}
       <button type="button" class="cr-tray__flag cr-tray__flag--button" data-action="reserveAll"
-              data-tooltip="{{#if allReserved}}Bring the whole hand back upright, so it reacts again.{{else}}Turn the whole hand sideways: nothing reacts, and every card is still yours to play. Playing for your turns rather than your skin.{{/if}}">
+              data-tooltip="{{#if allReserved}}Your hand went sideways when your turn ended, because a reaction costs 1 stamina. Bring it all back upright to react again.{{else}}Turn the whole hand sideways: nothing reacts, and every card is still yours to play. Playing for your turns rather than your skin.{{/if}}">
         {{#if allReserved}}All upright{{else}}Hold all{{/if}}
       </button>
       {{/if}}
@@ -107,7 +107,7 @@
         <button type="button" data-action="clear" {{#unless canClear}}disabled{{/unless}}
                 data-tooltip="Empty the play area: action cards back to hand, items and features back to their decks.">Clear</button>
         <button type="button" data-action="breathe" {{#unless canBreathe}}disabled{{/unless}}
-                data-tooltip="{{#if canBreathe}}Your whole turn, for {{breathRecovery}} cards out of the discard at random — exactly enough to not be Exhausted next turn.{{else}}Needs {{breathRecovery}} cards in the discard. It recovers {{breathRecovery}}, all or nothing.{{/if}}">Breath</button>
+                data-tooltip="{{#if canBreathe}}Your whole turn, playing nothing, for {{breathRecovery}} stamina back — never above your maximum.{{else}}Nothing to buy back: you are at full stamina, or a Compulsion has taken the option.{{/if}}">Breath</button>
         {{#if inCombat}}
           <button type="button" data-action="endTurn"
                   data-tooltip="{{#if myTurn}}Your turn{{else}}{{turnOwner}}'s turn{{/if}}">End turn</button>

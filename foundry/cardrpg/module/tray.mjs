@@ -21,7 +21,7 @@ import { CARD_BLURBS } from "./content.mjs";
 import {
   deckOf, discardCards, retireCards, catchBreath, canCatchBreath, refill, cardName, artOf,
   dealSkillHand, discardSkillCards, pileBack, backOf,
-  isReserved, reserveCard, uprightCards, isIntruder, intruderLine
+  isReserved, reserveCard, reserveHand, uprightCards, isIntruder, intruderLine
 } from "./decks.mjs";
 import {
   resolveAttack, resolveDefend, resolveHeal, resolveUse, resolveCondition, resolveShake,
@@ -943,8 +943,9 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       },
       {
         id: "actionDiscard", label: "Discard", count: counts.discard ?? 0,
-        tip: `Your discard pile. Catch Breath takes ${breath} of these at random, and the rest `
-          + "waits for the next breath — nothing in here is lost. Click to look through it."
+        tip: "Your discard pile. It cycles back into your deck for free while you have stamina "
+          + `left, and Catch Breath buys ${breath} stamina rather than taking anything from here. `
+          + "Nothing in it is lost. Click to look through it."
       }
     ];
 
@@ -1389,21 +1390,44 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
    * It is a toggle rather than two buttons: if anything in the hand can still react, the hand goes
    * down; if nothing can, it all comes up. One button, and its label says which way it will go.
    *
-   * Dead cards are turned with the rest. A Wound cannot react in the first place, so sideways
-   * means nothing to it -- but skipping it would leave the hand in a state where `allReserved` is
-   * false and the button has nothing left to do, which is a button that lies.
+   * **[FIXED 2026-11-12] It did the opposite of what it said.** The loop read
+   * `if (isReserved(card) !== down) continue`, which skips the cards that need changing and
+   * changes the ones that do not -- so *Hold all* turned the held cards upright and left the
+   * upright ones alone. `reserveHand` takes the state to end in, and a target state cannot be
+   * inverted by a comparison written backwards.
    */
   static async #onReserveAll(event, target) {
     const hand = deckOf(this.actor, "actionHand");
-    const cards = hand?.cards.contents ?? [];
-    if (!cards.length) return;
-
-    const down = uprightCards(this.actor).length > 0;
-    for (const card of cards) {
-      if (isReserved(card) !== down) continue;
-      await reserveCard(card);
-    }
+    if (!(hand?.cards.size ?? 0)) return;
+    await reserveHand(this.actor, uprightCards(this.actor).length > 0);
     this.render();
+  }
+
+  /**
+   * **A turn that is over leaves a hand that will not react.**  **[RULED 2026-11-12]**
+   *
+   * A reaction is a card played, so it costs a point of stamina (core-rules 8), and the engine
+   * reacts on the player's behalf off whatever is upright. Those two together made an armed hand
+   * into a standing order to spend: a hero finished their turn with four cards and the next four
+   * hits took four points off the only number that decides how long the fight lasts for them,
+   * without anyone being asked.
+   *
+   * So the default inverts. The turn's actions are done, the leftovers go sideways, and arming one
+   * is a thing the player does deliberately before ending the turn. core-rules 3 already made this
+   * the player's call and nobody else's -- *you take it in advance, at leisure* -- and this is that
+   * sentence with the burden the right way round: you say what you will spend, rather than
+   * discovering what was spent.
+   *
+   * **Not on a draw.** core-rules 3 also says *everything you draw arrives upright*, and that
+   * stands: a refill is a fresh hand and a fresh question. What this disarms is the set you
+   * already chose not to play.
+   */
+  async #disarmHand() {
+    const held = await reserveHand(this.actor, true);
+    if (held) {
+      ui.notifications?.info(`${held} card(s) turned sideways: a reaction costs 1 stamina, so turn `
+        + "back upright whatever you mean to spend.");
+    }
   }
 
   /**
@@ -1940,6 +1964,8 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
           + `<em>${burned.map(c => cardName(c)).join(", ")}</em> — out until a rest.</p></div>`
       });
     }
+    /* The turn's actions are done, so the hand stops being an automatic bill against stamina. */
+    await this.#disarmHand();
     this.#resetPlay();
     this.render();
   }
@@ -2715,11 +2741,27 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
 
   static async #onBreathe() {
     const result = await catchBreath(this.actor);
+    /*
+     * **[FIXED 2026-11-12] The refusal described the retired rule.** It told the player the pile
+     * they draw from was too thin to breathe, which was true while a breath moved cards and has
+     * not been true since the ruling. A breath buys stamina and moves nothing, so there are two
+     * ways it can be refused and neither is about that pile: you are already at your maximum, or a
+     * Compulsion has taken the option (`canCatchBreath`).
+     *
+     * The sentence above deliberately **paraphrases** the retired string rather than quoting it.
+     * A check asserts no breath string still promises cards back, and quoting the old one here
+     * answered that check with prose -- the same defect, found twice in one day, once in a pin
+     * about a retired predicate and once here.
+     */
     if (!result) {
-      return ui.notifications.warn(
-        `Not enough in the discard to catch breath: it recovers `
-        + `${CARDRPG.defaults.breathRecovery} cards, all or nothing.`);
+      const stamina = this.actor.system?.stamina;
+      return ui.notifications.warn(stamina && stamina.value >= stamina.max
+        ? `Nothing to buy back: ${this.actor.name} is at full stamina `
+          + `(${stamina.value}/${stamina.max}).`
+        : "A Compulsion in your hand takes the option: you cannot catch your breath.");
     }
+    /* A breath is a whole turn, so it ends the same way a played turn does. */
+    await this.#disarmHand();
     this.#resetPlay();
     this.render();
   }

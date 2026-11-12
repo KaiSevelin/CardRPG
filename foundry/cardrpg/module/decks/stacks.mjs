@@ -125,6 +125,33 @@ export async function reserveCard(card, on = null) {
   return next;
 }
 /**
+ * **Turn a whole hand sideways, or bring it all back upright.**  **[BUILT 2026-11-12]**
+ *
+ * One gate for both callers -- the tray's button and the automatic disarm when a turn's actions are
+ * done -- and it takes the **state to end in** rather than toggling card by card. That is not
+ * tidiness: the button did toggle, with `if (isReserved(card) !== down) continue`, which skips
+ * exactly the cards that need changing and changes the ones that do not. *Hold all* turned the held
+ * cards upright and left the upright ones alone, every time it was pressed. A target state cannot
+ * be inverted by getting a comparison the wrong way round.
+ *
+ * **Dead cards are turned with the rest.** A Wound cannot react in the first place, so sideways
+ * means nothing to it; but leaving it upright would make a hand that reads as not-all-held while
+ * nothing in it can be held any further, which is a button that lies about what it will do.
+ *
+ * @returns {Promise<number>} how many cards actually moved, so a caller can stay quiet about none.
+ */
+export async function reserveHand(actor, on = true) {
+  const hand = deckOf(actor, "actionHand");
+  let changed = 0;
+  for (const card of hand?.cards.contents ?? []) {
+    if (isReserved(card) === !!on) continue;
+    await reserveCard(card, on);
+    changed++;
+  }
+  return changed;
+}
+
+/**
  * The cards in a hand that may react: upright, and not a dead card.
  *
  * An intruder is never one: a Wound "can't be played, not even for Brace" (core-rules 8) and Taint
