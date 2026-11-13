@@ -1066,6 +1066,25 @@ export const DIRECTION = {
    * Each names a different object and a different kind of motion, which is what keeps eight cards
    * from the one deck apart in the hand.
    */
+  /*
+   * **The two critical faces with no physical subject in them, caught as near twins.**
+   *
+   * Five of the seven name the damage they do -- a gap in armour, feet gone, a plate stove in --
+   * and draw themselves. These two are pure mechanics: *double the damage* and *draw two others
+   * and take both*. The fallback gave them the same direction and the suite called them what they
+   * were, which is the check doing its job rather than a complaint about the shelf.
+   *
+   * Both rules text is also actively dangerous here: *draw two others and take both* is an
+   * instruction a model will cheerfully obey by drawing two cards. These say what is in the frame.
+   */
+  "cards/crit/through-and-through":
+    "the far side of the hit: a blade's point standing clean out through the back of a "
+    + "breastplate, the steel peeled outward in a star around it. Drawn from BEHIND the plate, "
+    + "and nothing of whoever was wearing it. No swing, no arm, no blood",
+  "cards/crit/both":
+    "one helm broken twice over in the same frame -- the crown stove flat AND the cheek-plate "
+    + "torn away at the hinge -- so that the picture is plainly two things and not one. Empty, "
+    + "lying on the ground, no head in it. Not two helms: one helm, twice",
   "cards/twist/noise":
     "a lantern turned toward the viewer from a dark doorway, the shutter half open, somebody "
     + "behind it who has stopped to listen. The subject is the light and the pause, not the person",
@@ -2328,6 +2347,7 @@ const FRAME = {
    * weight and handling rather than about a thing in the frame, and the gradient across the eight
    * is the only composition instruction that matters.
    */
+  "cards/crit": "Turned face up the instant a Critical lands and read out to the table, so it is the one card here with no back and the one with an audience. **Draw what the hit DID, never the hit**: the gap in the armour, not the thrust that found it. The blow is on a hundred other cards in this book and the aftermath is on none of them.",
   "cards/fate": "Read in a row at tiny size with an enormous number printed over it, so **this is a ground and not a scene**: no object, no figure, no place, nothing the eye has to resolve. Brush, wash and bare paper. How much ink it carries is the whole of what it says \u2014 Zero is nearly empty and Critical is the heaviest mark in the deck.",
   "cards/shade": "A Way of Shade card: low light, cover, and the moment before being noticed.",
   "cards/strength": "A Way of Strength card: mass, leverage, and weight already moving.",

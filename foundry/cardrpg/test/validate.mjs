@@ -6695,7 +6695,10 @@ const artable = (await import("../module/art.mjs")).SHELVES.flatMap(s => s.list 
 /* 664 since 2026-11-13: the fate deck's eight faces. It was argued off the brief on the
  * grounds that twenty cards which are a number want a design rather than twenty pictures --
  * and it is not twenty, it is eight, which is the ratio the twist deck is drawn at. */
-check("pieces of content that take art", artable.length, 664);
+/* 671 since 2026-11-13: the critical deck's seven faces. Its exemption said it needed
+ * *neither faces nor a back* and then argued only the back -- a card turned face up the
+ * instant it is drawn. Applied to the face that argument runs the other way. */
+check("pieces of content that take art", artable.length, 671);
 /*
  * **The four items that are content without being commissions, and the item each one wears.**
  *
@@ -7218,7 +7221,7 @@ const { artIn: artInLive, backOf: backOfLive } = await import("../module/decks.m
 /* Every piece the game can hand Foundry a path for, which is all of them: kept as the denominator
  * the three states below have to add up to, and no longer printed as progress. */
 check("pieces the game has a path for", artable.filter(e => artInLive(e)).length
-  + backs.filter(([k]) => backOfLive(k)).length, 675);
+  + backs.filter(([k]) => backOfLive(k)).length, 682);
 /*
  * **And every path the game hands Foundry names a file that is there.**
  *
@@ -7237,7 +7240,7 @@ const pathless = [
   ...artable.map(e => [e.name, artInLive(e)]),
   ...backs.map(([k, b]) => [b.label ?? k, backOfLive(k)])
 ].filter(([, p]) => p && !fs.existsSync(fileFor(p)));
-check("art paths the game would hand Foundry", artable.length + backs.length, 675);
+check("art paths the game would hand Foundry", artable.length + backs.length, 682);
 /*
  * **The brief's progress line used to be the total, and nobody noticed for months.**
  *
@@ -7351,7 +7354,7 @@ const ART_SLOTS = {
    * argument against drawing it has been withdrawn. Both are card faces like the rest. */
   "cards/shade-starter": "face", "cards/twist": "face",
   /* A card face like the rest of them, however little is drawn on it. */
-  "cards/fate": "face",
+  "cards/fate": "face", "cards/crit": "face",
   features: "item", items: "item", "items/npc": "item", "items/natural": "item",
   tokens: "actor",
   /*
@@ -7368,7 +7371,7 @@ const ART_SLOTS = {
 };
 const briefDirs = [...new Set([...artList.matchAll(/Suggested path: `cardrpg\/art\/(.+?)\/`/g)]
   .map(m => m[1]))];
-check("directories the brief commissions into", briefDirs.length, 27);
+check("directories the brief commissions into", briefDirs.length, 28);
 check("and every one of them has a slot",
   briefDirs.filter(d => !(d in ART_SLOTS)).join(", ") || "none", "none");
 /* And no slot is declared for a group that is not in the brief, or this list rots quietly. */
@@ -7410,6 +7413,23 @@ for (const [slot, writers] of Object.entries(SLOT_WRITERS)) {
 check("slots whose writer never reads a definition's art",
   slotFaults.join(", ") || "none", "none");
 /* A parse that found no bodies would report "none" for writers that read nothing at all. */
+/*
+ * **The critical deck still has no back, and now nothing in prose says so.**  [2026-11-13]
+ *
+ * The brief's exemption carried that fact and the shelf it was written for has replaced it, so
+ * the claim moves from a sentence an artist reads to a check that fails. It is the one deck in
+ * the game that is never face down -- turned over the instant a Critical lands and read out -- so
+ * a back on it would be a picture nobody ever sees, like a hand's or a discard's.
+ */
+const critBody = decksSource.slice(
+  decksSource.indexOf("export function critCardData"),
+  decksSource.indexOf("export function actionCardData"));
+check("the critical deck is given no back",
+  /back:/.test(critBody) ? "wears one" : "none", "none");
+/* And the grep is not vacuous: the face it DOES wear is in the same body to be found. */
+check("while its face carries the art",
+  /faces: \[\{ name: def\.name, \.\.\.\(artIn\(def\)/.test(critBody) ? "yes" : "no", "yes");
+
 check("writers the rule actually read",
   Object.values(SLOT_WRITERS).flat().length, 6);
 
@@ -7523,7 +7543,7 @@ const briefs = faceRows.map(r => r.brief);
 const leaked = briefs.flatMap(text =>
   [...text.matchAll(/\b([a-z]+[A-Z][a-zA-Z]*)\b/g)].map(m => m[1]));
 /* A pattern that matched no rows at all would report "none" for any list whatsoever. */
-check("briefs the check actually read", briefs.length, 664);
+check("briefs the check actually read", briefs.length, 671);
 check("keys that leaked into the brief",
   leaked.length ? [...new Set(leaked)].join(", ") : "none", "none");
 /*
@@ -9054,7 +9074,10 @@ check("and those are the lengths in the source",
  * European and the cards had no assignment at all.
  */
 const castLines = [...artPrompts.matchAll(/that person is (a (?:wo)?man) of ([A-Za-z ]+?) appearance/g)];
-check("cards, signatures and features given an assigned person", castLines.length, 172);
+/* 179 since 2026-11-13: the critical deck. It IS cast -- half of these are a plate, a helm or
+ * a pair of feet and the line is written to be evaluated only if a face shows -- unlike the
+ * fate shelf, which is excluded because nothing in its frame is a person at all. */
+check("cards, signatures and features given an assigned person", castLines.length, 179);
 /* The NPC pool is the one group that must NOT be cast: its own capsule says the actor is nobody,
  * because one picture is drawn behind a goblin, a troll and a dragon. */
 const npcBlock = /\n## NPC intent cards\n([\s\S]*?)\n## /.exec(artPrompts)?.[1] ?? "";
@@ -9087,7 +9110,10 @@ check("prompts that ask an image model for self-harm, having nothing else to ask
 
 const EURO = new Set(["Mediterranean", "Nordic", "Slavic", "Northwest European", "Germanic"]);
 check("western ancestries among them, which had nearly vanished",
-  castLines.filter(m => EURO.has(m[2])).length, 58);
+  /* 61 of 179 since the critical deck joined the cast, against 58 of 172 before it: 34.1%
+   * against 33.7%, which is the proportion holding rather than a seventh shelf of westerners.
+   * The number this check is really about is that ratio. */
+  castLines.filter(m => EURO.has(m[2])).length, 61);
 check("and every ancestry on the list is used somewhere",
   new Set(castLines.map(m => m[2])).size, 15);
 
@@ -9351,7 +9377,7 @@ check("and each one says what is not in the frame",
  * spelling them again. */
 const packSource = fs.readFileSync(path.join(root, "test/build-packs.mjs"), "utf8");
 const rows = faceRows;
-check("file paths in the brief", rows.length, 664);
+check("file paths in the brief", rows.length, 671);
 /* And the backs, whose path is the slug of their KEY rather than of their printed label. */
 const backPaths = [...artList.matchAll(/\| `(backs\/[^`]+)` \|/g)].map(m => m[1]);
 check("back paths in the brief", backPaths.length, backs.length);

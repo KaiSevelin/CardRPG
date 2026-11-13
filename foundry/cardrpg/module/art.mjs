@@ -220,11 +220,16 @@ export const FATE_PIECES = [
   { key: "zero", name: "Zero",
     blurb: "The quietest card in the game, and it is the one seen most. A single flat tide-line of wash across the frame and almost nothing above or below it." },
   { key: "plusOne", name: "Plus One",
-    blurb: "One stroke rising from the lower edge and stopping cleanly where it meant to, with open paper all round it. Nothing crosses it." },
+    /* [GATE] 9.1% of bare top against a floor of 10. "Stopping cleanly where it meant to" says
+     * nothing about WHERE, and a stroke rising from the bottom will run to the top unless told. */
+    blurb: "One stroke rising from the lower edge and stopping well short of the top, with open paper all round it. Nothing crosses it." },
   { key: "plusTwo", name: "Plus Two",
-    blurb: "Two strokes crossing high in the frame, the ink pooling dark and deliberate where they meet. Weight, placed on purpose." },
+    /* [GATE] 9.9%, and the brief asked for it: "high in the frame" is the top strip. */
+    blurb: "Two strokes crossing above the middle and clear of the top edge, the ink pooling dark and deliberate where they meet." },
   { key: "critical", name: "Critical",
-    blurb: "The moment it all goes through: ink driven to its darkest at one point and the paper broken white against it, hard-edged, no gradient." },
+    /* [GATE] 2.4% cool against a ceiling of 1.0. The palette allows nothing outside the warm
+     * band, and "broken white" is how you ask a model for a cold highlight without meaning to. */
+    blurb: "All of it going through at once: ink at its darkest in one place, bare cream paper hard against it, no gradient and no cold light." },
   { key: "wild", name: "Wild",
     blurb: "Ink let into water: a bloom going somewhere nobody chose, the edge still moving and the shape not settled. No symmetry and no centre." },
 ];
@@ -271,6 +276,15 @@ export const SHELVES = [
    * twenty cards, read in a row at tiny size with the number doing the work -- so the shelf is a
    * gradient of weight rather than eight scenes. `FATE_PIECES` says why.
    */
+  /*
+   * **The critical deck, whose exemption only ever argued half of itself.** The brief said it
+   * *needs neither faces nor a back*, and then gave one reason -- a card is turned face up the
+   * instant a Critical lands and is never face down in front of anybody. That is an argument
+   * about the BACK, and the no-back half still stands (`critCardData` deliberately writes none).
+   * For the face it argues the other way: this is the one card in the game that is only ever
+   * seen face up, read out to the table, at the loudest moment a fight has.
+   */
+  { key: "cards/crit", list: content.CRIT_EFFECTS },
   { key: "cards/fate", list: FATE_PIECES },
   { key: "cards/harm", list: content.HARM_FACES },
 

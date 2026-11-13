@@ -865,9 +865,50 @@ async function probes(page) {
    * placeholder, face down, in front of everybody. `fateCards` has carried the back since the
    * backs were drawn; a second builder of the same document is a second place to forget a field.
    *
-   * **The files are not drawn yet**, so this does not fetch them and `art/cards/fate/` is allowed
-   * to 404 below. Both go the day the shelf is shot, exactly as the conditions' two did.
+   * **Drawn as of 2026-11-13**, so the files are fetched like every other shelf's; the allowance
+   * this probe shipped with lasted about an hour.
    */
+  /*
+   * **The critical deck, whose exemption argued only half of itself.**  **[BUILT 2026-11-13]**
+   *
+   * The brief said it *needs neither faces nor a back* and then gave one reason: a card is turned
+   * face up the instant a Critical lands and read out, so it is never face down in front of
+   * anybody. That is an argument about the **back** -- which still stands, and is checked here,
+   * because a back on this deck would be a picture nobody ever sees. Applied to the **face** the
+   * same sentence runs the other way: this is the one card in the game that is only ever seen
+   * face up, read out to the table, at the loudest moment a fight has.
+   *
+   * Asked of the built documents rather than of `critCardData`, because the two halves of the
+   * claim live in one object literal and a probe that reads the source would pass on a deck that
+   * was never created.
+   *
+   * **Not shot yet**, so `art/cards/crit/` is allowed to 404 above and this does not fetch.
+   */
+  await probe("the critical deck is faced and backless", async () => {
+    return page.evaluate(async () => {
+      const deck = game.cards.find(c => c.getFlag("cardrpg", "cardrpgContent") === "crit-deck")
+        ?? game.cards.find(c => c.name === "Critical Deck");
+      const cards = deck?.cards.contents ?? [];
+      const faces = cards.map(c => c.faces?.[0]?.img ?? "");
+      return [
+        ["the world has a critical deck", cards.length > 0, true],
+        ["every card wears a face",
+          faces.filter(f => f.includes("art/cards/crit/")).length, cards.length],
+        ["seven faces over twelve cards", new Set(faces).size, 7],
+        /*
+         * **Read off `_source`, not off the document.** `card.back.img` came back set on all
+         * twelve: Foundry derives a back for every Card whether one was written or not, so the
+         * live field cannot tell "this system prints none" from "core filled it in". The claim
+         * being checked is the first of those, and `_source` is the only place it is visible.
+         * It does not matter to a player either way -- this deck is never face down -- which is
+         * the whole reason it has no back to print.
+         */
+        ["and this system prints no back on any of them",
+          cards.filter(c => c._source.back?.img).length, 0]
+      ];
+    });
+  });
+
   await probe("the fate deck wears its faces", async () => {
     return page.evaluate(async () => {
       const { hero } = LIVE;
@@ -897,7 +938,10 @@ async function probes(page) {
         ["a card shuffled in later wears one too",
           wildFace.endsWith("/wild.webp") ? "yes" : wildFace || "nothing", "yes"],
         ["and is not the one card in the deck with no back",
-          wildBack.includes("backs/fate") ? "yes" : wildBack || "nothing", "yes"]
+          wildBack.includes("backs/fate") ? "yes" : wildBack || "nothing", "yes"],
+        ["and the server serves every rung", [...new Set(await Promise.all(
+          every.map(p => fetch(foundry.utils.getRoute(p), { method: "HEAD" })
+            .then(r => r.status).catch(() => 0))))].join(","), "200"]
       ];
     });
   });
@@ -1209,12 +1253,12 @@ try {
   const page = await browser.newPage({ viewport: { width: 1600, height: 900 } });
   page.on("response", r => {
     /*
-     * **The fate shelf is commissioned and not yet shot.** Eight files, named one by one in the
-     * brief and counted there as still to shoot, which is a different state from a path that is
-     * wrong. **Delete this clause the day `art/cards/fate/` is drawn** -- the conditions' own
-     * version of it lasted a morning.
+     * **The critical deck is commissioned and not yet shot.** Seven files, named one by one in
+     * the brief and counted there as still to shoot, which is a different state from a path that
+     * is wrong. **Delete this clause the day `art/cards/crit/` is drawn** -- the fate shelf's own
+     * version of it lasted about an hour, and the conditions' a morning.
      */
-    if (r.url().includes("/art/cards/fate/")) return;
+    if (r.url().includes("/art/cards/crit/")) return;
     if (r.status() >= 400) missing.add(`${r.status()} ${r.url().split(`:${PORT}`).pop()}`);
   });
   await page.addInitScript(() => {

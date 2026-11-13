@@ -352,6 +352,15 @@ const PROSE = {
     why: "Turned face up in front of four people who have been working toward this for a "
       + "session, so it is the one GM card with a real audience. Every one of them is the thing "
       + "the party is trying to undo pushing back: the injury, the curse or the rot answering." },
+  "cards/crit": { title: "The critical deck",
+    why: "**The one card in the game that is only ever seen face up.** It is turned over the "
+      + "instant a Critical lands and read out to the table, which is the loudest moment a fight "
+      + "has — and it is why this deck has no **back** and never will, since nobody ever looks "
+      + "at it wondering. Seven faces over twelve cards.\n\n**Draw the damage, not the blow.** Every "
+      + "one of these is what a hit DID: a gap found in armour, feet gone from under somebody, a "
+      + "breastplate stove in, an edge turned. The strike itself is on a hundred other cards in "
+      + "this book and none of them is the aftermath, which is the whole of what a Critical is. "
+      + "Close, physical, and on the thing that was broken rather than on whoever broke it." },
   "cards/fate": { title: "The fate deck",
     why: "**The deck every outcome in the game goes through**, and the only one drawn from on "
       + "somebody else's turn as well as your own. It was argued off this list once, on the "
@@ -604,11 +613,16 @@ push(
    */
   "- **Wounds and Taint.** Two faces, fixed, and both are meant to read as damage rather than as "
   + "content. One picture each at most.",
-  `- **The critical deck.** ${content.CRIT_EFFECTS.length} faces, `
-  + `${content.CRIT_EFFECTS.reduce((n, e) => n + (e.copies ?? 1), 0)} cards, and it needs neither `
-  + "faces nor a **back**. A card is drawn face up the instant a Critical lands and read out, so "
-  + "it is never face down in front of anybody — which is the same reason hands, discards and "
-  + "Spent piles have no back. A back is for a deck somebody looks at while wondering.",
+  /*
+   * **The critical deck left this list on 2026-11-13, and only half of it was ever an argument.**
+   *
+   * It said the deck *needs neither faces nor a back*, and then gave one reason: a card is turned
+   * face up the instant a Critical lands and read out, so it is never face down in front of
+   * anybody. **That is an argument about the back**, and the back half still stands -- it is in
+   * `critCardData` and the suite holds it there. Applied to the FACE the same sentence says the
+   * opposite: this is the one card in the game that is only ever seen face up, read out to the
+   * table, at the loudest moment a fight has. Seven faces over twelve cards.
+   */
   "- **The levelling graph's nodes.** A node wears the art of what it hands over, so drawing a "
   + "Signature draws its node too. Nothing needs art of its own.",
   `- **The ${content.MONSTER_TAGS.length} tagged creatures.** Elves, trolls, dragons and the rest `

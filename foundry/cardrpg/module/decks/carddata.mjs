@@ -94,10 +94,19 @@ export function critCardData(def) {
   return {
     name: def.name,
     type: "crit",
-    /* No back. It is turned over the instant a Critical lands and read out, so it is never face
-     * down in front of anybody -- the same reason a hand and a discard have none. */
+    /*
+     * **No back, and that half of the old exemption still holds.** It is turned over the instant
+     * a Critical lands and read out, so it is never face down in front of anybody -- the same
+     * reason a hand and a discard have none.
+     *
+     * **A face, which the same sentence was wrongly used to rule out.**  [FIXED 2026-11-13] The
+     * brief said this deck *needs neither faces nor a back* and then gave only the argument
+     * above, which is about being face down. Applied to the face it says the opposite: this is
+     * the one card in the game that is ONLY ever seen face up, read out to the table, at the
+     * loudest moment a fight has. Seven faces over twelve cards.
+     */
     face: 0,
-    faces: [{ name: def.name }],
+    faces: [{ name: def.name, ...(artIn(def) ? { img: artIn(def) } : {}) }],
     system: {
       doubles: !!def.doubles,
       draws: def.draws ?? 0,
