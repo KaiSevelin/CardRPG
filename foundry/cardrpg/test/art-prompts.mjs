@@ -138,6 +138,27 @@ const WAY_OF_DIR = {
  */
 const CAST_GROUP = /^(?:cards\/(?!npc\b|fate\b)|signatures\/|features$)/;
 
+/**
+ * **The pieces whose own direction rules a body out, and which therefore get no cast line.**
+ *
+ * The cast is written to be read conditionally -- *if a face or any bare skin shows here* -- and
+ * that costs nothing on a boot or a buckle, which is why it goes on the whole shelf rather than on
+ * a judged subset. On a piece whose direction says **no body, no skin**, it costs something: it is
+ * a second instruction contradicting the first, and this file already records what that does --
+ * *Lockpicks* and *The Red Hour* were refused twelve times each with the model following the
+ * sentence that was overridden rather than the one overriding it.
+ *
+ * `cards/crit/find-the-gap` is here because it was refused as `sexual` at the output stage, and
+ * the three clauses are the refusal: *their armour counts 0*, a motif about a plate swung away
+ * with *the gap under it open*, and a cast line opening *if any bare skin shows*. The direction
+ * was rewritten to a mail shirt on the ground with nobody in it; leaving the cast line under it
+ * would put the skin back in the prompt the rewrite took it out of.
+ *
+ * A key belongs here only while its direction genuinely forbids a person -- the suite counts the
+ * cast lines, so dropping one shows up as a number rather than as nothing.
+ */
+const NO_PERSON = new Set(["cards/crit/find-the-gap"]);
+
 function accentFor(dir) {
   const way = WAY_OF_DIR[dir];
   /*
@@ -1077,6 +1098,41 @@ export const DIRECTION = {
    * Both rules text is also actively dangerous here: *draw two others and take both* is an
    * instruction a model will cheerfully obey by drawing two cards. These say what is in the frame.
    */
+  /*
+   * **[REFUSED 2026-11-13] `safety_violations=[sexual]`, at the OUTPUT stage**, and the prompt
+   * reads as the refusal once the three clauses are put together rather than written apart.
+   *
+   * The motif for `exposed` gave it *a plate swung away on a cut strap, the gap under it open and
+   * nothing filling it*; the subject said *their armour counts 0*; and the cast line, which is
+   * appended to every card on this shelf, opens *if a face or any bare skin shows here*. Each is
+   * innocuous and the three of them together describe somebody being undressed. The motif is
+   * right for the condition and wrong for this card, which is the exact case `DIRECTION` exists
+   * for -- and it is the third time this project has paid to learn that **a refused composition
+   * is rewritten, not retried**.
+   *
+   * So: no body at all, and the armour is a garment on the ground rather than a plate on a
+   * person. It also draws the card better. *Exposed* is not a wound -- it is the mail failing,
+   * and the next hit is somebody else's.
+   */
+  /*
+   * **[GATE 2026-11-13] 2.4% cool against a ceiling of 1.0.** The `halted` motif gave it *stopped
+   * dead at a line*, which names no material at all -- and an abstract subject in a palette this
+   * narrow drifts cold, because grey and blue are where a model goes when nothing in the prompt
+   * says what the thing is made of. *Critical* on the fate shelf failed the same rule the same
+   * way, off *the paper broken white against it*.
+   *
+   * The motif is fine for a condition and thin for a card that has to be one of seven distinct
+   * pictures. Naming wood, iron and mud is the fix, and it is also the shelf's own rule: draw the
+   * damage, and the damage here is to the tempo rather than to a body.
+   */
+  "cards/crit/driven-down":
+    "a round shield driven edge-first into the earth and pinned flat there, the rim bitten in "
+    + "deep and the dirt heaped up against it, as though something very heavy came down on it. "
+    + "Wood, iron and mud, and nothing else -- no figure, and no weapon above it",
+  "cards/crit/find-the-gap":
+    "a riveted mail shirt laid out on bare ground with its rings sprung apart in a hand-sized "
+    + "hole, the cut links curled back and the quilted padding beneath showing through the gap. "
+    + "The garment ALONE and empty -- no body in it or near it, no blade, no wound, no skin",
   "cards/crit/through-and-through":
     "the far side of the hit: a blade's point standing clean out through the back of a "
     + "breastplate, the steel peeled outward in a star around it. Drawn from BEHIND the plate, "
@@ -2695,7 +2751,7 @@ for (const group of GROUPS) {
         : []),
       "",
       direction,
-      ...(CAST_GROUP.test(group.dir) && !exclusive.length
+      ...(CAST_GROUP.test(group.dir) && !exclusive.length && !NO_PERSON.has(key)
         ? ["", `WHO IS IN IT. If a face or any bare skin shows here, that person is `
           + `${castLine(key)} -- fixed, not a suggestion, and not a default to fall back from. `
           + "If this crop shows no person at all, the line does not apply."]

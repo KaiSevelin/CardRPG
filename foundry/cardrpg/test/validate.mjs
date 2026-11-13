@@ -9077,7 +9077,7 @@ const castLines = [...artPrompts.matchAll(/that person is (a (?:wo)?man) of ([A-
 /* 179 since 2026-11-13: the critical deck. It IS cast -- half of these are a plate, a helm or
  * a pair of feet and the line is written to be evaluated only if a face shows -- unlike the
  * fate shelf, which is excluded because nothing in its frame is a person at all. */
-check("cards, signatures and features given an assigned person", castLines.length, 179);
+check("cards, signatures and features given an assigned person", castLines.length, 178);
 /* The NPC pool is the one group that must NOT be cast: its own capsule says the actor is nobody,
  * because one picture is drawn behind a goblin, a troll and a dragon. */
 const npcBlock = /\n## NPC intent cards\n([\s\S]*?)\n## /.exec(artPrompts)?.[1] ?? "";
@@ -9112,8 +9112,9 @@ const EURO = new Set(["Mediterranean", "Nordic", "Slavic", "Northwest European",
 check("western ancestries among them, which had nearly vanished",
   /* 61 of 179 since the critical deck joined the cast, against 58 of 172 before it: 34.1%
    * against 33.7%, which is the proportion holding rather than a seventh shelf of westerners.
-   * The number this check is really about is that ratio. */
-  castLines.filter(m => EURO.has(m[2])).length, 61);
+   * The number this check is really about is that ratio. 60 of 178 once `find-the-gap` dropped
+   * its cast line -- see NO_PERSON in art-prompts.mjs, and the refusal it was added for. */
+  castLines.filter(m => EURO.has(m[2])).length, 60);
 check("and every ancestry on the list is used somewhere",
   new Set(castLines.map(m => m[2])).size, 15);
 

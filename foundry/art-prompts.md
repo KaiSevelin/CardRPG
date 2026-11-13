@@ -2953,7 +2953,7 @@ File: `cards/crit/driven-down.webp`
 ```text
 SUBJECT. "Driven Down" — Halted (1) · Halted: their next turn does not happen. Not doubled.
 
-Draw stopped dead at a line.
+Draw a round shield driven edge-first into the earth and pinned flat there, the rim bitten in deep and the dirt heaped up against it, as though something very heavy came down on it. Wood, iron and mud, and nothing else -- no figure, and no weapon above it.
 
 WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Central Asian appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
@@ -2965,9 +2965,7 @@ File: `cards/crit/find-the-gap.webp`
 ```text
 SUBJECT. "Find the Gap" — Exposed (1) · Exposed: their armour counts 0 until the end of your next turn. Not this hit, and not doubled.
 
-Draw a plate swung away on a cut strap, the gap under it open and nothing filling it.
-
-WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Nordic appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+Draw a riveted mail shirt laid out on bare ground with its rings sprung apart in a hand-sized hole, the cut links curled back and the quilted padding beneath showing through the gap. The garment ALONE and empty -- no body in it or near it, no blade, no wound, no skin.
 ```
 
 ### Off the Feet

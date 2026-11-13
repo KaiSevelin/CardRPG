@@ -1,6 +1,6 @@
 # Art list
 
-**682 pieces**, of which **675** are drawn and **7** still to shoot. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
+**682 pieces**, of which **681** are drawn and **1** still to shoot. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
 
 ## What to supply
 
@@ -322,17 +322,17 @@ Turned face up in front of four people who have been working toward this for a s
 
 **Draw the damage, not the blow.** Every one of these is what a hit DID: a gap found in armour, feet gone from under somebody, a breastplate stove in, an edge turned. The strike itself is on a hundred other cards in this book and none of them is the aftermath, which is the whole of what a Critical is. Close, physical, and on the thing that was broken rather than on whoever broke it.
 
-**7 pieces**. Suggested path: `cardrpg/art/cards/crit/`
+**7 pieces**, 6 wired up. Suggested path: `cardrpg/art/cards/crit/`
 
 | | Name | What it is | File |
 |---|---|---|---|
-|   | **Both** | Draw two others and take both. | `cards/crit/both.webp` |
-|   | **Driven Down** | Halted (1) · Halted: their next turn does not happen. Not doubled. | `cards/crit/driven-down.webp` |
+| ✓ | **Both** | Draw two others and take both. | `cards/crit/both.webp` |
+| ✓ | **Driven Down** | Halted (1) · Halted: their next turn does not happen. Not doubled. | `cards/crit/driven-down.webp` |
 |   | **Find the Gap** | Exposed (1) · Exposed: their armour counts 0 until the end of your next turn. Not this hit, and not doubled. | `cards/crit/find-the-gap.webp` |
-|   | **Off the Feet** | Off Balance (1) · Off Balance: their Block counts 0 until the end of your next turn, and it is an opening. Not this hit, and not doubled. | `cards/crit/off-the-feet.webp` |
-|   | **Stove In** | Corrode 1 · Their armour is 1 worse until it is repaired. Permanent, and not doubled. | `cards/crit/stove-in.webp` |
-|   | **Through and Through** | Double the damage, as a Critical always did. | `cards/crit/through-and-through.webp` |
-|   | **Turn the Edge** | Blunt 1 · Their weapon strikes for 1 less until it is repaired. Permanent, and not doubled. | `cards/crit/turn-the-edge.webp` |
+| ✓ | **Off the Feet** | Off Balance (1) · Off Balance: their Block counts 0 until the end of your next turn, and it is an opening. Not this hit, and not doubled. | `cards/crit/off-the-feet.webp` |
+| ✓ | **Stove In** | Corrode 1 · Their armour is 1 worse until it is repaired. Permanent, and not doubled. | `cards/crit/stove-in.webp` |
+| ✓ | **Through and Through** | Double the damage, as a Critical always did. | `cards/crit/through-and-through.webp` |
+| ✓ | **Turn the Edge** | Blunt 1 · Their weapon strikes for 1 less until it is repaired. Permanent, and not doubled. | `cards/crit/turn-the-edge.webp` |
 
 ## The fate deck
 
