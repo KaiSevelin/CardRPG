@@ -355,7 +355,7 @@ one thing instead of another.
 | Reward | What it does | Note |
 |---|---|---|
 | **Action card** | Add a card to your action deck | The deck is the main currency of progression |
-| **Skill card** | Add one, or upgrade one ([skill-rules.md](skill-rules.md) §8) | **[OPEN]** The one reward on this list with no key in the accumulator, so no node can grant it: measured in [skill-rules.md](skill-rules.md) §8, where it means a skill check barely scales with levelling |
+| **Skill card** | Add one, or upgrade one ([skill-rules.md](skill-rules.md) §8) | **[CLOSED 2026-11-13]** `grants.skill` names cards from the skill pool and deals them into the skill deck — a different deck from `card`'s, under different rules ([skill-rules.md](skill-rules.md) §1). **Rung 1**, which is what §8's measurement already said: a skill check barely scales with levelling. Its users are the twelve **backgrounds**, two cards each, and they cost nothing against the reward curve because a background is not a level |
 | **Training** | A tool type, at the full bonus instead of +1 | Skill rules §2 already says training comes from the Way trees |
 | **Item** | A slate, handed over outright | A node that teaches a tool training also **issues the tool** — see below |
 | **A rule set aside** | One rule stops applying to you, for good | Only Vax grants one, and only his: *his miracles need no free hand, because the spiked club is the holy symbol*. The gift half of a bargain whose other half is that every miracle costs Health ([way-cards.md](way-cards.md) §3.5) |

@@ -2765,7 +2765,9 @@ const graphSource = fs.readFileSync(path.join(root, "module/graph.mjs"), "utf8")
 const nodes = content.NODES;
 const byId = graph.GRAPH;
 
-check("nodes defined", nodes.length, 210);
+/* 232 since 2026-11-13: Birth gained ten origins and twelve backgrounds, taken at creation
+ * and free, so the graph is 22 nodes larger and not one level deeper. */
+check("nodes defined", nodes.length, 232);
 check("duplicate node ids", nodes.length === byId.size ? "none" : "yes", "none");
 
 /* Every prerequisite must resolve, or a branch is silently unreachable. */
@@ -2962,10 +2964,12 @@ for (const gate of exclusiveGates) {
  * differently: each order is its own creed, so joining one closes the other three outright. One
  * rule, a pantheon and a vocation, and no new field.
  */
-check("exclusive gates in the data", exclusiveGates.length, 16);
+/* 38: the sixteen Faith gates plus the twenty-two creation nodes, which are irreversible in a
+ * more obvious way -- you were born once and you had one childhood. */
+check("exclusive gates in the data", exclusiveGates.length, 38);
 check("and the families they fall into",
   [...new Set(nodes.filter(n => n.exclusive).map(n => n.exclusive))].sort().join(", "),
-  "faith, order");
+  "background, faith, order, origin");
 check("orders, each its own creed",
   nodes.filter(n => n.exclusive === "order").map(n => n.creed).sort().join(", "),
   "circle, cloister, drums, shield");
@@ -2979,10 +2983,40 @@ check("subgraphs that bypass their gate", laundered.length ? laundered.join(", "
 const unsworn = nodes.filter(n => n.title && n.id.startsWith("faith.") && !n.exclusive)
   .map(n => n.id);
 check("Faith titles that are not exclusive", unsworn.length ? unsworn.join(", ") : "none", "none");
-const strayGates = nodes.filter(n => n.exclusive && !n.id.startsWith("faith."))
+/*
+ * **Exclusivity is no longer Faith's alone, and the two new families are the only ones.**
+ * [CHANGED 2026-11-13]
+ *
+ * It was: *a gate outside Way of Faith is a mistake*, which was true while swearing to a god was
+ * the only irreversible thing in the game. Origin and Background are irreversible in a different
+ * and more obvious way -- you were born once and you had one childhood -- so they take the same
+ * mechanism, including the confirmation that names what it shuts before it shuts it.
+ *
+ * The claim that survives is the one worth keeping: **a gate belongs to a declared family.** An
+ * exclusive node in some fifth family nobody wrote down would close its rivals silently, which is
+ * the fault the original check was really guarding against.
+ */
+const strayGates = nodes
+  .filter(n => n.exclusive && !["faith", "order", "origin", "background"].includes(n.exclusive))
   .map(n => n.id);
-check("exclusive nodes outside Way of Faith",
+check("exclusive nodes in no declared family",
   strayGates.length ? strayGates.join(", ") : "none", "none");
+/* And the two creation families are exactly as big as the content says. */
+check("origins and backgrounds",
+  `${nodes.filter(n => n.exclusive === "origin").length} origins, `
+  + `${nodes.filter(n => n.exclusive === "background").length} backgrounds`,
+  "10 origins, 12 backgrounds");
+/* Every free node is a creation node and hangs off Birth: `free` must never be reachable by
+ * spending a level, or *the node is the level* (leveling 3) stops being true. */
+check("free nodes that are not creation nodes",
+  nodes.filter(n => n.free && !["origin", "background"].includes(n.exclusive))
+    .map(n => n.id).join(", ") || "none", "none");
+check("and free nodes that do not hang off Birth",
+  nodes.filter(n => n.free && (n.after ?? []).join() !== "root").map(n => n.id).join(", ")
+    || "none", "none");
+check("while every creation node is free",
+  nodes.filter(n => ["origin", "background"].includes(n.exclusive) && !n.free)
+    .map(n => n.id).join(", ") || "none", "none");
 /* Six religions, and their sizes are what makes a lone god lone (specializations.md). */
 const religions = new Map();
 for (const god of nodes.filter(n => n.exclusive === "faith")) {
@@ -3325,7 +3359,15 @@ check("a pool card granted twice on one path",
  * for its node. The ratio is the difference between a shippable graph and a stalled one, so it is
  * checked rather than intended.
  */
-const minors = nodes.filter(n => !n.title && n.id !== graph.ROOT);
+/*
+ * **A creation node is not a minor node**, and leaving them in moved this ratio for the first time
+ * in the project's life. leveling 1 sizes the budget as *around 120 minor nodes at two or three
+ * per edge*: it is about the stations along a Way's branches, which is why the number it protects
+ * is how much somebody has to WRITE. An origin draws on no pool and is bespoke by construction, so
+ * counting the twenty-two of them made a budget about branch content answer a question about
+ * character creation. Excluded by `free`, and the count is exactly what it was before they existed.
+ */
+const minors = nodes.filter(n => !n.title && n.id !== graph.ROOT && !n.free);
 const bespoke = minors.filter(n => n.bespoke);
 check("minor nodes", minors.length, 153);
 check("bespoke minor nodes", bespoke.length, 29);
@@ -3684,11 +3726,30 @@ check("the frontier never offers what you already own",
  * frontier for the whole of a character's life" rests entirely on it. A stub actor exercises it. */
 const blank = { system: { nodes: [] } };
 check("a character with no nodes still owns the root", graph.ownedIds(blank).has(graph.ROOT), true);
-check("so the Ways are reachable from a blank sheet", graph.frontier(graph.ownedIds(blank)).length, 4);
-check("a fresh character sees exactly the four Ways",
-  graph.frontier(new Set([graph.ROOT])).join(", "), "shade, strength, mind, faith");
-check("and nothing deeper than a Way",
-  graph.frontier(new Set([graph.ROOT])).some(id => id.includes(".")), false);
+/*
+ * **What a fresh character is offered.**  [CHANGED 2026-11-13]
+ *
+ * It used to be *exactly the four Ways, and nothing deeper than a Way*. Birth now also opens the
+ * ten origins and the twelve backgrounds, which are `free` -- taken at creation and not a level --
+ * so the frontier is 26 and 22 of them cost nothing.
+ *
+ * The claim that matters is unchanged and is now stated where it can be read: **everything on a
+ * blank sheet that COSTS a level is a Way, and nothing deeper than a Way is reachable.** That is
+ * leveling 6's *all four Ways stay on your frontier for the whole of a character's life*, and
+ * leveling 3's *the node is the level*, with the two creation families carved out by name rather
+ * than by being quietly tolerated.
+ */
+const atBirth = graph.frontier(graph.ownedIds(blank));
+const freeAtBirth = atBirth.filter(id => graph.GRAPH.get(id)?.free);
+check("what a blank sheet is offered",
+  `${atBirth.length}, of which ${freeAtBirth.length} are free`, "26, of which 22 are free");
+check("and the ones that cost a level are exactly the four Ways",
+  atBirth.filter(id => !graph.GRAPH.get(id)?.free).join(", "), "shade, strength, mind, faith");
+check("and nothing deeper than a Way costs one",
+  atBirth.filter(id => !graph.GRAPH.get(id)?.free).some(id => id.includes(".")), false);
+/* And the free ones really are free: taking every one of them leaves the character at level 0. */
+check("taking all of them is still level 0",
+  graph.levelOf(new Set([graph.ROOT, ...freeAtBirth])), 0);
 
 /* `all` means every prerequisite. One of the two is not enough; both are. */
 const halfWay = new Set(["root", "shade", "shade.footwork", "shade.quiet", "shade.patience",
@@ -5332,33 +5393,45 @@ check("and says the same thing about each",
  * every one of the seven sits on a node whose own reward already names those speakers.
  */
 const tongueNodes = nodes.filter(n => n.grants?.language);
-check("nodes that teach a language", tongueNodes.length, 9);
+/*
+ * **A tongue is taught where its speakers are studied, or spoken where you grew up.**
+ * [EXTENDED 2026-11-13]
+ *
+ * The rule was the first half of that and the second half closes this section's oldest finding.
+ * It read: *Perga is the language at Wolf Peak and Veche the local tongue in Saag et Haar:
+ * regional human tongues, which nobody studies -- you grow up in them. They belong to a
+ * background, and a background has no mechanical representation yet.*
+ *
+ * It does now, and the prediction was right about everything except the word. A place's tongue
+ * belongs to an **origin** rather than a background -- *you grow up in them* is a sentence about
+ * where, not about what you did -- which is why Wolf Peak and Saag et Haar are origins and why the
+ * four origins that teach a language are exactly the four from somewhere with one of its own.
+ */
+check("nodes that teach a language", tongueNodes.length, 13);
 check("and which tongue each teaches",
   tongueNodes.map(n => `${n.id}=${n.grants.language}`).sort().join(", "),
   "faith.vulpet.driven=Burrowing, mind.blood=Demonic, mind.divination=Valgar, "
   + "mind.letters=Imperial, mind.necromancy=Reversed, mind.spirit.debts=Elvish, "
-  + "mind.spirit.names=Troll, shade.duellist.politician=Imperial, shade.scout.spy=Imperial");
-/* Eight nodes and seven tongues: Imperial is taught twice, read by a scholar and spoken by a spy,
- * and `learned` dedupes it. A language is binary -- you read Reversed or you do not. */
+  + "mind.spirit.names=Troll, origin.furnace=Valgar, origin.saag=Veche, origin.velderon=Elvish, "
+  + "origin.wolfpeak=Perga, shade.duellist.politician=Imperial, shade.scout.spy=Imperial");
+/* Thirteen nodes and nine tongues; `learned` dedupes, and a language is binary -- you read
+ * Reversed or you do not. */
 check("tongues the graph teaches at all",
-  [...new Set(tongueNodes.map(n => n.grants.language))].length, 7);
-check("and the one taught from two directions",
-  [...new Set(tongueNodes.map(n => n.grants.language))]
-    .filter(l => tongueNodes.filter(n => n.grants.language === l).length > 1).join(", "),
-  "Imperial");
+  [...new Set(tongueNodes.map(n => n.grants.language))].length, 9);
 /*
- * **Two are taught by nothing, and that is the finding rather than an omission.** Perga is the
- * language at wolf's peak and Veche the local tongue in Saag et Haar: regional human tongues, which
- * nobody studies -- you grow up in them. They belong to a background, and a background has no
- * mechanical representation yet (rules/backgrounds.md is a template with no engine behind it), so
- * the field they will land in exists and the grant does not.
+ * **Three are reached from two directions now, and each pair is the rule stated twice.** Imperial
+ * is read by a scholar and spoken by a spy. Valgar is studied by a diviner and grown up in by
+ * Furnace stock. Elvish is owed by a spiritualist and native to anyone raised at Velderon. Studied
+ * and spoken are the two doors, and every one of these is one of each.
  */
+check("and the ones taught from two directions",
+  [...new Set(tongueNodes.map(n => n.grants.language))]
+    .filter(l => tongueNodes.filter(n => n.grants.language === l).length > 1).sort().join(", "),
+  "Elvish, Imperial, Valgar");
 const taughtTongues = new Set(tongueNodes.map(n => n.grants.language));
 check("languages no node teaches",
-  graph.LANGUAGES.filter(l => !taughtTongues.has(l.name)).map(l => l.name).join(", "),
-  "Perga, Veche");
-check("and leveling says where those two belong",
-  /\[OPEN\][^\n]*Perga and Veche[\s\S]{0,700}?background/.test(levDoc) ? "yes" : "no", "yes");
+  graph.LANGUAGES.filter(l => !taughtTongues.has(l.name)).map(l => l.name).join(", ") || "none",
+  "none");
 
 /* A language the world does not have is a reward that reads as flavour and means nothing: the same
  * failure as a node granting a card nobody wrote, refused in the same place. */
@@ -5639,6 +5712,16 @@ const RUNG = {
    * 2 back, so what a player actually takes is a 1: see `rewardOf` below.
    */
   handSize: 3,
+  /*
+   * **A skill card is rung 1, and section 4 said so before there was a key for it.**  [2026-11-13]
+   *
+   * That row carried `[OPEN] the one reward on this list with no key in the accumulator, so no
+   * node can grant it` -- measured in skill-rules 8, where a skill check barely scales with
+   * levelling, which is exactly what rung 1 means. `grants.skill` closes it, and the twelve
+   * backgrounds are its first and so far only users. They deal TWO, which costs nothing against
+   * the curve: a background is `free`, so it is not a level and sits outside this arithmetic.
+   */
+  skill: 1,
   training: 1, knowHow: 1, mastery: 1, language: 1, carry: 1, restTokens: 1,
   /* Binary, and worth nothing at all to a character who does not cast: rung 1 by 4's own
    * ranking, even though what it lifts is a rule rather than a cap. */
@@ -5684,7 +5767,10 @@ const rewardKeys = {
   spellSlots: "Spell slot",
   health: "Health", restTokens: "Rest token", spell: "Spell", choose: "Choose from a list",
   /* A rule set aside rather than a number raised: the only one is Vax's free hand. */
-  freehandCast: "A rule set aside"
+  freehandCast: "A rule set aside",
+  /* Section 4's longest-open row, closed 2026-11-13. It deals into the SKILL deck, which is why
+   * it is not `card`: different deck, different rules (skill-rules 1). */
+  skill: "Skill card"
 };
 const charGrants = (await import("../module/grants.mjs")).CHARACTER_GRANTS;
 const grantedSomewhere = new Set();
@@ -5710,24 +5796,21 @@ const timesCharged = k => nodes.filter(n => typeof n.grants?.[k] === "number"
 /*
  * Direction one: the rules offer it and nothing hands it over. This is where `deckMax` was.
  *
- * **And the map above has to carry the rewards that have no key at all**, or this check reads
- * "none" by construction -- which is the failure it exists to find, committed by the check itself.
- * `skillCard` is one: leveling 4 offers *Skill card: add one, or upgrade one*, and skill-rules 8
- * says plainly that **the accumulator has no key for it**, so no node can grant one and a
- * character's skill deck at level 20 is the deck they started with. It is listed here with a null
- * key so it counts as offered, and it is the one row this check is allowed to find.
+ * **And the map above used to carry a reward with no key at all**, because a map of keys cannot
+ * see a row that has none -- which would be this check reading "none" by construction, the exact
+ * failure it exists to find, committed by the check itself. `skillCard` was that row for as long
+ * as leveling 4 has existed: *Skill card: add one, or upgrade one*, offered by two documents and
+ * grantable by nothing, so a character's skill deck at level 20 was the deck they started with.
+ *
+ * **It is closed.**  [2026-11-13] `grants.skill` deals named cards into the skill deck and the
+ * twelve backgrounds use it. The expected answer is therefore *none*, and the `KEYLESS` escape
+ * hatch is gone with the row it was built for -- if another keyless reward is ever written into
+ * section 4, it comes back.
  */
-const KEYLESS = { skillCard: "Skill card" };
 check("rewards section 4 offers that no node grants",
-  [...Object.entries(rewardKeys).filter(([k]) => !grantedSomewhere.has(k)),
-    ...Object.entries(KEYLESS)].map(([, label]) => label).sort().join(", ") || "none",
-  "Skill card");
-/* ...and it is blocked on a mechanism rather than on content, which is why it is not fixed here. */
-check("and the grant accumulator has no key for it",
-  "skillCard" in (await import("../module/graph.mjs")).grantsOf(new Set()) ? "yes" : "no", "no");
-check("which skill-rules 8 records as the open mechanism",
-  /The mechanism this section needs is a `skillCard` grant/.test(
-    fs.readFileSync(path.join(root, "../../rules/skill-rules.md"), "utf8")) ? "yes" : "no", "yes");
+  Object.entries(rewardKeys).filter(([k]) => !grantedSomewhere.has(k))
+    .map(([, label]) => label).sort().join(", ") || "none",
+  "none");
 /* Direction two, which is the one nobody had asked: the graph hands it over and the rules never
  * called it a reward. This is where `carry` was, six nodes deep. */
 check("and grants the graph hands out that section 4 never offered",
@@ -5848,7 +5931,9 @@ check("and it rises every step of the back half",
  */
 const FLAVOUR = new Set(["knowHow", "mastery", "carry", "language", "restTokens"]);
 const followed = new Set(nodes.flatMap(n => n.after ?? []));
-const capstones = nodes.filter(n => !followed.has(n.id) && !n.title);
+/* A creation node is not a branch end: nothing follows an origin because an origin is where you
+ * START, and way-cards 3.4's *a branch has to be worth walking to the end* is not about it. */
+const capstones = nodes.filter(n => !followed.has(n.id) && !n.title && !n.free);
 const hollow = capstones.filter(n => {
   const keys = Object.keys(n.grants ?? {});
   return keys.length > 0 && keys.every(k => FLAVOUR.has(k));
@@ -10982,7 +11067,7 @@ check("the indexes are refilled rather than replaced",
 /* ---- what it refuses, asked rather than read ---- */
 
 const coreNodes = [...graph.LIVE_NODES];
-check("the graph starts as core content", coreNodes.length, 210);
+check("the graph starts as core content", coreNodes.length, 232);
 
 /* A prerequisite that does not exist: the first price section 8 names. */
 check("a node following nothing that exists",
@@ -11044,7 +11129,7 @@ check("and the graph is still whole", graph.GRAPH.has("shade.thief"), true);
 
 /* Back to core, so every check after this section is asking about the shipped graph. */
 check("the graph can be put back", graph.rebuildGraph({}).length, 0);
-check("and it is core again", graph.LIVE_NODES.length, 210);
+check("and it is core again", graph.LIVE_NODES.length, 232);
 check("with the replaced node restored", graph.GRAPH.get("shade.footwork")?.name, "Footwork");
 
 /* ---- the lock, which is the answer to "not in an active campaign" ---- */
@@ -13344,7 +13429,10 @@ check("which is how many of the fifteen",
  */
 const toolTrainers = nodes.filter(n => n.grants?.training
   && trainingTools.has(n.grants.training));
-check("nodes that teach a tool training", toolTrainers.length, 7);
+/* 19 since 2026-11-13: the twelve backgrounds each teach one and issue it, which is what
+ * backgrounds.md meant by *gear always includes the trained tool* -- and what this very
+ * check caught them not doing. */
+check("nodes that teach a tool training", toolTrainers.length, 19);
 check("and the ones that issue nothing, which may only be crossings",
   toolTrainers.filter(n => !n.grants.item).map(n => n.id).join(", "),
   "shade.cross.odds1, shade.cross.wire1");
@@ -13359,8 +13447,13 @@ check("issued tools that the node's training does not uncap",
 check("what each one is issued",
   toolTrainers.filter(n => n.grants.item).map(n => `${n.grants.training}:${n.grants.item}`)
     .sort().join(", "),
-  "armour and its repair:Repair Kit, lockpicks:Lockpicks, rope and climbing:Climbing Rope, "
-  + "treating wounds:Healer's Kit, treating wounds:Healer's Kit");
+  "armour and its repair:Repair Kit, armour and its repair:Repair Kit, "
+  + "armour and its repair:Repair Kit, games of chance:Gaming Set, games of chance:Gaming Set, "
+  + "lockpicks:Lockpicks, lockpicks:Lockpicks, lockpicks:Lockpicks, "
+  + "rope and climbing:Climbing Rope, rope and climbing:Climbing Rope, "
+  + "rope and climbing:Climbing Rope, traps:Hunting Traps, traps:Hunting Traps, "
+  + "treating wounds:Healer's Kit, treating wounds:Healer's Kit, treating wounds:Healer's Kit, "
+  + "treating wounds:Healer's Kit");
 /*
  * **And nothing measured is issued.** A service weapon or a suit of armour is the obvious next
  * thought and the answer is no: those are numbers this project has simulated -- Plate wins 100.0%
@@ -13383,7 +13476,7 @@ for (const [training, tool] of [["rope and climbing", "Climbing Rope"],
  * twice is one training: `learned` dedupes, so the cloister and the anatomist agree. */
 check("who teaches treating wounds",
   nodes.filter(n => n.grants?.training === "treating wounds").map(n => n.id).sort().join(", "),
-  "faith.order.cloister, mind.blood.anatomy");
+  "background.acolyte, background.healer, faith.order.cloister, mind.blood.anatomy");
 check("and the sheet would not list it twice",
   /trainings: \[\.\.\.new Set\(/.test(
     fs.readFileSync(path.join(root, "module/data/actors.mjs"), "utf8")) ? "yes" : "no", "yes");
@@ -13748,14 +13841,21 @@ check("the two the skill side gained",
 check("and whether any of them could grow a skill deck",
   grantKeys.filter(k => /skill/i.test(k)).join(", ") || "none", "none");
 check("nodes that grant a skill card", nodes.filter(n => n.grants?.skillCard).length, 0);
-/* The documents promise it in two places, which is why this is a gap and not a decision. */
+/* The documents promise it in two places, and now something delivers it. */
 check("leveling offers a skill card as a reward",
   /\| \*\*Skill card\*\* \| Add one, or upgrade one/.test(levDoc) ? "yes" : "no", "yes");
-/* And flags it as the one reward on that list nothing can grant, which is the half a reader needs:
- * the row on its own reads as a reward that works. */
-check("and flags it as the one nothing can grant",
+/*
+ * **And the row says it works, which it did not for as long as the table existed.**
+ * [CLOSED 2026-11-13] It used to carry `[OPEN] the one reward on this list with no key in the
+ * accumulator`, and this check held that warning in place -- because the row on its own reads as
+ * a reward that works, and it did not. `grants.skill` closes it, so the check is inverted: the
+ * warning must be GONE, and the row must say what closed it.
+ */
+check("and no longer warns that nothing can grant it",
   /Skill card[\s\S]{0,80}\*\*\[OPEN\]\*\* The one reward on this list with no key/.test(levDoc)
-    ? "yes" : "no", "yes");
+    ? "still warns" : "closed", "closed");
+check("and names the key that closed it",
+  /Skill card[\s\S]{0,200}`grants\.skill`/.test(levDoc) ? "yes" : "no", "yes");
 check("and skill-rules writes the whole rule out",
   /\*\*Add\*\* a skill card from your Way's card list/.test(skillDoc) ? "yes" : "no", "yes");
 /*
@@ -14055,7 +14155,7 @@ check("a mastery is always deeper than that Way's expertise",
   }).map(m => m.id).join(", ") || "none", "none");
 
 /* Nothing new was added to the graph for any of it. */
-check("nodes in the graph", nodes.length, 210);
+check("nodes in the graph", nodes.length, 232);
 check("and every expertise rides a node that was already there",
   expertiseNodes.filter(n => Object.keys(n.grants).length < 2).map(n => n.id).join(", ") || "none",
   "none");
@@ -15620,6 +15720,7 @@ const absentGreps = [
   String.raw`and no longer reads a spell as a source of bonus :: slate\.type === "spell" && slate\.system\.effect`,
   String.raw`and no longer reads an art field the content has not got :: def\?\.art \?\? ""`,
   String.raw`and no longer stops dealing at the first dose :: taint\+\+;\s*\n\s*break;`,
+  String.raw`and no longer warns that nothing can grant it :: Skill card[\s\S]{0,80}\*\*\[OPEN\]\*\* The one reward on this list with no key`,
   String.raw`and no slate is flagged unusable instead :: quarantined: new fields\.BooleanField`,
   String.raw`and no table offers a Swedish column :: \| Swedish \|`,
   String.raw`and nothing ever puts a condition in the waved set :: waved\.add\(.*condition`,

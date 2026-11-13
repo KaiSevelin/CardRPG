@@ -24,7 +24,8 @@ import {
   NODES, COMMON_POOL, WAY_CARDS, SHADE_POOL, STRENGTH_POOL, MIND_POOL, FAITH_POOL, LANGUAGES,
   FORMULAS, SHADOW_FORMULAS,
   SHADE_SIGNATURES, TACTICS, STRENGTH_SIGNATURES, STRENGTH_TACTICS,
-  MIND_SIGNATURES, MIND_TACTICS, FAITH_SIGNATURES, FAITH_TACTICS
+  MIND_SIGNATURES, MIND_TACTICS, FAITH_SIGNATURES, FAITH_TACTICS,
+  WARRIOR_SKILLS
 } from "./content.mjs";
 
 /**
@@ -34,7 +35,7 @@ import {
 export const SIGNATURES = [...SHADE_SIGNATURES, ...STRENGTH_SIGNATURES, ...MIND_SIGNATURES,
   ...FAITH_SIGNATURES];
 export const ALL_TACTICS = { ...TACTICS, ...STRENGTH_TACTICS, ...MIND_TACTICS, ...FAITH_TACTICS };
-import { deckOf, allStacks, actionCardData, artIn, isIntruder } from "./decks.mjs";
+import { deckOf, allStacks, actionCardData, skillCardData, artIn, isIntruder } from "./decks.mjs";
 /*
  * **One import from the resolver, and it is not a cycle.** `resolve.mjs` does not import this
  * module, so the dependency points one way -- unlike the deferred `import()` the deck module used
@@ -59,6 +60,15 @@ export const ROOT = "root";
  */
 export const POOL = new Map([...COMMON_POOL, ...WAY_CARDS, ...SHADE_POOL, ...STRENGTH_POOL,
   ...SIGNATURES.filter(s => s.kind === "card")].map(c => [c.name, c]));
+
+/**
+ * **The skill cards a node may deal, by name.** `POOL`'s opposite number, and a separate map for
+ * the same reason `SPELLS` is: a skill card goes into a different deck, under different rules
+ * (skill-rules 1), and the two must never resolve each other's names.
+ *
+ * A background is the only thing that deals from it today -- two cards, per backgrounds.md.
+ */
+export const SKILL_POOL = new Map(WARRIOR_SKILLS.map(c => [c.name, c]));
 
 /**
  * The formulas a node may hand out, by name -- the spell half of `POOL`, and a separate map
@@ -497,9 +507,20 @@ export function stateOf(id, owned, closed = closedIds(owned), live = null) {
 /*  What owning them means                      */
 /* -------------------------------------------- */
 
-/** Level is the number of nodes you own, not counting the root (§7). */
+/**
+ * **Level is the number of nodes you own that cost one.**  (§7, and `free` since 2026-11-13.)
+ *
+ * It used to be every node but the root. Origin and Background are nodes a character has from the
+ * start -- backgrounds.md: *who you were **before** you walked one of the Ways* -- so counting them
+ * would make a freshly made character level 2 before they had chosen anything, and *the node is the
+ * level* (§3) would stop being true of the two that are not.
+ *
+ * `free` is the exception and it is deliberately narrow: it marks a node taken AT CREATION rather
+ * than one that is cheap. Nothing in the graph may be both free and reachable by spending a level,
+ * which is what keeps §3 honest -- and the suite checks that every free node hangs off Birth.
+ */
 export function levelOf(owned) {
-  return [...owned].filter(id => id !== ROOT).length;
+  return [...owned].filter(id => id !== ROOT && !GRAPH.get(id)?.free).length;
 }
 
 /** Your title is the deepest specialization node you own (§5). */
@@ -768,6 +789,9 @@ export async function takeNode(actor, id) {
       ? grantCardChoice(actor, grants.choose.from)
       : grantSpellChoice(actor, grants.choose.from, id));
   }
+  /* A background deals into the SKILL deck, which nothing else here did: `card` is the action
+   * deck's and they are different decks with different rules (skill-rules 1). */
+  if (grants.skill) await grantSkillCards(actor, grants.skill);
   if (grants.expertise) await raiseSkillCard(actor, grants.expertise);
   for (let i = 0; i < (grants.prune ?? 0); i++) await prune(actor);
   return true;
@@ -1123,6 +1147,31 @@ export async function prune(actor) {
  * time the sheet is prepared; a card is a document in a deck, so it has to be created once and it
  * stays created. That asymmetry is why `grants.card` is the only key `takeNode` acts on.
  */
+/**
+ * **Skill cards, by name, into the skill deck.**  [BUILT 2026-11-13]
+ *
+ * A background gives two of them (backgrounds.md), and `grants.card` could not: it reads the ACTION
+ * pool and deals into the action deck, and the two decks are not interchangeable -- a skill card
+ * has an approach and a value where an action card has halves, and the skill discard comes back on
+ * a rest rather than on a shuffle (skill-rules 1).
+ *
+ * Takes an array, because every caller wants more than one and a node that listed `skill` twice
+ * would silently keep the second.
+ */
+async function grantSkillCards(actor, names) {
+  const deck = deckOf(actor, "skill");
+  if (!deck) return false;
+  const want = (Array.isArray(names) ? names : [names]).map(n => SKILL_POOL.get(n));
+  const missing = (Array.isArray(names) ? names : [names]).filter(n => !SKILL_POOL.has(n));
+  if (missing.length) {
+    ui.notifications?.warn(game.i18n.format("CARDRPG.Level.NoCard", { name: missing.join(", ") }));
+  }
+  if (!want.filter(Boolean).length) return false;
+  await deck.createEmbeddedDocuments("Card",
+    want.filter(Boolean).map(def => skillCardData(def)));
+  return true;
+}
+
 async function grantCard(actor, name) {
   const def = POOL.get(name);
   const deck = deckOf(actor, "action");

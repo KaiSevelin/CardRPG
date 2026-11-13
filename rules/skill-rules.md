@@ -737,7 +737,9 @@ Travel isn't a skill system of its own. It's a frame for **encounters**:
 > and *help* are the levers, not a rising number) but it should be a decision rather than a
 > consequence of §8 never being built.
 >
-> **[OPEN]** The mechanism this section needs is a `skillCard` grant: a node names a card from the
+> **[CLOSED 2026-11-13]** The mechanism this section needed is a `grants.skill`: a node names cards from the skill pool and they are dealt into the skill deck. The twelve **backgrounds** are its first users, two cards each. What is still open is the *upgrade* half — `expertise` raises a card the player picks, and nothing yet prunes as this section describes.
+>
+> The paragraph that follows describes the shape it was waiting for: a node names a card from the
 > Way's list, or an upgrade, and the level-up pane hands it over the way it hands over a spell. The
 > **Mnemonic Stone** (*one extra skill card in your skill deck*) is waiting on the same thing and is
 > the only piece of content that is.

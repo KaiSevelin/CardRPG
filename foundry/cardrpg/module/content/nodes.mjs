@@ -25,6 +25,10 @@
  *              every character who took it (leveling 9)
  *   bespoke    content written for this node and nowhere else. Two minor nodes in three are NOT
  *              bespoke: they draw on a pool, which is the content budget leveling 1 sets
+ *   free       taken at character creation and NOT a level. Origin and Background only: a
+ *              background is who you were *before* you walked a Way (backgrounds.md), so counting
+ *              it would make a new character level 2 before they had chosen anything. Narrow on
+ *              purpose -- it marks a node nobody spends on, never one that is cheap
  *   lore       what this node MEANS, for the player reading it before they spend a level. The
  *              numbers answer *what do I get*; nothing answered *what am I becoming*, and on a
  *              Way node that is the only question being asked. Where it LEADS is not written
@@ -41,11 +45,263 @@
  * crossing is a short chain of its own: the Dream Guild teaches you, and being taught takes levels.
  */
 export const NODES = [
+  /*
+   * **Birth, which was called Root.**  [RENAMED 2026-11-13] The id is unchanged -- leveling 8 says
+   * an id is renamed about as freely as a database column, and an add-on depends on this one --
+   * but `Root` was the graph describing its own data structure to the player. The node means the
+   * start of a life, and now it says so; it is also what Origin and Background hang off.
+   */
   {
-    id: "root", name: "Root", after: [],
-    lore: "Where every character starts, and the only node nobody chooses. All four Ways stay on "
-      + "your frontier for life (leveling 6): this is not a class picked once, and nothing here "
-      + "stops you walking into a second Way at level nine."
+    id: "root", name: "Birth", after: [],
+    lore: "Where every character starts, and the only node nobody chooses.\n\nTwo things hang off "
+      + "it for nothing: **where you are from** and **what you did before**. Neither costs a level, "
+      + "because both are true of you before the first one is spent. Everything else here is a "
+      + "level, and all four Ways stay on your frontier for life (leveling 6) -- this is not a "
+      + "class picked once, and nothing stops you walking into a second Way at level nine."
+  },
+
+
+  /* -------------------------------------------- */
+  /*  Where you are from                          */
+  /* -------------------------------------------- */
+
+  /**
+   * **Origin: one place, taken at creation and never a level.**  [BUILT 2026-11-13]
+   *
+   * `free` because this is true of you before the first level is spent, and `exclusive` because
+   * you were born once. Taking one shuts the other nine for good, which is the same mechanism Way
+   * of Faith's twelve gods use and the same confirmation dialog -- the pane names what it closes
+   * before it closes it.
+   *
+   * **Where, not what.** An origin is the place; a background is the trade. Both hang off Birth
+   * and neither depends on the other, so any origin pairs with any background.
+   *
+   * Every one of them grants a **know-how** -- advantage on skill checks in a situation
+   * (backgrounds.md) -- and the four from places that have a tongue of their own grant that too.
+   * That asymmetry is the content rather than an oversight: five districts share Imperial and a
+   * language nobody lacks is not a gift, while coming from Wolf Peak or Saag et Haar is strange
+   * enough to be worth a second line on the sheet.
+   *
+   * Every place named here is in the world file. Nothing was invented for this list.
+   */
+  {
+    id: "origin.core", name: "The Core", after: ["root"], free: true, exclusive: "origin",
+    grants: { knowHow: "courts, clerks and who outranks whom" },
+    lore:
+      "Born on the mesa or in the satellite cities under it: Geistburg, a dozen corrupt noble houses and a powerless man still titled emperor. You grew up knowing which of them to be careful of.\n\nThe rich live inside the walls, the slums cover the rest of the rock, and ordinary people are out on the plain where the food is grown. Whichever of those you came from, you learned the shape of the whole thing -- that is what the Core teaches."
+  },
+  {
+    id: "origin.fiord", name: "The Fiord", after: ["root"], free: true, exclusive: "origin",
+    grants: { knowHow: "boats, tides and harbour business" },
+    lore:
+      "Black Harbour, the fishing villages, or one of the islands close enough in to count. The sea cuts so deep inland here that the ring runs through water, and six enormous lighthouses mark where.\n\nThe Salt Barons are gone and their habits are not: fishing, smuggling and piracy were one trade with three names. The old faith of the Five is strong and the Church of the Eternal God is blasphemy, which is worth remembering before you say grace."
+  },
+  {
+    id: "origin.ruby", name: "The Ruby", after: ["root"], free: true, exclusive: "origin",
+    grants: { knowHow: "wine, trade and a good table" },
+    lore:
+      "Warm hills in the south-east, wine and fruit, winter palaces the rich no longer visit. A voted council governs from Tanto and nobody especially minds what you believe or who you are.\n\nIt is the easiest district to have been a child in and the hardest to be taken seriously from. Sol is down the road, the underground city where everything is permitted, and half the continent assumes you have been."
+  },
+  {
+    id: "origin.iron", name: "The Iron", after: ["root"], free: true, exclusive: "origin",
+    grants: { knowHow: "deserts, caravans and what water is worth" },
+    lore:
+      "The northern half of the Hyena Desert, or the mineral mountains above it. Sammel is the only real city and the emirs have cut it into sealed quarters called Rote -- the old assassin state holds the central one, around the Ziggurat.\n\nOut past the oases there is nothing but a caravan camp wherever there is water. You know what a day's march costs, and you know that the embassies in the Rote sell things under the table in every district but the Amber."
+  },
+  {
+    id: "origin.amber", name: "The Amber", after: ["root"], free: true, exclusive: "origin",
+    grants: { knowHow: "forests, tracking and living rough" },
+    lore:
+      "The far east, the second largest district and the one that was never entirely tamed. Dragons turn up. Trolls live in the forests. Dense wet conifer, broken by lakes and bog.\n\nKarmat is in decline and mercenaries are the only thing it still sells; every town runs itself and the mayor's chair changes hands bloodily and often. Vax has the most followers and nobody minds what you believe, because there is too much else to mind."
+  },
+  {
+    id: "origin.furnace", name: "Furnace Stock", after: ["root"], free: true, exclusive: "origin",
+    grants: { knowHow: "machinery, guilds and how a thing was made", language: "Valgar" },
+    lore:
+      "You were not born in the Furnace District -- nobody has been for a generation. You were born into what came out of it: the engineering guilds its refugees founded in every surviving district, which kept the trade, the manners and the language.\n\nThe Furnace built the Iron's trains, the Fiord's sea defences and the Core's cable cars, and then the Horde came in and Weder went to ruins and bog. Everyone in the guild hall speaks **Valgar** and nobody outside it does."
+  },
+  {
+    id: "origin.wolfpeak", name: "Wolf Peak", after: ["root"], free: true, exclusive: "origin",
+    grants: { knowHow: "fire, powder and the discipline of a closed order", language: "Perga" },
+    lore:
+      "A religious centre of the faith of the Fire, on a dormant volcano north of the Amber, never once taken. The roads to the summit are easy to hold and the mountain feeds itself.\n\nIt also makes the best gunpowder and firearms on the continent, because every ingredient is in the mountain. The priesthood has its own dress, tattoos over every inch of them, and its own tongue, **Perga**. They are rarely seen outside, which is the first thing anyone will notice about you."
+  },
+  {
+    id: "origin.saag", name: "Saag et Haar", after: ["root"], free: true, exclusive: "origin",
+    grants: { knowHow: "the dead, tyranny and keeping very quiet", language: "Veche" },
+    lore:
+      "What is left of Seetch, the realm of the necromancer kings, south of the Hyena Desert. The greatest of them, Fahlas, still rules it after four hundred years and has become a minor god.\n\nRaising the dead keeps the number of sacrifices lower than elsewhere, which is the closest thing to a mercy on offer. The religion is the death goddess Aecht, the government is a tyranny, the tongue is **Veche**, and the city buys slaves in Sammel and pays in stones out of its own mines."
+  },
+  {
+    id: "origin.velderon", name: "Velderon", after: ["root"], free: true, exclusive: "origin",
+    grants: { knowHow: "elves, old ruins and what is not said", language: "Elvish" },
+    lore:
+      "The elves' embassy on Firma, east of the Fiord: an ancient elven ruin with one restored corner. You do not go in without an invitation, so whatever brought you up there was unusual.\n\nThe elves are neutral and live on the Second Side. Their own magic keeps the Horde out, and the embassy exists to watch it and make sure it never starts looking upward -- which is a sentence most of Firma has never been told."
+  },
+  {
+    /* **-born, because `faith.first.echterhof` already carries the bare name.** Four pairs of
+     * minor nodes share a name across Ways and that is tolerated -- the ids differ and the art
+     * layer has `AMBIGUOUS` for it -- but an ORIGIN is one of ten things a player reads side by
+     * side at creation, and reading the same word as a node on The First's branch is a worse
+     * cost than a slightly longer label. */
+    id: "origin.echterhof", name: "Echterhof-born", after: ["root"], free: true,
+    exclusive: "origin",
+    grants: { knowHow: "vampires, guest law and whose turn it is" },
+    lore:
+      "A large neutral city in the middle of Horde territory, ruled by Strigoi princes, with farmland around it the Horde has left alone. Strigoi live off humans, so a large human population lives there between the vampires and the Horde.\n\nA human mayor chooses who is eaten -- criminals, usually, and when criminals run short it is done by lot or by grudge. The Guest Law guarantees a guest will not be killed and guarantees that a guest who breaks any of its many clauses will be. You grew up counting the population, because the more people there are the less likely you are the one chosen."
+  },
+
+
+  /* -------------------------------------------- */
+  /*  What you did before                         */
+  /* -------------------------------------------- */
+
+  /**
+   * **Background: one trade, taken at creation and never a level.**  [BUILT 2026-11-13]
+   *
+   * Written to backgrounds.md's own template, which was three placeholder examples and a promise
+   * that every background gives the same five parts. Four of the five are nodes' work already --
+   * two skill cards, a feature, a training, a know-how -- and the fifth is the **trained tool**,
+   * which the template says gear always includes.
+   *
+   * **That last one was missed and the suite caught it.** A training uncaps a tool's bonus, so a
+   * training on a tool nobody owns changes no number until somebody goes shopping: the graph
+   * already held *a node that teaches a tool training must issue the tool*, with crossings as the
+   * only exception, and twelve backgrounds walked straight into it. The rest of the starting gear
+   * is still a conversation at the table, because what else you own at creation is what the GM has
+   * let you buy.
+   *
+   * `free` and `exclusive` for the same reasons Origin is: it is true of you before the first
+   * level is spent, and you had one childhood. Taking one shuts the other eleven for good.
+   *
+   * **Where, and what.** An origin is the place and a background is the trade, and nothing couples
+   * them -- a Wolf Peak Card Sharp is a character somebody will play. The two know-hows never name
+   * the same situation, which is checked: a background that handed back the know-how its likeliest
+   * origin already granted would be a free part that is free twice.
+   *
+   * The skill cards come from the one skill pool that exists (`WARRIOR_SKILLS`), the features and
+   * trainings from the item and feature catalogues. Nothing new was invented to make these work,
+   * which is the test of whether the template was real.
+   */
+  {
+    id: "background.soldier", name: "Soldier", after: ["root"], free: true, exclusive: "background",
+    grants: {
+      skill: ["Soldier's Learning", "Set Your Feet"],
+      feature: "Steady", training: "armour and its repair", item: "Repair Kit",
+      knowHow: "military matters, soldiers and camps"
+    },
+    lore:
+      "Somebody drilled you until it stopped being a decision. Every district hires soldiers and only the Amber sells nothing else, so where you did it says as much as that you did.\n\nWhat it leaves is not courage, which nobody can train. It is the habit of standing in the place you were told to stand while something is coming at it."
+  },
+  {
+    id: "background.urchin", name: "Street Urchin", after: ["root"], free: true, exclusive: "background",
+    grants: {
+      skill: ["Out of the Light", "Quick Hands"],
+      feature: "Light Step", training: "lockpicks", item: "Lockpicks",
+      knowHow: "streets, alleys and the poor of big cities"
+    },
+    lore:
+      "You grew up in the parts of a city that are on no map the city admits to: the slums over the rock under Geistburg, the back of Black Harbour, the Rote nobody collects rubbish from.\n\nBeing small and fast was not a tactic, it was the whole of it. You know which doors are never locked and which of them it is worth being caught behind."
+  },
+  {
+    id: "background.acolyte", name: "Acolyte", after: ["root"], free: true, exclusive: "background",
+    grants: {
+      skill: ["The Loud Voice", "Sharp Eyes"],
+      feature: "Well Read", training: "treating wounds", item: "Healer's Kit",
+      knowHow: "temples, rituals and clergy"
+    },
+    lore:
+      "You were raised in or given to a temple -- of the Eternal God in the Core, of the Five in the Fiord, of the Fire on Wolf Peak, of Aecht in Saag et Haar. Which one you were is a different question from which one you are.\n\nYou can read, which most of Firma cannot, and you were taught to say words in the right order in front of frightened people. Both turn out to be useful well outside a temple."
+  },
+  {
+    id: "background.sailor", name: "Sailor", after: ["root"], free: true, exclusive: "background",
+    grants: {
+      skill: ["Keep Your Footing", "Heave"],
+      feature: "Quick", training: "rope and climbing", item: "Climbing Rope",
+      knowHow: "ships, harbours and the sea"
+    },
+    lore:
+      "The Fiord lands most of the continent's fish and the Ruby's coast feeds its cities, so there is work on the water for anybody who can keep their feet on a wet deck.\n\nThe Salt Barons are gone and their arrangements are not. Whether you were crew, smuggler or both depends mostly on who was asking at the time."
+  },
+  {
+    id: "background.miner", name: "Miner", after: ["root"], free: true, exclusive: "background",
+    grants: {
+      skill: ["Break It", "Set Your Feet"],
+      feature: "Hard Hands", training: "traps", item: "Hunting Traps",
+      knowHow: "stone, tunnels and what is under the ground"
+    },
+    lore:
+      "The Mouse Mountains above the Hyena Desert, or the Spear Mountains, or one of the roads being cut between districts. The Iron's mining is also why the East Road is the least safe road: dig far enough and something comes through.\n\nYou know how a tunnel is held up, how it sounds before it stops being held up, and what to do in the dark when it does."
+  },
+  {
+    id: "background.caravan", name: "Caravan Guard", after: ["root"], free: true, exclusive: "background",
+    grants: {
+      skill: ["Sharp Eyes", "Keep Your Footing"],
+      feature: "Alert", training: "armour and its repair", item: "Repair Kit",
+      knowHow: "roads, caravans and the country between towns"
+    },
+    lore:
+      "Everything between the districts moves by road or does not move. The West Road is a tunnel with cities in it, the Cracked Road is limestone and not safe, and the East Road has the Night Express running through its own coal smoke because nothing else will.\n\nYou slept badly for money. What you learned was not fighting -- it was noticing, which is the half that keeps a caravan whole."
+  },
+  {
+    id: "background.vintner", name: "Vintner", after: ["root"], free: true, exclusive: "background",
+    grants: {
+      skill: ["The Loud Voice", "Quick Hands"],
+      feature: "Good Name", training: "games of chance", item: "Gaming Set",
+      knowHow: "merchants, prices and a bad bargain"
+    },
+    lore:
+      "The Ruby's hills are warm and its wine is what the district is known for, and selling it means a season on the roads with something fragile and valuable.\n\nYou can judge what a thing is worth and what the person in front of you thinks it is worth, which are two numbers and the gap between them is the trade."
+  },
+  {
+    id: "background.forester", name: "Forester", after: ["root"], free: true, exclusive: "background",
+    grants: {
+      skill: ["Out of the Light", "Sharp Eyes"],
+      feature: "Good Aim", training: "traps", item: "Hunting Traps",
+      knowHow: "game, snares and what has passed this way"
+    },
+    lore:
+      "The Amber is wet conifer forest broken by lakes and bog, and most of it is nobody's. Timber was the export until the Furnace fell and took the routes with it; what is left is hunting, and the forest barons who are broken but not gone.\n\nTrolls live in those woods. Reading the ground is not a hobby there -- it is how you find out what is ahead of you before it finds out about you."
+  },
+  {
+    id: "background.guild", name: "Guild Apprentice", after: ["root"], free: true, exclusive: "background",
+    grants: {
+      skill: ["Break It", "Sharp Eyes"],
+      feature: "Quick Eye", training: "lockpicks", item: "Lockpicks",
+      knowHow: "workshops, apprentices and a master's temper"
+    },
+    lore:
+      "The Furnace's refugees founded engineering guilds in every surviving district, and a guild takes children. Seven years of fetching, grinding and being shouted at, and somewhere in it you learned how things come apart.\n\nYou did not finish, or you would not be here. What you have is the hands and the eye and an unfinished indenture somebody may still remember."
+  },
+  {
+    id: "background.healer", name: "Hedge Healer", after: ["root"], free: true, exclusive: "background",
+    grants: {
+      skill: ["Soldier's Learning", "Inspiration"],
+      feature: "Quiet Worker", training: "treating wounds", item: "Healer's Kit",
+      knowHow: "sickness, herbs and a village with no physician"
+    },
+    lore:
+      "Most of Firma has no physician and never will. What it has is somebody in the village who knows which leaf, who has set bones before, and who is sent for at night.\n\nThat was you, or the person who raised you. It is not magic and it is not respected, and it is the only thing between a farming village and whatever is going around."
+  },
+  {
+    id: "background.sharp", name: "Card Sharp", after: ["root"], free: true, exclusive: "background",
+    grants: {
+      skill: ["Quick Hands", "Sharp Eyes"],
+      feature: "Tough", training: "games of chance", item: "Gaming Set",
+      knowHow: "gambling houses, marks and a crooked table"
+    },
+    lore:
+      "Sol, where everything is permitted, or the back of any inn on any road. A deck is honest and the hands holding it are the variable.\n\nThe feature this leaves you is not dexterity. It is that you have been found out before, in a room with no other door, and you walked out of it."
+  },
+  {
+    id: "background.porter", name: "Porter", after: ["root"], free: true, exclusive: "background",
+    grants: {
+      skill: ["Heave", "Set Your Feet"],
+      feature: "Packhorse", training: "rope and climbing", item: "Climbing Rope",
+      knowHow: "loads, markets and what a thing weighs"
+    },
+    lore:
+      "Somebody carries it. On the mesa it goes up by cable car and at both ends of that it goes on a back; in Sammel it crosses between sealed quarters; in the Amber it goes where no cart will.\n\nIt is the least regarded trade in this book and the one that teaches the most about weight, which this game happens to measure."
   },
 
   /* --- the four Ways, all of them on your frontier for life (leveling 6) --- */
