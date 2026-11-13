@@ -165,7 +165,12 @@ const CAST_GROUP = /^(?:cards\/(?!npc\b|fate\b)|signatures\/|features$|nodes\/ti
  * A key belongs here only while its direction genuinely forbids a person -- the suite counts the
  * cast lines, so dropping one shows up as a number rather than as nothing.
  */
-const NO_PERSON = new Set(["cards/crit/find-the-gap"]);
+const NO_PERSON = new Set(["cards/crit/find-the-gap",
+  /* Refused with a cast line that opens *if any bare skin shows*, under a direction that
+   * now says there is nobody in the frame at all. Vulpet is NOT here: it keeps its figure,
+   * and keeping the casting is the whole reason that shelf has one. */
+  "nodes/background/street-urchin", "nodes/background/guild-apprentice",
+  "nodes/title/blood-magic"]);
 
 function accentFor(dir) {
   const way = WAY_OF_DIR[dir];
@@ -1141,6 +1146,36 @@ export const DIRECTION = {
     "a riveted mail shirt laid out on bare ground with its rings sprung apart in a hand-sized "
     + "hole, the cut links curled back and the quilted padding beneath showing through the gap. "
     + "The garment ALONE and empty -- no body in it or near it, no blade, no wound, no skin",
+  /*
+   * **Four of the graph's pieces were refused, and all four for the same reason.**
+   * [REFUSED 2026-11-13]
+   *
+   * The subject line on these shelves is the node's own description, which is written for a player
+   * deciding who to be -- and two of them open on children in a workhouse and one on a mage paying
+   * in blood. Read as a brief rather than as prose, they ask for exactly what the classifier
+   * refused: `violence` on the two backgrounds, `self-harm, violence` on the two titles.
+   *
+   * The prose is not the problem and is not changed. What changed is that these four now carry a
+   * hand-written direction, which suppresses it (see `what` above). Three of them lose the figure
+   * entirely; *Vulpet* keeps one, because the whole point of that shelf is a person, and what it
+   * needed was an act that could not be read as harm.
+   */
+  "nodes/background/street-urchin":
+    "a dark cloak folded on a windowsill with a set of picks laid on top of it and a city map "
+    + "beside them, marked up in a private shorthand. Early light, nobody in the room. No child, "
+    + "no figure of any kind, nothing poor or pitiable -- a working kit, kept well",
+  "nodes/background/guild-apprentice":
+    "a workbench at the end of a long day: a brass fitting half-ground in a vice, files laid out "
+    + "in order of fineness, swarf swept into one corner. Warm lamplight, tools put away properly. "
+    + "Nobody in frame, and nothing being done to anybody",
+  "nodes/title/blood-magic":
+    "a shallow stone basin with a narrow channel cut from its lip, standing on a worn plinth, and "
+    + "the old dark staining in the channel where a thousand of these have run. The vessel alone "
+    + "-- no person, no hand, no blade, no wound, and nothing wet in the frame",
+  "nodes/title/vulpet":
+    "a priest in a plain travelling cassock crouched on a doorstep in the rain, setting down a "
+    + "covered bowl and a folded blanket. The door is shut and the street behind them is empty. "
+    + "They are leaving, not asking. Nothing sharp, and nobody else in the picture",
   "cards/crit/through-and-through":
     "the far side of the hit: a blade's point standing clean out through the back of a "
     + "breastplate, the steel peeled outward in a star around it. Drawn from BEHIND the plate, "
@@ -2601,11 +2636,30 @@ for (const group of GROUPS) {
      * `brief()` itself is left alone: `art-list.md` is the document that says what a piece IS.
      */
     const described = describe(entry) || "";
-    const what = DIRECTION[key] && entry.blurb
-      /* The brief joins its parts with a MIDDLE DOT, so that is what is left dangling. The
-       * first version of this stripped an em dash and left `Tool ·` on every item. */
-      ? described.replace(entry.blurb, "").replace(/[\s\u00b7\u2014-]+$/, "").trim()
-      : described;
+    /*
+     * **A node's prose is dropped the same way an item's blurb is**, and for the reason this file
+     * already records twice: *a direction exists precisely because the piece's own sentence is the
+     * wrong thing to draw, so sending both was never right*. `nodeBrief` builds
+     * `Title - axis / resource - the first paragraph`; the spine is fact and stays, the paragraph
+     * is the sentence being overridden and goes.
+     *
+     * It was not academic. *Guild Apprentice* opens *a guild takes children. Seven years of
+     * fetching, grinding and being shouted at* and *Street Urchin* opens on the slums -- both were
+     * refused as `violence`, with the model drawing the sentence rather than the direction under
+     * it. The prose is good and it is for the player; it is not a brief.
+     */
+    const what = DIRECTION[key] && entry.lore
+      /* An origin or a background has no spine -- no title, no axis -- so `nodeBrief` returns the
+       * paragraph alone and there is nothing to split off it. Then the right answer is NOTHING:
+       * the SUBJECT line still prints the piece's name and the direction says what to draw.
+       * Falling back to the whole string left *Street Urchin* carrying the slums into a prompt
+       * that had just been rewritten to take them out. */
+      ? described.split(" \u2014 ").slice(0, -1).join(" \u2014 ")
+      : DIRECTION[key] && entry.blurb
+        /* The brief joins its parts with a MIDDLE DOT, so that is what is left dangling. The
+         * first version of this stripped an em dash and left `Tool ·` on every item. */
+        ? described.replace(entry.blurb, "").replace(/[\s\u00b7\u2014-]+$/, "").trim()
+        : described;
     /*
      * **[FOUND 2026-11-09] A hand-written direction REPLACES the piece's own sentence; it used to
      * follow it, and the model obeyed the sentence.**

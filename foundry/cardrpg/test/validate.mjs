@@ -9264,7 +9264,10 @@ const castLines = [...artPrompts.matchAll(/that person is (a (?:wo)?man) of ([A-
  * for -- fifty-six pictures of people, drawn one request at a time with no sight of each other,
  * is exactly the condition that returned twenty-four human tokens as one pale man in twenty-four
  * costumes. Origins and backgrounds are excluded: their own briefs forbid a figure. */
-check("cards, signatures and features given an assigned person", castLines.length, 234);
+/* 233: Blood Magic dropped its cast line with its refusal -- the rewrite put a stone basin in
+ * the frame and nobody at all, and a line opening *if any bare skin shows* under a direction
+ * saying there is no skin is the contradiction the refusal was made of. */
+check("cards, signatures and features given an assigned person", castLines.length, 233);
 /* The NPC pool is the one group that must NOT be cast: its own capsule says the actor is nobody,
  * because one picture is drawn behind a goblin, a troll and a dragon. */
 const npcBlock = /\n## NPC intent cards\n([\s\S]*?)\n## /.exec(artPrompts)?.[1] ?? "";

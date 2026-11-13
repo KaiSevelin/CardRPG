@@ -13,6 +13,8 @@
  * | a bare strip at the top, at least a sixth | the first row carrying ink is at or below `quietTop` |
  * | the focal is above the middle | the centroid of the dark mass is above 50% |
  * | a picture with no true black has failed | some pixels under L14 |
+ * | a PANEL picture obeys the palette and not the card's layout | `kind: "panel"` -- the level-up
+ *   pane prints its heading under the picture, so there is no name panel to leave clear |
  * | generous untouched paper | some pixels over L86 |
  * | warm throughout, no cool hue | almost nothing in the cyan-to-violet hues |
  * | never neutral grey | few desaturated mid tones |
@@ -184,8 +186,28 @@ export function score(file, { kind = "card", size = "1024x1536" } = {}) {
   }
   if (m.black < GATE.minBlack) faults.push(`no true black (${pc(m.black)} under L14)`);
 
-  if (kind === "card") {
+  /*
+   * **A panel picture is not a card face, and seven of the first seventy-five failed on a rule
+   * about a name panel that is not over them.**  [BUILT 2026-11-13]
+   *
+   * `quietTop` and `minWindow` are not style: they are the measured geometry of a CARD. The name
+   * prints across the top tenth and the rules text across the bottom half, so ink up there is ink
+   * behind a panel and a composition that puts nothing in the clear band is a composition nobody
+   * will see. Both sentences are false of the level-up pane, where the picture sits ABOVE the
+   * heading with nothing printed over it at all.
+   *
+   * So the three graph shelves are scored as `panel`: the palette, the near-black contour and the
+   * bare paper still bind -- those are the house hand, and a portrait that is not in it reads as
+   * imported from another game -- and the two layout rules do not apply. `edgeGrain` goes with
+   * them, since it is about a card being full-bleed in a hand.
+   *
+   * Seven pictures, all between 7.8% and 9.9% against a floor of 10%, were being asked to leave
+   * room for a panel that does not exist.
+   */
+  if (kind === "card" || kind === "panel") {
     if (m.paper < GATE.minPaper) faults.push(`no bare paper (${pc(m.paper)} over L86)`);
+  }
+  if (kind === "card") {
     if (m.quietTop < GATE.quietTop) {
       faults.push(`ink reaches ${pc(m.quietTop)} from the top, inside the name panel`);
     }

@@ -85,7 +85,11 @@ const outDir = path.join(root, opt("out", "art"));
 const dryRun = flag("dry-run");
 
 /* The piece's kind decides which rules the gate holds it to, and it is already in the ledger. */
-const kindOf = piece => piece.back ? "back" : piece.token ? "token" : "card";
+/* A graph node's picture is scored as a `panel`: same palette and same hand, but the level-up
+ * pane prints its heading under the picture rather than over it, so the card's two layout
+ * rules are measuring a name panel that is not there. See `score` in art-gate.mjs. */
+const kindOf = piece => piece.back ? "back" : piece.token ? "token"
+  : piece.key.startsWith("nodes/") ? "panel" : "card";
 
 /*
  * **`--failed` narrows a selection to the pieces the gate rejects, and implies `--force`.**

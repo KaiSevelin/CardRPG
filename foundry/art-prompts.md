@@ -3511,9 +3511,9 @@ Draw the work and not the worker -- the kit laid out, the bench, the deck at the
 File: `nodes/background/guild-apprentice.webp`
 
 ```text
-SUBJECT. "Guild Apprentice" — The Furnace's refugees founded engineering guilds in every surviving district, and a guild takes children. Seven years of fetching, grinding and being shouted at, and somewhere in it you learned how things come apart.
+SUBJECT. "Guild Apprentice"
 
-Draw the work and not the worker -- the kit laid out, the bench, the deck at the hour the job is done. Hands at most, and never a face.
+Draw a workbench at the end of a long day: a brass fitting half-ground in a vice, files laid out in order of fineness, swarf swept into one corner. Warm lamplight, tools put away properly. Nobody in frame, and nothing being done to anybody.
 ```
 
 ### Hedge Healer
@@ -3571,9 +3571,9 @@ Draw the work and not the worker -- the kit laid out, the bench, the deck at the
 File: `nodes/background/street-urchin.webp`
 
 ```text
-SUBJECT. "Street Urchin" — You grew up in the parts of a city that are on no map the city admits to: the slums over the rock under Geistburg, the back of Black Harbour, the Rote nobody collects rubbish from.
+SUBJECT. "Street Urchin"
 
-Draw the work and not the worker -- the kit laid out, the bench, the deck at the hour the job is done. Hands at most, and never a face.
+Draw a dark cloak folded on a windowsill with a set of picks laid on top of it and a city map beside them, marked up in a private shorthand. Early light, nobody in the room. No child, no figure of any kind, nothing poor or pitiable -- a working kit, kept well.
 ```
 
 ### Vintner
@@ -3777,11 +3777,9 @@ WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Hor
 File: `nodes/title/blood-magic.webp`
 
 ```text
-SUBJECT. "Blood Magic" — Blood Magic · Tempo / your own Health — The oldest arrangement on the continent and the one the rings run on. A blood mage pays in the only currency magic has ever reliably accepted.
+SUBJECT. "Blood Magic" — Blood Magic · Tempo / your own Health
 
-Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
-
-WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Central Asian appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+Draw a shallow stone basin with a narrow channel cut from its lip, standing on a worn plinth, and the old dark staining in the channel where a thousand of these have run. The vessel alone -- no person, no hand, no blade, no wound, and nothing wet in the frame.
 ```
 
 ### Bodyguard
@@ -4281,9 +4279,9 @@ WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Lev
 File: `nodes/title/vulpet.webp`
 
 ```text
-SUBJECT. "Vulpet" — Vulpet · Preparation / an ally — The outcast's god. Vulpet is owed by the people nobody else is obliged to, and the priesthood goes where the rest of the Five will not.
+SUBJECT. "Vulpet" — Vulpet · Preparation / an ally
 
-Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+Draw a priest in a plain travelling cassock crouched on a doorstep in the rain, setting down a covered bowl and a folded blanket. The door is shut and the street behind them is empty. They are leaving, not asking. Nothing sharp, and nobody else in the picture.
 
 WHO IS IN IT. If a face or any bare skin shows here, that person is a man of South Asian appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
@@ -11691,7 +11689,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 
 ## Where prompts still repeat
 
-**287 prompts in 36 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
+**283 prompts in 36 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
 
 **10 of those clusters are the ones that bite**, listed first: the ones where the subject line carries no prose either, so neither half of the prompt tells the cards apart. The rest share a direction over subjects that already differ — forty-three consumables drawing a nearly-empty vessel still come back as forty-three different pictures, because each subject names its own.
 
@@ -11709,7 +11707,7 @@ Answer a cluster by adding its keys to `DIRECTION` in `test/art-prompts.mjs` and
 | **3** | 2 | ground covered -- weight forward, the last footfall still behind; the instant a blow lands, the weapon already through -- never wound up, never posing | `cards/starter/lunge` `cards/shade-starter/slip-in` `signatures/strength/the-lance` |
 | **3** | 2 | an edge, worn and sharpened back more than once | `items/arming-sword` `items/trident` `items/npc/goblin-spear` |
 | **2** | 2 | a hand working an object, the object mid-use rather than held up to be seen; a weapon coming to hand, caught between carried and held | `cards/starter/quick-hands` `cards/shade-starter/light-fingers` |
-| **70** | 1 | the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem | `cards/fate/critical` `cards/fate/minus-one` `cards/fate/minus-two` `cards/fate/miss` `cards/fate/plus-one` …+65 |
+| **68** | 1 | the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem | `cards/fate/critical` `cards/fate/minus-one` `cards/fate/minus-two` `cards/fate/miss` `cards/fate/plus-one` …+63 |
 | **9** | 1 | set down on nothing, carried a long way among other things | `items/beggars-bowl` `items/cairn-stone` `items/cracked-spyglass` `items/locked-casket` `items/loose-cobble` …+4 |
 | **7** | 1 | an object that means nothing except in trained hands | `features/good-aim` `features/good-name` `features/hard-hands` `features/light-step` `features/quick-eye` …+2 |
 | **7** | 1 | a small dark bottle, labelled, a residue dried at the lip | `items/assassins-tincture` `items/black-lotus` `items/blade-venom` `items/drowsing-oil` `items/grave-cap-extract` …+2 |
@@ -11719,9 +11717,9 @@ Answer a cluster by adding its keys to `DIRECTION` in `test/art-prompts.mjs` and
 | **3** | 1 | worn unevenly, and the wear is the subject | `items/boots-of-the-long-step` `items/hollow-boots` `items/pilgrims-shoes` |
 | **2** | 1 | pulled toward something against the will | `cards/starter/taunt` `signatures/strength/play-to-the-crowd` |
 | **25** | — | the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol | `conditions/blessed` `conditions/burdened` `conditions/burning` `conditions/compelled` `conditions/cursed` …+20 |
-| **12** | — | the work and not the worker -- the kit laid out, the bench, the deck at the hour the job is done. Hands at most, and never a face | `nodes/background/acolyte` `nodes/background/caravan-guard` `nodes/background/card-sharp` `nodes/background/forester` `nodes/background/guild-apprentice` …+7 |
 | **11** | — |  | `backs/action` `backs/fate` `backs/ritual` `backs/skill` `backs/item` …+6 |
 | **10** | — | the place and nobody in it: somewhere a person could be standing, at an hour that says what living there is like, with nobody standing in it. No figure at all | `nodes/origin/echterhof-born` `nodes/origin/furnace-stock` `nodes/origin/saag-et-haar` `nodes/origin/the-amber` `nodes/origin/the-core` …+5 |
+| **10** | — | the work and not the worker -- the kit laid out, the bench, the deck at the hour the job is done. Hands at most, and never a face | `nodes/background/acolyte` `nodes/background/caravan-guard` `nodes/background/card-sharp` `nodes/background/forester` `nodes/background/hedge-healer` …+5 |
 | **6** | — | one hand's worth of object, drawn close and large | `items/accusers-ring` `items/gamblers-coin` `items/mnemonic-stone` `items/pact-iron` `items/serpents-tooth-ring` …+1 |
 | **6** | — | hung on a cord and drawn hanging, turned off square | `items/amulet-of-the-mended-thread` `items/gag-of-the-nine` `items/gorget-of-the-turned-blade` `items/hourglass-charm` `items/surgeons-pin` …+1 |
 | **6** | — | held, or just set down, the grip polished by gripping | `items/blade-of-the-eager-hand` `items/discriminating-wand` `items/gauntlet-of-the-open-palm` `items/hooked-gauntlet` `items/reavers-edge` …+1 |
