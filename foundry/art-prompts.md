@@ -6052,7 +6052,7 @@ Draw the evidence of it and not the person under it -- one object, one mark or o
 File: `conditions/compelled.webp`
 
 ```text
-SUBJECT. "Compelled" — One string running from the top of the frame down to a wrist, taut, the hand at the end of it already turning. Nothing above the string.
+SUBJECT. "Compelled" — A line of footprints in dust turning hard mid-stride: the last two face a way the first three were not going. No figure, no cord, no hand.
 
 Draw the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol.
 ```
@@ -6142,7 +6142,7 @@ Draw the evidence of it and not the person under it -- one object, one mark or o
 File: `conditions/heckled.webp`
 
 ```text
-SUBJECT. "Heckled" — A thumb turned down at the end of a bare arm thrust in from the frame's edge, drawn large and crude. Whoever it belongs to is not in the picture.
+SUBJECT. "Heckled" — A thumb turned down at the end of a bare arm thrust in from the lower edge, drawn large and crude. Whoever it belongs to is not in the picture.
 
 Draw the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol.
 ```

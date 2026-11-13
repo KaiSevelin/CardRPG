@@ -132,7 +132,13 @@ export const CONDITION_LOOKS = {
   stunned: "An open hand falling away from a grip it has lost, fingers still curled to the shape of what they held. The thing itself is out of frame below.",
   halted: "An hourglass lying on its side on bare ground, both bulbs half full and nothing moving between them. No sand falling, no hand, no table.",
   invisible: "A doorway with wet footprints coming through it and stopping, the last pair only half printed. Nobody in the frame.",
-  heckled: "A thumb turned down at the end of a bare arm thrust in from the frame's edge, drawn large and crude. Whoever it belongs to is not in the picture.",
+  /*
+   * **[GATE 2026-11-13] 8.9% of bare top against a floor of 10%**, which is the one rule an arm
+   * entering the frame is most likely to break. The brief said *from the frame's edge* and left
+   * the model to pick one; naming the edge costs a word and keeps the gesture out of the strip
+   * the card prints its name on.
+   */
+  heckled: "A thumb turned down at the end of a bare arm thrust in from the lower edge, drawn large and crude. Whoever it belongs to is not in the picture.",
   burning: "Heavy cloth catching: one corner curling black, the flame eating inward along a line. No figure, no torch, no pyre -- fabric and the edge of the burn.",
   poisoned: "A shallow bowl tipped over on the ground, a dark residue running out of it in one slow line. Nothing drinking, nobody holding it.",
   exposed: "A breastplate strap cut through, the ends hanging apart, the plate swinging away from what it covered. The body only as the shape it is leaving.",
@@ -142,7 +148,19 @@ export const CONDITION_LOOKS = {
   grappled: "Two hands locked around one forearm from opposite sides, gripping hard enough to mark it. Hands and arm only; no faces and no bodies.",
   silenced: "A mouth closed in the middle of a word -- nothing but lips and jaw, with a single stroke sealing the line of them. No gag, no hand, no cross.",
   disarmed: "A sword hilt-down in the dirt where it fell and still rocking, with the open hand that dropped it at the top edge of the frame.",
-  compelled: "One string running from the top of the frame down to a wrist, taut, the hand at the end of it already turning. Nothing above the string.",
+  /*
+   * **[REFUSED 2026-11-13, REWRITTEN] `safety_violations=[self-harm, violence]`, at the OUTPUT
+   * stage.** The brief asked for a taut string running down to a wrist with the hand already
+   * turning, and a cord to a cropped limb is a ligature to a classifier whatever the sentence
+   * around it says. It is the same finding `ART_REFUSED`'s own note records about *Where It Is
+   * Held*: **the words were never the problem, the composition was**, and no rewording of a
+   * string tied to a wrist was going to pass.
+   *
+   * So the body goes entirely. Compulsion is not restraint -- it takes away what you may CHOOSE
+   * and nothing else (conditions.md 1.1) -- and a walk that turns against the walker says that
+   * without a person in the frame to do it to.
+   */
+  compelled: "A line of footprints in dust turning hard mid-stride: the last two face a way the first three were not going. No figure, no cord, no hand.",
   graven: "Fresh ink worked into a forearm, the lines raised and the skin still angry around them. Close enough that it is skin and ink and nothing else.",
   blessed: "A thin shaft of outside light falling across a worn stone floor: one bright edge, and no source anywhere in the frame.",
   cursed: "A hairline crack running the full height of a plain stone, fine at the top and open at the bottom. Nothing else on the stone.",

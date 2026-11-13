@@ -1,6 +1,6 @@
 # Art list
 
-**667 pieces**, of which **642** are drawn and **25** still to shoot. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
+**667 pieces**, of which **666** are drawn and **1** still to shoot. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
 
 ## What to supply
 
@@ -591,35 +591,35 @@ Twelve gods' lesser miracles, handed over by minor nodes.
 
 **Draw the condition and never the sufferer.** One picture serves a goblin, a dragon and the player, so a figure in the frame is the wrong figure for three quarters of the table — the same constraint the intent deck works under. Each of these is one object or one gesture, close, with the body kept out or cropped to a limb. It is also the only way twenty-five of them do not arrive as twenty-five people pulling faces.
 
-**25 pieces**. Suggested path: `cardrpg/art/conditions/`
+**25 pieces**, 24 wired up. Suggested path: `cardrpg/art/conditions/`
 
 | | Name | What it is | File |
 |---|---|---|---|
-|   | **Blessed** | A thin shaft of outside light falling across a worn stone floor: one bright edge, and no source anywhere in the frame. | `conditions/blessed.webp` |
-|   | **Burdened** | A pack strap biting into a dropped shoulder, the cloth bunched where it has pulled. No face and no pack -- strap, shoulder, and the dent. | `conditions/burdened.webp` |
-|   | **Burning** | Heavy cloth catching: one corner curling black, the flame eating inward along a line. No figure, no torch, no pyre -- fabric and the edge of the burn. | `conditions/burning.webp` |
-|   | **Compelled** | One string running from the top of the frame down to a wrist, taut, the hand at the end of it already turning. Nothing above the string. | `conditions/compelled.webp` |
-|   | **Cursed** | A hairline crack running the full height of a plain stone, fine at the top and open at the bottom. Nothing else on the stone. | `conditions/cursed.webp` |
-|   | **Dazed** | A struck bell still moving, seen side-on, the ring drawn as doubled edges around the rim. No head, no face, no stars. | `conditions/dazed.webp` |
-|   | **Disarmed** | A sword hilt-down in the dirt where it fell and still rocking, with the open hand that dropped it at the top edge of the frame. | `conditions/disarmed.webp` |
-|   | **Exposed** | A breastplate strap cut through, the ends hanging apart, the plate swinging away from what it covered. The body only as the shape it is leaving. | `conditions/exposed.webp` |
-|   | **Frozen** | A boot taken into a sheet of grey ice, the ice risen past the ankle and holding it. Cut off at the shin; nothing above. | `conditions/frozen.webp` |
-|   | **Grappled** | Two hands locked around one forearm from opposite sides, gripping hard enough to mark it. Hands and arm only; no faces and no bodies. | `conditions/grappled.webp` |
-|   | **Graven** | Fresh ink worked into a forearm, the lines raised and the skin still angry around them. Close enough that it is skin and ink and nothing else. | `conditions/graven.webp` |
-|   | **Halted** | An hourglass lying on its side on bare ground, both bulbs half full and nothing moving between them. No sand falling, no hand, no table. | `conditions/halted.webp` |
-|   | **Heckled** | A thumb turned down at the end of a bare arm thrust in from the frame's edge, drawn large and crude. Whoever it belongs to is not in the picture. | `conditions/heckled.webp` |
-|   | **Invisible** | A doorway with wet footprints coming through it and stopping, the last pair only half printed. Nobody in the frame. | `conditions/invisible.webp` |
-|   | **Judged** | A pair of hand-scales hanging still with one pan lower than the other, against bare paper. Nothing in either pan. | `conditions/judged.webp` |
-|   | **Marked** | A chalk cross on a plain wooden door, drawn fast and recently, the dust still on the boards beneath it. | `conditions/marked.webp` |
-|   | **Off-Balance** | One foot caught on a raised root, the heel already lifting and the weight gone past where it can be recovered. Below the knee only. | `conditions/off-balance.webp` |
-|   | **Overloaded** | A pack that has given way: the bottom seam split, its contents going into the dirt. From behind and below, nothing identifiable in what falls. | `conditions/overloaded.webp` |
-|   | **Poisoned** | A shallow bowl tipped over on the ground, a dark residue running out of it in one slow line. Nothing drinking, nobody holding it. | `conditions/poisoned.webp` |
-|   | **Prone** | Ground seen from very low down: a scatter of grit at eye height and the horizon near the top edge. The viewer is the one who is down. | `conditions/prone.webp` |
-|   | **Silenced** | A mouth closed in the middle of a word -- nothing but lips and jaw, with a single stroke sealing the line of them. No gag, no hand, no cross. | `conditions/silenced.webp` |
-|   | **Slowed** | Thick mud closing over the print of one boot, the print already losing its shape. The foot has gone; the hole it made is what is left. | `conditions/slowed.webp` |
-|   | **Stunned** | An open hand falling away from a grip it has lost, fingers still curled to the shape of what they held. The thing itself is out of frame below. | `conditions/stunned.webp` |
-|   | **Unconscious** | An open hand lying palm-up on the ground, fingers slack and apart, the arm running out of frame. Still, and not dead. | `conditions/unconscious.webp` |
-|   | **Wet** | Water running off a flat surface in one sheet, the last of it beading along the lower edge. No rain, no vessel, no figure. | `conditions/wet.webp` |
+| ✓ | **Blessed** | A thin shaft of outside light falling across a worn stone floor: one bright edge, and no source anywhere in the frame. | `conditions/blessed.webp` |
+| ✓ | **Burdened** | A pack strap biting into a dropped shoulder, the cloth bunched where it has pulled. No face and no pack -- strap, shoulder, and the dent. | `conditions/burdened.webp` |
+| ✓ | **Burning** | Heavy cloth catching: one corner curling black, the flame eating inward along a line. No figure, no torch, no pyre -- fabric and the edge of the burn. | `conditions/burning.webp` |
+|   | **Compelled** | A line of footprints in dust turning hard mid-stride: the last two face a way the first three were not going. No figure, no cord, no hand. | `conditions/compelled.webp` |
+| ✓ | **Cursed** | A hairline crack running the full height of a plain stone, fine at the top and open at the bottom. Nothing else on the stone. | `conditions/cursed.webp` |
+| ✓ | **Dazed** | A struck bell still moving, seen side-on, the ring drawn as doubled edges around the rim. No head, no face, no stars. | `conditions/dazed.webp` |
+| ✓ | **Disarmed** | A sword hilt-down in the dirt where it fell and still rocking, with the open hand that dropped it at the top edge of the frame. | `conditions/disarmed.webp` |
+| ✓ | **Exposed** | A breastplate strap cut through, the ends hanging apart, the plate swinging away from what it covered. The body only as the shape it is leaving. | `conditions/exposed.webp` |
+| ✓ | **Frozen** | A boot taken into a sheet of grey ice, the ice risen past the ankle and holding it. Cut off at the shin; nothing above. | `conditions/frozen.webp` |
+| ✓ | **Grappled** | Two hands locked around one forearm from opposite sides, gripping hard enough to mark it. Hands and arm only; no faces and no bodies. | `conditions/grappled.webp` |
+| ✓ | **Graven** | Fresh ink worked into a forearm, the lines raised and the skin still angry around them. Close enough that it is skin and ink and nothing else. | `conditions/graven.webp` |
+| ✓ | **Halted** | An hourglass lying on its side on bare ground, both bulbs half full and nothing moving between them. No sand falling, no hand, no table. | `conditions/halted.webp` |
+| ✓ | **Heckled** | A thumb turned down at the end of a bare arm thrust in from the lower edge, drawn large and crude. Whoever it belongs to is not in the picture. | `conditions/heckled.webp` |
+| ✓ | **Invisible** | A doorway with wet footprints coming through it and stopping, the last pair only half printed. Nobody in the frame. | `conditions/invisible.webp` |
+| ✓ | **Judged** | A pair of hand-scales hanging still with one pan lower than the other, against bare paper. Nothing in either pan. | `conditions/judged.webp` |
+| ✓ | **Marked** | A chalk cross on a plain wooden door, drawn fast and recently, the dust still on the boards beneath it. | `conditions/marked.webp` |
+| ✓ | **Off-Balance** | One foot caught on a raised root, the heel already lifting and the weight gone past where it can be recovered. Below the knee only. | `conditions/off-balance.webp` |
+| ✓ | **Overloaded** | A pack that has given way: the bottom seam split, its contents going into the dirt. From behind and below, nothing identifiable in what falls. | `conditions/overloaded.webp` |
+| ✓ | **Poisoned** | A shallow bowl tipped over on the ground, a dark residue running out of it in one slow line. Nothing drinking, nobody holding it. | `conditions/poisoned.webp` |
+| ✓ | **Prone** | Ground seen from very low down: a scatter of grit at eye height and the horizon near the top edge. The viewer is the one who is down. | `conditions/prone.webp` |
+| ✓ | **Silenced** | A mouth closed in the middle of a word -- nothing but lips and jaw, with a single stroke sealing the line of them. No gag, no hand, no cross. | `conditions/silenced.webp` |
+| ✓ | **Slowed** | Thick mud closing over the print of one boot, the print already losing its shape. The foot has gone; the hole it made is what is left. | `conditions/slowed.webp` |
+| ✓ | **Stunned** | An open hand falling away from a grip it has lost, fingers still curled to the shape of what they held. The thing itself is out of frame below. | `conditions/stunned.webp` |
+| ✓ | **Unconscious** | An open hand lying palm-up on the ground, fingers slack and apart, the arm running out of frame. Still, and not dead. | `conditions/unconscious.webp` |
+| ✓ | **Wet** | Water running off a flat surface in one sheet, the last of it beading along the lower edge. No rain, no vessel, no figure. | `conditions/wet.webp` |
 
 ## Features
 
