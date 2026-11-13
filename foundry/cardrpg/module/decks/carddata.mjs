@@ -7,6 +7,27 @@
 
 import { artIn, backOf } from "./art.mjs";
 
+/**
+ * **A copy, because the document layer writes on what it is handed.**  [FIXED 2026-11-13]
+ *
+ * Foundry cleans a document's source data by filling in the schema's defaults **on the object it
+ * was given**, so a builder that forwards a content array -- `sequence: card.sequence` -- hands the
+ * engine a pen and the content its own paper. Every build wrote more of the schema into
+ * `INTENTS`, and the content definitions in memory drifted away from the file they came from.
+ *
+ * **It was found by asking the same question twice.** A live probe pressed the new rebuild button
+ * in settings, twice in a row, and asserted the second press changed nothing -- and five NPC decks
+ * were rebuilt every single run, for ever. The signature a deck records is the card data it was
+ * built from, and the card data was different each time because the last build had edited the
+ * content underneath it: 12,342 characters, then 15,863. So the rebuild was not wrong about a
+ * disagreement, and it could never settle one.
+ *
+ * Applied to the whole return rather than to the fields that happen to be arrays today, because
+ * the rule is *a builder hands over data the content does not share* -- and a rule about one field
+ * is a rule the next field added here will not know about.
+ */
+export const own = value => structuredClone(value);
+
 /** A Card document from a content definition. One shape in one place: the starter decks and the
  * levelling graph both create action cards, and two spellings of the same thing would drift.
  *
@@ -20,7 +41,7 @@ import { artIn, backOf } from "./art.mjs";
  */
 export function skillCardData(def) {
   const back = backOf("skill");
-  return {
+  return own({
     name: def.name,
     type: "skill",
     face: 0,
@@ -32,7 +53,7 @@ export function skillCardData(def) {
       wild: !!def.wild,
       ...(def.edge !== undefined ? { edge: def.edge } : {})
     }
-  };
+  });
 }
 
 /**
@@ -52,7 +73,7 @@ export function skillCardData(def) {
  * dial, so it is an argument rather than a second function.
  */
 export function twistCardData(def, back = "twist") {
-  return {
+  return own({
     name: def.name,
     type: "twist",
     img: backOf(back) || undefined,
@@ -61,7 +82,7 @@ export function twistCardData(def, back = "twist") {
       pressure: def.pressure ?? 0,
       gives: !!def.gives
     }
-  };
+  });
 }
 
 /**
@@ -81,17 +102,17 @@ export function harmCardData(kind, { source = "", flavour = "" } = {}) {
     ? (flavour === "mind" ? "Taint (mind)" : "Taint (body)")
     : kind[0].toUpperCase() + kind.slice(1);
   const art = artIn({ name });
-  return {
+  return own({
     name,
     type: kind,
     ...(art ? { faces: [{ name, img: art }], face: 0 } : {}),
     system: { source, ...(kind === "taint" ? { flavour } : {}) }
-  };
+  });
 }
 
 /** One face of the critical deck, as a Card. Face up from the moment it is drawn. */
 export function critCardData(def) {
-  return {
+  return own({
     name: def.name,
     type: "crit",
     /*
@@ -113,11 +134,11 @@ export function critCardData(def) {
       text: def.text ?? "",
       ...(def.effect ? { effect: def.effect } : {})
     }
-  };
+  });
 }
 
 export function actionCardData(def) {
-  return {
+  return own({
     name: def.name,
     type: "action",
     face: 0,
@@ -137,7 +158,7 @@ export function actionCardData(def) {
       costs: def.costs ?? {},
       ...(def.text !== undefined ? { text: def.text } : {})
     }
-  };
+  });
 }
 
 /**
@@ -151,7 +172,7 @@ export function actionCardData(def) {
  * earned one, the common intent back otherwise.
  */
 export function npcCardData(card, { kind, creature, back }) {
-  return {
+  return own({
     name: card.name,
     type: "npc",
     // Turned face down when drawn; the face is what a reveal turns up.
@@ -162,5 +183,5 @@ export function npcCardData(card, { kind, creature, back }) {
       kind, sequence: card.sequence, needs: card.needs ?? [],
       only: card.only ?? [], text: card.text ?? ""
     }
-  };
+  });
 }

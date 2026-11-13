@@ -61,16 +61,29 @@ first session runs, it works, and rewiring it is a behaviour change nothing offl
 
 ### Create the playtest content
 
-Run the macro **Card RPG: Create starter content** (the system leaves it in your macro directory on
-first load), or from the console:
+**Settings → Card RPG → World content → Rebuild world content.** It is also the macro **Card RPG:
+Create starter content** (left in your macro directory on first load) and, from the console:
 
 ```js
-game.cardrpg.createStarterContent();
+game.cardrpg.createStarterContent();      // the routine
+game.cardrpg.rebuildWorldContent();       // the same thing, with the button's two dialogs
 ```
 
 That builds the starter Warrior, **the goblin line** — the spearman, the Warrior, the Archer, the
 Shaman and the Chief — their decks, and every slate. It is safe to run twice: anything it already
 made is reused rather than duplicated.
+
+**Run it after every system update**, which is why it is a button. A world does not reread the
+content when the system changes, so this is how a deck that gained a card, a back that got drawn or
+a picture that landed reaches a world somebody is already playing in. Two things it will not do,
+both named in the dialog before it runs:
+
+- **A deck with cards out in a hand, a discard or a pile is left alone** and listed afterwards.
+  There is no per-card identity to diff against, so applying a content change means rebuilding the
+  stack's cards — safe only while all of them are still in it. End the combat and run it again.
+- **An item, feature or spell that already exists keeps its text.** Only its picture is repaired,
+  because a picture is derived from the name and the shelf and so there is no edit of anybody's to
+  lose. Wording, grants and tags are authored, and a world may have changed them.
 
 **The other 107 creatures arrive one at a time**, because a starter world with 112 monsters in it is a
 world nobody can find anything in:

@@ -10,7 +10,7 @@ import { CARDRPG } from "./config.mjs";
 /* The one shape a skill card takes, shared with anything that grants one rather than spelled here. */
 import {
   actionCardData, skillCardData, twistCardData, critCardData, npcCardData, backOf, artIn,
-  artOf, fateArt
+  artOf, fateArt, own
 } from "./decks.mjs";
 /* A deck is the subset of the pool a creature's capabilities earn, and a variant is a delta from
  * its base. Both are arithmetic, and both live where the validator can ask them. */
@@ -180,10 +180,19 @@ function expand(defs, build) {
   return out;
 }
 
-/** Slate data from a content entry, filling in what the schema expects. */
+/**
+ * Slate data from a content entry, filling in what the schema expects.
+ *
+ * **Copied, for the same reason every card builder is.**  [FIXED 2026-11-13] `...rest` forwards
+ * content's own arrays -- an item's `tags`, a feature's `grants`, a spell's `steps` -- and Foundry
+ * fills a schema's defaults in on the object it is handed, so creating the slates edited the
+ * catalogue they were made from. The NPC decks are where that was caught, because they are the
+ * only documents whose data is recorded and compared; nothing was comparing a slate, which makes
+ * this the same bug with no symptom rather than a different one. See `own` in decks/carddata.mjs.
+ */
 export function slateData(entry, type) {
   const { name, group, active, grants, bonus, text, copies, art, ...rest } = entry;
-  return {
+  return own({
     name,
     type,
     /*
@@ -208,7 +217,7 @@ export function slateData(entry, type) {
       ...(bonus ? { bonus } : {}),
       ...(text !== undefined ? { text } : {})
     }
-  };
+  });
 }
 
 /* -------------------------------------------- */
@@ -590,6 +599,19 @@ export async function createStarterContent() {
       : ".")
     + ` Place goblins as unlinked tokens so they share one deck but keep their own health.`
   );
+
+  /*
+   * **And it hands the tally back**, copied rather than shared: `resynced` is module scope and the
+   * next run clears it in place, so returning it directly would hand out a report that empties
+   * itself. The settings button reads this to say what happened; the console notes above stay,
+   * because a toast is not somewhere you can go back and look.
+   */
+  return {
+    ...made,
+    rebuilt: [...resynced.rebuilt],
+    held: [...resynced.held],
+    unchanged: [...resynced.unchanged]
+  };
 }
 
 /* -------------------------------------------- */
@@ -716,6 +738,119 @@ export async function buildMonster(name) {
 /* -------------------------------------------- */
 /*  Discoverability                             */
 /* -------------------------------------------- */
+
+/**
+ * **The same routine, on a button in the settings panel.**  [BUILT 2026-11-13]
+ *
+ * `createStarterContent` is how a world picks up a content change -- a deck that gained a card, a
+ * back that got drawn, a picture that landed on a slate -- so it is wanted once per RELEASE and not
+ * once per world. The two ways to run it were a console call and a macro made on first boot, and
+ * the macro is deliberately never recreated once deleted (`setupMacroMade`, and that is right: a
+ * deleted macro is a decision). A GM who updates the system three months later therefore has no
+ * macro, no console habit, and no reason to guess at the name of an API.
+ *
+ * Settings is where a GM already looks for the things a world does to itself, so it goes there.
+ *
+ * **It asks first, and what it says is mostly what it will NOT do.** Re-running is safe -- nothing
+ * stamped is duplicated, only an empty picture slot is filled -- but *safe* is a claim for a
+ * sentence to make, not a verb for a button to imply. Both real caveats are named, because each
+ * one is a thing a GM would otherwise discover by not noticing it:
+ *
+ *   - a deck with cards out in play is left alone, and
+ *   - **a slate that already exists keeps the content it was born with.**
+ *
+ * The second is the one worth reading twice. `createStarterContent` finds an Item by its tag and
+ * reuses it verbatim; only `img` is repaired, because art is derived from the name and the shelf
+ * and so there is no edit of anybody's to lose. Wording, grants and tags are authored, so a
+ * release that rewrites an item does not reach a world that already has it. Promising a rebuild
+ * and quietly not doing that half would be worse than saying so.
+ */
+export async function rebuildWorldContent() {
+  const { DialogV2 } = foundry.applications.api;
+  if (!game.user.isGM) {
+    ui.notifications.error("Only the GM can rebuild world content.");
+    return;
+  }
+
+  const go = await DialogV2.confirm({
+    window: { title: "Card RPG: Rebuild world content" },
+    content:
+      "<p>Builds whatever this world is missing and brings what it already has back in line with "
+      + "the system’s content. Safe on a world you are playing in, and worth running after "
+      + "every system update.</p>"
+      + "<ul>"
+      + "<li><strong>Nothing is duplicated.</strong> Everything this made before is marked, so a "
+      + "second run finds it rather than making a second one.</li>"
+      + "<li><strong>Decks are brought back in line</strong> with the content, backs included. A "
+      + "deck with cards still out in a hand, a discard or a pile is left alone and named "
+      + "afterwards — end the combat and run this again.</li>"
+      + "<li><strong>Only an empty picture is filled in.</strong> One you chose by hand stays.</li>"
+      + "<li><strong>An item, feature or spell that already exists keeps its text.</strong> Only "
+      + "its picture is repaired, so wording changed in a release will not reach a world that "
+      + "already has that slate.</li>"
+      + "</ul>"
+      + "<p>Run it outside combat.</p>",
+    yes: { label: "Rebuild", icon: "fa-solid fa-arrows-rotate" },
+    no: { label: "Cancel" },
+    /* The safe answer is the default, on a button whose own dialog lists two things it declines to
+     * do. A stray Enter should not rebuild a world. */
+    defaultYes: false
+  });
+  if (!go) return;
+
+  const r = await createStarterContent();
+  /* `createStarterContent` returns nothing when it refuses, and it has already said why. */
+  if (!r) return;
+
+  /*
+   * **The report is a dialog and not only a toast**, because the one line a GM needs to act on is
+   * the list of decks that were held: a toast is gone by the time they have finished reading it,
+   * and *which* decks is the difference between knowing what to do and knowing something is off.
+   */
+  const counted = [
+    ["Actors created", r.actors],
+    ["Items, features and spells created", r.slates],
+    ["Slates already here and reused", r.reused],
+    ["Slates given the picture they were missing", r.pictures],
+    ["Decks brought in line with the content", r.rebuilt.length]
+  ].filter(([, n]) => n);
+  await DialogV2.prompt({
+    window: { title: "Card RPG: Rebuild world content" },
+    content: "<ul>"
+      + (counted.length
+        ? counted.map(([label, n]) => `<li>${label}: <strong>${n}</strong></li>`).join("")
+        : "<li>Nothing to do: this world already matches the content.</li>")
+      + "</ul>"
+      + (r.rebuilt.length ? `<p>Updated: ${r.rebuilt.join(", ")}.</p>` : "")
+      + (r.held.length
+        ? "<p><strong>Left alone, because cards are still out in play:</strong> "
+          + `${r.held.join(", ")}. End the combat and run this again to update them.</p>`
+        : ""),
+    ok: { label: "Close" }
+  });
+}
+
+/**
+ * **A settings menu is a class the panel instantiates**, so the button needs one even though it has
+ * no window of its own: Foundry does `new type().render(true)` and nothing further with it, and
+ * `registerMenu` checks that what it was handed really is an application. Overriding `render` is
+ * the whole class -- there is a dialog to show and no form to fill in.
+ *
+ * **Returned from a function rather than declared**, because `extends` is evaluated on import and
+ * this file is imported by the validator in bare Node, where there is no `foundry` global. It cost
+ * one red test to find out. The settings panel asks for the class while the game is up, which is
+ * the only moment the base class exists.
+ */
+export function rebuildContentMenu() {
+  return class RebuildContentMenu extends foundry.applications.api.ApplicationV2 {
+    static DEFAULT_OPTIONS = { id: "cardrpg-rebuild-content" };
+
+    async render() {
+      await rebuildWorldContent();
+      return this;
+    }
+  };
+}
 
 /**
  * Leave a macro behind rather than making the GM remember a console call. Created once; if it is

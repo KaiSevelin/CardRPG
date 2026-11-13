@@ -1282,6 +1282,56 @@ async function probes(page) {
   });
 
   /*
+   * **The release button, pressed.**  [BUILT 2026-11-13]
+   *
+   * `createStarterContent` is what a world runs to pick up a content change, and it now has a
+   * button in the settings panel because once per release is the wrong cadence for a console call.
+   * Everything about that button is a claim about somebody else's campaign, so it is run here
+   * rather than read.
+   *
+   * The claim worth proving is **idempotence**, and the only honest way to prove it is to run the
+   * thing twice: the second run must create nothing, repair nothing and rebuild nothing. That is
+   * the same shape as the hand gate at the top of this file -- *ask twice, and the second answer
+   * must be zero* -- and it is the shape a bug in this routine would break first, because every
+   * mistake here looks like a duplicate rather than an error.
+   *
+   * The world this runs against is a copy, so a wrong answer costs a scratch directory.
+   */
+  await probe("the content rebuild", async () => {
+    await settle(page);
+    return page.evaluate(async () => {
+      const menu = game.settings.menus.get("cardrpg.rebuildContent");
+      const out = [
+        ["the rebuild has a button in settings", !!menu, true],
+        ["and no player is shown it", menu?.restricted, true],
+        /* `registerMenu` only checks the class; the panel is what calls `new type()`, so this is
+         * the one place the constructor is actually exercised. */
+        ["and the panel can build its window", (() => {
+          try { return !!new menu.type(); } catch (e) { return String(e.message).slice(0, 60); }
+        })(), true]
+      ];
+
+      /*
+       * **Twice, and the second one is the test.** This is where the content builders were found
+       * to be editing the content: five NPC decks were rebuilt on every run and could never
+       * settle, because Foundry fills a schema's defaults in on the object it is given and the
+       * builders were handing it `INTENTS`' own arrays. See `own` in decks/carddata.mjs.
+       */
+      await game.cardrpg.createStarterContent();
+      const again = await game.cardrpg.createStarterContent();
+      out.push(["running it hands back a tally", typeof again?.actors, "number"]);
+      out.push(["and a second run creates nothing",
+        `${again.actors} actors, ${again.slates} slates`, "0 actors, 0 slates"]);
+      out.push(["and repairs no pictures, because none are missing", again.pictures, 0]);
+      out.push(["and rebuilds no deck, because none disagree",
+        again.rebuilt.join(", ") || "none", "none"]);
+      out.push(["and holds none back, because nothing is in play",
+        again.held.join(", ") || "none", "none"]);
+      return out;
+    });
+  });
+
+  /*
    * **And the world opens at all.** Nine days of engine changes went in without one of them being
    * loaded, so the cheapest question worth asking is whether the system still boots -- which every
    * probe above depends on and none of them states.

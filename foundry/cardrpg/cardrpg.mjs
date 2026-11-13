@@ -7,7 +7,10 @@
 
 import { CARDRPG } from "./module/config.mjs";
 import { registerSheets } from "./module/sheets.mjs";
-import { createStarterContent, ensureSetupMacro, buildMonster } from "./module/setup.mjs";
+import {
+  createStarterContent, ensureSetupMacro, buildMonster, rebuildWorldContent,
+  rebuildContentMenu
+} from "./module/setup.mjs";
 /* A transformation is ended by somebody, because nothing here owns a timer that survives a
  * reload -- so the duration on the card is what the table reads and this is how it is settled. */
 import { endTransformation, payToPrepare } from "./module/resolve.mjs";
@@ -182,6 +185,23 @@ function registerHelpers() {
 function registerSettings() {
   const d = CARDRPG.defaults;
 
+  /*
+   * **The one setting that is a button**, and the only way a world gets a content change without
+   * somebody typing an API name into the console.  [BUILT 2026-11-13]
+   *
+   * It is first in the panel because it is the thing a GM opens settings for after a system
+   * update, and `restricted` because it writes to the world. What it does, what it refuses to do,
+   * and why are all in `rebuildWorldContent`; the dialog it opens says the same in a GM's words.
+   */
+  game.settings.registerMenu("cardrpg", "rebuildContent", {
+    name: "CARDRPG.Settings.RebuildContent.Name",
+    label: "CARDRPG.Settings.RebuildContent.Label",
+    hint: "CARDRPG.Settings.RebuildContent.Hint",
+    icon: "fa-solid fa-arrows-rotate",
+    type: rebuildContentMenu(),
+    restricted: true
+  });
+
   game.settings.register("cardrpg", "showFateSwing", {
     name: "CARDRPG.Settings.ShowFateSwing.Name",
     hint: "CARDRPG.Settings.ShowFateSwing.Hint",
@@ -287,6 +307,9 @@ Hooks.once("ready", async () => {
   // Exposed so the setup routine can be run from a macro or the console.
   game.cardrpg = {
     createStarterContent,
+    /* The settings button's routine, exposed too, so the thing in the menu and the thing in a
+     * macro are the same function and not two spellings of it. */
+    rebuildWorldContent,
     config: CARDRPG,
     decks,
     openTray: actor => CardRPGTray.openFor(actor),

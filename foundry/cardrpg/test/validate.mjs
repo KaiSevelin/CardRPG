@@ -10972,6 +10972,64 @@ check("and core's placeholder is refused by every one of them",
   placeheld.filter(([, doc]) => decksLive.artOf(doc) !== "")
     .map(([label]) => label).join(", ") || "none", "none");
 /*
+ * **And a writer hands over nothing the content still owns.**  [BUILT 2026-11-13]
+ *
+ * Foundry cleans a document's source data by filling the schema's defaults in **on the object it
+ * was given**. A builder that forwards a content array -- `sequence: card.sequence` -- therefore
+ * hands the engine a pen and the content its own paper, and every build wrote a little more of the
+ * schema into `INTENTS`. The definitions in memory drifted away from the file they were read from.
+ *
+ * **How it surfaced is the whole argument for the live harness.** A probe pressed the new rebuild
+ * button twice and asserted the second press changed nothing. Five NPC decks were rebuilt on every
+ * run, and could never settle: a deck records the card data it was built from, and the card data
+ * was different every time because the last build had edited the content underneath it. 12,342
+ * characters, then 15,863, then more.
+ *
+ * This asks it without Foundry, because the sharing is the defect and the cleaning is only what
+ * punishes it: walk the built object and the definition and look for one object that is in both.
+ * A copy cannot share a reference, so this fails the moment a builder forwards instead of copying
+ * -- including a builder nobody has written yet, which a grep for `own(` could not do.
+ */
+const refsOf = value => {
+  const out = new Set();
+  const walk = v => {
+    if (!v || typeof v !== "object" || out.has(v)) return;
+    out.add(v);
+    for (const inner of Object.values(v)) walk(inner);
+  };
+  walk(value);
+  return out;
+};
+/* Deep on purpose: a nested object is where this bug lives, since a schema with nowhere to put a
+ * default has nothing to write. */
+const deepDef = () => ({
+  name: "Close In",
+  needs: ["legs"], only: ["goblin"],
+  sequence: [{ verb: "move", param: 1, ground: { shape: "", effects: [] } }],
+  primary: ["fight"], secondary: ["move"], costs: { pips: 1 },
+  tags: ["edged"], grants: [{ what: "skill", name: "Sharp Eyes" }],
+  steps: [{ verb: "strike" }], approach: "force", value: 1,
+  text: "Close the distance.", cost: "A pip", effect: "bleed"
+});
+const forwarded = [
+  ["an action card", d => decksLive.actionCardData(d)],
+  ["a skill card", d => decksLive.skillCardData(d)],
+  ["a twist card", d => decksLive.twistCardData(d)],
+  ["a critical card", d => decksLive.critCardData(d)],
+  ["an intent card", d => decksLive.npcCardData(d, { kind: "goblin", creature: "Goblin", back: "" })],
+  ["an item, feature or weapon", d => setupLive.slateData(d, "item")]
+].map(([label, build]) => {
+  const def = deepDef();
+  const mine = refsOf(def);
+  return [label, [...refsOf(build(def))].some(r => mine.has(r))];
+});
+check("writers that hand back content's own objects",
+  forwarded.filter(([, shared]) => shared).map(([label]) => label).join(", ") || "none", "none");
+/* And the test is not vacuous: the definition really does contain objects to share. */
+check("and the definition they were given has some to share",
+  refsOf(deepDef()).size > 8, true);
+
+/*
  * The creature's two slots are not here, and the reason is worth stating: they are written by
  * `Actor.create` inside the setup routine, which needs Foundry. They stay greps above until
  * something builds a document against the data models -- which this file's own header already
@@ -12520,15 +12578,75 @@ check("hooks the system listens on", hooksUsed.length, 14);
  * `game.cardrpg` is how a world drives this system from a macro, so a name here is a promise. It
  * is also the one surface where a rename is silent: the macro breaks in somebody's world, not here.
  */
-const api = [...new Set([...entrySource.slice(entrySource.indexOf("game.cardrpg = {"))
-  .matchAll(/^\s{4}([a-zA-Z]+):/gm)].map(m => m[1]))];
+const apiBlock = entrySource.slice(entrySource.indexOf("game.cardrpg = {"));
+const api = [...new Set([...apiBlock.matchAll(/^\s{4}([a-zA-Z]+):/gm)].map(m => m[1]))];
 /* One member shorter since 2026-11-13: the award counter it raised is retired, and a name on
  * this object is a promise, so removing one is a breaking change worth a line. */
 check("the macro API", api.join(", "), "config, openTray, levelUp");
-/* The bare ones a destructuring import puts there -- createStarterContent and decks -- are on the
- * object too, and the regex above reads the `name:` form only; both forms are promises. */
-check("and the shorthand members beside them",
-  /game\.cardrpg = \{[\s\S]{0,40}createStarterContent,[\s\S]{0,80}decks,/.test(entrySource)
+/*
+ * **The bare members, listed rather than measured.**  [FIXED 2026-11-13]
+ *
+ * A destructuring import puts `createStarterContent` and friends on the object in shorthand, which
+ * the regex above cannot see because it reads the `name:` form only -- and both forms are
+ * promises. This used to be a pair of character windows: `game.cardrpg = {` within forty
+ * characters of `createStarterContent` and within eighty of `decks`. Adding one member with a
+ * comment over it failed both, in two places, and neither failure was about anything true.
+ *
+ * A distance was never the rule. The rule is which names this object promises, so that is what it
+ * reads: adding or removing one is a line to change here, deliberately, which is the whole point
+ * of checking an API surface at all.
+ */
+const apiShorthand = [...apiBlock.matchAll(/^ {4}([a-zA-Z]+),$/gm)].map(m => m[1]);
+check("and the shorthand members beside them", apiShorthand.join(", "),
+  "createStarterContent, rebuildWorldContent, decks, buildMonster, endTransformation");
+
+/* ---- and one of them is a button a GM can find ---- */
+
+/*
+ * **The one setting that does something rather than storing something.**  [BUILT 2026-11-13]
+ *
+ * `createStarterContent` is what makes a world pick up a content change, so it is wanted once per
+ * RELEASE, not once per world -- and until this button it could only be reached by a console call
+ * or by a macro that is deliberately never recreated once deleted. A GM updating the system months
+ * later had neither.
+ *
+ * What is checked is the part that is a promise to somebody else's world:
+ *
+ *   - it is **restricted**, because it writes to the world and a player must not see it at all;
+ *   - it **asks before it runs**, with the safe answer as the default, because a stray Enter in a
+ *     settings panel should not rebuild a campaign; and
+ *   - the question **names the two things it will not do**. Both are things a GM would otherwise
+ *     discover by not noticing them: a deck with cards out in play is left alone, and a slate that
+ *     already exists keeps the text it was created with. A button that promised a rebuild and
+ *     quietly skipped the second half would be worse than one that says so.
+ */
+const menuBlock = entrySource
+  .slice(entrySource.indexOf('registerMenu("cardrpg", "rebuildContent"')).split("});")[0];
+check("the content rebuild is a button in settings", menuBlock ? "yes" : "no", "yes");
+check("and only the GM is shown it", /restricted: true/.test(menuBlock) ? "yes" : "no", "yes");
+check("and it opens the routine rather than a copy of it",
+  /type: rebuildContentMenu\(\)/.test(menuBlock) ? "yes" : "no", "yes");
+/* The same function, so the button and a macro cannot drift apart. */
+check("which a macro can call too", apiShorthand.includes("rebuildWorldContent"), "true");
+
+const rebuildBody = setupSource.slice(setupSource.indexOf("export async function rebuildWorldContent"),
+  setupSource.indexOf("export function rebuildContentMenu"));
+check("it asks before it rebuilds anything",
+  /DialogV2\.confirm\(/.test(rebuildBody) ? "yes" : "no", "yes");
+check("and Cancel is the default answer",
+  /defaultYes: false/.test(rebuildBody) ? "yes" : "no", "yes");
+check("and the question says a deck in play is left alone",
+  /left alone and named/.test(rebuildBody) ? "yes" : "no", "yes");
+check("and that an existing slate keeps its text",
+  /already exists keeps its text/.test(rebuildBody) ? "yes" : "no", "yes");
+/* It prints what happened, which means the routine has to hand it back. */
+check("the routine returns the tally the button prints",
+  /return \{\s*\.\.\.made,/.test(setupSource) ? "yes" : "no", "yes");
+check("and the held decks are named in the report",
+  /cards are still out in play/.test(rebuildBody) ? "yes" : "no", "yes");
+/* And the hint in the panel says the same, since that is the sentence a GM reads first. */
+check("the hint warns that a slate keeps its text",
+  /only its picture is repaired/.test(lang["CARDRPG.Settings.RebuildContent.Hint"] ?? "")
     ? "yes" : "no", "yes");
 
 /* ---- every derived value is read by somebody ---- */
@@ -15600,9 +15718,9 @@ check("and no deck writes an action card by hand any more",
 check("the starter world builds the goblin line only",
   /ROSTER\.filter\(r => r\.system\.kind === "goblin"\)/.test(setupSource) ? "yes" : "no", "yes");
 /* The name appears three times in the entry module -- an import, the API line and its comment --
- * so this reads the one that matters: the key a GM reaches for. */
-check("and the rest are built on demand",
-  /game\.cardrpg = \{[\s\S]{0,600}?\n    buildMonster,/.test(entrySource) ? "yes" : "no", "yes");
+ * so this asks the one that matters: the key a GM reaches for, read off the API's own member
+ * list rather than found within six hundred characters of the object's opening brace. */
+check("and the rest are built on demand", apiShorthand.includes("buildMonster"), "true");
 check("from the setup module that knows how",
   /export async function buildMonster\(name\)/.test(setupSource) ? "yes" : "no", "yes");
 
