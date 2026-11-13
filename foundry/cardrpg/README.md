@@ -142,7 +142,8 @@ can't leak into player pickers, and that goblin weapons stay at least 2 above he
 
 Templates are precompiled with real Handlebars, so a broken one fails the run.
 
-It cannot tell you the system *loads*. Only Foundry can do that -- so ask Foundry:
+It cannot tell you the system *loads*. Only Foundry can do that -- so ask Foundry, which
+`npm run live` below now does for you:
 
 ```bash
 node "$FOUNDRY/resources/app/main.mjs" --dataPath=<your data dir> --port=30001 --noupnp --world=<world>
@@ -164,14 +165,37 @@ the sheets are client-side, so it says nothing about them -- for that, drive a b
 
 ### Driving a client
 
-`puppeteer-core` plus an installed Chrome or Edge needs no browser download. Boot the server as
-above, then log a client in, wait for `game.ready`, and collect `console`, `pageerror` and
-`requestfailed`. From there `game.cardrpg` is the whole API and `await import(...)` reaches any
-module, so the engine can be exercised directly:
+```
+npm run live
+```
+
+`test/live.mjs` does all of the above and then asks questions. It boots the server headlessly on a
+spare port, drives the Edge already installed through `playwright-core` -- so it downloads no
+browser -- joins, waits for `game.ready`, and puts about fifty checks to the live objects.
+`game.cardrpg` is the whole API and `await import(...)` reaches any module, so the engine is
+exercised directly rather than described:
 
 ```js
 const r = resolve.collectBonuses(actor, "strike", longsword);   //  +3 [Graven +2, Strong +1]
 ```
+
+**It works on a copy of the world and deletes it afterwards.** The probes are destructive on
+purpose -- one of them prunes a card out of a deck for ever -- so every run starts from the same
+state and the world you play in is never opened.
+
+```
+npm run live -- --keep       leave the scratch world behind to look at
+npm run live -- --show       a visible browser, for watching it go wrong
+npm run live -- --app=<dir>  where Foundry is, if it is somewhere unusual
+```
+
+**It is the half `npm test` cannot reach**, and the three defects of 12 November are why it exists:
+a button whose handler inverted its own condition, a dialog comparing an escaped name against a raw
+one, and `cap ?? 1`, which quietly turns the `null` that means *uncapped* into a cap of one. All
+three **read correctly** -- no grep over the source can tell them from working code, because the
+difference is what they do. On its first run this found a fourth of the same kind: `#itemCard`
+referred to a bare `actor`, a local belonging to another method, so every render of the HUD threw
+and the playtest interface had been dead for days behind a green suite.
 
 **That found five faults in an hour that 1736 offline checks did not.** Three modules used `CARDRPG`
 as a free variable, which is invisible to `node --check` and to importing them -- the tray simply

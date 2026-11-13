@@ -7985,6 +7985,26 @@ check("and no breath string still promises cards back",
   [["the tray", traySource], ["its template", trayTemplate]]
     .filter(([, text]) => /cards out of the discard|cards in the discard|all or nothing/.test(text))
     .map(([name]) => name).join(", ") || "none", "none");
+/*
+ * **The tray asks the actor for a range from inside a method that has one.**  **[FIXED 2026-11-13]**
+ *
+ * `#itemCard` called a bare `actor`, which is a local in `_prepareContext` and nothing at all one
+ * method along. So **every render of the HUD threw** `ReferenceError: actor is not defined` the
+ * moment a character held one item, which is every character -- the playtest interface had been
+ * dead for days behind a green suite.
+ *
+ * The name is spelled correctly, it is a real variable, and it is in scope four hundred lines
+ * above. No grep over this file can tell those two apart, because the difference is **scope** and
+ * this suite reads text. `npm run live` found it on its first run, waiting for a button that was
+ * never going to be drawn.
+ *
+ * Two readers of the same derived number, and the count is what is pinned: one reaches through
+ * `this`, one through the local that `_prepareContext` really does declare.
+ */
+check("the item card reaches the actor through this",
+  (traySource.match(/\(this\.actor\.system\.rangeOnLine/g) ?? []).length, 1);
+check("and only the one place that holds a local uses a bare name",
+  (traySource.match(/[^.](actor\.system\.rangeOnLine)/g) ?? []).length, 1);
 
 check("and the sheet shows a grant the cap ate",
   /at the cap, \{\{system\.handSize\.wasted\}\} wasted/.test(charTemplate) ? "yes" : "no",
@@ -11548,6 +11568,26 @@ check("and every other kind states one", Object.entries(injuryCats)
 check("the cap on each kind of injury", Object.entries(injuryCats)
   .map(([k, c]) => `${k} ${c.cap === null ? "uncapped" : c.cap}`).join(", "),
   "maiming uncapped, breaking 2, curse 2, corruption 2, obligation 1");
+/*
+ * **And the function that enforces them, rather than the table it reads.**  **[FIXED 2026-11-13]**
+ *
+ * The readout above is the table, and the table was never wrong. `roomForInjury` read
+ * `CARDRPG.injuryCategories[category]?.cap ?? 1` -- and **`null ?? 1` is `1`**, because nullish
+ * coalescing treats `null` and `undefined` alike. So the one category deliberately declared
+ * uncapped arrived here as a cap of one, the `cap === null` line below it tested a value that
+ * could no longer be null, and a second Maiming was refused from the day the uncap was ruled.
+ *
+ * **Nothing written in this file could have found that**, and that is the point worth recording:
+ * the table says `null`, the enforcer says `cap === null`, and both of them read correctly. It
+ * took running it. `npm run live` gives a hero two Maimings and asks whether there is room for a
+ * third, which is the question in the form a player asks it.
+ *
+ * What is pinned here is the **shape of the fix** -- the default applied to the lookup and not to
+ * the value -- so the coalescing cannot wander back in.
+ */
+check("and the enforcer keeps the table's null rather than coalescing it away",
+  /const cap = declared \? declared\.cap : 1;/
+    .test(resolveSource) ? "yes" : "no", "yes");
 /*
  * **Obligation is the one still at one, and the reason is the missing ritual.** Every other injury
  * has a way out, so a second is a harder fight; a second obligation is a second slate nothing in
@@ -15183,6 +15223,35 @@ section("The checks themselves");
  *     timer is gone*, *nothing draws a twist* -- and they are correct at zero. But a grep that went
  *     stale reads zero too, so a new one has to be added to the list deliberately.
  */
+/*
+ * **The other half of the testing, which this file cannot do.**  **[BUILT 2026-11-13]**
+ *
+ * Every check above is a statement about **text**. That is the suite's strength -- it can ask a
+ * thousand questions in two seconds and none of them needs a game -- and it is exactly why three
+ * of the defects of 12 November walked straight past it. A handler that inverted its own
+ * condition, a dialog comparing an escaped name against a raw one, and `cap ?? 1` turning the
+ * `null` that means *uncapped* into a cap of one: **all three read correctly**, and a reader of
+ * source has nothing left to notice.
+ *
+ * `npm run live` boots a real Foundry, joins with a real browser, and asks the objects. It found a
+ * fourth on its first run -- `#itemCard` reaching for a bare `actor` -- which had left the HUD
+ * unable to render at all.
+ *
+ * What is pinned here is only that it stays a **command** rather than a recipe in a README, and
+ * that it keeps the two properties that make it safe to run often: it works on a copy of the world
+ * and it downloads nothing.
+ */
+const liveSource = fs.readFileSync(path.join(root, "test/live.mjs"), "utf8");
+const packageJson = fs.readFileSync(path.join(root, "package.json"), "utf8");
+check("the live harness is a command and not a recipe",
+  /"live": "node test\/live\.mjs"/.test(packageJson) ? "yes" : "no", "yes");
+check("and it works on a copy of the world",
+  /fs\.cpSync\(from, to/.test(liveSource) ? "yes" : "no", "yes");
+check("and deletes the copy when it is done",
+  /fs\.rmSync\(scratch/.test(liveSource) ? "yes" : "no", "yes");
+check("and drives a browser that is already installed",
+  /channel: arg\("channel", "msedge"\)/.test(liveSource) ? "yes" : "no", "yes");
+
 const selfSource = fs.readFileSync(path.join(root, "test/validate.mjs"), "utf8");
 
 /* Which local holds which file: the same declarations this suite opens with. */
@@ -15206,7 +15275,9 @@ readFiles.set("decksSource", decksSource);
  * retired predicate used to be, in a section of the file that runs long before `grantsSource` is
  * declared, and `bookCss` reads the one hand-written file in the book pipeline, which now has to
  * dress a dialog the page generates. */
-check("files this suite greps by name", readFiles.size, 67);
+/* 69 since 2026-11-13: `liveSource` and `packageJson`, which between them check that the live
+ * harness is still a command anyone can run rather than a recipe nobody does. */
+check("files this suite greps by name", readFiles.size, 69);
 
 /* Every `/pattern/.test(VAR)` and `VAR.includes("...")`, with the check it belongs to. */
 const nameOfCheck = index => {

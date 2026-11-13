@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "test": "node test/validate.mjs",
+    "live": "node test/live.mjs",
     "build": "npm run packs && npm run art-list && npm run art-prompts && npm run handbook && npm run book",
     "packs": "node test/build-packs.mjs",
     "art-prompts": "node test/art-prompts.mjs",
@@ -17,7 +18,8 @@
   },
   "devDependencies": {
     "@foundryvtt/foundryvtt-cli": "^3.0.5",
-    "handlebars": "^4.7.8"
+    "handlebars": "^4.7.8",
+    "playwright-core": "^1.65.0"
   },
   "dependencies": {
     "cytoscape": "^3.30.2"

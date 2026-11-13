@@ -999,7 +999,21 @@ export function injuryCategoriesTaken(actor) {
  * What keeps that from being a death spiral is *Adapted*, not this.
  */
 export function roomForInjury(actor, category) {
-  const cap = CARDRPG.injuryCategories[category]?.cap ?? 1;
+  /*
+   * **[FIXED 2026-11-13] `?? 1` swallowed the uncap, and the next line could never fire.**
+   *
+   * It read `CARDRPG.injuryCategories[category]?.cap ?? 1`. **`null ?? 1` is `1`** -- nullish
+   * coalescing treats `null` and `undefined` alike -- so the one category deliberately declared
+   * uncapped arrived here as a cap of one, `cap === null` tested a value that could not be null,
+   * and a second Maiming was refused. The uncap ruled on 2026-11-12 did nothing from the day it
+   * was written, and the cap readout in the suite could not see it: that check reads
+   * `config.mjs`, where `null` is still sitting correctly in the table.
+   *
+   * `null` is the table's word for *uncapped* and has to survive the read, so the default for a
+   * category nobody declared is applied to the **lookup** and not to the value.
+   */
+  const declared = CARDRPG.injuryCategories[category];
+  const cap = declared ? declared.cap : 1;
   if (cap === null) return true;
   return (injuryCategoriesTaken(actor).get(category) ?? 0) < cap;
 }

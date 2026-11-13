@@ -792,10 +792,21 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
                     ? "Click to take it out of your pack. That is a Ready."
                     : "Click to equip it.",
       blurb: i.system.blurb,
+      /*
+       * **[FIXED 2026-11-13] A bare `actor` here, and the whole HUD threw.**
+       *
+       * `#itemCard` is a method and has no `actor` of its own -- the one at the top of
+       * `_prepareContext` is a local in a different function. So every render of the tray
+       * died with `ReferenceError: actor is not defined` the moment a character held a single
+       * item, which is every character. Nothing in the suite could see it: the name is spelled
+       * correctly, it is in scope four hundred lines above, and no check has ever rendered an
+       * application. The live harness found it on its first run, trying to click a button it
+       * could not find.
+       */
       lines: verbs
         // Same question, same asker: the printed range is a derived number now.
         .map(([v, l]) => `${v} ${l.value ?? ""}`
-          + ((r => r ? ` \u00b7 range ${r}` : "")(actor.system.rangeOnLine(l, i)))
+          + ((r => r ? ` \u00b7 range ${r}` : "")(this.actor.system.rangeOnLine(l, i)))
           + `${l.reach ? ` \u00b7 reach ${l.reach}${l.reachMin > 1 ? ` from ${l.reachMin}` : ""}` : ""}`
           + `${l.area ? ` \u00b7 ${l.areaKind || "blast"} ${l.area}` : ""}`)
         .concat(i.system.armor ? [`armor ${i.system.armor}`] : []),
