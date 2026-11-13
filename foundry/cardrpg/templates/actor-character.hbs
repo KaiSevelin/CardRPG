@@ -127,6 +127,24 @@
           <input type="number" name="system.health.base" value="{{system.health.base}}" min="1">
         </label>
 
+        {{!--
+          **[FIXED 2026-11-13] Stamina was on no sheet anywhere.** It is the stat that decides how
+          many cards you may play in a fight (core-rules 8) and it was readable only in the combat
+          HUD -- so outside a fight a player could not see the number, and *Deck floor* sitting
+          there in its place was read as the stamina it is not.
+        --}}
+        <label class="cr-stat">Stamina
+          <span class="cr-stat__pair">
+            <input type="number" name="system.stamina.value" value="{{system.stamina.value}}" min="0">
+            <span class="cr-stat__sep">/</span>
+            <span class="cr-stat__derived" data-tooltip="How many cards you may still play this fight. Base {{system.stamina.base}}{{#if system.overloaded}}, less the Overloaded penalty{{/if}}. It comes back in full when the fight ends.">{{system.stamina.max}}</span>
+          </span>
+        </label>
+        <label class="cr-stat">Base stamina
+          <input type="number" name="system.stamina.base" value="{{system.stamina.base}}" min="1"
+                 data-tooltip="Every card played costs one, whether it is a primary, a secondary or a reaction. Nothing you did not play costs any.">
+        </label>
+
         <label class="cr-stat">Block
           <input type="number" name="system.block" value="{{system.block}}" min="0">
         </label>
@@ -170,7 +188,7 @@
         </label>
         <label class="cr-stat">Deck floor
           <input type="number" name="system.actionDeck.min" value="{{system.actionDeck.min}}" min="1"
-                 data-tooltip="A prune is refused below this, because a prune is the one reward that can make a character illegal.">
+                 data-tooltip="The smallest your action deck may get. A prune is refused below this, because a prune is the one reward that can make a character illegal. It is not your stamina: stamina is how many cards you may play, and it is above.">
         </label>
 
         <label class="cr-stat">Rest tokens
@@ -253,17 +271,26 @@
         is simply true of you.
       --}}
       <section class="cr-block">
+        {{!--
+          **[FIXED 2026-11-13] Three lists, edited as lists.** All three are arrays in the data
+          model and always were; only the editor was a comma-separated sentence that the sheet
+          joined on the way out and split on the way back. A training is a binary that changes a
+          number, so "lockpicks, gaming set" being one string meant a typo or a stray comma
+          silently became a different training -- and nothing could ever offer, count or check one.
+        --}}
         <h3>Training</h3>
         <p class="cr-note">Structured &mdash; an untrained user caps a tool bonus at +1.</p>
-        <input type="text" name="system.trainingsText" value="{{trainingsText}}" placeholder="lockpicks, gaming set">
+        {{> "systems/cardrpg/templates/parts/entries.hbs" list=system.trainings field="trainings" hint="lockpicks"}}
+
         <h3>Know-how</h3>
         <p class="cr-note">A situation, not an approach. The GM reads this; nothing automates it.</p>
-        <input type="text" name="system.knowHowText" value="{{knowHowText}}" placeholder="Military matters; forests and tracking">
+        {{> "systems/cardrpg/templates/parts/entries.hbs" list=system.knowHow field="knowHow" hint="forests and tracking"}}
+
         <h3>Languages</h3>
         {{!-- Binary the way a training is, and it arrives from two directions: a background gives
               what you grew up with, the graph gives what you studied. This field is the first. --}}
         <p class="cr-note">What you grew up with. What you studied is below, from your nodes.</p>
-        <input type="text" name="system.languagesText" value="{{languagesText}}" placeholder="Imperial, Veche">
+        {{> "systems/cardrpg/templates/parts/entries.hbs" list=system.languages field="languages" hint="Imperial"}}
 
         {{!--
           What the graph has added, which is NOT editable here: it is derived from the nodes you own
@@ -344,7 +371,13 @@
                   <span class="cr-slate-row__name">{{slate.name}}</span>
                   <span class="cr-note">{{slate.system.weight}} kg</span>
                   <button type="button" data-action="toggleEquipped" data-slate-id="{{slate.id}}">Unequip</button>
-                  <button type="button" data-action="editSlate" data-slate-id="{{slate.id}}">Edit</button>
+                  <span class="cr-menu">
+                    <button type="button" class="cr-menu__dots" data-action="rowMenu"
+                            data-tooltip="More" aria-label="More">&#8943;</button>
+                    <span class="cr-menu__items">
+                      <button type="button" data-action="editSlate" data-slate-id="{{slate.id}}">Edit</button>
+                    </span>
+                  </span>
                 </li>
               {{else}}
                 <li class="cr-note">Empty.</li>
@@ -362,8 +395,15 @@
               <span class="cr-slate-row__name">{{slate.name}}</span>
               <span class="cr-note">{{slate.system.weight}} kg &middot; {{slate.system.value}} g</span>
               <button type="button" data-action="toggleEquipped" data-slate-id="{{slate.id}}">Equip</button>
-              <button type="button" data-action="editSlate" data-slate-id="{{slate.id}}">Edit</button>
-              <button type="button" data-action="deleteSlate" data-slate-id="{{slate.id}}">&times;</button>
+              <span class="cr-menu">
+                <button type="button" class="cr-menu__dots" data-action="rowMenu"
+                        data-tooltip="More" aria-label="More">&#8943;</button>
+                <span class="cr-menu__items">
+                  <button type="button" data-action="editSlate" data-slate-id="{{slate.id}}">Edit</button>
+                  <button type="button" class="cr-menu__danger" data-action="deleteSlate"
+                          data-slate-id="{{slate.id}}">Delete</button>
+                </span>
+              </span>
             </li>
           {{else}}
             <li class="cr-note">Nothing in the pack.</li>
@@ -391,7 +431,13 @@
                   {{#if entry.drain.drained}}Restore{{else}}Drain{{/if}}
                 </button>
               {{/if}}
-              <button type="button" data-action="editSlate" data-slate-id="{{entry.doc.id}}">Edit</button>
+              <span class="cr-menu">
+                <button type="button" class="cr-menu__dots" data-action="rowMenu"
+                        data-tooltip="More" aria-label="More">&#8943;</button>
+                <span class="cr-menu__items">
+                  <button type="button" data-action="editSlate" data-slate-id="{{entry.doc.id}}">Edit</button>
+                </span>
+              </span>
             </li>
           {{else}}
             <li class="cr-note">No features.</li>
@@ -413,7 +459,13 @@
               {{#if entry.doc.system.cause}}
                 <span class="cr-note">{{entry.doc.system.cause}}</span>
               {{/if}}
-              <button type="button" data-action="editSlate" data-slate-id="{{entry.doc.id}}">Edit</button>
+              <span class="cr-menu">
+                <button type="button" class="cr-menu__dots" data-action="rowMenu"
+                        data-tooltip="More" aria-label="More">&#8943;</button>
+                <span class="cr-menu__items">
+                  <button type="button" data-action="editSlate" data-slate-id="{{entry.doc.id}}">Edit</button>
+                </span>
+              </span>
             </li>
           {{else}}
             <li class="cr-note">No injuries.</li>

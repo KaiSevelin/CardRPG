@@ -1,0 +1,34 @@
+{{!--
+  **A short list of strings, edited as a list.**  [BUILT 2026-11-13]
+
+  Training, know-how and languages are `ArrayField`s and always have been. The editor was a single
+  text input that the sheet joined on the way out and split on the way back, which made the
+  separator part of the data: a comma inside a piece of know-how split it in two, and a training
+  typed with a stray space became a different training from the one a tool bonus looks for.
+
+  One partial rather than three copies, for the same reason the step editor is one: three copies
+  is three places for the vocabulary to drift.
+
+  `field` is the key under `system`, and the remove button carries an **index** rather than the
+  text. That is the lesson the prune dialog paid for -- it matched an escaped name against a raw
+  one and silently removed nothing -- and an index cannot be mangled on its way through HTML.
+--}}
+<div class="cr-entries__box">
+<ul class="cr-entries">
+  {{#each list}}
+    <li class="cr-entry">
+      <span class="cr-entry__text">{{this}}</span>
+      <button type="button" class="cr-entry__x" data-action="removeEntry"
+              data-field="{{../field}}" data-index="{{@index}}"
+              data-tooltip="Remove {{this}}" aria-label="Remove {{this}}">&#10005;</button>
+    </li>
+  {{else}}
+    <li class="cr-note cr-entries__none">Nothing yet.</li>
+  {{/each}}
+</ul>
+<div class="cr-entries__add">
+  <input type="text" class="cr-entry__new" data-field="{{field}}" placeholder="{{hint}}"
+         aria-label="Add one" autocomplete="off">
+  <button type="button" data-action="addEntry" data-field="{{field}}">Add</button>
+</div>
+</div>

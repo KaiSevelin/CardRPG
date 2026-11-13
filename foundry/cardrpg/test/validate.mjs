@@ -5280,8 +5280,11 @@ check("a character derives them",
 check("the pane prints what a node teaches",
   /CARDRPG\.Level\.Language/.test(graphSource) ? "yes" : "no", "yes");
 check("and the string exists", "CARDRPG.Level.Language" in lang, true);
+/* The editor stopped being a comma-separated sentence on 2026-11-13; it is the entries partial
+ * now, named by the field it writes. */
 check("the sheet holds the ones a background gave",
-  /name="system\.languagesText"/.test(charTemplate) ? "yes" : "no", "yes");
+  /entries\.hbs" list=system\.languages field="languages"/.test(charTemplate) ? "yes" : "no",
+  "yes");
 check("and lists the ones the nodes taught, separately",
   /\{\{#each fromNodes\.languages\}\}/.test(charTemplate) ? "yes" : "no", "yes");
 check("the editor offers the nine and nothing else",
@@ -6551,9 +6554,28 @@ const APPS = [
     cls: "LevelUpPane" }
 ];
 
+/**
+ * **A template plus every partial it pulls in.**  **[FIXED 2026-11-13]**
+ *
+ * This read one file per application, so the moment a button moved into a partial it counted as a
+ * handler with no button -- and a `data-action` written inside a partial would have counted as no
+ * action at all, which is the dangerous direction. A partial is part of the markup; the check is
+ * about markup and class agreeing, and where the markup is kept was never part of that.
+ *
+ * Recursive, because a partial may include one, with a seen-set so a cycle cannot hang the suite.
+ */
+const withPartials = (file, seen = new Set()) => {
+  const full = path.join(root, file);
+  if (seen.has(full) || !fs.existsSync(full)) return "";
+  seen.add(full);
+  const text = fs.readFileSync(full, "utf8");
+  const included = [...text.matchAll(/\{\{>\s*"?systems\/cardrpg\/([^"\s}]+)/g)].map(m => m[1]);
+  return text + included.map(part => withPartials(part, seen)).join("");
+};
+
 const wiringFaults = [];
 for (const app of APPS) {
-  const tpl = fs.readFileSync(path.join(root, app.template), "utf8");
+  const tpl = withPartials(app.template);
   const src = fs.readFileSync(path.join(root, app.source), "utf8");
   const inTemplate = new Set([...tpl.matchAll(/data-action="([a-zA-Z]+)"/g)].map(m => m[1]));
   /* The actions block of this class only: two sheets share one file. */

@@ -71,6 +71,9 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       removeCondition: CharacterSheet.#onRemoveCondition,
       editSlate: CharacterSheet.#onEditSlate,
       deleteSlate: CharacterSheet.#onDeleteSlate,
+      addEntry: CharacterSheet.#onAddEntry,
+      removeEntry: CharacterSheet.#onRemoveEntry,
+      rowMenu: CharacterSheet.#onRowMenu,
       shortRest: CharacterSheet.#onShortRest,
       longRest: CharacterSheet.#onLongRest
     }
@@ -200,11 +203,13 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
         isImmobile: system.encumbrance === "immobile"
       },
 
-      // ArrayFields don't round-trip through a text input, so they are joined for display and
-      // split again in _prepareSubmitData.
-      trainingsText: (system.trainings ?? []).join(", "),
-      knowHowText: (system.knowHow ?? []).join("; "),
-      languagesText: (system.languages ?? []).join(", "),
+      /*
+       * **[2026-11-13] The three joined strings are gone.** They were here because an `ArrayField`
+       * does not round-trip through a text input -- and the answer to that is not to make the
+       * separator part of the data, it is to edit the list as a list. The entries partial reads
+       * `system.trainings` and the two beside it directly, and `addEntry`/`removeEntry` write
+       * them, so nothing is joined, split, or re-parsed anywhere.
+       */
       /*
        * What the GRAPH added, separated from what was typed in. `system.learned` has been derived
        * since the nodes were wired and nothing ever read it, so every training and piece of
@@ -243,24 +248,92 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
   /* -------------------------------------------- */
 
-  /** Turn the two comma/semicolon lists back into arrays. */
-  _prepareSubmitData(event, form, formData, updateData) {
-    const data = super._prepareSubmitData(event, form, formData, updateData);
-    const split = (value, sep) => String(value ?? "")
-      .split(sep).map(s => s.trim()).filter(s => s.length);
-    if ("trainingsText" in data.system) {
-      data.system.trainings = split(data.system.trainingsText, ",");
-      delete data.system.trainingsText;
+  /*
+   * **[RETIRED 2026-11-13] The three lists no longer travel as text.** This split a comma-joined
+   * training list and a semicolon-joined know-how list back into arrays, which meant the
+   * separator was part of the data and a piece of know-how could not contain one. They are edited
+   * as entries now and written straight to the array, so there is nothing to parse back.
+   */
+
+  /* -------------------------------------------- */
+
+  /**
+   * Two things a `data-action` cannot express: a key, and a click somewhere else.
+   *
+   * **Enter adds the entry**, because typing a word and reaching for a button is not how anybody
+   * fills in a list of three things.
+   *
+   * **And a click outside shuts the open menu.** A menu that only closes by pressing its own dots
+   * again is a menu that stays open, and the sheet then has two of them disagreeing about which
+   * row a click belongs to.
+   */
+  _onRender(context, options) {
+    super._onRender?.(context, options);
+    for (const input of this.element.querySelectorAll(".cr-entry__new")) {
+      input.addEventListener("keydown", event => {
+        if (event.key !== "Enter") return;
+        event.preventDefault();
+        input.parentElement?.querySelector('[data-action="addEntry"]')?.click();
+      });
     }
-    if ("knowHowText" in data.system) {
-      data.system.knowHow = split(data.system.knowHowText, ";");
-      delete data.system.knowHowText;
+    this.element.addEventListener("click", event => {
+      if (event.target.closest(".cr-menu")) return;
+      for (const open of this.element.querySelectorAll(".cr-menu--open")) {
+        open.classList.remove("cr-menu--open");
+      }
+    });
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * **Add one entry to one of the short lists under `system`.**
+   *
+   * Case-insensitively unique, because "Imperial" and "imperial" are one language and a list that
+   * holds both is a list nobody can count. The field is named by the button rather than looked up
+   * from the markup around it, so the partial works wherever it is dropped.
+   */
+  static async #onAddEntry(event, target) {
+    const field = target.dataset.field;
+    const input = target.closest(".cr-entries__add")?.querySelector(".cr-entry__new");
+    const value = (input?.value ?? "").trim();
+    if (!field || !value) return;
+    const list = [...(this.actor.system[field] ?? [])];
+    if (!list.some(entry => entry.toLowerCase() === value.toLowerCase())) list.push(value);
+    if (input) input.value = "";
+    await this.actor.update({ [`system.${field}`]: list });
+  }
+
+  /**
+   * **Remove one, by index.**
+   *
+   * By index and never by text: `prune` matched an escaped name against a raw one and removed
+   * nothing at all, after the level had been spent. An index cannot be mangled on its way through
+   * HTML, and it is the only identifier a list of plain strings has.
+   */
+  static async #onRemoveEntry(event, target) {
+    const field = target.dataset.field;
+    const index = Number(target.dataset.index);
+    const list = [...(this.actor.system[field] ?? [])];
+    if (!field || !Number.isInteger(index) || index < 0 || index >= list.length) return;
+    list.splice(index, 1);
+    await this.actor.update({ [`system.${field}`]: list });
+  }
+
+  /**
+   * **The row's own menu.**
+   *
+   * *Edit* opens a document the player will touch once a session, and it sat on every row of
+   * every list shouting as loudly as the name beside it. It lives behind the dots now, and only
+   * one menu is open at a time: two would be a guess about which one a click belongs to.
+   */
+  static #onRowMenu(event, target) {
+    const menu = target.closest(".cr-menu");
+    const open = menu?.classList.contains("cr-menu--open");
+    for (const other of this.element.querySelectorAll(".cr-menu--open")) {
+      other.classList.remove("cr-menu--open");
     }
-    if ("languagesText" in data.system) {
-      data.system.languages = split(data.system.languagesText, ",");
-      delete data.system.languagesText;
-    }
-    return data;
+    if (!open) menu?.classList.add("cr-menu--open");
   }
 
   /* -------------------------------------------- */

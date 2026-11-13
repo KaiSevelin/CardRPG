@@ -99,7 +99,9 @@ Hooks.once("init", () => {
    */
   foundry.applications.handlebars.loadTemplates([
     "systems/cardrpg/templates/parts/step.hbs",
-    "systems/cardrpg/templates/parts/steps.hbs"
+    "systems/cardrpg/templates/parts/steps.hbs",
+    /* And the other shape that was written out more than once: a short list of strings. */
+    "systems/cardrpg/templates/parts/entries.hbs"
   ]);
 });
 

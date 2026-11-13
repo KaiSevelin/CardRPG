@@ -826,6 +826,110 @@ async function probes(page) {
   });
 
   /*
+   * **The character sheet, which had three faults nobody could see from the source.**
+   * **[FIXED 2026-11-13]**
+   *
+   * Stamina was on no sheet at all -- the stat that decides how many cards you may play existed
+   * only in the combat HUD, with *Deck floor* sitting where a reader looked for it. The three
+   * short lists were edited as one comma-separated string each. And the gear slot headings fell
+   * through every rule this system writes onto the core sheet's pale display face, which is a
+   * thing you can only find by looking at it, so the contrast is measured here rather than
+   * admired.
+   */
+  await probe("the character sheet", async () => {
+    await page.evaluate(() => LIVE.hero.sheet.render(true));
+    await page.waitForSelector('input[name="system.stamina.value"]', { timeout: 20000 });
+    const rows = [];
+
+    rows.push(...await page.evaluate(() => {
+      const { hero } = LIVE;
+      const root = hero.sheet.element;
+      const val = root.querySelector('input[name="system.stamina.value"]');
+      const base = root.querySelector('input[name="system.stamina.base"]');
+      const floor = root.querySelector('input[name="system.actionDeck.min"]');
+      return [
+        ["the sheet shows stamina at all", Number(val?.value), hero.system.stamina.value],
+        ["and what it can go back up to", Number(base?.value), hero.system.stamina.base],
+        ["the deck floor is a different number", Number(floor?.value) === hero.system.stamina.max
+          ? "the same as stamina" : "its own", "its own"],
+        ["and says so when you ask it",
+          /not your stamina/.test(floor?.dataset.tooltip ?? "") ? "yes" : "no", "yes"]
+      ];
+    }));
+
+    /* A list, added to and taken from, through the buttons a player uses. */
+    const trainings = () => page.evaluate(() => [...(LIVE.hero.system.trainings ?? [])]);
+    const before = await trainings();
+    await page.fill('.cr-entries__add input[data-field="trainings"]', "lockpicks");
+    await page.click('[data-action="addEntry"][data-field="trainings"]');
+    await page.waitForFunction(n => (LIVE.hero.system.trainings ?? []).length > n, before.length,
+      { timeout: 10000 }).catch(() => {});
+    const added = await trainings();
+
+    /* The same word again, in a different case: one training, not two. */
+    await page.fill('.cr-entries__add input[data-field="trainings"]', "LOCKPICKS");
+    await page.click('[data-action="addEntry"][data-field="trainings"]');
+    await new Promise(r => setTimeout(r, 600));
+    const twice = await trainings();
+
+    await page.click('.cr-entry__x[data-field="trainings"][data-index="'
+      + (added.length - 1) + '"]');
+    await page.waitForFunction(n => (LIVE.hero.system.trainings ?? []).length < n, twice.length,
+      { timeout: 10000 }).catch(() => {});
+    const removed = await trainings();
+
+    rows.push(
+      ["a training is added as an entry", added.includes("lockpicks"), true],
+      ["the same one twice is still one", twice.length, added.length],
+      ["and removing it by index removes that one", removed.includes("lockpicks"), false],
+      ["leaving what was there alone", removed.length, before.length]
+    );
+
+    /* The gear headings, measured against the paper they sit on. */
+    await page.click('[data-action="switchTab"][data-tab="gear"]');
+    await page.waitForSelector(".cr-slot > h4", { timeout: 10000 });
+    rows.push(...await page.evaluate(() => {
+      const lum = c => {
+        const [r, g, b] = c.match(/[\d.]+/g).slice(0, 3).map(Number).map(v => {
+          const x = v / 255;
+          return x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4;
+        });
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+      };
+      const head = document.querySelector(".cr-slot > h4");
+      let behind = head.parentElement;
+      let bg = getComputedStyle(behind).backgroundColor;
+      while (behind && /rgba\(0, 0, 0, 0\)|transparent/.test(bg)) {
+        behind = behind.parentElement;
+        bg = behind ? getComputedStyle(behind).backgroundColor : "rgb(255,255,255)";
+      }
+      const a = lum(getComputedStyle(head).color);
+      const b = lum(bg);
+      const ratio = (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+      return [
+        ["a gear slot names itself", head.textContent.trim().length > 0, true],
+        ["and does it legibly", ratio >= 4.5 ? "yes" : `only ${ratio.toFixed(1)}:1`, "yes"]
+      ];
+    }));
+
+    /* And Edit is behind the dots rather than shouting on every row. */
+    await page.waitForSelector(".cr-menu__dots", { timeout: 10000 });
+    const shown = () => page.evaluate(() =>
+      [...document.querySelectorAll(".cr-menu__items")]
+        .filter(m => getComputedStyle(m).display !== "none").length);
+    const hidden = await shown();
+    await page.click(".cr-menu__dots");
+    await new Promise(r => setTimeout(r, 300));
+    const opened = await shown();
+    rows.push(
+      ["Edit is out of the way until it is asked for", hidden, 0],
+      ["and the dots are what asks", opened, 1]
+    );
+    await page.evaluate(() => LIVE.hero.sheet.close());
+    return rows;
+  });
+
+  /*
    * **And the world opens at all.** Nine days of engine changes went in without one of them being
    * loaded, so the cheapest question worth asking is whether the system still boots -- which every
    * probe above depends on and none of them states.
