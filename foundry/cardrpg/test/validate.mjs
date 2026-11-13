@@ -112,7 +112,9 @@ for (const file of modules) {
 check("modules using CARDRPG without importing it",
   freeNames.length ? freeNames.join(", ") : "none", "none");
 /* And the sweep found users, so a strip that ate the whole file cannot pass it. */
-check("modules that use it at all", importers, 15);
+/* 16 since 2026-11-13: `art.mjs` reads the condition list out of the config rather than
+ * keeping a second copy of twenty-five names. */
+check("modules that use it at all", importers, 16);
 
 /*
  * **The vendored cytoscape carries a patch, and the patch has to still be there.**
@@ -253,6 +255,25 @@ if (!fs.existsSync(specPath)) {
     conditions.add(m[1]);
   }
   check("conditions found in config", conditions.size, 25);
+
+  /*
+   * **And the name its picture is filed under is the name on the card.**  [BUILT 2026-11-13]
+   *
+   * A condition's art path is derived from its key -- `offBalance` becomes `Off-Balance` becomes
+   * `conditions/off-balance.webp` -- because the English name is already written down once, in
+   * `lang/en.json`, and a second copy in the engine is a second fact that can drift. Deriving it
+   * is only safe while the two agree, so this is where they are made to: a condition renamed in
+   * the language file without its key following would file its picture under a name nobody at the
+   * table uses, and the picture would simply not appear.
+   */
+  const { conditionName } = await import("../module/art.mjs");
+  const lang = JSON.parse(fs.readFileSync(path.join(root, "lang/en.json"), "utf8"));
+  const misnamed = [...conditions]
+    .filter(key => lang[`CARDRPG.Condition.${conditionName(key).replace(/-/g, "")}`] === undefined
+      || lang[`CARDRPG.Condition.${conditionName(key).replace(/-/g, "")}`] !== conditionName(key));
+  check("conditions whose picture is filed under the wrong name",
+    misnamed.join(", ") || "none", "none");
+
 
 
   /*
@@ -6670,7 +6691,8 @@ const everyCreatureForArt = monsters.expandRoster(content.ROSTER, content.VARIAN
  */
 const artable = (await import("../module/art.mjs")).SHELVES.flatMap(s => s.list ?? []);
 /* 631 since 2026-11-12: *Adapted* was retired and took its own brief and picture with it. */
-check("pieces of content that take art", artable.length, 631);
+/* 656 since 2026-11-13: the twenty-five conditions, which were a deck to a player and on no shelf. */
+check("pieces of content that take art", artable.length, 656);
 /*
  * **The four items that are content without being commissions, and the item each one wears.**
  *
@@ -7193,7 +7215,7 @@ const { artIn: artInLive, backOf: backOfLive } = await import("../module/decks.m
 /* Every piece the game can hand Foundry a path for, which is all of them: kept as the denominator
  * the three states below have to add up to, and no longer printed as progress. */
 check("pieces the game has a path for", artable.filter(e => artInLive(e)).length
-  + backs.filter(([k]) => backOfLive(k)).length, 642);
+  + backs.filter(([k]) => backOfLive(k)).length, 667);
 /*
  * **And every path the game hands Foundry names a file that is there.**
  *
@@ -7212,7 +7234,7 @@ const pathless = [
   ...artable.map(e => [e.name, artInLive(e)]),
   ...backs.map(([k, b]) => [b.label ?? k, backOfLive(k)])
 ].filter(([, p]) => p && !fs.existsSync(fileFor(p)));
-check("art paths the game would hand Foundry", artable.length + backs.length, 642);
+check("art paths the game would hand Foundry", artable.length + backs.length, 667);
 /*
  * **The brief's progress line used to be the total, and nobody noticed for months.**
  *
@@ -7326,11 +7348,22 @@ const ART_SLOTS = {
    * argument against drawing it has been withdrawn. Both are card faces like the rest. */
   "cards/shade-starter": "face", "cards/twist": "face",
   features: "item", items: "item", "items/npc": "item", "items/natural": "item",
-  tokens: "actor"
+  tokens: "actor",
+  /*
+   * **The fourth kind of slot, and the first that is not a document.**  [2026-11-13]
+   *
+   * Every other shelf's picture is written onto something Foundry stores -- a Card face's `img`,
+   * an Item's, an Actor's. A condition has no document: it is a record on the actor's system data
+   * read against `CARDRPG.conditions`, so there is nothing for `artIn` to write to and nothing for
+   * `artOf` to read. The tray asks for the path by key instead, which is a writer of a different
+   * shape and still has to be checked -- a shelf whose pictures nothing fetches is a commission
+   * nobody will ever see, which is the whole reason this table exists.
+   */
+  conditions: "keyed"
 };
 const briefDirs = [...new Set([...artList.matchAll(/Suggested path: `cardrpg\/art\/(.+?)\/`/g)]
   .map(m => m[1]))];
-check("directories the brief commissions into", briefDirs.length, 25);
+check("directories the brief commissions into", briefDirs.length, 26);
 check("and every one of them has a slot",
   briefDirs.filter(d => !(d in ART_SLOTS)).join(", ") || "none", "none");
 /* And no slot is declared for a group that is not in the brief, or this list rots quietly. */
@@ -7340,29 +7373,40 @@ check("slots declared for nothing",
  * The three writers, each asked in its own body. A file-wide grep for `artIn` was exactly the
  * shape of the original bug: one reader in the file passed for all of them.
  */
+/*
+ * Each writer names the reader it must contain, because they no longer all read the same thing:
+ * three of the four take a definition and ask `artIn`, and the keyed one takes a condition's key
+ * and resolves it off the shelf. A single `artIn` grep across all of them would report the
+ * condition writer as missing while it worked, which is the opposite of useful.
+ */
+/* The condition resolver lives with the other three art readers, in the deck layer's own
+ * `art.mjs`, rather than in the one-door `decks.mjs` that re-exports it. */
+const artSource = fs.readFileSync(path.join(root, "module/decks/art.mjs"), "utf8");
 const SLOT_WRITERS = {
-  face: [["an action card", decksSource, "export function actionCardData", "\n}"],
-    ["a skill card", decksSource, "export function skillCardData", "\n}"],
-    ["an intent card", decksSource, "export function npcCardData", "\n}"]],
-  item: [["an item", setupSource, "export function slateData", "\n}"]],
-  actor: [["an actor", setupSource, "const buildActor = async", "\n  };"]]
+  face: [["an action card", decksSource, "export function actionCardData", "\n}", /artIn\(/],
+    ["a skill card", decksSource, "export function skillCardData", "\n}", /artIn\(/],
+    ["an intent card", decksSource, "export function npcCardData", "\n}", /artIn\(/]],
+  item: [["an item", setupSource, "export function slateData", "\n}", /artIn\(/]],
+  actor: [["an actor", setupSource, "const buildActor = async", "\n  };", /artIn\(/]],
+  keyed: [["a condition", artSource, "export function conditionArt", "\n}",
+    /CONDITION_ART\.get\(key\)/]]
 };
 const slotFaults = [];
 for (const [slot, writers] of Object.entries(SLOT_WRITERS)) {
-  for (const [label, src, anchor, end] of writers) {
+  for (const [label, src, anchor, end, reads] of writers) {
     const at = src.indexOf(anchor);
     const to = at < 0 ? -1 : src.indexOf(end, at);
     /* An anchor that no longer matches, or an end that does not, leaves a body of nothing or of
      * the whole file -- and the whole file is the bug this rule is about. Both are faults. */
     if (at < 0 || to < 0) { slotFaults.push(`${slot}: ${label} (no body)`); continue; }
-    if (!/artIn\(/.test(src.slice(at, to))) slotFaults.push(`${slot}: ${label}`);
+    if (!reads.test(src.slice(at, to))) slotFaults.push(`${slot}: ${label}`);
   }
 }
 check("slots whose writer never reads a definition's art",
   slotFaults.join(", ") || "none", "none");
 /* A parse that found no bodies would report "none" for writers that read nothing at all. */
 check("writers the rule actually read",
-  Object.values(SLOT_WRITERS).flat().length, 5);
+  Object.values(SLOT_WRITERS).flat().length, 6);
 
 /*
  * **A token is a different shape, and the brief says so twice on purpose.** Once in its own spec
@@ -7474,7 +7518,7 @@ const briefs = faceRows.map(r => r.brief);
 const leaked = briefs.flatMap(text =>
   [...text.matchAll(/\b([a-z]+[A-Z][a-zA-Z]*)\b/g)].map(m => m[1]));
 /* A pattern that matched no rows at all would report "none" for any list whatsoever. */
-check("briefs the check actually read", briefs.length, 631);
+check("briefs the check actually read", briefs.length, 656);
 check("keys that leaked into the brief",
   leaked.length ? [...new Set(leaked)].join(", ") : "none", "none");
 /*
@@ -9302,7 +9346,7 @@ check("and each one says what is not in the frame",
  * spelling them again. */
 const packSource = fs.readFileSync(path.join(root, "test/build-packs.mjs"), "utf8");
 const rows = faceRows;
-check("file paths in the brief", rows.length, 631);
+check("file paths in the brief", rows.length, 656);
 /* And the backs, whose path is the slug of their KEY rather than of their printed label. */
 const backPaths = [...artList.matchAll(/\| `(backs\/[^`]+)` \|/g)].map(m => m[1]);
 check("back paths in the brief", backPaths.length, backs.length);
@@ -15393,7 +15437,9 @@ readFiles.set("decksSource", decksSource);
 /* 70 since 2026-11-13: no new file, one comma. `css` was the only read in the suite spelled with
  * its path in segments, so the sweep never saw it and every `.test(css)` in the file sat outside
  * the audit -- including a check for a rule that had been retired. */
-check("files this suite greps by name", readFiles.size, 70);
+/* 71 since 2026-11-13: `artSource` reads the deck layer's `art.mjs`, where the condition
+ * resolver lives -- the first art writer that is not a document field. */
+check("files this suite greps by name", readFiles.size, 71);
 
 /* Every `/pattern/.test(VAR)` and `VAR.includes("...")`, with the check it belongs to. */
 const nameOfCheck = index => {

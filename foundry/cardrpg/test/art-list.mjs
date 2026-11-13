@@ -392,6 +392,17 @@ const PROSE = {
   "spells/faith": { title: "Miracles — Way of Faith pool",
     why: "Twelve gods' lesser miracles, handed over by minor nodes." },
 
+  "conditions": { title: "Conditions",
+    why: "**A condition looks like a deck to a player and each one looks like a card**, which is "
+      + "the whole of the case: the pile sits face down beside the action deck wearing a back of "
+      + "its own, and until today every card in it was blank paper with a word on it. They were "
+      + "on no shelf, so the brief reported the game fully drawn while twenty-five cards a player "
+      + "reads every fight had nothing on them.\n\n**Draw the condition and never the sufferer.** "
+      + "One picture serves a goblin, a dragon and the player, so a figure in the frame is the "
+      + "wrong figure for three quarters of the table \u2014 the same constraint the intent deck "
+      + "works under. Each of these is one object or one gesture, close, with the body kept out "
+      + "or cropped to a limb. It is also the only way twenty-five of them do not arrive as "
+      + "twenty-five people pulling faces." },
   "features": { title: "Features",
     why: "Always on, so a feature's picture is on the sheet for the character's whole life." },
   "items": { title: "Items",
@@ -513,7 +524,10 @@ push(
   "",
   "**The art goes behind the face, not instead of it.** A face is rendered from data so that a "
   + "condition can switch an individual icon off at runtime, so every card still draws its own name, "
-  + "halves and reaction row over the picture, on a scrim of the paper colour at 86%. That is also "
+  + "halves and reaction row over the picture. A wash of the paper colour at 60% sits between "
+  + "the two, so **count on four tenths of what you draw reaching the eye** and compose for a "
+  + "subject that survives it: a drawing that depends on fine low-contrast detail will not. "
+  + "That is also "
   + "why there is no deadline: a card with no art looks exactly as it did before there were "
   + "pictures, and the catalogue improves one file at a time.",
   "",

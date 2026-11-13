@@ -1,6 +1,6 @@
 # Art prompts
 
-**642 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
+**667 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
 
 It walks the same `GROUPS` the art list walks, by importing it rather than copying it, so the two files cannot disagree about what exists.
 
@@ -27,7 +27,7 @@ So the numbers are gone from the capsules and the picture is in their place: **t
 
 ## Deck backs
 
-**Draw these first.** 11 pictures against 631 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
+**Draw these first.** 11 pictures against 656 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
 
 ### The capsule — paste this once
 
@@ -5927,6 +5927,346 @@ Four turns. Then everybody stands up, including the ones who had stopped being p
 Draw that line literally: the one moment it describes, and nothing else in frame.
 ```
 
+## Conditions
+
+**25 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/conditions/`.
+
+On the table all fight, face up under a duration that is counting down. Draw **the condition and never who has it**: one picture serves a goblin, a dragon and the player alike, so the body stays out of frame or is cropped to a limb. An object, a mark or a gesture -- the evidence, not the victim.
+
+<details><summary><b>The capsule — paste this once, at the top of a fresh chat</b></summary>
+
+```text
+A single illustration for a playing card in a tabletop fantasy RPG.
+
+THIS GROUP. On the table all fight, face up under a duration that is counting down. Draw **the condition and never who has it**: one picture serves a goblin, a dragon and the player alike, so the body stays out of frame or is cropped to a limb. An object, a mark or a gesture -- the evidence, not the victim.
+
+FORMAT.
+- Portrait, aspect ratio exactly 2:3, 1024 x 1536.
+- Full bleed, edge to edge. No border, no frame, no card template, no rounded corners, no drop
+  shadow, no mat, no margin.
+- ABSOLUTELY NO TEXT of any kind: no letters, numerals, runes, glyphs, signature, watermark, or
+  anything that reads as writing. Not on a shield, not on a banner, not in the background.
+
+COMPOSITION. The card prints its own name and rules text over this image in opaque panels, so the
+layout is fixed and has been measured:
+- Crop in **close**: one subject, filling the frame from side to side.
+  Never a whole figure standing in a landscape, never an object laid out on a table.
+- **A strip of bare paper across the very top, between an eighth and a sixth of the height, and
+  no more than that.** No head, no helmet, no horns, no weapon, no hand, no banner enters it, and
+  it is a narrow strip rather than an empty upper third.
+- **All of the dark lives in the band from an eighth of the height down to just under halfway**,
+  and it begins immediately under the bare strip with nothing empty between the two. The
+  near-black contour, the deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
+  the picture actually happens.
+- **Below the halfway line the picture goes pale** and stays pale: the wash thins out, the ground
+  falls away to bare paper, and there is no dark mass down there at all. The card prints its rules
+  across that half, so that half has to be the quiet one.
+- Together those two make the test: **the picture must still read with its bottom half covered.**
+  Cover it in your head and check before you call it done.
+- **If the subject is taller than that band, CROP it rather than shrink it.** A bow, a raised
+  arm, a spear, a standing figure: the frame cuts through it and the part that matters stays in
+  the band. Never fit a tall thing in by making it small, and never let its top reach into the
+  bare strip to get all of it in.
+- ONE subject. A silhouette that still reads at **128 pixels wide**, which is the smallest size a
+  card is drawn at in this game.
+
+PALETTE.
+- Line and darks: **#1b1714**
+- Paper and lights: **#f4efe6**
+- Mid tone: **#c9bda8**
+- One chromatic accent only: **#a3655d**, a warm brick red. Use it on the
+  one thing the picture is about, and nowhere else.
+  **The accent is one small object's worth of colour and no more** -- a single
+  ribbon, a single flame, one stone set in a ring. Never the light, never the wash, never
+  the ground, never the sky, never a glow and never a whole figure: those are all the warm
+  neutral of the paper and the ink.
+- Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
+  Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
+  here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
+
+PEOPLE.
+- **Where a person is drawn, decide who they are rather than defaulting.** This is a port city on
+  a trade road: the people in the set are Black, brown, Levantine, Persian, South and East Asian,
+  Mediterranean and northern-pale in roughly the proportions a crowd there would be, and women
+  are as common in it as men. A sepia palette is not a statement about skin -- warm ink renders
+  every complexion, and a deck in which every figure is the same pale man is a failure of the
+  drawing and not of the paper.
+- Nothing here asks for a particular face unless the subject says so in words, and where it does
+  say so -- a named sex, an ancestry, an age -- that is binding.
+
+STYLE.
+Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
+with a loaded brush; then large soft washes for the mass; then generous untouched paper where the
+light falls. Loose and economical -- a few strokes doing the work of many. Visible bleed and
+granulation where a wash pools, dry-brush where it runs out.
+
+Three things this style does wrong at card size, and must not do here:
+- **Never neutral grey.** Every wash is warm: sepia, bistre, burnt earth. If a passage reads as
+  grey it is wrong.
+- **Never soft all over.** The contour is near-black #1b1714 and holds a hard edge. Only the
+  washes are soft. A picture with no true black in it has failed.
+- **Never evenly toned.** The darkest mass must sit directly against untouched paper, so the
+  subject separates from the ground in one glance at thumbnail size.
+
+Use the full range, both ends of it:
+- The lightest passage is **bare #f4efe6 paper, near white**, and there is a lot of it.
+- The darkest line is **near-black #1b1714**, and the two touch each other somewhere.
+- A picture whose every value sits between those ends is the failure above, however warm and
+  however well drawn. Mid tone is the background, not the picture.
+```
+
+</details>
+
+### Blessed
+
+File: `conditions/blessed.webp`
+
+```text
+SUBJECT. "Blessed" — A thin shaft of outside light falling across a worn stone floor: one bright edge, and no source anywhere in the frame.
+
+Draw the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol.
+```
+
+### Burdened
+
+File: `conditions/burdened.webp`
+
+```text
+SUBJECT. "Burdened" — A pack strap biting into a dropped shoulder, the cloth bunched where it has pulled. No face and no pack -- strap, shoulder, and the dent.
+
+Draw the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol.
+```
+
+### Burning
+
+File: `conditions/burning.webp`
+
+```text
+SUBJECT. "Burning" — Heavy cloth catching: one corner curling black, the flame eating inward along a line. No figure, no torch, no pyre -- fabric and the edge of the burn.
+
+Draw the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol.
+```
+
+### Compelled
+
+File: `conditions/compelled.webp`
+
+```text
+SUBJECT. "Compelled" — One string running from the top of the frame down to a wrist, taut, the hand at the end of it already turning. Nothing above the string.
+
+Draw the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol.
+```
+
+### Cursed
+
+File: `conditions/cursed.webp`
+
+```text
+SUBJECT. "Cursed" — A hairline crack running the full height of a plain stone, fine at the top and open at the bottom. Nothing else on the stone.
+
+Draw the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol.
+```
+
+### Dazed
+
+File: `conditions/dazed.webp`
+
+```text
+SUBJECT. "Dazed" — A struck bell still moving, seen side-on, the ring drawn as doubled edges around the rim. No head, no face, no stars.
+
+Draw the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol.
+```
+
+### Disarmed
+
+File: `conditions/disarmed.webp`
+
+```text
+SUBJECT. "Disarmed" — A sword hilt-down in the dirt where it fell and still rocking, with the open hand that dropped it at the top edge of the frame.
+
+Draw the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol.
+```
+
+### Exposed
+
+File: `conditions/exposed.webp`
+
+```text
+SUBJECT. "Exposed" — A breastplate strap cut through, the ends hanging apart, the plate swinging away from what it covered. The body only as the shape it is leaving.
+
+Draw the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol.
+```
+
+### Frozen
+
+File: `conditions/frozen.webp`
+
+```text
+SUBJECT. "Frozen" — A boot taken into a sheet of grey ice, the ice risen past the ankle and holding it. Cut off at the shin; nothing above.
+
+Draw the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol.
+```
+
+### Grappled
+
+File: `conditions/grappled.webp`
+
+```text
+SUBJECT. "Grappled" — Two hands locked around one forearm from opposite sides, gripping hard enough to mark it. Hands and arm only; no faces and no bodies.
+
+Draw the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol.
+```
+
+### Graven
+
+File: `conditions/graven.webp`
+
+```text
+SUBJECT. "Graven" — Fresh ink worked into a forearm, the lines raised and the skin still angry around them. Close enough that it is skin and ink and nothing else.
+
+Draw the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol.
+```
+
+### Halted
+
+File: `conditions/halted.webp`
+
+```text
+SUBJECT. "Halted" — An hourglass lying on its side on bare ground, both bulbs half full and nothing moving between them. No sand falling, no hand, no table.
+
+Draw the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol.
+```
+
+### Heckled
+
+File: `conditions/heckled.webp`
+
+```text
+SUBJECT. "Heckled" — A thumb turned down at the end of a bare arm thrust in from the frame's edge, drawn large and crude. Whoever it belongs to is not in the picture.
+
+Draw the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol.
+```
+
+### Invisible
+
+File: `conditions/invisible.webp`
+
+```text
+SUBJECT. "Invisible" — A doorway with wet footprints coming through it and stopping, the last pair only half printed. Nobody in the frame.
+
+Draw the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol.
+```
+
+### Judged
+
+File: `conditions/judged.webp`
+
+```text
+SUBJECT. "Judged" — A pair of hand-scales hanging still with one pan lower than the other, against bare paper. Nothing in either pan.
+
+Draw the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol.
+```
+
+### Marked
+
+File: `conditions/marked.webp`
+
+```text
+SUBJECT. "Marked" — A chalk cross on a plain wooden door, drawn fast and recently, the dust still on the boards beneath it.
+
+Draw the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol.
+```
+
+### Off-Balance
+
+File: `conditions/off-balance.webp`
+
+```text
+SUBJECT. "Off-Balance" — One foot caught on a raised root, the heel already lifting and the weight gone past where it can be recovered. Below the knee only.
+
+Draw the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol.
+```
+
+### Overloaded
+
+File: `conditions/overloaded.webp`
+
+```text
+SUBJECT. "Overloaded" — A pack that has given way: the bottom seam split, its contents going into the dirt. From behind and below, nothing identifiable in what falls.
+
+Draw the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol.
+```
+
+### Poisoned
+
+File: `conditions/poisoned.webp`
+
+```text
+SUBJECT. "Poisoned" — A shallow bowl tipped over on the ground, a dark residue running out of it in one slow line. Nothing drinking, nobody holding it.
+
+Draw the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol.
+```
+
+### Prone
+
+File: `conditions/prone.webp`
+
+```text
+SUBJECT. "Prone" — Ground seen from very low down: a scatter of grit at eye height and the horizon near the top edge. The viewer is the one who is down.
+
+Draw the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol.
+```
+
+### Silenced
+
+File: `conditions/silenced.webp`
+
+```text
+SUBJECT. "Silenced" — A mouth closed in the middle of a word -- nothing but lips and jaw, with a single stroke sealing the line of them. No gag, no hand, no cross.
+
+Draw the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol.
+```
+
+### Slowed
+
+File: `conditions/slowed.webp`
+
+```text
+SUBJECT. "Slowed" — Thick mud closing over the print of one boot, the print already losing its shape. The foot has gone; the hole it made is what is left.
+
+Draw the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol.
+```
+
+### Stunned
+
+File: `conditions/stunned.webp`
+
+```text
+SUBJECT. "Stunned" — An open hand falling away from a grip it has lost, fingers still curled to the shape of what they held. The thing itself is out of frame below.
+
+Draw the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol.
+```
+
+### Unconscious
+
+File: `conditions/unconscious.webp`
+
+```text
+SUBJECT. "Unconscious" — An open hand lying palm-up on the ground, fingers slack and apart, the arm running out of frame. Still, and not dead.
+
+Draw the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol.
+```
+
+### Wet
+
+File: `conditions/wet.webp`
+
+```text
+SUBJECT. "Wet" — Water running off a flat surface in one sheet, the last of it beading along the lower edge. No rain, no vessel, no figure.
+
+Draw the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol.
+```
+
 ## Features
 
 **14 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/features/`.
@@ -9847,7 +10187,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 
 ## Where prompts still repeat
 
-**176 prompts in 33 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
+**201 prompts in 34 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
 
 **10 of those clusters are the ones that bite**, listed first: the ones where the subject line carries no prose either, so neither half of the prompt tells the cards apart. The rest share a direction over subjects that already differ — forty-three consumables drawing a nearly-empty vessel still come back as forty-three different pictures, because each subject names its own.
 
@@ -9874,6 +10214,7 @@ Answer a cluster by adding its keys to `DIRECTION` in `test/art-prompts.mjs` and
 | **4** | 1 | a thing that says who somebody is before they speak | `items/fine-clothes` `items/gaming-set` `items/signet-ring` `items/travelling-cloak` |
 | **3** | 1 | worn unevenly, and the wear is the subject | `items/boots-of-the-long-step` `items/hollow-boots` `items/pilgrims-shoes` |
 | **2** | 1 | pulled toward something against the will | `cards/starter/taunt` `signatures/strength/play-to-the-crowd` |
+| **25** | — | the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol | `conditions/blessed` `conditions/burdened` `conditions/burning` `conditions/compelled` `conditions/cursed` …+20 |
 | **11** | — |  | `backs/action` `backs/fate` `backs/ritual` `backs/skill` `backs/item` …+6 |
 | **6** | — | one hand's worth of object, drawn close and large | `items/accusers-ring` `items/gamblers-coin` `items/mnemonic-stone` `items/pact-iron` `items/serpents-tooth-ring` …+1 |
 | **6** | — | hung on a cord and drawn hanging, turned off square | `items/amulet-of-the-mended-thread` `items/gag-of-the-nine` `items/gorget-of-the-turned-blade` `items/hourglass-charm` `items/surgeons-pin` …+1 |

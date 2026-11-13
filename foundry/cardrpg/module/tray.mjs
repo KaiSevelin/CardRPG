@@ -20,6 +20,7 @@ import { CARDRPG } from "./config.mjs";
 import { CARD_BLURBS } from "./content.mjs";
 import {
   deckOf, discardCards, retireCards, catchBreath, canCatchBreath, refill, cardName, artOf,
+  conditionArt,
   dealSkillHand, discardSkillCards, pileBack, backOf,
   isReserved, reserveCard, reserveHand, uprightCards, isIntruder, intruderLine
 } from "./decks.mjs";
@@ -512,6 +513,8 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
           id: `condition.${c.key}`,
           name: game.i18n.localize(rule.label ?? c.key),
           icon: rule.icon,
+          /* Keyed, because a condition has no document to carry an `img`. */
+          art: conditionArt(c.key),
           slate: true,
           fixed: true,
           condition: true,
@@ -1053,6 +1056,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
           id: `condition-${index}`,
           name: game.i18n.localize(cfg.label ?? c.key),
           icon: cfg.icon,
+          art: conditionArt(c.key),
           harm: true,
           passive: true,
           lines: [

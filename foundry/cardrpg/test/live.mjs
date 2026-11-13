@@ -796,6 +796,56 @@ async function probes(page) {
   });
 
   /*
+   * **A condition is a card, and it had nothing on it.**  **[BUILT 2026-11-13]**
+   *
+   * Twenty-five of them, face up on the table all fight under a duration counting down, and they
+   * were on no art shelf at all -- so the brief reported every piece in the game drawn while the
+   * cards a player reads most often were blank paper with a word on them.
+   *
+   * A condition is the one card with no document behind it: it is a record on the actor read
+   * against `CARDRPG.conditions`, so there is no `img` for `artOf` to find and nothing for
+   * `artIn` to be handed. The path is resolved from the key instead, and this is the probe that
+   * says the resolution survives the trip through the template -- which is exactly the half that
+   * source-reading cannot answer.
+   *
+   * **It does not ask the server for the file**, and that is deliberate rather than lax: the
+   * shelf is commissioned and not yet shot, so all twenty-five 404 by design and the brief says
+   * so out loud. `art/conditions/` is dropped from the missing set below for the same reason.
+   * **Both of those go when the shelf is drawn**, and the suite will then hold the pictures to
+   * the same standard as every other shelf.
+   */
+  await probe("a condition wears a picture", async () => {
+    await settle(page);
+    const rows = await page.evaluate(async () => {
+      const { hero } = LIVE;
+      await LIVE.resolveCondition(hero, {
+        step: { condition: "dazed", duration: 3 }, target: hero
+      });
+      await game.cardrpg.openTray(hero);
+      /* The tray re-renders off the update; give the application its frame. */
+      await new Promise(r => setTimeout(r, 400));
+      const card = [...document.querySelectorAll(".cr-card--condition")][0];
+      const art = card ? getComputedStyle(card).getPropertyValue("--cr-art").trim() : "";
+      const url = art.replace(/^url\(['"]?/, "").replace(/['"]?\)$/, "");
+      const every = Object.keys(LIVE.CARDRPG.conditions).map(k => LIVE.conditionArt(k));
+      return [
+        ["the condition landed and is on a card", !!card, true],
+        ["the card names a picture", url.includes("art/conditions/") ? "yes" : url || "nothing",
+          "yes"],
+        ["absolute from the server root, not from the stylesheet",
+          url.startsWith("/") ? "yes" : "no", "yes"],
+        ["and it is this condition's own", url.endsWith("/dazed.webp") ? "yes" : url, "yes"],
+        ["every condition in the game has one", every.filter(Boolean).length,
+          Object.keys(LIVE.CARDRPG.conditions).length],
+        ["and no two of them share a file", new Set(every).size, every.length]
+      ];
+    });
+    /* Put the hero back as it was found, or every probe after this one is reading a Dazed hero. */
+    await page.evaluate(() => LIVE.hero.update({ "system.conditions": [] }));
+    return rows;
+  });
+
+  /*
    * **And the decks fit on the scene.**  **[FIXED 2026-11-13]**
    *
    * The two columns are anchored from opposite ends -- the piles from the top, the action deck
@@ -1101,6 +1151,13 @@ try {
   /* Foundry refuses to render below 1366x768 and says so rather than guessing. */
   const page = await browser.newPage({ viewport: { width: 1600, height: 900 } });
   page.on("response", r => {
+    /*
+     * **One shelf is commissioned and not yet shot**, which is a different state from a path that
+     * is wrong -- the brief counts all twenty-five as still to shoot and names them one by one.
+     * **Delete this clause the day `art/conditions/` is drawn**, and the shelf is held to the
+     * same 200 as every other picture in the game.
+     */
+    if (r.url().includes("/art/conditions/")) return;
     if (r.status() >= 400) missing.add(`${r.status()} ${r.url().split(`:${PORT}`).pop()}`);
   });
   await page.addInitScript(() => {

@@ -6,7 +6,7 @@
  */
 
 import { DECK_BACKS } from "../content.mjs";
-import { artPathOf, backPath } from "../art.mjs";
+import { artPathOf, backPath, CONDITION_PIECES } from "../art.mjs";
 
 /**
  * The art on a card or a slate, or nothing.
@@ -64,6 +64,25 @@ export function artIn(def) {
  */
 export function backOf(key) {
   const art = DECK_BACKS[key] ? DECK_BACKS[key].art || backPath(key) : "";
+  return art && !art.startsWith("icons/svg/") ? art : "";
+}
+
+/**
+ * **The picture on a condition, by its key.**  [BUILT 2026-11-13]
+ *
+ * A condition is the one card in the game with no document behind it: it is a record on the
+ * actor's system data read against `CARDRPG.conditions`, so there is no `img` slot for `artOf` to
+ * look in and no definition for `artIn` to be handed. The key is all the tray has, and the key is
+ * all this needs.
+ *
+ * Resolved through the shelf rather than by spelling the directory out, so a condition's picture
+ * is named in exactly one place and the brief commissioning it cannot disagree with the game
+ * asking for it.
+ */
+const CONDITION_ART = new Map(CONDITION_PIECES.map(p => [p.key, artPathOf(p)]));
+
+export function conditionArt(key) {
+  const art = CONDITION_ART.get(key) ?? "";
   return art && !art.startsWith("icons/svg/") ? art : "";
 }
 

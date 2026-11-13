@@ -2260,12 +2260,21 @@ function motifsFor(entry, group) {
    * else to say is an object; a feature with nothing else to say is a QUALITY -- *Tough*,
    * *Alert*, *Nothing Gets Through* -- and asking for "the thing itself, lit from one side" got
    * twenty-eight prompts asking for a photograph of a character trait.
+   *
+   * **And a condition is neither, which the two-way version got exactly backwards.** It fell to
+   * the quality branch and asked all twenty-five for *the person it describes* -- the one thing
+   * this shelf must never draw, because one picture serves a goblin, a dragon and the player.
+   * A condition is a STATE and what can be drawn of it is the evidence it left.
    */
   if (!out.length && group.kind !== "token" && !flavourOf(entry)) {
     out.push(group.dir.startsWith("items")
       ? "the thing itself, lit from one side, nothing holding it and nothing behind it"
-      : "the quality itself as one human moment -- the person it describes, caught in the second "
-        + "that proves it. No object held up, no symbol, no emblem");
+      : group.dir === "conditions"
+        ? "the evidence of it and not the person under it -- one object, one mark or one gesture, "
+          + "with the body out of frame or cropped to a limb. No face, and nothing held up as a "
+          + "symbol"
+        : "the quality itself as one human moment -- the person it describes, caught in the second "
+          + "that proves it. No object held up, no symbol, no emblem");
   }
   return [...new Set(out)].slice(0, 3);
 }
@@ -2301,6 +2310,13 @@ const FRAME = {
   "cards/npc": "Face-up on the table during a fight, and seen behind a goblin, a troll and a "
     + "dragon alike. Draw the **shape of the move**, never a portrait of who is making it: "
     + "*Close In* is a thing closing in.",
+  /*
+   * **The intent deck's constraint, arrived at from the other direction.** A condition lands on
+   * a goblin, a dragon and the player, so the sufferer cannot be in the frame -- and unlike an
+   * intent, which is at least an action somebody is taking, a condition is a state. Draw what
+   * the state left behind.
+   */
+  "conditions": "On the table all fight, face up under a duration that is counting down. Draw **the condition and never who has it**: one picture serves a goblin, a dragon and the player alike, so the body stays out of frame or is cropped to a limb. An object, a mark or a gesture -- the evidence, not the victim.",
   "cards/shade": "A Way of Shade card: low light, cover, and the moment before being noticed.",
   "cards/strength": "A Way of Strength card: mass, leverage, and weight already moving.",
   "cards/way": "Written for the reach weapons and shared between Ways, so no Way's colour.",
