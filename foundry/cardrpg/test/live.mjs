@@ -808,11 +808,9 @@ async function probes(page) {
    * says the resolution survives the trip through the template -- which is exactly the half that
    * source-reading cannot answer.
    *
-   * **It does not ask the server for the file**, and that is deliberate rather than lax: the
-   * shelf is commissioned and not yet shot, so all twenty-five 404 by design and the brief says
-   * so out loud. `art/conditions/` is dropped from the missing set below for the same reason.
-   * **Both of those go when the shelf is drawn**, and the suite will then hold the pictures to
-   * the same standard as every other shelf.
+   * **Drawn as of 2026-11-13**, so it asks the server for the files like every other shelf. The
+   * two allowances this probe shipped with -- no fetch here, and `art/conditions/` dropped from
+   * the missing set -- are gone with the commission that justified them.
    */
   await probe("a condition wears a picture", async () => {
     await settle(page);
@@ -828,6 +826,10 @@ async function probes(page) {
       const art = card ? getComputedStyle(card).getPropertyValue("--cr-art").trim() : "";
       const url = art.replace(/^url\(['"]?/, "").replace(/['"]?\)$/, "");
       const every = Object.keys(LIVE.CARDRPG.conditions).map(k => LIVE.conditionArt(k));
+      /* Every one of them, not only the one on screen: a condition nobody happens to be carrying
+       * during this run is still a card somebody will draw tonight. */
+      const codes = await Promise.all(every.map(p => fetch(foundry.utils.getRoute(p),
+        { method: "HEAD" }).then(r => r.status).catch(() => 0)));
       return [
         ["the condition landed and is on a card", !!card, true],
         ["the card names a picture", url.includes("art/conditions/") ? "yes" : url || "nothing",
@@ -837,7 +839,8 @@ async function probes(page) {
         ["and it is this condition's own", url.endsWith("/dazed.webp") ? "yes" : url, "yes"],
         ["every condition in the game has one", every.filter(Boolean).length,
           Object.keys(LIVE.CARDRPG.conditions).length],
-        ["and no two of them share a file", new Set(every).size, every.length]
+        ["and no two of them share a file", new Set(every).size, every.length],
+        ["and the server serves every one", [...new Set(codes)].join(","), "200"]
       ];
     });
     /* Put the hero back as it was found, or every probe after this one is reading a Dazed hero. */
@@ -1151,13 +1154,6 @@ try {
   /* Foundry refuses to render below 1366x768 and says so rather than guessing. */
   const page = await browser.newPage({ viewport: { width: 1600, height: 900 } });
   page.on("response", r => {
-    /*
-     * **One shelf is commissioned and not yet shot**, which is a different state from a path that
-     * is wrong -- the brief counts all twenty-five as still to shoot and names them one by one.
-     * **Delete this clause the day `art/conditions/` is drawn**, and the shelf is held to the
-     * same 200 as every other picture in the game.
-     */
-    if (r.url().includes("/art/conditions/")) return;
     if (r.status() >= 400) missing.add(`${r.status()} ${r.url().split(`:${PORT}`).pop()}`);
   });
   await page.addInitScript(() => {

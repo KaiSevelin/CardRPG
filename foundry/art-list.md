@@ -1,6 +1,6 @@
 # Art list
 
-**667 pieces**, of which **666** are drawn and **1** still to shoot. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
+**667 pieces**, of which **667** are drawn and **0** still to shoot. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
 
 ## What to supply
 
@@ -591,14 +591,14 @@ Twelve gods' lesser miracles, handed over by minor nodes.
 
 **Draw the condition and never the sufferer.** One picture serves a goblin, a dragon and the player, so a figure in the frame is the wrong figure for three quarters of the table — the same constraint the intent deck works under. Each of these is one object or one gesture, close, with the body kept out or cropped to a limb. It is also the only way twenty-five of them do not arrive as twenty-five people pulling faces.
 
-**25 pieces**, 24 wired up. Suggested path: `cardrpg/art/conditions/`
+**25 pieces**, 25 wired up. Suggested path: `cardrpg/art/conditions/`
 
 | | Name | What it is | File |
 |---|---|---|---|
 | ✓ | **Blessed** | A thin shaft of outside light falling across a worn stone floor: one bright edge, and no source anywhere in the frame. | `conditions/blessed.webp` |
 | ✓ | **Burdened** | A pack strap biting into a dropped shoulder, the cloth bunched where it has pulled. No face and no pack -- strap, shoulder, and the dent. | `conditions/burdened.webp` |
 | ✓ | **Burning** | Heavy cloth catching: one corner curling black, the flame eating inward along a line. No figure, no torch, no pyre -- fabric and the edge of the burn. | `conditions/burning.webp` |
-|   | **Compelled** | A line of footprints in dust turning hard mid-stride: the last two face a way the first three were not going. No figure, no cord, no hand. | `conditions/compelled.webp` |
+| ✓ | **Compelled** | A line of footprints in dust turning hard mid-stride: the last two face a way the first three were not going. No figure, no cord, no hand. | `conditions/compelled.webp` |
 | ✓ | **Cursed** | A hairline crack running the full height of a plain stone, fine at the top and open at the bottom. Nothing else on the stone. | `conditions/cursed.webp` |
 | ✓ | **Dazed** | A struck bell still moving, seen side-on, the ring drawn as doubled edges around the rim. No head, no face, no stars. | `conditions/dazed.webp` |
 | ✓ | **Disarmed** | A sword hilt-down in the dirt where it fell and still rocking, with the open hand that dropped it at the top edge of the frame. | `conditions/disarmed.webp` |
