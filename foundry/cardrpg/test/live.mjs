@@ -826,6 +826,38 @@ async function probes(page) {
   });
 
   /*
+   * **And the names in the play panel are readable.**  **[FIXED 2026-11-13]**
+   *
+   * Two buttons in a 90px row left 30px for a name needing 54, so the panel read *den Sl* and
+   * *ngswc*. Measured at 1366x768, where a card is at its smallest and the fault is at its worst.
+   */
+  await probe("the played items name themselves", async () => {
+    await page.setViewportSize({ width: 1366, height: 768 });
+    await settle(page);
+    await page.evaluate(() => game.cardrpg.openTray(LIVE.hero));
+    await page.waitForSelector(".cr-hud__play .cr-card__title", { timeout: 20000 });
+    const rows = await page.evaluate(() => {
+      const titles = [...document.querySelectorAll(".cr-hud__play .cr-card__title")];
+      /*
+       * **Both directions.** Width alone passed a name that had been allowed to wrap inside a
+       * 30px column and was then clipped from below -- `ong` over `swor`, which measures as
+       * fitting horizontally and is not readable by anybody.
+       */
+      const cut = titles.filter(t => t.scrollWidth > t.clientWidth + 1)
+        .map(t => t.textContent.trim());
+      const squashed = titles.filter(t => t.scrollHeight > t.clientHeight + 1)
+        .map(t => t.textContent.trim());
+      return [
+        ["the panel names what is played", titles.length > 0, true],
+        ["and no name is cut off at the side", cut.join(", ") || "none", "none"],
+        ["nor clipped from below", squashed.join(", ") || "none", "none"]
+      ];
+    });
+    await page.setViewportSize({ width: 1600, height: 900 });
+    return rows;
+  });
+
+  /*
    * **The character sheet, which had three faults nobody could see from the source.**
    * **[FIXED 2026-11-13]**
    *

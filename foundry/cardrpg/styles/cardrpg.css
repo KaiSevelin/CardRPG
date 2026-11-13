@@ -1298,6 +1298,44 @@
   overflow: hidden;
 }
 /*
+ * **A name you can read, which that 26px strip did not leave room for.**  **[FIXED 2026-11-13]**
+ *
+ * A stacked card is about 100px wide; its name row holds an icon, the name, a move arrow and a
+ * flip button, and the two buttons took 40 of the 81 usable pixels. *Wooden Shield* needs 54 and
+ * was given 30, so what the player read was four characters and no ellipsis worth having. The
+ * narrower the window, the worse it got, because the card scales with it.
+ *
+ * **The cards behind lose their buttons**, and lose nothing by it: everything but that strip is
+ * covered by the card in front, so those controls were already unclickable. Clicking the name
+ * brings a card to the front -- which the title's own tooltip has always said -- and the controls
+ * are there when it arrives. A button you cannot press is not a feature the name should be
+ * shortened for.
+ */
+.cardrpg .cr-card--stacked:not(:last-child) .cr-card__half,
+.cardrpg .cr-card--stacked:not(:last-child) .cr-card__flip { display: none; }
+/*
+ * **And the front card's name may use two lines**, because nothing is stacked on top of it to
+ * cover the second one. The fixed height above exists so a card BEHIND shows exactly one row and
+ * the next card starts 26px down; the front card is the end of the stack and owes that to nobody.
+ */
+.cardrpg .cr-card--stacked:last-child .cr-card__name {
+  height: auto;
+  min-height: 26px;
+  white-space: normal;
+  flex-wrap: wrap;
+}
+/*
+ * **The whole line, and the buttons wrap under it.** Letting the name merely *wrap* was not
+ * enough: it still had the 30px the two buttons left it, so *Longsword* wrapped inside that
+ * column and came out as `ong` over `swor`. A name that has to share its line with two controls
+ * on a 100px card cannot be read, so on the one card that has room below it, it does not share.
+ */
+.cardrpg .cr-card--stacked:last-child .cr-card__title {
+  flex: 1 1 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+/*
  * The name is its own control: clicking it turns the stack to that card, so a card behind can be
  * read without being taken out. It still has to look like a title, not a button.
  */
