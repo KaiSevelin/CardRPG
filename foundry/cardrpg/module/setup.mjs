@@ -9,7 +9,8 @@
 import { CARDRPG } from "./config.mjs";
 /* The one shape a skill card takes, shared with anything that grants one rather than spelled here. */
 import {
-  actionCardData, skillCardData, twistCardData, critCardData, npcCardData, backOf, artIn
+  actionCardData, skillCardData, twistCardData, critCardData, npcCardData, backOf, artIn,
+  artOf
 } from "./decks.mjs";
 /* A deck is the subset of the pool a creature's capabilities earn, and a variant is a delta from
  * its base. Both are arithmetic, and both live where the validator can ask them. */
@@ -215,6 +216,51 @@ export function slateData(entry, type) {
 /* -------------------------------------------- */
 
 /**
+ * **Give every slate in the world the picture the catalogue says it has.**  [BUILT 2026-11-13]
+ *
+ * The decks learned to come back in line and the slates never did. `createStarterContent` finds a
+ * slate by its tag and **reuses it verbatim**, for ever -- which was right while a slate's content
+ * was only ever authored once, and became wrong the day art was wired up: every Item, feature and
+ * spell made before that day kept the empty `img` it was born with, and so did every copy embedded
+ * on an actor. A world could be rebuilt from scratch or stay blank, and nothing in between.
+ *
+ * Measured rather than suspected: `0 of 5` pieces of the hero's gear named a picture, with the
+ * files sitting in `art/items/` and the pack sources carrying the path correctly.
+ *
+ * **Only an empty slot is filled**, which is what makes this safe to run on a world somebody has
+ * been playing in. `artOf`'s guard is the test for empty -- no path, or one of core's `icons/svg/`
+ * placeholders -- so a picture a GM chose by hand is never overwritten by the one the rule would
+ * have named. Art is the only field repaired here for the same reason: it is **derived** from the
+ * name and the shelf, so there is no edit of a player's to lose. Nothing else about a slate is.
+ *
+ * Both halves of the world are walked, because a slate lives in two places at once: the world Item
+ * a GM drags from, and the embedded copy that drag made. Repairing only the first would leave
+ * every character sheet exactly as blank as it was.
+ */
+async function resyncArt(want) {
+  /* Keyed on type AND name, because six names in the book belong to two pieces each (art.mjs
+   * keeps the list) and a feature wearing an item's picture is worse than wearing none. */
+  const fill = doc => {
+    const img = want.get(`${doc.type}:${doc.name}`);
+    return img && !artOf(doc) ? { _id: doc.id, img } : null;
+  };
+  let repaired = 0;
+
+  const world = game.items.contents.map(fill).filter(Boolean);
+  if (world.length) {
+    await Item.updateDocuments(world);
+    repaired += world.length;
+  }
+  for (const actor of game.actors.contents) {
+    const mine = actor.items.contents.map(fill).filter(Boolean);
+    if (!mine.length) continue;
+    await actor.updateEmbeddedDocuments("Item", mine);
+    repaired += mine.length;
+  }
+  return repaired;
+}
+
+/**
  * Create the starter Warrior, the goblins, their decks and all the slates.
  *
  * **Safe to run twice, and worth running twice.** Anything already stamped is found rather than
@@ -232,7 +278,7 @@ export async function createStarterContent() {
   /* `decks` was missing from here and `made.decks += 2` has been adding 2 to `undefined` ever
    * since -- NaN, in a field nothing printed. It is printed now, which is the only reason anybody
    * would have noticed. */
-  const made = { cards: 0, actors: 0, slates: 0, reused: 0, decks: 0 };
+  const made = { cards: 0, actors: 0, slates: 0, reused: 0, decks: 0, pictures: 0 };
   for (const key of Object.keys(resynced)) resynced[key].length = 0;
   const note = msg => console.log(`Card RPG | ${msg}`);
 
@@ -359,6 +405,13 @@ export async function createStarterContent() {
     }
   }
   note(`slates ready (${made.slates} new, ${made.reused} reused)`);
+
+  /* Every name the catalogue has a picture for, which is also every name a stale document could
+   * be carrying. Built from `slateDefs` rather than from content a second time, because these
+   * have already been through `slateData` and that is where the path is decided. */
+  made.pictures = await resyncArt(new Map(
+    slateDefs.filter(d => d.img).map(d => [`${d.type}:${d.name}`, d.img])));
+  if (made.pictures) note(`pictures restored to ${made.pictures} slates`);
 
   /* --- actors, with their slates embedded and their decks wired up --- */
   const buildActor = async (def, decks) => {
@@ -529,6 +582,7 @@ export async function createStarterContent() {
   }
   ui.notifications.info(
     `Card RPG: ${made.actors} actors and ${made.slates} slates created`
+    + (made.pictures ? `, ${made.pictures} slates given their picture` : "")
     + (resynced.rebuilt.length ? `, ${resynced.rebuilt.length} decks updated` : "")
     + (resynced.held.length
       ? `. ${resynced.held.length} decks still have cards in play and were left alone -- `

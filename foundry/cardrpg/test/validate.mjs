@@ -1468,7 +1468,16 @@ const unregistered = [...used].filter(a => !registered.has(a));
 check("actions used in templates", used.size, used.size);
 check("actions with no handler", unregistered.length ? unregistered.join(", ") : "none", "none");
 
-const css = fs.readFileSync(path.join(root, "styles", "cardrpg.css"), "utf8");
+/*
+ * **Spelled as one path so the auditor can see it.**  [2026-11-13]
+ *
+ * The declaration sweep below matches `path.join(root, "<one string>")`, and this was the
+ * only read in the suite written with the segments apart -- so every `.test(css)` in the file
+ * was invisible to the audit that catches a grep matching nothing. A retired CSS rule could
+ * be checked for and the check could be dead, and the suite that exists to notice that was
+ * not looking. One comma.
+ */
+const css = fs.readFileSync(path.join(root, "styles/cardrpg.css"), "utf8");
 // Each segment must end in a letter or digit, so a name built in the template -- "cr-half--{{...}}"
 // -- contributes the part that is actually written down and nothing more. The lookbehind keeps a
 // custom property out of it: "--cr-depth" is a variable the stylesheet reads, not a class.
@@ -2457,6 +2466,37 @@ check("and sets it before deciding what to do with the cards",
     ? "yes" : "no", "yes");
 check("and the run says which decks it left alone",
   /decks left alone, cards still in play/.test(setupSource) ? "yes" : "no", "yes");
+
+/*
+ * **And a SLATE's picture, which had no repair at all.**  **[FIXED 2026-11-13]**
+ *
+ * The decks learned to come back in line and the items never did: `createStarterContent` finds a
+ * slate by its tag and reuses it verbatim, so every Item, feature and spell made before art was
+ * wired up kept the blank `img` it was born with -- and so did every copy embedded on an actor.
+ * The live harness measured `0 of 5` on the hero's gear, with the files on disk and the pack
+ * sources naming them correctly. A world could be rebuilt from scratch or stay blank; there was
+ * nothing in between.
+ *
+ * Two clauses carry the whole safety argument and both are pinned. **Only an empty slot is
+ * filled** -- `artOf`'s guard is the test, so a picture a GM chose by hand is never overwritten.
+ * And **art is the only field touched**, because it is derived from the name and the shelf and so
+ * there is no edit of a player's to lose; nothing else about a slate is derived, which is why
+ * this is a repair and not a resync.
+ */
+check("a slate's picture is brought in line too",
+  /async function resyncArt\(want\) \{/.test(setupSource) ? "yes" : "no", "yes");
+check("and only where there is no picture already",
+  /return img && !artOf\(doc\) \? \{ _id: doc\.id, img \} : null;/
+    .test(setupSource) ? "yes" : "no", "yes");
+/* Both halves of the world: the Item a GM drags from, and the copy the drag made. Repairing only
+ * the first would leave every character sheet exactly as blank as it was. */
+check("in the world and on every actor",
+  /for \(const actor of game\.actors\.contents\)/.test(setupSource)
+    && /const world = game\.items\.contents\.map\(fill\)/.test(setupSource)
+    ? "yes" : "no", "yes");
+check("and the run says how many it repaired",
+  /pictures restored to \$\{made\.pictures\} slates/.test(setupSource) ? "yes" : "no",
+  "yes");
 check("the world builds the deck",
   /makeCards\("Wild Magic", "deck", "wild\.deck"/.test(setupSource) ? "yes" : "no", "yes");
 check("a Wild draw deals a surge",
@@ -10717,6 +10757,28 @@ check("and seven groups still differ by more than hue",
 check("the scrim is the paper colour",
   /--cardrpg-scrim: rgba\(244, 239, 230, 0\.86\)/.test(css) ? "yes" : "no", "yes");
 
+/*
+ * **How much of a picture reaches the eye.**  **[FIXED 2026-11-13]**
+ *
+ * The scrim above was laid on the name row, both halves, the front AND the back -- five boxes
+ * that tile a card between them -- so the ground under text was a lid over the whole thing and
+ * **86% of every drawing in the game was painted out**. Each of the four rules was defensible on
+ * its own; their product was not, and a product of alphas is not something a reader of CSS adds
+ * up. The live harness measures what survives; these two pin what it is measuring.
+ *
+ * The number is set by the worst case rather than by taste: ink over a 0.6 paper wash laid on a
+ * **black** pixel is 5.5:1, which is past AA for the 12px type a card is set in and is the
+ * darkest the art can be. Lower the wash and that contrast is what goes.
+ */
+check("one wash over the art, not four",
+  /background-image: linear-gradient\(var\(--cardrpg-wash\), var\(--cardrpg-wash\)\), var\(--cr-art, none\);/
+    .test(css) ? "yes" : "no", "yes");
+check("and it leaves most of the picture",
+  Number(/--cardrpg-wash: rgba\(244, 239, 230, ([\d.]+)\)/.exec(css)?.[1] ?? 1) <= 0.6, true);
+/* And the four that made the lid are gone, or the wash above is one layer of two again. */
+check("and no band paints a ground of its own",
+  /background: var\(--cardrpg-scrim\);/.test(css) ? "still there" : "gone", "gone");
+
 /* The graph: a Way per colour, four territories, and state in the border. */
 const paneSource = fs.readFileSync(path.join(root, "module/levelup.mjs"), "utf8");
 const wayBlock = /const WAY_COLOUR = \{([\s\S]*?)\n\};/.exec(paneSource)?.[1] ?? "";
@@ -15328,7 +15390,10 @@ readFiles.set("decksSource", decksSource);
  * dress a dialog the page generates. */
 /* 69 since 2026-11-13: `liveSource` and `packageJson`, which between them check that the live
  * harness is still a command anyone can run rather than a recipe nobody does. */
-check("files this suite greps by name", readFiles.size, 69);
+/* 70 since 2026-11-13: no new file, one comma. `css` was the only read in the suite spelled with
+ * its path in segments, so the sweep never saw it and every `.test(css)` in the file sat outside
+ * the audit -- including a check for a rule that had been retired. */
+check("files this suite greps by name", readFiles.size, 70);
 
 /* Every `/pattern/.test(VAR)` and `VAR.includes("...")`, with the check it belongs to. */
 const nameOfCheck = index => {
@@ -15422,6 +15487,7 @@ const absentGreps = [
   String.raw`and neither table still offers a choice :: ` + "`" + String.raw`\.webp` + "`"
     + String.raw` (?:preferred|or ` + "`" + String.raw`\.png` + "`" + `)`,
   String.raw`and never decides from adjacency itself :: \.after[\s\S]{0,60}\.(some|every)\(`,
+  String.raw`and no band paints a ground of its own :: background: var\(--cardrpg-scrim\);`,
   String.raw`and no caller is assumed to mean the action deck :: const deck = deckOf\(actor, "action"\);\s*\n\s*const parent = card\.parent;`,
   String.raw`and no deck writes an action card by hand any more :: faces: \[\{ name: def\.name \}\]`,
   String.raw`and no longer reads a spell as a source of bonus :: slate\.type === "spell" && slate\.system\.effect`,

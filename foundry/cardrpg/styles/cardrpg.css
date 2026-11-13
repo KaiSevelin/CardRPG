@@ -8,7 +8,25 @@
 .cardrpg {
   --cardrpg-ink: #1b1714;
   --cardrpg-paper: #f4efe6;
-  /* The ground under text on a card. The paper colour, so a card with no art looks unlayered. */
+  /*
+   * **What stands between the eye and the picture.**  [RE-PITCHED 2026-11-13]
+   *
+   * It was 0.86 and it was laid on every text band separately, which between them cover a card
+   * almost entirely -- so **14% of every picture in the game reached the screen**. The art is
+   * strong ink on cream and it read as a faint stain. Nothing in the source said so; the number
+   * that mattered was a composite of four rules nobody adds up by eye.
+   *
+   * One wash over the whole card now, and the bands are clear. The alpha is set by the worst case
+   * a reader can meet rather than by taste: ink (#1b1714, L 0.009) over a 0.6 paper wash laid on
+   * a **black** pixel composites to L 0.276, which is **5.5:1** -- past AA for the 12px type a
+   * card is set in, and that is the darkest the art can possibly be. 40% of the picture gets
+   * through instead of 14%.
+   */
+  --cardrpg-wash: rgba(244, 239, 230, 0.6);
+  /*
+   * The old scrim, kept for the one thing that is not a card face: a condition is furniture in a
+   * stack rather than a card in play, and it wants a flat faded ground with no art behind it.
+   */
   --cardrpg-scrim: rgba(244, 239, 230, 0.86);
   --cardrpg-rule: #c9bda8;
   --cardrpg-dim: #635a4b;
@@ -123,7 +141,13 @@
   overflow: hidden;
 
   background-color: var(--cardrpg-paper);
-  background-image: var(--cr-art, none);
+  /*
+   * **The wash is a layer of the card, not a lid on each band.** Over the art once, where it can
+   * be read as one number, instead of four rules that multiplied to near-opacity. With no art the
+   * layer is paper over paper and the card looks exactly as it did before there were pictures,
+   * which is the same promise the line below used to make.
+   */
+  background-image: linear-gradient(var(--cardrpg-wash), var(--cardrpg-wash)), var(--cr-art, none);
   /* Cover rather than contain: art is supplied at the card's own 5:7, so a crop is a rounding
      error and a letterbox would be two grey bars on every card in the game. */
   background-size: cover;
@@ -133,15 +157,14 @@
 }
 
 /*
- * The scrim. Text over art needs a ground, and the ground is the paper colour at 86% -- so a card
- * WITHOUT art shows a scrim the same colour as what is behind it and nothing looks layered.
+ * **The bands carry no ground of their own.**  [RETIRED 2026-11-13]
+ *
+ * Four selectors used to paint `--cardrpg-scrim` on the name row, both halves, the front and the
+ * back -- and those five boxes tile a card, so what looked like a ground under text was a lid
+ * over the whole thing. The ground is the card's own wash now, one layer deep and one number to
+ * reason about; the name row keeps its rule below it, which is what made it read as a band in the
+ * first place.
  */
-.cardrpg .cr-card__name,
-.cardrpg .cr-card .cr-half,
-.cardrpg .cr-card__front,
-.cardrpg .cr-card__back {
-  background: var(--cardrpg-scrim);
-}
 
 .cardrpg .cr-card__name {
   font-size: 0.75rem;

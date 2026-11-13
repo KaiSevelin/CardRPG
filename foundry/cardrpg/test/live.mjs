@@ -729,6 +729,73 @@ async function probes(page) {
   });
 
   /*
+   * **What a picture actually looks like once the page has drawn it.**  **[FIXED 2026-11-13]**
+   *
+   * Two complaints, and the source read correctly for both, which is the whole reason this probe
+   * exists.
+   *
+   * **The art was at 14%.** Four separate rules painted an 86% scrim on the name row, both halves,
+   * the front and the back -- five boxes that tile a card -- so what each rule called *a ground
+   * under text* multiplied into a lid. No single declaration was wrong and the product of them
+   * was: strong ink-on-cream drawings read as a faint stain. A composite of alphas is not a thing
+   * anybody checks by reading CSS, so it is measured here.
+   *
+   * **And the gear had no pictures at all: `0 of 5`.** Not a styling fault -- the documents were
+   * empty. Setup finds a slate by its tag and reuses it verbatim, so every Item made before art
+   * was wired up kept the blank `img` it was born with, along with every copy embedded on an
+   * actor. The decks had learned to come back in line; the slates had not.
+   */
+  await probe("the pictures reach the eye", async () => {
+    await settle(page);
+    await page.evaluate(() => game.cardrpg.openTray(LIVE.hero));
+    await page.waitForSelector(".cr-hud__play", { timeout: 20000 });
+    const rows = await page.evaluate(async () => {
+      const alphaOf = el => {
+        const m = getComputedStyle(el).backgroundColor
+          .match(/rgba?\(([^)]+)\)/);
+        if (!m) return 0;
+        const parts = m[1].split(",").map(Number);
+        return parts.length > 3 ? parts[3] : 1;
+      };
+      const artOn = el => getComputedStyle(el).getPropertyValue("--cr-art").trim();
+      const out = [];
+
+      // What is left of a picture after everything the card lays over it.
+      const faced = [...document.querySelectorAll(".cr-card")].filter(artOn);
+      /* A staged half is deliberately solid -- it inverts to say *this one is in the stack* -- so
+       * it is not a scrim and counting it would read as the fault this probe is about. */
+      const covered = faced.flatMap(card =>
+        [...card.querySelectorAll(".cr-card__name, .cr-half:not(.cr-half--staged),"
+          + " .cr-card__front, .cr-card__back")].map(alphaOf));
+      const worst = covered.length ? Math.max(...covered) : 0;
+      out.push(["a card on the scene carries a picture", faced.length > 0, true]);
+      /* A third is the floor, not the target: the wash is 0.6, which leaves 40%. The gap is
+       * there so a rule laid over a card in future has to be deliberate about it. */
+      out.push(["and at least a third of it is still visible",
+        (1 - worst) >= 0.33 ? "at least 33%" : `${Math.round((1 - worst) * 100)}%`,
+        "at least 33%"]);
+
+      // The gear. `img` is the field, `--cr-art` is what the page did with it.
+      const gear = LIVE.hero.items.filter(i => i.type === "item");
+      const withImg = gear.filter(i => LIVE.artOf(i));
+      out.push(["the hero carries gear at all", gear.length > 0, true]);
+      out.push(["and every piece of it names a picture", withImg.length, gear.length]);
+
+      const stacked = [...document.querySelectorAll(".cr-hud__play .cr-card--stacked")];
+      const named = stacked.filter(artOn);
+      out.push(["a card is staged in the play panel", stacked.length > 0, true]);
+      out.push(["and every one of them wears its picture", named.length, stacked.length]);
+
+      const urls = named.map(e => artOn(e).replace(/^url\(['"]?/, "").replace(/['"]?\)$/, ""));
+      const codes = await Promise.all(urls.map(u =>
+        fetch(u, { method: "HEAD" }).then(r => r.status).catch(() => 0)));
+      out.push(["and the server serves it", [...new Set(codes)].join(",") || "none", "200"]);
+      return out;
+    });
+    return rows;
+  });
+
+  /*
    * **And the decks fit on the scene.**  **[FIXED 2026-11-13]**
    *
    * The two columns are anchored from opposite ends -- the piles from the top, the action deck
@@ -982,6 +1049,33 @@ async function probes(page) {
   });
 }
 
+/**
+ * **A picture of what was just measured**, written when `--shot=<dir>` is given.
+ *
+ * Four of the faults this harness has caught were visual -- a 404'd back, two columns on top of
+ * each other, a name clipped to four characters, a picture at 14% -- and in every case the number
+ * that proved it was convincing only once a human had seen the thing. A probe says *a third of it
+ * is visible*; whether a third is enough is a question for an eye, so the harness can hand one
+ * over instead of describing it.
+ */
+async function shots(page, dir) {
+  fs.mkdirSync(dir, { recursive: true });
+  const save = async (name, sel) => {
+    const el = await page.$(sel);
+    if (!el) return;
+    await el.screenshot({ path: path.join(dir, `${name}.png`) });
+    console.log(`shot    : ${path.join(dir, `${name}.png`)}`);
+  };
+  await page.evaluate(() => game.cardrpg.openTray(LIVE.hero));
+  await page.waitForSelector(".cr-hud__hand", { timeout: 20000 });
+  await save("hand", ".cr-hud__hand");
+  await save("play", ".cr-hud__play");
+  await save("decks", ".cr-hud__decks--left");
+  await page.evaluate(() => LIVE.hero.sheet.render(true));
+  await page.waitForSelector(".cardrpg.sheet", { timeout: 20000 });
+  await save("sheet", ".cardrpg.sheet");
+}
+
 /* -------------------------------------------- */
 /*  Run                                         */
 /* -------------------------------------------- */
@@ -1019,6 +1113,7 @@ try {
   console.log(`Joined  : game.ready on attempt ${attempt}\n`);
 
   await probes(page);
+  if (arg("shot")) await shots(page, arg("shot"));
 
   const width = Math.max(...results.map(r => r.name.length));
   for (const { name, got, want } of results) {
