@@ -1466,8 +1466,6 @@
 
 .cr-levelup__who { display: flex; align-items: baseline; gap: 8px; }
 .cr-levelup__level { opacity: 0.75; font-size: 0.9em; }
-.cr-levelup__pending { margin-left: auto; font-weight: bold; color: #7fb2ef; }
-.cr-levelup__pending--none { color: #8d9099; font-weight: normal; }
 .cr-levelup__layout { display: flex; align-items: center; gap: 4px; font-size: 0.9em; }
 
 .cr-levelup__body {
@@ -1510,6 +1508,73 @@
 /* The irreversible half of a level-up, and the only thing on this panel printed in a warning colour. */
 .cr-levelup__closes { margin-top: 8px; color: #e08a8a; }
 
+/*
+ * **Stepping through the choices.**  [BUILT 2026-11-13]
+ *
+ * Above the panel rather than beside the Accept button, because it is navigation and not an
+ * action: the two arrows change what you are READING, and the button at the bottom is the one
+ * thing in this window that writes anything.
+ */
+.cr-levelup__choices {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.cr-levelup__choices button {
+  flex: 0 0 auto;
+  width: 28px;
+  padding: 0;
+  font-size: 1.1em;
+  line-height: 1.4;
+}
+.cr-levelup__choice-label {
+  flex: 1 1 auto;
+  text-align: center;
+  font-size: 0.9em;
+  opacity: 0.8;
+}
+/* Where you are in the list, which is the only thing that makes two arrows into navigation. */
+.cr-levelup__choice-at { font-variant-numeric: tabular-nums; }
+
+/*
+ * **The state, in words, at the top of the panel.** The map says it in colour and the map is
+ * behind whichever window is being read; a panel that describes a node without saying whether you
+ * can have it answers the second question before the first. Each state takes the swatch colour it
+ * already has in the legend, so the two cannot drift apart by eye.
+ */
+.cr-levelup__state {
+  margin: 0 0 6px;
+  font-size: 0.78em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.cr-levelup__state--owned { color: #7ab874; }
+.cr-levelup__state--available { color: #7fb2ef; }
+.cr-levelup__state--later { color: #8e96a3; }
+.cr-levelup__state--closed { color: #e08a8a; }
+/* Which prerequisite, or which sibling shut it. The colour is the state's; this is the detail. */
+.cr-levelup__why { margin: 0 0 8px; font-size: 0.9em; opacity: 0.85; }
+
+/*
+ * **What the node means**, which is authored and is the only prose in this panel. Indented off a
+ * rule so it reads as a quotation from the book rather than as another derived row -- every other
+ * line here is computed from the graph, and a player should be able to tell which is which.
+ */
+.cr-levelup__lore {
+  margin: 8px 0;
+  padding-left: 8px;
+  border-left: 2px solid var(--cardrpg-rule, #4a505a);
+  font-size: 0.92em;
+  opacity: 0.92;
+}
+.cr-levelup__lore p { margin: 0 0 6px; }
+.cr-levelup__lore p:last-child { margin-bottom: 0; }
+
+/* Where the edges eventually arrive. Quieter than `opens`, which is the next step and is certain. */
+.cr-levelup__leads { margin-top: 6px; font-size: 0.85em; opacity: 0.7; }
+
 .cr-levelup__actions { display: flex; gap: 6px; flex: 0 0 auto; }
 .cr-levelup__actions button { flex: 1 1 auto; }
 .cr-levelup__accept:disabled { opacity: 0.45; cursor: default; }
@@ -1536,8 +1601,6 @@
 /* Level and title on the sheet: a readout, because both are derived from the node list. */
 .cr-standing { display: flex; align-items: center; gap: 8px; }
 .cr-standing__title { opacity: 0.85; font-style: italic; }
-.cr-standing__grant { display: flex; gap: 2px; }
-.cr-standing__grant button { width: 1.6em; padding: 0; line-height: 1.4; }
 
 /* The Tactic: always on, never a number, and never something you can drop. */
 /* A god asks something of you for ever, and a lone god gives something back. Both are standing

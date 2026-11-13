@@ -63,7 +63,6 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       switchTab: CharacterSheet.#onTab,
       openTray: CharacterSheet.#onOpenTray,
       levelUp: CharacterSheet.#onLevelUp,
-      grantLevel: CharacterSheet.#onGrantLevel,
       dropNode: CharacterSheet.#onDropNode,
       toggleEquipped: CharacterSheet.#onToggleEquipped,
       toggleDrained: CharacterSheet.#onToggleDrained,
@@ -134,7 +133,6 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       config: CARDRPG,
       isGM: game.user.isGM,
 
-      pendingLevels: system.levels?.pending ?? 0,
       tab: this.tab,
       tabs: CharacterSheet.TAB_LIST.map(t => ({ ...t, active: t.id === this.tab })),
       onVitals: this.tab === "vitals",
@@ -357,16 +355,17 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   }
 
   /*
-   * rules/leveling.md 2: *the GM says when*. No experience points and no thresholds, so the only
-   * thing that can raise a pending level is a GM deciding one happened -- and until this control
-   * existed, the pane's Accept button could never light up for anyone.
+   * **Nothing here grants a level any more.**  [RETIRED 2026-11-13] A + and a - sat on every
+   * character sheet raising the award counter, which the level-up pane then spent. Counter and
+   * controls are both gone: leveling 2 says *the GM says when* and then *no experience points, no
+   * thresholds, **no tracking***, so a number on the milestone was the one piece of bookkeeping
+   * the rules had refused. It is a sentence at the table, and the pane accepts a marked node
+   * whenever one is marked. `takeNode` in graph.mjs carries the argument.
+   *
+   * The action name and the field are deliberately NOT written out above: a check greps this file
+   * for both, and a comment quoting what it forbids answers the grep with prose about itself.
+   * That has happened four times in this project and it is easier to walk into than it looks.
    */
-  static async #onGrantLevel(event, target) {
-    if (!game.user.isGM) return;
-    const by = Number(target.dataset.by ?? 1);
-    const now = this.document.system.levels?.pending ?? 0;
-    await this.document.update({ "system.levels.pending": Math.max(0, now + by) });
-  }
 
   /**
    * Take a node back off a character.
@@ -400,11 +399,14 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     });
     if (!ok) return;
 
-    await this.actor.update({
-      "system.nodes": nodes,
-      /* The level comes back, so correcting a mistake is not also a penalty for making it. */
-      "system.levels.pending": (this.actor.system.levels?.pending ?? 0) + 1
-    });
+    /*
+     * **Nothing is refunded, because there is nothing to refund.**  [2026-11-13] This used to hand
+     * the award back as well, so that correcting a mistake was not also a penalty for making it.
+     * That argument was about a counter, and the counter is retired; with the milestone back to
+     * being a sentence at the table, taking the node off IS the correction and the player picks
+     * again. (The field is not named here, for the reason given on the retired grant above.)
+     */
+    await this.actor.update({ "system.nodes": nodes });
   }
 
   static async #onToggleEquipped(event, target) {

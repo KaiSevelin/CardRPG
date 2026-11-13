@@ -9,10 +9,16 @@
       <input type="text" name="name" value="{{actor.name}}" placeholder="Name" class="cr-name">
       <button type="button" class="cr-tray-button" data-action="openTray"
               data-tooltip="The hand and the live state. This is what you play from.">Tray</button>
-      <button type="button" class="cr-level-button {{#if pendingLevels}}cr-level-button--ready{{/if}}"
+      {{!--
+        **It used to light up when a level was granted and count the grants.** The counter is
+        retired (leveling 2: *the GM says when*, and then *no tracking*), so what is worth saying
+        on the button is the thing that was always more useful anyway -- how many nodes are on your
+        frontier, which is what you are about to open the graph to look at.
+      --}}
+      <button type="button" class="cr-level-button {{#if frontierCount}}cr-level-button--ready{{/if}}"
               data-action="levelUp"
-              data-tooltip="The levelling graph. Readable any time; spendable when the GM grants a level.">
-        {{localize "CARDRPG.Level.Pane"}}{{#if pendingLevels}} ({{pendingLevels}}){{/if}}
+              data-tooltip="The levelling graph. Readable any time; the milestone is the GM's word at the table.">
+        {{localize "CARDRPG.Level.Pane"}}
         {{!-- How many nodes are on your frontier right now, which is worth knowing before you
               open a graph of 169. --}}
         {{#if frontierCount}}<span class="cr-level-button__open">{{frontierCount}} open</span>{{/if}}
@@ -45,15 +51,12 @@
         {{#if waysWalked}}
           <span class="cr-standing__ways" data-tooltip="Derived from the Way nodes you own">{{waysWalked}}</span>
         {{/if}}
-        {{#if isGM}}
-          <span class="cr-standing__grant">
-            <button type="button" data-action="grantLevel" data-by="1"
-                    data-tooltip="{{localize 'CARDRPG.Level.Grant'}}">+</button>
-            <button type="button" data-action="grantLevel" data-by="-1"
-                    data-tooltip="{{localize 'CARDRPG.Level.Revoke'}}"
-                    {{#unless pendingLevels}}disabled{{/unless}}>&minus;</button>
-          </span>
-        {{/if}}
+        {{!--
+          **No + and - here.** They raised and lowered `system.levels.pending`, the counter the
+          level-up pane used to spend, and both are retired: leveling 2 says *the GM says when* and
+          then *no experience points, no thresholds, no tracking*. The milestone is a sentence at
+          the table, so the pane accepts a marked node whenever one is marked.
+        --}}
       </span>
       {{#if isGM}}
         {{!--

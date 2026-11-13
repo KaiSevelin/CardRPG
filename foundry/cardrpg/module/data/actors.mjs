@@ -332,13 +332,12 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
        * the list of node ids they own, and that level, title, frontier and every reward derive from
        * that list. Ordered, because the order they were taken in is the only record of the route.
        *
-       * `pending` is what a level-up button may spend. It exists because section 2 says *the GM
-       * says when* -- without a counter the GM grants nothing and a player could level at will.
+       * **No `pending` counter.**  [RETIRED 2026-11-13] There was one, with a pair of GM buttons
+       * on the sheet to feed it, and both are gone by decision: section 2 says *the GM says when*
+       * and then *no experience points, no thresholds, **no tracking***, so a number on the
+       * milestone was the one kind of bookkeeping the rules had refused. See `takeNode`.
        */
       nodes: new fields.ArrayField(new fields.StringField()),
-      levels: new fields.SchemaField({
-        pending: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 })
-      }),
 
       way: new fields.StringField({ required: false, blank: true, initial: "", choices: [...Object.keys(CARDRPG.ways), ""] }),
       background: new fields.StringField({ required: false, blank: true, initial: "" }),

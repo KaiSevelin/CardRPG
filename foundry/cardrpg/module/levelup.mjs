@@ -28,7 +28,7 @@
 import {
   ALL_TACTICS,
   rebuildGraph, GRAPH, SUCCESSORS, DEPTH, ROOT, POOL, SPELLS, SPELLS_BY_SOURCE, SLATES, LANGUAGES,
-  ownedIds, closedIds, reachable, canTake, stateOf,
+  ownedIds, closedIds, reachable, canTake, stateOf, frontier,
   levelOf, titleOf, describeGrants, wouldClose, takeNode
 } from "./graph.mjs";
 import { artIn } from "./decks.mjs";
@@ -150,6 +150,7 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
     window: { title: "CARDRPG.Level.Pane", resizable: true, icon: "fa-solid fa-diagram-project" },
     actions: {
       accept: LevelUpPane.#onAccept,
+      stepChoice: LevelUpPane.#onStepChoice,
       cancelPick: LevelUpPane.#onCancelPick,
       refit: LevelUpPane.#onRefit,
       /* Authoring, not playing: these only appear with the world setting on. */
@@ -177,7 +178,6 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
       actor: this.actor,
       level: levelOf(owned),
       title: titleOf(owned) ?? game.i18n.localize("CARDRPG.Level.NoTitle"),
-      pending: this.actor.system.levels?.pending ?? 0,
       counts: {
         owned: owned.size - 1,
         available: GRAPH.size && [...GRAPH.keys()].filter(id => canTake(id, owned, closed)).length,
@@ -216,6 +216,22 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
       minZoom: 0.25,
       maxZoom: 2.5,
       wheelSensitivity: 0.25,
+      /*
+       * **Nothing here is draggable, and that was a reported bug rather than a preference.**
+       * [FIXED 2026-11-13]
+       *
+       * Cytoscape makes every node grabbable by default, and the four territories are COMPOUND
+       * PARENTS -- so dragging one drags its whole Way with it. What that looks like to a player
+       * is *panning only pans part of the graph*: they grabbed the Faith band, a quarter of the
+       * map came away in their hand, and the rest stayed put. Nodes drag too, which scrambles a
+       * layout the pane computed from the edges.
+       *
+       * The graph is a MAP. Its positions are derived from depth and mean predecessor position,
+       * so a hand-placed node is not a preference the pane can keep -- the next layout run throws
+       * it away. Pan and zoom are unaffected: those are the navigation, and they still work on
+       * the background, the nodes and the bands alike.
+       */
+      autoungrabify: true,
       /* `fit: false` here too: the frame is the frontier, and it is taken once the box has a
        * size. See `#focus` and `#watchSize`. */
       layout: { name: "preset", positions: tierLayout([...GRAPH.keys()]), fit: false,
@@ -406,6 +422,18 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
    * A tap on a node. Only an *available* node can be marked, and the pane says why when one cannot
    * be -- a click that silently does nothing reads as a broken window rather than a closed door.
    */
+  /**
+   * **Every node can be read; only an available one can be marked.**  [CHANGED 2026-11-13]
+   *
+   * It used to answer a tap on anything else with a toast and nothing else -- *Not yet*, *Closed*
+   * -- which tells a player the one thing they could already see from the colour and withholds
+   * the thing they actually wanted: **what is it, and what would it take.** A graph you cannot
+   * read ahead on is a graph you cannot plan on, and planning is the whole point of drawing it.
+   *
+   * So the panel is written for whatever was tapped, and `tentative` -- the node a level would
+   * actually be spent on -- stays separate from `inspecting`. Accept is live only when the two
+   * are the same node, which is also what keeps reading ahead from arming the button.
+   */
   #onPick(id) {
     const owned = ownedIds(this.actor);
     const closed = closedIds(owned);
@@ -417,13 +445,11 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
      */
     this.inspecting = id;
     if (state === "available") return this.#pick(id);
-
-    const why = {
-      owned: "CARDRPG.Level.AlreadyOwned",
-      later: "CARDRPG.Level.NotYet",
-      closed: "CARDRPG.Level.Closed"
-    }[state];
-    ui.notifications?.info(game.i18n.format(why, { name: GRAPH.get(id)?.name ?? id }));
+    /* Reading an unavailable node un-marks whatever was marked: the panel shows one node, and a
+     * marked node the panel is not showing is an Accept nobody can read before pressing. */
+    this.tentative = null;
+    this.cy?.nodes().removeClass("tentative");
+    this.#renderDetail();
   }
 
   /* -------------------------------------------- */
@@ -621,12 +647,124 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
     return false;
   }
 
+  /**
+   * **Step through the choices, because finding four nodes on a map of 169 is not a reading
+   * task.**  [BUILT 2026-11-13]
+   *
+   * The pane says *Available now (4)* in its legend and then leaves the player to hunt for the
+   * four, in a graph that does not fit on the screen, by colour. At level 0 those four are the
+   * whole of the decision and three of them were off the right-hand edge of the window.
+   *
+   * The order is the engine's own frontier, so it cannot disagree with what Accept will take, and
+   * it is sorted by depth and then by name -- stable between opens, which matters because the
+   * arrows are a place in a list and a list that reshuffles is not navigable. Each step marks the
+   * node, writes the panel, and brings it to the middle of the canvas: the map follows the
+   * reading rather than the other way round.
+   *
+   * @param {number} by -1 or 1
+   */
+  #stepChoice(by) {
+    const owned = ownedIds(this.actor);
+    const closed = closedIds(owned);
+    const choices = frontier(owned, closed)
+      .sort((a, b) => (DEPTH.get(a) ?? 0) - (DEPTH.get(b) ?? 0)
+        || (GRAPH.get(a)?.name ?? a).localeCompare(GRAPH.get(b)?.name ?? b));
+    if (!choices.length) return;
+    const at = choices.indexOf(this.tentative);
+    /* From nowhere, the first step lands on the first choice rather than the second: a player who
+     * has read an unavailable node and presses the arrow means "show me one I can have". */
+    const next = at < 0
+      ? (by > 0 ? 0 : choices.length - 1)
+      : (at + by + choices.length) % choices.length;
+    this.#pick(choices[next]);
+    this.cy?.animate({ center: { eles: this.cy.getElementById(choices[next]) } },
+      { duration: 180 });
+    this.#renderChoiceCount(choices, next);
+  }
+
+  /** Where you are in the list, which is the only thing that makes two arrows navigation. */
+  #renderChoiceCount(choices = null, at = null) {
+    const label = this.element?.querySelector(".cr-levelup__choice-at");
+    if (!label) return;
+    const list = choices ?? frontier(ownedIds(this.actor));
+    const index = at ?? list.indexOf(this.tentative);
+    label.textContent = list.length
+      ? (index < 0 ? `\u2014 / ${list.length}` : `${index + 1} / ${list.length}`)
+      : game.i18n.localize("CARDRPG.Level.NoChoices");
+  }
+
   /** Marking a second node unmarks the first: one node, or none. */
   #pick(id) {
     this.tentative = id;
+    this.inspecting = id ?? this.inspecting;
     this.cy?.nodes().removeClass("tentative");
     if (id) this.cy?.getElementById(id).addClass("tentative");
     this.#renderDetail();
+  }
+
+  /**
+   * The benefit panel, written straight into the DOM rather than by re-rendering. A re-render
+   * would rebuild the canvas and throw away the player's pan and zoom on every click, which is
+   * exactly the moment they were comparing two nodes.
+   */
+  /**
+   * **Where a node leads, derived rather than written down.**  [BUILT 2026-11-13]
+   *
+   * A Way node's panel said *Title: Sworn, Support / an obligation, Spell slots +2, Opens: Vows*
+   * and a player at level 0 is being asked to choose between four of those. `Opens:` names the
+   * next node along, which on a trunk is a minor one nobody has heard of -- so the question *what
+   * does this Way become* had no answer anywhere in the window.
+   *
+   * The titles downstream are the answer, and they are already in the edges: every title
+   * reachable from here, in breadth order, which is roughly the order they arrive in. Writing
+   * them beside the node would be a list that drifts the first time a crossing is added -- this
+   * graph has fourteen of them and they all add destinations.
+   */
+  #leadsTo(id, limit = 8) {
+    const seen = new Set([id]);
+    const queue = [id];
+    const titles = [];
+    while (queue.length) {
+      for (const next of SUCCESSORS.get(queue.shift()) ?? []) {
+        if (seen.has(next)) continue;
+        seen.add(next);
+        queue.push(next);
+        const title = GRAPH.get(next)?.title;
+        if (title) titles.push(title);
+      }
+    }
+    return { titles: titles.slice(0, limit), more: Math.max(0, titles.length - limit) };
+  }
+
+  /**
+   * **Why a node cannot be taken, in the words the rule uses.**  [BUILT 2026-11-13]
+   *
+   * *Possible later* and *Closed for good* are the two states a player most needs told apart
+   * (leveling 3) and the colour alone does not say WHICH prerequisite is missing or WHICH choice
+   * shut the door. `after[]` is any-one-of unless `all`, so the sentence has to be built from the
+   * node rather than templated -- *needs any of* and *needs every one of* are different promises.
+   */
+  #whyNot(id, state, owned) {
+    const node = GRAPH.get(id);
+    const name = n => GRAPH.get(n)?.name ?? n;
+    if (state === "owned") return null;
+    const needs = (node?.after ?? []).filter(a => !owned.has(a));
+    if (state === "later" && needs.length) {
+      const how = node.all ? "CARDRPG.Level.NeedsAll" : "CARDRPG.Level.NeedsAny";
+      return game.i18n.format(how, { nodes: needs.map(name).join(", ") });
+    }
+    if (state === "closed") {
+      /* An exclusive family is the only thing in this graph that closes a node for good, so the
+       * sibling actually owned is the whole explanation. */
+      const family = node?.exclusive;
+      const taken = family
+        ? [...owned].map(o => GRAPH.get(o)).find(o => o?.exclusive === family && o.id !== id)
+        : null;
+      return taken
+        ? game.i18n.format("CARDRPG.Level.ClosedBy", { node: taken.name ?? taken.id })
+        : game.i18n.localize("CARDRPG.Level.ClosedUnreachable");
+    }
+    return null;
   }
 
   /**
@@ -638,21 +776,36 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
     const box = this.element?.querySelector(".cr-levelup__detail");
     if (!box) return;
 
-    if (!this.tentative) {
+    /* The panel follows what is being READ, which is any node; `tentative` is only what a level
+     * would be spent on. Reading ahead must not arm Accept, and Accept must not be armed on a
+     * node the panel is not showing. */
+    const showing = this.inspecting ?? this.tentative;
+    if (!showing || !GRAPH.has(showing)) {
       box.innerHTML = `<p class="cr-levelup__hint">${game.i18n.localize("CARDRPG.Level.Hint")}</p>`;
       this.#setButtons(false);
+      this.#renderChoiceCount();
       return;
     }
 
-    const node = GRAPH.get(this.tentative);
+    const node = GRAPH.get(showing);
     const grants = describeGrants(node);
     const owned = ownedIds(this.actor);
-    const opens = (SUCCESSORS.get(this.tentative) ?? [])
-      .map(id => GRAPH.get(id)?.name ?? id);
-    const closes = wouldClose(this.tentative, owned);
+    const closed = closedIds(owned);
+    const state = stateOf(showing, owned, closed);
+    const opens = (SUCCESSORS.get(showing) ?? []).map(id => GRAPH.get(id)?.name ?? id);
+    const closes = wouldClose(showing, owned);
     const esc = foundry.utils.escapeHTML;
 
     const rows = [];
+    /* **The state, said in words and first.** The colour says it on the map and the map is behind
+     * whatever window the player is reading; a panel that opens on a node and does not say
+     * whether you can have it is a panel that answers the second question before the first. */
+    rows.push(`<p class="cr-levelup__state cr-levelup__state--${state}">`
+      + `${game.i18n.localize(`CARDRPG.Level.State.${state[0].toUpperCase()}${state.slice(1)}`)}`
+      + `</p>`);
+    const why = this.#whyNot(showing, state, owned);
+    if (why) rows.push(`<p class="cr-levelup__why">${esc(why)}</p>`);
+
     if (node.title) {
       rows.push(`<p class="cr-levelup__title-row">${game.i18n.localize("CARDRPG.Level.Title")}:
         <strong>${esc(node.title)}</strong></p>`);
@@ -669,8 +822,20 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
          * is comparing the tactics as much as the Signatures. */
         const text = ALL_TACTICS[node.tactic] ?? "";
         rows.push(`<p><em>${game.i18n.localize("CARDRPG.Level.Tactic")}:</em>
-          ${esc(node.tactic)}${text ? ` — ${esc(text)}` : ""}</p>`);
+          ${esc(node.tactic)}${text ? ` \u2014 ${esc(text)}` : ""}</p>`);
       }
+    }
+    /*
+     * **What it MEANS, before what it gives.** The numbers were the only thing in this panel and
+     * they are the second question: a player choosing between four Ways at level 0 is not
+     * comparing `spell slots +2` against `nothing numeric`, they are asking what each one makes
+     * them. Authored per node (`lore` in content/nodes.mjs) rather than generated, because that
+     * is a sentence about the fiction and nothing can derive it.
+     */
+    if (node.lore) {
+      rows.push(`<div class="cr-levelup__lore">${node.lore.split("\n\n")
+        .map(p => `<p>${esc(p).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")}</p>`)
+        .join("")}</div>`);
     }
     rows.push(grants.length
       ? `<ul class="cr-levelup__grants">${grants.map(g => `<li>${esc(g)}</li>`).join("")}</ul>`
@@ -679,23 +844,51 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
       rows.push(`<p class="cr-levelup__opens">${game.i18n.localize("CARDRPG.Level.Opens")}:
         ${opens.map(esc).join(", ")}</p>`);
     }
+    /* And the far end of those edges, which is what a trunk node is actually choosing between. */
+    const leads = this.#leadsTo(showing);
+    if (leads.titles.length) {
+      rows.push(`<p class="cr-levelup__leads">${game.i18n.localize("CARDRPG.Level.LeadsTo")}:
+        ${leads.titles.map(esc).join(", ")}${leads.more
+        ? ` ${game.i18n.format("CARDRPG.Level.AndMore", { n: leads.more })}` : ""}</p>`);
+    }
     if (closes.length) {
       rows.push(`<p class="cr-levelup__closes"><strong>
         ${game.i18n.localize("CARDRPG.Level.Closes")}:</strong> ${closes.map(esc).join(", ")}</p>`);
     }
 
-    box.innerHTML = `<h3>${esc(node.name ?? this.tentative)}</h3>${rows.join("")}`;
-    this.#setButtons((this.actor.system.levels?.pending ?? 0) > 0);
+    box.innerHTML = `<h3>${esc(node.name ?? showing)}</h3>${rows.join("")}`;
+    this.#setButtons(showing === this.tentative);
+    this.#renderChoiceCount();
   }
 
-  #setButtons(canAccept) {
+  /**
+   * **Accept is live whenever a node is marked, and the award it used to wait for is gone.**
+   * [CHANGED 2026-11-13]
+   *
+   * It was disabled unless `system.levels.pending` was at least 1 -- a counter a GM raised with a
+   * pair of buttons on the character sheet, and the reason the button read as broken to anybody
+   * who had not found them: the only explanation was the word *No level to spend*, in grey, at
+   * the far end of a header 2300px wide.
+   *
+   * The counter is retired by decision (`takeNode`): the milestone is a sentence at the table, and
+   * leveling 2 refuses tracking in so many words. The one condition left is the honest one -- you
+   * have to have marked a node you can take.
+   */
+  #setButtons(marked) {
     const accept = this.element?.querySelector("[data-action=accept]");
-    if (accept) accept.disabled = !canAccept;
+    if (!accept) return;
+    accept.disabled = !marked;
+    accept.dataset.tooltip = game.i18n.localize(
+      marked ? "CARDRPG.Level.AcceptHint" : "CARDRPG.Level.PickFirst");
   }
 
   /* -------------------------------------------- */
   /*  Accept and cancel                           */
   /* -------------------------------------------- */
+
+  static #onStepChoice(event, target) {
+    this.#stepChoice(Number(target.dataset.dir) || 1);
+  }
 
   static async #onAccept() {
     if (!this.tentative) return;

@@ -739,13 +739,22 @@ export async function takeNode(actor, id) {
       { name: GRAPH.get(id)?.name ?? id }));
     return false;
   }
-  if ((actor.system.levels?.pending ?? 0) < 1) {
-    ui.notifications?.warn(game.i18n.localize("CARDRPG.Level.NoneToSpend"));
-    return false;
-  }
+  /*
+   * **Retired by decision, not because it was broken.**  [RETIRED 2026-11-13]
+
+   * The milestone is a sentence at the table -- *the GM says when* (leveling 2) -- and that
+   * paragraph's next sentence is *no experience points, no thresholds, **no tracking**. Nothing in
+   * the rules counts XP today and nothing here starts.* A `pending` counter with a pair of GM
+   * buttons beside it WAS tracking: it put a number on a thing the rules deliberately left as a
+   * conversation, and it bought nothing in exchange -- what stops a player levelling at will is
+   * the GM, the same way it stops them awarding themselves a magic sword.
+   *
+   * So the counter goes, and the two buttons that fed it go with it. The cost of keeping it was
+   * two controls on every character sheet, a field in the schema and a gate on the one button the
+   * level-up pane exists for.
+   */
   await actor.update({
-    "system.nodes": [...(actor.system.nodes ?? []), id],
-    "system.levels.pending": actor.system.levels.pending - 1
+    "system.nodes": [...(actor.system.nodes ?? []), id]
   });
 
   const grants = GRAPH.get(id)?.grants ?? {};

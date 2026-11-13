@@ -25,6 +25,11 @@
  *              every character who took it (leveling 9)
  *   bespoke    content written for this node and nowhere else. Two minor nodes in three are NOT
  *              bespoke: they draw on a pool, which is the content budget leveling 1 sets
+ *   lore       what this node MEANS, for the player reading it before they spend a level. The
+ *              numbers answer *what do I get*; nothing answered *what am I becoming*, and on a
+ *              Way node that is the only question being asked. Where it LEADS is not written
+ *              here -- the pane derives the titles downstream from the edges, because a list of
+ *              destinations typed beside the edges that produce them is a second fact that drifts
  *
  * All four Ways are built. `exclusive` and `creed` were written for Way of Faith and sat unused
  * until it existed; the twelve gods are their first content, and the religion is the group.
@@ -36,16 +41,25 @@
  * crossing is a short chain of its own: the Dream Guild teaches you, and being taught takes levels.
  */
 export const NODES = [
-  { id: "root", name: "Root", after: [] },
+  {
+    id: "root", name: "Root", after: [],
+    lore: "Where every character starts, and the only node nobody chooses. All four Ways stay on "
+      + "your frontier for life (leveling 6): this is not a class picked once, and nothing here "
+      + "stops you walking into a second Way at level nine."
+  },
 
   /* --- the four Ways, all of them on your frontier for life (leveling 6) --- */
   {
     id: "shade", name: "Way of Shade", after: ["root"], title: "Shade",
-    axis: "Position", resource: "halves"
+    axis: "Position", resource: "halves",
+    lore:
+      "Choosing the ground before anybody swings. Shade spends **halves** -- the second action in a turn -- and buys back **position**: reach, cover, and the step that was not there a moment ago.\n\nIt is the narrow, deep Way. Three titles sit off the trunk and nine behind them, so the first step commits to very little and the depth is a long walk rather than a wide choice."
   },
   {
     id: "strength", name: "Way of Strength", after: ["root"], title: "Warrior",
-    axis: "Position", resource: "weight"
+    axis: "Position", resource: "weight",
+    lore:
+      "Mass that is already moving, and making it somebody else's problem. Strength spends **weight** -- what you carry and what carrying it costs you -- and turns it into **position** the other side does not get to choose: ground held, a line that does not move, a blow that arrives whether it was answered or not.\n\nIt is the broad Way. A dozen titles, most of them reachable from more than one direction, so an early step here shuts almost nothing. The trunk itself caps your deck rather than pruning it -- Strength takes more and gets heavier; it does not get neater."
   },
   /*
    * **Both of these grant two slots, and neither did.** way-cards 1.4 says it in one line -- *a
@@ -56,12 +70,16 @@ export const NODES = [
   {
     id: "mind", name: "Way of Mind", after: ["root"], title: "Scholar",
     axis: "Preparation", resource: "spell slots",
-    grants: { spellSlots: 2 }
+    grants: { spellSlots: 2 },
+    lore:
+      "What was decided before it mattered. Mind spends **preparation** -- the spell slots and the formulae set before the fight -- and it is the only Way whose first node hands you a resource the sheet had none of at all.\n\nTwelve schools, and a school is a vocabulary rather than a rank: the depth here is in combining them, not in climbing one. Each is also a price written in something other than slots."
   },
   {
     id: "faith", name: "Way of Faith", after: ["root"], title: "Sworn",
     axis: "Support", resource: "an obligation",
-    grants: { spellSlots: 2 }
+    grants: { spellSlots: 2 },
+    lore:
+      "Standing for something that is not you. Faith spends an **obligation** -- somebody is owed, and the Way is what they ask -- and it answers in **support**: what you do for the people beside you rather than to the people in front of you.\n\nIt is the one Way whose first step is irreversible. Twelve gods fan out at once and swearing to one refuses the rest for good, because here the first choice IS the content (specializations.md). Wide at that step and committed from it."
   },
 
   /* --- the Shade trunk: three ordinary nodes before the first title --- */

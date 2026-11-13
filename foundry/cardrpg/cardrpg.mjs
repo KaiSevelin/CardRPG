@@ -303,10 +303,14 @@ Hooks.once("ready", async () => {
      * is how it is settled. A form that expired silently would be worse than one that waits.
      */
     endTransformation,
-    /* So a GM can grant from a macro as well as from the sheet. */
-    grantLevel: async (actor, n = 1) => actor.update({
-      "system.levels.pending": Math.max(0, (actor.system.levels?.pending ?? 0) + n)
-    })
+    /*
+     * **Nothing here grants a level.**  [RETIRED 2026-11-13] It raised `system.levels.pending` from a
+     * A member of this object raised the award counter from a macro, as the + on the character
+     * sheet did from the sheet. The counter is retired and all three of its keys went with it: leveling 2 says *the GM says when* and then *no experience
+     * points, no thresholds, **no tracking***, so a number on the milestone was the one piece of
+     * bookkeeping the rules had refused. It is a sentence at the table now, and the level-up pane
+     * accepts a marked node whenever one is marked.
+     */
   };
 
   /*

@@ -3699,11 +3699,19 @@ check("and offered on both",
 check("nodes requiring every prerequisite", nodes.filter(n => n.all).map(n => n.id).join(", "),
   "shade.assassin");
 
-/* Taking a node writes the id and the counter, and nothing else: leveling 9 in one assertion. */
+/*
+ * **Taking a node writes the id and NOTHING else: leveling 9 in one assertion.**
+ *
+ * It used to write the counter beside it. `system.levels.pending` is retired -- leveling 2 says
+ * *the GM says when* and then, in the next sentence, *no experience points, no thresholds, no
+ * tracking* -- and nothing in the game could ever increment it, so the one button the level-up
+ * pane exists for was dead on every character ever made. This assertion is the stronger one now:
+ * the whole of levelling up is one array push.
+ */
 const update = graphSource.slice(graphSource.indexOf("await actor.update({"));
 const written = [...update.slice(0, update.indexOf("});")).matchAll(/"(system\.[\w.]+)"/g)]
   .map(m => m[1]).sort();
-check("what taking a node writes", written.join(", "), "system.levels.pending, system.nodes");
+check("what taking a node writes", written.join(", "), "system.nodes");
 
 const g = graph.grantsOf(owned);
 check("what the branch has granted", `${g.health} health, ${g.cards.length} cards, ${g.trainings.length} trainings`,
@@ -3910,11 +3918,30 @@ check("an exclusive node is confirmed before it is taken",
 check("and the confirmation names what closes",
   /closes\.map\(c => foundry\.utils\.escapeHTML\(c\)\)/.test(levelup) ? "yes" : "no", "yes");
 
-/* The GM says when (leveling 2): a pending counter, and a button that is dead without one. */
-check("the actor stores pending levels",
-  /pending: new fields\.NumberField/.test(actorModel) ? "yes" : "no", "yes");
-check("takeNode refuses to spend a level nobody granted",
-  /levels\?\.pending \?\? 0\) < 1/.test(levelup + graphSource) ? "yes" : "no", "yes");
+/*
+ * **The GM says when, and nothing counts it.**  [RETIRED 2026-11-13]
+ *
+ * These two checks held a `pending` counter in place, along with the pair of GM buttons on the
+ * character sheet that fed it. All of it is retired by decision, and the rule it cited is the
+ * reason: leveling 2 says *the GM says when* and then *no experience points, no thresholds, **no
+ * tracking**. Nothing in the rules counts XP today and nothing here starts.* A number on the
+ * milestone was the one kind of bookkeeping the rules had refused, and it bought nothing -- what
+ * stops a player levelling at will is the GM, as with any other reward.
+ *
+ * So the pair is inverted: the field must be gone, the gate with it, and the two controls too.
+ */
+check("the actor stores no pending counter",
+  /pending: new fields\.NumberField/.test(actorModel) ? "still there" : "gone", "gone");
+/* Two checks, one per file, because the audit over these greps reads a BARE identifier --
+ * `.test(levelup + graphSource)` is an expression and is invisible to it, so a grep written
+ * that way could go dead and the rule that exists to notice would not be looking. */
+check("and taking a node asks for no award",
+  /levels\?\.pending/.test(graphSource) ? "still there" : "gone", "gone");
+check("nor does the pane",
+  /levels\?\.pending/.test(levelup) ? "still there" : "gone", "gone");
+/* And the greps are not vacuous: the field the model DOES still store is there to be found. */
+check("while the list of owned nodes is still stored",
+  /nodes: new fields\.ArrayField/.test(actorModel) ? "yes" : "no", "yes");
 
 /* Wiring Foundry will not complain about. */
 check("the sheet action is registered",
@@ -4049,18 +4076,30 @@ check("the pane's window content passes a height down",
 check("and the part inside it stretches",
   /\.cr-levelup \.window-content > \* \{[^}]*flex: 1 1 auto/s.test(paneCss) ? "yes" : "no", "yes");
 
-/* The GM says when, and now something can say it. */
-check("the sheet registers the grant",
-  /grantLevel: CharacterSheet\.#onGrantLevel/.test(sheets) ? "yes" : "no", "yes");
-check("granting is GM-only",
-  /#onGrantLevel\(event, target\) \{\s*\n\s*if \(!game\.user\.isGM\) return;/.test(sheets)
-    ? "yes" : "no", "yes");
-check("the sheet offers it only to a GM",
-  /\{\{#if isGM\}\}[\s\S]{0,400}data-action="grantLevel"/.test(charTemplate) ? "yes" : "no", "yes");
-check("pending levels cannot go negative",
-  /Math\.max\(0, now \+ by\)/.test(sheets) ? "yes" : "no", "yes");
-check("and a GM can grant from a macro",
-  /grantLevel: async \(actor, n = 1\)/.test(entrySource) ? "yes" : "no", "yes");
+/*
+ * **The GM says when, and nothing counts it.**  [RETIRED 2026-11-13]
+ *
+ * Five checks held a grant control in place: the sheet action, its GM guard, the two buttons in
+ * the template, the floor at zero, and the macro API beside them. All of it is retired by
+ * decision. Leveling 2 says *the GM says when* and then *no experience points, no thresholds,
+ * **no tracking***, so a counter on the milestone was the one piece of bookkeeping the rules had
+ * refused -- and it bought nothing: what stops a player levelling at will is the GM, as with any
+ * other reward.
+ *
+ * **It was not broken, and it is worth saying so.** There were three working keys to that gate --
+ * a + and a - on every character sheet, and `game.cardrpg.grantLevel` for a macro. What the gate
+ * cost was two controls on every sheet, a schema field, a counter to keep in step when a node was
+ * taken back, and an Accept button that read as broken to anybody who had not found the +.
+ *
+ * So the three keys are gone and so is the lock. All that is left is the inverse: nothing may
+ * grant a level, because there is nothing to grant.
+ */
+check("nothing on the sheet grants a level",
+  /grantLevel/.test(sheets) ? "still there" : "gone", "gone");
+check("nor does the template offer it",
+  /data-action="grantLevel"/.test(charTemplate) ? "still there" : "gone", "gone");
+check("nor the macro API",
+  /grantLevel: async/.test(entrySource) ? "still there" : "gone", "gone");
 check("the pane is reachable from the API",
   /levelUp: actor => LevelUpPane\.openFor\(actor\)/.test(entrySource) ? "yes" : "no", "yes");
 
@@ -12236,10 +12275,18 @@ check("a GM can take a node back",
 check("and only a GM",
   /#onDropNode\(event, target\) \{[\s\S]{0,40}if \(!game\.user\.isGM\) return;/.test(sheetSource)
     ? "yes" : "no", "yes");
-/* The level comes back, so correcting a mistake is not also a penalty for making it. */
-check("the level comes back with it",
-  /"system\.levels\.pending": \(this\.actor\.system\.levels\?\.pending \?\? 0\) \+ 1/
-    .test(sheetSource) ? "yes" : "no", "yes");
+/*
+ * **Nothing is refunded, because there is nothing to refund.**  [2026-11-13] Taking a node back
+ * used to hand the level in, so that correcting a mistake was not also a penalty for making it.
+ * That argument was about a counter; with the milestone back to being a sentence at the table,
+ * removing the node IS the correction and the player picks again.
+ */
+check("taking a node back refunds nothing",
+  /system\.levels/.test(sheetSource) ? "still there" : "gone", "gone");
+/* And the grep is not vacuous: the write it still makes is there to be found. */
+check("while it still takes the node off",
+  /await this\.actor\.update\({ "system\.nodes": nodes \}\)/.test(sheetSource)
+    ? "yes" : "no", "yes");
 /* What it cannot do, said out loud rather than discovered: a document stays behind. */
 check("and says what it cannot take back",
   /stays behind/.test(sheetSource) ? "yes" : "no", "yes");
@@ -12321,7 +12368,9 @@ check("hooks the system listens on", hooksUsed.length, 14);
  */
 const api = [...new Set([...entrySource.slice(entrySource.indexOf("game.cardrpg = {"))
   .matchAll(/^\s{4}([a-zA-Z]+):/gm)].map(m => m[1]))];
-check("the macro API", api.join(", "), "config, openTray, levelUp, grantLevel");
+/* One member shorter since 2026-11-13: the award counter it raised is retired, and a name on
+ * this object is a promise, so removing one is a breaking change worth a line. */
+check("the macro API", api.join(", "), "config, openTray, levelUp");
 /* The bare ones a destructuring import puts there -- createStarterContent and decks -- are on the
  * object too, and the regex above reads the `name:` form only; both forms are promises. */
 check("and the shorthand members beside them",
@@ -15578,6 +15627,7 @@ const absentGreps = [
   String.raw`and nothing matches a document back by its escaped name :: find\(card => card\.name === name\)`,
   String.raw`and nothing stores one on the character :: facing: new fields`,
   String.raw`and reads the change rather than the state :: item\.system\.prepared`,
+  String.raw`and taking a node asks for no award :: levels\?\.pending`,
   String.raw`and the chain is gone :: if \(effect === "taint"\)`,
   String.raw`and the dependency points one way :: from "\.\/graph\.mjs"`,
   String.raw`and the gate's own table no longer describes the old capsule :: the top quarter is empty`,
@@ -15595,14 +15645,20 @@ const absentGreps = [
   String.raw`and the tray keeps no loop of its own :: for \(const card of cards\) \{\s*\n\s*if \(isReserved`,
   String.raw`and the two retired vocabularies are gone from config :: conjureSources|conjureSides`,
   String.raw`and the unpatched line is gone :: Object\.create\(Array\.prototype\)`,
+  String.raw`nor does the pane :: levels\?\.pending`,
+  String.raw`nor does the template offer it :: data-action="grantLevel"`,
+  String.raw`nor the macro API :: grantLevel: async`,
   String.raw`nothing builds a fate card by hand any more :: createEmbeddedDocuments\("Card", \[\{\s*name: fateCard`,
   String.raw`nothing draws a twist automatically :: drawTwist\(`,
   String.raw`nothing in the resolver reads a default :: defaultFor|system\.defaults`,
+  String.raw`nothing on the sheet grants a level :: grantLevel`,
   String.raw`reaction timer retired from config :: reactionTimer`,
   String.raw`reaction timer retired from settings :: reactionTimer`,
   String.raw`reaction timer retired from the HUD spec :: \*\*Setting: ` + "`" + String.raw`reactionTimer` + "`" + String.raw`\*\*`,
   String.raw`reaction timer retired from the HUD spec :: ^### 6\.1 The reaction timer$`,
   String.raw`so the grant sum asks nothing about an injury :: slate\.type === "injury"`,
+  String.raw`taking a node back refunds nothing :: system\.levels`,
+  String.raw`the actor stores no pending counter :: pending: new fields\.NumberField`,
   String.raw`the claim that there are two triggers :: There are two triggers`,
   String.raw`the deck module reaches back into the resolver :: from "\.\/resolve\.mjs"`,
   String.raw`the deck module reaches back into the resolver :: resolve\.mjs"\)`,

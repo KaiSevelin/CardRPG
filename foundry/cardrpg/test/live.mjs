@@ -882,7 +882,8 @@ async function probes(page) {
    * claim live in one object literal and a probe that reads the source would pass on a deck that
    * was never created.
    *
-   * **Not shot yet**, so `art/cards/crit/` is allowed to 404 above and this does not fetch.
+   * **Drawn as of 2026-11-13**, so the faces are fetched like every other shelf's. Every shelf
+   * in the game is now held to a 200, and the harness carries no art allowance at all.
    */
   await probe("the critical deck is faced and backless", async () => {
     return page.evaluate(async () => {
@@ -904,7 +905,10 @@ async function probes(page) {
          * the whole reason it has no back to print.
          */
         ["and this system prints no back on any of them",
-          cards.filter(c => c._source.back?.img).length, 0]
+          cards.filter(c => c._source.back?.img).length, 0],
+        ["and the server serves every face", [...new Set(await Promise.all(
+          [...new Set(faces)].map(p => fetch(foundry.utils.getRoute(p), { method: "HEAD" })
+            .then(r => r.status).catch(() => 0))))].join(","), "200"]
       ];
     });
   });
@@ -1179,6 +1183,88 @@ async function probes(page) {
     return rows;
   });
 
+  await probe("the level-up pane", async () => {
+    const rows = await page.evaluate(async () => {
+      const graph = await import("/systems/cardrpg/module/graph.mjs");
+      const { hero } = LIVE;
+      const out = [];
+      const wait = ms => new Promise(r => setTimeout(r, ms));
+
+      /* A clean slate, so the frontier is the four Ways and the arithmetic below is readable. */
+      await hero.update({ "system.nodes": ["root"] });
+      game.cardrpg.levelUp(hero);
+      await wait(900);
+      const pane = [...foundry.applications.instances.values()]
+        .find(a => a.constructor.name === "LevelUpPane");
+      const root = pane?.element;
+      out.push(["the pane opens", !!root, true]);
+      if (!root) return out;
+
+      /*
+       * **Nothing is grabbable**, asked of cytoscape rather than of the source. The option is one
+       * word and the consequence was a quarter of the graph coming away in somebody's hand: the
+       * four Ways are compound parents, so dragging one drags its whole subtree, which is what
+       * *panning only pans a subgraph* was.
+       */
+      out.push(["no node can be dragged out of place",
+        pane.cy.nodes().filter(n => n.grabbable()).length, 0]);
+      out.push(["and the territories are among the ones that cannot",
+        pane.cy.nodes(":parent").length > 0, true]);
+
+      const detail = () => root.querySelector(".cr-levelup__detail");
+      const accept = () => root.querySelector("[data-action=accept]");
+      /* Through cytoscape's own event, so the pane's real handler runs. */
+      const tap = id => pane.cy.getElementById(id).emit("tap");
+
+      /*
+       * **Reading an unavailable node writes the panel.** `root` is owned, which makes it the
+       * nearest node that is not available; it used to answer with a toast and leave the panel on
+       * whatever was there before.
+       */
+      tap("root");
+      await wait(80);
+      out.push(["an owned node still says what it is",
+        /Root|Birth/.test(detail().textContent) ? "yes"
+          : detail().textContent.trim().slice(0, 40) || "nothing", "yes"]);
+      out.push(["and which state it is in", !!detail().querySelector(".cr-levelup__state"), true]);
+      out.push(["and reading it does not arm Accept", accept().disabled, true]);
+
+      /* **The arrows step the engine's own frontier**, so they cannot offer what Accept refuses. */
+      const want = graph.frontier(graph.ownedIds(hero)).length;
+      const seen = new Set();
+      for (let i = 0; i < want; i++) {
+        root.querySelector('[data-action=stepChoice][data-dir="1"]').click();
+        await wait(60);
+        seen.add(pane.tentative);
+      }
+      out.push(["the arrows reach every choice there is", seen.size, want]);
+      out.push(["and each one is a node the engine would accept",
+        [...seen].every(id => graph.canTake(id, graph.ownedIds(hero))), true]);
+      out.push(["the panel says where you are in the list",
+        /\d+ \/ \d+/.test(root.querySelector(".cr-levelup__choice-at")?.textContent ?? ""), true]);
+
+      /*
+       * **And Accept is live.** It required an award counter that a GM raised from the sheet, so
+       * to anybody who had not found that button it read as broken -- which is how it was
+       * reported. The counter is retired; the only condition is a marked node.
+       */
+      out.push(["a marked node arms the button", accept().disabled, false]);
+
+      /* The authored prose, which is what a Way node had none of, and where the Way leads. */
+      tap("strength");
+      await wait(80);
+      out.push(["a Way says what it means", !!detail().querySelector(".cr-levelup__lore"), true]);
+      out.push(["and where it leads",
+        /Knight|Berserker|Infantry/
+          .test(detail().querySelector(".cr-levelup__leads")?.textContent ?? ""), true]);
+
+      await pane.close({ animate: false });
+      return out;
+    });
+    await page.evaluate(() => LIVE.hero.update({ "system.nodes": ["root"] }));
+    return rows;
+  });
+
   /*
    * **And the world opens at all.** Nine days of engine changes went in without one of them being
    * loaded, so the cheapest question worth asking is whether the system still boots -- which every
@@ -1252,13 +1338,6 @@ try {
   /* Foundry refuses to render below 1366x768 and says so rather than guessing. */
   const page = await browser.newPage({ viewport: { width: 1600, height: 900 } });
   page.on("response", r => {
-    /*
-     * **The critical deck is commissioned and not yet shot.** Seven files, named one by one in
-     * the brief and counted there as still to shoot, which is a different state from a path that
-     * is wrong. **Delete this clause the day `art/cards/crit/` is drawn** -- the fate shelf's own
-     * version of it lasted about an hour, and the conditions' a morning.
-     */
-    if (r.url().includes("/art/cards/crit/")) return;
     if (r.status() >= 400) missing.add(`${r.status()} ${r.url().split(`:${PORT}`).pop()}`);
   });
   await page.addInitScript(() => {

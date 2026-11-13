@@ -12,14 +12,12 @@
       <span class="cr-levelup__level">{{localize "CARDRPG.Level.Level"}} {{level}}</span>
     </span>
 
-    {{#if pending}}
-      <span class="cr-levelup__pending">{{localize "CARDRPG.Level.ToSpend"}}: {{pending}}</span>
-    {{else}}
-      <span class="cr-levelup__pending cr-levelup__pending--none"
-            data-tooltip="{{localize 'CARDRPG.Level.GmSaysWhenHint'}}">
-        {{localize "CARDRPG.Level.GmSaysWhen"}}
-      </span>
-    {{/if}}
+    {{!--
+      **No "levels to spend" counter.** It sat here reading *No level to spend* until a GM pressed
+      the + on the character sheet, and leveling 2 refuses tracking in so many words -- so both the
+      counter and the buttons are retired. The milestone is a sentence at the table; this window is
+      for choosing the node, which is the part that needs a map.
+    --}}
 
     <label class="cr-levelup__layout">
       {{localize "CARDRPG.Level.LayoutLabel"}}
@@ -57,6 +55,25 @@
     <div class="cr-graph"></div>
 
     <aside class="cr-levelup__side">
+      {{!--
+        Two arrows and a place in the list. The legend already counts the available nodes; it does
+        not help you FIND them, and on a graph of 169 that does not fit the window the four that
+        matter are mostly off the edge of it. Stepping marks one, writes the panel and centres the
+        canvas on it, so the map follows the reading.
+      --}}
+      <nav class="cr-levelup__choices">
+        <button type="button" data-action="stepChoice" data-dir="-1"
+                data-tooltip="{{localize 'CARDRPG.Level.PrevChoice'}}"
+                aria-label="{{localize 'CARDRPG.Level.PrevChoice'}}">&#8249;</button>
+        <span class="cr-levelup__choice-label">
+          {{localize "CARDRPG.Level.ChoiceOf"}}
+          <strong class="cr-levelup__choice-at"></strong>
+        </span>
+        <button type="button" data-action="stepChoice" data-dir="1"
+                data-tooltip="{{localize 'CARDRPG.Level.NextChoice'}}"
+                aria-label="{{localize 'CARDRPG.Level.NextChoice'}}">&#8250;</button>
+      </nav>
+
       <div class="cr-levelup__detail"></div>
 
       <footer class="cr-levelup__actions">
