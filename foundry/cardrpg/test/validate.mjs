@@ -2973,6 +2973,47 @@ check("and the families they fall into",
 check("orders, each its own creed",
   nodes.filter(n => n.exclusive === "order").map(n => n.creed).sort().join(", "),
   "circle, cloister, drums, shield");
+/*
+ * **A description is written for a player, so it may not use the engine's words.**
+ * [BUILT 2026-11-13]
+ *
+ * `lore` is the only player-facing prose in this file, and it was written by somebody who had been
+ * reading `graph.mjs` all day: *the deepest **node** on this **branch***, *the only **branch** in
+ * the game*, *the one rule set aside anywhere in this **graph***. Thirteen of the seventy-nine
+ * described the data structure rather than the world, which is the same fault that had the first
+ * thing a character ever sees called **Root**.
+ *
+ * The banned list is the vocabulary a reader of the source picks up without noticing:
+ *
+ * - **node, branch, graph, shelf** -- the shape of the data.
+ * - **trunk, frontier, capstone** -- this project's own words for parts of that shape. They are
+ *   good words in leveling.md, which is written for whoever is building the thing.
+ * - **a filename, or a bracketed rules citation** -- `(specializations.md)` in a panel is a note
+ *   to a colleague.
+ *
+ * `title`, `Way`, `level`, `deck` and `card` are NOT on it: those are the game's own nouns, and a
+ * player meets every one of them on the first page.
+ */
+const ENGINE_WORDS =
+  /\b(nodes?|branch(es)?|graph|shelf|trunk|frontier|capstones?)\b|\.md\b|\bin this book\b/i;
+const describedNodes = nodes.filter(n => n.lore);
+check("nodes that carry a description", describedNodes.length, 79);
+check("descriptions written in the engine's vocabulary",
+  describedNodes.filter(n => ENGINE_WORDS.test(n.lore)).map(n => n.id).join(", ") || "none",
+  "none");
+/* And the rule is not vacuous: the words it bans are all over the file it is checking, in the
+ * comments, where they belong. */
+check("while the file itself still uses them",
+  ENGINE_WORDS.test(fs.readFileSync(path.join(root, "module/content/nodes.mjs"), "utf8"))
+    ? "yes" : "no", "yes");
+/*
+ * **Every origin, background and title has one**, because the pane shows a picture and a heading
+ * for all of them and an empty panel under a portrait reads as a bug rather than as brevity.
+ */
+check("creation nodes and titles without a description",
+  nodes.filter(n => (n.title || ["origin", "background"].includes(n.exclusive)) && !n.lore)
+    .map(n => n.id).join(", ") || "none", "none");
+
 /* An order is a title and every title of this Way is a gate, which is what the next check says in
  * general -- but the two families mean different things, so the count is pinned per family. */
 check("gods and orders",

@@ -1,6 +1,6 @@
 # Art list
 
-**760 pieces**, of which **682** are drawn and **78** still to shoot. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
+**760 pieces**, of which **692** are drawn and **68** still to shoot. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
 
 ## What to supply
 
@@ -361,20 +361,20 @@ Turned face up in front of four people who have been working toward this for a s
 
 **Draw the place, not a person from it.** An origin is shared by every character who takes it, so a figure in the frame is somebody else's character. A harbour at a particular hour, a mesa seen from the plain below, a sealed quarter's gate: somewhere a person could be standing, with nobody standing in it.
 
-**10 pieces**. Suggested path: `cardrpg/art/nodes/origin/`
+**10 pieces**, 10 wired up. Suggested path: `cardrpg/art/nodes/origin/`
 
 | | Name | What it is | File |
 |---|---|---|---|
-|   | **Echterhof-born** | A large neutral city in the middle of Horde territory, ruled by Strigoi princes, with farmland around it the Horde has left alone. Strigoi live off humans, so a large human population lives there between the vampires ... | `nodes/origin/echterhof-born.webp` |
-|   | **Furnace Stock** | You were not born in the Furnace District -- nobody has been for a generation. You were born into what came out of it: the engineering guilds its refugees founded in every surviving district, which kept the trade, the... | `nodes/origin/furnace-stock.webp` |
-|   | **Saag et Haar** | What is left of Seetch, the realm of the necromancer kings, south of the Hyena Desert. The greatest of them, Fahlas, still rules it after four hundred years and has become a minor god. | `nodes/origin/saag-et-haar.webp` |
-|   | **The Amber** | The far east, the second largest district and the one that was never entirely tamed. Dragons turn up. Trolls live in the forests. Dense wet conifer, broken by lakes and bog. | `nodes/origin/the-amber.webp` |
-|   | **The Core** | Born on the mesa or in the satellite cities under it: Geistburg, a dozen corrupt noble houses and a powerless man still titled emperor. You grew up knowing which of them to be careful of. | `nodes/origin/the-core.webp` |
-|   | **The Fiord** | Black Harbour, the fishing villages, or one of the islands close enough in to count. The sea cuts so deep inland here that the ring runs through water, and six enormous lighthouses mark where. | `nodes/origin/the-fiord.webp` |
-|   | **The Iron** | The northern half of the Hyena Desert, or the mineral mountains above it. Sammel is the only real city and the emirs have cut it into sealed quarters called Rote -- the old assassin state holds the central one, around... | `nodes/origin/the-iron.webp` |
-|   | **The Ruby** | Warm hills in the south-east, wine and fruit, winter palaces the rich no longer visit. A voted council governs from Tanto and nobody especially minds what you believe or who you are. | `nodes/origin/the-ruby.webp` |
-|   | **Velderon** | The elves' embassy on Firma, east of the Fiord: an ancient elven ruin with one restored corner. You do not go in without an invitation, so whatever brought you up there was unusual. | `nodes/origin/velderon.webp` |
-|   | **Wolf Peak** | A religious centre of the faith of the Fire, on a dormant volcano north of the Amber, never once taken. The roads to the summit are easy to hold and the mountain feeds itself. | `nodes/origin/wolf-peak.webp` |
+| ✓ | **Echterhof-born** | A large neutral city in the middle of Horde territory, ruled by Strigoi princes, with farmland around it the Horde has left alone. Strigoi live off humans, so a large human population lives there between the vampires ... | `nodes/origin/echterhof-born.webp` |
+| ✓ | **Furnace Stock** | You were not born in the Furnace District -- nobody has been for a generation. You were born into what came out of it: the engineering guilds its refugees founded in every surviving district, which kept the trade, the... | `nodes/origin/furnace-stock.webp` |
+| ✓ | **Saag et Haar** | What is left of Seetch, the realm of the necromancer kings, south of the Hyena Desert. The greatest of them, Fahlas, still rules it after four hundred years and has become a minor god. | `nodes/origin/saag-et-haar.webp` |
+| ✓ | **The Amber** | The far east, the second largest district and the one that was never entirely tamed. Dragons turn up. Trolls live in the forests. Dense wet conifer, broken by lakes and bog. | `nodes/origin/the-amber.webp` |
+| ✓ | **The Core** | Born on the mesa or in the satellite cities under it: Geistburg, a dozen corrupt noble houses and a powerless man still titled emperor. You grew up knowing which of them to be careful of. | `nodes/origin/the-core.webp` |
+| ✓ | **The Fiord** | Black Harbour, the fishing villages, or one of the islands close enough in to count. The sea cuts so deep inland here that the ring runs through water, and six enormous lighthouses mark where. | `nodes/origin/the-fiord.webp` |
+| ✓ | **The Iron** | The northern half of the Hyena Desert, or the mineral mountains above it. Sammel is the only real city and the emirs have cut it into sealed quarters called Rote -- the old assassin state holds the central one, around... | `nodes/origin/the-iron.webp` |
+| ✓ | **The Ruby** | Warm hills in the south-east, wine and fruit, winter palaces the rich no longer visit. A voted council governs from Tanto and nobody especially minds what you believe or who you are. | `nodes/origin/the-ruby.webp` |
+| ✓ | **Velderon** | The elves' embassy on Firma, east of the Fiord: an ancient elven ruin with one restored corner. You do not go in without an invitation, so whatever brought you up there was unusual. | `nodes/origin/velderon.webp` |
+| ✓ | **Wolf Peak** | A religious centre of the faith of the Fire, on a dormant volcano north of the Amber, never once taken. The roads to the summit are easy to hold and the mountain feeds itself. | `nodes/origin/wolf-peak.webp` |
 
 ## Backgrounds — what a character did before
 
@@ -414,7 +414,7 @@ Turned face up in front of four people who have been working toward this for a s
 |   | **Archer** | Archer · Position / range — The only Shade title that wants open ground. An archer's problem is never the shot -- it is being the thing on the hill that everybody can see. | `nodes/title/archer.webp` |
 |   | **Artillerist** | Artillerist · Position / ground — Engines. Bombards, swivel guns and the Furnace's leftovers -- an artillerist thinks in arcs and in the ground the arc lands on. | `nodes/title/artillerist.webp` |
 |   | **Asceticism** | Asceticism · Deck shape / an empty hand — The school that gives things up. An ascetic's power is in what they are not carrying, not holding and not preparing. | `nodes/title/asceticism.webp` |
-|   | **Assassin** | Assassin · Tempo / Spent — The deepest node on this branch and the one with the shortest working day. An assassin's fight is already decided before the first card; what follows it is tidying. | `nodes/title/assassin.webp` |
+|   | **Assassin** | Assassin · Tempo / Spent — The last thing learned on this road, and the trade with the shortest working day. An assassin's fight is already decided before the first card; what follows it is tidying. | `nodes/title/assassin.webp` |
 |   | **Bard** | Bard · Reactions / someone else's turn — A fighter who talks. The Bard is the one title here that works on the other side's attention, and the heckling is the mechanism rather than the flavour. | `nodes/title/bard.webp` |
 |   | **Berserker** | Berserker · Deck shape / Spent — Forward only. The Berserker is not angry for effect; the anger is the mechanism and it does not have a reverse gear. | `nodes/title/berserker.webp` |
 |   | **Blood Magic** | Blood Magic · Tempo / your own Health — The oldest arrangement on the continent and the one the rings run on. A blood mage pays in the only currency magic has ever reliably accepted. | `nodes/title/blood-magic.webp` |
@@ -425,14 +425,14 @@ Turned face up in front of four people who have been working toward this for a s
 |   | **Divination** | Divination · Support / someone else's turn — Reading. A diviner's work is other people's turns -- what is about to happen, said just early enough to matter. | `nodes/title/divination.webp` |
 |   | **Duellist** | Duellist · Reactions / halves — A formal fighter in a Way full of informal ones. The Duellist names an opponent and fights that opponent, and the courtesy is not politeness -- it is a narrowing. | `nodes/title/duellist.webp` |
 |   | **Elemental Magic** | Elemental Magic · Position / reagents — The physical school. Fire, water, stone and air, worked by formula rather than by bargain, and the most reliable magic in the game. | `nodes/title/elemental-magic.webp` |
-|   | **Executioner** | Executioner · Tempo / halves — One blow, delivered correctly, to something that is already finished. The Executioner is the most unpleasant title in this book and it is deliberately not a murderer's. | `nodes/title/executioner.webp` |
+|   | **Executioner** | Executioner · Tempo / halves — One blow, delivered correctly, to something that is already finished. The Executioner is the most unpleasant title on offer here and it is deliberately not a murderer's. | `nodes/title/executioner.webp` |
 |   | **Fagar** | Fagar · Control / Spent — The borrowed face. Fagar is the Five's god of the ones who are not noticed, and the priesthood is deliberately difficult to identify. | `nodes/title/fagar.webp` |
 |   | **Flagellant** | Flagellant · Tempo / a permanent Wild — Past caring. The Flagellant is the order the others are embarrassed by and the one that arrives when a town is already lost. | `nodes/title/flagellant.webp` |
 |   | **Gambler** | Gambler · Deck shape / the fate deck — The player who has read the fate deck and knows what is left in it. A gambler is not reckless -- reckless is what it looks like from outside. | `nodes/title/gambler.webp` |
 |   | **Gladiator** | Gladiator · Reactions / Health — A fighter whose job is to be watched. The Gladiator plays to a crowd that may be an actual crowd or may be two people in a tavern, and the showmanship is load-bearing. | `nodes/title/gladiator.webp` |
 |   | **Glamour** | Glamour · Control / an elven debt — Elven work, done by somebody who is not one. Glamour is not illusion exactly -- it is the question of whether you were ever quite there. | `nodes/title/glamour.webp` |
 |   | **Guardian** | Guardian · Reactions / a slot kept free — Standing in a doorway. The Guardian is not a defender of people but of a *place*, and the difference is the whole title. | `nodes/title/guardian.webp` |
-|   | **Half-mage** | Half-mage · Preparation / spell slots — One trick, learned properly, in a Way that has no magic. The Half-mage is the crossing made flesh -- a Shade who went and asked. | `nodes/title/half-mage.webp` |
+|   | **Half-mage** | Half-mage · Preparation / spell slots — One trick, learned properly, in a Way that has no magic. The Half-mage is what happens when a Shade goes and asks. | `nodes/title/half-mage.webp` |
 |   | **Household Magic** | Household Magic · Support / a place you know — Small magic, done where you live. Bread, locks, hinges, the fire catching first time -- the least respected school and the only one most of Firma has ever actually seen. | `nodes/title/household-magic.webp` |
 |   | **Infantry** | Infantry · Position / an ally — The line. Not a hero -- a person standing next to another person, which is the whole of what makes infantry work and the reason it is the first title on this Way. | `nodes/title/infantry.webp` |
 |   | **Inquisitor** | Inquisitor · Control / a secret — An order rather than a god: the Circle's writ, carried by somebody with the authority to ask and the standing to be answered. | `nodes/title/inquisitor.webp` |
@@ -462,7 +462,7 @@ Turned face up in front of four people who have been working toward this for a s
 |   | **Vulpet** | Vulpet · Preparation / an ally — The outcast's god. Vulpet is owed by the people nobody else is obliged to, and the priesthood goes where the rest of the Five will not. | `nodes/title/vulpet.webp` |
 |   | **Ward Magic** | Ward Magic · Reactions / Spent — Unmaking. A warder's craft is the opposite of every other school's: not doing a thing, but ensuring a thing does not happen. | `nodes/title/ward-magic.webp` |
 |   | **Way of Faith** | Sworn · Support / an obligation — Standing for something that is not you. Faith spends an obligation -- somebody is owed, and the Way is what they ask -- and it answers in support: what you do for the people beside yo... | `nodes/title/way-of-faith.webp` |
-|   | **Way of Mind** | Scholar · Preparation / spell slots — What was decided before it mattered. Mind spends preparation -- the spell slots and the formulae set before the fight -- and it is the only Way whose first node hands you a resour... | `nodes/title/way-of-mind.webp` |
+|   | **Way of Mind** | Scholar · Preparation / spell slots — What was decided before it mattered. Mind spends preparation -- the spell slots and the formulae set before the fight -- and it is the only Way whose first step hands you a resour... | `nodes/title/way-of-mind.webp` |
 |   | **Way of Shade** | Shade · Position / halves — Choosing the ground before anybody swings. Shade spends halves -- the second action in a turn -- and buys back position: reach, cover, and the step that was not there a moment ago. | `nodes/title/way-of-shade.webp` |
 |   | **Way of Strength** | Warrior · Position / weight — Mass that is already moving, and making it somebody else's problem. Strength spends weight -- what you carry and what carrying it costs you -- and turns it into position the other side do... | `nodes/title/way-of-strength.webp` |
 

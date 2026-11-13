@@ -53,11 +53,11 @@ export const NODES = [
    */
   {
     id: "root", name: "Birth", after: [],
-    lore: "Where every character starts, and the only node nobody chooses.\n\nTwo things hang off "
+    lore: "Where every character starts, and the one thing here nobody chooses.\n\nTwo things hang off "
       + "it for nothing: **where you are from** and **what you did before**. Neither costs a level, "
       + "because both are true of you before the first one is spent. Everything else here is a "
-      + "level, and all four Ways stay on your frontier for life (leveling 6) -- this is not a "
-      + "class picked once, and nothing stops you walking into a second Way at level nine."
+      + "level, and all four Ways stay open to you for the whole of a life -- this is not a class "
+      + "picked once, and nothing stops you walking into a second Way at level nine."
   },
 
 
@@ -382,10 +382,10 @@ export const NODES = [
       knowHow: "loads, markets and what a thing weighs"
     },
     lore:
-      "Somebody carries it. On the mesa it goes up by cable car and at both ends of that it goes on "
-      + "a back; in Sammel it crosses between sealed quarters; in the Amber it goes where no cart "
-      + "will.\n\nIt is the least regarded trade in this book and the one that teaches the most about "
-      + "weight, which this game happens to measure."
+      "Somebody carries it. On the mesa it goes up by cable car and at both ends of that it "
+      + "goes on a back; in Sammel it crosses between sealed quarters; in the Amber it goes "
+      + "where no cart will.\n\nIt is the least regarded trade on this list and the one that "
+      + "teaches the most about weight, which this game happens to measure."
   },
 
   /* --- the four Ways, all of them on your frontier for life (leveling 6) --- */
@@ -393,11 +393,11 @@ export const NODES = [
     id: "shade", name: "Way of Shade", after: ["root"], title: "Shade",
     axis: "Position", resource: "halves",
     lore:
-      "Choosing the ground before anybody swings. Shade spends **halves** -- the second action in a "
-      + "turn -- and buys back **position**: reach, cover, and the step that was not there a moment "
-      + "ago.\n\nIt is the narrow, deep Way. Three titles sit off the trunk and nine behind them, so "
-      + "the first step commits to very little and the depth is a long walk rather than a wide "
-      + "choice."
+      "Choosing the ground before anybody swings. Shade spends **halves** -- the second "
+      + "action in a turn -- and buys back **position**: reach, cover, and the step that was "
+      + "not there a moment ago.\n\nIt is the narrow, deep Way. Three titles stand close to "
+      + "the start and nine more behind them, so the first step commits to very little and "
+      + "the depth is a long walk rather than a wide choice."
   },
   {
     id: "strength", name: "Way of Strength", after: ["root"], title: "Warrior",
@@ -405,11 +405,11 @@ export const NODES = [
     lore:
       "Mass that is already moving, and making it somebody else's problem. Strength spends "
       + "**weight** -- what you carry and what carrying it costs you -- and turns it into "
-      + "**position** the other side does not get to choose: ground held, a line that does not move, "
-      + "a blow that arrives whether it was answered or not.\n\nIt is the broad Way. A dozen titles, "
-      + "most of them reachable from more than one direction, so an early step here shuts almost "
-      + "nothing. The trunk itself caps your deck rather than pruning it -- Strength takes more and "
-      + "gets heavier; it does not get neater."
+      + "**position** the other side does not get to choose: ground held, a line that does "
+      + "not move, a blow that arrives whether it was answered or not.\n\nIt is the broad "
+      + "Way. A dozen titles, most of them reachable from more than one direction, so an "
+      + "early step here shuts almost nothing. Strength raises what your deck may hold rather "
+      + "than cutting it down: it takes more and gets heavier, and it does not get neater."
   },
   /*
    * **Both of these grant two slots, and neither did.** way-cards 1.4 says it in one line -- *a
@@ -422,23 +422,23 @@ export const NODES = [
     axis: "Preparation", resource: "spell slots",
     grants: { spellSlots: 2 },
     lore:
-      "What was decided before it mattered. Mind spends **preparation** -- the spell slots and the "
-      + "formulae set before the fight -- and it is the only Way whose first node hands you a "
-      + "resource the sheet had none of at all.\n\nTwelve schools, and a school is a vocabulary "
-      + "rather than a rank: the depth here is in combining them, not in climbing one. Each is also a "
-      + "price written in something other than slots."
+      "What was decided before it mattered. Mind spends **preparation** -- the spell slots "
+      + "and the formulae set before the fight -- and it is the only Way whose first step "
+      + "hands you a resource the sheet had none of at all.\n\nTwelve schools, and a school "
+      + "is a vocabulary rather than a rank: the depth here is in combining them, not in "
+      + "climbing one. Each is also a price written in something other than slots."
   },
   {
     id: "faith", name: "Way of Faith", after: ["root"], title: "Sworn",
     axis: "Support", resource: "an obligation",
     grants: { spellSlots: 2 },
     lore:
-      "Standing for something that is not you. Faith spends an **obligation** -- somebody is owed, "
-      + "and the Way is what they ask -- and it answers in **support**: what you do for the people "
-      + "beside you rather than to the people in front of you.\n\nIt is the one Way whose first step "
-      + "is irreversible. Twelve gods fan out at once and swearing to one refuses the rest for good, "
-      + "because here the first choice IS the content (specializations.md). Wide at that step and "
-      + "committed from it."
+      "Standing for something that is not you. Faith spends an **obligation** -- somebody "
+      + "is owed, and the Way is what they ask -- and it answers in **support**: what you do "
+      + "for the people beside you rather than to the people in front of you.\n\nIt is the "
+      + "one Way whose first step is irreversible. Twelve gods fan out at once and swearing "
+      + "to one refuses the rest for good, because here the first choice IS the content. Wide "
+      + "at that step and committed from it."
   },
 
   /* --- the Shade trunk: three ordinary nodes before the first title --- */
@@ -543,7 +543,8 @@ export const NODES = [
     signature: "One Opening", tactic: "From Behind",
     grants: { card: "One Opening" },
     lore:
-      "The deepest node on this branch and the one with the shortest working day. An assassin's "
+      "The last thing learned on this road, and the trade with the shortest working day. An "
+      + "assassin's "
       + "fight is already decided before the first card; what follows it is tidying.\n\nThe price is "
       + "**Spent** -- cards that do not come back until a rest. You buy one certainty and pay for it "
       + "across the rest of the day, which is why an assassin who has to fight twice is in trouble."
@@ -561,11 +562,11 @@ export const NODES = [
     signature: "Lift", tactic: "Light Fingers",
     grants: { card: "Lift" },
     lore:
-      "A crowd specialist. The Cutpurse works in markets, processions and the press at a city gate, "
-      + "and the whole trade is to be the least interesting person present.\n\n**Deck size** is the "
-      + "resource: this is the branch that prunes, and a lean deck draws what it needs. The cost is "
-      + "that a pruned deck has no answer to the thing it pruned, and a Cutpurse meets that "
-      + "eventually."
+      "A crowd specialist. The Cutpurse works in markets, processions and the press at a "
+      + "city gate, and the whole trade is to be the least interesting person "
+      + "present.\n\n**Deck size** is the resource: this is where a deck gets cut down, and a "
+      + "lean deck draws what it needs. The cost is that a pruned deck has no answer to the "
+      + "thing it pruned, and a Cutpurse meets that eventually."
   },
 
   { id: "shade.thief.ropework", name: "Ropework", after: ["shade.thief"], grants: { item: "Climbing Rope", training: "rope and climbing" } },
@@ -718,10 +719,10 @@ export const NODES = [
     signature: "One Trick", tactic: "One Hand Free",
     grants: { spellSlots: 2, feature: "One Trick" },
     lore:
-      "One trick, learned properly, in a Way that has no magic. The Half-mage is the crossing made "
-      + "flesh -- a Shade who went and asked.\n\n**Spell slots** on a sheet that was not built for "
-      + "them, which is why there is one and not three. The hand stays free, because a Half-mage who "
-      + "needs both hands has stopped being a Shade and has not become a mage."
+      "One trick, learned properly, in a Way that has no magic. The Half-mage is what "
+      + "happens when a Shade goes and asks.\n\n**Spell slots** on a sheet that was not built "
+      + "for them, which is why there is one and not three. The hand stays free, because a "
+      + "Half-mage who needs both hands has stopped being a Shade and has not become a mage."
   },
 
   /*
@@ -848,10 +849,11 @@ export const NODES = [
     signature: "Cleave to the Bone", tactic: "No Second Thought",
     grants: { feature: "Cleave to the Bone" },
     lore:
-      "One blow, delivered correctly, to something that is already finished. The Executioner is the "
-      + "most unpleasant title in this book and it is deliberately not a murderer's.\n\nYou spend "
-      + "**halves**: the whole turn goes into one action, which means no step, no guard and no second "
-      + "thought. If it survives, you are standing in front of it with nothing left."
+      "One blow, delivered correctly, to something that is already finished. The "
+      + "Executioner is the most unpleasant title on offer here and it is deliberately not a "
+      + "murderer's.\n\nYou spend **halves**: the whole turn goes into one action, which "
+      + "means no step, no guard and no second thought. If it survives, you are standing in "
+      + "front of it with nothing left."
   },
   {
     id: "strength.gladiator", name: "Gladiator", after: ["strength.scars"], title: "Gladiator",
@@ -897,10 +899,11 @@ export const NODES = [
     signature: "Nothing Gets Through", tactic: "Immovable",
     grants: { feature: "Nothing Gets Through" },
     lore:
-      "Armour as an identity. The Ironclad is slower than everything else on the board and does not "
-      + "care, because the plan was never to be anywhere else.\n\n**Weight** is the price and the "
-      + "point: this is the branch that caps the deck rather than prunes it, and an Ironclad gets "
-      + "heavier, not neater. Immovable is a promise and a confession."
+      "Armour as an identity. The Ironclad is slower than everything else on the board and "
+      + "does not care, because the plan was never to be anywhere else.\n\n**Weight** is the "
+      + "price and the point: an Ironclad raises what the deck may hold rather than cutting "
+      + "it down, and gets heavier rather than neater. Immovable is a promise and a "
+      + "confession."
   },
 
   { id: "strength.infantry.crews", name: "Crews", after: ["strength.infantry"], grants: { card: "Heave" } },
@@ -1242,10 +1245,10 @@ export const NODES = [
     signature: "Nothing Left to Take", tactic: "The Still Point",
     grants: { spell: "Nothing Left to Take" },
     lore:
-      "The school that gives things up. An ascetic's power is in what they are not carrying, not "
-      + "holding and not preparing.\n\nThe resource is **an empty hand**, and this is the only branch "
-      + "in the game that gets stronger as the deck gets thinner. Nothing left to take is a boast "
-      + "when it is true and a eulogy when it is not quite."
+      "The school that gives things up. An ascetic's power is in what they are not "
+      + "carrying, not holding and not preparing.\n\nThe resource is **an empty hand**, and "
+      + "this is the only discipline in the game that gets stronger as the deck gets thinner. "
+      + "Nothing left to take is a boast when it is true and a eulogy when it is not quite."
   },
 
   {
@@ -1286,10 +1289,11 @@ export const NODES = [
     signature: "Step Through", tactic: "At Home in the Dark",
     grants: { spell: "Step Through" },
     lore:
-      "Stepping through. Shadow magic is the school that moves you, and it is the only one whose "
-      + "price is permanent.\n\n**A permanent Wild** in your fate deck -- forever, not until a rest. "
-      + "Every draw you ever make afterwards carries the card you paid with, which is the most "
-      + "expensive sentence in this book and the reason the school is small."
+      "Stepping through. Shadow magic is the school that moves you, and it is the only one "
+      + "whose price is permanent.\n\n**A permanent Wild** in your fate deck -- forever, not "
+      + "until a rest. Every draw you ever make afterwards carries the card you paid with, "
+      + "which is the costliest promise anyone makes in this game and the reason the school "
+      + "is small."
   },
 
   {
@@ -1547,11 +1551,11 @@ export const NODES = [
     gift: "His miracles need no free hand: the spiked club is the holy symbol.",
     grants: { spell: "The Club and the Line", freehandCast: true },
     lore:
-      "A war god with followers in every town in the Amber, where nobody minds what you believe "
-      + "because there is too much else to mind.\n\nYou spend **Health**, every miracle, and in "
-      + "exchange the spiked club IS the holy symbol -- the one rule set aside anywhere in this "
-      + "graph. Vax's bargain is the plainest in the book: no free hand required, and it costs you "
-      + "blood."
+      "A war god with followers in every town in the Amber, where nobody minds what you "
+      + "believe because there is too much else to mind.\n\nYou spend **Health**, every "
+      + "miracle, and in exchange the spiked club IS the holy symbol -- the one rule set "
+      + "aside anywhere in the game. Vax's bargain is the plainest in the book: no free hand "
+      + "required, and it costs you blood."
   },
   { id: "faith.vax.club", name: "The Club", after: ["faith.vax"], grants: { spell: "Stand Where I Stand" } },
   { id: "faith.vax.shield", name: "The Shield", after: ["faith.vax.club"], grants: { spell: "The Shield Line" } },
@@ -1771,10 +1775,10 @@ export const NODES = [
       + "taste it, always.",
     grants: { spell: "The First Taste" },
     lore:
-      "The Grey's sibling, and the one that drinks first. The Purple takes what is in the cup so "
-      + "that somebody else does not have to.\n\nThe resource is **Taint** -- the intruder in your "
-      + "own deck, accepted on purpose. The cup passes is the kindest sentence on this Way and the "
-      + "most expensive: what it passes from is you."
+      "The Grey's sibling, and the one that drinks first. The Purple takes what is in the "
+      + "cup so that somebody else does not have to.\n\nThe resource is **Taint** -- the "
+      + "intruder in your own deck, accepted on purpose. The cup passes is the kindest "
+      + "promise on this Way and the most expensive: what it passes from is you."
   },
   { id: "faith.purple.dose", name: "The Dose", after: ["faith.purple"], grants: { spell: "Taste of the Rot" } },
   {

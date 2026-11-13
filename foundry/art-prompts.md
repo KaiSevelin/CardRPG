@@ -3741,7 +3741,7 @@ WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of M
 File: `nodes/title/assassin.webp`
 
 ```text
-SUBJECT. "Assassin" — Assassin · Tempo / Spent — The deepest node on this branch and the one with the shortest working day. An assassin's fight is already decided before the first card; what follows it is tidying.
+SUBJECT. "Assassin" — Assassin · Tempo / Spent — The last thing learned on this road, and the trade with the shortest working day. An assassin's fight is already decided before the first card; what follows it is tidying.
 
 Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
 
@@ -3873,7 +3873,7 @@ WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of S
 File: `nodes/title/executioner.webp`
 
 ```text
-SUBJECT. "Executioner" — Executioner · Tempo / halves — One blow, delivered correctly, to something that is already finished. The Executioner is the most unpleasant title in this book and it is deliberately not a murderer's.
+SUBJECT. "Executioner" — Executioner · Tempo / halves — One blow, delivered correctly, to something that is already finished. The Executioner is the most unpleasant title on offer here and it is deliberately not a murderer's.
 
 Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
 
@@ -3957,7 +3957,7 @@ WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of N
 File: `nodes/title/half-mage.webp`
 
 ```text
-SUBJECT. "Half-mage" — Half-mage · Preparation / spell slots — One trick, learned properly, in a Way that has no magic. The Half-mage is the crossing made flesh -- a Shade who went and asked.
+SUBJECT. "Half-mage" — Half-mage · Preparation / spell slots — One trick, learned properly, in a Way that has no magic. The Half-mage is what happens when a Shade goes and asks.
 
 Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
 
@@ -4317,7 +4317,7 @@ WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of C
 File: `nodes/title/way-of-mind.webp`
 
 ```text
-SUBJECT. "Way of Mind" — Scholar · Preparation / spell slots — What was decided before it mattered. Mind spends preparation -- the spell slots and the formulae set before the fight -- and it is the only Way whose first node hands you a resour...
+SUBJECT. "Way of Mind" — Scholar · Preparation / spell slots — What was decided before it mattered. Mind spends preparation -- the spell slots and the formulae set before the fight -- and it is the only Way whose first step hands you a resour...
 
 Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
 
