@@ -1,6 +1,6 @@
 # Art list
 
-**682 pieces**, of which **682** are drawn and **0** still to shoot. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
+**760 pieces**, of which **682** are drawn and **78** still to shoot. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
 
 ## What to supply
 
@@ -51,7 +51,7 @@ Anything under `icons/svg/` is ignored on purpose: that is Foundry's own placeho
 
 ## Deck backs — draw these first
 
-**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 11 pictures against 671 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
+**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 11 pictures against 749 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
 
 **11 pieces**, 11 wired up. Same 2:3 and 640 × 960 as a face, and **no safe area**: nothing is printed over a back, so the whole card is yours.
 
@@ -354,6 +354,117 @@ Turned face up in front of four people who have been working toward this for a s
 | ✓ | **Plus Two** | Two strokes crossing above the middle and clear of the top edge, the ink pooling dark and deliberate where they meet. | `cards/fate/plus-two.webp` |
 | ✓ | **Wild** | Ink let into water: a bloom going somewhere nobody chose, the edge still moving and the shape not settled. No symmetry and no centre. | `cards/fate/wild.webp` |
 | ✓ | **Zero** | The quietest card in the game, and it is the one seen most. A single flat tide-line of wash across the frame and almost nothing above or below it. | `cards/fate/zero.webp` |
+
+## Origins — where a character is from
+
+**Ten places, and every one of them is in the world file.** A player picks one at character creation, for nothing, and it is the first picture they will ever see in this game — the level-up pane shows it beside the description while they are deciding who they are.
+
+**Draw the place, not a person from it.** An origin is shared by every character who takes it, so a figure in the frame is somebody else's character. A harbour at a particular hour, a mesa seen from the plain below, a sealed quarter's gate: somewhere a person could be standing, with nobody standing in it.
+
+**10 pieces**. Suggested path: `cardrpg/art/nodes/origin/`
+
+| | Name | What it is | File |
+|---|---|---|---|
+|   | **Echterhof-born** | A large neutral city in the middle of Horde territory, ruled by Strigoi princes, with farmland around it the Horde has left alone. Strigoi live off humans, so a large human population lives there between the vampires ... | `nodes/origin/echterhof-born.webp` |
+|   | **Furnace Stock** | You were not born in the Furnace District -- nobody has been for a generation. You were born into what came out of it: the engineering guilds its refugees founded in every surviving district, which kept the trade, the... | `nodes/origin/furnace-stock.webp` |
+|   | **Saag et Haar** | What is left of Seetch, the realm of the necromancer kings, south of the Hyena Desert. The greatest of them, Fahlas, still rules it after four hundred years and has become a minor god. | `nodes/origin/saag-et-haar.webp` |
+|   | **The Amber** | The far east, the second largest district and the one that was never entirely tamed. Dragons turn up. Trolls live in the forests. Dense wet conifer, broken by lakes and bog. | `nodes/origin/the-amber.webp` |
+|   | **The Core** | Born on the mesa or in the satellite cities under it: Geistburg, a dozen corrupt noble houses and a powerless man still titled emperor. You grew up knowing which of them to be careful of. | `nodes/origin/the-core.webp` |
+|   | **The Fiord** | Black Harbour, the fishing villages, or one of the islands close enough in to count. The sea cuts so deep inland here that the ring runs through water, and six enormous lighthouses mark where. | `nodes/origin/the-fiord.webp` |
+|   | **The Iron** | The northern half of the Hyena Desert, or the mineral mountains above it. Sammel is the only real city and the emirs have cut it into sealed quarters called Rote -- the old assassin state holds the central one, around... | `nodes/origin/the-iron.webp` |
+|   | **The Ruby** | Warm hills in the south-east, wine and fruit, winter palaces the rich no longer visit. A voted council governs from Tanto and nobody especially minds what you believe or who you are. | `nodes/origin/the-ruby.webp` |
+|   | **Velderon** | The elves' embassy on Firma, east of the Fiord: an ancient elven ruin with one restored corner. You do not go in without an invitation, so whatever brought you up there was unusual. | `nodes/origin/velderon.webp` |
+|   | **Wolf Peak** | A religious centre of the faith of the Fire, on a dormant volcano north of the Amber, never once taken. The roads to the summit are easy to hold and the mountain feeds itself. | `nodes/origin/wolf-peak.webp` |
+
+## Backgrounds — what a character did before
+
+**Twelve trades**, taken at creation beside an origin and for nothing. Where an origin is a place, a background is work.
+
+**Draw the work, not the worker.** Same reason as the origins: the picture is shared by everybody who was ever a Soldier, so it is the kit, the bench, the deck of a boat at the hour the job is done — hands at most, and a face never. The trained tool each one issues is a good place to start and a dull place to stop.
+
+**12 pieces**. Suggested path: `cardrpg/art/nodes/background/`
+
+| | Name | What it is | File |
+|---|---|---|---|
+|   | **Acolyte** | You were raised in or given to a temple -- of the Eternal God in the Core, of the Five in the Fiord, of the Fire on Wolf Peak, of Aecht in Saag et Haar. Which one you were is a different question from which one you are. | `nodes/background/acolyte.webp` |
+|   | **Caravan Guard** | Everything between the districts moves by road or does not move. The West Road is a tunnel with cities in it, the Cracked Road is limestone and not safe, and the East Road has the Night Express running through its own... | `nodes/background/caravan-guard.webp` |
+|   | **Card Sharp** | Sol, where everything is permitted, or the back of any inn on any road. A deck is honest and the hands holding it are the variable. | `nodes/background/card-sharp.webp` |
+|   | **Forester** | The Amber is wet conifer forest broken by lakes and bog, and most of it is nobody's. Timber was the export until the Furnace fell and took the routes with it; what is left is hunting, and the forest barons who are bro... | `nodes/background/forester.webp` |
+|   | **Guild Apprentice** | The Furnace's refugees founded engineering guilds in every surviving district, and a guild takes children. Seven years of fetching, grinding and being shouted at, and somewhere in it you learned how things come apart. | `nodes/background/guild-apprentice.webp` |
+|   | **Hedge Healer** | Most of Firma has no physician and never will. What it has is somebody in the village who knows which leaf, who has set bones before, and who is sent for at night. | `nodes/background/hedge-healer.webp` |
+|   | **Miner** | The Mouse Mountains above the Hyena Desert, or the Spear Mountains, or one of the roads being cut between districts. The Iron's mining is also why the East Road is the least safe road: dig far enough and something com... | `nodes/background/miner.webp` |
+|   | **Porter** | Somebody carries it. On the mesa it goes up by cable car and at both ends of that it goes on a back; in Sammel it crosses between sealed quarters; in the Amber it goes where no cart will. | `nodes/background/porter.webp` |
+|   | **Sailor** | The Fiord lands most of the continent's fish and the Ruby's coast feeds its cities, so there is work on the water for anybody who can keep their feet on a wet deck. | `nodes/background/sailor.webp` |
+|   | **Soldier** | Somebody drilled you until it stopped being a decision. Every district hires soldiers and only the Amber sells nothing else, so where you did it says as much as that you did. | `nodes/background/soldier.webp` |
+|   | **Street Urchin** | You grew up in the parts of a city that are on no map the city admits to: the slums over the rock under Geistburg, the back of Black Harbour, the Rote nobody collects rubbish from. | `nodes/background/street-urchin.webp` |
+|   | **Vintner** | The Ruby's hills are warm and its wine is what the district is known for, and selling it means a season on the roads with something fragile and valuable. | `nodes/background/vintner.webp` |
+
+## Titles — who a character becomes
+
+**Fifty-six, and the only shelf in this book whose subject is a PERSON.** Everything else here is an object, a gesture or a place, for the same reason every time: one picture has to serve a goblin, a dragon and the player. A title does not — it is one character's own standing, read in a panel while they decide whether to spend a level on becoming it.
+
+**So draw the figure, and draw them doing the thing the title is about.** The axis and the resource in each brief are the distinguishing pair: a Thief spends a slot kept free and a Duellist spends halves, and the pictures should differ the way those two sentences do. The four Ways are in here too — Shade, Warrior, Scholar and Sworn are titles, and they are the four a level-0 character chooses between.
+
+**56 pieces**. Suggested path: `cardrpg/art/nodes/title/`
+
+| | Name | What it is | File |
+|---|---|---|---|
+|   | **Acrobat** | Acrobat · Position / weight — Vertical. Over a table, off a wall, through the gap two people left between them -- an acrobat treats a room as a surface rather than a floor. | `nodes/title/acrobat.webp` |
+|   | **Anchorite** | Anchorite · Deck shape / skill cards — Walled in, on purpose. An anchorite's cell is a room with a window onto a church and no door, and the practice is old enough that nobody questions it. | `nodes/title/anchorite.webp` |
+|   | **Archer** | Archer · Position / range — The only Shade title that wants open ground. An archer's problem is never the shot -- it is being the thing on the hill that everybody can see. | `nodes/title/archer.webp` |
+|   | **Artillerist** | Artillerist · Position / ground — Engines. Bombards, swivel guns and the Furnace's leftovers -- an artillerist thinks in arcs and in the ground the arc lands on. | `nodes/title/artillerist.webp` |
+|   | **Asceticism** | Asceticism · Deck shape / an empty hand — The school that gives things up. An ascetic's power is in what they are not carrying, not holding and not preparing. | `nodes/title/asceticism.webp` |
+|   | **Assassin** | Assassin · Tempo / Spent — The deepest node on this branch and the one with the shortest working day. An assassin's fight is already decided before the first card; what follows it is tidying. | `nodes/title/assassin.webp` |
+|   | **Bard** | Bard · Reactions / someone else's turn — A fighter who talks. The Bard is the one title here that works on the other side's attention, and the heckling is the mechanism rather than the flavour. | `nodes/title/bard.webp` |
+|   | **Berserker** | Berserker · Deck shape / Spent — Forward only. The Berserker is not angry for effect; the anger is the mechanism and it does not have a reverse gear. | `nodes/title/berserker.webp` |
+|   | **Blood Magic** | Blood Magic · Tempo / your own Health — The oldest arrangement on the continent and the one the rings run on. A blood mage pays in the only currency magic has ever reliably accepted. | `nodes/title/blood-magic.webp` |
+|   | **Bodyguard** | Bodyguard · Reactions / ground — A person, not a door. The Bodyguard's entire subject is somebody else's body being between them and the thing coming at it. | `nodes/title/bodyguard.webp` |
+|   | **Brendan** | Brendan · Support / a turn spent early — Growing things, in the least promising ground available. Brendan is the Five's quiet one and the only god on this Way whose miracles are mostly agricultural. | `nodes/title/brendan.webp` |
+|   | **Burglar** | Burglar · Preparation / weight — Doors, locks, windows, roofs and the half-hour before any of it that nobody sees. A burglar's skill is logistics; the climbing is the easy part. | `nodes/title/burglar.webp` |
+|   | **Cutpurse** | Cutpurse · Deck shape / deck size — A crowd specialist. The Cutpurse works in markets, processions and the press at a city gate, and the whole trade is to be the least interesting person present. | `nodes/title/cutpurse.webp` |
+|   | **Divination** | Divination · Support / someone else's turn — Reading. A diviner's work is other people's turns -- what is about to happen, said just early enough to matter. | `nodes/title/divination.webp` |
+|   | **Duellist** | Duellist · Reactions / halves — A formal fighter in a Way full of informal ones. The Duellist names an opponent and fights that opponent, and the courtesy is not politeness -- it is a narrowing. | `nodes/title/duellist.webp` |
+|   | **Elemental Magic** | Elemental Magic · Position / reagents — The physical school. Fire, water, stone and air, worked by formula rather than by bargain, and the most reliable magic in the game. | `nodes/title/elemental-magic.webp` |
+|   | **Executioner** | Executioner · Tempo / halves — One blow, delivered correctly, to something that is already finished. The Executioner is the most unpleasant title in this book and it is deliberately not a murderer's. | `nodes/title/executioner.webp` |
+|   | **Fagar** | Fagar · Control / Spent — The borrowed face. Fagar is the Five's god of the ones who are not noticed, and the priesthood is deliberately difficult to identify. | `nodes/title/fagar.webp` |
+|   | **Flagellant** | Flagellant · Tempo / a permanent Wild — Past caring. The Flagellant is the order the others are embarrassed by and the one that arrives when a town is already lost. | `nodes/title/flagellant.webp` |
+|   | **Gambler** | Gambler · Deck shape / the fate deck — The player who has read the fate deck and knows what is left in it. A gambler is not reckless -- reckless is what it looks like from outside. | `nodes/title/gambler.webp` |
+|   | **Gladiator** | Gladiator · Reactions / Health — A fighter whose job is to be watched. The Gladiator plays to a crowd that may be an actual crowd or may be two people in a tavern, and the showmanship is load-bearing. | `nodes/title/gladiator.webp` |
+|   | **Glamour** | Glamour · Control / an elven debt — Elven work, done by somebody who is not one. Glamour is not illusion exactly -- it is the question of whether you were ever quite there. | `nodes/title/glamour.webp` |
+|   | **Guardian** | Guardian · Reactions / a slot kept free — Standing in a doorway. The Guardian is not a defender of people but of a *place*, and the difference is the whole title. | `nodes/title/guardian.webp` |
+|   | **Half-mage** | Half-mage · Preparation / spell slots — One trick, learned properly, in a Way that has no magic. The Half-mage is the crossing made flesh -- a Shade who went and asked. | `nodes/title/half-mage.webp` |
+|   | **Household Magic** | Household Magic · Support / a place you know — Small magic, done where you live. Bread, locks, hinges, the fire catching first time -- the least respected school and the only one most of Firma has ever actually seen. | `nodes/title/household-magic.webp` |
+|   | **Infantry** | Infantry · Position / an ally — The line. Not a hero -- a person standing next to another person, which is the whole of what makes infantry work and the reason it is the first title on this Way. | `nodes/title/infantry.webp` |
+|   | **Inquisitor** | Inquisitor · Control / a secret — An order rather than a god: the Circle's writ, carried by somebody with the authority to ask and the standing to be answered. | `nodes/title/inquisitor.webp` |
+|   | **Ironclad** | Ironclad · Deck shape / weight — Armour as an identity. The Ironclad is slower than everything else on the board and does not care, because the plan was never to be anywhere else. | `nodes/title/ironclad.webp` |
+|   | **Knight** | Knight · Position / gear you can lose — A charge, a lance and about four hundred pounds of trained animal. The Knight is the Core District's own idea of a fighter and the Amber's idea of a joke. | `nodes/title/knight.webp` |
+|   | **Musketeer** | Musketeer · Preparation / range — Powder and a long reload. The best firearms on the continent come off Wolf Peak, and a musketeer's whole discipline is the thirty seconds before anybody needs them. | `nodes/title/musketeer.webp` |
+|   | **Necromancy** | Necromancy · Preparation / a bound Taint — Saag et Haar's export. Raising the dead is cheaper than the alternative in sacrifices, which is the nearest thing to an argument for it anybody makes. | `nodes/title/necromancy.webp` |
+|   | **Poison** | Poison · Control / skill cards — Patience, chemistry and somebody else's timetable. A poisoner is not in the fight; a poisoner arranged the fight three days ago. | `nodes/title/poison.webp` |
+|   | **Scout** | Scout · Support / being alone — The one who is already a mile ahead and has been since dawn. A scout is not a sneak: the job is to see and come back, and most of it happens before anybody draws anything. | `nodes/title/scout.webp` |
+|   | **Sessyfyn** | Sessyfyn · Support / the fate deck — One of the Five, strongest in the Fiord where the old faith never gave way. Sessyfyn is tide, catch and the sea's own arithmetic. | `nodes/title/sessyfyn.webp` |
+|   | **Shadow Magic** | Shadow Magic · Position / a permanent Wild — Stepping through. Shadow magic is the school that moves you, and it is the only one whose price is permanent. | `nodes/title/shadow-magic.webp` |
+|   | **Shieldsworn** | Shieldsworn · Support / ground — The order that stands in front. The Shieldsworn are hired by districts that cannot field soldiers and trusted by people who have no reason to trust anybody. | `nodes/title/shieldsworn.webp` |
+|   | **Spiritualism** | Spiritualism · Preparation / a pact — Asking something. Spiritualism is not a technique but a negotiation, and the thing on the other end has its own reasons. | `nodes/title/spiritualism.webp` |
+|   | **Street Fighter** | Street Fighter · Control / a weapon's value — No lance, no line, no crowd. The Street Fighter wins in an alley against somebody better equipped, which is a different skill from winning a battle. | `nodes/title/street-fighter.webp` |
+|   | **Tactician** | Tactician · Support / halves — The one giving orders, which in this game means spending your own turn on someone else's. A tactician's contribution is invisible on their own sheet. | `nodes/title/tactician.webp` |
+|   | **Tattoo Magic** | Tattoo Magic · Deck shape / a secret — Magic worked into skin. Wolf Peak's priesthood is covered in it and will not discuss it, and what a tattoo mage has is permanent, visible and already paid for. | `nodes/title/tattoo-magic.webp` |
+|   | **The Eternal God** | The Eternal God · Control / deck size — The Church of the Eternal God: the Core's official faith, a cathedral grown into a town of its own, and the hypocrisy that walks beside the mages' academy on the same plain. | `nodes/title/the-eternal-god.webp` |
+|   | **The Eternal Spirit** | The Eternal Spirit · Reactions / weight — The same god from the other side, and the half the Fiord calls blasphemy. The Spirit is breath, movement and the air going where it was not. | `nodes/title/the-eternal-spirit.webp` |
+|   | **The First** | The First · Deck shape / spell slots — The first vampire, worshipped in Echterhof where the Strigoi princes rule and the mayor chooses who is eaten. | `nodes/title/the-first.webp` |
+|   | **The Grey** | The Grey · Reactions / range — Worshipped across the Iron District, where the emirs rule and the old assassin state holds the central Rote. The Grey is the silent hour and the thing that happens in it. | `nodes/title/the-grey.webp` |
+|   | **The Purple** | The Purple · Control / Taint — The Grey's sibling, and the one that drinks first. The Purple takes what is in the cup so that somebody else does not have to. | `nodes/title/the-purple.webp` |
+|   | **The Yellow** | The Yellow · Preparation / halves — Rumour as a sacrament. The Yellow is the third of the Grey's siblings and the one the other two do not discuss. | `nodes/title/the-yellow.webp` |
+|   | **Thief** | Thief · Control / a slot kept free — Not a burglar and not a cutpurse -- the one who is in the room and should not be, and whose whole art is that nobody looks where the thing actually is. | `nodes/title/thief.webp` |
+|   | **Trapmaker** | Trapmaker · Preparation / a turn spent early — Patience as a weapon. A trapmaker does not win the fight they are in; they win the one they arranged two rooms ago. | `nodes/title/trapmaker.webp` |
+|   | **Valtor** | Valtor · Tempo / Strain — The drum. Valtor is the Five's war god and the only one whose worship is audible from the next valley. | `nodes/title/valtor.webp` |
+|   | **Vax** | Vax · Position / Health — A war god with followers in every town in the Amber, where nobody minds what you believe because there is too much else to mind. | `nodes/title/vax.webp` |
+|   | **Vulpet** | Vulpet · Preparation / an ally — The outcast's god. Vulpet is owed by the people nobody else is obliged to, and the priesthood goes where the rest of the Five will not. | `nodes/title/vulpet.webp` |
+|   | **Ward Magic** | Ward Magic · Reactions / Spent — Unmaking. A warder's craft is the opposite of every other school's: not doing a thing, but ensuring a thing does not happen. | `nodes/title/ward-magic.webp` |
+|   | **Way of Faith** | Sworn · Support / an obligation — Standing for something that is not you. Faith spends an obligation -- somebody is owed, and the Way is what they ask -- and it answers in support: what you do for the people beside yo... | `nodes/title/way-of-faith.webp` |
+|   | **Way of Mind** | Scholar · Preparation / spell slots — What was decided before it mattered. Mind spends preparation -- the spell slots and the formulae set before the fight -- and it is the only Way whose first node hands you a resour... | `nodes/title/way-of-mind.webp` |
+|   | **Way of Shade** | Shade · Position / halves — Choosing the ground before anybody swings. Shade spends halves -- the second action in a turn -- and buys back position: reach, cover, and the step that was not there a moment ago. | `nodes/title/way-of-shade.webp` |
+|   | **Way of Strength** | Warrior · Position / weight — Mass that is already moving, and making it somebody else's problem. Strength spends weight -- what you carry and what carrying it costs you -- and turns it into position the other side do... | `nodes/title/way-of-strength.webp` |
 
 ## Wounds and Taint
 

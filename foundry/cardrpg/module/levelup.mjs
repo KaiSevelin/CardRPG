@@ -856,7 +856,25 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
         ${game.i18n.localize("CARDRPG.Level.Closes")}:</strong> ${closes.map(esc).join(", ")}</p>`);
     }
 
-    box.innerHTML = `<h3>${esc(node.name ?? showing)}</h3>${rows.join("")}`;
+    /*
+     * **The picture, at the top, above everything the panel says.**  [BUILT 2026-11-13]
+     *
+     * The panel was prose and a list of grants, in a window whose whole argument is that a
+     * level-up is a direction rather than a menu -- and a direction with no picture is a menu with
+     * longer entries. `artFor` resolves the node's own commissioned piece, or the art of what it
+     * hands over for the minor nodes that have none.
+     *
+     * `getRoute` and an escaped quote for the same reason `crArt` carries them: a relative path in
+     * a style attribute resolves against the stylesheet, and an apostrophe in a filename closes
+     * the attribute. Every other picture in this system learned both the hard way.
+     */
+    const art = artFor(node);
+    const picture = art && art !== "none"
+      ? `<div class="cr-levelup__art" role="img" aria-label="${esc(node.name ?? showing)}"
+           style="background-image: url('${foundry.utils.getRoute(art).replaceAll("'", "%27")}')"
+         ></div>`
+      : "";
+    box.innerHTML = `${picture}<h3>${esc(node.name ?? showing)}</h3>${rows.join("")}`;
     this.#setButtons(showing === this.tentative);
     this.#renderChoiceCount();
   }
@@ -990,7 +1008,18 @@ function wayOf(id) {
  * It never reproduced headlessly, which is worth writing down: the throw is on the **render** path,
  * so a Node test of the same elements and the same stylesheet passes every property on every one.
  */
+/*
+ * **Its own picture first, and the reward's only as a fallback.**  [2026-11-13]
+ *
+ * Origins, backgrounds and all fifty-six titles are commissioned pieces now, on three shelves of
+ * their own, because the description panel shows a picture beside the prose and a borrowed card
+ * face is a picture of the REWARD rather than of the person. The borrowed one stays for the
+ * hundred-odd minor nodes that have no portrait and never will: a station on a branch is the card
+ * it hands over, which is what the old brief meant and is still true of them.
+ */
 function artFor(node) {
+  const own = node ? artIn(node) : "";
+  if (own) return own;
   const name = node?.grants?.card ?? node?.grants?.spell ?? node?.grants?.feature
     ?? node?.grants?.item ?? null;
   const def = name ? (POOL.get(name) ?? SPELLS.get(name) ?? SLATES.get(name) ?? null) : null;

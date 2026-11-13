@@ -88,55 +88,94 @@ export const NODES = [
     id: "origin.core", name: "The Core", after: ["root"], free: true, exclusive: "origin",
     grants: { knowHow: "courts, clerks and who outranks whom" },
     lore:
-      "Born on the mesa or in the satellite cities under it: Geistburg, a dozen corrupt noble houses and a powerless man still titled emperor. You grew up knowing which of them to be careful of.\n\nThe rich live inside the walls, the slums cover the rest of the rock, and ordinary people are out on the plain where the food is grown. Whichever of those you came from, you learned the shape of the whole thing -- that is what the Core teaches."
+      "Born on the mesa or in the satellite cities under it: Geistburg, a dozen corrupt noble "
+      + "houses and a powerless man still titled emperor. You grew up knowing which of them to be "
+      + "careful of.\n\nThe rich live inside the walls, the slums cover the rest of the rock, and "
+      + "ordinary people are out on the plain where the food is grown. Whichever of those you came "
+      + "from, you learned the shape of the whole thing -- that is what the Core teaches."
   },
   {
     id: "origin.fiord", name: "The Fiord", after: ["root"], free: true, exclusive: "origin",
     grants: { knowHow: "boats, tides and harbour business" },
     lore:
-      "Black Harbour, the fishing villages, or one of the islands close enough in to count. The sea cuts so deep inland here that the ring runs through water, and six enormous lighthouses mark where.\n\nThe Salt Barons are gone and their habits are not: fishing, smuggling and piracy were one trade with three names. The old faith of the Five is strong and the Church of the Eternal God is blasphemy, which is worth remembering before you say grace."
+      "Black Harbour, the fishing villages, or one of the islands close enough in to count. The sea "
+      + "cuts so deep inland here that the ring runs through water, and six enormous lighthouses mark "
+      + "where.\n\nThe Salt Barons are gone and their habits are not: fishing, smuggling and piracy "
+      + "were one trade with three names. The old faith of the Five is strong and the Church of the "
+      + "Eternal God is blasphemy, which is worth remembering before you say grace."
   },
   {
     id: "origin.ruby", name: "The Ruby", after: ["root"], free: true, exclusive: "origin",
     grants: { knowHow: "wine, trade and a good table" },
     lore:
-      "Warm hills in the south-east, wine and fruit, winter palaces the rich no longer visit. A voted council governs from Tanto and nobody especially minds what you believe or who you are.\n\nIt is the easiest district to have been a child in and the hardest to be taken seriously from. Sol is down the road, the underground city where everything is permitted, and half the continent assumes you have been."
+      "Warm hills in the south-east, wine and fruit, winter palaces the rich no longer visit. A "
+      + "voted council governs from Tanto and nobody especially minds what you believe or who you "
+      + "are.\n\nIt is the easiest district to have been a child in and the hardest to be taken "
+      + "seriously from. Sol is down the road, the underground city where everything is permitted, "
+      + "and half the continent assumes you have been."
   },
   {
     id: "origin.iron", name: "The Iron", after: ["root"], free: true, exclusive: "origin",
     grants: { knowHow: "deserts, caravans and what water is worth" },
     lore:
-      "The northern half of the Hyena Desert, or the mineral mountains above it. Sammel is the only real city and the emirs have cut it into sealed quarters called Rote -- the old assassin state holds the central one, around the Ziggurat.\n\nOut past the oases there is nothing but a caravan camp wherever there is water. You know what a day's march costs, and you know that the embassies in the Rote sell things under the table in every district but the Amber."
+      "The northern half of the Hyena Desert, or the mineral mountains above it. Sammel is the only "
+      + "real city and the emirs have cut it into sealed quarters called Rote -- the old assassin "
+      + "state holds the central one, around the Ziggurat.\n\nOut past the oases there is nothing but "
+      + "a caravan camp wherever there is water. You know what a day's march costs, and you know that "
+      + "the embassies in the Rote sell things under the table in every district but the Amber."
   },
   {
     id: "origin.amber", name: "The Amber", after: ["root"], free: true, exclusive: "origin",
     grants: { knowHow: "forests, tracking and living rough" },
     lore:
-      "The far east, the second largest district and the one that was never entirely tamed. Dragons turn up. Trolls live in the forests. Dense wet conifer, broken by lakes and bog.\n\nKarmat is in decline and mercenaries are the only thing it still sells; every town runs itself and the mayor's chair changes hands bloodily and often. Vax has the most followers and nobody minds what you believe, because there is too much else to mind."
+      "The far east, the second largest district and the one that was never entirely tamed. Dragons "
+      + "turn up. Trolls live in the forests. Dense wet conifer, broken by lakes and bog.\n\nKarmat "
+      + "is in decline and mercenaries are the only thing it still sells; every town runs itself and "
+      + "the mayor's chair changes hands bloodily and often. Vax has the most followers and nobody "
+      + "minds what you believe, because there is too much else to mind."
   },
   {
     id: "origin.furnace", name: "Furnace Stock", after: ["root"], free: true, exclusive: "origin",
     grants: { knowHow: "machinery, guilds and how a thing was made", language: "Valgar" },
     lore:
-      "You were not born in the Furnace District -- nobody has been for a generation. You were born into what came out of it: the engineering guilds its refugees founded in every surviving district, which kept the trade, the manners and the language.\n\nThe Furnace built the Iron's trains, the Fiord's sea defences and the Core's cable cars, and then the Horde came in and Weder went to ruins and bog. Everyone in the guild hall speaks **Valgar** and nobody outside it does."
+      "You were not born in the Furnace District -- nobody has been for a generation. You were born "
+      + "into what came out of it: the engineering guilds its refugees founded in every surviving "
+      + "district, which kept the trade, the manners and the language.\n\nThe Furnace built the "
+      + "Iron's trains, the Fiord's sea defences and the Core's cable cars, and then the Horde came "
+      + "in and Weder went to ruins and bog. Everyone in the guild hall speaks **Valgar** and nobody "
+      + "outside it does."
   },
   {
     id: "origin.wolfpeak", name: "Wolf Peak", after: ["root"], free: true, exclusive: "origin",
     grants: { knowHow: "fire, powder and the discipline of a closed order", language: "Perga" },
     lore:
-      "A religious centre of the faith of the Fire, on a dormant volcano north of the Amber, never once taken. The roads to the summit are easy to hold and the mountain feeds itself.\n\nIt also makes the best gunpowder and firearms on the continent, because every ingredient is in the mountain. The priesthood has its own dress, tattoos over every inch of them, and its own tongue, **Perga**. They are rarely seen outside, which is the first thing anyone will notice about you."
+      "A religious centre of the faith of the Fire, on a dormant volcano north of the Amber, never "
+      + "once taken. The roads to the summit are easy to hold and the mountain feeds itself.\n\nIt "
+      + "also makes the best gunpowder and firearms on the continent, because every ingredient is in "
+      + "the mountain. The priesthood has its own dress, tattoos over every inch of them, and its own "
+      + "tongue, **Perga**. They are rarely seen outside, which is the first thing anyone will notice "
+      + "about you."
   },
   {
     id: "origin.saag", name: "Saag et Haar", after: ["root"], free: true, exclusive: "origin",
     grants: { knowHow: "the dead, tyranny and keeping very quiet", language: "Veche" },
     lore:
-      "What is left of Seetch, the realm of the necromancer kings, south of the Hyena Desert. The greatest of them, Fahlas, still rules it after four hundred years and has become a minor god.\n\nRaising the dead keeps the number of sacrifices lower than elsewhere, which is the closest thing to a mercy on offer. The religion is the death goddess Aecht, the government is a tyranny, the tongue is **Veche**, and the city buys slaves in Sammel and pays in stones out of its own mines."
+      "What is left of Seetch, the realm of the necromancer kings, south of the Hyena Desert. The "
+      + "greatest of them, Fahlas, still rules it after four hundred years and has become a minor "
+      + "god.\n\nRaising the dead keeps the number of sacrifices lower than elsewhere, which is the "
+      + "closest thing to a mercy on offer. The religion is the death goddess Aecht, the government "
+      + "is a tyranny, the tongue is **Veche**, and the city buys slaves in Sammel and pays in stones "
+      + "out of its own mines."
   },
   {
     id: "origin.velderon", name: "Velderon", after: ["root"], free: true, exclusive: "origin",
     grants: { knowHow: "elves, old ruins and what is not said", language: "Elvish" },
     lore:
-      "The elves' embassy on Firma, east of the Fiord: an ancient elven ruin with one restored corner. You do not go in without an invitation, so whatever brought you up there was unusual.\n\nThe elves are neutral and live on the Second Side. Their own magic keeps the Horde out, and the embassy exists to watch it and make sure it never starts looking upward -- which is a sentence most of Firma has never been told."
+      "The elves' embassy on Firma, east of the Fiord: an ancient elven ruin with one restored "
+      + "corner. You do not go in without an invitation, so whatever brought you up there was "
+      + "unusual.\n\nThe elves are neutral and live on the Second Side. Their own magic keeps the "
+      + "Horde out, and the embassy exists to watch it and make sure it never starts looking upward "
+      + "-- which is a sentence most of Firma has never been told."
   },
   {
     /* **-born, because `faith.first.echterhof` already carries the bare name.** Four pairs of
@@ -148,7 +187,13 @@ export const NODES = [
     exclusive: "origin",
     grants: { knowHow: "vampires, guest law and whose turn it is" },
     lore:
-      "A large neutral city in the middle of Horde territory, ruled by Strigoi princes, with farmland around it the Horde has left alone. Strigoi live off humans, so a large human population lives there between the vampires and the Horde.\n\nA human mayor chooses who is eaten -- criminals, usually, and when criminals run short it is done by lot or by grudge. The Guest Law guarantees a guest will not be killed and guarantees that a guest who breaks any of its many clauses will be. You grew up counting the population, because the more people there are the less likely you are the one chosen."
+      "A large neutral city in the middle of Horde territory, ruled by Strigoi princes, with "
+      + "farmland around it the Horde has left alone. Strigoi live off humans, so a large human "
+      + "population lives there between the vampires and the Horde.\n\nA human mayor chooses who is "
+      + "eaten -- criminals, usually, and when criminals run short it is done by lot or by grudge. "
+      + "The Guest Law guarantees a guest will not be killed and guarantees that a guest who breaks "
+      + "any of its many clauses will be. You grew up counting the population, because the more "
+      + "people there are the less likely you are the one chosen."
   },
 
 
@@ -191,7 +236,10 @@ export const NODES = [
       knowHow: "military matters, soldiers and camps"
     },
     lore:
-      "Somebody drilled you until it stopped being a decision. Every district hires soldiers and only the Amber sells nothing else, so where you did it says as much as that you did.\n\nWhat it leaves is not courage, which nobody can train. It is the habit of standing in the place you were told to stand while something is coming at it."
+      "Somebody drilled you until it stopped being a decision. Every district hires soldiers and "
+      + "only the Amber sells nothing else, so where you did it says as much as that you did.\n\nWhat "
+      + "it leaves is not courage, which nobody can train. It is the habit of standing in the place "
+      + "you were told to stand while something is coming at it."
   },
   {
     id: "background.urchin", name: "Street Urchin", after: ["root"], free: true, exclusive: "background",
@@ -201,7 +249,10 @@ export const NODES = [
       knowHow: "streets, alleys and the poor of big cities"
     },
     lore:
-      "You grew up in the parts of a city that are on no map the city admits to: the slums over the rock under Geistburg, the back of Black Harbour, the Rote nobody collects rubbish from.\n\nBeing small and fast was not a tactic, it was the whole of it. You know which doors are never locked and which of them it is worth being caught behind."
+      "You grew up in the parts of a city that are on no map the city admits to: the slums over the "
+      + "rock under Geistburg, the back of Black Harbour, the Rote nobody collects rubbish "
+      + "from.\n\nBeing small and fast was not a tactic, it was the whole of it. You know which doors "
+      + "are never locked and which of them it is worth being caught behind."
   },
   {
     id: "background.acolyte", name: "Acolyte", after: ["root"], free: true, exclusive: "background",
@@ -211,7 +262,11 @@ export const NODES = [
       knowHow: "temples, rituals and clergy"
     },
     lore:
-      "You were raised in or given to a temple -- of the Eternal God in the Core, of the Five in the Fiord, of the Fire on Wolf Peak, of Aecht in Saag et Haar. Which one you were is a different question from which one you are.\n\nYou can read, which most of Firma cannot, and you were taught to say words in the right order in front of frightened people. Both turn out to be useful well outside a temple."
+      "You were raised in or given to a temple -- of the Eternal God in the Core, of the Five in "
+      + "the Fiord, of the Fire on Wolf Peak, of Aecht in Saag et Haar. Which one you were is a "
+      + "different question from which one you are.\n\nYou can read, which most of Firma cannot, and "
+      + "you were taught to say words in the right order in front of frightened people. Both turn out "
+      + "to be useful well outside a temple."
   },
   {
     id: "background.sailor", name: "Sailor", after: ["root"], free: true, exclusive: "background",
@@ -221,7 +276,10 @@ export const NODES = [
       knowHow: "ships, harbours and the sea"
     },
     lore:
-      "The Fiord lands most of the continent's fish and the Ruby's coast feeds its cities, so there is work on the water for anybody who can keep their feet on a wet deck.\n\nThe Salt Barons are gone and their arrangements are not. Whether you were crew, smuggler or both depends mostly on who was asking at the time."
+      "The Fiord lands most of the continent's fish and the Ruby's coast feeds its cities, so there "
+      + "is work on the water for anybody who can keep their feet on a wet deck.\n\nThe Salt Barons "
+      + "are gone and their arrangements are not. Whether you were crew, smuggler or both depends "
+      + "mostly on who was asking at the time."
   },
   {
     id: "background.miner", name: "Miner", after: ["root"], free: true, exclusive: "background",
@@ -231,7 +289,10 @@ export const NODES = [
       knowHow: "stone, tunnels and what is under the ground"
     },
     lore:
-      "The Mouse Mountains above the Hyena Desert, or the Spear Mountains, or one of the roads being cut between districts. The Iron's mining is also why the East Road is the least safe road: dig far enough and something comes through.\n\nYou know how a tunnel is held up, how it sounds before it stops being held up, and what to do in the dark when it does."
+      "The Mouse Mountains above the Hyena Desert, or the Spear Mountains, or one of the roads "
+      + "being cut between districts. The Iron's mining is also why the East Road is the least safe "
+      + "road: dig far enough and something comes through.\n\nYou know how a tunnel is held up, how "
+      + "it sounds before it stops being held up, and what to do in the dark when it does."
   },
   {
     id: "background.caravan", name: "Caravan Guard", after: ["root"], free: true, exclusive: "background",
@@ -241,7 +302,11 @@ export const NODES = [
       knowHow: "roads, caravans and the country between towns"
     },
     lore:
-      "Everything between the districts moves by road or does not move. The West Road is a tunnel with cities in it, the Cracked Road is limestone and not safe, and the East Road has the Night Express running through its own coal smoke because nothing else will.\n\nYou slept badly for money. What you learned was not fighting -- it was noticing, which is the half that keeps a caravan whole."
+      "Everything between the districts moves by road or does not move. The West Road is a tunnel "
+      + "with cities in it, the Cracked Road is limestone and not safe, and the East Road has the "
+      + "Night Express running through its own coal smoke because nothing else will.\n\nYou slept "
+      + "badly for money. What you learned was not fighting -- it was noticing, which is the half "
+      + "that keeps a caravan whole."
   },
   {
     id: "background.vintner", name: "Vintner", after: ["root"], free: true, exclusive: "background",
@@ -251,7 +316,10 @@ export const NODES = [
       knowHow: "merchants, prices and a bad bargain"
     },
     lore:
-      "The Ruby's hills are warm and its wine is what the district is known for, and selling it means a season on the roads with something fragile and valuable.\n\nYou can judge what a thing is worth and what the person in front of you thinks it is worth, which are two numbers and the gap between them is the trade."
+      "The Ruby's hills are warm and its wine is what the district is known for, and selling it "
+      + "means a season on the roads with something fragile and valuable.\n\nYou can judge what a "
+      + "thing is worth and what the person in front of you thinks it is worth, which are two numbers "
+      + "and the gap between them is the trade."
   },
   {
     id: "background.forester", name: "Forester", after: ["root"], free: true, exclusive: "background",
@@ -261,7 +329,11 @@ export const NODES = [
       knowHow: "game, snares and what has passed this way"
     },
     lore:
-      "The Amber is wet conifer forest broken by lakes and bog, and most of it is nobody's. Timber was the export until the Furnace fell and took the routes with it; what is left is hunting, and the forest barons who are broken but not gone.\n\nTrolls live in those woods. Reading the ground is not a hobby there -- it is how you find out what is ahead of you before it finds out about you."
+      "The Amber is wet conifer forest broken by lakes and bog, and most of it is nobody's. Timber "
+      + "was the export until the Furnace fell and took the routes with it; what is left is hunting, "
+      + "and the forest barons who are broken but not gone.\n\nTrolls live in those woods. Reading "
+      + "the ground is not a hobby there -- it is how you find out what is ahead of you before it "
+      + "finds out about you."
   },
   {
     id: "background.guild", name: "Guild Apprentice", after: ["root"], free: true, exclusive: "background",
@@ -271,7 +343,10 @@ export const NODES = [
       knowHow: "workshops, apprentices and a master's temper"
     },
     lore:
-      "The Furnace's refugees founded engineering guilds in every surviving district, and a guild takes children. Seven years of fetching, grinding and being shouted at, and somewhere in it you learned how things come apart.\n\nYou did not finish, or you would not be here. What you have is the hands and the eye and an unfinished indenture somebody may still remember."
+      "The Furnace's refugees founded engineering guilds in every surviving district, and a guild "
+      + "takes children. Seven years of fetching, grinding and being shouted at, and somewhere in it "
+      + "you learned how things come apart.\n\nYou did not finish, or you would not be here. What you "
+      + "have is the hands and the eye and an unfinished indenture somebody may still remember."
   },
   {
     id: "background.healer", name: "Hedge Healer", after: ["root"], free: true, exclusive: "background",
@@ -281,7 +356,10 @@ export const NODES = [
       knowHow: "sickness, herbs and a village with no physician"
     },
     lore:
-      "Most of Firma has no physician and never will. What it has is somebody in the village who knows which leaf, who has set bones before, and who is sent for at night.\n\nThat was you, or the person who raised you. It is not magic and it is not respected, and it is the only thing between a farming village and whatever is going around."
+      "Most of Firma has no physician and never will. What it has is somebody in the village who "
+      + "knows which leaf, who has set bones before, and who is sent for at night.\n\nThat was you, "
+      + "or the person who raised you. It is not magic and it is not respected, and it is the only "
+      + "thing between a farming village and whatever is going around."
   },
   {
     id: "background.sharp", name: "Card Sharp", after: ["root"], free: true, exclusive: "background",
@@ -291,7 +369,10 @@ export const NODES = [
       knowHow: "gambling houses, marks and a crooked table"
     },
     lore:
-      "Sol, where everything is permitted, or the back of any inn on any road. A deck is honest and the hands holding it are the variable.\n\nThe feature this leaves you is not dexterity. It is that you have been found out before, in a room with no other door, and you walked out of it."
+      "Sol, where everything is permitted, or the back of any inn on any road. A deck is honest and "
+      + "the hands holding it are the variable.\n\nThe feature this leaves you is not dexterity. It "
+      + "is that you have been found out before, in a room with no other door, and you walked out of "
+      + "it."
   },
   {
     id: "background.porter", name: "Porter", after: ["root"], free: true, exclusive: "background",
@@ -301,7 +382,10 @@ export const NODES = [
       knowHow: "loads, markets and what a thing weighs"
     },
     lore:
-      "Somebody carries it. On the mesa it goes up by cable car and at both ends of that it goes on a back; in Sammel it crosses between sealed quarters; in the Amber it goes where no cart will.\n\nIt is the least regarded trade in this book and the one that teaches the most about weight, which this game happens to measure."
+      "Somebody carries it. On the mesa it goes up by cable car and at both ends of that it goes on "
+      + "a back; in Sammel it crosses between sealed quarters; in the Amber it goes where no cart "
+      + "will.\n\nIt is the least regarded trade in this book and the one that teaches the most about "
+      + "weight, which this game happens to measure."
   },
 
   /* --- the four Ways, all of them on your frontier for life (leveling 6) --- */
@@ -309,13 +393,23 @@ export const NODES = [
     id: "shade", name: "Way of Shade", after: ["root"], title: "Shade",
     axis: "Position", resource: "halves",
     lore:
-      "Choosing the ground before anybody swings. Shade spends **halves** -- the second action in a turn -- and buys back **position**: reach, cover, and the step that was not there a moment ago.\n\nIt is the narrow, deep Way. Three titles sit off the trunk and nine behind them, so the first step commits to very little and the depth is a long walk rather than a wide choice."
+      "Choosing the ground before anybody swings. Shade spends **halves** -- the second action in a "
+      + "turn -- and buys back **position**: reach, cover, and the step that was not there a moment "
+      + "ago.\n\nIt is the narrow, deep Way. Three titles sit off the trunk and nine behind them, so "
+      + "the first step commits to very little and the depth is a long walk rather than a wide "
+      + "choice."
   },
   {
     id: "strength", name: "Way of Strength", after: ["root"], title: "Warrior",
     axis: "Position", resource: "weight",
     lore:
-      "Mass that is already moving, and making it somebody else's problem. Strength spends **weight** -- what you carry and what carrying it costs you -- and turns it into **position** the other side does not get to choose: ground held, a line that does not move, a blow that arrives whether it was answered or not.\n\nIt is the broad Way. A dozen titles, most of them reachable from more than one direction, so an early step here shuts almost nothing. The trunk itself caps your deck rather than pruning it -- Strength takes more and gets heavier; it does not get neater."
+      "Mass that is already moving, and making it somebody else's problem. Strength spends "
+      + "**weight** -- what you carry and what carrying it costs you -- and turns it into "
+      + "**position** the other side does not get to choose: ground held, a line that does not move, "
+      + "a blow that arrives whether it was answered or not.\n\nIt is the broad Way. A dozen titles, "
+      + "most of them reachable from more than one direction, so an early step here shuts almost "
+      + "nothing. The trunk itself caps your deck rather than pruning it -- Strength takes more and "
+      + "gets heavier; it does not get neater."
   },
   /*
    * **Both of these grant two slots, and neither did.** way-cards 1.4 says it in one line -- *a
@@ -328,14 +422,23 @@ export const NODES = [
     axis: "Preparation", resource: "spell slots",
     grants: { spellSlots: 2 },
     lore:
-      "What was decided before it mattered. Mind spends **preparation** -- the spell slots and the formulae set before the fight -- and it is the only Way whose first node hands you a resource the sheet had none of at all.\n\nTwelve schools, and a school is a vocabulary rather than a rank: the depth here is in combining them, not in climbing one. Each is also a price written in something other than slots."
+      "What was decided before it mattered. Mind spends **preparation** -- the spell slots and the "
+      + "formulae set before the fight -- and it is the only Way whose first node hands you a "
+      + "resource the sheet had none of at all.\n\nTwelve schools, and a school is a vocabulary "
+      + "rather than a rank: the depth here is in combining them, not in climbing one. Each is also a "
+      + "price written in something other than slots."
   },
   {
     id: "faith", name: "Way of Faith", after: ["root"], title: "Sworn",
     axis: "Support", resource: "an obligation",
     grants: { spellSlots: 2 },
     lore:
-      "Standing for something that is not you. Faith spends an **obligation** -- somebody is owed, and the Way is what they ask -- and it answers in **support**: what you do for the people beside you rather than to the people in front of you.\n\nIt is the one Way whose first step is irreversible. Twelve gods fan out at once and swearing to one refuses the rest for good, because here the first choice IS the content (specializations.md). Wide at that step and committed from it."
+      "Standing for something that is not you. Faith spends an **obligation** -- somebody is owed, "
+      + "and the Way is what they ask -- and it answers in **support**: what you do for the people "
+      + "beside you rather than to the people in front of you.\n\nIt is the one Way whose first step "
+      + "is irreversible. Twelve gods fan out at once and swearing to one refuses the rest for good, "
+      + "because here the first choice IS the content (specializations.md). Wide at that step and "
+      + "committed from it."
   },
 
   /* --- the Shade trunk: three ordinary nodes before the first title --- */
@@ -383,19 +486,36 @@ export const NODES = [
     id: "shade.thief", name: "Thief", after: ["shade.patience"], title: "Thief",
     axis: "Control", resource: "a slot kept free",
     signature: "The Opening", tactic: "Never Where You Looked",
-    grants: { feature: "The Opening" }
+    grants: { feature: "The Opening" },
+    lore:
+      "Not a burglar and not a cutpurse -- the one who is in the room and should not be, and whose "
+      + "whole art is that nobody looks where the thing actually is.\n\nYou pay for it in a **slot "
+      + "kept free**. An empty hand is the price of being able to take the opening when it appears "
+      + "rather than the turn after, and a Thief who has filled every slot has stopped being one."
   },
   {
     id: "shade.scout", name: "Scout", after: ["shade.patience"], title: "Scout",
     axis: "Support", resource: "being alone",
     signature: "Point Man", tactic: "Furthest Forward",
-    grants: { card: "Point Man" }
+    grants: { card: "Point Man" },
+    lore:
+      "The one who is already a mile ahead and has been since dawn. A scout is not a sneak: the job "
+      + "is to see and come back, and most of it happens before anybody draws anything.\n\nThe "
+      + "resource is **being alone**, which is the strangest price on this Way and the most honest. "
+      + "What you can do no one else can reach, and what reaches you comes to one person with nobody "
+      + "beside them."
   },
   {
     id: "shade.duellist", name: "Duellist", after: ["shade.patience"], title: "Duellist",
     axis: "Reactions", resource: "halves",
     signature: "Named", tactic: "One at a Time",
-    grants: { card: "Named" }
+    grants: { card: "Named" },
+    lore:
+      "A formal fighter in a Way full of informal ones. The Duellist names an opponent and fights "
+      + "that opponent, and the courtesy is not politeness -- it is a narrowing.\n\nYou spend "
+      + "**halves**: the second action of a turn goes on watching rather than on doing, which is what "
+      + "buys the reaction. One at a time is a tactic and also a limitation, and against three people "
+      + "it is the latter."
   },
 
   /* --- Thief's three --- */
@@ -421,7 +541,12 @@ export const NODES = [
     after: ["shade.thief.shadowing", "shade.thief.crowds"], title: "Assassin",
     axis: "Tempo", resource: "Spent",
     signature: "One Opening", tactic: "From Behind",
-    grants: { card: "One Opening" }
+    grants: { card: "One Opening" },
+    lore:
+      "The deepest node on this branch and the one with the shortest working day. An assassin's "
+      + "fight is already decided before the first card; what follows it is tidying.\n\nThe price is "
+      + "**Spent** -- cards that do not come back until a rest. You buy one certainty and pay for it "
+      + "across the rest of the day, which is why an assassin who has to fight twice is in trouble."
   },
 
   { id: "shade.thief.crowds", name: "Crowds", after: ["shade.thief"], grants: { card: "Second Knife" } },
@@ -434,7 +559,13 @@ export const NODES = [
     id: "shade.cutpurse", name: "Cutpurse", after: ["shade.thief.fence"], title: "Cutpurse",
     axis: "Deck shape", resource: "deck size",
     signature: "Lift", tactic: "Light Fingers",
-    grants: { card: "Lift" }
+    grants: { card: "Lift" },
+    lore:
+      "A crowd specialist. The Cutpurse works in markets, processions and the press at a city gate, "
+      + "and the whole trade is to be the least interesting person present.\n\n**Deck size** is the "
+      + "resource: this is the branch that prunes, and a lean deck draws what it needs. The cost is "
+      + "that a pruned deck has no answer to the thing it pruned, and a Cutpurse meets that "
+      + "eventually."
   },
 
   { id: "shade.thief.ropework", name: "Ropework", after: ["shade.thief"], grants: { item: "Climbing Rope", training: "rope and climbing" } },
@@ -444,7 +575,12 @@ export const NODES = [
     id: "shade.burglar", name: "Burglar", after: ["shade.thief.night"], title: "Burglar",
     axis: "Preparation", resource: "weight",
     signature: "The Kit", tactic: "Through the Window",
-    grants: { item: "The Kit" }
+    grants: { item: "The Kit" },
+    lore:
+      "Doors, locks, windows, roofs and the half-hour before any of it that nobody sees. A "
+      + "burglar's skill is logistics; the climbing is the easy part.\n\nYou spend **weight**, "
+      + "because the kit is the trade and the kit is heavy. Everything that gets you through a window "
+      + "is something you are carrying when it goes wrong."
   },
 
   /* --- Scout's two --- */
@@ -454,7 +590,12 @@ export const NODES = [
     id: "shade.archer", name: "Archer", after: ["shade.scout.breathing"], title: "Archer",
     axis: "Position", resource: "range",
     signature: "Loose and Step", tactic: "Overwatch",
-    grants: { card: "Loose and Step" }
+    grants: { card: "Loose and Step" },
+    lore:
+      "The only Shade title that wants open ground. An archer's problem is never the shot -- it is "
+      + "being the thing on the hill that everybody can see.\n\n**Range** is what you spend and what "
+      + "you buy: step, loose, step again, and never let the distance close. An archer in a corridor "
+      + "is a person holding an awkward stick."
   },
   /*
    * **[BUILT 2026-11-09] The held shot, one node past each of the three ranged titles.**
@@ -485,7 +626,12 @@ export const NODES = [
     title: "Trapmaker",
     axis: "Preparation", resource: "a turn spent early",
     signature: "Set", tactic: "The Ground You Chose",
-    grants: { card: "Set" }
+    grants: { card: "Set" },
+    lore:
+      "Patience as a weapon. A trapmaker does not win the fight they are in; they win the one they "
+      + "arranged two rooms ago.\n\nThe price is **a turn spent early** -- a turn that does nothing "
+      + "while it is happening, which is the hardest thing in this game to spend. Set on the wrong "
+      + "ground and you have simply skipped a turn."
   },
 
   /* --- Duellist's four --- */
@@ -496,7 +642,12 @@ export const NODES = [
     id: "shade.acrobat", name: "Acrobat", after: ["shade.duellist.tumbling", "shade.cross.ledges"],
     title: "Acrobat", axis: "Position", resource: "weight",
     signature: "Over and Past", tactic: "Never Cornered",
-    grants: { card: "Over and Past" }
+    grants: { card: "Over and Past" },
+    lore:
+      "Vertical. Over a table, off a wall, through the gap two people left between them -- an "
+      + "acrobat treats a room as a surface rather than a floor.\n\n**Weight** again, and for the "
+      + "opposite reason to the Burglar's: you spend it by not carrying it. Nothing an acrobat owns "
+      + "is heavy, and nothing an acrobat does works in armour."
   },
 
   { id: "shade.duellist.timing", name: "Timing", after: ["shade.duellist"], grants: { card: "Mock" } },
@@ -530,7 +681,13 @@ export const NODES = [
     id: "shade.bard", name: "Bard", after: ["shade.duellist.politician"], title: "Bard",
     axis: "Reactions", resource: "someone else's turn",
     signature: "Heckle", tactic: "The Running Commentary",
-    grants: { card: "Heckle" }
+    grants: { card: "Heckle" },
+    lore:
+      "A fighter who talks. The Bard is the one title here that works on the other side's "
+      + "attention, and the heckling is the mechanism rather than the flavour.\n\nYou spend "
+      + "**somebody else's turn**, which is unique in the game: the Bard is at their most dangerous "
+      + "when it is not their go, and at their most useless the moment a fight becomes a straight "
+      + "exchange."
   },
 
   { id: "shade.duellist.nerve", name: "Nerve", after: ["shade.duellist"], grants: { health: 1 } },
@@ -542,7 +699,12 @@ export const NODES = [
     id: "shade.gambler", name: "Gambler", after: ["shade.duellist.cards", "shade.cross.odds"],
     title: "Gambler", axis: "Deck shape", resource: "the fate deck",
     signature: "Double or Nothing", tactic: "The Long Odds",
-    grants: { card: "Double or Nothing" }
+    grants: { card: "Double or Nothing" },
+    lore:
+      "The player who has read the fate deck and knows what is left in it. A gambler is not "
+      + "reckless -- reckless is what it looks like from outside.\n\n**The fate deck** is the "
+      + "resource, and it is the only title that treats the game's own randomiser as something to be "
+      + "spent. Double or nothing is an honest name: the losses are real and they are supposed to be."
   },
 
   { id: "shade.duellist.letters", name: "Letters", after: ["shade.duellist"], grants: { training: "reading" } },
@@ -554,7 +716,12 @@ export const NODES = [
     id: "shade.half-mage", name: "Half-mage", after: ["shade.duellist.formula"], title: "Half-mage",
     axis: "Preparation", resource: "spell slots",
     signature: "One Trick", tactic: "One Hand Free",
-    grants: { spellSlots: 2, feature: "One Trick" }
+    grants: { spellSlots: 2, feature: "One Trick" },
+    lore:
+      "One trick, learned properly, in a Way that has no magic. The Half-mage is the crossing made "
+      + "flesh -- a Shade who went and asked.\n\n**Spell slots** on a sheet that was not built for "
+      + "them, which is why there is one and not three. The hand stays free, because a Half-mage who "
+      + "needs both hands has stopped being a Shade and has not become a mage."
   },
 
   /*
@@ -668,19 +835,34 @@ export const NODES = [
     id: "strength.infantry", name: "Infantry", after: ["strength.scars"], title: "Infantry",
     axis: "Position", resource: "an ally",
     signature: "Shoulder to Shoulder", tactic: "The Line",
-    grants: { card: "Shoulder to Shoulder" }
+    grants: { card: "Shoulder to Shoulder" },
+    lore:
+      "The line. Not a hero -- a person standing next to another person, which is the whole of what "
+      + "makes infantry work and the reason it is the first title on this Way.\n\nThe resource is "
+      + "**an ally**: almost everything here is worth nothing alone and a great deal shoulder to "
+      + "shoulder. Infantry on their own is just a tired person in heavy clothing."
   },
   {
     id: "strength.executioner", name: "Executioner", after: ["strength.scars"],
     title: "Executioner", axis: "Tempo", resource: "halves",
     signature: "Cleave to the Bone", tactic: "No Second Thought",
-    grants: { feature: "Cleave to the Bone" }
+    grants: { feature: "Cleave to the Bone" },
+    lore:
+      "One blow, delivered correctly, to something that is already finished. The Executioner is the "
+      + "most unpleasant title in this book and it is deliberately not a murderer's.\n\nYou spend "
+      + "**halves**: the whole turn goes into one action, which means no step, no guard and no second "
+      + "thought. If it survives, you are standing in front of it with nothing left."
   },
   {
     id: "strength.gladiator", name: "Gladiator", after: ["strength.scars"], title: "Gladiator",
     axis: "Reactions", resource: "Health",
     signature: "Play to the Crowd", tactic: "The Crowd Wants Blood",
-    grants: { card: "Play to the Crowd" }
+    grants: { card: "Play to the Crowd" },
+    lore:
+      "A fighter whose job is to be watched. The Gladiator plays to a crowd that may be an actual "
+      + "crowd or may be two people in a tavern, and the showmanship is load-bearing.\n\n**Health** "
+      + "is the resource -- you take the hit in order to be seen taking it. The crowd wants blood and "
+      + "does not especially mind whose."
   },
 
   /* --- Infantry's four --- */
@@ -693,7 +875,12 @@ export const NODES = [
     id: "strength.guardian", name: "Guardian", after: ["strength.infantry.watch"],
     title: "Guardian", axis: "Reactions", resource: "a slot kept free",
     signature: "The Wall", tactic: "The Door",
-    grants: { feature: "The Wall" }
+    grants: { feature: "The Wall" },
+    lore:
+      "Standing in a doorway. The Guardian is not a defender of people but of a *place*, and the "
+      + "difference is the whole title.\n\nYou pay in **a slot kept free**, the same price as the "
+      + "Thief and for the opposite reason: theirs is for taking, yours is for refusing. The door "
+      + "only holds while you are not busy."
   },
 
   /* Mastery is the deeper step and raises what you notice rather than what you can push, so
@@ -708,7 +895,12 @@ export const NODES = [
     id: "strength.ironclad", name: "Ironclad", after: ["strength.infantry.armoury"],
     title: "Ironclad", axis: "Deck shape", resource: "weight",
     signature: "Nothing Gets Through", tactic: "Immovable",
-    grants: { feature: "Nothing Gets Through" }
+    grants: { feature: "Nothing Gets Through" },
+    lore:
+      "Armour as an identity. The Ironclad is slower than everything else on the board and does not "
+      + "care, because the plan was never to be anywhere else.\n\n**Weight** is the price and the "
+      + "point: this is the branch that caps the deck rather than prunes it, and an Ironclad gets "
+      + "heavier, not neater. Immovable is a promise and a confession."
   },
 
   { id: "strength.infantry.crews", name: "Crews", after: ["strength.infantry"], grants: { card: "Heave" } },
@@ -720,7 +912,12 @@ export const NODES = [
     id: "strength.artillerist", name: "Artillerist", after: ["strength.infantry.siege"],
     title: "Artillerist", axis: "Position", resource: "ground",
     signature: "Ranging Shot", tactic: "Ranging",
-    grants: { card: "Ranging Shot" }
+    grants: { card: "Ranging Shot" },
+    lore:
+      "Engines. Bombards, swivel guns and the Furnace's leftovers -- an artillerist thinks in arcs "
+      + "and in the ground the arc lands on.\n\n**Ground** is what you spend: the gun has to be "
+      + "somewhere, it takes time to be somewhere, and once it is there that is where it is. The "
+      + "first shot is for measuring and everybody knows it."
   },
 
   { id: "strength.infantry.orders", name: "Orders", after: ["strength.infantry"], grants: { card: "Shield Wall" } },
@@ -732,7 +929,12 @@ export const NODES = [
     id: "strength.tactician", name: "Tactician", after: ["strength.infantry.maps"],
     title: "Tactician", axis: "Support", resource: "halves",
     signature: "On My Call", tactic: "The Call",
-    grants: { card: "On My Call" }
+    grants: { card: "On My Call" },
+    lore:
+      "The one giving orders, which in this game means spending your own turn on someone else's. A "
+      + "tactician's contribution is invisible on their own sheet.\n\nYou spend **halves** to do it, "
+      + "and the call is only worth making if there is somebody there to answer it. The deepest "
+      + "tactician alone on a board is the weakest thing on this Way."
   },
 
   /* --- Executioner's three --- */
@@ -754,7 +956,12 @@ export const NODES = [
     id: "strength.knight", name: "Knight", after: ["strength.exec.stable"], title: "Knight",
     axis: "Position", resource: "gear you can lose",
     signature: "The Lance", tactic: "The Charge",
-    grants: { card: "The Lance" }
+    grants: { card: "The Lance" },
+    lore:
+      "A charge, a lance and about four hundred pounds of trained animal. The Knight is the Core "
+      + "District's own idea of a fighter and the Amber's idea of a joke.\n\nThe resource is **gear "
+      + "you can lose** -- the lance breaks, the horse is a target, and the title is built around the "
+      + "moment after the charge as much as the charge itself."
   },
 
   { id: "strength.exec.temper", name: "Temper", after: ["strength.executioner"], grants: { card: "Hammerblow" } },
@@ -791,7 +998,12 @@ export const NODES = [
     after: ["strength.exec.fury", "strength.cross.rage"], title: "Berserker",
     axis: "Deck shape", resource: "Spent",
     signature: "Red Mist", tactic: "Forward Only",
-    grants: { card: "Red Mist" }
+    grants: { card: "Red Mist" },
+    lore:
+      "Forward only. The Berserker is not angry for effect; the anger is the mechanism and it does "
+      + "not have a reverse gear.\n\n**Spent** is the price -- cards gone until a rest, spent in the "
+      + "first two rounds of a fight that may have five. What a berserker buys is the shape of the "
+      + "fight; what it costs is everything after it."
   },
 
   { id: "strength.exec.powder", name: "Powder", after: ["strength.executioner"], grants: { card: "Two-Hand It" } },
@@ -807,7 +1019,12 @@ export const NODES = [
     id: "strength.musketeer", name: "Musketeer", after: ["strength.exec.drillshot"],
     title: "Musketeer", axis: "Preparation", resource: "range",
     signature: "Loaded Before the Bell", tactic: "The Firing Step",
-    grants: { feature: "Loaded Before the Bell" }
+    grants: { feature: "Loaded Before the Bell" },
+    lore:
+      "Powder and a long reload. The best firearms on the continent come off Wolf Peak, and a "
+      + "musketeer's whole discipline is the thirty seconds before anybody needs them.\n\nYou spend "
+      + "**range** and buy it back: loaded before the bell is the title in four words, because a "
+      + "musketeer who has to load during the fight has already lost the round that mattered."
   },
 
   /* --- Gladiator's two --- */
@@ -821,7 +1038,12 @@ export const NODES = [
     id: "strength.street-fighter", name: "Street Fighter", after: ["strength.glad.alley"],
     title: "Street Fighter", axis: "Control", resource: "a weapon's value",
     signature: "Get a Grip", tactic: "The Alley",
-    grants: { card: "Get a Grip" }
+    grants: { card: "Get a Grip" },
+    lore:
+      "No lance, no line, no crowd. The Street Fighter wins in an alley against somebody better "
+      + "equipped, which is a different skill from winning a battle.\n\nThe resource is **a weapon's "
+      + "value** -- what you are holding matters less than how close you are, and the title is built "
+      + "to make a bad weapon in the right place beat a good one in the wrong one."
   },
 
   { id: "strength.glad.ward", name: "Warding", after: ["strength.gladiator"], grants: { card: "Beat the Blade" } },
@@ -831,7 +1053,12 @@ export const NODES = [
     after: ["strength.glad.shadow", "strength.cross.door"], title: "Bodyguard",
     axis: "Reactions", resource: "ground",
     signature: "Interpose", tactic: "Never Leave Them",
-    grants: { card: "Interpose" }
+    grants: { card: "Interpose" },
+    lore:
+      "A person, not a door. The Bodyguard's entire subject is somebody else's body being between "
+      + "them and the thing coming at it.\n\n**Ground** is the price: you do not get to choose where "
+      + "you stand, because where you stand is wherever they are. Never leave them is a tactic and "
+      + "also the reason a bodyguard dies first."
   },
 
   /*
@@ -945,19 +1172,34 @@ export const NODES = [
     /* **Demonic**, because blood is the currency it is spoken in: the demons hold the Third Side
      * and let the necromancers use it *in exchange for human sacrifices* (Firma.md). The school
      * whose price is its own Health is the school that can afford the conversation. */
-    grants: { spell: "Blood Price", language: "Demonic" }
+    grants: { spell: "Blood Price", language: "Demonic" },
+    lore:
+      "The oldest arrangement on the continent and the one the rings run on. A blood mage pays in "
+      + "the only currency magic has ever reliably accepted.\n\nThe resource is **your own Health**, "
+      + "which is what separates this school from every alternative to it: the price is immediate, "
+      + "visible and yours. Your own blood is nearest, and that is not a metaphor."
   },
   {
     id: "mind.elemental", name: "Elemental Magic", after: ["mind.vigil"], title: "Elemental Magic",
     axis: "Position", resource: "reagents",
     signature: "Wall of the Sphere", tactic: "The Sphere Holds",
-    grants: { spell: "Wall of the Sphere" }
+    grants: { spell: "Wall of the Sphere" },
+    lore:
+      "The physical school. Fire, water, stone and air, worked by formula rather than by bargain, "
+      + "and the most reliable magic in the game.\n\nYou spend **reagents** -- things that run out "
+      + "and have to be bought, which makes an elementalist the one caster with a shopping list. The "
+      + "sphere holds while you have the materials and not one moment after."
   },
   {
     id: "mind.spiritualism", name: "Spiritualism", after: ["mind.vigil"], title: "Spiritualism",
     axis: "Preparation", resource: "a pact",
     signature: "The Bargain", tactic: "Something Is Always Listening",
-    grants: { spell: "The Bargain" }
+    grants: { spell: "The Bargain" },
+    lore:
+      "Asking something. Spiritualism is not a technique but a negotiation, and the thing on the "
+      + "other end has its own reasons.\n\n**A pact** is the resource: you are spending an agreement, "
+      + "and agreements have terms you did not write. Something is always listening is the school's "
+      + "own warning to its students and it is meant literally."
   },
 
   /* --- Blood's three --- */
@@ -980,7 +1222,12 @@ export const NODES = [
     /* **Reversed** is *reversed elvish used by undead* (Firma.md), so it is the one language in
      * the world that is a derivation rather than a tongue -- and the school that calls the unquiet
      * is the only one with anybody to practise it on. */
-    grants: { spell: "Call the Unquiet", language: "Reversed" }
+    grants: { spell: "Call the Unquiet", language: "Reversed" },
+    lore:
+      "Saag et Haar's export. Raising the dead is cheaper than the alternative in sacrifices, which "
+      + "is the nearest thing to an argument for it anybody makes.\n\nYou spend **a bound Taint** -- "
+      + "the intruder card held rather than resolved, carried in your own deck as the price of what "
+      + "it does. The dead are furniture: useful, heavy, and not company."
   },
 
   {
@@ -993,7 +1240,12 @@ export const NODES = [
     id: "mind.asceticism", name: "Asceticism", after: ["mind.blood.silence"], title: "Asceticism",
     axis: "Deck shape", resource: "an empty hand",
     signature: "Nothing Left to Take", tactic: "The Still Point",
-    grants: { spell: "Nothing Left to Take" }
+    grants: { spell: "Nothing Left to Take" },
+    lore:
+      "The school that gives things up. An ascetic's power is in what they are not carrying, not "
+      + "holding and not preparing.\n\nThe resource is **an empty hand**, and this is the only branch "
+      + "in the game that gets stronger as the deck gets thinner. Nothing left to take is a boast "
+      + "when it is true and a eulogy when it is not quite."
   },
 
   {
@@ -1008,7 +1260,12 @@ export const NODES = [
     id: "mind.poison", name: "Poison", after: ["mind.blood.measures"], title: "Poison",
     axis: "Control", resource: "skill cards",
     signature: "Wither", tactic: "The Patient Hand",
-    grants: { spell: "Wither" }
+    grants: { spell: "Wither" },
+    lore:
+      "Patience, chemistry and somebody else's timetable. A poisoner is not in the fight; a "
+      + "poisoner arranged the fight three days ago.\n\nYou spend **skill cards** -- the "
+      + "out-of-combat deck, which is where the work actually happens. The patient hand is the whole "
+      + "title: everything a poisoner does is slow and nothing about it is reversible."
   },
 
   /* --- Elemental's three ---
@@ -1027,7 +1284,12 @@ export const NODES = [
     id: "mind.shadow", name: "Shadow Magic", after: ["mind.elem.dark"], title: "Shadow Magic",
     axis: "Position", resource: "a permanent Wild",
     signature: "Step Through", tactic: "At Home in the Dark",
-    grants: { spell: "Step Through" }
+    grants: { spell: "Step Through" },
+    lore:
+      "Stepping through. Shadow magic is the school that moves you, and it is the only one whose "
+      + "price is permanent.\n\n**A permanent Wild** in your fate deck -- forever, not until a rest. "
+      + "Every draw you ever make afterwards carries the card you paid with, which is the most "
+      + "expensive sentence in this book and the reason the school is small."
   },
 
   {
@@ -1039,7 +1301,12 @@ export const NODES = [
     id: "mind.ward", name: "Ward Magic", after: ["mind.elem.circles"], title: "Ward Magic",
     axis: "Reactions", resource: "Spent",
     signature: "Unmake", tactic: "The Standing Guard",
-    grants: { spell: "Unmake" }
+    grants: { spell: "Unmake" },
+    lore:
+      "Unmaking. A warder's craft is the opposite of every other school's: not doing a thing, but "
+      + "ensuring a thing does not happen.\n\nYou spend **Spent** -- cards gone until a rest, because "
+      + "standing guard is not free and nobody notices it working. The standing guard is thankless by "
+      + "construction, which is the joke the school makes about itself."
   },
 
   {
@@ -1062,7 +1329,12 @@ export const NODES = [
      */
     axis: "Support", resource: "a place you know",
     signature: "Hearth and Home", tactic: "The House Helps",
-    grants: { spell: "Hearth and Home" }
+    grants: { spell: "Hearth and Home" },
+    lore:
+      "Small magic, done where you live. Bread, locks, hinges, the fire catching first time -- the "
+      + "least respected school and the only one most of Firma has ever actually seen.\n\nThe "
+      + "resource is **a place you know**, which no other school spends and which cannot be bought or "
+      + "carried. The house helps, and away from it you are a person who is good at bread."
   },
 
   /* --- Spiritualism's three --- */
@@ -1083,7 +1355,12 @@ export const NODES = [
     id: "mind.glamour", name: "Glamour", after: ["mind.spirit.debts"], title: "Glamour",
     axis: "Control", resource: "an elven debt",
     signature: "Not Here", tactic: "Never Quite There",
-    grants: { spell: "Not Here" }
+    grants: { spell: "Not Here" },
+    lore:
+      "Elven work, done by somebody who is not one. Glamour is not illusion exactly -- it is the "
+      + "question of whether you were ever quite there.\n\nYou spend **an elven debt**, which is the "
+      + "only resource in the game owed to a third party who is still alive and still counting. "
+      + "Velderon does not forget, and the embassy does not explain its terms."
   },
 
   {
@@ -1111,7 +1388,12 @@ export const NODES = [
      * five and leaves one school's list unaffordable to the caster it was written for. That is the
      * Way ladder's arithmetic, not this school's, so all seven cards name the gap and wait.
      */
-    grants: { feature: "Graven Strength" }
+    grants: { feature: "Graven Strength" },
+    lore:
+      "Magic worked into skin. Wolf Peak's priesthood is covered in it and will not discuss it, and "
+      + "what a tattoo mage has is permanent, visible and already paid for.\n\nThe resource is **a "
+      + "secret** -- the design means something and the meaning is the power. Nothing to prepare is "
+      + "the whole advantage: a tattoo mage walks into a fight already cast."
   },
 
   {
@@ -1128,7 +1410,12 @@ export const NODES = [
     signature: "The Reading", tactic: "Already Seen",
     /* **Valgar** is a *lost* language from the Furnace District (Firma.md), and a lost language is
      * not learned from a speaker. It is read, which is what this school is for. */
-    grants: { spell: "The Reading", language: "Valgar" }
+    grants: { spell: "The Reading", language: "Valgar" },
+    lore:
+      "Reading. A diviner's work is other people's turns -- what is about to happen, said just "
+      + "early enough to matter.\n\nYou spend **somebody else's turn**, which is the Bard's resource "
+      + "approached from the opposite end: the Bard spoils it, the diviner spends it. Already seen is "
+      + "comforting exactly once and unsettling every time after."
   },
 
   /*
@@ -1185,7 +1472,12 @@ export const NODES = [
       + "not be in it.",
     gift: "Solidarity: his miracles cast on a brother or sister in faith cost one less -- no "
       + "Strain, no Spent.",
-    grants: { spell: "The Clean Hand" }
+    grants: { spell: "The Clean Hand" },
+    lore:
+      "The Church of the Eternal God: the Core's official faith, a cathedral grown into a town of "
+      + "its own, and the hypocrisy that walks beside the mages' academy on the same plain.\n\nYou "
+      + "spend **deck size**, which is this god's whole theology in a mechanic: the clean hand is a "
+      + "smaller hand, and no shelter for the guilty applies to the holder as much as the target."
   },
   { id: "faith.eg.rule", name: "The Rule", after: ["faith.eternalgod"], grants: { spell: "Name the Guilty" } },
   { id: "faith.eg.fast", name: "The Fast", after: ["faith.eg.rule"], grants: { health: 1 } },
@@ -1222,7 +1514,12 @@ export const NODES = [
     signature: "Breath of the Spirit", tactic: "Where the Air Goes",
     obedience: "You must stay Unburdened, and wear no armour heavier than Leather.",
     gift: "The spirit drifts through all the air: his miracles ignore range and cover.",
-    grants: { spell: "Breath of the Spirit" }
+    grants: { spell: "Breath of the Spirit" },
+    lore:
+      "The same god from the other side, and the half the Fiord calls blasphemy. The Spirit is "
+      + "breath, movement and the air going where it was not.\n\n**Weight** is the price -- the "
+      + "Spirit does not work through armour, and a priest of it who has put plate on has "
+      + "misunderstood the arrangement."
   },
   { id: "faith.es.breath", name: "Breath", after: ["faith.eternalspirit"], grants: { spell: "Lay On" } },
   { id: "faith.es.word", name: "The Given Word", after: ["faith.es.breath"], grants: { spell: "A Word for You" } },
@@ -1248,7 +1545,13 @@ export const NODES = [
      * the handbook both print to a player: nothing else in the game sets aside the free-hand
      * rule, and that is what makes a cleric-fighter possible. True, and not a player's business. */
     gift: "His miracles need no free hand: the spiked club is the holy symbol.",
-    grants: { spell: "The Club and the Line", freehandCast: true }
+    grants: { spell: "The Club and the Line", freehandCast: true },
+    lore:
+      "A war god with followers in every town in the Amber, where nobody minds what you believe "
+      + "because there is too much else to mind.\n\nYou spend **Health**, every miracle, and in "
+      + "exchange the spiked club IS the holy symbol -- the one rule set aside anywhere in this "
+      + "graph. Vax's bargain is the plainest in the book: no free hand required, and it costs you "
+      + "blood."
   },
   { id: "faith.vax.club", name: "The Club", after: ["faith.vax"], grants: { spell: "Stand Where I Stand" } },
   { id: "faith.vax.shield", name: "The Shield", after: ["faith.vax.club"], grants: { spell: "The Shield Line" } },
@@ -1284,7 +1587,12 @@ export const NODES = [
     obedience: "Your spell slots are capped at 3, for ever.",
     gift: "His miracles return what they take: Health drained from a living target comes back "
       + "to you, which is the only renewable pool in the game.",
-    grants: { spell: "The Long Night", caps: { spellSlots: 3 } }
+    grants: { spell: "The Long Night", caps: { spellSlots: 3 } },
+    lore:
+      "The first vampire, worshipped in Echterhof where the Strigoi princes rule and the mayor "
+      + "chooses who is eaten.\n\n**Spell slots** are the resource, and they are what the long night "
+      + "takes: the preparation is spent being what you have become. What is left is the tactic's "
+      + "name and it is not a metaphor either."
   },
   { id: "faith.first.debt", name: "The Debt", after: ["faith.first"], grants: { spell: "Measure of the Debt" } },
   {
@@ -1329,7 +1637,12 @@ export const NODES = [
     axis: "Support", resource: "the fate deck",
     signature: "The Tide Knows", tactic: "The Tide Comes In",
     obedience: "A permanent Miss AND a permanent Critical in your fate deck. Not one or the other.",
-    grants: { spell: "The Tide Knows" }
+    grants: { spell: "The Tide Knows" },
+    lore:
+      "One of the Five, strongest in the Fiord where the old faith never gave way. Sessyfyn is "
+      + "tide, catch and the sea's own arithmetic.\n\nYou spend **the fate deck** -- the only god who "
+      + "touches the randomiser, which is a fisher's theology exactly: the tide knows, you do not, "
+      + "and the tide comes in whatever anybody has decided."
   },
   { id: "faith.sess.tides", name: "The Tides", after: ["faith.sessyfyn"], grants: { spell: "Undertow" } },
   /*
@@ -1355,7 +1668,12 @@ export const NODES = [
     axis: "Tempo", resource: "Strain",
     signature: "The Drum", tactic: "The Drum Does Not Stop",
     obedience: "Every miracle costs Strain 1 on top of its slots.",
-    grants: { spell: "The Drum" }
+    grants: { spell: "The Drum" },
+    lore:
+      "The drum. Valtor is the Five's war god and the only one whose worship is audible from the "
+      + "next valley.\n\nThe resource is **Strain**, spent in a rhythm rather than a burst, and the "
+      + "drum does not stop is the whole of the doctrine. A priest of Valtor who stops is not "
+      + "resting; they have lost the thread."
   },
   { id: "faith.valtor.drums", name: "The Drums", after: ["faith.valtor"], grants: { spell: "No Step Back" } },
   { id: "faith.valtor.fury", name: "Fury", after: ["faith.valtor.drums"],
@@ -1367,7 +1685,12 @@ export const NODES = [
     axis: "Control", resource: "Spent",
     signature: "The Borrowed Face", tactic: "Nobody Remembers Your Face",
     obedience: "Each miracle may be cast once per fight. A trick works once.",
-    grants: { spell: "The Borrowed Face" }
+    grants: { spell: "The Borrowed Face" },
+    lore:
+      "The borrowed face. Fagar is the Five's god of the ones who are not noticed, and the "
+      + "priesthood is deliberately difficult to identify.\n\nYou spend **Spent** -- cards gone until "
+      + "a rest, which is what a face costs. Nobody remembers your face is the gift and the "
+      + "complaint: the miracles work and nobody can say who performed them."
   },
   { id: "faith.fagar.masks", name: "Masks", after: ["faith.fagar"], grants: { spell: "The Second Thought" } },
   /* Fagar's thesis is *the trick that works once*, so the know-how is the other side of it: the
@@ -1382,7 +1705,12 @@ export const NODES = [
     signature: "The Outcast's Due", tactic: "Alone and Unafraid",
     obedience: "You may not accept help: no ally may Heal you, Interpose for you, or Shake a "
       + "condition off you.",
-    grants: { spell: "The Outcast's Due" }
+    grants: { spell: "The Outcast's Due" },
+    lore:
+      "The outcast's god. Vulpet is owed by the people nobody else is obliged to, and the "
+      + "priesthood goes where the rest of the Five will not.\n\nThe resource is **an ally** -- which "
+      + "for this god means the opposite of Infantry's: you spend the fact of having one, and the "
+      + "miracles are strongest for someone who is alone and unafraid."
   },
   { id: "faith.vulpet.road", name: "The Road", after: ["faith.vulpet"], grants: { spell: "Alone on the Road" } },
   {
@@ -1403,7 +1731,12 @@ export const NODES = [
     signature: "Out of Barren Ground", tactic: "Roots",
     obedience: "Nothing he gives arrives on the turn you ask for it: every miracle resolves at "
       + "the start of your next turn at the earliest.",
-    grants: { spell: "Out of Barren Ground" }
+    grants: { spell: "Out of Barren Ground" },
+    lore:
+      "Growing things, in the least promising ground available. Brendan is the Five's quiet one and "
+      + "the only god on this Way whose miracles are mostly agricultural.\n\nYou spend **a turn spent "
+      + "early** -- the Trapmaker's price in a cassock, because roots take time and nothing Brendan "
+      + "does pays off in the round it is cast."
   },
   { id: "faith.brendan.seed", name: "The Seed", after: ["faith.brendan"], grants: { spell: "Full Belly" } },
   { id: "faith.brendan.ground", name: "Slow Ground", after: ["faith.brendan.seed"],
@@ -1416,7 +1749,12 @@ export const NODES = [
     axis: "Reactions", resource: "range",
     signature: "The Silent Hour", tactic: "Close Enough to Touch",
     obedience: "Adjacent only. Every miracle of The Grey reaches one square and no further.",
-    grants: { spell: "The Silent Hour" }
+    grants: { spell: "The Silent Hour" },
+    lore:
+      "Worshipped across the Iron District, where the emirs rule and the old assassin state holds "
+      + "the central Rote. The Grey is the silent hour and the thing that happens in it.\n\nYou spend "
+      + "**range** -- the Grey's miracles do not reach, which is the entire theology: close enough to "
+      + "touch, or not at all."
   },
   { id: "faith.grey.quiet", name: "The Quiet Step", after: ["faith.grey"], grants: { spell: "Grey Judgement" } },
   /* The Grey is the silent approach, and `the knife` was a weapon wearing a training's clothes.
@@ -1431,7 +1769,12 @@ export const NODES = [
     signature: "The First Taste", tactic: "The Cup Passes",
     obedience: "The first miracle you cast each fight gives you 1 Taint. You are the first to "
       + "taste it, always.",
-    grants: { spell: "The First Taste" }
+    grants: { spell: "The First Taste" },
+    lore:
+      "The Grey's sibling, and the one that drinks first. The Purple takes what is in the cup so "
+      + "that somebody else does not have to.\n\nThe resource is **Taint** -- the intruder in your "
+      + "own deck, accepted on purpose. The cup passes is the kindest sentence on this Way and the "
+      + "most expensive: what it passes from is you."
   },
   { id: "faith.purple.dose", name: "The Dose", after: ["faith.purple"], grants: { spell: "Taste of the Rot" } },
   {
@@ -1446,7 +1789,12 @@ export const NODES = [
     signature: "The Rumour", tactic: "Nobody Knows Where You Are",
     obedience: "A lie must be kept up: every miracle ends the moment you fail to spend a "
       + "secondary on it.",
-    grants: { spell: "The Rumour" }
+    grants: { spell: "The Rumour" },
+    lore:
+      "Rumour as a sacrament. The Yellow is the third of the Grey's siblings and the one the other "
+      + "two do not discuss.\n\nYou spend **halves** -- the second action of a turn, given to being "
+      + "somewhere other than where you are understood to be. Nobody knows where you are, which is a "
+      + "protection and a loneliness."
   },
   { id: "faith.yellow.whispers", name: "Whispers", after: ["faith.yellow"], grants: { spell: "The Planted Word" } },
   {
@@ -1583,7 +1931,12 @@ export const NODES = [
     signature: "The Writ", tactic: "Nobody Lies Twice",
     obedience: "You hold one thing about every ally that the others do not know, and the order "
       + "may ask you for it.",
-    grants: { card: "The Writ" }
+    grants: { card: "The Writ" },
+    lore:
+      "An order rather than a god: the Circle's writ, carried by somebody with the authority to ask "
+      + "and the standing to be answered.\n\nYou spend **a secret** -- yours, held against theirs, "
+      + "which is how a writ is actually enforced. Nobody lies twice is a promise about the second "
+      + "lie, not the first."
   },
   {
     id: "faith.shieldsworn", name: "Shieldsworn", after: ["faith.order.shield"],
@@ -1607,7 +1960,12 @@ export const NODES = [
     signature: "The Order's Shield", tactic: "Nobody Falls Beside You",
     obedience: "You may not give ground: while an ally stands further forward than you, you may "
       + "not move away from the enemy.",
-    grants: { card: "The Order's Shield" }
+    grants: { card: "The Order's Shield" },
+    lore:
+      "The order that stands in front. The Shieldsworn are hired by districts that cannot field "
+      + "soldiers and trusted by people who have no reason to trust anybody.\n\n**Ground** is the "
+      + "price, the Bodyguard's resource under vows: you stand where the person you are sworn to is "
+      + "standing. Nobody falls beside you is the oath and the epitaph."
   },
   {
     id: "faith.anchorite", name: "Anchorite", after: ["faith.order.cloister"],
@@ -1616,7 +1974,12 @@ export const NODES = [
     signature: "The Long Silence", tactic: "The Empty Cell",
     obedience: "Three skill cards are set aside each morning and are not yours until the next. "
       + "The cloister keeps them.",
-    grants: { card: "The Long Silence" }
+    grants: { card: "The Long Silence" },
+    lore:
+      "Walled in, on purpose. An anchorite's cell is a room with a window onto a church and no "
+      + "door, and the practice is old enough that nobody questions it.\n\nYou spend **skill cards** "
+      + "-- the whole out-of-combat deck, given up in exchange for what silence buys. The empty cell "
+      + "is not deprivation to an anchorite; it is the equipment."
   },
   {
     id: "faith.flagellant", name: "Flagellant", after: ["faith.order.drums"],
@@ -1625,6 +1988,11 @@ export const NODES = [
     signature: "The Scourge", tactic: "Past Caring",
     obedience: "One Wild stays in your fate deck for good. An ecstasy is not a thing you put "
       + "down.",
-    grants: { card: "The Scourge" }
+    grants: { card: "The Scourge" },
+    lore:
+      "Past caring. The Flagellant is the order the others are embarrassed by and the one that "
+      + "arrives when a town is already lost.\n\nThe resource is **a permanent Wild** -- Shadow "
+      + "Magic's price, paid for the opposite reason: not to step through anything, but because what "
+      + "you are doing to yourself does not come back. Nothing here is temporary."
   },
 ];

@@ -1,6 +1,6 @@
 # Art prompts
 
-**682 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
+**760 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
 
 It walks the same `GROUPS` the art list walks, by importing it rather than copying it, so the two files cannot disagree about what exists.
 
@@ -27,7 +27,7 @@ So the numbers are gone from the capsules and the picture is in their place: **t
 
 ## Deck backs
 
-**Draw these first.** 11 pictures against 671 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
+**Draw these first.** 11 pictures against 749 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
 
 ### The capsule — paste this once
 
@@ -3184,6 +3184,1168 @@ File: `cards/fate/zero.webp`
 SUBJECT. "Zero" — The quietest card in the game, and it is the one seen most. A single flat tide-line of wash across the frame and almost nothing above or below it.
 
 Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+```
+
+## Origins — where a character is from
+
+**10 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/nodes/origin/`.
+
+Shown in the level-up pane beside the description, while a player is still deciding who they are. **Draw the PLACE and nobody in it** -- every character who takes this origin shares the picture, so a figure in the frame is somebody else's character. Somewhere a person could be standing, with nobody standing in it.
+
+<details><summary><b>The capsule — paste this once, at the top of a fresh chat</b></summary>
+
+```text
+A single illustration for a playing card in a tabletop fantasy RPG.
+
+THIS GROUP. Shown in the level-up pane beside the description, while a player is still deciding who they are. **Draw the PLACE and nobody in it** -- every character who takes this origin shares the picture, so a figure in the frame is somebody else's character. Somewhere a person could be standing, with nobody standing in it.
+
+FORMAT.
+- Portrait, aspect ratio exactly 2:3, 1024 x 1536.
+- Full bleed, edge to edge. No border, no frame, no card template, no rounded corners, no drop
+  shadow, no mat, no margin.
+- ABSOLUTELY NO TEXT of any kind: no letters, numerals, runes, glyphs, signature, watermark, or
+  anything that reads as writing. Not on a shield, not on a banner, not in the background.
+
+COMPOSITION. The card prints its own name and rules text over this image in opaque panels, so the
+layout is fixed and has been measured:
+- Crop in **close**: one subject, filling the frame from side to side.
+  Never a whole figure standing in a landscape, never an object laid out on a table.
+- **A strip of bare paper across the very top, between an eighth and a sixth of the height, and
+  no more than that.** No head, no helmet, no horns, no weapon, no hand, no banner enters it, and
+  it is a narrow strip rather than an empty upper third.
+- **All of the dark lives in the band from an eighth of the height down to just under halfway**,
+  and it begins immediately under the bare strip with nothing empty between the two. The
+  near-black contour, the deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
+  the picture actually happens.
+- **Below the halfway line the picture goes pale** and stays pale: the wash thins out, the ground
+  falls away to bare paper, and there is no dark mass down there at all. The card prints its rules
+  across that half, so that half has to be the quiet one.
+- Together those two make the test: **the picture must still read with its bottom half covered.**
+  Cover it in your head and check before you call it done.
+- **If the subject is taller than that band, CROP it rather than shrink it.** A bow, a raised
+  arm, a spear, a standing figure: the frame cuts through it and the part that matters stays in
+  the band. Never fit a tall thing in by making it small, and never let its top reach into the
+  bare strip to get all of it in.
+- ONE subject. A silhouette that still reads at **128 pixels wide**, which is the smallest size a
+  card is drawn at in this game.
+
+PALETTE.
+- Line and darks: **#1b1714**
+- Paper and lights: **#f4efe6**
+- Mid tone: **#c9bda8**
+- One chromatic accent only: **#a3655d**, a warm brick red. Use it on the
+  one thing the picture is about, and nowhere else.
+  **The accent is one small object's worth of colour and no more** -- a single
+  ribbon, a single flame, one stone set in a ring. Never the light, never the wash, never
+  the ground, never the sky, never a glow and never a whole figure: those are all the warm
+  neutral of the paper and the ink.
+- Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
+  Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
+  here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
+
+PEOPLE.
+- **Where a person is drawn, decide who they are rather than defaulting.** This is a port city on
+  a trade road: the people in the set are Black, brown, Levantine, Persian, South and East Asian,
+  Mediterranean and northern-pale in roughly the proportions a crowd there would be, and women
+  are as common in it as men. A sepia palette is not a statement about skin -- warm ink renders
+  every complexion, and a deck in which every figure is the same pale man is a failure of the
+  drawing and not of the paper.
+- Nothing here asks for a particular face unless the subject says so in words, and where it does
+  say so -- a named sex, an ancestry, an age -- that is binding.
+
+STYLE.
+Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
+with a loaded brush; then large soft washes for the mass; then generous untouched paper where the
+light falls. Loose and economical -- a few strokes doing the work of many. Visible bleed and
+granulation where a wash pools, dry-brush where it runs out.
+
+Three things this style does wrong at card size, and must not do here:
+- **Never neutral grey.** Every wash is warm: sepia, bistre, burnt earth. If a passage reads as
+  grey it is wrong.
+- **Never soft all over.** The contour is near-black #1b1714 and holds a hard edge. Only the
+  washes are soft. A picture with no true black in it has failed.
+- **Never evenly toned.** The darkest mass must sit directly against untouched paper, so the
+  subject separates from the ground in one glance at thumbnail size.
+
+Use the full range, both ends of it:
+- The lightest passage is **bare #f4efe6 paper, near white**, and there is a lot of it.
+- The darkest line is **near-black #1b1714**, and the two touch each other somewhere.
+- A picture whose every value sits between those ends is the failure above, however warm and
+  however well drawn. Mid tone is the background, not the picture.
+```
+
+</details>
+
+### Echterhof-born
+
+File: `nodes/origin/echterhof-born.webp`
+
+```text
+SUBJECT. "Echterhof-born" — A large neutral city in the middle of Horde territory, ruled by Strigoi princes, with farmland around it the Horde has left alone. Strigoi live off humans, so a large human population lives there between the vampires ...
+
+Draw the place and nobody in it: somewhere a person could be standing, at an hour that says what living there is like, with nobody standing in it. No figure at all.
+```
+
+### Furnace Stock
+
+File: `nodes/origin/furnace-stock.webp`
+
+```text
+SUBJECT. "Furnace Stock" — You were not born in the Furnace District -- nobody has been for a generation. You were born into what came out of it: the engineering guilds its refugees founded in every surviving district, which kept the trade, the...
+
+Draw the place and nobody in it: somewhere a person could be standing, at an hour that says what living there is like, with nobody standing in it. No figure at all.
+```
+
+### Saag et Haar
+
+File: `nodes/origin/saag-et-haar.webp`
+
+```text
+SUBJECT. "Saag et Haar" — What is left of Seetch, the realm of the necromancer kings, south of the Hyena Desert. The greatest of them, Fahlas, still rules it after four hundred years and has become a minor god.
+
+Draw the place and nobody in it: somewhere a person could be standing, at an hour that says what living there is like, with nobody standing in it. No figure at all.
+```
+
+### The Amber
+
+File: `nodes/origin/the-amber.webp`
+
+```text
+SUBJECT. "The Amber" — The far east, the second largest district and the one that was never entirely tamed. Dragons turn up. Trolls live in the forests. Dense wet conifer, broken by lakes and bog.
+
+Draw the place and nobody in it: somewhere a person could be standing, at an hour that says what living there is like, with nobody standing in it. No figure at all.
+```
+
+### The Core
+
+File: `nodes/origin/the-core.webp`
+
+```text
+SUBJECT. "The Core" — Born on the mesa or in the satellite cities under it: Geistburg, a dozen corrupt noble houses and a powerless man still titled emperor. You grew up knowing which of them to be careful of.
+
+Draw the place and nobody in it: somewhere a person could be standing, at an hour that says what living there is like, with nobody standing in it. No figure at all.
+```
+
+### The Fiord
+
+File: `nodes/origin/the-fiord.webp`
+
+```text
+SUBJECT. "The Fiord" — Black Harbour, the fishing villages, or one of the islands close enough in to count. The sea cuts so deep inland here that the ring runs through water, and six enormous lighthouses mark where.
+
+Draw the place and nobody in it: somewhere a person could be standing, at an hour that says what living there is like, with nobody standing in it. No figure at all.
+```
+
+### The Iron
+
+File: `nodes/origin/the-iron.webp`
+
+```text
+SUBJECT. "The Iron" — The northern half of the Hyena Desert, or the mineral mountains above it. Sammel is the only real city and the emirs have cut it into sealed quarters called Rote -- the old assassin state holds the central one, around...
+
+Draw the place and nobody in it: somewhere a person could be standing, at an hour that says what living there is like, with nobody standing in it. No figure at all.
+```
+
+### The Ruby
+
+File: `nodes/origin/the-ruby.webp`
+
+```text
+SUBJECT. "The Ruby" — Warm hills in the south-east, wine and fruit, winter palaces the rich no longer visit. A voted council governs from Tanto and nobody especially minds what you believe or who you are.
+
+Draw the place and nobody in it: somewhere a person could be standing, at an hour that says what living there is like, with nobody standing in it. No figure at all.
+```
+
+### Velderon
+
+File: `nodes/origin/velderon.webp`
+
+```text
+SUBJECT. "Velderon" — The elves' embassy on Firma, east of the Fiord: an ancient elven ruin with one restored corner. You do not go in without an invitation, so whatever brought you up there was unusual.
+
+Draw the place and nobody in it: somewhere a person could be standing, at an hour that says what living there is like, with nobody standing in it. No figure at all.
+```
+
+### Wolf Peak
+
+File: `nodes/origin/wolf-peak.webp`
+
+```text
+SUBJECT. "Wolf Peak" — A religious centre of the faith of the Fire, on a dormant volcano north of the Amber, never once taken. The roads to the summit are easy to hold and the mountain feeds itself.
+
+Draw the place and nobody in it: somewhere a person could be standing, at an hour that says what living there is like, with nobody standing in it. No figure at all.
+```
+
+## Backgrounds — what a character did before
+
+**12 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/nodes/background/`.
+
+Shown in the level-up pane beside the description. **Draw the WORK, not the worker**: the kit laid out, the bench, the deck at the hour the job is done. Hands at most, and never a face -- this picture belongs to everybody who was ever a Soldier. The trained tool it issues is a good place to start and a dull place to stop.
+
+<details><summary><b>The capsule — paste this once, at the top of a fresh chat</b></summary>
+
+```text
+A single illustration for a playing card in a tabletop fantasy RPG.
+
+THIS GROUP. Shown in the level-up pane beside the description. **Draw the WORK, not the worker**: the kit laid out, the bench, the deck at the hour the job is done. Hands at most, and never a face -- this picture belongs to everybody who was ever a Soldier. The trained tool it issues is a good place to start and a dull place to stop.
+
+FORMAT.
+- Portrait, aspect ratio exactly 2:3, 1024 x 1536.
+- Full bleed, edge to edge. No border, no frame, no card template, no rounded corners, no drop
+  shadow, no mat, no margin.
+- ABSOLUTELY NO TEXT of any kind: no letters, numerals, runes, glyphs, signature, watermark, or
+  anything that reads as writing. Not on a shield, not on a banner, not in the background.
+
+COMPOSITION. The card prints its own name and rules text over this image in opaque panels, so the
+layout is fixed and has been measured:
+- Crop in **close**: one subject, filling the frame from side to side.
+  Never a whole figure standing in a landscape, never an object laid out on a table.
+- **A strip of bare paper across the very top, between an eighth and a sixth of the height, and
+  no more than that.** No head, no helmet, no horns, no weapon, no hand, no banner enters it, and
+  it is a narrow strip rather than an empty upper third.
+- **All of the dark lives in the band from an eighth of the height down to just under halfway**,
+  and it begins immediately under the bare strip with nothing empty between the two. The
+  near-black contour, the deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
+  the picture actually happens.
+- **Below the halfway line the picture goes pale** and stays pale: the wash thins out, the ground
+  falls away to bare paper, and there is no dark mass down there at all. The card prints its rules
+  across that half, so that half has to be the quiet one.
+- Together those two make the test: **the picture must still read with its bottom half covered.**
+  Cover it in your head and check before you call it done.
+- **If the subject is taller than that band, CROP it rather than shrink it.** A bow, a raised
+  arm, a spear, a standing figure: the frame cuts through it and the part that matters stays in
+  the band. Never fit a tall thing in by making it small, and never let its top reach into the
+  bare strip to get all of it in.
+- ONE subject. A silhouette that still reads at **128 pixels wide**, which is the smallest size a
+  card is drawn at in this game.
+
+PALETTE.
+- Line and darks: **#1b1714**
+- Paper and lights: **#f4efe6**
+- Mid tone: **#c9bda8**
+- One chromatic accent only: **#a3655d**, a warm brick red. Use it on the
+  one thing the picture is about, and nowhere else.
+  **The accent is one small object's worth of colour and no more** -- a single
+  ribbon, a single flame, one stone set in a ring. Never the light, never the wash, never
+  the ground, never the sky, never a glow and never a whole figure: those are all the warm
+  neutral of the paper and the ink.
+- Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
+  Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
+  here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
+
+PEOPLE.
+- **Where a person is drawn, decide who they are rather than defaulting.** This is a port city on
+  a trade road: the people in the set are Black, brown, Levantine, Persian, South and East Asian,
+  Mediterranean and northern-pale in roughly the proportions a crowd there would be, and women
+  are as common in it as men. A sepia palette is not a statement about skin -- warm ink renders
+  every complexion, and a deck in which every figure is the same pale man is a failure of the
+  drawing and not of the paper.
+- Nothing here asks for a particular face unless the subject says so in words, and where it does
+  say so -- a named sex, an ancestry, an age -- that is binding.
+
+STYLE.
+Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
+with a loaded brush; then large soft washes for the mass; then generous untouched paper where the
+light falls. Loose and economical -- a few strokes doing the work of many. Visible bleed and
+granulation where a wash pools, dry-brush where it runs out.
+
+Three things this style does wrong at card size, and must not do here:
+- **Never neutral grey.** Every wash is warm: sepia, bistre, burnt earth. If a passage reads as
+  grey it is wrong.
+- **Never soft all over.** The contour is near-black #1b1714 and holds a hard edge. Only the
+  washes are soft. A picture with no true black in it has failed.
+- **Never evenly toned.** The darkest mass must sit directly against untouched paper, so the
+  subject separates from the ground in one glance at thumbnail size.
+
+Use the full range, both ends of it:
+- The lightest passage is **bare #f4efe6 paper, near white**, and there is a lot of it.
+- The darkest line is **near-black #1b1714**, and the two touch each other somewhere.
+- A picture whose every value sits between those ends is the failure above, however warm and
+  however well drawn. Mid tone is the background, not the picture.
+```
+
+</details>
+
+### Acolyte
+
+File: `nodes/background/acolyte.webp`
+
+```text
+SUBJECT. "Acolyte" — You were raised in or given to a temple -- of the Eternal God in the Core, of the Five in the Fiord, of the Fire on Wolf Peak, of Aecht in Saag et Haar. Which one you were is a different question from which one you are.
+
+Draw the work and not the worker -- the kit laid out, the bench, the deck at the hour the job is done. Hands at most, and never a face.
+```
+
+### Caravan Guard
+
+File: `nodes/background/caravan-guard.webp`
+
+```text
+SUBJECT. "Caravan Guard" — Everything between the districts moves by road or does not move. The West Road is a tunnel with cities in it, the Cracked Road is limestone and not safe, and the East Road has the Night Express running through its own...
+
+Draw the work and not the worker -- the kit laid out, the bench, the deck at the hour the job is done. Hands at most, and never a face.
+```
+
+### Card Sharp
+
+File: `nodes/background/card-sharp.webp`
+
+```text
+SUBJECT. "Card Sharp" — Sol, where everything is permitted, or the back of any inn on any road. A deck is honest and the hands holding it are the variable.
+
+Draw the work and not the worker -- the kit laid out, the bench, the deck at the hour the job is done. Hands at most, and never a face.
+```
+
+### Forester
+
+File: `nodes/background/forester.webp`
+
+```text
+SUBJECT. "Forester" — The Amber is wet conifer forest broken by lakes and bog, and most of it is nobody's. Timber was the export until the Furnace fell and took the routes with it; what is left is hunting, and the forest barons who are bro...
+
+Draw the work and not the worker -- the kit laid out, the bench, the deck at the hour the job is done. Hands at most, and never a face.
+```
+
+### Guild Apprentice
+
+File: `nodes/background/guild-apprentice.webp`
+
+```text
+SUBJECT. "Guild Apprentice" — The Furnace's refugees founded engineering guilds in every surviving district, and a guild takes children. Seven years of fetching, grinding and being shouted at, and somewhere in it you learned how things come apart.
+
+Draw the work and not the worker -- the kit laid out, the bench, the deck at the hour the job is done. Hands at most, and never a face.
+```
+
+### Hedge Healer
+
+File: `nodes/background/hedge-healer.webp`
+
+```text
+SUBJECT. "Hedge Healer" — Most of Firma has no physician and never will. What it has is somebody in the village who knows which leaf, who has set bones before, and who is sent for at night.
+
+Draw the work and not the worker -- the kit laid out, the bench, the deck at the hour the job is done. Hands at most, and never a face.
+```
+
+### Miner
+
+File: `nodes/background/miner.webp`
+
+```text
+SUBJECT. "Miner" — The Mouse Mountains above the Hyena Desert, or the Spear Mountains, or one of the roads being cut between districts. The Iron's mining is also why the East Road is the least safe road: dig far enough and something com...
+
+Draw the work and not the worker -- the kit laid out, the bench, the deck at the hour the job is done. Hands at most, and never a face.
+```
+
+### Porter
+
+File: `nodes/background/porter.webp`
+
+```text
+SUBJECT. "Porter" — Somebody carries it. On the mesa it goes up by cable car and at both ends of that it goes on a back; in Sammel it crosses between sealed quarters; in the Amber it goes where no cart will.
+
+Draw the work and not the worker -- the kit laid out, the bench, the deck at the hour the job is done. Hands at most, and never a face.
+```
+
+### Sailor
+
+File: `nodes/background/sailor.webp`
+
+```text
+SUBJECT. "Sailor" — The Fiord lands most of the continent's fish and the Ruby's coast feeds its cities, so there is work on the water for anybody who can keep their feet on a wet deck.
+
+Draw the work and not the worker -- the kit laid out, the bench, the deck at the hour the job is done. Hands at most, and never a face.
+```
+
+### Soldier
+
+File: `nodes/background/soldier.webp`
+
+```text
+SUBJECT. "Soldier" — Somebody drilled you until it stopped being a decision. Every district hires soldiers and only the Amber sells nothing else, so where you did it says as much as that you did.
+
+Draw the work and not the worker -- the kit laid out, the bench, the deck at the hour the job is done. Hands at most, and never a face.
+```
+
+### Street Urchin
+
+File: `nodes/background/street-urchin.webp`
+
+```text
+SUBJECT. "Street Urchin" — You grew up in the parts of a city that are on no map the city admits to: the slums over the rock under Geistburg, the back of Black Harbour, the Rote nobody collects rubbish from.
+
+Draw the work and not the worker -- the kit laid out, the bench, the deck at the hour the job is done. Hands at most, and never a face.
+```
+
+### Vintner
+
+File: `nodes/background/vintner.webp`
+
+```text
+SUBJECT. "Vintner" — The Ruby's hills are warm and its wine is what the district is known for, and selling it means a season on the roads with something fragile and valuable.
+
+Draw the work and not the worker -- the kit laid out, the bench, the deck at the hour the job is done. Hands at most, and never a face.
+```
+
+## Titles — who a character becomes
+
+**56 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/nodes/title/`.
+
+Shown in the level-up pane while a player decides whether to spend a level on becoming this. **This is the one shelf here whose subject is a person, so draw the figure** -- and draw them doing the thing the title is about, not posing as it. The axis and resource in the subject line are what separate two titles whose prose reads alike; let the pictures differ the way those sentences do.
+
+<details><summary><b>The capsule — paste this once, at the top of a fresh chat</b></summary>
+
+```text
+A single illustration for a playing card in a tabletop fantasy RPG.
+
+THIS GROUP. Shown in the level-up pane while a player decides whether to spend a level on becoming this. **This is the one shelf here whose subject is a person, so draw the figure** -- and draw them doing the thing the title is about, not posing as it. The axis and resource in the subject line are what separate two titles whose prose reads alike; let the pictures differ the way those sentences do.
+
+FORMAT.
+- Portrait, aspect ratio exactly 2:3, 1024 x 1536.
+- Full bleed, edge to edge. No border, no frame, no card template, no rounded corners, no drop
+  shadow, no mat, no margin.
+- ABSOLUTELY NO TEXT of any kind: no letters, numerals, runes, glyphs, signature, watermark, or
+  anything that reads as writing. Not on a shield, not on a banner, not in the background.
+
+COMPOSITION. The card prints its own name and rules text over this image in opaque panels, so the
+layout is fixed and has been measured:
+- Crop in **close**: one subject, filling the frame from side to side.
+  Never a whole figure standing in a landscape, never an object laid out on a table.
+- **A strip of bare paper across the very top, between an eighth and a sixth of the height, and
+  no more than that.** No head, no helmet, no horns, no weapon, no hand, no banner enters it, and
+  it is a narrow strip rather than an empty upper third.
+- **All of the dark lives in the band from an eighth of the height down to just under halfway**,
+  and it begins immediately under the bare strip with nothing empty between the two. The
+  near-black contour, the deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
+  the picture actually happens.
+- **Below the halfway line the picture goes pale** and stays pale: the wash thins out, the ground
+  falls away to bare paper, and there is no dark mass down there at all. The card prints its rules
+  across that half, so that half has to be the quiet one.
+- Together those two make the test: **the picture must still read with its bottom half covered.**
+  Cover it in your head and check before you call it done.
+- **If the subject is taller than that band, CROP it rather than shrink it.** A bow, a raised
+  arm, a spear, a standing figure: the frame cuts through it and the part that matters stays in
+  the band. Never fit a tall thing in by making it small, and never let its top reach into the
+  bare strip to get all of it in.
+- ONE subject. A silhouette that still reads at **128 pixels wide**, which is the smallest size a
+  card is drawn at in this game.
+
+PALETTE.
+- Line and darks: **#1b1714**
+- Paper and lights: **#f4efe6**
+- Mid tone: **#c9bda8**
+- One chromatic accent only: **#a3655d**, a warm brick red. Use it on the
+  one thing the picture is about, and nowhere else.
+  **The accent is one small object's worth of colour and no more** -- a single
+  ribbon, a single flame, one stone set in a ring. Never the light, never the wash, never
+  the ground, never the sky, never a glow and never a whole figure: those are all the warm
+  neutral of the paper and the ink.
+- Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
+  Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
+  here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
+
+PEOPLE.
+- **Where a person is drawn, decide who they are rather than defaulting.** This is a port city on
+  a trade road: the people in the set are Black, brown, Levantine, Persian, South and East Asian,
+  Mediterranean and northern-pale in roughly the proportions a crowd there would be, and women
+  are as common in it as men. A sepia palette is not a statement about skin -- warm ink renders
+  every complexion, and a deck in which every figure is the same pale man is a failure of the
+  drawing and not of the paper.
+- Nothing here asks for a particular face unless the subject says so in words, and where it does
+  say so -- a named sex, an ancestry, an age -- that is binding.
+
+STYLE.
+Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
+with a loaded brush; then large soft washes for the mass; then generous untouched paper where the
+light falls. Loose and economical -- a few strokes doing the work of many. Visible bleed and
+granulation where a wash pools, dry-brush where it runs out.
+
+Three things this style does wrong at card size, and must not do here:
+- **Never neutral grey.** Every wash is warm: sepia, bistre, burnt earth. If a passage reads as
+  grey it is wrong.
+- **Never soft all over.** The contour is near-black #1b1714 and holds a hard edge. Only the
+  washes are soft. A picture with no true black in it has failed.
+- **Never evenly toned.** The darkest mass must sit directly against untouched paper, so the
+  subject separates from the ground in one glance at thumbnail size.
+
+Use the full range, both ends of it:
+- The lightest passage is **bare #f4efe6 paper, near white**, and there is a lot of it.
+- The darkest line is **near-black #1b1714**, and the two touch each other somewhere.
+- A picture whose every value sits between those ends is the failure above, however warm and
+  however well drawn. Mid tone is the background, not the picture.
+```
+
+</details>
+
+### Acrobat
+
+File: `nodes/title/acrobat.webp`
+
+```text
+SUBJECT. "Acrobat" — Acrobat · Position / weight — Vertical. Over a table, off a wall, through the gap two people left between them -- an acrobat treats a room as a surface rather than a floor.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Slavic appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Anchorite
+
+File: `nodes/title/anchorite.webp`
+
+```text
+SUBJECT. "Anchorite" — Anchorite · Deck shape / skill cards — Walled in, on purpose. An anchorite's cell is a room with a window onto a church and no door, and the practice is old enough that nobody questions it.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Southeast Asian appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Archer
+
+File: `nodes/title/archer.webp`
+
+```text
+SUBJECT. "Archer" — Archer · Position / range — The only Shade title that wants open ground. An archer's problem is never the shot -- it is being the thing on the hill that everybody can see.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Persian appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Artillerist
+
+File: `nodes/title/artillerist.webp`
+
+```text
+SUBJECT. "Artillerist" — Artillerist · Position / ground — Engines. Bombards, swivel guns and the Furnace's leftovers -- an artillerist thinks in arcs and in the ground the arc lands on.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Slavic appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Asceticism
+
+File: `nodes/title/asceticism.webp`
+
+```text
+SUBJECT. "Asceticism" — Asceticism · Deck shape / an empty hand — The school that gives things up. An ascetic's power is in what they are not carrying, not holding and not preparing.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Mediterranean appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Assassin
+
+File: `nodes/title/assassin.webp`
+
+```text
+SUBJECT. "Assassin" — Assassin · Tempo / Spent — The deepest node on this branch and the one with the shortest working day. An assassin's fight is already decided before the first card; what follows it is tidying.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Mediterranean appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Bard
+
+File: `nodes/title/bard.webp`
+
+```text
+SUBJECT. "Bard" — Bard · Reactions / someone else's turn — A fighter who talks. The Bard is the one title here that works on the other side's attention, and the heckling is the mechanism rather than the flavour.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of South Asian appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Berserker
+
+File: `nodes/title/berserker.webp`
+
+```text
+SUBJECT. "Berserker" — Berserker · Deck shape / Spent — Forward only. The Berserker is not angry for effect; the anger is the mechanism and it does not have a reverse gear.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Horn of Africa appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Blood Magic
+
+File: `nodes/title/blood-magic.webp`
+
+```text
+SUBJECT. "Blood Magic" — Blood Magic · Tempo / your own Health — The oldest arrangement on the continent and the one the rings run on. A blood mage pays in the only currency magic has ever reliably accepted.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Central Asian appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Bodyguard
+
+File: `nodes/title/bodyguard.webp`
+
+```text
+SUBJECT. "Bodyguard" — Bodyguard · Reactions / ground — A person, not a door. The Bodyguard's entire subject is somebody else's body being between them and the thing coming at it.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Mediterranean appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Brendan
+
+File: `nodes/title/brendan.webp`
+
+```text
+SUBJECT. "Brendan" — Brendan · Support / a turn spent early — Growing things, in the least promising ground available. Brendan is the Five's quiet one and the only god on this Way whose miracles are mostly agricultural.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of West African appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Burglar
+
+File: `nodes/title/burglar.webp`
+
+```text
+SUBJECT. "Burglar" — Burglar · Preparation / weight — Doors, locks, windows, roofs and the half-hour before any of it that nobody sees. A burglar's skill is logistics; the climbing is the easy part.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of North African appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Cutpurse
+
+File: `nodes/title/cutpurse.webp`
+
+```text
+SUBJECT. "Cutpurse" — Cutpurse · Deck shape / deck size — A crowd specialist. The Cutpurse works in markets, processions and the press at a city gate, and the whole trade is to be the least interesting person present.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of South Asian appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Divination
+
+File: `nodes/title/divination.webp`
+
+```text
+SUBJECT. "Divination" — Divination · Support / someone else's turn — Reading. A diviner's work is other people's turns -- what is about to happen, said just early enough to matter.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Horn of Africa appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Duellist
+
+File: `nodes/title/duellist.webp`
+
+```text
+SUBJECT. "Duellist" — Duellist · Reactions / halves — A formal fighter in a Way full of informal ones. The Duellist names an opponent and fights that opponent, and the courtesy is not politeness -- it is a narrowing.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of East Asian appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Elemental Magic
+
+File: `nodes/title/elemental-magic.webp`
+
+```text
+SUBJECT. "Elemental Magic" — Elemental Magic · Position / reagents — The physical school. Fire, water, stone and air, worked by formula rather than by bargain, and the most reliable magic in the game.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Southeast Asian appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Executioner
+
+File: `nodes/title/executioner.webp`
+
+```text
+SUBJECT. "Executioner" — Executioner · Tempo / halves — One blow, delivered correctly, to something that is already finished. The Executioner is the most unpleasant title in this book and it is deliberately not a murderer's.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of South Asian appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Fagar
+
+File: `nodes/title/fagar.webp`
+
+```text
+SUBJECT. "Fagar" — Fagar · Control / Spent — The borrowed face. Fagar is the Five's god of the ones who are not noticed, and the priesthood is deliberately difficult to identify.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Caribbean appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Flagellant
+
+File: `nodes/title/flagellant.webp`
+
+```text
+SUBJECT. "Flagellant" — Flagellant · Tempo / a permanent Wild — Past caring. The Flagellant is the order the others are embarrassed by and the one that arrives when a town is already lost.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Central Asian appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Gambler
+
+File: `nodes/title/gambler.webp`
+
+```text
+SUBJECT. "Gambler" — Gambler · Deck shape / the fate deck — The player who has read the fate deck and knows what is left in it. A gambler is not reckless -- reckless is what it looks like from outside.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Northwest European appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Gladiator
+
+File: `nodes/title/gladiator.webp`
+
+```text
+SUBJECT. "Gladiator" — Gladiator · Reactions / Health — A fighter whose job is to be watched. The Gladiator plays to a crowd that may be an actual crowd or may be two people in a tavern, and the showmanship is load-bearing.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Caribbean appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Glamour
+
+File: `nodes/title/glamour.webp`
+
+```text
+SUBJECT. "Glamour" — Glamour · Control / an elven debt — Elven work, done by somebody who is not one. Glamour is not illusion exactly -- it is the question of whether you were ever quite there.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of South Asian appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Guardian
+
+File: `nodes/title/guardian.webp`
+
+```text
+SUBJECT. "Guardian" — Guardian · Reactions / a slot kept free — Standing in a doorway. The Guardian is not a defender of people but of a *place*, and the difference is the whole title.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Nordic appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Half-mage
+
+File: `nodes/title/half-mage.webp`
+
+```text
+SUBJECT. "Half-mage" — Half-mage · Preparation / spell slots — One trick, learned properly, in a Way that has no magic. The Half-mage is the crossing made flesh -- a Shade who went and asked.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Caribbean appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Household Magic
+
+File: `nodes/title/household-magic.webp`
+
+```text
+SUBJECT. "Household Magic" — Household Magic · Support / a place you know — Small magic, done where you live. Bread, locks, hinges, the fire catching first time -- the least respected school and the only one most of Firma has ever actually seen.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Levantine appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Infantry
+
+File: `nodes/title/infantry.webp`
+
+```text
+SUBJECT. "Infantry" — Infantry · Position / an ally — The line. Not a hero -- a person standing next to another person, which is the whole of what makes infantry work and the reason it is the first title on this Way.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of East Asian appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Inquisitor
+
+File: `nodes/title/inquisitor.webp`
+
+```text
+SUBJECT. "Inquisitor" — Inquisitor · Control / a secret — An order rather than a god: the Circle's writ, carried by somebody with the authority to ask and the standing to be answered.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of West African appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Ironclad
+
+File: `nodes/title/ironclad.webp`
+
+```text
+SUBJECT. "Ironclad" — Ironclad · Deck shape / weight — Armour as an identity. The Ironclad is slower than everything else on the board and does not care, because the plan was never to be anywhere else.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Northwest European appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Knight
+
+File: `nodes/title/knight.webp`
+
+```text
+SUBJECT. "Knight" — Knight · Position / gear you can lose — A charge, a lance and about four hundred pounds of trained animal. The Knight is the Core District's own idea of a fighter and the Amber's idea of a joke.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Mediterranean appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Musketeer
+
+File: `nodes/title/musketeer.webp`
+
+```text
+SUBJECT. "Musketeer" — Musketeer · Preparation / range — Powder and a long reload. The best firearms on the continent come off Wolf Peak, and a musketeer's whole discipline is the thirty seconds before anybody needs them.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Central Asian appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Necromancy
+
+File: `nodes/title/necromancy.webp`
+
+```text
+SUBJECT. "Necromancy" — Necromancy · Preparation / a bound Taint — Saag et Haar's export. Raising the dead is cheaper than the alternative in sacrifices, which is the nearest thing to an argument for it anybody makes.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Caribbean appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Poison
+
+File: `nodes/title/poison.webp`
+
+```text
+SUBJECT. "Poison" — Poison · Control / skill cards — Patience, chemistry and somebody else's timetable. A poisoner is not in the fight; a poisoner arranged the fight three days ago.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Horn of Africa appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Scout
+
+File: `nodes/title/scout.webp`
+
+```text
+SUBJECT. "Scout" — Scout · Support / being alone — The one who is already a mile ahead and has been since dawn. A scout is not a sneak: the job is to see and come back, and most of it happens before anybody draws anything.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Levantine appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Sessyfyn
+
+File: `nodes/title/sessyfyn.webp`
+
+```text
+SUBJECT. "Sessyfyn" — Sessyfyn · Support / the fate deck — One of the Five, strongest in the Fiord where the old faith never gave way. Sessyfyn is tide, catch and the sea's own arithmetic.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Southeast Asian appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Shadow Magic
+
+File: `nodes/title/shadow-magic.webp`
+
+```text
+SUBJECT. "Shadow Magic" — Shadow Magic · Position / a permanent Wild — Stepping through. Shadow magic is the school that moves you, and it is the only one whose price is permanent.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Mediterranean appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Shieldsworn
+
+File: `nodes/title/shieldsworn.webp`
+
+```text
+SUBJECT. "Shieldsworn" — Shieldsworn · Support / ground — The order that stands in front. The Shieldsworn are hired by districts that cannot field soldiers and trusted by people who have no reason to trust anybody.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Germanic appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Spiritualism
+
+File: `nodes/title/spiritualism.webp`
+
+```text
+SUBJECT. "Spiritualism" — Spiritualism · Preparation / a pact — Asking something. Spiritualism is not a technique but a negotiation, and the thing on the other end has its own reasons.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Slavic appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Street Fighter
+
+File: `nodes/title/street-fighter.webp`
+
+```text
+SUBJECT. "Street Fighter" — Street Fighter · Control / a weapon's value — No lance, no line, no crowd. The Street Fighter wins in an alley against somebody better equipped, which is a different skill from winning a battle.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Southeast Asian appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Tactician
+
+File: `nodes/title/tactician.webp`
+
+```text
+SUBJECT. "Tactician" — Tactician · Support / halves — The one giving orders, which in this game means spending your own turn on someone else's. A tactician's contribution is invisible on their own sheet.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of West African appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Tattoo Magic
+
+File: `nodes/title/tattoo-magic.webp`
+
+```text
+SUBJECT. "Tattoo Magic" — Tattoo Magic · Deck shape / a secret — Magic worked into skin. Wolf Peak's priesthood is covered in it and will not discuss it, and what a tattoo mage has is permanent, visible and already paid for.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of West African appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### The Eternal God
+
+File: `nodes/title/the-eternal-god.webp`
+
+```text
+SUBJECT. "The Eternal God" — The Eternal God · Control / deck size — The Church of the Eternal God: the Core's official faith, a cathedral grown into a town of its own, and the hypocrisy that walks beside the mages' academy on the same plain.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Levantine appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### The Eternal Spirit
+
+File: `nodes/title/the-eternal-spirit.webp`
+
+```text
+SUBJECT. "The Eternal Spirit" — The Eternal Spirit · Reactions / weight — The same god from the other side, and the half the Fiord calls blasphemy. The Spirit is breath, movement and the air going where it was not.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of East Asian appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### The First
+
+File: `nodes/title/the-first.webp`
+
+```text
+SUBJECT. "The First" — The First · Deck shape / spell slots — The first vampire, worshipped in Echterhof where the Strigoi princes rule and the mayor chooses who is eaten.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of West African appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### The Grey
+
+File: `nodes/title/the-grey.webp`
+
+```text
+SUBJECT. "The Grey" — The Grey · Reactions / range — Worshipped across the Iron District, where the emirs rule and the old assassin state holds the central Rote. The Grey is the silent hour and the thing that happens in it.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Slavic appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### The Purple
+
+File: `nodes/title/the-purple.webp`
+
+```text
+SUBJECT. "The Purple" — The Purple · Control / Taint — The Grey's sibling, and the one that drinks first. The Purple takes what is in the cup so that somebody else does not have to.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Persian appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### The Yellow
+
+File: `nodes/title/the-yellow.webp`
+
+```text
+SUBJECT. "The Yellow" — The Yellow · Preparation / halves — Rumour as a sacrament. The Yellow is the third of the Grey's siblings and the one the other two do not discuss.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of North African appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Thief
+
+File: `nodes/title/thief.webp`
+
+```text
+SUBJECT. "Thief" — Thief · Control / a slot kept free — Not a burglar and not a cutpurse -- the one who is in the room and should not be, and whose whole art is that nobody looks where the thing actually is.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Slavic appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Trapmaker
+
+File: `nodes/title/trapmaker.webp`
+
+```text
+SUBJECT. "Trapmaker" — Trapmaker · Preparation / a turn spent early — Patience as a weapon. A trapmaker does not win the fight they are in; they win the one they arranged two rooms ago.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Persian appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Valtor
+
+File: `nodes/title/valtor.webp`
+
+```text
+SUBJECT. "Valtor" — Valtor · Tempo / Strain — The drum. Valtor is the Five's war god and the only one whose worship is audible from the next valley.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Southeast Asian appearance, in their thirties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Vax
+
+File: `nodes/title/vax.webp`
+
+```text
+SUBJECT. "Vax" — Vax · Position / Health — A war god with followers in every town in the Amber, where nobody minds what you believe because there is too much else to mind.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Levantine appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Vulpet
+
+File: `nodes/title/vulpet.webp`
+
+```text
+SUBJECT. "Vulpet" — Vulpet · Preparation / an ally — The outcast's god. Vulpet is owed by the people nobody else is obliged to, and the priesthood goes where the rest of the Five will not.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of South Asian appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Ward Magic
+
+File: `nodes/title/ward-magic.webp`
+
+```text
+SUBJECT. "Ward Magic" — Ward Magic · Reactions / Spent — Unmaking. A warder's craft is the opposite of every other school's: not doing a thing, but ensuring a thing does not happen.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Nordic appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Way of Faith
+
+File: `nodes/title/way-of-faith.webp`
+
+```text
+SUBJECT. "Way of Faith" — Sworn · Support / an obligation — Standing for something that is not you. Faith spends an obligation -- somebody is owed, and the Way is what they ask -- and it answers in support: what you do for the people beside yo...
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Caribbean appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Way of Mind
+
+File: `nodes/title/way-of-mind.webp`
+
+```text
+SUBJECT. "Way of Mind" — Scholar · Preparation / spell slots — What was decided before it mattered. Mind spends preparation -- the spell slots and the formulae set before the fight -- and it is the only Way whose first node hands you a resour...
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of East Asian appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Way of Shade
+
+File: `nodes/title/way-of-shade.webp`
+
+```text
+SUBJECT. "Way of Shade" — Shade · Position / halves — Choosing the ground before anybody swings. Shade spends halves -- the second action in a turn -- and buys back position: reach, cover, and the step that was not there a moment ago.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Mediterranean appearance, past fifty -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+### Way of Strength
+
+File: `nodes/title/way-of-strength.webp`
+
+```text
+SUBJECT. "Way of Strength" — Warrior · Position / weight — Mass that is already moving, and making it somebody else's problem. Strength spends weight -- what you carry and what carrying it costs you -- and turns it into position the other side do...
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+
+WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of West African appearance, in their twenties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
 ```
 
 ## Wounds and Taint
@@ -10529,7 +11691,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 
 ## Where prompts still repeat
 
-**209 prompts in 34 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
+**287 prompts in 36 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
 
 **10 of those clusters are the ones that bite**, listed first: the ones where the subject line carries no prose either, so neither half of the prompt tells the cards apart. The rest share a direction over subjects that already differ — forty-three consumables drawing a nearly-empty vessel still come back as forty-three different pictures, because each subject names its own.
 
@@ -10547,7 +11709,7 @@ Answer a cluster by adding its keys to `DIRECTION` in `test/art-prompts.mjs` and
 | **3** | 2 | ground covered -- weight forward, the last footfall still behind; the instant a blow lands, the weapon already through -- never wound up, never posing | `cards/starter/lunge` `cards/shade-starter/slip-in` `signatures/strength/the-lance` |
 | **3** | 2 | an edge, worn and sharpened back more than once | `items/arming-sword` `items/trident` `items/npc/goblin-spear` |
 | **2** | 2 | a hand working an object, the object mid-use rather than held up to be seen; a weapon coming to hand, caught between carried and held | `cards/starter/quick-hands` `cards/shade-starter/light-fingers` |
-| **14** | 1 | the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem | `cards/fate/critical` `cards/fate/minus-one` `cards/fate/minus-two` `cards/fate/miss` `cards/fate/plus-one` …+9 |
+| **70** | 1 | the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem | `cards/fate/critical` `cards/fate/minus-one` `cards/fate/minus-two` `cards/fate/miss` `cards/fate/plus-one` …+65 |
 | **9** | 1 | set down on nothing, carried a long way among other things | `items/beggars-bowl` `items/cairn-stone` `items/cracked-spyglass` `items/locked-casket` `items/loose-cobble` …+4 |
 | **7** | 1 | an object that means nothing except in trained hands | `features/good-aim` `features/good-name` `features/hard-hands` `features/light-step` `features/quick-eye` …+2 |
 | **7** | 1 | a small dark bottle, labelled, a residue dried at the lip | `items/assassins-tincture` `items/black-lotus` `items/blade-venom` `items/drowsing-oil` `items/grave-cap-extract` …+2 |
@@ -10557,7 +11719,9 @@ Answer a cluster by adding its keys to `DIRECTION` in `test/art-prompts.mjs` and
 | **3** | 1 | worn unevenly, and the wear is the subject | `items/boots-of-the-long-step` `items/hollow-boots` `items/pilgrims-shoes` |
 | **2** | 1 | pulled toward something against the will | `cards/starter/taunt` `signatures/strength/play-to-the-crowd` |
 | **25** | — | the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol | `conditions/blessed` `conditions/burdened` `conditions/burning` `conditions/compelled` `conditions/cursed` …+20 |
+| **12** | — | the work and not the worker -- the kit laid out, the bench, the deck at the hour the job is done. Hands at most, and never a face | `nodes/background/acolyte` `nodes/background/caravan-guard` `nodes/background/card-sharp` `nodes/background/forester` `nodes/background/guild-apprentice` …+7 |
 | **11** | — |  | `backs/action` `backs/fate` `backs/ritual` `backs/skill` `backs/item` …+6 |
+| **10** | — | the place and nobody in it: somewhere a person could be standing, at an hour that says what living there is like, with nobody standing in it. No figure at all | `nodes/origin/echterhof-born` `nodes/origin/furnace-stock` `nodes/origin/saag-et-haar` `nodes/origin/the-amber` `nodes/origin/the-core` …+5 |
 | **6** | — | one hand's worth of object, drawn close and large | `items/accusers-ring` `items/gamblers-coin` `items/mnemonic-stone` `items/pact-iron` `items/serpents-tooth-ring` …+1 |
 | **6** | — | hung on a cord and drawn hanging, turned off square | `items/amulet-of-the-mended-thread` `items/gag-of-the-nine` `items/gorget-of-the-turned-blade` `items/hourglass-charm` `items/surgeons-pin` …+1 |
 | **6** | — | held, or just set down, the grip polished by gripping | `items/blade-of-the-eager-hand` `items/discriminating-wand` `items/gauntlet-of-the-open-palm` `items/hooked-gauntlet` `items/reavers-edge` …+1 |

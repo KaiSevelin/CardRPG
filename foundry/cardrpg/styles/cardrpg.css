@@ -1500,6 +1500,26 @@
   border-radius: 3px;
 }
 
+/*
+ * **The node's picture, above its name.**  [BUILT 2026-11-13]
+ *
+ * 2:3 like every other piece in this game, so the shelves it is drawn from need no second spec --
+ * and a fixed aspect rather than a height, because the panel is 290px wide at every window size
+ * and a portrait that changes shape between two nodes reads as two different kinds of thing.
+ *
+ * `cover` for the same reason a card uses it: art is supplied at the card's own ratio, so a crop
+ * is a rounding error and a letterbox would be two bars on every node in the graph.
+ */
+.cr-levelup__art {
+  width: 100%;
+  aspect-ratio: var(--cardrpg-card-ratio, 0.667);
+  margin-bottom: 8px;
+  border-radius: 3px;
+  background-color: var(--cardrpg-dark, #221d1a);
+  background-size: cover;
+  background-position: center;
+}
+
 .cr-levelup__detail h3 { margin: 0 0 6px; }
 .cr-levelup__hint { opacity: 0.7; font-style: italic; }
 .cr-levelup__cell { opacity: 0.8; font-size: 0.9em; }

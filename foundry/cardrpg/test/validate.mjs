@@ -6822,7 +6822,12 @@ const artable = (await import("../module/art.mjs")).SHELVES.flatMap(s => s.list 
 /* 671 since 2026-11-13: the critical deck's seven faces. Its exemption said it needed
  * *neither faces nor a back* and then argued only the back -- a card turned face up the
  * instant it is drawn. Applied to the face that argument runs the other way. */
-check("pieces of content that take art", artable.length, 671);
+/* 749 since 2026-11-13: the graph's own three shelves -- ten origins, twelve backgrounds
+ * and fifty-six titles. The brief used to list the graph's nodes under what does not need
+ * art, because a node wears the art of what it hands over; that is true of what the GRAPH
+ * draws and false of what the PANE does, which shows a picture beside three paragraphs of
+ * prose about a person. */
+check("pieces of content that take art", artable.length, 749);
 /*
  * **The four items that are content without being commissions, and the item each one wears.**
  *
@@ -7345,7 +7350,7 @@ const { artIn: artInLive, backOf: backOfLive } = await import("../module/decks.m
 /* Every piece the game can hand Foundry a path for, which is all of them: kept as the denominator
  * the three states below have to add up to, and no longer printed as progress. */
 check("pieces the game has a path for", artable.filter(e => artInLive(e)).length
-  + backs.filter(([k]) => backOfLive(k)).length, 682);
+  + backs.filter(([k]) => backOfLive(k)).length, 760);
 /*
  * **And every path the game hands Foundry names a file that is there.**
  *
@@ -7364,7 +7369,7 @@ const pathless = [
   ...artable.map(e => [e.name, artInLive(e)]),
   ...backs.map(([k, b]) => [b.label ?? k, backOfLive(k)])
 ].filter(([, p]) => p && !fs.existsSync(fileFor(p)));
-check("art paths the game would hand Foundry", artable.length + backs.length, 682);
+check("art paths the game would hand Foundry", artable.length + backs.length, 760);
 /*
  * **The brief's progress line used to be the total, and nobody noticed for months.**
  *
@@ -7491,11 +7496,21 @@ const ART_SLOTS = {
    * shape and still has to be checked -- a shelf whose pictures nothing fetches is a commission
    * nobody will ever see, which is the whole reason this table exists.
    */
-  conditions: "keyed"
+  conditions: "keyed",
+  /*
+   * **The fifth kind, and the second that is not a document.**  [2026-11-13]
+   *
+   * A graph node is not a Foundry document at all -- it is an entry in content that the engine
+   * reads and the level-up pane draws. So its picture is fetched rather than stored: `artFor` in
+   * levelup.mjs resolves the node's own piece, or the art of what it hands over for the hundred-odd
+   * minor nodes that have no portrait. Checked like the rest, because a shelf whose pictures
+   * nothing fetches is a commission nobody will ever see.
+   */
+  "nodes/origin": "graph", "nodes/background": "graph", "nodes/title": "graph"
 };
 const briefDirs = [...new Set([...artList.matchAll(/Suggested path: `cardrpg\/art\/(.+?)\/`/g)]
   .map(m => m[1]))];
-check("directories the brief commissions into", briefDirs.length, 28);
+check("directories the brief commissions into", briefDirs.length, 31);
 check("and every one of them has a slot",
   briefDirs.filter(d => !(d in ART_SLOTS)).join(", ") || "none", "none");
 /* And no slot is declared for a group that is not in the brief, or this list rots quietly. */
@@ -7521,7 +7536,10 @@ const SLOT_WRITERS = {
   item: [["an item", setupSource, "export function slateData", "\n}", /artIn\(/]],
   actor: [["an actor", setupSource, "const buildActor = async", "\n  };", /artIn\(/]],
   keyed: [["a condition", artSource, "export function conditionArt", "\n}",
-    /CONDITION_ART\.get\(key\)/]]
+    /CONDITION_ART\.get\(key\)/]],
+  /* Its own piece first, the reward's only as a fallback -- so the grep is the first line and not
+   * merely the word `artIn`, which the fallback also uses. */
+  graph: [["a graph node", levelup, "function artFor(node)", "\n}", /const own = node \? artIn\(node\) : "";/]]
 };
 const slotFaults = [];
 for (const [slot, writers] of Object.entries(SLOT_WRITERS)) {
@@ -7555,7 +7573,7 @@ check("while its face carries the art",
   /faces: \[\{ name: def\.name, \.\.\.\(artIn\(def\)/.test(critBody) ? "yes" : "no", "yes");
 
 check("writers the rule actually read",
-  Object.values(SLOT_WRITERS).flat().length, 6);
+  Object.values(SLOT_WRITERS).flat().length, 7);
 
 /*
  * **A token is a different shape, and the brief says so twice on purpose.** Once in its own spec
@@ -7667,7 +7685,7 @@ const briefs = faceRows.map(r => r.brief);
 const leaked = briefs.flatMap(text =>
   [...text.matchAll(/\b([a-z]+[A-Z][a-zA-Z]*)\b/g)].map(m => m[1]));
 /* A pattern that matched no rows at all would report "none" for any list whatsoever. */
-check("briefs the check actually read", briefs.length, 671);
+check("briefs the check actually read", briefs.length, 749);
 check("keys that leaked into the brief",
   leaked.length ? [...new Set(leaked)].join(", ") : "none", "none");
 /*
@@ -9201,7 +9219,11 @@ const castLines = [...artPrompts.matchAll(/that person is (a (?:wo)?man) of ([A-
 /* 179 since 2026-11-13: the critical deck. It IS cast -- half of these are a plate, a helm or
  * a pair of feet and the line is written to be evaluated only if a face shows -- unlike the
  * fate shelf, which is excluded because nothing in its frame is a person at all. */
-check("cards, signatures and features given an assigned person", castLines.length, 178);
+/* 234 since 2026-11-13: the fifty-six titles. This is the shelf the casting mechanism was built
+ * for -- fifty-six pictures of people, drawn one request at a time with no sight of each other,
+ * is exactly the condition that returned twenty-four human tokens as one pale man in twenty-four
+ * costumes. Origins and backgrounds are excluded: their own briefs forbid a figure. */
+check("cards, signatures and features given an assigned person", castLines.length, 234);
 /* The NPC pool is the one group that must NOT be cast: its own capsule says the actor is nobody,
  * because one picture is drawn behind a goblin, a troll and a dragon. */
 const npcBlock = /\n## NPC intent cards\n([\s\S]*?)\n## /.exec(artPrompts)?.[1] ?? "";
@@ -9238,7 +9260,7 @@ check("western ancestries among them, which had nearly vanished",
    * against 33.7%, which is the proportion holding rather than a seventh shelf of westerners.
    * The number this check is really about is that ratio. 60 of 178 once `find-the-gap` dropped
    * its cast line -- see NO_PERSON in art-prompts.mjs, and the refusal it was added for. */
-  castLines.filter(m => EURO.has(m[2])).length, 60);
+  castLines.filter(m => EURO.has(m[2])).length, 76);
 check("and every ancestry on the list is used somewhere",
   new Set(castLines.map(m => m[2])).size, 15);
 
@@ -9502,7 +9524,7 @@ check("and each one says what is not in the frame",
  * spelling them again. */
 const packSource = fs.readFileSync(path.join(root, "test/build-packs.mjs"), "utf8");
 const rows = faceRows;
-check("file paths in the brief", rows.length, 671);
+check("file paths in the brief", rows.length, 749);
 /* And the backs, whose path is the slug of their KEY rather than of their printed label. */
 const backPaths = [...artList.matchAll(/\| `(backs\/[^`]+)` \|/g)].map(m => m[1]);
 check("back paths in the brief", backPaths.length, backs.length);
@@ -10946,8 +10968,11 @@ const ratioInCss = Number(/--cardrpg-card-ratio: ([\d.]+);/.exec(css)?.[1] ?? 0)
 check("the card is 2:3", Math.abs(ratioInCss - 2 / 3) < 0.001, true);
 
 /* Cover, not contain: a file at some other shape is cropped rather than letterboxed. */
+/* Anchored to the CARD's own rule: `.cr-levelup__art` covers too, for the same reason, and an
+ * unanchored grep that matches both is a grep a second rule can answer. */
 check("art is cropped rather than letterboxed",
-  /background-size: cover/.test(css) ? "yes" : "no", "yes");
+  /background-size: cover;\n  background-position: center;\n  background-clip: padding-box;/
+    .test(css) ? "yes" : "no", "yes");
 /* A tint still means a bonus group and nothing else, and the band carries the style too. */
 check("the group rim is the same band",
   /\.cr-slate\[data-group\] \{ border-width: 5px/.test(css) ? "yes" : "no", "yes");

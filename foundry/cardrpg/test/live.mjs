@@ -1254,6 +1254,21 @@ async function probes(page) {
       tap("strength");
       await wait(80);
       out.push(["a Way says what it means", !!detail().querySelector(".cr-levelup__lore"), true]);
+      /*
+       * **And shows a picture of it.** The panel was prose and a list of grants, in a window whose
+       * argument is that a level-up is a direction rather than a menu -- and a direction with no
+       * picture is a menu with longer entries. Three shelves were commissioned for it: an origin is
+       * a place, a background is a trade, a title is a person.
+       *
+       * The URL is checked rather than fetched, because the shelf is not shot yet and the brief
+       * says so. **When it is drawn this asks for a 200**, like every other shelf.
+       */
+      const shownArt = () => {
+        const el = detail().querySelector(".cr-levelup__art");
+        const bg = el ? getComputedStyle(el).backgroundImage : "";
+        return bg.includes("/art/nodes/title/") ? "yes" : bg.slice(0, 60) || "nothing";
+      };
+      out.push(["and a picture of its own", shownArt(), "yes"]);
       out.push(["and where it leads",
         /Knight|Berserker|Infantry/
           .test(detail().querySelector(".cr-levelup__leads")?.textContent ?? ""), true]);
@@ -1338,6 +1353,14 @@ try {
   /* Foundry refuses to render below 1366x768 and says so rather than guessing. */
   const page = await browser.newPage({ viewport: { width: 1600, height: 900 } });
   page.on("response", r => {
+    /*
+     * **The graph's three shelves are commissioned and not yet shot.** Seventy-eight files -- ten
+     * origins, twelve backgrounds and fifty-six titles -- named one by one in the brief and counted
+     * there as still to shoot, which is a different state from a path that is wrong. **Delete this
+     * clause the day `art/nodes/` is drawn.** Its predecessors lasted a morning, an hour, and an
+     * afternoon respectively.
+     */
+    if (r.url().includes("/art/nodes/")) return;
     if (r.status() >= 400) missing.add(`${r.status()} ${r.url().split(`:${PORT}`).pop()}`);
   });
   await page.addInitScript(() => {

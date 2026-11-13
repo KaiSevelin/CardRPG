@@ -234,6 +234,31 @@ export const FATE_PIECES = [
     blurb: "Ink let into water: a bloom going somewhere nobody chose, the edge still moving and the shape not settled. No symmetry and no centre." },
 ];
 
+/**
+ * **The levelling graph's own pictures.**  [BUILT 2026-11-13]
+ *
+ * The brief used to list *the levelling graph's nodes* under what does not need art, on the
+ * grounds that *a node wears the art of what it hands over, so drawing a Signature draws its node
+ * too*. That was true of what the GRAPH draws and false of what the pane does: the description
+ * panel shows a title, an axis, a resource and three paragraphs of prose, and a borrowed card
+ * face is a picture of the reward rather than of the person.
+ *
+ * Three shelves, because the three ask for different pictures and say so in their own briefs:
+ *
+ * - **origins** are a PLACE, and every one of them is a real place in the world file.
+ * - **backgrounds** are a trade, seen as the work rather than as a portrait.
+ * - **titles** are a person -- the only shelf in this book that is, which is the whole reason
+ *   these were worth commissioning instead of borrowed.
+ *
+ * Every piece's brief is derived from the node's own `lore`, which is authored once and read by
+ * both the pane and the prompt book. A second description written beside the first would drift
+ * the first time somebody rewrote one of them.
+ */
+const titled = content.NODES.filter(n => n.title);
+export const ORIGIN_PIECES = content.NODES.filter(n => n.exclusive === "origin");
+export const BACKGROUND_PIECES = content.NODES.filter(n => n.exclusive === "background");
+export const TITLE_PIECES = titled;
+
 export const SHELVES = [
   { key: "cards/starter", list: content.WARRIOR_DECK },
   /*
@@ -286,6 +311,15 @@ export const SHELVES = [
    */
   { key: "cards/crit", list: content.CRIT_EFFECTS },
   { key: "cards/fate", list: FATE_PIECES },
+
+  /*
+   * **The graph's three, and the only shelf in this book whose subject is a person.** A title is
+   * somebody a player becomes; an origin is where they are from; a background is what they did
+   * before. See the note above `ORIGIN_PIECES` for why these stopped being borrowed.
+   */
+  { key: "nodes/origin", list: ORIGIN_PIECES },
+  { key: "nodes/background", list: BACKGROUND_PIECES },
+  { key: "nodes/title", list: TITLE_PIECES },
   { key: "cards/harm", list: content.HARM_FACES },
 
   { key: "signatures/shade", list: content.SHADE_SIGNATURES },
@@ -379,9 +413,26 @@ const BY_ENTRY = new Map();
 const BY_NAME = new Map();
 export const AMBIGUOUS = [];
 
+/*
+ * **A graph node is never resolved by name, so it never enters that index.**  [2026-11-13]
+ *
+ * `BY_NAME` exists for one caller: a variant creature, rebuilt fresh by `applyVariant` every time
+ * it is asked for, so the object a builder holds was never the object this file indexed. Nothing
+ * else needs it -- and the three node shelves in particular never could, because the pane and the
+ * engine both hold the node itself.
+ *
+ * Letting them in cost something real and immediately. Four titles share a name with a creature --
+ * **Artillerist, Berserker, The Purple and Flagellant** -- so the collision detector did exactly
+ * what it is for and struck all four out of the index, which took the four CREATURES' tokens with
+ * them. A node that cannot be looked up by name loses nothing; a variant creature loses its only
+ * route. One line, and the names stop competing for an index only one of them uses.
+ */
+const NAMELESS = new Set(["nodes/origin", "nodes/background", "nodes/title"]);
+
 for (const shelf of SHELVES) {
   for (const entry of shelf.list) {
     BY_ENTRY.set(entry, fileOf(shelf, entry));
+    if (NAMELESS.has(shelf.key)) continue;
     if (BY_NAME.has(entry.name)) { AMBIGUOUS.push(entry.name); BY_NAME.delete(entry.name); }
     else if (!AMBIGUOUS.includes(entry.name)) BY_NAME.set(entry.name, fileOf(shelf, entry));
   }

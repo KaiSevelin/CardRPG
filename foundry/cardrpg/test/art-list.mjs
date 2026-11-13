@@ -329,6 +329,30 @@ const sigs = Object.fromEntries(Object.entries(content)
  * Keyed by shelf, so the two that share `tokens/` are still two entries: a creature's token and the
  * starter Warrior's are the same kind of picture and want the same words said differently.
  */
+/**
+ * **A graph node's brief, which is its own description.**  [BUILT 2026-11-13]
+ *
+ * Every other shelf's capsule is assembled from mechanics -- a strength, a range, a pair of card
+ * halves -- because that is all the content carries. A node carries `lore`: two paragraphs written
+ * for the player reading it before they spend a level, which is a better brief than any table can
+ * produce and is already the thing the pane shows.
+ *
+ * The first paragraph only. The second is almost always about what the node COSTS, which is the
+ * half an artist cannot draw, and the capsule has a length budget it would eat.
+ *
+ * The axis and the resource go in front of it, because they are what distinguishes two titles
+ * whose prose reads alike -- *Control / a slot kept free* against *Reactions / halves* is the
+ * difference between a Thief and a Duellist in four words.
+ */
+function nodeBrief(entry) {
+  const spine = [entry.title, entry.axis && `${entry.axis} / ${entry.resource ?? ""}`]
+    .filter(Boolean).join(" \u00b7 ");
+  const first = String(entry.lore ?? "").split("\n\n")[0]
+    .replace(/\*\*/g, "").replace(/\s+/g, " ").trim();
+  const line = [spine, first].filter(Boolean).join(" \u2014 ");
+  return line.length > 220 ? `${line.slice(0, 217)}...` : line;
+}
+
 const PROSE = {
   "cards/starter": { title: "The starter Warrior's deck",
     why: "What a first session plays with. Draw these first: ten cards is a playable game." },
@@ -352,6 +376,31 @@ const PROSE = {
     why: "Turned face up in front of four people who have been working toward this for a "
       + "session, so it is the one GM card with a real audience. Every one of them is the thing "
       + "the party is trying to undo pushing back: the injury, the curse or the rot answering." },
+  "nodes/origin": { title: "Origins \u2014 where a character is from",
+    why: "**Ten places, and every one of them is in the world file.** A player picks one at "
+      + "character creation, for nothing, and it is the first picture they will ever see in this "
+      + "game \u2014 the level-up pane shows it beside the description while they are deciding who "
+      + "they are.\n\n**Draw the place, not a person from it.** An origin is shared by every "
+      + "character who takes it, so a figure in the frame is somebody else's character. A harbour "
+      + "at a particular hour, a mesa seen from the plain below, a sealed quarter's gate: "
+      + "somewhere a person could be standing, with nobody standing in it.", brief: nodeBrief },
+  "nodes/background": { title: "Backgrounds \u2014 what a character did before",
+    why: "**Twelve trades**, taken at creation beside an origin and for nothing. Where an origin "
+      + "is a place, a background is work.\n\n**Draw the work, not the worker.** Same reason as the "
+      + "origins: the picture is shared by everybody who was ever a Soldier, so it is the kit, the "
+      + "bench, the deck of a boat at the hour the job is done \u2014 hands at most, and a face "
+      + "never. The trained tool each one issues is a good place to start and a dull place to "
+      + "stop.", brief: nodeBrief },
+  "nodes/title": { title: "Titles \u2014 who a character becomes",
+    why: "**Fifty-six, and the only shelf in this book whose subject is a PERSON.** Everything "
+      + "else here is an object, a gesture or a place, for the same reason every time: one picture "
+      + "has to serve a goblin, a dragon and the player. A title does not \u2014 it is one "
+      + "character's own standing, read in a panel while they decide whether to spend a level on "
+      + "becoming it.\n\n**So draw the figure, and draw them doing the thing the title is about.** "
+      + "The axis and the resource in each brief are the distinguishing pair: a Thief spends a "
+      + "slot kept free and a Duellist spends halves, and the pictures should differ the way those "
+      + "two sentences do. The four Ways are in here too \u2014 Shade, Warrior, Scholar and Sworn "
+      + "are titles, and they are the four a level-0 character chooses between.", brief: nodeBrief },
   "cards/crit": { title: "The critical deck",
     why: "**The one card in the game that is only ever seen face up.** It is turned over the "
       + "instant a Critical lands and read out to the table, which is the loudest moment a fight "

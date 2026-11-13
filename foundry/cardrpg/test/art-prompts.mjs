@@ -122,6 +122,14 @@ const WAY_OF_DIR = {
  *   nobody, because one picture serves a goblin, a troll and a dragon. Casting the actor would
  *   contradict the group's first rule. The far side of those cards is a player character drawn in
  *   full, but which half of the frame a cast line would land on is not something this can know.
+ * - **`nodes/title` is INCLUDED, and it is the shelf the mechanism was built for.** Fifty-six
+ *   pictures of people, drawn one request at a time with no sight of each other, is exactly the
+ *   condition that returned twenty-four human tokens as one pale man in twenty-four costumes. The
+ *   cast is assigned per piece and hashed from the key, so a title already drawn keeps its casting
+ *   when another is inserted beside it.
+ * - **origins and backgrounds are excluded**, and not for the usual reason: their own briefs
+ *   forbid a person outright. The picture is shared by every character who takes it, so a figure
+ *   in the frame is somebody else's character.
  * - **the fate deck is excluded** for the opposite reason to the intent deck's. There, the actor
  *   is deliberately nobody; here there is no actor at all -- the shelf is a ground with weight
  *   and its own brief forbids a figure, an object and a place. A cast line is written to be
@@ -136,7 +144,7 @@ const WAY_OF_DIR = {
  * and a cast on a boot is noise. A condition the artist can evaluate costs nothing when it is
  * false, where an unconditional one invites a face into a frame that did not want one.
  */
-const CAST_GROUP = /^(?:cards\/(?!npc\b|fate\b)|signatures\/|features$)/;
+const CAST_GROUP = /^(?:cards\/(?!npc\b|fate\b)|signatures\/|features$|nodes\/title$)/;
 
 /**
  * **The pieces whose own direction rules a body out, and which therefore get no cast line.**
@@ -2347,14 +2355,27 @@ function motifsFor(entry, group) {
    * A condition is a STATE and what can be drawn of it is the evidence it left.
    */
   if (!out.length && group.kind !== "token" && !flavourOf(entry)) {
+    /*
+     * **Five answers, because the shelves disagree about whether a person is in the frame.**
+     * The last of them -- *the quality itself as one human moment* -- was written for features and
+     * is exactly right for a TITLE, which is the one shelf in this book whose subject is a person.
+     * It is exactly wrong for the two beside it: an origin is a place every character who takes it
+     * shares, and a background is a trade, so a figure in either is somebody else's character.
+     */
     out.push(group.dir.startsWith("items")
       ? "the thing itself, lit from one side, nothing holding it and nothing behind it"
       : group.dir === "conditions"
         ? "the evidence of it and not the person under it -- one object, one mark or one gesture, "
           + "with the body out of frame or cropped to a limb. No face, and nothing held up as a "
           + "symbol"
-        : "the quality itself as one human moment -- the person it describes, caught in the second "
-          + "that proves it. No object held up, no symbol, no emblem");
+        : group.dir === "nodes/origin"
+          ? "the place and nobody in it: somewhere a person could be standing, at an hour that "
+            + "says what living there is like, with nobody standing in it. No figure at all"
+          : group.dir === "nodes/background"
+            ? "the work and not the worker -- the kit laid out, the bench, the deck at the hour "
+              + "the job is done. Hands at most, and never a face"
+            : "the quality itself as one human moment -- the person it describes, caught in the "
+              + "second that proves it. No object held up, no symbol, no emblem");
   }
   return [...new Set(out)].slice(0, 3);
 }
@@ -2403,6 +2424,9 @@ const FRAME = {
    * weight and handling rather than about a thing in the frame, and the gradient across the eight
    * is the only composition instruction that matters.
    */
+  "nodes/origin": "Shown in the level-up pane beside the description, while a player is still deciding who they are. **Draw the PLACE and nobody in it** -- every character who takes this origin shares the picture, so a figure in the frame is somebody else's character. Somewhere a person could be standing, with nobody standing in it.",
+  "nodes/background": "Shown in the level-up pane beside the description. **Draw the WORK, not the worker**: the kit laid out, the bench, the deck at the hour the job is done. Hands at most, and never a face -- this picture belongs to everybody who was ever a Soldier. The trained tool it issues is a good place to start and a dull place to stop.",
+  "nodes/title": "Shown in the level-up pane while a player decides whether to spend a level on becoming this. **This is the one shelf here whose subject is a person, so draw the figure** -- and draw them doing the thing the title is about, not posing as it. The axis and resource in the subject line are what separate two titles whose prose reads alike; let the pictures differ the way those sentences do.",
   "cards/crit": "Turned face up the instant a Critical lands and read out to the table, so it is the one card here with no back and the one with an audience. **Draw what the hit DID, never the hit**: the gap in the armour, not the thrust that found it. The blow is on a hundred other cards in this book and the aftermath is on none of them.",
   "cards/fate": "Read in a row at tiny size with an enormous number printed over it, so **this is a ground and not a scene**: no object, no figure, no place, nothing the eye has to resolve. Brush, wash and bare paper. How much ink it carries is the whole of what it says \u2014 Zero is nearly empty and Critical is the heaviest mark in the deck.",
   "cards/shade": "A Way of Shade card: low light, cover, and the moment before being noticed.",
