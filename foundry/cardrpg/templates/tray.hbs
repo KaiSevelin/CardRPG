@@ -22,7 +22,7 @@
             cards, so it keeps the hatch and loads no texture. --}}
       <button type="button"
             class="cr-pile{{#if this.open}} cr-pile--open{{/if}}{{#if this.art}} cr-pile--faced{{/if}}"
-            {{#if this.art}}style="--cr-art: url('{{this.art}}')"{{/if}}
+            {{#if this.art}}style="--cr-art: {{crArt this.art}}"{{/if}}
             data-action="openPile" data-pile="{{this.id}}" data-tooltip="{{this.tip}}">
       <span class="cr-pile__count">{{this.count}}</span>
       <span class="cr-pile__label">{{this.label}}</span>
@@ -34,7 +34,7 @@
   <section class="cr-hud__decks cr-hud__decks--action">
     <button type="button"
           class="cr-pile cr-pile--action{{#if actionDeck.spent}} cr-pile--spent{{/if}}{{#if actionDeck.art}} cr-pile--faced{{/if}}"
-          {{#if actionDeck.art}}style="--cr-art: url('{{actionDeck.art}}')"{{/if}}
+          {{#if actionDeck.art}}style="--cr-art: {{crArt actionDeck.art}}"{{/if}}
           data-action="dealHand" data-tooltip="{{actionDeck.tip}}">
       <span class="cr-pile__count">{{actionDeck.count}}</span>
       <span class="cr-pile__label">{{actionDeck.label}}</span>
@@ -142,7 +142,7 @@
                 tooltip saying "you cannot remove this" beside a button that removes it would be
                 the sheet arguing with itself. --}}
           <div class="cr-card cr-card--spread cr-card--stacked{{#unless this.fixed}} cr-card--takeable{{/unless}}{{#if this.condition}} cr-card--condition{{/if}}{{#if this.assisted}} cr-card--assisted{{/if}}{{#if this.action}} cr-card--base{{/if}}{{#if this.disabled}} cr-card--disabled{{/if}}{{#if this.flipped}} cr-card--back{{/if}}"
-               style="--cr-depth: {{@index}}{{#if this.art}}; --cr-art: url('{{this.art}}'){{/if}}"
+               style="--cr-depth: {{@index}}{{#if this.art}}; --cr-art: {{crArt this.art}}{{/if}}"
                data-group="{{this.group}}" data-tooltip="{{this.tip}}"
                {{#unless this.fixed}}role="button" tabindex="0" data-action="unstack" data-half="{{../half}}"{{/unless}}
                {{#if this.slate}}data-slate-id="{{this.id}}"{{/if}}>
@@ -214,7 +214,7 @@
         {{!-- `--cr-art` is the only thing art needs: the rim is the border and the art is the
               background inside it, so a card with no picture needs no different markup. --}}
         <div class="cr-card{{#if card.harm}} cr-card--harm{{/if}}{{#if card.sole}} cr-card--sole{{/if}}{{#if card.reaction.reserved}} cr-card--reserved{{/if}}"
-             {{#if card.art}}style="--cr-art: url('{{card.art}}')"{{/if}}>
+             {{#if card.art}}style="--cr-art: {{crArt card.art}}"{{/if}}>
           <div class="cr-card__name"{{#if card.blurb}} data-tooltip="{{card.blurb}}"{{/if}}>{{card.name}}</div>
           {{#if card.harm}}
             <div class="cr-half"><span class="cr-note">Can't be played, not even for Brace.</span></div>
@@ -372,7 +372,7 @@
                 same rule a blocked card half follows (hud-spec 3.2), and for the same reason --
                 hiding it would hide why it cannot be played. --}}
           <div class="cr-card cr-card--skill{{#if this.wild}} cr-card--wild{{/if}}{{#unless this.answers}} cr-card--mute{{/unless}}"
-               {{#if this.art}}style="--cr-art: url('{{this.art}}')"{{/if}}
+               {{#if this.art}}style="--cr-art: {{crArt this.art}}"{{/if}}
                role="button" tabindex="0" data-action="check" data-card-id="{{this.id}}"
                data-tooltip="Play it: the check asks how hard, which tool, and whether anybody helped.">
             <div class="cr-card__name">
@@ -431,7 +431,7 @@
       {{#each viewer.cards}}
       <div class="cr-card cr-card--spread{{#if this.harm}} cr-card--harm{{/if}}{{#if this.sole}} cr-card--sole{{/if}}{{#if this.flipped}} cr-card--back{{/if}}{{#if this.passive}} cr-card--passive{{else}} cr-card--takeable{{/if}}"
            data-group="{{this.group}}" data-tooltip="{{this.tip}}"
-           {{#if this.art}}style="--cr-art: url('{{this.art}}')"{{/if}}
+           {{#if this.art}}style="--cr-art: {{crArt this.art}}"{{/if}}
            {{#unless this.passive}}role="button" tabindex="0" data-action="playSlate" data-slate-id="{{this.id}}"{{/unless}}>
         <div class="cr-card__name">
           {{#if this.icon}}{{crIcon this.icon}}{{/if}}

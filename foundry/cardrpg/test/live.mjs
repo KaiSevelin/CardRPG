@@ -211,6 +211,15 @@ async function arm(page) {
 const results = [];
 const check = (name, got, want) => results.push({ name, got, want });
 
+/*
+ * **Everything the page asked the server for and did not get.**
+ *
+ * A 404 is the one kind of fault a browser reports and then carries on from, which makes it the
+ * exact shape of defect a human misses: the deck backs 404'd on every render for months and the
+ * piles simply fell back to their hatch, so the game looked drawn rather than broken.
+ */
+const missing = new Set();
+
 /** Run one probe in its own try, so a broken probe is one failed row and not a dead run. */
 async function probe(name, fn) {
   try {
@@ -569,12 +578,125 @@ async function probes(page) {
   });
 
   /*
+   * **The pictures are where the page looks for them.**  **[FIXED 2026-11-13]**
+   *
+   * A relative `url()` inside a **custom property** resolves against the stylesheet that consumes
+   * the `var()`, not against the document -- so `systems/cardrpg/art/backs/action.webp` was asked
+   * for as `systems/cardrpg/styles/systems/cardrpg/art/backs/action.webp` and every deck back in
+   * the game 404'd. The path in the content was right, the file was there, the helper returned it
+   * correctly, and nothing was wrong anywhere a reader of source would look.
+   *
+   * So this asks the browser what it computed, and then asks the server for it.
+   */
+  await probe("the art is where the page asks for it", async () => {
+    await settle(page);
+    await page.evaluate(() => game.cardrpg.openTray(LIVE.hero));
+    await page.waitForSelector(".cr-pile--faced", { timeout: 20000 });
+    return page.evaluate(async () => {
+      const faced = [...document.querySelectorAll(".cr-pile--faced")];
+      const urls = faced.map(e => getComputedStyle(e).getPropertyValue("--cr-art").trim()
+        .replace(/^url\(['"]?/, "").replace(/['"]?\)$/, ""));
+      const codes = await Promise.all(urls.map(u =>
+        fetch(u, { method: "HEAD" }).then(r => r.status).catch(() => 0)));
+      return [
+        ["the piles wear a back at all", faced.length > 0, true],
+        ["every back is absolute from the server root",
+          urls.filter(u => !u.startsWith("/")).join(" | ") || "all of them", "all of them"],
+        ["every back names a real file", urls.every(u => /\.(webp|png|jpg|svg)$/.test(u)), true],
+        ["and every one of them is served", [...new Set(codes)].join(","), "200"]
+      ];
+    });
+  });
+
+  /*
+   * **And the cards wear theirs.**  **[FIXED 2026-11-13]**
+   *
+   * The starter deck was the one deck in `setup.mjs` that wrote its own card literal instead of
+   * calling `actionCardData`, and that literal never carried the face's `img`. So the ten cards a
+   * first session actually touches were the ten with no picture, in every world ever built, while
+   * the files sat in `art/cards/starter/`. Both halves read correctly on their own: the builder
+   * sets the art, the content names it, the files exist, and the deck that skipped the builder was
+   * not visibly skipping anything.
+   *
+   * Setup is re-run here rather than trusted, because that is also the repair an existing world
+   * needs: the signature moves with the fix, so a stack that is not mid-fight rebuilds itself.
+   */
+  await probe("the starter deck wears its pictures", async () => {
+    return page.evaluate(async () => {
+      const { hero } = LIVE;
+      const setup = await import("/systems/cardrpg/module/setup.mjs");
+      const content = await import("/systems/cardrpg/module/content.mjs");
+      /* Everything back in the deck: `resyncPlan` holds a stack with a game in progress, which is
+       * the right refusal and would make this probe measure nothing. */
+      await LIVE.afterCombat(hero);
+      const before = LIVE.deckOf(hero, "action");
+      /*
+       * **The plan is checked rather than inferred from the result.** A probe that only looked at
+       * the cards afterwards reported `0 of 16` and said nothing about why -- and the reason was
+       * that an earlier probe had left the stack a card short of the number it was built with, so
+       * `resyncPlan` quite correctly refused to touch a game in progress. A repair that cannot run
+       * is a different fault from a repair that runs and fails, and the harness has to tell them
+       * apart or it sends you hunting the wrong one.
+       */
+      const want = JSON.stringify(content.WARRIOR_DECK.flatMap(d =>
+        Array.from({ length: d.copies ?? 1 }, () => LIVE.actionCardData(d))));
+      const plan = setup.resyncPlan({
+        built: before.getFlag("cardrpg", "cardrpgBuilt"), want, held: before.cards.size
+      });
+
+      await game.cardrpg.createStarterContent();
+      const deck = LIVE.deckOf(hero, "action");
+      const cards = deck.cards.contents.filter(c => c.type === "action");
+      const drawn = cards.filter(c => LIVE.artOf(c));
+      return [
+        ["the deck is in a state setup may repair",
+          plan === "held" ? `held: ${before.cards.size} cards against a build of `
+            + `${JSON.parse(before.getFlag("cardrpg", "cardrpgBuilt") ?? "[]").length}` : plan,
+          plan === "unchanged" ? "unchanged" : "rebuild"],
+        ["the deck holds its cards", cards.length > 0, true],
+        ["every one of them has a picture", drawn.length, cards.length],
+        ["and it is the one drawn for that card",
+          cards.every(c => LIVE.artOf(c).includes("art/cards/starter/")), true]
+      ];
+    });
+  });
+
+  /*
+   * **And the decks fit on the scene.**  **[FIXED 2026-11-13]**
+   *
+   * The two columns are anchored from opposite ends -- the piles from the top, the action deck
+   * from the hand's baseline -- and nothing related them, so below a window 924px tall the action
+   * deck sat on top of Conditions. Measured at **1366x768**, which is the smallest window Foundry
+   * will run in at all, so what is pinned is the worst case rather than this machine's.
+   */
+  await probe("the decks fit the window", async () => {
+    await page.setViewportSize({ width: 1366, height: 768 });
+    await page.evaluate(() => game.cardrpg.openTray(LIVE.hero));
+    await page.waitForSelector(".cr-hud__decks--action", { timeout: 20000 });
+    const rows = await page.evaluate(() => {
+      const box = sel => document.querySelector(sel)?.getBoundingClientRect();
+      const left = box(".cr-hud__decks--left");
+      const action = box(".cr-hud__decks--action");
+      return [
+        ["the pile column stops before the action deck starts",
+          Math.round(Math.max(0, left.bottom - action.top)), 0],
+        ["the action deck is on the screen", action.bottom <= window.innerHeight, true],
+        ["the column starts on the screen", left.top >= 0, true],
+        ["and a pile is still big enough to read a number on", Math.round(action.height) >= 110,
+          true]
+      ];
+    });
+    await page.setViewportSize({ width: 1600, height: 900 });
+    return rows;
+  });
+
+  /*
    * **And the world opens at all.** Nine days of engine changes went in without one of them being
    * loaded, so the cheapest question worth asking is whether the system still boots -- which every
    * probe above depends on and none of them states.
    */
   await probe("the system itself", async () => {
-    return page.evaluate(() => {
+    const rows = await page.evaluate(() => {
       const errors = (globalThis.LIVE_ERRORS ?? []).filter(e => !/favicon|DevTools/.test(e));
       return [
         ["the system is the one in the repo", game.system.id, "cardrpg"],
@@ -583,6 +705,9 @@ async function probes(page) {
         ["and nothing threw on the way up", errors.join(" | ") || "none", "none"]
       ];
     });
+    rows.push(["and nothing it asked the server for was missing",
+      [...missing].join(" | ") || "none", "none"]);
+    return rows;
   });
 }
 
@@ -609,6 +734,9 @@ try {
   });
   /* Foundry refuses to render below 1366x768 and says so rather than guessing. */
   const page = await browser.newPage({ viewport: { width: 1600, height: 900 } });
+  page.on("response", r => {
+    if (r.status() >= 400) missing.add(`${r.status()} ${r.url().split(`:${PORT}`).pop()}`);
+  });
   await page.addInitScript(() => {
     globalThis.LIVE_ERRORS = [];
     globalThis.addEventListener("error", e => globalThis.LIVE_ERRORS.push(String(e.message)));

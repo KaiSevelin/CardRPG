@@ -6789,8 +6789,15 @@ const backKeys = `${backs.map(([k]) => k.replace(/\./g, "\\.")).join("|")}|npc\\
  * Named rather than counted, so a *second* backless deck cannot arrive quietly: that is the
  * failure this check exists for, and "one of them" would not have caught it.
  */
+/*
+ * **And across a line break, not just a space.** The argument may sit on its own line -- the
+ * starter deck's call went multi-line the day its cards stopped being written out by hand --
+ * and `, "action"` then failed to match a back that was plainly there. The same lesson as the
+ * paragraph above, one character along: the check is about whether a deck names a back, and
+ * neither the position nor the whitespace was ever part of that.
+ */
 const backless = deckCalls
-  .filter(args => !new RegExp(`backOf\\(|, "(${backKeys})"`).test(args.trim()))
+  .filter(args => !new RegExp(`backOf\\(|,\\s*"(${backKeys})"`).test(args.trim()))
   .map(args => (/"([^"]+)"/.exec(args) ?? [])[1] ?? args.trim().slice(0, 40));
 check("deck documents with no back", backless.join(", ") || "none", "Critical Deck");
 /*
@@ -15190,6 +15197,24 @@ check("and every variant gets its own intent, because kind owns it",
   /`\$\{kind\}\.deck`/.test(buildCreatureBody) ? "yes" : "no", "yes");
 /* A starter world gets the goblin line and nothing else: forty-seven monsters in a new world is a
  * world nobody can find anything in. */
+/*
+ * **One builder for an action card, and the starter deck finally uses it.** **[FIXED 2026-11-13]**
+ *
+ * `setup.mjs` wrote this one deck's cards out by hand while every other deck in the file called
+ * its shared builder -- and the hand-written copy never carried the face's `img`, so the ten
+ * cards a first session touches were the ten with no picture, in every world ever built. It had
+ * drifted in two more places by then: `reactionParam` and `text` are on the builder and were
+ * not in the copy.
+ *
+ * A fact written in two places is a second fact that can drift, and no grep could have found
+ * this one: both spellings were correct JavaScript producing valid cards. What found it was
+ * looking at the game.
+ */
+check("the starter deck is built by the shared builder",
+  /expand\(WARRIOR_DECK, actionCardData\)/.test(setupSource) ? "yes" : "no", "yes");
+check("and no deck writes an action card by hand any more",
+  /faces: \[\{ name: def\.name \}\]/.test(setupSource) ? "still there" : "gone", "gone");
+
 check("the starter world builds the goblin line only",
   /ROSTER\.filter\(r => r\.system\.kind === "goblin"\)/.test(setupSource) ? "yes" : "no", "yes");
 /* The name appears three times in the entry module -- an import, the API line and its comment --
@@ -15372,6 +15397,7 @@ const absentGreps = [
     + String.raw` (?:preferred|or ` + "`" + String.raw`\.png` + "`" + `)`,
   String.raw`and never decides from adjacency itself :: \.after[\s\S]{0,60}\.(some|every)\(`,
   String.raw`and no caller is assumed to mean the action deck :: const deck = deckOf\(actor, "action"\);\s*\n\s*const parent = card\.parent;`,
+  String.raw`and no deck writes an action card by hand any more :: faces: \[\{ name: def\.name \}\]`,
   String.raw`and no longer reads a spell as a source of bonus :: slate\.type === "spell" && slate\.system\.effect`,
   String.raw`and no longer reads an art field the content has not got :: def\?\.art \?\? ""`,
   String.raw`and no longer stops dealing at the first dose :: taint\+\+;\s*\n\s*break;`,

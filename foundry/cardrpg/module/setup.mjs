@@ -8,7 +8,9 @@
 
 import { CARDRPG } from "./config.mjs";
 /* The one shape a skill card takes, shared with anything that grants one rather than spelled here. */
-import { skillCardData, twistCardData, critCardData, npcCardData, backOf, artIn } from "./decks.mjs";
+import {
+  actionCardData, skillCardData, twistCardData, critCardData, npcCardData, backOf, artIn
+} from "./decks.mjs";
 /* A deck is the subset of the pool a creature's capabilities earn, and a variant is a delta from
  * its base. Both are arithmetic, and both live where the validator can ask them. */
 import { deckFor, expandRoster } from "./monsters.mjs";
@@ -238,23 +240,32 @@ export async function createStarterContent() {
    * Discard and Spent must be separate piles: Catch Breath shuffles the discard back, and Spent
    * cards survive it until a rest. Flagging cards inside one pile would mean filtering on every
    * shuffle. */
+  /*
+   * **[FIXED 2026-11-13] The one deck that built its own cards, and the only one with no art.**
+   *
+   * This wrote the card out by hand -- a face carrying a name and nothing else -- while every
+   * other deck in this file goes through its shared builder.
+   *
+   * The sentence above **paraphrases** the retired literal rather than quoting it. A check asserts
+   * that no deck in this file writes one, and quoting the old shape here answered that check with
+   * prose: it reported *still there* and pointed at this comment. That is the third time a check
+   * has been satisfied by a sentence describing what it forbids. `actionCardData` has carried the face's `img` since
+   * the starter cards were drawn, so the ten cards a first session actually touches were the ten
+   * that never wore their pictures, in every world ever built. The hand was text on paper and the
+   * art was sitting in `art/cards/starter/` the whole time.
+   *
+   * It had quietly fallen behind in two more places: `reactionParam` and `text` are on the builder
+   * and were not here. **A fact written in two places is a second fact that can drift**, and this
+   * is that defect in its purest form -- the copy was not wrong when it was written, it was wrong
+   * three changes later.
+   *
+   * The signature changes with it, so the next `createStarterContent` sees `rebuild` rather than
+   * `unchanged` and an existing world repairs itself -- outside combat, which is what `resyncPlan`
+   * means by held.
+   */
   const warriorDeck = await makeCards(
     "Starter Warrior — Action Deck", "deck", "warrior.action",
-    expand(WARRIOR_DECK, def => ({
-      name: def.name,
-      type: "action",
-      // A Card with no face is face-down, and Foundry then shows "Unknown (<deck>)" instead of
-      // its name. Every card here is meant to be readable in hand, so it gets a face.
-      face: 0,
-      faces: [{ name: def.name }],
-      ...(backOf("action") ? { back: { img: backOf("action") } } : {}),
-      system: {
-        primary: def.primary ?? [],
-        secondary: def.secondary ?? [],
-        reaction: def.reaction ?? "",
-        costs: def.costs ?? {}
-      }
-    })),
+    expand(WARRIOR_DECK, actionCardData),
     "action"
   );
   const warriorHand = await makeCards("Starter Warrior — Hand", "hand", "warrior.hand");
@@ -302,7 +313,13 @@ export async function createStarterContent() {
     expand(WILD_MAGIC, def => ({
       name: def.name,
       type: "wild",
-      faces: [{ name: def.name }],
+      /*
+       * **[FIXED 2026-11-13] The second deck with no pictures, found by the check written for the
+       * first.** Ten surges, ten files in `art/cards/wild/`, and a face that never named one. No
+       * shared builder is invented for a single call site -- the one line that was missing is the
+       * one line that is added.
+       */
+      faces: [{ name: def.name, ...(artIn(def) ? { img: artIn(def) } : {}) }],
       face: 0,
       ...(backOf("wild") ? { back: { img: backOf("wild") } } : {}),
       system: { steps: def.steps ?? [], turn: def.turn, text: def.text ?? "" }

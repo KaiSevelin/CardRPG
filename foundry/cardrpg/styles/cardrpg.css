@@ -578,7 +578,26 @@
    * should be exactly the size of the deck it came from; anything else reads as a different object.
    * 63 x 88 mm, the standard poker ratio.
    */
-  --cr-card-w: 128px;
+  /*
+   * **Sized to the window rather than fixed.**  **[FIXED 2026-11-13]**
+   *
+   * 128px was a constant, and the two deck columns are anchored from opposite ends: the left
+   * column hangs from `top: 54px` and is three piles tall, while the action deck sits on the
+   * hand's baseline at `bottom: var(--cr-hotbar)`. Nothing related them, so they met in the
+   * middle -- the column ends at 54 + 3*192 + 12 = **642** and the action deck starts at
+   * `100vh - 90 - 192`, which needs a window **924px tall** before the two stop overlapping.
+   * Almost nobody has one once the browser's own furniture is taken off, so the action deck has
+   * been sitting on top of Conditions for everybody.
+   *
+   * The budget is four cards plus the fixed furniture: 54 above, 12 of gaps inside the column, 12
+   * between the column and the deck, and the hotbar below. The card is whatever is left over --
+   * never bigger than the 128px the art was drawn for, never smaller than a count is readable at.
+   *
+   * One variable does it, because the hand, the piles and any opened deck all derive from it:
+   * a card dealt from a deck is exactly the size of the deck it came from, which is the rule this
+   * block opens with and the reason the fix is one line and not six.
+   */
+  --cr-card-w: clamp(76px, (100vh - 168px) / 4 * var(--cardrpg-card-ratio), 128px);
   /* Derived, so the tray's cards and the card's own aspect-ratio cannot disagree. 2:3 at 128
      wide is 192 tall, which is 13px more than 5:7 was -- the whole cost of the change. */
   --cr-card-h: calc(var(--cr-card-w) / var(--cardrpg-card-ratio));

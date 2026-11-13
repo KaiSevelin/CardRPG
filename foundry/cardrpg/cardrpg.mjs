@@ -127,6 +127,34 @@ function registerHelpers() {
     );
   });
 
+  /**
+   * **A CSS `url()` for a piece of art, absolute from the server root.**  **[FIXED 2026-11-13]**
+   *
+   * The same defect as `crIcon` above, in the other half of the pictures, and the comment up there
+   * had described it for months: a relative `url()` inside a **custom property** resolves against
+   * the stylesheet that consumes the `var()`, not against the document. Every deck back asked the
+   * server for `systems/cardrpg/styles/systems/cardrpg/art/backs/action.webp` and got a 404, so
+   * the piles fell back to the hatch and the game looked like it had no art at all.
+   *
+   * Eight sites across two templates wrote the `url()` by hand. They go through here now, so the
+   * next one cannot be written the broken way -- which is the actual lesson, because the knowledge
+   * existed and simply did not travel the twenty lines from `crIcon` to the art.
+   *
+   * `getRoute` rather than a bare slash, so a server behind a route prefix still finds its own
+   * pictures.
+   */
+  Handlebars.registerHelper("crArt", path => {
+    if (!path) return new Handlebars.SafeString("");
+    /*
+     * **Single quotes, because every caller is inside a double-quoted attribute.** The first
+     * version returned `url("...")` and the `"` closed `style="` on the spot, so the browser kept
+     * `--cr-art: url(` and threw the path away -- the backs went missing a second time, by a
+     * different route, and the computed value said `url(` with nothing in it.
+     */
+    const url = foundry.utils.getRoute(String(path)).replaceAll("'", "%27");
+    return new Handlebars.SafeString(`url('${url}')`);
+  });
+
   Handlebars.registerHelper("crEq", (a, b) => a === b);
   /*
    * **Two helpers for editing a list of enum values as checkboxes.**
