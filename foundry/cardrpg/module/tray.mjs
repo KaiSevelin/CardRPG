@@ -155,7 +155,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
 
   static #open = new Map();
 
-  static openFor(actor) {
+  static openFor(actor, { auto = false } = {}) {
     if (!actor || actor.type !== "character") {
       if (actor) ui.notifications.warn("The HUD is for characters; NPCs are run from their sheet.");
       return null;
@@ -167,6 +167,13 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     let tray = CardRPGTray.#open.get(actor.id);
     if (!tray) {
       tray = new CardRPGTray(actor);
+      /*
+       * **Whose idea this HUD was**, which is the only thing that decides whether it should go
+       * when the fight does. Set at creation and never after: a HUD somebody opened by hand stays
+       * theirs even if a fight starts around it, and closing it on them would be the application
+       * overruling a click.
+       */
+      tray.openedByFight = auto;
       CardRPGTray.#open.set(actor.id, tray);
     }
     tray.render({ force: true });
@@ -191,16 +198,43 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     const inCombat = id => combat.combatants.some(c => c.actor?.id === id);
 
     const assigned = game.user.character;
-    if (assigned?.type === "character" && inCombat(assigned.id)) return CardRPGTray.openFor(assigned);
+    if (assigned?.type === "character" && inCombat(assigned.id)) {
+      return CardRPGTray.openFor(assigned, { auto: true });
+    }
 
     const selected = canvas?.tokens?.controlled?.[0]?.actor;
-    if (selected?.type === "character" && inCombat(selected.id)) return CardRPGTray.openFor(selected);
+    if (selected?.type === "character" && inCombat(selected.id)) {
+      return CardRPGTray.openFor(selected, { auto: true });
+    }
 
     const characters = combat.combatants
       .map(c => c.actor)
       .filter(a => a?.type === "character" && (game.user.isGM || a.isOwner));
     const unique = [...new Map(characters.map(a => [a.id, a])).values()];
-    if (unique.length === 1) CardRPGTray.openFor(unique[0]);
+    if (unique.length === 1) CardRPGTray.openFor(unique[0], { auto: true });
+  }
+
+  /**
+   * **Close the HUDs the fight opened, because the fight is over.**  **[FIXED 2026-11-13]**
+   *
+   * Three hooks opened one and nothing ever shut it: `deleteCombat` was wired to *refresh* every
+   * tray, which redrew the decks of a fight that no longer existed. So a scene kept a hand, four
+   * deck backs and a Play button laid over it after the encounter ended, for a character nobody
+   * had selected -- the playtest build's furniture with nothing left to furnish.
+   *
+   * Only the ones the fight opened. A HUD somebody opened by hand is theirs to close.
+   */
+  static async closeAfterFight() {
+    /*
+     * `animate: false`, and not for speed. ApplicationV2 runs a closing transition of up to a
+     * second and only drops the instance from the registry afterwards, so an animated close leaves
+     * the HUD both on the screen and in `openTrays` for that second -- long enough for the refresh
+     * that follows to find it and render it straight back. A HUD going away with the fight it
+     * belonged to has nothing to animate anyway.
+     */
+    for (const tray of CardRPGTray.openTrays) {
+      if (tray.openedByFight) await tray.close({ animate: false });
+    }
   }
 
   get title() {
@@ -2839,15 +2873,32 @@ export function registerTrayHooks() {
   /* `updateScene` is the call for a check: it lives as a scene flag, so every tray reads the one
    * the GM set and redraws when it changes (checks.mjs). */
   for (const hook of ["createCard", "updateCard", "deleteCard", "createCards", "updateCards",
-    "deleteCards", "updateCombat", "deleteCombat", "updateScene"]) {
+    "deleteCards", "updateCombat", "updateScene"]) {
     Hooks.on(hook, refreshAll);
   }
+  /*
+   * **`deleteCombat` closes before it refreshes, and the order is the whole of it.**
+   *
+   * It used to sit in the list above, so ending a fight *redrew* a HUD belonging to a fight that
+   * no longer existed. Closing it as well was not enough either: `render()` is asynchronous, and a
+   * render already in flight re-attaches an application that has since closed -- the first version
+   * of this closed the tray and the pending refresh put it straight back, which measured as a
+   * close that did nothing.
+   *
+   * So the closes are awaited first, and only what is left over is refreshed: a HUD somebody
+   * opened by hand is still theirs and still needs redrawing.
+   */
+  Hooks.on("deleteCombat", async () => {
+    await CardRPGTray.closeAfterFight();
+    refreshAll();
+  });
 
   // Every one of these is a TRANSITION. Reloading Foundry mid-combat fires none of them, so the
   // HUD stayed shut until the fight was ended and restarted; catch the fight already in progress.
   Hooks.on("combatStart", combat => CardRPGTray.autoOpen(combat));
   Hooks.on("combatTurn", combat => CardRPGTray.autoOpen(combat));
   Hooks.on("combatRound", combat => CardRPGTray.autoOpen(combat));
+
 
   // On "ready" the canvas may not be up, and autoOpen looks at the controlled token to decide who
   // is playing; "canvasReady" runs again once it is, and opening twice is a no-op.

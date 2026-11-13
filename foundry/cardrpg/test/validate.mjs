@@ -13025,8 +13025,12 @@ check("and offers the GM a way to make one",
 const countsBlock = trayTemplate.slice(trayTemplate.indexOf('class="cr-scene__counts"'));
 check("and a way to change it once it stands",
   /data-action="callCheck"[\s\S]{0,200}Re-call/.test(countsBlock) ? "yes" : "no", "yes");
+/*
+ * `deleteCombat` left that list on 2026-11-13: ending a fight now closes the HUDs the fight
+ * opened and refreshes only what is left, which an entry in a refresh-everything loop cannot do.
+ */
 check("a scene change redraws every tray",
-  /"deleteCombat", "updateScene"/.test(traySource) ? "yes" : "no", "yes");
+  /"updateCombat", "updateScene"/.test(traySource) ? "yes" : "no", "yes");
 check("every string the call needs is translated",
   Object.keys(lang).filter(k => k.startsWith("CARDRPG.Check.")).length, 26);
 check("and nothing it uses is missing",
@@ -15272,8 +15276,8 @@ check("the live harness is a command and not a recipe",
   /"live": "node test\/live\.mjs"/.test(packageJson) ? "yes" : "no", "yes");
 check("and it works on a copy of the world",
   /fs\.cpSync\(from, to/.test(liveSource) ? "yes" : "no", "yes");
-check("and deletes the copy when it is done",
-  /fs\.rmSync\(scratch/.test(liveSource) ? "yes" : "no", "yes");
+check("and deletes everything it made when it is done",
+  /removeScratchData\(scratch\)/.test(liveSource) ? "yes" : "no", "yes");
 check("and drives a browser that is already installed",
   /channel: arg\("channel", "msedge"\)/.test(liveSource) ? "yes" : "no", "yes");
 

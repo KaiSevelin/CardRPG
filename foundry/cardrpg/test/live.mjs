@@ -39,7 +39,11 @@ import { spawn } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { chromium } from "playwright-core";
+
+/** The system folder this file lives in, which is what gets linked into the scratch data dir. */
+const SYSTEM_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 /* -------------------------------------------- */
 /*  Where everything is                         */
@@ -101,18 +105,73 @@ const SCRATCH_WORLD = "cardrpg-live";
 /* -------------------------------------------- */
 
 /**
- * Copy the world and rename it in place.
+ * **A data directory of its own**, built fresh and thrown away.  **[BUILT 2026-11-13]**
+ *
+ * The first version ran against the real one, which works right up until somebody has Foundry
+ * open -- the desktop app takes a lock on the whole user data directory, and the harness died with
+ * *this directory is already locked by another process* and a stack trace. A test you cannot run
+ * while you are looking at the thing it tests is a test you will not run.
+ *
+ * So the server is given its own directory holding exactly three things:
+ *
+ *   Config/license.json              copied, the one file a server will not start without
+ *   Data/systems/cardrpg             a junction to this repo, because 644 pieces of art are not
+ *                                    worth duplicating per run -- and a link means the harness
+ *                                    always tests the working tree rather than a stale copy
+ *   Data/worlds/cardrpg-live         the copied world
+ *
+ * Nothing else: no modules, no other systems, no settings. That is a second property worth having
+ * for free -- whatever the harness finds is the system's, not a module's.
+ */
+function makeScratchData(realData) {
+  const root = path.join(os.tmpdir(), "cardrpg-live-data");
+  removeScratchData(root);
+  for (const dir of [["Config"], ["Data", "systems"], ["Data", "worlds"], ["Data", "modules"]]) {
+    fs.mkdirSync(path.join(root, ...dir), { recursive: true });
+  }
+
+  const licence = path.join(realData, "Config", "license.json");
+  if (!fs.existsSync(licence)) {
+    throw new Error(`No licence at ${licence}. Run Foundry once, or pass --data=<dir>.`);
+  }
+  fs.copyFileSync(licence, path.join(root, "Config", "license.json"));
+  /* A junction rather than a copy. Windows allows one without elevation; a symlink does not. */
+  fs.symlinkSync(SYSTEM_DIR, path.join(root, "Data", "systems", "cardrpg"), "junction");
+  return root;
+}
+
+/**
+ * Delete the scratch directory, **unlinking the junction first and checking that it is one**.
+ *
+ * `fs.rmSync` does not follow links, so recursing into the repo should be impossible -- and
+ * "should be impossible" is not the standard for a recursive delete pointed at a directory that
+ * contains a link to the source tree. The link is removed by hand, and only after `lstat` agrees
+ * it is a link.
+ */
+function removeScratchData(root) {
+  const link = path.join(root, "Data", "systems", "cardrpg");
+  if (fs.existsSync(path.dirname(link))) {
+    let stat = null;
+    try { stat = fs.lstatSync(link); } catch { stat = null; }
+    if (stat?.isSymbolicLink()) fs.unlinkSync(link);
+    else if (stat) throw new Error(`${link} is not a link; refusing to delete it.`);
+  }
+  fs.rmSync(root, { recursive: true, force: true, maxRetries: 20, retryDelay: 250 });
+}
+
+/**
+ * Copy the world into the scratch directory.
  *
  * A world is a few hundred kilobytes of LevelDB, so this costs nothing and buys the only property
  * that matters: the probes may break whatever they like. `LOCK` is a running server's file and is
  * left behind; copying one into a fresh world is how you get a world that will not open.
  */
-function makeScratchWorld(data) {
-  const worlds = path.join(data, "Data", "worlds");
-  const from = path.join(worlds, SOURCE_WORLD);
+function makeScratchWorld(data, into) {
+  const from = path.join(data, "Data", "worlds", SOURCE_WORLD);
+  const worlds = path.join(into, "Data", "worlds");
   const to = path.join(worlds, SCRATCH_WORLD);
   if (!fs.existsSync(from)) {
-    throw new Error(`No world "${SOURCE_WORLD}" in ${worlds}. Pass --world=<id>.`);
+    throw new Error(`No world "${SOURCE_WORLD}" in ${path.dirname(from)}. Pass --world=<id>.`);
   }
   fs.rmSync(to, { recursive: true, force: true });
   fs.cpSync(from, to, { recursive: true, filter: src => path.basename(src) !== "LOCK" });
@@ -149,6 +208,14 @@ function startServer(main, data) {
     });
     server.on("exit", code => {
       clearTimeout(timer);
+      const text = log.join("");
+      /* It should not happen now the harness has a directory of its own, but this message
+       * arrived once buried in a stack trace and cost a run to read. */
+      if (/already locked by another process/.test(text)) {
+        reject(new Error("Foundry has that data directory locked. The harness uses a scratch "
+          + "directory of its own, so this means --data= was pointed at a live one."));
+        return;
+      }
       reject(new Error(`Foundry exited with ${code} before listening:\n${log.join("")}`));
     });
   }) };
@@ -691,6 +758,74 @@ async function probes(page) {
   });
 
   /*
+   * **The HUD belongs to the fight that opened it.**  **[FIXED 2026-11-13]**
+   *
+   * Three hooks opened one and none closed it: `deleteCombat` was wired to *refresh* every tray,
+   * so an ended encounter left a hand, four deck backs and a Play button lying on the scene for a
+   * character nobody had selected.
+   *
+   * A real encounter is started and ended here rather than calling the closer directly, because
+   * what was missing was never the closing -- it was the wiring, and a probe that calls the
+   * function proves the half that was already fine.
+   */
+  await probe("the HUD belongs to the fight", async () => {
+    return page.evaluate(async () => {
+      const { CardRPGTray } = await import("/systems/cardrpg/module/tray.mjs");
+      const { hero } = LIVE;
+      /*
+       * **Polled, not slept at.** A fixed wait of 600ms reported a close that had not finished:
+       * `deleteCombat` handlers are not awaited by the caller, so the clock starts before the
+       * closing does. This waits for the count to hold still instead of betting on a number.
+       */
+      const settled = async () => {
+        let last = -1;
+        let same = 0;
+        for (let i = 0; i < 40 && same < 3; i++) {
+          await new Promise(r => setTimeout(r, 100));
+          const n = CardRPGTray.openTrays.length;
+          same = n === last ? same + 1 : 0;
+          last = n;
+        }
+        return last;
+      };
+      for (const t of CardRPGTray.openTrays) await t.close();
+
+      /* A HUD opened by hand is the user's and survives the fight ending. */
+      game.cardrpg.openTray(hero);
+      const byHand = await settled();
+      CardRPGTray.closeAfterFight();
+      const kept = await settled();
+      for (const t of CardRPGTray.openTrays) await t.close();
+
+      /* And a real encounter, so the hooks are what is tested. */
+      const token = (await hero.getTokenDocument({ x: 1000, y: 1000 })).toObject();
+      const [placed] = await canvas.scene.createEmbeddedDocuments("Token", [token]);
+      const combat = await Combat.create({ scene: canvas.scene.id });
+      await combat.createEmbeddedDocuments("Combatant",
+        [{ tokenId: placed.id, sceneId: canvas.scene.id, actorId: hero.id }]);
+      await combat.startCombat();
+      const duringFight = await settled();
+      const owned = CardRPGTray.openTrays.map(t => String(t.openedByFight)).join(",");
+      let fired = "no";
+      Hooks.once("deleteCombat", () => { fired = "yes"; });
+      await combat.delete();
+      const afterFight = await settled();
+      const stillThere = CardRPGTray.openTrays.map(t => String(t.openedByFight)).join(",");
+      await placed.delete();
+
+      return [
+        ["a HUD opened by hand is open", byHand, 1],
+        ["and the end of a fight is not its business", kept, 1],
+        ["starting a fight opens one", duringFight, 1],
+        ["the fight owns the HUD it opened", owned, "true"],
+        ["the delete hook fires", fired, "yes"],
+        ["what is left afterwards", stillThere || "nothing", "nothing"],
+        ["and ending the fight takes it off the scene", afterFight, 0]
+      ];
+    });
+  });
+
+  /*
    * **And the world opens at all.** Nine days of engine changes went in without one of them being
    * loaded, so the cheapest question worth asking is whether the system still boots -- which every
    * probe above depends on and none of them states.
@@ -717,12 +852,13 @@ async function probes(page) {
 
 const app = findApp();
 const data = findData();
-const scratch = makeScratchWorld(data);
+const scratch = makeScratchData(data);
+makeScratchWorld(data, scratch);
 console.log(`Foundry : ${app.dir}`);
-console.log(`Data    : ${data}`);
-console.log(`World   : ${SCRATCH_WORLD} (copied from ${SOURCE_WORLD})`);
+console.log(`Data    : ${scratch}`);
+console.log(`World   : ${SCRATCH_WORLD} (copied from ${SOURCE_WORLD} in ${data})`);
 
-const { server, log, ready } = startServer(app.main, data);
+const { server, log, ready } = startServer(app.main, scratch);
 let browser = null;
 let failed = 0;
 
@@ -771,9 +907,7 @@ try {
     const timer = setTimeout(resolve, 10000);
     server.on("exit", () => { clearTimeout(timer); setTimeout(resolve, 250); });
   });
-  if (!flag("keep")) {
-    fs.rmSync(scratch, { recursive: true, force: true, maxRetries: 20, retryDelay: 250 });
-  }
+  if (!flag("keep")) removeScratchData(scratch);
   else console.log(`\nLeft behind: ${scratch}`);
 }
 
