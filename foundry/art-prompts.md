@@ -1,6 +1,6 @@
 # Art prompts
 
-**667 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
+**675 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
 
 It walks the same `GROUPS` the art list walks, by importing it rather than copying it, so the two files cannot disagree about what exists.
 
@@ -27,7 +27,7 @@ So the numbers are gone from the capsules and the picture is in their place: **t
 
 ## Deck backs
 
-**Draw these first.** 11 pictures against 656 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
+**Draw these first.** 11 pictures against 664 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
 
 ### The capsule — paste this once
 
@@ -2842,6 +2842,176 @@ SUBJECT. "The Long Way"
 Draw a page turned back to and read again, the diagram on it plainly not matching what has been built on the table in front of it.
 
 WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of Caribbean appearance, in their forties -- fixed, not a suggestion, and not a default to fall back from. If this crop shows no person at all, the line does not apply.
+```
+
+## The fate deck
+
+**8 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/cards/fate/`.
+
+Read in a row at tiny size with an enormous number printed over it, so **this is a ground and not a scene**: no object, no figure, no place, nothing the eye has to resolve. Brush, wash and bare paper. How much ink it carries is the whole of what it says — Zero is nearly empty and Critical is the heaviest mark in the deck.
+
+<details><summary><b>The capsule — paste this once, at the top of a fresh chat</b></summary>
+
+```text
+A single illustration for a playing card in a tabletop fantasy RPG.
+
+THIS GROUP. Read in a row at tiny size with an enormous number printed over it, so **this is a ground and not a scene**: no object, no figure, no place, nothing the eye has to resolve. Brush, wash and bare paper. How much ink it carries is the whole of what it says — Zero is nearly empty and Critical is the heaviest mark in the deck.
+
+FORMAT.
+- Portrait, aspect ratio exactly 2:3, 1024 x 1536.
+- Full bleed, edge to edge. No border, no frame, no card template, no rounded corners, no drop
+  shadow, no mat, no margin.
+- ABSOLUTELY NO TEXT of any kind: no letters, numerals, runes, glyphs, signature, watermark, or
+  anything that reads as writing. Not on a shield, not on a banner, not in the background.
+
+COMPOSITION. The card prints its own name and rules text over this image in opaque panels, so the
+layout is fixed and has been measured:
+- Crop in **close**: one subject, filling the frame from side to side.
+  Never a whole figure standing in a landscape, never an object laid out on a table.
+- **A strip of bare paper across the very top, between an eighth and a sixth of the height, and
+  no more than that.** No head, no helmet, no horns, no weapon, no hand, no banner enters it, and
+  it is a narrow strip rather than an empty upper third.
+- **All of the dark lives in the band from an eighth of the height down to just under halfway**,
+  and it begins immediately under the bare strip with nothing empty between the two. The
+  near-black contour, the deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
+  the picture actually happens.
+- **Below the halfway line the picture goes pale** and stays pale: the wash thins out, the ground
+  falls away to bare paper, and there is no dark mass down there at all. The card prints its rules
+  across that half, so that half has to be the quiet one.
+- Together those two make the test: **the picture must still read with its bottom half covered.**
+  Cover it in your head and check before you call it done.
+- **If the subject is taller than that band, CROP it rather than shrink it.** A bow, a raised
+  arm, a spear, a standing figure: the frame cuts through it and the part that matters stays in
+  the band. Never fit a tall thing in by making it small, and never let its top reach into the
+  bare strip to get all of it in.
+- ONE subject. A silhouette that still reads at **128 pixels wide**, which is the smallest size a
+  card is drawn at in this game.
+
+PALETTE.
+- Line and darks: **#1b1714**
+- Paper and lights: **#f4efe6**
+- Mid tone: **#c9bda8**
+- One chromatic accent only: **#a3655d**, a warm brick red. Use it on the
+  one thing the picture is about, and nowhere else.
+  **The accent is one small object's worth of colour and no more** -- a single
+  ribbon, a single flame, one stone set in a ring. Never the light, never the wash, never
+  the ground, never the sky, never a glow and never a whole figure: those are all the warm
+  neutral of the paper and the ink.
+- Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
+  Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
+  here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
+
+PEOPLE.
+- **Where a person is drawn, decide who they are rather than defaulting.** This is a port city on
+  a trade road: the people in the set are Black, brown, Levantine, Persian, South and East Asian,
+  Mediterranean and northern-pale in roughly the proportions a crowd there would be, and women
+  are as common in it as men. A sepia palette is not a statement about skin -- warm ink renders
+  every complexion, and a deck in which every figure is the same pale man is a failure of the
+  drawing and not of the paper.
+- Nothing here asks for a particular face unless the subject says so in words, and where it does
+  say so -- a named sex, an ancestry, an age -- that is binding.
+
+STYLE.
+Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
+with a loaded brush; then large soft washes for the mass; then generous untouched paper where the
+light falls. Loose and economical -- a few strokes doing the work of many. Visible bleed and
+granulation where a wash pools, dry-brush where it runs out.
+
+Three things this style does wrong at card size, and must not do here:
+- **Never neutral grey.** Every wash is warm: sepia, bistre, burnt earth. If a passage reads as
+  grey it is wrong.
+- **Never soft all over.** The contour is near-black #1b1714 and holds a hard edge. Only the
+  washes are soft. A picture with no true black in it has failed.
+- **Never evenly toned.** The darkest mass must sit directly against untouched paper, so the
+  subject separates from the ground in one glance at thumbnail size.
+
+Use the full range, both ends of it:
+- The lightest passage is **bare #f4efe6 paper, near white**, and there is a lot of it.
+- The darkest line is **near-black #1b1714**, and the two touch each other somewhere.
+- A picture whose every value sits between those ends is the failure above, however warm and
+  however well drawn. Mid tone is the background, not the picture.
+```
+
+</details>
+
+### Critical
+
+File: `cards/fate/critical.webp`
+
+```text
+SUBJECT. "Critical" — The moment it all goes through: ink driven to its darkest at one point and the paper broken white against it, hard-edged, no gradient.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+```
+
+### Minus One
+
+File: `cards/fate/minus-one.webp`
+
+```text
+SUBJECT. "Minus One" — One confident stroke with the brush lifted halfway: a clean start, a gap, and a thinner finish that does not match it.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+```
+
+### Minus Two
+
+File: `cards/fate/minus-two.webp`
+
+```text
+SUBJECT. "Minus Two" — A wash that has run where it was not wanted -- a heavy bloom spreading off the edge of its own stroke, the shape lost under it.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+```
+
+### Miss
+
+File: `cards/fate/miss.webp`
+
+```text
+SUBJECT. "Miss" — A blade's arc drawn through empty air and nothing in it: the stroke complete, the thing it was aimed at not there. No figure and no target.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+```
+
+### Plus One
+
+File: `cards/fate/plus-one.webp`
+
+```text
+SUBJECT. "Plus One" — One stroke rising from the lower edge and stopping cleanly where it meant to, with open paper all round it. Nothing crosses it.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+```
+
+### Plus Two
+
+File: `cards/fate/plus-two.webp`
+
+```text
+SUBJECT. "Plus Two" — Two strokes crossing high in the frame, the ink pooling dark and deliberate where they meet. Weight, placed on purpose.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+```
+
+### Wild
+
+File: `cards/fate/wild.webp`
+
+```text
+SUBJECT. "Wild" — Ink let into water: a bloom going somewhere nobody chose, the edge still moving and the shape not settled. No symmetry and no centre.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
+```
+
+### Zero
+
+File: `cards/fate/zero.webp`
+
+```text
+SUBJECT. "Zero" — The quietest card in the game, and it is the one seen most. A single flat tide-line of wash across the frame and almost nothing above or below it.
+
+Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
 ```
 
 ## Wounds and Taint
@@ -10187,7 +10357,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 
 ## Where prompts still repeat
 
-**201 prompts in 34 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
+**209 prompts in 34 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
 
 **10 of those clusters are the ones that bite**, listed first: the ones where the subject line carries no prose either, so neither half of the prompt tells the cards apart. The rest share a direction over subjects that already differ — forty-three consumables drawing a nearly-empty vessel still come back as forty-three different pictures, because each subject names its own.
 
@@ -10205,10 +10375,10 @@ Answer a cluster by adding its keys to `DIRECTION` in `test/art-prompts.mjs` and
 | **3** | 2 | ground covered -- weight forward, the last footfall still behind; the instant a blow lands, the weapon already through -- never wound up, never posing | `cards/starter/lunge` `cards/shade-starter/slip-in` `signatures/strength/the-lance` |
 | **3** | 2 | an edge, worn and sharpened back more than once | `items/arming-sword` `items/trident` `items/npc/goblin-spear` |
 | **2** | 2 | a hand working an object, the object mid-use rather than held up to be seen; a weapon coming to hand, caught between carried and held | `cards/starter/quick-hands` `cards/shade-starter/light-fingers` |
+| **14** | 1 | the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem | `cards/fate/critical` `cards/fate/minus-one` `cards/fate/minus-two` `cards/fate/miss` `cards/fate/plus-one` …+9 |
 | **9** | 1 | set down on nothing, carried a long way among other things | `items/beggars-bowl` `items/cairn-stone` `items/cracked-spyglass` `items/locked-casket` `items/loose-cobble` …+4 |
 | **7** | 1 | an object that means nothing except in trained hands | `features/good-aim` `features/good-name` `features/hard-hands` `features/light-step` `features/quick-eye` …+2 |
 | **7** | 1 | a small dark bottle, labelled, a residue dried at the lip | `items/assassins-tincture` `items/black-lotus` `items/blade-venom` `items/drowsing-oil` `items/grave-cap-extract` …+2 |
-| **6** | 1 | the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem | `signatures/shade/one-trick` `signatures/shade/the-opening` `signatures/strength/cleave-to-the-bone` `signatures/strength/loaded-before-the-bell` `signatures/strength/nothing-gets-through` …+1 |
 | **5** | 1 | made well, by somebody who signed nothing | `items/fine-longsword` `items/marching-boots` `items/masterwork-crossbow` `items/proofed-mail` `items/smiths-hammer` |
 | **4** | 1 | the weapon drawn and held at tension | `items/crossbow` `items/matchlock-pistol` `items/shortbow` `items/npc/goblin-shortbow` |
 | **4** | 1 | a thing that says who somebody is before they speak | `items/fine-clothes` `items/gaming-set` `items/signet-ring` `items/travelling-cloak` |

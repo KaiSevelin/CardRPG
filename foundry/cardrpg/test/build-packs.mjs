@@ -28,7 +28,10 @@ import {
 } from "../module/graph.mjs";
 import { expandRoster } from "../module/monsters.mjs";
 import { slateData } from "../module/setup.mjs";
-import { actionCardData, skillCardData, twistCardData, critCardData, npcCardData, artIn, backOf }
+import {
+  actionCardData, skillCardData, twistCardData, critCardData, npcCardData, artIn, backOf,
+  fateArt
+}
   from "../module/decks.mjs";
 
 const root = path.join(import.meta.dirname, "..");
@@ -393,7 +396,9 @@ const PACK_PLAN = [
         list: [...POOL.values()].filter(c => SIGNATURES.some(s => s.name === c.name)) },
       { name: "Skill Cards", back: "skill", build: skillCardData, list: content.WARRIOR_SKILLS },
       { name: "Wild Magic", back: "wild", build: actionCardData, list: content.WILD_MAGIC },
-      { name: "The Fate Deck", back: "fate", build: c => c, list: content.fateCards() },
+      { name: "The Fate Deck", back: "fate", build: c => c, list: content.fateCards("", fateArt) },
+      /* The back is applied by the row above (`back: "fate"`); the FACES are the resolver's,
+       * and were the one thing a packed fate deck came out of here without. */
       /*
        * **`back: "skill"` here was a drawn picture nothing ever showed.** `backs/twist.webp`
        * exists, with a brief of its own in the art list -- *a fork, one line arriving and leaving

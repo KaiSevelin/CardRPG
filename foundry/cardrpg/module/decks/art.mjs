@@ -6,7 +6,7 @@
  */
 
 import { DECK_BACKS } from "../content.mjs";
-import { artPathOf, backPath, CONDITION_PIECES } from "../art.mjs";
+import { artPathOf, backPath, CONDITION_PIECES, FATE_PIECES } from "../art.mjs";
 
 /**
  * The art on a card or a slate, or nothing.
@@ -80,6 +80,25 @@ export function backOf(key) {
  * asking for it.
  */
 const CONDITION_ART = new Map(CONDITION_PIECES.map(p => [p.key, artPathOf(p)]));
+
+/**
+ * **The picture on a fate card, by its rung.**  [BUILT 2026-11-13]
+ *
+ * Asked by key for the same reason a condition is: a glyph is not a filename. `slug("+1")` is the
+ * empty string, so three of the eight would resolve to one file and the other five would be
+ * guesswork. The shelf holds the pairing of a rung to a name; this is the only thing that needs
+ * to know it.
+ *
+ * `fateCards` takes this as an ARGUMENT rather than importing it, the same way it already takes
+ * the back: the content layer must not reach into the art layer, or `content -> decks/art ->
+ * art -> content` closes a cycle around the whole catalogue.
+ */
+const FATE_ART = new Map(FATE_PIECES.map(p => [p.key, artPathOf(p)]));
+
+export function fateArt(key) {
+  const art = FATE_ART.get(key) ?? "";
+  return art && !art.startsWith("icons/svg/") ? art : "";
+}
 
 export function conditionArt(key) {
   const art = CONDITION_ART.get(key) ?? "";

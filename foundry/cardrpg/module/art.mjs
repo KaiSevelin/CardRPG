@@ -184,6 +184,51 @@ export const CONDITION_PIECES = Object.keys(CARDRPG.conditions).map(key => ({
   blurb: CONDITION_LOOKS[key] ?? ""
 }));
 
+/**
+ * **The fate deck's eight faces.**  [BUILT 2026-11-13]
+ *
+ * This shelf is here because the argument against it was two claims and only one of them was
+ * true. The brief said *twenty cards that are a number and a reshuffle marker; they want a design,
+ * not twenty illustrations* -- and **it is not twenty.** It is **eight faces over twenty cards**,
+ * which is the ratio the twist deck is already drawn at: one *Noise* picture serves four *Noise*
+ * cards. *Not twenty illustrations* was used to conclude *no illustrations*, and that does not
+ * follow from it.
+ *
+ * What survives from the old argument, and governs every line below: **the number is the
+ * information.** A fate card is read in a row at tiny size and the player has to see `+1` the
+ * instant it lands, so these are not eight scenes. They are a ground with weight, and the glyph
+ * stays the subject.
+ *
+ * **So the shelf is a gradient rather than a set.** How much ink a card carries says how much the
+ * card does: *Zero* is nearly bare paper and is the commonest card in the deck, one and two are a
+ * stroke and a stroke gone wrong, and **Miss and Critical are the only two that are really
+ * pictures** -- which they have earned, because they are the two that reshuffle the deck and
+ * decide the fight (core-rules 6). No other shelf in the game reads in an order.
+ *
+ * **Named in words, because a glyph cannot be a filename.** `slug("+1")` is the empty string and
+ * so is `slug("\u00b10")`, so three of these would collide on nothing at all. The *card* keeps its
+ * glyph; the piece is called *Plus One* and files itself as `fate/plus-one.webp`. The engine asks
+ * by key, like a condition, since neither has a name a path can be derived from.
+ */
+export const FATE_PIECES = [
+  { key: "miss", name: "Miss",
+    blurb: "A blade's arc drawn through empty air and nothing in it: the stroke complete, the thing it was aimed at not there. No figure and no target." },
+  { key: "minusTwo", name: "Minus Two",
+    blurb: "A wash that has run where it was not wanted -- a heavy bloom spreading off the edge of its own stroke, the shape lost under it." },
+  { key: "minusOne", name: "Minus One",
+    blurb: "One confident stroke with the brush lifted halfway: a clean start, a gap, and a thinner finish that does not match it." },
+  { key: "zero", name: "Zero",
+    blurb: "The quietest card in the game, and it is the one seen most. A single flat tide-line of wash across the frame and almost nothing above or below it." },
+  { key: "plusOne", name: "Plus One",
+    blurb: "One stroke rising from the lower edge and stopping cleanly where it meant to, with open paper all round it. Nothing crosses it." },
+  { key: "plusTwo", name: "Plus Two",
+    blurb: "Two strokes crossing high in the frame, the ink pooling dark and deliberate where they meet. Weight, placed on purpose." },
+  { key: "critical", name: "Critical",
+    blurb: "The moment it all goes through: ink driven to its darkest at one point and the paper broken white against it, hard-edged, no gradient." },
+  { key: "wild", name: "Wild",
+    blurb: "Ink let into water: a bloom going somewhere nobody chose, the edge still moving and the shape not settled. No symmetry and no centre." },
+];
+
 export const SHELVES = [
   { key: "cards/starter", list: content.WARRIOR_DECK },
   /*
@@ -221,6 +266,12 @@ export const SHELVES = [
    * the ones a player looks at hardest -- and they had no pictures because the decision was taken
    * when there were two of them.
    */
+  /*
+   * **The fate deck, which the brief argued out of existence on a miscount.** Eight faces over
+   * twenty cards, read in a row at tiny size with the number doing the work -- so the shelf is a
+   * gradient of weight rather than eight scenes. `FATE_PIECES` says why.
+   */
+  { key: "cards/fate", list: FATE_PIECES },
   { key: "cards/harm", list: content.HARM_FACES },
 
   { key: "signatures/shade", list: content.SHADE_SIGNATURES },

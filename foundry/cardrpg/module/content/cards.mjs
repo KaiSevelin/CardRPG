@@ -23,26 +23,40 @@
  * Miss and Critical both reshuffle, so between reshuffles the deck always holds one of each --
  * which is what makes the remaining count a live risk readout.
  */
-export function fateCards(back = "") {
+/*
+ * **Both pictures are arguments, not imports.**  [2026-11-13]
+ *
+ * `back` has always been one: the content layer must not reach into the art layer, and `art` is
+ * here for the same reason and more sharply. `content -> decks/art -> art -> content` closes a
+ * cycle around the entire catalogue, so the resolver is handed in by the caller that already
+ * holds both -- the setup routine, and the pack builder beside it.
+ *
+ * A fate card is asked for by RUNG rather than by name because a glyph cannot be a filename: the
+ * slug of `+1` is the empty string and so is the slug of the plus-or-minus zero, so three of the
+ * eight would resolve to one file. The piece is called *Plus One* on the shelf; the card keeps
+ * its glyph.
+ */
+export function fateCards(back = "", art = () => "") {
   const cards = [];
-  const push = (name, system, n) => {
+  const push = (key, name, system, n) => {
+    const img = art(key);
     for (let i = 0; i < n; i++) {
       /* A fate card's back is the one a table sees most: the deck is face down by design, and
        * that is what makes a thin one a risk rather than a lookup (core-rules 6). */
       cards.push({
-        name, type: "fate", face: 0, faces: [{ name }],
+        name, type: "fate", face: 0, faces: [{ name, ...(img ? { img } : {}) }],
         ...(back ? { back: { img: back } } : {}),
         system
       });
     }
   };
-  push("Miss", { special: "miss", value: 0 }, 1);
-  push("−2", { value: -2 }, 1);
-  push("−1", { value: -1 }, 4);
-  push("±0", { value: 0 }, 8);
-  push("+1", { value: 1 }, 4);
-  push("+2", { value: 2 }, 1);
-  push("Critical", { special: "crit", value: 0 }, 1);
+  push("miss", "Miss", { special: "miss", value: 0 }, 1);
+  push("minusTwo", "−2", { value: -2 }, 1);
+  push("minusOne", "−1", { value: -1 }, 4);
+  push("zero", "±0", { value: 0 }, 8);
+  push("plusOne", "+1", { value: 1 }, 4);
+  push("plusTwo", "+2", { value: 2 }, 1);
+  push("critical", "Critical", { special: "crit", value: 0 }, 1);
   return cards;
 }
 

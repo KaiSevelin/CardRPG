@@ -1,6 +1,6 @@
 # Art list
 
-**667 pieces**, of which **667** are drawn and **0** still to shoot. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
+**675 pieces**, of which **667** are drawn and **8** still to shoot. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
 
 ## What to supply
 
@@ -45,7 +45,6 @@ Anything under `icons/svg/` is ignored on purpose: that is Foundry's own placeho
 
 ## What does not need art
 
-- **Fate cards.** Twenty cards that are a number and a reshuffle marker. They want a *design* — a back, a Miss, a Critical — not twenty illustrations.
 - **Wounds and Taint.** Two faces, fixed, and both are meant to read as damage rather than as content. One picture each at most.
 - **The critical deck.** 7 faces, 12 cards, and it needs neither faces nor a **back**. A card is drawn face up the instant a Critical lands and read out, so it is never face down in front of anybody — which is the same reason hands, discards and Spent piles have no back. A back is for a deck somebody looks at while wondering.
 - **The levelling graph's nodes.** A node wears the art of what it hands over, so drawing a Signature draws its node too. Nothing needs art of its own.
@@ -53,7 +52,7 @@ Anything under `icons/svg/` is ignored on purpose: that is Foundry's own placeho
 
 ## Deck backs — draw these first
 
-**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 11 pictures against 656 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
+**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 11 pictures against 664 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
 
 **11 pieces**, 11 wired up. Same 2:3 and 640 × 960 as a face, and **no safe area**: nothing is printed over a back, so the whole card is yours.
 
@@ -317,6 +316,27 @@ Turned face up in front of four people who have been working toward this for a s
 | ✓ | **Residue** | — | `cards/ritual/residue.webp` |
 | ✓ | **Spoiled** | — | `cards/ritual/spoiled.webp` |
 | ✓ | **The Long Way** | — | `cards/ritual/the-long-way.webp` |
+
+## The fate deck
+
+**The deck every outcome in the game goes through**, and the only one drawn from on somebody else's turn as well as your own. It was argued off this list once, on the grounds that twenty cards which are a number want a design rather than twenty pictures — and it is not twenty. It is **eight faces**, the same ratio the twist deck is drawn at.
+
+**The number is the information and the picture must not compete with it.** A fate card is read in a row at tiny size and the player has to see `+1` the instant it lands, so these are a **ground with weight** rather than eight scenes.
+
+**Draw them in order, because the shelf is a gradient.** How much ink a card carries says how much the card does: *Zero* is nearly bare paper and is the commonest card in the deck, the ones and twos are a stroke and a stroke gone wrong, and **Miss and Critical are the only two that are really pictures** — which they have earned, because they are the two that reshuffle the deck and decide the fight. No other shelf here reads in an order.
+
+**8 pieces**. Suggested path: `cardrpg/art/cards/fate/`
+
+| | Name | What it is | File |
+|---|---|---|---|
+|   | **Critical** | The moment it all goes through: ink driven to its darkest at one point and the paper broken white against it, hard-edged, no gradient. | `cards/fate/critical.webp` |
+|   | **Minus One** | One confident stroke with the brush lifted halfway: a clean start, a gap, and a thinner finish that does not match it. | `cards/fate/minus-one.webp` |
+|   | **Minus Two** | A wash that has run where it was not wanted -- a heavy bloom spreading off the edge of its own stroke, the shape lost under it. | `cards/fate/minus-two.webp` |
+|   | **Miss** | A blade's arc drawn through empty air and nothing in it: the stroke complete, the thing it was aimed at not there. No figure and no target. | `cards/fate/miss.webp` |
+|   | **Plus One** | One stroke rising from the lower edge and stopping cleanly where it meant to, with open paper all round it. Nothing crosses it. | `cards/fate/plus-one.webp` |
+|   | **Plus Two** | Two strokes crossing high in the frame, the ink pooling dark and deliberate where they meet. Weight, placed on purpose. | `cards/fate/plus-two.webp` |
+|   | **Wild** | Ink let into water: a bloom going somewhere nobody chose, the edge still moving and the shape not settled. No symmetry and no centre. | `cards/fate/wild.webp` |
+|   | **Zero** | The quietest card in the game, and it is the one seen most. A single flat tide-line of wash across the frame and almost nothing above or below it. | `cards/fate/zero.webp` |
 
 ## Wounds and Taint
 

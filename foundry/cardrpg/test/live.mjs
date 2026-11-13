@@ -849,6 +849,60 @@ async function probes(page) {
   });
 
   /*
+   * **The fate deck's eight faces, and the three cards that wore nothing at all.**
+   * **[BUILT 2026-11-13]**
+   *
+   * Two separate things, in the one deck that is always face down.
+   *
+   * The faces are new: the shelf was argued out of the brief on the grounds that twenty cards
+   * which are a number want a design rather than twenty pictures, and it is **eight** faces over
+   * twenty cards -- the ratio the twist deck is already drawn at. The glyph stays the subject, so
+   * what this asks is only that every rung resolves to its own file.
+   *
+   * The second is a defect of the kind this project keeps finding. **`addFateCards` built a card
+   * with no `faces` and no `back`** -- so a Blessed's temporary Critical, a Cursed's temporary
+   * Miss and Shadow Magic's permanent Wild were the three cards in a fate deck wearing Foundry's
+   * placeholder, face down, in front of everybody. `fateCards` has carried the back since the
+   * backs were drawn; a second builder of the same document is a second place to forget a field.
+   *
+   * **The files are not drawn yet**, so this does not fetch them and `art/cards/fate/` is allowed
+   * to 404 below. Both go the day the shelf is shot, exactly as the conditions' two did.
+   */
+  await probe("the fate deck wears its faces", async () => {
+    return page.evaluate(async () => {
+      const { hero } = LIVE;
+      const deck = LIVE.deckOf(hero, "fate");
+      const faces = deck.cards.contents.map(c => c.faces?.[0]?.img ?? "");
+      const backs = deck.cards.contents.map(c => c.back?.img ?? "");
+      const rungs = ["miss", "minusTwo", "minusOne", "zero", "plusOne", "plusTwo", "critical",
+        "wild"];
+      const every = rungs.map(k => LIVE.fateArt(k));
+
+      /* The Wild is the one `addFateCards` builds, and the one that used to come out bare. */
+      const before = deck.cards.size;
+      await LIVE.addFateCards(hero, { special: "wild", count: 1, source: "the harness" });
+      const wild = LIVE.deckOf(hero, "fate").cards.contents
+        .find(c => c.system.special === "wild");
+      const wildFace = wild?.faces?.[0]?.img ?? "";
+      const wildBack = wild?.back?.img ?? "";
+      if (wild) await wild.delete();
+
+      return [
+        ["the deck holds the fixed twenty", before, 20],
+        ["every rung has a picture of its own", new Set(every).size, rungs.length],
+        ["and none of them is empty", every.filter(Boolean).length, rungs.length],
+        ["a card dealt by setup wears a face",
+          faces.filter(f => f.includes("art/cards/fate/")).length, before],
+        ["and the fate back", backs.filter(b => b.includes("backs/fate")).length, before],
+        ["a card shuffled in later wears one too",
+          wildFace.endsWith("/wild.webp") ? "yes" : wildFace || "nothing", "yes"],
+        ["and is not the one card in the deck with no back",
+          wildBack.includes("backs/fate") ? "yes" : wildBack || "nothing", "yes"]
+      ];
+    });
+  });
+
+  /*
    * **And the decks fit on the scene.**  **[FIXED 2026-11-13]**
    *
    * The two columns are anchored from opposite ends -- the piles from the top, the action deck
@@ -1154,6 +1208,13 @@ try {
   /* Foundry refuses to render below 1366x768 and says so rather than guessing. */
   const page = await browser.newPage({ viewport: { width: 1600, height: 900 } });
   page.on("response", r => {
+    /*
+     * **The fate shelf is commissioned and not yet shot.** Eight files, named one by one in the
+     * brief and counted there as still to shoot, which is a different state from a path that is
+     * wrong. **Delete this clause the day `art/cards/fate/` is drawn** -- the conditions' own
+     * version of it lasted a morning.
+     */
+    if (r.url().includes("/art/cards/fate/")) return;
     if (r.status() >= 400) missing.add(`${r.status()} ${r.url().split(`:${PORT}`).pop()}`);
   });
   await page.addInitScript(() => {

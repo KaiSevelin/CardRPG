@@ -352,6 +352,19 @@ const PROSE = {
     why: "Turned face up in front of four people who have been working toward this for a "
       + "session, so it is the one GM card with a real audience. Every one of them is the thing "
       + "the party is trying to undo pushing back: the injury, the curse or the rot answering." },
+  "cards/fate": { title: "The fate deck",
+    why: "**The deck every outcome in the game goes through**, and the only one drawn from on "
+      + "somebody else's turn as well as your own. It was argued off this list once, on the "
+      + "grounds that twenty cards which are a number want a design rather than twenty pictures "
+      + "\u2014 and it is not twenty. It is **eight faces**, the same ratio the twist deck is drawn "
+      + "at.\n\n**The number is the information and the picture must not compete with it.** A fate "
+      + "card is read in a row at tiny size and the player has to see `+1` the instant it lands, "
+      + "so these are a **ground with weight** rather than eight scenes.\n\n**Draw them in order, "
+      + "because the shelf is a gradient.** How much ink a card carries says how much the card "
+      + "does: *Zero* is nearly bare paper and is the commonest card in the deck, the ones and "
+      + "twos are a stroke and a stroke gone wrong, and **Miss and Critical are the only two that "
+      + "are really pictures** \u2014 which they have earned, because they are the two that "
+      + "reshuffle the deck and decide the fight. No other shelf here reads in an order." },
   "cards/harm": { title: "Wounds and Taint",
     why: "The only cards in the game a player does not want, which makes them the ones a player "
       + "looks at hardest. They arrive in a deck that was theirs and stay there, so they have to "
@@ -580,8 +593,15 @@ push(
   "",
   "## What does not need art",
   "",
-  "- **Fate cards.** Twenty cards that are a number and a reshuffle marker. They want a *design* — "
-  + "a back, a Miss, a Critical — not twenty illustrations.",
+  /*
+   * **Fate left this list on 2026-11-13, and the entry is worth reading before it goes.**
+   *
+   * It said *twenty cards that are a number and a reshuffle marker; they want a design, not
+   * twenty illustrations* -- and the arithmetic was wrong in the one place that mattered. It is
+   * **eight faces over twenty cards**, the ratio the twist deck is already drawn at. The true half
+   * of it survives as the whole brief for the new shelf: the number is the information, so the
+   * pictures are a ground with weight rather than eight scenes.
+   */
   "- **Wounds and Taint.** Two faces, fixed, and both are meant to read as damage rather than as "
   + "content. One picture each at most.",
   `- **The critical deck.** ${content.CRIT_EFFECTS.length} faces, `

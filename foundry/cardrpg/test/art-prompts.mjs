@@ -122,6 +122,11 @@ const WAY_OF_DIR = {
  *   nobody, because one picture serves a goblin, a troll and a dragon. Casting the actor would
  *   contradict the group's first rule. The far side of those cards is a player character drawn in
  *   full, but which half of the frame a cast line would land on is not something this can know.
+ * - **the fate deck is excluded** for the opposite reason to the intent deck's. There, the actor
+ *   is deliberately nobody; here there is no actor at all -- the shelf is a ground with weight
+ *   and its own brief forbids a figure, an object and a place. A cast line is written to be
+ *   evaluated only *if a face shows*, which costs nothing when it is false, but on a shelf whose
+ *   whole instruction is that nothing in the frame has to be resolved it is an invitation.
  * - **items and spells are excluded** because they are objects and workings: *one item, one
  *   light, no hand*, and *the working, not the worker*.
  * - A card drawn as a single creature's exception is excluded too -- it has a creature, and the
@@ -131,7 +136,7 @@ const WAY_OF_DIR = {
  * and a cast on a boot is noise. A condition the artist can evaluate costs nothing when it is
  * false, where an unconditional one invites a face into a frame that did not want one.
  */
-const CAST_GROUP = /^(?:cards\/(?!npc\b)|signatures\/|features$)/;
+const CAST_GROUP = /^(?:cards\/(?!npc\b|fate\b)|signatures\/|features$)/;
 
 function accentFor(dir) {
   const way = WAY_OF_DIR[dir];
@@ -2317,6 +2322,13 @@ const FRAME = {
    * the state left behind.
    */
   "conditions": "On the table all fight, face up under a duration that is counting down. Draw **the condition and never who has it**: one picture serves a goblin, a dragon and the player alike, so the body stays out of frame or is cropped to a limb. An object, a mark or a gesture -- the evidence, not the victim.",
+  /*
+   * **The one shelf where the picture is not the subject.** Every other card in this book wants
+   * the eye; a fate card wants the eye on its number. So the direction is deliberately about
+   * weight and handling rather than about a thing in the frame, and the gradient across the eight
+   * is the only composition instruction that matters.
+   */
+  "cards/fate": "Read in a row at tiny size with an enormous number printed over it, so **this is a ground and not a scene**: no object, no figure, no place, nothing the eye has to resolve. Brush, wash and bare paper. How much ink it carries is the whole of what it says \u2014 Zero is nearly empty and Critical is the heaviest mark in the deck.",
   "cards/shade": "A Way of Shade card: low light, cover, and the moment before being noticed.",
   "cards/strength": "A Way of Strength card: mass, leverage, and weight already moving.",
   "cards/way": "Written for the reach weapons and shared between Ways, so no Way's colour.",

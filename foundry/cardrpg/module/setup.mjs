@@ -10,7 +10,7 @@ import { CARDRPG } from "./config.mjs";
 /* The one shape a skill card takes, shared with anything that grants one rather than spelled here. */
 import {
   actionCardData, skillCardData, twistCardData, critCardData, npcCardData, backOf, artIn,
-  artOf
+  artOf, fateArt
 } from "./decks.mjs";
 /* A deck is the subset of the pool a creature's capabilities earn, and a variant is a delta from
  * its base. Both are arithmetic, and both live where the validator can ask them. */
@@ -328,7 +328,7 @@ export async function createStarterContent() {
   const warriorQuarantine = await makeCards(
     "Starter Warrior — Quarantine", "pile", "warrior.quarantine");
   const warriorFate = await makeCards(
-    "Starter Warrior — Fate Deck", "deck", "warrior.fate", fateCards(backOf("fate")), "fate");
+    "Starter Warrior — Fate Deck", "deck", "warrior.fate", fateCards(backOf("fate"), fateArt), "fate");
   const warriorFateDiscard = await makeCards("Starter Warrior — Fate Discard", "pile", "warrior.fateDiscard");
   note("warrior decks ready");
 
@@ -345,7 +345,7 @@ export async function createStarterContent() {
    * it did was ship six dead cards into every world.
    */
   const goblinFate = await makeCards(
-    "Goblin — Fate Deck", "deck", "goblin.fate", fateCards(backOf("fate")), "fate");
+    "Goblin — Fate Deck", "deck", "goblin.fate", fateCards(backOf("fate"), fateArt), "fate");
   const goblinFateDiscard = await makeCards("Goblin — Fate Discard", "pile", "goblin.fateDiscard");
   // Each NPC type has its own fate deck, so a Cursed goblin doesn't hex the ogre beside it.
 
@@ -674,7 +674,7 @@ export async function buildMonster(name) {
   /* One fate deck per base, shared by its variants. */
   const fate = find(`${baseKind}.fate`)
     ?? await Cards.create({
-      name: `${base.name} \u2014 Fate Deck`, type: "deck", cards: fateCards(backOf("fate")),
+      name: `${base.name} \u2014 Fate Deck`, type: "deck", cards: fateCards(backOf("fate"), fateArt),
       ...(backOf("fate") ? { img: backOf("fate") } : {}),
       flags: { cardrpg: { [FLAG]: `${baseKind}.fate` } }
     });

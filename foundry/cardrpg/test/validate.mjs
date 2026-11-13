@@ -6692,7 +6692,10 @@ const everyCreatureForArt = monsters.expandRoster(content.ROSTER, content.VARIAN
 const artable = (await import("../module/art.mjs")).SHELVES.flatMap(s => s.list ?? []);
 /* 631 since 2026-11-12: *Adapted* was retired and took its own brief and picture with it. */
 /* 656 since 2026-11-13: the twenty-five conditions, which were a deck to a player and on no shelf. */
-check("pieces of content that take art", artable.length, 656);
+/* 664 since 2026-11-13: the fate deck's eight faces. It was argued off the brief on the
+ * grounds that twenty cards which are a number want a design rather than twenty pictures --
+ * and it is not twenty, it is eight, which is the ratio the twist deck is drawn at. */
+check("pieces of content that take art", artable.length, 664);
 /*
  * **The four items that are content without being commissions, and the item each one wears.**
  *
@@ -7215,7 +7218,7 @@ const { artIn: artInLive, backOf: backOfLive } = await import("../module/decks.m
 /* Every piece the game can hand Foundry a path for, which is all of them: kept as the denominator
  * the three states below have to add up to, and no longer printed as progress. */
 check("pieces the game has a path for", artable.filter(e => artInLive(e)).length
-  + backs.filter(([k]) => backOfLive(k)).length, 667);
+  + backs.filter(([k]) => backOfLive(k)).length, 675);
 /*
  * **And every path the game hands Foundry names a file that is there.**
  *
@@ -7234,7 +7237,7 @@ const pathless = [
   ...artable.map(e => [e.name, artInLive(e)]),
   ...backs.map(([k, b]) => [b.label ?? k, backOfLive(k)])
 ].filter(([, p]) => p && !fs.existsSync(fileFor(p)));
-check("art paths the game would hand Foundry", artable.length + backs.length, 667);
+check("art paths the game would hand Foundry", artable.length + backs.length, 675);
 /*
  * **The brief's progress line used to be the total, and nobody noticed for months.**
  *
@@ -7347,6 +7350,8 @@ const ART_SLOTS = {
   /* Both newly commissioned: the other starter deck, and the twist deck now that the
    * argument against drawing it has been withdrawn. Both are card faces like the rest. */
   "cards/shade-starter": "face", "cards/twist": "face",
+  /* A card face like the rest of them, however little is drawn on it. */
+  "cards/fate": "face",
   features: "item", items: "item", "items/npc": "item", "items/natural": "item",
   tokens: "actor",
   /*
@@ -7363,7 +7368,7 @@ const ART_SLOTS = {
 };
 const briefDirs = [...new Set([...artList.matchAll(/Suggested path: `cardrpg\/art\/(.+?)\/`/g)]
   .map(m => m[1]))];
-check("directories the brief commissions into", briefDirs.length, 26);
+check("directories the brief commissions into", briefDirs.length, 27);
 check("and every one of them has a slot",
   briefDirs.filter(d => !(d in ART_SLOTS)).join(", ") || "none", "none");
 /* And no slot is declared for a group that is not in the brief, or this list rots quietly. */
@@ -7518,7 +7523,7 @@ const briefs = faceRows.map(r => r.brief);
 const leaked = briefs.flatMap(text =>
   [...text.matchAll(/\b([a-z]+[A-Z][a-zA-Z]*)\b/g)].map(m => m[1]));
 /* A pattern that matched no rows at all would report "none" for any list whatsoever. */
-check("briefs the check actually read", briefs.length, 656);
+check("briefs the check actually read", briefs.length, 664);
 check("keys that leaked into the brief",
   leaked.length ? [...new Set(leaked)].join(", ") : "none", "none");
 /*
@@ -9346,7 +9351,7 @@ check("and each one says what is not in the frame",
  * spelling them again. */
 const packSource = fs.readFileSync(path.join(root, "test/build-packs.mjs"), "utf8");
 const rows = faceRows;
-check("file paths in the brief", rows.length, 656);
+check("file paths in the brief", rows.length, 664);
 /* And the backs, whose path is the slug of their KEY rather than of their printed label. */
 const backPaths = [...artList.matchAll(/\| `(backs\/[^`]+)` \|/g)].map(m => m[1]);
 check("back paths in the brief", backPaths.length, backs.length);

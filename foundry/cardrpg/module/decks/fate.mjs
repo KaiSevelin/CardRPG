@@ -7,6 +7,8 @@
 
 import { CARDRPG } from "../config.mjs";
 import { allStacks, available, cardName, deckOf, move, moveRandom, normalizeDeck } from "./stacks.mjs";
+/* The face and the back a special fate card wears: the three built here used to wear neither. */
+import { backOf, fateArt } from "./art.mjs";
 
 /* -------------------------------------------- */
 /*  Wild Magic                                  */
@@ -143,9 +145,27 @@ export async function addFateCards(actor, { special, count = 1, temporary = fals
   if (!rule || !deck || count < 1) return 0;
 
   const label = game.i18n.localize(rule.label);
+  /*
+   * **[FIXED 2026-11-13] These wore nothing at all -- not even the back.**
+   *
+   * Every fate card `fateCards` builds has carried `backs/fate.webp` since the backs were drawn,
+   * and the cards built HERE had no `faces` and no `back` -- so a Blessed's temporary Critical, a
+   * Cursed's temporary Miss and Shadow Magic's permanent Wild were the three cards in a fate deck
+   * showing Foundry's own placeholder, face down, in the deck a table looks at most. A second
+   * place that builds the same document is a second place to forget a field, and this one was in
+   * the deck that is never face up.
+   *
+   * The key is the special's own name, which is what the shelf is keyed on -- except that the
+   * shelf spells `crit` out, because *Critical* is what the card says.
+   */
+  const img = fateArt(special === "crit" ? "critical" : special);
+  const back = backOf("fate");
   await deck.createEmbeddedDocuments("Card", Array.from({ length: count }, () => ({
     name: temporary ? `${label} (temporary)` : label,
     type: "fate",
+    face: 0,
+    faces: [{ name: label, ...(img ? { img } : {}) }],
+    ...(back ? { back: { img: back } } : {}),
     system: { special, temporary, source }
   })));
   await deck.shuffle({ chatNotification: false });
