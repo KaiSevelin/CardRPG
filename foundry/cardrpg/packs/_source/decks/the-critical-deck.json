@@ -23,7 +23,8 @@
       "face": 0,
       "faces": [
         {
-          "name": "Through and Through"
+          "name": "Through and Through",
+          "img": "systems/cardrpg/art/cards/crit/through-and-through.webp"
         }
       ],
       "system": {
@@ -46,7 +47,8 @@
       "face": 0,
       "faces": [
         {
-          "name": "Through and Through"
+          "name": "Through and Through",
+          "img": "systems/cardrpg/art/cards/crit/through-and-through.webp"
         }
       ],
       "system": {
@@ -69,7 +71,8 @@
       "face": 0,
       "faces": [
         {
-          "name": "Through and Through"
+          "name": "Through and Through",
+          "img": "systems/cardrpg/art/cards/crit/through-and-through.webp"
         }
       ],
       "system": {
@@ -92,7 +95,8 @@
       "face": 0,
       "faces": [
         {
-          "name": "Through and Through"
+          "name": "Through and Through",
+          "img": "systems/cardrpg/art/cards/crit/through-and-through.webp"
         }
       ],
       "system": {
@@ -115,7 +119,8 @@
       "face": 0,
       "faces": [
         {
-          "name": "Find the Gap"
+          "name": "Find the Gap",
+          "img": "systems/cardrpg/art/cards/crit/find-the-gap.webp"
         }
       ],
       "system": {
@@ -142,7 +147,8 @@
       "face": 0,
       "faces": [
         {
-          "name": "Find the Gap"
+          "name": "Find the Gap",
+          "img": "systems/cardrpg/art/cards/crit/find-the-gap.webp"
         }
       ],
       "system": {
@@ -169,7 +175,8 @@
       "face": 0,
       "faces": [
         {
-          "name": "Off the Feet"
+          "name": "Off the Feet",
+          "img": "systems/cardrpg/art/cards/crit/off-the-feet.webp"
         }
       ],
       "system": {
@@ -196,7 +203,8 @@
       "face": 0,
       "faces": [
         {
-          "name": "Off the Feet"
+          "name": "Off the Feet",
+          "img": "systems/cardrpg/art/cards/crit/off-the-feet.webp"
         }
       ],
       "system": {
@@ -223,7 +231,8 @@
       "face": 0,
       "faces": [
         {
-          "name": "Driven Down"
+          "name": "Driven Down",
+          "img": "systems/cardrpg/art/cards/crit/driven-down.webp"
         }
       ],
       "system": {
@@ -250,7 +259,8 @@
       "face": 0,
       "faces": [
         {
-          "name": "Stove In"
+          "name": "Stove In",
+          "img": "systems/cardrpg/art/cards/crit/stove-in.webp"
         }
       ],
       "system": {
@@ -277,7 +287,8 @@
       "face": 0,
       "faces": [
         {
-          "name": "Turn the Edge"
+          "name": "Turn the Edge",
+          "img": "systems/cardrpg/art/cards/crit/turn-the-edge.webp"
         }
       ],
       "system": {
@@ -304,7 +315,8 @@
       "face": 0,
       "faces": [
         {
-          "name": "Both"
+          "name": "Both",
+          "img": "systems/cardrpg/art/cards/crit/both.webp"
         }
       ],
       "system": {

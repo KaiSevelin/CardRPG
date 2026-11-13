@@ -1,6 +1,6 @@
 # Art list
 
-**760 pieces**, of which **757** are drawn and **3** still to shoot. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
+**760 pieces**, of which **760** are drawn and **0** still to shoot. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
 
 ## What to supply
 
@@ -382,7 +382,7 @@ Turned face up in front of four people who have been working toward this for a s
 
 **Draw the work, not the worker.** Same reason as the origins: the picture is shared by everybody who was ever a Soldier, so it is the kit, the bench, the deck of a boat at the hour the job is done — hands at most, and a face never. The trained tool each one issues is a good place to start and a dull place to stop.
 
-**12 pieces**, 11 wired up. Suggested path: `cardrpg/art/nodes/background/`
+**12 pieces**, 12 wired up. Suggested path: `cardrpg/art/nodes/background/`
 
 | | Name | What it is | File |
 |---|---|---|---|
@@ -390,7 +390,7 @@ Turned face up in front of four people who have been working toward this for a s
 | ✓ | **Caravan Guard** | Everything between the districts moves by road or does not move. The West Road is a tunnel with cities in it, the Cracked Road is limestone and not safe, and the East Road has the Night Express running through its own... | `nodes/background/caravan-guard.webp` |
 | ✓ | **Card Sharp** | Sol, where everything is permitted, or the back of any inn on any road. A deck is honest and the hands holding it are the variable. | `nodes/background/card-sharp.webp` |
 | ✓ | **Forester** | The Amber is wet conifer forest broken by lakes and bog, and most of it is nobody's. Timber was the export until the Furnace fell and took the routes with it; what is left is hunting, and the forest barons who are bro... | `nodes/background/forester.webp` |
-|   | **Guild Apprentice** | The Furnace's refugees founded engineering guilds in every surviving district, and a guild takes children. Seven years of fetching, grinding and being shouted at, and somewhere in it you learned how things come apart. | `nodes/background/guild-apprentice.webp` |
+| ✓ | **Guild Apprentice** | The Furnace's refugees founded engineering guilds in every surviving district, and a guild takes children. Seven years of fetching, grinding and being shouted at, and somewhere in it you learned how things come apart. | `nodes/background/guild-apprentice.webp` |
 | ✓ | **Hedge Healer** | Most of Firma has no physician and never will. What it has is somebody in the village who knows which leaf, who has set bones before, and who is sent for at night. | `nodes/background/hedge-healer.webp` |
 | ✓ | **Miner** | The Mouse Mountains above the Hyena Desert, or the Spear Mountains, or one of the roads being cut between districts. The Iron's mining is also why the East Road is the least safe road: dig far enough and something com... | `nodes/background/miner.webp` |
 | ✓ | **Porter** | Somebody carries it. On the mesa it goes up by cable car and at both ends of that it goes on a back; in Sammel it crosses between sealed quarters; in the Amber it goes where no cart will. | `nodes/background/porter.webp` |
@@ -405,7 +405,7 @@ Turned face up in front of four people who have been working toward this for a s
 
 **So draw the figure, and draw them doing the thing the title is about.** The axis and the resource in each brief are the distinguishing pair: a Thief spends a slot kept free and a Duellist spends halves, and the pictures should differ the way those two sentences do. The four Ways are in here too — Shade, Warrior, Scholar and Sworn are titles, and they are the four a level-0 character chooses between.
 
-**56 pieces**, 54 wired up. Suggested path: `cardrpg/art/nodes/title/`
+**56 pieces**, 56 wired up. Suggested path: `cardrpg/art/nodes/title/`
 
 | | Name | What it is | File |
 |---|---|---|---|
@@ -417,7 +417,7 @@ Turned face up in front of four people who have been working toward this for a s
 | ✓ | **Assassin** | Assassin · Tempo / Spent — The last thing learned on this road, and the trade with the shortest working day. An assassin's fight is already decided before the first card; what follows it is tidying. | `nodes/title/assassin.webp` |
 | ✓ | **Bard** | Bard · Reactions / someone else's turn — A fighter who talks. The Bard is the one title here that works on the other side's attention, and the heckling is the mechanism rather than the flavour. | `nodes/title/bard.webp` |
 | ✓ | **Berserker** | Berserker · Deck shape / Spent — Forward only. The Berserker is not angry for effect; the anger is the mechanism and it does not have a reverse gear. | `nodes/title/berserker.webp` |
-|   | **Blood Magic** | Blood Magic · Tempo / your own Health — The oldest arrangement on the continent and the one the rings run on. A blood mage pays in the only currency magic has ever reliably accepted. | `nodes/title/blood-magic.webp` |
+| ✓ | **Blood Magic** | Blood Magic · Tempo / your own Health — The oldest arrangement on the continent and the one the rings run on. A blood mage pays in the only currency magic has ever reliably accepted. | `nodes/title/blood-magic.webp` |
 | ✓ | **Bodyguard** | Bodyguard · Reactions / ground — A person, not a door. The Bodyguard's entire subject is somebody else's body being between them and the thing coming at it. | `nodes/title/bodyguard.webp` |
 | ✓ | **Brendan** | Brendan · Support / a turn spent early — Growing things, in the least promising ground available. Brendan is the Five's quiet one and the only god on this Way whose miracles are mostly agricultural. | `nodes/title/brendan.webp` |
 | ✓ | **Burglar** | Burglar · Preparation / weight — Doors, locks, windows, roofs and the half-hour before any of it that nobody sees. A burglar's skill is logistics; the climbing is the easy part. | `nodes/title/burglar.webp` |
@@ -459,7 +459,7 @@ Turned face up in front of four people who have been working toward this for a s
 | ✓ | **Trapmaker** | Trapmaker · Preparation / a turn spent early — Patience as a weapon. A trapmaker does not win the fight they are in; they win the one they arranged two rooms ago. | `nodes/title/trapmaker.webp` |
 | ✓ | **Valtor** | Valtor · Tempo / Strain — The drum. Valtor is the Five's war god and the only one whose worship is audible from the next valley. | `nodes/title/valtor.webp` |
 | ✓ | **Vax** | Vax · Position / Health — A war god with followers in every town in the Amber, where nobody minds what you believe because there is too much else to mind. | `nodes/title/vax.webp` |
-|   | **Vulpet** | Vulpet · Preparation / an ally — The outcast's god. Vulpet is owed by the people nobody else is obliged to, and the priesthood goes where the rest of the Five will not. | `nodes/title/vulpet.webp` |
+| ✓ | **Vulpet** | Vulpet · Preparation / an ally — The outcast's god. Vulpet is owed by the people nobody else is obliged to, and the priesthood goes where the rest of the Five will not. | `nodes/title/vulpet.webp` |
 | ✓ | **Ward Magic** | Ward Magic · Reactions / Spent — Unmaking. A warder's craft is the opposite of every other school's: not doing a thing, but ensuring a thing does not happen. | `nodes/title/ward-magic.webp` |
 | ✓ | **Way of Faith** | Sworn · Support / an obligation — Standing for something that is not you. Faith spends an obligation -- somebody is owed, and the Way is what they ask -- and it answers in support: what you do for the people beside yo... | `nodes/title/way-of-faith.webp` |
 | ✓ | **Way of Mind** | Scholar · Preparation / spell slots — What was decided before it mattered. Mind spends preparation -- the spell slots and the formulae set before the fight -- and it is the only Way whose first step hands you a resour... | `nodes/title/way-of-mind.webp` |

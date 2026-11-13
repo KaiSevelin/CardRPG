@@ -1260,8 +1260,9 @@ async function probes(page) {
        * picture is a menu with longer entries. Three shelves were commissioned for it: an origin is
        * a place, a background is a trade, a title is a person.
        *
-       * The URL is checked rather than fetched, because the shelf is not shot yet and the brief
-       * says so. **When it is drawn this asks for a 200**, like every other shelf.
+       * This row reads the URL; the 200 is asked for by the response sweep above, which no longer
+       * excuses `art/nodes/`. The two together are the whole promise: the pane names a file, and
+       * the file is there.
        */
       const shownArt = () => {
         const el = detail().querySelector(".cr-levelup__art");
@@ -1353,14 +1354,8 @@ try {
   /* Foundry refuses to render below 1366x768 and says so rather than guessing. */
   const page = await browser.newPage({ viewport: { width: 1600, height: 900 } });
   page.on("response", r => {
-    /*
-     * **The graph's three shelves are commissioned and not yet shot.** Seventy-eight files -- ten
-     * origins, twelve backgrounds and fifty-six titles -- named one by one in the brief and counted
-     * there as still to shoot, which is a different state from a path that is wrong. **Delete this
-     * clause the day `art/nodes/` is drawn.** Its predecessors lasted a morning, an hour, and an
-     * afternoon respectively.
-     */
-    if (r.url().includes("/art/nodes/")) return;
+    /* All seventy-eight of the graph's pictures are drawn, so the allowance that used to sit here
+     * is gone and a 404 under `art/nodes/` is a wrong path again, like every other one. */
     if (r.status() >= 400) missing.add(`${r.status()} ${r.url().split(`:${PORT}`).pop()}`);
   });
   await page.addInitScript(() => {

@@ -334,7 +334,11 @@ if (process.argv[1]?.endsWith("art-gate.mjs")) {
   for (const f of files) {
     /* The kind is read off the path, which is what the art list files it under anyway. */
     const kind = /(^|\/)backs\//.test(f) ? "back"
-      : /(^|\/)tokens?\//.test(f) ? "token" : "card";
+      : /(^|\/)tokens?\//.test(f) ? "token"
+        /* The same ladder as `kindOf` in art-shoot.mjs, which is the one that runs during a
+         * shoot. Scored here as a card instead, a pane picture fails a rule about a name
+         * panel it does not have -- and a second copy of a fact is a fact that can drift. */
+        : /(^|\/)nodes\//.test(f) ? "panel" : "card";
     const s = score(f, { kind, size: kind === "token" ? "1024x1024" : "1024x1536" });
     if (!s.ok) bad++;
     console.log(report(s));

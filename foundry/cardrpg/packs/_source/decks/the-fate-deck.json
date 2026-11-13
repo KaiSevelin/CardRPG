@@ -24,7 +24,8 @@
       "face": 0,
       "faces": [
         {
-          "name": "Miss"
+          "name": "Miss",
+          "img": "systems/cardrpg/art/cards/fate/miss.webp"
         }
       ],
       "system": {
@@ -46,7 +47,8 @@
       "face": 0,
       "faces": [
         {
-          "name": "−2"
+          "name": "−2",
+          "img": "systems/cardrpg/art/cards/fate/minus-two.webp"
         }
       ],
       "system": {
@@ -67,7 +69,8 @@
       "face": 0,
       "faces": [
         {
-          "name": "−1"
+          "name": "−1",
+          "img": "systems/cardrpg/art/cards/fate/minus-one.webp"
         }
       ],
       "system": {
@@ -88,7 +91,8 @@
       "face": 0,
       "faces": [
         {
-          "name": "−1"
+          "name": "−1",
+          "img": "systems/cardrpg/art/cards/fate/minus-one.webp"
         }
       ],
       "system": {
@@ -109,7 +113,8 @@
       "face": 0,
       "faces": [
         {
-          "name": "−1"
+          "name": "−1",
+          "img": "systems/cardrpg/art/cards/fate/minus-one.webp"
         }
       ],
       "system": {
@@ -130,7 +135,8 @@
       "face": 0,
       "faces": [
         {
-          "name": "−1"
+          "name": "−1",
+          "img": "systems/cardrpg/art/cards/fate/minus-one.webp"
         }
       ],
       "system": {
@@ -151,7 +157,8 @@
       "face": 0,
       "faces": [
         {
-          "name": "±0"
+          "name": "±0",
+          "img": "systems/cardrpg/art/cards/fate/zero.webp"
         }
       ],
       "system": {
@@ -172,7 +179,8 @@
       "face": 0,
       "faces": [
         {
-          "name": "±0"
+          "name": "±0",
+          "img": "systems/cardrpg/art/cards/fate/zero.webp"
         }
       ],
       "system": {
@@ -193,7 +201,8 @@
       "face": 0,
       "faces": [
         {
-          "name": "±0"
+          "name": "±0",
+          "img": "systems/cardrpg/art/cards/fate/zero.webp"
         }
       ],
       "system": {
@@ -214,7 +223,8 @@
       "face": 0,
       "faces": [
         {
-          "name": "±0"
+          "name": "±0",
+          "img": "systems/cardrpg/art/cards/fate/zero.webp"
         }
       ],
       "system": {
@@ -235,7 +245,8 @@
       "face": 0,
       "faces": [
         {
-          "name": "±0"
+          "name": "±0",
+          "img": "systems/cardrpg/art/cards/fate/zero.webp"
         }
       ],
       "system": {
@@ -256,7 +267,8 @@
       "face": 0,
       "faces": [
         {
-          "name": "±0"
+          "name": "±0",
+          "img": "systems/cardrpg/art/cards/fate/zero.webp"
         }
       ],
       "system": {
@@ -277,7 +289,8 @@
       "face": 0,
       "faces": [
         {
-          "name": "±0"
+          "name": "±0",
+          "img": "systems/cardrpg/art/cards/fate/zero.webp"
         }
       ],
       "system": {
@@ -298,7 +311,8 @@
       "face": 0,
       "faces": [
         {
-          "name": "±0"
+          "name": "±0",
+          "img": "systems/cardrpg/art/cards/fate/zero.webp"
         }
       ],
       "system": {
@@ -319,7 +333,8 @@
       "face": 0,
       "faces": [
         {
-          "name": "+1"
+          "name": "+1",
+          "img": "systems/cardrpg/art/cards/fate/plus-one.webp"
         }
       ],
       "system": {
@@ -340,7 +355,8 @@
       "face": 0,
       "faces": [
         {
-          "name": "+1"
+          "name": "+1",
+          "img": "systems/cardrpg/art/cards/fate/plus-one.webp"
         }
       ],
       "system": {
@@ -361,7 +377,8 @@
       "face": 0,
       "faces": [
         {
-          "name": "+1"
+          "name": "+1",
+          "img": "systems/cardrpg/art/cards/fate/plus-one.webp"
         }
       ],
       "system": {
@@ -382,7 +399,8 @@
       "face": 0,
       "faces": [
         {
-          "name": "+1"
+          "name": "+1",
+          "img": "systems/cardrpg/art/cards/fate/plus-one.webp"
         }
       ],
       "system": {
@@ -403,7 +421,8 @@
       "face": 0,
       "faces": [
         {
-          "name": "+2"
+          "name": "+2",
+          "img": "systems/cardrpg/art/cards/fate/plus-two.webp"
         }
       ],
       "system": {
@@ -424,7 +443,8 @@
       "face": 0,
       "faces": [
         {
-          "name": "Critical"
+          "name": "Critical",
+          "img": "systems/cardrpg/art/cards/fate/critical.webp"
         }
       ],
       "system": {
