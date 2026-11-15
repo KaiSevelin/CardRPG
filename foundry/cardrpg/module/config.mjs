@@ -276,8 +276,25 @@ CARDRPG.conditions = {
    * `includes("invisible")` directly, which is the hardcoded-by-key pattern the condition flags
    * exist to replace -- and it is what left `heckled` below with nowhere to say what it does.
    */
+  /*
+   * **And `advantageOn`, which says where that advantage reaches.**  [2026-11-15]
+   *
+   * Invisible helping a fight is the condition's whole point. Invisible helping *every* skill
+   * check is what came out of reading `grantsAdvantage` on the check side as well, and it is
+   * wrong in a way that is obvious once it is at a table: being unseen does nothing for recalling
+   * a genealogy, forcing a door or talking a guard round -- and if it did, it would be the
+   * strongest condition in the game by a distance, because it would improve six things at once.
+   *
+   * What it does help is the one approach that is *about* not being seen. So the flag names the
+   * approaches the advantage reaches on a CHECK; an attack asks about no approach and is not
+   * narrowed, which keeps the combat side exactly as it was.
+   *
+   * A condition with no `advantageOn` reaches everything, so this is opt-in narrowing rather
+   * than a list every future condition has to remember to fill in.
+   */
   invisible: {
-    label: "CARDRPG.Condition.Invisible", icon: "invisible", grantsAdvantage: true
+    label: "CARDRPG.Condition.Invisible", icon: "invisible", grantsAdvantage: true,
+    advantageOn: ["shadow"]
   },
   /*
    * Heckled: you draw fate with disadvantage.

@@ -27,7 +27,16 @@
       "ambusher",
       "packTactics"
     ],
-    "targetPriority": "weakest"
+    "targetPriority": "weakest",
+    "passive": 3,
+    "passives": {
+      "might": 3,
+      "agility": 3,
+      "shadow": 4,
+      "wits": 4,
+      "lore": 3,
+      "presence": 4
+    }
   },
   "items": [
     {

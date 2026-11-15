@@ -27,7 +27,16 @@
       "ambusher",
       "grappler"
     ],
-    "targetPriority": "nearest"
+    "targetPriority": "nearest",
+    "passive": 5,
+    "passives": {
+      "might": 8,
+      "agility": 4,
+      "shadow": 5,
+      "wits": 4,
+      "lore": 3,
+      "presence": 4
+    }
   },
   "items": [
     {

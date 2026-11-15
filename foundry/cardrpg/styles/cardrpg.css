@@ -2264,3 +2264,21 @@ a.cr-enriched { cursor: pointer; white-space: nowrap; }
 
 /* --- where you are from and what you did, on the sheet --- */
 .cr-sheet__from { display: block; font-size: 0.95em; }
+
+/* --- a creature's six passive scores, on the NPC sheet ---
+ *
+ * Two columns of three rather than one row of six: the labels are words and not icons alone, and
+ * six words on one line is six words nobody reads. The box is narrow because the number is one
+ * digit, and an empty one shows the weight class as a placeholder -- greyed, because it is what
+ * the number would be rather than what it is.
+ */
+.cr-npc__sixes {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.25em 0.75em; margin-top: 0.4em;
+}
+.cr-stat--passive {
+  display: flex; align-items: center; justify-content: space-between; gap: 0.5em;
+}
+.cr-stat--passive input { width: 3.2em; flex: 0 0 auto; text-align: center; }
+.cr-stat--passive input::placeholder { opacity: 0.45; font-style: italic; }
+.cr-npc__passives .cr-stat { font-size: 0.95em; }

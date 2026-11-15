@@ -29,7 +29,16 @@
     "tactics": [
       "grappler"
     ],
-    "targetPriority": "nearest"
+    "targetPriority": "nearest",
+    "passive": 7,
+    "passives": {
+      "might": 8,
+      "agility": 6,
+      "shadow": 8,
+      "wits": 6,
+      "lore": 5,
+      "presence": 7
+    }
   },
   "items": [
     {

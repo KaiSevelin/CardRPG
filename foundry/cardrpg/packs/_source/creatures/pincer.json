@@ -28,7 +28,16 @@
       "commander",
       "grappler"
     ],
-    "targetPriority": "leader"
+    "targetPriority": "leader",
+    "passive": 5,
+    "passives": {
+      "might": 7,
+      "agility": 5,
+      "shadow": 4,
+      "wits": 7,
+      "lore": 4,
+      "presence": 7
+    }
   },
   "items": [
     {

@@ -23,12 +23,21 @@
       "feral",
       "fast"
     ],
+    "passives": {
+      "might": 4,
+      "agility": 6,
+      "shadow": 3,
+      "wits": 3,
+      "lore": 2,
+      "presence": 5
+    },
     "tactics": [
       "packTactics",
       "brute",
       "skirmisher"
     ],
-    "targetPriority": "caster"
+    "targetPriority": "caster",
+    "passive": 4
   },
   "items": [
     {

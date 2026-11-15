@@ -24,7 +24,16 @@
       "siege"
     ],
     "tactics": [],
-    "targetPriority": "nearest"
+    "targetPriority": "nearest",
+    "passive": 3,
+    "passives": {
+      "might": 4,
+      "agility": 2,
+      "shadow": 3,
+      "wits": 4,
+      "lore": 3,
+      "presence": 4
+    }
   },
   "items": [
     {

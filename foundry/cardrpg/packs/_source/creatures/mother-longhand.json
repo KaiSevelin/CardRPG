@@ -29,7 +29,16 @@
       "grappler",
       "ambusher"
     ],
-    "targetPriority": "weakest"
+    "targetPriority": "weakest",
+    "passive": 7,
+    "passives": {
+      "might": 9,
+      "agility": 7,
+      "shadow": 9,
+      "wits": 6,
+      "lore": 7,
+      "presence": 6
+    }
   },
   "items": [
     {

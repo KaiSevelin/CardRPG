@@ -27,7 +27,16 @@
       "bodyguard",
       "commander"
     ],
-    "targetPriority": "leader"
+    "targetPriority": "leader",
+    "passive": 4,
+    "passives": {
+      "might": 6,
+      "agility": 3,
+      "shadow": 2,
+      "wits": 6,
+      "lore": 3,
+      "presence": 6
+    }
   },
   "items": [
     {

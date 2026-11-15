@@ -26,7 +26,16 @@
     "tactics": [
       "ambusher"
     ],
-    "targetPriority": "weakest"
+    "targetPriority": "weakest",
+    "passive": 4,
+    "passives": {
+      "might": 4,
+      "agility": 5,
+      "shadow": 6,
+      "wits": 3,
+      "lore": 2,
+      "presence": 4
+    }
   },
   "items": [
     {

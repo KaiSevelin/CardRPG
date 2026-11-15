@@ -22,10 +22,19 @@
       "pack",
       "feral"
     ],
+    "passives": {
+      "might": 2,
+      "agility": 3,
+      "shadow": 2,
+      "wits": 5,
+      "lore": 2,
+      "presence": 2
+    },
     "tactics": [
       "skirmisher"
     ],
-    "targetPriority": "nearest"
+    "targetPriority": "nearest",
+    "passive": 2
   },
   "items": [
     {

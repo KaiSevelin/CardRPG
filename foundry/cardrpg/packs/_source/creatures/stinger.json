@@ -30,6 +30,15 @@
       "condition": "poisoned",
       "intensity": 1,
       "duration": 3
+    },
+    "passive": 3,
+    "passives": {
+      "might": 3,
+      "agility": 4,
+      "shadow": 3,
+      "wits": 2,
+      "lore": 2,
+      "presence": 2
     }
   },
   "items": [

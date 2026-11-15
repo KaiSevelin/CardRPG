@@ -440,22 +440,45 @@ export function edgeLine(claim) {
  * added to the config with one of these flags has to reach both halves of the game or neither.
  *
  * **It reads the flags and not the keys**, which is the rule the combat side already followed and
- * the reason this is a two-line change rather than a special case for Heckled. The other side of
- * that coin is that **Invisible now helps a check too** -- it carries `grantsAdvantage` and the
- * flag does not say *in combat*. That is the consistent reading and conditions.md pairs the two
- * in the same sentence; if some future condition should sway a fight and not a check, the answer
- * is a third flag, not an exception here.
+ * the reason this is a two-line change rather than a special case for Heckled.
  *
+ * **And `approach`, which is the third flag that paragraph said would be needed.**
+ * [2026-11-15] Reading `grantsAdvantage` on the check side made **Invisible good at all six
+ * approaches**, which is not a consistent reading of the condition so much as the strongest
+ * condition in the game arriving by accident: being unseen does nothing for recalling a
+ * genealogy or forcing a door. It helps the one approach that is about not being seen, so the
+ * config narrows it (`advantageOn`) and the caller says which approach is being asked about.
+ *
+ * An attack asks about **no** approach and is not narrowed, which is both how combat worked
+ * before this and the honest reading: a Strike is not a Shadow check.
+ *
+ * **Disadvantage is never narrowed.** Heckled says *you draw fate with disadvantage* with no
+ * qualification, and a condition that spoils a draw spoils whatever the draw was for. The
+ * asymmetry is in the conditions rather than in this function: one of them names where it helps
+ * and the other does not name where it hurts.
+ *
+ * @param {Actor} actor
+ * @param {object} [options]
+ * @param {string} [options.approach]  the approach of the check, or omitted for an attack
  * @returns {{advantage: boolean, disadvantage: boolean, labels: string[]}}
  */
-export function conditionSway(actor) {
+export function conditionSway(actor, { approach = "" } = {}) {
   const out = { advantage: false, disadvantage: false, labels: [] };
   for (const key of (actor?.system.activeConditions ?? []).map(c => c.key)) {
     const cfg = CARDRPG.conditions[key];
     if (!cfg?.grantsAdvantage && !cfg?.drawsWithDisadvantage) continue;
-    if (cfg.grantsAdvantage) out.advantage = true;
+    /* Narrowed only when an approach was named AND the condition names a list: no list reaches
+     * everything, and no approach is an attack, which no list has ever applied to. */
+    const reaches = !cfg.advantageOn?.length || !approach
+      || cfg.advantageOn.includes(approach);
+    const helps = !!cfg.grantsAdvantage && reaches;
+    if (helps) out.advantage = true;
     if (cfg.drawsWithDisadvantage) out.disadvantage = true;
-    out.labels.push(game.i18n.localize(cfg.label ?? key));
+    /* A condition that is not reaching this check is not a reason for anything, so it is not
+     * printed as one: the chain beside a result lists what moved the number. */
+    if (helps || cfg.drawsWithDisadvantage) {
+      out.labels.push(game.i18n.localize(cfg.label ?? key));
+    }
   }
   return out;
 }
@@ -3304,7 +3327,7 @@ export async function resolveCheck(actor, {
    * *you draw fate with disadvantage* and this is the other place fate is drawn. See
    * `conditionSway`, which both halves of the game now read.
    */
-  const carried = conditionSway(actor);
+  const carried = conditionSway(actor, { approach });
   reasons.push(...carried.labels.map(label => `checking while ${label}`));
   /*
    * **Two booleans, like the combat side**, rather than the signed sum this used to take.
@@ -3435,9 +3458,14 @@ export async function answerCheck(actor) {
  * The whole deck, not the hand -- draw pile, discard and Spent alike -- so the number does not
  * wander as the day is played, and nobody is caught unaware for having drawn badly.
  *
- * Until the skill deck exists there is nothing to count, so this falls back to `system.passive`,
- * which is how an NPC carries a score at all, and then to the floor of 2 that a character with no
- * cards of an approach would have anyway.
+ * Until the skill deck exists there is nothing to count, so this falls back to the NPC's own
+ * numbers -- **the approach's own score first and the baseline behind it** (data/actors.mjs
+ * `passives`) -- and then to the floor of 2 that a character with no cards of an approach would
+ * have anyway.
+ *
+ * The approach-by-approach lookup is why an opposed check is worth asking about at all: a flat
+ * number meant the board suggested the same difficulty for sneaking past a thing as for shouting
+ * it down, and a difficulty that does not depend on what you are attempting is not an answer.
  */
 export function passiveScore(actor, approach) {
   /*
@@ -3451,9 +3479,28 @@ export function passiveScore(actor, approach) {
    * So it reads every stack the character owns and takes the skill cards out of them, which is
    * what "the whole deck" means and is immune to where a card happens to be sitting.
    */
-  const stacks = actor?.system?.decks ? Object.values(actor.system.decks) : [];
-  const held = stacks.map(id => game.cards.get(id)).filter(Boolean);
-  if (held.length) {
+  /*
+   * **The gate is the SKILL deck, not "owns any stacks at all".**  [FOUND IN PLAY 2026-11-15]
+   *
+   * It was `held.length` -- any resolvable stack -- and **a creature has four of them**: an action
+   * deck, a fate deck, its discard and an intent. So every monster ever built went down the
+   * counting branch, found no skill cards in any of its stacks, and returned `0 + 2`. The flat
+   * `passive: 4` in the schema had never once been read for a creature that was actually in a
+   * world, which is why nothing noticed: 2 and 4 are both *a number that does not vary*, and
+   * until the six scores arrived there was nothing to compare either of them against.
+   *
+   * Caught by the live harness reading `passiveScore` off a creature that had been through the
+   * pack round trip. Every source check about this function agreed with the function.
+   *
+   * The skill deck's slot is the honest gate because it is the thing that means *this actor counts
+   * cards*: only a character has one. The scan then reads EVERY stack, because a card sitting in
+   * the discard is still in the deck (skill-rules 2), and that part was always right.
+   */
+  const counts = actor?.system?.decks?.skill ? game.cards.get(actor.system.decks.skill) : null;
+  const held = counts
+    ? Object.values(actor.system.decks).map(id => game.cards.get(id)).filter(Boolean)
+    : [];
+  if (counts) {
     let best = 0;
     for (const stack of held) {
       for (const card of stack.cards) {
@@ -3469,7 +3516,9 @@ export function passiveScore(actor, approach) {
       .filter(m => m === approach).length;
     return best + 2 + mastery;
   }
-  return actor?.system.passive ?? 2;
+  /* An approach the creature says nothing about falls through to its weight class. `null` is the
+   * schema's way of saying nothing, so `??` and not `||`: a passive of 0 is a real number. */
+  return actor?.system.passives?.[approach] ?? actor?.system.passive ?? 2;
 }
 
 /**

@@ -24,7 +24,9 @@ import { LevelUpPane } from "./module/levelup.mjs";
 import * as decks from "./module/decks.mjs";
 import { answerArrival, answerWatch, watches } from "./module/resolve.mjs";
 /* The graph is assembled at runtime from core content plus whatever the world has added. */
-import { rebuildGraph } from "./module/graph.mjs";
+import {
+  rebuildGraph, repairCharacters, repairCharactersMenu
+} from "./module/graph.mjs";
 import { CharacterData, NpcData } from "./module/data/actors.mjs";
 import { ItemSlateData, FeatureSlateData, SpellSlateData, InjurySlateData } from "./module/data/items.mjs";
 import {
@@ -206,6 +208,27 @@ function registerSettings() {
     restricted: true
   });
 
+  /*
+   * **And the other half of that question.**  [BUILT 2026-11-15]
+   *
+   * The button above brings the WORLD's content in line with the system. This one brings the
+   * CHARACTERS in line with what their own nodes say they were given -- which is a separate
+   * button because it is a separate fault: two engine bugs handed over nothing and said nothing,
+   * and fixing the code only fixes the next character. `repairCharacters` has the full account,
+   * and its dialog says the same in a GM's words.
+   *
+   * Second in the panel rather than first, because a world whose content is missing should be
+   * rebuilt before anybody asks what a character is owed out of it.
+   */
+  game.settings.registerMenu("cardrpg", "repairCharacters", {
+    name: "CARDRPG.Settings.RepairCharacters.Name",
+    label: "CARDRPG.Settings.RepairCharacters.Label",
+    hint: "CARDRPG.Settings.RepairCharacters.Hint",
+    icon: "fa-solid fa-user-doctor",
+    type: repairCharactersMenu(),
+    restricted: true
+  });
+
   game.settings.register("cardrpg", "showFateSwing", {
     name: "CARDRPG.Settings.ShowFateSwing.Name",
     hint: "CARDRPG.Settings.ShowFateSwing.Hint",
@@ -314,6 +337,10 @@ Hooks.once("ready", async () => {
     /* The settings button's routine, exposed too, so the thing in the menu and the thing in a
      * macro are the same function and not two spellings of it. */
     rebuildWorldContent,
+    /* The character-side repair, exposed for the same reason: the menu and a macro should run one
+     * function rather than two spellings of it. Takes no argument and does every character; the
+     * per-actor `repairCharacter` is the graph's export for one. */
+    repairCharacters,
     config: CARDRPG,
     decks,
     openTray: actor => CardRPGTray.openFor(actor),

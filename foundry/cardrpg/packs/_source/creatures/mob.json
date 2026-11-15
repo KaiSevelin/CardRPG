@@ -26,7 +26,16 @@
     "tactics": [
       "packTactics"
     ],
-    "targetPriority": "nearest"
+    "targetPriority": "nearest",
+    "passive": 3,
+    "passives": {
+      "might": 5,
+      "agility": 2,
+      "shadow": 2,
+      "wits": 4,
+      "lore": 3,
+      "presence": 4
+    }
   },
   "items": [
     {

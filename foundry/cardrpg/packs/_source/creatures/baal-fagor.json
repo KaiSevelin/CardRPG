@@ -29,7 +29,16 @@
       "brute",
       "sniper"
     ],
-    "targetPriority": "leader"
+    "targetPriority": "leader",
+    "passive": 7,
+    "passives": {
+      "might": 9,
+      "agility": 7,
+      "shadow": 6,
+      "wits": 6,
+      "lore": 8,
+      "presence": 6
+    }
   },
   "items": [
     {

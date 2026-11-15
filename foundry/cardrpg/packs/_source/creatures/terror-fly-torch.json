@@ -30,6 +30,15 @@
       "condition": "burning",
       "intensity": 3,
       "duration": 2
+    },
+    "passive": 4,
+    "passives": {
+      "might": 4,
+      "agility": 5,
+      "shadow": 4,
+      "wits": 3,
+      "lore": 2,
+      "presence": 3
     }
   },
   "items": [

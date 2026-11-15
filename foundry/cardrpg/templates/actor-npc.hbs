@@ -42,6 +42,32 @@
     </label>
   </section>
 
+  {{!--
+    **What it is hard to beat at.** The six passive scores, plus the weight class behind them.
+
+    A passive is the difficulty of an opposed check against this creature and its saving throw
+    against being held, blinded or frightened. The roster derives all six from a creature's health
+    and its capabilities, so an empty box here is not a missing number: it means *whatever the
+    weight class says*, and the hint beside it says what that is.
+  --}}
+  <section class="cr-block cr-npc__passives">
+    <h3>Passive scores</h3>
+    <label class="cr-stat">Weight class
+      <input type="number" name="system.passive" value="{{system.passive}}" min="0"
+             data-tooltip="What any approach with nothing of its own falls back to. Chaff 2, rank and file 3, lieutenant 4, general 5, great 6, a god 7.">
+    </label>
+    <div class="cr-npc__sixes">
+      {{#each passives as |row|}}
+        <label class="cr-stat cr-stat--passive">
+          <span>{{crIcon row.icon}} {{row.label}}</span>
+          <input type="number" name="system.passives.{{row.key}}" value="{{row.value}}" min="0"
+                 placeholder="{{row.fallback}}"
+                 data-tooltip="The difficulty of beating this creature with {{row.label}}, and its saving throw when {{row.label}} is what resists. Empty falls back to {{row.fallback}}.">
+        </label>
+      {{/each}}
+    </div>
+  </section>
+
   {{!-- Keep a weak enemy's Strike at least 2 above the heroes' armor (core-rules 9). --}}
   <section class="cr-block">
     <h3>Gear</h3>

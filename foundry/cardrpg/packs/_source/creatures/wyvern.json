@@ -26,7 +26,16 @@
     "tactics": [
       "skirmisher"
     ],
-    "targetPriority": "weakest"
+    "targetPriority": "weakest",
+    "passive": 4,
+    "passives": {
+      "might": 4,
+      "agility": 7,
+      "shadow": 4,
+      "wits": 3,
+      "lore": 2,
+      "presence": 3
+    }
   },
   "items": [
     {

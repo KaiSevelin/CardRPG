@@ -121,12 +121,148 @@ export function applyVariant(base, delta) {
   };
 }
 
-/** Every creature the roster produces: each base, then each of its variants. */
+/**
+ * Every creature the roster produces: each base, then each of its variants.
+ *
+ * **Passives are filled in after the expansion and not before**, so a variant's six scores come
+ * off its OWN health and capabilities: a Goblin Chief is a lieutenant and a Goblin Sneak is a
+ * stealthy one, and both of those are things the delta changed. An authored override on a base
+ * still reaches its variants, because `applyVariant` carries `system` across -- which is right, a
+ * variant of a specialist is a specialist.
+ */
 export function expandRoster(bases, variants) {
   const out = [];
   for (const base of bases) {
     out.push(base);
     for (const delta of variants[base.system?.kind] ?? []) out.push(applyVariant(base, delta));
   }
-  return out;
+  return out.map(withPassives);
+}
+
+/* -------------------------------------------- */
+/*  What it is good at                          */
+/* -------------------------------------------- */
+
+/**
+ * **A creature's six passive scores, derived the way its deck is.**  [BUILT 2026-11-15]
+ *
+ * Every creature in the roster carried `passive: 4` -- not authored, the schema's initial value --
+ * and `passiveScore` returns that one number for all six approaches. So the opposed difficulty the
+ * GM's board suggests was **4 for every creature in the game**: the same number for sneaking past
+ * the Cat God as for out-arguing a townsfolk, and the same saving throw against being held whether
+ * the target was a Scrip or the Troll King. A knob that reads 4 on all seventy-five creatures is
+ * not a knob.
+ *
+ * Derived rather than typed, for the reason a deck is derived: seventy-five creatures times six
+ * approaches is four hundred and fifty numbers, and four hundred and fifty hand-typed numbers are
+ * four hundred and fifty chances to be inconsistent about what a goblin is. A creature already
+ * declares what it is -- its health and its capabilities -- and that is enough to say what it is
+ * hard to beat at.
+ *
+ * **The baseline is its weight class**, on the ladder the roster's own table is built on: chaff,
+ * rank and file, lieutenant, general, great, god. Health is the stated measure of that -- *every
+ * number is a multiple of the one creature that was measured* -- so it is what the tier reads.
+ *
+ * **The temperament does the mental three.** `feral`, `drilled` and `wits` are exclusive and every
+ * creature has exactly one, which makes them the one axis in the data that already says whether a
+ * thing can think, obey or only act. A beast has no Lore worth the name; a soldier has training
+ * and no learning; something that reasons and speaks is better at all three than either.
+ *
+ * **The rest do the physical three**, each capability shifting the approach it actually speaks to:
+ * `brute` is Might, `fast` is Agility, `stealth` is Shadow, and a thing built to batter down a
+ * gate is not built to tumble or to go unheard.
+ *
+ * **Bounded, and floored at the human floor.** No approach moves more than 3 from the tier, so the
+ * weight class stays the thing that is read first and no pile of capabilities turns a goblin into
+ * a god at one thing. Nothing falls below 2, which is `SKILL_FLOOR`: the passive of a character
+ * with no card of an approach at all, and therefore what *bad at this* already means in this game.
+ *
+ * **An authored number always wins**, which is what the roster's `passives` overrides are for: the
+ * derivation knows what a capability says and not what a creature IS, and five creatures in the
+ * roster are a specialist at something their capabilities under-state.
+ */
+
+/** The weight classes the roster's own table is built on, read off health. */
+const TIERS = [
+  { upTo: 4, passive: 2, of: "chaff" },
+  { upTo: 11, passive: 3, of: "rank and file" },
+  { upTo: 23, passive: 4, of: "lieutenant" },
+  { upTo: 44, passive: 5, of: "general" },
+  { upTo: 59, passive: 6, of: "great" },
+  { upTo: Infinity, passive: 7, of: "god" }
+];
+
+/**
+ * **What each capability says about each approach**, as shifts from the tier.
+ *
+ * Read down a column rather than across a row: this is a statement about the approaches, which is
+ * why `brute` appears three times. A battering thing is better at Might *and* worse at Agility and
+ * Shadow, and all three of those are the same fact about it.
+ *
+ * The three temperaments are in here with the rest, because they are capabilities -- that is how
+ * `needs` can read them -- and because keeping them separate would mean two tables with one job.
+ */
+const SPEAKS_TO = {
+  might: { brute: 2, siege: 1, grapple: 1, reach: 1 },
+  agility: {
+    fast: 2, flight: 1, swim: 1,
+    brute: -1, siege: -1, dormant: -1, shelter: -1
+  },
+  shadow: {
+    stealth: 2, burrow: 1, dormant: 1,
+    brute: -1, siege: -1, pack: -1, commander: -1
+  },
+  wits: { wits: 1, drilled: 1, commander: 1, feral: -1 },
+  /* **Lore takes nothing from the `wits` temperament**, which it did until the table was read
+   * back: it made every goblin in the world as well read as a Normal difficulty. Lore is what a
+   * thing has studied, not whether it can think -- so a caster and a summoner have it and a
+   * literate goblin has whatever its weight class has. */
+  lore: { caster: 2, summon: 1, drilled: -1, feral: -2 },
+  presence: { commander: 2, wits: 1, drain: 1, terrify: 1, feral: -1 }
+};
+
+/** How far a pile of capabilities may move one approach off the tier, and the floor underneath. */
+const SHIFT_CAP = 3;
+const FLOOR = 2;
+
+/**
+ * The six scores for one creature, from its health and its capabilities.
+ *
+ * `authored` is anything the roster said itself, and it is copied over the top rather than
+ * clamped: a number a person typed is a decision, and the bounds here exist to keep *derivation*
+ * modest rather than to argue with the author.
+ */
+export function passivesOf({ health = 0, capabilities = [], authored = {} } = {}) {
+  const tier = TIERS.find(t => health <= t.upTo);
+  const have = capsOf(capabilities);
+  const out = { passive: authored.passive ?? tier.passive, passives: {} };
+
+  for (const [approach, says] of Object.entries(SPEAKS_TO)) {
+    const shift = Object.entries(says)
+      .filter(([cap]) => have.has(cap))
+      .reduce((n, [, by]) => n + by, 0);
+    const bounded = Math.max(-SHIFT_CAP, Math.min(SHIFT_CAP, shift));
+    out.passives[approach] = Math.max(FLOOR, out.passive + bounded);
+  }
+
+  /*
+   * **A creature that cannot leave its square does not dodge.** The Queen is the only one, and she
+   * is also the creature that proves `move` is worth deriving (`capsOf`): *the one who rules it
+   * all*, rooted, speed 0. Giving her a general's Agility because nothing in her capabilities
+   * mentions moving would be the derivation answering a question nobody asked it.
+   */
+  if (!have.has("move")) out.passives.agility = FLOOR;
+
+  return { ...out, passives: { ...out.passives, ...(authored.passives ?? {}) } };
+}
+
+/** Fill in a creature's passive scores, leaving anything the roster authored alone. */
+export function withPassives(creature) {
+  const system = creature.system ?? {};
+  const { passive, passives } = passivesOf({
+    health: system.health?.base ?? 0,
+    capabilities: system.capabilities,
+    authored: { passive: system.passive, passives: system.passives }
+  });
+  return { ...creature, system: { ...system, passive, passives } };
 }

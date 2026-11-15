@@ -23,11 +23,20 @@
       "venom",
       "wits"
     ],
+    "passives": {
+      "might": 4,
+      "agility": 4,
+      "shadow": 7,
+      "wits": 5,
+      "lore": 4,
+      "presence": 5
+    },
     "tactics": [
       "ambusher",
       "sniper"
     ],
-    "targetPriority": "leader"
+    "targetPriority": "leader",
+    "passive": 4
   },
   "items": [
     {

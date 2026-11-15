@@ -27,7 +27,16 @@
       "packTactics",
       "shieldWall"
     ],
-    "targetPriority": "nearest"
+    "targetPriority": "nearest",
+    "passive": 3,
+    "passives": {
+      "might": 3,
+      "agility": 2,
+      "shadow": 2,
+      "wits": 4,
+      "lore": 2,
+      "presence": 3
+    }
   },
   "items": [
     {

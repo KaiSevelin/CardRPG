@@ -27,7 +27,16 @@
       "bodyguard",
       "brute"
     ],
-    "targetPriority": "nearest"
+    "targetPriority": "nearest",
+    "passive": 4,
+    "passives": {
+      "might": 7,
+      "agility": 3,
+      "shadow": 3,
+      "wits": 5,
+      "lore": 3,
+      "presence": 4
+    }
   },
   "items": [
     {

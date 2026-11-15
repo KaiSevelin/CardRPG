@@ -29,7 +29,16 @@
       "ambusher",
       "skirmisher"
     ],
-    "targetPriority": "weakest"
+    "targetPriority": "weakest",
+    "passive": 6,
+    "passives": {
+      "might": 7,
+      "agility": 8,
+      "shadow": 8,
+      "wits": 7,
+      "lore": 6,
+      "presence": 7
+    }
   },
   "items": [
     {

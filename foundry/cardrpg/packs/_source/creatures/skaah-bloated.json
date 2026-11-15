@@ -27,7 +27,16 @@
     "tactics": [
       "bodyguard"
     ],
-    "targetPriority": "nearest"
+    "targetPriority": "nearest",
+    "passive": 7,
+    "passives": {
+      "might": 7,
+      "agility": 7,
+      "shadow": 7,
+      "wits": 8,
+      "lore": 6,
+      "presence": 7
+    }
   },
   "items": [
     {

@@ -23,11 +23,20 @@
       "feral",
       "stealth"
     ],
+    "passives": {
+      "might": 2,
+      "agility": 3,
+      "shadow": 3,
+      "wits": 5,
+      "lore": 2,
+      "presence": 2
+    },
     "tactics": [
       "skirmisher",
       "ambusher"
     ],
-    "targetPriority": "nearest"
+    "targetPriority": "nearest",
+    "passive": 2
   },
   "items": [
     {

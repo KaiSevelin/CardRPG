@@ -603,7 +603,26 @@ export class NpcSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       })),
       motivations: system.motivations.map((m, index) => ({ ...m, index })),
       targetPriorities: CARDRPG.targetPriorities,
-      allTactics: CARDRPG.tactics
+      allTactics: CARDRPG.tactics,
+
+      /*
+       * **The six passive scores, and what each one falls back to.**  [BUILT 2026-11-15]
+       *
+       * This sheet had no passive field at all -- not the six, not the baseline -- so the one
+       * number that says how hard a creature is to hold, trick, outrun or shout down was
+       * editable only through the console. The roster derives all six, so what a GM is doing here
+       * is almost always overruling one of them for one creature, which is why the row shows the
+       * number it would otherwise fall back to rather than only an empty box.
+       */
+      passives: Object.keys(CARDRPG.approaches).filter(key => key !== "any").map(key => ({
+        key,
+        label: game.i18n.localize(CARDRPG.approaches[key]?.label ?? key),
+        icon: CARDRPG.approaches[key]?.icon ?? "",
+        value: system.passives?.[key] ?? null,
+        /* Not `passiveScore(actor, key)`: that would print the value back into the box's hint and
+         * so read "falls back to 6" beside a 6 somebody typed. The fallback is the baseline. */
+        fallback: system.passive
+      }))
     });
   }
 

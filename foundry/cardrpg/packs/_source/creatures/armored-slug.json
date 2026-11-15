@@ -25,7 +25,16 @@
     "tactics": [
       "sniper"
     ],
-    "targetPriority": "nearest"
+    "targetPriority": "nearest",
+    "passive": 4,
+    "passives": {
+      "might": 4,
+      "agility": 4,
+      "shadow": 4,
+      "wits": 3,
+      "lore": 2,
+      "presence": 3
+    }
   },
   "items": [
     {

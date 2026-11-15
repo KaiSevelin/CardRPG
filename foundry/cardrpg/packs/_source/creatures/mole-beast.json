@@ -27,7 +27,16 @@
       "brute",
       "ambusher"
     ],
-    "targetPriority": "nearest"
+    "targetPriority": "nearest",
+    "passive": 4,
+    "passives": {
+      "might": 7,
+      "agility": 3,
+      "shadow": 4,
+      "wits": 3,
+      "lore": 2,
+      "presence": 3
+    }
   },
   "items": [
     {

@@ -27,7 +27,16 @@
       "packTactics",
       "commander"
     ],
-    "targetPriority": "leader"
+    "targetPriority": "leader",
+    "passive": 3,
+    "passives": {
+      "might": 3,
+      "agility": 3,
+      "shadow": 2,
+      "wits": 5,
+      "lore": 2,
+      "presence": 5
+    }
   },
   "items": [
     {

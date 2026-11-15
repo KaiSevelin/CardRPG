@@ -935,12 +935,36 @@ export class NpcData extends foundry.abstract.TypeDataModel {
       }),
 
       /*
-       * An NPC's passive score, used for every approach when it saves against a condition
-       * (core-rules 7). A character derives this from their skill deck; an NPC has none, so it
-       * carries one flat number instead -- which is also the only knob needed to say how hard a
-       * monster is to hold, blind or frighten.
+       * **An NPC's baseline passive score**: its weight class, and what any approach that has
+       * nothing more specific to say falls back to.
+       *
+       * A character derives this from their skill deck; an NPC has none, so it carries numbers
+       * instead -- and until 2026-11-15 it carried exactly one, which no creature in the roster
+       * authored, so **every creature in the game had a passive of 4 on all six approaches**.
+       * That is the difficulty the GM's board suggests for an opposed check, so sneaking past the
+       * Cat God and out-arguing a townsfolk were the same number.
        */
       passive: new fields.NumberField({ required: true, integer: true, min: 0, initial: 4 }),
+
+      /*
+       * **And the six, which is the knob that was missing.**  [BUILT 2026-11-15]
+       *
+       * `null` rather than a number as the initial value, so *nothing said about this approach*
+       * is a state the schema can hold: `passiveScore` falls back to `passive` for an approach
+       * left empty, which is what an NPC a GM typed by hand in two minutes should do. The roster
+       * fills all six, derived from health and capabilities (`passivesOf` in monsters.mjs).
+       *
+       * Six named fields rather than a map keyed by approach, for the reason every other
+       * enumerated schema here is written out: a typo in a key is a field the model drops
+       * silently, and a creature whose Shadow quietly reverted to its baseline is the kind of
+       * fault that is noticed by losing a fight.
+       */
+      passives: new fields.SchemaField(Object.fromEntries(
+        Object.keys(CARDRPG.approaches).filter(key => key !== "any")
+          .map(key => [key, new fields.NumberField({
+            required: false, integer: true, min: 0, nullable: true, initial: null
+          })])
+      )),
 
       // Flat, for a creature with no body slate. Overridden by gear when it has some.
       armorBase: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 }),

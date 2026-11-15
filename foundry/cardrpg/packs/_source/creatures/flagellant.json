@@ -22,11 +22,20 @@
       "pack",
       "feral"
     ],
+    "passives": {
+      "might": 3,
+      "agility": 3,
+      "shadow": 2,
+      "wits": 2,
+      "lore": 2,
+      "presence": 5
+    },
     "tactics": [
       "packTactics",
       "brute"
     ],
-    "targetPriority": "nearest"
+    "targetPriority": "nearest",
+    "passive": 3
   },
   "items": [
     {

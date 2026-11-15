@@ -27,7 +27,16 @@
     "tactics": [
       "brute"
     ],
-    "targetPriority": "nearest"
+    "targetPriority": "nearest",
+    "passive": 6,
+    "passives": {
+      "might": 8,
+      "agility": 6,
+      "shadow": 5,
+      "wits": 7,
+      "lore": 8,
+      "presence": 7
+    }
   },
   "items": [
     {

@@ -49,7 +49,7 @@ import { liftInjury } from "./resolve.mjs";
 import { CARDRPG } from "./config.mjs";
 /* Where a picture lives, derived from the list that commissioned it rather than written down. */
 /* The one shape a slate takes, shared with the setup routine rather than spelled twice. */
-import { slateData } from "./setup.mjs";
+import { slateData, buildCharacterDecks } from "./setup.mjs";
 
 export const ROOT = "root";
 
@@ -1320,4 +1320,250 @@ async function grantCardChoice(actor, source) {
   }).catch(() => null);
   if (!chosen) return false;
   return grantCard(actor, chosen);
+}
+
+/* -------------------------------------------- */
+/*  Repairing a character the engine let down   */
+/* -------------------------------------------- */
+
+/**
+ * **What a character's nodes should have handed over, and what they actually hold.**
+ * [BUILT 2026-11-15]
+ *
+ * Every character made before 2026-11-14 came into the world with ten empty deck slots, and every
+ * character made before 2026-11-15 walked a graph whose feature lookup could not see `FEATURES`.
+ * Neither fault threw. Both quietly did nothing:
+ *
+ *   - **no decks**, so `grantCard` and `grantSkillCards` returned false before creating anything,
+ *     `grantCardChoice` returned before opening its dialog, `raiseSkillCard` had no card to
+ *     raise, and the passive score fell back to the flat 2 an NPC uses;
+ *   - **twelve of the nineteen feature names a node grants resolved to nothing**, so taking Acolyte
+ *     warned *Well Read has not been built yet* and handed over nothing. It had been built.
+ *
+ * Fixing the code fixes the next character. It does not fix the ones at the table, and a level
+ * spent on silence is not something a player can be asked to take on trust -- so this walks the
+ * nodes somebody already owns and gives them what those nodes said they would.
+ *
+ * **Identity is the name**, and by presence rather than by count. Several nodes grant a Dagger --
+ * they are alternative occupations' kit lists -- so a character who owns two of them does not need
+ * two daggers, and a character who bought one in a shop must not be handed another. The question
+ * this answers is *did nothing arrive*, and a name either is in the list or is not.
+ *
+ * **It is idempotent.** Run it twice and the second run reports nothing, which is what makes it
+ * safe to put on a button rather than in a release note.
+ *
+ * @returns {Promise<object|null>} what was given and what is still owed, or null for a non-character
+ */
+export async function repairCharacter(actor) {
+  if (actor?.type !== "character") return null;
+
+  /* The decks first, because every card grant below needs somewhere to put a card. */
+  const stacks = await buildCharacterDecks(actor);
+
+  const report = { name: actor.name, stacks, items: [], cards: [], skills: [], owed: [] };
+  const held = {
+    items: new Set(actor.items.map(i => i.name)),
+    cards: new Set(allStacks(actor).flatMap(stack => stack.cards.contents).map(c => c.name))
+  };
+
+  /*
+   * **Counted per source rather than per node**, for the two rewards that ask the player a
+   * question. A character owning three nodes that each offer a card from the Shade pool should
+   * hold three Shade cards; holding two means one menu never opened. Counting is the only way to
+   * tell, because a choice leaves no record of which node it answered.
+   */
+  const owedChoices = new Map();
+  let owedExpertise = 0;
+  let owedPrunes = 0;
+
+  for (const id of ownedIds(actor)) {
+    const grants = GRAPH.get(id)?.grants ?? {};
+    const from = GRAPH.get(id)?.name ?? id;
+
+    if (grants.feature && !held.items.has(grants.feature)) {
+      if (await grantSlate(actor, grants.feature, "feature")) {
+        held.items.add(grants.feature);
+        report.items.push(`${grants.feature} (${from})`);
+      }
+    }
+    for (const name of [grants.item ?? []].flat()) {
+      if (held.items.has(name)) continue;
+      if (await grantSlate(actor, name, "item")) {
+        held.items.add(name);
+        report.items.push(`${name} (${from})`);
+      }
+    }
+    if (grants.spell && !held.items.has(grants.spell)) {
+      if (await grantSpell(actor, grants.spell, id)) {
+        held.items.add(grants.spell);
+        report.items.push(`${grants.spell} (${from})`);
+      }
+    }
+    if (grants.card && !held.cards.has(grants.card)) {
+      if (await grantCard(actor, grants.card)) {
+        held.cards.add(grants.card);
+        report.cards.push(`${grants.card} (${from})`);
+      }
+    }
+    const wantSkills = [grants.skill ?? []].flat().filter(name => !held.cards.has(name));
+    if (wantSkills.length && await grantSkillCards(actor, wantSkills)) {
+      for (const name of wantSkills) held.cards.add(name);
+      report.skills.push(`${wantSkills.join(", ")} (${from})`);
+    }
+
+    if (grants.choose?.from) {
+      owedChoices.set(grants.choose.from, (owedChoices.get(grants.choose.from) ?? 0) + 1);
+    }
+    if (grants.expertise) owedExpertise++;
+    owedPrunes += grants.prune ?? 0;
+  }
+
+  /*
+   * **A menu that never opened, worked out from what is missing rather than from a record.**
+   *
+   * Nothing stores which node a chosen card answered, so the test is arithmetic: own three nodes
+   * offering from a source and hold two of that source's cards, and one menu is outstanding. It
+   * errs toward offering nothing -- a card from the source that arrived some other way counts as
+   * an answered choice -- because handing somebody a second reward is worse than this report
+   * naming one it could not prove.
+   */
+  for (const [source, wanted] of owedChoices) {
+    const list = CARDS_BY_SOURCE.get(source) ?? SPELLS_BY_SOURCE.get(source) ?? [];
+    const names = new Set(list.map(entry => entry.name));
+    const have = [...held.items, ...held.cards].filter(name => names.has(name)).length;
+    for (let i = have; i < wanted; i++) {
+      const done = CARDS_BY_SOURCE.has(source)
+        ? await grantCardChoice(actor, source)
+        : await grantSpellChoice(actor, source, "");
+      report[CARDS_BY_SOURCE.has(source) ? "cards" : "items"]
+        .push(`a choice from ${source}${done ? "" : " \u2014 not taken"}`);
+    }
+  }
+
+  /*
+   * **And a raise that never landed**, which is the one reward whose history IS readable: a skill
+   * card's value is its printed value plus however many times Expertise has been spent on it. So
+   * nine Expertise nodes minus the raises visible in the deck is what is owed, and the arithmetic
+   * cannot double-count the way re-running the grant blindly would.
+   */
+  const raised = allStacks(actor).flatMap(stack => stack.cards.contents)
+    .filter(card => card.type === "skill")
+    .reduce((n, card) => n
+      + Math.max(0, (card.system?.value ?? 0) - (SKILL_POOL.get(card.name)?.value ?? 0)), 0);
+  for (let i = raised; i < owedExpertise; i++) {
+    const approach = [...ownedIds(actor)].map(id => GRAPH.get(id)?.grants?.expertise)
+      .filter(Boolean)[i] ?? "";
+    if (approach && await raiseSkillCard(actor, approach)) report.skills.push(`Expertise raise`);
+    else report.owed.push("an Expertise raise");
+  }
+
+  /*
+   * **A prune is the one thing this cannot work out.** It removes a card the player chose to drop,
+   * and a deck that is one card short of nothing in particular is not a record. So it is reported
+   * rather than offered: the pane's own button is where a player drops a card, and inventing a
+   * number of prunes owed would be the repair guessing.
+   */
+  if (owedPrunes) report.owed.push(`${owedPrunes} prune${owedPrunes > 1 ? "s" : ""} to offer`);
+
+  report.changed = report.stacks + report.items.length + report.cards.length
+    + report.skills.length;
+  return report;
+}
+
+/**
+ * **The same thing on a button, for every character in the world.**  [BUILT 2026-11-15]
+ *
+ * Beside *Rebuild world content* in settings, because it is the other half of the same question a
+ * GM asks after a system update -- that one brings the world's CONTENT in line, and this one
+ * brings the characters in line with what the content now says their nodes give them.
+ *
+ * It asks first, and the dialog says what it will ask the GM to decide: a menu node and an
+ * Expertise raise are the player's choice by the rules, and this runs them on whoever pressed the
+ * button, because the alternative is leaving a provably spent level unspent.
+ */
+export async function repairCharacters() {
+  const { DialogV2 } = foundry.applications.api;
+  if (!game.user.isGM) {
+    ui.notifications.error("Only the GM can repair characters.");
+    return;
+  }
+
+  const people = game.actors.filter(a => a.type === "character");
+  if (!people.length) {
+    ui.notifications.info("Card RPG: there are no characters in this world to repair.");
+    return;
+  }
+
+  const go = await DialogV2.confirm({
+    window: { title: "Card RPG: Repair characters" },
+    content:
+      `<p>Walks the nodes each of this world's <strong>${people.length}</strong> characters already
+       owns and hands over anything those nodes promised and never delivered. Two engine faults
+       made that possible, and both of them failed silently.</p>`
+      + "<ul>"
+      + "<li><strong>A character with no card stacks gets them</strong>, skill deck and fate deck "
+      + "included. Until this was fixed every check improvised at 0 with disadvantage and every "
+      + "passive score read as the flat 2 an NPC uses.</li>"
+      + "<li><strong>Features, items, formulas and cards a node names are created if missing.</strong> "
+      + "Twelve of the nineteen features a node grants used to resolve to nothing, so the node was "
+      + "marked owned and warned that the feature had not been built yet.</li>"
+      + "<li><strong>Nothing is duplicated.</strong> A thing already on the sheet by that name is "
+      + "left alone, which also means an item bought in a shop is never replaced.</li>"
+      + "<li><strong>You will be asked to choose</strong> where a node offers a menu or an "
+      + "Expertise raise. Those are the player's to make by the rules, so run this with them if "
+      + "you can &mdash; the alternative is a level that stays spent on nothing.</li>"
+      + "<li><strong>A prune is reported, not offered.</strong> Dropping a card leaves no record, "
+      + "so this cannot tell whether one happened.</li>"
+      + "</ul>"
+      + "<p>Safe to run twice: a second run reports nothing.</p>",
+    yes: { label: "Repair", icon: "fa-solid fa-user-doctor" },
+    /* The safe answer is the default, on a button that creates documents on somebody's character
+     * sheet. A stray Enter should not reach into a player's inventory. */
+    no: { label: "Cancel" },
+    defaultYes: false
+  });
+  if (!go) return;
+
+  const reports = [];
+  for (const actor of people) {
+    const report = await repairCharacter(actor);
+    if (report) reports.push(report);
+  }
+
+  const touched = reports.filter(r => r.changed || r.owed.length);
+  const line = r => `<li><strong>${foundry.utils.escapeHTML(r.name)}</strong>: `
+    + [
+      r.stacks ? `${r.stacks} card stacks built` : "",
+      r.items.length ? `gear and features &mdash; ${r.items.join(", ")}` : "",
+      r.cards.length ? `cards &mdash; ${r.cards.join(", ")}` : "",
+      r.skills.length ? `skill deck &mdash; ${r.skills.join(", ")}` : "",
+      r.owed.length ? `<em>still owed: ${r.owed.join(", ")}</em>` : ""
+    ].filter(Boolean).join("; ")
+    + "</li>";
+
+  await DialogV2.prompt({
+    window: { title: "Card RPG: Repair characters" },
+    content: touched.length
+      ? `<ul>${touched.map(line).join("")}</ul>`
+        + `<p>${people.length - touched.length} of ${people.length} needed nothing.</p>`
+      : `<p>Nothing to do: all ${people.length} characters already hold everything their nodes
+         grant.</p>`,
+    ok: { label: "Close" }
+  });
+}
+
+/**
+ * A settings menu is a class the panel instantiates. Same shape as `rebuildContentMenu`, and for
+ * the same reason it is returned from a function rather than declared: `extends` is evaluated on
+ * import and the validator imports this file in bare Node, where there is no `foundry` global.
+ */
+export function repairCharactersMenu() {
+  return class RepairCharactersMenu extends foundry.applications.api.ApplicationV2 {
+    static DEFAULT_OPTIONS = { id: "cardrpg-repair-characters" };
+
+    async render() {
+      await repairCharacters();
+      return this;
+    }
+  };
 }

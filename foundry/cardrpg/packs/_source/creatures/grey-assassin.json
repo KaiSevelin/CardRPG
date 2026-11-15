@@ -24,11 +24,20 @@
       "fast",
       "wits"
     ],
+    "passives": {
+      "might": 3,
+      "agility": 5,
+      "shadow": 7,
+      "wits": 4,
+      "lore": 3,
+      "presence": 4
+    },
     "tactics": [
       "ambusher",
       "skirmisher"
     ],
-    "targetPriority": "caster"
+    "targetPriority": "caster",
+    "passive": 3
   },
   "items": [
     {

@@ -27,7 +27,16 @@
       "shieldWall",
       "bodyguard"
     ],
-    "targetPriority": "nearest"
+    "targetPriority": "nearest",
+    "passive": 4,
+    "passives": {
+      "might": 6,
+      "agility": 2,
+      "shadow": 3,
+      "wits": 5,
+      "lore": 3,
+      "presence": 4
+    }
   },
   "items": [
     {

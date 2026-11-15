@@ -4979,8 +4979,39 @@ check("the Cutpurse's card keeps its printed name",
 check("Invisible declares its advantage rather than being looked for by name",
   CARDRPG.conditions.invisible?.grantsAdvantage, true);
 check("and the resolver reads the flag",
-  /if \(cfg\.grantsAdvantage\) out\.advantage = true;/.test(resolveSource)
+  /const helps = !!cfg\.grantsAdvantage && reaches;/.test(resolveSource)
   && !/conditionsOf\(actor\)\.includes\("invisible"\)/.test(resolveSource) ? "yes" : "no", "yes");
+/*
+ * **And it says where that advantage reaches.**  [BUILT 2026-11-15]
+ *
+ * Reading `grantsAdvantage` on the check side as well made **Invisible an advantage on all six
+ * approaches**, which is not the consistent reading the comment above it claimed so much as the
+ * strongest condition in the game arriving unannounced: being unseen does nothing for recalling a
+ * genealogy, forcing a door or talking a guard round. It helps the approach that is about not
+ * being seen, and `advantageOn` is the third flag the split's own note said this would need.
+ *
+ * Checked at both ends -- the list in the config and the narrowing in the reader -- because either
+ * one alone is satisfied by a flag nothing honours or a filter nothing fills.
+ */
+check("Invisible says which approach its advantage reaches",
+  (CARDRPG.conditions.invisible?.advantageOn ?? []).join(","), "shadow");
+check("and the reader narrows by it",
+  /cfg\.advantageOn\.includes\(approach\)/.test(resolveSource) ? "yes" : "no", "yes");
+/* An attack asks about no approach, which is how combat is left exactly as it was. */
+check("and an attack, which names no approach, is not narrowed",
+  /!cfg\.advantageOn\?\.length \|\| !approach/.test(resolveSource) ? "yes" : "no", "yes");
+/*
+ * **Disadvantage is never narrowed.** Heckled says *you draw fate with disadvantage* and names no
+ * place it does not reach, so the asymmetry belongs to the conditions rather than to the reader.
+ * Pinned as the shape of the line, because the tidy-looking symmetrical version of this function
+ * is a silent nerf to the Bard.
+ */
+check("and disadvantage reaches every draw",
+  /if \(cfg\.drawsWithDisadvantage\) out\.disadvantage = true;/.test(resolveSource) ? "yes" : "no",
+  "yes");
+/* A condition that is not reaching this check is not printed as a reason for it. */
+check("and a condition that does not reach is not listed as a reason",
+  /if \(helps \|\| cfg\.drawsWithDisadvantage\) \{/.test(resolveSource) ? "yes" : "no", "yes");
 /*
  * **And BOTH kinds of draw read it.**  [BUILT 2026-11-15]
  *
@@ -4995,11 +5026,13 @@ check("and the resolver reads the flag",
  * stale the next time a condition was added.
  */
 check("one reader for what a condition does to a draw",
-  /export function conditionSway\(actor\)/.test(resolveSource) ? "yes" : "no", "yes");
+  /export function conditionSway\(actor, \{ approach = "" \} = \{\}\)/.test(resolveSource)
+    ? "yes" : "no", "yes");
 check("and an attack and a check both ask it",
-  (resolveSource.match(/conditionSway\(actor\)/g) ?? []).length, 3);
+  (resolveSource.match(/conditionSway\(actor[,)]/g) ?? []).length, 3);
 check("Heckled reaches a skill check",
-  /const carried = conditionSway\(actor\);/.test(resolveSource) ? "yes" : "no", "yes");
+  /const carried = conditionSway\(actor, \{ approach \}\);/.test(resolveSource) ? "yes" : "no",
+  "yes");
 
 /* The history, so a fixed defect stays a known one. */
 for (const [label, re] of [
@@ -13052,7 +13085,8 @@ check("the macro API", api.join(", "), "config, openTray, levelUp");
  */
 const apiShorthand = [...apiBlock.matchAll(/^ {4}([a-zA-Z]+),$/gm)].map(m => m[1]);
 check("and the shorthand members beside them", apiShorthand.join(", "),
-  "createStarterContent, rebuildWorldContent, decks, buildMonster, endTransformation");
+  "createStarterContent, rebuildWorldContent, repairCharacters, decks, buildMonster, "
+  + "endTransformation");
 
 /* ---- and one of them is a button a GM can find ---- */
 
@@ -13102,6 +13136,96 @@ check("and the held decks are named in the report",
 check("the hint warns that a slate keeps its text",
   /only its picture is repaired/.test(lang["CARDRPG.Settings.RebuildContent.Hint"] ?? "")
     ? "yes" : "no", "yes");
+
+/*
+ * ---- and the other button: what a character is owed  [BUILT 2026-11-15] ----
+ *
+ * The rebuild above brings a WORLD's content in line with the system. It does nothing for the
+ * characters already in it, and two engine faults mean those characters are owed documents:
+ *
+ *   - every character made before 2026-11-14 had **ten empty deck slots**, so every card grant,
+ *     every menu node and every Expertise raise returned false before creating anything, and the
+ *     passive score fell back to the flat 2 an NPC uses;
+ *   - every character made before 2026-11-15 walked a graph whose feature lookup could not see
+ *     `FEATURES`, so **twelve of the nineteen features a node grants resolved to nothing** and
+ *     the node was marked owned anyway.
+ *
+ * Fixing the code fixes the next character. What is checked here is the part that is a promise to
+ * somebody's campaign: that it is idempotent, that it does not duplicate, and that it is honest
+ * about the one reward it cannot work out.
+ */
+const repairBody = graphSource.slice(graphSource.indexOf("export async function repairCharacter("),
+  graphSource.indexOf("export function repairCharactersMenu"));
+
+check("the character repair is a button in settings too",
+  /registerMenu\("cardrpg", "repairCharacters"/.test(entrySource) ? "yes" : "no", "yes");
+check("and it opens the routine rather than a copy of it",
+  /type: repairCharactersMenu\(\)/.test(entrySource) ? "yes" : "no", "yes");
+check("which a macro can call too", apiShorthand.includes("repairCharacters"), "true");
+check("it asks before it touches anybody's sheet",
+  /DialogV2\.confirm\(/.test(repairBody) ? "yes" : "no", "yes");
+check("and Cancel is the default answer",
+  (repairBody.match(/defaultYes: false/g) ?? []).length, 1);
+
+/* The decks first, because every card grant below needs somewhere to put a card. */
+check("it builds the stacks before it grants anything",
+  repairBody.indexOf("buildCharacterDecks(actor)")
+    < repairBody.indexOf("grantSlate(actor, grants.feature") ? "yes" : "no", "yes");
+/*
+ * **Identity is the name, by presence and not by count.** Six nodes grant a Dagger -- they are
+ * alternative occupations' kit lists -- so a character who owns two of them does not need two
+ * daggers, and one who bought a dagger must not be handed another. The question the repair
+ * answers is *did nothing arrive*, which a set answers exactly.
+ */
+check("nothing already on the sheet by that name is granted again",
+  /if \(held\.items\.has\(name\)\) continue;/.test(repairBody) ? "yes" : "no", "yes");
+check("and a card already in a stack is left alone",
+  /!held\.cards\.has\(grants\.card\)/.test(repairBody) ? "yes" : "no", "yes");
+/* Every stack, not the draw pile: a granted card that has since been played is still held. */
+check("which reads every stack the character owns",
+  /allStacks\(actor\)\.flatMap\(stack => stack\.cards\.contents\)\.map\(c => c\.name\)/
+    .test(repairBody) ? "yes" : "no", "yes");
+/*
+ * **A menu that never opened is worked out from what is missing**, because nothing records which
+ * node a chosen card answered. Own three nodes offering from a source and hold two of that
+ * source's cards, and one menu is outstanding -- arithmetic rather than a flag, and it errs toward
+ * offering nothing, because handing somebody a second reward is worse than under-repairing.
+ */
+check("an unanswered menu is counted rather than guessed at",
+  /for \(const \[source, wanted\] of owedChoices\)/.test(repairBody) ? "yes" : "no", "yes");
+check("and only the difference is offered",
+  /for \(let i = have; i < wanted; i\+\+\)/.test(repairBody) ? "yes" : "no", "yes");
+/*
+ * **An Expertise raise is the one reward whose history is readable**: a skill card's value is its
+ * printed value plus however many times Expertise has been spent on it. So the raises visible in
+ * the deck, subtracted from the nodes owned, is what is owed -- and that arithmetic cannot
+ * double-raise the way re-running the grant blindly would.
+ */
+check("a raise that landed is read off the card rather than re-run",
+  /\(card\.system\?\.value \?\? 0\) - \(SKILL_POOL\.get\(card\.name\)\?\.value \?\? 0\)/
+    .test(repairBody) ? "yes" : "no", "yes");
+/*
+ * **And the prune is reported rather than offered.** It removes a card the player chose to drop,
+ * and a deck one card short of nothing in particular is not a record of that. A repair that
+ * invented a number of prunes owed would be guessing with somebody's deck.
+ */
+check("a prune is reported and not offered",
+  /report\.owed\.push\(`\$\{owedPrunes\} prune/.test(repairBody) ? "yes" : "no", "yes");
+check("and the dialog says so before it runs",
+  /A prune is reported, not offered/.test(graphSource) ? "yes" : "no", "yes");
+/* And the hint in the panel says the sentence a GM reads first. */
+check("the hint says nothing is duplicated",
+  /Nothing is duplicated/.test(lang["CARDRPG.Settings.RepairCharacters.Hint"] ?? "")
+    ? "yes" : "no", "yes");
+check("and that a choice will be asked for",
+  /asked to choose/.test(lang["CARDRPG.Settings.RepairCharacters.Hint"] ?? "") ? "yes" : "no",
+  "yes");
+/* One function for one character, so the loop and a single repair cannot drift apart. */
+check("one character and all of them are the same routine",
+  /const report = await repairCharacter\(actor\);/.test(graphSource) ? "yes" : "no", "yes");
+check("and a non-character is refused rather than half-repaired",
+  /if \(actor\?\.type !== "character"\) return null;/.test(repairBody) ? "yes" : "no", "yes");
+
 
 /* ---- every derived value is read by somebody ---- */
 
@@ -16286,7 +16410,8 @@ check("a node's feature and item grants are performed",
   && /for \(const name of \[grants\.item \?\? \[\]\]\.flat\(\)\) await grantSlate\(actor, name, "item"\);/
     .test(graphSource) ? "yes" : "no", "yes");
 check("through the setup routine's own slate shape",
-  /import \{ slateData \} from "\.\/setup\.mjs";/.test(graphSource) ? "yes" : "no", "yes");
+  /import \{ slateData, buildCharacterDecks \} from "\.\/setup\.mjs";/.test(graphSource)
+    ? "yes" : "no", "yes");
 check("and a slate nobody built is refused rather than silently skipped",
   /CARDRPG\.Level\.NoSlate/.test(graphSource) ? "yes" : "no", "yes");
 
@@ -16971,6 +17096,154 @@ check("and the rest are built on demand", apiShorthand.includes("buildMonster"),
 check("from the setup module that knows how",
   /export async function buildMonster\(name\)/.test(setupSource) ? "yes" : "no", "yes");
 
+/*
+ * ---- what a creature is hard to beat at  [BUILT 2026-11-15] ----
+ *
+ * **Every creature in the game had a passive of 4.** Not authored -- the schema's initial value,
+ * which no entry in the roster overrode -- and `passiveScore` returned that one number for all six
+ * approaches. The GM's board suggests an opposed difficulty from exactly this, so the number it
+ * offered for sneaking past the Cat God was the number it offered for out-arguing a townsfolk, and
+ * a saving throw against being held was the same whether the target was a Scrip or the Troll King.
+ *
+ * The suite had nothing to say about it, which is the more interesting half: there was no check
+ * that a creature's numbers differ from another creature's, because until a knob is turned nobody
+ * thinks to ask whether it can be. So the checks here are about the SPREAD and not about any one
+ * creature -- a derivation that quietly collapsed back to one number would pass every
+ * single-creature assertion ever written about it.
+ */
+const monstersSource = fs.readFileSync(path.join(root, "module/monsters.mjs"), "utf8");
+const npcTemplate = fs.readFileSync(path.join(root, "templates/actor-npc.hbs"), "utf8");
+const withScores = monsters.expandRoster(content.ROSTER, content.VARIANTS);
+const SIX = Object.keys(CARDRPG.approaches).filter(key => key !== "any");
+
+check("every creature carries all six passive scores",
+  withScores.filter(c => SIX.some(k => typeof c.system.passives?.[k] !== "number")).length, 0);
+/* The spread, which is the whole point: one number for seventy-five creatures is not a knob. */
+check("and the roster no longer has one weight class",
+  new Set(withScores.map(c => c.system.passive)).size, 6);
+check("and the six are not one number repeated",
+  new Set(withScores.flatMap(c => SIX.map(k => c.system.passives[k]))).size >= 8 ? "yes" : "no",
+  "yes");
+/*
+ * **And no creature's six are all the same number**, which is the collapse this would fail by: a
+ * derivation that said nothing about any approach would still pass both counts above, because the
+ * weight classes alone would spread it.
+ */
+check("and no creature is flat across all six",
+  withScores.filter(c => new Set(SIX.map(k => c.system.passives[k])).size === 1).map(c => c.name)
+    .join(", ") || "none", "none");
+/*
+ * **Bounded, so the weight class stays the thing read first.** No DERIVED approach moves more than
+ * 3 off the baseline and nothing falls below the human floor of 2 -- a pile of capabilities must
+ * not turn a goblin into a god at one thing. Asked of the function rather than of the roster, so
+ * it holds for a creature nobody has written yet.
+ */
+const sixSpread = monsters.passivesOf({ health: 10, capabilities: ["legs", "stealth", "wits"] });
+check("a derived score stays within three of the weight class",
+  SIX.every(k => Math.abs(sixSpread.passives[k] - sixSpread.passive) <= 3) ? "yes" : "no", "yes");
+check("and nothing derives below the untrained floor",
+  monsters.passivesOf({ health: 1, capabilities: ["legs", "pack", "feral"] }).passives.presence, 2);
+/* The Queen is rooted, and the one creature `move` was worth deriving for (`capsOf`). */
+check("and a creature that cannot leave its square does not dodge",
+  withScores.find(c => c.name === "The Queen")?.system.passives.agility, 2);
+/*
+ * **An authored number wins outright.** The derivation knows what a capability says and not what a
+ * creature IS, and five entries in the roster are a specialist at something their capabilities
+ * under-state: a Scrip is eyes and ears, a Changeling has been in the house for years, a Grey
+ * Assassin has trained for this since the Rote was a state, a Flagellant cannot be reasoned with
+ * and a Tempter will not ask for the thing it wants.
+ *
+ * Counted as well as named, because the failure here is an override clamped, ignored or written
+ * over by the derivation -- and any of those would still leave four of the five right.
+ */
+for (const [name, approach, want] of [
+  ["Scrip", "wits", 5], ["Changeling", "shadow", 7], ["Grey Assassin", "shadow", 7],
+  ["Flagellant", "presence", 5], ["Tempter", "presence", 7]
+]) {
+  check(name + " keeps the " + approach + " the roster authored",
+    withScores.find(c => c.name === name)?.system.passives[approach], want);
+}
+check("and nothing else in the roster authors one",
+  content.ROSTER.filter(c => c.system.passives).length, 5);
+/* A variant inherits its base's specialism and derives the rest from its own numbers. */
+check("a variant inherits the specialism",
+  withScores.find(c => c.name === "Scrip Watcher")?.system.passives.wits, 5);
+check("and re-derives the rest from its own health and capabilities",
+  withScores.find(c => c.name === "Goblin Chief")?.system.passives.wits
+    > withScores.find(c => c.name === "Goblin")?.system.passives.wits ? "yes" : "no", "yes");
+/*
+ * **Lore takes nothing from being able to think.** It did, for the first reading of the table, and
+ * the result was every goblin in the world as well read as a Normal difficulty. Lore is what a
+ * thing has studied: a caster and a summoner have it, and a literate goblin has its weight class.
+ */
+check("a goblin is no more learned than its weight class",
+  withScores.find(c => c.name === "Goblin")?.system.passives.lore,
+  withScores.find(c => c.name === "Goblin")?.system.passive);
+check("and its shaman is",
+  withScores.find(c => c.name === "Goblin Shaman")?.system.passives.lore, 5);
+/* The three temperaments are exclusive and every creature has exactly one -- the exclusivity is
+ * checked earlier in this section -- which is what makes them the axis the mental three read. */
+check("the temperaments are what the mental three are read off",
+  /wits: \{ wits: 1, drilled: 1, commander: 1, feral: -1 \}/.test(monstersSource) ? "yes" : "no",
+  "yes");
+/* Derived once, after the expansion, so a variant's scores are its own. */
+check("passives are filled in where every creature is produced",
+  /return out\.map\(withPassives\);/.test(monstersSource) ? "yes" : "no", "yes");
+
+/*
+ * **And the resolver reads the approach rather than the flat number.** This is the line that makes
+ * the table worth deriving at all: it fell through to `system.passive` for every approach, so an
+ * NPC had six identical scores however carefully the content said otherwise.
+ */
+check("a passive score asks the creature about the approach",
+  /return actor\?\.system\.passives\?\.\[approach\] \?\? actor\?\.system\.passive \?\? 2;/
+    .test(resolveSource) ? "yes" : "no", "yes");
+/*
+ * **And it only counts cards for an actor that has a skill deck.**  [FOUND IN PLAY 2026-11-15]
+ *
+ * The gate was *owns any resolvable stack*, and a creature owns four: an action deck, a fate deck,
+ * its discard and an intent. So **every monster ever built went down the counting branch**, found
+ * no skill cards in any of its stacks, and returned the floor of 2 -- which means the flat
+ * `passive: 4` in the schema had never once been read for a creature that was in a world.
+ *
+ * Nothing noticed because 2 and 4 are both *a number that does not vary*, and until the six scores
+ * arrived there was nothing to compare either against. The live harness found it by reading
+ * `passiveScore` off a creature that had been through the pack round trip; every source check
+ * ever written about this function agreed with the function.
+ *
+ * The skill deck's slot is the gate because having one is what *counts cards* means: a creature's
+ * schema has no such slot, so the branch cannot be entered by accident again.
+ */
+check("and only counts cards for an actor that has a skill deck",
+  /const counts = actor\?\.system\?\.decks\?\.skill \? game\.cards\.get\(actor\.system\.decks\.skill\) : null;/
+    .test(resolveSource) ? "yes" : "no", "yes");
+check("which a creature's schema has not got",
+  /intent: new fields\.DocumentIdField\(\)[\s\S]{0,40}skill/.test(actorsSource) ? "it has" : "none",
+  "none");
+/* And the scan still reads every stack, because a card in the discard is still in the deck. */
+check("and the count still reads the whole deck",
+  /\? Object\.values\(actor\.system\.decks\)\.map\(id => game\.cards\.get\(id\)\)\.filter\(Boolean\)/
+    .test(resolveSource) ? "yes" : "no", "yes");
+/* `??` and not `||`: a passive of 0 is a real number, and the schema says *nothing here* with
+ * `null`. */
+check("and an empty approach falls back rather than reading as nought",
+  /\.map\(key => \[key, new fields\.NumberField\(\{\n            required: false, integer: true, min: 0, nullable: true, initial: null/.test(actorsSource) ? "yes" : "no", "yes");
+check("the schema holds one field per approach",
+  /passives: new fields\.SchemaField\(Object\.fromEntries\(/.test(actorsSource) ? "yes" : "no",
+  "yes");
+/*
+ * **And the GM can see and change them**, which this sheet could not do for the flat number
+ * either: there was no passive field on it at all, so the one knob that says how hard a creature
+ * is to hold, trick or outrun was reachable only from the console.
+ */
+check("the NPC sheet offers all six",
+  /name="system\.passives\.\{\{row\.key\}\}"/.test(npcTemplate) ? "yes" : "no", "yes");
+check("and the weight class behind them",
+  /name="system\.passive"/.test(npcTemplate) ? "yes" : "no", "yes");
+/* An empty box is not a missing number: it is the baseline, and it says so where it is read. */
+check("and an empty one shows what it falls back to",
+  /placeholder="\{\{row\.fallback\}\}"/.test(npcTemplate) ? "yes" : "no", "yes");
+
 section("The checks themselves");
 
 /*
@@ -17063,7 +17336,7 @@ readFiles.set("decksSource", decksSource);
  *
  * 74 since 2026-11-15: `tableSource` reads `module/table.mjs`, the GM's own controls, which are
  * on the token HUD rather than inside a player's window. */
-check("files this suite greps by name", readFiles.size, 74);
+check("files this suite greps by name", readFiles.size, 76);
 
 /* Every `/pattern/.test(VAR)` and `VAR.includes("...")`, with the check it belongs to. */
 const nameOfCheck = index => {
@@ -17226,6 +17499,9 @@ const absentGreps = [
   /* The tray built one of its own before the board existed; two forms writing one scene
    * flag is the divergence found months later as "the other one does not do that". */
   String.raw`the tray builds no call dialog of its own :: CARDRPG\.Check\.CallTitle`,
+  /* Only a character counts cards for a passive score, which is what having a skill deck means.
+   * The gate used to be "owns any stack", and a creature owns four. */
+  String.raw`which a creature's schema has not got :: intent: new fields\.DocumentIdField\(\)[\s\S]{0,40}skill`,
   String.raw`while nothing applies one at grant time :: createItem[\s\S]{0,200}resolveCondition`,
 ].join(" | ");
 check("greps that correctly match nothing",

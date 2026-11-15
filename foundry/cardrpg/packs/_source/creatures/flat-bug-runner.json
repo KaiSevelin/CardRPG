@@ -27,7 +27,16 @@
       "packTactics",
       "skirmisher"
     ],
-    "targetPriority": "nearest"
+    "targetPriority": "nearest",
+    "passive": 2,
+    "passives": {
+      "might": 2,
+      "agility": 4,
+      "shadow": 2,
+      "wits": 2,
+      "lore": 2,
+      "presence": 2
+    }
   },
   "items": [
     {

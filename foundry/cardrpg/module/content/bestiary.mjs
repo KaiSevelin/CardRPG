@@ -53,6 +53,9 @@ export const MONSTERS = [
     system: {
       health: { value: 2, base: 2 }, kind: "scrip", armorBase: 0, speed: 6,
       capabilities: ["flight", "pack", "feral"],
+      /* **Eyes and ears**, which is the note and not a capability it could declare: noticing is
+       * the whole of what a Scrip is for, and a beast of this weight class derives a Wits of 2. */
+      passives: { wits: 5 },
       tactics: ["skirmisher"], targetPriority: "nearest"
     },
     equipped: ["Nip"],
@@ -321,6 +324,10 @@ export const MONSTERS = [
     system: {
       health: { value: 8, base: 8 }, kind: "changeling", armorBase: 0, speed: 4,
       capabilities: ["legs", "stealth", "wits"],
+      /* **It has been in the house for years and nobody said so.** `stealth` says it can arrive
+       * unheard; passing as the child of the house for a decade is a different claim, and the
+       * only one this creature has. */
+      passives: { shadow: 7 },
       /* Not `cowardly`: that is the goblins own tactic and the suite pins it to them. A
        * changeling does not run when found -- it has not been found for years. */
       tactics: ["ambusher"], targetPriority: "weakest"
@@ -706,6 +713,10 @@ export const MONSTERS = [
     system: {
       health: { value: 10, base: 10 }, kind: "flagellant", armorBase: 0, speed: 4,
       capabilities: ["legs", "pack", "feral"],
+      /* **The Church's most committed**, and the derivation reads `feral` as *cannot be reasoned
+       * with*, which is the right shape and far too cheap a number: being unable to reason with
+       * this one is the point of it. */
+      passives: { presence: 5 },
       tactics: ["packTactics", "brute"], targetPriority: "nearest"
     },
     equipped: ["Mace"],
@@ -745,6 +756,9 @@ export const MONSTERS = [
     system: {
       health: { value: 10, base: 10 }, kind: "grey-assassin", armorBase: 1, speed: 6,
       capabilities: ["legs", "stealth", "venom", "fast", "wits"],
+      /* The roster's one creature whose profession is this. `stealth` is a capability a bandit
+       * also has; a sect that has trained for it since the Rote was a state is not a bandit. */
+      passives: { shadow: 7 },
       tactics: ["ambusher", "skirmisher"], targetPriority: "caster"
     },
     equipped: ["Balanced Dagger", "Blade Venom"],
@@ -867,6 +881,9 @@ export const MONSTERS = [
     system: {
       health: { value: 20, base: 20 }, kind: "tempter", armorBase: 1, speed: 4,
       capabilities: ["legs", "caster", "summon", "wits"],
+      /* **It has not asked you for anything yet, and it will not ask for the thing it wants.**
+       * Every number this creature has is the conversation; `caster` sends its score to Lore. */
+      passives: { presence: 7 },
       tactics: ["ambusher"], targetPriority: "caster"
     },
     equipped: ["Demon's Sigil"],

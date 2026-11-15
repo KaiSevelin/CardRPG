@@ -25,7 +25,16 @@
     "tactics": [
       "commander"
     ],
-    "targetPriority": "nearest"
+    "targetPriority": "nearest",
+    "passive": 7,
+    "passives": {
+      "might": 7,
+      "agility": 2,
+      "shadow": 6,
+      "wits": 9,
+      "lore": 7,
+      "presence": 9
+    }
   },
   "items": [
     {

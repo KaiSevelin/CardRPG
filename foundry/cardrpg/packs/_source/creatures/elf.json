@@ -27,7 +27,16 @@
       "ambusher",
       "skirmisher"
     ],
-    "targetPriority": "caster"
+    "targetPriority": "caster",
+    "passive": 4,
+    "passives": {
+      "might": 4,
+      "agility": 4,
+      "shadow": 6,
+      "wits": 5,
+      "lore": 6,
+      "presence": 5
+    }
   },
   "items": [
     {

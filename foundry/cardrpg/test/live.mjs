@@ -1790,6 +1790,181 @@ async function probes(page) {
     });
   });
 
+  /*
+   * **Invisible helps you sneak, and nothing else.**  [BUILT 2026-11-15]
+   *
+   * `conditionSway` was split out so that Heckled -- *you draw fate with disadvantage* -- would
+   * reach a check as well as an attack, and reading the flags rather than the keys took Invisible
+   * along with it: being unseen became an advantage on all six approaches, which is the strongest
+   * condition in the game arriving by accident.
+   *
+   * Driven rather than grepped because the question is about the ARITHMETIC. The narrowing could
+   * be written correctly and still read the wrong approach, and both halves have to be true at
+   * once: present on Shadow, absent on Might. A source check can see the filter; only running it
+   * can see which side of the filter a check lands on.
+   */
+  await probe("Invisible helps you sneak and nothing else", async () => {
+    await settle(page);
+    return page.evaluate(async () => {
+      const { hero, resolveCheck } = LIVE;
+      const stacks = Object.values(hero.system.decks ?? {})
+        .map(id => game.cards.get(id)).filter(Boolean);
+      const all = stacks.flatMap(stack => stack.cards.contents).filter(c => c.type === "skill");
+      const said = () => game.messages.contents.at(-1)?.content ?? "";
+      const run = async approach => {
+        const card = all.find(c => !c.system.wild && c.system.approach === approach);
+        if (!card) return "no card";
+        await resolveCheck(hero, { approach, dc: 5, card });
+        return said().includes("checking while") ? "named" : "silent";
+      };
+
+      await hero.update({
+        "system.conditions": [{ key: "invisible", duration: 2, creatorId: hero.id }]
+      });
+      const onShadow = await run("shadow");
+      const onMight = await run("might");
+
+      /* Heckled is the other half of the same reader, and it names no place it does not reach. */
+      await hero.update({
+        "system.conditions": [{ key: "heckled", duration: 2, creatorId: hero.id }]
+      });
+      const heckledMight = await run("might");
+      await hero.update({ "system.conditions": [] });
+
+      return [
+        ["Invisible is read on a Shadow check", onShadow, "named"],
+        ["and says nothing about a Might check", onMight, "silent"],
+        ["while Heckled spoils whatever you were drawing for", heckledMight, "named"]
+      ];
+    });
+  });
+
+  /*
+   * **A creature is hard to beat at some things and not at others.**  [BUILT 2026-11-15]
+   *
+   * Every creature in the roster carried the schema's initial `passive: 4`, and `passiveScore`
+   * returned it for all six approaches -- so the opposed difficulty the GM's board offers was 4
+   * for every creature in the game.
+   *
+   * Asked of `passiveScore` on documents that went through the pack round trip, which is the half a
+   * source check cannot reach: the numbers are derived in Node and have to survive being written
+   * to a pack, validated by the data model and read back off an Actor. A `SchemaField` the model
+   * silently dropped would pass every check in the static suite.
+   */
+  await probe("a creature's six passive scores", async () => {
+    await settle(page);
+    return page.evaluate(async () => {
+      const { passiveScore } = await import("/systems/cardrpg/module/resolve.mjs");
+      const made = [];
+      for (const name of ["Grey Assassin", "Smash Beetle"]) {
+        made.push(game.actors.getName(name) ?? await game.cardrpg.buildMonster(name));
+      }
+      const [assassin, beetle] = made;
+      const six = ["might", "agility", "shadow", "wits", "lore", "presence"];
+      const read = a => six.map(k => passiveScore(a, k));
+
+      return [
+        ["a creature arrives with six scores and not one",
+          new Set(read(assassin)).size > 1, true],
+        ["sneaking past the assassin is the number the roster authored",
+          passiveScore(assassin, "shadow"), 7],
+        ["and past the beetle is not the same number",
+          passiveScore(beetle, "shadow") < passiveScore(assassin, "shadow"), true],
+        ["while overpowering the beetle is the harder of the two",
+          passiveScore(beetle, "might") > passiveScore(assassin, "might"), true],
+        ["and the weight class is what an unsaid approach falls back to",
+          passiveScore({ system: { passive: 5, passives: {} } }, "lore"), 5]
+      ];
+    });
+  });
+
+  /*
+   * **The GM can see and change them**, which this sheet could not do for the flat number either:
+   * there was no passive field on it at all, so the knob that says how hard a creature is to hold,
+   * trick or outrun was reachable only from the console.
+   */
+  await probe("and the NPC sheet offers them", async () => {
+    await settle(page);
+    const rows = await page.evaluate(async () => {
+      const beast = game.actors.getName("Grey Assassin");
+      await beast.sheet.render({ force: true });
+      await new Promise(r => setTimeout(r, 500));
+      const root = beast.sheet.element;
+      const boxes = [...root.querySelectorAll("[name^='system.passives.']")];
+      const shadow = boxes.find(b => b.name === "system.passives.shadow");
+      const out = [
+        ["one box per approach", boxes.length, 6],
+        ["the authored Shadow is the one shown", shadow?.value, "7"],
+        ["and the weight class has a box of its own",
+          !!root.querySelector("[name='system.passive']"), true],
+        /* An empty box is not a missing number: it is the baseline, said where it is read. */
+        ["and every box says what it would fall back to",
+          boxes.every(b => b.placeholder === String(beast.system.passive)), true]
+      ];
+      await beast.sheet.close();
+      return out;
+    });
+    return rows;
+  });
+
+  /*
+   * **A character gets what their nodes said they would.**  [BUILT 2026-11-15]
+   *
+   * Two engine faults handed over nothing and said nothing: a character with no card stacks, and
+   * a feature lookup that could not see `FEATURES`. Fixing them fixes the next character, so the
+   * repair walks what somebody already owns.
+   *
+   * Driven because the claim is about DOCUMENTS appearing on a sheet and not appearing twice, and
+   * idempotence is the half no grep can see: the second run has to find what the first one made.
+   * The nodes are chosen here rather than taken from the hero, so that nothing in the set opens a
+   * dialog -- a menu node would stop the probe dead waiting for somebody to pick.
+   */
+  await probe("a character is given what their nodes promised", async () => {
+    await settle(page);
+    return page.evaluate(async () => {
+      const graph = await import("/systems/cardrpg/module/graph.mjs");
+      const { hero } = LIVE;
+      const before = [...(hero.system.nodes ?? [])];
+
+      /* A node that grants a feature and one that grants gear, and neither asks a question. */
+      const quiet = id => {
+        const g = graph.GRAPH.get(id)?.grants ?? {};
+        return !g.choose && !g.expertise && !g.prune;
+      };
+      const giving = [...graph.GRAPH.keys()].filter(id => {
+        const g = graph.GRAPH.get(id)?.grants ?? {};
+        return quiet(id) && (g.feature || (g.item ?? []).length);
+      }).slice(0, 3);
+
+      await hero.update({ "system.nodes": ["root", ...giving] });
+      /* Nothing arrived, which is the state every character made before today is in. */
+      const owed = new Set(giving.flatMap(id => {
+        const g = graph.GRAPH.get(id).grants;
+        return [g.feature, ...[g.item ?? []].flat()].filter(Boolean);
+      }));
+      for (const item of hero.items.filter(i => owed.has(i.name))) await item.delete();
+      const started = hero.items.filter(i => owed.has(i.name)).length;
+
+      const first = await graph.repairCharacter(hero);
+      const after = hero.items.filter(i => owed.has(i.name)).length;
+      /* And again, which is what makes it safe on a button rather than in a release note. */
+      const second = await graph.repairCharacter(hero);
+      const stillAfter = hero.items.filter(i => owed.has(i.name)).length;
+
+      await hero.update({ "system.nodes": before });
+
+      return [
+        ["the nodes were owned and had handed over nothing", started, 0],
+        ["the repair hands over every one of them", after, owed.size],
+        ["and names them", first.items.length, owed.size],
+        ["a second run finds them rather than making a second set", stillAfter, owed.size],
+        ["and reports nothing to do", second.changed, 0],
+        ["an NPC is refused rather than half-repaired",
+          await graph.repairCharacter(game.actors.find(a => a.type === "npc")), null]
+      ];
+    });
+  });
+
   await probe("a monster attacks from its HUD", async () => {
     await settle(page);
     const opened = await page.evaluate(async () => {
