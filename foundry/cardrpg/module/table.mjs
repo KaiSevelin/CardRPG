@@ -110,7 +110,10 @@ export async function openTableBoard({ preselect = null } = {}) {
   /* Who is in the way, and what they bring to it. */
   const against = opposition({ exclude: candidates.map(c => c.actor.id) });
   const scores = oppositionScores(against);
-  const suggested = scores ? (scores[call?.approach ?? "any"] ?? scores.any) : null;
+  /* One approach ticked reads that one; none or several read their best, since the player will
+   * choose which of them they are using and the GM is pricing the obstacle, not the choice. */
+  const only = call?.approaches?.length === 1 ? call.approaches[0] : "any";
+  const suggested = scores ? (scores[only] ?? scores.any) : null;
 
   /* Ticked already: whoever a live call or challenge named, else the selection, else the token. */
   const named = new Set([...(live?.who ?? []), ...(call?.who ?? [])]);
@@ -138,11 +141,19 @@ export async function openTableBoard({ preselect = null } = {}) {
     .map(([name, dc]) => `<option value="${dc}">${name}</option>`).join("");
   const rungNote = Object.entries(CARDRPG.difficulties)
     .map(([name, dc]) => `${name} ${dc}`).join(" · ");
-  const approaches = [`<option value="any">`
-    + `${game.i18n.localize("CARDRPG.Check.AnyApproach")}</option>`,
-  ...Object.entries(CARDRPG.approaches).filter(([key]) => key !== "any")
-    .map(([key, cfg]) => `<option value="${key}"${call?.approach === key ? " selected" : ""}>`
-      + `${game.i18n.localize(cfg.label ?? key)}</option>`)].join("");
+  /*
+   * **Boxes, not a drop-down.**  [2026-11-15] A stuck door yields to Might or to Agility and a
+   * crowd is read with Wits or talked to with Presence; one obstacle commonly has two honest
+   * answers, and a single-choice control made the GM rule out one of them before anybody had
+   * said how they were going about it. Ticking none means any, which is the common case and so
+   * is also the resting state of six empty boxes.
+   */
+  const approaches = Object.entries(CARDRPG.approaches)
+    .filter(([key]) => key !== "any")
+    .map(([key, cfg]) => `<label class="cr-board__approach">`
+      + `<input type="checkbox" name="approaches" value="${key}"`
+      + `${call?.approaches?.includes(key) ? " checked" : ""}>`
+      + `<span>${game.i18n.localize(cfg.label ?? key)}</span></label>`).join("");
 
   /*
    * **The number starts where the opposition is, and stays the GM's.**  [2026-11-15]
@@ -157,6 +168,25 @@ export async function openTableBoard({ preselect = null } = {}) {
     ? `<p class="cr-note">${game.i18n.format("CARDRPG.Board.Against",
       { who: esc(against.map(a => a.name).join(", ")), n: suggested })}</p>`
     : "";
+
+  /*
+   * **Disadvantage | even | advantage, as one row of three.**  [2026-11-15]
+   *
+   * It was a drop-down labelled *The plan*, which hid two of the three states behind a click and
+   * named the control after one reason for using it. The three are a scale with a middle, which
+   * is a thing to see at a glance rather than to open: the same shape the passive strip uses for
+   * over / close / under, and for the same reason.
+   */
+  const swing = picked => `<fieldset class="cr-board__swing">
+    <legend>${game.i18n.localize("CARDRPG.Check.Edge")}</legend>
+    <div class="cr-swing">${[
+    [-1, "CARDRPG.Check.Disadvantage"], [0, "CARDRPG.Check.Even"],
+    [1, "CARDRPG.Check.Advantage"]
+  ].map(([value, key]) => `<label class="cr-swing__pick cr-swing__pick--${
+    value < 0 ? "down" : value > 0 ? "up" : "even"}">`
+      + `<input type="radio" name="mode" value="${value}"${picked === value ? " checked" : ""}>`
+      + `<span>${game.i18n.localize(key)}</span></label>`).join("")}</div>
+  </fieldset>`;
 
   const answer = await foundry.applications.api.DialogV2.prompt({
     window: { title: game.i18n.localize("CARDRPG.Board.Title") },
@@ -185,13 +215,12 @@ export async function openTableBoard({ preselect = null } = {}) {
         <datalist id="cr-board-rungs">${rungs}</datalist>
         ${againstNote}
         <p class="cr-note">${rungNote}. ${game.i18n.localize("CARDRPG.Board.AnyNumber")}</p>
-        <label>${game.i18n.localize("CARDRPG.Check.Approach")}
-          <select name="approach">${approaches}</select></label>
-        <label>${game.i18n.localize("CARDRPG.Check.Edge")} <select name="mode">
-          <option value="0">${game.i18n.localize("CARDRPG.Check.Even")}</option>
-          <option value="1">${game.i18n.localize("CARDRPG.Check.Advantage")}</option>
-          <option value="-1">${game.i18n.localize("CARDRPG.Check.Disadvantage")}</option>
-        </select></label>
+        <fieldset class="cr-board__cast">
+          <legend>${game.i18n.localize("CARDRPG.Check.Approach")}</legend>
+          <div class="cr-board__people">${approaches}</div>
+          <p class="cr-note">${game.i18n.localize("CARDRPG.Board.AnyApproach")}</p>
+        </fieldset>
+        ${swing(call?.mode ?? 0)}
       </div>
 
       <div data-shape="challenge" hidden>
@@ -203,8 +232,6 @@ export async function openTableBoard({ preselect = null } = {}) {
           ${game.i18n.localize("CARDRPG.Board.Ritual")}</label>
       </div>
 
-      <label>${game.i18n.localize("CARDRPG.Check.Note")}
-        <input type="text" name="note" value="${esc(call?.note ?? "")}"></label>
     </div>`,
     /*
      * The two halves swap rather than both being shown. A dialog that asks for a difficulty AND a
@@ -228,13 +255,16 @@ export async function openTableBoard({ preselect = null } = {}) {
        * field that keeps overwriting what you typed is worse than one that never helped.
        */
       const dc = form.elements.dc;
-      const approach = form.elements.approach;
-      if (dc && approach && scores) {
+      const boxes = [...form.querySelectorAll("input[name=approaches]")];
+      if (dc && boxes.length && scores) {
         dc.addEventListener("input", () => { dc.dataset.touched = "yes"; });
-        approach.addEventListener("change", () => {
-          if (dc.dataset.touched === "yes") return;
-          dc.value = scores[approach.value] ?? scores.any;
-        });
+        for (const box of boxes) {
+          box.addEventListener("change", () => {
+            if (dc.dataset.touched === "yes") return;
+            const ticked = boxes.filter(b => b.checked).map(b => b.value);
+            dc.value = ticked.length === 1 ? (scores[ticked[0]] ?? scores.any) : scores.any;
+          });
+        }
       }
     },
     ok: {
@@ -245,12 +275,12 @@ export async function openTableBoard({ preselect = null } = {}) {
           shape: form.elements.shape.value,
           who: [...form.querySelectorAll("input[name=who]:checked")].map(i => i.value),
           dc: Number(form.elements.dc.value),
-          approach: form.elements.approach.value,
+          approaches: [...form.querySelectorAll("input[name=approaches]:checked")]
+            .map(i => i.value),
           mode: Number(form.elements.mode.value),
           progressMax: Number(form.elements.progressMax.value),
           pressureMax: Number(form.elements.pressureMax.value),
-          ritual: form.elements.ritual.checked,
-          note: form.elements.note.value
+          ritual: form.elements.ritual.checked
         };
       }
     },
@@ -267,13 +297,13 @@ export async function openTableBoard({ preselect = null } = {}) {
       content: `<div class="cardrpg"><p><strong>`
         + `${game.i18n.localize("CARDRPG.Challenge.Title")}</strong> `
         + `${answer.progressMax}/${answer.pressureMax}`
-        + `${answer.note ? ` · ${esc(answer.note)}` : ""}${whoLine}</p></div>`
+        + `${whoLine}</p></div>`
     });
   } else {
     const set = await setCall(answer);
     await ChatMessage.create({
       content: `<div class="cardrpg"><p><strong>${describeCall(set)}</strong>`
-        + `${answer.note ? ` — ${esc(answer.note)}` : ""}${whoLine}</p></div>`
+        + `${whoLine}</p></div>`
     });
   }
 

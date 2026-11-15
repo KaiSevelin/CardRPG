@@ -266,6 +266,28 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
     });
     this.cy.on("tap", ev => { if (ev.target === this.cy) this.#pick(null); });
 
+    /*
+     * **The detail panel is its own switch.**  [BUILT 2026-11-15] Wired here rather than as a
+     * registered action, the way the layout select and the graph's taps are: the panel is built
+     * with `innerHTML` and is only pressable when the node showing has a picture, so the
+     * attribute would have to be added and removed from code anyway -- and an action attached
+     * that way depends on how ApplicationV2 delegates rather than on anything this pane owns.
+     *
+     * The box survives `#renderDetail`, which replaces its contents and not the element, and a
+     * full re-render makes a new one and runs this again. One listener either way.
+     */
+    const detail = this.element.querySelector(".cr-levelup__detail");
+    detail?.addEventListener("click", () => {
+      if (detail.dataset.flippable === undefined) return;
+      this.#flipDetail();
+    });
+    detail?.addEventListener("keydown", ev => {
+      if (detail.dataset.flippable === undefined) return;
+      if (ev.key !== "Enter" && ev.key !== " ") return;
+      ev.preventDefault();
+      this.#flipDetail();
+    });
+
     this.element.querySelector("[name=layout]")?.addEventListener("change", ev => {
       this.layout = ev.target.value;
       this.#runLayout();
@@ -967,10 +989,33 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
      * the attribute. Every other picture in this system learned both the hard way.
      */
     const art = artFor(node);
-    const picture = art && art !== "none"
+    const hasArt = !!art && art !== "none";
+    const picture = hasArt
       ? `<div class="cr-levelup__art" role="img" aria-label="${esc(node.name ?? showing)}"
            style="background-image: url('${foundry.utils.getRoute(art).replaceAll("'", "%27")}')"
          ></div>`
+      : "";
+
+    /*
+     * **One of the two, and a click to swap them.**  [BUILT 2026-11-15]
+     *
+     * The picture is a card's worth of height and the prose and grants are as long as they are,
+     * so the panel stacked them and scrolled: every node worth a picture put its grants below
+     * the fold, which is the half a player is reading to decide. Shrinking the picture would
+     * have answered the scrolling and thrown away the reason it is there -- *a direction with no
+     * picture is a menu with longer entries*.
+     *
+     * So the panel holds one at a time and the whole area is the switch.
+     *
+     * **What it does leads, and the picture is the click.** The pane is open because somebody is
+     * deciding, and arrowing through six choices to compare their grants must not cost a click
+     * at each one. The picture is the thing you look at once, which is the right side of that
+     * trade to put behind a press.
+     */
+    const showingArt = hasArt && this.detailFace === "art";
+    const flip = hasArt
+      ? `<p class="cr-levelup__flip">${game.i18n.localize(showingArt
+        ? "CARDRPG.Level.SeeDetail" : "CARDRPG.Level.SeePicture")}</p>`
       : "";
     /*
      * **The name first, then the picture.**  [2026-11-14] The picture was laid above the heading,
@@ -978,9 +1023,37 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
      * to look past it to find out what they were looking at. A card names itself at the top --
      * that is the whole of card-layout's first tier -- and this panel is a card.
      */
-    box.innerHTML = `<h3>${esc(node.name ?? showing)}</h3>${picture}${rows.join("")}`;
+    /* The name is outside the switch: a panel that can show an unlabelled illustration is the
+     * defect that put the heading above the picture in the first place. */
+    box.innerHTML = `<h3>${esc(node.name ?? showing)}</h3>`
+      + `${showingArt ? picture : rows.join("")}${flip}`;
+    box.classList.toggle("cr-levelup__detail--art", showingArt);
+    /* A node with no picture has nothing to swap to, so it must not look or behave pressable. */
+    box.toggleAttribute("data-flippable", hasArt);
+    if (hasArt) {
+      box.setAttribute("role", "button");
+      box.setAttribute("tabindex", "0");
+      box.dataset.tooltip = game.i18n.localize(showingArt
+        ? "CARDRPG.Level.SeeDetail" : "CARDRPG.Level.SeePicture");
+    } else {
+      box.removeAttribute("role");
+      box.removeAttribute("tabindex");
+      delete box.dataset.tooltip;
+    }
     this.#setButtons(showing === this.tentative);
     this.#renderChoiceCount();
+  }
+
+  /**
+   * Swap the panel between the picture and what the node actually does.
+   *
+   * Not stored on the node or the actor: it is a way of looking at the panel rather than a fact
+   * about the character, and it should survive moving between nodes within one visit to the pane
+   * so a player comparing two nodes' grants does not have to click twice at each of them.
+   */
+  #flipDetail() {
+    this.detailFace = this.detailFace === "art" ? "text" : "art";
+    this.#renderDetail();
   }
 
   /**

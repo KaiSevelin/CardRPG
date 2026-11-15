@@ -473,10 +473,17 @@
                     data-tooltip="Withdraw the call.">&times;</button>
           {{/if}}
         </div>
-      {{else if scene.isGM}}
-        <button type="button" data-action="callCheck" class="cr-call__ask"
-                data-tooltip="Name the obstacle: how hard, which approach, and whether the plan earns advantage.">Call for a check</button>
       {{/if}}
+      {{!--
+        **No "Call for a check" button here, and no "Challenge" or "Re-call" below.**
+        [RETIRED 2026-11-15]
+
+        All three opened the board, which is now one press on the token of whoever the thing is
+        happening to -- and that is the gesture a GM makes anyway. Three buttons in a player's
+        window, in a panel that only renders out of combat, were three ways to reach a dialog
+        that has a better door. The banner stays because it is a readout, and its cross stays
+        because withdrawing the call is not reaching for the dialog again.
+      --}}
 
       {{!--
         The two tracks of a challenge (skill-rules 3), which appear only while one is running.
@@ -535,10 +542,6 @@
 
       <div class="cr-scene__counts">
         {{#if scene.isGM}}
-          {{#unless scene.challenge}}
-            <button type="button" data-action="startChallenge"
-                    data-tooltip="Begin a challenge: a Progress track to fill and a Pressure track to stay under.">Challenge</button>
-          {{/unless}}
           {{!-- Only when a cost is actually due, and named. `TRACK_MOVES` owes a twist on a
                 Partial and a Fail and on nothing else, so these controls used to sit in the
                 scene area through every scene that never drew one.
@@ -558,10 +561,6 @@
                       data-tooltip="No card: choose the cost yourself, or let this one go. skill-rules 4 leaves it to you.">&times;</button>
             </span>
           {{/each}}
-          {{#if scene.call}}
-            <button type="button" data-action="callCheck"
-                    data-tooltip="Change the call: a difficulty set wrongly is corrected here, not argued about.">Re-call</button>
-          {{/if}}
         {{/if}}
         <button type="button" data-action="dealSkills" {{#if scene.full}}disabled{{/if}}
                 data-tooltip="Draw up to your skill hand size. A new scene: a new location, a new conversation, or time passing.">New scene</button>

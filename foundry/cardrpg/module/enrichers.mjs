@@ -35,11 +35,13 @@ const CLICK = "cr-enriched";
  * button.
  */
 function parseCheck(args) {
-  const out = { approach: "any", dc: CARDRPG.difficulties.normal, mode: 0 };
+  const out = { approaches: [], dc: CARDRPG.difficulties.normal, mode: 0 };
   for (const raw of args) {
     const part = raw.trim().toLowerCase();
     if (!part) continue;
-    if (part in CARDRPG.approaches && part !== "any") { out.approach = part; continue; }
+    /* Several are allowed and they accumulate: `@Check[might|agility|hard]` is one obstacle
+     * with two honest answers, which is the commonest kind. */
+    if (part in CARDRPG.approaches && part !== "any") { out.approaches.push(part); continue; }
     if (part in CARDRPG.difficulties) { out.dc = CARDRPG.difficulties[part]; continue; }
     if (/^\d+$/.test(part)) { out.dc = Number(part); continue; }
     if (part === "advantage" || part === "adv") { out.mode = 1; continue; }

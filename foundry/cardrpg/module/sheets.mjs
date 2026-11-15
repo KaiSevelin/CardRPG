@@ -292,6 +292,21 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       })),
       waysWalked: (system.waysOwned ?? [])
         .map(id => game.i18n.localize(CARDRPG.ways[id] ?? id)).join(", "),
+      /*
+       * **Where you are from and what you did, as words.**  [BUILT 2026-11-15]
+       *
+       * Both are creation nodes and both were visible only as a row in the GM's node list, which
+       * is a debugging view: the two facts a player states first about their character were the
+       * two the sheet never said. Derived rather than stored, like level and title, because the
+       * node list is the record and a second copy is a second thing to be wrong.
+       *
+       * A character may hold only one of each -- they are `exclusive` groups -- so the first is
+       * the answer rather than a list.
+       */
+      origin: (system.nodes ?? []).filter(id => id.startsWith("origin."))
+        .map(id => GRAPH.get(id)?.name).filter(Boolean)[0] ?? "",
+      occupation: (system.nodes ?? []).filter(id => id.startsWith("background."))
+        .map(id => GRAPH.get(id)?.name).filter(Boolean)[0] ?? "",
       frontierCount: (system.frontier ?? []).length,
       fromNodes: {
         trainings: (system.learned?.trainings ?? []).filter(t => !(system.trainings ?? []).includes(t)),

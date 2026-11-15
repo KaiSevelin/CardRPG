@@ -1856,6 +1856,17 @@
  * `cover` for the same reason a card uses it: art is supplied at the card's own ratio, so a crop
  * is a rounding error and a letterbox would be two bars on every node in the graph.
  */
+/*
+ * **The panel shows one face at a time.**  [2026-11-15] Picture and prose stacked came to more
+ * than the panel's height on every node worth a picture, so the grants -- the half being read to
+ * decide -- sat below the fold. The whole area is the switch now, so the picture can stay the
+ * size that made it worth commissioning.
+ */
+.cr-levelup__detail[data-flippable] { cursor: pointer; }
+.cr-levelup__detail--art { display: flex; flex-direction: column; }
+.cr-levelup__detail--art .cr-levelup__art { flex: 1 1 auto; min-height: 0; aspect-ratio: auto; }
+.cr-levelup__flip { margin: 6px 0 0; font-size: 0.85em; opacity: 0.6; font-style: italic; text-align: right; }
+
 .cr-levelup__art {
   width: 100%;
   aspect-ratio: var(--cardrpg-card-ratio, 0.667);
@@ -2231,3 +2242,25 @@ a.cr-enriched { cursor: pointer; white-space: nowrap; }
 .cr-owed { display: inline-flex; align-items: center; gap: 0.25rem; }
 .cr-owed__who { font-weight: 700; white-space: nowrap; }
 .cr-owed button { flex: 0 0 auto; width: auto; padding: 0.1em 0.45em; line-height: 1.3; }
+
+/* --- the board's approach boxes and its three-way swing --- */
+.cr-board__approach { display: flex; align-items: center; gap: 0.35em; white-space: nowrap; }
+.cr-board__approach input { width: auto; flex: 0 0 auto; margin: 0; }
+.cr-board__swing { border: 1px solid var(--cardrpg-rule); border-radius: 4px; margin: 0 0 0.5em; padding: 0.3em 0.6em; }
+/*
+ * One row of three with a middle, read at a glance. The same shape the passive strip uses for
+ * over / close / under, and the colours are the same three: a scale should look like one.
+ */
+.cr-swing { display: flex; gap: 0.3rem; }
+.cr-swing__pick {
+  flex: 1 1 0; display: flex; align-items: center; justify-content: center; gap: 0.3em;
+  padding: 0.2em 0.4em; border: 1px solid var(--cardrpg-rule); border-radius: 4px;
+  cursor: pointer; text-align: center;
+}
+.cr-swing__pick input { width: auto; flex: 0 0 auto; margin: 0; }
+.cr-swing__pick:has(input:checked) { font-weight: 700; border-width: 2px; }
+.cr-swing__pick--down:has(input:checked) { border-color: var(--cardrpg-bad, #a33); }
+.cr-swing__pick--up:has(input:checked) { border-color: var(--cardrpg-good, #3a7); }
+
+/* --- where you are from and what you did, on the sheet --- */
+.cr-sheet__from { display: block; font-size: 0.95em; }

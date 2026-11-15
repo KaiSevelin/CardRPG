@@ -164,10 +164,8 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       dealSkills: CardRPGTray.#onDealSkills,
       check: CardRPGTray.#onCheck,
       // The GM's half of a check, and withdrawing it again (skill-rules 2, step 1).
-      callCheck: CardRPGTray.#onCallCheck,
       clearCall: CardRPGTray.#onClearCall,
       // A challenge is two tracks and a GM who starts and ends it (skill-rules 3).
-      startChallenge: CardRPGTray.#onStartChallenge,
       endChallenge: CardRPGTray.#onEndChallenge,
       // Catch Breath on the skill side, which costs Pressure rather than a turn.
       breatheScene: CardRPGTray.#onBreatheScene,
@@ -1503,8 +1501,13 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         const hand = actor ? deckOf(actor, "skillHand") : null;
         const cards = [...(hand?.cards?.contents ?? [])];
         if (!cards.length) return 0;
-        return Math.max(...cards.map(c => (call && call.approach !== "any"
-          ? (c.system.worth?.(call.approach) ?? 0) : c.system.value) ?? 0));
+        /* A call may name several approaches, so the best card for it is the best across the
+         * ones it accepts: a *Might or Agility* door is answered by whichever of the two this
+         * character is better at. */
+        const keys = call?.approaches ?? [];
+        return Math.max(...cards.map(c => (keys.length
+          ? Math.max(...keys.map(k => c.system.worth?.(k) ?? 0))
+          : c.system.value) ?? 0));
       };
       return {
         open,
@@ -1513,7 +1516,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         rows: reading.rows.map(row => {
           /* Marked only against a call that names this approach, or an open one: a Wits call
            * says nothing about whether anybody could manage the Might obstacle. */
-          const mark = call && (call.approach === "any" || call.approach === row.key)
+          const mark = call && (!call.approaches.length || call.approaches.includes(row.key))
             ? readAgainst(row.best, call.dc, best(row.who))
             : "";
           /* The tooltip is built here rather than in the template: three branches of prose in a
@@ -2030,6 +2033,14 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     this.render();
   }
 
+  /*
+   * **No `#onCallCheck` and no `#onStartChallenge`.**  [RETIRED 2026-11-15]
+   *
+   * Both built a dialog of their own and both lost their button when the board took the gesture
+   * onto the token. A private method with no caller is a second implementation waiting to drift
+   * from the first, which is exactly what the call dialog had already started doing.
+   */
+
   /**
    * Draw up to the skill hand size. The GM says when, because a scene is not an event the engine
    * has -- the same reason granting a level is a GM action and not a hook.
@@ -2041,69 +2052,6 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     const { drawn } = await dealSkillHand(this.actor);
     if (!drawn) ui.notifications.info("Nothing to draw: the skill deck is empty until a rest.");
     this.render();
-  }
-
-  /**
-   * The GM's half of a check: name the obstacle (skill-rules 2, step 1).
-   *
-   * **This step existed in the rules and not in the software.** The dialog below used to offer
-   * every difficulty to whoever clicked their own card, so the player set the difficulty of their
-   * own obstacle. A call is set here, read by every tray, and answered with one card.
-   */
-  static async #onCallCheck() {
-    /*
-     * **One dialog, reached from two places.**  [2026-11-15] This used to build a call dialog of
-     * its own, which was fine while it was the only one. The board on the token HUD then grew a
-     * better version of the same thing -- it names a cast, it offers a challenge, and it takes
-     * any difficulty rather than the four rungs -- and two dialogs that both set one scene flag
-     * is the kind of divergence that gets found months later as "the other one does not do that".
-     *
-     * So the scene panel's button opens the board. The entry point stays, because a GM with no
-     * token selected still needs one; the sixty lines of duplicate form do not.
-     */
-    const { openTableBoard } = await import("./table.mjs");
-    await openTableBoard();
-  }
-
-  /**
-   * Begin a challenge: two numbers and a line about what it is (skill-rules 3).
-   *
-   * The defaults are the example's -- Progress 5, Pressure 3 -- because a GM reaching for this
-   * button mid-sentence should not have to invent a pair of numbers, and those two are the pair the
-   * rules worked through.
-   */
-  static async #onStartChallenge() {
-    if (!game.user.isGM) return ui.notifications.info(game.i18n.localize("CARDRPG.Check.GMCalls"));
-    const live = readChallenge();
-    const answer = await foundry.applications.api.DialogV2.prompt({
-      window: { title: game.i18n.localize("CARDRPG.Challenge.Title") },
-      content: `<div class="cardrpg cr-check">
-        <p class="cr-note">${game.i18n.localize("CARDRPG.Challenge.Body")}</p>
-        <label>${game.i18n.localize("CARDRPG.Challenge.Progress")}
-          <input type="number" name="progress" min="1" value="${live?.progressMax ?? 5}"></label>
-        <label>${game.i18n.localize("CARDRPG.Challenge.Pressure")}
-          <input type="number" name="pressure" min="1" value="${live?.pressureMax ?? 3}"></label>
-        <label>${game.i18n.localize("CARDRPG.Check.Note")}
-          <input type="text" name="note" value="${foundry.utils.escapeHTML(live?.note ?? "")}"></label>
-      </div>`,
-      ok: {
-        label: game.i18n.localize("CARDRPG.Challenge.Begin"),
-        callback: (ev, button) => ({
-          progressMax: Number(button.form.elements.progress.value),
-          pressureMax: Number(button.form.elements.pressure.value),
-          note: button.form.elements.note.value
-        })
-      },
-      rejectClose: false
-    });
-    if (!answer) return;
-    await startChallenge(answer);
-    await ChatMessage.create({
-      content: `<div class="cardrpg"><p><strong>${answer.note
-        || game.i18n.localize("CARDRPG.Challenge.Title")}</strong> &mdash; Progress 0/`
-        + `${answer.progressMax} &middot; Pressure 0/${answer.pressureMax}</p></div>`
-    });
-    for (const tray of CardRPGTray.openTrays) tray.render();
   }
 
   /** End it. Either track filling is a reason, and so is the GM deciding it is over. */
@@ -2405,10 +2353,20 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         { card: card.name, approach: describeCall(call) }));
     }
 
-    /* A wild claims an approach; anything else has one. A call that names one settles it. */
-    const called = call && call.approach !== "any" ? call.approach : null;
+    /*
+     * **The card settles it; the call only narrows what may be played.**  [2026-11-15]
+     *
+     * This read `called ?? own`, which was right while a call named at most one approach: the
+     * call WAS the approach. Now that it may name several, the card is the thing that says which
+     * of them is happening -- a Might 2 answering a *Might or Agility* door is a Might check --
+     * and `cardAnswers` has already refused any card that serves none of them.
+     *
+     * A wild serves all six and so settles nothing: it takes the call's approach when there is
+     * exactly one, and otherwise the player is asked, which is what a wild is for.
+     */
+    const allowed = call?.approaches ?? [];
     const own = card.system.wild ? null : card.system.approach;
-    const approach = called ?? own;
+    const approach = own ?? (allowed.length === 1 ? allowed[0] : null);
 
     const pushable = [...hand.cards.contents]
       .filter(c => c.id !== card.id
@@ -2481,6 +2439,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
           + "</select>") : "",
         asks.includes("approach") ? row(game.i18n.localize("CARDRPG.Check.Approach"),
           `<select name="approach">${Object.entries(CARDRPG.approaches)
+            .filter(([key]) => !allowed.length || allowed.includes(key))
             .filter(([key]) => key !== "any")
             .map(([key, cfg]) => `<option value="${key}">`
               + `${game.i18n.localize(cfg.label ?? key)}</option>`).join("")}</select>`) : "",

@@ -25,7 +25,7 @@ import {
   FORMULAS, SHADOW_FORMULAS,
   SHADE_SIGNATURES, TACTICS, STRENGTH_SIGNATURES, STRENGTH_TACTICS,
   MIND_SIGNATURES, MIND_TACTICS, FAITH_SIGNATURES, FAITH_TACTICS,
-  WARRIOR_SKILLS, ALL_SKILLS, ITEMS, RITUALS
+  WARRIOR_SKILLS, ALL_SKILLS, ITEMS, RITUALS, FEATURES
 } from "./content.mjs";
 
 /**
@@ -626,6 +626,20 @@ export const GEAR = new Map([...ITEMS, ...RITUALS].map(i => [i.name, i]));
  */
 export const TEACHINGS_BY_NAME = new Map(TEACHINGS.map(t => [t.name, t]));
 
+/**
+ * The plain features, which were in none of the maps above.
+ *
+ * **[FOUND IN PLAY 2026-11-15] Twelve of the nineteen features a node can grant did not exist as
+ * far as `grantSlate` was concerned**, so taking Acolyte warned *Well Read has not been built
+ * yet. Tell your GM* and handed over nothing. It had been built: it is in `FEATURES`, with its
+ * bonus and its text, and `FEATURES` was simply not one of the three maps the lookup read.
+ *
+ * Exactly the shape of the `GEAR` bug a week ago, and for the same reason: each map was added
+ * when a particular kind of grant needed one, and the kind nobody added a map for fails silently
+ * at the only moment it matters.
+ */
+export const PLAIN_FEATURES = new Map(FEATURES.map(f => [f.name, f]));
+
 /** The nine, by name, so a node teaching a tongue nobody speaks is a fault and not a typo. */
 export const LANGUAGE_NAMES = new Set(LANGUAGES.map(l => l.name));
 
@@ -930,7 +944,8 @@ async function grantSlate(actor, name, type) {
   /* A Signature first, then any teaching: eight of the nine features a school teaches are pool
    * entries, which `SLATES` has never held. Then the equipment catalogue, which is where every
    * one of the twenty-one `grants.item` names actually lives -- see `GEAR`. */
-  const def = SLATES.get(name) ?? TEACHINGS_BY_NAME.get(name) ?? GEAR.get(name);
+  const def = SLATES.get(name) ?? TEACHINGS_BY_NAME.get(name) ?? GEAR.get(name)
+    ?? PLAIN_FEATURES.get(name);
   if (!def) {
     ui.notifications?.warn(game.i18n.format("CARDRPG.Level.NoSlate", { name }));
     return false;

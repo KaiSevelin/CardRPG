@@ -1372,10 +1372,25 @@ async function probes(page) {
         const bg = el ? getComputedStyle(el).backgroundImage : "";
         return bg.includes("/art/nodes/title/") ? "yes" : bg.slice(0, 60) || "nothing";
       };
-      out.push(["and a picture of its own", shownArt(), "yes"]);
+      /*
+       * **The picture is one press away now.**  [2026-11-15] Picture and prose stacked came to
+       * more than the panel on every node worth a picture, so the grants -- the half being read
+       * to decide -- sat below the fold and the area scrolled. The panel shows one face at a
+       * time and the whole area is the switch, with what the node DOES leading, because the pane
+       * is open because somebody is deciding.
+       *
+       * So the probe presses it. The promise is unchanged: the pane names a file and the file is
+       * there.
+       */
+      out.push(["what it means comes first", !!detail().querySelector(".cr-levelup__lore"), true]);
+      out.push(["and no picture until it is asked for", !detail().querySelector(".cr-levelup__art"),
+        true]);
       out.push(["and where it leads",
         /Knight|Berserker|Infantry/
           .test(detail().querySelector(".cr-levelup__leads")?.textContent ?? ""), true]);
+      detail().click();
+      await wait(60);
+      out.push(["and a picture of its own", shownArt(), "yes"]);
 
       /*
        * **The name is read before the picture, not after it.**  [2026-11-14] A panel that opened
@@ -1389,6 +1404,11 @@ async function probes(page) {
       out.push(["and the picture is under the name",
         detail().querySelector("h3")?.nextElementSibling?.classList
           ?.contains("cr-levelup__art") ?? false, true]);
+      /* Back to what it does, so the rows after this read the panel they expect. */
+      detail().click();
+      await wait(60);
+      out.push(["and pressing it again gives the words back",
+        !!detail().querySelector(".cr-levelup__lore"), true]);
 
       /*
        * **The legend is two columns and names the two shapes.** The map has drawn a title as a

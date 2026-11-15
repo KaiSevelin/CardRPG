@@ -25,20 +25,24 @@
       </button>
     </div>
     <div class="cr-sheet__identity">
-      <label>Way
-        <select name="system.way">
-          <option value="">&mdash;</option>
-          {{selectOptions ways selected=system.way localize=true}}
-        </select>
-      </label>
-      <label>Background
-        <input type="text" name="system.background" value="{{system.background}}">
-      </label>
       {{!--
-        Level, title and the Ways walked are DERIVED from the owned node list
-        (rules/leveling.md 9), so they are a readout and not a field. The Way dropdown above is
-        still stored and is still how a playtest character is set up; that overlap is section 9's
-        one remaining seam, and it closes when creation grants a Way node instead.
+        **Where you are from and what you did.**  [BUILT 2026-11-15] Both were visible only in
+        the GM's node list, which is a debugging view: the two facts a player states first about
+        their character were the two the sheet never said.
+      --}}
+      {{#if origin}}<span class="cr-sheet__from"><strong>Origin:</strong> {{origin}}</span>{{/if}}
+      {{#if occupation}}<span class="cr-sheet__from"><strong>Occupation:</strong> {{occupation}}</span>{{/if}}
+      {{!--
+        **No Way dropdown, and no Background box.**  [RETIRED 2026-11-15]
+
+        The dropdown held ONE Way and a character may walk several: it was a declaration sitting
+        beside `waysWalked`, which is the truth, and the two could disagree. leveling 9 called
+        that the last remaining seam and said it closes when creation grants a Way node, which it
+        now does. Background was a free-text box that nothing read and nobody filled, and what it
+        was for is answered above by the origin and the occupation.
+
+        Level, title and the Ways walked are DERIVED from the owned node list (leveling 9), so
+        they are a readout and not a field.
       --}}
       <span class="cr-standing">
         <strong>{{localize "CARDRPG.Level.Level"}} {{system.level}}</strong>

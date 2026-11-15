@@ -6514,8 +6514,28 @@ check("and the choice is handed over by the routine the kind calls for",
 /* And `grantSlate` finds a pool teaching, not only a Signature: eight of the nine features a
  * school teaches have never been in `SLATES`. */
 check("granting a slate looks beyond the Signatures",
-  /const def = SLATES\.get\(name\) \?\? TEACHINGS_BY_NAME\.get\(name\) \?\? GEAR\.get\(name\);/
+  /const def = SLATES\.get\(name\) \?\? TEACHINGS_BY_NAME\.get\(name\) \?\? GEAR\.get\(name\)\s*\n\s*\?\? PLAIN_FEATURES\.get\(name\);/
     .test(graphSource) ? "yes" : "no", "yes");
+/*
+ * **[FOUND IN PLAY 2026-11-15] Twelve of the nineteen features a node grants did not exist** as
+ * far as the lookup was concerned, so taking Acolyte warned *Well Read has not been built yet*
+ * and handed over nothing. It had been built; `FEATURES` was simply not one of the maps.
+ *
+ * The same shape as the `GEAR` bug a week earlier, so the check is the one that would have
+ * caught both: every name any node grants must resolve somewhere, counted rather than spot-read.
+ */
+const grantableNames = new Map([
+  ["feature", [...graph.SLATES.keys(), ...graph.TEACHINGS_BY_NAME.keys(),
+    ...graph.GEAR.keys(), ...graph.PLAIN_FEATURES.keys()]],
+  ["item", [...graph.GEAR.keys(), ...graph.SLATES.keys(),
+    ...graph.TEACHINGS_BY_NAME.keys(), ...graph.PLAIN_FEATURES.keys()]]
+]);
+check("names a node grants that resolve to nothing",
+  [...grantableNames].flatMap(([key, known]) => {
+    const have = new Set(known);
+    return [...new Set(content.NODES.flatMap(n => [n.grants?.[key] ?? []].flat()))]
+      .filter(name => !have.has(name)).map(name => `${key}: ${name}`);
+  }).join(", ") || "none", "none");
 check("and it looks the teaching up by name to find out",
   /const def = TEACHINGS_BY_NAME\.get\(chosen\);/.test(graphSource) ? "yes" : "no", "yes");
 /* A feature already held is left out of the menu too, or a school would offer the same ink twice. */
@@ -7090,8 +7110,8 @@ const withPartials = (file, seen = new Set()) => {
 
 const wiringFaults = [];
 for (const app of APPS) {
-  const tpl = withPartials(app.template);
   const src = fs.readFileSync(path.join(root, app.source), "utf8");
+  const tpl = withPartials(app.template);
   const inTemplate = new Set([...tpl.matchAll(/data-action="([a-zA-Z]+)"/g)].map(m => m[1]));
   /* The actions block of this class only: two sheets share one file. */
   const at = src.indexOf(`class ${app.cls} `);
@@ -14065,8 +14085,26 @@ check("and only on the way in",
   /this\.firstLook = false;/.test(levelup) ? "yes" : "no", "yes");
 
 check("the node's name comes before its picture",
-  /box\.innerHTML = `<h3>\$\{esc\(node\.name \?\? showing\)\}<\/h3>\$\{picture\}/.test(levelup)
+  /box\.innerHTML = `<h3>\$\{esc\(node\.name \?\? showing\)\}<\/h3>`/.test(levelup)
     ? "yes" : "no", "yes");
+/*
+ * **And it is outside the switch.**  [BUILT 2026-11-15] Picture and prose stacked came to more
+ * than the panel on every node worth a picture, so the grants -- the half being read to decide --
+ * sat below the fold, and the area scrolled. One face at a time, with the whole area as the
+ * switch, keeps the picture the size that made it worth commissioning.
+ */
+check("the panel shows one face at a time",
+  /\$\{showingArt \? picture : rows\.join\(""\)\}/.test(levelup) ? "yes" : "no", "yes");
+/* Wired where the pane wires its other listeners, not as a registered action: the box is built
+ * with `innerHTML` and is pressable only when the node showing has a picture, so an action would
+ * have to be added and removed from code and would lean on how ApplicationV2 delegates. */
+check("and the whole area is the switch",
+  /detail\?\.addEventListener\("click"/.test(levelup) ? "yes" : "no", "yes");
+check("and the keyboard reaches it too",
+  /detail\?\.addEventListener\("keydown"/.test(levelup) ? "yes" : "no", "yes");
+/* A node with no picture has nothing to swap to, so it must not look or behave pressable. */
+check("and a node with no picture is not pressable",
+  (levelup.match(/if \(detail\.dataset\.flippable === undefined\) return;/g) ?? []).length, 2);
 /* Two columns, so the picture above it has the room. */
 check("the legend is laid out in two columns",
   /\.cr-levelup__legend \{[\s\S]{0,260}grid-template-columns: 1fr 1fr;/.test(paneCss)
@@ -14286,13 +14324,11 @@ check("the difficulty is a number the GM may set",
 check("and the four rungs are offered on it",
   /list="cr-board-rungs"/.test(tableSource) ? "yes" : "no", "yes");
 /*
- * **One dialog, not two.** The scene panel built a call dialog of its own before the board
- * existed. Two forms writing one scene flag is the divergence that is found months later as
- * "the other one does not do that", so the button opens the board instead.
+ * **One dialog, and one door to it.** The scene panel built a call dialog of its own, then
+ * delegated to the board, and now has no button at all: the token is the door. What is checked
+ * here is the end state -- nothing in the tray builds a call dialog, so the two cannot diverge.
  */
-check("the scene panel's button opens the board",
-  /await openTableBoard\(\);/.test(traySource) ? "yes" : "no", "yes");
-check("and builds no second call dialog",
+check("the tray builds no call dialog of its own",
   /CARDRPG\.Check\.CallTitle/.test(traySource) ? "it does" : "none", "none");
 
 /*
@@ -14303,7 +14339,31 @@ check("and builds no second call dialog",
 check("a card that cannot answer the call is refused",
   /if \(call && !cardAnswers\(card, call\)\)/.test(traySource) ? "yes" : "no", "yes");
 check("and a wild answers any call",
-  /serves\?\.\(call\.approach\)/.test(checksCode) ? "yes" : "no", "yes");
+  /call\.approaches\.some\(a => !!card\.system\?\.serves\?\.\(a\)\)/.test(checksCode)
+    ? "yes" : "no", "yes");
+/*
+ * **A call may name several approaches.**  [2026-11-15] One obstacle often has more than one
+ * honest answer -- a stuck door yields to Might or to Agility -- and a single-approach call made
+ * the GM rule one of them out before anybody had said how they were going about it.
+ *
+ * Any ONE of them is enough: the list is ways in, not requirements. An empty list is the old
+ * "any", which is also the resting state of six empty boxes.
+ */
+check("one of them is enough",
+  /the call is a list of ways in, not a list of requirements/.test(checksSource) ? "yes" : "no",
+  "yes");
+check("and none ticked is any of them",
+  /if \(!call \|\| !call\.approaches\.length\)/.test(checksSource) ? "yes" : "no", "yes");
+/* One reader for a value that arrives from a stored flag, the board's boxes and the enricher. */
+check("the list is cleaned in one place",
+  (checksSource.match(/export function approachList/g) ?? []).length, 1);
+check("and the enricher accumulates them",
+  /out\.approaches\.push\(part\);/.test(fs.readFileSync(path.join(root, "module/enrichers.mjs"), "utf8"))
+    ? "yes" : "no", "yes");
+/* The card says which of the allowed approaches is actually happening. */
+check("the card settles which approach it is",
+  /const approach = own \?\? \(allowed\.length === 1 \? allowed\[0\] : null\);/.test(traySource)
+    ? "yes" : "no", "yes");
 /* Which rests on `serves` itself, where a wild is the first clause: the card model has said so
  * since the skill side was built, and a check about wilds that did not read it would be a check
  * about a regex. */
@@ -14352,21 +14412,37 @@ const bannerBlock = trayTemplate.slice(trayTemplate.indexOf('data-group-label="S
   trayTemplate.indexOf('class="cr-scene__counts"'));
 check("the tray prints the call",
   /\{\{#if scene\.call\}\}/.test(bannerBlock) ? "yes" : "no", "yes");
-check("and offers the GM a way to make one",
-  /data-action="callCheck"/.test(bannerBlock) ? "yes" : "no", "yes");
-/* And the second one is its own affordance, worth its own assertion rather than propping up the
- * first: a difficulty set wrongly should be corrected, not argued about. */
-const countsBlock = trayTemplate.slice(trayTemplate.indexOf('class="cr-scene__counts"'));
-check("and a way to change it once it stands",
-  /data-action="callCheck"[\s\S]{0,200}Re-call/.test(countsBlock) ? "yes" : "no", "yes");
+/*
+ * **The three GM buttons are gone from the panel.**  [RETIRED 2026-11-15] Call for a check,
+ * Challenge and Re-call all opened the board, which is now one press on the token of whoever the
+ * thing is happening to. Three buttons in a player's window, in a panel that only renders out of
+ * combat, were three ways to reach a dialog with a better door.
+ */
+check("the panel no longer summons the dialog",
+  /data-action="callCheck"/.test(trayTemplate) ? "it does" : "none", "none");
+check("nor starts a challenge",
+  /data-action="startChallenge"/.test(trayTemplate) ? "it does" : "none", "none");
+/* And the handlers went with the buttons: a private method with no caller is a second
+ * implementation waiting to drift from the first. */
+/* Read from the code and not the file: the comment recording the removal names both methods,
+ * so a file-wide grep is answered by the note that says they are gone. */
+check("and the handlers went with them",
+  /#onCallCheck|#onStartChallenge/.test(trayCode) ? "still there" : "none", "none");
+/* The banner stays, because it is a readout rather than a door. */
+check("the banner still says what was called",
+  /class="cr-call__dc">\{\{scene\.call\.label\}\}/.test(bannerBlock) ? "yes" : "no", "yes");
+/* Withdrawing it is not reaching for the dialog again, so the cross stays where it was. */
+check("and a way to withdraw it",
+  /data-action="clearCall"/.test(bannerBlock) ? "yes" : "no", "yes");
 /*
  * `deleteCombat` left that list on 2026-11-13: ending a fight now closes the HUDs the fight
  * opened and refreshes only what is left, which an entry in a refresh-everything loop cannot do.
  */
 check("a scene change redraws every tray",
   /"updateCombat", "updateScene"/.test(traySource) ? "yes" : "no", "yes");
+/* 31 since 2026-11-15: `Or`, which joins the approaches a call will accept. */
 check("every string the call needs is translated",
-  Object.keys(lang).filter(k => k.startsWith("CARDRPG.Check.")).length, 30);
+  Object.keys(lang).filter(k => k.startsWith("CARDRPG.Check.")).length, 31);
 check("and nothing it uses is missing",
   [...traySource.matchAll(/CARDRPG\.Check\.[A-Za-z]+/g)].map(m => m[0])
     .filter(k => !(k in lang)).join(", ") || "none", "none");
@@ -14908,7 +14984,8 @@ check("and close means a card could carry it",
 /* Marked only against a call that names the approach, or an open one: a Wits call says nothing
  * about whether anybody could manage the Might obstacle. */
 check("a row is marked only when the call is about it",
-  /call\.approach === "any" \|\| call\.approach === row\.key/.test(traySource) ? "yes" : "no", "yes");
+  /!call\.approaches\.length \|\| call\.approaches\.includes\(row\.key\)/.test(traySource)
+    ? "yes" : "no", "yes");
 check("and each mark has words of its own",
   ["CARDRPG.Check.PassiveOver", "CARDRPG.Check.PassiveClose", "CARDRPG.Check.PassiveUnder"]
     .every(k => k in lang), true);
@@ -17072,8 +17149,6 @@ check("greps a second printer could answer",
 const absentGreps = [
   String.raw`a pile is never given one :: "pile",[^)]*backOf\(`,
   String.raw`and breadth-first is gone from the picker :: breadthfirst`,
-  /* The scene panel's call dialog, retired into the board so one form writes the flag. */
-  String.raw`and builds no second call dialog :: CARDRPG\.Check\.CallTitle`,
   String.raw`and core content is never written to :: NODES\.(push|splice|length =)`,
   String.raw`and down is not computed from the updated document :: down: taker\.system\.health\.value - dealt`,
   String.raw`and from the card sheet :: type === "wound" \|\| type === "taint"`,
@@ -17124,6 +17199,8 @@ const absentGreps = [
   String.raw`and the unpatched line is gone :: Object\.create\(Array\.prototype\)`,
   String.raw`nor does the pane :: levels\?\.pending`,
   String.raw`nor does the template offer it :: data-action="grantLevel"`,
+  /* The Challenge button, retired with the other two: the token is the door now. */
+  String.raw`nor starts a challenge :: data-action="startChallenge"`,
   String.raw`nor the macro API :: grantLevel: async`,
   String.raw`nothing builds a fate card by hand any more :: createEmbeddedDocuments\("Card", \[\{\s*name: fateCard`,
   String.raw`nothing draws a twist automatically :: drawTwist\(`,
@@ -17142,8 +17219,13 @@ const absentGreps = [
   String.raw`the fate bar no longer assumes twenty :: \(counts\.fate \?\? 0\) \/ 20`,
   String.raw`the grant accumulator no longer asks a spell about its timing :: slate\.type === "spell"`,
   String.raw`the old bare rank map is gone :: CARDRPG\.fateRank`,
+  /* Call for a check and Re-call, retired for the same reason. */
+  String.raw`the panel no longer summons the dialog :: data-action="callCheck"`,
   String.raw`the sheet reads level out rather than storing it :: name="system\.level"`,
   String.raw`the tactic no longer promises a reaction draw :: advantage\*\* on reactions`,
+  /* The tray built one of its own before the board existed; two forms writing one scene
+   * flag is the divergence found months later as "the other one does not do that". */
+  String.raw`the tray builds no call dialog of its own :: CARDRPG\.Check\.CallTitle`,
   String.raw`while nothing applies one at grant time :: createItem[\s\S]{0,200}resolveCondition`,
 ].join(" | ");
 check("greps that correctly match nothing",

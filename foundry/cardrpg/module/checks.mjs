@@ -52,7 +52,13 @@ export function readCall() {
   const call = scene?.getFlag?.("cardrpg", FLAG) ?? null;
   if (!call || typeof call !== "object") return null;
   return {
-    approach: call.approach ?? "any",
+    /*
+     * **A call may name several approaches.**  [2026-11-15] One obstacle often has more than one
+     * honest answer: a stuck door yields to Might or to Agility, and a single-approach call made
+     * the GM pick which of the two the fiction allowed before anybody had said how they were
+     * doing it. An empty list is the old "any".
+     */
+    approaches: approachList(call.approaches ?? call.approach),
     dc: Number(call.dc) || CARDRPG.difficulties.normal,
     mode: Number(call.mode) || 0,
     note: String(call.note ?? ""),
@@ -80,12 +86,25 @@ export function describeCast(ids) {
   return names.length ? names.join(", ") : "";
 }
 
+/**
+ * The approaches a call will accept, cleaned.
+ *
+ * One reader for a value that arrives from three places: a stored flag written by an older
+ * build, the board's checkboxes, and the `@Check` enricher's word list. Empty means any.
+ */
+export function approachList(value) {
+  const list = (Array.isArray(value) ? value : [value])
+    .filter(a => typeof a === "string" && a && a !== "any" && a in CARDRPG.approaches);
+  return [...new Set(list)];
+}
+
 /** Set the call. GM only: it is the GM's half of the step. */
-export async function setCall({ approach = "any", dc, mode = 0, note = "", who = [] } = {}) {
+export async function setCall({ approaches = [], dc, mode = 0, note = "", who = [] } = {}) {
   const scene = game.scenes?.active;
   if (!game.user.isGM || !scene) return null;
   await scene.setFlag("cardrpg", FLAG, {
-    approach, dc: Number(dc) || CARDRPG.difficulties.normal, mode: Number(mode) || 0, note,
+    approaches: approachList(approaches),
+    dc: Number(dc) || CARDRPG.difficulties.normal, mode: Number(mode) || 0, note,
     who: (who ?? []).filter(id => typeof id === "string")
   });
   return readCall();
@@ -201,9 +220,13 @@ export function describeCall(call) {
   if (!call) return "";
   const name = Object.entries(CARDRPG.difficulties)
     .find(([, dc]) => dc === call.dc)?.[0] ?? "";
-  const approach = call.approach === "any"
-    ? game.i18n.localize("CARDRPG.Check.AnyApproach")
-    : game.i18n.localize(CARDRPG.approaches[call.approach]?.label ?? call.approach);
+  /* "Might or Agility", because that is what the GM said and what the player has to choose
+   * between. The separator is a word rather than a comma: a list reads as a requirement. */
+  const approach = call.approaches.length
+    ? call.approaches
+      .map(a => game.i18n.localize(CARDRPG.approaches[a]?.label ?? a))
+      .join(` ${game.i18n.localize("CARDRPG.Check.Or")} `)
+    : game.i18n.localize("CARDRPG.Check.AnyApproach");
   const edge = call.mode > 0 ? game.i18n.localize("CARDRPG.Check.Advantage")
     : call.mode < 0 ? game.i18n.localize("CARDRPG.Check.Disadvantage") : "";
   return [`${name ? `${name} ` : ""}${call.dc}`, approach, edge].filter(Boolean).join(" · ");
@@ -218,8 +241,9 @@ export function describeCall(call) {
  */
 export function cardAnswers(card, call) {
   if (!card) return false;
-  if (!call || call.approach === "any") return (card.system?.value ?? 0) >= 0;
-  return !!card.system?.serves?.(call.approach);
+  if (!call || !call.approaches.length) return (card.system?.value ?? 0) >= 0;
+  /* Any ONE of them is enough: the call is a list of ways in, not a list of requirements. */
+  return call.approaches.some(a => !!card.system?.serves?.(a));
 }
 
 /**
