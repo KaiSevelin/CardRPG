@@ -10,8 +10,9 @@ import { CARDRPG } from "./config.mjs";
 import { LevelUpPane } from "./levelup.mjs";
 /* The node index, so the sheet can name what it is taking back rather than printing an id. */
 import { GRAPH } from "./graph.mjs";
-/* One answer to "is there art on this", shared with the tray rather than spelled twice. */
-import { artOf, isIntruder, intruderLine } from "./decks.mjs";
+/* One answer to "is there art on this", shared with the tray rather than spelled twice -- and
+ * one answer to "what does this card say", for the deck list the Deck tab grew. */
+import { artOf, isIntruder, intruderLine, deckOf, cardName, cardLine } from "./decks.mjs";
 import { isSole } from "./monsters.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
@@ -45,6 +46,51 @@ function describeDrain(slate) {
     remaining: slate.system.drainedFor,
     icon: CARDRPG.effects.charging.icon
   };
+}
+
+/**
+ * **Every card this character owns, and where each one is standing.**  [BUILT 2026-11-14]
+ *
+ * The Deck tab counted them -- *14 cards (limit 12-20), draw 5, hand 5, discard 4* -- and showed
+ * none of them. So the one surface in the whole system that is supposed to answer *what is in my
+ * deck* could answer only *how many*, and the only way to read your own deck was to play until
+ * each card came round.
+ *
+ * It is a **list and not a hand**: one line per card, printed values, no pictures resolved against
+ * what you are holding (`cardLine`). The tray paints cards because you are choosing between five
+ * of them; a deck is twenty and is read down a column.
+ *
+ * **Where** is the other half of it, and it is the half a count cannot give you at all. A card in
+ * the Spent pile is out of this fight; one in the discard comes back on the next cycle; one in
+ * quarantine is somewhere a transformation put it. Those are three different answers to *can I
+ * draw this* and the deck size is the same number for all three.
+ *
+ * Sorted by name across the piles rather than grouped by pile, because the question is about the
+ * deck and not about the piles -- and a card you are looking for should be findable without
+ * knowing where it currently is.
+ */
+function describeDeck(actor, piles) {
+  const rows = [];
+  for (const [which, where] of piles) {
+    const stack = actor.system.decks?.[which] ? deckOf(actor, which) : null;
+    for (const card of stack?.cards ?? []) {
+      rows.push({
+        id: card.id,
+        name: cardName(card),
+        art: artOf(card),
+        line: cardLine(card),
+        where,
+        /* A Wound, a Taint or a Fear is in the deck and was never chosen (core-rules 8). It is
+         * marked, because a deck list that shows it as an ordinary card is answering *what do I
+         * own* with *what is clogging it*. */
+        intruder: isIntruder(card),
+        reaction: card.system?.reaction
+          ? game.i18n.localize(CARDRPG.reactions[card.system.reaction]?.label ?? card.system.reaction)
+          : ""
+      });
+    }
+  }
+  return rows.sort((a, b) => a.name.localeCompare(b.name));
 }
 
 /* -------------------------------------------- */
@@ -186,7 +232,24 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
         max: deckMax,
         underMin: deckSize > 0 && deckSize < deckMin,
         overMax: deckSize > deckMax,
-        counts: system.deckCounts ?? {}
+        counts: system.deckCounts ?? {},
+        /*
+         * The cards themselves, which this tab has never shown. Both decks, because a character
+         * owns two and *what can I do out of combat* is as much a deck question as the other one
+         * -- and the skill deck is the one nothing in the interface has ever listed at all.
+         */
+        cards: describeDeck(actor, [
+          ["action", "Deck"],
+          ["actionHand", "Hand"],
+          ["actionDiscard", "Discard"],
+          ["actionSpent", "Spent"],
+          ["quarantine", "Away"]
+        ]),
+        skills: describeDeck(actor, [
+          ["skill", "Deck"],
+          ["skillHand", "Hand"],
+          ["skillDiscard", "Discard"]
+        ])
       },
 
       encumbrance: {
@@ -493,7 +556,9 @@ export class NpcSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     actions: {
       toggleMotivation: NpcSheet.#onToggleMotivation,
       toggleTactic: NpcSheet.#onToggleTactic,
-      editSlate: NpcSheet.#onEditSlate
+      editSlate: NpcSheet.#onEditSlate,
+      /* The HUD runs a monster now, and this sheet used to be where the HUD sent you instead. */
+      openTray: NpcSheet.#onOpenTray
     }
   };
 
@@ -525,6 +590,17 @@ export class NpcSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       targetPriorities: CARDRPG.targetPriorities,
       allTactics: CARDRPG.tactics
     });
+  }
+
+  /**
+   * **This sheet is no longer the answer to *where do I play it from*.**  [2026-11-14]
+   *
+   * It used to be, by elimination: the HUD refused NPCs outright and told you to run them from
+   * here, and nothing here can attack with anything. Selecting the token is the usual way in --
+   * the HUD follows the selection now -- and this is the way in when the token is not placed.
+   */
+  static #onOpenTray() {
+    game.cardrpg.openTray(this.document);
   }
 
   static async #onToggleMotivation(event, target) {

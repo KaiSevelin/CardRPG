@@ -8,6 +8,7 @@
   },
   "name": "Shaken Faith",
   "type": "injury",
+  "img": "systems/cardrpg/art/injuries/shaken-faith.webp",
   "system": {
     "category": "breaking",
     "description": "<p>The formula is intact and the conviction is not, and only one of those is the part that casts.</p>",

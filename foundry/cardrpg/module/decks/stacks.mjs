@@ -5,7 +5,7 @@
  * Part of the deck layer: see decks.mjs, which is the one door onto all of it.
  */
 
-import { isDeadCard } from "./intruders.mjs";
+import { isDeadCard, isIntruder, intruderLine } from "./intruders.mjs";
 
 /* -------------------------------------------- */
 /*  Primitives                                  */
@@ -171,6 +171,44 @@ export function uprightCards(actor) {
 /** A card's readable name, never Foundry's "Unknown (<deck>)" placeholder for a faceless card. */
 export function cardName(card) {
   return card?.faces?.[0]?.name || card?._source?.name || card?.name || "?";
+}
+
+/**
+ * **A card in one line, for a list rather than a hand.**  [BUILT 2026-11-14]
+ *
+ * The HUD paints a card: a picture, two halves with their resolved values, a reaction row and a
+ * tooltip apiece. A **list** of cards wants none of that -- it wants to be scannable, and twenty
+ * painted cards in a column is a hand you cannot read.
+ *
+ * So this is the other register: what the card does, in printed values, with nothing resolved
+ * against the character holding it. It is the register a deck list wants and the one a discard
+ * pile wanted all along -- the tray had a private copy of exactly this, and the character sheet
+ * was about to need a second one the day it learned to show a deck.
+ *
+ * Printed and not resolved, deliberately. A deck list is about what you own, and *Strike 4 with
+ * the sword you happen to be holding* is a fact about this moment rather than about the card.
+ */
+export function cardLine(card) {
+  if (!card) return "";
+  if (card.type === "fate") {
+    return card.system.special === "miss" ? "Miss — the action does nothing, then reshuffle"
+      : card.system.special === "crit" ? "Critical — double the value, then reshuffle"
+        : `${card.system.value > 0 ? "+" : ""}${card.system.value}`;
+  }
+  // One line per intruder, read from the table that defines them rather than retyped here.
+  if (isIntruder(card)) return intruderLine(card);
+  if (card.type === "skill") {
+    const worth = card.system.wild ? "any" : (card.system.approach ?? "");
+    return `${worth} ${card.system.value ?? 0}`
+      + (card.system.edge ? ` · edge: ${card.system.edge}` : "");
+  }
+  const steps = list => (list ?? [])
+    .map(s => `${s.verb ?? ""}${s.param ? ` ${s.param}` : ""}`
+      + `${s.mod ? ` ${s.mod > 0 ? "+" : ""}${s.mod}` : ""}`)
+    .join(", ");
+  /* An intent card is a sequence rather than two halves, so it has one side and says so. */
+  if (card.type === "npc") return steps(card.system.sequence);
+  return `${steps(card.system.primary)} / ${steps(card.system.secondary)}`;
 }
 
 /**

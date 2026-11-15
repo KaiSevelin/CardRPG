@@ -28,6 +28,23 @@
    * stack rather than a card in play, and it wants a flat faded ground with no art behind it.
    */
   --cardrpg-scrim: rgba(244, 239, 230, 0.86);
+  /*
+   * **The halo that keeps type off the picture underneath it.**  [BUILT 2026-11-14]
+   *
+   * The wash above is set by the WORST case a reader can meet -- ink over a 0.6 paper wash on a
+   * black pixel, 5.5:1 -- and that is the right way to pick a wash. It is not enough on its own,
+   * because the worst case for *contrast* is not the worst case for *reading*: a line of 11px
+   * type crossing a high-frequency edge in the art is legible by the numbers and still hard to
+   * read, because every letter has a different thing behind it.
+   *
+   * So the type carries a short halo of the ground it is set on. Three stops rather than one: a
+   * tight pair that fills the gaps inside the letterforms and a wider one that lifts the word off
+   * whatever is behind it. It costs nothing where there is no art -- paper on paper is invisible
+   * -- which is the same promise the wash makes.
+   */
+  --cardrpg-glow: rgba(244, 239, 230, 0.95);
+  --cardrpg-halo: 0 0 2px var(--cardrpg-glow), 0 0 4px var(--cardrpg-glow),
+    0 0 7px var(--cardrpg-glow);
   --cardrpg-rule: #c9bda8;
   --cardrpg-dim: #635a4b;
   --cardrpg-blocked: #b0a89a;
@@ -165,6 +182,36 @@
  * reason about; the name row keeps its rule below it, which is what made it read as a band in the
  * first place.
  */
+
+/*
+ * Everything written on a card is written over its art, so everything written on a card wears the
+ * halo. Set on the card and inherited rather than listed per band: the bands tile the face, and a
+ * list of them is a list the next band added here will not be on.
+ */
+.cardrpg .cr-card,
+.cardrpg .cr-npc__strike {
+  text-shadow: var(--cardrpg-halo);
+}
+
+/* A harm card is light ink on an oxblood ground, so its halo is that ground and not the paper. */
+/*
+ * **A dark card redefines the tokens that assume a light one.**  [FIXED 2026-11-14]
+ *
+ * `--cardrpg-dim` is #635a4b, a dark warm grey, and `.cr-note` is painted with it everywhere in
+ * the system -- which is right on paper and unreadable on oxblood. A Compulsion's whole face is
+ * one note, *Can't be played, not even for Brace*, and it has been dark red on dark red since
+ * harm cards were given a ground of their own. The halo could not save it: a halo in the ground
+ * colour around ink that is nearly the ground colour is two invisible things.
+ *
+ * Fixed where the ground changes rather than where the text is written. Both tokens are
+ * redefined on the card, so every descendant that reads either one gets the dark-ground value --
+ * including the next one somebody adds, which a rule naming `.cr-note` would not cover.
+ */
+.cardrpg .cr-card--harm {
+  --cardrpg-glow: rgba(46, 22, 19, 0.95);
+  /* The harm ink, held back rather than darkened: dimmer than the face, still clear of it. */
+  --cardrpg-dim: #c3a79f;
+}
 
 .cardrpg .cr-card__name {
   font-size: 0.75rem;
@@ -523,6 +570,42 @@
 .cardrpg .cr-slate-row__name { flex: 1 1 auto; font-weight: 500; }
 .cardrpg .cr-slate-row--drained .cr-slate-row__name { color: var(--cardrpg-dim); text-decoration: line-through; }
 
+/*
+ * **A deck, read down a column.**  [BUILT 2026-11-14]
+ *
+ * Deliberately not card-shaped. The tray paints cards because you are choosing between five of
+ * them and the picture is how you find the one you want; a deck list is twenty rows and the thing
+ * that makes it readable is that the names line up. Four columns -- name, what it does, what it
+ * does on somebody else's turn, and which pile it is in -- with the last two pushed right so the
+ * eye can run down either edge.
+ */
+.cardrpg .cr-cardlist { list-style: none; margin: 0.4em 0 0; padding: 0; }
+.cardrpg .cr-cardlist__row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5em;
+  padding: 0.1em 0;
+  border-bottom: 1px solid var(--cardrpg-rule);
+}
+.cardrpg .cr-cardlist__name { flex: 0 0 9em; font-weight: 500; }
+.cardrpg .cr-cardlist__line { flex: 1 1 auto; font-size: 0.85em; color: var(--cardrpg-dim); }
+.cardrpg .cr-cardlist__react {
+  flex: 0 0 auto;
+  font-size: 0.8em;
+  color: var(--cardrpg-dim);
+  font-style: italic;
+}
+.cardrpg .cr-cardlist__where {
+  flex: 0 0 4.5em;
+  text-align: right;
+  font-size: 0.75em;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--cardrpg-dim);
+}
+/* A card nobody chose to put there (core-rules 8), marked so the list answers what you OWN. */
+.cardrpg .cr-cardlist__row--intruder .cr-cardlist__name { color: var(--cardrpg-harm-edge); }
+
 /* A derived condition has no remove button, because nothing applied it. */
 .cardrpg .cr-condition--derived { color: var(--cardrpg-dim); }
 
@@ -613,14 +696,22 @@
    * been sitting on top of Conditions for everybody.
    *
    * The budget is four cards plus the fixed furniture: 54 above, 12 of gaps inside the column, 12
-   * between the column and the deck, and the hotbar below. The card is whatever is left over --
-   * never bigger than the 128px the art was drawn for, never smaller than a count is readable at.
+   * between the column and the deck, the deck's own toggle, and the hotbar below. The card is
+   * whatever is left over -- never bigger than the 128px the art was drawn for, never smaller
+   * than a count is readable at.
    *
    * One variable does it, because the hand, the piles and any opened deck all derive from it:
    * a card dealt from a deck is exactly the size of the deck it came from, which is the rule this
    * block opens with and the reason the fix is one line and not six.
+   *
+   * **The toggle is in the budget and not an afterthought.**  [2026-11-14] The deck corner grew a
+   * button under it -- which deck this window is playing from -- and the corner is anchored from
+   * the BOTTOM, so the button pushed the deck up into the pile column above it. Sixteen pixels of
+   * overlap at 1366x768, found by the check that exists because these two columns met in the
+   * middle once before. Anything added to that corner has to be declared here.
    */
-  --cr-card-w: clamp(76px, (100vh - 168px) / 4 * var(--cardrpg-card-ratio), 128px);
+  --cr-flip: 22px;
+  --cr-card-w: clamp(76px, (100vh - 168px - var(--cr-flip)) / 4 * var(--cardrpg-card-ratio), 128px);
   /* Derived, so the tray's cards and the card's own aspect-ratio cannot disagree. 2:3 at 128
      wide is 192 tall, which is 13px more than 5:7 was -- the whole cost of the change. */
   --cr-card-h: calc(var(--cr-card-w) / var(--cardrpg-card-ratio));
@@ -632,6 +723,7 @@
 .cr-hud-layer .cr-hud__decks,
 .cr-hud-layer .cr-hud__hand,
 .cr-hud-layer .cr-hud__play,
+.cr-hud-layer .cr-scene,
 .cr-hud-layer .cr-hud__spread { position: absolute; pointer-events: auto; }
 
 .cr-hud-layer .cr-hud__panel {
@@ -660,6 +752,33 @@
   left: calc(var(--cr-controls) + var(--cr-gutter));
   bottom: var(--cr-hotbar);
 }
+
+/*
+ * **Which deck the window is playing from.**  [BUILT 2026-11-14]
+ *
+ * Under the corner it changes, and deliberately small: it is a thing you press twice a session,
+ * beside a deck you press every turn. The label is the deck it will turn TO, so it reads as the
+ * destination rather than as the state -- the same way the Hold all button does.
+ */
+.cr-hud-layer .cr-pile__flip {
+  width: 100%;
+  margin-top: 0.25em;
+  padding: 0.15em 0.3em;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--cardrpg-ink);
+  background: var(--cardrpg-paper);
+  border: 1px solid var(--cardrpg-rule);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.cr-hud-layer .cr-pile__flip:hover {
+  background: var(--cardrpg-ink);
+  color: var(--cardrpg-paper);
+}
+/* Pinned: the window is no longer following the fight starting and stopping, and says so. */
+.cr-hud-layer .cr-pile__flip--pinned { border-style: dashed; }
 
 
 /* --- a deck back --- */
@@ -939,6 +1058,23 @@
 .cardrpg .cr-half__play:hover { text-decoration: underline; }
 
 /*
+ * **A number a condition has cut.**  [BUILT 2026-11-14]
+ *
+ * The face used to print `Move 0 (was 1)`, which spent four characters of a card's width saying
+ * that something had changed and none of them saying what. The parenthesis is gone and this is
+ * what replaced it: a small mark that the value is not the printed one, with the reason in the
+ * tooltip beside it. Dim rather than red -- a halved Move is a circumstance, not an error.
+ */
+.cardrpg .cr-half__cut {
+  flex: 0 0 auto;
+  font-size: 0.7rem;
+  line-height: 1;
+  color: var(--cardrpg-dim);
+  cursor: help;
+}
+.cardrpg .cr-half--staged .cr-half__cut { color: var(--cardrpg-paper); }
+
+/*
  * A price: the icon, and a BARE number where there is one, which is the same convention the rest of
  * a face uses for a parameter (card-layout 1.3). Boxed rather than coloured, because a cost is not
  * a warning -- a card worth its Spent is the right card to play.
@@ -1110,12 +1246,45 @@
   font-size: 0.72rem;
 }
 
+/*
+ * **The face beside the name.**  [BUILT 2026-11-14]
+ *
+ * One row: a small square portrait and the name it belongs to, with the rule that used to sit
+ * under the name now under the pair of them. Square and cropped rather than letterboxed, because
+ * every portrait in this game is a card's 5:7 and a thumbnail of one wants the middle of it.
+ */
+.cr-hud-layer .cr-options__who {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  border-bottom: 1px solid var(--cardrpg-rule);
+  padding-bottom: 0.2em;
+}
+
+.cr-hud-layer .cr-options__face {
+  flex: 0 0 auto;
+  width: 2.1em;
+  height: 2.1em;
+  object-fit: cover;
+  object-position: center top;
+  border: 1px solid var(--cardrpg-rule);
+  border-radius: 3px;
+}
+
 .cr-hud-layer .cr-options__name {
   font-weight: 700;
   font-size: 0.78rem;
   line-height: 1.15;
-  border-bottom: 1px solid var(--cardrpg-rule);
-  padding-bottom: 0.2em;
+  min-width: 0;
+}
+
+/* What kind of creature, under its name: the field that owns its deck and its intent card. */
+.cr-hud-layer .cr-options__kind {
+  display: block;
+  font-weight: 400;
+  font-size: 0.65rem;
+  color: var(--cardrpg-dim);
+  text-transform: lowercase;
 }
 
 .cr-hud-layer .cr-options__vitals {
@@ -1149,6 +1318,91 @@
 }
 
 .cr-hud-layer .cr-options .cr-tray__flag { text-align: center; }
+
+/*
+ * **The claim.**  [BUILT 2026-11-14]
+ *
+ * A segmented three-state control and the reason beside it. Three buttons rather than a toggle,
+ * because disadvantage is as claimable as advantage, and the middle state is the resting one --
+ * it reads as *nothing claimed* rather than as a third choice, which is also what it does.
+ *
+ * It only colours itself once something IS claimed. A control that looked active at rest would
+ * have one more thing shouting on a panel that already carries five flags.
+ */
+.cr-hud-layer .cr-edge {
+  /*
+   * **Wraps, because the labels are words now.**  [2026-11-14] Three glyphs sat on one line at
+   * any width; *Disadvantage · Normal · Advantage* does not, and a control that overflows its
+   * panel on a narrow sidebar is worse than one nobody can read. The segmented control takes a
+   * row of its own and the reason follows underneath it.
+   */
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3em;
+  font-size: 0.64rem;
+  padding: 0.1em 0.2em;
+  border-radius: 3px;
+  border: 1px solid transparent;
+}
+
+.cr-hud-layer .cr-edge--claimed {
+  border-color: var(--cardrpg-rule);
+  background: var(--cardrpg-wash);
+}
+
+.cr-hud-layer .cr-edge__states {
+  /* The whole row: three words divide it evenly, so the one that is on reads as a position
+     rather than as a highlight that happens to be somewhere. */
+  flex: 1 1 100%;
+  display: flex;
+  border: 1px solid var(--cardrpg-rule);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.cr-hud-layer .cr-edge__state {
+  flex: 1 1 0;
+  width: auto;
+  min-width: 0;
+  padding: 0.1em 0.2em;
+  white-space: nowrap;
+  margin: 0;
+  background: none;
+  border: none;
+  border-radius: 0;
+  font: inherit;
+  line-height: 1.5;
+  color: var(--cardrpg-dim);
+  cursor: pointer;
+}
+.cr-hud-layer .cr-edge__state + .cr-edge__state { border-left: 1px solid var(--cardrpg-rule); }
+.cr-hud-layer .cr-edge__state:hover { background: var(--cardrpg-rule); }
+.cr-hud-layer .cr-edge__state--on {
+  background: var(--cardrpg-ink);
+  color: var(--cardrpg-paper);
+  font-weight: 700;
+}
+
+/* The reason, which is a button because it is a thing you say rather than a state you are in. */
+.cr-hud-layer .cr-edge__why {
+  flex: 1 1 100%;
+  width: auto;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: none;
+  font: inherit;
+  text-align: left;
+  color: var(--cardrpg-ink);
+  text-decoration: underline dotted;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 
 /*
  * Fate, Discard and Spent as a row of counters in the panel, not as deck backs on the table.
@@ -1187,8 +1441,19 @@
 /*  Played and unplayed slates                  */
 /* -------------------------------------------- */
 
-/* A passive feature is simply true: nothing to pick up, so nothing to click. */
-.cardrpg .cr-card--passive { opacity: 0.7; }
+/*
+ * **A passive slate is dimmed, not made see-through.**  [FIXED 2026-11-14]
+ *
+ * `opacity` on the card took the card's own BACKGROUND with it, so a Burdened condition in an
+ * open pile was a 70% card with the tray's text showing through it -- three overlapping
+ * sentences, none of them readable, and the one a player had clicked on was the faintest. A
+ * condition is furniture in a stack and should look like it; it should not look like a window.
+ *
+ * The opacity moves to the card's CONTENTS. The ground stays solid, nothing behind it comes
+ * through, and *you cannot pick this up* still reads at a glance -- which is all the rule was
+ * ever for.
+ */
+.cardrpg .cr-card--passive > * { opacity: 0.75; }
 
 /* The card is the control: there is no button to aim at. */
 .cardrpg .cr-card--takeable { cursor: pointer; }
@@ -1251,6 +1516,78 @@
 .cr-hud-layer .cr-play:hover:not(:disabled) { background: var(--cardrpg-group-6); color: var(--cardrpg-paper); }
 /* Half a turn is not a turn, so the button waits until both stacks have an action. */
 .cr-hud-layer .cr-play:disabled { opacity: 0.45; cursor: default; border-color: var(--cardrpg-rule); }
+
+/*
+ * **The monster's turn.**  [BUILT 2026-11-14]
+ *
+ * One column in the place the two play stacks sit for a character, because it is the same thing:
+ * what will happen when this figure acts. The intent card is a card and wears the card rules; the
+ * weapons under it are buttons, because they are not cards -- they are the gear, read for the one
+ * number core-rules 9 says sets how dangerous the creature is.
+ */
+.cr-hud-layer .cr-npc {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35em;
+  width: 100%;
+}
+
+/*
+ * **Its own paper, because it sits on the canvas and not in a panel.**
+ *
+ * The first build left the "no intent drawn" line as bare text over the scene, which on a lit map
+ * is black-on-orange and unreadable -- the same mistake the play stacks beside it do not make,
+ * because a card brings its own ground. Anything here that is not a card gets one.
+ */
+.cr-hud-layer .cr-npc > .cr-note,
+.cr-hud-layer .cr-npc__strikes {
+  background: var(--cardrpg-paper);
+  color: var(--cardrpg-ink);
+  border: 1px solid var(--cardrpg-rule);
+  border-radius: 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  padding: 0.35em 0.45em;
+  margin: 0;
+}
+
+/* Full width of the column rather than a card's width: nothing is laid beside it. */
+.cr-hud-layer .cr-card--intent {
+  width: 100%;
+  aspect-ratio: auto;
+}
+
+/* Face down to the table, face up to the GM. The word says which, so a flip is never a surprise. */
+.cr-hud-layer .cr-card__hidden {
+  float: right;
+  font-size: 0.6rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--cardrpg-dim);
+}
+
+.cr-hud-layer .cr-npc__strikes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25em;
+}
+
+.cr-hud-layer .cr-npc__strike {
+  flex: 1 1 auto;
+  width: auto;
+  padding: 0.2em 0.45em;
+  font-size: 0.72rem;
+  text-align: left;
+  color: var(--cardrpg-ink);
+  background: var(--cardrpg-paper);
+  border: 1px solid var(--cardrpg-rule);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.cr-hud-layer .cr-npc__strike:hover {
+  background: var(--cardrpg-ink);
+  color: var(--cardrpg-paper);
+}
 
 .cr-hud-layer .cr-stack {
   flex: 0 0 auto;
@@ -1501,7 +1838,16 @@
 }
 
 /*
- * **The node's picture, above its name.**  [BUILT 2026-11-13]
+ * **The node's picture, under its name.**  [BUILT 2026-11-13, REORDERED 2026-11-14]
+ *
+ * It was above the name, which meant a panel opened on an unfamiliar node showed an unlabelled
+ * illustration and the player had to look past it to find out what they were looking at. A card
+ * names itself at the top -- card-layout's first tier -- and this panel is a card.
+ *
+ * At 2:3 it is most of the panel's height, and that is the intent: the legend below it went to
+ * two columns to buy exactly this room, so the whole picture is in view without scrolling for it.
+ * Everything the panel says is under the fold and the box scrolls; the picture is the part you
+ * are meant to meet first.
  *
  * 2:3 like every other piece in this game, so the shelves it is drawn from need no second spec --
  * and a fixed aspect rather than a height, because the panel is 290px wide at every window size
@@ -1599,21 +1945,60 @@
 .cr-levelup__actions button { flex: 1 1 auto; }
 .cr-levelup__accept:disabled { opacity: 0.45; cursor: default; }
 
+/*
+ * **Two columns, because the picture above it wants the room.**  [2026-11-14]
+ *
+ * Seven rows down one side of a 300px panel pushed the node's illustration into a strip. The
+ * legend is reference -- you read it once and then stop seeing it -- and the picture is the thing
+ * the panel is for, so the legend gets the short shape and the art gets the height.
+ *
+ * `grid` rather than `columns`, so a long label wraps inside its own cell instead of flowing
+ * into the next column and taking the swatch away from its words.
+ */
 .cr-levelup__legend {
   list-style: none;
   margin: 0;
   padding: 0;
   font-size: 0.85em;
   flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 10px;
+  row-gap: 2px;
 }
 .cr-levelup__legend li { display: flex; align-items: center; gap: 6px; }
 
-.cr-swatch { width: 14px; height: 10px; border: 2px solid; border-radius: 2px; }
+.cr-swatch { width: 14px; height: 10px; border: 2px solid; border-radius: 2px; flex: 0 0 auto; }
 .cr-swatch--owned { background: #3c5a3a; border-color: #7ab874; }
 .cr-swatch--available { background: #2a3a52; border-color: #7fb2ef; }
 .cr-swatch--later { background: #1c1f24; border-color: #3a4049; }
 .cr-swatch--closed { background: #1a1a1a; border-color: #58333a; }
 .cr-swatch--cross { background: transparent; border: 0; border-top: 2px dashed #8a6f9c; height: 0; }
+
+/*
+ * **The two shapes, which the map has always drawn and never named.**  [BUILT 2026-11-14]
+ *
+ * A title is a hexagon and a minor node is a rounded rectangle, and that is the one structural
+ * distinction on the graph: a destination against a step toward one. These two swatches are the
+ * same two silhouettes at legend size -- the hexagon clipped rather than approximated, so what
+ * the player matches against is the shape itself and not a description of it.
+ */
+.cr-swatch--major {
+  width: 16px;
+  height: 12px;
+  border: 0;
+  background: #4a4030;
+  box-shadow: inset 0 0 0 2px #c8a86a;
+  border-radius: 0;
+  clip-path: polygon(22% 0, 78% 0, 100% 50%, 78% 100%, 22% 100%, 0 50%);
+}
+.cr-swatch--minor {
+  width: 14px;
+  height: 10px;
+  background: #2b2f36;
+  border-color: #6b7382;
+  border-radius: 3px;
+}
 
 /* The sheet button lights up only when the GM has actually granted a level. */
 .cr-level-button { white-space: nowrap; }
@@ -1691,8 +2076,44 @@
 .cr-step__row input[type="number"] { width: 4rem; }
 .cr-step__row--wide input[type="text"] { width: 14rem; }
 /* The scene tray: the skill hand, the six passives, and what is left of the deck. */
-.cr-scene { display: flex; flex-direction: column; gap: 0.3rem; padding: 0.3rem 0; }
-.cr-scene__passives { display: flex; gap: 0.5rem; align-items: center; }
+/*
+ * **The scene strip.**  [FIXED 2026-11-15]
+ *
+ * This had no `position` and was not in the `pointer-events: auto` list above, which is one
+ * mistake with three faces: it laid out in normal flow at the top-left of a full-screen fixed
+ * layer, so it was drawn over Foundry's scene controls; it inherited `pointer-events: none`, so
+ * not one of its buttons could be clicked; and the skill hand was nowhere near where the action
+ * hand appears. It is a panel like the others now, on the bottom strip, sharing the action hand's
+ * span -- the two hands of one character belong in one place.
+ */
+.cr-scene {
+  /* The HAND's left edge, not the deck column's: the two share a baseline, and starting where the
+     column starts laid this strip over the action deck and its flip button. */
+  left: calc(var(--cr-controls) + var(--cr-gutter) + var(--cr-card-w) + 12px);
+  right: calc(var(--cr-sidebar) + 2 * var(--cr-card-w) + 20px);
+  bottom: var(--cr-hotbar);
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.3rem 0;
+}
+.cr-passives__mine { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+
+/*
+ * The passive panel, above the character panel and sharing its right edge. Right-aligned rather
+ * than stretched: the numbers are short and a row of six chips pinned to the same edge as the
+ * vitals reads as one column of information about this character, not two panels that happen to
+ * be stacked.
+ */
+.cr-hud-layer .cr-hud__passives {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+  text-align: right;
+}
+.cr-hud-layer .cr-hud__passives .cr-passives,
+.cr-hud-layer .cr-hud__passives .cr-passives__mine { justify-content: flex-end; }
 .cr-passive { display: inline-flex; align-items: center; gap: 0.15rem; font-size: 0.9em; }
 .cr-passive__n { font-weight: bold; }
 .cr-scene__hand { display: flex; gap: 0.3rem; flex-wrap: wrap; align-items: flex-start; }
@@ -1794,3 +2215,19 @@ a.cr-enriched { cursor: pointer; white-space: nowrap; }
   background: none;
 }
 .cr-tray__flag--button:hover { filter: brightness(1.25); }
+
+/* --- the table board: the GM's one dialog for a check or a challenge --- */
+.cr-board fieldset { border: 1px solid var(--cardrpg-rule); border-radius: 4px; margin: 0 0 0.5em; padding: 0.3em 0.6em; }
+.cr-board legend { font-weight: 700; padding: 0 0.3em; }
+.cr-board__people { display: flex; flex-wrap: wrap; gap: 0.2em 0.9em; }
+.cr-board__person { display: flex; align-items: center; gap: 0.35em; white-space: nowrap; }
+.cr-board__person input, .cr-board__shape input, .cr-board__flag input { width: auto; flex: 0 0 auto; margin: 0; }
+.cr-board__shape label { display: flex; align-items: center; gap: 0.35em; }
+.cr-board__flag { display: flex; align-items: center; gap: 0.35em; }
+/* The token HUD control, which Foundry styles for us; this only fixes the glyph's weight. */
+.cr-hud-board i { font-size: 1.1em; }
+
+/* --- a twist owed, and by whom --- */
+.cr-owed { display: inline-flex; align-items: center; gap: 0.25rem; }
+.cr-owed__who { font-weight: 700; white-space: nowrap; }
+.cr-owed button { flex: 0 0 auto; width: auto; padding: 0.1em 0.45em; line-height: 1.3; }

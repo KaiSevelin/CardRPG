@@ -8,6 +8,7 @@
   },
   "name": "The Debt",
   "type": "injury",
+  "img": "systems/cardrpg/art/injuries/the-debt.webp",
   "system": {
     "category": "obligation",
     "intruder": {

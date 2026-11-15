@@ -48,12 +48,46 @@ Some cards also have a small **edge**: a bonus effect that triggers when the car
 ### Deck composition
 
 - Every deck contains **all six approaches**, so anyone can try anything.
-- The **Way** (class) and **background** decide which approaches have more cards and higher values. Rough idea:
-  - Way of Strength: lots of Might and Agility
-  - Way of Shade: lots of Shadow, Agility and Wits
-  - Way of Mind: lots of Lore, Presence and Wits
+- You start with the same **fifteen** as everybody else, plus **two** your occupation deals in. At creation you are nobody in particular, and the deck says so.
+- The **Way** decides what comes after. Walking into a Way deals one card, and each of its branches deals another:
+  - Way of Strength — Might and Agility, and the Executioner's branch leans on fear
+  - Way of Shade — Shadow, Agility and Wits, and the Duellist's branch on Presence
+  - Way of Mind — Lore and Wits, and Spiritualism on Presence
+  - Way of Faith — Presence and Lore
+- **The deck grows; nothing is taken out.** A Way card joins the fifteen, so a character deep in a Way has **more checks in a day** and draws any one card **less often**. That is the trade in §8 — *a small deck draws your best cards more often, but runs out sooner* — and it is what makes pruning a reward worth granting rather than a chore.
 - Specialists play their best approach more often and with higher values. They still sometimes draw a hand without it, which is where teamwork comes in.
+
+| | cards |
+|---|---|
+| Creation — origin and occupation | **17** |
+| A Way, and one of its titles | **19** |
+| A Way, and two titles | **20** |
+
+> **[BUILT 2026-11-15] Every character in the game carried the identical fifteen**, because the
+> Way trees did not exist when this deck was written and this section said so: *the starter skill
+> deck is a generic stand-in until then.* They exist now, so a Way deals its own — **fifteen named
+> cards across the four**, one on each trunk and one on each tier-one title.
+>
+> Faith is wired differently on purpose. Twelve gods stand behind one door, so its three go on the
+> Way, the **Vows** and the **Calling** rather than on twelve exclusive titles — a card per god
+> would be twelve cards nobody could hold eleven of.
+>
+> Each obeys the ladder the generic fifteen turned out to be built on: **value trades against
+> text**. *Shoulder to It* is a **Might 3** whose edge is a detail; *Read the Room* is a
+> **Presence 1** whose edge is the reason you played it.
 - Each deck has 1–2 **Inspiration** cards: wild, any approach, value 1. *Edge: draw 1 skill card.*
+- **Every card carries an edge**, and the size of the number tells you how much to expect of it. A **3** is nearly all number and its edge is a detail that is occasionally decisive; a **1** is nearly all text and the number is the excuse to play it. You claim the edge when you play the card and the GM rules on it out loud — it is prose, not arithmetic, and nothing resolves it for you.
+
+> **[BUILT 2026-11-15] The ladder was already in the content and nobody had written it down.**
+>
+> Five of the ten cards carried an edge, and the five were not a sample: **every one of them was a
+> value 1** — Break It, Keep Your Footing, Sharp Eyes, The Loud Voice and Inspiration — while every
+> 2 and every 3 was a bare number. Content that obeys an unwritten rule exactly is usually obeying
+> a real one.
+>
+> So it is written down and the other five were filled in. The point is the decision it buys: before
+> this, the honest answer to every check was *play the highest card that fits*, which is not a
+> decision. A hand of four is now four of them.
 
 ### Hand and refresh
 
@@ -161,9 +195,25 @@ Only make a check when **failure would be interesting** and the outcome is uncer
 | **Partial** | Total is 1–4 below | You do it, **but** there's a cost: draw a twist card (section 4) or the GM picks a cost. |
 | **Fail** | 5+ below, or Miss | You don't do it, **and** the situation changes: draw a twist card. |
 
-How the odds work with the fate deck: if your total equals the difficulty, you succeed **70%** of the
-time, with **25%** partial and **5%** outright failure. One below gives **30%** success and **60%**
-partial. Two below gives **30%** success and **60%** partial.
+How the odds work with the fate deck, counted off all twenty cards. Criticals are folded into
+success and Misses into failure, since that is what they are:
+
+| total − difficulty | advantage | normal | disadvantage |
+|---|---|---|---|
+| **−5** | 10 / 41 / 49 | 5 / 25 / 70 | 0 / 9 / 91 |
+| **−4, −3** | 19 / 72 / 9 | 10 / 60 / 30 | 1 / 48 / 51 |
+| **−2, −1** | 51 / 48 / 1 | **30 / 60 / 10** | 9 / 72 / 19 |
+| **0, +1** | 91 / 9 / 0 | **70 / 25 / 5** | 49 / 41 / 10 |
+| **+2, +3** | 99 / 1 / 0 | **90 / 5 / 5** | 81 / 9 / 10 |
+
+**The rows pair up, and that is not a rounding artefact.** A fate card is worth twice its value on
+a check, so the swing is always **even** — and the bands are a point apart. Hitting the difficulty
+exactly and beating it by one are therefore the same check.
+
+So **a point of total is worth nothing at all, or a great deal, and never a little.** Measured
+across the four steps either side of the difficulty it buys **0, 40, 0 and 20** points of success
+chance — the fifteen-point average this section records below, and nothing like a fifteen-point
+reward at the table. Worth knowing before pricing anything that gives +1.
 
 > **[BUILT 2026-11-02] A check reads its fate card twice as loudly as combat does, and the Partial
 > band widened to four to match.**
@@ -230,6 +280,15 @@ Items have **skill lines**, just as they have combat lines:
 
 Only equipped or easily reached items count. Pulling something from deep in your pack may take time, which can matter in a challenge.
 
+**A tool helps in its situation, not with its approach.** The line is `Might +2 (climbing)`, and the bracket is the half that matters: a Climbing Rope is worth two points going up a wall and nothing at all shoving a stuck door, which is also a Might check. **Say which tool you are using and what it is doing**; the GM says whether it applies. Nothing is added for you.
+
+> **[FIXED 2026-11-15] The dialog used to pre-select the best tool for the approach**, and the
+> comment defending that conceded the case against it in its own last sentence — *a tool's bonus
+> is situational, and only the table can say whether this is a lock.* A modifier that defaults to
+> **on** is a modifier that gets applied: clearing it requires noticing it, and the player holding
+> the rope is the last person who will notice. It is offered first in the list now, and the list
+> opens on *no tool*.
+
 > **[BUILT 2026-11-02] Eleven of the fourteen tools could never be trained, so a tool names the
 > training that unlocks it.**
 >
@@ -248,6 +307,30 @@ Only equipped or easily reached items count. Pulling something from deep in your
 > and on the school that already names what a body is made of.
 
 **Training:** anyone can use a tool, but an untrained user gets at most **+1** from it. Trained users get the full bonus. Training comes from backgrounds and from the Way graphs, where it is one of the benefits a node can offer ([leveling.md](leveling.md) §4).
+
+**And a trained hand does not fumble.** On a check your training covers, **the card you play counts as at least 2**. Say which training you are claiming; the GM says whether it covers this. It cannot lift a 2 or a 3, so a specialist's good hand plays exactly as it did — a floor is worth most on the hand you did not want, which is what competence feels like from the inside.
+
+> **[BUILT 2026-11-15] A training was worth one thing and it needed an object.**
+>
+> Lifting the cap on a tool is a real reward and a narrow one: **ten of the sixteen trainings a node
+> can teach reach no tool at all**, and nine of those never will. *Riding*, *oratory*, *sleight of
+> hand*, *the rule of an order* — there is no catalogue entry for having done a thing since you were
+> six, and §2's own audit called them *practices* and said so. They were rewards that moved no
+> number anywhere in the game.
+>
+> A floor needs no object, so it is the dial those rewards were missing. **Two and not three**:
+> three would make a trained character's every card their best card and the deck stop mattering,
+> while two removes the disaster — holding nothing but a 1 for the approach that was called —
+> without touching the ceiling.
+>
+> **The engine does the arithmetic and the table makes the ruling.** It offers only trainings the
+> character actually holds, because that is the half it can know; whether *lockpicks* covers the
+> thing in front of you is a sentence about the fiction. The claim is printed under the result in
+> the words you chose, for the same reason the advantage claim is: a claim the table cannot see is
+> the only kind that could be abused.
+>
+> It does not rescue an improvised check. Drawing from an empty deck is fatigue, and having once
+> been taught something is not a card in your hand.
 
 > **[FOUND 2026-11-07] Twenty of the twenty-four training grants on the Way graphs changed no
 > number anywhere, and the check that would have found it had only ever been run backwards.**
@@ -288,6 +371,74 @@ Only equipped or easily reached items count. Pulling something from deep in your
 - **Help:** another character plays **any** card and describes how they help. Add **+1**, or **+2** if their card has the same approach. Only one helper per check. If the check fails, the helper shares the consequences.
 - **Advantage:** a good plan, a clever use of the environment, or a fitting background grants advantage. Disadvantage works the same way for bad conditions.
 
+### Four checks, worked
+
+The three characters below are not pregenerated: each is an origin and an occupation, which is
+everything character creation hands over.
+
+| | **Mira** — The Core / Street Urchin | **Osric** — Regensburg / Soldier | **Pell** — The Ruby / Card Sharp |
+|---|---|---|---|
+| Gear | Fine Clothes *Presence +1*, **Lockpicks** *Shadow +2*, Dagger | Light Helm, **Repair Kit** *Lore +2*, Spear, Leather Armor | Signet Ring *Presence +1*, **Gaming Set** *Presence +2*, Dagger |
+| Feature | Light Step *Agility +1* | Steady *(no approach bonus)* | Tough *(no approach bonus)* |
+| Trained | lockpicks | armour and its repair | games of chance |
+
+**1. A training is a sentence, and it is worth saying.** *The counting-house door. Shadow, Normal
+5.* Mira plays **Out of the Light** (Shadow 1), her Lockpicks are **+2** — she is trained, so she
+gets the full bonus — and Osric holds the lantern for **+1**. Total **4** against 5, which is
+30 / 60 / 10.
+
+> *"I have been picking locks since I was eight. This is lockpicks."*
+
+The GM agrees, so the card counts as **2** and the total is **5**: 70 / 25 / 5. One sentence took
+her from losing the door two times in three to taking it seven times in ten. Said on a night with
+nobody holding the lantern it would have moved the total from 3 to 4 and the odds not at all —
+which is the even step above, and the reason a floor is worth claiming out loud rather than
+assuming.
+
+**2. The best card is not always the card.** *Get the forged writ onto his desk. Any approach,
+Normal 5.* Two cards in Mira's hand answer a call that names no approach:
+
+- **Quick Hands** (Agility 2) with Light Step: total **3**, which is 30 / 60 / 10
+- **Out of the Light** (Shadow 1): total **1**, which is 10 / 60 / 30 — *edge: nobody can say afterwards that it was you*
+
+She plays the 1. A Partial on Quick Hands is *the writ is on the desk and the clerk saw who put it
+there*; a Partial on Out of the Light is *the room noticed something and nobody can name her*. The
+number is worse and the failure is survivable, which is the whole of what an edge is for.
+
+**3. What a training is worth, measured.** Osric borrows the picks for the same door. He is not
+trained in them, so the tool **caps at +1**, and he has no training to claim, so no floor:
+
+| | card | tool | total | against 5 | |
+|---|---|---|---|---|---|
+| Osric | 1 | +1 *(capped, untrained)* | 2 | −3 | 10 / 60 / 30 |
+| Mira | 2 *(floored)* | +2 | 4 | −1 | 30 / 60 / 10 |
+
+Three times the success and a third of the failure, out of one word on a node, and not one larger
+number printed on a card.
+
+**4. A heckle, and talking your way out of it.** *Convince the house you are losing honestly.
+Presence, Normal 5.* Pell plays **The Loud Voice** (Presence 1) with the Gaming Set at **+2** — he
+is trained in games of chance and a crooked table is games of chance. He claims the training, so
+the card counts as 2: total **4**, which is 30 / 60 / 10.
+
+Then the mark's friend starts needling him. **Heckled** means he draws with disadvantage, and at
+one below the difficulty that is 9 / 72 / 19.
+
+> *"I have been buying his drinks all night. He owes me the benefit of the doubt."*
+
+The GM allows it, and **advantage and disadvantage cancel** — they do not sum, here or anywhere —
+so he is back to a normal draw at 30 / 60 / 10. Under the result:
+
+```
+Presence 2 (printed 1, trained) · Gaming Set +2
+advantage claimed: buying his drinks all night; checking while Heckled;
+advantage and disadvantage cancel;
+this card's edge — Everyone nearby hears you, and knows it was you.
+```
+
+That last line is not a reward. The Loud Voice says what it says whether or not he wanted it, and
+at a table he is trying to leave quietly it is the price of the card.
+
 ### Opposed checks
 
 When someone is actively working against you — a guard watching for you, a merchant haggling back, a thief you're chasing — the opposition isn't a difficulty number, it's a character.
@@ -304,18 +455,26 @@ When someone is actively working against you — a guard watching for you, a mer
 
 - Compare your total to the resistance and read the result off the normal table (Critical / Success / Partial / Fail).
 - **A specialist NPC's tactic or motivation** can give you disadvantage instead of raising the number. Prefer that: it keeps the numbers readable and gives players something to play against.
+- **The number starts at the opponent's passive.**  **[2026-11-15]** Target them and the call opens on their best passive, which is the one number that can be read rather than judged: a passive is what somebody brings to a thing they are not actively trying at. It is a starting point and not a verdict.
+- **Any number, not only the four rungs.**  **[2026-11-15]** The ladder above is where most calls sit, not a list of the legal values. A watchful guard is a 6 and a patrol of them is an 8, and typing the number is less work than a rule for adding opponents up.
+- **More than one opponent is priced by the GM, not by a formula.** Two guards are harder than one and eight are not four times harder than two, and no arithmetic this game could carry would say so better than the person running them. Raise the number, or hand out disadvantage, or both: the call takes all three.
 - **Player against player** (an arm-wrestle, a bluff between characters): both play a card and draw fate; the higher total wins, and the active character wins ties.
 
 This keeps all uncertainty on the players' side of the table, so the GM never rolls against them in secret.
 
-### Group checks
+### Group checks  **[REWRITTEN 2026-11-15]**
 
-When the whole party has to get past the same obstacle — crossing a chasm, sneaking past one gate, keeping a story straight — don't make everyone check.
+When the whole party has to get past the same obstacle: crossing a chasm, sneaking past one gate, keeping a story straight.
 
-- **One character checks** for the group. They choose the approach and describe how they get everyone through.
-- **Each other character** may either **help** (normal help rules, but the one-helper limit is lifted: each helper after the first adds **+1**, to a maximum of +3 from help) **or** accept being a **liability**: if they have no card of a fitting approach and don't help, the check takes **−1**.
-- **On a Partial or Fail,** the consequence lands on the whole group, not just the one who checked.
-- **When the group splits up** on purpose — two people over the wall, two through the cellar — that's two checks, and usually a challenge rather than a single check.
+**The old rule was one check for everybody**, with the others helping or dragging it down. That reads well and plays badly: it hands one player the whole scene, and a group of five has four people watching. It also made the consequence collective, so the character who was good at it paid for the character who was not.
+
+- **Anyone whose passive in that approach meets the difficulty is through.** No card, no draw. A passive is the best card of that approach in your whole deck plus 2, so this is the party's competence being allowed to matter.
+- **Everyone else makes a normal check.** The ones already through may help, by the normal rules.
+- **Consequences are personal.** Your Partial costs you something; your Fail is your twist. The character who got over the wall cleanly does not pay for the one who did not.
+- **At most two twists, however many came up short.** The worst single result draws its own, and everybody else shares one. See section 4.
+- **When the group splits up** on purpose, two over the wall and two through the cellar, that is two checks, and usually a challenge rather than a single check.
+
+Because passives cap at 5, the gate opens wide at Easy 3, narrows at Normal 5, and closes entirely at Hard 7 and above: a genuinely hard obstacle is one everybody has to answer for themselves.
 
 ### Passive senses
 
@@ -541,6 +700,8 @@ That's **30** cards. The counts are the deck's tone: *Strain*, *Noise*, *Time*, 
 - **Draw two and pick** when the failure was dramatic, or when the first card doesn't fit the scene at all. Never force a twist that makes no sense — put it back and draw again.
 - **Opening on a Fail** is the fail-forward valve: you didn't do the thing, but a new road opened. If every twist in a session has been bad news, the GM should reach for this one.
 - **The GM can always choose a cost directly** instead of drawing. The deck is there for when inspiration runs out, not to override the GM.
+- **At most two twists per obstacle**, however many characters came up short.  **[2026-11-15]** The worst single result draws its own and everybody else collapses into one shared cost. Five twists for five failures is the deck narrating the scene instead of the GM, at length, and the fifth card is never the interesting one.
+- **A twist belongs to whoever earned it.** Name the character when you draw, because a cost nobody can place is a cost that lands on nobody.
 - **Twists stack with the challenge tracks.** A twist on a Fail is *in addition* to Pressure +1, not instead of it. Only *Time* adds a second point of Pressure.
 
 ### Twists outside a scene

@@ -1,6 +1,6 @@
 # Art list
 
-**760 pieces**, of which **760** are drawn and **0** still to shoot. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
+**779 pieces**, of which **779** are drawn and **0** still to shoot. Generated from the game's own content by `test/art-list.mjs` — regenerate it rather than editing it, or it will disagree with the game the first time somebody adds a card. **Drawn means the file is on the disk**, not that the game knows where it would go: every piece in content knows that, so the older count was always the total.
 
 ## What to supply
 
@@ -51,7 +51,7 @@ Anything under `icons/svg/` is ignored on purpose: that is Foundry's own placeho
 
 ## Deck backs — draw these first
 
-**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 11 pictures against 749 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
+**A back is one picture per deck, not one per card**, and it does one job: it says which deck a face-down card came from. 11 pictures against 768 faces — and these are what a table looks at all evening, since a deck is face down from the first second of play.
 
 **11 pieces**, 11 wired up. Same 2:3 and 640 × 960 as a face, and **no safe area**: nothing is printed over a back, so the whole card is yours.
 
@@ -253,14 +253,14 @@ The scene tray's hand: four of these are face up whenever nobody is fighting.
 | | Name | What it is | File |
 |---|---|---|---|
 | ✓ | **Break It** | might 1 · Edge: Something gives whether or not you get through: the GM says what broke. | `cards/skill/break-it.webp` |
-| ✓ | **Heave** | might 2 | `cards/skill/heave.webp` |
+| ✓ | **Heave** | might 2 · Edge: What you shift stays shifted: the way is open behind you for everybody else. | `cards/skill/heave.webp` |
 | ✓ | **Inspiration** | Edge: Draw 1 skill card. | `cards/skill/inspiration.webp` |
 | ✓ | **Keep Your Footing** | agility 1 · Edge: You do not fall, whatever else happens. | `cards/skill/keep-your-footing.webp` |
-| ✓ | **Out of the Light** | shadow 1 | `cards/skill/out-of-the-light.webp` |
-| ✓ | **Quick Hands** | agility 2 | `cards/skill/quick-hands.webp` |
-| ✓ | **Set Your Feet** | might 3 | `cards/skill/set-your-feet.webp` |
+| ✓ | **Out of the Light** | shadow 1 · Edge: Nobody can say afterwards that it was you. | `cards/skill/out-of-the-light.webp` |
+| ✓ | **Quick Hands** | agility 2 · Edge: You do it one-handed, without setting down what you were already carrying. | `cards/skill/quick-hands.webp` |
+| ✓ | **Set Your Feet** | might 3 · Edge: You are not moved, and you do not drop what you are holding. | `cards/skill/set-your-feet.webp` |
 | ✓ | **Sharp Eyes** | wits 1 · Edge: Ask the GM one yes-or-no question about the scene. | `cards/skill/sharp-eyes.webp` |
-| ✓ | **Soldier's Learning** | lore 1 | `cards/skill/soldiers-learning.webp` |
+| ✓ | **Soldier's Learning** | lore 1 · Edge: You have watched somebody try this: the GM tells you one thing that went wrong for them. | `cards/skill/soldiers-learning.webp` |
 | ✓ | **The Loud Voice** | presence 1 · Edge: Everyone nearby hears you, and knows it was you. | `cards/skill/the-loud-voice.webp` |
 
 ## Wild Magic
@@ -290,14 +290,14 @@ Drawn on a Wild, so each one is a surprise and wants to look like one.
 
 | | Name | What it is | File |
 |---|---|---|---|
-| ✓ | **Arrival** | — | `cards/twist/arrival.webp` |
-| ✓ | **Gear** | — | `cards/twist/gear.webp` |
-| ✓ | **Hurt** | — | `cards/twist/hurt.webp` |
-| ✓ | **Noise** | — | `cards/twist/noise.webp` |
-| ✓ | **Opening** | — | `cards/twist/opening.webp` |
-| ✓ | **Secret** | — | `cards/twist/secret.webp` |
-| ✓ | **Strain** | — | `cards/twist/strain.webp` |
-| ✓ | **Time** | — | `cards/twist/time.webp` |
+| ✓ | **Arrival** | Someone new. A third party walks into the scene. | `cards/twist/arrival.webp` |
+| ✓ | **Gear** | A tool. It breaks or is lost: no tool bonus until repaired or replaced. | `cards/twist/gear.webp` |
+| ✓ | **Hurt** | Health. Lose 2 Health, or gain a condition that fits. | `cards/twist/hurt.webp` |
+| ✓ | **Noise** | Attention. The opposition now knows something is wrong. | `cards/twist/noise.webp` |
+| ✓ | **Opening** | Nothing — this one gives. The complication also creates an opportunity. | `cards/twist/opening.webp` |
+| ✓ | **Secret** | Information, in either direction. You learn something unwelcome, or they learn something about you. | `cards/twist/secret.webp` |
+| ✓ | **Strain** | Cards. Discard 1 skill card of the GM's choice from your hand. | `cards/twist/strain.webp` |
+| ✓ | **Time** | The clock. Pressure +1 on top of the normal cost. | `cards/twist/time.webp` |
 
 ## The ritual twist deck
 
@@ -307,14 +307,14 @@ Turned face up in front of four people who have been working toward this for a s
 
 | | Name | What it is | File |
 |---|---|---|---|
-| ✓ | **Backlash** | — | `cards/ritual/backlash.webp` |
-| ✓ | **Deeper** | — | `cards/ritual/deeper.webp` |
-| ✓ | **It Answers** | — | `cards/ritual/it-answers.webp` |
-| ✓ | **It Sets** | — | `cards/ritual/it-sets.webp` |
-| ✓ | **Not Alone** | — | `cards/ritual/not-alone.webp` |
-| ✓ | **Residue** | — | `cards/ritual/residue.webp` |
-| ✓ | **Spoiled** | — | `cards/ritual/spoiled.webp` |
-| ✓ | **The Long Way** | — | `cards/ritual/the-long-way.webp` |
+| ✓ | **Backlash** | The working turns. The subject takes 2 damage, ignoring armor. | `cards/ritual/backlash.webp` |
+| ✓ | **Deeper** | The injury speaks for itself: it lands as a condition that fits, for the rest of the ritual. A bad leg is Slowed, a shattered nerve is Stunned. | `cards/ritual/deeper.webp` |
+| ✓ | **It Answers** | Whatever did this knows the ritual is happening. The curser, the god, the rot itself — and it has time to arrive before you finish. | `cards/ritual/it-answers.webp` |
+| ✓ | **It Sets** | The injury becomes **bound**: no ritual lifts it until the GM's own condition is met, the way an obligation's Taint is bound (core-rules §8). The r... | `cards/ritual/it-sets.webp` |
+| ✓ | **Not Alone** | The working reaches somebody else present. One ally takes a Doubt, or the condition the subject just took. | `cards/ritual/not-alone.webp` |
+| ✓ | **Residue** | Magic leaves marks. 1 Taint into the subject's deck, in the flavour that fits. | `cards/ritual/residue.webp` |
+| ✓ | **Spoiled** | A component is consumed wrongly. No further check until it is replaced, and the GM says what replacing it takes. | `cards/ritual/spoiled.webp` |
+| ✓ | **The Long Way** | The recipe was wrong about the order. Pressure +1, and the next check needs a different approach than the one you have been using. | `cards/ritual/the-long-way.webp` |
 
 ## The critical deck
 
@@ -361,20 +361,25 @@ Turned face up in front of four people who have been working toward this for a s
 
 **Draw the place, not a person from it.** An origin is shared by every character who takes it, so a figure in the frame is somebody else's character. A harbour at a particular hour, a mesa seen from the plain below, a sealed quarter's gate: somewhere a person could be standing, with nobody standing in it.
 
-**10 pieces**, 10 wired up. Suggested path: `cardrpg/art/nodes/origin/`
+**15 pieces**, 15 wired up. Suggested path: `cardrpg/art/nodes/origin/`
 
 | | Name | What it is | File |
 |---|---|---|---|
-| ✓ | **Echterhof-born** | A large neutral city in the middle of Horde territory, ruled by Strigoi princes, with farmland around it the Horde has left alone. Strigoi live off humans, so a large human population lives there between the vampires ... | `nodes/origin/echterhof-born.webp` |
-| ✓ | **Furnace Stock** | You were not born in the Furnace District -- nobody has been for a generation. You were born into what came out of it: the engineering guilds its refugees founded in every surviving district, which kept the trade, the... | `nodes/origin/furnace-stock.webp` |
-| ✓ | **Saag et Haar** | What is left of Seetch, the realm of the necromancer kings, south of the Hyena Desert. The greatest of them, Fahlas, still rules it after four hundred years and has become a minor god. | `nodes/origin/saag-et-haar.webp` |
-| ✓ | **The Amber** | The far east, the second largest district and the one that was never entirely tamed. Dragons turn up. Trolls live in the forests. Dense wet conifer, broken by lakes and bog. | `nodes/origin/the-amber.webp` |
-| ✓ | **The Core** | Born on the mesa or in the satellite cities under it: Geistburg, a dozen corrupt noble houses and a powerless man still titled emperor. You grew up knowing which of them to be careful of. | `nodes/origin/the-core.webp` |
-| ✓ | **The Fiord** | Black Harbour, the fishing villages, or one of the islands close enough in to count. The sea cuts so deep inland here that the ring runs through water, and six enormous lighthouses mark where. | `nodes/origin/the-fiord.webp` |
-| ✓ | **The Iron** | The northern half of the Hyena Desert, or the mineral mountains above it. Sammel is the only real city and the emirs have cut it into sealed quarters called Rote -- the old assassin state holds the central one, around... | `nodes/origin/the-iron.webp` |
-| ✓ | **The Ruby** | Warm hills in the south-east, wine and fruit, winter palaces the rich no longer visit. A voted council governs from Tanto and nobody especially minds what you believe or who you are. | `nodes/origin/the-ruby.webp` |
-| ✓ | **Velderon** | The elves' embassy on Firma, east of the Fiord: an ancient elven ruin with one restored corner. You do not go in without an invitation, so whatever brought you up there was unusual. | `nodes/origin/velderon.webp` |
-| ✓ | **Wolf Peak** | A religious centre of the faith of the Fire, on a dormant volcano north of the Amber, never once taken. The roads to the summit are easy to hold and the mountain feeds itself. | `nodes/origin/wolf-peak.webp` |
+| ✓ | **Echterhof-born** | A city in the middle of Horde territory held by Strigoi princes. At dusk the shutters go up street by street, lamps are left burning in the windows... | `nodes/origin/echterhof-born.webp` |
+| ✓ | **Furnace Stock** | You were not born in the Furnace District -- nobody has been for a generation. | `nodes/origin/furnace-stock.webp` |
+| ✓ | **Hyrlock** | The Red Tower, fifty metres of it at the top of Mander Cliff, over a terraced city on an island a week's sailing from anywhere. | `nodes/origin/hyrlock.webp` |
+| ✓ | **Kelp Bay** | Cobbled alleys under standing fog, hung with blue lanterns for the bars, red for the brothels and green for the business nobody names, over the sme... | `nodes/origin/kelp-bay.webp` |
+| ✓ | **Regensburg** | Three concentric walls ten metres high in a valley of the Spear Mountains, each ring cut again into sections by more walls: a city built to be lost... | `nodes/origin/regensburg.webp` |
+| ✓ | **Saag et Haar** | What is left of Seetch, the realm of the necromancer kings, south of the Hyena Desert. The greatest of them, Fahlas, still rules it after four hund... | `nodes/origin/saag-et-haar.webp` |
+| ✓ | **Solemn** | A white limestone island south-east of the Ruby, with a walled city of towers and spires at the top of it: Sonebra, where the sisterhood keeps its ... | `nodes/origin/solemn.webp` |
+| ✓ | **The Amber** | The far east, the second largest district and the one that was never entirely tamed. Dragons turn up. Trolls live in the forests. Dense wet conifer... | `nodes/origin/the-amber.webp` |
+| ✓ | **The Core** | Born on the mesa or in the satellite cities under it: Geistburg, a dozen corrupt noble houses and a powerless man still titled emperor. You grew up... | `nodes/origin/the-core.webp` |
+| ✓ | **The Fiord** | Black Harbour, the fishing villages, or one of the islands close enough in to count. The sea cuts so deep inland here that the ring runs through wa... | `nodes/origin/the-fiord.webp` |
+| ✓ | **The Iron** | The northern half of the Hyena Desert, or the mineral mountains above it. Sammel is the only real city and the emirs have cut it into sealed quarte... | `nodes/origin/the-iron.webp` |
+| ✓ | **The Ruby** | Warm hills in the south-east, wine and fruit, winter palaces the rich no longer visit. A voted council governs from Tanto and nobody especially min... | `nodes/origin/the-ruby.webp` |
+| ✓ | **The Triple Enclave** | Three walled towns on the western slopes of the Spear Mountains, each ringed around its own castle, with a waterfall falling over the wall of the h... | `nodes/origin/the-triple-enclave.webp` |
+| ✓ | **Wolf Peak** | A monastery cut into the steep flank of a dormant volcano north of the Amber: terraces, stairs and bell towers stepped up the black scree, never on... | `nodes/origin/wolf-peak.webp` |
+| ✓ | **Xtchaargh** | The Summer Village: a quarter of ordinary houses and a square, walled into the middle of a hive's chaotic tunnels and chambers of chewed earth. | `nodes/origin/xtchaargh.webp` |
 
 ## Backgrounds — what a character did before
 
@@ -386,18 +391,18 @@ Turned face up in front of four people who have been working toward this for a s
 
 | | Name | What it is | File |
 |---|---|---|---|
-| ✓ | **Acolyte** | You were raised in or given to a temple -- of the Eternal God in the Core, of the Five in the Fiord, of the Fire on Wolf Peak, of Aecht in Saag et Haar. Which one you were is a different question from which one you are. | `nodes/background/acolyte.webp` |
-| ✓ | **Caravan Guard** | Everything between the districts moves by road or does not move. The West Road is a tunnel with cities in it, the Cracked Road is limestone and not safe, and the East Road has the Night Express running through its own... | `nodes/background/caravan-guard.webp` |
+| ✓ | **Acolyte** | You were raised in or given to a temple -- of the Eternal God in the Core, of the Five in the Fiord, of the Fire on Wolf Peak, of Aecht in Saag et ... | `nodes/background/acolyte.webp` |
+| ✓ | **Caravan Guard** | Everything between the districts moves by road or does not move. The West Road is a tunnel with cities in it, the Cracked Road is limestone and not... | `nodes/background/caravan-guard.webp` |
 | ✓ | **Card Sharp** | Sol, where everything is permitted, or the back of any inn on any road. A deck is honest and the hands holding it are the variable. | `nodes/background/card-sharp.webp` |
-| ✓ | **Forester** | The Amber is wet conifer forest broken by lakes and bog, and most of it is nobody's. Timber was the export until the Furnace fell and took the routes with it; what is left is hunting, and the forest barons who are bro... | `nodes/background/forester.webp` |
-| ✓ | **Guild Apprentice** | The Furnace's refugees founded engineering guilds in every surviving district, and a guild takes children. Seven years of fetching, grinding and being shouted at, and somewhere in it you learned how things come apart. | `nodes/background/guild-apprentice.webp` |
-| ✓ | **Hedge Healer** | Most of Firma has no physician and never will. What it has is somebody in the village who knows which leaf, who has set bones before, and who is sent for at night. | `nodes/background/hedge-healer.webp` |
-| ✓ | **Miner** | The Mouse Mountains above the Hyena Desert, or the Spear Mountains, or one of the roads being cut between districts. The Iron's mining is also why the East Road is the least safe road: dig far enough and something com... | `nodes/background/miner.webp` |
-| ✓ | **Porter** | Somebody carries it. On the mesa it goes up by cable car and at both ends of that it goes on a back; in Sammel it crosses between sealed quarters; in the Amber it goes where no cart will. | `nodes/background/porter.webp` |
-| ✓ | **Sailor** | The Fiord lands most of the continent's fish and the Ruby's coast feeds its cities, so there is work on the water for anybody who can keep their feet on a wet deck. | `nodes/background/sailor.webp` |
-| ✓ | **Soldier** | Somebody drilled you until it stopped being a decision. Every district hires soldiers and only the Amber sells nothing else, so where you did it says as much as that you did. | `nodes/background/soldier.webp` |
-| ✓ | **Street Urchin** | You grew up in the parts of a city that are on no map the city admits to: the slums over the rock under Geistburg, the back of Black Harbour, the Rote nobody collects rubbish from. | `nodes/background/street-urchin.webp` |
-| ✓ | **Vintner** | The Ruby's hills are warm and its wine is what the district is known for, and selling it means a season on the roads with something fragile and valuable. | `nodes/background/vintner.webp` |
+| ✓ | **Forester** | The Amber is wet conifer forest broken by lakes and bog, and most of it is nobody's. | `nodes/background/forester.webp` |
+| ✓ | **Guild Apprentice** | The Furnace's refugees founded engineering guilds in every surviving district, and a guild takes children. Seven years of fetching, grinding and be... | `nodes/background/guild-apprentice.webp` |
+| ✓ | **Hedge Healer** | Most of Firma has no physician and never will. What it has is somebody in the village who knows which leaf, who has set bones before, and who is se... | `nodes/background/hedge-healer.webp` |
+| ✓ | **Miner** | The Mouse Mountains above the Hyena Desert, or the Spear Mountains, or one of the roads being cut between districts. | `nodes/background/miner.webp` |
+| ✓ | **Porter** | Somebody carries it. On the mesa it goes up by cable car and at both ends of that it goes on a back; in Sammel it crosses between sealed quarters; ... | `nodes/background/porter.webp` |
+| ✓ | **Sailor** | The Fiord lands most of the continent's fish and the Ruby's coast feeds its cities, so there is work on the water for anybody who can keep their fe... | `nodes/background/sailor.webp` |
+| ✓ | **Soldier** | Somebody drilled you until it stopped being a decision. Every district hires soldiers and only the Amber sells nothing else, so where you did it sa... | `nodes/background/soldier.webp` |
+| ✓ | **Street Urchin** | You grew up in the parts of a city that are on no map the city admits to: the slums over the rock under Geistburg, the back of Black Harbour, the R... | `nodes/background/street-urchin.webp` |
+| ✓ | **Vintner** | The Ruby's hills are warm and its wine is what the district is known for, and selling it means a season on the roads with something fragile and val... | `nodes/background/vintner.webp` |
 
 ## Titles — who a character becomes
 
@@ -409,62 +414,62 @@ Turned face up in front of four people who have been working toward this for a s
 
 | | Name | What it is | File |
 |---|---|---|---|
-| ✓ | **Acrobat** | Acrobat · Position / weight — Vertical. Over a table, off a wall, through the gap two people left between them -- an acrobat treats a room as a surface rather than a floor. | `nodes/title/acrobat.webp` |
-| ✓ | **Anchorite** | Anchorite · Deck shape / skill cards — Walled in, on purpose. An anchorite's cell is a room with a window onto a church and no door, and the practice is old enough that nobody questions it. | `nodes/title/anchorite.webp` |
-| ✓ | **Archer** | Archer · Position / range — The only Shade title that wants open ground. An archer's problem is never the shot -- it is being the thing on the hill that everybody can see. | `nodes/title/archer.webp` |
-| ✓ | **Artillerist** | Artillerist · Position / ground — Engines. Bombards, swivel guns and the Furnace's leftovers -- an artillerist thinks in arcs and in the ground the arc lands on. | `nodes/title/artillerist.webp` |
-| ✓ | **Asceticism** | Asceticism · Deck shape / an empty hand — The school that gives things up. An ascetic's power is in what they are not carrying, not holding and not preparing. | `nodes/title/asceticism.webp` |
-| ✓ | **Assassin** | Assassin · Tempo / Spent — The last thing learned on this road, and the trade with the shortest working day. An assassin's fight is already decided before the first card; what follows it is tidying. | `nodes/title/assassin.webp` |
-| ✓ | **Bard** | Bard · Reactions / someone else's turn — A fighter who talks. The Bard is the one title here that works on the other side's attention, and the heckling is the mechanism rather than the flavour. | `nodes/title/bard.webp` |
+| ✓ | **Acrobat** | Acrobat · Position / weight — Vertical. Over a table, off a wall, through the gap two people left between them -- an acrobat treats a room as a sur... | `nodes/title/acrobat.webp` |
+| ✓ | **Anchorite** | Anchorite · Deck shape / skill cards — Walled in, on purpose. An anchorite's cell is a room with a window onto a church and no door, and the practi... | `nodes/title/anchorite.webp` |
+| ✓ | **Archer** | Archer · Position / range — The only Shade title that wants open ground. An archer's problem is never the shot -- it is being the thing on the hill... | `nodes/title/archer.webp` |
+| ✓ | **Artillerist** | Artillerist · Position / ground — Engines. Bombards, swivel guns and the Furnace's leftovers -- an artillerist thinks in arcs and in the ground the... | `nodes/title/artillerist.webp` |
+| ✓ | **Asceticism** | Asceticism · Deck shape / an empty hand — The school that gives things up. An ascetic's power is in what they are not carrying, not holding and not... | `nodes/title/asceticism.webp` |
+| ✓ | **Assassin** | Assassin · Tempo / Spent — The last thing learned on this road, and the trade with the shortest working day. An assassin's fight is already decided... | `nodes/title/assassin.webp` |
+| ✓ | **Bard** | Bard · Reactions / someone else's turn — A fighter who talks. The Bard is the one title here that works on the other side's attention, and the heck... | `nodes/title/bard.webp` |
 | ✓ | **Berserker** | Berserker · Deck shape / Spent — Forward only. The Berserker is not angry for effect; the anger is the mechanism and it does not have a reverse gear. | `nodes/title/berserker.webp` |
-| ✓ | **Blood Magic** | Blood Magic · Tempo / your own Health — The oldest arrangement on the continent and the one the rings run on. A blood mage pays in the only currency magic has ever reliably accepted. | `nodes/title/blood-magic.webp` |
-| ✓ | **Bodyguard** | Bodyguard · Reactions / ground — A person, not a door. The Bodyguard's entire subject is somebody else's body being between them and the thing coming at it. | `nodes/title/bodyguard.webp` |
-| ✓ | **Brendan** | Brendan · Support / a turn spent early — Growing things, in the least promising ground available. Brendan is the Five's quiet one and the only god on this Way whose miracles are mostly agricultural. | `nodes/title/brendan.webp` |
-| ✓ | **Burglar** | Burglar · Preparation / weight — Doors, locks, windows, roofs and the half-hour before any of it that nobody sees. A burglar's skill is logistics; the climbing is the easy part. | `nodes/title/burglar.webp` |
-| ✓ | **Cutpurse** | Cutpurse · Deck shape / deck size — A crowd specialist. The Cutpurse works in markets, processions and the press at a city gate, and the whole trade is to be the least interesting person present. | `nodes/title/cutpurse.webp` |
-| ✓ | **Divination** | Divination · Support / someone else's turn — Reading. A diviner's work is other people's turns -- what is about to happen, said just early enough to matter. | `nodes/title/divination.webp` |
-| ✓ | **Duellist** | Duellist · Reactions / halves — A formal fighter in a Way full of informal ones. The Duellist names an opponent and fights that opponent, and the courtesy is not politeness -- it is a narrowing. | `nodes/title/duellist.webp` |
-| ✓ | **Elemental Magic** | Elemental Magic · Position / reagents — The physical school. Fire, water, stone and air, worked by formula rather than by bargain, and the most reliable magic in the game. | `nodes/title/elemental-magic.webp` |
-| ✓ | **Executioner** | Executioner · Tempo / halves — One blow, delivered correctly, to something that is already finished. The Executioner is the most unpleasant title on offer here and it is deliberately not a murderer's. | `nodes/title/executioner.webp` |
-| ✓ | **Fagar** | Fagar · Control / Spent — The borrowed face. Fagar is the Five's god of the ones who are not noticed, and the priesthood is deliberately difficult to identify. | `nodes/title/fagar.webp` |
-| ✓ | **Flagellant** | Flagellant · Tempo / a permanent Wild — Past caring. The Flagellant is the order the others are embarrassed by and the one that arrives when a town is already lost. | `nodes/title/flagellant.webp` |
-| ✓ | **Gambler** | Gambler · Deck shape / the fate deck — The player who has read the fate deck and knows what is left in it. A gambler is not reckless -- reckless is what it looks like from outside. | `nodes/title/gambler.webp` |
-| ✓ | **Gladiator** | Gladiator · Reactions / Health — A fighter whose job is to be watched. The Gladiator plays to a crowd that may be an actual crowd or may be two people in a tavern, and the showmanship is load-bearing. | `nodes/title/gladiator.webp` |
-| ✓ | **Glamour** | Glamour · Control / an elven debt — Elven work, done by somebody who is not one. Glamour is not illusion exactly -- it is the question of whether you were ever quite there. | `nodes/title/glamour.webp` |
-| ✓ | **Guardian** | Guardian · Reactions / a slot kept free — Standing in a doorway. The Guardian is not a defender of people but of a *place*, and the difference is the whole title. | `nodes/title/guardian.webp` |
-| ✓ | **Half-mage** | Half-mage · Preparation / spell slots — One trick, learned properly, in a Way that has no magic. The Half-mage is what happens when a Shade goes and asks. | `nodes/title/half-mage.webp` |
-| ✓ | **Household Magic** | Household Magic · Support / a place you know — Small magic, done where you live. Bread, locks, hinges, the fire catching first time -- the least respected school and the only one most of Firma has ever actually seen. | `nodes/title/household-magic.webp` |
-| ✓ | **Infantry** | Infantry · Position / an ally — The line. Not a hero -- a person standing next to another person, which is the whole of what makes infantry work and the reason it is the first title on this Way. | `nodes/title/infantry.webp` |
-| ✓ | **Inquisitor** | Inquisitor · Control / a secret — An order rather than a god: the Circle's writ, carried by somebody with the authority to ask and the standing to be answered. | `nodes/title/inquisitor.webp` |
-| ✓ | **Ironclad** | Ironclad · Deck shape / weight — Armour as an identity. The Ironclad is slower than everything else on the board and does not care, because the plan was never to be anywhere else. | `nodes/title/ironclad.webp` |
-| ✓ | **Knight** | Knight · Position / gear you can lose — A charge, a lance and about four hundred pounds of trained animal. The Knight is the Core District's own idea of a fighter and the Amber's idea of a joke. | `nodes/title/knight.webp` |
-| ✓ | **Musketeer** | Musketeer · Preparation / range — Powder and a long reload. The best firearms on the continent come off Wolf Peak, and a musketeer's whole discipline is the thirty seconds before anybody needs them. | `nodes/title/musketeer.webp` |
-| ✓ | **Necromancy** | Necromancy · Preparation / a bound Taint — Saag et Haar's export. Raising the dead is cheaper than the alternative in sacrifices, which is the nearest thing to an argument for it anybody makes. | `nodes/title/necromancy.webp` |
-| ✓ | **Poison** | Poison · Control / skill cards — Patience, chemistry and somebody else's timetable. A poisoner is not in the fight; a poisoner arranged the fight three days ago. | `nodes/title/poison.webp` |
-| ✓ | **Scout** | Scout · Support / being alone — The one who is already a mile ahead and has been since dawn. A scout is not a sneak: the job is to see and come back, and most of it happens before anybody draws anything. | `nodes/title/scout.webp` |
-| ✓ | **Sessyfyn** | Sessyfyn · Support / the fate deck — One of the Five, strongest in the Fiord where the old faith never gave way. Sessyfyn is tide, catch and the sea's own arithmetic. | `nodes/title/sessyfyn.webp` |
-| ✓ | **Shadow Magic** | Shadow Magic · Position / a permanent Wild — Stepping through. Shadow magic is the school that moves you, and it is the only one whose price is permanent. | `nodes/title/shadow-magic.webp` |
-| ✓ | **Shieldsworn** | Shieldsworn · Support / ground — The order that stands in front. The Shieldsworn are hired by districts that cannot field soldiers and trusted by people who have no reason to trust anybody. | `nodes/title/shieldsworn.webp` |
-| ✓ | **Spiritualism** | Spiritualism · Preparation / a pact — Asking something. Spiritualism is not a technique but a negotiation, and the thing on the other end has its own reasons. | `nodes/title/spiritualism.webp` |
-| ✓ | **Street Fighter** | Street Fighter · Control / a weapon's value — No lance, no line, no crowd. The Street Fighter wins in an alley against somebody better equipped, which is a different skill from winning a battle. | `nodes/title/street-fighter.webp` |
-| ✓ | **Tactician** | Tactician · Support / halves — The one giving orders, which in this game means spending your own turn on someone else's. A tactician's contribution is invisible on their own sheet. | `nodes/title/tactician.webp` |
-| ✓ | **Tattoo Magic** | Tattoo Magic · Deck shape / a secret — Magic worked into skin. Wolf Peak's priesthood is covered in it and will not discuss it, and what a tattoo mage has is permanent, visible and already paid for. | `nodes/title/tattoo-magic.webp` |
-| ✓ | **The Eternal God** | The Eternal God · Control / deck size — The Church of the Eternal God: the Core's official faith, a cathedral grown into a town of its own, and the hypocrisy that walks beside the mages' academy on the same plain. | `nodes/title/the-eternal-god.webp` |
-| ✓ | **The Eternal Spirit** | The Eternal Spirit · Reactions / weight — The same god from the other side, and the half the Fiord calls blasphemy. The Spirit is breath, movement and the air going where it was not. | `nodes/title/the-eternal-spirit.webp` |
+| ✓ | **Blood Magic** | Blood Magic · Tempo / your own Health — The oldest arrangement on the continent and the one the rings run on. A blood mage pays in the only currenc... | `nodes/title/blood-magic.webp` |
+| ✓ | **Bodyguard** | Bodyguard · Reactions / ground — A person, not a door. The Bodyguard's entire subject is somebody else's body being between them and the thing comi... | `nodes/title/bodyguard.webp` |
+| ✓ | **Brendan** | Brendan · Support / a turn spent early — Growing things, in the least promising ground available. Brendan is the Five's quiet one and the only god ... | `nodes/title/brendan.webp` |
+| ✓ | **Burglar** | Burglar · Preparation / weight — Doors, locks, windows, roofs and the half-hour before any of it that nobody sees. A burglar's skill is logistics; ... | `nodes/title/burglar.webp` |
+| ✓ | **Cutpurse** | Cutpurse · Deck shape / deck size — A crowd specialist. The Cutpurse works in markets, processions and the press at a city gate, and the whole trad... | `nodes/title/cutpurse.webp` |
+| ✓ | **Divination** | Divination · Support / someone else's turn — Reading. A diviner's work is other people's turns -- what is about to happen, said just early enough t... | `nodes/title/divination.webp` |
+| ✓ | **Duellist** | Duellist · Reactions / halves — A formal fighter in a Way full of informal ones. The Duellist names an opponent and fights that opponent, and the c... | `nodes/title/duellist.webp` |
+| ✓ | **Elemental Magic** | Elemental Magic · Position / reagents — The physical school. Fire, water, stone and air, worked by formula rather than by bargain, and the most rel... | `nodes/title/elemental-magic.webp` |
+| ✓ | **Executioner** | Executioner · Tempo / halves — One blow, delivered correctly, to something that is already finished. The Executioner is the most unpleasant title o... | `nodes/title/executioner.webp` |
+| ✓ | **Fagar** | Fagar · Control / Spent — The borrowed face. Fagar is the Five's god of the ones who are not noticed, and the priesthood is deliberately difficult ... | `nodes/title/fagar.webp` |
+| ✓ | **Flagellant** | Flagellant · Tempo / a permanent Wild — Past caring. The Flagellant is the order the others are embarrassed by and the one that arrives when a town... | `nodes/title/flagellant.webp` |
+| ✓ | **Gambler** | Gambler · Deck shape / the fate deck — The player who has read the fate deck and knows what is left in it. A gambler is not reckless -- reckless is... | `nodes/title/gambler.webp` |
+| ✓ | **Gladiator** | Gladiator · Reactions / Health — A fighter whose job is to be watched. The Gladiator plays to a crowd that may be an actual crowd or may be two peo... | `nodes/title/gladiator.webp` |
+| ✓ | **Glamour** | Glamour · Control / an elven debt — Elven work, done by somebody who is not one. Glamour is not illusion exactly -- it is the question of whether y... | `nodes/title/glamour.webp` |
+| ✓ | **Guardian** | Guardian · Reactions / a slot kept free — Standing in a doorway. The Guardian is not a defender of people but of a *place*, and the difference is t... | `nodes/title/guardian.webp` |
+| ✓ | **Half-mage** | Half-mage · Preparation / spell slots — One trick, learned properly, in a Way that has no magic. The Half-mage is what happens when a Shade goes an... | `nodes/title/half-mage.webp` |
+| ✓ | **Household Magic** | Household Magic · Support / a place you know — Small magic, done where you live. Bread, locks, hinges, the fire catching first time -- the least re... | `nodes/title/household-magic.webp` |
+| ✓ | **Infantry** | Infantry · Position / an ally — The line. Not a hero -- a person standing next to another person, which is the whole of what makes infantry work an... | `nodes/title/infantry.webp` |
+| ✓ | **Inquisitor** | Inquisitor · Control / a secret — An order rather than a god: the Circle's writ, carried by somebody with the authority to ask and the standing to ... | `nodes/title/inquisitor.webp` |
+| ✓ | **Ironclad** | Ironclad · Deck shape / weight — Armour as an identity. The Ironclad is slower than everything else on the board and does not care, because the pla... | `nodes/title/ironclad.webp` |
+| ✓ | **Knight** | Knight · Position / gear you can lose — A charge, a lance and about four hundred pounds of trained animal. The Knight is the Core District's own id... | `nodes/title/knight.webp` |
+| ✓ | **Musketeer** | Musketeer · Preparation / range — Powder and a long reload. The best firearms on the continent come off Wolf Peak, and a musketeer's whole discipli... | `nodes/title/musketeer.webp` |
+| ✓ | **Necromancy** | Necromancy · Preparation / a bound Taint — Saag et Haar's export. Raising the dead is cheaper than the alternative in sacrifices, which is the near... | `nodes/title/necromancy.webp` |
+| ✓ | **Poison** | Poison · Control / skill cards — Patience, chemistry and somebody else's timetable. A poisoner is not in the fight; a poisoner arranged the fight t... | `nodes/title/poison.webp` |
+| ✓ | **Scout** | Scout · Support / being alone — The one who is already a mile ahead and has been since dawn. A scout is not a sneak: the job is to see and come bac... | `nodes/title/scout.webp` |
+| ✓ | **Sessyfyn** | Sessyfyn · Support / the fate deck — One of the Five, strongest in the Fiord where the old faith never gave way. Sessyfyn is tide, catch and the se... | `nodes/title/sessyfyn.webp` |
+| ✓ | **Shadow Magic** | Shadow Magic · Position / a permanent Wild — Stepping through. Shadow magic is the school that moves you, and it is the only one whose price is per... | `nodes/title/shadow-magic.webp` |
+| ✓ | **Shieldsworn** | Shieldsworn · Support / ground — The order that stands in front. The Shieldsworn are hired by districts that cannot field soldiers and trusted by p... | `nodes/title/shieldsworn.webp` |
+| ✓ | **Spiritualism** | Spiritualism · Preparation / a pact — Asking something. Spiritualism is not a technique but a negotiation, and the thing on the other end has its o... | `nodes/title/spiritualism.webp` |
+| ✓ | **Street Fighter** | Street Fighter · Control / a weapon's value — No lance, no line, no crowd. The Street Fighter wins in an alley against somebody better equipped, wh... | `nodes/title/street-fighter.webp` |
+| ✓ | **Tactician** | Tactician · Support / halves — The one giving orders, which in this game means spending your own turn on someone else's. A tactician's contribution... | `nodes/title/tactician.webp` |
+| ✓ | **Tattoo Magic** | Tattoo Magic · Deck shape / a secret — Magic worked into skin. Wolf Peak's priesthood is covered in it and will not discuss it, and what a tattoo m... | `nodes/title/tattoo-magic.webp` |
+| ✓ | **The Eternal God** | The Eternal God · Control / deck size — The Church of the Eternal God: the Core's official faith, a cathedral grown into a town of its own, and the... | `nodes/title/the-eternal-god.webp` |
+| ✓ | **The Eternal Spirit** | The Eternal Spirit · Reactions / weight — The same god from the other side, and the half the Fiord calls blasphemy. The Spirit is breath, movement ... | `nodes/title/the-eternal-spirit.webp` |
 | ✓ | **The First** | The First · Deck shape / spell slots — The first vampire, worshipped in Echterhof where the Strigoi princes rule and the mayor chooses who is eaten. | `nodes/title/the-first.webp` |
-| ✓ | **The Grey** | The Grey · Reactions / range — Worshipped across the Iron District, where the emirs rule and the old assassin state holds the central Rote. The Grey is the silent hour and the thing that happens in it. | `nodes/title/the-grey.webp` |
-| ✓ | **The Purple** | The Purple · Control / Taint — The Grey's sibling, and the one that drinks first. The Purple takes what is in the cup so that somebody else does not have to. | `nodes/title/the-purple.webp` |
+| ✓ | **The Grey** | The Grey · Reactions / range — Worshipped across the Iron District, where the emirs rule and the old assassin state holds the central Rote. The Gre... | `nodes/title/the-grey.webp` |
+| ✓ | **The Purple** | The Purple · Control / Taint — The Grey's sibling, and the one that drinks first. The Purple takes what is in the cup so that somebody else does no... | `nodes/title/the-purple.webp` |
 | ✓ | **The Yellow** | The Yellow · Preparation / halves — Rumour as a sacrament. The Yellow is the third of the Grey's siblings and the one the other two do not discuss. | `nodes/title/the-yellow.webp` |
-| ✓ | **Thief** | Thief · Control / a slot kept free — Not a burglar and not a cutpurse -- the one who is in the room and should not be, and whose whole art is that nobody looks where the thing actually is. | `nodes/title/thief.webp` |
-| ✓ | **Trapmaker** | Trapmaker · Preparation / a turn spent early — Patience as a weapon. A trapmaker does not win the fight they are in; they win the one they arranged two rooms ago. | `nodes/title/trapmaker.webp` |
+| ✓ | **Thief** | Thief · Control / a slot kept free — Not a burglar and not a cutpurse -- the one who is in the room and should not be, and whose whole art is that ... | `nodes/title/thief.webp` |
+| ✓ | **Trapmaker** | Trapmaker · Preparation / a turn spent early — Patience as a weapon. A trapmaker does not win the fight they are in; they win the one they arranged... | `nodes/title/trapmaker.webp` |
 | ✓ | **Valtor** | Valtor · Tempo / Strain — The drum. Valtor is the Five's war god and the only one whose worship is audible from the next valley. | `nodes/title/valtor.webp` |
-| ✓ | **Vax** | Vax · Position / Health — A war god with followers in every town in the Amber, where nobody minds what you believe because there is too much else to mind. | `nodes/title/vax.webp` |
-| ✓ | **Vulpet** | Vulpet · Preparation / an ally — The outcast's god. Vulpet is owed by the people nobody else is obliged to, and the priesthood goes where the rest of the Five will not. | `nodes/title/vulpet.webp` |
-| ✓ | **Ward Magic** | Ward Magic · Reactions / Spent — Unmaking. A warder's craft is the opposite of every other school's: not doing a thing, but ensuring a thing does not happen. | `nodes/title/ward-magic.webp` |
-| ✓ | **Way of Faith** | Sworn · Support / an obligation — Standing for something that is not you. Faith spends an obligation -- somebody is owed, and the Way is what they ask -- and it answers in support: what you do for the people beside yo... | `nodes/title/way-of-faith.webp` |
-| ✓ | **Way of Mind** | Scholar · Preparation / spell slots — What was decided before it mattered. Mind spends preparation -- the spell slots and the formulae set before the fight -- and it is the only Way whose first step hands you a resour... | `nodes/title/way-of-mind.webp` |
-| ✓ | **Way of Shade** | Shade · Position / halves — Choosing the ground before anybody swings. Shade spends halves -- the second action in a turn -- and buys back position: reach, cover, and the step that was not there a moment ago. | `nodes/title/way-of-shade.webp` |
-| ✓ | **Way of Strength** | Warrior · Position / weight — Mass that is already moving, and making it somebody else's problem. Strength spends weight -- what you carry and what carrying it costs you -- and turns it into position the other side do... | `nodes/title/way-of-strength.webp` |
+| ✓ | **Vax** | Vax · Position / Health — A war god with followers in every town in the Amber, where nobody minds what you believe because there is too much else t... | `nodes/title/vax.webp` |
+| ✓ | **Vulpet** | Vulpet · Preparation / an ally — The outcast's god. Vulpet is owed by the people nobody else is obliged to, and the priesthood goes where the rest ... | `nodes/title/vulpet.webp` |
+| ✓ | **Ward Magic** | Ward Magic · Reactions / Spent — Unmaking. A warder's craft is the opposite of every other school's: not doing a thing, but ensuring a thing does n... | `nodes/title/ward-magic.webp` |
+| ✓ | **Way of Faith** | Sworn · Support / an obligation — Standing for something that is not you. Faith spends an obligation -- somebody is owed, and the Way is what they ... | `nodes/title/way-of-faith.webp` |
+| ✓ | **Way of Mind** | Scholar · Preparation / spell slots — What was decided before it mattered. Mind spends preparation -- the spell slots and the formulae set before t... | `nodes/title/way-of-mind.webp` |
+| ✓ | **Way of Shade** | Shade · Position / halves — Choosing the ground before anybody swings. Shade spends halves -- the second action in a turn -- and buys back position... | `nodes/title/way-of-shade.webp` |
+| ✓ | **Way of Strength** | Warrior · Position / weight — Mass that is already moving, and making it somebody else's problem. | `nodes/title/way-of-strength.webp` |
 
 ## Wounds and Taint
 
@@ -533,7 +538,7 @@ Eleven, not twelve: *Step Through* is in the Shadow formulas below.
 
 | | Name | What it is | File |
 |---|---|---|---|
-| ✓ | **Blood Price** | strength 2 · Cast +4 range 3 ignores armour | `signatures/mind/blood-price.webp` |
+| ✓ | **Blood Price** | strength 2 · Cast +4 range 3 ignores armour · [object Object] | `signatures/mind/blood-price.webp` |
 | ✓ | **Call the Unquiet** | strength 3 · Conjure range 2 a corpse rises and fights for you | `signatures/mind/call-the-unquiet.webp` |
 | ✓ | **Graven Strength** | strength 1 · Graven | `signatures/mind/graven-strength.webp` |
 | ✓ | **Hearth and Home** | strength 1 · a camp nobody unfriendly can find, for one night | `signatures/mind/hearth-and-home.webp` |
@@ -543,7 +548,7 @@ Eleven, not twelve: *Step Through* is in the Shadow formulas below.
 | ✓ | **The Reading** | strength 2 · Foresee 3 | `signatures/mind/the-reading.webp` |
 | ✓ | **Unmake** | strength 2 · a Cast you have survived before does not resolve | `signatures/mind/unmake.webp` |
 | ✓ | **Wall of the Sphere** | strength 2 · range 3 area 3 of your element | `signatures/mind/wall-of-the-sphere.webp` |
-| ✓ | **Wither** | strength 2 · Cast Poisoned 1 (2) | `signatures/mind/wither.webp` |
+| ✓ | **Wither** | strength 2 · Cast Poisoned 1 (2) · [object Object] | `signatures/mind/wither.webp` |
 
 ## Signatures — Way of Faith
 
@@ -557,9 +562,9 @@ A god's first and defining miracle.
 | ✓ | **Out of Barren Ground** | strength 3 · Heal 4 range 2 | `signatures/faith/out-of-barren-ground.webp` |
 | ✓ | **The Borrowed Face** | strength 3 · range 3 Spent: one enemy spends this round attacking its own ally | `signatures/faith/the-borrowed-face.webp` |
 | ✓ | **The Clean Hand** | strength 2 · range 3 an ally's next check or attack cannot fail | `signatures/faith/the-clean-hand.webp` |
-| ✓ | **The Club and the Line** | strength 2 · Cast blast 1 with the weapon in hand | `signatures/faith/the-club-and-the-line.webp` |
+| ✓ | **The Club and the Line** | strength 2 · Cast blast 1 with the weapon in hand · [object Object] | `signatures/faith/the-club-and-the-line.webp` |
 | ✓ | **The Drum** | strength 1 · your next Strike this turn is +3 | `signatures/faith/the-drum.webp` |
-| ✓ | **The First Taste** | strength 2 · Tainting 2 range 1 | `signatures/faith/the-first-taste.webp` |
+| ✓ | **The First Taste** | strength 2 · Tainting 2 range 1 · [object Object] | `signatures/faith/the-first-taste.webp` |
 | ✓ | **The Long Night** | strength 3 · Cast +3 range 1 you gain the Health you take | `signatures/faith/the-long-night.webp` |
 | ✓ | **The Long Silence** | Ready 2 · / Shake 1 · Only if you did not move this round. Stillness is the whole of the order's method. | `signatures/faith/the-long-silence.webp` |
 | ✓ | **The Order's Shield** | Defend, Block 2 range 1 · / Block 1 range 1 · The Block goes to an adjacent ally and never to you. The order does not defend itself. | `signatures/faith/the-orders-shield.webp` |
@@ -604,7 +609,7 @@ Blood Magic and Spiritualism, handed over by minor nodes.
 | ✓ | **A Clear Head** | strength 1 · Shake 1 range 3 Dazed and they may play a secondary this turn even if they already have | `spells/mind/a-clear-head.webp` |
 | ✓ | **Ask the Dead** | strength 1 · a corpse answers three questions, as truthfully as it knew | `spells/mind/ask-the-dead.webp` |
 | ✓ | **Become the Shadow** | strength 5 · until the fight ends you are in every shadow at once: Strike from any shadowed square, and nothing can target you | `spells/mind/become-the-shadow.webp` |
-| ✓ | **Boil** | strength 3 · Cast Burning 3 (2) | `spells/mind/boil.webp` |
+| ✓ | **Boil** | strength 3 · Cast Burning 3 (2) · [object Object] | `spells/mind/boil.webp` |
 | ✓ | **Cast No Shadow** | strength 2 · until your next turn nothing further than 1 square away can target you | `spells/mind/cast-no-shadow.webp` |
 | ✓ | **Empty Hand** | strength 1 · you may Strike with no item, at your own Might | `spells/mind/empty-hand.webp` |
 | ✓ | **Flesh of the Earth** | strength 2 · Cast range 3 Burning 1 (2) and Corrode 1: it eats the armour as well as the man | `spells/mind/flesh-of-the-earth.webp` |
@@ -621,9 +626,9 @@ Blood Magic and Spiritualism, handed over by minor nodes.
 | ✓ | **Nothing At All** | strength 5 · your action deck becomes 4 cards, you hold all four, and may play any two halves. Costs a hand | `spells/mind/nothing-at-all.webp` |
 | ✓ | **Nothing to Carry** | strength 1 · +2 to all Casts, and you cannot be Disarmed | `spells/mind/nothing-to-carry.webp` |
 | ✓ | **One Less Thing** | strength 1 · Sift 1 once a fight | `spells/mind/one-less-thing.webp` |
-| ✓ | **Open the Vein** | strength 1 · Cast +3 range 2 ignores Block | `spells/mind/open-the-vein.webp` |
+| ✓ | **Open the Vein** | strength 1 · Cast +3 range 2 ignores Block · [object Object] | `spells/mind/open-the-vein.webp` |
 | ✓ | **Shake It Off** | strength 2 · Shake 3 range 3 | `spells/mind/shake-it-off.webp` |
-| ✓ | **Slick** | strength 1 · range 3 Off Balance (1) | `spells/mind/slick.webp` |
+| ✓ | **Slick** | strength 1 · range 3 Off Balance (1) · [object Object] | `spells/mind/slick.webp` |
 | ✓ | **Slippery** | strength 1 · Shake 1 range 2 Grappled until your next turn they cannot be Grappled again | `spells/mind/slippery.webp` |
 | ✓ | **The Borrowed Body** | strength 3 · Shape | `spells/mind/the-borrowed-body.webp` |
 | ✓ | **The Borrowed Dark** | strength 3 | `spells/mind/the-borrowed-dark.webp` |
@@ -637,13 +642,13 @@ Blood Magic and Spiritualism, handed over by minor nodes.
 | ✓ | **The Gathered Pact** | strength 4 · every god you are pacted with grants its written favour, this turn | `spells/mind/the-gathered-pact.webp` |
 | ✓ | **The Grave's Bargain** | strength 5 · Conjure a dead ally, and they stand at 1 Health | `spells/mind/the-graves-bargain.webp` |
 | ✓ | **The Great Bargain** | strength 5 · Conjure a minor god becomes present and fights as an ally for three rounds | `spells/mind/the-great-bargain.webp` |
-| ✓ | **The Grey Sickness** | strength 2 · Tainting 1 slow: a disease, not a poison | `spells/mind/the-grey-sickness.webp` |
+| ✓ | **The Grey Sickness** | strength 2 · Tainting 1 slow: a disease, not a poison · [object Object] | `spells/mind/the-grey-sickness.webp` |
 | ✓ | **The Hand Given** | strength 3 · and it costs a hand: your bare Strike is a Heavy weapon at Strike 4 | `spells/mind/the-hand-given.webp` |
 | ✓ | **The House That Was** | strength 4 · overnight a ruin becomes a house, and the party rests as in a town | `spells/mind/the-house-that-was.webp` |
-| ✓ | **The Kingmaker's Draught** | strength 5 · Poisoned 3 (3) no save. If it dies while poisoned, set aside no skill cards for this formula | `spells/mind/the-kingmakers-draught.webp` |
+| ✓ | **The Kingmaker's Draught** | strength 5 · Poisoned 3 (3) no save. If it dies while poisoned, set aside no skill cards for this formula · [object Object] | `spells/mind/the-kingmakers-draught.webp` |
 | ✓ | **The Last Card** | strength 2 · you may play that card for both halves | `spells/mind/the-last-card.webp` |
-| ✓ | **The Last Drop** | strength 5 · take your whole turn again, now | `spells/mind/the-last-drop.webp` |
-| ✓ | **The Long Dose** | strength 1 · Cast range 2 Poisoned (3) | `spells/mind/the-long-dose.webp` |
+| ✓ | **The Last Drop** | strength 5 · take your whole turn again, now · [object Object] | `spells/mind/the-last-drop.webp` |
+| ✓ | **The Long Dose** | strength 1 · Cast range 2 Poisoned (3) · [object Object] | `spells/mind/the-long-dose.webp` |
 | ✓ | **The Long Look** | strength 3 · one true answer about the next scene, and the GM writes a prophecy | `spells/mind/the-long-look.webp` |
 | ✓ | **The Long Masquerade** | strength 5 · you and your whole party appear to be other people for a day | `spells/mind/the-long-masquerade.webp` |
 | ✓ | **The Long Preparation** | strength 1 · name one enemy type: your Casts against it are +2 all fight | `spells/mind/the-long-preparation.webp` |
@@ -654,12 +659,12 @@ Blood Magic and Spiritualism, handed over by minor nodes.
 | ✓ | **The Mirror** | strength 3 · Spent: a Cast aimed at you resolves against its own caster | `spells/mind/the-mirror.webp` |
 | ✓ | **The Nine Names** | strength 1 · a minor god names who here it is angry with | `spells/mind/the-nine-names.webp` |
 | ✓ | **The Open Book** | strength 4 · every ally draws fate with advantage, and Read 2 | `spells/mind/the-open-book.webp` |
-| ✓ | **The Quick Dose** | strength 3 · Cast Poisoned 2 (2) | `spells/mind/the-quick-dose.webp` |
-| ✓ | **The Red Hour** | strength 4 · range 2 every ally within 2 may play a second secondary | `spells/mind/the-red-hour.webp` |
+| ✓ | **The Quick Dose** | strength 3 · Cast Poisoned 2 (2) · [object Object] | `spells/mind/the-quick-dose.webp` |
+| ✓ | **The Red Hour** | strength 4 · range 2 every ally within 2 may play a second secondary · [object Object] | `spells/mind/the-red-hour.webp` |
 | ✓ | **The Risen Rank** | strength 4 · Conjure range 3 corpses rise, and fall again when the round ends | `spells/mind/the-risen-rank.webp` |
-| ✓ | **The Second Heartbeat** | strength 3 · Spent: play a second primary this turn | `spells/mind/the-second-heartbeat.webp` |
+| ✓ | **The Second Heartbeat** | strength 3 · Spent: play a second primary this turn · [object Object] | `spells/mind/the-second-heartbeat.webp` |
 | ✓ | **The Shadow Road** | strength 4 · area 1 you and every ally within 1 teleport to any shadowed square on the map | `spells/mind/the-shadow-road.webp` |
-| ✓ | **The Shared Cup** | strength 4 · Cast aimed 3 Poisoned 1 (3) | `spells/mind/the-shared-cup.webp` |
+| ✓ | **The Shared Cup** | strength 4 · Cast aimed 3 Poisoned 1 (3) · [object Object] | `spells/mind/the-shared-cup.webp` |
 | ✓ | **The Shut Mouth** | strength 2 · Cast range 3 Silenced (1) | `spells/mind/the-shut-mouth.webp` |
 | ✓ | **The Small Pact** | strength 1 · the god grants the favour written on your pact | `spells/mind/the-small-pact.webp` |
 | ✓ | **The Sphere Entire** | strength 4 · range 3 area 5 of your element | `spells/mind/the-sphere-entire.webp` |
@@ -696,21 +701,21 @@ Twelve gods' lesser miracles, handed over by minor nodes.
 | ✓ | **Name the Guilty** | strength 1 · range 6 Judged (1) | `spells/faith/name-the-guilty.webp` |
 | ✓ | **No Step Back** | strength 2 · Block 2 area 2 | `spells/faith/no-step-back.webp` |
 | ✓ | **Nobody's Friend** | strength 2 · range 3 until your next turn no ally may Heal, Interpose for, or redirect a hit from one enemy | `spells/faith/nobodys-friend.webp` |
-| ✓ | **Stand Where I Stand** | strength 1 · range 1 adjacent allies cannot be reduced below 1 Health | `spells/faith/stand-where-i-stand.webp` |
+| ✓ | **Stand Where I Stand** | strength 1 · range 1 adjacent allies cannot be reduced below 1 Health · [object Object] | `spells/faith/stand-where-i-stand.webp` |
 | ✓ | **Steady the Hand** | strength 1 · Shake 1 range 3 Compelled | `spells/faith/steady-the-hand.webp` |
-| ✓ | **Taste of the Rot** | strength 1 · Cast +1 range 1 Off Balance (1) the Taint only on a Miss | `spells/faith/taste-of-the-rot.webp` |
+| ✓ | **Taste of the Rot** | strength 1 · Cast +1 range 1 Off Balance (1) the Taint only on a Miss · [object Object] | `spells/faith/taste-of-the-rot.webp` |
 | ✓ | **The Air Between** | strength 4 · until your next turn every ally may take one extra reaction per trigger | `spells/faith/the-air-between.webp` |
 | ✓ | **The Amber District** | strength 5 · until the fight ends every adjacent ally shares your armor and Block, and damage dealt to them is dealt to you instead | `spells/faith/the-amber-district.webp` |
 | ✓ | **The Body Made Clean** | strength 5 · every ally is healed to full and every condition is Lifted and Shaken off. Your action deck is 6 cards for the rest of the day | `spells/faith/the-body-made-clean.webp` |
 | ✓ | **The Brewer's Tithe** | strength 2 · Tainting 2 slow: a disease, not a poison | `spells/faith/the-brewers-tithe.webp` |
-| ✓ | **The Charge** | strength 2 · area 2 every ally within 2 may Move their full value, at once, now | `spells/faith/the-charge.webp` |
+| ✓ | **The Charge** | strength 2 · area 2 every ally within 2 may Move their full value, at once, now · [object Object] | `spells/faith/the-charge.webp` |
 | ✓ | **The Clean Field** | strength 4 · until your next turn no enemy may play a secondary | `spells/faith/the-clean-field.webp` |
 | ✓ | **The Close Work** | strength 2 · adjacent: an enemy's Strike hits the nearest other enemy instead | `spells/faith/the-close-work.webp` |
 | ✓ | **The Driven Out** | strength 4 · area 3 Compelled (1) and you gain Block 3 for each enemy Compelled | `spells/faith/the-driven-out.webp` |
 | ✓ | **The Grey Hour** | strength 4 · range 1 Halted (1) | `spells/faith/the-grey-hour.webp` |
 | ✓ | **The Land Beneath** | strength 5 · area 2 every enemy within 2 is gone until then. You are Prone | `spells/faith/the-land-beneath.webp` |
 | ✓ | **The Lie That Held** | strength 5 · a lie named before the fight is true | `spells/faith/the-lie-that-held.webp` |
-| ✓ | **The Line Holds** | strength 4 · allies adjacent to you cannot be moved, knocked Prone or Compelled | `spells/faith/the-line-holds.webp` |
+| ✓ | **The Line Holds** | strength 4 · allies adjacent to you cannot be moved, knocked Prone or Compelled · [object Object] | `spells/faith/the-line-holds.webp` |
 | ✓ | **The Mask of the Captain** | strength 4 · one enemy obeys you for a round -- you play its turn | `spells/faith/the-mask-of-the-captain.webp` |
 | ✓ | **The Narrow Path** | strength 1 · your miracles cost 1 slot less (min 1) | `spells/faith/the-narrow-path.webp` |
 | ✓ | **The Orchard** | strength 4 · Heal 4 and sheds one condition | `spells/faith/the-orchard.webp` |
@@ -719,17 +724,17 @@ Twelve gods' lesser miracles, handed over by minor nodes.
 | ✓ | **The Sea Decides** | strength 5 · shuffle every fate deck on the field into one; everyone draws from it | `spells/faith/the-sea-decides.webp` |
 | ✓ | **The Second Face** | strength 1 · Spent: read one enemy's intent card for this round before anyone acts | `spells/faith/the-second-face.webp` |
 | ✓ | **The Second Thought** | strength 1 · range 3 Dazed (1) | `spells/faith/the-second-thought.webp` |
-| ✓ | **The Shield Line** | strength 2 · range 1 adjacent allies gain your armor as Block | `spells/faith/the-shield-line.webp` |
+| ✓ | **The Shield Line** | strength 2 · range 1 adjacent allies gain your armor as Block · [object Object] | `spells/faith/the-shield-line.webp` |
 | ✓ | **The Silent Knife** | strength 5 · adjacent: one enemy is dead. No save, no fate draw, no roll of any kind | `spells/faith/the-silent-knife.webp` |
-| ✓ | **The Slow Failure** | strength 5 · Tainting 3 | `spells/faith/the-slow-failure.webp` |
+| ✓ | **The Slow Failure** | strength 5 · Tainting 3 · [object Object] | `spells/faith/the-slow-failure.webp` |
 | ✓ | **The Slow Mercy** | strength 2 · range 3 healed to full | `spells/faith/the-slow-mercy.webp` |
 | ✓ | **The Spring Tide** | strength 4 · until your next turn every ally draws fate twice and keeps both | `spells/faith/the-spring-tide.webp` |
 | ✓ | **The Turning Tide** | strength 2 · range 3 Cursed an ally redraws a fate card and keeps the second. The Cursed is yours | `spells/faith/the-turning-tide.webp` |
-| ✓ | **The War Drum** | strength 4 · area 2 every ally within 2 takes their whole turn again, now | `spells/faith/the-war-drum.webp` |
+| ✓ | **The War Drum** | strength 4 · area 2 every ally within 2 takes their whole turn again, now · [object Object] | `spells/faith/the-war-drum.webp` |
 | ✓ | **The Weight of It** | strength 2 · range 6 a Judged enemy's armor counts 0 against everyone until your next turn | `spells/faith/the-weight-of-it.webp` |
 | ✓ | **The Whole Cloth** | strength 4 · one enemy type believes the party are its own | `spells/faith/the-whole-cloth.webp` |
 | ✓ | **Undertow** | strength 2 · Cast range 3 blast 2 Wet (1) every target is moved 1 square you choose | `spells/faith/undertow.webp` |
-| ✓ | **Valtor's Own** | strength 5 · for the rest of the fight you play a primary and two secondaries each turn | `spells/faith/valtors-own.webp` |
+| ✓ | **Valtor's Own** | strength 5 · for the rest of the fight you play a primary and two secondaries each turn · [object Object] | `spells/faith/valtors-own.webp` |
 | ✓ | **What Does Not Die** | strength 3 · drop to 1 instead of 0, and lose a spell slot for good | `spells/faith/what-does-not-die.webp` |
 | ✓ | **What Grows Out of Us** | strength 5 · every ally including the dead stands at full Health | `spells/faith/what-grows-out-of-us.webp` |
 
@@ -768,6 +773,33 @@ Twelve gods' lesser miracles, handed over by minor nodes.
 | ✓ | **Stunned** | An open hand falling away from a grip it has lost, fingers still curled to the shape of what they held. The thing itself is out of frame below. | `conditions/stunned.webp` |
 | ✓ | **Unconscious** | An open hand lying palm-up on the ground, fingers slack and apart, the arm running out of frame. Still, and not dead. | `conditions/unconscious.webp` |
 | ✓ | **Wet** | Water running off a flat surface in one sheet, the last of it beading along the lower edge. No rain, no vessel, no figure. | `conditions/wet.webp` |
+
+## Injuries
+
+**Fourteen slates a character carries for the rest of their life**, and they were on no shelf — so the brief reported the game drawn while the one kind of card a player cannot get rid of had nothing on it.
+
+**Draw what is left behind, never the harm.** Two reasons and they point the same way. One: a figure in the frame is somebody else's character, permanently — the constraint every shelf here works under but the titles, and sharper for an injury than for anything else. Two: a brief that asks for a wound is a brief that comes back refused, and the fix recorded in `ART_REFUSED` is not to soften the wording until it slips through but to draw the right subject.
+
+So each of these is **the thing that compensates, the thing that no longer works, or the record of it**: the eye-patch rather than the eye, the stick rather than the leg, the ledger rather than the debtor. No bodies, no blood, no faces.
+
+**14 pieces**, 14 wired up. Suggested path: `cardrpg/art/injuries/`
+
+| | Name | What it is | File |
+|---|---|---|---|
+| ✓ | **Bad Leg** | One boot worn through along its outer edge, and a walking stick polished smooth at the grip leaning against it. No feet in frame. | `injuries/bad-leg.webp` |
+| ✓ | **Compelled Step** | A single line of muddy footprints crossing a bare stone floor dead straight, passing an open door without turning toward it. The prints alone -- no... | `injuries/compelled-step.webp` |
+| ✓ | **Hexed Blood** | A stoppered glass vial of something dark on a slate, and one spilt drop beside it that has eaten a pale ring into the stone. | `injuries/hexed-blood.webp` |
+| ✓ | **Hollow Eyes** | A plain wooden mask face-up on a table, its eye-holes cut clean through to the dark grain beneath. Nobody behind it. | `injuries/hollow-eyes.webp` |
+| ✓ | **Lost Eye** | A plain cloth eye-patch hooked over the corner of a shaving mirror, the mirror showing only the wall behind. Nobody reflected. | `injuries/lost-eye.webp` |
+| ✓ | **Lost Fingers** | A roll of fine engraver's tools in tan leather on cream cloth, the two smallest out of their loops and set apart. Brass and boxwood. | `injuries/lost-fingers.webp` |
+| ✓ | **Lost Hand** | A pair of gauntlets on a workbench: the left worn soft and shaped by use, the right still bright and unmarked. Nobody wearing either. | `injuries/lost-hand.webp` |
+| ✓ | **Night Fears** | A candle guttering beside a cot nobody is in, the blanket thrown back and the bed empty, the dark of the room pressing on a small ring of light. No... | `injuries/night-fears.webp` |
+| ✓ | **Rotted** | A cut loaf low on a scrubbed pale board, the crumb gone dark amber and brown-black right through to the crust. The top bare. | `injuries/rotted.webp` |
+| ✓ | **Scarred Face** | A hand-mirror turned face-down on folded linen, a jar of salve open beside it and a clean strip half unrolled. Nothing reflected. | `injuries/scarred-face.webp` |
+| ✓ | **Shaken Faith** | A holy symbol on a snapped cord in the bottom of an open satchel, half under a folded prayer sheet. Nobody wearing it. | `injuries/shaken-faith.webp` |
+| ✓ | **Shattered Nerves** | A full cup of pale tea alone on a sunlit pine table, low in frame, its surface ringed with fine tremors. Honey and cream, the top bare. Nobody at t... | `injuries/shattered-nerves.webp` |
+| ✓ | **The Debt** | An open ledger alone low in frame, pages bright bare cream, one line written in brown ink and the sum column empty. A red wax seal. No hand, no qui... | `injuries/the-debt.webp` |
+| ✓ | **The Eager Hand** | An empty scabbard buckled shut on a belt, and across bare boards the sword that belongs in it, point sunk into a plank. | `injuries/the-eager-hand.webp` |
 
 ## Features
 
@@ -1012,118 +1044,118 @@ A mandible, a sting, a tail club and a breath are items like any other — grown
 
 | | Name | What it is | File |
 |---|---|---|---|
-| ✓ | **Alp** | Health 12 · speed 4 · Draining Bite, Tarnkappe — a small hunched night-thing wearing a shabby grey cap pulled low -- the Tarnkappe, and it is the only thing on it that reads as clothing. Thin, long-fingered, far too light for its size, drawn crouching as though on someone's ribs | `tokens/alp.webp` |
+| ✓ | **Alp** | Health 12 · speed 4 · Draining Bite, Tarnkappe — a small hunched night-thing wearing a shabby grey cap pulled low -- the Tarnkappe, and it is the o... | `tokens/alp.webp` |
 | ✓ | **Armored Slug** | Health 16 · armour 4 · speed 1 · Acid Spray — slow, armoured, and it does not need to reach you | `tokens/armored-slug.webp` |
-| ✓ | **Armored Slug Spitter** | Health 12 · armour 3 · speed 2 · Acid Spray — A Armored Slug: slow, armoured, and it does not need to reach you This one thinner shell, longer reach of acid: it is here to ruin somebody's concentration | `tokens/armored-slug-spitter.webp` |
-| ✓ | **Artillerist** | Health 14 · armour 3 · speed 2 · Matchlock Musket, Brigandine — A Guild Engineer: an engineer caught at the work rather than at the gun: sleeves rolled over a leather apron, a cloth cap, both hands on a tool -- a c... This one the same engineer, but down behind a long musket on a forked rest and sighting along it: shoulders low, cheek to the stock, goggles down over the eyes, a second charge between the teeth. The gun is the whole silhouette where the Engineer's was the tools Draw this one as a man of North African appearance, past fifty -- that is fixed, not a suggestion. | `tokens/artillerist.webp` |
-| ✓ | **Baal Fagor** | Health 68 · armour 5 · speed 5 · Burning Grasp, Fire Spray, Demon's Sigil — a demon that became a god: enormous, horned, cracked black hide with fire in every split, wings of smoke rather than membrane. Everything within reach of it is already burning. Grander and more deliberate than the Div, which is merely large | `tokens/baal-fagor.webp` |
-| ✓ | **Bandit** | Health 8 · armour 1 · speed 4 · Arming Sword, Leather Armor — one roadside robber in mismatched gear: a good sword, a bad coat, a hood or a scarf across the face. Everything worn looks taken off somebody else, because it was Draw this one as a woman of West African appearance, past fifty -- that is fixed, not a suggestion. | `tokens/bandit.webp` |
-| ✓ | **Berserker** | Health 14 · speed 5 · Great Axe — bare-armed and unarmoured, a great axe in both hands, hair matted and the pupils wrong. Pelts at the shoulder rather than armour. Caught mid-stride with no guard up at all, because guarding is not part of it Draw this one as a man of Persian appearance, in their forties -- that is fixed, not a suggestion. | `tokens/berserker.webp` |
-| ✓ | **Black Circle** | Health 14 · armour 2 · speed 3 · Arming Sword, Mail Shirt — a plain dark coat over mail, gloves, a flat wide hat, a sheaf of papers in one hand. Reads as an official rather than a soldier. The only frightening thing about the figure is how unhurried it is Draw this one as a woman of Southeast Asian appearance, past fifty -- that is fixed, not a suggestion. | `tokens/black-circle.webp` |
-| ✓ | **Blind Worm** | Health 14 · armour 2 · speed 3 · Heavy Mandibles — a thick blind tube of segmented muscle, heavy mandibles at the head end and no eyes anywhere on it. **Purplish red** -- the raw dark red-violet of muscle or of an earthworm's flush, wet-looking, deeper in the creases between the segments. Drawn coming up out of broken ground | `tokens/blind-worm.webp` |
-| ✓ | **Blind Worm Elder** | Health 24 · armour 3 · speed 3 · Heavy Mandibles — A Blind Worm: a thick blind tube of segmented muscle, heavy mandibles at the head end and no eyes anywhere on it. **Purplish red** -- the raw dark red-violet of muscle or of an earthworm's flush, wet-looking, deeper in the creases betw... This one is longer and thicker and the same purplish red, jaws at one end and the body simply ending at the other. ONE BODY AND NO TAIL: no second tapering limb, no stinger, nothing trailing | `tokens/blind-worm-elder.webp` |
-| ✓ | **Burrower** | Health 18 · armour 2 · speed 5 · Mandibles — one great pale ringed worm, as thick as a barrel, blind, with a ring of rasping plates where a face would be. Drawn head-first out of broken ground with the body trailing back into it. No rider in the picture | `tokens/burrower.webp` |
-| ✓ | **Burrower Brood Mother** | Health 30 · armour 3 · speed 3 · Mandibles — A Burrower: one great pale ringed worm, as thick as a barrel, blind, with a ring of rasping plates where a face would be. Drawn head-first out of broken ground with the body trailing back into it. No rider in the picture This one it stopped being a steed when it started laying | `tokens/burrower-brood-mother.webp` |
-| ✓ | **Changeling** | Health 8 · speed 4 · Nip — a byting: child-sized and child-shaped and not a child -- the proportions a little off, the head a little large, the hands too long, old in the eyes. Dressed in human clothes that fit badly. Nothing monstrous on it at a glance, which is the whole horror | `tokens/changeling.webp` |
-| ✓ | **Chupacabra** | Health 10 · armour 1 · speed 7 · Draining Bite — a lean hairless quadruped, grey and leathery, with a ridge of stiff spines down the back, a long muzzle and oversized hind legs built for springing. An animal, not a person: the only one of these nine that goes on four legs | `tokens/chupacabra.webp` |
-| ✓ | **Cult Priest** | Health 14 · armour 1 · speed 4 · Carved Idol, Mace — A Cultist: one worshipper of something local and unofficial: plain robes over ordinary clothes, a crude carved figure held in both hand... This one the same plain robes with one piece of real finery on top -- a heavy pectoral, a painted stole, a crown of something -- and the carved idol held overhead rather than cradled. Eyes closed, mouth open mid-word. Alone in the frame -- the crowd it is talking to is not in the picture Draw this one as a man of Mediterranean appearance, in their thirties -- that is fixed, not a suggestion. | `tokens/cult-priest.webp` |
-| ✓ | **Cultist** | Health 8 · speed 4 · Carved Idol, Dagger — one worshipper of something local and unofficial: plain robes over ordinary clothes, a crude carved figure held in both hands, the face lit from below. Not a hooded skeleton -- this is somebody from the next village and you would know them in daylight Draw this one as a man of Nordic appearance, in their thirties -- that is fixed, not a suggestion. | `tokens/cultist.webp` |
-| ✓ | **Dhampir** | Health 14 · armour 1 · speed 5 · Draining Bite — a living person, which is the point: a lean traveller in worn coat and boots, nothing undead about the body at all. Only the eyes are wrong, and they know it. The only thing in this group that casts a shadow Draw this one as a woman of Nordic appearance, in their twenties -- that is fixed, not a suggestion. | `tokens/dhampir.webp` |
-| ✓ | **Div** | Health 38 · armour 3 · speed 3 · Burning Grasp — a giant of the Persian stories: horned, tusked, skin like cracked basalt with heat in the splits, far taller than a person and roughly built. Carrying something architectural it has just pulled out of the ground | `tokens/div.webp` |
-| ✓ | **Djinn** | Health 24 · armour 1 · speed 6 · Demon's Sigil, Fire Spray — a person, and a whole one: two legs, two feet, two hands, a face that holds still. Fine robes actually worn as cloth, gold at the wrists, dark unblinking eyes. **No wind, no smoke, no dust, no vapour, nothing trailing off and nothing transparent** -- the only thing not human about it is that the heels are a hand's breadth clear of the ground and nothing is holding them up | `tokens/djinn.webp` |
+| ✓ | **Armored Slug Spitter** | Health 12 · armour 3 · speed 2 · Acid Spray — A Armored Slug: slow, armoured, and it does not need to reach you This one thinner shell, longer reac... | `tokens/armored-slug-spitter.webp` |
+| ✓ | **Artillerist** | Health 14 · armour 3 · speed 2 · Matchlock Musket, Brigandine — A Guild Engineer: an engineer caught at the work rather than at the gun: sleeves ro... | `tokens/artillerist.webp` |
+| ✓ | **Baal Fagor** | Health 68 · armour 5 · speed 5 · Burning Grasp, Fire Spray, Demon's Sigil — a demon that became a god: enormous, horned, cracked black hide with fi... | `tokens/baal-fagor.webp` |
+| ✓ | **Bandit** | Health 8 · armour 1 · speed 4 · Arming Sword, Leather Armor — one roadside robber in mismatched gear: a good sword, a bad coat, a hood or a scarf a... | `tokens/bandit.webp` |
+| ✓ | **Berserker** | Health 14 · speed 5 · Great Axe — bare-armed and unarmoured, a great axe in both hands, hair matted and the pupils wrong. Pelts at the shoulder rat... | `tokens/berserker.webp` |
+| ✓ | **Black Circle** | Health 14 · armour 2 · speed 3 · Arming Sword, Mail Shirt — a plain dark coat over mail, gloves, a flat wide hat, a sheaf of papers in one hand. Re... | `tokens/black-circle.webp` |
+| ✓ | **Blind Worm** | Health 14 · armour 2 · speed 3 · Heavy Mandibles — a thick blind tube of segmented muscle, heavy mandibles at the head end and no eyes anywhere on ... | `tokens/blind-worm.webp` |
+| ✓ | **Blind Worm Elder** | Health 24 · armour 3 · speed 3 · Heavy Mandibles — A Blind Worm: a thick blind tube of segmented muscle, heavy mandibles at the head end and no eye... | `tokens/blind-worm-elder.webp` |
+| ✓ | **Burrower** | Health 18 · armour 2 · speed 5 · Mandibles — one great pale ringed worm, as thick as a barrel, blind, with a ring of rasping plates where a face wo... | `tokens/burrower.webp` |
+| ✓ | **Burrower Brood Mother** | Health 30 · armour 3 · speed 3 · Mandibles — A Burrower: one great pale ringed worm, as thick as a barrel, blind, with a ring of rasping plates whe... | `tokens/burrower-brood-mother.webp` |
+| ✓ | **Changeling** | Health 8 · speed 4 · Nip — a byting: child-sized and child-shaped and not a child -- the proportions a little off, the head a little large, the han... | `tokens/changeling.webp` |
+| ✓ | **Chupacabra** | Health 10 · armour 1 · speed 7 · Draining Bite — a lean hairless quadruped, grey and leathery, with a ridge of stiff spines down the back, a long m... | `tokens/chupacabra.webp` |
+| ✓ | **Cult Priest** | Health 14 · armour 1 · speed 4 · Carved Idol, Mace — A Cultist: one worshipper of something local and unofficial: plain robes over ordinary clothes... | `tokens/cult-priest.webp` |
+| ✓ | **Cultist** | Health 8 · speed 4 · Carved Idol, Dagger — one worshipper of something local and unofficial: plain robes over ordinary clothes, a crude carved figu... | `tokens/cultist.webp` |
+| ✓ | **Dhampir** | Health 14 · armour 1 · speed 5 · Draining Bite — a living person, which is the point: a lean traveller in worn coat and boots, nothing undead about... | `tokens/dhampir.webp` |
+| ✓ | **Div** | Health 38 · armour 3 · speed 3 · Burning Grasp — a giant of the Persian stories: horned, tusked, skin like cracked basalt with heat in the splits, ... | `tokens/div.webp` |
+| ✓ | **Djinn** | Health 24 · armour 1 · speed 6 · Demon's Sigil, Fire Spray — a person, and a whole one: two legs, two feet, two hands, a face that holds still. Fin... | `tokens/djinn.webp` |
 | ✓ | **Doomfly** | Health 12 · armour 1 · speed 7 · Nip — transport: it is how everything else arrived | `tokens/doomfly.webp` |
-| ✓ | **Dragon** | Health 50 · armour 5 · speed 6 · Dragon Jaws, Fire Spray — the biggest thing in the bestiary: a long-bodied winged worm, more serpent than lizard, with a narrow head and an old intelligence in it. **Scaled in bright silver** -- the scales metallic and polished like plate armour, hard white highlights running along every edge and the light sliding off it as off steel. Wings like a bat's and far too large. It should dwarf everything drawn beside it | `tokens/dragon.webp` |
-| ✓ | **Draugr** | Health 30 · armour 3 · speed 3 · Grave-Cold Hands — a barrow-dweller: a corpse swollen far past the size it was alive, hel-bla -- the blue-black of a drowned man -- in the rotted remains of good clothes, with grave-goods still on it. Heavy, slow, and far too strong. Not a skeleton: there is too much of it left | `tokens/draugr.webp` |
-| ✓ | **Ecstatic** | Health 14 · speed 5 · Warhammer — A Flagellant: stripped to the shoulders under a rough habit, back and shoulders a mess of old and new scourging, a knotted cord at the belt and a mace in the hand. Ecstatic rather than angry, which is worse This one further gone than the rest: the habit discarded entirely, the body a map of old scarring, a warhammer in both hands and the head thrown back. Running, not marching Draw this one as a woman of Nordic appearance, past fifty -- that is fixed, not a suggestion. | `tokens/ecstatic.webp` |
-| ✓ | **Elf** | Health 16 · armour 1 · speed 5 · Elf-Bolt — an alva of the Nordic kind, not a tall archer: slight, pale and barefoot in a thin shift, hair unbound, drawn mid-step as if still dancing and only half attending to you. **The whole figure glitters** -- a fine dust of light caught on the skin, the hair and the shift, as though it had been rolled in frost or crushed glass, and the air immediately around it sparkles too. Beautiful and slightly wrong in the proportions. No armour, ... | `tokens/elf.webp` |
-| ✓ | **Estrie** | Health 16 · armour 1 · speed 6 · Draining Bite — a woman at a glance and not on a second look: hair unbound and far too long, moving as though in water, feet not quite meeting the ground, mouth dark. The hair is the picture -- that is where its strength is kept | `tokens/estrie.webp` |
-| ✓ | **Fahlas** | Health 60 · armour 4 · speed 4 · Grave Candle, Arming Sword — a human king who did not stop: court dress four centuries out of fashion and perfectly kept, a thin dry face that is still a face, a circlet. **One figure and nothing else** -- no court, no attendants, no standing dead anywhere in the frame, and he is alone in it. The only minor god you could mistake for a living man | `tokens/fahlas.webp` |
-| ✓ | **Familiar** | Health 6 · speed 5 · Nip — a hare, and anatomically exactly a hare: **four legs, no more and no fewer**, every limb and joint where a hare's belongs. What is wrong is not the body -- it is the attention. Pupils that do not match, a person's patience behind them, and it has been looking at you for some time. Ordinary at a distance and unbearable close up. Drawn sitting upright, watching, not attacking | `tokens/familiar.webp` |
-| ✓ | **Five Legs** | Health 15 · armour 2 · speed 4 · Claws — FIVE-FOLD RADIAL: five identical limbs spaced evenly around a domed carapace, no head and no front or back, like a starfish built as a predator. Nothing else here is radial | `tokens/five-legs.webp` |
-| ✓ | **Five Legs Adjutant** | Health 12 · armour 2 · speed 4 · Claws — A Five Legs: FIVE-FOLD RADIAL: five identical limbs spaced evenly around a domed carapace, no head and no front or back, like a starfish built as a predator. Nothing else here is radial This one it does not fight at all: it calls the next wave | `tokens/five-legs-adjutant.webp` |
-| ✓ | **Flagellant** | Health 10 · speed 4 · Mace — stripped to the shoulders under a rough habit, back and shoulders a mess of old and new scourging, a knotted cord at the belt and a mace in the hand. Ecstatic rather than angry, which is worse Draw this one as a woman of Persian appearance, past fifty -- that is fixed, not a suggestion. | `tokens/flagellant.webp` |
-| ✓ | **Flat Bug** | Health 5 · armour 1 · speed 3 · Mandibles — a low broad arachnid plated front to back, EIGHT legs splayed under a flat shell. No goblin and no humanoid head of any kind: the head is a wedge of jaw set into the shell | `tokens/flat-bug.webp` |
-| ✓ | **Flat Bug Runner** | Health 4 · speed 5 · Mandibles — A Flat Bug: a low broad arachnid plated front to back, EIGHT legs splayed under a flat shell. No goblin and no humanoid head of any kind: the head is a wedge of jaw set into the shell This one sent ahead to find out where you are, and dies finding out | `tokens/flat-bug-runner.webp` |
-| ✓ | **Flat Bug Shieldline** | Health 7 · armour 2 · speed 2 · Mandibles — A Flat Bug: a low broad arachnid plated front to back, EIGHT legs splayed under a flat shell. No goblin and no humanoid head of any kind: the head is a wedge of jaw set into the shell This one the front rank, which is where the Horde's armour actually is | `tokens/flat-bug-shieldline.webp` |
-| ✓ | **Forest Troll** | Health 20 · armour 2 · speed 4 · Troll Fists — a skogstroll: long-limbed and hunched, hide like wet bark with lichen in the seams, a cow's tail it keeps tucked, and a face that is nearly a person's and wrong about it | `tokens/forest-troll.webp` |
-| ✓ | **Gheul** | Health 14 · armour 1 · speed 5 · Draining Bite — a graveyard demon: man-high and man-shaped and wrong in every joint, grey skin drawn tight over the skull, a mouth far too wide for the jaw, no nose to speak of, fingers long enough to dig with and used for it. Crouched over turned earth, grave-dirt to the elbow. **No animal head at all** -- nothing of the hyena, the dog or the jackal in it | `tokens/gheul.webp` |
-| ✓ | **Gnome** | Health 14 · armour 1 · speed 3 · Elf-Bolt — a tomte: knee-high, old-man-faced, grey homespun and a red knitted cap, with a beard far too long for the body under it. Carries itself like the owner of the place. Enormously strong for its size, which should show in the hands and the stance | `tokens/gnome.webp` |
+| ✓ | **Dragon** | Health 50 · armour 5 · speed 6 · Dragon Jaws, Fire Spray — the biggest thing in the bestiary: a long-bodied winged worm, more serpent than lizard, ... | `tokens/dragon.webp` |
+| ✓ | **Draugr** | Health 30 · armour 3 · speed 3 · Grave-Cold Hands — a barrow-dweller: a corpse swollen far past the size it was alive, hel-bla -- the blue-black of... | `tokens/draugr.webp` |
+| ✓ | **Ecstatic** | Health 14 · speed 5 · Warhammer — A Flagellant: stripped to the shoulders under a rough habit, back and shoulders a mess of old and new scourging, ... | `tokens/ecstatic.webp` |
+| ✓ | **Elf** | Health 16 · armour 1 · speed 5 · Elf-Bolt — an alva of the Nordic kind, not a tall archer: slight, pale and barefoot in a thin shift, hair unbound,... | `tokens/elf.webp` |
+| ✓ | **Estrie** | Health 16 · armour 1 · speed 6 · Draining Bite — a woman at a glance and not on a second look: hair unbound and far too long, moving as though in w... | `tokens/estrie.webp` |
+| ✓ | **Fahlas** | Health 60 · armour 4 · speed 4 · Grave Candle, Arming Sword — a human king who did not stop: court dress four centuries out of fashion and perfectl... | `tokens/fahlas.webp` |
+| ✓ | **Familiar** | Health 6 · speed 5 · Nip — a hare, and anatomically exactly a hare: **four legs, no more and no fewer**, every limb and joint where a hare's belong... | `tokens/familiar.webp` |
+| ✓ | **Five Legs** | Health 15 · armour 2 · speed 4 · Claws — FIVE-FOLD RADIAL: five identical limbs spaced evenly around a domed carapace, no head and no front or back... | `tokens/five-legs.webp` |
+| ✓ | **Five Legs Adjutant** | Health 12 · armour 2 · speed 4 · Claws — A Five Legs: FIVE-FOLD RADIAL: five identical limbs spaced evenly around a domed carapace, no head and no ... | `tokens/five-legs-adjutant.webp` |
+| ✓ | **Flagellant** | Health 10 · speed 4 · Mace — stripped to the shoulders under a rough habit, back and shoulders a mess of old and new scourging, a knotted cord at t... | `tokens/flagellant.webp` |
+| ✓ | **Flat Bug** | Health 5 · armour 1 · speed 3 · Mandibles — a low broad arachnid plated front to back, EIGHT legs splayed under a flat shell. No goblin and no huma... | `tokens/flat-bug.webp` |
+| ✓ | **Flat Bug Runner** | Health 4 · speed 5 · Mandibles — A Flat Bug: a low broad arachnid plated front to back, EIGHT legs splayed under a flat shell. No goblin and no hum... | `tokens/flat-bug-runner.webp` |
+| ✓ | **Flat Bug Shieldline** | Health 7 · armour 2 · speed 2 · Mandibles — A Flat Bug: a low broad arachnid plated front to back, EIGHT legs splayed under a flat shell. No goblin... | `tokens/flat-bug-shieldline.webp` |
+| ✓ | **Forest Troll** | Health 20 · armour 2 · speed 4 · Troll Fists — a skogstroll: long-limbed and hunched, hide like wet bark with lichen in the seams, a cow's tail it ... | `tokens/forest-troll.webp` |
+| ✓ | **Gheul** | Health 14 · armour 1 · speed 5 · Draining Bite — a graveyard demon: man-high and man-shaped and wrong in every joint, grey skin drawn tight over th... | `tokens/gheul.webp` |
+| ✓ | **Gnome** | Health 14 · armour 1 · speed 3 · Elf-Bolt — a tomte: knee-high, old-man-faced, grey homespun and a red knitted cap, with a beard far too long for t... | `tokens/gnome.webp` |
 | ✓ | **Goblin** | Health 5 · speed 3 · Goblin Spear | `tokens/goblin.webp` |
 | ✓ | **Goblin Archer** | Health 5 · speed 3 · Goblin Shortbow — A Goblin:  This one it earns Loose by being able to shoot, which the spearman cannot | `tokens/goblin-archer.webp` |
 | ✓ | **Goblin Chief** | Health 11 · armour 1 · speed 3 · Goblin Spear, Goblin Shield — A Goblin:  This one kill it and the Cower comes back to everybody else | `tokens/goblin-chief.webp` |
 | ✓ | **Goblin Shaman** | Health 6 · speed 2 · Goblin Fetish — A Goblin:  This one the elves taught it enough glamour to be dangerous and not enough to be free | `tokens/goblin-shaman.webp` |
-| ✓ | **Goblin Warrior** | Health 8 · armour 1 · speed 3 · Goblin Spear, Goblin Shield — A Goblin:  This one the one that does not run: a shield, a shell of discipline, and no Cower | `tokens/goblin-warrior.webp` |
-| ✓ | **God's Spirit** | Health 14 · armour 2 · speed 4 · Balanced Dagger, Leather Armor — A Black Circle: a plain dark coat over mail, gloves, a flat wide hat, a sheaf of papers in one hand. Reads as an official rather than a soldier. The only frightening thing about the figure is how... This one where the Black Circle looks like an official, this looks like nobody: ordinary travelling clothes, no insignia, no hat, hands empty until they are not. The one in the room you would not describe afterwards Draw this one as a man of Horn of Africa appearance, in their thirties -- that is fixed, not a suggestion. | `tokens/gods-spirit.webp` |
-| ✓ | **Grey Assassin** | Health 10 · armour 1 · speed 6 · Balanced Dagger, Blade Venom — a city killer in plain western dress: dark wool coat to the knee, close hood, gloves, a thin blade held reversed along the forearm. **Nothing wrapped, no veil, nothing eastern about it** -- this is somebody who can stand in a doorway on the Iron District's own streets and be taken for a clerk. Nothing worn on it rattles Draw this one as a man of Caribbean appearance, past fifty -- that is fixed, not a suggestion. | `tokens/grey-assassin.webp` |
-| ✓ | **Guild Engineer** | Health 12 · armour 2 · speed 3 · Arquebus, Brigandine — an engineer caught at the work rather than at the gun: sleeves rolled over a leather apron, a cloth cap, both hands on a tool -- a crank, a measuring rod, a length of chain -- and the arquebus slung across the back where it is out of the way. Standing upright and busy. **No goggles, nothing aimed, nothing braced** Draw this one as a man of Southeast Asian appearance, in their thirties -- that is fixed, not a suggestion. | `tokens/guild-engineer.webp` |
-| ✓ | **Highwayman** | Health 10 · armour 2 · speed 6 · Matchlock Pistol, Arming Sword, Brigandine — A Bandit: one roadside robber in mismatched gear: a good sword, a bad coat, a hood or a scarf across the face. Everything worn looks taken off somebody else, because it was This one mounted-class robbery: a long riding coat, boots to the knee, a scarf to the eyes and a matchlock pistol levelled. Better dressed than the band it came from, which is the whole of its character Draw this one as a woman of Horn of Africa appearance, past fifty -- that is fixed, not a suggestion. | `tokens/highwayman.webp` |
-| ✓ | **Holy Shield** | Health 18 · armour 4 · speed 3 · Longsword, Kite Shield, Plate, Great Helm — a knight of the order in full plate and a great helm, kite shield up, the faith's mark on the surcoat. Heavy, closed, and faceless -- the helm has no opening worth drawing a face in Draw this one as a man of Slavic appearance, in their twenties -- that is fixed, not a suggestion. | `tokens/holy-shield.webp` |
-| ✓ | **Holy Sword** | Health 18 · armour 4 · speed 4 · Longsword, Mail Shirt, Great Helm — A Holy Shield: a knight of the order in full plate and a great helm, kite shield up, the faith's mark on the surcoat. Heavy, closed, and faceless -- th... This one the other church's knight: mail rather than plate, **a longsword held in both hands** and no shield at all, a surcoat with a different mark on it. Lighter, faster and visibly poorer -- the two orders are not equally funded and both of them know it Draw this one as a man of North African appearance, in their forties -- that is fixed, not a suggestion. | `tokens/holy-sword.webp` |
-| ✓ | **Imp** | Health 6 · speed 7 · Nip — cat-sized, leathery, bat-winged, all elbows and grin, perched on something it has no business perching on. Drawn small in the frame on purpose -- scale is the joke, and it is the only thing here that looks like it is enjoying itself | `tokens/imp.webp` |
-| ✓ | **Incubus** | Health 18 · armour 1 · speed 5 · Demon's Sigil, Draining Bite — beautiful and subtly over-designed -- the proportions a shade too even, the hair too deliberate -- bare-shouldered, drawn leaning in from the edge of the frame as though over a bed. Small dark horns half-hidden. Nothing exposed that a card could not print | `tokens/incubus.webp` |
-| ✓ | **Keres** | Health 8 · speed 6 · Claws — one Greek death-spirit: a dark ragged woman, gaunt, bloodied to the elbow, teeth bared, stooping low over the ground towards something already down. **A single figure** -- there are others working the same field and not one of them is in this picture | `tokens/keres.webp` |
-| ✓ | **Lindworm** | Health 34 · armour 3 · speed 4 · Dragon Jaws, Acid Spray — a wingless serpent-dragon of the Nordic kind: a long heavy body with ONE pair of forelegs at the front and nothing behind, dragging the rest. **Ferocious, not sluggish** -- the head low and driving forward, jaws wide open on a mouthful of back-curved teeth, gums drawn back, the small eyes fixed on what is in front of it. Scarred, filthy scale. No wings at all -- that is what makes it a lindworm and not a dragon | `tokens/lindworm.webp` |
-| ✓ | **Little Folk** | Health 10 · armour 1 · speed 4 · Elf-Bolt — one of the vattar, the underground people: small, grey and earthen, dressed like a poor farmer of no particular century, with a flat look and no expression to read. Drawn half out of the ground: never fully in the open, and never in company -- one figure and no second one anywhere | `tokens/little-folk.webp` |
-| ✓ | **Lugat** | Health 22 · armour 2 · speed 3 · Draining Bite — the Albanian kind: bloated and tight-skinned, still wound in its shroud with the wrapping split, moving with a full belly's slowness. Fat rather than gaunt, which is what separates it from every other corpse here | `tokens/lugat.webp` |
-| ✓ | **Mantiss** | Health 12 · armour 2 · speed 4 · Grasping Claws — EIGHT legs, the front pair long and folded like a mantis's and the other six walking. Upright over them, taller than the infantry, with a narrow swivelling head | `tokens/mantiss.webp` |
-| ✓ | **Mantiss Veteran** | Health 18 · armour 3 · speed 4 · Grasping Claws — A Mantiss: EIGHT legs, the front pair long and folded like a mantis's and the other six walking. Upright over them, taller than the infantry, with a narrow swivelling head This one it has done this before and takes you out of the fight first | `tokens/mantiss-veteran.webp` |
+| ✓ | **Goblin Warrior** | Health 8 · armour 1 · speed 3 · Goblin Spear, Goblin Shield — A Goblin:  This one the one that does not run: a shield, a shell of discipline, and n... | `tokens/goblin-warrior.webp` |
+| ✓ | **God's Spirit** | Health 14 · armour 2 · speed 4 · Balanced Dagger, Leather Armor — A Black Circle: a plain dark coat over mail, gloves, a flat wide hat, a sheaf of ... | `tokens/gods-spirit.webp` |
+| ✓ | **Grey Assassin** | Health 10 · armour 1 · speed 6 · Balanced Dagger, Blade Venom — a city killer in plain western dress: dark wool coat to the knee, close hood, glove... | `tokens/grey-assassin.webp` |
+| ✓ | **Guild Engineer** | Health 12 · armour 2 · speed 3 · Arquebus, Brigandine — an engineer caught at the work rather than at the gun: sleeves rolled over a leather apron,... | `tokens/guild-engineer.webp` |
+| ✓ | **Highwayman** | Health 10 · armour 2 · speed 6 · Matchlock Pistol, Arming Sword, Brigandine — A Bandit: one roadside robber in mismatched gear: a good sword, a bad... | `tokens/highwayman.webp` |
+| ✓ | **Holy Shield** | Health 18 · armour 4 · speed 3 · Longsword, Kite Shield, Plate, Great Helm — a knight of the order in full plate and a great helm, kite shield up, ... | `tokens/holy-shield.webp` |
+| ✓ | **Holy Sword** | Health 18 · armour 4 · speed 4 · Longsword, Mail Shirt, Great Helm — A Holy Shield: a knight of the order in full plate and a great helm, kite shie... | `tokens/holy-sword.webp` |
+| ✓ | **Imp** | Health 6 · speed 7 · Nip — cat-sized, leathery, bat-winged, all elbows and grin, perched on something it has no business perching on. Drawn small i... | `tokens/imp.webp` |
+| ✓ | **Incubus** | Health 18 · armour 1 · speed 5 · Demon's Sigil, Draining Bite — beautiful and subtly over-designed -- the proportions a shade too even, the hair to... | `tokens/incubus.webp` |
+| ✓ | **Keres** | Health 8 · speed 6 · Claws — one Greek death-spirit: a dark ragged woman, gaunt, bloodied to the elbow, teeth bared, stooping low over the ground t... | `tokens/keres.webp` |
+| ✓ | **Lindworm** | Health 34 · armour 3 · speed 4 · Dragon Jaws, Acid Spray — a wingless serpent-dragon of the Nordic kind: a long heavy body with ONE pair of foreleg... | `tokens/lindworm.webp` |
+| ✓ | **Little Folk** | Health 10 · armour 1 · speed 4 · Elf-Bolt — one of the vattar, the underground people: small, grey and earthen, dressed like a poor farmer of no pa... | `tokens/little-folk.webp` |
+| ✓ | **Lugat** | Health 22 · armour 2 · speed 3 · Draining Bite — the Albanian kind: bloated and tight-skinned, still wound in its shroud with the wrapping split, m... | `tokens/lugat.webp` |
+| ✓ | **Mantiss** | Health 12 · armour 2 · speed 4 · Grasping Claws — EIGHT legs, the front pair long and folded like a mantis's and the other six walking. Upright ove... | `tokens/mantiss.webp` |
+| ✓ | **Mantiss Veteran** | Health 18 · armour 3 · speed 4 · Grasping Claws — A Mantiss: EIGHT legs, the front pair long and folded like a mantis's and the other six walking. ... | `tokens/mantiss-veteran.webp` |
 | ✓ | **Mega Beetle** | Health 30 · armour 4 · speed 2 · Heavy Mandibles — a wall that walks: the Scrips under its wings are the point of it | `tokens/mega-beetle.webp` |
-| ✓ | **Mercenary** | Health 12 · armour 3 · speed 4 · Halberd, Brigandine — a hardened soldier out of the eastern forests: brigandine over travelling clothes, a halberd, an old scar and a bedroll. Professional, unbothered, and nobody's idea of a hero Draw this one as a woman of Germanic appearance, past fifty -- that is fixed, not a suggestion. | `tokens/mercenary.webp` |
-| ✓ | **Mercenary Captain** | Health 18 · armour 4 · speed 4 · Greatsword, Brigandine, Great Helm — A Mercenary: a hardened soldier out of the eastern forests: brigandine over travelling clothes, a halberd, an old scar and a bedroll. Professional, unbothered, and nobody's idea of a hero This one the same hard soldier with a greatsword and a closed helm under one arm, a captain's sash and a whistle. Older, scarred across the hands, and watching the field rather than the man in front of it Draw this one as a woman of South Asian appearance, in their forties -- that is fixed, not a suggestion. | `tokens/mercenary-captain.webp` |
-| ✓ | **Mob** | Health 8 · speed 4 · Dagger — A Townsfolk, and this one the same working people, no longer leaving: faces front, hands full of whatever was to hand -- a hayfork, a cobble, a bottle. Drawn as a press of bodies with no space between them, and they are not all the same person: different ages, different colours, men and women together. Frightened and coming anyway. **This is the one creature in the roster that is deliberately more than one body** Draw this one as a man of Central Asian appearance, in their twenties -- that is fixed, not a suggestion. | `tokens/mob.webp` |
-| ✓ | **Mole Beast** | Health 22 · armour 2 · speed 3 · Tusks — a true mole, enlarged: a barrel of muscle with a pink snout, tiny buried eyes and huge outward-turned digging forelimbs. Fur, not chitin -- it is not one of the Horde | `tokens/mole-beast.webp` |
-| ✓ | **Mole Beast Tusker** | Health 30 · armour 3 · speed 3 · Tusks — A Mole Beast: a true mole, enlarged: a barrel of muscle with a pink snout, tiny buried eyes and huge outward-turned digging forelimbs. Fur, not chitin -- it is not one of the Horde This one the one the mole men dig behind | `tokens/mole-beast-tusker.webp` |
+| ✓ | **Mercenary** | Health 12 · armour 3 · speed 4 · Halberd, Brigandine — a hardened soldier out of the eastern forests: brigandine over travelling clothes, a halberd... | `tokens/mercenary.webp` |
+| ✓ | **Mercenary Captain** | Health 18 · armour 4 · speed 4 · Greatsword, Brigandine, Great Helm — A Mercenary: a hardened soldier out of the eastern forests: brigandine over t... | `tokens/mercenary-captain.webp` |
+| ✓ | **Mob** | Health 8 · speed 4 · Dagger — A Townsfolk, and this one the same working people, no longer leaving: faces front, hands full of whatever was to hand... | `tokens/mob.webp` |
+| ✓ | **Mole Beast** | Health 22 · armour 2 · speed 3 · Tusks — a true mole, enlarged: a barrel of muscle with a pink snout, tiny buried eyes and huge outward-turned digg... | `tokens/mole-beast.webp` |
+| ✓ | **Mole Beast Tusker** | Health 30 · armour 3 · speed 3 · Tusks — A Mole Beast: a true mole, enlarged: a barrel of muscle with a pink snout, tiny buried eyes and huge outwa... | `tokens/mole-beast-tusker.webp` |
 | ✓ | **Mole Man** | Health 8 · armour 1 · speed 3 · Mole Pick — followers of the Queen of the Dark, and the only burrower that carries a tool | `tokens/mole-man.webp` |
-| ✓ | **Mole Man Digger** | Health 8 · armour 1 · speed 3 · Mole Pick — A Mole Man: followers of the Queen of the Dark, and the only burrower that carries a tool This one carries a MOLE PICK: a short-hafted single-bladed digging pick, the haft cut short for swinging in a tunnel. Not a spear, not a polearm, not a lamp | `tokens/mole-man-digger.webp` |
-| ✓ | **Mole Man Priest** | Health 10 · armour 1 · speed 2 · Dark Lantern — A Mole Man: followers of the Queen of the Dark, and the only burrower that carries a tool This one carries a DARK LANTERN and nothing else: a shuttered lantern in one hand, one slit open. No staff, no rod, no crook -- both arms and both hands whole and unpierced | `tokens/mole-man-priest.webp` |
-| ✓ | **Mother Longhand** | Health 72 · armour 4 · speed 5 · Grasping Claws, Elf-Bolt — a ra grown enormous and wrong: the bark-and-moss body of a skogsra on a frame three times too tall, with arms that reach most of the way across the picture and hands at the end of them bigger than a person. The hollow back is still there | `tokens/mother-longhand.webp` |
-| ✓ | **Mountain Troll** | Health 34 · armour 4 · speed 2 · Troll Fists, Thrown Stone — a bergtroll: a hunched mass of grey stone-hide with lichen and moss growing on its back and shoulders, a great hooked nose, small deep-set eyes and a mouth too wide. Vast, slow and mineral -- more cliff than animal, and no green skin anywhere | `tokens/mountain-troll.webp` |
-| ✓ | **Mummer** | Health 8 · speed 5 · Dagger — one reveller in a carved animal mask -- a goat, horns and all -- over ordinary festival clothes, with ribbons at the sleeves and a drinking horn in hand. Mid-step and mid-song, alone in the frame. The mask is the picture, and it is not a human face Draw this one as a woman of Central Asian appearance, in their twenties -- that is fixed, not a suggestion. | `tokens/mummer.webp` |
-| ✓ | **Naga** | Health 30 · armour 3 · speed 4 · Crushing Coils, Demon's Sigil — serpent from the waist down and something close to human above, with a hood of scaled skin flared behind the head and heavy jewellery it was not given. Half-submerged, coiled rather than swimming | `tokens/naga.webp` |
-| ✓ | **Nature Spirit** | Health 20 · armour 1 · speed 5 · Elf-Bolt — a skogsra: from the front a tall woman made of the wood -- bark-grained skin, moss in the hair, eyes like a deer's -- and from any other angle hollow, the back open like a rotted trunk. Draw her turning, so both are true at once. That hollow is the whole point | `tokens/nature-spirit.webp` |
+| ✓ | **Mole Man Digger** | Health 8 · armour 1 · speed 3 · Mole Pick — A Mole Man: followers of the Queen of the Dark, and the only burrower that carries a tool This one carr... | `tokens/mole-man-digger.webp` |
+| ✓ | **Mole Man Priest** | Health 10 · armour 1 · speed 2 · Dark Lantern — A Mole Man: followers of the Queen of the Dark, and the only burrower that carries a tool This one ... | `tokens/mole-man-priest.webp` |
+| ✓ | **Mother Longhand** | Health 72 · armour 4 · speed 5 · Grasping Claws, Elf-Bolt — a ra grown enormous and wrong: the bark-and-moss body of a skogsra on a frame three tim... | `tokens/mother-longhand.webp` |
+| ✓ | **Mountain Troll** | Health 34 · armour 4 · speed 2 · Troll Fists, Thrown Stone — a bergtroll: a hunched mass of grey stone-hide with lichen and moss growing on its bac... | `tokens/mountain-troll.webp` |
+| ✓ | **Mummer** | Health 8 · speed 5 · Dagger — one reveller in a carved animal mask -- a goat, horns and all -- over ordinary festival clothes, with ribbons at the ... | `tokens/mummer.webp` |
+| ✓ | **Naga** | Health 30 · armour 3 · speed 4 · Crushing Coils, Demon's Sigil — serpent from the waist down and something close to human above, with a hood of sca... | `tokens/naga.webp` |
+| ✓ | **Nature Spirit** | Health 20 · armour 1 · speed 5 · Elf-Bolt — a skogsra: from the front a tall woman made of the wood -- bark-grained skin, moss in the hair, eyes li... | `tokens/nature-spirit.webp` |
 | ✓ | **Pincer** | Health 25 · armour 3 · speed 4 · Grasping Claws — generals, intelligent, armoured: it takes somebody out of the fight rather than down | `tokens/pincer.webp` |
-| ✓ | **Pincer Marshal** | Health 35 · armour 4 · speed 4 · Grasping Claws — A Pincer: generals, intelligent, armoured: it takes somebody out of the fight rather than down This one the largest armoured form in the Horde, heavy pincers held high and a thick plated hood over the front. NO FLAGS, no banners, no standards, no insignia, no cloth of any kind | `tokens/pincer-marshal.webp` |
-| ✓ | **Processor** | Health 4 · armour 1 · speed 3 · Nip — a single worker, unarmoured and unarmed, built for carrying rather than fighting: a low six-legged body with the front pair held up and loaded, mouthparts busy. Caught mid-task and not looking up | `tokens/processor.webp` |
-| ✓ | **Processor Driller** | Health 6 · armour 1 · speed 3 · Mandibles — A Processor: a single worker, unarmoured and unarmed, built for carrying rather than fighting: a low six-legged body with the front pair held up and loaded, mouthparts busy. Caught mid-task and not looking up This one what the Horde uses instead of a siege engine, and the reason walls fall from below | `tokens/processor-driller.webp` |
-| ✓ | **Queen of the Dark** | Health 70 · armour 5 · speed 3 · Dark Lantern, Grave-Cold Hands — an immense seated figure in the dark, more cave formation than body, with a crown of rock and a face only suggested. **Alone** -- no mole men, no attendants, no court, nothing else alive in the frame; the scale comes from how completely she fills it. The one light in the picture is the shuttered lantern in her hand | `tokens/queen-of-the-dark.webp` |
-| ✓ | **Revenant** | Health 24 · armour 2 · speed 4 · Grave-Cold Hands — a body walking with a purpose and nothing else: dried rather than rotted, the clothes it was buried in, the wound that killed it still open and not bleeding. The face is intact and recognisable, which is the worst thing about it | `tokens/revenant.webp` |
+| ✓ | **Pincer Marshal** | Health 35 · armour 4 · speed 4 · Grasping Claws — A Pincer: generals, intelligent, armoured: it takes somebody out of the fight rather than down Th... | `tokens/pincer-marshal.webp` |
+| ✓ | **Processor** | Health 4 · armour 1 · speed 3 · Nip — a single worker, unarmoured and unarmed, built for carrying rather than fighting: a low six-legged body with ... | `tokens/processor.webp` |
+| ✓ | **Processor Driller** | Health 6 · armour 1 · speed 3 · Mandibles — A Processor: a single worker, unarmoured and unarmed, built for carrying rather than fighting: a low si... | `tokens/processor-driller.webp` |
+| ✓ | **Queen of the Dark** | Health 70 · armour 5 · speed 3 · Dark Lantern, Grave-Cold Hands — an immense seated figure in the dark, more cave formation than body, with a crown... | `tokens/queen-of-the-dark.webp` |
+| ✓ | **Revenant** | Health 24 · armour 2 · speed 4 · Grave-Cold Hands — a body walking with a purpose and nothing else: dried rather than rotted, the clothes it was bu... | `tokens/revenant.webp` |
 | ✓ | **Rush Spider** | Health 10 · armour 1 · speed 8 · Mandibles — cavalry: it arrives before you have finished deciding | `tokens/rush-spider.webp` |
-| ✓ | **Rush Spider Rider** | Health 14 · armour 1 · speed 8 · Mandibles — A Rush Spider: cavalry: it arrives before you have finished deciding This one carrying a Mole Man, which is two statblocks arriving as one problem | `tokens/rush-spider-rider.webp` |
-| ✓ | **Salt Baron** | Health 16 · armour 2 · speed 4 · Matchlock Pistol, Arming Sword, Fine Clothes — A Smuggler: a north-coast sailor turned quiet trader: oilskin, a knitted cap, salt-stained boots, a crossbow held low and ready. **The figure and the crossbow and nothing else** -- no crates, no... This one a north-coast magnate gone slightly to seed: a good coat over sea-weathered skin, rings, a pistol worn openly on the hip. Standing on a quay as though it were owned, because at one point it was Draw this one as a man of Nordic appearance, in their thirties -- that is fixed, not a suggestion. | `tokens/salt-baron.webp` |
-| ✓ | **Scrip** | Health 2 · speed 6 · Nip — small and quick on EIGHT thin legs, more eye than body -- a cluster of eyes over a trunk barely bigger than a fist. One of them and not a swarm | `tokens/scrip.webp` |
-| ✓ | **Scrip Watcher** | Health 2 · speed 7 · Nip — A Scrip: small and quick on EIGHT thin legs, more eye than body -- a cluster of eyes over a trunk barely bigger than a fist. One of them and not a swarm This one the one that is still watching after you killed the others | `tokens/scrip-watcher.webp` |
-| ✓ | **Sea Serpent** | Health 40 · armour 3 · speed 6 · Crushing Coils, Dragon Jaws — a vast limbless water-worm, drawn as a series of humps breaking a flat surface with the head low and forward at one end -- the shape of every lake-monster sighting ever reported. Most of it is under the water and should stay there | `tokens/sea-serpent.webp` |
-| ✓ | **Shade** | Health 10 · speed 5 · Grave Candle — barely there: the shape of a person in thin grey wash, the edges losing themselves into the paper, carrying a single guttering candle that is the most solid thing in the picture. No chains, no skull, no sheet -- just somebody almost rubbed out | `tokens/shade.webp` |
+| ✓ | **Rush Spider Rider** | Health 14 · armour 1 · speed 8 · Mandibles — A Rush Spider: cavalry: it arrives before you have finished deciding This one carrying a Mole Man, whi... | `tokens/rush-spider-rider.webp` |
+| ✓ | **Salt Baron** | Health 16 · armour 2 · speed 4 · Matchlock Pistol, Arming Sword, Fine Clothes — A Smuggler: a north-coast sailor turned quiet trader: oilskin, a kn... | `tokens/salt-baron.webp` |
+| ✓ | **Scrip** | Health 2 · speed 6 · Nip — small and quick on EIGHT thin legs, more eye than body -- a cluster of eyes over a trunk barely bigger than a fist. One ... | `tokens/scrip.webp` |
+| ✓ | **Scrip Watcher** | Health 2 · speed 7 · Nip — A Scrip: small and quick on EIGHT thin legs, more eye than body -- a cluster of eyes over a trunk barely bigger than a f... | `tokens/scrip-watcher.webp` |
+| ✓ | **Sea Serpent** | Health 40 · armour 3 · speed 6 · Crushing Coils, Dragon Jaws — a vast limbless water-worm, drawn as a series of humps breaking a flat surface with ... | `tokens/sea-serpent.webp` |
+| ✓ | **Shade** | Health 10 · speed 5 · Grave Candle — barely there: the shape of a person in thin grey wash, the edges losing themselves into the paper, carrying a ... | `tokens/shade.webp` |
 | ✓ | **Skaah** | Health 40 · armour 2 · speed 4 · Nip — a drop ship: balloon-like, gigantic, and full of something worse | `tokens/skaah.webp` |
-| ✓ | **Skaah Bloated** | Health 60 · armour 1 · speed 3 · Acid Spray — A Skaah: a drop ship: balloon-like, gigantic, and full of something worse This one full, low and leaking: it is going to come down somewhere | `tokens/skaah-bloated.webp` |
-| ✓ | **Slitherer** | Health 7 · armour 1 · speed 4 · Mandibles — a long low body dragging between EIGHT short legs set wide along its sides -- it slithers because the body is on the ground, not because it has no legs | `tokens/slitherer.webp` |
-| ✓ | **Slitherer Brood** | Health 4 · armour 1 · speed 5 · Mandibles — A Slitherer: a long low body dragging between EIGHT short legs set wide along its sides -- it slithers because the body is on the ground, not because it has no legs This one is smaller and leaner, the same animal at two-thirds the size, and it is drawn alone -- the others it travels with are not in the picture | `tokens/slitherer-brood.webp` |
+| ✓ | **Skaah Bloated** | Health 60 · armour 1 · speed 3 · Acid Spray — A Skaah: a drop ship: balloon-like, gigantic, and full of something worse This one full, low and leak... | `tokens/skaah-bloated.webp` |
+| ✓ | **Slitherer** | Health 7 · armour 1 · speed 4 · Mandibles — a long low body dragging between EIGHT short legs set wide along its sides -- it slithers because the b... | `tokens/slitherer.webp` |
+| ✓ | **Slitherer Brood** | Health 4 · armour 1 · speed 5 · Mandibles — A Slitherer: a long low body dragging between EIGHT short legs set wide along its sides -- it slithers ... | `tokens/slitherer-brood.webp` |
 | ✓ | **Smash Beetle** | Health 20 · armour 3 · speed 2 · Tail Club — it is here for the wall, and you are in the way of the wall | `tokens/smash-beetle.webp` |
-| ✓ | **Smash Beetle Breaker** | Health 28 · armour 4 · speed 1 · Tail Club — A Smash Beetle: it is here for the wall, and you are in the way of the wall This one bred bigger for the gates of the Third Ring, and it does not turn quickly | `tokens/smash-beetle-breaker.webp` |
-| ✓ | **Smuggler** | Health 10 · armour 1 · speed 4 · Crossbow, Leather Armor — a north-coast sailor turned quiet trader: oilskin, a knitted cap, salt-stained boots, a crossbow held low and ready. **The figure and the crossbow and nothing else** -- no crates, no barrels, no bundles, no cargo, no quay. The goods are elsewhere, which is the point of the trade Draw this one as a man of Caribbean appearance, in their twenties -- that is fixed, not a suggestion. | `tokens/smuggler.webp` |
+| ✓ | **Smash Beetle Breaker** | Health 28 · armour 4 · speed 1 · Tail Club — A Smash Beetle: it is here for the wall, and you are in the way of the wall This one bred bigger for t... | `tokens/smash-beetle-breaker.webp` |
+| ✓ | **Smuggler** | Health 10 · armour 1 · speed 4 · Crossbow, Leather Armor — a north-coast sailor turned quiet trader: oilskin, a knitted cap, salt-stained boots, a ... | `tokens/smuggler.webp` |
 | ✓ | **Stinger** | Health 6 · speed 6 · Sting — it goes for whoever is concentrating | `tokens/stinger.webp` |
 | ✓ | **Stinger Drone** | Health 10 · speed 6 · Acid Spray — A Stinger: it goes for whoever is concentrating This one the sting became a nozzle somewhere in the hive's history | `tokens/stinger-drone.webp` |
-| ✓ | **Strigoi** | Health 28 · armour 2 · speed 4 · Draining Bite — the troubled dead of the Romanian stories: gaunt and upright and almost presentable, dressed as a living person of standing, with too-long nails and a mouth that does not close properly. It does not shamble. It arrives | `tokens/strigoi.webp` |
-| ✓ | **Sweeper** | Health 8 · armour 1 · speed 7 · Claws — EIGHT legs folded tight under four wings. Not a bird and not a bat: the wings are thin and veined off a segmented body, and there are no feathers anywhere on it | `tokens/sweeper.webp` |
-| ✓ | **Sweeper Carrier** | Health 12 · armour 1 · speed 6 · Nip — A Sweeper: EIGHT legs folded tight under four wings. Not a bird and not a bat: the wings are thin and veined off a segmented body, and there are no feathers anywhere on it This one it is carrying something, and the something is the encounter | `tokens/sweeper-carrier.webp` |
-| ✓ | **Sweeper Diver** | Health 6 · armour 1 · speed 9 · Claws — A Sweeper: EIGHT legs folded tight under four wings. Not a bird and not a bat: the wings are thin and veined off a segmented body, and there are no feathers anywhere on it This one it comes down on whoever is concentrating | `tokens/sweeper-diver.webp` |
-| ✓ | **Tempter** | Health 20 · armour 1 · speed 4 · Demon's Sigil — immaculate and entirely at ease: good clothes a century out of date, hands open and empty, a slight pleasant expression. Nothing visibly wrong until you look for a shadow and find it pointing the wrong way | `tokens/tempter.webp` |
+| ✓ | **Strigoi** | Health 28 · armour 2 · speed 4 · Draining Bite — the troubled dead of the Romanian stories: gaunt and upright and almost presentable, dressed as a ... | `tokens/strigoi.webp` |
+| ✓ | **Sweeper** | Health 8 · armour 1 · speed 7 · Claws — EIGHT legs folded tight under four wings. Not a bird and not a bat: the wings are thin and veined off a seg... | `tokens/sweeper.webp` |
+| ✓ | **Sweeper Carrier** | Health 12 · armour 1 · speed 6 · Nip — A Sweeper: EIGHT legs folded tight under four wings. Not a bird and not a bat: the wings are thin and veined... | `tokens/sweeper-carrier.webp` |
+| ✓ | **Sweeper Diver** | Health 6 · armour 1 · speed 9 · Claws — A Sweeper: EIGHT legs folded tight under four wings. Not a bird and not a bat: the wings are thin and veine... | `tokens/sweeper-diver.webp` |
+| ✓ | **Tempter** | Health 20 · armour 1 · speed 4 · Demon's Sigil — immaculate and entirely at ease: good clothes a century out of date, hands open and empty, a sligh... | `tokens/tempter.webp` |
 | ✓ | **Terror Fly** | Health 18 · armour 2 · speed 6 · Fire Spray — captains, and the first thing in the roster that burns ground | `tokens/terror-fly.webp` |
-| ✓ | **Terror Fly Torch** | Health 14 · armour 2 · speed 6 · Fire Spray — A Terror Fly: captains, and the first thing in the roster that burns ground This one all the fire and none of the authority | `tokens/terror-fly-torch.webp` |
-| ✓ | **The Cat God** | Health 55 · armour 4 · speed 9 · Grasping Claws — a cat the size of a cart horse and in no way a lion: the exact proportions and indifference of a domestic cat, scaled up, sitting. Too many shadows behind it for the light in the frame. Nothing about the pose suggests it has agreed to be here | `tokens/the-cat-god.webp` |
-| ✓ | **The Land Jelly** | Health 90 · armour 3 · speed 1 · Crushing Coils — a vast translucent mass filling the whole frame, with things suspended inside it that are clearly older than the picture -- bones, worked stone, a boat. No face, no front, no limbs. The biggest and least animal thing in the set | `tokens/the-land-jelly.webp` |
-| ✓ | **The Purple** | Health 12 · armour 1 · speed 5 · Crossbow, Blade Venom, Serpent's Milk — A Grey Assassin: a city killer in plain western dress: dark wool coat to the knee, close hood, gloves, a thin blade held re... This one the same plain western coat, in deep purple-dyed wool and better cut, hood back, kneeling over a flat case of stoppered vials open across one knee. **No crossbow anywhere in the picture, and no blade either** -- the vials are the whole of it. Working rather than stalking Draw this one as a woman of Southeast Asian appearance, in their forties -- that is fixed, not a suggestion. | `tokens/the-purple.webp` |
-| ✓ | **The Queen** | Health 60 · armour 4 · speed 0 · Heavy Mandibles — enormous and rooted to the floor, armoured in overlapping plate like a siege engine, heavy jaws and a crown of horn. The most frightening thing in the set: more armour than the Marshal and more mass than anything that walks | `tokens/the-queen.webp` |
-| ✓ | **The Troll King** | Health 85 · armour 6 · speed 4 · Troll Fists, Thrown Stone — a bergtroll grown past any scale a troll should reach -- a moving ridge of stone-hide with full-sized pines rooted along its back and shoulders, a crude iron crown half swallowed by the hide it was put on. The trolls around its feet are knee-high | `tokens/the-troll-king.webp` |
-| ✓ | **The Unseen** | Health 12 · armour 2 · speed 6 · Dagger, Leather Armor — A Grey Assassin: a city killer in plain western dress: dark wool coat to the knee, close hood, gloves, a thin blade held reversed along the forearm. **Nothing wrapped, no veil, nothing eastern about it** -- this is some... This one a western monastic at a glance -- plain habit, cord belt, hood up, hands inside the sleeves -- and nothing about the stance belongs to a monk. The dagger is not visible and is obviously there Draw this one as a woman of West African appearance, in their forties -- that is fixed, not a suggestion. | `tokens/the-unseen.webp` |
-| ✓ | **The Winter Lady** | Health 65 · armour 4 · speed 5 · Killing Frost, Elf-Bolt — a tall elven woman made of winter: skin the white of old ice with the grey of it underneath, hair and gown drifting upward rather than down, bare feet not melting what she stands on. Beautiful, composed, and the air around her visibly colder | `tokens/the-winter-lady.webp` |
-| ✓ | **Town Guard** | Health 10 · armour 2 · speed 3 · Spear, Wooden Shield, Leather Armor, Light Helm — a watchman in a padded coat and an open kettle helm with a spear and a round shield, a town's badge on the shield and nothing else to mark them. Tired rather than fierce Draw this one as a man of North African appearance, past fifty -- that is fixed, not a suggestion. | `tokens/town-guard.webp` |
-| ✓ | **Townsfolk** | Health 4 · speed 3 · Dagger — one ordinary working person of no particular century: apron, patched wool, boots worn down on one side, a basket or a bundle still in the hands. Already turning away from whatever is happening. The dagger at the belt has only ever cut bread Draw this one as a woman of West African appearance, in their twenties -- that is fixed, not a suggestion. | `tokens/townsfolk.webp` |
-| ✓ | **Trollkin** | Health 10 · armour 1 · speed 4 · Troll Club — knee-high to a person and broad, grey-brown and leathery, with a troll's nose and a troll's ears on a body built low to the ground. Rough homespun and a stick. One of many, drawn alone: a single figure in the frame, and what is unsettling about it is how plainly it is not the only one | `tokens/trollkin.webp` |
-| ✓ | **Wanderer** | Health 18 · armour 1 · speed 7 · Dagger — a traveller that does not resolve: layered road clothes, a staff, a pack -- and the parts of it furthest from the centre are smeared into motion, as though half of it has already left. Never drawn standing still | `tokens/wanderer.webp` |
-| ✓ | **Watch Sergeant** | Health 14 · armour 3 · speed 3 · Halberd, Mail Shirt, Light Helm — A Town Guard: a watchman in a padded coat and an open kettle helm with a spear and a round shield, a town's badge on the shield and nothing else to mark them. Tired rather than fierce This one an older watchman with a halberd and a mail shirt instead of a spear and a coat, a sergeant's sash and a horn at the belt. Shouting rather than fighting Draw this one as a man of Mediterranean appearance, in their twenties -- that is fixed, not a suggestion. | `tokens/watch-sergeant.webp` |
-| ✓ | **Watcher** | Health 26 · armour 2 · speed 5 · Demon's Sigil — tall, still and frontal, with far too many eyes -- down the arms, across the chest, open in the wings. Not bestial and not beautiful: a watching thing in the shape of a person, drawn facing the viewer dead-on, which nothing else in the set does | `tokens/watcher.webp` |
-| ✓ | **Wyvern** | Health 22 · armour 2 · speed 8 · Claws — a two-legged winged worm, hawk-sized rather than dragon-sized: wings and hind legs and nothing else, built entirely for the stoop. **The tail grows out of the base of the spine in one unbroken line** and tapers from there to a barbed point -- it is part of the body and continuous with it, never a separate whip-shape floating near the hips. Lean and quick where the dragon is heavy | `tokens/wyvern.webp` |
+| ✓ | **Terror Fly Torch** | Health 14 · armour 2 · speed 6 · Fire Spray — A Terror Fly: captains, and the first thing in the roster that burns ground This one all the fire and... | `tokens/terror-fly-torch.webp` |
+| ✓ | **The Cat God** | Health 55 · armour 4 · speed 9 · Grasping Claws — a cat the size of a cart horse and in no way a lion: the exact proportions and indifference of a ... | `tokens/the-cat-god.webp` |
+| ✓ | **The Land Jelly** | Health 90 · armour 3 · speed 1 · Crushing Coils — a vast translucent mass filling the whole frame, with things suspended inside it that are clearly... | `tokens/the-land-jelly.webp` |
+| ✓ | **The Purple** | Health 12 · armour 1 · speed 5 · Crossbow, Blade Venom, Serpent's Milk — A Grey Assassin: a city killer in plain western dress: dark wool coat to t... | `tokens/the-purple.webp` |
+| ✓ | **The Queen** | Health 60 · armour 4 · speed 0 · Heavy Mandibles — enormous and rooted to the floor, armoured in overlapping plate like a siege engine, heavy jaws ... | `tokens/the-queen.webp` |
+| ✓ | **The Troll King** | Health 85 · armour 6 · speed 4 · Troll Fists, Thrown Stone — a bergtroll grown past any scale a troll should reach -- a moving ridge of stone-hide ... | `tokens/the-troll-king.webp` |
+| ✓ | **The Unseen** | Health 12 · armour 2 · speed 6 · Dagger, Leather Armor — A Grey Assassin: a city killer in plain western dress: dark wool coat to the knee, close h... | `tokens/the-unseen.webp` |
+| ✓ | **The Winter Lady** | Health 65 · armour 4 · speed 5 · Killing Frost, Elf-Bolt — a tall elven woman made of winter: skin the white of old ice with the grey of it underne... | `tokens/the-winter-lady.webp` |
+| ✓ | **Town Guard** | Health 10 · armour 2 · speed 3 · Spear, Wooden Shield, Leather Armor, Light Helm — a watchman in a padded coat and an open kettle helm with a spear... | `tokens/town-guard.webp` |
+| ✓ | **Townsfolk** | Health 4 · speed 3 · Dagger — one ordinary working person of no particular century: apron, patched wool, boots worn down on one side, a basket or a... | `tokens/townsfolk.webp` |
+| ✓ | **Trollkin** | Health 10 · armour 1 · speed 4 · Troll Club — knee-high to a person and broad, grey-brown and leathery, with a troll's nose and a troll's ears on a... | `tokens/trollkin.webp` |
+| ✓ | **Wanderer** | Health 18 · armour 1 · speed 7 · Dagger — a traveller that does not resolve: layered road clothes, a staff, a pack -- and the parts of it furthest ... | `tokens/wanderer.webp` |
+| ✓ | **Watch Sergeant** | Health 14 · armour 3 · speed 3 · Halberd, Mail Shirt, Light Helm — A Town Guard: a watchman in a padded coat and an open kettle helm with a spear a... | `tokens/watch-sergeant.webp` |
+| ✓ | **Watcher** | Health 26 · armour 2 · speed 5 · Demon's Sigil — tall, still and frontal, with far too many eyes -- down the arms, across the chest, open in the wi... | `tokens/watcher.webp` |
+| ✓ | **Wyvern** | Health 22 · armour 2 · speed 8 · Claws — a two-legged winged worm, hawk-sized rather than dragon-sized: wings and hind legs and nothing else, built... | `tokens/wyvern.webp` |
 
 ## The starter Warrior
 

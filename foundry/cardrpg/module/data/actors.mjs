@@ -199,6 +199,78 @@ function rangeOnLine(system, line, item) {
   return Math.max(1, base + n);
 }
 
+/** How much a condition takes off a Move after halving. The highest applies; they do not add. */
+function moveReductionOf(system) {
+  let worst = 0;
+  for (const c of system.activeConditions ?? []) {
+    if (CARDRPG.conditions[c.key]?.reducesMove) worst = Math.max(worst, c.value ?? 1);
+  }
+  return worst;
+}
+
+/** How much an injury takes off a Move, which is a different subtraction with a different floor. */
+function injuryMoveReductionOf(system) {
+  let worst = 0;
+  for (const slate of bitingInjuries(system)) {
+    worst = Math.max(worst, slate.system.takes?.move ?? 0);
+  }
+  return worst;
+}
+
+/**
+ * **A printed Move as it actually plays, and the sentence that says why it changed.**
+ *
+ * In order, and the order is the rule: the **injury** first, which can never take you below 1
+ * square; then **halved** if a condition halves it; then the **condition's** own reduction, which
+ * can take you to 0. A leg that healed wrong is not the same sentence as a leg frozen to the
+ * ground, and before they were the same subtraction.
+ *
+ * **Shared between the two models, and it carries its reasons now.**  [2026-11-14] A card face
+ * read `Move 0 (was 1)` and that is a readout with the cause cut off: it told the player a number
+ * had been taken away and not what took it, so the only way to find out was to count conditions
+ * by hand. The arithmetic already knows -- every branch below is a named condition or a named
+ * injury -- so it says so, and the face puts the sentence in a tooltip rather than printing a
+ * parenthesis it has no room for.
+ *
+ * A monster can be Frozen and a monster can be Slowed, so this is `(system, printed)` like every
+ * other shared answer in this file rather than a method on the character alone.
+ */
+function moveAsPlayed(system, printed) {
+  const why = [];
+  const named = key => game.i18n.localize(CARDRPG.conditions[key]?.label ?? key);
+
+  /* Read off the conditions and the injuries rather than off the character's getters, so a
+   * monster -- which can be Frozen and can lose a leg -- gets the same answer from the same
+   * function instead of a second copy of it three hundred lines down. */
+  const injury = injuryMoveReductionOf(system);
+  const injured = printed > 0 && injury ? Math.max(1, printed - injury) : printed;
+  if (injured !== printed) {
+    const slate = [...(system.parent?.items ?? [])]
+      .find(s => s.type === "injury" && (s.system.takes?.move ?? 0) === injury);
+    why.push(`${slate?.name ?? "An injury"} takes ${injury} off a Move, never below 1`);
+  }
+
+  const halves = (system.activeConditions ?? [])
+    .some(c => CARDRPG.conditions[c.key]?.halvesMove);
+  const halved = halves ? Math.floor(injured / 2) : injured;
+  if (halved !== injured) {
+    const key = (system.activeConditions ?? [])
+      .map(c => c.key).find(k => CARDRPG.conditions[k]?.halvesMove);
+    why.push(`${named(key)} halves your Move`);
+  }
+
+  const cut = moveReductionOf(system);
+  const played = Math.max(0, halved - cut);
+  if (played !== halved) {
+    const worst = (system.activeConditions ?? [])
+      .filter(c => CARDRPG.conditions[c.key]?.reducesMove)
+      .sort((a, b) => (b.value ?? 1) - (a.value ?? 1))[0];
+    why.push(`${named(worst?.key)} takes ${cut} more off it`);
+  }
+
+  return { printed, played, why };
+}
+
 function blockedReactionsOf(system) {
   const blocked = new Set();
   if (system.noReactions) return new Set(Object.keys(CARDRPG.reactions));
@@ -756,11 +828,7 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
 
   /** How much a condition takes off a Move after halving. The highest applies; they do not add. */
   get moveReduction() {
-    let worst = 0;
-    for (const c of this.activeConditions) {
-      if (CARDRPG.conditions[c.key]?.reducesMove) worst = Math.max(worst, c.value ?? 1);
-    }
-    return worst;
+    return moveReductionOf(this);
   }
 
   /**
@@ -779,11 +847,7 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
    * applies rather than the sum, as conditions already do.
    */
   get injuryMoveReduction() {
-    let worst = 0;
-    for (const slate of bitingInjuries(this)) {
-      worst = Math.max(worst, slate.system.takes?.move ?? 0);
-    }
-    return worst;
+    return injuryMoveReductionOf(this);
   }
 
   /**
@@ -809,11 +873,12 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
    * the ground, and before they were the same subtraction.
    */
   movePlayed(printed) {
-    const injured = printed > 0
-      ? Math.max(1, printed - this.injuryMoveReduction)
-      : printed;
-    const halved = this.moveHalved ? Math.floor(injured / 2) : injured;
-    return Math.max(0, halved - this.moveReduction);
+    return moveAsPlayed(this, printed).played;
+  }
+
+  /** The same answer with its reasons, for a face that has to explain itself. */
+  moveAsPlayed(printed) {
+    return moveAsPlayed(this, printed);
   }
 
   /* -------------------------------------------- */
@@ -1003,5 +1068,55 @@ export class NpcData extends foundry.abstract.TypeDataModel {
   /** And a monster with a bow reads its range the same way. */
   rangeOnLine(line, item) {
     return rangeOnLine(this, line, item);
+  }
+
+  /*
+   * --- what the HUD asks of whoever it is drawing  [BUILT 2026-11-14]
+   *
+   * The tray is the one surface a GM runs a monster from, and until today it refused to open on
+   * one at all -- so a goblin could be given an intent card and there was nowhere to play it. The
+   * four readers below are everything the tray asks of an actor that the character model answers
+   * and this one did not. None of them is new rule: each is the monster's half of a sentence
+   * core-rules already states for both.
+   */
+
+  /** A Frozen monster moves as little as a Frozen hero (core-rules 7). */
+  movePlayed(printed) {
+    return moveAsPlayed(this, printed).played;
+  }
+
+  moveAsPlayed(printed) {
+    return moveAsPlayed(this, printed);
+  }
+
+  /** A monster loses its secondary to Dazed too. */
+  get noSecondary() {
+    return this.activeConditions.some(c => CARDRPG.conditions[c.key]?.blocksSecondary);
+  }
+
+  /** And its whole turn to Halted. */
+  get noTurn() {
+    return this.activeConditions.some(c => CARDRPG.conditions[c.key]?.blocksTurn);
+  }
+
+  /**
+   * **The piles, counted.** An NPC has four of the six a character has: no hand (core-rules 9
+   * says it holds none) and no Spent pile, because nothing of a monster's goes out for the fight.
+   * The keys a character has but a monster cannot are reported as 0 rather than left out, so the
+   * one template can read `deckCounts.hand` without asking which kind of actor it is drawing.
+   */
+  get deckCounts() {
+    const deck = which => {
+      const id = this.decks?.[which];
+      return id ? game.cards?.get(id) : null;
+    };
+    return {
+      draw: available(deck("action")).length,
+      hand: 0,
+      discard: deck("actionDiscard")?.cards.size ?? 0,
+      spent: 0,
+      fate: available(deck("fate")).length,
+      fateDiscard: deck("fateDiscard")?.cards.size ?? 0
+    };
   }
 }

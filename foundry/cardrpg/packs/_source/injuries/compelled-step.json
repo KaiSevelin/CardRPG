@@ -8,6 +8,7 @@
   },
   "name": "Compelled Step",
   "type": "injury",
+  "img": "systems/cardrpg/art/injuries/compelled-step.webp",
   "system": {
     "category": "curse",
     "intruder": {

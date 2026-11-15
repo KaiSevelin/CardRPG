@@ -25,7 +25,7 @@ import {
   FORMULAS, SHADOW_FORMULAS,
   SHADE_SIGNATURES, TACTICS, STRENGTH_SIGNATURES, STRENGTH_TACTICS,
   MIND_SIGNATURES, MIND_TACTICS, FAITH_SIGNATURES, FAITH_TACTICS,
-  WARRIOR_SKILLS
+  WARRIOR_SKILLS, ALL_SKILLS, ITEMS, RITUALS
 } from "./content.mjs";
 
 /**
@@ -68,7 +68,14 @@ export const POOL = new Map([...COMMON_POOL, ...WAY_CARDS, ...SHADE_POOL, ...STR
  *
  * A background is the only thing that deals from it today -- two cards, per backgrounds.md.
  */
-export const SKILL_POOL = new Map(WARRIOR_SKILLS.map(c => [c.name, c]));
+/*
+ * **Every skill card, not only the generic fifteen.**  [2026-11-15] This was built from
+ * `WARRIOR_SKILLS`, which was every skill card there was; the four Ways deal in their own
+ * now, and a map that could not see them would have told the player that the card their
+ * title had just handed over "has not been built yet" -- the same defect the twenty-one item
+ * grants had, caught here before it shipped rather than a fortnight after.
+ */
+export const SKILL_POOL = new Map(ALL_SKILLS.map(c => [c.name, c]));
 
 /**
  * The formulas a node may hand out, by name -- the spell half of `POOL`, and a separate map
@@ -402,14 +409,24 @@ export function rebuildGraph({ added = [], removed = [] } = {}) {
 }
 
 /**
- * The earliest level at which a node can be held: the nodes it needs plus itself, and **not** the
- * root -- section 7 counts level as the nodes you own not counting the root, so this counts the same
- * way or the two numbers would never agree.
+ * The earliest level at which a node can be held: the nodes it needs plus itself, counting the
+ * same way `levelOf` counts -- or the two numbers would never agree about the same character.
+ *
+ * **Not the root, and not a creation node.**  [FIXED 2026-11-14] It skipped the root alone, which
+ * was the whole of the exception while the root was the only thing you could own without spending
+ * a level. Origin and Occupation are `free` too (leveling 3: *the node is the level*, and these
+ * are not levels), and the day a Way moved behind them every title in the game reported itself
+ * **two levels deeper than a character could actually reach it** -- the Way's own trunk included.
+ *
+ * `levelOf` already read `free`; this did not. Two counters for one number, agreeing only while
+ * nothing free sat on a path, which is exactly the shape of defect this project keeps digging out.
  */
 export function levelFor(id) {
   const needs = REACH.get(id);
   if (!needs) return 1;
-  return [...needs].filter(n => n !== ROOT).length + 1;
+  const spent = [...needs].filter(n => n !== ROOT && !GRAPH.get(n)?.free).length;
+  /* Itself, unless it is free too: an occupation is held at level 0 like the origin behind it. */
+  return spent + (GRAPH.get(id)?.free ? 0 : 1);
 }
 
 /**
@@ -573,6 +590,33 @@ export function tacticOf(owned) {
 export const SLATES = new Map(SIGNATURES.map(s => [s.name, s]));
 
 /**
+ * **The equipment catalogue by name, because twenty-one nodes promise gear and none of it ever
+ * arrived.**  [FIXED 2026-11-14]
+ *
+ * `grants.item` has been in the content since the occupations were written -- a Soldier's Repair
+ * Kit, an Urchin's Lockpicks, a Burglar's Kit, three of Ritual Magic's recipes -- and
+ * `grantSlate` looked for the name in `SLATES` and `TEACHINGS_BY_NAME`, which hold Signatures
+ * and what a school teaches. **An item is in neither.** All twenty-one resolved to nothing, told the
+ * player that what they had just been promised "has not been built yet", and handed over no
+ * document.
+ *
+ * It was invisible from both ends. The panel never listed the item either -- `describeGrants`
+ * had no line for `item` -- so a player was not told they were owed gear and then not given it;
+ * they were simply never told. *A new character has no gear* is the whole of the symptom, and the
+ * only reason it reads as a content gap rather than a bug is that the content was right.
+ *
+ * **Recipes are in it too.** The seven `RITUALS` are items by decision -- magic.mjs argues it at
+ * length: *a recipe is bought, stolen, copied and lent, and a GM hands one out the way they hand
+ * out a key* -- and they are built into the items pack beside `ITEMS`. Three nodes grant one, so
+ * a map that held only `ITEMS` would have fixed eighteen of twenty-one and left Ritual Magic's
+ * whole trunk still handing over nothing.
+ *
+ * NPC gear and natural weapons are deliberately NOT here: a node cannot grant a goblin's shiv or
+ * a bite, and a map that could answer for them would answer a question nobody should ask it.
+ */
+export const GEAR = new Map([...ITEMS, ...RITUALS].map(i => [i.name, i]));
+
+/**
  * Every teaching by name, so a school's menu can hand over what the school actually teaches.
  *
  * `SLATES` holds Signatures and `SPELLS` holds formulas, and the nine features a school teaches are
@@ -698,6 +742,18 @@ export function describeGrants(node) {
   if (g.card) lines.push(`${game.i18n.localize("CARDRPG.Level.Card")}: ${g.card}`);
   if (g.feature) lines.push(`${game.i18n.localize("CARDRPG.Level.Feature")}: ${g.feature}`);
   if (g.spell) lines.push(`${game.i18n.localize("CARDRPG.Level.Spell")}: ${g.spell}`);
+  /*
+   * **Gear and skill cards, which this panel has never named.**  [FIXED 2026-11-14] Twenty-one
+   * nodes grant an item and twelve grant skill cards, and the one window whose job is to say what
+   * a level buys listed neither. A player taking Street Urchin was told *Feature: Light Step,
+   * Training: lockpicks* and not that it also hands over the lockpicks.
+   */
+  for (const name of [g.item ?? []].flat()) {
+    lines.push(`${game.i18n.localize("CARDRPG.Level.Item")}: ${name}`);
+  }
+  for (const name of [g.skill ?? []].flat()) {
+    lines.push(`${game.i18n.localize("CARDRPG.Level.Skill")}: ${name}`);
+  }
   if (g.choose?.from) {
     lines.push(game.i18n.format("CARDRPG.Level.Choose", {
       source: g.choose.from, n: choiceList(g.choose.from)?.length ?? 0
@@ -728,18 +784,29 @@ export function describeGrants(node) {
 }
 
 /**
- * What taking this node would shut, by name. An exclusive node is the one irreversible level-up in
- * the game, so accept-or-cancel is not enough on its own: the player is told what they are giving
- * up before they give it up, not afterwards.
+ * **What taking this node would shut.** An exclusive node is the one irreversible level-up in the
+ * game, so accept-or-cancel is not enough on its own: the player is told what they are giving up
+ * before they give it up, not afterwards.
+ *
+ * **Ids, and `wouldClose` names them.**  [SPLIT 2026-11-14] This returned names, because the only
+ * reader was a sentence in a panel. The map lights them now -- a list of fifty-six names beside a
+ * graph that knows exactly where all fifty-six are is the wrong form for the question -- and a
+ * highlighter needs ids. One computation with two readings rather than two walks of the graph
+ * that could disagree about what *shut* means.
  */
-export function wouldClose(id, owned) {
+export function wouldCloseIds(id, owned) {
   const node = GRAPH.get(id);
   if (!node?.exclusive) return [];
   const after = new Set([...owned, id]);
   const stillLive = reachable(after, closedIds(after));
   return LIVE_NODES
     .filter(n => !after.has(n.id) && !stillLive.has(n.id) && reachable(owned).has(n.id))
-    .map(n => n.name ?? n.id);
+    .map(n => n.id);
+}
+
+/** The same answer in the words a panel prints. */
+export function wouldClose(id, owned) {
+  return wouldCloseIds(id, owned).map(n => GRAPH.get(n)?.name ?? n);
 }
 
 /* -------------------------------------------- */
@@ -781,7 +848,12 @@ export async function takeNode(actor, id) {
   const grants = GRAPH.get(id)?.grants ?? {};
   if (grants.card) await grantCard(actor, grants.card);
   if (grants.feature) await grantSlate(actor, grants.feature, "feature");
-  if (grants.item) await grantSlate(actor, grants.item, "item");
+  /*
+   * **One name or several.** A trade gives you its tool and the thing you did the work with, and
+   * one string could only ever say one of them. A string stays a string -- nineteen nodes grant
+   * exactly one thing and should not have to be written as a list of one.
+   */
+  for (const name of [grants.item ?? []].flat()) await grantSlate(actor, name, "item");
   if (grants.spell) await grantSpell(actor, grants.spell, id);
   /* A menu names either kind of list, and which one decides the document that gets made. */
   if (grants.choose?.from) {
@@ -856,8 +928,9 @@ export function spellKindOf(source) {
  */
 async function grantSlate(actor, name, type) {
   /* A Signature first, then any teaching: eight of the nine features a school teaches are pool
-   * entries, which `SLATES` has never held. */
-  const def = SLATES.get(name) ?? TEACHINGS_BY_NAME.get(name);
+   * entries, which `SLATES` has never held. Then the equipment catalogue, which is where every
+   * one of the twenty-one `grants.item` names actually lives -- see `GEAR`. */
+  const def = SLATES.get(name) ?? TEACHINGS_BY_NAME.get(name) ?? GEAR.get(name);
   if (!def) {
     ui.notifications?.warn(game.i18n.format("CARDRPG.Level.NoSlate", { name }));
     return false;
@@ -1199,7 +1272,23 @@ async function grantCard(actor, name) {
 async function grantCardChoice(actor, source) {
   const deck = deckOf(actor, "action");
   const list = CARDS_BY_SOURCE.get(source) ?? [];
-  if (!deck) return false;
+  /*
+   * **A menu with nowhere to put the card says so.**  [FIXED 2026-11-14]
+   *
+   * This returned false before the dialog ever opened, so a character with no action deck
+   * accepted *What You Favour*, spent the level, and was shown nothing at all -- no menu, no
+   * warning, no card. The node was marked owned either way, which made it a level spent on
+   * silence.
+   *
+   * Characters have decks now (`buildCharacterDecks`), so the common case is gone. The guard
+   * stays, because a stack can still be deleted out from under an actor, and it now says which of
+   * the two things went wrong rather than looking exactly like a player changing their mind.
+   */
+  if (!deck) {
+    ui.notifications?.warn(`${actor.name} has no action deck, so there is nowhere to put a card `
+      + "from this list. Rebuild the character's decks and take the node again.");
+    return false;
+  }
   const held = new Set(deck.cards.map(c => c.name));
   const open = list.filter(card => !held.has(card.name));
   if (!open.length) {

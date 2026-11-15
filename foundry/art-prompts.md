@@ -1,6 +1,6 @@
 # Art prompts
 
-**760 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
+**779 prompts**, one per piece in [the art list](art-list.md), in the style the six-flavour test picked: **brush and ink wash**. Generated from the game's own content by `cardrpg/test/art-prompts.mjs` — regenerate it rather than editing it.
 
 It walks the same `GROUPS` the art list walks, by importing it rather than copying it, so the two files cannot disagree about what exists.
 
@@ -27,7 +27,7 @@ So the numbers are gone from the capsules and the picture is in their place: **t
 
 ## Deck backs
 
-**Draw these first.** 11 pictures against 749 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
+**Draw these first.** 11 pictures against 768 faces, and they are what a table looks at all evening, since a deck is face down from the first second of play.
 
 ### The capsule — paste this once
 
@@ -1135,7 +1135,7 @@ Draw a gesture that moves somebody else: one limb extended and pointing out of f
 File: `cards/npc/pick-the-soft-one.webp`
 
 ```text
-SUBJECT. "Pick the Soft One" — Move, Strike ignores Block · Move your speed and Strike whoever is least ready for it, round the shield rather than through it: Block does not answ...
+SUBJECT. "Pick the Soft One" — Move, Strike ignores Block · Move your speed and Strike whoever is least ready for it, round the shield rather than through it: Block does not answer this.
 
 Draw a blow arriving past a raised human shield instead of against it -- the guard still whole, still high, facing the wrong way, and the strike already behind it and in.
 ```
@@ -1432,7 +1432,7 @@ Use the full range, both ends of it:
 File: `cards/shade/at-full-draw.webp`
 
 ```text
-SUBJECT. "At Full Draw" — Ready · / Move 1 · A bow or a crossbow. The first enemy to walk into the ground you are watching takes the shot, at the bow's own value, out to its...
+SUBJECT. "At Full Draw" — Ready · / Move 1 · A bow or a crossbow. The first enemy to walk into the ground you are watching takes the shot, at the bow's own value, out to its own range.
 
 Draw the drawing hand at full draw, three fingers hooked hard on the string with the arrow's nock between them and the string bent sharp either side. The bow's limbs are cut off by the frame and the arrow runs out of it level. No head, no face and no shoulder: the hand and the string are the whole subject. The arrowhead and every metal edge are warm grey, never blue.
 
@@ -1636,7 +1636,7 @@ WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of N
 File: `cards/shade/the-held-knife.webp`
 
 ```text
-SUBJECT. "The Held Knife" — Ready · / Move 1 · A weapon you can throw. The first enemy to walk into the ground you are watching takes it, at the blade's own value and no furth...
+SUBJECT. "The Held Knife" — Ready · / Move 1 · A weapon you can throw. The first enemy to walk into the ground you are watching takes it, at the blade's own value and no further than it flies.
 
 Draw a knife held by the blade between finger and thumb, the hand filling the upper middle of the frame and the forearm running out of the bottom corner. The point is steady and aimed out of frame to one side. Nothing above the hand: no head and no shoulder in the picture. The steel is warm grey, never blue.
 
@@ -1823,7 +1823,7 @@ WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of N
 File: `cards/strength/on-the-rest.webp`
 
 ```text
-SUBJECT. "On the Rest" — Ready · / Move 1 · A firearm, levelled on its rest. The first enemy to walk into the ground you are watching takes it, armour and all, out to the b...
+SUBJECT. "On the Rest" — Ready · / Move 1 · A firearm, levelled on its rest. The first enemy to walk into the ground you are watching takes it, armour and all, out to the barrel's own range.
 
 Draw a musket barrel laid across a forked rest driven into the ground, levelled flat down one line and sighted along, the match smouldering. Not fired: waiting.
 
@@ -2159,7 +2159,7 @@ WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of S
 File: `cards/skill/heave.webp`
 
 ```text
-SUBJECT. "Heave" — might 2
+SUBJECT. "Heave" — might 2 · Edge: What you shift stays shifted: the way is open behind you for everybody else.
 
 Draw a load shifting at last -- shoulder into it, feet skidding, the thing finally moving.
 
@@ -2195,7 +2195,7 @@ WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Per
 File: `cards/skill/out-of-the-light.webp`
 
 ```text
-SUBJECT. "Out of the Light" — shadow 1
+SUBJECT. "Out of the Light" — shadow 1 · Edge: Nobody can say afterwards that it was you.
 
 Draw somebody stepping backwards out of a lit place into one that is not, more than half of them already gone.
 
@@ -2207,7 +2207,7 @@ WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of E
 File: `cards/skill/quick-hands.webp`
 
 ```text
-SUBJECT. "Quick Hands" — agility 2
+SUBJECT. "Quick Hands" — agility 2 · Edge: You do it one-handed, without setting down what you were already carrying.
 
 Draw fingers working a catch or a knot faster than an eye follows, the other hand already started on what comes after.
 
@@ -2219,7 +2219,7 @@ WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of M
 File: `cards/skill/set-your-feet.webp`
 
 ```text
-SUBJECT. "Set Your Feet" — might 3
+SUBJECT. "Set Your Feet" — might 3 · Edge: You are not moved, and you do not drop what you are holding.
 
 Draw the instant before a pull rather than during it: weight dropped, heels dug, the line gone tight and nothing moving yet.
 
@@ -2243,7 +2243,7 @@ WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of L
 File: `cards/skill/soldiers-learning.webp`
 
 ```text
-SUBJECT. "Soldier's Learning" — lore 1
+SUBJECT. "Soldier's Learning" — lore 1 · Edge: You have watched somebody try this: the GM tells you one thing that went wrong for them.
 
 Draw a hand reading something by touch that it has handled a thousand times before. Recognition, not study.
 
@@ -3188,7 +3188,7 @@ Draw the quality itself as one human moment -- the person it describes, caught i
 
 ## Origins — where a character is from
 
-**10 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/nodes/origin/`.
+**15 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/nodes/origin/`.
 
 Shown in the level-up pane beside the description, while a player is still deciding who they are. **Draw the PLACE and nobody in it** -- every character who takes this origin shares the picture, so a figure in the frame is somebody else's character. Somewhere a person could be standing, with nobody standing in it.
 
@@ -3281,7 +3281,7 @@ Use the full range, both ends of it:
 File: `nodes/origin/echterhof-born.webp`
 
 ```text
-SUBJECT. "Echterhof-born" — A large neutral city in the middle of Horde territory, ruled by Strigoi princes, with farmland around it the Horde has left alone. Strigoi live off humans, so a large human population lives there between the vampires ...
+SUBJECT. "Echterhof-born" — A city in the middle of Horde territory held by Strigoi princes. At dusk the shutters go up street by street, lamps are left burning in the windows so that whatever walks can see who is at home, and the long cold hall
 
 Draw the place and nobody in it: somewhere a person could be standing, at an hour that says what living there is like, with nobody standing in it. No figure at all.
 ```
@@ -3291,7 +3291,37 @@ Draw the place and nobody in it: somewhere a person could be standing, at an hou
 File: `nodes/origin/furnace-stock.webp`
 
 ```text
-SUBJECT. "Furnace Stock" — You were not born in the Furnace District -- nobody has been for a generation. You were born into what came out of it: the engineering guilds its refugees founded in every surviving district, which kept the trade, the...
+SUBJECT. "Furnace Stock" — You were not born in the Furnace District -- nobody has been for a generation.
+
+Draw the place and nobody in it: somewhere a person could be standing, at an hour that says what living there is like, with nobody standing in it. No figure at all.
+```
+
+### Hyrlock
+
+File: `nodes/origin/hyrlock.webp`
+
+```text
+SUBJECT. "Hyrlock" — The Red Tower, fifty metres of it at the top of Mander Cliff, over a terraced city on an island a week's sailing from anywhere.
+
+Draw the place and nobody in it: somewhere a person could be standing, at an hour that says what living there is like, with nobody standing in it. No figure at all.
+```
+
+### Kelp Bay
+
+File: `nodes/origin/kelp-bay.webp`
+
+```text
+SUBJECT. "Kelp Bay" — Cobbled alleys under standing fog, hung with blue lanterns for the bars, red for the brothels and green for the business nobody names, over the smell of fermenting kelp.
+
+Draw the place and nobody in it: somewhere a person could be standing, at an hour that says what living there is like, with nobody standing in it. No figure at all.
+```
+
+### Regensburg
+
+File: `nodes/origin/regensburg.webp`
+
+```text
+SUBJECT. "Regensburg" — Three concentric walls ten metres high in a valley of the Spear Mountains, each ring cut again into sections by more walls: a city built to be lost one street at a time.
 
 Draw the place and nobody in it: somewhere a person could be standing, at an hour that says what living there is like, with nobody standing in it. No figure at all.
 ```
@@ -3302,6 +3332,16 @@ File: `nodes/origin/saag-et-haar.webp`
 
 ```text
 SUBJECT. "Saag et Haar" — What is left of Seetch, the realm of the necromancer kings, south of the Hyena Desert. The greatest of them, Fahlas, still rules it after four hundred years and has become a minor god.
+
+Draw the place and nobody in it: somewhere a person could be standing, at an hour that says what living there is like, with nobody standing in it. No figure at all.
+```
+
+### Solemn
+
+File: `nodes/origin/solemn.webp`
+
+```text
+SUBJECT. "Solemn" — A white limestone island south-east of the Ruby, with a walled city of towers and spires at the top of it: Sonebra, where the sisterhood keeps its own counsel.
 
 Draw the place and nobody in it: somewhere a person could be standing, at an hour that says what living there is like, with nobody standing in it. No figure at all.
 ```
@@ -3341,7 +3381,7 @@ Draw the place and nobody in it: somewhere a person could be standing, at an hou
 File: `nodes/origin/the-iron.webp`
 
 ```text
-SUBJECT. "The Iron" — The northern half of the Hyena Desert, or the mineral mountains above it. Sammel is the only real city and the emirs have cut it into sealed quarters called Rote -- the old assassin state holds the central one, around...
+SUBJECT. "The Iron" — The northern half of the Hyena Desert, or the mineral mountains above it. Sammel is the only real city and the emirs have cut it into sealed quarters called Rote -- the old assassin state holds the central one, around
 
 Draw the place and nobody in it: somewhere a person could be standing, at an hour that says what living there is like, with nobody standing in it. No figure at all.
 ```
@@ -3356,12 +3396,12 @@ SUBJECT. "The Ruby" — Warm hills in the south-east, wine and fruit, winter pal
 Draw the place and nobody in it: somewhere a person could be standing, at an hour that says what living there is like, with nobody standing in it. No figure at all.
 ```
 
-### Velderon
+### The Triple Enclave
 
-File: `nodes/origin/velderon.webp`
+File: `nodes/origin/the-triple-enclave.webp`
 
 ```text
-SUBJECT. "Velderon" — The elves' embassy on Firma, east of the Fiord: an ancient elven ruin with one restored corner. You do not go in without an invitation, so whatever brought you up there was unusual.
+SUBJECT. "The Triple Enclave" — Three walled towns on the western slopes of the Spear Mountains, each ringed around its own castle, with a waterfall falling over the wall of the highest of them.
 
 Draw the place and nobody in it: somewhere a person could be standing, at an hour that says what living there is like, with nobody standing in it. No figure at all.
 ```
@@ -3371,7 +3411,17 @@ Draw the place and nobody in it: somewhere a person could be standing, at an hou
 File: `nodes/origin/wolf-peak.webp`
 
 ```text
-SUBJECT. "Wolf Peak" — A religious centre of the faith of the Fire, on a dormant volcano north of the Amber, never once taken. The roads to the summit are easy to hold and the mountain feeds itself.
+SUBJECT. "Wolf Peak" — A monastery cut into the steep flank of a dormant volcano north of the Amber: terraces, stairs and bell towers stepped up the black scree, never once taken.
+
+Draw the place and nobody in it: somewhere a person could be standing, at an hour that says what living there is like, with nobody standing in it. No figure at all.
+```
+
+### Xtchaargh
+
+File: `nodes/origin/xtchaargh.webp`
+
+```text
+SUBJECT. "Xtchaargh" — The Summer Village: a quarter of ordinary houses and a square, walled into the middle of a hive's chaotic tunnels and chambers of chewed earth.
 
 Draw the place and nobody in it: somewhere a person could be standing, at an hour that says what living there is like, with nobody standing in it. No figure at all.
 ```
@@ -3481,7 +3531,7 @@ Draw the work and not the worker -- the kit laid out, the bench, the deck at the
 File: `nodes/background/caravan-guard.webp`
 
 ```text
-SUBJECT. "Caravan Guard" — Everything between the districts moves by road or does not move. The West Road is a tunnel with cities in it, the Cracked Road is limestone and not safe, and the East Road has the Night Express running through its own...
+SUBJECT. "Caravan Guard" — Everything between the districts moves by road or does not move. The West Road is a tunnel with cities in it, the Cracked Road is limestone and not safe, and the East Road has the Night Express running through its own
 
 Draw the work and not the worker -- the kit laid out, the bench, the deck at the hour the job is done. Hands at most, and never a face.
 ```
@@ -3501,7 +3551,7 @@ Draw the work and not the worker -- the kit laid out, the bench, the deck at the
 File: `nodes/background/forester.webp`
 
 ```text
-SUBJECT. "Forester" — The Amber is wet conifer forest broken by lakes and bog, and most of it is nobody's. Timber was the export until the Furnace fell and took the routes with it; what is left is hunting, and the forest barons who are bro...
+SUBJECT. "Forester" — The Amber is wet conifer forest broken by lakes and bog, and most of it is nobody's.
 
 Draw the work and not the worker -- the kit laid out, the bench, the deck at the hour the job is done. Hands at most, and never a face.
 ```
@@ -3531,7 +3581,7 @@ Draw the work and not the worker -- the kit laid out, the bench, the deck at the
 File: `nodes/background/miner.webp`
 
 ```text
-SUBJECT. "Miner" — The Mouse Mountains above the Hyena Desert, or the Spear Mountains, or one of the roads being cut between districts. The Iron's mining is also why the East Road is the least safe road: dig far enough and something com...
+SUBJECT. "Miner" — The Mouse Mountains above the Hyena Desert, or the Spear Mountains, or one of the roads being cut between districts.
 
 Draw the work and not the worker -- the kit laid out, the bench, the deck at the hour the job is done. Hands at most, and never a face.
 ```
@@ -4303,7 +4353,7 @@ WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Nor
 File: `nodes/title/way-of-faith.webp`
 
 ```text
-SUBJECT. "Way of Faith" — Sworn · Support / an obligation — Standing for something that is not you. Faith spends an obligation -- somebody is owed, and the Way is what they ask -- and it answers in support: what you do for the people beside yo...
+SUBJECT. "Way of Faith" — Sworn · Support / an obligation — Standing for something that is not you. Faith spends an obligation -- somebody is owed, and the Way is what they ask -- and it answers in support: what you do for the people beside you
 
 Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
 
@@ -4315,7 +4365,7 @@ WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of C
 File: `nodes/title/way-of-mind.webp`
 
 ```text
-SUBJECT. "Way of Mind" — Scholar · Preparation / spell slots — What was decided before it mattered. Mind spends preparation -- the spell slots and the formulae set before the fight -- and it is the only Way whose first step hands you a resour...
+SUBJECT. "Way of Mind" — Scholar · Preparation / spell slots — What was decided before it mattered. Mind spends preparation -- the spell slots and the formulae set before the fight -- and it is the only Way whose first step hands you a resource
 
 Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
 
@@ -4339,7 +4389,7 @@ WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of M
 File: `nodes/title/way-of-strength.webp`
 
 ```text
-SUBJECT. "Way of Strength" — Warrior · Position / weight — Mass that is already moving, and making it somebody else's problem. Strength spends weight -- what you carry and what carrying it costs you -- and turns it into position the other side do...
+SUBJECT. "Way of Strength" — Warrior · Position / weight — Mass that is already moving, and making it somebody else's problem.
 
 Draw the quality itself as one human moment -- the person it describes, caught in the second that proves it. No object held up, no symbol, no emblem.
 
@@ -5098,7 +5148,7 @@ Use the full range, both ends of it:
 File: `signatures/mind/blood-price.webp`
 
 ```text
-SUBJECT. "Blood Price" — strength 2 · Cast +4 range 3 ignores armour
+SUBJECT. "Blood Price" — strength 2 · Cast +4 range 3 ignores armour · [object Object]
 
 Four damage at three squares, and nothing between you and it matters. The two Health are not a drawback; they are the school.
 
@@ -5238,7 +5288,7 @@ WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of H
 File: `signatures/mind/wither.webp`
 
 ```text
-SUBJECT. "Wither" — strength 2 · Cast Poisoned 1 (2)
+SUBJECT. "Wither" — strength 2 · Cast Poisoned 1 (2) · [object Object]
 
 Dazed while it lasts, and one damage a turn that armour does not stop.
 
@@ -5399,7 +5449,7 @@ WHO IS IN IT. If a face or any bare skin shows here, that person is a woman of W
 File: `signatures/faith/the-club-and-the-line.webp`
 
 ```text
-SUBJECT. "The Club and the Line" — strength 2 · Cast blast 1 with the weapon in hand
+SUBJECT. "The Club and the Line" — strength 2 · Cast blast 1 with the weapon in hand · [object Object]
 
 Strike every adjacent enemy. No free hand needed, because the club is the holy symbol — which is the gift on the node, not on the card.
 
@@ -5923,7 +5973,7 @@ Draw that line literally: the one moment it describes, and nothing else in frame
 File: `spells/mind/boil.webp`
 
 ```text
-SUBJECT. "Boil" — strength 3 · Cast Burning 3 (2)
+SUBJECT. "Boil" — strength 3 · Cast Burning 3 (2) · [object Object]
 
 Not your blood this time. Theirs, and it does not stop.
 
@@ -6125,7 +6175,7 @@ Draw a hand turning one thing over and letting it drop.
 File: `spells/mind/open-the-vein.webp`
 
 ```text
-SUBJECT. "Open the Vein" — strength 1 · Cast +3 range 2 ignores Block
+SUBJECT. "Open the Vein" — strength 1 · Cast +3 range 2 ignores Block · [object Object]
 
 Your own blood, thrown. It goes round a shield rather than through it.
 
@@ -6149,7 +6199,7 @@ Draw footing lost, landing 3 squares from the one who threw it.
 File: `spells/mind/slick.webp`
 
 ```text
-SUBJECT. "Slick" — strength 1 · range 3 Off Balance (1)
+SUBJECT. "Slick" — strength 1 · range 3 Off Balance (1) · [object Object]
 
 Oil of something. No save: a man whose feet have gone is not resisting anything.
 
@@ -6317,7 +6367,7 @@ Draw something arriving that was not there a moment ago.
 File: `spells/mind/the-grey-sickness.webp`
 
 ```text
-SUBJECT. "The Grey Sickness" — strength 2 · Tainting 1 slow: a disease, not a poison
+SUBJECT. "The Grey Sickness" — strength 2 · Tainting 1 slow: a disease, not a poison · [object Object]
 
 Not a poison. A disease, which is the difference between a bad afternoon and something still with them next week.
 
@@ -6353,7 +6403,7 @@ Draw that line literally: the one moment it describes, and nothing else in frame
 File: `spells/mind/the-kingmakers-draught.webp`
 
 ```text
-SUBJECT. "The Kingmaker's Draught" — strength 5 · Poisoned 3 (3) no save. If it dies while poisoned, set aside no skill cards for this formula
+SUBJECT. "The Kingmaker's Draught" — strength 5 · Poisoned 3 (3) no save. If it dies while poisoned, set aside no skill cards for this formula · [object Object]
 
 Three rounds of three, no save, and no cost at all if it finishes him. If it does not, you have paid five cards for an angry survivor who knows your face.
 
@@ -6377,7 +6427,7 @@ Draw that line literally: the one moment it describes, and nothing else in frame
 File: `spells/mind/the-last-drop.webp`
 
 ```text
-SUBJECT. "The Last Drop" — strength 5 · take your whole turn again, now
+SUBJECT. "The Last Drop" — strength 5 · take your whole turn again, now · [object Object]
 
 You will not be standing afterwards. You will have had two turns.
 
@@ -6389,7 +6439,7 @@ Draw that line literally: the one moment it describes, and nothing else in frame
 File: `spells/mind/the-long-dose.webp`
 
 ```text
-SUBJECT. "The Long Dose" — strength 1 · Cast range 2 Poisoned (3)
+SUBJECT. "The Long Dose" — strength 1 · Cast range 2 Poisoned (3) · [object Object]
 
 No damage at all. Three rounds of a man who cannot use his off hand, which in a fight is worse than three damage and lasts longer.
 
@@ -6521,7 +6571,7 @@ Draw that line literally: the one moment it describes, and nothing else in frame
 File: `spells/mind/the-quick-dose.webp`
 
 ```text
-SUBJECT. "The Quick Dose" — strength 3 · Cast Poisoned 2 (2)
+SUBJECT. "The Quick Dose" — strength 3 · Cast Poisoned 2 (2) · [object Object]
 
 Adjacent, because it has to go in them. Two rounds, two damage a round, and armour is no part of the conversation.
 
@@ -6555,7 +6605,7 @@ Draw the arrival, landing 3 squares from the one who threw it.
 File: `spells/mind/the-second-heartbeat.webp`
 
 ```text
-SUBJECT. "The Second Heartbeat" — strength 3 · Spent: play a second primary this turn
+SUBJECT. "The Second Heartbeat" — strength 3 · Spent: play a second primary this turn · [object Object]
 
 Two hearts for one turn. The second one is paid for.
 
@@ -6579,7 +6629,7 @@ Draw that line literally: the one moment it describes, and nothing else in frame
 File: `spells/mind/the-shared-cup.webp`
 
 ```text
-SUBJECT. "The Shared Cup" — strength 4 · Cast aimed 3 Poisoned 1 (3)
+SUBJECT. "The Shared Cup" — strength 4 · Cast aimed 3 Poisoned 1 (3) · [object Object]
 
 Everyone who drank. Three rounds of it, over three squares, and the save is the only mercy in the formula.
 
@@ -7004,7 +7054,7 @@ Draw that line literally: the one moment it describes, and nothing else in frame
 File: `spells/faith/stand-where-i-stand.webp`
 
 ```text
-SUBJECT. "Stand Where I Stand" — strength 1 · range 1 adjacent allies cannot be reduced below 1 Health
+SUBJECT. "Stand Where I Stand" — strength 1 · range 1 adjacent allies cannot be reduced below 1 Health · [object Object]
 
 Allies adjacent to you cannot be reduced below 1 Health until your next turn. His miracles are paid in yours.
 
@@ -7028,7 +7078,7 @@ Draw footing lost, landing 3 squares from the one who threw it; pulled toward so
 File: `spells/faith/taste-of-the-rot.webp`
 
 ```text
-SUBJECT. "Taste of the Rot" — strength 1 · Cast +1 range 1 Off Balance (1) the Taint only on a Miss
+SUBJECT. "Taste of the Rot" — strength 1 · Cast +1 range 1 Off Balance (1) the Taint only on a Miss · [object Object]
 
 One adjacent enemy: 1 damage and Off-Balance, no save. A Miss costs you a Taint, which is the god being paid whether or not it worked.
 
@@ -7088,7 +7138,7 @@ Draw something going wrong under the skin.
 File: `spells/faith/the-charge.webp`
 
 ```text
-SUBJECT. "The Charge" — strength 2 · area 2 every ally within 2 may Move their full value, at once, now
+SUBJECT. "The Charge" — strength 2 · area 2 every ally within 2 may Move their full value, at once, now · [object Object]
 
 Strain 2, and the whole line moves at once. Movement is a sentence the table applies (core-rules 11), so this miracle is finished as written.
 
@@ -7170,7 +7220,7 @@ Draw a plank laid across a gap with nothing under its far end and nothing holdin
 File: `spells/faith/the-line-holds.webp`
 
 ```text
-SUBJECT. "The Line Holds" — strength 4 · allies adjacent to you cannot be moved, knocked Prone or Compelled
+SUBJECT. "The Line Holds" — strength 4 · allies adjacent to you cannot be moved, knocked Prone or Compelled · [object Object]
 
 Nobody beside you is moved, knocked down or turned. It costs two Health a man, and Vax expects you to count them first.
 
@@ -7278,7 +7328,7 @@ Draw sight swimming.
 File: `spells/faith/the-shield-line.webp`
 
 ```text
-SUBJECT. "The Shield Line" — strength 2 · range 1 adjacent allies gain your armor as Block
+SUBJECT. "The Shield Line" — strength 2 · range 1 adjacent allies gain your armor as Block · [object Object]
 
 Every ally adjacent to you gains your armor value as Block until your next turn. One Health per ally, so a long line is a dear one.
 
@@ -7302,7 +7352,7 @@ Draw that line literally: the one moment it describes, and nothing else in frame
 File: `spells/faith/the-slow-failure.webp`
 
 ```text
-SUBJECT. "The Slow Failure" — strength 5 · Tainting 3
+SUBJECT. "The Slow Failure" — strength 5 · Tainting 3 · [object Object]
 
 Tainting 3 on them and two Taint on you — which with the first taste is Afflicted. A priest of The Purple who casts their thesis is ill for good.
 
@@ -7350,7 +7400,7 @@ Draw a shadow that chose someone.
 File: `spells/faith/the-war-drum.webp`
 
 ```text
-SUBJECT. "The War Drum" — strength 4 · area 2 every ally within 2 takes their whole turn again, now
+SUBJECT. "The War Drum" — strength 4 · area 2 every ally within 2 takes their whole turn again, now · [object Object]
 
 Strain 3, and everybody near you goes again. The same mechanism Blood Magic's thesis wants, bought with pain instead of blood.
 
@@ -7398,7 +7448,7 @@ Draw the shape forming between the hands, landing 3 squares from the one who thr
 File: `spells/faith/valtors-own.webp`
 
 ```text
-SUBJECT. "Valtor's Own" — strength 5 · for the rest of the fight you play a primary and two secondaries each turn
+SUBJECT. "Valtor's Own" — strength 5 · for the rest of the fight you play a primary and two secondaries each turn · [object Object]
 
 Your whole hand, strained, and for the rest of the fight you act like three men. There is nothing left to play it with, which is the god's idea of a bargain.
 
@@ -7767,6 +7817,236 @@ File: `conditions/wet.webp`
 SUBJECT. "Wet" — Water running off a flat surface in one sheet, the last of it beading along the lower edge. No rain, no vessel, no figure.
 
 Draw the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol.
+```
+
+## Injuries
+
+**14 prompts.** **2:3, 1024 × 1536.** Files go under `cardrpg/art/injuries/`.
+
+What a character carries for the rest of their life, and the ONE constraint is that nobody is in the picture. Draw the thing that compensates, the thing that no longer works, or the record of it -- the eye-patch and not the eye, the stick and not the leg, the ledger and not the debtor. **No body, no limb, no hand, no face and no figure anywhere in frame, however distant or turned away**, and nothing bleeding or in pain. An injury is permanent, so a person drawn here would be somebody else's character forever.
+
+<details><summary><b>The capsule — paste this once, at the top of a fresh chat</b></summary>
+
+```text
+A single illustration for a playing card in a tabletop fantasy RPG.
+
+THIS GROUP. What a character carries for the rest of their life, and the ONE constraint is that nobody is in the picture. Draw the thing that compensates, the thing that no longer works, or the record of it -- the eye-patch and not the eye, the stick and not the leg, the ledger and not the debtor. **No body, no limb, no hand, no face and no figure anywhere in frame, however distant or turned away**, and nothing bleeding or in pain. An injury is permanent, so a person drawn here would be somebody else's character forever.
+
+FORMAT.
+- Portrait, aspect ratio exactly 2:3, 1024 x 1536.
+- Full bleed, edge to edge. No border, no frame, no card template, no rounded corners, no drop
+  shadow, no mat, no margin.
+- ABSOLUTELY NO TEXT of any kind: no letters, numerals, runes, glyphs, signature, watermark, or
+  anything that reads as writing. Not on a shield, not on a banner, not in the background.
+
+COMPOSITION. The card prints its own name and rules text over this image in opaque panels, so the
+layout is fixed and has been measured:
+- Crop in **close**: one subject, filling the frame from side to side.
+  Never a whole figure standing in a landscape, never an object laid out on a table.
+- **A strip of bare paper across the very top, between an eighth and a sixth of the height, and
+  no more than that.** No head, no helmet, no horns, no weapon, no hand, no banner enters it, and
+  it is a narrow strip rather than an empty upper third.
+- **All of the dark lives in the band from an eighth of the height down to just under halfway**,
+  and it begins immediately under the bare strip with nothing empty between the two. The
+  near-black contour, the deepest wash and the point of the action -- a face, a blade's edge, the point of the gesture -- are all in that band, which is where
+  the picture actually happens.
+- **Below the halfway line the picture goes pale** and stays pale: the wash thins out, the ground
+  falls away to bare paper, and there is no dark mass down there at all. The card prints its rules
+  across that half, so that half has to be the quiet one.
+- Together those two make the test: **the picture must still read with its bottom half covered.**
+  Cover it in your head and check before you call it done.
+- **If the subject is taller than that band, CROP it rather than shrink it.** A bow, a raised
+  arm, a spear, a standing figure: the frame cuts through it and the part that matters stays in
+  the band. Never fit a tall thing in by making it small, and never let its top reach into the
+  bare strip to get all of it in.
+- ONE subject. A silhouette that still reads at **128 pixels wide**, which is the smallest size a
+  card is drawn at in this game.
+
+PALETTE.
+- Line and darks: **#1b1714**
+- Paper and lights: **#f4efe6**
+- Mid tone: **#c9bda8**
+- One chromatic accent only: **#a3655d**, a warm brick red. Use it on the
+  one thing the picture is about, and nowhere else.
+  **The accent is one small object's worth of colour and no more** -- a single
+  ribbon, a single flame, one stone set in a ring. Never the light, never the wash, never
+  the ground, never the sky, never a glow and never a whole figure: those are all the warm
+  neutral of the paper and the ink.
+- Desaturated and earthy. Warm throughout. **No cyan, no teal, no blue, no green, no purple, no magenta, no neon.**
+  Every hue in the picture is between red and amber -- **and that includes the ground.** Earth
+  here is bare and brown; there is no grass, no moss and no foliage anywhere in this set.
+
+PEOPLE.
+- **Where a person is drawn, decide who they are rather than defaulting.** This is a port city on
+  a trade road: the people in the set are Black, brown, Levantine, Persian, South and East Asian,
+  Mediterranean and northern-pale in roughly the proportions a crowd there would be, and women
+  are as common in it as men. A sepia palette is not a statement about skin -- warm ink renders
+  every complexion, and a deck in which every figure is the same pale man is a failure of the
+  drawing and not of the paper.
+- Nothing here asks for a particular face unless the subject says so in words, and where it does
+  say so -- a named sex, an ancestry, an age -- that is binding.
+
+STYLE.
+Brush and ink wash on rough rag paper. A confident, almost-black contour laid in
+with a loaded brush; then large soft washes for the mass; then generous untouched paper where the
+light falls. Loose and economical -- a few strokes doing the work of many. Visible bleed and
+granulation where a wash pools, dry-brush where it runs out.
+
+Three things this style does wrong at card size, and must not do here:
+- **Never neutral grey.** Every wash is warm: sepia, bistre, burnt earth. If a passage reads as
+  grey it is wrong.
+- **Never soft all over.** The contour is near-black #1b1714 and holds a hard edge. Only the
+  washes are soft. A picture with no true black in it has failed.
+- **Never evenly toned.** The darkest mass must sit directly against untouched paper, so the
+  subject separates from the ground in one glance at thumbnail size.
+
+Use the full range, both ends of it:
+- The lightest passage is **bare #f4efe6 paper, near white**, and there is a lot of it.
+- The darkest line is **near-black #1b1714**, and the two touch each other somewhere.
+- A picture whose every value sits between those ends is the failure above, however warm and
+  however well drawn. Mid tone is the background, not the picture.
+```
+
+</details>
+
+### Bad Leg
+
+File: `injuries/bad-leg.webp`
+
+```text
+SUBJECT. "Bad Leg" — One boot worn through along its outer edge, and a walking stick polished smooth at the grip leaning against it. No feet in frame.
+
+Draw what is left behind and never the person -- the thing that compensates, the thing that no longer works, or the record of it. No body, no limb, no face and no figure anywhere in frame.
+```
+
+### Compelled Step
+
+File: `injuries/compelled-step.webp`
+
+```text
+SUBJECT. "Compelled Step" — A single line of muddy footprints crossing a bare stone floor dead straight, passing an open door without turning toward it. The prints alone -- nobody in the room, and nobody in the doorway.
+
+Draw what is left behind and never the person -- the thing that compensates, the thing that no longer works, or the record of it. No body, no limb, no face and no figure anywhere in frame.
+```
+
+### Hexed Blood
+
+File: `injuries/hexed-blood.webp`
+
+```text
+SUBJECT. "Hexed Blood" — A stoppered glass vial of something dark on a slate, and one spilt drop beside it that has eaten a pale ring into the stone.
+
+Draw what is left behind and never the person -- the thing that compensates, the thing that no longer works, or the record of it. No body, no limb, no face and no figure anywhere in frame.
+```
+
+### Hollow Eyes
+
+File: `injuries/hollow-eyes.webp`
+
+```text
+SUBJECT. "Hollow Eyes" — A plain wooden mask face-up on a table, its eye-holes cut clean through to the dark grain beneath. Nobody behind it.
+
+Draw what is left behind and never the person -- the thing that compensates, the thing that no longer works, or the record of it. No body, no limb, no face and no figure anywhere in frame.
+```
+
+### Lost Eye
+
+File: `injuries/lost-eye.webp`
+
+```text
+SUBJECT. "Lost Eye" — A plain cloth eye-patch hooked over the corner of a shaving mirror, the mirror showing only the wall behind. Nobody reflected.
+
+Draw what is left behind and never the person -- the thing that compensates, the thing that no longer works, or the record of it. No body, no limb, no face and no figure anywhere in frame.
+```
+
+### Lost Fingers
+
+File: `injuries/lost-fingers.webp`
+
+```text
+SUBJECT. "Lost Fingers" — A roll of fine engraver's tools in tan leather on cream cloth, the two smallest out of their loops and set apart. Brass and boxwood.
+
+Draw what is left behind and never the person -- the thing that compensates, the thing that no longer works, or the record of it. No body, no limb, no face and no figure anywhere in frame.
+```
+
+### Lost Hand
+
+File: `injuries/lost-hand.webp`
+
+```text
+SUBJECT. "Lost Hand" — A pair of gauntlets on a workbench: the left worn soft and shaped by use, the right still bright and unmarked. Nobody wearing either.
+
+Draw what is left behind and never the person -- the thing that compensates, the thing that no longer works, or the record of it. No body, no limb, no face and no figure anywhere in frame.
+```
+
+### Night Fears
+
+File: `injuries/night-fears.webp`
+
+```text
+SUBJECT. "Night Fears" — A candle guttering beside a cot nobody is in, the blanket thrown back and the bed empty, the dark of the room pressing on a small ring of light. No figure.
+
+Draw what is left behind and never the person -- the thing that compensates, the thing that no longer works, or the record of it. No body, no limb, no face and no figure anywhere in frame.
+```
+
+### Rotted
+
+File: `injuries/rotted.webp`
+
+```text
+SUBJECT. "Rotted" — A cut loaf low on a scrubbed pale board, the crumb gone dark amber and brown-black right through to the crust. The top bare.
+
+Draw what is left behind and never the person -- the thing that compensates, the thing that no longer works, or the record of it. No body, no limb, no face and no figure anywhere in frame.
+```
+
+### Scarred Face
+
+File: `injuries/scarred-face.webp`
+
+```text
+SUBJECT. "Scarred Face" — A hand-mirror turned face-down on folded linen, a jar of salve open beside it and a clean strip half unrolled. Nothing reflected.
+
+Draw what is left behind and never the person -- the thing that compensates, the thing that no longer works, or the record of it. No body, no limb, no face and no figure anywhere in frame.
+```
+
+### Shaken Faith
+
+File: `injuries/shaken-faith.webp`
+
+```text
+SUBJECT. "Shaken Faith" — A holy symbol on a snapped cord in the bottom of an open satchel, half under a folded prayer sheet. Nobody wearing it.
+
+Draw what is left behind and never the person -- the thing that compensates, the thing that no longer works, or the record of it. No body, no limb, no face and no figure anywhere in frame.
+```
+
+### Shattered Nerves
+
+File: `injuries/shattered-nerves.webp`
+
+```text
+SUBJECT. "Shattered Nerves" — A full cup of pale tea alone on a sunlit pine table, low in frame, its surface ringed with fine tremors. Honey and cream, the top bare. Nobody at the table.
+
+Draw what is left behind and never the person -- the thing that compensates, the thing that no longer works, or the record of it. No body, no limb, no face and no figure anywhere in frame.
+```
+
+### The Debt
+
+File: `injuries/the-debt.webp`
+
+```text
+SUBJECT. "The Debt" — An open ledger alone low in frame, pages bright bare cream, one line written in brown ink and the sum column empty. A red wax seal. No hand, no quill, nobody at the desk.
+
+Draw what is left behind and never the person -- the thing that compensates, the thing that no longer works, or the record of it. No body, no limb, no face and no figure anywhere in frame.
+```
+
+### The Eager Hand
+
+File: `injuries/the-eager-hand.webp`
+
+```text
+SUBJECT. "The Eager Hand" — An empty scabbard buckled shut on a belt, and across bare boards the sword that belongs in it, point sunk into a plank.
+
+Draw what is left behind and never the person -- the thing that compensates, the thing that no longer works, or the record of it. No body, no limb, no face and no figure anywhere in frame.
 ```
 
 ## Features
@@ -8192,7 +8472,7 @@ MADE OF. 90gp -- wrought iron and seasoned wood.
 File: `items/assassins-tincture.webp`
 
 ```text
-SUBJECT. "Assassin's Tincture" — Poison · Apply with a Ready. Next Strike that hits: Poisoned 1 (2), beginning at the start of their next turn. No save. · They finish the sentence ...
+SUBJECT. "Assassin's Tincture" — Poison · Apply with a Ready. Next Strike that hits: Poisoned 1 (2), beginning at the start of their next turn. No save. · They finish the sentence they were saying.
 
 Draw a small dark bottle, labelled, a residue dried at the lip.
 
@@ -8228,7 +8508,7 @@ MADE OF. 500gp -- silver, worked bronze and fine leather.
 File: `items/black-lotus.webp`
 
 ```text
-SUBJECT. "Black Lotus" — Poison · Apply with a Ready. Next Strike that hits: Poisoned 3 (2), resist Might 9. · Illegal in every district, which is how you know the price is...
+SUBJECT. "Black Lotus" — Poison · Apply with a Ready. Next Strike that hits: Poisoned 3 (2), resist Might 9. · Illegal in every district, which is how you know the price is right.
 
 Draw a small dark bottle, labelled, a residue dried at the lip.
 
@@ -9476,7 +9756,7 @@ MADE OF. 35gp -- true ash, goose fletching and a forged head.
 File: `items/serpents-milk.webp`
 
 ```text
-SUBJECT. "Serpent's Milk" — Poison · Apply with a Ready. Next Strike that hits: Poisoned 0 (3) -- no damage, three rounds without a secondary. · Milked, strained and kept cold...
+SUBJECT. "Serpent's Milk" — Poison · Apply with a Ready. Next Strike that hits: Poisoned 0 (3) -- no damage, three rounds without a secondary. · Milked, strained and kept cold. No damage in it at all.
 
 Draw a small dark bottle, labelled, a residue dried at the lip.
 
@@ -9500,7 +9780,7 @@ MADE OF. 850gp -- gold, gilt and gems.
 File: `items/sessyfyns-tear.webp`
 
 ```text
-SUBJECT. "Sessyfyn's Tear" — Relic · Obligation: a permanent Miss AND a permanent Critical in your fate deck. · Seawater that has not dried in four hundred years. · Any one fat...
+SUBJECT. "Sessyfyn's Tear" — Relic · Obligation: a permanent Miss AND a permanent Critical in your fate deck. · Seawater that has not dried in four hundred years. · Any one fate draw on the field is drawn again.
 
 Draw worn through at the one spot a thumb has found.
 
@@ -9620,7 +9900,7 @@ MADE OF. 600gp -- silver, worked bronze and fine leather.
 File: `items/the-black-lantern.webp`
 
 ```text
-SUBJECT. "The Black Lantern" — Relic · Every square within 3 is shadowed, your enemies' included. Obligation: you may never carry any other light. · It is lit. You can tell becau...
+SUBJECT. "The Black Lantern" — Relic · Every square within 3 is shadowed, your enemies' included. Obligation: you may never carry any other light. · It is lit. You can tell because of how much less you can see.
 
 Draw worn through at the one spot a thumb has found.
 
@@ -9692,7 +9972,7 @@ MADE OF. 1200gp -- gold, gilt and gems.
 File: `items/the-unquiet-quiver.webp`
 
 ```text
-SUBJECT. "The Unquiet Quiver" — Relic · Every piece of magical ammunition you fire returns to it when the fight ends. Obligation: it will not hold ordinary arrows, and you may car...
+SUBJECT. "The Unquiet Quiver" — Relic · Every piece of magical ammunition you fire returns to it when the fight ends. Obligation: it will not hold ordinary arrows, and you may carry no other quiver. · It rattles when there is nothing in it.
 
 Draw worn through at the one spot a thumb has found.
 
@@ -9824,7 +10104,7 @@ MADE OF. 25gp -- wrought iron and seasoned wood.
 File: `items/weeping-resin.webp`
 
 ```text
-SUBJECT. "Weeping Resin" — Poison · Apply with a Ready. Next Strike that hits: the target cannot be healed for 2 rounds. No save. · The wound will not close while it is in th...
+SUBJECT. "Weeping Resin" — Poison · Apply with a Ready. Next Strike that hits: the target cannot be healed for 2 rounds. No save. · The wound will not close while it is in there.
 
 Draw a small dark bottle, labelled, a residue dried at the lip.
 
@@ -11689,7 +11969,7 @@ The whole creature, three-quarter from above, filling the square on full transpa
 
 ## Where prompts still repeat
 
-**283 prompts in 36 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
+**302 prompts in 37 clusters** share a direction with another piece. That is a motif table working as designed — it is what makes every Strike card read as a Strike — right up until it flattens two cards that mean different things.
 
 **10 of those clusters are the ones that bite**, listed first: the ones where the subject line carries no prose either, so neither half of the prompt tells the cards apart. The rest share a direction over subjects that already differ — forty-three consumables drawing a nearly-empty vessel still come back as forty-three different pictures, because each subject names its own.
 
@@ -11717,8 +11997,9 @@ Answer a cluster by adding its keys to `DIRECTION` in `test/art-prompts.mjs` and
 | **3** | 1 | worn unevenly, and the wear is the subject | `items/boots-of-the-long-step` `items/hollow-boots` `items/pilgrims-shoes` |
 | **2** | 1 | pulled toward something against the will | `cards/starter/taunt` `signatures/strength/play-to-the-crowd` |
 | **25** | — | the evidence of it and not the person under it -- one object, one mark or one gesture, with the body out of frame or cropped to a limb. No face, and nothing held up as a symbol | `conditions/blessed` `conditions/burdened` `conditions/burning` `conditions/compelled` `conditions/cursed` …+20 |
+| **15** | — | the place and nobody in it: somewhere a person could be standing, at an hour that says what living there is like, with nobody standing in it. No figure at all | `nodes/origin/echterhof-born` `nodes/origin/furnace-stock` `nodes/origin/hyrlock` `nodes/origin/kelp-bay` `nodes/origin/regensburg` …+10 |
+| **14** | — | what is left behind and never the person -- the thing that compensates, the thing that no longer works, or the record of it. No body, no limb, no face and no figure anywhere in frame | `injuries/bad-leg` `injuries/compelled-step` `injuries/hexed-blood` `injuries/hollow-eyes` `injuries/lost-eye` …+9 |
 | **11** | — |  | `backs/action` `backs/fate` `backs/ritual` `backs/skill` `backs/item` …+6 |
-| **10** | — | the place and nobody in it: somewhere a person could be standing, at an hour that says what living there is like, with nobody standing in it. No figure at all | `nodes/origin/echterhof-born` `nodes/origin/furnace-stock` `nodes/origin/saag-et-haar` `nodes/origin/the-amber` `nodes/origin/the-core` …+5 |
 | **10** | — | the work and not the worker -- the kit laid out, the bench, the deck at the hour the job is done. Hands at most, and never a face | `nodes/background/acolyte` `nodes/background/caravan-guard` `nodes/background/card-sharp` `nodes/background/forester` `nodes/background/hedge-healer` …+5 |
 | **6** | — | one hand's worth of object, drawn close and large | `items/accusers-ring` `items/gamblers-coin` `items/mnemonic-stone` `items/pact-iron` `items/serpents-tooth-ring` …+1 |
 | **6** | — | hung on a cord and drawn hanging, turned off square | `items/amulet-of-the-mended-thread` `items/gag-of-the-nine` `items/gorget-of-the-turned-blade` `items/hourglass-charm` `items/surgeons-pin` …+1 |

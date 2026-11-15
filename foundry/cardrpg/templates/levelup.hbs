@@ -85,12 +85,24 @@
         </button>
       </footer>
 
+      {{!--
+        Two columns, so the legend costs one short block at the foot of the panel rather than five
+        rows of it. The panel is where the picture goes, and a picture squeezed by a list that
+        could have been half as tall is a list winning an argument it should not be in.
+
+        The last two rows are the shape rather than the colour: the map has drawn titles as
+        hexagons since it was built and has never said so, which left the one structural
+        distinction on it — a destination against a step toward one — for the player to infer
+        from 169 boxes.
+      --}}
       <ul class="cr-levelup__legend">
         <li><span class="cr-swatch cr-swatch--owned"></span>{{localize "CARDRPG.Level.State.Owned"}} ({{counts.owned}})</li>
         <li><span class="cr-swatch cr-swatch--available"></span>{{localize "CARDRPG.Level.State.Available"}} ({{counts.available}})</li>
         <li><span class="cr-swatch cr-swatch--later"></span>{{localize "CARDRPG.Level.State.Later"}}</li>
         <li><span class="cr-swatch cr-swatch--closed"></span>{{localize "CARDRPG.Level.State.Closed"}} ({{counts.closed}})</li>
         <li><span class="cr-swatch cr-swatch--cross"></span>{{localize "CARDRPG.Level.State.Cross"}}</li>
+        <li><span class="cr-swatch cr-swatch--major"></span>{{localize "CARDRPG.Level.Kind.Major"}}</li>
+        <li><span class="cr-swatch cr-swatch--minor"></span>{{localize "CARDRPG.Level.Kind.Minor"}}</li>
       </ul>
     </aside>
   </div>

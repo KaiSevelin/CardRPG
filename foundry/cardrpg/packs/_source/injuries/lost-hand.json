@@ -8,6 +8,7 @@
   },
   "name": "Lost Hand",
   "type": "injury",
+  "img": "systems/cardrpg/art/injuries/lost-hand.webp",
   "system": {
     "category": "maiming",
     "takes": {

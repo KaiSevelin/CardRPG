@@ -6,7 +6,9 @@
  */
 
 import { DECK_BACKS } from "../content.mjs";
-import { artPathOf, backPath, CONDITION_PIECES, FATE_PIECES } from "../art.mjs";
+import {
+  artPathOf, backPath, slatePath, figurePath, CONDITION_PIECES, FATE_PIECES
+} from "../art.mjs";
 
 /**
  * The art on a card or a slate, or nothing.
@@ -21,8 +23,48 @@ import { artPathOf, backPath, CONDITION_PIECES, FATE_PIECES } from "../art.mjs";
  */
 export function artOf(doc) {
   const path = doc?.faces?.[0]?.img || doc?.img || "";
-  if (!path || path.startsWith("icons/svg/")) return "";
-  return path;
+  if (path && !path.startsWith("icons/svg/")) return path;
+  /*
+   * **And if the document is carrying nothing, derive it.**  [BUILT 2026-11-14]
+   *
+   * `slateData` stamps the path on when a slate is created and `resyncArt` repairs one created
+   * before its picture was drawn, but both are writes, and a write only ever reaches the
+   * documents in front of it. A world that has not been rebuilt since the items were drawn, a
+   * slate dragged in from somewhere else, one made by hand on an actor -- all three carry an empty
+   * `img`, and all three were showing a blank card beside a Dagger that happened to have been
+   * stamped. The rule is derivable, so it is asked rather than remembered.
+   *
+   * Items only: a Card's face is built by a deck builder that already resolves `BY_ENTRY` from the
+   * definition in its hand, which is exact where a name is a guess.
+   */
+  if (doc?.documentName === "Item") return slatePath(doc.type, doc.name);
+  return "";
+}
+
+/**
+ * **The face a figure wears, for the one panel that is about a person.**  [BUILT 2026-11-14]
+ *
+ * Every other picture in this system is a card's. The HUD's stat panel is about whoever is acting,
+ * and with the window following the selection it is also the fastest answer to *whose turn am I
+ * looking at* -- a name read at the corner of the eye is slower than a face.
+ *
+ * Three places asked in order, and the order is what each one means:
+ *
+ *  1. the actor's own `img`, which is a portrait somebody chose;
+ *  2. the prototype token's texture, which is the figure on the map -- one picture, both slots, as
+ *     `buildActor` sets them;
+ *  3. the shelf, by name, which is the rule that named the file in the first place.
+ *
+ * The third is there for the same reason a slate has one: stamping is a **write**, and a write
+ * only ever reaches the documents in front of it. A world built before the tokens were drawn has
+ * actors carrying core's grey silhouette and nothing in the source says so.
+ */
+export function portraitOf(actor) {
+  const own = artOf(actor);
+  if (own) return own;
+  const token = actor?.prototypeToken?.texture?.src ?? "";
+  if (token && !token.startsWith("icons/svg/")) return token;
+  return figurePath(actor?.name);
 }
 
 /**

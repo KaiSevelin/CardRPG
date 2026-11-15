@@ -8,6 +8,7 @@
   },
   "name": "Lost Fingers",
   "type": "injury",
+  "img": "systems/cardrpg/art/injuries/lost-fingers.webp",
   "system": {
     "category": "maiming",
     "description": "<p>A lockpick needs three fingers and patience. You have the patience.</p>",

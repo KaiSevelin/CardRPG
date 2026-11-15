@@ -8,6 +8,7 @@
   },
   "name": "Lost Eye",
   "type": "injury",
+  "img": "systems/cardrpg/art/injuries/lost-eye.webp",
   "system": {
     "category": "maiming",
     "description": "<p>Depth is a thing you had and now estimate. The bow still draws; the arrow lands where you guessed.</p>",

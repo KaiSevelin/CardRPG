@@ -576,6 +576,46 @@ function statsChapter() {
   return out;
 }
 
+/**
+ * **Every skill card in the game**, which the handbook listed none of.
+ *
+ * It prints the action cards, the items, the features and the spells, and a player's other deck
+ * was nowhere in it -- so the one question a check always raises, *what else could I be holding*,
+ * had no answer in the book it should be answered in.
+ *
+ * Split the way the deck is built: the fifteen everybody starts with, then what each Way deals in
+ * on top. The value and the edge are both printed because they are the choice -- a 1 with a
+ * clause and a 3 without it are the two ends of the same ladder, and a table that showed only the
+ * number would hide the whole decision.
+ */
+function skillChapter() {
+  const rows = list => {
+    const out = ["| Card | Approach | Value | Copies | Edge |", "|---|---|---|---|---|"];
+    for (const c of list) {
+      const approach = c.wild
+        ? "any"
+        : say(CARDRPG.approaches[c.approach]?.label) || c.approach;
+      out.push(`| **${c.name}** | ${approach} | ${c.value} | ${c.copies ?? 1} `
+        + `| ${cell(c.edge ?? "")} |`);
+    }
+    out.push("");
+    return out;
+  };
+  const out = ["### The deck everybody starts with", ""];
+  out.push("Fifteen cards, all six approaches, and two more from your occupation.", "");
+  out.push(...rows(CONTENT.WARRIOR_SKILLS));
+  for (const [title, list] of [
+    ["Way of Shade", CONTENT.SHADE_SKILLS],
+    ["Way of Strength", CONTENT.STRENGTH_SKILLS],
+    ["Way of Mind", CONTENT.MIND_SKILLS],
+    ["Way of Faith", CONTENT.FAITH_SKILLS]
+  ]) {
+    out.push(`### ${title} deals in`, "");
+    out.push(...rows(list));
+  }
+  return out;
+}
+
 export const CHAPTERS = {
   stats: statsChapter,
   actions: actionChapter,
@@ -583,6 +623,7 @@ export const CHAPTERS = {
   features: featureChapter,
   spells: spellChapter,
   reactions: reactionChapter,
+  skills: skillChapter,
   creeds: creedChapter,
   twists: twistChapter
 };
@@ -611,6 +652,6 @@ if (process.argv[1] && process.argv[1].endsWith("handbook.mjs")) {
   const rows = name => CHAPTERS[name]().filter(l => l.startsWith("| **")).length;
   console.log(`wrote the handbook's reference chapters: ${rows("actions")} action cards, `
     + `${rows("items")} of ${ITEMS.length} items (the magical gear is the GM's), `
-    + `${rows("features")} features, ${rows("spells")} spells, ${rows("creeds")} creeds `
-    + `and orders, ${rows("twists")} twists`);
+    + `${rows("features")} features, ${rows("spells")} spells, ${rows("skills")} skill cards, `
+    + `${rows("creeds")} creeds and orders, ${rows("twists")} twists`);
 }

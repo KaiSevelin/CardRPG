@@ -8,6 +8,7 @@
   },
   "name": "Scarred Face",
   "type": "injury",
+  "img": "systems/cardrpg/art/injuries/scarred-face.webp",
   "system": {
     "category": "maiming",
     "description": "<p>The first thing anyone learns about you, before you have said a word. Sometimes that is the whole negotiation.</p>",

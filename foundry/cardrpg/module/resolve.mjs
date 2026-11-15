@@ -343,6 +343,123 @@ export async function payToCast(actor, slate) {
   return true;
 }
 
+/* -------------------------------------------- */
+/*  The edge                                    */
+/* -------------------------------------------- */
+
+/**
+ * **The claim: a player says this one should be easier, and the table can see them say it.**
+ * [BUILT 2026-11-14]
+ *
+ * skill-rules 2 is explicit that *a good plan, a clever use of the environment, or a fitting
+ * background grants advantage*, and skill-rules 7 that know-how and features *apply if they fit
+ * the situation*. That is deliberately a conversation and not a table of modifiers -- the game's
+ * whole know-how system is a loose bag of tags you argue from, not a skill list you look up.
+ *
+ * The software had no lever for any of it. `advantageFor` knew six rules it could prove from the
+ * canvas and the conditions, the GM's call carried a mode for skill checks, and there was no third
+ * way to make a draw advantaged at all: a player with *Trained: the knife* and a good reason could
+ * say so out loud and then watch a normal draw happen anyway.
+ *
+ * So the claim is **state on the actor**, not an argument to a function:
+ *
+ * - **A player sets it on their own character**, which is the usual case and the one that needs no
+ *   permission: they own the actor, and the thing they are doing is announcing a reason.
+ * - **A GM sets it on anyone**, through the same control on whichever HUD they are looking at --
+ *   which is how a refusal is expressed, and how disadvantage is handed out at all.
+ * - **It is one claim, not a stack.** Advantage does not stack with itself anywhere in this game,
+ *   and a claim is one more source of the same single advantage rather than a second one; it goes
+ *   through `advantageFor` precisely so that the cancel rule holds over it too. A player claiming
+ *   advantage while Heckled still draws normally, and the chat card says why.
+ * - **It carries its reason and who set it**, and the reason is printed with the result. That is
+ *   the whole of the accountability: nothing here asks the GM's permission in advance, and nothing
+ *   needs to, because a claim nobody can see is the only kind that could be abused.
+ * - **It is spent by the action it was claimed for**, like a target or a staged half. A claim that
+ *   survived its own turn would be a permanent buff written in a UI control.
+ *
+ * A flag rather than a schema field, and that is not laziness: both actor models would need it,
+ * it is cleared within the turn it is set, and nothing derived depends on it. The one thing it
+ * must be is **visible to every client**, which a flag is and an application's own state is not.
+ */
+const EDGE = "edge";
+
+/** The claim standing on this actor right now, or null. */
+export function readEdge(actor) {
+  const claim = actor?.getFlag?.("cardrpg", EDGE);
+  const mode = Math.sign(Number(claim?.mode) || 0);
+  if (!mode) return null;
+  return { mode, reason: String(claim?.reason ?? ""), by: String(claim?.by ?? "") };
+}
+
+/**
+ * Set it, or clear it when the mode is 0 -- because *normal* is the absence of a claim rather than
+ * a third kind of one, and storing it would leave a flag on every actor who ever thought about it.
+ */
+export async function setEdge(actor, mode, reason = "") {
+  if (!actor) return null;
+  const want = Math.sign(Number(mode) || 0);
+  if (!want) return clearEdge(actor);
+  return actor.setFlag("cardrpg", EDGE, {
+    mode: want,
+    /* Trimmed, because this is printed in chat beside a result and a paragraph is not a reason. */
+    reason: String(reason ?? "").trim().slice(0, 120),
+    by: game.user?.name ?? ""
+  });
+}
+
+/** Spend it. Called by whatever resolved the action it was claimed for. */
+export async function clearEdge(actor) {
+  if (!actor?.getFlag?.("cardrpg", EDGE)) return null;
+  return actor.unsetFlag("cardrpg", EDGE);
+}
+
+/**
+ * **How a claim reads in the chain**, which is the same sentence wherever it is printed: what was
+ * claimed, why, and by whom. Written once because the attack card and the check card both print
+ * it and two spellings of an accountability record is one spelling too many.
+ */
+export function edgeLine(claim) {
+  if (!claim) return "";
+  const what = claim.mode > 0 ? "advantage" : "disadvantage";
+  return `${what} claimed${claim.reason ? `: ${claim.reason}` : ""}`
+    + `${claim.by ? ` (${claim.by})` : ""}`;
+}
+
+/**
+ * **What an actor's own conditions do to their draw**, whatever they are drawing for.
+ * [SPLIT 2026-11-15]
+ *
+ * This was six lines inside `advantageFor`, and `advantageFor` is called from exactly one place:
+ * `resolveAttack`. So **Heckled -- whose entire text is *you draw fate with disadvantage* --
+ * did nothing whatsoever to a skill check.** A character could be heckled mid-negotiation and
+ * their Presence check would not notice, which is the one check the condition exists to spoil.
+ * conditions.md says of it *the fate draw reads it, the same way Invisible is read*, and the fate
+ * draw read it on one of the two occasions a fate card is drawn.
+ *
+ * Pulled out rather than copied, because a copy is how this gets out of step again: a condition
+ * added to the config with one of these flags has to reach both halves of the game or neither.
+ *
+ * **It reads the flags and not the keys**, which is the rule the combat side already followed and
+ * the reason this is a two-line change rather than a special case for Heckled. The other side of
+ * that coin is that **Invisible now helps a check too** -- it carries `grantsAdvantage` and the
+ * flag does not say *in combat*. That is the consistent reading and conditions.md pairs the two
+ * in the same sentence; if some future condition should sway a fight and not a check, the answer
+ * is a third flag, not an exception here.
+ *
+ * @returns {{advantage: boolean, disadvantage: boolean, labels: string[]}}
+ */
+export function conditionSway(actor) {
+  const out = { advantage: false, disadvantage: false, labels: [] };
+  for (const key of (actor?.system.activeConditions ?? []).map(c => c.key)) {
+    const cfg = CARDRPG.conditions[key];
+    if (!cfg?.grantsAdvantage && !cfg?.drawsWithDisadvantage) continue;
+    if (cfg.grantsAdvantage) out.advantage = true;
+    if (cfg.drawsWithDisadvantage) out.disadvantage = true;
+    out.labels.push(game.i18n.localize(cfg.label ?? key));
+  }
+  return out;
+}
+
 /**
  * Work out advantage. Two sources of advantage still give one, and advantage and disadvantage
  * cancel -- so this returns a mode, never a stack.
@@ -370,15 +487,13 @@ export function advantageFor(actor, target, {
   /*
    * What the attacker's own conditions do to their draw, from the config flags rather than by key.
    * Invisible granted advantage through a hardcoded `includes("invisible")` until Heckled needed
-   * the other half of the same idea and found nowhere to declare it.
+   * the other half of the same idea and found nowhere to declare it. `conditionSway` is now that
+   * declaration, and a check reads the same one.
    */
-  for (const key of conditionsOf(actor)) {
-    const cfg = CARDRPG.conditions[key];
-    if (!cfg?.grantsAdvantage && !cfg?.drawsWithDisadvantage) continue;
-    const label = game.i18n.localize(cfg.label ?? key);
-    if (cfg.grantsAdvantage) { advantage = true; reasons.push(`attacking while ${label}`); }
-    if (cfg.drawsWithDisadvantage) { disadvantage = true; reasons.push(`attacking while ${label}`); }
-  }
+  const sway = conditionSway(actor);
+  if (sway.advantage) advantage = true;
+  if (sway.disadvantage) disadvantage = true;
+  reasons.push(...sway.labels.map(label => `attacking while ${label}`));
   /*
    * A feature granting advantage against anyone carrying an opening. Unlike the `when` clause
    * below, this reads ANY opening -- it is the Thief's whole claim, and the reason the Thief is the
@@ -419,6 +534,18 @@ export function advantageFor(actor, target, {
     reasons.push("target is in cover");
   }
   if (target?.system?.cover && ignoresCover) reasons.push("cover ignored");
+
+  /*
+   * **And what somebody said out loud**, which is the only source here that the engine cannot
+   * prove. It is folded in at the end and through the same two booleans as everything above it,
+   * so the two rules that govern every other source govern it too: a second advantage is still
+   * one advantage, and a claim against a condition that already gives disadvantage cancels.
+   */
+  const claim = readEdge(actor);
+  if (claim) {
+    if (claim.mode > 0) advantage = true; else disadvantage = true;
+    reasons.push(edgeLine(claim));
+  }
 
   if (advantage && disadvantage) {
     return { mode: 0, reasons: [...reasons, "advantage and disadvantage cancel"] };
@@ -2500,6 +2627,9 @@ export async function resolveAttack(actor, {
     ranged, area, when, ignoresCover: effect === "ignoresCover"
   });
   const fate = await drawFate(actor, before, mode);
+  /* Spent by the action it was claimed for. The reason is already in `reasons`, so the record
+   * survives the claim. */
+  await clearEdge(actor);
   // A Miss is a shot that went wide: nothing arrives, so nothing the piece promised arrives either.
   const missed = fate.used?.system.special === "miss";
   /*
@@ -2674,7 +2804,21 @@ export async function resolveAttack(actor, {
     : null;
   if (ammo) await ammo.delete();
 
-  await attackCard(actor, { verb, item, base, mod, bonuses, fate, mode, reasons, rows, nocked });
+  /*
+   * **`crit` and `landed` travel with the rest of it.**  **[FIXED 2026-11-14]**
+   *
+   * They did not, and the card has been throwing since the critical deck was wired up: both are
+   * locals of this function, `attackCard` read them as free names, and a `ReferenceError` in an
+   * un-awaited chat post is the quietest failure there is -- the damage had already been applied,
+   * so the fight looked right and the message simply never arrived.
+   *
+   * Found by running an attack rather than by reading one. Nothing in fifteen thousand lines of
+   * source checking could see it: the names are spelled correctly, they exist forty lines above,
+   * and the function reads perfectly.
+   */
+  await attackCard(actor, {
+    verb, item, base, mod, bonuses, fate, mode, reasons, rows, nocked, crit, landed
+  });
 
   if (shot?.condition && !missed) {
     for (const target of targets) await resolveCondition(actor, { step: shot, target });
@@ -2728,7 +2872,7 @@ function reactionName(key) {
 
 /** The chat card. Shows the whole chain, because a hidden calculation is an unauditable one. */
 async function attackCard(actor, info) {
-  const { verb, item, base, mod, bonuses, fate, mode, reasons, rows, nocked } = info;
+  const { verb, item, base, mod, bonuses, fate, mode, reasons, rows, nocked, crit, landed } = info;
 
   const chain = [`${item.name} ${verb} <strong>${base}</strong>`];
   if (mod) chain.push(`card ${mod > 0 ? "+" : ""}${mod}`);
@@ -2986,6 +3130,30 @@ export async function resolveUse(actor, { item, target = actor }) {
 export const CHECK_SWING = 2;
 
 /**
+ * **What a trained hand cannot do, which is fumble the thing it has done ten thousand times.**
+ * [BUILT 2026-11-15]
+ *
+ * A training was worth exactly one thing before this: it lifted the cap on a tool that named it.
+ * That is a real reward and it is a narrow one -- it needs an object, and **ten of the sixteen
+ * trainings a node can teach reach no object at all**. Nine of those ten never will: riding,
+ * oratory, sleight of hand and the rest are *practices*, and there is no catalogue entry for
+ * having done a thing for years. They were rewards that moved no number anywhere.
+ *
+ * A floor needs no object. On a check your training covers, the card you play **counts as at
+ * least 2** -- so a training is worth most on the hand you did not want, which is the right shape
+ * for competence. It is not a bonus and it does not stack with one: it cannot lift a 2 or a 3, so
+ * a specialist's good hand plays exactly as it did and only their bad hand changes.
+ *
+ * **Two, and not three.** Three would make a trained character's every card their best card and
+ * the deck stop mattering; two removes the disaster -- holding nothing but a 1 for the approach
+ * that was called -- without touching the ceiling. The deck is still the thing you build.
+ *
+ * It does not rescue an improvised check. Drawing from an empty deck is fatigue (skill-rules 1),
+ * and having once been taught something is not a card in your hand.
+ */
+export const SKILL_FLOOR = 2;
+
+/**
  * How far below the difficulty a total may be and still be a **Partial** (skill-rules 2).
  *
  * **It widened with the swing, and had to.** A doubled card jumps over a two-point band: at one
@@ -3030,19 +3198,35 @@ export function checkOutcome(margin, special = "") {
  */
 export async function resolveCheck(actor, {
   approach, dc = CARDRPG.difficulties.normal, card = null, push = null, help = 0,
-  item = null, mode = 0, improvise = false
+  item = null, mode = 0, improvise = false, training = "", useEdge = false
 } = {}) {
   if (!actor || !approach) return null;
   /* A check is an action of the turn like any other. An ANSWER to somebody else's check is not,
    * and `answerCheck` does not come through here. */
   if (refusesAction(actor, { what: "a check" })) return null;
 
-  const base = improvise ? 0 : (card?.system?.worth?.(approach) ?? null);
-  if (base === null && !improvise) {
+  const printed = improvise ? 0 : (card?.system?.worth?.(approach) ?? null);
+  if (printed === null && !improvise) {
     ui.notifications.warn(
       `${cardName(card) || "That card"} is not a ${game.i18n.localize(CARDRPG.approaches[approach]?.label ?? approach)} card.`);
     return null;
   }
+
+  /*
+   * **The floor, and the table decides whether it applies.**  [BUILT 2026-11-15]
+   *
+   * `training` is a claim, not a lookup. The engine can tell whether a character HOLDS a training
+   * -- the tray only offers the ones on `learned.trainings` -- and it cannot tell whether
+   * *lockpicks* covers the lock in front of them, because that is a sentence about the fiction.
+   * So the arithmetic is the engine's and the question is the GM's, which is the same split the
+   * tool already works under: *Shadow +2 (locks and mechanisms)* is chosen automatically and
+   * stays clearable, because it is not a bonus to every Shadow check.
+   *
+   * The claim is printed under the result in the words the player chose, for the reason the note
+   * below it gives: a claim the table cannot see is the only kind that could be abused.
+   */
+  const floored = !improvise && !!training && printed < SKILL_FLOOR;
+  const base = floored ? SKILL_FLOOR : printed;
 
   /*
    * A tool helps with the approach it names, and **an untrained user gets at most +1** however good
@@ -3076,7 +3260,67 @@ export async function resolveCheck(actor, {
   const features = collectSkillBonuses(actor, approach);
   const before = base + toolBonus + pushed + help + features.total;
 
-  const draw = improvise ? -1 : mode;
+  /* Why the draw was what it was, printed under the result the way an attack prints its own. */
+  const reasons = [];
+  if (training) {
+    reasons.push(`trained in ${training}`
+      + (floored ? `, so the card counts as ${SKILL_FLOOR}` : ""));
+  }
+  /*
+   * **The card's own clause, claimed rather than applied.**  [BUILT 2026-11-15]
+   *
+   * A skill card's `edge` is prose -- *ask the GM one yes-or-no question about the scene* -- and
+   * nothing in an engine resolves that. It never needed to. What it needed was to be **said at
+   * the moment it is claimed**, in front of the person who rules on it, instead of sitting on a
+   * card face hoping somebody reads it.
+   *
+   * So this changes no number and is not meant to. It puts the sentence in the chat line beside
+   * the result, which is where the GM is already looking.
+   *
+   * Not to be confused with `readEdge`, which is this game's OTHER edge: the advantage a player
+   * argues for. Two things wear the word -- the rules call a skill card's clause its Edge and the
+   * HUD control is labelled Disadvantage / Normal / Advantage -- so they never collide in front
+   * of a player, only here.
+   */
+  const clause = card?.system?.edge ?? "";
+  if (clause) reasons.push(`${useEdge ? "edge claimed" : "this card's edge"} \u2014 ${clause}`);
+
+  /*
+   * **The GM's call and the player's claim, settled the same way a combat draw settles them.**
+   *
+   * A call can print *advantage* (skill-rules 2 step 1) and a player can claim one from a tag they
+   * can argue for (skill-rules 7), and the two meet here. Not summed: advantage does not stack, so
+   * two of them is one, and one of each cancels -- the same arithmetic `advantageFor` does for
+   * combat, written out rather than borrowed because that function is about targets and cover and
+   * has nothing to say about a check.
+   *
+   * Improvising still overrules both. Drawing from an empty deck is not a circumstance anybody
+   * argues their way out of (skill-rules 1, Fatigue).
+   */
+  const claimed = readEdge(actor);
+  if (claimed) reasons.push(edgeLine(claimed));
+  /*
+   * **And the third source: what the character is carrying.**  [BUILT 2026-11-15] Heckled says
+   * *you draw fate with disadvantage* and this is the other place fate is drawn. See
+   * `conditionSway`, which both halves of the game now read.
+   */
+  const carried = conditionSway(actor);
+  reasons.push(...carried.labels.map(label => `checking while ${label}`));
+  /*
+   * **Two booleans, like the combat side**, rather than the signed sum this used to take.
+   *
+   * With two sources the two spellings agree and the sum was the shorter one. With three they
+   * part company: `sign(1 + 1 - 1)` is **advantage**, which would let a call and a claim outvote
+   * a condition -- and *advantage does not stack* is the rule, so two of a thing cannot outweigh
+   * one of the other. Any advantage and any disadvantage cancel, however many of each there are.
+   */
+  let up = Math.sign(mode) > 0 || claimed?.mode > 0 || carried.advantage;
+  let down = Math.sign(mode) < 0 || claimed?.mode < 0 || carried.disadvantage;
+  if (up && down) {
+    reasons.push("advantage and disadvantage cancel");
+    up = down = false;
+  }
+  const draw = improvise ? -1 : (up ? 1 : down ? -1 : 0);
   /*
    * **The total is computed here rather than taken from `drawFate`**, for two reasons. The card is
    * read at `CHECK_SWING` on a check, which is the swing; and `applyFate` is combat-shaped -- it
@@ -3085,6 +3329,8 @@ export async function resolveCheck(actor, {
    * the band rather than by the arithmetic.
    */
   const { used } = await drawFate(actor, before, draw);
+  /* Spent by the check it was claimed for, the same way an attack spends it. */
+  await clearEdge(actor);
   const special = used?.system?.special ?? "";
   const swing = special ? 0 : (used?.system?.value ?? 0) * CHECK_SWING;
   const result = before + swing;
@@ -3096,7 +3342,8 @@ export async function resolveCheck(actor, {
     critical: "Critical", success: "Success", partial: "Partial", fail: "Fail"
   }[outcome];
   const chain = [
-    `${game.i18n.localize(CARDRPG.approaches[approach]?.label ?? approach)} ${base}`,
+    `${game.i18n.localize(CARDRPG.approaches[approach]?.label ?? approach)} ${base}`
+    + (floored ? ` (printed ${printed}, trained)` : ""),
     ...(toolBonus ? [`${item.name} +${toolBonus}${trained ? "" : " (untrained, capped)"}`] : []),
     ...(pushed ? [`push +${pushed}`] : []),
     ...(help ? [`help +${help}`] : []),
@@ -3114,9 +3361,16 @@ export async function resolveCheck(actor, {
    */
   await ChatMessage.create({
     speaker: ChatMessage.getSpeaker({ actor }),
-    flags: { cardrpg: { outcome } },
+    /*
+     * **And WHO, because a group check owes a twist per person.**  [2026-11-15] The outcome alone
+     * could move a track, which is all one boolean on the challenge ever needed. A ledger of
+     * debts needs the character, and the speaker is not it: a speaker is a display name that a
+     * GM can override and that carries no id back to an actor.
+     */
+    flags: { cardrpg: { outcome, who: actor?.id ?? "", whoName: actor?.name ?? "" } },
     content: `<div class="cardrpg"><p>${chain.join(" &middot; ")}</p>`
-      + `<p>Fate: <strong>${used ? (special
+      + `<p>Fate${draw > 0 ? " with advantage" : draw < 0 ? " with disadvantage" : ""}`
+      + `: <strong>${used ? (special
         || `${used.system.value >= 0 ? "+" : ""}${used.system.value}`
           + `${used.system.value ? ` \u00d7${CHECK_SWING} = ${swing >= 0 ? "+" : ""}${swing}` : ""}`)
         : "\u2014"}</strong>`
@@ -3125,7 +3379,11 @@ export async function resolveCheck(actor, {
       + (outcome === "partial" ? " &mdash; you do it, and it costs something. Draw a twist."
         : "")
       + (outcome === "fail" ? " &mdash; and the situation changes. Draw a twist." : "")
-      + `</p></div>`
+      + `</p>`
+      /* The claim, under the result, in the words whoever made it chose. A claim the table
+       * cannot see is the only kind that could be abused. */
+      + (reasons.length ? `<p class="cr-note">${reasons.join("; ")}</p>` : "")
+      + `</div>`
   });
 
   /*

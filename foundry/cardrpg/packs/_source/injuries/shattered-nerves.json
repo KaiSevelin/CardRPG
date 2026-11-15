@@ -8,6 +8,7 @@
   },
   "name": "Shattered Nerves",
   "type": "injury",
+  "img": "systems/cardrpg/art/injuries/shattered-nerves.webp",
   "system": {
     "category": "breaking",
     "blocksReactions": [

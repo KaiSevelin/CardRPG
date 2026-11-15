@@ -8,6 +8,7 @@
   },
   "name": "Night Fears",
   "type": "injury",
+  "img": "systems/cardrpg/art/injuries/night-fears.webp",
   "system": {
     "category": "breaking",
     "intruder": {

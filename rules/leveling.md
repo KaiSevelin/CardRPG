@@ -1029,9 +1029,16 @@ pays a level for a training. What was removed is not the low rewards, it is the 
 
 ## 6. A second Way
 
-The root is a node you own, and **you never stop owning it** — so all four Way nodes stay on your
-frontier for the whole of a character's life. A Shade at level 5 may spend that level taking **Way of
-Strength** and start down its trunk.
+Your **occupation** is a node you own, and **you never stop owning it** — so all four Way nodes
+stay on your frontier for the whole of a character's life. A Shade at level 5 may spend that level
+taking **Way of Strength** and start down its trunk.
+
+> **[CHANGED 2026-11-14] It used to be the root.** The Ways hung off Birth beside the origins and
+> the occupations, so a brand-new character met all four before deciding where they were from.
+> Creation is a sequence now — Birth, a place, a trade, then a Way — and the Ways moved behind the
+> trade. The mechanism is untouched and so is everything this section promises: the anchor is one
+> layer further out and it is just as permanently owned, because an occupation is `free` and
+> exclusive and can never be given up.
 
 Nothing special makes this work; it falls out of the geometry, and it costs exactly what it should.
 A second Way starts at its trunk, so the level buys you an opening that a single-Way character got

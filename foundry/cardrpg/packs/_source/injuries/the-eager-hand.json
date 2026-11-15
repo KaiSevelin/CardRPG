@@ -8,6 +8,7 @@
   },
   "name": "The Eager Hand",
   "type": "injury",
+  "img": "systems/cardrpg/art/injuries/the-eager-hand.webp",
   "system": {
     "category": "curse",
     "intruder": {

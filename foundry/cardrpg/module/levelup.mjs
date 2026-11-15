@@ -29,7 +29,7 @@ import {
   ALL_TACTICS,
   rebuildGraph, GRAPH, SUCCESSORS, DEPTH, ROOT, POOL, SPELLS, SPELLS_BY_SOURCE, SLATES, LANGUAGES,
   ownedIds, closedIds, reachable, canTake, stateOf, frontier,
-  levelOf, titleOf, describeGrants, wouldClose, takeNode
+  levelOf, titleOf, describeGrants, wouldClose, wouldCloseIds, takeNode
 } from "./graph.mjs";
 import { artIn } from "./decks.mjs";
 import { CARDRPG } from "./config.mjs";
@@ -95,19 +95,25 @@ function tierLayout(ids) {
   return positions;
 }
 
-/** What the layout picker offers. The first is ours; the rest are Cytoscape's own. */
+/**
+ * What the layout picker offers. The first is ours; the rest are Cytoscape's own.
+ *
+ * **Breadth-first is gone.**  [RETIRED 2026-11-14] It was the nearest thing to `tiers` and the
+ * worst version of it: both lay the graph out in rings from the root, and only `tiers` knows that
+ * the depth is already computed from the edges and that a layer wants ordering by its
+ * predecessors. What it produced was the same shape with more crossings, which is a choice
+ * between a thing and a worse copy of it. The other three are genuinely different readings --
+ * rings, a force settle, and a flat index -- and are worth the slot.
+ *
+ * `cssId` went with it: it existed for that one `roots` selector and nothing else escapes a node
+ * id for a Cytoscape query.
+ */
 const LAYOUTS = {
   tiers: { label: "CARDRPG.Level.Layout.Tiers" },
-  breadthfirst: { label: "CARDRPG.Level.Layout.Breadthfirst", cy: { name: "breadthfirst", directed: true, spacingFactor: 1.1, roots: [`#${cssId(ROOT)}`] } },
   concentric: { label: "CARDRPG.Level.Layout.Concentric", cy: { name: "concentric", minNodeSpacing: 40, concentric: n => -(DEPTH.get(n.id()) ?? 0), levelWidth: () => 1 } },
   cose: { label: "CARDRPG.Level.Layout.Force", cy: { name: "cose", animate: false, nodeRepulsion: 9000, idealEdgeLength: 90 } },
   grid: { label: "CARDRPG.Level.Layout.Grid", cy: { name: "grid", condense: false, sort: (a, b) => (DEPTH.get(a.id()) ?? 0) - (DEPTH.get(b.id()) ?? 0) } }
 };
-
-/** Node ids carry dots, which a Cytoscape selector reads as a class. */
-function cssId(id) {
-  return id.replace(/[.]/g, "\\.");
-}
 
 /* -------------------------------------------- */
 
@@ -118,6 +124,21 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
     this.actor = actor;
     /** The node marked but not yet taken. Exactly one, or none. */
     this.tentative = null;
+    /**
+     * **Whether this pane has been opened but not yet looked at.**  [BUILT 2026-11-14]
+     *
+     * The pane used to open on an empty panel reading *tap a node* -- 237 boxes, a hint, and the
+     * player's first job was to find one of the four they could actually take. The arrows have
+     * always known where those are; nothing pressed one for them.
+     *
+     * So the first render steps to the first choice: it marks it, centres the map on it and
+     * writes the panel, which is exactly what pressing the right arrow once would have done.
+     *
+     * **Once, and only on the way in.** `_onRender` runs again after a node is taken, and
+     * auto-marking there would arm Accept on a node nobody had read -- a second level spent by
+     * two clicks in the same place. One flag, dropped the moment it is used.
+     */
+    this.firstLook = true;
     this.layout = "tiers";
     this.cy = null;
   }
@@ -254,6 +275,14 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
     /* Belt and braces: the observer frames it the moment the box has a size, and this covers the
      * case where it already had one and the first callback is all there is. */
     this.#focus();
+    /*
+     * **Open on something, not on an instruction.** The first choice is marked, centred and read
+     * out; after that the pane is the player's and renders whatever they left showing.
+     */
+    if (this.firstLook && !this.tentative) {
+      this.firstLook = false;
+      this.#stepChoice(1);
+    }
     this.#renderDetail();
   }
 
@@ -352,13 +381,32 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
        * datum with no `art` at all is the same unreadable value as an empty one. The `:parent`
        * rule below sets `background-image: none` too, but the `node` rule is applied first and is
        * where the parse happens. */
-      nodes.push({ data: { id: `territory-${way}`, label: paint.label, ...paint, art: "none" } });
+      nodes.push({
+        data: { id: `territory-${way}`, label: paint.label, ...paint, art: "none" },
+        /* See the note on `pannable` below: a band is the largest drag target on the map and
+         * the one most likely to be grabbed by somebody trying to move it. */
+        pannable: true
+      });
     }
 
     for (const [id, node] of GRAPH) {
       const way = wayOf(id);
       const paint = WAY_COLOUR[way] ?? WAY_COLOUR.root;
       nodes.push({
+        /*
+         * **Dragging anywhere pans.**  [FIXED 2026-11-14]
+         *
+         * Nothing here is grabbable -- `autoungrabify` sees to that, for the reasons below -- but
+         * ungrabbable is not the same as transparent to a drag: Cytoscape defaults `pannable` to
+         * false on a node, so a drag that began on one simply did nothing. On a map whose four
+         * territories are compound parents covering most of the canvas, that is most of the
+         * canvas: the reported symptom was *drag to pan does not work in some regions*, and the
+         * regions were the coloured bands.
+         *
+         * A tap is unaffected -- it is a press without movement, and still selects -- so this
+         * costs nothing and makes the whole surface behave like the map it is.
+         */
+        pannable: true,
         data: {
           id,
           label: node.name ?? id,
@@ -377,9 +425,16 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
        * is the way this node was meant to be reached, and anything deeper arrived from elsewhere.
        * Computed rather than flagged, so content cannot say one thing and the graph another.
        */
+      /*
+       * **Depth, not identity.**  [FIXED 2026-11-14] This picked one shallowest predecessor and
+       * dashed every other edge as a crossing -- which was right while a node's prerequisites sat
+       * at different depths, and wrong the moment several sat at the same one. An occupation that
+       * follows five origins has five equal routes into it, and four of them were being drawn as
+       * if the player had arrived from somewhere they were not meant to.
+       */
       const after = node.after ?? [];
       const shallowest = after.length
-        ? after.reduce((a, b) => ((DEPTH.get(a) ?? 0) <= (DEPTH.get(b) ?? 0) ? a : b))
+        ? Math.min(...after.map(p => DEPTH.get(p) ?? 0))
         : null;
       for (const prereq of after) {
         edges.push({
@@ -389,7 +444,7 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
             edge: (WAY_COLOUR[wayOf(id)] ?? WAY_COLOUR.root).edge,
             /* A road already walked: both ends owned. Brighter, because it is your history. */
             walked: owned.has(prereq) && owned.has(id) ? "yes" : "no",
-            cross: after.length > 1 && prereq !== shallowest ? "yes" : "no"
+            cross: after.length > 1 && (DEPTH.get(prereq) ?? 0) > shallowest ? "yes" : "no"
           }
         });
       }
@@ -445,6 +500,9 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
      */
     this.inspecting = id;
     if (state === "available") return this.#pick(id);
+    /* An unavailable node still answers *what does this lead to*, which is most of what reading
+     * ahead is for -- so the halo is painted before the early return, not after it. */
+    this.#showOpens(id);
     /* Reading an unavailable node un-marks whatever was marked: the panel shows one node, and a
      * marked node the panel is not showing is an Accept nobody can read before pressing. */
     this.tentative = null;
@@ -699,7 +757,47 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
     this.inspecting = id ?? this.inspecting;
     this.cy?.nodes().removeClass("tentative");
     if (id) this.cy?.getElementById(id).addClass("tentative");
+    this.#showOpens(this.inspecting);
     this.#renderDetail();
+  }
+
+  /**
+   * **What this node would open, lit on the map.**  [BUILT 2026-11-14]
+   *
+   * The panel has printed *Opens: …* as a list of names since it was written, and a list of names
+   * is the wrong form for the question: *what does this lead to* is a question about **where**,
+   * and the answer was words beside a map that knew. On a graph of 237 the player then had to
+   * find each name by eye.
+   *
+   * So the successors are lit, and the edges into them with them -- a road and its destination
+   * are one statement, and lighting the box without the line leaves the player working out which
+   * of six arrows was meant.
+   *
+   * **And what it would bar**, which is the half a player cannot undo. An exclusive node shuts
+   * every branch its siblings led to -- swearing to one god closes eleven, and taking an origin
+   * closes fourteen -- and the panel has printed that as a list of names, fifty-six of them in
+   * the worst case, beside a map that knew where every one of them was. Two halos rather than
+   * one: **this is what it buys, and this is what it costs.**
+   *
+   * **It follows what is being READ, not what is marked.** Reading ahead is the whole purpose of
+   * the panel, and a player comparing two nodes wants to see what each one opens and shuts as
+   * they look at it, not only once they have committed to marking it.
+   */
+  #showOpens(id) {
+    if (!this.cy) return;
+    this.cy.elements().removeClass("opens opens-edge bars");
+    if (!id) return;
+    for (const next of SUCCESSORS.get(id) ?? []) {
+      this.cy.getElementById(next).addClass("opens");
+      this.cy.getElementById(`${id}->${next}`).addClass("opens-edge");
+    }
+    /*
+     * Only what is still open to you: `wouldCloseIds` already asks that question, so a node shut
+     * by a choice made ten levels ago is not lit again as though this one were shutting it.
+     */
+    for (const shut of wouldCloseIds(id, ownedIds(this.actor))) {
+      this.cy.getElementById(shut).addClass("bars");
+    }
   }
 
   /**
@@ -874,7 +972,13 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
            style="background-image: url('${foundry.utils.getRoute(art).replaceAll("'", "%27")}')"
          ></div>`
       : "";
-    box.innerHTML = `${picture}<h3>${esc(node.name ?? showing)}</h3>${rows.join("")}`;
+    /*
+     * **The name first, then the picture.**  [2026-11-14] The picture was laid above the heading,
+     * so a panel opened on an unfamiliar node showed an unlabelled illustration and the player had
+     * to look past it to find out what they were looking at. A card names itself at the top --
+     * that is the whole of card-layout's first tier -- and this panel is a card.
+     */
+    box.innerHTML = `<h3>${esc(node.name ?? showing)}</h3>${picture}${rows.join("")}`;
     this.#setButtons(showing === this.tentative);
     this.#renderChoiceCount();
   }
@@ -928,7 +1032,25 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
     }
 
     if (await takeNode(this.actor, this.tentative)) {
+      /*
+       * **And the pane moves on to the next thing that can be chosen.**  [FIXED 2026-11-14]
+       *
+       * It used to clear the mark and re-render, which left the panel describing the node you
+       * had just taken -- now owned, with its Accept button greyed out, and the player reading a
+       * decision they had already made. A level-up is not a destination; the question after
+       * taking one is always *what now*, and the pane knew the answer and was showing the
+       * previous one.
+       *
+       * `inspecting` has to go with `tentative`: the panel reads whichever is set, and leaving
+       * the accepted id in it would survive the render and put the same node back on screen.
+       *
+       * Re-arming `firstLook` rather than calling `#stepChoice` here, because the graph is
+       * rebuilt by the render and the step has to happen against the NEW frontier -- the node
+       * just taken has opened its successors, and those are what the player wants offered.
+       */
       this.tentative = null;
+      this.inspecting = null;
+      this.firstLook = true;
       await this.render();
     }
   }
@@ -967,11 +1089,24 @@ export class LevelUpPane extends HandlebarsApplicationMixin(ApplicationV2) {
  * -- which is the same split the cards use, where the rim says what a thing belongs to and the
  * face says what it does.
  */
+/**
+ * A band per namespace, because the namespace IS the band (leveling 8).
+ *
+ * **Creation is two bands and they were both called the same thing.**  [FIXED 2026-11-14] A node
+ * id's first segment names its territory, and the day origins and occupations became
+ * `origin.*` and `background.*` they stopped being `root` -- so both fell through to the
+ * fallback and the map drew two adjacent grey boxes, each labelled *Where everyone starts*. The
+ * sequence was right underneath and the labels said it was one step twice.
+ *
+ * They are named for the question they answer now, which is also the order they are answered in.
+ */
 const WAY_COLOUR = {
   shade: { fill: "#2f3b4e", edge: "#5d7aa3", label: "Way of Shade" },
   strength: { fill: "#4a3330", edge: "#a3655d", label: "Way of Strength" },
   mind: { fill: "#2f3f3a", edge: "#5d9a86", label: "Way of Mind" },
   faith: { fill: "#403458", edge: "#8a74b8", label: "Way of Faith" },
+  origin: { fill: "#2b3330", edge: "#6b7a66", label: "Where you are from" },
+  background: { fill: "#33302b", edge: "#7a7166", label: "What you did before" },
   root: { fill: "#2a2d33", edge: "#5a606a", label: "Where everyone starts" }
 };
 
@@ -1017,13 +1152,57 @@ function wayOf(id) {
  * hundred-odd minor nodes that have no portrait and never will: a station on a branch is the card
  * it hands over, which is what the old brief meant and is still true of them.
  */
+/*
+ * **And the branch's picture after that, so no node is blank.**  [BUILT 2026-11-14]
+ *
+ * Ninety-eight nodes of two hundred and thirty-seven resolved a picture and **a hundred and
+ * thirty-nine did not** -- every node whose reward is a training, a know-how, a language or an
+ * expertise, which is most of the minor ones, plus every menu node, which hands over a CHOICE and
+ * so has no one thing to be a picture of. *What You Favour* is the one that gets noticed, because
+ * it sits two steps from the start of a Shade's life.
+ *
+ * The three fixes available were: commission a hundred and thirty-nine pieces, show a placeholder,
+ * or say what is already true -- **a minor node is a station on a branch**, and the branch has a
+ * portrait. Walking back up `after` to the nearest ancestor that has one costs nothing, draws
+ * nothing new, and is the same sentence the panel's own comment has made since it was written:
+ * *a station on a branch is the card it hands over*. Now it is the branch when there is no card.
+ *
+ * Nearest first, breadth-first, because a cross edge can reach back into another Way: *The Second
+ * Door* is a Shade node that follows a Thief's trunk and a Guild's, and the one a player is
+ * reading it on is the closer. A seen-set, because `after` is a list of ids and nothing here
+ * promises the graph is acyclic -- it is, and a walk that trusts that is a walk that hangs the
+ * client the day somebody authors a loop.
+ */
 function artFor(node) {
   const own = node ? artIn(node) : "";
   if (own) return own;
   const name = node?.grants?.card ?? node?.grants?.spell ?? node?.grants?.feature
     ?? node?.grants?.item ?? null;
   const def = name ? (POOL.get(name) ?? SPELLS.get(name) ?? SLATES.get(name) ?? null) : null;
-  return (def && artIn(def)) || "none";
+  if (def && artIn(def)) return artIn(def);
+  return inheritedArt(node) || "none";
+}
+
+/** The nearest ancestor's picture, which is the branch this node is a station on. */
+function inheritedArt(node) {
+  const seen = new Set(node?.id ? [node.id] : []);
+  let edge = [...(node?.after ?? [])];
+  while (edge.length) {
+    const next = [];
+    for (const id of edge) {
+      if (seen.has(id)) continue;
+      seen.add(id);
+      const up = GRAPH.get(id);
+      if (!up) continue;
+      /* Its OWN picture only. Inheriting an ancestor's inherited picture would walk the whole
+       * graph back to Birth and paint half the map with one image. */
+      const art = artIn(up);
+      if (art) return art;
+      next.push(...(up.after ?? []));
+    }
+    edge = next;
+  }
+  return "";
 }
 
 const STYLE = [
@@ -1086,13 +1265,54 @@ const STYLE = [
       "opacity": 0.5, "background-blacken": 0.55, "background-image-opacity": 0.12 }
   },
 
-  /* A title is a bigger, stronger shape: the thing a player is aiming at should look like one. */
+  /*
+   * **A title is a bigger, stronger shape**, and the player is told so.  [2026-11-14]
+   *
+   * The hexagon has been here since the graph was drawn and nothing ever said what it meant, so
+   * the one structural distinction on the map -- *this node is a destination, that one is a step
+   * toward one* -- was a difference a player had to infer from 169 boxes. The legend names it
+   * now, and the shape is pushed further apart from a minor node's so that naming it is worth
+   * doing: a wider hexagon, a heavier rim, and more of its own picture showing through.
+   *
+   * A minor node stays a quiet rounded rectangle. That is the point of the pair.
+   */
   {
     selector: "node[kind = 'major']",
     style: {
-      "width": 154, "height": 60, "font-size": 12, "font-weight": "bold",
-      "shape": "round-hexagon", "border-width": 3, "background-image-opacity": 0.7
+      "width": 166, "height": 66, "font-size": 12, "font-weight": "bold",
+      "shape": "round-hexagon", "border-width": 4, "background-image-opacity": 0.78
     }
+  },
+
+  /*
+   * **What the marked node would open.** A dashed ring rather than a fill, so it reads as *this
+   * one is implicated* and never as *this one is available* -- the states are the border's job
+   * (above) and a second meaning in the same channel would be two rules fighting over one edge.
+   */
+  {
+    selector: "node.opens",
+    style: { "border-color": "#f0c060", "border-style": "dashed", "border-width": 3 }
+  },
+  /*
+   * **And what it would bar.** Oxblood against the gold, because the pair has to be readable as
+   * *gained* and *given up* at a glance and in that order -- it is the same two colours the game
+   * uses for a reward and for harm everywhere else. Dotted rather than dashed, so the two halos
+   * differ in shape as well as in hue: a player who cannot tell the colours apart still can.
+   *
+   * It paints the border only, like `opens`. The fill belongs to the Way and a node that is about
+   * to be shut is still a node of that Way.
+   */
+  {
+    selector: "node.bars",
+    style: { "border-color": "#c2554a", "border-style": "dotted", "border-width": 3,
+      "color": "#e8b5ae" }
+  },
+
+  /* And the road to it, because a lit box with no lit line leaves six arrows to choose between. */
+  {
+    selector: "edge.opens-edge",
+    style: { "line-color": "#f0c060", "target-arrow-color": "#f0c060", "line-opacity": 0.95,
+      "width": 3 }
   },
 
   { selector: "node.tentative", style: { "border-color": "#f0c060", "border-width": 6, "color": "#fff6e0", "background-blacken": -0.2 } },

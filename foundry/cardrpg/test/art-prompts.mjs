@@ -2409,8 +2409,26 @@ function motifsFor(entry, group) {
           : group.dir === "nodes/background"
             ? "the work and not the worker -- the kit laid out, the bench, the deck at the hour "
               + "the job is done. Hands at most, and never a face"
-            : "the quality itself as one human moment -- the person it describes, caught in the "
-              + "second that proves it. No object held up, no symbol, no emblem");
+            /*
+             * **[FOUND 2026-11-14] Six answers now, because an injury fell off the end into the
+             * one that asks for a person.**
+             *
+             * The comment above this already records the same mistake made about conditions --
+             * *a condition is neither, which the two-way version got exactly backwards* -- and
+             * an injury is further from a title than a condition is. It is permanent. A figure
+             * drawn here is somebody else's character for the rest of the campaign, which is the
+             * first thing `art-list.md` says about the shelf.
+             *
+             * Four of the fourteen came back with a person in them, and this line is why: they
+             * were handed *the person it describes, caught in the second that proves it* and
+             * drew exactly that.
+             */
+            : group.dir === "injuries"
+              ? "what is left behind and never the person -- the thing that compensates, the "
+                + "thing that no longer works, or the record of it. No body, no limb, no face "
+                + "and no figure anywhere in frame"
+              : "the quality itself as one human moment -- the person it describes, caught in "
+                + "the second that proves it. No object held up, no symbol, no emblem");
   }
   return [...new Set(out)].slice(0, 3);
 }
@@ -2439,7 +2457,27 @@ function flavourOf(entry) {
 /*  What each group is for, as a picture         */
 /* -------------------------------------------- */
 
-const FRAME = {
+export const FRAME = {
+  /*
+   * **[FOUND 2026-11-14] The one rule this shelf has was written where the model could not read
+   * it.**
+   *
+   * *No bodies, no blood, no faces* is the first thing `art-list.md` says about an injury, and
+   * `FRAME` had no entry for the shelf at all -- so the rule reached a human and never reached a
+   * prompt. Each blurb was left to remember it on its own, and the correlation is exact: the ten
+   * that ended *nobody reflected*, *no feet in frame*, *nobody wearing it* came back as objects,
+   * and **the four that did not came back with a person in them** -- a man at a ledger, a woman
+   * with her head in her hands, somebody sitting up in a cot, a figure walking past a door.
+   *
+   * A constraint every piece on a shelf must satisfy belongs to the shelf. Fourteen chances to
+   * forget it is fourteen chances, and four of them were taken the first time out.
+   */
+  injuries: "What a character carries for the rest of their life, and the ONE constraint is that "
+    + "nobody is in the picture. Draw the thing that compensates, the thing that no longer works, "
+    + "or the record of it -- the eye-patch and not the eye, the stick and not the leg, the ledger "
+    + "and not the debtor. **No body, no limb, no hand, no face and no figure anywhere in frame, "
+    + "however distant or turned away**, and nothing bleeding or in pain. An injury is permanent, "
+    + "so a person drawn here would be somebody else's character forever.",
   "cards/starter": "The first ten cards a table ever sees. Plain, legible, no cleverness.",
   "cards/common": "Every character in the game draws this one, so it belongs to nobody in "
     + "particular: no Way's colour, no named hero, no signature weapon.",
@@ -2655,10 +2693,21 @@ for (const group of GROUPS) {
        * Falling back to the whole string left *Street Urchin* carrying the slums into a prompt
        * that had just been rewritten to take them out. */
       ? described.split(" \u2014 ").slice(0, -1).join(" \u2014 ")
-      : DIRECTION[key] && entry.blurb
+      /*
+       * **And a twist's COST is prose too.**  [FOUND 2026-11-14] `brief` was taught to print it,
+       * because without it a twist's subject line was a bare name -- and that put it straight
+       * back beside the direction it is overridden by: *"Noise" — Attention. The opposition now
+       * knows something is wrong.* followed by *draw a lantern turned toward the viewer*. Two
+       * instructions, the second overriding the first, which is the exact shape of the defect
+       * this branch exists to prevent. Whatever the brief appends as prose comes off here; what
+       * stays is the mechanical half, which instructs nobody and tells an artist the scale.
+       */
+      : DIRECTION[key] && (entry.blurb || entry.cost)
         /* The brief joins its parts with a MIDDLE DOT, so that is what is left dangling. The
          * first version of this stripped an em dash and left `Tool ·` on every item. */
-        ? described.replace(entry.blurb, "").replace(/[\s\u00b7\u2014-]+$/, "").trim()
+        ? [entry.blurb, entry.cost].filter(Boolean)
+          .reduce((s, prose) => s.replace(prose, ""), described)
+          .replace(/[\s\u00b7\u2014-]+$/, "").trim()
         : described;
     /*
      * **[FOUND 2026-11-09] A hand-written direction REPLACES the piece's own sentence; it used to

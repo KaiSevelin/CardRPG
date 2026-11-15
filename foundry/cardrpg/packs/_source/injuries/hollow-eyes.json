@@ -8,6 +8,7 @@
   },
   "name": "Hollow Eyes",
   "type": "injury",
+  "img": "systems/cardrpg/art/injuries/hollow-eyes.webp",
   "system": {
     "category": "corruption",
     "intruder": {

@@ -830,7 +830,18 @@ game is about: you do not run out of spells, you run out of deck.
 
 ## 13. Checks, outside a fight
 
-Draw a hand of **4** skill cards. Each shows one **approach** and a value of 1–3.
+Most of what you do away from a fight is a **check**: one card out of your hand, a difficulty the
+GM names, and a fate card to say how it went. This chapter walks through one from start to finish,
+and then through everything you are allowed to add to it.
+
+Only make a check when **failing would be interesting**. Walking across a room is not a check.
+Walking across a room with a tray of glasses while the duke is watching might be.
+
+### 13.1 The six approaches
+
+A skill card names one **approach** and a value of **1 to 3**. The approach is *how* you are doing
+the thing, not what the thing is: you can get over a wall with Might or with Agility, and the
+difference is whether you went through it or over it.
 
 | Approach | Covers |
 |---|---|
@@ -841,33 +852,195 @@ Draw a hand of **4** skill cards. Each shows one **approach** and a value of 1�
 | **Lore** 📜 | Knowledge, arcana, religion, history, healing |
 | **Presence** 👑 | Persuading, leading, performing, bargaining, calming |
 
-Every deck contains all six, so anyone can try anything. Your Way and background decide which ones
-you hold more of, and better.
+**Every deck holds all six**, so anyone can try anything. Nobody is locked out of talking or of
+climbing; some people are simply better at one of them.
 
-**To make a check:** the GM sets a difficulty. You play a card of the approach you are using, add
-your bonuses, and draw fate.
+### 13.2 Your deck, your hand, and running dry
 
-| Difficulty | Number |
-|---|---|
-| Easy | 3 |
-| Normal | 5 |
-| Hard | 7 |
-| Heroic | 9 |
+Your skill deck is a different deck from your action deck, and it works on a different clock.
 
-| Result | When | Effect |
+- You start with **fifteen** cards, plus **two** your occupation dealt in: seventeen in all.
+- Draw a hand of **4** skill cards at the start of each **scene**, back up to four if you have
+  some already. A scene is the GM's call: a new place, a new conversation, time passing.
+- A card you play goes to your **skill discard**, and the discard **does not shuffle back**. It
+  comes back on a **rest** (§15).
+- If your deck and hand are both empty you can still **improvise**: value **0**, with
+  disadvantage.
+
+That last point is the shape of the whole thing. Your skill deck is not a per-scene resource like
+stamina. **It is a budget for the day**. Four checks into an afternoon you are holding your
+leftovers, and the question stops being *can I do this* and becomes *is this worth a card*.
+
+**A clogged deck is worse than a thin one.** Mind **Taint** and **Doubt** both live in this deck,
+and this is the expensive place to put them: a played card comes back on a rest, so an intruder
+here costs you across a session rather than within a fight.
+
+**Your Way deals in more.** Walking into a Way adds a card, and each of its branches adds another,
+so a character deep in a Way has more checks in a day and draws any one of them less often. See
+§21 for every card in the game.
+
+### 13.3 One check, start to finish
+
+> **Mira** is a Street Urchin out of the Core. She carries **Lockpicks** (*Shadow +2, locks and
+> mechanisms*) and is **trained in lockpicks**. Her friend Osric is holding a lantern.
+
+**Step 1. The GM names the obstacle and a difficulty.** This half is the GM's and you cannot do
+it for them. Without a call there is nothing to answer.
+
+| Difficulty | Number | Who gets there reliably |
+|---|---|---|
+| Easy | 3 | Anyone with a decent card |
+| Normal | 5 | Trained, or anyone with a good tool or help |
+| Hard | 7 | Specialists with a tool or help |
+| Heroic | 9 | Specialists pushing hard, with help |
+
+> *"The counting-house door. Shadow, Normal 5."*
+
+**Step 2. You play one card and say how.** The approach has to fit what you described. A card that
+cannot answer the call is greyed out rather than hidden, so you can see why it will not go.
+
+> Mira plays **Out of the Light**, a Shadow **1**. It is not a good card. It is the Shadow card she
+> has.
+
+**Step 3. Add what applies.** This is the part worth learning properly, and §13.4 does it one
+piece at a time. For now: her picks are **+2**, Osric's lantern is **+1**.
+
+> `1 + 2 + 1 =` **4**, against a difficulty of 5.
+
+**Step 4. Claim anything you can argue for.** Mira has been picking locks since she was eight.
+
+> *"This is lockpicks."* The GM agrees, so her card **counts as 2** and her total is **5**.
+
+**Step 5. Draw fate, and double it.** A fate card is worth **twice** its value on a check. That is
+the single biggest difference between a check and an attack: the deck swings a check around twice
+as hard, which is why a point of bonus matters less here than it looks.
+
+**Step 6. Compare.**
+
+| Result | When | What happens |
 |---|---|---|
 | **Critical** | Critical drawn | You do it, and something extra goes your way. |
 | **Success** | Total ≥ difficulty | You do it. |
-| **Partial** | 1–4 below | You do it, **but** it costs something. |
-| **Fail** | 5 or more below, or a Miss | You don't, **and** the situation changes. |
+| **Partial** | 1–4 below | You do it, **but** it costs something: a twist. |
+| **Fail** | 5+ below, or a Miss | You don't, **and** the situation changes: a twist. |
 
-A Critical comes off the card, so a Critical that still falls short is a success with a bonus, not a
-near miss. A Miss is a Fail however high the total was.
+A **Critical** comes off the card, so a Critical that still falls short is a success with a bonus
+rather than a near miss. A **Miss** is a Fail however high your total was.
 
-**Tools** help the approach they name. An **untrained** user gets at most +1 from a tool however good
-it is; training is what unlocks the rest, and training comes from levelling.
+**Partial is the common result and it is not a failure.** You get the thing. The GM gets to say
+what it cost. Most doors in this game open; the interesting question is what was on the other side
+by the time you got through.
 
-### Challenges
+### 13.4 The five things you can add
+
+In the order you should think about them.
+
+**1. A tool**, if one helps *here*. Tools name a situation, not just an approach: Lockpicks are
+`Shadow +2 (locks and mechanisms)`, and a Climbing Rope is `Might +2 (climbing)`: worth two points
+going up a wall and **nothing at all** shoving a stuck door, which is also Might. Say which tool
+you are using and what it is doing. Nothing is added for you.
+
+**Untrained, a tool gives at most +1** however good it is. Training is what unlocks the rest, and
+training comes from your background and from levelling.
+
+**2. A training**, if one covers it. Say which one you are claiming. If the GM agrees, **the card
+you play counts as at least 2**. You do not fumble the thing you have done ten thousand times.
+It cannot lift a 2 or a 3, so it is worth most on exactly the hand you did not want. It does not
+rescue an improvised check: having once been taught something is not a card in your hand.
+
+**3. A push.** Play a **second card of the same approach** from your hand and add its value. This
+is how a specialist reaches Hard and Heroic, and it costs you two cards out of a day's four.
+
+**4. Help.** Another character plays **any** card and says how they help: **+1**, or **+2** if
+their card is the same approach. One helper. **If the check fails, the helper shares the
+consequences**: helping is not free and not risk-free.
+
+**5. Advantage**, which is not a number. A good plan, a clever use of the ground, a background that
+fits: the GM may give you advantage, and you may argue for it. Bad conditions give disadvantage the
+same way.
+
+> **Advantage never stacks, and it cancels.** Two sources of advantage are one advantage. One of
+> each is neither: being **Heckled** while you have talked your way into a favour leaves you
+> drawing normally. However many of each there are, you end up with advantage, disadvantage, or
+> neither.
+
+### 13.5 The card's edge, and why the 1 is sometimes the right card
+
+Every skill card carries an **edge**: a line of text that happens whether or not the check
+succeeds. The edge is not a bonus. It is the card's second half.
+
+**The size of the number tells you how much to expect of the edge.** A **3** is nearly all number
+and its edge is a detail that is occasionally decisive. A **1** is nearly all text, and the number
+is the excuse to play it.
+
+> *Get the forged writ onto his desk. Any approach, Normal 5.* Mira can play:
+>
+> - **Quick Hands**, Agility 2, +1 from Light Step = **3**
+> - **Out of the Light**, Shadow 1 = **1**, *edge: nobody can say afterwards that it was you*
+>
+> She plays the 1. A Partial on Quick Hands is *the writ is on the desk and the clerk saw who put
+> it there*. A Partial on Out of the Light is *the room noticed something and nobody can name her*.
+> The number is worse and the failure is survivable.
+
+Some edges are a **price**, not a gift. *The Loud Voice* says everyone nearby hears you and knows
+it was you, and it says that whether or not you wanted it today.
+
+### 13.6 What the numbers actually buy
+
+Success, partial and fail, counted off all twenty fate cards.
+
+| total − difficulty | advantage | normal | disadvantage |
+|---|---|---|---|
+| **−3** | 19 / 72 / 9 | 10 / 60 / 30 | 1 / 48 / 51 |
+| **−2, −1** | 51 / 48 / 1 | **30 / 60 / 10** | 9 / 72 / 19 |
+| **0, +1** | 91 / 9 / 0 | **70 / 25 / 5** | 49 / 41 / 10 |
+| **+2, +3** | 99 / 1 / 0 | **90 / 5 / 5** | 81 / 9 / 10 |
+
+Two things are worth taking from that table.
+
+**Advantage is worth about as much as two points of bonus.** On the difficulty it takes you from 70
+to 91. Arguing well is not flavour.
+
+**The rows pair up.** A fate card is doubled on a check, so the swing is always even and the odds
+move in steps of two. Hitting the difficulty exactly and beating it by one are the same check.
+**One point is worth either nothing at all or a great deal**. Mira's claimed training above took
+her from 30% to 70% because it crossed a step; on a night with no lantern the same claim would have
+moved her total from 3 to 4 and her odds not at all.
+
+### 13.7 Things you never check for
+
+Some things you notice without trying: an ambush in the trees, a lie in a friendly sentence, a
+tripwire. These cost no card and no draw.
+
+**Your passive score in an approach is your best card of it, plus 2.** If the party's best Wits
+passive is 6, the party simply notices a Normal 5: the GM does not call for anything, and you
+never knew there was a check to make. The point of a passive is to **delete** checks, not to speed
+them up.
+
+### 13.8 Opposed checks
+
+When somebody is actively working against you, a guard watching or a merchant haggling back, the
+opposition is not a difficulty, it is a character. **You still play and draw; they never do.** The
+GM sets their resistance on the same scale: 3 for someone not expecting trouble, 5 for someone
+doing their job, 7 for someone good at it and alert.
+
+### 13.9 When everybody has to get past it
+
+Some obstacles are not one task with many hands on it: they are the same task, once each. Everyone
+has to get over the wall, and the question is not whether the party manages it but who gives it
+away.
+
+**Anyone whose passive meets the difficulty is simply through**, with no card spent, which is the
+second job a passive does. Everyone else makes a normal check, and the people already through can
+help.
+
+**What you get wrong is yours.** Your Partial costs you something and your Fail is your twist.
+Nobody pays for your bad hand, and you do not pay for theirs.
+
+The GM draws **at most two** twists however many of you came up short: the worst result gets its
+own, and the rest of you share one. So a bad crossing costs the party two complications, not five.
+
+### 13.10 Challenges
 
 A big situation is not one check. Getting into a manor, chasing a thief over rooftops, crossing a
 mountain, talking a duke round: each is a **challenge**, and the whole party plays into two tracks.
@@ -910,7 +1083,7 @@ matters, and when the party has to plan as a group rather than as four people ta
 duke grows impatient. Then shuffle your skill discard back into your skill deck, set **1** card of
 your choice aside as Spent until your next rest, and draw up to hand size.
 
-### Twists
+### 13.11 Twists
 
 **A Partial costs you a twist. A Fail is one.**
 
@@ -1497,7 +1670,70 @@ what you will ever carry.
 
 ---
 
-## 21. Features
+## 21. Skill cards
+
+Your other deck. The fifteen everybody starts with, then what each Way deals in on top of them.
+See §13.2 for how the deck grows and §13.5 for why a 1 is sometimes the card you want.
+
+<!-- generated: skills -->
+
+### The deck everybody starts with
+
+Fifteen cards, all six approaches, and two more from your occupation.
+
+| Card | Approach | Value | Copies | Edge |
+|---|---|---|---|---|
+| **Set Your Feet** | Might | 3 | 1 | You are not moved, and you do not drop what you are holding. |
+| **Heave** | Might | 2 | 2 | What you shift stays shifted: the way is open behind you for everybody else. |
+| **Break It** | Might | 1 | 1 | Something gives whether or not you get through: the GM says what broke. |
+| **Quick Hands** | Agility | 2 | 2 | You do it one-handed, without setting down what you were already carrying. |
+| **Keep Your Footing** | Agility | 1 | 1 | You do not fall, whatever else happens. |
+| **Out of the Light** | Shadow | 1 | 2 | Nobody can say afterwards that it was you. |
+| **Sharp Eyes** | Wits | 1 | 2 | Ask the GM one yes-or-no question about the scene. |
+| **Soldier's Learning** | Lore | 1 | 2 | You have watched somebody try this: the GM tells you one thing that went wrong for them. |
+| **The Loud Voice** | Presence | 1 | 1 | Everyone nearby hears you, and knows it was you. |
+| **Inspiration** | any | 1 | 1 | Draw 1 skill card. |
+
+### Way of Shade deals in
+
+| Card | Approach | Value | Copies | Edge |
+|---|---|---|---|---|
+| **The Quiet Way** | Shadow | 2 | 1 | You leave nothing behind that says how long you were there. |
+| **Pockets** | Agility | 2 | 1 | Whatever you took, you took without looking at it. |
+| **Dead Ground** | Wits | 2 | 1 | You know one way out of here that nobody is watching. |
+| **Read the Room** | Presence | 1 | 1 | Name one person here who is armed, or one who is frightened. You are right. |
+
+### Way of Strength deals in
+
+| Card | Approach | Value | Copies | Edge |
+|---|---|---|---|---|
+| **Set Against It** | Might | 2 | 1 | Whatever you braced stays where you put it until you move. |
+| **Shoulder to It** | Might | 3 | 1 | You do not have to say anything: the others move with you. |
+| **The Reputation** | Presence | 1 | 1 | Anybody here who knows what you are stops arguing with you. |
+| **Feet Under You** | Agility | 2 | 1 | However that ended, you are standing. |
+
+### Way of Mind deals in
+
+| Card | Approach | Value | Copies | Edge |
+|---|---|---|---|---|
+| **The Long Study** | Lore | 2 | 1 | You have read about this. The GM tells you what it is called. |
+| **What a Body Is** | Lore | 3 | 1 | You can say what killed it, if something did. |
+| **The Shape of It** | Wits | 2 | 1 | You see which way it will go when it goes. |
+| **Owed and Owing** | Presence | 1 | 1 | Name one thing the dead here still want. The GM says whether it is cheap. |
+
+### Way of Faith deals in
+
+| Card | Approach | Value | Copies | Edge |
+|---|---|---|---|---|
+| **The Words** | Presence | 2 | 1 | Everyone who hears you knows which god you serve, whether or not that helps. |
+| **Kept Faith** | Lore | 2 | 1 | You know what the observance here is, and what breaking it would cost. |
+| **The Petition** | Presence | 1 | 1 | Somebody here was going to ask you for something. Now they do. |
+
+<!-- /generated: skills -->
+
+---
+
+## 22. Features
 
 Permanent traits. A feature is never shuffled and never spent: it is simply true of you.
 
@@ -1524,7 +1760,7 @@ Permanent traits. A feature is never shuffled and never spent: it is simply true
 
 ---
 
-## 22. Spells
+## 23. Spells
 
 Formulas for Way of Mind and miracles for Way of Faith, by where they come from. **Strength** is how
 many spell slots preparing one costs.
@@ -1790,7 +2026,7 @@ many spell slots preparing one costs.
 
 ---
 
-## 23. Quick reference
+## 24. Quick reference
 
 | | |
 |---|---|

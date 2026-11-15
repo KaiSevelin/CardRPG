@@ -67,6 +67,26 @@ The tray folds in **steps 1-3** of the resolution (item base, card modifier, fea
 
 Hovering a half shows the breakdown, so the arithmetic stays auditable.
 
+#### What the face does NOT print  **[BUILT 2026-11-14]**
+
+> A card is 150px wide, and the face used to take every clause a step could carry. *Shield Up* came
+> out as "Defend (Block applies to every attack until your next turn)" wrapped over five lines
+> across its own picture, and *Strike* printed "Move 0 (was 1)" — a number with its cause cut off.
+
+Each step now reads in two registers:
+
+- **The face** says the verb, the number, the condition and its duration, the kit requirement, and
+  the combo clause's numbers. These are the things you compare cards on at a glance.
+- **The tooltip** says the rest: the author's prose, the resist clause, the combo clause's wording,
+  which item supplied the value, and — when a number on the face is not the number printed on the
+  card — **which condition took it**. A half you can play has a tooltip now too, which it did not
+  when the only thing worth explaining was why a half was dead.
+
+The dividing line is not length. It is whether the clause is a quantity you choose between: a `+2`
+stays on the face at two characters, and a sentence explaining what the +2 means does not, however
+short it happens to be. A value a condition has cut carries a small ▾ beside it, because a tooltip
+nobody hovers is not a way of telling anybody anything.
+
 ### 3.2 Blocked halves are greyed in place, never hidden
 
 Conditions, features and item drawbacks block icons (core-rules §10). The tray computes the blocked
@@ -380,6 +400,39 @@ The face-up discard is **provisional**. It makes the `2/k` readout above availab
 looks, which is a real tactical layer — and if it turns out to slow turns down or to drain the
 suspense from a draw, hiding it again is a one-line change. Worth watching for in the first playtest.
 
+### 4.4 The claim: advantage somebody argued for  **[BUILT 2026-11-14]**
+
+> **The rules have always granted it and the software had no lever.** skill-rules §2: *a good plan,
+> a clever use of the environment, or a fitting background grants advantage.* skill-rules §7:
+> features, know-how and tools *apply if they fit the situation*. The know-how system is
+> deliberately a loose bag of tags you argue from rather than a list you look up — and none of it
+> could reach a draw. `advantageFor` knew six rules it could prove from the canvas and the
+> conditions, the GM's call carried a mode for skill checks, and there was no third way in.
+
+```
+┌─ EDGE ────────────────────────────────┐
+│  [ − ] [ • ] [ + ]   high ground      │
+└───────────────────────────────────────┘
+```
+
+- **Three states, not a tick box**, because disadvantage is as claimable as advantage. The middle
+  one is the resting state and **clears** the claim rather than storing a third kind of one.
+- **The player sets it on their own character; the GM sets it on whoever they are looking at.**
+  Both go through the same control on the same panel. Nothing asks permission in advance — a claim
+  nobody can see is the only kind that could be abused, and this one is printed with the result.
+- **The reason is offered, never required.** A select of the character's own tags — background,
+  trainings, know-how, languages, the tags on what they are carrying, their features; a monster's
+  type and its tactics — with a free field beside it, because the commonest good reason at a table
+  is the shape of the room and that is on nobody's sheet. Nothing validates the choice, because
+  nothing could.
+- **One claim, not a stack.** It is folded into `advantageFor` through the same two booleans every
+  other source goes through, so the two rules that govern them govern it: a second advantage is
+  still one advantage, and a claim against a condition that already gives disadvantage cancels. A
+  claim made beside the GM's call on a check settles the same way.
+- **Spent by the action it was claimed for**, like a target or a staged half. A claim that survived
+  its own turn would be a permanent buff written in a UI control.
+
+
 ### 4.3 The fate deck spans both modes
 
 The same 20-card deck resolves combat damage *and* skill checks (skill-rules §2). The fate panel
@@ -450,6 +503,28 @@ icon stretched across a card would be worse than no art at all.
 > gear in the catalogue, a hundred and seventy-six pieces. The levelling graph reads the path
 > straight from content and draws it on a node, so a feature's picture turned up there and on
 > nothing else, which is exactly the shape of a defect nobody finds by reading.
+
+---
+
+## 4b. Two decks, one window  **[BUILT 2026-11-14]**
+
+A character has two decks and the window used to show **both at once** out of combat: the action
+hand laid across the scene, the skill hand under it, and a deck in the corner that was always the
+action one. Two hands on the screen is two hands to read, and only one of them could be played.
+
+- **The mode picks the side.** A fight is the action deck; a scene is the skill deck. That is the
+  same automatic switch §2 settled for the tray as a whole, applied to the thing it is actually
+  about.
+- **A button overrules it**, in both directions and in both modes, sitting under the deck corner
+  because that is what it changes. It **pins**: once somebody has asked for a side the window
+  stays there until they ask again, including across a fight starting. A check called in the
+  middle of a fight is the whole reason the override exists, and a toggle that un-pinned itself on
+  the next mode change would lose the click at the one moment it mattered.
+- **Turning over empties the play area**, because what is staged belongs to the side it was staged
+  on. An action half sitting in a stack while the window shows a skill hand is a turn nobody can
+  see they are holding.
+- **A monster never sees it.** It has one deck and makes no checks of its own (core-rules §9), so
+  a control with one state would be a label.
 
 ---
 
@@ -683,12 +758,70 @@ public knowledge anyway — so the system flips it automatically rather than rel
 This is what makes **Foresee** cleanly valuable only when the enemy acts late in the order, which is
 the intended design (core-rules §3).
 
+### 7.1 The monster tray  **[BUILT 2026-11-14]**
+
+> **The HUD refused NPCs and sent the GM to a sheet that cannot attack with anything.** So the one
+> actor in a fight nobody could play from the interface was every actor the GM was playing: a
+> goblin could be dealt an intent card, and reading it was all anyone could do with it.
+
+The same window in a third mode, for the same reason §5 gives for the scene tray: the vitals, the
+conditions, the gear and the fate deck are the same four panels reading different fields, and a
+second application would draw all four twice.
+
+```
+┌─ Goblin Warrior ──────────────────┐
+│ ♥ 5/5  ⎆0  ▣1        goblin       │
+│ [ − ] [ • ] [ + ]  normal draw    │
+├─ Close In ────────────────── hidden
+│   Move 3                          │
+│   Strike 3 · Goblin Spear         │
+│          [ Play intent ]          │
+├───────────────────────────────────┤
+│ Goblin Spear 3   ·   Thrown Rock 2│
+└───────────────────────────────────┘
+```
+
+- **Nothing is staged.** core-rules §9: a monster holds no hand, has no stamina, and pays no Ready
+  and no Strain. core-rules §3: its turn is one intent card per type per round, carrying an ordered
+  sequence. There is nothing to choose between, so a row **resolves on the click** and the two play
+  stacks are not drawn at all.
+- **Its weapons are rows under the card.** An intent that does not fit the moment is a thing the GM
+  overrules rather than obeys, the deck is empty out of combat, and a specialist's tactic is meant
+  to be played. core-rules §9 already says an NPC's Strike comes off its item — the one knob that
+  sets how dangerous it is — so this is that sentence with a button on it.
+- **The card says whether the players can see it**, and playing from here flips it through the same
+  `revealIntent` the turn hook uses, so the auto-flip above still holds.
+- **Players never see one.** The window opens on an NPC for a GM only.
+
+#### The HUD follows the selection
+
+Selecting a token opens the HUD on its actor, in or out of combat, and on a GM's client the window
+also moves with the **turn marker** — because for a GM *which character am I playing* has no answer
+except *the one whose turn it is*. A player is never moved this way: their HUD is their own
+character's.
+
+Visibility is unchanged and is the whole of the rule: a player sees a character they own, a GM sees
+whoever they have selected. Deselecting closes nothing — the tray is the surface you play from, and
+one that vanished on every click into empty canvas would be unusable.
+
 ---
 
 ## 8. What stays on the sheet
 
 Deck building, full inventory and slot management, features, injuries, rests and Spent-card recovery,
 Wound and Taint detail, levelling. None of it changes moment to moment.
+
+**And the decks themselves, listed.**  **[BUILT 2026-11-14]** The Deck tab counted them — *14 cards
+(limit 12–20), draw 5, hand 5, discard 4* — and showed none of them, so the one surface that is
+supposed to answer *what is in my deck* could answer only *how many*. Both decks are listed now, one
+line per card: what it does in printed values, what it does on somebody else's turn, and **which
+pile it is in**. That last column is the part a count cannot give you at all — Spent is out of this
+fight, the discard comes back on the next cycle, and the deck size is the same number for both. A
+card nobody chose to put there (core-rules §8) is marked, so the list answers *what do I own* rather
+than *what is clogging it*.
+
+It is a **list and not a hand**: the tray paints cards because you are choosing between five of
+them, and a deck is twenty read down a column.
 
 ---
 
@@ -774,6 +907,80 @@ gradient — and an edge with both ends owned is brighter, because that one is y
 
 **A node wears the art of what it hands over**, not art of its own: what a node GIVES is the thing
 worth looking at, so a title shows its Signature's picture. Nothing to show stays blank.
+
+#### What a node buys, and what it costs  **[BUILT 2026-11-14]**
+
+Selecting a node lights **two halos** on the map:
+
+| Halo | Says |
+|---|---|
+| gold, dashed | what this node would **open** — its successors, and the roads into them |
+| oxblood, dotted | what this node would **bar** — everything still reachable that taking it shuts |
+
+The panel has printed both as lists of names since it was written, and a list of names is the wrong
+form for a question about **where**. *Closes: …* runs to fifty-six entries on a god, beside a map
+that knew exactly where all fifty-six were.
+
+Two channels that differ in hue **and** in shape, so a reader who cannot separate the colours still
+reads the pair. Both paint the border only: the fill belongs to the Way, and a node about to be
+shut is still a node of that Way.
+
+**It follows what is being read, not what is marked.** Reading ahead is the whole purpose of the
+panel, so an unavailable node answers *what does this lead to* as readily as a takeable one.
+
+#### Dragging anywhere pans  **[FIXED 2026-11-14]**
+
+Nothing on the map is grabbable, but ungrabbable is not transparent to a drag: Cytoscape defaults
+`pannable` to false on a node, so a drag that began on one did nothing at all. The territories are
+compound parents covering most of the canvas, so *most of the canvas* is what that came to. Every
+element is `pannable` now; a tap is a press without movement and still selects.
+
+#### A band per namespace  **[FIXED 2026-11-14]**
+
+A node id's first segment names its band. When origins and occupations became `origin.*` and
+`background.*` they stopped being `root`, so both fell through to the fallback and the map drew
+two adjacent grey boxes, each labelled *Where everyone starts* — the sequence right underneath and
+the labels saying it was one step twice. They are **Where you are from** and **What you did
+before** now, named for the questions they answer and in the order they are answered.
+
+#### A third channel: the shape  **[NAMED 2026-11-14]**
+
+| Channel | Says |
+|---|---|
+| the **shape** | whether this is a destination or a step toward one |
+
+A title is a **hexagon**, bigger and heavier-rimmed; a minor node is a quiet **rounded rectangle**.
+The map has drawn them that way since it was built and never said so, which left the only
+structural distinction on it for the player to infer from 169 boxes. The legend names both, and
+draws them as the shapes themselves rather than describing them.
+
+#### It opens on a choice, not on an instruction  **[BUILT 2026-11-14]**
+
+The pane opened on an empty panel reading *tap a node*, with 237 boxes behind it, and the player's
+first job was to find one of the handful they could actually take. The arrows have always known
+where those are; nothing pressed one.
+
+The first render now **marks the first choice, centres the map on it and writes the panel** —
+exactly what pressing the right arrow once would have done. Once, and only on the way in: the pane
+renders again after a node is taken, and auto-marking there would arm **Accept** on a node nobody
+had read.
+
+#### The panel, and the room for a picture  **[CHANGED 2026-11-14]**
+
+- **The name comes before the picture.** It was the other way round, so a panel opened on an
+  unfamiliar node showed an unlabelled illustration and the player had to look past it to find out
+  what they were looking at. A card names itself at the top — card-layout's first tier — and this
+  panel is a card.
+- **The legend is two columns**, which is what buys the picture its height. The legend is
+  reference: you read it once and then stop seeing it. The picture is what the panel is for.
+
+#### The layouts  **[CHANGED 2026-11-14]**
+
+Four, and **breadth-first is retired**. It was the nearest thing to *Tiers* and the worse version
+of it: both lay the graph out in rings from the root, and only *Tiers* knows that the depth is
+already computed from the edges and that a layer wants ordering by its predecessors. A picker whose
+second entry is a worse copy of its first offers one choice and charges for two. *Tiers*,
+*Concentric*, *Force* and *Grid* are four genuinely different readings of the same graph.
 
 ### 8a.2a Prune: the reward that asks back
 

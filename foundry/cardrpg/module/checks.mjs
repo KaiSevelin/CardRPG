@@ -26,6 +26,21 @@ import { deckOf, move, dealSkillHand } from "./decks.mjs";
 const FLAG = "call";
 
 /**
+ * Where the twist debts live.
+ *
+ * **One boolean could not hold a group check.**  [BUILT 2026-11-15] A twist used to be owed by
+ * the challenge -- `owed: true` -- which can record that *somebody* owes one and not who, and
+ * only inside a challenge. The moment several characters answer one call that is wrong twice
+ * over: three of five may fail, each failure is a different person's problem, and none of it
+ * happens inside a challenge unless the GM started one.
+ *
+ * So the debt is a list on the scene, each entry naming the character who incurred it. The twist
+ * that pays it says whose it was, which is the whole point: a card drawn into the middle of a
+ * group check with no name on it is a cost nobody can place.
+ */
+const DEBTS = "twistDebts";
+
+/**
  * The call in front of the party, or null.
  *
  * Read off the ACTIVE scene, which is the one the players are looking at -- `game.scenes.active`
@@ -41,16 +56,37 @@ export function readCall() {
     dc: Number(call.dc) || CARDRPG.difficulties.normal,
     mode: Number(call.mode) || 0,
     note: String(call.note ?? ""),
+    /*
+     * **Who the call is addressed to**, as actor ids, empty for "whoever is holding a card".
+     *
+     * A call used to be addressed to the room, which is right for one obstacle in front of one
+     * party and wrong for every shape of check that names people: a group check is a call made of
+     * several characters, and an opposed one has a second side. Recording the cast on the call is
+     * what lets the banner say who is answering and the panel count how many still owe a card.
+     */
+    who: Array.isArray(call.who) ? call.who.filter(id => typeof id === "string") : [],
     scene: scene.id
   };
 }
 
+/** The named cast of a call or a challenge, as actors, skipping any that have been deleted. */
+export function castOf(ids) {
+  return (ids ?? []).map(id => game.actors?.get(id)).filter(Boolean);
+}
+
+/** ...and as one line of names, for a banner or a chat record. */
+export function describeCast(ids) {
+  const names = castOf(ids).map(a => a.name);
+  return names.length ? names.join(", ") : "";
+}
+
 /** Set the call. GM only: it is the GM's half of the step. */
-export async function setCall({ approach = "any", dc, mode = 0, note = "" } = {}) {
+export async function setCall({ approach = "any", dc, mode = 0, note = "", who = [] } = {}) {
   const scene = game.scenes?.active;
   if (!game.user.isGM || !scene) return null;
   await scene.setFlag("cardrpg", FLAG, {
-    approach, dc: Number(dc) || CARDRPG.difficulties.normal, mode: Number(mode) || 0, note
+    approach, dc: Number(dc) || CARDRPG.difficulties.normal, mode: Number(mode) || 0, note,
+    who: (who ?? []).filter(id => typeof id === "string")
   });
   return readCall();
 }
@@ -67,6 +103,97 @@ export async function clearCall() {
   const scene = game.scenes?.active;
   if (!game.user.isGM || !scene) return;
   await scene.unsetFlag("cardrpg", FLAG);
+  /* The obstacle is gone, so what it cost is gone with it: a twist owed for a wall the party
+   * walked away from is a button left lit over a scene that has moved on. */
+  await forgiveDebts();
+}
+
+/* -------------------------------------------- */
+/*  Who owes a twist                            */
+/* -------------------------------------------- */
+
+/** Every debt standing on this scene, oldest first. */
+export function readDebts() {
+  const scene = game.scenes?.active ?? null;
+  const list = scene?.getFlag?.("cardrpg", DEBTS);
+  if (!Array.isArray(list)) return [];
+  return list
+    .filter(d => d && typeof d.actor === "string")
+    .map(d => ({
+      actor: d.actor,
+      name: String(d.name ?? ""),
+      kind: d.kind === "fail" ? "fail" : "partial"
+    }));
+}
+
+/**
+ * Record one, deduplicated by character.
+ *
+ * **One debt per person per call**, and a Fail outranks a Partial. A character who answers the
+ * same obstacle twice and comes up short twice has not earned two twists: skill-rules 4 is about
+ * a cost that fits the fiction, and the same person paying twice for one obstacle is a tax rather
+ * than a consequence. The worse of the two results is the one that stands.
+ */
+export async function oweTwist({ actor, name, kind }) {
+  const scene = game.scenes?.active;
+  if (!game.user.isGM || !scene || !actor) return null;
+  const debts = readDebts();
+  const already = debts.find(d => d.actor === actor);
+  if (already) {
+    if (already.kind === "fail" || kind !== "fail") return debts;
+    already.kind = "fail";
+  } else {
+    debts.push({ actor, name: String(name ?? ""), kind: kind === "fail" ? "fail" : "partial" });
+  }
+  await scene.setFlag("cardrpg", DEBTS, debts);
+  return debts;
+}
+
+/** Strike some debts off, or all of them when given nothing. */
+export async function forgiveDebts(actorIds = null) {
+  const scene = game.scenes?.active;
+  if (!game.user.isGM || !scene) return;
+  if (!actorIds) return void await scene.unsetFlag("cardrpg", DEBTS);
+  const keep = readDebts().filter(d => !actorIds.includes(d.actor));
+  if (keep.length) await scene.setFlag("cardrpg", DEBTS, keep);
+  else await scene.unsetFlag("cardrpg", DEBTS);
+}
+
+/**
+ * The debts as **at most two** things to draw for.
+ *
+ * Five characters answering one call can fail five times, and five twists is five consequences
+ * narrated back to back over one wall: the deck would be doing the GM's job badly and at length.
+ * So a group check pays twice at most -- **the worst single result draws its own, and everybody
+ * else collapses into one shared cost** -- and the cap lives here rather than in the GM's
+ * self-restraint, because the panel can only offer what this returns.
+ *
+ * A Fail outranks a Partial for which one is "the worst", since that is the ordering the result
+ * table already uses.
+ */
+export function twistQueue() {
+  const debts = readDebts();
+  if (!debts.length) return [];
+  const rank = d => (d.kind === "fail" ? 0 : 1);
+  const sorted = [...debts].sort((a, b) => rank(a) - rank(b));
+  const [worst, ...rest] = sorted;
+
+  const entry = (list, label) => ({
+    ids: list.map(d => d.actor),
+    label,
+    kind: list.some(d => d.kind === "fail") ? "fail" : "partial",
+    shared: list.length > 1
+  });
+
+  const out = [entry([worst], worst.name || game.i18n.localize("CARDRPG.Twist.Someone"))];
+  if (rest.length) {
+    const names = rest.map(d => d.name).filter(Boolean);
+    const label = names.length > 2
+      ? `${names.slice(0, 2).join(", ")} and ${names.length - 2} more`
+      : names.join(" and ");
+    out.push(entry(rest, label || game.i18n.localize("CARDRPG.Twist.TheRest")));
+  }
+  return out;
 }
 
 /** How a call reads in one line, for the banner and for a chat record. */
@@ -98,11 +225,21 @@ export function cardAnswers(card, call) {
 /**
  * The best equipped tool for this approach, or null.
  *
- * **Chosen rather than asked**, which is the other half of streamlining a check: the engine knows
- * which items are equipped and which approach each serves, so the common case needs no answer. The
- * dialog still shows it and still lets it be cleared, because a tool's bonus is *situational* --
- * `Shadow +2 (locks and mechanisms)` is not a bonus to every Shadow check, and only the table can
- * say whether this is a lock.
+ * **Offered first rather than chosen**, which is a correction.  [2026-11-15]
+ *
+ * This used to pre-select it, and the comment that justified it conceded the whole case against
+ * it in its own last sentence: *a tool's bonus is situational -- `Shadow +2 (locks and
+ * mechanisms)` is not a bonus to every Shadow check, and only the table can say whether this is
+ * a lock.* A modifier that defaults to ON is a modifier that gets applied, because clearing it
+ * requires noticing it, and the player holding the tool is the last person who will.
+ *
+ * It read worst on the plainest case: a **Climbing Rope** is `Might +2 (climbing)`, and
+ * every Might check in the game -- shoving a stuck door, holding a portcullis, breaking a
+ * cart axle -- came pre-loaded with two points of rope.
+ *
+ * So this now decides what to offer FIRST, and the dialog defaults to no tool. It is the same
+ * arrangement the training claim is under, for the same reason: the engine knows what you are
+ * carrying and only the table knows whether it helps here.
  */
 export function bestTool(actor, approach) {
   const tools = (actor?.items ?? []).filter(i => i.type === "item" && i.system.equipped
@@ -267,25 +404,15 @@ export function readChallenge() {
      * than offering a second pair of buttons is what keeps the scene area from doubling.
      */
     ritual: !!live.ritual,
-    /**
-     * **Whether a twist is owed right now.**
-     *
-     * `TRACK_MOVES` has carried `twist: true` on partial and fail since the table was written and
-     * **nothing read it** -- the fifth field in this project found with no reader. This is the
-     * reader: a Partial or a Fail sets it, drawing one clears it, and the scene area shows the
-     * button only while it is set.
-     *
-     * It does not draw anything. skill-rules 4 is explicit that *the GM can always choose a cost
-     * directly... the deck is there for when inspiration runs out, not to override the GM*, so
-     * this is a prompt and never a consequence.
-     */
-    owed: !!live.owed
+    /* The same cast as a call carries, for the same reason: a challenge is a row of checks and
+     * the question between them is whose turn it is to spend a card. */
+    who: Array.isArray(live.who) ? live.who.filter(id => typeof id === "string") : [],
   };
 }
 
 /** Start one. GM only, like everything about a scene. */
 export async function startChallenge({
-  progressMax = 5, pressureMax = 3, note = "", ritual = false
+  progressMax = 5, pressureMax = 3, note = "", ritual = false, who = []
 } = {}) {
   const scene = game.scenes?.active;
   if (!game.user.isGM || !scene) return null;
@@ -294,9 +421,9 @@ export async function startChallenge({
     progressMax: Math.max(1, Number(progressMax) || 5),
     pressureMax: Math.max(1, Number(pressureMax) || 3),
     note,
+    who: (who ?? []).filter(id => typeof id === "string"),
     /* A ritual draws its twists from its own deck, and nothing else about it differs. */
-    ritual: !!ritual,
-    owed: false
+    ritual: !!ritual
   });
   return readChallenge();
 }
@@ -306,6 +433,7 @@ export async function endChallenge() {
   const scene = game.scenes?.active;
   if (!game.user.isGM || !scene) return;
   await scene.unsetFlag("cardrpg", CHALLENGE);
+  await forgiveDebts();
 }
 
 /**
@@ -327,13 +455,7 @@ export async function advanceChallenge(outcome) {
   if (!move) return null;
   await writeChallenge({
     progress: live.progress + move.progress,
-    pressure: live.pressure + move.pressure,
-    /*
-     * **And the table's own `twist` flag, finally read.** A Partial and a Fail owe one; a Success
-     * and a Critical clear the debt, because a twist owed two checks ago and never taken is a
-     * button left lit over a scene that has moved on.
-     */
-    owed: !!move.twist
+    pressure: live.pressure + move.pressure
   });
   const now = readChallenge();
   const line = `Progress ${now.progress}/${now.progressMax}`
@@ -423,7 +545,7 @@ function twistStacks(which = "scene") {
  *
  * Reshuffled when it runs out, which is the only shuffle rule the deck has.
  */
-export async function drawTwist({ two = false } = {}) {
+export async function drawTwist({ two = false, pay = null, label = "" } = {}) {
   if (!game.user.isGM) return null;
   /*
    * **Which deck is read off the challenge, not chosen at the button.**
@@ -458,17 +580,28 @@ export async function drawTwist({ two = false } = {}) {
   }
 
   /*
-   * The debt is paid. `TRACK_MOVES` sets it on a Partial or a Fail and this is the only thing
-   * that clears it, so the button goes out as soon as it has been used.
+   * **The debt is paid, and only the one that was pointed at.** `pay` is the list of characters
+   * this draw settles, so one failure in a group of five clears that one name and leaves the
+   * others standing in the queue. Nothing means a draw the GM made without a debt behind it,
+   * which skill-rules 4 allows: *the deck is there for when inspiration runs out*.
    */
-  if (live?.owed) await writeChallenge({ owed: false });
+  if (pay?.length) await forgiveDebts(pay);
 
+  /*
+   * **Whose cost this is, printed on the card.** A twist drawn into the middle of a group check
+   * with no name on it is a cost nobody can place, and the pairing cannot be reconstructed
+   * afterwards: the GM would be matching cards to people from memory. So the name travels with
+   * the draw rather than being attached to it later.
+   */
+  const whose = label
+    ? `<p class="cr-note">${foundry.utils.escapeHTML(label)}</p>`
+    : "";
   const body = drawn.map(t => `<p><strong>${t.name}</strong>`
     + `${t.pressure ? " (Pressure +1 as well)" : ""}`
     + `${t.gives ? " &mdash; this one gives" : ""}<br>${t.cost}</p>`).join("");
   await ChatMessage.create({
     whisper: ChatMessage.getWhisperRecipients("GM"),
-    content: `<div class="cardrpg">${two
+    content: `<div class="cardrpg">${whose}${two
       ? "<p><em>Two, and the GM picks one.</em></p>" : ""}${body}</div>`
   });
   return drawn;
@@ -480,9 +613,12 @@ export async function drawTwist({ two = false } = {}) {
  *
  * **`needed` is the whole point.** The buttons used to appear whenever a deck existed, which is
  * always, so two controls sat in the scene area through every scene that never drew one. A twist
- * is owed on a Partial or a Fail and on nothing else (`TRACK_MOVES`), and that flag had no reader
- * until the challenge grew one -- so the panel can now show the button exactly when the rules say
- * a cost is due.
+ * is owed on a Partial or a Fail and on nothing else (`TRACK_MOVES`), so the panel shows a
+ * button exactly when the rules say a cost is due.
+ *
+ * **It reads the ledger and not the challenge**, which is what lets a group check work at all:
+ * the debt belongs to the character who incurred it, several can stand at once, and a call
+ * answered by five people outside any challenge still owes what it owes.
  *
  * `kind` is which deck the next draw will come from, so the button can say so rather than leave
  * a GM in a ritual wondering which pile they are about to disturb.
@@ -497,7 +633,9 @@ export function twistCounts() {
     exists: !!deck,
     kind: ritual ? "ritual" : "scene",
     label: ritual ? "Ritual twist" : "Twist",
-    needed: !!live?.owed
+    /* At most two, and each one named: see `twistQueue`. */
+    queue: twistQueue(),
+    needed: readDebts().length > 0
   };
 }
 
@@ -516,7 +654,26 @@ export function registerCheckHooks() {
   Hooks.on("createChatMessage", async message => {
     if (!game.user.isGM) return;
     const outcome = message.getFlag?.("cardrpg", "outcome");
-    if (outcome) await advanceChallenge(outcome);
+    if (outcome) {
+      await advanceChallenge(outcome);
+      /*
+       * **Recording a debt is not drawing a twist.** skill-rules 4 is explicit that the GM
+       * chooses the cost and the deck is only there for when inspiration runs out, so nothing
+       * here touches the deck: it writes down who came up short, and the GM decides whether a
+       * card is the answer. The result message is the only place that knows both the outcome and
+       * the character, which is why the hook does it rather than the panel.
+       */
+      if (TRACK_MOVES[outcome]?.twist) {
+        const actor = message.getFlag?.("cardrpg", "who");
+        if (actor) {
+          await oweTwist({
+            actor,
+            name: message.getFlag?.("cardrpg", "whoName") ?? "",
+            kind: outcome
+          });
+        }
+      }
+    }
     /* Catch Breath pays in Pressure rather than in a result, and says so the same way. */
     const pressure = message.getFlag?.("cardrpg", "pressure");
     if (pressure) {

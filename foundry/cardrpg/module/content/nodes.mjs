@@ -73,8 +73,10 @@ export const NODES = [
    * of Faith's twelve gods use and the same confirmation dialog -- the pane names what it closes
    * before it closes it.
    *
-   * **Where, not what.** An origin is the place; a background is the trade. Both hang off Birth
-   * and neither depends on the other, so any origin pairs with any background.
+   * **Where, not what.** An origin is the place; a background is the trade, and the trade follows
+   * the place: an origin hangs off Birth, and every occupation hangs off the origins it could
+   * plausibly have come out of. See the Occupation section below for why that is a rule and not a
+   * flourish.
    *
    * Every one of them grants a **know-how** -- advantage on skill checks in a situation
    * (backgrounds.md) -- and the four from places that have a tongue of their own grant that too.
@@ -86,7 +88,7 @@ export const NODES = [
    */
   {
     id: "origin.core", name: "The Core", after: ["root"], free: true, exclusive: "origin",
-    grants: { knowHow: "courts, clerks and who outranks whom" },
+    grants: { knowHow: "courts, clerks and who outranks whom", item: "Fine Clothes" },
     lore:
       "Born on the mesa or in the satellite cities under it: Geistburg, a dozen corrupt noble "
       + "houses and a powerless man still titled emperor. You grew up knowing which of them to be "
@@ -96,7 +98,7 @@ export const NODES = [
   },
   {
     id: "origin.fiord", name: "The Fiord", after: ["root"], free: true, exclusive: "origin",
-    grants: { knowHow: "boats, tides and harbour business" },
+    grants: { knowHow: "boats, tides and harbour business", item: "Lantern" },
     lore:
       "Black Harbour, the fishing villages, or one of the islands close enough in to count. The sea "
       + "cuts so deep inland here that the ring runs through water, and six enormous lighthouses mark "
@@ -106,7 +108,7 @@ export const NODES = [
   },
   {
     id: "origin.ruby", name: "The Ruby", after: ["root"], free: true, exclusive: "origin",
-    grants: { knowHow: "wine, trade and a good table" },
+    grants: { knowHow: "wine, trade and a good table", item: "Signet Ring" },
     lore:
       "Warm hills in the south-east, wine and fruit, winter palaces the rich no longer visit. A "
       + "voted council governs from Tanto and nobody especially minds what you believe or who you "
@@ -116,7 +118,7 @@ export const NODES = [
   },
   {
     id: "origin.iron", name: "The Iron", after: ["root"], free: true, exclusive: "origin",
-    grants: { knowHow: "deserts, caravans and what water is worth" },
+    grants: { knowHow: "deserts, caravans and what water is worth", item: "Travelling Cloak" },
     lore:
       "The northern half of the Hyena Desert, or the mineral mountains above it. Sammel is the only "
       + "real city and the emirs have cut it into sealed quarters called Rote -- the old assassin "
@@ -126,7 +128,7 @@ export const NODES = [
   },
   {
     id: "origin.amber", name: "The Amber", after: ["root"], free: true, exclusive: "origin",
-    grants: { knowHow: "forests, tracking and living rough" },
+    grants: { knowHow: "forests, tracking and living rough", item: "Travelling Cloak" },
     lore:
       "The far east, the second largest district and the one that was never entirely tamed. Dragons "
       + "turn up. Trolls live in the forests. Dense wet conifer, broken by lakes and bog.\n\nKarmat "
@@ -136,7 +138,7 @@ export const NODES = [
   },
   {
     id: "origin.furnace", name: "Furnace Stock", after: ["root"], free: true, exclusive: "origin",
-    grants: { knowHow: "machinery, guilds and how a thing was made", language: "Valgar" },
+    grants: { knowHow: "machinery, guilds and how a thing was made", item: "Lantern", language: "Valgar" },
     lore:
       "You were not born in the Furnace District -- nobody has been for a generation. You were born "
       + "into what came out of it: the engineering guilds its refugees founded in every surviving "
@@ -147,10 +149,11 @@ export const NODES = [
   },
   {
     id: "origin.wolfpeak", name: "Wolf Peak", after: ["root"], free: true, exclusive: "origin",
-    grants: { knowHow: "fire, powder and the discipline of a closed order", language: "Perga" },
+    grants: { knowHow: "fire, powder and the discipline of a closed order", item: "Flask of Oil", language: "Perga" },
     lore:
-      "A religious centre of the faith of the Fire, on a dormant volcano north of the Amber, never "
-      + "once taken. The roads to the summit are easy to hold and the mountain feeds itself.\n\nIt "
+      "A monastery cut into the steep flank of a dormant volcano north of the Amber: terraces, "
+      + "stairs and bell towers stepped up the black scree, never once taken. The roads to the "
+      + "summit are easy to hold and the mountain feeds itself.\n\nIt "
       + "also makes the best gunpowder and firearms on the continent, because every ingredient is in "
       + "the mountain. The priesthood has its own dress, tattoos over every inch of them, and its own "
       + "tongue, **Perga**. They are rarely seen outside, which is the first thing anyone will notice "
@@ -158,7 +161,7 @@ export const NODES = [
   },
   {
     id: "origin.saag", name: "Saag et Haar", after: ["root"], free: true, exclusive: "origin",
-    grants: { knowHow: "the dead, tyranny and keeping very quiet", language: "Veche" },
+    grants: { knowHow: "the dead, tyranny and keeping very quiet", item: "Antidote", language: "Veche" },
     lore:
       "What is left of Seetch, the realm of the necromancer kings, south of the Hyena Desert. The "
       + "greatest of them, Fahlas, still rules it after four hundred years and has become a minor "
@@ -168,16 +171,6 @@ export const NODES = [
       + "out of its own mines."
   },
   {
-    id: "origin.velderon", name: "Velderon", after: ["root"], free: true, exclusive: "origin",
-    grants: { knowHow: "elves, old ruins and what is not said", language: "Elvish" },
-    lore:
-      "The elves' embassy on Firma, east of the Fiord: an ancient elven ruin with one restored "
-      + "corner. You do not go in without an invitation, so whatever brought you up there was "
-      + "unusual.\n\nThe elves are neutral and live on the Second Side. Their own magic keeps the "
-      + "Horde out, and the embassy exists to watch it and make sure it never starts looking upward "
-      + "-- which is a sentence most of Firma has never been told."
-  },
-  {
     /* **-born, because `faith.first.echterhof` already carries the bare name.** Four pairs of
      * minor nodes share a name across Ways and that is tolerated -- the ids differ and the art
      * layer has `AMBIGUOUS` for it -- but an ORIGIN is one of ten things a player reads side by
@@ -185,15 +178,87 @@ export const NODES = [
      * cost than a slightly longer label. */
     id: "origin.echterhof", name: "Echterhof-born", after: ["root"], free: true,
     exclusive: "origin",
-    grants: { knowHow: "vampires, guest law and whose turn it is" },
+    grants: { knowHow: "vampires, guest law and whose turn it is", item: "Fine Clothes" },
     lore:
-      "A large neutral city in the middle of Horde territory, ruled by Strigoi princes, with "
-      + "farmland around it the Horde has left alone. Strigoi live off humans, so a large human "
-      + "population lives there between the vampires and the Horde.\n\nA human mayor chooses who is "
+      "A city in the middle of Horde territory held by Strigoi princes. At dusk the shutters go "
+      + "up street by street, lamps are left burning in the windows so that whatever walks can see "
+      + "who is at home, and the long cold hall on the hill opens its doors.\n\nThe farmland "
+      + "around it has been left alone, and Strigoi live off humans, so a large human population "
+      + "lives there between the vampires and the Horde. A human mayor chooses who is "
       + "eaten -- criminals, usually, and when criminals run short it is done by lot or by grudge. "
       + "The Guest Law guarantees a guest will not be killed and guarantees that a guest who breaks "
       + "any of its many clauses will be. You grew up counting the population, because the more "
       + "people there are the less likely you are the one chosen."
+  },
+  {
+    /*
+     * **The one hive that lets humans in, which makes it the one hive somebody can be from.**
+     * Everything else about the Horde is a thing that happens to you; this is a childhood.
+     */
+    id: "origin.xtchaargh", name: "Xtchaargh", after: ["root"], free: true, exclusive: "origin",
+    grants: { knowHow: "the Horde: its hives, its castes and what it will bargain for", item: "Travelling Cloak" },
+    lore:
+      "The Summer Village: a quarter of ordinary houses and a square, walled into the middle of a "
+      + "hive's chaotic tunnels and chambers of chewed earth.\n\nXtchaargh is the only hive that "
+      + "receives envoys, and the people in the Summer Village are the Horde's own subjects -- "
+      + "raised there, trusted there, and trained there to go out and unsettle the enclaves. "
+      + "Nobody you meet afterwards will be able to decide what that makes you, and you have had "
+      + "longer to think about it than they have."
+  },
+  {
+    id: "origin.triple", name: "The Triple Enclave", after: ["root"], free: true,
+    exclusive: "origin",
+    grants: { knowHow: "dreamwort, the Dream Guild and which duke is owed what", item: "Flask of Ink" },
+    lore:
+      "Three walled towns on the western slopes of the Spear Mountains, each ringed around its own "
+      + "castle, with a waterfall falling over the wall of the highest of them.\n\nFarsight is run "
+      + "by a duchess who is also a cardinal and religion stands behind every law; Marke's duke is "
+      + "powerless and the Dream Guild is not; Highfall keeps up appearances and pays for it in "
+      + "troops. One safe tunnel joins them, and all three still call the emperor in Denaria their "
+      + "ruler, which he hears about roughly never."
+  },
+  {
+    id: "origin.regensburg", name: "Regensburg", after: ["root"], free: true, exclusive: "origin",
+    grants: { knowHow: "drill, rank and the business of holding a wall", item: "Light Helm" },
+    lore:
+      "Three concentric walls ten metres high in a valley of the Spear Mountains, each ring cut "
+      + "again into sections by more walls: a city built to be lost one street at a time.\n\nIt "
+      + "could hold for years without an enchantment and everyone there knows it. The government is "
+      + "military, the hierarchy is strict, the Marshal of the Realm is at the top of it, and the "
+      + "cavalry is hired out to districts that pay in the food the valley cannot grow."
+  },
+  {
+    id: "origin.solemn", name: "Solemn", after: ["root"], free: true, exclusive: "origin",
+    grants: { knowHow: "witches, the Primal Mother and ground that is thin", item: "Healing Potion" },
+    lore:
+      "A white limestone island south-east of the Ruby, with a walled city of towers and spires at "
+      + "the top of it: Sonebra, where the sisterhood keeps its own counsel.\n\nSolemn is one of "
+      + "the few places that does not buy its protection from blood mages -- the witches have an "
+      + "enchantment of their own and will not say how it works. The island's borders to the Second "
+      + "and Third Sides are thin, which is either the explanation or a coincidence nobody is "
+      + "allowed to test."
+  },
+  {
+    id: "origin.kelpbay", name: "Kelp Bay", after: ["root"], free: true, exclusive: "origin",
+    grants: { knowHow: "docks, cartels and who is worth trusting on a bad night", item: "Lantern" },
+    lore:
+      "Cobbled alleys under standing fog, hung with blue lanterns for the bars, red for the "
+      + "brothels and green for the business nobody names, over the smell of fermenting "
+      + "kelp.\n\nIt was an insignificant port until it became the only one left on the west coast "
+      + "and the only way to Hyrlock. Three shipping companies run the voyages and do not like each "
+      + "other. People arrive to get rich on the blood tax run and a good many of them do not come "
+      + "back, which has done to the town what you would expect."
+  },
+  {
+    id: "origin.hyrlock", name: "Hyrlock", after: ["root"], free: true, exclusive: "origin",
+    grants: { knowHow: "blood magic, castes and what the tax is really for", item: "Signet Ring" },
+    lore:
+      "The Red Tower, fifty metres of it at the top of Mander Cliff, over a terraced city on an "
+      + "island a week's sailing from anywhere.\n\nEvery district and enclave on Firma pays "
+      + "Hyrlock an annual tax in goods and thralls to keep the enchantments up, and all the power "
+      + "on the island sits in that tower. Under the mages are the administrators and the "
+      + "merchants, under them the workers, and under them the thralls, who are bred. Wherever you "
+      + "stood in that, you grew up knowing exactly where it was."
   },
 
 
@@ -219,20 +284,44 @@ export const NODES = [
    * `free` and `exclusive` for the same reasons Origin is: it is true of you before the first
    * level is spent, and you had one childhood. Taking one shuts the other eleven for good.
    *
-   * **Where, and what.** An origin is the place and a background is the trade, and nothing couples
-   * them -- a Wolf Peak Card Sharp is a character somebody will play. The two know-hows never name
-   * the same situation, which is checked: a background that handed back the know-how its likeliest
-   * origin already granted would be a free part that is free twice.
+   * **Where first, then what.**  [CHANGED 2026-11-14]
+   *
+   * It was: *an origin is the place and a background is the trade, and nothing couples them* --
+   * every occupation hung off Birth beside every origin, so the two sat on one layer of the map
+   * and a player met twenty-two doors at once with no order to take them in. Both are things that
+   * were true of you before the first level is spent, but they are not simultaneous: you were
+   * somewhere before you were something.
+   *
+   * So an occupation now follows **the origins it could plausibly have come out of**, and
+   * `after[]` is any-one-of, which is exactly the sentence wanted: *you can have come to this
+   * trade from any of these places.* The pane gets the ordering for free -- origins on one layer,
+   * occupations on the next -- and choosing a place narrows what you can have done there, which
+   * is the part that makes the first choice mean something.
+   *
+   * **Every pairing is argued from worldinfo/Firma.md and nothing was invented for it.** A Miner
+   * comes from the Iron's mining camps, the Furnace's workings, Saag et Haar's gem mines or Wolf
+   * Peak's sulphur; a Vintner from the Ruby, where wine is the export, or from the two districts
+   * that trade it. The ones that look thin are thin in the world: Velderon is a closed elven
+   * embassy you do not enter without invitation, and four trades is generous for it.
+   *
+   * **Every origin keeps at least four occupations**, which is checked rather than eyeballed. An
+   * origin that led to one would be a trap: a player picks the interesting place and finds their
+   * character already decided.
+   *
+   * The two know-hows still never name the same situation, which is checked: an occupation that
+   * handed back the know-how one of its own origins already granted would be a free part that is
+   * free twice, and the coupling makes that sharper rather than looser.
    *
    * The skill cards come from the one skill pool that exists (`WARRIOR_SKILLS`), the features and
    * trainings from the item and feature catalogues. Nothing new was invented to make these work,
    * which is the test of whether the template was real.
    */
   {
-    id: "background.soldier", name: "Soldier", after: ["root"], free: true, exclusive: "background",
+    id: "background.soldier", name: "Soldier", after: ["origin.core", "origin.fiord", "origin.iron", "origin.amber",
+      "origin.wolfpeak", "origin.echterhof", "origin.regensburg", "origin.triple"], free: true, exclusive: "background",
     grants: {
       skill: ["Soldier's Learning", "Set Your Feet"],
-      feature: "Steady", training: "armour and its repair", item: "Repair Kit",
+      feature: "Steady", training: "armour and its repair", item: ["Repair Kit", "Spear", "Leather Armor"],
       knowHow: "military matters, soldiers and camps"
     },
     lore:
@@ -242,10 +331,11 @@ export const NODES = [
       + "you were told to stand while something is coming at it."
   },
   {
-    id: "background.urchin", name: "Street Urchin", after: ["root"], free: true, exclusive: "background",
+    id: "background.urchin", name: "Street Urchin", after: ["origin.core", "origin.fiord", "origin.iron", "origin.saag",
+      "origin.echterhof", "origin.kelpbay", "origin.xtchaargh"], free: true, exclusive: "background",
     grants: {
       skill: ["Out of the Light", "Quick Hands"],
-      feature: "Light Step", training: "lockpicks", item: "Lockpicks",
+      feature: "Light Step", training: "lockpicks", item: ["Lockpicks", "Dagger"],
       knowHow: "streets, alleys and the poor of big cities"
     },
     lore:
@@ -255,10 +345,11 @@ export const NODES = [
       + "are never locked and which of them it is worth being caught behind."
   },
   {
-    id: "background.acolyte", name: "Acolyte", after: ["root"], free: true, exclusive: "background",
+    id: "background.acolyte", name: "Acolyte", after: ["origin.core", "origin.fiord", "origin.amber", "origin.wolfpeak",
+      "origin.saag", "origin.solemn", "origin.triple", "origin.hyrlock"], free: true, exclusive: "background",
     grants: {
       skill: ["The Loud Voice", "Sharp Eyes"],
-      feature: "Well Read", training: "treating wounds", item: "Healer's Kit",
+      feature: "Well Read", training: "treating wounds", item: ["Healer's Kit", "Mace"],
       knowHow: "temples, rituals and clergy"
     },
     lore:
@@ -269,10 +360,11 @@ export const NODES = [
       + "to be useful well outside a temple."
   },
   {
-    id: "background.sailor", name: "Sailor", after: ["root"], free: true, exclusive: "background",
+    id: "background.sailor", name: "Sailor", after: ["origin.fiord", "origin.ruby", "origin.amber", "origin.kelpbay",
+      "origin.hyrlock", "origin.solemn"], free: true, exclusive: "background",
     grants: {
       skill: ["Keep Your Footing", "Heave"],
-      feature: "Quick", training: "rope and climbing", item: "Climbing Rope",
+      feature: "Quick", training: "rope and climbing", item: ["Climbing Rope", "Dagger"],
       knowHow: "ships, harbours and the sea"
     },
     lore:
@@ -282,10 +374,10 @@ export const NODES = [
       + "mostly on who was asking at the time."
   },
   {
-    id: "background.miner", name: "Miner", after: ["root"], free: true, exclusive: "background",
+    id: "background.miner", name: "Miner", after: ["origin.iron", "origin.furnace", "origin.saag", "origin.wolfpeak"], free: true, exclusive: "background",
     grants: {
       skill: ["Break It", "Set Your Feet"],
-      feature: "Hard Hands", training: "traps", item: "Hunting Traps",
+      feature: "Hard Hands", training: "traps", item: ["Hunting Traps", "Mace"],
       knowHow: "stone, tunnels and what is under the ground"
     },
     lore:
@@ -295,10 +387,11 @@ export const NODES = [
       + "it sounds before it stops being held up, and what to do in the dark when it does."
   },
   {
-    id: "background.caravan", name: "Caravan Guard", after: ["root"], free: true, exclusive: "background",
+    id: "background.caravan", name: "Caravan Guard", after: ["origin.core", "origin.ruby", "origin.iron", "origin.amber",
+      "origin.regensburg", "origin.triple"], free: true, exclusive: "background",
     grants: {
       skill: ["Sharp Eyes", "Keep Your Footing"],
-      feature: "Alert", training: "armour and its repair", item: "Repair Kit",
+      feature: "Alert", training: "armour and its repair", item: ["Repair Kit", "Shortbow", "Leather Armor"],
       knowHow: "roads, caravans and the country between towns"
     },
     lore:
@@ -309,10 +402,10 @@ export const NODES = [
       + "that keeps a caravan whole."
   },
   {
-    id: "background.vintner", name: "Vintner", after: ["root"], free: true, exclusive: "background",
+    id: "background.vintner", name: "Vintner", after: ["origin.core", "origin.fiord", "origin.ruby", "origin.kelpbay"], free: true, exclusive: "background",
     grants: {
       skill: ["The Loud Voice", "Quick Hands"],
-      feature: "Good Name", training: "games of chance", item: "Gaming Set",
+      feature: "Good Name", training: "games of chance", item: ["Gaming Set", "Dagger"],
       knowHow: "merchants, prices and a bad bargain"
     },
     lore:
@@ -322,10 +415,10 @@ export const NODES = [
       + "and the gap between them is the trade."
   },
   {
-    id: "background.forester", name: "Forester", after: ["root"], free: true, exclusive: "background",
+    id: "background.forester", name: "Forester", after: ["origin.amber", "origin.furnace", "origin.wolfpeak", "origin.xtchaargh"], free: true, exclusive: "background",
     grants: {
       skill: ["Out of the Light", "Sharp Eyes"],
-      feature: "Good Aim", training: "traps", item: "Hunting Traps",
+      feature: "Good Aim", training: "traps", item: ["Hunting Traps", "Shortbow"],
       knowHow: "game, snares and what has passed this way"
     },
     lore:
@@ -336,10 +429,11 @@ export const NODES = [
       + "finds out about you."
   },
   {
-    id: "background.guild", name: "Guild Apprentice", after: ["root"], free: true, exclusive: "background",
+    id: "background.guild", name: "Guild Apprentice", after: ["origin.core", "origin.ruby", "origin.iron", "origin.furnace",
+      "origin.regensburg", "origin.hyrlock", "origin.solemn"], free: true, exclusive: "background",
     grants: {
       skill: ["Break It", "Sharp Eyes"],
-      feature: "Quick Eye", training: "lockpicks", item: "Lockpicks",
+      feature: "Quick Eye", training: "lockpicks", item: ["Lockpicks", "Dagger"],
       knowHow: "workshops, apprentices and a master's temper"
     },
     lore:
@@ -349,10 +443,11 @@ export const NODES = [
       + "have is the hands and the eye and an unfinished indenture somebody may still remember."
   },
   {
-    id: "background.healer", name: "Hedge Healer", after: ["root"], free: true, exclusive: "background",
+    id: "background.healer", name: "Hedge Healer", after: ["origin.fiord", "origin.ruby", "origin.iron", "origin.amber",
+      "origin.echterhof", "origin.solemn", "origin.triple"], free: true, exclusive: "background",
     grants: {
       skill: ["Soldier's Learning", "Inspiration"],
-      feature: "Quiet Worker", training: "treating wounds", item: "Healer's Kit",
+      feature: "Quiet Worker", training: "treating wounds", item: ["Healer's Kit", "Dagger"],
       knowHow: "sickness, herbs and a village with no physician"
     },
     lore:
@@ -362,10 +457,11 @@ export const NODES = [
       + "thing between a farming village and whatever is going around."
   },
   {
-    id: "background.sharp", name: "Card Sharp", after: ["root"], free: true, exclusive: "background",
+    id: "background.sharp", name: "Card Sharp", after: ["origin.core", "origin.ruby", "origin.iron", "origin.echterhof",
+      "origin.kelpbay", "origin.xtchaargh"], free: true, exclusive: "background",
     grants: {
       skill: ["Quick Hands", "Sharp Eyes"],
-      feature: "Tough", training: "games of chance", item: "Gaming Set",
+      feature: "Tough", training: "games of chance", item: ["Gaming Set", "Dagger"],
       knowHow: "gambling houses, marks and a crooked table"
     },
     lore:
@@ -375,10 +471,12 @@ export const NODES = [
       + "it."
   },
   {
-    id: "background.porter", name: "Porter", after: ["root"], free: true, exclusive: "background",
+    id: "background.porter", name: "Porter", after: ["origin.core", "origin.fiord", "origin.ruby", "origin.iron",
+      "origin.furnace", "origin.saag", "origin.kelpbay", "origin.hyrlock",
+      "origin.xtchaargh", "origin.regensburg"], free: true, exclusive: "background",
     grants: {
       skill: ["Heave", "Set Your Feet"],
-      feature: "Packhorse", training: "rope and climbing", item: "Climbing Rope",
+      feature: "Packhorse", training: "rope and climbing", item: ["Climbing Rope", "Mace"],
       knowHow: "loads, markets and what a thing weighs"
     },
     lore:
@@ -390,7 +488,12 @@ export const NODES = [
 
   /* --- the four Ways, all of them on your frontier for life (leveling 6) --- */
   {
-    id: "shade", name: "Way of Shade", after: ["root"], title: "Shade",
+    id: "shade", name: "Way of Shade", after: [
+      "background.soldier", "background.urchin", "background.acolyte", "background.sailor",
+      "background.miner", "background.caravan", "background.vintner", "background.forester",
+      "background.guild", "background.healer", "background.sharp", "background.porter"
+    ],
+    grants: { skill: ["The Quiet Way"] }, title: "Shade",
     axis: "Position", resource: "halves",
     lore:
       "Choosing the ground before anybody swings. Shade spends **halves** -- the second "
@@ -400,7 +503,12 @@ export const NODES = [
       + "the depth is a long walk rather than a wide choice."
   },
   {
-    id: "strength", name: "Way of Strength", after: ["root"], title: "Warrior",
+    id: "strength", name: "Way of Strength", after: [
+      "background.soldier", "background.urchin", "background.acolyte", "background.sailor",
+      "background.miner", "background.caravan", "background.vintner", "background.forester",
+      "background.guild", "background.healer", "background.sharp", "background.porter"
+    ],
+    grants: { skill: ["Set Against It"] }, title: "Warrior",
     axis: "Position", resource: "weight",
     lore:
       "Mass that is already moving, and making it somebody else's problem. Strength spends "
@@ -418,9 +526,13 @@ export const NODES = [
    * all. Two is the smallest number that is a decision: one strength-2 formula, or two 1s.
    */
   {
-    id: "mind", name: "Way of Mind", after: ["root"], title: "Scholar",
+    id: "mind", name: "Way of Mind", after: [
+      "background.soldier", "background.urchin", "background.acolyte", "background.sailor",
+      "background.miner", "background.caravan", "background.vintner", "background.forester",
+      "background.guild", "background.healer", "background.sharp", "background.porter"
+    ], title: "Scholar",
     axis: "Preparation", resource: "spell slots",
-    grants: { spellSlots: 2 },
+    grants: { skill: ["The Long Study"], spellSlots: 2 },
     lore:
       "What was decided before it mattered. Mind spends **preparation** -- the spell slots "
       + "and the formulae set before the fight -- and it is the only Way whose first step "
@@ -429,9 +541,13 @@ export const NODES = [
       + "climbing one. Each is also a price written in something other than slots."
   },
   {
-    id: "faith", name: "Way of Faith", after: ["root"], title: "Sworn",
+    id: "faith", name: "Way of Faith", after: [
+      "background.soldier", "background.urchin", "background.acolyte", "background.sailor",
+      "background.miner", "background.caravan", "background.vintner", "background.forester",
+      "background.guild", "background.healer", "background.sharp", "background.porter"
+    ], title: "Sworn",
     axis: "Support", resource: "an obligation",
-    grants: { spellSlots: 2 },
+    grants: { skill: ["The Words"], spellSlots: 2 },
     lore:
       "Standing for something that is not you. Faith spends an **obligation** -- somebody "
       + "is owed, and the Way is what they ask -- and it answers in **support**: what you do "
@@ -486,7 +602,7 @@ export const NODES = [
     id: "shade.thief", name: "Thief", after: ["shade.patience"], title: "Thief",
     axis: "Control", resource: "a slot kept free",
     signature: "The Opening", tactic: "Never Where You Looked",
-    grants: { feature: "The Opening" },
+    grants: { skill: ["Pockets"], feature: "The Opening" },
     lore:
       "Not a burglar and not a cutpurse -- the one who is in the room and should not be, and whose "
       + "whole art is that nobody looks where the thing actually is.\n\nYou pay for it in a **slot "
@@ -497,7 +613,7 @@ export const NODES = [
     id: "shade.scout", name: "Scout", after: ["shade.patience"], title: "Scout",
     axis: "Support", resource: "being alone",
     signature: "Point Man", tactic: "Furthest Forward",
-    grants: { card: "Point Man" },
+    grants: { skill: ["Dead Ground"], card: "Point Man" },
     lore:
       "The one who is already a mile ahead and has been since dawn. A scout is not a sneak: the job "
       + "is to see and come back, and most of it happens before anybody draws anything.\n\nThe "
@@ -509,7 +625,7 @@ export const NODES = [
     id: "shade.duellist", name: "Duellist", after: ["shade.patience"], title: "Duellist",
     axis: "Reactions", resource: "halves",
     signature: "Named", tactic: "One at a Time",
-    grants: { card: "Named" },
+    grants: { skill: ["Read the Room"], card: "Named" },
     lore:
       "A formal fighter in a Way full of informal ones. The Duellist names an opponent and fights "
       + "that opponent, and the courtesy is not politeness -- it is a narrowing.\n\nYou spend "
@@ -836,7 +952,7 @@ export const NODES = [
     id: "strength.infantry", name: "Infantry", after: ["strength.scars"], title: "Infantry",
     axis: "Position", resource: "an ally",
     signature: "Shoulder to Shoulder", tactic: "The Line",
-    grants: { card: "Shoulder to Shoulder" },
+    grants: { skill: ["Shoulder to It"], card: "Shoulder to Shoulder" },
     lore:
       "The line. Not a hero -- a person standing next to another person, which is the whole of what "
       + "makes infantry work and the reason it is the first title on this Way.\n\nThe resource is "
@@ -847,7 +963,7 @@ export const NODES = [
     id: "strength.executioner", name: "Executioner", after: ["strength.scars"],
     title: "Executioner", axis: "Tempo", resource: "halves",
     signature: "Cleave to the Bone", tactic: "No Second Thought",
-    grants: { feature: "Cleave to the Bone" },
+    grants: { skill: ["The Reputation"], feature: "Cleave to the Bone" },
     lore:
       "One blow, delivered correctly, to something that is already finished. The "
       + "Executioner is the most unpleasant title on offer here and it is deliberately not a "
@@ -859,7 +975,7 @@ export const NODES = [
     id: "strength.gladiator", name: "Gladiator", after: ["strength.scars"], title: "Gladiator",
     axis: "Reactions", resource: "Health",
     signature: "Play to the Crowd", tactic: "The Crowd Wants Blood",
-    grants: { card: "Play to the Crowd" },
+    grants: { skill: ["Feet Under You"], card: "Play to the Crowd" },
     lore:
       "A fighter whose job is to be watched. The Gladiator plays to a crowd that may be an actual "
       + "crowd or may be two people in a tavern, and the showmanship is load-bearing.\n\n**Health** "
@@ -1175,7 +1291,7 @@ export const NODES = [
     /* **Demonic**, because blood is the currency it is spoken in: the demons hold the Third Side
      * and let the necromancers use it *in exchange for human sacrifices* (Firma.md). The school
      * whose price is its own Health is the school that can afford the conversation. */
-    grants: { spell: "Blood Price", language: "Demonic" },
+    grants: { skill: ["What a Body Is"], spell: "Blood Price", language: "Demonic" },
     lore:
       "The oldest arrangement on the continent and the one the rings run on. A blood mage pays in "
       + "the only currency magic has ever reliably accepted.\n\nThe resource is **your own Health**, "
@@ -1186,7 +1302,7 @@ export const NODES = [
     id: "mind.elemental", name: "Elemental Magic", after: ["mind.vigil"], title: "Elemental Magic",
     axis: "Position", resource: "reagents",
     signature: "Wall of the Sphere", tactic: "The Sphere Holds",
-    grants: { spell: "Wall of the Sphere" },
+    grants: { skill: ["The Shape of It"], spell: "Wall of the Sphere" },
     lore:
       "The physical school. Fire, water, stone and air, worked by formula rather than by bargain, "
       + "and the most reliable magic in the game.\n\nYou spend **reagents** -- things that run out "
@@ -1197,7 +1313,7 @@ export const NODES = [
     id: "mind.spiritualism", name: "Spiritualism", after: ["mind.vigil"], title: "Spiritualism",
     axis: "Preparation", resource: "a pact",
     signature: "The Bargain", tactic: "Something Is Always Listening",
-    grants: { spell: "The Bargain" },
+    grants: { skill: ["Owed and Owing"], spell: "The Bargain" },
     lore:
       "Asking something. Spiritualism is not a technique but a negotiation, and the thing on the "
       + "other end has its own reasons.\n\n**A pact** is the resource: you are spending an agreement, "
@@ -1458,13 +1574,13 @@ export const NODES = [
   /* `liturgy` is the rite itself, which no tool holds. What vows actually teach is when a rite has
    * gone wrong -- and, the harder half, whether that mattered. */
   { id: "faith.vows", name: "Vows", after: ["faith"],
-    grants: { knowHow: "a rite done wrong, and whether it mattered", spellSlots: 1 } },
+    grants: { skill: ["Kept Faith"], knowHow: "a rite done wrong, and whether it mattered", spellSlots: 1 } },
   {
     id: "faith.pilgrimage", name: "Pilgrimage", after: ["faith.vows"],
     grants: { card: "Hold the Line", spellSlots: 1, expertise: "presence" }
   },
   { id: "faith.calling", name: "The Calling", after: ["faith.pilgrimage"],
-    grants: { restTokens: 1, spellSlots: 1 } },
+    grants: { skill: ["The Petition"], restTokens: 1, spellSlots: 1 } },
 
   /* --- the four lone gods: one door, no second god ever, and a branch four nodes deeper --- */
   {

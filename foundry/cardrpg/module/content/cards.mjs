@@ -480,30 +480,61 @@ export const COMMON_POOL = [
  *
  * `edge` is what the card does whether or not the check succeeds, and it is **prose on purpose**:
  * *ask the GM one yes/no question about the scene* is not a computation and should not pretend to
- * be one. Four of the fifteen carry one, which is the document's *some cards also have a small
- * edge* read as a ratio rather than as a maybe.
+ * be one. The player claims it when they play the card and the GM rules on it out loud; the
+ * engine's whole part is to print the sentence beside the result, where the person ruling is
+ * already looking.
+ *
+ * **Every card carries one now, and the ladder is the point.**  [BUILT 2026-11-15] Five did, and
+ * all five were **value 1** -- Break It, Keep Your Footing, Sharp Eyes, The Loud Voice and
+ * Inspiration -- while every 2 and every 3 was a bare number. Nobody wrote that rule down and the
+ * content obeyed it exactly, which is usually the sign of a real one.
+ *
+ * So it is written down: **value trades against text.** A 3 is nearly all number and its edge is
+ * a detail that is occasionally decisive; a 1 is nearly all text and the number is the excuse. It
+ * is the same gradient the fate deck is built on, and it turns a hand of four into four decisions
+ * instead of *play the highest one that fits* -- which was the honest answer to every check
+ * before this, and is not a decision.
  *
  * And one Inspiration: any approach, value 1, *draw 1 skill card*. The one card in the deck that is
  * never the wrong card, which is what makes it worth a slot that could have held a 3.
  */
 export const WARRIOR_SKILLS = [
-  { name: "Set Your Feet", approach: "might", value: 3, copies: 1 },
-  { name: "Heave", approach: "might", value: 2, copies: 2 },
+  /* The top of the ladder: the biggest number in the deck, and the thinnest clause. */
+  {
+    name: "Set Your Feet", approach: "might", value: 3, copies: 1,
+    edge: "You are not moved, and you do not drop what you are holding."
+  },
+  {
+    name: "Heave", approach: "might", value: 2, copies: 2,
+    edge: "What you shift stays shifted: the way is open behind you for everybody else."
+  },
   {
     name: "Break It", approach: "might", value: 1, copies: 1,
     edge: "Something gives whether or not you get through: the GM says what broke."
   },
-  { name: "Quick Hands", approach: "agility", value: 2, copies: 2 },
+  {
+    name: "Quick Hands", approach: "agility", value: 2, copies: 2,
+    edge: "You do it one-handed, without setting down what you were already carrying."
+  },
   {
     name: "Keep Your Footing", approach: "agility", value: 1, copies: 1,
     edge: "You do not fall, whatever else happens."
   },
-  { name: "Out of the Light", approach: "shadow", value: 1, copies: 2 },
+  /* A 1, so the clause does the work: this is the card you play to be unattributable rather
+   * than to clear the difficulty, and most of the time it will not clear it. */
+  {
+    name: "Out of the Light", approach: "shadow", value: 1, copies: 2,
+    edge: "Nobody can say afterwards that it was you."
+  },
   {
     name: "Sharp Eyes", approach: "wits", value: 1, copies: 2,
     edge: "Ask the GM one yes-or-no question about the scene."
   },
-  { name: "Soldier's Learning", approach: "lore", value: 1, copies: 2 },
+  {
+    name: "Soldier's Learning", approach: "lore", value: 1, copies: 2,
+    edge: "You have watched somebody try this: the GM tells you one thing that went wrong "
+      + "for them."
+  },
   {
     name: "The Loud Voice", approach: "presence", value: 1, copies: 1,
     edge: "Everyone nearby hears you, and knows it was you."
@@ -512,6 +543,125 @@ export const WARRIOR_SKILLS = [
     name: "Inspiration", approach: "", value: 1, copies: 1, wild: true,
     edge: "Draw 1 skill card."
   }
+];
+
+/**
+ * **The skill cards a Way deals into your deck.**  [BUILT 2026-11-15]
+ *
+ * `WARRIOR_SKILLS` is fifteen cards every character in the game carried identically, and
+ * skill-rules 1 has said since it was written that it should not be: *the Way and background
+ * decide which approaches have more cards and higher values*, with a lean named for each Way.
+ * The content could not do it, because the Way trees did not exist when the deck was written and
+ * the document said so -- *the starter skill deck is a generic stand-in until then*. They exist
+ * now.
+ *
+ * **The deck GROWS rather than turning over.** A Way card joins the fifteen and nothing leaves,
+ * so a Shade who has walked a long way has more checks in a day and draws any one of them less
+ * often -- which is the trade skill-rules 8 already prices: *a small deck draws your best cards
+ * more often, but runs out sooner.* It also makes `prune` worth granting here, which is the
+ * reward that section leaves open.
+ *
+ * **One card per title, and one on the trunk**, so walking a Way at all is worth something and
+ * each branch is worth something more. Not one per node: fifteen cards across four Ways is a
+ * lean, and a hundred would be a different deck rather than a tilted one.
+ *
+ * Every card obeys the ladder the generic fifteen turned out to be built on -- **value trades
+ * against text**. A 3 is nearly all number; a 1 is nearly all clause and the number is the excuse
+ * to play it. Copies are 1: these are the cards that make a deck yours, and a second copy of one
+ * would make it somebody's twice.
+ */
+export const SHADE_SKILLS = [
+  /* The trunk. Everybody who walks into Shade gets this, which is what makes the Way itself worth
+   * a level on the skill side rather than only on the action side. */
+  {
+    name: "The Quiet Way", approach: "shadow", value: 2, copies: 1,
+    edge: "You leave nothing behind that says how long you were there."
+  },
+  {
+    name: "Pockets", approach: "agility", value: 2, copies: 1,
+    edge: "Whatever you took, you took without looking at it."
+  },
+  {
+    name: "Dead Ground", approach: "wits", value: 2, copies: 1,
+    edge: "You know one way out of here that nobody is watching."
+  },
+  /* The Duellist is the social branch of a Way that is otherwise about not being seen -- Letters,
+   * Politician, Card Sense -- so its card is the one Shade card worth playing in a room with the
+   * lamps lit. A 1, so the clause is the reason to play it. */
+  {
+    name: "Read the Room", approach: "presence", value: 1, copies: 1,
+    edge: "Name one person here who is armed, or one who is frightened. You are right."
+  }
+];
+
+export const STRENGTH_SKILLS = [
+  {
+    name: "Set Against It", approach: "might", value: 2, copies: 1,
+    edge: "Whatever you braced stays where you put it until you move."
+  },
+  /* The biggest number on any skill card in the game and the thinnest clause on one, which is the
+   * ladder stated at its own top end. */
+  {
+    name: "Shoulder to It", approach: "might", value: 3, copies: 1,
+    edge: "You do not have to say anything: the others move with you."
+  },
+  /* The Executioner's branch is fear, and fear is Presence. A deliberate outlier on a Way that
+   * leans Might and Agility -- a branch may lean away from its trunk, and that is most of what
+   * makes a branch worth taking rather than a longer trunk. */
+  {
+    name: "The Reputation", approach: "presence", value: 1, copies: 1,
+    edge: "Anybody here who knows what you are stops arguing with you."
+  },
+  {
+    name: "Feet Under You", approach: "agility", value: 2, copies: 1,
+    edge: "However that ended, you are standing."
+  }
+];
+
+export const MIND_SKILLS = [
+  {
+    name: "The Long Study", approach: "lore", value: 2, copies: 1,
+    edge: "You have read about this. The GM tells you what it is called."
+  },
+  {
+    name: "What a Body Is", approach: "lore", value: 3, copies: 1,
+    edge: "You can say what killed it, if something did."
+  },
+  {
+    name: "The Shape of It", approach: "wits", value: 2, copies: 1,
+    edge: "You see which way it will go when it goes."
+  },
+  {
+    name: "Owed and Owing", approach: "presence", value: 1, copies: 1,
+    edge: "Name one thing the dead here still want. The GM says whether it is cheap."
+  }
+];
+
+export const FAITH_SKILLS = [
+  {
+    name: "The Words", approach: "presence", value: 2, copies: 1,
+    edge: "Everyone who hears you knows which god you serve, whether or not that helps."
+  },
+  {
+    name: "Kept Faith", approach: "lore", value: 2, copies: 1,
+    edge: "You know what the observance here is, and what breaking it would cost."
+  },
+  /* On the door every god opens, so each of the twelve hands it over without twelve copies of it
+   * being written: `faith.calling` is the one node all of them stand behind.
+   *
+   * **Not called *The Calling*, which is that node's own name.**  [2026-11-15] It was, for about
+   * a minute, and the wiring script skipped the node because it looked for the card's name in the
+   * node's text and found the node calling itself that. A card and a node sharing a name is a
+   * thing that reads fine and greps terribly, and this is what it costs the first time. */
+  {
+    name: "The Petition", approach: "presence", value: 1, copies: 1,
+    edge: "Somebody here was going to ask you for something. Now they do."
+  }
+];
+
+/** Every skill card in the game, which is what a grant and a deck builder both ask. */
+export const ALL_SKILLS = [
+  ...WARRIOR_SKILLS, ...SHADE_SKILLS, ...STRENGTH_SKILLS, ...MIND_SKILLS, ...FAITH_SKILLS
 ];
 
 /* -------------------------------------------- */

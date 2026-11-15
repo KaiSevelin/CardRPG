@@ -8,6 +8,7 @@
   },
   "name": "Rotted",
   "type": "injury",
+  "img": "systems/cardrpg/art/injuries/rotted.webp",
   "system": {
     "category": "corruption",
     "description": "<p>Afflicted ends when you are under three Taint (core-rules 8). This does not end.</p>",

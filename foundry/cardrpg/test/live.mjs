@@ -304,6 +304,16 @@ async function settle(page) {
     await LIVE.afterCombat(hero);
     await LIVE.refill(hero);
     await LIVE.reserveHand(hero, false);
+    /*
+     * **And the window on the action side.**  [2026-11-14] The mode picks the side now -- a fight
+     * is the action deck, a scene is the skill deck -- and these probes run out of combat, so
+     * without this the hand they are all about is not on the screen. Pinned here rather than
+     * started per probe because it is part of *a known state*, which is what this function is.
+     */
+    const { CardRPGTray } = await import("/systems/cardrpg/module/tray.mjs");
+    for (const tray of CardRPGTray.openTrays) {
+      if (tray.actor?.type !== "npc") tray.side = "action";
+    }
   });
 }
 
@@ -342,7 +352,11 @@ async function probes(page) {
    */
   await probe("the Hold all button", async () => {
     await settle(page);
-    await page.evaluate(() => game.cardrpg.openTray(LIVE.hero));
+    await page.evaluate(async () => {
+      const tray = game.cardrpg.openTray(LIVE.hero);
+      tray.side = "action";
+      await tray.render();
+    });
     await page.waitForSelector("[data-action=reserveAll]", { timeout: 20000 });
 
     const upright = () => page.evaluate(() => LIVE.uprightCards(LIVE.hero).length);
@@ -373,7 +387,11 @@ async function probes(page) {
       const { hero } = LIVE;
       await hero.update({ "system.stamina.value": Math.max(1, hero.system.stamina.max - 4) });
     });
-    await page.evaluate(() => game.cardrpg.openTray(LIVE.hero));
+    await page.evaluate(async () => {
+      const tray = game.cardrpg.openTray(LIVE.hero);
+      tray.side = "action";
+      await tray.render();
+    });
     await page.waitForSelector("[data-action=breathe]", { timeout: 20000 });
     const before = await page.evaluate(() => LIVE.hero.system.stamina.value);
     await page.click("[data-action=breathe]");
@@ -657,7 +675,11 @@ async function probes(page) {
    */
   await probe("the art is where the page asks for it", async () => {
     await settle(page);
-    await page.evaluate(() => game.cardrpg.openTray(LIVE.hero));
+    await page.evaluate(async () => {
+      const tray = game.cardrpg.openTray(LIVE.hero);
+      tray.side = "action";
+      await tray.render();
+    });
     await page.waitForSelector(".cr-pile--faced", { timeout: 20000 });
     return page.evaluate(async () => {
       const faced = [...document.querySelectorAll(".cr-pile--faced")];
@@ -747,7 +769,11 @@ async function probes(page) {
    */
   await probe("the pictures reach the eye", async () => {
     await settle(page);
-    await page.evaluate(() => game.cardrpg.openTray(LIVE.hero));
+    await page.evaluate(async () => {
+      const tray = game.cardrpg.openTray(LIVE.hero);
+      tray.side = "action";
+      await tray.render();
+    });
     await page.waitForSelector(".cr-hud__play", { timeout: 20000 });
     const rows = await page.evaluate(async () => {
       const alphaOf = el => {
@@ -960,7 +986,11 @@ async function probes(page) {
    */
   await probe("the decks fit the window", async () => {
     await page.setViewportSize({ width: 1366, height: 768 });
-    await page.evaluate(() => game.cardrpg.openTray(LIVE.hero));
+    await page.evaluate(async () => {
+      const tray = game.cardrpg.openTray(LIVE.hero);
+      tray.side = "action";
+      await tray.render();
+    });
     await page.waitForSelector(".cr-hud__decks--action", { timeout: 20000 });
     const rows = await page.evaluate(() => {
       const box = sel => document.querySelector(sel)?.getBoundingClientRect();
@@ -1056,7 +1086,11 @@ async function probes(page) {
   await probe("the played items name themselves", async () => {
     await page.setViewportSize({ width: 1366, height: 768 });
     await settle(page);
-    await page.evaluate(() => game.cardrpg.openTray(LIVE.hero));
+    await page.evaluate(async () => {
+      const tray = game.cardrpg.openTray(LIVE.hero);
+      tray.side = "action";
+      await tray.render();
+    });
     await page.waitForSelector(".cr-hud__play .cr-card__title", { timeout: 20000 });
     const rows = await page.evaluate(() => {
       const titles = [...document.querySelectorAll(".cr-hud__play .cr-card__title")];
@@ -1200,6 +1234,7 @@ async function probes(page) {
       out.push(["the pane opens", !!root, true]);
       if (!root) return out;
 
+
       /*
        * **Nothing is grabbable**, asked of cytoscape rather than of the source. The option is one
        * word and the consequence was a quarter of the graph coming away in somebody's hand: the
@@ -1215,6 +1250,74 @@ async function probes(page) {
       const accept = () => root.querySelector("[data-action=accept]");
       /* Through cytoscape's own event, so the pane's real handler runs. */
       const tap = id => pane.cy.getElementById(id).emit("tap");
+      /*
+       * **And it opens on something.**  [BUILT 2026-11-14] It used to open on an empty panel
+       * reading *tap a node*, with 237 boxes behind it; the arrows always knew where the takeable
+       * ones were and nothing pressed one. Asked of the pane's own state rather than the DOM,
+       * because what must be true is that a node is MARKED -- the panel following is the part
+       * that already worked.
+       */
+      const opensOn = graph.frontier(graph.ownedIds(hero))
+        .sort((a, b) => (graph.DEPTH.get(a) ?? 0) - (graph.DEPTH.get(b) ?? 0)
+          || (graph.GRAPH.get(a)?.name ?? a).localeCompare(graph.GRAPH.get(b)?.name ?? b))[0];
+      out.push(["and on a node you can actually take", pane.tentative, opensOn]);
+      out.push(["with the panel showing it",
+        detail().querySelector("h3")?.textContent, graph.GRAPH.get(opensOn)?.name]);
+      out.push(["and Accept already live", accept().disabled, false]);
+
+      /*
+       * **What a node would open, lit on the map.** The panel has printed *Opens: …* as a list of
+       * names since it was written, and on a graph of 237 the player then had to find each name
+       * by eye. Asked of cytoscape rather than of the panel: the classes are the answer, and the
+       * set of lit nodes has to be exactly the successors the engine knows about.
+       */
+      const lit = () => pane.cy.nodes(".opens").map(n => n.id()).sort();
+      tap("origin.core");
+      await wait(80);
+      const leadsTo = [...(graph.SUCCESSORS.get("origin.core") ?? [])].sort();
+      out.push(["reading a node lights what it opens", lit().join(", "), leadsTo.join(", ")]);
+      out.push(["and the roads to them",
+        pane.cy.edges(".opens-edge").length, leadsTo.length]);
+      /* Moving on clears it, or yesterday's halo stays on the map behind today's. */
+      tap("origin.fiord");
+      await wait(80);
+      out.push(["moving on clears the last one",
+        lit().some(id => !(graph.SUCCESSORS.get("origin.fiord") ?? []).includes(id)), false]);
+      /* An unavailable node answers the same question, which is most of what reading ahead is. */
+      tap("shade.thief");
+      await wait(80);
+      out.push(["and an unavailable node answers it too", lit().length > 0, true]);
+
+      /*
+       * **And the half a player cannot undo.** An exclusive node shuts every branch its siblings
+       * led to -- taking an origin closes the other fourteen and everything behind them -- and
+       * that was a list of names beside a map that knew where all of them were.
+       */
+      const barred = () => pane.cy.nodes(".bars").map(n => n.id()).sort();
+      tap("origin.core");
+      await wait(80);
+      const shuts = graph.wouldCloseIds("origin.core", graph.ownedIds(hero)).sort();
+      out.push(["and what it would bar is lit too", barred().join() === shuts.join(), true]);
+      out.push(["which for a place is the other fourteen and their trades",
+        shuts.length > 14, true]);
+      out.push(["and the two halos never name the same node",
+        barred().some(id => lit().includes(id)), false]);
+      /* A node that shuts nothing lights nothing: the halo is a warning, not decoration. */
+      tap("shade.thief");
+      await wait(80);
+      out.push(["a node that bars nothing lights nothing", barred().length, 0]);
+
+      /* Two creation bands, and they used to be called the same thing. */
+      const bands = pane.cy.nodes(":parent").map(n => n.data("label"));
+      out.push(["every band is named once",
+        bands.length === new Set(bands).size ? "yes" : bands.sort().join(", "), "yes"]);
+      out.push(["and creation is two of them",
+        bands.filter(l => /Where you are from|What you did before/.test(l)).length, 2]);
+
+      /* Nothing is grabbable, and everything is draggable-to-pan. */
+      out.push(["and every element pans rather than moves",
+        pane.cy.nodes().filter(n => !n.pannable()).length, 0]);
+
 
       /*
        * **Reading an unavailable node writes the panel.** `root` is owned, which makes it the
@@ -1273,6 +1376,61 @@ async function probes(page) {
       out.push(["and where it leads",
         /Knight|Berserker|Infantry/
           .test(detail().querySelector(".cr-levelup__leads")?.textContent ?? ""), true]);
+
+      /*
+       * **The name is read before the picture, not after it.**  [2026-11-14] A panel that opened
+       * on an unfamiliar node showed an unlabelled illustration and the player had to look past
+       * it to find out what they were looking at. Asked of the DOM order rather than the source,
+       * because what matters is which one the eye reaches first.
+       */
+      const first = detail().firstElementChild;
+      out.push(["the panel names the node before it shows one",
+        first?.tagName?.toLowerCase() ?? "nothing", "h3"]);
+      out.push(["and the picture is under the name",
+        detail().querySelector("h3")?.nextElementSibling?.classList
+          ?.contains("cr-levelup__art") ?? false, true]);
+
+      /*
+       * **The legend is two columns and names the two shapes.** The map has drawn a title as a
+       * hexagon since it was built and never said so, which left the one structural distinction
+       * on it for the player to infer from 169 boxes.
+       */
+      const legend = root.querySelector(".cr-levelup__legend");
+      out.push(["the legend is in two columns",
+        getComputedStyle(legend).gridTemplateColumns.split(" ").length, 2]);
+      out.push(["and names both kinds of node",
+        !!legend.querySelector(".cr-swatch--major") && !!legend.querySelector(".cr-swatch--minor"),
+        true]);
+      /* And the map really does draw them differently, which is what the legend is promising. */
+      const shapeOf = kind => pane.cy.nodes(`[kind = '${kind}']`)[0]?.style("shape");
+      out.push(["a title is a different shape from a step toward one",
+        shapeOf("major") !== shapeOf("minor")
+          ? `${shapeOf("major")} vs ${shapeOf("minor")}` : "the same",
+        "round-hexagon vs round-rectangle"]);
+
+      /* Breadth-first was the nearest thing to `tiers` and the worse version of it. */
+      const options = [...root.querySelectorAll("[name=layout] option")].map(o => o.value);
+      out.push(["the layout picker offers", options.join(", "), "tiers, concentric, cose, grid"]);
+
+      /*
+       * **Where first, then what.** An occupation follows the origins it could have come out of,
+       * so a blank sheet offers the places and the Ways and no trades at all -- and taking a
+       * place opens some of the trades but not all twelve. Asked of the pane's own graph, because
+       * what a player meets is the frontier and not the content list.
+       */
+      const blank = graph.ownedIds(hero);
+      const atBirth = graph.frontier(blank);
+      const isTrade = id => graph.GRAPH.get(id)?.exclusive === "background";
+      out.push(["a blank sheet offers no occupation", atBirth.filter(isTrade).length, 0]);
+      out.push(["but every place there is", atBirth.filter(
+        id => graph.GRAPH.get(id)?.exclusive === "origin").length, 15]);
+      const withPlace = new Set([...blank, "origin.wolfpeak"]);
+      const opened = graph.frontier(withPlace).filter(isTrade);
+      out.push(["a place opens some trades", opened.length > 0, true]);
+      out.push(["and not all of them", opened.length < 12, true]);
+      out.push(["the ones the place could have made",
+        opened.map(id => graph.GRAPH.get(id).name).sort().join(", "),
+        "Acolyte, Forester, Miner, Soldier"]);
 
       await pane.close({ animate: false });
       return out;
@@ -1336,6 +1494,522 @@ async function probes(page) {
    * loaded, so the cheapest question worth asking is whether the system still boots -- which every
    * probe above depends on and none of them states.
    */
+  /*
+   * **Every slate wears its picture, whoever made the document.**  [BUILT 2026-11-14]
+   *
+   * `slateData` stamps a path on when a slate is created and `resyncArt` repairs one made before
+   * its art was drawn -- and both are writes, so both only ever reach the documents in front of
+   * them. A world last rebuilt before the items were drawn showed a Dagger with a picture beside
+   * a Leather Armor without one, and nothing in the source said so: the rule was right, the files
+   * were there, the stamping had simply not happened to that document.
+   *
+   * `artOf` derives it now, so the question this asks is the honest one: not *was it stamped*,
+   * but **does every slate on this character report a picture**. Blanked first, deliberately --
+   * a probe that only passes on freshly stamped documents is the probe that missed this.
+   */
+  await probe("a slate with no stamp still finds its picture", async () => {
+    return page.evaluate(async () => {
+      const { hero, artOf } = LIVE;
+      const slates = hero.items.filter(i => ["item", "feature", "spell"].includes(i.type));
+      /* Named rather than counted: "6 of 7" sends you looking, and a name is the answer. */
+      const blank = slates.filter(i => !artOf(i)).map(i => `${i.type}:${i.name}`);
+
+      /* Take the stamp off one and ask again. */
+      const victim = slates.find(i => i.type === "item" && artOf(i));
+      const kept = victim.img;
+      const want = artOf(victim);
+      await victim.update({ img: "icons/svg/item-bag.svg" });
+      const derived = artOf(victim);
+      await victim.update({ img: kept });
+
+      return [
+        ["every slate the hero holds names a picture", blank.join(", ") || "none", "none"],
+        ["and one wearing core's placeholder still does", derived || "nothing", want],
+        ["which is the file the rule names", derived.startsWith("systems/cardrpg/art/"), true]
+      ];
+    });
+  });
+
+  /*
+   * **The claim, which is the only source of advantage the engine cannot prove.**
+   *
+   * Three things have to hold and only the first is obvious: it reaches `advantageFor`; it does
+   * not STACK, so a claim on top of a rule that already gives advantage is still one advantage;
+   * and it CANCELS against disadvantage like every other source. The second and third are why it
+   * is folded in through the same two booleans rather than added to the mode.
+   */
+  await probe("the claim", async () => {
+    return page.evaluate(async () => {
+      const { hero, advantageFor, setEdge, clearEdge, readEdge } = LIVE;
+      await clearEdge(hero);
+      const plain = advantageFor(hero, null, {}).mode;
+
+      await setEdge(hero, 1, "high ground");
+      const claimed = advantageFor(hero, null, {});
+      const stored = readEdge(hero);
+
+      await setEdge(hero, -1, "in the dark");
+      const against = advantageFor(hero, null, {}).mode;
+
+      /* Normal is the absence of a claim, not a third kind of one. */
+      await setEdge(hero, 0);
+      const cleared = readEdge(hero);
+
+      return [
+        ["with nothing claimed the draw is plain", plain, 0],
+        ["a claim reaches the draw", claimed.mode, 1],
+        ["and says who said it and why", stored.reason, "high ground"],
+        ["and the reason is printed with the result",
+          claimed.reasons.some(r => r.includes("high ground")), true],
+        ["disadvantage can be claimed too", against, -1],
+        ["and the middle state stores nothing", cleared, null]
+      ];
+    });
+  });
+
+  /*
+   * **And it is spent by the action it was claimed for**, like a target or a staged half. A claim
+   * that survived its own turn would be a permanent buff written in a UI control.
+   */
+  await probe("a claim is spent", async () => {
+    await settle(page);
+    return page.evaluate(async () => {
+      const { hero, setEdge, readEdge, resolveAttack } = LIVE;
+      const weapon = hero.items.find(i => i.type === "item" && i.system.equipped
+        && i.system.verbs?.strike?.value !== null);
+      await setEdge(hero, 1, "they have not seen me");
+      const held = !!readEdge(hero);
+      await resolveAttack(hero, { verb: "strike", item: weapon, targets: [hero] });
+      return [
+        ["it is there before the attack", held, true],
+        ["and gone after it", readEdge(hero), null]
+      ];
+    });
+  });
+
+  /*
+   * **A monster is played from the HUD.**  [BUILT 2026-11-14]
+   *
+   * The window refused NPCs outright until today and sent the GM to a sheet that cannot attack
+   * with anything, so the one actor in a fight nobody could play was every actor the GM was
+   * playing. What this asks is what a GM asks: can I open it, and is there a button on a weapon.
+   */
+  await probe("the monster HUD", async () => {
+    const opened = await page.evaluate(async () => {
+      const { CardRPGTray } = await import("/systems/cardrpg/module/tray.mjs");
+      for (const t of CardRPGTray.openTrays) await t.close();
+      const beast = game.actors.find(a => a.type === "npc");
+      globalThis.LIVE.beast = beast;
+      return !!game.cardrpg.openTray(beast);
+    });
+    await page.waitForSelector(".cr-npc", { timeout: 20000 });
+    const rows = await page.evaluate(() => {
+      const { beast } = LIVE;
+      const strikes = [...document.querySelectorAll(".cr-npc__strike")];
+      const stacks = document.querySelector(".cr-play__stacks");
+      const name = document.querySelector(".cr-options__name")?.textContent ?? "";
+      return [
+        ["the HUD opens on a monster", true, true],
+        ["and names it", name.includes(beast.name), true],
+        ["it offers a button per weapon", strikes.length > 0, true],
+        ["each one reading a value off the gear",
+          strikes.every(b => /\d/.test(b.textContent)), true],
+        ["and no play stacks, because a monster stages nothing", stacks, null]
+      ];
+    });
+    rows.unshift(["the window agrees to open", opened, true]);
+    await page.evaluate(async () => {
+      const { CardRPGTray } = await import("/systems/cardrpg/module/tray.mjs");
+      for (const t of CardRPGTray.openTrays) await t.close();
+      game.cardrpg.openTray(LIVE.hero);
+    });
+    return rows;
+  });
+
+  /*
+   * **Selecting a token moves the window.**  [BUILT 2026-11-14]
+   *
+   * The second half of *there is no way to attack as a goblin*, and the half that is not about
+   * monsters at all: the HUD kept drawing whoever it had opened on, so a GM running four heroes
+   * could reach exactly one of them. Controlling a token is the gesture; what it has to produce
+   * is a window showing that actor and no second window beside it.
+   */
+  await probe("the HUD follows the selection", async () => {
+    return page.evaluate(async () => {
+      const { CardRPGTray } = await import("/systems/cardrpg/module/tray.mjs");
+      for (const t of CardRPGTray.openTrays) await t.close();
+      const beast = game.actors.find(a => a.type === "npc");
+
+      const place = async actor => {
+        const doc = (await actor.getTokenDocument({ x: 1400, y: 1400 })).toObject();
+        const [made] = await canvas.scene.createEmbeddedDocuments("Token", [doc]);
+        return made;
+      };
+      const hero = await place(LIVE.hero);
+      const other = await place(beast);
+
+      /*
+       * **Polled, because `render` is asynchronous.** The hook calls `openFor` synchronously and
+       * the application only joins Foundry's registry once it has drawn, so reading the registry
+       * on the next line reports the window that has not finished opening as no window at all.
+       * The same lesson the fight-close probe above records, from the other direction.
+       */
+      const showing = async want => {
+        for (let i = 0; i < 50; i++) {
+          const ids = CardRPGTray.openTrays.map(t => t.actor.id);
+          if (ids.length === 1 && ids[0] === want) return ids;
+          await new Promise(r => setTimeout(r, 100));
+        }
+        return CardRPGTray.openTrays.map(t => t.actor.id);
+      };
+
+      hero.object.control({ releaseOthers: true });
+      const first = await showing(LIVE.hero.id);
+      other.object.control({ releaseOthers: true });
+      const second = await showing(beast.id);
+
+      /* Letting go of a token is not a request to put the window away. */
+      other.object.release();
+      await new Promise(r => setTimeout(r, 300));
+      const afterRelease = CardRPGTray.openTrays.length;
+
+      for (const t of CardRPGTray.openTrays) await t.close();
+      await hero.delete();
+      await other.delete();
+      game.cardrpg.openTray(LIVE.hero);
+
+      return [
+        ["selecting a hero opens their HUD", first.join(","), LIVE.hero.id],
+        ["selecting a monster moves it there", second.join(","), beast.id],
+        ["and never leaves two of them up", second.length, 1],
+        ["letting go closes nothing", afterRelease, 1]
+      ];
+    });
+  });
+
+  /*
+   * **And the button on it resolves an attack.**  [BUILT 2026-11-14]
+   *
+   * The probe above proves the window draws. This one presses the thing a GM presses: target a
+   * hero, click the monster's weapon, and ask whether the hero lost health. That is the sentence
+   * *there is no way to attack as a goblin* turned into a measurement, and nothing short of
+   * clicking it answers it -- the row renders fine whether or not the handler is wired.
+   */
+  /*
+   * **A skill check, resolved end to end, which nothing here had ever done.**  [BUILT 2026-11-15]
+   *
+   * Every probe in this file was about combat or about the window, and `resolveCheck` is the
+   * other half of the game. That is not a gap worth noting in passing: the one defect this
+   * harness has ever caught that no source check could have is `attackCard` reading two free
+   * names, and it was caught because something *ran* it. The check path had the same exposure and
+   * nothing pointed at it.
+   *
+   * The floor is what makes it worth writing now. It renamed the variable the whole chain is
+   * built from -- `base` became `printed`, and `base` came back meaning something slightly
+   * different -- which is exactly the edit that reads correctly and resolves wrongly.
+   *
+   * **It reads the chain rather than the total**, because the total has a fate card in it. The
+   * chain is everything before the draw, so it is the same string twice for the same inputs, and
+   * it is the string that would be wrong if the floor were applied in the wrong place.
+   */
+  await probe("a trained hand does not fumble", async () => {
+    await settle(page);
+    return page.evaluate(async () => {
+      const { hero, resolveCheck, SKILL_FLOOR, CARDRPG } = LIVE;
+      const stacks = Object.values(hero.system.decks ?? {})
+        .map(id => game.cards.get(id)).filter(Boolean);
+      const all = stacks.flatMap(stack => stack.cards.contents).filter(c => c.type === "skill");
+      const low = all.find(c => !c.system.wild && c.system.value === 1);
+      const high = all.find(c => !c.system.wild && c.system.value === 3);
+      /* The first line of the last message, which is the chain: everything before the fate card. */
+      const chain = () => {
+        const html = game.messages.contents.at(-1)?.content ?? "";
+        return (html.match(/<p>(.*?)<\/p>/)?.[1] ?? "").replace(/&middot;/g, "\u00b7")
+          .replace(/&mdash;/g, "\u2014");
+      };
+      const label = a => game.i18n.localize(CARDRPG.approaches[a]?.label ?? a);
+
+      await resolveCheck(hero, { approach: low.system.approach, dc: 5, card: low });
+      const plain = chain();
+      await resolveCheck(hero, {
+        approach: low.system.approach, dc: 5, card: low, training: "lockpicks"
+      });
+      const lifted = chain();
+      const liftedSaid = game.messages.contents.at(-1)?.content ?? "";
+      /* The same claim on a card the floor cannot help, which is the half a floor gets wrong by
+       * becoming a bonus. */
+      await resolveCheck(hero, {
+        approach: high.system.approach, dc: 5, card: high, training: "lockpicks"
+      });
+      const ceiling = chain();
+
+      /* And the card's own clause: said out loud, and changing nothing. */
+      const edged = all.find(c => c.system.edge && !c.system.wild);
+      await resolveCheck(hero, {
+        approach: edged.system.approach, dc: 5, card: edged
+      });
+      const quiet = chain();
+      await resolveCheck(hero, {
+        approach: edged.system.approach, dc: 5, card: edged, useEdge: true
+      });
+      const claimedEdge = game.messages.contents.at(-1)?.content ?? "";
+
+      return [
+        ["an unclaimed 1 is worth 1", plain, `${label(low.system.approach)} 1`],
+        ["a claimed training lifts it to the floor", lifted,
+          `${label(low.system.approach)} ${SKILL_FLOOR} (printed 1, trained)`],
+        ["and the claim is printed where the GM can see it",
+          liftedSaid.includes("trained in lockpicks"), true],
+        ["a 3 is not raised by it", ceiling, `${label(high.system.approach)} 3`],
+        ["an edge changes no number", chain(), quiet],
+        ["and is said out loud when it is claimed",
+          claimedEdge.includes("edge claimed"), true],
+        ["in the card's own words",
+          claimedEdge.includes(edged.system.edge.slice(0, 24)), true]
+      ];
+    });
+  });
+
+  await probe("a monster attacks from its HUD", async () => {
+    await settle(page);
+    const opened = await page.evaluate(async () => {
+      const { CardRPGTray } = await import("/systems/cardrpg/module/tray.mjs");
+      for (const t of CardRPGTray.openTrays) await t.close();
+      const beast = game.actors.find(a => a.type === "npc");
+      globalThis.LIVE.beast = beast;
+      /* A target, which is the one thing the click does not supply. The hero is standing in for
+       * whoever the goblin would be swinging at. */
+      const doc = (await LIVE.hero.getTokenDocument({ x: 1200, y: 1200 })).toObject();
+      const [placed] = await canvas.scene.createEmbeddedDocuments("Token", [doc]);
+      globalThis.LIVE.mark = placed;
+      /*
+       * **Wait for the token to exist on the canvas, not just in the database.** A placeable is
+       * drawn a tick after its document is created, and a probe that ran straight after another
+       * one that deleted tokens found `placed.object` undefined -- so the target was never set
+       * and the attack correctly refused for want of one. The failure looked like a broken
+       * button and was a race in the probe.
+       */
+      for (let i = 0; i < 50 && !placed.object; i++) {
+        await new Promise(r => setTimeout(r, 100));
+      }
+      placed.object?.setTarget(true, { releaseOthers: true });
+      await LIVE.hero.update({ "system.health.value": LIVE.hero.system.health.max });
+      game.cardrpg.openTray(beast);
+      return { health: LIVE.hero.system.health.value, targets: game.user.targets.size };
+    });
+    await page.waitForSelector(".cr-npc__strike", { timeout: 20000 });
+    /*
+     * **Pressed until it answers, because the HUD redraws under the cursor.**
+     *
+     * The tray re-renders on \`updateActor\`, \`updateCard\` and half a dozen other hooks, and this
+     * probe sets the hero's health two lines above -- so the button can be detached between the
+     * wait and the click, and a click into a node that is no longer in the document is a click
+     * that resolves and does nothing. The first version of this failed about one run in four,
+     * which is worse than failing every time: it reads as a flaky feature rather than a flaky
+     * probe.
+     *
+     * So the click is the thing retried and the monster SPEAKING is the signal. A Miss is a real
+     * outcome -- no damage, but a chat card all the same -- so health is the wrong thing to wait
+     * on and the message is the right one.
+     */
+    const spoke = () => page.evaluate(() =>
+      [...game.messages].some(m => m.speaker?.actor === LIVE.beast.id));
+    for (let i = 0; i < 4 && !(await spoke()); i++) {
+      await page.click(".cr-npc__strike", { force: true }).catch(() => {});
+      await page.waitForFunction(() =>
+        [...game.messages].some(m => m.speaker?.actor === LIVE.beast.id),
+      null, { timeout: 5000 }).catch(() => {});
+    }
+    const rows = await page.evaluate(async () => {
+      const { hero } = LIVE;
+      const said = [...game.messages].reverse()
+        .find(m => m.speaker?.actor === LIVE.beast.id)?.content ?? "";
+      LIVE.mark.object?.setTarget(false);
+      await LIVE.mark.delete();
+      await hero.update({ "system.health.value": hero.system.health.max });
+      const { CardRPGTray } = await import("/systems/cardrpg/module/tray.mjs");
+      for (const t of CardRPGTray.openTrays) await t.close();
+      game.cardrpg.openTray(hero);
+      return [
+        /* A Miss is a real outcome, so what is asserted is that the attack RESOLVED: a fate card
+         * was drawn against a target, and the card says which weapon swung. */
+        ["the monster's attack resolves", /Fate/.test(said), true],
+        ["naming the weapon it swung", /Spear|Dagger|Bow|Claw|Knife|Rock|Sword/i.test(said), true],
+        /*
+         * **And it is resolved against the figure that was marked**, which the card names in a
+         * row of its own. Not *the hero lost health*: the starter Warrior wears Leather Armor,
+         * a goblin spear is 3, and a fate card of -2 leaves nothing to get through. Zero damage
+         * is the armour doing its job, and an assertion that reads it as a failure is an
+         * assertion about the dice.
+         */
+        ["and it resolves against the figure that was marked",
+          said.includes(hero.name), true]
+      ];
+    });
+    rows.unshift(["the hero started at full health", opened.health, 12],
+      ["and was the one targeted", opened.targets, 1]);
+    return rows;
+  });
+
+  /*
+   * **One hand at a time, and a button to say which.**  [BUILT 2026-11-14]
+   *
+   * Out of combat the window drew both: the action hand laid across the scene, the skill hand
+   * under it, and a deck in the corner that was always the action one. Two hands on the screen is
+   * two hands to read and only one of them could be played.
+   *
+   * The mode picks the side and the toggle overrules it, so the probe presses it: out of a fight
+   * it must open on the skill deck, the button must turn it to the action deck, and the pin must
+   * hold -- a check called in the middle of a fight is the whole reason the override exists.
+   */
+  await probe("the two decks", async () => {
+    await settle(page);
+    await page.evaluate(async () => {
+      const { CardRPGTray } = await import("/systems/cardrpg/module/tray.mjs");
+      for (const t of CardRPGTray.openTrays) await t.close();
+      /* No combat running and nothing pinned, so the mode picks the skill side by itself. */
+      for (const c of [...game.combats]) await c.delete();
+      const tray = game.cardrpg.openTray(LIVE.hero);
+      tray.side = null;
+      await tray.render();
+    });
+    await page.waitForSelector(".cr-hud__decks--action", { timeout: 20000 });
+    const read = () => page.evaluate(() => {
+      const corner = document.querySelector(".cr-pile--action .cr-pile__label")?.textContent ?? "";
+      return {
+        corner: corner.trim(),
+        hands: document.querySelectorAll(".cr-hud__hand").length,
+        scenes: document.querySelectorAll(".cr-scene").length,
+        flip: document.querySelector(".cr-pile__flip")?.textContent?.trim() ?? ""
+      };
+    });
+    const scene = await read();
+    await page.click(".cr-pile__flip");
+    await page.waitForFunction(() =>
+      document.querySelector(".cr-pile--action .cr-pile__label")?.textContent?.includes("Action"),
+    null, { timeout: 20000 }).catch(() => {});
+    const combatSide = await read();
+    await page.click(".cr-pile__flip").catch(() => {});
+    return [
+      ["out of a fight the corner is the skill deck", scene.corner, "Skill deck"],
+      ["and the skill hand is the one on the screen", `${scene.scenes}/${scene.hands}`, "1/0"],
+      ["the button offers the other deck", scene.flip, "Action deck"],
+      ["pressing it turns the window over", combatSide.corner, "Action deck"],
+      ["and only one hand is ever drawn",
+        combatSide.scenes + combatSide.hands <= 1, true],
+      ["the button now offers the way back", combatSide.flip, "Skill deck"]
+    ];
+  });
+
+  /*
+   * **A condition card is a card, not a window.**  [FIXED 2026-11-14]
+   *
+   * \`.cr-card--passive\` set \`opacity: 0.7\` on the card, which takes the card's own BACKGROUND
+   * with it -- so an open Conditions pile laid a 70% card over the tray and three sentences
+   * showed through each other, none of them readable. The rule was saying *you cannot pick this
+   * up*; what it did was make the card transparent.
+   *
+   * Measured where it was wrong: the card's computed opacity, and the ground actually painted
+   * behind its text. A card you can see the tray through has neither.
+   */
+  await probe("a passive card is opaque", async () => {
+    await settle(page);
+    await page.evaluate(async () => {
+      const tray = game.cardrpg.openTray(LIVE.hero);
+      tray.side = "action";
+      await tray.render();
+    });
+    /* Burdened arrives from carried weight, so the pile has something in it to look at. */
+    await page.evaluate(async () => {
+      const { CardRPGTray } = await import("/systems/cardrpg/module/tray.mjs");
+      const tray = CardRPGTray.openTrays[0];
+      tray.openPile = "conditions";
+      await tray.render();
+    });
+    await page.waitForSelector(".cr-hud__spread .cr-card", { timeout: 20000 });
+    return page.evaluate(() => {
+      const card = document.querySelector(".cr-hud__spread .cr-card");
+      const css = getComputedStyle(card);
+      const name = card.querySelector(".cr-card__name");
+      /*
+       * **And the dark cards, measured rather than looked at.** A Compulsion's whole face is one
+       * note and \`.cr-note\` is painted in \`--cardrpg-dim\`, a dark warm grey that is right on
+       * paper and invisible on oxblood. The contrast of the text against the ground it is
+       * actually laid on is the only honest test of that.
+       */
+      const luminance = rgb => {
+        const [r, g, b] = rgb.match(/[\d.]+/g).slice(0, 3).map(Number).map(v => {
+          const c = v / 255;
+          return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+        });
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+      };
+      const ratio = (a, b) => {
+        const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+        return (hi + 0.05) / (lo + 0.05);
+      };
+      const harm = [...document.querySelectorAll(".cr-card--harm")];
+      const worst = Math.min(99, ...harm.flatMap(card => {
+        const ground = getComputedStyle(card).backgroundColor;
+        return [...card.querySelectorAll(".cr-note, .cr-card__name")]
+          .map(el => ratio(getComputedStyle(el).color, ground));
+      }));
+
+      return [
+        ["the card itself is fully opaque", Number(css.opacity), 1],
+        ["and every word on a dark card clears 4.5:1",
+          harm.length ? Math.round(worst * 10) / 10 >= 4.5 : "no dark card on screen", true],
+        ["its ground is painted rather than let through",
+          css.backgroundColor !== "rgba(0, 0, 0, 0)", true],
+        ["and its text carries a halo against the picture",
+          /\d/.test(getComputedStyle(name).textShadow ?? ""), true]
+      ];
+    });
+  });
+
+  /*
+   * **The face carries the short register and the tooltip carries the long one.**
+   *
+   * *Shield Up* printed "Defend (Block applies to every attack until your next turn)" across its
+   * own picture, and *Strike* printed "Move 0 (was 1)" -- a number with its cause cut off. Both
+   * are measurements rather than opinions: nothing on a face is a sentence, and the sentence is
+   * reachable from the thing it explains.
+   */
+  await probe("a card face stays short", async () => {
+    await settle(page);
+    await page.evaluate(async () => {
+      const tray = game.cardrpg.openTray(LIVE.hero);
+      tray.side = "action";
+      await tray.render();
+    });
+    await page.waitForSelector(".cr-hud__hand .cr-half", { timeout: 20000 });
+    return page.evaluate(() => {
+      const halves = [...document.querySelectorAll(".cr-hud__hand .cr-half")];
+      const faces = halves.map(h => h.querySelector(".cr-half__play, span:not(.cr-half__marker)"))
+        .filter(Boolean);
+      const longest = Math.max(0, ...faces.map(f => (f.textContent ?? "").trim().length));
+      const parenthesised = faces.filter(f => /\(was \d/.test(f.textContent ?? "")).length;
+      /*
+       * **Counted in LINES, not in pixels.** The first version of this measured the half's own
+       * box, which is laid out by `flex: 2 1 0` and is the same height whatever is written in it
+       * -- so it reported five wrapped halves on a hand where nothing wrapped at all. What the
+       * complaint was about is text running to a paragraph, and that is the text's own height
+       * over its line height.
+       */
+      const lines = f => {
+        const css = getComputedStyle(f);
+        const lh = parseFloat(css.lineHeight) || parseFloat(css.fontSize) * 1.2;
+        return Math.round(f.getBoundingClientRect().height / lh);
+      };
+      const tallest = Math.max(0, ...faces.map(lines));
+      return [
+        ["no half prints the parenthesis that said nothing", parenthesised, 0],
+        ["and none of them runs on", longest <= 48, true],
+        ["so none wraps past two lines", tallest <= 2, true]
+      ];
+    });
+  });
+
   await probe("the system itself", async () => {
     const rows = await page.evaluate(() => {
       const errors = (globalThis.LIVE_ERRORS ?? []).filter(e => !/favicon|DevTools/.test(e));
@@ -1374,9 +2048,71 @@ async function shots(page, dir) {
   await save("hand", ".cr-hud__hand");
   await save("play", ".cr-hud__play");
   await save("decks", ".cr-hud__decks--left");
+  /* The other side of the same window: the skill hand, the passives and the scene counts. */
+  await page.evaluate(async () => {
+    const tray = game.cardrpg.openTray(LIVE.hero);
+    tray.side = "skill";
+    await tray.render();
+  });
+  await page.waitForSelector(".cr-scene", { timeout: 20000 });
+  await save("skillside", ".cr-scene");
+  await save("skilldeck", ".cr-hud__decks--action");
+
   await page.evaluate(() => LIVE.hero.sheet.render(true));
   await page.waitForSelector(".cardrpg.sheet", { timeout: 20000 });
   await save("sheet", ".cardrpg.sheet");
+
+  /* The Deck tab, which is where the deck list landed. It is not the default tab, so it has to be
+   * asked for -- and a shot of a tab nobody opened is a shot of the wrong thing. */
+  await page.evaluate(() => {
+    document.querySelector('.cardrpg.sheet [data-action="switchTab"][data-tab="deck"]')?.click();
+  });
+  await page.waitForSelector(".cardrpg.sheet .cr-cardlist", { timeout: 20000 });
+  await save("decklist", ".cardrpg.sheet");
+
+  /* The level-up pane, opened on a node with a picture so the panel has something to show. */
+  await page.evaluate(async () => {
+    game.cardrpg.levelUp(LIVE.hero);
+    await new Promise(r => setTimeout(r, 900));
+    const pane = [...foundry.applications.instances.values()]
+      .find(a => a.constructor.name === "LevelUpPane");
+    /* No tap: the pane opens on its first choice by itself now, and that is the thing to show. */
+    await new Promise(r => setTimeout(r, 200));
+  });
+  await page.waitForSelector(".cr-levelup__side", { timeout: 20000 });
+  await save("levelup", ".cr-levelup__side");
+  /* The map with both halos up: what the marked place opens, and what it bars. */
+  await page.evaluate(async () => {
+    const pane = [...foundry.applications.instances.values()]
+      .find(a => a.constructor.name === "LevelUpPane");
+    pane?.cy?.getElementById("origin.core").emit("tap");
+    await new Promise(r => setTimeout(r, 200));
+    const creation = pane?.cy?.nodes().filter(n => /^(origin|background)\./.test(n.id())
+      || n.id() === "root");
+    if (creation?.length) pane.cy.fit(creation, 40);
+    await new Promise(r => setTimeout(r, 250));
+  });
+  await save("halos", ".cr-graph");
+
+  /* And the map, framed on the creation layers: the places, and the trades behind them. */
+  await page.evaluate(async () => {
+    const pane = [...foundry.applications.instances.values()]
+      .find(a => a.constructor.name === "LevelUpPane");
+    const creation = pane?.cy?.nodes().filter(n => /^(root|origin|background)\./.test(n.id())
+      || n.id() === "root");
+    if (creation?.length) pane.cy.fit(creation, 40);
+    await new Promise(r => setTimeout(r, 300));
+  });
+  await save("graph", ".cr-graph");
+
+  /* And the monster's side of the same window, which has no counterpart on the hero's. */
+  await page.evaluate(async () => {
+    const { CardRPGTray } = await import("/systems/cardrpg/module/tray.mjs");
+    for (const t of CardRPGTray.openTrays) await t.close();
+    game.cardrpg.openTray(game.actors.find(a => a.type === "npc"));
+  });
+  await page.waitForSelector(".cr-npc", { timeout: 20000 });
+  await save("monster", ".cr-hud__play");
 }
 
 /* -------------------------------------------- */
@@ -1403,10 +2139,38 @@ try {
   });
   /* Foundry refuses to render below 1366x768 and says so rather than guessing. */
   const page = await browser.newPage({ viewport: { width: 1600, height: 900 } });
+  /*
+   * **A piece the brief says is still to be drawn is not a wrong path.**  [2026-11-14]
+   *
+   * The allowance that used to sit here was a blanket one for `art/nodes/`, and it went when the
+   * shelf was finished. This is the narrow version and it is read from the ledger rather than
+   * typed: `art-list.md` records every piece and whether it has a file, so a 404 for one it
+   * already reports as **to shoot** is the state the brief is describing, and a 404 for anything
+   * else is a wrong path like every other one.
+   *
+   * That keeps the check honest in both directions. A piece that quietly stopped being drawn
+   * fails here the moment the brief says it is drawn, and a piece nobody has got to yet does not
+   * fail twice for the same reason.
+   *
+   * **It is empty right now, which is the resting state and the reason it is safe to leave in.**
+   * The blanket allowance it replaced had to be deleted by hand once the shelf was finished, and
+   * the thing about an allowance you delete by hand is that somebody has to remember. This one
+   * tightens by itself: the set is whatever the ledger says is outstanding, so a finished shelf
+   * tolerates nothing at all.
+   */
+  const brief = fs.readFileSync(path.join(SYSTEM_DIR, "../art-list.md"), "utf8");
+  /* One row per piece: a tick in the first cell when the file is on the disk, blank when it is
+   * not, and the path in the last cell. The blank ones are the ones still to shoot. */
+  const notYet = new Set(brief.split("\n")
+    .map(line => /^\|\s*(\S*)\s*\|.*`([\w/-]+\.webp)`\s*\|\s*$/.exec(line))
+    .filter(row => row && row[1] === "")
+    .map(row => row[2]));
   page.on("response", r => {
-    /* All seventy-eight of the graph's pictures are drawn, so the allowance that used to sit here
-     * is gone and a 404 under `art/nodes/` is a wrong path again, like every other one. */
-    if (r.status() >= 400) missing.add(`${r.status()} ${r.url().split(`:${PORT}`).pop()}`);
+    if (r.status() < 400) return;
+    const url = r.url().split(`:${PORT}`).pop();
+    const file = url.split("/art/")[1]?.split("?")[0] ?? "";
+    if (r.status() === 404 && notYet.has(file)) return;
+    missing.add(`${r.status()} ${url}`);
   });
   await page.addInitScript(() => {
     globalThis.LIVE_ERRORS = [];

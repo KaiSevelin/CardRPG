@@ -2,6 +2,57 @@
 
 A background is who you were **before** you walked one of the Ways. Every background gives the same five parts, so they are simple to write and easy to compare.
 
+## Where, what, then how  **[RULED 2026-11-14]**
+
+Character creation is a **sequence**, not a wall of doors:
+
+1. **Origin** — the place you are from. One of **fifteen**, taken once, and it shuts the other
+   fourteen.
+2. **Occupation** — the trade you were in. One of twelve, and **not all twelve are open to you**:
+   an occupation follows the origins it could plausibly have come out of.
+3. **Way** — how you fight, which is the first thing that costs a level. All four follow any
+   occupation.
+
+> **Why an order rather than free choices.** The first two are true of you before the first level
+> is spent, so neither costs one — but they are not simultaneous. You were somewhere before you
+> were something, and you were something before you learned to fight. A trade that could follow
+> from anywhere is a trade the place did not shape; a Way chosen before either is a character
+> sheet filled in backwards.
+>
+> A Miner comes from the Iron's camps, the Furnace's workings, Saag et Haar's gem mines or Wolf
+> Peak's sulphur; a Vintner from the Ruby, where wine is the export, or from the two districts
+> that trade it. Picking the place is what makes the second list worth reading.
+
+Every origin keeps **at least four** occupations open, so no place decides your character for you,
+and none keeps all twelve, so the narrowing is real. **Which occupations follow which origin is
+the level-up pane's to show** — it is derived from the graph, and a second copy of it here is a
+second thing that can be wrong. Every pairing is argued from [the world file](../worldinfo/Firma.md)
+and nothing was invented to make one work.
+
+### The fifteen places
+
+The six districts, and nine enclaves and other holdings that a person can be *from*:
+
+| | |
+|---|---|
+| **Districts** | The Core, The Fiord, The Ruby, The Iron, The Amber, Furnace Stock |
+| **Enclaves** | Wolf Peak, Saag et Haar, Echterhof-born, The Triple Enclave, Regensburg, Solemn, Kelp Bay, Hyrlock |
+| **The Horde** | Xtchaargh — the Summer Village, the one hive that takes human envoys |
+
+> **Velderon is not on it.** The elves' embassy is a closed ruin you do not enter without an
+> invitation, which makes it somewhere a character can **go** and not somewhere a character is
+> **from**. That is the test for this list.
+>
+> **Xtchaargh is**, for the opposite reason: it is the one hive with a human quarter, and the
+> people in it are raised there. Its know-how is the Horde itself — its hives, its castes and what
+> it will bargain for — which is the one subject on which nobody else at the table has an opinion
+> worth having.
+
+Three of the fifteen teach a **language**, and they are exactly the three from somewhere with a
+tongue of its own: Furnace Stock (Valgar), Wolf Peak (Perga) and Saag et Haar (Veche). A language
+nobody lacks is not a gift, which is why the rest teach none — and none of the six new places has
+one in the world file, so none of them was given one to even the list up.
+
 ## Template
 
 | Part | What you get | Rule |

@@ -103,6 +103,14 @@ export function brief(entry) {
   if (entry.effect) bits.push(step(entry.effect));
   if (entry.steps?.length) bits.push(entry.steps.map(step).filter(Boolean).join(", "));
   if (entry.text) bits.push(entry.text);
+  /*
+   * **A twist's `cost` is the whole of what it is.**  [FIXED 2026-11-14] Sixteen twist and ritual
+   * cards carry their meaning in `cost` -- *Attention. The opposition now knows something is
+   * wrong.* -- and this read every other field and not that one, so all sixteen were commissioned
+   * with an empty subject line and the model drew their NAMES. Found by the check below, which
+   * exists because the injuries shelf did the same thing for the same reason.
+   */
+  if (entry.cost) bits.push(entry.cost);
   if (entry.blurb) bits.push(entry.blurb);
   if (entry.active?.text) bits.push(entry.active.text);
   if (entry.approach) {
@@ -116,8 +124,24 @@ export function brief(entry) {
     .replace(/<[^>]+>/g, "")
     .replace(/\s+/g, " ")
     .trim();
-  return line.length > 150 ? line.slice(0, 147) + "..." : line;
+  return line;
 }
+
+/**
+ * **The same line, cut to fit a table cell.**  [SPLIT 2026-11-14]
+ *
+ * The cap used to live inside `brief` itself, which meant a column width in this document was
+ * also deciding how much of a brief the MODEL was told. Twenty-odd prompts went out ending in a
+ * literal `...`, mid-clause -- and the clause that falls off the end is the last one written,
+ * which is where a brief puts the thing it most wants remembered. *The Debt* ended **no hand, no
+ * qui...** and came back with a man leaning over the ledger.
+ *
+ * Markdown renders a long cell by wrapping it, so the cap was never load-bearing here either; it
+ * is kept because a four-line cell in a table of two hundred rows is unreadable. The prompt book
+ * gets the whole sentence, this table gets as much of it as fits, and neither is deciding
+ * anything for the other.
+ */
+export const cell = line => (line.length > 150 ? `${line.slice(0, 147)}...` : line);
 
 /**
  * A creature's brief: its numbers, what it fights with, and the one line of description the
@@ -343,14 +367,30 @@ const sigs = Object.fromEntries(Object.entries(content)
  * The axis and the resource go in front of it, because they are what distinguishes two titles
  * whose prose reads alike -- *Control / a slot kept free* against *Reactions / halves* is the
  * difference between a Thief and a Duellist in four words.
+ *
+ * **The budget cuts at a full stop.**  [FIXED 2026-11-14] It used to cut at the 220th character
+ * and append `...`, which is fine in a table cell and is not fine in a prompt: ten nodes were
+ * being sent a SUBJECT that stopped mid-word. A budget is still wanted -- a node's paragraph is
+ * written for a player and can run long -- but a brief that ends on a sentence is a brief, and
+ * one that ends on half a word is a transcription error the model has to guess its way out of.
  */
+const toSentence = (text, room) => {
+  if (text.length <= room) return text;
+  const cut = text.slice(0, room);
+  /* The last full stop in the budget, provided there is enough sentence left to be worth having.
+   * Below that the paragraph is one long sentence and a whole-word cut is the honest answer. */
+  const stop = Math.max(cut.lastIndexOf(". "), cut.lastIndexOf("? "), cut.lastIndexOf("! "));
+  if (stop > room / 3) return cut.slice(0, stop + 1);
+  const space = cut.lastIndexOf(" ");
+  return space > 0 ? cut.slice(0, space) : cut;
+};
+
 function nodeBrief(entry) {
   const spine = [entry.title, entry.axis && `${entry.axis} / ${entry.resource ?? ""}`]
     .filter(Boolean).join(" \u00b7 ");
   const first = String(entry.lore ?? "").split("\n\n")[0]
     .replace(/\*\*/g, "").replace(/\s+/g, " ").trim();
-  const line = [spine, first].filter(Boolean).join(" \u2014 ");
-  return line.length > 220 ? `${line.slice(0, 217)}...` : line;
+  return [spine, toSentence(first, 220 - spine.length)].filter(Boolean).join(" \u2014 ");
 }
 
 const PROSE = {
@@ -474,6 +514,18 @@ const PROSE = {
       + "works under. Each of these is one object or one gesture, close, with the body kept out "
       + "or cropped to a limb. It is also the only way twenty-five of them do not arrive as "
       + "twenty-five people pulling faces." },
+  "injuries": { title: "Injuries",
+    why: "**Fourteen slates a character carries for the rest of their life**, and they were on no "
+      + "shelf — so the brief reported the game drawn while the one kind of card a player "
+      + "cannot get rid of had nothing on it.\n\n**Draw what is left behind, never the harm.** "
+      + "Two reasons and they point the same way. One: a figure in the frame is somebody else's "
+      + "character, permanently — the constraint every shelf here works under but the titles, "
+      + "and sharper for an injury than for anything else. Two: a brief that asks for a wound is a "
+      + "brief that comes back refused, and the fix recorded in `ART_REFUSED` is not to soften "
+      + "the wording until it slips through but to draw the right subject.\n\nSo each of these is "
+      + "**the thing that compensates, the thing that no longer works, or the record of it**: the "
+      + "eye-patch rather than the eye, the stick rather than the leg, the ledger rather than the "
+      + "debtor. No bodies, no blood, no faces." },
   "features": { title: "Features",
     why: "Always on, so a feature's picture is on the sheet for the character's whole life." },
   "items": { title: "Items",
@@ -749,7 +801,7 @@ for (const group of GROUPS) {
   );
   for (const entry of [...group.list].sort((a, b) => a.name.localeCompare(b.name))) {
     const mark = { drawn: "✓", refused: "✗", pending: " " }[state(group, entry)];
-    push(`| ${mark} | **${entry.name}** | ${describe(entry) || "—"} `
+    push(`| ${mark} | **${entry.name}** | ${cell(describe(entry) || "") || "—"} `
       + `| \`${group.dir}/${slug(entry.name)}.webp\` |`);
   }
   push("");

@@ -20,9 +20,12 @@ import { CARDRPG } from "./config.mjs";
 import { CARD_BLURBS } from "./content.mjs";
 import {
   deckOf, discardCards, retireCards, catchBreath, canCatchBreath, refill, cardName, artOf,
-  conditionArt,
+  conditionArt, portraitOf,
   dealSkillHand, discardSkillCards, pileBack, backOf,
-  isReserved, reserveCard, reserveHand, uprightCards, isIntruder, intruderLine
+  isReserved, reserveCard, reserveHand, uprightCards, isIntruder, intruderLine,
+  /* One printed line per card, shared with the sheet's deck list: the discard viewer here and
+   * the deck list there are the same register of the same question. */
+  cardLine
 } from "./decks.mjs";
 import {
   resolveAttack, resolveDefend, resolveHeal, resolveUse, resolveCondition, resolveShake,
@@ -32,11 +35,16 @@ import {
   liftCondition, resolveForesee, collectBonuses,
   resolveConjure, resolveShape,
   itemMeets, requireText, payToCast, answerCast, grantBlock, resolveCheck, passiveScore,
-  refusesAction
+  refusesAction, SKILL_FLOOR,
+  readEdge, setEdge, edgeLine
 } from "./resolve.mjs";
+/* The GM plays a monster from this window now, and the moment one acts its type's intent card is
+ * public knowledge anyway -- so the HUD flips it through the same function the turn hook does. */
+import { revealIntent } from "./combat.mjs";
 import {
   readCall, setCall, clearCall, describeCall, cardAnswers, bestTool, helpOptions,
   readChallenge, startChallenge, endChallenge, catchBreathInChallenge, drawTwist, twistCounts,
+  twistQueue, forgiveDebts,
   partyPassives, readAgainst
 } from "./checks.mjs";
 
@@ -105,6 +113,26 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     this.flipped = new Set();
     /** The round:turn a hand was last dealt, so the deck goes inert until the next turn. */
     this.dealtAt = null;
+    /**
+     * **Which deck this window is playing from**, or null to follow the mode.  [BUILT 2026-11-14]
+     *
+     * A character has two decks and the window used to show both at once out of combat: the
+     * action hand laid across the scene, the skill hand under it, and a deck in the corner that
+     * was always the action one. Two hands on the screen is two hands to read, and only one of
+     * them could be played.
+     *
+     * So the mode picks a side -- a fight is the action deck, a scene is the skill deck -- and
+     * this overrules it when somebody says otherwise. **Null is not "action"**: it means *follow
+     * the mode*, so a tray left alone switches with the fight starting and ending, which is what
+     * hud-spec 2 decided about mode switching in the first place. Pinning it is a deliberate act
+     * and it stays pinned until it is unpinned.
+     *
+     * Why pin at all: skill checks happen in combat -- a lock picked while the fight is on, a
+     * shove resisted -- and the action deck is worth reading out of one, when the question is
+     * what you will have in hand when it starts.
+     * @type {"action"|"skill"|null}
+     */
+    this.side = null;
   }
 
   static DEFAULT_OPTIONS = {
@@ -145,8 +173,18 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       breatheScene: CardRPGTray.#onBreatheScene,
       // The GM's own deck, drawn by hand because the rules say it is never forced.
       twist: CardRPGTray.#onTwist,
+      forgiveTwist: CardRPGTray.#onForgiveTwist,
       // The GM's passive panel, folded open or shut and remembered per client.
       togglePassives: CardRPGTray.#onTogglePassives,
+      // The claim: what somebody says should make this draw easier or harder, and why.
+      setEdge: CardRPGTray.#onSetEdge,
+      sayWhy: CardRPGTray.#onSayWhy,
+      // Which of the character's two decks this window is playing from.
+      flipSide: CardRPGTray.#onFlipSide,
+      // The monster side: a sequence resolves in order and a weapon resolves on its own.
+      playStep: CardRPGTray.#onPlayStep,
+      playIntent: CardRPGTray.#onPlayIntent,
+      npcStrike: CardRPGTray.#onNpcStrike,
     }
   };
 
@@ -156,11 +194,25 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
 
   static #open = new Map();
 
+  /**
+   * **Who this window will open on, and for whom.**  [2026-11-14]
+   *
+   * It used to refuse an NPC flatly -- *the HUD is for characters; NPCs are run from their sheet*
+   * -- and the sheet it sent you to has no way to attack with anything. So the one actor in a
+   * fight that could not be played from the HUD was every actor the GM was playing.
+   *
+   * Two rules, and they are the visibility rules of hud-spec 7 rather than new ones:
+   *
+   * - **A player sees their own character and nothing else.** Not a monster, not another
+   *   player's hero. The HUD shows a hand, and hand contents are private.
+   * - **A GM sees whoever they have selected**, hero or monster. They own every actor in the
+   *   world, so "pick the one you own" was never the test -- selection is.
+   */
   static openFor(actor, { auto = false } = {}) {
-    if (!actor || actor.type !== "character") {
-      if (actor) ui.notifications.warn("The HUD is for characters; NPCs are run from their sheet.");
-      return null;
-    }
+    if (!actor) return null;
+    if (actor.type !== "character" && actor.type !== "npc") return null;
+    if (actor.type === "npc" && !game.user.isGM) return null;
+    if (!actor.isOwner) return null;
     // One HUD at a time: it covers the screen edges, so two would fight for the same space.
     for (const other of CardRPGTray.openTrays) {
       if (other.actor?.id !== actor.id) other.close();
@@ -197,6 +249,24 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   static autoOpen(combat) {
     if (!combat) return;
     const inCombat = id => combat.combatants.some(c => c.actor?.id === id);
+
+    /*
+     * **A GM follows the turn order, because the turn order is what they are running.**
+     * [BUILT 2026-11-14]
+     *
+     * The three rules below are about finding the one character a client is playing, and for a GM
+     * that question has no answer -- they are playing all of them, in a defined order, one at a
+     * time. So on a GM's client the acting combatant IS the answer, and the HUD moves with the
+     * turn marker. That is also the whole of what *there is no way to attack as a goblin* meant:
+     * the goblin's turn came round and nothing on the screen changed.
+     *
+     * A player is never moved this way. Their HUD is their own character's and does not go
+     * wandering off to whoever happens to be acting.
+     */
+    const acting = combat.combatant?.actor;
+    if (game.user.isGM && acting?.isOwner) {
+      return CardRPGTray.openFor(acting, { auto: true });
+    }
 
     const assigned = game.user.character;
     if (assigned?.type === "character" && inCombat(assigned.id)) {
@@ -284,14 +354,53 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     }
   }
 
+  /**
+   * And the same for the controls down the left, which were a number typed into the stylesheet.
+   *
+   * **`--cr-controls: 82px` was a guess, and it was wrong.**  [FIXED 2026-11-15] The right
+   * sidebar has been measured since the HUD was built, for the reason written above it: a fixed
+   * width is wrong half the time. The left column was never given the same treatment, so on any
+   * build whose controls are wider than 82px every panel anchored to that edge was drawn on top
+   * of Foundry's own tools. Same bug, same fix, other side of the screen.
+   */
+  #fitControls() {
+    const layer = this.element?.classList?.contains("cr-hud-layer")
+      ? this.element
+      : this.element?.querySelector(".cr-hud-layer");
+    if (!layer) return;
+
+    const own = ui.controls?.element;
+    const candidates = [
+      own instanceof HTMLElement ? own : (own?.[0] ?? null),
+      document.getElementById("controls"),
+      document.getElementById("scene-controls"),
+      document.getElementById("ui-left")
+    ];
+    for (const node of candidates) {
+      const rect = node?.getBoundingClientRect?.();
+      if (!rect || rect.width <= 0) continue;
+      // Measured from the screen edge, because the column is not always flush against it.
+      const width = rect.right;
+      // Narrower than a button or wider than a third of the screen is a measurement of something
+      // else; leave the stylesheet's fallback alone rather than trust it.
+      if (width < 24 || width > Math.min(420, window.innerWidth / 3)) continue;
+      layer.style.setProperty("--cr-controls", `${Math.round(width)}px`);
+      return;
+    }
+  }
+
   _onRender(context, options) {
     super._onRender?.(context, options);
     this.#fitSidebar();
+    this.#fitControls();
   }
 
   /** Re-measure when the sidebar opens or shuts, without re-rendering the whole HUD. */
   static refitAll() {
-    for (const tray of CardRPGTray.openTrays) tray.#fitSidebar();
+    for (const tray of CardRPGTray.openTrays) {
+      tray.#fitSidebar();
+      tray.#fitControls();
+    }
   }
 
   /* -------------------------------------------- */
@@ -300,8 +409,18 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     const context = await super._prepareContext(options);
     const actor = this.actor;
     const system = actor.system;
+    /*
+     * **Which kind of actor this window is drawing**, asked once and answered everywhere below.
+     * core-rules 9 is the whole of the difference: a monster holds no hand, has no stamina, pays
+     * no Ready and no Strain, and takes its turn off one intent card instead of two halves of
+     * two. Everything it DOES have -- health, block, armour, conditions, gear, a fate deck -- is
+     * the same four panels reading the same fields.
+     */
+    const npc = actor.type === "npc";
+    /* Which of the two decks this window is turned to; the mode picks unless somebody pinned. */
+    const side = this.#sideNow();
     const blocked = system.blockedIcons ?? new Set();
-    const hand = deckOf(actor, "actionHand");
+    const hand = npc ? null : deckOf(actor, "actionHand");
 
     const active = (system.activeConditions ?? []);
     const dazed = system.noSecondary;
@@ -334,8 +453,18 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       system,
       config: CARDRPG,
       isGM: game.user.isGM,
+      isNpc: npc,
+      npcKind: npc ? (system.kind || "") : "",
+      /* The face, beside the name. `portraitOf` knows core's placeholders from ours, so an
+       * actor nobody has given a portrait shows the name alone rather than a grey silhouette. */
+      portrait: portraitOf(actor),
+      /* A claim is state on the actor, so it reads the same on every client that can see them. */
+      edge: this.#edge(),
+      npc: npc ? this.#npcTray() : null,
 
-      cards: (hand?.cards.contents ?? []).map(card => this.#renderCard(card, blocked, dazed)),
+      /* One hand on the screen at a time: the side decides which (hud-spec 5a). */
+      cards: (npc || side === "skill") ? [] : (hand?.cards.contents ?? [])
+        .map(card => this.#renderCard(card, blocked, dazed)),
       staged: this.staged.map((s, i) => ({
         ...s, order: i + 1, name: cardName(hand?.cards.get(s.cardId))
       })),
@@ -349,7 +478,9 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         || ["primary", "secondary"].some(h => this.#assigned(h).length > 0),
       // A breath recovers a fixed 2, so a discard that cannot cover it buys nothing: the button
       // says so by being dead, rather than by taking the turn and handing back one card.
-      canBreathe: canCatchBreath(this.actor),
+      /* A monster has no stamina and no hand to look in, so the question is not asked of one:
+       * `canCatchBreath` would go looking for a deck it has not got and warn about the absence. */
+      canBreathe: !npc && canCatchBreath(this.actor),
       breathRecovery: CARDRPG.defaults.breathRecovery,
       playHint: (dazed || system.exhausted)
         ? "Primary only this turn."
@@ -415,7 +546,8 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       fateSwing: counts.fate ? Math.min(100, Math.round(200 / counts.fate)) : null,
       playArea: this.#playArea(),
       leftDecks: this.#leftDecks(),
-      actionDeck: this.#actionDeck(combat),
+      /* The corner means the same thing on both sides: the deck you are playing from. */
+      actionDeck: side === "skill" ? this.#skillDeck() : this.#actionDeck(combat),
       pileLinks: this.#pileLinks(),
       viewer: this.#viewer(),
 
@@ -424,7 +556,29 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
        * a different mode rather than a second application, because the fate deck spans both and a
        * second window would have to show it twice.
        */
-      scene: myCombatant ? null : this.#sceneTray(),
+      /*
+       * **The skill side, shown whenever the window is turned to it** -- which out of combat is
+       * by default and in combat is by asking. It used to be *whenever no Combat is active*, so a
+       * check called mid-fight had nowhere to be answered from.
+       *
+       * A monster has no skill deck and makes no checks of its own (core-rules 9), so it is never
+       * drawn for one: it would be four empty panels and a New scene button.
+       */
+      scene: (npc || side !== "skill") ? null : this.#sceneTray(),
+      /* Above the character panel, in both modes: a passive does not move during play. */
+      passives: npc ? null : this.#passivePanel(),
+      side,
+      onSkill: side === "skill",
+      /* The toggle itself. Not offered to a monster, which has one deck and nothing to turn to. */
+      flip: npc ? null : {
+        label: side === "skill" ? "Action deck" : "Skill deck",
+        tip: side === "skill"
+          ? "Turn the window to your action deck: the hand you fight from. Anything staged is "
+            + "put back first."
+          : "Turn the window to your skill deck: the hand you answer a check from. Anything "
+            + "staged is put back first.",
+        pinned: this.side !== null
+      },
       inCombat: !!myCombatant,
       myTurn: combat?.combatant?.actor?.id === actor.id,
       turnOwner: combat?.combatant?.name ?? "",
@@ -434,6 +588,129 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   /* -------------------------------------------- */
+
+  /**
+   * **The monster's half of the HUD.**  [BUILT 2026-11-14]
+   *
+   * Until today `openFor` refused an NPC outright -- *the HUD is for characters; NPCs are run from
+   * their sheet* -- and the sheet has no way to attack with anything. So a GM could draw a goblin
+   * an intent card, read it, and then have nowhere to play it: the whole monster side of a fight
+   * happened by hand, in chat, with the numbers typed in.
+   *
+   * It is the same window, for the same reason the scene tray is (hud-spec 5): the fate deck, the
+   * conditions, the gear and the vitals are the same four panels drawn from different fields, and
+   * a second application would draw all four twice.
+   *
+   * **A monster's turn is not a hand of halves.** core-rules 9: it holds no hand, it has no
+   * stamina, it pays no Ready and no Strain. What it has is **one intent card per type per round**
+   * (core-rules 3) carrying an ordered sequence, so there is nothing to stage and nothing to pick
+   * between -- which is why the rows here resolve on the click rather than going into a stack.
+   *
+   * **And its weapons are rows too**, under the intent. Not every monster turn is the card: an
+   * intent that does not fit the moment is a thing the GM overrules, the deck can be empty out of
+   * combat, and *a specialist's tactic* is supposed to be played rather than rolled for. One click
+   * per weapon is the floor this was missing.
+   */
+  #npcTray() {
+    const intent = deckOf(this.actor, "intent");
+    const card = intent?.cards.contents[0] ?? null;
+    const blocked = this.actor.system.blockedIcons ?? new Set();
+
+    const row = (step, index) => {
+      const face = this.#stepFace(step);
+      return {
+        index,
+        text: face.text,
+        cut: face.cut,
+        icon: face.icons[0] ?? null,
+        blocked: face.icons.some(i => blocked.has(i)) || !!face.unmet,
+        tip: face.unmet
+          ? `Needs ${face.unmet}, and nothing it is holding is.`
+          : face.notes.join(" ")
+      };
+    };
+
+    /*
+     * Every equipped weapon, as a one-step Strike. Built from the item rather than from a card,
+     * because core-rules 9 is explicit that an NPC's Strike comes off its item -- the one knob
+     * that sets how dangerous it is -- so this is that sentence with a button on it.
+     */
+    const strikes = this.#itemsFor("strike").map(item => {
+      const line = item.system.verbs?.strike ?? {};
+      const reach = this.actor.system.rangeOnLine(line, item);
+      return {
+        id: item.id,
+        name: item.name,
+        art: artOf(item),
+        value: item.system.valueFor?.("strike") ?? line.value,
+        range: reach && reach > 1 ? reach : null,
+        tip: `Strike with ${item.name}. Target a token first; the fate draw and the damage go to `
+          + "chat like any other attack."
+      };
+    });
+
+    return {
+      /* The card itself, face up for the GM whatever the players can see. §7 of the HUD spec: the
+       * GM tray shows intent cards face up, one per type, this round. */
+      card: card ? {
+        id: card.id,
+        name: cardName(card),
+        art: artOf(card),
+        text: card.system.text ?? "",
+        revealed: !!intent?.getFlag("cardrpg", "revealed"),
+        steps: (card.system.sequence ?? []).map(row)
+      } : null,
+      strikes,
+      /* A monster whose whole turn is gone says so, rather than offering rows that refuse. */
+      halted: !!this.actor.system.noTurn,
+      empty: !card && !strikes.length
+    };
+  }
+
+  /**
+   * Resolve one step of a monster's turn, on the click.
+   *
+   * Nothing is staged, because there is nothing to choose between: a sequence is ordered and a
+   * monster has no second half to weigh it against. The one thing the GM does choose is the
+   * target, and that is Foundry's own targeting, exactly as it is for a character.
+   */
+  static async #onPlayStep(event, target) {
+    const step = this.#npcStep(Number(target.dataset.index));
+    if (!step) return;
+    await revealIntent(this.actor);
+    await this.#resolveStep(step, "primary", CardRPGTray.#targets());
+    this.render();
+  }
+
+  /** The whole sequence, in its printed order -- which is the order the face numbers it in. */
+  static async #onPlayIntent() {
+    const card = deckOf(this.actor, "intent")?.cards.contents[0];
+    if (!card) return;
+    await revealIntent(this.actor);
+    const targets = CardRPGTray.#targets();
+    for (const step of card.system.sequence ?? []) {
+      await this.#resolveStep(step, "primary", targets);
+    }
+    this.render();
+  }
+
+  /** One weapon, straight out of the gear, for a turn the card does not describe. */
+  static async #onNpcStrike(event, target) {
+    const item = this.actor.items.get(target.dataset.slateId);
+    if (!item) return;
+    await this.#resolveStep({ verb: "strike" }, "primary", CardRPGTray.#targets(), item);
+    this.render();
+  }
+
+  #npcStep(index) {
+    const card = deckOf(this.actor, "intent")?.cards.contents[0];
+    return Number.isInteger(index) ? (card?.system.sequence ?? [])[index] ?? null : null;
+  }
+
+  /** Whoever the acting user has targeted. The same question a character's Play asks. */
+  static #targets() {
+    return [...(game.user.targets ?? [])].map(t => t.actor).filter(a => a);
+  }
 
   /**
    * The play area: two stacks of overlapping cards above the Fate deck.
@@ -945,6 +1222,41 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   /**
+   * **Which side is showing**: what was pinned, or what the mode implies.
+   *
+   * A monster has no skill deck and makes no checks of its own (core-rules 9), so it is always on
+   * the action side whatever anybody pinned -- which also keeps the toggle off its HUD, because a
+   * control with one state is a label.
+   */
+  #sideNow() {
+    if (this.actor.type === "npc") return "action";
+    return this.side ?? (game.combat?.combatants.some(c => c.actor?.id === this.actor.id)
+      ? "action" : "skill");
+  }
+
+  /**
+   * The skill deck in the bottom-left corner, where the action deck sits on the other side.
+   *
+   * It is **not** a deal button. skill-rules 1 says the GM says when a new scene starts, which is
+   * why dealing lives on the scene panel's *New scene* and not here; this is the count and the
+   * back, so the corner means the same thing on both sides -- *this is the deck you are playing
+   * from, and this is how much of it is left*.
+   */
+  #skillDeck() {
+    const deck = deckOf(this.actor, "skill");
+    const discard = deckOf(this.actor, "skillDiscard");
+    return {
+      label: "Skill deck",
+      count: deck?.cards.size ?? 0,
+      spent: false,
+      art: backOf("skill"),
+      state: `${discard?.cards.size ?? 0} discarded`,
+      tip: "Your skill deck. The GM deals a hand when a new scene starts, and the discard comes "
+        + "back on a rest rather than on a shuffle."
+    };
+  }
+
+  /**
    * The action deck, in the bottom-left corner. Clicking it deals a hand; it then goes inert until
    * the next turn, because the hand refills once a round and dealing repeatedly would just be
    * drawing your deck away.
@@ -1082,23 +1394,9 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       flipped: false,
       // A discard is a record, not a slate: there is nothing to put into play.
       passive: true,
-      lines: [CardRPGTray.#cardDetail(c)]
+      lines: [cardLine(c)]
     }));
     return { label: labels[this.openPile] ?? this.openPile, count: `${cards.length}`, cards };
-  }
-
-  static #cardDetail(card) {
-    if (card.type === "fate") {
-      return card.system.special === "miss" ? "Miss — the action does nothing, then reshuffle"
-        : card.system.special === "crit" ? "Critical — double the value, then reshuffle"
-          : `${card.system.value > 0 ? "+" : ""}${card.system.value}`;
-    }
-    // One line per intruder, read from the table that defines them rather than retyped here.
-    if (isIntruder(card)) return intruderLine(card);
-    const half = (name, steps) => (steps ?? [])
-      .map(s => `${s.verb ?? ""}${s.param ? ` ${s.param}` : ""}${s.mod ? ` ${s.mod > 0 ? "+" : ""}${s.mod}` : ""}`)
-      .join(", ");
-    return `${half("p", card.system.primary)} / ${half("s", card.system.secondary)}`;
   }
 
   /**
@@ -1167,65 +1465,83 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         };
       })(),
       twists: game.user.isGM ? twistCounts() : null,
-      /*
-       * **What the party notices, for the GM only.** Not a secret-roll panel: a passive score is
-       * static by design (hud-spec 5), which is exactly what makes it safe to read in the open.
-       * When a call is live each row is marked against it, because the only rows that need a check
-       * are the ones a card could still carry.
-       */
-      passives_gm: (() => {
-        if (!game.user.isGM) return null;
-        const open = game.settings.get("cardrpg", "passivesOpen");
-        const reading = partyPassives(passiveScore);
-        const best = actorName => {
-          const actor = game.actors.getName(actorName);
-          const hand = actor ? deckOf(actor, "skillHand") : null;
-          const cards = [...(hand?.cards?.contents ?? [])];
-          if (!cards.length) return 0;
-          return Math.max(...cards.map(c => (call && call.approach !== "any"
-            ? (c.system.worth?.(call.approach) ?? 0) : c.system.value) ?? 0));
-        };
-        return {
-          open,
-          fromScene: reading.fromScene,
-          party: reading.party.join(", "),
-          rows: reading.rows.map(row => {
-            /* Marked only against a call that names this approach, or an open one: a Wits call
-             * says nothing about whether anybody could manage the Might obstacle. */
-            const mark = call && (call.approach === "any" || call.approach === row.key)
-              ? readAgainst(row.best, call.dc, best(row.who))
-              : "";
-            /* The tooltip is built here rather than in the template: three branches of prose in a
-             * `data-tooltip` attribute is markup doing arithmetic's job, and the template has one
-             * comparison helper where this needs three. */
-            const said = {
-              over: game.i18n.localize("CARDRPG.Check.PassiveOver"),
-              close: game.i18n.localize("CARDRPG.Check.PassiveClose"),
-              under: game.i18n.localize("CARDRPG.Check.PassiveUnder")
-            }[mark] ?? "";
-            return {
-              ...row,
-              mark,
-              tip: `${row.label} ${row.best} — ${row.who}`
-                + (said ? ` · ${said}` : "")
-            };
-          })
-        };
-      })(),
-      /* The six, always all six: a deck that covers every approach is the composition rule. */
-      passives: Object.entries(CARDRPG.approaches)
-        .filter(([key]) => key !== "any")
-        .map(([key, cfg]) => ({
-          key,
-          label: game.i18n.localize(cfg.label ?? key),
-          icon: cfg.icon,
-          score: passiveScore(actor, key)
-        })),
       deck: deck?.cards?.size ?? 0,
       discard: discard?.cards?.size ?? 0,
       full: cards.length >= CARDRPG.defaults.skillHandSize,
       /* Deck and hand both empty is the improvising case, and it is worth saying out loud. */
       improvising: !cards.length && !(deck?.cards?.size ?? 0)
+    };
+  }
+
+  /**
+   * **What the party notices, which is now its own panel.**  [MOVED 2026-11-15]
+   *
+   * These six numbers used to live at the bottom of the scene section, which meant they were
+   * drawn beside the skill hand in the far corner from the character they describe, and vanished
+   * the moment a fight started. A passive is read while deciding whether to call for anything at
+   * all, so it belongs beside the character panel and not beside the cards.
+   *
+   * Lifted out of `#sceneTray` to a context key of its own so it does not depend on the scene
+   * side being the one on show: the numbers are static (hud-spec 5) and true in both modes.
+   */
+  #passivePanel() {
+    const actor = this.actor;
+    const call = readCall();
+    return {
+    /*
+     * **What the party notices, for the GM only.** Not a secret-roll panel: a passive score is
+     * static by design (hud-spec 5), which is exactly what makes it safe to read in the open.
+     * When a call is live each row is marked against it, because the only rows that need a check
+     * are the ones a card could still carry.
+     */
+    gm: (() => {
+      if (!game.user.isGM) return null;
+      const open = game.settings.get("cardrpg", "passivesOpen");
+      const reading = partyPassives(passiveScore);
+      const best = actorName => {
+        const actor = game.actors.getName(actorName);
+        const hand = actor ? deckOf(actor, "skillHand") : null;
+        const cards = [...(hand?.cards?.contents ?? [])];
+        if (!cards.length) return 0;
+        return Math.max(...cards.map(c => (call && call.approach !== "any"
+          ? (c.system.worth?.(call.approach) ?? 0) : c.system.value) ?? 0));
+      };
+      return {
+        open,
+        fromScene: reading.fromScene,
+        party: reading.party.join(", "),
+        rows: reading.rows.map(row => {
+          /* Marked only against a call that names this approach, or an open one: a Wits call
+           * says nothing about whether anybody could manage the Might obstacle. */
+          const mark = call && (call.approach === "any" || call.approach === row.key)
+            ? readAgainst(row.best, call.dc, best(row.who))
+            : "";
+          /* The tooltip is built here rather than in the template: three branches of prose in a
+           * `data-tooltip` attribute is markup doing arithmetic's job, and the template has one
+           * comparison helper where this needs three. */
+          const said = {
+            over: game.i18n.localize("CARDRPG.Check.PassiveOver"),
+            close: game.i18n.localize("CARDRPG.Check.PassiveClose"),
+            under: game.i18n.localize("CARDRPG.Check.PassiveUnder")
+          }[mark] ?? "";
+          return {
+            ...row,
+            mark,
+            tip: `${row.label} ${row.best} — ${row.who}`
+              + (said ? ` · ${said}` : "")
+          };
+        })
+      };
+    })(),
+    /* The six, always all six: a deck that covers every approach is the composition rule. */
+    mine: Object.entries(CARDRPG.approaches)
+      .filter(([key]) => key !== "any")
+      .map(([key, cfg]) => ({
+        key,
+        label: game.i18n.localize(cfg.label ?? key),
+        icon: cfg.icon,
+        score: passiveScore(actor, key)
+      }))
     };
   }
 
@@ -1238,84 +1554,159 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
    * Fold resolution steps 1-3 into the face: item base, card modifier, features. Steps 4-6 need a
    * target, so they wait until the half is played.
    */
+  /**
+   * **One step, in both registers.**  [2026-11-14]
+   *
+   * Pulled out of `#renderCard` because a monster's intent card is a **sequence of steps** and a
+   * player's card half is a **list of steps**, and they were about to be two renderers for one
+   * vocabulary. The HUD now draws both, so the moment there were two copies a goblin's *Close In*
+   * would have printed its Move differently from an *Advance* in a hand -- the same number, cut by
+   * the same condition, saying so in one place and not the other.
+   *
+   * @returns {{text: string, notes: string[], icons: string[], unmet: string, cut: boolean}}
+   */
+  #stepFace(step, half = "primary") {
+    const icons = [];
+    /* What this step has to say that the face has no room for. */
+    const notes = [];
+    let unmet = "";
+    let cut = false;
+
+    const icon = CARDRPG.verbs[step.verb]?.icon ?? CARDRPG.effects[step.verb]?.icon ?? null;
+    if (icon) icons.push(icon);
+
+    let text = step.verb
+      ? game.i18n.localize(CARDRPG.verbs[step.verb]?.label ?? CARDRPG.effects[step.verb]?.label ?? step.verb)
+      : "";
+
+    if (step.verb === "strike" || step.verb === "cast") {
+      // The face shows the item the player chose, so "Strike 4" is never a guess.
+      const item = this.#itemFor(step.verb, half, step.requires);
+      /*
+       * A kit requirement is printed from the field, never from the card's prose, and the same
+       * call that printed the number decided whether anything meets it -- so the face and the
+       * click cannot disagree about whether this half is playable.
+       */
+      const need = requireText(step.requires);
+      if (need && !item) unmet = need;
+      const base = item?.system.verbs?.[step.verb]?.value;
+      if (base !== null && base !== undefined) {
+        text += ` ${base + (step.mod ?? 0) + collectBonuses(this.actor, step.verb, item).total}`;
+      } else if (step.mod) text += ` ${step.mod > 0 ? "+" : ""}${step.mod}`;
+      /*
+       * **The requirement stays on the face, because it decides legality.** *needs a shield* is
+       * what you compare cards on; *and nothing you are holding is one* is what the tooltip says
+       * once you have noticed.
+       */
+      if (need) text += ` \u00b7 ${need}`;
+      if (item) notes.push(`${item.name} supplies the value.`);
+    } else if (step.param !== null && step.param !== undefined) {
+      /*
+       * Move as it actually plays: halved by Slowed, Burdened or Overloaded, then reduced by
+       * Frozen, floored at 0 (core-rules 7). The face has to show the real number -- a Slowed
+       * Advance that still reads "Move 3" is a lie the player acts on -- and it has to be able to
+       * say what took the squares, which `(was 1)` never could.
+       */
+      const moved = step.verb === "move"
+        ? (this.actor.system.moveAsPlayed?.(step.param) ?? { played: step.param, why: [] })
+        : { played: step.param, why: [] };
+      text += ` ${moved.played}`;
+      if (moved.played !== step.param) {
+        cut = true;
+        notes.push(`The card prints Move ${step.param}. `
+          + `${moved.why.join("; ") || "Something is reducing it"}.`);
+      }
+    }
+    else if (step.mod !== null && step.mod !== undefined) {
+      text += ` ${step.mod > 0 ? "+" : ""}${step.mod}`;
+    }
+
+    if (step.condition) {
+      const label = game.i18n.localize(CARDRPG.conditions[step.condition]?.label ?? step.condition);
+      // A valued condition prints its intensity before its duration: Burning 3 (2).
+      const fierce = CARDRPG.conditions[step.condition]?.valued
+        ? ` ${Math.max(1, step.intensity ?? 1)}` : "";
+      text += `${text ? " " : ""}${label}${fierce} (${Math.max(1, step.duration ?? 1)})`;
+      /*
+       * **The resist clause is a sentence, so it is a tooltip.** It is the longest thing a
+       * condition step can carry and it changes nothing about which card you would rather play:
+       * every condition in the game is resisted the same way, and only the number moves.
+       */
+      if (step.resist) {
+        const approach = CARDRPG.approaches[step.resist];
+        notes.push(`${label} is resisted with a `
+          + `${game.i18n.localize(approach?.label ?? step.resist)} check against `
+          + `${step.dc ?? CARDRPG.difficulties.normal}.`);
+      }
+      const mark = CARDRPG.conditions[step.condition]?.icon;
+      if (mark) icons.push(mark);
+    }
+
+    /*
+     * The combo clause. Printed after the verb and the condition, because that is the order it is
+     * read in: what the step does, then what it does extra against an opening. The numbers and the
+     * keyword stay on the face; the author's wording goes behind it.
+     */
+    if (step.when?.needs) {
+      const w = step.when;
+      const opening = game.i18n.localize(CARDRPG.conditions[w.needs]?.label ?? w.needs);
+      const printed = [];
+      if (w.mod) printed.push(`${w.mod > 0 ? "+" : ""}${w.mod}`);
+      if (w.advantage) printed.push(game.i18n.localize(CARDRPG.effects.advantage?.label ?? "advantage"));
+      const behind = [...printed];
+      if (w.dc) behind.push(`resist ${w.dc}`);
+      if (w.text) behind.push(w.text);
+      if (printed.length) text += `${text ? " " : ""}vs ${opening}: ${printed.join(", ")}`;
+      else if (behind.length) text += `${text ? " " : ""}vs ${opening}`;
+      if (behind.length) notes.push(`Against a ${opening} target: ${behind.join(", ")}.`);
+    }
+
+    /*
+     * **And the author's own sentence, which never belonged on the face.** It was printed inline
+     * in brackets, so *Shield Up* read "Defend (Block applies to every attack until your next
+     * turn)" -- thirteen words on a card with room for three.
+     */
+    if (step.text) notes.push(step.text);
+
+    return { text: text.trim(), notes, icons, unmet, cut };
+  }
+
+  /**
+   * **A half reads in two registers, and only the short one is printed.**  [2026-11-14]
+   *
+   * A card is 150px wide and the face used to take every clause a step could carry: the verb, the
+   * number, the condition, the combo clause, the resist, the kit requirement and whatever prose
+   * the content author wrote in `text`. *Shield Up* came out as "Defend (Block applies to every
+   * attack until your next turn)" wrapped over five lines across its own picture, and *Strike*
+   * printed "Move 0 (was 1)" -- a number with its cause cut off.
+   *
+   * So each step produces two strings. The face says the verb, the number, the condition and its
+   * duration -- the things you choose between at a glance. The tooltip says the rest: the prose,
+   * the resist, the combo clause's wording, and *why* a number on the face is not the number
+   * printed on the card.
+   *
+   * **Prose moves, mechanics stay.** The dividing line is not length: it is whether the clause is
+   * a quantity you compare cards on. A `+2` stays on the face at two characters; a sentence
+   * explaining what the +2 means does not, however short it happens to be.
+   */
   #renderCard(card, blockedIcons, dazed) {
     const half = (name, steps) => {
       const icons = [];
       const bits = [];
+      /* The long register: one sentence per step that has anything more to say. */
+      const detail = [];
       /* Why this half cannot be played, when it cannot: a kit requirement nothing in hand meets. */
       let unmet = "";
+      /* Whether any number on this face differs from the number printed on the card. */
+      let cut = false;
 
       for (const step of steps ?? []) {
-        const icon = CARDRPG.verbs[step.verb]?.icon ?? CARDRPG.effects[step.verb]?.icon ?? null;
-        if (icon) icons.push(icon);
-
-        let text = step.verb
-          ? game.i18n.localize(CARDRPG.verbs[step.verb]?.label ?? CARDRPG.effects[step.verb]?.label ?? step.verb)
-          : "";
-
-        if (step.verb === "strike" || step.verb === "cast") {
-          // The face shows the item the player chose, so "Strike 4" is never a guess.
-          const item = this.#itemFor(step.verb, name, step.requires);
-          /*
-           * A kit requirement is printed from the field, never from the card's prose, and the same
-           * call that printed the number decided whether anything meets it -- so the face and the
-           * click cannot disagree about whether this half is playable.
-           */
-          const need = requireText(step.requires);
-          if (need && !item) unmet = need;
-          const base = item?.system.verbs?.[step.verb]?.value;
-          if (base !== null && base !== undefined) {
-            text += ` ${base + (step.mod ?? 0) + collectBonuses(this.actor, step.verb, item).total}`;
-          } else if (step.mod) text += ` ${step.mod > 0 ? "+" : ""}${step.mod}`;
-          if (need) text += ` · ${need}`;
-        } else if (step.param !== null && step.param !== undefined) {
-          /*
-           * Move as it actually plays: halved by Slowed, Burdened or Overloaded, then reduced by
-           * Frozen, floored at 0 (core-rules 7). The face has to show the real number -- a Slowed
-           * Advance that still reads "Move 3" is a lie the player acts on.
-           */
-          const played = step.verb === "move"
-            ? this.actor.system.movePlayed(step.param)
-            : step.param;
-          text += ` ${played}`;
-          if (played !== step.param) text += `\u00a0(was ${step.param})`;
-        }
-        else if (step.mod !== null && step.mod !== undefined) {
-          text += ` ${step.mod > 0 ? "+" : ""}${step.mod}`;
-        }
-
-        if (step.condition) {
-          const name = game.i18n.localize(CARDRPG.conditions[step.condition]?.label ?? step.condition);
-          // A valued condition prints its intensity before its duration: Burning 3 (2).
-          const fierce = CARDRPG.conditions[step.condition]?.valued
-            ? ` ${Math.max(1, step.intensity ?? 1)}` : "";
-          text += `${text ? " " : ""}${name}${fierce} (${Math.max(1, step.duration ?? 1)})`;
-          if (step.resist) {
-            const approach = CARDRPG.approaches[step.resist];
-            text += ` · resist ${game.i18n.localize(approach?.label ?? step.resist)} `
-              + `${step.dc ?? CARDRPG.difficulties.normal}`;
-          }
-          const icon = CARDRPG.conditions[step.condition]?.icon;
-          if (icon) icons.push(icon);
-        }
-
-        /*
-         * The combo clause. Printed after the verb and the condition, because that is the order it
-         * is read in: what the half does, then what it does extra against an opening.
-         */
-        if (step.when?.needs) {
-          const w = step.when;
-          const opening = game.i18n.localize(CARDRPG.conditions[w.needs]?.label ?? w.needs);
-          const extra = [];
-          if (w.mod) extra.push(`${w.mod > 0 ? "+" : ""}${w.mod}`);
-          if (w.advantage) extra.push(game.i18n.localize(CARDRPG.effects.advantage?.label ?? "advantage"));
-          if (w.dc) extra.push(`resist ${w.dc}`);
-          if (w.text) extra.push(w.text);
-          if (extra.length) text += `${text ? " " : ""}vs ${opening}: ${extra.join(", ")}`;
-        }
-
-        if (step.text) text += ` (${step.text})`;
-        bits.push(text.trim());
+        const face = this.#stepFace(step, name);
+        icons.push(...face.icons);
+        if (face.unmet) unmet = face.unmet;
+        if (face.cut) cut = true;
+        bits.push(face.text);
+        if (face.notes.length) detail.push(`${face.text} \u2014 ${face.notes.join(" ")}`);
       }
 
       // What the half costs is part of the half, printed with it wherever the half is shown.
@@ -1340,20 +1731,37 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         });
       }
 
+      const explains = detail.join(" ");
+      const blocked = icons.some(i => blockedIcons.has(i))
+        || (name === "secondary" && dazed) || !!unmet;
+
       return {
         name,
-        text: bits.join(", ") || "—",
+        text: bits.join(", ") || "\u2014",
+        /*
+         * **A marker, so a tooltip nobody hovers is not the only sign.** A number cut by a
+         * condition has to be noticeable without being explained in place: the glyph says
+         * *something took this*, and the tooltip says what.
+         */
+        cut,
         costs,
         icon: CARDRPG.halfIcons[name],
-        blocked: icons.some(i => blockedIcons.has(i)) || (name === "secondary" && dazed) || !!unmet,
+        blocked,
         /*
          * Why, in words. The sentence used to be fixed in the template, which was fine while a
          * half could only ever be switched off by a Blocked icon; a kit requirement is a second
          * reason, and a player who cannot tell them apart will go looking for the condition.
+         *
+         * A playable half gets its detail here instead, which is the whole of the long register:
+         * the face says what it does, and the tooltip says what that means.
          */
         tip: unmet
           ? `Needs ${unmet} in hand. Ready something that is, or play the other half.`
-          : "Blocked right now. The other half may still be playable, and Brace never is.",
+            + (explains ? ` ${explains}` : "")
+          : blocked
+            ? "Blocked right now. The other half may still be playable, and Brace never is."
+              + (explains ? ` ${explains}` : "")
+            : explains,
         staged: this.staged.some(s => s.cardId === card.id && s.half === name)
       };
     };
@@ -1643,58 +2051,18 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
    * own obstacle. A call is set here, read by every tray, and answered with one card.
    */
   static async #onCallCheck() {
-    if (!game.user.isGM) return ui.notifications.info(game.i18n.localize("CARDRPG.Check.GMCalls"));
-    if (!game.scenes?.active) {
-      return ui.notifications.warn(game.i18n.localize("CARDRPG.Check.NoScene"));
-    }
-    const current = readCall();
-    const difficulties = Object.entries(CARDRPG.difficulties)
-      .map(([name, dc]) => `<option value="${dc}"${current?.dc === dc ? " selected" : ""}>`
-        + `${name} (${dc})</option>`).join("");
-    const approaches = [`<option value="any">`
-      + `${game.i18n.localize("CARDRPG.Check.AnyApproach")}</option>`,
-    ...Object.entries(CARDRPG.approaches).filter(([key]) => key !== "any")
-      .map(([key, cfg]) => `<option value="${key}"`
-        + `${current?.approach === key ? " selected" : ""}>`
-        + `${game.i18n.localize(cfg.label ?? key)}</option>`)].join("");
-
-    const answer = await foundry.applications.api.DialogV2.prompt({
-      window: { title: game.i18n.localize("CARDRPG.Check.CallTitle") },
-      content: `<div class="cardrpg cr-check">
-        <p class="cr-note">${game.i18n.localize("CARDRPG.Check.CallBody")}</p>
-        <label>${game.i18n.localize("CARDRPG.Check.Difficulty")}
-          <select name="dc">${difficulties}</select></label>
-        <label>${game.i18n.localize("CARDRPG.Check.Approach")}
-          <select name="approach">${approaches}</select></label>
-        <label>${game.i18n.localize("CARDRPG.Check.Edge")} <select name="mode">
-          <option value="0">${game.i18n.localize("CARDRPG.Check.Even")}</option>
-          <option value="1">${game.i18n.localize("CARDRPG.Check.Advantage")}</option>
-          <option value="-1">${game.i18n.localize("CARDRPG.Check.Disadvantage")}</option>
-        </select></label>
-        <label>${game.i18n.localize("CARDRPG.Check.Note")}
-          <input type="text" name="note" value="${foundry.utils.escapeHTML(current?.note ?? "")}"></label>
-      </div>`,
-      ok: {
-        label: game.i18n.localize("CARDRPG.Check.CallConfirm"),
-        callback: (ev, button) => ({
-          dc: Number(button.form.elements.dc.value),
-          approach: button.form.elements.approach.value,
-          mode: Number(button.form.elements.mode.value),
-          note: button.form.elements.note.value
-        })
-      },
-      rejectClose: false
-    });
-    if (!answer) return;
-
-    const call = await setCall(answer);
-    /* A chat line as well as the banner: the banner is the state of the table and the message is
-     * its history, which is what a log is for. */
-    await ChatMessage.create({
-      content: `<div class="cardrpg"><p><strong>${describeCall(call)}</strong>`
-        + `${answer.note ? ` &mdash; ${foundry.utils.escapeHTML(answer.note)}` : ""}</p></div>`
-    });
-    for (const tray of CardRPGTray.openTrays) tray.render();
+    /*
+     * **One dialog, reached from two places.**  [2026-11-15] This used to build a call dialog of
+     * its own, which was fine while it was the only one. The board on the token HUD then grew a
+     * better version of the same thing -- it names a cast, it offers a challenge, and it takes
+     * any difficulty rather than the four rungs -- and two dialogs that both set one scene flag
+     * is the kind of divergence that gets found months later as "the other one does not do that".
+     *
+     * So the scene panel's button opens the board. The entry point stays, because a GM with no
+     * token selected still needs one; the sixty lines of duplicate form do not.
+     */
+    const { openTableBoard } = await import("./table.mjs");
+    await openTableBoard();
   }
 
   /**
@@ -1789,7 +2157,33 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
    */
   static async #onTwist(event, target) {
     if (!game.user.isGM) return;
-    await drawTwist({ two: target.dataset.two === "yes" });
+    /*
+     * **Which debt this pays.** The row is identified by its place in the queue rather than by a
+     * list of actor ids in the markup: the queue is rebuilt on every render from the ledger, so a
+     * row that was drawn for between the click and the handler is simply not there any more, and
+     * an index that no longer exists pays nothing instead of paying the wrong person.
+     */
+    const row = twistQueue()[Number(target.dataset.pay)] ?? null;
+    await drawTwist({
+      two: target.dataset.two === "yes",
+      pay: row?.ids ?? null,
+      label: row ? `${row.label}${row.shared ? " (shared)" : ""}` : ""
+    });
+    for (const tray of CardRPGTray.openTrays) tray.render();
+  }
+
+  /**
+   * No card for this one.
+   *
+   * skill-rules 4 says the GM can always choose a cost directly and that a twist which makes no
+   * sense goes back, so the queue needs a way to say *I have handled this* that is not a draw.
+   * Without it a debt the GM narrated their own way would sit in the panel until the call was
+   * withdrawn, and a list of reminders that cannot be ticked off stops being read.
+   */
+  static async #onForgiveTwist(event, target) {
+    if (!game.user.isGM) return;
+    const row = twistQueue()[Number(target.dataset.pay)] ?? null;
+    if (row?.ids?.length) await forgiveDebts(row.ids);
     for (const tray of CardRPGTray.openTrays) tray.render();
   }
 
@@ -1811,6 +2205,173 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     if (!game.user.isGM) return;
     await clearCall();
     for (const tray of CardRPGTray.openTrays) tray.render();
+  }
+
+  /**
+   * **The claim, as a control: three states and a reason.**  [BUILT 2026-11-14]
+   *
+   * The rules have always said a good plan or a fitting background grants advantage (skill-rules
+   * 2), and the know-how system is deliberately a loose bag of tags you argue from rather than a
+   * list you look up (skill-rules 7). Neither had anywhere to happen: `advantageFor` proved six
+   * things from the canvas and the conditions, and there was no third way in.
+   *
+   * Three buttons rather than a checkbox, because **disadvantage is as claimable as advantage**
+   * and a tick box can only say one of them. Normal is the middle state and clears the claim --
+   * see `setEdge`: *normal* is the absence of a claim, not a third kind of one.
+   *
+   * The reason is **offered, never required**. A player who has already said it out loud should
+   * not have to type it, and the tags below are a prompt rather than a validation: nothing checks
+   * that the chosen tag has anything to do with the action, because nothing could. The table does
+   * that, which is why the claim and its reason are printed with the result.
+   */
+  #edge() {
+    const claim = readEdge(this.actor);
+    const mode = claim?.mode ?? 0;
+    /* Only somebody who could act for this character may speak for them. A player sees their own
+     * HUD and a GM sees whoever is selected, so this is the one test both cases need. */
+    const mine = this.actor.isOwner;
+    return {
+      mode,
+      mine,
+      reason: claim?.reason ?? "",
+      by: claim?.by ?? "",
+      line: edgeLine(claim),
+      /*
+       * **Named, not drawn.**  [2026-11-14] The three states were a minus, a dot and a plus,
+       * which is compact and says nothing: a glyph has to be learned before it can be read, and
+       * the one thing this control must not need is a player who already knows what it does.
+       *
+       * The word IS the label and the tooltip carries everything else, so the panel never
+       * explains itself in place -- which is also why the "normal draw" caption beside it is
+       * gone. It was a description of the state the buttons were already showing.
+       */
+      states: [
+        {
+          mode: -1, label: game.i18n.localize("CARDRPG.Edge.Disadvantage"), on: mode < 0,
+          tip: "Draw two fate cards and take the worse. The GM hands this out, and a player can "
+            + "take it on themselves for a reckless plan."
+        },
+        {
+          mode: 0, label: game.i18n.localize("CARDRPG.Edge.Normal"), on: mode === 0,
+          tip: "One fate card. Clears whatever was claimed."
+        },
+        {
+          mode: 1, label: game.i18n.localize("CARDRPG.Edge.Advantage"), on: mode > 0,
+          tip: "Draw two fate cards and take the better. Claim it for a good plan, the ground "
+            + "you are on, or a training that fits — then say which."
+        }
+      ],
+      tags: this.#edgeTags()
+    };
+  }
+
+  /**
+   * **The bag you argue from**, gathered from wherever the character keeps it.
+   *
+   * Everything here is a **tag**: a short phrase the character demonstrably has, with no rule
+   * attached and no number behind it. That is the whole design of know-how in this game, and it is
+   * why this list is assembled rather than configured -- a background, a node's training, a thing
+   * you are carrying and a feature you own are four different fields and one kind of argument.
+   *
+   * A monster's half of the same list is its tactics and its type, which is what a GM would cite
+   * for the same reason: *it fights in packs*, *it is a goblin and this is its tunnel*.
+   */
+  #edgeTags() {
+    const system = this.actor.system;
+    const out = [];
+    const add = (group, text) => {
+      const label = String(text ?? "").trim();
+      if (label) out.push({ group, label });
+    };
+
+    if (system.background) add("Background", system.background);
+    for (const t of system.learned?.trainings ?? []) add("Trained", t);
+    for (const k of system.learned?.knowHow ?? []) add("Know-how", k);
+    for (const l of system.learned?.languages ?? []) add("Speaks", l);
+
+    for (const slate of this.actor.items) {
+      if (slate.type === "feature" && !slate.system.drained) add("Feature", slate.name);
+      if (slate.type !== "item" || !slate.system.equipped) continue;
+      for (const tag of slate.system.tags ?? []) add(slate.name, tag);
+    }
+
+    /* The monster's side: what it is, and how it is known to fight. */
+    if (system.kind) add("Type", system.kind);
+    /* `CARDRPG.tactics` maps a key straight to a label key, not to a config object -- the same
+     * shape the NPC sheet reads it in. Asking it for a `.label` would have quietly printed the
+     * raw key for every tactic in the game. */
+    for (const key of system.tactics ?? []) {
+      add("Tactic", game.i18n.localize(CARDRPG.tactics[key] ?? key));
+    }
+
+    /* De-duplicated on the whole phrase, because a training and a know-how can be the same words
+     * arriving from two directions and a list that offers both says nothing twice. */
+    const seen = new Set();
+    return out.filter(tag => {
+      const key = `${tag.group}:${tag.label}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
+
+  /**
+   * Set the claim, keeping whatever reason was already given.
+   *
+   * Clicking a state is the fast gesture and must not open anything: a player who has already said
+   * why out loud should be one click from the draw they argued for.
+   */
+  static async #onSetEdge(event, target) {
+    if (!this.actor.isOwner) return;
+    const want = Number(target.dataset.mode) || 0;
+    const claim = readEdge(this.actor);
+    await setEdge(this.actor, want, want && claim?.mode === want ? claim.reason : (claim?.reason ?? ""));
+    this.render();
+  }
+
+  /**
+   * **And the reason, asked separately.**
+   *
+   * A select of the character's own tags and a free field beside it, because the bag is a prompt
+   * and not a closed list: the most common good reason at a table is the shape of the room, which
+   * is on nobody's sheet.
+   */
+  static async #onSayWhy() {
+    if (!this.actor.isOwner) return;
+    const claim = readEdge(this.actor);
+    if (!claim) {
+      return ui.notifications.info("Claim advantage or disadvantage first, then say why.");
+    }
+    const tags = this.#edgeTags();
+    const esc = foundry.utils.escapeHTML;
+    const what = claim.mode > 0 ? "advantage" : "disadvantage";
+
+    const got = await foundry.applications.api.DialogV2.prompt({
+      window: { title: `Why ${what}?` },
+      content: `<div class="cardrpg cr-check">`
+        + `<p class="cr-note">Nothing checks this. It is printed with the result so the table `
+        + `can argue with it.</p>`
+        + (tags.length
+          ? `<label>Something you have <select name="tag">`
+            + `<option value="">\u2014</option>`
+            + tags.map(t => `<option value="${esc(`${t.group}: ${t.label}`)}">`
+              + `${esc(t.group)}: ${esc(t.label)}</option>`).join("")
+            + `</select></label>`
+          : "")
+        + `<label>Or say it <input type="text" name="said" value="${esc(claim.reason)}" `
+        + `placeholder="high ground, and they have not seen me"></label></div>`,
+      ok: {
+        label: "Claim it",
+        callback: (ev, button) => {
+          const f = button.form.elements;
+          return (f.said?.value || "").trim() || (f.tag?.value || "");
+        }
+      },
+      rejectClose: false
+    });
+    if (got === null || got === undefined) return;
+    await setEdge(this.actor, claim.mode, got);
+    this.render();
   }
 
   /**
@@ -1852,10 +2413,31 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     const pushable = [...hand.cards.contents]
       .filter(c => c.id !== card.id
         && (approach ? c.system.serves(approach) : c.system.value > 0));
+    /*
+     * **Ordered by what is likeliest, selected by nobody.**  [2026-11-15] The best tool for the
+     * approach leads the list so the common case is one click away, and the list opens on *no
+     * tool* -- see `bestTool`. A rope that is `Might +2 (climbing)` must not arrive already
+     * added to the check for shoving a stuck door.
+     */
     const tool = approach ? bestTool(this.actor, approach) : null;
     const tools = this.actor.items.filter(i => i.type === "item" && i.system.equipped
-      && i.system.bonus?.approach);
+      && i.system.bonus?.approach)
+      .sort((a, b) => (b.id === tool?.id) - (a.id === tool?.id)
+        || (b.system.bonus.approach === approach) - (a.system.bonus.approach === approach)
+        || a.name.localeCompare(b.name));
     const helpers = helpOptions(this.actor);
+
+    /*
+     * **What the character has been taught, and what this card says it can do.**
+     * [BUILT 2026-11-15]
+     *
+     * Both are claims the GM rules on out loud, so both are offered and neither is checked
+     * against the obstacle: the engine knows a character holds *lockpicks* and cannot know
+     * whether the thing in front of them is a lock. Only trainings they actually hold are listed,
+     * which is the half that IS the engine's to know.
+     */
+    const trainings = this.actor.system.learned?.trainings ?? [];
+    const edge = card.system.edge ?? "";
 
     /* What is still a decision. An empty list means the click was the whole check. */
     const asks = [
@@ -1863,13 +2445,32 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       tools.length ? "tool" : null,
       pushable.length ? "push" : null,
       helpers ? "help" : null,
+      /* A floor can only lift a 1, so a 2 or a 3 is not asked a question with one answer. */
+      trainings.length && card.system.value < SKILL_FLOOR ? "training" : null,
       !call ? "dc" : null
     ].filter(Boolean);
+    /*
+     * **The edge is NOT on that list, and it was for an hour.**  [FIXED 2026-11-15]
+     *
+     * Every skill card carries an edge now, so an `edge ? "edge" : null` entry meant the list
+     * was never empty and **the dialog opened on every check in the game** -- which is the one
+     * thing the paragraph above this method promises it will not do: *when none of those applies
+     * the check resolves on the click, which is the common case at a table.* A feature that costs
+     * every other check a modal is not worth having.
+     *
+     * So the box rides along when the dialog is open for a real decision, and never summons one.
+     * The clause reaches the GM either way, because the note under the result prints it whether
+     * or not the box was ticked -- which is the honest arrangement for a rider: *The Loud Voice*
+     * says everyone knows it was you, and that is a price rather than an option, so the sentence
+     * has to be in front of the table even on a check nobody paused over.
+     */
 
     let answer = {
       approach, dc: call?.dc ?? CARDRPG.difficulties.normal, mode: call?.mode ?? 0,
-      tool: tool?.id ?? "", push: "", help: 0
+      tool: "", push: "", help: 0, training: "", useEdge: false
     };
+
+    if (asks.length && edge) asks.push("edge");
 
     if (asks.length) {
       const row = (label, body) => `<label>${label} ${body}</label>`;
@@ -1886,7 +2487,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         asks.includes("tool") ? row(game.i18n.localize("CARDRPG.Check.Tool"),
           `<select name="tool"><option value="">`
           + `${game.i18n.localize("CARDRPG.Check.NoTool")}</option>`
-          + tools.map(i => `<option value="${i.id}"${i.id === tool?.id ? " selected" : ""}>`
+          + tools.map(i => `<option value="${i.id}">`
             + `${foundry.utils.escapeHTML(i.name)} (${i.system.bonus.approach} `
             + `+${i.system.bonus.value ?? 0}${i.system.bonus.situation
               ? `, ${foundry.utils.escapeHTML(i.system.bonus.situation)}` : ""})</option>`).join("")
@@ -1901,7 +2502,19 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
           + `${game.i18n.localize("CARDRPG.Check.NoHelp")}</option>`
           + `<option value="1">+1</option>`
           + `<option value="2">+2 (${game.i18n.localize("CARDRPG.Check.SameApproach")})</option>`
-          + "</select>") : ""
+          + "</select>") : "",
+        asks.includes("training") ? row(game.i18n.localize("CARDRPG.Check.Training"),
+          `<select name="training"><option value="">`
+          + `${game.i18n.localize("CARDRPG.Check.NoTraining")}</option>`
+          + trainings.map(t => `<option value="${foundry.utils.escapeHTML(t)}">`
+            + `${foundry.utils.escapeHTML(t)}</option>`).join("")
+          + `</select> <span class="cr-note">${game.i18n.format("CARDRPG.Check.FloorHint",
+            { floor: SKILL_FLOOR })}</span>`) : "",
+        /* The card's own clause, shown in full: it is the thing being claimed, so hiding it
+         * behind a label would be asking the player to remember what they are asking for. */
+        asks.includes("edge") ? row(game.i18n.localize("CARDRPG.Check.CardEdge"),
+          `<input type="checkbox" name="useEdge"> `
+          + `<span class="cr-note">${foundry.utils.escapeHTML(edge)}</span>`) : ""
       ].filter(Boolean).join("");
 
       const got = await foundry.applications.api.DialogV2.prompt({
@@ -1917,9 +2530,11 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
             return {
               dc: f.dc ? Number(f.dc.value) : (call?.dc ?? CARDRPG.difficulties.normal),
               approach: f.approach ? f.approach.value : approach,
-              tool: f.tool ? f.tool.value : (tool?.id ?? ""),
+              tool: f.tool ? f.tool.value : "",
               push: f.push ? f.push.value : "",
-              help: f.help ? Number(f.help.value) : 0
+              help: f.help ? Number(f.help.value) : 0,
+              training: f.training ? f.training.value : "",
+              useEdge: f.useEdge ? f.useEdge.checked : false
             };
           }
         },
@@ -1937,11 +2552,31 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       card,
       push: pushed,
       help: answer.help,
-      item: answer.tool ? this.actor.items.get(answer.tool) : null
+      item: answer.tool ? this.actor.items.get(answer.tool) : null,
+      training: answer.training,
+      useEdge: answer.useEdge
     });
 
     /* Played cards go to the skill discard, and the push went with them. */
     await discardSkillCards(this.actor, [card.id, ...(pushed ? [pushed.id] : [])]);
+    this.render();
+  }
+
+  /**
+   * **Turn the window over to the other deck.**  [BUILT 2026-11-14]
+   *
+   * It pins rather than nudges: once somebody has said *I want the skill side* the window stays
+   * there until they say otherwise, including across a fight starting. A toggle that un-pinned
+   * itself on the next mode change would lose the click at the exact moment it mattered -- a
+   * check called in the middle of a fight is the whole reason this exists.
+   *
+   * The play area is emptied on the way, because what is staged belongs to the side it was staged
+   * on: an action half sitting in a stack while the window shows a skill hand is a turn nobody
+   * can see they are holding.
+   */
+  static async #onFlipSide() {
+    this.side = this.#sideNow() === "action" ? "skill" : "action";
+    if (this.staged.length) await CardRPGTray.#onClear.call(this);
     this.render();
   }
 
@@ -2895,6 +3530,32 @@ export function registerTrayHooks() {
   Hooks.on("deleteCombat", async () => {
     await CardRPGTray.closeAfterFight();
     refreshAll();
+  });
+
+  /**
+   * **The HUD follows the selection.**  [BUILT 2026-11-14]
+   *
+   * Two things were wrong and they were the same thing. A GM selecting a goblin got nothing --
+   * the window refused NPCs outright -- so there was no way to take a monster's turn anywhere in
+   * the interface. And selecting a *second* character did not switch the HUD either: it kept
+   * drawing whoever it had opened on, which for a GM running four heroes meant three of them were
+   * unreachable. Out of combat it never opened at all, so the skill hand, the passives and the
+   * call banner were only ever visible if a fight happened to be running.
+   *
+   * `openFor` holds both visibility rules (hud-spec 7) and is the only thing that decides: a
+   * player sees their own character, a GM sees whoever they have selected. So this hook asks and
+   * does not second-guess the answer -- a refusal is silent, because selecting a token you cannot
+   * play is an ordinary thing to do and not an error.
+   *
+   * **It opens and never closes.** Deselecting is not a request to put the window away: the tray
+   * is the surface you play from, and one that vanished every time a click landed on empty canvas
+   * would be unusable. What closes it is the fight ending, which `closeAfterFight` already does
+   * for whatever the fight opened -- and a HUD that came up during a fight counts as that, which
+   * is the one thing the flag below decides.
+   */
+  Hooks.on("controlToken", (token, controlled) => {
+    if (!controlled || !token?.actor) return;
+    CardRPGTray.openFor(token.actor, { auto: !!game.combat?.started });
   });
 
   // Every one of these is a TRANSITION. Reloading Foundry mid-combat fires none of them, so the

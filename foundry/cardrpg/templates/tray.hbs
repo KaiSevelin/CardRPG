@@ -30,17 +30,27 @@
     {{/each}}
   </section>
 
-  {{!-- BOTTOM-LEFT CORNER: the action deck --}}
+  {{!-- BOTTOM-LEFT CORNER: the deck this window is playing from — the action deck in a fight,
+        the skill deck in a scene, and whichever one was asked for. A monster's intent is dealt by
+        the round rather than by a click (core-rules 3), so it has nothing here to press. --}}
+  {{#unless isNpc}}
   <section class="cr-hud__decks cr-hud__decks--action">
     <button type="button"
           class="cr-pile cr-pile--action{{#if actionDeck.spent}} cr-pile--spent{{/if}}{{#if actionDeck.art}} cr-pile--faced{{/if}}"
           {{#if actionDeck.art}}style="--cr-art: {{crArt actionDeck.art}}"{{/if}}
-          data-action="dealHand" data-tooltip="{{actionDeck.tip}}">
+          {{#unless onSkill}}data-action="dealHand"{{/unless}} data-tooltip="{{actionDeck.tip}}">
       <span class="cr-pile__count">{{actionDeck.count}}</span>
       <span class="cr-pile__label">{{actionDeck.label}}</span>
       <span class="cr-pile__state">{{actionDeck.state}}</span>
     </button>
+    {{!-- The one control that belongs to neither deck: which of them you are looking at. It sits
+          under the corner because that is the thing it changes. --}}
+    {{#if flip}}
+      <button type="button" class="cr-pile__flip{{#if flip.pinned}} cr-pile__flip--pinned{{/if}}"
+              data-action="flipSide" data-tooltip="{{flip.tip}}">{{flip.label}}</button>
+    {{/if}}
   </section>
+  {{/unless}}
 
   {{!--
     The play area, over the canvas above the hand: two stacks of overlapping cards, primary on the
@@ -54,8 +64,79 @@
       of these is drawn from by hand. It also keeps the column short enough that Foundry's own
       toasts have somewhere to land.
     --}}
+    {{#if passives}}
+      {{!-- Above the character panel and sharing its right edge: the six numbers that
+            say what this party notices without drawing anything. Static by design, so
+            they sit beside the vitals rather than among the cards. --}}
+      <div class="cr-hud__passives">
+      {{#if passives.gm}}
+        {{!--
+          What the party notices, for the GM. Collapsed to one line by default, because the question
+          is usually only "does anyone notice" and the answer is the best score and a name. Folded
+          open it says who else could be asked.
+
+          Not a secret-roll panel, and deliberately not: a passive score is static (hud-spec 5),
+          which is what makes it safe to read in the open. Uncertainty is what a check is for.
+        --}}
+        <div class="cr-passives{{#if passives.gm.open}} cr-passives--open{{/if}}">
+          <button type="button" data-action="togglePassives" class="cr-passives__fold"
+                  aria-expanded="{{#if passives.gm.open}}true{{else}}false{{/if}}"
+                  data-tooltip="What the party notices without drawing anything. The best card of that approach in the whole deck, plus 2 — it counts the discard and never changes during play.">
+            {{#if passives.gm.open}}&minus;{{else}}+{{/if}} Passives
+          </button>
+          <div class="cr-passives__row">
+            {{#each passives.gm.rows}}
+              <span class="cr-passive cr-passive--gm{{#if this.mark}} cr-passive--{{this.mark}}{{/if}}"
+                    data-tooltip="{{this.tip}}">
+                {{crIcon this.icon}}<span class="cr-passive__n">{{this.best}}</span>
+              </span>
+            {{/each}}
+          </div>
+          {{#if passives.gm.open}}
+            <table class="cr-passives__grid">
+              {{#each passives.gm.rows}}
+                <tr>
+                  <th>{{crIcon this.icon}} {{this.label}}</th>
+                  {{#each this.all}}
+                    <td>{{this.name}} <strong>{{this.score}}</strong></td>
+                  {{/each}}
+                </tr>
+              {{/each}}
+            </table>
+            <p class="cr-note">
+              {{#if passives.gm.fromScene}}Tokens on this scene{{else}}Every character, since this scene has no tokens{{/if}}:
+              {{passives.gm.party}}
+            </p>
+          {{/if}}
+        </div>
+      {{/if}}
+
+      <div class="cr-passives__mine">
+        {{#each passives.mine}}
+          {{!-- Static: the best card of this approach in the WHOLE deck plus 2, counting the
+                discard. It does not move during play, so it is a constant and not a live stat. --}}
+          <span class="cr-passive" data-tooltip="{{this.label}} passive: the best {{this.label}} card in your whole deck, plus 2. It does not change during play.">
+            {{crIcon this.icon}}<span class="cr-passive__n">{{this.score}}</span>
+          </span>
+        {{/each}}
+      </div>
+      </div>
+    {{/if}}
+
     <div class="cr-options">
-      <div class="cr-options__name">{{actor.name}}</div>
+      {{!--
+        The face, beside the name. Every other picture in this system is a card's: this is the one
+        panel that is about a person rather than about a thing they can play, and with the HUD now
+        following whoever is selected it is also the fastest answer to "whose turn am I looking
+        at" -- a name read at the corner of the eye is slower than a face.
+      --}}
+      <div class="cr-options__who">
+        {{#if portrait}}
+          <img class="cr-options__face" src="{{portrait}}" alt="" data-tooltip="{{actor.name}}">
+        {{/if}}
+        <div class="cr-options__name">{{actor.name}}{{#if isNpc}}
+          <span class="cr-options__kind">{{npcKind}}</span>{{/if}}</div>
+      </div>
       <div class="cr-options__vitals">
         <span data-tooltip="Health">&#9829; {{system.health.value}}/{{system.health.max}}</span>
         <span data-tooltip="Block: subtracted from incoming damage, after armor. From a Defend. {{#if system.blockPersists}}Played as a primary, so it holds against every attack until your next turn.{{else}}Gone after the next attack, unless it came from a Defend primary.{{/if}}">&#9094; {{system.block}}{{#if system.blockPersists}}&infin;{{/if}}</span>
@@ -94,6 +175,38 @@
       </button>
       {{/if}}
       {{#if encumbered}}<div class="cr-tray__flag">{{encumbered}}</div>{{/if}}
+
+      {{!--
+        The claim (skill-rules 2 and 7): a good plan, the ground you are standing on, or a training
+        that fits. The engine cannot prove any of it, so the control does not try -- it records who
+        said what, and the chat card prints it beside the result for the table to argue with.
+
+        Three states, because disadvantage is as claimable as advantage and a tick box can only say
+        one of them. The middle one clears the claim rather than storing a third kind.
+      --}}
+      {{#if edge.mine}}
+      <div class="cr-edge{{#if edge.mode}} cr-edge--claimed{{/if}}">
+        <span class="cr-edge__states">
+          {{#each edge.states}}
+            <button type="button" class="cr-edge__state{{#if this.on}} cr-edge__state--on{{/if}}"
+                    data-action="setEdge" data-mode="{{this.mode}}"
+                    data-tooltip="{{this.tip}}">{{this.label}}</button>
+          {{/each}}
+        </span>
+        {{!-- The reason, and only once something is claimed. With nothing claimed there is
+              nothing to explain, and the state the buttons are showing is not a description the
+              panel needs to repeat back. --}}
+        {{#if edge.mode}}
+          <button type="button" class="cr-edge__why" data-action="sayWhy"
+                  data-tooltip="Say what you are claiming it for. Nothing checks it; it is printed with the result.">
+            {{#if edge.reason}}{{edge.reason}}{{else}}say why&hellip;{{/if}}
+          </button>
+        {{/if}}
+      </div>
+      {{else if edge.mode}}
+        {{!-- Somebody else's claim, read-only: you can see it was made and by whom. --}}
+        <div class="cr-tray__flag" data-tooltip="{{edge.line}}">{{edge.line}}</div>
+      {{/if}}
       {{#if staged}}
       <div class="cr-options__staged">
       {{#each staged}}<span class="cr-chip cr-chip--staged">{{this.order}}. {{this.name}}</span>{{/each}}
@@ -103,11 +216,15 @@
       <div class="cr-note" data-tooltip="Fate is drawn once per action, not per target">&#9678; {{targets}}</div>
       {{/if}}
       <div class="cr-options__buttons">
+        {{!-- Clear and Breath are a character's: a monster stages nothing and has no stamina to
+              buy back (core-rules 9). End turn is everyone's. --}}
+        {{#unless isNpc}}
         {{!-- Play lives under the stacks it resolves. This is the undo for a mis-clicked half. --}}
         <button type="button" data-action="clear" {{#unless canClear}}disabled{{/unless}}
                 data-tooltip="Empty the play area: action cards back to hand, items and features back to their decks.">Clear</button>
         <button type="button" data-action="breathe" {{#unless canBreathe}}disabled{{/unless}}
                 data-tooltip="{{#if canBreathe}}Your whole turn, playing nothing, for {{breathRecovery}} stamina back — never above your maximum.{{else}}Nothing to buy back: you are at full stamina, or a Compulsion has taken the option.{{/if}}">Breath</button>
+        {{/unless}}
         {{#if inCombat}}
           <button type="button" data-action="endTurn"
                   data-tooltip="{{#if myTurn}}Your turn{{else}}{{turnOwner}}'s turn{{/if}}">End turn</button>
@@ -115,6 +232,9 @@
       </div>
     </div>
 
+    {{!-- A monster stages nothing: its turn is one intent card's sequence, in order (core-rules
+          3 and 9). The two stacks and the Play that resolves them are a character's. --}}
+    {{#unless isNpc}}
     <div class="cr-play__stacks">
     {{#each playArea}}
       <div class="cr-stack" data-half="{{this.half}}">
@@ -205,6 +325,66 @@
           data-tooltip="{{#if canPlay}}Resolve both stacks, in the order you staged them.{{else}}{{playHint}}{{/if}}">
       Play
     </button>
+    {{/unless}}
+
+    {{!--
+      The monster's turn, in the same column the stacks would be in: its intent card with the
+      sequence numbered as it resolves, and its weapons under it.
+
+      Nothing is staged. A sequence is ordered and a monster has no second half to weigh it
+      against, so a row resolves on the click -- and the weapons are there because an intent that
+      does not fit the moment is a thing the GM overrules rather than obeys.
+    --}}
+    {{#if npc}}
+      <div class="cr-npc">
+        {{#if npc.halted}}
+          <p class="cr-note">Its whole turn is gone. Nothing here will resolve.</p>
+        {{/if}}
+
+        {{#if npc.card}}
+          <div class="cr-card cr-card--intent" {{#if npc.card.art}}style="--cr-art: {{crArt npc.card.art}}"{{/if}}>
+            <div class="cr-card__name"{{#if npc.card.text}} data-tooltip="{{npc.card.text}}"{{/if}}>
+              {{npc.card.name}}
+              {{#unless npc.card.revealed}}
+                <span class="cr-card__hidden" data-tooltip="Face down to the players. It flips by itself the moment the first of this type acts.">hidden</span>
+              {{/unless}}
+            </div>
+            {{#each npc.card.steps}}
+              <div class="cr-half cr-half--primary{{#if this.blocked}} cr-half--blocked{{/if}}">
+                <span class="cr-half__marker">{{#if this.icon}}{{crIcon this.icon}}{{else}}{{this.index}}{{/if}}</span>
+                {{#if this.blocked}}
+                  <span data-tooltip="{{this.tip}}">{{this.text}}</span>
+                {{else}}
+                  <button type="button" class="cr-half__play" data-action="playStep"
+                          data-index="{{this.index}}"
+                          data-tooltip="{{#if this.tip}}{{this.tip}} {{/if}}Resolve just this step.">{{this.text}}</button>
+                {{/if}}
+                {{#if this.cut}}<span class="cr-half__cut" data-tooltip="{{this.tip}}">&#9662;</span>{{/if}}
+              </div>
+            {{/each}}
+          </div>
+          <button type="button" class="cr-play" data-action="playIntent" {{#if npc.halted}}disabled{{/if}}
+                  data-tooltip="Resolve the whole sequence, in the printed order. Target a token first.">
+            Play intent
+          </button>
+        {{else}}
+          <p class="cr-note">No intent drawn. One is dealt per type at the start of a round.</p>
+        {{/if}}
+
+        {{#if npc.strikes}}
+          <div class="cr-npc__strikes" data-group-label="Strike with">
+            {{#each npc.strikes}}
+              <button type="button" class="cr-npc__strike" data-action="npcStrike"
+                      data-slate-id="{{this.id}}" data-tooltip="{{this.tip}}">
+                {{this.name}} <strong>{{this.value}}</strong>{{#if this.range}} &middot; range {{this.range}}{{/if}}
+              </button>
+            {{/each}}
+          </div>
+        {{else}}
+          <p class="cr-note">Nothing equipped can strike. Give it a weapon from the Items deck.</p>
+        {{/if}}
+      </div>
+    {{/if}}
   </section>
 
   {{!-- The dealt hand: cards laid on the scene, not inside a tray --}}
@@ -222,12 +402,21 @@
             {{#each card.halves as |half|}}
               <div class="cr-half cr-half--{{half.name}}{{#if half.blocked}} cr-half--blocked{{/if}}{{#if half.staged}} cr-half--staged{{/if}}">
                 <span class="cr-half__marker">{{crIcon half.icon}}</span>
+                {{!-- The face carries the short register; the tooltip carries the long one. A
+                      playable half gets one now too: prose, resist clauses and the reason a
+                      number differs from the printed one all moved off the card and have to be
+                      reachable from it (hud-spec 3.1). --}}
                 {{#if half.blocked}}
                   <span data-tooltip="{{half.tip}}">{{half.text}}</span>
                 {{else}}
                   <button type="button" class="cr-half__play"
+                          {{#if half.tip}}data-tooltip="{{half.tip}}"{{/if}}
                           data-action="stage" data-card-id="{{card.id}}" data-half="{{half.name}}">{{half.text}}</button>
                 {{/if}}
+                {{!-- A value a condition has cut. The glyph says something took it; the tooltip
+                      above says what. Without it the only sign is a number you would have to know
+                      the card to doubt. --}}
+                {{#if half.cut}}<span class="cr-half__cut" data-tooltip="{{half.tip}}">&#9662;</span>{{/if}}
                 {{#each half.costs}}
                   {{!-- What the half costs, printed with the half it belongs to. --}}
                   <span class="cr-cost" data-tooltip="{{this.tip}}">
@@ -314,58 +503,6 @@
         </div>
       {{/if}}
 
-      {{#if scene.passives_gm}}
-        {{!--
-          What the party notices, for the GM. Collapsed to one line by default, because the question
-          is usually only "does anyone notice" and the answer is the best score and a name. Folded
-          open it says who else could be asked.
-
-          Not a secret-roll panel, and deliberately not: a passive score is static (hud-spec 5),
-          which is what makes it safe to read in the open. Uncertainty is what a check is for.
-        --}}
-        <div class="cr-passives{{#if scene.passives_gm.open}} cr-passives--open{{/if}}">
-          <button type="button" data-action="togglePassives" class="cr-passives__fold"
-                  aria-expanded="{{#if scene.passives_gm.open}}true{{else}}false{{/if}}"
-                  data-tooltip="What the party notices without drawing anything. The best card of that approach in the whole deck, plus 2 — it counts the discard and never changes during play.">
-            {{#if scene.passives_gm.open}}&minus;{{else}}+{{/if}} Passives
-          </button>
-          <div class="cr-passives__row">
-            {{#each scene.passives_gm.rows}}
-              <span class="cr-passive cr-passive--gm{{#if this.mark}} cr-passive--{{this.mark}}{{/if}}"
-                    data-tooltip="{{this.tip}}">
-                {{crIcon this.icon}}<span class="cr-passive__n">{{this.best}}</span>
-              </span>
-            {{/each}}
-          </div>
-          {{#if scene.passives_gm.open}}
-            <table class="cr-passives__grid">
-              {{#each scene.passives_gm.rows}}
-                <tr>
-                  <th>{{crIcon this.icon}} {{this.label}}</th>
-                  {{#each this.all}}
-                    <td>{{this.name}} <strong>{{this.score}}</strong></td>
-                  {{/each}}
-                </tr>
-              {{/each}}
-            </table>
-            <p class="cr-note">
-              {{#if scene.passives_gm.fromScene}}Tokens on this scene{{else}}Every character, since this scene has no tokens{{/if}}:
-              {{scene.passives_gm.party}}
-            </p>
-          {{/if}}
-        </div>
-      {{/if}}
-
-      <div class="cr-scene__passives">
-        {{#each scene.passives}}
-          {{!-- Static: the best card of this approach in the WHOLE deck plus 2, counting the
-                discard. It does not move during play, so it is a constant and not a live stat. --}}
-          <span class="cr-passive" data-tooltip="{{this.label}} passive: the best {{this.label}} card in your whole deck, plus 2. It does not change during play.">
-            {{crIcon this.icon}}<span class="cr-passive__n">{{this.score}}</span>
-          </span>
-        {{/each}}
-      </div>
-
       <div class="cr-scene__hand">
         {{#each scene.cards}}
           {{!-- A card whose approach cannot fit the call is dimmed in place, never hidden: the
@@ -402,17 +539,25 @@
             <button type="button" data-action="startChallenge"
                     data-tooltip="Begin a challenge: a Progress track to fill and a Pressure track to stay under.">Challenge</button>
           {{/unless}}
-          {{!-- Only when a cost is actually due. `TRACK_MOVES` owes a twist on a Partial and a
-                Fail and on nothing else, so these two controls used to sit in the scene area
-                through every scene that never drew one. Still drawn by hand and never by a
-                result: skill-rules 4 says the GM can always choose a cost directly, and that a
-                twist which makes no sense goes back. --}}
-          {{#if scene.twists.needed}}
-            <button type="button" data-action="twist"
-                    data-tooltip="A {{scene.twists.kind}} twist is owed. Draw one — {{scene.twists.deck}} left in the deck. Or choose a cost yourself and ignore this.">{{scene.twists.label}}</button>
-            <button type="button" data-action="twist" data-two="yes"
-                    data-tooltip="Draw two and pick one — for a dramatic failure, or when the first card does not fit the scene.">{{scene.twists.label}} ×2</button>
-          {{/if}}
+          {{!-- Only when a cost is actually due, and named. `TRACK_MOVES` owes a twist on a
+                Partial and a Fail and on nothing else, so these controls used to sit in the
+                scene area through every scene that never drew one.
+
+                One row per debt, at most two: the worst result draws its own and everybody else
+                shares one, because five twists for five failures is the deck narrating the scene
+                instead of the GM. Still drawn by hand and never by a result: skill-rules 4 says
+                the GM can always choose a cost directly, and the dismiss is how they say so. --}}
+          {{#each scene.twists.queue}}
+            <span class="cr-owed">
+              <span class="cr-owed__who">{{this.label}}</span>
+              <button type="button" data-action="twist" data-pay="{{@index}}"
+                      data-tooltip="Draw a {{../scene.twists.kind}} twist for {{this.label}} — {{../scene.twists.deck}} left in the deck.">{{../scene.twists.label}}</button>
+              <button type="button" data-action="twist" data-pay="{{@index}}" data-two="yes"
+                      data-tooltip="Draw two and pick one — for a dramatic failure, or when the first card does not fit the scene.">×2</button>
+              <button type="button" data-action="forgiveTwist" data-pay="{{@index}}"
+                      data-tooltip="No card: choose the cost yourself, or let this one go. skill-rules 4 leaves it to you.">&times;</button>
+            </span>
+          {{/each}}
           {{#if scene.call}}
             <button type="button" data-action="callCheck"
                     data-tooltip="Change the call: a difficulty set wrongly is corrected here, not argued about.">Re-call</button>

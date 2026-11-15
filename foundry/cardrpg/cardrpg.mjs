@@ -9,6 +9,7 @@ import { CARDRPG } from "./module/config.mjs";
 import { registerSheets } from "./module/sheets.mjs";
 import {
   createStarterContent, ensureSetupMacro, buildMonster, rebuildWorldContent,
+  buildCharacterDecks,
   rebuildContentMenu
 } from "./module/setup.mjs";
 /* A transformation is ended by somebody, because nothing here owns a timer that survives a
@@ -17,6 +18,7 @@ import { endTransformation, payToPrepare } from "./module/resolve.mjs";
 import { CardRPGCombat, registerCombatHooks } from "./module/combat.mjs";
 import { CardRPGTray, registerTrayHooks } from "./module/tray.mjs";
 import { registerCheckHooks } from "./module/checks.mjs";
+import { registerTableBoard } from "./module/table.mjs";
 import { registerEnrichers, registerEnricherClicks } from "./module/enrichers.mjs";
 import { LevelUpPane } from "./module/levelup.mjs";
 import * as decks from "./module/decks.mjs";
@@ -88,6 +90,8 @@ Hooks.once("init", () => {
   /* A check's result moves a challenge track, and only the GM's client may write a scene
    * flag -- so the recording hangs off the message rather than off the roll (checks.mjs). */
   registerCheckHooks();
+  /* The GM's own controls, on the token rather than inside a player's window. */
+  registerTableBoard();
   /* Enrichment happens the first time anything renders a journal page, so the patterns must be
    * registered at init; the delegated click listener can wait for a document to exist. */
   registerEnrichers();
@@ -372,6 +376,33 @@ Hooks.once("ready", async () => {
    * again. `updateItem` is given that object for exactly this, and the load watcher below is the
    * precedent for reading it.
    */
+  /*
+   * **A new character gets the ten stacks it plays out of.**  [BUILT 2026-11-14]
+   *
+   * The schema has had the slots since it was written and nothing but `createStarterContent`
+   * ever filled them, and that fills them for one named actor. So every character made the
+   * ordinary way -- the sidebar's Create Actor -- arrived with no skill deck, no fate deck and
+   * nowhere for a granted card to go. See `buildCharacterDecks` for what each of those costs at
+   * the table; the short version is that a menu node spent a level and handed over nothing.
+   *
+   * On `createActor` rather than on a button, because the question *does this character have a
+   * skill deck* has exactly one right answer and nobody should have to ask it.
+   *
+   * **`activeGM` and not `isGM`**, which is the difference between one set of stacks and one
+   * per connected GM: the builder is idempotent per SLOT, so two GMs racing would both find the
+   * slots empty and both fill them. Foundry elects a single GM client for exactly this, and it
+   * also covers the case this hook most needs to cover -- a PLAYER making their own character,
+   * where no GM created anything and so no GM-side `userId` check would fire.
+   */
+  Hooks.on("createActor", async actor => {
+    if (!(game.users.activeGM?.isSelf ?? game.user.isGM)) return;
+    const made = await buildCharacterDecks(actor);
+    if (made) {
+      ui.notifications?.info(`Card RPG: built ${made} card stacks for ${actor.name}, `
+        + "including their skill deck.");
+    }
+  });
+
   Hooks.on("updateItem", async (item, change) => {
     if (item.type !== "spell" || change?.system?.prepared !== true) return;
     if (!item.parent || !game.user.isGM) return;

@@ -615,6 +615,89 @@ export async function createStarterContent() {
 }
 
 /* -------------------------------------------- */
+/*  One character's own stacks                  */
+/* -------------------------------------------- */
+
+/**
+ * **The ten stacks a character plays out of, built for a character that has none.**
+ * [BUILT 2026-11-14]
+ *
+ * Nothing in the system made these except `createStarterContent`, and that builds them for ONE
+ * actor: the pregenerated Starter Warrior, by name, from a hard-wired list of tags. Every other
+ * character -- every character a GM has ever made in this system -- came into the world with ten
+ * empty `DocumentIdField`s and no way to fill them that did not involve creating Cards documents
+ * by hand and pasting their ids into a schema.
+ *
+ * What that looks like from the table is not *the decks are missing*. It is:
+ *
+ *   - **the skill deck is empty**, so every check improvises at value 0 with disadvantage
+ *     (skill-rules 1), and the character's passive score silently falls back to the flat 2 an
+ *     NPC uses;
+ *   - **a menu node hands over nothing.** `grantCardChoice` opens with
+ *     `if (!deck) return false`, before the dialog -- so *What You Favour* was accepted, the
+ *     node was marked owned, and no card was ever offered. The level was spent on silence;
+ *   - **the fate deck is empty**, so a draw has nothing to turn over.
+ *
+ * Three unrelated-looking faults, one missing step. The deck layer never assumed a character had
+ * stacks -- `deckOf` warns and returns null, and every caller handles it -- so none of this
+ * threw. It just quietly did nothing, which is the harder kind to find.
+ *
+ * **What goes in them.** The skill deck is the generic fifteen (skill-rules 1: *about 15 cards*,
+ * and `starter-cards.md` is the stand-in until each Way has its own list), because a skill deck
+ * is the one deck every character has regardless of Way -- an occupation deals two more into it
+ * on top. The fate deck is the twenty faces. **The action deck starts empty**, and that is not an
+ * oversight: a character's action cards come from their Way and their nodes, and a level-0
+ * character has taken neither. The stack has to exist for the first grant to land in.
+ *
+ * Idempotent per slot rather than per actor, so a character missing one stack gets one stack. The
+ * tag is the actor's id, which is what makes a rebuild find the same documents rather than make a
+ * second set.
+ *
+ * Ownership is copied from the actor, because a player who cannot see their own deck cannot play
+ * out of it -- and a Cards document does not inherit anything from the actor whose schema points
+ * at it.
+ */
+export async function buildCharacterDecks(actor) {
+  if (!actor || actor.type !== "character") return 0;
+  const have = actor.system?.decks ?? {};
+  const ownership = foundry.utils.deepClone(actor.ownership ?? {});
+  const tagOf = slot => `character.${actor.id}.${slot}`;
+
+  /*
+   * One description per slot: the stack's kind, what it is called, what it is built with and
+   * which back it wears. A table rather than ten near-identical calls, because the thing that
+   * goes wrong here is a slot spelled one way in the schema and another in the builder.
+   */
+  const plan = [
+    { slot: "action", type: "deck", label: "Action Deck", back: "action" },
+    { slot: "actionHand", type: "hand", label: "Hand" },
+    { slot: "actionDiscard", type: "pile", label: "Discard" },
+    { slot: "actionSpent", type: "pile", label: "Spent" },
+    { slot: "quarantine", type: "pile", label: "Quarantine" },
+    { slot: "fate", type: "deck", label: "Fate Deck", back: "fate",
+      cards: () => fateCards(backOf("fate"), fateArt) },
+    { slot: "fateDiscard", type: "pile", label: "Fate Discard" },
+    { slot: "skill", type: "deck", label: "Skill Deck", back: "skill",
+      cards: () => expand(WARRIOR_SKILLS, def => skillCardData(def)) },
+    { slot: "skillHand", type: "hand", label: "Skill Hand" },
+    { slot: "skillDiscard", type: "pile", label: "Skill Discard" }
+  ];
+
+  const decks = {};
+  for (const step of plan) {
+    /* A slot pointing at a stack somebody has since deleted is as empty as one that was never
+     * filled, so the id is checked against the world rather than merely for being set. */
+    if (have[step.slot] && game.cards.get(have[step.slot])) continue;
+    const made = await makeCards(`${actor.name} \u2014 ${step.label}`, step.type,
+      tagOf(step.slot), step.cards?.() ?? [], step.back ?? "", ownership);
+    decks[step.slot] = made.id;
+  }
+  if (!Object.keys(decks).length) return 0;
+  await actor.update({ system: { decks } });
+  return Object.keys(decks).length;
+}
+
+/* -------------------------------------------- */
 /*  One creature, on demand                     */
 /* -------------------------------------------- */
 

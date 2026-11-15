@@ -113,8 +113,9 @@ check("modules using CARDRPG without importing it",
   freeNames.length ? freeNames.join(", ") : "none", "none");
 /* And the sweep found users, so a strip that ate the whole file cannot pass it. */
 /* 16 since 2026-11-13: `art.mjs` reads the condition list out of the config rather than
- * keeping a second copy of twenty-five names. */
-check("modules that use it at all", importers, 16);
+ * keeping a second copy of twenty-five names. 17 since 2026-11-15: `table.mjs` builds the GM's
+ * dialog out of `difficulties` and `approaches` rather than spelling either of them again. */
+check("modules that use it at all", importers, 17);
 
 /*
  * **The vendored cytoscape carries a patch, and the patch has to still be there.**
@@ -1397,6 +1398,8 @@ check("cover exists on both actor models",
   (actorsSource.match(/cover: new fields\.BooleanField/g) ?? []).length, 2);
 // Nocking costs no half of its own, so it must not be spending one anywhere.
 const traySource = fs.readFileSync(path.join(root, "module/tray.mjs"), "utf8");
+/* Where a card is, and how it reads in one line: the deck layer's room for both. */
+const stacksSource = fs.readFileSync(path.join(root, "module/decks/stacks.mjs"), "utf8");
 check("the nock asks before the Strike resolves",
   traySource.includes("await this.#nock(item)") ? "yes" : "no", "yes");
 
@@ -2767,7 +2770,7 @@ const byId = graph.GRAPH;
 
 /* 232 since 2026-11-13: Birth gained ten origins and twelve backgrounds, taken at creation
  * and free, so the graph is 22 nodes larger and not one level deeper. */
-check("nodes defined", nodes.length, 232);
+check("nodes defined", nodes.length, 237);
 check("duplicate node ids", nodes.length === byId.size ? "none" : "yes", "none");
 
 /* Every prerequisite must resolve, or a branch is silently unreachable. */
@@ -2809,13 +2812,19 @@ check("cycles", cycles.length ? cycles.join("; ") : "none", "none");
  */
 const cellOf = n => `${n.axis ?? "?"} / ${n.resource ?? "?"}`;
 const sameCell = [];
-const sameHalf = [];
+const sameHalf = new Set();
 for (const parent of nodes) {
   const kids = (graph.SUCCESSORS.get(parent.id) ?? []).map(id => byId.get(id)).filter(n => n?.title);
   for (const a of kids) for (const b of kids) {
     if (a.id >= b.id) continue;
     if (cellOf(a) === cellOf(b)) sameCell.push(`${parent.id}: ${a.id}/${b.id} (${cellOf(a)})`);
-    else if (a.axis === b.axis || a.resource === b.resource) sameHalf.push(`${a.id}/${b.id}`);
+    /*
+     * **A pair, not a pair per parent.**  [FIXED 2026-11-14] Two Ways used to share one
+     * predecessor and now share all twelve occupations, so the one tolerated repeat --
+     * shade/strength -- was reported twelve times. It is a statement about the two NODES and the
+     * parent they were found under is not part of it.
+     */
+    else if (a.axis === b.axis || a.resource === b.resource) sameHalf.add(`${a.id}/${b.id}`);
   }
 }
 check("major siblings sharing a cell", sameCell.length ? sameCell.join("; ") : "none", "none");
@@ -2828,7 +2837,7 @@ check("major siblings sharing a cell", sameCell.length ? sameCell.join("; ") : "
  * one CELL -- still holds everywhere.
  */
 check("major siblings sharing one half (warning)",
-  sameHalf.length ? sameHalf.join(", ") : "none",
+  sameHalf.size ? [...sameHalf].join(", ") : "none",
   "shade/strength, faith.eternalgod/faith.fagar, faith.eternalgod/faith.purple, "
   + "faith.eternalspirit/faith.grey, faith.fagar/faith.purple, faith.vulpet/faith.yellow, "
   + "faith.brendan/faith.sessyfyn");
@@ -2893,9 +2902,30 @@ for (const node of nodes) {
   }
 }
 check("crossings in the data", crossings, 5);
-/* One confluence in the graph, and it is the only place the exception applies. */
+/*
+ * **Thirteen confluences, and the twelve new ones are the shape this exception was written for.**
+ * [CHANGED 2026-11-14]
+ *
+ * It was one: Way of Faith's orders, behind all twelve gods. An occupation now hangs off the
+ * origins it could plausibly have come out of, and those are gates of one exclusive family too --
+ * so each is *several mutually exclusive doors into one room*, which is the exception's own
+ * sentence and not a stretch of it. Nobody can hold two origins, so no occupation can be reached
+ * past a door that was meant to shut.
+ *
+ * Pinned per node rather than counted, because what makes it safe is that every predecessor
+ * belongs to ONE family: a thirteenth predecessor that is not a gated door would make it a
+ * crossing again, with all three crossing rules applying, and a bare count would not notice.
+ */
 check("confluences of exclusive doors", confluences.join("; ") || "none",
-  "faith.ordination <- 12 faith doors");
+  "background.soldier <- 8 origin doors; background.urchin <- 7 origin doors; "
+  + "background.acolyte <- 8 origin doors; background.sailor <- 6 origin doors; "
+  + "background.miner <- 4 origin doors; background.caravan <- 6 origin doors; "
+  + "background.vintner <- 4 origin doors; background.forester <- 4 origin doors; "
+  + "background.guild <- 7 origin doors; background.healer <- 7 origin doors; "
+  + "background.sharp <- 6 origin doors; background.porter <- 10 origin doors; "
+  + "shade <- 12 background doors; strength <- 12 background doors; "
+  + "mind <- 12 background doors; faith <- 12 background doors; "
+  + "faith.ordination <- 12 faith doors");
 /*
  * **The first reason I wrote for this was wrong, and the check is what said so.** It read *no
  * character can hold two of the doors* -- but two gods of ONE religion share a creed, so a priest
@@ -2964,9 +2994,10 @@ for (const gate of exclusiveGates) {
  * differently: each order is its own creed, so joining one closes the other three outright. One
  * rule, a pantheon and a vocation, and no new field.
  */
-/* 38: the sixteen Faith gates plus the twenty-two creation nodes, which are irreversible in a
- * more obvious way -- you were born once and you had one childhood. */
-check("exclusive gates in the data", exclusiveGates.length, 38);
+/* 43: the sixteen Faith gates plus the twenty-seven creation nodes, which are irreversible in a
+ * more obvious way -- you were born once and you had one childhood. Twenty-seven since 2026-11-14:
+ * fifteen places and twelve trades, Velderon out and six enclaves in. */
+check("exclusive gates in the data", exclusiveGates.length, 43);
 check("and the families they fall into",
   [...new Set(nodes.filter(n => n.exclusive).map(n => n.exclusive))].sort().join(", "),
   "background, faith, order, origin");
@@ -2997,7 +3028,7 @@ check("orders, each its own creed",
 const ENGINE_WORDS =
   /\b(nodes?|branch(es)?|graph|shelf|trunk|frontier|capstones?)\b|\.md\b|\bin this book\b/i;
 const describedNodes = nodes.filter(n => n.lore);
-check("nodes that carry a description", describedNodes.length, 79);
+check("nodes that carry a description", describedNodes.length, 84);
 check("descriptions written in the engine's vocabulary",
   describedNodes.filter(n => ENGINE_WORDS.test(n.lore)).map(n => n.id).join(", ") || "none",
   "none");
@@ -3043,18 +3074,75 @@ const strayGates = nodes
 check("exclusive nodes in no declared family",
   strayGates.length ? strayGates.join(", ") : "none", "none");
 /* And the two creation families are exactly as big as the content says. */
+/*
+ * **Fifteen places.**  [CHANGED 2026-11-14] Six enclaves joined -- Xtchaargh, the Triple Enclave,
+ * Regensburg, Solemn, Kelp Bay and Hyrlock, all of them in the world file and none invented -- and
+ * **Velderon left**. Velderon is the elves' embassy, a closed ruin you do not enter without an
+ * invitation; it is somewhere a character can go and not somewhere a character is from, which is
+ * what an origin is for.
+ */
 check("origins and backgrounds",
   `${nodes.filter(n => n.exclusive === "origin").length} origins, `
   + `${nodes.filter(n => n.exclusive === "background").length} backgrounds`,
-  "10 origins, 12 backgrounds");
+  "15 origins, 12 backgrounds");
+/*
+ * **Every place named here is in the world file.** Nothing was invented for this list, and the
+ * only way to keep that true as it grows is to ask the file. Read locally rather than through
+ * `worldDoc`, which is declared two thousand lines below this one: a check that reaches forward
+ * to a binding is a check that throws rather than fails, and takes the suite with it.
+ */
+const worldPlaces = fs.readFileSync(path.join(root, "../../worldinfo/Firma.md"), "utf8");
+const placeNamed = name => name
+  /* Two of the fifteen are named for the PEOPLE rather than the place -- *Echterhof-born* and
+   * *Furnace Stock* -- because an origin is read beside nine others at creation and the bare name
+   * collides with a node elsewhere in the graph. Both forms reduce to the place. */
+  .replace(/-born$/, "").replace(/ Stock$/, "").replace(/^The /, "");
+check("and every one of them is a real place",
+  nodes.filter(n => n.exclusive === "origin")
+    .filter(n => !worldPlaces.includes(placeNamed(n.name)))
+    .map(n => n.name).join(", ") || "none", "none");
 /* Every free node is a creation node and hangs off Birth: `free` must never be reachable by
  * spending a level, or *the node is the level* (leveling 3) stops being true. */
 check("free nodes that are not creation nodes",
   nodes.filter(n => n.free && !["origin", "background"].includes(n.exclusive))
     .map(n => n.id).join(", ") || "none", "none");
-check("and free nodes that do not hang off Birth",
-  nodes.filter(n => n.free && (n.after ?? []).join() !== "root").map(n => n.id).join(", ")
-    || "none", "none");
+/*
+ * **[CHANGED 2026-11-14] It was *every free node hangs off Birth*, and an occupation no longer
+ * does.** That spelling was a proxy for the rule, not the rule: what must hold is that `free`
+ * is never reachable by spending a level, or *the node is the level* (leveling 3) stops being
+ * true. Birth was the only free thing to hang off when it was written.
+ *
+ * Stated directly now: **every predecessor of a free node is itself free.** That is the property
+ * the proxy was standing in for, it still forbids everything it forbade, and it allows exactly
+ * the one new thing -- an occupation behind an origin, both taken at creation and neither costing
+ * a level.
+ */
+const paidParents = nodes.filter(n => n.free).flatMap(n => (n.after ?? [])
+  .filter(a => a !== graph.ROOT && !byId.get(a)?.free)
+  .map(a => `${a} -> ${n.id}`));
+check("and free nodes reachable by spending a level",
+  paidParents.length ? paidParents.join(", ") : "none", "none");
+
+/*
+ * **Where first, then what.**  [BUILT 2026-11-14] An occupation follows the origins it could have
+ * come out of, so a player picks a place and the place narrows the trade. Two things make that a
+ * rule rather than decoration, and both are checked: every occupation names at least one origin
+ * and nothing else, and **every origin leads to at least four occupations** -- an origin that led
+ * to one would be a trap, where picking the interesting place decides your character for you.
+ */
+const occupations = nodes.filter(n => n.exclusive === "background");
+check("every occupation follows origins and nothing else",
+  occupations.filter(n => !(n.after ?? []).length
+    || (n.after ?? []).some(a => byId.get(a)?.exclusive !== "origin"))
+    .map(n => n.id).join(", ") || "none", "none");
+const perOrigin = nodes.filter(n => n.exclusive === "origin")
+  .map(o => [o.id, occupations.filter(b => (b.after ?? []).includes(o.id)).length]);
+check("the narrowest origin still offers a choice",
+  Math.min(...perOrigin.map(([, n]) => n)) >= 4 ? "four or more" : perOrigin
+    .filter(([, n]) => n < 4).map(([id, n]) => `${id}:${n}`).join(", "), "four or more");
+/* And the widest, so the coupling is a narrowing rather than a decoration on a list of twelve. */
+check("and the widest offers fewer than all twelve",
+  Math.max(...perOrigin.map(([, n]) => n)) < occupations.length ? "yes" : "no", "yes");
 check("while every creation node is free",
   nodes.filter(n => ["origin", "background"].includes(n.exclusive) && !n.free)
     .map(n => n.id).join(", ") || "none", "none");
@@ -3524,10 +3612,18 @@ check("Mind cells that drifted from the document",
 const mindAll = nodes.filter(n => n.id === "mind" || n.id.startsWith("mind."));
 check("Way of Mind nodes", mindAll.length, 49);
 /* One predecessor each, so there is no crossing and no `all` node anywhere in the Way. */
-const mindForks = mindAll.filter(n => (n.after ?? []).length > 1).map(n => n.id);
+/*
+ * The WAY ROOT is carved out of both sweeps below.  [CHANGED 2026-11-14] A Way follows the twelve
+ * occupations now, so it has twelve predecessors by design -- the same carve-out `mindLeaks`
+ * already made for the graph root, and for the same reason: where a Way hangs from is a fact
+ * about creation, not about the Way's own shape. Everything INSIDE the Way is still one
+ * predecessor each, which is the claim these two checks exist to hold.
+ */
+const inside = n => n.id !== "mind";
+const mindForks = mindAll.filter(inside).filter(n => (n.after ?? []).length > 1).map(n => n.id);
 check("Mind nodes with more than one way in",
   mindForks.length ? mindForks.join(", ") : "none", "none");
-const mindLeaks = mindAll.flatMap(n => (n.after ?? [])
+const mindLeaks = mindAll.filter(inside).flatMap(n => (n.after ?? [])
   /* The Way root hangs off the graph root like every Way root; that is not an edge from elsewhere. */
   .filter(p => p !== graph.ROOT && p !== "mind" && !p.startsWith("mind."))
   .map(p => `${n.id} <- ${p}`));
@@ -3661,11 +3757,21 @@ check("the strength of everything in it",
 check("their title and tactic", `${graph.titleOf(diviner)} / ${graph.tacticOf(diviner).name}`,
   "Divination / Already Seen");
 
-/* The crossings the document drafts must be the crossings the data carries. */
+/*
+ * The crossings the document drafts must be the crossings the data carries.
+ *
+ * **Confluences are skipped here too.**  [FIXED 2026-11-14] The sweep further up already carves
+ * out *several mutually exclusive doors into one room*; this one did not, and the day the four
+ * Ways moved behind the twelve occupations it walked back from an occupation looking for a title,
+ * fell off the root and threw. Two sweeps over the same edges have to agree about what an edge
+ * IS, so the same test decides it in both.
+ */
 const dataCrossings = [];
 for (const node of nodes) {
   const after = node.after ?? [];
   if (after.length < 2 || !node.title || node.all) continue;
+  const gates = after.map(id => byId.get(id)?.exclusive);
+  if (gates.every(Boolean) && new Set(gates).size === 1) continue;
   const depth = id => graph.DEPTH.get(id) ?? 0;
   const primary = after.reduce((a, b) => (depth(a) <= depth(b) ? a : b));
   for (const prereq of after.filter(a => a !== primary)) {
@@ -3744,13 +3850,31 @@ check("dearer without the flag that prices it",
 
 /* -------------------------------------------- */
 
-/* The engine's answers, on a character walked down one branch. */
-const owned = new Set(["root", "shade", "shade.footwork", "shade.quiet", "shade.patience",
+/*
+ * The engine's answers, on a character walked down one branch.
+ *
+ * **With a creation on them**, which they did not need before 2026-11-14: a Way follows an
+ * occupation now, so a character who has never been anywhere and never done anything cannot have
+ * walked into Way of Shade. Both cost nothing, so the level below is unchanged -- which is the
+ * point of `free` and worth seeing asserted on a real character rather than only in the abstract.
+ */
+const owned = new Set(["root", "origin.core", "background.urchin",
+  "shade", "shade.footwork", "shade.quiet", "shade.patience",
   "shade.thief", "shade.thief.crowds", "shade.thief.fence", "shade.cutpurse"]);
 check("level is the number of nodes owned", graph.levelOf(owned), 8);
 check("title is the deepest major owned", graph.titleOf(owned), "Cutpurse");
+/*
+ * **leveling 6, re-anchored.**  [CHANGED 2026-11-14] It read *the root is a node you own and you
+ * never stop owning it, so all four Ways stay on your frontier for the whole of a character's
+ * life.* The mechanism is unchanged and the anchor moved one layer out: your OCCUPATION is a node
+ * you own and never stop owning, and the Ways hang off it. A second Way is still a level away at
+ * any point in a character's life, which is the whole of what the section promises.
+ */
 check("every Way stays on the frontier",
   ["strength", "mind", "faith"].every(w => graph.frontier(owned).includes(w)), true);
+/* And it is the occupation holding them there, not the root, which is the half that moved. */
+check("and it is the occupation that holds them there",
+  graph.frontier(new Set(["root", "origin.core"])).includes("shade"), false);
 /* The crossing is open to a Cutpurse and the far title is not -- that is the whole of "past a
  * title is the leak", seen from the engine rather than from the prose. */
 check("the crossing opens", graph.frontier(owned).includes("shade.cross.odds1"), true);
@@ -3768,29 +3892,51 @@ check("the frontier never offers what you already own",
 const blank = { system: { nodes: [] } };
 check("a character with no nodes still owns the root", graph.ownedIds(blank).has(graph.ROOT), true);
 /*
- * **What a fresh character is offered.**  [CHANGED 2026-11-13]
+ * **What a fresh character is offered.**  [CHANGED 2026-11-14]
  *
- * It used to be *exactly the four Ways, and nothing deeper than a Way*. Birth now also opens the
- * ten origins and the twelve backgrounds, which are `free` -- taken at creation and not a level --
- * so the frontier is 26 and 22 of them cost nothing.
+ * It was 26 doors at once -- four Ways, ten origins and twelve backgrounds, all off Birth, in no
+ * order. Creation is a sequence now and the graph is the sequence: **Birth, then a place, then a
+ * trade, then a Way.** So a blank sheet offers exactly the **fifteen places**, every one of them
+ * free, and nothing on it costs a level at all.
  *
- * The claim that matters is unchanged and is now stated where it can be read: **everything on a
- * blank sheet that COSTS a level is a Way, and nothing deeper than a Way is reachable.** That is
- * leveling 6's *all four Ways stay on your frontier for the whole of a character's life*, and
- * leveling 3's *the node is the level*, with the two creation families carved out by name rather
- * than by being quietly tolerated.
+ * That last part is the change worth stating. It used to be *everything on a blank sheet that
+ * costs a level is a Way*; now **nothing on a blank sheet costs a level**, because a Way is not
+ * on it. You cannot walk into Way of Shade without having been somewhere and done something
+ * first, which is the order a player was reading the lore in anyway.
  */
 const atBirth = graph.frontier(graph.ownedIds(blank));
 const freeAtBirth = atBirth.filter(id => graph.GRAPH.get(id)?.free);
 check("what a blank sheet is offered",
-  `${atBirth.length}, of which ${freeAtBirth.length} are free`, "26, of which 22 are free");
-check("and the ones that cost a level are exactly the four Ways",
-  atBirth.filter(id => !graph.GRAPH.get(id)?.free).join(", "), "shade, strength, mind, faith");
-check("and nothing deeper than a Way costs one",
-  atBirth.filter(id => !graph.GRAPH.get(id)?.free).some(id => id.includes(".")), false);
-/* And the free ones really are free: taking every one of them leaves the character at level 0. */
-check("taking all of them is still level 0",
-  graph.levelOf(new Set([graph.ROOT, ...freeAtBirth])), 0);
+  `${atBirth.length}, of which ${freeAtBirth.length} are free`, "15, of which 15 are free");
+/* Trades and Ways are behind them rather than beside them, which is the whole of the change. */
+check("and every one of them is a place",
+  atBirth.filter(id => graph.GRAPH.get(id)?.exclusive !== "origin").join(", ") || "none", "none");
+/* The order, read off the graph rather than off the prose: Birth, a place, a trade, a Way. */
+const layerOf = id => graph.DEPTH.get(id) ?? 0;
+check("creation runs Birth, place, trade, Way",
+  [layerOf(graph.ROOT), layerOf("origin.core"), layerOf("background.urchin"), layerOf("shade")]
+    .join(" < "), "0 < 1 < 2 < 3");
+check("and nothing on it costs a level",
+  atBirth.filter(id => !graph.GRAPH.get(id)?.free).join(", ") || "none", "none");
+/* And the four Ways are exactly what the first level CAN buy, once a creation is behind them. */
+const made = new Set([graph.ROOT, "origin.core", "background.urchin"]);
+check("the first level buys a Way and nothing else",
+  graph.frontier(made).filter(id => !graph.GRAPH.get(id)?.free).join(", "),
+  "shade, strength, mind, faith");
+/*
+ * And the free ones really are free: taking every one of them leaves the character at level 0.
+ * Walked a layer at a time now, because an occupation is only offered once its origin is owned --
+ * which is the assertion underneath this one, so it is worth doing the long way.
+ */
+const atCreation = new Set([graph.ROOT]);
+for (let layer = 0; layer < 4; layer++) {
+  for (const id of graph.frontier(atCreation)) {
+    if (graph.GRAPH.get(id)?.free) atCreation.add(id);
+  }
+}
+check("taking all of them is still level 0", graph.levelOf(atCreation), 0);
+check("and an occupation becomes reachable once a place is owned",
+  [...atCreation].some(id => graph.GRAPH.get(id)?.exclusive === "background"), true);
 
 /* `all` means every prerequisite. One of the two is not enough; both are. */
 const halfWay = new Set(["root", "shade", "shade.footwork", "shade.quiet", "shade.patience",
@@ -3815,7 +3961,12 @@ const written = [...update.slice(0, update.indexOf("});")).matchAll(/"(system\.[
   .map(m => m[1]).sort();
 check("what taking a node writes", written.join(", "), "system.nodes");
 
-const g = graph.grantsOf(owned);
+/*
+ * What the BRANCH granted: the creation is filtered out for the same reason it is everywhere else
+ * on this page. The character above has an origin and an occupation because a Way needs one; the
+ * training the occupation issued is not something Way of Shade handed them.
+ */
+const g = graph.grantsOf(new Set([...owned].filter(id => !graph.GRAPH.get(id)?.free)));
 check("what the branch has granted", `${g.health} health, ${g.cards.length} cards, ${g.trainings.length} trainings`,
   "1 health, 3 cards, 2 trainings");
 
@@ -3905,7 +4056,7 @@ check("and the observer is dropped when the pane closes",
  * pinned on the SHAPE of the value rather than on a test that would pass either way.
  */
 check("a node with no picture says so in a word the parser knows",
-  /return \(def && artIn\(def\)\) \|\| "none";/.test(levelup) ? "yes" : "no", "yes");
+  /return inheritedArt\(node\) \|\| "none";/.test(levelup) ? "yes" : "no", "yes");
 check("and a territory says it too",
   /\.\.\.paint, art: "none"/.test(levelup) ? "yes" : "no", "yes");
 /*
@@ -4072,7 +4223,19 @@ check("dagre is not vendored",
 /* Every layout the picker offers must exist, or the select has a dead option. */
 const layoutKeys = [...levelup.matchAll(/^  (\w+): \{ label: "CARDRPG\.Level\.Layout\./gm)]
   .map(m => m[1]);
-check("layouts offered", layoutKeys.join(", "), "tiers, breadthfirst, concentric, cose, grid");
+/*
+ * **[RETIRED 2026-11-14] Breadth-first.** It was the nearest thing to `tiers` and the worse
+ * version of it: both lay the graph out in rings from the root, and only `tiers` knows that the
+ * depth is already computed from the edges and that a layer wants ordering by its predecessors.
+ * A picker whose second entry is a worse copy of its first is offering one choice and charging
+ * for two. The three that remain are genuinely different readings of the same graph.
+ */
+check("layouts offered", layoutKeys.join(", "), "tiers, concentric, cose, grid");
+check("and breadth-first is gone from the picker",
+  /breadthfirst/.test(levelup) ? "still there" : "gone", "gone");
+/* The helper it was the only caller of went with it; a dead escaper is a dead escaper. */
+check("and so is the id escaper it was the only caller of",
+  /function cssId/.test(levelup) ? "still there" : "gone", "gone");
 
 /* And the spec, so the pane and the document cannot drift apart. */
 const hudPane = fs.readFileSync(path.join(root, "../hud-spec.md"), "utf8");
@@ -4138,7 +4301,7 @@ const everyModule = [
 const CONTENT_MODULES = fs.readdirSync(path.join(MODULE_DIR, "content"))
   .filter(f => f.endsWith(".mjs")).map(f => `content/${f.slice(0, -4)}`);
 const LOADS_ANYWHERE = ["art", "checks", "config", "content", "decks", "enrichers", "grants",
-  "graph", "monsters", "resolve", "setup", ...CONTENT_MODULES];
+  "graph", "monsters", "resolve", "setup", "table", ...CONTENT_MODULES];
 /*
  * And the ones that legitimately cannot: three data models extending Foundry's own classes, three
  * applications extending ApplicationV2, and the combat document. Every one of them is a SUBCLASS
@@ -4816,8 +4979,27 @@ check("the Cutpurse's card keeps its printed name",
 check("Invisible declares its advantage rather than being looked for by name",
   CARDRPG.conditions.invisible?.grantsAdvantage, true);
 check("and the resolver reads the flag",
-  /if \(cfg\.grantsAdvantage\) \{ advantage = true;/.test(resolveSource)
+  /if \(cfg\.grantsAdvantage\) out\.advantage = true;/.test(resolveSource)
   && !/conditionsOf\(actor\)\.includes\("invisible"\)/.test(resolveSource) ? "yes" : "no", "yes");
+/*
+ * **And BOTH kinds of draw read it.**  [BUILT 2026-11-15]
+ *
+ * The flag loop lived inside `advantageFor`, which is called from `resolveAttack` and nowhere
+ * else -- so Heckled, whose whole text is *you draw fate with disadvantage*, did nothing at all
+ * to a skill check. conditions.md says of it *the fate draw reads it, the same way Invisible is
+ * read*, and that was true of one of the two places fate is drawn.
+ *
+ * Checked as one reader with two callers rather than as two call sites, because the failure was
+ * never a missing line: it was a rule that lived inside the only function that had ever needed
+ * it. A copy pasted into `resolveCheck` would have passed a check written the other way and gone
+ * stale the next time a condition was added.
+ */
+check("one reader for what a condition does to a draw",
+  /export function conditionSway\(actor\)/.test(resolveSource) ? "yes" : "no", "yes");
+check("and an attack and a check both ask it",
+  (resolveSource.match(/conditionSway\(actor\)/g) ?? []).length, 3);
+check("Heckled reaches a skill check",
+  /const carried = conditionSway\(actor\);/.test(resolveSource) ? "yes" : "no", "yes");
 
 /* The history, so a fixed defect stays a known one. */
 for (const [label, re] of [
@@ -5446,29 +5628,39 @@ const tongueNodes = nodes.filter(n => n.grants?.language);
  * It does now, and the prediction was right about everything except the word. A place's tongue
  * belongs to an **origin** rather than a background -- *you grow up in them* is a sentence about
  * where, not about what you did -- which is why Wolf Peak and Saag et Haar are origins and why the
- * four origins that teach a language are exactly the four from somewhere with one of its own.
+ * origins that teach a language are exactly the ones from somewhere with a tongue of its own.
+ *
+ * **Three of them since 2026-11-14**, not four: Velderon retired as an origin, because the elves'
+ * embassy is a closed ruin you do not enter without an invitation and so is somewhere a character
+ * can go rather than somewhere a character is from. None of the six enclaves that replaced it has
+ * a tongue of its own in the world file, and inventing one to keep a number round would be the
+ * content answering to the check.
  */
-check("nodes that teach a language", tongueNodes.length, 13);
+check("nodes that teach a language", tongueNodes.length, 12);
 check("and which tongue each teaches",
   tongueNodes.map(n => `${n.id}=${n.grants.language}`).sort().join(", "),
   "faith.vulpet.driven=Burrowing, mind.blood=Demonic, mind.divination=Valgar, "
   + "mind.letters=Imperial, mind.necromancy=Reversed, mind.spirit.debts=Elvish, "
-  + "mind.spirit.names=Troll, origin.furnace=Valgar, origin.saag=Veche, origin.velderon=Elvish, "
+  + "mind.spirit.names=Troll, origin.furnace=Valgar, origin.saag=Veche, "
   + "origin.wolfpeak=Perga, shade.duellist.politician=Imperial, shade.scout.spy=Imperial");
-/* Thirteen nodes and nine tongues; `learned` dedupes, and a language is binary -- you read
- * Reversed or you do not. */
+/* Twelve nodes and nine tongues; `learned` dedupes, and a language is binary -- you read
+ * Reversed or you do not. **All nine are still taught**, which is the thing that had to survive
+ * Velderon leaving: Elvish is owed by a spiritualist, and that was always the studied door. */
 check("tongues the graph teaches at all",
   [...new Set(tongueNodes.map(n => n.grants.language))].length, 9);
 /*
- * **Three are reached from two directions now, and each pair is the rule stated twice.** Imperial
- * is read by a scholar and spoken by a spy. Valgar is studied by a diviner and grown up in by
- * Furnace stock. Elvish is owed by a spiritualist and native to anyone raised at Velderon. Studied
- * and spoken are the two doors, and every one of these is one of each.
+ * **Two are reached from two directions, and each pair is the rule stated twice.** Imperial is
+ * read by a scholar and spoken by a spy. Valgar is studied by a diviner and grown up in by Furnace
+ * stock. Studied and spoken are the two doors, and each of these is one of each.
+ *
+ * **Elvish was a third until Velderon retired** and is now studied only, which is the honest state
+ * of it: nobody on Firma is raised speaking Elvish. The elves are on the Second Side, their
+ * embassy is closed, and the one human route to the tongue is owing a spiritualist's debt.
  */
 check("and the ones taught from two directions",
   [...new Set(tongueNodes.map(n => n.grants.language))]
     .filter(l => tongueNodes.filter(n => n.grants.language === l).length > 1).sort().join(", "),
-  "Elvish, Imperial, Valgar");
+  "Imperial, Valgar");
 const taughtTongues = new Set(tongueNodes.map(n => n.grants.language));
 check("languages no node teaches",
   graph.LANGUAGES.filter(l => !taughtTongues.has(l.name)).map(l => l.name).join(", ") || "none",
@@ -6066,7 +6258,13 @@ const reachOneWay = titleId => {
     if (next.size === owned.size) break;
     owned = next;
   }
-  return [...owned].filter(id => id !== graph.ROOT).length;
+  /*
+   * The root and the creation are not the Way's.  [FIXED 2026-11-14] A Way follows an occupation,
+   * so reaching one of its titles seeds the walk with an origin and an occupation -- and counting
+   * those would answer *how many nodes does this character own* when the question asked is *how
+   * much of this Way can one character have*. `free` separates them, here as everywhere else.
+   */
+  return [...owned].filter(id => id !== graph.ROOT && !graph.GRAPH.get(id)?.free).length;
 };
 const sizeOf = way => nodes.filter(n => n.id === way || n.id.startsWith(`${way}.`)).length;
 check("nodes in each Way", WAYS.map(w => `${w} ${sizeOf(w)}`).join(", "),
@@ -6228,6 +6426,72 @@ check("and all of them are one of the two declared cases",
 check("spells reachable only through a choice",
   [...graph.SPELLS.keys()].filter(n => !namedByNodes.includes(n)).length, 76);
 
+/*
+ * **Every piece of gear a node promises exists, and arrives.**  [BUILT 2026-11-14]
+ *
+ * `grants.item` was in the content before anything could hand one over: `grantSlate` looked in
+ * `SLATES` (Signatures) and `TEACHINGS_BY_NAME` (what a school teaches), and **an item is in
+ * neither**. All twenty-one item grants resolved to nothing and warned the player that the thing
+ * they had just been promised "has not been built yet".
+ *
+ * Nothing caught it because nothing asked the question. The grant vocabulary was checked, the key
+ * was declared in `rewardKeys`, the node count was pinned -- every check around it passed while
+ * the one thing the grant is for never happened once. A vocabulary check tells you the word is
+ * spelled right; this one asks whether it means anything.
+ */
+const gearNames = nodes.flatMap(n => [n.grants?.item ?? []].flat());
+check("nodes promising gear that does not exist",
+  [...new Set(gearNames)].filter(name => !graph.GEAR.has(name) && !graph.SLATES.has(name))
+    .join(", ") || "none", "none");
+check("and the catalogue it is found in holds the recipes too",
+  graph.GEAR.has("Recipe: Mending") ? "yes" : "no", "yes");
+/* NPC gear is deliberately NOT reachable: no node grants a goblin's shiv, and a map that could
+ * answer for one would answer a question nobody should be asking it. */
+check("and not a monster's kit", graph.GEAR.has("Rusted Shiv"), false);
+
+/*
+ * **A character is never handed the same thing twice at creation.**
+ *
+ * Origin and occupation are the two free nodes, taken together and taken once, so their gear is
+ * read as one kit. A Sailor out of the Fiord carrying two Climbing Ropes is not a bug the engine
+ * can see -- both grants are correct on their own -- so it is checked here, across every pair the
+ * edges actually allow.
+ */
+const originNodes = nodes.filter(n => n.id.startsWith("origin."));
+const tradeNodes = nodes.filter(n => n.id.startsWith("background."));
+check("creation pairs that hand over the same item twice", tradeNodes
+  .flatMap(job => (job.after ?? []).map(id => [originNodes.find(o => o.id === id), job]))
+  .filter(([origin]) => origin)
+  .flatMap(([origin, job]) => {
+    const theirs = new Set([origin.grants?.item ?? []].flat());
+    return [job.grants?.item ?? []].flat().filter(i => theirs.has(i))
+      .map(i => `${origin.id}+${job.id}: ${i}`);
+  }).join(", ") || "none", "none");
+
+/*
+ * **And every occupation arms you with something.** The twelve grant a trade's tool and used to
+ * grant nothing else, so a character finished creation holding a Healer's Kit and no weapon --
+ * which reads as a content gap and was one. A weapon OR a piece of armour, not both required:
+ * an Urchin has a knife and no mail, and that is the right answer for an Urchin.
+ */
+const armed = new Set(["Dagger", "Spear", "Mace", "Shortbow", "Leather Armor"]);
+check("occupations that send you out with neither weapon nor armour", tradeNodes
+  .filter(job => ![job.grants?.item ?? []].flat().some(i => armed.has(i)))
+  .map(job => job.name).join(", ") || "none", "none");
+check("and every origin puts one thing in your pack",
+  originNodes.filter(o => ![o.grants?.item ?? []].flat().length).map(o => o.name).join(", ")
+    || "none", "none");
+
+/* One name or a list of them, which is what lets a trade grant its tool AND the thing it works
+ * with. Both readers flatten, and a reader that forgot would hand over the characters of a
+ * string one at a time. */
+check("the engine reads a list of gear as readily as one name",
+  /for \(const name of \[grants\.item \?\? \[\]\]\.flat\(\)\) await grantSlate/.test(graphSource)
+    ? "yes" : "no", "yes");
+check("and the panel does too",
+  /for \(const name of \[g\.item \?\? \[\]\]\.flat\(\)\) \{/.test(graphSource) ? "yes" : "no",
+  "yes");
+
 /* The engine reads the key in all four places a grant has to be read -- and since 2026-11-07 it
  * reads WHICH KIND of list the source names, because a card and a spell are different documents. */
 check("taking a node asks the question",
@@ -6250,8 +6514,8 @@ check("and the choice is handed over by the routine the kind calls for",
 /* And `grantSlate` finds a pool teaching, not only a Signature: eight of the nine features a
  * school teaches have never been in `SLATES`. */
 check("granting a slate looks beyond the Signatures",
-  /const def = SLATES\.get\(name\) \?\? TEACHINGS_BY_NAME\.get\(name\);/.test(graphSource)
-    ? "yes" : "no", "yes");
+  /const def = SLATES\.get\(name\) \?\? TEACHINGS_BY_NAME\.get\(name\) \?\? GEAR\.get\(name\);/
+    .test(graphSource) ? "yes" : "no", "yes");
 check("and it looks the teaching up by name to find out",
   /const def = TEACHINGS_BY_NAME\.get\(chosen\);/.test(graphSource) ? "yes" : "no", "yes");
 /* A feature already held is left out of the menu too, or a school would offer the same ink twice. */
@@ -6698,11 +6962,16 @@ check("cards with both a requirement and a reaction, which nothing checks",
     && [...(c.primary ?? []), ...(c.secondary ?? [])].some(st => st.requires))
     .map(c => c.name).join(", ") || "none", "none");
 
-/* The paint and the click ask the same question of the same pickers, or they can disagree. */
-check("the face picks the item the requirement allows",
-  /#itemFor\(step\.verb, name, step\.requires\)/.test(traySource) ? "yes" : "no", "yes");
-check("and so does playing the half",
-  /#itemFor\(step\.verb, half, step\.requires\)/.test(traySource) ? "yes" : "no", "yes");
+/*
+ * The paint and the click ask the same question of the same pickers, or they can disagree.
+ *
+ * **[2026-11-14] They are now the same spelling**, which is stronger than two that agree: the
+ * face's half of it moved into `#stepFace`, whose parameter is called `half` for the same reason
+ * the resolver's is. Two call sites, one literal -- so a change to one of them cannot be a change
+ * to only one of them.
+ */
+check("the face and the click pick through one call",
+  (traySource.match(/#itemFor\(step\.verb, half, step\.requires\)/g) ?? []).length, 2);
 /* Narrowed BEFORE the sort: a Shade holding a bow and a dagger strikes harder with the dagger. */
 check("the requirement narrows the list before the best is chosen",
   /\.filter\(i => itemMeets\(i, requires\)\)[\s\S]{0,120}\.sort\(/.test(traySource)
@@ -6722,13 +6991,33 @@ check("callers that ask the same predicate for a bonus's tag",
  * said "needs ranged in hand" on a button that fired the dagger.
  */
 check("an unmet requirement blocks the half",
-  /blocked: icons\.some[^\n]*\|\| !!unmet,/.test(traySource) ? "yes" : "no", "yes");
+  /const blocked = icons\.some[\s\S]{0,80}\|\| !!unmet;/.test(traySource) ? "yes" : "no", "yes");
 check("and something sets it",
   /if \(need && !item\) unmet = need;/.test(traySource) ? "yes" : "no", "yes");
 
 /* Two reasons a half can be dead now, so the tooltip has to say which. */
 check("the blocked tooltip says which reason",
-  /data-tooltip="\{\{half\.tip\}\}"/.test(trayTemplate) ? "yes" : "no", "yes");
+  /<span data-tooltip="\{\{half\.tip\}\}">\{\{half\.text\}\}<\/span>/.test(trayTemplate)
+    ? "yes" : "no", "yes");
+
+/*
+ * **[2026-11-14] And a half you CAN play has one too.**
+ *
+ * The long register moved off the face -- a step's prose, its resist clause, the reason a number
+ * is not the printed one -- and a tooltip that only appears on a half you cannot play would have
+ * put all of it out of reach of every half you can. The marker beside a cut value is the other
+ * half of the same change: a value quietly reduced has to be visible before anybody thinks to
+ * hover it.
+ */
+check("and so does a half you can play",
+  /\{\{#if half\.tip\}\}data-tooltip="\{\{half\.tip\}\}"\{\{\/if\}\}/.test(trayTemplate)
+    ? "yes" : "no", "yes");
+check("a cut value is marked on the face",
+  /\{\{#if half\.cut\}\}<span class="cr-half__cut"/.test(trayTemplate) ? "yes" : "no", "yes");
+check("and the parenthesis that said nothing is gone",
+  /\(was \$\{step\.param\}\)/.test(traySource) ? "still there" : "gone", "gone");
+check("a step's prose is a note rather than a line on the face",
+  /if \(step\.text\) notes\.push\(step\.text\);/.test(traySource) ? "yes" : "no", "yes");
 
 /*
  * And the rule, written where a reader of the OTHER rule will find it. Core-rules 7 rule 3 forbids
@@ -6868,7 +7157,7 @@ const artable = (await import("../module/art.mjs")).SHELVES.flatMap(s => s.list 
  * art, because a node wears the art of what it hands over; that is true of what the GRAPH
  * draws and false of what the PANE does, which shows a picture beside three paragraphs of
  * prose about a person. */
-check("pieces of content that take art", artable.length, 749);
+check("pieces of content that take art", artable.length, 768);
 /*
  * **The four items that are content without being commissions, and the item each one wears.**
  *
@@ -7391,7 +7680,7 @@ const { artIn: artInLive, backOf: backOfLive } = await import("../module/decks.m
 /* Every piece the game can hand Foundry a path for, which is all of them: kept as the denominator
  * the three states below have to add up to, and no longer printed as progress. */
 check("pieces the game has a path for", artable.filter(e => artInLive(e)).length
-  + backs.filter(([k]) => backOfLive(k)).length, 760);
+  + backs.filter(([k]) => backOfLive(k)).length, 779);
 /*
  * **And every path the game hands Foundry names a file that is there.**
  *
@@ -7410,7 +7699,7 @@ const pathless = [
   ...artable.map(e => [e.name, artInLive(e)]),
   ...backs.map(([k, b]) => [b.label ?? k, backOfLive(k)])
 ].filter(([, p]) => p && !fs.existsSync(fileFor(p)));
-check("art paths the game would hand Foundry", artable.length + backs.length, 760);
+check("art paths the game would hand Foundry", artable.length + backs.length, 779);
 /*
  * **The brief's progress line used to be the total, and nobody noticed for months.**
  *
@@ -7547,11 +7836,14 @@ const ART_SLOTS = {
    * minor nodes that have no portrait. Checked like the rest, because a shelf whose pictures
    * nothing fetches is a commission nobody will ever see.
    */
-  "nodes/origin": "graph", "nodes/background": "graph", "nodes/title": "graph"
+  "nodes/origin": "graph", "nodes/background": "graph", "nodes/title": "graph",
+  /* An injury is a slate like a feature, so its picture lands in the Item's `img` the same way
+   * -- which is also what puts it on the compendium entry that had none. */
+  injuries: "img"
 };
 const briefDirs = [...new Set([...artList.matchAll(/Suggested path: `cardrpg\/art\/(.+?)\/`/g)]
   .map(m => m[1]))];
-check("directories the brief commissions into", briefDirs.length, 31);
+check("directories the brief commissions into", briefDirs.length, 32);
 check("and every one of them has a slot",
   briefDirs.filter(d => !(d in ART_SLOTS)).join(", ") || "none", "none");
 /* And no slot is declared for a group that is not in the brief, or this list rots quietly. */
@@ -7726,7 +8018,7 @@ const briefs = faceRows.map(r => r.brief);
 const leaked = briefs.flatMap(text =>
   [...text.matchAll(/\b([a-z]+[A-Z][a-zA-Z]*)\b/g)].map(m => m[1]));
 /* A pattern that matched no rows at all would report "none" for any list whatsoever. */
-check("briefs the check actually read", briefs.length, 749);
+check("briefs the check actually read", briefs.length, 768);
 check("keys that leaked into the brief",
   leaked.length ? [...new Set(leaked)].join(", ") : "none", "none");
 /*
@@ -7748,7 +8040,7 @@ check("briefs with a missing number in them",
  * hundred and fifty files have been named that way and the brief is the only record of it.
  */
 const { slug, DELIVERY, GROUPS: ART_GROUPS, CREATURES: ART_CREATURES, creatureBrief, castOf,
-  brief: artBrief } = await import("./art-list.mjs");
+  brief: artBrief, cell: artCell } = await import("./art-list.mjs");
 
 /*
  * **And both generated files say what the content says TODAY.**
@@ -7769,8 +8061,13 @@ const { slug, DELIVERY, GROUPS: ART_GROUPS, CREATURES: ART_CREATURES, creatureBr
  * and its own description, not a card's verbs -- and a check that assumed one builder would have
  * been 112 false failures.
  */
+/*
+ * Read through the table's own clip, because that is what the table prints. The brief itself is
+ * whole now: the cap belongs to a column width and used to reach the model.
+ */
 check("pieces the brief describes out of date", ART_GROUPS
-  .flatMap(g => g.list.filter(e => !artList.includes((g.brief ?? artBrief)(e))).map(e => e.name))
+  .flatMap(g => g.list.filter(e => !artList.includes(artCell((g.brief ?? artBrief)(e))))
+    .map(e => e.name))
   .join(", ") || "none", "none");
 
 /*
@@ -7786,10 +8083,72 @@ check("pieces the brief describes out of date", ART_GROUPS
  * the old check never looked at at all -- so a reworded direction left unregenerated used to pass
  * and now fails, and that is the edit most likely to happen to this book.
  */
-const { DIRECTION: ART_DIRECTION, EFFECT_MOTIF, CONDITION_MOTIF } = await import("./art-prompts.mjs");
-const directedPieces = ART_GROUPS.flatMap(g => g.list
-  .map(e => ({ e, key: `${g.dir}/${slug(e.name)}`, line: (g.brief ?? artBrief)(e) })))
-  .filter(p => ART_DIRECTION[p.key]);
+const { DIRECTION: ART_DIRECTION, EFFECT_MOTIF, CONDITION_MOTIF, FRAME: ART_FRAME }
+  = await import("./art-prompts.mjs");
+const allPieces = ART_GROUPS.flatMap(g => g.list
+  .map(e => ({ e, key: `${g.dir}/${slug(e.name)}`, line: (g.brief ?? artBrief)(e) })));
+const directedPieces = allPieces.filter(p => ART_DIRECTION[p.key]);
+
+/*
+ * **And every piece is commissioned with something to draw.**  [BUILT 2026-11-14]
+ *
+ * The injuries shelf was pointed at `nodeBrief`, which reads `lore` -- a field an injury has not
+ * got -- so all fourteen went out with **an empty subject line**: the style capsule and nothing
+ * else. The brief printed an em dash in the subject column fourteen times and nobody read the
+ * column; the counts all agreed, because a count cannot see a blank.
+ *
+ * What the model does with no subject is draw the NAME, and *Bad Leg* came back as a bandaged leg
+ * on a crutch -- a human figure, the one thing that shelf forbids. **It passed the gate**, because
+ * the gate measures composition and cannot see a subject either. Two layers of checking, both
+ * blind to the same hole.
+ *
+ * **Either half counts, and the first version of this counted one.**  [FIXED 2026-11-14] Written
+ * above the `DIRECTION` import, it could only see the brief -- so it named the eight harm faces
+ * and the sixteen twists alongside the injuries, and every one of those twenty-four has a
+ * hand-written direction and always had. Acting on that reading cost a re-shoot of twenty-four
+ * pictures that were never blind, and nearly left eight invented sentences in `art.mjs`
+ * describing art the game does not contain.
+ *
+ * A piece is commissioned blind when NOTHING tells the model what to draw. A brief is one way of
+ * telling it and a direction is the other, and a check that knows about one of them will keep
+ * reporting the other as missing.
+ */
+/*
+ * **A shelf whose whole rule is *nobody in the frame* has to say so in the prompt.**
+ *
+ * It said so in `art-list.md`, which is read by people, and nowhere the model could see it --
+ * and four of the fourteen injuries came back with a person in them, the exact four whose own
+ * blurb had not repeated the rule. The shelf carries it now, and this is the check that it keeps
+ * carrying it: the brief's own sentence about the shelf is quoted, so deleting one and not the
+ * other fails here rather than in a picture.
+ */
+check("the injury shelf forbids a figure where the model reads it",
+  /no (?:body|figure)/i.test(ART_FRAME.injuries ?? "") ? "yes" : "no", "yes");
+
+check("pieces commissioned with nothing to draw",
+  allPieces.filter(p => !String(p.line ?? "").trim() && !ART_DIRECTION[p.key])
+    .map(p => p.key).join(", ") || "none", "none");
+/*
+ * **No length rule beside it, and that is deliberate.** The first version of this also refused a
+ * subject under twelve characters, and it was measuring the wrong thing: a skill card's brief is
+ * `might 3` and that is complete -- an approach and a value is the whole of what the card is. A
+ * rule that calls a correct brief too short teaches the next person to pad it.
+ *
+ * Empty is a fact; short is a taste.
+ */
+
+/*
+ * **And nothing is cut off before the model reads it.**  [BUILT 2026-11-14]
+ *
+ * A piece with a hand-written direction never sends its brief, so a clip cannot hurt it. Every
+ * other piece sends the brief AS the SUBJECT line, and a subject ending in a literal `...` is
+ * an instruction that stops mid-clause -- the last clause being where a brief puts what it most
+ * wants remembered. *The Debt* ended **no hand, no qui...** and came back with a man leaning
+ * over the ledger.
+ */
+check("prompts whose subject stops mid-sentence", allPieces
+  .filter(p => !ART_DIRECTION[p.key] && String(p.line ?? "").endsWith("..."))
+  .map(p => p.key).join(", ") || "none", "none");
 check("directed pieces the prompt book describes out of date",
   directedPieces.filter(p => !artPrompts.includes(ART_DIRECTION[p.key]))
     .map(p => p.e.name).join(", ") || "none", "none");
@@ -7821,8 +8180,8 @@ const promptBlockOf = file => {
 check("the blocks this check reads but cannot find",
   directedPieces.filter(p => !promptBlockOf(`${p.key}.${DELIVERY.format}`)).length, 0);
 check("directed pieces still sent the sentence they override",
-  directedPieces.filter(p => p.e.blurb
-    && promptBlockOf(`${p.key}.${DELIVERY.format}`).includes(p.e.blurb))
+  directedPieces.filter(p => [p.e.blurb, p.e.cost].filter(Boolean)
+    .some(prose => promptBlockOf(`${p.key}.${DELIVERY.format}`).includes(prose)))
     .map(p => p.e.name).join(", ") || "none", "none");
 
 /*
@@ -8083,7 +8442,7 @@ check("the handbook's page is current",
   bookBuilt.html === bookPage ? "yes" : "stale, run npm run book", "yes");
 /* Every h2 in the document, which is now every chapter: the numbering below asserts that no
  * section sits outside the sequence, so this count and that sequence are the same claim twice. */
-check("chapters on the page", bookBuilt.chapters, 23);
+check("chapters on the page", bookBuilt.chapters, 24);
 /* One table on the page per separator row in the markdown: a table that stopped rendering shows
  * up here rather than as a wall of pipes nobody reads. */
 check("and tables", bookBuilt.tables, (handbook.match(/^\|---/gm) ?? []).length);
@@ -9568,7 +9927,7 @@ check("and each one says what is not in the frame",
  * spelling them again. */
 const packSource = fs.readFileSync(path.join(root, "test/build-packs.mjs"), "utf8");
 const rows = faceRows;
-check("file paths in the brief", rows.length, 749);
+check("file paths in the brief", rows.length, 768);
 /* And the backs, whose path is the slug of their KEY rather than of their printed label. */
 const backPaths = [...artList.matchAll(/\| `(backs\/[^`]+)` \|/g)].map(m => m[1]);
 check("back paths in the brief", backPaths.length, backs.length);
@@ -11109,9 +11468,22 @@ check("and no band paints a ground of its own",
 /* The graph: a Way per colour, four territories, and state in the border. */
 const paneSource = fs.readFileSync(path.join(root, "module/levelup.mjs"), "utf8");
 const wayBlock = /const WAY_COLOUR = \{([\s\S]*?)\n\};/.exec(paneSource)?.[1] ?? "";
+/*
+ * **A band per namespace, and creation is two of them.**  [FIXED 2026-11-14] A node id's first
+ * segment names its band, so the day origins and occupations became `origin.*` and
+ * `background.*` they stopped being `root` -- both fell through to the fallback and the map drew
+ * two adjacent grey boxes labelled *Where everyone starts*. The sequence was right underneath and
+ * the labels said it was one step twice.
+ */
 check("a colour per Way",
   [...wayBlock.matchAll(/^ {2}([a-z]+): \{/gm)].map(m => m[1]).join(", "),
-  "shade, strength, mind, faith, root");
+  "shade, strength, mind, faith, origin, background, root");
+check("and no two bands are called the same thing",
+  (() => {
+    const labels = [...wayBlock.matchAll(/label: "([^"]+)"/g)].map(m => m[1]);
+    const twice = labels.filter((l, i) => labels.indexOf(l) !== i);
+    return twice.length ? [...new Set(twice)].join(", ") : "none";
+  })(), "none");
 check("the fill says which Way",
   /selector: "node\[way\]"[\s\S]{0,120}"background-color": "data\(fill\)"/.test(paneSource)
     ? "yes" : "no", "yes");
@@ -11126,9 +11498,50 @@ check("a closed node is drained instead",
   /"background-blacken": 0\.55/.test(stateRules) ? "yes" : "no", "yes");
 /* Four labelled territories, which is what turns 169 boxes into four places. */
 check("the Ways are drawn as territories",
-  /nodes\.push\(\{ data: \{ id: `territory-\$\{way\}`/.test(paneSource) ? "yes" : "no", "yes");
+  /data: \{ id: `territory-\$\{way\}`/.test(paneSource) ? "yes" : "no", "yes");
 check("and a territory is scenery",
   /if \(ev\.target\.isParent\(\)\) return;/.test(paneSource) ? "yes" : "no", "yes");
+/*
+ * **And scenery you can drag through.**  [FIXED 2026-11-14] Nothing on this map is grabbable, but
+ * ungrabbable is not transparent to a drag: Cytoscape defaults `pannable` to false on a node, so
+ * a drag that began on one did nothing at all. The four territories are compound parents covering
+ * most of the canvas, so *most of the canvas* is what that came to -- reported as *drag to pan
+ * does not work in some regions*, and the regions were the coloured bands.
+ */
+check("every element is pannable",
+  (paneSource.match(/^\s*pannable: true,?$/gm) ?? []).length, 2);
+
+/*
+ * **What a node would open, lit on the map.**  [BUILT 2026-11-14] The panel has printed *Opens: …*
+ * as a list of names since it was written, and a list of names is the wrong form for a question
+ * about WHERE: on a graph of 237 the player then had to find each name by eye.
+ */
+check("the successors are lit when a node is read",
+  /this\.cy\.getElementById\(next\)\.addClass\("opens"\);/.test(paneSource) ? "yes" : "no",
+  "yes");
+check("and the roads to them with them",
+  /addClass\("opens-edge"\)/.test(paneSource) ? "yes" : "no", "yes");
+/* Cleared first, or yesterday's halo is still on the map behind today's. */
+check("and the last node's halo is cleared first",
+  /removeClass\("opens opens-edge bars"\)/.test(paneSource) ? "yes" : "no", "yes");
+/*
+ * **And the other half: what it would bar.**  [BUILT 2026-11-14] An exclusive node shuts every
+ * branch its siblings led to -- swearing to one god closes eleven, taking an origin closes
+ * fourteen -- and the panel printed that as a list of names, fifty-six of them in the worst case,
+ * beside a map that knew where every one of them was. Two halos: what it buys and what it costs.
+ */
+check("and what it would bar is lit too",
+  /addClass\("bars"\)/.test(paneSource) ? "yes" : "no", "yes");
+check("read through the one function that decides what shuts",
+  /wouldCloseIds\(id, ownedIds\(this\.actor\)\)/.test(paneSource) ? "yes" : "no", "yes");
+/* Ids for the map, names for the panel, one walk of the graph behind both. */
+check("and the panel's sentence is the same answer in words",
+  /export function wouldClose\(id, owned\) \{[\s\S]{0,40}return wouldCloseIds\(id, owned\)/
+    .test(graphSource) ? "yes" : "no", "yes");
+/* Reading ahead is most of what the panel is for, so an unavailable node answers it too. */
+check("an unavailable node still says what it leads to",
+  /if \(state === "available"\) return this\.#pick\(id\);[\s\S]{0,220}this\.#showOpens\(id\);/
+    .test(paneSource) ? "yes" : "no", "yes");
 /* A node wears what it hands over: what a node GIVES is the thing worth looking at. */
 check("a node shows the art of what it grants",
   /function artFor\(node\)/.test(paneSource) ? "yes" : "no", "yes");
@@ -11194,7 +11607,7 @@ check("the indexes are refilled rather than replaced",
 /* ---- what it refuses, asked rather than read ---- */
 
 const coreNodes = [...graph.LIVE_NODES];
-check("the graph starts as core content", coreNodes.length, 232);
+check("the graph starts as core content", coreNodes.length, 237);
 
 /* A prerequisite that does not exist: the first price section 8 names. */
 check("a node following nothing that exists",
@@ -11231,7 +11644,8 @@ check("a good edit set is accepted", addedFaults.length, 0);
 check("the node joins the graph", graph.GRAPH.get("shade.thief.extra")?.name, "A World's Own Node");
 check("its predecessor knows about it",
   (graph.SUCCESSORS.get("shade.thief") ?? []).includes("shade.thief.extra"), true);
-check("it has a depth", graph.DEPTH.get("shade.thief.extra"), 6);
+/* 8, not 6: a Way follows an occupation, so everything inside one sits two layers deeper. */
+check("it has a depth", graph.DEPTH.get("shade.thief.extra"), 8);
 /* Five nodes behind it, so the sixth level is the earliest you could hold it. */
 check("and a level", graph.levelFor("shade.thief.extra"), 6);
 /* It is on a character's frontier the moment they own what it follows, with nothing re-authored. */
@@ -11256,7 +11670,7 @@ check("and the graph is still whole", graph.GRAPH.has("shade.thief"), true);
 
 /* Back to core, so every check after this section is asking about the shipped graph. */
 check("the graph can be put back", graph.rebuildGraph({}).length, 0);
-check("and it is core again", graph.LIVE_NODES.length, 232);
+check("and it is core again", graph.LIVE_NODES.length, 237);
 check("with the replaced node restored", graph.GRAPH.get("shade.footwork")?.name, "Footwork");
 
 /* ---- the lock, which is the answer to "not in an active campaign" ---- */
@@ -11400,8 +11814,17 @@ check("and prints the card's own line",
   /harmLine: intruderLine\(card\)/.test(sheetSource) ? "yes" : "no", "yes");
 check("the tray's pile rows ask the category",
   /harm: isIntruder\(c\)/.test(traySource) ? "yes" : "no", "yes");
+/*
+ * **[2026-11-14] The tray's own copy of that line is gone.** It printed a card in one line for
+ * the discard viewer, and the character sheet's deck list was about to need the same thing --
+ * so it moved to `cardLine` in the deck layer, which is where the intruder table already lives.
+ * The rule the check is about is unchanged: an intruder's line comes from the table, once.
+ */
 check("and its detail line comes from the table",
-  /if \(isIntruder\(card\)\) return intruderLine\(card\)/.test(traySource) ? "yes" : "no", "yes");
+  /if \(isIntruder\(card\)\) return intruderLine\(card\)/.test(stacksSource) ? "yes" : "no", "yes");
+check("and both lists print it through one function",
+  /lines: \[cardLine\(c\)\]/.test(traySource)
+    && /cardLine\(card\)/.test(sheetSource) ? "yes" : "no", "yes");
 check("the face prints one line, never a guess between two",
   /<span>\{\{harmLine\}\}<\/span>/.test(cardTemplate) ? "yes" : "no", "yes");
 check("and the old disjunction is gone from the hand filter",
@@ -12211,9 +12634,18 @@ check("and an empty state, so the tab never reads as broken",
 check("an injury's move reduction is its own, with its own floor",
   /get injuryMoveReduction\(\)/.test(actorsSource) ? "yes" : "no", "yes");
 check("and it can never take you below one square",
-  /Math\.max\(1, printed - this\.injuryMoveReduction\)/.test(actorsSource) ? "yes" : "no", "yes");
+  /Math\.max\(1, printed - injury\)/.test(actorsSource) ? "yes" : "no", "yes");
 check("while a condition still can take you to none",
-  /return Math\.max\(0, halved - this\.moveReduction\);/.test(actorsSource) ? "yes" : "no", "yes");
+  /const played = Math\.max\(0, halved - cut\);/.test(actorsSource) ? "yes" : "no", "yes");
+/*
+ * **[2026-11-14] And the arithmetic is one function both models call**, because a monster can be
+ * Frozen too and the tray draws one now. A second copy of the order above is the defect this
+ * suite keeps catching: the floors would be right in whichever model was edited last.
+ */
+check("and one function answers it for either kind of actor",
+  /function moveAsPlayed\(system, printed\)/.test(actorsSource) ? "yes" : "no", "yes");
+check("and it says which condition took the squares",
+  /why\.push\(`\$\{named\(key\)\} halves your Move`\)/.test(actorsSource) ? "yes" : "no", "yes");
 /* And the simulator agrees, or a measurement is of a different game. Its source is already read at the top of this suite. */
 check("and the simulator floors it the same way",
   /n = max\(1, n - self\.cfg\.bad_leg\)/.test(simSource) ? "yes" : "no", "yes");
@@ -12559,8 +12991,10 @@ check("icon references checked", 62, 62);
  */
 const FOUNDRY_HOOKS = new Set([
   "init", "ready", "canvasReady", "collapseSidebar",
+  /* `createActor` builds a new character's ten card stacks. See `buildCharacterDecks`. */
+  "createActor",
   "updateActor", "createItem", "updateItem", "deleteItem",
-  "preUpdateToken", "updateToken",
+  "preUpdateToken", "updateToken", "controlToken",
   "combatStart", "combatTurn", "combatRound", "deleteCombat"
 ]);
 const hookSources = ["cardrpg.mjs", "module/combat.mjs", "module/tray.mjs", "module/sheets.mjs",
@@ -12570,7 +13004,7 @@ const hooksUsed = [...new Set([...hookSources.matchAll(/Hooks\.(?:on|once)\("([a
   .map(m => m[1]))].sort();
 const strayHooks = hooksUsed.filter(h => !FOUNDRY_HOOKS.has(h));
 check("hooks nobody will ever call", strayHooks.length ? strayHooks.join(", ") : "none", "none");
-check("hooks the system listens on", hooksUsed.length, 14);
+check("hooks the system listens on", hooksUsed.length, 16);
 
 /* ---- the macro API is the functions it claims ---- */
 
@@ -13173,8 +13607,181 @@ check("which name no approach and are worth 1",
 /* Values run 1-3 and nothing is worth more than the top of the band. */
 check("skill cards outside the 1-3 band",
   skills.filter(c => c.value < 1 || c.value > 3).map(c => c.name).join(", ") || "none", "none");
-/* Some cards have an edge, which is prose on purpose: it is not a computation. */
-check("cards carrying an edge", skills.filter(c => c.edge).length, 5);
+/*
+ * **Every card has an edge, and the ladder it rides on is the check.**  [2026-11-15]
+ *
+ * It used to be five of ten, and the five were not a sample: **all five were value 1**, and every
+ * 2 and 3 was a bare number. The content had a rule in it that nobody had written down -- value
+ * trades against text -- so it is written down, every card carries a clause, and this is the pair
+ * of checks that keeps the ladder a ladder rather than a drift back to *everything has
+ * everything*.
+ *
+ * The clause is still prose on purpose: it is not a computation, the player claims it and the GM
+ * rules on it out loud. What the engine does is print it beside the result.
+ */
+check("skill cards carrying an edge", skills.filter(c => c.edge).length, skills.length);
+
+/* -------------------------------------------- */
+
+/*
+ * **The four Ways deal their own skill cards now.**  [BUILT 2026-11-15]
+ *
+ * skill-rules 1 has said since it was written that *the Way and background decide which approaches
+ * have more cards and higher values*, and named a lean for three of the four. The content could
+ * not do it -- the Way trees did not exist when the deck was written, and the document said as
+ * much: *the starter skill deck is a generic stand-in until then.* Every character in the game
+ * carried the identical fifteen, so a level-20 Shade was exactly as likely to hold a Shadow card
+ * as a level-0 Soldier.
+ *
+ * The deck **grows**: a Way card joins and nothing leaves, which is the trade section 8 prices --
+ * more checks in a day, each one drawn from a thicker deck.
+ */
+const waySkills = [...content.SHADE_SKILLS, ...content.STRENGTH_SKILLS,
+  ...content.MIND_SKILLS, ...content.FAITH_SKILLS];
+check("skill cards a Way can deal", waySkills.length, 15);
+check("and every one of them is in the pool a grant reads",
+  waySkills.filter(c => !graph.SKILL_POOL.has(c.name)).map(c => c.name).join(", ") || "none",
+  "none");
+check("and the pool holds every skill card in the game",
+  graph.SKILL_POOL.size, content.ALL_SKILLS.length);
+/* The ladder holds on the new ones too: a card is a number or a clause, never neither. */
+check("Way cards with nothing printed on them",
+  waySkills.filter(c => !c.edge).map(c => c.name).join(", ") || "none", "none");
+/* One copy each. A second copy of a card that is meant to make a deck yours makes it yours
+ * twice, which is a different thing. */
+check("Way cards that arrive more than once",
+  waySkills.filter(c => (c.copies ?? 1) !== 1).map(c => c.name).join(", ") || "none", "none");
+
+/*
+ * **The lean each Way was promised.** Section 1 names three of them -- Strength is *lots of Might
+ * and Agility*, Shade is *Shadow, Agility and Wits*, Mind is *Lore, Presence and Wits* -- so the
+ * cards are checked against the sentence rather than against taste. Faith was written after that
+ * list and takes the two approaches its content is made of.
+ */
+const leanOf = list => [...new Set(list.map(c => c.approach))].sort().join(", ");
+check("what Shade deals", leanOf(content.SHADE_SKILLS), "agility, presence, shadow, wits");
+check("what Strength deals", leanOf(content.STRENGTH_SKILLS), "agility, might, presence");
+check("what Mind deals", leanOf(content.MIND_SKILLS), "lore, presence, wits");
+check("what Faith deals", leanOf(content.FAITH_SKILLS), "lore, presence");
+
+/*
+ * **One card on the trunk and one on each tier-one title**, which is what makes walking a Way
+ * worth something on the skill side and each branch worth something more. Faith is wired
+ * differently and deliberately: twelve gods stand behind one door, so its three go on the trunk,
+ * the vows and the calling rather than on twelve exclusive titles.
+ */
+const dealers = nodes.filter(n => n.grants?.skill && !n.id.startsWith("background."));
+check("nodes outside creation that deal skill cards", dealers.length, 15);
+check("and each deals exactly one",
+  dealers.filter(n => [n.grants.skill].flat().length !== 1).map(n => n.id).join(", ") || "none",
+  "none");
+check("the four trunks are among them",
+  ["shade", "strength", "mind", "faith"].filter(id => !dealers.some(n => n.id === id))
+    .join(", ") || "none", "none");
+/*
+ * **No WAY card is dealt twice**, which is not true of the generic ones and should not be:
+ * the twelve occupations deal staples out of the shared fifteen and several of them want
+ * Sharp Eyes. A named card is the opposite kind of thing -- it is the card that makes a
+ * deck a Shade's -- so two nodes handing over the same one is a wiring mistake.
+ */
+check("and no Way card is dealt by two nodes",
+  (() => {
+    const named = new Set(waySkills.map(c => c.name));
+    const seen = new Set(), twice = [];
+    for (const n of nodes) for (const name of [n.grants?.skill ?? []].flat()) {
+      if (!named.has(name)) continue;
+      if (seen.has(name)) twice.push(name); else seen.add(name);
+    }
+    return twice.join(", ") || "none";
+  })(), "none");
+
+/*
+ * **No skill card is named after a node.**
+ *
+ * *The Petition* was called *The Calling* for about a minute, which is also the name of the node
+ * that deals it. The script wiring the grants looked for the card's name inside the node's text
+ * to avoid doing the work twice, found the node calling itself that, and skipped it -- so the one
+ * node in Faith that twelve gods stand behind silently handed over nothing.
+ *
+ * A card and a node sharing a name reads perfectly and greps terribly, and that is the cheapest
+ * possible example of what it costs.
+ */
+check("skill cards named after a node",
+  content.ALL_SKILLS.filter(c => nodes.some(n => n.name === c.name))
+    .map(c => c.name).join(", ") || "none", "none");
+
+/*
+ * **What a deck weighs at each stage**, pinned, because *the deck grows* is a decision and a
+ * decision that drifts is a different game. Fifteen generic, two from the occupation, and one
+ * for the Way plus one per title taken.
+ */
+const deckSize = content.WARRIOR_SKILLS.reduce((n, c) => n + (c.copies ?? 1), 0);
+check("the generic deck", deckSize, 15);
+check("and what creation makes of it", deckSize + 2, 17);
+check("and a Way with one title taken", deckSize + 2 + 2, 19);
+
+
+/*
+ * **No length rule beside it**, for the reason this file settled once already: *empty is a fact;
+ * short is a taste.* The obvious companion -- a 3's clause is short, a 1's is long -- is false on
+ * the first card you test it against. **Inspiration** is a value 1 and its edge is *Draw 1 skill
+ * card*: eighteen characters, and the strongest clause in the deck. The ladder is about how much
+ * the clause is WORTH, which no character count can see.
+ */
+
+/*
+ * **The floor, which is what a training is worth when it reaches no tool.**
+ *
+ * Ten of the sixteen trainings a node teaches uncap nothing and nine of those never will -- there
+ * is no catalogue entry for having ridden since you were six. The floor needs no object, so it is
+ * the dial those rewards were missing.
+ *
+ * **Claimed, not enforced**, which is the half this check exists to pin. The tray offers only
+ * trainings the character holds, because that is the half the engine knows; whether *lockpicks*
+ * covers the thing in front of them is a sentence about the fiction and belongs to the table. A
+ * later edit that started matching the training against the obstacle would be the engine taking
+ * a ruling off the GM.
+ */
+check("a trained card cannot fall below", resolve.SKILL_FLOOR, 2);
+check("and the floor lifts the card rather than adding to it",
+  /const base = floored \? SKILL_FLOOR : printed;/.test(resolveSource) ? "yes" : "no", "yes");
+check("and it only ever lifts, so a 2 and a 3 are untouched",
+  /const floored = !improvise && !!training && printed < SKILL_FLOOR;/.test(resolveSource)
+    ? "yes" : "no", "yes");
+check("and improvising is not rescued by it",
+  /!improvise && !!training/.test(resolveSource) ? "yes" : "no", "yes");
+check("the tray offers only trainings the character holds",
+  /const trainings = this\.actor\.system\.learned\?\.trainings \?\? \[\];/.test(traySource)
+    ? "yes" : "no", "yes");
+/* The claim is printed where the person ruling on it is already looking. */
+check("a claimed training is said out loud",
+  /reasons\.push\(`trained in \$\{training\}`/.test(resolveSource) ? "yes" : "no", "yes");
+/*
+ * **And the card's clause reaches the table whether or not anybody ticked a box.**
+ *
+ * It was printed only when claimed, and claiming needed the dialog -- so on a check that resolved
+ * on the click, the sentence the GM has to rule on was nowhere. Worse, making the box one of the
+ * things the dialog ASKS about meant the dialog opened on every check in the game, since every
+ * card has an edge: a feature that costs every other check a modal is not worth having.
+ *
+ * A rider is not an option anyway. *The Loud Voice* says everyone nearby knows it was you, which
+ * is a price; a player declining to mention it is not the system working. So the note carries it
+ * always, and the box only changes which words introduce it.
+ */
+check("a card's edge is printed whether or not it was claimed",
+  /const clause = card\?\.system\?\.edge \?\? "";/.test(resolveSource) ? "yes" : "no", "yes");
+check("and says which of the two happened",
+  /useEdge \? "edge claimed" : "this card's edge"/.test(resolveSource) ? "yes" : "no", "yes");
+/* That it changes no number is measured rather than grepped: the live harness resolves the
+ * same card twice, once claimed, and the arithmetic chain has to come out the same string.
+ * The regex that used to stand here could not tell code from comment and matched its own. */
+/*
+ * **And an edge never summons the dialog**, which is the regression the line above replaced:
+ * `asks` is what decides whether a check pauses, and an entry every card satisfies makes it
+ * never empty.
+ */
+check("the edge rides along rather than asking",
+  /if \(asks\.length && edge\) asks\.push\("edge"\);/.test(traySource) ? "yes" : "no", "yes");
 
 /* ---- the check itself ---- */
 
@@ -13265,7 +13872,24 @@ check("an untrained user caps the tool",
     ? "yes" : "no", "yes");
 /* Improvising: value 0 with disadvantage, so an empty deck is not an empty character. */
 check("an empty deck can still improvise",
-  /const draw = improvise \? -1 : mode;/.test(resolveSource) ? "yes" : "no", "yes");
+  /const draw = improvise \? -1 : \(up \? 1 : down \? -1 : 0\);/.test(resolveSource)
+    ? "yes" : "no", "yes");
+/*
+ * **[2026-11-14] And a claim meets the GM's call the way two sources of advantage always meet.**
+ *
+ * The call carries a mode and a player can now claim one, so there are two inputs where there was
+ * one. Summing them would make advantage stack, which it does nowhere else in this game.
+ *
+ * **[2026-11-15] The signed sum went when a third source arrived.** With two inputs the sum's
+ * sign and the combat side's pair of booleans agree, and the sum was shorter. With a condition in
+ * it they part company: `sign(1 + 1 - 1)` is advantage, so a call and a claim would outvote a
+ * Heckle -- and *does not stack* has to mean two of a thing cannot outweigh one of the other, or
+ * it only means it while nobody is counting. Both halves of the game now cancel the same way.
+ */
+check("a call, a claim and a condition do not stack",
+  /let up = Math\.sign\(mode\) > 0 \|\| claimed\?\.mode > 0 \|\| carried\.advantage;/
+    .test(resolveSource)
+  && /if \(up && down\) \{/.test(resolveSource) ? "yes" : "no", "yes");
 /* A wild serves every approach, which is what makes it worth a slot that could have held a 3. */
 check("a wild card serves any approach",
   /return this\.wild \|\| this\.approach === approach;/.test(cardsSource) ? "yes" : "no", "yes");
@@ -13285,12 +13909,221 @@ check("and says why it is not a second window",
   /\*\*The same window in a different mode, not a second application\*\*/.test(hudPane)
     ? "yes" : "no", "yes");
 
+/*
+ * **[CHANGED 2026-11-14] The scene side is a SIDE now, not the absence of a fight.**
+ *
+ * It was *whenever no Combat is active*, which meant a check called in the middle of one had
+ * nowhere to be answered from -- and out of combat the window drew both hands at once, only one
+ * of which could be played. The mode still picks the side; the toggle overrules it.
+ */
 check("the tray has a scene mode",
-  /scene: myCombatant \? null : this\.#sceneTray\(\),/.test(traySource) ? "yes" : "no", "yes");
+  /scene: \(npc \|\| side !== "skill"\) \? null : this\.#sceneTray\(\),/.test(traySource)
+    ? "yes" : "no", "yes");
+check("and a fight picks the side when nobody has said otherwise",
+  /this\.side \?\? \(game\.combat\?\.combatants\.some/.test(traySource) ? "yes" : "no", "yes");
+check("and only one hand is drawn at a time",
+  /cards: \(npc \|\| side === "skill"\) \? \[\]/.test(traySource) ? "yes" : "no", "yes");
+check("the corner shows whichever deck that is",
+  /actionDeck: side === "skill" \? this\.#skillDeck\(\) : this\.#actionDeck\(combat\),/
+    .test(traySource) ? "yes" : "no", "yes");
+check("and a button turns the window over",
+  /data-action="flipSide"/.test(trayTemplate) ? "yes" : "no", "yes");
+/* A monster has one deck, so it is never offered a choice between two. */
+check("a monster is never offered the toggle",
+  /flip: npc \? null :/.test(traySource) ? "yes" : "no", "yes");
 check("and the template draws it",
   /\{\{#if scene\}\}/.test(trayTemplate) ? "yes" : "no", "yes");
 check("a skill card is playable",
   /data-action="check" data-card-id="\{\{this\.id\}\}"/.test(trayTemplate) ? "yes" : "no", "yes");
+
+/*
+ * **The monster tray (hud-spec 7.1).**  [BUILT 2026-11-14]
+ *
+ * The window refused NPCs outright and sent the GM to a sheet that cannot attack with anything,
+ * so the one actor in a fight nobody could play was every actor the GM was playing.
+ *
+ * The three checks below are the three sentences core-rules 9 makes about a monster's turn, each
+ * in the place the HUD would have to break it: it has no hand to stage from, it has no stamina to
+ * buy back, and its turn is a sequence rather than two halves.
+ */
+check("the tray has a monster mode",
+  /npc: npc \? this\.#npcTray\(\) : null,/.test(traySource) ? "yes" : "no", "yes");
+check("and the template draws it",
+  /\{\{#if npc\}\}/.test(trayTemplate) ? "yes" : "no", "yes");
+check("a monster stages nothing",
+  /\{\{#unless isNpc\}\}\s*\n\s*<div class="cr-play__stacks">/.test(trayTemplate)
+    ? "yes" : "no", "yes");
+check("and is never asked whether it can breathe",
+  /canBreathe: !npc && canCatchBreath\(this\.actor\)/.test(traySource) ? "yes" : "no", "yes");
+check("its weapons are rows of their own",
+  /data-action="npcStrike"/.test(trayTemplate) ? "yes" : "no", "yes");
+/* Both routes in -- one step, or the whole sequence -- because the flip is about the type having
+ * acted and not about how much of its card the GM chose to play. */
+check("and playing its card flips it to the table",
+  (traySource.match(/await revealIntent\(this\.actor\);/g) ?? []).length, 2);
+
+/*
+ * **Who the window opens on**, which is hud-spec 7's visibility table and not a new rule: a player
+ * sees a character they own, a GM sees whoever they have selected. Both halves are checked because
+ * the dangerous one is the second -- a missing GM test refuses the GM their own monsters, and a
+ * missing player test shows a player the goblins' hand.
+ */
+check("a player is never shown a monster's HUD",
+  /if \(actor\.type === "npc" && !game\.user\.isGM\) return null;/.test(traySource)
+    ? "yes" : "no", "yes");
+check("nor an actor they do not own",
+  /if \(!actor\.isOwner\) return null;/.test(traySource) ? "yes" : "no", "yes");
+check("and the window follows the selection",
+  /Hooks\.on\("controlToken"/.test(traySource) ? "yes" : "no", "yes");
+
+/*
+ * **The claim (hud-spec 4.4).**  [BUILT 2026-11-14]
+ *
+ * skill-rules 2 has always granted advantage for a good plan and skill-rules 7 for know-how that
+ * fits, and neither could reach a draw: the engine knew six rules it could prove and there was no
+ * third way in.
+ *
+ * What must hold is that it goes through `advantageFor` rather than around it -- that is what
+ * makes a claim one more source of the same single advantage instead of a second one -- and that
+ * the action it was claimed for spends it.
+ */
+check("a claim reaches the draw through the one function",
+  /const claim = readEdge\(actor\);/.test(resolveSource) ? "yes" : "no", "yes");
+check("as a source and not as a number",
+  /if \(claim\.mode > 0\) advantage = true; else disadvantage = true;/.test(resolveSource)
+    ? "yes" : "no", "yes");
+check("an attack spends it",
+  (resolveSource.match(/await clearEdge\(actor\);/g) ?? []).length, 2);
+check("normal is the absence of one rather than a third kind",
+  /if \(!want\) return clearEdge\(actor\);/.test(resolveSource) ? "yes" : "no", "yes");
+check("the reason is printed with the result",
+  /reasons\.push\(edgeLine\(claim\)\);/.test(resolveSource) ? "yes" : "no", "yes");
+/*
+ * **The three states are words.**  [2026-11-14] They were a minus, a dot and a plus, which is
+ * compact and says nothing: a glyph has to be learned before it can be read, and the one control
+ * whose whole job is to be understood at a glance must not need a player who already knows it.
+ * The word is the label and the tooltip carries everything else -- which is also why the caption
+ * beside it went: it described the state the buttons were already showing.
+ */
+check("the edge states are named rather than drawn",
+  (traySource.match(/label: game\.i18n\.localize\("CARDRPG\.Edge\.\w+"\)/g) ?? []).length, 3);
+check("and the caption that repeated them is gone",
+  /cr-edge__note/.test(trayTemplate) ? "still there" : "gone", "gone");
+check("and its rule went with it",
+  /cr-edge__note/.test(paneCss) ? "still there" : "gone", "gone");
+
+/*
+ * **Type laid over a picture carries a halo.**  [BUILT 2026-11-14]
+ *
+ * The wash is set by the worst case for CONTRAST -- ink over a 0.6 paper wash on a black pixel,
+ * 5.5:1 -- and that is the right way to pick a wash. It is not the worst case for READING: a line
+ * of 11px type crossing a high-frequency edge in the art clears the ratio and is still hard to
+ * read, because every letter has something different behind it.
+ *
+ * Declared once as a token and inherited from the card, never listed per band: the bands tile a
+ * face, and a list of them is a list the next band added will not be on.
+ */
+check("there is one halo token",
+  /--cardrpg-halo: /.test(paneCss) ? "yes" : "no", "yes");
+check("and the card wears it rather than each band",
+  /\.cardrpg \.cr-card,[\s\S]{0,60}text-shadow: var\(--cardrpg-halo\)/.test(paneCss)
+    ? "yes" : "no", "yes");
+/* A harm card is light ink on an oxblood ground, so its halo is that ground and not the paper. */
+check("a dark card haloes in its own ground",
+  /\.cardrpg \.cr-card--harm \{\s*\n\s*--cardrpg-glow:/.test(paneCss) ? "yes" : "no", "yes");
+
+/*
+ * **A passive slate is dimmed, not made see-through.**  [FIXED 2026-11-14]
+ *
+ * `opacity` on the card took the card's own background with it, so an open Conditions pile laid a
+ * 70% card over the tray and three sentences showed through each other. The rule meant *you
+ * cannot pick this up*; what it did was make the card a window.
+ */
+check("a passive card dims its contents and not itself",
+  /\.cardrpg \.cr-card--passive > \* \{ opacity/.test(paneCss) ? "yes" : "no", "yes");
+check("and the card itself is no longer transparent",
+  /\.cardrpg \.cr-card--passive \{ opacity/.test(paneCss) ? "still there" : "gone", "gone");
+
+/*
+ * **The level-up panel names the node before it shows one.**  [2026-11-14] The picture sat above
+ * the heading, so a panel opened on an unfamiliar node showed an unlabelled illustration. A card
+ * names itself at the top -- card-layout's first tier -- and this panel is a card.
+ */
+/*
+ * **The pane opens on something, not on an instruction.**  [BUILT 2026-11-14] It opened on an
+ * empty panel reading *tap a node*, with 237 boxes behind it and the player's first job being to
+ * find one of the four they could take. The arrows always knew where those were; nothing pressed
+ * one. The first render now steps to the first choice -- marks it, centres on it, reads it out.
+ *
+ * **Once**, which is the half worth checking: `_onRender` runs again after a node is taken, and
+ * auto-marking there would arm Accept on a node nobody had read.
+ */
+check("the pane opens on the first choice",
+  /if \(this\.firstLook && !this\.tentative\) \{[\s\S]{0,120}this\.#stepChoice\(1\);/
+    .test(levelup) ? "yes" : "no", "yes");
+check("and only on the way in",
+  /this\.firstLook = false;/.test(levelup) ? "yes" : "no", "yes");
+
+check("the node's name comes before its picture",
+  /box\.innerHTML = `<h3>\$\{esc\(node\.name \?\? showing\)\}<\/h3>\$\{picture\}/.test(levelup)
+    ? "yes" : "no", "yes");
+/* Two columns, so the picture above it has the room. */
+check("the legend is laid out in two columns",
+  /\.cr-levelup__legend \{[\s\S]{0,260}grid-template-columns: 1fr 1fr;/.test(paneCss)
+    ? "yes" : "no", "yes");
+/*
+ * **And it names the two shapes.** The map has drawn a title as a hexagon since it was built and
+ * never said so, which left the one structural distinction on it -- a destination against a step
+ * toward one -- for the player to infer from 169 boxes.
+ */
+check("and names the major and minor shapes",
+  /cr-swatch--major/.test(panePart) && /cr-swatch--minor/.test(panePart)
+    ? "yes" : "no", "yes");
+check("which the stylesheet draws as the shapes themselves",
+  /\.cr-swatch--major \{[\s\S]{0,320}clip-path: polygon/.test(paneCss) ? "yes" : "no", "yes");
+
+/*
+ * **Same-depth predecessors are alternatives, not crossings.**  [FIXED 2026-11-14] The pane
+ * picked one shallowest predecessor and dashed every other edge as a crossing, which was right
+ * while a node's prerequisites sat at different depths and wrong the moment several sat at the
+ * same one. An occupation follows five origins by five equal routes.
+ */
+check("the pane marks a crossing by depth, not by identity",
+  /cross: after\.length > 1 && \(DEPTH\.get\(prereq\) \?\? 0\) > shallowest/.test(levelup)
+    ? "yes" : "no", "yes");
+
+check("the HUD offers all three states",
+  /data-action="setEdge" data-mode="\{\{this\.mode\}\}"/.test(trayTemplate) ? "yes" : "no", "yes");
+check("and the tags come from the loose bag rather than a table",
+  /for \(const k of system\.learned\?\.knowHow \?\? \[\]\) add\("Know-how", k\);/.test(traySource)
+    ? "yes" : "no", "yes");
+
+/*
+ * **The deck, listed on the sheet (hud-spec 8).** The Deck tab counted the cards and showed none
+ * of them, so the surface that answers *what is in my deck* could answer only *how many*.
+ */
+check("the sheet lists the action deck",
+  /cards: describeDeck\(actor, \[/.test(sheetSource) ? "yes" : "no", "yes");
+check("and the skill deck, which nothing has ever listed",
+  /skills: describeDeck\(actor, \[/.test(sheetSource) ? "yes" : "no", "yes");
+/* On both lists, because *which pile* is the column a count cannot give you and the skill deck
+ * has three piles of its own. */
+check("saying which pile each card is in",
+  (charTemplate.match(/cr-cardlist__where/g) ?? []).length, 2);
+
+/*
+ * **A slate finds its picture even when nothing stamped one on it** (the fallback in `artOf`).
+ * Stamping is a write and a write only reaches the documents in front of it, so a world built
+ * before a piece was drawn showed a blank card beside a stamped one.
+ */
+check("art is derived when a document carries none",
+  /if \(doc\?\.documentName === "Item"\) return slatePath\(doc\.type, doc\.name\);/.test(artSource)
+    ? "yes" : "no", "yes");
+check("and a figure's portrait the same way",
+  /return figurePath\(actor\?\.name\);/.test(artSource) ? "yes" : "no", "yes");
+check("the stat panel wears it",
+  /portrait: portraitOf\(actor\),/.test(traySource) ? "yes" : "no", "yes");
+
 /*
  * All six passives, always: a deck that covers every approach is the composition rule, so a tray
  * that showed four would be hiding two a player is entitled to. Read from the `#sceneTray` body --
@@ -13364,6 +14197,7 @@ check("the pact is the spell that prints it",
  * withdrawn, read identically by every client, and `updateScene` already redraws the tray.
  */
 const checksSource = fs.readFileSync(path.join(root, "module/checks.mjs"), "utf8");
+const tableSource = fs.readFileSync(path.join(root, "module/table.mjs"), "utf8");
 
 check("the call is a module of its own",
   /export function readCall\(\)/.test(checksSource) ? "yes" : "no", "yes");
@@ -13440,7 +14274,26 @@ check("and the call carries one at all",
   /mode: Number\(call\.mode\) \|\| 0/.test(checksSource) ? "yes" : "no", "yes");
 check("the GM's dialog offers all three edges",
   ["CARDRPG.Check.Even", "CARDRPG.Check.Advantage", "CARDRPG.Check.Disadvantage"]
-    .every(k => traySource.includes(k) && k in lang), true);
+    .every(k => tableSource.includes(k) && k in lang), true);
+/*
+ * **And the difficulty is typed rather than chosen.**  [2026-11-15] Four rungs in a drop-down is
+ * enough for an obstacle and not enough for a person: an opposed check is pitched against
+ * somebody, and somebody is a 6 or an 8 as readily as a 7. The rungs stay as the suggestions on
+ * the field, because they are still what most calls are.
+ */
+check("the difficulty is a number the GM may set",
+  /<input type="number" name="dc"/.test(tableSource) ? "yes" : "no", "yes");
+check("and the four rungs are offered on it",
+  /list="cr-board-rungs"/.test(tableSource) ? "yes" : "no", "yes");
+/*
+ * **One dialog, not two.** The scene panel built a call dialog of its own before the board
+ * existed. Two forms writing one scene flag is the divergence that is found months later as
+ * "the other one does not do that", so the button opens the board instead.
+ */
+check("the scene panel's button opens the board",
+  /await openTableBoard\(\);/.test(traySource) ? "yes" : "no", "yes");
+check("and builds no second call dialog",
+  /CARDRPG\.Check\.CallTitle/.test(traySource) ? "it does" : "none", "none");
 
 /*
  * **The approach must fit the description** (skill-rules 2, step 2), which the engine can hold once
@@ -13513,7 +14366,7 @@ check("and a way to change it once it stands",
 check("a scene change redraws every tray",
   /"updateCombat", "updateScene"/.test(traySource) ? "yes" : "no", "yes");
 check("every string the call needs is translated",
-  Object.keys(lang).filter(k => k.startsWith("CARDRPG.Check.")).length, 26);
+  Object.keys(lang).filter(k => k.startsWith("CARDRPG.Check.")).length, 30);
 check("and nothing it uses is missing",
   [...traySource.matchAll(/CARDRPG\.Check\.[A-Za-z]+/g)].map(m => m[0])
     .filter(k => !(k in lang)).join(", ") || "none", "none");
@@ -13620,19 +14473,28 @@ const toolTrainers = nodes.filter(n => n.grants?.training
  * backgrounds.md meant by *gear always includes the trained tool* -- and what this very
  * check caught them not doing. */
 check("nodes that teach a tool training", toolTrainers.length, 19);
+/*
+ * **A node may issue a LIST**, since 2026-11-14, so every reader here flattens. A trade hands
+ * over the tool it trained you on and the thing you did the work with, and `item` as a bare
+ * string could only ever say one of the two. What this section checks is unchanged and is checked
+ * the same way: the tool a training uncaps has to be among what the node issues.
+ */
+const issues = n => [n.grants?.item ?? []].flat();
 check("and the ones that issue nothing, which may only be crossings",
-  toolTrainers.filter(n => !n.grants.item).map(n => n.id).join(", "),
+  toolTrainers.filter(n => !issues(n).length).map(n => n.id).join(", "),
   "shade.cross.odds1, shade.cross.wire1");
 check("and every one of those is a crossing",
-  toolTrainers.filter(n => !n.grants.item && !n.id.includes(".cross.")).map(n => n.id).join(", ")
-    || "none", "none");
-/* And what each issues is a tool its own training uncaps, not merely some item. */
+  toolTrainers.filter(n => !issues(n).length && !n.id.includes(".cross.")).map(n => n.id)
+    .join(", ") || "none", "none");
+/* And what each issues includes a tool its own training uncaps, not merely some item. */
 check("issued tools that the node's training does not uncap",
-  toolTrainers.filter(n => n.grants.item
-    && !(trainingTools.get(n.grants.training) ?? []).includes(n.grants.item))
-    .map(n => `${n.id}:${n.grants.item}`).join(", ") || "none", "none");
+  toolTrainers.filter(n => issues(n).length
+    && !issues(n).some(i => (trainingTools.get(n.grants.training) ?? []).includes(i)))
+    .map(n => `${n.id}:${issues(n).join("+")}`).join(", ") || "none", "none");
 check("what each one is issued",
-  toolTrainers.filter(n => n.grants.item).map(n => `${n.grants.training}:${n.grants.item}`)
+  toolTrainers.filter(n => issues(n).length)
+    .map(n => `${n.grants.training}:${issues(n)
+      .find(i => (trainingTools.get(n.grants.training) ?? []).includes(i))}`)
     .sort().join(", "),
   "armour and its repair:Repair Kit, armour and its repair:Repair Kit, "
   + "armour and its repair:Repair Kit, games of chance:Gaming Set, games of chance:Gaming Set, "
@@ -13642,17 +14504,45 @@ check("what each one is issued",
   + "treating wounds:Healer's Kit, treating wounds:Healer's Kit, treating wounds:Healer's Kit, "
   + "treating wounds:Healer's Kit");
 /*
- * **And nothing measured is issued.** A service weapon or a suit of armour is the obvious next
- * thought and the answer is no: those are numbers this project has simulated -- Plate wins 100.0%
- * of the published fights -- so handing one out moves the fight the game is balanced against. A
- * tool changes a check nobody has simulated and caps at +2. This pins the line.
+ * **And nothing measured is issued FOR A LEVEL.** A service weapon or a suit of armour is the
+ * obvious next thought and the answer is still no: those are numbers this project has simulated
+ * -- Plate wins 100.0% of the published fights -- so handing one out moves the fight the game is
+ * balanced against. A tool changes a check nobody has simulated and caps at +2.
+ *
+ * **[NARROWED 2026-11-14] The line is drawn at a LEVEL, which is where its own reasoning draws
+ * it.** The argument above is about the reward curve: what a level buys, measured against what
+ * other levels buy. Creation is not a level -- `free: true` says so, `levelFor` skips those
+ * nodes when it counts, and a character who has taken an origin and an occupation is level 0.
+ *
+ * And the benchmark says the same thing from the other side. **The Starter Warrior begins with a
+ * Longsword, a Wooden Shield, Leather Armor and a Healing Potion**, and that loadout is what
+ * every published simulation was run against -- it is the balance point, not a departure from it.
+ * A character who finishes creation with a Spear and Leather Armor is carrying LESS than the
+ * figure the win rates were measured on. Refusing them a knife while handing the pregen a
+ * longsword was not a balance rule; it was the balance rule applied to the wrong half of the
+ * character's life.
+ *
+ * So: a levelled node issues no measured gear, as before and for the published reason. A creation
+ * node issues the basic kit its trade and its place would put on somebody, and what that is is
+ * pinned below rather than left to taste.
  */
-check("nodes that issue a weapon or armour",
-  nodes.filter(n => {
-    const it = n.grants?.item && content.ITEMS.find(i => i.name === n.grants.item);
-    if (!it) return false;
-    return (it.armor ?? 0) > 0 || Object.keys(it.verbs ?? {}).some(v => v === "strike");
-  }).map(n => `${n.id}:${n.grants.item}`).join(", ") || "none", "none");
+const measured = name => {
+  const it = content.ITEMS.find(i => i.name === name);
+  return it && ((it.armor ?? 0) > 0 || Object.keys(it.verbs ?? {}).some(v => v === "strike"));
+};
+check("levelled nodes that issue a weapon or armour",
+  nodes.filter(n => !n.free)
+    .flatMap(n => [n.grants?.item ?? []].flat().filter(measured).map(i => `${n.id}:${i}`))
+    .join(", ") || "none", "none");
+/*
+ * **And exactly what creation issues, pinned.** Every name here is from the cheap end of the
+ * catalogue and every one of them is a thing the trade or the place would actually put on
+ * somebody. The list is pinned whole so that arming creation more generously is a decision
+ * somebody makes in the open, which is the same guard the training list above is under.
+ */
+check("what creation arms a character with", [...new Set(nodes.filter(n => n.free)
+  .flatMap(n => [n.grants?.item ?? []].flat()).filter(measured))].sort().join(", "),
+  "Dagger, Leather Armor, Light Helm, Mace, Shortbow, Spear");
 
 /* The three the catalogue could already carry, so a later edit cannot quietly un-pair them. */
 for (const [training, tool] of [["rope and climbing", "Climbing Rope"],
@@ -13788,12 +14678,80 @@ check("and so does the Fail",
   /the situation changes\. Draw a twist\./.test(resolveSource) ? "yes" : "no", "yes");
 /* Two and pick, for a dramatic failure or a card that does not fit the scene. */
 check("two may be drawn and one picked",
-  /drawTwist\(\{ two: target\.dataset\.two === "yes" \}\)/.test(traySource) ? "yes" : "no", "yes");
+  /two: target\.dataset\.two === "yes",/.test(traySource) ? "yes" : "no", "yes");
 /* Reshuffled when it runs out, which is the only shuffle rule the deck has. */
 check("the deck comes back when it runs out",
   /if \(deck\.cards\.size < want\)/.test(checksSource) ? "yes" : "no", "yes");
 check("and a twist is whispered to the GM",
   /whisper: ChatMessage\.getWhisperRecipients\("GM"\)/.test(checksSource) ? "yes" : "no", "yes");
+
+/*
+ * **One boolean could not hold a group check.**  [BUILT 2026-11-15]
+ *
+ * A twist was owed by the challenge -- `owed: true` -- which records that somebody owes one
+ * and not who, holds exactly one at a time, and exists only inside a challenge. Several
+ * characters answering one call breaks all three at once: three of five may come up short, each
+ * failure is a different person's problem, and none of it happens inside a challenge unless the
+ * GM started one.
+ *
+ * So the debt is a list on the scene naming the character who incurred it, and the boolean is
+ * gone rather than kept beside it -- two records of one fact is the thing this project keeps
+ * finding as a bug months later.
+ */
+check("the debts are a scene's state, like the call",
+  /const DEBTS = "twistDebts";/.test(checksSource) ? "yes" : "no", "yes");
+check("and the challenge no longer keeps a boolean of its own",
+  /owed: (!!move\.twist|false|!!live\.owed)/.test(checksSource) ? "it does" : "none", "none");
+check("and the panel reads the ledger rather than the challenge",
+  /needed: readDebts\(\)\.length > 0/.test(checksSource) ? "yes" : "no", "yes");
+/* One per person per obstacle, and the worse result stands: the same character coming up short
+ * twice against one wall has not earned two costs. */
+check("a character owes at most one per call",
+  /const already = debts\.find\(d => d\.actor === actor\);/.test(checksSource) ? "yes" : "no", "yes");
+check("and a Fail outranks a Partial they already owed",
+  /if \(already\.kind === "fail" \|\| kind !== "fail"\) return debts;/.test(checksSource)
+    ? "yes" : "no", "yes");
+
+/*
+ * **At most two draws, however many failed.** Five twists for five failures is the deck narrating
+ * the scene at length and badly. The worst single result draws its own and everybody else shares
+ * one, and the cap lives in the queue rather than in the GM's self-restraint, because the panel
+ * can only offer what the queue returns.
+ */
+const queueBody = checksSource.slice(checksSource.indexOf("export function twistQueue"),
+  checksSource.indexOf("/** How a call reads in one line"));
+check("the queue never offers more than two",
+  /const \[worst, \.\.\.rest\] = sorted;/.test(queueBody) ? "yes" : "no", "yes");
+check("and the rest of them share the second",
+  /out\.push\(entry\(rest,/.test(queueBody) ? "yes" : "no", "yes");
+check("and a Fail is the worst before a Partial is",
+  /const rank = d => \(d\.kind === "fail" \? 0 : 1\);/.test(queueBody) ? "yes" : "no", "yes");
+
+/* The pairing is made at the draw and never afterwards: a card whispered into the middle of a
+ * group check with no name on it is a cost nobody can place. */
+check("the twist says whose cost it is",
+  /const whose = label/.test(checksSource) ? "yes" : "no", "yes");
+check("and the draw clears only the debt it paid",
+  /if \(pay\?\.length\) await forgiveDebts\(pay\);/.test(checksSource) ? "yes" : "no", "yes");
+/* skill-rules 4: the GM may always choose a cost directly, so a debt must be dismissable without
+ * a card. A list of reminders that cannot be ticked off stops being read. */
+check("a debt can be settled without a card",
+  /forgiveTwist: CardRPGTray\.#onForgiveTwist,/.test(traySource) ? "yes" : "no", "yes");
+check("and the queue is drawn one row per debt",
+  /\{\{#each scene\.twists\.queue\}\}/.test(trayTemplate) ? "yes" : "no", "yes");
+check("and each row says who owes it",
+  /class="cr-owed__who">\{\{this\.label\}\}/.test(trayTemplate) ? "yes" : "no", "yes");
+/* Withdrawing the obstacle writes off what it cost: a twist owed for a wall the party walked away
+ * from is a button left lit over a scene that has moved on. */
+check("withdrawing the call forgives the debts",
+  /await scene\.unsetFlag\("cardrpg", FLAG\);\s*\n(?:\s*\/\*[\s\S]{0,200}?\*\/\s*\n)?\s*await forgiveDebts\(\);/
+    .test(checksSource) ? "yes" : "no", "yes");
+check("and so does ending the challenge",
+  /await scene\.unsetFlag\("cardrpg", CHALLENGE\);\s*\n\s*await forgiveDebts\(\);/
+    .test(checksSource) ? "yes" : "no", "yes");
+/* Recording who owes is not drawing: skill-rules 4 keeps the deck out of it until the GM asks. */
+check("the hook records a debt and draws nothing",
+  /if \(TRACK_MOVES\[outcome\]\?\.twist\) \{/.test(checksSource) ? "yes" : "no", "yes");
 
 /*
  * **The challenge tracks, which are the table of §3 as data.** Critical +2 progress, Success +1,
@@ -13822,7 +14780,14 @@ check("only the GM starts one",
  * a flag on the chat message and one hook, guarded by `isGM`, moves the tracks.
  */
 check("the check stamps its outcome on the message",
-  /flags: \{ cardrpg: \{ outcome \} \},/.test(resolveSource) ? "yes" : "no", "yes");
+  /flags: \{ cardrpg: \{ outcome, who:/.test(resolveSource) ? "yes" : "no", "yes");
+/*
+ * **And who made it**, which the outcome alone could not say. A speaker is a display name a GM
+ * may override and it carries no id back to an actor, so the actor travels as its own flag.
+ */
+check("and the character who made it",
+  /who: actor\?\.id \?\? "", whoName: actor\?\.name \?\? ""/.test(resolveSource) ? "yes" : "no",
+  "yes");
 check("and a hook on the GM's client reads it",
   /Hooks\.on\("createChatMessage"[\s\S]{0,120}if \(!game\.user\.isGM\) return;/
     .test(checksSource) ? "yes" : "no", "yes");
@@ -13956,7 +14921,7 @@ check("and each mark has words of its own",
  * was the break test.
  */
 const panelBlock = trayTemplate.slice(trayTemplate.indexOf('<div class="cr-passives'),
-  trayTemplate.indexOf('<div class="cr-scene__passives"'));
+  trayTemplate.indexOf('<div class="cr-passives__mine"'));
 check("the tooltip is built where the data is",
   /data-tooltip="\{\{this\.tip\}\}"/.test(panelBlock) ? "yes" : "no", "yes");
 
@@ -13978,7 +14943,7 @@ check("the toggle writes it",
   /await game\.settings\.set\("cardrpg", "passivesOpen",\s*!game\.settings\.get\("cardrpg", "passivesOpen"\)\);/
     .test(traySource) ? "yes" : "no", "yes");
 check("the fold button says which way it goes",
-  /aria-expanded="\{\{#if scene\.passives_gm\.open\}\}true\{\{else\}\}false\{\{\/if\}\}"/
+  /aria-expanded="\{\{#if passives\.gm\.open\}\}true\{\{else\}\}false\{\{\/if\}\}"/
     .test(trayTemplate) ? "yes" : "no", "yes");
 /* Folded: one row of six. Open: the grid, and who the party is. */
 check("folded, it is one row",
@@ -13986,7 +14951,7 @@ check("folded, it is one row",
 check("open, it is a grid",
   /class="cr-passives__grid"/.test(trayTemplate) ? "yes" : "no", "yes");
 check("and it says whose scores these are",
-  /\{\{scene\.passives_gm\.party\}\}/.test(trayTemplate) ? "yes" : "no", "yes");
+  /\{\{passives\.gm\.party\}\}/.test(trayTemplate) ? "yes" : "no", "yes");
 /*
  * The question a GM will ask the moment the panel makes it visible, answered in the tooltip rather
  * than waiting to be asked: a passive counts the best card of that approach in the WHOLE deck,
@@ -14004,6 +14969,131 @@ check("and that its job is to remove checks",
 check("hud-spec records it as collapsible",
   /#### 5\.3 What the party notices {2}\*\*\[BUILT 2026-11-02\]\*\*/.test(hudSpec) ? "yes" : "no",
   "yes");
+
+/* ---- the table board, and the panel that could not be clicked  [2026-11-15] ---- */
+
+/*
+ * **The scene strip was drawn over Foundry's own tools and no button in it worked.**
+ * [FOUND IN THE APP 2026-11-15]
+ *
+ * One mistake with three faces. `.cr-scene` is a direct child of the HUD layer, and the
+ * layer is `position: fixed; inset: 0; pointer-events: none` -- a sheet over the whole canvas
+ * that lets clicks through to the board underneath. Every panel on that sheet has to do two
+ * things to exist: take `position: absolute` so it lands somewhere chosen, and re-enable
+ * `pointer-events` so it can be touched. The scene strip did neither.
+ *
+ * So it laid out in normal flow at the top-left corner, on top of the scene controls, and
+ * inherited `pointer-events: none` from the layer -- visible, in the wrong place, and dead. Call
+ * for a check, Passives, Challenge and New scene were all unreachable for as long as the panel
+ * has existed, and nothing in this suite asked whether a panel could be clicked.
+ *
+ * Both halves are pinned here, because either one alone brings the whole defect back.
+ */
+const sceneRule = css.slice(css.indexOf(".cr-scene {"), css.indexOf(".cr-scene__", css.indexOf(".cr-scene {")));
+check("the scene strip is a panel like the others",
+  /\.cr-hud-layer \.cr-scene,/.test(css) ? "yes" : "no", "yes");
+check("and it is placed rather than left to flow",
+  /bottom: var\(--cr-hotbar\);/.test(sceneRule) ? "yes" : "no", "yes");
+/* The hand's span exactly, which is also what keeps it off the action deck in the corner: the
+ * first placement started at the deck column's edge and covered the flip button, and the live
+ * harness caught it by trying to press one. */
+check("and it shares the action hand's span",
+  /left: calc\(var\(--cr-controls\) \+ var\(--cr-gutter\) \+ var\(--cr-card-w\) \+ 12px\);/
+    .test(sceneRule) ? "yes" : "no", "yes");
+/*
+ * Every panel anchored to the left edge measures that edge against a variable, and the variable
+ * was a number somebody typed. The right sidebar has been measured since the HUD was built, for
+ * the reason written above the measurement: a fixed width is wrong half the time, because the bar
+ * collapses. The left column is no more fixed than the right one.
+ */
+check("the left controls are measured, not assumed",
+  /#fitControls\(\) \{/.test(traySource) ? "yes" : "no", "yes");
+check("and both edges are re-measured together",
+  /this\.#fitSidebar\(\);\s*\n\s*this\.#fitControls\(\);/.test(traySource) ? "yes" : "no", "yes");
+
+/*
+ * **The GM's controls moved onto the token.** A call and a challenge are things that happen TO
+ * people, and the gesture is pointing at them; the controls lived in a panel belonging to
+ * whichever character was selected, at the other side of the screen, and only out of combat.
+ */
+check("the board hangs off the token HUD",
+  /Hooks\.on\("renderTokenHUD"/.test(tableSource) ? "yes" : "no", "yes");
+check("and it is the GM's",
+  /Hooks\.on\("renderTokenHUD", \(hud, html\) => \{\s*\n\s*if \(!game\.user\.isGM\) return;/
+    .test(tableSource) ? "yes" : "no", "yes");
+check("and it goes in the left column, which is ours",
+  /querySelector\?\.\("\.col\.left"\)/.test(tableSource) ? "yes" : "no", "yes");
+/* Twice-rendered HUDs are normal in Foundry; a second button would be two listeners on one click. */
+check("and it is added once",
+  /column\.querySelector\("\.cr-hud-board"\)\) return;/.test(tableSource) ? "yes" : "no", "yes");
+
+/*
+ * **One dialog, two lengths.** A check and a challenge name the same things -- an obstacle and a
+ * cast -- and differ only in whether one card settles it or a track does. Two buttons made that a
+ * decision taken before the dialog opened; one radio makes it a decision the GM can change.
+ */
+check("the board offers both shapes",
+  /name="shape" value="check"/.test(tableSource)
+    && /name="shape" value="challenge"/.test(tableSource) ? "both" : "no", "both");
+check("and shows only the half that was chosen",
+  /block\.hidden = block\.dataset\.shape !== shape;/.test(tableSource) ? "yes" : "no", "yes");
+/* A live challenge is state with two tracks in it. Restarting it from here would silently zero
+ * them, so the option is disabled rather than quietly destructive. */
+check("and it will not restart a running challenge",
+  /value="challenge"\$\{live \? " disabled" : ""\}/.test(tableSource) ? "yes" : "no", "yes");
+
+/*
+ * **The cast, which is the part that is new.** A call used to be addressed to the room. Group and
+ * opposed checks will both need to know who is in it, and recording the names costs nothing now
+ * and cannot be recovered later.
+ */
+check("a call carries its cast",
+  /who: Array\.isArray\(call\.who\)/.test(checksSource) ? "yes" : "no", "yes");
+check("and so does a challenge",
+  /who: Array\.isArray\(live\.who\)/.test(checksSource) ? "yes" : "no", "yes");
+/* Ids of actors that may be deleted between the call and the answer, so every reader goes through
+ * one resolver rather than trusting the stored list. */
+check("and the names are resolved through one reader",
+  (checksSource.match(/export function castOf/g) ?? []).length, 1);
+/* Read from `castCandidates`'s own body: the opposition finder sweeps the same placeables, so a
+ * file-wide grep is answered by whichever of the two still does it. */
+const castBody = tableSource.slice(tableSource.indexOf("export function castCandidates"),
+  tableSource.indexOf("export async function openTableBoard"));
+check("and the board names only who is in the room",
+  /canvas\?\.tokens\?\.placeables/.test(castBody) ? "yes" : "no", "yes");
+/*
+ * **The number opens on the opposition.**  [2026-11-15] An opposed check is pitched against
+ * somebody, so a generic Normal 5 is the one value the field should not start on. The highest
+ * passive among them, not the sum: two guards are harder than one and not twice as hard, and the
+ * rest is a judgement the GM makes by typing over it.
+ */
+const oppBody = tableSource.slice(tableSource.indexOf("export function oppositionScores"),
+  tableSource.indexOf("export async function openTableBoard"));
+check("the opposition is the highest of them",
+  /Math\.max\(\.\.\.actors\.map\(a => passiveScore\(a, key\)\)\)/.test(oppBody)
+    ? "yes" : "no", "yes");
+check("and never their sum",
+  /reduce\(/.test(oppBody) ? "it adds up" : "none", "none");
+/* Targets first, because pointing at the thing being opposed is a gesture Foundry already has. */
+check("the opposition is who the GM targeted",
+  /for \(const token of game\.user\?\.targets \?\? \[\]\) add\(token\.actor\);/.test(tableSource)
+    ? "yes" : "no", "yes");
+check("and nobody answering the call is also the wall",
+  /exclude: candidates\.map\(c => c\.actor\.id\)/.test(tableSource) ? "yes" : "no", "yes");
+/* A field that keeps overwriting what you typed is worse than one that never helped. */
+check("the suggestion stops when the GM disagrees",
+  /if \(dc\.dataset\.touched === "yes"\) return;/.test(tableSource) ? "yes" : "no", "yes");
+
+/* The panel moved above the character panel, which is also out of the scene section: a passive is
+ * static (hud-spec 5) and true in a fight as well as out of one. */
+check("the passives sit above the character panel",
+  trayTemplate.indexOf('class="cr-hud__passives"') < trayTemplate.indexOf('class="cr-options"')
+    ? "yes" : "no", "yes");
+check("and they no longer depend on the scene side being up",
+  /passives: npc \? null : this\.#passivePanel\(\),/.test(traySource) ? "yes" : "no", "yes");
+check("and they share the character panel's edge",
+  /\.cr-hud-layer \.cr-hud__passives \{[\s\S]{0,200}align-items: flex-end;/.test(css)
+    ? "yes" : "no", "yes");
 
 /* ---- the skill side against the levelling curve  [2026-11-02] ---- */
 
@@ -14128,8 +15218,21 @@ check("nodes that hand them over",
  * a total at all. Against that, the same eight levels buy the combat side two cards, two spell
  * slots and two points of carry.
  */
+/*
+ * **The creation nodes are left out, and that is the whole of what this measures.**
+ * [FIXED 2026-11-14] A Way follows an occupation now, so an origin and an occupation sit on the
+ * cheapest route to every title in the game -- and this read them as things the eight levels
+ * bought. They are not: both are `free`, taken before the first level is spent, and counting
+ * them inflated the skill side by a training and two know-hows on every row.
+ *
+ * It is the same confusion `levelFor` was carrying an hour earlier, in a different file: *what
+ * you had to own* is not *what a level bought you*, and `free` is exactly the field that
+ * separates them.
+ */
+const spentOn = id => new Set([graph.ROOT, ...(graph.REACH.get(id) ?? []), id]
+  .filter(n => !graph.GRAPH.get(n)?.free));
 const lv8 = nodes.filter(n => n.title && graph.tierOf(n.id) === 2 && graph.levelFor(n.id) === 8)
-  .map(n => graph.grantsOf(new Set([graph.ROOT, ...(graph.REACH.get(n.id) ?? []), n.id])));
+  .map(n => graph.grantsOf(spentOn(n.id)));
 const mean8 = f => (lv8.reduce((a, g) => a + f(g), 0) / lv8.length).toFixed(1);
 check("what level 8 adds to the skill side",
   `trainings ${mean8(g => g.trainings.length)} know-how ${mean8(g => g.knowHow.length)}`
@@ -14265,9 +15368,20 @@ check("and names the three things levelling can add",
  * what the graph says.
  */
 const tier2Titles = nodes.filter(n => n.title && graph.tierOf(n.id) === 2);
+/*
+ * **What the LEVELS bought, not what the character owns.**  [FIXED 2026-11-14] A Way follows an
+ * occupation now, so an origin and an occupation lie on the cheapest route to every tier-2 title
+ * -- and summing the route counted a creation nobody spent a level on. The skill half jumped by a
+ * training and two know-hows overnight, which would have read as the graph getting richer when
+ * nothing in it had changed.
+ *
+ * `free` is the field that separates the two, and it is now read in all three places that ask
+ * this question: `levelOf`, `levelFor`, and here.
+ */
 const routeMean = (pick) => {
   const total = tier2Titles.reduce((sum, n) => {
-    const owned = new Set([graph.ROOT, ...(graph.REACH.get(n.id) ?? []), n.id]);
+    const owned = new Set([graph.ROOT, ...(graph.REACH.get(n.id) ?? []), n.id]
+      .filter(id => !graph.GRAPH.get(id)?.free));
     return sum + pick(graph.grantsOf(owned));
   }, 0);
   return (total / tier2Titles.length).toFixed(1);
@@ -14342,7 +15456,7 @@ check("a mastery is always deeper than that Way's expertise",
   }).map(m => m.id).join(", ") || "none", "none");
 
 /* Nothing new was added to the graph for any of it. */
-check("nodes in the graph", nodes.length, 232);
+check("nodes in the graph", nodes.length, 237);
 check("and every expertise rides a node that was already there",
   expertiseNodes.filter(n => Object.keys(n.grants).length < 2).map(n => n.id).join(", ") || "none",
   "none");
@@ -14456,21 +15570,77 @@ check("the mean a check's draw adds",
  * The check here used to grep for the sentence, which is a claim about the sentence and not about
  * the game: it would have gone on passing the day the swing doubled and the prose went stale, which
  * is the fourth time this week a grep has agreed with something familiar instead of something true.
- * So the percentages are read out of the prose and compared with what `checkOutcome` and the real
- * deck produce. Neither can move without the other now.
+ * So the percentages are read out of the document and compared with what `checkOutcome` and the
+ * real deck produce. Neither can move without the other now.
+ *
+ * **[2026-11-15] The sentence became a table and the parse followed it.** Seven numbers became
+ * forty-five -- five distances by three draw modes by three outcomes -- and the two new columns
+ * are the half nothing had ever checked: the document had never printed what advantage is worth
+ * on a check, so nothing could disagree with it. `bandsAt` enumerates the pair a draw with
+ * advantage really takes, using the deck's own ranking, rather than estimating from the single
+ * draw.
  */
-const oddsSentence = skillDoc.slice(skillDoc.indexOf("How the odds work with the fate deck"));
-const printedOdds = [...oddsSentence.slice(0, 400).matchAll(/\*\*(\d+)%\*\*/g)]
-  .map(m => Number(m[1]));
-check("percentages the document prints for a check", printedOdds.length, 7);
-/* In the order the sentence gives them: on the difficulty win/partial/fail, then one below's
- * win/partial, then two below's win/partial. */
-check("and the engine agrees with every one",
-  [[0, 0], [0, 1], [0, 2], [-1, 0], [-1, 1], [-2, 0], [-2, 1]]
-    .map(([d, which], i) => {
-      const parts = bands(d).match(/(\d+)% success, (\d+)% partial, (\d+)% fail/);
-      return Number(parts[which + 1]) === printedOdds[i] ? "" : `d=${d} ${parts[which + 1]} vs ${printedOdds[i]}`;
-    }).filter(Boolean).join("; ") || "none", "none");
+const bandsAt = (d, mode = 0) => {
+  const outcomeOf = card => {
+    const special = card.system.special ?? "";
+    const margin = d + (special ? 0 : (card.system.value ?? 0) * resolve.CHECK_SWING);
+    return special === "crit" ? "critical" : special === "miss" ? "fail"
+      : margin >= 0 ? "success" : margin >= resolve.PARTIAL_FLOOR ? "partial" : "fail";
+  };
+  const counts = { critical: 0, success: 0, partial: 0, fail: 0 };
+  let total = 0;
+  if (!mode) {
+    for (const card of fate) { counts[outcomeOf(card)]++; total++; }
+  } else {
+    /* Draw two and keep the one the mode wants, which is what `drawFate` does -- every ordered
+     * pair, so the weights come out right without sampling. */
+    for (const a of fate) for (const b of fate) {
+      const better = CARDRPG.fateValueOf(a) > CARDRPG.fateValueOf(b);
+      counts[outcomeOf((mode > 0) === better ? a : b)]++;
+      total++;
+    }
+  }
+  const pct = k => Math.round(100 * counts[k] / total);
+  /* The document counts a Critical as a success and a Miss as a failure, which its own result
+   * table says they are. */
+  return [pct("success") + pct("critical"), pct("partial"), pct("fail")];
+};
+
+/*
+ * The table, read row by row. The first cell names the distances the row covers -- *−2, −1* --
+ * and the three that follow are advantage, normal and disadvantage, each a success/partial/fail
+ * triple. A row that covers two distances is a claim that both come out the same, so both are
+ * put to the engine.
+ */
+const oddsAt = skillDoc.indexOf("How the odds work with the fate deck");
+const oddsRows = [...skillDoc.slice(oddsAt, oddsAt + 1200)
+  .matchAll(/^\|\s*\*\*([^|]+?)\*\*\s*\|([^|]+)\|([^|]+)\|([^|]+)\|\s*$/gm)];
+check("rows of odds the document prints", oddsRows.length, 5);
+const triple = cell => cell.replace(/\*/g, "").trim().split("/").map(n => Number(n.trim()));
+check("distances they cover",
+  oddsRows.flatMap(r => r[1].replace(/\u2212/g, "-").replace(/\+/g, "").split(",")
+    .map(n => Number(n.trim()))).join(", "),
+  "-5, -4, -3, -2, -1, 0, 1, 2, 3");
+check("and the engine agrees with every number", oddsRows.flatMap(row => {
+  const distances = row[1].replace(/\u2212/g, "-").replace(/\+/g, "").split(",")
+    .map(n => Number(n.trim()));
+  return distances.flatMap(d => [[1, 2], [0, 3], [-1, 4]].flatMap(([mode, col]) => {
+    const want = triple(row[col]);
+    const got = bandsAt(d, mode);
+    return got.map((n, i) => (n === want[i] ? ""
+      : `d=${d} mode=${mode} ${["success", "partial", "fail"][i]} ${n} vs ${want[i]}`));
+  }));
+}).filter(Boolean).join("; ") || "none", "none");
+
+/*
+ * **And the thing the table is there to show**: the rows pair up because the swing is even, so a
+ * point of total is worth nothing or a great deal and never a little. The document says so in
+ * words; this is the arithmetic under them, and it is also the sanity check on the pairing --
+ * if a row ever covered two distances that did NOT agree, the check above would catch it and
+ * this one says why it matters.
+ */
+check("what each point of total buys, step by step",
+  [-2, -1, 0, 1].map(d => bandsAt(d + 1)[0] - bandsAt(d)[0]).join(", "), "0, 40, 0, 20");
 /* The band the document prints, too: a Partial is 1 to 4 below and a Fail is 5 or more. */
 check("the Partial band the document prints",
   /\| \*\*Partial\*\* \| Total is 1–(\d+) below/.exec(skillDoc)?.[1], "4");
@@ -15036,8 +16206,8 @@ check("the sheet prints the live Tactic",
 
 check("a node's feature and item grants are performed",
   /if \(grants\.feature\) await grantSlate\(actor, grants\.feature, "feature"\);/.test(graphSource)
-  && /if \(grants\.item\) await grantSlate\(actor, grants\.item, "item"\);/.test(graphSource)
-    ? "yes" : "no", "yes");
+  && /for \(const name of \[grants\.item \?\? \[\]\]\.flat\(\)\) await grantSlate\(actor, name, "item"\);/
+    .test(graphSource) ? "yes" : "no", "yes");
 check("through the setup routine's own slate shape",
   /import \{ slateData \} from "\.\/setup\.mjs";/.test(graphSource) ? "yes" : "no", "yes");
 check("and a slate nobody built is refused rather than silently skipped",
@@ -15806,8 +16976,17 @@ readFiles.set("decksSource", decksSource);
  * its path in segments, so the sweep never saw it and every `.test(css)` in the file sat outside
  * the audit -- including a check for a rule that had been retired. */
 /* 71 since 2026-11-13: `artSource` reads the deck layer's `art.mjs`, where the condition
- * resolver lives -- the first art writer that is not a document field. */
-check("files this suite greps by name", readFiles.size, 71);
+ * resolver lives -- the first art writer that is not a document field.
+ *
+ * 72 since 2026-11-14: `stacksSource` reads `decks/stacks.mjs`, which now holds `cardLine` --
+ * one printed line per card, read by the tray's discard viewer and the sheet's deck list.
+ *
+ * 73 later the same day: the origin list is held to the world file by name, so the suite reads
+ * `worldinfo/Firma.md` where the places are actually written down.
+ *
+ * 74 since 2026-11-15: `tableSource` reads `module/table.mjs`, the GM's own controls, which are
+ * on the token HUD rather than inside a player's window. */
+check("files this suite greps by name", readFiles.size, 74);
 
 /* Every `/pattern/.test(VAR)` and `VAR.includes("...")`, with the check it belongs to. */
 const nameOfCheck = index => {
@@ -15892,10 +17071,14 @@ check("greps a second printer could answer",
  */
 const absentGreps = [
   String.raw`a pile is never given one :: "pile",[^)]*backOf\(`,
+  String.raw`and breadth-first is gone from the picker :: breadthfirst`,
+  /* The scene panel's call dialog, retired into the board so one form writes the flag. */
+  String.raw`and builds no second call dialog :: CARDRPG\.Check\.CallTitle`,
   String.raw`and core content is never written to :: NODES\.(push|splice|length =)`,
   String.raw`and down is not computed from the updated document :: down: taker\.system\.health\.value - dealt`,
   String.raw`and from the card sheet :: type === "wound" \|\| type === "taint"`,
   String.raw`and from the tray :: c\.type === "wound" \|\| c\.type === "taint"`,
+  String.raw`and its rule went with it :: cr-edge__note`,
   String.raw`and neither builds a face by hand any more :: faces: \[\{ name: card\.name \}\]`,
   String.raw`and neither reads an item's tags by hand :: \(item\?\.system\?\.tags \?\? \[\]\)\.includes`,
   String.raw`and neither table still offers a choice :: ` + "`" + String.raw`\.webp` + "`"
@@ -15915,8 +17098,13 @@ const absentGreps = [
   String.raw`and nothing matches a document back by its escaped name :: find\(card => card\.name === name\)`,
   String.raw`and nothing stores one on the character :: facing: new fields`,
   String.raw`and reads the change rather than the state :: item\.system\.prepared`,
+  String.raw`and so is the id escaper it was the only caller of :: function cssId`,
   String.raw`and taking a node asks for no award :: levels\?\.pending`,
+  String.raw`and the caption that repeated them is gone :: cr-edge__note`,
+  String.raw`and the card itself is no longer transparent :: \.cardrpg \.cr-card--passive \{ opacity`,
   String.raw`and the chain is gone :: if \(effect === "taint"\)`,
+  /* The challenge's one-twist boolean, replaced by a ledger that can name several people. */
+  String.raw`and the challenge no longer keeps a boolean of its own :: owed: (!!move\.twist|false|!!live\.owed)`,
   String.raw`and the dependency points one way :: from "\.\/graph\.mjs"`,
   String.raw`and the gate's own table no longer describes the old capsule :: the top quarter is empty`,
   String.raw`and the handbook's feature table no longer lists it :: \| \*\*Adapted\*\* \|`,
@@ -15924,6 +17112,7 @@ const absentGreps = [
   String.raw`and the old disjunction is gone from the hand filter :: c\.type !== "wound" && c\.type !== "taint"`,
   String.raw`and the old relative anchor is gone :: the dark lives between that strip`,
   String.raw`and the old sentence is gone :: Faith is \*\*wide and shallow\*\*`,
+  String.raw`and the parenthesis that said nothing is gone :: \(was \$\{step\.param\}\)`,
   String.raw`and the predicate the five readers shared :: export function (injuryBites|adaptedNames)`,
   String.raw`and the repair hands its own item to the check :: resolveCheck\(actor, \{ approach: "lore", dc, item \}\)`,
   String.raw`and the resolver reads the flag :: conditionsOf\(actor\)\.includes\("invisible"\)`,

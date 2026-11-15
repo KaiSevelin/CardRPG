@@ -339,6 +339,45 @@
         {{#if system.exhausted}}<p class="cr-warn">Exhausted: one card per turn, and no reactions.</p>{{/if}}
         <p class="cr-note">Wounds and Taint don't count toward the limit, so being hurt never locks
           you out of adding a card.</p>
+
+        {{!--
+          The cards themselves. This tab counted them and showed none of them, so the one place
+          that is supposed to answer "what is in my deck" could only answer "how many".
+
+          A list and not a hand: the tray paints a card because you are choosing between five of
+          them, and a deck is twenty read down a column. Where each one is standing is the part a
+          count cannot give you — Spent is out of this fight, Discard comes back on the next
+          cycle, and the deck size is the same number for both.
+        --}}
+        <ul class="cr-cardlist">
+          {{#each deck.cards}}
+            <li class="cr-cardlist__row{{#if this.intruder}} cr-cardlist__row--intruder{{/if}}">
+              <span class="cr-cardlist__name">{{this.name}}</span>
+              <span class="cr-cardlist__line">{{this.line}}</span>
+              {{#if this.reaction}}<span class="cr-cardlist__react" data-tooltip="What it does on somebody else's turn">{{this.reaction}}</span>{{/if}}
+              <span class="cr-cardlist__where" data-tooltip="Which pile it is in right now">{{this.where}}</span>
+            </li>
+          {{else}}
+            <li class="cr-note">No action deck wired up yet.</li>
+          {{/each}}
+        </ul>
+      </section>
+
+      {{!-- The other deck a character owns, which nothing in the interface has ever listed. --}}
+      <section class="cr-block">
+        <h3>Skill deck</h3>
+        <ul class="cr-cardlist">
+          {{#each deck.skills}}
+            <li class="cr-cardlist__row">
+              <span class="cr-cardlist__name">{{this.name}}</span>
+              <span class="cr-cardlist__line">{{this.line}}</span>
+              <span class="cr-cardlist__where" data-tooltip="Which pile it is in right now">{{this.where}}</span>
+            </li>
+          {{else}}
+            <li class="cr-note">No skill deck yet. The GM deals a hand when a scene starts.</li>
+          {{/each}}
+        </ul>
+        <p class="cr-note">The skill discard comes back on a rest, never on a shuffle.</p>
       </section>
 
       <section class="cr-block">

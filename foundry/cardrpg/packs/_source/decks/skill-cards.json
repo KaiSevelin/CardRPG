@@ -34,7 +34,8 @@
       "system": {
         "approach": "might",
         "value": 3,
-        "wild": false
+        "wild": false,
+        "edge": "You are not moved, and you do not drop what you are holding."
       }
     },
     {
@@ -61,7 +62,8 @@
       "system": {
         "approach": "might",
         "value": 2,
-        "wild": false
+        "wild": false,
+        "edge": "What you shift stays shifted: the way is open behind you for everybody else."
       }
     },
     {
@@ -116,7 +118,8 @@
       "system": {
         "approach": "agility",
         "value": 2,
-        "wild": false
+        "wild": false,
+        "edge": "You do it one-handed, without setting down what you were already carrying."
       }
     },
     {
@@ -171,7 +174,8 @@
       "system": {
         "approach": "shadow",
         "value": 1,
-        "wild": false
+        "wild": false,
+        "edge": "Nobody can say afterwards that it was you."
       }
     },
     {
@@ -226,7 +230,8 @@
       "system": {
         "approach": "lore",
         "value": 1,
-        "wild": false
+        "wild": false,
+        "edge": "You have watched somebody try this: the GM tells you one thing that went wrong for them."
       }
     },
     {

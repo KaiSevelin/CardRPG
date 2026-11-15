@@ -185,6 +185,141 @@ export const CONDITION_PIECES = Object.keys(CARDRPG.conditions).map(key => ({
 }));
 
 /**
+ * **What an injury's picture is of.**  [BUILT 2026-11-14]
+ *
+ * Injuries were on no shelf, so fourteen slates a character carries for the rest of their life --
+ * and reads on their own sheet more often than they read most cards -- had nothing on them. The
+ * same silence that hid the conditions: the brief counts what is on a shelf, and a thing on no
+ * shelf cannot be reported as missing.
+ *
+ * **Draw what is left behind, never the harm.** This is the conditions shelf's rule one step
+ * further, and it is a rule twice over.
+ *
+ * It is the **house style**: every shelf in this book but the titles draws an object, a gesture or
+ * a place, because one picture has to serve a goblin, a dragon and the player, and a figure in the
+ * frame is the wrong figure for most of the table. An injury is worse than most -- *Lost Hand* on
+ * a drawn body is somebody else's character for ever.
+ *
+ * And it is what an image model will actually draw. `ART_REFUSED` records the precedent: *Where It
+ * Is Held* was refused for its composition rather than its words, and no rewording of that
+ * sentence was going to pass; rewritten to the object and the aftermath -- *a hand already on the
+ * strap* -- it drew first time, and the card is better for it. A brief that asks for a wound is a
+ * brief that gets refused, retried and refused again, and the honest fix is not to soften the
+ * wording until it slips through. It is to draw the right subject.
+ *
+ * So: **the thing that compensates, the thing that no longer works, or the record of it.** No
+ * bodies, no blood, no mutilation, no faces. The eye-patch rather than the eye; the stick rather
+ * than the leg; the loaf rather than the flesh.
+ */
+export const INJURY_LOOKS = {
+  "Lost Eye": "A plain cloth eye-patch hooked over the corner of a shaving mirror, the mirror "
+    + "showing only the wall behind. Nobody reflected.",
+  /*
+   * **[REFUSED 2026-11-14] violence + illicit, at the OUTPUT stage.** The first wording was *a
+   * lockpick lying across a lock that has not turned, beside a leather glove with two of its
+   * fingers stitched flat*, and it earned both categories honestly: a lockpick in a lock is a
+   * burglary whatever the sentence around it says, and a glove described by the fingers it is
+   * missing invites the hand that is missing them.
+   *
+   * Rewritten rather than reworded, which is what `ART_REFUSED` already records about the last
+   * one: *the words were never the problem, the composition was.* The injury is **fine work you
+   * can no longer do**, so the picture is the fine work. It is warmer too -- steel and grey
+   * leather are a cool subject and brass and boxwood are not.
+   */
+  "Lost Fingers": "A roll of fine engraver's tools in tan leather on cream cloth, the two smallest "
+    + "out of their loops and set apart. Brass and boxwood.",
+  "Lost Hand": "A pair of gauntlets on a workbench: the left worn soft and shaped by use, the "
+    + "right still bright and unmarked. Nobody wearing either.",
+  "Bad Leg": "One boot worn through along its outer edge, and a walking stick polished smooth at "
+    + "the grip leaning against it. No feet in frame.",
+  "Scarred Face": "A hand-mirror turned face-down on folded linen, a jar of salve open beside it "
+    + "and a clean strip half unrolled. Nothing reflected.",
+  /* **[GATE 2026-11-14] cool 3.3%, bare paper 4.7% against a floor of 5%.** A cup on a plank
+   * table is a grey subject on a dark ground unless somebody says otherwise. Naming the light and
+   * the wood costs a clause and buys both numbers. */
+  /* **[FIGURE 2026-11-14]** Came back as a woman with her head in her hands behind the cup.
+   * The shelf forbids a person and the shelf now says so in the prompt; the clause is here as
+   * well because a cup on a table is an invitation to draw whoever is sitting at it. */
+  "Shattered Nerves": "A full cup of pale tea alone on a sunlit pine table, low in frame, its "
+    + "surface ringed with fine tremors. Honey and cream, the top bare. Nobody at the table.",
+  "Shaken Faith": "A holy symbol on a snapped cord in the bottom of an open satchel, half under a "
+    + "folded prayer sheet. Nobody wearing it.",
+  /* **[FIGURE 2026-11-14]** *An empty cot* was not enough: it came back with somebody sitting
+   * up in it. The emptiness has to be the subject rather than an adjective. */
+  "Night Fears": "A candle guttering beside a cot nobody is in, the blanket thrown back and the "
+    + "bed empty, the dark of the room pressing on a small ring of light. No figure.",
+  "Hexed Blood": "A stoppered glass vial of something dark on a slate, and one spilt drop beside "
+    + "it that has eaten a pale ring into the stone.",
+  "The Eager Hand": "An empty scabbard buckled shut on a belt, and across bare boards the sword "
+    + "that belongs in it, point sunk into a plank.",
+  /* **[FIGURE 2026-11-14]** Footprints are the evidence of a walker, and the model drew the
+   * walker. Said plainly: the prints are what is left, and whoever made them is gone. */
+  "Compelled Step": "A single line of muddy footprints crossing a bare stone floor dead straight, "
+    + "passing an open door without turning toward it. The prints alone -- nobody in the room, "
+    + "and nobody in the doorway.",
+  /* **[GATE 2026-11-14] ink at 9.4% from the top against a floor of 10%**, and the palette fault
+   * before it was the brief's own doing: it asked for **grey-green**, the one hue band the
+   * capsule forbids. A brief that names a cool colour and then fails for cool pixels is a brief
+   * arguing with itself. Warm spoil, and the subject pushed down out of the name panel. */
+  "Rotted": "A cut loaf low on a scrubbed pale board, the crumb gone dark amber and brown-black "
+    + "right through to the crust. The top bare.",
+  "Hollow Eyes": "A plain wooden mask face-up on a table, its eye-holes cut clean through to the "
+    + "dark grain beneath. Nobody behind it.",
+  /* **[GATE 2026-11-14] bare paper 4.2% against a floor of 5%.** A ledger is the one subject on
+   * this shelf made OF paper, so the fix is to let the page be bright rather than tea-stained:
+   * it supplies the light the gate is looking for. */
+  /* **[FIGURE 2026-11-14]** The gate rewrite that brightened the page dropped the *no hand, no
+   * quill* clause that was in the first version, and a man leaning over the book is what came
+   * back. Both halves are wanted: the bright page for the gate, the empty chair for the shelf. */
+  "The Debt": "An open ledger alone low in frame, pages bright bare cream, one line written in "
+    + "brown ink and the sum column empty. A red wax seal. No hand, no quill, nobody at the desk."
+};
+
+/**
+ * The fourteen, as pieces. Built from the content rather than listed again, so an injury added to
+ * the game arrives in the brief the same day and is reported as still to shoot until somebody
+ * draws it -- the arrangement `CONDITION_PIECES` is in, for the same reason.
+ *
+ * **A name and a blurb and nothing else**, which is the other half of that arrangement and the
+ * half that was got wrong first.  [FIXED 2026-11-14] The entries were spread whole, carrying
+ * `text` and `description`, and the shelf was pointed at `nodeBrief` -- which reads `lore`, a
+ * field an injury has not got. So every injury was commissioned with **an empty subject line**:
+ * the style capsule and nothing to draw.
+ *
+ * The brief printed an em dash in the subject column for all fourteen and nobody read the column.
+ * What the model did with no subject was draw the NAME, so *Bad Leg* came back as a bandaged leg
+ * on a crutch -- a human figure, which is the one thing this shelf forbids, and it passed the
+ * gate because the gate measures composition and cannot see a subject.
+ */
+export const INJURY_PIECES = content.INJURIES.map(i => ({
+  name: i.name,
+  blurb: INJURY_LOOKS[i.name] ?? ""
+}));
+
+/*
+ * **[WITHDRAWN 2026-11-14] There was a `HARM_LOOKS` for the harm faces here too, and it was
+ * a second answer to a question already answered.**
+ *
+ * It was written because the blank-brief check named these eight beside the fourteen injuries,
+ * and the inference from that was wrong. An injury had nothing anywhere: no `lore`, no blurb and
+ * no entry in `DIRECTION`, so it really was commissioned with a style capsule and nothing to
+ * draw. A harm face has a `DIRECTION` entry and always had -- *an arm bound tight and held
+ * close, doing nothing and plainly unable to* -- and a direction REPLACES the piece's own
+ * sentence rather than following it, which is the rule `art-prompts.mjs` learned from
+ * forty-nine refusals.
+ *
+ * So the pictures were never blind. What the check measures is `art-list.md`'s subject column,
+ * and an em dash there is the truth about a card whose own text is a name and a kind: the
+ * sentence that says what to draw lives in the prompt book, which is the document that says it.
+ * The check has been taught the difference rather than fed eight sentences to quiet it.
+ *
+ * Eight directions written here would have been eight pictures the brief describes and the game
+ * does not contain -- cards creased and foxed, in a shelf whose art is bodies carrying what has
+ * already happened to them. A second copy of a fact is a fact that can drift, and this one
+ * drifted before it was a day old.
+ */
+
+/**
  * **The fate deck's eight faces.**  [BUILT 2026-11-13]
  *
  * This shelf is here because the argument against it was two claims and only one of them was
@@ -338,6 +473,13 @@ export const SHELVES = [
    * was blank paper with a word on it.
    */
   { key: "conditions", list: CONDITION_PIECES },
+  /*
+   * **Injuries, which were on no shelf either.** Fourteen slates a character carries for the rest
+   * of their life, read on their own sheet more often than most cards are read, and every one of
+   * them blank. See `INJURY_LOOKS` for what they are pictures OF, which is the part that needed
+   * deciding before any of them could be commissioned.
+   */
+  { key: "injuries", list: INJURY_PIECES },
   { key: "features", list: content.FEATURES },
   /* A counterfeit is not a piece: it wears the picture of the item it forges, resolved below. */
   { key: "items", list: content.ITEMS.filter(i => !i.npc && !content.forges(i.name)) },
@@ -436,6 +578,128 @@ for (const shelf of SHELVES) {
     if (BY_NAME.has(entry.name)) { AMBIGUOUS.push(entry.name); BY_NAME.delete(entry.name); }
     else if (!AMBIGUOUS.includes(entry.name)) BY_NAME.set(entry.name, fileOf(shelf, entry));
   }
+}
+
+/**
+ * **Which slate type a shelf holds, for the shelves that hold slates.**  [BUILT 2026-11-14]
+ *
+ * The three card-like documents a character carries -- an item, a feature, a formula -- are the
+ * only ones that can be looked up from a *document* rather than from a content object, because a
+ * document knows its `type` and its `name` and nothing else about where it came from. Every other
+ * shelf is left out deliberately: a creature's token and a card's face are reached through
+ * `BY_ENTRY` by whatever built them, and a shelf that cannot be addressed this way should answer
+ * nothing rather than answer a guess.
+ */
+const SLATE_SHELVES = {
+  items: "item",
+  "items/npc": "item",
+  "items/natural": "item",
+  features: "feature",
+  injuries: "injury",
+  "spells/elemental": "spell",
+  "spells/shadow": "spell",
+  "spells/mind": "spell",
+  "spells/faith": "spell",
+  /*
+   * **A signature shelf holds whatever the signature IS**, which is three of the four kinds: the
+   * Shade's are features, an item and cards; Tattoo Magic's are spells and a feature. So these
+   * four have no default -- the entry says, and an entry that says nothing is a card and not a
+   * slate at all.
+   */
+  "signatures/shade": "",
+  "signatures/strength": "",
+  "signatures/mind": "",
+  "signatures/faith": ""
+};
+
+/**
+ * **The document type a content entry becomes, when the entry has an opinion.**
+ *
+ * `kind` is an overloaded field and that is the whole of the care needed here. On an **item** it
+ * is a category -- Weapon, Potion, Ammunition. On a **spell** it is the Way -- formula or miracle.
+ * On a **signature** and on the two mixed pools it is the document type, because those lists hold
+ * more than one kind of thing and something has to say which.
+ *
+ * So only the three slate types and `card` are read; anything else is a word about something
+ * other than this question and the shelf's own answer stands. That rule holds for every list in
+ * the book without a list of exceptions, which is what makes it safe to leave for the next pool.
+ */
+const DOC_KINDS = new Set(["item", "feature", "spell", "card"]);
+
+const slateTypeOf = (shelf, entry) => {
+  const said = DOC_KINDS.has(entry?.kind) ? entry.kind : "";
+  const type = said || SLATE_SHELVES[shelf.key] || "";
+  return type === "card" ? "" : type;
+};
+
+/**
+ * **The picture a SLATE wears, derived from its type and its name.**  [BUILT 2026-11-14]
+ *
+ * `slateData` stamps a path onto an Item's `img` when the document is made, and `resyncArt`
+ * repairs one that was made before the art was wired. Both of those are **writes**, and a write
+ * only reaches the documents that exist when it runs: a slate dragged in from a module, built by a
+ * macro, created by hand, or embedded on an actor by a world that was last rebuilt before its
+ * picture was drawn carries an empty `img` and no amount of re-running setup on *this* world will
+ * find it.
+ *
+ * So the same rule is readable at render time too. The path is **derived** -- the shelf's
+ * directory and the slug of the name -- so asking for it costs a map lookup and can never
+ * disagree with what the write would have stamped.
+ *
+ * Keyed on type **and** name, for the reason `resyncArt` already states: six names in the book
+ * belong to two pieces each, and a feature wearing an item's picture is worse than wearing none.
+ * A name that is ambiguous *within one type* is struck out here the same way `BY_NAME` strikes
+ * one out across all of them.
+ */
+const BY_SLATE = new Map();
+const SLATE_CLASH = new Set();
+
+for (const shelf of SHELVES) {
+  if (!(shelf.key in SLATE_SHELVES)) continue;
+  for (const entry of shelf.list) {
+    const type = slateTypeOf(shelf, entry);
+    if (!type) continue;
+    const key = `${type}:${entry.name}`;
+    if (SLATE_CLASH.has(key)) continue;
+    if (BY_SLATE.has(key)) { SLATE_CLASH.add(key); BY_SLATE.delete(key); continue; }
+    BY_SLATE.set(key, fileOf(shelf, entry));
+  }
+}
+
+/**
+ * **The two shelves that hold a FIGURE rather than a card**, and the one picture each wears.
+ *
+ * A creature's token and the starter Warrior's are the same kind of thing -- which is why they
+ * share `tokens/` in the first place -- and both go in the same two slots on a document:
+ * `Actor.img` and `prototypeToken.texture.src`. Indexed by name because that is all a document
+ * has to offer, which is the same reason `BY_NAME` exists for a variant creature.
+ */
+const TOKEN_SHELVES = new Set(["tokens", "tokens/warrior"]);
+const BY_FIGURE = new Map();
+for (const shelf of SHELVES) {
+  if (!TOKEN_SHELVES.has(shelf.key)) continue;
+  for (const entry of shelf.list) BY_FIGURE.set(entry.name, fileOf(shelf, entry));
+}
+
+/** The picture a creature or a hero is drawn in, by name, or nothing. */
+export function figurePath(name) {
+  return name ? BY_FIGURE.get(name) ?? "" : "";
+}
+
+/**
+ * The file a slate of this type and name is drawn in, or nothing.
+ *
+ * **One name in the book answers nothing here, and should.** *The Kit* is both an item in the
+ * catalogue and the Shade's signature item, two different pieces with two different pictures, so
+ * asking by name cannot tell them apart -- and a wrong picture is worse than none. Both documents
+ * still wear theirs: they are built from the definition itself, through `BY_ENTRY`, which is
+ * exact. This is the fallback for a document whose stamp was never applied, and a fallback that
+ * guessed between two pictures would be the one thing worse than a blank card.
+ */
+export function slatePath(type, name) {
+  if (!type || !name) return "";
+  const forged = content.forges(name);
+  return BY_SLATE.get(`${type}:${forged || name}`) ?? "";
 }
 
 /**

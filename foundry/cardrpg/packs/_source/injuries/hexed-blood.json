@@ -8,6 +8,7 @@
   },
   "name": "Hexed Blood",
   "type": "injury",
+  "img": "systems/cardrpg/art/injuries/hexed-blood.webp",
   "system": {
     "category": "curse",
     "takes": {
