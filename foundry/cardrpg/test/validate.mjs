@@ -8495,7 +8495,7 @@ check("the handbook's page is current",
   bookBuilt.html === bookPage ? "yes" : "stale, run npm run book", "yes");
 /* Every h2 in the document, which is now every chapter: the numbering below asserts that no
  * section sits outside the sequence, so this count and that sequence are the same claim twice. */
-check("chapters on the page", bookBuilt.chapters, 24);
+check("chapters on the page", bookBuilt.chapters, 26);
 /* One table on the page per separator row in the markdown: a table that stopped rendering shows
  * up here rather than as a wall of pipes nobody reads. */
 check("and tables", bookBuilt.tables, (handbook.match(/^\|---/gm) ?? []).length);
@@ -8622,6 +8622,139 @@ check("and the prose chapters that state the same numbers",
     ["the fate deck", "Twenty cards, yours alone"]]
     .filter(([, text]) => !handbook.includes(text)).map(([name]) => name).join(", ") || "all of them",
   "all of them");
+
+/*
+ * **The two chapters the handbook was missing, and the fifty-two titles it described without
+ * printing.**  [BUILT 2026-11-15]
+ *
+ * Three things were in the graph and nowhere in the book: the fifteen **origins**, the twelve
+ * **occupations**, and every **title** with the Tactic it carries. The first two are the first two
+ * decisions anybody makes at a table and the book did not cover them at all; the third it covered
+ * in a sentence per Way, and those sentences had rotted:
+ *
+ * - **Way of Strength named fifteen specialists and twelve of them matched no node of any kind** --
+ *   the sword, the two-hander, the polearm, the dagger, the empty hand, formation fighting,
+ *   crossbows, artillery, protection, blunt weapons, cavalry and sappers. Of the twelve titles that
+ *   do exist, it named three.
+ * - **Way of Mind claimed eleven schools** against the graph's twelve, and left out **Tattoo
+ *   Magic**.
+ * - **It promised brewers, smiths, jewellers and orators**, none of which is a node. That sentence
+ *   appeared in two chapters, so the book advertised four specializations twice over and the game
+ *   has never had any of them.
+ * - Shade's list named a **pistolier**, which does not exist.
+ *
+ * Every one of those survived a suite with thousands of checks in it, because a sentence cannot be
+ * counted and nothing here was reading the handbook against the graph. These checks are that
+ * reading: not *is there a chapter*, but *does each row say what the node says*.
+ */
+const { AXIS_LEVERS, WAY_ORDER } = await import("./handbook.mjs");
+const bookTitles = [...graph.GRAPH.values()].filter(n => n.title);
+/* A Way root is a title too -- Warrior, Shade, Scholar, Sworn -- and is not a specialization. */
+const bookSpecialisms = bookTitles.filter(n => n.id.includes("."));
+const bookOrigins = [...graph.GRAPH.values()].filter(n => n.id.startsWith("origin."));
+const bookOccupations = [...graph.GRAPH.values()].filter(n => n.id.startsWith("background."));
+/* The titles chapter opens with the axis table, whose rows are bold too, so the title rows are
+ * counted inside the per-Way sections rather than across the chapter. */
+const bookTitleRows = handbookChapter("titles").split("### ").filter(s => s.startsWith("Way of"))
+  .flatMap(s => s.split("\n").filter(l => l.startsWith("| **")));
+
+check("the chapters the handbook gained",
+  ["## 18. Where you are from, and what you did before", "## 20. Specializations"]
+    .filter(h => !handbook.includes(h)).join(", ") || "both", "both");
+check("origins it lists", handbookRows("origins").length, bookOrigins.length);
+check("and occupations", handbookRows("occupations").length, bookOccupations.length);
+check("and titles", bookTitleRows.length, bookSpecialisms.length);
+
+/*
+ * **What an origin opens, checked row against graph.** This is the one table in the book that
+ * states a relation rather than a fact, and `backgrounds.md` refused to carry it by hand for
+ * exactly that reason: *"a second copy of it here is a second thing that can be wrong."* A derived
+ * copy is only safe while something is checking that it is still derived, and this is that.
+ */
+check("an origin whose open occupations the handbook gets wrong",
+  bookOrigins.filter(o => {
+    const row = handbookRows("origins").find(l => l.startsWith(`| **${o.name}** |`));
+    const opens = bookOccupations.filter(c => c.after.includes(o.id)).map(c => c.name);
+    return !row?.includes(`| ${opens.join(", ")} |`);
+  }).map(o => o.name).join(", ") || "none", "none");
+/* Three places have a tongue of their own and the book says a language nobody lacks is no gift. */
+check("and the origins that teach a language",
+  handbookRows("origins").filter(l => l.includes("language")).length,
+  bookOrigins.filter(o => o.grants.language).length);
+/* The narrowing is the reason the place is chosen first, and it is only visible in aggregate. */
+const bookOpened = bookOrigins
+  .map(o => bookOccupations.filter(c => c.after.includes(o.id)).length);
+check("and the narrowing the chapter states",
+  /keeps at least (\d+) of the (\d+) occupations open, and none keeps more than (\d+)/
+    .exec(handbookChapter("origins"))?.slice(1, 4).join("/"),
+  `${Math.min(...bookOpened)}/${bookOccupations.length}/${Math.max(...bookOpened)}`);
+
+/*
+ * **Every occupation gives the same five things, which is what makes twelve of them comparable.**
+ * An empty cell here would read as *this trade gives you nothing of that* rather than as a
+ * generator that missed a field -- the trap the items chapter fell into when sixty of its hundred
+ * and fifty rows printed a blank for what the item does.
+ */
+check("occupation rows with an empty cell",
+  handbookRows("occupations")
+    .filter(l => l.split("|").slice(1, -1).some(c => !c.trim())).length, 0);
+check("and occupations granting something other than two skill cards",
+  bookOccupations.filter(n => (n.grants.skill ?? []).length !== 2).map(n => n.name).join(", ")
+    || "none", "none");
+
+/*
+ * **The Tactic is printed in full, not named.** Its name was already in the graph and told a
+ * reader nothing; the rule itself lived in four content files that no reader of the handbook has.
+ * Checked against `ALL_TACTICS` text for text, because a chapter that named fifty-two Tactics and
+ * stated none of them would pass every count above.
+ */
+check("tactics the chapter names without stating",
+  bookSpecialisms.filter(n => n.tactic
+    && !handbookChapter("titles").includes(`**${n.tactic}.** ${graph.ALL_TACTICS[n.tactic]}`))
+    .map(n => n.title).join(", ") || "none", "none");
+/* The Mind pointer tells a reader to read the Spends column because every school charges for a
+ * formula in something other than slots, which is a claim about the data and so is checked. */
+check("Way of Mind schools whose price turns out to be slots after all",
+  bookSpecialisms.filter(n => n.id.startsWith("mind.") && /slot/i.test(n.resource))
+    .map(n => n.title).join(", ") || "none", "none");
+check("and signatures it does not name",
+  bookSpecialisms.filter(n => n.signature && !handbookChapter("titles").includes(n.signature))
+    .map(n => n.title).join(", ") || "none", "none");
+/* Four titles nobody could read before: the one the first step of each Way hands you. */
+check("and the title each Way's first step confers",
+  bookTitles.filter(n => !n.id.includes("."))
+    .filter(n => !handbookChapter("titles").includes(`**${n.title}**`))
+    .map(n => n.name).join(", ") || "all four", "all four");
+
+/*
+ * **The axis column is meaningless without the seven words, and those words are the one hand-
+ * written thing in the chapter.** `leveling.md` 5a has the same list written for whoever builds a
+ * node; this is the same seven written for whoever reads the table. Both directions are checked,
+ * so a new axis cannot arrive as a blank cell and a retired one cannot sit here describing nothing.
+ */
+check("axes the graph uses with no description in the handbook",
+  [...new Set(bookTitles.map(n => n.axis))].filter(a => !AXIS_LEVERS[a]).join(", ") || "none",
+  "none");
+check("and descriptions for an axis no title leans on",
+  Object.keys(AXIS_LEVERS).filter(a => !bookTitles.some(n => n.axis === a)).join(", ") || "none",
+  "none");
+check("and Ways the chapter would leave out",
+  bookTitles.filter(n => !n.id.includes(".") && !WAY_ORDER.includes(n.id))
+    .map(n => n.name).join(", ") || "none", "none");
+
+/*
+ * **The draft list is gone from both chapters that carried it.** Deleting it is half the fix; the
+ * other half is that nothing may quietly write it back, because the thing that made it survivable
+ * was that it read like prose. Each phrase below was in the handbook this morning.
+ */
+check("the draft specialist list the handbook carried twice",
+  ["Its specialists are", "eleven schools", "the two-hander", "cavalry and sappers",
+    "pistoliers", "brewers, smiths, jewellers and orators"]
+    .filter(w => handbook.includes(w)).join(", ") || "gone", "gone");
+/* And what replaced it: a pointer, by name, from chapter one and from each of the three Ways
+ * whose sentence was wrong. Faith's never was -- its gods are generated already. */
+check("chapters that send a reader to the generated list",
+  (handbook.match(/\*Specializations\*/g) ?? []).length, 4);
 
 /*
  * **[2026-11-12] Stamina is how many cards you can play, and it is not your deck.**

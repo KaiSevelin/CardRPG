@@ -18,7 +18,7 @@ import fs from "node:fs";
 import path from "node:path";
 import * as CONTENT from "../module/content.mjs";
 const { ITEMS, FEATURES } = CONTENT;
-import { SPELLS, GRAPH } from "../module/graph.mjs";
+import { SPELLS, GRAPH, ALL_TACTICS } from "../module/graph.mjs";
 import { CARDRPG } from "../module/config.mjs";
 
 const OUT = path.join(import.meta.dirname, "..", "..", "..", "rules", "players-handbook.md");
@@ -616,6 +616,182 @@ function skillChapter() {
   return out;
 }
 
+/* -------------------------------------------- */
+/*  Origins and occupations                     */
+/* -------------------------------------------- */
+
+/**
+ * **Where you are from, and what you did before.**  [BUILT 2026-11-15]
+ *
+ * The handbook had twenty-four chapters and not one of them said what a character starts as.
+ * Fifteen origins and twelve occupations were in the graph, the level-up pane showed them,
+ * `backgrounds.md` argued every pairing from the world file -- and a player reading the book front
+ * to back learned that a background gives them gold and nothing else. The first two decisions
+ * anybody makes at a table were the two the book did not cover.
+ *
+ * Generated for the usual reason, and `backgrounds.md` had already called it: *"Which occupations
+ * follow which origin is the level-up pane's to show -- it is derived from the graph, and a second
+ * copy of it here is a second thing that can be wrong."* That ruling is against a **hand-written**
+ * copy, which is what it would have been in a design document. A derived one cannot disagree with
+ * the graph, and the suite fails if this file stops matching it, so the objection does not apply --
+ * and a player choosing an origin has to be able to see what it opens.
+ *
+ * **Printed in one direction only.** An origin opens occupations; an occupation follows origins.
+ * Those are one fact read from two ends, and printing both would put the same relation in the book
+ * twice. Creation runs the origin first, so the origin's table carries it.
+ */
+const freeNodes = prefix => [...GRAPH.values()]
+  .filter(n => n.free && n.id.startsWith(prefix + "."));
+
+/** A grant is a string when there is one of it and an array when there are several. */
+const listOf = v => (Array.isArray(v) ? v : [v]).filter(Boolean);
+
+function originChapter() {
+  const occupations = freeNodes("background");
+  const out = ["| Origin | Know-how, which is advantage | It also gives | Occupations it opens |",
+    "|---|---|---|---|"];
+  const opened = [];
+  for (const n of freeNodes("origin")) {
+    const opens = occupations.filter(o => o.after.includes(n.id)).map(o => o.name);
+    opened.push(opens.length);
+    /*
+     * A language is the only thing three of them give that the other twelve do not, so it is named
+     * inside the cell rather than given a column: an empty cell in twelve rows out of fifteen
+     * reads as an omission, which is the trap the items chapter fell into once already.
+     */
+    const also = [...listOf(n.grants.item),
+      n.grants.language ? `the ${n.grants.language} language` : ""].filter(Boolean);
+    out.push(`| **${n.name}** | ${cell(n.grants.knowHow)} | ${cell(also.join(", "))} `
+      + `| ${cell(opens.join(", "))} |`);
+  }
+  out.push("");
+  /*
+   * Stated rather than left to be counted, and derived so that it cannot be stated wrongly: the
+   * narrowing is the whole reason the place is chosen first, and it is only visible in aggregate.
+   */
+  out.push(`Every origin keeps at least ${Math.min(...opened)} of the ${occupations.length} `
+    + `occupations open, and none keeps more than ${Math.max(...opened)}. `
+    + "So the place never decides your character for you, and it never fails to narrow it either.",
+  "");
+  return out;
+}
+
+function occupationChapter() {
+  const out = ["| Occupation | Skill cards | Feature | Trained with "
+    + "| Know-how, which is advantage | Gear |", "|---|---|---|---|---|---|"];
+  for (const n of freeNodes("background")) {
+    out.push(`| **${n.name}** | ${cell(listOf(n.grants.skill).join(", "))} `
+      + `| ${cell(n.grants.feature)} | ${cell(n.grants.training)} `
+      + `| ${cell(n.grants.knowHow)} | ${cell(listOf(n.grants.item).join(", "))} |`);
+  }
+  out.push("");
+  return out;
+}
+
+/* -------------------------------------------- */
+/*  Specializations                             */
+/* -------------------------------------------- */
+
+/**
+ * **Every title in the game, and the Tactic it carries.**  [BUILT 2026-11-15]
+ *
+ * **The handbook described the mechanism and printed none of the content.** *Levelling up* said a
+ * specialization node gives you a title and a Tactic and that you only ever have your deepest
+ * title's; *The four Ways* then listed each Way's specialists in a sentence. Checked against the
+ * graph, those sentences were a draft nobody had reread:
+ *
+ * - **Way of Strength named fifteen things and twelve of them were nodes of no kind** -- the
+ *   sword, the two-hander, the polearm, the dagger, the empty hand, formation fighting, crossbows,
+ *   artillery, protection, blunt weapons, cavalry and sappers. The twelve titles that do exist are
+ *   Infantry, Executioner, Gladiator, Guardian, Ironclad, Artillerist, Tactician, Knight,
+ *   Berserker, Musketeer, Street Fighter and Bodyguard, and the handbook named three of them.
+ * - **Way of Mind claimed eleven schools** where the graph has twelve, and the list it gave left
+ *   out **Tattoo Magic** -- so the one school whose entire price is a secret was itself a secret.
+ * - **It also promised brewers, smiths, jewellers and orators**, none of which is a node of any
+ *   kind. A player who read that and went looking for the trades on the level-up pane found
+ *   nothing there to find.
+ * - Shade's list named a **pistolier**, which does not exist, and otherwise mixed titles in with
+ *   minor nodes as though a reader could tell which was which.
+ *
+ * A sentence cannot be counted, which is how all of that survived a suite with thousands of checks
+ * in it. Fifty-two rows read off the graph can be.
+ *
+ * **The Tactic is the column that earns the chapter.** A title's axis and resource tell a player
+ * which lever a build pulls; the Tactic is the standing rule nobody else is allowed, it is always
+ * on, and it was written down in four content files that no reader of the handbook has. It is
+ * printed in full rather than named, because its name is what the graph already said and a name
+ * told nobody anything.
+ */
+
+/**
+ * The seven axes, in a player's words rather than a designer's.
+ *
+ * `leveling.md` 5a carries the same list as *levers* -- "Spent, Strain, Ready costs, what a turn
+ * sets up" -- which is the right description for whoever is writing a node and the wrong one for
+ * whoever is reading this table. The names are derived from the graph and the suite fails if an
+ * axis turns up without a description here, so a new axis cannot arrive as a blank cell.
+ */
+export const AXIS_LEVERS = {
+  "Control": "What you put on other people: conditions, and keeping them there.",
+  "Deck shape": "The deck itself, how large it is allowed to be, and what you prune out of it.",
+  "Position": "Where everybody is standing: Move, range, cover, and what one step is worth.",
+  "Preparation": "Anything decided before it mattered: a spell slot, a set trap, a loaded gun.",
+  "Reactions": "What you do on somebody else's turn, paid for out of your own hand.",
+  "Support": "What you spend your turn on when the payoff lands on somebody else's.",
+  "Tempo": "What a turn sets up and what you burn setting it up: Spent, Strain, getting Ready."
+};
+
+/**
+ * The Ways in the order *The four Ways* introduces them, which is not the order they sit in the
+ * graph. A reader arriving from that chapter should meet them again in the same sequence, and the
+ * suite checks that every Way root in the graph is named here.
+ */
+export const WAY_ORDER = ["strength", "shade", "mind", "faith"];
+
+function titleChapter() {
+  const all = [...GRAPH.values()].filter(n => n.title);
+  const out = [];
+
+  out.push("### The axes", "",
+    "Every title leans on exactly one of these. An axis is not a new rule: it is which lever the "
+    + "build pulls on the rules you already have.", "",
+    "| Axis | What it means |", "|---|---|");
+  for (const axis of [...new Set(all.map(n => n.axis))].sort()) {
+    out.push(`| **${axis}** | ${cell(AXIS_LEVERS[axis] ?? "")} |`);
+  }
+  out.push("");
+
+  /*
+   * The Way roots: a title with no Signature and no Tactic, because walking into a Way is not yet
+   * a specialization. Printed anyway, so that the four names a character carries first are in the
+   * book at all -- none of them was.
+   */
+  out.push("### What the first step calls you", "",
+    "Walking into a Way is not yet a specialization, so these four carry no Signature and no "
+    + "Tactic. They are what you are called until you take one.", "",
+    "| Way | Title | Leans on | Spends |", "|---|---|---|---|");
+  for (const id of WAY_ORDER) {
+    const n = GRAPH.get(id);
+    out.push(`| ${cell(n.name)} | **${n.title}** | ${n.axis} | ${cell(n.resource)} |`);
+  }
+  out.push("");
+
+  for (const id of WAY_ORDER) {
+    const ts = all.filter(n => n.id.startsWith(id + "."));
+    out.push(`### ${GRAPH.get(id).name}: ${plural(ts.length, "title")}`, "",
+      "| Title | Leans on | Spends | Signature | Tactic |", "|---|---|---|---|---|");
+    for (const n of ts) {
+      const tactic = n.tactic
+        ? `**${n.tactic}.** ${cell(ALL_TACTICS[n.tactic] ?? "")}`
+        : "none";
+      out.push(`| **${n.title}** | ${n.axis} | ${cell(n.resource)} `
+        + `| ${cell(n.signature ?? "none")} | ${tactic} |`);
+    }
+    out.push("");
+  }
+  return out;
+}
+
 export const CHAPTERS = {
   stats: statsChapter,
   actions: actionChapter,
@@ -625,7 +801,10 @@ export const CHAPTERS = {
   reactions: reactionChapter,
   skills: skillChapter,
   creeds: creedChapter,
-  twists: twistChapter
+  twists: twistChapter,
+  origins: originChapter,
+  occupations: occupationChapter,
+  titles: titleChapter
 };
 
 /** Replace what lies between a pair of markers, and leave the rest of the file alone. */
@@ -653,5 +832,8 @@ if (process.argv[1] && process.argv[1].endsWith("handbook.mjs")) {
   console.log(`wrote the handbook's reference chapters: ${rows("actions")} action cards, `
     + `${rows("items")} of ${ITEMS.length} items (the magical gear is the GM's), `
     + `${rows("features")} features, ${rows("spells")} spells, ${rows("skills")} skill cards, `
-    + `${rows("creeds")} creeds and orders, ${rows("twists")} twists`);
+    + `${rows("creeds")} creeds and orders, ${rows("twists")} twists, `
+    + `${rows("origins")} origins, ${rows("occupations")} occupations, `
+    /* Counted off the graph, because the chapter's own rows include the axis table. */
+    + `${[...GRAPH.values()].filter(n => n.title && n.id.includes(".")).length} titles`);
 }

@@ -304,17 +304,17 @@ Lady**, **the Soot Club** try to summon **Baal Fagor**, and **the Dancers** use 
 ### What a character can become
 
 Your Way is the direction you grow in, and each one ends in specialists the world has names for.
+Every one of those names is in *Specializations*, with the standing rule it carries and what it
+pays for it in.
 
-**Way of Mind** runs to ritual magic and the schools of direct magic: blood, necromancy, elemental,
-poison, glamour, asceticism, shadow, spiritualism, household, ward and divination. It also covers the
-trades that are not magic at all: brewers, smiths, jewellers and orators.
+**Way of Mind** runs to the schools of direct magic, each a vocabulary rather than a rank, and to
+ritual magic for what takes days rather than a turn.
 
-**Way of Strength** runs to the sword, the two-hander, the polearm, the dagger and the empty hand; to
-formation fighting, crossbows, artillery and muskets; to protection, blunt weapons, gladiators,
-berserkers, cavalry and sappers.
+**Way of Strength** runs to the people who stand in the line, hold the door, and go through what is
+in the way rather than around it.
 
-**Way of Shade** runs to thieves, assassins, spies, trapmakers and fences; to bards, politicians,
-archers, pistoliers and duellists; to acrobats and half-mages.
+**Way of Shade** runs to the people who arranged the fight before it started, and were not seen
+arriving.
 
 **Way of Faith** runs to the churches and the gods above, and swearing to one closes the others.
 Everything a priest does is here: the orders, the saints and the miracles of whichever god you swore
@@ -877,7 +877,7 @@ here costs you across a session rather than within a fight.
 
 **Your Way deals in more.** Walking into a Way adds a card, and each of its branches adds another,
 so a character deep in a Way has more checks in a day and draws any one of them less often. See
-§21 for every card in the game.
+*Skill cards* for every card in the game.
 
 ### 13.3 One check, start to finish
 
@@ -1248,7 +1248,94 @@ god is the clearest case. You will be told before it happens.
 
 ---
 
-## 18. The four Ways
+## 18. Where you are from, and what you did before
+
+Two things are true of your character before the first level is spent, and neither of them costs
+one: **where you are from**, and **what you did before you picked anything up**. You choose them in
+that order, and then you choose a Way.
+
+**Why an order rather than three open doors.** You were somewhere before you were something, and
+you were something before you learned to fight. An **origin** is taken once and closes the other
+fourteen. An **occupation** then follows only the origins it could plausibly have come out of, so
+choosing the place is what makes the second list worth reading: a Miner comes out of mining country
+and a Vintner out of wine country. A Way follows any occupation, and all four of them stay open for
+the whole of a life.
+
+### 18.1 Origin
+
+Your origin gives you **know-how** and a piece of gear, and three of the fifteen also teach a
+**language**.
+
+**Know-how is a situation, not an approach.** It names something like *boats, tides and harbour
+business*, and it is worth **advantage** on any skill check where that is what the question is
+about. It is deliberately not *Might checks*: see *Checks, outside a fight* for what advantage does,
+and why a situation rather than an approach is the thing being named.
+
+A language nobody lacks is not a gift, which is why only the three places with a tongue of their own
+teach one.
+
+<!-- generated: origins -->
+
+| Origin | Know-how, which is advantage | It also gives | Occupations it opens |
+|---|---|---|---|
+| **The Core** | courts, clerks and who outranks whom | Fine Clothes | Soldier, Street Urchin, Acolyte, Caravan Guard, Vintner, Guild Apprentice, Card Sharp, Porter |
+| **The Fiord** | boats, tides and harbour business | Lantern | Soldier, Street Urchin, Acolyte, Sailor, Vintner, Hedge Healer, Porter |
+| **The Ruby** | wine, trade and a good table | Signet Ring | Sailor, Caravan Guard, Vintner, Guild Apprentice, Hedge Healer, Card Sharp, Porter |
+| **The Iron** | deserts, caravans and what water is worth | Travelling Cloak | Soldier, Street Urchin, Miner, Caravan Guard, Guild Apprentice, Hedge Healer, Card Sharp, Porter |
+| **The Amber** | forests, tracking and living rough | Travelling Cloak | Soldier, Acolyte, Sailor, Caravan Guard, Forester, Hedge Healer |
+| **Furnace Stock** | machinery, guilds and how a thing was made | Lantern, the Valgar language | Miner, Forester, Guild Apprentice, Porter |
+| **Wolf Peak** | fire, powder and the discipline of a closed order | Flask of Oil, the Perga language | Soldier, Acolyte, Miner, Forester |
+| **Saag et Haar** | the dead, tyranny and keeping very quiet | Antidote, the Veche language | Street Urchin, Acolyte, Miner, Porter |
+| **Echterhof-born** | vampires, guest law and whose turn it is | Fine Clothes | Soldier, Street Urchin, Hedge Healer, Card Sharp |
+| **Xtchaargh** | the Horde: its hives, its castes and what it will bargain for | Travelling Cloak | Street Urchin, Forester, Card Sharp, Porter |
+| **The Triple Enclave** | dreamwort, the Dream Guild and which duke is owed what | Flask of Ink | Soldier, Acolyte, Caravan Guard, Hedge Healer |
+| **Regensburg** | drill, rank and the business of holding a wall | Light Helm | Soldier, Caravan Guard, Guild Apprentice, Porter |
+| **Solemn** | witches, the Primal Mother and ground that is thin | Healing Potion | Acolyte, Sailor, Guild Apprentice, Hedge Healer |
+| **Kelp Bay** | docks, cartels and who is worth trusting on a bad night | Lantern | Street Urchin, Sailor, Vintner, Card Sharp, Porter |
+| **Hyrlock** | blood magic, castes and what the tax is really for | Signet Ring | Acolyte, Sailor, Guild Apprentice, Porter |
+
+Every origin keeps at least 4 of the 12 occupations open, and none keeps more than 8. So the place never decides your character for you, and it never fails to narrow it either.
+
+<!-- /generated: origins -->
+
+### 18.2 Occupation
+
+Your occupation is the trade you were in before any of this. All twelve give the same five things,
+so they are easy to compare and none of them hides anything:
+
+| Part | What you get |
+|---|---|
+| **Skill cards** | 2, into your skill deck |
+| **Feature** | 1 small one, usually about skills or the world rather than about a fight |
+| **Training** | 1 tool type, which is what unlocks that tool's full bonus (*Checks, outside a fight*) |
+| **Know-how** | 1 more situation, worth advantage the same way your origin's is |
+| **Gear** | What the trade needs, including the tool you were trained with |
+
+**Not all twelve are open to you.** Which ones each place opens is in the origin table above, and
+the level-up pane shows you the same thing while you are making the character.
+
+<!-- generated: occupations -->
+
+| Occupation | Skill cards | Feature | Trained with | Know-how, which is advantage | Gear |
+|---|---|---|---|---|---|
+| **Soldier** | Soldier's Learning, Set Your Feet | Steady | armour and its repair | military matters, soldiers and camps | Repair Kit, Spear, Leather Armor |
+| **Street Urchin** | Out of the Light, Quick Hands | Light Step | lockpicks | streets, alleys and the poor of big cities | Lockpicks, Dagger |
+| **Acolyte** | The Loud Voice, Sharp Eyes | Well Read | treating wounds | temples, rituals and clergy | Healer's Kit, Mace |
+| **Sailor** | Keep Your Footing, Heave | Quick | rope and climbing | ships, harbours and the sea | Climbing Rope, Dagger |
+| **Miner** | Break It, Set Your Feet | Hard Hands | traps | stone, tunnels and what is under the ground | Hunting Traps, Mace |
+| **Caravan Guard** | Sharp Eyes, Keep Your Footing | Alert | armour and its repair | roads, caravans and the country between towns | Repair Kit, Shortbow, Leather Armor |
+| **Vintner** | The Loud Voice, Quick Hands | Good Name | games of chance | merchants, prices and a bad bargain | Gaming Set, Dagger |
+| **Forester** | Out of the Light, Sharp Eyes | Good Aim | traps | game, snares and what has passed this way | Hunting Traps, Shortbow |
+| **Guild Apprentice** | Break It, Sharp Eyes | Quick Eye | lockpicks | workshops, apprentices and a master's temper | Lockpicks, Dagger |
+| **Hedge Healer** | Soldier's Learning, Inspiration | Quiet Worker | treating wounds | sickness, herbs and a village with no physician | Healer's Kit, Dagger |
+| **Card Sharp** | Quick Hands, Sharp Eyes | Tough | games of chance | gambling houses, marks and a crooked table | Gaming Set, Dagger |
+| **Porter** | Heave, Set Your Feet | Packhorse | rope and climbing | loads, markets and what a thing weighs | Climbing Rope, Mace |
+
+<!-- /generated: occupations -->
+
+---
+
+## 19. The four Ways
 
 A Way is the direction your character grows in. It is not a class you are locked into: it is which
 part of the graph you are walking, and the four do genuinely different things rather than the same
@@ -1272,9 +1359,7 @@ armour it wants is paid for in weight: a fighter in plate with a shield and a pa
 decision away from **Burdened**, which is Slowed plus disadvantage on exactly the Agility and Shadow
 checks it was already worst at. Nothing it does is quiet, and nothing it does is a surprise.
 
-Its specialists are the sword, the two-hander, the polearm, the dagger and the empty hand; formation
-fighting, crossbows, artillery and muskets; protection, blunt weapons, gladiators, berserkers,
-cavalry and sappers.
+Its titles are in *Specializations*, each with the Tactic that comes with it.
 
 ### Way of Shade
 
@@ -1294,8 +1379,7 @@ Shade who has arranged nothing is a worse fighter than the Warrior standing besi
 deliberate. It is lightly armoured, it is spending cards to set up the hit rather than to survive
 one, and an enemy that cannot be surprised or unbalanced takes away most of what it is for.
 
-Its specialists are thieves, assassins, spies, trapmakers and fences; bards, politicians, archers,
-pistoliers and duellists; acrobats and half-mages.
+Its titles are in *Specializations*, with the Tactic each one carries.
 
 ### Way of Mind
 
@@ -1313,10 +1397,10 @@ holds one until you prepare something else, so the decision of what you can do i
 know what you will meet. Several schools charge Health for the privilege. And **Silenced** switches
 the entire Way off, because casting needs speech.
 
-Its eleven schools are blood magic, spiritualism, necromancy, elemental magic, poison, glamour,
-asceticism, shadow magic, household magic, ward magic and divination, with ritual magic for the
-things that take days rather than a turn. It also covers the trades that are not magic at all:
-brewers, smiths, jewellers and orators.
+Its schools are in *Specializations*, and what to read there is the **Spends** column: every one of
+them charges for a formula in something other than slots, and that price is the school. Ritual magic
+is the part that takes days rather than a turn, and it draws from a twist deck of its own
+(*Checks, outside a fight*).
 
 **No part of it is priestly.** A school is studied out of a book, and that is the whole difference
 between the two casting Ways: what Mind learns, Faith is given. Every god, every order and every
@@ -1408,7 +1492,140 @@ An order is sworn separately and carries a rule of its own, so a priest in an or
 
 ---
 
-## 19. Action cards
+## 20. Specializations
+
+A **specialization node** is a step on a Way that also makes you something. It hands over its
+reward like any other node, and on top of that it gives you a **title**, which is what people call
+you from there on, and a **Tactic**, which is a standing rule that nobody who has not walked that
+far is allowed.
+
+No character sees more than a handful of these, so this is a map rather than a reading list. Find
+your Way, read down to where you are, and look one row further to see what the next step makes you.
+
+Every one of them is written in the same five parts:
+
+| Part | What it says |
+|---|---|
+| **Title** | what you are called from here on |
+| **Leans on** | the one axis this build pushes |
+| **Spends** | the resource it pays in, and therefore the thing it is bad at |
+| **Signature** | the single card the build is named for |
+| **Tactic** | a standing rule: always on, never a number |
+
+**Signature and Tactic are a pair, and they divide cleanly.** The Signature is what the title lets
+you **do**. It is a card, so it is in your hand about a third of the time. The Tactic is how the
+title makes you **stand**. It is simply true, which means it is true on the turn you are deciding
+where to go, and that is the only turn it would ever have mattered on.
+
+**You only ever have your deepest title's Tactic.** Collecting titles does not collect Tactics, so a
+character who has walked through four of these has four titles and one standing rule. The Way of
+Faith is the exception you already know about: an **Obedience** is not a Tactic, and you carry every
+one you have sworn (*The four Ways*).
+
+<!-- generated: titles -->
+
+### The axes
+
+Every title leans on exactly one of these. An axis is not a new rule: it is which lever the build pulls on the rules you already have.
+
+| Axis | What it means |
+|---|---|
+| **Control** | What you put on other people: conditions, and keeping them there. |
+| **Deck shape** | The deck itself, how large it is allowed to be, and what you prune out of it. |
+| **Position** | Where everybody is standing: Move, range, cover, and what one step is worth. |
+| **Preparation** | Anything decided before it mattered: a spell slot, a set trap, a loaded gun. |
+| **Reactions** | What you do on somebody else's turn, paid for out of your own hand. |
+| **Support** | What you spend your turn on when the payoff lands on somebody else's. |
+| **Tempo** | What a turn sets up and what you burn setting it up: Spent, Strain, getting Ready. |
+
+### What the first step calls you
+
+Walking into a Way is not yet a specialization, so these four carry no Signature and no Tactic. They are what you are called until you take one.
+
+| Way | Title | Leans on | Spends |
+|---|---|---|---|
+| Way of Strength | **Warrior** | Position | weight |
+| Way of Shade | **Shade** | Position | halves |
+| Way of Mind | **Scholar** | Preparation | spell slots |
+| Way of Faith | **Sworn** | Support | an obligation |
+
+### Way of Strength: 12 titles
+
+| Title | Leans on | Spends | Signature | Tactic |
+|---|---|---|---|---|
+| **Infantry** | Position | an ally | Shoulder to Shoulder | **The Line.** While an ally is adjacent to you, neither of you can be moved against your will. |
+| **Executioner** | Tempo | halves | Cleave to the Bone | **No Second Thought.** When an enemy drops to 0 Health from your Strike, Move 1 at once. |
+| **Gladiator** | Reactions | Health | Play to the Crowd | **The Crowd Wants Blood.** While you are the nearest target to the enemy, your reactions fire even when the hit is not serious. |
+| **Guardian** | Reactions | a slot kept free | The Wall | **The Door.** An enemy adjacent to you that would move to another square adjacent to you must stop instead. You do not pin them; you stop them getting past. |
+| **Ironclad** | Deck shape | weight | Nothing Gets Through | **Immovable.** Forced movement never moves you, and difficult ground costs you nothing. |
+| **Artillerist** | Position | ground | Ranging Shot | **Ranging.** If you did not Move this turn, your ranged attacks ignore cover. |
+| **Tactician** | Support | halves | On My Call | **The Call.** At the start of a round, name a square. The first ally to end movement there draws fate with advantage on their next action. |
+| **Knight** | Position | gear you can lose | The Lance | **The Charge.** If you moved 3 or more squares in a straight line this turn, your Strike cannot be answered by a reaction. |
+| **Berserker** | Deck shape | Spent | Red Mist | **Forward Only.** You may never move away from the nearest enemy -- and while two or more enemies are adjacent to you, you cannot be Dazed or Compelled. |
+| **Musketeer** | Preparation | range | Loaded Before the Bell | **The Firing Step.** You may not Strike an adjacent enemy at all -- and your ranged attacks never take the ranged-in-melee penalty. |
+| **Street Fighter** | Control | a weapon's value | Get a Grip | **The Alley.** While both your hands are empty, an enemy adjacent to you may not Move away except by forced movement. |
+| **Bodyguard** | Reactions | ground | Interpose | **Never Leave Them.** When an ally moves, you may Move 1 as a reaction to follow -- and figures never block that move. |
+
+### Way of Shade: 12 titles
+
+| Title | Leans on | Spends | Signature | Tactic |
+|---|---|---|---|---|
+| **Thief** | Control | a slot kept free | The Opening | **Never Where You Looked.** An enemy that attacks you and misses may not attack you again this round. |
+| **Scout** | Support | being alone | Point Man | **Furthest Forward.** While no ally is nearer the enemy than you, you have cover from every figure on the field, not only those in the line. |
+| **Duellist** | Reactions | halves | Named | **One at a Time.** While exactly one enemy is adjacent to you, it has disadvantage against you and you have advantage against it. |
+| **Assassin** | Tempo | Spent | One Opening | **From Behind.** You have advantage against any enemy that is adjacent to one of your allies. |
+| **Cutpurse** | Deck shape | deck size | Lift | **Light Fingers.** The first time each fight you end your turn adjacent to an enemy that has not attacked you, take one item from its belt. |
+| **Burglar** | Preparation | weight | The Kit | **Through the Window.** You ignore difficult ground, and no enemy blocks your movement in a square that holds an obstacle. |
+| **Archer** | Position | range | Loose and Step | **Overwatch.** Once a round, and without spending a card: an enemy that walks into the ground you are watching takes a Strike as a reaction. |
+| **Trapmaker** | Preparation | a turn spent early | Set | **The Ground You Chose.** Every square you have occupied this fight is difficult ground for your enemies. |
+| **Acrobat** | Position | weight | Over and Past | **Never Cornered.** When you are attacked, you may Move 1 as a reaction before damage is worked out. |
+| **Bard** | Reactions | someone else's turn | Heckle | **The Running Commentary.** An enemy within 3 of you that would draw fate with advantage draws normally instead. |
+| **Gambler** | Deck shape | the fate deck | Double or Nothing | **The Long Odds.** While two or more enemies are adjacent to you, you draw fate with advantage. |
+| **Half-mage** | Preparation | spell slots | One Trick | **One Hand Free.** You may Cast with a weapon in your other hand. Casting never needs a hand free. |
+
+### Way of Mind: 12 titles
+
+| Title | Leans on | Spends | Signature | Tactic |
+|---|---|---|---|---|
+| **Blood Magic** | Tempo | your own Health | Blood Price | **Your Own Blood Is Nearest.** You may always Cast on yourself whatever the spell's range, and never take disadvantage for it. |
+| **Elemental Magic** | Position | reagents | Wall of the Sphere | **The Sphere Holds.** Your own Blast spares you alone, whatever the card says. |
+| **Spiritualism** | Preparation | a pact | The Bargain | **Something Is Always Listening.** You know whether any square within 6 is shadowed, high ground or difficult ground before anyone steps on it. |
+| **Necromancy** | Preparation | a bound Taint | Call the Unquiet | **The Dead Are Furniture.** Corpses are cover for you and difficult ground for your enemies. |
+| **Asceticism** | Deck shape | an empty hand | Nothing Left to Take | **The Still Point.** If you did not Move this turn, you cannot be moved and attacks against you have disadvantage. |
+| **Poison** | Control | skill cards | Wither | **The Patient Hand.** An enemy you have put a condition on this fight has disadvantage against you. |
+| **Shadow Magic** | Position | a permanent Wild | Step Through | **At Home in the Dark.** While you stand in a shadowed square, enemies more than 2 squares away cannot target you at all. |
+| **Ward Magic** | Reactions | Spent | Unmake | **The Standing Guard.** One extra reaction each round, usable only to answer a Cast. |
+| **Household Magic** | Support | a place you know | Hearth and Home | **The House Helps.** Indoors you ignore difficult ground, and you know where every door is before you see it. |
+| **Glamour** | Control | an elven debt | Not Here | **Never Quite There.** Ranged attacks against you from more than 3 squares always have disadvantage. |
+| **Tattoo Magic** | Deck shape | a secret | Graven Strength | **Nothing to Prepare.** You may Cast with both hands full, and Silenced does not stop you -- your spells are on your skin, not in your mouth. |
+| **Divination** | Support | someone else's turn | The Reading | **Already Seen.** You are never surprised, and at the start of any round you may swap your place in the initiative order with a willing ally's. |
+
+### Way of Faith: 16 titles
+
+| Title | Leans on | Spends | Signature | Tactic |
+|---|---|---|---|---|
+| **The Eternal God** | Control | deck size | The Clean Hand | **No Shelter for the Guilty.** Enemies get no cover from figures against you. |
+| **The Eternal Spirit** | Reactions | weight | Breath of the Spirit | **Where the Air Goes.** You may reach any ally you can see, ignoring cover and range, for anything that heals or helps. |
+| **Vax** | Position | Health | The Club and the Line | **The Line of Vax.** While two or more allies are adjacent to you, none of you can be moved and none of you is blocked by cover. |
+| **The First** | Deck shape | spell slots | The Long Night | **What Is Left.** At 0 Health you keep acting as though at 1 until the end of the round in which you fell. |
+| **Sessyfyn** | Support | the fate deck | The Tide Knows | **The Tide Comes In.** At the start of each round, move any one willing ally 1 square. |
+| **Valtor** | Tempo | Strain | The Drum | **The Drum Does Not Stop.** You may never Defend -- and if you moved toward an enemy this turn, your Strike cannot be answered by a reaction. |
+| **Fagar** | Control | Spent | The Borrowed Face | **Nobody Remembers Your Face.** The first enemy to attack you each fight draws fate with disadvantage. |
+| **Vulpet** | Preparation | an ally | The Outcast's Due | **Alone and Unafraid.** While no ally is within 2, you cannot be Compelled and enemies have disadvantage against you. |
+| **Brendan** | Support | a turn spent early | Out of Barren Ground | **Roots.** A square you have stood in for a whole round is high ground for you and difficult ground for your enemies. |
+| **The Grey** | Reactions | range | The Silent Hour | **Close Enough to Touch.** Moving into a square adjacent to an enemy costs you nothing, even out of difficult ground, and never sets off a reaction. |
+| **The Purple** | Control | Taint | The First Taste | **The Cup Passes.** An enemy will not willingly end its movement adjacent to you; doing so costs it a half. |
+| **The Yellow** | Preparation | halves | The Rumour | **Nobody Knows Where You Are.** Enemies treat you as standing where you were at the start of the round. |
+| **Inquisitor** | Control | a secret | The Writ | **Nobody Lies Twice.** An enemy carrying an opening you put there may not take a reaction against you. |
+| **Shieldsworn** | Support | ground | The Order's Shield | **Nobody Falls Beside You.** An ally adjacent to you may not be moved against their will, and cover between the two of you does not exist. |
+| **Anchorite** | Deck shape | skill cards | The Long Silence | **The Empty Cell.** You cannot be Burdened or Overloaded, and no card may be taken or lifted from any deck of yours. |
+| **Flagellant** | Tempo | a permanent Wild | The Scourge | **Past Caring.** While your Health is half or less you cannot be Compelled or Heckled, and leaving a square adjacent to an enemy never sets off a reaction. |
+
+<!-- /generated: titles -->
+
+---
+
+## 21. Action cards
 
 Every card a character can hold, by where it comes from. A card shows what it does as a **primary**,
 what it does as a **secondary**, and what it does as a **reaction** on somebody else's turn. A dash
@@ -1556,7 +1773,7 @@ do not hold them: they are simply true once the node is yours.
 
 ---
 
-## 20. Items
+## 22. Items
 
 What you can walk into a town and buy, by kind. **Slot** is where it has to sit to be used, and a
 weapon's hands are in brackets. **Weight** counts against your 40 kg limit. **Gold** is what it
@@ -1670,7 +1887,7 @@ what you will ever carry.
 
 ---
 
-## 21. Skill cards
+## 23. Skill cards
 
 Your other deck. The fifteen everybody starts with, then what each Way deals in on top of them.
 See §13.2 for how the deck grows and §13.5 for why a 1 is sometimes the card you want.
@@ -1733,7 +1950,7 @@ Fifteen cards, all six approaches, and two more from your occupation.
 
 ---
 
-## 22. Features
+## 24. Features
 
 Permanent traits. A feature is never shuffled and never spent: it is simply true of you.
 
@@ -1760,7 +1977,7 @@ Permanent traits. A feature is never shuffled and never spent: it is simply true
 
 ---
 
-## 23. Spells
+## 25. Spells
 
 Formulas for Way of Mind and miracles for Way of Faith, by where they come from. **Strength** is how
 many spell slots preparing one costs.
@@ -2026,7 +2243,7 @@ many spell slots preparing one costs.
 
 ---
 
-## 24. Quick reference
+## 26. Quick reference
 
 | | |
 |---|---|
