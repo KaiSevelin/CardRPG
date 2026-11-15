@@ -1791,6 +1791,93 @@ async function probes(page) {
   });
 
   /*
+   * **A dimmed card says why it is dimmed.**  [BUILT 2026-11-15]
+   *
+   * The rule is to dim rather than hide, *because hiding it would hide why it cannot be played* --
+   * and the card then wore the same tooltip as every playable one, so the display kept it in
+   * sight in order to explain itself and explained nothing.
+   *
+   * Driven because the claim is about what a player READS while hovering. The template could take
+   * the right field and the field could be built from the wrong call, and only rendering a real
+   * hand against a real call shows which. It also has to be true of BOTH kinds of card at once:
+   * the playable one must still say how to play it.
+   */
+  await probe("a card that cannot go says so on hover", async () => {
+    await settle(page);
+    const rows = await page.evaluate(async () => {
+      const checks = await import("/systems/cardrpg/module/checks.mjs");
+      const decks = await import("/systems/cardrpg/module/decks.mjs");
+      const { CardRPGTray } = await import("/systems/cardrpg/module/tray.mjs");
+      const { hero } = LIVE;
+      const wait = ms => new Promise(r => setTimeout(r, ms));
+
+      /*
+       * **A hand with cards in it**, through the deck layer's own lookup rather than by matching a
+       * stack's NAME: the hand is \`system.decks.skillHand\`, and the first version of this probe
+       * looked for a stack called "Skill Hand", found nothing, and passed four assertions over an
+       * empty list. An \`.every()\` on nothing is true.
+       */
+      const hand = decks.deckOf(hero, "skillHand");
+      const deck = decks.deckOf(hero, "skill");
+      if (hand.cards.size < 3) await decks.moveRandom(deck, hand, 3 - hand.cards.size);
+      await wait(200);
+      const held = [...hand.cards.contents].filter(c => !c.system.wild);
+      /* An approach NOTHING in hand serves, so every plain card in it is dimmed at once. */
+      const serves = new Set(held.map(c => c.system.approach));
+      const other = ["might", "agility", "shadow", "wits", "lore", "presence"]
+        .find(a => !serves.has(a));
+
+      /* Called for the approach nothing in hand serves, so every plain card is dimmed. */
+      await checks.setCall({ dc: 5, approaches: [other], mode: 0 });
+      for (const t of CardRPGTray.openTrays) await t.close();
+      await CardRPGTray.openFor(hero);
+      await wait(700);
+      const root = [...CardRPGTray.openTrays][0]?.element;
+      /*
+       * **The wild is read separately**, because it is the one card that answers every call: the
+       * first version of this probe asserted that every card in hand went dim and failed 2 of 3
+       * whenever a wild had been dealt. That is the rule working, so it is asserted rather than
+       * worked around.
+       */
+      const tips = () => [...root.querySelectorAll(".cr-card--skill")]
+        .map(el => ({
+          mute: el.classList.contains("cr-card--mute"),
+          wild: el.classList.contains("cr-card--wild"),
+          tip: el.dataset.tooltip ?? ""
+        }));
+      const called = tips();
+
+      await checks.clearCall();
+      await wait(600);
+      const open = tips();
+
+      const plain = called.filter(c => !c.wild);
+      const out = [
+        /* Said out loud, because every row below it is vacuously true of an empty hand. */
+        ["there is a hand to read", called.length >= 3, true],
+        ["and plain cards in it", plain.length > 0, true],
+        ["every card that cannot answer is dimmed",
+          plain.filter(c => c.mute).length, plain.length],
+        /* And the one card that is never the wrong card is not among them. */
+        ["while the wild answers the call whatever it was",
+          called.filter(c => c.wild).some(c => c.mute), false],
+        ["and the dimmed tooltips name the card and the call",
+          plain.filter(c => c.mute).every(c => c.tip.includes("cannot answer")), true],
+        ["and say the card stays in your hand",
+          plain.filter(c => c.mute).every(c => c.tip.includes("stays in your hand")), true],
+        ["and do not tell you to play it",
+          plain.filter(c => c.mute).every(c => !c.tip.startsWith("Play it")), true],
+        ["with no call, every card says how to play it",
+          open.every(c => c.tip.startsWith("Play it")), true],
+        ["and none of them is dimmed", open.some(c => c.mute), false]
+      ];
+      for (const t of CardRPGTray.openTrays) await t.close();
+      return out;
+    });
+    return rows;
+  });
+
+  /*
    * **Invisible helps you sneak, and nothing else.**  [BUILT 2026-11-15]
    *
    * `conditionSway` was split out so that Heckled -- *you draw fate with disadvantage* -- would
@@ -1970,7 +2057,20 @@ async function probes(page) {
     const opened = await page.evaluate(async () => {
       const { CardRPGTray } = await import("/systems/cardrpg/module/tray.mjs");
       for (const t of CardRPGTray.openTrays) await t.close();
-      const beast = game.actors.find(a => a.type === "npc");
+      /*
+       * **Named, not "whichever NPC is first".**  [FIXED 2026-11-15]
+       *
+       * It was `find(a => a.type === "npc")`, which was unambiguous while the starter world held
+       * the goblin line and nothing else. The creature-passives probe above now builds a Grey
+       * Assassin and a Smash Beetle into the world, so *the first NPC* became whatever the
+       * collection happened to hand back -- and a Smash Beetle swings a Tail Club, which the
+       * weapon assertion below did not recognise. One row in three failed, intermittently, in a
+       * probe about something else entirely.
+       *
+       * A probe that needs a particular creature should say which. The fallback is the old
+       * behaviour, for a world that somehow has no goblin in it.
+       */
+      const beast = game.actors.getName("Goblin") ?? game.actors.find(a => a.type === "npc");
       globalThis.LIVE.beast = beast;
       /* A target, which is the one thing the click does not supply. The hero is standing in for
        * whoever the goblin would be swinging at. */
@@ -2029,7 +2129,14 @@ async function probes(page) {
         /* A Miss is a real outcome, so what is asserted is that the attack RESOLVED: a fate card
          * was drawn against a target, and the card says which weapon swung. */
         ["the monster's attack resolves", /Fate/.test(said), true],
-        ["naming the weapon it swung", /Spear|Dagger|Bow|Claw|Knife|Rock|Sword/i.test(said), true],
+        /*
+         * **Asked of the creature's own gear** rather than a hand-written list of weapon names.
+         * The list was the half that went stale: it had seven names in it, and the roster is
+         * seventy-five creatures carrying rather more than seven weapons between them.
+         */
+        ["naming the weapon it swung",
+          LIVE.beast.items.filter(i => i.type === "item" && i.system.equipped)
+            .some(i => said.includes(i.name)), true],
         /*
          * **And it is resolved against the figure that was marked**, which the card names in a
          * row of its own. Not *the hero lost health*: the starter Warrior wears Leather Armor,
@@ -2304,7 +2411,8 @@ async function shots(page, dir) {
   await page.evaluate(async () => {
     const { CardRPGTray } = await import("/systems/cardrpg/module/tray.mjs");
     for (const t of CardRPGTray.openTrays) await t.close();
-    game.cardrpg.openTray(game.actors.find(a => a.type === "npc"));
+    game.cardrpg.openTray(game.actors.getName("Goblin")
+      ?? game.actors.find(a => a.type === "npc"));
   });
   await page.waitForSelector(".cr-npc", { timeout: 20000 });
   await save("monster", ".cr-hud__play");

@@ -514,11 +514,15 @@
         {{#each scene.cards}}
           {{!-- A card whose approach cannot fit the call is dimmed in place, never hidden: the
                 same rule a blocked card half follows (hud-spec 3.2), and for the same reason --
-                hiding it would hide why it cannot be played. --}}
+                hiding it would hide why it cannot be played.
+
+                And the tooltip is the card's own, because for a while it was not: a dimmed card
+                read "Play it: ..." like all the rest, so the one card the display had gone out of
+                its way to keep in sight was the one it said nothing useful about. --}}
           <div class="cr-card cr-card--skill{{#if this.wild}} cr-card--wild{{/if}}{{#unless this.answers}} cr-card--mute{{/unless}}"
                {{#if this.art}}style="--cr-art: {{crArt this.art}}"{{/if}}
                role="button" tabindex="0" data-action="check" data-card-id="{{this.id}}"
-               data-tooltip="Play it: the check asks how hard, which tool, and whether anybody helped.">
+               data-tooltip="{{this.why}}">
             <div class="cr-card__name">
               {{#if this.icon}}{{crIcon this.icon}}{{/if}}
               {{this.approach}} <strong>{{this.value}}</strong>

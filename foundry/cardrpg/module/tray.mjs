@@ -1435,7 +1435,25 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
     })).sort((a, b) => b.value - a.value || a.approach.localeCompare(b.approach));
 
     const call = readCall();
-    for (const card of cards) card.answers = !call || card.canAnswer;
+    /*
+     * **A dimmed card says why it is dimmed.**  [BUILT 2026-11-15]
+     *
+     * Dimming in place rather than hiding is the right rule -- hud-spec 3.2, and *hiding it would
+     * hide why it cannot be played* is written beside it in the template. But the card then wore
+     * the same tooltip as every other one: *Play it: the check asks how hard, which tool, and
+     * whether anybody helped.* So the display kept the card in sight in order to explain itself
+     * and then explained nothing, and the only way to find out was to click it and read a toast.
+     *
+     * The same string the click uses, formatted here instead -- a second sentence saying the same
+     * thing in slightly different words is how the two come to disagree.
+     */
+    for (const card of cards) {
+      card.answers = !call || card.canAnswer;
+      card.why = card.answers
+        ? game.i18n.localize("CARDRPG.Check.Playable")
+        : game.i18n.format("CARDRPG.Check.WrongApproach",
+          { card: card.name, approach: describeCall(call) });
+    }
 
     return {
       cards,

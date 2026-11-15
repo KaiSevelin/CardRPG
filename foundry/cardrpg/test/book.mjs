@@ -34,6 +34,15 @@ const HERE = import.meta.dirname;
 const REPO = path.join(HERE, "..", "..", "..");
 const MD = path.join(REPO, "rules", "players-handbook.md");
 const OUT = path.join(REPO, "rules", "players-handbook.html");
+/*
+ * **And the front door.**  [BUILT 2026-11-15] GitHub Pages serves this repository at its root, and
+ * the root held nothing -- so the one URL anybody would type or paste, the one without a path on
+ * it, was a 404, and the handbook could only be reached by somebody who already knew the filename.
+ *
+ * Generated here rather than written by hand, so the chapter count on it is the count of the page
+ * it links to. A landing page with a stale number on it is worse than no number.
+ */
+const FRONT = path.join(REPO, "index.html");
 const ART_DIR = path.join(HERE, "..", "art");
 const ICON_DIR = path.join(HERE, "..", "icons");
 /* How the page reaches the art from where it is written. */
@@ -438,6 +447,62 @@ if (artview && typeof artview.showModal === "function") {
 /* -------------------------------------------- */
 
 /**
+ * **The front door: one page, one link, and the numbers off the thing it links to.**
+ *
+ * Deliberately small. It is not a second handbook and not a pitch -- it is the page that answers
+ * *where is the book* for somebody who was sent the bare address, and anything else on it is
+ * something that has to be kept true.
+ *
+ * It wears the handbook's own stylesheet, which is why there is no CSS here: two stylesheets for
+ * two pages of one project is how they stop looking like one project.
+ */
+export function buildFront({ chapters, tables, art }) {
+  return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Card RPG</title>
+<meta name="description" content="A tabletop role-playing game played with cards instead of dice, and the Foundry VTT system that runs it.">
+<link rel="stylesheet" href="rules/book.css">
+<style>
+  .front { max-width: 36rem; margin: 4rem auto; padding: 0 1.5rem; }
+  .front h1 { margin-bottom: 0.2em; }
+  .front .front__sub { font-size: 1.1em; opacity: 0.85; margin-top: 0; }
+  .front__go {
+    display: inline-block; margin: 1.5rem 0 0.4rem; padding: 0.6em 1.2em;
+    border: 2px solid currentColor; border-radius: 4px;
+    font-size: 1.15em; font-weight: 700; text-decoration: none;
+  }
+  .front__count { opacity: 0.75; font-size: 0.95em; margin-top: 0.3em; }
+  .front__rest { margin-top: 2.5rem; font-size: 0.95em; opacity: 0.85; }
+</style>
+</head>
+<body>
+<main class="front">
+  <h1>Card RPG</h1>
+  <p class="front__sub">A tabletop role-playing game played with cards instead of dice.</p>
+
+  <p>Every character carries two decks &mdash; what they can do, and what the world does back.
+    There are no dice and no attributes: a card is both the thing you are good at and the thing
+    you spend to use it, so an adventuring day runs out rather than resetting.</p>
+
+  <a class="front__go" href="rules/players-handbook.html">Read the player's handbook</a>
+  <p class="front__count">${chapters} chapters, ${tables} tables, ${art} pieces of art.
+    One page &mdash; it is long, and it is meant to be read in a browser.</p>
+
+  <p class="front__rest">The game runs as a system for <strong>Foundry VTT</strong>, which lives in
+    this repository alongside the handbook it is built from.
+    <a href="https://github.com/KaiSevelin/CardRPG">The source is on GitHub.</a></p>
+</main>
+</body>
+</html>
+`;
+}
+
+/* -------------------------------------------- */
+
+/**
  * The whole page from the markdown, as a string.
  *
  * Exported and pure for the same reason `fill` is: the suite can then ask whether the committed
@@ -465,9 +530,11 @@ export function buildPage(md) {
 if (process.argv[1] && process.argv[1].endsWith("book.mjs")) {
   const built = buildPage(fs.readFileSync(MD, "utf8"));
   fs.writeFileSync(OUT, built.html, "utf8");
+  fs.writeFileSync(FRONT, buildFront(built), "utf8");
   console.log(`wrote rules/players-handbook.html: ${built.chapters} chapters, `
     + `${built.tables} tables, ${built.art} pieces of art placed, ${built.maps} map, `
     + `${built.icons} emoji replaced by the game's own icons`);
+  console.log("wrote index.html: the front door, with that page's own numbers on it");
   if (built.missed.length) {
     console.log(`  ${built.missed.length} rows went without a picture:`);
     for (const m of built.missed) console.log(`    ${m}`);

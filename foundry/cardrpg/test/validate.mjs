@@ -8488,7 +8488,7 @@ check("and the internal word for a kept card", (handbook.match(/\bslates?\b/gi) 
  * here: the page would still build, still validate, and simply be a worse document, which is
  * exactly the quiet loss this suite exists to refuse.
  */
-const { buildPage } = await import("./book.mjs");
+const { buildPage, buildFront } = await import("./book.mjs");
 const bookPage = fs.readFileSync(path.join(root, "../../rules/players-handbook.html"), "utf8");
 const bookBuilt = buildPage(handbook);
 check("the handbook's page is current",
@@ -8508,6 +8508,36 @@ check("and rows carrying their art", bookBuilt.art > 250 ? "most of them" : `onl
 /* Nothing of the markdown survives into the page: a stray pipe is a table that did not render. */
 check("markdown left unrendered on the page",
   (bookBuilt.html.split("<main")[1].match(/\*\*|^\|/gm) ?? []).length, 0);
+
+/*
+ * **And the front door.**  [BUILT 2026-11-15]
+ *
+ * Pages serves this repository at its root and the root held nothing, so the one address anybody
+ * would type or paste -- the one with no path on it -- was a 404, and the handbook could be
+ * reached only by somebody who already knew the filename.
+ *
+ * Generated from the same build as the page it links to, and checked the same way, because the
+ * numbers on it are that page's numbers. A landing page carrying a stale count is worse than one
+ * carrying none, and it is exactly the kind of file nobody opens again after writing it.
+ */
+const frontPage = fs.readFileSync(path.join(root, "../../index.html"), "utf8");
+check("the front door is current",
+  buildFront(bookBuilt) === frontPage ? "yes" : "stale, run npm run book", "yes");
+/* One link, to the one thing this page exists to reach. */
+check("and it points at the handbook",
+  /href="rules\/players-handbook\.html"/.test(frontPage) ? "yes" : "no", "yes");
+/* The handbook's own stylesheet: two stylesheets for two pages of one project is how they stop
+ * looking like one project. */
+check("and wears the handbook's stylesheet",
+  /href="rules\/book\.css"/.test(frontPage) ? "yes" : "no", "yes");
+/* The counts are the built page's and not typed, which is the whole reason it is generated. */
+check("and its counts are the page's own",
+  frontPage.includes(`${bookBuilt.chapters} chapters, ${bookBuilt.tables} tables`)
+    ? "yes" : "no", "yes");
+/* Pages needs this to serve a path with an underscore in it; it has been here since the handbook
+ * went up, and the front door is the first thing that would break without it. */
+check("and Pages is told not to run Jekyll",
+  fs.existsSync(path.join(root, "../../.nojekyll")) ? "yes" : "no", "yes");
 
 /*
  * **The handbook is numbered straight through, and used not to be.**
@@ -14564,9 +14594,37 @@ check("and a way to withdraw it",
  */
 check("a scene change redraws every tray",
   /"updateCombat", "updateScene"/.test(traySource) ? "yes" : "no", "yes");
-/* 31 since 2026-11-15: `Or`, which joins the approaches a call will accept. */
+/* 32 since 2026-11-15: `Or`, which joins the approaches a call will accept, and
+ * `Playable`, which is the tooltip a card that CAN answer wears -- the pair of them is what
+ * stops a dimmed card and a playable one reading the same. */
+/*
+ * **And a dimmed card says why it is dimmed.**  [BUILT 2026-11-15]
+ *
+ * Dimming in place rather than hiding is the rule, and the template has said *hiding it would hide
+ * why it cannot be played* since it was written. The card then wore the same tooltip as every
+ * other one -- *Play it: the check asks how hard...* -- so the display kept the card in sight in
+ * order to explain itself and then explained nothing. The only way to learn the reason was to
+ * click the card and read a toast.
+ *
+ * Checked at both ends: the template must take the card's own sentence, and the sentence must be
+ * formatted from the string the CLICK uses. Two wordings of one refusal is how they come to
+ * disagree, and the one on hover is the one nobody would notice going stale.
+ */
+check("a dimmed card wears its own reason",
+  /data-tooltip="\{\{this\.why\}\}"/.test(trayTemplate) ? "yes" : "no", "yes");
+/* Counted rather than grepped: TWO places must use it -- the hover and the click -- so a grep
+ * either one could answer is a grep about neither. */
+check("and it is the same refusal the click gives",
+  (traySource.match(/CARDRPG\.Check\.WrongApproach/g) ?? []).length, 2);
+check("while a card that can answer still says how to play it",
+  /game\.i18n\.localize\("CARDRPG\.Check\.Playable"\)/.test(traySource) ? "yes" : "no", "yes");
+/* And the refusal says what happens next, because a card that cannot be played is not a dead end:
+ * the call is the GM's to re-set, and the card stays in hand either way. */
+check("and the refusal says the card stays in your hand",
+  /It stays in your hand/.test(lang["CARDRPG.Check.WrongApproach"] ?? "") ? "yes" : "no", "yes");
+
 check("every string the call needs is translated",
-  Object.keys(lang).filter(k => k.startsWith("CARDRPG.Check.")).length, 31);
+  Object.keys(lang).filter(k => k.startsWith("CARDRPG.Check.")).length, 32);
 check("and nothing it uses is missing",
   [...traySource.matchAll(/CARDRPG\.Check\.[A-Za-z]+/g)].map(m => m[0])
     .filter(k => !(k in lang)).join(", ") || "none", "none");
@@ -17336,7 +17394,7 @@ readFiles.set("decksSource", decksSource);
  *
  * 74 since 2026-11-15: `tableSource` reads `module/table.mjs`, the GM's own controls, which are
  * on the token HUD rather than inside a player's window. */
-check("files this suite greps by name", readFiles.size, 76);
+check("files this suite greps by name", readFiles.size, 77);
 
 /* Every `/pattern/.test(VAR)` and `VAR.includes("...")`, with the check it belongs to. */
 const nameOfCheck = index => {
