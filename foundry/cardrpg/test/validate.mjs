@@ -2424,6 +2424,7 @@ check("and the rider is applied after the damage",
   resolveSource.indexOf("for (const step of crit.riders ?? [])")
   > resolveSource.indexOf('await taker.update({') ? "yes" : "no", "yes");
 
+
 /* One insertion path, because there are two reasons to insert and they differ in one field. */
 check("one path puts a card into a fate deck",
   /export async function addFateCards/.test(decksSource) ? "yes" : "no", "yes");
@@ -4203,6 +4204,47 @@ const panePart = fs.readFileSync(path.join(root, "templates/levelup.hbs"), "utf8
 const actorModel = fs.readFileSync(path.join(root, "module/data/actors.mjs"), "utf8");
 const charTemplate = fs.readFileSync(path.join(root, "templates/actor-character.hbs"), "utf8");
 const { CARDRPG } = await import("../module/config.mjs");
+
+/*
+ * **[FOUND 2026-11-16] Two steps print a number on a condition that has nowhere to put it.**
+ *
+ * `intensity` is how FIERCE a condition is and only a `valued` one has that; `duration` is how
+ * LONG, and every condition has that. Two steps carry `intensity: 2` on a condition that is not
+ * valued, so the number is read by nothing, printed by nothing, and applied by nothing:
+ *
+ *   - *Set*, the Trapmaker's Signature: `slowed 2`
+ *   - *The Standing Flood*: `wet 2`
+ *
+ * Neither Slowed nor Wet is valued, and neither should be -- halving a Move is not a thing you can
+ * do twice as hard, and being in water is not a quantity. So the number was almost certainly meant
+ * to be **`duration: 2`**, which is what the card face would then print as *Slowed (2)*. Today
+ * both print *(1)*, because duration is unset and defaults to one.
+ *
+ * **[OPEN]** It is pinned rather than fixed because changing it is a tuning decision and not a
+ * typo: the prose on neither card says how long, so `intensity: 2` is the only evidence of what
+ * was wanted, and two rounds of Slowed from a trap is a different card from one. What this check
+ * does is stop a THIRD arriving quietly, and stop these two being forgotten again.
+ *
+ * Found by ground phase 2, which was the first thing that ever asked a step for its intensity.
+ */
+const INTENSITY_STEPS = [];
+for (const key of ["WARRIOR_DECK", "SHADE_DECK", "COMMON_POOL", "WAY_CARDS", "STRENGTH_POOL",
+  "SHADE_POOL", "STRENGTH_SIGNATURES", "SHADE_SIGNATURES", "MIND_SIGNATURES", "FAITH_SIGNATURES",
+  "MIND_POOL", "FAITH_POOL", "ALL_SKILLS", "INTENTS"]) {
+  for (const card of content[key] ?? []) {
+    const look = step => {
+      if (step?.condition && step.intensity
+        && !CARDRPG.conditions[step.condition]?.valued) {
+        INTENSITY_STEPS.push(`${card.name} -> ${step.condition}`);
+      }
+    };
+    for (const half of ["primary", "secondary"]) for (const s of card[half] ?? []) look(s);
+    look(card.effect);
+  }
+}
+check("steps printing an intensity on a condition that has no value",
+  INTENSITY_STEPS.sort().join(", ") || "none",
+  "Set -> slowed, The Standing Flood -> wet");
 
 /*
  * **Every tag and every slot a content item declares is in the vocabulary the schema draws from.**

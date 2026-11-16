@@ -15,7 +15,7 @@
 import { CARDRPG } from "./config.mjs";
 import { deckOf, moveRandom, move, normalizeDeck, allStacks, available } from "./decks.mjs";
 import { resolveWound, DROPPED } from "./resolve.mjs";
-import { expireGround, clearGround } from "./ground.mjs";
+import { expireGround, clearGround, groundFor, imposeGround } from "./ground.mjs";
 
 /* -------------------------------------------- */
 /*  Initiative                                  */
@@ -326,15 +326,30 @@ export async function onTurnStart(combat, updateData = null) {
   if (actor.type === "npc") await revealIntent(actor);
 
   /*
+   * **The ground renews what it imposes, before anything reads the conditions.**  [2026-11-16]
+   * Phase 2. Stand in the Standing Flood and you are Wet again this turn; walk out and it is gone
+   * by your next one, because a zone's condition lasts a round and is refreshed by standing there.
+   * It goes above the bite so a zone that both soaks and burns is read once, in the right order.
+   */
+  await imposeGround(actor);
+
+  /*
    * Conditions that bite at the start of your turn -- Burning and Poisoned -- each for their own
    * value, defaulting to 1 when nothing printed one (core-rules 7). They meet neither armor nor
    * Block, which is why their bands are tight, and they add: a man on fire and poisoned takes both.
    *
    * Driven off the `damagePerTurn` flag rather than by key, so a third one needs no code here.
+   *
+   * **And the ground underfoot, which bites at the same moment and for the same reasons.**
+   * [2026-11-16] *The Sphere Entire* is *difficult ground, cover, and 2 damage at the start of
+   * your turn*, and that last clause is this. It ADDS to a condition rather than replacing it --
+   * a man on fire standing in fire takes both -- but two overlapping zones give the larger and not
+   * the sum, which `groundAt` decides: standing where two fires meet is standing in a fire.
    */
   const bites = (actor.system.activeConditions ?? [])
     .filter(c => CARDRPG.conditions[c.key]?.damagePerTurn);
-  const damage = bites.reduce((n, c) => n + (c.value ?? 1), 0);
+  const underfoot = groundFor(actor).damage ?? 0;
+  const damage = bites.reduce((n, c) => n + (c.value ?? 1), 0) + underfoot;
   if (damage > 0) {
     const before = actor.system.health.value;
     await actor.update({ "system.health.value": Math.max(0, before - damage) });

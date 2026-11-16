@@ -17,7 +17,7 @@ import {
 import { endTransformation, payToPrepare } from "./module/resolve.mjs";
 import { CardRPGCombat, registerCombatHooks } from "./module/combat.mjs";
 import { CardRPGTray, registerTrayHooks } from "./module/tray.mjs";
-import { registerGroundHooks } from "./module/ground.mjs";
+import { registerGroundHooks, imposeGround } from "./module/ground.mjs";
 import { registerCheckHooks } from "./module/checks.mjs";
 import { registerTableBoard } from "./module/table.mjs";
 import { registerEnrichers, registerEnricherClicks } from "./module/enrichers.mjs";
@@ -512,6 +512,15 @@ async function onArrival(mover, from) {
    * watcher who covered the old square too is not asked.
    */
   await answerWatch(mover, now, from);
+
+  /*
+   * **And what the ground they just walked onto puts on them.**  [2026-11-16] Ground phase 2.
+   *
+   * The other half of a zone's condition, and the half a turn tick cannot cover: you are wet when
+   * you step into the water, not at the start of your next turn. The tick renews it while you
+   * stand there; this is what starts it.
+   */
+  await imposeGround(mover);
 }
 
 /**

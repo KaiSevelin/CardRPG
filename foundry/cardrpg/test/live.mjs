@@ -2347,6 +2347,111 @@ async function probes(page) {
     });
   });
 
+  /*
+   * **[BUILT 2026-11-16] Ground phase 2: the ground bites, and the water keeps you wet.**
+   *
+   * *The Sphere Entire* is *difficult ground, cover, and 2 damage at the start of your turn*, and
+   * *The Standing Flood* is deep water that leaves everything in it Wet (2). Both were prose with
+   * a validated field behind them and nothing reading either.
+   *
+   * The condition is renewed by standing there and starts the moment you walk in, which is two
+   * call sites of one function: the turn tick, and the arrival hook. Leaving is what ends it --
+   * a zone hands out one round at a time, because a zone that handed out five would be a puddle
+   * you carry around.
+   *
+   * The actor is taken off the combat, not out of `game.actors`: an unlinked token carries a copy,
+   * and a condition written to the wrong document is a test that accuses the engine of nothing.
+   */
+  await probe("ground that bites, and ground that soaks", async () => {
+    await settle(page);
+    return page.evaluate(async () => {
+      const g = await import("/systems/cardrpg/module/ground.mjs");
+      const { CardRPGTray } = await import("/systems/cardrpg/module/tray.mjs");
+      const { hero } = LIVE;
+      const npc = game.actors.find(a => a.type === "npc");
+      for (const t of CardRPGTray.openTrays) await t.close();
+      for (const c of [...game.combats]) await c.delete();
+      await g.clearGround(canvas.scene);
+
+      const place = async (actor, x, y) =>
+        (await canvas.scene.createEmbeddedDocuments("Token",
+          [(await actor.getTokenDocument({ x, y })).toObject()]))[0];
+      const ph = await place(hero, 500, 500);
+      const pn = await place(npc, 900, 500);
+      const combat = await Combat.create({ scene: canvas.scene.id });
+      await combat.createEmbeddedDocuments("Combatant", [
+        { tokenId: ph.id, sceneId: canvas.scene.id, actorId: hero.id, initiative: 20 },
+        { tokenId: pn.id, sceneId: canvas.scene.id, actorId: npc.id, initiative: 10 }
+      ]);
+      await combat.startCombat();
+      const pause = () => new Promise(r => setTimeout(r, 900));
+      await pause();
+
+      /* Second in the order, standing in a burning flood: 2 damage and Wet 2. */
+      const second = combat.turns[1].actor;
+      const where = pn.object?.center ?? { x: pn.x, y: pn.y };
+      await g.layGround(canvas.scene, {
+        shape: "adjacent", effects: ["difficult"], damage: 2,
+        condition: "wet", intensity: 2, origin: where, radius: 0, until: null
+      });
+      /* And a second, overlapping, dealing less: the larger wins rather than the sum. */
+      await g.layGround(canvas.scene, {
+        shape: "adjacent", effects: ["difficult"], damage: 1,
+        origin: where, radius: 0, until: null
+      });
+      const reads = g.groundFor(second).damage;
+
+      const before = second.system.health.value;
+      const wetBefore = (second.system.conditions ?? []).some(c => c.key === "wet");
+      await combat.nextTurn();
+      await pause();
+      const acting = combat.combatant?.actor?.name ?? "nobody";
+      const after = combat.turns[1].actor.system.health.value;
+      const wet = (combat.turns[1].actor.system.conditions ?? []).find(c => c.key === "wet");
+
+      /*
+       * And the other half of intensity: it means something only where the condition has a value.
+       * Burning does, so a zone that burns carries how fiercely. Imposed by hand rather than by
+       * advancing the turn, because advancing it would also deal the burn and move the number this
+       * probe is holding still.
+       */
+      const first = combat.turns[0].actor;
+      await g.layGround(canvas.scene, {
+        shape: "adjacent", effects: ["difficult"], condition: "burning", intensity: 3,
+        origin: ph.object?.center ?? { x: ph.x, y: ph.y }, radius: 0, until: null
+      });
+      await g.imposeGround(first);
+      const burned = (combat.turns[0].actor.system.conditions ?? []).find(x => x.key === "burning");
+
+      /* The chips say both, and say the engine owns them. */
+      const chips = g.groundChips(combat.turns[1].actor)
+        .map(c => `${c.label}${c.enforced ? "*" : ""}`).sort().join(", ");
+
+      /* The fight's own end takes the zones it made, so this must not ask for them twice:
+       * two deletes of one region is a throw, and the first draft of this probe was the
+       * second delete. */
+      await combat.delete();
+      await pause();
+      await ph.delete();
+      await pn.delete();
+      const swept = g.zonesOn(canvas.scene).length;
+      return [
+        ["two zones on one square give the larger, not the sum", reads, 2],
+        ["and the fight's end took them both without being asked twice", swept, 0],
+        ["it is their turn", acting, combat.turns?.[1]?.actor?.name ?? npc.name],
+        ["standing in it costs them its damage", before - after, 2],
+        ["and the water leaves them Wet", wet ? "wet" : "dry", "wet"],
+        ["and carries no intensity, because Wet has no value to carry",
+          wet?.value ?? null, null],
+        ["while a zone whose condition IS valued carries one", burned?.value ?? 0, 3],
+        ["which they did not have before they stood there", wetBefore, false],
+        ["and it lasts one round at a time", wet?.duration ?? 0, 1],
+        ["and the chips name both, as the engine's",
+          chips, "2 damage*, Wet*, difficult ground"]
+      ];
+    });
+  });
+
   await probe("the claim control, measured rather than read", async () => {
     await settle(page);
     return page.evaluate(async () => {

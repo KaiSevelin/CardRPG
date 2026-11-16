@@ -212,6 +212,57 @@ export async function expireGround(scene, round) {
 }
 
 /**
+ * **The condition a zone puts on whoever is standing in it.**  [BUILT 2026-11-16] Phase 2.
+ *
+ * *The Standing Flood* is deep water and everything in it is **Wet (2)**: the condition is the
+ * zone's, not an attack's, so there is nobody to resist and nothing to draw against. You are
+ * either in the water or you are not.
+ *
+ * **It refreshes rather than stacks**, on exactly the terms `resolveCondition` already uses -- the
+ * longer duration wins and so does the fiercer value, each taken independently, because that is
+ * the only version with no order of arrival in it. A candle after a dragon leaves the dragon's
+ * fire.
+ *
+ * **One round at a time, with no creator.** A blank `creatorId` ticks on the victim's own turn
+ * (combat.mjs), which is what a zone wants: stand in the water and it is renewed under you every
+ * turn, walk out and it is gone by your next one. A zone that handed out a five-round condition
+ * would be a puddle you carry around.
+ *
+ * Written here rather than through `resolveCondition` because the resolver imports this module,
+ * and a cycle to save nine lines is a bad trade. The refresh rule is the one thing that must not
+ * drift between the two, so it is named in both.
+ */
+export async function imposeGround(actor) {
+  if (!actor?.update) return [];
+  const standing = groundFor(actor).zones
+    .map(({ ground }) => ground)
+    .filter(ground => ground.condition && ground.condition in CARDRPG.conditions);
+  if (!standing.length) return [];
+
+  const conditions = actor.system.toObject?.().conditions
+    ?? (actor.system.conditions ?? []).map(c => ({ ...c }));
+  const landed = [];
+  for (const ground of standing) {
+    const key = ground.condition;
+    const valued = CARDRPG.conditions[key]?.valued;
+    const value = valued ? Math.max(0, ground.intensity ?? 1) : null;
+    const already = conditions.find(c => c.key === key);
+    if (already) {
+      already.duration = Math.max(already.duration ?? 0, 1);
+      if (value) already.value = Math.max(already.value ?? 0, value);
+      already.creatorId = "";
+      already.round = game.combat?.round ?? null;
+    } else {
+      conditions.push({ key, duration: 1, value, creatorId: "",
+        round: game.combat?.round ?? null });
+    }
+    landed.push(key);
+  }
+  await actor.update({ "system.conditions": conditions });
+  return landed;
+}
+
+/**
  * **Ticking ground onto a region a GM drew themselves.**  [BUILT 2026-11-16]
  *
  * Phase 0 and 1 only let a **card** make ground, which answers the wrong half of the question. The
@@ -290,7 +341,8 @@ export const ENFORCED = new Set(["cover"]);
  * and none of them has to know which properties the engine has got round to.
  */
 export function groundChips(actor) {
-  return [...groundFor(actor).effects].map(key => {
+  const here = groundFor(actor);
+  const chips = [...here.effects].map(key => {
     const label = game.i18n.localize(CARDRPG.groundEffects[key] ?? key);
     return {
       key,
@@ -301,6 +353,31 @@ export function groundChips(actor) {
         : `You are standing in ${label}. The table applies it.`
     };
   });
+  /*
+   * **Damage and the zone's condition are chips too, and they are not in `groundEffects`.**
+   * [2026-11-16] Phase 2. They are fields beside the property list rather than entries in it --
+   * *difficult ground, cover, and 2 damage at the start of your turn* is one zone with two
+   * properties and a number -- so they are gathered here rather than looked up, and both are
+   * enforced, which is the point of saying them at all.
+   */
+  if (here.damage > 0) {
+    chips.push({
+      key: "damage", label: `${here.damage} damage`, enforced: true,
+      tip: `Standing here costs ${here.damage} at the start of your turn, before armor and Block.`
+    });
+  }
+  for (const { ground } of here.zones) {
+    const key = ground.condition;
+    if (!key || !(key in CARDRPG.conditions)) continue;
+    const label = game.i18n.localize(CARDRPG.conditions[key]?.label ?? key);
+    const value = CARDRPG.conditions[key]?.valued ? ` ${Math.max(0, ground.intensity ?? 1)}` : "";
+    if (chips.some(c => c.key === `condition:${key}`)) continue;
+    chips.push({
+      key: `condition:${key}`, label: `${label}${value}`, enforced: true,
+      tip: `The ground keeps you ${label} while you stand in it, and lets go when you leave.`
+    });
+  }
+  return chips;
 }
 
 /**
@@ -311,9 +388,18 @@ export function groundChips(actor) {
  * work on its way out of the room.
  */
 export async function clearGround(scene) {
+  /*
+   * **Asked for again at the moment of deleting**, because this is reached from a hook and the
+   * same zones can be on their way out already -- a GM deleting the combat while the fight's own
+   * `deleteCombat` handler is running is two deletes of one region, and Foundry throws on the
+   * second. Reading the ids one line before using them does not make that impossible, but it
+   * makes it the narrow race it should be rather than the ordinary case it was.
+   */
   const mine = zonesOn(scene)
     .filter(({ ground }) => ground.fromCard)
-    .map(({ region }) => region.id);
-  if (mine.length) await scene.deleteEmbeddedDocuments("Region", mine);
+    .map(({ region }) => region.id)
+    .filter(id => scene.regions?.has?.(id) ?? true);
+  if (!mine.length) return 0;
+  await scene.deleteEmbeddedDocuments("Region", mine);
   return mine.length;
 }
