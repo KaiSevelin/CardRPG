@@ -994,6 +994,33 @@ CARDRPG.groundShapes = {
  * `shadowed` is the Way of Shade's whole terrain: three other cards READ a shadowed square without
  * making one, which is why making one has to be sayable.
  */
+/**
+ * **What a square costs to cross, for the two properties that are about crossing it.**
+ * [BUILT 2026-11-16] Ground phase 3.
+ *
+ * These are multipliers handed to Foundry's own `modifyMovementCost` region behaviour, so what
+ * they move is **the ruler**: drag a token across difficult ground and the measurement charges
+ * double. They do not enforce anything in this game's terms and are not meant to -- core-rules 11
+ * is explicit that *movement is a sentence the table applies*, and nothing here spends a Move for
+ * anybody. What changes is that the number a player needs is now on the screen while they drag
+ * instead of in somebody's head.
+ *
+ * `impassable` is a cost rather than a wall because Foundry ships no behaviour that forbids
+ * movement, and a number this size is refused by any Move a card has ever printed. A wall that is
+ * really a very steep hill is the honest version of what the engine can do here.
+ */
+CARDRPG.groundCost = {
+  difficult: 2,
+  /*
+   * **Five is Foundry's ceiling, not a choice.** The field is capped at 5 with a step of 0.25, so
+   * *impassable* cannot be said as a cost at all -- what the ruler can be made to say is **as dear
+   * as it is allowed to get**. The wall itself stays the table's, which is the same division every
+   * other part of this makes: the engine knows what the square is, a person decides what that
+   * means for somebody walking.
+   */
+  impassable: 5
+};
+
 CARDRPG.groundEffects = {
   cover: "CARDRPG.Ground.Cover",
   difficult: "CARDRPG.Ground.Difficult",

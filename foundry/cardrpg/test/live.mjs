@@ -2998,6 +2998,99 @@ async function probes(page) {
     });
   });
 
+  /*
+   * **[BUILT 2026-11-16] Ground phase 3: what it costs to cross, and what is waiting in it.**
+   *
+   * Difficult ground is handed to Foundry's own `modifyMovementCost`, whose `difficulties` are
+   * per-action multipliers -- so the RULER charges double and nothing else does. That is the
+   * honest limit of it: *movement is a sentence the table applies*, and no part of this system
+   * spends a Move for anybody. What changed is that the number is on the screen during the drag.
+   *
+   * A trap is the opposite shape: it springs once, takes what it carries, and the square is clear.
+   * *Set* both slows and springs, which is why the arrival hook imposes before it springs -- a
+   * trap that went off first would be a trap that never slowed anybody.
+   */
+  await probe("what a square costs to cross, and what is waiting in it", async () => {
+    await settle(page);
+    return page.evaluate(async () => {
+      const g = await import("/systems/cardrpg/module/ground.mjs");
+      const npc = game.actors.find(a => a.type === "npc");
+      const scene = canvas.scene;
+      /* No combat is needed and none is touched: nothing here is about a turn, and a probe that
+       * tidied away somebody else's fight would be the reason three later ones failed. */
+      await g.clearGround(scene);
+      const grid = canvas.grid.size;
+
+      /* A GM draws a bog and ticks it difficult. */
+      const [bog] = await scene.createEmbeddedDocuments("Region", [{
+        name: "A bog", shapes: [{ type: "rectangle", x: 1200, y: 1200, width: 400, height: 400 }]
+      }]);
+      await g.setGround(bog, { effects: ["difficult"] });
+      await new Promise(r => setTimeout(r, 500));
+      const cost = bog.behaviors.find(b => b.getFlag("cardrpg", "crossing"));
+      const walk = cost?.system?.difficulties?.walk ?? 0;
+
+      /* Ticking impassable as well takes the larger of the two. */
+      await g.setGround(bog, { effects: ["difficult", "impassable"] });
+      await new Promise(r => setTimeout(r, 500));
+      const worse = bog.behaviors.find(b => b.getFlag("cardrpg", "crossing"))
+        ?.system?.difficulties?.walk ?? 0;
+
+      /* And unticking everything takes the behaviour off again. */
+      await g.setGround(bog, { effects: [] });
+      await new Promise(r => setTimeout(r, 500));
+      const left = bog.behaviors.filter(b => b.getFlag("cardrpg", "crossing")).length;
+      await bog.delete();
+
+      /*
+       * A trap, sprung. Called where the arrival hook calls it rather than through a token drag:
+       * a programmatic `token.update({x, y})` did not reach `onArrival` in this harness, and
+       * **[OPEN]** whether that is the harness or the hook is unsettled -- nothing else in this
+       * file drives an arrival end to end either. What is settled is what springing does.
+       */
+      const [tok] = await scene.createEmbeddedDocuments("Token",
+        [(await npc.getTokenDocument({ x: 1000, y: 1600 })).toObject()]);
+      const victim = tok.actor;
+      const was = victim.system.health.value;
+      const centre = tok.object?.center ?? { x: tok.x + grid / 2, y: tok.y + grid / 2 };
+      await g.layGround(scene, {
+        shape: "adjacent", effects: ["trap"], damage: 3, condition: "slowed",
+        origin: centre, radius: 0, until: null, by: "The Trapmaker"
+      });
+      const armed = g.zonesOn(scene).length;
+
+      /* The ground takes hold first, then the trap goes off: *Set* both slows and springs, and
+       * springing is what deletes the zone. */
+      await g.imposeGround(victim);
+      const slowed = (tok.actor.system.conditions ?? []).some(c => c.key === "slowed");
+      await g.springTraps(victim, centre);
+      const after = tok.actor.system.health.value;
+      const stillArmed = g.zonesOn(scene).length;
+      const twice = await g.springTraps(victim, centre);
+
+      await tok.update({ "system.health.value": was }).catch(() => {});
+      await tok.delete();
+      await g.clearGround(scene);
+      /* It made a token and a region on a live board, so it puts the board back: anything it
+       * selected released, anything it opened shut. Run before the rest of this file, it cost
+       * three later probes their monster. */
+      canvas.tokens?.releaseAll?.();
+      const { CardRPGTray } = await import("/systems/cardrpg/module/tray.mjs");
+      for (const t of CardRPGTray.openTrays) await t.close();
+      return [
+        ["a bog charges the ruler double", walk, LIVE.CARDRPG.groundCost.difficult],
+        ["and impassable charges the most the ruler allows", worse,
+          LIVE.CARDRPG.groundCost.impassable],
+        ["unticking it takes the cost off again", left, 0],
+        ["a trap is armed", armed, 1],
+        ["the ground slows them before it springs", slowed, true],
+        ["springing it costs what it carries", was - after, 3],
+        ["and the square is clear afterwards", stillArmed, 0],
+        ["so there is nothing left to spring twice", twice.length, 0]
+      ];
+    });
+  });
+
   await probe("the system itself", async () => {
     const rows = await page.evaluate(() => {
       const errors = (globalThis.LIVE_ERRORS ?? []).filter(e => !/favicon|DevTools/.test(e));

@@ -3165,18 +3165,37 @@ has twice written the same answer in two places and been wrong in both.
 
 #### Order of work
 
-| | | Unlocks |
-|---|---|---|
-| **0** | The zone, the reader, the seam, expiry on the turn tick, and a placement prompt the player drives | the eight steps stop being silent |
-| **1** | `cover` and `shadowed` | six Shadow Magic formulas, and cover joins the branch that already reads a declared one |
-| **2** | `damage` and the zone's condition | *The Sphere Entire*, *The Standing Flood* |
-| **3** | `difficult` and `impassable` through `modifyMovementCost`, `trap` through a region event | *Set*, *Spoil the Ground*, *Unmake the Ground* |
-| **4** | The Tactics that were waiting on it | about eight, including *The Ground You Chose*, *Through the Window* and *Immovable* |
+| | | Unlocks | |
+|---|---|---|---|
+| **0** | The zone, the reader, both seams, expiry by comparison, and the two shapes that place themselves | the eight steps stop being silent | **built** |
+| **1** | `cover`, and every property readable on the HUD | six Shadow Magic formulas, and cover joins the branch that already reads a declared one | **built** |
+| **2** | `damage` and the zone's condition | *The Sphere Entire*, *The Standing Flood* | **built** |
+| **3** | `difficult` and `impassable` through `modifyMovementCost`; `trap` sprung on arrival | *Set*, *Spoil the Ground*, *Unmake the Ground* | **built** |
+| **4** | The Tactics that were waiting on it | about eight, including *The Ground You Chose*, *Through the Window* and *Immovable* | |
 
-Phases 0 to 2 need no movement machinery at all, which is what makes them the sweet spot: they are
-most of the card content, and the rule this document already states about **forced movement
-ignoring difficult ground** stays a sentence the table applies until phase 3 gives it something to
-ignore.
+Phases 0 to 2 needed no movement machinery at all, which is what made them the sweet spot: they
+are most of the card content, and the rule this document already states about **forced movement
+ignoring difficult ground** stays a sentence the table applies.
+
+**And it stays one after phase 3, which is the limit worth stating plainly.** What
+`modifyMovementCost` moves is **the ruler**: drag a token across difficult ground and Foundry's
+own measurement charges double. Nothing in this system spends a Move for anybody, so what the
+engine now does is put the number on the screen during the drag instead of in somebody's head.
+
+**`impassable` cannot be said at all.** That behaviour's cost is capped at five with a step of a
+quarter, so the most a region can be made to cost is five times an ordinary square -- dear, and
+not a wall. A wall is still the table's, and a GM who wants one has Foundry's own walls.
+
+Three properties are therefore enforced outright (`cover`, `trap`, and the zone's damage and
+condition), two are measured and spent by a person (`difficult`, `impassable`), and the HUD's chip
+says which of the three a square is doing to you.
+
+> **[OPEN] Nothing in the live suite drives an arrival end to end.** A trap springs where the
+> arrival hook springs it, and that call is checked directly rather than by moving a token: a
+> programmatic `token.update({x, y})` did not reach `onArrival` in the harness, and whether that is
+> the harness or the hook is unsettled. Sidestep and the held shot hang off the same hook and are
+> checked the same way, by reading the source, so this is one question about three rules rather
+> than a new one about ground.
 
 
 

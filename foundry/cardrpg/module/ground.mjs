@@ -170,6 +170,8 @@ export async function layGround(scene, { shape, effects, damage = null, conditio
       fromCard: true
     } } }
   }]);
+  /* Phase 3: what it costs to cross, if it costs anything. */
+  if (region) await syncCrossing(region, region.getFlag("cardrpg", FLAG));
   return region ?? null;
 }
 
@@ -184,8 +186,11 @@ export async function setGround(region, { effects = [], damage = null } = {}) {
   if (!region) return null;
   const keep = region.getFlag?.("cardrpg", FLAG) ?? {};
   const live = effects.filter(key => key in CARDRPG.groundEffects);
-  if (!live.length && !damage) return region.unsetFlag("cardrpg", FLAG);
-  return region.setFlag("cardrpg", FLAG, {
+  if (!live.length && !damage) {
+    await syncCrossing(region, null);
+    return region.unsetFlag("cardrpg", FLAG);
+  }
+  const written = await region.setFlag("cardrpg", FLAG, {
     ...keep,
     effects: live,
     damage: damage || null,
@@ -193,6 +198,8 @@ export async function setGround(region, { effects = [], damage = null } = {}) {
     fromCard: false,
     until: keep.until ?? null
   });
+  await syncCrossing(region, region.getFlag("cardrpg", FLAG));
+  return written;
 }
 
 /**
@@ -209,6 +216,89 @@ export async function expireGround(scene, round) {
     .map(({ region }) => region.id);
   if (done.length) await scene.deleteEmbeddedDocuments("Region", done);
   return done.length;
+}
+
+/**
+ * **What crossing the zone costs, handed to Foundry's own measurement.**  [BUILT 2026-11-16]
+ * Phase 3.
+ *
+ * `modifyMovementCost` is a region behaviour the application ships, and its `difficulties` are
+ * per-movement-action multipliers. Attaching one makes **the ruler** charge double for difficult
+ * ground while somebody drags a token across it.
+ *
+ * **It enforces nothing and is not meant to.** core-rules 11 is explicit that *movement is a
+ * sentence the table applies*, and nothing in this system spends a Move for anybody. What changes
+ * is that the number a player needs is on the screen while they are dragging rather than in
+ * somebody's head -- which is the same bargain the chips made in phase 1.
+ *
+ * Synced rather than added, and from both writers, so unticking *difficult* on a region takes the
+ * behaviour off again. A behaviour left behind by an untick is a square that costs double for a
+ * reason nobody can see, which is worse than one that costs nothing.
+ */
+async function syncCrossing(region, ground) {
+  if (!region) return;
+  const walk = Math.max(
+    ground?.effects?.includes("impassable") ? CARDRPG.groundCost.impassable : 0,
+    ground?.effects?.includes("difficult") ? CARDRPG.groundCost.difficult : 0
+  );
+  const mine = (region.behaviors ?? []).filter(b => b.getFlag?.("cardrpg", "crossing"));
+  if (!walk) {
+    const ids = mine.map(b => b.id);
+    if (ids.length) await region.deleteEmbeddedDocuments("RegionBehavior", ids);
+    return;
+  }
+  if (mine.length) {
+    await mine[0].update({ "system.difficulties.walk": walk });
+    return;
+  }
+  await region.createEmbeddedDocuments("RegionBehavior", [{
+    type: "modifyMovementCost",
+    name: "Card RPG ground",
+    system: { difficulties: { walk } },
+    flags: { cardrpg: { crossing: true } }
+  }]);
+}
+
+/**
+ * **A trap springs once and is gone**, which is the whole of what a trap is.
+ *
+ * *Set* is *an adjacent square; the first enemy to enter takes your Strike value* and *Spoil the
+ * Ground* is *one square within reach is a trap now, and stays one*. **The first** is the load
+ * bearing word in one and **stays** is in the other, so springing is what removes the zone and a
+ * zone that is not sprung is still there next round.
+ *
+ * What it costs is the zone's `damage` when it carries one, and otherwise the table's -- *your
+ * Strike value* depends on what the setter had in hand when they set it, which is a question this
+ * does not pretend to answer. What it does instead is say loudly that the trap went off and whose
+ * it was, which is the part nobody at the table can reconstruct afterwards.
+ */
+export async function springTraps(actor, point) {
+  const scene = actor?.getActiveTokens?.()[0]?.scene ?? canvas?.scene;
+  if (!scene || !actor) return [];
+  const here = groundAt(scene, point ?? actor.getActiveTokens?.()[0]?.center);
+  const traps = here.zones.filter(({ ground }) => (ground.effects ?? []).includes("trap"));
+  if (!traps.length) return [];
+
+  const sprung = [];
+  for (const { region, ground } of traps) {
+    const hurt = Math.max(0, ground.damage ?? 0);
+    if (hurt > 0) {
+      const before = actor.system.health?.value ?? 0;
+      await actor.update({ "system.health.value": Math.max(0, before - hurt) });
+    }
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor }),
+      content: `<div class="cardrpg"><p><strong>${actor.name}</strong> walks into `
+        + `${ground.by ? `<strong>${ground.by}</strong>'s trap` : "a trap"}`
+        + (hurt > 0 ? `: <strong>${hurt}</strong> damage.` : ", and it springs.")
+        + ` The square is clear now.</p></div>`
+    });
+    if (scene.regions?.has?.(region.id) ?? true) {
+      await scene.deleteEmbeddedDocuments("Region", [region.id]);
+    }
+    sprung.push(region.id);
+  }
+  return sprung;
 }
 
 /**
@@ -332,7 +422,17 @@ export function registerGroundHooks() {
  * What a table cannot do is apply a rule about a square nobody can see. A chip that reads
  * *shadowed, the table applies this* is the whole of what those entries were missing.
  */
-export const ENFORCED = new Set(["cover"]);
+export const ENFORCED = new Set(["cover", "trap"]);
+
+/**
+ * **And the two the engine MEASURES without enforcing.**  [2026-11-16] Phase 3.
+ *
+ * Foundry's ruler charges double for difficult ground because a behaviour on the region says so,
+ * and then nothing spends it: *movement is a sentence the table applies*. Calling that enforced
+ * would be a lie on a tooltip, and calling it nothing would hide the one thing that changed. So it
+ * is its own answer, and the chip says which.
+ */
+export const MEASURED = new Set(["difficult", "impassable"]);
 
 /**
  * **What the square under an actor is, ready to show somebody.**
@@ -350,7 +450,9 @@ export function groundChips(actor) {
       enforced: ENFORCED.has(key),
       tip: ENFORCED.has(key)
         ? `You are standing in ${label}, and the engine applies it.`
-        : `You are standing in ${label}. The table applies it.`
+        : MEASURED.has(key)
+          ? `You are standing in ${label}. The ruler counts it; you spend it.`
+          : `You are standing in ${label}. The table applies it.`
     };
   });
   /*

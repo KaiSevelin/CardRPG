@@ -17,7 +17,7 @@ import {
 import { endTransformation, payToPrepare } from "./module/resolve.mjs";
 import { CardRPGCombat, registerCombatHooks } from "./module/combat.mjs";
 import { CardRPGTray, registerTrayHooks } from "./module/tray.mjs";
-import { registerGroundHooks, imposeGround } from "./module/ground.mjs";
+import { registerGroundHooks, imposeGround, springTraps } from "./module/ground.mjs";
 import { registerCheckHooks } from "./module/checks.mjs";
 import { registerTableBoard } from "./module/table.mjs";
 import { registerEnrichers, registerEnricherClicks } from "./module/enrichers.mjs";
@@ -511,16 +511,30 @@ async function onArrival(mover, from) {
    * already in the lane that shuffles one square inside it has not walked into anything, so a
    * watcher who covered the old square too is not asked.
    */
-  await answerWatch(mover, now, from);
-
   /*
-   * **And what the ground they just walked onto puts on them.**  [2026-11-16] Ground phase 2.
+   * **What the ground they just walked onto puts on them.**  [2026-11-16] Ground phase 2.
    *
    * The other half of a zone's condition, and the half a turn tick cannot cover: you are wet when
    * you step into the water, not at the start of your next turn. The tick renews it while you
    * stand there; this is what starts it.
    */
   await imposeGround(mover);
+
+  /*
+   * **And anything laid for them, which springs after the ground has taken hold.**  [2026-11-16]
+   * Ground phase 3. The order matters for exactly one card: *Set* both slows and springs, and
+   * springing is what deletes the zone -- so a trap that went off first would be a trap that never
+   * slowed anybody.
+   */
+  await springTraps(mover, now.center ?? { x: now.x, y: now.y });
+
+  /*
+   * **The held shots last**, because answering an arrival is somebody else's decision and the
+   * ground is not. [2026-11-16] These two sat behind `answerWatch` for an afternoon and a trap
+   * never went off once: whatever that resolver decides, a trap under the square was already
+   * under it before anybody chose to shoot.
+   */
+  await answerWatch(mover, now, from);
 }
 
 /**
