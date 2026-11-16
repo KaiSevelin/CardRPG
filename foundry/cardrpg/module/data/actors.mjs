@@ -627,6 +627,13 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
      * getter consults is a set of condition keys.
      */
     this.castsSilenced = fromNodes.castsSilenced;
+    /*
+     * **The ground this character does not feel.**  [2026-11-16] Ground phase 4. Read by
+     * `groundFor` in ground.mjs, which is the one place that answers what a square is doing to
+     * somebody -- so an exemption reaches the resolver, the HUD and anything later without any of
+     * them knowing it exists.
+     */
+    this.ignoresGround = [...(fromNodes.ignoresGround ?? [])];
     const setAside = { castsSilenced: this.castsSilenced };
     this.exemptFrom = new Set(Object.entries(CARDRPG.conditions)
       .filter(([, c]) => c.setAsideBy && setAside[c.setAsideBy]).map(([key]) => key));

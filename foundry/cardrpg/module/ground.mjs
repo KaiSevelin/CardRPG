@@ -87,11 +87,26 @@ export function groundAt(scene, point) {
   return answer;
 }
 
-/** The same, for wherever an actor is standing. Nothing to stand on is nothing true. */
+/**
+ * **The same, for wherever an actor is standing -- less whatever they do not feel.**
+ *
+ * [2026-11-16] Phase 4. `ignoresGround` is a list on the character, granted by a node: the Burglar
+ * goes *through the window* and the Ironclad is *immovable*, and both of those mean difficult
+ * ground specifically. Filtering **here** rather than in each reader is the whole point of there
+ * being one reader: the exemption reaches `advantageFor`, the chips and anything later without
+ * any of them knowing it exists.
+ *
+ * What was taken out is handed back in `ignored`, because a square whose difficulty you alone do
+ * not feel is worth seeing on your own HUD -- it is the reason you are standing there.
+ */
 export function groundFor(actor) {
   const token = actor?.getActiveTokens?.()[0];
-  if (!token) return { effects: new Set(), damage: 0, zones: [] };
-  return groundAt(token.scene ?? canvas?.scene, token.center ?? { x: token.x, y: token.y });
+  if (!token) return { effects: new Set(), damage: 0, zones: [], ignored: new Set() };
+  const here = groundAt(token.scene ?? canvas?.scene, token.center ?? { x: token.x, y: token.y });
+  const blind = new Set(actor?.system?.ignoresGround ?? []);
+  const ignored = new Set([...here.effects].filter(key => blind.has(key)));
+  for (const key of ignored) here.effects.delete(key);
+  return { ...here, ignored };
 }
 
 /**
@@ -466,6 +481,18 @@ export function groundChips(actor) {
     chips.push({
       key: "damage", label: `${here.damage} damage`, enforced: true,
       tip: `Standing here costs ${here.damage} at the start of your turn, before armor and Block.`
+    });
+  }
+  /*
+   * **And what this character alone does not feel**, which is worth a chip of its own: a Burglar
+   * standing in a bog is the reason the Burglar is standing in the bog, and a HUD that simply
+   * showed nothing there would hide the Tactic doing the work.
+   */
+  for (const key of here.ignored ?? []) {
+    const label = game.i18n.localize(CARDRPG.groundEffects[key] ?? key);
+    chips.push({
+      key: `ignored:${key}`, label, enforced: true, ignored: true,
+      tip: `This square is ${label}, and you ignore it.`
     });
   }
   for (const { ground } of here.zones) {

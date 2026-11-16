@@ -6166,6 +6166,9 @@ const RUNG = {
   /* The same, for the other casting rule. One node sets it aside and it is a Tactic rather than a
    * gift, which does not change what it is worth: a caster who is never Silenced notices nothing. */
   castsSilenced: 1,
+  /* The third rule a node can set aside, and the same rung for the same reason: binary, and worth
+   * nothing at all to somebody who never crosses a bog. */
+  ignoresGround: 1,
 };
 check("every grant key the graph uses has a rung",
   [...new Set(nodes.flatMap(n => Object.keys(n.grants ?? {})))]
@@ -6215,6 +6218,7 @@ const rewardKeys = {
    */
   freehandCast: "A rule set aside (the free hand)",
   castsSilenced: "A rule set aside (speech)",
+  ignoresGround: "A rule set aside (the ground)",
   /* Section 4's longest-open row, closed 2026-11-13. It deals into the SKILL deck, which is why
    * it is not `card`: different deck, different rules (skill-rules 1). */
   skill: "Skill card"
@@ -6285,7 +6289,9 @@ check("the rewards only one or two nodes grant",
    * was never quite the rarity in the game. Speech took its place at one node, which is honest: it
    * is the only exemption from a condition anywhere.
    */
-  "A rule set aside (speech) 1, Hand size 1, Stamina 1");
+  /* **[2026-11-16]** The ground joins them at two nodes -- the Burglar and the Ironclad, whose
+   * Tactics both say *difficult ground costs you nothing* in different words. */
+  "A rule set aside (speech) 1, A rule set aside (the ground) 2, Hand size 1, Stamina 1");
 /*
  * The character grants that no reward row offers and no node grants, each for a stated reason.
  * **handSize** is measured: specializations.md puts a card of hand size at 6 to 10 points of win
@@ -10874,8 +10880,22 @@ const saidTwice = everyStep.filter(s =>
  * or three at once -- a column of booleans could not have said that cheaply. */
 const groundSteps = everyStep.filter(s => s.st.ground?.shape);
 const groundUsed = new Set(groundSteps.flatMap(s => s.st.ground.effects ?? []));
+/*
+ * **[2026-11-16] One property is the GM's rather than a card's, and that is a use.**
+ *
+ * `high` was added in ground phase 4 because **two Tactics had been naming high ground since
+ * before this vocabulary existed** -- Brendan's *Roots* makes a square you have held *high ground
+ * for you*, and Spiritualism's *Something Is Always Listening* reads *shadowed, high ground or
+ * difficult ground*, a list of three of which the set held two.
+ *
+ * No card makes it and none should: a hill is a thing a map has, not a thing a spell leaves
+ * behind. What makes it a real entry rather than a declaration nobody reads is the GM's fieldset,
+ * which offers every property in this table, and the chips, which name whichever of them you are
+ * standing in. So the check keeps its shape and names the one exception rather than being widened
+ * into something that would pass for a sixth property nobody built.
+ */
 check("ground properties declared and never used",
-  Object.keys(CARDRPG.groundEffects).filter(k => !groundUsed.has(k)).join(", ") || "none", "none");
+  Object.keys(CARDRPG.groundEffects).filter(k => !groundUsed.has(k)).join(", ") || "none", "high");
 check("and the zone that names three at once",
   groundSteps.filter(s => (s.st.ground.effects ?? []).length >= 2).map(s => s.card).sort()
     .join(", "), "The Sphere Entire, Wall of the Sphere");
@@ -13762,6 +13782,9 @@ const modelSource = fs.readFileSync(path.join(root, "module/data/actors.mjs"), "
 const readers = [...everyTemplate().map(f => path.relative(root, f).replace(/\\/g, "/")),
   "module/sheets.mjs", "module/tray.mjs", "module/resolve.mjs", "module/levelup.mjs",
   "module/combat.mjs", "module/decks.mjs", "module/graph.mjs", "module/data/items.mjs",
+  /* [2026-11-16] `ground.mjs` reads `ignoresGround`, and was not on this list -- so the first
+   * derived value answered only there reported as read by nobody. */
+  "module/ground.mjs",
   "module/data/actors.mjs"]
   .map(f => fs.readFileSync(path.join(root, f), "utf8")).join("\n");
 const assigned = [...new Set([...modelSource.matchAll(/^\s*this\.([a-zA-Z]\w*)\s*=/gm)]
@@ -13777,7 +13800,7 @@ check("derived values nothing reads", unread.length ? unread.join(", ") : "none"
 /* **[2026-11-16] 22, from 20**: `castsSilenced` and the `exemptFrom` it resolves to. This check
  * is the reason the second of those exists -- the flag was read as `this[c.setAsideBy]` off the
  * config entry, which works and which nothing could find, and the line above reported it unread. */
-check("derived values on the character", assigned.length, 22);
+check("derived values on the character", assigned.length, 23);
 
 /* And the three that were found, now shown rather than deleted. */
 check("the sheet shows which Ways were walked",
@@ -15860,8 +15883,10 @@ check("and they share the character panel's edge",
  * neither does a passive score, since a passive is read off that deck.
  */
 const grantKeys = Object.keys(graph.grantsOf(new Set([graph.ROOT])));
-/* **[2026-11-16] 20**: `castsSilenced`, the second rule a node can set aside. */
-check("keys the grants accumulator carries", grantKeys.length, 20);
+/* **[2026-11-16] 20**: `castsSilenced`, the second rule a node can set aside.
+ * **21 the same day**: `ignoresGround`, the third -- and the first that is a list, because there
+ * are five properties a square can have and a node may set aside any of them. */
+check("keys the grants accumulator carries", grantKeys.length, 21);
 /* And the two that were added for it, which is the half of skill-rules 8 that a node can express:
  * an expertise asks the player which card to raise, a mastery is a number read off the owned set. */
 check("the two the skill side gained",

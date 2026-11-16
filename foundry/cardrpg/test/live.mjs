@@ -3091,6 +3091,73 @@ async function probes(page) {
     });
   });
 
+  /*
+   * **[BUILT 2026-11-16] Ground phase 4: the ground a character does not feel.**
+   *
+   * Twenty-one Tactics name ground, and most of them want things this engine has no
+   * representation of -- forced movement, cover from figures, a square that is difficult for your
+   * enemies only. **Four want the same one thing**, and it is a shape this project already has:
+   * *you ignore difficult ground*. The Burglar goes through the window, the Ironclad is immovable,
+   * Household Magic helps indoors and The Grey closes the last square for free.
+   *
+   * So it is the `castsSilenced` shape again -- a node grants an exemption, the character derives
+   * it, and the ONE reader applies it. The two unconditional ones are wired; the two that depend
+   * on where you are standing or what you are doing stay the table's, and say so.
+   *
+   * And `high` joined the vocabulary, because *Roots* and *Something Is Always Listening* have
+   * been naming high ground since before this vocabulary existed and it held five of the six
+   * things they talk about.
+   */
+  await probe("the ground a Burglar does not feel", async () => {
+    await settle(page);
+    return page.evaluate(async () => {
+      const g = await import("/systems/cardrpg/module/ground.mjs");
+      const { hero } = LIVE;
+      const scene = canvas.scene;
+      await g.clearGround(scene);
+      const was = [...(hero.system.nodes ?? [])];
+
+      const [tok] = await scene.createEmbeddedDocuments("Token",
+        [(await hero.getTokenDocument({ x: 500, y: 1100 })).toObject()]);
+      const centre = tok.object?.center ?? { x: tok.x + 50, y: tok.y + 50 };
+      await g.layGround(scene, {
+        shape: "adjacent", effects: ["difficult", "high"], origin: centre, radius: 0, until: null
+      });
+
+      /* An ordinary character feels all of it. */
+      await hero.update({ "system.nodes": ["root"] });
+      const plain = [...g.groundFor(hero).effects].sort().join(",");
+      const plainIgnored = [...g.groundFor(hero).ignored].join(",");
+
+      /* A Burglar does not feel the difficulty, and still sees the hill. */
+      await hero.update({ "system.nodes": ["root", "shade.burglar"] });
+      const exempt = [...hero.system.ignoresGround].join(",");
+      const felt = [...g.groundFor(hero).effects].sort().join(",");
+      const unfelt = [...g.groundFor(hero).ignored].join(",");
+      const chips = g.groundChips(hero)
+        .map(c => `${c.label}${c.ignored ? "(ignored)" : ""}`).sort().join(", ");
+
+      /* And the Ironclad says the same thing in different words. */
+      await hero.update({ "system.nodes": ["root", "strength.ironclad"] });
+      const ironclad = [...hero.system.ignoresGround].join(",");
+
+      await hero.update({ "system.nodes": was });
+      await tok.delete();
+      await g.clearGround(scene);
+      canvas.tokens?.releaseAll?.();
+      return [
+        ["an ordinary character feels both", plain, "difficult,high"],
+        ["and ignores nothing", plainIgnored, ""],
+        ["the Burglar's node sets the ground aside", exempt, "difficult"],
+        ["so the square is only high ground to them", felt, "high"],
+        ["and what they do not feel is still named", unfelt, "difficult"],
+        ["their HUD says both, and which is which", chips,
+          "difficult ground(ignored), high ground"],
+        ["the Ironclad gets there by another road", ironclad, "difficult"]
+      ];
+    });
+  });
+
   await probe("the system itself", async () => {
     const rows = await page.evaluate(() => {
       const errors = (globalThis.LIVE_ERRORS ?? []).filter(e => !/favicon|DevTools/.test(e));

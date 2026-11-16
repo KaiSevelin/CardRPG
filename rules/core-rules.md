@@ -3112,7 +3112,7 @@ nothing in the engine has ever asked a square what it is:
 | Layer | State |
 |---|---|
 | `CARDRPG.groundShapes` | five: line, area, adjacent, wholeMap, square |
-| `CARDRPG.groundEffects` | five: **cover, difficult, shadowed, impassable, trap** |
+| `CARDRPG.groundEffects` | six: **cover, difficult, shadowed, high, impassable, trap** |
 | The card schema | a `ground` field with validated choices, plus `damage` |
 | Content | **eight** steps make ground; **twelve** entries read a shadowed square |
 | The engine | **nothing** |
@@ -3171,7 +3171,29 @@ has twice written the same answer in two places and been wrong in both.
 | **1** | `cover`, and every property readable on the HUD | six Shadow Magic formulas, and cover joins the branch that already reads a declared one | **built** |
 | **2** | `damage` and the zone's condition | *The Sphere Entire*, *The Standing Flood* | **built** |
 | **3** | `difficult` and `impassable` through `modifyMovementCost`; `trap` sprung on arrival | *Set*, *Spoil the Ground*, *Unmake the Ground* | **built** |
-| **4** | The Tactics that were waiting on it | about eight, including *The Ground You Chose*, *Through the Window* and *Immovable* | |
+| **4** | `ignoresGround`, a rule a node sets aside; and `high` joins the vocabulary | *Through the Window*, *Immovable* | **built** |
+
+**Twenty-one Tactics name ground, and phase 4 wired two of them**, which is worth being exact
+about. Four want the same single thing -- *you ignore difficult ground* -- and that is a shape this
+project already had: a node grants an exemption, the character derives it, and the one reader
+applies it, exactly as `freehandCast` and `castsSilenced` do. The **Burglar** and the **Ironclad**
+say it unconditionally and are built. **Household Magic** says it *indoors* and **The Grey** says
+it *into a square adjacent to an enemy*, and both of those conditions are a person's judgement, so
+both stay the table's.
+
+**`high` was added because two Tactics had been naming it all along.** Brendan's *Roots* makes a
+square you have held *high ground for you*, and Spiritualism's *Something Is Always Listening*
+reads *shadowed, high ground or difficult ground* -- a list of three of which this set held two.
+No card makes high ground and none should: a hill is something a map has, not something a spell
+leaves behind. A GM ticks it, and whoever stands there sees it.
+
+The rest are still waiting, and on three things rather than on ground:
+
+| What they want | Who | State |
+|---|---|---|
+| **forced movement** | *Immovable*, *The Line*, *The Door*, *Nobody Falls Beside You* and four more | no representation at all |
+| **cover from figures** | *Furthest Forward*, *No Shelter for the Guilty*, *The Line of Vax* | deliberately absent, and every published win rate was measured without it |
+| **a zone that is difficult for its maker's enemies only** | *The Ground You Chose*, *The Dead Are Furniture*, *Roots* | the zone has no owner, and giving it one is a day's work rather than a phase |
 
 Phases 0 to 2 needed no movement machinery at all, which is what made them the sweet spot: they
 are most of the card content, and the rule this document already states about **forced movement

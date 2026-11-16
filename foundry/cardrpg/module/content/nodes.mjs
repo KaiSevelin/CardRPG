@@ -692,7 +692,10 @@ export const NODES = [
     id: "shade.burglar", name: "Burglar", after: ["shade.thief.night"], title: "Burglar",
     axis: "Preparation", resource: "weight",
     signature: "The Kit", tactic: "Through the Window",
-    grants: { item: "The Kit" },
+    /* *You ignore difficult ground* -- the half of this Tactic the engine can hold. The other
+     * half, that no enemy blocks your movement in a square with an obstacle, is the table's: a
+     * figure blocking a square is not a rule this game has. */
+    grants: { item: "The Kit", ignoresGround: ["difficult"] },
     lore:
       "Doors, locks, windows, roofs and the half-hour before any of it that nobody sees. A "
       + "burglar's skill is logistics; the climbing is the easy part.\n\nYou spend **weight**, "
@@ -1019,7 +1022,9 @@ export const NODES = [
     id: "strength.ironclad", name: "Ironclad", after: ["strength.infantry.armoury"],
     title: "Ironclad", axis: "Deck shape", resource: "weight",
     signature: "Nothing Gets Through", tactic: "Immovable",
-    grants: { feature: "Nothing Gets Through" },
+    /* *Difficult ground costs you nothing.* The other half -- *forced movement never moves you*
+     * -- waits on forced movement, which this engine still has no representation of at all. */
+    grants: { feature: "Nothing Gets Through", ignoresGround: ["difficult"] },
     lore:
       "Armour as an identity. The Ironclad is slower than everything else on the board and "
       + "does not care, because the plan was never to be anywhere else.\n\n**Weight** is the "

@@ -307,6 +307,7 @@
   "CARDRPG.Ground.Cover": "cover",
   "CARDRPG.Ground.Difficult": "difficult ground",
   "CARDRPG.Ground.Shadowed": "shadowed",
+  "CARDRPG.Ground.High": "high ground",
   "CARDRPG.Ground.Impassable": "impassable",
   "CARDRPG.Ground.Trap": "a trap: the first to enter sets it off",
   "CARDRPG.Target.Self": "Yourself",

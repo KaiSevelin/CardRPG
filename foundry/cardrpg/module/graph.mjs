@@ -674,6 +674,15 @@ export function grantsOf(owned) {
      */
     freehandCast: false,
     castsSilenced: false,
+    /*
+     * **And the ground a character simply does not feel.**  [2026-11-16] Ground phase 4.
+     *
+     * A list rather than a flag because there are five properties and a node might set aside any
+     * of them: the Burglar is *through the window* and the Ironclad is *immovable*, and both of
+     * them mean difficult ground specifically. A second node naming a second property needs no
+     * code here, which is the whole reason it is not `ignoresDifficult`.
+     */
+    ignoresGround: [],
     /* The sources a character has been offered a choice from, which is not the same as what they
      * chose: the spell itself is a document and is counted by the book, not by this. */
     choices: [],
@@ -710,6 +719,9 @@ export function grantsOf(owned) {
      */
     if (g.freehandCast) out.freehandCast = true;
     if (g.castsSilenced) out.castsSilenced = true;
+    for (const key of [g.ignoresGround ?? []].flat()) {
+      if (!out.ignoresGround.includes(key)) out.ignoresGround.push(key);
+    }
     if (g.caps?.spellSlots !== undefined) {
       out.slotCap = out.slotCap === null
         ? g.caps.spellSlots

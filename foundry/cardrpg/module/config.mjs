@@ -1025,6 +1025,18 @@ CARDRPG.groundEffects = {
   cover: "CARDRPG.Ground.Cover",
   difficult: "CARDRPG.Ground.Difficult",
   shadowed: "CARDRPG.Ground.Shadowed",
+  /*
+   * **[2026-11-16] Added because two Tactics had been naming it since before this vocabulary
+   * existed.** Brendan's *Roots* makes a square you have held *high ground for you*, and
+   * Spiritualism's *Something Is Always Listening* tells you whether a square is *shadowed, high
+   * ground or difficult ground* -- a list of three, of which this set held two.
+   *
+   * Nothing enforces it and nothing should yet: what high ground does to an attack is a rules
+   * question this project has not answered. What it buys today is that a GM can mark the hill and
+   * everybody standing on it can see they are on it, which is the whole of what those two Tactics
+   * needed and could not have.
+   */
+  high: "CARDRPG.Ground.High",
   impassable: "CARDRPG.Ground.Impassable",
   trap: "CARDRPG.Ground.Trap"
 };
