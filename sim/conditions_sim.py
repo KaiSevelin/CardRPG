@@ -251,6 +251,42 @@ def is_a_dispel_worth_a_card():
     print()
 
 
+def price_of_a_round():
+    """What is the SECOND round of a condition worth?  [2026-11-16]
+
+    *Set*, the Trapmaker's Signature, went from `intensity: 2` -- which did nothing, because Slowed
+    is not a valued condition -- to `duration: 2`. That is a tuning decision and this is the
+    measurement it was waiting for: not what Slowed costs, but what the second round of it adds.
+
+    **It prices the mechanism and not the card, and the difference matters.** The harness applies
+    the condition to the HERO, from a goblin's attack, because that is where `halves_move` meets a
+    real Move. A goblin in this model has no Move to halve -- `step_toward` returns one square and
+    nothing else -- so Slowed on a goblin cannot be measured here at all, and a naive extension
+    would halve one square to nought and report that Slowed stops a goblin dead. That is not the
+    game, and it is the honest reason this measures the hero's side of the same rule.
+    """
+    print("--- 5. what a second round of a condition is worth ---")
+    print("    (4 goblins, 2 spears + 2 bows; Slowed on the HERO, where there is a Move to halve)")
+    gob = ('spear', 'spear', 'bow', 'bow')
+    base = row("no condition (a plain Strike)",
+               scenario('none', goblins=gob, goblin_condition='marked')[1])
+    costs = {}
+    for n in (1, 2, 3):
+        costs[n] = row(f"Slowed ({n})",
+                       scenario(f'slow{n}', goblins=gob, goblin_condition='slowed',
+                                goblin_cond_dur=n)[1])
+    print()
+    for n in (1, 2, 3):
+        print(f"  Slowed ({n}) costs {base - costs[n]:.1f} points of win rate.")
+    first = base - costs[1]
+    print()
+    print(f"  The first round costs {first:.1f}; the second adds {(base - costs[2]) - first:.1f}, "
+          f"the third {(base - costs[3]) - (base - costs[2]):.1f}.")
+    print("  Diminishing, and none of it a rounding error.")
+    print()
+    return base, costs
+
+
 def main():
     fails = correctness()
     if fails:
@@ -259,6 +295,7 @@ def main():
     price_of_dazed()
     poisoned_against_burning()
     is_a_dispel_worth_a_card()
+    price_of_a_round()
 
 
 if __name__ == '__main__':

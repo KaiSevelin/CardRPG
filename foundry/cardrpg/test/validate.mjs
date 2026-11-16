@@ -2049,7 +2049,36 @@ check("the card that reacted is named",
 check("an arrival fires it",
   /await answerArrival\(who, mover\)/.test(entry) ? "yes" : "no", "yes");
 check("arriving means a new square out of reach",
-  /!reach\(placed, now\) \|\| reach\(placed, from\)/.test(entry) ? "yes" : "no", "yes");
+  /!reach\(doc, now\) \|\| reach\(doc, from\)/.test(entry) ? "yes" : "no", "yes");
+/*
+ * **[FIXED 2026-11-16] And it reads where the figure is GOING, out of the update.**
+ *
+ * `onArrival` asked the actor for `getActiveTokens()[0]` and compared that position against the
+ * square the figure came from. That was wrong twice over, and the second one is the interesting
+ * one.
+ *
+ * A **placeable** reports its old square, or 0,0, until the canvas has drawn the move -- measured
+ * the same day, a document at 500,400 beside its own placeable at 0,0. **And the document is no
+ * better during a move:** Foundry moves a token through a movement pipeline, `updateToken` fires
+ * as the movement begins (`options._movement` is right there in the options), and the document's
+ * own position lags behind it.
+ *
+ * So the comparison said *same square* and the whole routine returned having done nothing: **no
+ * Sidestep, no held shot, no ground under where it landed, no trap sprung.** Four rules, silent.
+ * From outside it looked like flakiness -- a live probe answered true once and false once -- which
+ * is what a dependency on whether a frame has been drawn looks like.
+ *
+ * Traced in the end rather than guessed: a marker inside the routine printed `entered > same
+ * square` with `from` at 500,600 and the destination 600,600. `change.x` had it all along.
+ *
+ * Pinned on all three positions, because any one of them reverting brings the fault back alone.
+ */
+check("and it reads the square the update says it is going to",
+  /const now = to && Number\.isFinite\(to\.x\)/.test(entry) ? "yes" : "no", "yes");
+check("and the hook hands that square over",
+  /\{ x: change\.x \?\? token\.x, y: change\.y \?\? token\.y \}\);/.test(entry) ? "yes" : "no", "yes");
+check("and the neighbours it measures are documents too",
+  /const doc = placed\.document;/.test(entry) ? "yes" : "no", "yes");
 const stepBody = resolveSource.slice(resolveSource.indexOf("export async function sidestep"),
   resolveSource.indexOf("/**\n * Resolve an attack against one target"));
 check("the square is random among the legal ones",

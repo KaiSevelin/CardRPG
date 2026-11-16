@@ -356,9 +356,11 @@ export async function springTraps(actor, point) {
  * and a cycle to save nine lines is a bad trade. The refresh rule is the one thing that must not
  * drift between the two, so it is named in both.
  */
-export async function imposeGround(actor) {
+export async function imposeGround(actor, which = null) {
   if (!actor?.update) return [];
-  const standing = groundFor(actor).zones
+  /* `which` is the figure that arrived, when the caller knows: an actor with two tokens on the
+   * board cannot say which square to read, and the arrival hook always knows. */
+  const standing = groundFor(actor, which).zones
     .map(({ ground }) => ground)
     .filter(ground => ground.condition && ground.condition in CARDRPG.conditions);
   if (!standing.length) return [];

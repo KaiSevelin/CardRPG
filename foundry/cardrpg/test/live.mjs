@@ -1742,10 +1742,26 @@ async function probes(page) {
       const low = all.find(c => !c.system.wild && c.system.value === 1);
       const high = all.find(c => !c.system.wild && c.system.value === 3);
       /* The first line of the last message, which is the chain: everything before the fate card. */
+      /*
+       * **The check's own line, not whichever line happens to be newest.**  [2026-11-16]
+       *
+       * The arrival machinery runs from a hook that does not await it, so a Sidestep or a piece of
+       * ground answering a token moved in an EARLIER probe can land its message in the middle of
+       * this one. That was impossible while the hook silently did nothing; the moment it started
+       * working, this probe read *Halted (1)* where it wanted *Might 1* -- once, and not again,
+       * which is the worst kind of failure to leave lying about.
+       *
+       * A check prints its approach first, so the newest message beginning with one is the answer
+       * however much has arrived since.
+       */
+      const approachLabels = Object.values(CARDRPG.approaches)
+        .map(a => game.i18n.localize(a.label ?? "")).filter(Boolean);
+      const firstLine = m => (m?.content?.match(/<p>(.*?)<\/p>/)?.[1] ?? "");
       const chain = () => {
-        const html = game.messages.contents.at(-1)?.content ?? "";
-        return (html.match(/<p>(.*?)<\/p>/)?.[1] ?? "").replace(/&middot;/g, "\u00b7")
-          .replace(/&mdash;/g, "\u2014");
+        const mine = [...game.messages.contents].reverse()
+          .find(m => approachLabels.some(l => firstLine(m).startsWith(l)));
+        return firstLine(mine ?? game.messages.contents.at(-1))
+          .replace(/&middot;/g, "\u00b7").replace(/&mdash;/g, "\u2014");
       };
       const label = a => game.i18n.localize(CARDRPG.approaches[a]?.label ?? a);
 
@@ -1772,7 +1788,9 @@ async function probes(page) {
       await resolveCheck(hero, {
         approach: edged.system.approach, dc: 5, card: edged, useEdge: true
       });
-      const claimedEdge = game.messages.contents.at(-1)?.content ?? "";
+      const claimedEdge = ([...game.messages.contents].reverse()
+        .find(m => /claimed/.test(m.content ?? "")) ?? game.messages.contents.at(-1))
+        ?.content ?? "";
 
       return [
         ["an unclaimed 1 is worth 1", plain, `${label(low.system.approach)} 1`],
@@ -3295,18 +3313,27 @@ async function probes(page) {
       await hero.update({ "system.nodes": wasNodes });
 
       /*
-       * **[OPEN] A fifth case was written and taken out, and what it measured is worth keeping.**
+       * **5. A shove is movement for everything that cares.**  [FIXED 2026-11-16]
        *
-       * Section 11 says forced movement *is movement for everything that cares* -- it can set off
-       * a Sidestep -- and a shove updates the token, so the arrival machinery should run on it.
-       * Asked by pushing a figure onto a zone and looking for the condition, it answered **true
-       * once and false once** across otherwise identical runs. So the hook does fire for a
-       * programmatic update, which is more than was known before, and whether everything it calls
-       * can see the new position by the time it is called is not reliable here.
-       *
-       * A flaky assertion is worse than none: it teaches a reader to re-run until it passes. The
-       * finding is recorded in core-rules 11 beside the arrival question it belongs to.
+       * Section 11 says forced movement *can set off a Sidestep*, and the cheapest way to ask is
+       * ground: push a figure onto a zone and look for the condition. This answered **true once
+       * and false once** across identical runs until the cause was found -- `onArrival` compared a
+       * PLACEABLE's position against the old square, and a placeable reports its old square until
+       * the canvas has drawn the move, so the routine returned having done nothing whenever a
+       * frame had not been drawn. Every position in it is a document's now.
        */
+      const d = await put(npc, lane.x + grid, lane.y + 2 * grid);
+      await g.layGround(scene, {
+        shape: "adjacent", effects: ["difficult"], condition: "slowed",
+        origin: { x: lane.x + 2 * grid + grid / 2, y: lane.y + 2 * grid + grid / 2 },
+        radius: 0, until: null
+      });
+      const before = (d.actor.system.conditions ?? []).some(x => x.key === "slowed");
+      const shover = await put(hero, lane.x, lane.y + 2 * grid);
+      await r.forceMove(hero, d.actor, 1, { token: d, from: shover });
+      await new Promise(res => setTimeout(res, 1200));
+      const tookHold = (d.actor.system.conditions ?? []).some(x => x.key === "slowed");
+
       for (const doc of made) await doc.delete().catch(() => {});
       await g.clearGround(scene);
       canvas.tokens?.releaseAll?.();
@@ -3325,7 +3352,11 @@ async function probes(page) {
         ["and says what stopped it", into.why, "another figure"],
         ["an Ironclad derives the refusal", immovable, true],
         ["and a push does not move them", refused.moved, 0],
-        ["saying so by name", /cannot be moved/.test(refused.why), true]
+        ["saying so by name", /cannot be moved/.test(refused.why), true],
+        ["the shoved figure was not slowed first", before, false],
+        /* core-rules 11's *it can set off a Sidestep*, which is also the arrival hook proven. */
+        /* core-rules 11's *it can set off a Sidestep*, which is the arrival hook proven. */
+        ["and ground under where it landed takes hold", tookHold, true]
 
       ];
     });

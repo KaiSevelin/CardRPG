@@ -3134,13 +3134,12 @@ was.
 > `shove: 2`. *Undertow* moves everything in its area **1 square you choose**, which is a judgement
 > about the map, so it stays prose — and its own description already said so.
 >
-> **[OPEN] *It can set off a Sidestep* is the clause with a question mark on it.** A shove updates
-> the token, so the arrival machinery should run on it exactly as it does for a drag. Measured by
-> pushing a figure onto a zone and looking for the condition, it answered **true once and false
-> once** across otherwise identical runs. So the arrival hook **does** fire for a programmatic
-> update — which is more than was known when the §8 note below was written — and whether everything
-> it calls can see the new position by the time it is called is not reliable. That is the same
-> question Sidestep and the held shot already carry, and it is now one question about four rules.
+> **[BUILT 2026-11-16] *It can set off a Sidestep* works, and proving it fixed the arrival hook
+> for everything else.** A shove updates the token, so the arrival machinery runs on it exactly as
+> it does for a drag. Asked by pushing a figure onto a zone and looking for the condition, it
+> answered true once and false once — and chasing that down found that `onArrival` had been
+> comparing a position that lags during a move, and had therefore been returning early for **every**
+> arrival, however caused. See §4's note on the hook. Driven now, twice running.
 
 ### Ranged in melee
 
@@ -3256,16 +3255,25 @@ Three properties are therefore enforced outright (`cover`, `trap`, and the zone'
 condition), two are measured and spent by a person (`difficult`, `impassable`), and the HUD's chip
 says which of the three a square is doing to you.
 
-> **[OPEN] Nothing in the live suite drives an arrival end to end.** A trap springs where the
-> arrival hook springs it, and that call is checked directly rather than by moving a token.
+> **[CLOSED 2026-11-16] The arrival hook never worked, and forced movement is what found it.**
 >
-> **[2026-11-16] And forced movement moved the question rather than answering it.** When this was
-> written, a programmatic `token.update({x, y})` had not reached `onArrival` in the harness at
-> all. Building `forceMove` gave a second way to ask, and the hook **does** fire for a
-> programmatic update — but the condition under the square it landed in appeared **once in two
-> otherwise identical runs**. So the hook runs and something downstream of it does not reliably
-> see the new position in time. Sidestep, the held shot, a trap and now a shove all hang off it,
-> which makes this one question about four rules.
+> This note used to say that nothing in the live suite drove an arrival end to end and that a
+> programmatic `token.update({x, y})` did not seem to reach `onArrival`. Both were symptoms.
+>
+> `onArrival` compared *where the figure is now* against *where it came from*, and read the first
+> of those off the actor's **placeable**. A placeable reports its old square — or 0,0 — until the
+> canvas has drawn the move. **And the document is no better during a move:** Foundry moves a token
+> through a movement pipeline, `updateToken` fires as the movement *begins*, and the document's own
+> position lags behind it.
+>
+> So the comparison said *same square* and the routine returned having done nothing — **no
+> Sidestep, no held shot, no ground under the square it landed in, no trap sprung.** Four rules,
+> silent, depending on whether a frame had been drawn. That is what made it look like flakiness
+> from outside.
+>
+> The update itself has the answer: `change.x` is the square it is going to, and the hook has had
+> it all along. Driven now, in the live suite: a shove lands a figure on a zone and the ground
+> takes hold, twice running.
 
 
 

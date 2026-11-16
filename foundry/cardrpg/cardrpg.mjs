@@ -463,7 +463,12 @@ Hooks.once("ready", async () => {
     const mover = token.actor;
     const from = options.cardrpgFrom;
     if (!mover || !from || !canvas?.ready) return;
-    await onArrival(mover, from);
+    /*
+     * **The square it is going to, out of the update itself.** Not the document and not the
+     * placeable: see `onArrival`.
+     */
+    await onArrival(mover, from, token,
+      { x: change.x ?? token.x, y: change.y ?? token.y });
   });
 
   await ensureSetupMacro();
@@ -486,16 +491,43 @@ Hooks.once("ready", async () => {
  * one square has not arrived, and answering that would cost a card for nothing -- the simulator
  * measures both readings and this is the one it measures by default (`sidestep_mode`).
  */
-async function onArrival(mover, from) {
+async function onArrival(mover, from, moved = null, to = null) {
   const size = canvas.grid.size;
   const reach = (a, b) => Math.max(Math.abs(a.x - b.x), Math.abs(a.y - b.y)) / size <= 1;
-  const now = mover.getActiveTokens()[0];
+  /*
+   * **Where it is GOING, taken out of the update.**  [FIXED 2026-11-16]
+   *
+   * This asked the actor for `getActiveTokens()[0]` and compared that position against the square
+   * the figure came from, and it was wrong twice over.
+   *
+   * A **placeable** reports its old square, or 0,0, until the canvas has drawn the move -- measured
+   * the same day: a document at 500,400 beside its own placeable at 0,0, in the same breath. So
+   * reading the placeable made this depend on whether a frame had been drawn, which is exactly the
+   * shape of a probe that answered *true once and false once* on identical runs.
+   *
+   * **And the document is no better during a move.** Foundry moves a token through a movement
+   * pipeline: `updateToken` fires as the movement BEGINS -- `options._movement` is right there in
+   * the options -- and the document's own x and y lag behind it. Traced, after the placeable was
+   * ruled out: `entered > same square`, with `from` at 500,600 and the destination 600,600.
+   *
+   * So the routine returned having done nothing, every time, for everything hung on it: **no
+   * Sidestep when a figure arrived next to somebody, no held shot when one crossed a watched lane,
+   * no ground under where it landed, no trap sprung.** Four rules, all silent.
+   *
+   * The update knows. `change.x` is the square it is going to, and the hook has had it all along.
+   */
+  const now = to && Number.isFinite(to.x)
+    ? { x: to.x, y: to.y, width: moved?.width ?? 1, height: moved?.height ?? 1 }
+    : moved ?? mover.getActiveTokens?.()[0]?.document ?? null;
   if (!now || (now.x === from.x && now.y === from.y)) return;
+  const middle = d =>
+    ({ x: d.x + (size * (d.width ?? 1)) / 2, y: d.y + (size * (d.height ?? 1)) / 2 });
 
   for (const placed of canvas.tokens.placeables) {
+    const doc = placed.document;
     const who = placed.actor;
-    if (!who || who.id === mover.id || who.type === mover.type) continue;
-    if (!reach(placed, now) || reach(placed, from)) continue;      // not an arrival, for this one
+    if (!doc || !who || who.id === mover.id || who.type === mover.type) continue;
+    if (!reach(doc, now) || reach(doc, from)) continue;      // not an arrival, for this one
     await answerArrival(who, mover);
   }
 
@@ -518,7 +550,7 @@ async function onArrival(mover, from) {
    * you step into the water, not at the start of your next turn. The tick renews it while you
    * stand there; this is what starts it.
    */
-  await imposeGround(mover);
+  await imposeGround(mover, now);
 
   /*
    * **And anything laid for them, which springs after the ground has taken hold.**  [2026-11-16]
@@ -526,7 +558,7 @@ async function onArrival(mover, from) {
    * springing is what deletes the zone -- so a trap that went off first would be a trap that never
    * slowed anybody.
    */
-  await springTraps(mover, now.center ?? { x: now.x, y: now.y });
+  await springTraps(mover, middle(now));
 
   /*
    * **The held shots last**, because answering an arrival is somebody else's decision and the
@@ -534,7 +566,7 @@ async function onArrival(mover, from) {
    * never went off once: whatever that resolver decides, a trap under the square was already
    * under it before anybody chose to shoot.
    */
-  await answerWatch(mover, now, from);
+  await answerWatch(mover, middle(now), from);
 }
 
 /**
