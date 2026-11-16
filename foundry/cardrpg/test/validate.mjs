@@ -636,6 +636,63 @@ for (const name of onDisk) {
 }
 check("icons with the background path left in", withBackground, 0);
 
+/*
+ * **[FOUND 2026-11-16] The spec had no reader, so it fell seven behind the folder.**
+ *
+ * The checks above this one are old and they are the ones that matter at runtime: every icon the
+ * config names is a file, so nothing renders a blank square. What none of them asked is whether
+ * **rules/icons.md** -- the document that decides what the set contains -- still describes the set.
+ * It did not. Its status block read *complete, 63 of 63 chosen* and ***72 icons*** against 81
+ * files, and seven icons in daily use were absent from it entirely: the six worn and stowed
+ * equipment slots the sheet grew after the spec was written, and `card-pick`, the Sift effect.
+ *
+ * That is the handbook's defect and backgrounds.md's defect once more, and the shape is becoming
+ * familiar enough to name: **a file the build reads stays true and a file only people read does
+ * not.** ATTRIBUTION.md was exactly right at 81 of 81 because CC BY makes it ship. So the spec is
+ * read here, and so is the attribution, in both directions -- a credit for an icon nobody has is
+ * as wrong as an icon nobody credited.
+ */
+const iconDoc = fs.readFileSync(path.join(root, "../../rules/icons.md"), "utf8");
+const attribution = fs.readFileSync(path.join(root, "icons/ATTRIBUTION.md"), "utf8");
+/*
+ * The spec's game-icons.net column, which is the one that names a file: the rest of a row is a
+ * glyph and an explanation. A **keep --** prefix marks a deliberate reuse and an **[OPEN]** cell is
+ * a face not chosen yet, which is a decision rather than a name.
+ */
+const specNames = new Set();
+{
+  let col = -1;
+  for (const line of iconDoc.split("\n")) {
+    if (!line.trim().startsWith("|")) { col = -1; continue; }
+    const cells = line.split("|").slice(1, -1).map(c => c.trim());
+    const at = cells.findIndex(c => /game-icons\.net/i.test(c));
+    if (at >= 0) { col = at; continue; }
+    if (col < 0 || cells.every(c => /^:?-+:?$/.test(c))) continue;
+    const raw = (cells[col] ?? "").replace(/\*\*/g, "").trim();
+    if (!raw || /\[OPEN\]/.test(raw)) continue;
+    specNames.add(raw.replace(/^keep\s*[\u2014-]+\s*/i, "").toLowerCase().replace(/ /g, "-"));
+  }
+}
+check("icons the folder holds that the spec never names",
+  [...onDisk].filter(n => !specNames.has(n)).sort().join(", ") || "none", "none");
+check("and names the spec gives that no file backs",
+  [...specNames].filter(n => !onDisk.has(n)).sort().join(", ") || "none", "none");
+/* A parser that found nothing would pass both lines above while reading nothing at all. */
+check("and the names it read out of the spec", specNames.size, onDisk.size);
+/*
+ * **CC BY 3.0 wants the credit to ship, which makes this the one icon check with a licence behind
+ * it.** Presence was already checked; coverage was not, and an icon added without a row is the
+ * failure the licence actually cares about.
+ */
+check("icons with nobody credited for them",
+  [...onDisk].filter(n => !attribution.includes(n)).sort().join(", ") || "none", "none");
+check("and credits for an icon the folder has not got",
+  [...attribution.matchAll(/^\| `?([a-z0-9-]+)`? \|/gm)].map(m => m[1])
+    .filter(n => !onDisk.has(n)).sort().join(", ") || "none", "none");
+/* And the number the spec prints to a reader, which is the one that had gone stale. */
+check("the total the spec states",
+  Number(/\*\*(\d+) icons\*\*/.exec(iconDoc)?.[1] ?? 0), onDisk.size);
+
 /* -------------------------------------------- */
 
 section("templates");
@@ -17688,8 +17745,14 @@ readFiles.set("decksSource", decksSource);
  * on the token HUD rather than inside a player's window. */
 /* 78 since 2026-11-16: `bgDoc`. backgrounds.md described four occupations by hand and was the
  * one rules document this suite had never opened, which is how three of them came to disagree
- * with the shipped node and the fourth to name a trade the game has never had. */
-check("files this suite greps by name", readFiles.size, 78);
+ * with the shipped node and the fourth to name a trade the game has never had.
+ *
+ * **80 the same day**, and the sentence above needed correcting as it was written: backgrounds.md
+ * was not the only unread document, it was the only unread one in `rules/` that this suite had a
+ * reason to open. `iconDoc` is rules/icons.md, the icon spec, which had fallen seven icons behind
+ * the folder; `attribution` is the icons own ATTRIBUTION.md, which had not, and is now checked in
+ * both directions because CC BY 3.0 is the reason it ships. */
+check("files this suite greps by name", readFiles.size, 80);
 
 /* Every `/pattern/.test(VAR)` and `VAR.includes("...")`, with the check it belongs to. */
 const nameOfCheck = index => {

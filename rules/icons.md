@@ -12,7 +12,7 @@ readable at about 16 px, single-colour so it can be recoloured and greyed out wh
 
 ---
 
-## Tier 1 — needed before the first card exists (28)
+## Tier 1 — needed before the first card exists (30)
 
 These appear on card faces. Nothing can be laid out until they're chosen.
 
@@ -35,7 +35,7 @@ These appear on card faces. Nothing can be laid out until they're chosen.
 | 👣 | **Move** (+ number) | No | Boot prints |
 | ⇄ | **Ready** | No | School bag |
 
-### Effects and targeting (10)
+### Effects and targeting (11)
 
 | Placeholder | Name | Notes | game-icons.net |
 |---|---|---|---|
@@ -44,6 +44,7 @@ These appear on card faces. Nothing can be laid out until they're chosen.
 | ☣ | **Tainting** (+ number) | That many Taint cards into a deck — disease and corruption, not poison (core-rules §8). Reuses the body-taint face | Virus |
 | ⚗ | **Corrode** (+ number) | That much off the target's armour, until repaired — how acid works (core-rules §8) | Melting metal |
 | ✋ | **Lift** | Removes a condition with no duration to spend — Blessed, Cursed (core-rules §7) | Magic palm |
+| – | **Sift** (+ number) | Look at that many from the top of your own draw pile and you may discard what you saw (core-rules §8). No glyph: the rules write it as *Sift 1* | Card pick |
 | ◎ | **Range** (+ number) | | Bullseye |
 | ✸ | **Blast** (+ number) | Area that hits everyone in it, allies included | Mushroom cloud |
 | ✵ | **Aimed** (+ number) | Area that hits only your enemies | Laser sparks |
@@ -197,7 +198,7 @@ gap this file exists to stop.
 
 ---
 
-## Tier 3 — HUD and sheet chrome (10)
+## Tier 3 — HUD and sheet chrome (16)
 
 Nothing blocks on these; Font Awesome ships with Foundry and covers most of them.
 
@@ -207,6 +208,12 @@ Nothing blocks on these; Font Awesome ships with Foundry and covers most of them
 | | Body | Person |
 | | Belt | Belt |
 | | Pack | Knapsack |
+| | Back — what is stowed rather than held | Scabbard |
+| | Cloak | Cloak |
+| | Head | Light helm |
+| | Neck | Gem pendant |
+| | Fingers (two) | Diamond ring |
+| | Feet | Fur boot |
 | **Deck state** | Exhausted | Oppression |
 | | Fate deck | Card random |
 | | Rest token | Night sleep |
@@ -236,19 +243,38 @@ crowded inventory.
 
 ---
 
-## Status: complete — 63 of 63 chosen
+## Status: complete — 81 icons, all chosen and downloaded  **[2026-11-16]**
+
+The count is **icons first named in that tier**, so the column sums to the folder:
 
 | Tier | Count | Blocks |
 |---|---|---|
-| 1 | 26 | Card layout and the card schema |
-| 2 | 27 | Playable combat |
-| 3 | 10 | Polish |
+| 1 | 30 | Card layout and the card schema |
+| 2 | 26 | Playable combat |
+| 3 | 16 | Polish |
 | *optional tags* | *9* | *nothing* |
 
-**72 icons**, including the optional tags, all downloaded to
+Tier 2 **names** 27 and 26 are new, because `virus` is spent twice on purpose: once as the
+Tainting effect in tier 1 and again as the Taint card's own face. It is the only icon in the set
+doing two jobs, and the Injury categories reuse theirs for the reason written above them.
+
+**81 icons**, including the optional tags, all downloaded to
 [../foundry/cardrpg/icons/](../foundry/cardrpg/icons/) with per-icon credits in
 [ATTRIBUTION.md](../foundry/cardrpg/icons/ATTRIBUTION.md). Nothing in the rules or the system is
 waiting on an icon decision.
+
+> **[FOUND 2026-11-16] This block read *complete — 63 of 63 chosen* and ***72 icons***, against 81
+> files in the folder.** Seven were in the system and had never been written down here: the six
+> worn and stowed **equipment slots** the sheet grew after this spec was finished — back, cloak,
+> head, neck, fingers, feet, every one of them a `CARDRPG.slots` entry with an icon — and
+> **Sift**, an effect built on 2026-11-07, used by four cards and written up in core-rules §8.
+>
+> Nothing was broken by it: the suite has checked *every icon the config names is a file* for a
+> long time, and ATTRIBUTION.md had kept exact pace at 81 of 81. What had no reader was **this
+> file**. The difference is that attribution ships with the build and a spec does not, so one was
+> maintained and the other was trusted. The suite reads it now, and the three questions it asks are
+> the three that were never asked: does the folder hold an icon this file does not list, does this
+> file name an icon that is not in the folder, and is every icon credited.
 
 > The Presence icon is spelled **Embrassed energy** upstream, with a double s. That is
 > game-icons.net's own spelling, and the filename has to match it.
