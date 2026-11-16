@@ -3158,6 +3158,64 @@ async function probes(page) {
     });
   });
 
+  /*
+   * **[BUILT 2026-11-16] Sift, which has been built and unwired since 2026-11-07.**
+   *
+   * core-rules 8 wrote the keyword, config gave it an icon, four cards use it -- and nothing ever
+   * dispatched it, so playing *Scout Ahead* printed `sift 3` in chat and did nothing at all. It
+   * was the oldest built-and-unwired effect in the game.
+   *
+   * **There is no top of the draw pile**, which is the thing worth knowing about this engine:
+   * draws pick random ids on purpose. So Sift is *n out of the pile, seen, and binned if you
+   * like*, which buys exactly what the rule says -- a worse next hand for a better one after --
+   * and cannot be foreknowledge of the next draw, because nothing here knows which that is.
+   *
+   * The dialog is not driven here; its two halves are, against live documents. What a modal would
+   * add is a click, and what it would cost is a probe that fails on a frame of animation.
+   */
+  await probe("sift, against a real draw pile", async () => {
+    await settle(page);
+    return page.evaluate(async () => {
+      const d = await import("/systems/cardrpg/module/decks.mjs");
+      const { hero } = LIVE;
+      const pile = d.deckOf(hero, "action");
+      const bin = d.deckOf(hero, "actionDiscard");
+      const before = d.available(pile).length;
+      const binBefore = bin.cards.size;
+
+      const seen = d.cardsToSift(hero, 3);
+      const names = seen.map(c => d.cardName(c));
+      const unique = new Set(seen.map(c => c.id)).size;
+      /* Seeing is not taking: nothing has moved yet. */
+      const afterLooking = d.available(pile).length;
+
+      const binned = await d.binSifted(hero, [seen[0].id, seen[1].id]);
+      const afterBinning = d.available(pile).length;
+      const binAfter = bin.cards.size;
+
+      /* A card already binned is not in the draw pile, so asking again moves nothing. */
+      const again = await d.binSifted(hero, [seen[0].id]);
+      /* And an id from nowhere is refused rather than trusted. */
+      const nonsense = await d.binSifted(hero, ["notacardid"]);
+
+      /* Put them back so the rest of the file sees the deck it expects. */
+      await d.move(bin, pile, binned.map(c => c.id));
+      const restored = d.available(pile).length;
+
+      return [
+        ["it takes as many as it was asked for", seen.length, 3],
+        ["each of them a different card", unique, 3],
+        ["and every one a real card with a name", names.filter(Boolean).length, 3],
+        ["seeing them moves nothing", afterLooking, before],
+        ["binning two takes two out of the pile", before - afterBinning, 2],
+        ["and puts them in the discard", binAfter - binBefore, 2],
+        ["binning one twice moves nothing the second time", again.length, 0],
+        ["and an id from nowhere is refused", nonsense.length, 0],
+        ["and the pile is whole again afterwards", restored, before]
+      ];
+    });
+  });
+
   await probe("the system itself", async () => {
     const rows = await page.evaluate(() => {
       const errors = (globalThis.LIVE_ERRORS ?? []).filter(e => !/favicon|DevTools/.test(e));

@@ -260,3 +260,45 @@ export async function normalizeDeck(stack, elsewhere = []) {
   console.log(`Card RPG | repaired ${fixes.length} cards in ${stack.name}`);
   return fixes.length;
 }
+/**
+ * **Sift: take n cards out of the draw pile to be looked at.**  [BUILT 2026-11-16]
+ *
+ * core-rules 8 says *the top card of your draw pile*, and **this deck has no top.** Every draw
+ * here picks random ids, because *drawing n random cards without replacement is distributionally
+ * identical to drawing from a shuffled deck, and it keeps the randomness somewhere we control* --
+ * so there is no next card to peek at, only cards to judge. What Sift honestly is in this engine
+ * is **n out of the pile, seen, and binned if you like**, which buys what the rule says it buys:
+ * a worse next hand traded for a better one after that.
+ *
+ * Without replacement, the same way a draw is, so one card cannot be shown twice in one Sift.
+ *
+ * Nothing is moved here. Seeing is not taking, and the decision about what goes belongs to the
+ * player -- which is also what makes this half testable without a dialog in front of it.
+ */
+export function cardsToSift(actor, n = 1) {
+  const pile = deckOf(actor, "action");
+  const pool = available(pile);
+  if (!pool.length) return [];
+  const rest = [...pool];
+  const seen = [];
+  for (let i = 0; i < Math.min(Math.max(1, n), pool.length); i++) {
+    seen.push(rest.splice(Math.floor(Math.random() * rest.length), 1)[0]);
+  }
+  return seen;
+}
+
+/**
+ * **And bin the ones they rejected**, which costs the fight nothing: the discard is what the next
+ * cycle brings back. The ids come from the player, so they are checked against the pile rather
+ * than trusted -- a card already drawn is not in the draw pile in any meaningful sense, and
+ * `available` is the function that knows it.
+ */
+export async function binSifted(actor, ids = []) {
+  const pile = deckOf(actor, "action");
+  const bin = deckOf(actor, "actionDiscard");
+  if (!pile || !bin || !ids.length) return [];
+  const live = new Set(available(pile).map(c => c.id));
+  const real = ids.filter(id => live.has(id));
+  if (!real.length) return [];
+  return move(pile, bin, real);
+}

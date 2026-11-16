@@ -25,7 +25,9 @@ import {
   isReserved, reserveCard, reserveHand, uprightCards, isIntruder, intruderLine,
   /* One printed line per card, shared with the sheet's deck list: the discard viewer here and
    * the deck list there are the same register of the same question. */
-  cardLine
+  cardLine,
+  /* Sift's two halves, which live in the deck layer so they can be driven without a dialog. */
+  cardsToSift, binSifted
 } from "./decks.mjs";
 import {
   resolveAttack, resolveDefend, resolveHeal, resolveUse, resolveCondition, resolveShake,
@@ -3055,6 +3057,88 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
        * Foresee names one NPC TYPE, not a token: every goblin shares one intent card (core-rules
        * 6, 9). With one type in the fight there is nothing to ask.
        */
+      /*
+       * **Sift: see and reject, never see and arrange.**  [BUILT 2026-11-16]
+       *
+       * core-rules 8 built this keyword on 2026-11-07, gave it an icon, wrote it into the rules
+       * and put it on four cards -- and nothing ever dispatched it, so playing *Scout Ahead*
+       * printed `sift 3` in chat and did nothing. It is the oldest built-and-unwired effect in
+       * the game.
+       *
+       * **There is no top of the draw pile, and that is the one thing worth knowing here.**
+       * decks.mjs draws by picking random ids: *drawing n random cards without replacement is
+       * distributionally identical to drawing from a shuffled deck, and it keeps the randomness
+       * somewhere we control.* So *the top card of your draw pile* is a fiction in this engine --
+       * what Sift can honestly be is **n cards out of the pile, seen, and binned if you like**.
+       * What the rule buys is identical either way: you see cards, you judge them, and the bad
+       * ones go to the discard the next cycle brings back. What it cannot be is foreknowledge of
+       * the very next draw, because nothing in this deck model knows which that is. **[OPEN]** in
+       * core-rules 8, which still describes a top.
+       *
+       * **No reordering is offered, which is how the rule is enforced rather than trusted.** The
+       * dialog has tick boxes and nothing else: arranging the top of a deck you are about to
+       * refill from is a tutor, and 8 rules tutors out.
+       *
+       * Two cards want less than the full operation and say so in their own text. *Graven Sight*
+       * is **seeing only** -- Tattoo Magic holds the seeing, not the binning -- so it gets a
+       * dialog with no boxes at all.
+       */
+      case "sift": {
+        const n = Math.max(1, step.param ?? 1);
+        const seen = cardsToSift(actor, n);
+        if (!seen.length) {
+          return ui.notifications.info("Nothing left in the draw pile to sift.");
+        }
+        const lookOnly = /seeing only/i.test(step.text ?? "");
+        const esc = foundry.utils.escapeHTML;
+        const rows = seen.map(card => lookOnly
+          ? `<li>${esc(cardName(card))}</li>`
+          : `<li><label><input type="checkbox" name="bin" value="${card.id}"> `
+            + `${esc(cardName(card))}</label></li>`).join("");
+
+        const chosen = await foundry.applications.api.DialogV2.wait({
+          window: { title: `${game.i18n.localize("CARDRPG.Effect.Sift")} ${n}` },
+          content: `<div class="cardrpg cr-sift"><p class="cr-note">`
+            + (lookOnly
+              ? "You see them and that is all. Nothing moves."
+              : "Anything you tick goes to your discard, which the next cycle brings back. "
+                + "You cannot reorder them.")
+            + `</p><ul class="cr-sift__cards">${rows}</ul></div>`,
+          buttons: lookOnly
+            ? [{ action: "seen", label: "Seen" }]
+            : [
+              { action: "bin",
+                label: "Bin the ticked",
+                /*
+                 * `querySelectorAll` and not `form.elements.bin`: a form with ONE input of that
+                 * name hands back the input itself rather than a list, and spreading an element
+                 * throws. One checkbox is *One Less Thing*, a Sift 1 -- so the only card that
+                 * takes the narrowest version of this effect is the one that would have broken.
+                 */
+                callback: (ev, button) => [...button.form.querySelectorAll('input[name="bin"]')]
+                  .filter(input => input.checked).map(input => input.value) },
+              { action: "none", label: "Keep them all", callback: () => [] }
+            ],
+          modal: true,
+          rejectClose: false
+        });
+
+        const ids = Array.isArray(chosen) ? chosen : [];
+        const binned = await binSifted(actor, ids);
+        await ChatMessage.create({
+          speaker: ChatMessage.getSpeaker({ actor }),
+          content: `<div class="cardrpg"><p><strong>${actor.name}</strong> sifts `
+            + `<strong>${seen.length}</strong>`
+            + (lookOnly
+              ? ", and only looks."
+              : binned.length
+                ? `, and bins <strong>${binned.length}</strong>.`
+                : ", and keeps them all.")
+            + `</p></div>`
+        });
+        return;
+      }
+
       case "foresee": {
         const kinds = new Map();
         for (const combatant of game.combat?.combatants ?? []) {

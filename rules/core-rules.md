@@ -1642,6 +1642,25 @@ Sift costs the fight nothing — what it moves goes to the discard, which the ne
 on its own — so what it buys is a worse next hand traded for a better one after that. The no-repeat clause is what
 stops it being a dig.
 
+> **[OPEN] This deck has no top, and the rule above describes one.**  **[FOUND 2026-11-16]**
+>
+> `decks.mjs` draws by picking random ids, and says why: *drawing n random cards without
+> replacement is distributionally identical to drawing from a shuffled deck, and it keeps the
+> randomness somewhere we control.* It is a good decision and nothing here asks for it back. But it
+> means there is **no next card to look at** — so *look at the top card of your draw pile* cannot
+> be implemented as written.
+>
+> What was built on 2026-11-16 is the honest neighbour: **n cards out of the pile, seen, and binned
+> if you like.** It buys what this section says Sift buys — a worse next hand traded for a better
+> one after that — because binning a card you have judged bad is the whole of the trade. What it
+> cannot be is foreknowledge of the very next draw, and the *see and reject, never see and arrange*
+> fence holds by construction rather than by rule: the dialog has tick boxes and no way to reorder
+> anything.
+>
+> Whether to reword this section or to give the action deck a real order is the open question. The
+> second is the larger change by far, and it would also hand back the thing the random draw was
+> keeping: an order a player can learn.
+
 **The owner is not open either, and it was settled before this keyword existed.**
 [specializations.md](specializations.md) worked through *a diviner peeks, but at what?* and ruled
 three targets out — an enemy's intent is **Foresee**, another player's hand is private by design, and
