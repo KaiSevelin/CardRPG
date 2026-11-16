@@ -2055,6 +2055,83 @@ async function probes(page) {
    * So the question is asked of pixels. Not *is there a control* but **is it a box with a size,
    * inside the window, and does pressing it change what the resolver would draw.**
    */
+  /*
+   * **[FOUND 2026-11-16] The start-of-turn routine never ran for anybody but the first combatant
+   * of each round.**
+   *
+   * `onTurnStart` guards itself with a once-per-turn marker, `round:turn`, read off the combat --
+   * and inside a `combatTurn` hook `combat.turn` is still the turn that **ended**. So on the second
+   * combatant's turn it computed the marker it had already written for the first, matched it, and
+   * returned having done nothing at all. Measured before the fix:
+   *
+   *     turnDone markers: 1:0 then 2:0        (the goblin's turn wrote none)
+   *     after:            1:1 then 2:0
+   *
+   * Everything in that routine was skipped for them: Block never cleared, recharges never ticked,
+   * an NPC never revealed its intent, conditions created by them never ticked -- so a condition
+   * could outlive its duration -- and Burning and Poisoned never took their Health.
+   *
+   * **The condition goes on the combatant's own actor, which is the lesson this probe cost.** A
+   * token that is not linked carries a copy, and a first draft of this test applied Burning to the
+   * base actor, read 0 damage and accused the engine of something it does not do. `turnOf` hands
+   * back the actor the combat is actually about, and that is the one a condition has to go on.
+   */
+  await probe("the start-of-turn tick, for somebody who is not first in the order", async () => {
+    await settle(page);
+    return page.evaluate(async () => {
+      const combatMod = await import("/systems/cardrpg/module/combat.mjs");
+      const { CardRPGTray } = await import("/systems/cardrpg/module/tray.mjs");
+      const { hero } = LIVE;
+      const npc = game.actors.find(a => a.type === "npc");
+      for (const t of CardRPGTray.openTrays) await t.close();
+      for (const c of [...game.combats]) await c.delete();
+
+      const place = async (actor, x) =>
+        (await canvas.scene.createEmbeddedDocuments("Token",
+          [(await actor.getTokenDocument({ x, y: 1600 })).toObject()]))[0];
+      const ph = await place(hero, 1000);
+      const pn = await place(npc, 1200);
+      const combat = await Combat.create({ scene: canvas.scene.id });
+      await combat.createEmbeddedDocuments("Combatant", [
+        { tokenId: ph.id, sceneId: canvas.scene.id, actorId: hero.id, initiative: 20 },
+        { tokenId: pn.id, sceneId: canvas.scene.id, actorId: npc.id, initiative: 10 }
+      ]);
+      await combat.startCombat();
+      const pause = () => new Promise(r => setTimeout(r, 700));
+      await pause();
+
+      /* Second in the order: the one the marker used to swallow. Its OWN actor, token or not. */
+      const second = combat.turns[1].actor;
+      const wasHealth = second.system.health.value;
+      await second.update({ "system.conditions":
+        [{ key: "burning", duration: 5, value: 2, creatorId: second.id, round: combat.round }] });
+      const before = second.system.health.value;
+
+      const marks = [];
+      const dbg = Hooks.on("combatTurn", () => {});
+      await combat.nextTurn();
+      await pause();
+      marks.push(combat.getFlag("cardrpg", "turnDone"));
+      const acting = combat.combatant?.actor?.name ?? "nobody";
+      const after = combat.turns[1].actor.system.health.value;
+      Hooks.off("combatTurn", dbg);
+
+      await combat.delete();
+      await ph.delete();
+      await pn.delete();
+      await second.update({ "system.conditions": [], "system.health.value": wasHealth })
+        .catch(() => {});
+      for (const t of CardRPGTray.openTrays) await t.close();
+
+      return [
+        ["the second combatant is the one acting", acting, combat.turns?.[1]?.actor?.name ?? npc.name],
+        ["and the turn marker is written for their turn, not the first one's",
+          marks[0], "1:1"],
+        ["and Burning on them costs them the value on it", before - after, 2]
+      ];
+    });
+  });
+
   await probe("the claim control, measured rather than read", async () => {
     await settle(page);
     return page.evaluate(async () => {

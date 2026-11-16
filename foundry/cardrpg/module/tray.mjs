@@ -40,7 +40,7 @@ import {
 } from "./resolve.mjs";
 /* The GM plays a monster from this window now, and the moment one acts its type's intent card is
  * public knowledge anyway -- so the HUD flips it through the same function the turn hook does. */
-import { revealIntent } from "./combat.mjs";
+import { revealIntent, turnOf } from "./combat.mjs";
 import {
   readCall, setCall, clearCall, describeCall, cardAnswers, bestTool, helpOptions,
   readChallenge, startChallenge, endChallenge, catchBreathInChallenge, drawTwist, twistCounts,
@@ -276,10 +276,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
      * update to offer -- `ready` and `canvasReady`, where nothing just changed -- fall through
      * to the combatant, which is correct precisely because no turn is mid-change.
      */
-    const turning = Number.isInteger(updateData?.turn)
-      ? combat.turns?.[updateData.turn]?.actor
-      : null;
-    const acting = turning ?? combat.combatant?.actor;
+    const acting = turnOf(combat, updateData).actor;
     if (game.user.isGM && acting?.isOwner) {
       return CardRPGTray.openFor(acting, { auto: true });
     }

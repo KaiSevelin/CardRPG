@@ -231,9 +231,64 @@ export async function revealIntent(actor) {
  * my next turn*: it starts when the creator's turn ends and stops when their next one does, and
  * the creature that spent a turn setting something up is the one who gets to use it.
  */
-export async function onTurnStart(combat) {
+/**
+ * **Whose turn a combat hook is announcing.** One answer, in one place.
+ *
+ * **[FOUND 2026-11-16] Foundry's turn hooks lie about the turn.** Inside `combatTurn`,
+ * `combat.turn` and `combat.combatant` are still the turn that just **ended** -- the hook runs
+ * from `_onUpdate` and the turn that is starting arrives in `updateData`. Measured in a browser
+ * rather than argued:
+ *
+ *     combat.turn=0   updateData.turn=1   combatant=Starter Warrior   turnDoneBefore=1:0
+ *
+ * This project got that wrong twice, independently, which is why the answer is a function and not
+ * a line of code in each caller:
+ *
+ * - `CardRPGTray.autoOpen` moved a GM's HUD to the acting combatant and moved it one turn late,
+ *   for ever. A table reported it as *there is no way to attack as a goblin*.
+ * - `onTurnStart` built its once-per-turn marker as `round:turn` from the stale turn, got a marker
+ *   it had already written, and **returned without doing anything at all**. So on most turns Block
+ *   was never cleared, recharges never ticked, an NPC never revealed its intent, conditions never
+ *   expired, and **Burning and Poisoned never took a point of Health from anybody.**
+ *
+ * The second of those is the whole of core-rules 7's timed damage, silently absent, with every
+ * one of its own unit checks passing -- because every one of them asked the function, and the
+ * function was never reached.
+ *
+ * **It can be overridden.** `cardrpgTurnOf` is called with the answer before it is returned, so a
+ * module that reorders initiative, runs two creatures on one turn, or hands a turn to something
+ * that is not a combatant can write its own answer in rather than monkey-patching the callers.
+ * The seam is here and not in each caller for the same reason the answer is.
+ *
+ * @param {Combat} combat
+ * @param {object|null} updateData the hook's second argument, when there is one
+ * @returns {{index: number|null, round: number|null, combatant: object|null, actor: object|null}}
+ */
+export function turnOf(combat, updateData = null) {
+  const empty = { index: null, round: null, combatant: null, actor: null };
+  if (!combat) return empty;
+  /*
+   * The update wins where it has an answer, and only where it has one: `ready` and `canvasReady`
+   * have no update to offer and nothing is mid-change when they run, so the combat is right for
+   * them -- which is exactly the case a fix written as *always use updateData* would break.
+   */
+  const index = Number.isInteger(updateData?.turn) ? updateData.turn : combat.turn;
+  const round = Number.isInteger(updateData?.round) ? updateData.round : combat.round;
+  const combatant = (Number.isInteger(index) ? combat.turns?.[index] : null)
+    ?? combat.combatant ?? null;
+  const answer = {
+    index: Number.isInteger(index) ? index : null,
+    round: Number.isInteger(round) ? round : null,
+    combatant,
+    actor: combatant?.actor ?? null
+  };
+  Hooks.callAll("cardrpgTurnOf", combat, updateData, answer);
+  return answer;
+}
+
+export async function onTurnStart(combat, updateData = null) {
   if (!game.user.isGM) return;
-  const actor = combat.combatant?.actor;
+  const { actor, index, round } = turnOf(combat, updateData);
   if (!actor) return;
 
   /*
@@ -246,7 +301,7 @@ export async function onTurnStart(combat) {
    * hooks call this now, and this marker is what makes that safe: if a build ever fires both for
    * one transition, the second call does nothing rather than ticking everything twice.
    */
-  const at = `${combat.round}:${combat.turn}`;
+  const at = `${round}:${index}`;
   if (combat.getFlag("cardrpg", "turnDone") === at) return;
   await combat.setFlag("cardrpg", "turnDone", at);
 
@@ -254,7 +309,7 @@ export async function onTurnStart(combat) {
 
   /* The turn that just finished is the clock that just ran, so the tick belongs to that actor and
    * not to the one about to play. On the first turn of a fight there is nothing behind us. */
-  const ended = turnJustEnded(combat);
+  const ended = turnJustEnded(combat, index, round);
   if (ended?.actor) await tickConditionsCreatedBy(combat, ended.actor, ended.round);
   await tickRecharges(actor);
 
@@ -296,15 +351,17 @@ export async function onTurnStart(combat) {
  * condition on the very turn it was applied -- for exactly the creatures at the bottom of the
  * order and no others, which is the kind of bug that reads as bad luck for a month.
  */
-function turnJustEnded(combat) {
+function turnJustEnded(combat, index = null, round = null) {
   const turns = combat.turns ?? [];
-  const at = combat.turn;
+  /* The index the hook announced, not the one the combat still reports: see `turnOf`. */
+  const at = Number.isInteger(index) ? index : combat.turn;
   if (!turns.length || at === null || at === undefined) return null;
   const wrapped = at === 0;
   // Nothing has ended yet on the first turn of the first round.
-  if (wrapped && (combat.round ?? 0) <= 1) return null;
+  const now = Number.isInteger(round) ? round : (combat.round ?? 0);
+  if (wrapped && now <= 1) return null;
   const combatant = turns[(at - 1 + turns.length) % turns.length];
-  return { actor: combatant?.actor ?? null, round: (combat.round ?? 0) - (wrapped ? 1 : 0) };
+  return { actor: combatant?.actor ?? null, round: now - (wrapped ? 1 : 0) };
 }
 
 /** Tick every condition whose creator is this actor, wherever the victim sits in the order. */
@@ -394,14 +451,16 @@ export function registerCombatHooks() {
   /* A round advance is a turn start as well, and only one of these two hooks fires for it: the
    * first combatant of round 3 is as much a turn start as the second combatant of round 2. Intents
    * are drawn first, because the turn start is what reveals the acting NPC's. */
-  Hooks.on("combatRound", async combat => {
+  /* Every one of these hands the turn that is STARTING over in `updateData`, and the combat
+   * itself still reports the one that ended. All three pass it on; `turnOf` is the one reader. */
+  Hooks.on("combatRound", async (combat, updateData) => {
     await onRoundStart(combat);
-    await onTurnStart(combat);
+    await onTurnStart(combat, updateData);
   });
-  Hooks.on("combatTurn", combat => onTurnStart(combat));
-  Hooks.on("combatStart", async combat => {
+  Hooks.on("combatTurn", (combat, updateData) => onTurnStart(combat, updateData));
+  Hooks.on("combatStart", async (combat, updateData) => {
     await onRoundStart(combat);
-    await onTurnStart(combat);
+    await onTurnStart(combat, updateData);
   });
   Hooks.on("deleteCombat", combat => onCombatEnd(combat));
 }

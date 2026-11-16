@@ -2299,16 +2299,20 @@ check("files deciding a reshuffle from bare specialness",
  * one, with nothing about the card changed.
  */
 check("the tick belongs to the turn that just ended",
-  /const ended = turnJustEnded\(combat\);\s*\n\s*if \(ended\?\.actor\) await tickConditionsCreatedBy\(/
+  /const ended = turnJustEnded\(combat, index, round\);\s*\n\s*if \(ended\?\.actor\) await tickConditionsCreatedBy\(/
     .test(combatSource) ? "yes" : "no", "yes");
 /* Derived from the order rather than from `combat.previous`, and the round comes with the actor:
  * a creator at the bottom of the order sees the round increment before the tick runs, so a guard
  * that compared against the CURRENT round would tick on the turn of application for exactly those
  * creatures and no others. */
 check("and it carries the round that turn ran in",
-  /function turnJustEnded\(combat\)/.test(combatSource)
-  && /round: \(combat\.round \?\? 0\) - \(wrapped \? 1 : 0\)/.test(combatSource) ? "yes" : "no",
+  /function turnJustEnded\(combat, index = null, round = null\)/.test(combatSource)
+  && /round: now - \(wrapped \? 1 : 0\)/.test(combatSource) ? "yes" : "no",
   "yes");
+/* And it is TOLD which turn ended rather than reading it off a combat that is still mid-change. */
+check("and it is handed the index rather than reading it off the combat",
+  /const at = Number\.isInteger\(index\) \? index : combat\.turn;/.test(combatSource)
+    ? "yes" : "no", "yes");
 check("and nothing ticks on the round it landed",
   /condition\.round === endedRound/.test(combatSource) ? "yes" : "no", "yes");
 /*
@@ -2320,7 +2324,7 @@ check("and nothing ticks on the round it landed",
  * and the marker is what keeps that from double-ticking if a build ever fires both.
  */
 check("hooks that start a turn besides combatTurn",
-  (combatSource.match(/await onTurnStart\(combat\);/g) ?? []).length, 2);
+  (combatSource.match(/await onTurnStart\(combat, updateData\);/g) ?? []).length, 2);
 check("and a turn's work happens once however it was announced",
   /combat\.getFlag\("cardrpg", "turnDone"\) === at/.test(combatSource) ? "yes" : "no", "yes");
 /*
@@ -2339,17 +2343,42 @@ check("and a turn's work happens once however it was announced",
  * It was found in a browser and it could not have been found anywhere else: both values are
  * correct-looking reads of a live document, and only asking for them inside the hook, in the same
  * breath, shows one of them is stale. The live suite does exactly that and keeps the pair.
+ *
+ * **And the same mistake was already in `onTurnStart`, in a shape that hid it completely.** Its
+ * once-per-turn marker is `round:turn`, built from the stale turn -- so on the second combatant's
+ * turn it computed the marker it had already written for the first, matched it, and **returned
+ * having done nothing at all**. For everybody but whoever leads the order: Block never cleared,
+ * recharges never ticked, an NPC never revealed its intent, conditions created by them never
+ * ticked, and Burning and Poisoned never took a point of Health. Every unit check over that
+ * function passed, because every one of them called the function.
+ *
+ * Twice is a pattern, so the answer is one function with a seam in it rather than a line of code
+ * in each caller.
  */
+check("the one place that answers whose turn it is",
+  /export function turnOf\(combat, updateData = null\)/.test(combatSource) ? "yes" : "no", "yes");
+check("and the callers that ask it rather than asking the combat",
+  [["autoOpen", /const acting = turnOf\(combat, updateData\)\.actor;/.test(traySource)],
+    ["onTurnStart", /const \{ actor, index, round \} = turnOf\(combat, updateData\);/
+      .test(combatSource)]]
+    .filter(([, ok]) => !ok).map(([name]) => name).join(", ") || "both", "both");
 check("combat hooks that hand the new turn on to the HUD",
   (traySource.match(/Hooks\.on\("combat(?:Start|Turn|Round)", \(combat, updateData\) =>/g) ?? [])
     .length, 3);
-check("and autoOpen prefers the turn it was handed to the one the combat still reports",
-  /const turning = Number\.isInteger\(updateData\?\.turn\)\s*\n\s*\? combat\.turns\?\.\[updateData\.turn\]\?\.actor/
-    .test(traySource) ? "yes" : "no", "yes");
-/* And the fallback stays, because `ready` and `canvasReady` have no update to offer and nothing
- * is mid-change when they run. */
-check("and still answers for a caller with no update to hand it",
-  /const acting = turning \?\? combat\.combatant\?\.actor;/.test(traySource) ? "yes" : "no", "yes");
+/* The update wins only where it HAS an answer: `ready` and `canvasReady` have none and nothing is
+ * mid-change when they run, so the combat is right for them -- which is the case a fix written as
+ * *always use updateData* would quietly break. */
+check("and it falls back to the combat for a caller with no update",
+  /const index = Number\.isInteger\(updateData\?\.turn\) \? updateData\.turn : combat\.turn;/
+    .test(combatSource) ? "yes" : "no", "yes");
+/* Overridable, because a module that reorders initiative, runs two creatures on one turn, or hands
+ * a turn to something that is not a combatant should not have to patch every caller to say so. */
+check("and a module may answer it instead",
+  /Hooks\.callAll\("cardrpgTurnOf", combat, updateData, answer\);/.test(combatSource)
+    ? "yes" : "no", "yes");
+/* And the marker is built from that answer, which is the whole of the second bug. */
+check("and the once-per-turn marker is built from the turn that was announced",
+  /const at = `\$\{round\}:\$\{index\}`;/.test(combatSource) ? "yes" : "no", "yes");
 
 /*
  * **And every writer of a condition record stamps the round**, which is the half that rots. There
