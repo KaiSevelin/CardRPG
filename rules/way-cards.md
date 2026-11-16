@@ -958,6 +958,38 @@ a tactic, it is a house rule with a name on it ([leveling.md](leveling.md) §5a.
 > universal flanking rule would reward every character for the same thing; forty-eight different
 > tactics reward forty-eight different things, which adds decisions rather than power.
 
+#### What the engine enforces  **[2026-11-16]**
+
+A Tactic is **derived and printed**, and for most of this list that is the whole of it. `tacticOf`
+reads your deepest title and puts the name and the text on the character sheet and in the level-up
+pane, and **nothing in the engine reads `system.tactic`** — not the resolver, not the tray, not
+combat. For a rule about where people stand that is the right default: the ones below name advantage,
+cover and adjacency, which the engine already scores, so a table applying them is applying
+arithmetic the engine knows.
+
+Two of the fifty-two are engine rules, and they are the two with a different shape: **they set a rule
+aside rather than describing a position.** *Nothing to Prepare* and *One Hand Free* grant
+`freehandCast`, which `resolve.mjs` has refused a cast without since Vax was built, and Tattoo
+Magic also grants `castsSilenced` ([leveling.md](leveling.md) §4, *A rule set aside*). That is the
+test for whether a Tactic can be enforced at all: **a rule stops applying, and the engine already
+has that rule.** A Tactic that needs a rule the engine does not have is prose however it is worded,
+which is what the next paragraph is about.
+
+> **What the rest are waiting on, in one sentence each.** **Forced movement, difficult ground and
+> high ground do not exist** — `forcedMove`, `difficultGround` and `highGround` appear nowhere in
+> the module — and they are between them most of Way of Strength's list. **Condition immunity does
+> not exist**, which is *Forward Only* and three others. **A reaction budget does not exist**:
+> `noReactions` is a blanket per-actor flag, so *an extra reaction* and *cannot be answered by a
+> reaction* have nothing to add to or take from. These are the primitives, not the Tactics, and each
+> would serve cards that are already written.
+
+**Overwatch is the near miss, and it is worth reading as one.** Its entire mechanism was built on
+2026-11-09 — facing, a sixty-degree arc, a `watch` trigger, `answerWatch` picking one shooter by
+initiative — and the Tactic was reworded to that geometry rather than the other way round. But
+`reactionsFor` gathers a held shot from **upright cards** only, so an Archer gets Overwatch by
+playing *At Full Draw*, not by being an Archer, and *without spending a card* is the one clause of it
+nothing implements. **[OPEN]** A card-free source, once a round, off the title.
+
 #### Way of Strength
 
 | Node | Tactic | |

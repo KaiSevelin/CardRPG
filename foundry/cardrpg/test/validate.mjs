@@ -5992,6 +5992,9 @@ const RUNG = {
   /* Binary, and worth nothing at all to a character who does not cast: rung 1 by 4's own
    * ranking, even though what it lifts is a rule rather than a cap. */
   freehandCast: 1,
+  /* The same, for the other casting rule. One node sets it aside and it is a Tactic rather than a
+   * gift, which does not change what it is worth: a caster who is never Silenced notices nothing. */
+  castsSilenced: 1,
 };
 check("every grant key the graph uses has a rung",
   [...new Set(nodes.flatMap(n => Object.keys(n.grants ?? {})))]
@@ -6032,8 +6035,15 @@ const rewardKeys = {
   prune: "Prune", stamina: "Stamina", handSize: "Hand size", carry: "Carry",
   spellSlots: "Spell slot",
   health: "Health", restTokens: "Rest token", spell: "Spell", choose: "Choose from a list",
-  /* A rule set aside rather than a number raised: the only one is Vax's free hand. */
-  freehandCast: "A rule set aside",
+  /*
+   * **A rule set aside rather than a number raised, and there are two rules.**  **[2026-11-16]**
+   *
+   * Section 4 has one row for both because a player reading it wants the category. Here they are
+   * two keys with two labels, because the thinness check below counts nodes per key and a key that
+   * three nodes grant is a different finding from a key that one node grants.
+   */
+  freehandCast: "A rule set aside (the free hand)",
+  castsSilenced: "A rule set aside (speech)",
   /* Section 4's longest-open row, closed 2026-11-13. It deals into the SKILL deck, which is why
    * it is not `card`: different deck, different rules (skill-rules 1). */
   skill: "Skill card"
@@ -6097,7 +6107,14 @@ check("the rewards only one or two nodes grant",
    * nothing else. One node for the dearest reward in the game is the scarcity doing the same work
    * it does for stamina: there is no safe second point, so there is no second node.
    */
-  "A rule set aside 1, Hand size 1, Stamina 1");
+  /*
+   * **[2026-11-16] The free hand left this list the day two Tactics were built.** It was granted
+   * by Vax and by nothing else for as long as there have been gods; Tattoo Magic's and the
+   * Half-mage's Tactics had promised it in prose the whole time, so the rarity this check reported
+   * was never quite the rarity in the game. Speech took its place at one node, which is honest: it
+   * is the only exemption from a condition anywhere.
+   */
+  "A rule set aside (speech) 1, Hand size 1, Stamina 1");
 /*
  * The character grants that no reward row offers and no node grants, each for a stated reason.
  * **handSize** is measured: specializations.md puts a card of hand size at 6 to 10 points of win
@@ -9159,11 +9176,113 @@ check("items that excuse the free hand", freehandItems.join(", "),
 check("and each of them still says so in its own words",
   content.ITEMS.filter(i => i.freehandCast && !/without a free hand/.test(i.text ?? ""))
     .map(i => i.name).join(", ") || "none", "none");
-const freehandGods = [...byId.values()].filter(n => n.grants?.freehandCast)
+/*
+ * **This check read the whole graph and was named after one god, which is how it came to be
+ * wrong.**  **[2026-11-16]**
+ *
+ * It filtered every node for `grants.freehandCast` and pinned the answer to "Vax", so the pin
+ * was simultaneously a true statement about the gods and a false statement about the game: two
+ * **Tactics** had promised the same exemption in prose since the day they were written. Narrowed
+ * to the gods it is about, with the graph-wide question asked separately below.
+ */
+const freehandGods = [...byId.values()]
+  .filter(n => n.id.startsWith("faith.") && n.grants?.freehandCast)
   .map(n => n.title ?? n.name);
 check("gods whose gift is that the weapon is the symbol", freehandGods.join(", "), "Vax");
 check("and Vax's gift says so to the player too",
   /need no free hand/.test(byId.get("faith.vax").gift ?? "") ? "yes" : "no", "yes");
+
+/*
+ * **[BUILT 2026-11-16] The two Tactics that were a sentence on the character sheet.**
+ *
+ * A Tactic is derived from your deepest title and printed, and that is all it has ever been:
+ * `tacticOf` returns a name and a text, the sheet and the level-up pane display them, and nothing
+ * in the engine reads `system.tactic`. For most of the fifty-two that is the only thing it could
+ * be -- *forced movement*, *difficult ground* and *high ground* have no representation in this
+ * module at all, so a Tactic built on them has nothing to be built out of.
+ *
+ * **Two of them were different and nobody had noticed.** *Nothing to Prepare* and *One Hand Free*
+ * do not describe a position; they **set a rule aside**, and the rule is the one Vax has set aside
+ * since the gods were built, enforced in `resolve.mjs` against `castsFreehanded`. The flag
+ * existed, the enforcement existed, the prose promised it, and the two nodes granted a feature and
+ * some slots. Tattoo Magic promised a second rule as well -- *and Silenced does not stop you* --
+ * and that one had no mechanism of any kind: `silenced` blocks the magic-swirl icon out of config
+ * and nothing in the game could be exempt from a block.
+ *
+ * The checks go in both directions, and it is the second that would have found this: not *does the
+ * node grant the flag*, which only ever reports what the data already says, but **does any Tactic
+ * promise a rule its node does not set aside**. That reads the promise where the promise lives.
+ */
+const asideNodes = [...byId.values()]
+  .filter(n => n.grants?.freehandCast || n.grants?.castsSilenced);
+check("nodes that set a casting rule aside",
+  asideNodes.map(n => n.title ?? n.name).sort().join(", "), "Half-mage, Tattoo Magic, Vax");
+const asideTitled = [...byId.values()].filter(n => n.title && n.tactic);
+check("tactics that promise the free hand and do not set it aside",
+  asideTitled
+    .filter(n => /both hands full|never needs a hand free/i.test(graph.ALL_TACTICS[n.tactic] ?? ""))
+    .filter(n => !n.grants?.freehandCast).map(n => n.title).join(", ") || "none", "none");
+check("and tactics that promise Silenced does not stop you",
+  asideTitled
+    .filter(n => /Silenced does not stop you/.test(graph.ALL_TACTICS[n.tactic] ?? ""))
+    .filter(n => !n.grants?.castsSilenced).map(n => n.title).join(", ") || "none", "none");
+/*
+ * **And the exemption is config's to state, not the getter's.** The three blocking flags below
+ * this file's `BLOCKS` table exist because conditions used to be hardcoded by key in the tray
+ * while config carried flags nothing read. An exemption written as `if (c.key === "silenced")`
+ * would have been that mistake again, one release later.
+ */
+check("the condition a character can be exempt from",
+  Object.entries(CARDRPG.conditions).filter(([, c]) => c.setAsideBy)
+    .map(([k, c]) => `${k} -> ${c.setAsideBy}`).join(", "), "silenced -> castsSilenced");
+check("and an exemption naming a flag the character never derives",
+  Object.values(CARDRPG.conditions)
+    .filter(c => c.setAsideBy && !actorsSource.includes(`this.${c.setAsideBy} = `))
+    .map(c => c.setAsideBy).join(", ") || "none", "none");
+/* Both actors honour it, because a monster that is one day exempt from something should not need
+ * this found and fixed twice. */
+check("and the getters that honour it",
+  (actorsSource.match(/if \(this\.exemptFrom\?\.has\(c\.key\)\) continue;/g) ?? []).length, 2);
+/*
+ * **And a flag config names that the character's table leaves out**, which is the one way this
+ * shape can fail quietly: an exemption would be declared on the condition, derived onto the actor,
+ * and lift nothing, because the set it feeds is built from the table rather than from the flag.
+ */
+const asideTable = /const setAside = \{([^}]*)\}/.exec(actorsSource)?.[1] ?? "";
+check("and an exemption the table on the character leaves out",
+  Object.values(CARDRPG.conditions)
+    .filter(c => c.setAsideBy && !asideTable.includes(c.setAsideBy))
+    .map(c => c.setAsideBy).join(", ") || "none", "none");
+/*
+ * **Exempt is not dispelled, and the difference is where the test sits.** The condition stays on
+ * the actor, still ticks, still answers a dispel; it simply blocks nothing. Putting the exemption
+ * in `activeConditions` instead would have deleted it from the list and quietly unhooked every
+ * other thing Silenced is ever asked to do.
+ */
+check("the exemption lifts the block and not the condition",
+  ["get activeConditions()", "get blockedIcons()"]
+    .filter(g => actorsSource
+      .slice(actorsSource.indexOf(g), actorsSource.indexOf(g) + 420).includes("exemptFrom"))
+    .join(", "), "get blockedIcons()");
+/*
+ * **And the claim the documents now make about the other fifty: that the engine does not read a
+ * Tactic.** It is the kind of sentence that is true when written and false a month later, so it is
+ * measured rather than trusted.
+ */
+check("engine files that read a character's Tactic",
+  [["resolve", resolveSource], ["tray", traySource], ["combat", combatSource]]
+    .filter(([, src]) => /\bsystem\.tactic\b|\btactic\.(name|text)\b/.test(src))
+    .map(([name]) => name).join(", ") || "none", "none");
+/* The documents that said Vax was alone in this, each of which was true until today. */
+check("documents that still say Vax is the only one",
+  [["leveling", levDoc], ["specializations", specDoc]]
+    .filter(([, doc]) => /Only Vax grants one|nothing else in the game does it/.test(doc))
+    .map(([name]) => name).join(", ") || "none", "none");
+check("and core-rules 4 names who is excused the free hand",
+  ["Ring of the Open Hand", "Ring of Open Hands", "Half-mage", "Tattoo Magic"]
+    .filter(w => !coreDoc.includes(w)).join(", ") || "all four", "all four");
+check("and way-cards 2.5 states how much of the list the engine enforces",
+  /#### What the engine enforces/.test(wayDoc) ? "yes" : "no", "yes");
 
 /*
  * **[BUILT 2026-11-09] Overwatch, which is the sixth rule this project found written down and
@@ -13418,7 +13537,10 @@ const unread = assigned.filter(name => {
 });
 check("derived values nothing reads", unread.length ? unread.join(", ") : "none", "none");
 /* A detector that found nothing to look at would pass the line above while checking nothing. */
-check("derived values on the character", assigned.length, 20);
+/* **[2026-11-16] 22, from 20**: `castsSilenced` and the `exemptFrom` it resolves to. This check
+ * is the reason the second of those exists -- the flag was read as `this[c.setAsideBy]` off the
+ * config entry, which works and which nothing could find, and the line above reported it unread. */
+check("derived values on the character", assigned.length, 22);
 
 /* And the three that were found, now shown rather than deleted. */
 check("the sheet shows which Ways were walked",
@@ -15501,7 +15623,8 @@ check("and they share the character panel's edge",
  * neither does a passive score, since a passive is read off that deck.
  */
 const grantKeys = Object.keys(graph.grantsOf(new Set([graph.ROOT])));
-check("keys the grants accumulator carries", grantKeys.length, 19);
+/* **[2026-11-16] 20**: `castsSilenced`, the second rule a node can set aside. */
+check("keys the grants accumulator carries", grantKeys.length, 20);
 /* And the two that were added for it, which is the half of skill-rules 8 that a node can express:
  * an expertise asks the player which card to raise, a mastery is a number read off the owned set. */
 check("the two the skill side gained",

@@ -833,7 +833,13 @@ export const NODES = [
     id: "shade.half-mage", name: "Half-mage", after: ["shade.duellist.formula"], title: "Half-mage",
     axis: "Preparation", resource: "spell slots",
     signature: "One Trick", tactic: "One Hand Free",
-    grants: { spellSlots: 2, feature: "One Trick" },
+    /*
+     * *One Hand Free* says **casting never needs a hand free**, which is the same flag Vax's gift
+     * sets and was not set here. A Half-mage is the one caster in the game whose whole shape is a
+     * blade in one hand and a formula in the other, and the rule that shape exists to beat was
+     * still applying to them.
+     */
+    grants: { spellSlots: 2, feature: "One Trick", freehandCast: true },
     lore:
       "One trick, learned properly, in a Way that has no magic. The Half-mage is what "
       + "happens when a Shade goes and asks.\n\n**Spell slots** on a sheet that was not built "
@@ -1508,7 +1514,16 @@ export const NODES = [
      * five and leaves one school's list unaffordable to the caster it was written for. That is the
      * Way ladder's arithmetic, not this school's, so all seven cards name the gap and wait.
      */
-    grants: { feature: "Graven Strength" },
+    /*
+     * **And the Tactic, which was prose until today.** *Nothing to Prepare* has said *you may Cast
+     * with both hands full, and Silenced does not stop you* for as long as this school has existed,
+     * and the school granted a feature and nothing else -- so the thing its own lore calls *the
+     * whole advantage* happened only when a table remembered it. Both halves are flags now:
+     * `freehandCast` is the one Vax has carried since the gods were built and resolve.mjs already
+     * refuses a cast without, and `castsSilenced` is new, because no condition in this game had
+     * ever had an exemption from it.
+     */
+    grants: { feature: "Graven Strength", freehandCast: true, castsSilenced: true },
     lore:
       "Magic worked into skin. Wolf Peak's priesthood is covered in it and will not discuss it, and "
       + "what a tattoo mage has is permanent, visible and already paid for.\n\nThe resource is **a "

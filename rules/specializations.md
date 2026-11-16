@@ -640,7 +640,7 @@ Each lone god's gift bends a rule the others obey:
 
 | God | The gift | What it bends |
 |---|---|---|
-| **Vax** | **His miracles need no free hand.** The spiked club is the holy symbol. | core-rules §4's free-hand rule — the single thing standing between a caster and a shield. This is what makes the **cleric-fighter** possible, and nothing else in the game does it. |
+| **Vax** | **His miracles need no free hand.** The spiked club is the holy symbol. | core-rules §4's free-hand rule — the single thing standing between a caster and a shield. This is what makes the **cleric-fighter** possible. **[2026-11-16]** It was the only thing in the game that bent that rule until the Half-mage's and Tattoo Magic's Tactics were built; bending it for a **priest** is still Vax's alone, and a priest is the one caster who was also going to want the shield. |
 | **The First** | **His miracles return what they take.** Health drained from a living target comes back to you. | the Health economy — the only renewable pool in the game, and the price of it is written on the node: a narrow deck and few slots |
 | **The Eternal God** | **Solidarity.** His miracles cast on a brother or sister in faith cost one less — no Strain, no Spent. | the cost rules, straight out of the third tenet: *"Help your brothers and sisters, and ask no coin."* |
 | **The Eternal Spirit** | **The spirit drifts through all the air.** His miracles ignore range and cover. | the Position rules — the one caster for whom distance is not a question |

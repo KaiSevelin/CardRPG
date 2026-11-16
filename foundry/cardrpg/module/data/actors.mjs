@@ -593,8 +593,10 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
     this.handsUsed = inHand.reduce((n, i) => n + (i.system.isTwoHanded ? 2 : 1), 0);
     this.handsFree = Math.max(0, (this.slotCapacity("hands") ?? 0) - this.handsUsed);
     /*
-     * And who is excused the rule: the two rings that say so, and any god sworn to whose gift is
-     * that their symbol is the weapon already in your hand.
+     * And who is excused the rule: the two rings that say so, a god sworn to whose gift is that
+     * their symbol is the weapon already in your hand, and the two schools whose Tactic is that
+     * their magic is not held -- Tattoo Magic, which wears it, and the Half-mage, whose one trick
+     * is cast with a blade in the other fist.
      */
     this.castsFreehanded = fromNodes.freehandCast
       || inHand.some(i => i.system.castsFreehanded)
@@ -608,6 +610,26 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
      * Ironclad doubles armour only while Overloaded, and Overloaded is itself derived from weight.
      */
     this.armorDoubled = false;
+
+    /*
+     * **The other casting rule a node can set aside, and the first exemption from a condition.**
+     *
+     * Tattoo Magic's Tactic: *Silenced does not stop you -- your spells are on your skin, not in
+     * your mouth*. **Exempt is not dispelled**: the condition is still on them, still ticks, still
+     * answers somebody else's dispel. It simply blocks nothing.
+     *
+     * Which condition a flag lifts is `config.mjs`'s to say, beside the block itself, so the rule
+     * is findable from the condition rather than hardcoded in a getter -- that is why the three
+     * getters below this one exist at all. But the flag is read **by name** here and not as
+     * `this[c.setAsideBy]` where it is used: a dynamic read is invisible to the derived-value
+     * audit in validate.mjs, which found this and said so, and a derived value nothing can be
+     * shown to read is a claim nothing tests. So the lookup happens once, here, and what the
+     * getter consults is a set of condition keys.
+     */
+    this.castsSilenced = fromNodes.castsSilenced;
+    const setAside = { castsSilenced: this.castsSilenced };
+    this.exemptFrom = new Set(Object.entries(CARDRPG.conditions)
+      .filter(([, c]) => c.setAsideBy && setAside[c.setAsideBy]).map(([key]) => key));
 
     // --- carried weight and encumbrance
     this.carry.bonus = grants.carry;
@@ -728,6 +750,8 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
   get blockedIcons() {
     const blocked = new Set();
     for (const c of this.activeConditions) {
+      /* A condition this character is exempt from blocks nothing: `exemptFrom`, derived above. */
+      if (this.exemptFrom?.has(c.key)) continue;
       for (const icon of CARDRPG.conditions[c.key]?.blocks ?? []) blocked.add(icon);
     }
     return blocked;
@@ -1056,6 +1080,9 @@ export class NpcData extends foundry.abstract.TypeDataModel {
   get blockedIcons() {
     const blocked = new Set();
     for (const c of this.conditions) {
+      /* As the character's. No monster derives `exemptFrom` today and the optional chain costs
+       * nothing, so the two getters stay the same shape rather than one growing the rule later. */
+      if (this.exemptFrom?.has(c.key)) continue;
       for (const icon of CARDRPG.conditions[c.key]?.blocks ?? []) blocked.add(icon);
     }
     return blocked;

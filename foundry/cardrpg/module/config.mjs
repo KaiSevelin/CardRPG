@@ -405,7 +405,15 @@ CARDRPG.conditions = {
     noDuration: true
   },
   grappled: { label: "CARDRPG.Condition.Grappled", icon: "luchador", blocks: ["boot-prints"] },
-  silenced: { label: "CARDRPG.Condition.Silenced", icon: "silenced", blocks: ["magic-swirl"] },
+  /*
+   * The one condition a character can be exempt from. `setAsideBy` names the derived flag that
+   * excuses them, which is how Tattoo Magic's Tactic reaches the engine instead of being a rule
+   * the tray would have to know by key.
+   */
+  silenced: {
+    label: "CARDRPG.Condition.Silenced", icon: "silenced", blocks: ["magic-swirl"],
+    setAsideBy: "castsSilenced"
+  },
   disarmed: { label: "CARDRPG.Condition.Disarmed", icon: "drop-weapon", blocks: ["school-bag"] },
   /*
    * Compelled takes away WHO you attack, not whether you attack, which is the only shape a

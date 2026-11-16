@@ -670,6 +670,18 @@ want a weapon — that is the decision the rule exists to create.
 **Speech** is what **Silenced** already takes away (section 7). It blocks ✦ Cast wherever the magic
 came from, because a wand has a command word too; gags, water and held breath hang off the same hook.
 
+**Who is excused, and it is a short list.**  **[2026-11-16]** Two rings set the free hand aside, the
+*Ring of the Open Hand* and the *Ring of Open Hands*, and so does **Vax**, whose holy symbol is the
+club already in your fist. Two titles set it aside as their **Tactic**: the **Half-mage**, whose one
+trick is cast with a blade in the other hand, and **Tattoo Magic**, which is also the only thing in
+the game that **Silenced** does not stop, because a tattoo is neither held nor spoken. Every one of
+those is a flag the engine reads rather than a line a table has to remember
+([leveling.md](leveling.md) §4, *A rule set aside*).
+
+Note what being excused is **not**. A tattoo mage with Silenced on them still has it: it still ticks
+down, it still answers a dispel, and anything else ever hung on that hook still happens. The
+condition blocks nothing for them, which is a narrower thing than not having it.
+
 #### Reaction spells, and the one that counters  **[BUILT 2026-11-07]**
 
 A prepared spell may be a **reaction**. It costs no half, because it was never in your hand to play

@@ -2006,6 +2006,65 @@ async function probes(page) {
    * The nodes are chosen here rather than taken from the hero, so that nothing in the set opens a
    * dialog -- a menu node would stop the probe dead waiting for somebody to pick.
    */
+  /*
+   * **[BUILT 2026-11-16] The two Tactics that are engine rules rather than prose.**
+   *
+   * For fifty of the fifty-two a Tactic is derived text: `tacticOf` reads the deepest title and the
+   * sheet prints it. Two of them do not describe a position, they **set a casting rule aside** --
+   * *Nothing to Prepare* and *One Hand Free* -- and that is a claim about a grant accumulator, a
+   * data model and a getter all agreeing, which is the exact shape a grep passes and a game fails.
+   *
+   * So it is driven. Give the hero the school, read the flags off the document the browser built,
+   * put Silenced on them and ask the **tray's own** blocked-icon set whether it stopped them. The
+   * icon comes from config rather than being typed here, because the thing under test is whether
+   * the exemption lifts whatever Silenced blocks, not whether somebody spelled the icon right.
+   *
+   * The baseline is the exemption rather than the free hand on purpose: an equipped ring can excuse
+   * a free hand, so a world whose hero wears one would make that comparison meaningless. Nothing
+   * but a node can grant the Silenced exemption, so nothing but a node can contaminate it.
+   */
+  await probe("a tattoo mage casts with both hands full and through Silenced", async () => {
+    await settle(page);
+    return page.evaluate(async () => {
+      const { hero } = LIVE;
+      const before = [...(hero.system.nodes ?? [])];
+      const wasConditions = (hero.system.conditions ?? []).map(c => ({ ...c }));
+      const silence = [{ key: "silenced", duration: 2, creatorId: "" }];
+      const [icon] = LIVE.CARDRPG.conditions.silenced.blocks;
+
+      await hero.update({ "system.nodes": ["root"], "system.conditions": silence });
+      const plainExempt = hero.system.exemptFrom.has("silenced");
+      const plainBlocked = hero.system.blockedIcons.has(icon);
+
+      /* The school. `mind.tattoo` grants a feature and the two flags, and asks no question. */
+      await hero.update({ "system.nodes": ["root", "mind.tattoo"] });
+      const mageFree = hero.system.castsFreehanded;
+      const mageExempt = hero.system.exemptFrom.has("silenced");
+      const mageBlocked = hero.system.blockedIcons.has(icon);
+      /* Exempt is not dispelled: it is still on them, and still ticking. */
+      const stillOn = hero.system.activeConditions.some(c => c.key === "silenced");
+
+      /* And the Half-mage, whose Tactic promises the hand and claims nothing about speech. */
+      await hero.update({ "system.nodes": ["root", "shade.half-mage"] });
+      const halfFree = hero.system.castsFreehanded;
+      const halfBlocked = hero.system.blockedIcons.has(icon);
+
+      await hero.update({ "system.nodes": before, "system.conditions": wasConditions });
+
+      return [
+        ["a character with neither node is not exempt from Silenced", plainExempt, false],
+        ["and Silenced blocks their magic", plainBlocked, true],
+        ["Tattoo Magic casts with both hands full", mageFree, true],
+        ["and is exempt from Silenced", mageExempt, true],
+        ["so Silenced blocks nothing of theirs", mageBlocked, false],
+        ["while still being on them, because exempt is not dispelled", stillOn, true],
+        ["the Half-mage casts with both hands full too", halfFree, true],
+        ["and Silenced still stops them, which is the half their Tactic never claimed",
+          halfBlocked, true]
+      ];
+    });
+  });
+
   await probe("a character is given what their nodes promised", async () => {
     await settle(page);
     return page.evaluate(async () => {

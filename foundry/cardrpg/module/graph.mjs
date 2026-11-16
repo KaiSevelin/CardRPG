@@ -667,8 +667,13 @@ export function grantsOf(owned) {
      * time a passive is computed.
      */
     expertise: [], masteries: [],
-    /* Whether any sworn god lets this character cast with both hands full. */
+    /*
+     * The two rules a node can set aside. Both are casting rules and both are binary: a god whose
+     * symbol is the weapon in your hand, and two schools whose Tactic is that their magic is not
+     * held or spoken at all.
+     */
     freehandCast: false,
+    castsSilenced: false,
     /* The sources a character has been offered a choice from, which is not the same as what they
      * chose: the spell itself is a document and is counted by the book, not by this. */
     choices: [],
@@ -704,6 +709,7 @@ export function grantsOf(owned) {
      * can read.
      */
     if (g.freehandCast) out.freehandCast = true;
+    if (g.castsSilenced) out.castsSilenced = true;
     if (g.caps?.spellSlots !== undefined) {
       out.slotCap = out.slotCap === null
         ? g.caps.spellSlots

@@ -358,7 +358,7 @@ one thing instead of another.
 | **Skill card** | Add one, or upgrade one ([skill-rules.md](skill-rules.md) §8) | **[CLOSED 2026-11-13]** `grants.skill` names cards from the skill pool and deals them into the skill deck — a different deck from `card`'s, under different rules ([skill-rules.md](skill-rules.md) §1). **Rung 1**, which is what §8's measurement already said: a skill check barely scales with levelling. Its users are the twelve **backgrounds**, two cards each, and they cost nothing against the reward curve because a background is not a level |
 | **Training** | A tool type, at the full bonus instead of +1 | Skill rules §2 already says training comes from the Way trees |
 | **Item** | A slate, handed over outright | A node that teaches a tool training also **issues the tool** — see below |
-| **A rule set aside** | One rule stops applying to you, for good | Only Vax grants one, and only his: *his miracles need no free hand, because the spiked club is the holy symbol*. The gift half of a bargain whose other half is that every miracle costs Health ([way-cards.md](way-cards.md) §3.5) |
+| **A rule set aside** | One rule stops applying to you, for good | **[2026-11-16]** Three nodes grant one and all three are casting rules. **Vax**: *his miracles need no free hand, because the spiked club is the holy symbol* — the gift half of a bargain whose other half is that every miracle costs Health ([way-cards.md](way-cards.md) §3.5). **Tattoo Magic** and the **Half-mage**, where it is the Tactic rather than a gift: both set the free hand aside, and Tattoo Magic also sets aside **Silenced**, which is the only exemption from a condition in the game ([way-cards.md](way-cards.md) §2.5) |
 
 > **Trained and issued.**  **[BUILT 2026-11-08]**
 >
