@@ -99,10 +99,29 @@ export function groundAt(scene, point) {
  * What was taken out is handed back in `ignored`, because a square whose difficulty you alone do
  * not feel is worth seeing on your own HUD -- it is the reason you are standing there.
  */
-export function groundFor(actor) {
-  const token = actor?.getActiveTokens?.()[0];
-  if (!token) return { effects: new Set(), damage: 0, zones: [], ignored: new Set() };
-  const here = groundAt(token.scene ?? canvas?.scene, token.center ?? { x: token.x, y: token.y });
+export function groundFor(actor, which = null) {
+  /*
+   * **The token, when the caller knows which one.**  [FIXED 2026-11-16] An actor with two tokens
+   * on the board answers `getActiveTokens()[0]` with whichever comes first, and what square
+   * somebody is standing in is the one question where that is never good enough. Five goblins off
+   * one actor is the ordinary case. Callers that know pass it; the fallback prefers the token the
+   * user has hold of, which is right far more often than "the first one".
+   */
+  const doc = which?.document ?? which
+    ?? actor?.getActiveTokens?.().find(t => t.controlled)?.document
+    ?? actor?.getActiveTokens?.()[0]?.document;
+  if (!doc) return { effects: new Set(), damage: 0, zones: [], ignored: new Set() };
+  /*
+   * **The middle of the square, worked out from the document.**  [FIXED 2026-11-16] A placeable's
+   * `center` is 0,0 until the canvas has drawn it, so a figure that has just arrived -- which is
+   * exactly when something asks what it is standing in -- would be measured at the top-left corner
+   * of the map. The document always knows where it is.
+   */
+  const size = (doc.parent ?? canvas?.scene)?.grid?.size ?? canvas?.grid?.size ?? 100;
+  const here = groundAt(doc.parent ?? canvas?.scene, {
+    x: doc.x + (size * (doc.width ?? 1)) / 2,
+    y: doc.y + (size * (doc.height ?? 1)) / 2
+  });
   const blind = new Set(actor?.system?.ignoresGround ?? []);
   const ignored = new Set([...here.effects].filter(key => blind.has(key)));
   for (const key of ignored) here.effects.delete(key);

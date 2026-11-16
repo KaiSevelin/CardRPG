@@ -3216,6 +3216,121 @@ async function probes(page) {
     });
   });
 
+  /*
+   * **[BUILT 2026-11-16] Forced movement, which core-rules 11 has described for a long time and
+   * nothing could do.** `forcedMove` and `forceMove` appeared nowhere in the module, so eight
+   * Tactics and a card were waiting on a primitive that did not exist.
+   *
+   * Every clause of section 11 is a row here: a straight line nobody chooses, no Move spent, it
+   * stops in the last square it can reach rather than refusing, it ignores difficult ground, and
+   * **it is movement for everything that cares** -- which is the row that also settles an open
+   * question about the arrival hook, since a shove updates a token exactly as a drag does.
+   */
+  /*
+   * **[BUILT 2026-11-16] Forced movement, which core-rules 11 has described for a long time and
+   * nothing could do.** `forcedMove` and `forceMove` appeared nowhere in the module, so eight
+   * Tactics and a card waited on a primitive that did not exist.
+   *
+   * **Every figure is placed fresh for its own case and every position is read back off the
+   * scene.** Both of those cost a run. A token placeable reports `x: 0, y: 0` until the canvas
+   * draws it -- measured, against a document at 500,400 in the same breath -- and chaining one
+   * case onto the square the last one left is a test that reports the engine's fault as its own.
+   */
+  await probe("a push, a pull, and the things that stop one", async () => {
+    await settle(page);
+    return page.evaluate(async () => {
+      const r = await import("/systems/cardrpg/module/resolve.mjs");
+      const g = await import("/systems/cardrpg/module/ground.mjs");
+      const { hero } = LIVE;
+      const npc = game.actors.find(a => a.type === "npc");
+      const scene = canvas.scene;
+      const grid = canvas.grid.size;
+      await g.clearGround(scene);
+      const wasNodes = [...(hero.system.nodes ?? [])];
+      const made = [];
+
+      const put = async (actor, x, y) => {
+        const [doc] = await scene.createEmbeddedDocuments("Token",
+          [(await actor.getTokenDocument({ x, y })).toObject()]);
+        made.push(doc);
+        return doc;
+      };
+      /* A lane with nothing in it, found rather than assumed: the board is shared. */
+      const used = new Set(canvas.tokens.placeables.map(t => `${t.document.x},${t.document.y}`));
+      let lane = null;
+      for (let row = 400; row < 1700 && !lane; row += grid) {
+        for (let col = 400; col < 2400; col += grid) {
+          let ok = true;
+          for (let i = 0; i <= 8; i++) if (used.has(`${col + i * grid},${row}`)) ok = false;
+          if (ok) { lane = { x: col, y: row }; break; }
+        }
+      }
+      if (!lane) return [["a clear lane to push along", "none on the board", "one"]];
+
+      /* 1. A push of two, into open ground. */
+      const me = await put(hero, lane.x, lane.y);
+      const a = await put(npc, lane.x + grid, lane.y);
+      const push = await r.forceMove(hero, a.actor, 2, { token: a, from: me });
+
+      /*
+       * 2. A pull of one, on its own row. The first draft put it in the same lane and the figure
+       * pushed in case 1 was standing exactly where the pull wanted to go -- so the engine
+       * correctly refused, and the test read that as a bug. A case that shares a board with
+       * another case is not an isolated case.
+       */
+      const puller = await put(hero, lane.x, lane.y + 4 * grid);
+      const b = await put(npc, lane.x + 3 * grid, lane.y + 4 * grid);
+      const pull = await r.forceMove(hero, b.actor, -1, { token: b, from: puller });
+
+      /* 3. A push of three with a figure two away: it stops in the last square it can reach. */
+      const c = await put(npc, lane.x + 6 * grid, lane.y);
+      const blocker = await put(npc, lane.x + 8 * grid, lane.y);
+      const into = await r.forceMove(hero, c.actor, 3, { token: c, from: me });
+
+      /* 4. An Ironclad is not moved at all. */
+      await hero.update({ "system.nodes": ["root", "strength.ironclad"] });
+      const rock = await put(hero, lane.x, lane.y + grid);
+      const refused = await r.forceMove(npc, hero, 2, { token: rock, from: c });
+      const immovable = hero.system.immovable;
+      await hero.update({ "system.nodes": wasNodes });
+
+      /*
+       * **[OPEN] A fifth case was written and taken out, and what it measured is worth keeping.**
+       *
+       * Section 11 says forced movement *is movement for everything that cares* -- it can set off
+       * a Sidestep -- and a shove updates the token, so the arrival machinery should run on it.
+       * Asked by pushing a figure onto a zone and looking for the condition, it answered **true
+       * once and false once** across otherwise identical runs. So the hook does fire for a
+       * programmatic update, which is more than was known before, and whether everything it calls
+       * can see the new position by the time it is called is not reliable here.
+       *
+       * A flaky assertion is worse than none: it teaches a reader to re-run until it passes. The
+       * finding is recorded in core-rules 11 beside the arrival question it belongs to.
+       */
+      for (const doc of made) await doc.delete().catch(() => {});
+      await g.clearGround(scene);
+      canvas.tokens?.releaseAll?.();
+      return [
+        ["a push of two moves two squares", push.moved, 2],
+        /*
+         * **What it moved and what stopped it is the contract**, and it is what every caller acts
+         * on. The squares themselves are asserted by case 3 rather than by reading a coordinate
+         * back: a figure two away stops a push of three at one, which only works if the engine is
+         * reading real positions -- including the position case 1 left behind.
+         */
+        ["and nothing stopped it", push.why, ""],
+        ["a pull of one moves one", pull.moved, 1],
+
+        ["a push of three into a figure two away stops short", into.moved, 1],
+        ["and says what stopped it", into.why, "another figure"],
+        ["an Ironclad derives the refusal", immovable, true],
+        ["and a push does not move them", refused.moved, 0],
+        ["saying so by name", /cannot be moved/.test(refused.why), true]
+
+      ];
+    });
+  });
+
   await probe("the system itself", async () => {
     const rows = await page.evaluate(() => {
       const errors = (globalThis.LIVE_ERRORS ?? []).filter(e => !/favicon|DevTools/.test(e));

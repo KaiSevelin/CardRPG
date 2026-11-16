@@ -46,7 +46,13 @@ export const STRENGTH_POOL = [
   {
     name: "Shield Bash", copies: 1, pool: "strength",
     needs: ["a Strike that deals no damage"], reaction: "block",
-    primary: [{ verb: "strike" }],
+    /*
+     * **[2026-11-16] `shove: 2` says what the text has always said.** *Push 2 and step into the
+     * square it left* -- a straight line with exactly one reading, so it is a field now rather
+     * than a sentence nobody could act on. Stepping in afterwards is the secondary Move this card
+     * already had, and that stays the player's to aim: which square you take is a judgement.
+     */
+    primary: [{ verb: "strike", shove: 2 }],
     secondary: [{ verb: "move", param: 1 }],
     text: "No damage: push 2 and step into the square it left."
   },

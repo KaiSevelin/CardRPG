@@ -3117,6 +3117,31 @@ does not choose the path and the **moved** does not spend Move.
 *Undertow* (way-cards §3.5) is the first miracle that does this, and it was written before the rule
 was.
 
+> **[BUILT 2026-11-16] The rule is the engine's now, and the one field that says it is `shove`.**
+>
+> `forceMove` walks the figure one square at a time along the line between the two of them, and
+> every clause above is a line of it: positive **pushes** away and negative **pulls** toward, so a
+> push, a pull and a throw are one mechanic with a sign rather than three fields; nobody's Move is
+> touched; difficult ground costs nothing because that is a multiplier on Foundry's ruler and this
+> does not use the ruler; and it **stops in the last square it can reach**, which is a result and
+> not a refusal — the chat line says it moved two of three and what stopped it.
+>
+> **`immovable` is the one thing that refuses it**, and that completes the Ironclad's *Immovable*:
+> *forced movement never moves you, and difficult ground costs you nothing* now holds both halves.
+>
+> **What is a card's and what is a person's** stays where it was. *Shield Bash* is **push 2 and
+> step into the square it left**, a straight line with exactly one reading, so it carries
+> `shove: 2`. *Undertow* moves everything in its area **1 square you choose**, which is a judgement
+> about the map, so it stays prose — and its own description already said so.
+>
+> **[OPEN] *It can set off a Sidestep* is the clause with a question mark on it.** A shove updates
+> the token, so the arrival machinery should run on it exactly as it does for a drag. Measured by
+> pushing a figure onto a zone and looking for the condition, it answered **true once and false
+> once** across otherwise identical runs. So the arrival hook **does** fire for a programmatic
+> update — which is more than was known when the §8 note below was written — and whether everything
+> it calls can see the new position by the time it is called is not reliable. That is the same
+> question Sidestep and the held shot already carry, and it is now one question about four rules.
+
 ### Ranged in melee
 
 If you make a **Ranged** Strike or an **Area** Cast while an enemy is **adjacent** to you, you have **disadvantage**.
@@ -3232,11 +3257,15 @@ condition), two are measured and spent by a person (`difficult`, `impassable`), 
 says which of the three a square is doing to you.
 
 > **[OPEN] Nothing in the live suite drives an arrival end to end.** A trap springs where the
-> arrival hook springs it, and that call is checked directly rather than by moving a token: a
-> programmatic `token.update({x, y})` did not reach `onArrival` in the harness, and whether that is
-> the harness or the hook is unsettled. Sidestep and the held shot hang off the same hook and are
-> checked the same way, by reading the source, so this is one question about three rules rather
-> than a new one about ground.
+> arrival hook springs it, and that call is checked directly rather than by moving a token.
+>
+> **[2026-11-16] And forced movement moved the question rather than answering it.** When this was
+> written, a programmatic `token.update({x, y})` had not reached `onArrival` in the harness at
+> all. Building `forceMove` gave a second way to ask, and the hook **does** fire for a
+> programmatic update — but the condition under the square it landed in appeared **once in two
+> otherwise identical runs**. So the hook runs and something downstream of it does not reliably
+> see the new position in time. Sidestep, the held shot, a trap and now a shove all hang off it,
+> which makes this one question about four rules.
 
 
 

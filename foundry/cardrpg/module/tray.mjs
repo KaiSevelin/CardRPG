@@ -38,7 +38,9 @@ import {
   resolveConjure, resolveShape,
   itemMeets, requireText, payToCast, answerCast, grantBlock, resolveCheck, passiveScore,
   refusesAction, SKILL_FLOOR,
-  readEdge, setEdge, edgeLine
+  readEdge, setEdge, edgeLine,
+  /* core-rules 11's push, pull and throw, which nothing could express until today. */
+  forceMove
 } from "./resolve.mjs";
 /* The GM plays a monster from this window now, and the moment one acts its type's intent card is
  * public knowledge anyway -- so the HUD flips it through the same function the turn hook does. */
@@ -2870,6 +2872,13 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
         if (step.condition) {
           for (const target of targets) await resolveCondition(actor, { step, target });
         }
+        /*
+         * **And a shove rides in after it.**  [2026-11-16] *Shield Bash* is a Strike that deals no
+         * damage and **pushes 2**, so the push belongs to the attack rather than to a step of its
+         * own. After the condition, because a figure shoved out of reach should still have been
+         * given whatever the hit was carrying.
+         */
+        if (step.shove) await this.#shove(step, targets);
         return;
       }
 
@@ -3228,6 +3237,42 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
             + `${step.text ? ` — ${step.text}` : ""}</p></div>`
         });
     }
+  }
+
+  /**
+   * **A push, a pull or a throw.**  [BUILT 2026-11-16] core-rules 11.
+   *
+   * One line per target, because *it stops in the last square it can reach* is a result and not a
+   * refusal: a push into a crowd moves what it can, and the table needs to know it was two squares
+   * and not three, and what stopped it. A figure that cannot be moved at all says so by name --
+   * the Ironclad is **immovable** and somebody who shoved them should hear why nothing happened.
+   */
+  async #shove(step, targets) {
+    const squares = Math.trunc(step.shove ?? 0);
+    if (!squares || !targets.length) return;
+    const word = squares > 0 ? "pushes" : "pulls";
+    const lines = [];
+    /*
+     * **The targeted TOKENS, not their actors.** `#targets` maps targets to actors because almost
+     * everything in this game lands on an actor -- but a push is about where a figure is standing,
+     * and an actor with two figures on the board cannot say which. So the tokens are read back
+     * here, by actor, and handed over.
+     */
+    const marked = new Map();
+    for (const t of game.user.targets ?? []) if (t.actor) marked.set(t.actor.id, t.document);
+    for (const target of targets) {
+      const { moved, why } = await forceMove(this.actor, target, squares,
+        { token: marked.get(target.id) ?? null });
+      lines.push(moved
+        ? `${word} <strong>${target.name}</strong> ${moved}`
+          + (moved < Math.abs(squares) ? `, stopped by ${why}` : "")
+        : `cannot move <strong>${target.name}</strong>: ${why}`);
+    }
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+      content: `<div class="cardrpg"><p><strong>${this.actor.name}</strong> `
+        + `${lines.join("; ")}.</p></div>`
+    });
   }
 
   /**

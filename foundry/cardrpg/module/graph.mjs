@@ -683,6 +683,12 @@ export function grantsOf(owned) {
      * code here, which is the whole reason it is not `ignoresDifficult`.
      */
     ignoresGround: [],
+    /*
+     * **And whether forced movement moves them at all.**  [2026-11-16] The other half of the
+     * Ironclad's *Immovable*, and the half that waited on a primitive: *forced movement never
+     * moves you.* A flag rather than a list because there is one kind of being shoved.
+     */
+    immovable: false,
     /* The sources a character has been offered a choice from, which is not the same as what they
      * chose: the spell itself is a document and is counted by the book, not by this. */
     choices: [],
@@ -719,6 +725,7 @@ export function grantsOf(owned) {
      */
     if (g.freehandCast) out.freehandCast = true;
     if (g.castsSilenced) out.castsSilenced = true;
+    if (g.immovable) out.immovable = true;
     for (const key of [g.ignoresGround ?? []].flat()) {
       if (!out.ignoresGround.includes(key)) out.ignoresGround.push(key);
     }

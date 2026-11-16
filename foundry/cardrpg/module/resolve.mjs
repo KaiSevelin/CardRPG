@@ -650,6 +650,120 @@ function lineBlocked(from, to) {
 }
 
 /**
+ * **Can a figure be moved from here into there?** The `move` backend, not the `sight` one.
+ *
+ * A curtain stops an arrow and not a shove; a low wall stops a shove and not an arrow. Foundry
+ * keeps those on separate backends and asking the wrong one would be the sort of mistake that
+ * reads correct for a year. Same forgiveness as `lineBlocked`: no backend and no walls look
+ * identical from here, and refusing on both would make a push do nothing in the common case.
+ */
+function stepBlocked(from, to) {
+  const backend = CONFIG?.Canvas?.polygonBackends?.move;
+  if (!backend?.testCollision || !from || !to) return false;
+  try {
+    return !!backend.testCollision(from, to, { type: "move", mode: "any" });
+  } catch (err) {
+    console.warn("CardRPG | no wall test available for forced movement", err);
+    return false;
+  }
+}
+
+/**
+ * **Forced movement: a push, a pull or a throw.**  [BUILT 2026-11-16] core-rules 11.
+ *
+ * The rule has been written out for a long time and nothing could do it: `forcedMove` and
+ * `forceMove` appeared nowhere in this module, which left eight Tactics and a card waiting on a
+ * primitive that did not exist. What section 11 says, and what this does:
+ *
+ * - **A stated number of squares in a straight line.** The direction is taken from where the two
+ *   figures are standing, so nobody chooses a path: positive shoves away from the mover, negative
+ *   pulls toward. Chebyshev, like every other distance in this game, so a diagonal is one square.
+ * - **The moved does not spend Move**, which falls out of this not touching anybody's Move at all.
+ * - **It cannot push a figure into a wall or another figure. It stops in the last square it can
+ *   reach.** Walked one square at a time for exactly that: the stop is a real position and not a
+ *   refusal, so a push into a crowd moves what it can and says how far it got.
+ * - **It ignores difficult ground**, which costs nothing to honour because difficult ground is a
+ *   multiplier on Foundry's ruler and this does not use the ruler.
+ * - **It IS movement for everything that cares.** The token is updated, so `updateToken` fires and
+ *   the arrival machinery runs on it exactly as it does for a drag -- a Sidestep can answer being
+ *   shoved next to somebody, a held shot can answer a figure shoved into a lane, and ground takes
+ *   hold under wherever it lands. That is section 11's *it can set off a Sidestep*, and it is free.
+ *
+ * **And `immovable` is the one thing that refuses it**, which is the Ironclad's Tactic finally
+ * holding both halves: *forced movement never moves you, and difficult ground costs you nothing.*
+ *
+ * @returns {{moved: number, why: string}} how far it actually went, and why it stopped
+ */
+export async function forceMove(mover, target, squares = 1, { token = null, from = null } = {}) {
+  const want = Math.trunc(squares ?? 0);
+  if (!mover || !target || !want) return { moved: 0, why: "nothing to do" };
+  if (!canvas?.ready) return { moved: 0, why: "no map" };
+  /*
+   * **The token, when the caller knows which one.**  [FIXED 2026-11-16]
+   *
+   * Asking an ACTOR for its tokens is ambiguous the moment it has two, and five goblins off one
+   * actor is the ordinary case rather than the exotic one -- so a push resolved this way shoved
+   * whichever token came back first, which could be anywhere on the board. It is the only thing
+   * in this game where that ambiguity is fatal: damage lands on an actor and is the same wherever
+   * it is standing, and a push is *about* where it is standing.
+   *
+   * Caught by a probe reading *the edge of the map* for a push into open ground -- it had moved a
+   * different goblin, three hundred squares away, into the edge.
+   */
+  /*
+   * **And read off the DOCUMENT, never off the placeable.**  [FIXED 2026-11-16]
+   *
+   * A Token placeable reports `x: 0, y: 0` until the canvas has drawn it, so a figure that has
+   * just been placed or has just finished moving answers the wrong position -- and this routine's
+   * entire input is two positions. Measured: a document at 500,400 beside a placeable at 0,0, in
+   * the same breath. The document is the truth and the placeable is a view of it that is allowed
+   * to be a frame behind.
+   */
+  const asDoc = t => t?.document ?? t ?? null;
+  const standing = asDoc(from)
+    ?? asDoc(mover.getActiveTokens?.().find(t => t.controlled))
+    ?? asDoc(mover.getActiveTokens?.()[0]);
+  const shoved = asDoc(token) ?? asDoc(target.getActiveTokens?.()[0]);
+  if (!standing || !shoved) return { moved: 0, why: "not on the map" };
+  if (target.system?.immovable) return { moved: 0, why: `${target.name} cannot be moved` };
+
+  const size = canvas.grid.size;
+  const toward = Math.sign(want);
+  const sign = n => (n === 0 ? 0 : n > 0 ? 1 : -1);
+  const dx = sign(shoved.x - standing.x) * toward * size;
+  const dy = sign(shoved.y - standing.y) * toward * size;
+  /* Nose to nose with nothing between them: there is no line to push along. */
+  if (!dx && !dy) return { moved: 0, why: "no direction to move in" };
+
+  const scene = canvas.dimensions;
+  /* Also off the documents, for the reason above: a placeable that has not caught up would sit at
+   * 0,0 and make the top-left corner of the map permanently occupied. */
+  const taken = canvas.tokens.placeables
+    .map(t => t.document)
+    .filter(d => d && d.id !== shoved.id)
+    .map(d => `${d.x},${d.y}`);
+  const middle = (x, y) => ({ x: x + size / 2, y: y + size / 2 });
+
+  let x = shoved.x;
+  let y = shoved.y;
+  let moved = 0;
+  let why = "";
+  for (let i = 0; i < Math.abs(want); i++) {
+    const nx = x + dx;
+    const ny = y + dy;
+    if (nx < 0 || ny < 0 || nx + size > (scene?.width ?? Infinity)
+      || ny + size > (scene?.height ?? Infinity)) { why = "the edge of the map"; break; }
+    if (taken.includes(`${nx},${ny}`)) { why = "another figure"; break; }
+    if (stepBlocked(middle(x, y), middle(nx, ny))) { why = "a wall"; break; }
+    x = nx;
+    y = ny;
+    moved++;
+  }
+  if (moved) await shoved.update({ x, y });
+  return { moved, why };
+}
+
+/**
  * **Is that square inside the ground this actor is watching?**
  *
  * Four questions, and all four have to be yes: the weapon reaches that far, the square is in

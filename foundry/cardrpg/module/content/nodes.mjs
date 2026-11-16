@@ -1022,9 +1022,12 @@ export const NODES = [
     id: "strength.ironclad", name: "Ironclad", after: ["strength.infantry.armoury"],
     title: "Ironclad", axis: "Deck shape", resource: "weight",
     signature: "Nothing Gets Through", tactic: "Immovable",
-    /* *Difficult ground costs you nothing.* The other half -- *forced movement never moves you*
-     * -- waits on forced movement, which this engine still has no representation of at all. */
-    grants: { feature: "Nothing Gets Through", ignoresGround: ["difficult"] },
+    /*
+     * **[2026-11-16] Both halves of *Immovable*, at last.** *Forced movement never moves you, and
+     * difficult ground costs you nothing* -- the second was built in ground phase 4 and the first
+     * waited on forced movement existing at all, which it now does (resolve.mjs `forceMove`).
+     */
+    grants: { feature: "Nothing Gets Through", ignoresGround: ["difficult"], immovable: true },
     lore:
       "Armour as an identity. The Ironclad is slower than everything else on the board and "
       + "does not care, because the plan was never to be anywhere else.\n\n**Weight** is the "

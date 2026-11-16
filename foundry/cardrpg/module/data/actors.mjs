@@ -634,6 +634,9 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
      * them knowing it exists.
      */
     this.ignoresGround = [...(fromNodes.ignoresGround ?? [])];
+    /* And whether a push moves them: read by `forceMove` in resolve.mjs, which is the only
+     * thing in the game that moves a figure somebody else decided to move. */
+    this.immovable = !!fromNodes.immovable;
     const setAside = { castsSilenced: this.castsSilenced };
     this.exemptFrom = new Set(Object.entries(CARDRPG.conditions)
       .filter(([, c]) => c.setAsideBy && setAside[c.setAsideBy]).map(([key]) => key));

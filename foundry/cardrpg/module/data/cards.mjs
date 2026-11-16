@@ -36,6 +36,22 @@ export function stepField() {
     param: new fields.NumberField({ integer: true, min: 0, nullable: true, initial: null }),
     range: new fields.NumberField({ integer: true, min: 0, nullable: true, initial: null }),
     area: new fields.NumberField({ integer: true, min: 0, nullable: true, initial: null }),
+    /*
+     * **Forced movement, as one signed number.**  [BUILT 2026-11-16]
+     *
+     * core-rules 11 has written the rule out for a long time and nothing could express it: *a
+     * push, a pull or a throw moves a figure a stated number of squares in a straight line*, the
+     * mover does not choose the path and the moved does not spend Move. Three words, one mechanic,
+     * so one field -- **positive pushes away from whoever played the step and negative pulls
+     * toward them.** The sign is the direction for the same reason `mod`'s is: two fields that
+     * must never both be set are a rule nobody enforces.
+     *
+     * It is not how FAR a figure ends up. *Undertow* moves everything in its area *1 square you
+     * choose*, which is a judgement about the map and stays prose -- the card's own description
+     * says so. What this field is for is the straight line nobody has to choose: *Shield Bash* is
+     * **push 2 and step into the square it left**, and that has exactly one reading.
+     */
+    shove: new fields.NumberField({ integer: true, nullable: true, initial: null }),
     areaKind: new fields.StringField({
       required: false, blank: true, initial: "", choices: ["", "blast", "aimed"]
     }),

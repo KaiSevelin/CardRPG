@@ -110,7 +110,8 @@
       "system": {
         "primary": [
           {
-            "verb": "strike"
+            "verb": "strike",
+            "shove": 2
           }
         ],
         "secondary": [

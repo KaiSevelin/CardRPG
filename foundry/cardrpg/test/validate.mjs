@@ -852,7 +852,8 @@ const stepBlock = cardsSource.slice(cardsSource.indexOf("export function stepFie
 const stepKeys = new Set(
   [...stepBlock.slice(0, stepBlock.indexOf("\n}")).matchAll(/^    ([a-zA-Z]+):/gm)].map(m => m[1])
 );
-check("stepField keys read from source", stepKeys.size, 29);
+/* 30 since 2026-11-16: `shove`, core-rules 11's push, pull and throw as one signed number. */
+check("stepField keys read from source", stepKeys.size, 30);
 
 const strayKeys = new Set();
 for (const step of steps) {
@@ -6169,6 +6170,10 @@ const RUNG = {
   /* The third rule a node can set aside, and the same rung for the same reason: binary, and worth
    * nothing at all to somebody who never crosses a bog. */
   ignoresGround: 1,
+  /* The fourth, and the first that is about somebody else's decision rather than your own: a
+   * figure that cannot be shoved. Rung 1 on the same reasoning -- binary, and worth nothing at
+   * all in a fight where nobody pushes. */
+  immovable: 1,
 };
 check("every grant key the graph uses has a rung",
   [...new Set(nodes.flatMap(n => Object.keys(n.grants ?? {})))]
@@ -6219,6 +6224,7 @@ const rewardKeys = {
   freehandCast: "A rule set aside (the free hand)",
   castsSilenced: "A rule set aside (speech)",
   ignoresGround: "A rule set aside (the ground)",
+  immovable: "A rule set aside (being moved)",
   /* Section 4's longest-open row, closed 2026-11-13. It deals into the SKILL deck, which is why
    * it is not `card`: different deck, different rules (skill-rules 1). */
   skill: "Skill card"
@@ -6291,7 +6297,8 @@ check("the rewards only one or two nodes grant",
    */
   /* **[2026-11-16]** The ground joins them at two nodes -- the Burglar and the Ironclad, whose
    * Tactics both say *difficult ground costs you nothing* in different words. */
-  "A rule set aside (speech) 1, A rule set aside (the ground) 2, Hand size 1, Stamina 1");
+  "A rule set aside (being moved) 1, A rule set aside (speech) 1, "
+  + "A rule set aside (the ground) 2, Hand size 1, Stamina 1");
 /*
  * The character grants that no reward row offers and no node grants, each for a stated reason.
  * **handSize** is measured: specializations.md puts a card of hand size at 6 to 10 points of win
@@ -9643,11 +9650,24 @@ const tracers = modules
   .filter(f => fs.readFileSync(f, "utf8").indexOf("testCollision") >= 0)
   .map(f => path.basename(f));
 check("and nothing else in the system traces a line at all", tracers.join(", "), "resolve.mjs");
-/* No backend, no wall knowledge, and the shot is allowed: a headless run must not throw, and a
- * scene with no walls drawn looks identical from here. */
-check("a missing backend does not refuse the shot",
-  /if \(!backend\?\.testCollision \|\| !from \|\| !to\) return false;/.test(resolveSource)
-    ? "allowed" : "refused", "allowed");
+/*
+ * No backend, no wall knowledge, and the shot is allowed: a headless run must not throw, and a
+ * scene with no walls drawn looks identical from here.
+ *
+ * **[2026-11-16] Counted rather than matched, because there are two line tracers now.**
+ * `lineBlocked` asks the **sight** backend whether an arrow gets through and `stepBlocked` asks
+ * the **move** backend whether a shove does -- a curtain stops one and a low wall the other, and
+ * asking the wrong backend is a mistake that would read correct for a year. Both need the same
+ * forgiveness and both have it; a grep for one of them now matches both, so the honest check is
+ * that **every** tracer is forgiving rather than that some line exists.
+ */
+check("line tracers that refuse when there is no backend to ask",
+  (resolveSource.match(/if \(!backend\?\.testCollision \|\| !from \|\| !to\) return false;/g)
+    ?? []).length, 2);
+check("and each asks the backend its own question answers",
+  [["sight", /polygonBackends\?\.sight/], ["move", /polygonBackends\?\.move/]]
+    .filter(([, re]) => !re.test(resolveSource)).map(([name]) => name).join(", ") || "both",
+  "both");
 /*
  * And the declared half stays declared. If this ever reads `computed`, somebody has started
  * tracing cover from figures, and every win rate in sim/ is measuring a different game than the
@@ -13800,7 +13820,7 @@ check("derived values nothing reads", unread.length ? unread.join(", ") : "none"
 /* **[2026-11-16] 22, from 20**: `castsSilenced` and the `exemptFrom` it resolves to. This check
  * is the reason the second of those exists -- the flag was read as `this[c.setAsideBy]` off the
  * config entry, which works and which nothing could find, and the line above reported it unread. */
-check("derived values on the character", assigned.length, 23);
+check("derived values on the character", assigned.length, 24);
 
 /* And the three that were found, now shown rather than deleted. */
 check("the sheet shows which Ways were walked",
@@ -15885,8 +15905,10 @@ check("and they share the character panel's edge",
 const grantKeys = Object.keys(graph.grantsOf(new Set([graph.ROOT])));
 /* **[2026-11-16] 20**: `castsSilenced`, the second rule a node can set aside.
  * **21 the same day**: `ignoresGround`, the third -- and the first that is a list, because there
- * are five properties a square can have and a node may set aside any of them. */
-check("keys the grants accumulator carries", grantKeys.length, 21);
+ * are five properties a square can have and a node may set aside any of them.
+ * **22 the same day**: `immovable`, which is the Ironclad's Tactic holding its other half now
+ * that forced movement exists to refuse. */
+check("keys the grants accumulator carries", grantKeys.length, 22);
 /* And the two that were added for it, which is the half of skill-rules 8 that a node can express:
  * an expertise asks the player which card to raise, a mastery is a number read off the owned set. */
 check("the two the skill side gained",

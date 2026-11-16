@@ -35,6 +35,10 @@
 
   <div class="cr-step__row">
     <label>Area <input type="number" name="{{path}}.area" value="{{step.area}}" min="0"></label>
+    {{!-- Forced movement, signed: away from you, or toward you. core-rules 11 calls it a push, a
+          pull or a throw, and they are one mechanic, so the sign is the only difference. --}}
+    <label>Shove <input type="number" name="{{path}}.shove" value="{{step.shove}}"
+                        data-tooltip="Squares in a straight line. Positive pushes away from you, negative pulls toward you. It stops at a wall or another figure."></label>
     <label>Area kind
       <select name="{{path}}.areaKind">
         <option value="" {{#if (crEq step.areaKind "")}}selected{{/if}}>&mdash;</option>
