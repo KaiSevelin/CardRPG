@@ -2324,6 +2324,34 @@ check("hooks that start a turn besides combatTurn",
 check("and a turn's work happens once however it was announced",
   /combat\.getFlag\("cardrpg", "turnDone"\) === at/.test(combatSource) ? "yes" : "no", "yes");
 /*
+ * **[FOUND 2026-11-16] A second thing Foundry's turn hooks do not tell you.**
+ *
+ * The block above is about *which* hooks announce a turn. This is about *what the combat says
+ * when they do*: inside `combatTurn`, `combat.combatant` is still the combatant whose turn just
+ * **ended**. The hook runs from `_onUpdate` and the new turn arrives in `updateData`.
+ *
+ * `autoOpen` read the combat. So the rule that moves a GM's HUD to whoever is acting -- built on
+ * 2026-11-14, and correct -- moved it one turn late, every turn, for ever. A table reported it as
+ * *there is no way to attack as a goblin*, which is the same sentence that commissioned the rule,
+ * because from the far side of the screen a HUD one turn behind and a HUD that never moves are
+ * the same thing.
+ *
+ * It was found in a browser and it could not have been found anywhere else: both values are
+ * correct-looking reads of a live document, and only asking for them inside the hook, in the same
+ * breath, shows one of them is stale. The live suite does exactly that and keeps the pair.
+ */
+check("combat hooks that hand the new turn on to the HUD",
+  (traySource.match(/Hooks\.on\("combat(?:Start|Turn|Round)", \(combat, updateData\) =>/g) ?? [])
+    .length, 3);
+check("and autoOpen prefers the turn it was handed to the one the combat still reports",
+  /const turning = Number\.isInteger\(updateData\?\.turn\)\s*\n\s*\? combat\.turns\?\.\[updateData\.turn\]\?\.actor/
+    .test(traySource) ? "yes" : "no", "yes");
+/* And the fallback stays, because `ready` and `canvasReady` have no update to offer and nothing
+ * is mid-change when they run. */
+check("and still answers for a caller with no update to hand it",
+  /const acting = turning \?\? combat\.combatant\?\.actor;/.test(traySource) ? "yes" : "no", "yes");
+
+/*
  * **And every writer of a condition record stamps the round**, which is the half that rots. There
  * are three: a fresh application, a refresh of one already there, and the GM dropping one on a
  * token from the sheet. A writer that forgets leaves `round` null, the guard has nothing to

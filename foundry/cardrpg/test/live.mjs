@@ -2023,6 +2023,168 @@ async function probes(page) {
    * a free hand, so a world whose hero wears one would make that comparison meaningless. Nothing
    * but a node can grant the Silenced exemption, so nothing but a node can contaminate it.
    */
+  /*
+   * **[FOUND 2026-11-16] The GM's HUD was one turn behind, every turn.**
+   *
+   * Reported from a table as *there is no way to attack as a goblin* -- for the second time. The
+   * rule that answers it was built on 2026-11-14 and reads correctly: a GM follows the turn
+   * marker, so the acting combatant's HUD is the one on the screen. What it read was
+   * \`combat.combatant\`, and **inside a \`combatTurn\` hook that is still the combatant whose turn
+   * just ended** -- Foundry calls the hook from \`_onUpdate\` and hands the new turn over in
+   * \`updateData\`. So the HUD did move, one turn late, for ever: the goblin's turn came round and
+   * the hero's cards were on the screen.
+   *
+   * Nothing could have caught that by reading. The diagnostic that found it asked the browser for
+   * \`combat.combatant\` inside the hook (the hero) and for \`combat.turns[updateData.turn]\` (the
+   * goblin) in the same breath, which is the whole bug in two values.
+   *
+   * **A second's grace before counting the trays**, because closing one is an ApplicationV2
+   * transition of up to a second and the instance stays in the registry until it finishes -- read
+   * sooner and two HUDs look open when one is on its way out. That cost a false reading on the
+   * way to this and is worth the comment.
+   */
+  await probe("the HUD a GM gets when the goblin's turn comes", async () => {
+    await settle(page);
+    return page.evaluate(async () => {
+      const { CardRPGTray } = await import("/systems/cardrpg/module/tray.mjs");
+      const { hero } = LIVE;
+      const npc = game.actors.find(a => a.type === "npc");
+      if (!npc) return [["a monster to take a turn", "none in the world", "one"]];
+      for (const t of CardRPGTray.openTrays) await t.close();
+      for (const c of [...game.combats]) await c.delete();
+
+      const place = async (actor, x) =>
+        (await canvas.scene.createEmbeddedDocuments("Token",
+          [(await actor.getTokenDocument({ x, y: 1000 })).toObject()]))[0];
+      const ph = await place(hero, 1000);
+      const pn = await place(npc, 1200);
+      const combat = await Combat.create({ scene: canvas.scene.id });
+      await combat.createEmbeddedDocuments("Combatant", [
+        { tokenId: ph.id, sceneId: canvas.scene.id, actorId: hero.id, initiative: 20 },
+        { tokenId: pn.id, sceneId: canvas.scene.id, actorId: npc.id, initiative: 10 }
+      ]);
+      /* Long enough for a close transition to finish, so a HUD on its way out is not counted. */
+      const settled = () => new Promise(r => setTimeout(r, 1400));
+      const whose = () => CardRPGTray.openTrays.map(t => t.actor?.name).sort().join(", ");
+
+      await combat.startCombat();
+      await settled();
+      const onFirstTurn = whose();
+
+      /* What the hook could see, which is the fault itself rather than its symptom. */
+      let stale = "none";
+      let fresh = "none";
+      const id = Hooks.on("combatTurn", (c, upd) => {
+        stale = c.combatant?.actor?.name ?? "nobody";
+        fresh = c.turns?.[upd?.turn]?.actor?.name ?? "nothing in updateData";
+      });
+      await combat.nextTurn();
+      await settled();
+      Hooks.off("combatTurn", id);
+      const acting = combat.combatant?.actor?.name ?? "nobody";
+      const onGoblinTurn = whose();
+
+      /* And the other half of the report: picking the token up by hand. */
+      pn.object?.control({ releaseOthers: true });
+      await settled();
+      const bySelection = whose();
+
+      await combat.delete();
+      await ph.delete();
+      await pn.delete();
+      for (const t of CardRPGTray.openTrays) await t.close();
+      return [
+        ["the client running this is a GM", game.user.isGM, true],
+        ["the fight opens on the hero", onFirstTurn, hero.name],
+        ["and the goblin's turn comes round", acting, npc.name],
+        ["what the combat says inside the hook is the turn that ended", stale, hero.name],
+        ["and what updateData says is the turn that started", fresh, npc.name],
+        ["so the HUD on the screen is the goblin's", onGoblinTurn, npc.name],
+        ["and one HUD is open, not two", bySelection, npc.name]
+      ];
+    });
+  });
+
+  /*
+   * **And the three it was reported beside**, each of which turned out to be built. They stay
+   * because a rule somebody reported broken is worth a check whatever the answer was: *selecting a
+   * token out of a fight gives you a HUD*, *it offers the skill side out of combat*, and *the
+   * sheet lists the cards you have rather than counting them*.
+   */
+  await probe("a HUD out of a fight, and which deck it offers", async () => {
+    await settle(page);
+    return page.evaluate(async () => {
+      const { CardRPGTray } = await import("/systems/cardrpg/module/tray.mjs");
+      const { hero } = LIVE;
+      for (const c of [...game.combats]) await c.delete();
+      for (const t of CardRPGTray.openTrays) await t.close();
+      const [placed] = await canvas.scene.createEmbeddedDocuments("Token",
+        [(await hero.getTokenDocument({ x: 900, y: 900 })).toObject()]);
+      placed.object?.control({ releaseOthers: true });
+      await new Promise(r => setTimeout(r, 1400));
+      const open = CardRPGTray.openTrays.map(t => t.actor?.name).join(", ");
+      const corner = document.querySelector(".cr-pile--action .cr-pile__label")
+        ?.textContent?.trim() ?? "nothing";
+      await placed.delete();
+      return [
+        ["selecting a token out of a fight opens a HUD", open, hero.name],
+        ["and the corner it offers is the skill deck", corner, "Skill deck"]
+      ];
+    });
+  });
+
+  await probe("the cards an actor has, read off the sheet", async () => {
+    await settle(page);
+    return page.evaluate(async () => {
+      const { hero } = LIVE;
+      await hero.sheet.render(true);
+      await new Promise(r => setTimeout(r, 600));
+      const tab = hero.sheet.element?.querySelector('[data-action="switchTab"][data-tab="deck"]');
+      const offered = tab ? "yes" : "no";
+      tab?.click();
+      await new Promise(r => setTimeout(r, 600));
+      const root = hero.sheet.element;
+      const rows = root?.querySelectorAll(".cr-cardlist__row").length ?? 0;
+      const heads = [...(root?.querySelectorAll("h3") ?? [])].map(h => h.textContent.trim());
+      await hero.sheet.close();
+      return [
+        ["the sheet offers a deck tab", offered, "yes"],
+        ["and it lists the cards rather than counting them", rows > 0, true],
+        ["and both decks are on it",
+          ["Action deck", "Skill deck"].filter(h => heads.includes(h)).join(", "),
+          "Action deck, Skill deck"]
+      ];
+    });
+  });
+
+  /*
+   * **And the parenthesis that said nothing, asked of a browser rather than of the source.**
+   * The suite already checks it is gone from the source; this asks whether a Move whose number
+   * was cut still explains itself on the card, which is what replaced it.
+   */
+  await probe("what a Move prints when something is taking squares off it", async () => {
+    await settle(page);
+    return page.evaluate(async () => {
+      const { CardRPGTray } = await import("/systems/cardrpg/module/tray.mjs");
+      const { hero } = LIVE;
+      const was = (hero.system.conditions ?? []).map(c => ({ ...c }));
+      await hero.update({ "system.conditions": [{ key: "slowed", duration: 2, creatorId: "" }] });
+      const asPlayed = hero.system.moveAsPlayed(3);
+      const tray = game.cardrpg.openTray(hero);
+      await tray.render({ force: true });
+      await new Promise(r => setTimeout(r, 600));
+      const onScreen = document.querySelector(".cardrpg.cr-hud")?.textContent ?? "";
+      await hero.update({ "system.conditions": was });
+      for (const t of CardRPGTray.openTrays) await t.close();
+      return [
+        ["Slowed takes a Move 3 down to", asPlayed.played, 1],
+        ["and says what took the squares", asPlayed.why.length > 0, true],
+        ["and nothing on the screen prints the parenthesis that said nothing",
+          onScreen.includes("(was"), false]
+      ];
+    });
+  });
+
   await probe("a tattoo mage casts with both hands full and through Silenced", async () => {
     await settle(page);
     return page.evaluate(async () => {

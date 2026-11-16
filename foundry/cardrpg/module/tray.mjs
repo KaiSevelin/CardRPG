@@ -244,7 +244,7 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
    * assigned character, then a selected token, then — for a GM — the only player character in the
    * fight, which is the usual playtest shape.
    */
-  static autoOpen(combat) {
+  static autoOpen(combat, updateData = null) {
     if (!combat) return;
     const inCombat = id => combat.combatants.some(c => c.actor?.id === id);
 
@@ -260,8 +260,26 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
      *
      * A player is never moved this way. Their HUD is their own character's and does not go
      * wandering off to whoever happens to be acting.
+     *
+     * **[FIXED 2026-11-16] And it has to be asked of `updateData`, not of the combat.**
+     *
+     * Inside a `combatTurn` hook, `combat.combatant` is still the combatant whose turn just
+     * **ended** -- Foundry calls the hook from `_onUpdate` and hands the new turn over in
+     * `updateData`, which nothing here was reading. So this did move the GM's HUD, and moved it
+     * one turn late every single time: the goblin's turn came round and the screen showed the
+     * hero, which is *there is no way to attack as a goblin* for the second time, with the rule
+     * built and a stale read in front of it.
+     *
+     * Driven rather than argued: a live probe reads `combat.combatant` inside the hook and gets
+     * the previous actor, and reads `combat.turns[updateData.turn]` and gets the right one.
+     * `combatStart` and `combatRound` carry the same field, and the two callers that have no
+     * update to offer -- `ready` and `canvasReady`, where nothing just changed -- fall through
+     * to the combatant, which is correct precisely because no turn is mid-change.
      */
-    const acting = combat.combatant?.actor;
+    const turning = Number.isInteger(updateData?.turn)
+      ? combat.turns?.[updateData.turn]?.actor
+      : null;
+    const acting = turning ?? combat.combatant?.actor;
     if (game.user.isGM && acting?.isOwner) {
       return CardRPGTray.openFor(acting, { auto: true });
     }
@@ -3537,9 +3555,13 @@ export function registerTrayHooks() {
 
   // Every one of these is a TRANSITION. Reloading Foundry mid-combat fires none of them, so the
   // HUD stayed shut until the fight was ended and restarted; catch the fight already in progress.
-  Hooks.on("combatStart", combat => CardRPGTray.autoOpen(combat));
-  Hooks.on("combatTurn", combat => CardRPGTray.autoOpen(combat));
-  Hooks.on("combatRound", combat => CardRPGTray.autoOpen(combat));
+  /*
+   * All three hand the new round and turn over in `updateData`, and all three have to pass it on:
+   * inside the hook the combat itself still reads as the turn that just ended. See `autoOpen`.
+   */
+  Hooks.on("combatStart", (combat, updateData) => CardRPGTray.autoOpen(combat, updateData));
+  Hooks.on("combatTurn", (combat, updateData) => CardRPGTray.autoOpen(combat, updateData));
+  Hooks.on("combatRound", (combat, updateData) => CardRPGTray.autoOpen(combat, updateData));
 
 
   // On "ready" the canvas may not be up, and autoOpen looks at the controlled token to decide who
