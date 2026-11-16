@@ -158,10 +158,41 @@ export async function layGround(scene, { shape, effects, damage = null, conditio
     shapes: rects,
     color: CARDRPG.groundColor ?? "#5a7d9a",
     flags: { cardrpg: { [FLAG]: {
-      effects: [...(effects ?? [])], damage, condition, intensity, until, by
+      effects: [...(effects ?? [])], damage, condition, intensity, until, by,
+      /*
+       * **Who made it, which decides what the end of a fight is allowed to delete.**
+       *
+       * A card's wall is the fight's and goes with it. **A rock a GM drew on the map is the map's
+       * and must survive**, and without this the first encounter on a scene would quietly clear
+       * the scenery somebody built it out of. That is the kind of loss nobody notices until the
+       * second session.
+       */
+      fromCard: true
     } } }
   }]);
   return region ?? null;
+}
+
+/**
+ * **The properties a GM has ticked on a region they drew themselves.**
+ *
+ * Written straight onto the document as the box is ticked rather than on a form submit: the
+ * region config is Foundry's own application and this is a guest in it, so the less of its
+ * lifecycle this depends on the better.
+ */
+export async function setGround(region, { effects = [], damage = null } = {}) {
+  if (!region) return null;
+  const keep = region.getFlag?.("cardrpg", FLAG) ?? {};
+  const live = effects.filter(key => key in CARDRPG.groundEffects);
+  if (!live.length && !damage) return region.unsetFlag("cardrpg", FLAG);
+  return region.setFlag("cardrpg", FLAG, {
+    ...keep,
+    effects: live,
+    damage: damage || null,
+    /* A GM's ground is the map's, not the fight's. See `layGround`. */
+    fromCard: false,
+    until: keep.until ?? null
+  });
 }
 
 /**
@@ -178,6 +209,63 @@ export async function expireGround(scene, round) {
     .map(({ region }) => region.id);
   if (done.length) await scene.deleteEmbeddedDocuments("Region", done);
   return done.length;
+}
+
+/**
+ * **Ticking ground onto a region a GM drew themselves.**  [BUILT 2026-11-16]
+ *
+ * Phase 0 and 1 only let a **card** make ground, which answers the wrong half of the question. The
+ * first thing anybody wants from this is *that rock gives cover*, and a rock is not a card: it is
+ * scenery somebody drew once and the party walks behind it all evening.
+ *
+ * **Foundry already has the hard part and this does not rebuild it.** The Region tool draws
+ * rectangles, ellipses and polygons, snaps to the grid, and persists with the scene. So the whole
+ * of this is a fieldset in the region's own configuration, and what a GM does is draw a region the
+ * normal way and tick what it is. Nothing here owns a drawing tool, a layer or a click handler on
+ * the canvas, and that is deliberate: the one thing worse than no automation is a second,
+ * worse copy of a tool the application already ships.
+ *
+ * Written on change rather than on submit. This is a guest in somebody else's application and the
+ * less of its lifecycle it depends on, the longer it survives their next release.
+ */
+export function registerGroundHooks() {
+  Hooks.on("renderRegionConfig", (app, html) => {
+    const root = html instanceof HTMLElement ? html : html?.[0] ?? app?.element;
+    const region = app?.document;
+    if (!root || !region || !game.user?.isGM) return;
+    /* ApplicationV2 re-renders parts in place, so a second pass must not add a second copy. */
+    if (root.querySelector(".cr-ground")) return;
+
+    const current = region.getFlag?.("cardrpg", FLAG) ?? {};
+    const ticked = new Set(current.effects ?? []);
+    const box = document.createElement("fieldset");
+    box.className = "cr-ground";
+    const rows = Object.entries(CARDRPG.groundEffects).map(([key, label]) => {
+      const on = ticked.has(key) ? " checked" : "";
+      const who = ENFORCED.has(key) ? "the engine applies this" : "the table applies this";
+      return `<label class="cr-ground__row" data-tooltip="${who}">`
+        + `<input type="checkbox" data-ground="${key}"${on}> `
+        + `${game.i18n.localize(label)}</label>`;
+    }).join("");
+    box.innerHTML = `<legend>${game.i18n.localize("CARDRPG.Ground.Legend")}</legend>`
+      + `<div class="cr-ground__rows">${rows}</div>`
+      + `<label class="cr-ground__row">`
+      + `<input type="number" min="0" step="1" data-ground-damage `
+      + `value="${Number(current.damage ?? 0) || 0}"> `
+      + `${game.i18n.localize("CARDRPG.Ground.Damage")}</label>`
+      + `<p class="notes">${game.i18n.localize("CARDRPG.Ground.Hint")}</p>`;
+
+    const host = root.querySelector('[data-application-part="appearance"]')
+      ?? root.querySelector("form") ?? root;
+    host.appendChild(box);
+
+    box.addEventListener("change", async () => {
+      const effects = [...box.querySelectorAll("input[data-ground]")]
+        .filter(input => input.checked).map(input => input.dataset.ground);
+      const damage = Number(box.querySelector("input[data-ground-damage]")?.value ?? 0) || 0;
+      await setGround(region, { effects, damage });
+    });
+  });
 }
 
 /**
@@ -215,9 +303,17 @@ export function groundChips(actor) {
   });
 }
 
-/** And the fight ending takes every zone a fight made, including the ones that said all fight. */
+/**
+ * **The fight ending takes every zone the FIGHT made**, including the ones that said all fight.
+ *
+ * And nothing else. A region a GM drew and ticked is scenery: the rock is still a rock when the
+ * goblins are dead, and a fight that tidied the map away would be the system deleting somebody's
+ * work on its way out of the room.
+ */
 export async function clearGround(scene) {
-  const all = zonesOn(scene).map(({ region }) => region.id);
-  if (all.length) await scene.deleteEmbeddedDocuments("Region", all);
-  return all.length;
+  const mine = zonesOn(scene)
+    .filter(({ ground }) => ground.fromCard)
+    .map(({ region }) => region.id);
+  if (mine.length) await scene.deleteEmbeddedDocuments("Region", mine);
+  return mine.length;
 }

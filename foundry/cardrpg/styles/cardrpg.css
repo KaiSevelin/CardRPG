@@ -2299,3 +2299,20 @@ a.cr-enriched { cursor: pointer; white-space: nowrap; }
 }
 .cardrpg .cr-chip--ground { border-color: var(--cardrpg-ink); }
 .cardrpg .cr-chip--table { border-style: dashed; opacity: 0.85; }
+
+/*
+ * **The ground fieldset, which is a guest in Foundry's own region configuration.**  [2026-11-16]
+ *
+ * Deliberately plain: it borrows the application's typography and spacing rather than bringing its
+ * own, because a panel that looks like this system inside a core sheet reads as a mistake.
+ */
+.cr-ground .cr-ground__rows {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 0.15em 0.75em;
+}
+.cr-ground .cr-ground__row {
+  display: flex;
+  align-items: center;
+  gap: 0.35em;
+}

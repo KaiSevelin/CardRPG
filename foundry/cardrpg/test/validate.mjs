@@ -9450,6 +9450,29 @@ check("and way-cards 2.5 states how much of the list the engine enforces",
   /#### What the engine enforces/.test(wayDoc) ? "yes" : "no", "yes");
 
 /*
+ * **[FOUND 2026-11-16] The ground scope counted its own vocabulary wrong, an hour after writing
+ * it.** core-rules 11's table said *six* properties and then listed **five**, in the same cell, in
+ * a section whose entire point is that this vocabulary exists and nothing reads it. The number was
+ * written from memory beside a list that was right.
+ *
+ * It is the defect this project keeps finding in its own documents -- a sentence that cannot be
+ * counted -- and the fix is the same one every time: count it here instead. Both tables, in both
+ * directions, so a sixth property cannot arrive as a stale number and a retired one cannot sit in
+ * the prose describing nothing.
+ */
+const COUNTED = ["none", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
+check("tables in core-rules 11 whose count of the ground vocabulary is wrong",
+  [["groundShapes", CARDRPG.groundShapes], ["groundEffects", CARDRPG.groundEffects]]
+    .filter(([name, table]) => {
+      const row = coreDoc.split("\n").find(line => line.includes(`\`CARDRPG.${name}\``));
+      return !row || !row.includes(COUNTED[Object.keys(table).length]);
+    })
+    .map(([name]) => name).join(", ") || "none", "none");
+check("and properties the config has that the rules never name",
+  [...Object.keys(CARDRPG.groundShapes), ...Object.keys(CARDRPG.groundEffects)]
+    .filter(key => !coreDoc.includes(key)).join(", ") || "none", "none");
+
+/*
  * **[BUILT 2026-11-09] Overwatch, which is the sixth rule this project found written down and
  * never built.**
  *

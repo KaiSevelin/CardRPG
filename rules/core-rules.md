@@ -3112,7 +3112,7 @@ nothing in the engine has ever asked a square what it is:
 | Layer | State |
 |---|---|
 | `CARDRPG.groundShapes` | five: line, area, adjacent, wholeMap, square |
-| `CARDRPG.groundEffects` | six: **cover, difficult, shadowed, impassable, trap** |
+| `CARDRPG.groundEffects` | five: **cover, difficult, shadowed, impassable, trap** |
 | The card schema | a `ground` field with validated choices, plus `damage` |
 | Content | **eight** steps make ground; **twelve** entries read a shadowed square |
 | The engine | **nothing** |

@@ -17,6 +17,7 @@ import {
 import { endTransformation, payToPrepare } from "./module/resolve.mjs";
 import { CardRPGCombat, registerCombatHooks } from "./module/combat.mjs";
 import { CardRPGTray, registerTrayHooks } from "./module/tray.mjs";
+import { registerGroundHooks } from "./module/ground.mjs";
 import { registerCheckHooks } from "./module/checks.mjs";
 import { registerTableBoard } from "./module/table.mjs";
 import { registerEnrichers, registerEnricherClicks } from "./module/enrichers.mjs";
@@ -89,6 +90,8 @@ Hooks.once("init", () => {
   CONFIG.Combat.initiative = { formula: "0", decimals: 0 };
   registerCombatHooks();
   registerTrayHooks();
+  /* A GM ticks what a region they drew is; see module/ground.mjs. */
+  registerGroundHooks();
   /* A check's result moves a challenge track, and only the GM's client may write a scene
    * flag -- so the recording hangs off the message rather than off the roll (checks.mjs). */
   registerCheckHooks();

@@ -2274,6 +2274,79 @@ async function probes(page) {
     });
   });
 
+  /*
+   * **[BUILT 2026-11-16] A GM draws a rock and ticks it.**
+   *
+   * Phases 0 and 1 only let a CARD make ground, which answers the wrong half of the question. The
+   * first thing anybody wants is *that rock gives cover*, and a rock is not a card: it is scenery
+   * drawn once that the party walks behind all evening.
+   *
+   * Foundry's Region tool already draws, snaps and persists, so this adds a fieldset to the
+   * region's own configuration and nothing else -- no layer, no drawing tool, no click handler.
+   * What is driven here is that the fieldset arrives, that ticking it writes the document, that
+   * the resolver then reads it, and above all **that the end of a fight does not delete it**.
+   */
+  await probe("ground a GM ticks onto a region they drew", async () => {
+    await settle(page);
+    return page.evaluate(async () => {
+      const g = await import("/systems/cardrpg/module/ground.mjs");
+      const resolve = await import("/systems/cardrpg/module/resolve.mjs");
+      const { hero } = LIVE;
+      const npc = game.actors.find(a => a.type === "npc");
+      const scene = canvas.scene;
+      await g.clearGround(scene);
+
+      /* A region drawn the ordinary way: no system involvement at all. */
+      const [region] = await scene.createEmbeddedDocuments("Region", [{
+        name: "A rock",
+        shapes: [{ type: "rectangle", x: 700, y: 700, width: 300, height: 300 }]
+      }]);
+      const beforeTick = g.zonesOn(scene).length;
+
+      await region.sheet.render(true);
+      await new Promise(r => setTimeout(r, 900));
+      const root = region.sheet.element;
+      const boxes = root ? root.querySelectorAll(".cr-ground input[data-ground]").length : 0;
+      const cover = root?.querySelector('.cr-ground input[data-ground="cover"]');
+      if (cover) {
+        cover.checked = true;
+        cover.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+      await new Promise(r => setTimeout(r, 700));
+      await region.sheet.close();
+
+      const flagged = g.zonesOn(scene).length;
+      const props = [...(region.getFlag("cardrpg", "ground")?.effects ?? [])].join(",");
+
+      /* And the resolver reads it, for a target standing on the rock. */
+      const [tok] = await scene.createEmbeddedDocuments("Token",
+        [(await npc.getTokenDocument({ x: 800, y: 800 })).toObject()]);
+      const shot = resolve.advantageFor(hero, tok.actor, { ranged: true });
+
+      /* The fight ending must take a card's wall and leave the GM's rock. */
+      await g.layGround(scene, {
+        shape: "adjacent", effects: ["shadowed"],
+        origin: { x: 1500, y: 800 }, radius: 1, until: null
+      });
+      const withBoth = g.zonesOn(scene).length;
+      const swept = await g.clearGround(scene);
+      const left = g.zonesOn(scene).map(z => z.region.name).join(",");
+
+      await tok.delete();
+      await region.delete();
+      return [
+        ["an untouched region is not ground", beforeTick, 0],
+        ["the fieldset offers every property", boxes, Object.keys(LIVE.CARDRPG.groundEffects).length],
+        ["ticking one makes the region ground", flagged, 1],
+        ["and it is the one that was ticked", props, "cover"],
+        ["a shot at somebody on it is costed", shot.mode, -1],
+        ["a card's wall stands beside it", withBoth, 2],
+        ["the fight takes its own", swept, 1],
+        ["and leaves what the GM drew", left, "A rock"]
+      ];
+    });
+  });
+
   await probe("the claim control, measured rather than read", async () => {
     await settle(page);
     return page.evaluate(async () => {
