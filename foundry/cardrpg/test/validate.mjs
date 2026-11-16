@@ -114,8 +114,10 @@ check("modules using CARDRPG without importing it",
 /* And the sweep found users, so a strip that ate the whole file cannot pass it. */
 /* 16 since 2026-11-13: `art.mjs` reads the condition list out of the config rather than
  * keeping a second copy of twenty-five names. 17 since 2026-11-15: `table.mjs` builds the GM's
- * dialog out of `difficulties` and `approaches` rather than spelling either of them again. */
-check("modules that use it at all", importers, 17);
+ * dialog out of `difficulties` and `approaches` rather than spelling either of them again.
+ * 18 since 2026-11-16: `ground.mjs` reads `groundEffects` to decide which property keys on a
+ * zone are real, so a flag naming one the game retired is ignored rather than believed. */
+check("modules that use it at all", importers, 18);
 
 /*
  * **The vendored cytoscape carries a patch, and the patch has to still be there.**
@@ -4414,8 +4416,10 @@ const everyModule = [
 /* The engine and the content: no Foundry global at module scope, so they can be exercised here. */
 const CONTENT_MODULES = fs.readdirSync(path.join(MODULE_DIR, "content"))
   .filter(f => f.endsWith(".mjs")).map(f => `content/${f.slice(0, -4)}`);
+/* `ground` belongs here rather than below: it names `Hooks`, `canvas` and `game`, and names
+ * every one of them inside a function. Nothing runs at module scope, so it loads anywhere. */
 const LOADS_ANYWHERE = ["art", "checks", "config", "content", "decks", "enrichers", "grants",
-  "graph", "monsters", "resolve", "setup", "table", ...CONTENT_MODULES];
+  "graph", "ground", "monsters", "resolve", "setup", "table", ...CONTENT_MODULES];
 /*
  * And the ones that legitimately cannot: three data models extending Foundry's own classes, three
  * applications extending ApplicationV2, and the combat document. Every one of them is a SUBCLASS

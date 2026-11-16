@@ -2132,6 +2132,84 @@ async function probes(page) {
     });
   });
 
+  /*
+   * **[BUILT 2026-11-16] Ground, phase 0: a square can be something.**
+   *
+   * core-rules 11 is named *Grid, ground and movement* and the ground half reached the table only
+   * by being read aloud -- five shapes, six properties, a validated schema field, eight steps in
+   * the content using it, twelve entries reading a shadowed square, and not one reader in the
+   * engine. *Longer Shadow* and *The Borrowed Dark* were the only steps in the game whose whole
+   * content was a `ground` block, which made them the only two that announced nothing at all.
+   *
+   * Driven, because every part of this is a claim about a live document: that a Region can be made
+   * and flagged, that a point inside it answers, that the round rolls it up, and that the fight
+   * ending takes even the ones that said *all fight*.
+   */
+  await probe("ground, which a square could not have been until today", async () => {
+    await settle(page);
+    return page.evaluate(async () => {
+      const g = await import("/systems/cardrpg/module/ground.mjs");
+      const { hero } = LIVE;
+      const scene = canvas.scene;
+      await g.clearGround(scene);
+
+      const [placed] = await canvas.scene.createEmbeddedDocuments("Token",
+        [(await hero.getTokenDocument({ x: 600, y: 600 })).toObject()]);
+      /* Inside the scene rectangle on purpose: the map is 3840x1920 and a token parked
+       * outside it is outside *wholeMap* too, which cost this probe a run. */
+      const here = placed.object?.center ?? { x: placed.x, y: placed.y };
+      const far = { x: here.x + canvas.grid.size * 8, y: here.y };
+
+      const before = g.groundAt(scene, here).effects.size;
+      /* The block around the caster: *Longer Shadow*, which needs nobody to place it. */
+      const made = await g.layGround(scene, {
+        shape: "adjacent", effects: ["shadowed"], origin: here, radius: 1, until: 2
+      });
+      const onIt = [...g.groundAt(scene, here).effects].join(",");
+      const offIt = [...g.groundAt(scene, far).effects].join(",");
+      const forActor = [...g.groundFor(hero).effects].join(",");
+
+      /* A shape that is somebody's judgement about the map is not placed for them. */
+      const line = await g.layGround(scene, {
+        shape: "line", effects: ["impassable"], origin: here, until: null
+      });
+
+      /* The round rolls it up by comparison, not by counting. */
+      const beforeExpiry = g.zonesOn(scene).length;
+      await g.expireGround(scene, 2);
+      const atItsLastRound = g.zonesOn(scene).length;
+      await g.expireGround(scene, 3);
+      const afterItsLastRound = g.zonesOn(scene).length;
+
+      /* And somebody else can answer the question. */
+      const hook = Hooks.on("cardrpgGroundAt", (sc, point, answer) => answer.effects.add("cover"));
+      const overridden = g.groundAt(scene, far).effects.has("cover");
+      Hooks.off("cardrpgGroundAt", hook);
+
+      await g.layGround(scene, {
+        shape: "wholeMap", effects: ["shadowed"], until: null
+      });
+      const everywhere = [...g.groundAt(scene, far).effects].join(",");
+      const left = await g.clearGround(scene);
+      const after = g.zonesOn(scene).length;
+      await placed.delete();
+
+      return [
+        ["a square is nothing before anybody makes it something", before, 0],
+        ["the block around the caster places itself", made ? "made" : "not made", "made"],
+        ["and the square they are on is shadowed", onIt, "shadowed"],
+        ["and one eight squares away is not", offIt, ""],
+        ["and the actor is asked the same way", forActor, "shadowed"],
+        ["a line is nobody's to place but a person's", line, null],
+        ["the zone survives the round it lasts through", atItsLastRound, beforeExpiry],
+        ["and is gone the round after", afterItsLastRound, 0],
+        ["a module may answer for a square itself", overridden, true],
+        ["the whole map is a shape too", everywhere, "shadowed"],
+        ["and the fight ending takes what it made", left > 0 && after === 0, true]
+      ];
+    });
+  });
+
   await probe("the claim control, measured rather than read", async () => {
     await settle(page);
     return page.evaluate(async () => {

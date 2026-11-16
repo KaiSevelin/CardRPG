@@ -41,6 +41,7 @@ import {
 /* The GM plays a monster from this window now, and the moment one acts its type's intent card is
  * public knowledge anyway -- so the HUD flips it through the same function the turn hook does. */
 import { revealIntent, turnOf } from "./combat.mjs";
+import { layGround } from "./ground.mjs";
 import {
   readCall, setCall, clearCall, describeCall, cardAnswers, bestTool, helpOptions,
   readChallenge, startChallenge, endChallenge, catchBreathInChallenge, drawTwist, twistCounts,
@@ -2830,6 +2831,14 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
      * grows later is covered without the new route having to remember. */
     if (refusesAction(actor, { half, what: `a ${step.verb}` })) return;
 
+    /*
+     * **Ground first, and beside the verb rather than instead of it.** A step may do both: *Set*
+     * is a Ready that leaves a trap, and the Sphere's wall is a Cast that leaves a wall. Putting
+     * this inside the switch would have meant a case for every verb that can also leave ground,
+     * which is every verb.
+     */
+    if (step.ground?.shape) await this.#layGround(step);
+
     switch (step.verb) {
       case "strike":
       case "cast": {
@@ -3127,6 +3136,59 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
             + `${step.text ? ` — ${step.text}` : ""}</p></div>`
         });
     }
+  }
+
+  /**
+   * **Ground this step leaves behind.**  [BUILT 2026-11-16]
+   *
+   * Two shapes place themselves because they have exactly one honest reading -- the block around
+   * you, and the whole map -- and those two are precisely the ones that needed it: *Longer Shadow*
+   * and *The Borrowed Dark* were the only steps in the game that announced nothing at all when
+   * played, because a `ground` block was their entire content.
+   *
+   * **The other three announce and wait for a person**, which is the schema's ruling rather than
+   * a shortcut: *where a three-square line goes is a judgement about the map, and the one thing
+   * worse than no automation is automation that puts a wall through the party.* The chat line says
+   * what to draw and what it does, which is strictly more than the table had before.
+   *
+   * A duration is turned into the round it lasts THROUGH, not a counter: `expireGround` compares
+   * rather than counts, so nothing has to tick it and nothing can forget to.
+   */
+  async #layGround(step) {
+    const token = this.actor.getActiveTokens?.()[0] ?? null;
+    const scene = token?.scene ?? canvas?.scene ?? null;
+    const g = step.ground ?? {};
+    const round = game.combat?.round ?? null;
+    const until = Number.isInteger(step.duration) && Number.isInteger(round)
+      ? round + step.duration - 1
+      : null;
+    const named = (g.effects ?? [])
+      .map(key => game.i18n.localize(CARDRPG.groundEffects[key] ?? key)).join(", ");
+
+    const region = await layGround(scene, {
+      shape: g.shape,
+      effects: g.effects,
+      damage: g.damage ?? null,
+      condition: step.condition ?? "",
+      intensity: step.intensity ?? null,
+      origin: token?.center ?? null,
+      radius: Math.max(1, step.area ?? 1),
+      until,
+      by: this.actor.name,
+      name: `${named || g.shape} (${this.actor.name})`
+    });
+
+    const lasts = until === null ? "until the fight ends" : `through round ${until}`;
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+      content: `<div class="cardrpg"><p><strong>${this.actor.name}</strong> `
+        + (region
+          ? `makes ground: <strong>${named}</strong>, ${lasts}.`
+          : `makes ground: <strong>${named}</strong> `
+            + `(${game.i18n.localize(CARDRPG.groundShapes[g.shape] ?? g.shape)}), ${lasts} `
+            + `&mdash; <em>place it on the map</em>.`)
+        + `${step.text ? ` ${step.text}` : ""}</p></div>`
+    });
   }
 
   /* -------------------------------------------- */

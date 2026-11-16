@@ -15,6 +15,7 @@
 import { CARDRPG } from "./config.mjs";
 import { deckOf, moveRandom, move, normalizeDeck, allStacks, available } from "./decks.mjs";
 import { resolveWound, DROPPED } from "./resolve.mjs";
+import { expireGround, clearGround } from "./ground.mjs";
 
 /* -------------------------------------------- */
 /*  Initiative                                  */
@@ -138,6 +139,15 @@ export class CardRPGCombat extends Combat {
  */
 export async function onRoundStart(combat) {
   if (!game.user.isGM) return;
+
+  /*
+   * **Ground that has run out goes before anything else happens in the round.**
+   *
+   * Compared rather than counted: a zone stores the round it lasts THROUGH, so nothing has to tick
+   * it and nothing can forget to -- which is the failure the turn marker above was. A zone with no
+   * round at all is *all fight*, and what takes those is the fight ending.
+   */
+  await expireGround(combat.scene ?? canvas?.scene, combat.round ?? 0);
 
   const lines = [];
   const intents = await drawIntents(combat);
@@ -422,6 +432,8 @@ async function tickRecharges(actor) {
 /** Boundary recharges tied to the end of a fight, and the hand and discard going back. */
 export async function onCombatEnd(combat) {
   if (!game.user.isGM) return;
+  /* Including the ones that said *all fight*, which is this and not a round comparison. */
+  await clearGround(combat.scene ?? canvas?.scene);
   const { afterCombat } = await import("./decks.mjs");
 
   for (const combatant of combat.combatants) {

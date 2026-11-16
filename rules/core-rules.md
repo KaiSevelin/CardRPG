@@ -3103,6 +3103,83 @@ was.
 If you make a **Ranged** Strike or an **Area** Cast while an enemy is **adjacent** to you, you have **disadvantage**.
 This is the one generic rule. Items or features can make exceptions (e.g. a feature "Point Blank: ignore the ranged-in-melee rule").
 
+### [OPEN] Ground is written down at every layer and read at none  **[SCOPED 2026-11-16]**
+
+This section is named *Grid, **ground** and movement* and the ground half of it reaches the table
+only by being read aloud. The vocabulary exists, the schema validates it, content uses it, and
+nothing in the engine has ever asked a square what it is:
+
+| Layer | State |
+|---|---|
+| `CARDRPG.groundShapes` | five: line, area, adjacent, wholeMap, square |
+| `CARDRPG.groundEffects` | six: **cover, difficult, shadowed, impassable, trap** |
+| The card schema | a `ground` field with validated choices, plus `damage` |
+| Content | **eight** steps make ground; **twelve** entries read a shadowed square |
+| The engine | **nothing** |
+
+*Longer Shadow* and *The Borrowed Dark* are the only steps in the game whose whole content is a
+`ground` block, so they are the only two that announce literally nothing when played.
+
+**Two decisions are already made and this scope keeps both.**
+
+**It must not place the zone.** The schema says why: *where a three-square line goes is a judgement
+about the map, and the one thing worse than no automation is automation that puts a wall through
+the party.* The card says the shape and what it does; a person says where.
+
+**It only has to know which squares are in which state.** Shadow Magic says why: *movement is a
+sentence the table applies, so the only thing the engine would have to know is which squares are
+shadowed.* This is not a terrain-cost system with a rules change behind it. It is square state, and
+the precedent is **cover**, which has always been *a declared state, not a line traced across the
+canvas*.
+
+#### Where it lives: a Foundry Region
+
+Measured in the running game rather than assumed, on **Foundry 14.369**: `scene.regions` and
+`RegionDocument` are there, a grid-aligned region can be created and deleted, `testPoint` answers
+whether a square is inside one, and the behaviours shipped with it include **`modifyMovementCost`**,
+`defineSurface`, `teleportToken` and `executeScript`.
+
+That last list is the finding. **Difficult ground is a built-in**, which is the opposite of what
+this project assumed when it wrote eight Tactics around terrain it believed it would have to
+invent. A zone is therefore a Region carrying our own flag:
+
+    region.flags.cardrpg.ground = { effects, damage, condition, intensity, duration, round, by }
+
+Regions draw themselves, persist with the scene, survive a reload, and a GM can edit or delete one
+by hand without the system's help — which is the same reason cover is a checkbox rather than a
+calculation.
+
+#### The shape of the reader
+
+One question, asked in one place, answerable by somebody else:
+
+    groundAt(scene, point)   the set of properties active on that square
+    groundFor(actor)         the same, for wherever they are standing
+    Hooks.callAll("cardrpgGroundAt", scene, point, answer)
+
+Consumers ask for properties and never name a zone. **A property is a declaration in config, not a
+branch in code** — the pattern `conditions` already uses for `blocks`, `setAsideBy` and
+`damagePerTurn` — so a seventh property is a config entry, and a module may add one or redefine
+what an existing one does. That seam is deliberate and it is the lesson of `turnOf`: this project
+has twice written the same answer in two places and been wrong in both.
+
+#### Order of work
+
+| | | Unlocks |
+|---|---|---|
+| **0** | The zone, the reader, the seam, expiry on the turn tick, and a placement prompt the player drives | the eight steps stop being silent |
+| **1** | `cover` and `shadowed` | six Shadow Magic formulas, and cover joins the branch that already reads a declared one |
+| **2** | `damage` and the zone's condition | *The Sphere Entire*, *The Standing Flood* |
+| **3** | `difficult` and `impassable` through `modifyMovementCost`, `trap` through a region event | *Set*, *Spoil the Ground*, *Unmake the Ground* |
+| **4** | The Tactics that were waiting on it | about eight, including *The Ground You Chose*, *Through the Window* and *Immovable* |
+
+Phases 0 to 2 need no movement machinery at all, which is what makes them the sweet spot: they are
+most of the card content, and the rule this document already states about **forced movement
+ignoring difficult ground** stays a sentence the table applies until phase 3 gives it something to
+ignore.
+
+
+
 ---
 
 ## 12. Open questions (next sessions)
