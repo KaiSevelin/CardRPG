@@ -2245,7 +2245,12 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
             + "you are on, or a training that fits — then say which."
         }
       ],
-      tags: this.#edgeTags()
+      /*
+       * The bag itself is NOT handed to the template. [2026-11-16] It was, and nothing rendered
+       * it: the place a player picks a tag is the "say why" dialog, where the list is a prompt
+       * beside a free field, and a panel that also listed them would be repeating the dialog in a
+       * corner it has no room for. `#edgeTags` has one caller and this was not it.
+       */
     };
   }
 

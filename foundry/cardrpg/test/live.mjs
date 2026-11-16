@@ -2043,6 +2043,74 @@ async function probes(page) {
    * sooner and two HUDs look open when one is on its way out. That cost a false reading on the
    * way to this and is worth the comment.
    */
+  /*
+   * **[2026-11-16] Is the claim control on the screen, and does clicking it do anything?**
+   *
+   * Reported from a table as *there is no easy way to change fate card draw between disadvantage,
+   * normal and advantage*, and as *we need a loose way of adding advantage the player can argue
+   * for*. Both of those are built -- three named buttons on the character panel, a reason, the
+   * know-how and training tags listed beside them to argue from -- which is exactly the state the
+   * HUD-follows-the-turn rule was in an hour ago: correct in the source and not happening.
+   *
+   * So the question is asked of pixels. Not *is there a control* but **is it a box with a size,
+   * inside the window, and does pressing it change what the resolver would draw.**
+   */
+  await probe("the claim control, measured rather than read", async () => {
+    await settle(page);
+    return page.evaluate(async () => {
+      const { CardRPGTray } = await import("/systems/cardrpg/module/tray.mjs");
+      const resolve = await import("/systems/cardrpg/module/resolve.mjs");
+      const { hero } = LIVE;
+      await resolve.clearEdge(hero);
+      for (const t of CardRPGTray.openTrays) await t.close();
+      const tray = game.cardrpg.openTray(hero);
+      await tray.render({ force: true });
+      await new Promise(r => setTimeout(r, 700));
+
+      const states = [...document.querySelectorAll(".cr-edge__state")];
+      const labels = states.map(b => b.textContent.trim()).join(", ");
+      /* On the screen means: a box with area, and inside the window. A control the layout has
+       * pushed off the edge is a control nobody has. */
+      const shown = states.filter(b => {
+        const r = b.getBoundingClientRect();
+        return r.width > 0 && r.height > 0
+          && r.bottom > 0 && r.right > 0
+          && r.top < window.innerHeight && r.left < window.innerWidth;
+      }).length;
+
+      /* And the portrait, which is the other thing reported missing from this same panel. */
+      const face = document.querySelector(".cr-options__face");
+      const faceBox = face?.getBoundingClientRect();
+      const faceShown = !!faceBox && faceBox.width > 0 && faceBox.height > 0;
+      const faceLoaded = !!face && face.complete && face.naturalWidth > 0;
+
+      /* Press the one that claims advantage, as a player would. */
+      const plus = states.find(b => b.dataset.mode === "1");
+      plus?.click();
+      await new Promise(r => setTimeout(r, 700));
+      const claimed = resolve.readEdge(hero)?.mode ?? 0;
+
+      /* And does the resolver draw differently for it. */
+      const npc = game.actors.find(a => a.type === "npc");
+      const withClaim = resolve.advantageFor(hero, npc, {});
+      await resolve.clearEdge(hero);
+      const without = resolve.advantageFor(hero, npc, {});
+      for (const t of CardRPGTray.openTrays) await t.close();
+
+      return [
+        ["the three states the panel offers", labels, "Disadvantage, Normal, Advantage"],
+        ["and how many are a box inside the window", shown, 3],
+        ["the actor's face is on the same panel", faceShown, true],
+        ["and the picture actually loaded", faceLoaded, true],
+        ["pressing advantage claims it", claimed, 1],
+        ["and the resolver draws with it", withClaim.mode, 1],
+        ["and says why, in the words the table will read",
+          withClaim.reasons.some(r => /claimed/.test(r)), true],
+        ["and without it once it is spent", without.mode, 0]
+      ];
+    });
+  });
+
   await probe("the HUD a GM gets when the goblin's turn comes", async () => {
     await settle(page);
     return page.evaluate(async () => {
