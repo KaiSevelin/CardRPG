@@ -8774,6 +8774,42 @@ check("chapters that send a reader to the generated list",
   (handbook.match(/\*Specializations\*/g) ?? []).length, 4);
 
 /*
+ * **[FOUND 2026-11-16] The same draft, in the one document nobody was reading.**
+ *
+ * `backgrounds.md` carried four worked examples under *placeholders until the world is ready*,
+ * and the world had been ready for a while: **three of the four are real occupations now and the
+ * drafts disagreed with the shipped node in nearly every part.** Its Acolyte trained on a holy
+ * symbol and carried a prayer book, where `background.acolyte` trains *treating wounds* and issues
+ * a Healer's Kit and a Mace; its features -- *Drilled*, *Faithful*, *Small and quick* -- are not
+ * features this game has; its skill cards were an approach and a number, which is not what a skill
+ * card has been since they were given names. **And the fourth, Hunter, is not an occupation at
+ * all.** The game's woodsman is the Forester.
+ *
+ * It is the handbook's defect exactly, one document over, and it survived for the same reason and
+ * one worse: a sentence cannot be counted, **and nothing in this suite had ever opened the file**.
+ * So the file is read now, and what is checked is not that the examples are right but that there
+ * are none: the catalogue is the handbook's, generated, and this document says so itself about the
+ * origin-to-occupation pairing -- *a second copy of it here is a second thing that can be wrong*.
+ */
+const bgDoc = fs.readFileSync(path.join(root, "../../rules/backgrounds.md"), "utf8");
+check("the draft occupations backgrounds.md described by hand",
+  ["### Hunter", "Trail sense", "Drilled:", "Small and quick", "Faithful:", "Holy symbol",
+    "placeholders until the world is ready"]
+    .filter(w => bgDoc.includes(w)).join(", ") || "gone", "gone");
+check("and occupations it still states the parts of",
+  bookOccupations.filter(n => bgDoc.includes(`### ${n.name}`)).map(n => n.name).join(", ")
+    || "none", "none");
+/* The fifteen places are named here in a designer's words and the handbook's table is generated
+ * from the graph, so this is the one list in this file that may rot without anybody noticing. */
+check("and the places it names that the graph has not got",
+  bookOrigins.filter(o => !bgDoc.includes(o.name)).map(o => o.name).join(", ") || "all fifteen",
+  "all fifteen");
+check("and the two counts creation states",
+  [/One of \*\*fifteen\*\*/, /One of twelve/].filter(re => re.test(bgDoc)).length, 2);
+check("and that it sends a reader to the chapter that does carry them",
+  bgDoc.includes("Where you are from, and what you did before") ? "yes" : "no", "yes");
+
+/*
  * **[2026-11-12] Stamina is how many cards you can play, and it is not your deck.**
  *
  * The retired sentence -- *your action deck is your stamina* -- was restated in seven documents,
@@ -17650,7 +17686,10 @@ readFiles.set("decksSource", decksSource);
  *
  * 74 since 2026-11-15: `tableSource` reads `module/table.mjs`, the GM's own controls, which are
  * on the token HUD rather than inside a player's window. */
-check("files this suite greps by name", readFiles.size, 77);
+/* 78 since 2026-11-16: `bgDoc`. backgrounds.md described four occupations by hand and was the
+ * one rules document this suite had never opened, which is how three of them came to disagree
+ * with the shipped node and the fourth to name a trade the game has never had. */
+check("files this suite greps by name", readFiles.size, 78);
 
 /* Every `/pattern/.test(VAR)` and `VAR.includes("...")`, with the check it belongs to. */
 const nameOfCheck = index => {

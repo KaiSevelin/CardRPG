@@ -67,43 +67,28 @@ Rules for writing **know-how**:
 - It should come up now and then, but not in every scene.
 - It names a **situation**, not an approach. "Among soldiers and in military matters", not "Might checks".
 
-## Examples (placeholders until the world is ready)
+## Examples  **[2026-11-16]**
 
-### Soldier
-| Part | |
-|---|---|
-| Skill cards | ✊ Might 2, 👑 Presence 1 *(Edge: an ally in the scene draws 1 skill card)* |
-| Feature | **Drilled: Drain** to play a reaction while Stunned. *Recharge: combat.* |
-| Training | Gaming set |
-| Know-how | Military matters, soldiers and camps |
-| Gear | Spear, leather armor, gaming set, rank insignia |
+**The twelve are built, so this section stopped inventing any.** It carried four, written before
+the occupations existed and never looked at again: *Soldier*, *Street Urchin*, *Acolyte* and
+*Hunter*. Three of those are real occupations now and the drafts disagreed with the shipped node in
+nearly every part — the Acolyte here trained on a **holy symbol** and carried a prayer book, where
+`background.acolyte` trains **treating wounds** and issues a Healer's Kit and a Mace, and its
+feature is *Well Read* rather than a *Faithful* that no feature list has ever held. Their skill
+cards were written as an approach and a number, which is not how a skill card has worked since they
+were named. And the fourth, **Hunter**, is not an occupation and never has been; the game's woodsman
+is the **Forester**.
 
-### Street Urchin
-| Part | |
-|---|---|
-| Skill cards | 🌑 Shadow 2, 👁 Wits 1 |
-| Feature | **Small and quick:** advantage on the initiative draw in towns and cities. |
-| Training | Lockpicks |
-| Know-how | Streets, alleys and the poor of big cities |
-| Gear | Dagger, lockpicks, dark cloak, a city map with secret marks |
+That is the same failure the player's handbook had in two chapters: a draft the data moved past, in
+a document nothing was reading against the graph. The catalogue is therefore not kept here, for the
+reason this file already gives about the origin-to-occupation pairing — *a second copy of it here is
+a second thing that can be wrong*. All twelve, with all five of their parts, are printed in the
+handbook's *Where you are from, and what you did before*, generated from the graph and checked
+against it.
 
-### Acolyte
-| Part | |
-|---|---|
-| Skill cards | 📜 Lore 2, 👑 Presence 1 |
-| Feature | **Faithful: Drain** to shuffle a temporary Critical into your fate deck. *Recharge: long rest.* |
-| Training | Holy symbol |
-| Know-how | Temples, rituals and clergy |
-| Gear | Staff, holy symbol, prayer book, simple robes |
-
-### Hunter
-| Part | |
-|---|---|
-| Skill cards | 👁 Wits 2, 🌀 Agility 1 |
-| Feature | **Trail sense:** in the wild you can't be ambushed: the enemy never starts by surprise. |
-| Training | Hunting traps |
-| Know-how | Forests, animals and tracking |
-| Gear | Shortbow, hunting knife, traps, waterskin |
+What belongs here is the **template above** and the rules for writing know-how, which is what
+somebody writing a thirteenth actually needs. This file is read by the suite now, and a check fails
+if it ever describes an occupation by hand again.
 
 ## Background secret (note)
 
