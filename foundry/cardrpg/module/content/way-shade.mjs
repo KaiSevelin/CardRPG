@@ -330,7 +330,14 @@ export const SHADE_SIGNATURES = [
      * own condition and the Strike value it borrows. */
     needs: [],
     primary: [{
-      verb: "ready", condition: "slowed", intensity: 2,
+      /*
+       * **[2026-11-16] `duration: 2`, which is what `intensity: 2` was always trying to say.**
+       * Slowed is not a `valued` condition -- halving a Move is not something you can do twice as
+       * hard -- so the intensity was read by nothing and this card printed *Slowed (1)*. Two
+       * rounds is the payoff a Signature whose resource is *a turn spent early* is owed: a turn
+       * that does nothing while it happens, for one round of one enemy at half speed, was thin.
+       */
+      verb: "ready", condition: "slowed", duration: 2,
       ground: { shape: "square", effects: ["trap"] },
       text: "an adjacent square; the first enemy to enter takes your Strike value"
     }],

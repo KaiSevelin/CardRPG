@@ -1734,7 +1734,7 @@ do not hold them: they are simply true once the node is yours.
 | **One Opening** | Somebody who does not know you are there needs only the one. *Against a target that is unaware or carrying an opening, the damage is doubled.* | Strike | Move 1 | – | 1 |
 | **Lift** | Take a card out of their deck, and keep it. *On a hit, take one card from the target's own deck. It is yours now, and it is in your deck for good.* | Strike | Move 1 | – | 1 |
 | **Loose and Step** | Shoot, and be a square away by the time they look. | Strike, then Move 1 | Move 1 | – | 1 |
-| **Set** | Leave something on the ground for whoever comes next. *Place a trap on an adjacent square.* | Ready → slowed | Ready | – | 1 |
+| **Set** | Leave something on the ground for whoever comes next. *Place a trap on an adjacent square.* | Ready → slowed (2) | Ready | – | 1 |
 | **Over and Past** | Their line is not a wall if you simply go through it. *You may move through enemy squares.* | Move 3 | Move 1 | Sidestep | 1 |
 | **Heckle** | Anybody who closes on you is rattled before they arrive. *An enemy arriving next to you draws fate with disadvantage until your next turn.* | → heckled (1) | Move 1 | Heckle | 1 |
 | **Double or Nothing** | Two fate cards, both of them counting, which is weather and not advantage. *Draw two fate cards -- both apply, added together. Variance, not advantage.* | Strike | Move 1 | – | 1 |

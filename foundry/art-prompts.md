@@ -4786,7 +4786,7 @@ WHO IS IN IT. If a face or any bare skin shows here, that person is a man of Wes
 File: `signatures/shade/set.webp`
 
 ```text
-SUBJECT. "Set" — Ready Slowed 2 an adjacent square; the first enemy to enter takes your Strike value · / Ready · Place a trap on an adjacent square.
+SUBJECT. "Set" — Ready Slowed (2) an adjacent square; the first enemy to enter takes your Strike value · / Ready · Place a trap on an adjacent square.
 
 Draw a weapon coming to hand, caught between carried and held; movement dragging, as if through water.
 
@@ -6677,7 +6677,7 @@ Draw that line literally: the one moment it describes, and nothing else in frame
 File: `spells/mind/the-standing-flood.webp`
 
 ```text
-SUBJECT. "The Standing Flood" — strength 3 · range 3 area 3 Wet 2 deep water: and its Move is halved
+SUBJECT. "The Standing Flood" — strength 3 · range 3 area 3 Wet (2) deep water: and its Move is halved
 
 Deep water where there was a floor. Everything in it is Wet, which is the opening half this school is built to set up.
 

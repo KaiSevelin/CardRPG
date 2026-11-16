@@ -4220,10 +4220,11 @@ const { CARDRPG } = await import("../module/config.mjs");
  * to be **`duration: 2`**, which is what the card face would then print as *Slowed (2)*. Today
  * both print *(1)*, because duration is unset and defaults to one.
  *
- * **[OPEN]** It is pinned rather than fixed because changing it is a tuning decision and not a
- * typo: the prose on neither card says how long, so `intensity: 2` is the only evidence of what
- * was wanted, and two rounds of Slowed from a trap is a different card from one. What this check
- * does is stop a THIRD arriving quietly, and stop these two being forgotten again.
+ * **[CLOSED 2026-11-16]** Both are `duration: 2` now. It was a tuning decision rather than a
+ * typo -- the prose on neither card says how long, so `intensity: 2` was the only evidence of
+ * what was wanted, and two rounds of Slowed from a trap is a different card from one -- so it was
+ * pinned here until somebody decided it. The check stays, pointed at *none*, because what it is
+ * really for is stopping a THIRD arriving quietly.
  *
  * Found by ground phase 2, which was the first thing that ever asked a step for its intensity.
  */
@@ -4243,8 +4244,7 @@ for (const key of ["WARRIOR_DECK", "SHADE_DECK", "COMMON_POOL", "WAY_CARDS", "ST
   }
 }
 check("steps printing an intensity on a condition that has no value",
-  INTENSITY_STEPS.sort().join(", ") || "none",
-  "Set -> slowed, The Standing Flood -> wet");
+  INTENSITY_STEPS.sort().join(", ") || "none", "none");
 
 /*
  * **Every tag and every slot a content item declares is in the vocabulary the schema draws from.**

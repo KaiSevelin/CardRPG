@@ -505,7 +505,7 @@ A title's own piece of content, and what its node wears in the levelling graph.
 | ✓ | **One Trick** | You may prepare from any one school you have ever seen cast. | `signatures/shade/one-trick.webp` |
 | ✓ | **Over and Past** | Move 3 · / Move 1 · You may move through enemy squares. | `signatures/shade/over-and-past.webp` |
 | ✓ | **Point Man** | Foresee · / Move 1 · While you are the furthest forward of your party, Foresee one extra type. | `signatures/shade/point-man.webp` |
-| ✓ | **Set** | Ready Slowed 2 an adjacent square; the first enemy to enter takes your Strike value · / Ready · Place a trap on an adjacent square. | `signatures/shade/set.webp` |
+| ✓ | **Set** | Ready Slowed (2) an adjacent square; the first enemy to enter takes your Strike value · / Ready · Place a trap on an adjacent square. | `signatures/shade/set.webp` |
 | ✓ | **The Kit** | item · You may never put it down. Every Hard physical obstacle becomes Normal. | `signatures/shade/the-kit.webp` |
 | ✓ | **The Opening** | Advantage against anyone carrying an opening -- whoever set it. | `signatures/shade/the-opening.webp` |
 
@@ -668,7 +668,7 @@ Blood Magic and Spiritualism, handed over by minor nodes.
 | ✓ | **The Shut Mouth** | strength 2 · Cast range 3 Silenced (1) | `spells/mind/the-shut-mouth.webp` |
 | ✓ | **The Small Pact** | strength 1 · the god grants the favour written on your pact | `spells/mind/the-small-pact.webp` |
 | ✓ | **The Sphere Entire** | strength 4 · range 3 area 5 of your element | `spells/mind/the-sphere-entire.webp` |
-| ✓ | **The Standing Flood** | strength 3 · range 3 area 3 Wet 2 deep water: and its Move is halved | `spells/mind/the-standing-flood.webp` |
+| ✓ | **The Standing Flood** | strength 3 · range 3 area 3 Wet (2) deep water: and its Move is halved | `spells/mind/the-standing-flood.webp` |
 | ✓ | **The Standing Ward** | strength 4 · Spent: until your next turn no Cast resolves at all, anywhere -- yours too | `spells/mind/the-standing-ward.webp` |
 | ✓ | **The Unbound Tongue** | strength 1 · Shake 1 range 3 Silenced | `spells/mind/the-unbound-tongue.webp` |
 | ✓ | **The Unlatched Door** | strength 2 · a door ever opened by one who lived there opens for you | `spells/mind/the-unlatched-door.webp` |

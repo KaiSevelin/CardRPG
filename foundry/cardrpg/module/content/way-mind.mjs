@@ -270,7 +270,14 @@ export const MIND_POOL = [
     description: "<p>Deep water where there was a floor. Everything in it is Wet, which is the "
       + "opening half this school is built to set up.</p>",
     effect: {
-      range: 3, area: 3, condition: "wet", intensity: 2,
+      /*
+       * **[2026-11-16] `duration: 2`, for the reason Slowed's is.** Wet is an opening and a
+       * cancel, not a quantity, so an intensity on it did nothing. What two rounds buys is narrow
+       * on purpose: standing in the water keeps you Wet anyway, since the zone renews it every
+       * turn, so this is only about somebody who **walks out** -- and staying wet after you climb
+       * out of deep water is the version of the rule nobody has to be talked into.
+       */
+      range: 3, area: 3, condition: "wet", duration: 2,
       ground: { shape: "area", effects: ["difficult"] },
       text: "deep water: and its Move is halved"
     }

@@ -18,7 +18,7 @@
       "range": 3,
       "area": 3,
       "condition": "wet",
-      "intensity": 2,
+      "duration": 2,
       "ground": {
         "shape": "area",
         "effects": [
