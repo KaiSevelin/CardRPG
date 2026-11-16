@@ -154,6 +154,17 @@
           {{/each}}
         </span>
       </div>
+      {{!-- What the square under you is, when it is anything. Beside the vitals because it is
+            the same kind of fact: true of you right now, and not a choice you are being offered.
+            A chip says whether the engine applies it or the table does. --}}
+      {{#if ground.length}}
+      <div class="cr-options__ground">
+        {{#each ground}}
+          <span class="cr-chip cr-chip--ground{{#unless this.enforced}} cr-chip--table{{/unless}}"
+                data-tooltip="{{this.tip}}">{{this.label}}</span>
+        {{/each}}
+      </div>
+      {{/if}}
       {{!-- The clock. Not the draw pile: the deck cycles for free, so this is what runs out. --}}
       {{#if stamina}}
       <div class="cr-tray__stamina{{#if outOfStamina}} cr-tray__stamina--out{{/if}}"

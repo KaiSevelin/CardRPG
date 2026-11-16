@@ -20,6 +20,8 @@ import {
   INJURIES
 } from "./content.mjs";
 import { expandRoster } from "./monsters.mjs";
+/* Ground phase 1: a square can declare cover, the way a token already could. */
+import { groundFor } from "./ground.mjs";
 import { slateData } from "./setup.mjs";
 import {
   drawFate, deckOf, uprightCards, discardCards, cardName, addFateCards, moveRandom, move,
@@ -551,12 +553,25 @@ export function advantageFor(actor, target, {
    * the disadvantage on every ranged attack in the game, and every win rate this project has
    * published was measured without it (../../sim/analysis-2026-10-30.md). So the GM marks it, the
    * way they mark Prone, and `false` by default moves no measured number.
+   *
+   * **[2026-11-16] And a square can declare it now, which is the same kind of statement.** Ground
+   * phase 1: a zone whose properties include `cover` covers whoever is standing in it, and *Wall
+   * of the Sphere* is the card that has been asking for exactly that since it was written. It is
+   * still declared rather than traced -- somebody put the wall there and somebody walked behind it
+   * -- so it moves no measured number by itself either, and the two sources are one disadvantage
+   * rather than two, the way every other pair in this function is.
+   *
+   * The reason says which, because *target is in cover* with nothing visible on the token is the
+   * kind of result a table stops trusting.
    */
-  if ((ranged || area) && target?.system?.cover && !ignoresCover) {
+  const covered = groundFor(target).effects.has("cover");
+  const inCover = !!target?.system?.cover || covered;
+  if ((ranged || area) && inCover && !ignoresCover) {
     disadvantage = true;
-    reasons.push("target is in cover");
+    reasons.push(covered && !target?.system?.cover
+      ? "target is standing in cover" : "target is in cover");
   }
-  if (target?.system?.cover && ignoresCover) reasons.push("cover ignored");
+  if (inCover && ignoresCover) reasons.push("cover ignored");
 
   /*
    * **And what somebody said out loud**, which is the only source here that the engine cannot

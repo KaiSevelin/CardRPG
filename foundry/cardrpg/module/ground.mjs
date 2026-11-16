@@ -180,6 +180,41 @@ export async function expireGround(scene, round) {
   return done.length;
 }
 
+/**
+ * **Which properties the engine acts on by itself**, which is a shorter list than the six and will
+ * stay shorter for a while.
+ *
+ * It is here rather than in the HUD because the HUD is not the only thing that will want to say
+ * it, and it is a Set rather than a flag on each config entry because `groundEffects` is a map of
+ * label keys today and widening it is a phase-1 decision this phase does not need to make.
+ *
+ * **Saying so is the feature.** Eleven of the twelve entries that read a shadowed square are rules
+ * a person applies, and the game is better for that -- *movement is a sentence the table applies*.
+ * What a table cannot do is apply a rule about a square nobody can see. A chip that reads
+ * *shadowed, the table applies this* is the whole of what those entries were missing.
+ */
+export const ENFORCED = new Set(["cover"]);
+
+/**
+ * **What the square under an actor is, ready to show somebody.**
+ *
+ * One reader, so the HUD, a sheet and anything later all say the same words about the same square
+ * and none of them has to know which properties the engine has got round to.
+ */
+export function groundChips(actor) {
+  return [...groundFor(actor).effects].map(key => {
+    const label = game.i18n.localize(CARDRPG.groundEffects[key] ?? key);
+    return {
+      key,
+      label,
+      enforced: ENFORCED.has(key),
+      tip: ENFORCED.has(key)
+        ? `You are standing in ${label}, and the engine applies it.`
+        : `You are standing in ${label}. The table applies it.`
+    };
+  });
+}
+
 /** And the fight ending takes every zone a fight made, including the ones that said all fight. */
 export async function clearGround(scene) {
   const all = zonesOn(scene).map(({ region }) => region.id);

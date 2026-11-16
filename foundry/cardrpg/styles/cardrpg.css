@@ -2282,3 +2282,20 @@ a.cr-enriched { cursor: pointer; white-space: nowrap; }
 .cr-stat--passive input { width: 3.2em; flex: 0 0 auto; text-align: center; }
 .cr-stat--passive input::placeholder { opacity: 0.45; font-style: italic; }
 .cr-npc__passives .cr-stat { font-size: 0.95em; }
+
+/*
+ * **What the square under you is.**  [BUILT 2026-11-16]
+ *
+ * Ground phase 1. A row of chips beside the vitals, because it is the same kind of fact: true of
+ * you right now, and not a choice being offered. Dashed where the TABLE applies the rule and solid
+ * where the engine does -- the one distinction a player needs from this row, since eleven of the
+ * twelve rules that read a square are sentences somebody says rather than code.
+ */
+.cr-hud-layer .cr-options__ground {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.15em 0.3em;
+  margin-top: 0.15em;
+}
+.cardrpg .cr-chip--ground { border-color: var(--cardrpg-ink); }
+.cardrpg .cr-chip--table { border-style: dashed; opacity: 0.85; }

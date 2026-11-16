@@ -41,7 +41,7 @@ import {
 /* The GM plays a monster from this window now, and the moment one acts its type's intent card is
  * public knowledge anyway -- so the HUD flips it through the same function the turn hook does. */
 import { revealIntent, turnOf } from "./combat.mjs";
-import { layGround } from "./ground.mjs";
+import { layGround, groundChips } from "./ground.mjs";
 import {
   readCall, setCall, clearCall, describeCall, cardAnswers, bestTool, helpOptions,
   readChallenge, startChallenge, endChallenge, catchBreathInChallenge, drawTwist, twistCounts,
@@ -474,6 +474,14 @@ export class CardRPGTray extends HandlebarsApplicationMixin(ApplicationV2) {
       portrait: portraitOf(actor),
       /* A claim is state on the actor, so it reads the same on every client that can see them. */
       edge: this.#edge(),
+      /*
+       * **What the square under them is.**  [BUILT 2026-11-16]
+       *
+       * Ground phase 1. Eleven of the twelve entries that read a shadowed square are rules a
+       * person applies, and that is right -- what a table cannot do is apply a rule about a
+       * square nobody can see. Each chip says whether the engine acts on it or they do.
+       */
+      ground: groundChips(this.actor),
       npc: npc ? this.#npcTray() : null,
 
       /* One hand on the screen at a time: the side decides which (hud-spec 5a). */

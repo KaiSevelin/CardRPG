@@ -1449,9 +1449,20 @@ check("the piece is spent before anything depends on the hit",
 // Anchored on the whole disadvantage condition, not on the field name: the field is also named in
 // the line that merely explains itself in chat, and a check that matched there passed a resolver
 // that had stopped reading cover at all.
+/* **[2026-11-16] And on both sources now.** Ground phase 1 gave a SQUARE the same say a token had,
+ * so the condition reads a joined `inCover` -- which is still one disadvantage and not two, the
+ * way every other pair in that function is. */
 check("cover is read where advantage is decided",
-  resolveSource.includes("(ranged || area) && target?.system?.cover && !ignoresCover")
-    ? "yes" : "no", "yes");
+  resolveSource.includes("if ((ranged || area) && inCover && !ignoresCover)") ? "yes" : "no",
+  "yes");
+check("and both things that can put a target in it",
+  resolveSource.includes("const inCover = !!target?.system?.cover || covered;") ? "yes" : "no",
+  "yes");
+/* The chat line says WHICH, because *target is in cover* with nothing visible on the token is the
+ * kind of result a table stops trusting. */
+check("and the reason names the square when it is the square",
+  resolveSource.includes('"target is standing in cover" : "target is in cover"') ? "yes" : "no",
+  "yes");
 const actorsSource = fs.readFileSync(path.join(root, "module/data/actors.mjs"), "utf8");
 check("cover exists on both actor models",
   (actorsSource.match(/cover: new fields\.BooleanField/g) ?? []).length, 2);
@@ -9570,9 +9581,16 @@ check("a missing backend does not refuse the shot",
  * And the declared half stays declared. If this ever reads `computed`, somebody has started
  * tracing cover from figures, and every win rate in sim/ is measuring a different game than the
  * one it claims to.
+ *
+ * **[2026-11-16] There are two declarations now and neither is a trace.** Ground phase 1 lets a
+ * SQUARE say it gives cover, which is the same kind of statement as a checkbox on a token: a
+ * person put the wall there and a person walked behind it. What would break this is cover worked
+ * out from where the figures happen to be standing, and that is still nowhere in the resolver.
  */
 check("cover from figures is still declared rather than computed",
-  /target\?\.system\?\.cover && !ignoresCover/.test(resolveSource) ? "declared" : "computed",
+  ['const inCover = !!target?.system?.cover || covered;',
+    'const covered = groundFor(target).effects.has("cover");']
+    .every(line => resolveSource.includes(line)) ? "declared" : "computed",
   "declared");
 
 /* The book says so in all three places it has to: the rule, the player's copy, and the table. */

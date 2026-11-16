@@ -2210,6 +2210,70 @@ async function probes(page) {
     });
   });
 
+  /*
+   * **[BUILT 2026-11-16] Ground phase 1: a square can give cover, and you can see what you are
+   * standing in.**
+   *
+   * Cover has been *a declared state, not a line traced across the canvas* since it was written,
+   * and a zone is the same kind of statement -- somebody put the wall there and somebody walked
+   * behind it. *Wall of the Sphere* has asked for exactly this since it was written and had
+   * nothing to ask.
+   *
+   * The second half is the one that matters more and automates less: eleven of the twelve entries
+   * that read a shadowed square are rules a person applies, which is right. What a table cannot do
+   * is apply a rule about a square nobody can see.
+   */
+  await probe("a square that gives cover, and a square you can read", async () => {
+    await settle(page);
+    return page.evaluate(async () => {
+      const g = await import("/systems/cardrpg/module/ground.mjs");
+      const resolve = await import("/systems/cardrpg/module/resolve.mjs");
+      const { CardRPGTray } = await import("/systems/cardrpg/module/tray.mjs");
+      const { hero } = LIVE;
+      const npc = game.actors.find(a => a.type === "npc");
+      const scene = canvas.scene;
+      await g.clearGround(scene);
+      for (const t of CardRPGTray.openTrays) await t.close();
+
+      const [tok] = await scene.createEmbeddedDocuments("Token",
+        [(await npc.getTokenDocument({ x: 700, y: 700 })).toObject()]);
+      const target = tok.actor;
+      const here = tok.object?.center ?? { x: tok.x, y: tok.y };
+
+      const bare = resolve.advantageFor(hero, target, { ranged: true });
+      await g.layGround(scene, {
+        shape: "adjacent", effects: ["cover"], origin: here, radius: 0, until: null
+      });
+      const behind = resolve.advantageFor(hero, target, { ranged: true });
+      const ignoring = resolve.advantageFor(hero, target, { ranged: true, ignoresCover: true });
+      /* Melee is untouched: cover has never been a melee rule. */
+      const melee = resolve.advantageFor(hero, target, {});
+
+      /* And the chips, for whoever is standing in it. */
+      const [heroTok] = await scene.createEmbeddedDocuments("Token",
+        [(await hero.getTokenDocument({ x: 700, y: 700 })).toObject()]);
+      const chips = g.groundChips(hero);
+      await g.layGround(scene, {
+        shape: "wholeMap", effects: ["shadowed"], until: null
+      });
+      const both = g.groundChips(hero).map(c => `${c.label}${c.enforced ? "*" : ""}`).sort().join(", ");
+
+      await g.clearGround(scene);
+      await tok.delete();
+      await heroTok.delete();
+      return [
+        ["an open square is no cover", bare.mode, 0],
+        ["a square that gives cover costs the shooter", behind.mode, -1],
+        ["and the reason says it was the square",
+          behind.reasons.join("; ").includes("standing in cover"), true],
+        ["a shot that ignores cover is not costed", ignoring.mode, 0],
+        ["and cover was never a melee rule", melee.mode, 0],
+        ["standing in it reads as one chip", chips.map(c => c.label).join(","), "cover"],
+        ["and the engine says which of them it applies itself", both, "cover*, shadowed"]
+      ];
+    });
+  });
+
   await probe("the claim control, measured rather than read", async () => {
     await settle(page);
     return page.evaluate(async () => {
